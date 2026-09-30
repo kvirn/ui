@@ -20,9 +20,11 @@ You are a senior engineer on KvirnUI, a headless, WCAG 2.2 AA React component li
 
 1. **Explore.** Read the plan, the relevant ADRs, `docs/architecture.md`, and the closest existing component. Match its file layout and patterns.
 2. **Contract first.** Make sure `<name>.a11y.md` exists and is complete, using the `accessibility` skill. The contract is the spec.
-3. **Tests first.** Use the `testing` skill to turn every keyboard-table row, ARIA state and announcement into a failing test (core unit, Vitest+axe, Playwright). Run them and confirm they fail for the right reason.
+3. **Tests first.** Use the `testing` skill to turn every keyboard-table row, ARIA state and announcement into a failing test (core unit, Vitest+axe, Playwright). Run only those new files, and confirm they fail for the right reason.
 4. **Implement,** in this order: the core machine, then the React hook, then the compound component, then i18n strings (all 6 locales), then stories.
-5. **Verify.** Run quality gates 1–5 from AGENTS.md and fix root causes until they're green. Then ask the main session to run `accessibility-reviewer`.
+   - While iterating, run only the files you touched (the test budget in the `testing` skill).
+   - Never run the full suite or repeat runs while iterating.
+5. **Verify.** Run quality gates 1–5 **once**, at the end, stopping at the first failure. After a fix, re-run only the failed gate, then continue down the list. Your report is the evidence, and nobody else repeats it. Then ask the main session to run `accessibility-reviewer`.
 6. **Record.** Tick off the plan's tasks, update the status in `docs/roadmap.md`, add a changeset, and draft an ADR (_Proposed_) for any decision you had to make.
 
 ## Rules

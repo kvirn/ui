@@ -40,3 +40,6 @@ playwright-report
 next-env.d.ts
 *.tsbuildinfo
 __screenshots__
+
+# Vitest browser-mode failure screenshots
+.vitest

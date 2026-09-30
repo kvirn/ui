@@ -34,9 +34,35 @@ Tests are the definition of done. They come from the accessibility contract (`<n
 - **No mocking of the DOM or of focus.** Use browser mode, not jsdom, for components.
 - **Never weaken a gate.** No `.skip`/`.only`, no disabled axe rules, no raised timeouts to hide flakiness, and no snapshot updates without reading the diff. Fix flaky tests at the root cause, which is usually a missing `await expect(...)` auto-wait.
 
-## Gates
+## Test budget
 
-Use `vp test run --changed` while iterating. Before declaring done, run the full quality gates in AGENTS.md in order, and paste the tail of each output as evidence.
+Run the smallest thing that proves the point. Each full gate run happens **once per change**, by one agent.
+
+**While iterating:**
+
+- Run only the files you touched, or a single test:
+  - `vp test run <file>`
+  - `vp test run --project browser <file> -t "<name>"`
+- No full-suite runs, and no `--changed` sweeps after every edit.
+- No stress or repeat runs, unless a test actually flaked and you're investigating it.
+- E2E: one spec on one project, `vp run e2e <spec> --project chromium`, and only if story, fixture or keyboard behaviour changed.
+  - Keep `vp run storybook` running in the background, so Playwright reuses it instead of booting a new server each run.
+
+**Final gates:** the implementing agent runs them once, at the end, in this order, stopping at the first failure:
+
+1. `vp check`
+2. `vp test run`
+3. `vp run e2e` on the non-WebKit projects (all projects in CI)
+4. `vp run i18n:check`
+5. `vp run theme:check`
+
+Run `vp run build` only if package config or exports changed.
+
+**No one repeats it:**
+
+- The main session relies on the engineer's evidence and doesn't re-run the gates.
+- `accessibility-reviewer` runs only targeted checks for its findings: the component's own test files, and its e2e spec on `chromium` and `chromium-forced-colors`. It runs the full suite only if the tree changed after the engineer's evidence.
+- The Stop hook skips work when nothing changed since its last green run.
 
 ## Debugging failures
 
