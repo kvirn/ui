@@ -1,3 +1,5 @@
 import type { KvirnMessages } from '../types.ts'
 
-export const fi = {} satisfies KvirnMessages
+export const fi = {
+  link: { newTabNotice: '(avautuu uuteen välilehteen)' },
+} satisfies KvirnMessages

@@ -17,7 +17,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 
 | Component                                              | APG pattern                  | M   | Status  |
 | ------------------------------------------------------ | ---------------------------- | --- | ------- |
-| KvirnProvider (locale, dates, links, theme preference) | –                            | 0   | planned |
+| KvirnProvider (locale, dates, links, theme preference) | –                            | 0   | alpha   |
 | VisuallyHidden, SkipLink, Announcer                    | –                            | 1   | planned |
 | FocusScope, Portal, DismissableLayer                   | –                            | 1   | planned |
 | Button, Toggle                                         | Button                       | 1   | planned |

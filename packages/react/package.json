@@ -26,15 +26,18 @@
     "build": "vp pack"
   },
   "dependencies": {
-    "@kvirn-ui/core": "workspace:*"
+    "@kvirn-ui/core": "workspace:*",
+    "@kvirn-ui/i18n": "workspace:*"
   },
   "devDependencies": {
     "@kvirn-ui/testing": "workspace:*",
+    "@storybook/react-vite": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitest/browser-playwright": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "storybook": "catalog:",
     "vite-plus": "catalog:",
     "vitest-browser-react": "catalog:"
   },

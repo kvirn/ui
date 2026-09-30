@@ -346,10 +346,16 @@ importers:
       '@kvirn-ui/core':
         specifier: workspace:*
         version: link:../core
+      '@kvirn-ui/i18n':
+        specifier: workspace:*
+        version: link:../i18n
     devDependencies:
       '@kvirn-ui/testing':
         specifier: workspace:*
         version: link:../testing
+      '@storybook/react-vite':
+        specifier: 'catalog:'
+        version: 10.6.1(@types/react-dom@19.3.0)(@types/react@19.3.0)(@voidzero-dev/vite-plus-core@1.0.0)(react-dom@19.3.0)(react@19.3.0)(storybook@10.6.1)(typescript@7.0.2)
       '@types/react':
         specifier: 'catalog:'
         version: 19.3.0
@@ -365,6 +371,9 @@ importers:
       react-dom:
         specifier: 'catalog:'
         version: 19.3.0(react@19.3.0)
+      storybook:
+        specifier: 'catalog:'
+        version: 10.6.1(@types/react@19.3.0)(react@19.3.0)(vite-plus@1.0.0)
       vite-plus:
         specifier: 'catalog:'
         version: 1.0.0(@types/node@24.19.0)(@vitest/browser-playwright@5.0.1)(@vitest/ui@5.0.1)(esbuild@0.28.2)(typescript@7.0.2)(yaml@2.9.1)
