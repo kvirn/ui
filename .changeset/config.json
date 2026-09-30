@@ -1,0 +1,10 @@
+{
+  "baseBranch": "main",
+  "access": "public",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "ignore": ["@kvirn-ui/storybook", "@kvirn-ui/docs"],
+  "fixed": [],
+  "linked": [],
+  "updateInternalDependencies": "patch"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@kvirn-ui/docs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "NEXT_TELEMETRY_DISABLED=1 next dev",
+    "build": "NEXT_TELEMETRY_DISABLED=1 next build",
+    "start": "NEXT_TELEMETRY_DISABLED=1 next start"
+  },
+  "dependencies": {
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "name": "@kvirn-ui/react",
+  "version": "0.0.0",
+  "description": "Headless, accessible React hooks and components for KvirnUI.",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.mts",
+        "import": "./dist/index.mjs"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack"
+  },
+  "dependencies": {
+    "@kvirn-ui/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@kvirn-ui/testing": "workspace:*",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitest/browser-playwright": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "vite-plus": "catalog:",
+    "vitest-browser-react": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0"
+  }
+}

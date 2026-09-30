@@ -1,0 +1,61 @@
+{
+  "name": "@kvirn-ui/i18n",
+  "version": "0.0.0",
+  "description": "KvirnUI message catalogs for sv, fi, nb, nn, se and en.",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./en": "./src/locales/en.ts",
+    "./sv": "./src/locales/sv.ts",
+    "./fi": "./src/locales/fi.ts",
+    "./nb": "./src/locales/nb.ts",
+    "./nn": "./src/locales/nn.ts",
+    "./se": "./src/locales/se.ts",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.mts",
+        "import": "./dist/index.mjs"
+      },
+      "./en": {
+        "types": "./dist/locales/en.d.mts",
+        "import": "./dist/locales/en.mjs"
+      },
+      "./sv": {
+        "types": "./dist/locales/sv.d.mts",
+        "import": "./dist/locales/sv.mjs"
+      },
+      "./fi": {
+        "types": "./dist/locales/fi.d.mts",
+        "import": "./dist/locales/fi.mjs"
+      },
+      "./nb": {
+        "types": "./dist/locales/nb.d.mts",
+        "import": "./dist/locales/nb.mjs"
+      },
+      "./nn": {
+        "types": "./dist/locales/nn.d.mts",
+        "import": "./dist/locales/nn.mjs"
+      },
+      "./se": {
+        "types": "./dist/locales/se.d.mts",
+        "import": "./dist/locales/se.mjs"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack"
+  },
+  "devDependencies": {
+    "vite-plus": "catalog:"
+  }
+}

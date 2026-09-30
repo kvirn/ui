@@ -1,0 +1,6 @@
+import { defineConfig } from 'vite-plus'
+import { packPreset } from '../../tooling/vite-preset/pack.ts'
+
+export default defineConfig({
+  pack: { ...packPreset, deps: { neverBundle: ['react', 'react-dom', '@kvirn-ui/core'] } },
+})

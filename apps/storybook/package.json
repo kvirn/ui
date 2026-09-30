@@ -1,0 +1,25 @@
+{
+  "name": "@kvirn-ui/storybook",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "storybook dev --port 6006 --ci --no-open",
+    "build": "storybook build --output-dir storybook-static"
+  },
+  "devDependencies": {
+    "@kvirn-ui/react": "workspace:*",
+    "@kvirn-ui/testing": "workspace:*",
+    "@storybook/addon-a11y": "catalog:",
+    "@storybook/addon-vitest": "catalog:",
+    "@storybook/react-vite": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitest/browser-playwright": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "storybook": "catalog:",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  }
+}

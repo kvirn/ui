@@ -1,0 +1,35 @@
+{
+  "name": "@kvirn-ui/testing",
+  "version": "0.0.0",
+  "description": "Accessibility test helpers for KvirnUI (Vitest browser mode).",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.mts",
+        "import": "./dist/index.mjs"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack"
+  },
+  "dependencies": {
+    "axe-core": "catalog:"
+  },
+  "devDependencies": {
+    "@vitest/browser-playwright": "catalog:",
+    "vite-plus": "catalog:"
+  }
+}

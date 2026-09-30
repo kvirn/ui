@@ -1,0 +1,36 @@
+{
+  "name": "kvirn-ui",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "e2e": "playwright test",
+    "storybook": "vp run --filter @kvirn-ui/storybook dev",
+    "docs": "vp run --filter @kvirn-ui/docs dev",
+    "build": "vp run -r build",
+    "i18n:check": "node packages/i18n/scripts/i18n-check.ts",
+    "theme:check": "node packages/theme/scripts/theme-check.ts",
+    "changeset": "changeset"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "catalog:",
+    "@changesets/cli": "catalog:",
+    "@kvirn-ui/testing": "workspace:*",
+    "@playwright/test": "catalog:",
+    "@storybook/addon-vitest": "catalog:",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.8.1",
+      "onFail": "download"
+    }
+  },
+  "engines": {
+    "node": "^22.18.0 || ^24.11.0 || >=26.0.0"
+  }
+}

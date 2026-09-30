@@ -1,0 +1,60 @@
+packages:
+  - apps/*
+  - packages/*
+
+catalogMode: strict
+
+catalog:
+  # Toolchain (ADR-0002). Vite+ is pinned exactly and bundles Vitest, Oxlint, Oxfmt and tsdown.
+  vite-plus: 1.0.0
+  vite: npm:@voidzero-dev/vite-plus-core@1.0.0
+  '@vitest/browser-playwright': 5.0.1
+  typescript: ^7.0.2
+  '@types/node': ^24
+  # The one sanctioned runtime dependency, pinned exactly (ADR-0003)
+  '@tanstack/store': 0.11.2
+  # React 19+ only (docs/vision.md)
+  react: ^19.3.0
+  react-dom: ^19.3.0
+  '@types/react': ^19.3.0
+  '@types/react-dom': ^19.3.0
+  vitest-browser-react: ^2.3.0
+  # Accessibility engine and e2e
+  axe-core: 4.13.0
+  '@axe-core/playwright': 4.13.0
+  '@playwright/test': 1.63.0
+  # Workbench, docs, release
+  storybook: 10.6.1
+  '@storybook/react-vite': 10.6.1
+  '@storybook/addon-a11y': 10.6.1
+  '@storybook/addon-vitest': 10.6.1
+  next: 16.3.8
+  '@changesets/cli': 3.0.3
+
+overrides:
+  vite@*: 'catalog:'
+peerDependencyRules:
+  allowAny:
+    - vite
+    # storybook declares an optional vite-plus peer that predates 1.0
+    - vite-plus
+  allowedVersions:
+    vite: '*'
+
+# Dependencies allowed to run install scripts (supply-chain review required to add more)
+allowBuilds:
+  esbuild: true
+
+# One Vitest copy for vite-plus and Storybook (different optional peer sets otherwise split it)
+dedupePeers: true
+minimumReleaseAgeExclude:
+  - '@next/env@16.3.8'
+  - '@next/swc-darwin-arm64@16.3.8'
+  - '@next/swc-darwin-x64@16.3.8'
+  - '@next/swc-linux-arm64-gnu@16.3.8'
+  - '@next/swc-linux-arm64-musl@16.3.8'
+  - '@next/swc-linux-x64-gnu@16.3.8'
+  - '@next/swc-linux-x64-musl@16.3.8'
+  - '@next/swc-win32-arm64-msvc@16.3.8'
+  - '@next/swc-win32-x64-msvc@16.3.8'
+  - next@16.3.8
