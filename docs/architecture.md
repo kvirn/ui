@@ -14,7 +14,7 @@ packages/testing   @kvirn-ui/testing  a11y test helpers (dev only)
 tooling/           shared tsconfig + vite presets
 ```
 
-Dependencies only point downward: `blocks → theme, react → core, i18n (types + the built-in `en` catalog, ADR-0007)`. `core` depends only on `@tanstack/store`, which is wrapped in `core/src/store/`. `react` depends only on React (ADR-0003).
+Dependencies only point downward: `blocks → theme, react → core, i18n (types + the built-in `en` catalog)`. `core` depends only on `@tanstack/store`, which is wrapped in `core/src/store/`. `react` depends only on React, `core` and `i18n` (ADR-0003).
 
 - **core:** one store (`createComponentStore`, which wraps `@tanstack/store`) with typed actions per component, plus utilities for roving tabindex, typeahead, focus trap and restore, dismiss, scroll lock, `inert`, the announcer and IDs. It reaches the DOM only through an injected `Env`, which keeps it SSR-safe and unit-testable (ADR-0003).
 - **react:** binds to core stores via `useSyncExternalStore` (`useStoreSelector`). React 19 or later, RSC-aware (`"use client"` where needed), SSR and hydration safe. Composition works via the `render` prop (see API conventions).
@@ -113,7 +113,7 @@ Headless packages ship zero CSS. State is exposed only as attributes:
 ## Internationalisation
 
 - Required locales: `sv`, `fi`, `nb`, `nn`, `se` (Northern Sámi, reviewed by a native speaker) and `en` (the fallback). Finland is bilingual and Norway uses both written standards, so all are first-class.
-- No hard-coded visible or announced strings, and none that can't be replaced. Typed catalogs come through `<KvirnProvider messages>`, which is deep-merged over the parent provider and ultimately over built-in `en`. Any key can be overridden per instance with the component's `messages` prop, and visible text parts also take children (ADR-0008). Missing keys fail the type check and `i18n:check`.
+- No hard-coded visible or announced strings, and none that can't be replaced. Typed catalogs come through `<KvirnProvider messages>`, which is deep-merged over the parent provider and ultimately over built-in `en`. Any key can be overridden per instance with the component's `messages` prop, and visible text parts also take children (ADR-0007). Missing keys fail the type check and `i18n:check`.
 - Formatting uses `Intl.*` only, with no ICU runtime. `dir` comes from context, and arrow keys flip in RTL. Calendars start the week on Monday and show ISO week numbers.
 - Language links set `lang` / `hreflang` (3.1.2).
 

@@ -11,7 +11,7 @@
 | Versioning        | Changesets                                                                                                                     |
 | CI                | GitHub Actions (EU-hosted runners preferred)                                                                                   |
 
-Config lives in the root `vite.config.ts` (fmt, lint, test projects). Each package's `vite.config.ts` only adds `pack`, from `tooling/vite-preset/pack.ts`. `pnpm-workspace.yaml` catalogs pin every version, in strict mode. Details and reasons: ADR-0009.
+Config lives in the root `vite.config.ts` (fmt, lint, test projects). Each package's `vite.config.ts` only adds `pack`, from `tooling/vite-preset/pack.ts`. `pnpm-workspace.yaml` catalogs pin every version, in strict mode. Details and reasons: ADR-0002.
 
 - **Type checking** runs inside `vp check` (tsgolint, TypeScript 7), not as a separate `tsc` step.
 - **Tests import from `vite-plus/test`**, and browser APIs from `vite-plus/test/browser`, never from `vitest` directly.

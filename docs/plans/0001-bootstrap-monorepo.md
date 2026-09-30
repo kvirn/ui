@@ -3,7 +3,7 @@
 - **Status:** Done
 - **Owner:** Maintainer
 - **Created:** 2026-09-30 · **Target:** M0 Foundation
-- **Related:** ADR-0002, ADR-0003, ADR-0004, ADR-0009, Plan 0002, Plan 0003
+- **Related:** ADR-0002, ADR-0003, ADR-0004, Plan 0002, Plan 0003
 
 ## Goal
 

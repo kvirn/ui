@@ -3,7 +3,7 @@
 - **Status:** Approved
 - **Owner:** Maintainer
 - **Created:** 2026-09-30 · **Target:** M0 proof / M1
-- **Related:** ADR-0005, ADR-0008, Plan 0002
+- **Related:** ADR-0005, ADR-0007, Plan 0002
 
 ## Goal
 
@@ -39,7 +39,7 @@ const button = useButton({ disabled, focusableWhenDisabled: true })
   Digg <Link.NewTabNotice />                               // "(öppnas i en ny flik)" from i18n
 </Link>
 <Link href="https://digg.se" target="_blank" messages={{ newTabNotice: '(nytt fönster)' }}>
-  Digg <Link.NewTabNotice />                               // instance override (ADR-0008)
+  Digg <Link.NewTabNotice />                               // instance override (ADR-0007)
 </Link>
 <Link.NewTabNotice>(extern länk)</Link.NewTabNotice>       // children win over every message
 <Link href="/fi" hrefLang="fi" lang="fi">Suomeksi</Link>
@@ -73,7 +73,7 @@ const button = useButton({ disabled, focusableWhenDisabled: true })
 | ------------------- | -------------------- | --------------------- | ---------------------------- | -------------------- | ------------------------ | ------------------- |
 | `link.newTabNotice` | (opens in a new tab) | (öppnas i en ny flik) | (avautuu uuteen välilehteen) | (åpnes i en ny fane) | (blir opna i ei ny fane) | TODO(native-review) |
 
-Overridable via `<Link messages>`, provider `messages`, or `Link.NewTabNotice` children (ADR-0008). Tests cover all three.
+Overridable via `<Link messages>`, provider `messages`, or `Link.NewTabNotice` children (ADR-0007). Tests cover all three.
 
 ### Theming surface
 

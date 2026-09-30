@@ -1,4 +1,4 @@
-# ADR-0008: Every string has a default and can be overridden
+# ADR-0007: Every string has a default and can be overridden
 
 - **Status:** Accepted
 - **Date:** 2026-09-30
@@ -45,7 +45,7 @@ export const sv = {
 | 1   | Children of a visible text part                          | `<Link.NewTabNotice>(nytt fönster)</Link.NewTabNotice>` |
 | 2   | The `messages` prop on the component or hook             | `<Link messages={{ newTabNotice: '(nytt fönster)' }}>`  |
 | 3   | The nearest `KvirnProvider messages`, then its ancestors | `messages={{ link: { newTabNotice: '…' } }}`            |
-| 4   | Built-in `en` (ADR-0007)                                 | Dev warning if the active locale isn't `en`             |
+| 4   | Built-in `en` (ADR-0003)                                 | Dev warning if the active locale isn't `en`             |
 
 **3. Every provider's `messages` is deep-merged over what it inherits.** The root inherits `en`. So:
 
