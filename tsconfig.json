@@ -4,6 +4,7 @@
     "*.ts",
     "packages/*/src",
     "packages/*/scripts",
+    "tooling/commit-message",
     "apps/storybook/.storybook",
     "apps/storybook/src"
   ]

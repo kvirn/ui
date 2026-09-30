@@ -11,11 +11,30 @@
       "Bash(pnpm changeset*)",
       "Bash(git status*)",
       "Bash(git diff*)",
-      "Bash(git log*)"
+      "Bash(git log*)",
+      "Bash(sed *)",
+      "Bash(wc *)"
     ],
-    "ask": ["Bash(git push*)", "Bash(pnpm add*)", "Bash(pnpm publish*)"]
+    "ask": [
+      "Bash(git push*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(pnpm add*)",
+      "Bash(pnpm publish*)"
+    ]
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-git.sh\""
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",

@@ -113,7 +113,7 @@ export default defineConfig({
         test: {
           name: 'node',
           environment: 'node',
-          include: ['packages/{core,i18n,theme}/src/**/*.test.ts'],
+          include: ['packages/{core,i18n,theme}/src/**/*.test.ts', 'tooling/**/*.test.ts'],
         },
       },
       {

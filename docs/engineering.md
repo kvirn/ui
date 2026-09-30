@@ -8,6 +8,7 @@
 | Unified CLI       | Vite+ 1.0 (`vp`): `check`, `lint` (Oxlint + jsx-a11y), `fmt` (Oxfmt), `test` (Vitest 5), `pack` (tsdown), `run` (cached tasks) |
 | E2E / a11y engine | Playwright, axe-core                                                                                                           |
 | Workbench / docs  | Storybook 10 (Vite builder, `addon-vitest`), Next.js                                                                           |
+| Commit messages   | Conventional Commits 1.0.0, checked by a Vite+ `commit-msg` hook (`.vite-hooks/`) and in CI (ADR-0012)                         |
 | Versioning        | Changesets                                                                                                                     |
 | CI                | GitHub Actions (EU-hosted runners preferred)                                                                                   |
 

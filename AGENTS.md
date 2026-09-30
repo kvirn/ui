@@ -100,5 +100,11 @@ Nothing is done until all of these pass. A Stop hook enforces gates 1–2.
 - TypeScript strict and inference-first. Export `UseXOptions`, `UseXResult` and `XPartProps` types.
 - Visual decisions follow `DESIGN.md`. Changing a token or rule there needs an ADR and a passing `theme:check`.
 - Use kebab-case files, co-located as `x.test.tsx`, `x.stories.tsx`, `x.e2e.ts` and `x.a11y.md`.
-- Use Conventional Commits, with one concern per PR.
+- **Every commit follows [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)** (ADR-0012): `<type>[optional scope][!]: <description>`, then an optional body and footers after a blank line.
+  - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
+  - Scope is a lower-case package or area: `feat(react): add Button`, `fix(core/store): keep selection on reset`.
+  - Breaking changes use `!` after the type or scope, or a `BREAKING CHANGE: <description>` footer.
+  - The description is imperative, at most 100 characters in the header, and has no trailing period.
+  - The `commit-msg` hook and CI enforce this, and so does the PR title for squash merges. Never bypass the hook (`--no-verify`, `-n`, `VP_GIT_HOOKS=0`).
+- One concern per PR.
 - When spec and AT behaviour disagree, choose what works for users and record why in an ADR.

@@ -30,3 +30,4 @@ We record significant decisions as ADRs using a lightweight MADR-style format.
 | [0009](0009-message-value-types.md)                        | Message value types and resolved message shape           | Proposed |
 | [0010](0010-react-entry-use-client.md)                     | Mark the whole `@kvirn-ui/react` entry as `"use client"` | Proposed |
 | [0011](0011-design-md-and-ux-design-workflow.md)           | DESIGN.md design language and a UX design workflow       | Proposed |
+| [0012](0012-conventional-commits-enforced.md)              | Conventional Commits, enforced by hook and CI            | Proposed |

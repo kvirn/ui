@@ -5,6 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "prepare": "vp config --hooks --no-agent",
     "e2e": "playwright test",
     "storybook": "vp run --filter @kvirn-ui/storybook dev",
     "docs": "vp run --filter @kvirn-ui/docs dev",
