@@ -27,7 +27,7 @@
  *
  *   :root {
  *     --kv-font-family-body: 'Source Sans 3', var(--kv-font-family-system);   text, controls
- *     --kv-font-family-heading: 'Merriweather', Georgia, serif;               prose headings
+ *     --kv-font-family-heading: 'Merriweather', var(--kv-font-family-system-serif);  headings
  *     --kv-card-radius-default: var(--kv-radius-md);                          lg by default
  *     --kv-button-min-block-size: 2.5rem;                    never below 24px (2.5.8)
  *     --kv-button-padding-inline: var(--kv-space-5);
@@ -233,31 +233,42 @@
     --kv-radius-xl: 16px;
     --kv-radius-full: 9999px;
 
-    /* The theme loads no font. Self-host Inter, or the system UI font is used. On Apple,
-     * Windows and Android, the system stack finds San Francisco, Segoe UI or Roboto first, and
-     * each covers å ä ö æ ø and the Northern Sámi letters (á č đ ŋ š ŧ ž). On Linux, system-ui
-     * is the desktop's font, with Noto Sans and Arial behind it. End your own stack with it. Body text and controls use --kv-font-family-body, and prose
-     * headings --kv-font-family-heading, when you set them: both fall back to sans. */
+    /* The theme loads no font. Self-host IBM Plex Sans and IBM Plex Serif (IBM's files,
+     * unmodified), or the system fonts are used. On Apple, Windows and Android, the system
+     * stack finds San Francisco, Segoe UI or Roboto first, and each covers å ä ö æ ø and the
+     * Northern Sámi letters (á č đ ŋ š ŧ ž). On Linux, system-ui is the desktop's font, with
+     * Noto Sans and Arial behind it. End your own stack with it. The serif stack is its twin,
+     * for headings: ui-serif is New York in Safari, Cambria is on Windows, Noto Serif on
+     * Android and most Linux desktops, and Georgia comes last because it draws old-style
+     * figures. Body text and controls use --kv-font-family-body, and prose headings
+     * --kv-font-family-heading, when you set them: body falls back to sans, and headings fall
+     * back to serif. To keep sans headings, set --kv-font-family-heading to
+     * var(--kv-font-family-sans). */
     --kv-font-family-system:
       system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif;
-    --kv-font-family-sans: 'Inter Variable', Inter, var(--kv-font-family-system);
+    --kv-font-family-sans: 'IBM Plex Sans', var(--kv-font-family-system);
+    --kv-font-family-system-serif: ui-serif, Cambria, 'Noto Serif', Georgia, serif;
+    --kv-font-family-serif: 'IBM Plex Serif', var(--kv-font-family-system-serif);
     --kv-font-family-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
 
-    /* Type roles. cv05 and cv08 tell l, I and 1 apart in body text. */
+    /* Type roles. IBM Plex tells l, I and 1 apart without feature settings: its I has serifs,
+     * its l a tail and its 1 a flag and a foot. A brand font that can't sets its own
+     * (Inter: 'cv05', 'cv08'). Plex figures are tabular already, and 'tnum' stays for fonts
+     * that aren't. */
     --kv-font-display-size: 2.5rem;
     --kv-font-display-weight: 600;
-    --kv-font-display-line-height: 1.15;
-    --kv-font-display-letter-spacing: -0.025em;
+    --kv-font-display-line-height: 1.2;
+    --kv-font-display-letter-spacing: -0.01em;
     --kv-font-display-feature-settings: normal;
     --kv-font-heading-1-size: 1.75rem;
     --kv-font-heading-1-weight: 600;
     --kv-font-heading-1-line-height: 1.2;
-    --kv-font-heading-1-letter-spacing: -0.021em;
+    --kv-font-heading-1-letter-spacing: 0em;
     --kv-font-heading-1-feature-settings: normal;
     --kv-font-heading-2-size: 1.375rem;
     --kv-font-heading-2-weight: 500;
     --kv-font-heading-2-line-height: 1.25;
-    --kv-font-heading-2-letter-spacing: -0.018em;
+    --kv-font-heading-2-letter-spacing: 0em;
     --kv-font-heading-2-feature-settings: normal;
     --kv-font-heading-3-size: 1.125rem;
     --kv-font-heading-3-weight: 600;
@@ -268,23 +279,23 @@
     --kv-font-body-large-weight: 400;
     --kv-font-body-large-line-height: 1.6;
     --kv-font-body-large-letter-spacing: 0em;
-    --kv-font-body-large-feature-settings: 'cv05', 'cv08';
+    --kv-font-body-large-feature-settings: normal;
     /* The lead paragraph of large prose: 20px, one step above body-large. */
     --kv-font-lead-size: 1.25rem;
     --kv-font-lead-weight: 400;
     --kv-font-lead-line-height: 1.5;
     --kv-font-lead-letter-spacing: 0em;
-    --kv-font-lead-feature-settings: 'cv05', 'cv08';
+    --kv-font-lead-feature-settings: normal;
     --kv-font-body-size: 1rem;
     --kv-font-body-weight: 400;
     --kv-font-body-line-height: 1.5;
     --kv-font-body-letter-spacing: 0em;
-    --kv-font-body-feature-settings: 'cv05', 'cv08';
+    --kv-font-body-feature-settings: normal;
     --kv-font-body-small-size: 0.875rem;
     --kv-font-body-small-weight: 400;
     --kv-font-body-small-line-height: 1.5;
     --kv-font-body-small-letter-spacing: 0em;
-    --kv-font-body-small-feature-settings: 'cv05', 'cv08';
+    --kv-font-body-small-feature-settings: normal;
     --kv-font-label-size: 1rem;
     --kv-font-label-weight: 500;
     --kv-font-label-line-height: 1.4;
@@ -299,7 +310,7 @@
     --kv-font-numeric-weight: 400;
     --kv-font-numeric-line-height: 1.5;
     --kv-font-numeric-letter-spacing: 0em;
-    --kv-font-numeric-feature-settings: 'tnum', 'cv05', 'cv08';
+    --kv-font-numeric-feature-settings: 'tnum';
     --kv-font-code-size: 0.875rem;
     --kv-font-code-weight: 400;
     --kv-font-code-line-height: 1.6;
@@ -984,7 +995,8 @@
    * sense on its own.
    */
   /* Body text in --kv-color-text and --kv-font-family-body, headings in --kv-color-heading and
-   * --kv-font-family-heading. Without the family settings, both are sans. */
+   * --kv-font-family-heading. Without the family settings, text is IBM Plex Sans and headings
+   * are IBM Plex Serif. */
   :where(.kv-prose) {
     max-inline-size: var(--kv-prose-measure);
     color: var(--kv-color-text);
@@ -1043,7 +1055,7 @@
     &:not(:where(.kv-not-prose, .kv-nav, .kv-button-group, .kv-card)) {
       &:where(h1, h2, h3, h4, h5, h6) {
         color: var(--kv-color-heading);
-        font-family: var(--kv-font-family-heading, var(--kv-font-family-sans));
+        font-family: var(--kv-font-family-heading, var(--kv-font-family-serif));
       }
 
       &:where(h1) {

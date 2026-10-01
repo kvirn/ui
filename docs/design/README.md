@@ -17,4 +17,5 @@ Design specs describe **what users see and do**: the flow, content, layout, stat
 | [Prose styles and the Storybook Foundation section](foundations-and-prose.md) | 0006 (to be written)                                  | Draft  |
 | [Card](card.md)                                                               | [0007](../plans/0007-card.md)                         | Draft  |
 | [Icon and the built-in icon set](icon.md)                                     | [0009](../plans/0009-icon.md)                         | Draft  |
+| [IBM Plex Sans and Serif replace Inter](typography-ibm-plex.md)               | [0011](../plans/0011-ibm-plex-typography.md)          | Draft  |
 | [Button depth: D, Grounded, chosen (ADR-0026)](button-depth.md)               | to be written (handoff in section 10)                 | Draft  |

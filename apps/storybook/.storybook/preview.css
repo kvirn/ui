@@ -13,6 +13,12 @@ body {
   font-feature-settings: var(--kv-font-body-feature-settings);
 }
 
+/* Headings a story draws outside kv-prose (section headings like "Primär" or "Nyheter") get
+ * the heading family, like the prose headings next to them (ADR-0027). */
+:where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--kv-font-family-heading, var(--kv-font-family-serif));
+}
+
 /* A story on a Docs page gets the same canvas as the story on its own. */
 .docs-story {
   background-color: var(--kv-color-canvas);

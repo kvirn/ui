@@ -92,7 +92,7 @@ const scopedRebrandCss = themeNames
 const siteDefaultsCss = `/* Set once. Nothing needs a class. */
 :root {
   --kv-font-family-body: 'Source Sans 3', var(--kv-font-family-system);
-  --kv-font-family-heading: 'Merriweather', Georgia, serif;
+  --kv-font-family-heading: 'Merriweather', var(--kv-font-family-system-serif);
   --kv-card-radius-default: var(--kv-radius-md);
   /* Never below 24px (2.5.8). Resident-facing buttons should stay 44px. */
   --kv-button-min-block-size: 2.5rem;
@@ -375,9 +375,11 @@ function ThemingPage(): ReactNode {
       <ul>
         <li>
           <code>--kv-font-family-body</code> for body text, prose, buttons and navigation items, and{' '}
-          <code>--kv-font-family-heading</code> for prose headings. Both fall back to{' '}
-          <code>--kv-font-family-sans</code>. <code>--kv-font-family-system</code> is the system
-          stack, for the end of your own.
+          <code>--kv-font-family-heading</code> for headings. Body falls back to{' '}
+          <code>--kv-font-family-sans</code> (IBM Plex Sans), and headings to{' '}
+          <code>--kv-font-family-serif</code> (IBM Plex Serif). <code>--kv-font-family-system</code>{' '}
+          and <code>--kv-font-family-system-serif</code> are the system stacks, for the end of your
+          own.
         </li>
         <li>
           <code>--kv-card-padding-default</code> and <code>--kv-card-radius-default</code> for every

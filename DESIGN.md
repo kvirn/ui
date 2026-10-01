@@ -1,7 +1,7 @@
 ---
 version: alpha
 name: KvirnUI default theme
-description: Calm, precise and plain. A quiet, product-grade interface for Nordic and EU public services. Near-black and near-white canvases, a surface ladder with hairline dividers, one lavender accent, and tight Inter typography, with contrast, focus and target size held to WCAG 2.2 AA or better.
+description: Calm, precise and plain. A quiet, product-grade interface for Nordic and EU public services. Near-black and near-white canvases, a surface ladder with hairline dividers, one lavender accent, and IBM Plex typography (Plex Sans for text, Plex Serif for headings), with contrast, focus and target size held to WCAG 2.2 AA or better.
 colors:
   canvas: '#ffffff'
   surface: '#f7f8f8'
@@ -29,69 +29,65 @@ colors:
   warning-subtle: '#fff4dc'
 typography:
   display:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
+    fontFamily: 'IBM Plex Serif, ui-serif, Cambria, Noto Serif, Georgia, serif'
     fontSize: 2.5rem
     fontWeight: 600
-    lineHeight: 1.15
-    letterSpacing: -0.025em
+    lineHeight: 1.2
+    letterSpacing: -0.01em
   heading-1:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
+    fontFamily: 'IBM Plex Serif, ui-serif, Cambria, Noto Serif, Georgia, serif'
     fontSize: 1.75rem
     fontWeight: 600
     lineHeight: 1.2
-    letterSpacing: -0.021em
+    letterSpacing: 0em
   heading-2:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
+    fontFamily: 'IBM Plex Serif, ui-serif, Cambria, Noto Serif, Georgia, serif'
     fontSize: 1.375rem
     fontWeight: 500
     lineHeight: 1.25
-    letterSpacing: -0.018em
+    letterSpacing: 0em
   heading-3:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
+    fontFamily: 'IBM Plex Serif, ui-serif, Cambria, Noto Serif, Georgia, serif'
     fontSize: 1.125rem
     fontWeight: 600
     lineHeight: 1.4
     letterSpacing: 0em
   body-large:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
+    fontFamily: 'IBM Plex Sans, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 1.125rem
     fontWeight: 400
     lineHeight: 1.6
-    fontFeature: '"cv05", "cv08"'
   lead:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
+    fontFamily: 'IBM Plex Sans, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 1.25rem
     fontWeight: 400
     lineHeight: 1.5
-    fontFeature: '"cv05", "cv08"'
   body:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
+    fontFamily: 'IBM Plex Sans, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 1rem
     fontWeight: 400
     lineHeight: 1.5
-    fontFeature: '"cv05", "cv08"'
   body-small:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
+    fontFamily: 'IBM Plex Sans, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 0.875rem
     fontWeight: 400
     lineHeight: 1.5
-    fontFeature: '"cv05", "cv08"'
   label:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
+    fontFamily: 'IBM Plex Sans, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 1rem
     fontWeight: 500
     lineHeight: 1.4
   label-compact:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
+    fontFamily: 'IBM Plex Sans, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 0.875rem
     fontWeight: 500
     lineHeight: 1.3
   numeric:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
+    fontFamily: 'IBM Plex Sans, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 1rem
     fontWeight: 400
     lineHeight: 1.5
-    fontFeature: '"tnum", "cv05", "cv08"'
+    fontFeature: '"tnum"'
   code:
     fontFamily: 'ui-monospace, SF Mono, Cascadia Code, Menlo, Consolas, monospace'
     fontSize: 0.875rem
@@ -213,7 +209,7 @@ Changing a token or a rule here is a decision: write an ADR and update `theme.cs
 - a near-black dark canvas and a near-white light one
 - a ladder of slightly lifted surfaces instead of shadows, with 1px hairline dividers. The one control with depth is the button, which sits on the page with a gentle shadow and a tinted edge so it reads as "press me" (ADR-0026)
 - one lavender accent (`#5e6ad2`), used sparingly
-- tight Inter typography with negative tracking on large headings
+- IBM Plex Sans for text and controls, and IBM Plex Serif for headings, with no negative tracking below the display size
 - 8px control radii
 
 Nothing decorative competes with the task.
@@ -310,12 +306,14 @@ Rebranding for a municipality:
 
 ## Typography
 
-One sans-serif family with a system fallback, and one monospace family for reference numbers and code.
+One sans-serif family for text and controls, one serif family for headings, each with a system fallback, and one monospace family for reference numbers and code.
 
-- **Body and heading families.** Body text and controls (prose, buttons, navigation items) use `--kv-font-family-body`, and prose headings `--kv-font-family-heading`. The theme sets neither: both fall back to `--kv-font-family-sans`, so by default there is one family. A site sets them once for a brand font (see [Theming](#theming)). A link in running text keeps the font around it, and code stays `--kv-font-family-mono`.
-- **System stack.** `--kv-font-family-system` is `system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif`, and `--kv-font-family-sans` is Inter in front of it. On Apple, Windows and Android, the font it finds first (San Francisco, Segoe UI, Roboto) covers å ä ö æ ø and the Northern Sámi letters. On Linux, `system-ui` is the desktop's font, with Noto Sans and Arial behind it. End a brand stack with it, and check the Glyphs story in Foundation/Typography.
-- **Family.** The stack starts with Inter (SIL OFL). We use weights 400, 500 and 600. It is legible at small sizes and covers every Northern Sámi letter (á č đ ŋ š ŧ ž). The theme never loads a font. The docs site and Storybook self-host Inter Variable, and adopters self-host it or fall back to the system UI font (GDPR, AGENTS.md hard rule 7). A replacement brand font must cover the Sámi letters as well as å ä ö æ ø.
-- **Disambiguation.** Enable Inter's `cv05` (l with a tail) and `cv08` (I with serifs) for body text so that l, I and 1 are distinct. This matters for case numbers, codes and names. Verify the feature tags against the self-hosted Inter version.
+- **Families.** Body text and controls (prose, buttons, labels, navigation, tables and captions) use `--kv-font-family-body`, which falls back to `--kv-font-family-sans`. Prose headings (`h1`–`h6`) use `--kv-font-family-heading`, which falls back to `--kv-font-family-serif`. Use the same family wherever you apply the `display` tokens. The theme sets neither override. A link keeps the font around it, and code stays `--kv-font-family-mono`. The serif is only for real headings: anything users operate or scan as data stays sans, and hierarchy never depends on the family alone.
+- **Why IBM Plex.** Plex Sans's capitals sit in the middle of the line box, and its vertical metrics are the same on every OS (`hhea` = `win`, 1025/275), so labels sit the same way on every OS. It tells l, I and 1 apart without features, and it covers every Northern Sámi letter. Plex Serif shares its metrics and gives headings a distinct, calm voice. Both are SIL OFL 1.1, with "Plex" a Reserved Font Name: use IBM's files unmodified, and never subset or rename them.
+- **Weights.** Sans 400 (text), 500 (labels and controls) and 600 (`strong`, the current item). Serif 500 (`heading-2`) and 600 (the other headings). Upright only: italics are synthesised. Nothing uses 700.
+- **System stacks.** `--kv-font-family-system` is `system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif`, and `--kv-font-family-sans` is `'IBM Plex Sans'` in front of it. `--kv-font-family-system-serif` is `ui-serif, Cambria, 'Noto Serif', Georgia, serif`, and `--kv-font-family-serif` is `'IBM Plex Serif'` in front of it. End a brand stack with the matching system stack, and check the Glyphs story in Foundation/Typography.
+- **Loading.** The theme never loads a font (GDPR, AGENTS.md hard rule 7). The docs site and Storybook self-host IBM's split woff2 files (Latin1, Latin2, Pi). Adopters either self-host the same files, from [IBM Plex's GitHub releases](https://github.com/IBM/plex/releases) or copied from `apps/docs/fonts/ibm-plex/` with `OFL.txt`, or rely on the system fallback. The `@ibm/plex-sans` and `@ibm/plex-serif` npm packages send IBM telemetry from a `postinstall` script. Don't install them as dependencies: fetch them with `npm pack`, or set `IBM_TELEMETRY_DISABLED=true` if you must install them. A replacement brand font must cover the Sámi letters as well as å ä ö æ ø.
+- **Disambiguation.** No feature settings are needed: Plex's `I` has serifs, its `l` a tail and its `1` a flag and a foot. Don't turn on the slashed zero (`zero`, `ss03`), which reads as Ø in Danish and Norwegian. Set codes where O and 0 matter in `code` (mono), or add `'ss04'` (the dotted zero). A brand font that needs features for l, I and 1 sets them in the `--kv-font-*-feature-settings` tokens (Inter: `'cv05', 'cv08'`).
 - **Numbers.** Use `numeric` (tabular figures) for tables, amounts, dates and reference numbers.
 - **Scale.**
   - `body` is 1rem (16px) and never smaller for essential content. Long resident-facing text uses `body-large`.
@@ -323,7 +321,8 @@ One sans-serif family with a system fallback, and one monospace family for refer
   - `body-small` (14px) is for metadata, and never for instructions or errors.
   - `label-compact` (14px, weight 500) is only for control labels in compact density: staff tools, and the docs site's navigation and header controls.
   - There is no 12px or 13px size, so there are no small captions or eyebrows.
-- **Headings.** Weight 600 (500 for `heading-2`), with negative tracking that scales with size: -0.025em at 40px, -0.021em at 28px and -0.018em at 22px. There is no negative tracking below 20px, because it hurts legibility on body text and reverses under the 1.4.12 overrides anyway.
+- **Headings.** Weight 600 (500 for `heading-2`). `display` has −0.01em tracking and line height 1.2, so the ring on Å clears the descenders above it. Below 40px there is no tracking: negative tracking crowds the serifs, and it reverses under the 1.4.12 overrides anyway.
+- **One family, or keep Inter.** For a single family, set `--kv-font-family-heading: var(--kv-font-family-sans)`. To keep Inter, set both family tokens and the body feature settings.
 - **Line length** is 60–75 characters (`--kv-prose-measure`, `70ch`, on prose).
 - **Sentence case** everywhere. No all-caps labels, headings or eyebrows, because they are slower to read and some screen readers spell them out.
 - **Text spacing (1.4.12).** Everything must keep working with line height 1.5, paragraph spacing 2em, letter spacing 0.12em and word spacing 0.16em. No fixed heights on text containers. The `height` values in the front matter are minimum block sizes.

@@ -4,8 +4,9 @@ import type { ColorSchemePreference, ContrastPreference } from '@kvirn-ui/core'
 import { wcagTags } from '@kvirn-ui/testing'
 import { useLayoutEffect } from 'react'
 import type { ReactNode } from 'react'
-// Self-hosted Inter, the same files as the docs site: no network request (hard rule 7).
-import '../../docs/fonts/inter/inter.css'
+// Self-hosted IBM Plex Sans and Serif, the same files as the docs site: no network request
+// (hard rule 7, ADR-0027).
+import '../../docs/fonts/ibm-plex/ibm-plex.css'
 // The default theme (ADR-0013), as an adopter imports it.
 import '@kvirn-ui/theme/theme.css'
 import './preview.css'

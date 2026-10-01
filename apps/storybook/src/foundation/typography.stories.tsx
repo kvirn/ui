@@ -62,11 +62,14 @@ const typeRoles: readonly TypeRole[] = [
 
 const tokenPrefix = (role: string) => `--kv-font-${role}`
 
-/** The family as theme.css uses it: body and heading fall back to sans when they aren't set. */
+/**
+ * The family as theme.css uses it: body falls back to sans and heading to serif when they
+ * aren't set.
+ */
 const familyValue = (family: RoleFamily): string =>
   family === 'mono'
     ? 'var(--kv-font-family-mono)'
-    : `var(--kv-font-family-${family}, var(--kv-font-family-sans))`
+    : `var(--kv-font-family-${family}, var(--kv-font-family-${family === 'heading' ? 'serif' : 'sans'}))`
 
 /** A role's own tokens as inline style, so the sample shows exactly that role. */
 function roleStyle({ role, family = 'body' }: TypeRole): CSSProperties {
@@ -107,13 +110,21 @@ const fontFamilyTokens: readonly FontFamilyToken[] = [
   },
   {
     property: '--kv-font-family-heading',
-    use: 'Prose headings. A site-wide default you set',
-    fallback: '--kv-font-family-sans',
+    use: 'Prose h1 to h6, and wherever you apply the display tokens. A site-wide default you set',
+    fallback: '--kv-font-family-serif',
   },
-  { property: '--kv-font-family-sans', use: 'Inter, then the system stack' },
+  { property: '--kv-font-family-sans', use: 'IBM Plex Sans, then the system stack' },
+  {
+    property: '--kv-font-family-serif',
+    use: 'IBM Plex Serif, then the system serif stack. Headings',
+  },
   {
     property: '--kv-font-family-system',
     use: 'The system fallback stack. It covers å ä ö æ ø and the Northern Sámi letters',
+  },
+  {
+    property: '--kv-font-family-system-serif',
+    use: 'The system serif fallback stack, the twin of the system stack. End your own serif stack with it',
   },
   { property: '--kv-font-family-mono', use: 'Reference numbers and code' },
 ]
@@ -199,7 +210,7 @@ function TypeRolesTable({
   const sampleLang = lang ?? locale
   const number = new Intl.NumberFormat(sampleLang)
   return (
-    <ScrollTable caption="Type roles">
+    <ScrollTable caption="Type role tokens">
       <thead>
         <tr>
           <th scope="col">Role</th>
@@ -279,23 +290,34 @@ function FontFamilyTable({ families }: { families: FontFamilyValues | undefined 
 const glyphs = 'Å Ä Ö Æ Ø á č đ ŋ š ŧ ž'
 const lookAlikes = 'Il1 0O'
 
-type SpecimenFamily = 'body' | 'heading' | 'system' | 'mono'
+type SpecimenFamily = 'body' | 'heading' | 'system' | 'system-serif' | 'mono'
 
-const specimenFamilies: readonly SpecimenFamily[] = ['body', 'heading', 'system', 'mono']
+const specimenFamilies: readonly SpecimenFamily[] = [
+  'body',
+  'heading',
+  'system',
+  'system-serif',
+  'mono',
+]
 
 const specimenLabels: Record<SpecimenFamily, string> = {
-  body: 'Body, with the body features',
-  heading: 'Heading',
-  system: 'System fallback, with the body features',
+  body: 'Body (Plex Sans)',
+  heading: 'Heading (Plex Serif)',
+  system: 'System fallback',
+  'system-serif': 'System serif fallback',
   mono: 'Mono, the code role',
 }
 
+const specimenFontFamily = (family: SpecimenFamily): string =>
+  family === 'system' || family === 'system-serif'
+    ? `var(--kv-font-family-${family})`
+    : familyValue(family)
+
 const specimenStyle = (family: SpecimenFamily): CSSProperties => ({
-  fontFamily: family === 'system' ? 'var(--kv-font-family-system)' : familyValue(family),
+  fontFamily: specimenFontFamily(family),
   fontSize: 'var(--kv-font-heading-1-size)',
   lineHeight: 'var(--kv-font-heading-1-line-height)',
-  fontFeatureSettings:
-    family === 'body' || family === 'system' ? 'var(--kv-font-body-feature-settings)' : 'normal',
+  fontFeatureSettings: family === 'mono' ? 'normal' : 'var(--kv-font-body-feature-settings)',
 })
 
 function GlyphSpecimen() {
@@ -341,7 +363,7 @@ function TabularFiguresTable() {
       <thead>
         <tr>
           <th scope="col" style={{ textAlign: 'end' }}>
-            body: proportional figures
+            body: the font’s default figures
           </th>
           <th scope="col" style={{ textAlign: 'end' }}>
             numeric: tabular figures
@@ -391,11 +413,14 @@ function FontFamiliesPage(): ReactNode {
     <FoundationPage title="Font families">
       <div ref={ref}>
         <p>
-          Body text and controls use <code>--kv-font-family-body</code>, and prose headings{' '}
-          <code>--kv-font-family-heading</code>. theme.css doesn’t set either, so both fall back to{' '}
-          <code>--kv-font-family-sans</code>: Inter, then the system stack. Set them once, on{' '}
-          <code>:root</code> or on a container, for a brand font. The Type roles samples follow
-          them.
+          Body text and controls use <code>--kv-font-family-body</code>, and prose headings (h1 to
+          h6) <code>--kv-font-family-heading</code>. Use it wherever you apply the display tokens
+          too. theme.css doesn’t set either. Body falls back to <code>--kv-font-family-sans</code>:
+          IBM Plex Sans, then the system stack. Headings fall back to{' '}
+          <code>--kv-font-family-serif</code>: IBM Plex Serif, then the system serif stack. Set them
+          once, on <code>:root</code> or on a container, for a brand font. To keep sans headings,
+          set <code>--kv-font-family-heading</code> to <code>var(--kv-font-family-sans)</code>. The
+          Type roles samples follow them.
         </p>
         <FontFamilyTable families={families} />
       </div>
@@ -407,9 +432,11 @@ function GlyphsPage(): ReactNode {
   return (
     <FoundationPage title="Glyphs">
       <p>
-        A replacement brand font must cover these letters, and so does the system fallback. The body
-        roles ask for Inter’s <code>cv05</code> and <code>cv08</code>, so that l, I and 1 look
-        different. A replacement font without those features can’t tell the look-alikes apart.
+        A replacement brand font must cover these letters, and so do the system fallbacks. IBM Plex
+        tells l, I and 1, and O and 0, apart without features. A replacement font that can’t needs
+        its own feature settings (Inter: <code>cv05</code>, <code>cv08</code>) in the body role
+        tokens. The system fonts can’t: Segoe UI, Roboto and San Francisco draw I and l almost
+        alike, and no feature setting fixes that.
       </p>
       <GlyphSpecimen />
     </FoundationPage>
@@ -422,7 +449,8 @@ function TabularFiguresPage(): ReactNode {
       <p>
         Use <code>numeric</code> for tables, amounts, dates and reference numbers. Its figures all
         have the same width, so a column of amounts lines up. Prose tables set it on every{' '}
-        <code>td</code>.
+        <code>td</code>. Plex has only tabular figures, so both columns line up here. In most system
+        fonts body figures are proportional.
       </p>
       <TabularFiguresTable />
     </FoundationPage>
@@ -442,7 +470,7 @@ export const TypeRoles: Story = {
   render: (_args, { globals }) => <TypeRolesPage locale={fixtureLocaleOf(globals['locale'])} />,
   play: async ({ canvasElement, globals }) => {
     const canvas = within(canvasElement)
-    const table = canvas.getByRole('table', { name: 'Type roles' })
+    const table = canvas.getByRole('table', { name: 'Type role tokens' })
     const { text } = articleFor(fixtureLocaleOf(globals['locale']))
     // One row per role, each with a row header.
     await expect(within(table).getAllByRole('row')).toHaveLength(typeRoles.length + 1)
@@ -479,7 +507,7 @@ export const Glyphs: Story = {
   },
 }
 
-/** A column of amounts in body's proportional figures, next to numeric's tabular ones. */
+/** A column of amounts in body's default figures, next to numeric's tabular ones. */
 export const TabularFigures: Story = {
   name: 'Tabular figures',
   render: () => <TabularFiguresPage />,

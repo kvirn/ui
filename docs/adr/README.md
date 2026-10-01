@@ -44,3 +44,4 @@ We record significant decisions as ADRs using a lightweight MADR-style format.
 | [0024](0024-icon-registry-and-svg-attributes.md)           | Icons through a typed name registry, rendered as SVG attributes                | Proposed |
 | [0025](0025-icon-libraries-as-dev-dependencies.md)         | Lucide, Heroicons and Phosphor as devDependencies for Icon's tests and stories | Proposed |
 | [0026](0026-button-depth-grounded.md)                      | Buttons have gentle depth ("Grounded")                                         | Proposed |
+| [0027](0027-ibm-plex-typefaces.md)                         | IBM Plex Sans for text and IBM Plex Serif for headings                         | Proposed |

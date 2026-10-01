@@ -105,7 +105,7 @@ Some choices are made once for a whole site. Set these in your own CSS instead o
 | Custom property              | Used by                                       | Without it                    |
 | ---------------------------- | --------------------------------------------- | ----------------------------- |
 | `--kv-font-family-body`      | body text in prose, buttons, navigation items | `--kv-font-family-sans`       |
-| `--kv-font-family-heading`   | prose headings                                | `--kv-font-family-sans`       |
+| `--kv-font-family-heading`   | prose h1 to h6                                | `--kv-font-family-serif`      |
 | `--kv-card-padding-default`  | every card without a padding class            | `--kv-card-padding-md`        |
 | `--kv-card-radius-default`   | every card without a radius class             | `--kv-radius-lg`              |
 | `--kv-button-min-block-size` | every button. Never below 24px (2.5.8)        | `--kv-control-min-block-size` |
@@ -118,7 +118,7 @@ Some choices are made once for a whole site. Set these in your own CSS instead o
 :root {
   /* End your own stack with the system one: it covers å ä ö æ ø and the Sámi letters. */
   --kv-font-family-body: 'Source Sans 3', var(--kv-font-family-system);
-  --kv-font-family-heading: 'Merriweather', Georgia, serif;
+  --kv-font-family-heading: 'Merriweather', var(--kv-font-family-system-serif);
   --kv-card-radius-default: var(--kv-radius-md);
   --kv-button-min-block-size: 2.5rem;
   --kv-button-font-weight: 600;
@@ -136,7 +136,9 @@ For compact controls on a whole staff tool, put `class="kv-compact"` on `<html>`
 - **The one catch.** A custom property is resolved where it's declared. `:root { --kv-card-padding-default: var(--kv-card-padding-lg) }` takes `lg` as it is on `:root`: it still grows from 40rem, but the compact step-down inside a `kv-compact` container doesn't reach it. Set the default on `.kv-card` in your own CSS, as above, or on the compact container. `kv-compact` on `<html>` needs neither. Fixed values, such as `2.5rem` or a font name, have no catch.
 - **Opting one card out.** The classes still win: `kv-card--padding-md` and `kv-card--radius-lg` take a single card back to the theme's steps when your default is different.
 - **Buttons.** The `--kv-button-*` properties size buttons without touching other controls, and they win over density, the compact step and the 44px below 64rem included. Keep `--kv-button-min-block-size` at 24px or more, and enough `--kv-button-padding-inline` that a short label is at least 24px wide (2.5.8 Target Size (Minimum)). Resident-facing buttons should stay at 44px (2.5.5). `theme.css` doesn't clamp the values for you.
-- **Fonts.** `--kv-font-family-system` is the system stack (`system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif`), and `--kv-font-family-sans` is Inter in front of it. A link in running text keeps the font around it, so it isn't affected by `--kv-font-family-body`. Code stays `--kv-font-family-mono`.
+- **Fonts.** `--kv-font-family-system` is the system stack (`system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif`), and `--kv-font-family-sans` is `'IBM Plex Sans'` in front of it. `--kv-font-family-system-serif` is its serif twin (`ui-serif, Cambria, 'Noto Serif', Georgia, serif`), and `--kv-font-family-serif` is `'IBM Plex Serif'` in front of it. Body text and controls are sans, and headings are serif. A link in running text keeps the font around it, so it isn't affected by `--kv-font-family-body`. Code stays `--kv-font-family-mono`.
+- **Loading the fonts.** The theme loads no font (GDPR, no third-party requests). Self-host IBM's unmodified woff2 files for IBM Plex Sans and IBM Plex Serif, from [IBM Plex's GitHub releases](https://github.com/IBM/plex/releases) (the licence reserves the name "Plex", so don't subset or rename them), and declare them with `@font-face` under the family names `'IBM Plex Sans'` and `'IBM Plex Serif'`. `apps/docs/fonts/ibm-plex/` in the repository has a ready `ibm-plex.css`. Don't install `@ibm/plex-sans` or `@ibm/plex-serif` as dependencies: their `postinstall` script sends IBM telemetry. Without the files, the system fonts are used.
+- **Keeping sans headings, or Inter.** For sans headings, set `--kv-font-family-heading: var(--kv-font-family-sans)`. To keep Inter, self-host it and set `--kv-font-family-body` and `--kv-font-family-heading` to it, and set `--kv-font-body-feature-settings` (and the other body roles) to `'cv05', 'cv08'` so that l, I and 1 stay distinct.
 - **Heading colour.** `--kv-color-heading` is a semantic colour like the others, defined in each theme, so set it per theme with the selectors `theme.css` uses, and run `checkThemeCss()`: `theme:check` holds it to everything body text is held to. If you change `--kv-color-text` on a wrapper element, change `--kv-color-heading` there too.
 
 ## Button depth

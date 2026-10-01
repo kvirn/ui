@@ -1,6 +1,7 @@
 # ADR-0017: Implementation details of the default-theme prototype (Plan 0005, Phase 1)
 
 - **Status:** Accepted (2026-10-01, by the maintainer)
+- **Amended by:** ADR-0027 (Proposed): decision 4's font is now IBM Plex (IBM's own woff2, in `apps/docs/fonts/ibm-plex/`), not Inter. The plain `@font-face` CSS approach stands. This record is unchanged.
 - **Date:** 2026-10-01
 - **Deciders:** Maintainer (proposed by the component-engineer agent)
 - **Tags:** theming, tooling

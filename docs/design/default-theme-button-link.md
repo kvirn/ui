@@ -220,7 +220,7 @@ Where the target was adjusted:
   - Labels wrap, with no fixed heights. Groups stack.
   - Wrapped links keep one ring per line.
   - The 1.4.12 overrides fit, because padding is the only constraint.
-- **Font:** Inter Variable, self-hosted by the docs site and Storybook (docs-site.md §6), with the system-ui fallback.
+- **Font:** IBM Plex Sans for text and controls and IBM Plex Serif for headings, self-hosted by the docs site and Storybook (docs-site.md §6, ADR-0027), with the system fonts as the fallback.
 
 ### New or changed tokens
 

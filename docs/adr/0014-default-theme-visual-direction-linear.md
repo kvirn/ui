@@ -1,6 +1,7 @@
 # ADR-0014: Default theme visual direction: Linear-inspired, held to WCAG 2.2 AA
 
 - **Status:** Accepted (2026-10-01, by the maintainer)
+- **Amended by:** ADR-0027 (Proposed): the Type bullet's font is now IBM Plex Sans for text and IBM Plex Serif for headings, not Inter, and the heading tracking ramp is retuned. This record is unchanged.
 - **Date:** 2026-10-01
 - **Deciders:** Maintainer, after reviewing the Plan 0005 prototype (proposed by the ux-designer agent)
 - **Tags:** theming, a11y

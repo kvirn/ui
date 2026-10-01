@@ -56,6 +56,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Storybook Foundation section                                                               | 0006 | in progress                                                                                            |
 | Storybook story conventions (args-first, autodocs, Mode and Contrast, four theme projects) | 0008 | implemented (ADR-0023 proposed); accessibility review pending                                          |
 | Button depth ("Grounded": soft shadow and tinted edge, flat in contrast themes)            | 0010 | implemented (ADR-0026 proposed); accessibility and design review pending                               |
+| IBM Plex Sans and Serif replace Inter (typography)                                         | 0011 | in progress (ADR-0027 proposed; design review pending)                                                 |
 
 ## Blocks (M4 and later)
 

@@ -145,13 +145,13 @@ Fixture: _Kvirnby municipality_ (fictional), "Apply for a housing adaptation gra
 
 ### 6.2 Prose: the root
 
-| Property                           | Value                                                                                                                           |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `max-inline-size`                  | `var(--kv-prose-measure)` (70ch, about 44rem at 16px in Inter). The page's own column (45rem, DESIGN.md Layout) may be narrower |
-| `color`                            | `text`. No background: prose works on `canvas`, `surface`, `surface-raised` and the `-subtle` panels (§6.5)                     |
-| font                               | `font-family-sans`, `--kv-prose-font-size` / `-line-height` / `-feature-settings` (the body or body-large role)                 |
-| `overflow-wrap`                    | `break-word`, so long Finnish and Swedish compounds wrap at 320px. `hyphens` stays `manual` (Open question 3)                   |
-| `> :first-child` / `> :last-child` | `margin-block-start: 0` / `margin-block-end: 0`                                                                                 |
+| Property                           | Value                                                                                                                                        |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `max-inline-size`                  | `var(--kv-prose-measure)` (70ch, about 44rem at 16px, the same in IBM Plex). The page's own column (45rem, DESIGN.md Layout) may be narrower |
+| `color`                            | `text`. No background: prose works on `canvas`, `surface`, `surface-raised` and the `-subtle` panels (§6.5)                                  |
+| font                               | `font-family-sans`, `--kv-prose-font-size` / `-line-height` / `-feature-settings` (the body or body-large role)                              |
+| `overflow-wrap`                    | `break-word`, so long Finnish and Swedish compounds wrap at 320px. `hyphens` stays `manual` (Open question 3)                                |
+| `> :first-child` / `> :last-child` | `margin-block-start: 0` / `margin-block-end: 0`                                                                                              |
 
 Trimming also applies inside `li`, `blockquote`, `figure`, `td`, `th`, `dd` and `.kv-not-prose`: the first child has no start margin and the last child has no end margin.
 
