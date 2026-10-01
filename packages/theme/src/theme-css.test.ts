@@ -434,3 +434,54 @@ describe('theme.css card (ADR-0020, docs/design/card.md)', () => {
     ).toEqual([])
   })
 })
+
+describe('theme.css long words and small screens (ADR-0028)', () => {
+  const declarationsOf = (selector: string) =>
+    rules
+      .filter((rule) => rule.media.length === 0 && rule.selectors.includes(selector))
+      .flatMap((rule) => rule.declarations)
+
+  it.each([':where(.kv-prose)', '.kv-card'])(
+    '%s hyphenates long words at dictionary points, and still wraps any word that has none (1.4.10)',
+    (selector) => {
+      const declarations = declarationsOf(selector)
+      expect(declarations).toContainEqual(['hyphens', 'auto'])
+      expect(declarations).toContainEqual(['hyphenate-limit-chars', '10 4 4'])
+      expect(declarations).toContainEqual(['overflow-wrap', 'break-word'])
+    },
+  )
+
+  it('never hyphenates code, where a hyphen would read as part of it', () => {
+    expect(declarationsOf(':where(.kv-prose, .kv-card) :where(code, kbd, samp, pre)')).toEqual([
+      ['hyphens', 'manual'],
+    ])
+  })
+
+  const smallScreenRoot = rules.filter(
+    (rule) => rule.media.includes('(width < 40rem)') && rule.selectors.includes(':root'),
+  )
+  const smallScreenTokens = Object.fromEntries(smallScreenRoot.flatMap((rule) => rule.declarations))
+
+  it('steps the large roles down below 40rem, in rem so they follow the text size (1.4.4)', () => {
+    expect(smallScreenTokens).toEqual({
+      '--kv-font-display-size': '2rem',
+      '--kv-font-display-letter-spacing': '0em',
+      '--kv-font-heading-1-size': '1.5rem',
+      '--kv-font-heading-2-size': '1.25rem',
+      '--kv-font-lead-size': '1.125rem',
+    })
+  })
+
+  it('never makes a role smaller than the role below it, and never touches body text', () => {
+    const rootTokens = Object.fromEntries(declarationsOf(':root'))
+    const size = (role: string) =>
+      Number.parseFloat(
+        smallScreenTokens[`--kv-font-${role}-size`] ?? rootTokens[`--kv-font-${role}-size`] ?? '',
+      )
+    const descending = ['display', 'heading-1', 'heading-2', 'heading-3'].map(size)
+    expect(descending).toEqual(descending.toSorted((first, second) => second - first))
+    expect(new Set(descending).size).toBe(descending.length)
+    expect(size('lead')).toBeGreaterThanOrEqual(size('body-large'))
+    expect(size('body')).toBe(1)
+  })
+})

@@ -321,6 +321,7 @@ One sans-serif family for text and controls, one serif family for headings, each
   - `body-small` (14px) is for metadata, and never for instructions or errors.
   - `label-compact` (14px, weight 500) is only for control labels in compact density: staff tools, and the docs site's navigation and header controls.
   - There is no 12px or 13px size, so there are no small captions or eyebrows.
+  - **Below `40rem`** the large roles step down (ADR-0028): `display` 32px with no tracking, `heading-1` 24px, `heading-2` 20px and `lead` 18px. `heading-3` and the body roles never change. The front matter holds the sizes from `40rem` up.
 - **Headings.** Weight 600 (500 for `heading-2`). `display` has −0.01em tracking and line height 1.2, so the ring on Å clears the descenders above it. Below 40px there is no tracking: negative tracking crowds the serifs, and it reverses under the 1.4.12 overrides anyway.
 - **One family, or keep Inter.** For a single family, set `--kv-font-family-heading: var(--kv-font-family-sans)`. To keep Inter, set both family tokens and the body feature settings.
 - **Line length** is 60–75 characters (`--kv-prose-measure`, `70ch`, on prose).
@@ -335,7 +336,7 @@ One sans-serif family for text and controls, one serif family for headings, each
 - **Staff tools and the docs site** may use a sidebar and a content area. The sidebar collapses behind a disclosure below `64rem`.
 - **Breakpoints** are content-driven, but the reference points are `40rem`, `64rem` and `80rem`. Design mobile first.
 - **Reflow (1.4.10).** Everything works at 320 CSS px wide and at 400% zoom without horizontal scrolling, except data tables, which scroll inside their own labelled, focusable region.
-- **Text expansion.** Finnish and Northern Sámi strings can be 30–50% longer than English, and Finnish compounds are long. Buttons and labels wrap. Never set a fixed width on anything containing text, and use `overflow-wrap: anywhere` as a last resort, not truncation.
+- **Text expansion.** Finnish and Northern Sámi strings can be 30–50% longer than English, and Finnish compounds are long. Buttons and labels wrap. Never set a fixed width on anything containing text, and use `overflow-wrap: anywhere` as a last resort, not truncation. Prose and cards hyphenate words of 10 letters or more at the dictionary's points (`hyphens: auto`, `hyphenate-limit-chars: 10 4 4`), never inside code, and fall back to `overflow-wrap: break-word` where there's no dictionary, as for Northern Sámi (ADR-0028). Hyphenation follows `lang`, so set it on `<html>` and on every passage in another language.
 - **Direction.** Use logical properties (`margin-inline-start`, `padding-block`) so RTL works.
 - **Sticky elements** (headers, action bars) must never cover the focused element (2.4.11). Use `scroll-padding` to match their height.
 

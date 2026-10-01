@@ -378,6 +378,19 @@
     --kv-prose-code-size: 0.875em;
   }
 
+  /* Below 40rem the large roles step down, so a long word or a heading fits a phone (ADR-0028):
+   * display 32px with no tracking, heading-1 24px, heading-2 20px and lead 18px. Body text and
+   * heading-3 never change. In rem, so they still grow with the browser's text size (1.4.4). */
+  @media (width < 40rem) {
+    :root {
+      --kv-font-display-size: 2rem;
+      --kv-font-display-letter-spacing: 0em;
+      --kv-font-heading-1-size: 1.5rem;
+      --kv-font-heading-2-size: 1.25rem;
+      --kv-font-lead-size: 1.125rem;
+    }
+  }
+
   /* 3. The other themes --------------------------------------------------------------------
    * KvirnProvider and KvirnThemeScript set data-kv-color-scheme ("light" or "dark") and
    * data-kv-contrast ("standard" or "more") on <html>. Only colours change.
@@ -1004,8 +1017,19 @@
     font-size: var(--kv-prose-font-size);
     line-height: var(--kv-prose-line-height);
     font-feature-settings: var(--kv-prose-feature-settings);
-    /* Long Finnish and Swedish compounds wrap at 320px. Hyphens stay manual: use &shy;. */
+    /* Long Finnish and Swedish compounds wrap at 320px (ADR-0028). Words of 10 letters or more
+     * split at the dictionary's hyphenation points for the element's lang, with at least 4
+     * letters each side. Where there's no dictionary, as for Northern Sámi, break-word still
+     * wraps the word. Set lang on <html>, and on passages in another language. */
+    hyphens: auto;
+    hyphenate-limit-chars: 10 4 4;
     overflow-wrap: break-word;
+  }
+
+  /* Code is never hyphenated: a hyphen in a command or a reference number reads as part of it.
+   * Zero specificity, and it covers code in a card too. */
+  :where(.kv-prose, .kv-card) :where(code, kbd, samp, pre) {
+    hyphens: manual;
   }
 
   /* The large size only swaps tokens. */
@@ -1505,6 +1529,9 @@
     border-radius: var(--kv-card-radius);
     background-color: var(--kv-color-surface-raised);
     color: var(--kv-color-text);
+    /* Like prose: long words split at hyphenation points, then wrap anywhere (ADR-0028). */
+    hyphens: auto;
+    hyphenate-limit-chars: 10 4 4;
     overflow-wrap: break-word;
   }
 

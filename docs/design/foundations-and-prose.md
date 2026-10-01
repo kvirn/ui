@@ -150,7 +150,7 @@ Fixture: _Kvirnby municipality_ (fictional), "Apply for a housing adaptation gra
 | `max-inline-size`                  | `var(--kv-prose-measure)` (70ch, about 44rem at 16px, the same in IBM Plex). The page's own column (45rem, DESIGN.md Layout) may be narrower |
 | `color`                            | `text`. No background: prose works on `canvas`, `surface`, `surface-raised` and the `-subtle` panels (§6.5)                                  |
 | font                               | `font-family-sans`, `--kv-prose-font-size` / `-line-height` / `-feature-settings` (the body or body-large role)                              |
-| `overflow-wrap`                    | `break-word`, so long Finnish and Swedish compounds wrap at 320px. `hyphens` stays `manual` (Open question 3)                                |
+| `overflow-wrap`                    | `break-word`, so long Finnish and Swedish compounds wrap at 320px. `hyphens: auto` for words of 10+ letters, never in code (ADR-0028)        |
 | `> :first-child` / `> :last-child` | `margin-block-start: 0` / `margin-block-end: 0`                                                                                              |
 
 Trimming also applies inside `li`, `blockquote`, `figure`, `td`, `th`, `dd` and `.kv-not-prose`: the first child has no start margin and the last child has no end margin.
@@ -333,7 +333,7 @@ Values are **read live** from the page, from the story root element and not `:ro
 
 1. **Default size.** Should bare `kv-prose` be 16px (proposed: DESIGN.md's `body`, Tailwind's default, the docs site) or 18px, the size DESIGN.md prescribes for long resident text? With 18px as the default, the opt-out would be `kv-prose--compact`, which reads close to `kv-compact`.
 2. **h4 in large prose** looks the same as h3. Is that acceptable, as in GOV.UK and with guidance to stop at h3, or should `lead` (20px, weight 600) become h3 in large?
-3. **`hyphens: auto`** for fi, sv and nb would help long compounds, but it hurts some readers with dyslexia, and browser dictionaries vary. The proposal is `manual` plus `overflow-wrap`. Do you want it?
+3. **`hyphens: auto`** for fi, sv and nb would help long compounds, but it hurts some readers with dyslexia, and browser dictionaries vary. The proposal is `manual` plus `overflow-wrap`. Do you want it? **Resolved by ADR-0028:** yes, for words of 10 letters or more, never in code, with `overflow-wrap` kept as the fallback.
 4. **Visited links:** DESIGN.md has no visited style. Residents following multi-page guidance benefit from one. Is that a separate token decision?
 5. **Theming story, dark rebrand** (resolved by ADR-0019: the brand scale passes in all four themes)**:** a naive teal dark mapping fails (measured: `primary` teal-600 on `primary-subtle` teal-950 is 2.75:1, needs 3:1). Should the story show only the light theme, or show the failure caught by the live check, as a teaching example?
 6. **Video in the fixture:** a real `<video>` needs a local clip with a captions file, which adds binary files to the repo. Should it be left out, with `video` sharing the `img` rule and covered by a unit test only?
