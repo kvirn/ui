@@ -15,34 +15,35 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 
 ## Primitives
 
-| Component                                              | APG pattern                  | M   | Status  |
-| ------------------------------------------------------ | ---------------------------- | --- | ------- |
-| KvirnProvider (locale, dates, links, theme preference) | –                            | 0   | alpha   |
-| VisuallyHidden, SkipLink, Announcer                    | –                            | 1   | planned |
-| FocusScope, Portal, DismissableLayer                   | –                            | 1   | planned |
-| Button                                                 | Button                       | 1   | alpha   |
-| Toggle                                                 | Button                       | 1   | planned |
-| Link                                                   | – (native `<a>`)             | 1   | alpha   |
-| Card (Root, Header, Body, Footer)                      | – (native `<div>`)           | 1   | alpha   |
-| Field, Label, Description, ErrorMessage, Fieldset      | –                            | 1   | planned |
-| Input, Textarea                                        | –                            | 1   | planned |
-| Checkbox, CheckboxGroup                                | Checkbox                     | 1   | planned |
-| RadioGroup                                             | Radio Group                  | 1   | planned |
-| Switch                                                 | Switch                       | 1   | planned |
-| Disclosure, Accordion                                  | Disclosure, Accordion        | 1   | planned |
-| Dialog, AlertDialog                                    | Dialog (Modal), Alert Dialog | 2   | planned |
-| Popover, Tooltip                                       | –, Tooltip                   | 2   | planned |
-| Menu, MenuButton                                       | Menu Button                  | 2   | planned |
-| Tabs                                                   | Tabs                         | 2   | planned |
-| Listbox, Select                                        | Listbox                      | 2   | planned |
-| Combobox                                               | Combobox (ARIA 1.2)          | 3   | planned |
-| Toast                                                  | status / alert               | 3   | planned |
-| Breadcrumb, Pagination                                 | Breadcrumb                   | 3   | planned |
-| Slider                                                 | Slider                       | 3   | planned |
-| DatePicker, Calendar                                   | Date Picker Dialog, Grid     | 4   | planned |
-| Stepper                                                | –                            | 4   | planned |
-| FileUpload                                             | –                            | 4   | planned |
-| NavigationMenu                                         | Disclosure Navigation        | 4   | planned |
+| Component                                              | APG pattern                  | M   | Status      |
+| ------------------------------------------------------ | ---------------------------- | --- | ----------- |
+| KvirnProvider (locale, dates, links, theme preference) | –                            | 0   | alpha       |
+| VisuallyHidden, SkipLink, Announcer                    | –                            | 1   | planned     |
+| FocusScope, Portal, DismissableLayer                   | –                            | 1   | planned     |
+| Button                                                 | Button                       | 1   | alpha       |
+| Icon (built-in set, name registry)                     | – (SVG, decorative or `img`) | 1   | in progress |
+| Toggle                                                 | Button                       | 1   | planned     |
+| Link                                                   | – (native `<a>`)             | 1   | alpha       |
+| Card (Root, Header, Body, Footer)                      | – (native `<div>`)           | 1   | alpha       |
+| Field, Label, Description, ErrorMessage, Fieldset      | –                            | 1   | planned     |
+| Input, Textarea                                        | –                            | 1   | planned     |
+| Checkbox, CheckboxGroup                                | Checkbox                     | 1   | planned     |
+| RadioGroup                                             | Radio Group                  | 1   | planned     |
+| Switch                                                 | Switch                       | 1   | planned     |
+| Disclosure, Accordion                                  | Disclosure, Accordion        | 1   | planned     |
+| Dialog, AlertDialog                                    | Dialog (Modal), Alert Dialog | 2   | planned     |
+| Popover, Tooltip                                       | –, Tooltip                   | 2   | planned     |
+| Menu, MenuButton                                       | Menu Button                  | 2   | planned     |
+| Tabs                                                   | Tabs                         | 2   | planned     |
+| Listbox, Select                                        | Listbox                      | 2   | planned     |
+| Combobox                                               | Combobox (ARIA 1.2)          | 3   | planned     |
+| Toast                                                  | status / alert               | 3   | planned     |
+| Breadcrumb, Pagination                                 | Breadcrumb                   | 3   | planned     |
+| Slider                                                 | Slider                       | 3   | planned     |
+| DatePicker, Calendar                                   | Date Picker Dialog, Grid     | 4   | planned     |
+| Stepper                                                | –                            | 4   | planned     |
+| FileUpload                                             | –                            | 4   | planned     |
+| NavigationMenu                                         | Disclosure Navigation        | 4   | planned     |
 
 ## Theme and docs
 

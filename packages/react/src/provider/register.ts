@@ -1,11 +1,12 @@
 /**
- * Apps register their router's link component once, for typed link props everywhere
- * (ADR-0005):
+ * Apps register their router's link component (ADR-0005) and their icons (ADR-0024) once,
+ * for typed link props and icon names everywhere:
  *
  * ```ts
  * declare module '@kvirn-ui/react' {
  *   interface Register {
  *     linkComponent: typeof NextLink
+ *     icons: typeof icons
  *   }
  * }
  * ```

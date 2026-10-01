@@ -12,6 +12,8 @@ import type { PartialMessages } from '@kvirn-ui/i18n'
 import { useContext, useEffect, useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
+import type { IconRegistry } from '../icon/icon-registry.ts'
+import type { IconDefaults } from '../icon/use-icon.ts'
 import { KvirnConfigContext, ThemeStoreContext } from './provider-context.ts'
 import type { KvirnConfig } from './provider-context.ts'
 import type { RegisteredLinkComponent } from './register.ts'
@@ -33,6 +35,14 @@ export interface KvirnProviderProps {
   /** The router's link component (ADR-0005). Register it for typed link props. */
   linkComponent?: RegisteredLinkComponent | undefined
   /**
+   * Icons for `<Icon name>`, from `defineIcons` (ADR-0024). Merged over the parent provider's
+   * by name, and over the built-in set: a name registered here replaces a built-in icon.
+   * Register the registry's type for checked names.
+   */
+  icons?: IconRegistry | undefined
+  /** Defaults for every Icon below, such as `{ strokeWidth: 1.5 }`. Merged over the parent's. */
+  iconDefaults?: IconDefaults | undefined
+  /**
    * Theme defaults and storage (ADR-0006). Read by the outermost provider only, once,
    * when the document's theme store is created.
    */
@@ -42,8 +52,8 @@ export interface KvirnProviderProps {
 }
 
 /**
- * Optional. Gives every KvirnUI component its locale, strings, direction, date settings
- * and router link, and owns the document's theme preference. Renders no element: spread
+ * Optional. Gives every KvirnUI component its locale, strings, direction, date settings,
+ * router link and icons, and owns the document's theme preference. Renders no element: spread
  * `useLocale().localeProps` where the language changes.
  */
 export function KvirnProvider({
@@ -53,6 +63,8 @@ export function KvirnProvider({
   messages,
   timeZone: timeZoneProp,
   linkComponent: linkComponentProp,
+  icons: iconsProp,
+  iconDefaults: iconDefaultsProp,
   theme,
   env: envProp,
 }: KvirnProviderProps) {
@@ -67,11 +79,29 @@ export function KvirnProvider({
   const linkComponent = linkComponentProp ?? parentConfig.linkComponent
   const explicitEnv = envProp ?? parentConfig.env
   const parentLayers = parentConfig.messageLayers
+  const parentIcons = parentConfig.icons
+  const parentIconDefaults = parentConfig.iconDefaults
 
   const format = useMemo(() => createMessageFormat({ locale, timeZone }), [locale, timeZone])
   const messageLayers = useMemo(
     () => (messages === undefined ? parentLayers : [messages, ...parentLayers]),
     [messages, parentLayers],
+  )
+  const icons = useMemo(
+    () => (iconsProp === undefined ? parentIcons : Object.freeze({ ...parentIcons, ...iconsProp })),
+    [iconsProp, parentIcons],
+  )
+  const iconDefaultsSize = iconDefaultsProp?.size
+  const iconDefaultsStrokeWidth = iconDefaultsProp?.strokeWidth
+  const iconDefaults = useMemo<IconDefaults>(
+    () =>
+      iconDefaultsSize === undefined && iconDefaultsStrokeWidth === undefined
+        ? parentIconDefaults
+        : Object.freeze({
+            size: iconDefaultsSize ?? parentIconDefaults.size,
+            strokeWidth: iconDefaultsStrokeWidth ?? parentIconDefaults.strokeWidth,
+          }),
+    [iconDefaultsSize, iconDefaultsStrokeWidth, parentIconDefaults],
   )
   const config = useMemo<KvirnConfig>(
     () => ({
@@ -81,9 +111,11 @@ export function KvirnProvider({
       messageLayers,
       format,
       linkComponent,
+      icons,
+      iconDefaults,
       env: explicitEnv,
     }),
-    [locale, dir, timeZone, messageLayers, format, linkComponent, explicitEnv],
+    [locale, dir, timeZone, messageLayers, format, linkComponent, icons, iconDefaults, explicitEnv],
   )
 
   const isOutermost = parentThemeStore === null

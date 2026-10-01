@@ -150,6 +150,9 @@ components:
     rounded: '{rounded.md}'
     padding: 0 12px
     height: 32px
+  button-icon-only:
+    padding: 8px
+    width: 44px # minimum, equal to the button's minimum height; 32px in compact density
   link:
     textColor: '{colors.link}'
   link-hover:
@@ -374,7 +377,12 @@ Depth comes from the surface ladder (`canvas` → `surface` → `surface-raised`
 
 - **Lines** are 1px. Control borders are 1px `border-control`, and invalid inputs switch to 2px `danger` plus an error message, never colour alone.
 - **Focus ring**: 2px solid `focus-ring`, 2px offset, following the element's radius. It is restyled, never removed, and only shown for keyboard focus (`:focus-visible`, `data-focus-visible`). This meets 2.4.13. A thinner or glow-style focus is not used.
-- **Icons**: outline style, 1.5px stroke on a 24px grid, rendered at 16px, 20px or 24px, using `currentColor`. An icon next to text is `aria-hidden`. An icon-only button needs an accessible name from i18n and a visible tooltip, and is used only for universally known actions (close, search, menu). Icons are inline SVG and the theme has no icon dependency.
+- **Icons**: outline style, a 1.5 stroke on a 24 grid with round caps and joins, in `currentColor`. `@kvirn-ui/react` ships 24 built-in icons with semantic names, in the style of Heroicons outline but drawn from our own keylines (`docs/design/icon.md`). An app that registers the same name in `KvirnProvider` replaces a built-in, and Kvirn's components follow it.
+  - **Sizes** are `sm` 1em, `md` 1.25em (default) and `lg` 1.5em: 16, 20 and 24px next to 16px text, and they grow with the text. Use `md` in buttons, because it equals their line height. Size, stroke and colour are SVG attributes. The theme never sets them, except in forced colours, where an icon takes its parent's system colour.
+  - **Meaning.** An icon is decorative (`aria-hidden`) unless it has a `label` from i18n. A status icon always comes with the status in words, and the four statuses differ in shape as well as colour: info a square, success a circle, warning a triangle, error an octagon. A meaningful icon has 3:1 contrast against its background.
+  - **Direction.** Name by meaning (`chevron-forward`, `arrow-back`). Only icons that show horizontal direction mirror in RTL (`mirrorInRtl`). Check marks, status icons, objects and `search` never mirror.
+  - **Icon-only buttons** (`kv-button--icon-only`) are square, at least the button's minimum height, with 8px padding. Use them only for close and search, with an accessible name from i18n and, from M2, a visible tooltip with the same text. The menu toggle on resident-facing pages shows the word "Menu" too.
+  - Icons are inline SVG. No icon fonts, and no icons from third-party servers.
 
 ## Components
 
@@ -412,7 +420,7 @@ Visual rules for the default theme. Behaviour, roles and keyboard are defined in
 ## Theming
 
 - **One file, opt-in by import.** `import '@kvirn-ui/theme/theme.css'` styles every component on the page, and removing it unstyles them. Nothing loads CSS for you, and `KvirnProvider` never does.
-- **Components are selected by part classes,** and state by `data-*` attributes: `.kv-button`, `.kv-link`, `[data-disabled]`. Each part renders its own class, and the consumer's `className` joins it. Choices are classes the consumer adds: `kv-button--primary` or `kv-button--danger`, `kv-button-group`, `kv-nav`, `kv-compact`, for prose `kv-prose` (plus `kv-prose--large`), `kv-lead`, `kv-not-prose` and `kv-scroll-region`, and for cards `kv-card--surface`, `kv-card--canvas`, `kv-card--radius-lg|md|none`, `kv-card--padding-none|sm|md|lg`, `kv-card-header--padding-*` (and body and footer) and `kv-card--dividers`.
+- **Components are selected by part classes,** and state by `data-*` attributes: `.kv-button`, `.kv-link`, `[data-disabled]`. Each part renders its own class, and the consumer's `className` joins it. Choices are classes the consumer adds: `kv-button--primary` or `kv-button--danger`, `kv-button--icon-only`, `kv-button-group`, `kv-nav`, `kv-compact`, for prose `kv-prose` (plus `kv-prose--large`), `kv-lead`, `kv-not-prose` and `kv-scroll-region`, and for cards `kv-card--surface`, `kv-card--canvas`, `kv-card--radius-lg|md|none`, `kv-card--padding-none|sm|md|lg`, `kv-card-header--padding-*` (and body and footer) and `kv-card--dividers`.
 - **Override variables, not selectors.** Rebrand by overriding a role scale on `:root` (`--kv-primary-50` … `--kv-primary-950`), or set a single semantic token (`:root { --kv-color-link: var(--kv-primary-700) }`). Scales go on `:root`, where the semantic tokens are declared. To change one theme only, target the same selectors `theme.css` uses (`:root[data-kv-color-scheme='dark']`).
 - **Site-wide defaults are custom properties, set once.** `--kv-font-family-body`, `--kv-font-family-heading`, `--kv-card-padding-default`, `--kv-card-radius-default` and the five `--kv-button-*` sizes (`min-block-size`, `padding-inline`, `font-size`, `font-weight`, `line-height`), plus `class="kv-compact"` on `<html>`. `theme.css` sets none of them: it reads each where it's used, with its own value as the fallback (`var(--kv-font-family-body, var(--kv-font-family-sans))`), so they work on `:root` or on any container. A value that refers to another token (`var(--kv-card-padding-lg)`) is resolved where it's declared, so put those on the element that should resolve them. `--kv-color-heading` is a semantic token like the rest, set per theme.
 - **Your CSS always wins.** Everything in `theme.css` is in `@layer kv`. Any unlayered CSS you write, or any layer you declare after `kv`, overrides it regardless of specificity.

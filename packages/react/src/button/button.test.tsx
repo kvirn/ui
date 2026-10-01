@@ -1,12 +1,13 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, useState } from 'react'
-import type { ComponentPropsWithRef, FormEvent, ReactNode } from 'react'
+import type { ComponentPropsWithRef, FormEvent, ReactElement, ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
+import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { Button } from './button.tsx'
 import type { ButtonProps, ButtonState } from './button.tsx'
@@ -332,6 +333,73 @@ describe('render prop', () => {
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('<span>')
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('Link')
   })
+})
+
+describe('icon-only button name (Plan 0009)', () => {
+  function CloseIcon() {
+    return <Icon name="close" />
+  }
+
+  test('warns in development when an icon-only button has no accessible name', async () => {
+    await render(
+      <Button>
+        <CloseIcon />
+      </Button>,
+    )
+    await expect.element(page.getByRole('button')).toBeVisible()
+    expect(consoleWarn).toHaveBeenCalledTimes(1)
+    expect(consoleWarn.mock.calls[0]?.[0]).toContain('no accessible name')
+    expect(consoleWarn.mock.calls[0]?.[0]).toContain('aria-label')
+  })
+
+  const namedButtons: ReadonlyArray<readonly [string, () => ReactElement]> = [
+    ['aria-label', () => <Button aria-label="Stäng">{<CloseIcon />}</Button>],
+    [
+      'aria-labelledby',
+      () => (
+        <>
+          <span id="close-label">Stäng</span>
+          <Button aria-labelledby="close-label">{<CloseIcon />}</Button>
+        </>
+      ),
+    ],
+    ['title', () => <Button title="Stäng">{<CloseIcon />}</Button>],
+    [
+      'visible text',
+      () => (
+        <Button>
+          <CloseIcon />
+          Stäng
+        </Button>
+      ),
+    ],
+    [
+      'visually hidden text',
+      () => (
+        <Button>
+          <CloseIcon />
+          <span className="kv-visually-hidden">Stäng</span>
+        </Button>
+      ),
+    ],
+    [
+      'a labelled Icon',
+      () => (
+        <Button>
+          <Icon name="close" label="Stäng" />
+        </Button>
+      ),
+    ],
+  ]
+
+  test.each(namedButtons)(
+    'does not warn when the name comes from %s',
+    async (_source, renderButton) => {
+      await render(renderButton())
+      await expect.element(page.getByRole('button', { name: 'Stäng' })).toBeVisible()
+      expect(consoleWarn).not.toHaveBeenCalled()
+    },
+  )
 })
 
 describe('handlers on a render element (ADR-0016)', () => {

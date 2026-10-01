@@ -17,6 +17,7 @@ A Button performs an action. Navigation is a Link. `Button` defaults to `type="b
 |        | disabled and focusable | `aria-disabled="true"`, no `disabled` attribute | Stays in the Tab order. Click, Enter, Space and implicit form submission are blocked: neither the Button's `onClick` nor a `render` element's own `onClick` is called, and the default (form submission) is prevented. `data-disabled`. `aria-disabled` can't be passed directly: it's set only through `disabled` with `focusableWhenDisabled` (ADR-0016) |
 |        | keyboard focus         | none                                            | `data-focus-visible` while the button matches `:focus-visible`                                                                                                                                                                                                                                                                                             |
 |        | `render`               | must still render a `<button>`                  | A dev warning names the element when it doesn't. Use Link for navigation. An element's own `onClick` is gated like the Button's                                                                                                                                                                                                                            |
+|        | no accessible name     | –                                               | A dev warning when the button has no `aria-label`, `aria-labelledby`, `title` or `<label>`, and no content outside `aria-hidden`: an icon-only button with only a decorative `Icon` (4.1.2, Plan 0009). Test: `button.test.tsx › icon-only button name`                                                                                                    |
 
 `useButton` gives the same `buttonProps` for your own `<button>`. Pass your click handler as `useButton({ onClick })`, so it is blocked while disabled.
 
@@ -56,7 +57,7 @@ Button has no strings of its own. Its name is its content, which the consumer pr
 
 ## Consumer responsibilities
 
-- Give the button a visible text label, or an `aria-label` from your own translations for an icon-only button (4.1.2, 2.5.3).
+- Give the button a visible text label, or an `aria-label` from your own translations for an icon-only button (4.1.2, 2.5.3). Keep the icon decorative: `<Button className="kv-button--icon-only" aria-label={messages.close}><Icon name="close" /></Button>`.
 - Use `type="submit"` for the button that submits a form.
 - When a button is disabled, tell users why in text near it, and link that text with `aria-describedby` if the button is focusable. Prefer not disabling at all: let the user submit and show the errors (GOV.UK, 3.3.1).
 - Pass your click handler to `Button` (or to the `render` element), or to `useButton({ onClick })`. Don't merge your own `onClick` on top of `buttonProps`: it wouldn't be blocked while disabled.

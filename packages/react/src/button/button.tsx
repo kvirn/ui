@@ -8,6 +8,35 @@ import { renderPart, takeRenderElementProps } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
 import { useButton } from './use-button.ts'
 
+/**
+ * Whether a button has a source for its accessible name: its own label attributes, a `<label>`,
+ * text outside `aria-hidden`, or a labelled image. A rough check for a dev warning, not the
+ * accessible-name algorithm.
+ */
+function hasNameSource(button: HTMLButtonElement): boolean {
+  if (
+    button.hasAttribute('aria-label') ||
+    button.hasAttribute('aria-labelledby') ||
+    button.hasAttribute('title') ||
+    button.labels.length > 0
+  ) {
+    return true
+  }
+  const hasName = (node: Node): boolean => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return (node.textContent ?? '').trim() !== ''
+    }
+    if (!(node instanceof Element) || node.getAttribute('aria-hidden') === 'true') {
+      return false
+    }
+    if (node.hasAttribute('aria-label') || node.getAttribute('alt')?.trim()) {
+      return true
+    }
+    return [...node.childNodes].some(hasName)
+  }
+  return [...button.childNodes].some(hasName)
+}
+
 const isClickHandler = (value: unknown): value is MouseEventHandler<HTMLButtonElement> =>
   typeof value === 'function'
 
@@ -70,6 +99,11 @@ export function Button({
       warnOnce(
         `button-not-a-button:${rendered}`,
         `<Button render> must render a <button> and forward its ref, but it rendered ${rendered}. A button's role, keyboard activation and disabled state come from the native element. For navigation, use Link.`,
+      )
+    } else if (!hasNameSource(element)) {
+      warnOnce(
+        'button-without-name',
+        'A <Button> has no accessible name: its only content is hidden from assistive technology, such as a decorative <Icon>. Give an icon-only button an aria-label from your translations, or add visible text (WCAG 4.1.2).',
       )
     }
   })

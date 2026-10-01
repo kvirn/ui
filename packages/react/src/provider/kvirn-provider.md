@@ -101,6 +101,14 @@ declare module '@kvirn-ui/react' {
 
 Without the augmentation, `linkComponent` only accepts `'a'`, and link props are native `<a>` props. The registered component must forward its ref and render an `<a>`.
 
+## Icons: `icons` and `iconDefaults`
+
+Register your icons once, so `<Icon name>` works everywhere and names are checked (ADR-0024). The registry holds components, so it lives in a client module next to this setup. See [Icon](../icon/icon.md#registering-icons).
+
+```tsx
+<KvirnProvider icons={icons} iconDefaults={{ strokeWidth: 1.5 }}>
+```
+
 ## Locale and direction
 
 ```tsx
@@ -326,15 +334,17 @@ On the server, read the same cookie and render the attributes on `<html>`. Rende
 
 ### `KvirnProvider` props
 
-| Prop            | Type                                                | Default                             |
-| --------------- | --------------------------------------------------- | ----------------------------------- |
-| `locale`        | `string` (BCP 47)                                   | `'en'`, or the parent's             |
-| `dir`           | `'ltr' \| 'rtl'`                                    | From `locale`, or the parent's      |
-| `messages`      | `PartialMessages` (a catalog or a partial override) | Inherited, then built-in `en`       |
-| `timeZone`      | `string` (IANA)                                     | The parent's, or the runtime's zone |
-| `linkComponent` | `RegisteredLinkComponent`                           | `'a'`, or the parent's              |
-| `theme`         | `ThemeOptions`                                      | Outermost provider only             |
-| `env`           | `Env`                                               | The page, after hydration           |
+| Prop            | Type                                                | Default                                                                         |
+| --------------- | --------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `locale`        | `string` (BCP 47)                                   | `'en'`, or the parent's                                                         |
+| `dir`           | `'ltr' \| 'rtl'`                                    | From `locale`, or the parent's                                                  |
+| `messages`      | `PartialMessages` (a catalog or a partial override) | Inherited, then built-in `en`                                                   |
+| `timeZone`      | `string` (IANA)                                     | The parent's, or the runtime's zone                                             |
+| `linkComponent` | `RegisteredLinkComponent`                           | `'a'`, or the parent's                                                          |
+| `icons`         | `IconRegistry`, from `defineIcons`                  | The built-in icons, then the parent's, merged by name ([Icon](../icon/icon.md)) |
+| `iconDefaults`  | `IconDefaults` (`size`, `strokeWidth`)              | The parent's, merged by field                                                   |
+| `theme`         | `ThemeOptions`                                      | Outermost provider only                                                         |
+| `env`           | `Env`                                               | The page, after hydration                                                       |
 
 ### Hooks
 

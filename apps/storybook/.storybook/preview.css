@@ -455,3 +455,129 @@ body {
     padding: var(--kv-space-4);
   }
 }
+
+/* Components/Icon: the built-in set as a grid of cells, 2 columns at 320px and 6 at 64rem. */
+.kv-story-icon-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr));
+  gap: var(--kv-space-4);
+  margin: 0;
+  padding: 0;
+}
+
+.kv-story-icon-cell {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: var(--kv-space-2);
+  padding: var(--kv-space-3);
+  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-md);
+  font-size: var(--kv-font-body-small-size);
+  line-height: var(--kv-font-body-small-line-height);
+}
+
+.kv-story-icon-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kv-space-2);
+}
+
+.kv-story-icon-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kv-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The status lines: one under the other, each a plain line or a -subtle panel with a bar. */
+.kv-story-status-lines {
+  display: grid;
+  align-content: start;
+  gap: var(--kv-space-3);
+}
+
+.kv-story-status-lines p {
+  margin: 0;
+}
+
+.kv-story-status-panel {
+  box-sizing: border-box;
+  padding: var(--kv-space-3) var(--kv-space-4);
+  border-inline-start: var(--kv-indicator-width) solid var(--kv-color-border-control);
+  background-color: var(--kv-color-surface);
+}
+
+.kv-story-status-panel[data-status='success'] {
+  border-inline-start-color: var(--kv-color-success);
+  background-color: var(--kv-color-success-subtle);
+}
+
+.kv-story-status-panel[data-status='warning'] {
+  border-inline-start-color: var(--kv-color-warning);
+  background-color: var(--kv-color-warning-subtle);
+}
+
+.kv-story-status-panel[data-status='error'] {
+  border-inline-start-color: var(--kv-color-danger);
+  background-color: var(--kv-color-danger-subtle);
+}
+
+/* Without colour: the shapes alone carry the difference between the four statuses. */
+.kv-story-greyscale {
+  filter: grayscale(1);
+}
+
+/* Sizes next to text: three text styles, and the same at 200%. */
+.kv-story-text-200 {
+  --kv-story-text-scale: 2;
+}
+
+.kv-story-icon-sizes {
+  display: grid;
+  gap: var(--kv-space-4);
+}
+
+.kv-story-icon-sizes p {
+  margin: 0;
+}
+
+.kv-story-text-body {
+  --kv-story-guide-line-height: var(--kv-font-body-line-height);
+  font-size: calc(var(--kv-font-body-size) * var(--kv-story-text-scale, 1));
+  line-height: var(--kv-font-body-line-height);
+}
+
+.kv-story-text-body-large {
+  --kv-story-guide-line-height: var(--kv-font-body-large-line-height);
+  font-size: calc(var(--kv-font-body-large-size) * var(--kv-story-text-scale, 1));
+  line-height: var(--kv-font-body-large-line-height);
+}
+
+.kv-story-text-heading-2 {
+  --kv-story-guide-line-height: var(--kv-font-heading-2-line-height);
+  font-size: calc(var(--kv-font-heading-2-size) * var(--kv-story-text-scale, 1));
+  font-weight: var(--kv-font-heading-2-weight);
+  line-height: var(--kv-font-heading-2-line-height);
+}
+
+/*
+ * Two guide lines on each line of text: the baseline and the capital height (IBM Plex, 0.698em).
+ * The content area is 1.3em (ascent 1.025 + descent 0.275), centred in the line box.
+ */
+.kv-story-text-guide {
+  --kv-story-baseline: calc(((var(--kv-story-guide-line-height) - 1.3) / 2 + 1.025) * 1em);
+  --kv-story-cap-height: calc(var(--kv-story-baseline) - 0.698em);
+  background-image:
+    linear-gradient(var(--kv-color-border-control), var(--kv-color-border-control)),
+    linear-gradient(var(--kv-color-border-control), var(--kv-color-border-control));
+  background-position:
+    0 var(--kv-story-baseline),
+    0 var(--kv-story-cap-height);
+  background-size:
+    100% 1px,
+    100% 1px;
+  background-repeat: no-repeat;
+}

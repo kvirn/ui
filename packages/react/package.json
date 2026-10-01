@@ -30,10 +30,13 @@
     "@kvirn-ui/i18n": "workspace:*"
   },
   "devDependencies": {
+    "@heroicons/react": "catalog:",
     "@kvirn-ui/testing": "workspace:*",
+    "@phosphor-icons/react": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitest/browser-playwright": "catalog:",
+    "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "vite-plus": "catalog:",

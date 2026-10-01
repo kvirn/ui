@@ -19,15 +19,17 @@ import '@kvirn-ui/theme/theme.css'
 
 Every KvirnUI component on the page is now styled. Remove the import, and they are unstyled again.
 
-- Every component part renders its own class: `kv-button`, `kv-link`, `kv-link-new-tab-notice`, `kv-card`, `kv-card-header`, `kv-card-body` and `kv-card-footer`. Your `className` joins it, never replaces it. The theme selects on it.
-- State comes from the components as `data-*` attributes: `data-disabled`, `data-focus-visible`, `data-current`. Classes style, `data-*` is state.
+- Every component part renders its own class: `kv-button`, `kv-link`, `kv-link-new-tab-notice`, `kv-card`, `kv-card-header`, `kv-card-body`, `kv-card-footer` and `kv-icon`. Your `className` joins it, never replaces it. The theme selects on it.
+- State comes from the components as `data-*` attributes: `data-disabled`, `data-focus-visible`, `data-current`, and on icons `data-size` and `data-mirror-in-rtl`. Classes style, `data-*` is state.
 - Choices are classes you add:
   - `<Button className="kv-button--primary">` for the one main action per view, `kv-button--danger` for a destructive one. Without one, a Button is secondary.
+  - `<Button className="kv-button--icon-only" aria-label={messages.close}>` makes an icon-only button square, at least the button's minimum size. Use it only for close and search.
   - `<div class="kv-button-group">` lays buttons out in a row, stacked on narrow screens.
   - `<ul class="kv-nav">` inside a labelled `<nav>` turns its Links into navigation items, with the current page marked.
   - `kv-compact` on any container gives 32px controls for staff tools (from 64rem wide), and less padding in cards. On `<html>` or `<body>` it makes the whole site compact.
   - On a `Card.Root`: `kv-card--surface` or `kv-card--canvas` (the default is `surface-raised`), `kv-card--radius-md` or `kv-card--radius-none` (the default is `lg`, and `kv-card--radius-lg` takes a card back to it), and `kv-card--dividers` for a line between parts. `kv-card--padding-none`, `-sm`, `-md` or `-lg` on the Root sets every part's padding (the default is `md`). A part's own class overrides it, in all four steps: `<Card.Header className="kv-card-header--padding-none">` around a full-bleed image, and likewise `kv-card-body--padding-*` and `kv-card-footer--padding-*`. Parts must be direct children of the Root.
   - `kv-prose` styles content you don't control, and `kv-prose kv-prose--large` is the 18px size. It stops at a card, unless you put `kv-prose` on the card or inside it. Inside prose, `kv-lead` marks the lead paragraph, `kv-scroll-region` a wide table's labelled scroll region, and `kv-not-prose` anything prose shouldn't style.
+- The theme never sets an icon's size, stroke, fill or colour: those are `<Icon>` props, rendered as attributes, which any CSS would beat. It aligns icons with text, flips directional ones in right-to-left text, and in forced colours gives every icon its parent's system colour.
 - The theme follows `data-kv-color-scheme` and `data-kv-contrast`, which `KvirnProvider` and `KvirnThemeScript` set on `<html>`. Without them, it follows the OS settings. Forced colours always win.
 
 ### 2. Override variables
@@ -166,6 +168,7 @@ In this repository, `vp run theme:check` runs it on `theme.css`.
 8. Link and navigation lists
 9. Prose
 10. Card (and the card defaults)
+11. Icon
 
 The site-wide defaults are listed at the top of the file.
 

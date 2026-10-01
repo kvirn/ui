@@ -65,6 +65,7 @@
  *   8. Link and navigation lists
  *   9. Prose            kv-prose: articles from a CMS or Markdown
  *  10. Card
+ *  11. Icon
  */
 
 @layer kv {
@@ -707,6 +708,22 @@
     }
   }
 
+  /*
+   * Icon-only button: <Button className="kv-button--icon-only" aria-label={messages.close}>. A
+   * square target, at least the button's minimum size (2.5.8). Use it only for actions everyone
+   * knows (close, search), with the name from your translations (design spec: icon.md).
+   */
+  .kv-button.kv-button--icon-only {
+    min-inline-size: var(--kv-button-min-block-size, var(--kv-control-min-block-size));
+    padding-inline: var(--kv-space-2);
+  }
+
+  /* Stays square when a group stacks below 40rem, and sits at the inline start. */
+  .kv-button-group > .kv-button.kv-button--icon-only {
+    inline-size: auto;
+    align-self: flex-start;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     .kv-button {
       transition-property: background-color, border-color, color;
@@ -1182,14 +1199,14 @@
       }
 
       /* Pictures. An svg is one only directly in prose or in a figure: icons stay inline. */
-      &:where(img, video, picture, .kv-prose > svg, figure > svg) {
+      &:where(img, video, picture, .kv-prose > svg:not(.kv-icon), figure > svg:not(.kv-icon)) {
         display: block;
         max-inline-size: 100%;
         block-size: auto;
         border-radius: var(--kv-radius-md);
       }
 
-      &:where(img, video, picture, .kv-prose > svg):not(:where(figure *, picture *)) {
+      &:where(img, video, picture, .kv-prose > svg:not(.kv-icon)):not(:where(figure *, picture *)) {
         margin-block: var(--kv-prose-space-block);
         margin-inline: 0;
       }
@@ -1488,7 +1505,8 @@
    * prose: the card never clips, so a wide image would scroll the page at 320px (1.4.10).
    * Zero specificity, so your own sizes win. */
   :where(
-    :is(.kv-card, .kv-card-header, .kv-card-body, .kv-card-footer) > :is(img, video, svg),
+    :is(.kv-card, .kv-card-header, .kv-card-body, .kv-card-footer)
+      > :is(img, video, svg:not(.kv-icon)),
     :is(.kv-card, .kv-card-header, .kv-card-body, .kv-card-footer) > picture > img
   ) {
     max-inline-size: 100%;
@@ -1520,7 +1538,7 @@
       ),
     .kv-card.kv-card--padding-none:not(:has(> :is(.kv-card-header, .kv-card-body, .kv-card-footer)))
   ) {
-    & > :is(img, video, svg, picture),
+    & > :is(img, video, svg:where(:not(.kv-icon)), picture),
     & > picture > img {
       display: block;
       inline-size: 100%;
@@ -1528,16 +1546,71 @@
       margin: 0;
     }
 
-    &:is(.kv-card, :first-child) > :is(img, video, svg):first-child,
+    &:is(.kv-card, :first-child) > :is(img, video, svg:where(:not(.kv-icon))):first-child,
     &:is(.kv-card, :first-child) > picture:first-child > img {
       border-start-start-radius: max(0px, var(--kv-card-radius) - var(--kv-border-width));
       border-start-end-radius: max(0px, var(--kv-card-radius) - var(--kv-border-width));
     }
 
-    &:is(.kv-card, :last-child) > :is(img, video, svg):last-child,
+    &:is(.kv-card, :last-child) > :is(img, video, svg:where(:not(.kv-icon))):last-child,
     &:is(.kv-card, :last-child) > picture:last-child > img {
       border-end-start-radius: max(0px, var(--kv-card-radius) - var(--kv-border-width));
       border-end-end-radius: max(0px, var(--kv-card-radius) - var(--kv-border-width));
+    }
+  }
+
+  /* 11. Icon ---------------------------------------------------------------------------------
+   * <Icon name="close" /> renders <svg class="kv-icon">, sized and coloured by attributes
+   * (ADR-0024). This section never sets an icon's size, stroke, fill or colour: CSS beats
+   * attributes, so a prop would lose. Only forced colours do, so an icon can't disappear.
+   * Design spec: docs/design/icon.md.
+   *
+   *   data-size="sm|md|lg"   the size step: centred on the capital height in running text
+   *   data-mirror-in-rtl     a directional icon, flipped in right-to-left text
+   *
+   * In a flex row (a Button, kv-button-group), the row's gap separates icon and text. In
+   * running text, a normal space does, and it grows with 1.4.12 word spacing.
+   */
+  .kv-icon {
+    /* A wrapping Finnish label can't squash it. */
+    flex-shrink: 0;
+    vertical-align: middle;
+  }
+
+  /* (capital height 0.7em − size) / 2. IBM Plex's capital height is 0.698em. Ignored in flex
+   * rows, where align-items centres. */
+  .kv-icon[data-size='sm'] {
+    vertical-align: -0.15em;
+  }
+
+  .kv-icon[data-size='md'] {
+    vertical-align: -0.275em;
+  }
+
+  /* Fits the line box from line height 1.5. */
+  .kv-icon[data-size='lg'] {
+    vertical-align: -0.375em;
+  }
+
+  /* scale, not transform, so it combines with a component's own rotate. */
+  .kv-icon[data-mirror-in-rtl]:dir(rtl) {
+    scale: -1 1;
+  }
+
+  /* SVG keeps an explicit colour in forced colours (preserve-parent-color), so a hex colour
+   * could vanish. The root takes the parent's system colour. Colours on child shapes are kept,
+   * so a two-tone logo isn't flattened. */
+  @media (forced-colors: active) {
+    .kv-icon {
+      color: inherit;
+    }
+
+    .kv-icon[fill]:not([fill='none' i], [fill='transparent' i]) {
+      fill: currentColor;
+    }
+
+    .kv-icon[stroke]:not([stroke='none' i], [stroke='transparent' i]) {
+      stroke: currentColor;
     }
   }
 }

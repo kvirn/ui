@@ -35,6 +35,26 @@ export type {
 } from './card/card.tsx'
 export { useCard } from './card/use-card.ts'
 export type { CardPartProps, UseCardResult } from './card/use-card.ts'
+export { Icon } from './icon/icon.tsx'
+export type { IconElementProps, IconProps, IconState } from './icon/icon.tsx'
+export { useIcon } from './icon/use-icon.ts'
+export type {
+  IconDefaults,
+  IconPartProps,
+  IconSize,
+  IconSizeStep,
+  UseIconOptions,
+  UseIconResult,
+} from './icon/use-icon.ts'
+export { defineIcons } from './icon/icon-registry.ts'
+export type {
+  IconComponent,
+  IconComponentProps,
+  IconName,
+  IconRegistry,
+  IconRegistryEntry,
+} from './icon/icon-registry.ts'
+export type { BuiltInIconName } from './icon/built-in-icons.tsx'
 export type {
   ColorSchemePreference,
   ContrastPreference,

@@ -23,6 +23,11 @@ catalog:
   axe-core: 4.13.0
   '@axe-core/playwright': 4.13.0
   '@playwright/test': 1.63.0
+  # Icon libraries: devDependencies only, for Icon's compatibility tests and stories (ADR-0025).
+  # Pinned exactly, so a release that changes how a library builds its <svg> is a reviewed bump.
+  lucide-react: 1.49.0
+  '@heroicons/react': 2.2.0
+  '@phosphor-icons/react': 2.1.10
   # Workbench, docs, release
   storybook: 10.6.1
   '@storybook/react-vite': 10.6.1

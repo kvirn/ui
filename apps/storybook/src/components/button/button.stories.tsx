@@ -1,4 +1,4 @@
-import { Button } from '@kvirn-ui/react'
+import { Button, Icon } from '@kvirn-ui/react'
 import type { ButtonProps } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useId, useState } from 'react'
@@ -25,13 +25,16 @@ const sv = {
     disabled: 'Inaktiverad',
     focusableDisabled: 'Inaktiverad men fokuserbar',
   },
+  addChild: 'Lägg till ett barn till',
+  continue: 'Fortsätt',
+  close: 'Stäng',
   comfortable: 'Bekväm (standard)',
   compact: 'Kompakt',
 }
 const fiSaveLong = 'Tallenna rakennuslupahakemuksen luonnos'
 
 /** Secondary is the base look, with no class. */
-const variantClasses = ['kv-button--primary', 'kv-button--danger'] as const
+const variantClasses = ['kv-button--primary', 'kv-button--danger', 'kv-button--icon-only'] as const
 
 /** One button and a click counter: the keyboard contract's fixture. */
 function WithClickCount({ onClick, ...buttonProps }: ButtonProps) {
@@ -112,7 +115,7 @@ const meta = {
       control: 'select',
       options: [undefined, ...variantClasses],
       description:
-        'Your own classes, added to `kv-button`. The theme styles `kv-button--primary` and `kv-button--danger`; secondary is the base look.',
+        'Your own classes, added to `kv-button`. The theme styles `kv-button--primary` and `kv-button--danger`; secondary is the base look. `kv-button--icon-only` makes a button with only an icon square.',
     },
     type: { control: 'inline-radio', options: ['button', 'submit', 'reset'] },
     render: { control: false },
@@ -137,6 +140,59 @@ export const Primary: Story = { args: { className: 'kv-button--primary', childre
 
 /** `kv-button--danger`: removes something, always behind a confirmation step. */
 export const Danger: Story = { args: { className: 'kv-button--danger', children: sv.deleteDraft } }
+
+/** An icon before the text. The order in the markup is the order on screen, and RTL flips it. */
+export const IconAtStart: Story = {
+  args: {
+    children: (
+      <>
+        <Icon name="add" />
+        {sv.addChild}
+      </>
+    ),
+  },
+  play: async ({ canvas }) => {
+    const button = canvas.getByRole('button', { name: sv.addChild })
+    await expect(button.firstElementChild).toHaveClass('kv-icon')
+    await expect(button.firstElementChild).toHaveAttribute('aria-hidden', 'true')
+  },
+}
+
+/** An icon after the text, here a primary "continue" with an arrow that mirrors in RTL. */
+export const IconAtEnd: Story = {
+  args: {
+    className: 'kv-button--primary',
+    children: (
+      <>
+        {sv.continue}
+        <Icon name="arrow-forward" />
+      </>
+    ),
+  },
+  play: async ({ canvas }) => {
+    const button = canvas.getByRole('button', { name: sv.continue })
+    await expect(button.lastElementChild).toHaveClass('kv-icon')
+    await expect(button.lastElementChild).toHaveAttribute('data-mirror-in-rtl')
+  },
+}
+
+/**
+ * `kv-button--icon-only`: a square target. The name goes on the button (`aria-label` from your
+ * translations) and the icon stays decorative. Use it only for actions everyone knows.
+ */
+export const IconOnly: Story = {
+  args: {
+    className: 'kv-button--icon-only',
+    'aria-label': sv.close,
+    children: <Icon name="close" />,
+  },
+  play: async ({ canvas }) => {
+    const button = canvas.getByRole('button', { name: sv.close })
+    await expect(button.children).toHaveLength(1)
+    await expect(button.textContent).toBe('')
+    await expectMinimumTargetSize(button)
+  },
+}
 
 /** Enter and Space activate it: the counter shows each click. */
 export const Activation: Story = {

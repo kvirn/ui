@@ -2,6 +2,8 @@ import { createMessageFormat } from '@kvirn-ui/core'
 import type { Direction, Env, MessageFormatter, ThemeStore } from '@kvirn-ui/core'
 import type { PartialMessages } from '@kvirn-ui/i18n'
 import { createContext } from 'react'
+import type { IconRegistry } from '../icon/icon-registry.ts'
+import type { IconDefaults } from '../icon/use-icon.ts'
 import type { RegisteredLinkComponent } from './register.ts'
 
 /**
@@ -19,11 +21,15 @@ export interface KvirnConfig {
   messageLayers: readonly PartialMessages[]
   format: MessageFormatter
   linkComponent: LinkComponentOrAnchor<RegisteredLinkComponent>
+  /** Every provider's icons, the nearest winning per name. Built-in icons are added by `useIcon`. */
+  icons: IconRegistry
+  /** Every provider's icon defaults, the nearest winning per field. */
+  iconDefaults: IconDefaults
   /** Only an explicitly passed env. `useEnv` falls back to the page after mount. */
   env: Env | undefined
 }
 
-/** What components get without a provider: `en`, `ltr`, runtime zone, `<a>`. */
+/** What components get without a provider: `en`, `ltr`, runtime zone, `<a>`, built-in icons. */
 export const defaultKvirnConfig: KvirnConfig = {
   locale: 'en',
   dir: 'ltr',
@@ -31,6 +37,8 @@ export const defaultKvirnConfig: KvirnConfig = {
   messageLayers: [],
   format: createMessageFormat({ locale: 'en', timeZone: undefined }),
   linkComponent: 'a',
+  icons: Object.freeze({}),
+  iconDefaults: Object.freeze({}),
   env: undefined,
 }
 
