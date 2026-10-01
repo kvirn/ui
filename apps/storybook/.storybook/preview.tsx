@@ -1,3 +1,11 @@
+import {
+  Controls,
+  Description,
+  Primary,
+  Stories,
+  Subtitle,
+  Title,
+} from '@storybook/addon-docs/blocks'
 import type { Decorator, Preview } from '@storybook/react-vite'
 import { getDefaultEnv, getThemeStore } from '@kvirn-ui/core'
 import type { ColorSchemePreference, ContrastPreference } from '@kvirn-ui/core'
@@ -39,14 +47,17 @@ const drivesThemeStore = (parameters: Record<string, unknown>): boolean =>
   parameters['themeStore'] === 'story'
 
 /**
- * `lang`, `dir` and the theme on `<html>`, so the story itself needs no wrapper. On a Docs
- * page the last story wins: they share one document (ADR-0023).
+ * `lang`, `dir` and forced colours on `<html>` in a story's own view, so the story itself needs
+ * no wrapper. A Docs page renders every story in one document, so there they are scoped per
+ * story on a wrapper instead, or the last story would win (ADR-0023). The theme stays
+ * document-wide on both: it is selected through the theme store, which writes to `<html>`.
  */
 function StoryEnvironment({
   theme,
   locale,
   dir,
   forcedColors,
+  scoped,
   children,
 }: {
   /** `undefined` when the story drives the theme store itself. */
@@ -54,9 +65,14 @@ function StoryEnvironment({
   locale: string
   dir: string
   forcedColors: string
+  /** On a Docs page: put `lang`, `dir` and forced colours on a wrapper, not on `<html>`. */
+  scoped: boolean
   children: ReactNode
 }) {
   useLayoutEffect(() => {
+    if (scoped) {
+      return undefined
+    }
     const root = document.documentElement
     const previous = { lang: root.lang, dir: root.dir, forcedColors: root.dataset.forcedColors }
     root.lang = locale
@@ -70,7 +86,7 @@ function StoryEnvironment({
       if (previous.forcedColors === undefined) delete root.dataset.forcedColors
       else root.dataset.forcedColors = previous.forcedColors
     }
-  }, [locale, dir, forcedColors])
+  }, [scoped, locale, dir, forcedColors])
   const mode = theme?.mode
   const contrast = theme?.contrast
   useLayoutEffect(() => {
@@ -85,10 +101,18 @@ function StoryEnvironment({
       disconnect()
     }
   }, [mode, contrast])
-  return children
+  // No landmark and no box of its own: `display: contents` keeps layout, and `lang` and `dir`
+  // still reach the story.
+  return scoped ? (
+    <div lang={locale} dir={dir} data-forced-colors={forcedColors} style={{ display: 'contents' }}>
+      {children}
+    </div>
+  ) : (
+    children
+  )
 }
 
-const withStoryEnvironment: Decorator = (Story, { globals, parameters }) => (
+const withStoryEnvironment: Decorator = (Story, { globals, parameters, viewMode }) => (
   <StoryEnvironment
     theme={
       drivesThemeStore(parameters)
@@ -98,6 +122,7 @@ const withStoryEnvironment: Decorator = (Story, { globals, parameters }) => (
     locale={String(globals['locale'] ?? 'sv')}
     dir={String(globals['dir'] ?? 'ltr')}
     forcedColors={String(globals['forcedColors'] ?? 'none')}
+    scoped={viewMode === 'docs'}
   >
     <Story />
   </StoryEnvironment>
@@ -170,6 +195,19 @@ const preview: Preview = {
         canvas: { name: 'Canvas', value: 'var(--kv-color-canvas)' },
         surface: { name: 'Surface', value: 'var(--kv-color-surface)' },
       },
+    },
+    // The default DocsPage, except the primary story isn't repeated under "Stories".
+    docs: {
+      page: () => (
+        <>
+          <Title />
+          <Subtitle />
+          <Description />
+          <Primary />
+          <Controls />
+          <Stories includePrimary={false} />
+        </>
+      ),
     },
     options: {
       storySort: {

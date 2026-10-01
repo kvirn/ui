@@ -1,7 +1,8 @@
 /*
  * Storybook-only page styles: the body and the story helpers. Unlayered, so it wins over
  * @layer kv. Tokens only: no raw colours (ADR-0013). There is no wrapper around a story
- * (ADR-0023): `lang`, `dir` and the theme are set on <html>, and the body is the canvas.
+ * (ADR-0023): `lang`, `dir` and the theme are set on <html>, and the body is the canvas. On a
+ * Docs page a wrapper carries `lang` and `dir` per story, and the theme stays on <html>.
  */
 body {
   background-color: var(--kv-color-canvas);

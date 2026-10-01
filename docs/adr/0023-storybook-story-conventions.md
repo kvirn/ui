@@ -47,7 +47,7 @@ This revises the story structure in ADR-0017 decision 5 and in `docs/design/stor
 
 Decisions made while implementing, for review with this ADR:
 
-- **One decorator, no wrapper.** It sets `lang`, `dir` and `data-forced-colors` on `<html>`, connects the theme store and selects the Mode and Contrast globals through it, and resets both axes to `system` on cleanup. Stories that drive the theme store themselves set `parameters: { themeStore: 'story' }` (the `KvirnProvider` stories); for them the decorator selects nothing.
+- **One decorator, no wrapper.** In a story's own view it sets `lang`, `dir` and `data-forced-colors` on `<html>`; on a Docs page it scopes them per story on a `display: contents` `<div>` instead, so each story keeps its own. It connects the theme store and selects the Mode and Contrast globals through it, and resets both axes to `system` on cleanup. Stories that drive the theme store themselves set `parameters: { themeStore: 'story' }` (the `KvirnProvider` stories); for them the decorator selects nothing.
 - **No initial Backgrounds value.** The Backgrounds options use `--kv-color-canvas` and `--kv-color-surface`, but none is selected by default, unlike the reference. The addon's background has a 0.3s transition, and a theme change mid-transition would race axe's contrast check. The body gets the canvas colour from `preview.css` instead.
 - **A story valid in one theme pins it.** `Components/Button › ThemeOverride` re-points `--kv-color-primary` to `accent-600` on a wrapper, a light-theme rebrand. In dark with more contrast the label fails 4.5:1 (2.62:1), so the story keeps its light pin (`globals: { mode: 'light', contrast: 'standard' }`), as before, and its play function checks the pin reached `<html>`.
 - **Foundation theme stories check the theme.** The colour, border, focus-ring and theming stories (first named `CurrentTheme`, now named for their page) each first check that the toolbar's theme reached `<html>`, then run their theme-specific checks for that theme, so the four projects cover what the four fixed-theme exports did.
@@ -63,7 +63,7 @@ Positive: axe (WCAG 2.2 AA tags, `test: 'error'`) runs on every story in every t
 ## Consequences
 
 - Positive: shorter stories, a props table per component, wider theme coverage.
-- Negative / trade-offs: story tests take about 4× as long. Docs pages share one `<html>`, so changing dir or theme in a story affects the whole Docs page.
+- Negative / trade-offs: story tests take about 4× as long. Docs pages share one `<html>`, so changing the theme in a story affects the whole Docs page. Language, direction and forced colours are scoped per story.
 - Follow-ups: the testing skill's Story template follows this ADR.
 
 ## Validation
