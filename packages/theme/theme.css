@@ -43,7 +43,7 @@
    */
   :root {
     --kv-white: #ffffff;
-    /* Linear's near-black canvas. */
+    /* A near-black, not pure black. */
     --kv-black: #010102;
 
     /* Neutral: grey with a faint cool tint. Canvases, surfaces, borders and text. */
@@ -59,7 +59,7 @@
     --kv-neutral-900: #18191a;
     --kv-neutral-950: #0f1011;
 
-    /* Primary: lavender by default, Linear's is 500. Primary buttons, links, focus, selection. */
+    /* Primary: lavender by default. Primary buttons, links, focus, selection. */
     --kv-primary-50: #eff0fb;
     --kv-primary-100: #cdd0ff;
     --kv-primary-200: #b3b8ff;

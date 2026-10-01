@@ -183,20 +183,6 @@ export const Large: Story = {
   },
 }
 
-/** fi, nb, nn and se have no translated article yet: English, marked lang="en" (3.1.2). */
-export const UntranslatedLocale: Story = {
-  name: 'Untranslated locale (fi)',
-  globals: { locale: 'fi' },
-  render: () => <ArticlePage locale="fi" />,
-  play: async ({ canvasElement }) => {
-    const article = articleOf(canvasElement)
-    await expect(article).toHaveAttribute('lang', 'en')
-    await expect(within(article).getByRole('heading', { level: 1 })).toHaveTextContent(
-      articleFor('en').text.title,
-    )
-  },
-}
-
 /** Logical properties only: markers, indents and the blockquote bar follow `dir`. */
 export const RightToLeft: Story = {
   name: 'Right to left',

@@ -35,9 +35,8 @@ function RadiusPage(): ReactNode {
   return (
     <TokenPage title="Radius" pageRef={pageRef}>
       <p>
-        Radii are small and consistent, following the Linear scale. Radio buttons are always circles
-        and checkboxes always rounded squares, so the shape tells them apart. The focus ring follows
-        the element’s radius.
+        Radii are small and consistent. Radio buttons are always circles and checkboxes always
+        rounded squares, so the shape tells them apart. The focus ring follows the element’s radius.
       </p>
       {radii === null ? <ThemeMissingNotice /> : null}
       {radii ? (

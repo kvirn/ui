@@ -2,7 +2,7 @@
 '@kvirn-ui/theme': minor
 ---
 
-Add prose styles and foundation tokens to `theme.css` (Plan 0006, ADR-0018 Proposed).
+Add prose styles and foundation tokens to `theme.css` (Plan 0006, ADR-0018).
 
 - `data-kv-prose` on a wrapper styles articles from a CMS or Markdown: headings, paragraphs, links, lists, quotes, code, keys, tables, figures, definition lists and more, in every theme, with logical properties only. `data-kv-prose="large"` is the 18px size for long resident-facing text.
 - `data-kv-lead` marks the lead paragraph. `data-kv-not-prose` leaves a subtree alone, apart from its block margin. Components (`[data-kv]`) and the contents of `data-kv-nav` and `data-kv-button-group` are never styled by prose. Every prose rule has zero specificity, so any other CSS wins.

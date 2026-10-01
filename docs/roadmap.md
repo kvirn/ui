@@ -45,13 +45,13 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 
 ## Theme and docs
 
-| Item                                                                     | Plan | Status                                                                                                                  |
-| ------------------------------------------------------------------------ | ---- | ----------------------------------------------------------------------------------------------------------------------- |
-| Default theme (`theme.css`: palette, tokens, Button and Link)            | 0005 | prototype, reworked for simpler DX, scales named by role (ADR-0013, ADR-0014 and ADR-0019 Proposed, awaiting P1 review) |
-| Styled Storybook (`Components/*`, Theme toolbar with None, Introduction) | 0005 | prototype                                                                                                               |
-| Docs site (shell and the Button page)                                    | 0005 | prototype. The other pages come in Phase 2                                                                              |
-| Prose (`data-kv-prose`) and the lead and shadow tokens                   | 0006 | prototype (ADR-0018 Proposed). The docs site's articles use it                                                          |
-| Storybook Foundation section                                             | 0006 | in progress                                                                                                             |
+| Item                                                                     | Plan | Status                                                                                                 |
+| ------------------------------------------------------------------------ | ---- | ------------------------------------------------------------------------------------------------------ |
+| Default theme (`theme.css`: palette, tokens, Button and Link)            | 0005 | accepted (ADR-0013, ADR-0014, ADR-0017, ADR-0019); e2e, design review and accessibility review pending |
+| Styled Storybook (`Components/*`, Theme toolbar with None, Introduction) | 0005 | prototype                                                                                              |
+| Docs site (shell and the Button page)                                    | 0005 | prototype. The other pages come in Phase 2                                                             |
+| Prose (`data-kv-prose`) and the lead and shadow tokens                   | 0006 | accepted (ADR-0018). The docs site's articles use it                                                   |
+| Storybook Foundation section                                             | 0006 | in progress                                                                                            |
 
 ## Blocks (M4 and later)
 

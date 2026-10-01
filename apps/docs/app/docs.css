@@ -1,6 +1,6 @@
 /*
- * Docs site shell and page template (docs/design/docs-site.md §6), Linear-inspired
- * (ADR-0014). Plain, unlayered CSS, so it wins over @layer kv. Tokens only: no raw colours
+ * Docs site shell and page template (docs/design/docs-site.md §6), in the default theme's
+ * visual direction (ADR-0014). Plain, unlayered CSS, so it wins over @layer kv. Tokens only: no raw colours
  * (ADR-0013). The three --docs-* constants are layout, not theme tokens.
  */
 :root {
@@ -335,7 +335,7 @@ body {
   outline: none;
 }
 
-/* A hairline above each h2 gives the Linear changelog-row rhythm. */
+/* A hairline above each h2 gives a calm, row-by-row rhythm. */
 .docs-article > h2 {
   padding-block-start: var(--kv-space-6);
   border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);

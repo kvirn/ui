@@ -1,10 +1,18 @@
 /*
  * Inter Variable 4.001 (weights 100-900), self-hosted: no third-party request (AGENTS.md,
- * hard rule 7). The files are Fontsource 5.3.0's latin and latin-ext subsets, which cover
- * å ä ö æ ø and the Northern Sámi letters á č đ ŋ š ŧ ž. Licence: SIL OFL 1.1, see OFL.txt.
+ * hard rule 7). The subsets cover å ä ö æ ø and the Northern Sámi letters á č đ ŋ š ŧ ž.
+ * Licence: SIL OFL 1.1, see OFL.txt.
  *
- * Shared by the docs site and Storybook (ADR-0017). The subsets don't include Inter's cv05
- * and cv08 character variants, so the tokens' font-feature-settings have no effect yet.
+ * Built from InterVariable.woff2 in the upstream Inter 4.1 release (github.com/rsms/inter),
+ * with fontTools, so every OpenType feature is kept, including the cv05 and cv08 character
+ * variants that tell l, I and 1 apart (DESIGN.md). The opsz axis is pinned to 14, the text
+ * design, and each file is cut to the unicode-range below:
+ *
+ *   fonttools varLib.instancer InterVariable.woff2 opsz=14 -o inter-text.ttf
+ *   pyftsubset inter-text.ttf --unicodes="<range>" --layout-features='*' --flavor=woff2 \
+ *     --output-file=inter-<subset>-wght-normal.woff2
+ *
+ * Shared by the docs site and Storybook (ADR-0017).
  */
 @font-face {
   font-family: 'Inter Variable';

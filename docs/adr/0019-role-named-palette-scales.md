@@ -1,6 +1,6 @@
 # ADR-0019: Palette scales named by role, a secondary edge token, and an unused accent
 
-- **Status:** Proposed
+- **Status:** Accepted (2026-10-01, by the maintainer)
 - **Date:** 2026-10-01
 - **Deciders:** Maintainer (direction), proposed by the component-engineer agent
 - **Tags:** theming, api
@@ -54,6 +54,7 @@ We will use Option A, with these details:
 
 - Positive: rebranding is one documented override, without a refactor.
 - Negative / trade-offs: one more semantic token (`secondary`) and seven more contrast pairs per theme. `colorTokenNames` is public API, so the change needs a changeset.
+- Known limitation: a scale can only be overridden on `:root` (decision 6), so one part of a page can't carry a different brand. Supporting that, for example by also declaring the semantic tokens on a scoping attribute, needs its own ADR.
 - Follow-ups: when inputs and checkboxes ship, decide whether they need their own role (they use `border-control` today).
 
 ## Validation

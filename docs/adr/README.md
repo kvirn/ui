@@ -31,10 +31,10 @@ We record significant decisions as ADRs using a lightweight MADR-style format.
 | [0010](0010-react-entry-use-client.md)                     | Mark the whole `@kvirn-ui/react` entry as `"use client"`                   | Proposed |
 | [0011](0011-design-md-and-ux-design-workflow.md)           | DESIGN.md design language and a UX design workflow                         | Proposed |
 | [0012](0012-conventional-commits-enforced.md)              | Conventional Commits, enforced by hook and CI                              | Proposed |
-| [0013](0013-default-theme-delivery.md)                     | Default theme as one hand-written theme.css on part attributes             | Proposed |
-| [0014](0014-default-theme-visual-direction-linear.md)      | Default theme visual direction: Linear-inspired                            | Proposed |
+| [0013](0013-default-theme-delivery.md)                     | Default theme as one hand-written theme.css on part attributes             | Accepted |
+| [0014](0014-default-theme-visual-direction-linear.md)      | Default theme visual direction: Linear-inspired                            | Accepted |
 | [0015](0015-merge-props-and-render-semantics.md)           | `mergeProps` and `render` merge semantics                                  | Proposed |
 | [0016](0016-button-and-link-api-details.md)                | Button and Link API details                                                | Proposed |
-| [0017](0017-default-theme-prototype-implementation.md)     | Default-theme prototype implementation details                             | Proposed |
-| [0018](0018-prose-styles-and-foundation-tokens.md)         | Prose styles by attribute, and prose, lead and shadow tokens               | Proposed |
-| [0019](0019-role-named-palette-scales.md)                  | Palette scales named by role, a secondary edge token, and an unused accent | Proposed |
+| [0017](0017-default-theme-prototype-implementation.md)     | Default-theme prototype implementation details                             | Accepted |
+| [0018](0018-prose-styles-and-foundation-tokens.md)         | Prose styles by attribute, and prose, lead and shadow tokens               | Accepted |
+| [0019](0019-role-named-palette-scales.md)                  | Palette scales named by role, a secondary edge token, and an unused accent | Accepted |

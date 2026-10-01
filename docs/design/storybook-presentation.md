@@ -3,7 +3,7 @@
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-01
 - **Plan:** Plan 0005 (to be written) · component stories themselves: [Plan 0002](../plans/0002-kvirn-provider.md), [Plan 0003](../plans/0003-button-and-link.md)
-- **Related ADRs:** ADR-0006, [ADR-0013](../adr/0013-default-theme-delivery.md) (Proposed), [ADR-0014](../adr/0014-default-theme-visual-direction-linear.md) (Proposed)
+- **Related ADRs:** ADR-0006, [ADR-0013](../adr/0013-default-theme-delivery.md) (Accepted), [ADR-0014](../adr/0014-default-theme-visual-direction-linear.md) (Accepted)
 - **Type:** docs page (workbench presentation)
 - **Depends on:** [default-theme-button-link.md](default-theme-button-link.md) for tokens, recipes and states
 

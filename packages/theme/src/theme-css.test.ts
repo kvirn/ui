@@ -80,7 +80,7 @@ describe('theme.css palette', () => {
     expect(luminances).toEqual(luminances.toSorted((first, second) => second - first))
   })
 
-  it('keeps the Linear reference values as steps', () => {
+  it('keeps the reference values as steps', () => {
     expect(palette).toMatchObject({
       '--kv-white': '#ffffff',
       '--kv-black': '#010102',
@@ -140,7 +140,7 @@ describe('theme.css semantic tokens', () => {
     )
   })
 
-  it('maps light and dark to the Linear values', () => {
+  it('maps light and dark to the reference values', () => {
     expect(resolveThemeColors(themeCss, 'light')).toMatchObject({
       canvas: '#ffffff',
       primary: '#5e6ad2',
@@ -280,7 +280,7 @@ describe('theme.css non-colour tokens', () => {
     },
   })
 
-  it('has the 4px spacing scale in rem, the Linear radii and a 2px focus ring', () => {
+  it('has the 4px spacing scale in rem, the radii and a 2px focus ring', () => {
     expect(light).toMatchObject({
       '--kv-space-1': '0.25rem',
       '--kv-space-4': '1rem',

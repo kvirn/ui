@@ -167,6 +167,131 @@
   outline-offset: -2px;
 }
 
+/* Palette: one colour card per step, in a grid that reflows to one column at 320px. The
+   cards are flex, not list items, so they draw no marker, and list-style stays set: none
+   would remove the list semantics in Safari. */
+.kv-story-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr));
+  gap: var(--kv-space-4);
+  margin: var(--kv-space-4) 0 var(--kv-space-10);
+  padding: 0;
+}
+
+.kv-story-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-lg);
+  background-color: var(--kv-color-surface-raised);
+}
+
+/* The swatch, with the white and black samples in its lower corners. */
+.kv-story-card-color {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  block-size: 6rem;
+  padding: var(--kv-space-3);
+  border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.kv-story-card-sample > .kv-story-chip-stripe {
+  display: block;
+  inline-size: 2rem;
+}
+
+.kv-story-card-body {
+  display: grid;
+  gap: var(--kv-space-2);
+  padding: var(--kv-space-3);
+}
+
+.kv-story-card-title {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--kv-space-2);
+  margin: 0;
+  font-weight: 600;
+}
+
+.kv-story-card-hex,
+.kv-story-card code {
+  font-family: var(--kv-font-family-mono);
+  font-size: 0.875rem;
+}
+
+.kv-story-card-hex {
+  font-weight: 400;
+}
+
+.kv-story-card code {
+  color: var(--kv-color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.kv-story-card-note {
+  margin: 0;
+  color: var(--kv-color-text-muted);
+  font-size: 0.875rem;
+}
+
+.kv-story-card dl {
+  display: grid;
+  gap: var(--kv-space-1);
+  margin: 0;
+}
+
+.kv-story-card-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--kv-space-2);
+  font-size: 0.875rem;
+}
+
+.kv-story-card-row dt {
+  color: var(--kv-color-text-muted);
+}
+
+.kv-story-card-row dd {
+  display: inline-flex;
+  white-space: nowrap;
+  align-items: center;
+  gap: var(--kv-space-2);
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Status colours that theme:check guarantees (success on success-subtle, danger on
+   danger-subtle). The transparent border becomes visible in forced colours. */
+.kv-story-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kv-space-1);
+  padding: 0 var(--kv-space-2);
+  border: var(--kv-border-width) solid transparent;
+  border-radius: var(--kv-radius-full);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.kv-story-badge[data-result='pass'] {
+  background-color: var(--kv-color-success-subtle);
+  color: var(--kv-color-success);
+}
+
+.kv-story-badge[data-result='fail'] {
+  background-color: var(--kv-color-danger-subtle);
+  color: var(--kv-color-danger);
+}
+
 .kv-story-fail {
   display: inline-flex;
   align-items: center;

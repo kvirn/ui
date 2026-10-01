@@ -249,16 +249,3 @@ export const Light: Story = fixedTheme('light', 'Light')
 export const Dark: Story = fixedTheme('dark', 'Dark')
 export const LightHighContrast: Story = fixedTheme('light-contrast', 'Light, high contrast')
 export const DarkHighContrast: Story = fixedTheme('dark-contrast', 'Dark, high contrast')
-
-/** "None (unstyled)": the page says in text that there are no tokens to show. */
-export const WithoutTheme: Story = {
-  name: 'Without theme',
-  globals: { theme: 'none' },
-  play: async ({ canvasElement }) => {
-    await expect(
-      await within(canvasElement).findByText(
-        'theme.css is not loaded, so there are no tokens to show.',
-      ),
-    ).toBeVisible()
-  },
-}

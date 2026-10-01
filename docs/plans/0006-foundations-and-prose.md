@@ -3,7 +3,7 @@
 - **Status:** Done (heavy-development gates; e2e and reviewers deferred)
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-01 · **Target:** M0 / M1
-- **Related:** ADR-0013, ADR-0014, ADR-0017, ADR-0018 (Proposed), Plan 0005
+- **Related:** ADR-0013, ADR-0014, ADR-0017, ADR-0018, ADR-0019 (all Accepted 2026-10-01), Plan 0005
 
 ## Goal
 
@@ -20,7 +20,7 @@ Designers and developers get a complete foundation to build on. `data-kv-prose` 
 **Design spec:** [foundations-and-prose.md](../design/foundations-and-prose.md) (Draft).
 
 - Prose is set with `data-kv-prose` in `theme.css` (§6.1–6.5).
-- Tokens follow ADR-0018 (Proposed).
+- Tokens follow ADR-0018 (Accepted).
 - The Storybook Foundation pages follow §6.6.
 - Accessibility annotations and the tests derived from them are in §7.
 - Usability testing: `pending`.

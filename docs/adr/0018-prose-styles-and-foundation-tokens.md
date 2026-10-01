@@ -1,6 +1,6 @@
 # ADR-0018: Prose styles by attribute, and prose, lead and shadow tokens
 
-- **Status:** Proposed
+- **Status:** Accepted (2026-10-01, by the maintainer)
 - **Date:** 2026-10-01
 - **Deciders:** Maintainer (proposed by the ux-designer agent)
 - **Tags:** theming, api
@@ -39,7 +39,7 @@ We will use Option B:
 
 - **`data-kv-prose`** has two sizes, the default (`body`) and `"large"` (`body-large`). There is no small size.
 - **Zero-specificity `:where()` rules** in `@layer kv`. They never style `[data-kv]` elements, `[data-kv-not-prose]` subtrees, or the contents of `[data-kv-nav]` and `[data-kv-button-group]`.
-- **Proposed tokens:**
+- **Tokens:**
   - `--kv-prose-measure` (70ch)
   - `--kv-prose-space` (space-5, or space-6 in large)
   - `--kv-prose-space-item` (space-2)
@@ -60,7 +60,7 @@ The two em values are new, relative values. They're relative so that the list in
   - `pre` wraps instead of scrolling (no unfocusable scroller), and tables scroll in a labelled, focusable region.
   - Nothing has a fixed height (1.4.12).
   - Markers, captions and the lead meet 4.5:1, or 7:1 in the contrast themes.
-- No new colours. The prose-on-panel pairs were measured on 2026-10-01 (in the spec, §6.5), and all pass. They should be added to `contrast-requirements.ts`.
+- No new colours. The prose-on-panel pairs were measured on 2026-10-01 (in the spec, §6.5), and all pass. They are in `contrast-requirements.ts`.
 - No APG deviation.
 
 ## Consequences
@@ -73,8 +73,8 @@ The two em values are new, relative values. They're relative so that the list in
   - Unlayered page CSS such as `.kv-story-canvas p` overrides prose, and must be scoped away.
   - Prose inside `data-kv-not-prose` isn't re-enabled.
 - Follow-ups:
-  - On acceptance, update DESIGN.md: the `lead` role, a Prose entry under Components, the shadow tokens and the attributes under Theming.
-  - Implement in `theme.css` (engineering plan).
+  - Done: DESIGN.md has the `lead` role, a Prose entry under Components, the shadow tokens and the attributes under Theming. `theme.css` implements it (Plan 0006).
+  - A test that every consumer `data-kv-*` attribute in `theme.css` is on prose's not-prose list, so the list can't fall behind.
 
 ## Validation
 

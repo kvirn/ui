@@ -1,11 +1,11 @@
 # ADR-0014: Default theme visual direction: Linear-inspired, held to WCAG 2.2 AA
 
-- **Status:** Proposed
+- **Status:** Accepted (2026-10-01, by the maintainer)
 - **Date:** 2026-10-01
-- **Deciders:** Maintainer (proposed by the ux-designer agent; the decision waits for the Plan 0005 prototype)
+- **Deciders:** Maintainer, after reviewing the Plan 0005 prototype (proposed by the ux-designer agent)
 - **Tags:** theming, a11y
 - **Amends:** ADR-0011 (visual direction only, not the process). It includes the earlier proposal for `danger-hover` and the link-underline tokens.
-- **Note:** ADR-0017 (decision 8) moved a few values in the table below onto palette steps. `theme.css` holds the current values.
+- **Note:** the colour table below is the proposal as measured on 2026-10-01. ADR-0017 (decision 8) moved several values onto palette steps, and ADR-0019 renamed the scales. The current values live in `packages/theme/theme.css`, and `theme:check` (`packages/theme/src/contrast-requirements.ts`) is what enforces them.
 
 ## Context
 
@@ -67,11 +67,11 @@ DESIGN.md (ADR-0011) must stay accessible: WCAG 2.2 AA as the floor, 2.4.13 Focu
 
 ## Decision
 
-We will use Option B and update DESIGN.md accordingly. It stays Proposed until the maintainer approves the Plan 0005 prototype.
+We will use Option B and update DESIGN.md accordingly.
 
-### Colour tokens, old → new, with measured contrast
+### Colour tokens, old → new, with measured contrast (as proposed)
 
-Measured 2026-10-01 with `packages/theme/src/contrast.ts`. Ratios are light / dark / light-contrast / dark-contrast. Every pair meets its minimum, and 0 of the 168 required pairs fail (42 per theme), and the four `primary`-on-`primary-subtle` indicator pairs pass too. Only values that change are listed. `danger-subtle`, `warning`, `warning-subtle`, `success` and `success-subtle` are unchanged in every theme.
+This table records the proposal. It is not the current source of truth: see the note at the top. Measured 2026-10-01 with `packages/theme/src/contrast.ts`. Ratios are light / dark / light-contrast / dark-contrast. Every pair meets its minimum, and 0 of the 168 required pairs fail (42 per theme), and the four `primary`-on-`primary-subtle` indicator pairs pass too. Only values that change are listed. `danger-subtle`, `warning`, `warning-subtle`, `success` and `success-subtle` are unchanged in every theme.
 
 | Token                | Theme         | Old       | New                                           | Key pair: ratio                                                                                       |
 | -------------------- | ------------- | --------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
@@ -148,7 +148,7 @@ Neutral to positive against the current DESIGN.md:
 - Control borders pass 3:1 or more. The lowest is 3.13, before it was 3.78.
 - Focus rings pass 3:1 or more. The lowest is 4.38.
 - Comfortable targets stay at 44px. Compact density is documented as 2.5.8-only.
-- The dark theme moves from dark text on a light accent to white text on `#5e6ad2`, at 4.70:1. This passes, but it has less margin than before (7.34). An adopter who rebrands must re-run `theme:check`.
+- The dark theme moves from dark text on a light accent to white text on `#5e6ad2`, at 4.70:1. This passes, but it has less margin than before (7.34). An adopter who rebrands must re-run `theme:check` or `checkThemeCss()`: a primary scale only slightly lighter fails 1.4.3 in the standard themes.
 
 ## Consequences
 
@@ -158,18 +158,18 @@ Neutral to positive against the current DESIGN.md:
   - Thinner contrast margins on the accent.
   - The light theme is our inference, not Linear's.
 - Follow-ups:
-  - Plan 0005 builds the prototype.
-  - If it's approved, set this ADR and ADR-0013 to Accepted, and implement `tokens.ts` with every pair in `contrastRequirements`.
+  - Done: Plan 0005 built the prototype in `theme.css` (ADR-0013), with every pair above, and more, in `contrast-requirements.ts` (ADR-0017, decision 3).
+  - The ux-designer screenshot review against the reference continues in Plan 0005 Phase 2. Any change it proposes needs its own ADR.
 
 ## Validation
 
 - `theme:check` covers every pair in the table above.
 - axe reports 0 violations in the four fixed-theme stories.
 - A ux-designer design review compares the prototype with the reference, using screenshots at 320px and 1280px in all four themes.
-- The maintainer approves the prototype.
+- The maintainer approved the prototype on 2026-10-01.
 
 ## References
 
 - https://www.shadcn.io/design/linear (fetched 2026-10-01, raw DESIGN.md at `/design/linear/raw`)
-- DESIGN.md, ADR-0006, ADR-0011, ADR-0013
+- DESIGN.md, ADR-0006, ADR-0011, ADR-0013, ADR-0017, ADR-0019
 - `docs/design/default-theme-button-link.md`, `docs/design/docs-site.md`

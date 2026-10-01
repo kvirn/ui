@@ -1,9 +1,9 @@
 # Plan 0005: Default theme, styled Storybook and docs site
 
-- **Status:** In progress (Phase 1: visible prototype)
+- **Status:** In progress (Phase 2: after acceptance)
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-01 · **Target:** M0 / M1
-- **Related:** ADR-0013, ADR-0014, ADR-0017 (all Proposed), ADR-0006, ADR-0011, Plan 0002, Plan 0003, Plan 0004
+- **Related:** ADR-0013, ADR-0014, ADR-0017, ADR-0019 (all Accepted 2026-10-01), ADR-0006, ADR-0011, Plan 0002, Plan 0003, Plan 0004
 
 ## Goal
 
@@ -25,7 +25,7 @@ Evaluators and maintainers see KvirnProvider, Button and Link in a real, styled 
 
 **Design specs:** [docs-site.md](../design/docs-site.md), [storybook-presentation.md](../design/storybook-presentation.md) and [default-theme-button-link.md](../design/default-theme-button-link.md) (Draft, revised 2026-10-01 for the Linear-inspired direction).
 
-- **Visual direction (ADR-0014, Proposed):** Linear-inspired:
+- **Visual direction (ADR-0014, Accepted):** Linear-inspired:
   - a near-black `#010102` and white canvas, and a surface ladder with hairlines and no shadows
   - lavender `#5e6ad2` with white labels, and Inter self-hosted
   - a tight heading tracking ramp and 8px and 12px radii
@@ -35,8 +35,8 @@ Evaluators and maintainers see KvirnProvider, Button and Link in a real, styled 
   - `link` is its own token.
   - Controls use `border-control` instead of hairlines.
   - The focus ring is 2px with a 2px offset.
-- **Delivery (ADR-0013, Proposed, revised after the maintainer's review):**
-  - One hand-written `@kvirn-ui/theme/theme.css`, the source of truth: a Tailwind-style palette (`gray`, `indigo`, `red`, `green`, `amber`, `teal`), semantic tokens that point at palette steps per theme, fallbacks, `color-scheme`, forced colours, `data-kv-density`, and the Button and Link styles.
+- **Delivery (ADR-0013, Accepted, revised after the maintainer's review):**
+  - One hand-written `@kvirn-ui/theme/theme.css`, the source of truth: a Tailwind-style palette with scales named by role (`neutral`, `primary`, `secondary`, `accent`, `danger`, `success`, `warning`, ADR-0019), semantic tokens that point at palette steps per theme, fallbacks, `color-scheme`, forced colours, `data-kv-density`, and the Button and Link styles.
   - The components render stable part attributes (`data-kv="button"`, `data-kv="link"`, `data-kv="link-new-tab-notice"`). Variants are plain attributes: `data-variant="primary"` or `"danger"`, `data-kv-button-group`, `data-kv-nav`.
   - Everything sits in `@layer kv`, so consumer CSS always wins. No `tokens.css`, `tailwind.css` or recipe classes.
   - `theme:check` reads `theme.css` and resolves `var()` per theme.
@@ -71,7 +71,7 @@ The full detail is in [docs-site.md §10](../design/docs-site.md#10-handoff).
 - [x] B1–B5. Storybook: preview (Theme toolbar, sort, self-hosted Inter), decorator, example fixture, `Default theme/Button` and `Default theme/Link` stories, Introduction
 - [x] C1. Docs wiring (KvirnThemeScript, Providers with NextLink and `Register`, theme CSS, `next/font/local` Inter)
 - [x] C2. Docs shell (skip link, header, sidebar, Display settings, footer, 404, route-change focus) plus the Button page
-- [ ] P1. ux-designer screenshot review, then the maintainer's decision on ADR-0013 and ADR-0014
+- [x] P1. The maintainer reviewed the prototype and accepted ADR-0013, ADR-0014, ADR-0017, ADR-0018 and ADR-0019 (2026-10-01). The ux-designer screenshot review moved to Phase 2 (D1)
 
 ### Phase 1 rework: simpler DX (maintainer's direction, 2026-10-01)
 
@@ -85,6 +85,7 @@ Replaces A3–A6 and B1–B5 where they differ.
 - [x] R5. Storybook: `Components/*` stories merged from the headless and `Default theme/*` ones, Theme toolbar › "None (unstyled)", `Unstyled` stories, Introduction updated, e2e story IDs updated
 - [x] R6. Docs site on `theme.css` and `data-variant`; the Button page's Installation and Styling text
 - [x] R7. `packages/theme/README.md`, ADR-0013, ADR-0017, DESIGN.md, changesets
+- [x] R8. Inter rebuilt from the upstream 4.1 release with every OpenType feature, so `cv05` and `cv08` work (ADR-0017, decision 4)
 
 ### Phase 2: after acceptance
 
@@ -92,20 +93,21 @@ Replaces A3–A6 and B1–B5 where they differ.
 - [ ] C4. The Home, KvirnProvider and Link pages, and finishing the Button page
 - [ ] B6. Storybook e2e (reflow-320, forced colours, reduced motion, focus ring)
 - [ ] C5. The docs e2e harness (tooling ADR)
-- [ ] C6. All gates, accessibility-reviewer, and set ADR-0013 and ADR-0014 to Accepted
+- [ ] D1. ux-designer screenshot review against the reference at 320px and 1280px in all four themes (ADR-0014, Validation). Any change it proposes needs its own ADR
+- [ ] C6. All gates, including `theme:check`, and accessibility-reviewer APPROVE. The ADRs are already Accepted, so a blocking finding is fixed or waived in a new ADR
 
 Phase 1 notes (component-engineer, 2026-10-01):
 
 - 192 contrast pairs (48 per theme) are enforced, a superset of ADR-0014's 42 per theme (ADR-0017).
-- Inter is plain `@font-face` CSS rather than `next/font/local`, and the vendored subsets lack `cv05` and `cv08` (ADR-0017).
+- Inter is plain `@font-face` CSS rather than `next/font/local` (ADR-0017). Since R8 the subsets include `cv05` and `cv08`.
 - The Button page has Example, When to use it, Installation and Usage. The contents list, Accessibility, Strings, Styling and API reference come in C3 and C4. The nav links to KvirnProvider and Link reach the 404 page until C4.
 - The docs shell has Vitest browser tests (skip link, landmarks, disclosures, theme radios, current page, route-change focus, axe). Docs e2e is C5.
 
 ## Risks & open questions
 
 - Compact 14px/32px docs navigation meets 2.5.8 but not 2.5.5. The fallback is 44px chrome everywhere.
-- The rework ran `vp check` and the touched unit, browser and story tests only. The e2e specs (new story IDs), `vp run build` and the docs `next build` haven't run since.
-- The light theme is inferred, because Linear has none. The maintainer judges it in P1.
+- The ADRs were accepted before C6 ran, on the maintainer's call. The rework ran `vp check` and the touched unit, browser and story tests only. The e2e specs (new story IDs), `vp run build` and the docs `next build` haven't run since.
+- The light theme is inferred, because Linear has none. The maintainer accepted it in P1, and D1 reviews it against the reference.
 - The white label on lavender is 4.70:1: it passes, with a thin margin.
 - The `data-kv` part names and the `data-variant`, `data-kv-nav` and `data-kv-button-group` attributes become public API (semver).
 

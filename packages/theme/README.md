@@ -37,7 +37,7 @@ Every KvirnUI component on the page is now styled. Remove the import, and they a
   | Scale              | Default hue                                      | Used for                                                        |
   | ------------------ | ------------------------------------------------ | --------------------------------------------------------------- |
   | `--kv-neutral-*`   | grey with a faint cool tint                      | canvases, surfaces, borders, text                               |
-  | `--kv-primary-*`   | lavender (Linear's `#5e6ad2` is 500)             | primary buttons, links, focus rings, selection, current page    |
+  | `--kv-primary-*`   | lavender (`#5e6ad2` is 500)                      | primary buttons, links, focus rings, selection, current page    |
   | `--kv-secondary-*` | the neutral steps (`var(--kv-neutral-500)` etc.) | the secondary button's edge                                     |
   | `--kv-accent-*`    | teal                                             | nothing in the default theme: there for your brand's 2nd colour |
   | `--kv-danger-*`    | red                                              | errors, destructive actions                                     |

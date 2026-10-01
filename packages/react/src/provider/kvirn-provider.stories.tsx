@@ -4,6 +4,7 @@ import {
   getDefaultEnv,
   getThemeStore,
 } from '@kvirn-ui/core'
+import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { sv } from '@kvirn-ui/i18n/sv'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -92,6 +93,38 @@ export const NestedLocale: Story = {
     const finnish = canvas.getByRole('region', { name: 'Asetukset' })
     await expect(finnish).toHaveAttribute('lang', 'fi-FI')
     await expect(within(finnish).getByText('Europe/Stockholm')).toBeVisible()
+  },
+}
+
+/**
+ * A mixed result: a Finnish page with a section that isn't translated yet. The section gets its
+ * own provider with the English catalog and spreads `localeProps`, so `lang="en-GB"` matches its
+ * strings and a screen reader switches voice (3.1.2). Everything it doesn't set, such as the
+ * time zone, comes from the Finnish page.
+ */
+export const UntranslatedSection: Story = {
+  args: { locale: 'fi-FI', messages: fi, timeZone: 'Europe/Helsinki' },
+  globals: { locale: 'fi' },
+  render: (providerProps) => (
+    <KvirnProvider {...providerProps}>
+      <main>
+        <h1>KvirnProvider</h1>
+        <ProviderFixture />
+        <KvirnProvider locale="en-GB" messages={en}>
+          <ProviderFixture />
+        </KvirnProvider>
+      </main>
+    </KvirnProvider>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const finnish = canvas.getByRole('region', { name: 'Asetukset' })
+    await expect(finnish).toHaveAttribute('lang', 'fi-FI')
+    await expect(within(finnish).getByText('(avautuu uuteen välilehteen)')).toBeVisible()
+    const english = canvas.getByRole('region', { name: 'Settings' })
+    await expect(english).toHaveAttribute('lang', 'en-GB')
+    await expect(within(english).getByText('(opens in a new tab)')).toBeVisible()
+    await expect(within(english).getByText('Europe/Helsinki')).toBeVisible()
   },
 }
 

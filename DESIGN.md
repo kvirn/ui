@@ -1,7 +1,7 @@
 ---
 version: alpha
 name: KvirnUI default theme
-description: Calm, precise and plain, in a Linear-inspired direction. A quiet, product-grade interface for Nordic and EU public services. Near-black and near-white canvases, a surface ladder with hairline dividers, one lavender accent, and tight Inter typography, with contrast, focus and target size held to WCAG 2.2 AA or better.
+description: Calm, precise and plain. A quiet, product-grade interface for Nordic and EU public services. Near-black and near-white canvases, a surface ladder with hairline dividers, one lavender accent, and tight Inter typography, with contrast, focus and target size held to WCAG 2.2 AA or better.
 colors:
   canvas: '#ffffff'
   surface: '#f7f8f8'
@@ -196,11 +196,11 @@ It is a default, not a brand (see `docs/vision.md`, non-goals). A municipality r
 
 Changing a token or a rule here is a decision: write an ADR and update `theme.css` in the same change.
 
-> **Status: Proposed (ADR-0014, 2026-10-01).** The values here are the Linear-inspired visual direction the maintainer asked for. The maintainer decides after seeing the prototype (Plan 0005). `theme.css` implements these values for the Plan 0005 Phase 1 prototype, and ADR-0011 still describes the process.
+> **Status: Accepted (ADR-0014, 2026-10-01).** The values here are the visual direction the maintainer chose after reviewing the Plan 0005 prototype. `theme.css` implements them (ADR-0013, ADR-0017, ADR-0018, ADR-0019), and ADR-0011 still describes the process.
 
 ## Overview
 
-**Calm, precise, plain.** The interface is quiet so that the content and the next step are loud. The reference is Linear's design language ([shadcn.io/design/linear](https://www.shadcn.io/design/linear), fetched 2026-10-01):
+**Calm, precise, plain.** The interface is quiet so that the content and the next step are loud. The look:
 
 - a near-black dark canvas and a near-white light one
 - a ladder of slightly lifted surfaces instead of shadows, with 1px hairline dividers
@@ -210,7 +210,7 @@ Changing a token or a rule here is a decision: write an ADR and update `theme.cs
 
 Nothing decorative competes with the task.
 
-Unlike Linear's marketing site, KvirnUI serves public services. Wherever the reference relies on low-contrast greys, faint control borders, a lighter hover behind white text, or small labels on resident-facing controls, we keep its look and change the value until it passes WCAG 2.2 AA (and 7:1 for text in the contrast themes). Each deviation is listed in ADR-0014.
+KvirnUI serves public services. Wherever a look like this usually relies on low-contrast greys, faint control borders, a lighter hover behind white text, or small labels on resident-facing controls, we keep the look and change the value until it passes WCAG 2.2 AA (and 7:1 for text in the contrast themes). Each deviation is listed in ADR-0014.
 
 Who we design for:
 
@@ -234,7 +234,7 @@ Colours come in two tiers, both CSS custom properties in `theme.css`:
 
 - **Palette.** Role scales, Tailwind-style, from 50 (lightest) to 950 (darkest), each step darker than the last. They are named by role, never by hue, so a rebrand overrides a scale without a refactor (ADR-0019):
   - `--kv-neutral-*`: grey with a faint cool tint. Canvases, surfaces, borders and text.
-  - `--kv-primary-*`: lavender by default, Linear's `#5e6ad2` is `primary-500`. The one accent: primary buttons, links, focus, selection.
+  - `--kv-primary-*`: lavender by default, `#5e6ad2` is `primary-500`. The one accent: primary buttons, links, focus, selection.
   - `--kv-secondary-*`: the neutral steps by default (`--kv-secondary-500: var(--kv-neutral-500)`). The secondary button's edge, so a brand can give it a hue.
   - `--kv-accent-*`: teal by default. Not used by the default theme, which keeps one accent. It's there for a brand's second colour.
   - `--kv-danger-*` (red), `--kv-success-*` (green) and `--kv-warning-*` (amber).
@@ -280,9 +280,9 @@ The palette values are in `theme.css`, section 1. Measured contrast (2026-10-01,
 
 Rules:
 
-- **`border-subtle` never identifies a control.** Anything a user must perceive to operate (input edges, checkbox boxes) uses `border-control`, and a secondary button's outline uses `secondary`, both held to 3:1 (1.4.11). The Linear hairlines are 1.36–1.96:1, so they are `border-subtle` only.
+- **`border-subtle` never identifies a control.** Anything a user must perceive to operate (input edges, checkbox boxes) uses `border-control`, and a secondary button's outline uses `secondary`, both held to 3:1 (1.4.11). Hairlines are 1.36–1.96:1, so they are `border-subtle` only.
 - **The focus ring has an offset.** `focus-ring` on `primary` is about 1:1, so the ring sits 2px outside the element, where the adjacent colour is the background.
-- **Filled buttons get darker on hover, never lighter.** A lighter hover behind white text fails 4.5:1: Linear's `#828fff` is 2.87:1.
+- **Filled buttons get darker on hover, never lighter.** A lighter hover behind white text fails 4.5:1: white on `#828fff` is 2.87:1.
 - **Links use `link` and are underlined** in running text. In dark themes `link` is lighter than `primary`, because `#5e6ad2` as text on the dark canvas is only 4.44:1.
 - **Navigation lists** may drop the underline and use the `text` colour, because position in a labelled `<nav>` list is the cue. The current item always has a non-colour cue: an inline-start bar and weight 600, plus `aria-current`.
 - **Dark themes are not inverted light themes.** Raised surfaces get lighter, not shadowed.
@@ -300,7 +300,7 @@ Rebranding for a municipality:
 
 One sans-serif family with a system fallback, and one monospace family for reference numbers and code.
 
-- **Family.** The stack starts with Inter (SIL OFL). Inter is the free substitute the Linear reference itself recommends (weights 400, 500 and 600). It is legible at small sizes and covers every Northern Sámi letter (á č đ ŋ š ŧ ž). The theme never loads a font. The docs site and Storybook self-host Inter Variable, and adopters self-host it or fall back to the system UI font (GDPR, AGENTS.md hard rule 7). A replacement brand font must cover the Sámi letters as well as å ä ö æ ø.
+- **Family.** The stack starts with Inter (SIL OFL). We use weights 400, 500 and 600. It is legible at small sizes and covers every Northern Sámi letter (á č đ ŋ š ŧ ž). The theme never loads a font. The docs site and Storybook self-host Inter Variable, and adopters self-host it or fall back to the system UI font (GDPR, AGENTS.md hard rule 7). A replacement brand font must cover the Sámi letters as well as å ä ö æ ø.
 - **Disambiguation.** Enable Inter's `cv05` (l with a tail) and `cv08` (I with serifs) for body text so that l, I and 1 are distinct. This matters for case numbers, codes and names. Verify the feature tags against the self-hosted Inter version.
 - **Numbers.** Use `numeric` (tabular figures) for tables, amounts, dates and reference numbers.
 - **Scale.**
@@ -308,8 +308,8 @@ One sans-serif family with a system fallback, and one monospace family for refer
   - `lead` (20px, weight 400, no tracking) is only for the lead paragraph of large prose. The lead of default prose uses `body-large`. A lead is essential content, so it is always `text`, never `text-muted`.
   - `body-small` (14px) is for metadata, and never for instructions or errors.
   - `label-compact` (14px, weight 500) is only for control labels in compact density: staff tools, and the docs site's navigation and header controls.
-  - There is no 12px or 13px size. The Linear reference uses them for captions and eyebrows, which we don't need.
-- **Headings.** Weight 600 (500 for `heading-2`), with negative tracking that scales with size: -0.025em at 40px, -0.021em at 28px and -0.018em at 22px, following the Linear ramp. There is no negative tracking below 20px. Linear's -0.05px on body text is dropped, because it hurts legibility and reverses under the 1.4.12 overrides anyway.
+  - There is no 12px or 13px size, so there are no small captions or eyebrows.
+- **Headings.** Weight 600 (500 for `heading-2`), with negative tracking that scales with size: -0.025em at 40px, -0.021em at 28px and -0.018em at 22px. There is no negative tracking below 20px, because it hurts legibility on body text and reverses under the 1.4.12 overrides anyway.
 - **Line length** is 60–75 characters (`--kv-prose-measure`, `70ch`, on prose).
 - **Sentence case** everywhere. No all-caps labels, headings or eyebrows, because they are slower to read and some screen readers spell them out.
 - **Text spacing (1.4.12).** Everything must keep working with line height 1.5, paragraph spacing 2em, letter spacing 0.12em and word spacing 0.16em. No fixed heights on text containers. The `height` values in the front matter are minimum block sizes.
@@ -330,16 +330,16 @@ One sans-serif family with a system fallback, and one monospace family for refer
 
 Density is set on a container with `data-kv-density="compact"`. Comfortable is the default, and needs no attribute.
 
-| Density               | Control min height | Label type      | Min target | Use                                                                                                                                                            |
-| --------------------- | ------------------ | --------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Comfortable (default) | 44px               | `label` (16px)  | 44×44px    | Everything resident-facing, and every primary action. Meets 2.5.5 Target Size (Enhanced)                                                                       |
-| Compact (opt-in)      | 32px               | `label-compact` | 24×24px    | Staff tools, tables, toolbars, and the docs site chrome at 64rem and wider. Close to Linear's 14px, ~33px buttons. Meets 2.5.8 only, and is documented as such |
+| Density               | Control min height | Label type      | Min target | Use                                                                                                                     |
+| --------------------- | ------------------ | --------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Comfortable (default) | 44px               | `label` (16px)  | 44×44px    | Everything resident-facing, and every primary action. Meets 2.5.5 Target Size (Enhanced)                                |
+| Compact (opt-in)      | 32px               | `label-compact` | 24×24px    | Staff tools, tables, toolbars, and the docs site chrome at 64rem and wider. Meets 2.5.8 only, and is documented as such |
 
 Below `64rem`, where touch input is likely, compact chrome returns to comfortable.
 
 ## Elevation & Depth
 
-Depth comes from the surface ladder (`canvas` → `surface` → `surface-raised`) and 1px hairlines, not from shadows. The look is flat and precise, as in the Linear reference.
+Depth comes from the surface ladder (`canvas` → `surface` → `surface-raised`) and 1px hairlines, not from shadows. The look is flat and precise.
 
 | Level | Surface          | Border          | Shadow                                                                                              | Use                       |
 | ----- | ---------------- | --------------- | --------------------------------------------------------------------------------------------------- | ------------------------- |
@@ -364,10 +364,10 @@ Depth comes from the surface ladder (`canvas` → `surface` → `surface-raised`
   - `xl` (16px) for popups and dialogs.
   - `full` for pills and avatars.
 
-  These follow the Linear radius scale. Radio buttons are always circles and checkboxes always rounded squares, so the shape tells them apart.
+  Radio buttons are always circles and checkboxes always rounded squares, so the shape tells them apart.
 
 - **Lines** are 1px. Control borders are 1px `border-control`, and invalid inputs switch to 2px `danger` plus an error message, never colour alone.
-- **Focus ring**: 2px solid `focus-ring`, 2px offset, following the element's radius. It is restyled, never removed, and only shown for keyboard focus (`:focus-visible`, `data-focus-visible`). This meets 2.4.13. The Linear reference's thinner or glow-style focus is not used.
+- **Focus ring**: 2px solid `focus-ring`, 2px offset, following the element's radius. It is restyled, never removed, and only shown for keyboard focus (`:focus-visible`, `data-focus-visible`). This meets 2.4.13. A thinner or glow-style focus is not used.
 - **Icons**: outline style, 1.5px stroke on a 24px grid, rendered at 16px, 20px or 24px, using `currentColor`. An icon next to text is `aria-hidden`. An icon-only button needs an accessible name from i18n and a visible tooltip, and is used only for universally known actions (close, search, menu). Icons are inline SVG and the theme has no icon dependency.
 
 ## Components
@@ -375,7 +375,7 @@ Depth comes from the surface ladder (`canvas` → `surface` → `surface-raised`
 Visual rules for the default theme. Behaviour, roles and keyboard are defined in each component's `<name>.a11y.md`, never here. Style parts and state through the `data-*` attributes (`docs/architecture.md#styling-contract`): `[data-kv='button']`, `[data-disabled]`, `[data-variant='primary']`. `theme.css` implements Button, Link and prose. The design specs are `docs/design/default-theme-button-link.md` and `docs/design/foundations-and-prose.md`.
 
 - **Buttons.**
-  - One primary button per view, for the main next step. Secondary buttons use `surface-raised` with a `border-control` outline. The Linear reference's hairline edge doesn't reach 3:1.
+  - One primary button per view, for the main next step. Secondary buttons use `surface-raised` with a `border-control` outline. A hairline edge doesn't reach 3:1.
   - Destructive actions use `button-danger` and a confirmation step.
   - Labels are verbs ("Send application", "Book time").
   - Disabled buttons keep their label readable, with a dashed border as the non-colour cue. Prefer keeping them enabled and explaining what's missing on submit.

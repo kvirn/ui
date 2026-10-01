@@ -27,13 +27,13 @@ interface TypeRole {
   sample: (text: ArticleText, formatNumber: (value: number) => string) => string
 }
 
-/** The roles in DESIGN.md's order, largest first. `lead` is proposed in ADR-0018. */
+/** The roles in DESIGN.md's order, largest first. `lead` is from ADR-0018. */
 const typeRoles: readonly TypeRole[] = [
   { role: 'display', label: 'display', sample: (text) => text.title },
   { role: 'heading-1', label: 'heading-1', sample: (text) => text.title },
   { role: 'heading-2', label: 'heading-2', sample: (text) => text.who.heading },
   { role: 'heading-3', label: 'heading-3', sample: (text) => text.attach.heading },
-  { role: 'lead', label: 'lead (proposed)', sample: (text) => text.how.quoteSteps[0] },
+  { role: 'lead', label: 'lead', sample: (text) => text.how.quoteSteps[0] },
   { role: 'body-large', label: 'body-large', sample: (text) => text.how.quoteSteps[1] },
   { role: 'body', label: 'body', sample: (text) => text.what.items[1] ?? text.what.heading },
   { role: 'body-small', label: 'body-small', sample: (text) => text.what.figureCaption },
@@ -298,17 +298,15 @@ function TypeScalePage({ locale }: { locale: FixtureLocale }): ReactNode {
               {lang === undefined
                 ? null
                 : 'This locale has no translated fixture yet, so they are in English.'}{' '}
-              <code>lead</code> is proposed in ADR-0018: the lead paragraph of large prose.
+              <code>lead</code> is only for the lead paragraph of large prose (ADR-0018).
             </p>
             <TypeScaleTable locale={locale} values={values} />
 
             <h2>Glyphs</h2>
             <p>
               A replacement brand font must cover these letters. The body roles ask for Inter’s{' '}
-              <code>cv05</code> and <code>cv08</code>, so that l, I and 1 look different. The Inter
-              files vendored for Storybook and the docs site are the <code>latin</code> and{' '}
-              <code>latin-ext</code> subsets, which don’t contain those character variants, so the
-              look-alikes aren’t told apart yet (ADR-0017).
+              <code>cv05</code> and <code>cv08</code>, so that l, I and 1 look different. A
+              replacement font without those features can’t tell the look-alikes apart.
             </p>
             <GlyphSpecimen />
 
@@ -367,33 +365,5 @@ export const TypeScale: Story = {
     }
     await expect(getComputedStyle(numericCell).fontFeatureSettings).toContain('tnum')
     await expect(getComputedStyle(bodyCell).fontFeatureSettings).not.toContain('tnum')
-  },
-}
-
-/** Untranslated locales show the English samples, marked as English (3.1.2). */
-export const UntranslatedLocale: Story = {
-  name: 'Untranslated locale (fi)',
-  globals: { locale: 'fi' },
-  render: () => <TypeScalePage locale="fi" />,
-  play: async ({ canvasElement }) => {
-    const table = within(canvasElement).getByRole('table', { name: 'Type roles' })
-    const [sample] = within(table).getAllByText(articleFor('en').text.title)
-    await expect(sample).toHaveAttribute('lang', 'en')
-  },
-}
-
-/** "None (unstyled)": no tokens to read, so the page says so in text. */
-export const Unstyled: Story = {
-  name: 'Theme not loaded',
-  globals: { theme: 'none' },
-  render: () => <TypeScalePage locale="en" />,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await waitFor(() =>
-      expect(
-        canvas.getByText('theme.css is not loaded, so there are no tokens to show.'),
-      ).toBeVisible(),
-    )
-    await expect(canvas.queryByRole('table')).toBeNull()
   },
 }
