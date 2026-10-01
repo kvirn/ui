@@ -19,13 +19,15 @@ import '@kvirn-ui/theme/theme.css'
 
 Every KvirnUI component on the page is now styled. Remove the import, and they are unstyled again.
 
-- Components render a stable part name: `data-kv="button"`, `data-kv="link"`, `data-kv="link-new-tab-notice"`. The theme selects on it.
+- Components render a stable part name: `data-kv="button"`, `data-kv="link"`, `data-kv="link-new-tab-notice"`, `data-kv="card"`, `data-kv="card-header"`, `data-kv="card-body"`, `data-kv="card-footer"`. The theme selects on it.
 - State comes from the components: `data-disabled`, `data-focus-visible`, `data-current`.
 - Choices are plain attributes you set:
   - `<Button data-variant="primary">` for the one main action per view, `data-variant="danger"` for a destructive one. Without it, a Button is secondary.
   - `<div data-kv-button-group>` lays buttons out in a row, stacked on narrow screens.
   - `<ul data-kv-nav>` inside a labelled `<nav>` turns its Links into navigation items, with the current page marked.
-  - `data-kv-density="compact"` on any container gives 32px controls for staff tools (from 64rem wide).
+  - `data-kv-density="compact"` on any container gives 32px controls for staff tools (from 64rem wide), and less padding in cards.
+  - On a `Card.Root`: `data-surface="surface"` or `"canvas"` (the default is `surface-raised`), `data-radius="md"` or `"none"` (the default is `lg`), and `data-dividers` for a line between parts. `data-padding="none"`, `"sm"`, `"md"` or `"lg"` on the Root sets every part's padding, and on a part overrides it: `<Card.Header data-padding="none">` around a full-bleed image. Parts must be direct children of the Root.
+  - `data-kv-prose` styles content you don't control. It stops at a card, unless you put `data-kv-prose` on the card or inside it.
 - The theme follows `data-kv-color-scheme` and `data-kv-contrast`, which `KvirnProvider` and `KvirnThemeScript` set on `<html>`. Without them, it follows the OS settings. Forced colours always win.
 
 ### 2. Override variables
@@ -121,5 +123,7 @@ In this repository, `vp run theme:check` runs it on `theme.css`.
 6. Compact density
 7. Button
 8. Link and navigation lists
+9. Prose
+10. Card
 
 The visual rules behind it are in `DESIGN.md` at the repository root.

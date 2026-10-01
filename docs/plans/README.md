@@ -16,3 +16,4 @@ Plans describe **how** we will build something. ADRs record **why** we chose an 
 | [0004](0004-design-md-and-ux-designer.md)    | DESIGN.md, design skill and ux-designer agent          | Done        |
 | [0005](0005-default-theme-storybook-docs.md) | Default theme, styled Storybook and docs site          | In progress |
 | [0006](0006-foundations-and-prose.md)        | Foundations and prose                                  | Done        |
+| [0007](0007-card.md)                         | Card                                                   | Done        |

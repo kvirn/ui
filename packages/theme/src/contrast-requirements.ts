@@ -88,9 +88,16 @@ const nonTextPairs: readonly ColorPair[] = [
       background,
     ]),
   ),
-  // A hovered primary button's edge against the page.
+  // Hovered and pressed filled buttons on every surface they sit on: pages, sections and
+  // cards, dialogs and popups (1.4.11).
+  // - Primary: the edge is a `primary` border in that state (ADR-0021), and `primary` is
+  //   required on every plain background above. `primary-hover` is also required where it
+  //   reaches 3:1 on its own. It isn't required on `surface-raised`, where it's 2.98:1 in dark:
+  //   that gap is why the border exists. A theme test checks the border.
+  // - Danger: the border is transparent, so the hovered fill is the edge.
   ['primary-hover', 'canvas'],
   ['primary-hover', 'surface'],
+  ...plainBackgrounds.map((background): ColorPair => ['danger-hover', background]),
   // Controls, blockquote bars and focus rings on status panels (ADR-0018).
   ...(['border-control', 'secondary', 'focus-ring'] as const).flatMap((foreground) =>
     statusBackgrounds.map((background): ColorPair => [foreground, background]),

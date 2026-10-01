@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vite-plus/test'
 import { checkThemeCss } from './check-theme.ts'
-import { relativeLuminance } from './contrast.ts'
+import { contrastRatio, relativeLuminance } from './contrast.ts'
 import { colorTokenNames, contrastRequirements, themeNames } from './contrast-requirements.ts'
+import type { ColorTokenName } from './contrast-requirements.ts'
 import {
   parseCssRules,
   readRootProperties,
@@ -187,6 +188,51 @@ describe('theme.css semantic tokens', () => {
     expect(contrastRequirements[themeName].length).toBeGreaterThanOrEqual(42)
   })
 
+  it.each(themeNames)('%s: guards hovered filled buttons on every card surface', (themeName) => {
+    const minimumFor = (foreground: string, background: string) =>
+      contrastRequirements[themeName].find(
+        (requirement) =>
+          requirement.foreground === foreground && requirement.background === background,
+      )?.minimum
+    for (const background of ['canvas', 'surface', 'surface-raised']) {
+      // A hovered danger button's edge is its fill.
+      expect(minimumFor('danger-hover', background)).toBe(3)
+      // A hovered primary button's edge is its primary border (ADR-0021).
+      expect(minimumFor('primary', background)).toBe(3)
+    }
+    expect(minimumFor('primary-hover', 'canvas')).toBe(3)
+    expect(minimumFor('primary-hover', 'surface')).toBe(3)
+  })
+
+  it.each(themeNames)(
+    '%s: a hovered filled button keeps a 3:1 edge on every plain surface (ADR-0021)',
+    (themeName) => {
+      const colors = resolveThemeColors(themeCss, themeName)
+      const hovered = (variant: string) =>
+        Object.fromEntries(
+          rules.find((rule) =>
+            rule.selectors.includes(
+              `[data-kv='button'][data-variant='${variant}']:not(:disabled, [data-disabled]):is(:hover, :active)`,
+            ),
+          )?.declarations ?? [],
+        )
+      const edgeToken = (variant: string) => {
+        const border = hovered(variant)['border-color'] ?? ''
+        const fill = hovered(variant)['background-color'] ?? ''
+        const token = /^var\(--kv-color-([\w-]+)\)$/.exec(border === 'transparent' ? fill : border)
+        return token?.[1] as ColorTokenName
+      }
+      expect(hovered('primary')['border-color']).toBe('var(--kv-color-primary)')
+      expect(hovered('primary')['background-color']).toBe('var(--kv-color-primary-hover)')
+      for (const variant of ['primary', 'danger']) {
+        for (const background of ['canvas', 'surface', 'surface-raised'] as const) {
+          const edge = colors[edgeToken(variant)] ?? ''
+          expect(contrastRatio(edge, colors[background] ?? '')).toBeGreaterThanOrEqual(3)
+        }
+      }
+    },
+  )
+
   it.each(themeNames)('%s: guards prose on the status panels (ADR-0018)', (themeName) => {
     const textMinimum = themeName.endsWith('contrast') ? 7 : 4.5
     const minimumFor = (foreground: string, background: string) =>
@@ -366,10 +412,13 @@ describe('theme.css non-colour tokens', () => {
 })
 
 describe('theme.css prose (ADR-0018)', () => {
-  const proseScope =
-    ':is(:where([data-kv-prose]) :where(*):not(:where([data-kv], :is([data-kv-not-prose], [data-kv-nav], [data-kv-button-group]) *)))'
+  // A card (without data-kv-prose) stops prose, and data-kv-prose inside the card turns it on
+  // again: the nearest of the two wins, for two levels of cards (docs/design/card.md §6.6).
+  const card = "[data-kv='card']:not([data-kv-prose])"
+  const cardBoundary = `:is(${card} *):not(:is(${card} [data-kv-prose] *):not(:is(${card} [data-kv-prose] ${card} *):not(${card} [data-kv-prose] ${card} [data-kv-prose] *)))`
+  const proseScope = `:is(:where([data-kv-prose]) :where(*):not(:where([data-kv]:not([data-kv='card']), :is([data-kv-not-prose], [data-kv-nav], [data-kv-button-group]) *, ${cardBoundary})))`
   const notProseElements =
-    ':not(:where([data-kv-not-prose], [data-kv-nav], [data-kv-button-group]))'
+    ":not(:where([data-kv-not-prose], [data-kv-nav], [data-kv-button-group], [data-kv='card']))"
   const proseRules = rules.filter((rule) =>
     rule.selectors.some((selector) => selector.includes('[data-kv-prose]')),
   )
@@ -433,7 +482,7 @@ describe('theme.css prose (ADR-0018)', () => {
       'abbr[title]',
       'sub, sup',
       'mark',
-      '[data-kv-not-prose], [data-kv-scroll-region]',
+      "[data-kv-not-prose], [data-kv-scroll-region], [data-kv='card']",
     ]
     expect(specElements.filter((element) => !selectors.includes(`:where(${element})`))).toEqual([])
     expect(selectors).toContain('::marker')
@@ -453,7 +502,7 @@ describe('theme.css prose (ADR-0018)', () => {
     expect(specific).toEqual([])
   })
 
-  it('never styles a component or anything inside data-kv-not-prose, data-kv-nav or a button group', () => {
+  it('never styles a component, or anything inside data-kv-not-prose, data-kv-nav, a button group or a card', () => {
     expect(elementRules.length).toBeGreaterThan(40)
     for (const selector of elementRules.flatMap((rule) => rule.selectors)) {
       // Directly in the scope, or in the nested element block inside it.
@@ -461,13 +510,25 @@ describe('theme.css prose (ADR-0018)', () => {
         true,
       )
     }
-    // Only margins reach the not-prose, nav and button-group elements themselves.
+    // Only margins reach the not-prose, nav, button-group and card elements themselves.
     const flowRules = elementRules.filter((rule) =>
       rule.selectors.every((selector) => !selector.includes(notProseElements)),
     )
     for (const rule of flowRules) {
       expect(rule.declarations.every(([property]) => property.startsWith('margin'))).toBe(true)
     }
+  })
+
+  it('gives a card in prose prose’s block margins, like data-kv-not-prose', () => {
+    const marginRule = elementRules.find((rule) =>
+      rule.selectors.some((selector) =>
+        selector.endsWith(":where([data-kv-not-prose], [data-kv-scroll-region], [data-kv='card'])"),
+      ),
+    )
+    expect(Object.fromEntries(marginRule?.declarations ?? [])).toEqual({
+      'margin-block': 'var(--kv-prose-space-block)',
+      'margin-inline': '0',
+    })
   })
 
   it('uses only logical properties, and never hides overflow or fixes a height', () => {
@@ -503,5 +564,217 @@ describe('theme.css prose (ADR-0018)', () => {
       rule.declarations.some(([property]) => property === 'display'),
     )
     expect(changesDisplay.map((rule) => rule.selectors[0])).toEqual([])
+  })
+})
+
+describe('theme.css card (ADR-0020, docs/design/card.md)', () => {
+  const parts = "[data-kv='card-header'], [data-kv='card-body'], [data-kv='card-footer']"
+  const isCardSelector = (selector: string) =>
+    /\[data-kv='card(?:-header|-body|-footer)?'\]/.test(selector) &&
+    !selector.includes('[data-kv-prose]')
+  const cardRules = rules.filter((rule) => rule.selectors.every(isCardSelector))
+  const cardTokenRules = rules.filter((rule) =>
+    rule.declarations.some(([property]) => property.startsWith('--kv-card-padding-')),
+  )
+  const declarationsOf = (selector: string) =>
+    Object.fromEntries(
+      cardRules.find((rule) => rule.selectors.includes(selector))?.declarations ?? [],
+    )
+  const innerRadius = 'max(0px, var(--kv-card-radius) - var(--kv-border-width))'
+  const light = readRootProperties(themeCss, themeEnvironment('light'))
+
+  it('has padding tokens that alias spacing steps: smaller below 40rem and in compact density', () => {
+    expect(light).toMatchObject({
+      '--kv-card-padding-sm': '0.75rem',
+      '--kv-card-padding-md': '1rem',
+      '--kv-card-padding-lg': '1.5rem',
+    })
+    expect(
+      cardTokenRules.map((rule) => [
+        rule.selectors,
+        rule.media,
+        Object.fromEntries(rule.declarations),
+      ]),
+    ).toEqual([
+      [
+        [':root'],
+        [],
+        {
+          '--kv-card-padding-sm': 'var(--kv-space-3)',
+          '--kv-card-padding-md': 'var(--kv-space-4)',
+          '--kv-card-padding-lg': 'var(--kv-space-6)',
+        },
+      ],
+      [
+        [':root'],
+        ['(width >= 40rem)'],
+        {
+          '--kv-card-padding-md': 'var(--kv-space-6)',
+          '--kv-card-padding-lg': 'var(--kv-space-8)',
+        },
+      ],
+      [
+        ["[data-kv-density='compact']"],
+        ['(width >= 64rem)'],
+        {
+          '--kv-card-padding-md': 'var(--kv-space-4)',
+          '--kv-card-padding-lg': 'var(--kv-space-6)',
+        },
+      ],
+    ])
+  })
+
+  it('is elevation level 2 by default: surface-raised, a border-subtle edge, lg radius, md padding', () => {
+    expect(declarationsOf("[data-kv='card']")).toEqual({
+      '--kv-card-padding': 'var(--kv-card-padding-md)',
+      '--kv-card-radius': 'var(--kv-radius-lg)',
+      display: 'block',
+      'box-sizing': 'border-box',
+      'min-inline-size': '0',
+      'max-inline-size': '100%',
+      border: 'var(--kv-border-width) solid var(--kv-color-border-subtle)',
+      'border-radius': 'var(--kv-card-radius)',
+      'background-color': 'var(--kv-color-surface-raised)',
+      color: 'var(--kv-color-text)',
+      'overflow-wrap': 'break-word',
+    })
+  })
+
+  it('maps data-surface and data-radius to tokens', () => {
+    expect(declarationsOf("[data-kv='card'][data-surface='surface']")).toEqual({
+      'background-color': 'var(--kv-color-surface)',
+    })
+    expect(declarationsOf("[data-kv='card'][data-surface='canvas']")).toEqual({
+      'background-color': 'var(--kv-color-canvas)',
+    })
+    expect(declarationsOf("[data-kv='card'][data-radius='md']")).toEqual({
+      '--kv-card-radius': 'var(--kv-radius-md)',
+    })
+    expect(declarationsOf("[data-kv='card'][data-radius='none']")).toEqual({
+      '--kv-card-radius': 'var(--kv-radius-none)',
+    })
+  })
+
+  it('maps data-padding on the Root and on each part to the padding steps', () => {
+    const steps = {
+      none: 'var(--kv-space-0)',
+      sm: 'var(--kv-card-padding-sm)',
+      md: 'var(--kv-card-padding-md)',
+      lg: 'var(--kv-card-padding-lg)',
+    }
+    for (const [step, value] of Object.entries(steps)) {
+      expect(declarationsOf(`:is([data-kv='card'], ${parts})[data-padding='${step}']`)).toEqual({
+        '--kv-card-padding': value,
+      })
+    }
+  })
+
+  it('pads a Root without parts, and makes a Root with parts a column whose body grows', () => {
+    expect(declarationsOf(`[data-kv='card']:not(:has(> :is(${parts})))`)).toEqual({
+      padding: 'var(--kv-card-padding)',
+    })
+    expect(declarationsOf(`[data-kv='card']:has(> :is(${parts}))`)).toEqual({
+      display: 'flex',
+      'flex-direction': 'column',
+    })
+    expect(declarationsOf(`:is(${parts})`)).toEqual({ padding: 'var(--kv-card-padding)' })
+    expect(declarationsOf("[data-kv='card-body']")).toEqual({ 'flex-grow': '1' })
+  })
+
+  it('shares one padding between adjacent parts, or draws dividers and keeps every padding', () => {
+    expect(
+      declarationsOf(
+        `[data-kv='card']:not([data-dividers]) > :is(${parts}):not([data-padding='none']) + :is(${parts})`,
+      ),
+    ).toEqual({ 'padding-block-start': '0' })
+    expect(
+      declarationsOf(
+        `[data-kv='card'][data-dividers] > :is(${parts}):not([data-padding='none']) + :is(${parts})`,
+      ),
+    ).toEqual({
+      'border-block-start': 'var(--kv-border-width) solid var(--kv-color-border-subtle)',
+    })
+  })
+
+  it('trims the block margins of the first and last child, with zero specificity', () => {
+    expect(declarationsOf(`:where(:is([data-kv='card'], ${parts}) > :first-child)`)).toEqual({
+      'margin-block-start': '0',
+    })
+    expect(declarationsOf(`:where(:is([data-kv='card'], ${parts}) > :last-child)`)).toEqual({
+      'margin-block-end': '0',
+    })
+  })
+
+  it('keeps media in any card part or Root within it, with zero specificity (1.4.10)', () => {
+    expect(
+      declarationsOf(
+        `:where(:is([data-kv='card'], ${parts}) > :is(img, video, svg), :is([data-kv='card'], ${parts}) > picture > img)`,
+      ),
+    ).toEqual({ 'max-inline-size': '100%', 'block-size': 'auto' })
+  })
+
+  it('rounds full-bleed media at the card’s inner corners instead of clipping', () => {
+    const mediaRules = cardRules.filter((rule) =>
+      rule.selectors.some(
+        (selector) => selector.includes('img') && !selector.startsWith(':where('),
+      ),
+    )
+    expect(mediaRules.length).toBe(3)
+    const declarations = Object.fromEntries(mediaRules.flatMap((rule) => rule.declarations))
+    expect(declarations).toMatchObject({
+      display: 'block',
+      'inline-size': '100%',
+      'block-size': 'auto',
+      margin: '0',
+      'border-start-start-radius': innerRadius,
+      'border-start-end-radius': innerRadius,
+      'border-end-start-radius': innerRadius,
+      'border-end-end-radius': innerRadius,
+    })
+  })
+
+  it('never clips, never shadows, never looks clickable, and uses only logical properties', () => {
+    expect(cardRules.length).toBeGreaterThan(15)
+    const declarations = cardRules.flatMap((rule) => rule.declarations)
+    const forbidden =
+      /^(?:overflow(?:-[xy]|-block|-inline)?|clip-path|box-shadow|cursor|transition(?:-.+)?|animation(?:-.+)?|height|width|min-height|top|left|right|bottom|font(?:-.+)?)$/
+    const physical = /^(?:margin|padding|border)-(?:top|right|bottom|left)\b/
+    expect(
+      declarations.filter(([property]) => forbidden.test(property) || physical.test(property)),
+    ).toEqual([])
+    // A fixed height would clip text under the 1.4.12 overrides.
+    expect(
+      declarations.filter(
+        ([property, value]) => property.endsWith('block-size') && value !== 'auto',
+      ),
+    ).toEqual([])
+    // Every card keeps its border, so its edge survives forced colours.
+    expect(
+      declarations.filter(
+        ([property, value]) =>
+          property.startsWith('border') && /\b(?:none|transparent|hidden)\b/.test(value),
+      ),
+    ).toEqual([])
+    // No hover, focus or active state of its own.
+    expect(
+      cardRules
+        .flatMap((rule) => rule.selectors)
+        .filter((selector) => /:(?:hover|focus|active)/.test(selector)),
+    ).toEqual([])
+  })
+
+  it('styles only card parts, and the media and first and last children directly in them', () => {
+    const subjects = [
+      /\[data-kv='card(?:-header|-body|-footer)?'\](?:\[[\w-]+(?:='[\w-]+')?\]|:not\(.*\)|:has\(.*\))*$/,
+      /\[data-kv='card-(?:header|body|footer)'\]\)(?::not\(\[data-padding='none'\]\))?(?:\[data-padding='\w+'\])?$/,
+      /\) > :is\(img, video, svg(?:, picture)?\)(?::(?:first|last)-child)?$/,
+      /\) > picture(?::(?:first|last)-child)? > img$/,
+      /\) > :(?:first|last)-child\)$/,
+      /^:where\(.* > :is\(img, video, svg\), .* > picture > img\)$/,
+    ]
+    const selectors = cardRules.flatMap((rule) => rule.selectors)
+    expect(
+      selectors.filter((selector) => !subjects.some((subject) => subject.test(selector))),
+    ).toEqual([])
   })
 })

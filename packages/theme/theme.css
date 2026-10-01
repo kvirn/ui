@@ -6,7 +6,8 @@
  * file styles them through the attributes they render (`data-kv="button"`, `data-disabled`,
  * `data-current` and so on), plus a few you set yourself (`data-variant`, `data-kv-density`,
  * `data-kv-nav`, `data-kv-button-group`, `data-kv-prose`, `data-kv-lead`, `data-kv-not-prose`,
- * `data-kv-scroll-region`).
+ * `data-kv-scroll-region`, and on cards `data-surface`, `data-radius`, `data-padding` and
+ * `data-dividers`).
  *
  * This file is the source of truth, and it is meant to be read. Three ways to use it:
  *
@@ -31,6 +32,7 @@
  *   7. Button
  *   8. Link and navigation lists
  *   9. Prose            data-kv-prose: articles from a CMS or Markdown
+ *  10. Card
  */
 
 @layer kv {
@@ -540,7 +542,8 @@
 
   /* 6. Density -------------------------------------------------------------------------------
    * Put data-kv-density="compact" on any container for 32px controls with 14px labels, for
-   * staff tools and toolbars. Below 64rem touch is likely, so controls stay 44px.
+   * staff tools and toolbars. Below 64rem touch is likely, so controls stay 44px. Cards inside
+   * get less padding too (section 10).
    */
   @media (width >= 64rem) {
     [data-kv-density='compact'] {
@@ -602,8 +605,10 @@
     color: var(--kv-color-on-primary);
   }
 
+  /* The edge stays primary: primary-hover alone is under 3:1 on surface-raised in dark, where
+   * cards, dialogs and popups put buttons (1.4.11, ADR-0021). */
   [data-kv='button'][data-variant='primary']:not(:disabled, [data-disabled]):is(:hover, :active) {
-    border-color: transparent;
+    border-color: var(--kv-color-primary);
     background-color: var(--kv-color-primary-hover);
   }
 
@@ -798,8 +803,11 @@
    * Every rule has zero specificity, so component rules and your own CSS always win. Prose
    * never styles an element with data-kv (components style themselves), or anything inside
    * data-kv-not-prose, data-kv-nav or data-kv-button-group. Prose inside data-kv-not-prose
-   * isn't turned on again. Only logical properties are used, so right to left works, and
-   * nothing has a fixed height, so the text-spacing overrides fit (1.4.12).
+   * isn't turned on again. A card is a boundary too: a card in prose gets prose's block
+   * margins, and nothing inside it is prose-styled, unless you put data-kv-prose on the card
+   * or inside it. Then the nearest of the two wins, for two levels of nested cards. Only
+   * logical properties are used, so right to left works, and nothing has a fixed height, so
+   * the text-spacing overrides fit (1.4.12).
    *
    * Your part: don't skip heading levels, write alt text, give each table a caption and th
    * with scope, set lang on passages in another language, and write link text that makes
@@ -830,13 +838,39 @@
 
   /* Everything inside prose that prose may style. This is the only place the not-prose list
    * is written: add a new consumer attribute for components here. `&` has the specificity of
-   * this selector, which is zero. */
+   * this selector, which is zero.
+   *
+   * The last line is the card boundary. Inside a card (one without data-kv-prose), prose is
+   * off unless data-kv-prose sits between the card and the element. It reads: inside a card,
+   * but not (inside prose inside a card, but not (inside a card inside that, but not inside
+   * prose inside that)). So the nearest card or data-kv-prose wins, for two levels of cards.
+   * @scope would say it directly, once Safari 17.0 to 17.3 drop out of the support range. */
   :where([data-kv-prose])
     :where(*):not(
-      :where([data-kv], :is([data-kv-not-prose], [data-kv-nav], [data-kv-button-group]) *)
+      :where(
+        [data-kv]:not([data-kv='card']),
+        :is([data-kv-not-prose], [data-kv-nav], [data-kv-button-group]) *,
+        :is([data-kv='card']:not([data-kv-prose]) *):not(
+          :is([data-kv='card']:not([data-kv-prose]) [data-kv-prose] *):not(
+            :is(
+              [data-kv='card']:not([data-kv-prose])
+                [data-kv-prose]
+                [data-kv='card']:not([data-kv-prose])
+                *
+            ):not(
+              [data-kv='card']:not([data-kv-prose])
+                [data-kv-prose]
+                [data-kv='card']:not([data-kv-prose])
+                [data-kv-prose]
+                *
+            )
+          )
+        )
+      )
     ) {
-    /* Elements. data-kv-not-prose, data-kv-nav and data-kv-button-group only get margins. */
-    &:not(:where([data-kv-not-prose], [data-kv-nav], [data-kv-button-group])) {
+    /* Elements. data-kv-not-prose, data-kv-nav, data-kv-button-group and a card's Root only
+     * get margins. */
+    &:not(:where([data-kv-not-prose], [data-kv-nav], [data-kv-button-group], [data-kv='card'])) {
       &:where(h1) {
         margin-block: 0 var(--kv-space-6);
         font-size: var(--kv-font-heading-1-size);
@@ -1165,7 +1199,7 @@
     }
 
     /* Embedded components and other content prose leaves alone: only its own margin. */
-    &:where([data-kv-not-prose], [data-kv-scroll-region]) {
+    &:where([data-kv-not-prose], [data-kv-scroll-region], [data-kv='card']) {
       margin-block: var(--kv-prose-space-block);
       margin-inline: 0;
     }
@@ -1206,6 +1240,226 @@
   @media (forced-colors: active) {
     [data-kv-scroll-region]:is(:focus-visible, [data-focus-visible]) {
       outline-color: Highlight;
+    }
+  }
+
+  /* 10. Card ---------------------------------------------------------------------------------
+   * <Card.Root> renders data-kv="card", and its parts data-kv="card-header", "card-body" and
+   * "card-footer". Elevation level 2: surface-raised, a 1px border-subtle edge, the lg radius
+   * and no shadow. A card is never interactive, so it has no hover, focus or pointer style.
+   * Choose with plain attributes. An unknown value falls back to the default.
+   *
+   *   data-surface    on the Root: surface-raised (default), surface or canvas
+   *   data-radius     on the Root: lg (default), md (a card nested in a card) or none
+   *   data-padding    on the Root for every part, or on one part: md (default), none, sm, lg
+   *   data-dividers   on the Root: a border-subtle line between parts
+   *
+   *   <Card.Root render={<li />}>
+   *     <Card.Header data-padding="none"><img src="…" alt="" /></Card.Header>
+   *     <Card.Body data-kv-prose><h3>…</h3><p>…</p></Card.Body>
+   *     <Card.Footer data-kv-button-group><Button>…</Button></Card.Footer>
+   *   </Card.Root>
+   *
+   * Parts must be direct children of the Root. A Root without parts pads itself. A card never
+   * hides overflow, so a child's focus ring is never clipped (2.4.11, 2.4.13) and the
+   * text-spacing overrides never cut text off (1.4.12): media that touch a rounded corner get
+   * its radius themselves. Every card keeps its border, so forced colours show its edge.
+   * Use data-padding="none" on a part for full-bleed media, and keep the other parts' steps
+   * the same, so their edges line up.
+   */
+  :root {
+    --kv-card-padding-sm: var(--kv-space-3);
+    --kv-card-padding-md: var(--kv-space-4);
+    --kv-card-padding-lg: var(--kv-space-6);
+  }
+
+  /* Narrow screens and 400% zoom keep the line length: md and lg grow from 40rem. */
+  @media (width >= 40rem) {
+    :root {
+      --kv-card-padding-md: var(--kv-space-6);
+      --kv-card-padding-lg: var(--kv-space-8);
+    }
+  }
+
+  /* Compact density steps down from 64rem, with compact controls (section 6). */
+  @media (width >= 64rem) {
+    [data-kv-density='compact'] {
+      --kv-card-padding-md: var(--kv-space-4);
+      --kv-card-padding-lg: var(--kv-space-6);
+    }
+  }
+
+  /* The Root always sets both, so a nested card never inherits its parent's values. */
+  [data-kv='card'] {
+    --kv-card-padding: var(--kv-card-padding-md);
+    --kv-card-radius: var(--kv-radius-lg);
+    display: block;
+    box-sizing: border-box;
+    /* A card in a grid or flex row can shrink to 320px. */
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-card-radius);
+    background-color: var(--kv-color-surface-raised);
+    color: var(--kv-color-text);
+    overflow-wrap: break-word;
+  }
+
+  [data-kv='card'][data-surface='surface'] {
+    background-color: var(--kv-color-surface);
+  }
+
+  [data-kv='card'][data-surface='canvas'] {
+    background-color: var(--kv-color-canvas);
+  }
+
+  [data-kv='card'][data-radius='md'] {
+    --kv-card-radius: var(--kv-radius-md);
+  }
+
+  [data-kv='card'][data-radius='none'] {
+    --kv-card-radius: var(--kv-radius-none);
+  }
+
+  /* On the Root it's every part's default. On a part it overrides the Root. */
+  :is(
+    [data-kv='card'],
+    [data-kv='card-header'],
+    [data-kv='card-body'],
+    [data-kv='card-footer']
+  )[data-padding='none'] {
+    --kv-card-padding: var(--kv-space-0);
+  }
+
+  :is(
+    [data-kv='card'],
+    [data-kv='card-header'],
+    [data-kv='card-body'],
+    [data-kv='card-footer']
+  )[data-padding='sm'] {
+    --kv-card-padding: var(--kv-card-padding-sm);
+  }
+
+  :is(
+    [data-kv='card'],
+    [data-kv='card-header'],
+    [data-kv='card-body'],
+    [data-kv='card-footer']
+  )[data-padding='md'] {
+    --kv-card-padding: var(--kv-card-padding-md);
+  }
+
+  :is(
+    [data-kv='card'],
+    [data-kv='card-header'],
+    [data-kv='card-body'],
+    [data-kv='card-footer']
+  )[data-padding='lg'] {
+    --kv-card-padding: var(--kv-card-padding-lg);
+  }
+
+  /* Without parts, the Root pads itself and stays a block, so inline content stays inline. */
+  [data-kv='card']:not(
+    :has(> :is([data-kv='card-header'], [data-kv='card-body'], [data-kv='card-footer']))
+  ) {
+    padding: var(--kv-card-padding);
+  }
+
+  /* With parts, it's a column, and the body grows: footers line up in a stretched grid row. */
+  [data-kv='card']:has(
+    > :is([data-kv='card-header'], [data-kv='card-body'], [data-kv='card-footer'])
+  ) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  :is([data-kv='card-header'], [data-kv='card-body'], [data-kv='card-footer']) {
+    padding: var(--kv-card-padding);
+  }
+
+  [data-kv='card-body'] {
+    flex-grow: 1;
+  }
+
+  /* Adjacent parts share one padding, the earlier part's. After a part with no padding (an
+   * image), the next part keeps its own. */
+  [data-kv='card']:not([data-dividers])
+    > :is([data-kv='card-header'], [data-kv='card-body'], [data-kv='card-footer']):not(
+      [data-padding='none']
+    )
+    + :is([data-kv='card-header'], [data-kv='card-body'], [data-kv='card-footer']) {
+    padding-block-start: 0;
+  }
+
+  /* With dividers, every part keeps its padding, and a line separates it from the one before.
+   * Not after an image: its edge is the boundary already. */
+  [data-kv='card'][data-dividers]
+    > :is([data-kv='card-header'], [data-kv='card-body'], [data-kv='card-footer']):not(
+      [data-padding='none']
+    )
+    + :is([data-kv='card-header'], [data-kv='card-body'], [data-kv='card-footer']) {
+    border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  /* The padding is the real edge. Zero specificity: your CSS and prose's own spacing win. */
+  :where(
+    :is([data-kv='card'], [data-kv='card-header'], [data-kv='card-body'], [data-kv='card-footer'])
+      > :first-child
+  ) {
+    margin-block-start: 0;
+  }
+
+  :where(
+    :is([data-kv='card'], [data-kv='card-header'], [data-kv='card-body'], [data-kv='card-footer'])
+      > :last-child
+  ) {
+    margin-block-end: 0;
+  }
+
+  /* Media directly in any card part or Root never overflow it, also in a padded part without
+   * prose: the card never clips, so a wide image would scroll the page at 320px (1.4.10).
+   * Zero specificity, so your own sizes win. */
+  :where(
+    :is([data-kv='card'], [data-kv='card-header'], [data-kv='card-body'], [data-kv='card-footer'])
+      > :is(img, video, svg),
+    :is([data-kv='card'], [data-kv='card-header'], [data-kv='card-body'], [data-kv='card-footer'])
+      > picture
+      > img
+  ) {
+    max-inline-size: 100%;
+    block-size: auto;
+  }
+
+  /* Full-bleed media: an img, video, svg or picture directly in a box without padding (a part
+   * with data-padding="none", or a Root without parts that has it) fills the box. Media that
+   * touch the card's rounded corners get its inner radius, so the card needs no overflow. */
+  :is(
+    :is([data-kv='card-header'], [data-kv='card-body'], [data-kv='card-footer']):is(
+      [data-padding='none'],
+      [data-kv='card'][data-padding='none'] > :not([data-padding])
+    ),
+    [data-kv='card'][data-padding='none']:not(
+        :has(> :is([data-kv='card-header'], [data-kv='card-body'], [data-kv='card-footer']))
+      )
+  ) {
+    & > :is(img, video, svg, picture),
+    & > picture > img {
+      display: block;
+      inline-size: 100%;
+      block-size: auto;
+      margin: 0;
+    }
+
+    &:is([data-kv='card'], :first-child) > :is(img, video, svg):first-child,
+    &:is([data-kv='card'], :first-child) > picture:first-child > img {
+      border-start-start-radius: max(0px, var(--kv-card-radius) - var(--kv-border-width));
+      border-start-end-radius: max(0px, var(--kv-card-radius) - var(--kv-border-width));
+    }
+
+    &:is([data-kv='card'], :last-child) > :is(img, video, svg):last-child,
+    &:is([data-kv='card'], :last-child) > picture:last-child > img {
+      border-end-start-radius: max(0px, var(--kv-card-radius) - var(--kv-border-width));
+      border-end-end-radius: max(0px, var(--kv-card-radius) - var(--kv-border-width));
     }
   }
 }

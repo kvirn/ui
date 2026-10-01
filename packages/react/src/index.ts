@@ -25,6 +25,17 @@ export { Link, LinkNewTabNotice } from './link/link.tsx'
 export type { LinkElementProps, LinkNewTabNoticeProps, LinkProps, LinkState } from './link/link.tsx'
 export { useLink } from './link/use-link.ts'
 export type { LinkCurrent, LinkPartProps, UseLinkOptions, UseLinkResult } from './link/use-link.ts'
+export { Card, CardBody, CardFooter, CardHeader, CardRoot } from './card/card.tsx'
+export type {
+  CardBodyProps,
+  CardElementProps,
+  CardFooterProps,
+  CardHeaderProps,
+  CardRootProps,
+  CardState,
+} from './card/card.tsx'
+export { useCard } from './card/use-card.ts'
+export type { CardPartProps, UseCardResult } from './card/use-card.ts'
 export type {
   ColorSchemePreference,
   ContrastPreference,

@@ -38,3 +38,6 @@ We record significant decisions as ADRs using a lightweight MADR-style format.
 | [0017](0017-default-theme-prototype-implementation.md)     | Default-theme prototype implementation details                             | Accepted |
 | [0018](0018-prose-styles-and-foundation-tokens.md)         | Prose styles by attribute, and prose, lead and shadow tokens               | Accepted |
 | [0019](0019-role-named-palette-scales.md)                  | Palette scales named by role, a secondary edge token, and an unused accent | Accepted |
+| [0020](0020-card-container.md)                             | Card is a plain container with Header, Body and Footer parts               | Proposed |
+| [0021](0021-primary-button-hover-edge.md)                  | A hovered primary button keeps a `primary` edge                            | Proposed |
+| [0022](0022-card-implementation-details.md)                | Card implementation details                                                | Proposed |

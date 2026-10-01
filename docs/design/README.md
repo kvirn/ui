@@ -15,3 +15,4 @@ Design specs describe **what users see and do**: the flow, content, layout, stat
 | [Storybook presentation](storybook-presentation.md)                           | [0005](../plans/0005-default-theme-storybook-docs.md) | Draft  |
 | [Docs site shell, template and first pages](docs-site.md)                     | [0005](../plans/0005-default-theme-storybook-docs.md) | Draft  |
 | [Prose styles and the Storybook Foundation section](foundations-and-prose.md) | 0006 (to be written)                                  | Draft  |
+| [Card](card.md)                                                               | [0007](../plans/0007-card.md)                         | Draft  |

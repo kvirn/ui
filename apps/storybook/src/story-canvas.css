@@ -2,7 +2,8 @@
  * Storybook-only canvas and story layout. Unlayered, so it wins over @layer kv. Tokens only:
  * no raw colours (ADR-0013). With the Theme toolbar on "None (unstyled)" the preview drops
  * the canvas class, so stories show the browser's defaults. The heading and paragraph rules
- * stop at data-kv-prose: unlayered CSS would beat prose's zero-specificity rules (ADR-0018).
+ * stop at data-kv-prose and at cards: unlayered CSS would beat prose's zero-specificity rules
+ * (ADR-0018) and the card's margin trims.
  */
 .kv-story-canvas {
   box-sizing: border-box;
@@ -23,7 +24,7 @@
   }
 }
 
-.kv-story-canvas h1:not([data-kv-prose] *) {
+.kv-story-canvas h1:not([data-kv-prose] *, [data-kv='card'] *) {
   margin-block: 0 var(--kv-space-6);
   font-size: var(--kv-font-heading-1-size);
   font-weight: var(--kv-font-heading-1-weight);
@@ -31,7 +32,7 @@
   letter-spacing: var(--kv-font-heading-1-letter-spacing);
 }
 
-.kv-story-canvas h2:not([data-kv-prose] *) {
+.kv-story-canvas h2:not([data-kv-prose] *, [data-kv='card'] *) {
   margin-block: var(--kv-space-8) var(--kv-space-4);
   font-size: var(--kv-font-heading-2-size);
   font-weight: var(--kv-font-heading-2-weight);
@@ -39,7 +40,7 @@
   letter-spacing: var(--kv-font-heading-2-letter-spacing);
 }
 
-.kv-story-canvas p:not([data-kv-prose] *) {
+.kv-story-canvas p:not([data-kv-prose] *, [data-kv='card'] *) {
   max-inline-size: 70ch;
   margin-block: var(--kv-space-4);
 }
@@ -409,4 +410,34 @@
 
 .kv-story-text-spacing p {
   margin-block-end: 2em !important;
+}
+
+/* Components/Card: a list of cards, 1 column at 320px, 2 from 40rem, 3 from 64rem. The cards
+   are the list items. The theme draws no marker on them, and list-style stays set. */
+.kv-story-card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  gap: var(--kv-space-6);
+  margin: 0;
+  padding: 0;
+}
+
+/* One card on its own, as on a My pages view. */
+.kv-story-card-column {
+  max-inline-size: 30rem;
+}
+
+/* A surface section, so a canvas card shows as part of the page. */
+.kv-story-card-stage {
+  box-sizing: border-box;
+  padding: var(--kv-space-6);
+  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-lg);
+  background-color: var(--kv-color-surface);
+}
+
+@media (width < 40rem) {
+  .kv-story-card-stage {
+    padding: var(--kv-space-4);
+  }
 }
