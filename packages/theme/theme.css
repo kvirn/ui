@@ -664,8 +664,8 @@
    *
    * Size every button without touching other controls: set --kv-button-min-block-size,
    * --kv-button-padding-inline, --kv-button-font-size, --kv-button-font-weight or
-   * --kv-button-line-height on :root or on a container. Each falls back to its --kv-control-*
-   * token, so without them buttons follow the density (section 6). Set, they win over it,
+   * --kv-button-line-height (unitless) on :root or on a container. Each falls back to its
+   * --kv-control-* token, so without them buttons follow the density (section 6). Set, they win over it,
    * the compact step and the 44px below 64rem included. Keep --kv-button-min-block-size at
    * 24px or more, and enough --kv-button-padding-inline that a short label is 24px wide:
    * 2.5.8 Target Size (Minimum). Resident-facing buttons should stay at 44px (2.5.5).
@@ -690,7 +690,9 @@
     min-block-size: var(--kv-button-min-block-size, var(--kv-control-min-block-size));
     max-inline-size: 100%;
     margin: 0;
-    padding-block: var(--kv-space-2);
+    /* Small enough that min-block-size sets the height (44px, or 32px compact). The padding
+     * only shows when a long label wraps. */
+    padding-block: var(--kv-space-1);
     padding-inline: var(--kv-button-padding-inline, var(--kv-control-padding-inline));
     border: var(--kv-border-width) solid var(--kv-button-edge);
     border-block-start-color: color-mix(
@@ -707,6 +709,9 @@
     font-size: var(--kv-button-font-size, var(--kv-control-font-size));
     font-weight: var(--kv-button-font-weight, var(--kv-control-font-weight));
     line-height: var(--kv-button-line-height, var(--kv-control-line-height));
+    /* A whole-pixel line box (22.4px is 22px), so the label isn't drawn a pixel above the
+     * centre. The line-height tokens are unitless. */
+    line-height: round(var(--kv-button-line-height, var(--kv-control-line-height)) * 1em, 1px);
     letter-spacing: normal;
     text-align: center;
     text-decoration: none;

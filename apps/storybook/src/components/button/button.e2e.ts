@@ -103,6 +103,8 @@ test.describe('Site-wide compact density', () => {
     }) => {
       const button = await openStory(page, 'activation', 'Spara')
       const comfortable = await button.boundingBox()
+      // The control size sets the height, not the padding: 44px comfortable (DESIGN.md).
+      expect(comfortable?.height).toBe(44)
       await page.evaluate((selector) => {
         document.querySelector(selector)?.classList.add('kv-compact')
       }, element)
@@ -114,7 +116,8 @@ test.describe('Site-wide compact density', () => {
       }
       const box = await button.boundingBox()
       expect(box?.width).toBeGreaterThanOrEqual(24)
-      expect(box?.height).toBeGreaterThanOrEqual(isWide ? 24 : 44)
+      // 32px compact from 64rem, not the padding plus the line box (DESIGN.md).
+      expect(box?.height).toBe(isWide ? 32 : 44)
     })
   }
 })
