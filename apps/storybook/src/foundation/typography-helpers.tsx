@@ -15,15 +15,19 @@ export const computedPixels = (element: Element, property: string): number =>
 /** The fixture's reference number, for the code samples. */
 export const caseNumberSample = 'BAB-2026-004512'
 
-/**
- * A story title's component id, as Storybook builds it (`Foundation/Colors/Text on surface` is
- * `foundation-colors-text-on-surface`). Storybook opens the first story of a component id.
- */
-export const storyIdOf = (title: string): string =>
-  title
+/** A title or story name as Storybook puts it in an id: `Text on surface` is `text-on-surface`. */
+const idPartOf = (name: string): string =>
+  name
     .toLowerCase()
     .replaceAll(/[^a-z0-9]+/g, '-')
     .replaceAll(/^-+|-+$/g, '')
+
+/**
+ * A story's id, as Storybook builds it from the title and the story name: `Foundation/Colors`
+ * and `Text on surface` are `foundation-colors--text-on-surface`.
+ */
+export const storyIdOf = (title: string, story: string): string =>
+  `${idPartOf(title)}--${idPartOf(story)}`
 
 /** The first element matching `selector`, or a failed play function that says what's missing. */
 export function requireElement<ElementType extends Element = HTMLElement>(

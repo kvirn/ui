@@ -150,6 +150,8 @@ function LayoutPage(): ReactNode {
 
 const meta = {
   title: 'Foundation/Layout',
+  // One story, named like the page, and no Docs entry, so the sidebar shows a leaf.
+  tags: ['!autodocs'],
   render: () => <LayoutPage />,
 } satisfies Meta
 

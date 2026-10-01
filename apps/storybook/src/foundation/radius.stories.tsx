@@ -54,6 +54,8 @@ function RadiusPage(): ReactNode {
 
 const meta = {
   title: 'Foundation/Radius',
+  // One story, named like the page, and no Docs entry, so the sidebar shows a leaf.
+  tags: ['!autodocs'],
   render: () => <RadiusPage />,
 } satisfies Meta
 

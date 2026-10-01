@@ -7,6 +7,8 @@
 - **Type:** docs page (workbench presentation)
 - **Depends on:** [default-theme-button-link.md](default-theme-button-link.md) for tokens, recipes and states
 
+> **Update 2026-10-01 ([ADR-0023](../adr/0023-storybook-story-conventions.md), Plan 0008):** stories are args-first on the real component, with a Docs page each (`@storybook/addon-docs`) and an `introduction.mdx`. There is no story wrapper or page heading any more: `lang`, `dir` and the theme are set on `<html>`, and the body is the canvas (`.storybook/preview.css`). The Theme toolbar became **Mode** (light, dark, system) and **Contrast** (standard, more). The fixed-theme story exports are gone: four `storybook*` Vitest projects run every story once per theme instead. Where this spec says otherwise, ADR-0023 wins.
+
 > **Update 2026-10-01 (ADR-0013 revised, ADR-0017 decision 5):** the separate headless and `Default theme/*` sections became one set of stories per component (`Components/Button`, `Components/Link`, `Foundation/KvirnProvider`), all styled by `theme.css`. The Theme toolbar has a "None (unstyled)" option instead. The example fixture moved to the docs site.
 
 ## 1. Brief

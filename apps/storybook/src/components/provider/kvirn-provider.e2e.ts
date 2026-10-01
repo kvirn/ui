@@ -173,10 +173,18 @@ test.describe('KvirnProvider accessibility', () => {
     )
   })
 
-  for (const story of ['swedish', 'theme-switcher', 'nested-locale', 'right-to-left-override']) {
+  // Each story's first fixture section, named in the story's language.
+  const stories = [
+    ['swedish', 'Inställningar'],
+    ['theme-switcher', 'Inställningar'],
+    ['nested-locale', 'Inställningar'],
+    ['right-to-left-override', 'Settings'],
+  ] as const
+
+  for (const [story, settingsName] of stories) {
     test(`no horizontal scrolling (1.4.10): ${story}`, async ({ page }) => {
       await page.goto(storyUrl(story))
-      await expect(page.getByRole('heading', { name: 'KvirnProvider', level: 1 })).toBeVisible()
+      await expect(page.getByRole('region', { name: settingsName })).toBeVisible()
       const hasHorizontalScroll = await page.evaluate(
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
       )
@@ -185,7 +193,7 @@ test.describe('KvirnProvider accessibility', () => {
 
     test(`no axe violations: ${story}`, async ({ page }) => {
       await page.goto(storyUrl(story))
-      await expect(page.getByRole('heading', { name: 'KvirnProvider', level: 1 })).toBeVisible()
+      await expect(page.getByRole('region', { name: settingsName })).toBeVisible()
       const axeResults = await new AxeBuilder({ page }).withTags([...wcagTags]).analyze()
       expect(axeResults.violations).toEqual([])
     })

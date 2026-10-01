@@ -12,9 +12,10 @@ import { articleFor } from './foundations.fixture.tsx'
 import type { FixtureLocale } from './foundations.fixture.tsx'
 import { caseNumberSample, fixtureLocaleOf } from './typography-helpers.tsx'
 
-// Foundation/Typography/Type scale (docs/design/foundations-and-prose.md §6.6): every type
-// role, rendered in its own tokens and with its values read live from the page. The samples
-// are fixture text in the toolbar locale; the page around them is English maintainer text.
+// Foundation/Typography (docs/design/foundations-and-prose.md §6.6): every type role, rendered
+// in its own tokens and with its values read live from the page, then the font families, the
+// glyphs a font must cover and the tabular figures, one story each. The samples are fixture
+// text in the toolbar locale; the pages around them are English maintainer text.
 
 type ArticleText = ReturnType<typeof articleFor>['text']
 
@@ -117,14 +118,15 @@ const fontFamilyTokens: readonly FontFamilyToken[] = [
   { property: '--kv-font-family-mono', use: 'Reference numbers and code' },
 ]
 
-interface TypeScaleValues {
-  roles: Record<string, RoleValues>
-  families: Record<string, string | undefined>
-}
+/** By role: its values on the page. */
+type TypeRoleValues = Record<string, RoleValues>
+
+/** By family custom property: its value on the page, or `undefined` when it isn't set. */
+type FontFamilyValues = Record<string, string | undefined>
 
 /** Module level, so it's stable for useLiveValue. Reads from the page, not from :root. */
-function readTypeScale(element: HTMLDivElement): TypeScaleValues {
-  const roles: Record<string, RoleValues> = {}
+function readTypeRoles(element: HTMLDivElement): TypeRoleValues {
+  const roles: TypeRoleValues = {}
   for (const { role } of typeRoles) {
     const prefix = tokenPrefix(role)
     roles[role] = {
@@ -136,11 +138,14 @@ function readTypeScale(element: HTMLDivElement): TypeScaleValues {
       features: readProperty(element, `${prefix}-feature-settings`),
     }
   }
-  const families = Object.fromEntries(
+  return roles
+}
+
+/** Module level, so it's stable for useLiveValue. Reads from the page, not from :root. */
+const readFontFamilies = (element: HTMLDivElement): FontFamilyValues =>
+  Object.fromEntries(
     fontFamilyTokens.map(({ property }) => [property, readProperty(element, property)]),
   )
-  return { roles, families }
-}
 
 const notDefined = 'Not defined'
 const roundPixels = (pixels: number) => `${Number(pixels.toFixed(2))}px`
@@ -183,17 +188,16 @@ function formatFeatures(features: string | undefined): string {
   return features === 'normal' ? 'None (normal)' : features.replaceAll(/["']/g, '')
 }
 
-function TypeScaleTable({
+function TypeRolesTable({
   locale,
-  values,
+  roles,
 }: {
   locale: FixtureLocale
-  values: TypeScaleValues | undefined
+  roles: TypeRoleValues | undefined
 }) {
   const { text, lang } = articleFor(locale)
   const sampleLang = lang ?? locale
   const number = new Intl.NumberFormat(sampleLang)
-  const roles = values?.roles
   return (
     <ScrollTable caption="Type roles">
       <thead>
@@ -236,7 +240,7 @@ function TypeScaleTable({
 }
 
 /** Each family, live: the value set on this page, or what an unset default falls back to. */
-function FontFamilyTable({ values }: { values: TypeScaleValues | undefined }) {
+function FontFamilyTable({ families }: { families: FontFamilyValues | undefined }) {
   return (
     <ScrollTable caption="Font families">
       <thead>
@@ -248,7 +252,7 @@ function FontFamilyTable({ values }: { values: TypeScaleValues | undefined }) {
       </thead>
       <tbody>
         {fontFamilyTokens.map(({ property, use, fallback }) => {
-          const value = values?.families[property]
+          const value = families?.[property]
           return (
             <tr key={property}>
               <th scope="row">
@@ -331,7 +335,7 @@ const figureStyle = (role: 'body' | 'numeric'): CSSProperties => ({
   fontFeatureSettings: `var(--kv-font-${role}-feature-settings)`,
 })
 
-function TabularFigures() {
+function TabularFiguresTable() {
   return (
     <ScrollTable caption="Tabular figures">
       <thead>
@@ -356,69 +360,86 @@ function TabularFigures() {
   )
 }
 
-function TypeScalePage({ locale }: { locale: FixtureLocale }): ReactNode {
-  const [ref, values] = useLiveValue(readTypeScale)
+function TypeRolesPage({ locale }: { locale: FixtureLocale }): ReactNode {
+  const [ref, roles] = useLiveValue(readTypeRoles)
   const { lang } = articleFor(locale)
   return (
-    <FoundationPage title="Type scale">
+    <FoundationPage title="Type roles">
       <div ref={ref}>
-        <>
-          <p>
-            Every type role in <code>theme.css</code>, with its values read live from this page.
-            Each sample is set in the role’s own tokens, so an override shows up here. Sizes are in
-            rem, so they follow the browser’s text size (1.4.4), and the px values are at the
-            current root size.
-          </p>
-          <p>
-            The samples are in the toolbar locale.{' '}
-            {lang === undefined
-              ? null
-              : 'This locale has no translated fixture yet, so they are in English.'}{' '}
-            <code>lead</code> is only for the lead paragraph of large prose (ADR-0018).
-          </p>
-          <TypeScaleTable locale={locale} values={values} />
-
-          <h2>Font families</h2>
-          <p>
-            Body text and controls use <code>--kv-font-family-body</code>, and prose headings{' '}
-            <code>--kv-font-family-heading</code>. theme.css doesn’t set either, so both fall back
-            to <code>--kv-font-family-sans</code>: Inter, then the system stack. Set them once, on{' '}
-            <code>:root</code> or on a container, for a brand font. The samples above follow them.
-          </p>
-          <FontFamilyTable values={values} />
-
-          <h2>Glyphs</h2>
-          <p>
-            A replacement brand font must cover these letters, and so does the system fallback. The
-            body roles ask for Inter’s <code>cv05</code> and <code>cv08</code>, so that l, I and 1
-            look different. A replacement font without those features can’t tell the look-alikes
-            apart.
-          </p>
-          <GlyphSpecimen />
-
-          <h2>Tabular figures</h2>
-          <p>
-            Use <code>numeric</code> for tables, amounts, dates and reference numbers. Its figures
-            all have the same width, so a column of amounts lines up. Prose tables set it on every{' '}
-            <code>td</code>.
-          </p>
-          <TabularFigures />
-        </>
+        <p>
+          Every type role in <code>theme.css</code>, with its values read live from this page. Each
+          sample is set in the role’s own tokens, so an override shows up here. Sizes are in rem, so
+          they follow the browser’s text size (1.4.4), and the px values are at the current root
+          size.
+        </p>
+        <p>
+          The samples are in the toolbar locale.{' '}
+          {lang === undefined
+            ? null
+            : 'This locale has no translated fixture yet, so they are in English.'}{' '}
+          <code>lead</code> is only for the lead paragraph of large prose (ADR-0018).
+        </p>
+        <TypeRolesTable locale={locale} roles={roles} />
       </div>
     </FoundationPage>
   )
 }
 
+function FontFamiliesPage(): ReactNode {
+  const [ref, families] = useLiveValue(readFontFamilies)
+  return (
+    <FoundationPage title="Font families">
+      <div ref={ref}>
+        <p>
+          Body text and controls use <code>--kv-font-family-body</code>, and prose headings{' '}
+          <code>--kv-font-family-heading</code>. theme.css doesn’t set either, so both fall back to{' '}
+          <code>--kv-font-family-sans</code>: Inter, then the system stack. Set them once, on{' '}
+          <code>:root</code> or on a container, for a brand font. The Type roles samples follow
+          them.
+        </p>
+        <FontFamilyTable families={families} />
+      </div>
+    </FoundationPage>
+  )
+}
+
+function GlyphsPage(): ReactNode {
+  return (
+    <FoundationPage title="Glyphs">
+      <p>
+        A replacement brand font must cover these letters, and so does the system fallback. The body
+        roles ask for Inter’s <code>cv05</code> and <code>cv08</code>, so that l, I and 1 look
+        different. A replacement font without those features can’t tell the look-alikes apart.
+      </p>
+      <GlyphSpecimen />
+    </FoundationPage>
+  )
+}
+
+function TabularFiguresPage(): ReactNode {
+  return (
+    <FoundationPage title="Tabular figures">
+      <p>
+        Use <code>numeric</code> for tables, amounts, dates and reference numbers. Its figures all
+        have the same width, so a column of amounts lines up. Prose tables set it on every{' '}
+        <code>td</code>.
+      </p>
+      <TabularFiguresTable />
+    </FoundationPage>
+  )
+}
+
 const meta = {
-  title: 'Foundation/Typography/Type scale',
+  title: 'Foundation/Typography',
 } satisfies Meta
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const TypeScale: Story = {
-  name: 'Type scale',
-  render: (_args, { globals }) => <TypeScalePage locale={fixtureLocaleOf(globals['locale'])} />,
+/** Every type role, its sample in the toolbar locale and its values measured live. */
+export const TypeRoles: Story = {
+  name: 'Type roles',
+  render: (_args, { globals }) => <TypeRolesPage locale={fixtureLocaleOf(globals['locale'])} />,
   play: async ({ canvasElement, globals }) => {
     const canvas = within(canvasElement)
     const table = canvas.getByRole('table', { name: 'Type roles' })
@@ -429,11 +450,42 @@ export const TypeScale: Story = {
       await expect(within(table).getByRole('rowheader', { name: typeRole.label })).toBeVisible()
     }
     await expect(within(table).getAllByText(text.title)).toHaveLength(2)
-    await expect(canvas.getByRole('table', { name: 'Tabular figures' })).toBeVisible()
+  },
+}
+
+/** Each family custom property, live: the value here, or what an unset default falls back to. */
+export const FontFamilies: Story = {
+  name: 'Font families',
+  render: () => <FontFamiliesPage />,
+  play: async ({ canvas }) => {
     // Every family custom property has a row, the two site-wide defaults included.
     const families = canvas.getByRole('table', { name: 'Font families' })
     for (const { property } of fontFamilyTokens) {
       await expect(within(families).getByRole('rowheader', { name: property })).toBeVisible()
     }
+  },
+}
+
+/** The Nordic and Sámi letters and the look-alikes, in every family. */
+export const Glyphs: Story = {
+  render: () => <GlyphsPage />,
+  play: async ({ canvas }) => {
+    const specimen = canvas.getByRole('table', { name: 'Glyph specimen' })
+    for (const family of specimenFamilies) {
+      await expect(
+        within(specimen).getByRole('rowheader', { name: specimenLabels[family] }),
+      ).toBeVisible()
+    }
+  },
+}
+
+/** A column of amounts in body's proportional figures, next to numeric's tabular ones. */
+export const TabularFigures: Story = {
+  name: 'Tabular figures',
+  render: () => <TabularFiguresPage />,
+  play: async ({ canvas }) => {
+    const figures = canvas.getByRole('table', { name: 'Tabular figures' })
+    await expect(figures).toBeVisible()
+    await expect(within(figures).getAllByRole('row')).toHaveLength(amounts.length + 1)
   },
 }

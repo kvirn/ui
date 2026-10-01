@@ -16,6 +16,7 @@
     "@kvirn-ui/theme": "workspace:*",
     "@playwright/test": "catalog:",
     "@storybook/addon-a11y": "catalog:",
+    "@storybook/addon-docs": "catalog:",
     "@storybook/addon-vitest": "catalog:",
     "@storybook/react-vite": "catalog:",
     "@types/react": "catalog:",

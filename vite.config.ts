@@ -64,6 +64,24 @@ const jsxA11yRules = Object.fromEntries(
   ].map((rule) => [`jsx-a11y/${rule}`, 'error' as const]),
 )
 
+/**
+ * One Vitest project of Storybook stories. `env` sets the preview's initial Mode and Contrast
+ * globals (apps/storybook/.storybook/preview.tsx), so every story starts in that theme.
+ */
+const storybookProject = (name: string, mode: 'light' | 'dark', contrast: 'standard' | 'more') => ({
+  plugins: [storybookTest({ configDir: 'apps/storybook/.storybook' })],
+  test: {
+    name,
+    env: { VITE_STORYBOOK_MODE: mode, VITE_STORYBOOK_CONTRAST: contrast },
+    browser: {
+      enabled: true,
+      headless: true,
+      provider: playwright(),
+      instances: [{ browser: 'chromium' as const }],
+    },
+  },
+})
+
 export default defineConfig({
   fmt: {
     singleQuote: true,
@@ -132,19 +150,12 @@ export default defineConfig({
           },
         },
       },
-      {
-        // Every story is a test: it renders, runs its play function and fails on any axe violation.
-        plugins: [storybookTest({ configDir: 'apps/storybook/.storybook' })],
-        test: {
-          name: 'storybook',
-          browser: {
-            enabled: true,
-            headless: true,
-            provider: playwright(),
-            instances: [{ browser: 'chromium' }],
-          },
-        },
-      },
+      // Every story is a test: it renders, runs its play function and fails on any axe
+      // violation. The same stories run once per theme (ADR-0023).
+      storybookProject('storybook', 'light', 'standard'),
+      storybookProject('storybook-dark', 'dark', 'standard'),
+      storybookProject('storybook-light-contrast', 'light', 'more'),
+      storybookProject('storybook-dark-contrast', 'dark', 'more'),
     ],
   },
   run: {

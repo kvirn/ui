@@ -126,6 +126,8 @@ function SpacingPage(): ReactNode {
 
 const meta = {
   title: 'Foundation/Spacing',
+  // One story, named like the page, and no Docs entry, so the sidebar shows a leaf.
+  tags: ['!autodocs'],
   render: () => <SpacingPage />,
 } satisfies Meta
 

@@ -8,81 +8,118 @@ import { storyIdOf } from './typography-helpers.tsx'
 // classes a consumer adds, and a link to every Foundation page with what it answers.
 // Maintainer text in English, written in prose.
 
-/** Every Foundation page, in the spec's order, with the question it answers. */
-const foundationPages: readonly { title: string; label: string; answers: string }[] = [
-  {
-    title: 'Foundation/Colors/Palette',
-    label: 'Colors: Palette',
-    answers:
-      'What each step of the role scales is in hex, its default hue, and how white and black text measure on it.',
-  },
-  {
-    title: 'Foundation/Colors/Semantic tokens',
-    label: 'Colors: Semantic tokens',
-    answers: 'Which palette step each semantic token uses, in all four themes at once.',
-  },
-  {
-    title: 'Foundation/Colors/Text on surface',
-    label: 'Colors: Text on surface',
-    answers: 'Whether a text colour may be used on a background in a theme, with measured ratios.',
-  },
-  {
-    title: 'Foundation/Typography/Type scale',
-    label: 'Typography: Type scale',
-    answers: 'The size, weight, line height, tracking and features of every type role.',
-  },
-  {
-    title: 'Foundation/Typography/Prose',
-    label: 'Typography: Prose',
-    answers: 'How kv-prose sets an article from a CMS or Markdown, in every mode.',
-  },
-  {
-    title: 'Foundation/Spacing',
-    label: 'Spacing',
-    answers: 'The spacing scale in rem and px, and the prose spacing tokens.',
-  },
-  {
-    title: 'Foundation/Radius',
-    label: 'Radius',
-    answers: 'Each corner radius, and what it’s used for.',
-  },
-  {
-    title: 'Foundation/Borders and elevation',
-    label: 'Borders and elevation',
-    answers: 'Border widths, hairlines against control borders, and the five elevation levels.',
-  },
-  {
-    title: 'Foundation/Focus ring',
-    label: 'Focus ring',
-    answers: 'How the focus ring looks, and how it measures, on each background.',
-  },
-  {
-    title: 'Foundation/Motion',
-    label: 'Motion',
-    answers: 'The durations and easing, and what reduced motion turns off.',
-  },
-  {
-    title: 'Foundation/Density',
-    label: 'Density',
-    answers: 'Comfortable and compact controls side by side, with their measured sizes.',
-  },
-  {
-    title: 'Foundation/Theming',
-    label: 'Theming',
-    answers:
-      'How to rebrand by overriding one role scale, and a live check that the result still passes.',
-  },
-  {
-    title: 'Foundation/Layout',
-    label: 'Layout',
-    answers: 'The breakpoints, the reading columns and the 320px reflow rule.',
-  },
-  {
-    title: 'Foundation/KvirnProvider',
-    label: 'KvirnProvider',
-    answers: 'How the provider sets the locale, the theme and the messages.',
-  },
-]
+/**
+ * Every Foundation page, in the sidebar's order, with the question it answers. A page is a
+ * story: Colors and Typography have one per page, the others are a single story.
+ */
+const foundationPages: readonly { title: string; story: string; label: string; answers: string }[] =
+  [
+    {
+      title: 'Foundation/Colors',
+      story: 'Palette',
+      label: 'Colors: Palette',
+      answers:
+        'What each step of the role scales is in hex, its default hue, and how white and black text measure on it.',
+    },
+    {
+      title: 'Foundation/Colors',
+      story: 'Semantic tokens',
+      label: 'Colors: Semantic tokens',
+      answers: 'Which palette step each semantic token uses, in all four themes at once.',
+    },
+    {
+      title: 'Foundation/Colors',
+      story: 'Text on surface',
+      label: 'Colors: Text on surface',
+      answers:
+        'Whether a text colour may be used on a background in a theme, with measured ratios.',
+    },
+    {
+      title: 'Foundation/Typography',
+      story: 'Type roles',
+      label: 'Typography: Type roles',
+      answers: 'The size, weight, line height, tracking and features of every type role.',
+    },
+    {
+      title: 'Foundation/Typography',
+      story: 'Font families',
+      label: 'Typography: Font families',
+      answers: 'Which font each family custom property sets, and what an unset one falls back to.',
+    },
+    {
+      title: 'Foundation/Typography',
+      story: 'Glyphs',
+      label: 'Typography: Glyphs',
+      answers: 'The Nordic and Sámi letters and look-alikes a replacement font must get right.',
+    },
+    {
+      title: 'Foundation/Typography',
+      story: 'Tabular figures',
+      label: 'Typography: Tabular figures',
+      answers: 'Why amounts and tables use the numeric role, with a column of figures.',
+    },
+    {
+      title: 'Foundation/Prose',
+      story: 'Article',
+      label: 'Prose',
+      answers: 'How kv-prose sets an article from a CMS or Markdown, in every mode.',
+    },
+    {
+      title: 'Foundation/Spacing',
+      story: 'Spacing',
+      label: 'Spacing',
+      answers: 'The spacing scale in rem and px, and the prose spacing tokens.',
+    },
+    {
+      title: 'Foundation/Radius',
+      story: 'Radius',
+      label: 'Radius',
+      answers: 'Each corner radius, and what it’s used for.',
+    },
+    {
+      title: 'Foundation/Borders and elevation',
+      story: 'Borders and elevation',
+      label: 'Borders and elevation',
+      answers: 'Border widths, hairlines against control borders, and the five elevation levels.',
+    },
+    {
+      title: 'Foundation/Focus ring',
+      story: 'Focus ring',
+      label: 'Focus ring',
+      answers: 'How the focus ring looks, and how it measures, on each background.',
+    },
+    {
+      title: 'Foundation/Motion',
+      story: 'Motion',
+      label: 'Motion',
+      answers: 'The durations and easing, and what reduced motion turns off.',
+    },
+    {
+      title: 'Foundation/Density',
+      story: 'Density',
+      label: 'Density',
+      answers: 'Comfortable and compact controls side by side, with their measured sizes.',
+    },
+    {
+      title: 'Foundation/Layout',
+      story: 'Layout',
+      label: 'Layout',
+      answers: 'The breakpoints, the reading columns and the 320px reflow rule.',
+    },
+    {
+      title: 'Foundation/Theming',
+      story: 'Theming',
+      label: 'Theming',
+      answers:
+        'How to rebrand by overriding one role scale, and a live check that the result still passes.',
+    },
+    {
+      title: 'Foundation/KvirnProvider',
+      story: 'Default',
+      label: 'KvirnProvider',
+      answers: 'How the provider sets the locale, the theme and the messages.',
+    },
+  ]
 
 const consumerClasses: readonly { className: string; description: ReactNode }[] = [
   {
@@ -134,7 +171,7 @@ const consumerClasses: readonly { className: string; description: ReactNode }[] 
   },
 ]
 
-function Overview(): ReactNode {
+function OverviewPage(): ReactNode {
   return (
     <FoundationPage title="Foundation">
       <p>
@@ -148,8 +185,8 @@ function Overview(): ReactNode {
       <h2>Pages</h2>
       <ul>
         {foundationPages.map((page) => (
-          <li key={page.title}>
-            <a href={storyHref(storyIdOf(page.title))} target="_top">
+          <li key={page.label}>
+            <a href={storyHref(storyIdOf(page.title, page.story))} target="_top">
               {page.label}
             </a>
             : {page.answers}
@@ -228,26 +265,32 @@ function Overview(): ReactNode {
 
 const meta = {
   title: 'Foundation/Overview',
-  component: Overview,
+  component: OverviewPage,
+  // One story, named like the page, and no Docs entry, so the sidebar shows a leaf.
+  tags: ['!autodocs'],
   globals: { locale: 'en' },
-} satisfies Meta<typeof Overview>
+} satisfies Meta<typeof OverviewPage>
 
 export default meta
 
-export const OverviewStory: StoryObj<typeof meta> = {
-  name: 'Overview',
+export const Overview: StoryObj<typeof meta> = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('Foundation')
     for (const page of foundationPages) {
       const link = canvas.getByRole('link', { name: page.label })
-      await expect(link).toHaveAttribute('href', storyHref(storyIdOf(page.title)))
+      await expect(link).toHaveAttribute('href', storyHref(storyIdOf(page.title, page.story)))
       // Opens the page in Storybook itself, not inside the preview frame.
       await expect(link).toHaveAttribute('target', '_top')
     }
+    // Spot checks against Storybook's own ids: a story in Colors, and a hoisted single story.
     await expect(canvas.getByRole('link', { name: 'Colors: Text on surface' })).toHaveAttribute(
       'href',
-      './?path=/story/foundation-colors-text-on-surface',
+      './?path=/story/foundation-colors--text-on-surface',
+    )
+    await expect(canvas.getByRole('link', { name: 'Borders and elevation' })).toHaveAttribute(
+      'href',
+      './?path=/story/foundation-borders-and-elevation--borders-and-elevation',
     )
   },
 }

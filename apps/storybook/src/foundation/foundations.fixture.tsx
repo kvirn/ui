@@ -3,7 +3,7 @@ import { useId } from 'react'
 import type { ReactNode } from 'react'
 import { scrollRegionTabIndex } from './foundation-helpers.tsx'
 
-// Fixture text for Foundation/Typography/Prose (docs/design/foundations-and-prose.md §4):
+// Fixture text for Foundation/Prose (docs/design/foundations-and-prose.md §4):
 // a fictional municipality's guidance page that uses every element prose styles. sv and en
 // are written. fi, nb, nn and se come from a translator, not an agent: until then those
 // locales show the English article, marked lang="en" (3.1.2).

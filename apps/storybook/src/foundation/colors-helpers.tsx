@@ -8,7 +8,7 @@ import type {
 import type { ReactNode, Ref } from 'react'
 import { formatRatio } from './foundation-helpers.tsx'
 
-// Shared by the three Foundation/Colors pages (docs/design/foundations-and-prose.md §6.6 and
+// Shared by the three Foundation/Colors stories (docs/design/foundations-and-prose.md §6.6 and
 // §7). Storybook tooling, in English. Colour is never the only signal: every value, ratio,
 // tier and "In use" is text, and the swatches and chips are aria-hidden.
 

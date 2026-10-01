@@ -6,151 +6,119 @@ import {
 } from '@kvirn-ui/core'
 import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
-import { nb } from '@kvirn-ui/i18n/nb'
-import { nn } from '@kvirn-ui/i18n/nn'
-import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { KvirnProvider } from '@kvirn-ui/react'
-import type { KvirnProviderProps } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, userEvent, within } from 'storybook/test'
+import { expect, within } from 'storybook/test'
 // Package-internal fixture, shared with the provider's tests. Not part of the public API.
 import {
   ProviderFixture,
   ThemeSwitcherFixture,
 } from '../../../../../packages/react/src/provider/kvirn-provider.fixture.tsx'
 
-function ProviderStory(providerProps: KvirnProviderProps) {
-  return (
-    <KvirnProvider {...providerProps}>
-      <main>
-        <h1>KvirnProvider</h1>
-        <ProviderFixture />
-        <ThemeSwitcherFixture />
-      </main>
-    </KvirnProvider>
-  )
-}
+// Foundation/KvirnProvider: the provider and a fixture that shows what it gives components.
+// kvirn-provider.e2e.ts runs its keyboard contract against Swedish, ThemeSwitcher, NestedLocale
+// and RightToLeftOverride, so their play functions only read. These stories drive the theme
+// store themselves, so the preview's Mode and Contrast don't apply to them.
 
 const meta = {
   title: 'Foundation/KvirnProvider',
-  component: ProviderStory,
-  args: { locale: 'sv-SE', messages: sv, timeZone: 'Europe/Stockholm' },
-  globals: { locale: 'sv' },
-} satisfies Meta<typeof ProviderStory>
-
-export default meta
-type Story = StoryObj<typeof meta>
-
-const catalogs = { sv, fi, nb, nn, se, en }
-
-interface ProviderPlaygroundArgs extends Omit<KvirnProviderProps, 'messages'> {
-  /** Which `@kvirn-ui/i18n` catalog to pass as `messages`. */
-  messages: keyof typeof catalogs
-}
-
-function ProviderPlayground({ messages, ...providerProps }: ProviderPlaygroundArgs) {
-  return (
-    <KvirnProvider {...providerProps} messages={catalogs[messages]}>
-      <main>
-        <h1>KvirnProvider</h1>
-        <ProviderFixture />
-      </main>
-    </KvirnProvider>
-  )
-}
-
-/**
- * One provider with its whole API as controls, and a fixture that shows what it gives
- * components. `theme` is read once, when the document's theme store is created: reload the
- * story after changing it.
- */
-export const Default: StoryObj<typeof ProviderPlayground> = {
-  render: (args) => <ProviderPlayground {...args} />,
+  component: KvirnProvider,
   args: {
     locale: 'sv-SE',
-    messages: 'sv',
-    dir: undefined,
+    messages: sv,
     timeZone: 'Europe/Stockholm',
-    theme: { defaultColorScheme: 'system', defaultContrast: 'system', storage: 'local' },
+    children: (
+      <>
+        <ProviderFixture />
+        <ThemeSwitcherFixture />
+      </>
+    ),
   },
   argTypes: {
     locale: {
       control: 'select',
       // Only locales the fixture has text for, so `lang` matches the content (3.1.2).
       options: ['sv-SE', 'sv-FI', 'fi-FI', 'en-GB'],
-      description: 'BCP 47. Drives `Intl.*`, `lang` and `dir`.',
     },
-    messages: {
-      control: 'select',
-      options: Object.keys(catalogs),
-      description:
-        'A catalog from `@kvirn-ui/i18n` (`@kvirn-ui/i18n/sv`, …), or a partial override.',
-    },
+    messages: { control: 'object' },
     dir: { control: 'inline-radio', options: [undefined, 'ltr', 'rtl'] },
-    timeZone: { control: 'text', description: 'IANA time zone.' },
     theme: { control: 'object', description: 'Theme defaults and storage. Read once.' },
     linkComponent: { control: false },
     env: { control: false },
     children: { control: false },
   },
-  play: async ({ canvasElement }) => {
-    const settings = within(canvasElement).getByRole('region', { name: 'Inställningar' })
+  globals: { locale: 'sv' },
+  parameters: { themeStore: 'story' },
+} satisfies Meta<typeof KvirnProvider>
+
+export default meta
+type Story = StoryObj<typeof meta>
+
+/**
+ * A provider and what it gives components. `theme` is read once, when the document's theme
+ * store is created: reload the story after changing it.
+ */
+export const Default: Story = {
+  play: async ({ canvas }) => {
+    const settings = canvas.getByRole('region', { name: 'Inställningar' })
     await expect(settings).toHaveAttribute('lang', 'sv-SE')
   },
 }
 
+/** Swedish strings from `@kvirn-ui/i18n/sv`. */
 export const Swedish: Story = {
-  play: async ({ canvasElement }) => {
-    const settings = within(canvasElement).getByRole('region', { name: 'Inställningar' })
+  play: async ({ canvas }) => {
+    const settings = canvas.getByRole('region', { name: 'Inställningar' })
     await expect(settings).toHaveAttribute('lang', 'sv-SE')
     await expect(within(settings).getByText('(öppnas i en ny flik)')).toBeVisible()
   },
 }
 
+/** Finnish strings and the Helsinki time zone. */
 export const Finnish: Story = {
   args: { locale: 'fi-FI', messages: fi, timeZone: 'Europe/Helsinki' },
   globals: { locale: 'fi' },
-  play: async ({ canvasElement }) => {
-    const settings = within(canvasElement).getByRole('region', { name: 'Asetukset' })
+  play: async ({ canvas }) => {
+    const settings = canvas.getByRole('region', { name: 'Asetukset' })
     await expect(settings).toHaveAttribute('lang', 'fi-FI')
     await expect(within(settings).getByText('(avautuu uuteen välilehteen)')).toBeVisible()
   },
 }
 
+/** Without `messages` the English defaults apply. */
 export const English: Story = {
   args: { locale: 'en-GB', messages: undefined, timeZone: 'Europe/London' },
   globals: { locale: 'en' },
-  play: async ({ canvasElement }) => {
-    const settings = within(canvasElement).getByRole('region', { name: 'Settings' })
+  play: async ({ canvas }) => {
+    const settings = canvas.getByRole('region', { name: 'Settings' })
     await expect(within(settings).getByText('(opens in a new tab)')).toBeVisible()
   },
 }
 
+/** `dir="rtl"` overrides the direction the locale implies. */
 export const RightToLeftOverride: Story = {
   args: { locale: 'en', messages: undefined, dir: 'rtl', timeZone: 'UTC' },
   globals: { locale: 'en', dir: 'rtl' },
-  play: async ({ canvasElement }) => {
-    const settings = within(canvasElement).getByRole('region', { name: 'Settings' })
+  play: async ({ canvas }) => {
+    const settings = canvas.getByRole('region', { name: 'Settings' })
     await expect(settings).toHaveAttribute('dir', 'rtl')
   },
 }
 
 /** A section in another language spreads `localeProps`, so `lang` matches its strings (3.1.2). */
 export const NestedLocale: Story = {
-  render: (providerProps) => (
-    <KvirnProvider {...providerProps}>
-      <main>
-        <h1>KvirnProvider</h1>
+  args: {
+    children: (
+      <>
         <ProviderFixture />
         <KvirnProvider locale="fi-FI" messages={fi}>
           <ProviderFixture />
         </KvirnProvider>
-      </main>
-    </KvirnProvider>
-  ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
+      </>
+    ),
+  },
+  play: async ({ canvas }) => {
     await expect(canvas.getByRole('region', { name: 'Inställningar' })).toHaveAttribute(
       'lang',
       'sv-SE',
@@ -168,21 +136,21 @@ export const NestedLocale: Story = {
  * time zone, comes from the Finnish page.
  */
 export const UntranslatedSection: Story = {
-  args: { locale: 'fi-FI', messages: fi, timeZone: 'Europe/Helsinki' },
-  globals: { locale: 'fi' },
-  render: (providerProps) => (
-    <KvirnProvider {...providerProps}>
-      <main>
-        <h1>KvirnProvider</h1>
+  args: {
+    locale: 'fi-FI',
+    messages: fi,
+    timeZone: 'Europe/Helsinki',
+    children: (
+      <>
         <ProviderFixture />
         <KvirnProvider locale="en-GB" messages={en}>
           <ProviderFixture />
         </KvirnProvider>
-      </main>
-    </KvirnProvider>
-  ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
+      </>
+    ),
+  },
+  globals: { locale: 'fi' },
+  play: async ({ canvas }) => {
     const finnish = canvas.getByRole('region', { name: 'Asetukset' })
     await expect(finnish).toHaveAttribute('lang', 'fi-FI')
     await expect(within(finnish).getByText('(avautuu uuteen välilehteen)')).toBeVisible()
@@ -194,12 +162,11 @@ export const UntranslatedSection: Story = {
 }
 
 /**
- * The e2e keyboard contract runs against this story, so its play function only reads:
- * it must not change the persisted theme.
+ * A theme switcher of native radio groups on `useTheme()`. The e2e keyboard contract runs
+ * against this story, so its play function only reads: it must not change the persisted theme.
  */
 export const ThemeSwitcher: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
+  play: async ({ canvas }) => {
     await expect(canvas.getByRole('group', { name: 'Färgschema' })).toBeVisible()
     await expect(canvas.getByRole('group', { name: 'Kontrast' })).toBeVisible()
   },
@@ -222,8 +189,7 @@ function themeCombination(
 ) {
   return {
     beforeEach: () => resetThemePreference,
-    play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
-      const canvas = within(canvasElement)
+    play: async ({ canvas, canvasElement, userEvent }) => {
       await userEvent.click(canvas.getByRole('radio', { name: colorScheme }))
       await userEvent.click(canvas.getByRole('radio', { name: contrast }))
       await expect(canvas.getByText(`Används nu: ${colorScheme}, ${contrast}`)).toBeVisible()
@@ -240,9 +206,14 @@ function themeCombination(
   } satisfies Story
 }
 
+/** Light, standard contrast, chosen in the switcher. */
 export const LightStandardContrast: Story = themeCombination('Ljust', 'Normal kontrast')
+/** Light, high contrast, chosen in the switcher. */
 export const LightHighContrast: Story = themeCombination('Ljust', 'Hög kontrast')
+/** Dark, standard contrast, chosen in the switcher. */
 export const DarkStandardContrast: Story = themeCombination('Mörkt', 'Normal kontrast')
+/** Dark, high contrast, chosen in the switcher. */
 export const DarkHighContrast: Story = themeCombination('Mörkt', 'Hög kontrast')
 
+/** With the forced-colors marker. The e2e suite checks it with real emulation. */
 export const ForcedColors: Story = { globals: { forcedColors: 'active' } }

@@ -1,4 +1,3 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { colorTokenNames, contrastRequirements } from '@kvirn-ui/theme'
 import type { ColorTokenName, ThemeName } from '@kvirn-ui/theme'
 import type { ReactNode } from 'react'
@@ -17,7 +16,6 @@ import {
 import type { MeasuredRequirement } from './colors-helpers.tsx'
 import {
   currentThemeName,
-  expectThemeApplied,
   isForcedColors,
   ratioOf,
   readColor,
@@ -27,9 +25,10 @@ import {
   useLiveValue,
 } from './foundation-helpers.tsx'
 
-// Foundation/Colors/Text on surface (docs/design/foundations-and-prose.md §6.6 and §7): every
-// text token on every background, measured live from the page, so an override shows up. The
-// pairs in use come from contrast-requirements.ts, the list theme:check measures.
+// The Text on surface story of Foundation/Colors (colors.stories.tsx,
+// docs/design/foundations-and-prose.md §6.6 and §7): every text token on every background,
+// measured live from the page, so an override shows up. The pairs in use come from
+// contrast-requirements.ts, the list theme:check measures.
 //
 // Never colour only (1.4.1): each cell says its ratio, tier and use in text. A sample is drawn
 // as text only at 4.5:1 or more. Below that the chip is a stripe, so the page never renders
@@ -265,7 +264,7 @@ function PairsInUse({
   )
 }
 
-function TextOnSurfacePage(): ReactNode {
+export function TextOnSurfacePage(): ReactNode {
   const [pageRef, snapshot] = useLiveValue<MatrixSnapshot, HTMLElement>(readMatrix)
   if (snapshot === undefined) {
     return <ColorsPage title="Text on surface" pageRef={pageRef} />
@@ -305,16 +304,8 @@ function TextOnSurfacePage(): ReactNode {
   )
 }
 
-const meta = {
-  title: 'Foundation/Colors/Text on surface',
-  render: () => <TextOnSurfacePage />,
-} satisfies Meta
-
-export default meta
-type Story = StoryObj<typeof meta>
-
 /** The summary counts every pair in use, and the theme passes all of them. */
-async function expectTextOnSurface(canvasElement: HTMLElement, theme: ThemeName) {
+export async function expectTextOnSurface(canvasElement: HTMLElement, theme: ThemeName) {
   const canvas = within(canvasElement)
   const count = contrastRequirements[theme].length
   await waitFor(() =>
@@ -333,26 +324,3 @@ async function expectTextOnSurface(canvasElement: HTMLElement, theme: ThemeName)
     textTokens.length * backgroundTokens.length,
   )
 }
-
-export const CurrentTheme: Story = {
-  name: 'Current theme',
-  play: async ({ canvasElement }) => {
-    await expectTextOnSurface(canvasElement, currentThemeName(canvasElement))
-  },
-}
-
-function fixedTheme(theme: ThemeName, name: string): Story {
-  return {
-    name,
-    globals: { theme },
-    play: async ({ canvasElement }) => {
-      await expectThemeApplied(canvasElement, theme)
-      await expectTextOnSurface(canvasElement, theme)
-    },
-  }
-}
-
-export const Light: Story = fixedTheme('light', 'Light')
-export const Dark: Story = fixedTheme('dark', 'Dark')
-export const LightHighContrast: Story = fixedTheme('light-contrast', 'Light, high contrast')
-export const DarkHighContrast: Story = fixedTheme('dark-contrast', 'Dark, high contrast')

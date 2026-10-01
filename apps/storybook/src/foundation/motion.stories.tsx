@@ -105,6 +105,8 @@ function MotionPage(): ReactNode {
 
 const meta = {
   title: 'Foundation/Motion',
+  // One story, named like the page, and no Docs entry, so the sidebar shows a leaf.
+  tags: ['!autodocs'],
   render: () => <MotionPage />,
 } satisfies Meta
 

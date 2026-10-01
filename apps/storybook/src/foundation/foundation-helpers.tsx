@@ -120,7 +120,7 @@ export function useThemeVersion(): number {
       query.addEventListener('change', bump)
     }
     window.addEventListener('resize', bump)
-    // The canvas selects a fixed theme in its own effect, after this component's effects.
+    // The preview selects the toolbar's theme in its own effect, after this component's effects.
     const frame = window.requestAnimationFrame(bump)
     return () => {
       observer.disconnect()
@@ -228,19 +228,42 @@ export function Swatch({ color }: { color: string }): ReactNode {
 /** A link to another story, from inside the preview frame. */
 export const storyHref = (storyId: string): string => `./?path=/story/${storyId}`
 
-const fixedThemeAttributes: Record<ThemeName, readonly ['light' | 'dark', string]> = {
+const themeAttributes: Record<ThemeName, readonly ['light' | 'dark', string]> = {
   light: ['light', 'standard'],
   dark: ['dark', 'standard'],
   'light-contrast': ['light', 'more'],
   'dark-contrast': ['dark', 'more'],
 }
 
-/** The fixed theme story's theme reached `<html>`. */
-export async function expectThemeApplied(canvasElement: HTMLElement, theme: ThemeName) {
+/** The theme the Mode and Contrast toolbars select, or `undefined` when Mode follows the OS. */
+function themeOfGlobals(globals: Record<string, unknown>): ThemeName | undefined {
+  const isMore = globals['contrast'] === 'more'
+  if (globals['mode'] === 'light') {
+    return isMore ? 'light-contrast' : 'light'
+  }
+  if (globals['mode'] === 'dark') {
+    return isMore ? 'dark-contrast' : 'dark'
+  }
+  return undefined
+}
+
+/**
+ * The toolbar's theme reached `<html>`: each storybook Vitest project starts in its own theme
+ * (ADR-0023). Returns the theme the page shows.
+ */
+export async function expectGlobalsThemeApplied(
+  canvasElement: HTMLElement,
+  globals: Record<string, unknown>,
+): Promise<ThemeName> {
+  const theme = themeOfGlobals(globals)
+  if (theme === undefined) {
+    return currentThemeName(canvasElement)
+  }
   const root = canvasElement.ownerDocument.documentElement
-  const [colorScheme, contrast] = fixedThemeAttributes[theme]
+  const [colorScheme, contrast] = themeAttributes[theme]
   await waitFor(() => expect(root).toHaveAttribute('data-kv-color-scheme', colorScheme))
   await expect(root).toHaveAttribute('data-kv-contrast', contrast)
+  return theme
 }
 
 /** A tick. Decorative: the word next to it carries the meaning (1.4.1). */

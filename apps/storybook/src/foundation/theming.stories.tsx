@@ -12,6 +12,7 @@ import type { ReactNode } from 'react'
 import { expect, waitFor, within } from 'storybook/test'
 import {
   currentThemeName,
+  expectGlobalsThemeApplied,
   formatRatio,
   isForcedColors,
   ratioOf,
@@ -21,7 +22,7 @@ import {
   useLiveValue,
   VerdictBadge,
 } from './foundation-helpers.tsx'
-import { fixedThemeStory, ForcedColorsNotice, formatMinimum, TokenPage } from './tokens-helpers.tsx'
+import { ForcedColorsNotice, formatMinimum, TokenPage } from './tokens-helpers.tsx'
 
 // Foundation/Theming (docs/design/foundations-and-prose.md §6.6): the three levels of
 // theming, with a live rebrand next to the default and a contrast check of every pair in use,
@@ -447,15 +448,16 @@ function ThemingPage(): ReactNode {
 
 const meta = {
   title: 'Foundation/Theming',
+  // One story, named like the page, and no Docs entry, so the sidebar shows a leaf.
+  tags: ['!autodocs'],
   render: () => <ThemingPage />,
 } satisfies Meta
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-async function checkTheming(canvasElement: HTMLElement, fixedTheme?: ThemeName) {
+async function checkTheming(canvasElement: HTMLElement, theme: ThemeName) {
   const canvas = within(canvasElement)
-  const theme = fixedTheme ?? currentThemeName(canvasElement)
   // Every pair in use passes on the rebrand, measured live in this theme.
   await waitFor(() =>
     expect(
@@ -467,11 +469,9 @@ async function checkTheming(canvasElement: HTMLElement, fixedTheme?: ThemeName) 
   await expect(canvas.queryByRole('list', { name: 'Failing pairs' })).toBeNull()
 }
 
-export const CurrentTheme: Story = {
-  name: 'Current theme',
-  play: async ({ canvasElement }) => checkTheming(canvasElement),
+/** The page in the toolbar's theme: each storybook Vitest project checks one (ADR-0023). */
+export const Theming: Story = {
+  play: async ({ canvasElement, globals }) => {
+    await checkTheming(canvasElement, await expectGlobalsThemeApplied(canvasElement, globals))
+  },
 }
-export const Light: Story = fixedThemeStory('light', checkTheming)
-export const Dark: Story = fixedThemeStory('dark', checkTheming)
-export const LightHighContrast: Story = fixedThemeStory('light-contrast', checkTheming)
-export const DarkHighContrast: Story = fixedThemeStory('dark-contrast', checkTheming)

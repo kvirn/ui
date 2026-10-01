@@ -1,10 +1,8 @@
 import { Button, Link } from '@kvirn-ui/react'
-import type { ThemeName } from '@kvirn-ui/theme'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useId } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { expect, within } from 'storybook/test'
-import { expectThemeApplied } from './foundation-helpers.tsx'
 import { ProseArticle, articleFor, updatedDate } from './foundations.fixture.tsx'
 import type { FixtureLocale } from './foundations.fixture.tsx'
 import {
@@ -14,7 +12,7 @@ import {
   requireElement,
 } from './typography-helpers.tsx'
 
-// Foundation/Typography/Prose (docs/design/foundations-and-prose.md §6.1–6.6 and §7):
+// Foundation/Prose (docs/design/foundations-and-prose.md §6.1–6.6 and §7):
 // kv-prose on the fixture article, a municipality's guidance page that uses every element
 // prose styles. The article follows the Locale toolbar: sv and en are written, and the other
 // locales show the English article marked lang="en" until a translator delivers them.
@@ -107,7 +105,7 @@ function SurfacesPage({ locale }: { locale: FixtureLocale }): ReactNode {
 }
 
 const meta = {
-  title: 'Foundation/Typography/Prose',
+  title: 'Foundation/Prose',
 } satisfies Meta
 
 export default meta
@@ -269,35 +267,4 @@ export const NotProse: Story = {
       await expect(getComputedStyle(link).textDecorationLine).toBe('underline')
     }
   },
-}
-
-/** The article and the panels in a fixed theme: the axe gate for prose colour contrast. */
-function fixedTheme(theme: ThemeName): Story {
-  return {
-    globals: { theme },
-    render: (_args, { globals }) => {
-      const locale = fixtureLocaleOf(globals['locale'])
-      return (
-        <main>
-          <ProseArticle locale={locale} />
-          <SurfacePanels locale={locale} />
-        </main>
-      )
-    },
-    play: async ({ canvasElement }) => {
-      await expectThemeApplied(canvasElement, theme)
-    },
-  }
-}
-
-// The names are literal so Storybook's indexer can read them.
-export const Light: Story = { ...fixedTheme('light'), name: 'Light' }
-export const Dark: Story = { ...fixedTheme('dark'), name: 'Dark' }
-export const LightHighContrast: Story = {
-  ...fixedTheme('light-contrast'),
-  name: 'Light, high contrast',
-}
-export const DarkHighContrast: Story = {
-  ...fixedTheme('dark-contrast'),
-  name: 'Dark, high contrast',
 }

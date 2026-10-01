@@ -1,0 +1,39 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Introduction" />
+
+# About this Storybook
+
+## What’s here
+
+- **Foundation** is what everything is built on: the colours, type, spacing, prose and theming of `theme.css`, read live from the page, and the provider, `KvirnProvider`.
+- **Components** are the headless components, one set of stories each. Each component has a **Docs** page with its props table and every story.
+
+Every story is styled by the default theme, `@kvirn-ui/theme/theme.css`, as described in `DESIGN.md`. The components themselves ship no CSS. The theme styles the classes they render, such as `kv-button`, their state attributes, such as `data-disabled`, and variant classes you add yourself, such as `kv-button--primary`.
+
+## Toolbars
+
+- **Mode** selects light, dark, or the device’s setting (System).
+- **Contrast** selects standard or more contrast.
+- **Locale** changes the component strings.
+- **Direction** switches between left-to-right and right-to-left.
+- **Forced colors** only marks a story. Real emulation runs in the `chromium-forced-colors` end-to-end project.
+
+Mode and Contrast select the theme through the theme store, as a user’s choice would. The `KvirnProvider` stories drive the theme store themselves, so these two toolbars don’t change them.
+
+A Docs page shows several stories in one document, so the last story’s language, direction and theme apply to the whole page. Open a single story to check one of them.
+
+## What the tests check
+
+- axe runs on every story, and a violation fails `vp test run`. Every story runs four times, once in each theme: light, dark, light with more contrast and dark with more contrast. The exceptions are the `KvirnProvider` stories, which select their own theme, and stories pinned to one theme, which say why. The Mode and Contrast toolbars are for exploring.
+- axe can’t check hover, pressed, forced colours or reading order. Check those by hand, or in the end-to-end tests. A failing check is fixed in the theme or the component, never by turning off a rule.
+
+## Where the contracts are
+
+Each component’s accessibility contract is in `packages/react/src/<name>/<name>.a11y.md`. The visual rules are in `DESIGN.md`, the theme in `packages/theme/theme.css` and the design specs in `docs/design/`.
+
+## Manual assistive-technology testing
+
+Pending for every component. Nothing in this Storybook shows that a screen reader has been tested.
+
+The Storybook interface around the stories is third-party software. Its own accessibility is outside KvirnUI’s contract.

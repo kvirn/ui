@@ -7,11 +7,19 @@ import { wcagTags } from '@kvirn-ui/testing'
 // modes. One test per row, named after it. Card handles no keys: these prove it never gets in
 // the children's way.
 
-const storyUrl = (story: string) => `/iframe.html?id=components-card--${story}&viewMode=story`
+/** `globals` selects the theme like the toolbar does, such as `mode:dark;contrast:more`. */
+const storyUrl = (story: string, globals?: string) =>
+  `/iframe.html?id=components-card--${story}&viewMode=story${globals === undefined ? '' : `&globals=${globals}`}`
 
-async function openStory(page: Page, story: string) {
-  await page.goto(storyUrl(story))
+async function openStory(page: Page, story: string, globals?: string) {
+  await page.goto(storyUrl(story, globals))
   await expect(page.locator('.kv-card').first()).toBeVisible()
+  if (globals !== undefined) {
+    // The theme store resolved the selected theme onto <html>.
+    const { mode, contrast } = Object.fromEntries(globals.split(';').map((pair) => pair.split(':')))
+    await expect(page.locator('html')).toHaveAttribute('data-kv-color-scheme', String(mode))
+    await expect(page.locator('html')).toHaveAttribute('data-kv-contrast', String(contrast))
+  }
 }
 
 test.describe('Card keyboard contract', () => {
@@ -160,13 +168,13 @@ test.describe('Card reflow and text spacing', () => {
     )
   })
 
-  // The WCAG 1.4.12 overrides (story-canvas.css: .kv-story-text-spacing), at 320px.
+  // The WCAG 1.4.12 overrides (.storybook/preview.css: .kv-story-text-spacing), at 320px.
   for (const story of ['service-card', 'news-list', 'long-finnish-text'] as const) {
     test(`text spacing overrides clip nothing at 320px (1.4.12): ${story}`, async ({ page }) => {
       await page.setViewportSize({ width: 320, height: 640 })
       await openStory(page, story)
       await page.evaluate(() => {
-        document.querySelector('.kv-story-canvas')?.classList.add('kv-story-text-spacing')
+        document.body.classList.add('kv-story-text-spacing')
       })
       await expect(page.locator('.kv-story-text-spacing')).toHaveCount(1)
       // 0.12em of the 16px body text: the overrides apply.
@@ -251,38 +259,44 @@ test.describe('Card accessibility', () => {
     `)
   })
 
-  const stories = [
-    'service-card',
-    'sidebar-text-block',
-    'news-list',
-    'nested-card',
-    'surfaces',
-    'radii',
-    'padding',
-    'dividers',
-    'prose-and-cards',
-    'plain-children',
-    'image-in-padded-body',
-    'long-finnish-text',
-    'light',
-    'dark',
-    'light-high-contrast',
-    'dark-high-contrast',
-    'rtl',
-    'forced-colors',
+  // Examples A–D in each of the four themes, selected like the Mode and Contrast toolbars.
+  const themes = [
+    'mode:light;contrast:standard',
+    'mode:dark;contrast:standard',
+    'mode:light;contrast:more',
+    'mode:dark;contrast:more',
   ] as const
+  const stories: readonly (readonly [string, string?])[] = [
+    ['service-card'],
+    ['sidebar-text-block'],
+    ['news-list'],
+    ['nested-card'],
+    ['surfaces'],
+    ['radii'],
+    ['padding'],
+    ['dividers'],
+    ['prose-and-cards'],
+    ['plain-children'],
+    ['image-in-padded-body'],
+    ['long-finnish-text'],
+    ...themes.map((theme) => ['all-examples', theme] as const),
+    ['rtl'],
+    ['forced-colors'],
+  ]
 
-  for (const story of stories) {
-    test(`no horizontal scrolling (1.4.10): ${story}`, async ({ page }) => {
-      await openStory(page, story)
+  for (const [story, globals] of stories) {
+    const name = globals === undefined ? story : `${story} (${globals})`
+
+    test(`no horizontal scrolling (1.4.10): ${name}`, async ({ page }) => {
+      await openStory(page, story, globals)
       const hasHorizontalScroll = await page.evaluate(
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
       )
       expect(hasHorizontalScroll).toBe(false)
     })
 
-    test(`no axe violations: ${story}`, async ({ page }) => {
-      await openStory(page, story)
+    test(`no axe violations: ${name}`, async ({ page }) => {
+      await openStory(page, story, globals)
       const axeResults = await new AxeBuilder({ page }).withTags([...wcagTags]).analyze()
       expect(axeResults.violations).toEqual([])
     })

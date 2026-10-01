@@ -122,11 +122,9 @@ test.describe('Button accessibility', () => {
   test('a11y tree of the focusable disabled button', async ({ page }) => {
     await openStory(page, 'focusable-when-disabled', 'Skicka')
     await expect(page.locator('#storybook-root')).toMatchAriaSnapshot(`
-      - main:
-        - heading "Button" [level=1]
-        - paragraph: Fyll i alla obligatoriska fält innan du skickar.
-        - button "Skicka" [disabled]
-        - paragraph: "Antal klick: 0"
+      - paragraph: Fyll i alla obligatoriska fält innan du skickar.
+      - button "Skicka" [disabled]
+      - paragraph: "Antal klick: 0"
     `)
   })
 

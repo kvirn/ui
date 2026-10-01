@@ -199,6 +199,8 @@ function DensityPage(): ReactNode {
 
 const meta = {
   title: 'Foundation/Density',
+  // One story, named like the page, and no Docs entry, so the sidebar shows a leaf.
+  tags: ['!autodocs'],
   render: () => <DensityPage />,
 } satisfies Meta
 

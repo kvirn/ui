@@ -1,4 +1,3 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { colorTokenNames, resolveThemeColors, themeEnvironment, themeNames } from '@kvirn-ui/theme'
 import type { ColorTokenName, ThemeName } from '@kvirn-ui/theme'
 import themeCss from '@kvirn-ui/theme/theme.css?raw'
@@ -8,7 +7,6 @@ import { expect, waitFor, within } from 'storybook/test'
 import { ColorsPage, TokenCode } from './colors-helpers.tsx'
 import {
   currentThemeName,
-  expectThemeApplied,
   forcedColorsEnvironment,
   isForcedColors,
   readPaletteSteps,
@@ -18,10 +16,11 @@ import {
   useLiveValue,
 } from './foundation-helpers.tsx'
 
-// Foundation/Colors/Semantic tokens (docs/design/foundations-and-prose.md §6.6): the second
-// tier of colour. All four themes and forced colours side by side, read from theme.css as it
-// ships, so they can be compared at once. The palette step comes from the declaration, never
-// from a hex lookup: two steps can share a value.
+// The Semantic tokens story of Foundation/Colors (colors.stories.tsx,
+// docs/design/foundations-and-prose.md §6.6): the second tier of colour. All four themes and
+// forced colours side by side, read from theme.css as it ships, so they can be compared at once.
+// The palette step comes from the declaration, never from a hex lookup: two steps can share a
+// value.
 
 interface TokenGroup {
   heading: string
@@ -162,7 +161,7 @@ function GroupTable({ group, current }: { group: TokenGroup; current: CurrentCol
   )
 }
 
-function SemanticPage(): ReactNode {
+export function SemanticPage(): ReactNode {
   const [pageRef, snapshot] = useLiveValue<SemanticSnapshot, HTMLElement>(readSemantic)
   return (
     <ColorsPage title="Semantic tokens" pageRef={pageRef}>
@@ -196,16 +195,8 @@ function SemanticPage(): ReactNode {
   )
 }
 
-const meta = {
-  title: 'Foundation/Colors/Semantic tokens',
-  render: () => <SemanticPage />,
-} satisfies Meta
-
-export default meta
-type Story = StoryObj<typeof meta>
-
 /** Every token has a row header, and the current theme is named in text, not only shown. */
-async function expectSemanticTokens(canvasElement: HTMLElement, current: ThemeName) {
+export async function expectSemanticTokens(canvasElement: HTMLElement, current: ThemeName) {
   const canvas = within(canvasElement)
   await waitFor(() =>
     expect(
@@ -217,26 +208,3 @@ async function expectSemanticTokens(canvasElement: HTMLElement, current: ThemeNa
   )
   await expect(canvas.getAllByRole('rowheader')).toHaveLength(colorTokenNames.length)
 }
-
-export const CurrentTheme: Story = {
-  name: 'Current theme',
-  play: async ({ canvasElement }) => {
-    await expectSemanticTokens(canvasElement, currentThemeName(canvasElement))
-  },
-}
-
-function fixedTheme(theme: ThemeName, name: string): Story {
-  return {
-    name,
-    globals: { theme },
-    play: async ({ canvasElement }) => {
-      await expectThemeApplied(canvasElement, theme)
-      await expectSemanticTokens(canvasElement, theme)
-    },
-  }
-}
-
-export const Light: Story = fixedTheme('light', 'Light')
-export const Dark: Story = fixedTheme('dark', 'Dark')
-export const LightHighContrast: Story = fixedTheme('light-contrast', 'Light, high contrast')
-export const DarkHighContrast: Story = fixedTheme('dark-contrast', 'Dark, high contrast')

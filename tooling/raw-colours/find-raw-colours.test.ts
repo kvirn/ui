@@ -64,7 +64,7 @@ describe('theme.css and app CSS (ADR-0013)', () => {
       expect.arrayContaining([
         'packages/theme/theme.css',
         'apps/docs/app/docs.css',
-        'apps/storybook/src/story-canvas.css',
+        'apps/storybook/.storybook/preview.css',
       ]),
     )
   })

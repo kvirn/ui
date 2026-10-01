@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { CSSProperties, ReactNode } from 'react'
 import { expect, waitFor, within } from 'storybook/test'
 import {
+  expectGlobalsThemeApplied,
   formatRatio,
   isForcedColors,
   ratioOf,
@@ -11,13 +12,7 @@ import {
   Swatch,
   useLiveValue,
 } from './foundation-helpers.tsx'
-import {
-  ContrastResult,
-  fixedThemeStory,
-  ForcedColorsNotice,
-  readTokenText,
-  TokenPage,
-} from './tokens-helpers.tsx'
+import { ContrastResult, ForcedColorsNotice, readTokenText, TokenPage } from './tokens-helpers.tsx'
 
 // Foundation/Borders and elevation (docs/design/foundations-and-prose.md §6.6): line widths,
 // the two border colours with their live ratios, and the elevation levels from DESIGN.md.
@@ -273,6 +268,8 @@ function BordersElevationPage(): ReactNode {
 
 const meta = {
   title: 'Foundation/Borders and elevation',
+  // One story, named like the page, and no Docs entry, so the sidebar shows a leaf.
+  tags: ['!autodocs'],
   render: () => <BordersElevationPage />,
 } satisfies Meta
 
@@ -292,11 +289,11 @@ async function checkBorders(canvasElement: HTMLElement) {
   await waitFor(() => expect(within(controlRow).getByText('Passes')).toBeVisible())
 }
 
-export const CurrentTheme: Story = {
-  name: 'Current theme',
-  play: async ({ canvasElement }) => checkBorders(canvasElement),
+/** The page in the toolbar's theme: each storybook Vitest project checks one (ADR-0023). */
+export const BordersAndElevation: Story = {
+  name: 'Borders and elevation',
+  play: async ({ canvasElement, globals }) => {
+    await expectGlobalsThemeApplied(canvasElement, globals)
+    await checkBorders(canvasElement)
+  },
 }
-export const Light: Story = fixedThemeStory('light', checkBorders)
-export const Dark: Story = fixedThemeStory('dark', checkBorders)
-export const LightHighContrast: Story = fixedThemeStory('light-contrast', checkBorders)
-export const DarkHighContrast: Story = fixedThemeStory('dark-contrast', checkBorders)

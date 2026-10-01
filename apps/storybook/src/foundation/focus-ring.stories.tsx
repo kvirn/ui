@@ -4,6 +4,7 @@ import { useId } from 'react'
 import type { ReactNode } from 'react'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import {
+  expectGlobalsThemeApplied,
   formatRatio,
   isForcedColors,
   ratioOf,
@@ -13,13 +14,7 @@ import {
   Swatch,
   useLiveValue,
 } from './foundation-helpers.tsx'
-import {
-  ContrastResult,
-  fixedThemeStory,
-  ForcedColorsNotice,
-  readTokenText,
-  TokenPage,
-} from './tokens-helpers.tsx'
+import { ContrastResult, ForcedColorsNotice, readTokenText, TokenPage } from './tokens-helpers.tsx'
 
 // Foundation/Focus ring (docs/design/foundations-and-prose.md §6.6): the ring on a Button, a
 // Link and a scroll region, on each background it's used on, with its live ratio. The
@@ -211,6 +206,8 @@ function FocusRingPage(): ReactNode {
 
 const meta = {
   title: 'Foundation/Focus ring',
+  // One story, named like the page, and no Docs entry, so the sidebar shows a leaf.
+  tags: ['!autodocs'],
   render: () => <FocusRingPage />,
 } satisfies Meta
 
@@ -233,9 +230,11 @@ async function checkFocusRing(canvasElement: HTMLElement) {
   await expect(canvas.getByRole('button', { name: 'Send application' })).toHaveStyle(ringStyle)
 }
 
-export const CurrentTheme: Story = {
-  name: 'Current theme',
-  play: async ({ canvasElement }) => {
+/** The page in the toolbar's theme: each storybook Vitest project checks one (ADR-0023). */
+export const FocusRing: Story = {
+  name: 'Focus ring',
+  play: async ({ canvasElement, globals }) => {
+    await expectGlobalsThemeApplied(canvasElement, globals)
     await checkFocusRing(canvasElement)
     const canvas = within(canvasElement)
     const liveButton = canvas.getByRole('button', { name: 'Try the button' })
@@ -258,7 +257,3 @@ export const CurrentTheme: Story = {
     await expect(liveButton).toHaveStyle(ringStyle)
   },
 }
-export const Light: Story = fixedThemeStory('light', checkFocusRing)
-export const Dark: Story = fixedThemeStory('dark', checkFocusRing)
-export const LightHighContrast: Story = fixedThemeStory('light-contrast', checkFocusRing)
-export const DarkHighContrast: Story = fixedThemeStory('dark-contrast', checkFocusRing)

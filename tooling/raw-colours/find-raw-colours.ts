@@ -80,6 +80,8 @@ export function listCheckedCssFiles(repositoryRoot: string): string[] {
   return [
     join(repositoryRoot, 'packages/theme/theme.css'),
     ...listCssFiles(join(repositoryRoot, 'apps/docs')),
+    // The preview's stylesheet is in .storybook, which the walk skips as a dot directory.
+    ...listCssFiles(join(repositoryRoot, 'apps/storybook/.storybook')),
     ...listCssFiles(join(repositoryRoot, 'apps/storybook/src')),
   ].toSorted()
 }

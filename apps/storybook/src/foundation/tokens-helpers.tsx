@@ -1,8 +1,8 @@
 import { readRootProperties, themeEnvironment } from '@kvirn-ui/theme'
-import type { ContrastMinimum, ThemeName } from '@kvirn-ui/theme'
+import type { ContrastMinimum } from '@kvirn-ui/theme'
 import themeCss from '@kvirn-ui/theme/theme.css?raw'
 import type { ReactNode, Ref } from 'react'
-import { expectThemeApplied, readLength, readProperty, themeLabels } from './foundation-helpers.tsx'
+import { readLength, readProperty } from './foundation-helpers.tsx'
 
 // Shared by the non-colour Foundation pages (spacing, radius, borders and elevation, focus
 // ring, motion, density, theming). docs/design/foundations-and-prose.md §6.6. Storybook
@@ -93,7 +93,7 @@ export function ForcedColorsNotice(): ReactNode {
 /**
  * A Foundation page whose root element is read live (`useLiveValue`). The same markup as
  * `FoundationPage`, with a ref: wrapping the content in another element would break the
- * measure rules in story-canvas.css, which match the page's direct children.
+ * measure rules in preview.css, which match the page's direct children.
  */
 export function TokenPage({
   title,
@@ -110,22 +110,4 @@ export function TokenPage({
       {children}
     </main>
   )
-}
-
-/**
- * A story fixed to one theme: the axe gate for colour contrast in that theme. `check` runs
- * after the theme has reached `<html>`.
- */
-export function fixedThemeStory(
-  theme: ThemeName,
-  check?: (canvasElement: HTMLElement, theme: ThemeName) => Promise<void>,
-) {
-  return {
-    name: themeLabels[theme],
-    globals: { theme },
-    play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
-      await expectThemeApplied(canvasElement, theme)
-      await check?.(canvasElement, theme)
-    },
-  }
 }

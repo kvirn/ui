@@ -1,4 +1,3 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { readRootProperties, themeEnvironment, themeNames } from '@kvirn-ui/theme'
 import type { ThemeName } from '@kvirn-ui/theme'
 import themeCss from '@kvirn-ui/theme/theme.css?raw'
@@ -7,7 +6,6 @@ import { expect, waitFor, within } from 'storybook/test'
 import { ColorsPage, ratioText } from './colors-helpers.tsx'
 import {
   currentThemeName,
-  expectThemeApplied,
   forcedColorsEnvironment,
   isForcedColors,
   readColor,
@@ -17,10 +15,10 @@ import {
   VerdictBadge,
 } from './foundation-helpers.tsx'
 
-// Foundation/Colors/Palette (docs/design/foundations-and-prose.md §6.6): the raw scales, the
-// first tier of colour. They're named by role, not hue, so a rebrand overrides one scale.
-// Every hex is read live from the page, so an override on :root shows up. The white and black
-// ratios help a rebrand pick a step for text or a fill.
+// The Palette story of Foundation/Colors (colors.stories.tsx, docs/design/foundations-and-prose.md
+// §6.6): the raw scales, the first tier of colour. They're named by role, not hue, so a rebrand
+// overrides one scale. Every hex is read live from the page, so an override on :root shows up.
+// The white and black ratios help a rebrand pick a step for text or a fill.
 
 interface Scale {
   name: string
@@ -239,7 +237,7 @@ function ColorCards({
   )
 }
 
-function PalettePage(): ReactNode {
+export function PalettePage(): ReactNode {
   const [pageRef, snapshot] = useLiveValue<PaletteSnapshot, HTMLElement>(readPalette)
   return (
     <ColorsPage title="Palette" pageRef={pageRef}>
@@ -254,7 +252,7 @@ function PalettePage(): ReactNode {
             Each scale is named for its role, not its hue, so a rebrand never needs a refactor.
             Override the 11 steps of one scale on <code>:root</code>, such as{' '}
             <code>--kv-primary-*</code> with your brand’s colours, and all four themes follow. A
-            swapped scale can break contrast, so check the result on Colors/Text on surface or with{' '}
+            swapped scale can break contrast, so check the result on Colors: Text on surface or with{' '}
             <code>checkThemeCss()</code>.
           </p>
           <p>
@@ -273,7 +271,7 @@ function PalettePage(): ReactNode {
             step can change with the theme, so use them rather than a step and every theme and
             rebrand reaches your CSS. <code>--kv-white</code> and <code>--kv-black</code> are raw
             values, and <code>--kv-black</code> is a near-black, not pure black. All semantic tokens
-            are on Colors/Semantic tokens.
+            are on Colors: Semantic tokens.
           </p>
           <ColorCards
             label="Aliases"
@@ -321,16 +319,8 @@ function ScaleSection({
   )
 }
 
-const meta = {
-  title: 'Foundation/Colors/Palette',
-  render: () => <PalettePage />,
-} satisfies Meta
-
-export default meta
-type Story = StoryObj<typeof meta>
-
 /** Every scale has a heading and a named list of cards, and verdicts are in words (1.4.1). */
-async function expectPalette(canvasElement: HTMLElement) {
+export async function expectPalette(canvasElement: HTMLElement) {
   const canvas = within(canvasElement)
   await waitFor(() =>
     expect(canvas.getByRole('heading', { level: 2, name: 'Neutral' })).toBeVisible(),
@@ -349,26 +339,3 @@ async function expectPalette(canvasElement: HTMLElement) {
   await expect(verdicts.length).toBeGreaterThan(0)
   await expect(verdicts.every((verdict) => /^(?:Pass|Fail)$/.test(verdict.textContent))).toBe(true)
 }
-
-export const CurrentTheme: Story = {
-  name: 'Current theme',
-  play: async ({ canvasElement }) => {
-    await expectPalette(canvasElement)
-  },
-}
-
-function fixedTheme(theme: ThemeName, name: string): Story {
-  return {
-    name,
-    globals: { theme },
-    play: async ({ canvasElement }) => {
-      await expectThemeApplied(canvasElement, theme)
-      await expectPalette(canvasElement)
-    },
-  }
-}
-
-export const Light: Story = fixedTheme('light', 'Light')
-export const Dark: Story = fixedTheme('dark', 'Dark')
-export const LightHighContrast: Story = fixedTheme('light-contrast', 'Light, high contrast')
-export const DarkHighContrast: Story = fixedTheme('dark-contrast', 'Dark, high contrast')
