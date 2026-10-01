@@ -14,6 +14,17 @@ export type { UseDateSettingsResult } from './provider/use-date-settings.ts'
 export { useTheme } from './provider/use-theme.ts'
 export type { UseThemeResult } from './provider/use-theme.ts'
 export type { Register, RegisteredLinkComponent } from './provider/register.ts'
+export { mergeProps } from './merge-props/merge-props.ts'
+export type { MergedProps } from './merge-props/merge-props.ts'
+export type { RenderProp } from './render/render-part.ts'
+export { Button } from './button/button.tsx'
+export type { ButtonProps, ButtonState } from './button/button.tsx'
+export { useButton } from './button/use-button.ts'
+export type { ButtonPartProps, UseButtonOptions, UseButtonResult } from './button/use-button.ts'
+export { Link, LinkNewTabNotice } from './link/link.tsx'
+export type { LinkElementProps, LinkNewTabNoticeProps, LinkProps, LinkState } from './link/link.tsx'
+export { useLink } from './link/use-link.ts'
+export type { LinkCurrent, LinkPartProps, UseLinkOptions, UseLinkResult } from './link/use-link.ts'
 export type {
   ColorSchemePreference,
   ContrastPreference,

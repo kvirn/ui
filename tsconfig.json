@@ -5,6 +5,7 @@
     "packages/*/src",
     "packages/*/scripts",
     "tooling/commit-message",
+    "tooling/raw-colours",
     "apps/storybook/.storybook",
     "apps/storybook/src"
   ]

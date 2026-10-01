@@ -8,7 +8,7 @@ apps/storybook     Storybook (Vite builder)
 packages/core      @kvirn-ui/core     state machines, focus/keyboard utilities
 packages/react     @kvirn-ui/react    hooks + compound components
 packages/i18n      @kvirn-ui/i18n     message catalogs
-packages/theme     @kvirn-ui/theme    tokens, default theme, Tailwind preset
+packages/theme     @kvirn-ui/theme    theme.css: role scales, semantic tokens, component styles
 packages/blocks    @kvirn-ui/blocks   styled copy-in patterns (Tailwind Plus equivalent)
 packages/testing   @kvirn-ui/testing  a11y test helpers (dev only)
 tooling/           shared tsconfig + vite presets
@@ -51,8 +51,8 @@ Behaviour is visible where the element is rendered. You can see what a button do
 
 - **The hook spreads prop objects directly onto your elements.** There's no hidden DOM querying, no wiring by global ID or selector, and no module side effects.
 - **Each part renders exactly one element.**
-- **Composing your own handlers uses `mergeProps(ownProps, disclosure.triggerProps)`.** It chains event handlers, merges `className` and `style`, and merges refs. It also warns on conflicting `id`s.
-- **Change the element with the `render` prop**, not `asChild`. `render={<a href="/help" />}` or `render={(partProps, state) => <MyButton {...partProps} />}`. This keeps the swap explicit and typed.
+- **Composing your own handlers uses `mergeProps(ownProps, disclosure.triggerProps)`.** It chains event handlers in argument order, merges `className` and `style`, and merges refs. Otherwise the later defined value wins, and `undefined` never overrides. It also warns on conflicting `id`s (ADR-0015). A handler that a disabled part must block goes to the hook as an option instead, for example `useButton({ onClick })` (ADR-0016).
+- **Change the element with the `render` prop**, not `asChild`. `render={<a href="/help" />}` or `render={(partProps, state) => <MyButton {...partProps} />}`. An element keeps its own plain props and gets the part's props merged in (`mergeProps(partProps, element.props)`). This keeps the swap explicit and typed.
 
 ```tsx
 // Hook: full control, behaviour at the call site
@@ -97,16 +97,19 @@ Both forms are exported: `Disclosure.Trigger` and the named export `DisclosureTr
 
 ## Styling contract
 
-Headless packages ship zero CSS. State is exposed only as attributes:
+Headless packages ship zero CSS. Parts and state are exposed only as attributes:
 
 | Attribute                                                                 | Values                                                                      |
 | ------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `data-kv`                                                                 | the part's stable name: `button`, `link`, `link-new-tab-notice`, …          |
 | `data-state`                                                              | `open`/`closed`, `checked`/`unchecked`/`indeterminate`, `active`/`inactive` |
 | `data-disabled`, `data-invalid`, `data-focus-visible`, `data-highlighted` | present / absent                                                            |
 | `data-orientation`                                                        | `horizontal` / `vertical`                                                   |
 | `data-placement`                                                          | `top`, `bottom`, …                                                          |
 
-**Tokens** (`@kvirn-ui/theme`) are CSS custom properties with the `--kv-` prefix in three tiers: primitive (`--kv-blue-600`), semantic (`--kv-color-accent`, `--kv-focus-ring-width`) and component (`--kv-dialog-radius`). A municipality rebrands by overriding the semantic tokens. `theme:check` enforces 4.5:1 contrast for text and 3:1 for UI and focus.
+`data-kv` is part of the public API (semver). The default theme selects on it, so importing `@kvirn-ui/theme/theme.css` styles every component and removing the import unstyles them again (ADR-0013). Variants the consumer chooses are plain attributes, for example `<Button data-variant="primary">`, never props of the headless component.
+
+**Tokens** (`@kvirn-ui/theme/theme.css`, hand-written, the source of truth) are CSS custom properties with the `--kv-` prefix in two tiers: a palette of role scales named by role, never by hue (`--kv-primary-500`, `--kv-neutral-50`; also `secondary`, `accent`, `danger`, `success`, `warning`), and semantic tokens that point at the steps per theme (`--kv-color-primary`, `--kv-focus-ring-width`). A municipality rebrands by overriding one scale on `:root` (the eleven `--kv-primary-*` steps), and all four themes follow; or by pointing a single semantic token at another step (ADR-0019). `theme:check` reads `theme.css` and enforces 4.5:1 contrast for text and 3:1 for UI and focus.
 
 **Default theme** comes in light, dark and high-contrast variants. Under `forced-colors` it uses system colours (and never relies on background alone). Motion only runs under `prefers-reduced-motion: no-preference`. Focus rings are restyled, never removed. Targets are at least 24px, and 44px in touch-first blocks.
 

@@ -5,7 +5,7 @@ const storybookUrl = 'http://localhost:6006'
 // Keyboard contract, focus and display modes, run against Storybook (docs/engineering.md).
 export default defineConfig({
   testDir: '.',
-  testMatch: ['packages/*/src/**/*.e2e.ts', 'apps/storybook/src/**/*.e2e.ts'],
+  testMatch: ['packages/*/src/**/*.e2e.ts'],
   forbidOnly: true,
   fullyParallel: true,
   retries: 0,

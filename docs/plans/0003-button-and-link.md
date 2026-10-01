@@ -1,9 +1,9 @@
 # Plan 0003: Button and Link
 
-- **Status:** Approved
+- **Status:** Done (alpha. Manual AT and Sámi review pending before beta)
 - **Owner:** Maintainer
 - **Created:** 2026-09-30 · **Target:** M0 proof / M1
-- **Related:** ADR-0005, ADR-0007, Plan 0002
+- **Related:** ADR-0005, ADR-0007, ADR-0015, ADR-0016, Plan 0002
 
 ## Goal
 
@@ -81,14 +81,14 @@ Overridable via `<Link messages>`, provider `messages`, or `Link.NewTabNotice` c
 
 ## Tasks
 
-- [ ] `button.a11y.md` and `link.a11y.md` from the contract template
-- [ ] Failing tests: Vitest + axe, Playwright rows above
-- [ ] `core`: none expected (stateless). Revisit for Toggle
-- [ ] `react`: `useButton`, `Button`, `useLink`, `Link`, `Link.NewTabNotice`, `mergeProps` (first user)
-- [ ] i18n string in all 6 locales, Sámi reviewed by a native speaker
-- [ ] Stories: default, disabled, focusable-disabled, submit in a form, current page, new tab, router link (mock), RTL, forced-colors
-- [ ] accessibility-reviewer APPROVE
-- [ ] Roadmap: add Link, set status. Changeset
+- [x] `button.a11y.md` and `link.a11y.md` from the contract template
+- [x] Failing tests: Vitest + axe, Playwright rows above
+- [x] `core`: none expected (stateless). Revisit for Toggle
+- [x] `react`: `useButton`, `Button`, `useLink`, `Link`, `Link.NewTabNotice`, `mergeProps` (first user). Also internal `renderPart` (`render` prop), `useFocusVisible` and `useMergedRef` (ADR-0015, ADR-0016)
+- [ ] i18n string in all 6 locales, Sámi reviewed by a native speaker. The key exists in all 6 locales (Plan 0002). `se` is still an English placeholder, `TODO(native-review)`: not reviewed. **Blocks `beta`** (3.1.2: English text under `lang="se"`)
+- [x] Stories: default, disabled, focusable-disabled, submit in a form, current page, new tab, router link (mock), RTL, forced-colors. Also new-tab notice overrides and other language. The smoke story and its e2e are deleted
+- [x] accessibility-reviewer APPROVE (second round, after the render-element fix)
+- [x] Roadmap: add Link, set status. Changeset
 
 ## Risks & open questions
 
@@ -97,5 +97,5 @@ Overridable via `<Link messages>`, provider `messages`, or `Link.NewTabNotice` c
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass (manual AT `pending`)
-- [ ] Plan tasks ticked, `docs/roadmap.md` updated
+- [x] All quality gates in AGENTS.md pass (manual AT `pending`, Sámi native review open)
+- [x] Plan tasks ticked, `docs/roadmap.md` updated
