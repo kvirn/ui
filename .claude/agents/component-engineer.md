@@ -2,7 +2,7 @@
 name: component-engineer
 description: Implements a planned KvirnUI change (new component, bug fix, a11y defect) end to end — tests first, then code, then all quality gates. Use proactively once a plan in docs/plans/ exists.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: inherit
+model: sonnet
 skills:
   - accessibility
   - testing
