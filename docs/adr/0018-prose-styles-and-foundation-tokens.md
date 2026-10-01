@@ -1,9 +1,10 @@
-# ADR-0018: Prose styles by attribute, and prose, lead and shadow tokens
+# ADR-0018: Prose styles by class, and prose, lead and shadow tokens
 
 - **Status:** Accepted (2026-10-01, by the maintainer)
 - **Date:** 2026-10-01
 - **Deciders:** Maintainer (proposed by the ux-designer agent)
 - **Tags:** theming, api
+- **Revised:** 2026-10-01, with ADR-0013: prose moved from `data-*` attributes to classes
 
 ## Context
 
@@ -11,7 +12,7 @@ The maintainer asked for Tailwind-typography-style prose and a Storybook Foundat
 
 ## Decision drivers
 
-- Consistency with ADR-0013: no class vocabulary, and consumer choices are `data-kv-*` attributes
+- Consistency with ADR-0013: consumer choices are `kv-*` classes, and `data-*` is only state
 - Components inside prose keep their own look
 - No text under 16px for essential content (DESIGN.md)
 - WCAG 2.2 AA: 1.3.1 (list and table semantics survive), 1.4.10, 1.4.12, 1.4.3
@@ -19,15 +20,15 @@ The maintainer asked for Tailwind-typography-style prose and a Storybook Foundat
 
 ## Options considered
 
-### Option A: a `.kv-prose` class, like Tailwind's `.prose`
+### Option A: a `kv-prose` class, with `kv-prose--large`, `kv-not-prose`, `kv-lead` and `kv-scroll-region`
 
-- ✅ Familiar to Tailwind users
-- ❌ It brings back the class vocabulary ADR-0013 removed, and clashes with Tailwind's own `.prose`
+- ✅ Familiar to Tailwind users (`.prose`), and the same shape as `kv-compact` and `kv-nav` (ADR-0013). The `kv-` prefix keeps it apart from Tailwind's own `.prose`
+- ❌ Five more public classes to version
 
-### Option B: a `data-kv-prose` attribute, with `data-kv-not-prose`, `data-kv-lead` and `data-kv-scroll-region`
+### Option B: a `data-kv-prose` attribute, and the same for the others
 
-- ✅ The same shape as `data-kv-density` and `data-kv-nav`. No clash with Tailwind
-- ❌ Four more public attributes to version
+- ✅ No class names to learn
+- ❌ Uses `data-*` for styling, which ADR-0013 keeps for state
 
 ### Option C: no prose, only documentation
 
@@ -35,10 +36,10 @@ The maintainer asked for Tailwind-typography-style prose and a Storybook Foundat
 
 ## Decision
 
-We will use Option B:
+We will use Option A:
 
-- **`data-kv-prose`** has two sizes, the default (`body`) and `"large"` (`body-large`). There is no small size.
-- **Zero-specificity `:where()` rules** in `@layer kv`. They never style `[data-kv]` elements, `[data-kv-not-prose]` subtrees, or the contents of `[data-kv-nav]` and `[data-kv-button-group]`.
+- **`kv-prose`** has two sizes, the default (`body`) and `kv-prose kv-prose--large` (`body-large`). There is no small size. `kv-lead` marks the lead paragraph, `kv-scroll-region` a wide table's labelled, focusable region, and `kv-not-prose` anything prose shouldn't style.
+- **Zero-specificity `:where()` rules** in `@layer kv`. They never style a component part, or the contents of `.kv-not-prose`, `.kv-nav` and `.kv-button-group`. The component parts are an explicit list of their classes in `theme.css` (`kv-button`, `kv-link`, `kv-link-new-tab-notice`, `kv-card-header`, `kv-card-body`, `kv-card-footer`). A card's Root isn't on it: it gets prose's block margins (ADR-0022).
 - **Tokens:**
   - `--kv-prose-measure` (70ch)
   - `--kv-prose-space` (space-5, or space-6 in large)
@@ -69,12 +70,12 @@ The two em values are new, relative values. They're relative so that the list in
   - One wrapper styles CMS content accessibly.
   - The Storybook canvas and the docs site can drop their own article CSS.
 - Negative / trade-offs:
-  - Four new public attributes, and the not-prose list in `theme.css` must grow with each new consumer attribute.
+  - Five new public classes, and the not-prose list in `theme.css` must grow with each new component part class and consumer class.
   - Unlayered page CSS such as `.kv-story-canvas p` overrides prose, and must be scoped away.
-  - Prose inside `data-kv-not-prose` isn't re-enabled.
+  - Prose inside `kv-not-prose` isn't re-enabled.
 - Follow-ups:
-  - Done: DESIGN.md has the `lead` role, a Prose entry under Components, the shadow tokens and the attributes under Theming. `theme.css` implements it (Plan 0006).
-  - A test that every consumer `data-kv-*` attribute in `theme.css` is on prose's not-prose list, so the list can't fall behind.
+  - Done: DESIGN.md has the `lead` role, a Prose entry under Components, the shadow tokens and the classes under Theming. `theme.css` implements it (Plan 0006).
+  - A test that every component part class and consumer class in `theme.css` is on prose's not-prose list, so the list can't fall behind.
 
 ## Validation
 

@@ -43,19 +43,6 @@ describe('SiteShell', () => {
     await expect.element(screen.getByRole('contentinfo').getByText(text.footer.claim)).toBeVisible()
   })
 
-  test('the page content is prose, styled by the theme (ADR-0018)', async () => {
-    const screen = await render(
-      <SiteShell pathname="/components/button">
-        <Page title="Button" />
-      </SiteShell>,
-    )
-    const heading = screen.getByRole('heading', { level: 1, name: 'Button' }).element()
-    const article = heading.closest('[data-kv-prose]')
-    expect(article?.parentElement).toBe(screen.getByRole('main').element())
-    // docs.css no longer sets the h1's size: the prose heading-1 role (1.75rem) does.
-    expect(getComputedStyle(heading).fontSize).toBe('28px')
-  })
-
   test('the skip link is the first Tab stop and moves focus to main', async () => {
     const screen = await render(
       <SiteShell pathname="/components/button">

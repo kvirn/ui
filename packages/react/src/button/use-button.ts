@@ -21,8 +21,11 @@ export interface UseButtonOptions {
 
 /** Spread on a `<button>`. */
 export interface ButtonPartProps {
-  /** The stable part name, for `@kvirn-ui/theme` and your own CSS: `[data-kv='button']`. */
-  'data-kv': 'button'
+  /**
+   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-button`. Add a variant class
+   * of your own next to it with `mergeProps`: class names join.
+   */
+  className: 'kv-button'
   type: 'button' | 'submit' | 'reset'
   disabled?: true
   'aria-disabled'?: 'true'
@@ -73,7 +76,7 @@ export function useButton({
 
   const buttonProps = useMemo<ButtonPartProps>(
     () => ({
-      'data-kv': 'button',
+      className: 'kv-button',
       type,
       ...(isNativelyDisabled ? { disabled: true } : {}),
       ...(isFocusableWhenDisabled ? { 'aria-disabled': 'true' } : {}),

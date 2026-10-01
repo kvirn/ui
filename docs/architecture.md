@@ -97,17 +97,25 @@ Both forms are exported: `Disclosure.Trigger` and the named export `DisclosureTr
 
 ## Styling contract
 
-Headless packages ship zero CSS. Parts and state are exposed only as attributes:
+Headless packages ship zero CSS. Classes style, and `data-*` attributes are state.
+
+**Parts are classes.** Every part renders its own stable class, `kv-<part>`: `kv-button`, `kv-link`, `kv-link-new-tab-notice`, `kv-card`, `kv-card-header`, `kv-card-body`, `kv-card-footer`, … Hooks put it in their part props as `className` (`buttonProps.className: 'kv-button'`). A consumer's `className`, on the component or on a `render` element, joins it through `mergeProps` and never replaces it, so the theme keeps styling the part. In the `render` function form, keep `className` when you spread the part props.
+
+**Variants and options are modifier classes** the consumer adds, never props of the headless component: `kv-<part>--<option>`, for example `<Button className="kv-button--primary">` or `<Card.Root className="kv-card--surface">`. Context the consumer sets on a container is a class too: `kv-compact`, `kv-nav`, `kv-button-group`, `kv-prose`.
+
+**State is `data-*`,** set by the components and never by the consumer:
 
 | Attribute                                                                 | Values                                                                      |
 | ------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `data-kv`                                                                 | the part's stable name: `button`, `link`, `link-new-tab-notice`, …          |
 | `data-state`                                                              | `open`/`closed`, `checked`/`unchecked`/`indeterminate`, `active`/`inactive` |
 | `data-disabled`, `data-invalid`, `data-focus-visible`, `data-highlighted` | present / absent                                                            |
+| `data-current`                                                            | present / absent                                                            |
 | `data-orientation`                                                        | `horizontal` / `vertical`                                                   |
 | `data-placement`                                                          | `top`, `bottom`, …                                                          |
 
-`data-kv` is part of the public API (semver). The default theme selects on it, so importing `@kvirn-ui/theme/theme.css` styles every component and removing the import unstyles them again (ADR-0013). Variants the consumer chooses are plain attributes, for example `<Button data-variant="primary">`, never props of the headless component.
+The theme state on `<html>`, `data-kv-color-scheme` and `data-kv-contrast`, is state too: `KvirnProvider` and `KvirnThemeScript` set it.
+
+The part classes, the modifier classes and the state attributes are part of the public API (semver). The default theme selects on them, so importing `@kvirn-ui/theme/theme.css` styles every component and removing the import unstyles them again (ADR-0013).
 
 **Tokens** (`@kvirn-ui/theme/theme.css`, hand-written, the source of truth) are CSS custom properties with the `--kv-` prefix in two tiers: a palette of role scales named by role, never by hue (`--kv-primary-500`, `--kv-neutral-50`; also `secondary`, `accent`, `danger`, `success`, `warning`), and semantic tokens that point at the steps per theme (`--kv-color-primary`, `--kv-focus-ring-width`). A municipality rebrands by overriding one scale on `:root` (the eleven `--kv-primary-*` steps), and all four themes follow; or by pointing a single semantic token at another step (ADR-0019). `theme:check` reads `theme.css` and enforces 4.5:1 contrast for text and 3:1 for UI and focus.
 

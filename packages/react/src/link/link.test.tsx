@@ -47,18 +47,18 @@ describe('rendering', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('marks its parts with data-kv="link" and data-kv="link-new-tab-notice"', async () => {
+  test('marks its parts with class="kv-link" and class="kv-link-new-tab-notice"', async () => {
     await render(
       <Link href="https://www.digg.se/" target="_blank">
         Digg <Link.NewTabNotice />
       </Link>,
     )
-    await expect
-      .element(page.getByRole('link', { name: 'Digg (opens in a new tab)' }))
-      .toHaveAttribute('data-kv', 'link')
-    await expect
-      .element(page.getByText('(opens in a new tab)'))
-      .toHaveAttribute('data-kv', 'link-new-tab-notice')
+    const link = page.getByRole('link', { name: 'Digg (opens in a new tab)' })
+    const notice = page.getByText('(opens in a new tab)')
+    expect(link.element().className).toBe('kv-link')
+    expect(notice.element().className).toBe('kv-link-new-tab-notice')
+    await expect.element(link).not.toHaveAttribute('data-kv')
+    await expect.element(notice).not.toHaveAttribute('data-kv')
   })
 
   test('forwards its ref, className and other anchor props', async () => {
@@ -70,7 +70,7 @@ describe('rendering', () => {
     )
     const link = page.getByRole('link', { name: 'Blankett' })
     expect(ref.current).toBe(link.element())
-    await expect.element(link).toHaveClass('lank')
+    await expect.element(link).toHaveClass('lank', 'kv-link')
     await expect.element(link).toHaveAttribute('download', '')
   })
 
@@ -305,8 +305,17 @@ describe('new-tab notice (ADR-0007 resolution)', () => {
     )
     const notice = page.getByText('(opens in a new tab)')
     expect(notice.element().tagName).toBe('SPAN')
-    await expect.element(notice).toHaveClass('visuellt-dold')
+    await expect.element(notice).toHaveClass('visuellt-dold', 'kv-link-new-tab-notice')
     expect(page.getByText('(extern länk)').element().tagName).toBe('EM')
+  })
+
+  test('a render element’s own class joins the notice’s class', async () => {
+    await render(
+      <LinkNewTabNotice render={<em className="egen" />}>(extern länk)</LinkNewTabNotice>,
+    )
+    await expect
+      .element(page.getByText('(extern länk)'))
+      .toHaveClass('kv-link-new-tab-notice', 'egen')
   })
 })
 
@@ -348,6 +357,18 @@ describe('router link (ADR-0005)', () => {
     await expect.element(link).not.toHaveAttribute('data-router-link')
     await expect.element(link).toHaveAttribute('href', '#fil')
     await expect.element(link).toHaveAttribute('download', '')
+  })
+
+  test('a render element’s own class joins the part’s class', async () => {
+    const styledAnchor = createElement('a', { className: 'egen' })
+    await render(
+      <Link render={styledAnchor} href="#fil" className="fran-link">
+        Blankett
+      </Link>,
+    )
+    await expect
+      .element(page.getByRole('link', { name: 'Blankett' }))
+      .toHaveClass('kv-link', 'fran-link', 'egen')
   })
 
   test('target and rel on a render element go through useLink', async () => {
@@ -485,7 +506,7 @@ describe('useLink', () => {
     await expect.element(link).toHaveAttribute('rel', 'noopener noreferrer')
     await expect.element(link).toHaveAttribute('target', '_blank')
     await expect.element(link).toHaveAttribute('aria-current', 'page')
-    await expect.element(link).toHaveAttribute('data-kv', 'link')
+    await expect.element(link).toHaveClass('kv-link')
     await expectNoA11yViolations(container)
   })
 
@@ -512,7 +533,7 @@ describe('server rendering', () => {
       </KvirnProvider>,
     )
     expect(html).toBe(
-      '<a href="https://www.digg.se/" data-kv="link" target="_blank" rel="noopener noreferrer" aria-current="page" data-current="">Digg <span data-kv="link-new-tab-notice">(öppnas i en ny flik)</span></a>',
+      '<a href="https://www.digg.se/" class="kv-link" target="_blank" rel="noopener noreferrer" aria-current="page" data-current="">Digg <span class="kv-link-new-tab-notice">(öppnas i en ny flik)</span></a>',
     )
   })
 })
@@ -528,7 +549,8 @@ describe('types', () => {
 
   test('exports the hook and part types', () => {
     expectTypeOf<UseLinkResult['newTabNotice']>().toEqualTypeOf<string>()
-    expectTypeOf<LinkPartProps['data-kv']>().toEqualTypeOf<'link'>()
+    expectTypeOf<LinkPartProps['className']>().toEqualTypeOf<'kv-link'>()
+    expectTypeOf<LinkPartProps>().not.toHaveProperty('data-kv')
     expectTypeOf<UseLinkResult['isCurrent']>().toEqualTypeOf<boolean>()
     expectTypeOf<UseLinkResult['opensInNewTab']>().toEqualTypeOf<boolean>()
     expectTypeOf<LinkNewTabNoticeProps>().toHaveProperty('children')

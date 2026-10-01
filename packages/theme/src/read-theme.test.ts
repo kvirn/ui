@@ -27,8 +27,8 @@ const css = `
   @media (width >= 64rem) {
     :root { --kv-color-canvas: red; }
   }
-  [data-kv='button'] { color: var(--kv-color-text); }
-  :root [data-kv='link'] { color: blue; }
+  .kv-button { color: var(--kv-color-text); }
+  :root .kv-link { color: blue; }
 }
 `
 
@@ -41,8 +41,8 @@ describe('parseCssRules', () => {
       ":root[data-kv-color-scheme='dark']",
       ':root:not([data-kv-color-scheme])',
       ':root',
-      "[data-kv='button']",
-      ":root [data-kv='link']",
+      '.kv-button',
+      ':root .kv-link',
     ])
     expect(rules[3]?.media).toEqual(['(prefers-color-scheme: dark)'])
     expect(rules[0]?.declarations).toContainEqual(['--kv-font', "'Inter Variable', system-ui"])
@@ -51,7 +51,7 @@ describe('parseCssRules', () => {
   it('resolves nested rules and nested @media to full selectors, in source order', () => {
     const rules = parseCssRules(`
 @layer kv {
-  :where([data-kv-prose]) :where(*) {
+  :where(.kv-prose) :where(*) {
     &:where(p) { margin: 0; }
     :where(code) { content: '{;}'; }
     @media (forced-colors: active) {
@@ -60,7 +60,7 @@ describe('parseCssRules', () => {
   }
   :root { --kv-after: 1; }
 }`)
-    const parent = ':is(:where([data-kv-prose]) :where(*))'
+    const parent = ':is(:where(.kv-prose) :where(*))'
     expect(rules).toEqual([
       { selectors: [`${parent}:where(p)`], media: [], declarations: [['margin', '0']] },
       { selectors: [`${parent} :where(code)`], media: [], declarations: [['content', "'{;}'"]] },

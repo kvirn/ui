@@ -20,25 +20,25 @@ import type { CardPartProps, UseCardResult } from './use-card.ts'
 // Contract: card.a11y.md. The keyboard rows are also covered end to end in card.e2e.ts.
 
 const parts = [
-  ['Root', Card.Root, 'card'],
-  ['Header', Card.Header, 'card-header'],
-  ['Body', Card.Body, 'card-body'],
-  ['Footer', Card.Footer, 'card-footer'],
+  ['Root', Card.Root, 'kv-card'],
+  ['Header', Card.Header, 'kv-card-header'],
+  ['Body', Card.Body, 'kv-card-body'],
+  ['Footer', Card.Footer, 'kv-card-footer'],
 ] as const
 
 /** Example B from the design spec, in Swedish: image, heading, text and two actions. */
 function ServiceCard() {
   return (
     <Card.Root>
-      <Card.Header data-padding="none">
+      <Card.Header className="kv-card-header--padding-none">
         <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="" />
       </Card.Header>
       <Card.Body>
         <h2>Sophämtning vid Storgatan 12</h2>
         <p>Matavfall och restavfall töms varannan vecka.</p>
       </Card.Body>
-      <Card.Footer data-kv-button-group="">
-        <Button data-variant="primary">Beställ extra tömning</Button>
+      <Card.Footer className="kv-button-group">
+        <Button className="kv-button--primary">Beställ extra tömning</Button>
         <Button>Pausa hämtningen</Button>
       </Card.Footer>
     </Card.Root>
@@ -46,11 +46,12 @@ function ServiceCard() {
 }
 
 describe('rendering', () => {
-  test.each(parts)('Card.%s renders one <div> with its data-kv', async (_name, Part, dataKv) => {
+  test.each(parts)('Card.%s renders one <div> with its class', async (_name, Part, className) => {
     const { container } = await render(<Part data-testid="part">Innehåll</Part>)
     const part = page.getByTestId('part')
     expect(part.element().tagName).toBe('DIV')
-    await expect.element(part).toHaveAttribute('data-kv', dataKv)
+    expect(part.element().className).toBe(className)
+    await expect.element(part).not.toHaveAttribute('data-kv')
     await expect.element(part).toHaveTextContent('Innehåll')
     expect(container.children).toHaveLength(1)
     expect(container.firstElementChild).toBe(part.element())
@@ -58,7 +59,9 @@ describe('rendering', () => {
 
   test('adds no role, ARIA or tabindex', async () => {
     await render(<ServiceCard />)
-    const cardElements = [...document.querySelectorAll('[data-kv^="card"]')]
+    const cardElements = [
+      ...document.querySelectorAll('.kv-card, .kv-card-header, .kv-card-body, .kv-card-footer'),
+    ]
     expect(cardElements).toHaveLength(4)
     for (const element of cardElements) {
       const attributeNames = element.getAttributeNames()
@@ -103,8 +106,8 @@ describe('rendering', () => {
             <Link href="#atervinning">Nya öppettider på återvinningscentralen</Link>
           </h3>
         </Card.Body>
-        <Card.Footer data-kv-button-group="">
-          <Button data-variant="primary">Beställ extra tömning</Button>
+        <Card.Footer className="kv-button-group">
+          <Button className="kv-button--primary">Beställ extra tömning</Button>
           <Button>Pausa hämtningen</Button>
         </Card.Footer>
       </Card.Root>,
@@ -119,46 +122,44 @@ describe('rendering', () => {
     await expect.element(page.getByRole('button', { name: 'Pausa hämtningen' })).toHaveFocus()
   })
 
-  test('passes attributes through: variants, id, lang and aria on the consumer’s element', async () => {
+  test('passes attributes through: id, lang and title on the consumer’s element', async () => {
     await render(
-      <Card.Root
-        data-testid="card"
-        data-surface="surface"
-        data-radius="md"
-        data-padding="sm"
-        data-dividers=""
-        id="kontakt"
-        lang="en"
-        title="Kort"
-      >
-        <Card.Body data-padding="none">Contact us</Card.Body>
+      <Card.Root data-testid="card" id="kontakt" lang="en" title="Kort">
+        <Card.Body>Contact us</Card.Body>
       </Card.Root>,
     )
     const card = page.getByTestId('card')
-    await expect.element(card).toHaveAttribute('data-surface', 'surface')
-    await expect.element(card).toHaveAttribute('data-radius', 'md')
-    await expect.element(card).toHaveAttribute('data-padding', 'sm')
-    await expect.element(card).toHaveAttribute('data-dividers', '')
     await expect.element(card).toHaveAttribute('id', 'kontakt')
     await expect.element(card).toHaveAttribute('lang', 'en')
     await expect.element(card).toHaveAttribute('title', 'Kort')
-    await expect.element(page.getByText('Contact us')).toHaveAttribute('data-padding', 'none')
   })
 
-  test('keeps its own data-kv: a consumer value doesn’t replace the part name', async () => {
+  test('keeps its own class: a consumer className joins it instead of replacing it', async () => {
     await render(
-      <Card.Root data-testid="card" data-kv="annat">
+      <Card.Root data-testid="card" className="annat">
         Text
       </Card.Root>,
     )
-    await expect.element(page.getByTestId('card')).toHaveAttribute('data-kv', 'card')
+    await expect.element(page.getByTestId('card')).toHaveClass('kv-card', 'annat')
   })
 
   test.each(parts)(
-    'Card.%s keeps its own data-kv when a render element sets another one',
-    async (_name, Part, dataKv) => {
-      await render(<Part render={<section data-kv="annat" data-testid="part" />}>Text</Part>)
-      await expect.element(page.getByTestId('part')).toHaveAttribute('data-kv', dataKv)
+    'Card.%s keeps its own class when a render element sets another one',
+    async (_name, Part, className) => {
+      await render(
+        <Part className="fran-prop" render={<section className="annat" data-testid="part" />}>
+          Text
+        </Part>,
+      )
+      await expect.element(page.getByTestId('part')).toHaveClass(className, 'fran-prop', 'annat')
+    },
+  )
+
+  test.each(parts)(
+    'Card.%s keeps its own class when a render element’s className is empty',
+    async (_name, Part, className) => {
+      await render(<Part render={<section className="" data-testid="part" />}>Text</Part>)
+      expect(page.getByTestId('part').element().className).toBe(className)
     },
   )
 
@@ -233,7 +234,7 @@ describe('refs, className and style', () => {
 })
 
 describe('render', () => {
-  test('an element changes the element and keeps the part name and children', async () => {
+  test('an element changes the element and keeps the part class and children', async () => {
     const { container } = await render(
       <main>
         <Card.Root render={<article />}>
@@ -244,9 +245,9 @@ describe('render', () => {
       </main>,
     )
     const card = page.getByRole('article')
-    await expect.element(card).toHaveAttribute('data-kv', 'card')
+    await expect.element(card).toHaveClass('kv-card')
     const body = card.element().firstElementChild
-    expect(body?.getAttribute('data-kv')).toBe('card-body')
+    expect(body?.className).toBe('kv-card-body')
     expect(body?.hasAttribute('data-own')).toBe(true)
     await expect.element(page.getByRole('heading', { name: 'Nyheter', level: 2 })).toBeVisible()
     await expectNoA11yViolations(container)
@@ -267,8 +268,7 @@ describe('render', () => {
         <ContactSection />
       </main>,
     )
-    const region = page.getByRole('region', { name: 'Kontakta oss' })
-    await expect.element(region).toHaveAttribute('data-kv', 'card')
+    await expect.element(page.getByRole('region', { name: 'Kontakta oss' })).toBeVisible()
     await expectNoA11yViolations(container)
   })
 
@@ -280,11 +280,7 @@ describe('render', () => {
         <Card.Root render={<li />}>Föreningsbidrag</Card.Root>
       </ul>,
     )
-    const items = page.getByRole('listitem').elements()
-    expect(items).toHaveLength(3)
-    for (const item of items) {
-      expect(item.getAttribute('data-kv')).toBe('card')
-    }
+    expect(page.getByRole('listitem').elements()).toHaveLength(3)
     await expectNoA11yViolations(container)
   })
 
@@ -302,9 +298,8 @@ describe('render', () => {
       </Card.Footer>,
     )
     const footer = page.getByTestId('footer')
-    await expect.element(footer).toHaveAttribute('data-kv', 'card-footer')
+    await expect.element(footer).toHaveClass('kv-card-footer', 'sidfot')
     await expect.element(footer).toHaveAttribute('data-own', '')
-    await expect.element(footer).toHaveClass('sidfot')
     await expect.element(footer).toHaveTextContent('Text')
     expect(seenStates.at(-1)).toEqual({})
   })
@@ -336,7 +331,7 @@ describe('useCard', () => {
     )
   }
 
-  test('gives the part names for your own elements', async () => {
+  test('gives the part classes for your own elements', async () => {
     const { container } = await render(
       <main>
         <HookCard />
@@ -344,14 +339,14 @@ describe('useCard', () => {
     )
     await expect
       .element(page.getByRole('region', { name: 'Senaste händelse' }))
-      .toHaveAttribute('data-kv', 'card')
-    await expect.element(page.getByTestId('header')).toHaveAttribute('data-kv', 'card-header')
-    await expect.element(page.getByTestId('body')).toHaveAttribute('data-kv', 'card-body')
-    await expect.element(page.getByTestId('footer')).toHaveAttribute('data-kv', 'card-footer')
+      .toHaveClass('kv-card')
+    await expect.element(page.getByTestId('header')).toHaveClass('kv-card-header')
+    await expect.element(page.getByTestId('body')).toHaveClass('kv-card-body')
+    await expect.element(page.getByTestId('footer')).toHaveClass('kv-card-footer')
     await expectNoA11yViolations(container)
   })
 
-  test('returns only data-kv, the same props the components render', () => {
+  test('returns only the class, the same props the components render', () => {
     function CardPropsAsText() {
       return <pre>{JSON.stringify(useCard())}</pre>
     }
@@ -363,10 +358,10 @@ describe('useCard', () => {
         .replaceAll('&quot;', '"'),
     )
     expect(result).toEqual({
-      rootProps: { 'data-kv': 'card' },
-      headerProps: { 'data-kv': 'card-header' },
-      bodyProps: { 'data-kv': 'card-body' },
-      footerProps: { 'data-kv': 'card-footer' },
+      rootProps: { className: 'kv-card' },
+      headerProps: { className: 'kv-card-header' },
+      bodyProps: { className: 'kv-card-body' },
+      footerProps: { className: 'kv-card-footer' },
     })
   })
 })
@@ -374,25 +369,25 @@ describe('useCard', () => {
 describe('server rendering', () => {
   test('renders every part to a string without touching the page', () => {
     const html = renderToString(
-      <Card.Root data-surface="surface">
-        <Card.Header data-padding="none" />
+      <Card.Root className="kv-card--surface">
+        <Card.Header className="kv-card-header--padding-none" />
         <Card.Body>Text</Card.Body>
         <Card.Footer />
       </Card.Root>,
     )
     expect(html).toBe(
-      '<div data-surface="surface" data-kv="card"><div data-padding="none" data-kv="card-header"></div><div data-kv="card-body">Text</div><div data-kv="card-footer"></div></div>',
+      '<div class="kv-card--surface kv-card"><div class="kv-card-header--padding-none kv-card-header"></div><div class="kv-card-body">Text</div><div class="kv-card-footer"></div></div>',
     )
   })
 })
 
 describe('types', () => {
   test('exports the part, hook and state types', () => {
-    expectTypeOf<CardPartProps<'card'>>().toEqualTypeOf<{ 'data-kv': 'card' }>()
-    expectTypeOf<UseCardResult['rootProps']['data-kv']>().toEqualTypeOf<'card'>()
-    expectTypeOf<UseCardResult['headerProps']['data-kv']>().toEqualTypeOf<'card-header'>()
-    expectTypeOf<UseCardResult['bodyProps']['data-kv']>().toEqualTypeOf<'card-body'>()
-    expectTypeOf<UseCardResult['footerProps']['data-kv']>().toEqualTypeOf<'card-footer'>()
+    expectTypeOf<CardPartProps<'card'>>().toEqualTypeOf<{ className: 'kv-card' }>()
+    expectTypeOf<UseCardResult['rootProps']['className']>().toEqualTypeOf<'kv-card'>()
+    expectTypeOf<UseCardResult['headerProps']['className']>().toEqualTypeOf<'kv-card-header'>()
+    expectTypeOf<UseCardResult['bodyProps']['className']>().toEqualTypeOf<'kv-card-body'>()
+    expectTypeOf<UseCardResult['footerProps']['className']>().toEqualTypeOf<'kv-card-footer'>()
     expectTypeOf<CardState>().toEqualTypeOf<Record<string, never>>()
   })
 

@@ -5,7 +5,7 @@ import { FoundationPage, storyHref } from './foundation-helpers.tsx'
 import { storyIdOf } from './typography-helpers.tsx'
 
 // Foundation/Overview (docs/design/foundations-and-prose.md §6.6): what the foundation is, the
-// attributes a consumer sets, and a link to every Foundation page with what it answers.
+// classes a consumer adds, and a link to every Foundation page with what it answers.
 // Maintainer text in English, written in prose.
 
 /** Every Foundation page, in the spec's order, with the question it answers. */
@@ -34,7 +34,7 @@ const foundationPages: readonly { title: string; label: string; answers: string 
   {
     title: 'Foundation/Typography/Prose',
     label: 'Typography: Prose',
-    answers: 'How data-kv-prose sets an article from a CMS or Markdown, in every mode.',
+    answers: 'How kv-prose sets an article from a CMS or Markdown, in every mode.',
   },
   {
     title: 'Foundation/Spacing',
@@ -84,52 +84,47 @@ const foundationPages: readonly { title: string; label: string; answers: string 
   },
 ]
 
-const consumerAttributes: readonly { attribute: string; description: ReactNode }[] = [
+const consumerClasses: readonly { className: string; description: ReactNode }[] = [
   {
-    attribute: 'data-variant',
+    className: 'kv-button--primary, kv-button--danger',
     description: (
       <>
-        On a Button: <code>primary</code> for the one main action in a view, <code>danger</code> for
-        a destructive one.
+        On a Button: <code>kv-button--primary</code> for the one main action in a view,{' '}
+        <code>kv-button--danger</code> for a destructive one.
       </>
     ),
   },
   {
-    attribute: 'data-kv-nav',
+    className: 'kv-nav',
     description: 'On a list of Links in a labelled nav: navigation items instead of inline links.',
   },
   {
-    attribute: 'data-kv-button-group',
+    className: 'kv-button-group',
     description: 'Around buttons: a row that stacks at full width on narrow screens.',
   },
   {
-    attribute: 'data-kv-density',
+    className: 'kv-compact',
+    description: 'On any container: 32px controls for staff tools, back to 44px below 64rem.',
+  },
+  {
+    className: 'kv-prose, kv-prose--large',
     description: (
       <>
-        <code>compact</code> on any container: 32px controls for staff tools, back to 44px below
-        64rem.
+        Around content you don’t control, such as an article from a CMS. Add{' '}
+        <code>kv-prose--large</code> for the 18px size, for long resident-facing text.
       </>
     ),
   },
   {
-    attribute: 'data-kv-prose',
-    description: (
-      <>
-        Around content you don’t control, such as an article from a CMS. <code>large</code> is the
-        18px size for long resident-facing text.
-      </>
-    ),
-  },
-  {
-    attribute: 'data-kv-lead',
+    className: 'kv-lead',
     description: 'On the first paragraph of a prose article: one step larger than the body.',
   },
   {
-    attribute: 'data-kv-not-prose',
+    className: 'kv-not-prose',
     description: 'Inside prose, around anything prose shouldn’t style. It keeps only its spacing.',
   },
   {
-    attribute: 'data-kv-scroll-region',
+    className: 'kv-scroll-region',
     description: (
       <>
         Around a wide table, with <code>aria-labelledby</code> pointing at the caption and{' '}
@@ -145,9 +140,9 @@ function Overview(): ReactNode {
       <p>
         The foundation is what every component and block is built on: the default theme,{' '}
         <code>@kvirn-ui/theme/theme.css</code>. The components ship no CSS. The theme styles the
-        attributes they render, such as <code>data-kv=&quot;button&quot;</code>, and the attributes
-        you set yourself. Every page here reads its values live from the theme on this page, so an
-        override shows up.
+        classes they render, such as <code>kv-button</code>, their state attributes, such as{' '}
+        <code>data-disabled</code>, and the classes you add yourself. Every page here reads its
+        values live from the theme on this page, so an override shows up.
       </p>
 
       <h2>Pages</h2>
@@ -185,12 +180,12 @@ function Overview(): ReactNode {
         shadows, which the dark themes don’t use, they are the same in every theme.
       </p>
 
-      <h2>Attributes you set</h2>
+      <h2>Classes you add</h2>
       <dl>
-        {consumerAttributes.map(({ attribute, description }) => (
-          <div key={attribute}>
+        {consumerClasses.map(({ className, description }) => (
+          <div key={className}>
             <dt>
-              <code>{attribute}</code>
+              <code>{className}</code>
             </dt>
             <dd>{description}</dd>
           </div>

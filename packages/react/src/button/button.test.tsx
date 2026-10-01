@@ -7,6 +7,7 @@ import { page, userEvent } from 'vite-plus/test/browser'
 import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
+import { mergeProps } from '../merge-props/merge-props.ts'
 import { Button } from './button.tsx'
 import type { ButtonProps, ButtonState } from './button.tsx'
 import { useButton } from './use-button.ts'
@@ -52,7 +53,7 @@ function SubmitForm({
 /** A consumer's own styled button, as in `render={<MyStyledButton />}`. */
 function StyledButton({ children, ...buttonProps }: ComponentPropsWithRef<'button'>) {
   return (
-    <button type="button" {...buttonProps} data-variant="primar">
+    <button type="button" {...buttonProps} name="primar">
       {children}
     </button>
   )
@@ -76,25 +77,24 @@ describe('rendering', () => {
       </Button>,
     )
     const button = page.getByRole('button', { name: 'Spara' })
-    await expect.element(button).toHaveClass('primar')
+    await expect.element(button).toHaveClass('primar', 'kv-button')
     await expect.element(button).toHaveAttribute('name', 'atgard')
     await expect.element(button).toHaveAttribute('value', 'spara')
     await expect.element(button).toHaveStyle({ margin: '0px' })
   })
 
-  test('marks its part with data-kv="button" and passes data-variant through', async () => {
+  test('marks its part with class="kv-button" and joins a variant class', async () => {
     await render(
       <>
         <Button>Spara</Button>
-        <Button data-variant="primary">Skicka</Button>
+        <Button className="kv-button--primary">Skicka</Button>
       </>,
     )
     const secondary = page.getByRole('button', { name: 'Spara' })
     const primary = page.getByRole('button', { name: 'Skicka' })
-    await expect.element(secondary).toHaveAttribute('data-kv', 'button')
-    await expect.element(secondary).not.toHaveAttribute('data-variant')
-    await expect.element(primary).toHaveAttribute('data-kv', 'button')
-    await expect.element(primary).toHaveAttribute('data-variant', 'primary')
+    expect(secondary.element().className).toBe('kv-button')
+    await expect.element(secondary).not.toHaveAttribute('data-kv')
+    await expect.element(primary).toHaveClass('kv-button', 'kv-button--primary')
   })
 
   test('forwards its ref to the button', async () => {
@@ -292,8 +292,9 @@ describe('render prop', () => {
       </Button>,
     )
     const button = page.getByRole('button', { name: 'Spara' })
-    await expect.element(button).toHaveAttribute('data-variant', 'primar')
-    await expect.element(button).toHaveClass('fran-button', 'eget')
+    await expect.element(button).toHaveAttribute('name', 'primar')
+    // An element's own class joins the part's class, so the theme keeps styling it.
+    await expect.element(button).toHaveClass('kv-button', 'fran-button', 'eget')
     await userEvent.click(button)
     expect(onClick).toHaveBeenCalledTimes(1)
     expect(consoleWarn).not.toHaveBeenCalled()
@@ -393,11 +394,7 @@ describe('useButton', () => {
   function HookButton(options: UseButtonOptions & { children: ReactNode }) {
     const { children, ...buttonOptions } = options
     const button = useButton(buttonOptions)
-    return (
-      <button {...button.buttonProps} className="egen">
-        {children}
-      </button>
-    )
+    return <button {...mergeProps(button.buttonProps, { className: 'egen' })}>{children}</button>
   }
 
   test('gives spreadable buttonProps with the same behaviour', async () => {
@@ -410,7 +407,7 @@ describe('useButton', () => {
     const button = page.getByRole('button', { name: 'Skicka' })
     await expect.element(button).toHaveAttribute('type', 'button')
     await expect.element(button).toHaveAttribute('aria-disabled', 'true')
-    await expect.element(button).toHaveAttribute('data-kv', 'button')
+    await expect.element(button).toHaveClass('kv-button', 'egen')
     await userEvent.click(button, { force: true })
     expect(onClick).not.toHaveBeenCalled()
     await expectNoA11yViolations(container)
@@ -432,7 +429,7 @@ describe('server rendering', () => {
       </Button>,
     )
     expect(html).toBe(
-      '<button data-kv="button" type="submit" aria-disabled="true" data-disabled="">Skicka</button>',
+      '<button class="kv-button" type="submit" aria-disabled="true" data-disabled="">Skicka</button>',
     )
   })
 })
@@ -445,8 +442,9 @@ describe('types', () => {
       'button' | 'submit' | 'reset' | undefined
     >()
     expectTypeOf<ButtonProps['focusableWhenDisabled']>().toEqualTypeOf<boolean | undefined>()
-    // The stable part attribute that @kvirn-ui/theme and your own CSS select on.
-    expectTypeOf<ButtonPartProps['data-kv']>().toEqualTypeOf<'button'>()
+    // The part's class that @kvirn-ui/theme and your own CSS select on.
+    expectTypeOf<ButtonPartProps['className']>().toEqualTypeOf<'kv-button'>()
+    expectTypeOf<ButtonPartProps>().not.toHaveProperty('data-kv')
     // disabled + focusableWhenDisabled is the only way to aria-disabled, which also blocks activation.
     expectTypeOf<ButtonProps>().not.toHaveProperty('aria-disabled')
     expectTypeOf<ButtonState>().toEqualTypeOf<{ isDisabled: boolean; isFocusVisible: boolean }>()

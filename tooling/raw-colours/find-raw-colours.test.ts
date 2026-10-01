@@ -52,7 +52,7 @@ describe('withoutPaletteBlock', () => {
   })
 
   it('finds raw colours after the palette block', () => {
-    const css = ':root { --kv-neutral-50: #f7f8f8; } [data-kv="button"] { color: #000; }'
+    const css = ':root { --kv-neutral-50: #f7f8f8; } .kv-button { color: #000; }'
     expect(findRawColours(withoutPaletteBlock(css))).toEqual(['#000'])
   })
 })

@@ -37,7 +37,7 @@ Evaluators and maintainers see KvirnProvider, Button and Link in a real, styled 
   - The focus ring is 2px with a 2px offset.
 - **Delivery (ADR-0013, Accepted, revised after the maintainer's review):**
   - One hand-written `@kvirn-ui/theme/theme.css`, the source of truth: a Tailwind-style palette with scales named by role (`neutral`, `primary`, `secondary`, `accent`, `danger`, `success`, `warning`, ADR-0019), semantic tokens that point at palette steps per theme, fallbacks, `color-scheme`, forced colours, `data-kv-density`, and the Button and Link styles.
-  - The components render stable part attributes (`data-kv="button"`, `data-kv="link"`, `data-kv="link-new-tab-notice"`). Variants are plain attributes: `data-variant="primary"` or `"danger"`, `data-kv-button-group`, `data-kv-nav`.
+  - The components render stable part attributes (`data-kv="button"`, `data-kv="link"`, `data-kv="link-new-tab-notice"`). Variants are plain attributes: `data-variant="primary"` or `"danger"`, `data-kv-button-group`, `data-kv-nav`. **Revised (ADR-0013):** parts and variants are now classes, `kv-button`, `kv-link`, `kv-button--primary`, `kv-button-group`, `kv-nav`, and `data-*` is only state. Use the classes for the remaining tasks.
   - Everything sits in `@layer kv`, so consumer CSS always wins. No `tokens.css`, `tailwind.css` or recipe classes.
   - `theme:check` reads `theme.css` and resolves `var()` per theme.
 - **Docs site:** a Linear-style shell:

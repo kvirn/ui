@@ -7,7 +7,7 @@ A native `<button>` for actions. For navigation, use [Link](../link/link.md).
 - `type="button"` by default, so a Button never submits a form by accident. Use `type="submit"` for the button that does.
 - `disabled` makes it natively disabled: skipped by Tab.
 - `disabled` plus `focusableWhenDisabled` keeps it in the Tab order with `aria-disabled="true"`, so keyboard and screen-reader users can find it and read why. Click, Enter, Space and form submission stay blocked.
-- Headless: no CSS. It renders `data-kv="button"`, a stable part name. Style `[data-kv='button']`, `[data-disabled]` and `[data-focus-visible]` (or `:focus-visible`). With `@kvirn-ui/theme/theme.css` imported, it is styled: pass `data-variant="primary"` or `data-variant="danger"` as a plain attribute.
+- Headless: no CSS. It renders `class="kv-button"`, the part's stable class, and your `className` joins it. Style `.kv-button` and the state attributes `[data-disabled]` and `[data-focus-visible]` (or `:focus-visible`). With `@kvirn-ui/theme/theme.css` imported, it is styled: add `className="kv-button--primary"` or `className="kv-button--danger"` for a variant.
 
 ## Component
 
@@ -38,7 +38,13 @@ Change the element, which must still be a `<button>` (a dev warning says so othe
 
 An element keeps its own props, and the Button's props are merged in: handlers chain, class names join (ADR-0015). An element's own `onClick` goes through the Button too, so it's blocked while disabled (ADR-0016).
 
-In the function form, spread `buttonProps` and never override `buttonProps.onClick`: it is what blocks activation while disabled. Put your handler on the Button instead.
+In the function form, spread `buttonProps` and never override `buttonProps.onClick`: it is what blocks activation while disabled. Put your handler on the Button instead. `buttonProps.className` already holds `kv-button` and the Button's own `className`: keep it if you add a class of your own.
+
+```tsx
+<Button className="kv-button--primary" render={(buttonProps) => <button {...buttonProps} />}>
+  Skicka
+</Button>
+```
 
 If a button can be disabled while it has focus, for example one that disables itself when pressed, use `focusableWhenDisabled`. Otherwise focus drops to the page body.
 
@@ -53,7 +59,11 @@ function SaveButton({ isSaving }: { isSaving: boolean }) {
 }
 ```
 
-Pass your click handler as `useButton({ onClick })`. A handler merged on top of `buttonProps` isn't blocked while disabled (ADR-0016).
+Pass your click handler as `useButton({ onClick })`. A handler merged on top of `buttonProps` isn't blocked while disabled (ADR-0016). `buttonProps.className` is `kv-button`: add a variant class with `mergeProps`, which joins class names, instead of overriding it.
+
+```tsx
+<button {...mergeProps(button.buttonProps, { className: 'kv-button--primary' })}>Skicka</button>
+```
 
 | Option                  | Type                                   | Default    |
 | ----------------------- | -------------------------------------- | ---------- |

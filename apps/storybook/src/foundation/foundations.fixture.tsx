@@ -302,7 +302,7 @@ function BathroomPlan({ label }: { label: string }) {
   return <img src={bathroomPlanSource} width={480} height={300} alt={label} />
 }
 
-/** The article. `size` is the data-kv-prose value; `locale` formats numbers and dates. */
+/** The article. `size: 'large'` adds kv-prose--large; `locale` formats numbers and dates. */
 export function ProseArticle({
   locale,
   size,
@@ -316,9 +316,9 @@ export function ProseArticle({
   const date = new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long' })
   const ids = useId()
   return (
-    <article data-kv-prose={size ?? ''} lang={lang}>
+    <article className={size === 'large' ? 'kv-prose kv-prose--large' : 'kv-prose'} lang={lang}>
       <h1>{text.title}</h1>
-      <p data-kv-lead="">{text.lead}</p>
+      <p className="kv-lead">{text.lead}</p>
 
       <h2>{text.who.heading}</h2>
       <p>{text.who.intro}</p>
@@ -400,7 +400,7 @@ export function ProseArticle({
         <code>{smsCode}</code>
       </pre>
       <section
-        data-kv-scroll-region=""
+        className="kv-scroll-region"
         aria-labelledby={`${ids}-times`}
         tabIndex={scrollRegionTabIndex}
       >
@@ -449,9 +449,9 @@ export function ProseArticle({
           {text.otherLanguage}
         </a>
       </p>
-      <div data-kv-not-prose="">
-        <div data-kv-button-group="">
-          <Button data-variant="primary">{text.apply}</Button>
+      <div className="kv-not-prose">
+        <div className="kv-button-group">
+          <Button className="kv-button--primary">{text.apply}</Button>
         </div>
       </div>
       <p>

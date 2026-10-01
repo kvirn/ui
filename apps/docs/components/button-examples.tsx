@@ -4,19 +4,19 @@ import { useId } from 'react'
 import { useExampleTexts } from './example-texts.tsx'
 
 // Live examples for the Button page, in all six languages. Styled by theme.css: the variant
-// is a plain `data-variant` attribute, and `data-kv-button-group` lays the buttons out.
+// is a `kv-button--*` class, and `kv-button-group` lays the buttons out.
 
 /** Primary first: the one main next step. Danger sits next to it here only to compare. */
 export function ButtonVariants() {
   const { texts, textLang } = useExampleTexts()
   return (
     <>
-      <div data-kv-button-group="">
-        <Button data-variant="primary" lang={textLang}>
+      <div className="kv-button-group">
+        <Button className="kv-button--primary" lang={textLang}>
           {texts.button.sendApplication}
         </Button>
         <Button lang={textLang}>{texts.button.saveDraft}</Button>
-        <Button data-variant="danger" lang={textLang}>
+        <Button className="kv-button--danger" lang={textLang}>
           {texts.button.deleteDraft}
         </Button>
       </div>
@@ -35,7 +35,7 @@ export function DisabledWithReason() {
         {texts.button.disabledReason}
       </p>
       <Button
-        data-variant="primary"
+        className="kv-button--primary"
         lang={textLang}
         disabled
         focusableWhenDisabled

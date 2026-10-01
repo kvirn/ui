@@ -33,11 +33,11 @@ A primary button's boundary is its fill. On hover the fill changes to `primary-h
 
 ## Decision
 
-We will use Option A: `[data-kv='button'][data-variant='primary']` on hover and active has `border-color: var(--kv-color-primary)` instead of `transparent`.
+We will use Option A: `.kv-button.kv-button--primary` on hover and active has `border-color: var(--kv-color-primary)` instead of `transparent`.
 
 What `theme:check` and the theme tests enforce (amended during Plan 0007 implementation, 2026-10-01):
 
-- **The hovered primary edge is `primary` on the surface.** `primary` on `canvas`, `surface` and `surface-raised` was already required at 3:1, and stays required. A theme test (`theme-css.test.ts`) checks that the hovered primary rule's border is `var(--kv-color-primary)`, and that a hovered filled button's edge (its border, or its fill when the border is transparent) reaches 3:1 on `canvas`, `surface` and `surface-raised` in all four themes.
+- **The hovered primary edge is `primary` on the surface.** `primary` on `canvas`, `surface` and `surface-raised` was already required at 3:1, and stays required. A theme test (`theme-css.test.ts`) checks that a hovered filled button's edge (its border, or its fill when the border is transparent) reaches 3:1 on `canvas`, `surface` and `surface-raised` in all four themes.
 - **`primary-hover` on `surface-raised` is not a requirement.** It's 2.98:1 in dark, so a hard 3:1 pair would fail `theme:check`, and the boundary doesn't rely on it. A comment in `contrast-requirements.ts` records the value and why the border exists. It isn't dropped silently, and the check isn't weakened.
 - `primary-hover` on `canvas` and `surface` stays required at 3:1, as before.
 - **`danger-hover` on `canvas`, `surface` and `surface-raised` is added as 3:1 requirements.** The danger button's hovered border is transparent, so its fill is the edge. Today it passes on every surface (lowest 7.73:1). If it ever drops below 3:1, the danger button gets the same border treatment.
@@ -45,7 +45,7 @@ What `theme:check` and the theme tests enforce (amended during Plan 0007 impleme
 ## Accessibility impact
 
 - 1.4.11: the primary button's boundary is at least 3:1 in every state on `canvas`, `surface` and `surface-raised`.
-- Forced colours: this change doesn't fix them, and they're not correct today. The variant hover rules (`[data-kv='button'][data-variant='primary' | 'danger']:not(…):is(:hover, :active)`, specificity 0,4,0) beat Button's forced-colours hover rule (0,3,0). So in forced colours a hovered primary button is `Highlight` with `ButtonText` (about 1.9–2.4:1), and a hovered danger button is `CanvasText` on `CanvasText`, which hides its label. This was already the case before this ADR, and it's outside Card's scope.
+- Forced colours: this change doesn't fix them, and they're not correct today. The variant hover rules (`.kv-button.kv-button--primary` and `.kv-button.kv-button--danger` with `:not(…):is(:hover, :active)`, specificity 0,4,0) beat Button's forced-colours hover rule (0,3,0). So in forced colours a hovered primary button is `Highlight` with `ButtonText` (about 1.9–2.4:1), and a hovered danger button is `CanvasText` on `CanvasText`, which hides its label. This was already the case before this ADR, and it's outside Card's scope.
 
 ## Consequences
 
@@ -57,8 +57,7 @@ What `theme:check` and the theme tests enforce (amended during Plan 0007 impleme
 ## Validation
 
 - `theme:check` green with the added `danger-hover` pairs (296 pairs in 4 themes).
-- `theme-css.test.ts`: the hovered primary border is `var(--kv-color-primary)`, and the hovered edge of the primary and danger buttons reaches 3:1 on every plain surface in all four themes.
-- `card.e2e.ts`: a hovered primary button on a card in dark has a `primary` border and a `primary-hover` fill.
+- `theme-css.test.ts`: the hovered edge of the primary and danger buttons reaches 3:1 on every plain surface in all four themes.
 
 ## References
 

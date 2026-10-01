@@ -20,8 +20,11 @@ export interface UseLinkOptions {
 
 /** Spread on an `<a href>` or your router's link. */
 export interface LinkPartProps {
-  /** The stable part name, for `@kvirn-ui/theme` and your own CSS: `[data-kv='link']`. */
-  'data-kv': 'link'
+  /**
+   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-link`. Add your own class
+   * next to it with `mergeProps`: class names join.
+   */
+  className: 'kv-link'
   target?: string
   rel?: string
   'aria-current'?: Exclude<LinkCurrent, boolean> | 'true'
@@ -70,7 +73,7 @@ export function useLink({ current, target, rel, messages }: UseLinkOptions = {})
   const linkProps = useMemo<LinkPartProps>(() => {
     const resolvedRel = opensInNewTab ? relForNewTab(rel) : rel
     return {
-      'data-kv': 'link',
+      className: 'kv-link',
       ...(target === undefined ? {} : { target }),
       ...(resolvedRel === undefined ? {} : { rel: resolvedRel }),
       ...(ariaCurrent === undefined ? {} : { 'aria-current': ariaCurrent }),

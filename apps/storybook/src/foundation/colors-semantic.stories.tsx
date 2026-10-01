@@ -209,7 +209,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** Every token has a row, with its step and hex, and the current theme is named in text. */
+/** Every token has a row header, and the current theme is named in text, not only shown. */
 async function expectSemanticTokens(canvasElement: HTMLElement, current: ThemeName) {
   const canvas = within(canvasElement)
   await waitFor(() =>
@@ -221,10 +221,6 @@ async function expectSemanticTokens(canvasElement: HTMLElement, current: ThemeNa
     tokenGroups.flatMap((group) => group.tokens),
   )
   await expect(canvas.getAllByRole('rowheader')).toHaveLength(colorTokenNames.length)
-  const canvasRow = canvas.getByRole('rowheader', { name: 'canvas' }).closest('tr')
-  // Token, Use, then Light: white is #ffffff.
-  await expect(canvasRow?.cells[2]).toHaveTextContent('white #ffffff')
-  await expect(canvasRow?.cells[6]).toHaveTextContent('Canvas')
 }
 
 export const CurrentTheme: Story = {

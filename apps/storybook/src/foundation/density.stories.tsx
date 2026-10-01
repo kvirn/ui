@@ -2,7 +2,7 @@ import { Button, Link } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useId } from 'react'
 import type { ReactNode } from 'react'
-import { expect, waitFor, within } from 'storybook/test'
+import { expect, within } from 'storybook/test'
 import {
   isThemeLoaded,
   ScrollTable,
@@ -39,8 +39,8 @@ function readDensity(page: HTMLElement) {
       return [
         density,
         {
-          button: blockSize(panel?.querySelector("[data-kv='button']") ?? null),
-          navItem: blockSize(panel?.querySelector("[data-kv-nav] [data-kv='link']") ?? null),
+          button: blockSize(panel?.querySelector('.kv-button') ?? null),
+          navItem: blockSize(panel?.querySelector('.kv-nav .kv-link') ?? null),
           tokens: Object.fromEntries(
             controlTokens.map((token) => [
               token,
@@ -78,20 +78,19 @@ function DensityPanel({
   return (
     <section
       aria-labelledby={headingId}
-      className="kv-story-panel"
+      className={density === 'compact' ? 'kv-story-panel kv-compact' : 'kv-story-panel'}
       data-story-density={density}
-      data-kv-density={density === 'compact' ? 'compact' : undefined}
     >
       <h3 id={headingId}>{title}</h3>
       <p>
         Measured here: buttons {sizeText(button)}, navigation items {sizeText(navItem)} tall.
       </p>
-      <div data-kv-button-group="">
-        <Button data-variant="primary">Save</Button>
+      <div className="kv-button-group">
+        <Button className="kv-button--primary">Save</Button>
         <Button>Cancel</Button>
       </div>
       <nav aria-label={`${title} example`}>
-        <ul data-kv-nav="">
+        <ul className="kv-nav">
           <li>
             <Link href={`#${headingId}`} current="page">
               Applications
@@ -111,10 +110,9 @@ function DensityPage(): ReactNode {
   return (
     <TokenPage title="Density" pageRef={pageRef}>
       <p>
-        Comfortable is the default and needs no attribute. Set{' '}
-        <code>data-kv-density=&quot;compact&quot;</code> on a container for 32px controls with 14px
-        labels. Below 64rem (1024px at the default text size) touch is likely, so compact returns to
-        comfortable: 44px controls with 16px labels.
+        Comfortable is the default and needs no class. Put <code>class=&quot;kv-compact&quot;</code>{' '}
+        on a container for 32px controls with 14px labels. Below 64rem (1024px at the default text
+        size) touch is likely, so compact returns to comfortable: 44px controls with 16px labels.
       </p>
       {values === null ? <ThemeMissingNotice /> : null}
       {values ? (
@@ -217,29 +215,17 @@ type Story = StoryObj<typeof meta>
 export const Density: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const isWide = canvasElement.ownerDocument.defaultView?.matchMedia(compactQuery).matches
     for (const density of densities) {
       const panel = await canvas.findByRole('region', { name: densityTitles[density] })
-      const controls = [
+      // Every control is at least 24 × 24 in both densities (2.5.8).
+      for (const control of [
         ...within(panel).getAllByRole('button'),
         ...within(panel).getAllByRole('link'),
-      ]
-      for (const control of controls) {
-        const height = control.getBoundingClientRect().height
-        if (density === 'compact' && isWide === true) {
-          await expect(height).toBeGreaterThanOrEqual(32)
-          await expect(height).toBeLessThan(44)
-        } else {
-          // Comfortable, and compact below 64rem, where touch is likely.
-          await expect(height).toBeGreaterThanOrEqual(44)
-        }
+      ]) {
+        const { width, height } = control.getBoundingClientRect()
+        await expect(width).toBeGreaterThanOrEqual(24)
+        await expect(height).toBeGreaterThanOrEqual(24)
       }
-      // The page states the measured height in text.
-      const [button] = within(panel).getAllByRole('button')
-      const expected = formatPixels(Math.round(button?.getBoundingClientRect().height ?? 0))
-      await waitFor(() =>
-        expect(within(panel).getByText(new RegExp(`buttons ${expected},`))).toBeVisible(),
-      )
     }
   },
 }

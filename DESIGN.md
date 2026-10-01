@@ -329,7 +329,7 @@ One sans-serif family with a system fallback, and one monospace family for refer
 
 ### Density
 
-Density is set on a container with `data-kv-density="compact"`. Comfortable is the default, and needs no attribute.
+Density is set on a container with `class="kv-compact"`. Comfortable is the default, and needs no class.
 
 | Density               | Control min height | Label type      | Min target | Use                                                                                                                     |
 | --------------------- | ------------------ | --------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------- |
@@ -373,7 +373,7 @@ Depth comes from the surface ladder (`canvas` → `surface` → `surface-raised`
 
 ## Components
 
-Visual rules for the default theme. Behaviour, roles and keyboard are defined in each component's `<name>.a11y.md`, never here. Style parts and state through the `data-*` attributes (`docs/architecture.md#styling-contract`): `[data-kv='button']`, `[data-disabled]`, `[data-variant='primary']`. `theme.css` implements Button, Link, prose and Card. The design specs are `docs/design/default-theme-button-link.md`, `docs/design/foundations-and-prose.md` and `docs/design/card.md`.
+Visual rules for the default theme. Behaviour, roles and keyboard are defined in each component's `<name>.a11y.md`, never here. Style parts and variants through classes, and state through the `data-*` attributes (`docs/architecture.md#styling-contract`): `.kv-button`, `.kv-button--primary`, `[data-disabled]`. `theme.css` implements Button, Link, prose and Card. The design specs are `docs/design/default-theme-button-link.md`, `docs/design/foundations-and-prose.md` and `docs/design/card.md`.
 
 - **Buttons.**
   - One primary button per view, for the main next step. Secondary buttons use `surface-raised` with a `border-control` outline. A hairline edge doesn't reach 3:1.
@@ -383,11 +383,11 @@ Visual rules for the default theme. Behaviour, roles and keyboard are defined in
   - A hovered or pressed primary button keeps a 1px `primary` edge around its `primary-hover` fill, so its boundary stays at 3:1 on `surface-raised` in dark (ADR-0021).
 - **Links** look like links (underlined `link`) and buttons look like buttons. Never swap the two. The hover state thickens the underline to 2px and uses `link-hover`.
 - **Cards** are elevation level 2: `surface-raised`, a 1px `border-subtle` edge, the `lg` radius and no shadow. A card is a plain container and is never interactive: no hover, shadow or pointer style, because those suggest the whole card is clickable.
-  - Choose with attributes on the Root: `data-surface` (`surface-raised` by default, `surface` for a block in a sidebar, `canvas` on a `surface` section), `data-radius` (`lg` by default, `md` for a card nested in a card, `none` for a card flush with an edge) and `data-dividers` (a `border-subtle` line between parts).
-  - `data-padding` goes on the Root, for every part, or on one part: `md` (the default) is 24px, and 16px below `40rem` and in compact density from `64rem`. `sm` is 12px, `lg` is 32px (24px where `md` is 16px), and `none` is for full-bleed media. Use `none` on a part only, so the other parts' edges line up.
+  - Choose with classes on the Root: the surface (`surface-raised` by default, `kv-card--surface` for a block in a sidebar, `kv-card--canvas` on a `surface` section), the radius (`lg` by default, `kv-card--radius-md` for a card nested in a card, `kv-card--radius-none` for a card flush with an edge) and `kv-card--dividers` (a `border-subtle` line between parts).
+  - Padding goes on the Root, for every part (`kv-card--padding-none`, `-sm` or `-lg`), or on one part (`kv-card-header--padding-none`, and likewise for the body and footer, in all four steps): `md` (the default) is 24px, and 16px below `40rem` and in compact density from `64rem`. `sm` is 12px, `lg` is 32px (24px where `md` is 16px), and `none` is for full-bleed media. Use `none` on a part only, so the other parts' edges line up.
   - Parts are direct children of the Root. A Root without parts pads itself, and adjacent parts share one padding.
   - A card never hides overflow, so focus rings are never clipped. Media that touch a rounded corner get its inner radius instead.
-  - Footer actions use `data-kv-button-group` on the footer: start-aligned, primary first, and one primary per view. A card's one link goes in its heading. Navigation is a Link.
+  - Footer actions use `kv-button-group` on the footer: start-aligned, primary first, and one primary per view. A card's one link goes in its heading. Navigation is a Link.
   - Never use `primary-subtle` or a status `-subtle` background as a card surface: status belongs in a notification, with an icon and a heading.
   - Every card keeps its border, so its edge survives forced colours. Nest one level at most on resident-facing pages: `surface` and `md` for the inner card.
 - **Navigation items** use `nav-item`. The current item uses `primary-subtle`, weight 600, a `primary` inline-start bar and `aria-current`.
@@ -396,7 +396,7 @@ Visual rules for the default theme. Behaviour, roles and keyboard are defined in
 - **Error summary.** At the top of the form, `danger` border with `danger-subtle` background, a heading and a list of links to each invalid field. It receives focus on submit.
 - **Notifications and panels** use the `-subtle` background with a 4px inline-start border in the status colour, an icon, and a heading that states the status in words.
 - **Popups** (menus, listboxes, popovers) use level 3 elevation and `xl` radius, with 8px padding and items at least 44px high (32px in compact).
-- **Prose.** Put `data-kv-prose` on the element around content you don't control, such as an article from a CMS or Markdown. It uses `body` (16px), and `data-kv-prose="large"` uses `body-large` (18px) for long resident-facing text. There is no smaller size. `data-kv-lead` marks the lead paragraph. Prose never styles components (`[data-kv]`) or anything inside `data-kv-not-prose`, `data-kv-nav`, `data-kv-button-group` or a card (`[data-kv='card']`), and its rules have zero specificity, so any other CSS wins. A card in prose gets prose's block margins only. `data-kv-prose` on a card or inside one turns prose on again. It keeps list markers and table display, so semantics survive. Code blocks wrap instead of scrolling, and wide tables go in a `data-kv-scroll-region` with a name and `tabindex="0"`. Stop at `h3` in resident-facing text: in large prose, `h4` looks like `h3`. The design spec is `docs/design/foundations-and-prose.md`.
+- **Prose.** Put `kv-prose` on the element around content you don't control, such as an article from a CMS or Markdown. It uses `body` (16px), and `kv-prose kv-prose--large` uses `body-large` (18px) for long resident-facing text. There is no smaller size. `kv-lead` marks the lead paragraph. Prose never styles a component part (an explicit list in `theme.css`: `kv-button`, `kv-link`, `kv-link-new-tab-notice` and the card parts) or anything inside `kv-not-prose`, `kv-nav`, `kv-button-group` or a card (`kv-card`), and its rules have zero specificity, so any other CSS wins. A card in prose gets prose's block margins only. `kv-prose` on a card or inside one turns prose on again. It keeps list markers and table display, so semantics survive. Code blocks wrap instead of scrolling, and wide tables go in a `kv-scroll-region` with a name and `tabindex="0"`. Stop at `h3` in resident-facing text: in large prose, `h4` looks like `h3`. The design spec is `docs/design/foundations-and-prose.md`.
 - **Tables** use `numeric` for figures, `surface` for the header row, `border-subtle` row dividers and no zebra stripes. Sortable headers are buttons with a visible sort indicator.
 - **Step indicator** shows "Step 2 of 5" in text, not only as dots.
 - **Badges and tags** are for status or metadata, never for interactive elements.
@@ -405,10 +405,10 @@ Visual rules for the default theme. Behaviour, roles and keyboard are defined in
 ## Theming
 
 - **One file, opt-in by import.** `import '@kvirn-ui/theme/theme.css'` styles every component on the page, and removing it unstyles them. Nothing loads CSS for you, and `KvirnProvider` never does.
-- **Components are selected by part attributes,** never classes: `data-kv="button"`, `data-kv="link"`. Choices are plain attributes the consumer sets: `data-variant="primary"` or `"danger"`, `data-kv-button-group`, `data-kv-nav`, `data-kv-density="compact"`, for prose `data-kv-prose` (`""` or `"large"`), `data-kv-lead`, `data-kv-not-prose` and `data-kv-scroll-region`, and for cards `data-surface`, `data-radius`, `data-padding` and `data-dividers`.
+- **Components are selected by part classes,** and state by `data-*` attributes: `.kv-button`, `.kv-link`, `[data-disabled]`. Each part renders its own class, and the consumer's `className` joins it. Choices are classes the consumer adds: `kv-button--primary` or `kv-button--danger`, `kv-button-group`, `kv-nav`, `kv-compact`, for prose `kv-prose` (plus `kv-prose--large`), `kv-lead`, `kv-not-prose` and `kv-scroll-region`, and for cards `kv-card--surface`, `kv-card--canvas`, `kv-card--radius-md`, `kv-card--radius-none`, `kv-card--padding-none|sm|lg`, `kv-card-header--padding-*` (and body and footer) and `kv-card--dividers`.
 - **Override variables, not selectors.** Rebrand by overriding a role scale on `:root` (`--kv-primary-50` … `--kv-primary-950`), or set a single semantic token (`:root { --kv-color-link: var(--kv-primary-700) }`). Scales go on `:root`, where the semantic tokens are declared. To change one theme only, target the same selectors `theme.css` uses (`:root[data-kv-color-scheme='dark']`).
 - **Your CSS always wins.** Everything in `theme.css` is in `@layer kv`. Any unlayered CSS you write, or any layer you declare after `kv`, overrides it regardless of specificity.
-- **Own it, or skip it.** Copy `theme.css` into your project and import your copy, or skip it and style `[data-kv]` and the `data-*` attributes with Tailwind or your own CSS.
+- **Own it, or skip it.** Copy `theme.css` into your project and import your copy, or skip it and style the `kv-*` classes and the `data-*` state attributes with Tailwind or your own CSS.
 - After any colour change, run `vp run theme:check`, or `checkThemeCss()` from `@kvirn-ui/theme` on your own file.
 
 ## Content & Voice

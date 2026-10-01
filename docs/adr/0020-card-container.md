@@ -4,6 +4,7 @@
 - **Date:** 2026-10-01
 - **Deciders:** Maintainer (direction and the three choices below), proposed with Plan 0007
 - **Tags:** api, a11y, theming
+- **Revised:** 2026-10-01, with ADR-0013: parts and choices are classes, not `data-*` attributes
 
 ## Context
 
@@ -14,8 +15,8 @@ APG has no card pattern. The common accessibility failures with cards are a whol
 ## Decision drivers
 
 - Native semantics first: a card is not a widget and needs no role (AGENTS.md hard rule 2).
-- Consumer choices are plain attributes, not props or classes (ADR-0013).
-- Headless packages ship no CSS. The theme styles `data-kv` parts (ADR-0013).
+- Consumer choices are modifier classes, not props (ADR-0013).
+- Headless packages ship no CSS. The theme styles the part classes the components render (ADR-0013).
 - Keep the first version small. A clickable card needs its own accessibility decisions.
 
 ## Options considered
@@ -31,20 +32,20 @@ APG has no card pattern. The common accessibility failures with cards are a whol
 - ✅ Automatic `aria-labelledby`, one Tab stop for a clickable card.
 - ❌ A heading level the component can't know, and a stretched link that blocks text selection. The maintainer chose to leave both out for now.
 
-### Option C: no component, only theme attributes on the consumer's own `div`s
+### Option C: no component, only theme classes on the consumer's own `div`s
 
 - ✅ Even less API.
-- ❌ No `render`, no typed parts, and no `data-kv` names unless the consumer types them, which breaks "import the theme and everything is styled".
+- ❌ No `render`, no typed parts, and no part classes unless the consumer types them, which breaks "import the theme and everything is styled".
 
 ## Decision
 
 We will use Option A:
 
-1. **Parts:** `Card.Root`, `Card.Header`, `Card.Body` and `Card.Footer`, also as named exports (`CardRoot`, …), and `useCard()` for your own elements (`rootProps`, `headerProps`, `bodyProps`, `footerProps`). Each part renders one `<div>` by default, with `data-kv="card"`, `card-header`, `card-body` or `card-footer`.
+1. **Parts:** `Card.Root`, `Card.Header`, `Card.Body` and `Card.Footer`, also as named exports (`CardRoot`, …), and `useCard()` for your own elements (`rootProps`, `headerProps`, `bodyProps`, `footerProps`). Each part renders one `<div>` by default, with its class: `kv-card`, `kv-card-header`, `kv-card-body` or `kv-card-footer`. A consumer's `className` joins it.
 2. **Header and Footer are `<div>`, never `<header>`/`<footer>`.** At the top level those become `banner` and `contentinfo` landmarks.
 3. **No role, no ARIA, no strings, no behaviour.** Children are whatever the consumer passes. To make a card a landmark or a list item, the consumer renders it as `<section aria-labelledby>`, `<article>` or `<li>`.
 4. **No Title part and no clickable card** in this version. A future ADR can add them.
-5. **Look by attribute.** The default theme gives a card with no attributes the DESIGN.md card look. The consumer changes surface, radius and padding with plain `data-*` attributes on the Root (defaults for all parts) and padding per part. The names and values are in the design spec, `docs/design/card.md`.
+5. **Look by class.** The default theme gives a card with no modifier class the DESIGN.md card look. The consumer changes surface, radius and padding with modifier classes on the Root (`kv-card--surface`, `kv-card--radius-md`, `kv-card--padding-sm`, the defaults for all parts) and padding per part (`kv-card-header--padding-none`). The names and values are in the design spec, `docs/design/card.md`.
 
 ## Accessibility impact
 
@@ -57,12 +58,12 @@ We will use Option A:
 ## Consequences
 
 - Positive: one container for every surface use, styled by the same `theme.css` import.
-- Negative / trade-offs: the `data-kv` part names and the card's attributes become public API (semver). The consumer must pick the right element and heading level.
+- Negative / trade-offs: the part classes and the card's modifier classes become public API (semver). The consumer must pick the right element and heading level.
 - Follow-ups: a clickable card (stretched title link) and a Title part, if adopters ask; status panels (Notification) as their own component, not a card surface.
 
 ## Validation
 
-- Component tests: each part renders one `<div>` with its `data-kv`, `render` changes the element, `useCard` gives the same props.
+- Component tests: each part renders one `<div>` with its class, a consumer's or a `render` element's class joins it, `render` changes the element, `useCard` gives the same props.
 - Stories with axe in all four themes, forced colours and RTL, and e2e reflow at 320px.
 - `theme:check` with the card surfaces.
 

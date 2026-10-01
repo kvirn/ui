@@ -1,4 +1,4 @@
-/** Spread on one part's element. Only the stable part name: Card adds no role, ARIA or state. */
+/** Spread on one part's element. Only the part's class: Card adds no role, ARIA or state. */
 export interface CardPartProps<
   Name extends 'card' | 'card-header' | 'card-body' | 'card-footer' =
     | 'card'
@@ -6,8 +6,11 @@ export interface CardPartProps<
     | 'card-body'
     | 'card-footer',
 > {
-  /** For `@kvirn-ui/theme` and your own CSS: `[data-kv='card']`, `[data-kv='card-body']`. */
-  'data-kv': Name
+  /**
+   * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-card`, `.kv-card-body`. Add
+   * a modifier class of your own next to it with `mergeProps`: class names join.
+   */
+  className: `kv-${Name}`
 }
 
 export interface UseCardResult {
@@ -19,14 +22,14 @@ export interface UseCardResult {
 
 // The same objects every time, frozen, so nothing a consumer does can change another card.
 const cardProps: UseCardResult = Object.freeze({
-  rootProps: Object.freeze({ 'data-kv': 'card' }),
-  headerProps: Object.freeze({ 'data-kv': 'card-header' }),
-  bodyProps: Object.freeze({ 'data-kv': 'card-body' }),
-  footerProps: Object.freeze({ 'data-kv': 'card-footer' }),
+  rootProps: Object.freeze({ className: 'kv-card' }),
+  headerProps: Object.freeze({ className: 'kv-card-header' }),
+  bodyProps: Object.freeze({ className: 'kv-card-body' }),
+  footerProps: Object.freeze({ className: 'kv-card-footer' }),
 })
 
 /**
- * A card's part names for your own elements (ADR-0020, contract: card.a11y.md). A card is a
+ * A card's part classes for your own elements (ADR-0020, contract: card.a11y.md). A card is a
  * plain container: pick the element (`<section aria-labelledby>`, `<article>`, `<li>`) and the
  * heading level yourself. Header and Footer are never `<header>` or `<footer>`.
  *

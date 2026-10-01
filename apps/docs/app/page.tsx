@@ -6,7 +6,7 @@ export default function HomePage() {
   return (
     <>
       <PageHeading className="docs-display">KvirnUI</PageHeading>
-      <p data-kv-lead>
+      <p className="kv-lead">
         Accessible React components for public services in the Nordics and the EU. You write the
         markup and styles. KvirnUI gives you the behaviour, keyboard support and screen reader
         support, designed and tested to meet WCAG 2.2 AA.

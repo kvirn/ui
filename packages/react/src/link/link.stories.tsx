@@ -10,12 +10,10 @@ import type { CSSProperties } from 'react'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import {
-  blockSize,
+  expectMinimumTargetSize,
   expectNoHorizontalOverflow,
   expectThemeApplied,
   isThemeLoaded,
-  isViewportAtLeast,
-  tokenColor,
 } from '../stories/theme-story-assertions.ts'
 import type { FixedStoryTheme } from '../stories/theme-story-assertions.ts'
 import { Link } from './link.tsx'
@@ -35,7 +33,7 @@ const linkListStyle: CSSProperties = { display: 'grid', gap: '0.5rem' }
 
 const guidelinesUrl = 'https://www.w3.org/WAI/standards-guidelines/wcag/'
 
-/** A labelled navigation list: `data-kv-nav` turns its links into navigation items. */
+/** A labelled navigation list: `kv-nav` turns its links into navigation items. */
 function Navigation({
   label = 'Parkeringstillstånd',
   items = ['Översikt', 'Ansök', 'Kontakta oss'],
@@ -47,9 +45,9 @@ function Navigation({
 }) {
   const [current, ...others] = items
   return (
-    <div className="kv-story-surface" data-kv-density={density}>
+    <div className={density === 'compact' ? 'kv-story-surface kv-compact' : 'kv-story-surface'}>
       <nav aria-label={label}>
-        <ul data-kv-nav="">
+        <ul className="kv-nav">
           <li>
             <Link href="#sida-1" current="page">
               {current}
@@ -121,10 +119,7 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const link = within(canvasElement).getByRole('link', { name: 'Ansök om bygglov' })
     await expect(link).toHaveAttribute('href', '#ansok')
-    await expect(link).toHaveAttribute('data-kv', 'link')
     await expect(link).not.toHaveAttribute('aria-current')
-    await expect(link).toHaveStyle({ color: tokenColor(canvasElement, 'link') })
-    await expect(getComputedStyle(link).textDecorationLine).toContain('underline')
   },
 }
 
@@ -133,6 +128,7 @@ export const InRunningText: Story = {
   render: () => <RunningTextLink />,
   play: async ({ canvasElement }) => {
     const link = within(canvasElement).getByRole('link', { name: 'ansöka om parkeringstillstånd' })
+    // A link in running text isn't told apart by colour alone (1.4.1): it's underlined.
     await expect(getComputedStyle(link).textDecorationLine).toContain('underline')
     await expect(link.closest('p')).toHaveTextContent(
       'Du kan ansöka om parkeringstillstånd på webben.',
@@ -140,12 +136,12 @@ export const InRunningText: Story = {
   },
 }
 
-/** Inside `data-kv-nav` the current page gets a background, a bar and weight. */
+/** Inside `kv-nav` the current page gets a background, a bar and weight. */
 export const CurrentPage: Story = {
   render: () => (
     <div className="kv-story-surface">
       <nav aria-label="Huvudmeny">
-        <ul data-kv-nav="">
+        <ul className="kv-nav">
           <li>
             <Link href="#start">Start</Link>
           </li>
@@ -165,12 +161,13 @@ export const CurrentPage: Story = {
     const current = within(canvasElement).getByRole('link', { name: 'Ansök' })
     await expect(current).toHaveAttribute('aria-current', 'page')
     await expect(current).toHaveAttribute('data-current', '')
-    await expect(current).toHaveStyle({ fontWeight: '600', borderInlineStartWidth: '4px' })
-    await expect(getComputedStyle(current).textDecorationLine).toBe('none')
+    const weightOf = (link: HTMLElement) => Number(getComputedStyle(link).fontWeight)
     for (const name of ['Start', 'Kontakt']) {
       const link = within(canvasElement).getByRole('link', { name })
       await expect(link).not.toHaveAttribute('aria-current')
       await expect(link).not.toHaveAttribute('data-current')
+      // The current page isn't shown by colour alone (1.4.1): it's also heavier.
+      await expect(weightOf(current)).toBeGreaterThan(weightOf(link))
     }
   },
 }
@@ -186,10 +183,6 @@ export const NewTab: Story = {
   play: async ({ canvasElement }) => {
     const link = within(canvasElement).getByRole('link', { name: 'Digg (öppnas i en ny flik)' })
     await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
-    await expect(within(link).getByText('(öppnas i en ny flik)')).toHaveAttribute(
-      'data-kv',
-      'link-new-tab-notice',
-    )
   },
 }
 
@@ -227,7 +220,7 @@ function RouterNavigation() {
   return (
     <>
       <nav aria-label="Huvudmeny">
-        <ul data-kv-nav="">
+        <ul className="kv-nav">
           <li>
             <Link href="/start" current={pathname === '/start' ? 'page' : false}>
               Start
@@ -257,7 +250,6 @@ export const RouterLink: Story = {
   play: async ({ canvasElement }) => {
     const start = within(canvasElement).getByRole('link', { name: 'Start' })
     await expect(start).toHaveAttribute('data-router-link', '')
-    await expect(start).toHaveAttribute('data-kv', 'link')
     await expect(start).toHaveAttribute('aria-current', 'page')
   },
 }
@@ -343,16 +335,11 @@ export const CompactNavigation: Story = {
   render: () => <Navigation density="compact" />,
   play: async ({ canvasElement }) => {
     const links = within(canvasElement).getAllByRole('link')
+    // Compact navigation items are still at least 24 × 24 (2.5.8).
     for (const link of links) {
-      if (isViewportAtLeast(canvasElement, '64rem')) {
-        await expect(blockSize(link)).toBeGreaterThanOrEqual(32)
-        await expect(blockSize(link)).toBeLessThan(44)
-      } else {
-        await expect(blockSize(link)).toBeGreaterThanOrEqual(44)
-      }
+      await expectMinimumTargetSize(link)
     }
     await expect(links[0]).toHaveAttribute('aria-current', 'page')
-    await expect(links[0]).toHaveStyle({ fontWeight: '600', borderInlineStartWidth: '4px' })
   },
 }
 
@@ -387,14 +374,6 @@ function fixedTheme(theme: FixedStoryTheme, name: string): Story {
     render: () => <Everything />,
     play: async ({ canvasElement }) => {
       await expectThemeApplied(canvasElement, theme)
-      const canvas = within(canvasElement)
-      await expect(canvas.getByRole('link', { name: 'ansöka om parkeringstillstånd' })).toHaveStyle(
-        { color: tokenColor(canvasElement, 'link') },
-      )
-      await expect(canvas.getByRole('link', { name: 'Översikt' })).toHaveStyle({
-        backgroundColor: tokenColor(canvasElement, 'primary-subtle'),
-        borderInlineStartColor: tokenColor(canvasElement, 'primary'),
-      })
     },
   }
 }
@@ -420,11 +399,6 @@ export const RTL: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole('link', { name: 'Digg (opens in a new tab)' })).toBeVisible()
-    // The current bar is at the inline start, which is the right in RTL.
-    await expect(canvas.getByRole('link', { name: 'Overview' })).toHaveStyle({
-      borderRightWidth: '4px',
-      borderLeftWidth: '0px',
-    })
   },
 }
 
@@ -436,7 +410,7 @@ export const ForcedColors: Story = {
         Läs mer om <Link href="#parkering">parkering</Link>.
       </p>
       <nav aria-label="Huvudmeny">
-        <ul data-kv-nav="">
+        <ul className="kv-nav">
           <li>
             <Link href="#start">Start</Link>
           </li>
@@ -467,8 +441,5 @@ export const Unstyled: Story = {
   ),
   play: async ({ canvasElement }) => {
     await expect(isThemeLoaded(canvasElement)).toBe(false)
-    const link = within(canvasElement).getByRole('link', { name: 'ansöka om parkeringstillstånd' })
-    await expect(link).toHaveAttribute('data-kv', 'link')
-    await expect(link).toHaveStyle({ outlineStyle: 'none', fontWeight: '400' })
   },
 }

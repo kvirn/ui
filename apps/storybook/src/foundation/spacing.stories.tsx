@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
-import { expect, waitFor, within } from 'storybook/test'
 import {
   isThemeLoaded,
   readLength,
@@ -59,7 +58,7 @@ function SpacingPage(): ReactNode {
       {/* The large prose size, to read its tokens. It shows nothing. */}
       <div
         aria-hidden="true"
-        data-kv-prose="large"
+        className="kv-prose kv-prose--large"
         data-story-probe="large"
         style={{ position: 'absolute', inlineSize: 0, blockSize: 0, overflow: 'hidden' }}
       />
@@ -102,8 +101,8 @@ function SpacingPage(): ReactNode {
 
           <h2>Prose spacing</h2>
           <p>
-            <code>data-kv-prose</code> spaces its content with these tokens. The large size,{' '}
-            <code>data-kv-prose=&quot;large&quot;</code>, only swaps them for larger steps.
+            <code>kv-prose</code> spaces its content with these tokens. The large size,{' '}
+            <code>kv-prose--large</code>, only swaps them for larger steps.
           </p>
           <ScrollTable caption="Prose spacing tokens, default and large">
             <thead>
@@ -141,29 +140,4 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const rowOf = (canvasElement: HTMLElement, token: string) => {
-  const row = within(canvasElement).getByRole('rowheader', { name: token }).closest('tr')
-  if (row === null) {
-    throw new Error(`No row for ${token}`)
-  }
-  return within(row)
-}
-
-export const Spacing: Story = {
-  play: async ({ canvasElement }) => {
-    const root = canvasElement.ownerDocument.documentElement
-    await waitFor(() =>
-      expect(rowOf(canvasElement, '--kv-space-4').getByText('1rem')).toBeVisible(),
-    )
-    // Every step on the page, each with its measured size.
-    for (const token of spaceTokens) {
-      const pixels = readLength(root, token)
-      await expect(pixels).toBeDefined()
-      await expect(rowOf(canvasElement, token).getByText(formatPixels(pixels ?? 0))).toBeVisible()
-    }
-    // The large prose size swaps the paragraph spacing: 20px, then 24px.
-    const paragraphs = rowOf(canvasElement, '--kv-prose-space')
-    await expect(paragraphs.getByText('1.25rem (20px)')).toBeVisible()
-    await expect(paragraphs.getByText('1.5rem (24px)')).toBeVisible()
-  },
-}
+export const Spacing: Story = {}

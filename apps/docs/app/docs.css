@@ -262,7 +262,7 @@ body {
   max-inline-size: var(--docs-content-max);
 }
 
-/* The article is data-kv-prose (ADR-0018): the theme sets its type, spacing, lists and code.
+/* The article is kv-prose (ADR-0018): the theme sets its type, spacing, lists and code.
  * The column is wider than the prose measure so examples get room, and running text keeps
  * the measure. */
 .docs-article > :is(p, ul, ol, dl) {

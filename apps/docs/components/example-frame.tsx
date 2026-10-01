@@ -61,10 +61,10 @@ export function ExampleFrame({
   return (
     <>
       {/* The frame is page chrome around a live example, not article content. */}
-      <figure className="docs-example" data-kv-not-prose>
+      <figure className="docs-example kv-not-prose">
         <figcaption>{caption}</figcaption>
         <div className="docs-example-frame">
-          <div className="docs-example-toolbar" data-kv-density="compact">
+          <div className="docs-example-toolbar kv-compact">
             <label htmlFor={selectId}>{text.languageLabel}</label>
             <select
               id={selectId}

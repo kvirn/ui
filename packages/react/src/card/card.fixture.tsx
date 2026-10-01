@@ -278,8 +278,7 @@ export function ContactCard({ locale }: CardFixtureProps) {
   return (
     <Card.Root
       render={<aside aria-labelledby={headingId} />}
-      data-surface="surface"
-      data-kv-prose=""
+      className="kv-card--surface kv-prose"
       lang={lang}
     >
       <h2 id={headingId}>{text.contact.heading}</h2>
@@ -302,16 +301,16 @@ export function ServiceCard({ locale }: CardFixtureProps) {
   const { text, lang, formatLocale } = textsFor(locale)
   return (
     <Card.Root lang={lang} data-testid="service-card">
-      <Card.Header data-padding="none">
+      <Card.Header className="kv-card-header--padding-none">
         <img src={binsImage} alt="" width={640} height={240} />
       </Card.Header>
-      <Card.Body data-kv-prose="">
+      <Card.Body className="kv-prose">
         <h2>{text.waste.heading}</h2>
         <p>{text.waste.next(<DateValue date={nextCollection} formatLocale={formatLocale} />)}</p>
         <p>{text.waste.plan}</p>
       </Card.Body>
-      <Card.Footer data-kv-button-group="">
-        <Button data-variant="primary">{text.waste.orderExtra}</Button>
+      <Card.Footer className="kv-button-group">
+        <Button className="kv-button--primary">{text.waste.orderExtra}</Button>
         <Button>{text.waste.pause}</Button>
       </Card.Footer>
     </Card.Root>
@@ -336,11 +335,11 @@ export function NewsList({ locale }: CardFixtureProps) {
         {items.map(([id, item, published], index) => (
           <Card.Root key={id} render={<li />}>
             {index === 0 ? (
-              <Card.Header data-padding="none">
+              <Card.Header className="kv-card-header--padding-none">
                 <img src={recyclingImage} alt="" width={640} height={240} />
               </Card.Header>
             ) : null}
-            <Card.Body data-kv-prose="">
+            <Card.Body className="kv-prose">
               <h3>
                 <Link href={`#${id}`}>{item.title}</Link>
               </h3>
@@ -362,15 +361,13 @@ export function NewsList({ locale }: CardFixtureProps) {
 export function CaseCard({ locale }: CardFixtureProps) {
   const { text, lang, formatLocale } = textsFor(locale)
   return (
-    <div data-kv-density="compact" lang={lang}>
+    <div className="kv-compact" lang={lang}>
       <Card.Root data-testid="case-card">
-        <Card.Body data-kv-prose="">
+        <Card.Body className="kv-prose">
           <h2>{text.case.heading(caseNumber)}</h2>
           <p>{text.case.status}</p>
           <Card.Root
-            data-surface="surface"
-            data-radius="md"
-            data-kv-prose=""
+            className="kv-card--surface kv-card--radius-md kv-prose"
             data-testid="nested-card"
           >
             <h3>{text.case.latestHeading}</h3>

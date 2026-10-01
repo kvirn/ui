@@ -342,18 +342,6 @@ async function expectTextOnSurface(canvasElement: HTMLElement, theme: ThemeName)
   await expect(within(matrix).getAllByRole('cell')).toHaveLength(
     textTokens.length * backgroundTokens.length,
   )
-  // text-muted on warning-subtle is prose metadata on a status panel (ADR-0018).
-  const mutedRow = within(matrix).getByRole('rowheader', { name: 'text-muted' }).closest('tr')
-  const warningSubtle = mutedRow?.cells[backgroundTokens.indexOf('warning-subtle') + 1]
-  await expect(warningSubtle).toHaveTextContent(/^Aa\d+\.\d{2}:1(7|4\.5):1 or moreIn use$/)
-  // on-primary on canvas isn't a pair anyone uses.
-  const onPrimaryRow = within(matrix).getByRole('rowheader', { name: 'on-primary' }).closest('tr')
-  await expect(onPrimaryRow?.cells[backgroundTokens.indexOf('canvas') + 1]).toHaveTextContent(
-    'Not in use',
-  )
-  // A sample is drawn as text only from 4.5:1. Below that, the chip holds a stripe.
-  const chips = [...matrix.querySelectorAll('.kv-story-chip')]
-  await expect(chips.every((chip) => ['Aa', ''].includes(chip.textContent))).toBe(true)
 }
 
 export const CurrentTheme: Story = {

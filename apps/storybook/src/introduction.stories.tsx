@@ -6,7 +6,7 @@ import { expect, within } from 'storybook/test'
 
 function AboutThisStorybook() {
   return (
-    <main data-kv-prose="">
+    <main className="kv-prose">
       <h1>About this Storybook</h1>
 
       <h2>What’s here</h2>
@@ -23,9 +23,9 @@ function AboutThisStorybook() {
       <p>
         Every story is styled by the default theme, <code>@kvirn-ui/theme/theme.css</code>, as
         described in <code>DESIGN.md</code>. The components themselves ship no CSS. The theme styles
-        the attributes they render, such as <code>data-kv=&quot;button&quot;</code> and{' '}
-        <code>data-disabled</code>, and variants you set yourself, such as{' '}
-        <code>data-variant=&quot;primary&quot;</code>.
+        the classes they render, such as <code>kv-button</code>, their state attributes, such as{' '}
+        <code>data-disabled</code>, and variant classes you add yourself, such as{' '}
+        <code>kv-button--primary</code>.
       </p>
 
       <h2>Toolbars</h2>

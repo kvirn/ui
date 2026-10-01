@@ -1,4 +1,4 @@
-# ADR-0013: Deliver the default theme as one hand-written `theme.css` that styles part attributes
+# ADR-0013: Deliver the default theme as one hand-written `theme.css` that styles part classes
 
 - **Status:** Accepted (2026-10-01, by the maintainer)
 - **Date:** 2026-10-01 (revised the same day after the maintainer's review of the Phase 1 prototype)
@@ -9,7 +9,7 @@
 
 DESIGN.md defines the default theme. The docs site (`apps/docs`) and Storybook need to show KvirnProvider, Button and Link in the default look, in four themes and forced colours. The headless packages ship zero CSS (AGENTS.md hard rule 5), and no new runtime dependency is allowed without an ADR (hard rule 6). `theme:check` must enforce every contrast pair users actually see.
 
-The first prototype generated `tokens.css` and `tailwind.css` from `tokens.ts`, plus opt-in recipe classes (`kv-button`, `kv-button-primary`, `kv-nav-item`, …). The maintainer found that too much ceremony for adopters: four files to import, class names to learn on top of the components, and a generated file nobody could edit. The direction: import one file and everything is styled, remove it and nothing is.
+The first prototype generated `tokens.css` and `tailwind.css` from `tokens.ts`, plus opt-in recipe classes (`kv-button`, `kv-button-primary`, `kv-nav-item`, …) that the consumer had to put on every element. The maintainer found that too much ceremony for adopters: four files to import, a class to add to every component, and a generated file nobody could edit. The direction: import one file and everything is styled, remove it and nothing is. Styling uses plain CSS classes, which the components add themselves, and `data-*` attributes only for state.
 
 ## Decision drivers
 
@@ -24,15 +24,15 @@ The first prototype generated `tokens.css` and `tailwind.css` from `tokens.ts`, 
 ### Option A (first prototype): generated `tokens.css`, `tailwind.css` and opt-in recipe classes
 
 - ✅ One TypeScript source, and Tailwind v4 utilities for the tokens
-- ❌ Four files, a class vocabulary on top of the components, and generated CSS that adopters can't read or edit
+- ❌ Four files, a class to add to every component, and generated CSS that adopters can't read or edit
 - ❌ A build step and a sync test for generated files
 
-### Option B: one hand-written `theme.css` that styles stable part attributes
+### Option B: one hand-written `theme.css` that styles the part classes the components render
 
 - ✅ `import '@kvirn-ui/theme/theme.css'` styles everything. Removing it unstyles everything
 - ✅ The file is the documentation: readable, copyable, editable
-- ✅ No build step, no generator, and no class names: variants are plain `data-*` attributes
-- ❌ The fallback blocks repeat each theme (a test keeps them equal), and `data-kv` part names become public API
+- ✅ No build step and no generator. Parts style themselves: the components add their own class (`kv-button`), and the consumer adds only a modifier class for a choice (`kv-button--primary`). `data-*` stays state, so a selector reads as "this part, in this variant, in this state"
+- ❌ The fallback blocks repeat each theme (a test keeps them equal), and the part and modifier classes become public API
 
 ### Option C: local CSS in `apps/docs` and `apps/storybook`
 
@@ -48,13 +48,14 @@ We will use Option B:
   - A palette, Tailwind-style, with scales named by role (ADR-0019): `--kv-neutral-50` … `--kv-neutral-950` and the same eleven steps for `primary`, `danger`, `success`, `warning` and `accent`, a `secondary` scale that aliases neutral, plus `--kv-white` and `--kv-black`. The palette block is the only place with raw colour values.
   - Semantic tokens (`--kv-color-primary`, `--kv-color-text`, …) that point at palette steps. The four themes only remap semantic tokens to steps. Non-colour tokens (spacing, radii, type, focus ring, motion, control size) are the same in every theme.
 - **Themes** are selected by `data-kv-color-scheme` and `data-kv-contrast` on `<html>`, with `prefers-color-scheme` and `prefers-contrast` fallbacks when the attributes are absent, and a `color-scheme` per theme. Forced colours map every semantic token to a system colour.
-- **Part attributes.** Each headless part renders a stable `data-kv` name: `data-kv="button"`, `data-kv="link"`, `data-kv="link-new-tab-notice"`. The theme selects on it, together with the state attributes the components already render (`data-disabled`, `data-focus-visible`, `data-current`). `data-kv` is in the hooks' part props too, so `useButton` on your own `<button>` gets the same look. This is the only change to `@kvirn-ui/react`, and it ships no CSS.
-- **Consumer choices are plain attributes, not props or classes.**
-  - `data-variant="primary"` or `"danger"` on a Button. The base is the secondary look, so a primary button is always an explicit choice (DESIGN.md: one primary per view).
-  - `data-kv-button-group` on a container of buttons.
-  - `data-kv-nav` on a list inside a labelled `<nav>`: its Links become navigation items.
-  - `data-kv-density="compact"` on any container: 32px controls from 64rem.
-- **Overrides are trivial.** Rebrand by overriding the `--kv-primary-*` scale on `:root`, and every theme follows (ADR-0019). Or re-point a single semantic token, or redefine a palette step, on `:root`. For more, copy `theme.css`, edit it and import the copy, or skip it and style `[data-kv]` and the `data-*` attributes with Tailwind or your own CSS.
+- **Part classes.** Each headless part renders a stable class: `kv-button`, `kv-link`, `kv-link-new-tab-notice` (and the card parts, ADR-0020). The theme selects on it, together with the state attributes the components render (`data-disabled`, `data-focus-visible`, `data-current`). The class is in the hooks' part props as `className` too, so `useButton` on your own `<button>` gets the same look. A consumer's `className`, on the component or on a `render` element, joins the part's class through `mergeProps` and never replaces it. `@kvirn-ui/react` ships no CSS.
+- **Consumer choices are classes, not props.**
+  - `kv-button--primary` or `kv-button--danger` on a Button. The base is the secondary look, so a primary button is always an explicit choice (DESIGN.md: one primary per view).
+  - `kv-button-group` on a container of buttons.
+  - `kv-nav` on a list inside a labelled `<nav>`: its Links become navigation items.
+  - `kv-compact` on any container: 32px controls from 64rem.
+- **`data-*` is only state:** what the components set (`data-disabled`, `data-focus-visible`, `data-current`), and the theme state on `<html>` (`data-kv-color-scheme`, `data-kv-contrast`). A modifier class has the same specificity as the attribute it replaces, so the cascade (variant over base, disabled over variant, forced colours over both) is unchanged.
+- **Overrides are trivial.** Rebrand by overriding the `--kv-primary-*` scale on `:root`, and every theme follows (ADR-0019). Or re-point a single semantic token, or redefine a palette step, on `:root`. For more, copy `theme.css`, edit it and import the copy, or skip it and style the `kv-*` classes and the `data-*` state attributes with Tailwind or your own CSS.
 - **`theme:check` reads `theme.css`.** It resolves every `var()` per theme (attributes and OS fallbacks), and measures the contrast pairs listed in `packages/theme/src/contrast-requirements.ts`. `checkThemeCss()` does the same for an adopter's copy or overrides. A lint test fails on raw colour values outside the palette block and in the app CSS.
 - **`KvirnProvider` never loads CSS.** Styling is opt-in by import.
 - The docs site and Storybook consume `theme.css`. Storybook's Theme toolbar has a "None (unstyled)" option that takes the file off the page again.
@@ -66,7 +67,7 @@ Positive:
 - Contrast (1.4.3, 1.4.6, 1.4.11) and focus appearance (2.4.13) are enforced on the file users load.
 - The media-query fallbacks honour OS settings without JavaScript, and a test keeps them equal to the attribute themes.
 - The component styles handle forced colours explicitly and never use `forced-color-adjust: none`.
-- Variants are attributes, never a change of element: a Button stays a `<button>`, a Link an `<a href>`.
+- Variants are classes, never a change of element: a Button stays a `<button>`, a Link an `<a href>`.
 
 There is no APG deviation.
 
@@ -74,9 +75,9 @@ There is no APG deviation.
 
 - Positive: one import, one readable file, no build step, and the same styling path for the docs site, Storybook and adopters.
 - Negative / trade-offs:
-  - `data-kv` names and the `data-variant`, `data-kv-nav`, `data-kv-button-group` and `data-kv-density` attributes are public API, so they need semver and changesets.
+  - The part classes and the `kv-button--primary`, `kv-button--danger`, `kv-nav`, `kv-button-group` and `kv-compact` classes are public API, so they need semver and changesets. Classes share one global namespace: the `kv-` prefix keeps them apart from an app's own.
   - The OS fallback blocks repeat their theme. `checkThemeCss` reports any drift.
-  - No Tailwind `@theme` file. Tailwind users style the attributes directly (`data-disabled:…`) or reference `var(--kv-*)`. A Tailwind mapping can come back as a documented snippet if adopters ask.
+  - No Tailwind `@theme` file. Tailwind users style the state attributes directly (`data-disabled:…`) or reference `var(--kv-*)`. A Tailwind mapping can come back as a documented snippet if adopters ask.
 - Follow-ups: ADR-0014 (visual direction), ADR-0017 (implementation details), ADR-0019 (role-named scales), Plan 0005. The e2e forced-colours, reduced-motion and `reflow-320` runs are Plan 0005 task B6.
 
 ## Validation
@@ -90,6 +91,7 @@ There is no APG deviation.
 
 - 2026-10-01: the palette scales were renamed by role, with the same hex values (`gray` → `neutral`, `indigo` → `primary`, `red` → `danger`, `green` → `success`, `amber` → `warning`, `teal` → `accent`), a `secondary` scale and `--kv-color-secondary` were added, and the rebrand became one `--kv-primary-*` override. The Decision above is written with the new names. See ADR-0019.
 - 2026-10-01: Accepted. The e2e validation moved to Plan 0005, B6.
+- 2026-10-01: on the maintainer's direction, parts and choices moved from `data-*` attributes to classes, and `data-*` is now only state. The Decision above is written with classes.
 
 ## References
 

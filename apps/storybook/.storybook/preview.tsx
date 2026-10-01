@@ -41,7 +41,8 @@ function setThemeStylesheet(isEnabled: boolean): void {
 
 /**
  * Selects the theme through the document's theme store, like a user would. Writing the
- * `data-kv-*` attributes directly wouldn't last: a provider re-applies the store's values.
+ * `data-kv-color-scheme` and `data-kv-contrast` attributes directly wouldn't last: a provider
+ * re-applies the store's values.
  */
 function selectStoryTheme(theme: keyof typeof storyThemes): void {
   const [colorScheme, contrast] = storyThemes[theme]

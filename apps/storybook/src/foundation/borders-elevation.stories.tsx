@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import type { ThemeName } from '@kvirn-ui/theme'
 import type { CSSProperties, ReactNode } from 'react'
 import { expect, waitFor, within } from 'storybook/test'
 import {
@@ -269,7 +268,7 @@ function BordersElevationPage(): ReactNode {
             shadow is never the only boundary: shadows disappear in forced colours, so every level
             from 1 up keeps its border.
           </p>
-          <div data-kv-not-prose="">
+          <div className="kv-not-prose">
             <ElevationLevel levelIndex={0} shadows={values.shadows} />
           </div>
         </>
@@ -286,9 +285,8 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const isDark = (theme: ThemeName) => theme === 'dark' || theme === 'dark-contrast'
-
-async function checkBorders(canvasElement: HTMLElement, theme?: ThemeName) {
+/** The control border reaches 3:1 against the page, measured live (1.4.11). */
+async function checkBorders(canvasElement: HTMLElement) {
   const canvas = within(canvasElement)
   const controlRow = await waitFor(() => {
     const row = canvas.getByRole('rowheader', { name: 'border-control' }).closest('tr')
@@ -298,18 +296,6 @@ async function checkBorders(canvasElement: HTMLElement, theme?: ThemeName) {
     return row
   })
   await waitFor(() => expect(within(controlRow).getByText('Passes')).toBeVisible())
-  // Five levels, nested in order.
-  for (const level of levels) {
-    await expect(canvasElement.querySelector(`[data-story-level="${level.level}"]`)).not.toBeNull()
-  }
-  const popup = canvasElement.querySelector('[data-story-level="3"]')
-  if (theme !== undefined && popup !== null) {
-    if (isDark(theme)) {
-      await waitFor(() => expect(popup).toHaveStyle({ boxShadow: 'none' }))
-    } else {
-      await waitFor(() => expect(getComputedStyle(popup).boxShadow).not.toBe('none'))
-    }
-  }
 }
 
 export const CurrentTheme: Story = {

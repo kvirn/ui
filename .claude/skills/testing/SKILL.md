@@ -32,6 +32,7 @@ Tests are the definition of done. They come from the accessibility contract (`<n
 - **Test RTL, forced-colors, reduced-motion and 320px** using the Playwright projects or `page.emulateMedia({ forcedColors: 'active', reducedMotion: 'reduce' })`.
 - **Test in at least 2 locales** (`sv` + `en`) so hard-coded strings get caught.
 - **No mocking of the DOM or of focus.** Use browser mode, not jsdom, for components.
+- **Test functionality and WCAG only.** Don't assert styles (computed values, tokens, class lists beyond the part-class contract): the look is reviewed visually, not tested.
 - **Never weaken a gate.** No `.skip`/`.only`, no disabled axe rules, no raised timeouts to hide flakiness, and no snapshot updates without reading the diff. Fix flaky tests at the root cause, which is usually a missing `await expect(...)` auto-wait.
 
 ## Test budget

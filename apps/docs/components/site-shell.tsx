@@ -36,7 +36,7 @@ export function SiteShell({ pathname, children }: { pathname: string; children: 
     <>
       {/* A plain <a>, not the router's link: the browser moves focus to #main. */}
       <Link render={<a href="#main">{text.skipLink}</a>} href="#main" className="docs-skip-link" />
-      <header className="docs-header" data-kv-density="compact">
+      <header className="docs-header kv-compact">
         <div className="docs-header-inner">
           <div className="docs-brand">
             <Link href="/" className="docs-wordmark">
@@ -71,10 +71,8 @@ export function SiteShell({ pathname, children }: { pathname: string; children: 
         <SiteNavigation pathname={pathname} isOpen={isMenuOpen} />
         <main id="main" tabIndex={-1} ref={mainRef} className="docs-main">
           {/* The article is prose: the default theme styles its headings, lists and code
-              (ADR-0018). Examples opt out with data-kv-not-prose. */}
-          <div data-kv-prose className="docs-article">
-            {children}
-          </div>
+              (ADR-0018). Examples opt out with kv-not-prose. */}
+          <div className="docs-article kv-prose">{children}</div>
         </main>
       </div>
       <footer className="docs-footer">

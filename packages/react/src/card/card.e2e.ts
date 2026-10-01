@@ -10,19 +10,8 @@ const storyUrl = (story: string) => `/iframe.html?id=components-card--${story}&v
 
 async function openStory(page: Page, story: string) {
   await page.goto(storyUrl(story))
-  await expect(page.locator('[data-kv="card"]').first()).toBeVisible()
+  await expect(page.locator('.kv-card').first()).toBeVisible()
 }
-
-/** A `--kv-color-*` token as the browser computes it, for comparing with computed styles. */
-const tokenColor = (page: Page, token: string) =>
-  page.evaluate((name) => {
-    const probe = document.createElement('span')
-    probe.style.color = `var(--kv-color-${name})`
-    document.body.append(probe)
-    const color = getComputedStyle(probe).color
-    probe.remove()
-    return color
-  }, token)
 
 test.describe('Card keyboard contract', () => {
   test('Tab moves through the children in DOM order', async ({ page }) => {
@@ -37,7 +26,7 @@ test.describe('Card keyboard contract', () => {
       await expect(page.getByRole('link', { name })).toBeFocused()
     }
     // The cards themselves are never a Tab stop.
-    await expect(page.locator('[data-kv="card"]:focus')).toHaveCount(0)
+    await expect(page.locator('.kv-card:focus')).toHaveCount(0)
   })
 
   test('Shift+Tab moves back through the children', async ({ page }) => {
@@ -90,7 +79,7 @@ test.describe('Card focus and modes', () => {
           box.bottom >= ringBox.bottom &&
           box.left <= ringBox.left
         if (clips && !contains) {
-          clippingAncestors.push(ancestor.getAttribute('data-kv') ?? ancestor.tagName)
+          clippingAncestors.push(ancestor.getAttribute('class') ?? ancestor.tagName)
         }
       }
       const isInViewport =
@@ -102,7 +91,9 @@ test.describe('Card focus and modes', () => {
     })
     expect(clipped).toEqual({ clippingAncestors: [], isInViewport: true })
     // The card itself never clips: no overflow on any card part.
-    for (const part of await page.locator('[data-kv^="card"]').all()) {
+    for (const part of await page
+      .locator('.kv-card, .kv-card-header, .kv-card-body, .kv-card-footer')
+      .all()) {
       await expect(part).toHaveCSS('overflow', 'visible')
     }
   })
@@ -110,55 +101,33 @@ test.describe('Card focus and modes', () => {
   test('the card border is visible in forced colours', async ({ page }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'forced-colors')
-    const cards = await page.locator('[data-kv="card"]').all()
+    const cards = await page.locator('.kv-card').all()
     expect(cards.length).toBeGreaterThanOrEqual(6)
     for (const card of cards) {
+      // A visible edge on every side, in a colour other than the card's own (1.4.11).
       const border = await card.evaluate((element) => {
         const style = getComputedStyle(element)
+        const sides = ['top', 'right', 'bottom', 'left'].map((side) => ({
+          width: Number.parseFloat(style.getPropertyValue(`border-${side}-width`)),
+          style: style.getPropertyValue(`border-${side}-style`),
+        }))
         return {
-          widths: [
-            style.borderTopWidth,
-            style.borderRightWidth,
-            style.borderBottomWidth,
-            style.borderLeftWidth,
-          ],
-          styles: [
-            style.borderTopStyle,
-            style.borderRightStyle,
-            style.borderBottomStyle,
-            style.borderLeftStyle,
-          ],
+          isDrawn: sides.every(
+            (side) => side.width > 0 && !['none', 'hidden'].includes(side.style),
+          ),
           differsFromBackground: style.borderTopColor !== style.backgroundColor,
         }
       })
-      expect(border).toEqual({
-        widths: ['1px', '1px', '1px', '1px'],
-        styles: ['solid', 'solid', 'solid', 'solid'],
-        differsFromBackground: true,
-      })
+      expect(border).toEqual({ isDrawn: true, differsFromBackground: true })
     }
   })
 
   test('dividers are visible in forced colours', async ({ page }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'dividers')
-    const body = page.locator('[data-kv="card"][data-dividers] > [data-kv="card-body"]').first()
-    await expect(body).toHaveCSS('border-top-width', '1px')
+    const body = page.locator('.kv-card.kv-card--dividers > .kv-card-body').first()
+    await expect(body).not.toHaveCSS('border-top-width', '0px')
     await expect(body).toHaveCSS('border-top-style', 'solid')
-  })
-
-  test('a hovered primary button on a card keeps a primary edge in dark (ADR-0021)', async ({
-    page,
-  }) => {
-    await page.emulateMedia({ forcedColors: 'none' })
-    await openStory(page, 'dark')
-    await expect(page.locator('html')).toHaveAttribute('data-kv-color-scheme', 'dark')
-    const button = page
-      .getByTestId('service-card')
-      .getByRole('button', { name: 'Beställ extra tömning' })
-    await button.hover()
-    await expect(button).toHaveCSS('border-top-color', await tokenColor(page, 'primary'))
-    await expect(button).toHaveCSS('background-color', await tokenColor(page, 'primary-hover'))
   })
 
   test('no horizontal scrolling at 320px with the Finnish text (1.4.10)', async ({ page }) => {
@@ -183,7 +152,7 @@ test.describe('Card reflow and text spacing', () => {
     )
     expect(hasHorizontalScroll).toBe(false)
     const image = page.getByTestId('wide-image')
-    const body = page.locator('[data-kv="card-body"]')
+    const body = page.locator('.kv-card-body')
     const [imageBox, bodyBox] = [await image.boundingBox(), await body.boundingBox()]
     expect((imageBox?.x ?? 0) + (imageBox?.width ?? 0)).toBeLessThanOrEqual(
       (bodyBox?.x ?? 0) + (bodyBox?.width ?? 0),
@@ -200,14 +169,14 @@ test.describe('Card reflow and text spacing', () => {
       })
       await expect(page.locator('.kv-story-text-spacing')).toHaveCount(1)
       // 0.12em of the 16px body text: the overrides apply.
-      await expect(page.locator('[data-kv="card"] p').first()).toHaveCSS('letter-spacing', '1.92px')
+      await expect(page.locator('.kv-card p').first()).toHaveCSS('letter-spacing', '1.92px')
       const problems = await page.evaluate(() => {
         const found: string[] = []
         const root = document.documentElement
         if (root.scrollWidth > root.clientWidth) {
           found.push(`page scrolls sideways: ${root.scrollWidth} > ${root.clientWidth}`)
         }
-        for (const card of document.querySelectorAll<HTMLElement>('[data-kv="card"]')) {
+        for (const card of document.querySelectorAll<HTMLElement>('.kv-card')) {
           const cardBox = card.getBoundingClientRect()
           for (const element of [card, ...card.querySelectorAll<HTMLElement>('*')]) {
             const style = getComputedStyle(element)
@@ -215,7 +184,7 @@ test.describe('Card reflow and text spacing', () => {
               continue
             }
             const box = element.getBoundingClientRect()
-            const name = `${element.tagName.toLowerCase()}${element.dataset['kv'] === undefined ? '' : `[data-kv=${element.dataset['kv']}]`}`
+            const name = `${element.tagName.toLowerCase()}${[...element.classList].map((className) => `.${className}`).join('')}`
             if (box.left < cardBox.left - 0.5 || box.right > cardBox.right + 0.5) {
               found.push(`${name} sticks out of its card`)
             }

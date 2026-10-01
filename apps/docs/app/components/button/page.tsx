@@ -16,15 +16,15 @@ export const metadata: Metadata = { title: messages.docs.meta.title({ page: 'But
 const variantsCode = `import { Button } from '@kvirn-ui/react'
 import '@kvirn-ui/theme/theme.css'
 
-<div data-kv-button-group>
-  <Button data-variant="primary">Send application</Button>
+<div className="kv-button-group">
+  <Button className="kv-button--primary">Send application</Button>
   <Button>Save draft</Button>
-  <Button data-variant="danger">Delete draft</Button>
+  <Button className="kv-button--danger">Delete draft</Button>
 </div>`
 
 const disabledCode = `<p id="send-reason">Fill in all required fields before you send.</p>
 <Button
-  data-variant="primary"
+  className="kv-button--primary"
   disabled
   focusableWhenDisabled
   aria-describedby="send-reason"
@@ -85,7 +85,7 @@ import '@kvirn-ui/theme/theme.css'`}
       <CodeBlock
         code={`<form onSubmit={sendApplication}>
   {/* fields */}
-  <Button type="submit" data-variant="primary">
+  <Button type="submit" className="kv-button--primary">
     Send application
   </Button>
 </form>`}
@@ -121,20 +121,20 @@ import '@kvirn-ui/theme/theme.css'`}
 
       <h2 id="styling">{text.styling}</h2>
       <p>
-        Button renders <code>data-kv=&quot;button&quot;</code>, and its state as{' '}
+        Button renders <code>class=&quot;kv-button&quot;</code>, and its state as{' '}
         <code>data-disabled</code> and <code>data-focus-visible</code>. The default theme styles
-        those attributes. Choose how much of it you want.
+        that class and those attributes. Choose how much of it you want.
       </p>
 
       <h3 id="styling-theme">1. Use the default theme</h3>
       <p>
-        Import <code>@kvirn-ui/theme/theme.css</code>. A Button is secondary by default. Pass{' '}
-        <code>data-variant=&quot;primary&quot;</code> for the one main action on the page, or{' '}
-        <code>data-variant=&quot;danger&quot;</code> for an action that deletes something. Put{' '}
-        <code>data-kv-density=&quot;compact&quot;</code> on a container for smaller buttons in staff
-        tools.
+        Import <code>@kvirn-ui/theme/theme.css</code>. A Button is secondary by default. Add{' '}
+        <code>className=&quot;kv-button--primary&quot;</code> for the one main action on the page,
+        or <code>className=&quot;kv-button--danger&quot;</code> for an action that deletes
+        something. Put <code>class=&quot;kv-compact&quot;</code> on a container for smaller buttons
+        in staff tools.
       </p>
-      <CodeBlock code={'<Button data-variant="primary">Send application</Button>'} />
+      <CodeBlock code={'<Button className="kv-button--primary">Send application</Button>'} />
 
       <h3 id="styling-variables">2. Override variables</h3>
       <p>
@@ -173,7 +173,8 @@ import '@kvirn-ui/theme/theme.css'`}
       <p>
         <code>theme.css</code> is one readable file. Copy it from{' '}
         <code>node_modules/@kvirn-ui/theme/theme.css</code> into your project, edit it, and import
-        your copy instead. Or skip it, and style the attributes with Tailwind or your own CSS.
+        your copy instead. Or skip it, and style the <code>kv-button</code> class and the state
+        attributes with Tailwind or your own CSS.
       </p>
       <CodeBlock
         code={`<Button className="rounded-md border px-4 py-2 data-disabled:border-dashed data-focus-visible:outline-2">

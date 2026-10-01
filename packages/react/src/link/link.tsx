@@ -156,9 +156,9 @@ export function LinkNewTabNotice({
   return renderPart({
     render,
     defaultElement: 'span',
+    // Your class joins the part's class, so the theme keeps styling the notice.
     partProps: {
-      'data-kv': 'link-new-tab-notice',
-      ...otherProps,
+      ...mergeProps({ className: 'kv-link-new-tab-notice' }, otherProps),
       children: hasOwnText(children) ? children : linkMessages.newTabNotice,
     },
     state: noticeState,

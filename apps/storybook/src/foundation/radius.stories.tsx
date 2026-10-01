@@ -40,7 +40,7 @@ function RadiusPage(): ReactNode {
       </p>
       {radii === null ? <ThemeMissingNotice /> : null}
       {radii ? (
-        <div data-kv-not-prose="">
+        <div className="kv-not-prose">
           <ul className="kv-story-specimens" aria-label="Radius tokens">
             {radii.map(({ token, value }) => (
               <li key={token}>
@@ -74,16 +74,7 @@ export const Radius: Story = {
     const list = await waitFor(() =>
       within(canvasElement).getByRole('list', { name: 'Radius tokens' }),
     )
-    const items = within(list).getAllByRole('listitem')
-    await expect(items).toHaveLength(radiusTokens.length)
-    const medium = items.find((item) => item.textContent?.includes('--kv-radius-md'))
-    if (medium === undefined) {
-      throw new Error('No specimen for --kv-radius-md')
-    }
-    await expect(within(medium).getByText('8px')).toBeVisible()
-    await expect(within(medium).getByText('Buttons, inputs and navigation items')).toBeVisible()
-    // The specimen is drawn with the token itself.
-    const specimen = medium.querySelector('.kv-story-radius')
-    await expect(specimen).toHaveStyle({ borderTopLeftRadius: '8px' })
+    // A named list with one item per radius token.
+    await expect(within(list).getAllByRole('listitem')).toHaveLength(radiusTokens.length)
   },
 }

@@ -7,7 +7,7 @@ A plain container for content on a surface: a text block in a sidebar, or an ima
 - Four parts, each one `<div>`: `Card.Root`, `Card.Header`, `Card.Body` and `Card.Footer` (also exported as `CardRoot`, `CardHeader`, `CardBody` and `CardFooter`). Header and Footer are never `<header>` or `<footer>`, which would become page landmarks.
 - No role, no ARIA, no text and no behaviour. Children are whatever you pass, with their own semantics and focus order.
 - `render` changes the element: `<article>`, `<section aria-labelledby>`, `<aside aria-labelledby>` or `<li>`.
-- Headless: no CSS. It renders `data-kv="card"`, `"card-header"`, `"card-body"` and `"card-footer"`. With `@kvirn-ui/theme/theme.css` imported, it's styled, and you choose with plain attributes: `data-surface`, `data-radius`, `data-padding` and `data-dividers`.
+- Headless: no CSS. Each part renders its stable class: `kv-card`, `kv-card-header`, `kv-card-body` and `kv-card-footer`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, it's styled, and you choose with modifier classes: `kv-card--surface`, `kv-card--radius-md`, `kv-card--padding-sm`, `kv-card--dividers` and so on.
 
 ## Component
 
@@ -15,22 +15,22 @@ A plain container for content on a surface: a text block in a sidebar, or an ima
 import { Button, Card, Link } from '@kvirn-ui/react'
 
 // A text block: the Root pads itself when it has no parts.
-<Card.Root render={<aside aria-labelledby="kontakt" />} data-surface="surface" data-kv-prose="">
+<Card.Root render={<aside aria-labelledby="kontakt" />} className="kv-card--surface kv-prose">
   <h2 id="kontakt">Kontakta oss</h2>
   <p>Ring kundcenter på 0123-45 67 89.</p>
 </Card.Root>
 
 // Image, heading, text and actions.
 <Card.Root>
-  <Card.Header data-padding="none">
+  <Card.Header className="kv-card-header--padding-none">
     <img src="/sophamtning.jpg" alt="" />
   </Card.Header>
-  <Card.Body data-kv-prose="">
+  <Card.Body className="kv-prose">
     <h2>Sophämtning vid Storgatan 12</h2>
     <p>Matavfall och restavfall töms varannan vecka.</p>
   </Card.Body>
-  <Card.Footer data-kv-button-group="">
-    <Button data-variant="primary">Beställ extra tömning</Button>
+  <Card.Footer className="kv-button-group">
+    <Button className="kv-button--primary">Beställ extra tömning</Button>
     <Button>Pausa hämtningen</Button>
   </Card.Footer>
 </Card.Root>
@@ -38,7 +38,7 @@ import { Button, Card, Link } from '@kvirn-ui/react'
 // A list of cards: each card is a list item, with one link, in its heading.
 <ul role="list">
   <Card.Root render={<li />}>
-    <Card.Body data-kv-prose="">
+    <Card.Body className="kv-prose">
       <h3>
         <Link href="/nyheter/atervinning">Nya öppettider på återvinningscentralen</Link>
       </h3>
@@ -57,16 +57,21 @@ Your part:
 - **Landmarks** only for a region a user would want to jump to: `<section aria-labelledby>` or `<aside aria-labelledby>`. Never make every card in a list a landmark.
 - **Parts are direct children** of the Root. A wrapper between them breaks the default theme's padding, and an empty part still has padding: don't render it.
 
-### Attributes for the default theme
+### Classes for the default theme
 
-| Attribute       | On                | Values (default first)                |
-| --------------- | ----------------- | ------------------------------------- |
-| `data-surface`  | Root              | `surface-raised`, `surface`, `canvas` |
-| `data-radius`   | Root              | `lg`, `md` (a card in a card), `none` |
-| `data-padding`  | Root, or one part | `md`, `none`, `sm`, `lg`              |
-| `data-dividers` | Root              | present or absent                     |
+Without a modifier class, a card gets the default: `surface-raised`, the `lg` radius and `md` padding, with no dividers.
 
-`md` padding is 24px, and 16px below `40rem` and in compact density. All four steps are allowed on a part, but mixed steps misalign the parts' edges, so per-part values are normally `none`, for full-bleed media. Prose stops at a card: put `data-kv-prose` on `Card.Body` (or the Root of a card without parts) to style the text inside.
+| Class                                               | On     | Sets                                   |
+| --------------------------------------------------- | ------ | -------------------------------------- |
+| `kv-card--surface`, `kv-card--canvas`               | Root   | the background                         |
+| `kv-card--radius-md`, `kv-card--radius-none`        | Root   | the radius: `md` for a card in a card  |
+| `kv-card--padding-none`, `-sm`, `-lg`               | Root   | every part's padding                   |
+| `kv-card-header--padding-none`, `-sm`, `-md`, `-lg` | Header | its own padding, overriding the Root's |
+| `kv-card-body--padding-none`, `-sm`, `-md`, `-lg`   | Body   | its own padding, overriding the Root's |
+| `kv-card-footer--padding-none`, `-sm`, `-md`, `-lg` | Footer | its own padding, overriding the Root's |
+| `kv-card--dividers`                                 | Root   | a border-subtle line between parts     |
+
+`md` padding is 24px, and 16px below `40rem` and in compact density (`kv-compact`). All four steps are allowed on a part, but mixed steps misalign the parts' edges, so per-part values are normally `none`, for full-bleed media. Prose stops at a card: put `kv-prose` on `Card.Body` (or the Root of a card without parts) to style the text inside.
 
 ### `render`
 
@@ -75,7 +80,7 @@ Your part:
 <Card.Root render={(rootProps) => <li {...rootProps} className="nyhet" />}>…</Card.Root>
 ```
 
-An element keeps its own props, and the part's are merged in: class names join, styles merge and refs merge (ADR-0015). A `data-kv` prop or a `render` element's own `data-kv` never replaces the part name, so the theme keeps styling the card. The function form gets the props, with a callback ref that fits any element, and an empty state object. Spread them, and don't override `data-kv`.
+An element keeps its own props, and the part's are merged in: class names join, styles merge and refs merge (ADR-0015). A `className` prop and a `render` element's own `className` join the part's class instead of replacing it, so the theme keeps styling the card. The function form gets the props, with a callback ref that fits any element, and an empty state object. Spread them, and keep `className`: it holds the part's class and your own.
 
 ## Hook
 
@@ -95,4 +100,4 @@ function ContactCard() {
 }
 ```
 
-`useCard()` returns `rootProps`, `headerProps`, `bodyProps` and `footerProps`, which hold only the part names.
+`useCard()` returns `rootProps`, `headerProps`, `bodyProps` and `footerProps`, which hold only the part's `className`. Add a modifier class with `mergeProps`, which joins class names: `mergeProps(card.rootProps, { className: 'kv-card--surface' })`.

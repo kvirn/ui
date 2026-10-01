@@ -70,8 +70,8 @@ Resolution (ADR-0007), first match wins: `Link.NewTabNotice` children, then `<Li
 ## Visual / modes
 
 - Focus indicator: headless. The browser's native ring by default. The default theme restyles it to at least 2px at 3:1 (2.4.7, 2.4.13).
-- Target size: inline links in a sentence are exempt from 2.5.8. The default theme gives standalone links at least 24 × 24 CSS px.
-- forced-colors behaviour: a native `<a href>`, so the system's `LinkText` applies. The current page must not be shown by background alone in the default theme. The e2e suite passes in `chromium-forced-colors`.
+- Target size: inline links in a sentence are exempt from 2.5.8. The default theme gives standalone links at least 24 × 24 CSS px. Test: `link.stories.tsx › Compact navigation`.
+- forced-colors behaviour: a native `<a href>`, so the system's `LinkText` applies. The current page must not be shown by background alone in the default theme: it's also heavier (1.4.1, `link.stories.tsx › Current Page`). A link in running text is underlined (1.4.1, `link.stories.tsx › In running text`). The e2e suite passes in `chromium-forced-colors`.
 - reduced-motion behaviour: no motion. Passes in `chromium-reduced-motion`.
 - Reflow: no horizontal scrolling at 320 CSS px (`reflow-320`, 1.4.10).
 

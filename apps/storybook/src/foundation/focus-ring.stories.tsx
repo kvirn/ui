@@ -60,7 +60,7 @@ function FocusedScrollRegion({ background }: { background: Background }): ReactN
   const captionId = useId()
   return (
     <section
-      data-kv-scroll-region=""
+      className="kv-scroll-region"
       data-focus-visible=""
       aria-labelledby={captionId}
       tabIndex={scrollRegionTabIndex}
@@ -103,7 +103,7 @@ function BackgroundPanel({
         <code>focus-ring</code> on <code>{background}</code>: {ratioText(ratio)}. Minimum 3:1.{' '}
         <ContrastResult ratio={ratio} minimum={nonTextMinimum} />
       </p>
-      <div data-kv-button-group="">
+      <div className="kv-button-group">
         <Button data-focus-visible="">Save draft</Button>
       </div>
       <p>
@@ -192,8 +192,8 @@ function FocusRingPage(): ReactNode {
             element, against the page: on <code>canvas</code> it’s{' '}
             {ratioText(values.onBackground.canvas)}.
           </p>
-          <div data-kv-button-group="">
-            <Button data-variant="primary" data-focus-visible="">
+          <div className="kv-button-group">
+            <Button className="kv-button--primary" data-focus-visible="">
               Send application
             </Button>
           </div>
@@ -203,7 +203,7 @@ function FocusRingPage(): ReactNode {
             The examples above always show the ring. These two are live: press Tab to reach them,
             and the ring appears. Click one with a mouse, and no ring shows.
           </p>
-          <div data-kv-button-group="">
+          <div className="kv-button-group">
             <Button>Try the button</Button>
           </div>
           <p>

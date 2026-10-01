@@ -1,6 +1,6 @@
 # @kvirn-ui/theme
 
-The optional default theme for KvirnUI: one hand-written, readable CSS file, `theme.css`. The headless packages ship no CSS. This file styles them through the attributes they render.
+The optional default theme for KvirnUI: one hand-written, readable CSS file, `theme.css`. The headless packages ship no CSS. This file styles them through the classes they render and their state attributes.
 
 > **Pre-alpha.** The look is a proposal (ADR-0013 and ADR-0014, both Proposed). It is designed and tested to meet WCAG 2.2 AA, but check your own service.
 
@@ -19,15 +19,15 @@ import '@kvirn-ui/theme/theme.css'
 
 Every KvirnUI component on the page is now styled. Remove the import, and they are unstyled again.
 
-- Components render a stable part name: `data-kv="button"`, `data-kv="link"`, `data-kv="link-new-tab-notice"`, `data-kv="card"`, `data-kv="card-header"`, `data-kv="card-body"`, `data-kv="card-footer"`. The theme selects on it.
-- State comes from the components: `data-disabled`, `data-focus-visible`, `data-current`.
-- Choices are plain attributes you set:
-  - `<Button data-variant="primary">` for the one main action per view, `data-variant="danger"` for a destructive one. Without it, a Button is secondary.
-  - `<div data-kv-button-group>` lays buttons out in a row, stacked on narrow screens.
-  - `<ul data-kv-nav>` inside a labelled `<nav>` turns its Links into navigation items, with the current page marked.
-  - `data-kv-density="compact"` on any container gives 32px controls for staff tools (from 64rem wide), and less padding in cards.
-  - On a `Card.Root`: `data-surface="surface"` or `"canvas"` (the default is `surface-raised`), `data-radius="md"` or `"none"` (the default is `lg`), and `data-dividers` for a line between parts. `data-padding="none"`, `"sm"`, `"md"` or `"lg"` on the Root sets every part's padding, and on a part overrides it: `<Card.Header data-padding="none">` around a full-bleed image. Parts must be direct children of the Root.
-  - `data-kv-prose` styles content you don't control. It stops at a card, unless you put `data-kv-prose` on the card or inside it.
+- Every component part renders its own class: `kv-button`, `kv-link`, `kv-link-new-tab-notice`, `kv-card`, `kv-card-header`, `kv-card-body` and `kv-card-footer`. Your `className` joins it, never replaces it. The theme selects on it.
+- State comes from the components as `data-*` attributes: `data-disabled`, `data-focus-visible`, `data-current`. Classes style, `data-*` is state.
+- Choices are classes you add:
+  - `<Button className="kv-button--primary">` for the one main action per view, `kv-button--danger` for a destructive one. Without one, a Button is secondary.
+  - `<div class="kv-button-group">` lays buttons out in a row, stacked on narrow screens.
+  - `<ul class="kv-nav">` inside a labelled `<nav>` turns its Links into navigation items, with the current page marked.
+  - `kv-compact` on any container gives 32px controls for staff tools (from 64rem wide), and less padding in cards.
+  - On a `Card.Root`: `kv-card--surface` or `kv-card--canvas` (the default is `surface-raised`), `kv-card--radius-md` or `kv-card--radius-none` (the default is `lg`), and `kv-card--dividers` for a line between parts. `kv-card--padding-none`, `-sm` or `-lg` on the Root sets every part's padding (the default is `md`). A part's own class overrides it, in all four steps: `<Card.Header className="kv-card-header--padding-none">` around a full-bleed image, and likewise `kv-card-body--padding-*` and `kv-card-footer--padding-*`. Parts must be direct children of the Root.
+  - `kv-prose` styles content you don't control, and `kv-prose kv-prose--large` is the 18px size. It stops at a card, unless you put `kv-prose` on the card or inside it. Inside prose, `kv-lead` marks the lead paragraph, `kv-scroll-region` a wide table's labelled scroll region, and `kv-not-prose` anything prose shouldn't style.
 - The theme follows `data-kv-color-scheme` and `data-kv-contrast`, which `KvirnProvider` and `KvirnThemeScript` set on `<html>`. Without them, it follows the OS settings. Forced colours always win.
 
 ### 2. Override variables
@@ -94,7 +94,7 @@ If a brand colour fails as a fill, use it in the header band or the logo, and bu
 ### 3. Replace it, or skip it
 
 - **Your own copy.** Copy `node_modules/@kvirn-ui/theme/theme.css` into your project, edit it, and import your copy instead. It's meant to be read: numbered sections, the palette first, then the themes, then each component.
-- **No theme.** Skip it, and style `[data-kv="button"]`, `[data-disabled]`, `[data-focus-visible]`, `[data-variant="primary"]` and so on with Tailwind or your own CSS.
+- **No theme.** Skip it, and style `.kv-button`, `[data-disabled]`, `[data-focus-visible]`, `.kv-button--primary` and so on with Tailwind or your own CSS.
 
 ## Check your colours
 

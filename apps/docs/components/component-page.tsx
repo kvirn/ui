@@ -44,7 +44,7 @@ export function ComponentPage({
   return (
     <>
       <PageHeading>{title}</PageHeading>
-      <p data-kv-lead>{summary}</p>
+      <p className="kv-lead">{summary}</p>
       <StatusLine status={status} />
       {children}
     </>

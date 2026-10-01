@@ -8,7 +8,7 @@ A native `<a href>` for navigation, rendered by your router's link component whe
 - `target="_blank"` adds `rel="noopener noreferrer"` to your own `rel`.
 - `Link.NewTabNotice` renders the translated new-tab notice, `(öppnas i en ny flik)`, as part of the link's name (WCAG 3.2.5, G201). A dev warning fires when a `target="_blank"` link has none.
 - No `disabled` prop: a disabled link isn't a thing. Remove the link or render text.
-- Headless: no CSS. It renders `data-kv="link"` (and `data-kv="link-new-tab-notice"` on the notice), a stable part name. Style `[data-kv='link']`, `[data-current]` and `[data-focus-visible]` (or `:focus-visible`). With `@kvirn-ui/theme/theme.css` imported, it is styled, and links inside a list with `data-kv-nav` become navigation items.
+- Headless: no CSS. It renders `class="kv-link"` (and `class="kv-link-new-tab-notice"` on the notice), the part's stable class, and your `className` joins it. Style `.kv-link` and the state attributes `[data-current]` and `[data-focus-visible]` (or `:focus-visible`). With `@kvirn-ui/theme/theme.css` imported, it is styled, and links inside a list with `class="kv-nav"` become navigation items.
 
 ## Component
 

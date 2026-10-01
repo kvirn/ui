@@ -42,18 +42,18 @@ function NavigationItem({ page, pathname }: { page: NavigationPage; pathname: st
 
 /**
  * The documentation navigation: a list of links, not a menu (APG Disclosure Navigation).
- * `data-kv-nav` makes the theme style its links as navigation items.
+ * `kv-nav` makes the theme style its links as navigation items.
  * Below 64rem the Menu button shows and hides the list.
  */
 export function SiteNavigation({ pathname, isOpen }: { pathname: string; isOpen: boolean }) {
   return (
-    <nav aria-label={text.label} className="docs-sidebar" data-kv-density="compact">
-      <ul id="docs-nav-list" className="docs-nav-list" data-kv-nav="" data-open={isOpen}>
+    <nav aria-label={text.label} className="docs-sidebar kv-compact">
+      <ul id="docs-nav-list" className="docs-nav-list kv-nav" data-open={isOpen}>
         <NavigationItem page={introduction} pathname={pathname} />
         {groups.map((group) => (
           <li key={group.label} className="docs-nav-group">
             <span className="docs-nav-group-label">{group.label}</span>
-            <ul data-kv-nav="">
+            <ul className="kv-nav">
               {group.pages.map((page) => (
                 <NavigationItem key={page.href} page={page} pathname={pathname} />
               ))}

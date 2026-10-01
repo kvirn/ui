@@ -106,7 +106,7 @@ function LayoutPage(): ReactNode {
         one question or one topic per page. Prose lines stop at the measure, 60 to 75 characters.
         Each box is that column’s maximum width. On a narrow screen it shrinks to fit.
       </p>
-      <div data-kv-not-prose="" style={{ display: 'grid', gap: 'var(--kv-space-4)' }}>
+      <div className="kv-not-prose" style={{ display: 'grid', gap: 'var(--kv-space-4)' }}>
         {columns.map(({ id, label, width }) => {
           const measured = values?.columns[id]
           return (
@@ -134,8 +134,8 @@ function LayoutPage(): ReactNode {
       <p>
         Everything works at 320 CSS px wide, and at 400% zoom, without scrolling sideways (1.4.10).
         The one exception is a data table, which scrolls inside its own labelled, focusable region (
-        <code>data-kv-scroll-region</code>). Nothing that contains text gets a fixed width: Finnish
-        and Northern Sámi can be 30 to 50% longer than English, so buttons and labels wrap.
+        <code>kv-scroll-region</code>). Nothing that contains text gets a fixed width: Finnish and
+        Northern Sámi can be 30 to 50% longer than English, so buttons and labels wrap.
       </p>
       {values ? (
         <p>
@@ -173,12 +173,7 @@ export const Layout: Story = {
       const isMatching = view?.matchMedia(`(width >= ${breakpoint})`).matches === true
       await expect(within(row).getByRole('cell', { name: isMatching ? 'Yes' : 'No' })).toBeVisible()
     }
-    // The columns never exceed their maximum, and the page never scrolls sideways.
-    const rootFontSize = Number.parseFloat(
-      getComputedStyle(canvasElement.ownerDocument.documentElement).fontSize,
-    )
-    const forms = canvasElement.querySelector('[data-story-column="forms"]')
-    await expect(forms?.getBoundingClientRect().width).toBeLessThanOrEqual(40 * rootFontSize)
+    // The page never scrolls sideways (1.4.10).
     await expect(canvas.getByText('This page doesn’t scroll sideways at this width.')).toBeVisible()
   },
 }

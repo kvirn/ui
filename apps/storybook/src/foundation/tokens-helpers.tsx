@@ -105,7 +105,7 @@ export function TokenPage({
   children: ReactNode
 }): ReactNode {
   return (
-    <main ref={pageRef} lang="en" className="kv-story-foundation" data-kv-prose="">
+    <main ref={pageRef} lang="en" className="kv-story-foundation kv-prose">
       <h1>{title}</h1>
       {children}
     </main>

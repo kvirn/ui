@@ -72,7 +72,7 @@ The provider has no strings of its own. It resolves every component's keys. Plan
 - A nested provider that changes the language must pass that language's catalog too (`<KvirnProvider locale="fi-FI" messages={fi}>`). Otherwise its strings stay in the parent's language while `lang` says otherwise. A dev warning names both locales.
 - When overriding a message that forms an accessible name, keep it consistent with the visible label (2.5.3 Label in Name, ADR-0007).
 - Build the theme switcher from native controls with visible labels (for example radio groups in a `<fieldset>` with a `<legend>`), and don't make the resolved-theme text a live region.
-- Render `KvirnThemeScript` with the response's CSP `nonce` in the server-rendered `<head>`, and put `suppressHydrationWarning` on `<html>`. With a custom storage adapter, render the `data-kv-*` attributes on the server instead.
+- Render `KvirnThemeScript` with the response's CSP `nonce` in the server-rendered `<head>`, and put `suppressHydrationWarning` on `<html>`. With a custom storage adapter, render the `data-kv-color-scheme` and `data-kv-contrast` attributes on the server instead.
 - Set `timeZone` explicitly for server rendering, so dates don't differ between server and client.
 
 ## Visual / modes

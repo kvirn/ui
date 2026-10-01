@@ -287,7 +287,7 @@ The headings below are the real headings. The sentences are first drafts in plai
 - `h2` **Styling**:
   - `h3` State attributes: `data-disabled`, `data-focus-visible`.
   - `h3` Default theme: "Import `@kvirn-ui/theme/tokens.css` and `@kvirn-ui/theme/recipes/button.css`. `kv-button` gives a secondary button. Add `kv-button-primary` for the one main action, or `kv-button-danger` for a destructive action. Wrap several buttons in `kv-button-group`." Then a list of the tokens used.
-  - `h3` Density: "Buttons are 44px by default. Inside `data-kv-density=\"compact\"` they are 32px with 14px labels, for staff tools. Keep primary actions for residents at the default."
+  - `h3` Density: "Buttons are 44px by default. Inside `class=\"kv-compact\"` they are 32px with 14px labels, for staff tools. Keep primary actions for residents at the default."
   - `h3` Your own look: "Override the `--kv-*` variables. KvirnUI's CSS sits in `@layer kv`, so your own CSS always wins. With Tailwind v4, import `@kvirn-ui/theme/tailwind.css` and use utilities such as `bg-kv-primary`." Plus a code example of an override, and a reminder to run `checkTheme()`.
 - `h2` **API reference**: `h3` Button · `h3` useButton.
 - `h2` **Related**: Link · KvirnProvider.
@@ -329,7 +329,7 @@ The headings below are the real headings. The sentences are first drafts in plai
 ### Landmarks and DOM order (all widths)
 
 ```
-<html lang="en" dir="ltr" data-kv-color-scheme data-kv-contrast>   (KvirnThemeScript sets the data-kv-* attributes before paint)
+<html lang="en" dir="ltr" data-kv-color-scheme data-kv-contrast>   (KvirnThemeScript sets these two state attributes before paint)
   [a.skip-link → #main]                 first focusable element
   [header: banner]
     wordmark link "KvirnUI" · badge "Pre-alpha"
@@ -427,7 +427,7 @@ The docs site is a calm, dense developer tool in the direction the maintainer ch
 - **Depth from the surface ladder and hairlines, never shadows.** Every region edge is a 1px `border-subtle`.
 - **One accent, used sparingly:** the single primary action on a page, focus rings, links, and the current navigation item (a `primary` bar on `primary-subtle`). There is no decorative colour, gradient or glow.
 - **Dense chrome, readable content.**
-  - At 64rem and wider, the header and sidebar use `data-kv-density="compact"`: 14px/500 `label-compact` items, 32px rows (2.5.8). That's close to Linear's 14px, ~33px controls.
+  - At 64rem and wider, the header and sidebar use `kv-compact`: 14px/500 `label-compact` items, 32px rows (2.5.8). That's close to Linear's 14px, ~33px controls.
   - Below 64rem, where touch is likely, they return to comfortable (44px).
   - Content is always comfortable to read: `body` 16px at line height 1.5, prose at 70ch or less, and headings on the tight Linear tracking ramp (`heading-1` 28px at -0.021em).
 - **Examples are comfortable (44px)**, because they show the resident-facing default. The chrome around them is compact.
@@ -447,7 +447,7 @@ Only DESIGN.md tokens, the ADR-0013 recipes and the three `--docs-*` layout cons
 | Legend                          | `label-compact` (compact) or `label`, colour `text`, margin-block-end `space-2`. No fieldset border                                                                                                                                                                                            | –                                                       |                                                                                                                                            |
 | Radio option                    | Native radio at 1.5rem (24px), `accent-color: var(--kv-color-primary)`. The label row is flex, gap `space-2`, `min-block-size: var(--kv-control-min-block-size)`. Ring on the radio                                                                                                            | 32px row / 44px row                                     | The radio itself is 24px, so it meets 2.5.8 at either density                                                                              |
 | "In use now" and storage note   | `body-small` in compact, `body` otherwise. "In use now" in `text`, the storage note in `text-muted`                                                                                                                                                                                            | –                                                       | Not a live region                                                                                                                          |
-| Sidebar nav (64rem and wider)   | `surface` bg, 1px `border-subtle` inline-end hairline, padding `space-4` `space-3`, `data-kv-density="compact"`. Group labels in `label-compact`, colour `text-muted`, padding `space-2` `space-3`, margin-block-start `space-4`. No nesting indent: groups are flat, as in Linear's sidebar   | compact                                                 | Group labels: `text-muted` on `surface` is 5.79 / 5.86 / 11.27 / 13.04. The items carry the meaning                                        |
+| Sidebar nav (64rem and wider)   | `surface` bg, 1px `border-subtle` inline-end hairline, padding `space-4` `space-3`, `kv-compact`. Group labels in `label-compact`, colour `text-muted`, padding `space-2` `space-3`, margin-block-start `space-4`. No nesting indent: groups are flat, as in Linear's sidebar                  | compact                                                 | Group labels: `text-muted` on `surface` is 5.79 / 5.86 / 11.27 / 13.04. The items carry the meaning                                        |
 | Nav (below 64rem, expanded)     | Same list, full width, `surface` bg, bottom hairline                                                                                                                                                                                                                                           | comfortable                                             |                                                                                                                                            |
 | Nav items                       | `ul.kv-nav-list` with `.kv-nav-item` links (KvirnUI `Link`, `current="page"` for the current route)                                                                                                                                                                                            | 32px / 44px                                             | Hover: `surface-raised`. Current: `primary-subtle`, weight 600, `primary` bar and `aria-current`                                           |
 | Main                            | Padding-inline `space-4` / `space-6` / `space-10` by breakpoint. Padding-block `space-10`. Content `max-inline-size: var(--docs-content-max)`. `p`, `ul` and `ol` at `max-inline-size: 70ch`                                                                                                   | comfortable                                             |                                                                                                                                            |
@@ -648,7 +648,7 @@ All pass.
 >   - compact 14px/32px chrome for staff tools and the docs sidebar, while resident-facing controls stay 44px
 >     Every failing target value is adjusted and measured (168 pairs, 0 failures): hover darkens instead of lightening, `link` is a separate token, controls use `border-control` instead of hairlines, and the focus ring is 2px with a 2px offset. DESIGN.md is updated, and the decision waits for this prototype.
 > - **Delivery (ADR-0013, Proposed):**
->   - `@kvirn-ui/theme` generates `tokens.css` (four themes, fallbacks, `color-scheme`, `data-kv-density`) and `tailwind.css` (Tailwind v4 `@theme inline`, mapped to `--kv-*`) from `tokens.ts`.
+>   - `@kvirn-ui/theme` generates `tokens.css` (four themes, fallbacks, `color-scheme`, compact density) and `tailwind.css` (Tailwind v4 `@theme inline`, mapped to `--kv-*`) from `tokens.ts`.
 >   - Opt-in recipes: `recipes/button.css` (`kv-button` = secondary, `kv-button-primary`, `kv-button-danger`, `kv-button-group`) and `recipes/link.css` (`kv-link`, `kv-nav-list`, `kv-nav-item`).
 >   - Everything sits in `@layer kv`, so consumer CSS always wins. Theming overrides `--kv-*`.
 >   - The provider loads no CSS. Headless packages stay CSS-free.
@@ -680,7 +680,7 @@ The maintainer decides ADR-0013 and ADR-0014 **after seeing a styled result**, s
 - [ ] A3. Generate `tokens.css`:
   - `@layer kv.tokens, kv.recipes;` and the `kv.tokens` layer.
   - Attribute selectors plus media-query fallbacks, and `color-scheme`.
-  - `[data-kv-density="compact"]`, reset to comfortable below 64rem.
+  - `.kv-compact`, reset to comfortable below 64rem.
   - Forced colours.
   - An export, and a test that every token exists in every theme. Read the snapshot before accepting it.
 - [ ] A4. `recipes/button.css` and `recipes/link.css` (`kv.recipes` layer), to the state tables. `var(--kv-*)` only, logical properties, forced colours, reduced motion.

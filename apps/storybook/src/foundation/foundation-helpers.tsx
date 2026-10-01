@@ -17,7 +17,7 @@ export const themeLabels: Record<ThemeName, string> = {
 }
 
 /** `rgb(94, 106, 210)` as `#5e6ad2`. Anything translucent or not sRGB can't be measured. */
-export function rgbToHex(color: string): string | undefined {
+function rgbToHex(color: string): string | undefined {
   const match = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)$/.exec(color.trim())
   if (match === null || (match[4] !== undefined && Number(match[4]) < 1)) {
     return undefined
@@ -188,7 +188,7 @@ export function FoundationPage({
   children: ReactNode
 }): ReactNode {
   return (
-    <main lang="en" className="kv-story-foundation" data-kv-prose="">
+    <main lang="en" className="kv-story-foundation kv-prose">
       <h1>{title}</h1>
       {children}
     </main>
@@ -204,7 +204,7 @@ export function ThemeMissingNotice(): ReactNode {
 export const scrollRegionTabIndex = 0
 
 /**
- * A table in a labelled, focusable scroll region (`data-kv-scroll-region`): a `<section>`
+ * A table in a labelled, focusable scroll region (`kv-scroll-region`): a `<section>`
  * named by the caption, so it's a region landmark.
  */
 export function ScrollTable({
@@ -216,7 +216,11 @@ export function ScrollTable({
 }): ReactNode {
   const captionId = useId()
   return (
-    <section data-kv-scroll-region="" aria-labelledby={captionId} tabIndex={scrollRegionTabIndex}>
+    <section
+      className="kv-scroll-region"
+      aria-labelledby={captionId}
+      tabIndex={scrollRegionTabIndex}
+    >
       <table>
         <caption id={captionId}>{caption}</caption>
         {children}
