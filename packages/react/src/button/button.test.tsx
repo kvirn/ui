@@ -13,7 +13,8 @@ import type { ButtonProps, ButtonState } from './button.tsx'
 import { useButton } from './use-button.ts'
 import type { ButtonPartProps, UseButtonOptions, UseButtonResult } from './use-button.ts'
 
-// Contract: button.a11y.md. Keyboard rows are also covered end to end in button.e2e.ts.
+// Contract: button.a11y.md. Keyboard rows are also covered end to end in
+// apps/storybook/src/components/button/button.e2e.ts.
 
 let consoleWarn: MockInstance<Console['warn']>
 

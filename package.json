@@ -15,7 +15,6 @@
     "changeset": "changeset"
   },
   "devDependencies": {
-    "@axe-core/playwright": "catalog:",
     "@changesets/cli": "catalog:",
     "@kvirn-ui/testing": "workspace:*",
     "@playwright/test": "catalog:",

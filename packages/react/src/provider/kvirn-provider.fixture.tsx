@@ -16,7 +16,6 @@ const fixtureTexts = {
     direction: 'Riktning',
     timeZone: 'Tidszon',
     runtimeTimeZone: 'Enhetens tidszon',
-    weekStart: 'Veckan börjar på dag',
     date: 'Datum',
     newTabNotice: 'Text för ny flik',
     theme: 'Tema',
@@ -36,7 +35,6 @@ const fixtureTexts = {
     direction: 'Kirjoitussuunta',
     timeZone: 'Aikavyöhyke',
     runtimeTimeZone: 'Laitteen aikavyöhyke',
-    weekStart: 'Viikon ensimmäinen päivä',
     date: 'Päivämäärä',
     newTabNotice: 'Uuden välilehden ilmoitus',
     theme: 'Teema',
@@ -56,7 +54,6 @@ const fixtureTexts = {
     direction: 'Direction',
     timeZone: 'Time zone',
     runtimeTimeZone: 'Device time zone',
-    weekStart: 'Week starts on day',
     date: 'Date',
     newTabNotice: 'New tab notice',
     theme: 'Theme',
@@ -106,8 +103,6 @@ export function ProviderFixture() {
         <dd>{locale.dir}</dd>
         <dt>{text.timeZone}</dt>
         <dd>{dateSettings.timeZone ?? text.runtimeTimeZone}</dd>
-        <dt>{text.weekStart}</dt>
-        <dd>{dateSettings.weekStart}</dd>
         <dt>{text.date}</dt>
         <dd>
           <time dateTime={fixtureDate.toISOString()}>{formattedDate}</time>

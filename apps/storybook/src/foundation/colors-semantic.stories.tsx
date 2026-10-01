@@ -11,11 +11,9 @@ import {
   expectThemeApplied,
   forcedColorsEnvironment,
   isForcedColors,
-  isThemeLoaded,
   readPaletteSteps,
   ScrollTable,
   Swatch,
-  ThemeMissingNotice,
   themeLabels,
   useLiveValue,
 } from './foundation-helpers.tsx'
@@ -33,7 +31,7 @@ interface TokenGroup {
 const tokenGroups: readonly TokenGroup[] = [
   { heading: 'Surfaces', tokens: ['canvas', 'surface', 'surface-raised'] },
   { heading: 'Borders', tokens: ['border-subtle', 'border-control', 'secondary', 'focus-ring'] },
-  { heading: 'Text', tokens: ['text', 'text-muted', 'link', 'link-hover'] },
+  { heading: 'Text', tokens: ['text', 'heading', 'text-muted', 'link', 'link-hover'] },
   { heading: 'Primary', tokens: ['primary', 'primary-hover', 'on-primary', 'primary-subtle'] },
   {
     heading: 'Status',
@@ -60,7 +58,8 @@ const tokenUses: Record<ColorTokenName, string> = {
   secondary:
     'The secondary button’s edge. The secondary scale is the neutral steps by default, so it equals border-control until you give it a hue',
   'focus-ring': 'Focus indicator',
-  text: 'Body text and headings',
+  text: 'Body text',
+  heading: 'Headings in prose. The same step as text by default',
   'text-muted': 'Secondary text, hints, metadata',
   link: 'Link text, badge text',
   'link-hover': 'Link hover and pressed',
@@ -100,12 +99,10 @@ const forcedColorsSteps = readPaletteSteps(forcedColorsEnvironment)
 type CurrentColumn = ThemeName | 'forced-colors'
 
 interface SemanticSnapshot {
-  isLoaded: boolean
   current: CurrentColumn
 }
 
 const readSemantic = (element: HTMLElement): SemanticSnapshot => ({
-  isLoaded: isThemeLoaded(element),
   current: isForcedColors(element) ? 'forced-colors' : currentThemeName(element),
 })
 
@@ -169,7 +166,7 @@ function SemanticPage(): ReactNode {
   const [pageRef, snapshot] = useLiveValue<SemanticSnapshot, HTMLElement>(readSemantic)
   return (
     <ColorsPage title="Semantic tokens" pageRef={pageRef}>
-      {snapshot === undefined ? null : snapshot.isLoaded ? (
+      {snapshot === undefined ? null : (
         <>
           <p>
             The second tier of colour, <code>--kv-color-&lt;name&gt;</code>. Components use only
@@ -194,8 +191,6 @@ function SemanticPage(): ReactNode {
             </Fragment>
           ))}
         </>
-      ) : (
-        <ThemeMissingNotice />
       )}
     </ColorsPage>
   )

@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
 
-// Contract: link.a11y.md › Keyboard. One test per row, named after it.
+// Contract: packages/react/src/link/link.a11y.md › Keyboard. One test per row, named after it.
 
 const storyUrl = (story: string) => `/iframe.html?id=components-link--${story}&viewMode=story`
 
@@ -16,14 +16,14 @@ async function openStory(page: Page, story: string, linkName: string) {
 
 test.describe('Link keyboard contract', () => {
   test('Tab moves focus to the link', async ({ page }) => {
-    const link = await openStory(page, 'default', 'Ansök om bygglov')
+    const link = await openStory(page, 'same-page-link', 'Ansök om bygglov')
     await page.keyboard.press('Tab')
     await expect(link).toBeFocused()
     await expect(link).toHaveAttribute('data-focus-visible', '')
   })
 
   test('Enter follows the link', async ({ page }) => {
-    await openStory(page, 'default', 'Ansök om bygglov')
+    await openStory(page, 'same-page-link', 'Ansök om bygglov')
     await page.keyboard.press('Tab')
     await page.keyboard.press('Enter')
     await expect(page).toHaveURL(/#ansok$/)
@@ -63,7 +63,7 @@ test.describe('Link keyboard contract', () => {
   })
 
   test('Space does not follow the link', async ({ page }) => {
-    const link = await openStory(page, 'default', 'Ansök om bygglov')
+    const link = await openStory(page, 'same-page-link', 'Ansök om bygglov')
     const urlBefore = page.url()
     await page.keyboard.press('Tab')
     await page.keyboard.press(' ')
@@ -103,6 +103,7 @@ test.describe('Link accessibility', () => {
 
   const stories = [
     ['default', 'Ansök om bygglov'],
+    ['same-page-link', 'Ansök om bygglov'],
     ['current-page', 'Ansök'],
     ['new-tab', 'Digg (öppnas i en ny flik)'],
     ['new-tab-notice-overrides', 'Digg (öppnas i nytt fönster)'],

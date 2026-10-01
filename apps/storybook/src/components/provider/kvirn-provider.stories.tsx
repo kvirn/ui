@@ -6,12 +6,19 @@ import {
 } from '@kvirn-ui/core'
 import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
+import { nb } from '@kvirn-ui/i18n/nb'
+import { nn } from '@kvirn-ui/i18n/nn'
+import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
+import { KvirnProvider } from '@kvirn-ui/react'
+import type { KvirnProviderProps } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
-import { KvirnProvider } from './kvirn-provider.tsx'
-import type { KvirnProviderProps } from './kvirn-provider.tsx'
-import { ProviderFixture, ThemeSwitcherFixture } from './kvirn-provider.fixture.tsx'
+// Package-internal fixture, shared with the provider's tests. Not part of the public API.
+import {
+  ProviderFixture,
+  ThemeSwitcherFixture,
+} from '../../../../../packages/react/src/provider/kvirn-provider.fixture.tsx'
 
 function ProviderStory(providerProps: KvirnProviderProps) {
   return (
@@ -34,6 +41,64 @@ const meta = {
 
 export default meta
 type Story = StoryObj<typeof meta>
+
+const catalogs = { sv, fi, nb, nn, se, en }
+
+interface ProviderPlaygroundArgs extends Omit<KvirnProviderProps, 'messages'> {
+  /** Which `@kvirn-ui/i18n` catalog to pass as `messages`. */
+  messages: keyof typeof catalogs
+}
+
+function ProviderPlayground({ messages, ...providerProps }: ProviderPlaygroundArgs) {
+  return (
+    <KvirnProvider {...providerProps} messages={catalogs[messages]}>
+      <main>
+        <h1>KvirnProvider</h1>
+        <ProviderFixture />
+      </main>
+    </KvirnProvider>
+  )
+}
+
+/**
+ * One provider with its whole API as controls, and a fixture that shows what it gives
+ * components. `theme` is read once, when the document's theme store is created: reload the
+ * story after changing it.
+ */
+export const Default: StoryObj<typeof ProviderPlayground> = {
+  render: (args) => <ProviderPlayground {...args} />,
+  args: {
+    locale: 'sv-SE',
+    messages: 'sv',
+    dir: undefined,
+    timeZone: 'Europe/Stockholm',
+    theme: { defaultColorScheme: 'system', defaultContrast: 'system', storage: 'local' },
+  },
+  argTypes: {
+    locale: {
+      control: 'select',
+      // Only locales the fixture has text for, so `lang` matches the content (3.1.2).
+      options: ['sv-SE', 'sv-FI', 'fi-FI', 'en-GB'],
+      description: 'BCP 47. Drives `Intl.*`, `lang` and `dir`.',
+    },
+    messages: {
+      control: 'select',
+      options: Object.keys(catalogs),
+      description:
+        'A catalog from `@kvirn-ui/i18n` (`@kvirn-ui/i18n/sv`, …), or a partial override.',
+    },
+    dir: { control: 'inline-radio', options: [undefined, 'ltr', 'rtl'] },
+    timeZone: { control: 'text', description: 'IANA time zone.' },
+    theme: { control: 'object', description: 'Theme defaults and storage. Read once.' },
+    linkComponent: { control: false },
+    env: { control: false },
+    children: { control: false },
+  },
+  play: async ({ canvasElement }) => {
+    const settings = within(canvasElement).getByRole('region', { name: 'Inställningar' })
+    await expect(settings).toHaveAttribute('lang', 'sv-SE')
+  },
+}
 
 export const Swedish: Story = {
   play: async ({ canvasElement }) => {

@@ -4,8 +4,6 @@ import { expect, within } from 'storybook/test'
 import {
   FoundationPage,
   ScrollTable,
-  ThemeMissingNotice,
-  isThemeLoaded,
   readLength,
   readProperty,
   useLiveValue,
@@ -20,19 +18,32 @@ import { caseNumberSample, fixtureLocaleOf } from './typography-helpers.tsx'
 
 type ArticleText = ReturnType<typeof articleFor>['text']
 
+/** Which family a role is set in: headings, body text, or mono for code. */
+type RoleFamily = 'heading' | 'body' | 'mono'
+
 interface TypeRole {
   role: string
   label: string
-  isMono?: boolean
+  family?: RoleFamily
   sample: (text: ArticleText, formatNumber: (value: number) => string) => string
 }
 
 /** The roles in DESIGN.md's order, largest first. `lead` is from ADR-0018. */
 const typeRoles: readonly TypeRole[] = [
-  { role: 'display', label: 'display', sample: (text) => text.title },
-  { role: 'heading-1', label: 'heading-1', sample: (text) => text.title },
-  { role: 'heading-2', label: 'heading-2', sample: (text) => text.who.heading },
-  { role: 'heading-3', label: 'heading-3', sample: (text) => text.attach.heading },
+  { role: 'display', label: 'display', family: 'heading', sample: (text) => text.title },
+  { role: 'heading-1', label: 'heading-1', family: 'heading', sample: (text) => text.title },
+  {
+    role: 'heading-2',
+    label: 'heading-2',
+    family: 'heading',
+    sample: (text) => text.who.heading,
+  },
+  {
+    role: 'heading-3',
+    label: 'heading-3',
+    family: 'heading',
+    sample: (text) => text.attach.heading,
+  },
   { role: 'lead', label: 'lead', sample: (text) => text.how.quoteSteps[0] },
   { role: 'body-large', label: 'body-large', sample: (text) => text.how.quoteSteps[1] },
   { role: 'body', label: 'body', sample: (text) => text.what.items[1] ?? text.what.heading },
@@ -45,17 +56,23 @@ const typeRoles: readonly TypeRole[] = [
     sample: (text, formatNumber) =>
       text.times.rows.map(([, , grants]) => formatNumber(grants)).join(' · '),
   },
-  { role: 'code', label: 'code', isMono: true, sample: () => caseNumberSample },
+  { role: 'code', label: 'code', family: 'mono', sample: () => caseNumberSample },
 ]
 
 const tokenPrefix = (role: string) => `--kv-font-${role}`
 
+/** The family as theme.css uses it: body and heading fall back to sans when they aren't set. */
+const familyValue = (family: RoleFamily): string =>
+  family === 'mono'
+    ? 'var(--kv-font-family-mono)'
+    : `var(--kv-font-family-${family}, var(--kv-font-family-sans))`
+
 /** A role's own tokens as inline style, so the sample shows exactly that role. */
-function roleStyle({ role, isMono }: TypeRole): CSSProperties {
+function roleStyle({ role, family = 'body' }: TypeRole): CSSProperties {
   const prefix = tokenPrefix(role)
   return {
     display: 'block',
-    fontFamily: `var(--kv-font-family-${isMono === true ? 'mono' : 'sans'})`,
+    fontFamily: familyValue(family),
     fontSize: `var(${prefix}-size)`,
     fontWeight: `var(${prefix}-weight)`,
     lineHeight: `var(${prefix}-line-height)`,
@@ -73,13 +90,40 @@ interface RoleValues {
   features: string | undefined
 }
 
-type TypeScaleValues = { isLoaded: false } | { isLoaded: true; roles: Record<string, RoleValues> }
+/** The family custom properties, in the order the page lists them. */
+interface FontFamilyToken {
+  property: string
+  use: string
+  /** For the site-wide defaults theme.css doesn't set: what they fall back to. */
+  fallback?: string
+}
+
+const fontFamilyTokens: readonly FontFamilyToken[] = [
+  {
+    property: '--kv-font-family-body',
+    use: 'Body text, prose, buttons and navigation items. A site-wide default you set',
+    fallback: '--kv-font-family-sans',
+  },
+  {
+    property: '--kv-font-family-heading',
+    use: 'Prose headings. A site-wide default you set',
+    fallback: '--kv-font-family-sans',
+  },
+  { property: '--kv-font-family-sans', use: 'Inter, then the system stack' },
+  {
+    property: '--kv-font-family-system',
+    use: 'The system fallback stack. It covers å ä ö æ ø and the Northern Sámi letters',
+  },
+  { property: '--kv-font-family-mono', use: 'Reference numbers and code' },
+]
+
+interface TypeScaleValues {
+  roles: Record<string, RoleValues>
+  families: Record<string, string | undefined>
+}
 
 /** Module level, so it's stable for useLiveValue. Reads from the page, not from :root. */
 function readTypeScale(element: HTMLDivElement): TypeScaleValues {
-  if (!isThemeLoaded(element)) {
-    return { isLoaded: false }
-  }
   const roles: Record<string, RoleValues> = {}
   for (const { role } of typeRoles) {
     const prefix = tokenPrefix(role)
@@ -92,7 +136,10 @@ function readTypeScale(element: HTMLDivElement): TypeScaleValues {
       features: readProperty(element, `${prefix}-feature-settings`),
     }
   }
-  return { isLoaded: true, roles }
+  const families = Object.fromEntries(
+    fontFamilyTokens.map(({ property }) => [property, readProperty(element, property)]),
+  )
+  return { roles, families }
 }
 
 const notDefined = 'Not defined'
@@ -146,7 +193,7 @@ function TypeScaleTable({
   const { text, lang } = articleFor(locale)
   const sampleLang = lang ?? locale
   const number = new Intl.NumberFormat(sampleLang)
-  const roles = values?.isLoaded === true ? values.roles : undefined
+  const roles = values?.roles
   return (
     <ScrollTable caption="Type roles">
       <thead>
@@ -188,13 +235,63 @@ function TypeScaleTable({
   )
 }
 
+/** Each family, live: the value set on this page, or what an unset default falls back to. */
+function FontFamilyTable({ values }: { values: TypeScaleValues | undefined }) {
+  return (
+    <ScrollTable caption="Font families">
+      <thead>
+        <tr>
+          <th scope="col">Custom property</th>
+          <th scope="col">Use</th>
+          <th scope="col">Value here</th>
+        </tr>
+      </thead>
+      <tbody>
+        {fontFamilyTokens.map(({ property, use, fallback }) => {
+          const value = values?.families[property]
+          return (
+            <tr key={property}>
+              <th scope="row">
+                <code>{property}</code>
+              </th>
+              <td>{use}</td>
+              <td>
+                {value === undefined && fallback !== undefined ? (
+                  <>
+                    Not set, so <code>{fallback}</code>
+                  </>
+                ) : (
+                  (value ?? notDefined)
+                )}
+              </td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </ScrollTable>
+  )
+}
+
 const glyphs = 'Å Ä Ö Æ Ø á č đ ŋ š ŧ ž'
 const lookAlikes = 'Il1 0O'
-const specimenStyle = (family: 'sans' | 'mono'): CSSProperties => ({
-  fontFamily: `var(--kv-font-family-${family})`,
+
+type SpecimenFamily = 'body' | 'heading' | 'system' | 'mono'
+
+const specimenFamilies: readonly SpecimenFamily[] = ['body', 'heading', 'system', 'mono']
+
+const specimenLabels: Record<SpecimenFamily, string> = {
+  body: 'Body, with the body features',
+  heading: 'Heading',
+  system: 'System fallback, with the body features',
+  mono: 'Mono, the code role',
+}
+
+const specimenStyle = (family: SpecimenFamily): CSSProperties => ({
+  fontFamily: family === 'system' ? 'var(--kv-font-family-system)' : familyValue(family),
   fontSize: 'var(--kv-font-heading-1-size)',
   lineHeight: 'var(--kv-font-heading-1-line-height)',
-  fontFeatureSettings: family === 'sans' ? 'var(--kv-font-body-feature-settings)' : 'normal',
+  fontFeatureSettings:
+    family === 'body' || family === 'system' ? 'var(--kv-font-body-feature-settings)' : 'normal',
 })
 
 function GlyphSpecimen() {
@@ -208,11 +305,9 @@ function GlyphSpecimen() {
         </tr>
       </thead>
       <tbody>
-        {(['sans', 'mono'] as const).map((family) => (
+        {specimenFamilies.map((family) => (
           <tr key={family}>
-            <th scope="row">
-              {family === 'sans' ? 'Sans, with the body features' : 'Mono, the code role'}
-            </th>
+            <th scope="row">{specimenLabels[family]}</th>
             <td>
               <span style={specimenStyle(family)}>{glyphs}</span>
             </td>
@@ -267,42 +362,48 @@ function TypeScalePage({ locale }: { locale: FixtureLocale }): ReactNode {
   return (
     <FoundationPage title="Type scale">
       <div ref={ref}>
-        {values?.isLoaded === false ? (
-          <ThemeMissingNotice />
-        ) : (
-          <>
-            <p>
-              Every type role in <code>theme.css</code>, with its values read live from this page.
-              Each sample is set in the role’s own tokens, so an override shows up here. Sizes are
-              in rem, so they follow the browser’s text size (1.4.4), and the px values are at the
-              current root size.
-            </p>
-            <p>
-              The samples are in the toolbar locale.{' '}
-              {lang === undefined
-                ? null
-                : 'This locale has no translated fixture yet, so they are in English.'}{' '}
-              <code>lead</code> is only for the lead paragraph of large prose (ADR-0018).
-            </p>
-            <TypeScaleTable locale={locale} values={values} />
+        <>
+          <p>
+            Every type role in <code>theme.css</code>, with its values read live from this page.
+            Each sample is set in the role’s own tokens, so an override shows up here. Sizes are in
+            rem, so they follow the browser’s text size (1.4.4), and the px values are at the
+            current root size.
+          </p>
+          <p>
+            The samples are in the toolbar locale.{' '}
+            {lang === undefined
+              ? null
+              : 'This locale has no translated fixture yet, so they are in English.'}{' '}
+            <code>lead</code> is only for the lead paragraph of large prose (ADR-0018).
+          </p>
+          <TypeScaleTable locale={locale} values={values} />
 
-            <h2>Glyphs</h2>
-            <p>
-              A replacement brand font must cover these letters. The body roles ask for Inter’s{' '}
-              <code>cv05</code> and <code>cv08</code>, so that l, I and 1 look different. A
-              replacement font without those features can’t tell the look-alikes apart.
-            </p>
-            <GlyphSpecimen />
+          <h2>Font families</h2>
+          <p>
+            Body text and controls use <code>--kv-font-family-body</code>, and prose headings{' '}
+            <code>--kv-font-family-heading</code>. theme.css doesn’t set either, so both fall back
+            to <code>--kv-font-family-sans</code>: Inter, then the system stack. Set them once, on{' '}
+            <code>:root</code> or on a container, for a brand font. The samples above follow them.
+          </p>
+          <FontFamilyTable values={values} />
 
-            <h2>Tabular figures</h2>
-            <p>
-              Use <code>numeric</code> for tables, amounts, dates and reference numbers. Its figures
-              all have the same width, so a column of amounts lines up. Prose tables set it on every{' '}
-              <code>td</code>.
-            </p>
-            <TabularFigures />
-          </>
-        )}
+          <h2>Glyphs</h2>
+          <p>
+            A replacement brand font must cover these letters, and so does the system fallback. The
+            body roles ask for Inter’s <code>cv05</code> and <code>cv08</code>, so that l, I and 1
+            look different. A replacement font without those features can’t tell the look-alikes
+            apart.
+          </p>
+          <GlyphSpecimen />
+
+          <h2>Tabular figures</h2>
+          <p>
+            Use <code>numeric</code> for tables, amounts, dates and reference numbers. Its figures
+            all have the same width, so a column of amounts lines up. Prose tables set it on every{' '}
+            <code>td</code>.
+          </p>
+          <TabularFigures />
+        </>
       </div>
     </FoundationPage>
   )
@@ -329,5 +430,10 @@ export const TypeScale: Story = {
     }
     await expect(within(table).getAllByText(text.title)).toHaveLength(2)
     await expect(canvas.getByRole('table', { name: 'Tabular figures' })).toBeVisible()
+    // Every family custom property has a row, the two site-wide defaults included.
+    const families = canvas.getByRole('table', { name: 'Font families' })
+    for (const { property } of fontFamilyTokens) {
+      await expect(within(families).getByRole('rowheader', { name: property })).toBeVisible()
+    }
   },
 }

@@ -6,13 +6,11 @@ import { expect, userEvent, waitFor, within } from 'storybook/test'
 import {
   formatRatio,
   isForcedColors,
-  isThemeLoaded,
   ratioOf,
   readColor,
   ScrollTable,
   scrollRegionTabIndex,
   Swatch,
-  ThemeMissingNotice,
   useLiveValue,
 } from './foundation-helpers.tsx'
 import {
@@ -33,9 +31,6 @@ type Background = (typeof backgrounds)[number]
 const nonTextMinimum = 3
 
 function readFocusRing(page: HTMLElement) {
-  if (!isThemeLoaded(page)) {
-    return null
-  }
   const ring = readColor(page, '--kv-color-focus-ring')
   return {
     isForcedColors: isForcedColors(page),
@@ -128,7 +123,6 @@ function FocusRingPage(): ReactNode {
         <code>:focus-visible</code>, or <code>data-focus-visible</code> from the component), and it
         is restyled, never removed (2.4.7, 2.4.13).
       </p>
-      {values === null ? <ThemeMissingNotice /> : null}
       {values ? (
         <>
           <ScrollTable caption="Focus ring tokens">

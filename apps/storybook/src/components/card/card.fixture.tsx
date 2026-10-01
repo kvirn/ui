@@ -1,8 +1,6 @@
 import { useId } from 'react'
 import type { ReactNode } from 'react'
-import { Button } from '../button/button.tsx'
-import { Link } from '../link/link.tsx'
-import { Card } from './card.tsx'
+import { Button, Card, Link } from '@kvirn-ui/react'
 
 // Story and e2e fixture: the design spec's examples A–D (docs/design/card.md §4, §5). sv and en
 // are written. The fi strings are the designer's drafts, for length checks only. nb, nn and se

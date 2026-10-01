@@ -4,7 +4,7 @@
 
 `KvirnProvider` gives every KvirnUI component its locale, strings, text direction, date settings and router link. It also owns the document's theme preference, which a theme switcher reads and changes through `useTheme()`.
 
-It's optional. Without a provider, components use English (`en`), left-to-right text, weeks starting on Monday, the runtime's time zone and a native `<a>`, and the theme follows the operating system.
+It's optional. Without a provider, components use English (`en`), left-to-right text, the runtime's time zone and a native `<a>`, and the theme follows the operating system.
 
 The provider renders no element of its own.
 
@@ -105,12 +105,12 @@ Without the augmentation, `linkComponent` only accepts `'a'`, and link props are
 
 ```tsx
 const locale = useLocale() // { locale, dir, localeProps: { lang, dir } }
-const dateSettings = useDateSettings() // { timeZone, weekStart }
+const dateSettings = useDateSettings() // { timeZone }
 ```
 
 - `locale` is a BCP 47 tag, such as `sv-SE`, `fi-FI` or `nn-NO`. It drives `Intl.*` formatting and `lang`.
 - `dir` comes from the locale. Use the `dir` prop to override it.
-- `weekStart` is an ISO weekday: `1` is Monday (the default), `7` is Sunday.
+- Weeks always start on Monday, with ISO 8601 week numbers. That's the convention in every Nordic country and the EU, so there's no setting.
 
 ### A section in another language
 
@@ -332,7 +332,6 @@ On the server, read the same cookie and render the attributes on `<html>`. Rende
 | `dir`           | `'ltr' \| 'rtl'`                                    | From `locale`, or the parent's      |
 | `messages`      | `PartialMessages` (a catalog or a partial override) | Inherited, then built-in `en`       |
 | `timeZone`      | `string` (IANA)                                     | The parent's, or the runtime's zone |
-| `weekStart`     | `1`–`7` (ISO weekday)                               | `1` (Monday), or the parent's       |
 | `linkComponent` | `RegisteredLinkComponent`                           | `'a'`, or the parent's              |
 | `theme`         | `ThemeOptions`                                      | Outermost provider only             |
 | `env`           | `Env`                                               | The page, after hydration           |
@@ -342,7 +341,7 @@ On the server, read the same cookie and render the attributes on `<html>`. Rende
 | Hook                | Returns                                                                                                               |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | `useLocale()`       | `{ locale, dir, localeProps: { lang, dir } }`                                                                         |
-| `useDateSettings()` | `{ timeZone, weekStart }`                                                                                             |
+| `useDateSettings()` | `{ timeZone }`                                                                                                        |
 | `useTheme()`        | `{ colorScheme, contrast, resolvedColorScheme, resolvedContrast, isForcedColors, selectColorScheme, selectContrast }` |
 
 ### `KvirnThemeScript` props

@@ -75,10 +75,6 @@ export const ratioOf = (foreground: string | undefined, background: string | und
     ? undefined
     : contrastRatio(foreground, background)
 
-/** Whether theme.css is on the page. "None (unstyled)" removes it. */
-export const isThemeLoaded = (element: Element): boolean =>
-  readProperty(element.ownerDocument.documentElement, '--kv-color-primary') !== undefined
-
 export const isForcedColors = (element: Element): boolean =>
   element.ownerDocument.defaultView?.matchMedia('(forced-colors: active)').matches ?? false
 
@@ -195,11 +191,6 @@ export function FoundationPage({
   )
 }
 
-/** With "None (unstyled)" there are no tokens to read. Said in text, nothing throws. */
-export function ThemeMissingNotice(): ReactNode {
-  return <p>theme.css is not loaded, so there are no tokens to show.</p>
-}
-
 /** Keyboard users scroll it, so it's in the Tab order (2.1.1, 1.4.10). */
 export const scrollRegionTabIndex = 0
 
@@ -250,4 +241,53 @@ export async function expectThemeApplied(canvasElement: HTMLElement, theme: Them
   const [colorScheme, contrast] = fixedThemeAttributes[theme]
   await waitFor(() => expect(root).toHaveAttribute('data-kv-color-scheme', colorScheme))
   await expect(root).toHaveAttribute('data-kv-contrast', contrast)
+}
+
+/** A tick. Decorative: the word next to it carries the meaning (1.4.1). */
+export function PassIcon(): ReactNode {
+  return (
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      width={16}
+      height={16}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M2.5 8.5 6 12l7.5-8" />
+    </svg>
+  )
+}
+
+/** A cross. Decorative: the word next to it carries the meaning (1.4.1). */
+export function CrossIcon(): ReactNode {
+  return (
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      width={16}
+      height={16}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+    >
+      <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" />
+    </svg>
+  )
+}
+
+/** Pass or Fail as an icon and a word (1.4.1), on status colours theme:check guarantees. */
+export function VerdictBadge({ passes }: { passes: boolean }): ReactNode {
+  return (
+    <span className="kv-story-badge" data-result={passes ? 'pass' : 'fail'}>
+      {passes ? <PassIcon /> : <CrossIcon />}
+      {passes ? 'Pass' : 'Fail'}
+    </span>
+  )
 }

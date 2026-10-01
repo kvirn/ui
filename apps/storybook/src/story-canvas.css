@@ -1,7 +1,6 @@
 /*
  * Storybook-only canvas and story layout. Unlayered, so it wins over @layer kv. Tokens only:
- * no raw colours (ADR-0013). With the Theme toolbar on "None (unstyled)" the preview drops
- * the canvas class, so stories show the browser's defaults. The heading and paragraph rules
+ * no raw colours (ADR-0013). The heading and paragraph rules
  * stop at kv-prose and at cards: unlayered CSS would beat prose's zero-specificity rules
  * (ADR-0018) and the card's margin trims.
  */
@@ -67,7 +66,8 @@
   line-height: var(--kv-font-body-small-line-height);
 }
 
-.kv-story-section + .kv-story-section {
+/* A section after anything, such as a card or a row of cards, keeps its distance. */
+* + .kv-story-section {
   margin-block-start: var(--kv-space-8);
 }
 
@@ -199,6 +199,45 @@
   font-size: 1.5rem;
   font-weight: 600;
   line-height: 1;
+}
+
+/* Theming: a pair card's two samples, default and rebrand, side by side. */
+.kv-story-pair-samples {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+}
+
+.kv-story-pair-sample {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  block-size: 5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.kv-story-pair-sample + .kv-story-pair-sample {
+  border-inline-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+}
+
+.kv-story-pair-sample > .kv-story-chip-stripe {
+  display: block;
+  inline-size: 2rem;
+}
+
+/* A non-text pair: an outline in the foreground colour, like a control edge or focus ring. */
+.kv-story-pair-edge {
+  display: block;
+  inline-size: 2.5rem;
+  block-size: 1.5rem;
+  border: 2px solid currentColor;
+  border-radius: var(--kv-radius-md);
+}
+
+.kv-story-card-title code {
+  color: inherit;
 }
 
 .kv-story-card-sample > .kv-story-chip-stripe {

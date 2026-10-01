@@ -4,6 +4,7 @@
 - **Deviations:** none
 - **Native elements used:** `<button>`. Activation, the Tab stop and form submission are the browser's own.
 - **Status:** alpha candidate (Plan 0003). Gates 1–5 pass, accessibility-reviewer pending. Manual AT is `pending`.
+- **Tests:** `button.test.tsx` next to this file. `button.stories.tsx` and `button.e2e.ts` in `apps/storybook/src/components/button/`.
 
 A Button performs an action. Navigation is a Link. `Button` defaults to `type="button"`, so it never submits a form by accident. A disabled button can stay focusable (`focusableWhenDisabled`), so keyboard and screen-reader users can still find it and read why it's disabled.
 

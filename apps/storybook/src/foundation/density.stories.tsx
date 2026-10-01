@@ -3,12 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useId } from 'react'
 import type { ReactNode } from 'react'
 import { expect, within } from 'storybook/test'
-import {
-  isThemeLoaded,
-  ScrollTable,
-  ThemeMissingNotice,
-  useLiveValue,
-} from './foundation-helpers.tsx'
+import { ScrollTable, useLiveValue } from './foundation-helpers.tsx'
 import { formatPixels, readTokenText, themeTokenNames, TokenPage } from './tokens-helpers.tsx'
 
 // Foundation/Density (docs/design/foundations-and-prose.md §6.6): comfortable and compact side
@@ -29,9 +24,6 @@ const blockSize = (element: Element | null): number | undefined =>
   element === null ? undefined : element.getBoundingClientRect().height
 
 function readDensity(page: HTMLElement) {
-  if (!isThemeLoaded(page)) {
-    return null
-  }
   const view = page.ownerDocument.defaultView
   const panels = Object.fromEntries(
     densities.map((density) => {
@@ -113,8 +105,9 @@ function DensityPage(): ReactNode {
         Comfortable is the default and needs no class. Put <code>class=&quot;kv-compact&quot;</code>{' '}
         on a container for 32px controls with 14px labels. Below 64rem (1024px at the default text
         size) touch is likely, so compact returns to comfortable: 44px controls with 16px labels.
+        For a whole staff tool, put the class on <code>&lt;html&gt;</code> or{' '}
+        <code>&lt;body&gt;</code>.
       </p>
-      {values === null ? <ThemeMissingNotice /> : null}
       {values ? (
         <>
           <p>

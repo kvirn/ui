@@ -1,12 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
 import { expect, waitFor, within } from 'storybook/test'
-import {
-  isThemeLoaded,
-  readProperty,
-  ThemeMissingNotice,
-  useLiveValue,
-} from './foundation-helpers.tsx'
+import { readProperty, useLiveValue } from './foundation-helpers.tsx'
 import { themeTokenNames, TokenPage } from './tokens-helpers.tsx'
 
 // Foundation/Radius (docs/design/foundations-and-prose.md §6.6): one specimen per radius,
@@ -24,9 +19,6 @@ const radiusUses: Record<string, string> = {
 }
 
 function readRadii(page: HTMLElement) {
-  if (!isThemeLoaded(page)) {
-    return null
-  }
   return radiusTokens.map((token) => ({ token, value: readProperty(page, token) }))
 }
 
@@ -38,7 +30,6 @@ function RadiusPage(): ReactNode {
         Radii are small and consistent. Radio buttons are always circles and checkboxes always
         rounded squares, so the shape tells them apart. The focus ring follows the element’s radius.
       </p>
-      {radii === null ? <ThemeMissingNotice /> : null}
       {radii ? (
         <div className="kv-not-prose">
           <ul className="kv-story-specimens" aria-label="Radius tokens">

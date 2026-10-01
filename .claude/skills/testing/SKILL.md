@@ -10,12 +10,14 @@ Tests are the definition of done. They come from the accessibility contract (`<n
 
 ## Layers and file names
 
-| Layer     | File                                           | Runner                                                                    | Proves                                     |
-| --------- | ---------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------ |
-| Machine   | `packages/core/src/<name>/<name>.test.ts`      | Vitest (node)                                                             | State transitions, pure logic              |
-| Component | `packages/react/src/<name>/<name>.test.tsx`    | Vitest browser mode (Playwright provider)                                 | Rendering, ARIA, props, **axe**            |
-| Stories   | `packages/react/src/<name>/<name>.stories.tsx` | `vp test run` (Storybook `addon-vitest`, a11y addon: axe violations fail) | Every visual state, plus play functions    |
-| E2E       | `packages/react/src/<name>/<name>.e2e.ts`      | Playwright                                                                | **Every keyboard-table row**, focus, modes |
+| Layer     | File                                                      | Runner                                                                    | Proves                                     |
+| --------- | --------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------ |
+| Machine   | `packages/core/src/<name>/<name>.test.ts`                 | Vitest (node)                                                             | State transitions, pure logic              |
+| Component | `packages/react/src/<name>/<name>.test.tsx`               | Vitest browser mode (Playwright provider)                                 | Rendering, ARIA, props, **axe**            |
+| Stories   | `apps/storybook/src/components/<name>/<name>.stories.tsx` | `vp test run` (Storybook `addon-vitest`, a11y addon: axe violations fail) | Every visual state, plus play functions    |
+| E2E       | `apps/storybook/src/components/<name>/<name>.e2e.ts`      | Playwright                                                                | **Every keyboard-table row**, focus, modes |
+
+Stories and e2e specs live in the Storybook app, not the package. They import components the way an adopter does (`@kvirn-ui/react`). A fixture that the package's own tests also use stays in the package, and the story imports it by relative source path. It's never exported.
 
 ## TDD loop
 

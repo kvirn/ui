@@ -21,7 +21,7 @@ import { useMessages } from './use-messages.ts'
 async function readSettings(regionName: string) {
   const region = page.getByRole('region', { name: regionName })
   await expect.element(region).toBeVisible()
-  const [locale, direction, timeZone, weekStart, date, newTabNotice] = region
+  const [locale, direction, timeZone, date, newTabNotice] = region
     .getByRole('definition')
     .elements()
     .map((element) => element.textContent)
@@ -29,7 +29,6 @@ async function readSettings(regionName: string) {
     locale,
     direction,
     timeZone,
-    weekStart,
     date,
     newTabNotice,
     lang: region.element().getAttribute('lang'),
@@ -67,13 +66,12 @@ afterEach(() => {
 })
 
 describe('without a provider', () => {
-  test('uses en, ltr, Monday, the runtime time zone and the en messages', async () => {
+  test('uses en, ltr, the runtime time zone and the en messages', async () => {
     const { container } = await render(<ProviderFixture />)
     expect(await readSettings('Settings')).toEqual({
       locale: 'en',
       direction: 'ltr',
       timeZone: 'Device time zone',
-      weekStart: '1',
       date: new Intl.DateTimeFormat('en', { dateStyle: 'long', timeStyle: 'short' }).format(
         fixtureDate,
       ),
@@ -125,14 +123,13 @@ describe('locale, direction and dates', () => {
     await expectNoA11yViolations(container)
   })
 
-  test('formats dates in the provider time zone and exposes weekStart', async () => {
+  test('formats dates in the provider time zone', async () => {
     await render(
-      <KvirnProvider locale="fi-FI" messages={fi} timeZone="Europe/Helsinki" weekStart={7}>
+      <KvirnProvider locale="fi-FI" messages={fi} timeZone="Europe/Helsinki">
         <ProviderFixture />
       </KvirnProvider>,
     )
     const settings = await readSettings('Asetukset')
-    expect(settings.weekStart).toBe('7')
     expect(settings.date).toBe(
       new Intl.DateTimeFormat('fi-FI', {
         dateStyle: 'long',
@@ -170,7 +167,7 @@ describe('locale, direction and dates', () => {
 describe('nesting', () => {
   test('a nested provider inherits unset props and changes only its section', async () => {
     const { container } = await render(
-      <KvirnProvider locale="sv-SE" messages={sv} timeZone="Europe/Stockholm" weekStart={1}>
+      <KvirnProvider locale="sv-SE" messages={sv} timeZone="Europe/Stockholm">
         <ProviderFixture />
         <KvirnProvider locale="fi-FI" messages={fi}>
           <ProviderFixture />
@@ -185,7 +182,6 @@ describe('nesting', () => {
     expect(await readSettings('Asetukset')).toMatchObject({
       locale: 'fi-FI',
       timeZone: 'Europe/Stockholm',
-      weekStart: '1',
       newTabNotice: '(avautuu uuteen välilehteen)',
       lang: 'fi-FI',
       dir: 'ltr',

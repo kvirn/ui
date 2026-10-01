@@ -3,8 +3,9 @@ import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
 
-// Contract: card.a11y.md › Keyboard, Focus management and Visual / modes. One test per row,
-// named after it. Card handles no keys: these prove it never gets in the children's way.
+// Contract: packages/react/src/card/card.a11y.md › Keyboard, Focus management and Visual /
+// modes. One test per row, named after it. Card handles no keys: these prove it never gets in
+// the children's way.
 
 const storyUrl = (story: string) => `/iframe.html?id=components-card--${story}&viewMode=story`
 

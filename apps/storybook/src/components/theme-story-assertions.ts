@@ -1,7 +1,7 @@
 import { expect, waitFor } from 'storybook/test'
 
 // Play-function checks shared by the component stories, which the Storybook preview styles
-// with @kvirn-ui/theme/theme.css (ADR-0013). Story-only: nothing in the package imports this.
+// with @kvirn-ui/theme/theme.css (ADR-0013). Story-only, so it lives in the Storybook app.
 // Functionality and WCAG only: the look is reviewed visually, not asserted.
 
 export type FixedStoryTheme = 'light' | 'dark' | 'light-contrast' | 'dark-contrast'
@@ -14,10 +14,6 @@ const resolvedAttributes: Record<FixedStoryTheme, readonly ['light' | 'dark', st
 }
 
 const rootStyle = (element: Element) => getComputedStyle(element.ownerDocument.documentElement)
-
-/** Whether theme.css is on the page: its tokens are defined on `<html>`. */
-export const isThemeLoaded = (element: Element): boolean =>
-  rootStyle(element).getPropertyValue('--kv-color-primary').trim() !== ''
 
 /** The theme store resolved the fixed theme, and theme.css applied it to `<html>`. */
 export async function expectThemeApplied(canvasElement: HTMLElement, theme: FixedStoryTheme) {

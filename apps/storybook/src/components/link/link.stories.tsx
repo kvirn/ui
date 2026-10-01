@@ -5,23 +5,28 @@ import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
 import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
+import { KvirnProvider, Link } from '@kvirn-ui/react'
+import type { LinkProps } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { CSSProperties } from 'react'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
-import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import {
   expectMinimumTargetSize,
   expectNoHorizontalOverflow,
   expectThemeApplied,
-  isThemeLoaded,
-} from '../stories/theme-story-assertions.ts'
-import type { FixedStoryTheme } from '../stories/theme-story-assertions.ts'
-import { Link } from './link.tsx'
-import { MockRouterProvider, mockRouterLinkComponent, useMockPathname } from './link.fixture.tsx'
+} from '../theme-story-assertions.ts'
+import type { FixedStoryTheme } from '../theme-story-assertions.ts'
+// Package-internal fixture, shared with link.test.tsx. Not part of the public API.
+import {
+  MockRouterProvider,
+  mockRouterLinkComponent,
+  useMockPathname,
+} from '../../../../../packages/react/src/link/link.fixture.tsx'
 
 // Components/Link: the headless Link, styled by @kvirn-ui/theme/theme.css from the Storybook
-// preview (ADR-0013). Theme toolbar › "None (unstyled)" removes the theme again.
-// link.e2e.ts runs its keyboard contract against Default, CurrentPage, NewTab,
+// preview (ADR-0013).
+// Default is the playground: one Link, with every prop as a control.
+// link.e2e.ts runs its keyboard contract against SamePageLink, CurrentPage, NewTab,
 // NewTabNoticeOverrides, RouterLink, OtherLanguage, RTL and ForcedColors, so their play
 // functions only read.
 
@@ -106,8 +111,91 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+interface LinkPlaygroundArgs extends LinkProps {
+  /** Story-only: puts `<Link.NewTabNotice />` inside the link. Needed with `target="_blank"`. */
+  newTabNotice: boolean
+}
+
+/** One Link, with a NewTabNotice when the control asks for one. */
+function LinkPlayground({ newTabNotice, children, ...linkProps }: LinkPlaygroundArgs) {
+  return (
+    <p>
+      <Link {...linkProps}>
+        {children}
+        {newTabNotice ? (
+          <>
+            {' '}
+            <Link.NewTabNotice />
+          </>
+        ) : null}
+      </Link>
+    </p>
+  )
+}
+
+/** One Link with its whole API as controls. */
+export const Default: StoryObj<typeof LinkPlayground> = {
+  render: (args) => <LinkPlayground {...args} />,
+  args: {
+    href: '#ansok',
+    children: 'Ansök om bygglov',
+    current: undefined,
+    target: undefined,
+    newTabNotice: false,
+    hrefLang: undefined,
+    lang: undefined,
+    className: undefined,
+    messages: { newTabNotice: '(öppnas i en ny flik)' },
+  },
+  argTypes: {
+    href: { control: 'text' },
+    children: { control: 'text', description: 'The link text.' },
+    current: {
+      control: 'select',
+      options: [undefined, 'page', 'step', 'location', 'date', 'time', true],
+      description: 'Sets `aria-current` and `data-current`.',
+    },
+    target: {
+      control: 'select',
+      options: [undefined, '_blank'],
+      description: '`_blank` adds `rel="noopener noreferrer"`. Add a NewTabNotice too.',
+    },
+    newTabNotice: {
+      control: 'boolean',
+      description: 'Not a prop: renders `<Link.NewTabNotice />` inside the link.',
+    },
+    hrefLang: { control: 'text' },
+    lang: { control: 'text' },
+    className: { control: 'text', description: 'Your own classes, added to `kv-link`.' },
+    messages: { control: 'object', description: 'Per-instance message overrides (ADR-0007).' },
+    render: { control: false },
+  },
+  parameters: {
+    controls: {
+      include: [
+        'href',
+        'children',
+        'current',
+        'target',
+        'newTabNotice',
+        'hrefLang',
+        'lang',
+        'className',
+        'messages',
+        'render',
+      ],
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const link = within(canvasElement).getByRole('link', { name: 'Ansök om bygglov' })
+    await expect(link).toHaveAttribute('href', '#ansok')
+    await expect(link).toHaveClass('kv-link')
+  },
+}
+
 /** On its own, a link has the link colour and an underline. */
-export const Default: Story = {
+export const SamePageLink: Story = {
+  name: 'Same-page link',
   render: () => (
     <>
       <p>
@@ -428,18 +516,4 @@ export const ForcedColors: Story = {
       </nav>
     </>
   ),
-}
-
-/** Without theme.css the Link is a plain native link: the package ships no CSS. */
-export const Unstyled: Story = {
-  globals: { theme: 'none' },
-  render: () => (
-    <>
-      <RunningTextLink />
-      <NewTabLink />
-    </>
-  ),
-  play: async ({ canvasElement }) => {
-    await expect(isThemeLoaded(canvasElement)).toBe(false)
-  },
 }

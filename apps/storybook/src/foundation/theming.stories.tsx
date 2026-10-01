@@ -14,22 +14,14 @@ import {
   currentThemeName,
   formatRatio,
   isForcedColors,
-  isThemeLoaded,
   ratioOf,
   readColor,
   readPaletteSteps,
-  ScrollTable,
-  ThemeMissingNotice,
   themeLabels,
   useLiveValue,
+  VerdictBadge,
 } from './foundation-helpers.tsx'
-import {
-  ContrastResult,
-  fixedThemeStory,
-  ForcedColorsNotice,
-  formatMinimum,
-  TokenPage,
-} from './tokens-helpers.tsx'
+import { fixedThemeStory, ForcedColorsNotice, formatMinimum, TokenPage } from './tokens-helpers.tsx'
 
 // Foundation/Theming (docs/design/foundations-and-prose.md §6.6): the three levels of
 // theming, with a live rebrand next to the default and a contrast check of every pair in use,
@@ -95,6 +87,25 @@ const scopedRebrandCss = themeNames
   })
   .join('\n')
 
+/** The site-wide defaults, as an app writes them once. */
+const siteDefaultsCss = `/* Set once. Nothing needs a class. */
+:root {
+  --kv-font-family-body: 'Source Sans 3', var(--kv-font-family-system);
+  --kv-font-family-heading: 'Merriweather', Georgia, serif;
+  --kv-card-radius-default: var(--kv-radius-md);
+  /* Never below 24px (2.5.8). Resident-facing buttons should stay 44px. */
+  --kv-button-min-block-size: 2.5rem;
+  --kv-button-font-weight: 600;
+}
+
+/* Resolved on each card, so the compact step-down still applies. */
+.kv-card {
+  --kv-card-padding-default: var(--kv-card-padding-lg);
+}`
+
+const siteDefaultsMarkup = `<!-- Compact controls on the whole staff tool, from 64rem. -->
+<html class="kv-compact">`
+
 const unlayeredCss = `.my-button {
   border-radius: 0;
 }`
@@ -104,12 +115,19 @@ const readColors = (element: Element) =>
     colorTokenNames.map((token) => [token, readColor(element, `--kv-color-${token}`)]),
   ) as Record<ColorTokenName, string | undefined>
 
+/** One side of a pair: its two colours and their ratio. */
+interface PairSide {
+  foregroundColor: string | undefined
+  backgroundColor: string | undefined
+  ratio: number | undefined
+}
+
 interface Pair {
   foreground: string
   background: string
   minimum: ContrastMinimum
-  defaultRatio: number | undefined
-  brandRatio: number | undefined
+  defaultSide: PairSide
+  brandSide: PairSide
   isChanged: boolean
 }
 
@@ -117,19 +135,27 @@ function readTheming(page: HTMLElement) {
   const brand = page.querySelector('.municipal-brand')
   const base = page.querySelector('[data-story-brand="default"]')
   const unlayered = page.querySelector('.my-button')
-  if (!isThemeLoaded(page) || brand === null || base === null || unlayered === null) {
+  if (brand === null || base === null || unlayered === null) {
     return null
   }
   const theme = currentThemeName(page)
   const brandColors = readColors(brand)
   const baseColors = readColors(base)
-  const color = (colors: Record<string, string | undefined>, token: string) => colors[token]
+  const side = (
+    colors: Record<string, string | undefined>,
+    foreground: string,
+    background: string,
+  ): PairSide => ({
+    foregroundColor: colors[foreground],
+    backgroundColor: colors[background],
+    ratio: ratioOf(colors[foreground], colors[background]),
+  })
   const pairs = contrastRequirements[theme].map(({ foreground, background, minimum }): Pair => ({
     foreground,
     background,
     minimum,
-    defaultRatio: ratioOf(color(baseColors, foreground), color(baseColors, background)),
-    brandRatio: ratioOf(color(brandColors, foreground), color(brandColors, background)),
+    defaultSide: side(baseColors, foreground, background),
+    brandSide: side(brandColors, foreground, background),
     isChanged:
       rebrandedTokens.has(foreground as ColorTokenName) ||
       rebrandedTokens.has(background as ColorTokenName),
@@ -139,7 +165,7 @@ function readTheming(page: HTMLElement) {
     isForcedColors: isForcedColors(page),
     pairs,
     failing: pairs.filter(
-      ({ brandRatio, minimum }) => brandRatio === undefined || brandRatio < minimum,
+      ({ brandSide, minimum }) => brandSide.ratio === undefined || brandSide.ratio < minimum,
     ),
     unlayeredRadius: getComputedStyle(unlayered).borderTopLeftRadius,
   }
@@ -147,6 +173,70 @@ function readTheming(page: HTMLElement) {
 
 const ratioText = (ratio: number | undefined) =>
   ratio === undefined ? 'Can’t measure' : formatRatio(ratio)
+
+/**
+ * The pair drawn in its own colours. Text pairs show "Aa", but only when the pair reaches its
+ * minimum: below it, a stripe, so the page never shows unreadable text. Non-text pairs (edges,
+ * focus rings, indicators) show a 2px outline in the foreground colour.
+ */
+function PairSample({ side, minimum }: { side: PairSide; minimum: ContrastMinimum }): ReactNode {
+  const isText = minimum !== 3
+  const isReadable = side.ratio !== undefined && side.ratio >= minimum
+  return (
+    <span
+      className="kv-story-pair-sample"
+      style={{ backgroundColor: side.backgroundColor, color: side.foregroundColor }}
+    >
+      {isText ? (
+        isReadable ? (
+          'Aa'
+        ) : (
+          <span className="kv-story-chip-stripe" />
+        )
+      ) : (
+        <span className="kv-story-pair-edge" />
+      )}
+    </span>
+  )
+}
+
+/** A pair as a card: default and rebrand side by side, then the names, ratios and result. */
+function PairCard({ pair }: { pair: Pair }): ReactNode {
+  const { foreground, background, minimum, defaultSide, brandSide } = pair
+  return (
+    <li className="kv-story-card">
+      <div aria-hidden="true" className="kv-story-pair-samples">
+        <PairSample side={defaultSide} minimum={minimum} />
+        <PairSample side={brandSide} minimum={minimum} />
+      </div>
+      <div className="kv-story-card-body">
+        <p className="kv-story-card-title">
+          <span>
+            <code>{foreground}</code> on <code>{background}</code>
+          </span>
+        </p>
+        <p className="kv-story-card-note">
+          {minimum === 3 ? 'Non-text' : 'Text'}, needs {formatMinimum(minimum)}
+        </p>
+        <dl>
+          <div className="kv-story-card-row">
+            <dt>Default</dt>
+            <dd>{ratioText(defaultSide.ratio)}</dd>
+          </div>
+          <div className="kv-story-card-row">
+            <dt>Teal</dt>
+            <dd>
+              {brandSide.ratio === undefined ? null : (
+                <VerdictBadge passes={brandSide.ratio >= minimum} />
+              )}
+              {ratioText(brandSide.ratio)}
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </li>
+  )
+}
 
 /** The same components, on the default tokens or on the rebrand. */
 function BrandPanel({ isRebrand }: { isRebrand: boolean }): ReactNode {
@@ -231,7 +321,6 @@ function ThemingPage(): ReactNode {
         the semantic tokens are declared on <code>:root</code>. In your app, the scale on{' '}
         <code>:root</code> is all you need.
       </p>
-      {values === null ? <ThemeMissingNotice /> : null}
       <div className="kv-story-columns">
         <BrandPanel isRebrand={false} />
         <BrandPanel isRebrand />
@@ -246,56 +335,85 @@ function ThemingPage(): ReactNode {
           </p>
           {values.failing.length > 0 ? (
             <ul aria-label="Failing pairs">
-              {values.failing.map(({ foreground, background, brandRatio, minimum }) => (
+              {values.failing.map(({ foreground, background, brandSide, minimum }) => (
                 <li key={`${foreground} on ${background}`}>
-                  <code>{foreground}</code> on <code>{background}</code>: {ratioText(brandRatio)},
-                  needs {formatMinimum(minimum)}
+                  <code>{foreground}</code> on <code>{background}</code>:{' '}
+                  {ratioText(brandSide.ratio)}, needs {formatMinimum(minimum)}
                 </li>
               ))}
             </ul>
           ) : null}
-          <ScrollTable
-            caption={`Pairs in use that the rebrand changes, ${themeLabels[values.theme]}`}
+          <p>
+            Each card draws the pair on the default tokens (left) and on the teal rebrand (right).
+            Text pairs show “Aa”, and non-text pairs, such as edges and focus rings, show an
+            outline.
+          </p>
+          <ul
+            aria-label={`Pairs in use that the rebrand changes, ${themeLabels[values.theme]}`}
+            className="kv-story-cards kv-not-prose"
           >
-            <thead>
-              <tr>
-                <th scope="col">Foreground</th>
-                <th scope="col">Background</th>
-                <th scope="col">Kind</th>
-                <th scope="col">Minimum</th>
-                <th scope="col">Default</th>
-                <th scope="col">Teal rebrand</th>
-                <th scope="col">Result</th>
-              </tr>
-            </thead>
-            <tbody>
-              {values.pairs
-                .filter(({ isChanged }) => isChanged)
-                .map(({ foreground, background, minimum, defaultRatio, brandRatio }) => (
-                  <tr key={`${foreground} on ${background}`}>
-                    <th scope="row">
-                      <code>{foreground}</code>
-                    </th>
-                    <td>
-                      <code>{background}</code>
-                    </td>
-                    <td>{minimum === 3 ? 'Non-text' : 'Text'}</td>
-                    <td>{formatMinimum(minimum)}</td>
-                    <td>{ratioText(defaultRatio)}</td>
-                    <td>{ratioText(brandRatio)}</td>
-                    <td>
-                      <ContrastResult ratio={brandRatio} minimum={minimum} />
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </ScrollTable>
+            {values.pairs
+              .filter(({ isChanged }) => isChanged)
+              .map((pair) => (
+                <PairCard key={`${pair.foreground} on ${pair.background}`} pair={pair} />
+              ))}
+          </ul>
           <p>
             The same check runs on every theme in <code>vp run theme:check</code>, or with{' '}
             <code>checkThemeCss()</code> from <code>@kvirn-ui/theme</code> on your own file.
           </p>
         </>
       ) : null}
+
+      <h2>Site-wide defaults</h2>
+      <p>
+        Some choices are made once for a whole site, not per element. Set these custom properties in
+        your own CSS, on <code>:root</code> or on any container. theme.css sets none of them, so
+        without them the look is the default one.
+      </p>
+      <ul>
+        <li>
+          <code>--kv-font-family-body</code> for body text, prose, buttons and navigation items, and{' '}
+          <code>--kv-font-family-heading</code> for prose headings. Both fall back to{' '}
+          <code>--kv-font-family-sans</code>. <code>--kv-font-family-system</code> is the system
+          stack, for the end of your own.
+        </li>
+        <li>
+          <code>--kv-card-padding-default</code> and <code>--kv-card-radius-default</code> for every
+          card without a class. <code>kv-card--padding-md</code> and <code>kv-card--radius-lg</code>{' '}
+          take a single card back to the theme’s steps.
+        </li>
+        <li>
+          <code>--kv-button-min-block-size</code>, <code>--kv-button-padding-inline</code>,{' '}
+          <code>--kv-button-font-size</code>, <code>--kv-button-font-weight</code> and{' '}
+          <code>--kv-button-line-height</code> size buttons without touching other controls. They
+          win over density, so keep the height at 24px or more (2.5.8), and 44px on resident-facing
+          pages.
+        </li>
+        <li>
+          <code>class=&quot;kv-compact&quot;</code> on <code>&lt;html&gt;</code> or{' '}
+          <code>&lt;body&gt;</code> makes every control compact from 64rem, and 44px below.
+        </li>
+        <li>
+          <code>--kv-color-heading</code> is the colour of prose headings, and{' '}
+          <code>--kv-color-text</code> of body text. They’re semantic tokens, set in each theme, so
+          change them per theme as in level 2 and run <code>checkThemeCss()</code>.
+        </li>
+      </ul>
+      <pre>
+        <code>{siteDefaultsCss}</code>
+      </pre>
+      <pre>
+        <code>{siteDefaultsMarkup}</code>
+      </pre>
+      <p>
+        theme.css reads each one where it’s used, with its own value as the fallback, so a default
+        set on a container reaches everything inside it. A custom property is resolved where it’s
+        declared, though: <code>var(--kv-card-padding-lg)</code> set on <code>:root</code> is the{' '}
+        <code>:root</code> value, so the compact step-down inside a <code>kv-compact</code>{' '}
+        container doesn’t reach it. That’s why the example sets the padding on <code>.kv-card</code>
+        . Fixed values, such as <code>2.5rem</code> or a font name, have no such catch.
+      </p>
 
       <h2>3. Replace the file</h2>
       <p>

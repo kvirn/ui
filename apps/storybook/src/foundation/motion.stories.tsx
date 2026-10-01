@@ -3,13 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useId, useState } from 'react'
 import type { ReactNode } from 'react'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
-import {
-  isThemeLoaded,
-  readProperty,
-  ScrollTable,
-  ThemeMissingNotice,
-  useLiveValue,
-} from './foundation-helpers.tsx'
+import { readProperty, ScrollTable, useLiveValue } from './foundation-helpers.tsx'
 import { themeTokenNames, TokenPage } from './tokens-helpers.tsx'
 
 // Foundation/Motion (docs/design/foundations-and-prose.md §6.6): the durations and the
@@ -28,9 +22,6 @@ const motionUses: Record<string, string> = {
 const reducedMotionQuery = '(prefers-reduced-motion: reduce)'
 
 function readMotion(page: HTMLElement) {
-  if (!isThemeLoaded(page)) {
-    return null
-  }
   return {
     isReduced: page.ownerDocument.defaultView?.matchMedia(reducedMotionQuery).matches === true,
     medium: readProperty(page, '--kv-duration-medium'),
@@ -73,7 +64,6 @@ function MotionPage(): ReactNode {
         every change is instant. Nothing moves on its own: no autoplay, no parallax, nothing that
         flashes, and nothing longer than 5 seconds without a pause control (2.2.2).
       </p>
-      {values === null ? <ThemeMissingNotice /> : null}
       {values ? (
         <>
           <ScrollTable caption="Motion tokens">

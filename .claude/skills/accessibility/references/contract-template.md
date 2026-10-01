@@ -4,6 +4,7 @@
 - **Deviations:** none | ADR-NNNN
 - **Native elements used:** …
 - **Status:** alpha | beta | stable
+- **Tests:** `<name>.test.tsx` next to this file. `<name>.stories.tsx` and `<name>.e2e.ts` in `apps/storybook/src/components/<name>/`.
 
 ## Roles, states, properties
 

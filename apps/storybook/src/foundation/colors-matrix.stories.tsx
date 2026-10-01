@@ -19,12 +19,10 @@ import {
   currentThemeName,
   expectThemeApplied,
   isForcedColors,
-  isThemeLoaded,
   ratioOf,
   readColor,
   ScrollTable,
   Swatch,
-  ThemeMissingNotice,
   themeLabels,
   useLiveValue,
 } from './foundation-helpers.tsx'
@@ -39,6 +37,7 @@ import {
 
 const textTokens = [
   'text',
+  'heading',
   'text-muted',
   'link',
   'link-hover',
@@ -67,7 +66,6 @@ const backgroundTokens = [
 const sampleTextMinimum = 4.5
 
 interface MatrixSnapshot {
-  isLoaded: boolean
   isForced: boolean
   theme: ThemeName
   /**
@@ -78,7 +76,6 @@ interface MatrixSnapshot {
 }
 
 const readMatrix = (element: HTMLElement): MatrixSnapshot => ({
-  isLoaded: isThemeLoaded(element),
   isForced: isForcedColors(element),
   theme: currentThemeName(element),
   colors: Object.fromEntries(
@@ -272,13 +269,6 @@ function TextOnSurfacePage(): ReactNode {
   const [pageRef, snapshot] = useLiveValue<MatrixSnapshot, HTMLElement>(readMatrix)
   if (snapshot === undefined) {
     return <ColorsPage title="Text on surface" pageRef={pageRef} />
-  }
-  if (!snapshot.isLoaded) {
-    return (
-      <ColorsPage title="Text on surface" pageRef={pageRef}>
-        <ThemeMissingNotice />
-      </ColorsPage>
-    )
   }
   const measured = measureRequirements(snapshot)
   const minimum =

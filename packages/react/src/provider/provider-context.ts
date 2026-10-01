@@ -4,9 +4,6 @@ import type { PartialMessages } from '@kvirn-ui/i18n'
 import { createContext } from 'react'
 import type { RegisteredLinkComponent } from './register.ts'
 
-/** ISO 8601 weekday: 1 is Monday, 7 is Sunday (the same numbering as `Intl.Locale` week info). */
-export type WeekStart = 1 | 2 | 3 | 4 | 5 | 6 | 7
-
 /**
  * The registered router link, or the native `<a>` used when no provider sets one. Generic,
  * because the registered type is `'a'` itself until an app augments `Register`.
@@ -18,7 +15,6 @@ export interface KvirnConfig {
   locale: string
   dir: Direction
   timeZone: string | undefined
-  weekStart: WeekStart
   /** Nearest provider first, root last. Built-in `en` is added by `useMessages`. */
   messageLayers: readonly PartialMessages[]
   format: MessageFormatter
@@ -27,12 +23,11 @@ export interface KvirnConfig {
   env: Env | undefined
 }
 
-/** What components get without a provider: `en`, `ltr`, Monday, runtime zone, `<a>`. */
+/** What components get without a provider: `en`, `ltr`, runtime zone, `<a>`. */
 export const defaultKvirnConfig: KvirnConfig = {
   locale: 'en',
   dir: 'ltr',
   timeZone: undefined,
-  weekStart: 1,
   messageLayers: [],
   format: createMessageFormat({ locale: 'en', timeZone: undefined }),
   linkComponent: 'a',

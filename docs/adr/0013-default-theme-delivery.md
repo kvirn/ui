@@ -58,7 +58,7 @@ We will use Option B:
 - **Overrides are trivial.** Rebrand by overriding the `--kv-primary-*` scale on `:root`, and every theme follows (ADR-0019). Or re-point a single semantic token, or redefine a palette step, on `:root`. For more, copy `theme.css`, edit it and import the copy, or skip it and style the `kv-*` classes and the `data-*` state attributes with Tailwind or your own CSS.
 - **`theme:check` reads `theme.css`.** It resolves every `var()` per theme (attributes and OS fallbacks), and measures the contrast pairs listed in `packages/theme/src/contrast-requirements.ts`. `checkThemeCss()` does the same for an adopter's copy or overrides. A lint test fails on raw colour values outside the palette block and in the app CSS.
 - **`KvirnProvider` never loads CSS.** Styling is opt-in by import.
-- The docs site and Storybook consume `theme.css`. Storybook's Theme toolbar has a "None (unstyled)" option that takes the file off the page again.
+- The docs site and Storybook consume `theme.css`, imported the way an adopter imports it.
 
 ## Accessibility impact
 
@@ -83,7 +83,7 @@ There is no APG deviation.
 ## Validation
 
 - `theme:check` is green for all four themes.
-- axe reports 0 violations in every Storybook story, including the fixed-theme and unstyled ones.
+- axe reports 0 violations in every Storybook story, including the fixed-theme ones.
 - The e2e forced-colours, reduced-motion and `reflow-320` projects are green for the component stories (Plan 0005, B6, after acceptance).
 - A design review of screenshots matches the spec.
 

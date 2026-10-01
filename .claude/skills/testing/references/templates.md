@@ -46,10 +46,12 @@ test('trigger exposes aria-expanded and toggles panel', async () => {
 
 ## Story
 
+`apps/storybook/src/components/<name>/<name>.stories.tsx`:
+
 ```tsx
+import { Disclosure } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
-import { Disclosure } from './disclosure'
 
 const meta = { title: 'Components/Disclosure', component: Disclosure.Root } satisfies Meta
 export default meta
@@ -70,6 +72,8 @@ export const KeyboardToggle: Story = {
 ```
 
 ## E2E (Playwright)
+
+`apps/storybook/src/components/<name>/<name>.e2e.ts` (Playwright finds `**/*.e2e.ts` under `apps/storybook/src`):
 
 ```ts
 import { test, expect } from '@playwright/test'

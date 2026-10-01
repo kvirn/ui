@@ -3,7 +3,8 @@ import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
 
-// Contract: button.a11y.md › Keyboard. One test per row, named after it.
+// Contract: packages/react/src/button/button.a11y.md › Keyboard. One test per row,
+// named after it.
 
 const storyUrl = (story: string) => `/iframe.html?id=components-button--${story}&viewMode=story`
 
@@ -16,7 +17,7 @@ async function openStory(page: Page, story: string, buttonName: string) {
 
 test.describe('Button keyboard contract', () => {
   test('Tab moves focus to the button', async ({ page }) => {
-    const button = await openStory(page, 'default', 'Spara')
+    const button = await openStory(page, 'activation', 'Spara')
     await page.keyboard.press('Tab')
     await expect(button).toBeFocused()
   })
@@ -37,7 +38,7 @@ test.describe('Button keyboard contract', () => {
   })
 
   test('Enter activates the button and keeps focus', async ({ page }) => {
-    const button = await openStory(page, 'default', 'Spara')
+    const button = await openStory(page, 'activation', 'Spara')
     await page.keyboard.press('Tab')
     await page.keyboard.press('Enter')
     await expect(page.getByText('Antal klick: 1')).toBeVisible()
@@ -53,7 +54,7 @@ test.describe('Button keyboard contract', () => {
   })
 
   test('Space activates the button on key up', async ({ page }) => {
-    const button = await openStory(page, 'default', 'Spara')
+    const button = await openStory(page, 'activation', 'Spara')
     await page.keyboard.press('Tab')
     await page.keyboard.down(' ')
     await expect(page.getByText('Antal klick: 0')).toBeVisible()
@@ -92,6 +93,31 @@ test.describe('Button keyboard contract', () => {
   })
 })
 
+test.describe('Site-wide compact density', () => {
+  // kv-compact on <html> or <body> makes every control compact from 64rem, and keeps the
+  // comfortable 44px target below it, where touch is likely. Never under 24 × 24 (2.5.8).
+  for (const element of ['html', 'body'] as const) {
+    test(`kv-compact on <${element}> applies to every button, and keeps 44px below 64rem`, async ({
+      page,
+    }) => {
+      const button = await openStory(page, 'activation', 'Spara')
+      const comfortable = await button.boundingBox()
+      await page.evaluate((selector) => {
+        document.querySelector(selector)?.classList.add('kv-compact')
+      }, element)
+      const isWide = await page.evaluate(() => window.matchMedia('(width >= 64rem)').matches)
+      if (isWide) {
+        await expect
+          .poll(async () => (await button.boundingBox())?.height)
+          .toBeLessThan(comfortable?.height ?? 0)
+      }
+      const box = await button.boundingBox()
+      expect(box?.width).toBeGreaterThanOrEqual(24)
+      expect(box?.height).toBeGreaterThanOrEqual(isWide ? 24 : 44)
+    })
+  }
+})
+
 test.describe('Button accessibility', () => {
   test('a11y tree of the focusable disabled button', async ({ page }) => {
     await openStory(page, 'focusable-when-disabled', 'Skicka')
@@ -118,6 +144,7 @@ test.describe('Button accessibility', () => {
 
   const stories = [
     ['default', 'Spara'],
+    ['activation', 'Spara'],
     ['disabled', 'Skicka'],
     ['focusable-when-disabled', 'Skicka'],
     ['submit-in-form', 'Skicka ansökan'],

@@ -8,11 +8,13 @@
     "build": "storybook build --output-dir storybook-static"
   },
   "devDependencies": {
+    "@axe-core/playwright": "catalog:",
     "@kvirn-ui/core": "workspace:*",
     "@kvirn-ui/i18n": "workspace:*",
     "@kvirn-ui/react": "workspace:*",
     "@kvirn-ui/testing": "workspace:*",
     "@kvirn-ui/theme": "workspace:*",
+    "@playwright/test": "catalog:",
     "@storybook/addon-a11y": "catalog:",
     "@storybook/addon-vitest": "catalog:",
     "@storybook/react-vite": "catalog:",

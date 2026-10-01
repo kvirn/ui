@@ -22,6 +22,38 @@
  * text, 3:1 for control edges and focus, 7:1 for text in the high-contrast themes). Swapping
  * a scale can break contrast: a step that carries white text in light may fail in dark.
  *
+ * Site-wide defaults. Set these once, in your own CSS, instead of adding a class to every
+ * element. None is set by theme.css, so without them the look is the default one:
+ *
+ *   :root {
+ *     --kv-font-family-body: 'Source Sans 3', var(--kv-font-family-system);   text, controls
+ *     --kv-font-family-heading: 'Merriweather', Georgia, serif;               prose headings
+ *     --kv-card-radius-default: var(--kv-radius-md);                          lg by default
+ *     --kv-button-min-block-size: 2.5rem;                    never below 24px (2.5.8)
+ *     --kv-button-padding-inline: var(--kv-space-5);
+ *     --kv-button-font-size: 1rem;
+ *     --kv-button-font-weight: 600;
+ *     --kv-button-line-height: 1.25;
+ *   }
+ *   .kv-card {
+ *     --kv-card-padding-default: var(--kv-card-padding-lg);                  md by default
+ *   }
+ *   <html class="kv-compact">     compact controls on the whole site, from 64rem (section 6)
+ *
+ * They're read where they're used, with the theme's value as the fallback, for example
+ * `font-family: var(--kv-font-family-body, var(--kv-font-family-sans))`. So you can set them
+ * on :root or on any container, and only that part of the page changes. One rule to know: a
+ * custom property is resolved where it's declared. `:root { --kv-card-padding-default:
+ * var(--kv-card-padding-lg) }` takes lg as it is on :root, so the compact step-down inside a
+ * kv-compact container doesn't reach it. That's why the example sets it on .kv-card, which
+ * resolves it on each card. Fixed values (2.5rem, a font name) have no such catch.
+ *
+ * Colours. --kv-color-text is the body text colour, and --kv-color-heading the colour of
+ * prose headings, the same step as text by default. They're semantic tokens like every colour,
+ * set per theme (sections 2 to 5): a value on :root alone would apply in the dark themes too.
+ * To change one, use theme.css's own selectors for each theme, then run checkThemeCss(). If
+ * you change --kv-color-text on a wrapper element, change --kv-color-heading there too.
+ *
  * Sections:
  *   1. Palette          role scales, the only place with raw colour values
  *   2. Light theme      semantic colours, plus every non-colour token
@@ -158,7 +190,9 @@
     /* The secondary button's edge. The same as border-control until --kv-secondary-* gets
      * a hue of its own. */
     --kv-color-secondary: var(--kv-secondary-500);
+    /* Body text. Headings in prose use heading: the same step by default, in every theme. */
     --kv-color-text: var(--kv-neutral-950);
+    --kv-color-heading: var(--kv-neutral-950);
     --kv-color-text-muted: var(--kv-neutral-600);
     --kv-color-primary: var(--kv-primary-500);
     /* Filled buttons darken on hover: a lighter fill behind white text fails 4.5:1. */
@@ -198,9 +232,14 @@
     --kv-radius-xl: 16px;
     --kv-radius-full: 9999px;
 
-    /* The theme loads no font. Self-host Inter, or the system UI font is used. */
-    --kv-font-family-sans:
-      'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    /* The theme loads no font. Self-host Inter, or the system UI font is used. On Apple,
+     * Windows and Android, the system stack finds San Francisco, Segoe UI or Roboto first, and
+     * each covers å ä ö æ ø and the Northern Sámi letters (á č đ ŋ š ŧ ž). On Linux, system-ui
+     * is the desktop's font, with Noto Sans and Arial behind it. End your own stack with it. Body text and controls use --kv-font-family-body, and prose
+     * headings --kv-font-family-heading, when you set them: both fall back to sans. */
+    --kv-font-family-system:
+      system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif;
+    --kv-font-family-sans: 'Inter Variable', Inter, var(--kv-font-family-system);
     --kv-font-family-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
 
     /* Type roles. cv05 and cv08 tell l, I and 1 apart in body text. */
@@ -325,6 +364,7 @@
     --kv-color-border-control: var(--kv-neutral-500);
     --kv-color-secondary: var(--kv-secondary-500);
     --kv-color-text: var(--kv-neutral-50);
+    --kv-color-heading: var(--kv-neutral-50);
     --kv-color-text-muted: var(--kv-neutral-400);
     --kv-color-primary: var(--kv-primary-500);
     --kv-color-primary-hover: var(--kv-primary-600);
@@ -358,6 +398,7 @@
     --kv-color-border-control: var(--kv-neutral-700);
     --kv-color-secondary: var(--kv-secondary-700);
     --kv-color-text: var(--kv-black);
+    --kv-color-heading: var(--kv-black);
     --kv-color-text-muted: var(--kv-neutral-700);
     --kv-color-primary: var(--kv-primary-800);
     --kv-color-primary-hover: var(--kv-primary-900);
@@ -386,6 +427,7 @@
     --kv-color-border-control: var(--kv-neutral-200);
     --kv-color-secondary: var(--kv-secondary-200);
     --kv-color-text: var(--kv-white);
+    --kv-color-heading: var(--kv-white);
     --kv-color-text-muted: var(--kv-neutral-200);
     --kv-color-primary: var(--kv-primary-200);
     --kv-color-primary-hover: var(--kv-primary-100);
@@ -422,6 +464,7 @@
       --kv-color-border-control: var(--kv-neutral-500);
       --kv-color-secondary: var(--kv-secondary-500);
       --kv-color-text: var(--kv-neutral-50);
+      --kv-color-heading: var(--kv-neutral-50);
       --kv-color-text-muted: var(--kv-neutral-400);
       --kv-color-primary: var(--kv-primary-500);
       --kv-color-primary-hover: var(--kv-primary-600);
@@ -455,6 +498,7 @@
       --kv-color-border-control: var(--kv-neutral-700);
       --kv-color-secondary: var(--kv-secondary-700);
       --kv-color-text: var(--kv-black);
+      --kv-color-heading: var(--kv-black);
       --kv-color-text-muted: var(--kv-neutral-700);
       --kv-color-primary: var(--kv-primary-800);
       --kv-color-primary-hover: var(--kv-primary-900);
@@ -485,6 +529,7 @@
       --kv-color-border-control: var(--kv-neutral-200);
       --kv-color-secondary: var(--kv-secondary-200);
       --kv-color-text: var(--kv-white);
+      --kv-color-heading: var(--kv-white);
       --kv-color-text-muted: var(--kv-neutral-200);
       --kv-color-primary: var(--kv-primary-200);
       --kv-color-primary-hover: var(--kv-primary-100);
@@ -521,6 +566,7 @@
       --kv-color-border-control: ButtonBorder;
       --kv-color-secondary: ButtonBorder;
       --kv-color-text: CanvasText;
+      --kv-color-heading: CanvasText;
       --kv-color-text-muted: CanvasText;
       --kv-color-primary: Highlight;
       --kv-color-primary-hover: Highlight;
@@ -543,7 +589,8 @@
   /* 6. Density -------------------------------------------------------------------------------
    * Put class="kv-compact" on any container for 32px controls with 14px labels, for
    * staff tools and toolbars. Below 64rem touch is likely, so controls stay 44px. Cards inside
-   * get less padding too (section 10).
+   * get less padding too (section 10). For a whole staff tool, put it on <html> or <body>:
+   * every control on the page is compact from 64rem, and 44px below it.
    */
   @media (width >= 64rem) {
     .kv-compact {
@@ -560,6 +607,14 @@
    * a class: <Button className="kv-button--primary"> for the one main action per view, or
    * <Button className="kv-button--danger"> for a destructive action (with a confirmation step).
    * Use Button only for actions. For navigation use Link: a link must look like a link.
+   *
+   * Size every button without touching other controls: set --kv-button-min-block-size,
+   * --kv-button-padding-inline, --kv-button-font-size, --kv-button-font-weight or
+   * --kv-button-line-height on :root or on a container. Each falls back to its --kv-control-*
+   * token, so without them buttons follow the density (section 6). Set, they win over it,
+   * the compact step and the 44px below 64rem included. Keep --kv-button-min-block-size at
+   * 24px or more, and enough --kv-button-padding-inline that a short label is 24px wide:
+   * 2.5.8 Target Size (Minimum). Resident-facing buttons should stay at 44px (2.5.5).
    */
   .kv-button {
     display: inline-flex;
@@ -567,19 +622,19 @@
     justify-content: center;
     gap: var(--kv-space-2);
     box-sizing: border-box;
-    min-block-size: var(--kv-control-min-block-size);
+    min-block-size: var(--kv-button-min-block-size, var(--kv-control-min-block-size));
     max-inline-size: 100%;
     margin: 0;
     padding-block: var(--kv-space-2);
-    padding-inline: var(--kv-control-padding-inline);
+    padding-inline: var(--kv-button-padding-inline, var(--kv-control-padding-inline));
     border: var(--kv-border-width) solid var(--kv-color-secondary);
     border-radius: var(--kv-radius-md);
     background-color: var(--kv-color-surface-raised);
     color: var(--kv-color-text);
-    font-family: var(--kv-font-family-sans);
-    font-size: var(--kv-control-font-size);
-    font-weight: var(--kv-control-font-weight);
-    line-height: var(--kv-control-line-height);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-button-font-size, var(--kv-control-font-size));
+    font-weight: var(--kv-button-font-weight, var(--kv-control-font-weight));
+    line-height: var(--kv-button-line-height, var(--kv-control-line-height));
     letter-spacing: normal;
     text-align: center;
     text-decoration: none;
@@ -688,6 +743,8 @@
    * <Link> renders class="kv-link": the link colour and an underline, for running text.
    * Inside a list with class="kv-nav", links become navigation items instead: a row in the
    * text colour, without an underline, because their place in a labelled <nav> is the cue.
+   * A link in running text keeps the font around it. A navigation item is a control, so it uses
+   * --kv-font-family-body when you set it.
    *
    *   <nav aria-label="…"><ul class="kv-nav"><li><Link current="page" …>…</Link></li></ul></nav>
    */
@@ -736,7 +793,7 @@
     border-inline-start: var(--kv-indicator-width) solid transparent;
     border-radius: var(--kv-radius-md);
     color: var(--kv-color-text);
-    font-family: var(--kv-font-family-sans);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
     font-size: var(--kv-control-font-size);
     font-weight: var(--kv-control-font-weight);
     line-height: var(--kv-control-line-height);
@@ -812,10 +869,12 @@
    * with scope, set lang on passages in another language, and write link text that makes
    * sense on its own.
    */
+  /* Body text in --kv-color-text and --kv-font-family-body, headings in --kv-color-heading and
+   * --kv-font-family-heading. Without the family settings, both are sans. */
   :where(.kv-prose) {
     max-inline-size: var(--kv-prose-measure);
     color: var(--kv-color-text);
-    font-family: var(--kv-font-family-sans);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
     font-size: var(--kv-prose-font-size);
     line-height: var(--kv-prose-line-height);
     font-feature-settings: var(--kv-prose-feature-settings);
@@ -868,6 +927,11 @@
     ) {
     /* Elements. kv-not-prose, kv-nav, kv-button-group and a card's Root only get margins. */
     &:not(:where(.kv-not-prose, .kv-nav, .kv-button-group, .kv-card)) {
+      &:where(h1, h2, h3, h4, h5, h6) {
+        color: var(--kv-color-heading);
+        font-family: var(--kv-font-family-heading, var(--kv-font-family-sans));
+      }
+
       &:where(h1) {
         margin-block: 0 var(--kv-space-6);
         font-size: var(--kv-font-heading-1-size);
@@ -1248,7 +1312,8 @@
    *
    *   kv-card--surface, kv-card--canvas          Root: the background. Default surface-raised
    *   kv-card--radius-md, kv-card--radius-none   Root: md for a card nested in a card. Default lg
-   *   kv-card--padding-none, -sm, -lg            Root: every part's padding. Default md
+   *   kv-card--radius-lg                         Root: back to lg, when your default is another
+   *   kv-card--padding-none, -sm, -md, -lg       Root: every part's padding. Default md
    *   kv-card-header--padding-none, -sm, -md, -lg, and likewise kv-card-body--padding-* and
    *   kv-card-footer--padding-*                  one part: overrides the Root's padding
    *   kv-card--dividers                          Root: a border-subtle line between parts
@@ -1265,6 +1330,18 @@
    * its radius themselves. Every card keeps its border, so forced colours show its edge.
    * Use a part's --padding-none class for full-bleed media, and keep the other parts' steps
    * the same, so their edges line up.
+   *
+   * Site-wide defaults: every card without a class takes --kv-card-padding-default and
+   * --kv-card-radius-default when you set them, on :root or on a container:
+   *
+   *   :root { --kv-card-padding-default: var(--kv-card-padding-lg); }
+   *   :root { --kv-card-radius-default: var(--kv-radius-md); }
+   *
+   * The classes above still win, so kv-card--padding-md and kv-card--radius-lg take a single
+   * card back to the theme's steps. One catch: on :root, var(--kv-card-padding-lg) is resolved
+   * on :root, so it keeps growing from 40rem, but a kv-compact container below doesn't step it
+   * down. Set the default on the compact container too, or on .kv-card in your own CSS, which
+   * resolves it on each card. kv-compact on <html> needs neither.
    */
   :root {
     --kv-card-padding-sm: var(--kv-space-3);
@@ -1288,10 +1365,11 @@
     }
   }
 
-  /* The Root always sets both, so a nested card never inherits its parent's values. */
+  /* The Root always sets both, so a nested card never inherits its parent's values. The
+   * defaults are read here, on each card, so md and lg follow the width and the density. */
   .kv-card {
-    --kv-card-padding: var(--kv-card-padding-md);
-    --kv-card-radius: var(--kv-radius-lg);
+    --kv-card-padding: var(--kv-card-padding-default, var(--kv-card-padding-md));
+    --kv-card-radius: var(--kv-card-radius-default, var(--kv-radius-lg));
     display: block;
     box-sizing: border-box;
     /* A card in a grid or flex row can shrink to 320px. */
@@ -1312,6 +1390,10 @@
     background-color: var(--kv-color-canvas);
   }
 
+  .kv-card.kv-card--radius-lg {
+    --kv-card-radius: var(--kv-radius-lg);
+  }
+
   .kv-card.kv-card--radius-md {
     --kv-card-radius: var(--kv-radius-md);
   }
@@ -1320,8 +1402,8 @@
     --kv-card-radius: var(--kv-radius-none);
   }
 
-  /* On the Root it's every part's default. On a part it overrides the Root. The Root's
-   * default is md, so md is a part class only. */
+  /* On the Root it's every part's default. On a part it overrides the Root. md on the Root is
+   * the theme's default, for a card that opts out of your --kv-card-padding-default. */
   .kv-card.kv-card--padding-none,
   .kv-card-header.kv-card-header--padding-none,
   .kv-card-body.kv-card-body--padding-none,
@@ -1336,6 +1418,7 @@
     --kv-card-padding: var(--kv-card-padding-sm);
   }
 
+  .kv-card.kv-card--padding-md,
   .kv-card-header.kv-card-header--padding-md,
   .kv-card-body.kv-card-body--padding-md,
   .kv-card-footer.kv-card-footer--padding-md {

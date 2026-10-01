@@ -20,7 +20,8 @@ import {
 import { useLink } from './use-link.ts'
 import type { LinkPartProps, UseLinkOptions, UseLinkResult } from './use-link.ts'
 
-// Contract: link.a11y.md. Keyboard rows are also covered end to end in link.e2e.ts.
+// Contract: link.a11y.md. Keyboard rows are also covered end to end in
+// apps/storybook/src/components/link/link.e2e.ts.
 
 let consoleWarn: MockInstance<Console['warn']>
 

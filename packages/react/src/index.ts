@@ -4,7 +4,6 @@
 // `useEnv` and `useLinkComponent` are internal by design (ADR-0003, Plan 0002).
 export { KvirnProvider } from './provider/kvirn-provider.tsx'
 export type { KvirnProviderProps } from './provider/kvirn-provider.tsx'
-export type { WeekStart } from './provider/provider-context.ts'
 export { KvirnThemeScript } from './provider/kvirn-theme-script.tsx'
 export type { KvirnThemeScriptProps } from './provider/kvirn-theme-script.tsx'
 export { useLocale } from './provider/use-locale.ts'

@@ -99,7 +99,7 @@ Nothing is done until all of these pass. A Stop hook enforces gates 1–2.
 - Follow the API conventions in `docs/architecture.md#api-conventions`. In short: no abbreviated or single-letter names (`disclosure`, not `d`), prop objects named after their part (`triggerProps`), shared part names (Root, Trigger, Panel, Popup), locality of behaviour, and `render` instead of `asChild`.
 - TypeScript strict and inference-first. Export `UseXOptions`, `UseXResult` and `XPartProps` types.
 - Visual decisions follow `DESIGN.md`. Changing a token or rule there needs an ADR and a passing `theme:check`.
-- Use kebab-case files, co-located as `x.test.tsx`, `x.stories.tsx`, `x.e2e.ts` and `x.a11y.md`.
+- Use kebab-case files. `x.test.tsx`, `x.a11y.md` and `x.md` are co-located with the component in its package. `x.stories.tsx` and `x.e2e.ts` live in `apps/storybook/src/components/<name>/`, so packages ship no Storybook files.
 - **Every commit follows [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)** (ADR-0012): `<type>[optional scope][!]: <description>`, then an optional body and footers after a blank line.
   - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
   - Scope is a lower-case package or area: `feat(react): add Button`, `fix(core/store): keep selection on reset`.

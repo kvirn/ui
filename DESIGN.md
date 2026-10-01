@@ -10,6 +10,7 @@ colors:
   border-control: '#6b7079'
   secondary: '#6b7079'
   text: '#0f1011'
+  heading: '#0f1011'
   text-muted: '#5d6169'
   primary: '#5e6ad2'
   primary-hover: '#4f5ac0'
@@ -28,65 +29,65 @@ colors:
   warning-subtle: '#fff4dc'
 typography:
   display:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
+    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 2.5rem
     fontWeight: 600
     lineHeight: 1.15
     letterSpacing: -0.025em
   heading-1:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
+    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 1.75rem
     fontWeight: 600
     lineHeight: 1.2
     letterSpacing: -0.021em
   heading-2:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
+    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 1.375rem
     fontWeight: 500
     lineHeight: 1.25
     letterSpacing: -0.018em
   heading-3:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
+    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 1.125rem
     fontWeight: 600
     lineHeight: 1.4
     letterSpacing: 0em
   body-large:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
+    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 1.125rem
     fontWeight: 400
     lineHeight: 1.6
     fontFeature: '"cv05", "cv08"'
   lead:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
+    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 1.25rem
     fontWeight: 400
     lineHeight: 1.5
     fontFeature: '"cv05", "cv08"'
   body:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
+    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 1rem
     fontWeight: 400
     lineHeight: 1.5
     fontFeature: '"cv05", "cv08"'
   body-small:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
+    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 0.875rem
     fontWeight: 400
     lineHeight: 1.5
     fontFeature: '"cv05", "cv08"'
   label:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
+    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 1rem
     fontWeight: 500
     lineHeight: 1.4
   label-compact:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
+    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 0.875rem
     fontWeight: 500
     lineHeight: 1.3
   numeric:
-    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
+    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif'
     fontSize: 1rem
     fontWeight: 400
     lineHeight: 1.5
@@ -253,7 +254,8 @@ Colours come in two tiers, both CSS custom properties in `theme.css`:
 | `border-subtle`  | `neutral-100`   | `neutral-800`   | `neutral-500`   | `neutral-400`   | Hairline dividers and decorative outlines only                                             |
 | `border-control` | `neutral-500`   | `neutral-500`   | `neutral-700`   | `neutral-200`   | Borders that identify a control (inputs, checkboxes)                                       |
 | `secondary`      | `secondary-500` | `secondary-500` | `secondary-700` | `secondary-200` | The secondary button's edge. Equal to `border-control` until `--kv-secondary-*` gets a hue |
-| `text`           | `neutral-950`   | `neutral-50`    | `black`         | `white`         | Body text and headings                                                                     |
+| `text`           | `neutral-950`   | `neutral-50`    | `black`         | `white`         | Body text                                                                                  |
+| `heading`        | `neutral-950`   | `neutral-50`    | `black`         | `white`         | Headings in prose. The same step as `text` by default, so a site can set its own           |
 | `text-muted`     | `neutral-600`   | `neutral-400`   | `neutral-700`   | `neutral-200`   | Secondary text, hints, metadata                                                            |
 | `primary`        | `primary-500`   | `primary-500`   | `primary-800`   | `primary-200`   | Primary button background, selected state, current-page indicator                          |
 | `primary-hover`  | `primary-600`   | `primary-600`   | `primary-900`   | `primary-100`   | Hover and pressed state of `primary`                                                       |
@@ -271,10 +273,10 @@ Colours come in two tiers, both CSS custom properties in `theme.css`:
 | `warning`        | `warning-700`   | `warning-300`   | `warning-800`   | `warning-200`   | Warnings, deadlines                                                                        |
 | `warning-subtle` | `warning-50`    | `warning-950`   | `warning-50`    | `warning-950`   | Warning panel backgrounds                                                                  |
 
-The palette values are in `theme.css`, section 1. Measured contrast (2026-10-01, `vp run theme:check`, 71 pairs per theme):
+The palette values are in `theme.css`, section 1. Measured contrast (2026-10-01, `vp run theme:check`, 81 pairs per theme):
 
 - **Text.**
-  - Every text token (`text`, `text-muted`, `link`, `danger`, `success`, `warning`) is at least 4.5:1 on `canvas`, `surface`, `surface-raised` and the `-subtle` backgrounds it's used on in the standard themes. The lowest pairs are `on-primary` on `primary` (4.70:1) and `text-muted` on `primary-subtle` in dark (4.80:1).
+  - Every text token (`text`, `heading`, `text-muted`, `link`, `danger`, `success`, `warning`) is at least 4.5:1 on `canvas`, `surface`, `surface-raised` and the `-subtle` backgrounds it's used on in the standard themes. The lowest pairs are `on-primary` on `primary` (4.70:1) and `text-muted` on `primary-subtle` in dark (4.80:1).
   - In the contrast themes the minimum is 7:1. The lowest pair is `danger` on `danger-subtle` in light-contrast (7.31:1).
 - **Control borders and focus.** `border-control`, `secondary`, `focus-ring` and `primary` (used as a selected or current indicator) are at least 3:1 against `canvas`, `surface`, `surface-raised` and `primary-subtle` in every theme. The lowest pairs are `border-control` and `secondary` on `primary-subtle` in dark (3.13:1).
 - **Labels on filled buttons.** `on-primary` on `primary` is at least 4.70:1, and on `primary-hover` at least 5.91:1. `on-danger` on `danger` is at least 6.40:1, and on `danger-hover` at least 8.23:1.
@@ -287,6 +289,7 @@ Rules:
 - **Links use `link` and are underlined** in running text. In dark themes `link` is lighter than `primary`, because `#5e6ad2` as text on the dark canvas is only 4.44:1.
 - **Navigation lists** may drop the underline and use the `text` colour, because position in a labelled `<nav>` list is the cue. The current item always has a non-colour cue: an inline-start bar and weight 600, plus `aria-current`.
 - **Dark themes are not inverted light themes.** Raised surfaces get lighter, not shadowed.
+- **`heading` is held to everything `text` is.** A site that gives headings their own colour keeps 4.5:1 (7:1 in the contrast themes) on every background body text sits on, and `theme:check` measures it. In forced colours both are `CanvasText`.
 - **Forced colours** (`forced-colors: active`): use system colours (`Canvas`, `CanvasText`, `LinkText`, `ButtonText`, `Highlight`, `GrayText`). Every surface and control keeps a 1px border, even if it is transparent in the normal theme, so boundaries survive. Selected and current states get a non-colour cue such as a border, a check mark or `text-decoration`.
 
 Rebranding for a municipality:
@@ -301,6 +304,8 @@ Rebranding for a municipality:
 
 One sans-serif family with a system fallback, and one monospace family for reference numbers and code.
 
+- **Body and heading families.** Body text and controls (prose, buttons, navigation items) use `--kv-font-family-body`, and prose headings `--kv-font-family-heading`. The theme sets neither: both fall back to `--kv-font-family-sans`, so by default there is one family. A site sets them once for a brand font (see [Theming](#theming)). A link in running text keeps the font around it, and code stays `--kv-font-family-mono`.
+- **System stack.** `--kv-font-family-system` is `system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif`, and `--kv-font-family-sans` is Inter in front of it. On Apple, Windows and Android, the font it finds first (San Francisco, Segoe UI, Roboto) covers å ä ö æ ø and the Northern Sámi letters. On Linux, `system-ui` is the desktop's font, with Noto Sans and Arial behind it. End a brand stack with it, and check the Glyphs table on Foundation/Typography/Type scale.
 - **Family.** The stack starts with Inter (SIL OFL). We use weights 400, 500 and 600. It is legible at small sizes and covers every Northern Sámi letter (á č đ ŋ š ŧ ž). The theme never loads a font. The docs site and Storybook self-host Inter Variable, and adopters self-host it or fall back to the system UI font (GDPR, AGENTS.md hard rule 7). A replacement brand font must cover the Sámi letters as well as å ä ö æ ø.
 - **Disambiguation.** Enable Inter's `cv05` (l with a tail) and `cv08` (I with serifs) for body text so that l, I and 1 are distinct. This matters for case numbers, codes and names. Verify the feature tags against the self-hosted Inter version.
 - **Numbers.** Use `numeric` (tabular figures) for tables, amounts, dates and reference numbers.
@@ -329,7 +334,7 @@ One sans-serif family with a system fallback, and one monospace family for refer
 
 ### Density
 
-Density is set on a container with `class="kv-compact"`. Comfortable is the default, and needs no class.
+Density is set on a container with `class="kv-compact"`. Comfortable is the default, and needs no class. On `<html>` or `<body>`, the class makes a whole staff tool compact.
 
 | Density               | Control min height | Label type      | Min target | Use                                                                                                                     |
 | --------------------- | ------------------ | --------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------- |
@@ -381,11 +386,13 @@ Visual rules for the default theme. Behaviour, roles and keyboard are defined in
   - Labels are verbs ("Send application", "Book time").
   - Disabled buttons keep their label readable, with a dashed border as the non-colour cue. Prefer keeping them enabled and explaining what's missing on submit.
   - A hovered or pressed primary button keeps a 1px `primary` edge around its `primary-hover` fill, so its boundary stays at 3:1 on `surface-raised` in dark (ADR-0021).
+  - Size follows the density. A site can size every button without touching other controls with `--kv-button-min-block-size`, `--kv-button-padding-inline`, `--kv-button-font-size`, `--kv-button-font-weight` and `--kv-button-line-height`, which fall back to the `--kv-control-*` tokens. Set, they win over density, so the height never goes below 24px (2.5.8), and resident-facing buttons stay at 44px.
 - **Links** look like links (underlined `link`) and buttons look like buttons. Never swap the two. The hover state thickens the underline to 2px and uses `link-hover`.
 - **Cards** are elevation level 2: `surface-raised`, a 1px `border-subtle` edge, the `lg` radius and no shadow. A card is a plain container and is never interactive: no hover, shadow or pointer style, because those suggest the whole card is clickable.
   - Choose with classes on the Root: the surface (`surface-raised` by default, `kv-card--surface` for a block in a sidebar, `kv-card--canvas` on a `surface` section), the radius (`lg` by default, `kv-card--radius-md` for a card nested in a card, `kv-card--radius-none` for a card flush with an edge) and `kv-card--dividers` (a `border-subtle` line between parts).
   - Padding goes on the Root, for every part (`kv-card--padding-none`, `-sm` or `-lg`), or on one part (`kv-card-header--padding-none`, and likewise for the body and footer, in all four steps): `md` (the default) is 24px, and 16px below `40rem` and in compact density from `64rem`. `sm` is 12px, `lg` is 32px (24px where `md` is 16px), and `none` is for full-bleed media. Use `none` on a part only, so the other parts' edges line up.
   - Parts are direct children of the Root. A Root without parts pads itself, and adjacent parts share one padding.
+  - A site sets its own default for every card with `--kv-card-padding-default` and `--kv-card-radius-default`, and `kv-card--padding-md` or `kv-card--radius-lg` takes one card back to the theme's step. A default set on `:root` as `var(--kv-card-padding-lg)` is resolved there, so it doesn't step down inside a `kv-compact` container: set it on `.kv-card` or on the container instead.
   - A card never hides overflow, so focus rings are never clipped. Media that touch a rounded corner get its inner radius instead.
   - Footer actions use `kv-button-group` on the footer: start-aligned, primary first, and one primary per view. A card's one link goes in its heading. Navigation is a Link.
   - Never use `primary-subtle` or a status `-subtle` background as a card surface: status belongs in a notification, with an icon and a heading.
@@ -405,8 +412,9 @@ Visual rules for the default theme. Behaviour, roles and keyboard are defined in
 ## Theming
 
 - **One file, opt-in by import.** `import '@kvirn-ui/theme/theme.css'` styles every component on the page, and removing it unstyles them. Nothing loads CSS for you, and `KvirnProvider` never does.
-- **Components are selected by part classes,** and state by `data-*` attributes: `.kv-button`, `.kv-link`, `[data-disabled]`. Each part renders its own class, and the consumer's `className` joins it. Choices are classes the consumer adds: `kv-button--primary` or `kv-button--danger`, `kv-button-group`, `kv-nav`, `kv-compact`, for prose `kv-prose` (plus `kv-prose--large`), `kv-lead`, `kv-not-prose` and `kv-scroll-region`, and for cards `kv-card--surface`, `kv-card--canvas`, `kv-card--radius-md`, `kv-card--radius-none`, `kv-card--padding-none|sm|lg`, `kv-card-header--padding-*` (and body and footer) and `kv-card--dividers`.
+- **Components are selected by part classes,** and state by `data-*` attributes: `.kv-button`, `.kv-link`, `[data-disabled]`. Each part renders its own class, and the consumer's `className` joins it. Choices are classes the consumer adds: `kv-button--primary` or `kv-button--danger`, `kv-button-group`, `kv-nav`, `kv-compact`, for prose `kv-prose` (plus `kv-prose--large`), `kv-lead`, `kv-not-prose` and `kv-scroll-region`, and for cards `kv-card--surface`, `kv-card--canvas`, `kv-card--radius-lg|md|none`, `kv-card--padding-none|sm|md|lg`, `kv-card-header--padding-*` (and body and footer) and `kv-card--dividers`.
 - **Override variables, not selectors.** Rebrand by overriding a role scale on `:root` (`--kv-primary-50` … `--kv-primary-950`), or set a single semantic token (`:root { --kv-color-link: var(--kv-primary-700) }`). Scales go on `:root`, where the semantic tokens are declared. To change one theme only, target the same selectors `theme.css` uses (`:root[data-kv-color-scheme='dark']`).
+- **Site-wide defaults are custom properties, set once.** `--kv-font-family-body`, `--kv-font-family-heading`, `--kv-card-padding-default`, `--kv-card-radius-default` and the five `--kv-button-*` sizes (`min-block-size`, `padding-inline`, `font-size`, `font-weight`, `line-height`), plus `class="kv-compact"` on `<html>`. `theme.css` sets none of them: it reads each where it's used, with its own value as the fallback (`var(--kv-font-family-body, var(--kv-font-family-sans))`), so they work on `:root` or on any container. A value that refers to another token (`var(--kv-card-padding-lg)`) is resolved where it's declared, so put those on the element that should resolve them. `--kv-color-heading` is a semantic token like the rest, set per theme.
 - **Your CSS always wins.** Everything in `theme.css` is in `@layer kv`. Any unlayered CSS you write, or any layer you declare after `kv`, overrides it regardless of specificity.
 - **Own it, or skip it.** Copy `theme.css` into your project and import your copy, or skip it and style the `kv-*` classes and the `data-*` state attributes with Tailwind or your own CSS.
 - After any colour change, run `vp run theme:check`, or `checkThemeCss()` from `@kvirn-ui/theme` on your own file.

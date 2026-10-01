@@ -26,13 +26,15 @@ Command names were verified against [viteplus.dev](https://viteplus.dev/guide/) 
 
 ## Test layers
 
-| Layer     | File                               | Runner                                                | Proves                                   |
-| --------- | ---------------------------------- | ----------------------------------------------------- | ---------------------------------------- |
-| Machine   | `core/src/<name>/<name>.test.ts`   | Vitest (node)                                         | State logic                              |
-| Component | `react/src/<name>/<name>.test.tsx` | Vitest browser mode                                   | Rendering, ARIA, axe                     |
-| Stories   | `<name>.stories.tsx`               | `vp test run` (Storybook `addon-vitest` + a11y addon) | Every visual state, axe fails the test   |
-| E2E       | `<name>.e2e.ts`                    | Playwright                                            | Keyboard contract, focus, modes          |
-| Manual AT | `<name>.a11y.md`                   | Humans                                                | See [accessibility.md](accessibility.md) |
+| Layer     | File                                                      | Runner                                                | Proves                                   |
+| --------- | --------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------- |
+| Machine   | `packages/core/src/<name>/<name>.test.ts`                 | Vitest (node)                                         | State logic                              |
+| Component | `packages/react/src/<name>/<name>.test.tsx`               | Vitest browser mode                                   | Rendering, ARIA, axe                     |
+| Stories   | `apps/storybook/src/components/<name>/<name>.stories.tsx` | `vp test run` (Storybook `addon-vitest` + a11y addon) | Every visual state, axe fails the test   |
+| E2E       | `apps/storybook/src/components/<name>/<name>.e2e.ts`      | Playwright                                            | Keyboard contract, focus, modes          |
+| Manual AT | `packages/react/src/<name>/<name>.a11y.md`                | Humans                                                | See [accessibility.md](accessibility.md) |
+
+Stories and e2e specs live in the Storybook app, so the packages ship no Storybook files and need no Storybook dependencies. The package keeps its unit and browser tests (with axe), its contract and its docs page.
 
 Playwright projects: `chromium`, `firefox`, `webkit`, `chromium-forced-colors`, `chromium-reduced-motion`, `mobile-safari`, `mobile-chrome`, `reflow-320`.
 

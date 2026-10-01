@@ -3,8 +3,9 @@ import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
 
-// Contract: kvirn-provider.a11y.md. The theme switcher is fixture markup (native radio
-// groups) on useTheme(); these rows prove the provider keeps native behaviour intact.
+// Contract: packages/react/src/provider/kvirn-provider.a11y.md. The theme switcher is fixture
+// markup (native radio groups) on useTheme(); these rows prove the provider keeps native
+// behaviour intact.
 
 const storyUrl = (story: string) =>
   `/iframe.html?id=foundation-kvirnprovider--${story}&viewMode=story`

@@ -37,9 +37,7 @@ function AboutThisStorybook() {
           <strong>Direction</strong> switches between left-to-right and right-to-left.
         </li>
         <li>
-          <strong>Theme</strong> selects one of the four themes, or follows the system.{' '}
-          <strong>None (unstyled)</strong> removes <code>theme.css</code>, to show the components as
-          they ship.
+          <strong>Theme</strong> selects one of the four themes, or follows the system.
         </li>
         <li>
           <strong>Forced colors</strong> only marks a story. Real emulation runs in the{' '}

@@ -1,25 +1,26 @@
+import { Button } from '@kvirn-ui/react'
+import type { ButtonProps } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useId, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
-import { expect, userEvent, waitFor, within } from 'storybook/test'
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import {
   expectMinimumTargetSize,
   expectNoHorizontalOverflow,
   expectThemeApplied,
-  isThemeLoaded,
-} from '../stories/theme-story-assertions.ts'
-import type { FixedStoryTheme } from '../stories/theme-story-assertions.ts'
-import { Button } from './button.tsx'
-import type { ButtonProps } from './button.tsx'
+} from '../theme-story-assertions.ts'
+import type { FixedStoryTheme } from '../theme-story-assertions.ts'
 
 // Components/Button: the headless Button, styled by @kvirn-ui/theme/theme.css from the
-// Storybook preview (ADR-0013). Theme toolbar › "None (unstyled)" removes the theme again.
-// button.e2e.ts runs its keyboard contract against Default, Disabled, FocusableWhenDisabled,
+// Storybook preview (ADR-0013).
+// Default is the playground: one Button, with every prop and the variant class as controls.
+// button.e2e.ts runs its keyboard contract against Activation, Disabled, FocusableWhenDisabled,
 // SubmitInForm, RTL and ForcedColors, so their play functions only read.
 
 /** Fixture text. Stories set `locale` to match it, so `lang` matches the content (3.1.2). */
 const sv = {
   heading: 'Knappar',
+  clickCount: 'Antal klick',
   send: 'Skicka ansökan',
   saveDraft: 'Spara utkast',
   deleteDraft: 'Ta bort utkast',
@@ -46,21 +47,19 @@ function StoryPage({ heading = sv.heading, children }: { heading?: string; child
   )
 }
 
-interface ButtonStoryArgs extends ButtonProps {
-  heading: string
-  clickCountLabel: string
-}
+/** The page heading of the single-button stories. Fixture text, never a Button prop. */
+const pageHeading = 'Button'
 
 /** One button and a click counter: the keyboard contract's fixture. */
-function ButtonStory({ heading, clickCountLabel, children, ...buttonProps }: ButtonStoryArgs) {
+function ButtonStory({ children, ...buttonProps }: ButtonProps) {
   const [clickCount, setClickCount] = useState(0)
   return (
-    <StoryPage heading={heading}>
+    <StoryPage heading={pageHeading}>
       <Button {...buttonProps} onClick={() => setClickCount((count) => count + 1)}>
         {children}
       </Button>
       <p>
-        {clickCountLabel}: {clickCount}
+        {sv.clickCount}: {clickCount}
       </p>
     </StoryPage>
   )
@@ -117,18 +116,84 @@ function StatesMatrix() {
   )
 }
 
+type ButtonVariant = 'secondary' | 'primary' | 'danger'
+
+interface ButtonPlaygroundArgs extends ButtonProps {
+  /** Story-only: adds `kv-button--primary` or `kv-button--danger`. Secondary is the base. */
+  variant: ButtonVariant
+}
+
+/** One Button. `variant` becomes the class you'd add yourself. */
+function ButtonPlayground({ variant, className, ...buttonProps }: ButtonPlaygroundArgs) {
+  const variantClassName = variant === 'secondary' ? undefined : `kv-button--${variant}`
+  const classNames = [variantClassName, className].filter(Boolean).join(' ')
+  return (
+    <main>
+      <Button {...buttonProps} className={classNames === '' ? undefined : classNames} />
+    </main>
+  )
+}
+
 const meta = {
   title: 'Components/Button',
   component: ButtonStory,
-  args: { heading: 'Button', clickCountLabel: 'Antal klick', children: 'Spara' },
+  args: { children: 'Spara' },
   globals: { locale: 'sv' },
 } satisfies Meta<typeof ButtonStory>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
+/** One Button with its whole API as controls. */
+export const Default: StoryObj<typeof ButtonPlayground> = {
+  render: (args) => <ButtonPlayground {...args} />,
+  args: {
+    children: 'Spara',
+    variant: 'secondary',
+    disabled: false,
+    focusableWhenDisabled: false,
+    type: 'button',
+    className: undefined,
+    onClick: fn(),
+  },
+  argTypes: {
+    children: { control: 'text', description: 'The label.' },
+    variant: {
+      control: 'inline-radio',
+      options: ['secondary', 'primary', 'danger'],
+      description:
+        'Not a prop: adds the class `kv-button--primary` or `kv-button--danger`. Secondary is the base look.',
+    },
+    disabled: { control: 'boolean' },
+    focusableWhenDisabled: { control: 'boolean' },
+    type: { control: 'inline-radio', options: ['button', 'submit', 'reset'] },
+    className: { control: 'text', description: 'Your own classes, added to `kv-button`.' },
+    onClick: { action: 'click' },
+    render: { control: false },
+  },
+  parameters: {
+    controls: {
+      include: [
+        'children',
+        'variant',
+        'disabled',
+        'focusableWhenDisabled',
+        'type',
+        'className',
+        'onClick',
+        'render',
+      ],
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const button = within(canvasElement).getByRole('button', { name: 'Spara' })
+    await expect(button).toHaveAttribute('type', 'button')
+    await expect(button).toHaveClass('kv-button')
+  },
+}
+
 /** The base look is the secondary button: a primary one is always an explicit choice. */
-export const Default: Story = {
+export const Activation: Story = {
   play: async ({ canvasElement }) => {
     const button = within(canvasElement).getByRole('button', { name: 'Spara' })
     await expect(button).toHaveAttribute('type', 'button')
@@ -180,8 +245,8 @@ export const States: Story = {
 /** Natively disabled: skipped by Tab. The next button shows where focus goes instead. */
 export const Disabled: Story = {
   args: { children: 'Skicka', disabled: true },
-  render: ({ heading, clickCountLabel: _clickCountLabel, children, ...buttonProps }) => (
-    <StoryPage heading={heading}>
+  render: ({ children, ...buttonProps }) => (
+    <StoryPage heading={pageHeading}>
       <div className="kv-button-group">
         <Button {...buttonProps}>{children}</Button>
         <Button>Avbryt</Button>
@@ -195,16 +260,11 @@ export const Disabled: Story = {
   },
 }
 
-function FocusableWhenDisabledStory({
-  heading,
-  clickCountLabel,
-  children,
-  ...buttonProps
-}: ButtonStoryArgs) {
+function FocusableWhenDisabledStory({ children, ...buttonProps }: ButtonProps) {
   const reasonId = useId()
   const [clickCount, setClickCount] = useState(0)
   return (
-    <StoryPage heading={heading}>
+    <StoryPage heading={pageHeading}>
       <p id={reasonId}>{sv.reason}</p>
       <Button
         {...buttonProps}
@@ -215,7 +275,7 @@ function FocusableWhenDisabledStory({
         {children}
       </Button>
       <p>
-        {clickCountLabel}: {clickCount}
+        {sv.clickCount}: {clickCount}
       </p>
     </StoryPage>
   )
@@ -233,11 +293,11 @@ export const FocusableWhenDisabled: Story = {
   },
 }
 
-function SubmitInFormStory({ heading }: ButtonStoryArgs) {
+function SubmitInFormStory() {
   const [name, setName] = useState('')
   const [submittedName, setSubmittedName] = useState<string>()
   return (
-    <StoryPage heading={heading}>
+    <StoryPage heading={pageHeading}>
       <form
         aria-label="Ansökan"
         onSubmit={(event) => {
@@ -280,7 +340,7 @@ function SubmitInFormStory({ heading }: ButtonStoryArgs) {
 
 /** `type="submit"` submits. The default `type="button"` never does. */
 export const SubmitInForm: Story = {
-  render: (args) => <SubmitInFormStory {...args} />,
+  render: () => <SubmitInFormStory />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole('button', { name: 'Skicka ansökan' })).toHaveAttribute(
@@ -362,6 +422,40 @@ export const CompactDensity: Story = {
 }
 
 /**
+ * Button sizing set once, without classes: the five `--kv-button-*` properties, here on a
+ * container (on `:root` they size every button). This sets the documented floor, 24px, with
+ * small labels and padding, and every button still meets 2.5.8 Target Size (Minimum).
+ */
+const siteWideButtonSizing = {
+  '--kv-button-min-block-size': '24px',
+  '--kv-button-padding-inline': 'var(--kv-space-2)',
+  '--kv-button-font-size': 'var(--kv-font-label-compact-size)',
+  '--kv-button-font-weight': 'var(--kv-font-label-compact-weight)',
+  '--kv-button-line-height': 'var(--kv-font-label-compact-line-height)',
+} as CSSProperties
+
+export const SiteWideSizing: Story = {
+  name: 'Site-wide sizing',
+  render: () => (
+    <StoryPage>
+      <div style={siteWideButtonSizing} data-testid="site-wide-sizing">
+        <VariantsGroup labels={['OK', sv.saveDraft, sv.deleteDraft]} />
+        <StatesMatrix />
+      </div>
+    </StoryPage>
+  ),
+  play: async ({ canvasElement }) => {
+    const buttons = within(within(canvasElement).getByTestId('site-wide-sizing')).getAllByRole(
+      'button',
+    )
+    await expect(buttons).toHaveLength(12)
+    for (const button of buttons) {
+      await expectMinimumTargetSize(button)
+    }
+  },
+}
+
+/**
  * A municipality's teal on one wrapper: the semantic tokens point at the accent scale (teal
  * by default). An app rebrands on :root instead, by overriding `--kv-primary-*` with its brand
  * scale (Foundation/Theming). On a wrapper the semantic tokens must be re-pointed, because they
@@ -420,23 +514,10 @@ export const RTL: Story = {
 
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  render: ({ heading, children }) => (
-    <StoryPage heading={heading}>
+  render: ({ children }) => (
+    <StoryPage heading={pageHeading}>
       <Button>{children}</Button>
       <StatesMatrix />
     </StoryPage>
   ),
-}
-
-/** Without theme.css the Button is a plain native button: the package ships no CSS. */
-export const Unstyled: Story = {
-  globals: { theme: 'none' },
-  render: () => (
-    <StoryPage>
-      <VariantsGroup />
-    </StoryPage>
-  ),
-  play: async ({ canvasElement }) => {
-    await expect(isThemeLoaded(canvasElement)).toBe(false)
-  },
 }

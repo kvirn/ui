@@ -31,10 +31,10 @@ Revised on 2026-10-01 after the maintainer's review, with ADR-0013 (single `them
    - The subsets keep every OpenType feature, so `cv05` and `cv08` (DESIGN.md's l/I/1 disambiguation) and `tnum` work. The `opsz` axis is pinned to 14, the text design, which keeps the look of the first prototype's files and the size down (about 155 KB for both). The commands are in `inter.css`.
    - The Sámi letters need both subsets under one family name, split by `unicode-range`. `next/font/local` can't express that, because it gives each call its own family name and a size-adjusted fallback that would catch the Latin Extended-A letters first.
    - `apps/docs/fonts/inter/inter.css` is imported by the docs layout and by Storybook's `preview.tsx`. Both bundlers hash and self-host the files. Storybook doesn't use `staticDirs`.
-5. **Storybook has one set of stories per component,** co-located in `packages/react` (`Components/Button`, `Components/Link`, `Foundation/KvirnProvider`).
-   - The preview imports `theme.css?raw` and adds it as a `<style>` element, so the Theme toolbar's "None (unstyled)" option can remove it. The canvas decorator connects the theme store like a provider, and selects a fixed theme only for the fixed-theme stories.
-   - The play checks of the old headless and `Default theme/*` stories are merged. Stories that the e2e specs open keep their names, so only the ID prefix changed. Each component has an `Unstyled` story, an axe test of the removed theme.
-   - Shared play checks live in `packages/react/src/stories/theme-story-assertions.ts`. They check that a fixed theme reached `<html>`, the 24 × 24 target size (2.5.8) and reflow (1.4.10), never the look, so the stories don't import `@kvirn-ui/theme`.
+5. **Storybook has one set of stories per component,** co-located in `packages/react` (`Components/Button`, `Components/Link`, `Foundation/KvirnProvider`). Since moved, with their e2e specs, to `apps/storybook/src/components/<name>/`, so the packages ship no Storybook files.
+   - The preview imports `theme.css` like an adopter. The canvas decorator connects the theme store like a provider, and selects a fixed theme only for the fixed-theme stories.
+   - The play checks of the old headless and `Default theme/*` stories are merged. Stories that the e2e specs open keep their names, so only the ID prefix changed.
+   - Shared play checks live in `apps/storybook/src/components/theme-story-assertions.ts` (first in `packages/react/src/stories/`). They check that a fixed theme reached `<html>`, the 24 × 24 target size (2.5.8) and reflow (1.4.10), never the look, so the stories don't import `@kvirn-ui/theme`.
    - The example texts in six languages moved to `apps/docs/components/example-texts.tsx`, because only the docs site uses them now. The stories use Swedish, Finnish and English fixture text inline, like the provider stories.
 6. **The docs shell is tested like a component.** The Vitest `browser` project includes `apps/docs/components/**/*.test.tsx`, with the real theme and docs CSS loaded. The shell takes `pathname` as a prop, so the test doesn't need Next.js. The docs e2e harness stays Phase 2 (C5).
 7. **The docs TypeScript program turns off `exactOptionalPropertyTypes`.**
@@ -58,7 +58,6 @@ Revised on 2026-10-01 after the maintainer's review, with ADR-0013 (single `them
 ## Accessibility impact
 
 - Every pair still passes `theme:check`. The palette consolidation (decision 8) raised the light `border-control` and `link` contrast. Some margins shrank but stay above their minimum, the smallest being `danger` on `danger-subtle` in light high contrast (7.31:1, needs 7:1) and `on-primary` on `primary-hover` in dark (5.91:1, was 6.05:1).
-- Each component's `Unstyled` story is an axe test of the components without the theme.
 - The font fallback is unchanged (system-ui).
 - `cv05` and `cv08` now take effect, so l, I and 1 are distinct in case numbers, codes and names.
 

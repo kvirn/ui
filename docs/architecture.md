@@ -4,7 +4,7 @@
 
 ```
 apps/docs          Next.js (App Router, MDX) → kvirn-ui.com
-apps/storybook     Storybook (Vite builder)
+apps/storybook     Storybook (Vite builder): every story and e2e spec (src/components/<name>/)
 packages/core      @kvirn-ui/core     state machines, focus/keyboard utilities
 packages/react     @kvirn-ui/react    hooks + compound components
 packages/i18n      @kvirn-ui/i18n     message catalogs
@@ -125,7 +125,7 @@ The part classes, the modifier classes and the state attributes are part of the 
 
 - Required locales: `sv`, `fi`, `nb`, `nn`, `se` (Northern Sámi, reviewed by a native speaker) and `en` (the fallback). Finland is bilingual and Norway uses both written standards, so all are first-class.
 - No hard-coded visible or announced strings, and none that can't be replaced. Typed catalogs come through `<KvirnProvider messages>`, which is deep-merged over the parent provider and ultimately over built-in `en`. Any key can be overridden per instance with the component's `messages` prop, and visible text parts also take children (ADR-0007). Missing keys fail the type check and `i18n:check`.
-- Formatting uses `Intl.*` only, with no ICU runtime. `dir` comes from context, and arrow keys flip in RTL. Calendars start the week on Monday and show ISO week numbers.
+- Formatting uses `Intl.*` only, with no ICU runtime. `dir` comes from context, and arrow keys flip in RTL. Calendars start the week on Monday and show ISO 8601 week numbers. It's fixed, not a setting: it's the convention in every country we serve.
 - Language links set `lang` / `hreflang` (3.1.2).
 
 ## Support

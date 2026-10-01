@@ -4,6 +4,7 @@
 - **Deviations:** none
 - **Native elements used:** `<a href>`, rendered by the app's registered router link component (ADR-0005), or by a native `<a>` when none is registered or `render={<a />}` is given. `<span>` for the new-tab notice.
 - **Status:** alpha candidate (Plan 0003). Gates 1–5 pass, accessibility-reviewer pending. Manual AT is `pending`.
+- **Tests:** `link.test.tsx` next to this file. `link.stories.tsx` and `link.e2e.ts` in `apps/storybook/src/components/link/`.
 
 Link navigates. An action is a Button. Link has no `disabled` prop, by type: a disabled link isn't a thing, so remove the link or render plain text instead.
 

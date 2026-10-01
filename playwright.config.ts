@@ -2,10 +2,11 @@ import { defineConfig, devices } from '@playwright/test'
 
 const storybookUrl = 'http://localhost:6006'
 
-// Keyboard contract, focus and display modes, run against Storybook (docs/engineering.md).
+// Keyboard contract, focus and display modes, run against Storybook (docs/engineering.md). The
+// specs live next to their stories in apps/storybook/src/components/<name>/.
 export default defineConfig({
-  testDir: '.',
-  testMatch: ['packages/*/src/**/*.e2e.ts'],
+  testDir: 'apps/storybook/src',
+  testMatch: ['**/*.e2e.ts'],
   forbidOnly: true,
   fullyParallel: true,
   retries: 0,

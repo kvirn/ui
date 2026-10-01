@@ -4,6 +4,7 @@
 - **Deviations:** none
 - **Native elements used:** none rendered by the provider. The story fixture uses `<fieldset>`, `<legend>`, `<label>` and `<input type="radio">`. `KvirnThemeScript` renders one `<script>`.
 - **Status:** alpha. Gates 1–6 pass (accessibility-reviewer APPROVE, 2026-09-30). Manual AT is `pending`.
+- **Tests:** `kvirn-provider.test.tsx` next to this file. `kvirn-provider.stories.tsx` and `kvirn-provider.e2e.ts` in `apps/storybook/src/components/provider/`.
 
 The provider's contract is about what it guarantees for other components (Plan 0002):
 

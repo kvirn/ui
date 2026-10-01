@@ -89,6 +89,36 @@ describe('theme.css contrast and forced colours', () => {
     expect(contrastRequirements[themeName].length).toBeGreaterThanOrEqual(42)
   })
 
+  it.each(themeNames)(
+    '%s: heading is held to every minimum text is held to (1.4.3, 1.4.6)',
+    (themeName) => {
+      const requirements = contrastRequirements[themeName]
+      const textRequirements = requirements.filter(({ foreground }) => foreground === 'text')
+      expect(textRequirements.length).toBeGreaterThan(0)
+      for (const { background, minimum } of textRequirements) {
+        expect(
+          requirements.find(
+            (requirement) =>
+              requirement.foreground === 'heading' && requirement.background === background,
+          )?.minimum,
+        ).toBe(minimum)
+      }
+    },
+  )
+
+  it('heading becomes the user’s text colour in forced colours, like body text', () => {
+    const forced = readRootProperties(themeCss, {
+      attributes: { 'data-kv-color-scheme': 'dark', 'data-kv-contrast': 'more' },
+      media: {
+        'prefers-color-scheme': 'dark',
+        'prefers-contrast': 'more',
+        'forced-colors': 'active',
+      },
+    })
+    expect(forced['--kv-color-heading']).toBe('CanvasText')
+    expect(forced['--kv-color-text']).toBe('CanvasText')
+  })
+
   it.each(themeNames)('%s: guards hovered filled buttons on every card surface', (themeName) => {
     const minimumFor = (foreground: string, background: string) =>
       contrastRequirements[themeName].find(

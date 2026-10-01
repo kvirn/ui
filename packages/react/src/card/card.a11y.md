@@ -4,6 +4,7 @@
 - **Deviations:** none
 - **Native elements used:** `<div>` for every part by default. The consumer picks `<article>`, `<section>`, `<aside>` or `<li>` with `render`, and the element's own semantics apply.
 - **Status:** alpha candidate (Plan 0007). Gates 1–5 pass, accessibility-reviewer pending. Manual AT is `pending`.
+- **Tests:** `card.test.tsx` next to this file. `card.stories.tsx` and `card.e2e.ts` in `apps/storybook/src/components/card/`.
 
 Card is a plain container for content on a surface. It adds no role, no ARIA, no text, no `tabindex` and no behaviour. Everything a user perceives inside a card comes from the consumer's children, which keep their own semantics and focus order.
 

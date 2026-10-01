@@ -1,13 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
-import {
-  isThemeLoaded,
-  readLength,
-  readProperty,
-  ScrollTable,
-  ThemeMissingNotice,
-  useLiveValue,
-} from './foundation-helpers.tsx'
+import { readLength, readProperty, ScrollTable, useLiveValue } from './foundation-helpers.tsx'
 import { formatPixels, readTokenText, themeTokenNames, TokenPage } from './tokens-helpers.tsx'
 
 // Foundation/Spacing (docs/design/foundations-and-prose.md §6.6): the 4px spacing scale and
@@ -38,7 +31,7 @@ const measure = (element: Element, token: string): Measured => ({
 
 function readSpacing(page: HTMLElement) {
   const large = page.querySelector('[data-story-probe="large"]')
-  if (!isThemeLoaded(page) || large === null) {
+  if (large === null) {
     return null
   }
   return {
@@ -66,7 +59,6 @@ function SpacingPage(): ReactNode {
         Everything sits on a 4px grid. The steps are in rem, so they grow with the user’s text size.
         Most layouts use steps 2, 4, 6 and 8: 8, 16, 24 and 32px at the default text size.
       </p>
-      {values === null ? <ThemeMissingNotice /> : null}
       {values ? (
         <>
           <h2>The scale</h2>

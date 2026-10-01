@@ -17,7 +17,8 @@ import type {
 import { useCard } from './use-card.ts'
 import type { CardPartProps, UseCardResult } from './use-card.ts'
 
-// Contract: card.a11y.md. The keyboard rows are also covered end to end in card.e2e.ts.
+// Contract: card.a11y.md. The keyboard rows are also covered end to end in
+// apps/storybook/src/components/card/card.e2e.ts.
 
 const parts = [
   ['Root', Card.Root, 'kv-card'],

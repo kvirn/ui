@@ -10,12 +10,11 @@ import {
   expectThemeApplied,
   forcedColorsEnvironment,
   isForcedColors,
-  isThemeLoaded,
   readColor,
   readPaletteSteps,
   ratioOf,
-  ThemeMissingNotice,
   useLiveValue,
+  VerdictBadge,
 } from './foundation-helpers.tsx'
 
 // Foundation/Colors/Palette (docs/design/foundations-and-prose.md §6.6): the raw scales, the
@@ -117,7 +116,6 @@ function aliasNote(token: string, theme: CurrentTheme): string {
 }
 
 interface PaletteSnapshot {
-  isLoaded: boolean
   theme: CurrentTheme
   /** By token, such as `--kv-neutral-500`: the live hex, or `undefined` if it can't be measured. */
   colors: Record<string, string | undefined>
@@ -132,7 +130,6 @@ function readPalette(element: HTMLElement): PaletteSnapshot {
     ),
   ]
   return {
-    isLoaded: isThemeLoaded(element),
     theme: isForcedColors(element) ? 'forced-colors' : currentThemeName(element),
     colors: Object.fromEntries(tokens.map((token) => [token, readColor(element, token)])),
   }
@@ -140,55 +137,6 @@ function readPalette(element: HTMLElement): PaletteSnapshot {
 
 /** WCAG AA for normal text (1.4.3). Steps between 3:1 and this work for large text and edges. */
 const textMinimum = 4.5
-
-/** A tick. Decorative: the word next to it carries the meaning (1.4.1). */
-function PassIcon(): ReactNode {
-  return (
-    <svg
-      aria-hidden="true"
-      focusable="false"
-      width={16}
-      height={16}
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M2.5 8.5 6 12l7.5-8" />
-    </svg>
-  )
-}
-
-/** A cross. Decorative: the word next to it carries the meaning (1.4.1). */
-function FailIcon(): ReactNode {
-  return (
-    <svg
-      aria-hidden="true"
-      focusable="false"
-      width={16}
-      height={16}
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-    >
-      <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" />
-    </svg>
-  )
-}
-
-/** The Pass or Fail against 4.5:1 (never rounded up), as an icon and a word (1.4.1). */
-function Badge({ passes }: { passes: boolean }): ReactNode {
-  return (
-    <span className="kv-story-badge" data-result={passes ? 'pass' : 'fail'}>
-      {passes ? <PassIcon /> : <FailIcon />}
-      {passes ? 'Pass' : 'Fail'}
-    </span>
-  )
-}
 
 /**
  * "Aa" in white or black on the card's colour, drawn only from 4.5:1, like Text on surface.
@@ -212,7 +160,7 @@ function VerdictRow({ label, ratio }: { label: string; ratio: number | undefined
     <div className="kv-story-card-row">
       <dt>{label}</dt>
       <dd>
-        {ratio === undefined ? null : <Badge passes={ratio >= textMinimum} />}
+        {ratio === undefined ? null : <VerdictBadge passes={ratio >= textMinimum} />}
         {ratioText(ratio)}
       </dd>
     </div>
@@ -295,7 +243,7 @@ function PalettePage(): ReactNode {
   const [pageRef, snapshot] = useLiveValue<PaletteSnapshot, HTMLElement>(readPalette)
   return (
     <ColorsPage title="Palette" pageRef={pageRef}>
-      {snapshot === undefined ? null : snapshot.isLoaded ? (
+      {snapshot === undefined ? null : (
         <>
           <p>
             The first tier of colour: Tailwind-style scales from 50 (lightest) to 950 (darkest),
@@ -339,8 +287,6 @@ function PalettePage(): ReactNode {
             <ScaleSection key={scale.name} scale={scale} colors={snapshot.colors} />
           ))}
         </>
-      ) : (
-        <ThemeMissingNotice />
       )}
     </ColorsPage>
   )

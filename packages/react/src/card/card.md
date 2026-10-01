@@ -64,14 +64,14 @@ Without a modifier class, a card gets the default: `surface-raised`, the `lg` ra
 | Class                                               | On     | Sets                                   |
 | --------------------------------------------------- | ------ | -------------------------------------- |
 | `kv-card--surface`, `kv-card--canvas`               | Root   | the background                         |
-| `kv-card--radius-md`, `kv-card--radius-none`        | Root   | the radius: `md` for a card in a card  |
-| `kv-card--padding-none`, `-sm`, `-lg`               | Root   | every part's padding                   |
+| `kv-card--radius-lg`, `-md`, `-none`                | Root   | the radius: `md` for a card in a card  |
+| `kv-card--padding-none`, `-sm`, `-md`, `-lg`        | Root   | every part's padding                   |
 | `kv-card-header--padding-none`, `-sm`, `-md`, `-lg` | Header | its own padding, overriding the Root's |
 | `kv-card-body--padding-none`, `-sm`, `-md`, `-lg`   | Body   | its own padding, overriding the Root's |
 | `kv-card-footer--padding-none`, `-sm`, `-md`, `-lg` | Footer | its own padding, overriding the Root's |
 | `kv-card--dividers`                                 | Root   | a border-subtle line between parts     |
 
-`md` padding is 24px, and 16px below `40rem` and in compact density (`kv-compact`). All four steps are allowed on a part, but mixed steps misalign the parts' edges, so per-part values are normally `none`, for full-bleed media. Prose stops at a card: put `kv-prose` on `Card.Body` (or the Root of a card without parts) to style the text inside.
+`md` padding is 24px, and 16px below `40rem` and in compact density (`kv-compact`). All four steps are allowed on a part, but mixed steps misalign the parts' edges, so per-part values are normally `none`, for full-bleed media. A site can change the default for every card with `--kv-card-padding-default` and `--kv-card-radius-default` (`@kvirn-ui/theme` README, Site-wide defaults), and then `kv-card--padding-md` and `kv-card--radius-lg` take one card back to the theme's step. Prose stops at a card: put `kv-prose` on `Card.Body` (or the Root of a card without parts) to style the text inside.
 
 ### `render`
 

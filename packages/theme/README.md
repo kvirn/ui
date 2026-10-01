@@ -25,8 +25,8 @@ Every KvirnUI component on the page is now styled. Remove the import, and they a
   - `<Button className="kv-button--primary">` for the one main action per view, `kv-button--danger` for a destructive one. Without one, a Button is secondary.
   - `<div class="kv-button-group">` lays buttons out in a row, stacked on narrow screens.
   - `<ul class="kv-nav">` inside a labelled `<nav>` turns its Links into navigation items, with the current page marked.
-  - `kv-compact` on any container gives 32px controls for staff tools (from 64rem wide), and less padding in cards.
-  - On a `Card.Root`: `kv-card--surface` or `kv-card--canvas` (the default is `surface-raised`), `kv-card--radius-md` or `kv-card--radius-none` (the default is `lg`), and `kv-card--dividers` for a line between parts. `kv-card--padding-none`, `-sm` or `-lg` on the Root sets every part's padding (the default is `md`). A part's own class overrides it, in all four steps: `<Card.Header className="kv-card-header--padding-none">` around a full-bleed image, and likewise `kv-card-body--padding-*` and `kv-card-footer--padding-*`. Parts must be direct children of the Root.
+  - `kv-compact` on any container gives 32px controls for staff tools (from 64rem wide), and less padding in cards. On `<html>` or `<body>` it makes the whole site compact.
+  - On a `Card.Root`: `kv-card--surface` or `kv-card--canvas` (the default is `surface-raised`), `kv-card--radius-md` or `kv-card--radius-none` (the default is `lg`, and `kv-card--radius-lg` takes a card back to it), and `kv-card--dividers` for a line between parts. `kv-card--padding-none`, `-sm`, `-md` or `-lg` on the Root sets every part's padding (the default is `md`). A part's own class overrides it, in all four steps: `<Card.Header className="kv-card-header--padding-none">` around a full-bleed image, and likewise `kv-card-body--padding-*` and `kv-card-footer--padding-*`. Parts must be direct children of the Root.
   - `kv-prose` styles content you don't control, and `kv-prose kv-prose--large` is the 18px size. It stops at a card, unless you put `kv-prose` on the card or inside it. Inside prose, `kv-lead` marks the lead paragraph, `kv-scroll-region` a wide table's labelled scroll region, and `kv-not-prose` anything prose shouldn't style.
 - The theme follows `data-kv-color-scheme` and `data-kv-contrast`, which `KvirnProvider` and `KvirnThemeScript` set on `<html>`. Without them, it follows the OS settings. Forced colours always win.
 
@@ -48,7 +48,7 @@ Every KvirnUI component on the page is now styled. Remove the import, and they a
 
   plus `--kv-white` and `--kv-black`. The palette is the only place with raw colour values.
 
-- **semantic tokens** that point at the steps per theme: `--kv-color-primary: var(--kv-primary-500)` in light, `--kv-color-text: var(--kv-neutral-50)` in dark, `--kv-color-secondary: var(--kv-secondary-500)` for the secondary button's edge
+- **semantic tokens** that point at the steps per theme: `--kv-color-primary: var(--kv-primary-500)` in light, `--kv-color-text: var(--kv-neutral-50)` in dark, `--kv-color-secondary: var(--kv-secondary-500)` for the secondary button's edge. `--kv-color-text` is the body text colour, and `--kv-color-heading` the colour of prose headings, the same step as `text` in every theme until you change it.
 
 Components only use the semantic tokens. Everything is inside `@layer kv`, so any CSS you write outside a layer wins, whatever its specificity.
 
@@ -96,6 +96,47 @@ If a brand colour fails as a fill, use it in the header band or the logo, and bu
 - **Your own copy.** Copy `node_modules/@kvirn-ui/theme/theme.css` into your project, edit it, and import your copy instead. It's meant to be read: numbered sections, the palette first, then the themes, then each component.
 - **No theme.** Skip it, and style `.kv-button`, `[data-disabled]`, `[data-focus-visible]`, `.kv-button--primary` and so on with Tailwind or your own CSS.
 
+## Site-wide defaults
+
+Some choices are made once for a whole site. Set these in your own CSS instead of adding a class to every element. `theme.css` sets none of them, so without them the look is the default one.
+
+| Custom property              | Used by                                       | Without it                    |
+| ---------------------------- | --------------------------------------------- | ----------------------------- |
+| `--kv-font-family-body`      | body text in prose, buttons, navigation items | `--kv-font-family-sans`       |
+| `--kv-font-family-heading`   | prose headings                                | `--kv-font-family-sans`       |
+| `--kv-card-padding-default`  | every card without a padding class            | `--kv-card-padding-md`        |
+| `--kv-card-radius-default`   | every card without a radius class             | `--kv-radius-lg`              |
+| `--kv-button-min-block-size` | every button. Never below 24px (2.5.8)        | `--kv-control-min-block-size` |
+| `--kv-button-padding-inline` | every button                                  | `--kv-control-padding-inline` |
+| `--kv-button-font-size`      | every button                                  | `--kv-control-font-size`      |
+| `--kv-button-font-weight`    | every button                                  | `--kv-control-font-weight`    |
+| `--kv-button-line-height`    | every button                                  | `--kv-control-line-height`    |
+
+```css
+:root {
+  /* End your own stack with the system one: it covers å ä ö æ ø and the Sámi letters. */
+  --kv-font-family-body: 'Source Sans 3', var(--kv-font-family-system);
+  --kv-font-family-heading: 'Merriweather', Georgia, serif;
+  --kv-card-radius-default: var(--kv-radius-md);
+  --kv-button-min-block-size: 2.5rem;
+  --kv-button-font-weight: 600;
+}
+
+/* Resolved on each card, so the compact step-down still applies (see below). */
+.kv-card {
+  --kv-card-padding-default: var(--kv-card-padding-lg);
+}
+```
+
+For compact controls on a whole staff tool, put `class="kv-compact"` on `<html>` or `<body>`: every control is 32px from 64rem, and 44px below it.
+
+- **Where to set them.** `theme.css` reads each one where it's used, with its own value as the fallback: `font-family: var(--kv-font-family-body, var(--kv-font-family-sans))`. So you can set them on `:root` for the whole site, or on any container for one part of the page.
+- **The one catch.** A custom property is resolved where it's declared. `:root { --kv-card-padding-default: var(--kv-card-padding-lg) }` takes `lg` as it is on `:root`: it still grows from 40rem, but the compact step-down inside a `kv-compact` container doesn't reach it. Set the default on `.kv-card` in your own CSS, as above, or on the compact container. `kv-compact` on `<html>` needs neither. Fixed values, such as `2.5rem` or a font name, have no catch.
+- **Opting one card out.** The classes still win: `kv-card--padding-md` and `kv-card--radius-lg` take a single card back to the theme's steps when your default is different.
+- **Buttons.** The `--kv-button-*` properties size buttons without touching other controls, and they win over density, the compact step and the 44px below 64rem included. Keep `--kv-button-min-block-size` at 24px or more, and enough `--kv-button-padding-inline` that a short label is at least 24px wide (2.5.8 Target Size (Minimum)). Resident-facing buttons should stay at 44px (2.5.5). `theme.css` doesn't clamp the values for you.
+- **Fonts.** `--kv-font-family-system` is the system stack (`system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif`), and `--kv-font-family-sans` is Inter in front of it. A link in running text keeps the font around it, so it isn't affected by `--kv-font-family-body`. Code stays `--kv-font-family-mono`.
+- **Heading colour.** `--kv-color-heading` is a semantic colour like the others, defined in each theme, so set it per theme with the selectors `theme.css` uses, and run `checkThemeCss()`: `theme:check` holds it to everything body text is held to. If you change `--kv-color-text` on a wrapper element, change `--kv-color-heading` there too.
+
 ## Check your colours
 
 After changing colours, measure them. `checkThemeCss` reads a theme file the way a browser reads it for `<html>`, in all four themes, and checks that every colour token is defined, that each OS fallback matches its theme, and that every pair meets its WCAG minimum: 4.5:1 for text, 3:1 for control edges and focus, and 7:1 for text in the high-contrast themes.
@@ -121,9 +162,11 @@ In this repository, `vp run theme:check` runs it on `theme.css`.
 4. System fallbacks from `prefers-color-scheme` and `prefers-contrast`
 5. Forced colours
 6. Compact density
-7. Button
+7. Button (and its `--kv-button-*` sizing)
 8. Link and navigation lists
 9. Prose
-10. Card
+10. Card (and the card defaults)
+
+The site-wide defaults are listed at the top of the file.
 
 The visual rules behind it are in `DESIGN.md` at the repository root.

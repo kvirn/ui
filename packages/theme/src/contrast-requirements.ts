@@ -23,6 +23,7 @@ export const colorTokenNames = [
   'border-control',
   'secondary',
   'text',
+  'heading',
   'text-muted',
   'primary',
   'primary-hover',
@@ -48,17 +49,22 @@ const plainBackgrounds = ['canvas', 'surface', 'surface-raised'] as const
 /** The status panels, where prose and its links can sit (ADR-0018). */
 const statusBackgrounds = ['danger-subtle', 'success-subtle', 'warning-subtle'] as const
 
-/** Text on every background it's used on (DESIGN.md, Colors; ADR-0014). */
+/**
+ * Text on every background it's used on (DESIGN.md, Colors; ADR-0014). `heading` can be
+ * given its own colour, so it's held to everything body `text` is held to.
+ */
 const textPairs: readonly ColorPair[] = [
   ...(
-    ['text', 'text-muted', 'link', 'link-hover', 'danger', 'success', 'warning'] as const
+    ['text', 'heading', 'text-muted', 'link', 'link-hover', 'danger', 'success', 'warning'] as const
   ).flatMap((foreground) =>
     plainBackgrounds.map((background): ColorPair => [foreground, background]),
   ),
-  ['text', 'primary-subtle'],
-  ['text', 'danger-subtle'],
-  ['text', 'success-subtle'],
-  ['text', 'warning-subtle'],
+  ...(['text', 'heading'] as const).flatMap((foreground) =>
+    (['primary-subtle', ...statusBackgrounds] as const).map((background): ColorPair => [
+      foreground,
+      background,
+    ]),
+  ),
   ['text-muted', 'primary-subtle'],
   ['link', 'primary-subtle'],
   ['link-hover', 'primary-subtle'],

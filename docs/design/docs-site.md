@@ -224,7 +224,7 @@ The headings below are the real headings. The sentences are first drafts in plai
 - Warning panel `docs.notice.notVerified`: "We haven't tried the Next.js and TanStack Router setups in a sample app yet." (`TODO(verify-recipe)`, until resolved.)
 - `h2` On this page (contents).
 - `h2` **Example**
-  - Example 1, "Language and dates": the provider fixture's settings list (language, direction, time zone, week start, a formatted date, the new-tab text) in the chosen example language.
+  - Example 1, "Language and dates": the provider fixture's settings list (language, direction, time zone, a formatted date, the new-tab text) in the chosen example language.
   - Example 2, "Theme switcher": the recipe live, with `docs.example.wholeSiteTheme` above it.
 - `h2` **When to use it**: "Put one KvirnProvider at the root of your app. It's optional. Without it, components use English, left-to-right text, weeks starting on Monday and a plain `<a>`, and the theme follows the device. Add a nested provider for a part of the page in another language."
   - `h3` When not to use it: "Don't nest providers only to change the theme. There is one theme per page."

@@ -1,13 +1,8 @@
+import { Button, Card } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
-import { Button } from '../button/button.tsx'
-import {
-  expectNoHorizontalOverflow,
-  expectThemeApplied,
-  isThemeLoaded,
-} from '../stories/theme-story-assertions.ts'
-import type { FixedStoryTheme } from '../stories/theme-story-assertions.ts'
-import { Card } from './card.tsx'
+import { expectNoHorizontalOverflow, expectThemeApplied } from '../theme-story-assertions.ts'
+import type { FixedStoryTheme } from '../theme-story-assertions.ts'
 import {
   binsImage,
   CaseCard as CaseCardExample,
@@ -20,8 +15,8 @@ import {
 import type { CardFixtureLocale } from './card.fixture.tsx'
 
 // Components/Card: the headless Card, styled by @kvirn-ui/theme/theme.css from the Storybook
-// preview (ADR-0013, design spec docs/design/card.md). Theme toolbar › "None (unstyled)"
-// removes the theme again. card.e2e.ts runs its keyboard rows, focus-ring, forced-colours and
+// preview (ADR-0013, design spec docs/design/card.md). Default is the playground: one Card with
+// its parts, and every class and prop as a control. card.e2e.ts runs its keyboard rows, focus-ring, forced-colours and
 // reflow checks against ServiceCard, NewsList, Everything, LongFinnishText and ForcedColors.
 
 const localeOf = (globals: Record<string, unknown>): CardFixtureLocale => {
@@ -50,6 +45,142 @@ const meta = {
 
 export default meta
 type Story = StoryObj<typeof meta>
+
+type CardPadding = 'none' | 'sm' | 'md' | 'lg'
+
+interface CardPlaygroundArgs {
+  /** `kv-card--surface` or `kv-card--canvas`. `surface-raised` is the default, with no class. */
+  surface: 'surface-raised' | 'surface' | 'canvas'
+  /**
+   * `kv-card--radius-md` or `kv-card--radius-none`. `lg` is the default, with no class
+   * (`kv-card--radius-lg` takes a card back to it under a site-wide default).
+   */
+  radius: 'lg' | 'md' | 'none'
+  /**
+   * `kv-card--padding-none|sm|lg` on the Root, the default for every part. `md` is the default,
+   * with no class (`kv-card--padding-md` takes a card back to it under a site-wide default).
+   */
+  padding: CardPadding
+  /** `kv-card--dividers`: a line between the parts. */
+  dividers: boolean
+  /** The Root's element, through `render`. */
+  element: 'div' | 'article' | 'section'
+  header: boolean
+  headerPadding: CardPadding | 'inherit'
+  bodyPadding: CardPadding | 'inherit'
+  footer: boolean
+  footerPadding: CardPadding | 'inherit'
+  className: string | undefined
+}
+
+const partPadding = (part: 'header' | 'body' | 'footer', padding: CardPadding | 'inherit') =>
+  padding === 'inherit' ? undefined : `kv-card-${part}--padding-${padding}`
+
+const classes = (...names: (string | false | undefined)[]) =>
+  names.filter(Boolean).join(' ') || undefined
+
+/** One Card, built from the controls. The text is fixed Swedish fixture copy. */
+function CardPlayground(args: CardPlaygroundArgs) {
+  const rootClassName = classes(
+    args.surface !== 'surface-raised' && `kv-card--${args.surface}`,
+    args.radius !== 'lg' && `kv-card--radius-${args.radius}`,
+    args.padding !== 'md' && `kv-card--padding-${args.padding}`,
+    args.dividers && 'kv-card--dividers',
+    args.className,
+  )
+  const headingId = 'card-playground-heading'
+  const render =
+    args.element === 'div' ? undefined : args.element === 'article' ? (
+      <article />
+    ) : (
+      <section aria-labelledby={headingId} />
+    )
+  return (
+    <div className="kv-story-card-column">
+      <Card.Root className={rootClassName} render={render}>
+        {args.header ? (
+          <Card.Header className={partPadding('header', args.headerPadding)}>
+            <img src={binsImage} alt="" width={640} height={240} />
+          </Card.Header>
+        ) : null}
+        <Card.Body className={classes('kv-prose', partPadding('body', args.bodyPadding))}>
+          <h2 id={headingId}>Sophämtning</h2>
+          <p>Nästa hämtning är på tisdag. Ställ ut kärlet senast klockan 06.</p>
+        </Card.Body>
+        {args.footer ? (
+          <Card.Footer
+            className={classes('kv-button-group', partPadding('footer', args.footerPadding))}
+          >
+            <Button className="kv-button--primary">Beställ extra tömning</Button>
+            <Button>Pausa hämtningen</Button>
+          </Card.Footer>
+        ) : null}
+      </Card.Root>
+    </div>
+  )
+}
+
+const paddingOptions = ['none', 'sm', 'md', 'lg']
+const partPaddingOptions = ['inherit', ...paddingOptions]
+
+/** One Card with its parts, and its whole API as controls. */
+export const Default: StoryObj<typeof CardPlayground> = {
+  render: (args) => <CardPlayground {...args} />,
+  args: {
+    surface: 'surface-raised',
+    radius: 'lg',
+    padding: 'md',
+    dividers: false,
+    element: 'div',
+    header: true,
+    headerPadding: 'none',
+    bodyPadding: 'inherit',
+    footer: true,
+    footerPadding: 'inherit',
+    className: undefined,
+  },
+  argTypes: {
+    surface: { control: 'inline-radio', options: ['surface-raised', 'surface', 'canvas'] },
+    radius: { control: 'inline-radio', options: ['lg', 'md', 'none'] },
+    padding: { control: 'inline-radio', options: paddingOptions },
+    dividers: { control: 'boolean' },
+    element: {
+      control: 'inline-radio',
+      options: ['div', 'article', 'section'],
+      description: 'Through `render`. A `<section>` is labelled by its heading.',
+    },
+    header: { control: 'boolean', description: 'Card.Header, with a full-bleed image.' },
+    headerPadding: { control: 'select', options: partPaddingOptions },
+    bodyPadding: { control: 'select', options: partPaddingOptions },
+    footer: { control: 'boolean', description: 'Card.Footer, with two buttons.' },
+    footerPadding: { control: 'select', options: partPaddingOptions },
+    className: {
+      control: 'text',
+      description: 'Your own classes on the Root, added to `kv-card`.',
+    },
+  },
+  parameters: {
+    controls: {
+      include: [
+        'surface',
+        'radius',
+        'padding',
+        'dividers',
+        'element',
+        'header',
+        'headerPadding',
+        'bodyPadding',
+        'footer',
+        'footerPadding',
+        'className',
+      ],
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const heading = within(canvasElement).getByRole('heading', { level: 2, name: 'Sophämtning' })
+    await expect(heading.closest('.kv-card')).not.toBeNull()
+  },
+}
 
 /**
  * Example B: a service card on My pages. A full-bleed image gets the card's inner corners
@@ -440,13 +571,4 @@ export const RTL: Story = {
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   render: (_args, { globals }) => <Everything locale={localeOf(globals)} />,
-}
-
-/** Without theme.css a card is plain `<div>`s: the package ships no CSS. */
-export const Unstyled: Story = {
-  globals: { theme: 'none' },
-  render: (_args, { globals }) => <ServiceCardExample locale={localeOf(globals)} />,
-  play: async ({ canvasElement }) => {
-    await expect(isThemeLoaded(canvasElement)).toBe(false)
-  },
 }

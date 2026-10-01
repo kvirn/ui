@@ -56,7 +56,6 @@ No APG pattern applies: prose is static content. The only interactive parts are 
 
 Unhappy paths:
 
-- **Theme set to "None (unstyled)":** the token pages show a notice in text: "theme.css is not loaded, so there are no tokens to show." Nothing throws.
 - **Forced colours active:** the matrix shows a notice that the system colours replace the theme, so the ratios describe the user's palette. The swatches keep their text.
 - **A consumer override breaks a pair in use:** the summary counts it as failing and lists it by name, with the ratio and the minimum.
 - **A token can't be measured** (translucent, `color-mix` with transparency, or unparseable): the cell says "Can't measure" in text. It never shows a guessed ratio.
@@ -230,7 +229,7 @@ The spacing names refer to the proposed tokens in §6.7. All margins are `margin
 
 ### 6.6 Storybook Foundation section
 
-Location: `apps/storybook/src/foundation/*.stories.tsx`. This is Storybook tooling, and `@kvirn-ui/theme` stays React-free. `Foundation/KvirnProvider` stays where it is. Sort order within Foundation is the order of this table.
+Location: `apps/storybook/src/foundation/*.stories.tsx`. This is Storybook tooling, and `@kvirn-ui/theme` stays React-free. `Foundation/KvirnProvider` is in `apps/storybook/src/components/provider/`, with the other component stories. Sort order within Foundation is the order of this table.
 
 Values are **read live** from the page, from the story root element and not `:root`, so a scoped override shows up.
 

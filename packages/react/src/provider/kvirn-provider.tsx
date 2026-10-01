@@ -13,7 +13,7 @@ import { useContext, useEffect, useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { KvirnConfigContext, ThemeStoreContext } from './provider-context.ts'
-import type { KvirnConfig, WeekStart } from './provider-context.ts'
+import type { KvirnConfig } from './provider-context.ts'
 import type { RegisteredLinkComponent } from './register.ts'
 import { useEnv } from './use-env.ts'
 
@@ -30,8 +30,6 @@ export interface KvirnProviderProps {
   messages?: PartialMessages | undefined
   /** IANA time zone. Set it explicitly to avoid a server/client date mismatch. */
   timeZone?: string | undefined
-  /** ISO weekday the week starts on. Default 1 (Monday). */
-  weekStart?: WeekStart | undefined
   /** The router's link component (ADR-0005). Register it for typed link props. */
   linkComponent?: RegisteredLinkComponent | undefined
   /**
@@ -54,7 +52,6 @@ export function KvirnProvider({
   dir: dirProp,
   messages,
   timeZone: timeZoneProp,
-  weekStart: weekStartProp,
   linkComponent: linkComponentProp,
   theme,
   env: envProp,
@@ -67,7 +64,6 @@ export function KvirnProvider({
   const dir =
     dirProp ?? (localeProp === undefined ? parentConfig.dir : resolveDirection(localeProp))
   const timeZone = timeZoneProp ?? parentConfig.timeZone
-  const weekStart = weekStartProp ?? parentConfig.weekStart
   const linkComponent = linkComponentProp ?? parentConfig.linkComponent
   const explicitEnv = envProp ?? parentConfig.env
   const parentLayers = parentConfig.messageLayers
@@ -82,13 +78,12 @@ export function KvirnProvider({
       locale,
       dir,
       timeZone,
-      weekStart,
       messageLayers,
       format,
       linkComponent,
       env: explicitEnv,
     }),
-    [locale, dir, timeZone, weekStart, messageLayers, format, linkComponent, explicitEnv],
+    [locale, dir, timeZone, messageLayers, format, linkComponent, explicitEnv],
   )
 
   const isOutermost = parentThemeStore === null

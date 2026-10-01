@@ -4,13 +4,11 @@ import { expect, waitFor, within } from 'storybook/test'
 import {
   formatRatio,
   isForcedColors,
-  isThemeLoaded,
   ratioOf,
   readColor,
   readProperty,
   ScrollTable,
   Swatch,
-  ThemeMissingNotice,
   useLiveValue,
 } from './foundation-helpers.tsx'
 import {
@@ -77,9 +75,6 @@ const levels: readonly Level[] = [
 ]
 
 function readBorders(page: HTMLElement) {
-  if (!isThemeLoaded(page)) {
-    return null
-  }
   const canvas = readColor(page, '--kv-color-canvas')
   const surface = readColor(page, '--kv-color-surface')
   return {
@@ -165,7 +160,6 @@ function BordersElevationPage(): ReactNode {
         <code>surface-raised</code>) and 1px hairlines, not from shadows. The look is flat and
         precise.
       </p>
-      {values === null ? <ThemeMissingNotice /> : null}
       {values ? (
         <>
           <h2>Line widths</h2>
