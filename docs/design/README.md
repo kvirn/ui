@@ -9,5 +9,9 @@ Design specs describe **what users see and do**: the flow, content, layout, stat
 
 ## Index
 
-| Spec | Plan | Status |
-| ---- | ---- | ------ |
+| Spec                                                                          | Plan                                                  | Status |
+| ----------------------------------------------------------------------------- | ----------------------------------------------------- | ------ |
+| [Default theme for Button and Link](default-theme-button-link.md)             | [0005](../plans/0005-default-theme-storybook-docs.md) | Draft  |
+| [Storybook presentation](storybook-presentation.md)                           | [0005](../plans/0005-default-theme-storybook-docs.md) | Draft  |
+| [Docs site shell, template and first pages](docs-site.md)                     | [0005](../plans/0005-default-theme-storybook-docs.md) | Draft  |
+| [Prose styles and the Storybook Foundation section](foundations-and-prose.md) | 0006 (to be written)                                  | Draft  |

@@ -1,0 +1,1211 @@
+/*
+ * KvirnUI default theme: @kvirn-ui/theme/theme.css
+ *
+ * Import it once, and every KvirnUI component on the page gets the default look. Remove the
+ * import, and the components are unstyled again. The headless components ship no CSS: this
+ * file styles them through the attributes they render (`data-kv="button"`, `data-disabled`,
+ * `data-current` and so on), plus a few you set yourself (`data-variant`, `data-kv-density`,
+ * `data-kv-nav`, `data-kv-button-group`, `data-kv-prose`, `data-kv-lead`, `data-kv-not-prose`,
+ * `data-kv-scroll-region`).
+ *
+ * This file is the source of truth, and it is meant to be read. Three ways to use it:
+ *
+ *   1. Import it: `import '@kvirn-ui/theme/theme.css'`.
+ *   2. Override variables in your own CSS: `:root { --kv-color-primary: var(--kv-accent-600) }`.
+ *   3. Copy it into your project, edit it, and import your copy instead. Or skip it and style
+ *      `[data-kv]` and the `data-*` attributes with Tailwind or your own CSS.
+ *
+ * Everything is inside `@layer kv`, so any CSS you write outside a layer always wins,
+ * whatever its specificity. After changing colours, check them: `checkThemeCss()` from
+ * `@kvirn-ui/theme` measures every contrast pair in all four themes (WCAG 2.2: 4.5:1 for
+ * text, 3:1 for control edges and focus, 7:1 for text in the high-contrast themes). Swapping
+ * a scale can break contrast: a step that carries white text in light may fail in dark.
+ *
+ * Sections:
+ *   1. Palette          role scales, the only place with raw colour values
+ *   2. Light theme      semantic colours, plus every non-colour token
+ *   3. Dark, light high contrast and dark high contrast
+ *   4. System fallbacks the same themes from OS settings, before or without JavaScript
+ *   5. Forced colours   Windows contrast themes: system colours win
+ *   6. Density          data-kv-density="compact"
+ *   7. Button
+ *   8. Link and navigation lists
+ *   9. Prose            data-kv-prose: articles from a CMS or Markdown
+ */
+
+@layer kv {
+  /* 1. Palette ---------------------------------------------------------------------------
+   * Role scales, Tailwind-style: 50 (lightest) to 950 (darkest), each darker than the last.
+   * They're named for what they do, not for their hue, so a rebrand never needs a refactor.
+   * Semantic tokens below point at these steps. To rebrand, redefine the 11 steps of a scale
+   * on :root in your own CSS (--kv-primary-50 … --kv-primary-950 with your brand's colours),
+   * and all four themes follow. Then run checkThemeCss() on the result.
+   */
+  :root {
+    --kv-white: #ffffff;
+    /* Linear's near-black canvas. */
+    --kv-black: #010102;
+
+    /* Neutral: grey with a faint cool tint. Canvases, surfaces, borders and text. */
+    --kv-neutral-50: #f7f8f8;
+    --kv-neutral-100: #e4e5e7;
+    --kv-neutral-200: #d0d6e0;
+    --kv-neutral-300: #aeb3bb;
+    --kv-neutral-400: #8a8f98;
+    --kv-neutral-500: #6b7079;
+    --kv-neutral-600: #5d6169;
+    --kv-neutral-700: #3a3d45;
+    --kv-neutral-800: #23252a;
+    --kv-neutral-900: #18191a;
+    --kv-neutral-950: #0f1011;
+
+    /* Primary: lavender by default, Linear's is 500. Primary buttons, links, focus, selection. */
+    --kv-primary-50: #eff0fb;
+    --kv-primary-100: #cdd0ff;
+    --kv-primary-200: #b3b8ff;
+    --kv-primary-300: #a3acff;
+    --kv-primary-400: #828fff;
+    --kv-primary-500: #5e6ad2;
+    --kv-primary-600: #4f5ac0;
+    --kv-primary-700: #434db3;
+    --kv-primary-800: #2c35a0;
+    --kv-primary-900: #1f2780;
+    --kv-primary-950: #1e2140;
+
+    /* Secondary: the neutral steps by default. Give it a hue to colour the secondary
+     * button's edge (--kv-color-secondary). */
+    --kv-secondary-50: var(--kv-neutral-50);
+    --kv-secondary-100: var(--kv-neutral-100);
+    --kv-secondary-200: var(--kv-neutral-200);
+    --kv-secondary-300: var(--kv-neutral-300);
+    --kv-secondary-400: var(--kv-neutral-400);
+    --kv-secondary-500: var(--kv-neutral-500);
+    --kv-secondary-600: var(--kv-neutral-600);
+    --kv-secondary-700: var(--kv-neutral-700);
+    --kv-secondary-800: var(--kv-neutral-800);
+    --kv-secondary-900: var(--kv-neutral-900);
+    --kv-secondary-950: var(--kv-neutral-950);
+
+    /* Accent: teal by default. Not used by the default theme: for your brand's second colour.
+     * White text on 600 is 5.8:1. */
+    --kv-accent-50: #edfafa;
+    --kv-accent-100: #cdf0f0;
+    --kv-accent-200: #9be0e2;
+    --kv-accent-300: #5fc6cb;
+    --kv-accent-400: #26a4ac;
+    --kv-accent-500: #00868f;
+    --kv-accent-600: #00707a;
+    --kv-accent-700: #005a62;
+    --kv-accent-800: #00474e;
+    --kv-accent-900: #003a40;
+    --kv-accent-950: #00262a;
+
+    /* Danger: red by default. Errors and destructive actions. */
+    --kv-danger-50: #fdeef0;
+    --kv-danger-100: #ffd4d9;
+    --kv-danger-200: #ffb3bd;
+    --kv-danger-300: #ff8a9a;
+    --kv-danger-400: #f25c73;
+    --kv-danger-500: #d93a55;
+    --kv-danger-600: #b3273f;
+    --kv-danger-700: #962034;
+    --kv-danger-800: #700a1d;
+    --kv-danger-900: #4d0a16;
+    --kv-danger-950: #2e161b;
+
+    /* Success: green by default. Confirmation. */
+    --kv-success-50: #e9f6ef;
+    --kv-success-100: #c8ecd8;
+    --kv-success-200: #8ae6b6;
+    --kv-success-300: #5fd49a;
+    --kv-success-400: #36b57a;
+    --kv-success-500: #23965f;
+    --kv-success-600: #1f8052;
+    --kv-success-700: #1d7048;
+    --kv-success-800: #0f5132;
+    --kv-success-900: #0c3a25;
+    --kv-success-950: #12261c;
+
+    /* Warning: amber by default. Warnings and deadlines. */
+    --kv-warning-50: #fff4dc;
+    --kv-warning-100: #ffe6b0;
+    --kv-warning-200: #ffd08a;
+    --kv-warning-300: #f0b453;
+    --kv-warning-400: #e0961f;
+    --kv-warning-500: #c27a00;
+    --kv-warning-600: #a36500;
+    --kv-warning-700: #8a5300;
+    --kv-warning-800: #5c3700;
+    --kv-warning-900: #432800;
+    --kv-warning-950: #2a2012;
+  }
+
+  /* 2. Light theme (the default) ---------------------------------------------------------
+   * Components use only these semantic tokens, never the palette. The other themes below
+   * remap the colours to other palette steps. Everything else is the same in every theme.
+   */
+  :root {
+    color-scheme: light;
+
+    --kv-color-canvas: var(--kv-white);
+    --kv-color-surface: var(--kv-neutral-50);
+    --kv-color-surface-raised: var(--kv-white);
+    /* Hairlines only. Never the only edge of a control: use border-control. */
+    --kv-color-border-subtle: var(--kv-neutral-100);
+    --kv-color-border-control: var(--kv-neutral-500);
+    /* The secondary button's edge. The same as border-control until --kv-secondary-* gets
+     * a hue of its own. */
+    --kv-color-secondary: var(--kv-secondary-500);
+    --kv-color-text: var(--kv-neutral-950);
+    --kv-color-text-muted: var(--kv-neutral-600);
+    --kv-color-primary: var(--kv-primary-500);
+    /* Filled buttons darken on hover: a lighter fill behind white text fails 4.5:1. */
+    --kv-color-primary-hover: var(--kv-primary-600);
+    --kv-color-on-primary: var(--kv-white);
+    --kv-color-primary-subtle: var(--kv-primary-50);
+    --kv-color-link: var(--kv-primary-600);
+    --kv-color-link-hover: var(--kv-primary-700);
+    --kv-color-focus-ring: var(--kv-primary-500);
+    --kv-color-danger: var(--kv-danger-600);
+    --kv-color-danger-hover: var(--kv-danger-700);
+    --kv-color-on-danger: var(--kv-white);
+    --kv-color-danger-subtle: var(--kv-danger-50);
+    --kv-color-success: var(--kv-success-700);
+    --kv-color-success-subtle: var(--kv-success-50);
+    --kv-color-warning: var(--kv-warning-700);
+    --kv-color-warning-subtle: var(--kv-warning-50);
+
+    /* Spacing: a 4px grid, in rem so it follows the user's font size. */
+    --kv-space-0: 0rem;
+    --kv-space-1: 0.25rem;
+    --kv-space-2: 0.5rem;
+    --kv-space-3: 0.75rem;
+    --kv-space-4: 1rem;
+    --kv-space-5: 1.25rem;
+    --kv-space-6: 1.5rem;
+    --kv-space-8: 2rem;
+    --kv-space-10: 2.5rem;
+    --kv-space-12: 3rem;
+    --kv-space-16: 4rem;
+    --kv-space-24: 6rem;
+
+    --kv-radius-none: 0px;
+    --kv-radius-sm: 4px;
+    --kv-radius-md: 8px;
+    --kv-radius-lg: 12px;
+    --kv-radius-xl: 16px;
+    --kv-radius-full: 9999px;
+
+    /* The theme loads no font. Self-host Inter, or the system UI font is used. */
+    --kv-font-family-sans:
+      'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --kv-font-family-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+
+    /* Type roles. cv05 and cv08 tell l, I and 1 apart in body text. */
+    --kv-font-display-size: 2.5rem;
+    --kv-font-display-weight: 600;
+    --kv-font-display-line-height: 1.15;
+    --kv-font-display-letter-spacing: -0.025em;
+    --kv-font-display-feature-settings: normal;
+    --kv-font-heading-1-size: 1.75rem;
+    --kv-font-heading-1-weight: 600;
+    --kv-font-heading-1-line-height: 1.2;
+    --kv-font-heading-1-letter-spacing: -0.021em;
+    --kv-font-heading-1-feature-settings: normal;
+    --kv-font-heading-2-size: 1.375rem;
+    --kv-font-heading-2-weight: 500;
+    --kv-font-heading-2-line-height: 1.25;
+    --kv-font-heading-2-letter-spacing: -0.018em;
+    --kv-font-heading-2-feature-settings: normal;
+    --kv-font-heading-3-size: 1.125rem;
+    --kv-font-heading-3-weight: 600;
+    --kv-font-heading-3-line-height: 1.4;
+    --kv-font-heading-3-letter-spacing: 0em;
+    --kv-font-heading-3-feature-settings: normal;
+    --kv-font-body-large-size: 1.125rem;
+    --kv-font-body-large-weight: 400;
+    --kv-font-body-large-line-height: 1.6;
+    --kv-font-body-large-letter-spacing: 0em;
+    --kv-font-body-large-feature-settings: 'cv05', 'cv08';
+    /* The lead paragraph of large prose: 20px, one step above body-large. */
+    --kv-font-lead-size: 1.25rem;
+    --kv-font-lead-weight: 400;
+    --kv-font-lead-line-height: 1.5;
+    --kv-font-lead-letter-spacing: 0em;
+    --kv-font-lead-feature-settings: 'cv05', 'cv08';
+    --kv-font-body-size: 1rem;
+    --kv-font-body-weight: 400;
+    --kv-font-body-line-height: 1.5;
+    --kv-font-body-letter-spacing: 0em;
+    --kv-font-body-feature-settings: 'cv05', 'cv08';
+    --kv-font-body-small-size: 0.875rem;
+    --kv-font-body-small-weight: 400;
+    --kv-font-body-small-line-height: 1.5;
+    --kv-font-body-small-letter-spacing: 0em;
+    --kv-font-body-small-feature-settings: 'cv05', 'cv08';
+    --kv-font-label-size: 1rem;
+    --kv-font-label-weight: 500;
+    --kv-font-label-line-height: 1.4;
+    --kv-font-label-letter-spacing: 0em;
+    --kv-font-label-feature-settings: normal;
+    --kv-font-label-compact-size: 0.875rem;
+    --kv-font-label-compact-weight: 500;
+    --kv-font-label-compact-line-height: 1.3;
+    --kv-font-label-compact-letter-spacing: 0em;
+    --kv-font-label-compact-feature-settings: normal;
+    --kv-font-numeric-size: 1rem;
+    --kv-font-numeric-weight: 400;
+    --kv-font-numeric-line-height: 1.5;
+    --kv-font-numeric-letter-spacing: 0em;
+    --kv-font-numeric-feature-settings: 'tnum', 'cv05', 'cv08';
+    --kv-font-code-size: 0.875rem;
+    --kv-font-code-weight: 400;
+    --kv-font-code-line-height: 1.6;
+    --kv-font-code-letter-spacing: 0em;
+    --kv-font-code-feature-settings: normal;
+
+    /* A 2px ring, 2px outside the element, so it sits against the page (2.4.13). */
+    --kv-focus-ring-width: 2px;
+    --kv-focus-ring-offset: 2px;
+    /* 1px lines, and the 4px inline-start bar of the current navigation item. */
+    --kv-border-width: 1px;
+    --kv-indicator-width: 4px;
+
+    /* Elevation levels 3 (popups) and 4 (dialogs). Never the only boundary: shadows vanish in
+     * forced colours, so these surfaces also keep a border. The dark themes use none. */
+    --kv-shadow-popup: 0 8px 24px -4px color-mix(in srgb, var(--kv-neutral-950) 12%, transparent);
+    --kv-shadow-dialog: 0 24px 48px -8px color-mix(in srgb, var(--kv-neutral-950) 20%, transparent);
+
+    --kv-duration-fast: 120ms;
+    --kv-duration-medium: 180ms;
+    --kv-duration-slow: 240ms;
+    --kv-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+
+    /* Links thicken their underline on hover, a cue that doesn't rely on colour. */
+    --kv-link-underline-thickness: 1px;
+    --kv-link-underline-thickness-hover: 2px;
+    --kv-link-underline-offset: 0.15em;
+
+    /* Control size: comfortable, 44px with 16px labels. Compact is in section 6. */
+    --kv-control-min-block-size: 2.75rem;
+    --kv-control-font-size: var(--kv-font-label-size);
+    --kv-control-font-weight: var(--kv-font-label-weight);
+    --kv-control-line-height: var(--kv-font-label-line-height);
+    --kv-control-padding-inline: var(--kv-space-4);
+
+    /* Prose (section 9). data-kv-prose="large" swaps the size tokens for the large ones. */
+    --kv-prose-measure: 70ch;
+    --kv-prose-font-size: var(--kv-font-body-size);
+    --kv-prose-line-height: var(--kv-font-body-line-height);
+    --kv-prose-feature-settings: var(--kv-font-body-feature-settings);
+    --kv-prose-lead-font-size: var(--kv-font-body-large-size);
+    --kv-prose-lead-line-height: var(--kv-font-body-large-line-height);
+    --kv-prose-space: var(--kv-space-5);
+    --kv-prose-space-item: var(--kv-space-2);
+    --kv-prose-space-block: var(--kv-space-8);
+    --kv-prose-space-section: var(--kv-space-10);
+    /* Relative, so they scale in headings and in the large size. */
+    --kv-prose-list-indent: 1.75em;
+    --kv-prose-code-size: 0.875em;
+  }
+
+  /* 3. The other themes --------------------------------------------------------------------
+   * KvirnProvider and KvirnThemeScript set data-kv-color-scheme ("light" or "dark") and
+   * data-kv-contrast ("standard" or "more") on <html>. Only colours change.
+   */
+  :root[data-kv-color-scheme='dark'] {
+    color-scheme: dark;
+
+    --kv-color-canvas: var(--kv-black);
+    --kv-color-surface: var(--kv-neutral-950);
+    --kv-color-surface-raised: var(--kv-neutral-900);
+    --kv-color-border-subtle: var(--kv-neutral-800);
+    --kv-color-border-control: var(--kv-neutral-500);
+    --kv-color-secondary: var(--kv-secondary-500);
+    --kv-color-text: var(--kv-neutral-50);
+    --kv-color-text-muted: var(--kv-neutral-400);
+    --kv-color-primary: var(--kv-primary-500);
+    --kv-color-primary-hover: var(--kv-primary-600);
+    --kv-color-on-primary: var(--kv-white);
+    --kv-color-primary-subtle: var(--kv-primary-950);
+    /* Lighter than primary: primary-500 as text on the dark canvas is only 4.44:1. */
+    --kv-color-link: var(--kv-primary-400);
+    --kv-color-link-hover: var(--kv-primary-300);
+    --kv-color-focus-ring: var(--kv-primary-400);
+    --kv-color-danger: var(--kv-danger-300);
+    --kv-color-danger-hover: var(--kv-danger-200);
+    --kv-color-on-danger: var(--kv-black);
+    --kv-color-danger-subtle: var(--kv-danger-950);
+    --kv-color-success: var(--kv-success-300);
+    --kv-color-success-subtle: var(--kv-success-950);
+    --kv-color-warning: var(--kv-warning-300);
+    --kv-color-warning-subtle: var(--kv-warning-950);
+
+    /* Raised surfaces get lighter instead: a shadow on a near-black canvas isn't seen. */
+    --kv-shadow-popup: none;
+    --kv-shadow-dialog: none;
+  }
+
+  :root[data-kv-color-scheme='light'][data-kv-contrast='more'] {
+    color-scheme: light;
+
+    --kv-color-canvas: var(--kv-white);
+    --kv-color-surface: var(--kv-neutral-50);
+    --kv-color-surface-raised: var(--kv-white);
+    --kv-color-border-subtle: var(--kv-neutral-500);
+    --kv-color-border-control: var(--kv-neutral-700);
+    --kv-color-secondary: var(--kv-secondary-700);
+    --kv-color-text: var(--kv-black);
+    --kv-color-text-muted: var(--kv-neutral-700);
+    --kv-color-primary: var(--kv-primary-800);
+    --kv-color-primary-hover: var(--kv-primary-900);
+    --kv-color-on-primary: var(--kv-white);
+    --kv-color-primary-subtle: var(--kv-primary-50);
+    --kv-color-link: var(--kv-primary-800);
+    --kv-color-link-hover: var(--kv-primary-900);
+    --kv-color-focus-ring: var(--kv-primary-800);
+    --kv-color-danger: var(--kv-danger-700);
+    --kv-color-danger-hover: var(--kv-danger-800);
+    --kv-color-on-danger: var(--kv-white);
+    --kv-color-danger-subtle: var(--kv-danger-50);
+    --kv-color-success: var(--kv-success-800);
+    --kv-color-success-subtle: var(--kv-success-50);
+    --kv-color-warning: var(--kv-warning-800);
+    --kv-color-warning-subtle: var(--kv-warning-50);
+  }
+
+  :root[data-kv-color-scheme='dark'][data-kv-contrast='more'] {
+    color-scheme: dark;
+
+    --kv-color-canvas: var(--kv-black);
+    --kv-color-surface: var(--kv-neutral-950);
+    --kv-color-surface-raised: var(--kv-neutral-900);
+    --kv-color-border-subtle: var(--kv-neutral-400);
+    --kv-color-border-control: var(--kv-neutral-200);
+    --kv-color-secondary: var(--kv-secondary-200);
+    --kv-color-text: var(--kv-white);
+    --kv-color-text-muted: var(--kv-neutral-200);
+    --kv-color-primary: var(--kv-primary-200);
+    --kv-color-primary-hover: var(--kv-primary-100);
+    --kv-color-on-primary: var(--kv-black);
+    --kv-color-primary-subtle: var(--kv-primary-950);
+    --kv-color-link: var(--kv-primary-200);
+    --kv-color-link-hover: var(--kv-primary-100);
+    --kv-color-focus-ring: var(--kv-primary-200);
+    --kv-color-danger: var(--kv-danger-200);
+    --kv-color-danger-hover: var(--kv-danger-100);
+    --kv-color-on-danger: var(--kv-black);
+    --kv-color-danger-subtle: var(--kv-danger-950);
+    --kv-color-success: var(--kv-success-200);
+    --kv-color-success-subtle: var(--kv-success-950);
+    --kv-color-warning: var(--kv-warning-200);
+    --kv-color-warning-subtle: var(--kv-warning-950);
+
+    --kv-shadow-popup: none;
+    --kv-shadow-dialog: none;
+  }
+
+  /* 4. System fallbacks --------------------------------------------------------------------
+   * Without the attributes (no JavaScript, or no KvirnProvider), the OS settings choose the
+   * theme. Each block repeats the theme above it exactly: a test keeps them equal.
+   */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-kv-color-scheme]) {
+      color-scheme: dark;
+
+      --kv-color-canvas: var(--kv-black);
+      --kv-color-surface: var(--kv-neutral-950);
+      --kv-color-surface-raised: var(--kv-neutral-900);
+      --kv-color-border-subtle: var(--kv-neutral-800);
+      --kv-color-border-control: var(--kv-neutral-500);
+      --kv-color-secondary: var(--kv-secondary-500);
+      --kv-color-text: var(--kv-neutral-50);
+      --kv-color-text-muted: var(--kv-neutral-400);
+      --kv-color-primary: var(--kv-primary-500);
+      --kv-color-primary-hover: var(--kv-primary-600);
+      --kv-color-on-primary: var(--kv-white);
+      --kv-color-primary-subtle: var(--kv-primary-950);
+      --kv-color-link: var(--kv-primary-400);
+      --kv-color-link-hover: var(--kv-primary-300);
+      --kv-color-focus-ring: var(--kv-primary-400);
+      --kv-color-danger: var(--kv-danger-300);
+      --kv-color-danger-hover: var(--kv-danger-200);
+      --kv-color-on-danger: var(--kv-black);
+      --kv-color-danger-subtle: var(--kv-danger-950);
+      --kv-color-success: var(--kv-success-300);
+      --kv-color-success-subtle: var(--kv-success-950);
+      --kv-color-warning: var(--kv-warning-300);
+      --kv-color-warning-subtle: var(--kv-warning-950);
+
+      --kv-shadow-popup: none;
+      --kv-shadow-dialog: none;
+    }
+  }
+
+  @media (prefers-color-scheme: light) and (prefers-contrast: more) {
+    :root:not([data-kv-color-scheme]) {
+      color-scheme: light;
+
+      --kv-color-canvas: var(--kv-white);
+      --kv-color-surface: var(--kv-neutral-50);
+      --kv-color-surface-raised: var(--kv-white);
+      --kv-color-border-subtle: var(--kv-neutral-500);
+      --kv-color-border-control: var(--kv-neutral-700);
+      --kv-color-secondary: var(--kv-secondary-700);
+      --kv-color-text: var(--kv-black);
+      --kv-color-text-muted: var(--kv-neutral-700);
+      --kv-color-primary: var(--kv-primary-800);
+      --kv-color-primary-hover: var(--kv-primary-900);
+      --kv-color-on-primary: var(--kv-white);
+      --kv-color-primary-subtle: var(--kv-primary-50);
+      --kv-color-link: var(--kv-primary-800);
+      --kv-color-link-hover: var(--kv-primary-900);
+      --kv-color-focus-ring: var(--kv-primary-800);
+      --kv-color-danger: var(--kv-danger-700);
+      --kv-color-danger-hover: var(--kv-danger-800);
+      --kv-color-on-danger: var(--kv-white);
+      --kv-color-danger-subtle: var(--kv-danger-50);
+      --kv-color-success: var(--kv-success-800);
+      --kv-color-success-subtle: var(--kv-success-50);
+      --kv-color-warning: var(--kv-warning-800);
+      --kv-color-warning-subtle: var(--kv-warning-50);
+    }
+  }
+
+  @media (prefers-color-scheme: dark) and (prefers-contrast: more) {
+    :root:not([data-kv-color-scheme]) {
+      color-scheme: dark;
+
+      --kv-color-canvas: var(--kv-black);
+      --kv-color-surface: var(--kv-neutral-950);
+      --kv-color-surface-raised: var(--kv-neutral-900);
+      --kv-color-border-subtle: var(--kv-neutral-400);
+      --kv-color-border-control: var(--kv-neutral-200);
+      --kv-color-secondary: var(--kv-secondary-200);
+      --kv-color-text: var(--kv-white);
+      --kv-color-text-muted: var(--kv-neutral-200);
+      --kv-color-primary: var(--kv-primary-200);
+      --kv-color-primary-hover: var(--kv-primary-100);
+      --kv-color-on-primary: var(--kv-black);
+      --kv-color-primary-subtle: var(--kv-primary-950);
+      --kv-color-link: var(--kv-primary-200);
+      --kv-color-link-hover: var(--kv-primary-100);
+      --kv-color-focus-ring: var(--kv-primary-200);
+      --kv-color-danger: var(--kv-danger-200);
+      --kv-color-danger-hover: var(--kv-danger-100);
+      --kv-color-on-danger: var(--kv-black);
+      --kv-color-danger-subtle: var(--kv-danger-950);
+      --kv-color-success: var(--kv-success-200);
+      --kv-color-success-subtle: var(--kv-success-950);
+      --kv-color-warning: var(--kv-warning-200);
+      --kv-color-warning-subtle: var(--kv-warning-950);
+
+      --kv-shadow-popup: none;
+      --kv-shadow-dialog: none;
+    }
+  }
+
+  /* 5. Forced colours ------------------------------------------------------------------------
+   * The user's palette wins. Every token becomes a system colour, and status colours become
+   * the text colour: status is never shown by colour alone (1.4.1). The selector always
+   * matches :root, and its specificity (0,3,0) beats every theme selector above.
+   */
+  @media (forced-colors: active) {
+    :root:is(*, [data-kv-color-scheme][data-kv-contrast]) {
+      --kv-color-canvas: Canvas;
+      --kv-color-surface: Canvas;
+      --kv-color-surface-raised: Canvas;
+      --kv-color-border-subtle: CanvasText;
+      --kv-color-border-control: ButtonBorder;
+      --kv-color-secondary: ButtonBorder;
+      --kv-color-text: CanvasText;
+      --kv-color-text-muted: CanvasText;
+      --kv-color-primary: Highlight;
+      --kv-color-primary-hover: Highlight;
+      --kv-color-on-primary: HighlightText;
+      --kv-color-primary-subtle: Canvas;
+      --kv-color-link: LinkText;
+      --kv-color-link-hover: LinkText;
+      --kv-color-focus-ring: Highlight;
+      --kv-color-danger: CanvasText;
+      --kv-color-danger-hover: CanvasText;
+      --kv-color-on-danger: Canvas;
+      --kv-color-danger-subtle: Canvas;
+      --kv-color-success: CanvasText;
+      --kv-color-success-subtle: Canvas;
+      --kv-color-warning: CanvasText;
+      --kv-color-warning-subtle: Canvas;
+    }
+  }
+
+  /* 6. Density -------------------------------------------------------------------------------
+   * Put data-kv-density="compact" on any container for 32px controls with 14px labels, for
+   * staff tools and toolbars. Below 64rem touch is likely, so controls stay 44px.
+   */
+  @media (width >= 64rem) {
+    [data-kv-density='compact'] {
+      --kv-control-min-block-size: 2rem;
+      --kv-control-font-size: var(--kv-font-label-compact-size);
+      --kv-control-font-weight: var(--kv-font-label-compact-weight);
+      --kv-control-line-height: var(--kv-font-label-compact-line-height);
+      --kv-control-padding-inline: var(--kv-space-3);
+    }
+  }
+
+  /* 7. Button --------------------------------------------------------------------------------
+   * <Button> renders data-kv="button". The base is the secondary look. Choose a variant with
+   * a plain attribute: <Button data-variant="primary"> for the one main action per view, or
+   * <Button data-variant="danger"> for a destructive action (with a confirmation step).
+   * Use Button only for actions. For navigation use Link: a link must look like a link.
+   */
+  [data-kv='button'] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--kv-space-2);
+    box-sizing: border-box;
+    min-block-size: var(--kv-control-min-block-size);
+    max-inline-size: 100%;
+    margin: 0;
+    padding-block: var(--kv-space-2);
+    padding-inline: var(--kv-control-padding-inline);
+    border: var(--kv-border-width) solid var(--kv-color-secondary);
+    border-radius: var(--kv-radius-md);
+    background-color: var(--kv-color-surface-raised);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-sans);
+    font-size: var(--kv-control-font-size);
+    font-weight: var(--kv-control-font-weight);
+    line-height: var(--kv-control-line-height);
+    letter-spacing: normal;
+    text-align: center;
+    text-decoration: none;
+    /* Long Finnish compounds wrap instead of overflowing (1.4.10). */
+    overflow-wrap: break-word;
+    cursor: pointer;
+  }
+
+  [data-kv='button']:not(:disabled, [data-disabled]):is(:hover, :active) {
+    border-color: var(--kv-color-primary);
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  /* Keyboard focus only: a 2px ring, 2px outside, against the page (2.4.7, 2.4.13). */
+  [data-kv='button']:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  [data-kv='button'][data-variant='primary'] {
+    border-color: transparent;
+    background-color: var(--kv-color-primary);
+    color: var(--kv-color-on-primary);
+  }
+
+  [data-kv='button'][data-variant='primary']:not(:disabled, [data-disabled]):is(:hover, :active) {
+    border-color: transparent;
+    background-color: var(--kv-color-primary-hover);
+  }
+
+  [data-kv='button'][data-variant='danger'] {
+    border-color: transparent;
+    background-color: var(--kv-color-danger);
+    color: var(--kv-color-on-danger);
+  }
+
+  [data-kv='button'][data-variant='danger']:not(:disabled, [data-disabled]):is(:hover, :active) {
+    border-color: transparent;
+    background-color: var(--kv-color-danger-hover);
+  }
+
+  /* Disabled, natively or focusable (data-disabled): a dashed edge is the non-colour cue.
+   * It comes after the variants, so it wins over them. */
+  [data-kv='button']:is(:disabled, [data-disabled]) {
+    border-style: dashed;
+    border-color: var(--kv-color-border-control);
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+  }
+
+  /* <div data-kv-button-group>: buttons in a row, stacked at full width on narrow screens. */
+  [data-kv-button-group] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--kv-space-3);
+  }
+
+  @media (width < 40rem) {
+    [data-kv-button-group] {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    [data-kv-button-group] > [data-kv='button'] {
+      inline-size: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-kv='button'] {
+      transition-property: background-color, border-color, color;
+      transition-duration: var(--kv-duration-fast);
+      transition-timing-function: var(--kv-easing-standard);
+    }
+  }
+
+  @media (forced-colors: active) {
+    [data-kv='button'],
+    [data-kv='button']:is([data-variant='primary'], [data-variant='danger']) {
+      border-color: ButtonText;
+      background-color: ButtonFace;
+      color: ButtonText;
+    }
+
+    [data-kv='button']:not(:disabled, [data-disabled]):is(:hover, :active) {
+      border-color: Highlight;
+      background-color: ButtonFace;
+    }
+
+    [data-kv='button']:is(:focus-visible, [data-focus-visible]) {
+      outline-color: Highlight;
+    }
+
+    [data-kv='button']:is(:disabled, [data-disabled]) {
+      border-style: dashed;
+      border-color: GrayText;
+      color: GrayText;
+    }
+  }
+
+  /* 8. Link and navigation lists ---------------------------------------------------------------
+   * <Link> renders data-kv="link": the link colour and an underline, for running text.
+   * Inside a list marked data-kv-nav, links become navigation items instead: a row in the
+   * text colour, without an underline, because their place in a labelled <nav> is the cue.
+   *
+   *   <nav aria-label="…"><ul data-kv-nav><li><Link current="page" …>…</Link></li></ul></nav>
+   */
+  [data-kv='link'] {
+    border-radius: var(--kv-radius-sm);
+    color: var(--kv-color-link);
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--kv-link-underline-thickness);
+    text-underline-offset: var(--kv-link-underline-offset);
+    /* A wrapped link gets a ring on every line. */
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  [data-kv='link']:is(:hover, :active) {
+    color: var(--kv-color-link-hover);
+    text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+  }
+
+  [data-kv='link']:is([data-current], [aria-current]:not([aria-current='false'])) {
+    font-weight: 600;
+  }
+
+  [data-kv='link']:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  [data-kv-nav] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--kv-space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* A navigation item: 44px, or 32px in compact density. */
+  [data-kv-nav] [data-kv='link'] {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-block-size: var(--kv-control-min-block-size);
+    padding-block: var(--kv-space-1);
+    padding-inline: var(--kv-space-3);
+    border-inline-start: var(--kv-indicator-width) solid transparent;
+    border-radius: var(--kv-radius-md);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-sans);
+    font-size: var(--kv-control-font-size);
+    font-weight: var(--kv-control-font-weight);
+    line-height: var(--kv-control-line-height);
+    text-decoration: none;
+    overflow-wrap: break-word;
+  }
+
+  [data-kv-nav] [data-kv='link']:is(:hover, :active) {
+    background-color: var(--kv-color-surface-raised);
+  }
+
+  /* The current page: a background, an inline-start bar and weight, plus aria-current. */
+  [data-kv-nav] [data-kv='link']:is([data-current], [aria-current]:not([aria-current='false'])) {
+    border-inline-start-color: var(--kv-color-primary);
+    background-color: var(--kv-color-primary-subtle);
+    font-weight: 600;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-kv='link'] {
+      transition-property: color, text-decoration-thickness, background-color, border-color;
+      transition-duration: var(--kv-duration-fast);
+      transition-timing-function: var(--kv-easing-standard);
+    }
+  }
+
+  @media (forced-colors: active) {
+    [data-kv='link'] {
+      color: LinkText;
+      text-decoration-line: underline;
+    }
+
+    [data-kv='link']:is(:focus-visible, [data-focus-visible]) {
+      outline-color: Highlight;
+    }
+
+    /* Forced colours would show every transparent bar, so only the current item keeps one. */
+    [data-kv-nav] [data-kv='link'] {
+      border-inline-start-color: Canvas;
+      color: LinkText;
+      text-decoration-line: none;
+    }
+
+    [data-kv-nav] [data-kv='link']:is([data-current], [aria-current]:not([aria-current='false'])) {
+      border-inline-start-color: LinkText;
+    }
+  }
+
+  /* 9. Prose ---------------------------------------------------------------------------------
+   * Put data-kv-prose on the element around content you don't control, such as an article
+   * from a CMS or Markdown, and its headings, paragraphs, lists, tables, code and figures get
+   * the default typography in every theme. data-kv-prose="large" is the 18px size for long
+   * resident-facing text. Any other value is the default 16px size.
+   *
+   *   <article data-kv-prose>
+   *     <h1>…</h1>
+   *     <p data-kv-lead>…</p>
+   *     <section data-kv-scroll-region aria-labelledby="fees" tabindex="0">
+   *       <table><caption id="fees">…</caption>…</table>
+   *     </section>
+   *     <div data-kv-not-prose><div data-kv-button-group>…</div></div>
+   *   </article>
+   *
+   * Every rule has zero specificity, so component rules and your own CSS always win. Prose
+   * never styles an element with data-kv (components style themselves), or anything inside
+   * data-kv-not-prose, data-kv-nav or data-kv-button-group. Prose inside data-kv-not-prose
+   * isn't turned on again. Only logical properties are used, so right to left works, and
+   * nothing has a fixed height, so the text-spacing overrides fit (1.4.12).
+   *
+   * Your part: don't skip heading levels, write alt text, give each table a caption and th
+   * with scope, set lang on passages in another language, and write link text that makes
+   * sense on its own.
+   */
+  :where([data-kv-prose]) {
+    max-inline-size: var(--kv-prose-measure);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-sans);
+    font-size: var(--kv-prose-font-size);
+    line-height: var(--kv-prose-line-height);
+    font-feature-settings: var(--kv-prose-feature-settings);
+    /* Long Finnish and Swedish compounds wrap at 320px. Hyphens stay manual: use &shy;. */
+    overflow-wrap: break-word;
+  }
+
+  /* The large size only swaps tokens. */
+  :where([data-kv-prose='large']) {
+    --kv-prose-font-size: var(--kv-font-body-large-size);
+    --kv-prose-line-height: var(--kv-font-body-large-line-height);
+    --kv-prose-feature-settings: var(--kv-font-body-large-feature-settings);
+    --kv-prose-lead-font-size: var(--kv-font-lead-size);
+    --kv-prose-lead-line-height: var(--kv-font-lead-line-height);
+    --kv-prose-space: var(--kv-space-6);
+    --kv-prose-space-block: var(--kv-space-10);
+    --kv-prose-space-section: var(--kv-space-12);
+  }
+
+  /* Everything inside prose that prose may style. This is the only place the not-prose list
+   * is written: add a new consumer attribute for components here. `&` has the specificity of
+   * this selector, which is zero. */
+  :where([data-kv-prose])
+    :where(*):not(
+      :where([data-kv], :is([data-kv-not-prose], [data-kv-nav], [data-kv-button-group]) *)
+    ) {
+    /* Elements. data-kv-not-prose, data-kv-nav and data-kv-button-group only get margins. */
+    &:not(:where([data-kv-not-prose], [data-kv-nav], [data-kv-button-group])) {
+      &:where(h1) {
+        margin-block: 0 var(--kv-space-6);
+        font-size: var(--kv-font-heading-1-size);
+        font-weight: var(--kv-font-heading-1-weight);
+        line-height: var(--kv-font-heading-1-line-height);
+        letter-spacing: var(--kv-font-heading-1-letter-spacing);
+        font-feature-settings: var(--kv-font-heading-1-feature-settings);
+        text-wrap: balance;
+      }
+
+      &:where(h2) {
+        margin-block: var(--kv-prose-space-section) var(--kv-space-4);
+        font-size: var(--kv-font-heading-2-size);
+        font-weight: var(--kv-font-heading-2-weight);
+        line-height: var(--kv-font-heading-2-line-height);
+        letter-spacing: var(--kv-font-heading-2-letter-spacing);
+        font-feature-settings: var(--kv-font-heading-2-feature-settings);
+        text-wrap: balance;
+      }
+
+      &:where(h3) {
+        margin-block: var(--kv-space-8) var(--kv-space-3);
+        font-size: var(--kv-font-heading-3-size);
+        font-weight: var(--kv-font-heading-3-weight);
+        line-height: var(--kv-font-heading-3-line-height);
+        letter-spacing: var(--kv-font-heading-3-letter-spacing);
+        font-feature-settings: var(--kv-font-heading-3-feature-settings);
+      }
+
+      /* Body size in the heading-3 weight. In the large size h4 looks like h3, so resident
+       * content should stop at h3. */
+      &:where(h4, h5, h6) {
+        margin-block: var(--kv-space-6) var(--kv-space-2);
+        font-size: var(--kv-prose-font-size);
+        font-weight: var(--kv-font-heading-3-weight);
+        line-height: var(--kv-prose-line-height);
+        letter-spacing: 0em;
+      }
+
+      &:where(p) {
+        margin-block: var(--kv-prose-space);
+        text-wrap: pretty;
+      }
+
+      /* One step up from the body. Essential content, so never text-muted. */
+      &:where(p[data-kv-lead]) {
+        color: var(--kv-color-text);
+        font-size: var(--kv-prose-lead-font-size);
+        line-height: var(--kv-prose-lead-line-height);
+      }
+
+      /* Like the Link component. There is no visited style yet. */
+      &:where(a) {
+        border-radius: var(--kv-radius-sm);
+        color: var(--kv-color-link);
+        text-decoration-line: underline;
+        text-decoration-thickness: var(--kv-link-underline-thickness);
+        text-underline-offset: var(--kv-link-underline-offset);
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
+      }
+
+      &:where(a:hover, a:active) {
+        color: var(--kv-color-link-hover);
+        text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+      }
+
+      &:where(a:focus-visible) {
+        outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+        outline-offset: var(--kv-focus-ring-offset);
+      }
+
+      &:where(strong, b) {
+        font-weight: 600;
+      }
+
+      /* For short phrases only, never whole paragraphs. */
+      &:where(em, i, cite) {
+        font-style: italic;
+      }
+
+      /* The list style is always set: `list-style: none` removes list semantics in Safari. */
+      &:where(ul, ol) {
+        margin-block: var(--kv-prose-space);
+        margin-inline: 0;
+        padding-inline-start: var(--kv-prose-list-indent);
+      }
+
+      &:where(ul) {
+        list-style-type: disc;
+      }
+
+      &:where(:is(ul, ol) ul) {
+        list-style-type: circle;
+      }
+
+      &:where(:is(ul, ol) :is(ul, ol) ul) {
+        list-style-type: square;
+      }
+
+      /* An ol with a type attribute keeps it. */
+      &:where(ol:not([type])) {
+        list-style-type: decimal;
+      }
+
+      &:where(:is(ul, ol) ol:not([type])) {
+        list-style-type: lower-alpha;
+      }
+
+      &:where(:is(ul, ol) :is(ul, ol) ol:not([type])) {
+        list-style-type: lower-roman;
+      }
+
+      &:where(li) {
+        margin-block: var(--kv-prose-space-item);
+      }
+
+      /* Bullets are decoration. Step numbers are content ("step 3"), so they stay in text. */
+      &:where(ul > li)::marker {
+        color: var(--kv-color-text-muted);
+      }
+
+      &:where(ol > li)::marker {
+        color: var(--kv-color-text);
+      }
+
+      &:where(li > :is(p, ul, ol)) {
+        margin-block: var(--kv-prose-space-item);
+      }
+
+      /* No generated quote marks and no italics. The attribution goes in a figcaption. */
+      &:where(blockquote) {
+        margin-block: var(--kv-prose-space-block);
+        margin-inline: 0;
+        padding-inline-start: var(--kv-space-4);
+        border-inline-start: var(--kv-indicator-width) solid var(--kv-color-border-control);
+        color: var(--kv-color-text);
+        font-style: normal;
+      }
+
+      /* Decorative: a heading always follows it. */
+      &:where(hr) {
+        margin-block: var(--kv-prose-space-section);
+        margin-inline: 0;
+        border: 0;
+        border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+      }
+
+      /* Reference numbers have no break points, so inline code may break anywhere. */
+      &:where(code):not(:where(pre *)) {
+        padding-inline: var(--kv-space-1);
+        border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+        border-radius: var(--kv-radius-sm);
+        background-color: var(--kv-color-surface);
+        font-family: var(--kv-font-family-mono);
+        font-size: var(--kv-prose-code-size);
+        overflow-wrap: anywhere;
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
+      }
+
+      /* Code blocks wrap instead of scrolling: there's nothing to scroll at 320px, and no
+       * scroller that keyboard users can't reach. */
+      &:where(pre) {
+        margin-block: var(--kv-prose-space-block);
+        margin-inline: 0;
+        padding: var(--kv-space-4);
+        border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+        border-radius: var(--kv-radius-md);
+        background-color: var(--kv-color-surface);
+        font-family: var(--kv-font-family-mono);
+        font-size: var(--kv-prose-code-size);
+        line-height: var(--kv-font-code-line-height);
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+
+      &:where(pre code) {
+        padding: 0;
+        border: 0;
+        background: none;
+        font: inherit;
+      }
+
+      /* One key. An outer kbd that groups keys (<kbd><kbd>Ctrl</kbd>+<kbd>C</kbd></kbd>) stays
+       * plain. */
+      &:where(kbd):not(:where(:has(kbd))) {
+        padding-inline: var(--kv-space-1);
+        border: var(--kv-border-width) solid var(--kv-color-border-control);
+        border-block-end-width: 2px;
+        border-radius: var(--kv-radius-sm);
+        background-color: var(--kv-color-surface-raised);
+        font-family: var(--kv-font-family-mono);
+        font-size: var(--kv-prose-code-size);
+        white-space: nowrap;
+      }
+
+      /* Tables keep the prose size and their display: display: block removes table semantics
+       * in some browsers. Put a wide table in a data-kv-scroll-region. Aligning number
+       * columns is up to your CSS. */
+      &:where(table) {
+        inline-size: 100%;
+        margin-block: var(--kv-prose-space-block);
+        margin-inline: 0;
+        border-collapse: collapse;
+      }
+
+      &:where(caption) {
+        padding-block-end: var(--kv-space-2);
+        caption-side: top;
+        color: var(--kv-color-text);
+        font-weight: 600;
+        text-align: start;
+      }
+
+      &:where(th, td) {
+        padding-block: var(--kv-space-2);
+        padding-inline: var(--kv-space-3);
+        border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+        text-align: start;
+        vertical-align: top;
+      }
+
+      &:where(th) {
+        font-weight: 600;
+      }
+
+      &:where(td) {
+        font-feature-settings: var(--kv-font-numeric-feature-settings);
+      }
+
+      &:where(thead th) {
+        background-color: var(--kv-color-surface);
+      }
+
+      /* Browsers indent figures by 40px. */
+      &:where(figure) {
+        margin-block: var(--kv-prose-space-block);
+        margin-inline: 0;
+      }
+
+      /* Metadata: source, photographer, date. The explanation belongs in the text. */
+      &:where(figcaption) {
+        margin-block-start: var(--kv-space-2);
+        color: var(--kv-color-text-muted);
+        font-size: var(--kv-font-body-small-size);
+        line-height: var(--kv-font-body-small-line-height);
+      }
+
+      /* Pictures. An svg is one only directly in prose or in a figure: icons stay inline. */
+      &:where(img, video, picture, [data-kv-prose] > svg, figure > svg) {
+        display: block;
+        max-inline-size: 100%;
+        block-size: auto;
+        border-radius: var(--kv-radius-md);
+      }
+
+      &:where(img, video, picture, [data-kv-prose] > svg):not(:where(figure *, picture *)) {
+        margin-block: var(--kv-prose-space-block);
+        margin-inline: 0;
+      }
+
+      &:where(figure > :is(blockquote, pre, table)) {
+        margin-block: 0;
+      }
+
+      &:where(dl) {
+        margin-block: var(--kv-prose-space);
+        margin-inline: 0;
+      }
+
+      &:where(dt) {
+        margin-block-start: var(--kv-prose-space);
+        font-weight: 600;
+      }
+
+      &:where(dl > dt:first-child, dl > div:first-child > dt:first-child) {
+        margin-block-start: 0;
+      }
+
+      /* No indent: weight carries the hierarchy, and 320px needs the room. */
+      &:where(dd) {
+        margin-block-start: var(--kv-space-1);
+        margin-inline-start: 0;
+      }
+
+      /* Metadata only, never instructions. */
+      &:where(small) {
+        color: var(--kv-color-text-muted);
+        font-size: var(--kv-font-body-small-size);
+        line-height: var(--kv-font-body-small-line-height);
+      }
+
+      /* title isn't reliably exposed, so spell the term out at first use. */
+      &:where(abbr[title]) {
+        text-decoration-line: underline;
+        text-decoration-style: dotted;
+        cursor: help;
+      }
+
+      &:where(sub, sup) {
+        line-height: 0;
+      }
+
+      /* A highlight isn't announced, so it never carries meaning on its own. */
+      &:where(mark) {
+        background-color: var(--kv-color-warning-subtle);
+        color: var(--kv-color-text);
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        &:where(a) {
+          transition-property: color, text-decoration-thickness;
+          transition-duration: var(--kv-duration-fast);
+          transition-timing-function: var(--kv-easing-standard);
+        }
+      }
+
+      /* The tokens are system colours already. A highlight loses its background, so it gets
+       * an outline. */
+      @media (forced-colors: active) {
+        &:where(mark) {
+          outline: var(--kv-border-width) solid CanvasText;
+        }
+      }
+    }
+
+    /* Embedded components and other content prose leaves alone: only its own margin. */
+    &:where([data-kv-not-prose], [data-kv-scroll-region]) {
+      margin-block: var(--kv-prose-space-block);
+      margin-inline: 0;
+    }
+
+    /* Margins come last, so they win. A heading stays close to its own section, and the first
+     * and last child of a container add nothing to its padding. */
+    &:where(:is(h1, h2, h3, h4, h5, h6, hr) + *) {
+      margin-block-start: 0;
+    }
+
+    &:where(:is([data-kv-prose], li, blockquote, figure, td, th, dd) > :first-child) {
+      margin-block-start: 0;
+    }
+
+    &:where(:is([data-kv-prose], li, blockquote, figure, td, th, dd) > :last-child) {
+      margin-block-end: 0;
+    }
+  }
+
+  /* A labelled, focusable region around a wide table, in prose or anywhere else (1.4.10).
+   * Your part: aria-labelledby with the caption's id, and tabindex="0" so keyboard users can
+   * scroll it (2.1.1). A <section> with a name is a region, so it needs no role. */
+  [data-kv-scroll-region] {
+    max-inline-size: 100%;
+    overflow-x: auto;
+    border-radius: var(--kv-radius-sm);
+  }
+
+  [data-kv-scroll-region]:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  [data-kv-scroll-region] > table {
+    margin: 0;
+  }
+
+  @media (forced-colors: active) {
+    [data-kv-scroll-region]:is(:focus-visible, [data-focus-visible]) {
+      outline-color: Highlight;
+    }
+  }
+}

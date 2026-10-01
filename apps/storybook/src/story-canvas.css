@@ -1,0 +1,287 @@
+/*
+ * Storybook-only canvas and story layout. Unlayered, so it wins over @layer kv. Tokens only:
+ * no raw colours (ADR-0013). With the Theme toolbar on "None (unstyled)" the preview drops
+ * the canvas class, so stories show the browser's defaults. The heading and paragraph rules
+ * stop at data-kv-prose: unlayered CSS would beat prose's zero-specificity rules (ADR-0018).
+ */
+.kv-story-canvas {
+  box-sizing: border-box;
+  min-block-size: 100vb;
+  padding: var(--kv-space-6);
+  background-color: var(--kv-color-canvas);
+  color: var(--kv-color-text);
+  font-family: var(--kv-font-family-sans);
+  font-size: var(--kv-font-body-size);
+  font-weight: var(--kv-font-body-weight);
+  line-height: var(--kv-font-body-line-height);
+  font-feature-settings: var(--kv-font-body-feature-settings);
+}
+
+@media (width < 40rem) {
+  .kv-story-canvas {
+    padding: var(--kv-space-4);
+  }
+}
+
+.kv-story-canvas h1:not([data-kv-prose] *) {
+  margin-block: 0 var(--kv-space-6);
+  font-size: var(--kv-font-heading-1-size);
+  font-weight: var(--kv-font-heading-1-weight);
+  line-height: var(--kv-font-heading-1-line-height);
+  letter-spacing: var(--kv-font-heading-1-letter-spacing);
+}
+
+.kv-story-canvas h2:not([data-kv-prose] *) {
+  margin-block: var(--kv-space-8) var(--kv-space-4);
+  font-size: var(--kv-font-heading-2-size);
+  font-weight: var(--kv-font-heading-2-weight);
+  line-height: var(--kv-font-heading-2-line-height);
+  letter-spacing: var(--kv-font-heading-2-letter-spacing);
+}
+
+.kv-story-canvas p:not([data-kv-prose] *) {
+  max-inline-size: 70ch;
+  margin-block: var(--kv-space-4);
+}
+
+/* One group per state in matrix stories: the state name, then its button. */
+.kv-story-states {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kv-space-6);
+}
+
+.kv-story-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--kv-space-2);
+  max-inline-size: 100%;
+}
+
+.kv-story-canvas .kv-story-state > p {
+  margin: 0;
+  color: var(--kv-color-text-muted);
+  font-size: var(--kv-font-body-small-size);
+  line-height: var(--kv-font-body-small-line-height);
+}
+
+.kv-story-section + .kv-story-section {
+  margin-block-start: var(--kv-space-8);
+}
+
+/* A narrow wrapper for the wrapping examples. */
+.kv-story-narrow {
+  max-inline-size: 20rem;
+}
+
+/* Like the docs sidebar: a surface panel with a hairline. */
+.kv-story-surface {
+  box-sizing: border-box;
+  max-inline-size: 15rem;
+  padding: var(--kv-space-4) var(--kv-space-3);
+  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-lg);
+  background-color: var(--kv-color-surface);
+}
+
+.kv-story-inline-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kv-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Theme override story: an unlayered consumer rule beats @layer kv. */
+.my-button {
+  border-radius: 0;
+}
+
+/* Foundation pages: prose, wider than the measure so tables fit. Text keeps the measure. */
+.kv-story-foundation[data-kv-prose] {
+  max-inline-size: none;
+}
+
+.kv-story-foundation > :is(h1, h2, h3, p, ul, ol, dl, pre) {
+  max-inline-size: var(--kv-prose-measure);
+}
+
+/* A colour sample next to its value. Decorative, so the value is always in text. */
+.kv-story-swatch {
+  display: inline-block;
+  box-sizing: border-box;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  margin-inline-end: var(--kv-space-2);
+  border: var(--kv-border-width) solid var(--kv-color-border-control);
+  border-radius: var(--kv-radius-sm);
+  vertical-align: middle;
+}
+
+/* The eleven steps of a scale in one strip. */
+.kv-story-strip {
+  display: flex;
+  max-inline-size: 40rem;
+  border: var(--kv-border-width) solid var(--kv-color-border-control);
+  border-radius: var(--kv-radius-sm);
+  overflow: hidden;
+}
+
+.kv-story-strip > span {
+  flex: 1;
+  block-size: 2.5rem;
+}
+
+/* Text on surface: a sample chip, then the ratio, tier and use as text. */
+.kv-story-cell {
+  display: grid;
+  justify-items: start;
+  gap: var(--kv-space-1);
+  min-inline-size: 7rem;
+}
+
+.kv-story-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  inline-size: 3rem;
+  block-size: 2rem;
+  border: var(--kv-border-width) solid var(--kv-color-border-control);
+  border-radius: var(--kv-radius-sm);
+  font-weight: 600;
+}
+
+/* Below 4.5:1 no text is drawn: a stripe in the foreground colour instead. */
+.kv-story-chip-stripe {
+  inline-size: 60%;
+  block-size: 0;
+  border-block-start: var(--kv-indicator-width) solid currentColor;
+}
+
+/* A pair in use: a second cue besides the words. An outline survives forced colours. */
+.kv-story-in-use {
+  outline: 2px solid var(--kv-color-border-control);
+  outline-offset: -2px;
+}
+
+.kv-story-fail {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kv-space-1);
+  color: var(--kv-color-danger);
+  font-weight: 600;
+}
+
+/* A spacing token's length, as a line: a border, so it survives forced colours. */
+.kv-story-bar {
+  display: block;
+  block-size: 0;
+  border-block-start: var(--kv-indicator-width) solid var(--kv-color-primary);
+}
+
+.kv-story-specimens {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--kv-space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kv-story-specimens > li {
+  display: grid;
+  gap: var(--kv-space-2);
+  max-inline-size: 14rem;
+}
+
+.kv-story-radius {
+  box-sizing: border-box;
+  inline-size: 4rem;
+  block-size: 4rem;
+  border: var(--kv-border-width) solid var(--kv-color-border-control);
+  background-color: var(--kv-color-surface);
+}
+
+/* Panels side by side, stacked on narrow screens. */
+.kv-story-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--kv-space-6);
+}
+
+.kv-story-panel {
+  box-sizing: border-box;
+  padding: var(--kv-space-4);
+  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-lg);
+}
+
+.kv-story-panel > :first-child {
+  margin-block-start: 0;
+}
+
+.kv-story-panel > :last-child {
+  margin-block-end: 0;
+}
+
+/* DESIGN.md: a status panel is the -subtle background with a 4px bar in the status colour. */
+.kv-story-warning-panel {
+  border-inline-start: var(--kv-indicator-width) solid var(--kv-color-warning);
+  background-color: var(--kv-color-warning-subtle);
+}
+
+/* Elevation levels, each a card on the one before. */
+.kv-story-elevation {
+  display: grid;
+  gap: var(--kv-space-6);
+  padding: var(--kv-space-6);
+  background-color: var(--kv-color-canvas);
+}
+
+.kv-story-elevation-card {
+  padding: var(--kv-space-4);
+  border-radius: var(--kv-radius-lg);
+}
+
+.kv-story-elevation-card p {
+  margin: 0;
+}
+
+/* The Motion demo: it moves only when the user asks, and never under reduced motion. */
+.kv-story-motion-panel {
+  margin-block-start: var(--kv-space-4);
+  padding: var(--kv-space-4);
+  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-lg);
+  background-color: var(--kv-color-surface-raised);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .kv-story-motion-panel {
+    transition:
+      opacity var(--kv-duration-medium) var(--kv-easing-standard),
+      translate var(--kv-duration-medium) var(--kv-easing-standard);
+  }
+
+  @starting-style {
+    .kv-story-motion-panel {
+      opacity: 0;
+      translate: 0 -0.5rem;
+    }
+  }
+}
+
+/* The WCAG 1.4.12 text-spacing overrides, as a user's bookmarklet sets them. */
+.kv-story-text-spacing * {
+  line-height: 1.5 !important;
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+}
+
+.kv-story-text-spacing p {
+  margin-block-end: 2em !important;
+}

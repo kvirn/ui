@@ -1,9 +1,15 @@
 {
   "extends": "../../tooling/tsconfig/base.json",
   "compilerOptions": {
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "allowJs": false,
     "incremental": true,
+    // This program compiles the workspace packages' TypeScript source, together with Next's
+    // ambient `tw?: string` attribute and the registered NextLink's `as?: Url`, which leave
+    // out `| undefined`. The library itself stays checked with this flag on by `vp check`
+    // (root tsconfig). Published consumers compile against .d.ts files and aren't affected.
+    // See ADR-0017 and the Plan 0005 open questions.
+    "exactOptionalPropertyTypes": false,
     "plugins": [{ "name": "next" }]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

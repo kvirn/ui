@@ -4,6 +4,8 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: { unoptimized: true },
+  // The workspace packages ship TypeScript source in development (package.json exports).
+  transpilePackages: ['@kvirn-ui/core', '@kvirn-ui/i18n', '@kvirn-ui/react', '@kvirn-ui/theme'],
 }
 
 export default nextConfig

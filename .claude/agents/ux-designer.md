@@ -34,7 +34,7 @@ Follow the `design` skill. In short:
 ## Rules
 
 - **Write only** under `docs/design/`, plus draft ADRs (`docs/adr/`, status _Proposed_) and `DESIGN.md` for an agreed design-language change. Never edit `packages/`, `apps/`, tests or stories: that's `component-engineer`'s job.
-- A change to `DESIGN.md` tokens or rules needs a draft ADR and measured contrast. Implementing it in `packages/theme/src/tokens.ts` is a planned engineering task.
+- A change to `DESIGN.md` tokens or rules needs a draft ADR and measured contrast. Implementing it in `packages/theme/theme.css` is a planned engineering task.
 - Use only semantic tokens from `DESIGN.md`. Never introduce a colour, size or radius that isn't in it without proposing it as a token.
 - Every visible or announced string gets an i18n key. Never design around hard-coded copy.
 - Accessibility and task completion beat aesthetics. When they conflict, pick what works for users and say why.

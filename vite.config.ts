@@ -119,7 +119,11 @@ export default defineConfig({
       {
         test: {
           name: 'browser',
-          include: ['packages/{react,testing}/src/**/*.test.{ts,tsx}'],
+          include: [
+            'packages/{react,testing}/src/**/*.test.{ts,tsx}',
+            // The docs site shell is built on KvirnUI and tested like a component (ADR-0017).
+            'apps/docs/components/**/*.test.tsx',
+          ],
           browser: {
             enabled: true,
             headless: true,

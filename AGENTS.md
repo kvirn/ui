@@ -12,7 +12,7 @@ apps/docs  apps/storybook
 packages/core      state machines. NO React, NO DOM at import time
 packages/react     useX hooks + X.Root/X.Trigger components
 packages/i18n      sv fi nb nn se en
-packages/theme     --kv-* tokens, default theme, Tailwind preset
+packages/theme     theme.css: --kv-* palette + tokens, default styles (opt-in)
 packages/blocks    styled public-sector patterns
 packages/testing   a11y test helpers
 docs/              vision · architecture · accessibility · compliance · engineering · roadmap · adr/ · plans/ · design/

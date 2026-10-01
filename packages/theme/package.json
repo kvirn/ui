@@ -1,10 +1,11 @@
 {
   "name": "@kvirn-ui/theme",
   "version": "0.0.0",
-  "description": "Optional --kv-* design tokens and default theme for KvirnUI.",
+  "description": "Optional default theme for KvirnUI: one readable theme.css with --kv-* tokens and component styles.",
   "license": "MIT",
   "files": [
-    "dist"
+    "dist",
+    "theme.css"
   ],
   "type": "module",
   "sideEffects": [
@@ -12,6 +13,7 @@
   ],
   "exports": {
     ".": "./src/index.ts",
+    "./theme.css": "./theme.css",
     "./package.json": "./package.json"
   },
   "publishConfig": {
@@ -20,6 +22,7 @@
         "types": "./dist/index.d.mts",
         "import": "./dist/index.mjs"
       },
+      "./theme.css": "./theme.css",
       "./package.json": "./package.json"
     },
     "access": "public"

@@ -17,17 +17,24 @@ We record significant decisions as ADRs using a lightweight MADR-style format.
 
 ## Index
 
-| #                                                          | Title                                                    | Status   |
-| ---------------------------------------------------------- | -------------------------------------------------------- | -------- |
-| [0001](0001-record-architecture-decisions.md)              | Record architecture decisions                            | Accepted |
-| [0002](0002-vite-plus-pnpm-monorepo.md)                    | Vite+ and pnpm monorepo                                  | Accepted |
-| [0003](0003-framework-agnostic-core-react-only-adapter.md) | Framework-agnostic core, React-only adapter              | Accepted |
-| [0004](0004-wcag-2-2-aa-baseline.md)                       | WCAG 2.2 AA as release baseline                          | Accepted |
-| [0005](0005-router-link-registration.md)                   | Router links via provider registration                   | Accepted |
-| [0006](0006-theme-preference-store.md)                     | Theme preference store and persistence                   | Accepted |
-| [0007](0007-message-overrides.md)                          | Every string has a default and can be overridden         | Accepted |
-| [0008](0008-theme-storage-relative-to-defaults.md)         | Theme storage is relative to the configured defaults     | Proposed |
-| [0009](0009-message-value-types.md)                        | Message value types and resolved message shape           | Proposed |
-| [0010](0010-react-entry-use-client.md)                     | Mark the whole `@kvirn-ui/react` entry as `"use client"` | Proposed |
-| [0011](0011-design-md-and-ux-design-workflow.md)           | DESIGN.md design language and a UX design workflow       | Proposed |
-| [0012](0012-conventional-commits-enforced.md)              | Conventional Commits, enforced by hook and CI            | Proposed |
+| #                                                          | Title                                                                      | Status   |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------- | -------- |
+| [0001](0001-record-architecture-decisions.md)              | Record architecture decisions                                              | Accepted |
+| [0002](0002-vite-plus-pnpm-monorepo.md)                    | Vite+ and pnpm monorepo                                                    | Accepted |
+| [0003](0003-framework-agnostic-core-react-only-adapter.md) | Framework-agnostic core, React-only adapter                                | Accepted |
+| [0004](0004-wcag-2-2-aa-baseline.md)                       | WCAG 2.2 AA as release baseline                                            | Accepted |
+| [0005](0005-router-link-registration.md)                   | Router links via provider registration                                     | Accepted |
+| [0006](0006-theme-preference-store.md)                     | Theme preference store and persistence                                     | Accepted |
+| [0007](0007-message-overrides.md)                          | Every string has a default and can be overridden                           | Accepted |
+| [0008](0008-theme-storage-relative-to-defaults.md)         | Theme storage is relative to the configured defaults                       | Proposed |
+| [0009](0009-message-value-types.md)                        | Message value types and resolved message shape                             | Proposed |
+| [0010](0010-react-entry-use-client.md)                     | Mark the whole `@kvirn-ui/react` entry as `"use client"`                   | Proposed |
+| [0011](0011-design-md-and-ux-design-workflow.md)           | DESIGN.md design language and a UX design workflow                         | Proposed |
+| [0012](0012-conventional-commits-enforced.md)              | Conventional Commits, enforced by hook and CI                              | Proposed |
+| [0013](0013-default-theme-delivery.md)                     | Default theme as one hand-written theme.css on part attributes             | Proposed |
+| [0014](0014-default-theme-visual-direction-linear.md)      | Default theme visual direction: Linear-inspired                            | Proposed |
+| [0015](0015-merge-props-and-render-semantics.md)           | `mergeProps` and `render` merge semantics                                  | Proposed |
+| [0016](0016-button-and-link-api-details.md)                | Button and Link API details                                                | Proposed |
+| [0017](0017-default-theme-prototype-implementation.md)     | Default-theme prototype implementation details                             | Proposed |
+| [0018](0018-prose-styles-and-foundation-tokens.md)         | Prose styles by attribute, and prose, lead and shadow tokens               | Proposed |
+| [0019](0019-role-named-palette-scales.md)                  | Palette scales named by role, a secondary edge token, and an unused accent | Proposed |

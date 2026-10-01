@@ -1,10 +1,11 @@
-// `vp run theme:check`: every declared token pair meets its WCAG contrast minimum in all four themes.
-import { checkTheme } from '../src/check-theme.ts'
-import { colorTokens, contrastRequirements, themeNames } from '../src/tokens.ts'
+// `vp run theme:check`: theme.css defines every colour token in all four themes, its OS
+// fallbacks match, and every declared pair meets its WCAG contrast minimum (ADR-0013).
+import { readFileSync } from 'node:fs'
+import { checkThemeCss } from '../src/check-theme.ts'
+import { contrastRequirements, themeNames } from '../src/contrast-requirements.ts'
 
-const problems = themeNames.flatMap((themeName) =>
-  checkTheme(themeName, colorTokens[themeName], contrastRequirements[themeName]),
-)
+const themeCss = readFileSync(new URL('../theme.css', import.meta.url), 'utf8')
+const problems = checkThemeCss(themeCss)
 const pairCount = themeNames.reduce(
   (total, themeName) => total + contrastRequirements[themeName].length,
   0,
@@ -16,4 +17,6 @@ if (problems.length > 0) {
   )
   process.exit(1)
 }
-console.log(`theme:check passed: ${pairCount} contrast pair(s) in ${themeNames.length} themes.`)
+console.log(
+  `theme:check passed: theme.css, ${pairCount} contrast pair(s) in ${themeNames.length} themes.`,
+)

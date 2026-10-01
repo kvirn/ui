@@ -1,21 +1,26 @@
 ---
 version: alpha
 name: KvirnUI default theme
-description: Calm, precise and plain. A quiet, product-grade interface for Nordic and EU public services, where the content and the next step are always the loudest thing on the page.
+description: Calm, precise and plain, in a Linear-inspired direction. A quiet, product-grade interface for Nordic and EU public services. Near-black and near-white canvases, a surface ladder with hairline dividers, one lavender accent, and tight Inter typography, with contrast, focus and target size held to WCAG 2.2 AA or better.
 colors:
   canvas: '#ffffff'
-  surface: '#f6f7f9'
+  surface: '#f7f8f8'
   surface-raised: '#ffffff'
-  border-subtle: '#e3e5ea'
-  border-control: '#767b88'
-  text: '#15161a'
-  text-muted: '#555a66'
-  primary: '#4c56d0'
-  primary-hover: '#3d46b3'
+  border-subtle: '#e4e5e7'
+  border-control: '#6b7079'
+  secondary: '#6b7079'
+  text: '#0f1011'
+  text-muted: '#5d6169'
+  primary: '#5e6ad2'
+  primary-hover: '#4f5ac0'
   on-primary: '#ffffff'
-  primary-subtle: '#eef0fd'
-  focus-ring: '#4c56d0'
+  primary-subtle: '#eff0fb'
+  link: '#4f5ac0'
+  link-hover: '#434db3'
+  focus-ring: '#5e6ad2'
   danger: '#b3273f'
+  danger-hover: '#962034'
+  on-danger: '#ffffff'
   danger-subtle: '#fdeef0'
   success: '#1d7048'
   success-subtle: '#e9f6ef'
@@ -27,30 +32,36 @@ typography:
     fontSize: 2.5rem
     fontWeight: 600
     lineHeight: 1.15
-    letterSpacing: -0.022em
+    letterSpacing: -0.025em
   heading-1:
     fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
-    fontSize: 2rem
+    fontSize: 1.75rem
     fontWeight: 600
     lineHeight: 1.2
-    letterSpacing: -0.02em
+    letterSpacing: -0.021em
   heading-2:
     fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
-    fontSize: 1.5rem
-    fontWeight: 600
+    fontSize: 1.375rem
+    fontWeight: 500
     lineHeight: 1.25
-    letterSpacing: -0.015em
+    letterSpacing: -0.018em
   heading-3:
     fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
-    fontSize: 1.25rem
+    fontSize: 1.125rem
     fontWeight: 600
-    lineHeight: 1.3
-    letterSpacing: -0.01em
+    lineHeight: 1.4
+    letterSpacing: 0em
   body-large:
     fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
     fontSize: 1.125rem
     fontWeight: 400
     lineHeight: 1.6
+    fontFeature: '"cv05", "cv08"'
+  lead:
+    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
+    fontSize: 1.25rem
+    fontWeight: 400
+    lineHeight: 1.5
     fontFeature: '"cv05", "cv08"'
   body:
     fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
@@ -69,6 +80,11 @@ typography:
     fontSize: 1rem
     fontWeight: 500
     lineHeight: 1.4
+  label-compact:
+    fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
+    fontSize: 0.875rem
+    fontWeight: 500
+    lineHeight: 1.3
   numeric:
     fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif'
     fontSize: 1rem
@@ -77,15 +93,15 @@ typography:
     fontFeature: '"tnum", "cv05", "cv08"'
   code:
     fontFamily: 'ui-monospace, SF Mono, Cascadia Code, Menlo, Consolas, monospace'
-    fontSize: 0.9375rem
+    fontSize: 0.875rem
     fontWeight: 400
-    lineHeight: 1.5
+    lineHeight: 1.6
 rounded:
   none: 0px
   sm: 4px
-  md: 6px
-  lg: 10px
-  xl: 14px
+  md: 8px
+  lg: 12px
+  xl: 16px
   full: 9999px
 spacing:
   '0': 0px
@@ -106,7 +122,7 @@ components:
     textColor: '{colors.on-primary}'
     typography: '{typography.label}'
     rounded: '{rounded.md}'
-    padding: 0 20px
+    padding: 0 16px
     height: 44px
   button-primary-hover:
     backgroundColor: '{colors.primary-hover}'
@@ -115,15 +131,38 @@ components:
     textColor: '{colors.text}'
     typography: '{typography.label}'
     rounded: '{rounded.md}'
-    padding: 0 20px
+    padding: 0 16px
     height: 44px
+  button-secondary-hover:
+    backgroundColor: '{colors.primary-subtle}'
   button-danger:
     backgroundColor: '{colors.danger}'
-    textColor: '{colors.on-primary}'
+    textColor: '{colors.on-danger}'
     typography: '{typography.label}'
     rounded: '{rounded.md}'
-    padding: 0 20px
+    padding: 0 16px
     height: 44px
+  button-danger-hover:
+    backgroundColor: '{colors.danger-hover}'
+  button-compact:
+    typography: '{typography.label-compact}'
+    rounded: '{rounded.md}'
+    padding: 0 12px
+    height: 32px
+  link:
+    textColor: '{colors.link}'
+  link-hover:
+    textColor: '{colors.link-hover}'
+  nav-item:
+    backgroundColor: transparent
+    textColor: '{colors.text}'
+    typography: '{typography.label-compact}'
+    rounded: '{rounded.md}'
+    padding: 0 12px
+    height: 32px
+  nav-item-current:
+    backgroundColor: '{colors.primary-subtle}'
+    textColor: '{colors.text}'
   input:
     backgroundColor: '{colors.canvas}'
     textColor: '{colors.text}'
@@ -143,7 +182,7 @@ components:
     padding: 8px
   badge:
     backgroundColor: '{colors.primary-subtle}'
-    textColor: '{colors.primary}'
+    textColor: '{colors.link}'
     typography: '{typography.body-small}'
     rounded: '{rounded.full}'
     padding: 2px 10px
@@ -153,13 +192,25 @@ components:
 
 This file is the visual and interaction source of truth for everything in KvirnUI that has a look: the default theme (`@kvirn-ui/theme`), the styled blocks (`@kvirn-ui/blocks`), Storybook stories and the docs site. The headless packages ship zero CSS and are not bound by it (AGENTS.md hard rule 5).
 
-It is a default, not a brand (see `docs/vision.md`, non-goals). A municipality rebrands by overriding the semantic tokens, and everything here is written so that a rebrand stays accessible. The front matter follows the [DESIGN.md format](https://github.com/google-labs-code/design.md) and holds the **light** theme. The other three themes are in the tables below. The implementation lives in `packages/theme/src/tokens.ts` and every contrast pair is enforced by `vp run theme:check`.
+It is a default, not a brand (see `docs/vision.md`, non-goals). A municipality rebrands by overriding the `--kv-*` custom properties (see [Theming](#theming)), and everything here is written so that a rebrand stays accessible. The front matter follows the [DESIGN.md format](https://github.com/google-labs-code/design.md) and holds the **light** theme. The other three themes are in the semantic mapping below. The implementation is `packages/theme/theme.css`, a hand-written file that is the source of truth for values, and every contrast pair is enforced by `vp run theme:check`.
 
-Changing a token or a rule here is a decision: write an ADR and update `tokens.ts` in the same change.
+Changing a token or a rule here is a decision: write an ADR and update `theme.css` in the same change.
+
+> **Status: Proposed (ADR-0014, 2026-10-01).** The values here are the Linear-inspired visual direction the maintainer asked for. The maintainer decides after seeing the prototype (Plan 0005). `theme.css` implements these values for the Plan 0005 Phase 1 prototype, and ADR-0011 still describes the process.
 
 ## Overview
 
-**Calm, precise, plain.** The interface is quiet so that the content and the next step are loud. Think of a well-made professional tool: a restrained neutral palette with a faint cool tint, one confident accent, crisp 1px lines, tight, deliberate typography and generous whitespace. Nothing decorative competes with the task.
+**Calm, precise, plain.** The interface is quiet so that the content and the next step are loud. The reference is Linear's design language ([shadcn.io/design/linear](https://www.shadcn.io/design/linear), fetched 2026-10-01):
+
+- a near-black dark canvas and a near-white light one
+- a ladder of slightly lifted surfaces instead of shadows, with 1px hairline dividers
+- one lavender accent (`#5e6ad2`), used sparingly
+- tight Inter typography with negative tracking on large headings
+- 8px control radii
+
+Nothing decorative competes with the task.
+
+Unlike Linear's marketing site, KvirnUI serves public services. Wherever the reference relies on low-contrast greys, faint control borders, a lighter hover behind white text, or small labels on resident-facing controls, we keep its look and change the value until it passes WCAG 2.2 AA (and 7:1 for text in the contrast themes). Each deviation is listed in ADR-0014.
 
 Who we design for:
 
@@ -169,77 +220,106 @@ Who we design for:
 Principles, in priority order:
 
 1. **Clarity over cleverness.** Everyone should understand what the page is, what they need to do and what happens next, without prior knowledge.
-2. **Accessible by construction.** Contrast, focus, target size and reflow are properties of the tokens, not a later fix. WCAG 2.2 AA is the floor, and the default theme also meets 2.4.13 Focus Appearance and 2.5.5 Target Size (Enhanced).
+2. **Accessible by construction.** Contrast, focus, target size and reflow are properties of the tokens, not a later fix. WCAG 2.2 AA is the floor. The default theme also meets 2.4.13 Focus Appearance, and 2.5.5 Target Size (Enhanced) in comfortable density.
 3. **Quiet interface, loud content.** Neutral chrome, one accent, colour used for meaning, never for decoration.
 4. **Precision.** A 4px grid, consistent radii, 1px lines, aligned edges and optical balance. Precision reads as trustworthiness, and public services need trust.
-5. **Density fits the context.** Comfortable for residents by default. Compact is opt-in for staff tools and never below AA.
+5. **Density fits the context.** Comfortable for residents by default. Compact is opt-in for staff tools and developer surfaces, and never below AA.
 6. **Respect the user's settings.** OS colour scheme, contrast, forced colours, reduced motion, zoom and text spacing always win (ADR-0006).
 
 ## Colors
 
-The palette is neutral grey with a slight cool (blue) tint, plus one indigo accent. Colour carries meaning: the accent means "interactive or selected", and the status colours mean danger, success and warning. Status is never conveyed by colour alone (1.4.1): it is always paired with text and, where useful, an icon.
+The palette is neutral grey with a faint cool tint, a four-step ladder from canvas to raised surface, and one lavender accent (the primary scale). Colour carries meaning: the accent means "interactive or selected", and the status colours mean danger, success and warning. Status is never conveyed by colour alone (1.4.1): it is always paired with text and, where useful, an icon.
 
-Tokens are exposed as `--kv-color-<name>`. Four themes come from two preference axes, colour scheme and contrast (ADR-0006).
+Colours come in two tiers, both CSS custom properties in `theme.css`:
 
-| Token            | light     | dark      | light-contrast | dark-contrast | Use                                                                    |
-| ---------------- | --------- | --------- | -------------- | ------------- | ---------------------------------------------------------------------- |
-| `canvas`         | `#ffffff` | `#0e0f12` | `#ffffff`      | `#000000`     | Page background                                                        |
-| `surface`        | `#f6f7f9` | `#15161a` | `#f6f7f9`      | `#0b0c0e`     | Sections, sidebars, table headers                                      |
-| `surface-raised` | `#ffffff` | `#1c1d22` | `#ffffff`      | `#15161a`     | Cards, popups, dialogs                                                 |
-| `border-subtle`  | `#e3e5ea` | `#2a2c33` | `#6b7080`      | `#8a8f9c`     | Dividers and decorative outlines only                                  |
-| `border-control` | `#767b88` | `#72778a` | `#3a3d45`      | `#c4c8d0`     | Borders that identify a control (inputs, checkboxes, secondary button) |
-| `text`           | `#15161a` | `#f3f4f6` | `#000000`      | `#ffffff`     | Body text and headings                                                 |
-| `text-muted`     | `#555a66` | `#a3a8b4` | `#33363d`      | `#d6d9df`     | Secondary text, hints, metadata                                        |
-| `primary`        | `#4c56d0` | `#8f97ff` | `#2c35a0`      | `#b3b8ff`     | Links, primary buttons, selected state                                 |
-| `primary-hover`  | `#3d46b3` | `#a8aeff` | `#1f2780`      | `#cdd0ff`     | Hover and pressed state of `primary`                                   |
-| `on-primary`     | `#ffffff` | `#0e0f12` | `#ffffff`      | `#000000`     | Text and icons on `primary`                                            |
-| `primary-subtle` | `#eef0fd` | `#1e2140` | `#eef0fd`      | `#1e2140`     | Selected rows, highlighted options, info backgrounds                   |
-| `focus-ring`     | `#4c56d0` | `#8f97ff` | `#2c35a0`      | `#b3b8ff`     | Focus indicator                                                        |
-| `danger`         | `#b3273f` | `#ff8a9a` | `#8c1026`      | `#ffb3bd`     | Errors, destructive actions                                            |
-| `danger-subtle`  | `#fdeef0` | `#2e161b` | `#fdeef0`      | `#2e161b`     | Error summary and message backgrounds                                  |
-| `success`        | `#1d7048` | `#5fd49a` | `#0f5132`      | `#8ae6b6`     | Confirmation, completed steps                                          |
-| `success-subtle` | `#e9f6ef` | `#12261c` | `#e9f6ef`      | `#12261c`     | Confirmation panel backgrounds                                         |
-| `warning`        | `#8a5300` | `#f0b453` | `#5c3700`      | `#ffd08a`     | Warnings, deadlines                                                    |
-| `warning-subtle` | `#fff4dc` | `#2a2012` | `#fff4dc`      | `#2a2012`     | Warning panel backgrounds                                              |
+- **Palette.** Role scales, Tailwind-style, from 50 (lightest) to 950 (darkest), each step darker than the last. They are named by role, never by hue, so a rebrand overrides a scale without a refactor (ADR-0019):
+  - `--kv-neutral-*`: grey with a faint cool tint. Canvases, surfaces, borders and text.
+  - `--kv-primary-*`: lavender by default, Linear's `#5e6ad2` is `primary-500`. The one accent: primary buttons, links, focus, selection.
+  - `--kv-secondary-*`: the neutral steps by default (`--kv-secondary-500: var(--kv-neutral-500)`). The secondary button's edge, so a brand can give it a hue.
+  - `--kv-accent-*`: teal by default. Not used by the default theme, which keeps one accent. It's there for a brand's second colour.
+  - `--kv-danger-*` (red), `--kv-success-*` (green) and `--kv-warning-*` (amber).
+  - `--kv-white` and `--kv-black` (`#010102`).
 
-Measured contrast (2026-09-30, `packages/theme/src/contrast.ts`):
+  The palette is the only place with raw colour values.
 
-- Every text token on `canvas`, `surface` and its own `-subtle` background is at least **4.5:1** in the standard themes (lowest: `primary` on `primary-subtle`, 5.22:1) and at least **7:1** in the contrast themes (lowest: `danger` on `danger-subtle`, 8.42:1).
-- `border-control` and `focus-ring` are at least **3:1** against `canvas` and `surface` in every theme (lowest: 3.95:1).
-- `on-primary` on `primary` is at least 5.92:1.
+- **Semantic tokens,** `--kv-color-<name>`. Components use only these. Each theme points them at palette steps. Four themes come from two preference axes, colour scheme and contrast (ADR-0006), and only remap semantic tokens.
+
+| Token            | light           | dark            | light-contrast  | dark-contrast   | Use                                                                                        |
+| ---------------- | --------------- | --------------- | --------------- | --------------- | ------------------------------------------------------------------------------------------ |
+| `canvas`         | `white`         | `black`         | `white`         | `black`         | Page background                                                                            |
+| `surface`        | `neutral-50`    | `neutral-950`   | `neutral-50`    | `neutral-950`   | Sections, sidebars, table headers, code                                                    |
+| `surface-raised` | `white`         | `neutral-900`   | `white`         | `neutral-900`   | Cards, popups, dialogs, hovered navigation items                                           |
+| `border-subtle`  | `neutral-100`   | `neutral-800`   | `neutral-500`   | `neutral-400`   | Hairline dividers and decorative outlines only                                             |
+| `border-control` | `neutral-500`   | `neutral-500`   | `neutral-700`   | `neutral-200`   | Borders that identify a control (inputs, checkboxes)                                       |
+| `secondary`      | `secondary-500` | `secondary-500` | `secondary-700` | `secondary-200` | The secondary button's edge. Equal to `border-control` until `--kv-secondary-*` gets a hue |
+| `text`           | `neutral-950`   | `neutral-50`    | `black`         | `white`         | Body text and headings                                                                     |
+| `text-muted`     | `neutral-600`   | `neutral-400`   | `neutral-700`   | `neutral-200`   | Secondary text, hints, metadata                                                            |
+| `primary`        | `primary-500`   | `primary-500`   | `primary-800`   | `primary-200`   | Primary button background, selected state, current-page indicator                          |
+| `primary-hover`  | `primary-600`   | `primary-600`   | `primary-900`   | `primary-100`   | Hover and pressed state of `primary`                                                       |
+| `on-primary`     | `white`         | `white`         | `white`         | `black`         | Text and icons on `primary`                                                                |
+| `primary-subtle` | `primary-50`    | `primary-950`   | `primary-50`    | `primary-950`   | Current navigation item, secondary button hover, selected rows, info backgrounds           |
+| `link`           | `primary-600`   | `primary-400`   | `primary-800`   | `primary-200`   | Link text, badge text                                                                      |
+| `link-hover`     | `primary-700`   | `primary-300`   | `primary-900`   | `primary-100`   | Link hover and pressed                                                                     |
+| `focus-ring`     | `primary-500`   | `primary-400`   | `primary-800`   | `primary-200`   | Focus indicator                                                                            |
+| `danger`         | `danger-600`    | `danger-300`    | `danger-700`    | `danger-200`    | Errors, destructive actions                                                                |
+| `danger-hover`   | `danger-700`    | `danger-200`    | `danger-800`    | `danger-100`    | Hover and pressed state of `danger`                                                        |
+| `on-danger`      | `white`         | `black`         | `white`         | `black`         | Text and icons on `danger`                                                                 |
+| `danger-subtle`  | `danger-50`     | `danger-950`    | `danger-50`     | `danger-950`    | Error summary and message backgrounds                                                      |
+| `success`        | `success-700`   | `success-300`   | `success-800`   | `success-200`   | Confirmation, completed steps                                                              |
+| `success-subtle` | `success-50`    | `success-950`   | `success-50`    | `success-950`   | Confirmation panel backgrounds                                                             |
+| `warning`        | `warning-700`   | `warning-300`   | `warning-800`   | `warning-200`   | Warnings, deadlines                                                                        |
+| `warning-subtle` | `warning-50`    | `warning-950`   | `warning-50`    | `warning-950`   | Warning panel backgrounds                                                                  |
+
+The palette values are in `theme.css`, section 1. Measured contrast (2026-10-01, `vp run theme:check`, 71 pairs per theme):
+
+- **Text.**
+  - Every text token (`text`, `text-muted`, `link`, `danger`, `success`, `warning`) is at least 4.5:1 on `canvas`, `surface`, `surface-raised` and the `-subtle` backgrounds it's used on in the standard themes. The lowest pairs are `on-primary` on `primary` (4.70:1) and `text-muted` on `primary-subtle` in dark (4.80:1).
+  - In the contrast themes the minimum is 7:1. The lowest pair is `danger` on `danger-subtle` in light-contrast (7.31:1).
+- **Control borders and focus.** `border-control`, `secondary`, `focus-ring` and `primary` (used as a selected or current indicator) are at least 3:1 against `canvas`, `surface`, `surface-raised` and `primary-subtle` in every theme. The lowest pairs are `border-control` and `secondary` on `primary-subtle` in dark (3.13:1).
+- **Labels on filled buttons.** `on-primary` on `primary` is at least 4.70:1, and on `primary-hover` at least 5.91:1. `on-danger` on `danger` is at least 6.40:1, and on `danger-hover` at least 8.23:1.
 
 Rules:
 
-- **`border-subtle` never identifies a control.** Anything a user must perceive to operate (input edges, checkbox boxes, a secondary button's outline) uses `border-control` (1.4.11).
-- **The focus ring has an offset.** `focus-ring` on `primary` is 1:1, so the ring sits 2px outside the element, where the adjacent colour is the background.
-- **Links are `primary` and underlined** in running text. Navigation lists may drop the underline if another cue (position, weight, icon) remains.
-- **Dark themes are not inverted light themes.** Raised surfaces get lighter, not shadowed, and the accent is lightened so it keeps its contrast.
+- **`border-subtle` never identifies a control.** Anything a user must perceive to operate (input edges, checkbox boxes) uses `border-control`, and a secondary button's outline uses `secondary`, both held to 3:1 (1.4.11). The Linear hairlines are 1.36–1.96:1, so they are `border-subtle` only.
+- **The focus ring has an offset.** `focus-ring` on `primary` is about 1:1, so the ring sits 2px outside the element, where the adjacent colour is the background.
+- **Filled buttons get darker on hover, never lighter.** A lighter hover behind white text fails 4.5:1: Linear's `#828fff` is 2.87:1.
+- **Links use `link` and are underlined** in running text. In dark themes `link` is lighter than `primary`, because `#5e6ad2` as text on the dark canvas is only 4.44:1.
+- **Navigation lists** may drop the underline and use the `text` colour, because position in a labelled `<nav>` list is the cue. The current item always has a non-colour cue: an inline-start bar and weight 600, plus `aria-current`.
+- **Dark themes are not inverted light themes.** Raised surfaces get lighter, not shadowed.
 - **Forced colours** (`forced-colors: active`): use system colours (`Canvas`, `CanvasText`, `LinkText`, `ButtonText`, `Highlight`, `GrayText`). Every surface and control keeps a 1px border, even if it is transparent in the normal theme, so boundaries survive. Selected and current states get a non-colour cue such as a border, a check mark or `text-decoration`.
 
 Rebranding for a municipality:
 
-- Override `primary`, `primary-hover`, `on-primary`, `primary-subtle` and `focus-ring` together, then run `vp run theme:check`. If the coat-of-arms colour fails, use it in the header band or the logo and use a darker or lighter shade of it for `primary`.
+- Override one scale on `:root`: give `--kv-primary-*` the brand's eleven steps, and every semantic token and all four themes follow. Each theme uses different steps (light 500 and 600, dark 500 and 400, the contrast themes 800 and 200), so swapping a scale can break contrast. Check a customised copy with `checkThemeCss()` (or `vp run theme:check`), or on the live Foundation/Theming page. If the coat-of-arms colour fails, use it in the header band or the logo, and build the scale from a darker or lighter shade of it.
+- Give `--kv-secondary-*` a hue to colour the secondary button's edge. `--kv-accent-*` is free for a brand's second colour.
+- Pointing one semantic token at another step (`--kv-color-link: var(--kv-primary-700)`) also works, for a single change.
+- Override `danger` and `danger-hover` together, if at all.
 - Never reuse a brand red for `danger` or a brand green for `success`, because users will read the brand colour as a status.
 
 ## Typography
 
 One sans-serif family with a system fallback, and one monospace family for reference numbers and code.
 
-- **Family.** The stack starts with Inter (SIL OFL), which is legible at small sizes and covers every Northern Sámi letter (á č đ ŋ š ŧ ž). The theme never loads a font from a third-party server (GDPR, AGENTS.md hard rule 7). Adopters self-host Inter or fall back to the system UI font. A replacement brand font must cover the Sámi letters as well as å ä ö æ ø.
+- **Family.** The stack starts with Inter (SIL OFL). Inter is the free substitute the Linear reference itself recommends (weights 400, 500 and 600). It is legible at small sizes and covers every Northern Sámi letter (á č đ ŋ š ŧ ž). The theme never loads a font. The docs site and Storybook self-host Inter Variable, and adopters self-host it or fall back to the system UI font (GDPR, AGENTS.md hard rule 7). A replacement brand font must cover the Sámi letters as well as å ä ö æ ø.
 - **Disambiguation.** Enable Inter's `cv05` (l with a tail) and `cv08` (I with serifs) for body text so that l, I and 1 are distinct. This matters for case numbers, codes and names. Verify the feature tags against the self-hosted Inter version.
 - **Numbers.** Use `numeric` (tabular figures) for tables, amounts, dates and reference numbers.
-- **Scale.** `body` is 1rem (16px) and never smaller for essential content. Long resident-facing text uses `body-large`. `body-small` is only for metadata and never for instructions, errors or labels.
-- **Headings.** Weight 600 with slightly negative tracking gives the crisp, tight look. Negative letter spacing is only used at 20px and larger, where it doesn't hurt legibility.
-- **Line length** is 60–75 characters (`max-inline-size: 70ch` on prose).
-- **Sentence case** everywhere. No all-caps labels or headings, because they are slower to read and some screen readers spell them out.
-- **Text spacing (1.4.12).** Everything must keep working with line height 1.5, paragraph spacing 2em, letter spacing 0.12em and word spacing 0.16em. No fixed heights on text containers.
+- **Scale.**
+  - `body` is 1rem (16px) and never smaller for essential content. Long resident-facing text uses `body-large`.
+  - `lead` (20px, weight 400, no tracking) is only for the lead paragraph of large prose. The lead of default prose uses `body-large`. A lead is essential content, so it is always `text`, never `text-muted`.
+  - `body-small` (14px) is for metadata, and never for instructions or errors.
+  - `label-compact` (14px, weight 500) is only for control labels in compact density: staff tools, and the docs site's navigation and header controls.
+  - There is no 12px or 13px size. The Linear reference uses them for captions and eyebrows, which we don't need.
+- **Headings.** Weight 600 (500 for `heading-2`), with negative tracking that scales with size: -0.025em at 40px, -0.021em at 28px and -0.018em at 22px, following the Linear ramp. There is no negative tracking below 20px. Linear's -0.05px on body text is dropped, because it hurts legibility and reverses under the 1.4.12 overrides anyway.
+- **Line length** is 60–75 characters (`--kv-prose-measure`, `70ch`, on prose).
+- **Sentence case** everywhere. No all-caps labels, headings or eyebrows, because they are slower to read and some screen readers spell them out.
+- **Text spacing (1.4.12).** Everything must keep working with line height 1.5, paragraph spacing 2em, letter spacing 0.12em and word spacing 0.16em. No fixed heights on text containers. The `height` values in the front matter are minimum block sizes.
 - **Sizes in `rem`,** so browser zoom and font-size settings work (1.4.4).
 
 ## Layout
 
 - **Grid.** Everything sits on a 4px grid, and the spacing scale is in the front matter (`--kv-space-<step>`). Most layouts use steps 2, 4, 6 and 8.
 - **Reading column.** Resident-facing services use a single column of at most `40rem` for forms and `45rem` for prose. One question or one topic per page wherever possible.
-- **Staff tools** may use a sidebar and a content area. The sidebar collapses behind a disclosure below `64rem`.
+- **Staff tools and the docs site** may use a sidebar and a content area. The sidebar collapses behind a disclosure below `64rem`.
 - **Breakpoints** are content-driven, but the reference points are `40rem`, `64rem` and `80rem`. Design mobile first.
 - **Reflow (1.4.10).** Everything works at 320 CSS px wide and at 400% zoom without horizontal scrolling, except data tables, which scroll inside their own labelled, focusable region.
 - **Text expansion.** Finnish and Northern Sámi strings can be 30–50% longer than English, and Finnish compounds are long. Buttons and labels wrap. Never set a fixed width on anything containing text, and use `overflow-wrap: anywhere` as a last resort, not truncation.
@@ -248,22 +328,28 @@ One sans-serif family with a system fallback, and one monospace family for refer
 
 ### Density
 
-| Density               | Control height | Min target | Use                                                                           |
-| --------------------- | -------------- | ---------- | ----------------------------------------------------------------------------- |
-| Comfortable (default) | 44px           | 44×44px    | Everything resident-facing. Meets 2.5.5 Target Size (Enhanced)                |
-| Compact (opt-in)      | 32px           | 24×24px    | Staff tools, tables and toolbars. Meets 2.5.8 only, and is documented as such |
+Density is set on a container with `data-kv-density="compact"`. Comfortable is the default, and needs no attribute.
+
+| Density               | Control min height | Label type      | Min target | Use                                                                                                                                                            |
+| --------------------- | ------------------ | --------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Comfortable (default) | 44px               | `label` (16px)  | 44×44px    | Everything resident-facing, and every primary action. Meets 2.5.5 Target Size (Enhanced)                                                                       |
+| Compact (opt-in)      | 32px               | `label-compact` | 24×24px    | Staff tools, tables, toolbars, and the docs site chrome at 64rem and wider. Close to Linear's 14px, ~33px buttons. Meets 2.5.8 only, and is documented as such |
+
+Below `64rem`, where touch input is likely, compact chrome returns to comfortable.
 
 ## Elevation & Depth
 
-Depth comes from layered surfaces and 1px lines, not from shadows. The look is flat and precise.
+Depth comes from the surface ladder (`canvas` → `surface` → `surface-raised`) and 1px hairlines, not from shadows. The look is flat and precise, as in the Linear reference.
 
-| Level | Surface          | Border          | Shadow                                                              | Use                       |
-| ----- | ---------------- | --------------- | ------------------------------------------------------------------- | ------------------------- |
-| 0     | `canvas`         | none            | none                                                                | Page                      |
-| 1     | `surface`        | `border-subtle` | none                                                                | Sections, sidebars        |
-| 2     | `surface-raised` | `border-subtle` | none                                                                | Cards                     |
-| 3     | `surface-raised` | `border-subtle` | light: `0 8px 24px -4px #15161a1f`, dark: none (surface is lighter) | Popups, menus, popovers   |
-| 4     | `surface-raised` | `border-subtle` | light: `0 24px 48px -8px #15161a33`, dark: none                     | Dialogs (with a backdrop) |
+| Level | Surface          | Border          | Shadow                                                                                              | Use                       |
+| ----- | ---------------- | --------------- | --------------------------------------------------------------------------------------------------- | ------------------------- |
+| 0     | `canvas`         | none            | none                                                                                                | Page                      |
+| 1     | `surface`        | `border-subtle` | none                                                                                                | Sections, sidebars        |
+| 2     | `surface-raised` | `border-subtle` | none                                                                                                | Cards                     |
+| 3     | `surface-raised` | `border-subtle` | `--kv-shadow-popup`. Light: `0 8px 24px -4px` `neutral-950` at 12%. Dark: none (surface is lighter) | Popups, menus, popovers   |
+| 4     | `surface-raised` | `border-subtle` | `--kv-shadow-dialog`. Light: `0 24px 48px -8px` `neutral-950` at 20%. Dark: none                    | Dialogs (with a backdrop) |
+
+- The shadow tokens mix `--kv-neutral-950` with `color-mix()`, so the palette block stays the only place with raw colours (ADR-0013, ADR-0018). Both are `none` in the dark themes.
 
 - A dialog backdrop dims the page, so it must not reduce the dialog's own contrast. Content behind a modal is `inert`.
 - Shadows are never the only boundary, because they disappear in forced colours.
@@ -271,26 +357,49 @@ Depth comes from layered surfaces and 1px lines, not from shadows. The look is f
 
 ## Shapes
 
-- **Radii** are small and consistent: `sm` (4px) for badges inside controls, checkboxes and tags; `md` (6px) for buttons and inputs; `lg` (10px) for cards; `xl` (14px) for popups and dialogs; `full` for pills and avatars. Radio buttons are always circles and checkboxes always rounded squares, so the shape tells them apart.
+- **Radii** are small and consistent:
+  - `sm` (4px) for badges inside controls, checkboxes and tags.
+  - `md` (8px) for buttons, inputs and navigation items.
+  - `lg` (12px) for cards and example frames.
+  - `xl` (16px) for popups and dialogs.
+  - `full` for pills and avatars.
+
+  These follow the Linear radius scale. Radio buttons are always circles and checkboxes always rounded squares, so the shape tells them apart.
+
 - **Lines** are 1px. Control borders are 1px `border-control`, and invalid inputs switch to 2px `danger` plus an error message, never colour alone.
-- **Focus ring**: 2px solid `focus-ring`, 2px offset, following the element's radius. It is restyled, never removed, and only shown for keyboard focus (`:focus-visible`, `data-focus-visible`). This meets 2.4.13.
+- **Focus ring**: 2px solid `focus-ring`, 2px offset, following the element's radius. It is restyled, never removed, and only shown for keyboard focus (`:focus-visible`, `data-focus-visible`). This meets 2.4.13. The Linear reference's thinner or glow-style focus is not used.
 - **Icons**: outline style, 1.5px stroke on a 24px grid, rendered at 16px, 20px or 24px, using `currentColor`. An icon next to text is `aria-hidden`. An icon-only button needs an accessible name from i18n and a visible tooltip, and is used only for universally known actions (close, search, menu). Icons are inline SVG and the theme has no icon dependency.
 
 ## Components
 
-Visual rules for the default theme. Behaviour, roles and keyboard are defined in each component's `<name>.a11y.md`, never here. Style state through the `data-*` attributes (`docs/architecture.md#styling-contract`).
+Visual rules for the default theme. Behaviour, roles and keyboard are defined in each component's `<name>.a11y.md`, never here. Style parts and state through the `data-*` attributes (`docs/architecture.md#styling-contract`): `[data-kv='button']`, `[data-disabled]`, `[data-variant='primary']`. `theme.css` implements Button, Link and prose. The design specs are `docs/design/default-theme-button-link.md` and `docs/design/foundations-and-prose.md`.
 
-- **Buttons.** One primary button per view, for the main next step. Secondary buttons have a `border-control` outline. Destructive actions use `button-danger` and a confirmation step. Labels are verbs ("Send application", "Book time"). Disabled buttons keep their label readable, and prefer keeping them enabled and explaining what's missing on submit.
-- **Links** look like links (underlined `primary`) and buttons look like buttons. Never swap the two.
+- **Buttons.**
+  - One primary button per view, for the main next step. Secondary buttons use `surface-raised` with a `border-control` outline. The Linear reference's hairline edge doesn't reach 3:1.
+  - Destructive actions use `button-danger` and a confirmation step.
+  - Labels are verbs ("Send application", "Book time").
+  - Disabled buttons keep their label readable, with a dashed border as the non-colour cue. Prefer keeping them enabled and explaining what's missing on submit.
+- **Links** look like links (underlined `link`) and buttons look like buttons. Never swap the two. The hover state thickens the underline to 2px and uses `link-hover`.
+- **Navigation items** use `nav-item`. The current item uses `primary-subtle`, weight 600, a `primary` inline-start bar and `aria-current`.
 - **Text inputs.** A visible label above the input, hint text between the label and the input, and the error message directly above the input. No placeholder-only labels. The input width reflects the expected answer (a postcode field is short).
 - **Checkboxes and radios** are at least 24px, with the whole label clickable, and are grouped in a `fieldset` with a `legend` question.
 - **Error summary.** At the top of the form, `danger` border with `danger-subtle` background, a heading and a list of links to each invalid field. It receives focus on submit.
 - **Notifications and panels** use the `-subtle` background with a 4px inline-start border in the status colour, an icon, and a heading that states the status in words.
 - **Popups** (menus, listboxes, popovers) use level 3 elevation and `xl` radius, with 8px padding and items at least 44px high (32px in compact).
+- **Prose.** Put `data-kv-prose` on the element around content you don't control, such as an article from a CMS or Markdown. It uses `body` (16px), and `data-kv-prose="large"` uses `body-large` (18px) for long resident-facing text. There is no smaller size. `data-kv-lead` marks the lead paragraph. Prose never styles components (`[data-kv]`) or anything inside `data-kv-not-prose`, `data-kv-nav` or `data-kv-button-group`, and its rules have zero specificity, so any other CSS wins. It keeps list markers and table display, so semantics survive. Code blocks wrap instead of scrolling, and wide tables go in a `data-kv-scroll-region` with a name and `tabindex="0"`. Stop at `h3` in resident-facing text: in large prose, `h4` looks like `h3`. The design spec is `docs/design/foundations-and-prose.md`.
 - **Tables** use `numeric` for figures, `surface` for the header row, `border-subtle` row dividers and no zebra stripes. Sortable headers are buttons with a visible sort indicator.
 - **Step indicator** shows "Step 2 of 5" in text, not only as dots.
 - **Badges and tags** are for status or metadata, never for interactive elements.
 - **Command menus and shortcuts** are welcome in staff tools, but every shortcut has a visible menu or button equivalent and single-character shortcuts can be turned off (2.1.4).
+
+## Theming
+
+- **One file, opt-in by import.** `import '@kvirn-ui/theme/theme.css'` styles every component on the page, and removing it unstyles them. Nothing loads CSS for you, and `KvirnProvider` never does.
+- **Components are selected by part attributes,** never classes: `data-kv="button"`, `data-kv="link"`. Choices are plain attributes the consumer sets: `data-variant="primary"` or `"danger"`, `data-kv-button-group`, `data-kv-nav`, `data-kv-density="compact"`, and for prose `data-kv-prose` (`""` or `"large"`), `data-kv-lead`, `data-kv-not-prose` and `data-kv-scroll-region`.
+- **Override variables, not selectors.** Rebrand by overriding a role scale on `:root` (`--kv-primary-50` … `--kv-primary-950`), or set a single semantic token (`:root { --kv-color-link: var(--kv-primary-700) }`). Scales go on `:root`, where the semantic tokens are declared. To change one theme only, target the same selectors `theme.css` uses (`:root[data-kv-color-scheme='dark']`).
+- **Your CSS always wins.** Everything in `theme.css` is in `@layer kv`. Any unlayered CSS you write, or any layer you declare after `kv`, overrides it regardless of specificity.
+- **Own it, or skip it.** Copy `theme.css` into your project and import your copy, or skip it and style `[data-kv]` and the `data-*` attributes with Tailwind or your own CSS.
+- After any colour change, run `vp run theme:check`, or `checkThemeCss()` from `@kvirn-ui/theme` on your own file.
 
 ## Content & Voice
 
@@ -307,18 +416,19 @@ Content is design. Most failures in public services are unclear words, not uncle
 
 Do:
 
-- Use one accent colour and let whitespace and weight create the hierarchy.
+- Use one accent colour and let whitespace, weight and the surface ladder create the hierarchy.
 - Put one thing on each page for residents, and make the next step obvious.
 - Pair every status colour with words and, where useful, an icon.
-- Keep 44px targets for resident-facing controls.
+- Keep 44px targets for resident-facing controls and every primary action.
 - Test every design at 320px, at 200% text size, in dark and contrast themes and in forced colours before calling it done.
 - Show real content in real languages in mock-ups, including the longest Finnish string.
 
 Don't:
 
 - Use `text-muted` for anything the user must read to complete the task.
-- Use `border-subtle` as the only edge of a control.
-- Remove focus outlines, or rely on a shadow or background change to show focus.
+- Use `border-subtle` (the hairline) as the only edge of a control.
+- Lighten a filled button on hover behind white text.
+- Remove focus outlines, or rely on a glow, a shadow or a background change to show focus.
 - Use low-contrast "ghost" text, grey-on-grey placeholders or disabled-looking active controls, even though they look elegant.
 - Add gradients, glows or glass effects behind text. Decorative effects are allowed only on marketing surfaces of the docs site, and never reduce text contrast.
 - Put essential information in tooltips, hover states or images of text.

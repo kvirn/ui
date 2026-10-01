@@ -18,14 +18,14 @@ KvirnUI is a spiritual successor to Headless UI and Tailwind Plus, built on the 
 
 ## Packages
 
-| Package             | Purpose                                                                      |
-| ------------------- | ---------------------------------------------------------------------------- |
-| `@kvirn-ui/core`    | Framework-agnostic state machines, focus and keyboard logic (TypeScript)     |
-| `@kvirn-ui/react`   | Headless React hooks and components                                          |
-| `@kvirn-ui/i18n`    | Locale strings for sv, fi, nb, nn, se and en                                 |
-| `@kvirn-ui/theme`   | Optional tokens, default theme and Tailwind preset                           |
-| `@kvirn-ui/blocks`  | Copy-in styled patterns for public-sector UIs (the Tailwind Plus equivalent) |
-| `@kvirn-ui/testing` | a11y test helpers for Vitest and Playwright                                  |
+| Package             | Purpose                                                                       |
+| ------------------- | ----------------------------------------------------------------------------- |
+| `@kvirn-ui/core`    | Framework-agnostic state machines, focus and keyboard logic (TypeScript)      |
+| `@kvirn-ui/react`   | Headless React hooks and components                                           |
+| `@kvirn-ui/i18n`    | Locale strings for sv, fi, nb, nn, se and en                                  |
+| `@kvirn-ui/theme`   | Optional default theme: one readable `theme.css` you import, override or copy |
+| `@kvirn-ui/blocks`  | Copy-in styled patterns for public-sector UIs (the Tailwind Plus equivalent)  |
+| `@kvirn-ui/testing` | a11y test helpers for Vitest and Playwright                                   |
 
 ## Quick look
 
