@@ -1,4 +1,4 @@
-import { Button, Icon } from '@kvirn-ui/react'
+import { Button, Card, Icon } from '@kvirn-ui/react'
 import type { ButtonProps } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useId, useState } from 'react'
@@ -471,4 +471,90 @@ export const ForcedColors: Story = {
       <StatesMatrix />
     </>
   ),
+}
+
+/**
+ * One surface of the depth matrix: every kind at rest, with keyboard focus (the ring, and no
+ * shadow), and disabled (flat, dashed). `data-focus-visible` is what the Button sets itself
+ * after a Tab, passed in so the state can be shown without moving focus.
+ */
+const depthText = {
+  send: sv.send,
+  variants: sv.variants,
+  states: { rest: 'Standard', focusVisible: 'Tangentbordsfokus', disabled: 'Inaktiverad' },
+  surfaces: { canvas: 'På sidan', surface: 'På en yta', raised: 'På ett upphöjt kort' },
+  note: 'Hovring och tryckt läge går inte att visa statiskt. För hovring, för pekaren över en knapp. För tryckt läge, håll ned musknappen på den.',
+} as const
+
+function DepthSurface({ heading }: { heading: string }) {
+  const headingId = useId()
+  return (
+    <section aria-labelledby={headingId} className="kv-story-section">
+      <h2 id={headingId}>{heading}</h2>
+      {variants.map((variant) => (
+        <div key={variant} className="kv-story-states">
+          <div className="kv-story-state">
+            <p>
+              {depthText.variants[variant]}, {depthText.states.rest}
+            </p>
+            <Button className={variantClass(variant)}>{depthText.send}</Button>
+          </div>
+          <div className="kv-story-state">
+            <p>
+              {depthText.variants[variant]}, {depthText.states.focusVisible}
+            </p>
+            <Button className={variantClass(variant)} data-focus-visible="">
+              {depthText.send}
+            </Button>
+          </div>
+          <div className="kv-story-state">
+            <p>
+              {depthText.variants[variant]}, {depthText.states.disabled}
+            </p>
+            <Button className={variantClass(variant)} disabled>
+              {depthText.send}
+            </Button>
+          </div>
+        </div>
+      ))}
+    </section>
+  )
+}
+
+/** Every kind on the page (canvas), a surface and a raised surface, at rest, with focus and disabled. */
+function DepthMatrix() {
+  return (
+    <>
+      <p>{depthText.note}</p>
+      <DepthSurface heading={depthText.surfaces.canvas} />
+      <Card.Root className="kv-card--surface kv-story-section">
+        <Card.Body>
+          <DepthSurface heading={depthText.surfaces.surface} />
+        </Card.Body>
+      </Card.Root>
+      <Card.Root className="kv-story-section">
+        <Card.Body>
+          <DepthSurface heading={depthText.surfaces.raised} />
+        </Card.Body>
+      </Card.Root>
+    </>
+  )
+}
+
+/**
+ * Button depth (ADR-0026): a soft shadow, and a tinted edge (darker at the bottom in light,
+ * lighter at the top in dark). It's the default in light and dark, and flat in the contrast
+ * themes: use the Theme and Contrast toolbars to compare. The depth is subtle and axe can't
+ * judge it, so look at it. Keyboard focus shows only the ring, never a shadow.
+ */
+export const Depth: Story = {
+  render: () => <DepthMatrix />,
+  play: async ({ canvas }) => {
+    const buttons = canvas.getAllByRole('button')
+    await expect(buttons).toHaveLength(27)
+    await expect(
+      buttons.filter((button) => button.hasAttribute('data-focus-visible')),
+    ).toHaveLength(9)
+    await expect(buttons.filter((button) => button.hasAttribute('data-disabled'))).toHaveLength(9)
+  },
 }

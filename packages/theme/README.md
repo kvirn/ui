@@ -139,9 +139,36 @@ For compact controls on a whole staff tool, put `class="kv-compact"` on `<html>`
 - **Fonts.** `--kv-font-family-system` is the system stack (`system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif`), and `--kv-font-family-sans` is Inter in front of it. A link in running text keeps the font around it, so it isn't affected by `--kv-font-family-body`. Code stays `--kv-font-family-mono`.
 - **Heading colour.** `--kv-color-heading` is a semantic colour like the others, defined in each theme, so set it per theme with the selectors `theme.css` uses, and run `checkThemeCss()`: `theme:check` holds it to everything body text is held to. If you change `--kv-color-text` on a wrapper element, change `--kv-color-heading` there too.
 
+## Button depth
+
+Buttons sit on the page in the light and dark themes: a soft shadow that lifts on hover, and a 1px edge tinted darker at the bottom in light and lighter at the top in dark (ADR-0026). The shadow goes when a button is pressed, and on keyboard focus, so the focus ring sits on the plain page. Disabled buttons, the high-contrast themes and forced colours are flat, with the same edge on all four sides.
+
+| Custom property              | Light                       | Dark                       | High contrast, forced colours |
+| ---------------------------- | --------------------------- | -------------------------- | ----------------------------- |
+| `--kv-shadow-button`         | a soft two-layer shadow     | a 60% black shadow         | `none`                        |
+| `--kv-shadow-button-hover`   | the same, a little lifted   | the same, a little lifted  | `none`                        |
+| `--kv-button-edge-shade`     | `var(--kv-neutral-950) 35%` | `var(--kv-neutral-950) 0%` | `var(--kv-neutral-950) 0%`    |
+| `--kv-button-edge-highlight` | `var(--kv-white) 0%`        | `var(--kv-white) 25%`      | `var(--kv-white) 0%`          |
+
+The edge tokens are a colour and a percentage: the second argument of `color-mix(in srgb, <edge>, <colour> <percentage>)`. The shade tints the bottom edge, and the highlight the top edge. `0%` leaves the edge as it is. Use `#rgb` or `#rrggbb` colours or palette steps: `checkThemeCss()` reads them.
+
+**Turn depth off** for the whole site, with the flat button of earlier versions, by setting both shadows to `none` and both edge tokens to `0%` in every theme you use. A flat button needs no other change, since the fill and the edge carry it.
+
+```css
+:root,
+:root[data-kv-color-scheme='dark'] {
+  --kv-shadow-button: none;
+  --kv-shadow-button-hover: none;
+  --kv-button-edge-shade: var(--kv-neutral-950) 0%;
+  --kv-button-edge-highlight: var(--kv-white) 0%;
+}
+```
+
+If you copy `theme.css` from an older version, add the four tokens to every theme block (`:root`, dark, both high-contrast blocks, their `prefers-*` fallbacks and forced colours), or `checkThemeCss()` reports them as not defined.
+
 ## Check your colours
 
-After changing colours, measure them. `checkThemeCss` reads a theme file the way a browser reads it for `<html>`, in all four themes, and checks that every colour token is defined, that each OS fallback matches its theme, and that every pair meets its WCAG minimum: 4.5:1 for text, 3:1 for control edges and focus, and 7:1 for text in the high-contrast themes.
+After changing colours, measure them. `checkThemeCss` reads a theme file the way a browser reads it for `<html>`, in all four themes, and checks that every colour token is defined, that each OS fallback matches its theme, and that every pair meets its WCAG minimum: 4.5:1 for text, 3:1 for control edges and focus, and 7:1 for text in the high-contrast themes. It also reads the two button edge tokens, and requires every tinted button edge to keep 3:1 on `canvas`, `surface` and `surface-raised` (1.4.11), so a rebrand can't weaken a button's boundary.
 
 ```ts
 import { readFileSync } from 'node:fs'

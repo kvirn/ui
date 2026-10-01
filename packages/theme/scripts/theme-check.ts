@@ -1,13 +1,14 @@
 // `vp run theme:check`: theme.css defines every colour token in all four themes, its OS
-// fallbacks match, and every declared pair meets its WCAG contrast minimum (ADR-0013).
+// fallbacks match, and every declared pair and tinted button edge meets its WCAG contrast minimum (ADR-0013, ADR-0026).
 import { readFileSync } from 'node:fs'
+import { buttonEdgePairsPerTheme } from '../src/button-edge.ts'
 import { checkThemeCss } from '../src/check-theme.ts'
 import { contrastRequirements, themeNames } from '../src/contrast-requirements.ts'
 
 const themeCss = readFileSync(new URL('../theme.css', import.meta.url), 'utf8')
 const problems = checkThemeCss(themeCss)
 const pairCount = themeNames.reduce(
-  (total, themeName) => total + contrastRequirements[themeName].length,
+  (total, themeName) => total + contrastRequirements[themeName].length + buttonEdgePairsPerTheme,
   0,
 )
 

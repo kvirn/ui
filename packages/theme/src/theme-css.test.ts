@@ -1,15 +1,17 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vite-plus/test'
+import { mixButtonEdge, parseButtonEdgeTint } from './button-edge.ts'
 import { checkThemeCss } from './check-theme.ts'
 import { contrastRatio } from './contrast.ts'
 import { colorTokenNames, contrastRequirements, themeNames } from './contrast-requirements.ts'
-import type { ColorTokenName } from './contrast-requirements.ts'
+import type { ColorTokenName, ThemeName } from './contrast-requirements.ts'
 import {
   parseCssRules,
   readRootProperties,
   resolveThemeColors,
   themeEnvironment,
 } from './read-theme.ts'
+import type { ThemeEnvironment } from './read-theme.ts'
 
 // The shipped theme.css, the source of truth (ADR-0013). Only WCAG checks live here: contrast
 // (1.4.3, 1.4.6, 1.4.11), forced colours, and nothing that clips under 1.4.12. The look itself
@@ -147,9 +149,9 @@ describe('theme.css contrast and forced colours', () => {
             ),
           )?.declarations ?? [],
         )
-      // The edge is the border, or the fill when the border is transparent.
+      // The edge is --kv-button-edge (ADR-0026), or the fill when that is transparent.
       const edgeToken = (variant: string) => {
-        const border = hovered(variant)['border-color'] ?? ''
+        const border = hovered(variant)['--kv-button-edge'] ?? ''
         const fill = hovered(variant)['background-color'] ?? ''
         const token = /^var\(--kv-color-([\w-]+)\)$/.exec(border === 'transparent' ? fill : border)
         return token?.[1] as ColorTokenName
@@ -199,6 +201,34 @@ describe('overrides', () => {
     expect(problems).toContain('dark: on-primary on primary is 4.37:1, needs 4.5:1')
   })
 
+  it('reports a button edge tint that lowers a boundary under 3:1 (ADR-0026)', () => {
+    const problems = checkThemeCss(`${themeCss}\n:root { --kv-button-edge-shade: #ffffff 90%; }`)
+    expect(problems).toContainEqual(
+      expect.stringMatching(
+        /^light: secondary edge mixed with the shade \(#[\da-f]{6}\) on canvas is \d\.\d\d:1, needs 3:1$/,
+      ),
+    )
+    // Dark has its own value, which a plain :root can't override.
+    expect(problems.filter((problem) => problem.startsWith('dark'))).toEqual([])
+  })
+
+  it('reports button edge tokens that are missing, malformed or drifted in a fallback', () => {
+    const withoutShade = themeCss.replaceAll(/--kv-button-edge-shade:[^;]*;/g, '')
+    expect(checkThemeCss(withoutShade)).toContain('light: --kv-button-edge-shade is not defined')
+    const named = `${themeCss}\n:root { --kv-button-edge-shade: black 35%; }`
+    expect(checkThemeCss(named)).toContain(
+      'light: --kv-button-edge-shade is "black 35%", not a "#rgb or #rrggbb" colour and a percentage',
+    )
+    const drifted = themeCss.replace(
+      /(@media \(prefers-color-scheme: dark\) \{\s*:root:not\(\[data-kv-color-scheme\]\) \{[^}]*?--kv-button-edge-highlight: var\(--kv-white\) )25%/,
+      '$130%',
+    )
+    expect(drifted).not.toBe(themeCss)
+    expect(checkThemeCss(drifted)).toContain(
+      'dark: --kv-button-edge-highlight is #ffffff 25%, but #ffffff 30% in the system fallback',
+    )
+  })
+
   it('reports a copy whose colours fail, and a fallback that drifted', () => {
     const faint = `${themeCss}\n:root { --kv-neutral-600: #aeb3bb; }`
     expect(checkThemeCss(faint)).toContain('light: text-muted on canvas is 2.11:1, needs 4.5:1')
@@ -210,6 +240,127 @@ describe('overrides', () => {
     expect(checkThemeCss(drifted)).toContain(
       'dark: --kv-color-link is #828fff, but #a3acff in the system fallback',
     )
+  })
+})
+
+const buttonDepthTokens = [
+  '--kv-shadow-button',
+  '--kv-shadow-button-hover',
+  '--kv-button-edge-shade',
+  '--kv-button-edge-highlight',
+] as const
+
+/** An environment with forced colours on, whatever the theme (section 5 always matches). */
+const forcedColors = (themeName: ThemeName, source: 'attributes' | 'system'): ThemeEnvironment => {
+  const environment = themeEnvironment(themeName, source)
+  return { ...environment, media: { ...environment.media, 'forced-colors': 'active' } }
+}
+
+describe('theme.css button depth (ADR-0026, docs/design/button-depth.md)', () => {
+  const sources = ['attributes', 'system'] as const
+  const propertiesOf = (themeName: ThemeName, source: 'attributes' | 'system') =>
+    readRootProperties(themeCss, themeEnvironment(themeName, source))
+
+  it.each(themeNames)(
+    '%s: defines all four tokens, as attributes and as system fallback',
+    (themeName) => {
+      for (const source of sources) {
+        const properties = propertiesOf(themeName, source)
+        for (const token of buttonDepthTokens) {
+          expect(properties[token], `${themeName} (${source}) ${token}`).toBeDefined()
+        }
+      }
+    },
+  )
+
+  it.each(themeNames)('%s: the system fallback equals the theme', (themeName) => {
+    const theme = propertiesOf(themeName, 'attributes')
+    const fallback = propertiesOf(themeName, 'system')
+    for (const token of buttonDepthTokens) {
+      expect(fallback[token], `${themeName} ${token}`).toBe(theme[token])
+    }
+  })
+
+  it.each(['light-contrast', 'dark-contrast'] as const)(
+    '%s and forced colours: flat, with no shadow and untinted edges',
+    (themeName) => {
+      const environments = [
+        themeEnvironment(themeName, 'attributes'),
+        themeEnvironment(themeName, 'system'),
+        forcedColors(themeName, 'attributes'),
+        forcedColors(themeName, 'system'),
+      ]
+      for (const environment of environments) {
+        const properties = readRootProperties(themeCss, environment)
+        expect(properties['--kv-shadow-button']).toBe('none')
+        expect(properties['--kv-shadow-button-hover']).toBe('none')
+        expect(parseButtonEdgeTint(properties['--kv-button-edge-shade'])?.percent).toBe(0)
+        expect(parseButtonEdgeTint(properties['--kv-button-edge-highlight'])?.percent).toBe(0)
+      }
+    },
+  )
+
+  it.each(['light', 'dark'] as const)('%s: forced colours are flat too', (themeName) => {
+    for (const source of sources) {
+      const properties = readRootProperties(themeCss, forcedColors(themeName, source))
+      expect(properties['--kv-shadow-button']).toBe('none')
+      expect(properties['--kv-shadow-button-hover']).toBe('none')
+      expect(parseButtonEdgeTint(properties['--kv-button-edge-shade'])?.percent).toBe(0)
+      expect(parseButtonEdgeTint(properties['--kv-button-edge-highlight'])?.percent).toBe(0)
+    }
+  })
+
+  it('light shades the bottom edge and dark highlights the top edge, never the other way', () => {
+    const light = propertiesOf('light', 'attributes')
+    expect(parseButtonEdgeTint(light['--kv-button-edge-shade'])?.percent).toBe(35)
+    expect(parseButtonEdgeTint(light['--kv-button-edge-highlight'])?.percent).toBe(0)
+    expect(light['--kv-shadow-button']).not.toBe('none')
+    expect(light['--kv-shadow-button-hover']).not.toBe('none')
+    const dark = propertiesOf('dark', 'attributes')
+    expect(parseButtonEdgeTint(dark['--kv-button-edge-shade'])?.percent).toBe(0)
+    expect(parseButtonEdgeTint(dark['--kv-button-edge-highlight'])?.percent).toBe(25)
+    expect(dark['--kv-shadow-button']).not.toBe('none')
+    expect(dark['--kv-shadow-button-hover']).not.toBe('none')
+  })
+
+  it('every tinted edge is the colour in the design spec and keeps 3:1 on every surface', () => {
+    // docs/design/button-depth.md, section 10, "Resulting edges".
+    const expected = {
+      light: {
+        shade: {
+          secondary: '#4b4e55',
+          primary: '#424b8e',
+          danger: '#7a1f2f',
+          'danger-hover': '#671a28',
+        },
+      },
+      dark: {
+        highlight: {
+          secondary: '#90949b',
+          primary: '#868fdd',
+          danger: '#ffa7b3',
+          'danger-hover': '#ffc6ce',
+        },
+      },
+    } as const
+    for (const themeName of ['light', 'dark'] as const) {
+      const colors = resolveThemeColors(themeCss, themeName)
+      const properties = propertiesOf(themeName, 'attributes')
+      const tint = themeName === 'light' ? 'shade' : 'highlight'
+      const partner = parseButtonEdgeTint(properties[`--kv-button-edge-${tint}`])
+      if (partner === undefined) {
+        throw new Error(`${themeName}: --kv-button-edge-${tint} is not a colour and a percentage`)
+      }
+      const table: Record<string, string> =
+        themeName === 'light' ? expected.light.shade : expected.dark.highlight
+      for (const [base, hex] of Object.entries(table)) {
+        const mixed = mixButtonEdge(colors[base as ColorTokenName] ?? '', partner)
+        expect(mixed, `${themeName} ${base}`).toBe(hex)
+        for (const background of ['canvas', 'surface', 'surface-raised'] as const) {
+          expect(contrastRatio(mixed, colors[background] ?? '')).toBeGreaterThanOrEqual(3)
+        }
+      }
+    }
   })
 })
 

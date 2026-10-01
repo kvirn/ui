@@ -1,0 +1,1618 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Button depth: five gentle variations · KvirnUI design exploration</title>
+    <!-- Throwaway prototype for docs/design/button-depth.md. Self-contained: no network requests.
+     Generated once from a script, then committed as plain HTML. Not library code. -->
+    <style>
+      /* IBM Plex Sans, from the docs site's copy (ADR-0027), if the browser lets a file:// page load
+       * it. Otherwise the system stack, which is fine for judging depth. */
+      @import url('../../../apps/docs/fonts/ibm-plex/ibm-plex.css');
+
+      /* ---------------------------------------------------------------------------------------------
+ * Palette: copied from packages/theme/theme.css, section 1, on 2026-10-01. A throwaway copy so this
+ * file opens from disk with no build and no network. If theme.css changes, these go stale.
+ * ------------------------------------------------------------------------------------------- */
+      :root {
+        --kv-white: #ffffff;
+        --kv-black: #010102;
+        --kv-neutral-50: #f7f8f8;
+        --kv-neutral-100: #e4e5e7;
+        --kv-neutral-200: #d0d6e0;
+        --kv-neutral-300: #aeb3bb;
+        --kv-neutral-400: #8a8f98;
+        --kv-neutral-500: #6b7079;
+        --kv-neutral-600: #5d6169;
+        --kv-neutral-700: #3a3d45;
+        --kv-neutral-800: #23252a;
+        --kv-neutral-900: #18191a;
+        --kv-neutral-950: #0f1011;
+        --kv-primary-50: #eff0fb;
+        --kv-primary-100: #cdd0ff;
+        --kv-primary-200: #b3b8ff;
+        --kv-primary-300: #a3acff;
+        --kv-primary-400: #828fff;
+        --kv-primary-500: #5e6ad2;
+        --kv-primary-600: #4f5ac0;
+        --kv-primary-700: #434db3;
+        --kv-primary-800: #2c35a0;
+        --kv-primary-900: #1f2780;
+        --kv-primary-950: #1e2140;
+        --kv-secondary-50: var(--kv-neutral-50);
+        --kv-secondary-100: var(--kv-neutral-100);
+        --kv-secondary-200: var(--kv-neutral-200);
+        --kv-secondary-300: var(--kv-neutral-300);
+        --kv-secondary-400: var(--kv-neutral-400);
+        --kv-secondary-500: var(--kv-neutral-500);
+        --kv-secondary-600: var(--kv-neutral-600);
+        --kv-secondary-700: var(--kv-neutral-700);
+        --kv-secondary-800: var(--kv-neutral-800);
+        --kv-secondary-900: var(--kv-neutral-900);
+        --kv-secondary-950: var(--kv-neutral-950);
+
+        --kv-font-family-system:
+          system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial,
+          sans-serif;
+        --kv-font-family-sans: 'IBM Plex Sans', var(--kv-font-family-system);
+        --kv-radius-md: 8px;
+        --kv-radius-lg: 12px;
+        --kv-focus-ring-width: 2px;
+        --kv-focus-ring-offset: 2px;
+        --kv-duration-fast: 120ms;
+        --kv-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+      }
+
+      /* ---------------------------------------------------------------------------------------------
+ * Semantic tokens per panel. Same steps as theme.css sections 2 and 3. on-secondary and
+ * secondary-hover are PROPOSED (a filled secondary button doesn't exist today).
+ * ------------------------------------------------------------------------------------------- */
+      .t-light {
+        color-scheme: light;
+        --kv-color-canvas: var(--kv-white);
+        --kv-color-surface: var(--kv-neutral-50);
+        --kv-color-surface-raised: var(--kv-white);
+        --kv-color-border-subtle: var(--kv-neutral-100);
+        --kv-color-border-control: var(--kv-neutral-500);
+        --kv-color-secondary: var(--kv-secondary-500);
+        --kv-color-secondary-hover: var(--kv-secondary-600); /* proposed */
+        --kv-color-on-secondary: var(--kv-white); /* proposed */
+        --kv-color-text: var(--kv-neutral-950);
+        --kv-color-text-muted: var(--kv-neutral-600);
+        --kv-color-primary: var(--kv-primary-500);
+        --kv-color-primary-hover: var(--kv-primary-600);
+        --kv-color-on-primary: var(--kv-white);
+        --kv-color-primary-subtle: var(--kv-primary-50);
+        --kv-color-link: var(--kv-primary-600);
+        --kv-color-link-hover: var(--kv-primary-700);
+        --kv-color-focus-ring: var(--kv-primary-500);
+      }
+      .t-dark {
+        color-scheme: dark;
+        --kv-color-canvas: var(--kv-black);
+        --kv-color-surface: var(--kv-neutral-950);
+        --kv-color-surface-raised: var(--kv-neutral-900);
+        --kv-color-border-subtle: var(--kv-neutral-800);
+        --kv-color-border-control: var(--kv-neutral-500);
+        --kv-color-secondary: var(--kv-secondary-500);
+        --kv-color-secondary-hover: var(--kv-secondary-600); /* proposed */
+        --kv-color-on-secondary: var(--kv-white); /* proposed */
+        --kv-color-text: var(--kv-neutral-50);
+        --kv-color-text-muted: var(--kv-neutral-400);
+        --kv-color-primary: var(--kv-primary-500);
+        --kv-color-primary-hover: var(--kv-primary-600);
+        --kv-color-on-primary: var(--kv-white);
+        --kv-color-primary-subtle: var(--kv-primary-950);
+        --kv-color-link: var(--kv-primary-400);
+        --kv-color-link-hover: var(--kv-primary-300);
+        --kv-color-focus-ring: var(--kv-primary-400);
+      }
+      /* The contrast themes, switched by the "Contrast" control at the top. */
+      .contrast-more .t-light {
+        --kv-color-border-subtle: var(--kv-neutral-500);
+        --kv-color-border-control: var(--kv-neutral-700);
+        --kv-color-secondary: var(--kv-secondary-700);
+        --kv-color-secondary-hover: var(--kv-secondary-800);
+        --kv-color-on-secondary: var(--kv-white);
+        --kv-color-text: var(--kv-black);
+        --kv-color-text-muted: var(--kv-neutral-700);
+        --kv-color-primary: var(--kv-primary-800);
+        --kv-color-primary-hover: var(--kv-primary-900);
+        --kv-color-link: var(--kv-primary-800);
+        --kv-color-link-hover: var(--kv-primary-900);
+        --kv-color-focus-ring: var(--kv-primary-800);
+      }
+      .contrast-more .t-dark {
+        --kv-color-border-subtle: var(--kv-neutral-400);
+        --kv-color-border-control: var(--kv-neutral-200);
+        --kv-color-secondary: var(--kv-secondary-200);
+        --kv-color-secondary-hover: var(--kv-secondary-100);
+        --kv-color-on-secondary: var(--kv-black);
+        --kv-color-text: var(--kv-white);
+        --kv-color-text-muted: var(--kv-neutral-200);
+        --kv-color-primary: var(--kv-primary-200);
+        --kv-color-primary-hover: var(--kv-primary-100);
+        --kv-color-on-primary: var(--kv-black);
+        --kv-color-link: var(--kv-primary-200);
+        --kv-color-link-hover: var(--kv-primary-100);
+        --kv-color-focus-ring: var(--kv-primary-200);
+      }
+
+      /* ---------------------------------------------------------------------------------------------
+ * Page chrome (not part of the proposal)
+ * ------------------------------------------------------------------------------------------- */
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        font-family: var(--kv-font-family-sans);
+        line-height: 1.5;
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        margin: 0;
+        background: var(--kv-color-canvas);
+        color: var(--kv-color-text);
+      }
+      .page {
+        max-inline-size: 110rem;
+        margin-inline: auto;
+        padding: 2rem 1rem 4rem;
+      }
+      h1 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        letter-spacing: -0.021em;
+        line-height: 1.2;
+        margin: 0 0 1rem;
+      }
+      h2 {
+        font-size: 1.375rem;
+        font-weight: 500;
+        letter-spacing: -0.018em;
+        line-height: 1.25;
+        margin: 0 0 0.5rem;
+      }
+      h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        line-height: 1.4;
+        margin: 0 0 0.75rem;
+      }
+      p {
+        margin: 0 0 1rem;
+        max-inline-size: 70ch;
+      }
+      .intro li {
+        max-inline-size: 70ch;
+        margin-block-end: 0.25rem;
+      }
+      a {
+        color: var(--kv-color-link);
+        text-underline-offset: 0.15em;
+      }
+      a:focus-visible,
+      .scroll:focus-visible,
+      input:focus-visible {
+        outline: 2px solid var(--kv-color-focus-ring);
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+      .toc {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 1.5rem;
+        padding: 0;
+        list-style: none;
+        margin: 0 0 2rem;
+      }
+      .controls {
+        border: 1px solid var(--kv-color-border-subtle);
+        border-radius: var(--kv-radius-lg);
+        padding: 0.75rem 1rem 1rem;
+        margin: 0 0 1.5rem;
+        max-inline-size: 40rem;
+      }
+      .controls legend {
+        font-weight: 600;
+        padding-inline: 0.25rem;
+      }
+      .controls label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-block-size: 2.75rem;
+        margin-inline-end: 1.5rem;
+      }
+      .controls input {
+        inline-size: 1.25rem;
+        block-size: 1.25rem;
+        accent-color: var(--kv-color-primary);
+      }
+      .variation {
+        border-block-start: 1px solid var(--kv-color-border-subtle);
+        padding-block: 2rem;
+      }
+      .summary {
+        font-size: 1.125rem;
+      }
+      .measured {
+        color: var(--kv-color-text);
+      }
+      .panels {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 46rem), 1fr));
+      }
+      .panel {
+        background: var(--kv-color-canvas);
+        color: var(--kv-color-text);
+        border: 1px solid var(--kv-color-border-subtle);
+        border-radius: var(--kv-radius-lg);
+        padding: 1.25rem;
+        min-inline-size: 0;
+      }
+      .scroll {
+        overflow-x: auto;
+        margin-block-end: 1.25rem;
+      }
+      table {
+        border-collapse: collapse;
+        inline-size: 100%;
+      }
+      caption {
+        text-align: start;
+        font-size: 0.875rem;
+        color: var(--kv-color-text-muted);
+        padding-block-end: 0.5rem;
+      }
+      th {
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-align: start;
+        padding: 0.5rem;
+        white-space: nowrap;
+      }
+      td {
+        padding: 0.75rem 0.5rem;
+        vertical-align: middle;
+      }
+      td > .b {
+        white-space: nowrap;
+      }
+      thead th {
+        border-block-end: 1px solid var(--kv-color-border-subtle);
+      }
+      .card {
+        background: var(--kv-color-surface-raised);
+        border: 1px solid var(--kv-color-border-subtle);
+        border-radius: var(--kv-radius-lg);
+        padding: 1.25rem;
+        max-inline-size: 34rem;
+      }
+      .card-title {
+        font-weight: 600;
+        margin-block-end: 0.25rem;
+      }
+      .group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+        margin-block-start: 0.75rem;
+      }
+      @media (width < 40rem) {
+        .group {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .group > .b {
+          inline-size: 100%;
+        }
+      }
+
+      /* ---------------------------------------------------------------------------------------------
+ * The button. Mirrors theme.css section 7, restructured so each state only sets "-now"
+ * variables and one rule applies them. The depth tokens (--d-*) are declared on the button
+ * itself, per variation and theme, because some refer to --fill-now or --edge-now and a
+ * custom property is resolved where it is declared.
+ *
+ *   .b                       secondary, outlined (today's base look)
+ *   .b.b--primary            primary, filled (today's kv-button--primary)
+ *   .b.b--secondary          secondary, filled (PROPOSED)
+ *   .b.b--primary-outline    primary, outlined (PROPOSED)
+ *   .is-hover / .is-active / .is-focus / .is-disabled  force a state for the static grid
+ * ------------------------------------------------------------------------------------------- */
+      .b {
+        --fill: var(--kv-color-surface-raised);
+        --fill-hover: var(--kv-color-primary-subtle);
+        --label: var(--kv-color-text);
+        --label-hover: var(--kv-color-text);
+        --edge: var(--kv-color-secondary);
+        --edge-hover: var(--kv-color-primary);
+        --depth: var(--d-outline, none);
+        --depth-hover: var(--d-outline-hover, var(--depth));
+        --depth-active: var(--d-outline-active, var(--depth));
+        --image: var(--i-outline, none);
+        --image-active: var(--i-outline-active, var(--image));
+
+        --fill-now: var(--fill);
+        --label-now: var(--label);
+        --edge-now: var(--edge);
+        --depth-now: var(--depth);
+        --image-now: var(--image);
+        --press-now: 0px;
+
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        box-sizing: border-box;
+        min-block-size: 2.75rem;
+        max-inline-size: 100%;
+        margin: 0;
+        padding-block: 0.5rem;
+        padding-inline: 1rem;
+        border: 1px solid var(--edge-now);
+        border-radius: var(--kv-radius-md);
+        background-color: var(--fill-now);
+        background-image: var(--image-now);
+        box-shadow: var(--depth-now);
+        color: var(--label-now);
+        font: 500 1rem/1.4 var(--kv-font-family-sans);
+        text-align: center;
+        overflow-wrap: break-word;
+        transform: translateY(var(--press-now));
+        cursor: pointer;
+      }
+      .b--primary {
+        --fill: var(--kv-color-primary);
+        --fill-hover: var(--kv-color-primary-hover);
+        --label: var(--kv-color-on-primary);
+        --label-hover: var(--kv-color-on-primary);
+        --edge: transparent;
+        --edge-hover: var(
+          --kv-color-primary
+        ); /* ADR-0021: the edge stays at 3:1 on surface-raised in dark */
+      }
+      .b--secondary {
+        --fill: var(--kv-color-secondary);
+        --fill-hover: var(--kv-color-secondary-hover);
+        --label: var(--kv-color-on-secondary);
+        --label-hover: var(--kv-color-on-secondary);
+        --edge: transparent;
+        --edge-hover: var(
+          --kv-color-secondary
+        ); /* same reason: secondary-hover is 2.83:1 on surface-raised in dark */
+      }
+      .b--primary-outline {
+        --label: var(--kv-color-link);
+        --label-hover: var(--kv-color-link-hover);
+        --edge: var(--kv-color-primary);
+        --edge-hover: var(--kv-color-primary);
+      }
+      .b:is(.b--primary, .b--secondary) {
+        --depth: var(--d-filled, none);
+        --depth-hover: var(--d-filled-hover, var(--depth));
+        --depth-active: var(--d-filled-active, var(--depth));
+        --image: var(--i-filled, none);
+        --image-active: var(--i-filled-active, var(--image));
+      }
+      .b:not(.is-disabled, :disabled):is(:hover, .is-hover) {
+        --fill-now: var(--fill-hover);
+        --label-now: var(--label-hover);
+        --edge-now: var(--edge-hover);
+        --depth-now: var(--depth-hover);
+      }
+      .b:not(.is-disabled, :disabled):is(:active, .is-active) {
+        --fill-now: var(--fill-hover);
+        --label-now: var(--label-hover);
+        --edge-now: var(--edge-hover);
+        --depth-now: var(--depth-active);
+        --image-now: var(--image-active);
+        --press-now: var(--press, 0px);
+      }
+      .b:is(:focus-visible, .is-focus) {
+        outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+        outline-offset: var(--ring-offset, var(--kv-focus-ring-offset));
+      }
+      /* Disabled is always flat: losing the depth is one more cue that it can't be used. */
+      .b:is(.is-disabled, :disabled) {
+        --fill-now: var(--kv-color-surface);
+        --label-now: var(--kv-color-text-muted);
+        --edge-now: var(--kv-color-border-control);
+        --depth-now: none;
+        --image-now: none;
+        --press-now: 0px;
+        border-style: dashed;
+        cursor: not-allowed;
+      }
+
+      /* A. Soft lift ------------------------------------------------------------------------------- */
+      .v-a .t-light .b {
+        --d-filled:
+          inset 0 1px 0 rgb(255 255 255 / 0.2), 0 1px 2px rgb(15 16 17 / 0.12),
+          0 1px 3px rgb(15 16 17 / 0.06);
+        --d-filled-hover:
+          inset 0 1px 0 rgb(255 255 255 / 0.2), 0 2px 4px rgb(15 16 17 / 0.12),
+          0 1px 2px rgb(15 16 17 / 0.06);
+        --d-filled-active: inset 0 1px 2px rgb(15 16 17 / 0.25);
+        --d-outline: 0 1px 2px rgb(15 16 17 / 0.08);
+        --d-outline-hover: 0 2px 4px rgb(15 16 17 / 0.1);
+        --d-outline-active: inset 0 1px 2px rgb(15 16 17 / 0.1);
+      }
+      .v-a .t-dark .b {
+        --d-filled: inset 0 1px 0 rgb(255 255 255 / 0.16), 0 1px 2px rgb(1 1 2 / 0.6);
+        --d-filled-hover: inset 0 1px 0 rgb(255 255 255 / 0.2), 0 2px 4px rgb(1 1 2 / 0.6);
+        --d-filled-active: inset 0 1px 2px rgb(1 1 2 / 0.45);
+        --d-outline: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 1px 2px rgb(1 1 2 / 0.6);
+        --d-outline-hover: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 2px 4px rgb(1 1 2 / 0.6);
+        --d-outline-active: inset 0 1px 2px rgb(1 1 2 / 0.5);
+      }
+
+      /* B. Gentle gradient: the top stop is always the token. Never lighter behind the label. ------- */
+      .v-b .t-light .b {
+        --i-filled: linear-gradient(to bottom, rgb(15 16 17 / 0), rgb(15 16 17 / 0.1));
+        --i-filled-active: linear-gradient(to bottom, rgb(15 16 17 / 0.1), rgb(15 16 17 / 0));
+        --i-outline: linear-gradient(to bottom, rgb(15 16 17 / 0), rgb(15 16 17 / 0.035));
+        --i-outline-active: linear-gradient(to bottom, rgb(15 16 17 / 0.035), rgb(15 16 17 / 0));
+      }
+      .v-b .t-dark .b {
+        --i-filled: linear-gradient(to bottom, rgb(1 1 2 / 0), rgb(1 1 2 / 0.14));
+        --i-filled-active: linear-gradient(to bottom, rgb(1 1 2 / 0.14), rgb(1 1 2 / 0));
+        /* Dark outlined: a lighter top, measured against the label (link 5.36:1, text 14.45:1). */
+        --i-outline: linear-gradient(to bottom, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0));
+        --i-outline-active: linear-gradient(to bottom, rgb(1 1 2 / 0.2), rgb(1 1 2 / 0));
+      }
+
+      /* C. Hairline bevel: inset lines only, nothing outside the border box. ------------------------- */
+      .v-c .t-light .b {
+        --d-filled: inset 0 1px 0 rgb(255 255 255 / 0.22), inset 0 -1px 0 rgb(15 16 17 / 0.2);
+        --d-filled-active: inset 0 1px 0 rgb(15 16 17 / 0.2), inset 0 -1px 0 rgb(255 255 255 / 0.1);
+        --d-outline: inset 0 -1px 0 rgb(15 16 17 / 0.08);
+        --d-outline-active: inset 0 1px 0 rgb(15 16 17 / 0.1);
+      }
+      .v-c .t-dark .b {
+        --d-filled: inset 0 1px 0 rgb(255 255 255 / 0.2), inset 0 -1px 0 rgb(1 1 2 / 0.3);
+        --d-filled-active: inset 0 1px 0 rgb(1 1 2 / 0.3), inset 0 -1px 0 rgb(255 255 255 / 0.08);
+        --d-outline: inset 0 1px 0 rgb(255 255 255 / 0.08), inset 0 -1px 0 rgb(1 1 2 / 0.4);
+        --d-outline-active: inset 0 1px 0 rgb(1 1 2 / 0.4), inset 0 -1px 0 rgb(255 255 255 / 0.05);
+      }
+
+      /* D. Grounded: ambient shadow and a darker bottom edge (light), a lighter top edge (dark). ----- */
+      .v-d .t-light .b {
+        --d-filled: 0 1px 2px rgb(15 16 17 / 0.06), 0 2px 6px -1px rgb(15 16 17 / 0.12);
+        --d-filled-hover: 0 1px 2px rgb(15 16 17 / 0.06), 0 4px 10px -2px rgb(15 16 17 / 0.12);
+        --d-filled-active: none;
+        --d-outline: var(--d-filled);
+        --d-outline-hover: var(--d-filled-hover);
+        --d-outline-active: none;
+        /* With a transparent edge (filled buttons) this is ink at 35% over the fill. */
+        border-block-end-color: color-mix(in srgb, var(--edge-now) 65%, rgb(15 16 17));
+      }
+      .v-d .t-dark .b {
+        --d-filled: 0 1px 2px rgb(1 1 2 / 0.6);
+        --d-filled-hover: 0 2px 6px rgb(1 1 2 / 0.6);
+        --d-filled-active: none;
+        --d-outline: var(--d-filled);
+        --d-outline-hover: var(--d-filled-hover);
+        --d-outline-active: none;
+        border-block-start-color: color-mix(in srgb, var(--edge-now) 75%, rgb(255 255 255));
+        /* No darker bottom edge in dark: 60% edge + black is 1.80-2.20:1 on canvas, surface and
+         * surface-raised, below the 3:1 a control edge must keep. The bottom keeps the token edge. */
+      }
+      .v-d .panel .b:is(.is-disabled, :disabled),
+      .v-d .panel .b:not(.is-disabled, :disabled):is(:active, .is-active) {
+        border-block-start-color: var(--edge-now);
+        border-block-end-color: var(--edge-now);
+      }
+
+      /* E. Tactile press: a 2px ledge, and the button moves onto it when pressed. ------------------- */
+      .v-e .b {
+        --press: 2px;
+        /* 2px past the ledge, so the ring never touches it (ring vs ledge would be 1.70:1 in light). */
+        --ring-offset: calc(var(--kv-focus-ring-offset) + 2px);
+      }
+      /* Keep the hit area under the pointer while the button moves down (as GOV.UK does), so a
+ * press near the top edge still fires. */
+      .v-e .b::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+      }
+      .v-e .b:not(:disabled):active::before {
+        inset-block-start: calc(-1px - var(--press));
+      }
+      .v-e .t-light .b {
+        --d-filled:
+          inset 0 1px 0 rgb(255 255 255 / 0.14),
+          0 2px 0 color-mix(in srgb, var(--fill-now) 65%, rgb(15 16 17));
+        --d-filled-active: inset 0 1px 1px rgb(15 16 17 / 0.2);
+        --d-outline: 0 2px 0 color-mix(in srgb, var(--edge-now) 40%, transparent);
+        --d-outline-active: inset 0 1px 1px rgb(15 16 17 / 0.08);
+      }
+      .v-e .t-dark .b {
+        --d-filled:
+          inset 0 1px 0 rgb(255 255 255 / 0.16),
+          0 2px 0 color-mix(in srgb, var(--fill-now) 55%, rgb(1 1 2));
+        --d-filled-active: inset 0 1px 1px rgb(1 1 2 / 0.5);
+        --d-outline:
+          inset 0 1px 0 rgb(255 255 255 / 0.06),
+          0 2px 0 color-mix(in srgb, var(--edge-now) 50%, rgb(1 1 2));
+        --d-outline-active: inset 0 1px 1px rgb(1 1 2 / 0.5);
+      }
+
+      /* Contrast themes: proposed flat. The user asked for maximum clarity, so the solid fill and
+ * the edge carry everything, and no stop differs from the measured 7:1 token. */
+      body.contrast-more .panel .b {
+        --d-filled: none;
+        --d-filled-hover: none;
+        --d-filled-active: none;
+        --d-outline: none;
+        --d-outline-hover: none;
+        --d-outline-active: none;
+        --i-filled: none;
+        --i-filled-active: none;
+        --i-outline: none;
+        --i-outline-active: none;
+      }
+      body.contrast-more .v-d .panel .b {
+        border-block-start-color: var(--edge-now);
+        border-block-end-color: var(--edge-now);
+      }
+
+      /* Motion: only with no-preference. Under reduce, every change is instant, including E's
+ * 2px move (an instant 2px shift is a state change, not an animation). */
+      @media (prefers-reduced-motion: no-preference) {
+        .b {
+          transition-property: background-color, border-color, color, box-shadow, transform;
+          transition-duration: var(--kv-duration-fast);
+          transition-timing-function: var(--kv-easing-standard);
+        }
+      }
+
+      /* Forced colours (Windows contrast themes). Browsers already drop box-shadow and gradient
+ * images here; this says so explicitly and keeps theme.css section 7's rules. */
+      @media (forced-colors: active) {
+        :root .panel .b {
+          box-shadow: none;
+          background-image: none;
+          border-color: ButtonText;
+          background-color: ButtonFace;
+          color: ButtonText;
+        }
+        :root .panel .b:not(.is-disabled, :disabled):is(:hover, :active, .is-hover, .is-active) {
+          border-color: Highlight;
+          background-color: ButtonFace;
+        }
+        .b:is(:focus-visible, .is-focus) {
+          outline-color: Highlight;
+        }
+        :root .panel .b:is(.is-disabled, :disabled) {
+          border-style: dashed;
+          border-color: GrayText;
+          color: GrayText;
+        }
+      }
+
+      .skip {
+        position: absolute;
+        inset-inline-start: 1rem;
+        inset-block-start: -10rem;
+        background: #fff;
+        color: #0f1011;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+      }
+      .skip:focus {
+        inset-block-start: 1rem;
+        outline: 2px solid #5e6ad2;
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body class="t-light">
+    <a class="skip" href="#main">Skip to the variations</a>
+    <div class="page">
+      <header>
+        <h1>Button depth: five gentle variations</h1>
+        <p>
+          An exploration for the project owner, not a decision. DESIGN.md still says the look is
+          flat. Spec, values, measurements and open questions:
+          <a href="../button-depth.md">docs/design/button-depth.md</a>.
+        </p>
+        <ul class="intro">
+          <li>
+            Every variation keeps the label on the measured token colour, or on a darker stop of it.
+            Nothing is ever lighter behind a white label: even 4% white over primary drops it to
+            4.37:1.
+          </li>
+          <li>
+            Edges keep 3:1 (1.4.11), the focus ring is 2px with a 2px offset (4px in E, past its
+            ledge), hover darkens filled buttons, and every button is at least 44px high.
+          </li>
+          <li>
+            Disabled stays flat and dashed in every variation, so losing the depth is one more cue.
+          </li>
+          <li>
+            Hover, pressed and focus are forced in the grid. The buttons in each card are live:
+            hover, press and Tab to them.
+          </li>
+          <li>
+            Forced colours: emulate them in DevTools (Rendering, "Emulate CSS media feature
+            forced-colors"). Reduced motion: the same panel, prefers-reduced-motion.
+          </li>
+        </ul>
+        <fieldset class="controls">
+          <legend>Contrast</legend>
+          <label><input type="radio" name="contrast" value="standard" checked /> Standard</label>
+          <label
+            ><input type="radio" name="contrast" value="more" /> More (contrast themes, proposed
+            flat)</label
+          >
+        </fieldset>
+        <nav aria-label="Variations">
+          <ul class="toc">
+            <li><a href="#v-flat">Baseline</a></li>
+            <li><a href="#v-a">A. Soft lift</a></li>
+            <li><a href="#v-b">B. Gentle gradient</a></li>
+            <li><a href="#v-c">C. Hairline bevel</a></li>
+            <li><a href="#v-d">D. Grounded</a></li>
+            <li><a href="#v-e">E. Tactile press</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main id="main">
+        <section class="variation v-flat" id="v-flat" aria-labelledby="v-flat-h">
+          <h2 id="v-flat-h">Today: flat (baseline)</h2>
+          <p class="summary">
+            The current theme, for comparison. No highlight, no shade: the fill or the 1px edge is
+            the only cue.
+          </p>
+          <p class="measured">
+            <strong>Measured:</strong> Labels sit on the flat tokens: lowest 4.70:1 (white on
+            primary, both themes).
+          </p>
+          <div class="panels">
+            <div class="panel t-light">
+              <h3>Light canvas</h3>
+              <div class="scroll" role="region" tabindex="0" aria-labelledby="flat-light-caption">
+                <table>
+                  <caption id="flat-light-caption">
+                    Baseline, light canvas: forced states (the live buttons are in the card below)
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Button</th>
+                      <th scope="col">Default</th>
+                      <th scope="col">Hover</th>
+                      <th scope="col">Pressed</th>
+                      <th scope="col">Focus visible</th>
+                      <th scope="col">Disabled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Primary, filled</th>
+                      <td><span class="b b--primary">Continue</span></td>
+                      <td><span class="b b--primary is-hover">Continue</span></td>
+                      <td><span class="b b--primary is-active">Continue</span></td>
+                      <td><span class="b b--primary is-focus">Continue</span></td>
+                      <td><span class="b b--primary is-disabled">Continue</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, filled</th>
+                      <td><span class="b b--secondary">Save draft</span></td>
+                      <td><span class="b b--secondary is-hover">Save draft</span></td>
+                      <td><span class="b b--secondary is-active">Save draft</span></td>
+                      <td><span class="b b--secondary is-focus">Save draft</span></td>
+                      <td><span class="b b--secondary is-disabled">Save draft</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Primary, outlined</th>
+                      <td><span class="b b--primary-outline">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-hover">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-active">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-focus">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-disabled">Add a file</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, outlined</th>
+                      <td><span class="b">Back</span></td>
+                      <td><span class="b is-hover">Back</span></td>
+                      <td><span class="b is-active">Back</span></td>
+                      <td><span class="b is-focus">Back</span></td>
+                      <td><span class="b is-disabled">Back</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card">
+                <p class="card-title">Live, in a card (surface-raised)</p>
+                <p>
+                  Hover, press and Tab to these. Comparison only: a real view has one primary
+                  action. The Finnish label shows wrapping.
+                </p>
+                <div class="group">
+                  <button type="button" class="b b--primary">Send application</button>
+                  <button type="button" class="b">Tallenna ja jatka myöhemmin</button>
+                </div>
+                <div class="group">
+                  <button type="button" class="b b--secondary">Print summary</button>
+                  <button type="button" class="b b--primary-outline">Add a file</button>
+                  <button type="button" class="b" disabled>Unavailable</button>
+                </div>
+              </div>
+            </div>
+            <div class="panel t-dark">
+              <h3>Dark canvas</h3>
+              <div class="scroll" role="region" tabindex="0" aria-labelledby="flat-dark-caption">
+                <table>
+                  <caption id="flat-dark-caption">
+                    Baseline, dark canvas: forced states (the live buttons are in the card below)
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Button</th>
+                      <th scope="col">Default</th>
+                      <th scope="col">Hover</th>
+                      <th scope="col">Pressed</th>
+                      <th scope="col">Focus visible</th>
+                      <th scope="col">Disabled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Primary, filled</th>
+                      <td><span class="b b--primary">Continue</span></td>
+                      <td><span class="b b--primary is-hover">Continue</span></td>
+                      <td><span class="b b--primary is-active">Continue</span></td>
+                      <td><span class="b b--primary is-focus">Continue</span></td>
+                      <td><span class="b b--primary is-disabled">Continue</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, filled</th>
+                      <td><span class="b b--secondary">Save draft</span></td>
+                      <td><span class="b b--secondary is-hover">Save draft</span></td>
+                      <td><span class="b b--secondary is-active">Save draft</span></td>
+                      <td><span class="b b--secondary is-focus">Save draft</span></td>
+                      <td><span class="b b--secondary is-disabled">Save draft</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Primary, outlined</th>
+                      <td><span class="b b--primary-outline">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-hover">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-active">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-focus">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-disabled">Add a file</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, outlined</th>
+                      <td><span class="b">Back</span></td>
+                      <td><span class="b is-hover">Back</span></td>
+                      <td><span class="b is-active">Back</span></td>
+                      <td><span class="b is-focus">Back</span></td>
+                      <td><span class="b is-disabled">Back</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card">
+                <p class="card-title">Live, in a card (surface-raised)</p>
+                <p>
+                  Hover, press and Tab to these. Comparison only: a real view has one primary
+                  action. The Finnish label shows wrapping.
+                </p>
+                <div class="group">
+                  <button type="button" class="b b--primary">Send application</button>
+                  <button type="button" class="b">Tallenna ja jatka myöhemmin</button>
+                </div>
+                <div class="group">
+                  <button type="button" class="b b--secondary">Print summary</button>
+                  <button type="button" class="b b--primary-outline">Add a file</button>
+                  <button type="button" class="b" disabled>Unavailable</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="variation v-a" id="v-a" aria-labelledby="v-a-h">
+          <h2 id="v-a-h">A. Soft lift</h2>
+          <p class="summary">
+            A 1px inner highlight along the top edge and a soft, short shade below. Pressed swaps
+            both for a faint inner shade. In dark, the highlight carries the depth, because a shadow
+            on near-black is not seen.
+          </p>
+          <p class="measured">
+            <strong>Measured:</strong> Labels sit on the flat tokens, so the lowest label pair stays
+            4.70:1. Focus ring against the shadowed gap (worst pixel): 3.23:1 on canvas, 3.04:1 on
+            surface.
+          </p>
+          <div class="panels">
+            <div class="panel t-light">
+              <h3>Light canvas</h3>
+              <div class="scroll" role="region" tabindex="0" aria-labelledby="a-light-caption">
+                <table>
+                  <caption id="a-light-caption">
+                    A, light canvas: forced states (the live buttons are in the card below)
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Button</th>
+                      <th scope="col">Default</th>
+                      <th scope="col">Hover</th>
+                      <th scope="col">Pressed</th>
+                      <th scope="col">Focus visible</th>
+                      <th scope="col">Disabled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Primary, filled</th>
+                      <td><span class="b b--primary">Continue</span></td>
+                      <td><span class="b b--primary is-hover">Continue</span></td>
+                      <td><span class="b b--primary is-active">Continue</span></td>
+                      <td><span class="b b--primary is-focus">Continue</span></td>
+                      <td><span class="b b--primary is-disabled">Continue</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, filled</th>
+                      <td><span class="b b--secondary">Save draft</span></td>
+                      <td><span class="b b--secondary is-hover">Save draft</span></td>
+                      <td><span class="b b--secondary is-active">Save draft</span></td>
+                      <td><span class="b b--secondary is-focus">Save draft</span></td>
+                      <td><span class="b b--secondary is-disabled">Save draft</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Primary, outlined</th>
+                      <td><span class="b b--primary-outline">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-hover">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-active">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-focus">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-disabled">Add a file</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, outlined</th>
+                      <td><span class="b">Back</span></td>
+                      <td><span class="b is-hover">Back</span></td>
+                      <td><span class="b is-active">Back</span></td>
+                      <td><span class="b is-focus">Back</span></td>
+                      <td><span class="b is-disabled">Back</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card">
+                <p class="card-title">Live, in a card (surface-raised)</p>
+                <p>
+                  Hover, press and Tab to these. Comparison only: a real view has one primary
+                  action. The Finnish label shows wrapping.
+                </p>
+                <div class="group">
+                  <button type="button" class="b b--primary">Send application</button>
+                  <button type="button" class="b">Tallenna ja jatka myöhemmin</button>
+                </div>
+                <div class="group">
+                  <button type="button" class="b b--secondary">Print summary</button>
+                  <button type="button" class="b b--primary-outline">Add a file</button>
+                  <button type="button" class="b" disabled>Unavailable</button>
+                </div>
+              </div>
+            </div>
+            <div class="panel t-dark">
+              <h3>Dark canvas</h3>
+              <div class="scroll" role="region" tabindex="0" aria-labelledby="a-dark-caption">
+                <table>
+                  <caption id="a-dark-caption">
+                    A, dark canvas: forced states (the live buttons are in the card below)
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Button</th>
+                      <th scope="col">Default</th>
+                      <th scope="col">Hover</th>
+                      <th scope="col">Pressed</th>
+                      <th scope="col">Focus visible</th>
+                      <th scope="col">Disabled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Primary, filled</th>
+                      <td><span class="b b--primary">Continue</span></td>
+                      <td><span class="b b--primary is-hover">Continue</span></td>
+                      <td><span class="b b--primary is-active">Continue</span></td>
+                      <td><span class="b b--primary is-focus">Continue</span></td>
+                      <td><span class="b b--primary is-disabled">Continue</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, filled</th>
+                      <td><span class="b b--secondary">Save draft</span></td>
+                      <td><span class="b b--secondary is-hover">Save draft</span></td>
+                      <td><span class="b b--secondary is-active">Save draft</span></td>
+                      <td><span class="b b--secondary is-focus">Save draft</span></td>
+                      <td><span class="b b--secondary is-disabled">Save draft</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Primary, outlined</th>
+                      <td><span class="b b--primary-outline">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-hover">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-active">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-focus">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-disabled">Add a file</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, outlined</th>
+                      <td><span class="b">Back</span></td>
+                      <td><span class="b is-hover">Back</span></td>
+                      <td><span class="b is-active">Back</span></td>
+                      <td><span class="b is-focus">Back</span></td>
+                      <td><span class="b is-disabled">Back</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card">
+                <p class="card-title">Live, in a card (surface-raised)</p>
+                <p>
+                  Hover, press and Tab to these. Comparison only: a real view has one primary
+                  action. The Finnish label shows wrapping.
+                </p>
+                <div class="group">
+                  <button type="button" class="b b--primary">Send application</button>
+                  <button type="button" class="b">Tallenna ja jatka myöhemmin</button>
+                </div>
+                <div class="group">
+                  <button type="button" class="b b--secondary">Print summary</button>
+                  <button type="button" class="b b--primary-outline">Add a file</button>
+                  <button type="button" class="b" disabled>Unavailable</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="variation v-b" id="v-b" aria-labelledby="v-b-h">
+          <h2 id="v-b-h">B. Gentle gradient</h2>
+          <p class="summary">
+            The fill darkens towards the bottom edge, by 10% ink in light and 14% in dark. The top
+            stop is the token itself, so the measured pair is the floor. Pressed flips the gradient.
+            No shadows.
+          </p>
+          <p class="measured">
+            <strong>Measured:</strong> Worst stop is the top stop, the token: 4.70:1. Bottom stops
+            5.44:1 (light) and 5.98:1 (dark). Dark outlined, lighter top stop: link 5.36:1, text
+            14.45:1.
+          </p>
+          <div class="panels">
+            <div class="panel t-light">
+              <h3>Light canvas</h3>
+              <div class="scroll" role="region" tabindex="0" aria-labelledby="b-light-caption">
+                <table>
+                  <caption id="b-light-caption">
+                    B, light canvas: forced states (the live buttons are in the card below)
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Button</th>
+                      <th scope="col">Default</th>
+                      <th scope="col">Hover</th>
+                      <th scope="col">Pressed</th>
+                      <th scope="col">Focus visible</th>
+                      <th scope="col">Disabled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Primary, filled</th>
+                      <td><span class="b b--primary">Continue</span></td>
+                      <td><span class="b b--primary is-hover">Continue</span></td>
+                      <td><span class="b b--primary is-active">Continue</span></td>
+                      <td><span class="b b--primary is-focus">Continue</span></td>
+                      <td><span class="b b--primary is-disabled">Continue</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, filled</th>
+                      <td><span class="b b--secondary">Save draft</span></td>
+                      <td><span class="b b--secondary is-hover">Save draft</span></td>
+                      <td><span class="b b--secondary is-active">Save draft</span></td>
+                      <td><span class="b b--secondary is-focus">Save draft</span></td>
+                      <td><span class="b b--secondary is-disabled">Save draft</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Primary, outlined</th>
+                      <td><span class="b b--primary-outline">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-hover">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-active">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-focus">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-disabled">Add a file</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, outlined</th>
+                      <td><span class="b">Back</span></td>
+                      <td><span class="b is-hover">Back</span></td>
+                      <td><span class="b is-active">Back</span></td>
+                      <td><span class="b is-focus">Back</span></td>
+                      <td><span class="b is-disabled">Back</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card">
+                <p class="card-title">Live, in a card (surface-raised)</p>
+                <p>
+                  Hover, press and Tab to these. Comparison only: a real view has one primary
+                  action. The Finnish label shows wrapping.
+                </p>
+                <div class="group">
+                  <button type="button" class="b b--primary">Send application</button>
+                  <button type="button" class="b">Tallenna ja jatka myöhemmin</button>
+                </div>
+                <div class="group">
+                  <button type="button" class="b b--secondary">Print summary</button>
+                  <button type="button" class="b b--primary-outline">Add a file</button>
+                  <button type="button" class="b" disabled>Unavailable</button>
+                </div>
+              </div>
+            </div>
+            <div class="panel t-dark">
+              <h3>Dark canvas</h3>
+              <div class="scroll" role="region" tabindex="0" aria-labelledby="b-dark-caption">
+                <table>
+                  <caption id="b-dark-caption">
+                    B, dark canvas: forced states (the live buttons are in the card below)
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Button</th>
+                      <th scope="col">Default</th>
+                      <th scope="col">Hover</th>
+                      <th scope="col">Pressed</th>
+                      <th scope="col">Focus visible</th>
+                      <th scope="col">Disabled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Primary, filled</th>
+                      <td><span class="b b--primary">Continue</span></td>
+                      <td><span class="b b--primary is-hover">Continue</span></td>
+                      <td><span class="b b--primary is-active">Continue</span></td>
+                      <td><span class="b b--primary is-focus">Continue</span></td>
+                      <td><span class="b b--primary is-disabled">Continue</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, filled</th>
+                      <td><span class="b b--secondary">Save draft</span></td>
+                      <td><span class="b b--secondary is-hover">Save draft</span></td>
+                      <td><span class="b b--secondary is-active">Save draft</span></td>
+                      <td><span class="b b--secondary is-focus">Save draft</span></td>
+                      <td><span class="b b--secondary is-disabled">Save draft</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Primary, outlined</th>
+                      <td><span class="b b--primary-outline">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-hover">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-active">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-focus">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-disabled">Add a file</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, outlined</th>
+                      <td><span class="b">Back</span></td>
+                      <td><span class="b is-hover">Back</span></td>
+                      <td><span class="b is-active">Back</span></td>
+                      <td><span class="b is-focus">Back</span></td>
+                      <td><span class="b is-disabled">Back</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card">
+                <p class="card-title">Live, in a card (surface-raised)</p>
+                <p>
+                  Hover, press and Tab to these. Comparison only: a real view has one primary
+                  action. The Finnish label shows wrapping.
+                </p>
+                <div class="group">
+                  <button type="button" class="b b--primary">Send application</button>
+                  <button type="button" class="b">Tallenna ja jatka myöhemmin</button>
+                </div>
+                <div class="group">
+                  <button type="button" class="b b--secondary">Print summary</button>
+                  <button type="button" class="b b--primary-outline">Add a file</button>
+                  <button type="button" class="b" disabled>Unavailable</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="variation v-c" id="v-c" aria-labelledby="v-c-h">
+          <h2 id="v-c-h">C. Hairline bevel</h2>
+          <p class="summary">
+            Two inner 1px lines: lighter on top, darker at the bottom. Nothing outside the border
+            box. Pressed inverts the bevel. The most precise and the closest to the current flat
+            language.
+          </p>
+          <p class="measured">
+            <strong>Measured:</strong> Labels sit on the flat tokens: 4.70:1. Nothing outside the
+            border, so the focus ring keeps 4.70:1 (light) and 7.27:1 (dark) on canvas.
+          </p>
+          <div class="panels">
+            <div class="panel t-light">
+              <h3>Light canvas</h3>
+              <div class="scroll" role="region" tabindex="0" aria-labelledby="c-light-caption">
+                <table>
+                  <caption id="c-light-caption">
+                    C, light canvas: forced states (the live buttons are in the card below)
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Button</th>
+                      <th scope="col">Default</th>
+                      <th scope="col">Hover</th>
+                      <th scope="col">Pressed</th>
+                      <th scope="col">Focus visible</th>
+                      <th scope="col">Disabled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Primary, filled</th>
+                      <td><span class="b b--primary">Continue</span></td>
+                      <td><span class="b b--primary is-hover">Continue</span></td>
+                      <td><span class="b b--primary is-active">Continue</span></td>
+                      <td><span class="b b--primary is-focus">Continue</span></td>
+                      <td><span class="b b--primary is-disabled">Continue</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, filled</th>
+                      <td><span class="b b--secondary">Save draft</span></td>
+                      <td><span class="b b--secondary is-hover">Save draft</span></td>
+                      <td><span class="b b--secondary is-active">Save draft</span></td>
+                      <td><span class="b b--secondary is-focus">Save draft</span></td>
+                      <td><span class="b b--secondary is-disabled">Save draft</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Primary, outlined</th>
+                      <td><span class="b b--primary-outline">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-hover">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-active">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-focus">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-disabled">Add a file</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, outlined</th>
+                      <td><span class="b">Back</span></td>
+                      <td><span class="b is-hover">Back</span></td>
+                      <td><span class="b is-active">Back</span></td>
+                      <td><span class="b is-focus">Back</span></td>
+                      <td><span class="b is-disabled">Back</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card">
+                <p class="card-title">Live, in a card (surface-raised)</p>
+                <p>
+                  Hover, press and Tab to these. Comparison only: a real view has one primary
+                  action. The Finnish label shows wrapping.
+                </p>
+                <div class="group">
+                  <button type="button" class="b b--primary">Send application</button>
+                  <button type="button" class="b">Tallenna ja jatka myöhemmin</button>
+                </div>
+                <div class="group">
+                  <button type="button" class="b b--secondary">Print summary</button>
+                  <button type="button" class="b b--primary-outline">Add a file</button>
+                  <button type="button" class="b" disabled>Unavailable</button>
+                </div>
+              </div>
+            </div>
+            <div class="panel t-dark">
+              <h3>Dark canvas</h3>
+              <div class="scroll" role="region" tabindex="0" aria-labelledby="c-dark-caption">
+                <table>
+                  <caption id="c-dark-caption">
+                    C, dark canvas: forced states (the live buttons are in the card below)
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Button</th>
+                      <th scope="col">Default</th>
+                      <th scope="col">Hover</th>
+                      <th scope="col">Pressed</th>
+                      <th scope="col">Focus visible</th>
+                      <th scope="col">Disabled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Primary, filled</th>
+                      <td><span class="b b--primary">Continue</span></td>
+                      <td><span class="b b--primary is-hover">Continue</span></td>
+                      <td><span class="b b--primary is-active">Continue</span></td>
+                      <td><span class="b b--primary is-focus">Continue</span></td>
+                      <td><span class="b b--primary is-disabled">Continue</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, filled</th>
+                      <td><span class="b b--secondary">Save draft</span></td>
+                      <td><span class="b b--secondary is-hover">Save draft</span></td>
+                      <td><span class="b b--secondary is-active">Save draft</span></td>
+                      <td><span class="b b--secondary is-focus">Save draft</span></td>
+                      <td><span class="b b--secondary is-disabled">Save draft</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Primary, outlined</th>
+                      <td><span class="b b--primary-outline">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-hover">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-active">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-focus">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-disabled">Add a file</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, outlined</th>
+                      <td><span class="b">Back</span></td>
+                      <td><span class="b is-hover">Back</span></td>
+                      <td><span class="b is-active">Back</span></td>
+                      <td><span class="b is-focus">Back</span></td>
+                      <td><span class="b is-disabled">Back</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card">
+                <p class="card-title">Live, in a card (surface-raised)</p>
+                <p>
+                  Hover, press and Tab to these. Comparison only: a real view has one primary
+                  action. The Finnish label shows wrapping.
+                </p>
+                <div class="group">
+                  <button type="button" class="b b--primary">Send application</button>
+                  <button type="button" class="b">Tallenna ja jatka myöhemmin</button>
+                </div>
+                <div class="group">
+                  <button type="button" class="b b--secondary">Print summary</button>
+                  <button type="button" class="b b--primary-outline">Add a file</button>
+                  <button type="button" class="b" disabled>Unavailable</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="variation v-d" id="v-d" aria-labelledby="v-d-h">
+          <h2 id="v-d-h">D. Grounded</h2>
+          <p class="summary">
+            A soft ambient drop shadow and a darker 1px bottom edge, so the button sits on the page.
+            Hover lifts the shadow a little, pressed removes it. In dark the top edge gets lighter
+            instead.
+          </p>
+          <p class="measured">
+            <strong>Measured:</strong> Labels sit on the flat tokens: 4.70:1. In light, the darker
+            bottom edge only raises the boundary (7.51:1 or more). In dark, the lighter top edge is
+            5.78:1 or more, and the bottom keeps the token edge (a darker one fell to 1.80:1). Focus
+            ring against the shadowed gap: 3.23:1 on canvas, 3.04:1 on surface.
+          </p>
+          <div class="panels">
+            <div class="panel t-light">
+              <h3>Light canvas</h3>
+              <div class="scroll" role="region" tabindex="0" aria-labelledby="d-light-caption">
+                <table>
+                  <caption id="d-light-caption">
+                    D, light canvas: forced states (the live buttons are in the card below)
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Button</th>
+                      <th scope="col">Default</th>
+                      <th scope="col">Hover</th>
+                      <th scope="col">Pressed</th>
+                      <th scope="col">Focus visible</th>
+                      <th scope="col">Disabled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Primary, filled</th>
+                      <td><span class="b b--primary">Continue</span></td>
+                      <td><span class="b b--primary is-hover">Continue</span></td>
+                      <td><span class="b b--primary is-active">Continue</span></td>
+                      <td><span class="b b--primary is-focus">Continue</span></td>
+                      <td><span class="b b--primary is-disabled">Continue</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, filled</th>
+                      <td><span class="b b--secondary">Save draft</span></td>
+                      <td><span class="b b--secondary is-hover">Save draft</span></td>
+                      <td><span class="b b--secondary is-active">Save draft</span></td>
+                      <td><span class="b b--secondary is-focus">Save draft</span></td>
+                      <td><span class="b b--secondary is-disabled">Save draft</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Primary, outlined</th>
+                      <td><span class="b b--primary-outline">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-hover">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-active">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-focus">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-disabled">Add a file</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, outlined</th>
+                      <td><span class="b">Back</span></td>
+                      <td><span class="b is-hover">Back</span></td>
+                      <td><span class="b is-active">Back</span></td>
+                      <td><span class="b is-focus">Back</span></td>
+                      <td><span class="b is-disabled">Back</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card">
+                <p class="card-title">Live, in a card (surface-raised)</p>
+                <p>
+                  Hover, press and Tab to these. Comparison only: a real view has one primary
+                  action. The Finnish label shows wrapping.
+                </p>
+                <div class="group">
+                  <button type="button" class="b b--primary">Send application</button>
+                  <button type="button" class="b">Tallenna ja jatka myöhemmin</button>
+                </div>
+                <div class="group">
+                  <button type="button" class="b b--secondary">Print summary</button>
+                  <button type="button" class="b b--primary-outline">Add a file</button>
+                  <button type="button" class="b" disabled>Unavailable</button>
+                </div>
+              </div>
+            </div>
+            <div class="panel t-dark">
+              <h3>Dark canvas</h3>
+              <div class="scroll" role="region" tabindex="0" aria-labelledby="d-dark-caption">
+                <table>
+                  <caption id="d-dark-caption">
+                    D, dark canvas: forced states (the live buttons are in the card below)
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Button</th>
+                      <th scope="col">Default</th>
+                      <th scope="col">Hover</th>
+                      <th scope="col">Pressed</th>
+                      <th scope="col">Focus visible</th>
+                      <th scope="col">Disabled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Primary, filled</th>
+                      <td><span class="b b--primary">Continue</span></td>
+                      <td><span class="b b--primary is-hover">Continue</span></td>
+                      <td><span class="b b--primary is-active">Continue</span></td>
+                      <td><span class="b b--primary is-focus">Continue</span></td>
+                      <td><span class="b b--primary is-disabled">Continue</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, filled</th>
+                      <td><span class="b b--secondary">Save draft</span></td>
+                      <td><span class="b b--secondary is-hover">Save draft</span></td>
+                      <td><span class="b b--secondary is-active">Save draft</span></td>
+                      <td><span class="b b--secondary is-focus">Save draft</span></td>
+                      <td><span class="b b--secondary is-disabled">Save draft</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Primary, outlined</th>
+                      <td><span class="b b--primary-outline">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-hover">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-active">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-focus">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-disabled">Add a file</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, outlined</th>
+                      <td><span class="b">Back</span></td>
+                      <td><span class="b is-hover">Back</span></td>
+                      <td><span class="b is-active">Back</span></td>
+                      <td><span class="b is-focus">Back</span></td>
+                      <td><span class="b is-disabled">Back</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card">
+                <p class="card-title">Live, in a card (surface-raised)</p>
+                <p>
+                  Hover, press and Tab to these. Comparison only: a real view has one primary
+                  action. The Finnish label shows wrapping.
+                </p>
+                <div class="group">
+                  <button type="button" class="b b--primary">Send application</button>
+                  <button type="button" class="b">Tallenna ja jatka myöhemmin</button>
+                </div>
+                <div class="group">
+                  <button type="button" class="b b--secondary">Print summary</button>
+                  <button type="button" class="b b--primary-outline">Add a file</button>
+                  <button type="button" class="b" disabled>Unavailable</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="variation v-e" id="v-e" aria-labelledby="v-e-h">
+          <h2 id="v-e-h">E. Tactile press</h2>
+          <p class="summary">
+            A 2px solid ledge in a darker shade of the fill, and the button moves down onto it when
+            pressed (as GOV.UK does). The strongest "this is a button" cue, and the only one that
+            changes position.
+          </p>
+          <p class="measured">
+            <strong>Measured:</strong> Labels sit on the flat tokens: 4.70:1. The ring offset is 4px
+            here (2px past the ledge), so it keeps 4.70:1 (light) and 7.27:1 (dark) against canvas
+            on both sides.
+          </p>
+          <div class="panels">
+            <div class="panel t-light">
+              <h3>Light canvas</h3>
+              <div class="scroll" role="region" tabindex="0" aria-labelledby="e-light-caption">
+                <table>
+                  <caption id="e-light-caption">
+                    E, light canvas: forced states (the live buttons are in the card below)
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Button</th>
+                      <th scope="col">Default</th>
+                      <th scope="col">Hover</th>
+                      <th scope="col">Pressed</th>
+                      <th scope="col">Focus visible</th>
+                      <th scope="col">Disabled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Primary, filled</th>
+                      <td><span class="b b--primary">Continue</span></td>
+                      <td><span class="b b--primary is-hover">Continue</span></td>
+                      <td><span class="b b--primary is-active">Continue</span></td>
+                      <td><span class="b b--primary is-focus">Continue</span></td>
+                      <td><span class="b b--primary is-disabled">Continue</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, filled</th>
+                      <td><span class="b b--secondary">Save draft</span></td>
+                      <td><span class="b b--secondary is-hover">Save draft</span></td>
+                      <td><span class="b b--secondary is-active">Save draft</span></td>
+                      <td><span class="b b--secondary is-focus">Save draft</span></td>
+                      <td><span class="b b--secondary is-disabled">Save draft</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Primary, outlined</th>
+                      <td><span class="b b--primary-outline">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-hover">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-active">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-focus">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-disabled">Add a file</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, outlined</th>
+                      <td><span class="b">Back</span></td>
+                      <td><span class="b is-hover">Back</span></td>
+                      <td><span class="b is-active">Back</span></td>
+                      <td><span class="b is-focus">Back</span></td>
+                      <td><span class="b is-disabled">Back</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card">
+                <p class="card-title">Live, in a card (surface-raised)</p>
+                <p>
+                  Hover, press and Tab to these. Comparison only: a real view has one primary
+                  action. The Finnish label shows wrapping.
+                </p>
+                <div class="group">
+                  <button type="button" class="b b--primary">Send application</button>
+                  <button type="button" class="b">Tallenna ja jatka myöhemmin</button>
+                </div>
+                <div class="group">
+                  <button type="button" class="b b--secondary">Print summary</button>
+                  <button type="button" class="b b--primary-outline">Add a file</button>
+                  <button type="button" class="b" disabled>Unavailable</button>
+                </div>
+              </div>
+            </div>
+            <div class="panel t-dark">
+              <h3>Dark canvas</h3>
+              <div class="scroll" role="region" tabindex="0" aria-labelledby="e-dark-caption">
+                <table>
+                  <caption id="e-dark-caption">
+                    E, dark canvas: forced states (the live buttons are in the card below)
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Button</th>
+                      <th scope="col">Default</th>
+                      <th scope="col">Hover</th>
+                      <th scope="col">Pressed</th>
+                      <th scope="col">Focus visible</th>
+                      <th scope="col">Disabled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Primary, filled</th>
+                      <td><span class="b b--primary">Continue</span></td>
+                      <td><span class="b b--primary is-hover">Continue</span></td>
+                      <td><span class="b b--primary is-active">Continue</span></td>
+                      <td><span class="b b--primary is-focus">Continue</span></td>
+                      <td><span class="b b--primary is-disabled">Continue</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, filled</th>
+                      <td><span class="b b--secondary">Save draft</span></td>
+                      <td><span class="b b--secondary is-hover">Save draft</span></td>
+                      <td><span class="b b--secondary is-active">Save draft</span></td>
+                      <td><span class="b b--secondary is-focus">Save draft</span></td>
+                      <td><span class="b b--secondary is-disabled">Save draft</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Primary, outlined</th>
+                      <td><span class="b b--primary-outline">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-hover">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-active">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-focus">Add a file</span></td>
+                      <td><span class="b b--primary-outline is-disabled">Add a file</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Secondary, outlined</th>
+                      <td><span class="b">Back</span></td>
+                      <td><span class="b is-hover">Back</span></td>
+                      <td><span class="b is-active">Back</span></td>
+                      <td><span class="b is-focus">Back</span></td>
+                      <td><span class="b is-disabled">Back</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card">
+                <p class="card-title">Live, in a card (surface-raised)</p>
+                <p>
+                  Hover, press and Tab to these. Comparison only: a real view has one primary
+                  action. The Finnish label shows wrapping.
+                </p>
+                <div class="group">
+                  <button type="button" class="b b--primary">Send application</button>
+                  <button type="button" class="b">Tallenna ja jatka myöhemmin</button>
+                </div>
+                <div class="group">
+                  <button type="button" class="b b--secondary">Print summary</button>
+                  <button type="button" class="b b--primary-outline">Add a file</button>
+                  <button type="button" class="b" disabled>Unavailable</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script>
+      // Only the contrast switch. Everything else is static HTML and CSS.
+      ;(function () {
+        var radios = document.querySelectorAll('input[name="contrast"]')
+        function apply(value) {
+          document.body.classList.toggle('contrast-more', value === 'more')
+        }
+        if (window.matchMedia && window.matchMedia('(prefers-contrast: more)').matches) {
+          radios[1].checked = true
+          apply('more')
+        }
+        radios.forEach(function (radio) {
+          radio.addEventListener('change', function () {
+            apply(radio.value)
+          })
+        })
+      })()
+    </script>
+  </body>
+</html>

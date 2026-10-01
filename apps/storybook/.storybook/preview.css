@@ -30,7 +30,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--kv-space-2);
+  gap: var(--kv-space-3);
   max-inline-size: 100%;
 }
 
@@ -39,6 +39,11 @@ body {
   color: var(--kv-color-text-muted);
   font-size: var(--kv-font-body-small-size);
   line-height: var(--kv-font-body-small-line-height);
+}
+
+/* Consecutive rows keep a gap, the same as the gap between the cells in a row. */
+.kv-story-states + .kv-story-states {
+  margin-block-start: var(--kv-space-6);
 }
 
 /* A section after anything, such as a card or a row of cards, keeps its distance. */

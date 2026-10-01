@@ -1,9 +1,13 @@
+import { checkButtonEdges, parseButtonEdgeTint } from './button-edge.ts'
 import { contrastRatio } from './contrast.ts'
 import { colorTokenNames, contrastRequirements, themeNames } from './contrast-requirements.ts'
 import type { ContrastRequirement, ThemeName } from './contrast-requirements.ts'
-import { resolveThemeColors } from './read-theme.ts'
+import { readRootProperties, resolveThemeColors, themeEnvironment } from './read-theme.ts'
 
 const hexColor = /^#(?:[\da-f]{3}|[\da-f]{6})$/i
+
+/** The button edge tints (ADR-0026): a hex colour and a percentage, in every theme. */
+const buttonEdgeTokens = ['--kv-button-edge-shade', '--kv-button-edge-highlight'] as const
 
 /** Returns one message per unmet contrast requirement or unknown token. */
 export function checkTheme(
@@ -32,6 +36,8 @@ export function checkTheme(
  * Checks a theme file, the default `theme.css` or your own copy, in all four themes:
  * - every `--kv-color-*` token is defined and resolves to a hex colour
  * - every contrast pair meets its minimum
+ * - the button edge tints are `<#rgb or #rrggbb> <percentage>`, equal in their fallback, and
+ *   every tinted edge keeps 3:1 on `canvas`, `surface` and `surface-raised`
  * - each OS fallback (`prefers-color-scheme`, `prefers-contrast`) equals its theme
  *
  * Returns one message per problem, so `[]` means it passes.
@@ -44,23 +50,50 @@ export function checkThemeCss(css: string): string[] {
   return themeNames.flatMap((themeName) => {
     const colors = resolveThemeColors(css, themeName)
     const systemColors = resolveThemeColors(css, themeName, 'system')
-    const valueProblems = colorTokenNames.flatMap((name) => {
-      const value = colors[name]
-      if (value === undefined) {
-        return [`${themeName}: --kv-color-${name} is not defined`]
-      }
-      if (!hexColor.test(value)) {
-        return [`${themeName}: --kv-color-${name} is "${value}", not a #rgb or #rrggbb colour`]
-      }
-      return systemColors[name] === value
-        ? []
-        : [
-            `${themeName}: --kv-color-${name} is ${value}, but ${systemColors[name] ?? 'not defined'} in the system fallback`,
+    const properties = readRootProperties(css, themeEnvironment(themeName))
+    const systemProperties = readRootProperties(css, themeEnvironment(themeName, 'system'))
+    const valueProblems = [
+      ...colorTokenNames.flatMap((name) => {
+        const value = colors[name]
+        if (value === undefined) {
+          return [`${themeName}: --kv-color-${name} is not defined`]
+        }
+        if (!hexColor.test(value)) {
+          return [`${themeName}: --kv-color-${name} is "${value}", not a #rgb or #rrggbb colour`]
+        }
+        return systemColors[name] === value
+          ? []
+          : [
+              `${themeName}: --kv-color-${name} is ${value}, but ${systemColors[name] ?? 'not defined'} in the system fallback`,
+            ]
+      }),
+      ...buttonEdgeTokens.flatMap((name) => {
+        const value = properties[name]
+        if (value === undefined) {
+          return [`${themeName}: ${name} is not defined`]
+        }
+        if (parseButtonEdgeTint(value) === undefined) {
+          return [
+            `${themeName}: ${name} is "${value}", not a "#rgb or #rrggbb" colour and a percentage`,
           ]
-    })
+        }
+        return systemProperties[name] === value
+          ? []
+          : [
+              `${themeName}: ${name} is ${value}, but ${systemProperties[name] ?? 'not defined'} in the system fallback`,
+            ]
+      }),
+    ]
     if (valueProblems.length > 0) {
       return valueProblems
     }
-    return checkTheme(themeName, colors, contrastRequirements[themeName])
+    const shade = parseButtonEdgeTint(properties['--kv-button-edge-shade'])
+    const highlight = parseButtonEdgeTint(properties['--kv-button-edge-highlight'])
+    return [
+      ...checkTheme(themeName, colors, contrastRequirements[themeName]),
+      ...(shade === undefined || highlight === undefined
+        ? []
+        : checkButtonEdges(themeName, colors, shade, highlight)),
+    ]
   })
 }

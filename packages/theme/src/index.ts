@@ -1,3 +1,11 @@
+export {
+  buttonEdgeBases,
+  buttonEdgePairsPerTheme,
+  checkButtonEdges,
+  mixButtonEdge,
+  parseButtonEdgeTint,
+} from './button-edge.ts'
+export type { ButtonEdgeTint } from './button-edge.ts'
 export { checkTheme, checkThemeCss } from './check-theme.ts'
 export { contrastRatio, relativeLuminance } from './contrast.ts'
 export { colorTokenNames, contrastRequirements, themeNames } from './contrast-requirements.ts'

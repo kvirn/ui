@@ -118,6 +118,9 @@ spacing:
   '16': 64px
   '24': 96px
 components:
+  # Buttons also have gentle depth (a shadow and a tinted edge) in light and dark, and none in the
+  # contrast themes. The DESIGN.md format has no shadow property, so it's in prose: see
+  # "Elevation & Depth", "Button depth" (ADR-0026).
   button-primary:
     backgroundColor: '{colors.primary}'
     textColor: '{colors.on-primary}'
@@ -208,7 +211,7 @@ Changing a token or a rule here is a decision: write an ADR and update `theme.cs
 **Calm, precise, plain.** The interface is quiet so that the content and the next step are loud. The look:
 
 - a near-black dark canvas and a near-white light one
-- a ladder of slightly lifted surfaces instead of shadows, with 1px hairline dividers
+- a ladder of slightly lifted surfaces instead of shadows, with 1px hairline dividers. The one control with depth is the button, which sits on the page with a gentle shadow and a tinted edge so it reads as "press me" (ADR-0026)
 - one lavender accent (`#5e6ad2`), used sparingly
 - tight Inter typography with negative tracking on large headings
 - 8px control radii
@@ -276,13 +279,14 @@ Colours come in two tiers, both CSS custom properties in `theme.css`:
 | `warning`        | `warning-700`   | `warning-300`   | `warning-800`   | `warning-200`   | Warnings, deadlines                                                                        |
 | `warning-subtle` | `warning-50`    | `warning-950`   | `warning-50`    | `warning-950`   | Warning panel backgrounds                                                                  |
 
-The palette values are in `theme.css`, section 1. Measured contrast (2026-10-01, `vp run theme:check`, 81 pairs per theme):
+The palette values are in `theme.css`, section 1. Measured contrast (2026-10-01, `vp run theme:check`, 81 contrast pairs and 24 tinted button edges per theme):
 
 - **Text.**
   - Every text token (`text`, `heading`, `text-muted`, `link`, `danger`, `success`, `warning`) is at least 4.5:1 on `canvas`, `surface`, `surface-raised` and the `-subtle` backgrounds it's used on in the standard themes. The lowest pairs are `on-primary` on `primary` (4.70:1) and `text-muted` on `primary-subtle` in dark (4.80:1).
   - In the contrast themes the minimum is 7:1. The lowest pair is `danger` on `danger-subtle` in light-contrast (7.31:1).
 - **Control borders and focus.** `border-control`, `secondary`, `focus-ring` and `primary` (used as a selected or current indicator) are at least 3:1 against `canvas`, `surface`, `surface-raised` and `primary-subtle` in every theme. The lowest pairs are `border-control` and `secondary` on `primary-subtle` in dark (3.13:1).
 - **Labels on filled buttons.** `on-primary` on `primary` is at least 4.70:1, and on `primary-hover` at least 5.91:1. `on-danger` on `danger` is at least 6.40:1, and on `danger-hover` at least 8.23:1.
+- **Tinted button edges** (ADR-0026; `theme:check` measures all 24 per theme: 4 bases, tinted by the shade and by the highlight, on 3 surfaces). They only raise the boundary: the light bottom edge is at least 7.51:1 and the dark top edge at least 5.78:1 on `canvas`, `surface` and `surface-raised`. The full table is in [Button depth](#button-depth).
 
 Rules:
 
@@ -291,7 +295,7 @@ Rules:
 - **Filled buttons get darker on hover, never lighter.** A lighter hover behind white text fails 4.5:1: white on `#828fff` is 2.87:1.
 - **Links use `link` and are underlined** in running text. In dark themes `link` is lighter than `primary`, because `#5e6ad2` as text on the dark canvas is only 4.44:1.
 - **Navigation lists** may drop the underline and use the `text` colour, because position in a labelled `<nav>` list is the cue. The current item always has a non-colour cue: an inline-start bar and weight 600, plus `aria-current`.
-- **Dark themes are not inverted light themes.** Raised surfaces get lighter, not shadowed.
+- **Dark themes are not inverted light themes.** Raised surfaces get lighter, not shadowed. The one exception is the button (ADR-0026): its depth in dark comes from a lighter top edge, and its ambient shadow is barely visible on near-black. Its bottom edge never gets darker in dark, because a darkened edge drops to 1.80–2.20:1 there.
 - **`heading` is held to everything `text` is.** A site that gives headings their own colour keeps 4.5:1 (7:1 in the contrast themes) on every background body text sits on, and `theme:check` measures it. In forced colours both are `CanvasText`.
 - **Forced colours** (`forced-colors: active`): use system colours (`Canvas`, `CanvasText`, `LinkText`, `ButtonText`, `Highlight`, `GrayText`). Every surface and control keeps a 1px border, even if it is transparent in the normal theme, so boundaries survive. Selected and current states get a non-colour cue such as a border, a check mark or `text-decoration`.
 
@@ -301,6 +305,7 @@ Rebranding for a municipality:
 - Give `--kv-secondary-*` a hue to colour the secondary button's edge. `--kv-accent-*` is free for a brand's second colour.
 - Pointing one semantic token at another step (`--kv-color-link: var(--kv-primary-700)`) also works, for a single change.
 - Override `danger` and `danger-hover` together, if at all.
+- Button depth follows the scales: the tinted edges mix the current edge or fill with `--kv-button-edge-shade` or `--kv-button-edge-highlight`, so they change with a rebrand. `checkThemeCss()` will measure them once ADR-0026 is implemented. For flat buttons, set `--kv-shadow-button` and `--kv-shadow-button-hover` to `none` and both edge tokens to `0%` (`var(--kv-neutral-950) 0%`, `var(--kv-white) 0%`).
 - Never reuse a brand red for `danger` or a brand green for `success`, because users will read the brand colour as a status.
 
 ## Typography
@@ -348,7 +353,7 @@ Below `64rem`, where touch input is likely, compact chrome returns to comfortabl
 
 ## Elevation & Depth
 
-Depth comes from the surface ladder (`canvas` → `surface` → `surface-raised`) and 1px hairlines, not from shadows. The look is flat and precise.
+Depth comes from the surface ladder (`canvas` → `surface` → `surface-raised`) and 1px hairlines, not from shadows. The look is flat and precise. The one exception is the button, which isn't a surface level: see [Button depth](#button-depth).
 
 | Level | Surface          | Border          | Shadow                                                                                              | Use                       |
 | ----- | ---------------- | --------------- | --------------------------------------------------------------------------------------------------- | ------------------------- |
@@ -363,6 +368,46 @@ Depth comes from the surface ladder (`canvas` → `surface` → `surface-raised`
 - A dialog backdrop dims the page, so it must not reduce the dialog's own contrast. Content behind a modal is `inert`.
 - Shadows are never the only boundary, because they disappear in forced colours.
 - **Motion.** Durations are 120ms (hover, press), 180ms (popups, disclosures) and 240ms (dialogs, page-level). Easing is `cubic-bezier(0.2, 0, 0, 1)`. Motion only runs under `prefers-reduced-motion: no-preference`, and otherwise state changes are instant. No parallax, no auto-playing carousels, nothing that flashes, and no animation longer than 5 seconds without a pause control (2.2.2).
+
+### Button depth
+
+> **Status: Proposed (ADR-0026, 2026-10-01), implemented in `theme.css` (plan 0010).** The design spec is `docs/design/button-depth.md` (variation D, "Grounded").
+
+Buttons (`.kv-button`, `kv-button--primary`, `kv-button--danger`) sit on the page: a soft ambient shadow, and a 1px edge that's tinted darker at the bottom in light and lighter at the top in dark. Depth means "press me", so nothing else gets it.
+
+| State                    | Shadow                     | Edges                                                                                 |
+| ------------------------ | -------------------------- | ------------------------------------------------------------------------------------- |
+| Rest                     | `--kv-shadow-button`       | Tinted: the bottom edge in light, the top edge in dark. The others are the token edge |
+| Hover                    | `--kv-shadow-button-hover` | Tinted, following the hover edge (`primary` on the base and primary buttons)          |
+| Pressed (`:active`)      | none                       | The token edge on all four sides                                                      |
+| Focus-visible, any state | **none**                   | Tinted, as at rest or on hover                                                        |
+| Disabled                 | none                       | Today's dashed `border-control` on all four sides                                     |
+
+- **Tinting.** An edge is `color-mix(in srgb, <edge>, var(--kv-button-edge-shade))` at the bottom and `color-mix(in srgb, <edge>, var(--kv-button-edge-highlight))` at the top. `<edge>` is the button's token edge in that state (`secondary`, `primary` or `transparent`). Over a transparent edge the mix shows over the fill, so a filled button's bottom edge is its fill with 35% ink. A tinted edge must never lower a boundary: it's held to 3:1 on `canvas`, `surface` and `surface-raised` (1.4.11).
+- **Focus.** The shadow goes on keyboard focus, so the ring's adjacent colour is the plain page and its contrast is exactly the measured `focus-ring` pair. With the hover shadow under the ring, it was 3.04:1 on `surface` in light, unmeasured by `theme:check`. Focus is still shown only by the ring, never by the shadow.
+- **Dark.** Only the top edge changes, and it gets lighter. The bottom keeps the token edge (see Colors).
+- **Contrast themes:** flat. Both shadows are `none` and both edge tokens `0%`, so every edge is the measured token on all four sides.
+- **Forced colours:** no shadow, and all four edges are the system colour (`ButtonText`, `Highlight` on hover and pressed, dashed `GrayText` when disabled). The same as without depth.
+- **Motion:** `box-shadow` transitions with the other button properties over `--kv-duration-fast`, only under `prefers-reduced-motion: no-preference`.
+- **Never the only cue.** Depth disappears in forced colours and the contrast themes, so the fill, the edge and the label carry the button on their own, as before.
+
+| Token                        | light                                                                   | dark                       | light-contrast, dark-contrast, forced colours |
+| ---------------------------- | ----------------------------------------------------------------------- | -------------------------- | --------------------------------------------- |
+| `--kv-shadow-button`         | `0 1px 2px` `neutral-950` at 6%, `0 2px 6px -1px` `neutral-950` at 12%  | `0 1px 2px` `black` at 60% | `none`                                        |
+| `--kv-shadow-button-hover`   | `0 1px 2px` `neutral-950` at 6%, `0 4px 10px -2px` `neutral-950` at 12% | `0 2px 6px` `black` at 60% | `none`                                        |
+| `--kv-button-edge-shade`     | `var(--kv-neutral-950) 35%`                                             | `var(--kv-neutral-950) 0%` | `var(--kv-neutral-950) 0%`                    |
+| `--kv-button-edge-highlight` | `var(--kv-white) 0%`                                                    | `var(--kv-white) 25%`      | `var(--kv-white) 0%`                          |
+
+The shadows mix the palette with `color-mix(in srgb, <colour> N%, transparent)`, like `--kv-shadow-popup`. The edge tokens are a colour and a percentage, the second argument of `color-mix()`.
+
+Measured tinted edges (contrast against `canvas` / `surface` / `surface-raised`):
+
+| Edge                                           | light, bottom         | dark, top             |
+| ---------------------------------------------- | --------------------- | --------------------- |
+| Base button at rest (`secondary`)              | 8.33 / 7.83 / 8.33    | 6.85 / 6.25 / 5.78    |
+| Base hover, primary rest and hover (`primary`) | 7.99 / 7.51 / 7.99    | 6.94 / 6.34 / 5.86    |
+| Danger at rest (`danger` fill)                 | 10.17 / 9.56 / 10.17  | 11.36 / 10.37 / 9.58  |
+| Danger hover (`danger-hover` fill)             | 11.97 / 11.25 / 11.97 | 14.13 / 12.90 / 11.92 |
 
 ## Shapes
 
@@ -394,6 +439,7 @@ Visual rules for the default theme. Behaviour, roles and keyboard are defined in
   - Labels are verbs ("Send application", "Book time").
   - Disabled buttons keep their label readable, with a dashed border as the non-colour cue. Prefer keeping them enabled and explaining what's missing on submit.
   - A hovered or pressed primary button keeps a 1px `primary` edge around its `primary-hover` fill, so its boundary stays at 3:1 on `surface-raised` in dark (ADR-0021).
+  - Buttons have gentle depth in light and dark: a soft shadow that lifts a little on hover and goes on press and on keyboard focus, and a tinted edge. Disabled buttons, the contrast themes and forced colours are flat. See [Button depth](#button-depth) (proposed, ADR-0026).
   - Size follows the density. A site can size every button without touching other controls with `--kv-button-min-block-size`, `--kv-button-padding-inline`, `--kv-button-font-size`, `--kv-button-font-weight` and `--kv-button-line-height`, which fall back to the `--kv-control-*` tokens. Set, they win over density, so the height never goes below 24px (2.5.8), and resident-facing buttons stay at 44px.
 - **Links** look like links (underlined `link`) and buttons look like buttons. Never swap the two. The hover state thickens the underline to 2px and uses `link-hover`.
 - **Cards** are elevation level 2: `surface-raised`, a 1px `border-subtle` edge, the `lg` radius and no shadow. A card is a plain container and is never interactive: no hover, shadow or pointer style, because those suggest the whole card is clickable.
@@ -455,6 +501,7 @@ Don't:
 - Use `border-subtle` (the hairline) as the only edge of a control.
 - Lighten a filled button on hover behind white text.
 - Remove focus outlines, or rely on a glow, a shadow or a background change to show focus.
+- Give button depth (a shadow or a tinted edge) to anything that isn't a button: cards, inputs, badges, navigation items or links. Depth means "press me".
 - Use low-contrast "ghost" text, grey-on-grey placeholders or disabled-looking active controls, even though they look elegant.
 - Add gradients, glows or glass effects behind text. Decorative effects are allowed only on marketing surfaces of the docs site, and never reduce text contrast.
 - Put essential information in tooltips, hover states or images of text.

@@ -318,6 +318,22 @@
     --kv-shadow-popup: 0 8px 24px -4px color-mix(in srgb, var(--kv-neutral-950) 12%, transparent);
     --kv-shadow-dialog: 0 24px 48px -8px color-mix(in srgb, var(--kv-neutral-950) 20%, transparent);
 
+    /* Button depth (ADR-0026): a soft shadow that lifts on hover, and a 1px edge tinted darker
+     * at the bottom (shade, light) or lighter at the top (highlight, dark). Each tint is a
+     * colour and a percentage, the second argument of color-mix(in srgb, <edge>, <tint>); 0%
+     * leaves the edge as it is. theme:check holds every tinted edge to 3:1 on canvas, surface
+     * and surface-raised (1.4.11). Both shadows are none, and both tints 0%, in the contrast
+     * themes and in forced colours, and a button is flat there. To turn depth off, set both
+     * shadows to none and both tints to 0%. */
+    --kv-shadow-button:
+      0 1px 2px color-mix(in srgb, var(--kv-neutral-950) 6%, transparent),
+      0 2px 6px -1px color-mix(in srgb, var(--kv-neutral-950) 12%, transparent);
+    --kv-shadow-button-hover:
+      0 1px 2px color-mix(in srgb, var(--kv-neutral-950) 6%, transparent),
+      0 4px 10px -2px color-mix(in srgb, var(--kv-neutral-950) 12%, transparent);
+    --kv-button-edge-shade: var(--kv-neutral-950) 35%;
+    --kv-button-edge-highlight: var(--kv-white) 0%;
+
     --kv-duration-fast: 120ms;
     --kv-duration-medium: 180ms;
     --kv-duration-slow: 240ms;
@@ -387,6 +403,11 @@
     /* Raised surfaces get lighter instead: a shadow on a near-black canvas isn't seen. */
     --kv-shadow-popup: none;
     --kv-shadow-dialog: none;
+
+    --kv-shadow-button: 0 1px 2px color-mix(in srgb, var(--kv-black) 60%, transparent);
+    --kv-shadow-button-hover: 0 2px 6px color-mix(in srgb, var(--kv-black) 60%, transparent);
+    --kv-button-edge-shade: var(--kv-neutral-950) 0%;
+    --kv-button-edge-highlight: var(--kv-white) 25%;
   }
 
   :root[data-kv-color-scheme='light'][data-kv-contrast='more'] {
@@ -416,6 +437,12 @@
     --kv-color-success-subtle: var(--kv-success-50);
     --kv-color-warning: var(--kv-warning-800);
     --kv-color-warning-subtle: var(--kv-warning-50);
+
+    /* Flat: today's button. It would otherwise inherit the light shadows from :root. */
+    --kv-shadow-button: none;
+    --kv-shadow-button-hover: none;
+    --kv-button-edge-shade: var(--kv-neutral-950) 0%;
+    --kv-button-edge-highlight: var(--kv-white) 0%;
   }
 
   :root[data-kv-color-scheme='dark'][data-kv-contrast='more'] {
@@ -448,6 +475,11 @@
 
     --kv-shadow-popup: none;
     --kv-shadow-dialog: none;
+
+    --kv-shadow-button: none;
+    --kv-shadow-button-hover: none;
+    --kv-button-edge-shade: var(--kv-neutral-950) 0%;
+    --kv-button-edge-highlight: var(--kv-white) 0%;
   }
 
   /* 4. System fallbacks --------------------------------------------------------------------
@@ -485,6 +517,11 @@
 
       --kv-shadow-popup: none;
       --kv-shadow-dialog: none;
+
+      --kv-shadow-button: 0 1px 2px color-mix(in srgb, var(--kv-black) 60%, transparent);
+      --kv-shadow-button-hover: 0 2px 6px color-mix(in srgb, var(--kv-black) 60%, transparent);
+      --kv-button-edge-shade: var(--kv-neutral-950) 0%;
+      --kv-button-edge-highlight: var(--kv-white) 25%;
     }
   }
 
@@ -516,6 +553,11 @@
       --kv-color-success-subtle: var(--kv-success-50);
       --kv-color-warning: var(--kv-warning-800);
       --kv-color-warning-subtle: var(--kv-warning-50);
+
+      --kv-shadow-button: none;
+      --kv-shadow-button-hover: none;
+      --kv-button-edge-shade: var(--kv-neutral-950) 0%;
+      --kv-button-edge-highlight: var(--kv-white) 0%;
     }
   }
 
@@ -550,6 +592,11 @@
 
       --kv-shadow-popup: none;
       --kv-shadow-dialog: none;
+
+      --kv-shadow-button: none;
+      --kv-shadow-button-hover: none;
+      --kv-button-edge-shade: var(--kv-neutral-950) 0%;
+      --kv-button-edge-highlight: var(--kv-white) 0%;
     }
   }
 
@@ -584,6 +631,12 @@
       --kv-color-success-subtle: Canvas;
       --kv-color-warning: CanvasText;
       --kv-color-warning-subtle: Canvas;
+
+      /* Buttons are flat: the system draws their edge, and the browser drops shadows anyway. */
+      --kv-shadow-button: none;
+      --kv-shadow-button-hover: none;
+      --kv-button-edge-shade: var(--kv-neutral-950) 0%;
+      --kv-button-edge-highlight: var(--kv-white) 0%;
     }
   }
 
@@ -616,8 +669,19 @@
    * the compact step and the 44px below 64rem included. Keep --kv-button-min-block-size at
    * 24px or more, and enough --kv-button-padding-inline that a short label is 24px wide:
    * 2.5.8 Target Size (Minimum). Resident-facing buttons should stay at 44px (2.5.5).
+   *
+   * Depth (ADR-0026): buttons sit on the page, with a soft shadow (--kv-shadow-button), and an
+   * edge tinted darker at the bottom in light or lighter at the top in dark. Every state sets
+   * the internal --kv-button-edge, and the base rule derives the four edges from it. So only
+   * the pressed, disabled and forced-colours rules set border-color themselves: a later
+   * border-color would override the tinted sides. Hover lifts the shadow, and pressed and
+   * keyboard focus remove it, so the focus ring sits on the plain page and keeps exactly the
+   * measured focus-ring contrast (2.4.7, 2.4.13). Disabled buttons, the contrast themes and
+   * forced colours are flat. Depth is never the only boundary: the fill and edge carry it.
    */
   .kv-button {
+    --kv-button-edge: var(--kv-color-secondary);
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -628,8 +692,15 @@
     margin: 0;
     padding-block: var(--kv-space-2);
     padding-inline: var(--kv-button-padding-inline, var(--kv-control-padding-inline));
-    border: var(--kv-border-width) solid var(--kv-color-secondary);
+    border: var(--kv-border-width) solid var(--kv-button-edge);
+    border-block-start-color: color-mix(
+      in srgb,
+      var(--kv-button-edge),
+      var(--kv-button-edge-highlight)
+    );
+    border-block-end-color: color-mix(in srgb, var(--kv-button-edge), var(--kv-button-edge-shade));
     border-radius: var(--kv-radius-md);
+    box-shadow: var(--kv-shadow-button);
     background-color: var(--kv-color-surface-raised);
     color: var(--kv-color-text);
     font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
@@ -644,19 +715,35 @@
     cursor: pointer;
   }
 
-  .kv-button:not(:disabled, [data-disabled]):is(:hover, :active) {
-    border-color: var(--kv-color-primary);
+  .kv-button:not(:disabled, [data-disabled]):hover {
+    --kv-button-edge: var(--kv-color-primary);
     background-color: var(--kv-color-primary-subtle);
+    box-shadow: var(--kv-shadow-button-hover);
   }
 
-  /* Keyboard focus only: a 2px ring, 2px outside, against the page (2.4.7, 2.4.13). */
+  /* Pressed: no shadow, and the token edge on all four sides, untinted. */
+  .kv-button:not(:disabled, [data-disabled]):active {
+    --kv-button-edge: var(--kv-color-primary);
+    border-color: var(--kv-button-edge);
+    background-color: var(--kv-color-primary-subtle);
+    box-shadow: none;
+  }
+
+  /* Keyboard focus only: a 2px ring, 2px outside, against the page (2.4.7, 2.4.13). The
+   * shadow goes too, hover included, so the ring's neighbour is the plain page. This comes
+   * after hover and has its specificity. It sets no border-color, so pressed still resets
+   * the edges when the button is focused and pressed. */
   .kv-button:is(:focus-visible, [data-focus-visible]) {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: var(--kv-focus-ring-offset);
   }
 
+  .kv-button:not(:disabled, [data-disabled]):is(:focus-visible, [data-focus-visible]) {
+    box-shadow: none;
+  }
+
   .kv-button.kv-button--primary {
-    border-color: transparent;
+    --kv-button-edge: transparent;
     background-color: var(--kv-color-primary);
     color: var(--kv-color-on-primary);
   }
@@ -664,26 +751,28 @@
   /* The edge stays primary: primary-hover alone is under 3:1 on surface-raised in dark, where
    * cards, dialogs and popups put buttons (1.4.11, ADR-0021). */
   .kv-button.kv-button--primary:not(:disabled, [data-disabled]):is(:hover, :active) {
-    border-color: var(--kv-color-primary);
+    --kv-button-edge: var(--kv-color-primary);
     background-color: var(--kv-color-primary-hover);
   }
 
   .kv-button.kv-button--danger {
-    border-color: transparent;
+    --kv-button-edge: transparent;
     background-color: var(--kv-color-danger);
     color: var(--kv-color-on-danger);
   }
 
   .kv-button.kv-button--danger:not(:disabled, [data-disabled]):is(:hover, :active) {
-    border-color: transparent;
+    --kv-button-edge: transparent;
     background-color: var(--kv-color-danger-hover);
   }
 
-  /* Disabled, natively or focusable (data-disabled): a dashed edge is the non-colour cue.
-   * It comes after the variants, so it wins over them. */
+  /* Disabled, natively or focusable (data-disabled): a dashed edge is the non-colour cue, and
+   * the button is flat. It comes after the variants and every rule that sets a shadow, so it
+   * wins over them. Its border-color sets all four edges, tinted ones included. */
   .kv-button:is(:disabled, [data-disabled]) {
     border-style: dashed;
     border-color: var(--kv-color-border-control);
+    box-shadow: none;
     background-color: var(--kv-color-surface);
     color: var(--kv-color-text-muted);
     cursor: not-allowed;
@@ -726,7 +815,7 @@
 
   @media (prefers-reduced-motion: no-preference) {
     .kv-button {
-      transition-property: background-color, border-color, color;
+      transition-property: background-color, border-color, color, box-shadow;
       transition-duration: var(--kv-duration-fast);
       transition-timing-function: var(--kv-easing-standard);
     }
@@ -736,12 +825,14 @@
     .kv-button,
     .kv-button:is(.kv-button--primary, .kv-button--danger) {
       border-color: ButtonText;
+      box-shadow: none;
       background-color: ButtonFace;
       color: ButtonText;
     }
 
     .kv-button:not(:disabled, [data-disabled]):is(:hover, :active) {
       border-color: Highlight;
+      box-shadow: none;
       background-color: ButtonFace;
     }
 
@@ -752,6 +843,7 @@
     .kv-button:is(:disabled, [data-disabled]) {
       border-style: dashed;
       border-color: GrayText;
+      box-shadow: none;
       color: GrayText;
     }
   }
