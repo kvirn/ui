@@ -19,7 +19,7 @@ Masks have a poor accessibility record, and this is why GOV.UK ships none and as
 - **Paste and autofill.** Native `maxlength` truncates a pasted `1990-01-01-1234` before any script sees it. A strict mask rejects a pasted value with other separators (`19900101 1234`). Blocking paste or autofill fails 3.3.8.
 - **Placeholder characters** (`____-__`) in the value are read aloud as "underscore", make an empty field non-empty, and break `:placeholder-shown`.
 - **Auto-fixing.** Clamping a number to `min` as you type turns "1" into "10" when you meant "15". Changing what the user entered without telling them fails the purpose of 3.3.1 and 3.3.4.
-- **Undo.** Writing `input.value` from script clears the browser's undo history in Chrome and Firefox.
+- **Undo.** Writing `input.value` from script clears the browser's undo history before that step in Chrome and Firefox.
 
 ## Decision drivers
 
@@ -128,7 +128,7 @@ Decisions made while implementing, for review with this ADR. None contradicts th
 
 - Positive: shaped input with no dependency, in pure functions that every adapter can reuse, with the known mask failures designed out.
 - Negative / trade-offs:
-  - We own caret, composition and undo edge cases across browsers. When a mask inserts a literal, the undo history for that step is lost.
+  - We own caret, composition and undo edge cases across browsers. Undo can't go back past the last step the mask rewrote: writing the value clears the browser's history before it (measured in Chromium).
   - Announcing rejections needs the Announcer (roadmap M1, planned), so it must ship first.
   - The presets' formats need upkeep when the rules change (the FI century signs changed in 2023).
   - The rejection strings need translator review in fi, nn and se.

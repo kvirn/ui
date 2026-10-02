@@ -288,10 +288,10 @@ test.describe('Masked Input keyboard contract', () => {
     await input.focus()
     await page.keyboard.type('1234')
     await expect(input).toHaveValue('123 4')
-    // Writing the literal clears the browser's undo history for that step (ADR-0032): undo
-    // may do nothing or go back a step, and the value never breaks the mask.
+    // Writing the value (to insert the space) clears the browser's undo history before that
+    // step (ADR-0032), so undo can't go back past it: nothing is undone and the value stays.
     await page.keyboard.press('ControlOrMeta+Z')
-    await expect(input).toHaveValue(/^(\d{3}( \d{0,2})?)?$/)
+    await expect(input).toHaveValue('123 4')
   })
 
   test('an IME or dead key composition is left alone until compositionend', async ({

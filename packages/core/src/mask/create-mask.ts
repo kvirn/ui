@@ -213,9 +213,9 @@ function buildMask(engine: MaskEngine): Mask {
   }
 
   const format = (unmaskedValue: string): string =>
-    engine.parse(unmaskedValue, createWholeValueContext(unmaskedValue)).value
-  const unmask = (value: string): string =>
-    engine.parse(value, createWholeValueContext(value)).unmaskedValue
+    engine.parse(unmaskedValue, { ...createWholeValueContext(unmaskedValue), isCanonical: true })
+      .value
+  const unmask = (value: string): string => engine.parse(value, untouchedContext).unmaskedValue
 
   const mask: Mask = {
     attributes: engine.attributes,

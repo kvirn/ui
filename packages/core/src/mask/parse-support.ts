@@ -9,6 +9,11 @@ export interface ParseContext {
   readonly isBulk: boolean
   /** Inserted characters (by index) that the mask must drop because the value is full. */
   readonly skipped: ReadonlySet<number>
+  /**
+   * The value is a stored one, not text the user typed or pasted. A number mask then reads `.` as
+   * the decimal mark and `-` as the sign, without guessing.
+   */
+  readonly isCanonical?: boolean
 }
 
 export interface ParseRejection {
