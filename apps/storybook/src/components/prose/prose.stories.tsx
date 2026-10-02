@@ -1,21 +1,64 @@
-import { Button, Link } from '@kvirn-ui/react'
+import { Button, Heading, Link, Prose } from '@kvirn-ui/react'
+import contract from '../../../../../packages/react/src/prose/prose.a11y.md?raw'
+import guide from '../../../../../packages/react/src/prose/prose.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useId } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { expect, within } from 'storybook/test'
-import { ProseArticle, articleFor, updatedDate } from './foundations.fixture.tsx'
-import type { FixtureLocale } from './foundations.fixture.tsx'
+import { usageGuide } from '../../docs-source.ts'
+import { ProseArticle, articleFor, updatedDate } from '../../foundation/foundations.fixture.tsx'
+import type { FixtureLocale } from '../../foundation/foundations.fixture.tsx'
 import {
   caseNumberSample,
   computedPixels,
   fixtureLocaleOf,
   requireElement,
-} from './typography-helpers.tsx'
+} from '../../foundation/typography-helpers.tsx'
 
-// Foundation/Prose (docs/design/foundations-and-prose.md §6.1–6.6 and §7):
-// kv-prose on the fixture article, a municipality's guidance page that uses every element
-// prose styles. The article follows the Locale toolbar: sv and en are written, and the other
-// locales show the English article marked lang="en" until a translator delivers them.
+// Components/Prose: the headless Prose (ADR-0052), styled by @kvirn-ui/theme (docs/design/foundations-and-prose.md
+// §6.1–6.6 and §7). The Default story is the small example. The others put kv-prose on the fixture
+// article, a municipality's guidance page that uses every element prose styles. The article follows
+// the Locale toolbar: sv and en are written, and the other locales show the English article marked
+// lang="en" until a translator delivers them. Prose has no focusable part, so there's no Keyboard story.
+
+const meta = {
+  title: 'Components/Prose',
+  component: Prose.Root,
+  args: {
+    children: (
+      <>
+        <Heading level={2}>Kontakta oss</Heading>
+        <p>Vi svarar vardagar 9–16.</p>
+        <p>
+          <Link href="#epost">Mejla kundcenter</Link>
+        </p>
+      </>
+    ),
+  },
+  argTypes: {
+    className: {
+      control: 'text',
+      description: 'Your own classes, added to `kv-prose`. The theme styles `kv-prose--large`.',
+    },
+    render: { control: false },
+  },
+  parameters: {
+    a11yContract: contract,
+    docs: { description: { component: usageGuide(guide) } },
+  },
+} satisfies Meta<typeof Prose.Root>
+
+export default meta
+type Story = StoryObj<typeof meta>
+
+/** A heading, a paragraph and a link: a `<div>`, so it adds no landmark. */
+export const Default: Story = {
+  play: async ({ canvas }) => {
+    const heading = canvas.getByRole('heading', { level: 2, name: 'Kontakta oss' })
+    await expect(heading.closest('.kv-prose')).not.toBeNull()
+    await expect(canvas.queryByRole('article')).toBeNull()
+  },
+}
 
 /** The article in a page, as an adopter would put it. */
 function ArticlePage({
@@ -103,13 +146,6 @@ function SurfacesPage({ locale }: { locale: FixtureLocale }): ReactNode {
     </main>
   )
 }
-
-const meta = {
-  title: 'Foundation/Prose',
-} satisfies Meta
-
-export default meta
-type Story = StoryObj<typeof meta>
 
 const articleOf = (canvasElement: HTMLElement) => requireElement(canvasElement, 'article.kv-prose')
 

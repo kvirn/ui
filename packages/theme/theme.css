@@ -8,7 +8,7 @@
  * `data-focus-visible`, `data-current`, `data-invalid`),
  * plus classes you add yourself: variants and options (`kv-button--primary`,
  * `kv-section--canvas`, `kv-input--width-6`), and context (`kv-compact`, `kv-nav`,
- * `kv-button-group`, `kv-prose`, `kv-lead`, `kv-not-prose`, `kv-scroll-region`). Classes style,
+ * `kv-button-group`, `kv-prose`, `kv-lead`, `kv-heading--display`, `kv-not-prose`, `kv-scroll-region`). Classes style,
  * data-* attributes are state.
  *
  * This file is the source of truth, and it is meant to be read. Three ways to use it:
@@ -66,6 +66,7 @@
  *   7. Button
  *   8. Link and navigation lists
  *   9. Prose            kv-prose: articles from a CMS or Markdown
+ *  9a. Heading       kv-heading: the type role of a heading, apart from its level
  *  10. Card
  *  10a. Section          kv-section: a region of the page, elevation level 1
  *  10b. Notification     kv-notification: a status message, by status class
@@ -1500,6 +1501,59 @@
     .kv-scroll-region:is(:focus-visible, [data-focus-visible]) {
       outline-color: Highlight;
     }
+  }
+
+  /* 9a. Heading ------------------------------------------------------------------------------
+   * <Heading level={2}> renders <h2 class="kv-heading kv-heading--heading-2">: the level is the
+   * page's outline, and the modifier is the look. Choose the look apart from the level with
+   * kv-heading--display, --heading-1, --heading-2 or --heading-3, the type roles of the same names
+   * (a card's title can be an h3 set as heading-2, and a page's h1 can be display). Without a
+   * modifier, a heading looks like prose's h4 to h6: the body size in the heading-3 weight. The
+   * Heading component adds the modifier for levels 1 to 3. It works in prose and outside it.
+   * Only the type is set: margins come from kv-prose or from you. Zero specificity, after prose,
+   * so it wins over prose's rule for the element and your own CSS wins over it. */
+  :where(.kv-heading) {
+    color: var(--kv-color-heading);
+    font-family: var(--kv-font-family-heading, var(--kv-font-family-serif));
+    font-size: var(--kv-prose-font-size);
+    font-weight: var(--kv-font-heading-3-weight);
+    line-height: var(--kv-prose-line-height);
+    letter-spacing: 0em;
+  }
+
+  :where(.kv-heading--display) {
+    font-size: var(--kv-font-display-size);
+    font-weight: var(--kv-font-display-weight);
+    line-height: var(--kv-font-display-line-height);
+    letter-spacing: var(--kv-font-display-letter-spacing);
+    font-feature-settings: var(--kv-font-display-feature-settings);
+    text-wrap: balance;
+  }
+
+  :where(.kv-heading--heading-1) {
+    font-size: var(--kv-font-heading-1-size);
+    font-weight: var(--kv-font-heading-1-weight);
+    line-height: var(--kv-font-heading-1-line-height);
+    letter-spacing: var(--kv-font-heading-1-letter-spacing);
+    font-feature-settings: var(--kv-font-heading-1-feature-settings);
+    text-wrap: balance;
+  }
+
+  :where(.kv-heading--heading-2) {
+    font-size: var(--kv-font-heading-2-size);
+    font-weight: var(--kv-font-heading-2-weight);
+    line-height: var(--kv-font-heading-2-line-height);
+    letter-spacing: var(--kv-font-heading-2-letter-spacing);
+    font-feature-settings: var(--kv-font-heading-2-feature-settings);
+    text-wrap: balance;
+  }
+
+  :where(.kv-heading--heading-3) {
+    font-size: var(--kv-font-heading-3-size);
+    font-weight: var(--kv-font-heading-3-weight);
+    line-height: var(--kv-font-heading-3-line-height);
+    letter-spacing: var(--kv-font-heading-3-letter-spacing);
+    font-feature-settings: var(--kv-font-heading-3-feature-settings);
   }
 
   /* 10. Card ---------------------------------------------------------------------------------

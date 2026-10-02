@@ -37,6 +37,24 @@ export type {
 } from './card/card.tsx'
 export { useCard } from './card/use-card.ts'
 export type { CardPartProps, UseCardResult } from './card/use-card.ts'
+export { Heading } from './heading/heading.tsx'
+export type {
+  HeadingElementProps,
+  HeadingLevel,
+  HeadingProps,
+  HeadingSize,
+  HeadingState,
+} from './heading/heading.tsx'
+export { useHeading } from './heading/use-heading.ts'
+export type {
+  HeadingPartProps,
+  UseHeadingOptions,
+  UseHeadingResult,
+} from './heading/use-heading.ts'
+export { Prose, ProseRoot } from './prose/prose.tsx'
+export type { ProseElementProps, ProseRootProps, ProseState } from './prose/prose.tsx'
+export { useProse } from './prose/use-prose.ts'
+export type { ProsePartProps, UseProseResult } from './prose/use-prose.ts'
 export { Section, SectionRoot } from './section/section.tsx'
 export type { SectionElementProps, SectionRootProps, SectionState } from './section/section.tsx'
 export { useSection } from './section/use-section.ts'

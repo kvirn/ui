@@ -69,3 +69,4 @@ We record significant decisions as ADRs using a lightweight MADR-style format.
 | [0049](0049-file-upload-dashed-drop-zone.md)                        | The FileUpload drop zone has a dashed edge, the one that doesn't mean disabled                  | Proposed               |
 | [0050](0050-combobox-and-autocomplete-react-implementation.md)      | Combobox and Autocomplete share one hook and the Listbox's popup parts, and a Control anchors   | Proposed               |
 | [0051](0051-one-worktree-per-feature.md)                            | One git worktree per feature, and the Stop hook checks the whole tree                           | Proposed               |
+| [0052](0052-heading-and-prose.md)                                   | Heading takes a level and a type-role size, and Prose is `kv-prose` as a component              | Proposed               |

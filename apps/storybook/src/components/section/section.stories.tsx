@@ -1,4 +1,4 @@
-import { Card, Link, Section } from '@kvirn-ui/react'
+import { Card, Heading, Link, Prose, Section } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/section/section.a11y.md?raw'
 import guide from '../../../../../packages/react/src/section/section.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -40,10 +40,10 @@ const meta = {
   component: Section.Root,
   args: {
     children: (
-      <>
-        <h2>Kontakta oss</h2>
+      <Prose>
+        <Heading level={2}>Kontakta oss</Heading>
         <p>Vi svarar vardagar 9–16.</p>
-      </>
+      </Prose>
     ),
   },
   argTypes: {
@@ -63,6 +63,20 @@ type Story = StoryObj<typeof meta>
 
 /** A Section with a heading and a paragraph: a `<div>`, so it adds no landmark. */
 export const Default: Story = {
+  parameters: {
+    docs: {
+      source: {
+        code: `<Section>
+  <Prose>
+    <Heading level={2}>Kontakta oss</Heading>
+    <p>Vi svarar vardagar 9–16.</p>
+  </Prose>
+</Section>`,
+        language: 'tsx',
+        type: 'code',
+      },
+    },
+  },
   decorators: [
     (Story) => (
       <div className="kv-story-card-column">

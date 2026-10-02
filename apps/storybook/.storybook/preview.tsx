@@ -224,7 +224,6 @@ const preview: Preview = {
             'Overview',
             'Colors',
             'Typography',
-            'Prose',
             'Spacing',
             'Radius',
             'Borders and elevation',
