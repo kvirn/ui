@@ -209,6 +209,16 @@ The spec's open questions, resolved on 2026-10-02 as defaults the maintainer can
 - [ ] e2e: one test per keyboard row, including radio arrows in RTL
 - [ ] Docs, exports, changeset, accessibility-reviewer APPROVE
 
+### Phase 2b: NativeSelect (ADR-0037, item 2)
+
+Scope: only the native `<select>` wired by Field. The custom `Select`, `Combobox` and `Autocomplete` need Listbox, Popover and DismissableLayer (all `planned`, M2) and get their own plan.
+
+- [ ] `native-select.a11y.md` contract. Native `<select>`: Tab stop, arrows, typeahead and Alt+Down are browser behaviour, documented per ADR-0039. No placeholder option as the only label
+- [ ] Failing tests first, then `useNativeSelect` and `NativeSelect` (Field wiring: `id`, `aria-describedby`, `aria-invalid`, `aria-required`, `disabled`). `value`/`defaultValue`/`onValueChange` with no stored state (ADR-0029, item 0). Children are plain `<option>` and `<optgroup>`
+- [ ] Theme: `kv-native-select` per the Input look, with a drawn chevron that survives forced colours. Tokens only, no new contrast pairs unless needed
+- [ ] Stories: `Components/Form/NativeSelect` (default, selected, with description, invalid, disabled, groups, RTL, forced colours, long Finnish label, `Keyboard`, `parameters.a11yContract`). e2e: Tab order, label click focuses, 320px reflow
+- [ ] Docs, export, changeset, roadmap row for NativeSelect, accessibility-reviewer APPROVE
+
 ### Phase 3: DateInput
 
 - [ ] i18n: `dateInput.day`, `.month`, `.year`
