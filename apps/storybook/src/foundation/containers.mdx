@@ -1,0 +1,45 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Foundation/Containers and status" />
+
+# Containers and status
+
+Surface is a colour token. Section, Card and Notification are the three components that put content on it. This is the one place that says which to use, so the component pages link here instead of repeating it.
+
+- **Surface** is only the colour ladder: `canvas`, `surface` and `surface-raised` (see [Borders and elevation](?path=/docs/foundation-borders-and-elevation--docs)).
+- **Section** is a region of the page: elevation level 1, no visible edge.
+- **Card** is one thing with one primary destination: elevation level 2, with an edge.
+- **Notification** is a status message: info, success, warning or danger.
+
+## Section, Card, Notification or a surface token: when to use which
+
+| You're building                                                                                                                            | Use                                                                                                                                                                                         | Why                                                                                                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A region of the page next to or between other content: a sidebar, a filter section, a band of related content                              | `Section`. It's `surface`, square, with no visible edge                                                                                                                                     | It's part of the page's layout, not a thing on the page (elevation level 1)                                                                                            |
+| A region that should look like the page again inside a `surface` region: the work area next to a staff sidebar                             | `Section` with `kv-section--canvas`                                                                                                                                                         | It goes back to the page colour without drawing a box (level 0)                                                                                                        |
+| One self-contained thing people read, compare or act on as a unit: a service, a news item, a case, a contact card                          | `Card`. It's `surface-raised`, with a hairline edge and rounded corners                                                                                                                     | The edge and the corners say "these belong together" (level 2)                                                                                                         |
+| Several of those things                                                                                                                    | Cards in a list (`<ul>`, each card `render={<li />}`), on the page or on a Section                                                                                                          | One thing per card. A Section around them is optional                                                                                                                  |
+| A background inside your own component: a table header row, a code block, a read-only field                                                | The token in your CSS, `var(--kv-color-surface)`, with the `text` tokens on it                                                                                                              | It isn't a region or a thing, so it isn't a container. The `text` tokens keep `theme:check`'s pairs true                                                               |
+| One thing with several independent actions: a user with Edit and Delete, a settings block                                                  | `Section`. A Card has one primary destination, and here the controls are the reason the container exists                                                                                    | If you can't name one destination, it isn't a card                                                                                                                     |
+| A form section or a group of fields                                                                                                        | Neither. A heading or a `<fieldset>` with a legend, on the page or in a Section                                                                                                             | A card would make "Account" look like an entity and add a level of hierarchy                                                                                           |
+| A status message: something people need to know now, or the result of what they just did (an error, a warning, a confirmation, a deadline) | `Notification.Info`, `Notification.Success`, `Notification.Warning` or `Notification.Danger`. Each brings its status class (the `-subtle` background and bar), its icon and its status word | It's a message, not a region or a thing. Status is never shown by a surface colour alone (1.4.1), so you choose the status, and the colour, icon and word come with it |
+| An error on one form field                                                                                                                 | `Field.ErrorMessage` under the field. On submit, also the error summary (a `Notification.Danger` that takes focus)                                                                          | The error belongs to its field, and the summary gets the user to it                                                                                                    |
+| A quote, an example or an aside that isn't a status                                                                                        | Plain content: a paragraph, or prose's `blockquote` for a quotation. Never a `-subtle` background                                                                                           | A tinted box reads as a status. If nothing happened and nothing is at risk, it isn't one                                                                               |
+
+Rules that go with it: a Card on a Section keeps its default look. Don't put a Section inside a Card (a region inside a thing turns the ladder upside down). Nest Sections only to switch between `surface` and `canvas`. A Notification may sit on the page, in a Section or in a Card body, but never put a Card or a Section inside one.
+
+**When unsure, use the simpler container.** A Card is for one identifiable thing, not a box with a border, a background or padding. Before using Card, ask in order:
+
+1. Can you name the thing it represents (a product, a person, an article, a case, a search result)? If not, use a Section or plain HTML.
+2. Does the content represent exactly one thing? If not, use a Section.
+3. Is there one primary destination or action? If the controls are the reason the container exists, use a Section.
+4. Is it a form section, a field group, a toolbar, a button group or a layout wrapper? Never a Card.
+5. Don't nest Cards unless the inner one is a thing in its own right. Don't use Cards to create visual hierarchy.
+
+These are guidance in the docs. They don't change what Card does: a clickable whole card, and a choice of border, shadow or flat, stay out of scope (ADR-0020, DESIGN.md: a card is never interactive and has no shadow).
+
+## Related
+
+- [Section](?path=/docs/components-section--docs), [Card](?path=/docs/components-card--docs) and [Notification](?path=/docs/components-notification--docs): the three components
+- [Borders and elevation](?path=/docs/foundation-borders-and-elevation--docs): the levels each one sits on
+- [Section: Surface layers](?path=/story/components-section--surface-layers): all five levels, drawn

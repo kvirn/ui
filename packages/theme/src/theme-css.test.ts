@@ -165,7 +165,7 @@ describe('theme.css contrast and forced colours', () => {
     },
   )
 
-  it.each(themeNames)('%s: guards prose on the status panels (ADR-0018)', (themeName) => {
+  it.each(themeNames)('%s: guards prose on the status notifications (ADR-0018)', (themeName) => {
     const textMinimum = themeName.endsWith('contrast') ? 7 : 4.5
     const minimumFor = (foreground: string, background: string) =>
       contrastRequirements[themeName].find(
@@ -1190,5 +1190,206 @@ describe('theme.css one-time code (ADR-0033, ADR-0045, docs/design/one-time-code
         rule.media.some((media) => media.includes('prefers-reduced-motion: no-preference')),
       ).toBe(true)
     }
+  })
+})
+
+describe('theme.css notification (ADR-0047, docs/design/notification.md)', () => {
+  const isNotificationSelector = (selector: string) =>
+    /\.kv-notification\b/.test(selector) && !selector.includes('.kv-prose')
+  const notificationRules = rules.filter((rule) => rule.selectors.every(isNotificationSelector))
+  // The status word is visually hidden on purpose, so it is the one rule that may clip.
+  const isStatusWord = (rule: (typeof rules)[number]) =>
+    rule.selectors.every((selector) => selector.includes('.kv-notification-status'))
+  const boxRules = notificationRules.filter((rule) => !isStatusWord(rule))
+  const rootDeclarations = notificationRules
+    .filter((rule) => rule.media.length === 0 && rule.selectors.includes('.kv-notification'))
+    .flatMap((rule) => rule.declarations)
+  const declarationsOf = (selector: string, media = '') =>
+    rules
+      .filter(
+        (rule) =>
+          rule.selectors.includes(selector) &&
+          (media === '' ? rule.media.length === 0 : rule.media.some((m) => m.includes(media))),
+      )
+      .flatMap((rule) => rule.declarations)
+
+  it('never clips, never fixes a height and has no shadow, so nothing is cut off (1.4.12, 2.4.11)', () => {
+    expect(boxRules.length).toBeGreaterThan(10)
+    const declarations = boxRules.flatMap((rule) => rule.declarations)
+    expect(
+      declarations.filter(([property]) =>
+        /^(?:overflow(?:-[xy]|-block|-inline)?|clip-path)$/.test(property),
+      ),
+    ).toEqual([])
+    expect(
+      declarations.filter(
+        ([property, value]) =>
+          /^(?:height|min-height|max-height)$/.test(property) ||
+          (/^(?:min-|max-)?block-size$/.test(property) && value !== 'auto'),
+      ),
+    ).toEqual([])
+    // A notification is never raised: its edge is its bar.
+    expect(declarations.filter(([property]) => property === 'box-shadow')).toEqual([])
+  })
+
+  it('has no motion and no hover: it appears and disappears instantly', () => {
+    const declarations = notificationRules.flatMap((rule) => rule.declarations)
+    expect(declarations.filter(([property]) => /^(?:transition|animation)/.test(property))).toEqual(
+      [],
+    )
+    expect(
+      notificationRules.flatMap((rule) => rule.selectors).filter((s) => /:hover/.test(s)),
+    ).toEqual([])
+  })
+
+  it('draws the inline-start bar with the indicator width, in the accent token', () => {
+    expect(rootDeclarations).toContainEqual([
+      'border-inline-start',
+      'var(--kv-indicator-width) solid var(--kv-notification-accent)',
+    ])
+    // The other three sides stay a 1px edge, transparent until forced colours draw it.
+    expect(rootDeclarations).toContainEqual(['border', 'var(--kv-border-width) solid transparent'])
+    expect(rootDeclarations).toContainEqual(['border-radius', 'var(--kv-radius-sm)'])
+  })
+
+  it('pairs the background with the text colour, and shrinks in a grid (1.4.3, 1.4.10)', () => {
+    expect(rootDeclarations).toContainEqual([
+      'background-color',
+      'var(--kv-notification-background)',
+    ])
+    expect(rootDeclarations).toContainEqual(['color', 'var(--kv-color-text)'])
+    expect(rootDeclarations).toContainEqual(['min-inline-size', '0'])
+    expect(rootDeclarations).toContainEqual(['max-inline-size', '100%'])
+    expect(rootDeclarations).toContainEqual(['overflow-wrap', 'break-word'])
+  })
+
+  it('has a neutral fallback on the bare class: surface and a border-control bar', () => {
+    expect(rootDeclarations).toContainEqual([
+      '--kv-notification-background',
+      'var(--kv-color-surface)',
+    ])
+    expect(rootDeclarations).toContainEqual([
+      '--kv-notification-accent',
+      'var(--kv-color-border-control)',
+    ])
+  })
+
+  it.each([
+    ['info', 'primary-subtle', 'primary'],
+    ['success', 'success-subtle', 'success'],
+    ['warning', 'warning-subtle', 'warning'],
+    ['danger', 'danger-subtle', 'danger'],
+  ])(
+    'the %s class sets only the two colour tokens, to semantic tokens',
+    (status, background, accent) => {
+      expect(declarationsOf(`.kv-notification.kv-notification--${status}`)).toEqual([
+        ['--kv-notification-background', `var(--kv-color-${background})`],
+        ['--kv-notification-accent', `var(--kv-color-${accent})`],
+      ])
+    },
+  )
+
+  it('lays out two columns only when an icon is a direct child', () => {
+    // The bare class is one column, so a plain Root without an icon has no empty first column.
+    expect(rootDeclarations).toContainEqual(['grid-template-columns', 'minmax(0, 1fr)'])
+    expect(declarationsOf('.kv-notification:has(> .kv-notification-icon)')).toContainEqual([
+      'grid-template-columns',
+      'auto minmax(0, 1fr)',
+    ])
+    expect(
+      rules.filter(
+        (rule) =>
+          rule.selectors.includes('.kv-notification') &&
+          rule.declarations.some(([, value]) => value.startsWith('auto minmax')),
+      ),
+    ).toEqual([])
+  })
+
+  it('draws the border on all four sides in CanvasText in forced colours, and keeps the bar 4px', () => {
+    const forced = declarationsOf('.kv-notification', 'forced-colors')
+    expect(forced).toContainEqual(['border-color', 'CanvasText'])
+    // Nothing narrows the shorthand or changes the width, so the 4px bar stays.
+    expect(
+      forced.filter(([property]) => /^border-(?:block|inline)|^border-width/.test(property)),
+    ).toEqual([])
+    expect(declarationsOf('.kv-notification > .kv-notification-icon', 'forced-colors')).toEqual([
+      ['color', 'CanvasText'],
+    ])
+  })
+
+  it('shows a focused root with the focus ring, outside the box (2.4.7, 2.4.13)', () => {
+    const focused = declarationsOf('.kv-notification:is(:focus-visible, [data-focus-visible])')
+    expect(focused).toContainEqual([
+      'outline',
+      'var(--kv-focus-ring-width) solid var(--kv-color-focus-ring)',
+    ])
+    expect(focused).toContainEqual(['outline-offset', 'var(--kv-focus-ring-offset)'])
+  })
+
+  it('hides the status word visually and never with display: none (1.4.1, 1.3.1)', () => {
+    const statusRules = notificationRules.filter(isStatusWord)
+    expect(statusRules.length).toBeGreaterThan(0)
+    const declarations = statusRules.flatMap((rule) => rule.declarations)
+    expect(declarations).toContainEqual(['clip-path', 'inset(50%)'])
+    expect(declarations).toContainEqual(['inline-size', '1px'])
+    expect(declarations).toContainEqual(['block-size', '1px'])
+    expect(
+      declarations.filter(
+        ([property, value]) =>
+          (property === 'display' && value === 'none') ||
+          (property === 'visibility' && value === 'hidden'),
+      ),
+    ).toEqual([])
+  })
+
+  it('steps the padding and the gap up from 40rem and down in compact density from 64rem', () => {
+    const tokens = (media: string, selector: string) =>
+      declarationsOf(selector, media).filter(([property]) =>
+        /^--kv-notification-(?:padding|gap)/.test(property),
+      )
+    expect(tokens('', ':root')).toEqual([
+      ['--kv-notification-padding-block', 'var(--kv-space-4)'],
+      ['--kv-notification-padding-inline', 'var(--kv-space-3)'],
+      ['--kv-notification-gap', 'var(--kv-space-2)'],
+    ])
+    expect(tokens('40rem', ':root')).toEqual([
+      ['--kv-notification-padding-inline', 'var(--kv-space-4)'],
+      ['--kv-notification-gap', 'var(--kv-space-3)'],
+    ])
+    expect(tokens('64rem', '.kv-compact')).toEqual([
+      ['--kv-notification-padding-block', 'var(--kv-space-3)'],
+      ['--kv-notification-padding-inline', 'var(--kv-space-3)'],
+      ['--kv-notification-gap', 'var(--kv-space-2)'],
+    ])
+  })
+
+  it('uses logical properties only, so right to left works', () => {
+    const physical =
+      /^(?:(?:margin|padding|border)-(?:top|right|bottom|left)(?:-.+)?|(?:top|right|bottom|left)|(?:min-|max-)?(?:width|height)|float|clear)$/
+    expect(
+      notificationRules
+        .flatMap((rule) => rule.declarations)
+        .filter(([property]) => physical.test(property)),
+    ).toEqual([])
+  })
+
+  it('is a prose boundary like a card, and gets prose’s block margins in prose', () => {
+    const inProse = rules.filter((rule) => rule.selectors.some((s) => s.includes('.kv-prose')))
+    // The boundary: nothing inside a notification is prose-styled, so an h2 Title keeps its look.
+    expect(
+      inProse.some((rule) =>
+        rule.selectors.some((s) => s.includes(':is(.kv-card, .kv-notification):not(.kv-prose) *')),
+      ),
+    ).toBe(true)
+    // The Root only gets margins.
+    expect(
+      inProse.filter(
+        (rule) =>
+          rule.selectors.some((s) => /\.kv-notification\b/.test(s)) &&
+          rule.declarations.some(
+            ([property, value]) => property === 'margin-inline' && value === '0',
+          ),
+      ).length,
+    ).toBeGreaterThan(0)
   })
 })

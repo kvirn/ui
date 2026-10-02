@@ -377,6 +377,47 @@ body {
   max-inline-size: 30rem;
 }
 
+/* Components/Notification: one column that can shrink to 320px, with room between examples. */
+.kv-story-notification-column {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kv-space-6);
+  max-inline-size: 40rem;
+}
+
+/* RestyleWithTokens: your own unlayered rule beats @layer kv, so two tokens recolour a status
+   and the icon, the status word and announce stay. */
+.kv-story-notification-rebrand .kv-notification--warning {
+  --kv-notification-background: var(--kv-color-primary-subtle);
+  --kv-notification-accent: var(--kv-color-primary);
+}
+
+/* RestyleWithTokens: our class dropped through the render function form, and a look of your own. */
+.kv-story-my-warning {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--kv-space-3);
+  padding: var(--kv-space-4);
+  border: var(--kv-border-width) solid var(--kv-color-warning);
+  border-radius: var(--kv-radius-md);
+  background-color: var(--kv-color-surface);
+  color: var(--kv-color-text);
+}
+
+.kv-story-my-warning > :not(.kv-notification-icon) {
+  grid-column: 2;
+}
+
+.kv-story-my-warning > .kv-notification-icon {
+  color: var(--kv-color-warning);
+}
+
+/* BringYourOwn: your own class on the plain Root only has to set the two tokens. */
+.kv-story-my-notice {
+  --kv-notification-background: var(--kv-color-primary-subtle);
+  --kv-notification-accent: var(--kv-color-primary);
+}
+
 /* Components/Icon: the built-in set as a grid of cells, 2 columns at 320px and 6 at 64rem. */
 .kv-story-icon-gallery {
   display: grid;

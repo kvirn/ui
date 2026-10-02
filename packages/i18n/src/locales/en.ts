@@ -3,6 +3,12 @@ import type { KvirnMessages } from '../types.ts'
 export const en = {
   link: { newTabNotice: '(opens in a new tab)' },
   field: { optional: '(optional)', errorPrefix: 'Error:' },
+  notification: {
+    infoPrefix: 'Information:',
+    successPrefix: 'Success:',
+    warningPrefix: 'Warning:',
+    dangerPrefix: 'Error:',
+  },
   mask: {
     characterNotAllowed: ({ allowed }) =>
       ({

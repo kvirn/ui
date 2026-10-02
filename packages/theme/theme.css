@@ -68,6 +68,7 @@
  *   9. Prose            kv-prose: articles from a CMS or Markdown
  *  10. Card
  *  10a. Section          kv-section: a region of the page, elevation level 1
+ *  10b. Notification     kv-notification: a status message, by status class
  *  11. Icon
  *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-input-group,
  *                      kv-checkbox, kv-radio, kv-native-select
@@ -1007,7 +1008,8 @@
    * A field (kv-field) and a fieldset (kv-fieldset) are boundaries like kv-not-prose: a form in
    * prose gets prose's block margins on each question, and its hints, errors and heading
    * labels get none. A card is a boundary too: a card in prose gets prose's block margins, and nothing inside
-   * it is prose-styled, unless you put kv-prose on the card or inside it. Then the nearest of the two wins, for two levels of nested cards. Only
+   * it is prose-styled, unless you put kv-prose on the card or inside it. Then the nearest of the two wins, for two levels of nested cards.
+   * A notification (kv-notification) is the same boundary as a card, so its title isn't styled as a prose heading. Only
    * logical properties are used, so right to left works, and nothing has a fixed height, so
    * the text-spacing overrides fit (1.4.12).
    *
@@ -1081,10 +1083,19 @@
           .kv-native-select
         ),
         :is(.kv-not-prose, .kv-nav, .kv-button-group, .kv-field, .kv-fieldset) *,
-        :is(.kv-card:not(.kv-prose) *):not(
-          :is(.kv-card:not(.kv-prose) .kv-prose *):not(
-            :is(.kv-card:not(.kv-prose) .kv-prose .kv-card:not(.kv-prose) *):not(
-              .kv-card:not(.kv-prose) .kv-prose .kv-card:not(.kv-prose) .kv-prose *
+        :is(:is(.kv-card, .kv-notification):not(.kv-prose) *):not(
+          :is(:is(.kv-card, .kv-notification):not(.kv-prose) .kv-prose *):not(
+            :is(
+              :is(.kv-card, .kv-notification):not(.kv-prose)
+                .kv-prose
+                :is(.kv-card, .kv-notification):not(.kv-prose)
+                *
+            ):not(
+              :is(.kv-card, .kv-notification):not(.kv-prose)
+                .kv-prose
+                :is(.kv-card, .kv-notification):not(.kv-prose)
+                .kv-prose
+                *
             )
           )
         )
@@ -1098,6 +1109,7 @@
         .kv-nav,
         .kv-button-group,
         .kv-card,
+        .kv-notification,
         .kv-section,
         .kv-field,
         .kv-fieldset
@@ -1436,7 +1448,15 @@
     }
 
     /* Embedded components and other content prose leaves alone: only its own margin. */
-    &:where(.kv-not-prose, .kv-scroll-region, .kv-card, .kv-section, .kv-field, .kv-fieldset) {
+    &:where(
+      .kv-not-prose,
+      .kv-scroll-region,
+      .kv-card,
+      .kv-notification,
+      .kv-section,
+      .kv-field,
+      .kv-fieldset
+    ) {
       margin-block: var(--kv-prose-space-block);
       margin-inline: 0;
     }
@@ -1821,6 +1841,214 @@
   @media (forced-colors: active) {
     .kv-section {
       border-color: CanvasText;
+    }
+  }
+
+  /* 10b. Notification --------------------------------------------------------------------
+   * <Notification.Info|Success|Warning|Danger> render class="kv-notification" plus a status class,
+   * kv-notification--info|success|warning|danger, an icon and a visually hidden status word.
+   * <Notification.Root> renders kv-notification only. Parts: kv-notification-icon,
+   * kv-notification-title, kv-notification-status, kv-notification-body and
+   * kv-notification-actions. Design spec: docs/design/notification.md.
+   *
+   * The look of a status is only CSS on its class, through two tokens. Nothing in the
+   * components knows about colour, so you restyle with the tokens, or drop the class:
+   *
+   *   --kv-notification-background    the background
+   *   --kv-notification-accent        the inline-start bar and the icon
+   *
+   *   .kv-notification--warning {
+   *     --kv-notification-background: var(--kv-color-warning-subtle);
+   *     --kv-notification-accent: var(--kv-color-warning);
+   *   }
+   *
+   * A bare .kv-notification is a neutral surface with a border-control bar, so your own status
+   * class only has to set the two tokens. A notification is never interactive, never moves and
+   * never clips: no hover, no shadow, no transition, no overflow, no fixed size (1.4.12,
+   * 2.4.11, 2.4.13). It is a prose boundary like a card: nothing inside is prose-styled unless
+   * kv-prose sits between.
+   */
+  :root {
+    --kv-notification-padding-block: var(--kv-space-4);
+    --kv-notification-padding-inline: var(--kv-space-3);
+    --kv-notification-gap: var(--kv-space-2);
+    /* The title's size and line height, which place the icon on the title's first line. */
+    --kv-notification-title-size: 1.125rem;
+    --kv-notification-title-line-height: 1.4;
+  }
+
+  @media (width >= 40rem) {
+    :root {
+      --kv-notification-padding-inline: var(--kv-space-4);
+      --kv-notification-gap: var(--kv-space-3);
+    }
+  }
+
+  /* Compact density steps down from 64rem, with compact controls (section 6). */
+  @media (width >= 64rem) {
+    .kv-compact {
+      --kv-notification-padding-block: var(--kv-space-3);
+      --kv-notification-padding-inline: var(--kv-space-3);
+      --kv-notification-gap: var(--kv-space-2);
+      --kv-notification-title-size: 1rem;
+      --kv-notification-title-line-height: 1.5;
+    }
+  }
+
+  .kv-notification {
+    --kv-notification-background: var(--kv-color-surface);
+    --kv-notification-accent: var(--kv-color-border-control);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    box-sizing: border-box;
+    /* A notification in a grid or flex row can shrink to 320px. */
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    padding: var(--kv-notification-padding-block) var(--kv-notification-padding-inline);
+    /* The bar is the inline-start edge, 4px. The other three sides are a 1px transparent
+     * border, which forced colours draw in CanvasText. The sm radius has no inner curve at
+     * 4px, so the bar stays straight. */
+    border: var(--kv-border-width) solid transparent;
+    border-inline-start: var(--kv-indicator-width) solid var(--kv-notification-accent);
+    border-radius: var(--kv-radius-sm);
+    background-color: var(--kv-notification-background);
+    color: var(--kv-color-text);
+    /* Like prose and a card: long words split at hyphenation points, then wrap (ADR-0028). */
+    hyphens: auto;
+    hyphenate-limit-chars: 10 4 4;
+    overflow-wrap: break-word;
+  }
+
+  .kv-notification.kv-notification--info {
+    --kv-notification-background: var(--kv-color-primary-subtle);
+    --kv-notification-accent: var(--kv-color-primary);
+  }
+
+  .kv-notification.kv-notification--success {
+    --kv-notification-background: var(--kv-color-success-subtle);
+    --kv-notification-accent: var(--kv-color-success);
+  }
+
+  .kv-notification.kv-notification--warning {
+    --kv-notification-background: var(--kv-color-warning-subtle);
+    --kv-notification-accent: var(--kv-color-warning);
+  }
+
+  .kv-notification.kv-notification--danger {
+    --kv-notification-background: var(--kv-color-danger-subtle);
+    --kv-notification-accent: var(--kv-color-danger);
+  }
+
+  /* With an icon, two columns: the icon in the first, every other child in the second, in DOM
+   * order. Without one, a single column. */
+  .kv-notification:has(> .kv-notification-icon) {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--kv-notification-gap);
+  }
+
+  .kv-notification:has(> .kv-notification-icon) > :not(.kv-notification-icon) {
+    grid-column: 2;
+  }
+
+  /* Centred on the title's first line: (title line height - icon size) / 2. The icon is 1.25em
+   * (md), so 1.25em here is its own size. Under the 1.4.12 line height it stays on the line. */
+  .kv-notification > .kv-notification-icon {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    margin-block-start: calc(
+      (var(--kv-notification-title-size) * var(--kv-notification-title-line-height) - 1.25em) / 2
+    );
+    color: var(--kv-notification-accent);
+  }
+
+  /* A message label, not a section heading: the body family, so it doesn't read as new page
+   * structure. The heading level is the consumer's. */
+  .kv-notification-title {
+    max-inline-size: var(--kv-prose-measure);
+    margin: 0;
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-notification-title-size);
+    font-weight: 600;
+    line-height: var(--kv-notification-title-line-height);
+  }
+
+  /* Visually hidden, never display: none: the status word is how a screen reader says what
+   * kind of message this is (1.4.1), and it is in the heading list. Any consumer's own span with
+   * this class behaves the same. Without this theme it shows, which is correct unstyled. */
+  .kv-notification-status {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .kv-notification-body {
+    max-inline-size: var(--kv-prose-measure);
+    margin-block: var(--kv-space-2) 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-size);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  /* The Body's own blocks: no outer margins, space-2 between them, lists keep their markers.
+   * Zero specificity, so your CSS and kv-prose on the Body win. */
+  :where(.kv-notification-body > *) {
+    margin-block: 0;
+  }
+
+  :where(.kv-notification-body > * + *) {
+    margin-block-start: var(--kv-space-2);
+  }
+
+  :where(.kv-notification-body :is(ul, ol)) {
+    padding-inline-start: var(--kv-space-6);
+  }
+
+  /* The built-in button group: a wrapping row, start-aligned. Below 40rem a column of
+   * full-width buttons, and links stay links. */
+  .kv-notification-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--kv-space-3);
+    margin-block-start: var(--kv-notification-padding-block);
+  }
+
+  @media (width < 40rem) {
+    .kv-notification-actions {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .kv-notification-actions > .kv-button {
+      align-self: stretch;
+    }
+  }
+
+  /* Only when the consumer made the root a focus target (tabIndex={-1}): the ring is outside
+   * the box and follows the radius (2.4.7, 2.4.13). */
+  .kv-notification:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  /* All four statuses share one colour here, so the icon's shape, the status word and the
+   * title carry the status. The border is drawn on all four sides, and the bar keeps its 4px. */
+  @media (forced-colors: active) {
+    .kv-notification {
+      border-color: CanvasText;
+    }
+
+    .kv-notification > .kv-notification-icon {
+      color: CanvasText;
+    }
+
+    .kv-notification:is(:focus-visible, [data-focus-visible]) {
+      outline-color: Highlight;
     }
   }
 

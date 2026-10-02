@@ -4,7 +4,7 @@
 - **Date:** 2026-10-02
 - **Deciders:** Maintainer (asked for both). Recorded by the main session.
 - **Tags:** theming, typography, a11y
-- **Amends:** `docs/design/foundations-and-prose.md` open question 3 (`hyphens` stayed `manual`), and `docs/design/card.md` (the Root's wrapping). Plan 0012.
+- **Amends:** `docs/design/foundations-and-prose.md` open question 3 (`hyphens` stayed `manual`), and `docs/design/card.md` (the Root's wrapping). Plan 0012. Revised 2026-10-02 (Plan 0020, ADR-0047): notifications hyphenate like prose and cards.
 
 ## Context
 

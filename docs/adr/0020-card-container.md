@@ -60,7 +60,7 @@ We will use Option A:
 
 - Positive: one container for every surface use, styled by the same `theme.css` import.
 - Negative / trade-offs: the part classes and the card's modifier classes become public API (semver). The consumer must pick the right element and heading level.
-- Follow-ups: a clickable card (stretched title link) and a Title part, if adopters ask; status panels (Notification) as their own component, not a card surface.
+- Follow-ups: a clickable card (stretched title link) and a Title part, if adopters ask; Notification as its own component, not a card surface: designed in `docs/design/notification.md` (ADR-0047, Plan 0020).
 
 ## Validation
 

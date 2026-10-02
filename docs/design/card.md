@@ -158,7 +158,7 @@ Also used, existing: `kv-button-group` on `Card.Footer` (§6.4), `kv-prose` on a
 
 **Not card surfaces:** `primary-subtle` and the status `-subtle` backgrounds.
 
-- Status panels need an inline-start bar, an icon and a heading that states the status (DESIGN.md Components). As a card surface they'd invite colour-only status (1.4.1). They belong to a future Notification component (Plan 0007 non-goal, ADR-0020 follow-up).
+- Status messages need an inline-start bar, an icon and a status word (DESIGN.md Components). As a card surface they'd invite colour-only status (1.4.1). They belong to the Notification component ([notification.md](notification.md), ADR-0047, ADR-0020 follow-up).
 - `primary-subtle` is the secondary button's hover fill. On a `primary-subtle` card the hover fill would be invisible (1:1).
 
 ### 6.2 Padding

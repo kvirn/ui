@@ -42,6 +42,38 @@ export type { SectionElementProps, SectionRootProps, SectionState } from './sect
 export { useSection } from './section/use-section.ts'
 export type { SectionPartProps, UseSectionResult } from './section/use-section.ts'
 export {
+  Notification,
+  NotificationActions,
+  NotificationBody,
+  NotificationDanger,
+  NotificationInfo,
+  NotificationRoot,
+  NotificationSuccess,
+  NotificationTitle,
+  NotificationWarning,
+} from './notification/notification.tsx'
+export type {
+  NotificationActionsProps,
+  NotificationBodyProps,
+  NotificationElementProps,
+  NotificationRootProps,
+  NotificationState,
+  NotificationStatusRootProps,
+  NotificationTitleProps,
+  NotificationVariant,
+} from './notification/notification.tsx'
+export { useNotification } from './notification/use-notification.ts'
+export type {
+  NotificationActionsPartProps,
+  NotificationBodyPartProps,
+  NotificationIconPartProps,
+  NotificationRootPartProps,
+  NotificationStatusPartProps,
+  NotificationTitlePartProps,
+  UseNotificationOptions,
+  UseNotificationResult,
+} from './notification/use-notification.ts'
+export {
   Field,
   FieldDescription,
   FieldErrorMessage,

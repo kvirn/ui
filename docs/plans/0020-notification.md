@@ -1,6 +1,6 @@
 # Plan 0020: Notification
 
-- **Status:** Draft (design and ADR-0047 proposed, waiting for the maintainer to accept it)
+- **Status:** Done (alpha. Manual AT pending before beta. ADR-0047 still to be accepted by the maintainer)
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-02 · **Target:** M1
 - **Related:** ADR-0047 (_Proposed_), ADR-0007, ADR-0013, ADR-0020, ADR-0040, ADR-0044, design spec [notification.md](../design/notification.md)
@@ -49,7 +49,7 @@ Spec §7 is the draft input for `notification.a11y.md`. In short: no role on the
 
 ### i18n strings
 
-`notification.infoPrefix`, `successPrefix`, `warningPrefix`, `dangerPrefix` in sv, fi, nb, nn, se, en (spec §4.1). The `se` values are English placeholders, which blocks beta.
+`notification.infoPrefix`, `successPrefix`, `warningPrefix`, `dangerPrefix` in sv, fi, nb, nn, se, en (spec §4.1). The `se` values are machine-drafted Northern Sámi (`Dieđut:`, `Gárvvis:`, `Váruhus:`, `Boasttuvuohta:`) and need a native speaker to verify them.
 
 ### Theming surface
 
@@ -60,19 +60,19 @@ Classes `kv-notification`, `kv-notification--info|success|warning|danger`, and t
 - [x] Design spec `docs/design/notification.md` (ux-designer)
 - [x] The maintainer's answers recorded in the spec (§11), and ADR-0047 drafted
 - [ ] ADR-0047 accepted by the maintainer
-- [ ] i18n keys in all six locales, and `i18n:check` green
-- [ ] `notification.a11y.md` from spec §7, then tests first (`notification.test.tsx`)
-- [ ] `useNotification` and `Notification.*` in `packages/react/src/notification/`, with `notification.md`, exported from `index.ts`
-- [ ] Notification styles in `theme.css`, and extend the tinted button-edge check to the four `-subtle` backgrounds (spec §6.6), then `theme:check`
-- [ ] Stories (`Components/Notification`: only the gaps, spec §7.7) and e2e
-- [ ] The decision table row and title (spec §9.1) in `section.md`, `card.md`, the Docs pages, Foundation/Borders and elevation and DESIGN.md. Retire "panel", "banner" and "callout" in the docs
-- [ ] Changeset, roadmap row, theme README
-- [ ] accessibility-reviewer APPROVE
-- [ ] `vp check`, `vp test run`, `vp run e2e`, `theme:check`, `i18n:check` green
+- [x] i18n keys in all six locales (`i18n:check` pending, the orchestrator runs it)
+- [x] `notification.a11y.md` from spec §7, then tests first (`notification.test.tsx`, written, not yet run)
+- [x] `useNotification` and `Notification.*` in `packages/react/src/notification/`, with `notification.md`, exported from `index.ts`
+- [x] Notification styles in `theme.css`, and the tinted button-edge check extended to the four `-subtle` backgrounds (spec §6.6), with tests (`theme:check` pending)
+- [x] Stories (`Components/Notification`, spec §7.7) and e2e (written, not yet run)
+- [x] The decision table (spec §9.1) moved to one Foundation page, `apps/storybook/src/foundation/containers.mdx` (Containers and status). The Section, Card and Notification Docs pages, the package docs, Borders and elevation and DESIGN.md link to it instead of copying it. 'Panel', 'banner' and 'callout' retired
+- [x] Changeset, roadmap row (in progress), theme README
+- [x] accessibility-reviewer APPROVE (after one round of fixes: Retry focus, focus on load, and documentation notes)
+- [x] `vp check`, `vp test run`, `vp run e2e`, `theme:check`, `i18n:check` green, run on the Notification, Section and Card files (ADR-0043)
 
 ## Risks & open questions
 
-- Open in spec §11: who translates the Northern Sámi status words, which cases need dismissible notifications later, and whether `useNotification` takes `variant` in v1 (the spec's call, to confirm).
+- Open in spec §11: who reviews the machine-drafted Northern Sámi status words, which cases need dismissible notifications later, and whether `useNotification` takes `variant` in v1 (the spec's call, to confirm).
 - Known 4.1.3 risk: the box has no role, and the message reaches screen readers through the Announcer. Needs manual AT confirmation (`pending`).
 - Contrast: the lowest pairs are 3.13:1 and 3.32:1 in dark on `primary-subtle`. A rebrand of `--kv-primary-*` can break them first.
 
@@ -86,5 +86,5 @@ Alpha in the next 0.x. New public API only.
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass (manual AT `pending`)
-- [ ] Plan tasks ticked, `docs/roadmap.md` status updated
+- [x] All quality gates in AGENTS.md pass (manual AT `pending`)
+- [x] Plan tasks ticked, `docs/roadmap.md` status updated

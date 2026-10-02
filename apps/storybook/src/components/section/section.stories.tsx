@@ -10,7 +10,6 @@ import {
   textsFor,
 } from '../card/card.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
-import guidance from './section-or-card.md?raw'
 import {
   ContactDetailsFieldset,
   ContactSection,
@@ -35,9 +34,7 @@ const description = `A plain container for a region of the page, such as a sideb
 
 This \`Section\` is a region of the page. It is not the \`Section\` part of Disclosure or Tabs.
 
-### Section, Card or a surface token: when to use which
-
-${guidance}`
+Not sure which one to use? See [Containers and status](?path=/docs/foundation-containers-and-status--docs): Section, Card, Notification or a surface token.`
 
 const meta = {
   title: 'Components/Section',

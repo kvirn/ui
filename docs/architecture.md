@@ -18,7 +18,7 @@ Dependencies only point downward: `blocks → theme, react → core, i18n (types
 
 - **core:** one store (`createComponentStore`, which wraps `@tanstack/store`) with typed actions per component, plus utilities for roving tabindex, typeahead, focus trap and restore, dismiss, scroll lock, `inert`, the announcer and IDs. It reaches the DOM only through an injected `Env`, which keeps it SSR-safe and unit-testable (ADR-0003).
 - **react:** binds to core stores via `useSyncExternalStore` (`useStoreSelector`). React 19 or later, RSC-aware (`"use client"` where needed), SSR and hydration safe. Composition works via the `render` prop (see API conventions).
-- **blocks:** public-sector patterns such as the site header, footer, accessibility statement, feedback form, consent banner, form wizard and error summary. Distributed as a package and via a copy-in CLI.
+- **blocks:** public-sector patterns such as the site header, footer, accessibility statement, feedback form, consent banner, form wizard and error summary (built on `Notification.Danger`). Distributed as a package and via a copy-in CLI.
 
 ## API conventions
 
@@ -83,16 +83,17 @@ function FaqItem({ question, answer }: FaqItemProps) {
 
 The same names are used across all components:
 
-| Part                                   | Meaning                                                             |
-| -------------------------------------- | ------------------------------------------------------------------- |
-| `Root`                                 | State owner, which renders a wrapper only if the semantics need one |
-| `Trigger`                              | Element that opens, closes or toggles                               |
-| `Panel`                                | Inline revealed content (Disclosure, Accordion, Tabs)               |
-| `Popup`                                | Floating content (Popover, Menu, Select, Tooltip, Dialog)           |
-| `Backdrop`, `Portal`, `Close`          | Overlay plumbing                                                    |
-| `Label`, `Description`, `ErrorMessage` | Field text, wired automatically to the control                      |
-| `Item`, `Option`, `Tab`                | Collection members                                                  |
-| `Indicator`                            | Visual state marker, `aria-hidden`                                  |
+| Part                                   | Meaning                                                                                  |
+| -------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `Root`                                 | State owner, which renders a wrapper only if the semantics need one                      |
+| `Trigger`                              | Element that opens, closes or toggles                                                    |
+| `Panel`                                | Inline revealed content (Disclosure, Accordion, Tabs)                                    |
+| `Popup`                                | Floating content (Popover, Menu, Select, Tooltip, Dialog)                                |
+| `Backdrop`, `Portal`, `Close`          | Overlay plumbing                                                                         |
+| `Label`, `Description`, `ErrorMessage` | Field text, wired automatically to the control                                           |
+| `Item`, `Option`, `Tab`                | Collection members                                                                       |
+| `Indicator`                            | Visual state marker, `aria-hidden`                                                       |
+| `Info`, `Success`, `Warning`, `Danger` | A ready-made Root for one status: its class, its icon and its status word (Notification) |
 
 Both forms are exported: `Disclosure.Trigger` and the named export `DisclosureTrigger`, which tree-shakes well and is friendly to RSC.
 

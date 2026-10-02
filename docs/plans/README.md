@@ -24,4 +24,4 @@ Plans describe **how** we will build something. ADRs record **why** we chose an 
 | [0017](0017-close-storybook-feature-gaps.md)  | Close the Storybook feature gaps                                        | Draft       |
 | [0018](0018-section.md)                       | Section                                                                 | Done        |
 | [0019](0019-one-time-code-pattern.md)         | OneTimeCode pattern                                                     | Done        |
-| [0020](0020-notification.md)                  | Notification                                                            | Draft       |
+| [0020](0020-notification.md)                  | Notification                                                            | Done        |

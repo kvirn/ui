@@ -3,7 +3,6 @@ import contract from '../../../../../packages/react/src/card/card.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
-import guidance from '../section/section-or-card.md?raw'
 import {
   binsImage,
   CaseCard as CaseCardExample,
@@ -27,9 +26,7 @@ const pixels = (value: string): number => Number.parseFloat(value)
 
 const description = `A plain container for one thing on the page: an image, a heading, some text and a couple of actions, for a service, a news item or a case. It is always \`surface-raised\`. A region of the page, such as a sidebar, is a Section.
 
-### Section, Card or a surface token: when to use which
-
-${guidance}`
+Not sure which one to use? See [Containers and status](?path=/docs/foundation-containers-and-status--docs): Section, Card, Notification or a surface token.`
 
 const meta = {
   title: 'Components/Card',

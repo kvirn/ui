@@ -57,6 +57,20 @@ export interface KvirnMessages {
      */
     errorPrefix: TextMessage
   }
+  notification: {
+    /**
+     * The status word that starts the Title of `Notification.Info`, for example `Information:`.
+     * Includes its colon. Visually hidden by the theme, read by screen readers (WCAG 1.4.1).
+     * Owned by Notification (Plan 0020, ADR-0047).
+     */
+    infoPrefix: TextMessage
+    /** The status word of `Notification.Success`, for example `Klart:`. */
+    successPrefix: TextMessage
+    /** The status word of `Notification.Warning`, for example `Varning:`. */
+    warningPrefix: TextMessage
+    /** The status word of `Notification.Danger`, for example `Fel:`. */
+    dangerPrefix: TextMessage
+  }
   mask: {
     /**
      * Announced (politely, throttled) when a masked field drops a character the user typed or

@@ -48,8 +48,14 @@ type ColorPair = readonly [foreground: ColorTokenName, background: ColorTokenNam
 // The surfaces content sits on: pages, sections (`surface` and `canvas`), cards, popups and
 // dialogs (`surface-raised`). Sections need no pair of their own (ADR-0044).
 const plainBackgrounds = ['canvas', 'surface', 'surface-raised'] as const
-/** The status panels, where prose and its links can sit (ADR-0018). */
+/** The status backgrounds of Notifications, where prose and its links can sit (ADR-0018). */
 const statusBackgrounds = ['danger-subtle', 'success-subtle', 'warning-subtle'] as const
+/**
+ * Notifications (design spec docs/design/notification.md §6.6, ADR-0047): info uses
+ * `primary-subtle`. Every pair a Notification needs is already required below, so this adds
+ * none. `checkButtonEdges` measures a button's tinted edge on these too (Actions hold buttons).
+ */
+export const notificationBackgrounds = ['primary-subtle', ...statusBackgrounds] as const
 
 /**
  * Text on every background it's used on (DESIGN.md, Colors; ADR-0014). `heading` can be
@@ -62,15 +68,12 @@ const textPairs: readonly ColorPair[] = [
     plainBackgrounds.map((background): ColorPair => [foreground, background]),
   ),
   ...(['text', 'heading'] as const).flatMap((foreground) =>
-    (['primary-subtle', ...statusBackgrounds] as const).map((background): ColorPair => [
-      foreground,
-      background,
-    ]),
+    notificationBackgrounds.map((background): ColorPair => [foreground, background]),
   ),
   ['text-muted', 'primary-subtle'],
   ['link', 'primary-subtle'],
   ['link-hover', 'primary-subtle'],
-  // Prose on status panels: muted metadata, links and hovered links (ADR-0018).
+  // Prose on notifications: muted metadata, links and hovered links (ADR-0018).
   ...(['text-muted', 'link', 'link-hover'] as const).flatMap((foreground) =>
     statusBackgrounds.map((background): ColorPair => [foreground, background]),
   ),
@@ -106,19 +109,16 @@ const nonTextPairs: readonly ColorPair[] = [
   ['primary-hover', 'canvas'],
   ['primary-hover', 'surface'],
   ...plainBackgrounds.map((background): ColorPair => ['danger-hover', background]),
-  // Controls, blockquote bars and focus rings on status panels (ADR-0018).
+  // Controls, blockquote bars and focus rings on notifications (ADR-0018).
   ...(['border-control', 'secondary', 'focus-ring'] as const).flatMap((foreground) =>
     statusBackgrounds.map((background): ColorPair => [foreground, background]),
   ),
   // Form fields (ADR-0029, docs/design/form-fields.md §6.12). The invalid edge is `danger`
   // at 2px, so it's its own 3:1 requirement, kept even if `danger` is ever split into a text
-  // and an edge token. Controls sit in panels too, next to `border-control` there. A checked
-  // box inside a panel is `primary`, which `primary-subtle` already requires.
+  // and an edge token. Controls sit in notifications too, next to `border-control` there. A checked
+  // box inside a notification is `primary`, which `primary-subtle` already requires.
   ...plainBackgrounds.map((background): ColorPair => ['danger', background]),
-  ...(['primary-subtle', ...statusBackgrounds] as const).map((background): ColorPair => [
-    'danger',
-    background,
-  ]),
+  ...notificationBackgrounds.map((background): ColorPair => ['danger', background]),
   ...statusBackgrounds.map((background): ColorPair => ['primary', background]),
 ]
 

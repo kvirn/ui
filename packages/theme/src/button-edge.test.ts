@@ -51,6 +51,10 @@ describe('checkButtonEdges', () => {
     canvas: '#ffffff',
     surface: '#f7f8f8',
     'surface-raised': '#ffffff',
+    'primary-subtle': '#eff0fb',
+    'success-subtle': '#eef8f2',
+    'warning-subtle': '#fbf4e6',
+    'danger-subtle': '#fdeff1',
     secondary: '#6f737b',
     primary: '#5e6ad2',
     danger: '#c53d4f',
@@ -59,9 +63,23 @@ describe('checkButtonEdges', () => {
   const shade = { color: '#0f1011', percent: 35 }
   const highlight = { color: '#ffffff', percent: 0 }
 
-  it('measures every base, tinted by both partners, on every plain background', () => {
+  it('measures every base, tinted by both partners, on every plain and Notification background', () => {
     expect(buttonEdgeBases).toEqual(['secondary', 'primary', 'danger', 'danger-hover'])
-    expect(buttonEdgePairsPerTheme).toBe(24)
+    expect(buttonEdgePairsPerTheme).toBe(56)
+  })
+
+  it('measures the four Notification backgrounds, because Actions hold buttons (ADR-0047)', () => {
+    const problems = checkButtonEdges(
+      'light',
+      { ...colors, 'warning-subtle': '#7a7e86' },
+      { color: '#ffffff', percent: 0 },
+      { color: '#ffffff', percent: 0 },
+    )
+    expect(problems.length).toBeGreaterThan(0)
+    expect(problems).toContainEqual(expect.stringContaining('on warning-subtle is'))
+    expect(problems.filter((problem) => problem.includes('-subtle'))).toEqual(
+      problems.filter((problem) => problem.includes('on warning-subtle')),
+    )
   })
 
   it('passes tints that only raise the boundary', () => {

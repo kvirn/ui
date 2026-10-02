@@ -185,6 +185,13 @@ components:
     rounded: '{rounded.none}'
     # 16px below 40rem, and in compact density from 64rem (Plan 0018).
     padding: 24px
+  notification:
+    # Per status class: primary-subtle, success-subtle, warning-subtle, danger-subtle. Surface without one.
+    backgroundColor: '{colors.primary-subtle}'
+    textColor: '{colors.text}'
+    rounded: '{rounded.sm}'
+    # 12px inline below 40rem. 12px block and inline in compact density from 64rem (Plan 0020).
+    padding: 16px
   popup:
     backgroundColor: '{colors.surface-raised}'
     textColor: '{colors.text}'
@@ -254,41 +261,41 @@ Colours come in two tiers, both CSS custom properties in `theme.css`:
 
 - **Semantic tokens,** `--kv-color-<name>`. Components use only these. Each theme points them at palette steps. Four themes come from two preference axes, colour scheme and contrast (ADR-0006), and only remap semantic tokens.
 
-| Token            | light           | dark            | light-contrast  | dark-contrast   | Use                                                                                        |
-| ---------------- | --------------- | --------------- | --------------- | --------------- | ------------------------------------------------------------------------------------------ |
-| `canvas`         | `white`         | `black`         | `white`         | `black`         | Page background, and a canvas section (`kv-section--canvas`)                               |
-| `surface`        | `neutral-50`    | `neutral-950`   | `neutral-50`    | `neutral-950`   | Sections (`Section`), sidebars, table headers, code                                        |
-| `surface-raised` | `white`         | `neutral-900`   | `white`         | `neutral-900`   | Cards, popups, dialogs, hovered navigation items                                           |
-| `border-subtle`  | `neutral-100`   | `neutral-800`   | `neutral-500`   | `neutral-400`   | Hairline dividers and decorative outlines only                                             |
-| `border-control` | `neutral-500`   | `neutral-500`   | `neutral-700`   | `neutral-200`   | Borders that identify a control (inputs, checkboxes)                                       |
-| `secondary`      | `secondary-500` | `secondary-500` | `secondary-700` | `secondary-200` | The secondary button's edge. Equal to `border-control` until `--kv-secondary-*` gets a hue |
-| `text`           | `neutral-950`   | `neutral-50`    | `black`         | `white`         | Body text                                                                                  |
-| `heading`        | `neutral-950`   | `neutral-50`    | `black`         | `white`         | Headings in prose. The same step as `text` by default, so a site can set its own           |
-| `text-muted`     | `neutral-600`   | `neutral-400`   | `neutral-700`   | `neutral-200`   | Secondary text and metadata. Not hints: a hint is an instruction, so it uses `text`        |
-| `primary`        | `primary-500`   | `primary-500`   | `primary-800`   | `primary-200`   | Primary button background, selected state, current-page indicator                          |
-| `primary-hover`  | `primary-600`   | `primary-600`   | `primary-900`   | `primary-100`   | Hover and pressed state of `primary`                                                       |
-| `on-primary`     | `white`         | `white`         | `white`         | `black`         | Text and icons on `primary`                                                                |
-| `primary-subtle` | `primary-50`    | `primary-950`   | `primary-50`    | `primary-950`   | Current navigation item, secondary button hover, selected rows, info backgrounds           |
-| `link`           | `primary-600`   | `primary-400`   | `primary-800`   | `primary-200`   | Link text, badge text                                                                      |
-| `link-hover`     | `primary-700`   | `primary-300`   | `primary-900`   | `primary-100`   | Link hover and pressed                                                                     |
-| `focus-ring`     | `primary-500`   | `primary-400`   | `primary-800`   | `primary-200`   | Focus indicator                                                                            |
-| `danger`         | `danger-600`    | `danger-300`    | `danger-700`    | `danger-200`    | Errors, destructive actions                                                                |
-| `danger-hover`   | `danger-700`    | `danger-200`    | `danger-800`    | `danger-100`    | Hover and pressed state of `danger`                                                        |
-| `on-danger`      | `white`         | `black`         | `white`         | `black`         | Text and icons on `danger`                                                                 |
-| `danger-subtle`  | `danger-50`     | `danger-950`    | `danger-50`     | `danger-950`    | Error summary and message backgrounds                                                      |
-| `success`        | `success-700`   | `success-300`   | `success-800`   | `success-200`   | Confirmation, completed steps                                                              |
-| `success-subtle` | `success-50`    | `success-950`   | `success-50`    | `success-950`   | Confirmation panel backgrounds                                                             |
-| `warning`        | `warning-700`   | `warning-300`   | `warning-800`   | `warning-200`   | Warnings, deadlines                                                                        |
-| `warning-subtle` | `warning-50`    | `warning-950`   | `warning-50`    | `warning-950`   | Warning panel backgrounds                                                                  |
+| Token            | light           | dark            | light-contrast  | dark-contrast   | Use                                                                                               |
+| ---------------- | --------------- | --------------- | --------------- | --------------- | ------------------------------------------------------------------------------------------------- |
+| `canvas`         | `white`         | `black`         | `white`         | `black`         | Page background, and a canvas section (`kv-section--canvas`)                                      |
+| `surface`        | `neutral-50`    | `neutral-950`   | `neutral-50`    | `neutral-950`   | Sections (`Section`), sidebars, table headers, code                                               |
+| `surface-raised` | `white`         | `neutral-900`   | `white`         | `neutral-900`   | Cards, popups, dialogs, hovered navigation items                                                  |
+| `border-subtle`  | `neutral-100`   | `neutral-800`   | `neutral-500`   | `neutral-400`   | Hairline dividers and decorative outlines only                                                    |
+| `border-control` | `neutral-500`   | `neutral-500`   | `neutral-700`   | `neutral-200`   | Borders that identify a control (inputs, checkboxes)                                              |
+| `secondary`      | `secondary-500` | `secondary-500` | `secondary-700` | `secondary-200` | The secondary button's edge. Equal to `border-control` until `--kv-secondary-*` gets a hue        |
+| `text`           | `neutral-950`   | `neutral-50`    | `black`         | `white`         | Body text                                                                                         |
+| `heading`        | `neutral-950`   | `neutral-50`    | `black`         | `white`         | Headings in prose. The same step as `text` by default, so a site can set its own                  |
+| `text-muted`     | `neutral-600`   | `neutral-400`   | `neutral-700`   | `neutral-200`   | Secondary text and metadata. Not hints: a hint is an instruction, so it uses `text`               |
+| `primary`        | `primary-500`   | `primary-500`   | `primary-800`   | `primary-200`   | Primary button background, selected state, current-page indicator, info notification bar and icon |
+| `primary-hover`  | `primary-600`   | `primary-600`   | `primary-900`   | `primary-100`   | Hover and pressed state of `primary`                                                              |
+| `on-primary`     | `white`         | `white`         | `white`         | `black`         | Text and icons on `primary`                                                                       |
+| `primary-subtle` | `primary-50`    | `primary-950`   | `primary-50`    | `primary-950`   | Current navigation item, secondary button hover, selected rows, info notifications                |
+| `link`           | `primary-600`   | `primary-400`   | `primary-800`   | `primary-200`   | Link text, badge text                                                                             |
+| `link-hover`     | `primary-700`   | `primary-300`   | `primary-900`   | `primary-100`   | Link hover and pressed                                                                            |
+| `focus-ring`     | `primary-500`   | `primary-400`   | `primary-800`   | `primary-200`   | Focus indicator                                                                                   |
+| `danger`         | `danger-600`    | `danger-300`    | `danger-700`    | `danger-200`    | Errors, destructive actions, danger notification bar and icon                                     |
+| `danger-hover`   | `danger-700`    | `danger-200`    | `danger-800`    | `danger-100`    | Hover and pressed state of `danger`                                                               |
+| `on-danger`      | `white`         | `black`         | `white`         | `black`         | Text and icons on `danger`                                                                        |
+| `danger-subtle`  | `danger-50`     | `danger-950`    | `danger-50`     | `danger-950`    | Danger notifications, including the error summary                                                 |
+| `success`        | `success-700`   | `success-300`   | `success-800`   | `success-200`   | Confirmation, completed steps, success notification bar and icon                                  |
+| `success-subtle` | `success-50`    | `success-950`   | `success-50`    | `success-950`   | Success notifications                                                                             |
+| `warning`        | `warning-700`   | `warning-300`   | `warning-800`   | `warning-200`   | Warnings, deadlines, warning notification bar and icon                                            |
+| `warning-subtle` | `warning-50`    | `warning-950`   | `warning-50`    | `warning-950`   | Warning notifications                                                                             |
 
-The palette values are in `theme.css`, section 1. Measured contrast (2026-10-01, `vp run theme:check`, 81 contrast pairs and 24 tinted button edges per theme):
+The palette values are in `theme.css`, section 1. Measured contrast (2026-10-01, `vp run theme:check`, 81 contrast pairs and, since Plan 0020, 56 tinted button edges per theme):
 
 - **Text.**
   - Every text token (`text`, `heading`, `text-muted`, `link`, `danger`, `success`, `warning`) is at least 4.5:1 on `canvas`, `surface`, `surface-raised` and the `-subtle` backgrounds it's used on in the standard themes. The lowest pairs are `on-primary` on `primary` (4.70:1) and `text-muted` on `primary-subtle` in dark (4.80:1).
   - In the contrast themes the minimum is 7:1. The lowest pair is `danger` on `danger-subtle` in light-contrast (7.31:1).
 - **Control borders and focus.** `border-control`, `secondary`, `focus-ring` and `primary` (used as a selected or current indicator) are at least 3:1 against `canvas`, `surface`, `surface-raised` and `primary-subtle` in every theme. The lowest pairs are `border-control` and `secondary` on `primary-subtle` in dark (3.13:1).
 - **Labels on filled buttons.** `on-primary` on `primary` is at least 4.70:1, and on `primary-hover` at least 5.91:1. `on-danger` on `danger` is at least 6.40:1, and on `danger-hover` at least 8.23:1.
-- **Tinted button edges** (ADR-0026; `theme:check` measures all 24 per theme: 4 bases, tinted by the shade and by the highlight, on 3 surfaces). They only raise the boundary: the light bottom edge is at least 7.51:1 and the dark top edge at least 5.78:1 on `canvas`, `surface` and `surface-raised`. The full table is in [Button depth](#button-depth).
+- **Tinted button edges** (ADR-0026; `theme:check` measures all 56 per theme: 4 bases, tinted by the shade and by the highlight, on 3 surfaces and the 4 notification backgrounds, because a notification's Actions hold buttons, ADR-0047). They only raise the boundary: the light bottom edge is at least 7.51:1 and the dark top edge at least 5.78:1 on `canvas`, `surface` and `surface-raised`, and each is held to 3:1 on `primary-subtle`, `success-subtle`, `warning-subtle` and `danger-subtle` too. The full table is in [Button depth](#button-depth).
 
 Rules:
 
@@ -314,7 +321,7 @@ Rebranding for a municipality:
 
 One sans-serif family for text and controls, one serif family for headings, each with a system fallback, and one monospace family for reference numbers and code.
 
-- **Families.** Body text and controls (prose, buttons, labels, navigation, tables and captions) use `--kv-font-family-body`, which falls back to `--kv-font-family-sans`. Prose headings (`h1`–`h6`) use `--kv-font-family-heading`, which falls back to `--kv-font-family-serif`. Use the same family wherever you apply the `display` tokens. The theme sets neither override. A link keeps the font around it, and code stays `--kv-font-family-mono`. The serif is only for real headings: anything users operate or scan as data stays sans, and hierarchy never depends on the family alone.
+- **Families.** Body text and controls (prose, buttons, labels, navigation, tables and captions) use `--kv-font-family-body`, which falls back to `--kv-font-family-sans`. Prose headings (`h1`–`h6`) use `--kv-font-family-heading`, which falls back to `--kv-font-family-serif`. Use the same family wherever you apply the `display` tokens. The theme sets neither override. A link keeps the font around it, and code stays `--kv-font-family-mono`. The serif is only for real headings: anything users operate or scan as data stays sans, and hierarchy never depends on the family alone. A notification's title is the exception that stays sans (weight 600, 18px): it is a message label, not a section heading, and a serif at that size would read as new page structure.
 - **Why IBM Plex.** Plex Sans's capitals sit in the middle of the line box, and its vertical metrics are the same on every OS (`hhea` = `win`, 1025/275), so labels sit the same way on every OS. It tells l, I and 1 apart without features, and it covers every Northern Sámi letter. Plex Serif shares its metrics and gives headings a distinct, calm voice. Both are SIL OFL 1.1, with "Plex" a Reserved Font Name: use IBM's files unmodified, and never subset or rename them.
 - **Weights.** Sans 400 (text), 500 (labels and controls) and 600 (`strong`, the current item). Serif 500 (`heading-2`) and 600 (the other headings). Upright only: italics are synthesised. Nothing uses 700.
 - **System stacks.** `--kv-font-family-system` is `system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif`, and `--kv-font-family-sans` is `'IBM Plex Sans'` in front of it. `--kv-font-family-system-serif` is `ui-serif, Cambria, 'Noto Serif', Georgia, serif`, and `--kv-font-family-serif` is `'IBM Plex Serif'` in front of it. End a brand stack with the matching system stack, and check the Glyphs story in Foundation/Typography.
@@ -342,7 +349,7 @@ One sans-serif family for text and controls, one serif family for headings, each
 - **Staff tools and the docs site** may use a sidebar (a `Section`) and a content area. The sidebar collapses behind a disclosure below `64rem`.
 - **Breakpoints** are content-driven, but the reference points are `40rem`, `64rem` and `80rem`. Design mobile first.
 - **Reflow (1.4.10).** Everything works at 320 CSS px wide and at 400% zoom without horizontal scrolling, except data tables, which scroll inside their own labelled, focusable region.
-- **Text expansion.** Finnish and Northern Sámi strings can be 30–50% longer than English, and Finnish compounds are long. Buttons and labels wrap. Never set a fixed width on anything containing text, and use `overflow-wrap: anywhere` as a last resort, not truncation. Prose and cards hyphenate words of 10 letters or more at the dictionary's points (`hyphens: auto`, `hyphenate-limit-chars: 10 4 4`), never inside code, and fall back to `overflow-wrap: break-word` where there's no dictionary, as for Northern Sámi (ADR-0028). Hyphenation follows `lang`, so set it on `<html>` and on every passage in another language.
+- **Text expansion.** Finnish and Northern Sámi strings can be 30–50% longer than English, and Finnish compounds are long. Buttons and labels wrap. Never set a fixed width on anything containing text, and use `overflow-wrap: anywhere` as a last resort, not truncation. Prose, cards and notifications hyphenate words of 10 letters or more at the dictionary's points (`hyphens: auto`, `hyphenate-limit-chars: 10 4 4`), never inside code, and fall back to `overflow-wrap: break-word` where there's no dictionary, as for Northern Sámi (ADR-0028). Hyphenation follows `lang`, so set it on `<html>` and on every passage in another language.
 - **Direction.** Use logical properties (`margin-inline-start`, `padding-block`) so RTL works.
 - **Sticky elements** (headers, action bars) must never cover the focused element (2.4.11). Use `scroll-padding` to match their height.
 
@@ -373,6 +380,7 @@ Depth comes from the surface ladder (`canvas` → `surface` → `surface-raised`
 
 - A dialog backdrop dims the page, so it must not reduce the dialog's own contrast. Content behind a modal is `inert`.
 - Shadows are never the only boundary, because they disappear in forced colours.
+- A notification isn't a level. It is a tinted block in the content, at the level of whatever it sits on, with no shadow, and its edge is its 4px bar.
 - Level 1 has no visible edge: its 1px border is `transparent`, and `CanvasText` in forced colours. A region is identified by its position, its heading and, where it is worth it, a named landmark. A consumer may colour the one edge that meets content with `border-subtle`, for example `border-inline-end-color` on a sidebar.
 - **Motion.** Durations are 120ms (hover, press), 180ms (popups, disclosures) and 240ms (dialogs, page-level). Easing is `cubic-bezier(0.2, 0, 0, 1)`. Motion only runs under `prefers-reduced-motion: no-preference`, and otherwise state changes are instant. No parallax, no auto-playing carousels, nothing that flashes, and no animation longer than 5 seconds without a pause control (2.2.2).
 
@@ -419,7 +427,7 @@ Measured tinted edges (contrast against `canvas` / `surface` / `surface-raised`)
 ## Shapes
 
 - **Radii** are small and consistent:
-  - `sm` (4px) for badges inside controls, checkboxes and tags.
+  - `sm` (4px) for badges inside controls, checkboxes, tags and notifications.
   - `md` (8px) for buttons, inputs and navigation items.
   - `lg` (12px) for cards and example frames.
   - `xl` (16px) for popups and dialogs.
@@ -427,7 +435,7 @@ Measured tinted edges (contrast against `canvas` / `surface` / `surface-raised`)
 
   Radio buttons are always circles and checkboxes always rounded squares, so the shape tells them apart.
 
-- **Lines** are 1px. Control borders are 1px `border-control`, and invalid inputs switch to 2px `danger` plus an error message, never colour alone.
+- **Lines** are 1px. The 4px indicator bar (`--kv-indicator-width`) marks the current navigation item, a blockquote and a notification. Control borders are 1px `border-control`, and invalid inputs switch to 2px `danger` plus an error message, never colour alone.
 - **Focus ring**: 2px solid `focus-ring`, 2px offset, following the element's radius. It is restyled, never removed, and only shown for keyboard focus (`:focus-visible`, `data-focus-visible`). This meets 2.4.13. A thinner or glow-style focus is not used.
 - **Icons**: outline style, a 1.5 stroke on a 24 grid with round caps and joins, in `currentColor`. `@kvirn-ui/react` ships 24 built-in icons with semantic names, in the style of Heroicons outline but drawn from our own keylines (`docs/design/icon.md`). An app that registers the same name in `KvirnProvider` replaces a built-in, and Kvirn's components follow it.
   - **Sizes** are `sm` 1em, `md` 1.25em (default) and `lg` 1.5em: 16, 20 and 24px next to 16px text, and they grow with the text. Use `md` in buttons, because it equals their line height. Size, stroke and colour are SVG attributes. The theme never sets them, except in forced colours, where an icon takes its parent's system colour.
@@ -438,7 +446,18 @@ Measured tinted edges (contrast against `canvas` / `surface` / `surface-raised`)
 
 ## Components
 
-Visual rules for the default theme. Behaviour, roles and keyboard are defined in each component's `<name>.a11y.md`, never here. Style parts and variants through classes, and state through the `data-*` attributes (`docs/architecture.md#styling-contract`): `.kv-button`, `.kv-button--primary`, `[data-disabled]`. `theme.css` implements Button, Link, prose, Card and Section. The design specs are `docs/design/default-theme-button-link.md`, `docs/design/foundations-and-prose.md`, `docs/design/card.md` and `docs/design/section.md`.
+Visual rules for the default theme. Behaviour, roles and keyboard are defined in each component's `<name>.a11y.md`, never here. Style parts and variants through classes, and state through the `data-*` attributes (`docs/architecture.md#styling-contract`): `.kv-button`, `.kv-button--primary`, `[data-disabled]`. `theme.css` implements Button, Link, prose, Card, Section and Notification. The design specs are `docs/design/default-theme-button-link.md`, `docs/design/foundations-and-prose.md`, `docs/design/card.md`, `docs/design/section.md` and `docs/design/notification.md`.
+
+**Words we use.** Each of these words means one thing, in this file, the docs, Storybook, specs, ADRs and code comments:
+
+- **Surface** is a background colour token (`canvas`, `surface`, `surface-raised` and the `-subtle` backgrounds), not a box or a component.
+- **Section** is a region of the page: elevation level 1.
+- **Card** is one thing people read, compare or act on as a unit: elevation level 2.
+- **Notification** is a status message in the content: `Notification.Info`, `.Success`, `.Warning` and `.Danger`.
+- **Toast** is a transient notification that floats over the page and goes away (a later component). It reuses the Notification look and status words.
+- **Alert** is only the ARIA role `alert` and the `AlertDialog` component. It is never a status component.
+
+"Panel" is retired (say Section), and "banner" and "callout" aren't KvirnUI words (`banner` is the ARIA landmark of the site header). Say Notification for a status and Section for a region.
 
 - **Buttons.**
   - One primary button per view, for the main next step. Secondary buttons use `surface-raised` with a `border-control` outline. A hairline edge doesn't reach 3:1.
@@ -455,30 +474,7 @@ Visual rules for the default theme. Behaviour, roles and keyboard are defined in
   - Not a prose boundary: a section in prose gets prose's block margins on its own element, and its content stays prose. Put `kv-prose` on a sidebar section, and inside a full-width band.
   - A card on a section keeps its default look. The design spec is `docs/design/section.md`.
 
-  **Section, Card or a surface token: when to use which**
-
-  | You're building                                                                                                   | Use                                                                                                      | Why                                                                                                      |
-  | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-  | A region of the page next to or between other content: a sidebar, a filter section, a band of related content     | `Section`. It's `surface`, square, with no visible edge                                                  | It's part of the page's layout, not a thing on the page (elevation level 1)                              |
-  | A region that should look like the page again inside a `surface` region: the work area next to a staff sidebar    | `Section` with `kv-section--canvas`                                                                      | It goes back to the page colour without drawing a box (level 0)                                          |
-  | One self-contained thing people read, compare or act on as a unit: a service, a news item, a case, a contact card | `Card`. It's `surface-raised`, with a hairline edge and rounded corners                                  | The edge and the corners say "these belong together" (level 2)                                           |
-  | Several of those things                                                                                           | Cards in a list (`<ul>`, each card `render={<li />}`), on the page or on a Section                       | One thing per card. A Section around them is optional                                                    |
-  | A background inside your own component: a table header row, a code block, a read-only field                       | The token in your CSS, `var(--kv-color-surface)`, with the `text` tokens on it                           | It isn't a region or a thing, so it isn't a container. The `text` tokens keep `theme:check`'s pairs true |
-  | One thing with several independent actions: a user with Edit and Delete, a settings block                         | `Section`. A Card has one primary destination, and here the controls are the reason the container exists | If you can't name one destination, it isn't a card                                                       |
-  | A form section or a group of fields                                                                               | Neither. A heading or a `<fieldset>` with a legend, on the page or in a Section                          | A card would make "Account" look like an entity and add a level of hierarchy                             |
-  | A status message: an error, a warning, a confirmation                                                             | Neither. A notification, with a `-subtle` background, a bar, an icon and a heading                       | Status is never shown by a surface colour alone (1.4.1)                                                  |
-
-  Rules that go with it: a Card on a Section keeps its default look. Don't put a Section inside a Card (a region inside a thing turns the ladder upside down). Nest Sections only to switch between `surface` and `canvas`.
-
-  **When unsure, use the simpler container.** A Card is for one identifiable thing, not a box with a border, a background or padding. Before using Card, ask in order:
-
-  1. Can you name the thing it represents (a product, a person, an article, a case, a search result)? If not, use a Section or plain HTML.
-  2. Does the content represent exactly one thing? If not, use a Section.
-  3. Is there one primary destination or action? If the controls are the reason the container exists, use a Section.
-  4. Is it a form section, a field group, a toolbar, a button group or a layout wrapper? Never a Card.
-  5. Don't nest Cards unless the inner one is a thing in its own right. Don't use Cards to create visual hierarchy.
-
-  These are guidance in the docs. They don't change what Card does: a clickable whole card, and a choice of border, shadow or flat, stay out of scope (ADR-0020, DESIGN.md: a card is never interactive and has no shadow).
+  **Which one to use:** see `apps/storybook/src/foundation/containers.mdx` (Storybook: Foundation / Containers and status). It has the one decision table for Section, Card, Notification and a surface token, and the rules for when a Card is the wrong choice. A card is never interactive and has no shadow (ADR-0020).
 
 - **Cards** are elevation level 2: `surface-raised`, a 1px `border-subtle` edge, the `lg` radius and no shadow. A card is a plain container and is never interactive: no hover, shadow or pointer style, because those suggest the whole card is clickable.
   - A card is always `surface-raised`: a region of the page is a Section. Choose with classes on the Root: the radius (`lg` by default, `kv-card--radius-md` for a card nested in a card, `kv-card--radius-none` for a card flush with an edge) and `kv-card--dividers` (a `border-subtle` line between parts).
@@ -487,7 +483,7 @@ Visual rules for the default theme. Behaviour, roles and keyboard are defined in
   - A site sets its own default for every card with `--kv-card-padding-default` and `--kv-card-radius-default`, and `kv-card--padding-md` or `kv-card--radius-lg` takes one card back to the theme's step. A default set on `:root` as `var(--kv-card-padding-lg)` is resolved there, so it doesn't step down inside a `kv-compact` container: set it on `.kv-card` or on the container instead.
   - A card never hides overflow, so focus rings are never clipped. Media that touch a rounded corner get its inner radius instead.
   - Footer actions use `kv-button-group` on the footer: start-aligned, primary first, and one primary per view. A card's one link goes in its heading. Navigation is a Link.
-  - Never use `primary-subtle` or a status `-subtle` background as a card surface: status belongs in a notification, with an icon and a heading.
+  - Never use `primary-subtle` or a status `-subtle` background as a card surface: status belongs in a [Notification](#components), with an icon and a status word.
   - Every card keeps its border, so its edge survives forced colours. Nest one level at most on resident-facing pages: `md` for the inner card. A card on a section keeps its default look.
 - **Navigation items** use `nav-item`. The current item uses `primary-subtle`, weight 600, a `primary` inline-start bar and `aria-current`.
 - **Text inputs.** A visible label above the input, then the hint, then the input. A second hint can go directly under the input, for a format or a character limit, and the error message comes last, under the input and any hint under it (ADR-0031). No placeholder-only labels. The input width reflects the expected answer (a postcode field is short).
@@ -500,10 +496,10 @@ Visual rules for the default theme. Behaviour, roles and keyboard are defined in
   - Units and icons inside the box use an input group (ADR-0031). `InputGroup.Root` (`kv-input-group`) is the box: the input's edge, fill, radius and states, and the focus ring around the whole group when its input has keyboard focus. The input inside has no edge or ring of its own. `InputGroup.Addon` (`kv-input-group-addon`) holds a short unit or symbol ("kr", "%", "km", at most 4 characters) or a decorative icon, in `body` type and `text` colour, with no fill or separator. Addons are hidden from screen readers, so the label always names the unit ("Månadshyra i kronor"). An Addon before the input is at the start, on the right in right-to-left. A button in a group (clear, show password) is a flat segment with a 1px `border-control` divider, as tall as the box (44px, 32px in compact), with `primary-subtle` on hover and its own focus ring. Width classes stay on the input, and the group fits around it.
   - A one-time code (ADR-0033, ADR-0045) is one native input. The theme draws the code over it as a row of boxes, one per character of its pattern, with a drawn dash wherever the pattern has a `-`: 44px squares (32px in compact) that shrink to 32px wide on a narrow screen, 8px apart (4px in compact), with the `md` radius, a 1px `border-control` edge and `numeric` figures. A dash is a 12px cell with no edge or fill, in `text`. Boxes and dashes are hidden from assistive technology and can't be pressed: every press goes to the input. The focus ring goes around the whole row. The box where the next character goes has a 2px `focus-ring` edge and a static caret, and selected characters a `primary-subtle` fill with the same edge. Invalid is a 2px `danger` edge on every box plus the error message under the row. Complete has no look of its own. The row reads left to right in every direction. The theme draws 4 to 10 characters in up to 3 groups (two dashes). In forced colours, when the row doesn't fit at 32px boxes, outside those limits, or before the script runs, it shows a plain input as wide as the pattern, with the same value (dashes included) and focus instead.
 - **Checkboxes and radios** are at least 24px, with the whole label clickable, and are grouped in a `fieldset` with a `legend` question. A group's error message goes under the options, and a single checkbox's under its label.
-- **Error summary.** At the top of the form, `danger` border with `danger-subtle` background, a heading and a list of links to each invalid field. It receives focus on submit.
-- **Notifications** use the `-subtle` background with a 4px inline-start border in the status colour, an icon, and a heading that states the status in words.
+- **Error summary.** A `Notification.Danger` at the top of `main` with the heading "Det finns ett problem" and a list of links to each invalid field, worded like the field errors. It receives focus on submit and isn't announced.
+- **Notifications** are status messages in the content. Use `Notification.Info`, `.Success`, `.Warning` or `.Danger`: each renders its status class (`kv-notification--info|success|warning|danger`), its icon (square, circle, triangle, octagon) and a status word at the start of the title (visually hidden, from i18n), so colour, icon and word always agree. The look is only CSS on the class: the `-subtle` background and a 4px inline-start bar in the status colour, through `--kv-notification-background` and `--kv-notification-accent`. The `sm` radius, 16px padding, a sans title at 18px weight 600, no shadow. `Notification.Root` is the plain base, with no status, for your own design: you bring the icon and the word. Never colour alone. The title is a heading at the consumer's level, or a `<p>` for one sentence. Not dismissible. Announced only with `announce`, through the Announcer. The design spec is `docs/design/notification.md` (ADR-0047).
 - **Popups** (menus, listboxes, popovers) use level 3 elevation and `xl` radius, with 8px padding and items at least 44px high (32px in compact).
-- **Prose.** Put `kv-prose` on the element around content you don't control, such as an article from a CMS or Markdown. It uses `body` (16px), and `kv-prose kv-prose--large` uses `body-large` (18px) for long resident-facing text. There is no smaller size. `kv-lead` marks the lead paragraph. Prose never styles a component part (an explicit list in `theme.css`: `kv-button`, `kv-link`, `kv-link-new-tab-notice` and the card parts) or anything inside `kv-not-prose`, `kv-nav`, `kv-button-group`, a card (`kv-card`), a field (`kv-field`) or a fieldset (`kv-fieldset`), and its rules have zero specificity, so any other CSS wins. A card, a field or a fieldset in prose gets prose's block margins only. A section in prose gets prose's block margins on its own element, and its content stays prose. `kv-prose` on a card or inside one turns prose on again. It keeps list markers and table display, so semantics survive. Code blocks wrap instead of scrolling, and wide tables go in a `kv-scroll-region` with a name and `tabindex="0"`. Stop at `h3` in resident-facing text: in large prose, `h4` looks like `h3`. The design spec is `docs/design/foundations-and-prose.md`.
+- **Prose.** Put `kv-prose` on the element around content you don't control, such as an article from a CMS or Markdown. It uses `body` (16px), and `kv-prose kv-prose--large` uses `body-large` (18px) for long resident-facing text. There is no smaller size. `kv-lead` marks the lead paragraph. Prose never styles a component part (an explicit list in `theme.css`: `kv-button`, `kv-link`, `kv-link-new-tab-notice` and the card parts) or anything inside `kv-not-prose`, `kv-nav`, `kv-button-group`, a card (`kv-card`), a notification (`kv-notification`), a field (`kv-field`) or a fieldset (`kv-fieldset`), and its rules have zero specificity, so any other CSS wins. A card, a notification, a field or a fieldset in prose gets prose's block margins only. A section in prose gets prose's block margins on its own element, and its content stays prose. `kv-prose` on a card or a notification, or inside one, turns prose on again. It keeps list markers and table display, so semantics survive. Code blocks wrap instead of scrolling, and wide tables go in a `kv-scroll-region` with a name and `tabindex="0"`. Stop at `h3` in resident-facing text: in large prose, `h4` looks like `h3`. The design spec is `docs/design/foundations-and-prose.md`.
 - **Tables** use `numeric` for figures, `surface` for the header row, `border-subtle` row dividers and no zebra stripes. Sortable headers are buttons with a visible sort indicator.
 - **Step indicator** shows "Step 2 of 5" in text, not only as dots.
 - **Badges and tags** are for status or metadata, never for interactive elements.
@@ -512,7 +508,7 @@ Visual rules for the default theme. Behaviour, roles and keyboard are defined in
 ## Theming
 
 - **One file, opt-in by import.** `import '@kvirn-ui/theme/theme.css'` styles every component on the page, and removing it unstyles them. Nothing loads CSS for you, and `KvirnProvider` never does.
-- **Components are selected by part classes,** and state by `data-*` attributes: `.kv-button`, `.kv-link`, `[data-disabled]`. Each part renders its own class, and the consumer's `className` joins it. Choices are classes the consumer adds: `kv-button--primary` or `kv-button--danger`, `kv-button--icon-only`, `kv-button-group`, `kv-nav`, `kv-compact`, for prose `kv-prose` (plus `kv-prose--large`), `kv-lead`, `kv-not-prose` and `kv-scroll-region`, for cards `kv-card--radius-lg|md|none`, `kv-card--padding-none|sm|md|lg`, `kv-card-header--padding-*` (and body and footer) and `kv-card--dividers`, for panels `kv-panel--surface|canvas` and `kv-panel--padding-none|sm|md|lg`, and for form fields `kv-field-label--heading`, `kv-fieldset-legend--heading`, `kv-input--width-2|4|6|10|20` and `kv-input--numeric`. A panel renders `kv-panel`. The form parts render `kv-field`, `kv-field-label`, `kv-field-optional`, `kv-field-description`, `kv-field-error-message`, `kv-field-error-prefix`, `kv-fieldset`, `kv-fieldset-legend`, `kv-input`, `kv-input-group`, `kv-input-group-addon`, `kv-one-time-code`, `kv-one-time-code-input`, `kv-one-time-code-slot` and `kv-one-time-code-separator`, and the invalid state is `data-invalid` or `aria-invalid="true"`. An input group also takes `data-disabled` and `data-focus-visible`. A one-time code's boxes take `data-filled`, `data-active`, `data-caret`, `data-selected` and `data-invalid`, its separators none, and its root `data-ready`, `data-complete`, `data-invalid`, `data-disabled`, `data-character-count` and `data-separator-count`.
+- **Components are selected by part classes,** and state by `data-*` attributes: `.kv-button`, `.kv-link`, `[data-disabled]`. Each part renders its own class, and the consumer's `className` joins it. Choices are classes the consumer adds: `kv-button--primary` or `kv-button--danger`, `kv-button--icon-only`, `kv-button-group`, `kv-nav`, `kv-compact`, for prose `kv-prose` (plus `kv-prose--large`), `kv-lead`, `kv-not-prose` and `kv-scroll-region`, for cards `kv-card--radius-lg|md|none`, `kv-card--padding-none|sm|md|lg`, `kv-card-header--padding-*` (and body and footer) and `kv-card--dividers`, for sections `kv-section--surface|canvas` and `kv-section--padding-none|sm|md|lg`, for notifications the status classes `kv-notification--info|success|warning|danger`, which `Notification.Info`, `.Success`, `.Warning` and `.Danger` render themselves (`Notification.Root` renders `kv-notification` only), and for form fields `kv-field-label--heading`, `kv-fieldset-legend--heading`, `kv-input--width-2|4|6|10|20` and `kv-input--numeric`. A section renders `kv-section`. The notification parts render `kv-notification`, `kv-notification-icon`, `kv-notification-title`, `kv-notification-status`, `kv-notification-body` and `kv-notification-actions`, and its site-wide properties are `--kv-notification-padding-block`, `--kv-notification-padding-inline` and `--kv-notification-gap`. The form parts render `kv-field`, `kv-field-label`, `kv-field-optional`, `kv-field-description`, `kv-field-error-message`, `kv-field-error-prefix`, `kv-fieldset`, `kv-fieldset-legend`, `kv-input`, `kv-input-group`, `kv-input-group-addon`, `kv-one-time-code`, `kv-one-time-code-input`, `kv-one-time-code-slot` and `kv-one-time-code-separator`, and the invalid state is `data-invalid` or `aria-invalid="true"`. An input group also takes `data-disabled` and `data-focus-visible`. A one-time code's boxes take `data-filled`, `data-active`, `data-caret`, `data-selected` and `data-invalid`, its separators none, and its root `data-ready`, `data-complete`, `data-invalid`, `data-disabled`, `data-character-count` and `data-separator-count`.
 - **Override variables, not selectors.** Rebrand by overriding a role scale on `:root` (`--kv-primary-50` … `--kv-primary-950`), or set a single semantic token (`:root { --kv-color-link: var(--kv-primary-700) }`). Scales go on `:root`, where the semantic tokens are declared. To change one theme only, target the same selectors `theme.css` uses (`:root[data-kv-color-scheme='dark']`).
 - **Site-wide defaults are custom properties, set once.** `--kv-font-family-body`, `--kv-font-family-heading`, `--kv-card-padding-default`, `--kv-card-radius-default` and the five `--kv-button-*` sizes (`min-block-size`, `padding-inline`, `font-size`, `font-weight`, `line-height`), plus `class="kv-compact"` on `<html>`. `theme.css` sets none of them: it reads each where it's used, with its own value as the fallback (`var(--kv-font-family-body, var(--kv-font-family-sans))`), so they work on `:root` or on any container. A value that refers to another token (`var(--kv-card-padding-lg)`) is resolved where it's declared, so put those on the element that should resolve them. `--kv-color-heading` is a semantic token like the rest, set per theme.
 - **Your CSS always wins.** Everything in `theme.css` is in `@layer kv`. Any unlayered CSS you write, or any layer you declare after `kv`, overrides it regardless of specificity.
@@ -545,6 +541,9 @@ Don't:
 
 - Use `text-muted` for anything the user must read to complete the task.
 - Use `border-subtle` (the hairline) as the only edge of a control.
+- Use a `-subtle` background for anything but a notification.
+- Put `role="alert"` on a notification: it is announced through the Announcer (`announce`).
+- Put a status class on a plain `Notification.Root`: use the ready-made root, which brings the icon and the word.
 - Lighten a filled button on hover behind white text.
 - Remove focus outlines, or rely on a glow, a shadow or a background change to show focus.
 - Give button depth (a shadow or a tinted edge) to anything that isn't a button: cards, inputs, badges, navigation items or links. Depth means "press me".
