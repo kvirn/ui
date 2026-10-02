@@ -370,14 +370,14 @@ describe('useCard', () => {
 describe('server rendering', () => {
   test('renders every part to a string without touching the page', () => {
     const html = renderToString(
-      <Card.Root className="kv-card--surface">
+      <Card.Root className="kv-card--radius-md">
         <Card.Header className="kv-card-header--padding-none" />
         <Card.Body>Text</Card.Body>
         <Card.Footer />
       </Card.Root>,
     )
     expect(html).toBe(
-      '<div class="kv-card--surface kv-card"><div class="kv-card-header--padding-none kv-card-header"></div><div class="kv-card-body">Text</div><div class="kv-card-footer"></div></div>',
+      '<div class="kv-card--radius-md kv-card"><div class="kv-card-header--padding-none kv-card-header"></div><div class="kv-card-body">Text</div><div class="kv-card-footer"></div></div>',
     )
   })
 })

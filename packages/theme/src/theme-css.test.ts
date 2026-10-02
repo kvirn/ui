@@ -433,6 +433,143 @@ describe('theme.css card (ADR-0020, docs/design/card.md)', () => {
       ),
     ).toEqual([])
   })
+
+  it('is always surface-raised: it has no surface or canvas rules (ADR-0044)', () => {
+    // A region of the page is a Panel. The two classes are gone, and so are their rules.
+    expect(themeCss).not.toContain('kv-card--surface')
+    expect(themeCss).not.toContain('kv-card--canvas')
+    const backgrounds = cardRules
+      .flatMap((rule) => rule.declarations)
+      .filter(([property]) => property === 'background-color')
+    expect(backgrounds).toEqual([['background-color', 'var(--kv-color-surface-raised)']])
+  })
+})
+
+describe('theme.css panel (ADR-0044, docs/design/panel.md)', () => {
+  const isPanelSelector = (selector: string) =>
+    /\.kv-panel\b/.test(selector) && !selector.includes('.kv-prose')
+  const panelRules = rules.filter((rule) => rule.selectors.every(isPanelSelector))
+  const rootDeclarations = panelRules
+    .filter((rule) => rule.media.length === 0 && rule.selectors.includes('.kv-panel'))
+    .flatMap((rule) => rule.declarations)
+
+  it('never clips, never fixes a height, has no radius and no shadow', () => {
+    expect(panelRules.length).toBeGreaterThan(5)
+    const declarations = panelRules.flatMap((rule) => rule.declarations)
+    // Clipping would cut off a child's focus ring (2.4.11) or spaced-out text (1.4.12).
+    expect(
+      declarations.filter(([property]) =>
+        /^(?:overflow(?:-[xy]|-block|-inline)?|clip-path)$/.test(property),
+      ),
+    ).toEqual([])
+    // A fixed height would clip text under the 1.4.12 overrides.
+    expect(
+      declarations.filter(
+        ([property, value]) =>
+          /^(?:height|min-height|max-height)$/.test(property) ||
+          (property.endsWith('block-size') && value !== 'auto'),
+      ),
+    ).toEqual([])
+    // Level 1 is square and flat: a rounded or raised panel would read as a card.
+    expect(
+      declarations.filter(
+        ([property, value]) =>
+          (/radius/.test(property) && !['0', '0px', 'var(--kv-radius-none)'].includes(value)) ||
+          property === 'box-shadow',
+      ),
+    ).toEqual([])
+  })
+
+  it('always has a 1px border, so the edge survives forced colours (1.4.11)', () => {
+    expect(rootDeclarations).toContainEqual(['border', 'var(--kv-border-width) solid transparent'])
+    // Nothing takes the border away in any state, and no modifier changes it.
+    expect(
+      panelRules
+        .flatMap((rule) => rule.declarations)
+        .filter(
+          ([property, value]) =>
+            (property === 'border-width' && /^(?:0|0px|none)$/.test(value)) ||
+            (property === 'border' && /\b(?:none|hidden)\b/.test(value)),
+        ),
+    ).toEqual([])
+  })
+
+  it('draws the border in CanvasText on all four sides in forced colours', () => {
+    const forced = panelRules
+      .filter(
+        (rule) =>
+          rule.media.some((media) => media.includes('forced-colors')) &&
+          rule.selectors.includes('.kv-panel'),
+      )
+      .flatMap((rule) => rule.declarations)
+    expect(forced).toContainEqual(['border-color', 'CanvasText'])
+    // The shorthand sets all four sides, and nothing narrows it to fewer.
+    expect(forced.filter(([property]) => /^border-(?:block|inline)/.test(property))).toEqual([])
+  })
+
+  it('pairs the background with the text colour, on surface by default', () => {
+    expect(rootDeclarations).toContainEqual(['background-color', 'var(--kv-color-surface)'])
+    expect(rootDeclarations).toContainEqual(['color', 'var(--kv-color-text)'])
+    expect(rootDeclarations).toContainEqual(['overflow-wrap', 'break-word'])
+    // A panel can hold navigation, forms and tables, so it doesn't hyphenate.
+    expect(rootDeclarations.filter(([property]) => property.startsWith('hyphen'))).toEqual([])
+  })
+
+  it('shrinks in a grid for 320px reflow (1.4.10)', () => {
+    expect(rootDeclarations).toContainEqual(['min-inline-size', '0'])
+    expect(rootDeclarations).toContainEqual(['max-inline-size', '100%'])
+  })
+
+  it('uses logical properties only, so right to left works', () => {
+    const physical =
+      /^(?:(?:margin|padding|border)-(?:top|right|bottom|left)(?:-.+)?|(?:top|right|bottom|left)|(?:min-|max-)?(?:width|height)|float|clear)$/
+    expect(
+      panelRules
+        .flatMap((rule) => rule.declarations)
+        .filter(([property]) => physical.test(property)),
+    ).toEqual([])
+  })
+
+  it('steps md and lg padding up from 40rem and down in compact density from 64rem', () => {
+    const tokens = (media: string, selector: string) =>
+      rules
+        .filter(
+          (rule) =>
+            rule.selectors.includes(selector) &&
+            (media === '' ? rule.media.length === 0 : rule.media.some((m) => m.includes(media))),
+        )
+        .flatMap((rule) => rule.declarations)
+        .filter(([property]) => property.startsWith('--kv-panel-padding-'))
+    expect(tokens('', ':root')).toEqual([
+      ['--kv-panel-padding-sm', 'var(--kv-space-3)'],
+      ['--kv-panel-padding-md', 'var(--kv-space-4)'],
+      ['--kv-panel-padding-lg', 'var(--kv-space-6)'],
+    ])
+    expect(tokens('40rem', ':root')).toEqual([
+      ['--kv-panel-padding-md', 'var(--kv-space-6)'],
+      ['--kv-panel-padding-lg', 'var(--kv-space-8)'],
+    ])
+    expect(tokens('64rem', '.kv-compact')).toEqual([
+      ['--kv-panel-padding-md', 'var(--kv-space-4)'],
+      ['--kv-panel-padding-lg', 'var(--kv-space-6)'],
+    ])
+  })
+
+  it('always sets its own padding step, so a nested panel never inherits its parent’s', () => {
+    expect(rootDeclarations).toContainEqual(['--kv-panel-padding', 'var(--kv-panel-padding-md)'])
+    expect(rootDeclarations).toContainEqual(['padding', 'var(--kv-panel-padding)'])
+  })
+
+  it('is a margins-only element in prose, not a prose boundary', () => {
+    const marginRules = rules.filter(
+      (rule) =>
+        rule.selectors.some((selector) => /\.kv-panel\b/.test(selector)) &&
+        rule.declarations.some(
+          ([property, value]) => property === 'margin-inline' && value === '0',
+        ),
+    )
+    expect(marginRules.length).toBeGreaterThan(0)
+  })
 })
 
 describe('theme.css form fields (ADR-0029, docs/design/form-fields.md)', () => {

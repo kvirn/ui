@@ -1,6 +1,6 @@
 # Plan 0018: Panel
 
-- **Status:** Draft
+- **Status:** Done (alpha. Manual AT pending before beta. ADR-0044 still to be accepted)
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-02 · **Target:** M1
 - **Related:** ADR-0044 (Proposed), ADR-0013, ADR-0020, design spec [panel.md](../design/panel.md)
@@ -67,16 +67,16 @@ Classes `kv-panel`, `kv-panel--surface|canvas`, `kv-panel--padding-none|sm|md|lg
 
 - [x] Design spec `docs/design/panel.md` (ux-designer)
 - [ ] ADR-0044 accepted by the maintainer
-- [ ] `panel.a11y.md` contract from the draft above
-- [ ] Component tests first (`panel.test.tsx`): one `<div>` with its class, `render` (element and function), `usePanel` props, ref forwarding, class merging, axe
-- [ ] `usePanel` and `Panel` in `packages/react/src/panel/`, exported from `index.ts`, with `panel.md`
-- [ ] Panel styles in `theme.css` per spec §6, `kv-panel` in prose's margins-only list, tokens, forced colours; remove Card's surface rules; theme CSS tests
-- [ ] Card changes (spec §6.7, §9): docs, contract, JSDoc, test, stories, fixture, e2e
-- [ ] Stories (`Components/Panel`: every surface and padding, `SurfaceLayers` moved from Card, a named `aside`, four themes, RTL, forced colours) and e2e (reflow, forced-colours edge, no role by default)
-- [ ] The §6.9 decision table in `panel.md`, `card.md`, both Docs pages, Foundation/Borders and elevation, and DESIGN.md. Fix the hairline contrast sentence in DESIGN.md (spec §10.6)
-- [ ] Amend ADR-0020 (revision note), `.changeset/card.md`, add `.changeset/panel.md`, roadmap row
-- [ ] accessibility-reviewer APPROVE
-- [ ] `vp check`, `vp test run`, `vp run e2e`, `theme:check`, `i18n:check` green
+- [x] `panel.a11y.md` contract from the draft above
+- [x] Component tests first (`panel.test.tsx`): one `<div>` with its class, `render` (element and function), `usePanel` props, ref forwarding, class merging, axe
+- [x] `usePanel` and `Panel` in `packages/react/src/panel/`, exported from `index.ts`, with `panel.md`
+- [x] Panel styles in `theme.css` per spec §6, `kv-panel` in prose's margins-only list, tokens, forced colours; remove Card's surface rules; theme CSS tests
+- [x] Card changes (spec §6.7, §9): docs, contract, JSDoc, test, stories, fixture, e2e
+- [x] Stories (`Components/Panel`: every surface and padding, `SurfaceLayers` moved from Card, a named `aside`, four themes, RTL, forced colours) and e2e (reflow, forced-colours edge, no role by default)
+- [x] The §6.9 decision table in `panel.md`, `card.md`, both Docs pages, Foundation/Borders and elevation, and DESIGN.md. Fix the hairline contrast sentence in DESIGN.md (spec §10.6)
+- [x] Amend ADR-0020 (revision note), `.changeset/card.md`, add `.changeset/panel.md`, roadmap row
+- [x] accessibility-reviewer APPROVE (no blocking findings; its documentation notes are fixed)
+- [x] `vp check`, `vp test run`, `vp run e2e`, `theme:check`, `i18n:check` green, run on the Panel and Card files (ADR-0043)
 
 ## Risks & open questions
 
@@ -94,5 +94,5 @@ Alpha in the next 0.x, together with Card's change.
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass (manual AT `pending`)
-- [ ] Plan tasks ticked, `docs/roadmap.md` status updated
+- [x] All quality gates in AGENTS.md pass (manual AT `pending`)
+- [x] Plan tasks ticked, `docs/roadmap.md` status updated

@@ -1,4 +1,5 @@
-import { Meta } from '@storybook/addon-docs/blocks'
+import { Markdown, Meta } from '@storybook/addon-docs/blocks'
+import guidance from '../components/panel/panel-or-card.md?raw'
 
 <Meta title="Foundation/Borders and elevation" />
 
@@ -15,11 +16,11 @@ Depth comes from the surface ladder (`canvas`, `surface`, `surface-raised`) and 
 
 ## Border colours
 
-| Token                       | Use                                                                                    | Minimum contrast |
-| --------------------------- | -------------------------------------------------------------------------------------- | ---------------- |
-| `--kv-color-border-subtle`  | Hairlines: dividers, and the edges of cards and panels. Decorative                     | None             |
-| `--kv-color-border-control` | The edge of every control, such as an input or a checkbox                              | 3:1 (1.4.11)     |
-| `--kv-color-secondary`      | The secondary button's edge. The neutral steps until you give `--kv-secondary-*` a hue | 3:1 (1.4.11)     |
+| Token                       | Use                                                                                                         | Minimum contrast |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------- |
+| `--kv-color-border-subtle`  | Hairlines: dividers, and the edges of cards. A panel's edge is transparent until you colour one. Decorative | None             |
+| `--kv-color-border-control` | The edge of every control, such as an input or a checkbox                                                   | 3:1 (1.4.11)     |
+| `--kv-color-secondary`      | The secondary button's edge. The neutral steps until you give `--kv-secondary-*` a hue                      | 3:1 (1.4.11)     |
 
 Hairlines never identify a control. A control always has a `border-control` edge, or `secondary` for the secondary button.
 
@@ -27,15 +28,15 @@ Hairlines never identify a control. A control always has a `border-control` edge
 
 Five levels, each drawn on the one before.
 
-| Level | Surface          | Border          | Shadow                                                                           | Use                      |
-| ----- | ---------------- | --------------- | -------------------------------------------------------------------------------- | ------------------------ |
-| 0     | `canvas`         | none            | none                                                                             | Page                     |
-| 1     | `surface`        | `border-subtle` | none                                                                             | Sections, sidebars       |
-| 2     | `surface-raised` | `border-subtle` | none                                                                             | Cards                    |
-| 3     | `surface-raised` | `border-subtle` | `--kv-shadow-popup`. Light: `0 8px 24px -4px` `neutral-950` at 12%. Dark: none   | Popups, menus, popovers  |
-| 4     | `surface-raised` | `border-subtle` | `--kv-shadow-dialog`. Light: `0 24px 48px -8px` `neutral-950` at 20%. Dark: none | Dialogs, with a backdrop |
+| Level | Surface          | Border                                         | Shadow                                                                           | Use                        |
+| ----- | ---------------- | ---------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------- |
+| 0     | `canvas`         | none                                           | none                                                                             | Page                       |
+| 1     | `surface`        | `transparent` (`CanvasText` in forced colours) | none                                                                             | Panels, sidebars (`Panel`) |
+| 2     | `surface-raised` | `border-subtle`                                | none                                                                             | Cards (`Card`)             |
+| 3     | `surface-raised` | `border-subtle`                                | `--kv-shadow-popup`. Light: `0 8px 24px -4px` `neutral-950` at 12%. Dark: none   | Popups, menus, popovers    |
+| 4     | `surface-raised` | `border-subtle`                                | `--kv-shadow-dialog`. Light: `0 24px 48px -8px` `neutral-950` at 20%. Dark: none | Dialogs, with a backdrop   |
 
-[Card: Surface layers](?path=/story/components-card--surface-layers) shows all five levels, each with when to use it.
+[Panel: Surface layers](?path=/story/components-panel--surface-layers) shows all five levels, each with when to use it.
 
 The dark themes use no shadows. A raised surface is lighter there instead. The buttons have their own depth, which isn't a surface level (`--kv-shadow-button`).
 
@@ -43,19 +44,24 @@ The dark themes use no shadows. A raised surface is lighter there instead. The b
 
 Start at level 0 and go up only when the content needs it. Each level has one job.
 
-| Level | Use it for                                                                                     | Don't use it for                                                                           |
-| ----- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| 0     | The page itself                                                                                | A box on the page. Use level 1 or 2                                                        |
-| 1     | Setting a group of content apart from the page: a section, a sidebar, a block of related cards | A single piece of content. That is a card                                                  |
-| 2     | One unit of content: a card, an item in a list of cards                                        | A card inside a card, more than one level deep, or anything that can be clicked as a whole |
-| 3     | Something that opens over the page and closes again: a menu, a listbox, a popover              | Content that is always on the page                                                         |
-| 4     | A dialog that takes over the page, over a backdrop, with the page behind it `inert`            | A message that doesn't need an answer. Use a notification                                  |
+| Level | Use it for                                                                                                          | Don't use it for                                                                           |
+| ----- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 0     | The page itself                                                                                                     | A box on the page. Use level 1 or 2                                                        |
+| 1     | Setting a region of the page apart from the page: a `Panel` for a sidebar, a filter panel, a block of related cards | A single piece of content. That is a card                                                  |
+| 2     | One unit of content: a card, an item in a list of cards                                                             | A card inside a card, more than one level deep, or anything that can be clicked as a whole |
+| 3     | Something that opens over the page and closes again: a menu, a listbox, a popover                                   | Content that is always on the page                                                         |
+| 4     | A dialog that takes over the page, over a backdrop, with the page behind it `inert`                                 | A message that doesn't need an answer. Use a notification                                  |
 
-- Use the surface ladder first. Put a card (level 2) on a section (level 1) or on the page, not on another card.
+- Use the surface ladder first. Put a card (level 2) on a panel (level 1) or on the page, not on another card.
 - Don't add a shadow to levels 1 and 2. Depth there comes from the surface and the border.
-- Give every level from 1 up a border.
+- Every level from 1 up has a 1px border: transparent at level 1, except in forced colours.
+- Level 1 has no visible edge. To mark the one edge that meets the content, colour it yourself: `border-inline-end-color: var(--kv-color-border-subtle)`.
 - A status message is not an elevation level. It is a notification, with a status colour, an icon and a heading.
 - A new border or indicator width is a token change, not a one-off value.
+
+## Panel, Card or a surface token: when to use which
+
+<Markdown>{guidance}</Markdown>
 
 ## Accessibility
 
@@ -72,6 +78,7 @@ Set `--kv-border-width` or `--kv-indicator-width` on `:root`. Keep control edges
 ## Related
 
 - [Colors](?path=/story/foundation-colors--semantic-tokens): the border tokens in all four themes
-- [Card: Surface layers](?path=/story/components-card--surface-layers): all five levels, drawn with the Card
+- [Panel: Surface layers](?path=/story/components-panel--surface-layers): all five levels, drawn with a Panel and a Card
+- [Panel](?path=/docs/components-panel--docs) and [Card](?path=/docs/components-card--docs): the two containers
 - [Radius](?path=/docs/foundation-radius--docs): the corners the border follows
 - [Focus ring](?path=/docs/foundation-focus-ring--docs): drawn outside the border

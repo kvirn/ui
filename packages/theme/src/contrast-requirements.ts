@@ -45,6 +45,8 @@ export type ColorTokenName = (typeof colorTokenNames)[number]
 
 type ColorPair = readonly [foreground: ColorTokenName, background: ColorTokenName]
 
+// The surfaces content sits on: pages, panels (`surface` and `canvas`), cards, popups and
+// dialogs (`surface-raised`). Panels need no pair of their own (ADR-0044).
 const plainBackgrounds = ['canvas', 'surface', 'surface-raised'] as const
 /** The status panels, where prose and its links can sit (ADR-0018). */
 const statusBackgrounds = ['danger-subtle', 'success-subtle', 'warning-subtle'] as const
@@ -94,8 +96,8 @@ const nonTextPairs: readonly ColorPair[] = [
       background,
     ]),
   ),
-  // Hovered and pressed filled buttons on every surface they sit on: pages, sections and
-  // cards, dialogs and popups (1.4.11).
+  // Hovered and pressed filled buttons on every surface they sit on: pages, panels, cards,
+  // dialogs and popups (1.4.11).
   // - Primary: the edge is a `primary` border in that state (ADR-0021), and `primary` is
   //   required on every plain background above. `primary-hover` is also required where it
   //   reaches 3:1 on its own. It isn't required on `surface-raised`, where it's 2.98:1 in dark:

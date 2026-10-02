@@ -53,12 +53,13 @@ Card renders no text, so it has no message keys.
 
 ## Consumer responsibilities
 
-- **Heading level.** Put a heading at the top of `Card.Body` (or the Root), at the level the page outline needs: `h2` for a card in a sidebar or on My pages, `h3` for cards under an `h2` list heading. Card can't know it (2.4.6, 1.3.1).
+- **Heading level.** Put a heading at the top of `Card.Body` (or the Root), at the level the page outline needs: `h2` for a card on My pages, `h3` for cards under an `h2` list heading. Card can't know it (2.4.6, 1.3.1).
 - **Alt text.** `alt=""` for a decorative image, which most card images are when the heading names the topic. Real alt text for an informative one. No text in images. The image comes first in the DOM, as it does visually (1.3.2, 1.1.1).
 - **Links.** One link per card, in the heading, with text that makes sense on its own (2.4.4). No "Read more", and no second link on the image.
 - **Buttons.** Verbs, one primary per view. Navigation is a Link, not a Button.
 - **Landmarks.** `render={<section aria-labelledby={headingId} />}` or `<aside aria-labelledby>` only for a region a user would want to jump to. A `section` without a name isn't a landmark. Never make every card in a list a landmark. `<article>` is for a self-contained item such as a news story.
 - **Lists.** A list of cards is a `<ul>` with each card rendered as `<li>` (`render={<li />}`), so screen readers announce the number of items. The default theme draws no marker on a card, and Safari can then expose a `<ul>` without visible markers as a plain group. `role="list"` on the `<ul>` keeps it a list there (see Known issues).
+- **Card or Panel.** A card is one identifiable thing. A region of the page (a sidebar, a band, a group of controls) is a [Panel](../panel/panel.a11y.md), and a form section is a heading or a `<fieldset>`. A Card on a Panel is fine. Don't put a Panel inside a Card (ADR-0044).
 - **Language.** `lang` on any card text in another language (3.1.2).
 - **Parts are direct children of the Root.** The default theme's padding model relies on it. Don't render an empty part.
 
@@ -68,7 +69,7 @@ Headless: Card ships no CSS. With `@kvirn-ui/theme/theme.css` (design spec `docs
 
 - Focus indicator: none of its own (a card is never focused). Children keep their own rings, never clipped.
 - Target size: not applicable. Footer buttons keep their own sizes (2.5.8).
-- Contrast: text, links, muted text and button edges are held to their minimums on every card surface (`surface-raised`, `surface`, `canvas`) by `theme:check` (1.4.3, 1.4.11). The card's own edge is decorative (1.15–1.36:1 in the standard themes): grouping comes from structure and spacing.
+- Contrast: text, links, muted text and button edges are held to their minimums on `surface-raised`, the card's own surface, and on the surfaces a card sits on (`surface`, `canvas`) by `theme:check` (1.4.3, 1.4.11). The card's own edge is decorative (1.15–1.36:1 in the standard themes): grouping comes from structure and spacing.
 - forced-colors behaviour: every card keeps a 1px solid border in `CanvasText`, so its boundary and dividers survive. Test: `card.e2e.ts › the card border is visible in forced colours`, `› dividers are visible in forced colours` (`chromium-forced-colors`).
 - reduced-motion behaviour: no motion. No hover, transition or pointer style.
 - Reflow and text spacing: no fixed sizes, no `overflow`, `overflow-wrap: break-word`, and the card can shrink in a grid (`theme-css.test.ts › never clips, never fixes a height, and keeps its border for forced colours`). Media directly in a part or the Root never get wider than it. No horizontal scrolling at 320 CSS px with the Finnish fixture (`reflow-320`, `card.e2e.ts › an image in a padded body fits at 320px`, 1.4.10). With the 1.4.12 text-spacing overrides at 320px, the card grows and nothing is clipped or sticks out (`card.e2e.ts › text spacing overrides clip nothing at 320px`).

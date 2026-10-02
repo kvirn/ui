@@ -1,8 +1,8 @@
-import { useId } from 'react'
 import type { ReactNode } from 'react'
 import { Button, Card, Link } from '@kvirn-ui/react'
 
-// Story and e2e fixture: the design spec's examples A–D (docs/design/card.md §4, §5). sv and en
+// Story and e2e fixture: the design spec's examples B–D (docs/design/card.md §4, §5). Example A,
+// the sidebar text block, is a Panel now (ADR-0044): see ../panel/panel.fixture.tsx. sv and en
 // are written. The fi strings are the designer's drafts, for length checks only. nb, nn and se
 // come from a translator, not an agent: until then those locales show the English text, marked
 // lang="en" (3.1.2). Dates and times are values, formatted with Intl.
@@ -15,12 +15,6 @@ interface NewsItemText {
 }
 
 interface CardTexts {
-  contact: {
-    heading: string
-    phone: (phone: ReactNode) => ReactNode
-    hours: (open: ReactNode, close: ReactNode) => ReactNode
-    email: string
-  }
   waste: {
     heading: string
     next: (date: ReactNode) => ReactNode
@@ -44,16 +38,6 @@ interface CardTexts {
 }
 
 const en: CardTexts = {
-  contact: {
-    heading: 'Contact us',
-    phone: (phone) => <>Call the customer centre on {phone}.</>,
-    hours: (open, close) => (
-      <>
-        We answer Monday to Friday, {open}–{close}.
-      </>
-    ),
-    email: 'Email the customer centre',
-  },
   waste: {
     heading: 'Waste collection at Storgatan 12',
     next: (date) => <>Your next collection is on {date}.</>,
@@ -86,16 +70,6 @@ const en: CardTexts = {
 }
 
 const sv: CardTexts = {
-  contact: {
-    heading: 'Kontakta oss',
-    phone: (phone) => <>Ring kundcenter på {phone}.</>,
-    hours: (open, close) => (
-      <>
-        Vi svarar måndag–fredag kl. {open}–{close}.
-      </>
-    ),
-    email: 'Mejla kundcenter',
-  },
   waste: {
     heading: 'Sophämtning vid Storgatan 12',
     next: (date) => <>Nästa tömning är {date}.</>,
@@ -129,16 +103,6 @@ const sv: CardTexts = {
 
 /** Designer drafts (docs/design/card.md §4), for length checks. Not reviewed by a translator. */
 const fi: CardTexts = {
-  contact: {
-    heading: 'Ota yhteyttä',
-    phone: (phone) => <>Soita asiakaspalvelukeskukseen numeroon {phone}.</>,
-    hours: (open, close) => (
-      <>
-        Vastaamme maanantaista perjantaihin klo {open}–{close}.
-      </>
-    ),
-    email: 'Lähetä sähköpostia asiakaspalvelukeskukseen',
-  },
   waste: {
     heading: 'Jäteastioiden tyhjennys osoitteessa Storgatan 12',
     next: (date) => <>Seuraava tyhjennys on {date}.</>,
@@ -211,8 +175,6 @@ export function textsFor(locale: CardFixtureLocale): ResolvedTexts {
 
 // Fixed instants, so stories and tests are deterministic. Formatted in UTC.
 const nextCollection = new Date(Date.UTC(2026, 9, 14))
-const opens = new Date(Date.UTC(2026, 9, 1, 8, 0))
-const closes = new Date(Date.UTC(2026, 9, 1, 16, 0))
 const certificateArrived = new Date(Date.UTC(2026, 8, 30))
 const publishedDates = {
   recycling: new Date(Date.UTC(2026, 8, 28)),
@@ -225,14 +187,6 @@ function DateValue({ date, formatLocale }: { date: Date; formatLocale: string })
     date,
   )
   return <time dateTime={date.toISOString().slice(0, 10)}>{text}</time>
-}
-
-function TimeValue({ date, formatLocale }: { date: Date; formatLocale: string }) {
-  const text = new Intl.DateTimeFormat(formatLocale, {
-    timeStyle: 'short',
-    timeZone: 'UTC',
-  }).format(date)
-  return <time dateTime={date.toISOString().slice(11, 16)}>{text}</time>
 }
 
 /** A local file, never a network request (hard rule 7): an SVG as a data URI. */
@@ -268,31 +222,6 @@ export interface CardFixtureProps {
 }
 
 const caseNumber = 'BAB-2026-004512'
-
-/** Example A: a text block in a sidebar, a labelled `aside` with prose. */
-export function ContactCard({ locale }: CardFixtureProps) {
-  const { text, lang, formatLocale } = textsFor(locale)
-  const headingId = useId()
-  return (
-    <Card.Root
-      render={<aside aria-labelledby={headingId} />}
-      className="kv-card--surface kv-prose"
-      lang={lang}
-    >
-      <h2 id={headingId}>{text.contact.heading}</h2>
-      <p>{text.contact.phone('0123-45 67 89')}</p>
-      <p>
-        {text.contact.hours(
-          <TimeValue date={opens} formatLocale={formatLocale} />,
-          <TimeValue date={closes} formatLocale={formatLocale} />,
-        )}
-      </p>
-      <p>
-        <Link href="mailto:kundcenter@kvirnby.example">{text.contact.email}</Link>
-      </p>
-    </Card.Root>
-  )
-}
 
 /** Example B: a service card on My pages, with a full-bleed image and two actions. */
 export function ServiceCard({ locale }: CardFixtureProps) {
@@ -364,10 +293,7 @@ export function CaseCard({ locale }: CardFixtureProps) {
         <Card.Body className="kv-prose">
           <h2>{text.case.heading(caseNumber)}</h2>
           <p>{text.case.status}</p>
-          <Card.Root
-            className="kv-card--surface kv-card--radius-md kv-prose"
-            data-testid="nested-card"
-          >
+          <Card.Root className="kv-card--radius-md kv-prose" data-testid="nested-card">
             <h3>{text.case.latestHeading}</h3>
             <p>
               {text.case.latestText(

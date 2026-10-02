@@ -3,10 +3,10 @@ import contract from '../../../../../packages/react/src/card/card.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import guidance from '../panel/panel-or-card.md?raw'
 import {
   binsImage,
   CaseCard as CaseCardExample,
-  ContactCard as ContactCardExample,
   isCardFixtureLocale,
   NewsList as NewsListExample,
   ServiceCard as ServiceCardExample,
@@ -24,6 +24,12 @@ const localeOf = (globals: Record<string, unknown>): CardFixtureLocale => {
 }
 
 const pixels = (value: string): number => Number.parseFloat(value)
+
+const description = `A plain container for one thing on the page: an image, a heading, some text and a couple of actions, for a service, a news item or a case. It is always \`surface-raised\`. A region of the page, such as a sidebar, is a Panel.
+
+### Panel, Card or a surface token: when to use which
+
+${guidance}`
 
 const meta = {
   title: 'Components/Card',
@@ -49,12 +55,12 @@ const meta = {
     className: {
       control: 'text',
       description:
-        'Your own classes, added to `kv-card`. The theme styles `kv-card--surface`, `kv-card--canvas`, `kv-card--radius-md|none`, `kv-card--padding-none|sm|lg` and `kv-card--dividers`.',
+        'Your own classes, added to `kv-card`. The theme styles `kv-card--radius-md|none`, `kv-card--padding-none|sm|lg` and `kv-card--dividers`. A card is always `surface-raised`: a region of the page is a Panel.',
     },
     render: { control: false },
   },
   globals: { locale: 'sv' },
-  parameters: { a11yContract: contract },
+  parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof Card.Root>
 
 export default meta
@@ -93,23 +99,6 @@ export const ServiceCard: Story = {
   },
 }
 
-/** Example A: a text block on a surface in a sidebar. A Root without parts pads itself. */
-export const SidebarTextBlock: Story = {
-  render: (_args, { globals }) => (
-    <div className="kv-story-card-column">
-      <ContactCardExample locale={localeOf(globals)} />
-    </div>
-  ),
-  play: async ({ canvas }) => {
-    const region = canvas.getByRole('complementary', { name: 'Kontakta oss' })
-    await expect(within(region).getByRole('heading', { level: 2 })).toBeVisible()
-    await expect(within(region).getByRole('link', { name: 'Mejla kundcenter' })).toHaveAttribute(
-      'href',
-      'mailto:kundcenter@kvirnby.example',
-    )
-  },
-}
-
 /** Example C: a list of news cards. Each card is a list item with one link, in its heading. */
 export const NewsList: Story = {
   render: (_args, { globals }) => <NewsListExample locale={localeOf(globals)} />,
@@ -127,113 +116,6 @@ export const NewsList: Story = {
 /** Example D: a staff case card in compact density, with a nested card one step down. */
 export const NestedCard: Story = {
   render: (_args, { globals }) => <CaseCardExample locale={localeOf(globals)} />,
-}
-
-/**
- * `kv-card--surface` and `kv-card--canvas` on the Root, or neither for surface-raised. A canvas
- * card on a surface section looks part of the page.
- */
-export const Surfaces: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
-    return (
-      <div className="kv-story-card-stage">
-        <div className="kv-story-columns">
-          {(
-            [
-              ['surface-raised', 'kv-card'],
-              ['surface', 'kv-card--surface'],
-              ['canvas', 'kv-card--canvas'],
-            ] as const
-          ).map(([surface, className]) => (
-            <Card.Root
-              key={surface}
-              className={surface === 'surface-raised' ? undefined : className}
-              data-testid={surface}
-              lang={lang}
-            >
-              <p>
-                <code>{className}</code>
-              </p>
-              <p>{text.waste.plan}</p>
-            </Card.Root>
-          ))}
-        </div>
-      </div>
-    )
-  },
-}
-
-/**
- * The elevation levels (Foundation/Borders and elevation), 0 to 4, each labelled with when to
- * use it. Levels 0 to 2 are the page, a `kv-card--surface` section and a default card. In the
- * light themes the page and the raised card are both white, so the section between them and the
- * 1px border of each card are what show the layers. Levels 3 and 4 are stand-ins for a popup and
- * a dialog, which aren't components yet: they show the `xl` radius, the border and the shadow,
- * which the dark themes leave out. Every level from 1 up keeps its border, which also survives
- * forced colours. Nested cards are one level deep here, as the design spec allows.
- */
-export const SurfaceLayers: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
-    return (
-      <div
-        lang="en"
-        data-testid="canvas"
-        style={{ padding: 'var(--kv-space-4)', backgroundColor: 'var(--kv-color-canvas)' }}
-      >
-        <p>
-          <strong>Level 0, the page: </strong>
-          <code>canvas</code>. Everything sits on it. Use it for the page itself, and nothing else.
-        </p>
-        <Card.Root className="kv-card--surface" data-testid="surface">
-          <p>
-            <strong>Level 1, a section: </strong>
-            <code>kv-card--surface</code>. Use it to set a group of content apart from the page: a
-            section, a sidebar or a block of related cards. It has a border and no shadow.
-          </p>
-          <Card.Root data-testid="surface-raised">
-            <p>
-              <strong>Level 2, a card: </strong>
-              <code>kv-card</code>, <code>surface-raised</code>. Use it for one unit of content on
-              the page or on a section. It has a border and no shadow, and is never interactive.
-            </p>
-            <p lang={lang}>{text.waste.plan}</p>
-          </Card.Root>
-        </Card.Root>
-        <div className="kv-story-columns" style={{ marginBlockStart: 'var(--kv-space-6)' }}>
-          <div className="kv-story-popup" data-testid="popup">
-            <p>
-              <strong>Level 3, a popup: </strong>
-              <code>--kv-shadow-popup</code>. Use it for a menu, a listbox or a popover that opens
-              over the page and closes again. It has a border and a soft shadow.
-            </p>
-          </div>
-          <div className="kv-story-dialog" data-testid="dialog">
-            <p>
-              <strong>Level 4, a dialog: </strong>
-              <code>--kv-shadow-dialog</code>. Use it for a dialog that takes over the page, over a
-              backdrop, with the page behind it inert. It has a border and the deepest shadow.
-            </p>
-          </div>
-        </div>
-      </div>
-    )
-  },
-  play: async ({ canvas }) => {
-    // The section differs from the page and from the card on it. The page and the card can
-    // share a colour (white in the light themes), so the card's edge is checked below.
-    const [page, section, card] = ['canvas', 'surface', 'surface-raised'].map(
-      (id) => getComputedStyle(canvas.getByTestId(id)).backgroundColor,
-    )
-    await expect(section).not.toBe(page)
-    await expect(section).not.toBe(card)
-    // Every level from 1 up keeps a visible border: a shadow can disappear (dark themes, forced
-    // colours), so the edge is what shows the boundary.
-    for (const id of ['surface', 'surface-raised', 'popup', 'dialog']) {
-      await expect(getComputedStyle(canvas.getByTestId(id)).borderTopWidth).toBe('1px')
-    }
-  },
 }
 
 /**
@@ -380,7 +262,7 @@ export const ProseAndCards: Story = {
                 <li key={title}>{title}</li>
               ))}
             </ul>
-            <Card.Root className="kv-card--surface kv-card--radius-md">
+            <Card.Root className="kv-card--radius-md">
               <ul data-testid="list-in-nested-card">
                 {titles.map((title) => (
                   <li key={title}>{title}</li>
@@ -465,27 +347,22 @@ export const LongFinnishText: Story = {
   render: () => (
     <div className="kv-story-narrow" data-testid="narrow">
       <ServiceCardExample locale="fi" />
-      <div className="kv-story-section">
-        <ContactCardExample locale="fi" />
-      </div>
     </div>
   ),
   play: async ({ canvas }) => {
     await expect(
       canvas.getByRole('button', { name: 'Keskeytä jäteastioiden tyhjennykset' }),
     ).toBeVisible()
-    await expect(canvas.getByRole('complementary', { name: 'Ota yhteyttä' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }
 
-/** Examples A–D on one page. */
+/** Examples B–D on one page. */
 function AllExamplesPage({ locale }: { locale: CardFixtureLocale }) {
   return (
     <>
-      <div className="kv-story-columns">
+      <div className="kv-story-card-column">
         <ServiceCardExample locale={locale} />
-        <ContactCardExample locale={locale} />
       </div>
       <div className="kv-story-section">
         <NewsListExample locale={locale} />
@@ -497,7 +374,7 @@ function AllExamplesPage({ locale }: { locale: CardFixtureLocale }) {
   )
 }
 
-/** Examples A–D together: the design spec's four uses of a card on one page. */
+/** Examples B–D together: the design spec's uses of a card on one page. */
 export const AllExamples: Story = {
   render: (_args, { globals }) => <AllExamplesPage locale={localeOf(globals)} />,
 }
@@ -506,9 +383,8 @@ export const AllExamples: Story = {
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
   render: () => (
-    <div className="kv-story-columns">
+    <div className="kv-story-card-column">
       <ServiceCardExample locale="en" />
-      <ContactCardExample locale="en" />
     </div>
   ),
 }

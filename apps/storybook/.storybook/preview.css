@@ -320,7 +320,7 @@ body {
   background-color: var(--kv-color-warning-subtle);
 }
 
-/* Elevation levels 3 and 4 in Components/Card, SurfaceLayers: stand-ins for a popup and a dialog,
+/* Elevation levels 3 and 4 in Components/Panel, SurfaceLayers: stand-ins for a popup and a dialog,
    which aren't components yet. They show the radius, the border and the shadow, nothing more. */
 .kv-story-popup,
 .kv-story-dialog {
@@ -375,21 +375,6 @@ body {
 /* One card on its own, as on a My pages view. */
 .kv-story-card-column {
   max-inline-size: 30rem;
-}
-
-/* A surface section, so a canvas card shows as part of the page. */
-.kv-story-card-stage {
-  box-sizing: border-box;
-  padding: var(--kv-space-6);
-  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
-  border-radius: var(--kv-radius-lg);
-  background-color: var(--kv-color-surface);
-}
-
-@media (width < 40rem) {
-  .kv-story-card-stage {
-    padding: var(--kv-space-4);
-  }
 }
 
 /* Components/Icon: the built-in set as a grid of cells, 2 columns at 320px and 6 at 64rem. */

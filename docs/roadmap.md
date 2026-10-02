@@ -26,7 +26,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Toggle                                                 | Button                       | 1   | planned     |
 | Link                                                   | – (native `<a>`)             | 1   | alpha       |
 | Card (Root, Header, Body, Footer)                      | – (native `<div>`)           | 1   | alpha       |
-| Panel (level 1 container; Card becomes level 2 only)   | – (native `<div>`)           | 1   | planned     |
+| Panel (level 1 container; Card becomes level 2 only)   | – (native `<div>`)           | 1   | alpha       |
 | Field, Label, Description, ErrorMessage, Fieldset      | –                            | 1   | in progress |
 | Input, Textarea                                        | –                            | 1   | in progress |
 | InputGroup (Root, Addon: units, icons, a clear Button) | – (native `<input>`)         | 1   | in progress |

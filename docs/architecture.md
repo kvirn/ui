@@ -102,7 +102,7 @@ Headless packages ship zero CSS. Classes style, and `data-*` attributes are stat
 
 **Parts are classes.** Every part renders its own stable class, `kv-<part>`: `kv-button`, `kv-link`, `kv-link-new-tab-notice`, `kv-card`, `kv-card-header`, `kv-card-body`, `kv-card-footer`, … Hooks put it in their part props as `className` (`buttonProps.className: 'kv-button'`). A consumer's `className`, on the component or on a `render` element, joins it through `mergeProps` and never replaces it, so the theme keeps styling the part. In the `render` function form, keep `className` when you spread the part props.
 
-**Variants and options are modifier classes** the consumer adds, never props of the headless component: `kv-<part>--<option>`, for example `<Button className="kv-button--primary">` or `<Card.Root className="kv-card--surface">`. Context the consumer sets on a container is a class too: `kv-compact`, `kv-nav`, `kv-button-group`, `kv-prose`.
+**Variants and options are modifier classes** the consumer adds, never props of the headless component: `kv-<part>--<option>`, for example `<Button className="kv-button--primary">` or `<Panel className="kv-panel--canvas">`. Context the consumer sets on a container is a class too: `kv-compact`, `kv-nav`, `kv-button-group`, `kv-prose`.
 
 **State is `data-*`,** set by the components and never by the consumer:
 

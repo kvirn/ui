@@ -49,8 +49,8 @@ const tokenGroups: readonly TokenGroup[] = [
 
 /** The Use column of DESIGN.md, Colors. */
 const tokenUses: Record<ColorTokenName, string> = {
-  canvas: 'Page background',
-  surface: 'Sections, sidebars, table headers, code',
+  canvas: 'Page background, and a canvas panel (`kv-panel--canvas`)',
+  surface: 'Panels (`Panel`), sidebars, table headers, code',
   'surface-raised': 'Cards, popups, dialogs, hovered navigation items',
   'border-subtle': 'Hairline dividers and decorative outlines only',
   'border-control': 'Borders that identify a control (inputs, checkboxes)',

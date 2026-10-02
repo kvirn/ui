@@ -1,4 +1,4 @@
-import { Button, Card, Icon } from '@kvirn-ui/react'
+import { Button, Card, Icon, Panel } from '@kvirn-ui/react'
 import type { ButtonProps } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/button/button.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -543,11 +543,9 @@ function DepthMatrix() {
     <>
       <p>{depthText.note}</p>
       <DepthSurface heading={depthText.surfaces.canvas} />
-      <Card.Root className="kv-card--surface kv-story-section">
-        <Card.Body>
-          <DepthSurface heading={depthText.surfaces.surface} />
-        </Card.Body>
-      </Card.Root>
+      <Panel className="kv-story-section">
+        <DepthSurface heading={depthText.surfaces.surface} />
+      </Panel>
       <Card.Root className="kv-story-section">
         <Card.Body>
           <DepthSurface heading={depthText.surfaces.raised} />

@@ -5,6 +5,7 @@
 - **Deciders:** Maintainer (direction and the three choices below), proposed with Plan 0007
 - **Tags:** api, a11y, theming
 - **Revised:** 2026-10-01, with ADR-0013: parts and choices are classes, not `data-*` attributes
+- **Revised:** 2026-10-02, with [ADR-0044](0044-panel-level-1-container.md): Card is level 2 only. `kv-card--surface` and `kv-card--canvas` are removed, and a region of the page (a sidebar, a band) is a `Panel`. The Context's "text block on a surface background in a sidebar" and Decision 5's surface classes no longer apply
 
 ## Context
 
