@@ -37,10 +37,10 @@ export type {
 } from './card/card.tsx'
 export { useCard } from './card/use-card.ts'
 export type { CardPartProps, UseCardResult } from './card/use-card.ts'
-export { Panel, PanelRoot } from './panel/panel.tsx'
-export type { PanelElementProps, PanelRootProps, PanelState } from './panel/panel.tsx'
-export { usePanel } from './panel/use-panel.ts'
-export type { PanelPartProps, UsePanelResult } from './panel/use-panel.ts'
+export { Section, SectionRoot } from './section/section.tsx'
+export type { SectionElementProps, SectionRootProps, SectionState } from './section/section.tsx'
+export { useSection } from './section/use-section.ts'
+export type { SectionPartProps, UseSectionResult } from './section/use-section.ts'
 export {
   Field,
   FieldDescription,

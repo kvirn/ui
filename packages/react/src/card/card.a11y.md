@@ -59,7 +59,7 @@ Card renders no text, so it has no message keys.
 - **Buttons.** Verbs, one primary per view. Navigation is a Link, not a Button.
 - **Landmarks.** `render={<section aria-labelledby={headingId} />}` or `<aside aria-labelledby>` only for a region a user would want to jump to. A `section` without a name isn't a landmark. Never make every card in a list a landmark. `<article>` is for a self-contained item such as a news story.
 - **Lists.** A list of cards is a `<ul>` with each card rendered as `<li>` (`render={<li />}`), so screen readers announce the number of items. The default theme draws no marker on a card, and Safari can then expose a `<ul>` without visible markers as a plain group. `role="list"` on the `<ul>` keeps it a list there (see Known issues).
-- **Card or Panel.** A card is one identifiable thing. A region of the page (a sidebar, a band, a group of controls) is a [Panel](../panel/panel.a11y.md), and a form section is a heading or a `<fieldset>`. A Card on a Panel is fine. Don't put a Panel inside a Card (ADR-0044).
+- **Card or Section.** A card is one identifiable thing. A region of the page (a sidebar, a band, a group of controls) is a [Section](../section/section.a11y.md), and a form section is a heading or a `<fieldset>`. A Card on a Section is fine. Don't put a Section inside a Card (ADR-0044).
 - **Language.** `lang` on any card text in another language (3.1.2).
 - **Parts are direct children of the Root.** The default theme's padding model relies on it. Don't render an empty part.
 

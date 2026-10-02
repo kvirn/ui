@@ -320,7 +320,7 @@ body {
   background-color: var(--kv-color-warning-subtle);
 }
 
-/* Elevation levels 3 and 4 in Components/Panel, SurfaceLayers: stand-ins for a popup and a dialog,
+/* Elevation levels 3 and 4 in Components/Section, SurfaceLayers: stand-ins for a popup and a dialog,
    which aren't components yet. They show the radius, the border and the shadow, nothing more. */
 .kv-story-popup,
 .kv-story-dialog {

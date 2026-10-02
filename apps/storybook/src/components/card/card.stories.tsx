@@ -3,7 +3,7 @@ import contract from '../../../../../packages/react/src/card/card.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
-import guidance from '../panel/panel-or-card.md?raw'
+import guidance from '../section/section-or-card.md?raw'
 import {
   binsImage,
   CaseCard as CaseCardExample,
@@ -25,9 +25,9 @@ const localeOf = (globals: Record<string, unknown>): CardFixtureLocale => {
 
 const pixels = (value: string): number => Number.parseFloat(value)
 
-const description = `A plain container for one thing on the page: an image, a heading, some text and a couple of actions, for a service, a news item or a case. It is always \`surface-raised\`. A region of the page, such as a sidebar, is a Panel.
+const description = `A plain container for one thing on the page: an image, a heading, some text and a couple of actions, for a service, a news item or a case. It is always \`surface-raised\`. A region of the page, such as a sidebar, is a Section.
 
-### Panel, Card or a surface token: when to use which
+### Section, Card or a surface token: when to use which
 
 ${guidance}`
 
@@ -55,7 +55,7 @@ const meta = {
     className: {
       control: 'text',
       description:
-        'Your own classes, added to `kv-card`. The theme styles `kv-card--radius-md|none`, `kv-card--padding-none|sm|lg` and `kv-card--dividers`. A card is always `surface-raised`: a region of the page is a Panel.',
+        'Your own classes, added to `kv-card`. The theme styles `kv-card--radius-md|none`, `kv-card--padding-none|sm|lg` and `kv-card--dividers`. A card is always `surface-raised`: a region of the page is a Section.',
     },
     render: { control: false },
   },

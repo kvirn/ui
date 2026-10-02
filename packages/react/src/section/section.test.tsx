@@ -6,70 +6,70 @@ import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
 import { Card } from '../card/card.tsx'
 import { Link } from '../link/link.tsx'
-import { Panel, PanelRoot } from './panel.tsx'
-import type { PanelElementProps, PanelRootProps, PanelState } from './panel.tsx'
-import { usePanel } from './use-panel.ts'
-import type { PanelPartProps, UsePanelResult } from './use-panel.ts'
+import { Section, SectionRoot } from './section.tsx'
+import type { SectionElementProps, SectionRootProps, SectionState } from './section.tsx'
+import { useSection } from './use-section.ts'
+import type { SectionPartProps, UseSectionResult } from './use-section.ts'
 
-// Contract: panel.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/panel/panel.e2e.ts.
+// Contract: section.a11y.md. The keyboard rows are also covered end to end in
+// apps/storybook/src/components/section/section.e2e.ts.
 
 /** Example A from the design spec, in Swedish: a sidebar text block as a named aside. */
-function ContactPanel() {
+function ContactSection() {
   const headingId = useId()
   return (
-    <Panel render={<aside aria-labelledby={headingId} />} className="kv-panel--padding-lg">
+    <Section render={<aside aria-labelledby={headingId} />} className="kv-section--padding-lg">
       <h2 id={headingId}>Kontakta oss</h2>
       <p>Ring kundcenter på 0123-45 67 89.</p>
       <p>
         <Link href="#epost">Mejla kundcenter</Link>
       </p>
-    </Panel>
+    </Section>
   )
 }
 
 describe('rendering', () => {
   test('renders one <div> with its class and its children', async () => {
-    const { container } = await render(<Panel data-testid="panel">Innehåll</Panel>)
-    const panel = page.getByTestId('panel')
-    expect(panel.element().tagName).toBe('DIV')
-    expect(panel.element().className).toBe('kv-panel')
-    await expect.element(panel).not.toHaveAttribute('data-kv')
-    await expect.element(panel).toHaveTextContent('Innehåll')
+    const { container } = await render(<Section data-testid="section">Innehåll</Section>)
+    const section = page.getByTestId('section')
+    expect(section.element().tagName).toBe('DIV')
+    expect(section.element().className).toBe('kv-section')
+    await expect.element(section).not.toHaveAttribute('data-kv')
+    await expect.element(section).toHaveTextContent('Innehåll')
     expect(container.children).toHaveLength(1)
-    expect(container.firstElementChild).toBe(panel.element())
+    expect(container.firstElementChild).toBe(section.element())
   })
 
   test('adds no role, ARIA or tabindex', async () => {
     await render(
       <main>
-        <Panel data-testid="panel">
+        <Section data-testid="section">
           <h2>Nyheter</h2>
-        </Panel>
-        <ContactPanel />
+        </Section>
+        <ContactSection />
       </main>,
     )
-    const panels = [...document.querySelectorAll('.kv-panel')]
-    expect(panels).toHaveLength(2)
-    // The default panel has nothing. The aside has only the name the consumer gave it.
-    const attributeNames = panels[0]?.getAttributeNames() ?? []
+    const sections = [...document.querySelectorAll('.kv-section')]
+    expect(sections).toHaveLength(2)
+    // The default section has nothing. The aside has only the name the consumer gave it.
+    const attributeNames = sections[0]?.getAttributeNames() ?? []
     expect(attributeNames.filter((name) => name === 'role' || name.startsWith('aria-'))).toEqual([])
-    for (const panel of panels) {
-      expect(panel.getAttributeNames()).not.toContain('tabindex')
-      expect(panel.getAttributeNames()).not.toContain('inert')
-      expect(panel.getAttribute('role')).toBeNull()
+    for (const section of sections) {
+      expect(section.getAttributeNames()).not.toContain('tabindex')
+      expect(section.getAttributeNames()).not.toContain('inert')
+      expect(section.getAttribute('role')).toBeNull()
     }
-    expect(panels[1]?.getAttributeNames().filter((name) => name.startsWith('aria-'))).toEqual([
+    expect(sections[1]?.getAttributeNames().filter((name) => name.startsWith('aria-'))).toEqual([
       'aria-labelledby',
     ])
   })
 
-  test('a default panel is no landmark', async () => {
+  test('a default section is no landmark', async () => {
     await render(
       <main>
-        <Panel>
+        <Section>
           <h2>Nyheter</h2>
-        </Panel>
+        </Section>
       </main>,
     )
     expect(page.getByRole('complementary').elements()).toHaveLength(0)
@@ -78,18 +78,18 @@ describe('rendering', () => {
   })
 
   test('renders no text of its own: children are exactly what the consumer passes', async () => {
-    await render(<Panel data-testid="panel" />)
-    const panel = page.getByTestId('panel')
-    await expect.element(panel).toHaveTextContent('')
-    expect(panel.element().childNodes).toHaveLength(0)
+    await render(<Section data-testid="section" />)
+    const section = page.getByTestId('section')
+    await expect.element(section).toHaveTextContent('')
+    expect(section.element().childNodes).toHaveLength(0)
   })
 
-  test('the panel is skipped by Tab: focus goes through its children in DOM order', async () => {
+  test('the section is skipped by Tab: focus goes through its children in DOM order', async () => {
     await render(
-      <Panel>
+      <Section>
         <Link href="#forsta">Första länken</Link>
         <Link href="#andra">Andra länken</Link>
-      </Panel>,
+      </Section>,
     )
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('link', { name: 'Första länken' })).toHaveFocus()
@@ -101,58 +101,60 @@ describe('rendering', () => {
 
   test('passes attributes through: id, lang and title on the consumer’s element', async () => {
     await render(
-      <Panel data-testid="panel" id="kontakt" lang="en" title="Panel">
+      <Section data-testid="section" id="kontakt" lang="en" title="Section">
         Contact us
-      </Panel>,
+      </Section>,
     )
-    const panel = page.getByTestId('panel')
-    await expect.element(panel).toHaveAttribute('id', 'kontakt')
-    await expect.element(panel).toHaveAttribute('lang', 'en')
-    await expect.element(panel).toHaveAttribute('title', 'Panel')
+    const section = page.getByTestId('section')
+    await expect.element(section).toHaveAttribute('id', 'kontakt')
+    await expect.element(section).toHaveAttribute('lang', 'en')
+    await expect.element(section).toHaveAttribute('title', 'Section')
   })
 
   test('keeps its own class: a consumer className joins it instead of replacing it', async () => {
     await render(
-      <Panel data-testid="panel" className="kv-panel--canvas annat">
+      <Section data-testid="section" className="kv-section--canvas annat">
         Text
-      </Panel>,
+      </Section>,
     )
     await expect
-      .element(page.getByTestId('panel'))
-      .toHaveClass('kv-panel', 'kv-panel--canvas', 'annat')
+      .element(page.getByTestId('section'))
+      .toHaveClass('kv-section', 'kv-section--canvas', 'annat')
   })
 
   test('keeps its own class when a render element sets another one', async () => {
     await render(
-      <Panel className="fran-prop" render={<section className="annat" data-testid="panel" />}>
+      <Section className="fran-prop" render={<section className="annat" data-testid="section" />}>
         Text
-      </Panel>,
+      </Section>,
     )
-    await expect.element(page.getByTestId('panel')).toHaveClass('kv-panel', 'fran-prop', 'annat')
+    await expect
+      .element(page.getByTestId('section'))
+      .toHaveClass('kv-section', 'fran-prop', 'annat')
   })
 
   test('keeps its own class when a render element’s className is empty', async () => {
-    await render(<Panel render={<section className="" data-testid="panel" />}>Text</Panel>)
-    expect(page.getByTestId('panel').element().className).toBe('kv-panel')
+    await render(<Section render={<section className="" data-testid="section" />}>Text</Section>)
+    expect(page.getByTestId('section').element().className).toBe('kv-section')
   })
 
-  test('Panel, Panel.Root and PanelRoot are the same component', () => {
-    expect(Panel.Root).toBe(PanelRoot)
-    expect(Panel).toBe(PanelRoot)
+  test('Section, Section.Root and SectionRoot are the same component', () => {
+    expect(Section.Root).toBe(SectionRoot)
+    expect(Section).toBe(SectionRoot)
   })
 
   test('has no axe violations as a sidebar and as a band with a card', async () => {
     const { container } = await render(
       <main>
         <h1>Bygglov</h1>
-        <ContactPanel />
-        <Panel>
+        <ContactSection />
+        <Section>
           <h2>Nyheter</h2>
           <ul>
             <Card.Root render={<li />}>Nya öppettider</Card.Root>
             <Card.Root render={<li />}>Vinterväghållning</Card.Root>
           </ul>
-        </Panel>
+        </Section>
       </main>,
     )
     await expect.element(page.getByRole('heading', { name: 'Nyheter', level: 2 })).toBeVisible()
@@ -164,11 +166,11 @@ describe('refs, className and style', () => {
   test('forwards its ref to the element', async () => {
     const ref = createRef<HTMLElement>()
     await render(
-      <Panel ref={ref} data-testid="panel">
+      <Section ref={ref} data-testid="section">
         Text
-      </Panel>,
+      </Section>,
     )
-    expect(ref.current).toBe(page.getByTestId('panel').element())
+    expect(ref.current).toBe(page.getByTestId('section').element())
   })
 
   test('forwards a ref to any element: <aside>, <section> and <li>', async () => {
@@ -176,13 +178,13 @@ describe('refs, className and style', () => {
     const itemRef = createRef<HTMLLIElement>()
     await render(
       <>
-        <Panel ref={asideRef} render={<aside aria-label="Sidopanel" />}>
+        <Section ref={asideRef} render={<aside aria-label="Sidosection" />}>
           Text
-        </Panel>
+        </Section>
         <ul>
-          <Panel ref={itemRef} render={<li />}>
+          <Section ref={itemRef} render={<li />}>
             Punkt
-          </Panel>
+          </Section>
         </ul>
       </>,
     )
@@ -192,22 +194,22 @@ describe('refs, className and style', () => {
 
   test('forwards className and style', async () => {
     await render(
-      <Panel data-testid="panel" className="sidopanel" style={{ maxInlineSize: '20rem' }}>
+      <Section data-testid="section" className="sidosection" style={{ maxInlineSize: '20rem' }}>
         Text
-      </Panel>,
+      </Section>,
     )
-    const panel = page.getByTestId('panel')
-    await expect.element(panel).toHaveClass('sidopanel')
-    await expect.element(panel).toHaveStyle({ maxInlineSize: '20rem' })
+    const section = page.getByTestId('section')
+    await expect.element(section).toHaveClass('sidosection')
+    await expect.element(section).toHaveStyle({ maxInlineSize: '20rem' })
   })
 
   test('merges className and style with a render element, and both refs get the element', async () => {
     const partRef = createRef<HTMLElement>()
     const elementRef = createRef<HTMLElement>()
     await render(
-      <Panel
+      <Section
         ref={partRef}
-        className="sidopanel"
+        className="sidosection"
         style={{ maxInlineSize: '20rem', color: 'rgb(0, 0, 0)' }}
         render={
           <aside
@@ -215,42 +217,42 @@ describe('refs, className and style', () => {
             className="kontakt"
             style={{ color: 'rgb(1, 2, 3)' }}
             aria-label="Kontakt"
-            data-testid="panel"
+            data-testid="section"
           />
         }
       >
         Text
-      </Panel>,
+      </Section>,
     )
-    const panel = page.getByTestId('panel')
-    await expect.element(panel).toHaveClass('sidopanel kontakt')
-    await expect.element(panel).toHaveStyle({ maxInlineSize: '20rem', color: 'rgb(1, 2, 3)' })
-    expect(partRef.current).toBe(panel.element())
-    expect(elementRef.current).toBe(panel.element())
+    const section = page.getByTestId('section')
+    await expect.element(section).toHaveClass('sidosection kontakt')
+    await expect.element(section).toHaveStyle({ maxInlineSize: '20rem', color: 'rgb(1, 2, 3)' })
+    expect(partRef.current).toBe(section.element())
+    expect(elementRef.current).toBe(section.element())
   })
 })
 
 describe('render', () => {
-  test('<aside aria-labelledby> makes the panel a named complementary landmark', async () => {
+  test('<aside aria-labelledby> makes the section a named complementary landmark', async () => {
     const { container } = await render(
       <main>
         <h1>Bygglov</h1>
-        <ContactPanel />
+        <ContactSection />
       </main>,
     )
-    const panel = page.getByRole('complementary', { name: 'Kontakta oss' })
-    await expect.element(panel).toBeVisible()
-    await expect.element(panel).toHaveClass('kv-panel', 'kv-panel--padding-lg')
+    const section = page.getByRole('complementary', { name: 'Kontakta oss' })
+    await expect.element(section).toBeVisible()
+    await expect.element(section).toHaveClass('kv-section', 'kv-section--padding-lg')
     await expectNoA11yViolations(container)
   })
 
-  test('<section aria-labelledby> makes the panel a named region', async () => {
+  test('<section aria-labelledby> makes the section a named region', async () => {
     function NewsBand() {
       const headingId = useId()
       return (
-        <Panel render={<section aria-labelledby={headingId} />}>
+        <Section render={<section aria-labelledby={headingId} />}>
           <h2 id={headingId}>Nyheter</h2>
-        </Panel>
+        </Section>
       )
     }
     const { container } = await render(
@@ -262,14 +264,14 @@ describe('render', () => {
     await expectNoA11yViolations(container)
   })
 
-  test('<nav aria-labelledby> makes the panel a named navigation landmark', async () => {
+  test('<nav aria-labelledby> makes the section a named navigation landmark', async () => {
     function CaseNavigation() {
       const headingId = useId()
       return (
-        <Panel render={<nav aria-labelledby={headingId} />}>
+        <Section render={<nav aria-labelledby={headingId} />}>
           <h2 id={headingId}>Ärenden</h2>
           <Link href="#aktuella">Aktuella ärenden</Link>
-        </Panel>
+        </Section>
       )
     }
     const { container } = await render(
@@ -281,11 +283,11 @@ describe('render', () => {
     await expectNoA11yViolations(container)
   })
 
-  test('<li> panels make a list with one item per panel', async () => {
+  test('<li> sections make a list with one item per section', async () => {
     const { container } = await render(
       <ul>
-        <Panel render={<li />}>Nya öppettider</Panel>
-        <Panel render={<li />}>Vinterväghållning</Panel>
+        <Section render={<li />}>Nya öppettider</Section>
+        <Section render={<li />}>Vinterväghållning</Section>
       </ul>,
     )
     expect(page.getByRole('listitem').elements()).toHaveLength(2)
@@ -293,43 +295,46 @@ describe('render', () => {
   })
 
   test('a function receives the part props and an empty state', async () => {
-    const seenStates: PanelState[] = []
+    const seenStates: SectionState[] = []
     await render(
-      <Panel
-        className="sidopanel"
-        render={(panelProps, state) => {
+      <Section
+        className="sidosection"
+        render={(sectionProps, state) => {
           seenStates.push(state)
-          return <div {...panelProps} data-testid="panel" data-own="" />
+          return <div {...sectionProps} data-testid="section" data-own="" />
         }}
       >
         Text
-      </Panel>,
+      </Section>,
     )
-    const panel = page.getByTestId('panel')
-    await expect.element(panel).toHaveClass('kv-panel', 'sidopanel')
-    await expect.element(panel).toHaveAttribute('data-own', '')
-    await expect.element(panel).toHaveTextContent('Text')
+    const section = page.getByTestId('section')
+    await expect.element(section).toHaveClass('kv-section', 'sidosection')
+    await expect.element(section).toHaveAttribute('data-own', '')
+    await expect.element(section).toHaveTextContent('Text')
     expect(seenStates.at(-1)).toEqual({})
   })
 
   test('a function’s props include the ref', async () => {
     const ref = createRef<HTMLElement>()
     await render(
-      <Panel ref={ref} render={(panelProps) => <aside {...panelProps} data-testid="panel" />}>
+      <Section
+        ref={ref}
+        render={(sectionProps) => <aside {...sectionProps} data-testid="section" />}
+      >
         Text
-      </Panel>,
+      </Section>,
     )
-    expect(ref.current).toBe(page.getByTestId('panel').element())
+    expect(ref.current).toBe(page.getByTestId('section').element())
     expect(ref.current?.tagName).toBe('ASIDE')
   })
 })
 
-describe('usePanel', () => {
-  function HookPanel() {
-    const panel = usePanel()
+describe('useSection', () => {
+  function HookSection() {
+    const section = useSection()
     const headingId = useId()
     return (
-      <nav {...panel.rootProps} aria-labelledby={headingId} data-testid="panel">
+      <nav {...section.rootProps} aria-labelledby={headingId} data-testid="section">
         <h2 id={headingId}>Ärenden</h2>
       </nav>
     )
@@ -338,52 +343,54 @@ describe('usePanel', () => {
   test('gives the class for your own element', async () => {
     const { container } = await render(
       <main>
-        <HookPanel />
+        <HookSection />
       </main>,
     )
-    await expect.element(page.getByRole('navigation', { name: 'Ärenden' })).toHaveClass('kv-panel')
+    await expect
+      .element(page.getByRole('navigation', { name: 'Ärenden' }))
+      .toHaveClass('kv-section')
     await expectNoA11yViolations(container)
   })
 
   test('returns only the class, the same props the component renders', () => {
-    function PanelPropsAsText() {
-      return <pre>{JSON.stringify(usePanel())}</pre>
+    function SectionPropsAsText() {
+      return <pre>{JSON.stringify(useSection())}</pre>
     }
-    const html = renderToString(<PanelPropsAsText />)
+    const html = renderToString(<SectionPropsAsText />)
     const result: unknown = JSON.parse(
       html
         .replace(/^<pre>/, '')
         .replace(/<\/pre>$/, '')
         .replaceAll('&quot;', '"'),
     )
-    expect(result).toEqual({ rootProps: { className: 'kv-panel' } })
+    expect(result).toEqual({ rootProps: { className: 'kv-section' } })
   })
 })
 
 describe('server rendering', () => {
   test('renders to a string without touching the page', () => {
     const html = renderToString(
-      <Panel className="kv-panel--canvas">
+      <Section className="kv-section--canvas">
         <p>Text</p>
-      </Panel>,
+      </Section>,
     )
-    expect(html).toBe('<div class="kv-panel--canvas kv-panel"><p>Text</p></div>')
+    expect(html).toBe('<div class="kv-section--canvas kv-section"><p>Text</p></div>')
   })
 })
 
 describe('types', () => {
   test('exports the part, hook and state types', () => {
-    expectTypeOf<PanelPartProps>().toEqualTypeOf<{ className: 'kv-panel' }>()
-    expectTypeOf<UsePanelResult['rootProps']['className']>().toEqualTypeOf<'kv-panel'>()
-    expectTypeOf<PanelState>().toEqualTypeOf<Record<string, never>>()
+    expectTypeOf<SectionPartProps>().toEqualTypeOf<{ className: 'kv-section' }>()
+    expectTypeOf<UseSectionResult['rootProps']['className']>().toEqualTypeOf<'kv-section'>()
+    expectTypeOf<SectionState>().toEqualTypeOf<Record<string, never>>()
   })
 
   test('the root takes HTML attributes, a ref to any element, and render', () => {
-    const props = {} as PanelRootProps
+    const props = {} as SectionRootProps
     expectTypeOf(props).toHaveProperty('render')
     expectTypeOf(props).toHaveProperty('className')
     expectTypeOf(props).toHaveProperty('aria-labelledby')
     expectTypeOf(createRef<HTMLLIElement>()).toExtend<NonNullable<typeof props.ref>>()
-    expectTypeOf<PanelElementProps>().toHaveProperty('ref')
+    expectTypeOf<SectionElementProps>().toHaveProperty('ref')
   })
 })

@@ -61,5 +61,5 @@ We record significant decisions as ADRs using a lightweight MADR-style format.
 | [0041](0041-foundation-reference-pages-in-mdx.md)          | Foundation reference pages are MDX with static tables                                           | Proposed |
 | [0042](0042-playwright-baseline-is-chromium.md)            | The Playwright baseline is Chromium only, other browsers are opt-in                             | Proposed |
 | [0043](0043-scoped-checks-for-parallel-agents.md)          | Agents check only their own changes                                                             | Proposed |
-| [0044](0044-panel-level-1-container.md)                    | Panel is the level 1 container, and Card is level 2 only                                        | Proposed |
+| [0044](0044-section-level-1-container.md)                  | Section is the level 1 container, and Card is level 2 only                                      | Proposed |
 | [0045](0045-one-time-code-pattern.md)                      | OneTimeCode takes a pattern, not a length                                                       | Proposed |

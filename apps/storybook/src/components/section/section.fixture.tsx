@@ -1,19 +1,19 @@
 import { useId } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
-import { Button, Card, Field, Fieldset, Input, Link, Panel } from '@kvirn-ui/react'
+import { Button, Card, Field, Fieldset, Input, Link, Section } from '@kvirn-ui/react'
 import { textsFor } from '../card/card.fixture.tsx'
 import type { CardFixtureLocale } from '../card/card.fixture.tsx'
 
-// Story and e2e fixture: the design spec's examples A and B (docs/design/panel.md §4, §5) and the
-// Panel-or-Card example (§6.9). The `contact.*` strings moved here from the Card fixture: the
-// sidebar text block is a Panel now (ADR-0044). Example B reuses the Card fixture's NewsList.
+// Story and e2e fixture: the design spec's examples A and B (docs/design/section.md §4, §5) and the
+// Section-or-Card example (§6.9). The `contact.*` strings moved here from the Card fixture: the
+// sidebar text block is a Section now (ADR-0044). Example B reuses the Card fixture's NewsList.
 // sv and en are written. The fi strings are the designer's drafts, for length checks only. nb,
 // nn and se come from a translator, not an agent: until then those locales show the English
 // text, marked lang="en" (3.1.2). Times are values, formatted with Intl.
 
-export type PanelFixtureLocale = CardFixtureLocale
+export type SectionFixtureLocale = CardFixtureLocale
 
-interface PanelTexts {
+interface SectionTexts {
   contact: {
     heading: string
     phone: (phone: ReactNode) => ReactNode
@@ -31,7 +31,7 @@ interface PanelTexts {
   }
 }
 
-const en: PanelTexts = {
+const en: SectionTexts = {
   contact: {
     heading: 'Contact us',
     phone: (phone) => <>Call the customer centre on {phone}.</>,
@@ -46,7 +46,7 @@ const en: PanelTexts = {
   details: { legend: 'Contact details', email: 'Email address' },
 }
 
-const sv: PanelTexts = {
+const sv: SectionTexts = {
   contact: {
     heading: 'Kontakta oss',
     phone: (phone) => <>Ring kundcenter på {phone}.</>,
@@ -61,8 +61,8 @@ const sv: PanelTexts = {
   details: { legend: 'Kontaktuppgifter', email: 'E-postadress' },
 }
 
-/** Designer drafts (docs/design/panel.md §4), for length checks. Not reviewed by a translator. */
-const fi: PanelTexts = {
+/** Designer drafts (docs/design/section.md §4), for length checks. Not reviewed by a translator. */
+const fi: SectionTexts = {
   contact: {
     heading: 'Ota yhteyttä',
     phone: (phone) => <>Soita asiakaspalvelukeskukseen numeroon {phone}.</>,
@@ -78,7 +78,7 @@ const fi: PanelTexts = {
 }
 
 /** nb, nn and se: `undefined` until a translator delivers them. */
-const panelTexts: Record<PanelFixtureLocale, PanelTexts | undefined> = {
+const sectionTexts: Record<SectionFixtureLocale, SectionTexts | undefined> = {
   sv,
   fi,
   nb: undefined,
@@ -93,16 +93,16 @@ const formatLocales: Record<'sv' | 'fi' | 'en', string> = {
   en: 'en-GB',
 }
 
-interface ResolvedPanelTexts {
-  text: PanelTexts
+interface ResolvedSectionTexts {
+  text: SectionTexts
   /** `'en'` when the locale isn't translated yet: put it on the element (3.1.2). */
   lang: 'en' | undefined
   formatLocale: string
 }
 
 /** The fixture text in a locale, or the English text with `lang="en"` until it's translated. */
-function panelTextsFor(locale: PanelFixtureLocale): ResolvedPanelTexts {
-  const text = panelTexts[locale]
+function sectionTextsFor(locale: SectionFixtureLocale): ResolvedSectionTexts {
+  const text = sectionTexts[locale]
   if (text === undefined) {
     return { text: en, lang: 'en', formatLocale: formatLocales.en }
   }
@@ -125,11 +125,11 @@ function TimeValue({ date, formatLocale }: { date: Date; formatLocale: string })
   return <time dateTime={date.toISOString().slice(11, 16)}>{text}</time>
 }
 
-export interface PanelFixtureProps {
-  locale: PanelFixtureLocale
+export interface SectionFixtureProps {
+  locale: SectionFixtureLocale
 }
 
-export interface ContactPanelProps extends PanelFixtureProps {
+export interface ContactSectionProps extends SectionFixtureProps {
   /**
    * The documented recipe for the one edge that meets the content: the transparent border is
    * already there, so colouring one side moves nothing.
@@ -139,12 +139,12 @@ export interface ContactPanelProps extends PanelFixtureProps {
 
 const oneEdge: CSSProperties = { borderInlineEndColor: 'var(--kv-color-border-subtle)' }
 
-/** Example A: a text block in a sidebar, a Panel rendered as a named `aside`, with prose. */
-export function ContactPanel({ locale, hasEdge = false }: ContactPanelProps) {
-  const { text, lang, formatLocale } = panelTextsFor(locale)
+/** Example A: a text block in a sidebar, a Section rendered as a named `aside`, with prose. */
+export function ContactSection({ locale, hasEdge = false }: ContactSectionProps) {
+  const { text, lang, formatLocale } = sectionTextsFor(locale)
   const headingId = useId()
   return (
-    <Panel
+    <Section
       render={<aside aria-labelledby={headingId} />}
       className="kv-prose"
       style={hasEdge ? oneEdge : undefined}
@@ -161,29 +161,29 @@ export function ContactPanel({ locale, hasEdge = false }: ContactPanelProps) {
       <p>
         <Link href="mailto:kundcenter@kvirnby.example">{text.contact.email}</Link>
       </p>
-    </Panel>
+    </Section>
   )
 }
 
 /**
- * One thing with several independent actions: a Panel, not a Card (design spec §6.9). The
+ * One thing with several independent actions: a Section, not a Card (design spec §6.9). The
  * controls are the reason the container exists, and there is no one destination.
  */
-export function UserPanel({ locale }: PanelFixtureProps) {
-  const { text, lang } = panelTextsFor(locale)
+export function UserSection({ locale }: SectionFixtureProps) {
+  const { text, lang } = sectionTextsFor(locale)
   return (
-    <Panel lang={lang} data-testid="panel-with-actions">
+    <Section lang={lang} data-testid="section-with-actions">
       <h2>{text.users.heading}</h2>
       <div className="kv-button-group">
         <Button>{text.users.edit}</Button>
         <Button>{text.users.delete}</Button>
       </div>
-    </Panel>
+    </Section>
   )
 }
 
 /** One thing with one destination: a Card. The link is in the heading. */
-export function NewsCard({ locale }: PanelFixtureProps) {
+export function NewsCard({ locale }: SectionFixtureProps) {
   const { text, lang } = textsFor(locale)
   return (
     <Card.Root render={<article />} lang={lang} data-testid="news-card">
@@ -198,8 +198,8 @@ export function NewsCard({ locale }: PanelFixtureProps) {
 }
 
 /** A form section is neither: a `<fieldset>` with a legend, on the page. */
-export function ContactDetailsFieldset({ locale }: PanelFixtureProps) {
-  const { text, lang } = panelTextsFor(locale)
+export function ContactDetailsFieldset({ locale }: SectionFixtureProps) {
+  const { text, lang } = sectionTextsFor(locale)
   return (
     <Fieldset.Root lang={lang} data-testid="form-section">
       <Fieldset.Legend>{text.details.legend}</Fieldset.Legend>

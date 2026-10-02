@@ -3,17 +3,17 @@ import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
 
-// Contract: packages/react/src/panel/panel.a11y.md › Keyboard, Focus management and Visual /
-// modes. One test per row, named after it. Panel handles no keys: these prove it never gets in
+// Contract: packages/react/src/section/section.a11y.md › Keyboard, Focus management and Visual /
+// modes. One test per row, named after it. Section handles no keys: these prove it never gets in
 // the children's way.
 
 /** `globals` selects the theme like the toolbar does, such as `mode:dark;contrast:more`. */
 const storyUrl = (story: string, globals?: string) =>
-  `/iframe.html?id=components-panel--${story}&viewMode=story${globals === undefined ? '' : `&globals=${globals}`}`
+  `/iframe.html?id=components-section--${story}&viewMode=story${globals === undefined ? '' : `&globals=${globals}`}`
 
 async function openStory(page: Page, story: string, globals?: string) {
   await page.goto(storyUrl(story, globals))
-  await expect(page.locator('.kv-panel').first()).toBeVisible()
+  await expect(page.locator('.kv-section').first()).toBeVisible()
   if (globals !== undefined) {
     // The theme store resolved the selected theme onto <html>.
     const { mode, contrast } = Object.fromEntries(globals.split(';').map((pair) => pair.split(':')))
@@ -22,9 +22,9 @@ async function openStory(page: Page, story: string, globals?: string) {
   }
 }
 
-test.describe('Panel keyboard contract', () => {
+test.describe('Section keyboard contract', () => {
   test('Tab moves through the children in DOM order', async ({ page }) => {
-    await openStory(page, 'cards-on-a-panel')
+    await openStory(page, 'cards-on-a-section')
     const names = [
       'Nya öppettider på återvinningscentralen',
       'Vinterväghållning: så plogar vi',
@@ -34,12 +34,12 @@ test.describe('Panel keyboard contract', () => {
       await page.keyboard.press('Tab')
       await expect(page.getByRole('link', { name })).toBeFocused()
     }
-    // The panel itself is never a Tab stop.
-    await expect(page.locator('.kv-panel:focus')).toHaveCount(0)
+    // The section itself is never a Tab stop.
+    await expect(page.locator('.kv-section:focus')).toHaveCount(0)
   })
 
   test('Shift+Tab moves back through the children', async ({ page }) => {
-    await openStory(page, 'cards-on-a-panel')
+    await openStory(page, 'cards-on-a-section')
     for (let count = 0; count < 3; count += 1) {
       await page.keyboard.press('Tab')
     }
@@ -49,12 +49,14 @@ test.describe('Panel keyboard contract', () => {
     await expect(
       page.getByRole('link', { name: 'Nya öppettider på återvinningscentralen' }),
     ).toBeFocused()
-    await expect(page.locator('.kv-panel:focus')).toHaveCount(0)
+    await expect(page.locator('.kv-section:focus')).toHaveCount(0)
   })
 })
 
-test.describe('Panel focus and modes', () => {
-  test('the focus ring of a link at the edge of a small panel is not clipped', async ({ page }) => {
+test.describe('Section focus and modes', () => {
+  test('the focus ring of a link at the edge of a small section is not clipped', async ({
+    page,
+  }) => {
     await openStory(page, 'padding')
     const link = page.getByTestId('sm-link')
     // The links are in the order none, sm, md, lg.
@@ -102,20 +104,20 @@ test.describe('Panel focus and modes', () => {
       return { clippingAncestors, isInViewport }
     })
     expect(clipped).toEqual({ clippingAncestors: [], isInViewport: true })
-    // The panel itself never clips: no overflow on any panel.
-    for (const panel of await page.locator('.kv-panel').all()) {
-      await expect(panel).toHaveCSS('overflow', 'visible')
+    // The section itself never clips: no overflow on any section.
+    for (const section of await page.locator('.kv-section').all()) {
+      await expect(section).toHaveCSS('overflow', 'visible')
     }
   })
 
-  test('the panel border is visible in forced colours', async ({ page }) => {
+  test('the section border is visible in forced colours', async ({ page }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'forced-colors')
-    const panels = await page.locator('.kv-panel').all()
-    expect(panels.length).toBeGreaterThanOrEqual(3)
-    for (const panel of panels) {
-      // A visible edge on every side, in a colour other than the panel's own (1.4.11).
-      const border = await panel.evaluate((element) => {
+    const sections = await page.locator('.kv-section').all()
+    expect(sections.length).toBeGreaterThanOrEqual(3)
+    for (const section of sections) {
+      // A visible edge on every side, in a colour other than the section's own (1.4.11).
+      const border = await section.evaluate((element) => {
         const style = getComputedStyle(element)
         const sides = ['top', 'right', 'bottom', 'left'].map((side) => ({
           width: Number.parseFloat(style.getPropertyValue(`border-${side}-width`)),
@@ -133,10 +135,10 @@ test.describe('Panel focus and modes', () => {
     }
   })
 
-  test('a default panel adds no landmark or role', async ({ page }) => {
+  test('a default section adds no landmark or role', async ({ page }) => {
     await openStory(page, 'default')
-    await expect(page.locator('.kv-panel')).toHaveCount(1)
-    await expect(page.locator('.kv-panel')).not.toHaveAttribute('role')
+    await expect(page.locator('.kv-section')).toHaveCount(1)
+    await expect(page.locator('.kv-section')).not.toHaveAttribute('role')
     await expect(page.getByRole('complementary')).toHaveCount(0)
     await expect(page.getByRole('region')).toHaveCount(0)
     await expect(page.getByRole('navigation')).toHaveCount(0)
@@ -155,25 +157,25 @@ test.describe('Panel focus and modes', () => {
   })
 })
 
-test.describe('Panel reflow and text spacing', () => {
-  test('an image in a panel fits at 320px (1.4.10)', async ({ page }) => {
+test.describe('Section reflow and text spacing', () => {
+  test('an image in a section fits at 320px (1.4.10)', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 640 })
-    await openStory(page, 'image-in-panel')
+    await openStory(page, 'image-in-section')
     const hasHorizontalScroll = await page.evaluate(
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
     )
     expect(hasHorizontalScroll).toBe(false)
-    const [imageBox, panelBox] = [
+    const [imageBox, sectionBox] = [
       await page.getByTestId('wide-image').boundingBox(),
-      await page.locator('.kv-panel').boundingBox(),
+      await page.locator('.kv-section').boundingBox(),
     ]
     expect((imageBox?.x ?? 0) + (imageBox?.width ?? 0)).toBeLessThanOrEqual(
-      (panelBox?.x ?? 0) + (panelBox?.width ?? 0),
+      (sectionBox?.x ?? 0) + (sectionBox?.width ?? 0),
     )
   })
 
   // The WCAG 1.4.12 overrides (.storybook/preview.css: .kv-story-text-spacing), at 320px.
-  for (const story of ['sidebar-text-block', 'cards-on-a-panel', 'long-finnish-text'] as const) {
+  for (const story of ['sidebar-text-block', 'cards-on-a-section', 'long-finnish-text'] as const) {
     test(`text spacing overrides clip nothing at 320px (1.4.12): ${story}`, async ({ page }) => {
       await page.setViewportSize({ width: 320, height: 640 })
       await openStory(page, story)
@@ -182,24 +184,24 @@ test.describe('Panel reflow and text spacing', () => {
       })
       await expect(page.locator('.kv-story-text-spacing')).toHaveCount(1)
       // 0.12em of the 16px body text: the overrides apply.
-      await expect(page.locator('.kv-panel p').first()).toHaveCSS('letter-spacing', '1.92px')
+      await expect(page.locator('.kv-section p').first()).toHaveCSS('letter-spacing', '1.92px')
       const problems = await page.evaluate(() => {
         const found: string[] = []
         const root = document.documentElement
         if (root.scrollWidth > root.clientWidth) {
           found.push(`page scrolls sideways: ${root.scrollWidth} > ${root.clientWidth}`)
         }
-        for (const panel of document.querySelectorAll<HTMLElement>('.kv-panel')) {
-          const panelBox = panel.getBoundingClientRect()
-          for (const element of [panel, ...panel.querySelectorAll<HTMLElement>('*')]) {
+        for (const section of document.querySelectorAll<HTMLElement>('.kv-section')) {
+          const sectionBox = section.getBoundingClientRect()
+          for (const element of [section, ...section.querySelectorAll<HTMLElement>('*')]) {
             const style = getComputedStyle(element)
             if (style.display === 'inline' || style.display === 'contents') {
               continue
             }
             const box = element.getBoundingClientRect()
             const name = `${element.tagName.toLowerCase()}${[...element.classList].map((className) => `.${className}`).join('')}`
-            if (box.left < panelBox.left - 0.5 || box.right > panelBox.right + 0.5) {
-              found.push(`${name} sticks out of its panel`)
+            if (box.left < sectionBox.left - 0.5 || box.right > sectionBox.right + 0.5) {
+              found.push(`${name} sticks out of its section`)
             }
             if (element.scrollWidth > element.clientWidth + 1) {
               found.push(`${name} overflows sideways`)
@@ -216,7 +218,7 @@ test.describe('Panel reflow and text spacing', () => {
   }
 })
 
-test.describe('Panel accessibility', () => {
+test.describe('Section accessibility', () => {
   test('a11y tree of the sidebar text block: a named complementary landmark', async ({ page }) => {
     await openStory(page, 'sidebar-text-block')
     await expect(page.getByRole('complementary', { name: 'Kontakta oss' })).toMatchAriaSnapshot(`
@@ -244,14 +246,14 @@ test.describe('Panel accessibility', () => {
   const stories: readonly (readonly [string, string?])[] = [
     ['default'],
     ['sidebar-text-block'],
-    ['cards-on-a-panel'],
+    ['cards-on-a-section'],
     ['surfaces'],
     ['padding'],
     ['one-edge'],
     ['surface-layers'],
-    ['card-or-panel'],
-    ['prose-and-panels'],
-    ['image-in-panel'],
+    ['card-or-section'],
+    ['prose-and-sections'],
+    ['image-in-section'],
     ['long-finnish-text'],
     ...themes.map((theme) => ['all-examples', theme] as const),
     ['rtl'],

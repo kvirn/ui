@@ -435,7 +435,7 @@ describe('theme.css card (ADR-0020, docs/design/card.md)', () => {
   })
 
   it('is always surface-raised: it has no surface or canvas rules (ADR-0044)', () => {
-    // A region of the page is a Panel. The two classes are gone, and so are their rules.
+    // A region of the page is a Section. The two classes are gone, and so are their rules.
     expect(themeCss).not.toContain('kv-card--surface')
     expect(themeCss).not.toContain('kv-card--canvas')
     const backgrounds = cardRules
@@ -445,17 +445,17 @@ describe('theme.css card (ADR-0020, docs/design/card.md)', () => {
   })
 })
 
-describe('theme.css panel (ADR-0044, docs/design/panel.md)', () => {
-  const isPanelSelector = (selector: string) =>
-    /\.kv-panel\b/.test(selector) && !selector.includes('.kv-prose')
-  const panelRules = rules.filter((rule) => rule.selectors.every(isPanelSelector))
-  const rootDeclarations = panelRules
-    .filter((rule) => rule.media.length === 0 && rule.selectors.includes('.kv-panel'))
+describe('theme.css section (ADR-0044, docs/design/section.md)', () => {
+  const isSectionSelector = (selector: string) =>
+    /\.kv-section\b/.test(selector) && !selector.includes('.kv-prose')
+  const sectionRules = rules.filter((rule) => rule.selectors.every(isSectionSelector))
+  const rootDeclarations = sectionRules
+    .filter((rule) => rule.media.length === 0 && rule.selectors.includes('.kv-section'))
     .flatMap((rule) => rule.declarations)
 
   it('never clips, never fixes a height, has no radius and no shadow', () => {
-    expect(panelRules.length).toBeGreaterThan(5)
-    const declarations = panelRules.flatMap((rule) => rule.declarations)
+    expect(sectionRules.length).toBeGreaterThan(5)
+    const declarations = sectionRules.flatMap((rule) => rule.declarations)
     // Clipping would cut off a child's focus ring (2.4.11) or spaced-out text (1.4.12).
     expect(
       declarations.filter(([property]) =>
@@ -470,7 +470,7 @@ describe('theme.css panel (ADR-0044, docs/design/panel.md)', () => {
           (property.endsWith('block-size') && value !== 'auto'),
       ),
     ).toEqual([])
-    // Level 1 is square and flat: a rounded or raised panel would read as a card.
+    // Level 1 is square and flat: a rounded or raised section would read as a card.
     expect(
       declarations.filter(
         ([property, value]) =>
@@ -484,7 +484,7 @@ describe('theme.css panel (ADR-0044, docs/design/panel.md)', () => {
     expect(rootDeclarations).toContainEqual(['border', 'var(--kv-border-width) solid transparent'])
     // Nothing takes the border away in any state, and no modifier changes it.
     expect(
-      panelRules
+      sectionRules
         .flatMap((rule) => rule.declarations)
         .filter(
           ([property, value]) =>
@@ -495,11 +495,11 @@ describe('theme.css panel (ADR-0044, docs/design/panel.md)', () => {
   })
 
   it('draws the border in CanvasText on all four sides in forced colours', () => {
-    const forced = panelRules
+    const forced = sectionRules
       .filter(
         (rule) =>
           rule.media.some((media) => media.includes('forced-colors')) &&
-          rule.selectors.includes('.kv-panel'),
+          rule.selectors.includes('.kv-section'),
       )
       .flatMap((rule) => rule.declarations)
     expect(forced).toContainEqual(['border-color', 'CanvasText'])
@@ -511,7 +511,7 @@ describe('theme.css panel (ADR-0044, docs/design/panel.md)', () => {
     expect(rootDeclarations).toContainEqual(['background-color', 'var(--kv-color-surface)'])
     expect(rootDeclarations).toContainEqual(['color', 'var(--kv-color-text)'])
     expect(rootDeclarations).toContainEqual(['overflow-wrap', 'break-word'])
-    // A panel can hold navigation, forms and tables, so it doesn't hyphenate.
+    // A section can hold navigation, forms and tables, so it doesn't hyphenate.
     expect(rootDeclarations.filter(([property]) => property.startsWith('hyphen'))).toEqual([])
   })
 
@@ -524,7 +524,7 @@ describe('theme.css panel (ADR-0044, docs/design/panel.md)', () => {
     const physical =
       /^(?:(?:margin|padding|border)-(?:top|right|bottom|left)(?:-.+)?|(?:top|right|bottom|left)|(?:min-|max-)?(?:width|height)|float|clear)$/
     expect(
-      panelRules
+      sectionRules
         .flatMap((rule) => rule.declarations)
         .filter(([property]) => physical.test(property)),
     ).toEqual([])
@@ -539,31 +539,34 @@ describe('theme.css panel (ADR-0044, docs/design/panel.md)', () => {
             (media === '' ? rule.media.length === 0 : rule.media.some((m) => m.includes(media))),
         )
         .flatMap((rule) => rule.declarations)
-        .filter(([property]) => property.startsWith('--kv-panel-padding-'))
+        .filter(([property]) => property.startsWith('--kv-section-padding-'))
     expect(tokens('', ':root')).toEqual([
-      ['--kv-panel-padding-sm', 'var(--kv-space-3)'],
-      ['--kv-panel-padding-md', 'var(--kv-space-4)'],
-      ['--kv-panel-padding-lg', 'var(--kv-space-6)'],
+      ['--kv-section-padding-sm', 'var(--kv-space-3)'],
+      ['--kv-section-padding-md', 'var(--kv-space-4)'],
+      ['--kv-section-padding-lg', 'var(--kv-space-6)'],
     ])
     expect(tokens('40rem', ':root')).toEqual([
-      ['--kv-panel-padding-md', 'var(--kv-space-6)'],
-      ['--kv-panel-padding-lg', 'var(--kv-space-8)'],
+      ['--kv-section-padding-md', 'var(--kv-space-6)'],
+      ['--kv-section-padding-lg', 'var(--kv-space-8)'],
     ])
     expect(tokens('64rem', '.kv-compact')).toEqual([
-      ['--kv-panel-padding-md', 'var(--kv-space-4)'],
-      ['--kv-panel-padding-lg', 'var(--kv-space-6)'],
+      ['--kv-section-padding-md', 'var(--kv-space-4)'],
+      ['--kv-section-padding-lg', 'var(--kv-space-6)'],
     ])
   })
 
-  it('always sets its own padding step, so a nested panel never inherits its parent’s', () => {
-    expect(rootDeclarations).toContainEqual(['--kv-panel-padding', 'var(--kv-panel-padding-md)'])
-    expect(rootDeclarations).toContainEqual(['padding', 'var(--kv-panel-padding)'])
+  it('always sets its own padding step, so a nested section never inherits its parent’s', () => {
+    expect(rootDeclarations).toContainEqual([
+      '--kv-section-padding',
+      'var(--kv-section-padding-md)',
+    ])
+    expect(rootDeclarations).toContainEqual(['padding', 'var(--kv-section-padding)'])
   })
 
   it('is a margins-only element in prose, not a prose boundary', () => {
     const marginRules = rules.filter(
       (rule) =>
-        rule.selectors.some((selector) => /\.kv-panel\b/.test(selector)) &&
+        rule.selectors.some((selector) => /\.kv-section\b/.test(selector)) &&
         rule.declarations.some(
           ([property, value]) => property === 'margin-inline' && value === '0',
         ),

@@ -2,7 +2,7 @@
 
 > **Draft** (Plan 0007). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [card.a11y.md](card.a11y.md), and the design spec is [docs/design/card.md](../../../../docs/design/card.md).
 
-A plain container for one thing on the page: an image, a heading, some text and a couple of actions, for a service, a news item or a case (ADR-0020). Card is elevation level 2, and it is always `surface-raised`. A region of the page, such as a sidebar, is a [Panel](../panel/panel.md) (ADR-0044).
+A plain container for one thing on the page: an image, a heading, some text and a couple of actions, for a service, a news item or a case (ADR-0020). Card is elevation level 2, and it is always `surface-raised`. A region of the page, such as a sidebar, is a [Section](../section/section.md) (ADR-0044).
 
 - Four parts, each one `<div>`: `Card.Root`, `Card.Header`, `Card.Body` and `Card.Footer` (also exported as `CardRoot`, `CardHeader`, `CardBody` and `CardFooter`). Header and Footer are never `<header>` or `<footer>`, which would become page landmarks.
 - No role, no ARIA, no text and no behaviour. Children are whatever you pass, with their own semantics and focus order.
@@ -14,7 +14,7 @@ A plain container for one thing on the page: an image, a heading, some text and 
 ```tsx
 import { Button, Card, Link } from '@kvirn-ui/react'
 
-// A card without parts: the Root pads itself. A sidebar text block is a Panel, not a Card.
+// A card without parts: the Root pads itself. A sidebar text block is a Section, not a Card.
 <Card.Root render={<article />} className="kv-prose">
   <h2>Sophämtning</h2>
   <p>Matavfall och restavfall töms varannan vecka.</p>
@@ -72,26 +72,26 @@ Without a modifier class, a card gets the default: `surface-raised`, the `lg` ra
 
 `md` padding is 24px, and 16px below `40rem` and in compact density (`kv-compact`). All four steps are allowed on a part, but mixed steps misalign the parts' edges, so per-part values are normally `none`, for full-bleed media. A site can change the default for every card with `--kv-card-padding-default` and `--kv-card-radius-default` (`@kvirn-ui/theme` README, Site-wide defaults), and then `kv-card--padding-md` and `kv-card--radius-lg` take one card back to the theme's step. Prose stops at a card: put `kv-prose` on `Card.Body` (or the Root of a card without parts) to style the text inside.
 
-### Panel, Card or a surface token: when to use which
+### Section, Card or a surface token: when to use which
 
-| You're building                                                                                                   | Use                                                                                                    | Why                                                                                                      |
-| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| A region of the page next to or between other content: a sidebar, a filter panel, a band of related content       | `Panel`. It's `surface`, square, with no visible edge                                                  | It's part of the page's layout, not a thing on the page (elevation level 1)                              |
-| A region that should look like the page again inside a `surface` region: the work area next to a staff sidebar    | `Panel` with `kv-panel--canvas`                                                                        | It goes back to the page colour without drawing a box (level 0)                                          |
-| One self-contained thing people read, compare or act on as a unit: a service, a news item, a case, a contact card | `Card`. It's `surface-raised`, with a hairline edge and rounded corners                                | The edge and the corners say "these belong together" (level 2)                                           |
-| Several of those things                                                                                           | Cards in a list (`<ul>`, each card `render={<li />}`), on the page or on a Panel                       | One thing per card. A Panel around them is optional                                                      |
-| A background inside your own component: a table header row, a code block, a read-only field                       | The token in your CSS, `var(--kv-color-surface)`, with the `text` tokens on it                         | It isn't a region or a thing, so it isn't a container. The `text` tokens keep `theme:check`'s pairs true |
-| One thing with several independent actions: a user with Edit and Delete, a settings block                         | `Panel`. A Card has one primary destination, and here the controls are the reason the container exists | If you can't name one destination, it isn't a card                                                       |
-| A form section or a group of fields                                                                               | Neither. A heading or a `<fieldset>` with a legend, on the page or in a Panel                          | A card would make "Account" look like an entity and add a level of hierarchy                             |
-| A status message: an error, a warning, a confirmation                                                             | Neither. A notification, with a `-subtle` background, a bar, an icon and a heading                     | Status is never shown by a surface colour alone (1.4.1)                                                  |
+| You're building                                                                                                   | Use                                                                                                      | Why                                                                                                      |
+| ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| A region of the page next to or between other content: a sidebar, a filter section, a band of related content     | `Section`. It's `surface`, square, with no visible edge                                                  | It's part of the page's layout, not a thing on the page (elevation level 1)                              |
+| A region that should look like the page again inside a `surface` region: the work area next to a staff sidebar    | `Section` with `kv-section--canvas`                                                                      | It goes back to the page colour without drawing a box (level 0)                                          |
+| One self-contained thing people read, compare or act on as a unit: a service, a news item, a case, a contact card | `Card`. It's `surface-raised`, with a hairline edge and rounded corners                                  | The edge and the corners say "these belong together" (level 2)                                           |
+| Several of those things                                                                                           | Cards in a list (`<ul>`, each card `render={<li />}`), on the page or on a Section                       | One thing per card. A Section around them is optional                                                    |
+| A background inside your own component: a table header row, a code block, a read-only field                       | The token in your CSS, `var(--kv-color-surface)`, with the `text` tokens on it                           | It isn't a region or a thing, so it isn't a container. The `text` tokens keep `theme:check`'s pairs true |
+| One thing with several independent actions: a user with Edit and Delete, a settings block                         | `Section`. A Card has one primary destination, and here the controls are the reason the container exists | If you can't name one destination, it isn't a card                                                       |
+| A form section or a group of fields                                                                               | Neither. A heading or a `<fieldset>` with a legend, on the page or in a Section                          | A card would make "Account" look like an entity and add a level of hierarchy                             |
+| A status message: an error, a warning, a confirmation                                                             | Neither. A notification, with a `-subtle` background, a bar, an icon and a heading                       | Status is never shown by a surface colour alone (1.4.1)                                                  |
 
-Rules that go with it: a Card on a Panel keeps its default look. Don't put a Panel inside a Card (a region inside a thing turns the ladder upside down). Nest Panels only to switch between `surface` and `canvas`.
+Rules that go with it: a Card on a Section keeps its default look. Don't put a Section inside a Card (a region inside a thing turns the ladder upside down). Nest Sections only to switch between `surface` and `canvas`.
 
 **When unsure, use the simpler container.** A Card is for one identifiable thing, not a box with a border, a background or padding. Before using Card, ask in order:
 
-1. Can you name the thing it represents (a product, a person, an article, a case, a search result)? If not, use a Panel or plain HTML.
-2. Does the content represent exactly one thing? If not, use a Panel.
-3. Is there one primary destination or action? If the controls are the reason the container exists, use a Panel.
+1. Can you name the thing it represents (a product, a person, an article, a case, a search result)? If not, use a Section or plain HTML.
+2. Does the content represent exactly one thing? If not, use a Section.
+3. Is there one primary destination or action? If the controls are the reason the container exists, use a Section.
 4. Is it a form section, a field group, a toolbar, a button group or a layout wrapper? Never a Card.
 5. Don't nest Cards unless the inner one is a thing in its own right. Don't use Cards to create visual hierarchy.
 

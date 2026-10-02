@@ -7,7 +7,7 @@
  * `kv-field`, `kv-input` and so on) and their state attributes (`data-disabled`,
  * `data-focus-visible`, `data-current`, `data-invalid`),
  * plus classes you add yourself: variants and options (`kv-button--primary`,
- * `kv-panel--canvas`, `kv-input--width-6`), and context (`kv-compact`, `kv-nav`,
+ * `kv-section--canvas`, `kv-input--width-6`), and context (`kv-compact`, `kv-nav`,
  * `kv-button-group`, `kv-prose`, `kv-lead`, `kv-not-prose`, `kv-scroll-region`). Classes style,
  * data-* attributes are state.
  *
@@ -67,7 +67,7 @@
  *   8. Link and navigation lists
  *   9. Prose            kv-prose: articles from a CMS or Markdown
  *  10. Card
- *  10a. Panel          kv-panel: a region of the page, elevation level 1
+ *  10a. Section          kv-section: a region of the page, elevation level 1
  *  11. Icon
  *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-input-group,
  *                      kv-checkbox, kv-radio, kv-native-select
@@ -1054,7 +1054,7 @@
 
   /* Everything inside prose that prose may style. This is the only place the not-prose list
    * is written: add a new component part class (first line) or consumer class (second line)
-   * here. A card's or a panel's Root isn't in the first line: it gets prose's margins. Nor are
+   * here. A card's or a section's Root isn't in the first line: it gets prose's margins. Nor are
    * a field's or a fieldset's Root. They get margins, and everything inside them is excluded (second
    * line), so their text parts and controls are covered without being listed. `&` has the
    * specificity of this selector, which is zero.
@@ -1090,10 +1090,18 @@
         )
       )
     ) {
-    /* Elements. kv-not-prose, kv-nav, kv-button-group, a card's or a panel's Root and a field or
-     * fieldset Root only get margins. A panel isn't a prose boundary: its content stays prose. */
+    /* Elements. kv-not-prose, kv-nav, kv-button-group, a card's or a section's Root and a field or
+     * fieldset Root only get margins. A section isn't a prose boundary: its content stays prose. */
     &:not(
-      :where(.kv-not-prose, .kv-nav, .kv-button-group, .kv-card, .kv-panel, .kv-field, .kv-fieldset)
+      :where(
+        .kv-not-prose,
+        .kv-nav,
+        .kv-button-group,
+        .kv-card,
+        .kv-section,
+        .kv-field,
+        .kv-fieldset
+      )
     ) {
       &:where(h1, h2, h3, h4, h5, h6) {
         color: var(--kv-color-heading);
@@ -1428,7 +1436,7 @@
     }
 
     /* Embedded components and other content prose leaves alone: only its own margin. */
-    &:where(.kv-not-prose, .kv-scroll-region, .kv-card, .kv-panel, .kv-field, .kv-fieldset) {
+    &:where(.kv-not-prose, .kv-scroll-region, .kv-card, .kv-section, .kv-field, .kv-fieldset) {
       margin-block: var(--kv-prose-space-block);
       margin-inline: 0;
     }
@@ -1476,7 +1484,7 @@
    * <Card.Root> renders class="kv-card", and its parts kv-card-header, kv-card-body and
    * kv-card-footer. Elevation level 2: surface-raised, a 1px border-subtle edge, the lg radius
    * and no shadow. A card is never interactive, so it has no hover, focus or pointer style.
-   * It is always surface-raised: a region of the page is a Panel (section 10a).
+   * It is always surface-raised: a region of the page is a Section (section 10a).
    * Choose with modifier classes. Without one, the default applies.
    *
    *   kv-card--radius-md, kv-card--radius-none   Root: md for a card nested in a card. Default lg
@@ -1705,113 +1713,113 @@
     }
   }
 
-  /* 10a. Panel -------------------------------------------------------------------------------
-   * <Panel> renders class="kv-panel": a region of the page, such as a sidebar or a band of
+  /* 10a. Section -------------------------------------------------------------------------------
+   * <Section> renders class="kv-section": a region of the page, such as a sidebar or a band of
    * content. Elevation level 1: surface, square, no shadow, and no visible edge. A card is the
-   * level 2 object, and a Panel is never interactive, so it has no hover, focus or pointer
+   * level 2 object, and a Section is never interactive, so it has no hover, focus or pointer
    * style. Choose with modifier classes. Without one, the default applies.
    *
-   *   kv-panel--surface, kv-panel--canvas        the background. Default surface
-   *   kv-panel--padding-none, -sm, -md, -lg      the padding. Default md
+   *   kv-section--surface, kv-section--canvas        the background. Default surface
+   *   kv-section--padding-none, -sm, -md, -lg      the padding. Default md
    *
-   *   <Panel render={<aside aria-labelledby="contact" />} className="kv-prose">
+   *   <Section render={<aside aria-labelledby="contact" />} className="kv-prose">
    *     <h2 id="contact">Kontakta oss</h2><p>…</p>
-   *   </Panel>
+   *   </Section>
    *
-   * The border is 1px and transparent, so the background paints under it and stacked panels
+   * The border is 1px and transparent, so the background paints under it and stacked sections
    * leave no gap. Forced colours draw it in CanvasText on all four sides. To mark the one edge
    * that meets the content, colour it in your own CSS and nothing moves:
    *
    *   .sidebar { border-inline-end-color: var(--kv-color-border-subtle); }
    *
-   * A panel never hides overflow or sets a size, so a child's focus ring is never clipped
+   * A section never hides overflow or sets a size, so a child's focus ring is never clipped
    * (2.4.11, 2.4.13) and the text-spacing overrides never cut text off (1.4.12). It isn't a
    * prose boundary: put kv-prose on it or inside it (on a full-width band, inside it).
    */
   :root {
-    --kv-panel-padding-sm: var(--kv-space-3);
-    --kv-panel-padding-md: var(--kv-space-4);
-    --kv-panel-padding-lg: var(--kv-space-6);
+    --kv-section-padding-sm: var(--kv-space-3);
+    --kv-section-padding-md: var(--kv-space-4);
+    --kv-section-padding-lg: var(--kv-space-6);
   }
 
   /* Narrow screens and 400% zoom keep the line length: md and lg grow from 40rem. */
   @media (width >= 40rem) {
     :root {
-      --kv-panel-padding-md: var(--kv-space-6);
-      --kv-panel-padding-lg: var(--kv-space-8);
+      --kv-section-padding-md: var(--kv-space-6);
+      --kv-section-padding-lg: var(--kv-space-8);
     }
   }
 
   /* Compact density steps down from 64rem, with compact controls (section 6). */
   @media (width >= 64rem) {
     .kv-compact {
-      --kv-panel-padding-md: var(--kv-space-4);
-      --kv-panel-padding-lg: var(--kv-space-6);
+      --kv-section-padding-md: var(--kv-space-4);
+      --kv-section-padding-lg: var(--kv-space-6);
     }
   }
 
-  /* The Root always sets the padding, so a nested panel never inherits its parent's step. It
-   * is read here, on each panel, so md and lg follow the width and the density. */
-  .kv-panel {
-    --kv-panel-padding: var(--kv-panel-padding-md);
-    /* A block, so a panel rendered as <li> draws no marker. */
+  /* The Root always sets the padding, so a nested section never inherits its parent's step. It
+   * is read here, on each section, so md and lg follow the width and the density. */
+  .kv-section {
+    --kv-section-padding: var(--kv-section-padding-md);
+    /* A block, so a section rendered as <li> draws no marker. */
     display: block;
     box-sizing: border-box;
-    /* A panel in a grid or flex row can shrink to 320px. */
+    /* A section in a grid or flex row can shrink to 320px. */
     min-inline-size: 0;
     max-inline-size: 100%;
     border: var(--kv-border-width) solid transparent;
     border-radius: var(--kv-radius-none);
-    padding: var(--kv-panel-padding);
+    padding: var(--kv-section-padding);
     background-color: var(--kv-color-surface);
     color: var(--kv-color-text);
-    /* No hyphens: a panel can hold navigation, forms and tables. Prose hyphenates (ADR-0028). */
+    /* No hyphens: a section can hold navigation, forms and tables. Prose hyphenates (ADR-0028). */
     overflow-wrap: break-word;
   }
 
-  .kv-panel.kv-panel--surface {
+  .kv-section.kv-section--surface {
     background-color: var(--kv-color-surface);
   }
 
-  .kv-panel.kv-panel--canvas {
+  .kv-section.kv-section--canvas {
     background-color: var(--kv-color-canvas);
   }
 
-  .kv-panel.kv-panel--padding-none {
-    --kv-panel-padding: var(--kv-space-0);
+  .kv-section.kv-section--padding-none {
+    --kv-section-padding: var(--kv-space-0);
   }
 
-  .kv-panel.kv-panel--padding-sm {
-    --kv-panel-padding: var(--kv-panel-padding-sm);
+  .kv-section.kv-section--padding-sm {
+    --kv-section-padding: var(--kv-section-padding-sm);
   }
 
-  .kv-panel.kv-panel--padding-md {
-    --kv-panel-padding: var(--kv-panel-padding-md);
+  .kv-section.kv-section--padding-md {
+    --kv-section-padding: var(--kv-section-padding-md);
   }
 
-  .kv-panel.kv-panel--padding-lg {
-    --kv-panel-padding: var(--kv-panel-padding-lg);
+  .kv-section.kv-section--padding-lg {
+    --kv-section-padding: var(--kv-section-padding-lg);
   }
 
   /* The padding is the real edge. Zero specificity: your CSS and prose's own spacing win. */
-  :where(.kv-panel > :first-child) {
+  :where(.kv-section > :first-child) {
     margin-block-start: 0;
   }
 
-  :where(.kv-panel > :last-child) {
+  :where(.kv-section > :last-child) {
     margin-block-end: 0;
   }
 
-  /* Media directly in a panel never overflow it: it never clips, so a wide image would scroll
+  /* Media directly in a section never overflow it: it never clips, so a wide image would scroll
    * the page at 320px (1.4.10). Zero specificity, so your own sizes win. */
-  :where(.kv-panel > :is(img, video, svg:not(.kv-icon)), .kv-panel > picture > img) {
+  :where(.kv-section > :is(img, video, svg:not(.kv-icon)), .kv-section > picture > img) {
     max-inline-size: 100%;
     block-size: auto;
   }
 
   /* Every surface becomes Canvas, so the border is what shows the region's edge. */
   @media (forced-colors: active) {
-    .kv-panel {
+    .kv-section {
       border-color: CanvasText;
     }
   }

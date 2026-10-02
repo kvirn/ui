@@ -78,7 +78,7 @@ export function CardFooter(props: CardFooterProps): ReactElement {
 /**
  * A plain container for one thing on the page: a service, a news item, a case (ADR-0020,
  * contract: card.a11y.md). It is always `surface-raised`. A region of the page, such as a
- * sidebar, is a `Panel` (ADR-0044). Every part is one `<div>` with no role, ARIA, text or
+ * sidebar, is a `Section` (ADR-0044). Every part is one `<div>` with no role, ARIA, text or
  * behaviour, and `render` changes the element. With `@kvirn-ui/theme`, add modifier classes:
  * `kv-card--radius-md`, `kv-card--padding-sm`, `kv-card-header--padding-none`,
  * `kv-card--dividers` and so on.
