@@ -1,4 +1,5 @@
 import { Button, Card } from '@kvirn-ui/react'
+import contract from '../../../../../packages/react/src/card/card.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
@@ -53,6 +54,7 @@ const meta = {
     render: { control: false },
   },
   globals: { locale: 'sv' },
+  parameters: { a11yContract: contract },
 } satisfies Meta<typeof Card.Root>
 
 export default meta

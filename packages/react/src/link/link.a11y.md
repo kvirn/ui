@@ -24,13 +24,21 @@ Link navigates. An action is a Button. Link has no `disabled` prop, by type: a d
 
 ## Keyboard
 
-| Key   | Context                   | Action                                                                           | Test                                                            |
-| ----- | ------------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Tab   | Link                      | Moves focus to the link                                                          | `link.e2e.ts › Tab moves focus to the link`                     |
-| Enter | Link                      | Follows the link                                                                 | `link.e2e.ts › Enter follows the link`                          |
-| Enter | Router link               | Follows the link through the registered router, without a page load              | `link.e2e.ts › Enter follows a router link without a page load` |
-| Enter | Link with `target=_blank` | Opens the link in a new tab. The link's name already said it would (3.2.5, G201) | `link.e2e.ts › Enter opens a new-tab link in a new tab`         |
-| Space | Link                      | Not handled (native: scrolls the page). Doesn't follow the link. Focus stays     | `link.e2e.ts › Space does not follow the link`                  |
+- **Focus strategy:** native
+- **Selection follows focus:** n/a
+- **Arrows wrap:** n/a
+- **Shortcuts:** none
+
+A native `<a href>`: one Tab stop, in DOM order, with no `tabindex`. Enter is native.
+
+| Key       | Context                   | Action                                                                           | Test                                                            |
+| --------- | ------------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Tab       | Link                      | Moves focus to the link                                                          | `link.e2e.ts › Tab moves focus to the link`                     |
+| Shift+Tab | Link                      | Moves focus to the previous focusable element, and off the link                  | `link.e2e.ts › Shift+Tab moves focus off the link`              |
+| Enter     | Link                      | Follows the link                                                                 | `link.e2e.ts › Enter follows the link`                          |
+| Enter     | Router link               | Follows the link through the registered router, without a page load              | `link.e2e.ts › Enter follows a router link without a page load` |
+| Enter     | Link with `target=_blank` | Opens the link in a new tab. The link's name already said it would (3.2.5, G201) | `link.e2e.ts › Enter opens a new-tab link in a new tab`         |
+| Space     | Link                      | Not handled (native: scrolls the page). Doesn't follow the link. Focus stays     | `link.e2e.ts › Space does not follow the link`                  |
 
 Escape, arrow keys and Home / End are not handled.
 

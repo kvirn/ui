@@ -16,10 +16,21 @@ async function openStory(page: Page, story: string, linkName: string) {
 
 test.describe('Link keyboard contract', () => {
   test('Tab moves focus to the link', async ({ page }) => {
-    const link = await openStory(page, 'same-page-link', 'Ansök om bygglov')
+    const link = await openStory(page, 'keyboard', 'Ansök om bygglov')
     await page.keyboard.press('Tab')
     await expect(link).toBeFocused()
     await expect(link).toHaveAttribute('data-focus-visible', '')
+  })
+
+  test('Shift+Tab moves focus off the link', async ({ page }) => {
+    const link = await openStory(page, 'keyboard', 'Ansök om bygglov')
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Tab')
+    await expect(page.getByRole('link', { name: 'Kontakta oss' })).toBeFocused()
+    await page.keyboard.press('Shift+Tab')
+    await expect(link).toBeFocused()
+    await page.keyboard.press('Shift+Tab')
+    await expect(link).not.toBeFocused()
   })
 
   test('Enter follows the link', async ({ page }) => {

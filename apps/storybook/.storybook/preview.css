@@ -593,3 +593,51 @@ body {
     100% 1px;
   background-repeat: no-repeat;
 }
+
+/* Components/Form: questions in one column, 32px apart (docs/design/form-fields.md §5, open
+   question 10: the theme ships no form layout class yet). Also on a <form>. */
+.kv-story-form {
+  display: grid;
+  /* A single column that can shrink: an auto track's minimum is the longest word, so a long
+     Finnish compound would widen the page (1.4.10). */
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kv-space-8);
+  max-inline-size: 40rem;
+}
+
+/* A line of output under a controlled or submitted example. */
+.kv-story-form-output {
+  margin: 0;
+  color: var(--kv-color-text);
+}
+
+/* A surface section, so an input on `surface` shows its edge against it (1.4.11). */
+.kv-story-form-surface {
+  box-sizing: border-box;
+  padding: var(--kv-space-6);
+  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-lg);
+  background-color: var(--kv-color-surface);
+}
+
+/* The Keyboard section of a Docs page (ADR-0039): keys as keycaps, in the Docs page's own text colour. */
+.kv-docs-keyboard kbd {
+  display: inline-block;
+  padding: 0.1em 0.4em;
+  border: 1px solid currentColor;
+  border-radius: var(--kv-radius-sm);
+  font-family: ui-monospace, monospace;
+  font-size: 0.9em;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.kv-docs-keyboard table {
+  inline-size: 100%;
+}
+
+.kv-docs-keyboard caption {
+  text-align: start;
+  font-weight: 600;
+  padding-block-end: var(--kv-space-2);
+}

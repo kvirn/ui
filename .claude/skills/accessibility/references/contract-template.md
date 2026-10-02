@@ -15,9 +15,17 @@
 
 ## Keyboard
 
+<!-- Format and rules: the `keyboard` skill (ADR-0039). Shown on the Storybook Docs page. With no focusable part, replace everything below with: This component has no focusable parts and handles no keys. -->
+
+- **Focus strategy:** native | roving tabindex | aria-activedescendant
+- **Selection follows focus:** n/a | yes | no (Enter or Space selects)
+- **Arrows wrap:** n/a | yes | no
+- **Shortcuts:** none
+
 | Key                    | Context | Action | Test                |
 | ---------------------- | ------- | ------ | ------------------- |
 | Tab                    |         |        | `<name>.e2e.ts › …` |
+| Shift+Tab              |         |        |                     |
 | Enter / Space          |         |        |                     |
 | Escape                 |         |        |                     |
 | Arrow keys (RTL flips) |         |        |                     |

@@ -1,0 +1,133 @@
+# Accessibility contract: Field (Root, Label, Description, ErrorMessage)
+
+- **APG pattern:** none. There is no APG pattern for form fields. A field is native HTML: `<label for>`, a native control, and `aria-describedby` for the hint and the error ([ARIA22](https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA22) and [ARIA21](https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA21) are not used: errors go through `aria-describedby`, ADR-0029).
+- **Deviations:** none from APG. Decisions: ADR-0029 (parts, wiring, `aria-required`, the optional marker, the error prefix, no live errors), ADR-0030 (numbers) and ADR-0031 (the default order, several Descriptions).
+- **Native elements used:** `<div>` (Root), `<label for>` (Label), `<p>` (Description and ErrorMessage), a `<span>` for the optional marker and one for the error prefix, and a decorative `<svg>` (the `error` Icon) in the ErrorMessage.
+- **Status:** alpha candidate (Plan 0013, Phases 1 and 1b). Accessibility-reviewer pending for Phase 1b. Manual AT is `pending`.
+- **Tests:** `field.test.tsx` next to this file. `field.stories.tsx`, `label.stories.tsx`, `description.stories.tsx`, `error-message.stories.tsx` and `field.e2e.ts` in `apps/storybook/src/components/`. The control itself has its own contract: `input.a11y.md`.
+
+A Field joins one control to its visible label, an optional hint and an error message. The parts register with their Field, so no DOM query and no global id is involved, and the control's `aria-describedby` never names a part that isn't rendered. The consumer validates and sets `invalid`: there is no validation engine.
+
+## Roles, states, properties
+
+| Part               | Element / role                                     | ARIA / state                                                                                                                       | Notes                                                                                                                                                                                                                             |
+| ------------------ | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Field.Root         | `<div>`, no role                                   | none. `data-invalid`, `data-required`, `data-disabled`                                                                             | Class `kv-field`. Props: `invalid`, `required`, `disabled`, `controlId`, `messages`. Generates the ids (`useId`). Inside a group fieldset (`Fieldset.Root group`) the marker defaults to `none`                                   |
+| Field.Label        | `<label for>`, names the control                   | `htmlFor` is the control's id. `data-invalid`, `data-required`, `data-disabled`                                                    | Class `kv-field-label`. Appends `<span class="kv-field-optional">(valfritt)</span>` from `field.optional` after a normal space, inside the label, unless the field is `required` or `marker="none"`. So the marker is in the name |
+| Field.Description  | `<p id>`                                           | In the control's `aria-describedby`, in DOM order, before the error. `data-invalid`, `data-disabled`                               | Class `kv-field-description`. A Field can have several (one above the control, one under it, ADR-0031), each with its own id. An id is listed only while its Description is rendered                                              |
+| Field.ErrorMessage | `<p id>`, rendered only while the field is invalid | In the control's `aria-describedby`, after every description. `data-invalid`                                                       | Class `kv-field-error-message`. Starts with a decorative `error` Icon (`aria-hidden`), then `<span class="kv-field-error-prefix">Fel:</span>` from `field.errorPrefix`, a space, then the message                                 |
+| the control        | Input (`input.a11y.md`) or your element            | `id`, `aria-describedby` (description id, then error id), `aria-invalid="true"` when invalid, `aria-required="true"` when required | Not native `required` (ADR-0029): no browser bubbles. Native `disabled` when the Field is disabled. `data-invalid`, `data-required`, `data-disabled`                                                                              |
+| `useField`         | the same attributes, for your own elements         | `rootProps`, `labelProps`, `descriptionProps`, `getDescriptionProps(name)`, `errorMessageProps`, `controlProps`                    | Options: `id`, `invalid`, `required`, `disabled`, `hasDescription`, `descriptions` (names, in render order), `hasErrorMessage` (default: `invalid`), `marker`, `messages`. Also returns `optionalMarker` and `errorPrefix`        |
+
+Registration rules, tested in `field.test.tsx › wiring: name and description per state`:
+
+- `aria-describedby` is every description's id in DOM order, then the error id, joined by a space, and only for the parts rendered. The order is the DOM order, whichever order the Descriptions mounted in (`field.test.tsx › several descriptions`). When none is rendered the attribute is absent, never empty. A screen-reader user hears the hints, then "Fel: …", whatever the visual order.
+- Each Description has its own id (a generated suffix on the control's id), so two Descriptions never share one. A Description that unmounts leaves `aria-describedby` at once: it never names a missing id.
+- A Field with two ErrorMessages gives a dev warning (they share one id): render one, with all the text (ADR-0031).
+- `ErrorMessage` renders nothing while the Field isn't `invalid`, so a hidden or stale message is never referenced. A Field that is `invalid` without an ErrorMessage gives a dev warning (3.3.1).
+- Description and ErrorMessage attach to the nearest Field or Fieldset. A Field inside a Fieldset (an option, a date box) therefore owns its own hint and error, and the Fieldset's text parts stay the group's.
+- A Fieldset's `invalid` never passes down to the Fields inside it (ADR-0029, item 10).
+- `useField({ hasDescription: true })` or `useField({ descriptions: ['above', 'under'] })` sets `aria-describedby` from the first render, so server-rendered markup is complete. With `descriptions`, spread `getDescriptionProps(name)` on each hint: its id is `<controlId>-description-<name>`, listed in the order of the array, then the error. The Root component learns about its parts when they mount, so for a moment before hydration the server HTML has the parts but not the association. Use the hook for server-critical markup.
+
+## Keyboard
+
+- **Focus strategy:** native
+- **Selection follows focus:** n/a
+- **Arrows wrap:** n/a
+- **Shortcuts:** none
+
+Field, Label, Description and ErrorMessage handle no keys and move no focus. Focus stays on the control, which owns its keys: see `input.a11y.md` for Input and Number. Enter, Space, Escape, the arrow keys, Home and End are not handled by Field.
+
+| Key             | Context                                      | Action                                                                                       | Test                                                                                      |
+| --------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Tab / Shift+Tab | Fields in a form                             | Moves through the controls in DOM order. Label, description and error text are not Tab stops | `field.e2e.ts › Tab moves through the controls in DOM order`                              |
+| Tab             | Label, Description and ErrorMessage examples | Moves to the control, and never stops on the label, the hint or the error                    | `field.e2e.ts › Tab goes to the control on the Label, Description and ErrorMessage pages` |
+| –               | Label                                        | A click on the label focuses the control (native `<label for>`), also on the optional marker | `field.e2e.ts › clicking the label focuses the input`                                     |
+| –               | Description, ErrorMessage                    | Not focusable and not interactive: no `tabindex`                                             | `field.e2e.ts › Tab skips the description and the error message`                          |
+
+## Focus management
+
+- Initial focus: not moved.
+- Trap: no.
+- Restore to: not applicable.
+- On error: Field never moves focus. Until the error summary block ships (M4), the form moves focus to the first invalid field on submit. The consumer does this, and the docs say so.
+- Never obscured by: Field renders no overlay. Consumers with a sticky header set `scroll-padding` (2.4.11).
+
+## Announcements
+
+| Event                  | Message key (i18n)  | Politeness                                                                                                |
+| ---------------------- | ------------------- | --------------------------------------------------------------------------------------------------------- |
+| An error appears       | none                | None: errors are not live regions (ADR-0029, item 6). They are read when the control gets focus           |
+| The control gets focus | none                | Screen readers read the name, the role, "required" and "invalid", then the description and the error text |
+| The error text is read | `field.errorPrefix` | Part of the message: "Fel: Ange ditt fullständiga namn" (3.3.1)                                           |
+| The label is read      | `field.optional`    | Part of the name: "Telefonnummer (valfritt)" (3.3.2)                                                      |
+
+### Message keys
+
+| Key                 | Part               | en           | sv           | fi                |
+| ------------------- | ------------------ | ------------ | ------------ | ----------------- |
+| `field.optional`    | Field.Label        | `(optional)` | `(valfritt)` | `(vapaaehtoinen)` |
+| `field.errorPrefix` | Field.ErrorMessage | `Error:`     | `Fel:`       | `Virhe:`          |
+
+Resolution (ADR-0007), first match wins: the part's own children (an empty or whitespace-only value falls through), then `<Field.Root messages>` (or `useField({ messages })`), then the nearest provider's `messages` and its ancestors, then built-in `en`. The prefix is its own span, so a locale can change its punctuation. Tests: `field.test.tsx › messages`.
+
+## Consumer responsibilities
+
+- Give every control a visible label (Field.Label). A placeholder is not a label (3.3.2). Put examples in a Description, not in a placeholder.
+- Set `invalid` and render an ErrorMessage together. Write the message so it says what's wrong and how to fix it, in the field's own words, never blaming the user (3.3.1, 3.3.3). Plain text only: the icon, the prefix and the text lay out as one line.
+- Set `required` on every required field. Required fields carry no visible marker, and optional ones say "(optional)" (ADR-0029). Use `marker="none"` where that text is wrong, such as a lone search field or a single consent checkbox. If you mark required fields yourself with an asterisk, add your own text that explains it, and use `marker="none"`.
+- Keep a Field's control a direct child of `Field.Root` when it is a checkbox or radio: the default theme finds its layout from `.kv-field:has(> .kv-checkbox, > .kv-radio)`.
+- Validate on submit, not on every key. Move focus to the first invalid field until the error summary block exists (3.3.1).
+- Render the parts in the default order (ADR-0031): label, hint, control, a hint under the control, then the error. With the error under the control, keep `scroll-padding` on the page (the end value leaves room for the message), so the on-screen keyboard or an autocomplete list doesn't hide it when the field gets focus (2.4.11). The order is the consumer's: another order keeps working.
+- Use `autocomplete` on controls that ask for the user's own data (1.3.5), and never block paste (3.3.8).
+- Set `lang` on a Label whose text is in another language (3.1.2).
+- Give a Field the `controlId` you need to link to it, for example from an error summary. Don't pass an `id` to the control inside a Field: the Field's id wins and a dev warning says so.
+
+## Visual / modes
+
+- Focus indicator: on the control (`input.a11y.md`). Labels and text parts aren't focusable.
+- Target size: the label is the click target for choice controls (44px high, 32px compact), and sits above a text control (2.5.8).
+- Colour: the label, hint and optional marker are `text`. The error is `danger` on every background, 4.5:1 or 7:1 in the contrast themes (`theme:check`), plus a prefix and an icon: never colour alone (1.4.1). The invalid edge is 2px `danger` (3:1 on `canvas`, `surface` and `surface-raised`).
+- forced-colors behaviour: the error text is `CanvasText`, the icon follows it, and the invalid control keeps a 2px border (`field.e2e.ts › forced colours: the invalid input keeps a 2px border`).
+- reduced-motion behaviour: no layout animation when an error appears. Passes in `chromium-reduced-motion`.
+- Reflow: labels, hints and errors wrap and hyphenate. No horizontal scrolling at 320 CSS px with a long Finnish label (`reflow-320`, `field.e2e.ts › no horizontal scrolling at 320px with the Finnish label (1.4.10)`).
+- 1.4.12 text spacing: no fixed heights.
+- RTL: logical properties only. The icon doesn't mirror.
+
+## WCAG SCs covered
+
+- 1.3.1 Info and Relationships: native `<label for>`, description and error in the accessible description (`field.test.tsx › wiring: name and description per state`).
+- 1.3.5 Identify Input Purpose: the consumer's `autocomplete` passes through (`input.a11y.md`).
+- 1.4.1 Use of Color: invalid is a 2px edge, an icon and the message with its prefix.
+- 1.4.3 Contrast, 1.4.11 Non-text Contrast: pairs in `theme:check` (`danger` as text and as a 3:1 edge).
+- 2.5.3 Label in Name: the visible label text, including "(optional)", is the name.
+- 3.3.1 Error Identification: the message in text, with a text prefix, linked by `aria-describedby`.
+- 3.3.2 Labels or Instructions: a visible label always, and the hint linked to the control.
+- 3.3.3 Error Suggestion: the consumer's message text (the docs show the patterns).
+- 4.1.2 Name, Role, Value: the control's name, description, `aria-invalid` and `aria-required`.
+
+## AT test record
+
+| AT + browser + OS                        | Date    | Tester | Result | Notes |
+| ---------------------------------------- | ------- | ------ | ------ | ----- |
+| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| NVDA + Firefox + Windows                 | pending |        |        |       |
+| VoiceOver + Safari + macOS               | pending |        |        |       |
+| VoiceOver + Safari + iOS                 | pending |        |        |       |
+| TalkBack + Chrome + Android              | pending |        |        |       |
+| Windows Contrast Themes + Edge           | pending |        |        |       |
+| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
+| **Release (before 1.0 and each minor)**  |         |        |        |       |
+| JAWS + Chrome + Windows                  | pending |        |        |       |
+| NVDA + Chrome + Windows                  | pending |        |        |       |
+| Narrator + Edge + Windows                | pending |        |        |       |
+| Dragon / Voice Control                   | pending |        |        |       |
+
+Research questions for the AT run: is the error prefix heard once and in the right language? Is the optional marker heard in the name? Is the description heard before the error, and is that the best order (Designsystemet puts the error first)? With two descriptions and the error, are all three read, in this order? On iOS Safari and Android Chrome with the on-screen keyboard open, do users see the error under the field they were sent to (ADR-0031)?
+
+## Known issues
+
+- **`se` (Northern Sámi) is a placeholder. Blocks `beta`.** `field.optional` and `field.errorPrefix` use the English texts, marked `TODO(native-review)`. Sámi users get English for these strings under `lang="se"` (3.1.2). `fi`, `nb` and `nn` are drafts for a translator to confirm.
+- **The description is associated after mount.** Server-rendered markup lists a Description in `aria-describedby` only after hydration. `useField` with `hasDescription` or `descriptions` doesn't have this gap.
+- **Error under the control on phones.** The on-screen keyboard can cover the message under a focused field. The mitigation is in the docs (focus on submit, `scroll-padding`), not in the components, and the AT and usability run checks it (ADR-0031). The error is linked from the first render whenever the field is invalid, in server-rendered markup too, and when an app moves focus to the field in an effect after submit (accessibility review, Plan 0013). Tests: `field.test.tsx › focus on submit`.
+- **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.

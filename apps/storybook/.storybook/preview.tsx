@@ -18,6 +18,7 @@ import '../../docs/fonts/ibm-plex/ibm-plex.css'
 // The default theme (ADR-0013), as an adopter imports it.
 import '@kvirn-ui/theme/theme.css'
 import './preview.css'
+import { KeyboardSection } from './keyboard-section.tsx'
 
 /** The Mode toolbar: a colour scheme, or `system` to follow the device. */
 type StoryMode = ColorSchemePreference
@@ -196,7 +197,9 @@ const preview: Preview = {
         surface: { name: 'Surface', value: 'var(--kv-color-surface)' },
       },
     },
-    // The default DocsPage, except the primary story isn't repeated under "Stories".
+    // The default DocsPage, except the primary story isn't repeated under "Stories", and the
+    // contract's Keyboard section follows the controls (ADR-0039). A meta without a contract
+    // (the Foundation pages) shows nothing.
     docs: {
       page: () => (
         <>
@@ -205,6 +208,7 @@ const preview: Preview = {
           <Description />
           <Primary />
           <Controls />
+          <KeyboardSection />
           <Stories includePrimary={false} />
         </>
       ),

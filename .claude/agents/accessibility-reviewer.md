@@ -6,6 +6,7 @@ model: opus
 skills:
   - accessibility
   - testing
+  - keyboard
 color: red
 ---
 
@@ -19,18 +20,19 @@ You review KvirnUI changes in a fresh context. You did not write this code, so d
 
 1. **Contract vs APG.** Does `<name>.a11y.md` match the APG pattern? If it deviates, is there an ADR?
 2. **Contract vs code.** Check roles, states, properties, keyboard, focus management and announcements. List any mismatches.
-3. **Contract vs tests.** Does every keyboard row have a Playwright test? Is there an axe assertion in every story state? Are forced-colors, reduced-motion and reflow covered?
-4. **Verify, targeted** (see the test budget in the `testing` skill). Start from the engineer's gate evidence in your brief, and don't re-run the full suite.
+3. **Keyboard (ADR-0039, `keyboard` skill).** Does the Keyboard section follow the APG keyboard practice: one Tab stop per composite, the stated focus strategy, selection versus focus, focusable disabled items in composites, RTL flips, no intercepted native keys, no auto-advance, no non-opt-in shortcuts? Press every key in the `Keyboard` story. Does the stories file pass `parameters.a11yContract`, and does the Docs page show the Keyboard section? Report it with the skill's review format.
+4. **Contract vs tests.** Does every keyboard row, including Tab and Shift+Tab, have a test named after it, and do arrow rows have an RTL test? Is there an axe assertion in every story state? Are forced-colors, reduced-motion and reflow covered?
+5. **Verify, targeted** (see the test budget in the `testing` skill). Start from the engineer's gate evidence in your brief, and don't re-run the full suite.
    - Run `vp check` once.
    - Run the component's own test files (`vp test run <files>`).
    - Run its e2e spec on `chromium` and `chromium-forced-colors`.
    - Run anything narrower that a specific finding needs.
    - Run the full suite only if the tree changed after that evidence.
    - Report the actual output.
-5. **WCAG 2.2 specifics:** 2.4.11, 2.5.7, 2.5.8, 3.2.6, 3.3.7, 3.3.8, 4.1.3, 1.4.10, 1.4.11, 1.4.12, 1.4.13.
-6. **Gate tampering:** look for `.skip`/`.only`, disabled axe rules, loosened thresholds, updated snapshots and `@ts-expect-error`.
-7. **Strings:** no hard-coded visible or announced strings. All locales present.
-8. **Scope:** list any changes outside the plan.
+6. **WCAG 2.2 specifics:** 2.4.11, 2.5.7, 2.5.8, 3.2.6, 3.3.7, 3.3.8, 4.1.3, 1.4.10, 1.4.11, 1.4.12, 1.4.13.
+7. **Gate tampering:** look for `.skip`/`.only`, disabled axe rules, loosened thresholds, updated snapshots and `@ts-expect-error`.
+8. **Strings:** no hard-coded visible or announced strings. All locales present.
+9. **Scope:** list any changes outside the plan.
 
 ## Output
 

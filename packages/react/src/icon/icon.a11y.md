@@ -21,11 +21,14 @@ An icon is decorative by default: text next to it already says what it means, so
 
 ## Keyboard
 
-| Key | Context | Action                                                 | Test                                                 |
-| --- | ------- | ------------------------------------------------------ | ---------------------------------------------------- |
-| Tab | Icon    | Never stops on an icon: no `tabindex`, never focusable | `icon.test.tsx › accessibility › is never focusable` |
+This component has no focusable parts and handles no keys.
 
-Icon handles no keys. An icon that does something belongs inside a `Button` or `Link`, which is the focusable element.
+| Key       | Context | Action                                                 | Test                                                 |
+| --------- | ------- | ------------------------------------------------------ | ---------------------------------------------------- |
+| Tab       | Icon    | Never stops on an icon: no `tabindex`, never focusable | `icon.test.tsx › accessibility › is never focusable` |
+| Shift+Tab | Icon    | Never stops on an icon when moving backwards           | `icon.e2e.ts › Shift+Tab never stops on an icon`     |
+
+An icon that does something belongs inside a `Button` or `Link`, which is the focusable element.
 
 ## Focus management
 

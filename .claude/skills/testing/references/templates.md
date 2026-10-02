@@ -54,11 +54,13 @@ test('trigger exposes aria-expanded and toggles panel', async () => {
 - No fixed-theme exports (`Light`, `Dark`, …): `vp test run` runs every story in four theme projects. A story that is only valid in one theme pins it with `globals: { mode: 'light', contrast: 'standard' }` and says why.
 - Visible fixture text is in one locale, with a matching `globals: { locale }` (3.1.2).
 - Keep `RTL` and `ForcedColors`, and every story an e2e spec targets.
+- Pass the contract as `parameters.a11yContract` (a `?raw` import), so the Docs page renders its Keyboard section. A component with a focusable part has a story named `Keyboard`, the fixture its e2e keyboard tests drive (ADR-0039, the `keyboard` skill).
 
 ```tsx
 import { Disclosure } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
+import contract from '../../../../../packages/react/src/disclosure/disclosure.a11y.md?raw'
 
 const meta = {
   title: 'Components/Disclosure',
@@ -72,6 +74,7 @@ const meta = {
     ),
   },
   globals: { locale: 'sv' },
+  parameters: { a11yContract: contract },
 } satisfies Meta<typeof Disclosure.Root>
 
 export default meta
@@ -83,8 +86,8 @@ export const Default: Story = {}
 /** Open from the start. */
 export const Open: Story = { args: { defaultOpen: true } }
 
-/** Enter toggles the panel and keeps focus on the trigger. */
-export const KeyboardToggle: Story = {
+/** The keyboard fixture: try the keys in the Keyboard section. Enter toggles the panel and keeps focus on the trigger. */
+export const Keyboard: Story = {
   play: async ({ canvas, userEvent }) => {
     await userEvent.tab()
     await userEvent.keyboard('{Enter}')
@@ -123,7 +126,7 @@ import { test, expect } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 import { wcagTags } from '@kvirn-ui/testing'
 
-const url = '/iframe.html?id=primitives-disclosure--closed'
+const url = '/iframe.html?id=components-disclosure--keyboard'
 
 test.describe('Disclosure keyboard contract', () => {
   test('Enter toggles', async ({ page }) => {

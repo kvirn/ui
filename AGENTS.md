@@ -41,27 +41,28 @@ pnpm changeset
 5. **Verify.** Pass every quality gate, and show the commands you ran and their output as evidence.
 6. **Record.** Put every decision in an ADR (`docs/adr/`, status _Proposed_). Tick off the plan, update the status in `docs/roadmap.md`, and add a changeset.
 
-| Workflow                 | Skills                                                         | Agents                                                    |
-| ------------------------ | -------------------------------------------------------------- | --------------------------------------------------------- |
-| New component            | accessibility, testing (+ design for default-theme styling)    | component-engineer → accessibility-reviewer               |
-| New block, flow or page  | design, accessibility, testing (+ regulations if legal)        | ux-designer → component-engineer → accessibility-reviewer |
-| Visual or token change   | design, accessibility                                          | ux-designer (ADR + `theme:check`)                         |
-| A11y defect              | accessibility, testing                                         | component-engineer → accessibility-reviewer               |
-| Bug fix                  | testing (+ accessibility if keyboard, focus or AT is involved) | component-engineer                                        |
-| Refactor / tooling       | testing                                                        | – (ADR if tooling changes)                                |
-| Decision                 | accessibility or regulations, as relevant                      | – (ADR only)                                              |
-| Docs, claims, compliance | regulations, accessibility                                     | –                                                         |
-| Review a diff or PR      | accessibility, testing                                         | accessibility-reviewer                                    |
-| Design review            | design, accessibility                                          | ux-designer (review mode)                                 |
+| Workflow                 | Skills                                                                   | Agents                                                    |
+| ------------------------ | ------------------------------------------------------------------------ | --------------------------------------------------------- |
+| New component            | accessibility, keyboard, testing (+ design for default-theme styling)    | component-engineer → accessibility-reviewer               |
+| New block, flow or page  | design, accessibility, keyboard, testing (+ regulations if legal)        | ux-designer → component-engineer → accessibility-reviewer |
+| Visual or token change   | design, accessibility                                                    | ux-designer (ADR + `theme:check`)                         |
+| A11y defect              | accessibility, keyboard, testing                                         | component-engineer → accessibility-reviewer               |
+| Bug fix                  | testing (+ accessibility and keyboard if keys, focus or AT are involved) | component-engineer                                        |
+| Refactor / tooling       | testing                                                                  | – (ADR if tooling changes)                                |
+| Decision                 | accessibility or regulations, as relevant                                | – (ADR only)                                              |
+| Docs, claims, compliance | regulations, accessibility                                               | –                                                         |
+| Review a diff or PR      | accessibility, keyboard, testing                                         | accessibility-reviewer                                    |
+| Design review            | design, accessibility                                                    | ux-designer (review mode)                                 |
 
 ## Skills (`.claude/skills/<name>/SKILL.md`)
 
-| Skill             | Use when                                                                                                                                                                      |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **accessibility** | Designing, changing or reviewing roles, ARIA, keyboard, focus, announcements, labels, contrast, motion or target size. Also for writing a `<name>.a11y.md` contract           |
-| **testing**       | Writing or fixing tests or stories, running gates, or debugging a failure                                                                                                     |
-| **design**        | Designing or reviewing anything users see: flows, content, layout, states, tokens and themes, blocks, stories and docs pages. Also for writing a design spec (`docs/design/`) |
-| **regulations**   | Any statement about law or conformance, statement, feedback or consent blocks, docs copy, or adding a dependency or external service                                          |
+| Skill             | Use when                                                                                                                                                                                                                          |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **accessibility** | Designing, changing or reviewing roles, ARIA, keyboard, focus, announcements, labels, contrast, motion or target size. Also for writing a `<name>.a11y.md` contract                                                               |
+| **keyboard**      | Anything a user can focus or operate with keys: Tab order, APG keys, focus inside composites, disabled items, shortcuts, the Keyboard section of a contract, the `Keyboard` story and the Docs page's Keyboard section (ADR-0039) |
+| **testing**       | Writing or fixing tests or stories, running gates, or debugging a failure                                                                                                                                                         |
+| **design**        | Designing or reviewing anything users see: flows, content, layout, states, tokens and themes, blocks, stories and docs pages. Also for writing a design spec (`docs/design/`)                                                     |
+| **regulations**   | Any statement about law or conformance, statement, feedback or consent blocks, docs copy, or adding a dependency or external service                                                                                              |
 
 ## Agents (`.claude/agents/`)
 
@@ -77,14 +78,14 @@ Nothing is done until all of these pass. A Stop hook enforces gates 1–2.
 2. `vp test run` passes, with 0 axe violations in every story state (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`).
 3. `vp run e2e`: every keyboard-contract row is tested, and the forced-colors, reduced-motion and 320px reflow projects are green.
 4. `i18n:check` and `theme:check` pass.
-5. The component has a hook, a compound component, stories (every state, plus RTL and forced-colors), and a complete `<name>.a11y.md` that matches the tests.
+5. The component has a hook, a compound component, stories (every state, plus RTL and forced-colors, and a `Keyboard` story if it has a focusable part), and a complete `<name>.a11y.md` that matches the tests. Its Storybook Docs page shows the contract's Keyboard section (ADR-0039).
 6. accessibility-reviewer returns APPROVE.
 7. The manual AT matrix (`docs/accessibility.md`) must pass before `beta`. **Agents mark this `pending` and never claim it.**
 
 ## Hard rules
 
 1. **Never weaken a gate.** No `.skip` or `.only`, no disabled axe rules, no loosened thresholds, no unread snapshot updates, and no `@ts-expect-error` over real errors. If a gate is wrong, write an ADR.
-2. **Use native semantics first and follow the APG pattern.** Deviations need an ADR.
+2. **Use native semantics first and follow the APG pattern** and the [APG keyboard practice](https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/) (ADR-0039). Every key is documented in the contract and on the Docs page. Deviations need an ADR.
 3. **`core` stays pure:** no React, and no `window` or `document` at module scope.
 4. **No hard-coded visible or announced strings.** Every string exists in all 6 locales and can be overridden per provider and per instance (ADR-0007).
 5. **Headless packages ship zero CSS.** State is exposed via `data-*`.

@@ -5,4 +5,6 @@ import type { KvirnMessages } from '../types.ts'
 export const se = {
   // TODO(native-review): Northern Sámi translation of "(opens in a new tab)".
   link: { newTabNotice: '(opens in a new tab)' },
+  // TODO(native-review): Northern Sámi translation of "(optional)" and "Error:".
+  field: { optional: '(optional)', errorPrefix: 'Error:' },
 } satisfies KvirnMessages

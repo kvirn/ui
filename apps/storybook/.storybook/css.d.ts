@@ -6,3 +6,10 @@ declare module '*.css?raw' {
   const css: string
   export default css
 }
+
+// A component's accessibility contract as text: the Docs page renders its Keyboard section
+// (ADR-0039).
+declare module '*.md?raw' {
+  const markdown: string
+  export default markdown
+}

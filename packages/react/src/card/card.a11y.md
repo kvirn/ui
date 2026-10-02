@@ -24,7 +24,9 @@ Card is a plain container for content on a surface. It adds no role, no ARIA, no
 
 ## Keyboard
 
-Card handles no keys. It is never a Tab stop, and it never changes the Tab order.
+This component has no focusable parts and handles no keys.
+
+Card is never a Tab stop and never changes the Tab order. Its children handle their own keys. These rows prove Tab passes over the card.
 
 | Key       | Context                      | Action                                                                                                 | Test                                                         |
 | --------- | ---------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |

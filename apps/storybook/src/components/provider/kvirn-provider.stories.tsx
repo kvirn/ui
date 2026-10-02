@@ -8,6 +8,7 @@ import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { KvirnProvider } from '@kvirn-ui/react'
+import contract from '../../../../../packages/react/src/provider/kvirn-provider.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
 // Package-internal fixture, shared with the provider's tests. Not part of the public API.
@@ -49,7 +50,7 @@ const meta = {
     children: { control: false },
   },
   globals: { locale: 'sv' },
-  parameters: { themeStore: 'story' },
+  parameters: { themeStore: 'story', a11yContract: contract },
 } satisfies Meta<typeof KvirnProvider>
 
 export default meta

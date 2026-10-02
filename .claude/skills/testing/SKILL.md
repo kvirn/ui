@@ -10,12 +10,12 @@ Tests are the definition of done. They come from the accessibility contract (`<n
 
 ## Layers and file names
 
-| Layer     | File                                                      | Runner                                                                                                                             | Proves                                                  |
-| --------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Machine   | `packages/core/src/<name>/<name>.test.ts`                 | Vitest (node)                                                                                                                      | State transitions, pure logic                           |
-| Component | `packages/react/src/<name>/<name>.test.tsx`               | Vitest browser mode (Playwright provider)                                                                                          | Rendering, ARIA, props, **axe**                         |
-| Stories   | `apps/storybook/src/components/<name>/<name>.stories.tsx` | `vp test run` (Storybook `addon-vitest`, a11y addon: axe violations fail), once per theme in four `storybook*` projects (ADR-0023) | Every visual state, plus play functions, in every theme |
-| E2E       | `apps/storybook/src/components/<name>/<name>.e2e.ts`      | Playwright                                                                                                                         | **Every keyboard-table row**, focus, modes              |
+| Layer     | File                                                      | Runner                                                                                                                             | Proves                                                                   |
+| --------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Machine   | `packages/core/src/<name>/<name>.test.ts`                 | Vitest (node)                                                                                                                      | State transitions, pure logic                                            |
+| Component | `packages/react/src/<name>/<name>.test.tsx`               | Vitest browser mode (Playwright provider)                                                                                          | Rendering, ARIA, props, **axe**                                          |
+| Stories   | `apps/storybook/src/components/<name>/<name>.stories.tsx` | `vp test run` (Storybook `addon-vitest`, a11y addon: axe violations fail), once per theme in four `storybook*` projects (ADR-0023) | Every visual state, plus play functions, in every theme                  |
+| E2E       | `apps/storybook/src/components/<name>/<name>.e2e.ts`      | Playwright                                                                                                                         | **Every keyboard-table row** (incl. Shift+Tab, RTL arrows), focus, modes |
 
 Stories and e2e specs live in the Storybook app, not the package. They import components the way an adopter does (`@kvirn-ui/react`). A fixture that the package's own tests also use stays in the package, and the story imports it by relative source path. It's never exported.
 
@@ -34,6 +34,7 @@ Stories and e2e specs live in the Storybook app, not the package. They import co
 - **Test RTL, forced-colors, reduced-motion and 320px** using the Playwright projects or `page.emulateMedia({ forcedColors: 'active', reducedMotion: 'reduce' })`.
 - **Test in at least 2 locales** (`sv` + `en`) so hard-coded strings get caught.
 - **No mocking of the DOM or of focus.** Use browser mode, not jsdom, for components.
+- **Keyboard docs are checked** (ADR-0039): `tooling/keyboard-docs` fails when a stories file doesn't pass its contract as `parameters.a11yContract`, a Keyboard section is malformed, a row has no test, or a focusable component has no `Keyboard` story. See the `keyboard` skill.
 - **Test functionality and WCAG only.** Don't assert styles (computed values, tokens, class lists beyond the part-class contract): the look is reviewed visually, not tested.
 - **Never weaken a gate.** No `.skip`/`.only`, no disabled axe rules, no raised timeouts to hide flakiness, and no snapshot updates without reading the diff. Fix flaky tests at the root cause, which is usually a missing `await expect(...)` auto-wait.
 

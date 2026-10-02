@@ -13,7 +13,7 @@ The bar is WCAG 2.2 AA with real assistive technology, not just a clean axe run.
 1. **Find the pattern.** Look it up in [APG patterns](references/apg-patterns.md). If none fits, stop and write an ADR before designing your own.
 2. **Native first.** Can `<button>`, `<input type=checkbox>`, `<dialog>`, `<details>`, `<select>` or `<fieldset>`/`<legend>` do the job? Only add ARIA where HTML falls short. No ARIA is better than bad ARIA.
 3. **Write the contract** by copying [contract-template.md](references/contract-template.md) to `packages/react/src/<name>/<name>.a11y.md`. Fill in every section. The contract is the spec, and tests are derived from it.
-4. **Keyboard.** Every pointer action needs a keyboard equivalent. Use roving `tabindex` or `aria-activedescendant` for composite widgets (pick one and document it). There is one Tab stop per composite widget. Arrow keys flip in RTL.
+4. **Keyboard.** Follow the `keyboard` skill (ADR-0039): the APG keyboard practice is binding, and every key is documented in the contract, tested and shown on the Docs page. In short: every pointer action has a keyboard equivalent, one Tab stop per composite widget, roving `tabindex` or `aria-activedescendant` (pick one and document it), and arrow keys flip in RTL.
 5. **Focus.** Specify initial focus, whether focus is trapped (modals only, with the background `inert`), and where focus goes on close (the trigger, or a documented fallback if the trigger is gone). Focus must never land on `body`, and must never be obscured (2.4.11).
 6. **Name, role, value.** Every interactive element needs an accessible name. Prefer visible labels (`<label>`, `aria-labelledby`) over `aria-label`. Use `aria-describedby` for help and error text. State goes in `aria-expanded`, `aria-selected`, `aria-checked`, `aria-pressed`, `aria-invalid`, `aria-disabled` (keep disabled items focusable when discoverability matters).
 7. **Announcements (4.1.3).** Use the shared `Announcer` (a polite live region that already exists in the DOM). Never render a live region together with its content. Announced strings come from i18n.
@@ -52,6 +52,7 @@ When reviewing a diff, go through [wcag-22-checklist.md](references/wcag-22-chec
 ## References
 
 - [references/apg-patterns.md](references/apg-patterns.md): component → APG pattern → key notes
+- `.claude/skills/keyboard/`: the keyboard practice, key tables per pattern and the Keyboard section format
 - [references/wcag-22-checklist.md](references/wcag-22-checklist.md): SC checklist for component reviews
 - [references/contract-template.md](references/contract-template.md): the `*.a11y.md` template
 - `docs/accessibility.md`: AT matrix and definition of done

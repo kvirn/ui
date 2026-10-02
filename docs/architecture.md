@@ -35,6 +35,7 @@ Dependencies only point downward: `blocks → theme, react → core, i18n (types
 
 - **Mirror HTML where HTML has the concept:** `disabled`, `required`, `name`, `value`, `form`.
 - **Controlled / uncontrolled pairs are named after the value:** `open` / `defaultOpen` / `onOpenChange`, `checked` / `defaultChecked` / `onCheckedChange`, `value` / `defaultValue` / `onValueChange`.
+- **Form controls hold no form state** (ADR-0029). Values, checked state and validity belong to the implementor's form logic: TanStack Form, React Hook Form, or a plain `<form>` and `FormData`. A control reports changes up (`onValueChange`, `onCheckedChange`, native events) and renders what it's given (`value`, `checked`, `invalid`). Without those props, the native element keeps its own value, uncontrolled, and the component adds no React state. Native props, events, `name` and `ref` always pass through to the native element, so a form library's spreads and `register()` refs work. There's no built-in validation, touched or dirty tracking.
 - **Change callbacks receive `(nextValue, details)`.** `details.reason` is a typed union, for example `'trigger-press' | 'escape-key' | 'outside-press'`.
 - **No ambiguous props.** A prop like `open` is not overloaded to mean different things in different components. A prop like `variant` or `type` isn't used without a typed union. There are no boolean pairs that contradict each other.
 

@@ -23,20 +23,28 @@ A Button performs an action. Navigation is a Link. `Button` defaults to `type="b
 
 ## Keyboard
 
-| Key   | Context                   | Action                                                                                                        | Test                                                                                       |
-| ----- | ------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Tab   | Button                    | Moves focus to the button                                                                                     | `button.e2e.ts › Tab moves focus to the button`                                            |
-| Tab   | Disabled button           | Skips the button                                                                                              | `button.e2e.ts › Tab skips a disabled button`                                              |
-| Tab   | Focusable disabled button | Moves focus to the button, which is announced as unavailable                                                  | `button.e2e.ts › Tab moves focus to a focusable disabled button`                           |
-| Enter | Button                    | Activates. Focus stays on the button                                                                          | `button.e2e.ts › Enter activates the button and keeps focus`                               |
-| Enter | Focusable disabled button | Blocked. Focus stays on the button                                                                            | `button.e2e.ts › Enter does not activate a focusable disabled button`                      |
-| Space | Button                    | Activates on key up, not on key down. Focus stays on the button                                               | `button.e2e.ts › Space activates the button on key up`                                     |
-| Space | Focusable disabled button | Blocked. Focus stays on the button                                                                            | `button.e2e.ts › Space does not activate a focusable disabled button`                      |
-| Enter | Submit button in a form   | Submits the form                                                                                              | `button.e2e.ts › Enter on a submit button submits the form`                                |
-| Enter | Default button in a form  | Activates the button without submitting the form (`type="button"`)                                            | `button.e2e.ts › Enter on a default button does not submit the form`                       |
-| –     | Pointer                   | A click on a disabled button, focusable or not, calls no handler                                              | `button.test.tsx › disabled › …`, `button.test.tsx › focusable when disabled › …`          |
-| –     | Form, implicit submission | Enter in a text field doesn't submit through a focusable disabled submit                                      | `button.test.tsx › focusable when disabled › blocks implicit submission from a text field` |
-| –     | `render` element handler  | A focusable disabled button blocks the element's own `onClick` on click, Enter, Space and implicit submission | `button.test.tsx › handlers on a render element (ADR-0016) › …`                            |
+- **Focus strategy:** native
+- **Selection follows focus:** n/a
+- **Arrows wrap:** n/a
+- **Shortcuts:** none
+
+A native `<button>`: one Tab stop, in DOM order, with no `tabindex`. Enter and Space are native.
+
+| Key       | Context                   | Action                                                                                                        | Test                                                                                       |
+| --------- | ------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Tab       | Button                    | Moves focus to the button                                                                                     | `button.e2e.ts › Tab moves focus to the button`                                            |
+| Shift+Tab | Button                    | Moves focus to the previous focusable element, and off the button                                             | `button.e2e.ts › Shift+Tab moves focus off the button`                                     |
+| Tab       | Disabled button           | Skips the button                                                                                              | `button.e2e.ts › Tab skips a disabled button`                                              |
+| Tab       | Focusable disabled button | Moves focus to the button, which is announced as unavailable                                                  | `button.e2e.ts › Tab moves focus to a focusable disabled button`                           |
+| Enter     | Button                    | Activates. Focus stays on the button                                                                          | `button.e2e.ts › Enter activates the button and keeps focus`                               |
+| Enter     | Focusable disabled button | Blocked. Focus stays on the button                                                                            | `button.e2e.ts › Enter does not activate a focusable disabled button`                      |
+| Space     | Button                    | Activates on key up, not on key down. Focus stays on the button                                               | `button.e2e.ts › Space activates the button on key up`                                     |
+| Space     | Focusable disabled button | Blocked. Focus stays on the button                                                                            | `button.e2e.ts › Space does not activate a focusable disabled button`                      |
+| Enter     | Submit button in a form   | Submits the form                                                                                              | `button.e2e.ts › Enter on a submit button submits the form`                                |
+| Enter     | Default button in a form  | Activates the button without submitting the form (`type="button"`)                                            | `button.e2e.ts › Enter on a default button does not submit the form`                       |
+| –         | Pointer                   | A click on a disabled button, focusable or not, calls no handler                                              | `button.test.tsx › disabled › …`, `button.test.tsx › focusable when disabled › …`          |
+| –         | Form, implicit submission | Enter in a text field doesn't submit through a focusable disabled submit                                      | `button.test.tsx › focusable when disabled › blocks implicit submission from a text field` |
+| –         | `render` element handler  | A focusable disabled button blocks the element's own `onClick` on click, Enter, Space and implicit submission | `button.test.tsx › handlers on a render element (ADR-0016) › …`                            |
 
 Escape, arrow keys and Home / End are not handled.
 

@@ -27,9 +27,12 @@ Context, links to APG patterns, WCAG SCs, prior art (Headless UI, Radix, React A
 
 ### Accessibility contract (draft)
 
-| Key | Action |
-| --- | ------ |
-|     |        |
+Keyboard per the `keyboard` skill (ADR-0039): focus strategy, selection follows focus, arrows wrap, shortcuts, then the keys.
+
+| Key       | Action |
+| --------- | ------ |
+| Tab       |        |
+| Shift+Tab |        |
 
 - Roles / ARIA:
 - Focus management:
@@ -50,7 +53,7 @@ Context, links to APG patterns, WCAG SCs, prior art (Headless UI, Radix, React A
 - [ ] Core machine + unit tests
 - [ ] React hook + component
 - [ ] i18n strings (all locales)
-- [ ] Stories (all states, RTL, forced-colors)
+- [ ] Stories (all states, RTL, forced-colors, a `Keyboard` story, `parameters.a11yContract`)
 - [ ] Vitest + axe
 - [ ] Playwright keyboard tests
 - [ ] AT matrix run + `*.a11y.md`

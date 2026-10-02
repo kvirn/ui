@@ -1,5 +1,6 @@
 import { Button, Card, Icon } from '@kvirn-ui/react'
 import type { ButtonProps } from '@kvirn-ui/react'
+import contract from '../../../../../packages/react/src/button/button.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useId, useState } from 'react'
 import type { CSSProperties } from 'react'
@@ -121,6 +122,7 @@ const meta = {
     render: { control: false },
   },
   globals: { locale: 'sv' },
+  parameters: { a11yContract: contract },
 } satisfies Meta<typeof Button>
 
 export default meta
@@ -203,6 +205,20 @@ export const Activation: Story = {
     await expect(button).not.toHaveAttribute('data-disabled')
     await expectMinimumTargetSize(button)
   },
+}
+
+/**
+ * The fixture the keyboard tests drive: a button with a click counter, then a second button. Try
+ * the keys in the Keyboard section above: Tab and Shift+Tab move between the two, and Enter and
+ * Space activate the first.
+ */
+export const Keyboard: Story = {
+  render: (args) => (
+    <div className="kv-button-group">
+      <WithClickCount {...args} />
+      <Button>Avbryt</Button>
+    </div>
+  ),
 }
 
 /** `kv-button--primary` and `kv-button--danger` are classes you add, and theme.css styles. */

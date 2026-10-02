@@ -18,9 +18,20 @@ async function openStory(page: Page, story: string, buttonName: string) {
 
 test.describe('Button keyboard contract', () => {
   test('Tab moves focus to the button', async ({ page }) => {
-    const button = await openStory(page, 'activation', 'Spara')
+    const button = await openStory(page, 'keyboard', 'Spara')
     await page.keyboard.press('Tab')
     await expect(button).toBeFocused()
+  })
+
+  test('Shift+Tab moves focus off the button', async ({ page }) => {
+    const button = await openStory(page, 'keyboard', 'Spara')
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Tab')
+    await expect(page.getByRole('button', { name: 'Avbryt' })).toBeFocused()
+    await page.keyboard.press('Shift+Tab')
+    await expect(button).toBeFocused()
+    await page.keyboard.press('Shift+Tab')
+    await expect(button).not.toBeFocused()
   })
 
   test('Tab skips a disabled button', async ({ page }) => {

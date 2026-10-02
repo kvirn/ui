@@ -35,6 +35,51 @@ export type {
 } from './card/card.tsx'
 export { useCard } from './card/use-card.ts'
 export type { CardPartProps, UseCardResult } from './card/use-card.ts'
+export {
+  Field,
+  FieldDescription,
+  FieldErrorMessage,
+  FieldLabel,
+  FieldRoot,
+} from './field/field.tsx'
+export type {
+  FieldDescriptionProps,
+  FieldErrorMessageProps,
+  FieldLabelProps,
+  FieldMarker,
+  FieldRootProps,
+  FieldState,
+} from './field/field.tsx'
+export { useField } from './field/use-field.ts'
+export type {
+  FieldControlPartProps,
+  FieldDescriptionPartProps,
+  FieldErrorMessagePartProps,
+  FieldLabelPartProps,
+  FieldRootPartProps,
+  FieldStateAttributes,
+  UseFieldOptions,
+  UseFieldResult,
+} from './field/use-field.ts'
+export {
+  Fieldset,
+  FieldsetDescription,
+  FieldsetErrorMessage,
+  FieldsetLegend,
+  FieldsetRoot,
+} from './fieldset/fieldset.tsx'
+export type { FieldsetLegendProps, FieldsetRootProps, FieldsetState } from './fieldset/fieldset.tsx'
+export { useFieldset } from './fieldset/use-fieldset.ts'
+export type {
+  FieldsetLegendPartProps,
+  FieldsetRootPartProps,
+  UseFieldsetOptions,
+  UseFieldsetResult,
+} from './fieldset/use-fieldset.ts'
+export { Input } from './input/input.tsx'
+export type { InputChangeDetails, InputProps, InputState, InputType } from './input/input.tsx'
+export { useInput } from './input/use-input.ts'
+export type { InputPartProps, UseInputOptions, UseInputResult } from './input/use-input.ts'
 export { Icon } from './icon/icon.tsx'
 export type { IconElementProps, IconProps, IconState } from './icon/icon.tsx'
 export { useIcon } from './icon/use-icon.ts'
@@ -67,3 +112,16 @@ export type {
   ThemeStorage,
   ThemeStorageAdapter,
 } from '@kvirn-ui/core'
+export { InputGroup, InputGroupAddon, InputGroupRoot } from './input-group/input-group.tsx'
+export type {
+  InputGroupAddonProps,
+  InputGroupRootProps,
+  InputGroupState,
+} from './input-group/input-group.tsx'
+export { useInputGroup } from './input-group/use-input-group.ts'
+export type {
+  InputGroupAddonPartProps,
+  InputGroupRootPartProps,
+  UseInputGroupOptions,
+  UseInputGroupResult,
+} from './input-group/use-input-group.ts'

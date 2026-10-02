@@ -26,17 +26,17 @@ The provider's contract is about what it guarantees for other components (Plan 0
 
 ## Keyboard
 
-The provider adds no key handling. These rows prove it leaves native radio-group behaviour intact in the theme-switcher fixture.
+This component has no focusable parts and handles no keys.
 
-| Key                    | Context        | Action                                                                                          | Test                                                                                          |
-| ---------------------- | -------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Tab                    | Page           | Focus moves to the checked radio of the colour-scheme group                                     | `kvirn-provider.e2e.ts › Tab moves focus to the checked radio of the colour-scheme group`     |
-| Tab / Shift+Tab        | Radio group    | Moves to the next / previous group. One Tab stop per group                                      | `kvirn-provider.e2e.ts › Tab moves to the next group: one Tab stop per radio group`           |
-| ArrowUp / ArrowLeft    | Radio group    | Checks and focuses the previous option (native; RTL handling is the browser's, not tested here) | `kvirn-provider.e2e.ts › ArrowUp / ArrowLeft select the previous option and keep focus on it` |
-| ArrowDown / ArrowRight | Radio group    | Checks and focuses the next option, wrapping from last to first                                 | `kvirn-provider.e2e.ts › ArrowDown / ArrowRight select the next option and wrap around`       |
-| Arrow keys             | Contrast group | Changes contrast only; the colour-scheme group is untouched                                     | `kvirn-provider.e2e.ts › Arrow keys change the contrast group independently`                  |
-| Enter / Space          | Radio          | Native: Space checks the focused radio if unchecked. Enter is not handled                       | Native behaviour, not asserted                                                                |
-| Escape, Home / End     | –              | Not handled                                                                                     | –                                                                                             |
+The provider renders no element and adds no key handling. The rows below prove it leaves native radio-group behaviour intact in the `ThemeSwitcher` fixture, which is the consumer's markup on `useTheme()`. Enter and Space (a native radio is checked with Space) and Escape, Home and End are the browser's own and are not handled or asserted here.
+
+| Key                    | Context                    | Action                                                                                          | Test                                                                                          |
+| ---------------------- | -------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Tab                    | Theme-switcher fixture     | Focus moves to the checked radio of the colour-scheme group                                     | `kvirn-provider.e2e.ts › Tab moves focus to the checked radio of the colour-scheme group`     |
+| Tab / Shift+Tab        | Theme-switcher radio group | Moves to the next / previous group. One Tab stop per group                                      | `kvirn-provider.e2e.ts › Tab moves to the next group: one Tab stop per radio group`           |
+| ArrowUp / ArrowLeft    | Theme-switcher radio group | Checks and focuses the previous option (native; RTL handling is the browser's, not tested here) | `kvirn-provider.e2e.ts › ArrowUp / ArrowLeft select the previous option and keep focus on it` |
+| ArrowDown / ArrowRight | Theme-switcher radio group | Checks and focuses the next option, wrapping from last to first                                 | `kvirn-provider.e2e.ts › ArrowDown / ArrowRight select the next option and wrap around`       |
+| Arrow keys             | Contrast group             | Changes contrast only; the colour-scheme group is untouched                                     | `kvirn-provider.e2e.ts › Arrow keys change the contrast group independently`                  |
 
 Also covered in Vitest browser mode: `use-theme.test.tsx › arrow keys change the radio group; focus stays and nothing is announced`.
 

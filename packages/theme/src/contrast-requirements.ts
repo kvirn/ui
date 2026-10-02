@@ -108,6 +108,16 @@ const nonTextPairs: readonly ColorPair[] = [
   ...(['border-control', 'secondary', 'focus-ring'] as const).flatMap((foreground) =>
     statusBackgrounds.map((background): ColorPair => [foreground, background]),
   ),
+  // Form fields (ADR-0029, docs/design/form-fields.md §6.12). The invalid edge is `danger`
+  // at 2px, so it's its own 3:1 requirement, kept even if `danger` is ever split into a text
+  // and an edge token. Controls sit in panels too, next to `border-control` there. A checked
+  // box inside a panel is `primary`, which `primary-subtle` already requires.
+  ...plainBackgrounds.map((background): ColorPair => ['danger', background]),
+  ...(['primary-subtle', ...statusBackgrounds] as const).map((background): ColorPair => [
+    'danger',
+    background,
+  ]),
+  ...statusBackgrounds.map((background): ColorPair => ['primary', background]),
 ]
 
 const isContrastTheme = (themeName: ThemeName) =>

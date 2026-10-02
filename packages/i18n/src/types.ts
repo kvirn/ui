@@ -45,6 +45,18 @@ export interface KvirnMessages {
     /** Tells users a link opens in a new tab (WCAG 3.2.5, G201). Owned by Link (Plan 0003). */
     newTabNotice: TextMessage
   }
+  field: {
+    /**
+     * Appended to the label or legend of an optional field, for example `(valfritt)`. Part of
+     * the accessible name (WCAG 3.3.2). Owned by Field (Plan 0013, ADR-0029).
+     */
+    optional: TextMessage
+    /**
+     * The first words of every error message, for example `Fel:`. Includes its colon.
+     * Screen-reader users hear the message as an error without colour or the icon (WCAG 3.3.1).
+     */
+    errorPrefix: TextMessage
+  }
 }
 
 /** Any subset of namespaces and keys, for provider and `defineMessages` overrides. */

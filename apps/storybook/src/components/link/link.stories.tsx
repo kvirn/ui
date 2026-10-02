@@ -6,6 +6,7 @@ import { nn } from '@kvirn-ui/i18n/nn'
 import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { KvirnProvider, Link } from '@kvirn-ui/react'
+import contract from '../../../../../packages/react/src/link/link.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { CSSProperties } from 'react'
 import { expect, waitFor } from 'storybook/test'
@@ -91,6 +92,7 @@ const meta = {
       )
     },
   ],
+  parameters: { a11yContract: contract },
 } satisfies Meta<typeof Link>
 
 export default meta
@@ -120,6 +122,23 @@ export const SamePageLink: Story = {
     await expect(link).toHaveAttribute('href', '#ansok')
     await expect(link).not.toHaveAttribute('aria-current')
   },
+}
+
+/**
+ * The fixture the keyboard tests drive: two links. Try the keys in the Keyboard section above:
+ * Tab and Shift+Tab move between the links, and Enter follows the focused one.
+ */
+export const Keyboard: Story = {
+  render: (args) => (
+    <>
+      <p>
+        <Link {...args} />
+      </p>
+      <p>
+        <Link href="#kontakt">Kontakta oss</Link>
+      </p>
+    </>
+  ),
 }
 
 /** In a sentence, a link is told apart by its underline, not colour alone (1.4.1). */

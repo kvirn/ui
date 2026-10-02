@@ -9,6 +9,7 @@ import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { Button, defineIcons, Icon, KvirnProvider, Link } from '@kvirn-ui/react'
 import type { BuiltInIconName, IconName, IconProps } from '@kvirn-ui/react'
 import { Warning as PhosphorWarning } from '@phosphor-icons/react'
+import contract from '../../../../../packages/react/src/icon/icon.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ArrowRight, X as LucideClose } from 'lucide-react'
 import { expect, within } from 'storybook/test'
@@ -92,6 +93,7 @@ const meta = {
       )
     },
   ],
+  parameters: { a11yContract: contract },
 } satisfies Meta<IconArgs>
 
 export default meta

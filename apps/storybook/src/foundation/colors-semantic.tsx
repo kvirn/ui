@@ -59,7 +59,7 @@ const tokenUses: Record<ColorTokenName, string> = {
   'focus-ring': 'Focus indicator',
   text: 'Body text',
   heading: 'Headings in prose. The same step as text by default',
-  'text-muted': 'Secondary text, hints, metadata',
+  'text-muted': 'Secondary text and metadata. Not hints: a hint is an instruction, so it uses text',
   link: 'Link text, badge text',
   'link-hover': 'Link hover and pressed',
   primary: 'Primary button background, selected state, current-page indicator',
