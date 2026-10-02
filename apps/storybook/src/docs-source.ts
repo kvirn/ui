@@ -47,16 +47,42 @@ export function showSource(file: string, ...names: string[]) {
   } as const
 }
 
+// Sections of the package docs that the Docs page leaves out: theming is its own page later, and
+// the hook is code only. The stories' "Show code" is the code documentation.
+const leftOutSections = new Set(['Your own look', 'Classes for the default theme', 'Hook'])
+
 /**
- * A component's package docs (`<name>.md`) as the Docs page's description: the usage guide, without
- * the title (the page has its own) and the draft note, whose links only work in the repository.
+ * A component's package docs (`<name>.md`) as the Docs page's description: prose only. It drops
+ * the title (the page has its own), the draft note (its links only work in the repository), every
+ * fenced code block (the stories' "Show code" is the code, ADR-0023) and the sections in
+ * `leftOutSections`.
  */
 export function usageGuide(raw: string): string {
-  return raw
-    .split('\n')
-    .filter(
-      (line, index) => !(index === 0 && line.startsWith('# ')) && !line.startsWith('> **Draft**'),
-    )
+  const kept: string[] = []
+  let isInCode = false
+  let leftOutLevel = 0
+  raw.split('\n').forEach((line, index) => {
+    if (line.startsWith('```')) {
+      isInCode = !isInCode
+      return
+    }
+    if (isInCode || (index === 0 && line.startsWith('# ')) || line.startsWith('> **Draft**')) {
+      return
+    }
+    const heading = /^(#{1,6}) (.*)$/.exec(line)
+    if (heading !== null) {
+      const level = heading[1]?.length ?? 0
+      if (leftOutLevel > 0 && level > leftOutLevel) {
+        return
+      }
+      leftOutLevel = leftOutSections.has(heading[2] ?? '') ? level : 0
+    }
+    if (leftOutLevel === 0) {
+      kept.push(line)
+    }
+  })
+  return kept
     .join('\n')
-    .trimStart()
+    .replaceAll(/\n{3,}/g, '\n\n')
+    .trim()
 }
