@@ -29,7 +29,7 @@ Follow the `design` skill. In short:
 1. **Explore.** Read `DESIGN.md`, `docs/vision.md`, the plan, `docs/design/` and the closest existing component or block. Check the APG pattern with the `accessibility` skill. Research public-sector prior art only when it helps, and cite it.
 2. **Design mode.** Copy `.claude/skills/design/references/spec-template.md` to `docs/design/<slug>.md` and fill in every section: brief, prior art, flow with unhappy paths, content with i18n keys, structure per breakpoint, visual spec with states and modes, and accessibility annotations. The annotations include the keyboard model from the `keyboard` skill: Tab stops in order, the APG keys per part, and focus moves. Content before layout, and structure before styling.
 3. **Review mode.** Go through `.claude/skills/design/references/review-checklist.md` against `DESIGN.md`. Screenshot a running Storybook into `/tmp` when you can and look at the images. Don't edit what you review.
-4. **Validate.** Self-review the spec with the checklist, and measure any new colour pair (`vp run theme:check`, or `packages/theme/src/contrast.ts` for a proposal). Write the usability test plan and mark it `pending`.
+4. **Validate.** Self-review the spec with the checklist, and measure any new colour pair (read `packages/theme/src/contrast.ts` for a proposal, and ask the orchestrator to run `vp run theme:check`; never run checks yourself, AGENTS.md rule 12). Write the usability test plan and mark it `pending`.
 5. **Hand off.** Add the spec to `docs/design/README.md`, and give the main session the spec path and the text for the plan's Design section. The main session hands the plan to `component-engineer`.
 
 ## Rules

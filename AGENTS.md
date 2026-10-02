@@ -100,6 +100,8 @@ Nothing is done until all of these pass. A Stop hook enforces gates 1–2 on the
     - A failure in a file you didn't change isn't yours. Don't fix, skip or revert it. Name the files in your report, and ask. This includes a Stop hook that fails on someone else's files.
     - Never `git stash`, `git checkout -- <path>`, `git reset` or `git clean` over changes you didn't make.
 
+12. **Subagents never run checks.** No `vp check`, `vp test`, `vp run e2e`, `i18n:check`, `theme:check` or builds. The main session (orchestrator) runs the gates once, after every subagent has reported done, so parallel agents don't exhaust CPU and memory. A PreToolUse hook blocks it.
+
 ## Conventions
 
 - Follow the API conventions in `docs/architecture.md#api-conventions`. In short: no abbreviated or single-letter names (`disclosure`, not `d`), prop objects named after their part (`triggerProps`), shared part names (Root, Trigger, Panel, Popup), locality of behaviour, and `render` instead of `asChild`.

@@ -54,7 +54,9 @@ Run the smallest thing that proves the point. Each full gate run happens **once 
 - E2E: one spec on one project, `vp run e2e <spec> --project chromium`, and only if story, fixture or keyboard behaviour changed.
   - Keep `vp run storybook` running in the background, so Playwright reuses it instead of booting a new server each run.
 
-**Final gates:** the implementing agent runs them once, at the end, in this order, stopping at the first failure:
+**Who runs what:** only the main session (orchestrator) runs checks, and only after every subagent has reported done (AGENTS.md rule 12). Subagents never run them. Everything in this section describes what the orchestrator runs, scoped and sequential. Ignore "while iterating" advice if you are a subagent.
+
+**Final gates:** the orchestrator runs them once, at the end, in this order, stopping at the first failure:
 
 1. `vp check` (on your files while others may be editing; the whole tree only when you're the only one working)
 2. `vp test run`
@@ -66,8 +68,8 @@ Run `vp run build` only if package config or exports changed.
 
 **No one repeats it:**
 
-- The main session relies on the engineer's evidence and doesn't re-run the gates.
-- `accessibility-reviewer` runs only targeted checks for its findings: the component's own test files, and its e2e spec on `chromium` and `chromium-forced-colors`. It runs the full suite only if the tree changed after the engineer's evidence.
+- Run the gates once per change. Re-run only the failed gate after a fix.
+- `accessibility-reviewer` runs nothing. It reads the orchestrator's gate output. If it lists a `NEEDS RUN` command, the orchestrator runs just that, e.g. the component's e2e spec on `chromium` and `chromium-forced-colors`.
 - The Stop hook skips work when nothing changed since its last green run.
 
 ## Debugging failures
