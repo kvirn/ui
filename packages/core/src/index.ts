@@ -70,7 +70,6 @@ export type {
   DigitsMaskOptions,
   MaskCountry,
   NumberMaskOptions,
-  OneTimeCodeCharacters,
   OneTimeCodeMaskOptions,
   PatternMaskOptions,
   RegexpMaskOptions,

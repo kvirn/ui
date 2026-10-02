@@ -3,10 +3,11 @@ import { expect, test } from '@playwright/test'
 import type { Locator, Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
 
-// Contract: packages/react/src/one-time-code/one-time-code.a11y.md › Keyboard, Focus management
+// Contract: packages/react/src/one-time-code/one-time-code.a11y.md › Keyboard, Focus management,
 // and Visual / modes. One test per row, named after it. The Keyboard story is the fixture: an
-// empty six-digit code, then a Continue button, in a form that does nothing on submit.
-// KvirnUI holds no form state.
+// empty code in two groups (`****-****`), then a Continue button, in a form that does nothing on
+// submit. The digits-only rows (a refused letter, a seventh digit, undo) use the Default story
+// (`999999`), because they need a code with no dash. KvirnUI holds no form state.
 //
 // The baseline projects (forced colours, reduced motion, 320px) run every test, so a test that
 // needs the drawn boxes asks for them: `openStory` turns forced colours off and uses a desktop
@@ -34,7 +35,12 @@ async function openStory(page: Page, story: string, options: OpenOptions = {}) {
 }
 
 const code = (page: Page, name = 'Kod från sms:et') => page.getByRole('textbox', { name })
+/** The Keyboard and TwoGroups stories' field: a code from an email. */
+const emailCode = (page: Page) => code(page, 'Kod från e-postmeddelandet')
 const slots = (page: Page) => page.locator('.kv-one-time-code-slot')
+const separators = (page: Page) => page.locator('.kv-one-time-code-separator')
+/** Every cell of the pattern, boxes and dashes. */
+const cells = (page: Page) => page.locator('.kv-one-time-code-slot, .kv-one-time-code-separator')
 const root = (page: Page) => page.locator('.kv-one-time-code').first()
 const continueButton = (page: Page) => page.getByRole('button', { name: 'Fortsätt' })
 
@@ -153,8 +159,8 @@ test.describe('OneTimeCode keyboard contract', () => {
   test('Tab focuses the input once', async ({ page }) => {
     await openStory(page, 'keyboard')
     await page.keyboard.press('Tab')
-    await expect(code(page)).toBeFocused()
-    // The whole row is one Tab stop: nothing else in it is focusable.
+    await expect(emailCode(page)).toBeFocused()
+    // The whole row is one Tab stop: nothing else in it is focusable, the dash included.
     expect(
       await root(page).evaluate(
         (element) =>
@@ -164,18 +170,19 @@ test.describe('OneTimeCode keyboard contract', () => {
       ),
     ).toBe(1)
     await expect(slots(page).first()).toHaveAttribute('aria-hidden', 'true')
+    await expect(separators(page).first()).toHaveAttribute('aria-hidden', 'true')
   })
 
   test('Tab leaves the field', async ({ page }) => {
     await openStory(page, 'keyboard')
     await page.keyboard.press('Tab')
-    await page.keyboard.type('481')
+    await page.keyboard.type('ABC')
     // Tab goes to Continue, never to another box.
     await page.keyboard.press('Tab')
     await expect(continueButton(page)).toBeFocused()
     // The same with a complete code: nothing in the row takes focus.
-    await code(page).focus()
-    await page.keyboard.type('920')
+    await emailCode(page).focus()
+    await page.keyboard.type('D1234')
     await expect(root(page)).toHaveAttribute('data-complete', '')
     await page.keyboard.press('Tab')
     await expect(continueButton(page)).toBeFocused()
@@ -184,11 +191,11 @@ test.describe('OneTimeCode keyboard contract', () => {
   test('Shift+Tab leaves the field', async ({ page }) => {
     await openStory(page, 'keyboard')
     await page.keyboard.press('Tab')
-    await expect(code(page)).toBeFocused()
+    await expect(emailCode(page)).toBeFocused()
     await page.keyboard.press('Tab')
     await expect(continueButton(page)).toBeFocused()
     await page.keyboard.press('Shift+Tab')
-    await expect(code(page)).toBeFocused()
+    await expect(emailCode(page)).toBeFocused()
     // From the field it goes to the previous focusable element, never to a box. The story has
     // none before the field, so the test puts one there.
     await page.evaluate(() => {
@@ -200,28 +207,59 @@ test.describe('OneTimeCode keyboard contract', () => {
     await page.keyboard.press('Shift+Tab')
     await expect(page.getByRole('button', { name: 'Tillbaka' })).toBeFocused()
     await page.keyboard.press('Tab')
-    await expect(code(page)).toBeFocused()
+    await expect(emailCode(page)).toBeFocused()
   })
 
   test('typing fills the boxes and keeps focus', async ({ page }) => {
     await openStory(page, 'keyboard')
     const submits = await recordSubmits(page)
     await page.keyboard.press('Tab')
-    await page.keyboard.type('481')
-    await expect.poll(() => characters(page)).toEqual(['4', '8', '1', '', '', ''])
+    await page.keyboard.type('ABC')
+    await expect.poll(() => characters(page)).toEqual(['A', 'B', 'C', '', '', '', '', ''])
     // The caret is in the next box.
     await expect.poll(() => withAttribute(page, 'data-active')).toEqual([3])
-    await page.keyboard.type('920')
-    await expect(code(page)).toHaveValue('481920')
-    await expect.poll(() => characters(page)).toEqual(['4', '8', '1', '9', '2', '0'])
+    // The fifth character crosses the dash: the mask puts the dash in, and the character goes in
+    // the first box of the next group.
+    await page.keyboard.type('D1')
+    await expect(emailCode(page)).toHaveValue('ABCD-1')
+    await expect.poll(() => characters(page)).toEqual(['A', 'B', 'C', 'D', '1', '', '', ''])
+    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([5])
+    await page.keyboard.type('234')
+    await expect(emailCode(page)).toHaveValue('ABCD-1234')
+    await expect.poll(() => characters(page)).toEqual(['A', 'B', 'C', 'D', '1', '2', '3', '4'])
     // Complete: no focus moved, nothing submitted.
-    await expect(code(page)).toBeFocused()
+    await expect(emailCode(page)).toBeFocused()
     await expect(root(page)).toHaveAttribute('data-complete', '')
     expect(await submits()).toBe(0)
   })
 
-  test('a letter in a digits code is refused', async ({ page }) => {
+  test('a typed dash is accepted once', async ({ page }) => {
     await openStory(page, 'keyboard')
+    await page.keyboard.press('Tab')
+    // The dash at the group break is accepted, and a second one is refused.
+    await page.keyboard.type('ABCD--12')
+    await expect(emailCode(page)).toHaveValue('ABCD-12')
+    await expect.poll(() => characters(page)).toEqual(['A', 'B', 'C', 'D', '1', '2', '', ''])
+    // Anywhere else a dash is a refused character.
+    await page.keyboard.press('ControlOrMeta+A')
+    await page.keyboard.type('AB-')
+    await expect(emailCode(page)).toHaveValue('AB')
+    await expect(emailCode(page)).toBeFocused()
+  })
+
+  test('lower case becomes upper case', async ({ page }) => {
+    // TwoGroups is `&&&&-&&&&`: a capital letter or digit in every position.
+    await openStory(page, 'two-groups')
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('ControlOrMeta+A')
+    await page.keyboard.type('k7qx2m9p')
+    await expect(emailCode(page)).toHaveValue('K7QX-2M9P')
+    await expect.poll(() => characters(page)).toEqual(['K', '7', 'Q', 'X', '2', 'M', '9', 'P'])
+  })
+
+  test('a letter in a digits code is refused', async ({ page }) => {
+    // The Default story is `999999`: the refusal names digits.
+    await openStory(page, 'default')
     const announcements = await recordAnnouncements(page)
     await page.keyboard.press('Tab')
     await page.keyboard.type('48a1')
@@ -232,7 +270,7 @@ test.describe('OneTimeCode keyboard contract', () => {
   })
 
   test('a seventh digit is refused', async ({ page }) => {
-    await openStory(page, 'keyboard')
+    await openStory(page, 'default')
     await page.keyboard.press('Tab')
     await page.keyboard.type('4819207')
     await expect(code(page)).toHaveValue('481920')
@@ -243,61 +281,123 @@ test.describe('OneTimeCode keyboard contract', () => {
   test('paste normalises the code', async ({ page }) => {
     await openStory(page, 'keyboard')
     await page.keyboard.press('Tab')
-    for (const pasted of ['481 920', '481-920', 'Your code is 481920', ' 481  920 ']) {
+    // With or without the dash, with spaces: the dash ends up where the pattern has it.
+    for (const pasted of ['ABCD1234', 'ABCD-1234', 'ABCD 1234', ' ABCD  1234 ']) {
       await page.keyboard.press('ControlOrMeta+A')
       await paste(page, pasted)
-      await expect(code(page), pasted).toHaveValue('481920')
+      await expect(emailCode(page), pasted).toHaveValue('ABCD-1234')
       await expect
         .poll(() => characters(page), { message: pasted })
-        .toEqual(['4', '8', '1', '9', '2', '0'])
+        .toEqual(['A', 'B', 'C', 'D', '1', '2', '3', '4'])
     }
-    await expect(code(page)).toBeFocused()
+    await expect(emailCode(page)).toBeFocused()
   })
 
   test('Backspace deletes before the caret', async ({ page }) => {
     await openStory(page, 'keyboard')
     await page.keyboard.press('Tab')
-    await page.keyboard.type('481920')
+    await page.keyboard.type('ABCD1234')
     await page.keyboard.press('ArrowLeft')
     await page.keyboard.press('ArrowLeft')
     await page.keyboard.press('ArrowLeft')
-    expect(await caret(code(page))).toEqual([3, 3])
+    expect(await caret(emailCode(page))).toEqual([6, 6])
     await page.keyboard.press('Backspace')
-    await expect(code(page)).toHaveValue('48920')
+    await expect(emailCode(page)).toHaveValue('ABCD-234')
     // Later characters move back one box.
-    await expect.poll(() => characters(page)).toEqual(['4', '8', '9', '2', '0', ''])
-    expect(await caret(code(page))).toEqual([2, 2])
-    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([2])
+    await expect.poll(() => characters(page)).toEqual(['A', 'B', 'C', 'D', '2', '3', '4', ''])
+    expect(await caret(emailCode(page))).toEqual([5, 5])
+    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([4])
   })
 
   test('Delete deletes after the caret', async ({ page }) => {
     await openStory(page, 'keyboard')
     await page.keyboard.press('Tab')
-    await page.keyboard.type('481920')
+    await page.keyboard.type('ABCD1234')
     await page.keyboard.press('Home')
     await page.keyboard.press('ArrowRight')
     await page.keyboard.press('ArrowRight')
     await page.keyboard.press('Delete')
-    await expect(code(page)).toHaveValue('48920')
-    expect(await caret(code(page))).toEqual([2, 2])
+    // The rest reflows, and the dash stays between the groups.
+    await expect(emailCode(page)).toHaveValue('ABD1-234')
+    expect(await caret(emailCode(page))).toEqual([2, 2])
   })
 
   test('arrows move the caret', async ({ page }) => {
     await openStory(page, 'keyboard')
     await page.keyboard.press('Tab')
-    await page.keyboard.type('481920')
+    await page.keyboard.type('ABCD1234')
     // A complete code, the caret after the last character: the last box, caret after.
-    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([5])
-    await expect(slots(page).nth(5)).toHaveAttribute('data-caret', 'after')
+    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([7])
+    await expect(slots(page).nth(7)).toHaveAttribute('data-caret', 'after')
     await page.keyboard.press('ArrowLeft')
-    await expect(slots(page).nth(5)).toHaveAttribute('data-caret', 'before')
-    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([5])
+    await expect(slots(page).nth(7)).toHaveAttribute('data-caret', 'before')
+    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([7])
     await page.keyboard.press('ArrowLeft')
-    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([4])
-    await expect(slots(page).nth(4)).toHaveAttribute('data-filled', '')
+    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([6])
+    await expect(slots(page).nth(6)).toHaveAttribute('data-filled', '')
     await page.keyboard.press('ArrowRight')
-    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([5])
-    expect(await caret(code(page))).toEqual([5, 5])
+    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([7])
+    expect(await caret(emailCode(page))).toEqual([8, 8])
+  })
+
+  test('arrows step over the separator', async ({ page }) => {
+    await openStory(page, 'keyboard')
+    const input = emailCode(page)
+    await page.keyboard.press('Tab')
+    await page.keyboard.type('ABCD12')
+    await expect(input).toHaveValue('ABCD-12')
+    // Two presses back from the end: the caret is after the dash, before the first box of the group.
+    await page.keyboard.press('End')
+    await page.keyboard.press('ArrowLeft')
+    await page.keyboard.press('ArrowLeft')
+    expect(await caret(input)).toEqual([5, 5])
+    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([4])
+    await expect(slots(page).nth(4)).toHaveAttribute('data-caret', 'before')
+    // One press steps over the dash. The caret is drawn after the last box of the first group.
+    await page.keyboard.press('ArrowLeft')
+    expect(await caret(input)).toEqual([4, 4])
+    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([3])
+    await expect(slots(page).nth(3)).toHaveAttribute('data-caret', 'after')
+    await expect(slots(page).nth(3)).toHaveAttribute('data-filled', '')
+    // The dash itself is never the active box and never has a caret.
+    await expect(separators(page).first()).not.toHaveAttribute('data-active', /.*/)
+    await expect(separators(page).first()).not.toHaveAttribute('data-caret', /.*/)
+    // Every position draws differently: before D is not after D.
+    await page.keyboard.press('ArrowLeft')
+    expect(await caret(input)).toEqual([3, 3])
+    await expect(slots(page).nth(3)).toHaveAttribute('data-caret', 'before')
+    await page.keyboard.press('ArrowRight')
+    await expect(slots(page).nth(3)).toHaveAttribute('data-caret', 'after')
+    await page.keyboard.press('ArrowRight')
+    expect(await caret(input)).toEqual([5, 5])
+    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([4])
+    await expect(slots(page).nth(4)).toHaveAttribute('data-caret', 'before')
+    await expect(input).toBeFocused()
+  })
+
+  test('Backspace and Delete cross the separator', async ({ page }) => {
+    await openStory(page, 'keyboard')
+    const input = emailCode(page)
+    await page.keyboard.press('Tab')
+    await page.keyboard.type('ABCD1234')
+    await page.keyboard.press('Home')
+    for (let step = 0; step < 5; step += 1) {
+      await page.keyboard.press('ArrowRight')
+    }
+    expect(await caret(input)).toEqual([5, 5])
+    // Backspace just after the dash deletes the character before it in the same press: the dash
+    // stays (it is the pattern) and the rest reflows. The key never seems to do nothing.
+    await page.keyboard.press('Backspace')
+    await expect(input).toHaveValue('ABC1-234')
+    await expect.poll(() => characters(page)).toEqual(['A', 'B', 'C', '1', '2', '3', '4', ''])
+    expect(await caret(input)).toEqual([3, 3])
+    // Delete just before the dash deletes the character after it.
+    await page.keyboard.press('ArrowRight')
+    expect(await caret(input)).toEqual([4, 4])
+    await page.keyboard.press('Delete')
+    await expect(input).toHaveValue('ABC1-34')
+    await expect.poll(() => characters(page)).toEqual(['A', 'B', 'C', '1', '3', '4', '', ''])
+    await expect(input).toBeFocused()
   })
 
   test('arrows follow the code in RTL', async ({ page }) => {
@@ -322,28 +422,30 @@ test.describe('OneTimeCode keyboard contract', () => {
   test('Home and End move to the ends', async ({ page }) => {
     await openStory(page, 'keyboard')
     await page.keyboard.press('Tab')
-    await page.keyboard.type('4819')
+    await page.keyboard.type('ABCD12')
     await page.keyboard.press('Home')
     await expect.poll(() => withAttribute(page, 'data-active')).toEqual([0])
-    expect(await caret(code(page))).toEqual([0, 0])
+    expect(await caret(emailCode(page))).toEqual([0, 0])
     await page.keyboard.press('End')
-    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([4])
-    expect(await caret(code(page))).toEqual([4, 4])
+    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([6])
+    expect(await caret(emailCode(page))).toEqual([7, 7])
   })
 
   test('Shift extends the selection', async ({ page }) => {
     await openStory(page, 'keyboard')
     await page.keyboard.press('Tab')
-    await page.keyboard.type('481920')
+    await page.keyboard.type('ABCD1234')
     await page.keyboard.press('Home')
     await page.keyboard.press('Shift+ArrowRight')
     await page.keyboard.press('Shift+ArrowRight')
-    expect(await caret(code(page))).toEqual([0, 2])
+    expect(await caret(emailCode(page))).toEqual([0, 2])
     await expect.poll(() => withAttribute(page, 'data-selected')).toEqual([0, 1])
     // No box is active while there is a selection: no caret is drawn.
     await expect.poll(() => withAttribute(page, 'data-active')).toEqual([])
+    // Across the dash: every filled box is selected, and the dash never is.
     await page.keyboard.press('Shift+End')
-    await expect.poll(() => withAttribute(page, 'data-selected')).toEqual([0, 1, 2, 3, 4, 5])
+    await expect.poll(() => withAttribute(page, 'data-selected')).toEqual([0, 1, 2, 3, 4, 5, 6, 7])
+    await expect(separators(page).first()).not.toHaveAttribute('data-selected', /.*/)
     await page.keyboard.press('ArrowLeft')
     await expect.poll(() => withAttribute(page, 'data-selected')).toEqual([])
     await expect.poll(() => withAttribute(page, 'data-active')).toEqual([0])
@@ -352,18 +454,21 @@ test.describe('OneTimeCode keyboard contract', () => {
   test('select all highlights every box', async ({ page }) => {
     await openStory(page, 'keyboard')
     await page.keyboard.press('Tab')
-    await page.keyboard.type('4819')
+    await page.keyboard.type('ABCD12')
     await page.keyboard.press('ControlOrMeta+A')
-    await expect.poll(() => withAttribute(page, 'data-selected')).toEqual([0, 1, 2, 3])
+    await expect.poll(() => withAttribute(page, 'data-selected')).toEqual([0, 1, 2, 3, 4, 5])
     await expect.poll(() => withAttribute(page, 'data-active')).toEqual([])
+    await expect(separators(page).first()).not.toHaveAttribute('data-selected', /.*/)
     // The selected boxes have the 2px ring-coloured edge, and typing replaces the code.
     expect((await edgeOf(slots(page).nth(0))).width).toBe(2)
     await page.keyboard.type('7')
-    await expect(code(page)).toHaveValue('7')
+    await expect(emailCode(page)).toHaveValue('7')
   })
 
   test('undo restores the code', async ({ page }) => {
-    await openStory(page, 'keyboard')
+    // A code with no dash: undo is native. After the mask has put a dash in, undo can need two
+    // presses to step back over it (the contract's Known issues).
+    await openStory(page, 'default')
     await page.keyboard.press('Tab')
     await page.keyboard.type('481920')
     await page.keyboard.press('Backspace')
@@ -376,24 +481,24 @@ test.describe('OneTimeCode keyboard contract', () => {
   test('ArrowUp and ArrowDown never change the value', async ({ page }) => {
     await openStory(page, 'keyboard')
     await page.keyboard.press('Tab')
-    await page.keyboard.type('481')
+    await page.keyboard.type('ABCD')
     for (const key of ['ArrowUp', 'ArrowDown', 'ArrowUp']) {
       await page.keyboard.press(key)
-      await expect(code(page)).toHaveValue('481')
+      await expect(emailCode(page)).toHaveValue('ABCD')
     }
-    await expect(code(page)).toBeFocused()
+    await expect(emailCode(page)).toBeFocused()
   })
 
   test('Enter submits the form', async ({ page }) => {
     await openStory(page, 'keyboard')
     const submits = await recordSubmits(page)
     await page.keyboard.press('Tab')
-    await page.keyboard.type('481920')
+    await page.keyboard.type('ABCD1234')
     expect(await submits()).toBe(0)
     // The component never prevents it: the form's implicit submission runs.
     await page.keyboard.press('Enter')
     expect(await submits()).toBe(1)
-    await expect(code(page)).toBeFocused()
+    await expect(emailCode(page)).toBeFocused()
   })
 
   test('a press on a box focuses the input and places the caret', async ({ page }) => {
@@ -432,6 +537,42 @@ test.describe('OneTimeCode keyboard contract', () => {
       expect(isInput, `box ${index}`).toBe(true)
     }
   })
+
+  test('a press on a separator goes to the nearest box', async ({ page }) => {
+    // ThreeGroups is `&&&-&&&-&&&` holding `H4T-K92`: the first dash is value position 3.
+    await openStory(page, 'three-groups')
+    const input = code(page, 'Kod från e-postmeddelandet')
+    const dash = separators(page).first()
+    const box = await dash.boundingBox()
+    if (box === null) {
+      throw new Error('No separator')
+    }
+    // Neither the dash nor the gap takes the press: it goes to the input, and the caret to the
+    // nearer box. The left half is nearest to the box before the dash (T, position 2), the right
+    // half to the first box after it (K, position 4).
+    await page.mouse.click(box.x + 3, box.y + box.height / 2)
+    await expect(input).toBeFocused()
+    expect(await caret(input)).toEqual([2, 2])
+    await page.mouse.click(box.x + box.width - 3, box.y + box.height / 2)
+    expect(await caret(input)).toEqual([4, 4])
+    await expect.poll(() => withAttribute(page, 'data-active')).toEqual([3])
+    // Every point of every cell, the dashes too, is the input's.
+    const count = await cells(page).count()
+    expect(count).toBe(11)
+    for (let index = 0; index < count; index += 1) {
+      const isInput = await cells(page)
+        .nth(index)
+        .evaluate((element) => {
+          const rectangle = element.getBoundingClientRect()
+          const hit = document.elementFromPoint(
+            rectangle.x + rectangle.width / 2,
+            rectangle.y + rectangle.height / 2,
+          )
+          return hit?.matches('.kv-one-time-code-input') ?? false
+        })
+      expect(isInput, `cell ${index}`).toBe(true)
+    }
+  })
 })
 
 /** The centre of an element, as the two arguments of `page.mouse.click`. */
@@ -446,9 +587,9 @@ test.describe('OneTimeCode focus, states and modes', () => {
   }) => {
     await openStory(page, 'keyboard')
     await page.keyboard.press('Tab')
-    const input = code(page)
+    const input = emailCode(page)
     expect(await ringOf(input)).toEqual({ style: 'solid', width: 2, offset: 2 })
-    // The input's box is the row: the first box's start to the last box's end.
+    // The input's box is the row: the first box's start to the last box's end, the dash included.
     const inputBox = await input.boundingBox()
     const first = await slots(page).first().boundingBox()
     const last = await slots(page).last().boundingBox()
@@ -457,8 +598,9 @@ test.describe('OneTimeCode focus, states and modes', () => {
       (last?.x ?? 0) + (last?.width ?? 0),
       0,
     )
-    for (const slot of await slots(page).all()) {
-      expect((await ringOf(slot)).style).toBe('none')
+    // Nothing inside the row is a second ring.
+    for (const cell of await cells(page).all()) {
+      expect((await ringOf(cell)).style).toBe('none')
     }
   })
 
@@ -579,10 +721,28 @@ test.describe('OneTimeCode focus, states and modes', () => {
   test('right to left: the boxes read left to right, at the right of the column', async ({
     page,
   }) => {
+    // RTL is `AA-9999` holding `HT-4829`.
     await openStory(page, 'rtl', { globals: 'dir:rtl;locale:en' })
     const first = await slots(page).first().boundingBox()
     const last = await slots(page).last().boundingBox()
     expect(first?.x).toBeLessThan(last?.x ?? 0)
+    // The cells keep the pattern's order from left to right: H, T, the dash, then 4, 8, 2, 9.
+    const placed = await cells(page).evaluateAll((elements) =>
+      elements.map((element) => ({
+        text: element.textContent,
+        x: element.getBoundingClientRect().x,
+      })),
+    )
+    expect(placed.toSorted((a, b) => a.x - b.x).map(({ text }) => text)).toEqual([
+      'H',
+      'T',
+      '-',
+      '4',
+      '8',
+      '2',
+      '9',
+    ])
+    expect(placed.map(({ text }) => text)).toEqual(['H', 'T', '-', '4', '8', '2', '9'])
     const field = await page.locator('.kv-field').boundingBox()
     expect((last?.x ?? 0) + (last?.width ?? 0)).toBeCloseTo(
       (field?.x ?? 0) + (field?.width ?? 0),
@@ -597,20 +757,98 @@ test.describe('OneTimeCode focus, states and modes', () => {
     )
   })
 
-  test('grouped: an even code has a wider gap in the middle', async ({ page }) => {
-    await openStory(page, 'letters-and-digits')
+  test('a dash is a 12px cell of text between two boxes, with no edge or fill', async ({
+    page,
+  }) => {
+    await openStory(page, 'two-groups')
     expect(await isDrawn(page)).toBe(true)
-    const boxes = await slots(page).evaluateAll((elements) =>
-      elements.map((element) => {
-        const { x, width } = element.getBoundingClientRect()
-        return { x, width }
+    await expect(separators(page)).toHaveCount(1)
+    const dash = separators(page).first()
+    const dashBox = await dash.boundingBox()
+    const before = await slots(page).nth(3).boundingBox()
+    const after = await slots(page).nth(4).boundingBox()
+    if (dashBox === null || before === null || after === null) {
+      throw new Error('No box')
+    }
+    expect(dashBox.width).toBeCloseTo(12, 0)
+    // 8px between a box and the dash on each side, so the group break is 28px.
+    expect(dashBox.x - (before.x + before.width)).toBeCloseTo(8, 0)
+    expect(after.x - (dashBox.x + dashBox.width)).toBeCloseTo(8, 0)
+    expect(dashBox.height).toBeCloseTo(before.height, 0)
+    // The dash is text: the same colour as a character, no edge, no fill, never a state of a box.
+    const style = await dash.evaluate((element) => {
+      const computed = getComputedStyle(element)
+      const box = getComputedStyle(document.querySelector('.kv-one-time-code-slot') as Element)
+      const range = document.createRange()
+      range.selectNodeContents(element)
+      const text = range.getBoundingClientRect()
+      const cell = element.getBoundingClientRect()
+      return {
+        text: element.textContent,
+        color: computed.color,
+        boxColor: box.color,
+        border: Number.parseFloat(computed.borderTopWidth),
+        fill: computed.backgroundColor,
+        isInside: text.left >= cell.left && text.right <= cell.right,
+        pointerEvents: computed.pointerEvents,
+      }
+    })
+    expect(style.text).toBe('-')
+    expect(style.color).toBe(style.boxColor)
+    expect(style.border).toBe(0)
+    expect(style.fill).toBe('rgba(0, 0, 0, 0)')
+    expect(style.isInside).toBe(true)
+    expect(style.pointerEvents).toBe('none')
+    // It shrinks never: only the boxes do.
+    await page.setViewportSize({ width: 640, height: 800 })
+    expect((await dash.boundingBox())?.width).toBeCloseTo(12, 0)
+  })
+
+  test('compact: a dash is 12px wide, and the gaps are 4px', async ({ page }) => {
+    await openStory(page, 'two-groups')
+    await page.evaluate(() => document.querySelector('.kv-story-form')?.classList.add('kv-compact'))
+    await expect
+      .poll(async () => (await slots(page).first().boundingBox())?.width)
+      .toBeCloseTo(32, 0)
+    const dashBox = await separators(page).first().boundingBox()
+    const before = await slots(page).nth(3).boundingBox()
+    const after = await slots(page).nth(4).boundingBox()
+    if (dashBox === null || before === null || after === null) {
+      throw new Error('No box')
+    }
+    expect(dashBox.width).toBeCloseTo(12, 0)
+    expect(dashBox.x - (before.x + before.width)).toBeCloseTo(4, 0)
+    expect(after.x - (dashBox.x + dashBox.width)).toBeCloseTo(4, 0)
+  })
+
+  test('the dash never takes the selection or the active state of a box', async ({ page }) => {
+    await openStory(page, 'two-groups')
+    const dash = separators(page).first()
+    const before = await dash.evaluate((element) => {
+      const computed = getComputedStyle(element)
+      return {
+        color: computed.color,
+        border: computed.borderTopWidth,
+        fill: computed.backgroundColor,
+      }
+    })
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('ControlOrMeta+A')
+    await expect.poll(() => withAttribute(page, 'data-selected')).toEqual([0, 1, 2, 3, 4, 5, 6, 7])
+    // The boxes take the selection fill and the 2px edge. The dash stays as it was.
+    expect((await edgeOf(slots(page).nth(3))).width).toBe(2)
+    expect(
+      await dash.evaluate((element) => {
+        const computed = getComputedStyle(element)
+        return {
+          color: computed.color,
+          border: computed.borderTopWidth,
+          fill: computed.backgroundColor,
+        }
       }),
-    )
-    const gaps = boxes
-      .slice(1)
-      .map((box, index) => box.x - ((boxes[index]?.x ?? 0) + (boxes[index]?.width ?? 0)))
-    expect(gaps.filter((gap) => gap > 12)).toHaveLength(1)
-    expect(gaps[3]).toBeGreaterThan(12)
+    ).toEqual(before)
+    await expect(dash).not.toHaveAttribute('data-selected', /.*/)
+    await expect(dash).not.toHaveAttribute('data-active', /.*/)
   })
 
   test('compact: 32px boxes, and the input is at least 24px high', async ({ page }) => {
@@ -628,9 +866,15 @@ test.describe('OneTimeCode focus, states and modes', () => {
       globals: 'forcedColors:active',
     })
     expect(await isDrawn(page)).toBe(false)
-    for (const slot of await slots(page).all()) {
-      await expect(slot).toBeHidden()
+    for (const cell of await cells(page).all()) {
+      await expect(cell).toBeHidden()
     }
+    // The dash is not drawn either: it is in the value of the plain field.
+    expect(
+      await separators(page)
+        .first()
+        .evaluate((element) => getComputedStyle(element).display),
+    ).toBe('none')
     const inputs = page.locator('.kv-one-time-code-input')
     await expect(inputs).toHaveCount(4)
     for (const input of await inputs.all()) {
@@ -643,11 +887,13 @@ test.describe('OneTimeCode focus, states and modes', () => {
           style: computed.borderTopStyle,
           edgeDiffers: computed.borderTopColor !== computed.backgroundColor,
           textVisible: computed.color !== computed.backgroundColor,
+          fits: element.scrollWidth <= element.clientWidth,
         }
       })
       expect(style.position).toBe('static')
       expect(style.edgeDiffers).toBe(true)
       expect(style.textVisible).toBe(true)
+      expect(style.fits).toBe(true)
     }
     // The width and the dashes carry the state, not the colour (1.4.1, 1.4.11).
     const edges = await Promise.all(
@@ -664,11 +910,12 @@ test.describe('OneTimeCode focus, states and modes', () => {
     expect(edges[0]).toEqual({ width: 1, style: 'solid' })
     expect(edges[2]).toEqual({ width: 2, style: 'solid' })
     expect(edges[3]).toEqual({ width: 1, style: 'dashed' })
-    // The focus ring is a system colour outline, and the value is kept.
+    // The focus ring is a system colour outline, and the value is kept, the dash included.
     await page.keyboard.press('Tab')
     await expect(inputs.first()).toBeFocused()
     expect(await ringOf(inputs.first())).toMatchObject({ style: 'solid', width: 2 })
     await expect(inputs.nth(1)).toHaveValue('481')
+    await expect(inputs.nth(2)).toHaveValue('K7QX-2M9P')
   })
 
   test('reduced motion: the boxes do not transition', async ({ page }) => {
@@ -680,7 +927,17 @@ test.describe('OneTimeCode focus, states and modes', () => {
   test('no horizontal scrolling at 320px: six boxes shrink to fit, in every story', async ({
     page,
   }) => {
-    for (const story of ['default', 'partly-filled', 'invalid', 'compact', 'rtl', 'keyboard']) {
+    for (const story of [
+      'default',
+      'partly-filled',
+      'invalid',
+      'compact',
+      'rtl',
+      'keyboard',
+      'two-groups',
+      'three-groups',
+      'letter-prefix',
+    ]) {
       await openStory(page, story, { viewport: { width: 320, height: 640 } })
       expect(await hasHorizontalScroll(page), story).toBe(false)
     }
@@ -693,14 +950,67 @@ test.describe('OneTimeCode focus, states and modes', () => {
     expect(first?.width).toBeLessThan(44)
   })
 
-  test('at 320px eight characters do not fit at 32px: the plain field shows', async ({ page }) => {
-    await openStory(page, 'letters-and-digits', { viewport: { width: 320, height: 640 } })
-    expect(await isDrawn(page)).toBe(false)
+  test('at 320px AA-9999 draws its boxes and its dash, shrunk to fit', async ({ page }) => {
+    await openStory(page, 'letter-prefix', { viewport: { width: 320, height: 640 } })
+    expect(await isDrawn(page)).toBe(true)
+    expect(
+      await separators(page)
+        .first()
+        .evaluate((element) => getComputedStyle(element).display),
+    ).not.toBe('none')
     expect(await hasHorizontalScroll(page)).toBe(false)
-    const input = code(page, 'Kod från e-postmeddelandet')
-    await expect(input).toBeVisible()
-    await expect(input).toHaveValue('K7QX2M9P')
-    expect(await input.evaluate((element) => getComputedStyle(element).position)).toBe('static')
+    const last = await slots(page).last().boundingBox()
+    expect((last?.x ?? 0) + (last?.width ?? 0)).toBeLessThanOrEqual(320)
+    const first = await slots(page).first().boundingBox()
+    expect(first?.width).toBeGreaterThanOrEqual(32)
+    // The dash keeps its 12px: only the boxes shrink.
+    expect((await separators(page).first().boundingBox())?.width).toBeCloseTo(12, 0)
+  })
+
+  test('at 320px eight characters and a dash do not fit at 32px: the plain field shows', async ({
+    page,
+  }) => {
+    for (const [story, value] of [
+      ['two-groups', 'K7QX-2M9P'],
+      ['three-groups', 'H4T-K92'],
+    ] as const) {
+      await openStory(page, story, { viewport: { width: 320, height: 640 } })
+      expect(await isDrawn(page), story).toBe(false)
+      expect(await hasHorizontalScroll(page), story).toBe(false)
+      const input = emailCode(page)
+      await expect(input).toBeVisible()
+      // The same value, with its dashes, in a field as wide as the pattern: nothing scrolls inside it.
+      await expect(input).toHaveValue(value)
+      expect(await input.evaluate((element) => getComputedStyle(element).position)).toBe('static')
+      expect(await input.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
+        true,
+      )
+      for (const dash of await separators(page).all()) {
+        await expect(dash).toBeHidden()
+      }
+    }
+  })
+
+  test('outside 4 to 10 characters and 2 dashes the plain field shows, at any width', async ({
+    page,
+  }) => {
+    await openStory(page, 'pattern-limits')
+    const roots = page.locator('.kv-one-time-code')
+    await expect(roots).toHaveCount(6)
+    for (const [index, drawn] of [true, true, true, false, false, false].entries()) {
+      const root = roots.nth(index)
+      const name = (await root.locator('input').getAttribute('name')) ?? ''
+      const firstSlot = root.locator('.kv-one-time-code-slot').first()
+      expect(
+        await firstSlot.evaluate((element) => getComputedStyle(element).display !== 'none'),
+        name,
+      ).toBe(drawn)
+      const position = await root
+        .locator('input')
+        .evaluate((element) => getComputedStyle(element).position)
+      expect(position === 'absolute', name).toBe(drawn)
+    }
+    expect(await hasHorizontalScroll(page)).toBe(false)
   })
 
   test('at 200% text on a phone the plain field shows, and on a desktop the boxes grow', async ({
@@ -742,51 +1052,54 @@ test.describe('OneTimeCode focus, states and modes', () => {
     expect(await caret(input)).toEqual([1, 1])
   })
 
-  test('text spacing (1.4.12): each character stays inside its box, and nothing overlaps', async ({
-    page,
-  }) => {
-    await openStory(page, 'complete')
-    await page.addStyleTag({
-      content:
-        '* { line-height: 1.5 !important; letter-spacing: 0.12em !important; word-spacing: 0.16em !important; } p { margin-bottom: 2em !important; }',
-    })
-    const boxes = await slots(page).evaluateAll((elements) =>
-      elements.map((element) => {
-        const box = element.getBoundingClientRect()
-        const range = document.createRange()
-        range.selectNodeContents(element)
-        const text = range.getBoundingClientRect()
-        return {
-          box: { left: box.left, right: box.right, top: box.top, bottom: box.bottom },
-          text: { left: text.left, right: text.right, top: text.top, bottom: text.bottom },
-          clipped:
-            element.scrollWidth > element.clientWidth ||
-            element.scrollHeight > element.clientHeight,
+  for (const story of ['complete', 'two-groups']) {
+    test(`text spacing (1.4.12): each character stays inside its box, and nothing overlaps (${story})`, async ({
+      page,
+    }) => {
+      await openStory(page, story)
+      await page.addStyleTag({
+        content:
+          '* { line-height: 1.5 !important; letter-spacing: 0.12em !important; word-spacing: 0.16em !important; } p { margin-bottom: 2em !important; }',
+      })
+      // Every cell: the boxes and the dash. The dash has to stay inside its 12px cell.
+      const boxes = await cells(page).evaluateAll((elements) =>
+        elements.map((element) => {
+          const box = element.getBoundingClientRect()
+          const range = document.createRange()
+          range.selectNodeContents(element)
+          const text = range.getBoundingClientRect()
+          return {
+            box: { left: box.left, right: box.right, top: box.top, bottom: box.bottom },
+            text: { left: text.left, right: text.right, top: text.top, bottom: text.bottom },
+            clipped:
+              element.scrollWidth > element.clientWidth ||
+              element.scrollHeight > element.clientHeight,
+          }
+        }),
+      )
+      for (const [index, { box, text, clipped }] of boxes.entries()) {
+        expect(text.left, `cell ${index}`).toBeGreaterThanOrEqual(box.left)
+        expect(text.right, `cell ${index}`).toBeLessThanOrEqual(box.right)
+        expect(text.top, `cell ${index}`).toBeGreaterThanOrEqual(box.top)
+        expect(text.bottom, `cell ${index}`).toBeLessThanOrEqual(box.bottom)
+        expect(clipped, `cell ${index}`).toBe(false)
+        const next = boxes[index + 1]
+        if (next !== undefined) {
+          expect(box.right, `cell ${index}`).toBeLessThanOrEqual(next.box.left + 0.5)
         }
-      }),
-    )
-    for (const [index, { box, text, clipped }] of boxes.entries()) {
-      expect(text.left, `box ${index}`).toBeGreaterThanOrEqual(box.left)
-      expect(text.right, `box ${index}`).toBeLessThanOrEqual(box.right)
-      expect(text.top, `box ${index}`).toBeGreaterThanOrEqual(box.top)
-      expect(text.bottom, `box ${index}`).toBeLessThanOrEqual(box.bottom)
-      expect(clipped, `box ${index}`).toBe(false)
-      const next = boxes[index + 1]
-      if (next !== undefined) {
-        expect(box.right, `box ${index}`).toBeLessThanOrEqual(next.box.left + 0.5)
       }
-    }
-  })
+    })
+  }
 
   test('not ready: the plain field shows, and typed text is visible', async ({ page }) => {
     await openStory(page, 'keyboard')
     // Before the script has run there is no data-ready: the theme shows the plain field.
     await root(page).evaluate((element) => element.removeAttribute('data-ready'))
     expect(await isDrawn(page)).toBe(false)
-    const input = code(page)
+    const input = emailCode(page)
     expect(await input.evaluate((element) => getComputedStyle(element).position)).toBe('static')
     await input.focus()
-    await page.keyboard.type('48')
+    await page.keyboard.type('AB')
     const colors = await input.evaluate((element) => {
       const computed = getComputedStyle(element)
       return { color: computed.color, fill: computed.webkitTextFillColor }
@@ -800,20 +1113,21 @@ test.describe('OneTimeCode focus, states and modes', () => {
     await expect.poll(() => characters(page)).toEqual(['4', '8', '1', '', '', ''])
   })
 
-  // The mount path ("481 920" typed before the script runs) is in one-time-code.test.tsx. This is
-  // the other half: a form reset puts the markup's default back, and it goes through the mask too.
+  // The mount path ("abcd 1234" typed before the script runs) is in one-time-code.test.tsx. This is
+  // the other half: a form reset puts the markup's default back, and it goes through the mask too,
+  // the dash included.
   for (const [written, shown] of [
-    ['481 920', ['4', '8', '1', '9', '2', '0']],
-    ['4819207', ['4', '8', '1', '9', '2', '0']],
+    ['abcd 1234', ['a', 'b', 'c', 'd', '1', '2', '3', '4']],
+    ['abcd12345', ['a', 'b', 'c', 'd', '1', '2', '3', '4']],
   ] as const) {
     test(`a form reset to "${written}" goes through the mask`, async ({ page }) => {
       await openStory(page, 'keyboard')
-      await code(page).evaluate((element, defaultValue) => {
+      await emailCode(page).evaluate((element, defaultValue) => {
         const input = element as HTMLInputElement
         input.defaultValue = defaultValue
         input.form?.reset()
       }, written)
-      await expect(code(page)).toHaveValue('481920')
+      await expect(emailCode(page)).toHaveValue('abcd-1234')
       await expect.poll(() => characters(page)).toEqual([...shown])
     })
   }
@@ -837,6 +1151,27 @@ test.describe('OneTimeCode accessibility', () => {
     }
   })
 
+  test('a11y tree with a dash: one textbox holding the value with its dash, the dash hidden', async ({
+    page,
+  }) => {
+    await openStory(page, 'two-groups')
+    await expect(page.locator('.kv-field')).toMatchAriaSnapshot(`
+      - text: Kod från e-postmeddelandet
+      - paragraph: Koden har 8 bokstäver och siffror, i 2 grupper om 4. Du hittar den i e-postmeddelandet som vi just skickade till dig.
+      - textbox "Kod från e-postmeddelandet": K7QX-2M9P
+    `)
+    await expect(emailCode(page)).toHaveAccessibleDescription(
+      'Koden har 8 bokstäver och siffror, i 2 grupper om 4. Du hittar den i e-postmeddelandet som vi just skickade till dig.',
+    )
+    await expect(root(page)).toHaveAttribute('data-character-count', '8')
+    await expect(root(page)).toHaveAttribute('data-separator-count', '1')
+    for (const cell of await cells(page).all()) {
+      await expect(cell).toHaveAttribute('aria-hidden', 'true')
+    }
+    // Nothing in the row but the input is focusable or named.
+    await expect(root(page).getByRole('textbox')).toHaveCount(1)
+  })
+
   test('the input is at least 44px high and as wide as the row', async ({ page }) => {
     await openStory(page, 'default')
     const box = await code(page).boundingBox()
@@ -850,7 +1185,9 @@ test.describe('OneTimeCode accessibility', () => {
     'complete',
     'invalid',
     'disabled',
-    'letters-and-digits',
+    'two-groups',
+    'three-groups',
+    'letter-prefix',
     'compact',
     'rtl',
     'forced-colors',

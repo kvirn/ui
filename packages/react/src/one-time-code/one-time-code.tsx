@@ -38,7 +38,10 @@ export interface OneTimeCodeInputProps extends Omit<
 }
 
 export interface OneTimeCodeSlotProps extends ComponentPropsWithRef<'span'> {
-  /** The position of the character this slot draws, from 0 to `length - 1`. */
+  /**
+   * The position in the pattern this slot draws, from 0 to `pattern.length - 1`. A `-` in the
+   * pattern is a separator slot: it shows `-`, and it is never filled or active.
+   */
   index: number
   render?: RenderProp<ComponentPropsWithRef<'span'>, OneTimeCodeSlotState> | undefined
 }
@@ -57,23 +60,22 @@ function hasNameSource(input: HTMLInputElement): boolean {
 /**
  * The row of a one-time code (ADR-0033, contract: one-time-code.a11y.md): one
  * `<div class="kv-one-time-code">` that holds the one native input and the slots that draw it.
- * It takes the options (`length`, `characters`, `value`, `defaultValue`, `onValueChange`,
- * `onComplete`), holds no form state, and never moves focus or submits. Put it in a Field with a
- * label and a hint that says how many characters the code has.
+ * It takes the options (`pattern`, `value`, `defaultValue`, `onValueChange`, `onComplete`), holds
+ * no form state, and never moves focus or submits. Put it in a Field with a label and a hint that
+ * says how many characters the code has and how they are grouped (ADR-0045).
  *
  * @example
  * <Field.Root>
  *   <Field.Label>Kod från sms:et</Field.Label>
- *   <Field.Description>Koden har 6 siffror.</Field.Description>
- *   <OneTimeCode.Root length={6} onComplete={verifyCode}>
+ *   <Field.Description>Koden har 8 tecken i två grupper om 4.</Field.Description>
+ *   <OneTimeCode.Root pattern="&&&&-&&&&" onComplete={(value, unmaskedValue) => verify(unmaskedValue)}>
  *     <OneTimeCode.Input name="code" />
- *     {Array.from({ length: 6 }, (_, index) => <OneTimeCode.Slot key={index} index={index} />)}
+ *     {[...'&&&&-&&&&'].map((_, index) => <OneTimeCode.Slot key={index} index={index} />)}
  *   </OneTimeCode.Root>
  * </Field.Root>
  */
 export function OneTimeCodeRoot({
-  length,
-  characters,
+  pattern,
   value,
   defaultValue,
   onValueChange,
@@ -87,8 +89,7 @@ export function OneTimeCodeRoot({
   ...otherProps
 }: OneTimeCodeRootProps): ReactElement {
   const oneTimeCode = useOneTimeCode({
-    length,
-    characters,
+    pattern,
     value,
     defaultValue,
     onValueChange,
@@ -164,13 +165,25 @@ export function OneTimeCodeInput({
         'A OneTimeCode.Input has no accessible name (WCAG 1.3.1, 4.1.2). Put it in a Field with a Field.Label that says where the code is, such as "Kod från sms:et".',
       )
     }
+    const row = element.closest('.kv-one-time-code')
+    if (oneTimeCode !== null && row !== null) {
+      const cellCount = row.querySelectorAll(
+        '.kv-one-time-code-slot, .kv-one-time-code-separator',
+      ).length
+      if (cellCount < oneTimeCode.pattern.length) {
+        warnOnce(
+          'one-time-code-too-few-slots',
+          `The OneTimeCode.Root has ${cellCount} slots, too few for the pattern "${oneTimeCode.pattern}" (${oneTimeCode.pattern.length} positions, separators included). A character typed in a position without a slot is in the field and submitted, but sighted users never see it. Render one OneTimeCode.Slot per position of the pattern, for example Array.from(pattern, (_, index) => <OneTimeCode.Slot key={index} index={index} />).`,
+        )
+      }
+    }
     const controlId = field?.controlProps.id
     if (controlId !== undefined && ownDescribedBy === undefined) {
       const prefix = `${controlId}-description`
       if (element.ownerDocument.querySelector(`[id^="${CSS.escape(prefix)}"]`) === null) {
         warnOnce(
           'one-time-code-without-description',
-          'A OneTimeCode.Input in a Field has no Field.Description. The boxes are hidden from screen readers and disappear in the fallback, so say in a visible hint how many characters the code has and where to find it (WCAG 3.3.2, ADR-0033).',
+          'A OneTimeCode.Input in a Field has no Field.Description. The boxes are hidden from screen readers and disappear in the fallback, so say in a visible hint how many characters the code has, how they are grouped and where to find it (WCAG 3.3.2, ADR-0033, ADR-0045).',
         )
       }
     }
@@ -201,9 +214,12 @@ export function OneTimeCodeInput({
 OneTimeCodeInput.displayName = 'OneTimeCode.Input'
 
 /**
- * One drawn character: a `<span aria-hidden="true">` that is never focusable and, in the default
- * theme, never takes a press: every press goes to the input. Render one per character, with
- * `index` from 0 to `length - 1`. The hint, not the slots, tells screen-reader users the length.
+ * One drawn cell of the pattern: a `<span aria-hidden="true">` that is never focusable and, in the
+ * default theme, never takes a press: every press goes to the input. Render one per position of
+ * the pattern, with `index` from 0 to `pattern.length - 1`: a character slot draws one character,
+ * and a `-` in the pattern is a separator slot (class `kv-one-time-code-separator`) that shows `-`
+ * and is never filled or active. The hint, not the slots, tells screen-reader users the length and
+ * the groups.
  */
 export function OneTimeCodeSlot({
   index,
@@ -220,15 +236,16 @@ export function OneTimeCodeSlot({
         'one-time-code-slot-outside-root',
         'A OneTimeCode.Slot is outside a OneTimeCode.Root, so it draws nothing. Put it inside <OneTimeCode.Root>.',
       )
-    } else if (!Number.isInteger(index) || index < 0 || index >= oneTimeCode.length) {
+    } else if (!Number.isInteger(index) || index < 0 || index >= oneTimeCode.pattern.length) {
       warnOnce(
         'one-time-code-slot-index',
-        `A OneTimeCode.Slot has index ${index}, but the code has ${oneTimeCode.length} characters (0 to ${oneTimeCode.length - 1}). Render one slot per character: the theme counts the slots to draw the row.`,
+        `A OneTimeCode.Slot has index ${index}, but the pattern "${oneTimeCode.pattern}" has ${oneTimeCode.pattern.length} positions (0 to ${oneTimeCode.pattern.length - 1}). Render one slot per position of the pattern, separators included: the theme counts the slots to draw the row.`,
       )
     }
   }, [oneTimeCode, index])
 
   const slotState: OneTimeCodeSlotState = oneTimeCode?.slots[index] ?? {
+    kind: 'character',
     character: '',
     isFilled: false,
     isActive: false,

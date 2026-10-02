@@ -938,7 +938,7 @@ describe('theme.css long words and small screens (ADR-0028)', () => {
   })
 })
 
-describe('theme.css one-time code (ADR-0033, docs/design/one-time-code.md)', () => {
+describe('theme.css one-time code (ADR-0033, ADR-0045, docs/design/one-time-code.md)', () => {
   const isOneTimeCode = (selector: string) => /\.kv-one-time-code/.test(selector)
   const oneTimeCodeRules = rules.filter((rule) => rule.selectors.some(isOneTimeCode))
   const declarationsOf = (found: typeof rules) => found.flatMap((rule) => rule.declarations)
@@ -952,31 +952,43 @@ describe('theme.css one-time code (ADR-0033, docs/design/one-time-code.md)', () 
     expect(oneTimeCodeRules.length).toBeGreaterThan(20)
   })
 
-  it('shows the plain field by default: the boxes are not displayed until every condition holds', () => {
-    const slotRules = oneTimeCodeRules.filter((rule) =>
-      rule.selectors.every((selector) => selector === '.kv-one-time-code-slot'),
-    )
-    expect(declarationsOf(slotRules)).toContainEqual(['display', 'none'])
-    // The boxes only turn on outside forced colours, and only for a Root that is ready.
-    const showsSlots = oneTimeCodeRules.filter(
-      (rule) =>
-        rule.selectors.some((selector) => selector.endsWith('> .kv-one-time-code-slot')) &&
-        rule.declarations.some(([property, value]) => property === 'display' && value === 'flex'),
-    )
-    expect(showsSlots.length).toBe(5)
-    for (const rule of showsSlots) {
-      expect(rule.media.some((media) => media.includes('forced-colors: none'))).toBe(true)
-      for (const selector of rule.selectors) {
-        expect(selector).toContain('[data-ready]')
-        expect(selector).toContain('.kv-one-time-code-slot')
+  // The pairs of (characters, separators) the theme draws: 4 to 10 characters and 0 to 2 dashes.
+  const limits = [4, 5, 6, 7, 8, 9, 10].flatMap((characters) =>
+    [0, 1, 2].map((separators) => ({ characters, separators })),
+  )
+  const pairSelector = ({ characters, separators }: (typeof limits)[number]) =>
+    `[data-character-count='${characters}'][data-separator-count='${separators}']`
+
+  it('shows the plain field by default: the cells are not displayed until every condition holds', () => {
+    for (const part of ['slot', 'separator']) {
+      const hiddenRules = oneTimeCodeRules.filter((rule) =>
+        rule.selectors.every((selector) => selector === `.kv-one-time-code-${part}`),
+      )
+      expect(declarationsOf(hiddenRules)).toContainEqual(['display', 'none'])
+      // The cells only turn on outside forced colours, for a Root that is ready, has counts and a box.
+      const showing = oneTimeCodeRules.filter(
+        (rule) =>
+          rule.selectors.some((selector) => selector.endsWith(`> .kv-one-time-code-${part}`)) &&
+          rule.declarations.some(([property, value]) => property === 'display' && value === 'flex'),
+      )
+      // One rule per distinct threshold.
+      expect(showing.length).toBe(15)
+      for (const rule of showing) {
+        expect(rule.media.some((media) => media.includes('forced-colors: none'))).toBe(true)
+        for (const selector of rule.selectors) {
+          expect(selector).toContain('[data-ready]')
+          expect(selector).toContain('data-character-count')
+          expect(selector).toContain('data-separator-count')
+          expect(selector).toContain(':has(> .kv-one-time-code-slot)')
+        }
       }
     }
   })
 
   it('hides the input’s own text only where the boxes are drawn: outside forced colours and with data-ready (3.3.8, 1.4.1)', () => {
     const hiding = oneTimeCodeRules.filter((rule) => hidesText(rule.declarations))
-    // One rule per length, and the ::selection rules.
-    expect(hiding.length).toBeGreaterThanOrEqual(5)
+    // One rule per distinct threshold, and the ::selection rules.
+    expect(hiding.length).toBeGreaterThanOrEqual(30)
     for (const rule of hiding) {
       expect(rule.media.some((media) => media.includes('forced-colors: none'))).toBe(true)
       for (const selector of rule.selectors) {
@@ -991,12 +1003,121 @@ describe('theme.css one-time code (ADR-0033, docs/design/one-time-code.md)', () 
     ).toEqual([])
   })
 
-  it('has a fallback width per length, 2.5rem a character, so the boxes never wrap (1.4.10)', () => {
-    const source = themeCss
-    for (const length of [4, 5, 6, 7, 8]) {
-      const minimum = length * 2.5
-      expect(source).toContain(`@container kv-one-time-code (inline-size >= ${minimum}rem)`)
+  it('has a threshold per pair of counts, (2.5c + 1.25s - 0.5)rem, so the cells never wrap (1.4.10)', () => {
+    // The nearest container condition before a pair's first use is that pair's threshold.
+    const condition = /@container kv-one-time-code \(inline-size >= ([\d.]+)rem\)/g
+    const thresholds = [...themeCss.matchAll(condition)].map((match) => ({
+      rem: Number(match[1]),
+      position: match.index,
+    }))
+    expect(new Set(thresholds.map(({ rem }) => rem)).size).toBe(thresholds.length)
+    for (const pair of limits) {
+      const expected = 2.5 * pair.characters + 1.25 * pair.separators - 0.5
+      const use = themeCss.indexOf(pairSelector(pair))
+      expect(use, pairSelector(pair)).toBeGreaterThan(-1)
+      const before = thresholds.filter(({ position }) => position < use).at(-1)
+      expect(before?.rem, pairSelector(pair)).toBe(expected)
     }
+    // Nothing outside the limits is drawn: no pair of counts beyond them appears in a container rule.
+    const containerStart = themeCss.indexOf('@container kv-one-time-code')
+    const drawn = themeCss.slice(containerStart)
+    for (const [, characters, separators] of drawn.matchAll(
+      /\[data-character-count='(\d+)'\]\[data-separator-count='(\d+)'\]/g,
+    )) {
+      expect(characters).toBeDefined()
+      expect(limits).toContainEqual({
+        characters: Number(characters),
+        separators: Number(separators),
+      })
+    }
+  })
+
+  it('reads the pattern’s counts from the Root’s data attributes, not by counting children', () => {
+    const oneTimeCodeSource = themeCss.slice(themeCss.indexOf('/* 13. One-time code'))
+    expect(oneTimeCodeSource).not.toContain('kv-one-time-code--grouped')
+    expect(oneTimeCodeSource).not.toContain('--kv-one-time-code-length')
+    expect(oneTimeCodeSource).not.toMatch(/:nth-(?:last-)?child\([^)]* of /)
+    const declared = declarationsOf(oneTimeCodeRules)
+    for (const characters of Array.from({ length: 12 }, (_, index) => index + 1)) {
+      expect(
+        oneTimeCodeRules.some(
+          (rule) =>
+            rule.selectors.includes(`.kv-one-time-code[data-character-count='${characters}']`) &&
+            rule.declarations.some(
+              ([property, value]) =>
+                property === '--kv-one-time-code-characters' && value === String(characters),
+            ),
+        ),
+      ).toBe(true)
+    }
+    for (const separators of [0, 1, 2, 3]) {
+      expect(
+        oneTimeCodeRules.some(
+          (rule) =>
+            rule.selectors.includes(`.kv-one-time-code[data-separator-count='${separators}']`) &&
+            rule.declarations.some(
+              ([property, value]) =>
+                property === '--kv-one-time-code-separators' && value === String(separators),
+            ),
+        ),
+      ).toBe(true)
+    }
+    // The plain field counts the dashes: each is a character of the value (1.4.10, no scrolling).
+    const inputChars = declared.find(([property]) => property === '--kv-input-chars')
+    expect(inputChars?.[1]).toContain('--kv-one-time-code-characters')
+    expect(inputChars?.[1]).toContain('--kv-one-time-code-separators')
+  })
+
+  it('draws a dash as a 12px cell of text: no edge, no fill, never shrinking, only space-3, text and text-muted', () => {
+    const separatorRules = oneTimeCodeRules.filter((rule) =>
+      rule.selectors.every((selector) => selector.endsWith('.kv-one-time-code-separator')),
+    )
+    const declarations = declarationsOf(separatorRules)
+    expect(declarations).toContainEqual(['pointer-events', 'none'])
+    expect(declarations).toContainEqual(['flex', 'none'])
+    expect(declarations).toContainEqual(['inline-size', 'var(--kv-one-time-code-separator-size)'])
+    expect(
+      declarations.filter(([property]) =>
+        /^(?:border|background|box-shadow|outline)/.test(property),
+      ),
+    ).toEqual([])
+    expect(
+      declarations.filter(([property]) =>
+        /^(?:height|min-height|max-height|block-size)$/.test(property),
+      ),
+    ).toEqual([])
+    const colours = declarations
+      .filter(([property]) => property === 'color')
+      .map(([, value]) => value)
+      .toSorted()
+    expect(colours).toEqual(['var(--kv-color-text)', 'var(--kv-color-text-muted)'])
+    expect(declarationsOf(oneTimeCodeRules)).toContainEqual([
+      '--kv-one-time-code-separator-size',
+      'var(--kv-space-3)',
+    ])
+    // A dash never takes a state of the box: the hook gives it none.
+    expect(
+      oneTimeCodeRules
+        .flatMap((rule) => rule.selectors)
+        .filter(
+          (selector) =>
+            /\.kv-one-time-code-separator\[data-/.test(selector) ||
+            /\.kv-one-time-code-separator:(?:hover|focus)/.test(selector),
+        ),
+    ).toEqual([])
+  })
+
+  it('adds the dotted zero for a code that can hold letters, to the boxes, dashes and plain field', () => {
+    const dotted = oneTimeCodeRules.filter((rule) =>
+      rule.declarations.some(
+        ([property, value]) => property === 'font-feature-settings' && value.includes("'ss04'"),
+      ),
+    )
+    const selectors = dotted.flatMap((rule) => rule.selectors).join(' ')
+    expect(selectors).toContain(":not([inputmode='numeric'])")
+    expect(selectors).toContain('.kv-one-time-code-slot')
+    expect(selectors).toContain('.kv-one-time-code-separator')
+    expect(selectors).not.toContain('autocapitalize')
   })
 
   it('keeps the plain field’s edge, system colours and focus ring in forced colours (1.4.11, 2.4.7)', () => {

@@ -4,6 +4,7 @@
 - **Date:** 2026-10-02
 - **Deciders:** Maintainer asked for an OTP field component. The approach below was proposed with Plan 0014 and is open to change.
 - **Tags:** api, a11y
+- **Amended by:** ADR-0045 (items 1 to 3: a `pattern` replaces `length` and `characters`)
 
 ## Context
 

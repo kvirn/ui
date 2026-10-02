@@ -146,7 +146,7 @@ Presets (all from `masks`, re-exported by `@kvirn-ui/react`):
 | `organisationNumber({ country })`, `postalCode({ country })`, `iban()`                         | `556000-0001`, `123 45`, `SE45 5000 0000 0583 9825 7466`                                                                                           |
 | `email()`, `telephone()`                                                                       | Filters: spaces out of an address, and digits, `+`, space, `-`, `(`, `)` for a number. No national format                                          |
 | `pattern('aa-9999', { transform? })`, `regexp(/^[A-Z]{0,3}\d{0,3}$/, { allowed?, complete? })` | Your own. In a pattern `9` is a digit, `a` a letter (å, ø, đ, ŋ count), `*` either, and the rest are literals. A regexp must accept partial values |
-| `oneTimeCode({ length, characters? })`                                                         | For a one-time code (ADR-0033)                                                                                                                     |
+| `oneTimeCode({ pattern })`                                                                     | For a one-time code (ADR-0033, ADR-0045): `9` digit, `*` letter or digit, `a` letter, `A` and `&` upper-case, `-` a separator. ASCII only          |
 
 A preset suggests `inputMode`, `autoCapitalize`, `spellCheck={false}` and, for identifiers, `dir="ltr"`. Your own props win. It never sets `autocomplete`: that depends on the question.
 

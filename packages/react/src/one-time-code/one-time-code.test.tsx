@@ -39,15 +39,16 @@ afterEach(() => {
 })
 
 interface CodeFieldProps {
-  length?: number
-  characters?: 'digits' | 'lettersAndDigits'
+  pattern?: string
+  /** The hint under the label. Default: the six digits of the default pattern. */
+  hint?: string
   value?: string
   defaultValue?: string
   invalid?: boolean
   disabled?: boolean
   readOnly?: boolean
   onValueChange?: (value: string, details: InputChangeDetails) => void
-  onComplete?: (value: string) => void
+  onComplete?: (value: string, unmaskedValue: string) => void
   inputRef?: Ref<HTMLInputElement>
   /** Rendered after the field, inside the form: a submit button, for the Enter test. */
   after?: ReactNode
@@ -56,8 +57,9 @@ interface CodeFieldProps {
 
 /** The design spec's field: label, hint above, the row of slots over the one input. */
 function CodeField({
-  length = 6,
-  slotCount = length,
+  pattern = '999999',
+  hint = 'Koden har 6 siffror.',
+  slotCount = [...pattern].length,
   invalid = false,
   disabled = false,
   readOnly = false,
@@ -68,8 +70,8 @@ function CodeField({
   return (
     <Field.Root invalid={invalid} disabled={disabled}>
       <Field.Label>Kod från sms:et</Field.Label>
-      <Field.Description>Koden har {length} siffror.</Field.Description>
-      <OneTimeCode.Root length={length} data-testid="root" {...rootProps}>
+      <Field.Description>{hint}</Field.Description>
+      <OneTimeCode.Root pattern={pattern} data-testid="root" {...rootProps}>
         <OneTimeCode.Input name="code" readOnly={readOnly} ref={inputRef} />
         {Array.from({ length: slotCount }, (_, index) => (
           <OneTimeCode.Slot key={index} index={index} />
@@ -89,6 +91,14 @@ const filledSlots = () => slots().filter((slot) => slot.hasAttribute('data-fille
 const activeSlots = () => slots().filter((slot) => slot.hasAttribute('data-active'))
 const selectedSlots = () => slots().filter((slot) => slot.hasAttribute('data-selected'))
 const characters = () => slots().map((slot) => slot.textContent)
+/** Every cell of the pattern, characters and separators, in order. */
+const cells = () => [
+  ...document.querySelectorAll<HTMLElement>('.kv-one-time-code-slot, .kv-one-time-code-separator'),
+]
+const separators = () => [...document.querySelectorAll<HTMLElement>('.kv-one-time-code-separator')]
+const cellTexts = () => cells().map((cell) => cell.textContent)
+const isSeparatorCell = (cell: HTMLElement | undefined) =>
+  cell?.classList.contains('kv-one-time-code-separator') === true
 
 /** Sets the value the way the browser does, so React sees a real change (not its own setter). */
 function setNativeValue(element: HTMLInputElement, value: string): void {
@@ -108,13 +118,16 @@ describe('exports and types', () => {
   })
 
   test('the option, result and part prop types', () => {
-    expectTypeOf<UseOneTimeCodeOptions['length']>().toEqualTypeOf<number | undefined>()
-    expectTypeOf<UseOneTimeCodeOptions['characters']>().toEqualTypeOf<
-      'digits' | 'lettersAndDigits' | undefined
+    expectTypeOf<UseOneTimeCodeOptions['pattern']>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<UseOneTimeCodeOptions['onComplete']>().toEqualTypeOf<
+      ((value: string, unmaskedValue: string) => void) | undefined
     >()
     expectTypeOf<UseOneTimeCodeResult['isComplete']>().toEqualTypeOf<boolean>()
+    expectTypeOf<UseOneTimeCodeResult['characterCount']>().toEqualTypeOf<number>()
+    expectTypeOf<UseOneTimeCodeResult['pattern']>().toEqualTypeOf<string>()
+    expectTypeOf<OneTimeCodeSlotState['kind']>().toEqualTypeOf<'character' | 'separator'>()
     expectTypeOf<OneTimeCodeSlotState['caret']>().toEqualTypeOf<'before' | 'after' | undefined>()
-    expectTypeOf<OneTimeCodeRootProps['length']>().toEqualTypeOf<number | undefined>()
+    expectTypeOf<OneTimeCodeRootProps['pattern']>().toEqualTypeOf<string | undefined>()
     expectTypeOf<OneTimeCodeInputProps['name']>().toEqualTypeOf<string | undefined>()
     expectTypeOf<OneTimeCodeSlotProps['index']>().toEqualTypeOf<number>()
   })
@@ -149,9 +162,9 @@ describe('the input', () => {
     await expect.element(code()).not.toHaveAttribute('type', 'password')
   })
 
-  test('letters and digits: capitals on a phone keyboard, and no inputmode', async () => {
-    await render(<CodeField characters="lettersAndDigits" length={8} />)
-    await expect.element(code()).toHaveAttribute('autocapitalize', 'characters')
+  test('letters and digits as typed: the text keyboard, no inputmode and no capitals', async () => {
+    await render(<CodeField pattern="********" />)
+    await expect.element(code()).not.toHaveAttribute('autocapitalize')
     await expect.element(code()).not.toHaveAttribute('inputmode')
     await userEvent.type(code(), 'k7qx2m9p')
     await expect.element(code()).toHaveValue('k7qx2m9p')
@@ -285,6 +298,27 @@ describe('the root', () => {
     await expect.poll(() => root()?.hasAttribute('data-complete')).toBe(true)
     await userEvent.keyboard('{Backspace}')
     await expect.poll(() => root()?.hasAttribute('data-complete')).toBe(false)
+  })
+
+  test('data-character-count and data-separator-count come from the pattern, in the server render too', async () => {
+    const patterns: [string, string, string][] = [
+      ['999999', '6', '0'],
+      ['****-****', '8', '1'],
+      ['***-***-***', '9', '2'],
+      ['AA-9999', '6', '1'],
+    ]
+    for (const [pattern, characterCount, separatorCount] of patterns) {
+      const html = renderToString(<CodeField pattern={pattern} />)
+      expect(html).toContain(`data-character-count="${characterCount}"`)
+      expect(html).toContain(`data-separator-count="${separatorCount}"`)
+    }
+    const { unmount } = await render(<CodeField pattern="&&&&-&&&&" />)
+    expect(root()?.getAttribute('data-character-count')).toBe('8')
+    expect(root()?.getAttribute('data-separator-count')).toBe('1')
+    await unmount()
+    await render(<CodeField />)
+    expect(root()?.getAttribute('data-character-count')).toBe('6')
+    expect(root()?.getAttribute('data-separator-count')).toBe('0')
   })
 
   test('data-ready once the hook has started, and not in the server render (ADR-0033 item 5)', async () => {
@@ -483,8 +517,8 @@ describe('value, defaultValue and onValueChange (ADR-0033 item 8)', () => {
     await expect.poll(characters).toEqual(['', '', '', '', '', ''])
   })
 
-  test('the value of an own, unrelated length: an 8 character code has 8 slots', async () => {
-    await render(<CodeField length={8} />)
+  test('an 8 character pattern has 8 slots', async () => {
+    await render(<CodeField pattern="99999999" />)
     expect(slots()).toHaveLength(8)
     await userEvent.fill(code(), '12345678')
     await expect.poll(() => root()?.hasAttribute('data-complete')).toBe(true)
@@ -493,31 +527,31 @@ describe('value, defaultValue and onValueChange (ADR-0033 item 8)', () => {
 
 describe('onComplete', () => {
   test('fires once with the code when it becomes complete, and never moves focus or submits', async () => {
-    const onComplete = vi.fn<(value: string) => void>()
+    const onComplete = vi.fn<(value: string, unmaskedValue: string) => void>()
     await render(<CodeField onComplete={onComplete} />)
     await userEvent.type(code(), '48192')
     expect(onComplete).not.toHaveBeenCalled()
     await userEvent.keyboard('0')
     expect(onComplete).toHaveBeenCalledTimes(1)
-    expect(onComplete).toHaveBeenCalledWith('481920')
+    expect(onComplete).toHaveBeenCalledWith('481920', '481920')
     await expect.element(code()).toHaveFocus()
   })
 
   test('fires for a paste of the whole code, and not again for the same code', async () => {
-    const onComplete = vi.fn<(value: string) => void>()
+    const onComplete = vi.fn<(value: string, unmaskedValue: string) => void>()
     await render(<CodeField onComplete={onComplete} />)
     await userEvent.fill(code(), 'Your code is 481 920')
     expect(onComplete).toHaveBeenCalledTimes(1)
-    expect(onComplete).toHaveBeenLastCalledWith('481920')
+    expect(onComplete).toHaveBeenLastCalledWith('481920', '481920')
     await userEvent.fill(code(), '481920')
     expect(onComplete).toHaveBeenCalledTimes(1)
     await userEvent.fill(code(), '481921')
     expect(onComplete).toHaveBeenCalledTimes(2)
-    expect(onComplete).toHaveBeenLastCalledWith('481921')
+    expect(onComplete).toHaveBeenLastCalledWith('481921', '481921')
   })
 
   test('does not fire for an incomplete code', async () => {
-    const onComplete = vi.fn<(value: string) => void>()
+    const onComplete = vi.fn<(value: string, unmaskedValue: string) => void>()
     await render(<CodeField onComplete={onComplete} />)
     await userEvent.type(code(), '48192')
     expect(onComplete).not.toHaveBeenCalled()
@@ -617,6 +651,370 @@ describe('caret and selection are drawn from the input (ADR-0033 item 3)', () =>
   })
 })
 
+describe('patterns with separators (ADR-0045)', () => {
+  const groupedHint = 'Koden har 8 tecken i två grupper om 4.'
+
+  test.each([
+    {
+      pattern: '****-****',
+      kinds: 'ccccscccc',
+      texts: ['', '', '', '', '-', '', '', '', ''],
+    },
+    {
+      pattern: '***-***-***',
+      kinds: 'cccscccsccc',
+      texts: ['', '', '', '-', '', '', '', '-', '', '', ''],
+    },
+    { pattern: 'AA-9999', kinds: 'ccscccc', texts: ['', '', '-', '', '', '', ''] },
+    { pattern: '&&&&', kinds: 'cccc', texts: ['', '', '', ''] },
+  ])('$pattern draws one cell per position of the pattern', async ({ pattern, kinds, texts }) => {
+    await render(<CodeField pattern={pattern} />)
+    expect(cells()).toHaveLength(pattern.length)
+    expect(
+      cells()
+        .map((cell) => (isSeparatorCell(cell) ? 's' : 'c'))
+        .join(''),
+    ).toBe(kinds)
+    expect(cellTexts()).toEqual(texts)
+    expect(slots()).toHaveLength([...pattern].filter((symbol) => symbol !== '-').length)
+    expect(separators()).toHaveLength([...pattern].filter((symbol) => symbol === '-').length)
+  })
+
+  test('a separator is an aria-hidden span with its own class, and has no state', async () => {
+    await render(<CodeField pattern="****-****" hint={groupedHint} defaultValue="abcd-12" />)
+    await userEvent.click(code())
+    await userEvent.keyboard('{Control>}a{/Control}')
+    await expect.poll(() => selectedSlots().length).toBe(6)
+    expect(separators()).toHaveLength(1)
+    const [separator] = separators()
+    expect(separator?.tagName).toBe('SPAN')
+    expect(separator?.className).toBe('kv-one-time-code-separator')
+    expect(separator?.getAttribute('aria-hidden')).toBe('true')
+    expect(separator?.textContent).toBe('-')
+    for (const name of ['data-filled', 'data-active', 'data-selected', 'data-caret', 'tabindex']) {
+      expect(separator?.hasAttribute(name)).toBe(false)
+    }
+    // The separator is not a character slot: it never takes the slot class.
+    expect(separator?.classList.contains('kv-one-time-code-slot')).toBe(false)
+    expect(slots().every((slot) => slot !== separator)).toBe(true)
+    await expect.element(code()).toHaveValue('abcd-12')
+  })
+
+  test('draws the separator before anything is typed, and the characters around it', async () => {
+    await render(<CodeField pattern="****-****" defaultValue="abcd-12" />)
+    expect(cellTexts()).toEqual(['a', 'b', 'c', 'd', '-', '1', '2', '', ''])
+    expect(filledSlots()).toHaveLength(6)
+    expect(slots().filter((slot) => slot.textContent === '')).toHaveLength(2)
+  })
+
+  test('typing across the separator: the dash goes in as the fifth character is placed', async () => {
+    await render(<CodeField pattern="****-****" hint={groupedHint} />)
+    await userEvent.type(code(), 'abcd')
+    await expect.element(code()).toHaveValue('abcd')
+    expect(cellTexts()).toEqual(['a', 'b', 'c', 'd', '-', '', '', '', ''])
+    await userEvent.keyboard('1')
+    await expect.element(code()).toHaveValue('abcd-1')
+    await userEvent.keyboard('234')
+    await expect.element(code()).toHaveValue('abcd-1234')
+    expect(cellTexts()).toEqual(['a', 'b', 'c', 'd', '-', '1', '2', '3', '4'])
+    await expect.poll(() => root()?.hasAttribute('data-complete')).toBe(true)
+    await expect.element(code()).toHaveFocus()
+  })
+
+  test('a typed dash after the group is accepted once, and not doubled', async () => {
+    await render(<CodeField pattern="****-****" />)
+    await userEvent.type(code(), 'abcd--1')
+    await expect.element(code()).toHaveValue('abcd-1')
+  })
+
+  test.each(['abcd1234', 'abcd-1234', 'abcd 1234', ' abcd  1234 '])(
+    'a paste of %j ends as abcd-1234',
+    async (pasted) => {
+      await render(<CodeField pattern="****-****" />)
+      await userEvent.fill(code(), pasted)
+      await expect.element(code()).toHaveValue('abcd-1234')
+      expect(cellTexts()).toEqual(['a', 'b', 'c', 'd', '-', '1', '2', '3', '4'])
+    },
+  )
+
+  test('three groups: a paste with or without dashes ends with them', async () => {
+    await render(<CodeField pattern="***-***-***" />)
+    await userEvent.fill(code(), '123456789')
+    await expect.element(code()).toHaveValue('123-456-789')
+    await userEvent.fill(code(), '987-654-321')
+    await expect.element(code()).toHaveValue('987-654-321')
+    expect(cellTexts()).toEqual(['9', '8', '7', '-', '6', '5', '4', '-', '3', '2', '1'])
+  })
+
+  test('autofill without a separator ends with it, in the field and in the boxes', async () => {
+    await render(<CodeField pattern="****-****" />)
+    const element = inputElement()
+    setNativeValue(element, 'abcd1234')
+    element.dispatchEvent(new Event('input', { bubbles: true }))
+    await expect.element(code()).toHaveValue('abcd-1234')
+    expect(cellTexts()).toEqual(['a', 'b', 'c', 'd', '-', '1', '2', '3', '4'])
+  })
+
+  test('a value in the field before the script starts goes through the mask, separator included', async () => {
+    await render(
+      <CodeField
+        pattern="****-****"
+        inputRef={(element) => {
+          if (element !== null) {
+            setNativeValue(element, 'abcd1234')
+          }
+        }}
+      />,
+    )
+    await expect.element(code()).toHaveValue('abcd-1234')
+    await expect.poll(cellTexts).toEqual(['a', 'b', 'c', 'd', '-', '1', '2', '3', '4'])
+  })
+
+  test('AA-9999: lower case is upper-cased, in the field and in the boxes', async () => {
+    await render(<CodeField pattern="AA-9999" />)
+    await userEvent.type(code(), 'ab1234')
+    await expect.element(code()).toHaveValue('AB-1234')
+    expect(cellTexts()).toEqual(['A', 'B', '-', '1', '2', '3', '4'])
+  })
+
+  test('&&&&: lower case is upper-cased and digits are kept', async () => {
+    await render(<CodeField pattern="&&&&" />)
+    await userEvent.fill(code(), 'a1b2')
+    await expect.element(code()).toHaveValue('A1B2')
+    expect(cellTexts()).toEqual(['A', '1', 'B', '2'])
+  })
+
+  test('****-****: a lower case letter stays as typed (the boxes show the value)', async () => {
+    await render(<CodeField pattern="****-****" />)
+    await userEvent.type(code(), 'k7qx')
+    await expect.element(code()).toHaveValue('k7qx')
+  })
+
+  test('a refused character is not inserted: a digit in the letters, a letter in the digits', async () => {
+    await render(<CodeField pattern="AA-9999" />)
+    // `1` and `x` are refused (the letters want letters, the digits want digits), `a` becomes `A`.
+    await userEvent.type(code(), '1abx1')
+    await expect.element(code()).toHaveValue('AB-1')
+  })
+
+  test('onValueChange and onComplete get the value with the dash, and the code without it', async () => {
+    const reports: { value: string; details: InputChangeDetails }[] = []
+    const onComplete = vi.fn<(value: string, unmaskedValue: string) => void>()
+    await render(
+      <CodeField
+        pattern="****-****"
+        onComplete={onComplete}
+        onValueChange={(value, details) => {
+          reports.push({ value, details })
+        }}
+      />,
+    )
+    await userEvent.type(code(), 'abcd123')
+    expect(onComplete).not.toHaveBeenCalled()
+    expect(reports.at(-1)?.value).toBe('abcd-123')
+    expect(reports.at(-1)?.details.unmaskedValue).toBe('abcd123')
+    expect(reports.at(-1)?.details.isComplete).toBe(false)
+    await userEvent.keyboard('4')
+    expect(onComplete).toHaveBeenCalledTimes(1)
+    expect(onComplete).toHaveBeenCalledWith('abcd-1234', 'abcd1234')
+    expect(reports.at(-1)?.details.isComplete).toBe(true)
+    await expect.element(code()).toHaveFocus()
+  })
+
+  test('Backspace deletes the character before the caret, also across the dash', async () => {
+    await render(<CodeField pattern="****-****" defaultValue="abcd-1" />)
+    await userEvent.click(code())
+    inputElement().setSelectionRange(6, 6)
+    await userEvent.keyboard('{Backspace}')
+    await expect.element(code()).toHaveValue('abcd-')
+    await userEvent.keyboard('{Backspace}')
+    await expect.element(code()).toHaveValue('abcd')
+    await userEvent.keyboard('{Backspace}')
+    await expect.element(code()).toHaveValue('abc')
+    expect(cellTexts()).toEqual(['a', 'b', 'c', '', '-', '', '', '', ''])
+  })
+
+  test('a refused character is announced with the class it needs, and a full code says its length', async () => {
+    await render(
+      <KvirnProvider locale="en" messages={en}>
+        <CodeField pattern="AA-9999" />
+      </KvirnProvider>,
+    )
+    await userEvent.type(code(), '1')
+    await expect
+      .poll(() => document.body.textContent)
+      .toContain('Only letters can be entered here.')
+  })
+
+  test('a code that is full says how many characters it has, without counting the dash', async () => {
+    await render(
+      <KvirnProvider locale="en" messages={en}>
+        <CodeField pattern="****-****" defaultValue="abcd-1234" />
+      </KvirnProvider>,
+    )
+    await userEvent.click(code())
+    await userEvent.keyboard('{End}5')
+    await expect.poll(() => document.body.textContent).toContain('You’ve entered all 8 characters.')
+  })
+
+  test.each([
+    { pattern: '999999', inputmode: 'numeric', autocapitalize: 'characters' },
+    { pattern: '999-999', inputmode: 'numeric', autocapitalize: 'characters' },
+    { pattern: '****-****', inputmode: null, autocapitalize: null },
+    { pattern: 'aaaa', inputmode: null, autocapitalize: null },
+    { pattern: 'AA-9999', inputmode: null, autocapitalize: 'characters' },
+    { pattern: '&&&&', inputmode: null, autocapitalize: 'characters' },
+    { pattern: '99-AA', inputmode: null, autocapitalize: 'characters' },
+  ])(
+    '$pattern: inputmode $inputmode, autocapitalize $autocapitalize',
+    async ({ pattern, inputmode, autocapitalize }) => {
+      await render(<CodeField pattern={pattern} />)
+      const read = (name: string) => inputElement().getAttribute(name)
+      expect(read('inputmode')).toBe(inputmode)
+      expect(read('autocapitalize')).toBe(autocapitalize)
+      // the same attributes whatever the pattern
+      expect(read('autocomplete')).toBe('one-time-code')
+      expect(read('spellcheck')).toBe('false')
+      expect(read('autocorrect')).toBe('off')
+      expect(read('dir')).toBe('ltr')
+      expect(inputElement().hasAttribute('maxlength')).toBe(false)
+      expect(inputElement().hasAttribute('pattern')).toBe(false)
+    },
+  )
+
+  test.each([
+    { pattern: '99x9', message: /"x" at position 2/ },
+    { pattern: '-999', message: /"-" at position 0/ },
+    { pattern: '999-', message: /"-" at position 3/ },
+    { pattern: '99--99', message: /"-" at position 3/ },
+    { pattern: '', message: /no character symbol/ },
+  ])('an invalid pattern %j throws a RangeError that names the problem', ({ pattern, message }) => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+    try {
+      expect(() => renderToString(<CodeField pattern={pattern} />)).toThrow(RangeError)
+      expect(() => renderToString(<CodeField pattern={pattern} />)).toThrow(message)
+    } finally {
+      consoleError.mockRestore()
+    }
+  })
+
+  describe('the caret and the active box at a separator (ADR-0045 item 8)', () => {
+    const activeCell = () => cells().findIndex((cell) => cell.hasAttribute('data-active'))
+
+    test('the active box is the first character box at or after the caret, never a separator', async () => {
+      await render(<CodeField pattern="****-****" defaultValue="abcd-123" />)
+      await userEvent.click(code())
+      await userEvent.keyboard('{Home}')
+      for (const caret of [0, 1, 2, 3, 4, 5, 6, 7, 8]) {
+        if (caret > 0) {
+          await userEvent.keyboard('{ArrowRight}')
+        }
+        // Caret 4 is just before the dash: it is drawn after the box before it.
+        const expected = caret === 4 ? 3 : caret
+        await expect.poll(activeCell).toBe(expected)
+        expect(isSeparatorCell(cells()[activeCell()])).toBe(false)
+        expect(cells()[expected]?.getAttribute('data-caret')).toBe(caret === 4 ? 'after' : 'before')
+      }
+    })
+
+    test('a caret just before an existing dash is drawn after the character before it', async () => {
+      await render(<CodeField pattern="****-****" defaultValue="abcd-123" />)
+      await userEvent.click(code())
+      await userEvent.keyboard('{Home}{ArrowRight}{ArrowRight}{ArrowRight}{ArrowRight}')
+      await expect.poll(activeCell).toBe(3)
+      expect(cells()[3]?.getAttribute('data-caret')).toBe('after')
+      expect(cells()[3]?.hasAttribute('data-filled')).toBe(true)
+      expect(separators()[0]?.hasAttribute('data-active')).toBe(false)
+      expect(separators()[0]?.hasAttribute('data-caret')).toBe(false)
+      // the other side of the dash is a different box
+      await userEvent.keyboard('{ArrowRight}')
+      await expect.poll(activeCell).toBe(5)
+      expect(cells()[5]?.getAttribute('data-caret')).toBe('before')
+    })
+
+    test('ArrowLeft steps back over the dash in one press, then before the last box of the first group', async () => {
+      await render(<CodeField pattern="****-****" defaultValue="abcd-123" />)
+      await userEvent.click(code())
+      inputElement().setSelectionRange(5, 5)
+      await userEvent.keyboard('{ArrowLeft}')
+      await expect.poll(activeCell).toBe(3)
+      expect(cells()[3]?.getAttribute('data-caret')).toBe('after')
+      await userEvent.keyboard('{ArrowLeft}')
+      await expect.poll(activeCell).toBe(3)
+      expect(cells()[3]?.getAttribute('data-caret')).toBe('before')
+    })
+
+    test('with no dash in the value yet, a caret at the end of the group goes to the next group’s first box', async () => {
+      await render(<CodeField pattern="****-****" defaultValue="abcd" />)
+      await userEvent.click(code())
+      await userEvent.keyboard('{End}')
+      await expect.poll(activeCell).toBe(5)
+      expect(cells()[5]?.getAttribute('data-caret')).toBe('before')
+      expect(cells()[5]?.hasAttribute('data-filled')).toBe(false)
+    })
+
+    test('at the end of a complete code the caret is after the last character', async () => {
+      await render(<CodeField pattern="****-****" />)
+      await userEvent.type(code(), 'abcd1234')
+      await expect.poll(activeCell).toBe(8)
+      expect(cells()[8]?.getAttribute('data-caret')).toBe('after')
+      await userEvent.keyboard('{ArrowLeft}')
+      await expect.poll(() => cells()[8]?.getAttribute('data-caret')).toBe('before')
+    })
+
+    test('a selection across the dash selects the filled characters and never the separator', async () => {
+      await render(<CodeField pattern="****-****" defaultValue="abcd-123" />)
+      await userEvent.click(code())
+      await userEvent.keyboard('{Home}{ArrowRight}{ArrowRight}')
+      await userEvent.keyboard(
+        '{Shift>}{ArrowRight}{ArrowRight}{ArrowRight}{ArrowRight}{ArrowRight}{/Shift}',
+      )
+      await expect.poll(() => selectedSlots().length).toBe(4)
+      expect(separators()[0]?.hasAttribute('data-selected')).toBe(false)
+      expect(activeSlots()).toHaveLength(0)
+    })
+
+    test('a press is placed by the character box nearest to it: a separator and a gap are not targets', async () => {
+      await render(
+        <Field.Root>
+          <Field.Label marker="none">Kod</Field.Label>
+          <Field.Description>Åtta tecken.</Field.Description>
+          <OneTimeCode.Root pattern="****-****" defaultValue="abcd-12" style={{ display: 'flex' }}>
+            <OneTimeCode.Input style={{ position: 'absolute' }} />
+            {Array.from({ length: 9 }, (_, index) => (
+              <OneTimeCode.Slot
+                key={index}
+                index={index}
+                style={{ display: 'inline-block', width: '20px', height: '20px' }}
+              />
+            ))}
+          </OneTimeCode.Root>
+        </Field.Root>,
+      )
+      const input = page.getByRole('textbox', { name: 'Kod' }).element() as HTMLInputElement
+      const pressAt = (clientX: number) => {
+        input.focus()
+        input.setSelectionRange(0, 0)
+        input.dispatchEvent(
+          new MouseEvent('click', { bubbles: true, detail: 1, clientX, clientY: 5 }),
+        )
+        return input.selectionStart
+      }
+      const rectOf = (cell: HTMLElement) => cell.getBoundingClientRect()
+      const [dash] = separators()
+      const dashBox = rectOf(dash!)
+      // The left half of the dash is nearest to the box before it (the fourth, position 3), the right
+      // half to the first of the second group (position 5, not 4: the dash takes a position).
+      expect(pressAt(dashBox.left + 4)).toBe(3)
+      expect(pressAt(dashBox.right - 4)).toBe(5)
+      // A press on a filled box is before its character, and on an empty box it is at the end.
+      expect(pressAt(rectOf(cells()[1]!).left + 10)).toBe(1)
+      expect(pressAt(rectOf(cells()[6]!).left + 10)).toBe(6)
+      expect(pressAt(rectOf(cells()[8]!).left + 10)).toBe(7)
+    })
+  })
+})
+
 describe('render, refs and merged props (ADR-0015)', () => {
   test('the input’s own ref and the hook’s both get the element', async () => {
     const ref = createRef<HTMLInputElement>()
@@ -652,7 +1050,7 @@ describe('render, refs and merged props (ADR-0015)', () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">Kod</Field.Label>
-        <OneTimeCode.Root length={4} defaultValue="48">
+        <OneTimeCode.Root pattern="9999" defaultValue="48">
           <OneTimeCode.Input />
           <OneTimeCode.Slot
             index={0}
@@ -668,7 +1066,12 @@ describe('render, refs and merged props (ADR-0015)', () => {
       'true',
     )
     expect(document.querySelector('b[data-testid="bold"]')?.className).toBe('kv-one-time-code-slot')
-    expect(states.at(-1)).toMatchObject({ character: '4', isFilled: true, isActive: false })
+    expect(states.at(-1)).toMatchObject({
+      kind: 'character',
+      character: '4',
+      isFilled: true,
+      isActive: false,
+    })
   })
 
   test('render as an element on the Root', async () => {
@@ -687,7 +1090,7 @@ describe('render, refs and merged props (ADR-0015)', () => {
 
 describe('the hook, on your own elements', () => {
   function Own({ options }: { options?: UseOneTimeCodeOptions }) {
-    const oneTimeCode = useOneTimeCode({ length: 4, ...options })
+    const oneTimeCode = useOneTimeCode({ pattern: '9999', ...options })
     return (
       <div {...oneTimeCode.rootProps} data-testid="root">
         <label>
@@ -717,7 +1120,7 @@ describe('the hook, on your own elements', () => {
 
   test('slots carry the state of each position', async () => {
     function Slots() {
-      const oneTimeCode = useOneTimeCode({ length: 3, defaultValue: '4' })
+      const oneTimeCode = useOneTimeCode({ pattern: '999', defaultValue: '4' })
       return (
         <div {...oneTimeCode.rootProps}>
           <input aria-label="Kod" {...oneTimeCode.inputProps} />
@@ -729,10 +1132,84 @@ describe('the hook, on your own elements', () => {
     const read = () =>
       JSON.parse(document.querySelector('[data-testid="slots"]')?.textContent ?? '[]') as unknown
     expect(read()).toEqual([
-      { character: '4', isFilled: true, isActive: false, isSelected: false },
-      { character: '', isFilled: false, isActive: false, isSelected: false },
-      { character: '', isFilled: false, isActive: false, isSelected: false },
+      { kind: 'character', character: '4', isFilled: true, isActive: false, isSelected: false },
+      { kind: 'character', character: '', isFilled: false, isActive: false, isSelected: false },
+      { kind: 'character', character: '', isFilled: false, isActive: false, isSelected: false },
     ])
+  })
+})
+
+describe('the hook with a pattern, on your own elements', () => {
+  function Grouped({ pattern }: { pattern: string }) {
+    const oneTimeCode = useOneTimeCode({ pattern, defaultValue: '12-3' })
+    return (
+      <div {...oneTimeCode.rootProps} data-testid="root">
+        <label>
+          Egen kod
+          <input {...oneTimeCode.inputProps} />
+        </label>
+        {oneTimeCode.slots.map((slot, index) => (
+          <span key={index} {...oneTimeCode.getSlotProps(index)}>
+            {slot.character}
+          </span>
+        ))}
+        <pre data-testid="slots">{JSON.stringify(oneTimeCode.slots)}</pre>
+        <output data-testid="count">{oneTimeCode.characterCount}</output>
+        <output data-testid="pattern">{oneTimeCode.pattern}</output>
+        <output data-testid="complete">{String(oneTimeCode.isComplete)}</output>
+      </div>
+    )
+  }
+  const read = (testId: string) =>
+    document.querySelector(`[data-testid="${testId}"]`)?.textContent ?? ''
+
+  test('slots has one entry per position of the pattern, with a kind, and a separator has no state', async () => {
+    await render(<Grouped pattern="99-99" />)
+    expect(JSON.parse(read('slots')) as unknown).toEqual([
+      { kind: 'character', character: '1', isFilled: true, isActive: false, isSelected: false },
+      { kind: 'character', character: '2', isFilled: true, isActive: false, isSelected: false },
+      { kind: 'separator', character: '-', isFilled: false, isActive: false, isSelected: false },
+      { kind: 'character', character: '3', isFilled: true, isActive: false, isSelected: false },
+      { kind: 'character', character: '', isFilled: false, isActive: false, isSelected: false },
+    ])
+  })
+
+  test('characterCount and pattern are in the result, and isComplete ignores the separators', async () => {
+    await render(<Grouped pattern="99-99" />)
+    expect(read('count')).toBe('4')
+    expect(read('pattern')).toBe('99-99')
+    expect(read('complete')).toBe('false')
+    const input = page.getByRole('textbox', { name: 'Egen kod' }).element() as HTMLInputElement
+    input.focus()
+    await userEvent.keyboard('{End}4')
+    await expect.poll(() => read('complete')).toBe('true')
+  })
+
+  test('getSlotProps: a separator has the separator class and aria-hidden, a character the slot class', async () => {
+    await render(<Grouped pattern="99-99" />)
+    expect(cells().map((cell) => cell.className)).toEqual([
+      'kv-one-time-code-slot',
+      'kv-one-time-code-slot',
+      'kv-one-time-code-separator',
+      'kv-one-time-code-slot',
+      'kv-one-time-code-slot',
+    ])
+    expect(cells().every((cell) => cell.getAttribute('aria-hidden') === 'true')).toBe(true)
+    const [separator] = separators()
+    expect(separator?.getAttributeNames().sort()).toEqual(['aria-hidden', 'class'])
+  })
+
+  test('the default pattern is six digits', async () => {
+    function Default() {
+      const oneTimeCode = useOneTimeCode()
+      return (
+        <output data-testid="default">
+          {oneTimeCode.pattern} {oneTimeCode.characterCount} {oneTimeCode.slots.length}
+        </output>
+      )
+    }
+    await render(<Default />)
+    expect(read('default')).toBe('999999 6 6')
   })
 })
 
@@ -757,9 +1234,33 @@ describe('development warnings', () => {
   })
 
   test('a Slot whose index is not in the code warns once', async () => {
-    await render(<CodeField length={4} slotCount={6} />)
+    await render(<CodeField pattern="9999" slotCount={6} />)
     const warnings = consoleWarn.mock.calls.map((call) => String(call[0]))
     expect(warnings.filter((warning) => warning.includes('index'))).toHaveLength(1)
+  })
+
+  test('a Slot is checked against the pattern, separators included', async () => {
+    await render(<CodeField pattern="****-****" slotCount={9} />)
+    expect(consoleWarn.mock.calls.filter((call) => String(call[0]).includes('index'))).toHaveLength(
+      0,
+    )
+    resetDevWarnings()
+    await render(<CodeField pattern="****-****" slotCount={10} />)
+    const warnings = consoleWarn.mock.calls.map((call) => String(call[0]))
+    expect(warnings.filter((warning) => warning.includes('index 9'))).toHaveLength(1)
+  })
+
+  test('too few Slots for the pattern warns once: a character would be typed that nobody sees', async () => {
+    // The old idiom: one slot per character, which leaves out the dash.
+    await render(<CodeField pattern="****-****" slotCount={8} />)
+    const warnings = consoleWarn.mock.calls.map((call) => String(call[0]))
+    expect(warnings.filter((warning) => warning.includes('too few'))).toHaveLength(1)
+    resetDevWarnings()
+    consoleWarn.mockClear()
+    await render(<CodeField pattern="****-****" slotCount={9} />)
+    expect(
+      consoleWarn.mock.calls.filter((call) => String(call[0]).includes('too few')),
+    ).toHaveLength(0)
   })
 
   test('an Input in a Field without a Field.Label warns (3.3.2)', async () => {
@@ -815,7 +1316,8 @@ describe('axe', () => {
     ['invalid', { defaultValue: '481920', invalid: true }],
     ['disabled', { defaultValue: '481920', disabled: true }],
     ['read-only', { defaultValue: '481920', readOnly: true }],
-    ['letters and digits', { length: 8, characters: 'lettersAndDigits', defaultValue: 'K7QX2M9P' }],
+    ['letters and digits in groups', { pattern: '****-****', defaultValue: 'K7QX-2M9P' }],
+    ['uppercase letters then digits', { pattern: 'AA-9999', defaultValue: 'AB-12' }],
   ]
   test.each(states)('no violations: %s', async (_name, props) => {
     const { container } = await render(<CodeField {...props} />)

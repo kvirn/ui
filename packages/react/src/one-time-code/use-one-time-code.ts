@@ -24,14 +24,15 @@ import type { InputChangeDetails } from '../input/use-input.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { useMask } from '../mask/use-mask.ts'
 
-/** What a code may contain. Digits by default. */
-export type OneTimeCodeCharacters = 'digits' | 'lettersAndDigits'
-
 export interface UseOneTimeCodeOptions {
-  /** How many characters the code has: one slot each. Default `6`. The theme draws 4 to 8. */
-  length?: number | undefined
-  /** `'digits'` (default) or `'lettersAndDigits'`. */
-  characters?: OneTimeCodeCharacters | undefined
+  /**
+   * The shape of the code, one symbol per position (ADR-0045): `9` a digit, `*` a letter or digit,
+   * `a` a letter, `A` an upper-case letter and `&` an upper-case letter or digit (lower case typed
+   * is upper-cased), and `-` a separator between two of them, drawn as its own cell. ASCII only.
+   * `'****-****'` is two groups of four. Default `'999999'`. An invalid pattern throws a
+   * `RangeError`.
+   */
+  pattern?: string | undefined
   /** Controlled: the value from your state. Pass `onValueChange` with it. */
   value?: string | undefined
   /** Uncontrolled: the native input keeps the value, and a form submit sends it. */
@@ -43,10 +44,12 @@ export interface UseOneTimeCodeOptions {
   onValueChange?: ((value: string, details: InputChangeDetails) => void) | undefined
   /**
    * Called with the code when a change leaves it complete and different from before: typing the
-   * last character, a paste, an autofill. It never submits and never moves focus (3.2.2). Say in
-   * the hint that the code is checked as soon as it's entered, and keep a submit button.
+   * last character, a paste, an autofill. `value` is what the input holds (`ABCD-1234`) and
+   * `unmaskedValue` is the code without the separators (`ABCD1234`). It never submits and never
+   * moves focus (3.2.2). Say in the hint that the code is checked as soon as it's entered, and
+   * keep a submit button.
    */
-  onComplete?: ((value: string) => void) | undefined
+  onComplete?: ((value: string, unmaskedValue: string) => void) | undefined
   /** Native `disabled`. A disabled Field disables the input too. */
   disabled?: boolean | undefined
   /** Announce, politely and throttled, when the mask drops a character (4.1.3). Default `true`. */
@@ -55,17 +58,30 @@ export interface UseOneTimeCodeOptions {
   messages?: Partial<KvirnMessages['mask']> | undefined
 }
 
-/** One drawn character, the state of its box. */
+/**
+ * One cell of the pattern, the state of its box. `index` in `getSlotProps` and in `slots` is the
+ * position in the pattern: position _i_ of the pattern draws position _i_ of the value.
+ */
 export interface OneTimeCodeSlotState {
-  /** The character, or `''` when the slot is empty. */
+  /** `'character'` takes a character of the code. `'separator'` is the pattern's `-` (ADR-0045). */
+  kind: 'character' | 'separator'
+  /**
+   * The character, or `''` when a character slot is empty. A separator always has `'-'`: it is the
+   * pattern, not the value.
+   */
   character: string
+  /** A character slot holds a character. Never true for a separator. */
   isFilled: boolean
-  /** The input has focus, nothing is selected, and the caret is at this slot. At most one. */
+  /**
+   * The input has focus, nothing is selected, and the caret is at this slot. At most one, and
+   * never a separator: it is the first character slot at or after the caret.
+   */
   isActive: boolean
   /**
    * On the active slot: `'before'` when the caret is before this slot's position (in an empty
-   * slot, where the next character goes), `'after'` on the last slot when the code is complete
-   * and the caret is after its last character.
+   * slot, where the next character goes). `'after'` when the caret is after this slot's character
+   * and the next position is not a character slot you could type in: the last slot of a complete
+   * code, or the slot before a `-` that the caret has stepped back over.
    */
   caret: 'before' | 'after' | undefined
   /** The input has focus and its selection covers this slot's character. */
@@ -82,6 +98,10 @@ export interface OneTimeCodeRootPartProps {
   'data-disabled'?: ''
   /** The hook is running and has read the input's value. The theme draws the slots only then. */
   'data-ready'?: ''
+  /** The number of character symbols in the pattern (`8` for `****-****`), for the theme. */
+  'data-character-count': number
+  /** The number of `-` in the pattern (`1` for `****-****`, `0` for none). The theme reads it. */
+  'data-separator-count': number
 }
 
 /** Spread on the one `<input>`. */
@@ -98,8 +118,9 @@ export interface OneTimeCodeInputPartProps {
   autoComplete: 'one-time-code'
   spellCheck: false
   autoCorrect: 'off'
-  /** `numeric` for digits. Letters and digits set `autoCapitalize` instead. */
+  /** `numeric` when every symbol of the pattern is `9`. */
   inputMode?: 'numeric'
+  /** Set when no symbol is `a` or `*`: the code is in capitals or digits. */
   autoCapitalize?: 'characters'
   /** A code stays left to right in a right-to-left page. */
   dir: 'ltr'
@@ -119,10 +140,13 @@ export interface OneTimeCodeInputPartProps {
   onCompositionEnd: CompositionEventHandler<HTMLInputElement>
 }
 
-/** Spread on each slot: a `<span>` that draws one character. */
+/**
+ * Spread on each slot: a `<span>` that draws one character or, for the pattern's `-`, a separator.
+ * A separator has no `data-*` state at all: it is the pattern's dash, not part of the code's state.
+ */
 export interface OneTimeCodeSlotPartProps {
-  /** The part's class: `.kv-one-time-code-slot`. */
-  className: 'kv-one-time-code-slot'
+  /** `.kv-one-time-code-slot` for a character, `.kv-one-time-code-separator` for a separator. */
+  className: 'kv-one-time-code-slot' | 'kv-one-time-code-separator'
   /** A slot is a drawing of the input's value, so assistive technology never sees it. */
   'aria-hidden': 'true'
   'data-filled'?: ''
@@ -135,14 +159,17 @@ export interface OneTimeCodeSlotPartProps {
 export interface UseOneTimeCodeResult {
   rootProps: OneTimeCodeRootPartProps
   inputProps: OneTimeCodeInputPartProps
-  /** The props for the slot at `index`, from 0 to `length - 1`. */
+  /** The props for the slot at `index`, a position in the pattern: 0 to `pattern.length - 1`. */
   getSlotProps: (index: number) => OneTimeCodeSlotPartProps
-  /** One entry per character of the code, for rendering the slots. */
+  /** One entry per position of the pattern (characters and separators), for rendering the slots. */
   slots: readonly OneTimeCodeSlotState[]
-  /** The value the input shows now. */
+  /** The value the input shows now, with its separators (`ABCD-1234`). */
   value: string
-  length: number
-  /** Every slot is filled. */
+  /** The pattern in use. */
+  pattern: string
+  /** How many characters the code has: the pattern without its separators. */
+  characterCount: number
+  /** Every character slot is filled. */
   isComplete: boolean
   /** The hook has started and read the input's value. */
   isReady: boolean
@@ -179,10 +206,12 @@ function normaliseInput(element: HTMLInputElement, mask: Mask): string {
 }
 
 /**
- * The index of the slot nearest to a pointer, or `undefined` when the slots aren't drawn (the
- * theme's fallback shows the plain input, and its own caret is right).
+ * The ordinal (0 for the first character slot) of the character slot nearest to a pointer, or
+ * `undefined` when the slots aren't drawn (the theme's fallback shows the plain input, and its own
+ * caret is right). Only `.kv-one-time-code-slot` counts: a separator is `.kv-one-time-code-separator`,
+ * so a press on a separator or in a gap goes to the nearest character slot.
  */
-function slotIndexAt(input: HTMLInputElement, clientX: number): number | undefined {
+function characterSlotAt(input: HTMLInputElement, clientX: number): number | undefined {
   const row = input.closest('.kv-one-time-code') ?? input.parentElement
   if (row === null) {
     return undefined
@@ -203,13 +232,14 @@ function slotIndexAt(input: HTMLInputElement, clientX: number): number | undefin
 }
 
 /**
- * A one-time code's wiring for your own elements (ADR-0033, contract: one-time-code.a11y.md):
- * the props of one native `<input>`, the row, and one slot per character. The slots only draw
- * the input's value, caret and selection: the input stays the one operable element, so SMS
- * autofill, paste, dictation and undo work. The hook moves no focus and submits nothing.
+ * A one-time code's wiring for your own elements (ADR-0033 and ADR-0045, contract:
+ * one-time-code.a11y.md): the props of one native `<input>`, the row, and one slot per position of
+ * the pattern. The slots only draw the input's value, caret and selection: the input stays the one
+ * operable element, so SMS autofill, paste, dictation and undo work. The hook moves no focus and
+ * submits nothing.
  *
  * @example
- * const oneTimeCode = useOneTimeCode({ length: 6, onComplete: verify })
+ * const oneTimeCode = useOneTimeCode({ pattern: '****-****', onComplete: verify })
  * <div {...oneTimeCode.rootProps}>
  *   <input {...oneTimeCode.inputProps} name="code" />
  *   {oneTimeCode.slots.map((slot, index) => (
@@ -218,8 +248,7 @@ function slotIndexAt(input: HTMLInputElement, clientX: number): number | undefin
  * </div>
  */
 export function useOneTimeCode({
-  length = 6,
-  characters = 'digits',
+  pattern = '999999',
   value,
   defaultValue,
   onValueChange,
@@ -234,7 +263,13 @@ export function useOneTimeCode({
   const isDisabled = (field?.state.isDisabled ?? false) || disabled
   const controlProps = field?.controlProps
 
-  const mask = useMemo(() => masks.oneTimeCode({ length, characters }), [length, characters])
+  // Throws a RangeError for an invalid pattern, in development, naming the character.
+  const mask = useMemo(() => masks.oneTimeCode({ pattern }), [pattern])
+  const characterPositions = useMemo(
+    () => [...pattern].flatMap((symbol, position) => (symbol === '-' ? [] : [position])),
+    [pattern],
+  )
+  const characterCount = characterPositions.length
 
   const isControlled = value !== undefined
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -257,10 +292,10 @@ export function useOneTimeCode({
       previousValue.current = nextValue
       onValueChange?.(nextValue, details)
       if (details.isComplete === true && nextValue !== before) {
-        onComplete?.(nextValue)
+        onComplete?.(nextValue, details.unmaskedValue ?? mask.unmask(nextValue))
       }
     },
-    [onValueChange, onComplete, updateFocusAndSelection],
+    [onValueChange, onComplete, updateFocusAndSelection, mask],
   )
   const masked = useMask({
     mask,
@@ -337,7 +372,9 @@ export function useOneTimeCode({
     autoComplete: 'one-time-code',
     spellCheck: false,
     autoCorrect: 'off',
-    ...(characters === 'digits' ? { inputMode: 'numeric' } : { autoCapitalize: 'characters' }),
+    // The pattern decides (ADR-0045 item 9): the mask suggests, the same as for an Input.
+    ...(mask.attributes.inputMode === 'numeric' ? { inputMode: 'numeric' } : {}),
+    ...(mask.attributes.autoCapitalize === 'characters' ? { autoCapitalize: 'characters' } : {}),
     dir: 'ltr',
     ...(value === undefined ? {} : { value }),
     ...(defaultValue === undefined ? {} : { defaultValue }),
@@ -360,8 +397,10 @@ export function useOneTimeCode({
     },
     // A press on an empty slot puts the caret at the end of the code, and a press on a filled
     // slot before its character. The invisible text's own positions are only approximate, so the
-    // press is mapped to the slot, never to the text. A double click, a drag and a long press
-    // keep the browser's selection.
+    // press is mapped to the slot, never to the text. A press on a separator or in a gap goes to
+    // the nearest character slot. The slot's position in the pattern is its position in the value,
+    // because the value holds the separators. A double click, a drag and a long press keep the
+    // browser's selection.
     onClick: (event) => {
       const element = event.currentTarget
       if (
@@ -371,7 +410,8 @@ export function useOneTimeCode({
       ) {
         return
       }
-      const index = slotIndexAt(element, event.clientX)
+      const ordinal = characterSlotAt(element, event.clientX)
+      const index = ordinal === undefined ? undefined : characterPositions[ordinal]
       if (index === undefined) {
         return
       }
@@ -383,22 +423,52 @@ export function useOneTimeCode({
 
   const { isFocused, start, end } = focusAndSelection
   const isCollapsed = start === end
-  const activeIndex = isFocused && isCollapsed ? Math.min(start, length - 1) : undefined
-  const slots = Array.from({ length }, (_, index): OneTimeCodeSlotState => {
+  // Where the caret is drawn: the first character slot at or after it, "before" its character.
+  // A caret just before a `-` that is in the value (the user stepped back over it) is "after" the
+  // character before the dash, so the two sides of a separator don't look the same. With no
+  // character slot left (the end of a complete code) it is "after" the last character.
+  let activeIndex: number | undefined
+  let caretSide: 'before' | 'after' = 'before'
+  if (isFocused && isCollapsed) {
+    if (pattern[start] === '-' && shownValue[start] === '-' && start > 0) {
+      activeIndex = start - 1
+      caretSide = 'after'
+    } else {
+      activeIndex = characterPositions.find((position) => position >= start)
+      if (activeIndex === undefined) {
+        activeIndex = characterPositions.at(-1)
+        caretSide = 'after'
+      }
+    }
+  }
+  const slots = Array.from({ length: pattern.length }, (_, index): OneTimeCodeSlotState => {
+    if (pattern[index] === '-') {
+      return {
+        kind: 'separator',
+        character: '-',
+        isFilled: false,
+        isActive: false,
+        caret: undefined,
+        isSelected: false,
+      }
+    }
     const character = shownValue[index] ?? ''
     const isActive = activeIndex === index
     return {
+      kind: 'character',
       character,
       isFilled: character !== '',
       isActive,
-      caret: isActive ? (start >= length ? 'after' : 'before') : undefined,
+      caret: isActive ? caretSide : undefined,
       isSelected: isFocused && !isCollapsed && character !== '' && index >= start && index < end,
     }
   })
-  const isComplete = slots.every((slot) => slot.isFilled)
+  const isComplete = slots.every((slot) => slot.kind === 'separator' || slot.isFilled)
 
   const rootProps: OneTimeCodeRootPartProps = {
     className: 'kv-one-time-code',
+    'data-character-count': characterCount,
+    'data-separator-count': pattern.length - characterCount,
     ...(isComplete ? { 'data-complete': '' } : {}),
     ...(isInvalid ? { 'data-invalid': '' } : {}),
     ...(isDisabled ? { 'data-disabled': '' } : {}),
@@ -407,6 +477,12 @@ export function useOneTimeCode({
 
   const getSlotProps = (index: number): OneTimeCodeSlotPartProps => {
     const slot = slots[index]
+    if (slot?.kind === 'separator') {
+      return {
+        className: 'kv-one-time-code-separator',
+        'aria-hidden': 'true',
+      }
+    }
     return {
       className: 'kv-one-time-code-slot',
       'aria-hidden': 'true',
@@ -424,7 +500,8 @@ export function useOneTimeCode({
     getSlotProps,
     slots,
     value: shownValue,
-    length,
+    pattern,
+    characterCount,
     isComplete,
     isReady,
     isInvalid,

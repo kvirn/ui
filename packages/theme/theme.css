@@ -71,7 +71,7 @@
  *  11. Icon
  *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-input-group,
  *                      kv-checkbox, kv-radio, kv-native-select
- *  13. One-time code    kv-one-time-code: one input, drawn as a row of boxes
+ *  13. One-time code    kv-one-time-code: one input, drawn as boxes and dashes of its pattern
  */
 
 @layer kv {
@@ -3051,40 +3051,46 @@
   }
 
   /* 13. One-time code ------------------------------------------------------------------------
-   * <OneTimeCode.Root> renders class="kv-one-time-code", <OneTimeCode.Input> the one native input
-   * kv-one-time-code-input, and each <OneTimeCode.Slot> a box kv-one-time-code-slot (ADR-0033).
-   * Design spec: docs/design/one-time-code.md. Add the modifier kv-one-time-code--grouped to split
-   * an even-length code into two halves, as the message groups it ("481 920").
+   * <OneTimeCode.Root pattern="****-****"> renders class="kv-one-time-code", <OneTimeCode.Input>
+   * the one native input kv-one-time-code-input, and one <OneTimeCode.Slot> per position of the
+   * pattern: a box kv-one-time-code-slot for a character symbol, and a dash
+   * kv-one-time-code-separator for each "-" (ADR-0033, ADR-0045). Design spec:
+   * docs/design/one-time-code.md.
    *
    *   <Field.Root>
-   *     <Field.Label>Kod från sms:et</Field.Label>
-   *     <Field.Description>Koden har 6 siffror.</Field.Description>
-   *     <OneTimeCode.Root length={6}>
+   *     <Field.Label>Kod från e-postmeddelandet</Field.Label>
+   *     <Field.Description>Koden har 8 tecken, i 2 grupper om 4.</Field.Description>
+   *     <OneTimeCode.Root pattern="&&&&-&&&&">
    *       <OneTimeCode.Input name="code" />
-   *       <OneTimeCode.Slot index={0} /> … <OneTimeCode.Slot index={5} />
+   *       <OneTimeCode.Slot index={0} /> … <OneTimeCode.Slot index={8} />
    *     </OneTimeCode.Root>
    *   </Field.Root>
    *
    * The input is the only operable element. Without more, the theme shows it as a plain numeric
-   * input (it looks like kv-input kv-input--numeric, as wide as the code), and hides the slots.
-   * It draws the code as boxes over the input only when all of this holds: the Root has
-   * [data-ready] (the script has run and has read the input's value, so typing or autofill
-   * before that is never invisible), it has 4 to 8 slots, the browser isn't in forced colours
-   * (which would repaint the transparent text and the boxes), the row fits at 32px boxes (every
-   * length has its own minimum width: 2.5rem per character), and the browser knows the selectors
-   * used. Switching is CSS only: it is the same element, so its value, caret and focus stay.
+   * input (it looks like kv-input kv-input--numeric, as wide as the pattern: its characters and
+   * its dashes), and hides the boxes and dashes. It draws the code over the input only when all
+   * of this holds: the Root has [data-ready] (the script has run and has read the input's value,
+   * so typing or autofill before that is never invisible), its pattern has 4 to 10 characters and
+   * 0 to 2 dashes ([data-character-count] and [data-separator-count], which the hook renders from
+   * the pattern), it has a box, the browser isn't in forced colours (which would repaint the
+   * transparent text and the boxes), the row fits at 32px boxes (every pair of counts has its own
+   * minimum width, (2.5 × characters + 1.25 × dashes − 0.5)rem), and the browser knows the
+   * selectors used. Switching is CSS only: it is the same element, so its value, caret and focus
+   * stay.
    *
-   * Then the input is invisible and lies under the boxes (z-index 0), over the whole row and the
-   * gaps. The boxes are above it and take no pointer events, so every press is the input's.
-   * They draw the characters, the caret and the selection from the hook's state: [data-filled],
-   * [data-active] (with [data-caret="before" | "after"]) and [data-selected]. The caret is a
-   * static bar: a blinking one would be motion that never stops (2.2.2). Nothing visible depends
-   * on the input's text metrics, so the boxes can't drift from the text under 1.4.12 text
-   * spacing or zoom. Complete has no look: it isn't correct, and a tick would read as "verified".
+   * Then the input is invisible and lies under the cells (z-index 0), over the whole row and the
+   * gaps. The cells are above it and take no pointer events, so every press is the input's. They
+   * draw the characters, the dashes, the caret and the selection from the hook's state:
+   * [data-filled], [data-active] (with [data-caret="before" | "after"]) and [data-selected]. A
+   * dash has no state: it is the pattern, drawn whatever the value holds. The caret is a static
+   * bar: a blinking one would be motion that never stops (2.2.2). Nothing visible depends on the
+   * input's text metrics, so the cells can't drift from the text under 1.4.12 text spacing or
+   * zoom. Complete has no look: it isn't correct, and a tick would read as "verified".
    *
-   * Internal aliases, not public tokens: --kv-one-time-code-length (4 to 8, from the slot count),
-   * -slot-size, -gap, -row, -slot-edge and -slot-edge-width. The row always reads left to right,
-   * also in a right-to-left page, because a code is an identifier. */
+   * Internal aliases, not public tokens: --kv-one-time-code-characters (1 to 12) and
+   * -separators (0 to 3) from the Root's count attributes, -slot-size, -separator-size, -gap,
+   * -row, -slot-edge and -slot-edge-width. The row always reads left to right, also in a
+   * right-to-left page, because a code is an identifier. */
   :root {
     --kv-one-time-code-gap: var(--kv-space-2);
   }
@@ -3095,13 +3101,16 @@
     }
   }
 
-  /* The row: a flex row of boxes, the positioning context for the input, and the container the
+  /* The row: a flex row of cells, the positioning context for the input, and the container the
    * fallback asks about its width. Draws nothing itself, in any mode. */
   .kv-one-time-code {
     --kv-one-time-code-slot-size: var(--kv-control-min-block-size);
+    --kv-one-time-code-separator-size: var(--kv-space-3);
     --kv-one-time-code-row: calc(
-      var(--kv-one-time-code-length, 6) * var(--kv-one-time-code-slot-size) +
-        (var(--kv-one-time-code-length, 6) - 1) * var(--kv-one-time-code-gap)
+      var(--kv-one-time-code-characters, 6) * var(--kv-one-time-code-slot-size) +
+        var(--kv-one-time-code-separators, 0) * var(--kv-one-time-code-separator-size) +
+        (var(--kv-one-time-code-characters, 6) + var(--kv-one-time-code-separators, 0) - 1) *
+        var(--kv-one-time-code-gap)
     );
 
     display: flex;
@@ -3113,12 +3122,70 @@
     container: kv-one-time-code / inline-size;
   }
 
-  /* One extra gap between the two halves of the code. */
-  .kv-one-time-code.kv-one-time-code--grouped {
-    --kv-one-time-code-row: calc(
-      var(--kv-one-time-code-length, 6) * var(--kv-one-time-code-slot-size) +
-        var(--kv-one-time-code-length, 6) * var(--kv-one-time-code-gap)
-    );
+  /* The pattern's counts, from the Root's data attributes. Outside these ranges the plain field
+   * shows, with the width of 16 characters. */
+  .kv-one-time-code[data-character-count='1'] {
+    --kv-one-time-code-characters: 1;
+  }
+
+  .kv-one-time-code[data-character-count='2'] {
+    --kv-one-time-code-characters: 2;
+  }
+
+  .kv-one-time-code[data-character-count='3'] {
+    --kv-one-time-code-characters: 3;
+  }
+
+  .kv-one-time-code[data-character-count='4'] {
+    --kv-one-time-code-characters: 4;
+  }
+
+  .kv-one-time-code[data-character-count='5'] {
+    --kv-one-time-code-characters: 5;
+  }
+
+  .kv-one-time-code[data-character-count='6'] {
+    --kv-one-time-code-characters: 6;
+  }
+
+  .kv-one-time-code[data-character-count='7'] {
+    --kv-one-time-code-characters: 7;
+  }
+
+  .kv-one-time-code[data-character-count='8'] {
+    --kv-one-time-code-characters: 8;
+  }
+
+  .kv-one-time-code[data-character-count='9'] {
+    --kv-one-time-code-characters: 9;
+  }
+
+  .kv-one-time-code[data-character-count='10'] {
+    --kv-one-time-code-characters: 10;
+  }
+
+  .kv-one-time-code[data-character-count='11'] {
+    --kv-one-time-code-characters: 11;
+  }
+
+  .kv-one-time-code[data-character-count='12'] {
+    --kv-one-time-code-characters: 12;
+  }
+
+  .kv-one-time-code[data-separator-count='0'] {
+    --kv-one-time-code-separators: 0;
+  }
+
+  .kv-one-time-code[data-separator-count='1'] {
+    --kv-one-time-code-separators: 1;
+  }
+
+  .kv-one-time-code[data-separator-count='2'] {
+    --kv-one-time-code-separators: 2;
+  }
+
+  .kv-one-time-code[data-separator-count='3'] {
+    --kv-one-time-code-separators: 3;
   }
 
   /* The row reads left to right in every direction, and sits at the start of the column: on the
@@ -3131,14 +3198,16 @@
     justify-content: flex-end;
   }
 
-  /* The plain field: what .kv-input draws (section 12), with the code's length for its width.
-   * Written out here, not shared with .kv-input, so a global .kv-input rule of yours can't
-   * restyle the overlay. The 1.4.12 allowance and the invalid edge are in the width, so the
-   * code fits in every state. */
+  /* The plain field: what .kv-input draws (section 12), with the pattern's width: every
+   * character and every dash is a character of the value. Written out here, not shared with
+   * .kv-input, so a global .kv-input rule of yours can't restyle the overlay. The 1.4.12
+   * allowance and the invalid edge are in the width, so the code fits in every state. */
   .kv-one-time-code-input {
     --kv-input-edge: var(--kv-color-border-control);
     --kv-input-edge-width: var(--kv-border-width);
-    --kv-input-chars: var(--kv-one-time-code-length, 8);
+    --kv-input-chars: calc(
+      var(--kv-one-time-code-characters, 16) + var(--kv-one-time-code-separators, 0)
+    );
 
     box-sizing: border-box;
     flex: 0 1 auto;
@@ -3197,50 +3266,13 @@
     -webkit-text-fill-color: currentColor;
   }
 
-  /* The boxes are not drawn in the plain field. */
+  /* The boxes and the dashes are not drawn in the plain field. */
   .kv-one-time-code-slot {
     display: none;
   }
 
-  /* How many slots there are. */
-  .kv-one-time-code:has(
-    > .kv-one-time-code-slot:nth-child(4 of .kv-one-time-code-slot):nth-last-child(
-        1 of .kv-one-time-code-slot
-      )
-  ) {
-    --kv-one-time-code-length: 4;
-  }
-
-  .kv-one-time-code:has(
-    > .kv-one-time-code-slot:nth-child(5 of .kv-one-time-code-slot):nth-last-child(
-        1 of .kv-one-time-code-slot
-      )
-  ) {
-    --kv-one-time-code-length: 5;
-  }
-
-  .kv-one-time-code:has(
-    > .kv-one-time-code-slot:nth-child(6 of .kv-one-time-code-slot):nth-last-child(
-        1 of .kv-one-time-code-slot
-      )
-  ) {
-    --kv-one-time-code-length: 6;
-  }
-
-  .kv-one-time-code:has(
-    > .kv-one-time-code-slot:nth-child(7 of .kv-one-time-code-slot):nth-last-child(
-        1 of .kv-one-time-code-slot
-      )
-  ) {
-    --kv-one-time-code-length: 7;
-  }
-
-  .kv-one-time-code:has(
-    > .kv-one-time-code-slot:nth-child(8 of .kv-one-time-code-slot):nth-last-child(
-        1 of .kv-one-time-code-slot
-      )
-  ) {
-    --kv-one-time-code-length: 8;
+  .kv-one-time-code-separator {
+    display: none;
   }
 
   /* A box. Styled here whatever the mode, because it is only displayed when the row is drawn.
@@ -3276,8 +3308,40 @@
     user-select: none;
   }
 
-  /* Letters and digits: Plex's dotted zero tells 0 from O (DESIGN.md, disambiguation). */
-  .kv-one-time-code:has(> [autocapitalize='characters']) > .kv-one-time-code-slot {
+  /* A dash: the pattern's "-", drawn as text so it scales with the text size and matches the
+   * value in the plain field. No edge, no fill: it must not read as one more box to fill. It
+   * never shrinks (only the boxes do) and has no state. */
+  .kv-one-time-code-separator {
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    inline-size: var(--kv-one-time-code-separator-size);
+    min-block-size: var(--kv-control-min-block-size);
+    color: var(--kv-color-text);
+    direction: ltr;
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-feature-settings: var(--kv-font-numeric-feature-settings);
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    letter-spacing: normal;
+    overflow: visible;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* A code that can hold letters (the input isn't inputmode="numeric", which only an all-digits
+   * pattern gets): Plex's dotted zero tells 0 from O (DESIGN.md, disambiguation). The plain
+   * field gets it too. */
+  .kv-one-time-code-input:not([inputmode='numeric']) {
+    font-feature-settings: var(--kv-font-numeric-feature-settings), 'ss04';
+  }
+
+  .kv-one-time-code:has(> .kv-one-time-code-input:not([inputmode='numeric']))
+    > :is(.kv-one-time-code-slot, .kv-one-time-code-separator) {
     font-feature-settings: var(--kv-font-numeric-feature-settings), 'ss04';
   }
 
@@ -3287,7 +3351,8 @@
     --kv-one-time-code-slot-edge: var(--kv-color-text);
   }
 
-  /* Invalid: every box, from the Field. The message under the row carries it too. */
+  /* Invalid: every box, from the Field. The message under the row carries it too. The dashes
+   * don't change: the dash isn't wrong. */
   .kv-one-time-code-slot[data-invalid],
   .kv-one-time-code-input:is([data-invalid], [aria-invalid='true']) ~ .kv-one-time-code-slot {
     --kv-one-time-code-slot-edge: var(--kv-color-danger);
@@ -3312,7 +3377,8 @@
 
   /* The caret: a static 2px bar next to the character, never blinking. Its margins cancel its
    * own width, so the character stays put when it arrives. An empty box has no character, so
-   * its bar is centred as it is. */
+   * its bar is centred as it is. "after" is on any filled box: the last of a group, when the
+   * caret sits just before a dash, or the last of a complete code. */
   .kv-one-time-code-slot[data-caret]::before,
   .kv-one-time-code-slot[data-caret]::after {
     content: none;
@@ -3335,7 +3401,8 @@
     margin-inline: 1px calc(-1 * (var(--kv-focus-ring-width) + 1px));
   }
 
-  /* Disabled: a dashed edge on the surface colour, from the Field or the input. */
+  /* Disabled: a dashed edge on the surface colour, from the Field or the input. The dash is dimmed
+   * with the characters. */
   .kv-one-time-code[data-disabled] > .kv-one-time-code-slot,
   .kv-one-time-code-input:is(:disabled, [data-disabled]) ~ .kv-one-time-code-slot {
     --kv-one-time-code-slot-edge: var(--kv-color-border-control);
@@ -3345,57 +3412,36 @@
     color: var(--kv-color-text-muted);
   }
 
-  .kv-one-time-code--grouped:has(
-      > .kv-one-time-code-slot:nth-child(4 of .kv-one-time-code-slot):nth-last-child(
-          1 of .kv-one-time-code-slot
-        )
-    )
-    > .kv-one-time-code-slot:nth-child(3 of .kv-one-time-code-slot) {
-    /* Physical on purpose: the row always reads left to right. */
-    margin-left: var(--kv-one-time-code-gap);
+  .kv-one-time-code[data-disabled] > .kv-one-time-code-separator,
+  .kv-one-time-code-input:is(:disabled, [data-disabled]) ~ .kv-one-time-code-separator {
+    color: var(--kv-color-text-muted);
   }
 
-  .kv-one-time-code--grouped:has(
-      > .kv-one-time-code-slot:nth-child(6 of .kv-one-time-code-slot):nth-last-child(
-          1 of .kv-one-time-code-slot
-        )
-    )
-    > .kv-one-time-code-slot:nth-child(4 of .kv-one-time-code-slot) {
-    /* Physical on purpose: the row always reads left to right. */
-    margin-left: var(--kv-one-time-code-gap);
-  }
-
-  .kv-one-time-code--grouped:has(
-      > .kv-one-time-code-slot:nth-child(8 of .kv-one-time-code-slot):nth-last-child(
-          1 of .kv-one-time-code-slot
-        )
-    )
-    > .kv-one-time-code-slot:nth-child(5 of .kv-one-time-code-slot) {
-    /* Physical on purpose: the row always reads left to right. */
-    margin-left: var(--kv-one-time-code-gap);
-  }
-
-  /* The drawn row. Each length asks its own width: 2.5rem a character, so the boxes can shrink
-   * to 32px and no further. Narrower than that (320px, a card, 200% text, 400% zoom), the plain
-   * field above stays: a row broken into two lines would read as two answers. */
+  /* The drawn row. Each pair of counts (characters, dashes) asks its own width, the row with 32px
+   * boxes and the comfortable gaps: (2.5 × characters + 1.25 × dashes − 0.5)rem. Pairs with the
+   * same width share a block. Narrower than that (320px, a card, 200% text, 400% zoom), the plain
+   * field above stays: a row broken into two lines would read as two answers. Outside 4 to 10
+   * characters and 0 to 2 dashes there is no block, so the plain field always shows. */
   @media (forced-colors: none) {
-    @supports (container-type: inline-size) and selector(:has(*)) and selector(:nth-child(1 of *))
-      and selector(:dir(rtl)) {
-      @container kv-one-time-code (inline-size >= 10rem) {
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(4 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+    @supports (container-type: inline-size) and selector(:has(*)) and selector(:dir(rtl)) {
+      @container kv-one-time-code (inline-size >= 9.5rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='4'][data-separator-count='0']
+          )
           > .kv-one-time-code-slot {
           display: flex;
         }
 
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(4 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='4'][data-separator-count='0']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='4'][data-separator-count='0']
+          )
           > .kv-one-time-code-input {
           position: absolute;
           inset-block: 0;
@@ -3425,32 +3471,33 @@
           -webkit-text-fill-color: transparent;
         }
 
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(4 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='4'][data-separator-count='0']
+          )
           > .kv-one-time-code-input::selection {
           background-color: transparent;
           color: transparent;
         }
       }
 
-      @container kv-one-time-code (inline-size >= 12.5rem) {
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(5 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+      @container kv-one-time-code (inline-size >= 10.75rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='4'][data-separator-count='1']
+          )
           > .kv-one-time-code-slot {
           display: flex;
         }
 
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(5 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='4'][data-separator-count='1']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='4'][data-separator-count='1']
+          )
           > .kv-one-time-code-input {
           position: absolute;
           inset-block: 0;
@@ -3480,32 +3527,36 @@
           -webkit-text-fill-color: transparent;
         }
 
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(5 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='4'][data-separator-count='1']
+          )
           > .kv-one-time-code-input::selection {
           background-color: transparent;
           color: transparent;
         }
       }
 
-      @container kv-one-time-code (inline-size >= 15rem) {
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(6 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+      @container kv-one-time-code (inline-size >= 12rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='4'][data-separator-count='2'],
+            [data-character-count='5'][data-separator-count='0']
+          )
           > .kv-one-time-code-slot {
           display: flex;
         }
 
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(6 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='4'][data-separator-count='2'],
+            [data-character-count='5'][data-separator-count='0']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='4'][data-separator-count='2'],
+            [data-character-count='5'][data-separator-count='0']
+          )
           > .kv-one-time-code-input {
           position: absolute;
           inset-block: 0;
@@ -3535,32 +3586,34 @@
           -webkit-text-fill-color: transparent;
         }
 
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(6 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='4'][data-separator-count='2'],
+            [data-character-count='5'][data-separator-count='0']
+          )
           > .kv-one-time-code-input::selection {
           background-color: transparent;
           color: transparent;
         }
       }
 
-      @container kv-one-time-code (inline-size >= 17.5rem) {
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(7 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+      @container kv-one-time-code (inline-size >= 13.25rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='5'][data-separator-count='1']
+          )
           > .kv-one-time-code-slot {
           display: flex;
         }
 
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(7 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='5'][data-separator-count='1']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='5'][data-separator-count='1']
+          )
           > .kv-one-time-code-input {
           position: absolute;
           inset-block: 0;
@@ -3590,32 +3643,36 @@
           -webkit-text-fill-color: transparent;
         }
 
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(7 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='5'][data-separator-count='1']
+          )
           > .kv-one-time-code-input::selection {
           background-color: transparent;
           color: transparent;
         }
       }
 
-      @container kv-one-time-code (inline-size >= 20rem) {
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(8 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+      @container kv-one-time-code (inline-size >= 14.5rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='5'][data-separator-count='2'],
+            [data-character-count='6'][data-separator-count='0']
+          )
           > .kv-one-time-code-slot {
           display: flex;
         }
 
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(8 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='5'][data-separator-count='2'],
+            [data-character-count='6'][data-separator-count='0']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='5'][data-separator-count='2'],
+            [data-character-count='6'][data-separator-count='0']
+          )
           > .kv-one-time-code-input {
           position: absolute;
           inset-block: 0;
@@ -3645,11 +3702,586 @@
           -webkit-text-fill-color: transparent;
         }
 
-        .kv-one-time-code:has(
-            > .kv-one-time-code-slot:nth-child(8 of .kv-one-time-code-slot):nth-last-child(
-                1 of .kv-one-time-code-slot
-              )
-          )[data-ready]
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='5'][data-separator-count='2'],
+            [data-character-count='6'][data-separator-count='0']
+          )
+          > .kv-one-time-code-input::selection {
+          background-color: transparent;
+          color: transparent;
+        }
+      }
+
+      @container kv-one-time-code (inline-size >= 15.75rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='6'][data-separator-count='1']
+          )
+          > .kv-one-time-code-slot {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='6'][data-separator-count='1']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='6'][data-separator-count='1']
+          )
+          > .kv-one-time-code-input {
+          position: absolute;
+          inset-block: 0;
+          /* Physical on purpose: the input is always dir="ltr", and the row sits on the right
+           * in a right-to-left page. */
+          left: var(--kv-one-time-code-input-left, 0);
+          right: var(--kv-one-time-code-input-right, auto);
+          z-index: 0;
+          inline-size: min(100%, var(--kv-one-time-code-row));
+          max-inline-size: none;
+          block-size: 100%;
+          min-block-size: 0;
+          margin: 0;
+          padding-block: 0;
+          /* Best effort: the invisible text, and so its caret that magnifiers follow, lies near
+           * the drawn characters. Nothing visible relies on it. */
+          padding-inline-start: calc((var(--kv-one-time-code-slot-size) - 1ch) / 2);
+          border: 0;
+          border-radius: var(--kv-radius-md);
+          background-color: transparent;
+          box-shadow: none;
+          caret-color: transparent;
+          color: transparent;
+          letter-spacing: calc(
+            var(--kv-one-time-code-slot-size) + var(--kv-one-time-code-gap) - 1ch
+          );
+          -webkit-text-fill-color: transparent;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='6'][data-separator-count='1']
+          )
+          > .kv-one-time-code-input::selection {
+          background-color: transparent;
+          color: transparent;
+        }
+      }
+
+      @container kv-one-time-code (inline-size >= 17rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='6'][data-separator-count='2'],
+            [data-character-count='7'][data-separator-count='0']
+          )
+          > .kv-one-time-code-slot {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='6'][data-separator-count='2'],
+            [data-character-count='7'][data-separator-count='0']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='6'][data-separator-count='2'],
+            [data-character-count='7'][data-separator-count='0']
+          )
+          > .kv-one-time-code-input {
+          position: absolute;
+          inset-block: 0;
+          /* Physical on purpose: the input is always dir="ltr", and the row sits on the right
+           * in a right-to-left page. */
+          left: var(--kv-one-time-code-input-left, 0);
+          right: var(--kv-one-time-code-input-right, auto);
+          z-index: 0;
+          inline-size: min(100%, var(--kv-one-time-code-row));
+          max-inline-size: none;
+          block-size: 100%;
+          min-block-size: 0;
+          margin: 0;
+          padding-block: 0;
+          /* Best effort: the invisible text, and so its caret that magnifiers follow, lies near
+           * the drawn characters. Nothing visible relies on it. */
+          padding-inline-start: calc((var(--kv-one-time-code-slot-size) - 1ch) / 2);
+          border: 0;
+          border-radius: var(--kv-radius-md);
+          background-color: transparent;
+          box-shadow: none;
+          caret-color: transparent;
+          color: transparent;
+          letter-spacing: calc(
+            var(--kv-one-time-code-slot-size) + var(--kv-one-time-code-gap) - 1ch
+          );
+          -webkit-text-fill-color: transparent;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='6'][data-separator-count='2'],
+            [data-character-count='7'][data-separator-count='0']
+          )
+          > .kv-one-time-code-input::selection {
+          background-color: transparent;
+          color: transparent;
+        }
+      }
+
+      @container kv-one-time-code (inline-size >= 18.25rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='7'][data-separator-count='1']
+          )
+          > .kv-one-time-code-slot {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='7'][data-separator-count='1']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='7'][data-separator-count='1']
+          )
+          > .kv-one-time-code-input {
+          position: absolute;
+          inset-block: 0;
+          /* Physical on purpose: the input is always dir="ltr", and the row sits on the right
+           * in a right-to-left page. */
+          left: var(--kv-one-time-code-input-left, 0);
+          right: var(--kv-one-time-code-input-right, auto);
+          z-index: 0;
+          inline-size: min(100%, var(--kv-one-time-code-row));
+          max-inline-size: none;
+          block-size: 100%;
+          min-block-size: 0;
+          margin: 0;
+          padding-block: 0;
+          /* Best effort: the invisible text, and so its caret that magnifiers follow, lies near
+           * the drawn characters. Nothing visible relies on it. */
+          padding-inline-start: calc((var(--kv-one-time-code-slot-size) - 1ch) / 2);
+          border: 0;
+          border-radius: var(--kv-radius-md);
+          background-color: transparent;
+          box-shadow: none;
+          caret-color: transparent;
+          color: transparent;
+          letter-spacing: calc(
+            var(--kv-one-time-code-slot-size) + var(--kv-one-time-code-gap) - 1ch
+          );
+          -webkit-text-fill-color: transparent;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='7'][data-separator-count='1']
+          )
+          > .kv-one-time-code-input::selection {
+          background-color: transparent;
+          color: transparent;
+        }
+      }
+
+      @container kv-one-time-code (inline-size >= 19.5rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='7'][data-separator-count='2'],
+            [data-character-count='8'][data-separator-count='0']
+          )
+          > .kv-one-time-code-slot {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='7'][data-separator-count='2'],
+            [data-character-count='8'][data-separator-count='0']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='7'][data-separator-count='2'],
+            [data-character-count='8'][data-separator-count='0']
+          )
+          > .kv-one-time-code-input {
+          position: absolute;
+          inset-block: 0;
+          /* Physical on purpose: the input is always dir="ltr", and the row sits on the right
+           * in a right-to-left page. */
+          left: var(--kv-one-time-code-input-left, 0);
+          right: var(--kv-one-time-code-input-right, auto);
+          z-index: 0;
+          inline-size: min(100%, var(--kv-one-time-code-row));
+          max-inline-size: none;
+          block-size: 100%;
+          min-block-size: 0;
+          margin: 0;
+          padding-block: 0;
+          /* Best effort: the invisible text, and so its caret that magnifiers follow, lies near
+           * the drawn characters. Nothing visible relies on it. */
+          padding-inline-start: calc((var(--kv-one-time-code-slot-size) - 1ch) / 2);
+          border: 0;
+          border-radius: var(--kv-radius-md);
+          background-color: transparent;
+          box-shadow: none;
+          caret-color: transparent;
+          color: transparent;
+          letter-spacing: calc(
+            var(--kv-one-time-code-slot-size) + var(--kv-one-time-code-gap) - 1ch
+          );
+          -webkit-text-fill-color: transparent;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='7'][data-separator-count='2'],
+            [data-character-count='8'][data-separator-count='0']
+          )
+          > .kv-one-time-code-input::selection {
+          background-color: transparent;
+          color: transparent;
+        }
+      }
+
+      @container kv-one-time-code (inline-size >= 20.75rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='8'][data-separator-count='1']
+          )
+          > .kv-one-time-code-slot {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='8'][data-separator-count='1']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='8'][data-separator-count='1']
+          )
+          > .kv-one-time-code-input {
+          position: absolute;
+          inset-block: 0;
+          /* Physical on purpose: the input is always dir="ltr", and the row sits on the right
+           * in a right-to-left page. */
+          left: var(--kv-one-time-code-input-left, 0);
+          right: var(--kv-one-time-code-input-right, auto);
+          z-index: 0;
+          inline-size: min(100%, var(--kv-one-time-code-row));
+          max-inline-size: none;
+          block-size: 100%;
+          min-block-size: 0;
+          margin: 0;
+          padding-block: 0;
+          /* Best effort: the invisible text, and so its caret that magnifiers follow, lies near
+           * the drawn characters. Nothing visible relies on it. */
+          padding-inline-start: calc((var(--kv-one-time-code-slot-size) - 1ch) / 2);
+          border: 0;
+          border-radius: var(--kv-radius-md);
+          background-color: transparent;
+          box-shadow: none;
+          caret-color: transparent;
+          color: transparent;
+          letter-spacing: calc(
+            var(--kv-one-time-code-slot-size) + var(--kv-one-time-code-gap) - 1ch
+          );
+          -webkit-text-fill-color: transparent;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='8'][data-separator-count='1']
+          )
+          > .kv-one-time-code-input::selection {
+          background-color: transparent;
+          color: transparent;
+        }
+      }
+
+      @container kv-one-time-code (inline-size >= 22rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='8'][data-separator-count='2'],
+            [data-character-count='9'][data-separator-count='0']
+          )
+          > .kv-one-time-code-slot {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='8'][data-separator-count='2'],
+            [data-character-count='9'][data-separator-count='0']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='8'][data-separator-count='2'],
+            [data-character-count='9'][data-separator-count='0']
+          )
+          > .kv-one-time-code-input {
+          position: absolute;
+          inset-block: 0;
+          /* Physical on purpose: the input is always dir="ltr", and the row sits on the right
+           * in a right-to-left page. */
+          left: var(--kv-one-time-code-input-left, 0);
+          right: var(--kv-one-time-code-input-right, auto);
+          z-index: 0;
+          inline-size: min(100%, var(--kv-one-time-code-row));
+          max-inline-size: none;
+          block-size: 100%;
+          min-block-size: 0;
+          margin: 0;
+          padding-block: 0;
+          /* Best effort: the invisible text, and so its caret that magnifiers follow, lies near
+           * the drawn characters. Nothing visible relies on it. */
+          padding-inline-start: calc((var(--kv-one-time-code-slot-size) - 1ch) / 2);
+          border: 0;
+          border-radius: var(--kv-radius-md);
+          background-color: transparent;
+          box-shadow: none;
+          caret-color: transparent;
+          color: transparent;
+          letter-spacing: calc(
+            var(--kv-one-time-code-slot-size) + var(--kv-one-time-code-gap) - 1ch
+          );
+          -webkit-text-fill-color: transparent;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='8'][data-separator-count='2'],
+            [data-character-count='9'][data-separator-count='0']
+          )
+          > .kv-one-time-code-input::selection {
+          background-color: transparent;
+          color: transparent;
+        }
+      }
+
+      @container kv-one-time-code (inline-size >= 23.25rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='9'][data-separator-count='1']
+          )
+          > .kv-one-time-code-slot {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='9'][data-separator-count='1']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='9'][data-separator-count='1']
+          )
+          > .kv-one-time-code-input {
+          position: absolute;
+          inset-block: 0;
+          /* Physical on purpose: the input is always dir="ltr", and the row sits on the right
+           * in a right-to-left page. */
+          left: var(--kv-one-time-code-input-left, 0);
+          right: var(--kv-one-time-code-input-right, auto);
+          z-index: 0;
+          inline-size: min(100%, var(--kv-one-time-code-row));
+          max-inline-size: none;
+          block-size: 100%;
+          min-block-size: 0;
+          margin: 0;
+          padding-block: 0;
+          /* Best effort: the invisible text, and so its caret that magnifiers follow, lies near
+           * the drawn characters. Nothing visible relies on it. */
+          padding-inline-start: calc((var(--kv-one-time-code-slot-size) - 1ch) / 2);
+          border: 0;
+          border-radius: var(--kv-radius-md);
+          background-color: transparent;
+          box-shadow: none;
+          caret-color: transparent;
+          color: transparent;
+          letter-spacing: calc(
+            var(--kv-one-time-code-slot-size) + var(--kv-one-time-code-gap) - 1ch
+          );
+          -webkit-text-fill-color: transparent;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='9'][data-separator-count='1']
+          )
+          > .kv-one-time-code-input::selection {
+          background-color: transparent;
+          color: transparent;
+        }
+      }
+
+      @container kv-one-time-code (inline-size >= 24.5rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='9'][data-separator-count='2'],
+            [data-character-count='10'][data-separator-count='0']
+          )
+          > .kv-one-time-code-slot {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='9'][data-separator-count='2'],
+            [data-character-count='10'][data-separator-count='0']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='9'][data-separator-count='2'],
+            [data-character-count='10'][data-separator-count='0']
+          )
+          > .kv-one-time-code-input {
+          position: absolute;
+          inset-block: 0;
+          /* Physical on purpose: the input is always dir="ltr", and the row sits on the right
+           * in a right-to-left page. */
+          left: var(--kv-one-time-code-input-left, 0);
+          right: var(--kv-one-time-code-input-right, auto);
+          z-index: 0;
+          inline-size: min(100%, var(--kv-one-time-code-row));
+          max-inline-size: none;
+          block-size: 100%;
+          min-block-size: 0;
+          margin: 0;
+          padding-block: 0;
+          /* Best effort: the invisible text, and so its caret that magnifiers follow, lies near
+           * the drawn characters. Nothing visible relies on it. */
+          padding-inline-start: calc((var(--kv-one-time-code-slot-size) - 1ch) / 2);
+          border: 0;
+          border-radius: var(--kv-radius-md);
+          background-color: transparent;
+          box-shadow: none;
+          caret-color: transparent;
+          color: transparent;
+          letter-spacing: calc(
+            var(--kv-one-time-code-slot-size) + var(--kv-one-time-code-gap) - 1ch
+          );
+          -webkit-text-fill-color: transparent;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='9'][data-separator-count='2'],
+            [data-character-count='10'][data-separator-count='0']
+          )
+          > .kv-one-time-code-input::selection {
+          background-color: transparent;
+          color: transparent;
+        }
+      }
+
+      @container kv-one-time-code (inline-size >= 25.75rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='10'][data-separator-count='1']
+          )
+          > .kv-one-time-code-slot {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='10'][data-separator-count='1']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='10'][data-separator-count='1']
+          )
+          > .kv-one-time-code-input {
+          position: absolute;
+          inset-block: 0;
+          /* Physical on purpose: the input is always dir="ltr", and the row sits on the right
+           * in a right-to-left page. */
+          left: var(--kv-one-time-code-input-left, 0);
+          right: var(--kv-one-time-code-input-right, auto);
+          z-index: 0;
+          inline-size: min(100%, var(--kv-one-time-code-row));
+          max-inline-size: none;
+          block-size: 100%;
+          min-block-size: 0;
+          margin: 0;
+          padding-block: 0;
+          /* Best effort: the invisible text, and so its caret that magnifiers follow, lies near
+           * the drawn characters. Nothing visible relies on it. */
+          padding-inline-start: calc((var(--kv-one-time-code-slot-size) - 1ch) / 2);
+          border: 0;
+          border-radius: var(--kv-radius-md);
+          background-color: transparent;
+          box-shadow: none;
+          caret-color: transparent;
+          color: transparent;
+          letter-spacing: calc(
+            var(--kv-one-time-code-slot-size) + var(--kv-one-time-code-gap) - 1ch
+          );
+          -webkit-text-fill-color: transparent;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='10'][data-separator-count='1']
+          )
+          > .kv-one-time-code-input::selection {
+          background-color: transparent;
+          color: transparent;
+        }
+      }
+
+      @container kv-one-time-code (inline-size >= 27rem) {
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='10'][data-separator-count='2']
+          )
+          > .kv-one-time-code-slot {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='10'][data-separator-count='2']
+          )
+          > .kv-one-time-code-separator {
+          display: flex;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='10'][data-separator-count='2']
+          )
+          > .kv-one-time-code-input {
+          position: absolute;
+          inset-block: 0;
+          /* Physical on purpose: the input is always dir="ltr", and the row sits on the right
+           * in a right-to-left page. */
+          left: var(--kv-one-time-code-input-left, 0);
+          right: var(--kv-one-time-code-input-right, auto);
+          z-index: 0;
+          inline-size: min(100%, var(--kv-one-time-code-row));
+          max-inline-size: none;
+          block-size: 100%;
+          min-block-size: 0;
+          margin: 0;
+          padding-block: 0;
+          /* Best effort: the invisible text, and so its caret that magnifiers follow, lies near
+           * the drawn characters. Nothing visible relies on it. */
+          padding-inline-start: calc((var(--kv-one-time-code-slot-size) - 1ch) / 2);
+          border: 0;
+          border-radius: var(--kv-radius-md);
+          background-color: transparent;
+          box-shadow: none;
+          caret-color: transparent;
+          color: transparent;
+          letter-spacing: calc(
+            var(--kv-one-time-code-slot-size) + var(--kv-one-time-code-gap) - 1ch
+          );
+          -webkit-text-fill-color: transparent;
+        }
+
+        .kv-one-time-code[data-ready]:has(> .kv-one-time-code-slot):is(
+            [data-character-count='10'][data-separator-count='2']
+          )
           > .kv-one-time-code-input::selection {
           background-color: transparent;
           color: transparent;
@@ -3706,8 +4338,8 @@
     .kv-one-time-code-input:is(:disabled, [data-disabled]) {
       --kv-input-edge: GrayText;
 
-    .kv-input-group > .kv-button::before {
-      background-color: ButtonText;
+      color: GrayText;
+      -webkit-text-fill-color: GrayText;
     }
   }
 }

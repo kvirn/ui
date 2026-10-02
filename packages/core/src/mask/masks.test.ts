@@ -306,40 +306,166 @@ describe('masks.pattern and masks.regexp', () => {
 
 describe('masks.oneTimeCode', () => {
   it.each([
-    { characters: undefined, pasted: '123456', after: '123456' },
-    { characters: undefined, pasted: '123 456', after: '123456' },
-    { characters: undefined, pasted: '123-456', after: '123456' },
-    { characters: 'digits' as const, pasted: ' 123456\n', after: '123456' },
-    { characters: 'letters' as const, pasted: 'ABC DEF', after: 'ABCDEF' },
-    { characters: 'lettersAndDigits' as const, pasted: 'a1b 2c3', after: 'a1b2c3' },
-  ])('$characters: $pasted ends as $after', ({ characters, pasted, after }) => {
-    const mask = masks.oneTimeCode({ length: 6, ...(characters ? { characters } : {}) })
+    { pattern: '999999', pasted: '123456', after: '123456' },
+    { pattern: '999999', pasted: '123 456', after: '123456' },
+    { pattern: '999999', pasted: '123-456', after: '123456' },
+    { pattern: '999999', pasted: ' 123456\n', after: '123456' },
+    { pattern: 'aaaaaa', pasted: 'ABC DEF', after: 'ABCDEF' },
+    { pattern: '******', pasted: 'a1b 2c3', after: 'a1b2c3' },
+    // the dash goes where the pattern says, whether the paste has it or not
+    { pattern: '****-****', pasted: 'abcd1234', after: 'abcd-1234' },
+    { pattern: '****-****', pasted: 'abcd-1234', after: 'abcd-1234' },
+    { pattern: '****-****', pasted: 'abcd 1234', after: 'abcd-1234' },
+    { pattern: '***-***-***', pasted: 'abc123xyz', after: 'abc-123-xyz' },
+    { pattern: '***-***-***', pasted: 'abc-123-xyz', after: 'abc-123-xyz' },
+    { pattern: '***-***-***', pasted: ' abc 123 xyz ', after: 'abc-123-xyz' },
+    { pattern: 'AA-9999', pasted: 'ab1234', after: 'AB-1234' },
+    { pattern: 'AA-9999', pasted: 'AB-1234', after: 'AB-1234' },
+    { pattern: '&&&&', pasted: 'a1b2', after: 'A1B2' },
+    { pattern: '&&&&', pasted: 'a1-b2', after: 'A1B2' },
+    { pattern: '999-999', pasted: '123-456', after: '123-456' },
+  ])('$pattern: $pasted ends as $after', ({ pattern, pasted, after }) => {
+    const mask = masks.oneTimeCode({ pattern })
     const result = mask.apply({ value: pasted, previousValue: '' })
     expect(result.value).toBe(after)
     expect(result.isComplete).toBe(true)
     expect(result.rejected).toEqual([])
   })
 
-  it('does not insert separators, and refuses what does not fit', () => {
-    const mask = masks.oneTimeCode({ length: 6 })
+  it('inserts the separator as the next character is placed, and refuses what does not fit', () => {
+    const mask = masks.oneTimeCode({ pattern: '****-****' })
+    expect(showCaret(insert(mask, 'abc|', 'd'))).toBe('abcd|')
+    expect(showCaret(insert(mask, 'abcd|', '1'))).toBe('abcd-1|')
+    expect(showCaret(insert(mask, 'abcd-1|', '2'))).toBe('abcd-12|')
+    expect(insert(mask, 'abcd-1234|', '5').rejected).toEqual([
+      { reason: 'length', characters: '5' },
+    ])
+  })
+
+  it('accepts a typed separator once, in its place', () => {
+    const mask = masks.oneTimeCode({ pattern: '****-****' })
+    expect(showCaret(insert(mask, 'abcd|', '-'))).toBe('abcd-|')
+    const typedTwice = insert(mask, 'abcd-|', '-')
+    expect(typedTwice.value).toBe('abcd-')
+    expect(showCaret(insert(mask, 'abcd-|', '1'))).toBe('abcd-1|')
+    // A dash inside a group isn't the separator: it is refused and named.
+    expect(insert(mask, 'ab|', '-').rejected).toEqual([
+      { reason: 'lettersAndDigits', characters: '-' },
+    ])
+  })
+
+  it('does not insert a separator for a pattern without one', () => {
+    const mask = masks.oneTimeCode({ pattern: '999999' })
     expect(showCaret(insert(mask, '123|', '4'))).toBe('1234|')
     expect(insert(mask, '123456|', '7').rejected).toEqual([{ reason: 'length', characters: '7' }])
     expect(insert(mask, '123|', 'a').rejected).toEqual([{ reason: 'digits', characters: 'a' }])
+    expect(insert(mask, '123|', '-').rejected).toEqual([{ reason: 'digits', characters: '-' }])
   })
 
-  it('is complete at its length only', () => {
-    const mask = masks.oneTimeCode({ length: 4 })
-    expect(mask.apply({ value: '123' }).isComplete).toBe(false)
-    expect(mask.apply({ value: '1234' }).isComplete).toBe(true)
+  it('upper-cases typed letters for A and &, and leaves a and * as typed', () => {
+    const upper = masks.oneTimeCode({ pattern: 'AA-9999' })
+    expect(showCaret(insert(upper, '|', 'a'))).toBe('A|')
+    expect(showCaret(insert(upper, 'A|', 'b'))).toBe('AB|')
+    expect(showCaret(insert(upper, 'AB|', '1'))).toBe('AB-1|')
+    const alphanumeric = masks.oneTimeCode({ pattern: '&&&&' })
+    expect(showCaret(insert(alphanumeric, 'A1|', 'b'))).toBe('A1B|')
+    expect(masks.oneTimeCode({ pattern: 'aa' }).apply({ value: 'ab' }).value).toBe('ab')
+    expect(masks.oneTimeCode({ pattern: '**' }).apply({ value: 'a1' }).value).toBe('a1')
   })
 
-  it('suggests a numeric keypad for digits and a text keypad for letters', () => {
-    expect(masks.oneTimeCode({ length: 6 }).attributes).toMatchObject({
-      inputMode: 'numeric',
-      dir: 'ltr',
-    })
-    expect(
-      masks.oneTimeCode({ length: 6, characters: 'lettersAndDigits' }).attributes,
-    ).toMatchObject({ inputMode: 'text' })
+  it('names the class that refused a character', () => {
+    expect(insert(masks.oneTimeCode({ pattern: '9999' }), '|', 'a').rejected).toEqual([
+      { reason: 'digits', characters: 'a' },
+    ])
+    expect(insert(masks.oneTimeCode({ pattern: 'aaaa' }), '|', '1').rejected).toEqual([
+      { reason: 'letters', characters: '1' },
+    ])
+    expect(insert(masks.oneTimeCode({ pattern: 'AAAA' }), '|', '1').rejected).toEqual([
+      { reason: 'letters', characters: '1' },
+    ])
+    expect(insert(masks.oneTimeCode({ pattern: '****' }), '|', '!').rejected).toEqual([
+      { reason: 'lettersAndDigits', characters: '!' },
+    ])
+    expect(insert(masks.oneTimeCode({ pattern: '&&&&' }), '|', '?').rejected).toEqual([
+      { reason: 'lettersAndDigits', characters: '?' },
+    ])
+    // a position in AA-9999 takes its own class: a digit in the letters, a letter in the digits
+    const mixed = masks.oneTimeCode({ pattern: 'AA-9999' })
+    expect(insert(mixed, '|', '1').rejected).toEqual([{ reason: 'letters', characters: '1' }])
+    expect(insert(mixed, 'AB-|', 'x').rejected).toEqual([{ reason: 'digits', characters: 'x' }])
+  })
+
+  it('is ASCII only: å, ø, ß and the dotless ı are not letters in a code', () => {
+    for (const symbol of ['a', 'A', '*', '&']) {
+      const mask = masks.oneTimeCode({ pattern: symbol.repeat(4) })
+      for (const character of ['å', 'ø', 'ß', 'ı', 'đ']) {
+        expect(insert(mask, '|', character).rejected).toHaveLength(1)
+      }
+    }
+    expect(insert(masks.oneTimeCode({ pattern: '9999' }), '|', '٣').rejected).toHaveLength(1)
+  })
+
+  it('is complete when every character position is filled, and unmasks without the separators', () => {
+    const mask = masks.oneTimeCode({ pattern: '****-****' })
+    expect(mask.apply({ value: 'abcd-123' }).isComplete).toBe(false)
+    const complete = mask.apply({ value: 'abcd1234' })
+    expect(complete.isComplete).toBe(true)
+    expect(complete.unmaskedValue).toBe('abcd1234')
+    expect(mask.unmask('abcd-1234')).toBe('abcd1234')
+    expect(mask.format('abcd1234')).toBe('abcd-1234')
+    expect(masks.oneTimeCode({ pattern: '9999' }).apply({ value: '123' }).isComplete).toBe(false)
+    expect(masks.oneTimeCode({ pattern: '9999' }).apply({ value: '1234' }).isComplete).toBe(true)
+  })
+
+  it('Backspace and Delete cross the separator like any character', () => {
+    const mask = masks.oneTimeCode({ pattern: '****-****' })
+    expect(showCaret(remove(mask, 'abcd-1|'))).toBe('abcd-|')
+    expect(showCaret(remove(mask, 'abcd-|'))).toBe('abcd|')
+    // Backspace right after the dash deletes the character before it, and the rest reflows
+    expect(showCaret(remove(mask, 'abcd-|12'))).toBe('abc|1-2')
+  })
+
+  it.each([
+    { pattern: '999999', inputMode: 'numeric', autoCapitalize: 'characters' },
+    { pattern: '999-999', inputMode: 'numeric', autoCapitalize: 'characters' },
+    { pattern: '****-****', inputMode: 'text', autoCapitalize: undefined },
+    { pattern: 'aaaa', inputMode: 'text', autoCapitalize: undefined },
+    { pattern: 'AA-9999', inputMode: 'text', autoCapitalize: 'characters' },
+    { pattern: '&&&&', inputMode: 'text', autoCapitalize: 'characters' },
+  ])(
+    '$pattern suggests inputMode $inputMode and autoCapitalize $autoCapitalize',
+    ({ pattern, inputMode, autoCapitalize }) => {
+      const { attributes } = masks.oneTimeCode({ pattern })
+      expect(attributes.inputMode).toBe(inputMode)
+      expect(attributes.autoCapitalize).toBe(autoCapitalize)
+      expect(attributes.spellCheck).toBe(false)
+      expect(attributes.dir).toBe('ltr')
+    },
+  )
+
+  it.each([
+    { pattern: '99x9', character: 'x', position: 2 },
+    { pattern: '9 9', character: ' ', position: 1 },
+    { pattern: '99_99', character: '_', position: 2 },
+    { pattern: '9999.9', character: '.', position: 4 },
+    { pattern: '\\9', character: '\\', position: 0 },
+    // `?` and other Alpine-style symbols are not part of the code pattern
+    { pattern: '999?', character: '?', position: 3 },
+    { pattern: '-999', character: '-', position: 0 },
+    { pattern: '999-', character: '-', position: 3 },
+    { pattern: '99--99', character: '-', position: 3 },
+  ])(
+    'throws a RangeError that names $character at position $position in "$pattern"',
+    ({ pattern, character, position }) => {
+      expect(() => masks.oneTimeCode({ pattern })).toThrow(RangeError)
+      expect(() => masks.oneTimeCode({ pattern })).toThrow(
+        new RegExp(`"${character.replace(/[\\.?]/g, '\\$&')}" at position ${position}`),
+      )
+    },
+  )
+
+  it('throws for a pattern with no character symbol', () => {
+    expect(() => masks.oneTimeCode({ pattern: '' })).toThrow(RangeError)
+    expect(() => masks.oneTimeCode({ pattern: '' })).toThrow(/no character symbol/)
   })
 })

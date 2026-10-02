@@ -159,7 +159,6 @@ export type {
 } from './one-time-code/one-time-code.tsx'
 export { useOneTimeCode } from './one-time-code/use-one-time-code.ts'
 export type {
-  OneTimeCodeCharacters,
   OneTimeCodeInputPartProps,
   OneTimeCodeRootPartProps,
   OneTimeCodeSlotPartProps,

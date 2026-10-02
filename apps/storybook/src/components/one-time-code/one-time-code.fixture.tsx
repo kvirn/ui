@@ -3,8 +3,11 @@ import type { OneTimeCodeRootProps } from '@kvirn-ui/react'
 import { textsFor } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
-// Story and e2e fixture for Components/Form/OneTimeCode (Plan 0014, docs/design/one-time-code.md
-// §4). The component adds no strings of its own: the label and the hint belong to the consumer,
+// Story and e2e fixture for Components/Form/OneTimeCode (Plan 0014 and Plan 0019,
+// docs/design/one-time-code.md §4). The hint is built from the pattern: it says the length and the
+// groups, because the boxes are hidden from screen readers and disappear in the fallback
+// (ADR-0045 item 10). The length is the characters, never the dashes. The numbers are small
+// integers, so they read the same in every locale (no number words). The component adds no strings of its own: the label and the hint belong to the consumer,
 // because they name the channel and the length. The strings below are fixture text, with keys
 // local to this file. sv, en and fi are written (the fi strings are the designer's drafts, for
 // length checks). nb, nn and se come from a translator, not an agent: until then those locales
@@ -17,12 +20,20 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 
 export interface OneTimeCodeTexts {
   smsLabel: string
+  /** An ungrouped digits code. `length` is the number of digits. */
   smsHint: (length: number) => string
+  /** A code of some letters, a dash and then digits (`AA-9999`). */
+  smsPrefixHint: (letters: number, digits: number) => string
   emailLabel: string
-  emailHint: (length: number) => string
+  /** A code of letters and digits in equal groups (`&&&&-&&&&`). `length` counts characters only. */
+  emailGroupsHint: (length: number, groupCount: number, groupLength: number) => string
   appLabel: string
   appHint: (length: number) => string
   signInLabel: string
+  /** A code of capital letters only (`PatternLimits`): the label names the count, so it is unique. */
+  lettersLabel: (length: number) => string
+  /** `groupCount` is 1 for an ungrouped code, and then the groups are not mentioned. */
+  lettersHint: (length: number, groupCount: number, groupLength: number) => string
   submit: string
   errorWrong: string
 }
@@ -32,11 +43,16 @@ const textsEn: OneTimeCodeTexts = {
   smsHint: (length) =>
     `The code has ${length} digits. You’ll find it in the text message we just sent you.`,
   emailLabel: 'Code from the email',
-  emailHint: (length) =>
-    `The code has ${length} letters and digits. You’ll find it in the email we just sent you.`,
+  smsPrefixHint: (letters, digits) =>
+    `The code has ${letters} letters and then ${digits} digits. You’ll find it in the text message we just sent you.`,
+  emailGroupsHint: (length, groupCount, groupLength) =>
+    `The code has ${length} letters and digits, in ${groupCount} groups of ${groupLength}. You’ll find it in the email we just sent you.`,
   appLabel: 'Code from your authenticator app',
   appHint: (length) => `Open the app and enter the code it shows. The code has ${length} digits.`,
   signInLabel: 'Code to sign in',
+  lettersLabel: (length) => `Code with ${length} capital letters`,
+  lettersHint: (length, groupCount, groupLength) =>
+    `The code has ${length} capital letters${groupCount > 1 ? `, in ${groupCount} groups of ${groupLength}` : ''}.`,
   submit: 'Continue',
   errorWrong:
     'The code doesn’t match the one we sent. Check the text message and enter the code again.',
@@ -47,11 +63,16 @@ const textsSv: OneTimeCodeTexts = {
   smsHint: (length) =>
     `Koden har ${length} siffror. Du hittar den i sms:et som vi just skickade till dig.`,
   emailLabel: 'Kod från e-postmeddelandet',
-  emailHint: (length) =>
-    `Koden har ${length} bokstäver och siffror. Du hittar den i e-postmeddelandet som vi just skickade till dig.`,
+  smsPrefixHint: (letters, digits) =>
+    `Koden har ${letters} bokstäver och sedan ${digits} siffror. Du hittar den i sms:et som vi just skickade till dig.`,
+  emailGroupsHint: (length, groupCount, groupLength) =>
+    `Koden har ${length} bokstäver och siffror, i ${groupCount} grupper om ${groupLength}. Du hittar den i e-postmeddelandet som vi just skickade till dig.`,
   appLabel: 'Kod från din autentiseringsapp',
   appHint: (length) => `Öppna appen och skriv koden som visas. Koden har ${length} siffror.`,
   signInLabel: 'Kod för inloggning',
+  lettersLabel: (length) => `Kod med ${length} versaler`,
+  lettersHint: (length, groupCount, groupLength) =>
+    `Koden har ${length} versaler${groupCount > 1 ? `, i ${groupCount} grupper om ${groupLength}` : ''}.`,
   submit: 'Fortsätt',
   errorWrong: 'Koden stämmer inte med den vi skickade. Kontrollera sms:et och skriv koden igen.',
 }
@@ -61,12 +82,17 @@ const textsFi: OneTimeCodeTexts = {
   smsHint: (length) =>
     `Koodissa on ${length} numeroa. Löydät sen tekstiviestistä, jonka lähetimme sinulle juuri.`,
   emailLabel: 'Sähköpostissa saamasi koodi',
-  emailHint: (length) =>
-    `Koodissa on ${length} merkkiä, sekä kirjaimia että numeroita. Löydät sen sähköpostista, jonka lähetimme sinulle juuri.`,
+  smsPrefixHint: (letters, digits) =>
+    `Koodissa on ensin ${letters} kirjainta ja sitten ${digits} numeroa. Löydät sen tekstiviestistä, jonka lähetimme sinulle juuri.`,
+  emailGroupsHint: (length, groupCount, groupLength) =>
+    `Koodissa on ${length} merkkiä, sekä kirjaimia että numeroita, ${groupCount} ryhmässä, joissa kussakin on ${groupLength} merkkiä. Löydät sen sähköpostista, jonka lähetimme sinulle juuri.`,
   appLabel: 'Todennussovelluksesi koodi',
   appHint: (length) =>
     `Avaa sovellus ja kirjoita siinä näkyvä koodi. Koodissa on ${length} numeroa.`,
   signInLabel: 'Kirjautumiskoodi',
+  lettersLabel: (length) => `Koodi, jossa on ${length} isoa kirjainta`,
+  lettersHint: (length, groupCount, groupLength) =>
+    `Koodissa on ${length} isoa kirjainta${groupCount > 1 ? `, ${groupCount} ryhmässä, joissa kussakin on ${groupLength} merkkiä` : ''}.`,
   submit: 'Jatka',
   errorWrong:
     'Koodi ei vastaa lähettämäämme koodia. Tarkista tekstiviesti ja kirjoita koodi uudelleen.',
@@ -87,53 +113,66 @@ export function oneTimeCodeTextsFor(locale: FormLocale): OneTimeCodeTexts {
 }
 
 /** Where the code comes from: it decides the label and the hint. */
-export type CodeKind = 'sms' | 'email' | 'app' | 'signIn'
+export type CodeKind = 'sms' | 'email' | 'app' | 'signIn' | 'letters'
 
 export interface OneTimeCodeFieldProps extends Pick<
   OneTimeCodeRootProps,
-  | 'length'
-  | 'characters'
-  | 'defaultValue'
-  | 'disabled'
-  | 'announceRejections'
-  | 'onComplete'
-  | 'onValueChange'
+  'pattern' | 'defaultValue' | 'disabled' | 'announceRejections' | 'onComplete' | 'onValueChange'
 > {
   locale: FormLocale
   kind?: CodeKind
   invalid?: boolean | undefined
-  /** `kv-one-time-code--grouped`: two halves, the way the message groups the code. */
-  grouped?: boolean
   readOnly?: boolean
   /** A Continue button after the field, in a form that does nothing on submit. */
   withSubmit?: boolean
   name?: string
 }
 
-const labelsFor = (texts: OneTimeCodeTexts, kind: CodeKind, length: number) => {
+/** The shape of a pattern: its groups (split at the dashes) and its characters, dashes not counted. */
+function shapeOf(pattern: string) {
+  const groups = pattern.split('-')
+  return { groups, characterCount: groups.join('').length }
+}
+
+const labelsFor = (texts: OneTimeCodeTexts, kind: CodeKind, pattern: string) => {
+  const { groups, characterCount } = shapeOf(pattern)
   switch (kind) {
     case 'email':
-      return { label: texts.emailLabel, hint: texts.emailHint(length) }
+      return {
+        label: texts.emailLabel,
+        hint: texts.emailGroupsHint(characterCount, groups.length, groups[0]?.length ?? 0),
+      }
     case 'app':
-      return { label: texts.appLabel, hint: texts.appHint(length) }
+      return { label: texts.appLabel, hint: texts.appHint(characterCount) }
     case 'signIn':
-      return { label: texts.signInLabel, hint: texts.appHint(length) }
+      return { label: texts.signInLabel, hint: texts.appHint(characterCount) }
+    case 'letters':
+      return {
+        label: texts.lettersLabel(characterCount),
+        hint: texts.lettersHint(characterCount, groups.length, groups[0]?.length ?? 0),
+      }
     default:
-      return { label: texts.smsLabel, hint: texts.smsHint(length) }
+      // Some letters and then some digits (`AA-9999`) is said as such. Any other code is "N digits".
+      return {
+        label: texts.smsLabel,
+        hint:
+          groups.length === 2
+            ? texts.smsPrefixHint(groups[0]?.length ?? 0, groups[1]?.length ?? 0)
+            : texts.smsHint(characterCount),
+      }
   }
 }
 
 /**
- * Every story is a full Field: the label, the hint above the boxes (the length must be read
- * before typing), the row, and the error under it when invalid. The slots are one per character.
+ * Every story is a full Field: the label, the hint above the boxes (the length and the groups must
+ * be read before typing), the row, and the error under it when invalid. There is one slot per
+ * position of the pattern, so a `-` gets its own slot, drawn as a separator.
  */
 export function OneTimeCodeField({
   locale,
   kind = 'sms',
-  length = 6,
-  characters = 'digits',
+  pattern = '999999',
   invalid,
-  grouped = false,
   readOnly,
   withSubmit = false,
   name = 'code',
@@ -141,19 +180,14 @@ export function OneTimeCodeField({
 }: OneTimeCodeFieldProps) {
   const texts = oneTimeCodeTextsFor(locale)
   const { lang } = textsFor(locale)
-  const { label, hint } = labelsFor(texts, kind, length)
+  const { label, hint } = labelsFor(texts, kind, pattern)
   const field = (
     <Field.Root invalid={invalid} lang={lang}>
       <Field.Label marker="none">{label}</Field.Label>
       <Field.Description>{hint}</Field.Description>
-      <OneTimeCode.Root
-        length={length}
-        characters={characters}
-        className={grouped ? 'kv-one-time-code--grouped' : undefined}
-        {...rootProps}
-      >
+      <OneTimeCode.Root pattern={pattern} {...rootProps}>
         <OneTimeCode.Input name={name} readOnly={readOnly} />
-        {Array.from({ length }, (_, index) => (
+        {Array.from(pattern, (_, index) => (
           <OneTimeCode.Slot key={index} index={index} />
         ))}
       </OneTimeCode.Root>
