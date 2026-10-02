@@ -63,3 +63,4 @@ We record significant decisions as ADRs using a lightweight MADR-style format.
 | [0043](0043-scoped-checks-for-parallel-agents.md)          | Agents check only their own changes                                                             | Proposed |
 | [0044](0044-section-level-1-container.md)                  | Section is the level 1 container, and Card is level 2 only                                      | Proposed |
 | [0045](0045-one-time-code-pattern.md)                      | OneTimeCode takes a pattern, not a length                                                       | Proposed |
+| [0046](0046-notification-status-roots.md)                  | Notification is one plain Root and four ready-made status roots                                 | Proposed |
