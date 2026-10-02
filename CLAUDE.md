@@ -4,7 +4,7 @@
 
 ## Claude Code specifics
 
-- Skills: `.claude/skills/{accessibility,keyboard,testing,regulations,design}`. Load them per the workflow table in AGENTS.md.
+- Skills: `.claude/skills/{accessibility,keyboard,testing,storybook-docs,regulations,design}`. Load them per the workflow table in AGENTS.md.
 - Subagents: `ux-designer` (design specs and design review, no code), `component-engineer` (implements) and `accessibility-reviewer` (independent read-only review). Use the built-in Explore agent for broad codebase searches.
 - Model routing: the main session (Opus) orchestrates and owns architecture, plans and ADRs. Delegate the rest to cheaper subagents:
   - Exploration: Explore with `model: "sonnet"` (`haiku` for a single-file or single-symbol lookup). Fan out independent searches in parallel and keep only the conclusions.

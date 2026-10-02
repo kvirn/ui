@@ -7,6 +7,7 @@ skills:
   - accessibility
   - testing
   - keyboard
+  - storybook-docs
 memory: project
 color: blue
 ---

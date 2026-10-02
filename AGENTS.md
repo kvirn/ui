@@ -43,8 +43,8 @@ pnpm changeset
 
 | Workflow                 | Skills                                                                   | Agents                                                    |
 | ------------------------ | ------------------------------------------------------------------------ | --------------------------------------------------------- |
-| New component            | accessibility, keyboard, testing (+ design for default-theme styling)    | component-engineer → accessibility-reviewer               |
-| New block, flow or page  | design, accessibility, keyboard, testing (+ regulations if legal)        | ux-designer → component-engineer → accessibility-reviewer |
+| New component            | accessibility, keyboard, testing, storybook-docs (+ design for styling)  | component-engineer → accessibility-reviewer               |
+| New block, flow or page  | design, accessibility, keyboard, testing, storybook-docs (+ regulations) | ux-designer → component-engineer → accessibility-reviewer |
 | Visual or token change   | design, accessibility                                                    | ux-designer (ADR + `theme:check`)                         |
 | A11y defect              | accessibility, keyboard, testing                                         | component-engineer → accessibility-reviewer               |
 | Bug fix                  | testing (+ accessibility and keyboard if keys, focus or AT are involved) | component-engineer                                        |
@@ -56,13 +56,14 @@ pnpm changeset
 
 ## Skills (`.claude/skills/<name>/SKILL.md`)
 
-| Skill             | Use when                                                                                                                                                                                                                          |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **accessibility** | Designing, changing or reviewing roles, ARIA, keyboard, focus, announcements, labels, contrast, motion or target size. Also for writing a `<name>.a11y.md` contract                                                               |
-| **keyboard**      | Anything a user can focus or operate with keys: Tab order, APG keys, focus inside composites, disabled items, shortcuts, the Keyboard section of a contract, the `Keyboard` story and the Docs page's Keyboard section (ADR-0039) |
-| **testing**       | Writing or fixing tests or stories, running gates, or debugging a failure                                                                                                                                                         |
-| **design**        | Designing or reviewing anything users see: flows, content, layout, states, tokens and themes, blocks, stories and docs pages. Also for writing a design spec (`docs/design/`)                                                     |
-| **regulations**   | Any statement about law or conformance, statement, feedback or consent blocks, docs copy, or adding a dependency or external service                                                                                              |
+| Skill              | Use when                                                                                                                                                                                                                          |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **accessibility**  | Designing, changing or reviewing roles, ARIA, keyboard, focus, announcements, labels, contrast, motion or target size. Also for writing a `<name>.a11y.md` contract                                                               |
+| **keyboard**       | Anything a user can focus or operate with keys: Tab order, APG keys, focus inside composites, disabled items, shortcuts, the Keyboard section of a contract, the `Keyboard` story and the Docs page's Keyboard section (ADR-0039) |
+| **testing**        | Writing or fixing tests or stories, running gates, or debugging a failure                                                                                                                                                         |
+| **storybook-docs** | Writing a component's stories, Docs page or fixtures: the Docs page is prose from the package docs, "Show code" is the code documentation (`showSource`), and cross-component guidance lives once on a Foundation page            |
+| **design**         | Designing or reviewing anything users see: flows, content, layout, states, tokens and themes, blocks, stories and docs pages. Also for writing a design spec (`docs/design/`)                                                     |
+| **regulations**    | Any statement about law or conformance, statement, feedback or consent blocks, docs copy, or adding a dependency or external service                                                                                              |
 
 ## Agents (`.claude/agents/`)
 
