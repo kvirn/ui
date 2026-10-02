@@ -1,4 +1,4 @@
-# ADR-0046: Notification is one plain Root and four ready-made status roots
+# ADR-0047: Notification is one plain Root and four ready-made status roots
 
 - **Status:** Proposed
 - **Date:** 2026-10-02

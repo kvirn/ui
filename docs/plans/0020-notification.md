@@ -1,9 +1,9 @@
 # Plan 0020: Notification
 
-- **Status:** Draft (design and ADR-0046 proposed, waiting for the maintainer to accept it)
+- **Status:** Draft (design and ADR-0047 proposed, waiting for the maintainer to accept it)
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-02 · **Target:** M1
-- **Related:** ADR-0046 (_Proposed_), ADR-0007, ADR-0013, ADR-0020, ADR-0040, ADR-0044, design spec [notification.md](../design/notification.md)
+- **Related:** ADR-0047 (_Proposed_), ADR-0007, ADR-0013, ADR-0020, ADR-0040, ADR-0044, design spec [notification.md](../design/notification.md)
 
 ## Goal
 
@@ -58,8 +58,8 @@ Classes `kv-notification`, `kv-notification--info|success|warning|danger`, and t
 ## Tasks
 
 - [x] Design spec `docs/design/notification.md` (ux-designer)
-- [x] The maintainer's answers recorded in the spec (§11), and ADR-0046 drafted
-- [ ] ADR-0046 accepted by the maintainer
+- [x] The maintainer's answers recorded in the spec (§11), and ADR-0047 drafted
+- [ ] ADR-0047 accepted by the maintainer
 - [ ] i18n keys in all six locales, and `i18n:check` green
 - [ ] `notification.a11y.md` from spec §7, then tests first (`notification.test.tsx`)
 - [ ] `useNotification` and `Notification.*` in `packages/react/src/notification/`, with `notification.md`, exported from `index.ts`

@@ -2,7 +2,7 @@
 
 - **Status:** Draft (revised 2026-10-02 with the maintainer's answers: status by class, content by ready-made roots; the decisions are in §11)
 - **Designer:** ux-designer agent · **Date:** 2026-10-02
-- **Plan:** to be written (links this spec in its Design section) · **Related ADRs:** ADR-0007 (message overrides), ADR-0013 (classes, not props), ADR-0015 (`render`, `mergeProps`), ADR-0018 (prose on status backgrounds), ADR-0020 (its follow-up: "status panels (Notification) as their own component, not a card surface"), ADR-0021, ADR-0024 (icon registry), ADR-0028 (hyphenation), ADR-0029 (field error prefix), ADR-0039 (keyboard), ADR-0040 (Announcer), ADR-0044 (Section and Card). **New ADR to draft** (main session, _Proposed_, next free number, likely ADR-0046): "Notification: one plain Root and four ready-made status roots, no role, announced through the Announcer" (§10). It follows ADR-0013 and makes no exception to it
+- **Plan:** to be written (links this spec in its Design section) · **Related ADRs:** ADR-0007 (message overrides), ADR-0013 (classes, not props), ADR-0015 (`render`, `mergeProps`), ADR-0018 (prose on status backgrounds), ADR-0020 (its follow-up: "status panels (Notification) as their own component, not a card surface"), ADR-0021, ADR-0024 (icon registry), ADR-0028 (hyphenation), ADR-0029 (field error prefix), ADR-0039 (keyboard), ADR-0040 (Announcer), ADR-0044 (Section and Card). **New ADR to draft** (main session, _Proposed_, next free number, likely ADR-0047): "Notification: one plain Root and four ready-made status roots, no role, announced through the Announcer" (§10). It follows ADR-0013 and makes no exception to it
 - **Type:** new component (headless: a plain Root, four ready-made status roots that add an icon and a status word, and an optional announcement) + default-theme styling + DESIGN.md vocabulary and rule changes
 
 The maintainer's framing, which this spec doesn't reopen: a status block is **its own component, not a variant of a container**. Status is chosen **by class**, like Card and Section, so the look is plain CSS that's easy to change or replace. The accessible content that must agree with the colour (the icon and the status word) comes from **ready-made roots**, one per status. This spec decides the name, what is and isn't a Notification, its parts, its semantics and announcements, its look, its content rules, and the vocabulary that separates it from Surface, Section and Card.
@@ -547,7 +547,7 @@ and add two rows after it:
 ### 9.3 Other files
 
 - `docs/design/section.md` §6.1 ("a future Notification") and §6.9 (the table, §9.1); `docs/design/card.md` §6.1 ("a future Notification component") → link this spec.
-- `docs/adr/0020-card-container.md` Follow-ups: "Notification: designed in `docs/design/notification.md`, ADR-0046".
+- `docs/adr/0020-card-container.md` Follow-ups: "Notification: designed in `docs/design/notification.md`, ADR-0047".
 - `docs/adr/0028-…` (hyphenation): a revision line adding notifications.
 - `docs/architecture.md`: **Shared part vocabulary** gets a row: "`Info`, `Success`, `Warning`, `Danger` | A ready-made Root for one status: its class, its icon and its status word (Notification)". The blocks list says the error summary is built on `Notification.Danger`. No change to the Styling contract: there's no exception.
 - `docs/roadmap.md`: a Primitives row "Notification (Root; Info, Success, Warning, Danger; Title, Body, Actions; announce) | – (native `<div>`, Announcer) | 1 | planned"; the Toast row notes "reuses the Notification look and status words"; the "Form wizard + error summary" block row notes "built on `Notification.Danger`".
@@ -559,7 +559,7 @@ and add two rows after it:
 
 ## 10. ADR to draft (main session, status _Proposed_)
 
-**"Notification: one plain Root and four ready-made status roots, no role, announced through the Announcer"** (likely ADR-0046). It follows ADR-0013: status is a class, and the look is CSS on it. Decisions to record:
+**"Notification: one plain Root and four ready-made status roots, no role, announced through the Announcer"** (likely ADR-0047). It follows ADR-0013: status is a class, and the look is CSS on it. Decisions to record:
 
 1. **The name** Notification, not Alert, and the error status is Danger (§3.1).
 2. **The component split** (§6.1, §6.2). Options:
