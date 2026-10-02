@@ -1,6 +1,6 @@
 # Plan 0014: Input masks and OneTimeCode
 
-- **Status:** In progress
+- **Status:** Done
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-02 · **Target:** M1
 - **Related:** ADR-0032, ADR-0033 (Proposed), ADR-0029, ADR-0030, ADR-0007, Plan 0013. Design spec: [docs/design/one-time-code.md](../design/one-time-code.md) (Draft)
@@ -146,8 +146,8 @@ Phase 3: OneTimeCode
 
 Wrap-up
 
-- [ ] accessibility-reviewer APPROVE for each phase's diff
-- [ ] Docs pages, changeset, roadmap status
+- [x] accessibility-reviewer APPROVE for each phase's diff (engine and masked Input after four rounds on the number mask, OneTimeCode and Announcer after one fix round each)
+- [x] Docs pages (`input.md`, `one-time-code.md`, `announcer.md`), changesets, roadmap status
 
 ## Phase 1 notes: what the engine adds to ADR-0032
 
@@ -192,5 +192,5 @@ Additive: new exports and an optional `mask` prop. A minor changeset per phase w
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass (manual AT may be `pending`)
-- [ ] Plan tasks ticked, `docs/roadmap.md` status updated
+- [x] All quality gates in AGENTS.md pass (manual AT is `pending`). Firefox and WebKit aren't part of the baseline (ADR-0042); two unrelated Firefox failures are noted in the final report
+- [x] Plan tasks ticked, `docs/roadmap.md` status updated
