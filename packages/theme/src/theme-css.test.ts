@@ -1393,3 +1393,283 @@ describe('theme.css notification (ADR-0047, docs/design/notification.md)', () =>
     ).toBeGreaterThan(0)
   })
 })
+
+describe('theme.css file upload (ADR-0038, ADR-0049, docs/design/file-upload.md)', () => {
+  const isFileUpload = (selector: string) => /\.kv-file-upload\b/.test(selector)
+  const fileUploadRules = rules.filter((rule) => rule.selectors.every(isFileUpload))
+  const fileUploadSelectors = fileUploadRules.flatMap((rule) => rule.selectors)
+  const declarationsOf = (selector: string, media = '') =>
+    rules
+      .filter(
+        (rule) =>
+          rule.selectors.includes(selector) &&
+          (media === '' ? rule.media.length === 0 : rule.media.some((m) => m.includes(media))),
+      )
+      .flatMap((rule) => rule.declarations)
+
+  const dropZoneBox =
+    '.kv-file-upload-drop-zone:is([data-droppable], [data-dragging]):not([data-disabled])'
+  const dropZoneDragging = '.kv-file-upload-drop-zone[data-dragging]:not([data-disabled])'
+
+  it.each([
+    'kv-file-upload',
+    'kv-file-upload-limits',
+    'kv-file-upload-drop-zone',
+    'kv-file-upload-trigger',
+    'kv-file-upload-drop-hint',
+    'kv-file-upload-rejections',
+    'kv-file-upload-summary',
+    'kv-file-upload-list',
+    'kv-file-upload-item',
+    'kv-file-upload-preview',
+    'kv-file-upload-name',
+    'kv-file-upload-type',
+    'kv-file-upload-size',
+    'kv-file-upload-status',
+    'kv-file-upload-progress',
+    'kv-file-upload-item-error',
+    'kv-file-upload-actions',
+    'kv-file-upload-cancel',
+    'kv-file-upload-retry',
+    'kv-file-upload-remove',
+  ])('styles the part class .%s', (className) => {
+    expect(fileUploadSelectors.some((selector) => selector.includes(`.${className}`))).toBe(true)
+  })
+
+  it('draws the drop zone only where a file can be dropped, never when disabled (ADR-0049)', () => {
+    // The bare class draws no edge: it's a plain wrapper until a file can be dropped.
+    expect(
+      declarationsOf('.kv-file-upload-drop-zone').filter(([property]) =>
+        /^(?:border|background)/.test(property),
+      ),
+    ).toEqual([])
+    const box = declarationsOf(dropZoneBox)
+    expect(box).toContainEqual([
+      'border',
+      'var(--kv-file-upload-zone-edge-width) dashed var(--kv-file-upload-zone-edge)',
+    ])
+    expect(declarationsOf('.kv-file-upload-drop-zone')).toContainEqual([
+      '--kv-file-upload-zone-edge',
+      'var(--kv-color-border-control)',
+    ])
+  })
+
+  it('dragging changes style, width and fill, not only colour (1.4.1), and gives back the pixel', () => {
+    const dragging = declarationsOf(dropZoneDragging)
+    expect(dragging).toContainEqual(['border-style', 'solid'])
+    expect(dragging).toContainEqual([
+      '--kv-file-upload-zone-edge-width',
+      'var(--kv-control-border-width-invalid)',
+    ])
+    expect(dragging).toContainEqual(['--kv-file-upload-zone-edge', 'var(--kv-color-primary)'])
+    expect(dragging).toContainEqual(['background-color', 'var(--kv-color-primary-subtle)'])
+    // The padding is the zone's padding minus the extra edge width, so nothing moves.
+    const padding = declarationsOf(dropZoneBox).find(([property]) => property === 'padding-block')
+    expect(padding?.[1]).toContain('var(--kv-file-upload-zone-edge-width)')
+    expect(padding?.[1]).toContain('var(--kv-border-width)')
+  })
+
+  it('draws invalid as a 2px solid danger edge, and dragging wins over it', () => {
+    const invalid = declarationsOf(
+      '.kv-file-upload-drop-zone:is([data-droppable], [data-dragging])[data-invalid]:not([data-disabled], [data-dragging])',
+    )
+    expect(invalid).toContainEqual(['--kv-file-upload-zone-edge', 'var(--kv-color-danger)'])
+    expect(invalid).toContainEqual([
+      '--kv-file-upload-zone-edge-width',
+      'var(--kv-control-border-width-invalid)',
+    ])
+    expect(invalid).toContainEqual(['border-style', 'solid'])
+  })
+
+  it('carries the dragging state in forced colours with a solid Highlight edge (1.4.1)', () => {
+    expect(declarationsOf(dropZoneBox, 'forced-colors')).toContainEqual([
+      'border-color',
+      'CanvasText',
+    ])
+    const dragging = declarationsOf(dropZoneDragging, 'forced-colors')
+    expect(dragging).toContainEqual(['border-style', 'solid'])
+    expect(dragging).toContainEqual(['border-color', 'Highlight'])
+  })
+
+  it('shows the failed bar in CanvasText and every other item’s transparent bar as Canvas', () => {
+    expect(
+      declarationsOf('.kv-file-upload-item', '').filter(
+        ([property]) => property === 'border-inline-start',
+      ),
+    ).toContainEqual(['border-inline-start', 'var(--kv-indicator-width) solid transparent'])
+    expect(declarationsOf(".kv-file-upload-item[data-status='failed']")).toContainEqual([
+      'border-inline-start-color',
+      'var(--kv-color-danger)',
+    ])
+    expect(
+      declarationsOf(".kv-file-upload-item:not([data-status='failed'])", 'forced-colors'),
+    ).toEqual([['border-inline-start-color', 'Canvas']])
+    expect(declarationsOf(".kv-file-upload-item[data-status='failed']", 'forced-colors')).toEqual([
+      ['border-inline-start-color', 'CanvasText'],
+    ])
+  })
+
+  it('shows a focused item with the focus ring, and Highlight in forced colours (2.4.7, 2.4.13)', () => {
+    const selector = '.kv-file-upload-item:is(:focus-visible, [data-focus-visible])'
+    expect(declarationsOf(selector)).toContainEqual([
+      'outline',
+      'var(--kv-focus-ring-width) solid var(--kv-color-focus-ring)',
+    ])
+    expect(declarationsOf(selector, 'forced-colors')).toContainEqual(['outline-color', 'Highlight'])
+  })
+
+  it('wraps file names anywhere and never truncates, so 120 characters reflow at 320px (1.4.10)', () => {
+    expect(declarationsOf('.kv-file-upload-name')).toContainEqual(['overflow-wrap', 'anywhere'])
+    const declarations = fileUploadRules.flatMap((rule) => rule.declarations)
+    expect(
+      declarations.filter(
+        ([property, value]) =>
+          property === 'text-overflow' ||
+          (property === 'white-space' && /nowrap/.test(value)) ||
+          property === '-webkit-line-clamp',
+      ),
+    ).toEqual([])
+  })
+
+  it('never fixes a height on text or clips it, so spaced-out text survives (1.4.12)', () => {
+    // The preview and the progress bar hold no text, and the bar clips its own value.
+    const holdsNoText = (rule: (typeof rules)[number]) =>
+      rule.selectors.every(
+        (selector) =>
+          selector.includes('.kv-file-upload-preview') ||
+          selector.includes('.kv-file-upload-progress'),
+      )
+    const textDeclarations = fileUploadRules
+      .filter((rule) => !holdsNoText(rule))
+      .flatMap((rule) => rule.declarations)
+    expect(
+      textDeclarations.filter(([property]) =>
+        /^(?:overflow(?:-[xy]|-block|-inline)?|clip-path|height|max-height|min-height)$/.test(
+          property,
+        ),
+      ),
+    ).toEqual([])
+    expect(
+      textDeclarations.filter(
+        ([property, value]) => /^(?:max-)?block-size$/.test(property) && value !== 'auto',
+      ),
+    ).toEqual([])
+  })
+
+  it('gives every file upload button at least a 24px target, and 44px on a coarse pointer (2.5.8)', () => {
+    const buttons = [
+      '.kv-file-upload-trigger',
+      '.kv-file-upload-cancel',
+      '.kv-file-upload-retry',
+      '.kv-file-upload-remove',
+    ]
+    const rule = fileUploadRules.find(
+      (candidate) =>
+        candidate.media.length === 0 && buttons.every((c) => candidate.selectors.includes(c)),
+    )
+    expect(rule?.declarations).toContainEqual([
+      'min-inline-size',
+      'var(--kv-button-min-block-size, var(--kv-control-min-block-size))',
+    ])
+    const coarse = fileUploadRules.find(
+      (candidate) =>
+        candidate.media.some((media) => media.includes('pointer: coarse')) &&
+        buttons.every((c) => candidate.selectors.includes(c)),
+    )
+    expect(coarse?.declarations.map(([property]) => property).toSorted()).toEqual([
+      'min-block-size',
+      'min-inline-size',
+    ])
+    for (const [, value] of coarse?.declarations ?? []) {
+      expect(value).toContain('2.75rem')
+    }
+  })
+
+  it('has no animation, and transitions only under prefers-reduced-motion: no-preference (2.2.2, 2.3.3)', () => {
+    expect(
+      fileUploadRules
+        .flatMap((rule) => rule.declarations)
+        .filter(([property]) => property.startsWith('animation')),
+    ).toEqual([])
+    const transitioned = fileUploadRules.filter((rule) =>
+      rule.declarations.some(([property]) => property.startsWith('transition')),
+    )
+    expect(transitioned.length).toBeGreaterThan(0)
+    for (const rule of transitioned) {
+      expect(rule.media).toContain('(prefers-reduced-motion: no-preference)')
+    }
+  })
+
+  it('draws an unknown size as a static hatch, and a known size with a Highlight fill in forced colours', () => {
+    const indeterminate = declarationsOf('.kv-file-upload-progress:indeterminate')
+    expect(indeterminate.map(([property]) => property)).toEqual(['background-image'])
+    expect(indeterminate[0]?.[1]).toContain('repeating-linear-gradient')
+    for (const pseudo of ['::-webkit-progress-value', '::-moz-progress-bar']) {
+      expect(declarationsOf(`.kv-file-upload-progress${pseudo}`, 'forced-colors')).toContainEqual([
+        'background-color',
+        'Highlight',
+      ])
+      expect(declarationsOf(`.kv-file-upload-progress${pseudo}`, 'forced-colors')).toContainEqual([
+        'forced-color-adjust',
+        'none',
+      ])
+    }
+    expect(declarationsOf('.kv-file-upload-progress')).toContainEqual([
+      'border',
+      'var(--kv-border-width) solid var(--kv-color-border-control)',
+    ])
+  })
+
+  it('names the status and the muted meta line with text tokens (1.4.3)', () => {
+    expect(declarationsOf('.kv-file-upload-status')).toContainEqual([
+      'color',
+      'var(--kv-color-text)',
+    ])
+    expect(
+      fileUploadRules.find(
+        (rule) =>
+          rule.selectors.includes('.kv-file-upload-type') &&
+          rule.selectors.includes('.kv-file-upload-size') &&
+          rule.media.length === 0,
+      )?.declarations,
+    ).toContainEqual(['color', 'var(--kv-color-text-muted)'])
+    expect(
+      fileUploadRules.find(
+        (rule) =>
+          rule.selectors.includes('.kv-file-upload-rejections > p') &&
+          rule.selectors.includes('.kv-file-upload-item-error'),
+      )?.declarations,
+    ).toContainEqual(['color', 'var(--kv-color-danger)'])
+  })
+
+  it('steps the item and preview down in compact density from 64rem', () => {
+    expect(declarationsOf('.kv-compact', '64rem')).toEqual(
+      expect.arrayContaining([
+        ['--kv-file-upload-item-padding-block', 'var(--kv-space-2)'],
+        ['--kv-file-upload-preview-size', 'var(--kv-space-10)'],
+      ]),
+    )
+    expect(declarationsOf(':root')).toEqual(
+      expect.arrayContaining([
+        ['--kv-file-upload-item-padding-block', 'var(--kv-space-3)'],
+        ['--kv-file-upload-preview-size', 'var(--kv-space-12)'],
+      ]),
+    )
+  })
+
+  it('uses logical properties only, so right to left works', () => {
+    const physical =
+      /^(?:(?:margin|padding|border)-(?:top|right|bottom|left)(?:-.+)?|(?:top|right|bottom|left)|(?:min-|max-)?(?:width|height)|float|clear)$/
+    expect(
+      fileUploadRules
+        .flatMap((rule) => rule.declarations)
+        .filter(([property]) => physical.test(property)),
+    ).toEqual([])
+  })
+
+  it('never styles from :invalid, so the consumer decides when a field is invalid (ADR-0029)', () => {
+    expect(
+      fileUploadSelectors.filter((selector) => /:(?:user-)?(?:in)?valid\b/.test(selector)),
+    ).toEqual([])
+  })
+})

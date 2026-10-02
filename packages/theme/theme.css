@@ -71,8 +71,10 @@
  *  10b. Notification     kv-notification: a status message, by status class
  *  11. Icon
  *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-input-group,
- *                      kv-checkbox, kv-radio, kv-native-select
+ *                      kv-checkbox, kv-radio, kv-listbox-native, kv-listbox-trigger and popup,
+ *                      kv-combobox and kv-autocomplete (input, control, buttons, value chips)
  *  13. One-time code    kv-one-time-code: one input, drawn as boxes and dashes of its pattern
+ *  14. File upload      kv-file-upload: drop zone, trigger, rejections, and the list of files
  */
 
 @layer kv {
@@ -1080,7 +1082,7 @@
           .kv-input-group-addon,
           .kv-checkbox,
           .kv-radio,
-          .kv-native-select
+          .kv-listbox-native
         ),
         :is(.kv-not-prose, .kv-nav, .kv-button-group, .kv-field, .kv-fieldset) *,
         :is(:is(.kv-card, .kv-notification):not(.kv-prose) *):not(
@@ -2832,10 +2834,10 @@
     }
   }
 
-  /* Checkbox, radio and native select (section 12, continued). <Checkbox> renders
+  /* Checkbox, radio and native listbox (section 12, continued). <Checkbox> renders
    * class="kv-checkbox" and <Radio> class="kv-radio": the native input is the box or the circle
-   * (appearance: none), so the browser's keys, focus and form behaviour stay. <NativeSelect>
-   * renders class="kv-native-select". Design spec: docs/design/form-fields.md §6.5 and §6.8.
+   * (appearance: none), so the browser's keys, focus and form behaviour stay. <Listbox.Root> with
+   * native="always" (or on touch devices) renders a <select class="kv-listbox-native">. Design spec: docs/design/form-fields.md §6.5 and §6.8.
    *
    * A control that is a direct child of kv-field makes the field a choice row: the box or the
    * circle at the start, 24px, centred on the label's first line, and the label across the
@@ -3071,18 +3073,19 @@
 
   /* The select. The look of an input; the chevron is two diagonal strokes, one gradient each,
    * at the end of the box (the left in right-to-left). */
-  .kv-native-select {
+  .kv-listbox-native {
     --kv-input-edge: var(--kv-color-border-control);
     --kv-input-edge-width: var(--kv-border-width);
-    --kv-native-select-chevron: var(--kv-color-text);
-    --kv-native-select-stroke: 1px;
+    --kv-listbox-native-chevron: var(--kv-color-text);
+    --kv-listbox-native-stroke: 1px;
 
     box-sizing: border-box;
     inline-size: 100%;
     max-inline-size: 100%;
     min-block-size: var(--kv-control-min-block-size);
     margin: 0;
-    padding-block: 0;
+    /* The value wraps, so the trigger grows with it: the padding keeps wrapped lines off the edge. */
+    padding-block: var(--kv-space-2);
     /* Room for the chevron: 12px from the edge, 12px wide, and a gap. */
     padding-inline: calc(
         var(--kv-input-padding-inline) - (var(--kv-input-edge-width) - var(--kv-border-width))
@@ -3095,17 +3098,17 @@
     background-image:
       linear-gradient(
         to bottom left,
-        transparent calc(50% - var(--kv-native-select-stroke)),
-        var(--kv-native-select-chevron) calc(50% - var(--kv-native-select-stroke)),
-        var(--kv-native-select-chevron) calc(50% + var(--kv-native-select-stroke)),
-        transparent calc(50% + var(--kv-native-select-stroke))
+        transparent calc(50% - var(--kv-listbox-native-stroke)),
+        var(--kv-listbox-native-chevron) calc(50% - var(--kv-listbox-native-stroke)),
+        var(--kv-listbox-native-chevron) calc(50% + var(--kv-listbox-native-stroke)),
+        transparent calc(50% + var(--kv-listbox-native-stroke))
       ),
       linear-gradient(
         to bottom right,
-        transparent calc(50% - var(--kv-native-select-stroke)),
-        var(--kv-native-select-chevron) calc(50% - var(--kv-native-select-stroke)),
-        var(--kv-native-select-chevron) calc(50% + var(--kv-native-select-stroke)),
-        transparent calc(50% + var(--kv-native-select-stroke))
+        transparent calc(50% - var(--kv-listbox-native-stroke)),
+        var(--kv-listbox-native-chevron) calc(50% - var(--kv-listbox-native-stroke)),
+        var(--kv-listbox-native-chevron) calc(50% + var(--kv-listbox-native-stroke)),
+        transparent calc(50% + var(--kv-listbox-native-stroke))
       );
     background-position:
       right calc(var(--kv-input-padding-inline) + 0.375rem) center,
@@ -3125,30 +3128,30 @@
     text-overflow: ellipsis;
   }
 
-  .kv-native-select:dir(rtl) {
+  .kv-listbox-native:dir(rtl) {
     background-position:
       left var(--kv-input-padding-inline) center,
       left calc(var(--kv-input-padding-inline) + 0.375rem) center;
   }
 
-  .kv-native-select:not(:disabled, [data-disabled], [data-invalid], [aria-invalid='true']):hover {
+  .kv-listbox-native:not(:disabled, [data-disabled], [data-invalid], [aria-invalid='true']):hover {
     --kv-input-edge: var(--kv-color-text);
   }
 
-  .kv-native-select:is(:focus-visible, [data-focus-visible]) {
+  .kv-listbox-native:is(:focus-visible, [data-focus-visible]) {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: var(--kv-focus-ring-offset);
   }
 
-  .kv-native-select:is([data-invalid], [aria-invalid='true']) {
+  .kv-listbox-native:is([data-invalid], [aria-invalid='true']) {
     --kv-input-edge: var(--kv-color-danger);
     --kv-input-edge-width: var(--kv-control-border-width-invalid);
   }
 
-  .kv-native-select:is(:disabled, [data-disabled]) {
+  .kv-listbox-native:is(:disabled, [data-disabled]) {
     --kv-input-edge: var(--kv-color-border-control);
     --kv-input-edge-width: var(--kv-border-width);
-    --kv-native-select-chevron: var(--kv-color-text-muted);
+    --kv-listbox-native-chevron: var(--kv-color-text-muted);
 
     border-style: dashed;
     background-color: var(--kv-color-surface);
@@ -3161,7 +3164,7 @@
   @media (prefers-reduced-motion: no-preference) {
     .kv-checkbox,
     .kv-radio,
-    .kv-native-select {
+    .kv-listbox-native {
       transition-property: background-color, border-color;
       transition-duration: var(--kv-duration-fast);
       transition-timing-function: var(--kv-easing-standard);
@@ -3230,7 +3233,7 @@
 
     .kv-checkbox:is(:focus-visible, [data-focus-visible]),
     .kv-radio:is(:focus-visible, [data-focus-visible]),
-    .kv-native-select:is(:focus-visible, [data-focus-visible]) {
+    .kv-listbox-native:is(:focus-visible, [data-focus-visible]) {
       outline-color: Highlight;
     }
 
@@ -3261,7 +3264,7 @@
     }
 
     /* The native appearance draws the select's arrow in a system colour. */
-    .kv-native-select {
+    .kv-listbox-native {
       --kv-input-edge: ButtonBorder;
 
       appearance: auto;
@@ -3270,19 +3273,752 @@
       color: FieldText;
     }
 
-    .kv-native-select:not(:disabled, [data-disabled], [data-invalid], [aria-invalid='true']):hover {
+    .kv-listbox-native:not(
+        :disabled,
+        [data-disabled],
+        [data-invalid],
+        [aria-invalid='true']
+      ):hover {
       --kv-input-edge: ButtonBorder;
     }
 
-    .kv-native-select:is([data-invalid], [aria-invalid='true']) {
+    .kv-listbox-native:is([data-invalid], [aria-invalid='true']) {
       --kv-input-edge: CanvasText;
     }
 
-    .kv-native-select:is(:disabled, [data-disabled]) {
+    .kv-listbox-native:is(:disabled, [data-disabled]) {
       --kv-input-edge: GrayText;
 
       color: GrayText;
       -webkit-text-fill-color: GrayText;
+    }
+  }
+
+  /* The stylable Listbox (ADR-0037; contract: listbox.a11y.md). <Listbox.Trigger> renders
+   * class="kv-listbox-trigger", a div with role="combobox" that looks like the select above: the
+   * input's edge, fill, radius and height, with a chevron drawn by ::after. <Listbox.Value>
+   * renders kv-listbox-value, with [data-placeholder] while nothing is chosen. <Listbox.Popup>
+   * renders kv-listbox-popup, a popover in the top layer that the script places (its position,
+   * width and --kv-popup-max-height are inline): level 3 elevation, xl radius, 8px padding.
+   * <Listbox.Option> renders kv-listbox-option, at least 44px high (32px compact), with
+   * [data-active], [data-selected] and [data-disabled]. The active option has a 4px bar at its
+   * inline start and a tinted fill; the chosen one has a tick at its end: neither is colour
+   * only, and both stay in forced colours. <Listbox.Group> and <Listbox.GroupLabel> render
+   * kv-listbox-group and kv-listbox-group-label, <Listbox.Empty> kv-listbox-empty. */
+  .kv-listbox-trigger {
+    --kv-input-edge: var(--kv-color-border-control);
+    --kv-input-edge-width: var(--kv-border-width);
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-block-size: var(--kv-control-min-block-size);
+    margin: 0;
+    padding-block: 0;
+    /* Room for the chevron: 12px from the edge, 12px wide, and a gap. */
+    padding-inline: calc(
+        var(--kv-input-padding-inline) - (var(--kv-input-edge-width) - var(--kv-border-width))
+      )
+      calc(2rem - (var(--kv-input-edge-width) - var(--kv-border-width)));
+    border: var(--kv-input-edge-width) solid var(--kv-input-edge);
+    border-radius: var(--kv-radius-md);
+    background-color: var(--kv-color-canvas);
+    box-shadow: none;
+    color: var(--kv-color-text);
+    cursor: pointer;
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    letter-spacing: normal;
+    text-align: start;
+  }
+
+  /* The chevron: two borders of a square, turned. It takes the text colour, so it follows the
+   * disabled and forced-colour states (listbox trigger). */
+  .kv-listbox-trigger::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-end: calc(var(--kv-input-padding-inline) + 0.1875rem);
+    inline-size: 0.4375rem;
+    block-size: 0.4375rem;
+    border-block-end: 2px solid currentColor;
+    border-inline-end: 2px solid currentColor;
+    pointer-events: none;
+    transform: translateY(-75%) rotate(45deg);
+  }
+
+  .kv-listbox-trigger:dir(rtl)::after {
+    transform: translateY(-75%) rotate(-45deg);
+  }
+
+  /* The chosen text wraps, never truncated (DESIGN.md, Layout): several chosen values and long
+   * Finnish names stay readable, and the trigger grows to hold them. */
+  .kv-listbox-value {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .kv-listbox-value[data-placeholder] {
+    color: var(--kv-color-text-muted);
+  }
+
+  .kv-listbox-trigger:not(
+      [aria-disabled='true'],
+      [data-disabled],
+      [data-invalid],
+      [aria-invalid='true']
+    ):hover {
+    --kv-input-edge: var(--kv-color-text);
+  }
+
+  .kv-listbox-trigger:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-listbox-trigger:is([data-invalid], [aria-invalid='true']) {
+    --kv-input-edge: var(--kv-color-danger);
+    --kv-input-edge-width: var(--kv-control-border-width-invalid);
+  }
+
+  .kv-listbox-trigger:is([aria-disabled='true'], [data-disabled]) {
+    --kv-input-edge: var(--kv-color-border-control);
+    --kv-input-edge-width: var(--kv-border-width);
+
+    border-style: dashed;
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+  }
+
+  /* The popup is in the top layer (popover), so it has no z-index. It keeps a border: the shadow
+   * goes in the dark themes and in forced colours. It scrolls inside, up to the room that the
+   * script measured (--kv-popup-max-height, inline). It never takes focus: the trigger keeps it. */
+  .kv-listbox-popup {
+    /* About seven options: a longer list scrolls inside, and an open popup never fills the page. */
+    --kv-popup-height-limit: 20rem;
+    box-sizing: border-box;
+    margin: 0;
+    padding: var(--kv-space-2);
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-xl);
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-shadow-popup);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    letter-spacing: normal;
+  }
+
+  /* The popup is the shell and the list inside it scrolls, up to the room that the script
+   * measured (--kv-popup-max-height, set inline on the popup). Display only while open: an author
+   * display would otherwise override the browser's display: none on a closed popover. */
+  .kv-listbox-popup:popover-open {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .kv-listbox-list {
+    flex: 0 1 auto;
+    min-block-size: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .kv-listbox-option {
+    display: flex;
+    align-items: center;
+    gap: var(--kv-space-3);
+    box-sizing: border-box;
+    min-block-size: var(--kv-control-min-block-size);
+    padding-block: var(--kv-space-1);
+    padding-inline: var(--kv-space-3);
+    border-inline-start: var(--kv-indicator-width) solid transparent;
+    border-radius: var(--kv-radius-md);
+    cursor: pointer;
+    overflow-wrap: anywhere;
+  }
+
+  /* The active option (aria-activedescendant): a tinted fill and a bar at the inline start. */
+  .kv-listbox-option[data-active] {
+    border-inline-start-color: var(--kv-color-primary);
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  /* The chosen option: a tick at the inline end. Its borders are physical on purpose: a tick
+   * isn't mirrored in right-to-left text. */
+  .kv-listbox-option[data-selected]::after {
+    content: '';
+    flex: none;
+    inline-size: 0.375rem;
+    block-size: 0.75rem;
+    margin-inline-start: auto;
+    border-color: currentColor;
+    border-style: solid;
+    border-width: 0 2px 2px 0;
+    transform: translateY(-0.0625rem) rotate(45deg);
+  }
+
+  .kv-listbox-option[aria-disabled='true'] {
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+  }
+
+  /* A line between groups, so each group reads as one block. */
+  .kv-listbox-group + .kv-listbox-group {
+    margin-block-start: var(--kv-space-2);
+    padding-block-start: var(--kv-space-2);
+    border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  /* The label type style in the text colour: a group name is content, not a hint. */
+  .kv-listbox-group-label {
+    padding-block: var(--kv-space-2) var(--kv-space-1);
+    padding-inline: calc(var(--kv-space-3) + var(--kv-indicator-width)) var(--kv-space-3);
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-label-size);
+    font-weight: var(--kv-font-label-weight);
+    line-height: var(--kv-font-label-line-height);
+  }
+
+  /* "No results" and "Loading results" are read as content: the text colour. */
+  .kv-listbox-empty {
+    padding: var(--kv-space-3);
+    color: var(--kv-color-text);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .kv-listbox-trigger {
+      transition-property: background-color, border-color;
+      transition-duration: var(--kv-duration-fast);
+      transition-timing-function: var(--kv-easing-standard);
+    }
+  }
+
+  /* System colours, set explicitly. The shapes carry the state: a 2px edge when invalid, a
+   * dashed edge when disabled, the bar and the fill of the active option, the tick of the chosen
+   * one. The active option swaps to Highlight, so it is never only a shade. */
+  @media (forced-colors: active) {
+    .kv-listbox-trigger {
+      --kv-input-edge: ButtonBorder;
+
+      background-color: Field;
+      color: FieldText;
+    }
+
+    .kv-listbox-trigger:not(
+        [aria-disabled='true'],
+        [data-disabled],
+        [data-invalid],
+        [aria-invalid='true']
+      ):hover {
+      --kv-input-edge: ButtonBorder;
+    }
+
+    .kv-listbox-trigger:is(:focus-visible, [data-focus-visible]) {
+      outline-color: Highlight;
+    }
+
+    .kv-listbox-trigger:is([data-invalid], [aria-invalid='true']) {
+      --kv-input-edge: CanvasText;
+    }
+
+    .kv-listbox-trigger:is([aria-disabled='true'], [data-disabled]) {
+      --kv-input-edge: GrayText;
+
+      color: GrayText;
+    }
+
+    .kv-listbox-value[data-placeholder] {
+      color: GrayText;
+    }
+
+    .kv-listbox-popup {
+      border-color: CanvasText;
+      background-color: Canvas;
+      color: CanvasText;
+    }
+
+    .kv-listbox-option[data-active] {
+      border-inline-start-color: HighlightText;
+      background-color: Highlight;
+      color: HighlightText;
+      forced-color-adjust: none;
+    }
+
+    .kv-listbox-option[aria-disabled='true']:not([data-active]) {
+      color: GrayText;
+    }
+
+    .kv-listbox-group-label,
+    .kv-listbox-empty {
+      color: CanvasText;
+    }
+  }
+
+  /* The Combobox and the Autocomplete (ADR-0037; contracts: combobox.a11y.md and
+   * autocomplete.a11y.md). <Combobox.Input> renders class="kv-combobox-input" and
+   * <Autocomplete.Input> kv-autocomplete-input: both look like kv-input (its edge, fill, radius,
+   * height, states and ring). The optional <*.Control> renders kv-combobox-control (or
+   * kv-autocomplete-control), a box around the input and its buttons that draws that edge and
+   * ring, as kv-input-group does, so the input inside has none. <*.Toggle> (kv-*-toggle, a
+   * chevron) and <*.Clear> (kv-*-clear, a cross) fill the box's height, so the hit area is 44px
+   * (32px compact, never under 24px), and the mark is drawn with borders, which stay visible in
+   * forced colours. <Combobox.ValueList> renders kv-combobox-value-list, a wrapping row of
+   * chips: <Combobox.Value> renders kv-combobox-value, with kv-combobox-value-label and the
+   * remove button kv-combobox-value-remove, 44px square (32px compact), its cross drawn the same
+   * way. A chip has a 1px edge, so it is a chip in forced colours too. The popup and its options
+   * are the Listbox's (kv-listbox-popup, kv-listbox-option). The one thing added for them: an
+   * open popup with no option, no group and no Empty text to show (an Autocomplete with no
+   * suggestion and no Empty) draws nothing, instead of an empty box. */
+  .kv-listbox-popup:not(:has([role='option'], [role='group'], .kv-listbox-empty)) {
+    display: none;
+  }
+
+  .kv-combobox-input,
+  .kv-autocomplete-input {
+    --kv-input-edge: var(--kv-color-border-control);
+    --kv-input-edge-width: var(--kv-border-width);
+
+    box-sizing: border-box;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-block-size: var(--kv-control-min-block-size);
+    margin: 0;
+    padding-block: 0;
+    padding-inline: calc(
+      var(--kv-input-padding-inline) - (var(--kv-input-edge-width) - var(--kv-border-width))
+    );
+    border: var(--kv-input-edge-width) solid var(--kv-input-edge);
+    border-radius: var(--kv-radius-md);
+    appearance: none;
+    background-color: var(--kv-color-canvas);
+    box-shadow: none;
+    caret-color: var(--kv-color-text);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    letter-spacing: normal;
+    text-align: start;
+  }
+
+  .kv-combobox-input::placeholder,
+  .kv-autocomplete-input::placeholder {
+    color: var(--kv-color-text-muted);
+    opacity: 1;
+  }
+
+  .kv-combobox-input:not(:disabled, [data-invalid], [aria-invalid='true']):hover,
+  .kv-autocomplete-input:not(:disabled, [data-invalid], [aria-invalid='true']):hover {
+    --kv-input-edge: var(--kv-color-text);
+  }
+
+  .kv-combobox-input:is(:focus-visible, [data-focus-visible]),
+  .kv-autocomplete-input:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-combobox-input:is([data-invalid], [aria-invalid='true']),
+  .kv-autocomplete-input:is([data-invalid], [aria-invalid='true']) {
+    --kv-input-edge: var(--kv-color-danger);
+    --kv-input-edge-width: var(--kv-control-border-width-invalid);
+  }
+
+  .kv-combobox-input:is(:disabled, [data-disabled]),
+  .kv-autocomplete-input:is(:disabled, [data-disabled]) {
+    --kv-input-edge: var(--kv-color-border-control);
+    --kv-input-edge-width: var(--kv-border-width);
+
+    border-style: dashed;
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+    opacity: 1;
+    -webkit-text-fill-color: currentColor;
+  }
+
+  /* The box around the input and its buttons. Its edge plus its padding is always 2px, so
+   * nothing inside moves when the edge goes to 2px. No overflow: the ring is drawn outside the
+   * box and must not be clipped (2.4.11, 2.4.13). */
+  .kv-combobox-control,
+  .kv-autocomplete-control {
+    --kv-combobox-edge: var(--kv-color-border-control);
+    --kv-combobox-edge-width: var(--kv-border-width);
+
+    display: flex;
+    align-items: stretch;
+    box-sizing: border-box;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-block-size: var(--kv-control-min-block-size);
+    padding: calc(var(--kv-control-border-width-invalid) - var(--kv-combobox-edge-width));
+    border: var(--kv-combobox-edge-width) solid var(--kv-combobox-edge);
+    border-radius: var(--kv-radius-md);
+    background-color: var(--kv-color-canvas);
+    box-shadow: none;
+    color: var(--kv-color-text);
+    cursor: text;
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    letter-spacing: normal;
+  }
+
+  .kv-combobox-control:not([data-invalid], [data-disabled]):hover,
+  .kv-autocomplete-control:not([data-invalid], [data-disabled]):hover {
+    --kv-combobox-edge: var(--kv-color-text);
+  }
+
+  .kv-combobox-control:is(
+    [data-focus-visible],
+    :has(> :is(.kv-combobox-input, .kv-autocomplete-input):focus-visible)
+  ),
+  .kv-autocomplete-control:is(
+    [data-focus-visible],
+    :has(> :is(.kv-combobox-input, .kv-autocomplete-input):focus-visible)
+  ) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-combobox-control[data-invalid],
+  .kv-autocomplete-control[data-invalid] {
+    --kv-combobox-edge: var(--kv-color-danger);
+    --kv-combobox-edge-width: var(--kv-control-border-width-invalid);
+  }
+
+  .kv-combobox-control[data-disabled],
+  .kv-autocomplete-control[data-disabled] {
+    --kv-combobox-edge: var(--kv-color-border-control);
+    --kv-combobox-edge-width: var(--kv-border-width);
+
+    border-style: dashed;
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+  }
+
+  /* The input inside: no edge, fill or ring of its own, in any state. It fills the space that
+   * the buttons leave, and the whole height, so the click target is the whole box. */
+  :is(.kv-combobox-control, .kv-autocomplete-control)
+    > :is(.kv-combobox-input, .kv-autocomplete-input) {
+    flex: 1 1 auto;
+    align-self: stretch;
+    inline-size: auto;
+    min-inline-size: 0;
+    min-block-size: 0;
+    margin: 0;
+    padding-block: 0;
+    padding-inline: calc(var(--kv-input-padding-inline) - var(--kv-border-width));
+    border: 0;
+    border-radius: 0;
+    outline: 0;
+    background-color: transparent;
+    box-shadow: none;
+    cursor: inherit;
+  }
+
+  /* Toggle and Clear: as high as the box, 44px wide (32px compact). They reach over the box's
+   * padding, as the input group's button does, and paint nothing of their own but the mark. */
+  :is(.kv-combobox-toggle, .kv-autocomplete-toggle, .kv-combobox-clear, .kv-autocomplete-clear) {
+    position: relative;
+    display: grid;
+    flex: none;
+    align-self: stretch;
+    place-items: center;
+    box-sizing: border-box;
+    min-block-size: 0;
+    min-inline-size: var(--kv-control-min-block-size);
+    margin: 0;
+    margin-block: calc(-1 * var(--kv-control-border-width-invalid));
+    padding: 0;
+    border: 0;
+    border-radius: var(--kv-radius-md);
+    background-color: transparent;
+    color: var(--kv-color-text);
+    cursor: pointer;
+    font: inherit;
+  }
+
+  :is(.kv-combobox-toggle, .kv-autocomplete-toggle, .kv-combobox-clear, .kv-autocomplete-clear):is(
+    :disabled,
+    [data-disabled]
+  ) {
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+  }
+
+  :is(
+    .kv-combobox-toggle,
+    .kv-autocomplete-toggle,
+    .kv-combobox-clear,
+    .kv-autocomplete-clear
+  ):focus-visible {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: calc(-1 * var(--kv-focus-ring-width));
+  }
+
+  /* The chevron: the bottom and right edges of a square, turned. Physical borders on purpose: a
+   * chevron that points down isn't mirrored in right-to-left text. Open, it points up. */
+  :is(.kv-combobox-toggle, .kv-autocomplete-toggle)::after {
+    content: '';
+    inline-size: 0.4375rem;
+    block-size: 0.4375rem;
+    border-color: currentColor;
+    border-style: solid;
+    border-width: 0 2px 2px 0;
+    transform: translateY(-25%) rotate(45deg);
+  }
+
+  :is(.kv-combobox-toggle, .kv-autocomplete-toggle)[data-open]::after {
+    transform: translateY(25%) rotate(-135deg);
+  }
+
+  /* The cross: two lines, drawn with borders so forced colours keep them. */
+  :is(.kv-combobox-clear, .kv-autocomplete-clear, .kv-combobox-value-remove)::before,
+  :is(.kv-combobox-clear, .kv-autocomplete-clear, .kv-combobox-value-remove)::after {
+    content: '';
+    grid-area: 1 / 1;
+    inline-size: 0.875rem;
+    block-size: 0;
+    border-block-start: 2px solid currentColor;
+  }
+
+  :is(.kv-combobox-clear, .kv-autocomplete-clear, .kv-combobox-value-remove)::before {
+    transform: rotate(45deg);
+  }
+
+  :is(.kv-combobox-clear, .kv-autocomplete-clear, .kv-combobox-value-remove)::after {
+    transform: rotate(-45deg);
+  }
+
+  /* Your own icon replaces the cross. */
+  .kv-combobox-value-remove:has(> *)::before,
+  .kv-combobox-value-remove:has(> *)::after {
+    display: none;
+  }
+
+  /* The chosen values of a Combobox with several choices: a wrapping row, before the input. */
+  .kv-combobox-value-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--kv-space-2);
+    margin: 0;
+    margin-block-end: var(--kv-space-2);
+    padding: 0;
+    list-style: none;
+  }
+
+  .kv-combobox-value {
+    display: flex;
+    align-items: stretch;
+    box-sizing: border-box;
+    max-inline-size: 100%;
+    /* The edge is outside the 44px (32px compact) of the remove button inside. */
+    min-block-size: calc(var(--kv-control-min-block-size) + 2 * var(--kv-border-width));
+    margin: 0;
+    padding: 0;
+    border: var(--kv-border-width) solid var(--kv-color-border-control);
+    border-radius: var(--kv-radius-md);
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    letter-spacing: normal;
+  }
+
+  .kv-combobox-value-label {
+    display: flex;
+    align-items: center;
+    min-inline-size: 0;
+    padding-block: var(--kv-space-1);
+    padding-inline: var(--kv-space-3) var(--kv-space-1);
+    overflow-wrap: anywhere;
+  }
+
+  .kv-combobox-value-remove {
+    position: relative;
+    display: grid;
+    flex: none;
+    align-self: stretch;
+    place-items: center;
+    box-sizing: border-box;
+    min-inline-size: var(--kv-control-min-block-size);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-start-end-radius: var(--kv-radius-md);
+    border-end-end-radius: var(--kv-radius-md);
+    background-color: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .kv-combobox-value-remove:not(:disabled):hover {
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  .kv-combobox-value-remove:focus-visible {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-combobox-value[data-disabled] {
+    border-style: dashed;
+    color: var(--kv-color-text-muted);
+  }
+
+  .kv-combobox-value-remove:disabled {
+    cursor: not-allowed;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .kv-combobox-input,
+    .kv-autocomplete-input,
+    .kv-combobox-control,
+    .kv-autocomplete-control {
+      transition-property: background-color, border-color;
+      transition-duration: var(--kv-duration-fast);
+      transition-timing-function: var(--kv-easing-standard);
+    }
+  }
+
+  /* System colours, set explicitly so nothing depends on a background the browser drops. The
+   * edge keeps its width: an invalid field is 2px against 1px, so the width and the message
+   * carry the state. The chips keep their 1px edge, the marks are borders. */
+  @media (forced-colors: active) {
+    .kv-combobox-input,
+    .kv-autocomplete-input {
+      --kv-input-edge: ButtonBorder;
+
+      background-color: Field;
+      color: FieldText;
+    }
+
+    .kv-combobox-input:not(:disabled, [data-invalid], [aria-invalid='true']):hover,
+    .kv-autocomplete-input:not(:disabled, [data-invalid], [aria-invalid='true']):hover {
+      --kv-input-edge: ButtonBorder;
+    }
+
+    .kv-combobox-input:is([data-invalid], [aria-invalid='true']),
+    .kv-autocomplete-input:is([data-invalid], [aria-invalid='true']) {
+      --kv-input-edge: CanvasText;
+    }
+
+    .kv-combobox-input:is(:focus-visible, [data-focus-visible]),
+    .kv-autocomplete-input:is(:focus-visible, [data-focus-visible]) {
+      outline-color: Highlight;
+    }
+
+    .kv-combobox-input:is(:disabled, [data-disabled]),
+    .kv-autocomplete-input:is(:disabled, [data-disabled]) {
+      --kv-input-edge: GrayText;
+
+      color: GrayText;
+      -webkit-text-fill-color: GrayText;
+    }
+
+    .kv-combobox-input::placeholder,
+    .kv-autocomplete-input::placeholder {
+      color: GrayText;
+    }
+
+    .kv-combobox-control,
+    .kv-autocomplete-control {
+      --kv-combobox-edge: ButtonBorder;
+
+      background-color: Field;
+      color: FieldText;
+    }
+
+    .kv-combobox-control:not([data-invalid], [data-disabled]):hover,
+    .kv-autocomplete-control:not([data-invalid], [data-disabled]):hover {
+      --kv-combobox-edge: ButtonBorder;
+    }
+
+    .kv-combobox-control[data-invalid],
+    .kv-autocomplete-control[data-invalid] {
+      --kv-combobox-edge: CanvasText;
+    }
+
+    .kv-combobox-control:is(
+      [data-focus-visible],
+      :has(> :is(.kv-combobox-input, .kv-autocomplete-input):focus-visible)
+    ),
+    .kv-autocomplete-control:is(
+      [data-focus-visible],
+      :has(> :is(.kv-combobox-input, .kv-autocomplete-input):focus-visible)
+    ) {
+      outline-color: Highlight;
+    }
+
+    .kv-combobox-control[data-disabled],
+    .kv-autocomplete-control[data-disabled] {
+      --kv-combobox-edge: GrayText;
+
+      color: GrayText;
+    }
+
+    :is(.kv-combobox-control, .kv-autocomplete-control)
+      > :is(.kv-combobox-input, .kv-autocomplete-input) {
+      background-color: Field;
+      color: inherit;
+    }
+
+    :is(.kv-combobox-toggle, .kv-autocomplete-toggle, .kv-combobox-clear, .kv-autocomplete-clear) {
+      color: inherit;
+    }
+
+    :is(
+      .kv-combobox-toggle,
+      .kv-autocomplete-toggle,
+      .kv-combobox-clear,
+      .kv-autocomplete-clear
+    ):is(:disabled, [data-disabled]) {
+      color: GrayText;
+    }
+
+    :is(
+      .kv-combobox-toggle,
+      .kv-autocomplete-toggle,
+      .kv-combobox-clear,
+      .kv-autocomplete-clear
+    ):focus-visible,
+    .kv-combobox-value-remove:focus-visible {
+      outline-color: Highlight;
+    }
+
+    .kv-combobox-value {
+      border-color: ButtonBorder;
+      background-color: Canvas;
+      color: CanvasText;
+    }
+
+    .kv-combobox-value[data-disabled] {
+      border-color: GrayText;
+      color: GrayText;
+    }
+
+    .kv-combobox-value-remove:not(:disabled):hover {
+      background-color: Canvas;
+      outline: 1px solid Highlight;
+      outline-offset: -1px;
     }
   }
 
@@ -4576,6 +5312,538 @@
 
       color: GrayText;
       -webkit-text-fill-color: GrayText;
+    }
+  }
+
+  /* 14. File upload --------------------------------------------------------------------------
+   * <FileUpload.Root> renders class="kv-file-upload", and its parts one class each:
+   * kv-file-upload-limits, -drop-zone, -trigger, -drop-hint, -rejections, -summary, -list,
+   * -item, -preview, -name, -type, -size, -status, -progress, -item-error, -actions and the
+   * three item buttons -cancel, -retry and -remove (ADR-0038). Design spec:
+   * docs/design/file-upload.md.
+   *
+   *   <Field.Root>
+   *     <Field.Label>Bilagor</Field.Label>
+   *     <FileUpload.Root maxFiles={5}>
+   *       <FileUpload.Limits />
+   *       <FileUpload.DropZone>
+   *         <FileUpload.Trigger />
+   *         <FileUpload.DropHint />
+   *       </FileUpload.DropZone>
+   *       <FileUpload.Rejections />
+   *       <FileUpload.Summary />
+   *       <FileUpload.List>{(item) => (
+   *         <FileUpload.Item item={item}>
+   *           <FileUpload.Preview /> <FileUpload.Name /> <FileUpload.Type /> <FileUpload.Size />
+   *           <FileUpload.Status /> <FileUpload.Progress /> <FileUpload.ItemError />
+   *           <FileUpload.Actions> … buttons … </FileUpload.Actions>
+   *         </FileUpload.Item>
+   *       )}</FileUpload.List>
+   *     </FileUpload.Root>
+   *   </Field.Root>
+   *
+   * State comes from data attributes the parts render: [data-droppable] and [data-dragging] on
+   * the drop zone, [data-drag-active] and [data-full] on the Root, [data-status] on the item and
+   * its status, and [data-invalid] and [data-disabled]. The Trigger is a kv-button, so it
+   * has the button's look, hover, ring and disabled look, and at the limit it is aria-disabled
+   * with [data-disabled]. Nothing in this section styles an element by :invalid.
+   *
+   * The drop zone is plain until a file can be dropped on it: [data-droppable] (a precise
+   * pointer, or a file dragged over the page) draws the box. The one dashed edge in the theme
+   * that doesn't mean disabled (DESIGN.md, ADR-0049): the zone is a target, not a control.
+   * Dragging over it is a 2px solid primary edge with the primary-subtle fill, so style, width
+   * and fill change together and never colour alone. Invalid is a 2px danger edge. In both the
+   * padding gives back the extra pixel, so nothing moves.
+   *
+   * An item is a row: a 4px inline-start bar (transparent, danger when failed), the preview
+   * hung in the padding, then the name, a type and size line, the status, the progress bar and
+   * the error, one under the other. The buttons go under the text, and move to the inline end
+   * when the list is at least 30rem wide. The list is the container, so a narrow sidebar
+   * behaves like a phone.
+   *
+   * Internal aliases, not public tokens: --kv-file-upload-item-padding-block and
+   * --kv-file-upload-preview-size (they step down in compact density), and the drop zone's
+   * --kv-file-upload-zone-edge, -edge-width, -padding-block and -padding-inline.
+   *
+   * No state moves anything by animation, and nothing here animates unless the user allows
+   * motion: only the determinate progress fill eases. An indeterminate bar is a static hatch,
+   * because a bar that slides for minutes would be moving content with no pause (2.2.2). */
+  :root {
+    --kv-file-upload-item-padding-block: var(--kv-space-3);
+    --kv-file-upload-preview-size: var(--kv-space-12);
+  }
+
+  @media (width >= 64rem) {
+    .kv-compact {
+      --kv-file-upload-item-padding-block: var(--kv-space-2);
+      --kv-file-upload-preview-size: var(--kv-space-10);
+    }
+  }
+
+  .kv-file-upload {
+    display: flex;
+    flex-direction: column;
+    gap: var(--kv-space-3);
+    min-inline-size: 0;
+  }
+
+  /* An instruction, so body text in the text colour, as a field description is. */
+  .kv-file-upload-limits {
+    max-inline-size: var(--kv-prose-measure);
+    margin: 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  /* The wrapper around the Trigger and the hint. Plain unless a file can be dropped. */
+  .kv-file-upload-drop-zone {
+    --kv-file-upload-zone-edge: var(--kv-color-border-control);
+    --kv-file-upload-zone-edge-width: var(--kv-border-width);
+    --kv-file-upload-zone-padding-block: var(--kv-space-4);
+    --kv-file-upload-zone-padding-inline: var(--kv-space-4);
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--kv-space-3);
+    box-sizing: border-box;
+    min-inline-size: 0;
+  }
+
+  @media (width >= 40rem) {
+    .kv-file-upload-drop-zone {
+      --kv-file-upload-zone-padding-block: var(--kv-space-6);
+    }
+  }
+
+  /* The box: a dashed 1px border-control edge on a transparent background, so it sits on the
+   * canvas, a Section's surface or a Card. Disabled draws none. */
+  .kv-file-upload-drop-zone:is([data-droppable], [data-dragging]):not([data-disabled]) {
+    padding-block: calc(
+      var(--kv-file-upload-zone-padding-block) -
+        (var(--kv-file-upload-zone-edge-width) - var(--kv-border-width))
+    );
+    padding-inline: calc(
+      var(--kv-file-upload-zone-padding-inline) -
+        (var(--kv-file-upload-zone-edge-width) - var(--kv-border-width))
+    );
+    border: var(--kv-file-upload-zone-edge-width) dashed var(--kv-file-upload-zone-edge);
+    border-radius: var(--kv-radius-md);
+  }
+
+  /* Invalid, from the Field: a 2px solid danger edge. Only where the box is drawn: on a touch
+   * device the error text and icon carry it. */
+  .kv-file-upload-drop-zone:is([data-droppable], [data-dragging])[data-invalid]:not(
+      [data-disabled],
+      [data-dragging]
+    ) {
+    --kv-file-upload-zone-edge: var(--kv-color-danger);
+    --kv-file-upload-zone-edge-width: var(--kv-control-border-width-invalid);
+
+    border-style: solid;
+  }
+
+  /* A file over the zone: solid, 2px, primary, on the tinted fill, and the hint's words change. */
+  .kv-file-upload-drop-zone[data-dragging]:not([data-disabled]) {
+    --kv-file-upload-zone-edge: var(--kv-color-primary);
+    --kv-file-upload-zone-edge-width: var(--kv-control-border-width-invalid);
+
+    border-style: solid;
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  /* The Trigger is a kv-button. Never narrower than the button's minimum height (2.5.8). */
+  .kv-file-upload-trigger,
+  .kv-file-upload-cancel,
+  .kv-file-upload-retry,
+  .kv-file-upload-remove {
+    min-inline-size: var(--kv-button-min-block-size, var(--kv-control-min-block-size));
+  }
+
+  /* Pointer advice, not the button's own: it wraps below the Trigger when there is no room.
+   * Pointer-only, so it never shows without a box or when the list is full. */
+  .kv-file-upload-drop-hint {
+    min-inline-size: 0;
+    margin: 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  .kv-file-upload-drop-zone:not([data-droppable], [data-dragging]) > .kv-file-upload-drop-hint,
+  .kv-file-upload[data-full] .kv-file-upload-drop-hint {
+    display: none;
+  }
+
+  .kv-file-upload-summary {
+    max-inline-size: var(--kv-prose-measure);
+    margin: 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    font-feature-settings: var(--kv-font-numeric-feature-settings);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  /* The rejections block and an item's error: the field error look (label type, danger, the
+   * icon on the first line, in the padding so a link inside stays in the text). File names have
+   * no dictionary points and often no spaces, so they wrap anywhere (1.4.10). */
+  .kv-file-upload-rejections > p,
+  .kv-file-upload-item-error {
+    position: relative;
+    max-inline-size: var(--kv-prose-measure);
+    margin: 0;
+    padding-inline-start: calc(1.25rem + var(--kv-space-2));
+    color: var(--kv-color-danger);
+    font-size: var(--kv-font-label-size);
+    font-weight: var(--kv-font-label-weight);
+    line-height: var(--kv-font-label-line-height);
+    overflow-wrap: anywhere;
+  }
+
+  .kv-file-upload-rejections > p > .kv-icon,
+  .kv-file-upload-item-error > .kv-icon {
+    position: absolute;
+    inset-block-start: calc((1lh - 1.25rem) / 2);
+    inset-inline-start: 0;
+  }
+
+  /* One line per file, in body text with markers. */
+  .kv-file-upload-rejections > ul {
+    max-inline-size: var(--kv-prose-measure);
+    margin-block: var(--kv-space-1) 0;
+    margin-inline: 0;
+    padding-block: 0;
+    padding-inline: var(--kv-space-6) 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  .kv-file-upload-rejections > ul > li {
+    overflow-wrap: anywhere;
+  }
+
+  .kv-file-upload-rejections > ul > li + li {
+    margin-block-start: var(--kv-space-1);
+  }
+
+  /* The list of rows. No box, no inner scroll: it grows with the page. It is also the container
+   * the item asks about, so the buttons move to the inline end by the room the list has. */
+  .kv-file-upload-list {
+    margin: 0;
+    padding: 0;
+    border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    list-style: none;
+    container: kv-file-upload-list / inline-size;
+  }
+
+  .kv-file-upload-item {
+    display: grid;
+    position: relative;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-content: start;
+    row-gap: var(--kv-space-1);
+    box-sizing: border-box;
+    min-inline-size: 0;
+    margin: 0;
+    padding-block: var(--kv-file-upload-item-padding-block);
+    padding-inline: var(--kv-space-3) 0;
+    /* The bar is the inline-start edge, transparent until the item fails, so a failed item's bar
+     * doesn't shift the text. Forced colours repaint a transparent border (below). */
+    border-inline-start: var(--kv-indicator-width) solid transparent;
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    color: var(--kv-color-text);
+    list-style: none;
+  }
+
+  .kv-file-upload-item[data-status='failed'] {
+    border-inline-start-color: var(--kv-color-danger);
+  }
+
+  /* The preview hangs in the padding, so it spans the rows without stretching them. */
+  .kv-file-upload-item:has(> .kv-file-upload-preview) {
+    min-block-size: calc(
+      var(--kv-file-upload-preview-size) + 2 * var(--kv-file-upload-item-padding-block) +
+        var(--kv-border-width)
+    );
+    padding-inline-start: calc(
+      var(--kv-space-3) + var(--kv-file-upload-preview-size) + var(--kv-space-3)
+    );
+  }
+
+  .kv-file-upload-item > * {
+    grid-column: 1 / -1;
+  }
+
+  /* Zero specificity, so a button keeps its own minimum width. */
+  :where(.kv-file-upload-item > *) {
+    min-inline-size: 0;
+  }
+
+  /* Focus lands on the item after a button disappears (Remove, Cancel, Retry): a 2px ring
+   * outside the row (2.4.7, 2.4.13). It isn't a control, so it has no hover. */
+  .kv-file-upload-item:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  /* A fixed box that holds no text: an image, or the document icon on the surface fill. */
+  .kv-file-upload-preview {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    inline-size: var(--kv-file-upload-preview-size);
+    block-size: var(--kv-file-upload-preview-size);
+    border-radius: var(--kv-radius-sm);
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text-muted);
+    object-fit: cover;
+  }
+
+  .kv-file-upload-item > .kv-file-upload-preview {
+    position: absolute;
+    inset-block-start: var(--kv-file-upload-item-padding-block);
+    inset-inline-start: var(--kv-space-3);
+  }
+
+  /* The name: label type, wrapping anywhere, never truncated. */
+  .kv-file-upload-name {
+    min-inline-size: 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-label-size);
+    font-weight: var(--kv-font-label-weight);
+    line-height: var(--kv-font-label-line-height);
+    overflow-wrap: anywhere;
+  }
+
+  /* The meta line: type, then size, in two columns so they read as one line. The separator is
+   * drawn by CSS and is never read. It is only there when both are. */
+  .kv-file-upload-type,
+  .kv-file-upload-size {
+    color: var(--kv-color-text-muted);
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    overflow-wrap: anywhere;
+  }
+
+  .kv-file-upload-size {
+    font-feature-settings: var(--kv-font-numeric-feature-settings);
+  }
+
+  .kv-file-upload-item > .kv-file-upload-type {
+    grid-column: 1;
+  }
+
+  .kv-file-upload-item > .kv-file-upload-size {
+    grid-column: 2;
+  }
+
+  .kv-file-upload-type + .kv-file-upload-size::before {
+    margin-inline: var(--kv-space-2);
+    content: '·';
+    content: '·' / '';
+  }
+
+  /* The status as text, with an icon in the padding when it has one: a circle for uploaded and
+   * a triangle for cancelled. The words always say it. */
+  .kv-file-upload-status {
+    position: relative;
+    margin: 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    font-feature-settings: var(--kv-font-numeric-feature-settings);
+    line-height: var(--kv-font-body-line-height);
+    overflow-wrap: break-word;
+  }
+
+  .kv-file-upload-status:has(> .kv-icon) {
+    padding-inline-start: calc(1rem + var(--kv-space-2));
+  }
+
+  .kv-file-upload-status > .kv-icon {
+    position: absolute;
+    inset-block-start: calc((1lh - 1rem) / 2);
+    inset-inline-start: 0;
+  }
+
+  .kv-file-upload-status[data-status='complete'] > .kv-icon {
+    color: var(--kv-color-success);
+  }
+
+  .kv-file-upload-status[data-status='cancelled'] > .kv-icon {
+    color: var(--kv-color-warning);
+  }
+
+  /* A native <progress>, 8px high, the width of the text column. The track has a border-control
+   * edge so its whole length is visible (1.4.11), and the value is primary. Only the value and
+   * the track are drawn: the percentage is visible text in the status, so the bar is never the
+   * only cue. Direction follows the page: it fills from the right in right-to-left. */
+  .kv-file-upload-progress {
+    appearance: none;
+    display: block;
+    box-sizing: border-box;
+    inline-size: 100%;
+    block-size: var(--kv-space-2);
+    margin: 0;
+    padding: 0;
+    border: var(--kv-border-width) solid var(--kv-color-border-control);
+    border-radius: var(--kv-radius-sm);
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-primary);
+    overflow: hidden;
+  }
+
+  .kv-file-upload-progress::-webkit-progress-bar {
+    background-color: transparent;
+  }
+
+  .kv-file-upload-progress::-webkit-progress-value {
+    background-color: var(--kv-color-primary);
+  }
+
+  .kv-file-upload-progress::-moz-progress-bar {
+    background-color: var(--kv-color-primary);
+  }
+
+  /* No value: a static hatch over the whole track. It never moves, in any preference (2.2.2). */
+  .kv-file-upload-progress:indeterminate {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      var(--kv-color-primary) 0 4px,
+      transparent 4px 8px
+    );
+  }
+
+  .kv-file-upload-progress:indeterminate::-moz-progress-bar {
+    background-color: transparent;
+  }
+
+  /* The buttons, under the text. Never full width and never icon-only. */
+  .kv-file-upload-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--kv-space-2);
+    align-items: center;
+    margin-block-start: var(--kv-space-2);
+  }
+
+  /* Without the wrapper, a button is its own row at its own width. */
+  .kv-file-upload-item
+    > :is(.kv-file-upload-cancel, .kv-file-upload-retry, .kv-file-upload-remove) {
+    justify-self: start;
+    margin-block-start: var(--kv-space-2);
+  }
+
+  /* From a list 30rem wide, the buttons go to the inline end of the first row. */
+  @container kv-file-upload-list (inline-size >= 30rem) {
+    .kv-file-upload-item {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+
+    .kv-file-upload-item > * {
+      grid-column: 1 / 3;
+    }
+
+    .kv-file-upload-item > .kv-file-upload-actions {
+      grid-column: 3;
+      grid-row: 1;
+      align-self: start;
+      justify-content: flex-end;
+      margin-block-start: 0;
+      margin-inline-start: var(--kv-space-3);
+    }
+
+    .kv-file-upload-item:has(> .kv-file-upload-actions) > .kv-file-upload-name {
+      align-self: center;
+    }
+  }
+
+  /* Touch: 44px targets even in compact density, which steps down from 64rem on any pointer. */
+  @media (pointer: coarse) {
+    .kv-file-upload-trigger,
+    .kv-file-upload-cancel,
+    .kv-file-upload-retry,
+    .kv-file-upload-remove {
+      min-block-size: max(
+        var(--kv-button-min-block-size, var(--kv-control-min-block-size)),
+        2.75rem
+      );
+      min-inline-size: max(
+        var(--kv-button-min-block-size, var(--kv-control-min-block-size)),
+        2.75rem
+      );
+    }
+  }
+
+  /* The fill eases only when the user allows motion. Otherwise it jumps. The zone, the items and
+   * the hatch never animate. */
+  @media (prefers-reduced-motion: no-preference) {
+    .kv-file-upload-progress::-webkit-progress-value {
+      transition-property: inline-size;
+      transition-duration: var(--kv-duration-fast);
+      transition-timing-function: var(--kv-easing-standard);
+    }
+  }
+
+  /* Forced colours: style and width carry the state, as in every other mode.
+   * - Drop zone: dashed CanvasText at rest, solid 2px Highlight while dragging, and 2px solid
+   *   CanvasText when invalid. The fill is gone, which is fine.
+   * - Items: forced colours repaint the transparent bar, so every item that isn't failed gets a
+   *   Canvas bar (it marks nothing), and a failed one keeps its CanvasText bar next to the icon
+   *   and the error text.
+   * - Progress: the track is a CanvasText edge on Canvas, the value is Highlight, and
+   *   indeterminate is the edge alone (the hatch is a background image), with the status text. */
+  @media (forced-colors: active) {
+    .kv-file-upload-drop-zone:is([data-droppable], [data-dragging]):not([data-disabled]) {
+      border-color: CanvasText;
+    }
+
+    .kv-file-upload-drop-zone[data-dragging]:not([data-disabled]) {
+      border-style: solid;
+      border-color: Highlight;
+      background-color: Canvas;
+    }
+
+    .kv-file-upload-item:not([data-status='failed']) {
+      border-inline-start-color: Canvas;
+    }
+
+    .kv-file-upload-item[data-status='failed'] {
+      border-inline-start-color: CanvasText;
+    }
+
+    .kv-file-upload-item:is(:focus-visible, [data-focus-visible]) {
+      outline-color: Highlight;
+    }
+
+    .kv-file-upload-progress,
+    .kv-file-upload-progress:indeterminate {
+      border-color: CanvasText;
+      background-color: Canvas;
+      background-image: none;
+    }
+
+    .kv-file-upload-progress::-webkit-progress-value {
+      forced-color-adjust: none;
+      background-color: Highlight;
+    }
+
+    .kv-file-upload-progress::-moz-progress-bar {
+      forced-color-adjust: none;
+      background-color: Highlight;
+    }
+
+    .kv-file-upload-progress:indeterminate::-moz-progress-bar {
+      background-color: transparent;
     }
   }
 }
