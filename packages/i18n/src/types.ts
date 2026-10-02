@@ -71,6 +71,27 @@ export interface KvirnMessages {
     /** The status word of `Notification.Danger`, for example `Fel:`. */
     dangerPrefix: TextMessage
   }
+  combobox: {
+    /**
+     * Announced (politely, debounced) when the filtered list changes, for example `5 resultat`.
+     * Plural: `1 resultat` and `{count} resultat`. Owned by Combobox and Autocomplete (Plan
+     * 0022, ADR-0037 item 9).
+     */
+    resultCount: MessageFunction<{ count: number }>
+    /** Announced when the filter leaves no options, for example `Inga resultat`. */
+    noResults: TextMessage
+    /** Announced while the options are loading, for example `Laddar resultat`. */
+    loading: TextMessage
+    /**
+     * The accessible name of the button that removes one chosen value, for example
+     * `Ta bort Stockholm`. `label` is the value's visible text.
+     */
+    removeValue: MessageFunction<{ label: string }>
+    /** The accessible name of the optional button that clears the value, for example `Rensa`. */
+    clear: TextMessage
+    /** The accessible name of the optional button that opens the list, for example `Visa alternativ`. */
+    showOptions: TextMessage
+  }
   mask: {
     /**
      * Announced (politely, throttled) when a masked field drops a character the user typed or
@@ -85,6 +106,115 @@ export interface KvirnMessages {
      * `Du har skrivit alla 12 tecken.` `length` counts the characters without separators.
      */
     maximumLength: MessageFunction<{ length: number }>
+  }
+  /**
+   * Every visible, named and announced string of FileUpload (Plan 0021, ADR-0038, design spec
+   * `docs/design/file-upload.md` §4.1). `name` is a file name, inserted as plain text. `size` and
+   * `limit` are byte counts: a message formats them with `formatFileSize`, so a file and its limit
+   * read in the same unit. `allowed` is the accepted types as short labels (`PDF`, `JPG`): a
+   * message joins them with `format.list`. Every sentence ends with its full stop, so the
+   * announcer can join sentences with a space.
+   */
+  fileUpload: {
+    /** The Trigger's text with `multiple`, for example `Välj filer`. */
+    chooseFiles: TextMessage
+    /** The Trigger's text in single-file mode with nothing chosen, for example `Välj fil`. */
+    chooseFile: TextMessage
+    /** The Trigger's text in single-file mode with a file chosen, for example `Byt fil`. */
+    replaceFile: TextMessage
+    /** The hint next to the Trigger on devices with a mouse, for example `eller släpp filer här`. */
+    dropHint: MessageFunction<{ multiple: boolean }>
+    /** The hint while a file is dragged over the zone, for example `Släpp filerna för att lägga till dem`. */
+    dropHintActive: MessageFunction<{ multiple: boolean }>
+    /** Limits: how many files, for example `Du kan lägga till högst 5 filer.` Plural. */
+    limitsMaxFiles: MessageFunction<{ count: number }>
+    /** Limits: which types, for example `Filerna ska vara i formatet PDF, JPG eller PNG.` */
+    limitsTypes: MessageFunction<{ allowed: readonly string[]; multiple: boolean }>
+    /** Limits: how large, for example `Varje fil får vara högst 10 MB.` `limit` in bytes. */
+    limitsMaxSize: MessageFunction<{ limit: number; multiple: boolean }>
+    /** The Summary without `maxFiles`, for example `3 filer tillagda`. Plural. */
+    summary: MessageFunction<{ count: number }>
+    /** The Summary with `maxFiles`, for example `2 av 5 filer tillagda`. */
+    summaryOfMax: MessageFunction<{ count: number; maxFiles: number }>
+    /** The Summary at the limit, with what to do next. Also ends the announcement of the add that filled the list. */
+    summaryFull: MessageFunction<{ maxFiles: number }>
+    /** The first line of Rejections, for example `1 fil kunde inte läggas till:`. Plural. */
+    rejectedHeading: MessageFunction<{ count: number }>
+    /** An item with the form as its destination, for example `Tillagd. Skickas med formuläret`. */
+    statusReady: TextMessage
+    /** An item waiting for an upload slot. */
+    statusQueued: TextMessage
+    /** An upload with no known size. */
+    statusUploading: TextMessage
+    /** An upload with a known size. `percent` is whole percent, `0` to `100`. */
+    statusUploadingPercent: MessageFunction<{ percent: number }>
+    statusComplete: TextMessage
+    statusFailed: TextMessage
+    statusCancelled: TextMessage
+    /** The Type part when the file has no extension. */
+    typeUnknown: TextMessage
+    /** The visible text of the Remove button. Its name adds the file (`removeFile`). */
+    remove: TextMessage
+    /** The visible text of the Cancel button. */
+    cancel: TextMessage
+    /** The visible text of the Retry button. */
+    retry: TextMessage
+    /** A file name when two items share it, for example `image.jpg (2)`. `number` is 2 or more. */
+    duplicateName: MessageFunction<{ name: string; number: number }>
+    /** Rejected: not an accepted type. Says what to choose instead. */
+    errorType: MessageFunction<{ name: string; allowed: readonly string[] }>
+    /** Rejected: too large. Says how to get under the limit. `size` and `limit` in bytes. */
+    errorTooLarge: MessageFunction<{ name: string; size: number; limit: number }>
+    /** Rejected: too small. `size` and `limit` in bytes. */
+    errorTooSmall: MessageFunction<{ name: string; size: number; limit: number }>
+    /** Rejected: the file has no content. */
+    errorEmpty: MessageFunction<{ name: string }>
+    /** Rejected: the list is full. Plural in `maxFiles`. */
+    errorTooMany: MessageFunction<{ name: string; maxFiles: number }>
+    /** Rejected: the same file is already in the list. */
+    errorDuplicate: MessageFunction<{ name: string }>
+    /** Rejected: a folder was dropped. */
+    errorFolder: MessageFunction<{ name: string }>
+    /** A failed upload that supplies no text of its own. Neutral: it never says why. */
+    uploadFailedMessage: MessageFunction<{ name: string }>
+    /**
+     * Starts a rejection line for a file that shares its name with another file in the same
+     * selection, for example `Fil 2 av 3, {message}`. `position` counts from 1.
+     */
+    rejectedFilePosition: MessageFunction<{ position: number; total: number; message: string }>
+    /** The Remove button's accessible name. Starts with the visible text (WCAG 2.5.3). */
+    removeFile: MessageFunction<{ name: string }>
+    /** The Cancel button's accessible name. */
+    cancelFile: MessageFunction<{ name: string }>
+    /** The Retry button's accessible name. */
+    retryFile: MessageFunction<{ name: string }>
+    /** The progress bar's accessible name. */
+    uploadingFile: MessageFunction<{ name: string }>
+    /** Announced: one file was added. */
+    fileAdded: MessageFunction<{ name: string }>
+    /** Announced: several files were added. Plural. */
+    filesAdded: MessageFunction<{ count: number }>
+    /** Announced: files were refused. Plural. */
+    filesRejected: MessageFunction<{ count: number }>
+    /** Announced: uploads started. Plural. Not announced in auto mode: the add message is enough. */
+    uploadsStarted: MessageFunction<{ count: number }>
+    /** Announced: one upload finished. */
+    uploadComplete: MessageFunction<{ name: string }>
+    /** Announced: several uploads finished. */
+    uploadsComplete: MessageFunction<{ count: number }>
+    /** Announced: a batch emptied the queue with no failure. `one` form for a single file. */
+    allUploadsComplete: MessageFunction<{ count: number }>
+    /** Announced: one upload failed. */
+    uploadFailed: MessageFunction<{ name: string }>
+    /** Announced: several uploads failed. */
+    uploadsFailed: MessageFunction<{ count: number }>
+    /** Announced: a file was removed. */
+    fileRemoved: MessageFunction<{ name: string }>
+    /**
+     * Wraps one FileUpload's announcement with its Field label when several FileUploads are
+     * mounted, for example `Bilagor: 2 filer har laddats upp.` `label` has no optional marker.
+     */
+    announcementForField: MessageFunction<{ label: string; message: string }>
   }
 }
 
