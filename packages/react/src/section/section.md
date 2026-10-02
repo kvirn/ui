@@ -55,10 +55,6 @@ Without a modifier class, a section is `surface`, square, with `md` padding and 
 - **Prose.** A section is not a prose boundary. `kv-prose` on a section makes its content prose, which is fine for a sidebar, and the section keeps its full width (its `max-inline-size: 100%` wins over prose's `70ch`). For a 70ch reading column in a full-width band, put `kv-prose` on an element inside. A section inside prose gets prose's block margins and its content stays prose.
 - **A Card on a Section** keeps its default look.
 
-### Which container to use
-
-Not sure which one to use? See Foundation / Containers and status in Storybook (`apps/storybook/src/foundation/containers.mdx`): Section, Card, Notification or a surface token.
-
 ### `render`
 
 ```tsx

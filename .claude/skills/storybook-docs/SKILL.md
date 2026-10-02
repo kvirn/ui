@@ -1,6 +1,6 @@
 ---
 name: storybook-docs
-description: How KvirnUI documents a component in Storybook — the Docs page is prose from the package docs, "Show code" is the code documentation, and one Foundation page says which container to use. Use when writing or reviewing a component's stories, Docs page or fixtures.
+description: How KvirnUI documents a component in Storybook — the Docs page is prose from the package docs, "Show code" is the code documentation. Use when writing or reviewing a component's stories, Docs page or fixtures.
 when_to_use: add story, write a Docs page, stories for a new component, "Show code" shows a wrapper, docs repeat each other, review stories
 ---
 
@@ -11,9 +11,9 @@ when_to_use: add story, write a Docs page, stories for a new component, "Show co
 ## The Docs page
 
 - **Opens with prose** from the package docs: `packages/react/src/<name>/<name>.md`, through `usageGuide` (`apps/storybook/src/docs-source.ts`). `meta.parameters.docs.description.component = usageGuide(guide)`, with `import guide from '<path>/<name>.md?raw'`.
-- `usageGuide` drops the title, the draft note, **every fenced code block**, and the sections `Your own look`, `Classes for the default theme`, `Hook` and `Which container to use`. Theming and the hook get their own pages later. So write the package `.md` with that in mind: prose sections that stand without their code.
+- `usageGuide` drops the title, the draft note, **every fenced code block**, and the sections `Your own look`, `Classes for the default theme` and `Hook`. Theming and the hook get their own pages later. So write the package `.md` with that in mind: prose sections that stand without their code.
 - Then `Primary`, the controls, the contract's Keyboard section (`parameters.a11yContract`), and the stories. A component with no focusable part has no `Keyboard` story.
-- **Say each thing once.** The "Section, Card, Notification or a surface token: when to use which" table lives only on the Foundation page `apps/storybook/src/foundation/containers.mdx`. Link to it from a Docs page or story (`?path=/docs/foundation-containers-and-status--docs`), never copy it. The same goes for any cross-component guidance: one Foundation page, links elsewhere.
+- **Say each thing once.** Cross-component guidance lives on one Foundation page, and Docs pages and stories link to it instead of copying it.
 
 ## "Show code" shows what an adopter writes
 

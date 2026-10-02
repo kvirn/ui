@@ -47,14 +47,9 @@ export function showSource(file: string, ...names: string[]) {
   } as const
 }
 
-// Sections of the package docs that the Docs page leaves out: theming is its own page later, the
-// hook is code only, and "which container" is on the Foundation page (Containers and status). The stories' "Show code" is the code documentation.
-const leftOutSections = new Set([
-  'Your own look',
-  'Classes for the default theme',
-  'Hook',
-  'Which container to use',
-])
+// Sections of the package docs that the Docs page leaves out: theming is its own page later, and the
+// hook is code only. The stories' "Show code" is the code documentation.
+const leftOutSections = new Set(['Your own look', 'Classes for the default theme', 'Hook'])
 
 /**
  * A component's package docs (`<name>.md`) as the Docs page's description: prose only. It drops

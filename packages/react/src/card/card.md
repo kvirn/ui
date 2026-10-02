@@ -72,10 +72,6 @@ Without a modifier class, a card gets the default: `surface-raised`, the `lg` ra
 
 `md` padding is 24px, and 16px below `40rem` and in compact density (`kv-compact`). All four steps are allowed on a part, but mixed steps misalign the parts' edges, so per-part values are normally `none`, for full-bleed media. A site can change the default for every card with `--kv-card-padding-default` and `--kv-card-radius-default` (`@kvirn-ui/theme` README, Site-wide defaults), and then `kv-card--padding-md` and `kv-card--radius-lg` take one card back to the theme's step. Prose stops at a card: put `kv-prose` on `Card.Body` (or the Root of a card without parts) to style the text inside.
 
-### Which container to use
-
-Not sure which one to use? See Foundation / Containers and status in Storybook (`apps/storybook/src/foundation/containers.mdx`): Section, Card, Notification or a surface token.
-
 ### `render`
 
 ```tsx

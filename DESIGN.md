@@ -474,7 +474,7 @@ Visual rules for the default theme. Behaviour, roles and keyboard are defined in
   - Not a prose boundary: a section in prose gets prose's block margins on its own element, and its content stays prose. Put `kv-prose` on a sidebar section, and inside a full-width band.
   - A card on a section keeps its default look. The design spec is `docs/design/section.md`.
 
-  **Which one to use:** see `apps/storybook/src/foundation/containers.mdx` (Storybook: Foundation / Containers and status). It has the one decision table for Section, Card, Notification and a surface token, and the rules for when a Card is the wrong choice. A card is never interactive and has no shadow (ADR-0020).
+  A card is never interactive and has no shadow (ADR-0020). Section and Card sit on elevation levels 1 and 2 (Storybook: Foundation / Borders and elevation).
 
 - **Cards** are elevation level 2: `surface-raised`, a 1px `border-subtle` edge, the `lg` radius and no shadow. A card is a plain container and is never interactive: no hover, shadow or pointer style, because those suggest the whole card is clickable.
   - A card is always `surface-raised`: a region of the page is a Section. Choose with classes on the Root: the radius (`lg` by default, `kv-card--radius-md` for a card nested in a card, `kv-card--radius-none` for a card flush with an edge) and `kv-card--dividers` (a `border-subtle` line between parts).

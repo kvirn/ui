@@ -135,10 +135,6 @@ The default `<div>` isn't a landmark. For one site-wide notification only (a ser
 
 Never for messages about a part of the page.
 
-### Which container to use
-
-Not sure which one to use? See Foundation / Containers and status in Storybook (`apps/storybook/src/foundation/containers.mdx`): Section, Card, Notification or a surface token.
-
 ### `render`
 
 An element keeps its own props, and the part's are merged in: class names join, styles merge and refs merge (ADR-0015). The function form gets the props, a callback ref that fits any element, and an empty state object. On a root, the props include the icon as `children`, so spreading them keeps the icon.

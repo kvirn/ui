@@ -258,7 +258,7 @@ A section is never interactive: no hover, no pointer cursor, no shadow. Children
 
 ### 6.9 Section, Card, Notification or a surface token: when to use which
 
-The table and the "when unsure" rules live once, in the Storybook Foundation page `apps/storybook/src/foundation/containers.mdx` (Containers and status). The Section, Card and Notification Docs pages, the package docs and DESIGN.md link to it instead of copying it.
+The separate Foundation page (Containers and status) was removed: Section, Card and Notification are different enough that one decision table didn't help. A light note on the elevation levels lives in Foundation / Borders and elevation.
 
 ### 6.10 Modes
 

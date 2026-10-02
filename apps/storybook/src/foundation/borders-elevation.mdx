@@ -58,9 +58,9 @@ Start at level 0 and go up only when the content needs it. Each level has one jo
 - A status message is not an elevation level. It is a `Notification`: a tinted block in the content, at the level of what it sits on, with no shadow. Its edge is a 4px bar in the status colour, and it has an icon and a status word.
 - A new border or indicator width is a token change, not a one-off value.
 
-## Which container to use
+## Containers
 
-See [Containers and status](?path=/docs/foundation-containers-and-status--docs): Section, Card, Notification or a surface token.
+A `Section` is level 1: a region of the page. A `Card` is level 2: one thing with one primary destination, never a form section. A `Notification` is a status message, not a level. Each has its own Docs page.
 
 ## Accessibility
 
@@ -78,7 +78,6 @@ Set `--kv-border-width` or `--kv-indicator-width` on `:root`. Keep control edges
 
 - [Colors](?path=/story/foundation-colors--semantic-tokens): the border tokens in all four themes
 - [Section: Surface layers](?path=/story/components-section--surface-layers): all five levels, drawn with a Section and a Card
-- [Containers and status](?path=/docs/foundation-containers-and-status--docs): Section, Card, Notification or a surface token
 - [Section](?path=/docs/components-section--docs) and [Card](?path=/docs/components-card--docs): the two containers
 - [Radius](?path=/docs/foundation-radius--docs): the corners the border follows
 - [Focus ring](?path=/docs/foundation-focus-ring--docs): drawn outside the border
