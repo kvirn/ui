@@ -1,7 +1,9 @@
 import { Button, Card } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/card/card.a11y.md?raw'
+import guide from '../../../../../packages/react/src/card/card.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
+import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   binsImage,
@@ -24,9 +26,8 @@ const localeOf = (globals: Record<string, unknown>): CardFixtureLocale => {
 
 const pixels = (value: string): number => Number.parseFloat(value)
 
-const description = `A plain container for one thing on the page: an image, a heading, some text and a couple of actions, for a service, a news item or a case. It is always \`surface-raised\`. A region of the page, such as a sidebar, is a Section.
-
-Not sure which one to use? See [Containers and status](?path=/docs/foundation-containers-and-status--docs): Section, Card, Notification or a surface token.`
+// The Docs page opens with the package docs: how to use it, and how to build your own.
+const description = usageGuide(guide)
 
 const meta = {
   title: 'Components/Card',
@@ -83,6 +84,7 @@ export const Default: Story = {
  * instead of the card hiding overflow, so the footer buttons' focus rings are never clipped.
  */
 export const ServiceCard: Story = {
+  parameters: showSource('card/card.fixture.tsx', 'ServiceCard'),
   render: (_args, { globals }) => (
     <div className="kv-story-card-column">
       <ServiceCardExample locale={localeOf(globals)} />
@@ -98,6 +100,7 @@ export const ServiceCard: Story = {
 
 /** Example C: a list of news cards. Each card is a list item with one link, in its heading. */
 export const NewsList: Story = {
+  parameters: showSource('card/card.fixture.tsx', 'NewsList'),
   render: (_args, { globals }) => <NewsListExample locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     const list = canvas.getByRole('list')
@@ -112,6 +115,7 @@ export const NewsList: Story = {
 
 /** Example D: a staff case card in compact density, with a nested card one step down. */
 export const NestedCard: Story = {
+  parameters: showSource('card/card.fixture.tsx', 'CaseCard'),
   render: (_args, { globals }) => <CaseCardExample locale={localeOf(globals)} />,
 }
 

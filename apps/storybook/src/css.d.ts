@@ -13,3 +13,17 @@ declare module '*.md?raw' {
   const markdown: string
   export default markdown
 }
+
+// A fixture's source as text: "Show code" shows the code that renders a story (docs-source.ts).
+declare module '*.tsx?raw' {
+  const source: string
+  export default source
+}
+
+// Vite's `import.meta.glob`, the one form docs-source.ts uses (eager, a named query, a default export).
+interface ImportMeta {
+  glob(
+    patterns: string | string[],
+    options: { query: string; import: string; eager: true },
+  ): Record<string, unknown>
+}

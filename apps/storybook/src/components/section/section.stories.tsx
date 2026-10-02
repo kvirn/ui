@@ -1,5 +1,6 @@
 import { Card, Link, Section } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/section/section.a11y.md?raw'
+import guide from '../../../../../packages/react/src/section/section.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
 import {
@@ -9,6 +10,7 @@ import {
   ServiceCard,
   textsFor,
 } from '../card/card.fixture.tsx'
+import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   ContactDetailsFieldset,
@@ -30,11 +32,8 @@ const localeOf = (globals: Record<string, unknown>): SectionFixtureLocale => {
 
 const pixels = (value: string): number => Number.parseFloat(value)
 
-const description = `A plain container for a region of the page, such as a sidebar or a band of content. It renders a \`<div>\`. To make it a landmark, render it as a \`<section>\`, \`<aside>\` or \`<nav>\` with a name.
-
-This \`Section\` is a region of the page. It is not the \`Section\` part of Disclosure or Tabs.
-
-Not sure which one to use? See [Containers and status](?path=/docs/foundation-containers-and-status--docs): Section, Card, Notification or a surface token.`
+// The Docs page opens with the package docs: how to use it, and how to build your own.
+const description = usageGuide(guide)
 
 const meta = {
   title: 'Components/Section',
@@ -84,6 +83,7 @@ export const Default: Story = {
  * is a complementary landmark worth jumping to. Prose styles the text.
  */
 export const SidebarTextBlock: Story = {
+  parameters: showSource('section/section.fixture.tsx', 'ContactSection'),
   render: (_args, { globals }) => (
     <div className="kv-story-card-column">
       <ContactSection locale={localeOf(globals)} />
@@ -198,6 +198,7 @@ export const Padding: Story = {
  * var(--kv-color-border-subtle)` moves nothing. It follows `dir`, and every theme.
  */
 export const OneEdge: Story = {
+  parameters: showSource('section/section.fixture.tsx', 'ContactSection'),
   render: (_args, { globals }) => (
     <div className="kv-story-card-column">
       <ContactSection locale={localeOf(globals)} hasEdge />
@@ -285,6 +286,12 @@ export const SurfaceLayers: Story = {
  * so it's a Card. A form section is neither: a `<fieldset>` with a legend.
  */
 export const CardOrSection: Story = {
+  parameters: showSource(
+    'section/section.fixture.tsx',
+    'ContactDetailsFieldset',
+    'NewsCard',
+    'UserSection',
+  ),
   render: (_args, { globals }) => {
     const locale = localeOf(globals)
     return (

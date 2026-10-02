@@ -1,7 +1,9 @@
 import { Card, Icon, KvirnProvider, Notification } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/notification/notification.a11y.md?raw'
+import guide from '../../../../../packages/react/src/notification/notification.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
+import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   ConsequenceNotification,
@@ -25,11 +27,8 @@ import type { NotificationFixtureLocale } from './notification.fixture.tsx'
 // FocusTarget, Announced, LongFinnishText, AllExamples and ForcedColors. There is no Keyboard
 // story: a notification has no focusable part of its own.
 
-const description = `A status message in the content: something people need to know now, or the result of what they just did. Use \`Notification.Info\`, \`Notification.Success\`, \`Notification.Warning\` or \`Notification.Danger\`: each shows its status with an icon, a word and a colour, never with colour alone. It doesn't announce itself unless you ask, and it never takes focus on its own.
-
-Status is a class, not a prop: you choose it by choosing the component. \`Notification.Root\` is the plain base for your own design.
-
-Not sure which one to use? See [Containers and status](?path=/docs/foundation-containers-and-status--docs): Section, Card, Notification or a surface token.`
+// The Docs page opens with the package docs: how to use it, and how to build your own.
+const description = usageGuide(guide)
 
 const meta = {
   title: 'Components/Notification',
@@ -62,6 +61,7 @@ type Story = StoryObj<typeof meta>
 
 /** Example A: an info notification present when the page loads. It is content: not announced. */
 export const Default: Story = {
+  parameters: showSource('notification/notification.fixture.tsx', 'DeadlineNotification'),
   render: (args, { globals }) => (
     <div className="kv-story-notification-column">
       <DeadlineNotification {...args} locale={localeOf(globals)} />
@@ -109,6 +109,7 @@ function FourStatuses({ locale }: { locale: NotificationFixtureLocale }) {
  * status there.
  */
 export const Statuses: Story = {
+  parameters: showSource('notification/notification.stories.tsx', 'FourStatuses'),
   render: (_args, { globals }) => <FourStatuses locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
     for (const word of ['Information:', 'Klart:', 'Varning:', 'Fel:']) {
@@ -127,6 +128,11 @@ export const Statuses: Story = {
  * (`render={<p />}`). The status word is still first.
  */
 export const TitleOnly: Story = {
+  parameters: showSource(
+    'notification/notification.fixture.tsx',
+    'SavedNotification',
+    'ConsequenceNotification',
+  ),
   render: (_args, { globals }) => (
     <div className="kv-story-notification-column">
       <SavedNotification locale={localeOf(globals)} />
@@ -144,6 +150,11 @@ export const TitleOnly: Story = {
  * notification is skipped by Tab, and its actions are reached in DOM order.
  */
 export const WithActions: Story = {
+  parameters: showSource(
+    'notification/notification.fixture.tsx',
+    'PermitNotification',
+    'SendFailedNotification',
+  ),
   render: (_args, { globals }) => (
     <div className="kv-story-notification-column">
       <PermitNotification locale={localeOf(globals)} />
@@ -164,6 +175,7 @@ export const WithActions: Story = {
  * present at load, so it put nothing there.
  */
 export const Announced: Story = {
+  parameters: showSource('notification/notification.fixture.tsx', 'SavedExample'),
   render: (_args, { globals }) => (
     <div className="kv-story-notification-column">
       <DeadlineNotification locale={localeOf(globals)} />
@@ -187,10 +199,12 @@ export const Announced: Story = {
 
 /**
  * Example D: danger, inserted after Send fails, directly above Send. It is announced politely.
- * A second failure remounts it with a new `key`, so it is announced again. Shift+Tab from Send
- * reaches "Försök igen".
+ * A second failure keeps the same instance and announces through `useAnnouncer()`, because
+ * "Försök igen" is inside it and a remount would drop the focus. Shift+Tab from Send reaches
+ * "Försök igen".
  */
 export const SendFailed: Story = {
+  parameters: showSource('notification/notification.fixture.tsx', 'SendFailedExample'),
   render: (_args, { globals }) => <SendFailedExample locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     const region = canvas.getByRole('status')
@@ -221,6 +235,7 @@ export const SendFailed: Story = {
  * focus ring, and Tab from it goes to its first action.
  */
 export const FocusTarget: Story = {
+  parameters: showSource('notification/notification.fixture.tsx', 'FocusTargetExample'),
   render: (_args, { globals }) => <FocusTargetExample locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('button', { name: 'Skicka ansökan' }))
@@ -236,6 +251,7 @@ export const FocusTarget: Story = {
  * stays visible in the code. There is no status prop.
  */
 export const DynamicStatus: Story = {
+  parameters: showSource('notification/notification.fixture.tsx', 'DynamicStatusExample'),
   render: (_args, { globals }) => <DynamicStatusExample locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await expect(canvas.getByTestId('dynamic')).toHaveClass('kv-notification--warning')

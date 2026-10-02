@@ -40,6 +40,7 @@ We will use Option B, plus the reference conventions:
 3. `@storybook/addon-docs` (dev dependency) with `tags: ['autodocs']`, and `introduction.mdx`.
 4. The Theme toolbar becomes **Mode** (light, dark, system) and **Contrast** (standard, more), matching the theme store's two axes.
 5. Root `vite.config.ts` runs the stories in four projects (light, dark, light with more contrast, dark with more contrast), and the initial globals come from `VITE_STORYBOOK_MODE` and `VITE_STORYBOOK_CONTRAST`.
+6. **Show code shows what an adopter writes** (revision, 2026-10-02). A story whose `render` is a fixture component (`<DeadlineNotification locale="sv" />`) would show that wrapper in "Show code", which says nothing about the component. Such a story passes `parameters: showSource('<name>/<name>.fixture.tsx', 'FunctionName')` (`apps/storybook/src/docs-source.ts`), which shows the fixture function's own source, so the code on the page is the code that renders the example. A component's Docs page opens with its package docs (`<name>.md`, through `usageGuide`): how to use it and how to build your own, written once. Stories that already render the component inline need nothing.
 
 This revises the story structure in ADR-0017 decision 5 and in `docs/design/storybook-presentation.md`.
 
