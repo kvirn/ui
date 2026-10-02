@@ -22,6 +22,7 @@ Plans describe **how** we will build something. ADRs record **why** we chose an 
 | [0015](0015-keyboard-docs-and-backfill.md)    | Keyboard section on every Docs page, and the backfill                   | In progress |
 | [0016](0016-foundation-mdx-pages.md)          | Foundation reference pages in MDX                                       | In progress |
 | [0017](0017-close-storybook-feature-gaps.md)  | Close the Storybook feature gaps                                        | Draft       |
-| [0018](0018-section.md)                       | Section                                                                 | Done        |
+| [0018](0018-section.md)                       | Section                                                                 | In progress |
 | [0019](0019-one-time-code-pattern.md)         | OneTimeCode pattern                                                     | Done        |
-| [0020](0020-notification.md)                  | Notification                                                            | Done        |
+| [0020](0020-notification.md)                  | Notification                                                            | In progress |
+| [0021](0021-file-upload.md)                   | FileUpload                                                              | In progress |

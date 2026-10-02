@@ -27,7 +27,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Link                                                                                | – (native `<a>`)              | 1   | alpha       |
 | Card (Root, Header, Body, Footer)                                                   | – (native `<div>`)            | 1   | alpha       |
 | Section (level 1 container; Card becomes level 2 only)                              | – (native `<div>`)            | 1   | alpha       |
-| Notification (Root; Info, Success, Warning, Danger; Title, Body, Actions; announce) | – (native `<div>`, Announcer) | 1   | alpha       |
+| Notification (Root; Info, Success, Warning, Danger; Title, Body, Actions; announce) | – (native `<div>`, Announcer) | 1   | in progress |
 | Field, Label, Description, ErrorMessage, Fieldset                                   | –                             | 1   | in progress |
 | Input, Textarea                                                                     | –                             | 1   | in progress |
 | InputGroup (Root, Addon: units, icons, a clear Button)                              | – (native `<input>`)          | 1   | in progress |
@@ -38,17 +38,17 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Switch                                                                              | Switch                        | 1   | planned     |
 | Disclosure, Accordion                                                               | Disclosure, Accordion         | 1   | planned     |
 | Dialog, AlertDialog                                                                 | Dialog (Modal), Alert Dialog  | 2   | planned     |
-| Popover, Tooltip                                                                    | –, Tooltip                    | 2   | planned     |
+| Popover (alpha candidate), Tooltip                                                  | –, Tooltip                    | 2   | in progress |
 | Menu, MenuButton                                                                    | Menu Button                   | 2   | planned     |
 | Tabs                                                                                | Tabs                          | 2   | planned     |
-| Listbox, Select                                                                     | Listbox                       | 2   | planned     |
-| Combobox                                                                            | Combobox (ARIA 1.2)           | 3   | planned     |
+| Listbox (alpha candidate: native and popup rendering)                               | Select-Only Combobox, Listbox | 2   | in progress |
+| Combobox, Autocomplete (alpha candidate: single, multiple, free text)               | Combobox (ARIA 1.2)           | 3   | in progress |
 | Toast (reuses the Notification look and status words)                               | status / alert                | 3   | planned     |
 | Breadcrumb, Pagination                                                              | Breadcrumb                    | 3   | planned     |
 | Slider                                                                              | Slider                        | 3   | planned     |
 | DatePicker, Calendar                                                                | Date Picker Dialog, Grid      | 4   | planned     |
 | Stepper                                                                             | –                             | 4   | planned     |
-| FileUpload                                                                          | –                             | 4   | planned     |
+| FileUpload (alpha candidate: native button, drop zone, queue)                       | –                             | 4   | in progress |
 | NavigationMenu                                                                      | Disclosure Navigation         | 4   | planned     |
 
 ## Theme and docs
