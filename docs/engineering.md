@@ -18,7 +18,8 @@ Config lives in the root `vite.config.ts` (fmt, lint, test projects). Each packa
 - **Tests import from `vite-plus/test`**, and browser APIs from `vite-plus/test/browser`, never from `vitest` directly.
 - **`vp run e2e <args>`** passes arguments straight to Playwright. Don't put `--` before them, or Playwright ignores the filters.
 - **Telemetry is off:** Storybook (`core.disableTelemetry`) and Next.js (`NEXT_TELEMETRY_DISABLED=1`). Vite+ and Playwright send none.
-- **Local WebKit on Linux** needs system libraries (`sudo pnpm exec playwright install-deps webkit`). CI installs them.
+- **Playwright runs Chromium only by default** (ADR-0042). Other browsers are opt-in with `E2E_BROWSERS`, such as `E2E_BROWSERS=firefox,webkit vp run e2e <spec> --project webkit`, or `E2E_BROWSERS=all`. WebKit on Linux also needs system libraries (`sudo pnpm exec playwright install-deps webkit`).
+- **Check only your own changes** (ADR-0043). The Stop hook does: it checks the files that differ from a snapshot taken at session start (`.claude/hooks/session-start.sh`). By hand, pass paths to `vp check`, `vp test run` and `vp run e2e`, and never run `vp check --fix` or a path-less `vp fmt` while others may be editing.
 
 **Known Oxlint jsx-a11y gaps** (vs eslint-plugin-jsx-a11y 6.x, accepted in ADR-0002, verified 2026-09-30 against Oxlint 1.85): only the rules ESLint itself deprecated, which are `accessible-emoji`, `label-has-for` and `no-onchange`. `iframe-missing-sandbox` lives in Oxlint's `react` plugin. All the other 36 rules are enabled as errors.
 
@@ -36,7 +37,7 @@ Command names were verified against [viteplus.dev](https://viteplus.dev/guide/) 
 
 Stories and e2e specs live in the Storybook app, so the packages ship no Storybook files and need no Storybook dependencies. The package keeps its unit and browser tests (with axe), its contract and its docs page.
 
-Playwright projects: `chromium`, `firefox`, `webkit`, `chromium-forced-colors`, `chromium-reduced-motion`, `mobile-safari`, `mobile-chrome`, `reflow-320`.
+Playwright projects: the baseline is `chromium`, `chromium-forced-colors`, `chromium-reduced-motion` and `reflow-320`. `firefox`, `webkit`, `mobile-safari` and `mobile-chrome` are defined and off until `E2E_BROWSERS` names them (ADR-0042).
 
 ## CI
 

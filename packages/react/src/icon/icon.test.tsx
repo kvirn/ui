@@ -344,11 +344,13 @@ describe('attributes', () => {
         <RegisteredIcon name="lucide-trash" size="sm" color="currentColor" />
       </KvirnProvider>,
     )
-    expect(html).toMatch(/class="[^"]*\bkv-icon\b[^"]*"/)
-    expect(html).toMatch(/class="[^"]*\blucide\b[^"]*"/)
-    expect(html).toContain('width="1em"')
-    expect(html).toContain('aria-hidden="true"')
-    expect(html).not.toContain('style=')
+    // The provider adds its two empty live regions (ADR-0040) after the icon, and they carry inline styles.
+    const svg = html.slice(0, html.indexOf('</svg>') + '</svg>'.length)
+    expect(svg).toMatch(/class="[^"]*\bkv-icon\b[^"]*"/)
+    expect(svg).toMatch(/class="[^"]*\blucide\b[^"]*"/)
+    expect(svg).toContain('width="1em"')
+    expect(svg).toContain('aria-hidden="true"')
+    expect(svg).not.toContain('style=')
   })
 })
 

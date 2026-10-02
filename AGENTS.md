@@ -24,9 +24,9 @@ docs/              vision · architecture · accessibility · compliance · engi
 Use pnpm only. `vp` is the single CLI. Don't use ESLint or Prettier.
 
 ```sh
-vp check                    # fmt + lint + types
-vp test run [--changed]     # Vitest unit/component + axe
-vp run e2e [file] [--project <name>]  # Playwright (no `--` before args)
+vp check [files]            # fmt + lint + types. Pass your files while working
+vp test run [files]         # Vitest unit/component + axe. Pass your files while working
+vp run e2e [file] [--project <name>]  # Playwright, Chromium only (no `--` before args). E2E_BROWSERS=firefox,webkit|all for others (ADR-0042)
 vp run i18n:check           # all locales complete
 vp run theme:check          # token contrast
 pnpm changeset
@@ -72,11 +72,11 @@ pnpm changeset
 
 ## Quality gates
 
-Nothing is done until all of these pass. A Stop hook enforces gates 1–2.
+Nothing is done until all of these pass. A Stop hook enforces gates 1–2 on the files your session changed (ADR-0043).
 
 1. `vp check` is clean.
 2. `vp test run` passes, with 0 axe violations in every story state (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`).
-3. `vp run e2e`: every keyboard-contract row is tested, and the forced-colors, reduced-motion and 320px reflow projects are green.
+3. `vp run e2e` (the Chromium baseline, ADR-0042): every keyboard-contract row is tested, and the forced-colors, reduced-motion and 320px reflow projects are green.
 4. `i18n:check` and `theme:check` pass.
 5. The component has a hook, a compound component, stories (every state, plus RTL and forced-colors, and a `Keyboard` story if it has a focusable part), and a complete `<name>.a11y.md` that matches the tests. Its Storybook Docs page shows the contract's Keyboard section (ADR-0039).
 6. accessibility-reviewer returns APPROVE.
@@ -94,6 +94,11 @@ Nothing is done until all of these pass. A Stop hook enforces gates 1–2.
 8. **Never claim legal compliance.** Say "designed and tested to meet WCAG 2.2 AA".
 9. **Public API changes** need a changeset and a docs update.
 10. **Stay in scope.** No drive-by refactors. If the plan is wrong, update the plan first.
+11. **Check only your own changes** (ADR-0043). Other agents and the maintainer edit the same tree at the same time.
+    - Pass paths: `vp check <files>`, `vp test run <files>`, `vp run e2e <spec> --project chromium`. Run the whole-tree gates only at the end of your change, once.
+    - Never run `vp check --fix` or `vp fmt` without paths. They rewrite other people's in-progress files. The edit hook formats each file you edit.
+    - A failure in a file you didn't change isn't yours. Don't fix, skip or revert it. Name the files in your report, and ask. This includes a Stop hook that fails on someone else's files.
+    - Never `git stash`, `git checkout -- <path>`, `git reset` or `git clean` over changes you didn't make.
 
 ## Conventions
 

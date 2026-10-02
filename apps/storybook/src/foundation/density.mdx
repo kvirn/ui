@@ -1,0 +1,48 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Foundation/Density" />
+
+# Density
+
+Density is how tall and tight the controls are. Comfortable is the default and needs no class. Compact is opt-in, for staff tools, and returns to comfortable on small screens.
+
+## Tokens
+
+The control tokens are read by every button, input and navigation item. Compact swaps them inside `kv-compact`.
+
+| Token                         | Value                       | Compact                             |
+| ----------------------------- | --------------------------- | ----------------------------------- |
+| `--kv-control-min-block-size` | `2.75rem`                   | `2rem`                              |
+| `--kv-control-font-size`      | `var(--kv-font-label-size)` | `var(--kv-font-label-compact-size)` |
+| `--kv-control-padding-inline` | `var(--kv-space-4)`         | `var(--kv-space-3)`                 |
+
+The font weight and line height follow the `label` role, or `label-compact` in compact.
+
+## The two densities
+
+| Density               | Control height | Label                  | Smallest target | Use                                                                                          |
+| --------------------- | -------------- | ---------------------- | --------------- | -------------------------------------------------------------------------------------------- |
+| Comfortable (default) | 44px           | `label` (16px)         | 44×44px         | Everything resident-facing, and every primary action. Meets 2.5.5 Target Size (Enhanced)     |
+| Compact               | 32px           | `label-compact` (14px) | 24×24px         | Staff tools, tables, toolbars, and the docs site chrome at 64rem and wider. Meets 2.5.8 only |
+
+## Usage
+
+- Put `class="kv-compact"` on a container to make the controls inside it compact.
+- For a whole staff tool, put the class on `<html>` or `<body>`.
+- **Below 64rem (1024px at the default text size), compact returns to comfortable.** Touch is likely there, so controls go back to 44px with 16px labels.
+- Never use compact for resident-facing pages or for a primary action.
+
+## Accessibility
+
+- **Target size (2.5.8).** Both densities have targets of at least 24×24px. Comfortable has 44×44px, which meets 2.5.5 Enhanced. Compact doesn't, and is documented as meeting 2.5.8 only.
+- **Reflow and zoom (1.4.4, 1.4.10).** Sizes are `min-block-size` in rem, so a control grows with the text and never clips its label.
+
+## Customising
+
+Use `--kv-button-min-block-size` and the other `--kv-button-*` properties to size buttons alone. They win over density, so keep the height at 24px or more (2.5.8), and 44px on resident-facing pages.
+
+## Related
+
+- [Spacing](?path=/docs/foundation-spacing--docs): the steps the padding uses
+- [Layout](?path=/docs/foundation-layout--docs): the 64rem breakpoint
+- [Typography](?path=/story/foundation-typography--type-roles): the `label` and `label-compact` roles

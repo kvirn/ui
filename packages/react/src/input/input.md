@@ -8,6 +8,7 @@
 - Inside a [Field](../field/field.md) it takes its `id`, `aria-describedby`, `aria-invalid`, `aria-required` and `disabled` from it. Outside a Field it needs `aria-label` or `aria-labelledby`: a dev warning says so.
 - **Controlled:** pass `value` and `onValueChange(value, { reason: 'input', event })`. **Uncontrolled:** pass `defaultValue` and `name`, and the browser keeps the value until a form submit reads it. `onChange` and every other native prop, `name` and `ref` pass through.
 - **Numbers are text** (ADR-0030): `type="text"` with `inputMode="numeric"` or `"decimal"`, and `spellCheck={false}`. `type="number"` and `type="date"` aren't accepted. See Numbers below.
+- **Masks** (Plan 0014, ADR-0032): `mask={masks.personalIdentityNumber({ country: 'SE' })}` shapes what is typed. It stays a native `<input>`: paste, autofill and undo work, nothing is clamped or corrected, and a refused character is announced. See Masks below.
 - Headless: no CSS. It renders `kv-input`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported it is styled.
 
 ## Component
@@ -113,11 +114,74 @@ A unit ("kr", "%"), a decorative icon or a button inside the input's box goes in
 - Never filter keys or block paste (3.3.8). Your form parses what people type ("1 250,50", "1250.50", " 2 ") and validates it.
 - A width class is a hint, never a limit: no `maxlength` comes from it.
 
+### Masks
+
+A mask shapes what the user types: it drops characters that can't be valid, puts separators in as the user types past them, and limits the length. The control stays a native `<input>`, so paste, autofill, undo and dictation keep working (ADR-0032).
+
+```tsx
+import { Field, Input, masks } from '@kvirn-ui/react'
+
+;<Field.Root invalid={errors.personalIdentityNumber !== undefined} required>
+  <Field.Label>Personnummer</Field.Label>
+  {/* The hint says the format. The mask doesn't (3.3.2): a masked Input without one warns. */}
+  <Field.Description>Tio eller tolv siffror, till exempel 19900101-2385.</Field.Description>
+  <Field.ErrorMessage>{errors.personalIdentityNumber}</Field.ErrorMessage>
+  <Input
+    name="personalIdentityNumber"
+    mask={masks.personalIdentityNumber({ country: 'SE' })}
+    onValueChange={(value, details) =>
+      form.setValue('personalIdentityNumber', details.unmaskedValue)
+    }
+  />
+</Field.Root>
+```
+
+Presets (all from `masks`, re-exported by `@kvirn-ui/react`):
+
+| Preset                                                                                         | Shapes                                                                                                                                             |
+| ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `digits({ length? })`, `letters()`, `lettersAndDigits()`                                       | Filters. `letters()` isn't for names: names have spaces, hyphens and apostrophes                                                                   |
+| `number({ decimals?, allowNegative?, grouping?, min?, max? })`                                 | A number with the page's decimal separator. `min` and `max` are reported as `isWithinRange`, never clamped                                         |
+| `personalIdentityNumber({ country })`                                                          | SE: 10 or 12 digits and `-` or `+`. FI: `DDMMYY`, the century sign and `NNNC`, in capitals. NO: 11 digits                                          |
+| `organisationNumber({ country })`, `postalCode({ country })`, `iban()`                         | `556000-0001`, `123 45`, `SE45 5000 0000 0583 9825 7466`                                                                                           |
+| `email()`, `telephone()`                                                                       | Filters: spaces out of an address, and digits, `+`, space, `-`, `(`, `)` for a number. No national format                                          |
+| `pattern('aa-9999', { transform? })`, `regexp(/^[A-Z]{0,3}\d{0,3}$/, { allowed?, complete? })` | Your own. In a pattern `9` is a digit, `a` a letter (å, ø, đ, ŋ count), `*` either, and the rest are literals. A regexp must accept partial values |
+| `oneTimeCode({ length, characters? })`                                                         | For a one-time code (ADR-0033)                                                                                                                     |
+
+A preset suggests `inputMode`, `autoCapitalize`, `spellCheck={false}` and, for identifiers, `dir="ltr"`. Your own props win. It never sets `autocomplete`: that depends on the question.
+
+What a mask does, and doesn't:
+
+- **Lenient.** A pasted `19900101 2385`, `199001012385` or `19900101-2385` all end as `19900101-2385`. A typed literal is accepted once. There are no placeholder characters in the value, and no `maxlength` or `pattern`.
+- **Backspace and Delete always remove a character**, also next to a separator. The caret stays after the character the user typed. A dead key or IME composition is left alone until it ends.
+- **The value is written back only when the mask changed it**, so plain typing keeps the browser's undo history. When the mask inserts a separator, undo for that step is lost.
+- **Reported, never enforced.** `onValueChange(value, details)` gets `details.unmaskedValue`, `isComplete` (the shape is complete, not that the number exists), `isWithinRange` (number masks) and `rejected` (the characters dropped, grouped by reason). Check the number yourself when you validate, with `checks.personalIdentityNumber(value, { country })`, `checks.organisationNumber` and `checks.iban`: each returns `{ isValid, reason }` with `reason` `'format'`, `'date'`, `'checkDigit'` (and `'country'` for an IBAN), so you can write a specific message.
+- **A controlled `value` is rendered as given and never rewritten.** For a stored, unmasked value use the mask's `format`: `value={mask.format(stored)}`. A form submit sends the formatted value, and `mask.unmask(value)` gives the plain one.
+- **Rejected characters are announced** (4.1.3): a polite message from the shared Announcer, "Här kan du bara skriva siffror." or "Du har skrivit alla 12 tecken.", at most once every three seconds per field. The strings are in all six locales (`mask.characterNotAllowed`, `mask.maximumLength`), and you can override them per provider or per instance: `messages={{ characterNotAllowed: () => '…' }}`. `announceRejections={false}` turns it off, for example when you show your own message. **The `KvirnProvider` is required for announcements:** without one the mask still works, nothing is announced, and a development warning says so once.
+- **Numbers** use the provider's locale for the separator (a comma in sv, fi, nb, nn and se), whichever one is typed. Pass `useMask`'s `format` or `mask.withLocale(locale)` to show a stored number the same way.
+- **Types.** A mask works on `type` `text`, `tel`, `search`, `url` and `password`. On `type="email"` there is no caret control, so use only `masks.email()` there: another mask warns in development.
+
+#### `useMask` on your own `<input>`
+
+```tsx
+import { masks, mergeProps, useMask } from '@kvirn-ui/react'
+
+const caseNumber = useMask({
+  mask: masks.pattern('aa-9999', { transform: { a: (letter) => letter.toUpperCase() } }),
+  onValueChange: (value, details) => setCaseNumber(details.unmaskedValue),
+})
+// Your own props last, so they win over the preset's suggestions. The handlers chain.
+<input {...mergeProps(caseNumber.inputProps, { name: 'caseNumber', autoComplete: 'off' })} />
+```
+
+`useMask` returns `inputProps` (`onChange`, `onFocus`, `onCompositionStart`, `onCompositionEnd`, a `ref` that tracks the value before each edit, and the suggested attributes), plus `format` and `unmask` for the provider's locale. Inside a Field, spread `useInput`'s props too: they read the Field.
+
 ### Your part
 
 - **A visible label** in a Field. The placeholder is not the label: put examples in the Description (3.3.2).
 - **`autoComplete`** on every input that asks for the user's own data (`name`, `email`, `tel`, `postal-code`, `bday`): 1.3.5. Never `autocomplete="off"` on a password, and never block paste.
 - **Read-only and disabled** are for staff tools. In a resident form, explain on submit instead, and say why in the Description if you must use them.
+- **A hint with the format** for every masked Input, and the `KvirnProvider` around the app, so a refused character is announced.
 - **Don't pass `id`** to an Input inside a Field: the Field's id wins. Set `controlId` on `Field.Root`.
 
 ### Classes for the default theme

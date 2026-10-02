@@ -74,7 +74,7 @@ Components only use the semantic tokens. Everything is inside `@layer kv`, so an
 }
 ```
 
-Each theme uses different steps of a scale. For primary: 500 for the button and 600 for links in light, 500 and 400 in dark, 800 in light high contrast and 200 in dark high contrast. So **swapping a scale can break contrast**: a step that carries white text in light may not show against the dark canvas. The default `--kv-accent-*` (teal) is an example: copied into `--kv-primary-*` as it is, white text on its 500 is 4.37:1, below 4.5:1. That's why the brand scale above has a darker 500. Always run `checkThemeCss()` on your customised copy (see [Check your colours](#check-your-colours)), or read the live Foundation/Theming page and the Text on surface story in Foundation/Colors in Storybook.
+Each theme uses different steps of a scale. For primary: 500 for the button and 600 for links in light, 500 and 400 in dark, 800 in light high contrast and 200 in dark high contrast. So **swapping a scale can break contrast**: a step that carries white text in light may not show against the dark canvas. The default `--kv-accent-*` (teal) is an example: copied into `--kv-primary-*` as it is, white text on its 500 is 4.37:1, below 4.5:1. That's why the brand scale above has a darker 500. Always run `checkThemeCss()` on your customised copy (see [Check your colours](#check-your-colours)), or read the Foundation/Theming page and the Text on surface story in Foundation/Colors in Storybook, which measures live.
 
 Override scales on `:root`, where `theme.css` declares the semantic tokens. A custom property is resolved where it's declared, so a scale overridden on a wrapper element doesn't reach the semantic tokens inside it.
 

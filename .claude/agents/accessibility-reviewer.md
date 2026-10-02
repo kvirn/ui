@@ -23,7 +23,7 @@ You review KvirnUI changes in a fresh context. You did not write this code, so d
 3. **Keyboard (ADR-0039, `keyboard` skill).** Does the Keyboard section follow the APG keyboard practice: one Tab stop per composite, the stated focus strategy, selection versus focus, focusable disabled items in composites, RTL flips, no intercepted native keys, no auto-advance, no non-opt-in shortcuts? Press every key in the `Keyboard` story. Does the stories file pass `parameters.a11yContract`, and does the Docs page show the Keyboard section? Report it with the skill's review format.
 4. **Contract vs tests.** Does every keyboard row, including Tab and Shift+Tab, have a test named after it, and do arrow rows have an RTL test? Is there an axe assertion in every story state? Are forced-colors, reduced-motion and reflow covered?
 5. **Verify, targeted** (see the test budget in the `testing` skill). Start from the engineer's gate evidence in your brief, and don't re-run the full suite.
-   - Run `vp check` once.
+   - Run `vp check <the diff's files>` once. Never `--fix`, and never a path-less `vp fmt`: you're read-only, and others may be editing (ADR-0043).
    - Run the component's own test files (`vp test run <files>`).
    - Run its e2e spec on `chromium` and `chromium-forced-colors`.
    - Run anything narrower that a specific finding needs.

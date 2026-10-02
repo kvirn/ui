@@ -1,9 +1,9 @@
 # Plan 0014: Input masks and OneTimeCode
 
-- **Status:** Draft
+- **Status:** In progress
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-02 · **Target:** M1
-- **Related:** ADR-0032, ADR-0033 (Proposed), ADR-0029, ADR-0030, ADR-0007, Plan 0013. Design spec: `docs/design/one-time-code.md` (to be written by ux-designer)
+- **Related:** ADR-0032, ADR-0033 (Proposed), ADR-0029, ADR-0030, ADR-0007, Plan 0013. Design spec: [docs/design/one-time-code.md](../design/one-time-code.md) (Draft)
 
 ## Goal
 
@@ -123,38 +123,55 @@ All six locales. fi, nn and se need translator review.
 
 Phase 1: the engine (`core`, no React)
 
-- [ ] `packages/core/src/mask/`: `createMask`, pattern, regexp, function and number definitions, with unit tests for every ADR-0032 item 5 rule
-- [ ] Presets: digits, letters, lettersAndDigits, number, personalIdentityNumber (SE, FI, NO), postalCode, organisationNumber, iban, email, telephone, pattern, regexp, oneTimeCode, with test tables of real and edge-case values
-- [ ] `packages/core/src/mask/checks/`: `checks.personalIdentityNumber` (SE, FI, NO), `checks.organisationNumber` (SE, FI, NO) and `checks.iban`, with `{ isValid, reason }`, tested with the authorities' published test numbers only (no real personal data in the repo)
+- [x] `packages/core/src/mask/`: `createMask`, pattern, regexp, function and number definitions, with unit tests for every ADR-0032 item 5 rule
+- [x] Presets: digits, letters, lettersAndDigits, number, personalIdentityNumber (SE, FI, NO), postalCode, organisationNumber, iban, email, telephone, pattern, regexp, oneTimeCode, with test tables of real and edge-case values
+- [x] `packages/core/src/mask/checks/`: `checks.personalIdentityNumber` (SE, FI, NO), `checks.organisationNumber` (SE, FI, NO) and `checks.iban`, with `{ isValid, reason }`, tested with the authorities' published test numbers only (no real personal data in the repo)
 
 Phase 2: masked Input
 
-- [ ] Announcer available (roadmap M1). See open question 1
-- [ ] `useMask` and Input's `mask` prop, with the caret, composition and write-back rules
-- [ ] i18n strings in all six locales, `i18n:check`
-- [ ] Component tests and axe. Stories: `Components/Form/Input` mask examples and a `Components/Form/Mask` page (every preset, RTL, forced colours)
-- [ ] e2e: typing, paste styles, Backspace across literals, undo, composition (Chromium, Firefox, WebKit)
-- [ ] `input.a11y.md` and `input.md` updated
+- [x] Minimal shared Announcer (core utility + react part, ADR-0040), maintainer approved building it first
+- [x] `useMask` and Input's `mask` prop, with the caret, composition and write-back rules
+- [x] i18n strings in all six locales, `i18n:check`
+- [x] Component tests and axe. Stories: `Components/Form/Input` mask examples and a `Components/Form/Mask` page (every preset, RTL, forced colours)
+- [x] e2e: typing, paste styles, Backspace across literals, undo, composition (Chromium and Firefox run locally, WebKit in CI)
+- [x] `input.a11y.md` and `input.md` updated, with the Keyboard section per ADR-0039 (masked rows, `Keyboard` story, `a11yContract` on the stories file)
 
 Phase 3: OneTimeCode
 
-- [ ] ux-designer: `docs/design/one-time-code.md` (slots, caret, states, fallback, 320px and zoom)
+- [x] ux-designer: `docs/design/one-time-code.md` (slots, caret, states, fallback, 320px and zoom). ADR-0033 amended with `data-caret`, `data-selected` and `data-ready`; the spec's other open questions (§9) default to its recommendations until the maintainer answers
 - [ ] `useOneTimeCode`, `OneTimeCode.Root`, `.Input`, `.Slot`, with tests first
 - [ ] Theme styles and the forced-colors fallback, `theme:check`
 - [ ] Stories (empty, partly filled, complete, invalid, disabled, letters and digits, RTL, forced colours) and e2e
-- [ ] `one-time-code.a11y.md` and `one-time-code.md`
+- [ ] `one-time-code.a11y.md` and `one-time-code.md`, with the Keyboard section per ADR-0039 (focus strategy native, no auto-advance), a `Keyboard` story and `a11yContract`
 
 Wrap-up
 
 - [ ] accessibility-reviewer APPROVE for each phase's diff
 - [ ] Docs pages, changeset, roadmap status
 
+## Phase 1 notes: what the engine adds to ADR-0032
+
+Additions and clarifications the implementation needed. None contradicts the ADR, and they should be folded into it before it is accepted.
+
+- `mask.apply` also takes an optional `inputType` (the InputEvent's, so `deleteContentForward` makes Delete skip a literal), and its selection fields are optional. Result: `isChanged` (write back only then; when false the selection is the one the browser reported).
+- `rejected` is `{ reason, characters }[]`, grouped by reason, and only for what the user inserted. Separators in pasted text and literals the mask itself moved are dropped silently. A separator typed alone is reported.
+- When new characters would push existing ones out of a full mask, the new ones are refused (like `maxlength`) and reported as `length`, instead of cutting the end.
+- Number masks take `locale` (default `en`, an unsupported locale also falls back to `en`, never to the machine). `mask.withLocale(locale)` returns the mask with the provider's locale unless the definition pins one, so the React layer can inject it. Unmasked numbers use `.` and `-`. Paste: the last of mixed `,` and `.` is the decimal separator, a repeated one is grouping. `isWithinRange` is `true` while nothing is entered.
+- Pattern definitions take `completeLengths` (a Swedish number is complete at 10 or 12 digits). Regexp definitions take `allowed` (the rejection message), `complete`, `transform` and `unmask`.
+- `masks.personalIdentityNumber` NO takes no options beyond `country`, but `checks.personalIdentityNumber` takes `allowSyntheticNumbers` (Norway only, off by default) for Skatteetaten's synthetic test numbers (month plus 80).
+- SE organisation numbers accept ten digits only (not the 12-digit `16` form), and do not test the third digit, because a sole trader's organisation number is the personal identity number.
+- The IBAN country lengths are the SWIFT registry's and need upkeep (the table is in `checks/iban.ts`).
+
 ## Risks & open questions
 
 1. **Announcer first.** Rejection announcements need the shared Announcer, which is planned but not built. Build a minimal Announcer before Phase 2, or ship Phase 2 with `onValueChange` details only and turn the announcement on later?
 2. **Throttle.** "One message per field every few seconds" needs a number. Proposal: 3 seconds, tested with NVDA and VoiceOver.
 3. **Grouping in number masks.** Off by default. Screen readers read a space-grouped number in sv and fi inconsistently, so we need AT results before turning it on.
-4. **Preset formats.** The FI century signs and the SE 10/12-digit forms need a check against the official sources during Phase 1.
+4. ~~**Preset formats.**~~ Checked in Phase 1 against the official sources (2026-10-02):
+   - **FI** (DVV, dvv.fi/en/personal-identity-code, and the decree on the Population Information System): `DDMMYY` + century sign + `NNN` (002 to 899 for people, 900 to 999 temporary and test) + check character, from the nine digits modulo 31 in `0123456789ABCDEFHJKLMNPRSTUVWXY`. Century signs since 2023 (new numbers issued from 19.12.2023): `+` is the 1800s, `-` and `U`, `V`, `W`, `X`, `Y` the 1900s, `A`, `B`, `C`, `D`, `E`, `F` the 2000s. DVV's own page still lists only `+`, `-`, `Y` and `A` and says more may be introduced, so the 2023 additions come from the decree as reported by Finnish Wikipedia. Needs a re-check against Finlex when a translator reviews the docs. Implemented in `masks.personalIdentityNumber({ country: 'FI' })` and its check, case-insensitive on input.
+   - **SE** (Skatteverket): `YYMMDD-NNNN`, the hyphen becomes `+` the year the person turns 100. The 12-digit form (`YYYYMMDD-NNNN`) is the same number with the century. The Luhn check covers the ten digits without the century. Samordningsnummer add 60 to the day. Implemented as a function mask: a separator typed after 6 or 8 digits decides the form, without one the number stays plain up to ten digits and the eleventh digit makes it the 12-digit form.
+   - **NO** (Skatteetaten): `DDMMYYNNNKK`, two modulus 11 check digits (weights 3,7,6,1,8,9,4,5,2 and 5,4,3,2,7,6,5,4,3,2), D-numbers add 40 to the day, H-numbers add 40 to the month, and the synthetic Tenor numbers add 80 to the month. **A new numbering is decided from 2032-01-01** (the first check digit accepts four values, the individual number no longer says the century and the gender is no longer in the number). The check implements today's rule only. Follow-up before 2032: add the new rule to `checks.personalIdentityNumber` (`30108299939` in the tests is Skatteetaten's example for it).
+   - Test data: SE numbers come from Skatteverket's published test numbers (entryscape rowstore), FI from DVV's example (131052-308T), NO from Skatteetaten's documented examples. Derived variants are noted in `checks.test.ts`. No authority publishes test organisation numbers that we found, so SE and FI organisation numbers in the tests are built from the check rules, and the NO ones are the agencies' own.
 5. **Slot alignment** under 1.4.12 text spacing is the biggest Phase 3 risk. The fallback must trigger reliably, not only in forced colours.
 6. **Undo** after an inserted literal can't be kept without `execCommand`, which is deprecated. Accepted trade-off (ADR-0032).
 

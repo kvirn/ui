@@ -89,9 +89,10 @@ test.describe('KvirnProvider theme switcher keyboard contract', () => {
     await page.keyboard.press('Tab')
     await page.keyboard.press('ArrowUp')
     await expect(switcher.colorSchemeRadio('Mörkt')).toBeFocused()
-    await expect(page.getByRole('status')).toHaveCount(0)
-    await expect(page.getByRole('alert')).toHaveCount(0)
-    await expect(page.locator('[aria-live]')).toHaveCount(0)
+    // The provider's two live regions (ADR-0040) exist, and stay empty: nothing is announced.
+    await expect(page.getByRole('status')).toHaveText('')
+    await expect(page.getByRole('alert')).toHaveText('')
+    await expect(page.locator('[aria-live]')).toHaveCount(2)
   })
 })
 

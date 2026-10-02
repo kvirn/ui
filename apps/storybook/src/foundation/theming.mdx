@@ -1,0 +1,85 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Foundation/Theming" />
+
+# Theming
+
+There are three levels of theming. Each one keeps the components' accessibility: they ship no CSS, and `theme.css` only styles the attributes they render.
+
+## The three levels
+
+| Level                     | You do                                                      | Use it when                                   |
+| ------------------------- | ----------------------------------------------------------- | --------------------------------------------- |
+| 1. Import `theme.css`     | Import it once                                              | You want the default look                     |
+| 2. Override the variables | Set a role scale, a semantic token or a site-wide default   | You want your brand's colours, fonts or sizes |
+| 3. Replace the file       | Copy `theme.css` and edit it, or skip it and write your own | You need a different system                   |
+
+## 1. Import theme.css
+
+Import it once, and every KvirnUI component on the page gets the default look, in all four themes: light, dark, and their high-contrast versions. Remove the import, and the components are unstyled again. Nothing loads CSS for you, and `KvirnProvider` never does.
+
+```js
+import '@kvirn-ui/theme/theme.css'
+```
+
+## 2. Override the variables
+
+The palette is role scales, named for what they do and not for their hue: neutral, primary, secondary, accent, danger, success and warning. To rebrand, give one scale your brand's 11 steps on `:root`, usually `--kv-primary-*`, and all four themes follow. Scales go on `:root`, where the semantic tokens are declared.
+
+```css
+:root {
+  --kv-primary-50: #edfafa;
+  --kv-primary-100: #cdf0f0;
+  --kv-primary-200: #9be0e2;
+  --kv-primary-300: #5fc6cb;
+  --kv-primary-400: #26a4ac;
+  --kv-primary-500: #007d86;
+  --kv-primary-600: #00707a;
+  --kv-primary-700: #005a62;
+  --kv-primary-800: #00474e;
+  --kv-primary-900: #003a40;
+  --kv-primary-950: #00262a;
+}
+```
+
+Each theme uses different steps of the scale: 500 for the primary button in light and dark, 400 for links in dark, 800 in light high contrast and 200 in dark high contrast. Your scale has to work in every one of those roles. The teal above passes in all four themes.
+
+**Swapping a scale can break contrast.** The accent scale in `theme.css` (teal by default, unused by the default theme) isn't a drop-in: white text on its 500 is 4.37:1, below 4.5:1, so the scale above has a darker 500. Always run `checkThemeCss()` from `@kvirn-ui/theme` on your customised copy, or `vp run theme:check`.
+
+You can also point one semantic token at another step, such as `--kv-color-link: var(--kv-primary-700)`, or give `--kv-secondary-*` a hue for the secondary button's edge. To change one theme only, target the selectors `theme.css` uses, such as `:root[data-kv-color-scheme='dark']`.
+
+### Site-wide defaults
+
+Some choices are made once for a whole site. Set these custom properties in your own CSS, on `:root` or on any container. `theme.css` sets none of them, so without them the look is the default one.
+
+| Property                                                                                      | Sets                                                                                                                                              |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--kv-font-family-body`                                                                       | Body text, prose, buttons and navigation items. Falls back to IBM Plex Sans                                                                       |
+| `--kv-font-family-heading`                                                                    | Headings. Falls back to IBM Plex Serif                                                                                                            |
+| `--kv-card-padding-default`, `--kv-card-radius-default`                                       | Every card without a class                                                                                                                        |
+| `--kv-button-min-block-size`, `-padding-inline`, `-font-size`, `-font-weight`, `-line-height` | Buttons alone, without touching other controls. They win over density. Keep the height at 24px or more (2.5.8), and 44px on resident-facing pages |
+| `--kv-color-heading`, `--kv-color-text`                                                       | The colour of prose headings and body text. Semantic tokens, so set them per theme                                                                |
+
+`class="kv-compact"` on `<html>` or `<body>` makes every control compact from 64rem, and 44px below.
+
+`theme.css` reads each property where it's used, with its own value as the fallback, so a default set on a container reaches everything inside it. A custom property is resolved where it's declared, though: `var(--kv-card-padding-lg)` set on `:root` is the `:root` value, so the compact step-down inside a `kv-compact` container doesn't reach it. Set a value that refers to another token on the element that should resolve it. Fixed values, such as `2.5rem` or a font name, have no such catch.
+
+## 3. Replace the file
+
+Copy `theme.css` into your project, edit it, and import your copy instead. Or skip it, and style the `kv-*` classes and the `data-*` state attributes with Tailwind or your own CSS. Either way, measure your colours with `checkThemeCss()`.
+
+## Your CSS always wins
+
+Everything in `theme.css` is inside `@layer kv`. Any unlayered CSS you write, or any layer you declare after `kv`, overrides it regardless of specificity. Override variables, not selectors.
+
+## Accessibility
+
+- **Contrast (1.4.3, 1.4.6, 1.4.11).** Text needs 4.5:1, and 7:1 in the high-contrast themes. Borders, focus rings and other parts of controls need 3:1. `checkThemeCss()` measures every pair in use in all four themes.
+- **Forced colours.** The theme maps its tokens to system colours, so a user's own palette wins. Never use `forced-color-adjust: none`.
+- **A rebrand keeps the components accessible,** but only if your colours pass the check. A failing pair is fixed in the scale, never by turning off a check.
+
+## Related
+
+- [Colors](?path=/story/foundation-colors--text-on-surface): measured text contrast, live
+- [Overview](?path=/docs/foundation-overview--docs): the classes you add
+- [KvirnProvider](?path=/story/foundation-kvirnprovider--default): the locale and the theme preferences

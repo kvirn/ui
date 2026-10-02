@@ -1,10 +1,11 @@
-import { Button, Card, Field, Input } from '@kvirn-ui/react'
+import { Button, Card, Field, Input, masks } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/input/input.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { expect, fn, userEvent } from 'storybook/test'
 import { FieldStates, localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
+import { MaskedField, maskTextsFor } from '../mask/mask.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/Input: the native text <input>, styled by @kvirn-ui/theme/theme.css (ADR-0013,
@@ -370,6 +371,131 @@ export const Compact: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = textsFor(localeOf(globals))
     await expectMinimumTargetSize(canvas.getByRole('textbox', { name: text.name }))
+  },
+}
+
+/**
+ * With a `mask` the input shapes what is typed (ADR-0032): here a Swedish personal identity
+ * number, which takes ten or twelve digits with or without the hyphen. The hint says the
+ * format, because the mask doesn't (3.3.2). More on Components/Form/Mask.
+ */
+export const Masked: Story = {
+  render: (_args, { globals }) => {
+    const { text, lang } = maskTextsFor(globals)
+    return (
+      <div className="kv-story-form" lang={lang}>
+        <MaskedField
+          label={text.personalIdentityNumber}
+          hint={text.personalIdentityNumberHint}
+          name="personalIdentityNumber"
+          mask={masks.personalIdentityNumber({ country: 'SE' })}
+          autoComplete="off"
+          className="kv-input--width-20"
+        />
+      </div>
+    )
+  },
+  play: async ({ canvas, globals }) => {
+    const { text } = maskTextsFor(globals)
+    const input = canvas.getByRole('textbox', {
+      name: new RegExp(`^${text.personalIdentityNumber}`),
+    })
+    await userEvent.type(input, '199001012385')
+    await expect(input).toHaveValue('19900101-2385')
+    await expect(input).toHaveAttribute('inputmode', 'numeric')
+    await expect(input).toHaveAttribute('dir', 'ltr')
+  },
+}
+
+/** A postcode mask: the space is inserted as the user types past it. */
+export const MaskedPostcode: Story = {
+  render: (_args, { globals }) => {
+    const { text, lang } = maskTextsFor(globals)
+    return (
+      <div className="kv-story-form" lang={lang}>
+        <MaskedField
+          label={text.postalCode}
+          hint={text.postalCodeHint}
+          name="postalCode"
+          mask={masks.postalCode({ country: 'SE' })}
+          autoComplete="postal-code"
+          className="kv-input--width-6"
+        />
+      </div>
+    )
+  },
+  play: async ({ canvas, globals }) => {
+    const { text } = maskTextsFor(globals)
+    const input = canvas.getByRole('textbox', { name: new RegExp(`^${text.postalCode}`) })
+    await userEvent.type(input, '12345')
+    await expect(input).toHaveValue('123 45')
+  },
+}
+
+/** An inline filter: the inputs and the Button side by side are the same height (44px). */
+export const InlineFilter: Story = {
+  render: (_args, { globals }) => {
+    const { text, lang } = textsFor(localeOf(globals))
+    return (
+      <form className="kv-story-filter" lang={lang} onSubmit={(event) => event.preventDefault()}>
+        <Field.Root>
+          <Field.Label>{text.name}</Field.Label>
+          <Input name="name" autoComplete="off" />
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>{text.caseNumber}</Field.Label>
+          <Input name="case" autoComplete="off" spellCheck={false} />
+        </Field.Root>
+        <Button type="submit" className="kv-button--primary">
+          {text.filter}
+        </Button>
+      </form>
+    )
+  },
+  play: async ({ canvas, globals }) => {
+    const { text } = textsFor(localeOf(globals))
+    const heights = [
+      canvas.getByRole('textbox', { name: new RegExp(text.name) }),
+      canvas.getByRole('textbox', { name: new RegExp(text.caseNumber) }),
+      canvas.getByRole('button', { name: text.filter }),
+    ].map((element) => element.getBoundingClientRect().height)
+    await expect(new Set(heights).size).toBe(1)
+    await expect(heights[0]).toBeGreaterThanOrEqual(44)
+  },
+}
+
+/** The same filter in staff density from 64rem: all three are 32px. */
+export const InlineFilterCompact: Story = {
+  render: (_args, { globals }) => {
+    const { text, lang } = textsFor(localeOf(globals))
+    return (
+      <form
+        className="kv-compact kv-story-filter"
+        lang={lang}
+        onSubmit={(event) => event.preventDefault()}
+      >
+        <Field.Root>
+          <Field.Label>{text.name}</Field.Label>
+          <Input name="name" autoComplete="off" />
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>{text.caseNumber}</Field.Label>
+          <Input name="case" autoComplete="off" spellCheck={false} />
+        </Field.Root>
+        <Button type="submit" className="kv-button--primary">
+          {text.filter}
+        </Button>
+      </form>
+    )
+  },
+  play: async ({ canvas, globals }) => {
+    const { text } = textsFor(localeOf(globals))
+    const heights = [
+      canvas.getByRole('textbox', { name: new RegExp(text.name) }),
+      canvas.getByRole('textbox', { name: new RegExp(text.caseNumber) }),
+      canvas.getByRole('button', { name: text.filter }),
+    ].map((element) => element.getBoundingClientRect().height)
+    await expect(new Set(heights).size).toBe(1)
   },
 }
 

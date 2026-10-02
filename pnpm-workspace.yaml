@@ -34,6 +34,8 @@ catalog:
   '@storybook/addon-a11y': 10.6.1
   '@storybook/addon-docs': 10.6.1
   '@storybook/addon-vitest': 10.6.1
+  # Tables in MDX pages: a Storybook build dependency only (ADR-0041)
+  remark-gfm: 4.0.1
   next: 16.3.8
   '@changesets/cli': 3.0.3
 

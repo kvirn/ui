@@ -1,0 +1,70 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Foundation/Overview" />
+
+# Foundation
+
+The foundation is what every component and block is built on: the default theme, `@kvirn-ui/theme/theme.css`. The components ship no CSS. The theme styles the classes they render, such as `kv-button`, their state attributes, such as `data-disabled`, and the classes you add yourself.
+
+These pages are reference material. Each one explains a part of the theme, lists its tokens and says how to use them.
+
+## Pages
+
+| Page                                                                        | What it answers                                                                     |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| [Colors](?path=/story/foundation-colors--palette)                           | The role scales, the semantic tokens in all four themes, and measured text contrast |
+| [Typography](?path=/story/foundation-typography--type-roles)                | The type roles, the font families, and the glyphs a replacement font must get right |
+| [Prose](?path=/story/foundation-prose--article)                             | How `kv-prose` sets an article from a CMS or Markdown                               |
+| [Spacing](?path=/docs/foundation-spacing--docs)                             | The 4px spacing scale and the prose spacing tokens                                  |
+| [Radius](?path=/docs/foundation-radius--docs)                               | The corner radii and what each is for                                               |
+| [Borders and elevation](?path=/docs/foundation-borders-and-elevation--docs) | Border widths, hairlines against control borders, and the elevation levels          |
+| [Focus ring](?path=/docs/foundation-focus-ring--docs)                       | How the focus ring looks and where it shows                                         |
+| [Motion](?path=/docs/foundation-motion--docs)                               | The durations and easing, and what reduced motion turns off                         |
+| [Density](?path=/docs/foundation-density--docs)                             | Comfortable and compact controls                                                    |
+| [Layout](?path=/docs/foundation-layout--docs)                               | The breakpoints, the reading columns and the 320px reflow rule                      |
+| [Theming](?path=/docs/foundation-theming--docs)                             | How to rebrand, set site-wide defaults, or replace the file                         |
+| [KvirnProvider](?path=/story/foundation-kvirnprovider--default)             | How the provider sets the locale, the theme and the messages                        |
+
+## Two tiers of colour
+
+The palette is role scales of raw colour steps, such as `--kv-neutral-500` and `--kv-primary-500`: neutral, primary, secondary, accent, danger, success and warning. They are named for their role, not their hue.
+
+Semantic tokens, such as `--kv-color-text`, point at the steps. They differ in each of the four themes: light, dark, and their high-contrast versions. Components only use semantic tokens.
+
+## Tokens that aren't colours
+
+Type roles (`--kv-font-<role>-*`), spacing (`--kv-space-*`), radius, border and indicator widths, the focus ring, motion durations and easing, control sizes for each density, and the prose tokens (`--kv-prose-*`). Apart from the shadows, which the dark themes don't use, they are the same in every theme.
+
+## Classes you add
+
+The components render the base classes. You add the choices.
+
+| Class                                     | Where                            | What it does                                                                                        |
+| ----------------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `kv-button--primary`, `kv-button--danger` | On a Button                      | The one main action in a view, or a destructive one                                                 |
+| `kv-nav`                                  | On a list of Links               | Navigation items instead of inline links, in a labelled `nav`                                       |
+| `kv-button-group`                         | Around buttons                   | A row that stacks at full width on narrow screens                                                   |
+| `kv-compact`                              | On any container                 | 32px controls for staff tools, back to 44px below 64rem                                             |
+| `kv-prose`, `kv-prose--large`             | Around content you don't control | Sets an article from a CMS. The large size is 18px, for long resident-facing text                   |
+| `kv-lead`                                 | On the first paragraph of prose  | One step larger than the body                                                                       |
+| `kv-not-prose`                            | Inside prose                     | Around anything prose shouldn't style. It keeps only its spacing                                    |
+| `kv-scroll-region`                        | Around a wide table              | Needs `aria-labelledby` pointing at the caption and `tabindex="0"`, so keyboard users can scroll it |
+
+## Your CSS wins
+
+Everything in `theme.css` is inside `@layer kv`, so any CSS you write outside a layer wins, whatever its specificity. Prose rules have zero specificity, so a component's own rules win inside prose too.
+
+## Check what you change
+
+After changing colours, run `vp run theme:check`, or call `checkThemeCss()` from `@kvirn-ui/theme`. It measures every contrast pair in use in all four themes: 4.5:1 for text, 3:1 for borders and focus rings, and 7:1 for text in the high-contrast themes.
+
+## Your part in prose
+
+Prose styles what you write, but it can't make the content accessible on its own.
+
+- Don't skip heading levels.
+- Write alt text for images.
+- Give each table a `caption`, and `th` elements with `scope`.
+- Caption videos, and don't autoplay them.
+- Write link text that makes sense on its own.
+- Set `lang` on passages in another language.

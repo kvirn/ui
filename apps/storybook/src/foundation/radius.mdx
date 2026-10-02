@@ -1,0 +1,40 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Foundation/Radius" />
+
+# Radius
+
+Radii are small and consistent. The shape of a corner says what kind of thing it is: radio buttons are always circles and checkboxes always rounded squares, so the shape tells them apart.
+
+## Tokens
+
+| Token              | Value    | Use                                         |
+| ------------------ | -------- | ------------------------------------------- |
+| `--kv-radius-none` | `0px`    | No rounding                                 |
+| `--kv-radius-sm`   | `4px`    | Badges inside controls, checkboxes and tags |
+| `--kv-radius-md`   | `8px`    | Buttons, inputs and navigation items        |
+| `--kv-radius-lg`   | `12px`   | Cards and example frames                    |
+| `--kv-radius-xl`   | `16px`   | Popups and dialogs                          |
+| `--kv-radius-full` | `9999px` | Pills and avatars                           |
+
+## Usage
+
+- A container is rounder than what's inside it, never less round. A button (`md`) sits inside a card (`lg`).
+- Use `sm` and `md` for things a user operates, and `lg` and `xl` for surfaces that hold them.
+- Don't mix radii on one kind of component. Every button is `md`.
+- Cards take a radius class: `kv-card--radius-lg`, `kv-card--radius-md` or `kv-card--radius-none`.
+
+## Accessibility
+
+- **Focus ring (2.4.13).** The focus ring follows the element's radius, so a rounder element gets a rounder ring. Changing a radius never hides the ring.
+- **Non-text contrast (1.4.11).** Corner radius doesn't change the contrast of an edge. A control's border still needs 3:1 against its background.
+- **Shape is an extra cue, not the only one.** The checkbox and radio shapes help sighted users, but each also has its own role and a label.
+
+## Customising
+
+Set a token on `:root` to change it everywhere, for example `--kv-radius-md: 4px` for squarer controls. For one card, use the card's own default: `--kv-card-radius-default`.
+
+## Related
+
+- [Focus ring](?path=/docs/foundation-focus-ring--docs): follows the radius
+- [Borders and elevation](?path=/docs/foundation-borders-and-elevation--docs): the edges the radius rounds

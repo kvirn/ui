@@ -1,0 +1,58 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Foundation/Layout" />
+
+# Layout
+
+Everything sits on a 4px grid, and is designed mobile first. The breakpoints are content-driven, with three reference points. They are in rem, so they follow the user's text size: at 200% text, 64rem is reached at twice the width.
+
+## Tokens
+
+Media queries can't read custom properties, so the breakpoints are reference points, not tokens. The prose measure is a token.
+
+| Breakpoint | At 16px | What changes at or above it                                                                                            |
+| ---------- | ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `40rem`    | 640px   | Button groups change from stacked, full-width buttons to a row                                                         |
+| `64rem`    | 1024px  | Compact density turns on. Below it, touch is likely and controls stay 44px. A sidebar can show instead of a disclosure |
+| `80rem`    | 1280px  | A reference point for wide layouts. Nothing in `theme.css` changes here yet                                            |
+
+| Token                | Value  | Use                                            |
+| -------------------- | ------ | ---------------------------------------------- |
+| `--kv-prose-measure` | `70ch` | The longest line of prose: 60 to 75 characters |
+
+## Reading columns
+
+Resident-facing services use a single column, with one question or one topic per page.
+
+| Column              | Widest               |
+| ------------------- | -------------------- |
+| Forms               | `40rem`              |
+| Prose for residents | `45rem`              |
+| Prose line          | `--kv-prose-measure` |
+
+Staff tools and the docs site can use a sidebar and a content area. The sidebar collapses behind a disclosure below `64rem`.
+
+## Usage
+
+- **Design mobile first.** Start with one column and add layout at a breakpoint when the content needs it.
+- **Never set a fixed width on anything that contains text.** Finnish and Northern Sámi strings can be 30 to 50% longer than English, and Finnish compounds are long. Buttons and labels wrap. Use `overflow-wrap: anywhere` as a last resort, never truncation.
+- **Use logical properties** (`margin-inline-start`, `padding-block`), so the layout mirrors in right-to-left languages.
+- **Set `lang`** on `<html>` and on every passage in another language. Hyphenation follows it.
+- **Prose and cards hyphenate** words of 10 letters or more at the dictionary's points, never inside code (ADR-0028).
+
+## Accessibility
+
+- **Reflow (1.4.10).** Everything works at 320 CSS px wide, and at 400% zoom, without scrolling sideways. The one exception is a data table, which scrolls inside its own labelled, focusable region (`kv-scroll-region`).
+- **Text spacing (1.4.12).** Nothing has a fixed height or clips text.
+- **Focus not obscured (2.4.11).** A sticky header or action bar must never cover the focused element. Use `scroll-padding` to match its height.
+- **Orientation (1.3.4).** Don't lock the layout to portrait or landscape.
+
+## Customising
+
+Widen the prose measure by setting `--kv-prose-measure` on `:root` or a container. Keep it at 75 characters or fewer, because longer lines are harder to read. Reading column widths are set by your own layout CSS, with the spacing steps.
+
+## Related
+
+- [Spacing](?path=/docs/foundation-spacing--docs): the grid
+- [Density](?path=/docs/foundation-density--docs): turns on at 64rem
+- [Prose](?path=/story/foundation-prose--article): the measure at work

@@ -1,0 +1,60 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Foundation/Spacing" />
+
+# Spacing
+
+Everything sits on a 4px grid. The steps are in rem, so they grow with the user's text size. Most layouts use steps 2, 4, 6 and 8: 8, 16, 24 and 32px at the default text size.
+
+## Tokens
+
+The scale, `--kv-space-<step>`. The step number is the size in quarter-rem, so step 4 is 1rem.
+
+| Token           | Value     | At 16px |
+| --------------- | --------- | ------- |
+| `--kv-space-0`  | `0rem`    | 0px     |
+| `--kv-space-1`  | `0.25rem` | 4px     |
+| `--kv-space-2`  | `0.5rem`  | 8px     |
+| `--kv-space-3`  | `0.75rem` | 12px    |
+| `--kv-space-4`  | `1rem`    | 16px    |
+| `--kv-space-5`  | `1.25rem` | 20px    |
+| `--kv-space-6`  | `1.5rem`  | 24px    |
+| `--kv-space-8`  | `2rem`    | 32px    |
+| `--kv-space-10` | `2.5rem`  | 40px    |
+| `--kv-space-12` | `3rem`    | 48px    |
+| `--kv-space-16` | `4rem`    | 64px    |
+| `--kv-space-24` | `6rem`    | 96px    |
+
+### Prose spacing
+
+`kv-prose` spaces its content with these tokens. The large size, `kv-prose--large`, only swaps them for larger steps.
+
+| Token                      | Value                | Large                | Use                                                              |
+| -------------------------- | -------------------- | -------------------- | ---------------------------------------------------------------- |
+| `--kv-prose-space`         | `var(--kv-space-5)`  | `var(--kv-space-6)`  | Between paragraphs, lists and description lists                  |
+| `--kv-prose-space-item`    | `var(--kv-space-2)`  | `var(--kv-space-2)`  | Between list items                                               |
+| `--kv-prose-space-block`   | `var(--kv-space-8)`  | `var(--kv-space-10)` | Around figures, tables, code blocks, quotes and not-prose blocks |
+| `--kv-prose-space-section` | `var(--kv-space-10)` | `var(--kv-space-12)` | Before each `h2`, and around `hr`                                |
+| `--kv-prose-list-indent`   | `1.75em`             | `1.75em`             | List indent, in em so the marker "10." fits at any size          |
+
+## Usage
+
+- Pick a step, never a pixel value. A `px` spacing doesn't follow the user's text size.
+- Use steps 2, 4, 6 and 8 for most layouts: inside a control, between fields, around a card and between sections.
+- Use the larger steps (10 and up) for the space between page sections.
+- Use logical properties (`margin-inline-start`, `padding-block`), so the spacing mirrors in right-to-left languages.
+
+## Accessibility
+
+- **Text spacing (1.4.12).** Spacing is in rem and em, and nothing depends on a line count, so a user who raises the line height, paragraph spacing, letter spacing or word spacing doesn't lose content.
+- **Target size (2.5.8).** A target smaller than 24×24px passes only if a 24px circle centred on it touches no other target, so the space between small controls matters. Comfortable controls are 44px, and compact ones 32px.
+
+## Customising
+
+Tokens are custom properties, so set a step on `:root` or on any container to change it there. Changing a step moves everything that uses it, so check the controls and the prose still fit at 320px (see [Layout](?path=/docs/foundation-layout--docs)).
+
+## Related
+
+- [Layout](?path=/docs/foundation-layout--docs): the grid, columns and breakpoints the spacing sits in
+- [Density](?path=/docs/foundation-density--docs): control sizes, which use these steps for padding
+- [Prose](?path=/story/foundation-prose--article): the prose tokens at work

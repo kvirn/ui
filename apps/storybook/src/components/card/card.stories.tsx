@@ -165,6 +165,78 @@ export const Surfaces: Story = {
 }
 
 /**
+ * The elevation levels (Foundation/Borders and elevation), 0 to 4, each labelled with when to
+ * use it. Levels 0 to 2 are the page, a `kv-card--surface` section and a default card. In the
+ * light themes the page and the raised card are both white, so the section between them and the
+ * 1px border of each card are what show the layers. Levels 3 and 4 are stand-ins for a popup and
+ * a dialog, which aren't components yet: they show the `xl` radius, the border and the shadow,
+ * which the dark themes leave out. Every level from 1 up keeps its border, which also survives
+ * forced colours. Nested cards are one level deep here, as the design spec allows.
+ */
+export const SurfaceLayers: Story = {
+  render: (_args, { globals }) => {
+    const { text, lang } = textsFor(localeOf(globals))
+    return (
+      <div
+        lang="en"
+        data-testid="canvas"
+        style={{ padding: 'var(--kv-space-4)', backgroundColor: 'var(--kv-color-canvas)' }}
+      >
+        <p>
+          <strong>Level 0, the page: </strong>
+          <code>canvas</code>. Everything sits on it. Use it for the page itself, and nothing else.
+        </p>
+        <Card.Root className="kv-card--surface" data-testid="surface">
+          <p>
+            <strong>Level 1, a section: </strong>
+            <code>kv-card--surface</code>. Use it to set a group of content apart from the page: a
+            section, a sidebar or a block of related cards. It has a border and no shadow.
+          </p>
+          <Card.Root data-testid="surface-raised">
+            <p>
+              <strong>Level 2, a card: </strong>
+              <code>kv-card</code>, <code>surface-raised</code>. Use it for one unit of content on
+              the page or on a section. It has a border and no shadow, and is never interactive.
+            </p>
+            <p lang={lang}>{text.waste.plan}</p>
+          </Card.Root>
+        </Card.Root>
+        <div className="kv-story-columns" style={{ marginBlockStart: 'var(--kv-space-6)' }}>
+          <div className="kv-story-popup" data-testid="popup">
+            <p>
+              <strong>Level 3, a popup: </strong>
+              <code>--kv-shadow-popup</code>. Use it for a menu, a listbox or a popover that opens
+              over the page and closes again. It has a border and a soft shadow.
+            </p>
+          </div>
+          <div className="kv-story-dialog" data-testid="dialog">
+            <p>
+              <strong>Level 4, a dialog: </strong>
+              <code>--kv-shadow-dialog</code>. Use it for a dialog that takes over the page, over a
+              backdrop, with the page behind it inert. It has a border and the deepest shadow.
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  play: async ({ canvas }) => {
+    // The section differs from the page and from the card on it. The page and the card can
+    // share a colour (white in the light themes), so the card's edge is checked below.
+    const [page, section, card] = ['canvas', 'surface', 'surface-raised'].map(
+      (id) => getComputedStyle(canvas.getByTestId(id)).backgroundColor,
+    )
+    await expect(section).not.toBe(page)
+    await expect(section).not.toBe(card)
+    // Every level from 1 up keeps a visible border: a shadow can disappear (dark themes, forced
+    // colours), so the edge is what shows the boundary.
+    for (const id of ['surface', 'surface-raised', 'popup', 'dialog']) {
+      await expect(getComputedStyle(canvas.getByTestId(id)).borderTopWidth).toBe('1px')
+    }
+  },
+}
+
+/**
  * `kv-card--radius-md` on the Root for a card nested in a card, `kv-card--radius-none` for a
  * flush card, or neither for lg.
  */

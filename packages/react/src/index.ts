@@ -13,6 +13,8 @@ export type { UseDateSettingsResult } from './provider/use-date-settings.ts'
 export { useTheme } from './provider/use-theme.ts'
 export type { UseThemeResult } from './provider/use-theme.ts'
 export type { Register, RegisteredLinkComponent } from './provider/register.ts'
+export { useAnnouncer } from './announcer/use-announcer.ts'
+export type { UseAnnouncerResult } from './announcer/use-announcer.ts'
 export { mergeProps } from './merge-props/merge-props.ts'
 export type { MergedProps } from './merge-props/merge-props.ts'
 export type { RenderProp } from './render/render-part.ts'
@@ -80,6 +82,8 @@ export { Input } from './input/input.tsx'
 export type { InputChangeDetails, InputProps, InputState, InputType } from './input/input.tsx'
 export { useInput } from './input/use-input.ts'
 export type { InputPartProps, UseInputOptions, UseInputResult } from './input/use-input.ts'
+export { useMask } from './mask/use-mask.ts'
+export type { MaskInputPartProps, UseMaskOptions, UseMaskResult } from './mask/use-mask.ts'
 export { Icon } from './icon/icon.tsx'
 export type { IconElementProps, IconProps, IconState } from './icon/icon.tsx'
 export { useIcon } from './icon/use-icon.ts'
@@ -100,9 +104,21 @@ export type {
   IconRegistryEntry,
 } from './icon/icon-registry.ts'
 export type { BuiltInIconName } from './icon/built-in-icons.tsx'
+export { checks, masks } from '@kvirn-ui/core'
+export type {
+  CheckResult,
+  Mask,
+  MaskAllowedCharacters,
+  MaskAttributes,
+  MaskRejection,
+  MaskRejectionReason,
+  MaskResult,
+} from '@kvirn-ui/core'
 export type {
   ColorSchemePreference,
   ContrastPreference,
+  AnnounceOptions,
+  AnnouncerPoliteness,
   Direction,
   Env,
   ResolvedColorScheme,

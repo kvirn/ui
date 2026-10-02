@@ -77,6 +77,7 @@ export interface FormTexts {
   town: string
   youTyped: string
   send: string
+  filter: string
   sent: string
   surface: string
   inCard: string
@@ -137,6 +138,7 @@ const textsEn: FormTexts = {
   town: 'Town or city',
   youTyped: 'You typed',
   send: 'Send',
+  filter: 'Filter',
   sent: 'Sent',
   surface: 'On a surface section',
   inCard: 'In a card',
@@ -197,6 +199,7 @@ const textsSv: FormTexts = {
   town: 'Postort',
   youTyped: 'Du skrev',
   send: 'Skicka',
+  filter: 'Filtrera',
   sent: 'Skickat',
   surface: 'På en yta',
   inCard: 'I ett kort',
@@ -258,6 +261,7 @@ const textsFi: FormTexts = {
   town: 'Postitoimipaikka',
   youTyped: 'Kirjoitit',
   send: 'Lähetä',
+  filter: 'Suodata',
   sent: 'Lähetetty',
   surface: 'Pinnalla',
   inCard: 'Kortissa',

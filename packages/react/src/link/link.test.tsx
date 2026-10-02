@@ -533,7 +533,9 @@ describe('server rendering', () => {
         </Link>
       </KvirnProvider>,
     )
-    expect(html).toBe(
+    // The provider adds its two empty live regions (ADR-0040) after the link.
+    const link = html.slice(0, html.indexOf('</a>') + '</a>'.length)
+    expect(link).toBe(
       '<a href="https://www.digg.se/" class="kv-link" target="_blank" rel="noopener noreferrer" aria-current="page" data-current="">Digg <span class="kv-link-new-tab-notice">(öppnas i en ny flik)</span></a>',
     )
   })

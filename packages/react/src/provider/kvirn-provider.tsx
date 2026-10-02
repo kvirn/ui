@@ -1,5 +1,6 @@
 'use client'
 import {
+  createAnnouncer,
   createMessageFormat,
   findInvalidThemeOptions,
   getLanguage,
@@ -11,6 +12,8 @@ import type { Direction, Env, ThemeOptions } from '@kvirn-ui/core'
 import type { PartialMessages } from '@kvirn-ui/i18n'
 import { useContext, useEffect, useMemo } from 'react'
 import type { ReactNode } from 'react'
+import { Announcer } from '../announcer/announcer.tsx'
+import { AnnouncerContext } from '../announcer/announcer-context.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
 import type { IconRegistry } from '../icon/icon-registry.ts'
 import type { IconDefaults } from '../icon/use-icon.ts'
@@ -53,8 +56,10 @@ export interface KvirnProviderProps {
 
 /**
  * Optional. Gives every KvirnUI component its locale, strings, direction, date settings,
- * router link and icons, and owns the document's theme preference. Renders no element: spread
- * `useLocale().localeProps` where the language changes.
+ * router link and icons, and owns the document's theme preference. The outermost provider also
+ * renders the two visually hidden live regions behind `useAnnouncer()` (ADR-0040), after its
+ * children. It renders no other element: spread `useLocale().localeProps` where the language
+ * changes.
  */
 export function KvirnProvider({
   children,
@@ -70,6 +75,7 @@ export function KvirnProvider({
 }: KvirnProviderProps) {
   const parentConfig = useContext(KvirnConfigContext)
   const parentThemeStore = useContext(ThemeStoreContext)
+  const parentAnnouncer = useContext(AnnouncerContext)
   const inheritedEnv = useEnv()
 
   const locale = localeProp ?? parentConfig.locale
@@ -163,9 +169,22 @@ export function KvirnProvider({
 
   useEffect(() => (isOutermost ? themeStore.connect() : undefined), [isOutermost, themeStore])
 
+  // One announcer and one pair of live regions per document: nested providers use the outermost's.
+  // Creating it only builds state, so it is safe in render; timers start on the first announce.
+  const announcer = useMemo(() => parentAnnouncer ?? createAnnouncer(env), [parentAnnouncer, env])
+  useEffect(
+    () => (parentAnnouncer === null ? () => announcer.actions.clear() : undefined),
+    [parentAnnouncer, announcer],
+  )
+
   return (
     <KvirnConfigContext.Provider value={config}>
-      <ThemeStoreContext.Provider value={themeStore}>{children}</ThemeStoreContext.Provider>
+      <ThemeStoreContext.Provider value={themeStore}>
+        <AnnouncerContext.Provider value={announcer}>
+          {children}
+          {parentAnnouncer === null ? <Announcer announcer={announcer} /> : null}
+        </AnnouncerContext.Provider>
+      </ThemeStoreContext.Provider>
     </KvirnConfigContext.Provider>
   )
 }

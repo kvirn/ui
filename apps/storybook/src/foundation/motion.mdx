@@ -1,0 +1,38 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Foundation/Motion" />
+
+# Motion
+
+Motion is short and only explains a change. It runs only when the user has no preference for reduced motion. Nothing moves on its own.
+
+## Tokens
+
+| Token                  | Value                        | Use                                                             |
+| ---------------------- | ---------------------------- | --------------------------------------------------------------- |
+| `--kv-duration-fast`   | `120ms`                      | Hover and press: colour and border changes on buttons and links |
+| `--kv-duration-medium` | `180ms`                      | Popups and disclosures                                          |
+| `--kv-duration-slow`   | `240ms`                      | Dialogs and page-level changes                                  |
+| `--kv-easing-standard` | `cubic-bezier(0.2, 0, 0, 1)` | Every transition: it starts quickly and settles gently          |
+
+## Usage
+
+- **Transitions go inside a media query.** Every transition in `theme.css` sits inside `@media (prefers-reduced-motion: no-preference)`. With reduced motion on, there is no transition at all, so every change is instant.
+- **Explain, don't decorate.** Use motion to show where something came from or went to, such as a panel that opens. Don't use it to draw attention.
+- **Keep it short.** Nothing in the theme is longer than the slow duration, 240ms.
+
+## Accessibility
+
+- **Pause, stop, hide (2.2.2).** There is no autoplay, no parallax and no looping animation. Anything that moves for more than 5 seconds needs a pause control.
+- **Three flashes (2.3.1).** Nothing flashes.
+- **Animation from interactions (2.3.3).** With `prefers-reduced-motion: reduce`, motion that comes from an interaction is off.
+- **State is never only motion.** A change shows in text or a state attribute too, such as `aria-expanded`, so a user who doesn't see the animation still knows.
+
+## Customising
+
+Change a duration or the easing on `:root`. To turn all motion off for everyone, set the three durations to `0ms`. Keep any motion you add inside `@media (prefers-reduced-motion: no-preference)`, and use the tokens, so your motion follows the user's preference too.
+
+## Related
+
+- [Focus ring](?path=/docs/foundation-focus-ring--docs): appears at once, without a transition
+- [Theming](?path=/docs/foundation-theming--docs): how to change a token safely

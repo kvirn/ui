@@ -1,0 +1,77 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Foundation/Borders and elevation" />
+
+# Borders and elevation
+
+Depth comes from the surface ladder (`canvas`, `surface`, `surface-raised`) and 1px hairlines, not from shadows. The look is flat and precise.
+
+## Tokens
+
+| Token                  | Value | Use                                                                      |
+| ---------------------- | ----- | ------------------------------------------------------------------------ |
+| `--kv-border-width`    | `1px` | Hairlines and control edges                                              |
+| `--kv-indicator-width` | `4px` | The current navigation item's bar, status panel bars and blockquote bars |
+
+## Border colours
+
+| Token                       | Use                                                                                    | Minimum contrast |
+| --------------------------- | -------------------------------------------------------------------------------------- | ---------------- |
+| `--kv-color-border-subtle`  | Hairlines: dividers, and the edges of cards and panels. Decorative                     | None             |
+| `--kv-color-border-control` | The edge of every control, such as an input or a checkbox                              | 3:1 (1.4.11)     |
+| `--kv-color-secondary`      | The secondary button's edge. The neutral steps until you give `--kv-secondary-*` a hue | 3:1 (1.4.11)     |
+
+Hairlines never identify a control. A control always has a `border-control` edge, or `secondary` for the secondary button.
+
+## Elevation
+
+Five levels, each drawn on the one before.
+
+| Level | Surface          | Border          | Shadow                                                                           | Use                      |
+| ----- | ---------------- | --------------- | -------------------------------------------------------------------------------- | ------------------------ |
+| 0     | `canvas`         | none            | none                                                                             | Page                     |
+| 1     | `surface`        | `border-subtle` | none                                                                             | Sections, sidebars       |
+| 2     | `surface-raised` | `border-subtle` | none                                                                             | Cards                    |
+| 3     | `surface-raised` | `border-subtle` | `--kv-shadow-popup`. Light: `0 8px 24px -4px` `neutral-950` at 12%. Dark: none   | Popups, menus, popovers  |
+| 4     | `surface-raised` | `border-subtle` | `--kv-shadow-dialog`. Light: `0 24px 48px -8px` `neutral-950` at 20%. Dark: none | Dialogs, with a backdrop |
+
+[Card: Surface layers](?path=/story/components-card--surface-layers) shows all five levels, each with when to use it.
+
+The dark themes use no shadows. A raised surface is lighter there instead. The buttons have their own depth, which isn't a surface level (`--kv-shadow-button`).
+
+## Which level to use
+
+Start at level 0 and go up only when the content needs it. Each level has one job.
+
+| Level | Use it for                                                                                     | Don't use it for                                                                           |
+| ----- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 0     | The page itself                                                                                | A box on the page. Use level 1 or 2                                                        |
+| 1     | Setting a group of content apart from the page: a section, a sidebar, a block of related cards | A single piece of content. That is a card                                                  |
+| 2     | One unit of content: a card, an item in a list of cards                                        | A card inside a card, more than one level deep, or anything that can be clicked as a whole |
+| 3     | Something that opens over the page and closes again: a menu, a listbox, a popover              | Content that is always on the page                                                         |
+| 4     | A dialog that takes over the page, over a backdrop, with the page behind it `inert`            | A message that doesn't need an answer. Use a notification                                  |
+
+- Use the surface ladder first. Put a card (level 2) on a section (level 1) or on the page, not on another card.
+- Don't add a shadow to levels 1 and 2. Depth there comes from the surface and the border.
+- Give every level from 1 up a border.
+- A status message is not an elevation level. It is a notification, with a status colour, an icon and a heading.
+- A new border or indicator width is a token change, not a one-off value.
+
+## Accessibility
+
+- **Non-text contrast (1.4.11).** A control's edge needs 3:1 against what's next to it. `border-subtle` is decorative and has no minimum, so it must never be the only thing that shows where a control is.
+- **A shadow is never the only boundary.** Shadows disappear in forced colours, so every level from 1 up keeps its border.
+- **Forced colours.** Borders map to system colours. The theme never uses `forced-color-adjust: none`.
+- **Backdrop.** A dialog backdrop dims the page, and must not reduce the dialog's own contrast.
+- **Invalid fields.** An invalid input switches to a 2px `danger` border and shows an error message, never colour alone.
+
+## Customising
+
+Set `--kv-border-width` or `--kv-indicator-width` on `:root`. Keep control edges at 1px or more. To turn button depth off, set both button shadows to `none` and both edge tints to `0%`. Change a border colour through the palette, and run `vp run theme:check` or `checkThemeCss()`, which measures every pair.
+
+## Related
+
+- [Colors](?path=/story/foundation-colors--semantic-tokens): the border tokens in all four themes
+- [Card: Surface layers](?path=/story/components-card--surface-layers): all five levels, drawn with the Card
+- [Radius](?path=/docs/foundation-radius--docs): the corners the border follows
+- [Focus ring](?path=/docs/foundation-focus-ring--docs): drawn outside the border

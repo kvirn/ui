@@ -6,7 +6,7 @@
 
 It's optional. Without a provider, components use English (`en`), left-to-right text, the runtime's time zone and a native `<a>`, and the theme follows the operating system.
 
-The provider renders no element of its own.
+The provider renders no element of its own for layout or styling. The outermost one adds two empty, visually hidden live regions after its children, for `useAnnouncer()` (see [Announcer](../announcer/announcer.md)).
 
 ## Setup
 
@@ -60,7 +60,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 }
 ```
 
-- **`<html lang dir>`:** set them to the root provider's locale and direction (WCAG 3.1.1). The provider renders no element, so it can't set the page language. `resolveDirection(locale)` from `@kvirn-ui/core` gives `dir` for a locale that isn't known ahead of time.
+- **`<html lang dir>`:** set them to the root provider's locale and direction (WCAG 3.1.1). The provider renders no element that could hold it, so it can't set the page language. `resolveDirection(locale)` from `@kvirn-ui/core` gives `dir` for a locale that isn't known ahead of time.
 - **Nested languages:** a nested provider that changes the language needs that language's catalog, for example `<KvirnProvider locale="fi-FI" messages={fi}>`. Also spread `useLocale().localeProps` on its section (3.1.2).
 - **`timeZone`:** set it explicitly. Otherwise the server formats dates in its own zone and the browser in the visitor's, and the two renders differ.
 - **`suppressHydrationWarning` on `<html>`:** `KvirnThemeScript` adds `data-kv-color-scheme` and `data-kv-contrast` before React hydrates, so the server markup and the page differ on purpose. The flag only affects `<html>`'s own attributes.
@@ -122,7 +122,7 @@ const dateSettings = useDateSettings() // { timeZone }
 
 ### A section in another language
 
-A nested provider inherits everything it doesn't set. Because the provider renders no element, spread `localeProps` on the element that starts the section, so `lang` matches the strings inside it (WCAG 3.1.2):
+A nested provider inherits everything it doesn't set. Because the provider renders no wrapper element, spread `localeProps` on the element that starts the section, so `lang` matches the strings inside it (WCAG 3.1.2):
 
 ```tsx
 function FinnishSummary({ children }: { children: ReactNode }) {

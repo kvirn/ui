@@ -7,4 +7,15 @@ export const se = {
   link: { newTabNotice: '(opens in a new tab)' },
   // TODO(native-review): Northern Sámi translation of "(optional)" and "Error:".
   field: { optional: '(optional)', errorPrefix: 'Error:' },
+  // TODO(native-review): Northern Sámi translation of the two mask messages (Plan 0014).
+  mask: {
+    characterNotAllowed: ({ allowed }) =>
+      ({
+        digits: 'Only digits can be entered here.',
+        letters: 'Only letters can be entered here.',
+        lettersAndDigits: 'Only letters and digits can be entered here.',
+        other: 'That character can’t be entered here.',
+      })[allowed],
+    maximumLength: ({ length }) => `You’ve entered all ${length} characters.`,
+  },
 } satisfies KvirnMessages

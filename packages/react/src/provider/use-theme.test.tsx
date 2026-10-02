@@ -141,8 +141,9 @@ describe('theme preference (ADR-0006)', () => {
 
     await userEvent.keyboard('{ArrowDown}')
     await expect.element(radio('Följ systemet').first()).toBeChecked()
-    expect(page.getByRole('status').elements()).toHaveLength(0)
-    expect(page.getByRole('alert').elements()).toHaveLength(0)
+    // The provider's two live regions (ADR-0040) exist, and stay empty: nothing is announced.
+    await expect.element(page.getByRole('status')).toBeEmptyDOMElement()
+    await expect.element(page.getByRole('alert')).toBeEmptyDOMElement()
   })
 
   test('syncs with another tab through the storage event', async () => {

@@ -9,14 +9,15 @@ Design specs describe **what users see and do**: the flow, content, layout, stat
 
 ## Index
 
-| Spec                                                                                                                | Plan                                                  | Status |
-| ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ------ |
-| [Default theme for Button and Link](default-theme-button-link.md)                                                   | [0005](../plans/0005-default-theme-storybook-docs.md) | Draft  |
-| [Storybook presentation](storybook-presentation.md)                                                                 | [0005](../plans/0005-default-theme-storybook-docs.md) | Draft  |
-| [Docs site shell, template and first pages](docs-site.md)                                                           | [0005](../plans/0005-default-theme-storybook-docs.md) | Draft  |
-| [Prose styles and the Storybook Foundation section](foundations-and-prose.md)                                       | 0006 (to be written)                                  | Draft  |
-| [Card](card.md)                                                                                                     | [0007](../plans/0007-card.md)                         | Draft  |
-| [Icon and the built-in icon set](icon.md)                                                                           | [0009](../plans/0009-icon.md)                         | Draft  |
-| [IBM Plex Sans and Serif replace Inter](typography-ibm-plex.md)                                                     | [0011](../plans/0011-ibm-plex-typography.md)          | Draft  |
-| [Button depth: D, Grounded, chosen (ADR-0026)](button-depth.md)                                                     | to be written (handoff in section 10)                 | Draft  |
-| [Form fields: Field, Fieldset, Input, InputGroup, Checkbox, RadioGroup, DateInput (ADR-0031 order)](form-fields.md) | [0013](../plans/0013-form-fields.md)                  | Draft  |
+| Spec                                                                                                                | Plan                                                   | Status |
+| ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------ |
+| [Default theme for Button and Link](default-theme-button-link.md)                                                   | [0005](../plans/0005-default-theme-storybook-docs.md)  | Draft  |
+| [Storybook presentation](storybook-presentation.md)                                                                 | [0005](../plans/0005-default-theme-storybook-docs.md)  | Draft  |
+| [Docs site shell, template and first pages](docs-site.md)                                                           | [0005](../plans/0005-default-theme-storybook-docs.md)  | Draft  |
+| [Prose styles and the Storybook Foundation section](foundations-and-prose.md)                                       | 0006 (to be written)                                   | Draft  |
+| [Card](card.md)                                                                                                     | [0007](../plans/0007-card.md)                          | Draft  |
+| [Icon and the built-in icon set](icon.md)                                                                           | [0009](../plans/0009-icon.md)                          | Draft  |
+| [IBM Plex Sans and Serif replace Inter](typography-ibm-plex.md)                                                     | [0011](../plans/0011-ibm-plex-typography.md)           | Draft  |
+| [Button depth: D, Grounded, chosen (ADR-0026)](button-depth.md)                                                     | to be written (handoff in section 10)                  | Draft  |
+| [Form fields: Field, Fieldset, Input, InputGroup, Checkbox, RadioGroup, DateInput (ADR-0031 order)](form-fields.md) | [0013](../plans/0013-form-fields.md)                   | Draft  |
+| [OneTimeCode: one input with drawn slots, and the plain-field fallback](one-time-code.md)                           | [0014](../plans/0014-input-masks-and-one-time-code.md) | Draft  |

@@ -1,5 +1,6 @@
+import type { MaskRejection } from '@kvirn-ui/core'
 import { useContext, useEffect, useMemo } from 'react'
-import type { ChangeEvent, ChangeEventHandler, FocusEventHandler } from 'react'
+import type { ChangeEvent, ChangeEventHandler, CompositionEvent, FocusEventHandler } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldContext } from '../field/field-context.ts'
 import type { FieldStateAttributes } from '../field/field-state.ts'
@@ -14,7 +15,19 @@ export type InputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search'
 /** The second argument of `onValueChange`. */
 export interface InputChangeDetails {
   reason: 'input'
-  event: ChangeEvent<HTMLInputElement>
+  /**
+   * The change event. A masked input also reports at `compositionend`, when it applies the mask
+   * to what an IME or dead key composed: then it is the `CompositionEvent`.
+   */
+  event: ChangeEvent<HTMLInputElement> | CompositionEvent<HTMLInputElement>
+  /** Masks only: the value without literals and separators. */
+  unmaskedValue?: string | undefined
+  /** Masks only: the shape is complete. It doesn't mean the number exists (ADR-0032, item 4). */
+  isComplete?: boolean | undefined
+  /** Number masks only: whether the number is within `min` and `max`. Never clamped. */
+  isWithinRange?: boolean | undefined
+  /** Masks only: the characters the user entered that the mask dropped, by reason. */
+  rejected?: readonly MaskRejection[] | undefined
 }
 
 export interface UseInputOptions {

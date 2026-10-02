@@ -39,8 +39,8 @@ KvirnUI needs one fast, consistent toolchain across the library packages, Storyb
    - `dedupePeers: true` keeps a single Vitest copy. Without it, Storybook's optional peers split Vitest into two instances and story tests fail with "Vitest failed to find the runner".
    - `allowBuilds` allows only `esbuild`'s install script.
    - Storybook 10.6's optional `vite-plus` peer (`^0.1 || ^0.2`) is allowed to be 1.0.
-6. **Playwright** has a `chromium-reduced-motion` project, because AGENTS.md gate 3 names reduced motion. That makes 8 projects.
-7. **CI** pins GitHub Actions to commit SHAs, uses read-only `contents` permissions, and installs WebKit's system dependencies itself.
+6. **Playwright** has a `chromium-reduced-motion` project, because AGENTS.md gate 3 names reduced motion. That makes 8 projects. Since ADR-0042 only the four Chromium ones run by default.
+7. **CI** pins GitHub Actions to commit SHAs, uses read-only `contents` permissions, and installs its browsers itself (Chromium only since ADR-0042).
 8. **Hooks** find `vp` on `PATH`, then the global install, then `node_modules/.bin`. If none is found, the Stop hook **blocks**, so a missing toolchain can never silently pass the gate. Before the first commit it runs the full test suite instead of `--changed`.
 9. **Test budget (maintainer request, 2026-09-30).** Test runs are targeted, and the full gates run once per change (the testing skill's "Test budget" section).
    - While iterating, run only the touched files, with no stress reruns.

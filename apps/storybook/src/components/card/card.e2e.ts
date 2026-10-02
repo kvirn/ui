@@ -272,6 +272,7 @@ test.describe('Card accessibility', () => {
     ['news-list'],
     ['nested-card'],
     ['surfaces'],
+    ['surface-layers'],
     ['radii'],
     ['padding'],
     ['dividers'],

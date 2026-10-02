@@ -1,3 +1,5 @@
+import type { Mask } from '@kvirn-ui/core'
+import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, useState } from 'react'
@@ -8,6 +10,7 @@ import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
+import { masks } from '../index.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Input } from './input.tsx'
 import type { InputChangeDetails, InputProps, InputState, InputType } from './input.tsx'
@@ -540,5 +543,272 @@ describe('types', () => {
     expectTypeOf<InputPartProps>().not.toHaveProperty('data-kv')
     expectTypeOf<UseInputResult['inputProps']>().toEqualTypeOf<InputPartProps>()
     expectTypeOf<UseInputResult['isFocusVisible']>().toEqualTypeOf<boolean>()
+  })
+})
+
+describe('mask (ADR-0032, contract: input.a11y.md › Masked input)', () => {
+  const personalIdentityNumber = masks.personalIdentityNumber({ country: 'SE' })
+
+  test('without a mask nothing changes: no suggested attributes, no announcer warning', async () => {
+    await render(<Input aria-label="Namn" />)
+    const input = page.getByRole('textbox', { name: 'Namn' })
+    await expect.element(input).not.toHaveAttribute('inputmode')
+    await expect.element(input).not.toHaveAttribute('spellcheck')
+    await expect.element(input).not.toHaveAttribute('dir')
+    await userEvent.type(input, 'Maja 1')
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('a mask shapes the value, adds no class or role, and keeps the Field wiring', async () => {
+    const { container } = await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <Field.Root required invalid>
+          <Field.Label>Personnummer</Field.Label>
+          <Field.Description>12 siffror, till exempel 19900101-1234.</Field.Description>
+          <Field.ErrorMessage>Ange personnumret</Field.ErrorMessage>
+          <Input name="personalIdentityNumber" mask={personalIdentityNumber} />
+        </Field.Root>
+      </KvirnProvider>,
+    )
+    const input = page.getByRole('textbox', { name: 'Personnummer' })
+    await userEvent.fill(input, '19900101 1234')
+
+    await expect.element(input).toHaveValue('19900101-1234')
+    const element = input.element()
+    expect(element.className).toBe('kv-input')
+    await expect.element(input).toHaveAttribute('type', 'text')
+    await expect.element(input).toHaveAttribute('inputmode', 'numeric')
+    await expect.element(input).toHaveAttribute('spellcheck', 'false')
+    await expect.element(input).toHaveAttribute('dir', 'ltr')
+    await expect.element(input).toHaveAttribute('aria-invalid', 'true')
+    await expect.element(input).toHaveAttribute('aria-required', 'true')
+    await expect.element(input).not.toHaveAttribute('maxlength')
+    await expect.element(input).not.toHaveAttribute('pattern')
+    await expect
+      .element(input)
+      .toHaveAccessibleDescription('12 siffror, till exempel 19900101-1234. Fel: Ange personnumret')
+    await expectNoA11yViolations(container)
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('onValueChange gets the masked value and the mask details, once per change', async () => {
+    const onValueChange = vi.fn<(value: string, details: InputChangeDetails) => void>()
+    await render(
+      <KvirnProvider>
+        <Input
+          aria-label="Personnummer"
+          mask={personalIdentityNumber}
+          onValueChange={onValueChange}
+        />
+      </KvirnProvider>,
+    )
+    await userEvent.type(page.getByRole('textbox', { name: 'Personnummer' }), '1234')
+
+    expect(onValueChange.mock.calls.map(([value]) => value)).toEqual(['1', '12', '123', '1234'])
+    const details = onValueChange.mock.calls.at(-1)?.[1]
+    expect(details?.reason).toBe('input')
+    expect(details?.unmaskedValue).toBe('1234')
+    expect(details?.isComplete).toBe(false)
+    expect(details?.rejected).toEqual([])
+  })
+
+  test('your own inputMode, spellCheck and dir win over the preset’s', async () => {
+    await render(
+      <Input
+        aria-label="Personnummer"
+        mask={personalIdentityNumber}
+        inputMode="text"
+        spellCheck
+        dir="rtl"
+      />,
+    )
+    const input = page.getByRole('textbox', { name: 'Personnummer' })
+    await expect.element(input).toHaveAttribute('inputmode', 'text')
+    await expect.element(input).toHaveAttribute('spellcheck', 'true')
+    await expect.element(input).toHaveAttribute('dir', 'rtl')
+  })
+
+  test('your own onChange, ref and onFocus still run next to the mask', async () => {
+    const onChange = vi.fn<(event: unknown) => void>()
+    const onFocus = vi.fn<(event: unknown) => void>()
+    const ref = createRef<HTMLInputElement>()
+    await render(
+      <Input
+        ref={ref}
+        aria-label="Postnummer"
+        mask={masks.postalCode({ country: 'SE' })}
+        onChange={onChange}
+        onFocus={onFocus}
+      />,
+    )
+    const input = page.getByRole('textbox', { name: 'Postnummer' })
+    await userEvent.type(input, '12345')
+    expect(ref.current).toBe(input.element())
+    expect(onChange).toHaveBeenCalledTimes(5)
+    expect(onFocus).toHaveBeenCalledTimes(1)
+    await expect.element(input).toHaveValue('123 45')
+  })
+
+  test('controlled: the value is rendered as given and follows onValueChange', async () => {
+    function Controlled() {
+      const [value, setValue] = useState('19900101 1234')
+      return (
+        <>
+          <Input
+            aria-label="Personnummer"
+            mask={personalIdentityNumber}
+            value={value}
+            onValueChange={setValue}
+          />
+          <output>{value}</output>
+        </>
+      )
+    }
+    await render(
+      <KvirnProvider>
+        <Controlled />
+      </KvirnProvider>,
+    )
+    const input = page.getByRole('textbox', { name: 'Personnummer' })
+    await expect.element(input).toHaveValue('19900101 1234')
+    await userEvent.fill(input, '199001011234')
+    await expect.element(input).toHaveValue('19900101-1234')
+  })
+
+  test('a plain form submits the masked value, and mask.unmask gives the plain one', async () => {
+    let submitted: FormData | undefined
+    await render(
+      <form
+        aria-label="Ansökan"
+        onSubmit={(event) => {
+          event.preventDefault()
+          submitted = new FormData(event.currentTarget)
+        }}
+      >
+        <Input aria-label="Personnummer" name="pin" mask={personalIdentityNumber} />
+        <button type="submit">Skicka</button>
+      </form>,
+    )
+    await userEvent.type(page.getByRole('textbox', { name: 'Personnummer' }), '199001011234')
+    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    expect(submitted?.get('pin')).toBe('19900101-1234')
+    expect(personalIdentityNumber.unmask('19900101-1234')).toBe('199001011234')
+  })
+
+  test('announces a refused character once per field, from the Input’s own messages too', async () => {
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <Input aria-label="Antal" mask={masks.digits()} />
+        <Input
+          aria-label="Kod"
+          mask={masks.digits()}
+          messages={{ characterNotAllowed: () => 'Bara siffror i koden.' }}
+        />
+      </KvirnProvider>,
+    )
+    const status = page.getByRole('status')
+    await userEvent.type(page.getByRole('textbox', { name: 'Antal' }), 'a')
+    await expect.element(status).toHaveTextContent('Här kan du bara skriva siffror.')
+    await userEvent.type(page.getByRole('textbox', { name: 'Kod' }), 'a')
+    await expect.element(status).toHaveTextContent('Bara siffror i koden.')
+  })
+
+  test('announceRejections={false} keeps the live region quiet', async () => {
+    await render(
+      <KvirnProvider>
+        <Input aria-label="Antal" mask={masks.digits()} announceRejections={false} />
+      </KvirnProvider>,
+    )
+    await userEvent.type(page.getByRole('textbox', { name: 'Antal' }), 'a')
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    await expect.element(page.getByRole('status')).toBeEmptyDOMElement()
+  })
+
+  test('a masked Input in a Field without a Field.Description warns once (3.3.2)', async () => {
+    await render(
+      <Field.Root>
+        <Field.Label>Personnummer</Field.Label>
+        <Input mask={personalIdentityNumber} />
+      </Field.Root>,
+    )
+    await vi.waitFor(() => {
+      expect(consoleWarn).toHaveBeenCalledTimes(1)
+    })
+    const message = String(consoleWarn.mock.calls[0]?.[0])
+    expect(message).toContain('Field.Description')
+    expect(message).toContain('3.3.2')
+  })
+
+  test('no description warning when the Field has one, or the Input has its own aria-describedby', async () => {
+    await render(
+      <>
+        <Field.Root>
+          <Field.Label>Personnummer</Field.Label>
+          <Input mask={personalIdentityNumber} />
+          <Field.Description>12 siffror, till exempel 19900101-1234.</Field.Description>
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>Postnummer</Field.Label>
+          <Input mask={masks.postalCode({ country: 'SE' })} aria-describedby="eget-tips" />
+        </Field.Root>
+        <p id="eget-tips">Fem siffror.</p>
+      </>,
+    )
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('an Input without a mask in a Field without a description does not warn about it', async () => {
+    await render(
+      <Field.Root>
+        <Field.Label>Namn</Field.Label>
+        <Input />
+      </Field.Root>,
+    )
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('a mask other than masks.email() on type="email" warns once (ADR-0032 item 9)', async () => {
+    await render(<Input aria-label="E-post" type="email" mask={masks.digits()} />)
+    await vi.waitFor(() => {
+      expect(consoleWarn).toHaveBeenCalledTimes(1)
+    })
+    expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('type="email"')
+  })
+
+  test('masks.email() on type="email" is fine, and filters whitespace', async () => {
+    await render(
+      <KvirnProvider>
+        <Input aria-label="E-post" type="email" mask={masks.email()} />
+      </KvirnProvider>,
+    )
+    const input = page.getByRole('textbox', { name: 'E-post' })
+    await userEvent.type(input, 'maja @example.se')
+    await expect.element(input).toHaveValue('maja@example.se')
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('number masks use the provider’s locale, and sv and en differ', async () => {
+    await render(
+      <>
+        <KvirnProvider locale="sv" messages={sv}>
+          <Input aria-label="Belopp sv" mask={masks.number({ decimals: 2 })} />
+        </KvirnProvider>
+        <Input aria-label="Belopp en" mask={masks.number({ decimals: 2 })} />
+      </>,
+    )
+    await userEvent.type(page.getByRole('textbox', { name: 'Belopp sv' }), '1.5')
+    await userEvent.type(page.getByRole('textbox', { name: 'Belopp en' }), '1,5')
+    await expect.element(page.getByRole('textbox', { name: 'Belopp sv' })).toHaveValue('1,5')
+    await expect.element(page.getByRole('textbox', { name: 'Belopp en' })).toHaveValue('1.5')
+  })
+
+  test('the new props have types', () => {
+    expectTypeOf<InputProps['mask']>().toEqualTypeOf<Mask | undefined>()
+    expectTypeOf<InputProps['announceRejections']>().toEqualTypeOf<boolean | undefined>()
+    expectTypeOf<InputProps['messages']>().toEqualTypeOf<
+      Partial<KvirnMessages['mask']> | undefined
+    >()
   })
 })

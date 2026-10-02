@@ -18,7 +18,8 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Component                                              | APG pattern                  | M   | Status      |
 | ------------------------------------------------------ | ---------------------------- | --- | ----------- |
 | KvirnProvider (locale, dates, links, theme preference) | –                            | 0   | alpha       |
-| VisuallyHidden, SkipLink, Announcer                    | –                            | 1   | planned     |
+| VisuallyHidden, SkipLink                               | –                            | 1   | planned     |
+| Announcer (`useAnnouncer`, KvirnProvider live regions) | –                            | 1   | in progress |
 | FocusScope, Portal, DismissableLayer                   | –                            | 1   | planned     |
 | Button                                                 | Button                       | 1   | alpha       |
 | Icon (built-in set, name registry)                     | – (SVG, decorative or `img`) | 1   | in progress |
@@ -28,7 +29,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Field, Label, Description, ErrorMessage, Fieldset      | –                            | 1   | in progress |
 | Input, Textarea                                        | –                            | 1   | in progress |
 | InputGroup (Root, Addon: units, icons, a clear Button) | – (native `<input>`)         | 1   | in progress |
-| Input masks (core engine, presets, `useMask`)          | – (native `<input>`)         | 1   | planned     |
+| Input masks (core engine, presets, `useMask`)          | – (native `<input>`)         | 1   | in progress |
 | OneTimeCode                                            | – (native `<input>`)         | 1   | planned     |
 | Checkbox, CheckboxGroup                                | Checkbox                     | 1   | planned     |
 | RadioGroup                                             | Radio Group                  | 1   | planned     |

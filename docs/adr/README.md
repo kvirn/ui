@@ -57,3 +57,7 @@ We record significant decisions as ADRs using a lightweight MADR-style format.
 | [0037](0037-select-combobox-autocomplete.md)               | Select, Combobox and Autocomplete share one ARIA 1.2 combobox core                              | Proposed |
 | [0038](0038-file-upload.md)                                | FileUpload: native file input, optional drop zone, file list and a consumer-driven upload queue | Proposed |
 | [0039](0039-apg-keyboard-interface-and-documented-keys.md) | Follow the APG keyboard interface practice, and document every key in Storybook                 | Proposed |
+| [0040](0040-announcer.md)                                  | A shared Announcer: core state, live regions in KvirnProvider, `useAnnouncer()`                 | Proposed |
+| [0041](0041-foundation-reference-pages-in-mdx.md)          | Foundation reference pages are MDX with static tables                                           | Proposed |
+| [0042](0042-playwright-baseline-is-chromium.md)            | The Playwright baseline is Chromium only, other browsers are opt-in                             | Proposed |
+| [0043](0043-scoped-checks-for-parallel-agents.md)          | Agents check only their own changes                                                             | Proposed |

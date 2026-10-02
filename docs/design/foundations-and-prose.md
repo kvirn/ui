@@ -229,6 +229,8 @@ The spacing names refer to the proposed tokens in §6.7. All margins are `margin
 
 ### 6.6 Storybook Foundation section
 
+> **Update 2026-10-02 (ADR-0041):** Overview, Spacing, Radius, Borders and elevation, Focus ring, Motion, Density, Layout and Theming are MDX reference pages, not live stories. Their rows below describe what each page covers, not a demo. `tooling/foundation-docs/foundation-docs.test.ts` checks their token tables against `theme.css`.
+
 > **Update 2026-10-01 (Plan 0008, ADR-0023):** the sidebar is flatter than this table. Colors is one title, `Foundation/Colors`, with the stories _Palette_, _Semantic tokens_ and _Text on surface_ (each page is a plain module, `colors-*.tsx`, used by `colors.stories.tsx`). Type scale became `Foundation/Typography` with the stories _Type roles_, _Font families_, _Glyphs_ and _Tabular figures_, one per section. Prose moved up to `Foundation/Prose`. The single-story pages turn autodocs off and name their story like the title, so each is a sidebar leaf. The fixed-theme stories are gone: each story runs in all four themes as Vitest projects.
 
 Location: `apps/storybook/src/foundation/*.stories.tsx`. This is Storybook tooling, and `@kvirn-ui/theme` stays React-free. `Foundation/KvirnProvider` is in `apps/storybook/src/components/provider/`, with the other component stories. Sort order within Foundation is the order of this table.

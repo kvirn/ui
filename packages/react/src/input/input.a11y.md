@@ -2,9 +2,9 @@
 
 - **APG pattern:** none needed. Input is a native `<input>` with a text-like `type`. There is no APG pattern for a text field: the name, description and state come from HTML and `aria-describedby`.
 - **Deviations:** none from APG. `type="number"` and `type="date"` are not accepted by design (ADR-0030).
-- **Native elements used:** `<input type="text | email | tel | url | password | search">`.
-- **Status:** alpha candidate (Plan 0013, Phase 1). Gates pass, accessibility-reviewer pending. Manual AT is `pending`.
-- **Tests:** `input.test.tsx` next to this file. `input.stories.tsx` and `input.e2e.ts` in `apps/storybook/src/components/input/`, and `number.stories.tsx` in `…/number/` (its stories are covered by `input.e2e.ts`).
+- **Native elements used:** `<input type="text | email | tel | url | password | search">`. A mask adds no element and no role (ADR-0032).
+- **Status:** alpha candidate (Plan 0013, Phase 1). The `mask` prop and `useMask` are Plan 0014, Phase 2: gates pass, accessibility-reviewer pending. Manual AT is `pending`.
+- **Tests:** `input.test.tsx` and `../mask/use-mask.test.tsx`. `input.stories.tsx` and `input.e2e.ts` in `apps/storybook/src/components/input/`, `mask.stories.tsx` and `mask.e2e.ts` in `…/mask/`, and `number.stories.tsx` in `…/number/` (its stories are covered by `input.e2e.ts`).
 
 Input is the text control of a Field (`field.a11y.md`). It is a native input: the browser supplies the role (`textbox`, `searchbox`), the keyboard, selection, paste and autofill. Input adds the Field's wiring and the part class.
 
@@ -20,6 +20,30 @@ Numbers are text with `inputMode`: `<Input inputMode="numeric" spellCheck={false
 
 `useInput` gives the same `inputProps` for your own `<input>`: it reads the nearest Field too.
 
+## Masked input
+
+An `Input` with a `mask` (or `useMask` on your own `<input>`) shapes what the user types: it drops characters that can't be valid, inserts separators as the user types past them, and limits the length (ADR-0032). The control stays a native `<input>`: no role, no `maxlength`, no `pattern`, no placeholder characters in the value. The mask holds no form state and corrects nothing: `min` and `max` are reported as `isWithinRange`, and the `checks.*` helpers are called by your form.
+
+| Action                     | Result                                                                                                                                                                 | Test                                                                                                                                                                      |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Type an allowed character  | Inserted at the caret. A literal is inserted after it only when the next character is typed                                                                            | `mask.e2e.ts › typing an allowed character inserts it, and a literal comes only when the next character is typed`                                                         |
+| Type a literal at its spot | Accepted once, not doubled                                                                                                                                             | `mask.e2e.ts › typing a literal at its spot is accepted once, not doubled`                                                                                                |
+| Type a refused character   | Not inserted, the caret stays. `details.rejected` says why, and the Announcer says it, at most once every few seconds per field                                        | `mask.e2e.ts › typing a refused character inserts nothing, and the caret stays`, `mask.e2e.ts › a refused character is announced once, and throttled per field`           |
+| Paste, drop or autofill    | Separators and refused characters are stripped, the rest fills the mask. Nothing is truncated early                                                                    | `mask.e2e.ts › Control/Command+V pastes in each separator style and fills the mask`, `mask.e2e.ts › a paste with refused characters drops them, and nothing is cut early` |
+| Backspace / Delete         | Always removes a character, also next to a literal                                                                                                                     | `mask.e2e.ts › Backspace next to a literal removes a character`, `mask.e2e.ts › Delete before a literal removes the next character`                                       |
+| Caret                      | Stays right after the character the user typed, also across a literal the mask inserts                                                                                 | `mask.e2e.ts › the caret stays after the typed character, also when the mask inserts a literal`                                                                           |
+| IME or dead key            | Left alone until `compositionend`: the raw text shows while composing, and the mask applies once                                                                       | `mask.e2e.ts › an IME or dead key composition is left alone until compositionend`                                                                                         |
+| Undo                       | Native. Lost only for a step where the mask rewrote the value (inserted a literal or removed a refused character). The mask writes back only when it changed the value | `mask.e2e.ts › Control/Command+Z undoes typing that the mask did not rewrite`, `mask.e2e.ts › Control/Command+Z after a step the mask rewrote leaves a valid value`       |
+
+- **Roles / ARIA:** a native `<input>`, no added role, state or property. Field wiring as above.
+- **Attributes the preset suggests** (your own props win): `inputMode`, `autoCapitalize`, `spellCheck={false}` and, for identifiers, `dir="ltr"`. A preset never sets `autocomplete`: the right token depends on the question (1.3.5). RTL: an identifier stays left to right in a right-to-left page (`mask.e2e.ts › right to left: identifiers stay left to right`).
+- **Value and details:** `onValueChange(value, details)` gets the masked value, and `details.unmaskedValue`, `isComplete`, `isWithinRange` (number masks) and `rejected`. A controlled `value` is rendered as given and never rewritten (ADR-0029 item 0, ADR-0032 item 8): use `mask.format()` for a stored value.
+- **Composition:** while composing, `onValueChange` reports the raw value without mask details, so a controlled field keeps following what the IME shows. At `compositionend` it reports once more, with the `CompositionEvent` as `details.event`.
+- **Numbers:** the decimal separator is the provider's locale (a comma in sv, fi, nb, nn and se), whichever separator is typed. The value is never clamped.
+- **Types:** a mask works on `text`, `tel`, `search`, `url` and `password`. On `type="email"` the browser has no selection API, so only `masks.email()` is accepted: another mask warns in development, and the caret goes to the end when the mask rewrites.
+- **Dev warnings:** a masked Input in a Field without a `Field.Description` or an `aria-describedby` of its own (3.3.2: the mask doesn't explain the format), and a mask other than `masks.email()` on `type="email"`. Without a `KvirnProvider`, the first refused character warns once that nothing is announced.
+- **Format in text (3.3.2):** the hint says the format with an example. The mask is never the only explanation.
+
 ## Keyboard
 
 - **Focus strategy:** native
@@ -27,19 +51,30 @@ Numbers are text with `inputMode`: `<Input inputMode="numeric" spellCheck={false
 - **Arrows wrap:** n/a
 - **Shortcuts:** none
 
-All native: Input handles no keys itself and never calls `preventDefault` on one. Number is the same Input with `inputMode` (ADR-0030), so its rows are here too. In a Field, the Label, Description and ErrorMessage are not Tab stops (`field.a11y.md`).
+All native: Input handles no keys itself and never calls `preventDefault` on one. A mask doesn't either: it reads the value after the browser's edit and rewrites it only when it must, and never moves focus or auto-advances. Number is the same Input with `inputMode` (ADR-0030), so its rows are here too. The masked rows are in the Keyboard table and in Masked input above. In a Field, the Label, Description and ErrorMessage are not Tab stops (`field.a11y.md`).
 
-| Key                                 | Context              | Action                                                                       | Test                                                                                                                                                                           |
-| ----------------------------------- | -------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Tab / Shift+Tab                     | Input                | Moves focus to and from the input, in DOM order                              | `input.e2e.ts › Tab moves through the inputs in DOM order`                                                                                                                     |
-| Characters                          | Input                | Types them. Nothing is filtered, also for numbers                            | `input.test.tsx › typing calls onValueChange with the value and the reason, and onChange too`, `input.e2e.ts › any character types, and nothing is filtered, also for numbers` |
-| ArrowLeft / ArrowRight / Home / End | Input                | Move the caret (flips in RTL: the browser's own). Never intercepted          | `input.e2e.ts › ArrowLeft, ArrowRight, Home and End move the caret and are not intercepted`                                                                                    |
-| ArrowUp / ArrowDown                 | Number (`inputMode`) | Native caret movement only. Never steps or changes a number value (ADR-0030) | `input.e2e.ts › ArrowUp and ArrowDown never change a number value`                                                                                                             |
-| Control/Command+A                   | Input                | Selects all the text. Native                                                 | `input.e2e.ts › Control/Command+A selects all the text`                                                                                                                        |
-| Control/Command+V                   | Input                | Pastes. Never blocked (3.3.8)                                                | `input.test.tsx › paste is not blocked`                                                                                                                                        |
-| Enter                               | Input in a `<form>`  | Submits the form (implicit submission). Native, never prevented              | `input.e2e.ts › Enter in a plain form submits it with the typed values (native)`                                                                                               |
-| Escape                              | Input                | Does nothing: the value and the focus stay                                   | `input.e2e.ts › Escape does nothing: the value and the focus stay`                                                                                                             |
-| –                                   | its Label            | A click on the label focuses the input (native `<label for>`)                | `input.e2e.ts › clicking the label focuses the input`                                                                                                                          |
+| Key                                 | Context                    | Action                                                                                                               | Test                                                                                                                                                                                                      |
+| ----------------------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tab / Shift+Tab                     | Input                      | Moves focus to and from the input, in DOM order                                                                      | `input.e2e.ts › Tab moves through the inputs in DOM order`                                                                                                                                                |
+| Characters                          | Input                      | Types them. Nothing is filtered, also for numbers                                                                    | `input.test.tsx › typing calls onValueChange with the value and the reason, and onChange too`, `input.e2e.ts › any character types, and nothing is filtered, also for numbers`                            |
+| ArrowLeft / ArrowRight / Home / End | Input                      | Move the caret (flips in RTL: the browser's own). Never intercepted                                                  | `input.e2e.ts › ArrowLeft, ArrowRight, Home and End move the caret and are not intercepted`                                                                                                               |
+| ArrowUp / ArrowDown                 | Number (`inputMode`)       | Native caret movement only. Never steps or changes a number value (ADR-0030)                                         | `input.e2e.ts › ArrowUp and ArrowDown never change a number value`                                                                                                                                        |
+| Control/Command+A                   | Input                      | Selects all the text. Native                                                                                         | `input.e2e.ts › Control/Command+A selects all the text`                                                                                                                                                   |
+| Control/Command+V                   | Input                      | Pastes. Never blocked (3.3.8)                                                                                        | `input.test.tsx › paste is not blocked`                                                                                                                                                                   |
+| Enter                               | Input in a `<form>`        | Submits the form (implicit submission). Native, never prevented                                                      | `input.e2e.ts › Enter in a plain form submits it with the typed values (native)`                                                                                                                          |
+| Escape                              | Input                      | Does nothing: the value and the focus stay                                                                           | `input.e2e.ts › Escape does nothing: the value and the focus stay`                                                                                                                                        |
+| Tab / Shift+Tab                     | Masked input               | Moves focus to and from the input, in DOM order. Never moves on when the mask is full                                | `mask.e2e.ts › Tab and Shift+Tab move through the masked inputs in DOM order`                                                                                                                             |
+| Characters                          | Masked input               | Types the ones the mask allows, inserts a literal as the user types past it, drops the rest and says so              | `mask.e2e.ts › typing an allowed character inserts it, and a literal comes only when the next character is typed`, `mask.e2e.ts › typing a refused character inserts nothing, and the caret stays`        |
+| Control/Command+V                   | Masked input               | Pastes: separators and refused characters are stripped, the rest fills the mask. Never blocked                       | `mask.e2e.ts › Control/Command+V pastes in each separator style and fills the mask`, `use-mask.test.tsx › %s fills the mask and ends as 19900101-1234`                                                    |
+| Backspace / Delete                  | Masked input               | Removes a character, also next to a literal. Never intercepted                                                       | `mask.e2e.ts › Backspace next to a literal removes a character`, `mask.e2e.ts › Delete before a literal removes the next character`, `mask.e2e.ts › Backspace and Delete are not intercepted by the page` |
+| ArrowLeft / ArrowRight / Home / End | Masked input               | Move the caret (flips in RTL: the browser's own). Never intercepted                                                  | `mask.e2e.ts › ArrowLeft, ArrowRight, Home and End move the caret and are not intercepted`                                                                                                                |
+| ArrowUp / ArrowDown                 | Masked number              | Native caret movement only. Never steps or changes the value (ADR-0030)                                              | `mask.e2e.ts › ArrowUp and ArrowDown never change a masked number`                                                                                                                                        |
+| Control/Command+A                   | Masked input               | Selects all the text. Typing then replaces it and the mask starts over                                               | `mask.e2e.ts › Control/Command+A selects all the text`                                                                                                                                                    |
+| Control/Command+Z                   | Masked input               | Undo is native: it works for typing the mask didn't rewrite, and the history is lost for a rewritten step (ADR-0032) | `mask.e2e.ts › Control/Command+Z undoes typing that the mask did not rewrite`, `mask.e2e.ts › Control/Command+Z after a step the mask rewrote leaves a valid value`                                       |
+| Dead key, IME                       | Masked input               | Left alone until the composition ends, then the mask applies once                                                    | `mask.e2e.ts › an IME or dead key composition is left alone until compositionend`, `mask.e2e.ts › a composed character the mask accepts is kept, and nothing is rewritten during it`                      |
+| Enter                               | Masked input in a `<form>` | Submits the form with the masked value. Native, never prevented                                                      | `mask.e2e.ts › Enter in the form submits it with the masked values (native)`                                                                                                                              |
+| Escape                              | Masked input               | Does nothing: the value and the focus stay                                                                           | `mask.e2e.ts › Escape does nothing: the value and the focus stay`                                                                                                                                         |
+| –                                   | its Label                  | A click on the label focuses the input (native `<label for>`)                                                        | `input.e2e.ts › clicking the label focuses the input`                                                                                                                                                     |
 
 Copy, cut and undo (Control/Command+C, X and Z) are native too. Input adds no shortcuts.
 
@@ -56,7 +91,18 @@ Copy, cut and undo (Control/Command+C, X and Z) are native too. Input adds no sh
 | ---------------------- | ------------------ | ------------------------------------------------------------------------------------------------ |
 | Focus enters the input | none               | None live. The name, role, "required", "invalid" and the description (hint, then error) are read |
 
-Input announces nothing itself. Its texts are the Field's (`field.a11y.md`).
+An Input without a mask announces nothing itself. Its texts are the Field's (`field.a11y.md`).
+
+A masked Input announces a rejection through the shared Announcer (4.1.3, ADR-0040): a polite message in the live region that the outermost `KvirnProvider` renders, throttled to one every three seconds per field (the Field's control id). Strings come from i18n in all six locales, and can be overridden per provider and per instance (`messages`). `announceRejections={false}` turns it off, for example when you show your own message.
+
+| Event                                                               | Message key (i18n)                     | Politeness                                           | Test                                                                                                                                                                                      |
+| ------------------------------------------------------------------- | -------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A character is refused (digits, letters, letters and digits, other) | `mask.characterNotAllowed` (`allowed`) | Polite, once per field per window, never moves focus | `use-mask.test.tsx › a refused character is announced politely, in the provider language (sv, fi and en)`, `mask.e2e.ts › a refused character is announced once, and throttled per field` |
+| The mask is full and another character is refused                   | `mask.maximumLength` (`length`)        | Polite, same throttle                                | `use-mask.test.tsx › a full mask says so, with the number of characters`, `mask.e2e.ts › a full mask says so with the number of characters`                                               |
+| Characters accepted, a literal inserted                             | none                                   | Nothing is announced for input that works            | `use-mask.test.tsx › nothing is announced for accepted input`                                                                                                                             |
+| `announceRejections={false}`                                        | none                                   | The live region stays quiet                          | `mask.e2e.ts › announceRejections off keeps the live region quiet, and the character is still refused`                                                                                    |
+
+**The KvirnProvider is required for announcements.** Without one the mask still works, nothing is announced, and one development warning says so (ADR-0040, ADR-0003).
 
 ## Consumer responsibilities
 
@@ -66,6 +112,9 @@ Input announces nothing itself. Its texts are the Field's (`field.a11y.md`).
 - Use `inputMode` for numbers, with `spellCheck={false}`. Don't use `type="number"` or `type="date"` (ADR-0030). Validate ranges and formats yourself and say what's wrong in an ErrorMessage.
 - Choose a width class that fits the answer: `kv-input--width-2`, `-4`, `-6`, `-10`, `-20`. Width is a hint, never a limit: no `maxlength` comes from it.
 - Read-only is for staff tools showing a value the user can't change here. Say why in the Description. In a resident form, avoid both read-only and disabled.
+- With a `mask`, put the format and an example in a `Field.Description` (3.3.2, dev warning): the mask shapes input, it doesn't explain it. Wrap the app in `KvirnProvider` so refused characters are announced (4.1.3).
+- Validate in your form, after submit: the mask never says a value is wrong. Call `checks.personalIdentityNumber`, `checks.organisationNumber` and `checks.iban` and write a specific message from `reason`. Don't clamp numbers to `min` and `max`: show your own hint from `isWithinRange`.
+- Set `autoComplete` on masked fields yourself where a token exists (`postal-code`, `tel`, `email`). `masks.letters()` isn't for names: names have spaces, hyphens and apostrophes.
 - Don't pass an `id` inside a Field: the Field's id wins, so the label stays associated (dev warning). Use `<Field.Root controlId>`.
 
 ## Visual / modes
@@ -86,7 +135,10 @@ Input announces nothing itself. Its texts are the Field's (`field.a11y.md`).
 - 2.1.1 Keyboard: native input.
 - 2.5.3 Label in Name: the visible label is the name.
 - 3.3.2 Labels or Instructions, 3.3.1 Error Identification: through the Field.
-- 3.3.8 Accessible Authentication (Minimum): paste and autofill work, and no cognitive test is added.
+- 3.3.8 Accessible Authentication (Minimum): paste and autofill work, and no cognitive test is added. A mask normalises a pasted value instead of refusing it (`mask.e2e.ts › Control/Command+V pastes in each separator style and fills the mask`).
+- 3.3.1 and 3.3.4: a mask never auto-fixes or clamps what the user entered, and dropped characters are reported (`input.test.tsx › onValueChange gets the masked value and the mask details, once per change`).
+- 3.2.2 On Input: typing never moves focus, and a full mask doesn't advance (`mask.e2e.ts › Tab and Shift+Tab move through the masked inputs in DOM order`).
+- 4.1.3 Status Messages: a refused character is announced politely through the Announcer (`use-mask.test.tsx › a refused character is announced politely, in the provider language (sv, fi and en)`).
 - 4.1.2 Name, Role, Value: native role, name, `aria-invalid`, `aria-required`, `disabled`.
 
 ## AT test record
@@ -106,11 +158,17 @@ Input announces nothing itself. Its texts are the Field's (`field.a11y.md`).
 | Narrator + Edge + Windows                | pending |        |        |       |
 | Dragon / Voice Control                   | pending |        |        |       |
 
-Research questions for the AT run: does `inputMode="numeric"` bring up the right keyboard with VoiceOver and TalkBack? Is a decimal comma accepted by the form's own parser (consumer)?
+Research questions for the AT run: is a refused character's message read once, after the echo, and not repeated while a key is held? Does the caret stay where the user expects after the mask inserts a literal, with each screen reader? Does Dragon dictate into a masked field without corruption?
+
+Also: does `inputMode="numeric"` bring up the right keyboard with VoiceOver and TalkBack? Is a decimal comma accepted by the form's own parser (consumer)?
 
 ## Known issues
 
 - **`se` (Northern Sámi) is a placeholder. Blocks `beta`.** See `field.a11y.md`.
 - **No Textarea yet.** It comes later and reuses Field (Plan 0013, non-goals).
 - **No prefix or suffix (`kr`, `€`), no show-password button.** Out of scope for this phase (design spec, open question 9). Put the unit in the label or hint.
+- **Masks: manual AT is `pending`.** The throttle (three seconds), the clear-then-set message and the caret behaviour need NVDA, VoiceOver, TalkBack and Dragon (ADR-0032, ADR-0040). Real IMEs, dead keys and dictation are tested by hand: e2e uses a CDP composition in Chromium, and dispatched composition events in Firefox and WebKit.
+- **Masks: undo.** When the mask rewrites the value (inserts a literal, removes a refused character), the browser's undo history for that step is lost. Accepted (ADR-0032).
+- **Masks: no provider, no announcement.** `KvirnProvider` is required for announcements (ADR-0040).
+- **Masks: `type="email"`** has no caret control, so only `masks.email()` is supported on it.
 - **WebKit not run locally.** CI runs the `webkit` and `mobile-safari` projects.

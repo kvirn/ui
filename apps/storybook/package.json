@@ -27,6 +27,7 @@
     "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "remark-gfm": "catalog:",
     "storybook": "catalog:",
     "vite": "catalog:",
     "vite-plus": "catalog:"

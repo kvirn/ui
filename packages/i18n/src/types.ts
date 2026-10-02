@@ -57,6 +57,21 @@ export interface KvirnMessages {
      */
     errorPrefix: TextMessage
   }
+  mask: {
+    /**
+     * Announced (politely, throttled) when a masked field drops a character the user typed or
+     * pasted, for example `Här kan du bara skriva siffror.` `allowed` says what the field
+     * takes, so the message can name it. Owned by the masks (Plan 0014, ADR-0032 item 6).
+     */
+    characterNotAllowed: MessageFunction<{
+      allowed: 'digits' | 'letters' | 'lettersAndDigits' | 'other'
+    }>
+    /**
+     * Announced when the mask is full and refused another character, for example
+     * `Du har skrivit alla 12 tecken.` `length` counts the characters without separators.
+     */
+    maximumLength: MessageFunction<{ length: number }>
+  }
 }
 
 /** Any subset of namespaces and keys, for provider and `defineMessages` overrides. */

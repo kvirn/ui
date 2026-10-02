@@ -225,9 +225,6 @@ export function Swatch({ color }: { color: string }): ReactNode {
   return <span aria-hidden="true" className="kv-story-swatch" style={{ backgroundColor: color }} />
 }
 
-/** A link to another story, from inside the preview frame. */
-export const storyHref = (storyId: string): string => `./?path=/story/${storyId}`
-
 const themeAttributes: Record<ThemeName, readonly ['light' | 'dark', string]> = {
   light: ['light', 'standard'],
   dark: ['dark', 'standard'],
