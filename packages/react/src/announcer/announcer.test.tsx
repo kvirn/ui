@@ -179,8 +179,10 @@ describe('announce', () => {
 
     expect(announce('Endast siffror', { key: 'telefon' })).toBe(true)
     expect(announce('Endast siffror', { key: 'telefon' })).toBe(false)
+    // Once spoken, the key stays throttled. A different key is not affected.
+    await expect.element(politeRegion()).toHaveTextContent('Endast siffror')
     expect(announce('Endast siffror', { key: 'postnummer' })).toBe(true)
-    expect(announce('Endast siffror', { key: 'telefon', throttleMilliseconds: 0 })).toBe(false)
+    expect(announce('Endast siffror', { key: 'telefon' })).toBe(false)
   })
 
   test('text is passed through unchanged, in the provider language (sv and fi)', async () => {

@@ -141,3 +141,25 @@ export type {
   UseInputGroupOptions,
   UseInputGroupResult,
 } from './input-group/use-input-group.ts'
+export {
+  OneTimeCode,
+  OneTimeCodeInput,
+  OneTimeCodeRoot,
+  OneTimeCodeSlot,
+} from './one-time-code/one-time-code.tsx'
+export type {
+  OneTimeCodeInputProps,
+  OneTimeCodeRootProps,
+  OneTimeCodeSlotProps,
+  OneTimeCodeState,
+} from './one-time-code/one-time-code.tsx'
+export { useOneTimeCode } from './one-time-code/use-one-time-code.ts'
+export type {
+  OneTimeCodeCharacters,
+  OneTimeCodeInputPartProps,
+  OneTimeCodeRootPartProps,
+  OneTimeCodeSlotPartProps,
+  OneTimeCodeSlotState,
+  UseOneTimeCodeOptions,
+  UseOneTimeCodeResult,
+} from './one-time-code/use-one-time-code.ts'

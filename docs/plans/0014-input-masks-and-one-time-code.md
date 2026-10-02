@@ -80,7 +80,7 @@ const caseNumberMask = useMask({ mask: masks.pattern('aa-9999') })
 | Paste, drop or autofill    | Separators and refused characters stripped, the rest fills the mask. Nothing is truncated early |
 | Backspace / Delete         | Always removes a character, also when it's next to a literal                                    |
 | IME or dead key            | Left alone until `compositionend`                                                               |
-| Undo                       | Native. Lost only for a step where the mask inserted a literal                                  |
+| Undo                       | Native. Can't go back past the last step the mask rewrote                                       |
 
 - Roles / ARIA: a native `<input>`, no added role. Field wiring as ADR-0029.
 - Announcements: the shared Announcer, `mask.characterNotAllowed` and `mask.maximumLength`, polite and throttled. `announceRejections={false}` opts out.
@@ -139,10 +139,10 @@ Phase 2: masked Input
 Phase 3: OneTimeCode
 
 - [x] ux-designer: `docs/design/one-time-code.md` (slots, caret, states, fallback, 320px and zoom). ADR-0033 amended with `data-caret`, `data-selected` and `data-ready`; the spec's other open questions (§9) default to its recommendations until the maintainer answers
-- [ ] `useOneTimeCode`, `OneTimeCode.Root`, `.Input`, `.Slot`, with tests first
-- [ ] Theme styles and the forced-colors fallback, `theme:check`
-- [ ] Stories (empty, partly filled, complete, invalid, disabled, letters and digits, RTL, forced colours) and e2e
-- [ ] `one-time-code.a11y.md` and `one-time-code.md`, with the Keyboard section per ADR-0039 (focus strategy native, no auto-advance), a `Keyboard` story and `a11yContract`
+- [x] `useOneTimeCode`, `OneTimeCode.Root`, `.Input`, `.Slot`, with tests first (built on `useMask`)
+- [x] Theme styles and the forced-colors fallback, `theme:check`
+- [x] Stories (empty, partly filled, complete, invalid, disabled, letters and digits, RTL, forced colours) and e2e
+- [x] `one-time-code.a11y.md` and `one-time-code.md`, with the Keyboard section per ADR-0039 (focus strategy native, no auto-advance), a `Keyboard` story and `a11yContract`
 
 Wrap-up
 
@@ -156,7 +156,7 @@ Additions and clarifications the implementation needed. None contradicts the ADR
 - `mask.apply` also takes an optional `inputType` (the InputEvent's, so `deleteContentForward` makes Delete skip a literal), and its selection fields are optional. Result: `isChanged` (write back only then; when false the selection is the one the browser reported).
 - `rejected` is `{ reason, characters }[]`, grouped by reason, and only for what the user inserted. Separators in pasted text and literals the mask itself moved are dropped silently. A separator typed alone is reported.
 - When new characters would push existing ones out of a full mask, the new ones are refused (like `maxlength`) and reported as `length`, instead of cutting the end.
-- Number masks take `locale` (default `en`, an unsupported locale also falls back to `en`, never to the machine). `mask.withLocale(locale)` returns the mask with the provider's locale unless the definition pins one, so the React layer can inject it. Unmasked numbers use `.` and `-`. Paste: the last of mixed `,` and `.` is the decimal separator, a repeated one is grouping. `isWithinRange` is `true` while nothing is entered.
+- Number masks take `locale` (default `en`, an unsupported locale also falls back to `en`, never to the machine). `mask.withLocale(locale)` returns the mask with the provider's locale unless the definition pins one, so the React layer can inject it. Unmasked numbers use `.` and `-`. Paste (bulk insert): a `,`, `.` or space is grouping only when exactly three digits follow it. The last mark is the decimal mark when the kinds are mixed (`1,250.75`) or when three digits don't follow it (`12.50`); a lone mark with three digits after it is grouping unless it is the locale's own decimal mark (`1,000` is a thousand in en and one in sv). The other marks, a space between digits that isn't grouping and a stray `-` are refused and reported as `other`/`digits`. With no decimals, a pasted fraction is refused and reported, never merged into the whole number (`12.50` gives `12` and reports `.50`). Only whitespace around a pasted number, and grouping that looks like grouping, are dropped silently. `isWithinRange` is `true` while nothing is entered.
 - Pattern definitions take `completeLengths` (a Swedish number is complete at 10 or 12 digits). Regexp definitions take `allowed` (the rejection message), `complete`, `transform` and `unmask`.
 - `masks.personalIdentityNumber` NO takes no options beyond `country`, but `checks.personalIdentityNumber` takes `allowSyntheticNumbers` (Norway only, off by default) for Skatteetaten's synthetic test numbers (month plus 80).
 - SE organisation numbers accept ten digits only (not the 12-digit `16` form), and do not test the third digit, because a sole trader's organisation number is the personal identity number.
@@ -173,7 +173,7 @@ Additions and clarifications the implementation needed. None contradicts the ADR
    - **NO** (Skatteetaten): `DDMMYYNNNKK`, two modulus 11 check digits (weights 3,7,6,1,8,9,4,5,2 and 5,4,3,2,7,6,5,4,3,2), D-numbers add 40 to the day, H-numbers add 40 to the month, and the synthetic Tenor numbers add 80 to the month. **A new numbering is decided from 2032-01-01** (the first check digit accepts four values, the individual number no longer says the century and the gender is no longer in the number). The check implements today's rule only. Follow-up before 2032: add the new rule to `checks.personalIdentityNumber` (`30108299939` in the tests is Skatteetaten's example for it).
    - Test data: SE numbers come from Skatteverket's published test numbers (entryscape rowstore), FI from DVV's example (131052-308T), NO from Skatteetaten's documented examples. Derived variants are noted in `checks.test.ts`. No authority publishes test organisation numbers that we found, so SE and FI organisation numbers in the tests are built from the check rules, and the NO ones are the agencies' own.
 5. **Slot alignment** under 1.4.12 text spacing is the biggest Phase 3 risk. The fallback must trigger reliably, not only in forced colours.
-6. **Undo** after an inserted literal can't be kept without `execCommand`, which is deprecated. Accepted trade-off (ADR-0032).
+6. **Undo** can't go back past the last step the mask rewrote (writing the value clears the history before it, measured in Chromium). Keeping it needs `execCommand`, which is deprecated. Accepted trade-off (ADR-0032).
 
 ## Testing strategy
 

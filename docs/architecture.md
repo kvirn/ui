@@ -106,13 +106,15 @@ Headless packages ship zero CSS. Classes style, and `data-*` attributes are stat
 
 **State is `data-*`,** set by the components and never by the consumer:
 
-| Attribute                                                                 | Values                                                                      |
-| ------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `data-state`                                                              | `open`/`closed`, `checked`/`unchecked`/`indeterminate`, `active`/`inactive` |
-| `data-disabled`, `data-invalid`, `data-focus-visible`, `data-highlighted` | present / absent                                                            |
-| `data-current`                                                            | present / absent                                                            |
-| `data-orientation`                                                        | `horizontal` / `vertical`                                                   |
-| `data-placement`                                                          | `top`, `bottom`, …                                                          |
+| Attribute                                                                    | Values                                                                                                                                     |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `data-state`                                                                 | `open`/`closed`, `checked`/`unchecked`/`indeterminate`, `active`/`inactive`                                                                |
+| `data-disabled`, `data-invalid`, `data-focus-visible`, `data-highlighted`    | present / absent                                                                                                                           |
+| `data-current`                                                               | present / absent                                                                                                                           |
+| `data-filled`, `data-active`, `data-selected`, `data-complete`, `data-ready` | present / absent (OneTimeCode: a box holds a character, has the caret, is inside the selection; every box is filled; the hook has started) |
+| `data-caret`                                                                 | `before` / `after` (OneTimeCode: on the active box, which side of its character the caret is)                                              |
+| `data-orientation`                                                           | `horizontal` / `vertical`                                                                                                                  |
+| `data-placement`                                                             | `top`, `bottom`, …                                                                                                                         |
 
 The theme state on `<html>`, `data-kv-color-scheme` and `data-kv-contrast`, is state too: `KvirnProvider` and `KvirnThemeScript` set it.
 

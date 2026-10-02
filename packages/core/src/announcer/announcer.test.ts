@@ -242,6 +242,43 @@ describe('throttle per key', () => {
     expect(announcer.actions.announce('Saved')).toBe(true)
   })
 
+  test('a message replaced before it was spoken gives its key back', () => {
+    const clock = createFakeEnv()
+    const announcer = createAnnouncer(clock.env)
+
+    announcer.actions.announce('Only digits', { key: 'phone' })
+    clock.advance(40)
+    announcer.actions.announce('You have entered all 12 characters', { key: 'phone-length' })
+    clock.advance(100)
+
+    expect(announcer.getState().polite).toBe('You have entered all 12 characters')
+    expect(announcer.actions.announce('Only digits', { key: 'phone' })).toBe(true)
+  })
+
+  test('replacing an unthrottled message with the same key still throttles the new one', () => {
+    const clock = createFakeEnv()
+    const announcer = createAnnouncer(clock.env)
+
+    announcer.actions.announce('One', { key: 'phone', throttleMilliseconds: 0 })
+    announcer.actions.announce('Two', { key: 'phone' })
+    clock.advance(100)
+
+    expect(announcer.getState().polite).toBe('Two')
+    expect(announcer.actions.announce('Three', { key: 'phone' })).toBe(false)
+  })
+
+  test('a message that was spoken keeps its key throttled', () => {
+    const clock = createFakeEnv()
+    const announcer = createAnnouncer(clock.env)
+
+    announcer.actions.announce('Only digits', { key: 'phone' })
+    clock.advance(100)
+    announcer.actions.announce('Something else', { key: 'other' })
+    clock.advance(100)
+
+    expect(announcer.actions.announce('Only digits', { key: 'phone' })).toBe(false)
+  })
+
   test('the key is shared by both politeness levels', () => {
     const clock = createFakeEnv()
     const announcer = createAnnouncer(clock.env)

@@ -800,3 +800,134 @@ describe('theme.css long words and small screens (ADR-0028)', () => {
     expect(size('body')).toBe(1)
   })
 })
+
+describe('theme.css one-time code (ADR-0033, docs/design/one-time-code.md)', () => {
+  const isOneTimeCode = (selector: string) => /\.kv-one-time-code/.test(selector)
+  const oneTimeCodeRules = rules.filter((rule) => rule.selectors.some(isOneTimeCode))
+  const declarationsOf = (found: typeof rules) => found.flatMap((rule) => rule.declarations)
+  const hidesText = (declarations: [string, string][]) =>
+    declarations.some(
+      ([property, value]) =>
+        (property === 'color' || property === '-webkit-text-fill-color') && value === 'transparent',
+    )
+
+  it('has rules for the row, the input and the boxes', () => {
+    expect(oneTimeCodeRules.length).toBeGreaterThan(20)
+  })
+
+  it('shows the plain field by default: the boxes are not displayed until every condition holds', () => {
+    const slotRules = oneTimeCodeRules.filter((rule) =>
+      rule.selectors.every((selector) => selector === '.kv-one-time-code-slot'),
+    )
+    expect(declarationsOf(slotRules)).toContainEqual(['display', 'none'])
+    // The boxes only turn on outside forced colours, and only for a Root that is ready.
+    const showsSlots = oneTimeCodeRules.filter(
+      (rule) =>
+        rule.selectors.some((selector) => selector.endsWith('> .kv-one-time-code-slot')) &&
+        rule.declarations.some(([property, value]) => property === 'display' && value === 'flex'),
+    )
+    expect(showsSlots.length).toBe(5)
+    for (const rule of showsSlots) {
+      expect(rule.media.some((media) => media.includes('forced-colors: none'))).toBe(true)
+      for (const selector of rule.selectors) {
+        expect(selector).toContain('[data-ready]')
+        expect(selector).toContain('.kv-one-time-code-slot')
+      }
+    }
+  })
+
+  it('hides the input’s own text only where the boxes are drawn: outside forced colours and with data-ready (3.3.8, 1.4.1)', () => {
+    const hiding = oneTimeCodeRules.filter((rule) => hidesText(rule.declarations))
+    // One rule per length, and the ::selection rules.
+    expect(hiding.length).toBeGreaterThanOrEqual(5)
+    for (const rule of hiding) {
+      expect(rule.media.some((media) => media.includes('forced-colors: none'))).toBe(true)
+      for (const selector of rule.selectors) {
+        expect(selector).toContain('[data-ready]')
+      }
+    }
+    // Never in a forced-colours block, and never for the plain field.
+    expect(
+      oneTimeCodeRules
+        .filter((rule) => rule.media.some((media) => media.includes('forced-colors: active')))
+        .filter((rule) => hidesText(rule.declarations)),
+    ).toEqual([])
+  })
+
+  it('has a fallback width per length, 2.5rem a character, so the boxes never wrap (1.4.10)', () => {
+    const source = themeCss
+    for (const length of [4, 5, 6, 7, 8]) {
+      const minimum = length * 2.5
+      expect(source).toContain(`@container kv-one-time-code (inline-size >= ${minimum}rem)`)
+    }
+  })
+
+  it('keeps the plain field’s edge, system colours and focus ring in forced colours (1.4.11, 2.4.7)', () => {
+    const forced = declarationsOf(
+      oneTimeCodeRules.filter((rule) =>
+        rule.media.some((media) => media.includes('forced-colors: active')),
+      ),
+    )
+    expect(forced).toContainEqual(['--kv-input-edge', 'ButtonBorder'])
+    expect(forced).toContainEqual(['--kv-input-edge', 'CanvasText'])
+    expect(forced).toContainEqual(['--kv-input-edge', 'GrayText'])
+    expect(forced).toContainEqual(['background-color', 'Field'])
+    expect(forced).toContainEqual(['color', 'FieldText'])
+    expect(forced).toContainEqual(['outline-color', 'Highlight'])
+    // The edge keeps its width: invalid is 2px against 1px, so the width carries the state.
+    expect(forced.filter(([property]) => property === '--kv-input-edge-width')).toEqual([])
+  })
+
+  it('never animates the caret, never removes an outline, never clips (2.2.2, 2.4.7, 2.4.11)', () => {
+    const declarations = declarationsOf(oneTimeCodeRules)
+    expect(declarations.filter(([property]) => property.startsWith('animation'))).toEqual([])
+    expect(
+      declarations.filter(
+        ([property, value]) => property.startsWith('outline') && /^(?:none|0)$/.test(value),
+      ),
+    ).toEqual([])
+    expect(
+      declarations.filter(
+        ([property, value]) => property.startsWith('overflow') && value !== 'visible',
+      ),
+    ).toEqual([])
+  })
+
+  it('keeps the boxes out of pointer and keyboard reach: a press goes to the input', () => {
+    const slotRules = oneTimeCodeRules.filter((rule) =>
+      rule.selectors.every((selector) => selector === '.kv-one-time-code-slot'),
+    )
+    expect(declarationsOf(slotRules)).toContainEqual(['pointer-events', 'none'])
+  })
+
+  it('gives the boxes no fixed height, so text spacing never clips a character (1.4.12)', () => {
+    // Rules for the box itself: the selector ends at a slot, not at a pseudo-element or the input.
+    const slotRules = oneTimeCodeRules.filter((rule) =>
+      rule.selectors.every((selector) =>
+        /\.kv-one-time-code-slot(?:\[[^\]]+\]|:(?:not|is)\([^)]*\))*$/.test(selector),
+      ),
+    )
+    expect(
+      declarationsOf(slotRules).filter(([property]) =>
+        /^(?:height|min-height|max-height|block-size|max-block-size)$/.test(property),
+      ),
+    ).toEqual([])
+  })
+
+  it('draws no state from :invalid, only from the Field’s attributes (ADR-0029)', () => {
+    const selectors = oneTimeCodeRules.flatMap((rule) => rule.selectors)
+    expect(selectors.filter((selector) => /:(?:user-)?(?:in)?valid\b/.test(selector))).toEqual([])
+  })
+
+  it('transitions only under no-preference, never the caret or the active edge (2.3.3)', () => {
+    const transitioning = oneTimeCodeRules.filter((rule) =>
+      rule.declarations.some(([property]) => property.startsWith('transition')),
+    )
+    expect(transitioning.length).toBeGreaterThan(0)
+    for (const rule of transitioning) {
+      expect(
+        rule.media.some((media) => media.includes('prefers-reduced-motion: no-preference')),
+      ).toBe(true)
+    }
+  })
+})

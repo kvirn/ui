@@ -64,6 +64,8 @@ const keepMilliseconds = 5000
 interface RegionTimers {
   set: number | undefined
   clear: number | undefined
+  /** The throttle key of the message waiting for `set`, so it can be given back if replaced. */
+  pendingKey: string | undefined
 }
 
 /**
@@ -78,8 +80,8 @@ export function createAnnouncer(env: AnnouncerEnv | undefined): Announcer {
     { polite: '', assertive: '' },
     ({ getState, update }) => {
       const timers: Record<AnnouncerPoliteness, RegionTimers> = {
-        polite: { set: undefined, clear: undefined },
-        assertive: { set: undefined, clear: undefined },
+        polite: { set: undefined, clear: undefined, pendingKey: undefined },
+        assertive: { set: undefined, clear: undefined, pendingKey: undefined },
       }
       /** When each key's throttle window ends, on the `performance.now()` clock. */
       const throttledUntil = new Map<string, number>()
@@ -92,6 +94,11 @@ export function createAnnouncer(env: AnnouncerEnv | undefined): Announcer {
 
       const cancelTimers = (politeness: AnnouncerPoliteness) => {
         const regionTimers = timers[politeness]
+        // A message that never got spoken must not keep its key throttled.
+        if (regionTimers.pendingKey !== undefined) {
+          throttledUntil.delete(regionTimers.pendingKey)
+          regionTimers.pendingKey = undefined
+        }
         for (const name of ['set', 'clear'] as const) {
           if (regionTimers[name] !== undefined) {
             env?.window.clearTimeout(regionTimers[name])
@@ -116,6 +123,13 @@ export function createAnnouncer(env: AnnouncerEnv | undefined): Announcer {
           if (throttledUntil.has(key)) {
             return false
           }
+        }
+
+        // Replacing a message that was not spoken yet gives its key back, so this comes before
+        // the new key is reserved.
+        cancelTimers(politeness)
+
+        if (key !== undefined) {
           const requested = options.throttleMilliseconds
           const windowMilliseconds =
             requested !== undefined && Number.isFinite(requested) && requested >= 0
@@ -126,10 +140,11 @@ export function createAnnouncer(env: AnnouncerEnv | undefined): Announcer {
           }
         }
 
-        cancelTimers(politeness)
         setText(politeness, '')
+        timers[politeness].pendingKey = key
         timers[politeness].set = env.window.setTimeout(() => {
           timers[politeness].set = undefined
+          timers[politeness].pendingKey = undefined
           setText(politeness, message)
           timers[politeness].clear = env.window.setTimeout(() => {
             timers[politeness].clear = undefined

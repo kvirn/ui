@@ -1,0 +1,145 @@
+# Accessibility contract: OneTimeCode (Root, Input, Slot)
+
+- **APG pattern:** none. A one-time code is one native text input. The name, description and state come from HTML and the Field (`field.a11y.md`, `input.a11y.md`), and the masked typing rules from the mask engine (ADR-0032). Prior art: GOV.UK "Confirm a phone number" (one input for the code) and `input-otp` (one input with drawn slots).
+- **Deviations:** none from APG. Decisions: ADR-0033 (one native input with presentational slots, `data-caret`, `data-selected` and `data-ready`, no auto-advance, no auto-submit), ADR-0032 (the mask), ADR-0039 (keys), design spec `docs/design/one-time-code.md`.
+- **Native elements used:** `<input type="text">` (Input), `<div>` (Root, no role), `<span aria-hidden="true">` (Slot).
+- **Status:** alpha candidate (Plan 0014, Phase 3). Gates pass, accessibility-reviewer pending. Manual AT is `pending`.
+- **Tests:** `one-time-code.test.tsx` next to this file. `one-time-code.stories.tsx` and `one-time-code.e2e.ts` in `apps/storybook/src/components/one-time-code/`.
+
+A OneTimeCode shows a code sent by text message or email as a row of boxes, one per character. Underneath it is one native input: SMS autofill, password managers, paste, dictation, undo and the screen reader all work on that one field. The boxes are a drawing of its value, caret and selection, hidden from assistive technology. Nothing moves focus and nothing submits on its own (3.2.2).
+
+## Roles, states, properties
+
+| Part              | Element / role                             | ARIA / state                                                                                                                                     | Notes                                                                                                                                                                                                                                                                                 |
+| ----------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OneTimeCode.Root  | `<div>`, no role                           | none. `data-complete`, `data-invalid`, `data-disabled`, `data-ready`                                                                             | Class `kv-one-time-code`. Takes the options (`length`, `characters`, `value`, `defaultValue`, `onValueChange`, `onComplete`, `disabled`, `announceRejections`, `messages`) and `render`. No role: it holds one control, and an unnamed `group` would only add noise. No form state    |
+| OneTimeCode.Input | `<input type="text">`, role textbox        | name from the Field's label, description from its hint and error. `aria-invalid`, `aria-required`, native `disabled`, all from the Field         | Class `kv-one-time-code-input`. `autocomplete="one-time-code"`, `inputmode="numeric"` (digits) or `autocapitalize="characters"` (letters and digits), `spellcheck="false"`, `autocorrect="off"`, `dir="ltr"`. No `maxlength`, no `pattern`, never `type="password"` (ADR-0033 item 2) |
+| OneTimeCode.Slot  | `<span>`, hidden from the a11y tree        | `aria-hidden="true"`. `data-filled`, `data-active`, `data-caret="before" \| "after"`, `data-selected`, `data-invalid`                            | Class `kv-one-time-code-slot`. Draws one character. Never focusable (a span with text), no name, role or description. Takes no pointer events in the default theme: every press goes to the input                                                                                     |
+| `useOneTimeCode`  | the same attributes, for your own elements | `rootProps`, `inputProps`, `getSlotProps(index)`, `slots` (each `{ character, isFilled, isActive, caret, isSelected }`), `isComplete`, `isReady` | Options as the Root. Spread `rootProps` on the row, `inputProps` on one `<input>`, and `getSlotProps(index)` on each box                                                                                                                                                              |
+
+Rules, tested in `one-time-code.test.tsx`:
+
+- **One field.** The row has exactly one textbox. Its accessible name is the Field's visible label (2.5.3), and its description is the Field's hint, then the error. The slots are never in the name, the description or the tree.
+- **The attributes** in the table above, on every input. The mask is `masks.oneTimeCode({ length, characters })`: a pasted `123 456`, `123-456` or "Your code is 123456" ends as `123456`, with no `maxlength` and no rewrite during an IME composition (ADR-0032 item 5).
+- **State from the input.** The slots draw what the input holds: its value, read again whenever the `value` prop or the hook's own state changes (so autofill, a controlled `value`, and a form reset are drawn as they are), and its caret and selection from `onSelect`. `data-active` is on the one slot at `min(caret, length - 1)` while the input has focus and nothing is selected. `data-caret="before"` says the caret is before that slot's position, and `"after"` only on the last slot of a complete code with the caret after it. `data-selected` is on the filled slots a selection covers. None of them is set while the input has no focus.
+- **Ready flag.** `data-ready` is set once the hook has started. It first runs the input's current value through the mask (writing it back only if it changed), so what the browser or a password manager filled in before the script ran is drawn as the mask would have shaped it, and an uncontrolled value never hides a character past `length`. A controlled `value` is the consumer's and is drawn as it is, so one that is too long or has a separator hides characters from sighted users while a screen reader reads all of it: keep it to what the mask would produce. The mount step is silent: it calls neither `onValueChange` nor `onComplete`, so a code autofilled before the script ran doesn't report completion (the submit button still covers it). The default theme draws the slots only then (ADR-0033 item 5).
+- **A press on a slot** (a box, or a gap) focuses the input natively. A single click on an empty slot puts the caret at the end of the code, and on a filled slot before its character. A double click, a drag and a long press keep the browser's selection.
+- **No auto-advance, no auto-submit.** Typing the last character moves no focus and submits nothing. `onComplete(value)` is a callback for consumers who check early.
+- **Field state.** `data-invalid` and `data-disabled` come from the nearest Field (or the Root's `disabled`), on the Root and on every slot.
+- **`render` on all three parts,** with class and handlers merged, and refs merged (ADR-0015).
+- **Dev warnings:** an Input or Slot outside a Root, a Slot whose index is not in the code, an Input with no accessible name, and an Input in a Field with no description (the length must be said, 3.3.2).
+
+## Keyboard
+
+<!-- Format and rules: the `keyboard` skill (ADR-0039). Shown on the Storybook Docs page. -->
+
+- **Focus strategy:** native
+- **Selection follows focus:** n/a
+- **Arrows wrap:** n/a
+- **Shortcuts:** none
+
+| Key                                                        | Context                         | Action                                                                                                                                  | Test                                                                             |
+| ---------------------------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Tab                                                        | before the field                | Moves focus into the code field. The whole row is one stop                                                                              | `one-time-code.e2e.ts › Tab focuses the input once`                              |
+| Tab                                                        | in the field                    | Moves focus to the next focusable element (Continue), never to another box, also when the code is complete                              | `one-time-code.e2e.ts › Tab leaves the field`                                    |
+| Shift+Tab                                                  | in the field                    | Moves focus to the previous focusable element                                                                                           | `one-time-code.e2e.ts › Shift+Tab leaves the field`                              |
+| Characters                                                 | in the field                    | Inserted at the caret and shown in its box. The caret moves to the next box. Focus stays when the code is complete, and nothing submits | `one-time-code.e2e.ts › typing fills the boxes and keeps focus`                  |
+| A refused character                                        | in the field                    | Not inserted. A polite message says which characters fit ("Only digits can be entered here")                                            | `one-time-code.e2e.ts › a letter in a digits code is refused`                    |
+| Characters                                                 | code complete, caret at the end | Not inserted. A polite message says the code is complete ("You've entered all 6 characters")                                            | `one-time-code.e2e.ts › a seventh digit is refused`                              |
+| Control/Command+V                                          | in the field                    | Pastes. Spaces, dashes and other text are removed, and the code fills the boxes                                                         | `one-time-code.e2e.ts › paste normalises the code`                               |
+| Backspace                                                  | in the field                    | Deletes the character before the caret. Later characters move back one box                                                              | `one-time-code.e2e.ts › Backspace deletes before the caret`                      |
+| Delete                                                     | in the field                    | Deletes the character after the caret                                                                                                   | `one-time-code.e2e.ts › Delete deletes after the caret`                          |
+| ArrowLeft / ArrowRight                                     | in the field                    | Moves the caret one character, shown by the active box. Native                                                                          | `one-time-code.e2e.ts › arrows move the caret`                                   |
+| ArrowLeft / ArrowRight                                     | in the field, RTL page          | The code reads left to right, so ArrowRight still moves to the next character and the next box on the right                             | `one-time-code.e2e.ts › arrows follow the code in RTL`                           |
+| Home / End                                                 | in the field                    | Moves the caret before the first character, or after the last                                                                           | `one-time-code.e2e.ts › Home and End move to the ends`                           |
+| Shift+ArrowLeft / Shift+ArrowRight, Shift+Home / Shift+End | in the field                    | Extends the selection. The selected boxes are highlighted                                                                               | `one-time-code.e2e.ts › Shift extends the selection`                             |
+| Control/Command+A                                          | in the field                    | Selects the whole code. Every filled box is highlighted                                                                                 | `one-time-code.e2e.ts › select all highlights every box`                         |
+| Control/Command+Z                                          | in the field                    | Undoes the last edit. Native                                                                                                            | `one-time-code.e2e.ts › undo restores the code`                                  |
+| ArrowUp / ArrowDown                                        | in the field                    | Native caret movement only. Never changes the value (ADR-0030)                                                                          | `one-time-code.e2e.ts › ArrowUp and ArrowDown never change the value`            |
+| Enter                                                      | in the field                    | Submits the form, if it has a submit button (native implicit submission). Never prevented                                               | `one-time-code.e2e.ts › Enter submits the form`                                  |
+| Pointer press                                              | on a box or in a gap            | Focuses the field. A press on an empty box puts the caret at the end of the code, and on a filled box before its character              | `one-time-code.e2e.ts › a press on a box focuses the input and places the caret` |
+
+Every key is the native text field's, and the component prevents none of them: no key moves focus between boxes, and none is a shortcut. The ring is the input's, around the whole row.
+
+## Focus management
+
+- Initial focus: not moved. The component never focuses anything, including when the code is complete or when a wrong-code error shows (the page focuses the error summary or the field, as for any field).
+- Trap: no.
+- Restore to: not applicable. The input is always rendered, and never disabled while a code is checked: a disabled input loses focus, which lands on `body`. Use `readOnly` and say "Checking the code" through the Announcer (see Consumer responsibilities).
+- Never obscured by: the focus ring is the input's 2px ring, drawn outside the whole row, and nothing in the row has overflow, so it is not clipped (2.4.11, 2.4.13). Consumers with a sticky header set `scroll-padding`.
+
+## Announcements
+
+| Event                                                    | Message key (i18n)                                          | Politeness |
+| -------------------------------------------------------- | ----------------------------------------------------------- | ---------- |
+| A character the mask refuses (a letter in a digits code) | `mask.characterNotAllowed` (`digits` or `lettersAndDigits`) | polite     |
+| A character refused because the code is complete         | `mask.maximumLength`                                        | polite     |
+
+Both are the mask's (ADR-0032 item 6, ADR-0040), throttled to one message per field every three seconds, and need the `KvirnProvider`. `announceRejections={false}` turns them off for a consumer who shows their own. The component adds no strings of its own. Completing the code announces nothing: the user hears their own typing.
+
+## Consumer responsibilities
+
+- **A visible label that says where the code is,** in the user's words ("Kod från sms:et", "Code from your authenticator app"), not "OTP" or "verification code". The label is the accessible name (2.5.3).
+- **A `Field.Description` above the boxes with the length and where to find the code** ("Koden har 6 siffror. Du hittar den i sms:et som vi just skickade"). The slots are hidden from screen readers and disappear in the fallback, so the hint is the only place they learn the length (3.3.2). A dev warning fires without one.
+- **Errors in text,** under the row, linked by the Field: "Enter all 6 digits of the code", "The code doesn't match the one we sent. Check the text message and enter the code again." Never blame, and keep the code in the field after a wrong-code error so the user can fix one digit (3.3.1, 3.3.3).
+- **Keep a submit button.** Never submit from `onComplete` without telling the user in advance that the code is checked as soon as it's entered (3.2.2), and never clear the field on a wrong code.
+- **While the code is being checked, use `readOnly`, not `disabled`,** so focus stays, and say "Checking the code" through the Announcer.
+- **Never `type="password"`, never block paste, and keep `autocomplete="one-time-code"`.** The user must see what they enter, and a password manager or SMS suggestion must be able to fill it (3.3.8).
+- **Group the boxes only the way the message groups the code** (`kv-one-time-code--grouped`, even lengths). Letters-and-digits codes should avoid look-alikes (`0`/`O`, `1`/`I`/`l`).
+- **Countdowns, "Send a new code" and timeouts** belong to the login and verification blocks (M4), which must meet 2.2.1: an expiring code never ends the session without warning.
+- Everything in `input.a11y.md` and `field.a11y.md` still applies.
+
+## Visual / modes
+
+- Focus indicator: the input's own 2px `focus-ring` outline, 2px offset, around the whole row. The box where the next character goes also has a 2px `focus-ring` edge and a static caret, and selected boxes a `primary-subtle` fill with the same edge, never colour alone.
+- Target size: the input covers the row, at least 160 by 44px in comfortable density (2.5.5) and 32px high in compact (2.5.8).
+- Colour: box edges are `border-control` (3:1), 2px `danger` when invalid on every box (never colour alone: the message under the row carries it), dashed when disabled. Characters are `text`, `text-muted` when disabled. Complete has no look of its own: a tick or green edge would read as "verified". Every pair is already in `theme:check`.
+- forced-colors behaviour: the theme shows the plain input as a normal text field (`Field`, `FieldText`, edge `ButtonBorder`, invalid 2px `CanvasText`, disabled dashed `GrayText`, focus `Highlight`), and hides the slots (`one-time-code.e2e.ts › forced colours: the plain field shows and the boxes are hidden`).
+- reduced-motion behaviour: the boxes' edge and fill transition only under `no-preference`. The caret never blinks, in any setting (2.2.2).
+- Reflow: the boxes shrink from 44px to 32px, then the plain field shows instead of wrapping, so there is never horizontal scrolling at 320px, in a card, at 200% text or at 400% zoom (`one-time-code.e2e.ts › at 320px …`). Switching is CSS only: the same input keeps its value, caret and focus.
+- 1.4.12 text spacing: the boxes don't depend on the input's text metrics, have no fixed height and are centred with flex, so characters are not clipped.
+- Before the script runs (`data-ready` not yet set) the plain input shows, so what is typed or autofilled meanwhile is visible as the browser draws it, with no mask and no `maxlength`. When the script starts, that value goes through the mask once (separators and characters that don't fit are dropped, and it is written back only if it changed), so the boxes draw exactly what the field holds and the form never submits characters the boxes hide. A controlled `value` is the consumer's and is drawn as it is. A form reset does the same for the default value.
+- RTL: the code is an identifier, so the input has `dir="ltr"` and the row of boxes reads left to right, at the start (the right) of the column. ArrowRight still moves to the next character.
+
+## WCAG SCs covered
+
+- 1.3.1 Info and Relationships, 3.3.2 Labels or Instructions, 4.1.2 Name, Role, Value: one native input, named by its label and described by its hint. The drawing is hidden.
+- 1.3.2 Meaningful Sequence, 2.4.3 Focus Order: one Tab stop, in DOM order.
+- 1.4.1 Use of Color, 1.4.11 Non-text Contrast: the invalid width, the active and selected edges, the dashed disabled edge.
+- 1.4.3 Contrast (Minimum), 1.4.4 Resize Text, 1.4.10 Reflow, 1.4.12 Text Spacing: the fallback and the box-independent drawing.
+- 2.1.1 Keyboard, 2.1.2 No Keyboard Trap, 2.1.4 Character Key Shortcuts: native keys only, no shortcuts.
+- 2.2.2 Pause, Stop, Hide: a static caret.
+- 2.4.7 Focus Visible, 2.4.11 Focus Not Obscured, 2.4.13 Focus Appearance: the ring around the whole row.
+- 2.5.3 Label in Name, 2.5.5 and 2.5.8 Target Size: the label is the name, and the row is the target.
+- 3.2.1 On Focus, 3.2.2 On Input: no focus moves and nothing submits.
+- 3.3.1 Error Identification, 3.3.8 Accessible Authentication (Minimum): errors in text, and paste, autofill and password managers work with a visible code.
+- 4.1.3 Status Messages: refused characters are announced politely.
+
+## AT test record
+
+| AT + browser + OS                                                                      | Date    | Tester | Result | Notes                                                                                                     |
+| -------------------------------------------------------------------------------------- | ------- | ------ | ------ | --------------------------------------------------------------------------------------------------------- |
+| **Core (required for beta, ADR-0004)**                                                 |         |        |        |                                                                                                           |
+| NVDA + Firefox + Windows                                                               | pending |        |        |                                                                                                           |
+| VoiceOver + Safari + macOS                                                             | pending |        |        |                                                                                                           |
+| VoiceOver + Safari + iOS                                                               | pending |        |        |                                                                                                           |
+| TalkBack + Chrome + Android                                                            | pending |        |        |                                                                                                           |
+| Windows Contrast Themes + Edge                                                         | pending |        |        |                                                                                                           |
+| Keyboard only / 400% zoom / 320px reflow                                               | pending |        |        |                                                                                                           |
+| **Release (before 1.0 and each minor)**                                                |         |        |        |                                                                                                           |
+| JAWS + Chrome + Windows                                                                | pending |        |        |                                                                                                           |
+| NVDA + Chrome + Windows                                                                | pending |        |        |                                                                                                           |
+| Narrator + Edge + Windows                                                              | pending |        |        |                                                                                                           |
+| Dragon / Voice Control                                                                 | pending |        |        |                                                                                                           |
+| Caret position after activation (centre press by Dragon, Voice Control, VoiceOver iOS) | pending |        |        | A press at a box's centre puts the caret before that character, or at the end of the code on an empty box |
+
+Also pending, by hand: SMS autofill on iOS Safari and Android Chrome, the browsers' own password managers, 1Password and Bitwarden (does an icon cover the last box?), iOS selection handles at the invisible text, and a screen magnifier following the caret. Research questions: how do screen-reader users check the code they entered? Do they press Tab between digits? Can magnifier users say which box is next, at a glance?
+
+## Known issues
+
+- **Screen readers read a digits value as a number** ("four hundred eighty-one thousand…") until the user moves through it by character. The same as any numeric field (ADR-0033).
+- **Password-manager icons** can cover the last box. Not detectable in CSS; waits for the manual matrix.
+- **The browser's autofill tint** shows in the 8px gaps between the boxes, under the opaque boxes. Accepted: it tells sighted users the code was filled in.
+- **Undo** after the mask inserted a literal can't be kept without `execCommand` (ADR-0032). A one-time code has no literals, so undo is native.
+- **`nb`, `nn` and `se` story texts show English** until a translator delivers them, marked `lang="en"` (3.1.2). The component itself has no strings.
+- **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.

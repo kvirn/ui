@@ -77,9 +77,10 @@ We will use Option B.
   - Latest wins: two messages for the same politeness inside 100 ms lose the first. Callers batch. A queue is a follow-up if a real case needs it.
   - The regions have no `lang`, so a message in another language than the page's is read with the page's voice (3.1.2). Follow-up: a per-message `lang` option.
   - A nested provider with its own `env` (an iframe) shares the outermost provider's regions, which are in the outer document.
+  - **Modals silence the regions.** The regions sit in the app tree, after the provider's children. A modal that makes the rest of the page inert or hidden (native `<dialog>` `showModal()`, `inert` on the app root, `aria-modal` in Safari) also silences them, so nothing announced from inside the dialog is heard (4.1.3). Follow-up: the future Dialog hosts its own regions, or moves them into the top layer, before it ships.
   - `<output>` is form-associated: a provider mounted inside a `<form>` makes the polite region one of its `elements`. It is never submitted. Mount the provider at the top of the app.
   - `KvirnProvider` adds two DOM nodes after its children, which changes its "renders no element" statement.
-- **Follow-ups:** the AT matrix; a queue; per-message `lang`; the provider-less case; Toast (roadmap M3) may use the same regions for non-modal messages or its own.
+- **Follow-ups:** the AT matrix; a queue; per-message `lang`; the provider-less case; the Dialog follow-up above; Toast (roadmap M3) may use the same regions for non-modal messages or its own.
 
 ## Validation
 
