@@ -1,6 +1,6 @@
 # ADR-0043: Agents check only their own changes
 
-- **Status:** Proposed
+- **Status:** Superseded by ADR-0051
 - **Date:** 2026-10-02
 - **Deciders:** Magnus Vike
 - **Tags:** tooling | process
@@ -17,7 +17,7 @@ Several agents and the maintainer often work in the same tree at once, on differ
 - **Don't touch git state you didn't create.** No `git stash`, `git checkout -- <path>`, `git reset` or `git clean` over changes you didn't make.
 - **The Stop hook checks only this session's changes.**
   - A `SessionStart` hook (`.claude/hooks/session-start.sh`) records the content hash of every changed or new file in the code paths, in `.git/kvirn-session/<session id>.base`. A resumed session keeps its first snapshot, and snapshots older than a week are deleted.
-  - The Stop hook (`verify.sh`) finds the working-tree files whose content differs from that snapshot, and runs `vp check <those files>` and `vp test related --run <those files>`. Git is the source, so files changed through Bash are included.
+  - The Stop hook (`verify.sh`) finds the working-tree files whose content differs from that snapshot, and runs `vp check <those files>` and `vp test run <the tests of those files>`: the test and story files in that set, and the tests next to any other changed file (its directory, or `src/` for a package root). It no longer uses `vp test related`, which also ran every test that imports a shared changed file (the i18n catalogs, `theme.css`, the React index) and so pulled in other sessions' unfinished tests. Git is the source, so files changed through Bash are included.
   - Files that were already changed when the session started, such as another agent's work in progress, are left out. If none of the session's files is in the code paths, the hook passes.
   - Without a snapshot (a session from before this hook) or before the first commit, it checks the whole tree as before.
 - **The full gates still exist.** `vp check`, `vp test run`, `vp run e2e`, `i18n:check` and `theme:check` run in CI and before a merge, over the whole tree, by one agent or the maintainer, when no one else is editing.
@@ -28,7 +28,7 @@ Several agents and the maintainer often work in the same tree at once, on differ
 - ✅ Two agents no longer reformat or fail each other's files.
 - ✅ Runs are smaller and faster.
 - ⚠️ The snapshot can't tell this session's edits from another agent's edits made _during_ the session: both are in the working tree and differ from the start. Another agent's file can still block, so the rule to report it, not fix it, stays.
-- ⚠️ `vp test related` runs the tests that import the changed files. A change to a file with no importing test runs nothing (`--passWithNoTests`), so the whole-tree gates before a merge still matter.
+- ⚠️ The Stop hook runs only the tests next to what you changed. A change to a shared file can break a test elsewhere, and the hook won't see it: the whole-tree gates before a merge still matter, and you can run `vp test related <files>` yourself.
 - ⚠️ `vp check <files>` still type-checks the whole project, so a type error in another agent's file can show up. Report it, don't fix it.
 
 ## References

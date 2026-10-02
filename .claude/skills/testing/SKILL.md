@@ -48,8 +48,8 @@ Run the smallest thing that proves the point. Each full gate run happens **once 
   - `vp test run <file>`
   - `vp test run --project browser <file> -t "<name>"`
 - No full-suite runs, and no `--changed` sweeps after every edit.
-- **Only your own changes** (ADR-0043, AGENTS.md rule 11): pass paths to `vp check <files>` and `vp test run <files>`, or use `vp test related <files>`. Never run `vp check --fix` or `vp fmt` without paths: another agent may be editing the same tree, and a global write changes its files under it.
-- A failure in a file you didn't edit isn't yours. Report it with the file names, and don't fix, skip or revert it.
+- **Pass paths while working** (ADR-0051, AGENTS.md rule 11): `vp check <files>` and `vp test run <files>`, or `vp test related <files>`. Never run `vp check --fix` or `vp fmt` without paths. Run the whole-tree gates once, at the end.
+- A failure that predates your branch isn't caused by you, but the tree has one owner: fix it if it blocks the gates, or report it with the file names. Never skip or disable it.
 - No stress or repeat runs, unless a test actually flaked and you're investigating it.
 - E2E: one spec on one project, `vp run e2e <spec> --project chromium`, and only if story, fixture or keyboard behaviour changed.
   - Keep `vp run storybook` running in the background, so Playwright reuses it instead of booting a new server each run.
@@ -58,9 +58,9 @@ Run the smallest thing that proves the point. Each full gate run happens **once 
 
 **Final gates:** the orchestrator runs them once, at the end, in this order, stopping at the first failure:
 
-1. `vp check` (on your files while others may be editing; the whole tree only when you're the only one working)
+1. `vp check` (lint and types block, formatting is advisory; on your files while others may be editing; the whole tree only when you're the only one working)
 2. `vp test run`
-3. `vp run e2e`: the Chromium baseline (ADR-0042). Other browsers only with `E2E_BROWSERS`
+3. `vp run e2e`: the `chromium` baseline (ADR-0048). The display-mode projects and other browsers only for a dedicated sweep, with `E2E_BROWSERS=sweep|all`
 4. `vp run i18n:check`
 5. `vp run theme:check`
 
@@ -69,7 +69,7 @@ Run `vp run build` only if package config or exports changed.
 **No one repeats it:**
 
 - Run the gates once per change. Re-run only the failed gate after a fix.
-- `accessibility-reviewer` runs nothing. It reads the orchestrator's gate output. If it lists a `NEEDS RUN` command, the orchestrator runs just that, e.g. the component's e2e spec on `chromium` and `chromium-forced-colors`.
+- `accessibility-reviewer` runs nothing. It reads the orchestrator's gate output. If it lists a `NEEDS RUN` command, the orchestrator runs just that, e.g. the component's e2e spec on `chromium`, or on the sweep projects when a dedicated sweep is requested.
 - The Stop hook skips work when nothing changed since its last green run.
 
 ## Debugging failures

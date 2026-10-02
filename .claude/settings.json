@@ -17,6 +17,8 @@
     ],
     "ask": [
       "Bash(git push*)",
+      "Bash(git branch*)",
+      "Bash(git merge*)",
       "Bash(git add*)",
       "Bash(git commit*)",
       "Bash(pnpm add*)",
@@ -24,16 +26,6 @@
     ]
   },
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh\""
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Bash",

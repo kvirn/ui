@@ -1,6 +1,6 @@
 # ADR-0042: The Playwright baseline is Chromium only, other browsers are opt-in
 
-- **Status:** Proposed
+- **Status:** Proposed (the four-project baseline is superseded by ADR-0048)
 - **Date:** 2026-10-02
 - **Deciders:** Magnus Vike
 - **Tags:** tooling | testing

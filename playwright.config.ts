@@ -2,12 +2,15 @@ import { defineConfig, devices } from '@playwright/test'
 
 const storybookUrl = 'http://localhost:6006'
 
-// The baseline is Chromium only (ADR-0042): the keyboard contract, focus and the display modes
-// all run in Chrome, with forced colours, reduced motion and the 320px reflow as Chromium
-// projects. Other engines and devices are defined but off. Turn them on with `E2E_BROWSERS`:
-// `E2E_BROWSERS=firefox,webkit vp run e2e <spec> --project firefox`, or `E2E_BROWSERS=all`.
-const baselineProjects = [
-  { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+// The baseline is one project, `chromium` (ADR-0042, ADR-0048): the keyboard contract, focus and
+// the story-state checks all run in Chrome. The display-mode projects (forced colours, reduced
+// motion, 320px reflow) and the other engines are defined but off, because they repeat every test
+// and are for a dedicated WCAG sweep. Turn them on with `E2E_BROWSERS`, a comma-separated list of
+// project names or keywords: `sweep` (the three display-mode projects) or `all` (every project).
+// Examples: `E2E_BROWSERS=sweep vp run e2e <spec>`, `E2E_BROWSERS=firefox vp run e2e <spec> --project firefox`.
+const baselineProjects = [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }]
+
+const sweepProjects = [
   {
     name: 'chromium-forced-colors',
     use: { ...devices['Desktop Chrome'], forcedColors: 'active' },
@@ -37,8 +40,9 @@ const requested = (process.env['E2E_BROWSERS'] ?? '')
 const isEnabled = (name: string): boolean =>
   baselineProjects.some((project) => project.name === name) ||
   requested.includes('all') ||
-  requested.includes(name)
-const projects = [...baselineProjects, ...optionalProjects]
+  requested.includes(name) ||
+  (requested.includes('sweep') && sweepProjects.some((project) => project.name === name))
+const projects = [...baselineProjects, ...sweepProjects, ...optionalProjects]
 
 // Keyboard contract, focus and display modes, run against Storybook (docs/engineering.md). The
 // specs live next to their stories in apps/storybook/src/components/<name>/.
