@@ -103,3 +103,67 @@ export type {
   PatternMaskDefinition,
   RegexpMaskDefinition,
 } from './mask/mask-types.ts'
+export { computePlacement } from './overlay/compute-placement.ts'
+export type {
+  ComputedPlacement,
+  OverlayRect,
+  OverlaySize,
+  Placement,
+  PlacementAlignment,
+  PlacementOptions,
+  PlacementSide,
+} from './overlay/compute-placement.ts'
+export { createDismissableLayerStack } from './overlay/dismissable-layer-stack.ts'
+export type {
+  DismissableLayerOptions,
+  DismissableLayerStack,
+  LayerTargetCheck,
+} from './overlay/dismissable-layer-stack.ts'
+export { createFileUpload, defaultFileUploadConcurrency } from './file-upload/file-upload.ts'
+export type {
+  FileRejection,
+  FileUpload,
+  FileUploadActions,
+  FileUploadAddResult,
+  FileUploadContext,
+  FileUploadEnv,
+  FileUploadError,
+  FileUploadFailure,
+  FileUploadInput,
+  FileUploadItem,
+  FileUploadOptions,
+  FileUploadRejection,
+  FileUploadState,
+  FileUploadStatus,
+} from './file-upload/file-upload-types.ts'
+export { filterItems, matchesText, startsWithText } from './filter/filter-items.ts'
+export type { FilterItemsOptions, FilterLocale } from './filter/filter-items.ts'
+export {
+  createListbox,
+  defaultPageSize,
+  defaultTypeaheadResetMilliseconds,
+} from './listbox/create-listbox.ts'
+export type {
+  Listbox,
+  ListboxActions,
+  ListboxEntry,
+  ListboxEnv,
+  ListboxGroup,
+  ListboxOptions,
+  ListboxReaders,
+  ListboxSection,
+  ListboxState,
+} from './listbox/create-listbox.ts'
+export { announcementDebounceMilliseconds, createCombobox } from './combobox/create-combobox.ts'
+export type {
+  Combobox,
+  ComboboxActions,
+  ComboboxAnnouncement,
+  ComboboxFocusTarget,
+  ComboboxInputReason,
+  ComboboxKeyEvent,
+  ComboboxKeyResult,
+  ComboboxMode,
+  ComboboxOptions,
+  ComboboxState,
+} from './combobox/create-combobox.ts'
