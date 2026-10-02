@@ -85,13 +85,3 @@ export const Finnish: Story = {
     )
   },
 }
-
-/** Right to left, in English: nothing in the announcer depends on direction. */
-export const RTL: Story = {
-  globals: { dir: 'rtl', locale: 'en' },
-}
-
-/** Nothing in the announcer is visible, so forced colours changes nothing. */
-export const ForcedColors: Story = {
-  globals: { forcedColors: 'active' },
-}

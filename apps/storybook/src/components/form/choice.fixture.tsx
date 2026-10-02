@@ -1,9 +1,9 @@
 import { action } from 'storybook/actions'
 import type { FormLocale } from './form.fixture.tsx'
 
-// Story and e2e fixture for Components/Form/Checkbox, CheckboxGroup, RadioGroup and
-// NativeSelect (docs/design/form-fields.md §4.2, §4.3, §7.1). sv, en and fi are written. The fi
-// strings are designer drafts, for length checks only. nb, nn and se come from a translator, not
+// Story and e2e fixture for Components/Form/Checkbox, CheckboxGroup, RadioGroup and Listbox
+// (native rendering) (docs/design/form-fields.md §4.2, §4.3, §7.1). sv, en and fi are written.
+// The fi strings are designer drafts, for length checks only. nb, nn and se come from a translator, not
 // an agent: until then those locales show the English text, marked lang="en" (3.1.2). The
 // library's own strings ("(optional)", "Error:") follow the locale through `withFormLocale`.
 //
