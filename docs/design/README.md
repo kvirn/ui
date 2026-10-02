@@ -21,3 +21,4 @@ Design specs describe **what users see and do**: the flow, content, layout, stat
 | [Button depth: D, Grounded, chosen (ADR-0026)](button-depth.md)                                                     | to be written (handoff in section 10)                  | Draft  |
 | [Form fields: Field, Fieldset, Input, InputGroup, Checkbox, RadioGroup, DateInput (ADR-0031 order)](form-fields.md) | [0013](../plans/0013-form-fields.md)                   | Draft  |
 | [OneTimeCode: one input with drawn slots, and the plain-field fallback](one-time-code.md)                           | [0014](../plans/0014-input-masks-and-one-time-code.md) | Draft  |
+| [Section: the level 1 container, and Card is level 2 only (ADR-0044)](section.md)                                   | [0018](../plans/0018-section.md)                       | Draft  |

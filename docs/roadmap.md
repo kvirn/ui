@@ -26,11 +26,12 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Toggle                                                 | Button                       | 1   | planned     |
 | Link                                                   | – (native `<a>`)             | 1   | alpha       |
 | Card (Root, Header, Body, Footer)                      | – (native `<div>`)           | 1   | alpha       |
+| Section (level 1 container; Card becomes level 2 only) | – (native `<div>`)           | 1   | planned     |
 | Field, Label, Description, ErrorMessage, Fieldset      | –                            | 1   | in progress |
 | Input, Textarea                                        | –                            | 1   | in progress |
 | InputGroup (Root, Addon: units, icons, a clear Button) | – (native `<input>`)         | 1   | in progress |
 | Input masks (core engine, presets, `useMask`)          | – (native `<input>`)         | 1   | in progress |
-| OneTimeCode                                            | – (native `<input>`)         | 1   | planned     |
+| OneTimeCode                                            | – (native `<input>`)         | 1   | in progress |
 | Checkbox, CheckboxGroup                                | Checkbox                     | 1   | planned     |
 | RadioGroup                                             | Radio Group                  | 1   | planned     |
 | Switch                                                 | Switch                       | 1   | planned     |
