@@ -72,7 +72,7 @@ None. Nothing is live (ADR-0029). On entering the group a screen reader reads th
 - Preselecting an option is a decision with consequences (residents rarely change a default): do it only when one answer is overwhelmingly common and harmless.
 - Pass `value` and `onValueChange` from your form state, or `defaultValue` and `name` for a plain `<form>`.
 - Set `invalid` and render a `Fieldset.ErrorMessage`. On submit, move focus to the checked radio or the first one of an invalid group (or to the error summary).
-- Don't use a radio group for a long list: from about 7 options, a NativeSelect is shorter to scan.
+- Don't use a radio group for a long list: from about 7 options, a Listbox is shorter to scan.
 
 ## Visual / modes
 

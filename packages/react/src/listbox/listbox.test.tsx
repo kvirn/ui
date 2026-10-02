@@ -9,17 +9,18 @@ import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
-import { NativeSelect } from './native-select.tsx'
+import { Listbox } from './listbox.tsx'
+import { ListboxNative } from './listbox-native.tsx'
 import type {
-  NativeSelectChangeDetails,
-  NativeSelectProps,
-  NativeSelectState,
-} from './native-select.tsx'
-import { useNativeSelect } from './use-native-select.ts'
-import type { NativeSelectPartProps, UseNativeSelectResult } from './use-native-select.ts'
+  ListboxNativeChangeDetails,
+  ListboxNativeProps,
+  ListboxNativeState,
+} from './listbox-native.tsx'
+import { useListboxNative } from './use-listbox-native.ts'
+import type { ListboxNativePartProps, UseListboxNativeResult } from './use-listbox-native.ts'
 
-// Contract: native-select.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/native-select/native-select.e2e.ts.
+// Contract: listbox.a11y.md (native rendering). The keyboard rows are also covered end to end in
+// apps/storybook/src/components/listbox/listbox.e2e.ts.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -42,14 +43,21 @@ const municipalities = (
 )
 
 describe('rendering', () => {
+  test('the native select is an internal part: Listbox has no Native member', () => {
+    // NativeSelect became Listbox (ADR-0037, item 2): the native select is not a part of its own,
+    // `Listbox.Root` renders it for `native="always"` and `native="auto"` on touch devices.
+    expect('Native' in Listbox).toBe(false)
+    expect(ListboxNative.displayName).toBe('ListboxNative')
+  })
+
   test('renders a native <select> with its class, outside a Field', async () => {
     const { container } = await render(
-      <NativeSelect aria-label="Kommun">{municipalities}</NativeSelect>,
+      <ListboxNative aria-label="Kommun">{municipalities}</ListboxNative>,
     )
     const select = page.getByRole('combobox', { name: 'Kommun' })
     const element = select.element()
     expect(element.tagName).toBe('SELECT')
-    expect(element.className).toBe('kv-native-select')
+    expect(element.className).toBe('kv-listbox-native')
     await expect.element(select).not.toHaveAttribute('id')
     await expect.element(select).not.toHaveAttribute('aria-describedby')
     await expect.element(select).not.toHaveAttribute('aria-invalid')
@@ -62,7 +70,7 @@ describe('rendering', () => {
   test('forwards its ref, className, native props and option groups', async () => {
     const ref = createRef<HTMLSelectElement>()
     await render(
-      <NativeSelect
+      <ListboxNative
         ref={ref}
         aria-label="Kommun"
         className="egen"
@@ -76,11 +84,11 @@ describe('rendering', () => {
         <optgroup label="Skåne">
           <option value="malmo">Malmö</option>
         </optgroup>
-      </NativeSelect>,
+      </ListboxNative>,
     )
     const select = page.getByRole('combobox', { name: 'Kommun' })
     expect(ref.current).toBe(select.element())
-    await expect.element(select).toHaveClass('egen', 'kv-native-select')
+    await expect.element(select).toHaveClass('egen', 'kv-listbox-native')
     await expect.element(select).toHaveAttribute('name', 'municipality')
     await expect.element(select).toHaveAttribute('autocomplete', 'address-level2')
     await expect.element(select).toHaveAttribute('data-egen', '')
@@ -88,19 +96,19 @@ describe('rendering', () => {
   })
 
   test('render as a function gets the part’s props and the state', async () => {
-    const seenStates: NativeSelectState[] = []
+    const seenStates: ListboxNativeState[] = []
     await render(
       <Field.Root invalid required>
         <Field.Label>Kommun</Field.Label>
         <Field.ErrorMessage>Välj en kommun</Field.ErrorMessage>
-        <NativeSelect
+        <ListboxNative
           render={(partProps, state) => {
             seenStates.push(state)
             return <select {...partProps} data-egen="" />
           }}
         >
           {municipalities}
-        </NativeSelect>
+        </ListboxNative>
       </Field.Root>,
     )
     await expect.element(page.getByRole('combobox')).toHaveAttribute('data-egen', '')
@@ -113,8 +121,8 @@ describe('rendering', () => {
   })
 
   test('multiple and size warn once: use a CheckboxGroup (ADR-0037)', async () => {
-    const props = { 'aria-label': 'Kommun', multiple: true } as unknown as NativeSelectProps
-    await render(<NativeSelect {...props}>{municipalities}</NativeSelect>)
+    const props = { 'aria-label': 'Kommun', multiple: true } as unknown as ListboxNativeProps
+    await render(<ListboxNative {...props}>{municipalities}</ListboxNative>)
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('CheckboxGroup')
   })
@@ -126,7 +134,7 @@ describe('in a Field', () => {
       <Field.Root invalid required>
         <Field.Label>Kommun</Field.Label>
         <Field.Description>Där du är folkbokförd.</Field.Description>
-        <NativeSelect name="municipality">{municipalities}</NativeSelect>
+        <ListboxNative name="municipality">{municipalities}</ListboxNative>
         <Field.ErrorMessage>Välj en kommun</Field.ErrorMessage>
       </Field.Root>,
     )
@@ -147,11 +155,11 @@ describe('in a Field', () => {
         <Field.Root invalid required>
           <Field.Label>Kommun</Field.Label>
           <Field.ErrorMessage>Välj en kommun</Field.ErrorMessage>
-          <NativeSelect>{municipalities}</NativeSelect>
+          <ListboxNative>{municipalities}</ListboxNative>
         </Field.Root>
         <Field.Root disabled>
           <Field.Label marker="none">Land</Field.Label>
-          <NativeSelect>{municipalities}</NativeSelect>
+          <ListboxNative>{municipalities}</ListboxNative>
         </Field.Root>
       </>,
     )
@@ -170,7 +178,7 @@ describe('in a Field', () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">Kommun</Field.Label>
-        <NativeSelect disabled>{municipalities}</NativeSelect>
+        <ListboxNative disabled>{municipalities}</ListboxNative>
       </Field.Root>,
     )
     await expect.element(page.getByRole('combobox', { name: 'Kommun' })).toBeDisabled()
@@ -181,7 +189,7 @@ describe('in a Field', () => {
       <KvirnProvider locale="sv-SE" messages={sv}>
         <Field.Root>
           <Field.Label>Kommun</Field.Label>
-          <NativeSelect>{municipalities}</NativeSelect>
+          <ListboxNative>{municipalities}</ListboxNative>
         </Field.Root>
       </KvirnProvider>,
     )
@@ -195,7 +203,7 @@ describe('in a Field', () => {
         <Field.Root required>
           <Field.Label>Kommun</Field.Label>
           <Field.Description>Där du bor.</Field.Description>
-          <NativeSelect aria-describedby="extra">{municipalities}</NativeSelect>
+          <ListboxNative aria-describedby="extra">{municipalities}</ListboxNative>
         </Field.Root>
       </>,
     )
@@ -208,7 +216,7 @@ describe('in a Field', () => {
     await render(
       <Field.Root required>
         <Field.Label>Kommun</Field.Label>
-        <NativeSelect>{municipalities}</NativeSelect>
+        <ListboxNative>{municipalities}</ListboxNative>
       </Field.Root>,
     )
     await userEvent.click(page.getByText('Kommun', { exact: true }))
@@ -219,7 +227,7 @@ describe('in a Field', () => {
     await render(
       <Field.Root controlId="fältet" required>
         <Field.Label>Kommun</Field.Label>
-        <NativeSelect id="annat">{municipalities}</NativeSelect>
+        <ListboxNative id="annat">{municipalities}</ListboxNative>
       </Field.Root>,
     )
     await expect
@@ -232,17 +240,17 @@ describe('in a Field', () => {
 
 describe('value', () => {
   test('uncontrolled: defaultValue is kept, and onValueChange reports the value with the reason', async () => {
-    const onValueChange = vi.fn<(value: string, details: NativeSelectChangeDetails) => void>()
+    const onValueChange = vi.fn<(value: string, details: ListboxNativeChangeDetails) => void>()
     const onChange = vi.fn<(event: React.ChangeEvent<HTMLSelectElement>) => void>()
     await render(
-      <NativeSelect
+      <ListboxNative
         aria-label="Kommun"
         defaultValue="sthlm"
         onValueChange={onValueChange}
         onChange={onChange}
       >
         {municipalities}
-      </NativeSelect>,
+      </ListboxNative>,
     )
     const select = page.getByRole('combobox', { name: 'Kommun' })
     await expect.element(select).toHaveValue('sthlm')
@@ -260,9 +268,9 @@ describe('value', () => {
       const [value, setValue] = useState('gbg')
       return (
         <>
-          <NativeSelect aria-label="Kommun" value={value} onValueChange={setValue}>
+          <ListboxNative aria-label="Kommun" value={value} onValueChange={setValue}>
             {municipalities}
-          </NativeSelect>
+          </ListboxNative>
           <output>{value}</output>
         </>
       )
@@ -276,11 +284,11 @@ describe('value', () => {
   })
 
   test('a controlled select stays as it is when the parent does not update the value', async () => {
-    const onValueChange = vi.fn<(value: string, details: NativeSelectChangeDetails) => void>()
+    const onValueChange = vi.fn<(value: string, details: ListboxNativeChangeDetails) => void>()
     await render(
-      <NativeSelect aria-label="Kommun" value="gbg" onValueChange={onValueChange}>
+      <ListboxNative aria-label="Kommun" value="gbg" onValueChange={onValueChange}>
         {municipalities}
-      </NativeSelect>,
+      </ListboxNative>,
     )
     const select = page.getByRole('combobox', { name: 'Kommun' })
     await userEvent.selectOptions(select, 'malmo')
@@ -303,9 +311,9 @@ describe('value', () => {
       >
         <Field.Root required>
           <Field.Label>Kommun</Field.Label>
-          <NativeSelect name="municipality" defaultValue="gbg">
+          <ListboxNative name="municipality" defaultValue="gbg">
             {municipalities}
-          </NativeSelect>
+          </ListboxNative>
         </Field.Root>
         <button type="submit">Skicka</button>
       </form>,
@@ -332,7 +340,7 @@ describe('value', () => {
     await render(
       <Field.Root required>
         <Field.Label>Kommun</Field.Label>
-        <NativeSelect {...register('municipality')}>{municipalities}</NativeSelect>
+        <ListboxNative {...register('municipality')}>{municipalities}</ListboxNative>
       </Field.Root>,
     )
     const select = page.getByRole('combobox', { name: 'Kommun' })
@@ -346,8 +354,8 @@ describe('focus visible', () => {
   test('sets data-focus-visible on keyboard focus only, and Tab moves on', async () => {
     await render(
       <>
-        <NativeSelect aria-label="Ett">{municipalities}</NativeSelect>
-        <NativeSelect aria-label="Två">{municipalities}</NativeSelect>
+        <ListboxNative aria-label="Ett">{municipalities}</ListboxNative>
+        <ListboxNative aria-label="Två">{municipalities}</ListboxNative>
       </>,
     )
     const first = page.getByRole('combobox', { name: 'Ett' })
@@ -364,7 +372,7 @@ describe('dev warnings', () => {
   test('a select in a Field with no label warns once', async () => {
     await render(
       <Field.Root>
-        <NativeSelect>{municipalities}</NativeSelect>
+        <ListboxNative>{municipalities}</ListboxNative>
       </Field.Root>,
     )
     expect(consoleWarn).toHaveBeenCalledTimes(1)
@@ -372,26 +380,26 @@ describe('dev warnings', () => {
   })
 
   test('a select with no name at all warns once', async () => {
-    await render(<NativeSelect>{municipalities}</NativeSelect>)
+    await render(<ListboxNative>{municipalities}</ListboxNative>)
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('accessible name')
   })
 })
 
-describe('useNativeSelect', () => {
+describe('useListboxNative', () => {
   test('spreads the same props on your own select', async () => {
-    const onValueChange = vi.fn<(value: string, details: NativeSelectChangeDetails) => void>()
+    const onValueChange = vi.fn<(value: string, details: ListboxNativeChangeDetails) => void>()
     function Own() {
-      const select = useNativeSelect({ onValueChange })
+      const select = useListboxNative({ onValueChange })
       return (
-        <select aria-label="Egen" {...select.selectProps}>
+        <select aria-label="Egen" {...select.nativeProps}>
           {municipalities}
         </select>
       )
     }
     await render(<Own />)
     const select = page.getByRole('combobox', { name: 'Egen' })
-    await expect.element(select).toHaveClass('kv-native-select')
+    await expect.element(select).toHaveClass('kv-listbox-native')
     await userEvent.selectOptions(select, 'gbg')
     expect(onValueChange.mock.calls.at(-1)?.[0]).toBe('gbg')
   })
@@ -400,7 +408,7 @@ describe('useNativeSelect', () => {
     const markup = renderToString(
       <Field.Root controlId="kommun" required>
         <Field.Label>Kommun</Field.Label>
-        <NativeSelect defaultValue="gbg">{municipalities}</NativeSelect>
+        <ListboxNative defaultValue="gbg">{municipalities}</ListboxNative>
       </Field.Root>,
     )
     expect(markup).toContain('<select')
@@ -411,11 +419,11 @@ describe('useNativeSelect', () => {
 
 describe('types', () => {
   test('exports the prop, state and hook types', () => {
-    expectTypeOf<NativeSelectProps['onValueChange']>().toEqualTypeOf<
-      ((value: string, details: NativeSelectChangeDetails) => void) | undefined
+    expectTypeOf<ListboxNativeProps['onValueChange']>().toEqualTypeOf<
+      ((value: string, details: ListboxNativeChangeDetails) => void) | undefined
     >()
-    expectTypeOf<NativeSelectProps['value']>().toEqualTypeOf<string | undefined>()
-    expectTypeOf<NativeSelectPartProps['className']>().toEqualTypeOf<'kv-native-select'>()
-    expectTypeOf<UseNativeSelectResult['selectProps']>().toEqualTypeOf<NativeSelectPartProps>()
+    expectTypeOf<ListboxNativeProps['value']>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<ListboxNativePartProps['className']>().toEqualTypeOf<'kv-listbox-native'>()
+    expectTypeOf<UseListboxNativeResult['nativeProps']>().toEqualTypeOf<ListboxNativePartProps>()
   })
 })

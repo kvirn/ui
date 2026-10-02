@@ -1,7 +1,7 @@
 import { fi } from '@kvirn-ui/i18n/fi'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { createRef, useEffect, useRef, useState } from 'react'
+import { createRef, useContext, useEffect, useRef, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -10,6 +10,7 @@ import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Input } from '../input/input.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
+import { FieldContext } from './field-context.ts'
 import { Field, FieldDescription, FieldErrorMessage, FieldLabel, FieldRoot } from './field.tsx'
 import type {
   FieldDescriptionProps,
@@ -309,7 +310,8 @@ describe('wiring: name and description per state', () => {
     )
     const ids = [...container.querySelectorAll('[id]')].map((element) => element.id)
     expect(new Set(ids).size).toBe(ids.length)
-    expect(ids.length).toBe(6)
+    // control, label, description and error message, per Field
+    expect(ids.length).toBe(8)
     expectNoDanglingReferences(container)
   })
 
@@ -327,6 +329,34 @@ describe('wiring: name and description per state', () => {
       .element(page.getByText('Telefonnummer (optional)'))
       .toHaveAttribute('for', 'telefon')
     expect(input.element().getAttribute('aria-describedby')).toContain('telefon')
+    expectNoDanglingReferences(container)
+  })
+
+  test('Field.Label has an id derived from the control id, the context carries it, and htmlFor is unchanged', async () => {
+    function LabelIdReader() {
+      const field = useContext(FieldContext)
+      return (
+        <button type="button" aria-labelledby={`self ${field?.labelId ?? ''}`} id="self">
+          Välj
+        </button>
+      )
+    }
+    const { container } = await render(
+      <Field.Root controlId="telefon">
+        <Field.Label>Telefonnummer</Field.Label>
+        <Input />
+        <LabelIdReader />
+      </Field.Root>,
+    )
+    const label = container.querySelector('label')
+    expect(label?.id).toBe('telefon-label')
+    expect(label?.getAttribute('for')).toBe('telefon')
+    await expect
+      .element(page.getByRole('button', { name: 'Välj Telefonnummer (optional)' }))
+      .toBeVisible()
+    await expect
+      .element(page.getByRole('textbox', { name: 'Telefonnummer (optional)' }))
+      .toHaveAttribute('id', 'telefon')
     expectNoDanglingReferences(container)
   })
 })
@@ -642,6 +672,48 @@ describe('useField', () => {
       .toHaveAttribute('id', 'eget')
   })
 
+  test('labelProps.id and labelId are the label’s id, derived from the control id, and htmlFor is unchanged', async () => {
+    function Labelled() {
+      const field = useField({ id: 'namn' })
+      return (
+        <div {...field.rootProps}>
+          <label {...field.labelProps}>Namn {field.optionalMarker}</label>
+          <input {...field.controlProps} />
+          <output data-testid="label-id">{field.labelId}</output>
+        </div>
+      )
+    }
+    const { container } = await render(<Labelled />)
+    const label = container.querySelector('label')
+    expect(label?.id).toBe('namn-label')
+    expect(label?.getAttribute('for')).toBe('namn')
+    await expect.element(page.getByTestId('label-id')).toHaveTextContent('namn-label')
+    await expect
+      .element(page.getByRole('textbox', { name: 'Namn (optional)' }))
+      .toHaveAttribute('id', 'namn')
+    expectNoDanglingReferences(container)
+  })
+
+  test('the label id is unique per field and the same on the server', () => {
+    function Labelled() {
+      const field = useField()
+      return (
+        <label {...field.labelProps}>
+          Namn <input {...field.controlProps} />
+        </label>
+      )
+    }
+    const html = renderToString(
+      <>
+        <Labelled />
+        <Labelled />
+      </>,
+    )
+    const labelIds = [...html.matchAll(/<label[^>]* id="([^"]+)"/g)].map((match) => match[1])
+    expect(labelIds).toHaveLength(2)
+    expect(new Set(labelIds).size).toBe(2)
+  })
+
   test('hasDescription gives a complete aria-describedby in server-rendered markup', () => {
     const html = renderToString(<HookField invalid />)
     const ids = [...html.matchAll(/id="([^"]+)"/g)].map((match) => match[1])
@@ -931,6 +1003,7 @@ describe('types', () => {
 
   test('the parts can’t take an id or htmlFor that would break the wiring', () => {
     expectTypeOf<FieldLabelProps>().not.toHaveProperty('htmlFor')
+    expectTypeOf<FieldLabelProps>().not.toHaveProperty('id')
     expectTypeOf<FieldDescriptionProps>().not.toHaveProperty('id')
     expectTypeOf<FieldErrorMessageProps>().not.toHaveProperty('id')
     expectTypeOf<FieldLabelProps['marker']>().toEqualTypeOf<'optional' | 'none' | undefined>()

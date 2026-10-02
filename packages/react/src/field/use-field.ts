@@ -64,6 +64,8 @@ export interface FieldRootPartProps extends FieldStateAttributes {
 /** Spread on the `<label>`. */
 export interface FieldLabelPartProps extends FieldStateAttributes {
   className: 'kv-field-label'
+  /** The label's own id, derived from the control's id. For `aria-labelledby` from another part. */
+  id: string
   /** The control's id. */
   htmlFor: string
 }
@@ -101,6 +103,8 @@ export interface UseFieldResult {
   errorMessageProps: FieldErrorMessagePartProps
   controlProps: FieldControlPartProps
   controlId: string
+  /** The label's id (`labelProps.id`), for an `aria-labelledby` that names a part by the label. */
+  labelId: string
   descriptionId: string
   errorMessageId: string
   isInvalid: boolean
@@ -152,6 +156,7 @@ export function useField({
   const isInGroup = useContext(FieldGroupContext)
   const fieldMessages = useMessages('field', messages)
   const controlId = id ?? generatedId
+  const labelId = `${controlId}-label`
   const descriptionId = `${controlId}-description`
   const errorMessageId = `${controlId}-error`
   const resolvedMarker: FieldMarker = marker ?? (isInGroup ? 'none' : 'optional')
@@ -168,6 +173,7 @@ export function useField({
     const rootProps: FieldRootPartProps = { className: 'kv-field', ...stateAttributes(state) }
     const labelProps: FieldLabelPartProps = {
       className: 'kv-field-label',
+      id: labelId,
       htmlFor: controlId,
       ...stateAttributes(state),
     }
@@ -205,6 +211,7 @@ export function useField({
     }
   }, [
     controlId,
+    labelId,
     descriptionId,
     errorMessageId,
     invalid,
@@ -218,6 +225,7 @@ export function useField({
   return {
     ...props,
     controlId,
+    labelId,
     descriptionId,
     errorMessageId,
     isInvalid: invalid,

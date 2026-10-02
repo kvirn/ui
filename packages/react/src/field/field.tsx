@@ -33,7 +33,7 @@ export interface FieldRootProps extends ComponentPropsWithRef<'div'> {
   render?: RenderProp<ComponentPropsWithRef<'div'>, FieldState> | undefined
 }
 
-export interface FieldLabelProps extends Omit<ComponentPropsWithRef<'label'>, 'htmlFor'> {
+export interface FieldLabelProps extends Omit<ComponentPropsWithRef<'label'>, 'htmlFor' | 'id'> {
   /** `'none'` leaves out the optional text. Default: `'optional'`, or `'none'` in a group. */
   marker?: FieldMarker | undefined
   render?: RenderProp<ComponentPropsWithRef<'label'>, FieldState> | undefined
@@ -123,11 +123,12 @@ export function FieldRoot({
     () => ({
       controlProps: field.controlProps,
       labelProps: field.labelProps,
+      labelId: field.labelId,
       state,
       marker: field.marker,
       messages,
     }),
-    [field.controlProps, field.labelProps, state, field.marker, messages],
+    [field.controlProps, field.labelProps, field.labelId, state, field.marker, messages],
   )
 
   return (

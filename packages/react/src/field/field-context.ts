@@ -42,6 +42,8 @@ export const FieldTextHostContext = createContext<FieldTextHostContextValue | nu
 export interface FieldContextValue {
   controlProps: FieldControlPartProps
   labelProps: FieldLabelPartProps
+  /** The label's id, for a part that names itself by the label (`aria-labelledby`). */
+  labelId: string
   state: FieldState
   marker: FieldMarker
   messages: Partial<KvirnMessages['field']> | undefined
