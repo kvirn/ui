@@ -22,7 +22,7 @@ async function emulateSystem(features: MediaFeature[]) {
   await cdp().send('Emulation.setEmulatedMedia', { features })
 }
 
-/** A fresh document per test gives a fresh per-document theme store (ADR-0006). */
+/** A fresh document per test gives a fresh per-document theme store. */
 function createEnv(): Env {
   return { window, document: document.implementation.createHTMLDocument('') }
 }
@@ -60,7 +60,7 @@ afterEach(async () => {
   localStorage.clear()
 })
 
-describe('theme preference (ADR-0006)', () => {
+describe('theme preference', () => {
   test('follows the OS until the user chooses', async () => {
     await emulateSystem([
       { name: 'prefers-color-scheme', value: 'dark' },
@@ -141,7 +141,7 @@ describe('theme preference (ADR-0006)', () => {
 
     await userEvent.keyboard('{ArrowDown}')
     await expect.element(radio('Följ systemet').first()).toBeChecked()
-    // The provider's two live regions (ADR-0040) exist, and stay empty: nothing is announced.
+    // The provider's two live regions exist, and stay empty: nothing is announced.
     await expect.element(page.getByRole('status')).toBeEmptyDOMElement()
     await expect.element(page.getByRole('alert')).toBeEmptyDOMElement()
   })

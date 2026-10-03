@@ -114,7 +114,7 @@ export function ComboboxProviders<TItem>({
 
 /**
  * Owns the state of a Combobox: the options, the chosen value, the text and the open state
- * (ADR-0037; contract: combobox.a11y.md). It renders no element of its own: put a
+ * (contract: combobox.a11y.md). It renders no element of its own: put a
  * `Combobox.Input` and a `Combobox.Popup` inside it, in a `Field`, the popup right after the
  * input. With `multiple`, put a `Combobox.ValueList` before the input.
  *
@@ -459,7 +459,7 @@ export function ComboboxValue<TItem = unknown>({
 }
 ComboboxValue.displayName = 'Combobox.Value'
 
-// The popup parts are the Listbox's (ADR-0037, item 7): each Root provides the same context.
+// The popup parts are the Listbox's: each Root provides the same context.
 export {
   ListboxEmpty as ComboboxEmpty,
   ListboxGroup as ComboboxGroup,
@@ -479,7 +479,7 @@ export type ComboboxPopupProps = ListboxPopupProps
 export type ComboboxPopupState = ListboxPartState
 
 /**
- * The Combobox's parts (ADR-0037). `Root` with `Input` and `Popup` is the editable combobox (the
+ * The Combobox's parts. `Root` with `Input` and `Popup` is the editable combobox (the
  * APG combobox with list autocomplete): the user types to filter, then chooses. `Control`,
  * `Toggle` and `Clear` are optional, `ValueList` and `Value` are for `multiple`. The popup parts
  * (`Popup`, `List`, `Option`, `Group`, `GroupLabel`, `Empty`) are the Listbox's.

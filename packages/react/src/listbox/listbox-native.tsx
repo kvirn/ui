@@ -13,8 +13,7 @@ import { useListboxNative } from './use-listbox-native.ts'
 import type { ListboxNativeChangeDetails } from './use-listbox-native.ts'
 
 // Internal. The native rendering of `Listbox.Root` (`native="always"`, or `native="auto"` on touch
-// devices): a native `<select>` wired to its Field. It is not part of the public API (ADR-0037,
-// item 2: NativeSelect became Listbox).
+// devices): a native `<select>` wired to its Field. It is not part of the public API (NativeSelect became Listbox).
 
 export type { ListboxNativeChangeDetails } from './use-listbox-native.ts'
 
@@ -42,7 +41,7 @@ export interface ListboxNativeProps extends Omit<
 /**
  * The native rendering of a Listbox, rendered by `Listbox.Root` for `native="always"` and `native="auto"`
  * on touch devices: a native `<select>`, wired to its Field. The label names
- * it, and the hint and error describe it (ADR-0037, item 2; contract: listbox.a11y.md).
+ * it, and the hint and error describe it (contract: listbox.a11y.md).
  * Children are plain `<option>` and `<optgroup>`. It holds no form state: pass `value` and
  * `onValueChange`, or `defaultValue` and `name` for a plain form, or spread your form library's
  * props. A single choice only: for several, use a CheckboxGroup.
@@ -74,7 +73,7 @@ export function ListboxNative({
     if (isMultiple || hasSize) {
       warnOnce(
         'listbox-native-multiple',
-        'A native Listbox select got multiple or size. It is a single choice from a short list (ADR-0037, item 2); a list box or a multi-select is hard to use with a keyboard and a screen reader. For several choices use a CheckboxGroup.',
+        'A native Listbox select got multiple or size. It is a single choice from a short list; a list box or a multi-select is hard to use with a keyboard and a screen reader. For several choices use a CheckboxGroup.',
       )
     }
   }, [isMultiple, hasSize])

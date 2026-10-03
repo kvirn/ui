@@ -22,7 +22,7 @@ describe('defineMessages', () => {
     expect(defineMessages(en, {})).not.toBe(en)
   })
 
-  it('accepts function values for external i18n systems (ADR-0007)', () => {
+  it('accepts function values for external i18n systems', () => {
     const translate = (key: string) => `translated:${key}`
     const messages = defineMessages(sv, {
       link: { newTabNotice: () => translate('kvirn.link.newTabNotice') },
@@ -37,7 +37,7 @@ describe('defineMessages', () => {
   })
 })
 
-describe('catalog types (ADR-0007)', () => {
+describe('catalog types', () => {
   it('every shipped catalog is a complete KvirnMessages', () => {
     expectTypeOf(en).toExtend<KvirnMessages>()
     expectTypeOf(sv).toExtend<KvirnMessages>()

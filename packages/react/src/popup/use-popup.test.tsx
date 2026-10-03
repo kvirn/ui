@@ -8,7 +8,7 @@ import { render } from 'vitest-browser-react'
 import { usePopup } from './use-popup.ts'
 import type { Placement, UsePopupOptions, UsePopupResult } from './use-popup.ts'
 
-// Contract: popover.a11y.md (placement, top layer, modes) and ADR-0046. usePopup shows and
+// Contract: popover.a11y.md (placement, top layer, modes). usePopup shows and
 // places an element: it never moves focus and never closes anything.
 
 interface PopupExampleProps extends Partial<

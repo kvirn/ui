@@ -236,7 +236,7 @@ describe('paste, drop and autofill (5.3)', () => {
   })
 })
 
-describe('write-back (5.7) and controlled values (ADR-0029 item 0, ADR-0032 item 8)', () => {
+describe('write-back (5.7) and controlled values', () => {
   test('writes to the input only when the mask changed the value', async () => {
     await render(<MaskedInput options={{ mask: masks.digits() }} />)
     const valueSetter = vi.spyOn(field().element() as HTMLInputElement, 'value', 'set')
@@ -306,7 +306,7 @@ describe('write-back (5.7) and controlled values (ADR-0029 item 0, ADR-0032 item
   })
 })
 
-describe('suggested attributes (ADR-0032 item 3)', () => {
+describe('suggested attributes', () => {
   test('an identifier mask suggests inputMode, spellCheck and dir="ltr"', async () => {
     await render(
       <MaskedInput options={{ mask: masks.personalIdentityNumber({ country: 'SE' }) }} />,
@@ -352,7 +352,7 @@ describe('suggested attributes (ADR-0032 item 3)', () => {
   })
 })
 
-describe('number masks and the provider locale (ADR-0032 item 2)', () => {
+describe('number masks and the provider locale', () => {
   test('sv shows a decimal comma, and the unmasked value is machine form', async () => {
     const reports: Report[] = []
     await render(
@@ -458,7 +458,7 @@ describe('composition (5.5)', () => {
   })
 })
 
-describe('announcing rejections (ADR-0032 item 6, ADR-0040)', () => {
+describe('announcing rejections', () => {
   const status = () => page.getByRole('status')
 
   test('a refused character is announced politely, in the provider language (sv, fi and en)', async () => {

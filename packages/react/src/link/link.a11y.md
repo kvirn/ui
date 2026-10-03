@@ -2,7 +2,7 @@
 
 - **APG pattern:** none needed. A link is a native `<a href>` ([APG Link](https://www.w3.org/WAI/ARIA/apg/patterns/link/) only covers non-native links, which Link never renders).
 - **Deviations:** none
-- **Native elements used:** `<a href>`, rendered by the app's registered router link component (ADR-0005), or by a native `<a>` when none is registered or `render={<a />}` is given. `<span>` for the new-tab notice.
+- **Native elements used:** `<a href>`, rendered by the app's registered router link component, or by a native `<a>` when none is registered or `render={<a />}` is given. `<span>` for the new-tab notice.
 - **Status:** alpha candidate (Plan 0003). Gates 1–5 pass, accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `link.test.tsx` next to this file. `link.stories.tsx` and `link.e2e.ts` in `apps/storybook/src/components/link/`.
 
@@ -18,7 +18,7 @@ Link navigates. An action is a Button. Link has no `disabled` prop, by type: a d
 |                   | another language                       | `lang`, `hrefLang` passed through | `<Link href="/fi" hrefLang="fi" lang="fi">Suomeksi</Link>` (3.1.2)                                                                 |
 | Link.NewTabNotice | `<span>`, part of the link's name      | none                              | Text from `link.newTabNotice`. The consumer decides whether to hide it visually. Also exported as `LinkNewTabNotice`               |
 |                   | `target="_blank"` without a notice     | –                                 | Dev warning, naming the link's text                                                                                                |
-|                   | link component doesn't render an `<a>` | –                                 | Dev warning (ADR-0005): the registered component must forward its ref and render an `<a>`                                          |
+|                   | link component doesn't render an `<a>` | –                                 | Dev warning: the registered component must forward its ref and render an `<a>`                                                     |
 
 `useLink` gives the same `linkProps` and the resolved `newTabNotice` text for your own `<a>` or router link.
 
@@ -63,7 +63,7 @@ Link announces nothing. The new-tab notice is part of the link's accessible name
 | ------------------- | ----------------- | ---------------------- | ----------------------- |
 | `link.newTabNotice` | Link.NewTabNotice | `(opens in a new tab)` | `(öppnas i en ny flik)` |
 
-Resolution (ADR-0007), first match wins: `Link.NewTabNotice` children, then `<Link messages>` (or `useLink({ messages })`), then the nearest provider's `messages` and its ancestors, then built-in `en`. An empty or whitespace-only value falls through to the next level, with a dev warning. Tests: `link.test.tsx › new-tab notice`.
+Resolution, first match wins: `Link.NewTabNotice` children, then `<Link messages>` (or `useLink({ messages })`), then the nearest provider's `messages` and its ancestors, then built-in `en`. An empty or whitespace-only value falls through to the next level, with a dev warning. Tests: `link.test.tsx › new-tab notice`.
 
 ## Consumer responsibilities
 
@@ -72,7 +72,7 @@ Resolution (ADR-0007), first match wins: `Link.NewTabNotice` children, then `<Li
 - If you hide the notice visually, hide it with a visually-hidden technique, not `display: none` or `aria-hidden`, so it stays in the name. Consider showing it: sighted users benefit too.
 - Set `current="page"` on the link to the current page, for example in navigation. Link doesn't detect it from the router.
 - For a link in another language, set `lang` (the text's language) and `hrefLang` (the target's language) (3.1.2).
-- Register a router link component that forwards its ref and renders an `<a>` (ADR-0005). Use `render={<a />}` for downloads and other links the router mustn't handle.
+- Register a router link component that forwards its ref and renders an `<a>`. Use `render={<a />}` for downloads and other links the router mustn't handle.
 - When overriding `newTabNotice`, keep it true to what happens (3.2.5) and consistent with any visible text (2.5.3).
 - Style `[data-current]` and `[data-focus-visible]` (or `:focus-visible`). Don't show the current page by colour alone (1.4.1).
 
@@ -97,7 +97,7 @@ Resolution (ADR-0007), first match wins: `Link.NewTabNotice` children, then `<Li
 
 | AT + browser + OS                        | Date    | Tester | Result | Notes |
 | ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| **Core (required for beta)**             |         |        |        |       |
 | NVDA + Firefox + Windows                 | pending |        |        |       |
 | VoiceOver + Safari + macOS               | pending |        |        |       |
 | VoiceOver + Safari + iOS                 | pending |        |        |       |

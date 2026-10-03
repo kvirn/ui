@@ -3,7 +3,7 @@
 - **Status:** In progress (Phase 2: after acceptance)
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-01 · **Target:** M0 / M1
-- **Related:** ADR-0013, ADR-0014, ADR-0017, ADR-0019 (all Accepted 2026-10-01), ADR-0006, ADR-0011, Plan 0002, Plan 0003, Plan 0004
+- **Related:** Plan 0002, Plan 0003, Plan 0004
 
 ## Goal
 
@@ -14,18 +14,18 @@ Evaluators and maintainers see KvirnProvider, Button and Link in a real, styled 
 - A styled React package. Styling is opt-in CSS (`theme.css`) or the consumer's own (Tailwind, CSS modules, wrappers).
 - The provider loading CSS. CSS is opt-in by import.
 - Blocks (M4), MDX, syntax highlighting, "Copy code" (needs the Announcer), translated docs copy.
-- Accepting ADR-0013 and ADR-0014. The maintainer decides after seeing the Phase 1 prototype.
+- Accepting the theme delivery and visual direction decisions. The maintainer decides after seeing the Phase 1 prototype.
 
 ## Background
 
-- Visual target from the maintainer: [shadcn.io/design/linear](https://www.shadcn.io/design/linear). Deviations for WCAG 2.2 AA are listed in ADR-0014.
+- Visual target from the maintainer: [shadcn.io/design/linear](https://www.shadcn.io/design/linear). Deviations for WCAG 2.2 AA are listed in DESIGN.md.
 - `packages/theme/src/tokens.ts` was empty (Plan 0004 follow-up). This plan implements it.
 
 ## Design
 
 **Design specs:** [docs-site.md](../design/docs-site.md), [storybook-presentation.md](../design/storybook-presentation.md) and [default-theme-button-link.md](../design/default-theme-button-link.md) (Draft, revised 2026-10-01 for the Linear-inspired direction).
 
-- **Visual direction (ADR-0014, Accepted):** Linear-inspired:
+- **Visual direction (Accepted):** Linear-inspired:
   - a near-black `#010102` and white canvas, and a surface ladder with hairlines and no shadows
   - lavender `#5e6ad2` with white labels, and Inter self-hosted
   - a tight heading tracking ramp and 8px and 12px radii
@@ -35,9 +35,9 @@ Evaluators and maintainers see KvirnProvider, Button and Link in a real, styled 
   - `link` is its own token.
   - Controls use `border-control` instead of hairlines.
   - The focus ring is 2px with a 2px offset.
-- **Delivery (ADR-0013, Accepted, revised after the maintainer's review):**
-  - One hand-written `@kvirn-ui/theme/theme.css`, the source of truth: a Tailwind-style palette with scales named by role (`neutral`, `primary`, `secondary`, `accent`, `danger`, `success`, `warning`, ADR-0019), semantic tokens that point at palette steps per theme, fallbacks, `color-scheme`, forced colours, `data-kv-density`, and the Button and Link styles.
-  - The components render stable part attributes (`data-kv="button"`, `data-kv="link"`, `data-kv="link-new-tab-notice"`). Variants are plain attributes: `data-variant="primary"` or `"danger"`, `data-kv-button-group`, `data-kv-nav`. **Revised (ADR-0013):** parts and variants are now classes, `kv-button`, `kv-link`, `kv-button--primary`, `kv-button-group`, `kv-nav`, and `data-*` is only state. Use the classes for the remaining tasks.
+- **Delivery (Accepted, revised after the maintainer's review):**
+  - One hand-written `@kvirn-ui/theme/theme.css`, the source of truth: a Tailwind-style palette with scales named by role (`neutral`, `primary`, `secondary`, `accent`, `danger`, `success`, `warning`), semantic tokens that point at palette steps per theme, fallbacks, `color-scheme`, forced colours, `data-kv-density`, and the Button and Link styles.
+  - The components render stable part attributes (`data-kv="button"`, `data-kv="link"`, `data-kv="link-new-tab-notice"`). Variants are plain attributes: `data-variant="primary"` or `"danger"`, `data-kv-button-group`, `data-kv-nav`. **Revised:** parts and variants are now classes, `kv-button`, `kv-link`, `kv-button--primary`, `kv-button-group`, `kv-nav`, and `data-*` is only state. Use the classes for the remaining tasks.
   - Everything sits in `@layer kv`, so consumer CSS always wins. No `tokens.css`, `tailwind.css` or recipe classes.
   - `theme:check` reads `theme.css` and resolves `var()` per theme.
 - **Docs site:** a Linear-style shell:
@@ -53,7 +53,7 @@ Evaluators and maintainers see KvirnProvider, Button and Link in a real, styled 
 
 ### Content system (C0)
 
-TSX pages and a small first-party `.a11y.md` parser, with no new dependency. MDX is revisited, with an ADR, at about 10 pages.
+TSX pages and a small first-party `.a11y.md` parser, with no new dependency. MDX is revisited, with the maintainer, at about 10 pages.
 
 ## Tasks
 
@@ -61,7 +61,7 @@ The full detail is in [docs-site.md §10](../design/docs-site.md#10-handoff).
 
 ### Phase 1: visible prototype
 
-- [x] A1. `tokens.ts` colour tokens for 4 themes, and all contrast pairs from ADR-0014, until `theme:check` is green
+- [x] A1. `tokens.ts` colour tokens for 4 themes, and all contrast pairs from the visual direction decision, until `theme:check` is green
 - [x] A2. Non-colour tokens
 - [x] A3. Generated `tokens.css` (layers, fallbacks, density, forced colours) and a test that every token exists in every theme
 - [x] A4. `recipes/button.css` and `recipes/link.css`
@@ -71,42 +71,42 @@ The full detail is in [docs-site.md §10](../design/docs-site.md#10-handoff).
 - [x] B1–B5. Storybook: preview (Theme toolbar, sort, self-hosted Inter), decorator, example fixture, `Default theme/Button` and `Default theme/Link` stories, Introduction
 - [x] C1. Docs wiring (KvirnThemeScript, Providers with NextLink and `Register`, theme CSS, `next/font/local` Inter)
 - [x] C2. Docs shell (skip link, header, sidebar, Display settings, footer, 404, route-change focus) plus the Button page
-- [x] P1. The maintainer reviewed the prototype and accepted ADR-0013, ADR-0014, ADR-0017, ADR-0018 and ADR-0019 (2026-10-01). The ux-designer screenshot review moved to Phase 2 (D1)
+- [x] P1. The maintainer reviewed the prototype and accepted the theme decisions (2026-10-01). The ux-designer screenshot review moved to Phase 2 (D1)
 
 ### Phase 1 rework: simpler DX (maintainer's direction, 2026-10-01)
 
 Replaces A3–A6 and B1–B5 where they differ.
 
-- [x] R1. Palette scales (`gray`, `indigo`, `red`, `green`, `amber`, plus `teal` for rebrands) and semantic tokens that point at steps; `theme:check` green (ADR-0017, decision 8)
-- [x] R1a. Scales renamed by role, same hexes (`neutral`, `primary`, `secondary` aliasing neutral, `accent`, `danger`, `success`, `warning`), `--kv-color-secondary` for the secondary button's edge, and the rebrand documented as one `--kv-primary-*` scale override; `theme:check` green, 284 pairs (ADR-0019, maintainer direction)
+- [x] R1. Palette scales (`gray`, `indigo`, `red`, `green`, `amber`, plus `teal` for rebrands) and semantic tokens that point at steps; `theme:check` green (decision 8)
+- [x] R1a. Scales renamed by role, same hexes (`neutral`, `primary`, `secondary` aliasing neutral, `accent`, `danger`, `success`, `warning`), `--kv-color-secondary` for the secondary button's edge, and the rebrand documented as one `--kv-primary-*` scale override; `theme:check` green, 284 pairs (maintainer direction)
 - [x] R2. One hand-written `theme.css` in `@layer kv`, with the Button and Link styles; `tokens.css`, `tailwind.css`, the recipes and the generator removed
 - [x] R3. `theme:check` and `checkThemeCss()` read `theme.css`; the raw-colour check allows hex only in its palette block
 - [x] R4. `data-kv` part attributes on Button, Link and Link.NewTabNotice, and `data-variant` passed through
 - [x] R5. Storybook: `Components/*` stories merged from the headless and `Default theme/*` ones, Theme toolbar › "None (unstyled)", `Unstyled` stories, Introduction updated, e2e story IDs updated
 - [x] R6. Docs site on `theme.css` and `data-variant`; the Button page's Installation and Styling text
-- [x] R7. `packages/theme/README.md`, ADR-0013, ADR-0017, DESIGN.md, changesets
-- [x] R8. Inter rebuilt from the upstream 4.1 release with every OpenType feature, so `cv05` and `cv08` work (ADR-0017, decision 4)
+- [x] R7. `packages/theme/README.md`, DESIGN.md, changesets
+- [x] R8. Inter rebuilt from the upstream 4.1 release with every OpenType feature, so `cv05` and `cv08` work (decision 4)
 
 ### Phase 2: after acceptance
 
 - [ ] C3. The remaining template components and the `.a11y.md` parser
 - [ ] C4. The Home, KvirnProvider and Link pages, and finishing the Button page
 - [ ] B6. Storybook e2e (reflow-320, forced colours, reduced motion, focus ring)
-- [ ] C5. The docs e2e harness (tooling ADR)
-- [ ] D1. ux-designer screenshot review against the reference at 320px and 1280px in all four themes (ADR-0014, Validation). Any change it proposes needs its own ADR
-- [ ] C6. All gates, including `theme:check`, and accessibility-reviewer APPROVE. The ADRs are already Accepted, so a blocking finding is fixed or waived in a new ADR
+- [ ] C5. The docs e2e harness (a tooling decision)
+- [ ] D1. ux-designer screenshot review against the reference at 320px and 1280px in all four themes (Validation). Any change it proposes needs the maintainer's approval
+- [ ] C6. All gates, including `theme:check`, and accessibility-reviewer APPROVE. The theme decisions are already accepted, so a blocking finding is fixed or waived with the maintainer's approval
 
 Phase 1 notes (component-engineer, 2026-10-01):
 
-- 192 contrast pairs (48 per theme) are enforced, a superset of ADR-0014's 42 per theme (ADR-0017).
-- Inter is plain `@font-face` CSS rather than `next/font/local` (ADR-0017). Since R8 the subsets include `cv05` and `cv08`.
+- 192 contrast pairs (48 per theme) are enforced, a superset of the 42 per theme first listed.
+- Inter is plain `@font-face` CSS rather than `next/font/local`. Since R8 the subsets include `cv05` and `cv08`.
 - The Button page has Example, When to use it, Installation and Usage. The contents list, Accessibility, Strings, Styling and API reference come in C3 and C4. The nav links to KvirnProvider and Link reach the 404 page until C4.
 - The docs shell has Vitest browser tests (skip link, landmarks, disclosures, theme radios, current page, route-change focus, axe). Docs e2e is C5.
 
 ## Risks & open questions
 
 - Compact 14px/32px docs navigation meets 2.5.8 but not 2.5.5. The fallback is 44px chrome everywhere.
-- The ADRs were accepted before C6 ran, on the maintainer's call. The rework ran `vp check` and the touched unit, browser and story tests only. The e2e specs (new story IDs), `vp run build` and the docs `next build` haven't run since.
+- The theme decisions were accepted before C6 ran, on the maintainer's call. The rework ran `vp check` and the touched unit, browser and story tests only. The e2e specs (new story IDs), `vp run build` and the docs `next build` haven't run since.
 - The light theme is inferred, because Linear has none. The maintainer accepted it in P1, and D1 reviews it against the reference.
 - The white label on lavender is 4.70:1: it passes, with a thin margin.
 - The `data-kv` part names and the `data-variant`, `data-kv-nav` and `data-kv-button-group` attributes become public API (semver).

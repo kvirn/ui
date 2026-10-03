@@ -144,7 +144,7 @@ describe('the input', () => {
     expect(page.getByRole('textbox').elements()).toHaveLength(1)
   })
 
-  test('has the attributes that make autofill, paste and dictation work (ADR-0033 item 2)', async () => {
+  test('has the attributes that make autofill, paste and dictation work', async () => {
     await render(<CodeField />)
     const input = code()
     await expect.element(input).toHaveAttribute('autocomplete', 'one-time-code')
@@ -322,7 +322,7 @@ describe('the root', () => {
     expect(root()?.getAttribute('data-separator-count')).toBe('0')
   })
 
-  test('data-ready once the hook has started, and not in the server render (ADR-0033 item 5)', async () => {
+  test('data-ready once the hook has started, and not in the server render', async () => {
     const html = renderToString(<CodeField defaultValue="481" />)
     expect(html).toContain('kv-one-time-code')
     expect(html).not.toContain('data-ready')
@@ -477,7 +477,7 @@ describe('typing, paste and autofill', () => {
   })
 })
 
-describe('value, defaultValue and onValueChange (ADR-0033 item 8)', () => {
+describe('value, defaultValue and onValueChange', () => {
   test('onValueChange gets the masked value and the mask details', async () => {
     const reports: { value: string; details: InputChangeDetails }[] = []
     await render(
@@ -559,7 +559,7 @@ describe('onComplete', () => {
   })
 })
 
-describe('caret and selection are drawn from the input (ADR-0033 item 3)', () => {
+describe('caret and selection are drawn from the input', () => {
   test('no slot is active before the field has focus', async () => {
     await render(<CodeField defaultValue="481" />)
     expect(activeSlots()).toHaveLength(0)
@@ -652,7 +652,7 @@ describe('caret and selection are drawn from the input (ADR-0033 item 3)', () =>
   })
 })
 
-describe('patterns with separators (ADR-0045)', () => {
+describe('patterns with separators', () => {
   const groupedHint = 'Koden har 8 tecken i två grupper om 4.'
 
   test.each([
@@ -899,7 +899,7 @@ describe('patterns with separators (ADR-0045)', () => {
     }
   })
 
-  describe('the caret and the active box at a separator (ADR-0045 item 8)', () => {
+  describe('the caret and the active box at a separator', () => {
     const activeCell = () => cells().findIndex((cell) => cell.hasAttribute('data-active'))
 
     test('the active box is the first character box at or after the caret, never a separator', async () => {
@@ -1016,7 +1016,7 @@ describe('patterns with separators (ADR-0045)', () => {
   })
 })
 
-describe('render, refs and merged props (ADR-0015)', () => {
+describe('render, refs and merged props', () => {
   test('the input’s own ref and the hook’s both get the element', async () => {
     const ref = createRef<HTMLInputElement>()
     await render(<CodeField inputRef={ref} />)

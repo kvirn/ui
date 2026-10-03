@@ -62,7 +62,7 @@ Without a modifier class, a section is `surface`, square, with `md` padding and 
 <Section render={(sectionProps) => <li {...sectionProps} className={[sectionProps.className, 'nyhet'].join(' ')} />}>…</Section>
 ```
 
-An element keeps its own props, and the part's are merged in: class names join, styles merge and refs merge (ADR-0015). A `className` prop and a `render` element's own `className` join `kv-section` instead of replacing it, so the theme keeps styling the section. The function form gets the props, with a callback ref that fits any element, and an empty state object. Spread them, and keep `className`: it holds the part's class and your own.
+An element keeps its own props, and the part's are merged in: class names join, styles merge and refs merge. A `className` prop and a `render` element's own `className` join `kv-section` instead of replacing it, so the theme keeps styling the section. The function form gets the props, with a callback ref that fits any element, and an empty state object. Spread them, and keep `className`: it holds the part's class and your own.
 
 ## Hook
 

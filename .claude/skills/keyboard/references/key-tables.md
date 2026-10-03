@@ -13,7 +13,7 @@ These are starting points for a contract's Keyboard table. Every component also 
 | Tab / Shift+Tab                    | Moves focus into and out of the input. Addons are never Tab stops      |
 | Characters                         | Type. Native                                                           |
 | ArrowLeft / ArrowRight, Home / End | Move the caret. Native, never intercepted                              |
-| ArrowUp / ArrowDown                | Native caret movement only. Never change a number value (ADR-0030)     |
+| ArrowUp / ArrowDown                | Native caret movement only. Never change a number value                |
 | Control/Command+A, C, V, X, Z      | Select, copy, paste, cut, undo. Native. Paste is never blocked (3.3.8) |
 | Enter                              | Submits the form (implicit submission). Native, never prevented        |
 | Escape                             | Nothing, unless a pattern adds it (a combobox closes its popup)        |
@@ -37,7 +37,7 @@ These are starting points for a contract's Keyboard table. Every component also 
 
 One Tab stop for the group. Focus strategy: native.
 
-### DateInput (three fields, ADR-0030)
+### DateInput (three fields; planned, see the roadmap)
 
 | Key                 | Action                                                            |
 | ------------------- | ----------------------------------------------------------------- |

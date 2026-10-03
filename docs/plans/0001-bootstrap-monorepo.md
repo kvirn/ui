@@ -3,7 +3,7 @@
 - **Status:** Done
 - **Owner:** Maintainer
 - **Created:** 2026-09-30 · **Target:** M0 Foundation
-- **Related:** ADR-0002, ADR-0003, ADR-0004, Plan 0002, Plan 0003
+- **Related:** Plan 0002, Plan 0003
 
 ## Goal
 
@@ -17,7 +17,7 @@ A contributor (human or agent) can run every command in AGENTS.md and get a real
 
 ## Background
 
-- Toolchain is fixed by ADR-0002: pnpm workspaces + catalogs, Vite+ (`vp`), Oxlint + Oxfmt, Vitest browser mode, Playwright, Storybook (Vite builder), Changesets.
+- Toolchain is fixed (see docs/engineering.md): pnpm workspaces + catalogs, Vite+ (`vp`), Oxlint + Oxfmt, Vitest browser mode, Playwright, Storybook (Vite builder), Changesets.
 - `engineering.md` requires verifying `vp` command names against viteplus.dev during bootstrap.
 - `.claude/hooks/verify.sh` no-ops until `package.json` exists. Once it does, every session with code changes is gated.
 

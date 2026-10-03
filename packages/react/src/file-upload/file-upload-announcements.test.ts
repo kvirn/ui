@@ -13,7 +13,7 @@ import type {
   HeldUploadResults,
 } from './file-upload-announcements.ts'
 
-// Contract: design spec §7.3 and ADR-0038 item 7. The buffer is pure: finished sentences in,
+// Contract: design spec §7.3. The buffer is pure: finished sentences in,
 // one Announcer call per flush out. These tests use fake timers and no React.
 
 /** A participant that writes English sentences from the held results, like the hook does. */

@@ -28,7 +28,7 @@ export interface InputProps extends Omit<
   ComponentPropsWithRef<'input'>,
   'type' | 'value' | 'defaultValue'
 > {
-  /** Default `'text'`. Never `number` or `date` (ADR-0030). */
+  /** Default `'text'`. Never `number` or `date`. */
   type?: InputType | undefined
   /** Controlled: the value from your form state. */
   value?: string | undefined
@@ -37,7 +37,7 @@ export interface InputProps extends Omit<
   /** Reports each change, with `{ reason: 'input', event }`. `onChange` still works too. */
   onValueChange?: ((value: string, details: InputChangeDetails) => void) | undefined
   /**
-   * Shapes what the user types (ADR-0032): a preset from `masks`, or your own. The input stays
+   * Shapes what the user types: a preset from `masks`, or your own. The input stays
    * native, so paste, autofill and undo work. `onValueChange` then also gets `unmaskedValue`,
    * `isComplete`, `isWithinRange` (number masks) and `rejected`. Put the format in a hint, a
    * `<Prose>` in the Field (3.3.2).
@@ -48,7 +48,7 @@ export interface InputProps extends Omit<
    * characters. Default `true`. Needs a `KvirnProvider`: without one nothing is announced.
    */
   announceRejections?: boolean | undefined
-  /** With a `mask`: per-instance overrides for the rejection announcements (ADR-0007). */
+  /** With a `mask`: per-instance overrides for the rejection announcements. */
   messages?: Partial<KvirnMessages['mask']> | undefined
   render?: RenderProp<ComponentPropsWithRef<'input'>, InputState> | undefined
 }
@@ -64,9 +64,9 @@ function hasNameSource(input: HTMLInputElement): boolean {
 
 /**
  * A native text `<input>`, wired to its Field: the label names it, and the hint and error
- * describe it (ADR-0029, contract: input.a11y.md). It holds no form state: pass `value` and
+ * describe it (contract: input.a11y.md). It holds no form state: pass `value` and
  * `onValueChange`, or `defaultValue` and `name` for a plain form, or spread your form library's
- * props. Numbers are text with `inputMode` (ADR-0030).
+ * props. Numbers are text with `inputMode`.
  *
  * @example
  * <Field>
@@ -136,7 +136,7 @@ export function Input({
     if (type === 'email' && mask.attributes.inputMode !== 'email') {
       warnOnce(
         'input-mask-on-email',
-        'A mask other than masks.email() is on an Input with type="email". The browser has no selection API for it, so the caret can’t be kept while the mask rewrites the value (ADR-0032). Use type="text" with inputMode="email", or masks.email().',
+        'A mask other than masks.email() is on an Input with type="email". The browser has no selection API for it, so the caret can’t be kept while the mask rewrites the value. Use type="text" with inputMode="email", or masks.email().',
       )
     }
     if (controlId !== undefined && !hasDescriptionText) {
@@ -144,7 +144,7 @@ export function Input({
       if (element.ownerDocument.querySelector(`[id^="${CSS.escape(prefix)}"]`) === null) {
         warnOnce(
           'input-mask-without-description',
-          'A masked Input in a Field has no hint. The mask shapes what is typed, but it doesn’t explain the format: say it in a visible hint, a <Prose> in the Field, with an example (WCAG 3.3.2, ADR-0032, ADR-0054).',
+          'A masked Input in a Field has no hint. The mask shapes what is typed, but it doesn’t explain the format: say it in a visible hint, a <Prose> in the Field, with an example (WCAG 3.3.2).',
         )
       }
     }

@@ -7,7 +7,7 @@ import type { FormLocale } from './form.fixture.tsx'
 // an agent: until then those locales show the English text, marked lang="en" (3.1.2). The
 // library's own strings ("(optional)", "Error:") follow the locale through `withFormLocale`.
 //
-// KvirnUI holds no form state (ADR-0029, item 0). Nothing here validates: an "invalid" story
+// KvirnUI holds no form state. Nothing here validates: an "invalid" story
 // sets `invalid` and writes the message itself, as an implementor's form logic would.
 
 export interface ChoiceTexts {

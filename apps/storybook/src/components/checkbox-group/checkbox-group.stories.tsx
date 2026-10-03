@@ -20,9 +20,9 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/CheckboxGroup: one question with several answers, in a native <fieldset> under
-// a <legend> (ADR-0029, design spec docs/design/form-fields.md §6.2 and §6.5). `value` and
+// a <legend> (design spec docs/design/form-fields.md §6.2 and §6.5). `value` and
 // `onValueChange` are the selected values: the group derives each box from `value` and reports
-// the next array. KvirnUI holds no form state (ADR-0029, item 0): without `value` the native
+// the next array. KvirnUI holds no form state: without `value` the native
 // checkboxes are uncontrolled. Nothing here validates: an invalid story sets `invalid` itself.
 // checkbox-group.e2e.ts runs the keyboard rows, forced colours and reflow checks.
 

@@ -1,7 +1,7 @@
 # Accessibility contract: Popover (Root, Trigger, Popup, Close)
 
 - **APG pattern:** [Dialog (Non-Modal)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) for the popup, opened by a [Disclosure](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/)-style button (`aria-expanded`, `aria-controls`). The popup is non-modal: the page behind it stays reachable and is never `inert`.
-- **Deviations:** none from the APG keyboard practice. Decisions: ADR-0046 (the native `popover` attribute, the pure placement function and the dismissable-layer stack, with its implementation notes for Popover), ADR-0039 (keys). Opening does not move focus, which is the disclosure pattern's rule, not the modal dialog's (see Focus management).
+- **Deviations:** none from the APG keyboard practice. Decisions (overlays-and-lists skill): the native `popover` attribute, the pure placement function and the dismissable-layer stack, with its implementation notes for Popover. Opening does not move focus, which is the disclosure pattern's rule, not the modal dialog's (see Focus management).
 - **Native elements used:** `<button>` (Trigger, Close), `<div popover="auto" role="dialog">` (Popup). Nothing for Root: it renders no element.
 - **Status:** alpha candidate (Plan 0022, Phase 2). Manual AT is `pending`.
 - **Tests:** `popover.test.tsx`, `../popup/use-popup.test.tsx` and `../popup/use-dismissable-layer.test.tsx` next to this file. `popover.stories.tsx` and `popover.e2e.ts` in `apps/storybook/src/components/popover/`.
@@ -29,12 +29,12 @@ Rules, tested in `popover.test.tsx`, `use-popup.test.tsx` and `use-dismissable-l
 - **Same state as the page.** When the platform hides an open popup (a light dismiss, or another auto popover opening), `onOpenChange(false, { reason: 'light-dismiss' })` runs, so the state matches. A click on the trigger never opens a popup the platform just closed.
 - **Focus.** See Focus management.
 - **Server rendering.** Nothing reads `window` while rendering: the server writes `popover`, `data-placement`, `aria-*` and no inline position. Everything else happens in effects.
-- **`render` on every part,** with class and handlers merged and refs merged (ADR-0015).
+- **`render` on every part,** with class and handlers merged and refs merged.
 - **Dev warnings:** a Popup with no accessible name, and a Trigger, Popup or Close outside a Root.
 
 ## Keyboard
 
-<!-- Format and rules: the `keyboard` skill (ADR-0039). Shown on the Storybook Docs page. -->
+<!-- Format and rules: the `keyboard` skill. Shown on the Storybook Docs page. -->
 
 - **Focus strategy:** native
 - **Selection follows focus:** n/a
@@ -91,7 +91,7 @@ Popover has no strings of its own and announces nothing: `aria-expanded` changes
 - Target size: the trigger and Close are at least 44px high in comfortable density, 32px compact (2.5.8). Nothing in the popup is smaller.
 - Colour: the popup's edge keeps 3:1 against the page (1.4.11) and its text 4.5:1 on its surface. In the default theme these pairs are in `theme:check` once the theme styles are added.
 - forced-colors behaviour: the popup keeps a visible 1px `CanvasText` edge (`popover.e2e.ts › forced colours: the popup keeps a visible edge`). Open state is shown by `aria-expanded`, never by colour alone.
-- reduced-motion behaviour: no positional animation, ever. A fade is opacity only and is off under `prefers-reduced-motion` (ADR-0046 item 4).
+- reduced-motion behaviour: no positional animation, ever. A fade is opacity only and is off under `prefers-reduced-motion`.
 - Reflow: at 320px the popup is never wider than the viewport minus the padding, scrolls inside when it is too tall, and the page has no horizontal scroll (`popover.e2e.ts › at 320px the popup stays inside the viewport`, 1.4.10).
 - RTL: `start` and `end` placements follow the anchor's direction: `bottom-start` lines the popup's right edge with the trigger's in right-to-left text.
 
@@ -110,7 +110,7 @@ Popover has no strings of its own and announces nothing: `aria-expanded` changes
 
 | AT + browser + OS                        | Date    | Tester | Result | Notes |
 | ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| **Core (required for beta)**             |         |        |        |       |
 | NVDA + Firefox + Windows                 | pending |        |        |       |
 | VoiceOver + Safari + macOS               | pending |        |        |       |
 | VoiceOver + Safari + iOS                 | pending |        |        |       |
@@ -127,7 +127,7 @@ Also pending, by hand: whether screen readers announce the popup's name when foc
 
 ## Known issues
 
-- **Opening does not move focus,** so a screen reader user hears only "expanded" on the trigger and has to move on with Tab (or a virtual cursor key) to reach the popup. This is the disclosure pattern and is deliberate (ADR-0046). A Dialog is the pattern for content that must take focus.
+- **Opening does not move focus,** so a screen reader user hears only "expanded" on the trigger and has to move on with Tab (or a virtual cursor key) to reach the popup. This is the disclosure pattern and is deliberate. A Dialog is the pattern for content that must take focus.
 - **A closed popup's content is in the DOM,** hidden by the browser. A popup with a heavy subtree, or with ids that must be unique, is the consumer's to render conditionally.
-- **No Safari 17 or iOS run yet.** `popover` light dismiss and the toggle event differ a little between browsers (ADR-0046, Consequences). The Chromium baseline is green; the Safari rows wait for CI and the AT matrix.
+- **No Safari 17 or iOS run yet.** `popover` light dismiss and the toggle event differ a little between browsers (Consequences). The Chromium baseline is green; the Safari rows wait for CI and the AT matrix.
 - **The default theme does not style Popover yet.** The parts carry classes and `data-*` only (`kv-popover-trigger`, `kv-popover-popup`, `kv-popover-close`), plus the inline placement. A themed look follows with the design review of Plan 0022.

@@ -52,7 +52,7 @@ interface Layer {
 }
 
 /**
- * Pure state for the layers that dismiss on Escape and outside presses (ADR-0046): popovers,
+ * Pure state for the layers that dismiss on Escape and outside presses: popovers,
  * menus, listboxes. It holds no DOM and no listeners. The React `useDismissableLayer` feeds it
  * events and measures `contains`, so a nested layer closes before the one under it.
  */

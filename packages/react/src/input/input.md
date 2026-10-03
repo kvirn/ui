@@ -1,14 +1,14 @@
 # Input
 
-> **Draft** (Plan 0013). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [input.a11y.md](input.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md), and the decisions are in ADR-0029 (fields) and ADR-0030 (numbers and dates).
+> **Draft** (Plan 0013). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [input.a11y.md](input.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md), and the decisions are in the forms skill.
 
 **KvirnUI holds no form state; bring your own form logic.** Input is a native `<input>`. It renders the `value` you give it and reports changes up through `onValueChange`. It never copies the value into state of its own, and it doesn't validate. Use it with TanStack Form, React Hook Form, your own `useState`, or a plain `<form>`.
 
 - A native `<input>` with a text-like `type`: `text` (the default), `email`, `tel`, `url`, `password` or `search`. The browser supplies the role, the keyboard, selection, paste and autofill.
 - Inside a [Field](../field/field.md) it takes its `id`, `aria-describedby`, `aria-invalid`, `aria-required` and `disabled` from it. Outside a Field it needs `aria-label` or `aria-labelledby`: a dev warning says so.
 - **Controlled:** pass `value` and `onValueChange(value, { reason: 'input', event })`. **Uncontrolled:** pass `defaultValue` and `name`, and the browser keeps the value until a form submit reads it. `onChange` and every other native prop, `name` and `ref` pass through.
-- **Numbers are text** (ADR-0030): `type="text"` with `inputMode="numeric"` or `"decimal"`, and `spellCheck={false}`. `type="number"` and `type="date"` aren't accepted. See Numbers below.
-- **Masks** (Plan 0014, ADR-0032): `mask={masks.personalIdentityNumber({ country: 'SE' })}` shapes what is typed. It stays a native `<input>`: paste, autofill and undo work, nothing is clamped or corrected, and a refused character is announced. See Masks below.
+- **Numbers are text**: `type="text"` with `inputMode="numeric"` or `"decimal"`, and `spellCheck={false}`. `type="number"` and `type="date"` aren't accepted. See Numbers below.
+- **Masks** (Plan 0014): `mask={masks.personalIdentityNumber({ country: 'SE' })}` shapes what is typed. It stays a native `<input>`: paste, autofill and undo work, nothing is clamped or corrected, and a refused character is announced. See Masks below.
 - Headless: no CSS. It renders `kv-input`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported it is styled.
 
 ## Component
@@ -79,7 +79,7 @@ No `value`, no handlers: each Input is uncontrolled, and the form's `FormData` h
 
 ### Hints and errors: the order
 
-The default order (ADR-0031) is label, hint, input, a second hint under the input, then the error ([Field](../field/field.md#the-default-order)). Put what to answer above the input, and a format example under it:
+The default order is label, hint, input, a second hint under the input, then the error ([Field](../field/field.md#the-default-order)). Put what to answer above the input, and a format example under it:
 
 ```tsx
 <Field invalid={invalid}>
@@ -120,7 +120,7 @@ A unit ("kr", "%"), a decorative icon or a button inside the input's box goes in
 
 ### Masks
 
-A mask shapes what the user types: it drops characters that can't be valid, puts separators in as the user types past them, and limits the length. The control stays a native `<input>`, so paste, autofill, undo and dictation keep working (ADR-0032).
+A mask shapes what the user types: it drops characters that can't be valid, puts separators in as the user types past them, and limits the length. The control stays a native `<input>`, so paste, autofill, undo and dictation keep working.
 
 ```tsx
 import { ErrorMessage, Field, Input, Label, masks, Prose } from '@kvirn-ui/react'
@@ -152,7 +152,7 @@ Presets (all from `masks`, re-exported by `@kvirn-ui/react`):
 | `organisationNumber({ country })`, `postalCode({ country })`, `iban()`                         | `556000-0001`, `123 45`, `SE45 5000 0000 0583 9825 7466`                                                                                           |
 | `email()`, `telephone()`                                                                       | Filters: spaces out of an address, and digits, `+`, space, `-`, `(`, `)` for a number. No national format                                          |
 | `pattern('aa-9999', { transform? })`, `regexp(/^[A-Z]{0,3}\d{0,3}$/, { allowed?, complete? })` | Your own. In a pattern `9` is a digit, `a` a letter (å, ø, đ, ŋ count), `*` either, and the rest are literals. A regexp must accept partial values |
-| `oneTimeCode({ pattern })`                                                                     | For a one-time code (ADR-0033, ADR-0045): `9` digit, `*` letter or digit, `a` letter, `A` and `&` upper-case, `-` a separator. ASCII only          |
+| `oneTimeCode({ pattern })`                                                                     | For a one-time code: `9` digit, `*` letter or digit, `a` letter, `A` and `&` upper-case, `-` a separator. ASCII only                               |
 
 A preset suggests `inputMode`, `autoCapitalize`, `spellCheck={false}` and, for identifiers, `dir="ltr"`. Your own props win. It never sets `autocomplete`: that depends on the question.
 

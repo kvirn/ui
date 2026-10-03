@@ -1,5 +1,5 @@
 /**
- * Locale-aware text matching for Listbox, Combobox and Autocomplete (ADR-0037, item 10).
+ * Locale-aware text matching for Listbox, Combobox and Autocomplete.
  *
  * Matching uses `Intl.Collator` with `sensitivity: 'base'`: case and, where the locale allows it,
  * accents are ignored, but letters the locale treats as separate stay separate. In `sv`, `fi`,

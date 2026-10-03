@@ -133,7 +133,7 @@ test.describe('Site-wide compact density', () => {
   }
 })
 
-// Button depth (ADR-0026, docs/design/button-depth.md section 10). Depth is a visual rule, but
+// Button depth (docs/design/button-depth.md section 10). Depth is a visual rule, but
 // WCAG depends on it in four places, so these read computed styles: keyboard focus shows no
 // shadow, so the ring sits on the plain page (2.4.7, 2.4.13); every tinted edge keeps its
 // boundary (1.4.11); the contrast themes and forced colours stay flat (1.4.11, 1.4.1); and the
@@ -329,7 +329,7 @@ test.describe('Button depth: light', () => {
       }
     })
 
-    test(`${kind}: the hover edge is tinted from its hover colour, and primary keeps its border (ADR-0021)`, async ({
+    test(`${kind}: the hover edge is tinted from its hover colour, and primary keeps its border`, async ({
       page,
     }) => {
       const { restButton } = await openDepth(page, 'mode:light;contrast:standard')

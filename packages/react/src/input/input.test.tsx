@@ -93,7 +93,7 @@ describe('rendering', () => {
     await expect.element(page.getByRole(role, { name: 'Fält' })).toBeVisible()
   })
 
-  test('passes autoComplete, inputMode and spellCheck for numbers (ADR-0030)', async () => {
+  test('passes autoComplete, inputMode and spellCheck for numbers', async () => {
     const { container } = await render(
       <Input aria-label="Antal barn" inputMode="numeric" spellCheck={false} autoComplete="off" />,
     )
@@ -523,7 +523,7 @@ describe('server rendering', () => {
 })
 
 describe('types', () => {
-  test('type is the text-like union, never number or date (ADR-0030)', () => {
+  test('type is the text-like union, never number or date', () => {
     expectTypeOf<InputType>().toEqualTypeOf<
       'text' | 'email' | 'tel' | 'url' | 'password' | 'search'
     >()
@@ -547,7 +547,7 @@ describe('types', () => {
   })
 })
 
-describe('mask (ADR-0032, contract: input.a11y.md › Masked input)', () => {
+describe('mask (contract: input.a11y.md › Masked input)', () => {
   const personalIdentityNumber = masks.personalIdentityNumber({ country: 'SE' })
 
   test('without a mask nothing changes: no suggested attributes, no announcer warning', async () => {
@@ -770,7 +770,7 @@ describe('mask (ADR-0032, contract: input.a11y.md › Masked input)', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('a mask other than masks.email() on type="email" warns once (ADR-0032 item 9)', async () => {
+  test('a mask other than masks.email() on type="email" warns once', async () => {
     await render(<Input aria-label="E-post" type="email" mask={masks.digits()} />)
     await vi.waitFor(() => {
       expect(consoleWarn).toHaveBeenCalledTimes(1)

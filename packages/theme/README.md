@@ -2,7 +2,7 @@
 
 The optional default theme for KvirnUI: one hand-written, readable CSS file, `theme.css`. The headless packages ship no CSS. This file styles them through the classes they render and their state attributes.
 
-> **Pre-alpha.** The look is a proposal (ADR-0013 and ADR-0014, both Proposed). It is designed and tested to meet WCAG 2.2 AA, but check your own service.
+> **Pre-alpha.** The look is accepted, and the package is pre-alpha: expect changes before 1.0. It is designed and tested to meet WCAG 2.2 AA, but check your own service.
 
 ## Three ways to use it
 
@@ -173,7 +173,7 @@ The lowest pairs are 3.13:1 and 3.32:1 in the dark theme on `primary-subtle`, so
 
 ## Button depth
 
-Buttons sit on the page in the light and dark themes: a soft shadow that lifts on hover, and a 1px edge tinted darker at the bottom in light and lighter at the top in dark (ADR-0026). The shadow goes when a button is pressed, and on keyboard focus, so the focus ring sits on the plain page. Disabled buttons, the high-contrast themes and forced colours are flat, with the same edge on all four sides.
+Buttons sit on the page in the light and dark themes: a soft shadow that lifts on hover, and a 1px edge tinted darker at the bottom in light and lighter at the top in dark. The shadow goes when a button is pressed, and on keyboard focus, so the focus ring sits on the plain page. Disabled buttons, the high-contrast themes and forced colours are flat, with the same edge on all four sides.
 
 | Custom property              | Light                       | Dark                       | High contrast, forced colours |
 | ---------------------------- | --------------------------- | -------------------------- | ----------------------------- |

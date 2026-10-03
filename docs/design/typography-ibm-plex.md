@@ -2,7 +2,7 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-01
-- **Plan:** [0011](../plans/0011-ibm-plex-typography.md) · **Related ADRs:** [ADR-0027](../adr/0027-ibm-plex-typefaces.md) (amends ADR-0014 and ADR-0017)
+- **Plan:** [0011](../plans/0011-ibm-plex-typography.md)
 - **Type:** theme/token change
 
 The maintainer has decided (2026-10-01): IBM Plex Sans for body text, labels and controls, and IBM Plex Serif for headings. This spec says how. Figures marked _measured_ come from fontTools on the committed woff2 files in `apps/docs/fonts/ibm-plex/`, or from a Playwright render of them, both run here on 2026-10-01.
@@ -32,7 +32,7 @@ The maintainer has decided (2026-10-01): IBM Plex Sans for body text, labels and
 | `--kv-font-family-system`       | unchanged (`system-ui, -apple-system, 'Segoe UI', Roboto, …, sans-serif`)     | –                    |
 | `--kv-font-family-sans`         | `'IBM Plex Sans', var(--kv-font-family-system)`                               | changed              |
 | `--kv-font-family-system-serif` | `ui-serif, Cambria, 'Noto Serif', Georgia, serif`                             | **new** (proposed)   |
-| `--kv-font-family-serif`        | `'IBM Plex Serif', var(--kv-font-family-system-serif)`                        | **new** (ADR-0027)   |
+| `--kv-font-family-serif`        | `'IBM Plex Serif', var(--kv-font-family-system-serif)`                        | **new**              |
 | `--kv-font-family-mono`         | unchanged                                                                     | –                    |
 | `--kv-font-family-body`         | not set. Read as `var(--kv-font-family-body, var(--kv-font-family-sans))`     | unchanged            |
 | `--kv-font-family-heading`      | not set. Read as `var(--kv-font-family-heading, var(--kv-font-family-serif))` | **fallback changed** |
@@ -158,7 +158,7 @@ No roles, names, focus or announcements change. The relevant SCs: 1.4.4 (rem), 1
 
 ## 9. Open questions
 
-1. **New token `--kv-font-family-system-serif`.** It isn't in plan 0011 or ADR-0027. Accept it (recommended), or write the serif fallback inline in `--kv-font-family-serif` and drop the Glyphs row.
+1. **New token `--kv-font-family-system-serif`.** It isn't in plan 0011 or the IBM Plex decision. Accept it (recommended), or write the serif fallback inline in `--kv-font-family-serif` and drop the Glyphs row.
 2. **Adopter upgrade.** Every adopter who sets only `--kv-font-family-body` will now get serif headings. Plan 0011 says minor (pre-1.0). The changeset should lead with the one-line opt-out.
 3. **Georgia's old-style figures** in Chrome and Firefox on macOS without Plex. Acceptable for a fallback?
 4. **Out of scope:** `--kv-prose-measure: 70ch` comes to about 92 characters a line (_measured_ estimate, the same in Inter and Plex, because `ch` is the zero's width), above DESIGN.md's 60–75. That needs its own change.

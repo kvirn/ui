@@ -42,7 +42,7 @@ function warnOutsideRoot(part: string): void {
 }
 
 /**
- * Owns the open state of a popover (ADR-0046; contract: popover.a11y.md). It renders no element:
+ * Owns the open state of a popover (contract: popover.a11y.md). It renders no element:
  * put a `Popover.Trigger` and a `Popover.Popup` inside it, the popup right after the trigger.
  * Open it from state with `open` and `onOpenChange`, or let it keep its own with `defaultOpen`.
  *
@@ -155,7 +155,7 @@ export function PopoverClose({ render, ref, ...otherProps }: PopoverCloseProps):
 }
 PopoverClose.displayName = 'Popover.Close'
 
-/** A popover: a trigger that opens a popup in the top layer, placed next to it (ADR-0046). */
+/** A popover: a trigger that opens a popup in the top layer, placed next to it. */
 export const Popover = {
   Root: PopoverRoot,
   Trigger: PopoverTrigger,

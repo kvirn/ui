@@ -1,6 +1,6 @@
 # APG pattern map
 
-Source: https://www.w3.org/WAI/ARIA/apg/patterns/. Re-check the live page before implementing, because APG gets updated. Full key tables, and the APG keyboard practice that applies to every pattern (ADR-0039), are in the `keyboard` skill: `.claude/skills/keyboard/references/key-tables.md`.
+Source: https://www.w3.org/WAI/ARIA/apg/patterns/. Re-check the live page before implementing, because APG gets updated. Full key tables, and the APG keyboard practice that applies to every pattern, are in the `keyboard` skill: `.claude/skills/keyboard/references/key-tables.md`.
 
 | KvirnUI component   | APG pattern                     | Key notes                                                                                                                             |
 | ------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |

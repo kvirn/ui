@@ -1,4 +1,4 @@
-// ADR-0039: every component's keys live in the `## Keyboard` section of its `<name>.a11y.md`.
+// Every component's keys live in the `## Keyboard` section of its `<name>.a11y.md`.
 // This module reads that section. The Storybook Docs block renders what it returns, and the
 // check in keyboard-docs.test.ts fails on what it reports. Pure: no DOM, no file access, and no
 // markdown library (Plan 0015).

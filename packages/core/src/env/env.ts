@@ -1,6 +1,6 @@
 /**
  * Everything `core` knows about the host page. Components receive it instead of
- * reading globals, so they stay SSR-safe, testable and work inside iframes (ADR-0003).
+ * reading globals, so they stay SSR-safe, testable and work inside iframes.
  */
 export interface Env {
   readonly window: Window & typeof globalThis

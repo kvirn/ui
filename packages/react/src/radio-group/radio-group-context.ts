@@ -2,7 +2,7 @@ import { createContext } from 'react'
 import type { ChangeEventHandler } from 'react'
 
 // Internal. How a RadioGroup hands each Radio inside it the props it derives from the group's
-// `value` (ADR-0029, item 0): nothing is stored, the group only computes.
+// `value`: nothing is stored, the group only computes.
 
 /** What a RadioGroup puts on one of its radios. */
 export interface RadioGroupItemProps {
@@ -14,7 +14,7 @@ export interface RadioGroupItemProps {
   defaultChecked?: boolean
   /** Reports the group's next value. */
   onChange: ChangeEventHandler<HTMLInputElement>
-  /** The group is invalid. Styling only: a radio never gets `aria-invalid` (ADR-0029, item 10). */
+  /** The group is invalid. Styling only: a radio never gets `aria-invalid`. */
   'data-invalid'?: ''
   'data-disabled'?: ''
 }

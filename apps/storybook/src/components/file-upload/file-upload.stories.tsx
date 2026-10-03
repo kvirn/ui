@@ -11,7 +11,7 @@ import {
   makeImage,
 } from './file-upload.fixture.tsx'
 
-// Components/Form/FileUpload: attach files to an application (Plan 0021, ADR-0038, design spec
+// Components/Form/FileUpload: attach files to an application (Plan 0021, design spec
 // docs/design/file-upload.md). One native button opens the system dialog: that is the way in for
 // the keyboard, voice, switch and touch. A drop zone is an extra on devices that drag. The native
 // `<input type="file">` is hidden from assistive technology and never required. Every limit is
@@ -21,7 +21,7 @@ import {
 // it with `controlledUpload`. Client checks aren't security: the server checks type, size and
 // content again.
 //
-// KvirnUI holds no form state (ADR-0029). The Field's `invalid` and message stay with the
+// KvirnUI holds no form state. The Field's `invalid` and message stay with the
 // consumer, who decides whether a refused file blocks the form. file-upload.e2e.ts runs the keys,
 // the drop, focus after a removal, RTL, forced colours, reduced motion and reflow.
 

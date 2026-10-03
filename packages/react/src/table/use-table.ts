@@ -69,20 +69,20 @@ export interface UseTableExtraOptions {
   /**
    * Render only the rows near the scroll position, with spacer rows for the rest. Off by default:
    * pagination or a filter is better, because unrendered rows can't be found with find-in-page,
-   * aren't printed and are out of reach of a screen reader's browse mode (ADR-0059). Rows keep
+   * aren't printed and are out of reach of a screen reader's browse mode. Rows keep
    * `aria-rowindex`, and the table `aria-rowcount`. Ignored, with a development warning, when
    * `rowExpandingFeature` is registered.
    */
   virtualize?: boolean | TableVirtualizeOptions | undefined
   /** Rows are loading: `aria-busy` and `data-busy` on the table, and "Loading rows." is announced. */
   isLoading?: boolean | undefined
-  /** Per-instance message overrides (ADR-0007). */
+  /** Per-instance message overrides. */
   messages?: Partial<KvirnMessages['table']> | undefined
 }
 
 /**
  * TanStack Table's options (`features`, `columns`, `data`, `getRowId`, `state`, `on…Change`,
- * `initialState`, …) and KvirnUI's. Multi-sort isn't an option (ADR-0059).
+ * `initialState`, …) and KvirnUI's. Multi-sort isn't an option.
  */
 export type UseTableOptions<
   TFeatures extends TableFeatures,
@@ -319,8 +319,7 @@ const toSortDirection = (sorted: false | SortDirection): TableSortDirection | un
 
 /**
  * Creates the table for `Table.Root`, or for your own elements: TanStack Table with KvirnUI's
- * accessible defaults, and the props each native table element needs (ADR-0035, ADR-0059,
- * contract: table.a11y.md). It re-renders when the table's state changes, so a sort or a
+ * accessible defaults, and the props each native table element needs (contract: table.a11y.md). It re-renders when the table's state changes, so a sort or a
  * selection shows without any wiring. Sorting is one column at a time. Call it once per table.
  *
  * @example
@@ -391,11 +390,8 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
   )
   // Stable between renders while their inputs are, so the virtualizer doesn't measure again for nothing.
   const estimateRowSize = useCallback(() => estimateSize, [estimateSize])
-  const getRowKey = useCallback(
-    (index: number) => rowModelRows[index]?.id ?? index,
-    [rowModelRows],
-  )
-  // The row that holds focus stays rendered wherever it is scrolled to (ADR-0059).
+  const getRowKey = useCallback((index: number) => rowModelRows[index]?.id ?? index, [rowModelRows])
+  // The row that holds focus stays rendered wherever it is scrolled to.
   const getRequiredRowIndexes = useCallback(() => {
     const position = focusedRowId === null ? undefined : rowPositionById.get(focusedRowId)
     return position === undefined ? [] : [position]
@@ -601,8 +597,10 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
       scope: spansColumns ? 'colgroup' : 'col',
       ...(spansColumns ? { colSpan: header.colSpan } : {}),
       ...(sort === undefined ? {} : { 'aria-sort': sort, 'data-sort': sort }),
-      // A fixed layout takes the widths of the columns from the head (ADR-0059, item 5).
-      ...(isVirtualized && hasHeaderSize(header) ? { style: { inlineSize: header.getSize() } } : {}),
+      // A fixed layout takes the widths of the columns from the head.
+      ...(isVirtualized && hasHeaderSize(header)
+        ? { style: { inlineSize: header.getSize() } }
+        : {}),
     } satisfies TableColumnHeaderPartProps
   }
 
@@ -617,7 +615,7 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
         if (!hasColumnSorting(column) || !column.getCanSort()) {
           return
         }
-        // One column at a time: no multi-sort, so a Shift+click is a plain click (ADR-0059).
+        // One column at a time: no multi-sort, so a Shift+click is a plain click.
         const next = column.getNextSortingOrder(false)
         column.toggleSorting(undefined, false)
         const label =

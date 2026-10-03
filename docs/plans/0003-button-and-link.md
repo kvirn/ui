@@ -3,7 +3,7 @@
 - **Status:** Done (alpha. Manual AT and Sámi review pending before beta)
 - **Owner:** Maintainer
 - **Created:** 2026-09-30 · **Target:** M0 proof / M1
-- **Related:** ADR-0005, ADR-0007, ADR-0015, ADR-0016, Plan 0002
+- **Related:** Plan 0002
 
 ## Goal
 
@@ -34,12 +34,12 @@ const button = useButton({ disabled, focusableWhenDisabled: true })
 <Button disabled focusableWhenDisabled>Skicka</Button>     // aria-disabled, activation blocked
 <Button render={<MyStyledButton />}>…</Button>             // must still render a <button>
 
-<Link href="/ansok" current="page">Ansök</Link>            // registered router Link (ADR-0005)
+<Link href="/ansok" current="page">Ansök</Link>            // registered router Link
 <Link href="https://digg.se" target="_blank">
   Digg <Link.NewTabNotice />                               // "(öppnas i en ny flik)" from i18n
 </Link>
 <Link href="https://digg.se" target="_blank" messages={{ newTabNotice: '(nytt fönster)' }}>
-  Digg <Link.NewTabNotice />                               // instance override (ADR-0007)
+  Digg <Link.NewTabNotice />                               // instance override
 </Link>
 <Link.NewTabNotice>(extern länk)</Link.NewTabNotice>       // children win over every message
 <Link href="/fi" hrefLang="fi" lang="fi">Suomeksi</Link>
@@ -73,7 +73,7 @@ const button = useButton({ disabled, focusableWhenDisabled: true })
 | ------------------- | -------------------- | --------------------- | ---------------------------- | -------------------- | ------------------------ | ------------------- |
 | `link.newTabNotice` | (opens in a new tab) | (öppnas i en ny flik) | (avautuu uuteen välilehteen) | (åpnes i en ny fane) | (blir opna i ei ny fane) | TODO(native-review) |
 
-Overridable via `<Link messages>`, provider `messages`, or `Link.NewTabNotice` children (ADR-0007). Tests cover all three.
+Overridable via `<Link messages>`, provider `messages`, or `Link.NewTabNotice` children. Tests cover all three.
 
 ### Theming surface
 
@@ -84,7 +84,7 @@ Overridable via `<Link messages>`, provider `messages`, or `Link.NewTabNotice` c
 - [x] `button.a11y.md` and `link.a11y.md` from the contract template
 - [x] Failing tests: Vitest + axe, Playwright rows above
 - [x] `core`: none expected (stateless). Revisit for Toggle
-- [x] `react`: `useButton`, `Button`, `useLink`, `Link`, `Link.NewTabNotice`, `mergeProps` (first user). Also internal `renderPart` (`render` prop), `useFocusVisible` and `useMergedRef` (ADR-0015, ADR-0016)
+- [x] `react`: `useButton`, `Button`, `useLink`, `Link`, `Link.NewTabNotice`, `mergeProps` (first user). Also internal `renderPart` (`render` prop), `useFocusVisible` and `useMergedRef`
 - [ ] i18n string in all 6 locales, Sámi reviewed by a native speaker. The key exists in all 6 locales (Plan 0002). `se` is still an English placeholder, `TODO(native-review)`: not reviewed. **Blocks `beta`** (3.1.2: English text under `lang="se"`)
 - [x] Stories: default, disabled, focusable-disabled, submit in a form, current page, new tab, router link (mock), RTL, forced-colors. Also new-tab notice overrides and other language. The smoke story and its e2e are deleted
 - [x] accessibility-reviewer APPROVE (second round, after the render-element fix)

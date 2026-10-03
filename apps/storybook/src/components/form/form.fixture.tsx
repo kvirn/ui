@@ -14,7 +14,7 @@ import type { Decorator } from '@storybook/react-vite'
 // English text, marked lang="en" (3.1.2). The library's own strings ("(optional)", "Error:")
 // follow the locale through the provider decorator below, like an app's provider would.
 //
-// KvirnUI holds no form state (ADR-0029, item 0). Nothing here validates: an "invalid" story
+// KvirnUI holds no form state. Nothing here validates: an "invalid" story
 // sets `invalid` and writes the message itself, as an implementor's form logic would.
 
 export type FormLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
@@ -29,7 +29,7 @@ export interface FormTexts {
   registration: string
   /** The hint above the control: where to find the answer. */
   registrationWhere: string
-  /** The hint under the control: a format example (ADR-0031). */
+  /** The hint under the control: a format example. */
   registrationHint: string
   /** The ErrorMessage, under the hint under the control. */
   registrationError: string
@@ -347,7 +347,7 @@ export const withFormLocale: Decorator = (Story, { globals }) => {
 }
 
 /**
- * Every state of a text field in one column, in the default order (ADR-0031: label, hint,
+ * Every state of a text field in one column, in the default order (forms skill: label, hint,
  * control, error): with a hint, invalid, optional, disabled and read-only. The RTL and ForcedColors stories of each page render it.
  */
 export function FieldStates({ locale }: { locale: FormLocale }) {

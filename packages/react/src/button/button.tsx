@@ -48,7 +48,7 @@ export interface ButtonState {
 
 /**
  * `aria-disabled` is left out: `disabled` with `focusableWhenDisabled` sets it, and also blocks
- * activation (ADR-0016).
+ * activation.
  */
 export interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'aria-disabled'> {
   /**

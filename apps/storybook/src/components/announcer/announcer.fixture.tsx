@@ -1,7 +1,7 @@
 import { Button, KvirnProvider, useAnnouncer } from '@kvirn-ui/react'
 import { useState } from 'react'
 
-// Story fixture for the shared Announcer (ADR-0040). The buttons stand in for what a component
+// Story fixture for the shared Announcer. The buttons stand in for what a component
 // does when something changes: they call `announce`. sv, fi and en are written. Any other
 // locale shows the English text, marked lang="en" (3.1.2). In a real component these strings
 // come from the catalogs; here they are fixture text, so the live region's output is readable.

@@ -220,7 +220,7 @@ function toItemState(itemContext: FileUploadItemContextValue): FileUploadItemSta
 }
 
 /**
- * The file upload of a form question (ADR-0038, contract: file-upload.a11y.md). Put it in a
+ * The file upload of a form question (contract: file-upload.a11y.md). Put it in a
  * Field with a label and say the limits (`FileUpload.Limits`). A native button opens the system
  * dialog and a hidden native input receives the files, so the keyboard, voice, switch, touch and
  * screen readers all work. The drop zone is an extra. Each file is checked against the limits,
@@ -1066,7 +1066,7 @@ export function FileUploadRemoveButton(props: FileUploadRemoveButtonProps): Reac
 }
 FileUploadRemoveButton.displayName = 'FileUpload.RemoveButton'
 
-/** A file upload: a native button and input, an optional drop zone, a checked list (ADR-0038). */
+/** A file upload: a native button and input, an optional drop zone, a checked list. */
 export const FileUpload = {
   Root: FileUploadRoot,
   Trigger: FileUploadTrigger,

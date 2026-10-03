@@ -1,7 +1,7 @@
 # Accessibility contract: InputGroup (Root, Addon)
 
 - **APG pattern:** none. An input group is a visual wrapper around a native text input. The name, description and state come from HTML and the Field (`field.a11y.md`, `input.a11y.md`). A Button inside it follows the APG Button pattern (`button.a11y.md`).
-- **Deviations:** none from APG. Decisions: ADR-0031 (Addons are visual only and `aria-hidden`, interactive add-ons are real Buttons directly in the Root, start and end follow DOM order).
+- **Deviations:** none from APG. Decisions (forms skill): Addons are visual only and `aria-hidden`, interactive add-ons are real Buttons directly in the Root, start and end follow DOM order.
 - **Native elements used:** `<div>` (Root, no role), `<span>` (Addon, `aria-hidden`), the `<input>` (Input), and an optional `<button>` (Button) placed directly in the Root.
 - **Status:** alpha candidate (Plan 0013, Phase 1b). Gates pass, accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `input-group.test.tsx` next to this file. `input-group.stories.tsx` and `input-group.e2e.ts` in `apps/storybook/src/components/input-group/`, and `AmountWithUnit` in `number.stories.tsx`.
@@ -20,7 +20,7 @@ An InputGroup puts a unit ("kr", "%", "km"), a decorative icon or a Button insid
 
 Rules, tested in `input-group.test.tsx`:
 
-- **Addons are `aria-hidden="true"`** and are never in the Input's accessible name or description. A unit shown in the box is also said by the label or a hint, a `Prose` in the Field (ADR-0031: if the Addon were linked to the Input, users would hear a unit the label already says, twice).
+- **Addons are `aria-hidden="true"`** and are never in the Input's accessible name or description. A unit shown in the box is also said by the label or a hint, a `Prose` in the Field (if the Addon were linked to the Input, users would hear a unit the label already says, twice).
 - **Clicking an Addon, or the Root's padding, focuses the Input** (`mousedown` on the box, outside any control inside it). The whole box is one target, and the keyboard reaches the Input directly, so no key is needed for it. Disabled groups don't move focus.
 - **Field state on the Root:** `data-invalid` and `data-disabled` come from the nearest Field (or the Root's own props). The Input keeps `aria-invalid` and native `disabled` from the Field: the theme draws the box from the Root's attributes and from `:has(> .kv-input…)`, so it doesn't wait for JavaScript.
 - **`data-focus-visible` is set only while the Input has keyboard focus** (`:focus-visible`, which text inputs also match on a click). Focus on a Button inside the Root doesn't set it: the Button draws its own ring.
@@ -92,7 +92,7 @@ None. Nothing is live. The Input's name, description and state are read on focus
 
 | AT + browser + OS                        | Date    | Tester | Result | Notes |
 | ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| **Core (required for beta)**             |         |        |        |       |
 | NVDA + Firefox + Windows                 | pending |        |        |       |
 | VoiceOver + Safari + macOS               | pending |        |        |       |
 | VoiceOver + Safari + iOS                 | pending |        |        |       |

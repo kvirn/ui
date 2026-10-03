@@ -17,7 +17,7 @@ const sectionProps: UseSectionResult = Object.freeze({
 })
 
 /**
- * A section's class for your own element (ADR-0044, contract: section.a11y.md). A section is a plain
+ * A section's class for your own element (contract: section.a11y.md). A section is a plain
  * container for a region of the page: pick the element (`<aside aria-labelledby>`,
  * `<section aria-labelledby>`, `<nav aria-labelledby>`, `<li>`) and the heading level yourself.
  * A landmark needs a name.

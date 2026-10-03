@@ -33,10 +33,10 @@ export interface RadioProps extends Omit<
 
 /**
  * A native `<input type="radio">`, wired to its Field and RadioGroup: the label names it, and
- * the option's hint describes it (ADR-0029, contract: radio-group.a11y.md). Put it directly in
+ * the option's hint describes it (contract: radio-group.a11y.md). Put it directly in
  * `Field.Root`, before the label, inside a `RadioGroup.Root`. The group gives it its `name`,
  * its checked state from `value`, and reports the change. The browser does the keys: one Tab
- * stop, the arrow keys move and check. It never gets `aria-invalid` (ADR-0029, item 10).
+ * stop, the arrow keys move and check. It never gets `aria-invalid`.
  *
  * @example
  * <Field>

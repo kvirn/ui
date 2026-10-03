@@ -3,7 +3,7 @@ import type { RowData, SortFn, TableFeatures } from './table-exports.ts'
 /**
  * A TanStack sort function that orders text the way people in `locale` expect, with
  * `Intl.Collator`: å, ä and ö (and æ and ø) come after z in Swedish, Finnish and Norwegian, and
- * case is ignored. Register it in the features and name it in a column (ADR-0059):
+ * case is ignored. Register it in the features and name it in a column:
  *
  * ```ts
  * const features = tableFeatures({

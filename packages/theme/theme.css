@@ -346,7 +346,7 @@
     --kv-shadow-popup: 0 8px 24px -4px color-mix(in srgb, var(--kv-neutral-950) 12%, transparent);
     --kv-shadow-dialog: 0 24px 48px -8px color-mix(in srgb, var(--kv-neutral-950) 20%, transparent);
 
-    /* Button depth (ADR-0026): a soft shadow that lifts on hover, and a 1px edge tinted darker
+    /* Button depth: a soft shadow that lifts on hover, and a 1px edge tinted darker
      * at the bottom (shade, light) or lighter at the top (highlight, dark). Each tint is a
      * colour and a percentage, the second argument of color-mix(in srgb, <edge>, <tint>); 0%
      * leaves the edge as it is. theme:check holds every tinted edge to 3:1 on canvas, surface
@@ -396,7 +396,7 @@
     --kv-prose-code-size: 0.875em;
   }
 
-  /* Below 40rem the large roles step down, so a long word or a heading fits a phone (ADR-0028):
+  /* Below 40rem the large roles step down, so a long word or a heading fits a phone:
    * display 32px with no tracking, heading-1 24px, heading-2 20px and lead 18px. Body text and
    * heading-3 never change. In rem, so they still grow with the browser's text size (1.4.4). */
   @media (width < 40rem) {
@@ -712,7 +712,7 @@
    * 24px or more, and enough --kv-button-padding-inline that a short label is 24px wide:
    * 2.5.8 Target Size (Minimum). Resident-facing buttons should stay at 44px (2.5.5).
    *
-   * Depth (ADR-0026): buttons sit on the page, with a soft shadow (--kv-shadow-button), and an
+   * Depth: buttons sit on the page, with a soft shadow (--kv-shadow-button), and an
    * edge tinted darker at the bottom in light or lighter at the top in dark. Every state sets
    * the internal --kv-button-edge, and the base rule derives the four edges from it. So only
    * the pressed, disabled and forced-colours rules set border-color themselves: a later
@@ -796,7 +796,7 @@
   }
 
   /* The edge stays primary: primary-hover alone is under 3:1 on surface-raised in dark, where
-   * cards, dialogs and popups put buttons (1.4.11, ADR-0021). */
+   * cards, dialogs and popups put buttons (1.4.11). */
   .kv-button.kv-button--primary:not(:disabled, [data-disabled]):is(:hover, :active) {
     --kv-button-edge: var(--kv-color-primary);
     background-color: var(--kv-color-primary-hover);
@@ -1021,7 +1021,7 @@
    * the two wins, for two levels of nested cards. A field (kv-field) and a fieldset
    * (kv-fieldset) are boundaries the same way: a form in prose gets prose's block margins on
    * each question, and its labels, errors and controls get none. The hint is a kv-prose that
-   * is a direct child of the field or fieldset (ADR-0054), so it is prose again: its own
+   * is a direct child of the field or fieldset, so it is prose again: its own
    * paragraphs, lists and links are styled, and nothing else in the field is.
    * A notification (kv-notification) is the same boundary as a card, so its title isn't styled as a prose heading. Only
    * logical properties are used, so right to left works, and nothing has a fixed height, so
@@ -1064,7 +1064,7 @@
     font-size: var(--kv-prose-font-size);
     line-height: var(--kv-prose-line-height);
     font-feature-settings: var(--kv-prose-feature-settings);
-    /* Long Finnish and Swedish compounds wrap at 320px (ADR-0028). Words of 10 letters or more
+    /* Long Finnish and Swedish compounds wrap at 320px. Words of 10 letters or more
      * split at the dictionary's hyphenation points for the element's lang, with at least 4
      * letters each side. Where there's no dictionary, as for Northern Sámi, break-word still
      * wraps the word. Set lang on <html>, and on passages in another language. */
@@ -1095,7 +1095,7 @@
    * token swap. Headings keep their type roles (DESIGN.md), and h4 to h6 follow the size.
    * --small is 14px: for notes and metadata, never for the text a resident must read (DESIGN.md
    * says essential content is never below 16px). --xl and --2xl step down below 40rem, so a
-   * long word fits a phone (ADR-0028). */
+   * long word fits a phone. */
   :where(.kv-prose--small) {
     --kv-prose-font-size: var(--kv-font-body-small-size);
     --kv-prose-line-height: var(--kv-font-body-small-line-height);
@@ -1805,7 +1805,7 @@
     border-radius: var(--kv-card-radius);
     background-color: var(--kv-color-surface-raised);
     color: var(--kv-color-text);
-    /* Like prose: long words split at hyphenation points, then wrap anywhere (ADR-0028). */
+    /* Like prose: long words split at hyphenation points, then wrap anywhere. */
     hyphens: auto;
     hyphenate-limit-chars: 10 4 4;
     overflow-wrap: break-word;
@@ -2023,7 +2023,7 @@
     padding: var(--kv-section-padding);
     background-color: var(--kv-color-surface);
     color: var(--kv-color-text);
-    /* No hyphens: a section can hold navigation, forms and tables. Prose hyphenates (ADR-0028). */
+    /* No hyphens: a section can hold navigation, forms and tables. Prose hyphenates. */
     overflow-wrap: break-word;
   }
 
@@ -2143,7 +2143,7 @@
     border-radius: var(--kv-radius-sm);
     background-color: var(--kv-notification-background);
     color: var(--kv-color-text);
-    /* Like prose and a card: long words split at hyphenation points, then wrap (ADR-0028). */
+    /* Like prose and a card: long words split at hyphenation points, then wrap. */
     hyphens: auto;
     hyphenate-limit-chars: 10 4 4;
     overflow-wrap: break-word;
@@ -2284,7 +2284,7 @@
 
   /* 11. Icon ---------------------------------------------------------------------------------
    * <Icon name="close" /> renders <svg class="kv-icon">, sized and coloured by attributes
-   * (ADR-0024). This section never sets an icon's size, stroke, fill or colour: CSS beats
+   *. This section never sets an icon's size, stroke, fill or colour: CSS beats
    * attributes, so a prop would lose. Only forced colours do, so an icon can't disappear.
    * Design spec: docs/design/icon.md.
    *
@@ -2344,7 +2344,7 @@
    * <InputGroup.Root> renders kv-input-group, the box around an input and its units, icons or
    * button, and <InputGroup.Addon> renders kv-input-group-addon. KvirnUI holds no form state:
    * the components render what they're given, and the theme styles the state attributes they
-   * set (ADR-0029). Design spec: docs/design/form-fields.md.
+   * set. Design spec: docs/design/form-fields.md.
    * Choose with modifier classes. Without one, the default applies.
    *
    *   kv-field-label--heading, kv-fieldset-legend--heading   the label or legend is the page's
@@ -2361,11 +2361,11 @@
    *     <Field.ErrorMessage>{error}</Field.ErrorMessage>
    *   </Field.Root>
    *
-   * The hint is a <Prose> directly in the Field or Fieldset (ADR-0054): kv-prose, which the
+   * The hint is a <Prose> directly in the Field or Fieldset: kv-prose, which the
    * component registers as the description of the control or group. Keep it to plain text and
    * short paragraphs, since an accessible description has no structure.
    *
-   * The default order (ADR-0031) is label, hint, control, a second hint under the control, then
+   * The default order is label, hint, control, a second hint under the control, then
    * the error message. A fieldset is legend, hint, controls, error. Every part is one gap from
    * the next, so any order you render spaces correctly, and a part you leave out leaves no hole.
    *
@@ -2375,7 +2375,7 @@
    * :user-invalid: the browser's own validity isn't your form's. A disabled input has a dashed
    * edge on the surface colour, and a read-only one a solid edge on the surface colour.
    *
-   * A unit, an icon or a button inside the input's box goes in an input group (ADR-0031):
+   * A unit, an icon or a button inside the input's box goes in an input group:
    *
    *   <Field.Root>
    *     <Field.Label>Månadshyra i kronor</Field.Label>
@@ -2400,7 +2400,7 @@
    * hint and never a limit (no maxlength), and they shrink to fit a 320px screen (1.4.10).
    *
    * Nothing here clips, and nothing has a fixed height: min-block-size only, so the text
-   * spacing overrides fit (1.4.12). Every part wraps, hyphenated like prose (ADR-0028). The
+   * spacing overrides fit (1.4.12). Every part wraps, hyphenated like prose. The
    * error prefix ("Fel:") is visually hidden, never display: none, so screen readers read it.
    * Only logical properties are used, so right to left works. In forced colours the edge is
    * a system colour and an invalid input keeps its 2px width, so the width carries the state.
@@ -2434,7 +2434,7 @@
     min-inline-size: 0;
     color: var(--kv-color-text);
     font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
-    /* Like prose: long words split at hyphenation points, then wrap anywhere (ADR-0028). */
+    /* Like prose: long words split at hyphenation points, then wrap anywhere. */
     hyphens: auto;
     hyphenate-limit-chars: 10 4 4;
     overflow-wrap: break-word;
@@ -2522,7 +2522,7 @@
 
   /* The hint is an instruction, so it is in the text colour, in every density: never muted. A
    * hint above the control is body text, and one under it (a sibling after the control) is
-   * body-small (ADR-0054). Not counted as the control: the label, a heading that holds the
+   * body-small. Not counted as the control: the label, a heading that holds the
    * label (a question page), another hint, and a checkbox or radio (its option hint stays 16px). It is a kv-prose that is a direct child of the
    * field or fieldset, so its paragraphs, lists and links are prose; this only fixes the box and
    * the type, and gives it no margin of its own (the gap is the field's). */
@@ -2701,7 +2701,7 @@
     font-feature-settings: var(--kv-font-numeric-feature-settings);
   }
 
-  /* An input group (ADR-0031): the box around an input and its addons or button. It draws the
+  /* An input group: the box around an input and its addons or button. It draws the
    * edge, fill, radius, states and focus ring that .kv-input draws alone. --kv-input-group-edge
    * and --kv-input-group-edge-width are internal: set per state, read by the button inside. The
    * edge plus the padding is always 2px, so nothing inside moves when the edge goes to 2px. No
@@ -2885,7 +2885,7 @@
    * on its three outer sides (negative margins), so it is as tall as the box: 44px, 32px in
    * compact. Its own edge there is transparent and as wide as the box's, so the box's edge shows
    * through, also on hover. The divider is on the side that faces the input. Without a depth
-   * (ADR-0026) or fill, only the default look is styled. */
+   * or fill, only the default look is styled. */
   .kv-input-group > .kv-button {
     flex: none;
     align-self: stretch;
@@ -3262,7 +3262,7 @@
   }
 
   /* Checked and mixed: filled primary with a primary edge. Hovered, the fill goes to
-   * primary-hover and the edge stays primary (ADR-0021: primary-hover isn't 3:1 as an edge). */
+   * primary-hover and the edge stays primary: primary-hover isn't 3:1 as an edge. */
   .kv-checkbox:is(:checked, :indeterminate) {
     --kv-choice-edge: var(--kv-color-primary);
     --kv-choice-fill: var(--kv-color-primary);
@@ -3549,7 +3549,7 @@
     }
   }
 
-  /* The stylable Listbox (ADR-0037; contract: listbox.a11y.md). <Listbox.Trigger> renders
+  /* The stylable Listbox (contract: listbox.a11y.md). <Listbox.Trigger> renders
    * class="kv-listbox-trigger", a div with role="combobox" that looks like the select above: the
    * input's edge, fill, radius and height, with a chevron drawn by ::after. <Listbox.Value>
    * renders kv-listbox-value, with [data-placeholder] while nothing is chosen. <Listbox.Popup>
@@ -3840,7 +3840,7 @@
     }
   }
 
-  /* The Combobox and the Autocomplete (ADR-0037; contracts: combobox.a11y.md and
+  /* The Combobox and the Autocomplete (contracts: combobox.a11y.md and
    * autocomplete.a11y.md). <Combobox.Input> renders class="kv-combobox-input" and
    * <Autocomplete.Input> kv-autocomplete-input: both look like kv-input (its edge, fill, radius,
    * height, states and ring). The optional <*.Control> renders kv-combobox-control (or
@@ -4301,7 +4301,7 @@
    * <OneTimeCode.Root pattern="****-****"> renders class="kv-one-time-code", <OneTimeCode.Input>
    * the one native input kv-one-time-code-input, and one <OneTimeCode.Slot> per position of the
    * pattern: a box kv-one-time-code-slot for a character symbol, and a dash
-   * kv-one-time-code-separator for each "-" (ADR-0033, ADR-0045). Design spec:
+   * kv-one-time-code-separator for each "-". Design spec:
    * docs/design/one-time-code.md.
    *
    *   <Field.Root>
@@ -5594,7 +5594,7 @@
    * <FileUpload.Root> renders class="kv-file-upload", and its parts one class each:
    * kv-file-upload-limits, -drop-zone, -trigger, -drop-hint, -rejections, -summary, -list,
    * -item, -preview, -name, -type, -size, -status, -progress, -item-error, -actions and the
-   * three item buttons -cancel, -retry and -remove (ADR-0038). Design spec:
+   * three item buttons -cancel, -retry and -remove. Design spec:
    * docs/design/file-upload.md.
    *
    *   <Field.Root>
@@ -5625,7 +5625,7 @@
    *
    * The drop zone is plain until a file can be dropped on it: [data-droppable] (a precise
    * pointer, or a file dragged over the page) draws the box. The one dashed edge in the theme
-   * that doesn't mean disabled (DESIGN.md, ADR-0049): the zone is a target, not a control.
+   * that doesn't mean disabled (DESIGN.md): the zone is a target, not a control.
    * Dragging over it is a 2px solid primary edge with the primary-subtle fill, so style, width
    * and fill change together and never colour alone. Invalid is a 2px danger edge. In both the
    * padding gives back the extra pixel, so nothing moves.
@@ -6126,7 +6126,7 @@
    * -head, -body, -foot, -row, -column-header, -row-header, -cell, -sort-button, -sort-icon,
    * -select-checkbox (with kv-checkbox), -expand-button, -expand-icon, -detail-row, -empty,
    * -spacer and -scroll-region (with kv-scroll-region). State is data-sort, data-selected,
-   * data-expanded, data-busy, data-virtualized and data-overflowing (ADR-0035, ADR-0059).
+   * data-expanded, data-busy, data-virtualized and data-overflowing.
    * Design spec: docs/design/table.md.
    *
    *   <Table.ScrollRegion table={cases}>
@@ -6135,7 +6135,7 @@
    *       …
    *
    * Never changes the display of a table element: display: block on a table, row or cell drops
-   * its semantics in some browsers (ADR-0035). Rows are 48px, and 32px in compact density from
+   * its semantics in some browsers. Rows are 48px, and 32px in compact density from
    * 64rem. The text stays 16px in both, since table data is essential content. A divider of 1px
    * under every row, a filled head, no stripes, no vertical lines, no frame and no row hover: a
    * row isn't something you press. The state of a selected row is the checked box, and the fill

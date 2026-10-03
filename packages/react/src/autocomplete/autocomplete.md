@@ -1,6 +1,6 @@
 # Autocomplete
 
-> **Draft** (Plan 0022). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [autocomplete.a11y.md](autocomplete.a11y.md), and the decision is ADR-0037.
+> **Draft** (Plan 0022). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [autocomplete.a11y.md](autocomplete.a11y.md), and the decisions are in the overlays-and-lists skill.
 
 A text field that suggests. The user types, a list of suggestions appears, and they can pick one, which fills the field, or keep what they typed. The value is the text, which may match nothing: suggestions help, they never block other text.
 
@@ -46,7 +46,7 @@ import { Autocomplete, Field, Label } from '@kvirn-ui/react'
 | `virtualize`                             | `true`, or `{ estimateSize, overscan }`: renders only the suggestions in view, for a flat list of thousands. Off by default. See Long lists.                                                                                                                             |
 | `items`, `groups`, `filter`, `isLoading` | The suggestions. The default filter matches anywhere in the text, in the provider's locale (å, ä and ö are not a and o in Swedish). For suggestions that your server chooses, pass `filter={false}` and `isLoading` while it works, and keep the last result in `items`. |
 
-`invalid`, `required` and the description (a `Prose` in the Field) come from the Field, as for every control. The value is never copied into KvirnUI state (ADR-0029).
+`invalid`, `required` and the description (a `Prose` in the Field) come from the Field, as for every control. The value is never copied into KvirnUI state.
 
 ## Parts
 

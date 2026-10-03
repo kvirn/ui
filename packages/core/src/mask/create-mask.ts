@@ -149,7 +149,7 @@ function buildMask(engine: MaskEngine): Mask {
     let rejected = groupRejections(outcome.rejections, insertion)
 
     // Backspace and Delete always make progress: when the deletion only removed a literal that the
-    // mask puts back, delete the neighbouring character too (ADR-0032, 5.6).
+    // mask puts back, delete the neighbouring character too.
     const isDeletion =
       previousValue !== undefined &&
       insertion.start === insertion.end &&
@@ -230,7 +230,7 @@ function buildMask(engine: MaskEngine): Mask {
   return mask
 }
 
-/** Builds a mask from a definition. The result is a bundle of pure functions (ADR-0032). */
+/** Builds a mask from a definition. The result is a bundle of pure functions. */
 export function createMask(definition: MaskDefinition): Mask {
   return buildMask(createEngine(definition))
 }

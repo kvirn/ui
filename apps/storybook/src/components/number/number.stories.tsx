@@ -6,7 +6,7 @@ import { localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/Form/Number: numbers are an Input, not a new component (ADR-0030, design spec
+// Components/Form/Number: numbers are an Input, not a new component (design spec
 // docs/design/form-fields.md §6.4). `type="number"` changes the value on mouse wheel, drops
 // leading zeros ("004512" becomes 4512), rounds silently, shows spinners that are hard to hit
 // and, in some browsers, reads the decimal mark by the browser's language, not the page's. So:
@@ -155,7 +155,7 @@ export const Amount: Story = {
 
 /**
  * The fixture the keyboard tests drive: an amount as text. Try the keys in the Keyboard
- * section above: ArrowUp and ArrowDown never step the number (ADR-0030), and the other keys are
+ * section above: ArrowUp and ArrowDown never step the number, and the other keys are
  * the browser's own, as in any text field.
  */
 export const Keyboard: Story = {
@@ -163,7 +163,7 @@ export const Keyboard: Story = {
 }
 
 /**
- * An amount with its unit shown in the box (ADR-0031): an `InputGroup` with a "kr" Addon. The
+ * An amount with its unit shown in the box: an `InputGroup` with a "kr" Addon. The
  * Addon is `aria-hidden`, so the label carries the unit: "Månadshyra i kronor". See
  * Components/Form/InputGroup for the other add-ons.
  */

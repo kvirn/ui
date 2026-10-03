@@ -15,7 +15,7 @@ import {
 } from './card.fixture.tsx'
 import type { CardFixtureLocale } from './card.fixture.tsx'
 
-// Components/Card: the headless Card, styled by @kvirn-ui/theme/theme.css (ADR-0013, design
+// Components/Card: the headless Card, styled by @kvirn-ui/theme/theme.css (design
 // spec docs/design/card.md). card.e2e.ts runs its keyboard rows, focus-ring, forced-colours and
 // reflow checks against ServiceCard, NewsList, AllExamples, LongFinnishText and ForcedColors.
 

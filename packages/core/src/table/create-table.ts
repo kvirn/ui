@@ -5,13 +5,13 @@ import type { Listener, ReadableStore } from '../store/create-component-store.ts
 
 /**
  * The options of `createTable`: TanStack Table's options, except multi-sort. `enableMultiSort`
- * is always off (ADR-0059), because multi-sort needs Shift+click, a key the APG table pattern
+ * is always off, because multi-sort needs Shift+click, a key the APG table pattern
  * doesn't define and the Keyboard section would have to document. Leave it out.
  */
-export type KvirnTableOptions<TFeatures extends TableFeatures, TData extends RowData> = TableOptions<
-  TFeatures,
-  TData
-> & {
+export type KvirnTableOptions<
+  TFeatures extends TableFeatures,
+  TData extends RowData,
+> = TableOptions<TFeatures, TData> & {
   readonly enableMultiSort?: never
 }
 
@@ -20,7 +20,7 @@ export interface KvirnTable<TFeatures extends TableFeatures, TData extends RowDa
   readonly table: Table<TFeatures, TData>
   /**
    * `table.store` as a `ReadableStore`, so `useStoreSelector` and any other adapter can read and
-   * subscribe to the table's state (ADR-0003). It notifies when a state slice changes, and not
+   * subscribe to the table's state. It notifies when a state slice changes, and not
    * while `updateOptions` runs.
    */
   readonly store: ReadableStore<TableState<TFeatures>>
@@ -39,7 +39,7 @@ const accessibleDefaults = { enableMultiSort: false }
 
 /**
  * Creates a TanStack Table instance (`constructTable`) with the store reactivity bindings,
- * and adapts its state to a `ReadableStore`. The only place a table is constructed (ADR-0059).
+ * and adapts its state to a `ReadableStore`. The only place a table is constructed.
  * Use `tableFeatures` and the other re-exports from `@kvirn-ui/core` for the features.
  *
  * @example

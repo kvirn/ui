@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 
 const storybookUrl = 'http://localhost:6006'
 
-// The baseline is one project, `chromium` (ADR-0042, ADR-0048): the keyboard contract, focus and
+// The baseline is one project, `chromium`: the keyboard contract, focus and
 // the story-state checks all run in Chrome. The display-mode projects (forced colours, reduced
 // motion, 320px reflow) and the other engines are defined but off, because they repeat every test
 // and are for a dedicated WCAG sweep. Turn them on with `E2E_BROWSERS`, a comma-separated list of

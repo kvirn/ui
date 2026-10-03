@@ -3,7 +3,7 @@
 - **Status:** Draft <!-- Draft | Approved | In progress | Done | Abandoned -->
 - **Owner:** <name / agent>
 - **Created:** YYYY-MM-DD · **Target:** <milestone>
-- **Related:** ADR-NNNN, issue #NN
+- **Related:** plans, skills, issue #NN
 
 ## Goal
 
@@ -27,7 +27,7 @@ Context, links to APG patterns, WCAG SCs, prior art (Headless UI, Radix, React A
 
 ### Accessibility contract (draft)
 
-Keyboard per the `keyboard` skill (ADR-0039): focus strategy, selection follows focus, arrows wrap, shortcuts, then the keys.
+Keyboard per the `keyboard` skill: focus strategy, selection follows focus, arrows wrap, shortcuts, then the keys.
 
 | Key       | Action |
 | --------- | ------ |
@@ -59,6 +59,12 @@ Keyboard per the `keyboard` skill (ADR-0039): focus strategy, selection follows 
 - [ ] AT matrix run + `*.a11y.md`
 - [ ] Docs page
 - [ ] Changeset
+
+## Decisions
+
+The options weighed and the one chosen, then each decision taken during implementation. Anything that needs the maintainer's approval (a new dependency, a gate change, an APG deviation, a token change) is marked. When a decision changes a rule, the owning skill or doc changes in the same PR.
+
+- …
 
 ## Risks & open questions
 

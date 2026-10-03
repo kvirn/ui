@@ -20,7 +20,7 @@ export interface CheckboxGroupRootProps extends Omit<FieldsetRootProps, 'group'>
   defaultValue?: readonly string[] | undefined
   /**
    * Called with the next values when a box changes: `value` with the box's value added or
-   * removed, or, without `value`, the group's checked boxes. It only reports (ADR-0029).
+   * removed, or, without `value`, the group's checked boxes. It only reports.
    */
   onValueChange?: ((value: string[], details: CheckboxGroupChangeDetails) => void) | undefined
 }
@@ -28,7 +28,7 @@ export interface CheckboxGroupRootProps extends Omit<FieldsetRootProps, 'group'>
 /**
  * A group of checkboxes: the native `<fieldset>` of a `Fieldset.Root` with `group` set, so
  * `Fieldset.Legend`, a hint (`Prose`) and `Fieldset.ErrorMessage` work inside it
- * (ADR-0029, contract: checkbox-group.a11y.md). It holds no form state: pass `value` and
+ * (contract: checkbox-group.a11y.md). It holds no form state: pass `value` and
  * `onValueChange`, or `defaultValue` and `name` for a plain form. Give each `Checkbox` a `value`.
  *
  * @example
@@ -76,7 +76,7 @@ export function CheckboxGroupRoot({
 }
 CheckboxGroupRoot.displayName = 'CheckboxGroup.Root'
 
-/** A group of checkboxes under a legend, with a hint and an error (ADR-0029). */
+/** A group of checkboxes under a legend, with a hint and an error. */
 export const CheckboxGroup = {
   Root: CheckboxGroupRoot,
 } as const

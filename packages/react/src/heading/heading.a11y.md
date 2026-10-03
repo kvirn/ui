@@ -1,6 +1,6 @@
 # Accessibility contract: Heading
 
-- **APG pattern:** none. A heading is not a widget (ADR-0052).
+- **APG pattern:** none. A heading is not a widget.
 - **Deviations:** none
 - **Native elements used:** `<h1>` to `<h6>`.
 - **Status:** alpha candidate (Plan 0023). Gates pending. Manual AT is `pending`.
@@ -61,7 +61,7 @@ Right to left and forced colours are the `Right to left` and `Forced colors` sto
 
 | AT + browser + OS                        | Date    | Tester | Result | Notes |
 | ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| **Core (required for beta)**             |         |        |        |       |
 | NVDA + Firefox + Windows                 | pending |        |        |       |
 | VoiceOver + Safari + macOS               | pending |        |        |       |
 | VoiceOver + Safari + iOS                 | pending |        |        |       |

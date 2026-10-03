@@ -1,4 +1,4 @@
-// Checks commit messages against Conventional Commits (ADR-0012).
+// Checks commit messages against Conventional Commits (AGENTS.md, Conventions: commits).
 //   node tooling/commit-message/commit-msg.ts <message-file>       git commit-msg hook
 //   node tooling/commit-message/commit-msg.ts --range <from>..<to> every commit in a range (CI)
 //   node tooling/commit-message/commit-msg.ts --message <text>     one message, such as a PR title
@@ -62,7 +62,7 @@ if (failures.length > 0) {
   console.error(
     [
       '',
-      'Commit messages follow Conventional Commits 1.0.0 (ADR-0012):',
+      'Commit messages follow Conventional Commits 1.0.0 (AGENTS.md, Conventions: commits):',
       '  <type>[optional scope][!]: <description>',
       '',
       '  [optional body]',

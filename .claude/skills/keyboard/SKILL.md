@@ -1,18 +1,18 @@
 ---
 name: keyboard
-description: KvirnUI keyboard interaction procedure (ADR-0039) — the WAI-ARIA APG keyboard interface practice made binding, plus documenting every key in the contract, the tests and the Storybook Docs page. Use when designing, implementing, documenting or reviewing anything a user can focus or operate with a keyboard.
+description: KvirnUI keyboard interaction procedure — the WAI-ARIA APG keyboard interface practice made binding, plus documenting every key in the contract, the tests and the Storybook Docs page. Use when designing, implementing, documenting or reviewing anything a user can focus or operate with a keyboard.
 when_to_use: new component, form input or control, keyboard or focus bug, Tab order, arrow-key navigation, roving tabindex, aria-activedescendant, disabled items, shortcuts, the Keyboard table in a *.a11y.md, the Keyboard story or Docs section, review of keyboard behaviour
 ---
 
 # Keyboard
 
-Every component with a focusable or keyboard-operable part follows the APG practice [Developing a Keyboard Interface](https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/) **and** its APG pattern's key table. Every key it handles is documented in its contract, tested in e2e and shown on its Storybook Docs page. This is ADR-0039. A deviation needs its own ADR (hard rule 2).
+Every component with a focusable or keyboard-operable part follows the APG practice [Developing a Keyboard Interface](https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/) **and** its APG pattern's key table. Every key it handles is documented in its contract, tested in e2e and shown on its Storybook Docs page. A deviation needs the maintainer's approval and this skill (or the pattern's key table) updated in the same PR (hard rule 2).
 
 Load this together with the `accessibility` skill (roles, names, focus visibility) and the `testing` skill (how to write the tests).
 
 ## Procedure
 
-1. **Find the key table.** Look up the component in [references/key-tables.md](references/key-tables.md). Re-check the live APG pattern page, because APG gets updated. No pattern fits: stop and write an ADR before inventing keys.
+1. **Find the key table.** Look up the component in [references/key-tables.md](references/key-tables.md). Re-check the live APG pattern page, because APG gets updated. No pattern fits: stop and get the maintainer's approval before inventing keys.
 2. **Native first.** A native control already has its keys: text editing in `<input>`, Space on a checkbox, arrows in a native radio group, Enter submitting a form. Don't re-implement them, don't `preventDefault` them, and document them anyway, because users read the table to learn the component.
 3. **Apply the practice rules** below. Decide and write down the focus strategy, whether selection follows focus, and whether arrows wrap.
 4. **Write the Keyboard table** in `<name>.a11y.md` (format below). Every key the component handles, plus Tab and Shift+Tab. Every row names its e2e test.
@@ -26,9 +26,9 @@ Load this together with the `accessibility` skill (roles, names, focus visibilit
      Parts documented in another component's contract (Label, Description and ErrorMessage in `field.a11y.md`, Number in `input.a11y.md`) import that one.
    - The Docs page template renders the contract's Keyboard section (`<KeyboardSection />`, after Controls): the focus lines, and the table with Key, Context and Action. Keys show in `<kbd>`.
    - A component with a focusable part has a story named `Keyboard`: the fixture its e2e keyboard tests drive, with a JSDoc that says to try the keys in the table.
-   - `tooling/keyboard-docs` fails `vp test run` when a stories file has no contract, a contract has no valid Keyboard section, or a row has no test.
+   - `tooling/keyboard-docs` fails `vp test run` when a stories file has no contract, a contract is used by no stories file, a contract has no valid Keyboard section, a focusable component has no Tab or Shift+Tab row, or a row has no test.
 
-## Practice rules (ADR-0039)
+## Practice rules
 
 1. **Tab sequence.** Every interactive part is reachable with Tab and Shift+Tab, in DOM order, which matches the visual order. Never `tabindex` > 0. A composite widget (radio group, tabs, listbox, menu, menubar, toolbar, grid, tree) is **one** Tab stop. Arrow keys move inside it.
 2. **Focus inside composites.** Roving `tabindex` by default: the current item has `tabindex="0"`, the rest `-1`, and moving calls `.focus()`. `aria-activedescendant` only where DOM focus must stay on a text input (combobox), and the active item must be scrolled into view. The contract says which.
@@ -60,11 +60,16 @@ In `<name>.a11y.md`, under `## Keyboard`:
 - A component with no focusable part starts the section with exactly `This component has no focusable parts and handles no keys.` and has no focus lines. It may keep Tab rows that prove Tab passes over it. The Docs page shows the sentence.
 - A wrapper whose focusable part is another component (Field around Input) says which component owns the keys and links that contract.
 
+## Maintainer preferences
+
+- The APG keyboard practice is binding, not advice: every component with a focusable part follows it, and every key it handles is documented.
+- The `<name>.a11y.md` Keyboard section is the single source of truth. It is never copied by hand into a story, MDX or JSDoc.
+
 ## Common mistakes (reject in review)
 
 - Every item in a composite in the Tab sequence, or `tabindex` > 0.
 - `preventDefault` on Home, End or the arrows in a text input, or on Enter so a form can't submit.
-- Arrow keys that change a number value in a text field (ADR-0030: numbers are text).
+- Arrow keys that change a number value in a text field (numbers are text: `forms` skill).
 - Auto-advancing focus to the next field when one is full (DateInput, one-time code).
 - A disabled composite item removed from navigation with native `disabled`, so it can't be discovered.
 - Single character shortcuts that can't be turned off. Shortcuts with no `aria-keyshortcuts`.
@@ -79,5 +84,4 @@ Check, in order: the contract's table against the APG pattern and the rules abov
 ## References
 
 - [references/key-tables.md](references/key-tables.md): key tables per component and pattern, including native form inputs
-- ADR-0039, `docs/adr/0039-apg-keyboard-interface-and-documented-keys.md`
 - APG keyboard practice: https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/

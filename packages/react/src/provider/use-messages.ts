@@ -10,7 +10,7 @@ const builtInMessages: KvirnMessages = en
 
 /**
  * Internal. Resolves one namespace: instance `messages`, then the nearest provider and its
- * ancestors, then built-in `en` (ADR-0007). Text parts add their children on top.
+ * ancestors, then built-in `en`. Text parts add their children on top.
  *
  * @example const linkMessages = useMessages('link', props.messages)
  */

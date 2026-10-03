@@ -497,7 +497,7 @@ describe('states', () => {
   })
 })
 
-describe('messages (ADR-0007 resolution)', () => {
+describe('messages resolution', () => {
   test('uses the provider’s catalog: sv', async () => {
     const { container } = await render(
       <KvirnProvider locale="sv-SE" messages={sv}>
@@ -790,7 +790,7 @@ describe('useField', () => {
   })
 })
 
-describe('several descriptions (ADR-0031)', () => {
+describe('several descriptions', () => {
   /** The design spec's registration number field: a hint above the input, one under it. */
   function RegistrationField({ invalid = false }: { invalid?: boolean }) {
     return (
@@ -1034,7 +1034,7 @@ describe('types', () => {
     expect(Field.Label).toBe(FieldLabel)
     expect(Field).not.toHaveProperty('Description')
     expect(Field.Prose).toBe(Prose)
-    // The flat form (ADR-0055): <Field> is the root, and Label and ErrorMessage stand alone.
+    // The flat form: <Field> is the root, and Label and ErrorMessage stand alone.
     expect(Field).toBe(FieldRoot)
     expect(Label).toBe(FieldLabel)
     expect(ErrorMessage).toBe(FieldErrorMessage)
@@ -1045,7 +1045,7 @@ describe('types', () => {
     expect(Field.ErrorMessage).toBe(FieldErrorMessage)
   })
 
-  test('the flat form wires the label, the hint and the error like the compound form (ADR-0055)', async () => {
+  test('the flat form wires the label, the hint and the error like the compound form', async () => {
     await render(
       <Field required invalid>
         <Label>E-postadress</Label>

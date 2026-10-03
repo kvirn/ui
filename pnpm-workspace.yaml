@@ -5,13 +5,13 @@ packages:
 catalogMode: strict
 
 catalog:
-  # Toolchain (ADR-0002). Vite+ is pinned exactly and bundles Vitest, Oxlint, Oxfmt and tsdown.
+  # Toolchain. Vite+ is pinned exactly and bundles Vitest, Oxlint, Oxfmt and tsdown.
   vite-plus: 1.0.0
   vite: npm:@voidzero-dev/vite-plus-core@1.0.0
   '@vitest/browser-playwright': 5.0.1
   typescript: ^7.0.2
   '@types/node': ^24
-  # The sanctioned runtime dependencies of core, pinned exactly (ADR-0003, ADR-0059)
+  # The sanctioned runtime dependencies of core, pinned exactly
   '@tanstack/store': 0.11.2
   '@tanstack/table-core': 9.2.4
   '@tanstack/virtual-core': 3.17.11
@@ -25,7 +25,7 @@ catalog:
   axe-core: 4.13.0
   '@axe-core/playwright': 4.13.0
   '@playwright/test': 1.63.0
-  # Icon libraries: devDependencies only, for Icon's compatibility tests and stories (ADR-0025).
+  # Icon libraries: devDependencies only, for Icon's compatibility tests and stories.
   # Pinned exactly, so a release that changes how a library builds its <svg> is a reviewed bump.
   lucide-react: 1.49.0
   '@heroicons/react': 2.2.0
@@ -36,7 +36,7 @@ catalog:
   '@storybook/addon-a11y': 10.6.1
   '@storybook/addon-docs': 10.6.1
   '@storybook/addon-vitest': 10.6.1
-  # Tables in MDX pages: a Storybook build dependency only (ADR-0041)
+  # Tables in MDX pages: a Storybook build dependency only
   remark-gfm: 4.0.1
   next: 16.3.8
   '@changesets/cli': 3.0.3

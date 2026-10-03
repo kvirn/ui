@@ -216,7 +216,7 @@ const isEmptyContent = (children: ReactNode): boolean =>
   children === undefined || children === null || children === false || children === ''
 
 /**
- * A data table (ADR-0035, ADR-0059, contract: table.a11y.md). It renders a native `<table>`, so
+ * A data table (contract: table.a11y.md). It renders a native `<table>`, so
  * screen readers read its headers, rows and columns, and nothing here changes a table element's
  * `display`. Give it a name with `Table.Caption`, or `aria-labelledby` on the Root. With the result
  * of `useTable()` it sorts, selects, expands and can virtualize; without it, every part is a plain
@@ -416,7 +416,7 @@ TableBody.displayName = 'Table.Body'
 /** Internal. The space of the rows that aren't rendered: a row that is hidden from assistive technology. */
 function TableSpacer({ size, columnCount }: { size: number; columnCount: number }): ReactElement {
   return (
-    // Its block size is the one thing virtualization can't work without (ADR-0059).
+    // Its block size is the one thing virtualization can't work without.
     <tr aria-hidden="true" className="kv-table-spacer" style={{ blockSize: size }}>
       <td aria-hidden="true" colSpan={columnCount} />
     </tr>
@@ -469,7 +469,7 @@ TableRow.displayName = 'Table.Row'
 
 /**
  * The sort indicator, drawn here and not from the icon set (a built-in `sort` icon would change
- * the icon API, ADR-0061): two small chevrons while the column is sortable but not sorted, one up
+ * the icon API): two small chevrons while the column is sortable but not sorted, one up
  * chevron for ascending and one down chevron for descending, so the three states differ in shape.
  * Decorative: `aria-sort` on the header carries the state.
  */
@@ -531,7 +531,10 @@ export function TableColumnHeader<TFeatures extends TableFeatures, TData extends
     render,
     defaultElement: 'th',
     partProps: mergeProps(otherProps, hookProps, { children: content }),
-    state: { ...toState(table), sort: 'data-sort' in hookProps ? hookProps['data-sort'] : undefined },
+    state: {
+      ...toState(table),
+      sort: 'data-sort' in hookProps ? hookProps['data-sort'] : undefined,
+    },
   })
 }
 TableColumnHeader.displayName = 'Table.ColumnHeader'
@@ -730,9 +733,7 @@ export function TableDetailRow<TFeatures extends TableFeatures, TData extends Ro
     render,
     defaultElement: 'tr',
     partProps: mergeProps(otherProps, hookProps, {
-      children: (
-        <td colSpan={table?.columnCount ?? colSpan ?? 1}>{children}</td>
-      ),
+      children: <td colSpan={table?.columnCount ?? colSpan ?? 1}>{children}</td>,
     }),
     state: toRowState(table, row),
   })
@@ -772,7 +773,7 @@ export function TableEmpty({
 }
 TableEmpty.displayName = 'Table.Empty'
 
-/** A data table: a native `<table>` with sorting, selection, expanding and virtualization (ADR-0035, ADR-0059). */
+/** A data table: a native `<table>` with sorting, selection, expanding and virtualization. */
 export const Table = {
   Root: TableRoot,
   ScrollRegion: TableScrollRegion,

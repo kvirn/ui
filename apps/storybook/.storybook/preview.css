@@ -1,7 +1,7 @@
 /*
  * Storybook-only page styles: the body and the story helpers. Unlayered, so it wins over
- * @layer kv. Tokens only: no raw colours (ADR-0013). There is no wrapper around a story
- * (ADR-0023): `lang`, `dir` and the theme are set on <html>, and the body is the canvas. On a
+ * @layer kv. Tokens only: no raw colours. There is no wrapper around a story
+ *: `lang`, `dir` and the theme are set on <html>, and the body is the canvas. On a
  * Docs page a wrapper carries `lang` and `dir` per story, and the theme stays on <html>.
  */
 body {
@@ -15,7 +15,7 @@ body {
 }
 
 /* Headings a story draws outside kv-prose (section headings like "Primär" or "Nyheter") get
- * the heading family, like the prose headings next to them (ADR-0027). */
+ * the heading family, like the prose headings next to them. */
 :where(h1, h2, h3, h4, h5, h6) {
   font-family: var(--kv-font-family-heading, var(--kv-font-family-serif));
 }
@@ -583,7 +583,7 @@ body {
   background-color: var(--kv-color-surface);
 }
 
-/* The Keyboard section of a Docs page (ADR-0039): keys as keycaps, in the Docs page's own text colour. */
+/* The Keyboard section of a Docs page: keys as keycaps, in the Docs page's own text colour. */
 .kv-docs-keyboard kbd {
   display: inline-block;
   padding: 0.1em 0.4em;

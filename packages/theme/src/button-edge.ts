@@ -2,7 +2,7 @@ import { contrastRatio } from './contrast.ts'
 import { notificationBackgrounds } from './contrast-requirements.ts'
 import type { ColorTokenName, ThemeName } from './contrast-requirements.ts'
 
-// Button depth (ADR-0026): a button's edge is tinted, darker at the bottom in light and lighter
+// Button depth: a button's edge is tinted, darker at the bottom in light and lighter
 // at the top in dark. `--kv-button-edge-shade` and `--kv-button-edge-highlight` are a colour and
 // a percentage, the second argument of `color-mix(in srgb, <edge>, <colour> <percentage>)`.
 // A tint must never lower a boundary under 3:1 (1.4.11), so `theme:check` measures every one.
@@ -63,7 +63,7 @@ const plainBackgrounds = ['canvas', 'surface', 'surface-raised'] as const
 
 /**
  * Where a button sits: the plain backgrounds, and the four Notification backgrounds, because a
- * Notification's Actions hold buttons (design spec notification.md §6.6, ADR-0047).
+ * Notification's Actions hold buttons (design spec notification.md §6.6).
  */
 const buttonBackgrounds = [...plainBackgrounds, ...notificationBackgrounds] as const
 

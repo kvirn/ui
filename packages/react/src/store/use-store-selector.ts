@@ -9,7 +9,7 @@ interface SelectionCache<State, Selected> {
 
 /**
  * Subscribes to a core store and re-renders only when the selected slice changes
- * (ADR-0003). Uses React's own `useSyncExternalStore`, so it is concurrent- and SSR-safe.
+ *. Uses React's own `useSyncExternalStore`, so it is concurrent- and SSR-safe.
  */
 export function useStoreSelector<State, Selected>(
   store: ReadableStore<State>,

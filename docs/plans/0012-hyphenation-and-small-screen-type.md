@@ -3,7 +3,7 @@
 - **Status:** Done (design review pending)
 - **Owner:** Main session
 - **Created:** 2026-10-02 · **Target:** default theme 0.x
-- **Related:** ADR-0028, `docs/design/foundations-and-prose.md` (open question 3), `docs/design/card.md`
+- **Related:** `docs/design/foundations-and-prose.md` (open question 3), `docs/design/card.md`
 
 ## Goal
 

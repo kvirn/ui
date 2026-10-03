@@ -2,7 +2,7 @@ import { createContext } from 'react'
 import type { ChangeEventHandler } from 'react'
 
 // Internal. How a CheckboxGroup hands each Checkbox inside it the props it derives from the
-// group's `value` (ADR-0029, item 0): nothing is stored, the group only computes.
+// group's `value`: nothing is stored, the group only computes.
 
 /** What a CheckboxGroup puts on one of its checkboxes. */
 export interface CheckboxGroupItemProps {

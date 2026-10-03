@@ -3,15 +3,15 @@
 - **Status:** Approved
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-02 · **Target:** M1
-- **Related:** ADR-0039 (Proposed), ADR-0023, ADR-0004, Plan 0013, skill `.claude/skills/keyboard`
+- **Related:** Plan 0013, skill `.claude/skills/keyboard`
 
 ## Goal
 
-A consumer or keyboard user opening any component's Storybook Docs page sees which keys it supports, taken from its tested contract. Every existing component, first the form inputs, meets ADR-0039 now, and a check keeps it that way.
+A consumer or keyboard user opening any component's Storybook Docs page sees which keys it supports, taken from its tested contract. Every existing component, first the form inputs, meets the `keyboard` skill now, and a check keeps it that way.
 
 ## Non-goals
 
-- No behaviour changes in the packages. If the backfill finds a component that breaks ADR-0039, stop and report it: it's a separate a11y defect with its own fix.
+- No behaviour changes in the packages. If the backfill finds a component that breaks the `keyboard` skill, stop and report it: it's a separate a11y defect with its own fix.
 - No new components. Plan 0013's remaining phases (InputGroup, Checkbox, RadioGroup, DateInput) follow the keyboard skill as they're built.
 - No new dependency. The Keyboard section is parsed with a small function, not a markdown library.
 

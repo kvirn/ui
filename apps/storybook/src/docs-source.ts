@@ -1,4 +1,4 @@
-// "Show code" and the Docs description show what an adopter writes (ADR-0023). A story that
+// "Show code" and the Docs description show what an adopter writes. A story that
 // renders a fixture component would otherwise show `<DeadlineNotification locale="sv" />`, which
 // says nothing about the component. These helpers show the fixture's own source instead, so the
 // code on the page is the code that renders the example and cannot drift from it.
@@ -54,7 +54,7 @@ const leftOutSections = new Set(['Your own look', 'Classes for the default theme
 /**
  * A component's package docs (`<name>.md`) as the Docs page's description: prose only. It drops
  * the title (the page has its own), the draft note (its links only work in the repository), every
- * fenced code block (the stories' "Show code" is the code, ADR-0023) and the sections in
+ * fenced code block (the stories' "Show code" is the code) and the sections in
  * `leftOutSections`.
  */
 export function usageGuide(raw: string): string {

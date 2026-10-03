@@ -20,7 +20,7 @@ export interface IconDefaults {
 }
 
 export interface UseIconOptions extends IconDefaults {
-  /** A built-in or registered icon (ADR-0024). */
+  /** A built-in or registered icon. */
   name?: IconName | undefined
   /**
    * Sets `currentColor` for the icon, so it works with every library. Default: the text colour
@@ -32,7 +32,7 @@ export interface UseIconOptions extends IconDefaults {
   /** The root `<svg>`'s `stroke`. With Tabler, use `color`: its `stroke` prop is the width. */
   stroke?: string | undefined
   /**
-   * Makes the icon an image with this name, from your own translations (ADR-0007). Leave it
+   * Makes the icon an image with this name, from your own translations. Leave it
    * out when text next to the icon says the same thing: the icon is then hidden from
    * assistive technology.
    */
@@ -81,7 +81,7 @@ const isSizeStep = (size: IconSize): size is IconSizeStep =>
   typeof size === 'string' && size in sizeSteps
 
 /**
- * An icon's props, and the component for its name (ADR-0024, contract: icon.a11y.md). The
+ * An icon's props, and the component for its name (contract: icon.a11y.md). The
  * icon is decorative unless it has a `label`.
  *
  * @example

@@ -3,7 +3,6 @@
 - **Status:** Done
 - **Owner:** Maintainer
 - **Created:** 2026-09-30 · **Target:** M0
-- **Related:** ADR-0011, ADR-0004, ADR-0006
 
 ## Goal
 
@@ -19,7 +18,7 @@ Humans and agents design against one written visual language that fits Nordic mu
 
 - Root `DESIGN.md` in the DESIGN.md format: front matter tokens for the light theme, and prose sections for four themes, typography, layout and density, elevation and motion, shapes, components, content and do's and don'ts.
 - `.claude/skills/design/` with `SKILL.md` and three references: service patterns, spec template and review checklist.
-- `.claude/agents/ux-designer.md`: design and review modes, writes only to `docs/design/`, draft ADRs and `DESIGN.md`.
+- `.claude/agents/ux-designer.md`: design and review modes, writes only to `docs/design/` and `DESIGN.md`.
 - `docs/design/README.md` as the spec index.
 
 ## Tasks
@@ -28,7 +27,7 @@ Humans and agents design against one written visual language that fits Nordic mu
 - [x] `design` skill and references
 - [x] `ux-designer` agent
 - [x] `AGENTS.md`, `CLAUDE.md` and `docs/README.md` updated (repo map, workflow table, skills, agents, conventions)
-- [x] ADR-0011 (Proposed)
+- [x] Decision recorded (Proposed)
 
 ## Risks & open questions
 

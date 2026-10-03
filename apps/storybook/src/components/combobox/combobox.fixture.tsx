@@ -10,7 +10,7 @@ import type { VirtualizedPlace } from '../form/virtualized.fixture.ts'
 // is one Combobox as an adopter writes it. sv, en and fi are written, and nb, nn and se show the
 // English text, marked lang="en" (3.1.2), until a translator has been through them.
 //
-// KvirnUI holds no form state (ADR-0029, item 0). The value is the chosen option's key: pass
+// KvirnUI holds no form state. The value is the chosen option's key: pass
 // `value` and `onValueChange`, or `defaultValue` and `name` for a plain form. Nothing here
 // validates: an invalid story sets `invalid` itself.
 

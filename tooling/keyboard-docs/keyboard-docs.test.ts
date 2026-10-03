@@ -8,7 +8,7 @@ import {
   listStoriesFiles,
 } from './check-keyboard-docs.ts'
 
-// ADR-0039, Plan 0015: every component's Docs page shows its contract's Keyboard section, and
+// Plan 0015: every component's Docs page shows its contract's Keyboard section, and
 // every key in it names a test. Like raw-colours: assert the walk found the files first, so an
 // empty walk can't pass.
 
@@ -33,7 +33,7 @@ describe('importedContract', () => {
   })
 })
 
-describe('Keyboard sections (ADR-0039)', () => {
+describe('Keyboard sections', () => {
   it('finds the stories files and the contracts it checks', () => {
     const stories = listStoriesFiles(repositoryRoot).map((file) => relative(repositoryRoot, file))
     expect(stories).toEqual(

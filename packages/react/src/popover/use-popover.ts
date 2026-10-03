@@ -79,7 +79,7 @@ export interface UsePopoverResult {
 }
 
 /**
- * A popover's props for your own elements (ADR-0046; contract: popover.a11y.md): a trigger
+ * A popover's props for your own elements (contract: popover.a11y.md): a trigger
  * button, a popup in the top layer and an optional close button.
  *
  * - The trigger gets `aria-expanded`, `aria-controls` and `aria-haspopup="dialog"`, and toggles

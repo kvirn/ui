@@ -7,7 +7,7 @@ import { render } from 'vitest-browser-react'
 import { useDismissableLayer } from './use-dismissable-layer.ts'
 import type { DismissReason, UseDismissableLayerOptions } from './use-dismissable-layer.ts'
 
-// Contract: popover.a11y.md (Escape and outside press) and ADR-0046. The hook only reports:
+// Contract: popover.a11y.md (Escape and outside press). The hook only reports:
 // the owner closes the layer.
 
 interface LayerProps {

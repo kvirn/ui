@@ -6,7 +6,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 // Story and e2e fixture for Components/Form/OneTimeCode (Plan 0014 and Plan 0019,
 // docs/design/one-time-code.md §4). The hint is built from the pattern: it says the length and the
 // groups, because the boxes are hidden from screen readers and disappear in the fallback
-// (ADR-0045 item 10). The length is the characters, never the dashes. The numbers are small
+//. The length is the characters, never the dashes. The numbers are small
 // integers, so they read the same in every locale (no number words). The component adds no strings of its own: the label and the hint belong to the consumer,
 // because they name the channel and the length. The strings below are fixture text, with keys
 // local to this file. sv, en and fi are written (the fi strings are the designer's drafts, for
@@ -14,7 +14,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 // show the English text, marked lang="en" (3.1.2). The library's own strings (the mask's
 // rejection messages, "Error:") follow the locale through the shared provider decorator.
 //
-// KvirnUI holds no form state (ADR-0029, item 0). Nothing here validates or checks the code: an
+// KvirnUI holds no form state. Nothing here validates or checks the code: an
 // invalid story sets `invalid` and writes the message itself, as an implementor's form logic
 // would.
 

@@ -1,7 +1,7 @@
 /** Whether a field's optional text shows in its label: `optional` shows it, `none` never does. */
 export type FieldMarker = 'optional' | 'none'
 
-/** State that any part of a field or fieldset exposes as `data-*` attributes (ADR-0029). */
+/** State that any part of a field or fieldset exposes as `data-*` attributes. */
 export interface FieldStateAttributes {
   'data-invalid'?: ''
   'data-required'?: ''

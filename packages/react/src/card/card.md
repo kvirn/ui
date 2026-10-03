@@ -2,7 +2,7 @@
 
 > **Draft** (Plan 0007). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [card.a11y.md](card.a11y.md), and the design spec is [docs/design/card.md](../../../../docs/design/card.md).
 
-A plain container for one thing on the page: an image, a heading, some text and a couple of actions, for a service, a news item or a case (ADR-0020). Card is elevation level 2, and it is always `surface-raised`. A region of the page, such as a sidebar, is a [Section](../section/section.md) (ADR-0044).
+A plain container for one thing on the page: an image, a heading, some text and a couple of actions, for a service, a news item or a case. Card is elevation level 2, and it is always `surface-raised`. A region of the page, such as a sidebar, is a [Section](../section/section.md).
 
 - Four parts, each one `<div>`: `Card.Root`, `Card.Header`, `Card.Body` and `Card.Footer` (also exported as `CardRoot`, `CardHeader`, `CardBody` and `CardFooter`). Header and Footer are never `<header>` or `<footer>`, which would become page landmarks.
 - No role, no ARIA, no text and no behaviour. Children are whatever you pass, with their own semantics and focus order.
@@ -79,7 +79,7 @@ Without a modifier class, a card gets the default: `surface-raised`, the `lg` ra
 <Card.Root render={(rootProps) => <li {...rootProps} className="nyhet" />}>…</Card.Root>
 ```
 
-An element keeps its own props, and the part's are merged in: class names join, styles merge and refs merge (ADR-0015). A `className` prop and a `render` element's own `className` join the part's class instead of replacing it, so the theme keeps styling the card. The function form gets the props, with a callback ref that fits any element, and an empty state object. Spread them, and keep `className`: it holds the part's class and your own.
+An element keeps its own props, and the part's are merged in: class names join, styles merge and refs merge. A `className` prop and a `render` element's own `className` join the part's class instead of replacing it, so the theme keeps styling the card. The function form gets the props, with a callback ref that fits any element, and an empty state object. Spread them, and keep `className`: it holds the part's class and your own.
 
 ## Hook
 

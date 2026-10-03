@@ -76,8 +76,7 @@ function renderNativeOptions<TItem>(listbox: UseListboxResult<TItem>): ReactElem
 }
 
 /**
- * Owns the state of a Listbox: the options, the chosen value and the open state (ADR-0037;
- * contract: listbox.a11y.md). It renders no element of its own: put a `Listbox.Trigger` and a
+ * Owns the state of a Listbox: the options, the chosen value and the open state (contract: listbox.a11y.md). It renders no element of its own: put a `Listbox.Trigger` and a
  * `Listbox.Popup` inside it, the popup right after the trigger, in a `Field`.
  *
  * The value is the chosen option's key (`itemToKey`): a string or `null`, or with `multiple` an
@@ -674,7 +673,7 @@ export function ListboxEmpty({
 ListboxEmpty.displayName = 'Listbox.Empty'
 
 /**
- * The Listbox's parts (ADR-0037). `Root` with `Trigger` and `Popup` is the stylable listbox
+ * The Listbox's parts. `Root` with `Trigger` and `Popup` is the stylable listbox
  * (the APG select-only combobox). On touch devices, `Root` renders the browser's own `<select>`
  * instead (`native="auto"`).
  */

@@ -1,9 +1,9 @@
 # Plan 0018: Section
 
-- **Status:** Done (alpha. Manual AT pending before beta. ADR-0044 still to be accepted)
+- **Status:** Done (alpha. Manual AT pending before beta. The decision is still to be accepted)
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-02 · **Target:** M1
-- **Related:** ADR-0044 (Proposed), ADR-0013, ADR-0020, design spec [section.md](../design/section.md)
+- **Related:** design spec [section.md](../design/section.md)
 
 ## Goal
 
@@ -25,9 +25,9 @@ Adopters lay out a page with one plain container for a region (a sidebar, a band
 
 Design spec: [docs/design/section.md](../design/section.md) (ux-designer, Draft). Section is elevation level 1: `surface` by default or `kv-section--canvas`; padding `kv-section--padding-none|sm|md|lg` (default `md`, Card's steps, compact step-down); square, no shadow, a 1px transparent border that is `CanvasText` in forced colours; renders a `<div>`, and landmarks are opt-in and named via `render`. Card loses `kv-card--surface` and `kv-card--canvas` and is `surface-raised` only. No new contrast pairs. Every reference to update is in spec §9, and the stories and tests are in §7. Open questions are in spec §10.
 
-Decisions (2026-10-02, maintainer: "follow convention"): choices are classes, not props (ADR-0013). The name is `Section`, rendering a `<div>`. The look is the spec's. The spec's open questions 1–5 stay open and out of scope.
+Decisions (2026-10-02, maintainer: "follow convention"): choices are classes, not props. The name is `Section`, rendering a `<div>`. The look is the spec's. The spec's open questions 1–5 stay open and out of scope.
 
-Name history (2026-10-02, maintainer): called Section in the first spec, renamed Panel, then back to Section, because `Panel` collides with the shared part name (`Disclosure.Panel`, `Tabs.Panel`) and a bordered non-entity panel would duplicate Card. The maintainer's card rules are in the §6.9 decision table as docs only. A clickable card and a border, shadow or flat choice are not adopted (they would reverse ADR-0020 and DESIGN.md, so they need their own ADR). Status messages are a separate Notification component (`docs/design/notification.md`).
+Name history (2026-10-02, maintainer): called Section in the first spec, renamed Panel, then back to Section, because `Panel` collides with the shared part name (`Disclosure.Panel`, `Tabs.Panel`) and a bordered non-entity panel would duplicate Card. The maintainer's card rules are in the §6.9 decision table as docs only. A clickable card and a border, shadow or flat choice are not adopted (they would reverse the Card decision and DESIGN.md, so they need their own decision record). Status messages are a separate Notification component (`docs/design/notification.md`).
 
 ### API sketch
 
@@ -46,8 +46,8 @@ Exports: `Section` (`Root`), `SectionRoot`, `useSection`. Types: `SectionRootPro
 
 ### Accessibility contract (draft)
 
-| Part | Element (default) | ARIA                                        | Class      |
-| ---- | ----------------- | ------------------------------------------- | ---------- |
+| Part | Element (default) | ARIA                                        | Class        |
+| ---- | ----------------- | ------------------------------------------- | ------------ |
 | Root | `<div>`           | none. The consumer adds it with the element | `kv-section` |
 
 - Keyboard: none of its own, no focusable parts. Tab order is the children's DOM order.
@@ -66,7 +66,7 @@ Classes `kv-section`, `kv-section--surface|canvas`, `kv-section--padding-none|sm
 ## Tasks
 
 - [x] Design spec `docs/design/section.md` (ux-designer)
-- [ ] ADR-0044 accepted by the maintainer
+- [ ] The Section decision accepted by the maintainer
 - [x] `section.a11y.md` contract from the draft above
 - [x] Component tests first (`section.test.tsx`): one `<div>` with its class, `render` (element and function), `useSection` props, ref forwarding, class merging, axe
 - [x] `useSection` and `Section` in `packages/react/src/section/`, exported from `index.ts`, with `section.md`
@@ -74,9 +74,9 @@ Classes `kv-section`, `kv-section--surface|canvas`, `kv-section--padding-none|sm
 - [x] Card changes (spec §6.7, §9): docs, contract, JSDoc, test, stories, fixture, e2e
 - [x] Stories (`Components/Section`: every surface and padding, `SurfaceLayers` moved from Card, a named `aside`, four themes, RTL, forced colours) and e2e (reflow, forced-colours edge, no role by default)
 - [x] The §6.9 decision table in `section.md`, `card.md`, both Docs pages, Foundation/Borders and elevation, and DESIGN.md. Fix the hairline contrast sentence in DESIGN.md (spec §10.6)
-- [x] Amend ADR-0020 (revision note), `.changeset/card.md`, add `.changeset/section.md`, roadmap row
+- [x] Amend the Card decision (revision note), `.changeset/card.md`, add `.changeset/section.md`, roadmap row
 - [x] accessibility-reviewer APPROVE (no blocking findings; its documentation notes are fixed)
-- [x] `vp check`, `vp test run`, `vp run e2e`, `theme:check`, `i18n:check` green, run on the Section and Card files (ADR-0043)
+- [x] `vp check`, `vp test run`, `vp run e2e`, `theme:check`, `i18n:check` green, run on the Section and Card files
 
 ## Risks & open questions
 

@@ -15,11 +15,11 @@ import {
   withMaskLocale,
 } from './mask.fixture.tsx'
 
-// Components/Form/Mask: an Input with a `mask` (Plan 0014, ADR-0032). The input stays a native
+// Components/Form/Mask: an Input with a `mask` (Plan 0014). The input stays a native
 // <input>: paste, autofill and undo keep working, nothing is clamped or corrected, and a
 // refused character is announced politely (4.1.3) through the KvirnProvider's live region. The
 // mask shapes what is typed. It doesn't explain the format, so every field has a hint that does
-// (3.3.2). KvirnUI holds no form state (ADR-0029, item 0): the checks are helpers your form
+// (3.3.2). KvirnUI holds no form state: the checks are helpers your form
 // calls. mask.e2e.ts runs the keys, paste styles, caret, undo, composition and the throttle.
 
 const meta = {
@@ -171,7 +171,7 @@ export const PersonalIdentityNumberCheck: Story = {
 
 /**
  * A stored value is the plain one. `mask.format()` shows it with its separators, and Input
- * renders the controlled `value` exactly as given: it never rewrites it (ADR-0032, item 8).
+ * renders the controlled `value` exactly as given: it never rewrites it.
  */
 export const StoredValue: Story = {
   render: (_args, { globals }) => <StoredValueField globals={globals} />,

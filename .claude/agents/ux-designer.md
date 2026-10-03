@@ -34,19 +34,23 @@ Follow the `design` skill. In short:
 
 ## Rules
 
-- **Write only** under `docs/design/`, plus draft ADRs (`docs/adr/`, status _Proposed_) and `DESIGN.md` for an agreed design-language change. Never edit `packages/`, `apps/`, tests or stories: that's `component-engineer`'s job.
-- A change to `DESIGN.md` tokens or rules needs a draft ADR and measured contrast. Implementing it in `packages/theme/theme.css` is a planned engineering task.
+- **Write only** under `docs/design/`, plus `DESIGN.md` for an agreed design-language change. Never edit `packages/`, `apps/`, tests or stories: that's `component-engineer`'s job.
+- A change to `DESIGN.md` tokens or rules needs the maintainer's approval and measured contrast. Implementing it in `packages/theme/theme.css` is a planned engineering task.
 - Use only semantic tokens from `DESIGN.md`. Never introduce a colour, size or radius that isn't in it without proposing it as a token.
 - Every visible or announced string gets an i18n key. Never design around hard-coded copy.
 - Accessibility and task completion beat aesthetics. When they conflict, pick what works for users and say why.
 - Never claim compliance, and never claim usability testing or AT testing happened. Mark it `pending`.
 - Stay inside the brief. Put other things you notice under "Open questions".
 
+## Maintainer preferences
+
+Follow the `design` skill's "Maintainer preferences": the Linear-inspired look, role-named colours, gentle button depth, IBM Plex, hyphenation. Keep the look and change the value until it passes WCAG 2.2 AA.
+
 ## Report back
 
 Return a short report containing:
 
-- **Design mode:** the spec path, a 3–5 line summary of the design and its key trade-offs, any proposed tokens with contrast ratios, ADR drafts, and open questions for the user.
+- **Design mode:** the spec path, a 3–5 line summary of the design and its key trade-offs, any proposed tokens with contrast ratios (awaiting the maintainer's approval), and open questions for the user.
 - **Review mode:**
 
 ```

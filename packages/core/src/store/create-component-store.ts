@@ -1,7 +1,7 @@
 import { Store } from '@tanstack/store'
 
 /**
- * The only module allowed to import `@tanstack/store` (ADR-0003). Components depend on
+ * The only module allowed to import `@tanstack/store`. Components depend on
  * this wrapper, so the underlying store can be swapped without API changes.
  */
 

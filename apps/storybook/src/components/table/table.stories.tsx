@@ -19,8 +19,8 @@ import {
   VirtualizedCases,
 } from './table.fixture.tsx'
 
-// Components/Table: a native table with TanStack Table bundled (Plan 0026, ADR-0035, ADR-0059,
-// ADR-0061, design spec docs/design/table.md). A static table needs no `useTable`: every part is
+// Components/Table: a native table with TanStack Table bundled (Plan 0026,
+// design spec docs/design/table.md). A static table needs no `useTable`: every part is
 // the plain native element. With `useTable` it sorts one column at a time, selects, expands,
 // paginates and virtualizes. Every story has a caption, which names the table and its region.
 // table.e2e.ts runs the keys of the Keyboard story, the sticky head, RTL, forced colours and 320px.

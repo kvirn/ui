@@ -154,7 +154,7 @@ describe('rendering', () => {
     expect(Fieldset.Legend).toBe(FieldsetLegend)
     expect(Fieldset).not.toHaveProperty('Description')
     expect(Fieldset.Prose).toBe(Prose)
-    // The flat form (ADR-0055): <Fieldset> is the root, and Legend stands alone.
+    // The flat form: <Fieldset> is the root, and Legend stands alone.
     expect(Fieldset).toBe(FieldsetRoot)
     expect(Legend).toBe(FieldsetLegend)
     expect(Fieldset.displayName).toBe('Fieldset')
@@ -362,7 +362,7 @@ describe('states', () => {
   })
 })
 
-describe('marker defaults in a group (ADR-0029, item 10)', () => {
+describe('marker defaults in a group', () => {
   test('a plain Fieldset has no legend marker, and its Fields mark themselves', async () => {
     const { container } = await render(
       <Fieldset.Root>
@@ -447,7 +447,7 @@ describe('marker defaults in a group (ADR-0029, item 10)', () => {
   })
 })
 
-describe('messages (ADR-0007 resolution)', () => {
+describe('messages resolution', () => {
   test('uses the provider’s catalog for the legend marker and the prefix', async () => {
     const { container } = await render(sweden(<ContactGroup invalid />))
     expect(container.querySelector('legend .kv-field-optional')?.textContent).toBe('(valfritt)')
@@ -563,7 +563,7 @@ describe('useFieldset', () => {
   })
 })
 
-describe('several descriptions (ADR-0031)', () => {
+describe('several descriptions', () => {
   /** The default order: legend, hints, controls, then the error. */
   function AddressGroup({ invalid = false }: { invalid?: boolean }) {
     return (

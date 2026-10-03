@@ -5,7 +5,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 
-// Components/Heading: the headless Heading (ADR-0052). It has no focusable part, so there's no
+// Components/Heading: the headless Heading. It has no focusable part, so there's no
 // Keyboard story.
 
 const meta = {

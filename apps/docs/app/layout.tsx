@@ -1,6 +1,6 @@
-// Default theme (ADR-0013), in @layer kv, then the site's own unlayered CSS, which wins.
+// Default theme, in @layer kv, then the site's own unlayered CSS, which wins.
 import '@kvirn-ui/theme/theme.css'
-// Self-hosted IBM Plex Sans and Serif (ADR-0027): no request to any third party, at build
+// Self-hosted IBM Plex Sans and Serif: no request to any third party, at build
 // time or at runtime.
 import '../fonts/ibm-plex/ibm-plex.css'
 import './docs.css'

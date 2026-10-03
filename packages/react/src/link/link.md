@@ -2,7 +2,7 @@
 
 > **Draft** (Plan 0003). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [link.a11y.md](link.a11y.md).
 
-A native `<a href>` for navigation, rendered by your router's link component when you register one (ADR-0005). For actions, use [Button](../button/button.md).
+A native `<a href>` for navigation, rendered by your router's link component when you register one. For actions, use [Button](../button/button.md).
 
 - `current` sets `aria-current`, for example `current="page"` in navigation. Link doesn't detect the current page itself.
 - `target="_blank"` adds `rel="noopener noreferrer"` to your own `rel`.
@@ -28,7 +28,7 @@ In a React Server Component, use the named export `LinkNewTabNotice` instead of 
 
 ### The new-tab notice text
 
-First match wins (ADR-0007):
+First match wins:
 
 ```tsx
 <Link.NewTabNotice>(extern länk)</Link.NewTabNotice>          // 1. children

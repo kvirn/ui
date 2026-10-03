@@ -45,7 +45,7 @@ export function useQuietAnnouncer(): UseAnnouncerResult & { isAvailable: boolean
 /**
  * Announces changes to screen reader users (4.1.3) through the live regions the outermost
  * `KvirnProvider` renders. Call `announce` from an event handler or an effect, never during
- * render. Without a provider it does nothing and warns in development (ADR-0040).
+ * render. Without a provider it does nothing and warns in development.
  */
 export function useAnnouncer(): UseAnnouncerResult {
   const { isAvailable, announce } = useQuietAnnouncer()

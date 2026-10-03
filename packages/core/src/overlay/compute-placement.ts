@@ -109,7 +109,7 @@ function insetViewport(viewport: OverlayRect, padding: number): Bounds {
 }
 
 /**
- * Works out where a popup goes next to its anchor (ADR-0046). Pure: pass measured rectangles in,
+ * Works out where a popup goes next to its anchor. Pure: pass measured rectangles in,
  * apply `x`, `y`, `width` and `maxHeight` to the popup.
  *
  * - It starts on the requested side and **flips** to the opposite one when the popup does not fit

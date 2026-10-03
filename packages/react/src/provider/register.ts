@@ -1,5 +1,5 @@
 /**
- * Apps register their router's link component (ADR-0005) and their icons (ADR-0024) once,
+ * Apps register their router's link component and their icons once,
  * for typed link props and icon names everywhere:
  *
  * ```ts

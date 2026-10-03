@@ -1,6 +1,6 @@
 /**
- * The four themes (ADR-0006) and every colour pair `theme:check` measures in them. The
- * colours themselves live in `theme.css`, the source of truth (ADR-0013).
+ * The four themes and every colour pair `theme:check` measures in them. The
+ * colours themselves live in `theme.css`, the source of truth.
  */
 export const themeNames = ['light', 'dark', 'light-contrast', 'dark-contrast'] as const
 export type ThemeName = (typeof themeNames)[number]
@@ -46,19 +46,19 @@ export type ColorTokenName = (typeof colorTokenNames)[number]
 type ColorPair = readonly [foreground: ColorTokenName, background: ColorTokenName]
 
 // The surfaces content sits on: pages, sections (`surface` and `canvas`), cards, popups and
-// dialogs (`surface-raised`). Sections need no pair of their own (ADR-0044).
+// dialogs (`surface-raised`). Sections need no pair of their own.
 const plainBackgrounds = ['canvas', 'surface', 'surface-raised'] as const
-/** The status backgrounds of Notifications, where prose and its links can sit (ADR-0018). */
+/** The status backgrounds of Notifications, where prose and its links can sit. */
 const statusBackgrounds = ['danger-subtle', 'success-subtle', 'warning-subtle'] as const
 /**
- * Notifications (design spec docs/design/notification.md §6.6, ADR-0047): info uses
+ * Notifications (design spec docs/design/notification.md §6.6): info uses
  * `primary-subtle`. Every pair a Notification needs is already required below, so this adds
  * none. `checkButtonEdges` measures a button's tinted edge on these too (Actions hold buttons).
  */
 export const notificationBackgrounds = ['primary-subtle', ...statusBackgrounds] as const
 
 /**
- * Text on every background it's used on (DESIGN.md, Colors; ADR-0014). `heading` can be
+ * Text on every background it's used on (DESIGN.md, Colors). `heading` can be
  * given its own colour, so it's held to everything body `text` is held to.
  */
 const textPairs: readonly ColorPair[] = [
@@ -77,7 +77,7 @@ const textPairs: readonly ColorPair[] = [
   ['danger', 'primary-subtle'],
   ['success', 'primary-subtle'],
   ['warning', 'primary-subtle'],
-  // Prose on notifications: muted metadata, links and hovered links (ADR-0018).
+  // Prose on notifications: muted metadata, links and hovered links.
   ...(['text-muted', 'link', 'link-hover'] as const).flatMap((foreground) =>
     statusBackgrounds.map((background): ColorPair => [foreground, background]),
   ),
@@ -105,7 +105,7 @@ const nonTextPairs: readonly ColorPair[] = [
   ),
   // Hovered and pressed filled buttons on every surface they sit on: pages, sections, cards,
   // dialogs and popups (1.4.11).
-  // - Primary: the edge is a `primary` border in that state (ADR-0021), and `primary` is
+  // - Primary: the edge is a `primary` border in that state, and `primary` is
   //   required on every plain background above. `primary-hover` is also required where it
   //   reaches 3:1 on its own. It isn't required on `surface-raised`, where it's 2.98:1 in dark:
   //   that gap is why the border exists. A theme test checks the border.
@@ -113,11 +113,11 @@ const nonTextPairs: readonly ColorPair[] = [
   ['primary-hover', 'canvas'],
   ['primary-hover', 'surface'],
   ...plainBackgrounds.map((background): ColorPair => ['danger-hover', background]),
-  // Controls, blockquote bars and focus rings on notifications (ADR-0018).
+  // Controls, blockquote bars and focus rings on notifications.
   ...(['border-control', 'secondary', 'focus-ring'] as const).flatMap((foreground) =>
     statusBackgrounds.map((background): ColorPair => [foreground, background]),
   ),
-  // Form fields (ADR-0029, docs/design/form-fields.md §6.12). The invalid edge is `danger`
+  // Form fields (docs/design/form-fields.md §6.12). The invalid edge is `danger`
   // at 2px, so it's its own 3:1 requirement, kept even if `danger` is ever split into a text
   // and an edge token. Controls sit in notifications too, next to `border-control` there. A checked
   // box inside a notification is `primary`, which `primary-subtle` already requires.

@@ -2,9 +2,9 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-03
-- **Plan:** [0024](../plans/0024-kbd.md) · **Related ADRs:** [ADR-0053](../adr/0053-kbd.md) (Proposed, decision 3 and its Consequences need amending, see §8), ADR-0026 (button depth), ADR-0013
+- **Plan:** [0024](../plans/0024-kbd.md)
 - **Type:** component default styling (`kv-kbd` and prose `kbd`)
-- **Revises:** the `kbd` row in [foundations-and-prose.md §6.3](foundations-and-prose.md) and ADR-0053 decision 3
+- **Revises:** the `kbd` row in [foundations-and-prose.md §6.3](foundations-and-prose.md) and the Kbd decision
 
 ## 1. Brief
 
@@ -28,8 +28,8 @@ Measured in `Components/Kbd › Default` (light, 16px body text, 24px line): the
 | Minor    | Font family `--kv-font-family-mono`                        | `ui-monospace` resolves to a different face on each OS (SF Mono, Cascadia, DejaVu Sans Mono on Linux), and none of them matches Plex. The Linux screenshot shows wide, codey glyphs that look like inline code, not like a key. Physical keycaps are printed in sans, and DESIGN.md keeps mono for "reference numbers and code". `Shift` is 52px wide in mono. | DESIGN.md Typography: families                                                                                                   | Everyone. It also blurs `kbd` with `code`                                          |
 | Minor    | Combination spacing                                        | `Ctrl`, `+` and `C` touch each other (`[Ctrl]+[C]`), so the plus is hard to see between two boxes. A grouped combination can also break across a line at its `+`.                                                                                                                                                                                              | –                                                                                                                                | Low vision, magnification                                                          |
 | Minor    | Forced colours                                             | The edge is `border-control`, which forced colours maps to `ButtonBorder`, the colour for buttons. A key isn't a button. `kbd.a11y.md` and foundations §6.5 both say the edge is `CanvasText`, which is not what the CSS does.                                                                                                                                 | DESIGN.md: forced colours use the system colour for the role                                                                     | Windows contrast-theme users (low risk: ButtonBorder is usually the text colour)   |
-| Minor    | Docs and ADR text                                          | `kbd.a11y.md` gives 1.4.11 as the reason for `border-control`. A key's edge isn't a UI component and isn't needed to understand the content (the key name is text), so 1.4.11 doesn't require 3:1. We keep `border-control` for a different reason (see §5), and the docs shouldn't claim a requirement that doesn't apply.                                    | Accuracy of claims (AGENTS.md hard rule 8 spirit)                                                                                | Adopters reading the contract                                                      |
-| Minor    | Duplication                                                | The prose `kbd` and `kv-kbd` rules repeat the same 8 declarations, so they will drift apart (ADR-0053 Consequences already says so).                                                                                                                                                                                                                           | –                                                                                                                                | Maintainers                                                                        |
+| Minor    | Docs text                                                  | `kbd.a11y.md` gives 1.4.11 as the reason for `border-control`. A key's edge isn't a UI component and isn't needed to understand the content (the key name is text), so 1.4.11 doesn't require 3:1. We keep `border-control` for a different reason (see §5), and the docs shouldn't claim a requirement that doesn't apply.                                    | Accuracy of claims (AGENTS.md hard rule 8 spirit)                                                                                | Adopters reading the contract                                                      |
+| Minor    | Duplication                                                | The prose `kbd` and `kv-kbd` rules repeat the same 8 declarations, so they will drift apart (the Kbd decision's Consequences already says so).                                                                                                                                                                                                                 | –                                                                                                                                | Maintainers                                                                        |
 | Minor    | `kbd.stories.tsx › InProse`                                | `Shift+Tab` is written as two separate keys with a loose `+`, not as a group, so the story doesn't show the recommended markup. It's also allowed to break between `+` and `Tab` at 320px. Engineering change, out of this spec's write scope.                                                                                                                 | –                                                                                                                                | Adopters copying the example                                                       |
 | Polish   | Vertical position                                          | The box (19px) nearly fills the 24px line and drops about 5px below the baseline, so it looks lower than the text around it. This comes from the mono font's metrics. With the inherited sans the box is 20px, is symmetric around the label, and its label sits on the sentence's baseline.                                                                   | –                                                                                                                                | –                                                                                  |
 
@@ -44,7 +44,7 @@ Measured in `Components/Kbd › Default` (light, 16px body text, 24px line): the
 
 ## 3. Flow and content
 
-A key is static text, so there's no flow, no state and no strings. Key names are content the consumer writes, and they aren't translated (ADR-0053 decision 4). No i18n keys are needed.
+A key is static text, so there's no flow, no state and no strings. Key names are content the consumer writes, and they aren't translated (the Kbd decision). No i18n keys are needed.
 
 ## 4. Structure
 
@@ -152,7 +152,7 @@ There is now one rule, so a change goes in one place. Things to check during the
   - `InProse` should group `Shift+Tab` in an outer `Kbd`.
 - `kbd.a11y.md` § visual: describe the new look. The edge maps to `CanvasText` in forced colours. Change the 1.4.11 wording to: "the edge is `border-control` (at least 3:1) so the key stays distinct at high zoom, though 1.4.11 doesn't require it."
 - `kbd.md`: "drawn like inline code, in the body font, with a control-coloured edge".
-- ADR-0053 (still Proposed): amend decision 3 and the Consequences (text in the hand-off).
+- the Kbd decision (still Proposed): amend decision 3 and the Consequences (text in the hand-off).
 - `theme.css` header comment for section 9b (line 70) if its wording changes.
 
 ## 7. Accessibility annotations

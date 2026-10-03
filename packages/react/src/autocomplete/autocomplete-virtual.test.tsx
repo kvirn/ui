@@ -10,7 +10,7 @@ import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Autocomplete } from './autocomplete.tsx'
 import type { UseAutocompleteOptions } from './use-autocomplete.ts'
 
-// Contract: autocomplete.a11y.md › Virtualization (ADR-0059, item 3; ADR-0037, item 11). The keys
+// Contract: autocomplete.a11y.md › Virtualization. The keys
 // are also covered end to end in apps/storybook/src/components/autocomplete/autocomplete.e2e.ts.
 // Component tests load no theme, so the fixture gives the list the height limit and the scroll that
 // the theme gives it, and every option the 2rem height that `estimateSize` guesses.

@@ -45,7 +45,7 @@ const municipalities = (
 
 describe('rendering', () => {
   test('the native select is an internal part: Listbox has no Native member', () => {
-    // NativeSelect became Listbox (ADR-0037, item 2): the native select is not a part of its own,
+    // NativeSelect became Listbox: the native select is not a part of its own,
     // `Listbox.Root` renders it for `native="always"` and `native="auto"` on touch devices.
     expect('Native' in Listbox).toBe(false)
     expect(ListboxNative.displayName).toBe('ListboxNative')
@@ -121,7 +121,7 @@ describe('rendering', () => {
     })
   })
 
-  test('multiple and size warn once: use a CheckboxGroup (ADR-0037)', async () => {
+  test('multiple and size warn once: use a CheckboxGroup', async () => {
     const props = { 'aria-label': 'Kommun', multiple: true } as unknown as ListboxNativeProps
     await render(<ListboxNative {...props}>{municipalities}</ListboxNative>)
     expect(consoleWarn).toHaveBeenCalledTimes(1)

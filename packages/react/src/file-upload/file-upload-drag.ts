@@ -1,7 +1,7 @@
 import type { Env, FileUploadInput } from '@kvirn-ui/core'
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
 
-// Internal. Drag-and-drop helpers for FileUpload (ADR-0038 item 3, design spec D2 and §3). Drag
+// Internal. Drag-and-drop helpers for FileUpload (design spec D2 and §3). Drag
 // and drop is only ever an extra: the Trigger is the keyboard and single-pointer path (2.5.7).
 
 const anyFinePointerQuery = '(any-pointer: fine)'

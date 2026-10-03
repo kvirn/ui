@@ -1,6 +1,6 @@
 # KvirnProvider
 
-> **Draft** (Plan 0002). This page moves to the docs site once `apps/docs` has a content system. The Next.js and TanStack Router recipes have not yet been verified in a sample app (ADR-0005). `TODO(verify-recipe)`.
+> **Draft** (Plan 0002). This page moves to the docs site once `apps/docs` has a content system. The Next.js and TanStack Router recipes have not yet been verified in a sample app. `TODO(verify-recipe)`.
 
 `KvirnProvider` gives every KvirnUI component its locale, strings, text direction, date settings and router link. It also owns the document's theme preference, which a theme switcher reads and changes through `useTheme()`.
 
@@ -86,7 +86,7 @@ If you render on the server, add `<KvirnThemeScript />` to the server-rendered d
 
 ## Typed router links: `Register`
 
-Register your router's link component once, and every KvirnUI component that renders a link gets that component's props, including typed routes (ADR-0005):
+Register your router's link component once, and every KvirnUI component that renders a link gets that component's props, including typed routes:
 
 ```ts
 // kvirn-ui.d.ts
@@ -103,7 +103,7 @@ Without the augmentation, `linkComponent` only accepts `'a'`, and link props are
 
 ## Icons: `icons` and `iconDefaults`
 
-Register your icons once, so `<Icon name>` works everywhere and names are checked (ADR-0024). The registry holds components, so it lives in a client module next to this setup. See [Icon](../icon/icon.md#registering-icons).
+Register your icons once, so `<Icon name>` works everywhere and names are checked. The registry holds components, so it lives in a client module next to this setup. See [Icon](../icon/icon.md#registering-icons).
 
 ```tsx
 <KvirnProvider icons={icons} iconDefaults={{ strokeWidth: 1.5 }}>
@@ -141,7 +141,7 @@ function FinnishSection({ children }: { children: ReactNode }) {
 
 ## Strings: `messages`
 
-Every visible or announced string has a default and can be replaced (ADR-0007). Import the catalog for your locale and pass it as `messages`. English is built in and is the fallback:
+Every visible or announced string has a default and can be replaced. Import the catalog for your locale and pass it as `messages`. English is built in and is the fallback:
 
 ```tsx
 import { sv } from '@kvirn-ui/i18n/sv'

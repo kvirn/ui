@@ -29,7 +29,7 @@ interface TypeRole {
   sample: (text: ArticleText, formatNumber: (value: number) => string) => string
 }
 
-/** The roles in DESIGN.md's order, largest first. `lead` is from ADR-0018. */
+/** The roles in DESIGN.md's order, largest first. */
 const typeRoles: readonly TypeRole[] = [
   { role: 'display', label: 'display', family: 'heading', sample: (text) => text.title },
   { role: 'heading-1', label: 'heading-1', family: 'heading', sample: (text) => text.title },
@@ -399,7 +399,7 @@ function TypeRolesPage({ locale }: { locale: FixtureLocale }): ReactNode {
           {lang === undefined
             ? null
             : 'This locale has no translated fixture yet, so they are in English.'}{' '}
-          <code>lead</code> is only for the lead paragraph of large prose (ADR-0018).
+          <code>lead</code> is only for the lead paragraph of large prose.
         </p>
         <TypeRolesTable locale={locale} roles={roles} />
       </div>

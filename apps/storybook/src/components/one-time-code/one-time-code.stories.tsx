@@ -8,7 +8,7 @@ import { expectMinimumTargetSize } from '../theme-story-assertions.ts'
 import { OneTimeCodeField, oneTimeCodeTextsFor } from './one-time-code.fixture.tsx'
 
 // Components/Form/OneTimeCode: a code from a text message, an email or an authenticator app,
-// shown as a row of boxes over ONE native input (Plan 0014, Plan 0019, ADR-0033, ADR-0045, design
+// shown as a row of boxes over ONE native input (Plan 0014, Plan 0019, design
 // spec docs/design/one-time-code.md). A `pattern` shapes it: one box per character symbol and a
 // drawn dash for each `-`. The input takes the typing, paste, SMS autofill, dictation and the
 // screen reader. The boxes and dashes only draw its value, caret and selection, are hidden from
@@ -17,7 +17,7 @@ import { OneTimeCodeField, oneTimeCodeTextsFor } from './one-time-code.fixture.t
 // input instead: the same element, so its value and focus stay. Nothing moves focus and nothing
 // submits on its own (3.2.2).
 //
-// KvirnUI holds no form state (ADR-0029, item 0). Nothing here checks the code: an invalid story
+// KvirnUI holds no form state. Nothing here checks the code: an invalid story
 // sets `invalid` and writes the message itself. one-time-code.e2e.ts runs the keys, the pointer,
 // the fallback, RTL, forced colours, reflow, the pattern limits and text spacing.
 

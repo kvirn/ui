@@ -113,7 +113,7 @@ function createBuiltInIcon(paths: readonly string[]): IconComponent {
 /** Every built-in name, in the order of the design spec. */
 export const builtInIconNames = Object.freeze(Object.keys(shapes) as BuiltInIconName[])
 
-/** Internal. The base layer of every icon registry (ADR-0024). */
+/** Internal. The base layer of every icon registry. */
 export const builtInIcons: Readonly<Record<string, IconRegistryEntry | undefined>> = Object.freeze(
   Object.fromEntries(
     builtInIconNames.map((name) => {

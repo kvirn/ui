@@ -47,8 +47,7 @@ export function SectionRoot({ render, ref, ...otherProps }: SectionRootProps): R
 }
 
 /**
- * A plain container for a region of the page, such as a sidebar or a band of content (ADR-0044,
- * contract: section.a11y.md). It renders a `<div>` with no role, ARIA, text or behaviour, and
+ * A plain container for a region of the page, such as a sidebar or a band of content (contract: section.a11y.md). It renders a `<div>` with no role, ARIA, text or behaviour, and
  * `render` changes the element. To make it a landmark, render it as a `<section>`, `<aside>` or
  * `<nav>` with a name. With `@kvirn-ui/theme`, add modifier classes: `kv-section--canvas` and
  * `kv-section--padding-none|sm|md|lg`. `<Section>` and `<Section.Root>` are the same component.

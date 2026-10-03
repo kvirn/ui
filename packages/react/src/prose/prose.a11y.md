@@ -1,7 +1,7 @@
 # Accessibility contract: Prose
 
-- **APG pattern:** none. Prose is a styling container, not a widget (ADR-0052).
-- **Deviations:** none. Decisions: ADR-0052 (Prose) and ADR-0054 (a Prose in a Field or Fieldset is its description).
+- **APG pattern:** none. Prose is a styling container, not a widget.
+- **Deviations:** none. A Prose in a Field or Fieldset is its description (forms skill).
 - **Native elements used:** `<div>` by default. The consumer picks `<article>` or `<section>` with `render`, and the element's own semantics apply.
 - **Status:** alpha candidate (Plan 0023). Gates pending. Manual AT is `pending`.
 - **Tests:** `prose.test.tsx` next to this file. `prose.stories.tsx` in `apps/storybook/src/components/prose/`.
@@ -19,7 +19,7 @@ Prose is the `kv-prose` class as a component: a container whose headings, paragr
 
 `useProse()` gives the same `rootProps` (only `className`) for your own element.
 
-## A Prose in a Field or Fieldset is its description (ADR-0054)
+## A Prose in a Field or Fieldset is its description
 
 A `Prose` inside a `Field` or a `Fieldset` registers itself with the nearest one, like `ErrorMessage` does, and is the hint of that control or group. There is no `Field.Description` or `Fieldset.Description`.
 
@@ -66,7 +66,7 @@ Prose renders no text, so it has no message keys.
 
 Headless: Prose ships no CSS. With `@kvirn-ui/theme/theme.css` the `kv-prose` rules apply (design spec `docs/design/foundations-and-prose.md`): a 70ch measure, the body and heading type roles, link underline and focus ring, and reflow without fixed sizes. Contrast of text, links and code on `canvas` and `surface` is measured by `theme:check` (1.4.3, 1.4.11). 320px reflow, the size step-down and forced colours are checked in `prose.e2e.ts` (`Prose reflow (1.4.10) › the article has no horizontal scrolling at 320px`, `… › kv-prose--xl and --2xl step down to the large size at 320px and do not scroll sideways`, `Prose forced colours (1.4.11) › the table rules, quote bar and rule stay borders, and a mark gets an outline`), and text spacing in the `Text spacing` story (1.4.12). Reduced motion: Prose animates only a link's colour, and only when motion is allowed.
 
-## Sizes, width and colour roles (ADR-0054)
+## Sizes, width and colour roles
 
 With the theme, `kv-prose--small` (14px), the default (16px), `kv-prose--large` (18px), `kv-prose--xl` (20px) and `kv-prose--2xl` (24px) are token swaps, and `kv-prose--xl` and `--2xl` step down to the large size below 40rem. `kv-prose--full` removes the 70ch measure. The text stays in rem and the line height has no fixed height, so it resizes to 200% (1.4.4) and the text-spacing overrides fit (1.4.12). The `--kv-prose-color-*` roles recolour one part and default to the theme's tokens, so each theme and the high-contrast and forced-colours themes still apply.
 
@@ -85,7 +85,7 @@ With the theme, `kv-prose--small` (14px), the default (16px), `kv-prose--large` 
 
 | AT + browser + OS                        | Date    | Tester | Result | Notes |
 | ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| **Core (required for beta)**             |         |        |        |       |
 | NVDA + Firefox + Windows                 | pending |        |        |       |
 | VoiceOver + Safari + macOS               | pending |        |        |       |
 | VoiceOver + Safari + iOS                 | pending |        |        |       |

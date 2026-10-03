@@ -1,4 +1,4 @@
-/** A header, cell or footer template: text, or a function that gets the context (ADR-0059). */
+/** A header, cell or footer template: text, or a function that gets the context. */
 export type Template<Context extends object, Result> = string | ((context: Context) => Result)
 
 /**

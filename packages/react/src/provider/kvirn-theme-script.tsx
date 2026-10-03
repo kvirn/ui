@@ -13,7 +13,7 @@ export interface KvirnThemeScriptProps {
 /**
  * A blocking inline script for `<head>` that sets `data-kv-color-scheme` and
  * `data-kv-contrast` on `<html>` before first paint, so there is no wrong-theme flash
- * (ADR-0006). Reads `localStorage` only: with a custom storage adapter, render the
+ *. Reads `localStorage` only: with a custom storage adapter, render the
  * attributes on the server instead. Put `suppressHydrationWarning` on `<html>`.
  *
  * Render it in the server-rendered document only. Browsers never run scripts that React

@@ -1,6 +1,6 @@
 # Combobox
 
-> **Draft** (Plan 0022). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [combobox.a11y.md](combobox.a11y.md), and the decision is ADR-0037.
+> **Draft** (Plan 0022). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [combobox.a11y.md](combobox.a11y.md), and the decisions are in the overlays-and-lists skill.
 
 Choosing one option from a long list, or several, by typing to filter it. The user types a few letters, the list shrinks to what contains them, and they choose with the arrow keys and Enter, or with a press. The value is one of the options, never the text.
 
@@ -67,9 +67,9 @@ interface Municipality {
 | `open`, `defaultOpen`, `onOpenChange`                   | The popup's state. `onOpenChange(open, { reason })`: `'input'`, `'key'`, `'escape'`, `'toggle-press'`, `'option-press'`, `'outside-press'`, `'blur'`, `'light-dismiss'` or `'clear'`.                                                                                                                                                                                     |
 | `placement`, `offset`, `padding`                        | Where the popup goes (default `'bottom-start'`, 4px gap, 8px from the viewport's edge). It is as wide as the input (or its Control), flips when there is no room and scrolls inside.                                                                                                                                                                                      |
 | `virtualize`                                            | `true`, or `{ estimateSize, overscan }`: renders only the options in view, for a flat list of thousands. Off by default. See Long lists.                                                                                                                                                                                                                                  |
-| `announcementDebounceMilliseconds`, `messages`          | How long after typing stops the count is announced (default 500), and per-instance overrides of the `combobox` strings (ADR-0007).                                                                                                                                                                                                                                        |
+| `announcementDebounceMilliseconds`, `messages`          | How long after typing stops the count is announced (default 500), and per-instance overrides of the `combobox` strings.                                                                                                                                                                                                                                                   |
 
-`invalid`, `required` and the description (a `Prose` in the Field) come from the Field, as for every control. The value is never copied into KvirnUI state: `value` and `onValueChange` are yours, or `defaultValue` and `name` for a plain form (ADR-0029).
+`invalid`, `required` and the description (a `Prose` in the Field) come from the Field, as for every control. The value is never copied into KvirnUI state: `value` and `onValueChange` are yours, or `defaultValue` and `name` for a plain form.
 
 ## Parts
 

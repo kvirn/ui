@@ -66,7 +66,7 @@ A `Section` is level 1: a region of the page. A `Card` is level 2: one thing wit
 
 - **Non-text contrast (1.4.11).** A control's edge needs 3:1 against what's next to it. `border-subtle` is decorative and has no minimum, so it must never be the only thing that shows where a control is.
 - **A shadow is never the only boundary.** Shadows disappear in forced colours, so every level from 1 up keeps its border.
-- **Forced colours.** Borders map to system colours. The theme never uses `forced-color-adjust: none`.
+- **Forced colours.** Borders map to system colours. The theme uses `forced-color-adjust: none` only where the element sets system colours itself (the active listbox option, the progress fill).
 - **Backdrop.** A dialog backdrop dims the page, and must not reduce the dialog's own contrast.
 - **Invalid fields.** An invalid input switches to a 2px `danger` border and shows an error message, never colour alone.
 

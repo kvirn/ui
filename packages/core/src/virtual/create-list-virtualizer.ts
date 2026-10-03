@@ -8,9 +8,9 @@ import {
 } from '@tanstack/virtual-core'
 import type { Range, VirtualItem, VirtualizerOptions } from '@tanstack/virtual-core'
 
-// The only place that imports @tanstack/virtual-core (ADR-0059, item 2). It wraps the library's
+// The only place that imports @tanstack/virtual-core. It wraps the library's
 // `Virtualizer` for a vertical list of options or rows, and owns the accessibility rules of a
-// virtualized list (ADR-0059, item 3): what the user is on is always rendered, and the size of the
+// virtualized list: what the user is on is always rendered, and the size of the
 // list is always known. Nothing here reads `window` or `document`: the scroll element is handed in.
 
 /** Items rendered beyond the visible ones, on each side. */
@@ -115,7 +115,7 @@ function toListItem(item: VirtualItem): VirtualListItem {
 
 /**
  * A virtualizer for a vertical list: it says which items to render for what is scrolled into
- * view, and keeps the active, selected and focused items rendered wherever they are (ADR-0059).
+ * view, and keeps the active, selected and focused items rendered wherever they are.
  *
  * - The scroll element is yours (`getScrollElement`), and `mount()` starts watching its size and
  *   scroll position. Until then, and without a DOM, the window is `initialSize` from the top.

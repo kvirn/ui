@@ -3,7 +3,7 @@
 - **Status:** In progress
 - **Owner:** Magnus Vike / Claude
 - **Created:** 2026-10-02 · **Target:** M4 (maintainer may pull it earlier)
-- **Related:** ADR-0038, ADR-0040 (Announcer), ADR-0029, ADR-0007, ADR-0009, ADR-0024, design spec `docs/design/file-upload.md` (ux-designer, in progress)
+- **Related:** design spec `docs/design/file-upload.md` (ux-designer, in progress)
 
 ## Goal
 
@@ -11,11 +11,11 @@ A resident can attach one or more files to an e-service form with the keyboard, 
 
 ## Non-goals
 
-Per ADR-0038 item 11: folder upload, clipboard paste, chunked or resumable uploads, image editing, timeouts, a larger preview in a Dialog. No network code in the library (hard rule 7).
+Out of scope: folder upload, clipboard paste, chunked or resumable uploads, image editing, timeouts, a larger preview in a Dialog. No network code in the library (hard rule 7).
 
 ## Background
 
-No APG pattern. A native `<input type="file">` is always present. Prior art: GOV.UK file upload and multiple-file upload. Decisions are in ADR-0038. Findings from the codebase survey that shape this plan:
+No APG pattern. A native `<input type="file">` is always present. Prior art: GOV.UK file upload and multiple-file upload. Decisions are in the design spec and the forms skill. Findings from the codebase survey that shape this plan:
 
 - Field exposes no label `id`. The trigger name ("Choose files, Attachments") needs one. **Phase 0** adds `labelId` to Field (additive, minor).
 - Field context has no `descriptionId`. Read `controlProps['aria-describedby']` and put it on the **Trigger**, not on the hidden Input.
@@ -63,12 +63,12 @@ No APG pattern. A native `<input type="file">` is always present. Prior art: GOV
 
 - Core: `createFileUpload(options, env)` returns a `ComponentStore` with state `{ items, isDragging }` and actions `add`, `remove`, `cancel`, `retry`, `uploadAll`, `reset`. Pure checks (`accept`, size, count, `validate`) live in `core/src/file-upload/checks/` and return typed reasons, not strings.
 - React: `useFileUpload()` returns `rootProps`, `triggerProps`, `inputProps`, `dropZoneProps`, `getItemProps`, `getProgressProps`, `getRemoveButtonProps` and so on, plus `items`. Types `UseFileUploadOptions`, `UseFileUploadResult` and `FileUploadPartProps` are exported.
-- `FileUpload.DropHint` and `FileUpload.Status` are new parts over the ADR's list (hint text only with drag support, and per-item status text for 1.4.1). Confirm in the spec.
+- `FileUpload.DropHint` and `FileUpload.Status` are new parts over the earlier list (hint text only with drag support, and per-item status text for 1.4.1). Confirm in the spec.
 - Item status: `pending | rejected | uploading | complete | failed | cancelled` as `data-status`.
 
 ### Accessibility contract (draft)
 
-One Tab stop for the add control (the Trigger). The hidden Input is `tabIndex={-1}`. The drop zone has no role and isn't focusable. No composite widget, so no arrow keys (ADR-0039: nothing to roam).
+One Tab stop for the add control (the Trigger). The hidden Input is `tabIndex={-1}`. The drop zone has no role and isn't focusable. No composite widget, so no arrow keys (the `keyboard` skill: nothing to roam).
 
 | Key         | Action                                                                                              |
 | ----------- | --------------------------------------------------------------------------------------------------- |
@@ -109,7 +109,7 @@ Namespace `fileUpload`, all six locales (`en sv fi nb nn se`). Final wording and
 
 ### Theming surface
 
-Classes and state attributes per ADR-0038 item 12, plus `kv-file-upload-status` and `kv-file-upload-drop-hint`. The theme section is added to `packages/theme/theme.css` and to the class list in `theme-css.test.ts`. `data-dragging` is shown with a border change that survives forced colours. Reduced motion removes the progress transition. Tokens come from DESIGN.md. A new token needs an ADR and `theme:check`.
+Classes and state attributes as in the forms skill, plus `kv-file-upload-status` and `kv-file-upload-drop-hint`. The theme section is added to `packages/theme/theme.css` and to the class list in `theme-css.test.ts`. `data-dragging` is shown with a border change that survives forced colours. Reduced motion removes the progress transition. Tokens come from DESIGN.md. A new token needs a recorded decision and `theme:check`.
 
 ## Tasks
 
@@ -136,27 +136,27 @@ Classes and state attributes per ADR-0038 item 12, plus `kv-file-upload-status` 
 
 **Phase 4: theme, stories, e2e**
 
-- [x] Default-theme styles for every state in the design spec (theme.css section 14, ADR-0049).
+- [x] Default-theme styles for every state in the design spec (theme.css section 14).
 - [x] Stories: Default, Single, Multiple, Dragging, Disabled, Invalid, Rejected, Uploading (known, unknown), Complete, Failed, Cancelled, ManyFiles, LimitReached, WithPreview, RTL, ForcedColors, Keyboard. `parameters.a11yContract`.
 - [x] e2e (Playwright file chooser and drop): every contract row, rejected file, progress, cancel, retry, remove, plus forced-colors, reduced-motion, RTL and 320px projects.
 
 **Phase 5: docs and contract**
 
 - [x] `file-upload.a11y.md` matching the tests. `file-upload.md` with the `XMLHttpRequest` progress recipe, a "client checks aren't security" section, and the EXIF/location warning.
-- [x] Roadmap row to `alpha`. Changeset (`react`, `core`, `i18n`, `theme` minor). Plans index rows for 0020 and 0021. ADR-0038 to reflect any changes from the spec.
+- [x] Roadmap row to `alpha`. Changeset (`react`, `core`, `i18n`, `theme` minor). Plans index rows for 0020 and 0021. Decision record updated for any changes from the spec.
 - [ ] accessibility-reviewer returns APPROVE. Manual AT matrix marked `pending`.
 
 ## Risks & open questions
 
-- `DataTransfer` sync in form mode depends on browser support. Fallback and dev warning are in the ADR.
-- Whether rejected files stay in the list (ADR says yes). The design review may argue for an error summary instead.
+- `DataTransfer` sync in form mode depends on browser support. Fallback and dev warning are in the forms skill.
+- Whether rejected files stay in the list (the decision says yes). The design review may argue for an error summary instead.
 - `pointer: fine` as the drag-and-drop heuristic misses hybrid devices. The spec may propose a better test.
 - Announcer throttle (default 3 s per `key`) could swallow a "finished" message that follows an "added" one. Use distinct keys.
 - Field `labelId` is a change to a shipped component. It's additive.
 
 ## Testing strategy
 
-Core: Node unit tests with a fake env. React: Vitest browser-mode component tests with axe in every story state (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`). e2e: Chromium baseline (ADR-0042) with the forced-colors, reduced-motion and 320px projects. Manual AT: NVDA, JAWS, VoiceOver (macOS, iOS), TalkBack, Dragon. Marked `pending`, never claimed by an agent.
+Core: Node unit tests with a fake env. React: Vitest browser-mode component tests with axe in every story state (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`). e2e: Chromium baseline with the forced-colors, reduced-motion and 320px projects. Manual AT: NVDA, JAWS, VoiceOver (macOS, iOS), TalkBack, Dragon. Marked `pending`, never claimed by an agent.
 
 ## Rollout
 

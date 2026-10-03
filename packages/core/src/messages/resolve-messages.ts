@@ -50,7 +50,7 @@ function readValue(layer: object | undefined, key: string): unknown {
 /**
  * Resolves one namespace through ordered layers without pre-merging them, so an empty
  * override falls through to the next layer and an accessible name is never empty
- * (ADR-0007). Pure: problems are reported through `reportIssue`, never logged here.
+ *. Pure: problems are reported through `reportIssue`, never logged here.
  */
 export function resolveMessageNamespace<Namespace extends object>({
   namespace,

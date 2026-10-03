@@ -8,7 +8,7 @@
     <!-- Throwaway prototype for docs/design/button-depth.md. Self-contained: no network requests.
      Generated once from a script, then committed as plain HTML. Not library code. -->
     <style>
-      /* IBM Plex Sans, from the docs site's copy (ADR-0027), if the browser lets a file:// page load
+      /* IBM Plex Sans, from the docs site's copy, if the browser lets a file:// page load
        * it. Otherwise the system stack, which is fine for judging depth. */
       @import url('../../../apps/docs/fonts/ibm-plex/ibm-plex.css');
 
@@ -376,7 +376,7 @@
         --edge: transparent;
         --edge-hover: var(
           --kv-color-primary
-        ); /* ADR-0021: the edge stays at 3:1 on surface-raised in dark */
+        ); /* primary hover edge: the edge stays at 3:1 on surface-raised in dark */
       }
       .b--secondary {
         --fill: var(--kv-color-secondary);

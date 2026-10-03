@@ -8,7 +8,7 @@
     // ambient `tw?: string` attribute and the registered NextLink's `as?: Url`, which leave
     // out `| undefined`. The library itself stays checked with this flag on by `vp check`
     // (root tsconfig). Published consumers compile against .d.ts files and aren't affected.
-    // See ADR-0017 and the Plan 0005 open questions.
+    // See the Plan 0005 open questions.
     "exactOptionalPropertyTypes": false,
     "plugins": [{ "name": "next" }]
   },

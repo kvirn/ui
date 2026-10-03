@@ -6,13 +6,13 @@ import { useQuietAnnouncer, warnAnnouncerMissing } from '../announcer/use-announ
 import { warnOnce } from '../dev/dev-warning.ts'
 import { useMessages } from '../provider/use-messages.ts'
 
-/** The four statuses (ADR-0047). Chosen by the component you render, never by a prop. */
+/** The four statuses. Chosen by the component you render, never by a prop. */
 export type NotificationVariant = 'info' | 'success' | 'warning' | 'danger'
 
 /**
  * The one table: a status's class, icon and status word key. The ready-made roots and
  * `useNotification({ variant })` read only this, so the colour, the icon and the word can't
- * disagree (ADR-0047, decision 4).
+ * disagree (decision 4).
  */
 const statuses = {
   info: {
@@ -56,16 +56,16 @@ export interface UseNotificationOptions {
    * Makes the result a ready-made root: `rootProps` gets the status class, and `iconProps` and
    * `statusProps` are set, from the same table as `Notification.Info|Success|Warning|Danger`.
    * Without it, the result is the plain Root: only the classes, so you bring your own icon and
-   * status word (ADR-0047).
+   * status word.
    */
   variant?: NotificationVariant | undefined
   /**
    * Announces the Title and Body text once, when the notification mounts, in the shared
-   * Announcer's polite or assertive region (4.1.3, ADR-0040). Set it only on a notification
+   * Announcer's polite or assertive region (4.1.3). Set it only on a notification
    * inserted after an action, never on one present at load. Default: nothing is announced.
    */
   announce?: AnnouncerPoliteness | undefined
-  /** Per-instance overrides for the status word (ADR-0007). Only the key of `variant` is read. */
+  /** Per-instance overrides for the status word. Only the key of `variant` is read. */
   messages?: Partial<KvirnMessages['notification']> | undefined
 }
 
@@ -128,7 +128,7 @@ function readText(element: HTMLElement | null): string {
 }
 
 /**
- * A notification's props for your own elements (ADR-0047, contract: notification.a11y.md). It
+ * A notification's props for your own elements (contract: notification.a11y.md). It
  * adds no role, `aria-live`, `aria-atomic` or `tabindex`: the visible box is never a live
  * region, and `announce` goes through the Announcer once, on mount. Attach `titleProps` to the
  * Title and `bodyProps` to the Body, so `announce` can read their text.

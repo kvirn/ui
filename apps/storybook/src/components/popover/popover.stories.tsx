@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { expect, fn, userEvent, waitFor } from 'storybook/test'
 
 // Components/Popover: a button that opens a small floating panel in the browser's top layer
-// (ADR-0046; contract: popover.a11y.md). The default theme doesn't style it yet, so these
+// (contract: popover.a11y.md). The default theme doesn't style it yet, so these
 // stories draw the panel with inline styles and existing tokens. popover.e2e.ts runs the
 // keyboard rows, the placement and the display modes against Keyboard, Nested, FlipsAtTheEdge,
 // LongContent, RTL and ForcedColors.

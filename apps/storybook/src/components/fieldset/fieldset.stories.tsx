@@ -8,7 +8,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/Fieldset: the native <fieldset> and <legend>, grouping questions under one
-// name (ADR-0029, design spec docs/design/form-fields.md §6.2). The group's hint and error
+// name (design spec docs/design/form-fields.md §6.2). The group's hint and error
 // are its accessible description. `disabled` is native `fieldset[disabled]`, so every control
 // inside is disabled. KvirnUI holds no form state: `invalid`, `required` and `disabled` are
 // props from your form logic.

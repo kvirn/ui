@@ -1,5 +1,5 @@
 /**
- * The only module that re-exports `@tanstack/table-core` (ADR-0059), together with
+ * The only module that re-exports `@tanstack/table-core`, together with
  * `create-table.ts`: nothing else in the repository imports it. What is listed here is what
  * KvirnUI tests and supports: sorting, row selection, expanding, pagination, column and global
  * filtering and column visibility, their row models, the built-in sort and filter functions, and

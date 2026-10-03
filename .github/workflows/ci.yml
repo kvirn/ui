@@ -1,4 +1,4 @@
-# Quality gates 1–4 from AGENTS.md. Formatting is advisory, the WCAG display-mode sweep runs separately (ADR-0048). Actions are pinned to commit SHAs (supply chain, CRA readiness).
+# Quality gates 1–4 from AGENTS.md. Formatting is advisory, the WCAG display-mode sweep runs separately. Actions are pinned to commit SHAs (supply chain, CRA readiness).
 name: CI
 
 on:
@@ -45,7 +45,7 @@ jobs:
           cache: true
       - run: vp install
       - run: pnpm exec playwright install --with-deps chromium
-      # Formatting is advisory (ADR-0048): lint and types block, format drift only warns.
+      # Formatting is advisory: lint and types block, format drift only warns.
       - run: vp check --no-fmt
       - run: vp fmt --check
         continue-on-error: true

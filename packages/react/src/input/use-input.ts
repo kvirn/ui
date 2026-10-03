@@ -7,7 +7,7 @@ import type { FieldStateAttributes } from '../field/field-state.ts'
 import { useFocusVisible } from '../focus-visible/use-focus-visible.ts'
 
 /**
- * The text-like input types. Never `number` or `date` (ADR-0030): for numbers use `inputMode`,
+ * The text-like input types. Never `number` or `date`: for numbers use `inputMode`,
  * and for dates DateInput.
  */
 export type InputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search'
@@ -22,7 +22,7 @@ export interface InputChangeDetails {
   event: ChangeEvent<HTMLInputElement> | CompositionEvent<HTMLInputElement>
   /** Masks only: the value without literals and separators. */
   unmaskedValue?: string | undefined
-  /** Masks only: the shape is complete. It doesn't mean the number exists (ADR-0032, item 4). */
+  /** Masks only: the shape is complete. It doesn't mean the number exists. */
   isComplete?: boolean | undefined
   /** Number masks only: whether the number is within `min` and `max`. Never clamped. */
   isWithinRange?: boolean | undefined
@@ -37,7 +37,7 @@ export interface UseInputOptions {
   disabled?: boolean | undefined
   /**
    * Called with the new value on every change. It only reports: the value lives in your form
-   * state, or in the native input when you don't pass `value` (ADR-0029, item 0).
+   * state, or in the native input when you don't pass `value`.
    */
   onValueChange?: ((value: string, details: InputChangeDetails) => void) | undefined
 }
@@ -71,7 +71,7 @@ export interface UseInputResult {
 }
 
 /**
- * A text input's props for your own `<input>`, wired to the nearest Field (ADR-0029, contract:
+ * A text input's props for your own `<input>`, wired to the nearest Field (contract:
  * input.a11y.md). It holds no value: spread your form library's props next to it.
  *
  * @example
@@ -96,8 +96,8 @@ export function useInput({
       warnOnce(
         `input-type-${askedType}`,
         askedType === 'number'
-          ? 'An Input has type="number". It changes on scroll, drops leading zeros and rounds silently (ADR-0030). Use type="text" with inputMode="numeric" (or "decimal") and spellCheck={false}, and validate in your form.'
-          : 'An Input has type="date". Its format and picker follow the browser, not the page language (ADR-0030). Use DateInput: three fields for day, month and year.',
+          ? 'An Input has type="number". It changes on scroll, drops leading zeros and rounds silently. Use type="text" with inputMode="numeric" (or "decimal") and spellCheck={false}, and validate in your form.'
+          : 'An Input has type="date". Its format and picker follow the browser, not the page language. Use DateInput: three fields for day, month and year.',
       )
     }
   }, [type])

@@ -1,12 +1,12 @@
 # Accessibility contract: RadioGroup (Root, Radio)
 
 - **APG pattern:** [Radio Group](https://www.w3.org/WAI/ARIA/apg/patterns/radio/). Native: `<input type="radio">` elements that share a `name` already give the pattern's keys (one Tab stop, arrows move and check, Space checks) and its roles, so no ARIA and no key handler are added. The group is a `<fieldset>` with a `<legend>` instead of `role="radiogroup"`.
-- **Deviations:** none from APG. Decisions: ADR-0029 (Fieldset wiring, option labels carry no optional marker, **no `aria-invalid` on radios**, no form state) and ADR-0039 (keyboard).
+- **Deviations:** none from APG. Decisions (forms skill): Fieldset wiring, option labels carry no optional marker, **no `aria-invalid` on radios**, no form state.
 - **Native elements used:** `<fieldset>` and `<legend>` (Root and `Legend`), `<input type="radio">` (Radio), `<label for>` (Label).
 - **Status:** alpha candidate (Plan 0013, Phase 2). Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `radio-group.test.tsx` next to this file. `radio-group.stories.tsx` and `radio-group.e2e.ts` in `apps/storybook/src/components/radio-group/`. The fieldset parts (Legend, ErrorMessage, and a `Prose` as the hint): `fieldset.a11y.md`.
 
-A RadioGroup is one question with exactly one answer ("Hur länge behöver du tillståndet?": 1, 6 or 12 månader). `RadioGroup.Root` renders the `<fieldset>` and acts as a `Fieldset` with `group` set; `Radio` is a native radio. It holds no form state: the selected value is the `value` prop, and each change is reported up (ADR-0029, item 0).
+A RadioGroup is one question with exactly one answer ("Hur länge behöver du tillståndet?": 1, 6 or 12 månader). `RadioGroup.Root` renders the `<fieldset>` and acts as a `Fieldset` with `group` set; `Radio` is a native radio. It holds no form state: the selected value is the `value` prop, and each change is reported up.
 
 ## Roles, states, properties
 
@@ -21,11 +21,11 @@ A RadioGroup is one question with exactly one answer ("Hur länge behöver du ti
 
 Rules, tested in `radio-group.test.tsx`:
 
-- **The group is named by its legend and described by its hint and error** (`radio-group.test.tsx › the group is named by its legend and described by its hint and error`). The hint is a `Prose` in the group (ADR-0054): its description is its text content, so keep it short and plain. A Prose directly in the group describes the group, one inside an option's Field describes that radio, and a Prose that isn't a hint goes outside the group.
+- **The group is named by its legend and described by its hint and error** (`radio-group.test.tsx › the group is named by its legend and described by its hint and error`). The hint is a `Prose` in the group: its description is its text content, so keep it short and plain. A Prose directly in the group describes the group, one inside an option's Field describes that radio, and a Prose that isn't a hint goes outside the group.
 - **One name, native grouping.** Every radio has the group's `name`, so the browser groups them. Without `name`, the group generates one (`useId`) (`radio-group.test.tsx › every radio gets the group’s name, generated when missing`).
 - **Controlled by `value`.** The radio whose `value` equals the group's `value` is checked. `null` means "controlled, nothing selected". A change calls `onValueChange(value, { reason: 'input', event })` with the radio's value. The group never stores it (`radio-group.test.tsx › a controlled group checks the radio whose value it is given`).
 - **Uncontrolled without `value`.** `defaultValue` sets `defaultChecked` on one radio; the browser keeps the state and a form submit sends it (`radio-group.test.tsx › uncontrolled: defaultValue and the form submit`).
-- **No `aria-invalid` on radios** (ADR-0029, item 10; ARIA 1.2 doesn't support it on `radio`). An invalid group sets `data-invalid` on the fieldset, its parts and every radio for the 2px `danger` edge; the error reaches users through the fieldset's `aria-describedby` (`radio-group.test.tsx › invalid styles every radio and sets no aria-invalid`).
+- **No `aria-invalid` on radios** (ARIA 1.2 doesn't support it on `radio`). An invalid group sets `data-invalid` on the fieldset, its parts and every radio for the 2px `danger` edge; the error reaches users through the fieldset's `aria-describedby` (`radio-group.test.tsx › invalid styles every radio and sets no aria-invalid`).
 - **`required`** removes "(valfritt)" from the legend and sets `data-required`. No `aria-required` (not supported on `group` or `radio`); see Known issues.
 - **`disabled`** on the group is native `fieldset[disabled]`. A single disabled `Radio` is skipped by Tab and by the arrow keys (native) (`radio-group.test.tsx › a disabled radio is natively disabled`).
 - **No key handler.** Roving focus, wrapping and checking on arrow keys are the browser's (`radio-group.test.tsx › the group handles no keys`).
@@ -63,7 +63,7 @@ Arrow keys check the radio they move to, so the page must not do anything harmfu
 
 ## Announcements
 
-None. Nothing is live (ADR-0029). On entering the group a screen reader reads the legend, "group", the hint and, when invalid, "Fel: …"; then the radio's label, "radio button", "1 of 3" (from the native grouping) and its state.
+None. Nothing is live. On entering the group a screen reader reads the legend, "group", the hint and, when invalid, "Fel: …"; then the radio's label, "radio button", "1 of 3" (from the native grouping) and its state.
 
 ## Consumer responsibilities
 
@@ -97,7 +97,7 @@ None. Nothing is live (ADR-0029). On entering the group a screen reader reads th
 
 | AT + browser + OS                        | Date    | Tester | Result | Notes |
 | ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| **Core (required for beta)**             |         |        |        |       |
 | NVDA + Firefox + Windows                 | pending |        |        |       |
 | VoiceOver + Safari + macOS               | pending |        |        |       |
 | VoiceOver + Safari + iOS                 | pending |        |        |       |
@@ -114,7 +114,7 @@ Research questions for the AT run: without `aria-invalid` on radios, is the grou
 
 ## Known issues
 
-- **A required group isn't announced as required.** `aria-required` isn't supported on `group` or `radio`, and ADR-0029 prefers `aria-required` over native `required`. The group's legend loses "(valfritt)" and gets `data-required`. If the AT run shows a gap: `role="radiogroup"` on the fieldset (allowed on `<fieldset>`, and it supports `aria-required` and `aria-invalid`), or native `required` on the radios. Open question in Plan 0013.
+- **A required group isn't announced as required.** `aria-required` isn't supported on `group` or `radio`, and KvirnUI prefers `aria-required` over native `required`. The group's legend loses "(valfritt)" and gets `data-required`. If the AT run shows a gap: `role="radiogroup"` on the fieldset (allowed on `<fieldset>`, and it supports `aria-required` and `aria-invalid`), or native `required` on the radios. Open question in Plan 0013.
 - **`aria-describedby` on a `<fieldset>` isn't announced consistently by TalkBack.** See `fieldset.a11y.md`.
 - **Shift+Tab into an unchecked group.** Browsers differ on which radio gets focus: Chrome and Firefox focus the last, Safari the first. The e2e runs on Chromium; the optional engines run in CI.
 - **`se` (Northern Sámi) is a placeholder in the fixtures.** See `field.a11y.md`.

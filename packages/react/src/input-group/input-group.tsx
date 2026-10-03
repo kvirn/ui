@@ -33,7 +33,7 @@ const focusableSelector =
   'a[href], button, input, select, textarea, summary, iframe, [tabindex], [contenteditable]:not([contenteditable="false"])'
 
 /**
- * The input's box (ADR-0031, contract: input-group.a11y.md): one `<div class="kv-input-group">`
+ * The input's box (contract: input-group.a11y.md): one `<div class="kv-input-group">`
  * that draws the edge, the invalid and disabled state and the focus ring around an `Input` and
  * its addons. Put a unit or an icon in an `InputGroup.Addon`, and a Button (clear, show password)
  * directly in the Root. It holds no form state.
@@ -103,7 +103,7 @@ export function InputGroupAddon({
     if (element !== null && element.querySelector(focusableSelector) !== null) {
       warnOnce(
         'input-group-addon-focusable',
-        'An InputGroup.Addon contains focusable content, but an Addon is aria-hidden and visual only (ADR-0031): keyboard and screen-reader users could reach something they can’t perceive. Put a Button directly in <InputGroup.Root>, next to the Addon, instead.',
+        'An InputGroup.Addon contains focusable content, but an Addon is aria-hidden and visual only: keyboard and screen-reader users could reach something they can’t perceive. Put a Button directly in <InputGroup.Root>, next to the Addon, instead.',
       )
     }
   })
@@ -117,7 +117,7 @@ export function InputGroupAddon({
 }
 InputGroupAddon.displayName = 'InputGroup.Addon'
 
-/** An input with units or icons inside its box (ADR-0031). */
+/** An input with units or icons inside its box. */
 export const InputGroup = {
   Root: InputGroupRoot,
   Addon: InputGroupAddon,

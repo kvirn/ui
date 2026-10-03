@@ -30,15 +30,15 @@ export interface KvirnProviderProps {
   dir?: Direction | undefined
   /**
    * A catalog (`sv` from `@kvirn-ui/i18n/sv`) or a partial override. Resolved over the
-   * parent provider's messages, and finally over built-in `en` (ADR-0007).
+   * parent provider's messages, and finally over built-in `en`.
    */
   messages?: PartialMessages | undefined
   /** IANA time zone. Set it explicitly to avoid a server/client date mismatch. */
   timeZone?: string | undefined
-  /** The router's link component (ADR-0005). Register it for typed link props. */
+  /** The router's link component. Register it for typed link props. */
   linkComponent?: RegisteredLinkComponent | undefined
   /**
-   * Icons for `<Icon name>`, from `defineIcons` (ADR-0024). Merged over the parent provider's
+   * Icons for `<Icon name>`, from `defineIcons`. Merged over the parent provider's
    * by name, and over the built-in set: a name registered here replaces a built-in icon.
    * Register the registry's type for checked names.
    */
@@ -46,7 +46,7 @@ export interface KvirnProviderProps {
   /** Defaults for every Icon below, such as `{ strokeWidth: 1.5 }`. Merged over the parent's. */
   iconDefaults?: IconDefaults | undefined
   /**
-   * Theme defaults and storage (ADR-0006). Read by the outermost provider only, once,
+   * Theme defaults and storage. Read by the outermost provider only, once,
    * when the document's theme store is created.
    */
   theme?: ThemeOptions | undefined
@@ -57,7 +57,7 @@ export interface KvirnProviderProps {
 /**
  * Optional. Gives every KvirnUI component its locale, strings, direction, date settings,
  * router link and icons, and owns the document's theme preference. The outermost provider also
- * renders the two visually hidden live regions behind `useAnnouncer()` (ADR-0040), after its
+ * renders the two visually hidden live regions behind `useAnnouncer()`, after its
  * children. It renders no other element: spread `useLocale().localeProps` where the language
  * changes.
  */

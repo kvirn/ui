@@ -45,7 +45,7 @@ describe('core ↔ i18n glue (Plan 0002)', () => {
   })
 })
 
-describe('Register (ADR-0005)', () => {
+describe('Register', () => {
   it('falls back to a native <a> when the app registers nothing', () => {
     expectTypeOf<RegisteredLinkComponent>().toEqualTypeOf<'a'>()
     expectTypeOf<KvirnProviderProps['linkComponent']>().toEqualTypeOf<

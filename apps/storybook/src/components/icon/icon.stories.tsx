@@ -32,7 +32,7 @@ import {
 import type { IconFixtureLocale } from './icon.fixture.tsx'
 
 // Components/Icon: the headless Icon and the built-in set, styled by @kvirn-ui/theme/theme.css
-// (ADR-0013, ADR-0024; design spec docs/design/icon.md §6.6). icon.e2e.ts runs its keyboard
+// (design spec docs/design/icon.md §6.6). icon.e2e.ts runs its keyboard
 // row, forced-colours, reflow, RTL and text-resize checks against InButtons, ForcedColors, RTL,
 // SizesNextToText and InRunningTextAndLinks, so their play functions only read.
 

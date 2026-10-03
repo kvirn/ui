@@ -1,13 +1,13 @@
 # Notification
 
-> **Draft** (Plan 0020). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [notification.a11y.md](notification.a11y.md), the design spec is [docs/design/notification.md](../../../../docs/design/notification.md), and the decision is ADR-0047.
+> **Draft** (Plan 0020). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [notification.a11y.md](notification.a11y.md), the design spec is [docs/design/notification.md](../../../../docs/design/notification.md), and the decisions are in the api-conventions skill.
 
 A status message in the content: something people need to know now, or the result of what they just did. Use `Notification.Info`, `Notification.Success`, `Notification.Warning` or `Notification.Danger`: each shows its status with an icon, a word and a colour, never with colour alone. It doesn't announce itself unless you ask, and it never takes focus on its own.
 
 - Five roots: the plain `Notification.Root`, and four ready-made ones, `Notification.Info`, `.Success`, `.Warning` and `.Danger` (also named exports: `NotificationRoot`, `NotificationInfo`, `NotificationSuccess`, `NotificationWarning`, `NotificationDanger`).
 - Three parts inside them: `Notification.Title` (required, an `h2` by default), `Notification.Body` and `Notification.Actions` (both optional).
 - No role, no `aria-live` and no `aria-atomic` on the box. A screen reader reads it in reading order, and finds the Title in the heading list.
-- Status is a class, not a prop (ADR-0013): you choose it by choosing the component. There is no `variant` prop.
+- Status is a class, not a prop: you choose it by choosing the component. There is no `variant` prop.
 - Headless: no CSS. Every part renders its stable class, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, it's styled.
 - Not dismissible in this version. Never on a timer. A Toast (transient) is a later component.
 
@@ -49,7 +49,7 @@ Each ready-made root renders four things from one internal table:
 | `Notification.Warning` | `kv-notification--warning` | `warning` (a triangle) | `notification.warningPrefix` (Varning:)  |
 | `Notification.Danger`  | `kv-notification--danger`  | `error` (an octagon)   | `notification.dangerPrefix` (Fel:)       |
 
-The colour (CSS on the class), the icon and the status word therefore can't disagree. The word starts the Title, so heading navigation reads "Varning: Ditt parkeringstillstånd går ut …". The default theme hides it visually, as it does for a field's "Fel:". Override the word per instance (`messages={{ dangerPrefix: 'Viktigt:' }}`) or per provider (`messages.notification`), the usual order (ADR-0007). An override changes the word, never which status it belongs to.
+The colour (CSS on the class), the icon and the status word therefore can't disagree. The word starts the Title, so heading navigation reads "Varning: Ditt parkeringstillstånd går ut …". The default theme hides it visually, as it does for a field's "Fel:". Override the word per instance (`messages={{ dangerPrefix: 'Viktigt:' }}`) or per provider (`messages.notification`), the usual order. An override changes the word, never which status it belongs to.
 
 ### Pick the status
 
@@ -98,7 +98,7 @@ The visible notification is never a live region. When it must be heard without f
 | Errors on submit                                                              | The error summary block (later) moves focus. No `announce`. Each field's error reads on focus                                                                           |
 | Its text changes while shown                                                  | Not supported. Call `useAnnouncer()` yourself. A new `key` also announces again, but never when a button inside it holds focus: the remount drops the focus to the page |
 
-Never announce and focus at once. Set `announce` only from the state of the action that just happened: a server-rendered notification with `announce` is announced after hydration. Inside a modal dialog the Announcer's regions are silenced for now (ADR-0040), so a notification there isn't heard.
+Never announce and focus at once. Set `announce` only from the state of the action that just happened: a server-rendered notification with `announce` is announced after hydration. Inside a modal dialog the Announcer's regions are silenced for now, so a notification there isn't heard.
 
 ### Your own look
 
@@ -109,7 +109,7 @@ From least to most work:
 | Our structure, your colours or spacing           | Set the two component tokens in your own (unlayered) CSS: `.kv-notification--warning { --kv-notification-background: …; --kv-notification-accent: … }`. Or set the semantic tokens and scales. Run `checkThemeCss()` on your colours | Everything: icon, word, announce, our classes                                                       |
 | Our component, your own look entirely            | Skip or copy `theme.css` and style the classes yourself. Or keep the theme and drop our class with the `render` function form: `render={(props) => <div {...props} className="my-warning" />}`                                       | The icon, the word and `announce`, from `Notification.Warning`                                      |
 | Your own icon or word, or a status we don't have | `Notification.Root` with your class, your `<Icon name="…" className="kv-notification-icon" />` first, and your own `<span className="kv-notification-status">` with your translated word first in the Title                          | The layout, the Title, Body, Actions and `announce`. **You own the colour, icon and word agreeing** |
-| A different icon drawing everywhere              | Register `info`, `success`, `warning` or `error` in `KvirnProvider` (ADR-0024). Keep its shape distinct from the other three                                                                                                         | Everything else                                                                                     |
+| A different icon drawing everywhere              | Register `info`, `success`, `warning` or `error` in `KvirnProvider`. Keep its shape distinct from the other three                                                                                                                    | Everything else                                                                                     |
 
 Development warnings help you keep the agreement: a ready-made root whose `className` (or `render` element) carries another status class, such as `<Notification.Warning className="kv-notification--danger">`, and a plain `Notification.Root` with one of our status classes.
 
@@ -137,7 +137,7 @@ Never for messages about a part of the page.
 
 ### `render`
 
-An element keeps its own props, and the part's are merged in: class names join, styles merge and refs merge (ADR-0015). The function form gets the props, a callback ref that fits any element, and an empty state object. On a root, the props include the icon as `children`, so spreading them keeps the icon.
+An element keeps its own props, and the part's are merged in: class names join, styles merge and refs merge. The function form gets the props, a callback ref that fits any element, and an empty state object. On a root, the props include the icon as `children`, so spreading them keeps the icon.
 
 ## Hook
 

@@ -15,7 +15,7 @@ export interface UseListboxNativeOptions {
   disabled?: boolean | undefined
   /**
    * Called with the chosen option's value on every change. It only reports: the value lives in
-   * your form state, or in the native select when you don't pass `value` (ADR-0029, item 0).
+   * your form state, or in the native select when you don't pass `value`.
    */
   onValueChange?: ((value: string, details: ListboxNativeChangeDetails) => void) | undefined
 }
@@ -49,8 +49,7 @@ export interface UseListboxNativeResult {
 }
 
 /**
- * The native rendering's props for your own `<select>`, wired to the nearest Field (ADR-0037,
- * item 2; contract: listbox.a11y.md). It holds no value: spread your form library's props next
+ * The native rendering's props for your own `<select>`, wired to the nearest Field (contract: listbox.a11y.md). It holds no value: spread your form library's props next
  * to it. The custom popup rendering is `useListbox`.
  *
  * @example

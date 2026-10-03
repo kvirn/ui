@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vite-plus/test'
 import { readRootProperties, themeEnvironment } from '../../packages/theme/src/index.ts'
 
-// ADR-0041: the Foundation reference pages are MDX with static tables, so a token that's
+// The Foundation reference pages are MDX with static tables, so a token that's
 // renamed or changed in theme.css must fail here, not drift silently. In a `## Tokens`
 // section, every table row that starts with a `--kv-*` token must name a token theme.css
 // defines on :root, and its first code cell must be that token's value (a `var()` is resolved

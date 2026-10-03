@@ -2,8 +2,8 @@
 
 ## Baseline
 
-- **Target:** WCAG 2.2 AA for every component and block (ADR-0004). The default theme also meets 2.4.13 Focus Appearance and 2.5.5 Target Size (Enhanced), and the high-contrast theme meets 1.4.6.
-- **Patterns:** WAI-ARIA APG. Any deviation needs an ADR.
+- **Target:** WCAG 2.2 AA for every component and block. The default theme also meets 2.4.13 Focus Appearance and 2.5.5 Target Size (Enhanced), and the high-contrast theme meets 1.4.6.
+- **Patterns:** WAI-ARIA APG, and the APG keyboard practice (the `keyboard` skill). A deviation needs the maintainer's approval and the skill or the pattern's key table updated in the same PR.
 - **Legal mapping:** EN 301 549. See [compliance.md](compliance.md).
 - **Procedure, checklist and contract template:** `.claude/skills/accessibility/`. These are plain Markdown and written for humans too.
 - **Definition of done:** the quality gates in [AGENTS.md](../AGENTS.md#quality-gates).
@@ -22,7 +22,7 @@
 
 ## Assistive technology matrix
 
-These tiers are set by ADR-0004. **Core** rows must pass before a component reaches `beta`. **Release** rows are tested before 1.0, and before every minor release after it, for all changed components. Results go in `<name>.a11y.md` and are published on the docs site.
+A component is `alpha` when quality gates 1 to 6 pass, and `beta` when it is alpha and the **Core** rows below have passed. **Release** rows are tested before 1.0, and before every minor release after it, for all changed components. Results go in `<name>.a11y.md`, dated and with versions, and are published on the docs site. Agents mark every row `pending` and never claim a pass.
 
 | AT                                     | Browser         | OS              | Tier    |
 | -------------------------------------- | --------------- | --------------- | ------- |

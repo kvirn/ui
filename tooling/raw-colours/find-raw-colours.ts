@@ -1,7 +1,7 @@
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 
-// ADR-0013: theme.css and the app CSS use only `var(--kv-*)` (and system colours in forced
+// theme.css and the app CSS use only `var(--kv-*)` (and system colours in forced
 // colours), so an override of a token reaches everything and `theme:check` measures what users
 // see. Raw colour values belong in the palette block of packages/theme/theme.css only.
 

@@ -17,14 +17,14 @@ export interface RadioGroupRootProps extends Omit<FieldsetRootProps, 'group'> {
   value?: string | null | undefined
   /** Uncontrolled: the value checked at the start. The browser keeps the state after that. */
   defaultValue?: string | undefined
-  /** Called with the value of the radio the user chose. It only reports (ADR-0029, item 0). */
+  /** Called with the value of the radio the user chose. It only reports. */
   onValueChange?: ((value: string, details: RadioGroupChangeDetails) => void) | undefined
 }
 
 /**
  * A group of radios: the native `<fieldset>` of a `Fieldset.Root` with `group` set, so
  * `Fieldset.Legend`, a hint (`Prose`) and `Fieldset.ErrorMessage` work inside it
- * (ADR-0029, contract: radio-group.a11y.md). Radios that share a `name` are one Tab stop, and
+ * (contract: radio-group.a11y.md). Radios that share a `name` are one Tab stop, and
  * the browser's arrow keys move and check, mirrored in right-to-left. It holds no form state:
  * pass `value` and `onValueChange`, or `defaultValue` and `name` for a plain form.
  *
@@ -67,7 +67,7 @@ export function RadioGroupRoot({
 }
 RadioGroupRoot.displayName = 'RadioGroup.Root'
 
-/** A group of radios under a legend, with a hint and an error (ADR-0029). */
+/** A group of radios under a legend, with a hint and an error. */
 export const RadioGroup = {
   Root: RadioGroupRoot,
 } as const

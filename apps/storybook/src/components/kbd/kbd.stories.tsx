@@ -5,7 +5,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 
-// Components/Kbd: the headless Kbd (ADR-0053), styled by @kvirn-ui/theme. A key is text, not a
+// Components/Kbd: the headless Kbd, styled by @kvirn-ui/theme. A key is text, not a
 // control, so there's no focusable part and no Keyboard story.
 
 const meta = {

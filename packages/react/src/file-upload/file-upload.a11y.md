@@ -1,7 +1,7 @@
 # Accessibility contract: FileUpload (Root, Trigger, Input, DropZone, DropHint, Limits, Rejections, Summary, List, Item, Preview, Name, Type, Size, Status, Progress, Actions, CancelButton, RetryButton, RemoveButton)
 
 - **APG pattern:** none. There is no APG pattern for a file upload. The way in is a native `<button>` that opens the system file dialog, backed by a hidden native `<input type="file">`. A drop zone is an enhancement for devices that drag, never the only way in (2.1.1, 2.5.7). Prior art: GOV.UK file upload and multiple file upload.
-- **Deviations:** none from APG. Decisions: ADR-0038 (one native button and a hidden input, rejected files kept out of the list, announcements batched into one sentence, focus on the item after a removal), ADR-0040 (the Announcer), ADR-0039 (keys), ADR-0029 (a scoped exception: the component checks the files it is given), design spec `docs/design/file-upload.md`.
+- **Deviations:** none from APG. Decisions (forms skill): one native button and a hidden input, rejected files kept out of the list, announcements batched into one sentence, focus on the item after a removal, and a scoped exception (the component checks the files it is given). Design spec `docs/design/file-upload.md`.
 - **Native elements used:** `<button>` (Trigger, Cancel, Retry, Remove), `<input type="file">` (Input), `<progress>` (Progress), `<ul>` and `<li>` (List, Item, and the lines of Rejections), `<div>` (Root, DropZone, Actions), `<p>` (DropHint, Summary, Status).
 - **Status:** alpha candidate (Plan 0021). Gates pass once accessibility-reviewer returns APPROVE. Manual AT is `pending`.
 - **Tests:** `file-upload.test.tsx` and `file-upload-announcements.test.ts` next to this file. `file-upload.stories.tsx` and `file-upload.e2e.ts` in `apps/storybook/src/components/file-upload/`.
@@ -38,13 +38,13 @@ Rules, tested in `file-upload.test.tsx`:
 - **Adding appends,** except with `multiple` off, where a new file replaces the old. A refused new file leaves the old one in place. With an `upload` function the input is reset after each add, so the same file can be chosen again. Without one, the input holds the list (through `DataTransfer`), so a plain form posts it.
 - **Statuses** are exposed as `data-status` and in text. A failure shows neutral words and never the raw error of the network. Only an error object that opts in (`retryable`, `message`) supplies text of its own.
 - **Retry reuses the stored `File`,** so nobody has to find it in a phone's picker again.
-- **The limits are said before anyone chooses** (3.3.2): `FileUpload.Limits` or a hint, a `Prose` in the Field (ADR-0054). A development warning fires if `accept`, `maxFiles` or `maxFileSize` is set and neither exists.
+- **The limits are said before anyone chooses** (3.3.2): `FileUpload.Limits` or a hint, a `Prose` in the Field. A development warning fires if `accept`, `maxFiles` or `maxFileSize` is set and neither exists.
 - **`render` on every part,** with class and handlers merged, and refs merged.
 - **Dev warnings:** a part outside a Root, the limits not said (3.3.2), and a missing Announcer when a message has to be announced. The types leave out `aria-required` and `required` on the Trigger and the input.
 
 ## Keyboard
 
-<!-- Format and rules: the `keyboard` skill (ADR-0039). Shown on the Storybook Docs page. -->
+<!-- Format and rules: the `keyboard` skill. Shown on the Storybook Docs page. -->
 
 - **Focus strategy:** native
 - **Selection follows focus:** n/a
@@ -75,7 +75,7 @@ Rules, tested in `file-upload.test.tsx`:
 
 ## Announcements
 
-- Through the shared Announcer, politely (ADR-0040). One sentence per batch, built by FileUpload's buffer, so a second call never replaces the first. The buffer is shared by every FileUpload on the same Announcer, merges calls less than about 150 ms apart, drops held sentences for a file that was removed, retried or cancelled, and names the Field label when several FileUploads are mounted.
+- Through the shared Announcer, politely. One sentence per batch, built by FileUpload's buffer, so a second call never replaces the first. The buffer is shared by every FileUpload on the same Announcer, merges calls less than about 150 ms apart, drops held sentences for a file that was removed, retried or cancelled, and names the Field label when several FileUploads are mounted.
 - **Now:** files added and refused (counts and the file's name for one), a removal, the list becoming full, and a start of uploads when not automatic. After a dialog add it announces counts only, because the Trigger's description already carries the detail and screen readers re-read it when focus returns. After a drop it announces the full text.
 - **After about one second of quiet (at most three):** uploads finished, failed or all done.
 - **Never:** percentages. Progress is only a native `<progress>` that a screen reader can query.

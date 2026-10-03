@@ -53,7 +53,7 @@ export function isInsideElement(element: Element | null | undefined, target: unk
 }
 
 /**
- * Escape and outside presses for a floating layer (ADR-0046): a Popover, a Menu, a Combobox's
+ * Escape and outside presses for a floating layer: a Popover, a Menu, a Combobox's
  * listbox. Open layers share one stack, and **only the top layer reacts**, so Escape closes the
  * innermost layer and a press outside everything closes the top one first. The hook only reports
  * (`onDismiss`): you close the layer and, where the pattern says so, return focus.

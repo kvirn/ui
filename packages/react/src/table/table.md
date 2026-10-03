@@ -1,6 +1,6 @@
 # Table
 
-> **Draft** (Plan 0026). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [table.a11y.md](table.a11y.md), the design spec is [docs/design/table.md](../../../../docs/design/table.md), and the decisions are in ADR-0035 (a native table, not a grid) and ADR-0059 (TanStack Table and TanStack Virtual are bundled).
+> **Draft** (Plan 0026). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [table.a11y.md](table.a11y.md), the design spec is [docs/design/table.md](../../../../docs/design/table.md), and the decisions are in the overlays-and-lists skill.
 
 A Table shows data in rows and columns: cases, payments, decisions, statistics. It renders a **native `<table>`**, so a screen reader can read it by row and column and say which header a cell belongs to. KvirnUI adds what is easy to get wrong: a name, the sort state and its announcement, a different name for every row checkbox, and an honest size for a table too big to render.
 
@@ -188,7 +188,10 @@ Give the scroll region a height (`max-block-size`). Virtualizing keeps what matt
 Align a column of quantities to the end, so the figures line up: add `kv-table-column-header--numeric` to its `Table.ColumnHeader` and `kv-table-cell--numeric` to each of its cells (`kv-table-row-header--numeric` for a row header that is a quantity). Its sort icon then comes before the text, so the label's end edge lines up with the figures. Use it for amounts, counts and percentages. Case numbers, personal identity numbers and dates are read, not compared by magnitude: they stay at the start. Put the unit in the header once ("Belopp (kr)"), never in every cell. Every column has tabular figures already. With `useTable`, pass `className` per column:
 
 ```tsx
-<Table.Cell cell={cell} className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined} />
+<Table.Cell
+  cell={cell}
+  className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
+/>
 ```
 
 ## Narrow screens

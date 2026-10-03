@@ -1,6 +1,6 @@
 # FileUpload
 
-> **Draft** (Plan 0021). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [file-upload.a11y.md](file-upload.a11y.md), the design spec is [docs/design/file-upload.md](../../../../docs/design/file-upload.md), and the decisions are in ADR-0038 and ADR-0049 (the dashed drop zone).
+> **Draft** (Plan 0021). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [file-upload.a11y.md](file-upload.a11y.md), the design spec is [docs/design/file-upload.md](../../../../docs/design/file-upload.md), and the decisions are in the forms skill (FileUpload).
 
 **KvirnUI sends nothing anywhere.** FileUpload checks the files it is given, shows them, and calls _your_ `upload` function. It makes no network calls, sets no cookies and reads no file content except to show an image preview on the device.
 
@@ -78,7 +78,7 @@ Options (also the options of the hook):
 | `upload`                                     | –           | `(file, { signal, onProgress }) => Promise<result>`. Without it, files stay `pending` and go with the form |
 | `concurrency`, `autoUpload`                  | `3`, `true` | How many upload at once, and whether they start when added. `uploadAll()` starts them otherwise            |
 | `disabled`                                   | `false`     | Native `disabled` on the Trigger and the input                                                             |
-| `onFilesChange`, `onFilesReject`, `messages` | –           | The list changed, files were refused (data, not text), and per-instance string overrides (ADR-0007)        |
+| `onFilesChange`, `onFilesReject`, `messages` | –           | The list changed, files were refused (data, not text), and per-instance string overrides                   |
 
 ## Uploading
 

@@ -1,14 +1,14 @@
 # Field
 
-> **Draft** (Plan 0013). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [field.a11y.md](field.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md), and the decisions are in ADR-0029.
+> **Draft** (Plan 0013). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [field.a11y.md](field.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md), and the decisions are in the forms skill.
 
 **KvirnUI holds no form state; bring your own form logic.** Field renders what it's given and wires it together. It doesn't validate, and it doesn't keep a value, a touched flag or an error. You set `invalid`, `required` and `disabled` from your form library (TanStack Form, React Hook Form) or from your own code, and you write the error message.
 
-A Field joins one control to its label, an optional hint (a `Prose`) and an error message, so the accessible name, the description and the invalid state are right without you wiring ids (ADR-0029).
+A Field joins one control to its label, an optional hint (a `Prose`) and an error message, so the accessible name, the description and the invalid state are right without you wiring ids.
 
-- Three parts: `<Field>` is the root (`<div>`), `<Label>` is the `<label for>` and `<ErrorMessage>` is the `<p>`. `Field.Root`, `Field.Label`, `Field.Prose` and `Field.ErrorMessage` are aliases of the same components (ADR-0055), and each is also exported on its own (`FieldRoot`, `FieldLabel`, `FieldErrorMessage`). The hint is a [Prose](../prose/prose.md): a `<Prose>` inside a Field is its description, and `Field.Prose` is the same component under a name that reads as part of the Field (ADR-0054).
+- Three parts: `<Field>` is the root (`<div>`), `<Label>` is the `<label for>` and `<ErrorMessage>` is the `<p>`. `Field.Root`, `Field.Label`, `Field.Prose` and `Field.ErrorMessage` are aliases of the same components, and each is also exported on its own (`FieldRoot`, `FieldLabel`, `FieldErrorMessage`). The hint is a [Prose](../prose/prose.md): a `<Prose>` inside a Field is its description, and `Field.Prose` is the same component under a name that reads as part of the Field.
 - The label names the control, and clicking it focuses the control. The hints and the error are in the control's `aria-describedby`: every hint in DOM order, then the error, and only the parts that are rendered.
-- A field can have several hints: one above the control and one under it (ADR-0031). Each `Prose` has its own id.
+- A field can have several hints: one above the control and one under it. Each `Prose` has its own id.
 - **A hint is text.** The accessible description is the Prose's text content, so a heading, list or link inside it loses its structure for a screen-reader user, and a link in it can't be followed from there. Keep a hint to plain text and a few short paragraphs. A Prose that isn't a hint (an article, a list of links) goes outside the Field. Every `Prose` inside a Field, at any depth, registers as a description.
 - `invalid` puts `aria-invalid="true"` on the control and `data-invalid` on every part, and the ErrorMessage renders. Without `invalid` the ErrorMessage renders nothing, so a stale error is never referenced.
 - `required` puts `aria-required="true"` on the control, never native `required`: the browser shows no validation bubble of its own, in its own language. Required fields carry no visible marker. A field that isn't required ends its label with the `field.optional` text, "(valfritt)" in Swedish, which is part of the accessible name. `<Label marker="none">` leaves it out. If you also want the browser's native validation, put `required` on the control _and_ keep it on Field, or the label says "(optional)" while assistive technology announces "required".
@@ -32,7 +32,7 @@ import { ErrorMessage, Field, Input, Label, Prose } from '@kvirn-ui/react'
 
 ### The default order
 
-Render the parts in this order (ADR-0031): **label, hint, control, a second hint under the control, then the error**. The reading order, the DOM order and the visual order are then the same, and the theme spaces every part one gap from the next.
+Render the parts in this order: **label, hint, control, a second hint under the control, then the error**. The reading order, the DOM order and the visual order are then the same, and the theme spaces every part one gap from the next.
 
 ```tsx
 <Field invalid={errors.registration !== undefined}>
@@ -67,7 +67,7 @@ html {
 }
 ```
 
-iOS doesn't always honour `scroll-padding` for its keyboard, so this is listed as an open usability question (ADR-0031), not a solved problem.
+iOS doesn't always honour `scroll-padding` for its keyboard, so this is listed as an open usability question, not a solved problem.
 
 Your part:
 
@@ -76,7 +76,7 @@ Your part:
 - **Validate on submit, not on every key,** so content doesn't move under a magnifier. Keep what the user typed.
 - **`controlId`** gives the control the id you need to link to it, for example from an error summary. Don't pass an `id` to a control inside a Field: the Field's id wins, and a dev warning says so.
 - **`lang`** on a label whose text is in another language (3.1.2).
-- **Messages.** `field.optional` and `field.errorPrefix` come from `@kvirn-ui/i18n` in six languages, and can be overridden per provider and per instance: `<Field messages={{ optional: '(frivilligt)' }}>` (ADR-0007).
+- **Messages.** `field.optional` and `field.errorPrefix` come from `@kvirn-ui/i18n` in six languages, and can be overridden per provider and per instance: `<Field messages={{ optional: '(frivilligt)' }}>`.
 - **A checkbox or radio** must be a direct child of `Field` (later phase): the default theme finds its layout from `.kv-field:has(> .kv-checkbox, > .kv-radio)`.
 
 ### Classes for the default theme
@@ -137,7 +137,7 @@ function RegistrationField({ invalid }: { invalid: boolean }) {
 
 ### `render`
 
-Every part takes `render` to change its element. The part's props are merged into yours: class names join, handlers chain and refs merge (ADR-0015). The Label must stay a `<label>`, so the control keeps its name.
+Every part takes `render` to change its element. The part's props are merged into yours: class names join, handlers chain and refs merge. The Label must stay a `<label>`, so the control keeps its name.
 
 ```tsx
 <Prose render={<p />}>Som det står i ditt pass.</Prose>

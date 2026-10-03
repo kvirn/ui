@@ -55,7 +55,7 @@ const textEntryTags = new Set(['INPUT', 'TEXTAREA', 'SELECT'])
 const ownBehaviourSelector = 'input, textarea, select, button, a[href], label, [tabindex]'
 
 /**
- * The box around an input and its addons or buttons, for your own elements (ADR-0031, contract:
+ * The box around an input and its addons or buttons, for your own elements (contract:
  * input-group.a11y.md). It takes `data-invalid` and `data-disabled` from the nearest Field, sets
  * `data-focus-visible` while the input inside has keyboard focus, and focuses the input when the
  * pointer goes down on an addon or on the box's padding. It holds no form state.

@@ -6,7 +6,7 @@
 - **Status:** alpha candidate (Plan 0009). Manual AT is `pending`.
 - **Tests:** `icon.test.tsx` next to this file, and the icon-only rows in `button.test.tsx`. `icon.stories.tsx` and `icon.e2e.ts` in `apps/storybook/src/components/icon/`.
 
-An icon is decorative by default: text next to it already says what it means, so it's hidden from assistive technology. With a `label`, it's an image with that name. Icons come from the built-in set, from the app's registry (`KvirnProvider icons`, ADR-0024), or from `render` and children for one-offs.
+An icon is decorative by default: text next to it already says what it means, so it's hidden from assistive technology. With a `label`, it's an image with that name. Icons come from the built-in set, from the app's registry (`KvirnProvider icons`), or from `render` and children for one-offs.
 
 ## Roles, states, properties
 
@@ -43,7 +43,7 @@ An icon that does something belongs inside a `Button` or `Link`, which is the fo
 | ----- | ------------------ | ---------- |
 | none  | none               | –          |
 
-Icon has no strings. A `label` comes from your own translations (ADR-0007).
+Icon has no strings. A `label` comes from your own translations.
 
 ## Consumer responsibilities
 
@@ -75,7 +75,7 @@ Icon has no strings. A `label` comes from your own translations (ADR-0007).
 
 | AT + browser + OS                        | Date    | Tester | Result | Notes |
 | ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| **Core (required for beta)**             |         |        |        |       |
 | NVDA + Firefox + Windows                 | pending |        |        |       |
 | VoiceOver + Safari + macOS               | pending |        |        |       |
 | VoiceOver + Safari + iOS                 | pending |        |        |       |

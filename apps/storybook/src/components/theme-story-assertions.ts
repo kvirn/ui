@@ -1,7 +1,7 @@
 import { expect } from 'storybook/test'
 
 // Play-function checks shared by the component stories, which the Storybook preview styles
-// with @kvirn-ui/theme/theme.css (ADR-0013). Story-only, so it lives in the Storybook app.
+// with @kvirn-ui/theme/theme.css. Story-only, so it lives in the Storybook app.
 // Functionality and WCAG only: the look is reviewed visually, not asserted.
 
 /** At least 24 × 24 CSS px, the 2.5.8 Target Size (Minimum). */

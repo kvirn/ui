@@ -71,7 +71,7 @@ export function SiteShell({ pathname, children }: { pathname: string; children: 
         <SiteNavigation pathname={pathname} isOpen={isMenuOpen} />
         <main id="main" tabIndex={-1} ref={mainRef} className="docs-main">
           {/* The article is prose: the default theme styles its headings, lists and code
-              (ADR-0018). Examples opt out with kv-not-prose. */}
+. Examples opt out with kv-not-prose. */}
           <div className="docs-article kv-prose">{children}</div>
         </main>
       </div>

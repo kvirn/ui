@@ -264,7 +264,7 @@ describe('createThemeStore: selecting', () => {
     disconnect()
   })
 
-  it('keeps an explicit `system` choice when the configured default is not `system` (ADR-0008)', () => {
+  it('keeps an explicit `system` choice when the configured default is not `system`', () => {
     const fake = createFakeEnv()
     const themeStore = createThemeStore(fake.env, { defaultColorScheme: 'dark' })
     themeStore.actions.selectColorScheme('system')

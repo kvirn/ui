@@ -195,7 +195,7 @@ function iban(): Mask {
   )
 }
 
-/** A filter that only drops whitespace. An email address has no fixed shape (ADR-0032). */
+/** A filter that only drops whitespace. An email address has no fixed shape. */
 function email(): Mask {
   return createMask({
     type: 'regexp',
@@ -204,7 +204,7 @@ function email(): Mask {
   })
 }
 
-/** A filter for digits, `+`, space, `-`, `(` and `)`. There is no national format (ADR-0032). */
+/** A filter for digits, `+`, space, `-`, `(` and `)`. There is no national format. */
 function telephone(): Mask {
   return createMask({
     type: 'regexp',
@@ -229,7 +229,7 @@ const oneTimeCodeSymbols = '9*aA&'
 const upperCaseAscii = (character: string): string =>
   character >= 'a' && character <= 'z' ? character.toUpperCase() : character
 
-// ASCII only (ADR-0045, item 4): a code is an identifier, so å, ø and đ are not letters here.
+// ASCII only: a code is an identifier, so å, ø and đ are not letters here.
 const oneTimeCodeTokens: Record<string, ClassToken> = {
   '9': { kind: 'class', allowed: 'digits', test: (c) => /^[0-9]$/.test(c), takesMarks: false },
   '*': {
@@ -289,7 +289,7 @@ function assertOneTimeCodePattern(source: string): void {
 }
 
 /**
- * A one-time code shaped by `pattern` (ADR-0045): `9` digit, `*` letter or digit, `a` letter, `A`
+ * A one-time code shaped by `pattern`: `9` digit, `*` letter or digit, `a` letter, `A`
  * and `&` the same in upper case, `-` a separator. Typing, paste and autofill all end as the
  * pattern's value (`ABCD1234` and `ABCD-1234` both become `ABCD-1234`). A pattern that is invalid
  * throws a `RangeError`: it is a literal in your code, so it fails in development.
@@ -316,7 +316,7 @@ function oneTimeCode({ pattern: source }: OneTimeCodeMaskOptions): Mask {
   )
 }
 
-/** Presets (ADR-0032, item 3). Every one returns a `Mask` of pure functions. */
+/** Presets. Every one returns a `Mask` of pure functions. */
 export const masks = {
   digits,
   letters,

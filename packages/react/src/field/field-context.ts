@@ -11,7 +11,7 @@ import type {
 } from './use-field.ts'
 
 // Internal. How a Field or Fieldset and its parts find each other, without DOM queries and
-// without global ids (ADR-0029). Three contexts:
+// without global ids. Three contexts:
 //
 // - FieldTextHostContext: the nearest Field or Fieldset. A Prose (its description, see
 //   useDescriptionPart) and the ErrorMessage attach to it, and tell it when they mount, so
@@ -84,7 +84,7 @@ function byDocumentPosition(
  * Root's `aria-describedby`. Also warns, once, when the owner is invalid and no ErrorMessage
  * rendered (3.3.1), and when it renders two (they'd share one id).
  *
- * Descriptions are listed in DOM order, not mount order (ADR-0031): each registers its element,
+ * Descriptions are listed in DOM order, not mount order: each registers its element,
  * and the list is sorted with `compareDocumentPosition` inside the layout effect, never while
  * rendering.
  *

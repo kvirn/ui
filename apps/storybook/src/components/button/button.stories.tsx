@@ -7,7 +7,7 @@ import type { CSSProperties } from 'react'
 import { expect, fn, waitFor, within } from 'storybook/test'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/Button: the headless Button, styled by @kvirn-ui/theme/theme.css (ADR-0013).
+// Components/Button: the headless Button, styled by @kvirn-ui/theme/theme.css.
 // button.e2e.ts runs its keyboard contract against Default, Activation, Disabled,
 // FocusableWhenDisabled, SubmitInForm, RTL and ForcedColors, so their play functions only read.
 
@@ -556,7 +556,7 @@ function DepthMatrix() {
 }
 
 /**
- * Button depth (ADR-0026): a soft shadow, and a tinted edge (darker at the bottom in light,
+ * Button depth: a soft shadow, and a tinted edge (darker at the bottom in light,
  * lighter at the top in dark). It's the default in light and dark, and flat in the contrast
  * themes: use the Theme and Contrast toolbars to compare. The depth is subtle and axe can't
  * judge it, so look at it. Keyboard focus shows only the ring, never a shadow.

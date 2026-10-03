@@ -11,8 +11,8 @@ import {
 } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/Form/Field: the headless Field, styled by @kvirn-ui/theme/theme.css (ADR-0013, design
-// spec docs/design/form-fields.md). KvirnUI holds no form state (ADR-0029, item 0): every story
+// Components/Form/Field: the headless Field, styled by @kvirn-ui/theme/theme.css (design
+// spec docs/design/form-fields.md). KvirnUI holds no form state: every story
 // passes `invalid`, `required` and `disabled` itself, and writes its own error text, as an
 // implementor's form logic would. field.e2e.ts runs the keyboard rows, focus, forced-colours and
 // reflow checks against Default, Invalid, InvalidWithHintUnder, LongFinnish and ForcedColors.
@@ -158,7 +158,7 @@ export const Keyboard: Story = {
 }
 
 /**
- * Two hints, in the default order (ADR-0031): what to answer and where to find it, above the
+ * Two hints, in the default order: what to answer and where to find it, above the
  * input, and the format under it. Each has its own id, and the input's `aria-describedby`
  * lists them in DOM order.
  */
@@ -224,7 +224,7 @@ export const InvalidWithHintUnder: Story = {
 }
 
 /**
- * Invalid: the label, the hint, the input and then the error, under it (ADR-0031). The input
+ * Invalid: the label, the hint, the input and then the error, under it. The input
  * gets `aria-invalid`, and its description lists the hint and then the error, which starts with
  * the hidden "Fel:". The error isn't a live region: it's heard when the user reaches the input.
  */
@@ -321,7 +321,7 @@ export const AsPageHeading: Story = {
 
 /**
  * A form in prose: prose stops at a field, so the heading label gets no prose margins, and the
- * field gets prose's block spacing. The hint is a Prose of its own inside the field (ADR-0054):
+ * field gets prose's block spacing. The hint is a Prose of its own inside the field:
  * its paragraphs are prose, and it has no margin, so it stays close to its label.
  */
 export const InsideProse: Story = {

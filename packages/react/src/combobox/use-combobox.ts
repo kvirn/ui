@@ -130,11 +130,11 @@ export interface UseComboboxCommonOptions<TItem> {
    * milliseconds. Default 500. Nothing is announced while the user is typing.
    */
   announcementDebounceMilliseconds?: number | undefined
-  /** Per-instance message overrides (ADR-0007): the result count, "no results", "loading", and the names of the buttons. */
+  /** Per-instance message overrides: the result count, "no results", "loading", and the names of the buttons. */
   messages?: Partial<KvirnMessages['combobox']> | undefined
   /**
    * Renders only the options that are scrolled into view, plus the active and the chosen one, for
-   * a flat list of thousands (ADR-0059). `true` uses the defaults. The `Combobox.List` must be a
+   * a flat list of thousands. `true` uses the defaults. The `Combobox.List` must be a
    * scroll container with a height limit (the default theme makes it one). Not with `groups`
    * (they render in full, with a development warning). Let the user filter first: unrendered
    * options can't be found with find in page or printed.
@@ -164,7 +164,7 @@ export interface UseComboboxSingleOptions<TItem> extends UseComboboxBaseOptions<
   defaultValue?: string | null | undefined
   /**
    * Called with the chosen key when the user chooses, and with `null` when the text no longer
-   * names the chosen option. It only reports (ADR-0029).
+   * names the chosen option. It only reports.
    */
   onValueChange?: ((value: string | null, details: ComboboxValueChangeDetails) => void) | undefined
 }
@@ -576,7 +576,7 @@ function announcementText(
 }
 
 /**
- * Internal. The state and props behind Combobox and Autocomplete (ADR-0037; contracts:
+ * Internal. The state and props behind Combobox and Autocomplete (contracts:
  * combobox.a11y.md and autocomplete.a11y.md), built on `createCombobox`. `useCombobox` and
  * `useAutocomplete` map their public options onto it.
  */
@@ -1119,7 +1119,7 @@ export function useComboboxMachine<TItem>(
 }
 
 /**
- * The state and props of a Combobox (ADR-0037; contract: combobox.a11y.md): an editable
+ * The state and props of a Combobox (contract: combobox.a11y.md): an editable
  * `role="combobox"` input that filters a list as the user types, and a popup to choose from. The
  * value is one of the options (or several), never the text. Built on `createCombobox`.
  *

@@ -3,7 +3,7 @@
 - **Status:** Done. The owner accepted the visual result on 2026-10-02 and skipped the reviews below
 - **Owner:** main session → component-engineer
 - **Created:** 2026-10-01 · **Target:** next `@kvirn-ui/theme` minor
-- **Related:** ADR-0026 (Proposed), design spec [`docs/design/button-depth.md`](../design/button-depth.md) (section 10 is the handoff), prototype `docs/design/prototypes/button-depth.html`
+- **Related:** design spec [`docs/design/button-depth.md`](../design/button-depth.md) (section 10 is the handoff), prototype `docs/design/prototypes/button-depth.html`
 
 ## Goal
 
@@ -13,7 +13,7 @@ Buttons in the default theme read as pressable objects: a gentle ambient shadow 
 
 - New button kinds (filled secondary, outlined primary). These are an open question for the owner.
 - Depth on other controls (inputs, selects, checkboxes, cards, links, navigation).
-- Fixing the ADR-0021 forced-colours hover defect. This change must not make it worse.
+- Fixing the forced-colours hover defect of the primary hover edge. This change must not make it worse.
 - Any change to `@kvirn-ui/react`, the a11y contract's behaviour rows or i18n. There are no new strings.
 
 ## Background
@@ -49,7 +49,7 @@ There is also an internal `--kv-button-edge` on `.kv-button`. Every state sets t
 - [x] Extend `checkThemeCss()`: parse the edge tokens, compute the sRGB mixes and require 3:1 against canvas, surface and surface-raised (96 pairs)
 - [x] `packages/theme/theme.css`: tokens (sections 2–5), button rules (section 7) per the spec's selector table, and comments
 - [x] e2e in `apps/storybook/src/components/button/button.e2e.ts`, per spec section 10 "Tests" (light, keyboard focus, dark, contrast themes, disabled, forced colours, reduced motion)
-- [x] Stories: every kind at rest, with keyboard focus and disabled on all three surfaces, in all four themes (the four Vitest projects), in the `Depth` story. RTL and forced colours are covered by the general `RTL` and `ForcedColors` Button stories and by e2e forced-colors emulation. Hover, pressed and focus+hover can't be forced statically without a pseudo-state addon (a new dependency, so an ADR): `button.e2e.ts` covers them with real pointer and keyboard input, and they can be tried by hand in Storybook
+- [x] Stories: every kind at rest, with keyboard focus and disabled on all three surfaces, in all four themes (the four Vitest projects), in the `Depth` story. RTL and forced colours are covered by the general `RTL` and `ForcedColors` Button stories and by e2e forced-colors emulation. Hover, pressed and focus+hover can't be forced statically without a pseudo-state addon (a new dependency, so it needs the maintainer's approval): `button.e2e.ts` covers them with real pointer and keyboard input, and they can be tried by hand in Storybook
 - [x] Docs: `packages/theme/README.md` (tokens, how to turn depth off). Remove the "not yet in theme.css / not yet by theme:check" notes from `DESIGN.md` and update the pair count
 - [x] Changeset for `@kvirn-ui/theme`
 - [ ] accessibility-reviewer: APPROVE (skipped by the owner on 2026-10-02, not run)
@@ -72,4 +72,4 @@ The theme unit tests and `theme:check` cover tokens and contrast. Playwright rea
 ## Done when
 
 - [ ] All quality gates in AGENTS.md pass (manual AT `pending`). Gates 1–4 pass, except WebKit and mobile-safari e2e, which could not run on this host. Gate 6 (accessibility-reviewer) was skipped by the owner
-- [x] Plan tasks ticked, `docs/roadmap.md` status updated, ADR-0026 stays Proposed until the owner accepts it
+- [x] Plan tasks ticked, `docs/roadmap.md` status updated, the decision stays Proposed until the owner accepts it

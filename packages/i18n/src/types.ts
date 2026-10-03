@@ -1,4 +1,4 @@
-/** The locales KvirnUI ships. All are first-class; `en` is the fallback (ADR-0003). */
+/** The locales KvirnUI ships. All are first-class; `en` is the fallback. */
 export const localeCodes = ['sv', 'fi', 'nb', 'nn', 'se', 'en'] as const
 export type LocaleCode = (typeof localeCodes)[number]
 
@@ -13,7 +13,7 @@ export interface PluralForms {
 }
 
 /**
- * The locale-aware helper that parameterised messages receive (ADR-0007). Built on `Intl`
+ * The locale-aware helper that parameterised messages receive. Built on `Intl`
  * for the active locale; `date` uses the provider's `timeZone`.
  */
 export interface MessageFormat {
@@ -26,7 +26,7 @@ export interface MessageFormat {
 
 /**
  * A key without parameters. Catalogs use strings; a function lets an app route the string
- * through its own i18n system, for example `() => t('kvirn.link.newTabNotice')` (ADR-0007).
+ * through its own i18n system, for example `() => t('kvirn.link.newTabNotice')`.
  */
 export type TextMessage = string | (() => string)
 
@@ -37,7 +37,7 @@ export type MessageFunction<Values extends object> = (
 ) => string
 
 /**
- * Every visible or announced string, namespaced per component (ADR-0007). The depth is
+ * Every visible or announced string, namespaced per component. The depth is
  * fixed at `namespace.key`. Components add their namespace here as they are built.
  */
 export interface KvirnMessages {
@@ -48,7 +48,7 @@ export interface KvirnMessages {
   field: {
     /**
      * Appended to the label or legend of an optional field, for example `(valfritt)`. Part of
-     * the accessible name (WCAG 3.3.2). Owned by Field (Plan 0013, ADR-0029).
+     * the accessible name (WCAG 3.3.2). Owned by Field (Plan 0013).
      */
     optional: TextMessage
     /**
@@ -61,7 +61,7 @@ export interface KvirnMessages {
     /**
      * The status word that starts the Title of `Notification.Info`, for example `Information:`.
      * Includes its colon. Visually hidden by the theme, read by screen readers (WCAG 1.4.1).
-     * Owned by Notification (Plan 0020, ADR-0047).
+     * Owned by Notification (Plan 0020).
      */
     infoPrefix: TextMessage
     /** The status word of `Notification.Success`, for example `Klart:`. */
@@ -75,7 +75,7 @@ export interface KvirnMessages {
     /**
      * Announced (politely, debounced) when the filtered list changes, for example `5 resultat`.
      * Plural: `1 resultat` and `{count} resultat`. Owned by Combobox and Autocomplete (Plan
-     * 0022, ADR-0037 item 9).
+     * 0022).
      */
     resultCount: MessageFunction<{ count: number }>
     /** Announced when the filter leaves no options, for example `Inga resultat`. */
@@ -96,7 +96,7 @@ export interface KvirnMessages {
     /**
      * Announced (politely, throttled) when a masked field drops a character the user typed or
      * pasted, for example `Här kan du bara skriva siffror.` `allowed` says what the field
-     * takes, so the message can name it. Owned by the masks (Plan 0014, ADR-0032 item 6).
+     * takes, so the message can name it. Owned by the masks (Plan 0014).
      */
     characterNotAllowed: MessageFunction<{
       allowed: 'digits' | 'letters' | 'lettersAndDigits' | 'other'
@@ -108,7 +108,7 @@ export interface KvirnMessages {
     maximumLength: MessageFunction<{ length: number }>
   }
   /**
-   * Every visible, named and announced string of FileUpload (Plan 0021, ADR-0038, design spec
+   * Every visible, named and announced string of FileUpload (Plan 0021, design spec
    * `docs/design/file-upload.md` §4.1). `name` is a file name, inserted as plain text. `size` and
    * `limit` are byte counts: a message formats them with `formatFileSize`, so a file and its limit
    * read in the same unit. `allowed` is the accepted types as short labels (`PDF`, `JPG`): a
@@ -217,7 +217,7 @@ export interface KvirnMessages {
     announcementForField: MessageFunction<{ label: string; message: string }>
   }
   /**
-   * Every visible, named and announced string of Table (Plan 0026, ADR-0035, ADR-0059). `column`
+   * Every visible, named and announced string of Table (Plan 0026). `column`
    * is the column's label as text. Announced sentences end with their full stop, so the Announcer
    * can join sentences with a space. Names and labels have none.
    */

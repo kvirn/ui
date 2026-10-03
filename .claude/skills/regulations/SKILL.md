@@ -16,7 +16,7 @@ when_to_use: compliance claim, marketing copy, accessibility statement, tillgän
    - SE: digg.se, riksdagen.se (EAA supervision is split across sector authorities, so verify per sector)
    - FI: finlex.fi, traficom.fi (accessibility supervisor since 2025-01-01)
    - NO: lovdata.no, uutilsynet.no, digdir.no
-3. **Update `docs/compliance.md`** if you learn something new. Add a "verified YYYY-MM-DD" note and the source link. If the change affects a decision, write an ADR.
+3. **Update `docs/compliance.md`** if you learn something new. Add a "verified YYYY-MM-DD" note and the source link. If the change affects a rule, update the skill or doc that owns it in the same PR, with the maintainer's approval.
 4. **Write the claim using the approved wording** below.
 
 ## Claims policy (hard rule)
@@ -39,11 +39,14 @@ The block must never pre-fill the adopter's conformance status. It provides stru
 
 ## Product constraints from regulation
 
-- **GDPR:** no telemetry, no third-party requests (fonts, CDNs, analytics) in packages or the docs site, and no cookies set by the library.
+- **GDPR:** no telemetry, no third-party requests (fonts, CDNs, analytics) in packages or the docs site, and no cookies set by the library. The one thing the library stores is the theme preference in `localStorage`, only after an explicit user selection and switchable off (`storage: 'none'`). `TODO(legal-verify)`: that an explicit UI preference is exempt under ePrivacy Art. 5(3).
+- **Fonts and assets are self-hosted.** IBM Plex is IBM's own unmodified woff2, committed to `apps/docs/fonts/ibm-plex/` and fetched with `npm pack` rather than installed as a dependency, because its `postinstall` sends IBM telemetry. The theme itself loads no font.
+- **Telemetry stays off** in every tool: Storybook (`core.disableTelemetry`) and Next.js (`NEXT_TELEMETRY_DISABLED=1`).
 - **Consent block:** equal-weight accept and reject buttons, nothing pre-ticked, keyboard and screen-reader accessible, not a focus trap. Include an ePrivacy note.
 - **Feedback block:** satisfies WAD Art. 7 (feedback mechanism).
 - **CRA readiness:** CycloneDX SBOM, npm provenance, `SECURITY.md` with a disclosure process, and a documented support period.
-- **New dependency or service:** check licence compatibility with MIT, where data goes (EU only), and any network calls. Record the result in an ADR.
+- **New dependency or service:** needs the maintainer's approval. Check licence compatibility with MIT, where data goes (EU only), any network calls and any install scripts, then record the result in the PR description and update the docs that list dependencies (`docs/architecture.md`, `docs/engineering.md`). A runtime dependency must be on the sanctioned list in AGENTS.md rule 6 or be added there. A dev dependency is pinned exactly in the pnpm catalog. `allowBuilds` lists the only packages allowed to run install scripts.
+  - Example: the icon libraries `lucide-react`, `@heroicons/react` and `@phosphor-icons/react` are dev dependencies only (tests and stories). They are ISC or MIT, have no dependencies, no network calls and no install scripts, and are not in the SBOM.
 
 ## Output
 

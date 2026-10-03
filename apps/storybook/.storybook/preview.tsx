@@ -13,9 +13,9 @@ import { wcagTags } from '@kvirn-ui/testing'
 import { useLayoutEffect } from 'react'
 import type { ReactNode } from 'react'
 // Self-hosted IBM Plex Sans and Serif, the same files as the docs site: no network request
-// (hard rule 7, ADR-0027).
+// (hard rule 7).
 import '../../docs/fonts/ibm-plex/ibm-plex.css'
-// The default theme (ADR-0013), as an adopter imports it.
+// The default theme, as an adopter imports it.
 import '@kvirn-ui/theme/theme.css'
 import './preview.css'
 import { KeyboardSection } from './keyboard-section.tsx'
@@ -50,7 +50,7 @@ const drivesThemeStore = (parameters: Record<string, unknown>): boolean =>
 /**
  * `lang`, `dir` and forced colours on `<html>` in a story's own view, so the story itself needs
  * no wrapper. A Docs page renders every story in one document, so there they are scoped per
- * story on a wrapper instead, or the last story would win (ADR-0023). The theme stays
+ * story on a wrapper instead, or the last story would win. The theme stays
  * document-wide on both: it is selected through the theme store, which writes to `<html>`.
  */
 function StoryEnvironment({
@@ -171,7 +171,7 @@ const preview: Preview = {
     },
   },
   // The four storybook Vitest projects (root vite.config.ts) start every story in one theme
-  // each, so axe checks every story in all four (ADR-0023).
+  // each, so axe checks every story in all four.
   initialGlobals: {
     mode: modeOf(import.meta.env.VITE_STORYBOOK_MODE),
     contrast: contrastOf(import.meta.env.VITE_STORYBOOK_CONTRAST),
@@ -198,7 +198,7 @@ const preview: Preview = {
       },
     },
     // The default DocsPage, except the primary story isn't repeated under "Stories", and the
-    // contract's Keyboard section follows the controls (ADR-0039). A meta without a contract
+    // contract's Keyboard section follows the controls. A meta without a contract
     // (the Foundation pages) shows nothing.
     docs: {
       page: () => (

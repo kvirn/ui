@@ -58,11 +58,11 @@ function hasNameSource(input: HTMLInputElement): boolean {
 }
 
 /**
- * The row of a one-time code (ADR-0033, contract: one-time-code.a11y.md): one
+ * The row of a one-time code (contract: one-time-code.a11y.md): one
  * `<div class="kv-one-time-code">` that holds the one native input and the slots that draw it.
  * It takes the options (`pattern`, `value`, `defaultValue`, `onValueChange`, `onComplete`), holds
  * no form state, and never moves focus or submits. Put it in a Field with a label and a hint that
- * says how many characters the code has and how they are grouped (ADR-0045).
+ * says how many characters the code has and how they are grouped.
  *
  * @example
  * <Field>
@@ -124,7 +124,7 @@ OneTimeCodeRoot.displayName = 'OneTimeCode.Root'
 /**
  * The one native `<input>`: it takes the typing, paste, autofill, dictation and the pointer, and
  * the slots only draw its value. It is named by the Field's label and described by its hint and
- * error (ADR-0029). `autocomplete="one-time-code"`, no `maxlength`, never `type="password"`: the
+ * error. `autocomplete="one-time-code"`, no `maxlength`, never `type="password"`: the
  * user has to see the code (3.3.8). Pass `name`, `readOnly`, `required` and so on as on an Input.
  */
 export function OneTimeCodeInput({
@@ -185,7 +185,7 @@ export function OneTimeCodeInput({
       if (element.ownerDocument.querySelector(`[id^="${CSS.escape(prefix)}"]`) === null) {
         warnOnce(
           'one-time-code-without-description',
-          'A OneTimeCode.Input in a Field has no hint. The boxes are hidden from screen readers and disappear in the fallback, so say in a visible hint (a <Prose> in the Field) how many characters the code has, how they are grouped and where to find it (WCAG 3.3.2, ADR-0033, ADR-0045, ADR-0054).',
+          'A OneTimeCode.Input in a Field has no hint. The boxes are hidden from screen readers and disappear in the fallback, so say in a visible hint (a <Prose> in the Field) how many characters the code has, how they are grouped and where to find it (WCAG 3.3.2).',
         )
       }
     }
@@ -269,7 +269,7 @@ export function OneTimeCodeSlot({
 }
 OneTimeCodeSlot.displayName = 'OneTimeCode.Slot'
 
-/** A one-time code: one native input, with presentational slots (ADR-0033). */
+/** A one-time code: one native input, with presentational slots. */
 export const OneTimeCode = {
   Root: OneTimeCodeRoot,
   Input: OneTimeCodeInput,

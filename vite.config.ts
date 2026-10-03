@@ -2,27 +2,27 @@ import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
 import { defineConfig } from 'vite-plus'
 import { playwright } from 'vite-plus/test/browser-playwright'
 
-// Only core/src/store/ may import @tanstack/store, and core never imports React (ADR-0003).
+// Only core/src/store/ may import @tanstack/store, and core never imports React.
 const coreRestrictedImports = [
-  { name: 'react', message: 'core stays framework-agnostic (ADR-0003).' },
-  { name: 'react-dom', message: 'core stays framework-agnostic (ADR-0003).' },
+  { name: 'react', message: 'core stays framework-agnostic.' },
+  { name: 'react-dom', message: 'core stays framework-agnostic.' },
 ]
 const tanstackStoreRestriction = {
   name: '@tanstack/store',
-  message: 'Import createComponentStore from core/src/store/ instead (ADR-0003).',
+  message: 'Import createComponentStore from core/src/store/ instead.',
 }
 // Only core/src/virtual/ may import @tanstack/virtual-core, and only core/src/table/ may import
-// @tanstack/table-core, subpaths included. Everything else uses core's wrappers (ADR-0059).
+// @tanstack/table-core, subpaths included. Everything else uses core's wrappers.
 const tanstackVirtualRestriction = {
   group: ['@tanstack/virtual-core', '@tanstack/virtual-core/*'],
-  message: 'Import createListVirtualizer from @kvirn-ui/core instead (ADR-0059).',
+  message: 'Import createListVirtualizer from @kvirn-ui/core instead.',
 }
 const tanstackTableRestriction = {
   group: ['@tanstack/table-core', '@tanstack/table-core/*'],
-  message: 'Import useTable and the table re-exports from @kvirn-ui/core or @kvirn-ui/react (ADR-0059).',
+  message: 'Import useTable and the table re-exports from @kvirn-ui/core or @kvirn-ui/react.',
 }
 const tanstackPatterns = [tanstackVirtualRestriction, tanstackTableRestriction]
-// core reaches the page only through the injected Env (ADR-0003).
+// core reaches the page only through the injected Env.
 const coreRestrictedGlobals = [
   'window',
   'document',
@@ -30,9 +30,9 @@ const coreRestrictedGlobals = [
   'localStorage',
   'sessionStorage',
   'matchMedia',
-].map((name) => ({ name, message: 'Use the injected Env instead of globals (ADR-0003).' }))
+].map((name) => ({ name, message: 'Use the injected Env instead of globals.' }))
 
-// Every Oxlint jsx-a11y rule, as errors. Static linting is the weakest a11y check (ADR-0002),
+// Every Oxlint jsx-a11y rule, as errors. Static linting is the weakest a11y check,
 // so all of it is on. Turning one off needs an ADR.
 const jsxA11yRules = Object.fromEntries(
   [
@@ -196,7 +196,7 @@ export default defineConfig({
           maxWorkers,
           include: [
             'packages/{react,testing}/src/**/*.test.{ts,tsx}',
-            // The docs site shell is built on KvirnUI and tested like a component (ADR-0017).
+            // The docs site shell is built on KvirnUI and tested like a component.
             'apps/docs/components/**/*.test.tsx',
           ],
           browser: {
@@ -208,7 +208,7 @@ export default defineConfig({
         },
       },
       // Every story is a test: it renders, runs its play function and fails on any axe
-      // violation. The same stories run once per theme (ADR-0023).
+      // violation. The same stories run once per theme.
       storybookProject('storybook', 'light', 'standard'),
       storybookProject('storybook-dark', 'dark', 'standard'),
       storybookProject('storybook-light-contrast', 'light', 'more'),

@@ -3,7 +3,7 @@ import type { ComponentStore } from '../store/create-component-store.ts'
 
 /**
  * What the announcer needs from the page: timers and a monotonic clock. `Env` satisfies it (`createAnnouncer(env)` accepts one), and
- * a Node test can pass a few functions instead of a DOM (ADR-0003).
+ * a Node test can pass a few functions instead of a DOM.
  */
 export interface AnnouncerEnv {
   readonly window: {
@@ -69,7 +69,7 @@ interface RegionTimers {
 }
 
 /**
- * The state behind the shared live region (ADR-0040). It holds the text for a polite and an
+ * The state behind the shared live region. It holds the text for a polite and an
  * assertive region, and the React `Announcer` renders it into regions that are already in the
  * page. Strings come from the caller, resolved from i18n: this module has none of its own.
  *

@@ -4,8 +4,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef } 
 import type { CSSProperties, RefObject } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 
-// Internal. The virtualization that Listbox, Combobox and Autocomplete share (ADR-0059, item 3;
-// ADR-0037, item 11; contracts: the "Virtualization" sections of listbox.a11y.md,
+// Internal. The virtualization that Listbox, Combobox and Autocomplete share (contracts: the "Virtualization" sections of listbox.a11y.md,
 // combobox.a11y.md and autocomplete.a11y.md). `useListbox` and `useComboboxMachine` call it
 // with what their machine says, and the popup parts (`Listbox.List`, `Listbox.Option`) render what
 // it returns.
@@ -31,7 +30,7 @@ export const defaultOptionEstimateSize = 44
 
 /**
  * Spread on the one element inside the list that has the size of all the options, so the list
- * scrolls as far as the whole list. The geometry is inline on purpose (ADR-0059, item 5): a
+ * scrolls as far as the whole list. The geometry is inline on purpose: a
  * virtualized list lays out without a theme.
  */
 export interface ListboxVirtualSizerPartProps {
@@ -91,7 +90,7 @@ export function getFirstSelectedIndex(
 
 export interface UseListVirtualizationOptions {
   virtualize: ListboxVirtualizeOption | undefined
-  /** The list has groups: they aren't virtualized, so everything renders (ADR-0037, item 11). */
+  /** The list has groups: they aren't virtualized, so everything renders. */
   hasGroups: boolean
   /** The popup is open and renders options, so there is something to virtualize. */
   isOpen: boolean
@@ -148,7 +147,7 @@ export function useListVirtualization(
     if (isWanted && hasGroups) {
       warnOnce(
         'listbox-virtualize-groups',
-        'virtualize does not work with groups: a partly rendered group would give a screen reader the wrong group, so the list renders in full (ADR-0037, item 11). Remove groups, or remove virtualize and filter the list instead.',
+        'virtualize does not work with groups: a partly rendered group would give a screen reader the wrong group, so the list renders in full. Remove groups, or remove virtualize and filter the list instead.',
       )
     }
   }, [isWanted, hasGroups])

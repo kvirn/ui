@@ -3,16 +3,15 @@
 - **Status:** Draft. Revised 2026-10-01 for the Linear-inspired direction
 - **Designer:** ux-designer agent · **Date:** 2026-10-01
 - **Plan:** Plan 0005, a visible prototype (to be written; [docs-site.md](docs-site.md) §10 has the proposed Design section and tasks) · builds on [Plan 0003](../plans/0003-button-and-link.md) and [Plan 0004](../plans/0004-design-md-and-ux-designer.md)
-- **Related ADRs:** ADR-0006, ADR-0011, [ADR-0013](../adr/0013-default-theme-delivery.md) (Proposed), [ADR-0014](../adr/0014-default-theme-visual-direction-linear.md) (Proposed)
 - **Type:** component default styling + theme/token change
 - **Companion specs:** [storybook-presentation.md](storybook-presentation.md) and [docs-site.md](docs-site.md). Both use what this spec defines.
 
-> **Update 2026-10-01 (ADR-0013, revised):** the recipe files in this spec became one `theme.css`, and the components render their part class themselves: `kv-button` and `kv-link`. The consumer adds only the choices: `kv-button--primary` or `kv-button--danger` (the spec's earlier `kv-button-primary` and `kv-button-danger`), `kv-button-group`, and `kv-nav` on a navigation list, whose links become navigation items (the spec's earlier `kv-nav-list` and `kv-nav-item`). Density is `kv-compact`. `data-*` attributes are only state. The visual rules are unchanged, apart from the palette values in ADR-0017, decision 8.
+> **Update 2026-10-01 (revised):** the recipe files in this spec became one `theme.css`, and the components render their part class themselves: `kv-button` and `kv-link`. The consumer adds only the choices: `kv-button--primary` or `kv-button--danger` (the spec's earlier `kv-button-primary` and `kv-button-danger`), `kv-button-group`, and `kv-nav` on a navigation list, whose links become navigation items (the spec's earlier `kv-nav-list` and `kv-nav-item`). Density is `kv-compact`. `data-*` attributes are only state. The visual rules are unchanged, apart from the palette values in the later role-scale palette.
 
 This spec answers three questions:
 
 1. **How the docs site and Storybook get their styling**, when `tokens.ts` is empty and the headless packages ship zero CSS.
-2. **What the visual direction is.** The maintainer's target is the [Linear-inspired DESIGN.md](https://www.shadcn.io/design/linear), adjusted to WCAG 2.2 AA (ADR-0014).
+2. **What the visual direction is.** The maintainer's target is the [Linear-inspired DESIGN.md](https://www.shadcn.io/design/linear), adjusted to WCAG 2.2 AA.
 3. **What Button (primary, secondary, danger) and Link look like** in every state, theme, density and mode.
 
 ## 1. Brief
@@ -20,7 +19,7 @@ This spec answers three questions:
 - **Users:**
   - Developers and designers at Nordic and EU municipalities and agencies, who evaluate KvirnUI in the docs site and Storybook and then copy the styling. Some use assistive technology, and some read English as a second language.
   - Maintainers, who use Storybook as a workbench.
-  - The maintainer, who decides ADR-0013 and ADR-0014 from the prototype.
+  - The maintainer, who decides the theme delivery and visual direction decisions from the prototype.
   - Indirectly, the residents and staff who use adopters' services.
 - **Hardest-case user:** a developer with low vision who uses the dark theme at 200% zoom, or Windows Contrast Themes. Linear's near-black canvas and faint hairlines are exactly where low-vision users lose control edges and focus. If our Linear look only works for people with typical vision, it has failed.
 - **Job to be done:** When I evaluate KvirnUI, I want to see Button and Link in a modern, calm look that still meets WCAG 2.2 AA in all four themes, so I can adopt it without an accessibility consultant telling me to restyle it.
@@ -44,14 +43,14 @@ This spec answers three questions:
 
 ## 2. Prior art
 
-| Source                                                                                                                                       | What we reuse                                                                                                                                                                                                                                                                          | What we change and why                                                                                                                                                                                                                                                                                                          |
-| -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Linear-inspired DESIGN.md** ([shadcn.io/design/linear](https://www.shadcn.io/design/linear), raw `/design/linear/raw`, fetched 2026-10-01) | The near-black canvas `#010102` and the surface ladder `#0f1011`–`#18191a`. Hairline `#23252a`. Ink `#f7f8f8`, `#d0d6e0`, `#8a8f98`. The lavender `#5e6ad2` with white text. Inter as the substitute font. The tracking ramp. Radii 4, 8, 12, 16. 14px/500 compact buttons. No shadows | Every value that fails AA is adjusted (ADR-0014, "Deviations"): the hover darkens, links get their own lighter or darker `link` token, control edges use `border-control`, the focus ring is 2px with an offset, and comfortable buttons stay 44px. The light and contrast themes are inferred, because the source is dark-only |
-| DESIGN.md (components, colours, shapes)                                                                                                      | The component styles, focus ring, link rules and forced-colour rules                                                                                                                                                                                                                   | Values updated to the Linear direction. `height` in the front matter is a minimum                                                                                                                                                                                                                                               |
-| KvirnUI Plan 0003 contract                                                                                                                   | Styling hooks `data-disabled`, `data-focus-visible` and `data-current`. `aria-disabled` for focusable disabled buttons                                                                                                                                                                 | Nothing                                                                                                                                                                                                                                                                                                                         |
-| APG Button pattern                                                                                                                           | Native `<button>`                                                                                                                                                                                                                                                                      | Visual only                                                                                                                                                                                                                                                                                                                     |
-| GOV.UK Design System: Button, Links                                                                                                          | Full-width stacked buttons on narrow screens, a thicker underline on link hover, and visible "(opens in new tab)" text                                                                                                                                                                 | Lavender and a 2px offset ring instead of GOV.UK's yellow focus fill                                                                                                                                                                                                                                                            |
-| Base UI / Radix: styling via `data-*`                                                                                                        | State selectors on `data-*`                                                                                                                                                                                                                                                            | Variants are **classes**, and density is a context attribute (ADR-0013)                                                                                                                                                                                                                                                         |
+| Source                                                                                                                                       | What we reuse                                                                                                                                                                                                                                                                          | What we change and why                                                                                                                                                                                                                                                                                                |
+| -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Linear-inspired DESIGN.md** ([shadcn.io/design/linear](https://www.shadcn.io/design/linear), raw `/design/linear/raw`, fetched 2026-10-01) | The near-black canvas `#010102` and the surface ladder `#0f1011`–`#18191a`. Hairline `#23252a`. Ink `#f7f8f8`, `#d0d6e0`, `#8a8f98`. The lavender `#5e6ad2` with white text. Inter as the substitute font. The tracking ramp. Radii 4, 8, 12, 16. 14px/500 compact buttons. No shadows | Every value that fails AA is adjusted ("Deviations"): the hover darkens, links get their own lighter or darker `link` token, control edges use `border-control`, the focus ring is 2px with an offset, and comfortable buttons stay 44px. The light and contrast themes are inferred, because the source is dark-only |
+| DESIGN.md (components, colours, shapes)                                                                                                      | The component styles, focus ring, link rules and forced-colour rules                                                                                                                                                                                                                   | Values updated to the Linear direction. `height` in the front matter is a minimum                                                                                                                                                                                                                                     |
+| KvirnUI Plan 0003 contract                                                                                                                   | Styling hooks `data-disabled`, `data-focus-visible` and `data-current`. `aria-disabled` for focusable disabled buttons                                                                                                                                                                 | Nothing                                                                                                                                                                                                                                                                                                               |
+| APG Button pattern                                                                                                                           | Native `<button>`                                                                                                                                                                                                                                                                      | Visual only                                                                                                                                                                                                                                                                                                           |
+| GOV.UK Design System: Button, Links                                                                                                          | Full-width stacked buttons on narrow screens, a thicker underline on link hover, and visible "(opens in new tab)" text                                                                                                                                                                 | Lavender and a 2px offset ring instead of GOV.UK's yellow focus fill                                                                                                                                                                                                                                                  |
+| Base UI / Radix: styling via `data-*`                                                                                                        | State selectors on `data-*`                                                                                                                                                                                                                                                            | Variants are **classes**, and density is a context attribute                                                                                                                                                                                                                                                          |
 
 ## 3. Flow
 
@@ -89,7 +88,7 @@ The recipes add no strings. The example labels are in [storybook-presentation.md
 
 ## 6. Visual specification
 
-### Delivery (ADR-0013)
+### Delivery
 
 **Tokens in `tokens.ts` generate `tokens.css`, and `tokens.ts` also generates `tailwind.css`. Opt-in recipes ship from `@kvirn-ui/theme`. Nothing is loaded automatically.**
 
@@ -124,7 +123,7 @@ Rules:
 | Motion                               | `--kv-duration-fast`, `-medium`, `-slow`, `--kv-easing-standard`                                                                                                                                                      |
 | Link underline                       | `--kv-link-underline-thickness` (1px), `--kv-link-underline-thickness-hover` (2px), `--kv-link-underline-offset` (0.15em)                                                                                             |
 
-Theme selection, following ADR-0006:
+Theme selection, following the theme decision:
 
 - `:root` holds light.
 - The `[data-kv-color-scheme]` and `[data-kv-contrast]` combinations select the other themes.
@@ -197,7 +196,7 @@ Minimums: 4.5:1 for text (7:1 in the contrast themes), and 3:1 for UI and focus.
 | `link-hover` on `canvas`             | link hover                        | 7.12  | 9.84  | 12.65 | 13.97 |
 | `text` on `surface`                  | nav item                          | 17.75 | 17.90 | 19.57 | 19.05 |
 
-Every pair passes. The full list of 168 pairs (42 per theme) is in ADR-0014, and every one goes into `contrastRequirements`.
+Every pair passes. The full list of 168 pairs (42 per theme) is in the visual-direction decision, and every one goes into `contrastRequirements`.
 
 Where the target was adjusted:
 
@@ -220,11 +219,11 @@ Where the target was adjusted:
   - Labels wrap, with no fixed heights. Groups stack.
   - Wrapped links keep one ring per line.
   - The 1.4.12 overrides fit, because padding is the only constraint.
-- **Font:** IBM Plex Sans for text and controls and IBM Plex Serif for headings, self-hosted by the docs site and Storybook (docs-site.md §6, ADR-0027), with the system fonts as the fallback.
+- **Font:** IBM Plex Sans for text and controls and IBM Plex Serif for headings, self-hosted by the docs site and Storybook (docs-site.md §6), with the system fonts as the fallback.
 
 ### New or changed tokens
 
-Everything is in ADR-0014, with an old → new table and ratios. For this spec:
+Everything is in the visual-direction decision, with an old → new table and ratios. For this spec:
 
 - New colours: `link`, `link-hover`, `on-danger`, `danger-hover`.
 - New type token: `label-compact`.
@@ -251,14 +250,14 @@ Everything is in ADR-0014, with an old → new table and ratios. For this spec:
 ## 8. Validation
 
 - [x] Self-review against `review-checklist.md`. No open blockers. The thinnest margins are listed as research questions.
-- [x] Every pair measured (the table above and ADR-0014).
+- [x] Every pair measured (the table above and the visual-direction decision).
 - [x] Usability test plan: shared with [docs-site.md §8](docs-site.md#8-validation), plus the low-vision white-on-lavender question. Result: `pending`.
 
 ## 9. Open questions
 
-1. Once the maintainer has seen the prototype: accept ADR-0013 and ADR-0014?
+1. Once the maintainer has seen the prototype: accept the theme delivery and visual direction decisions?
 2. **Visited links:** DESIGN.md has no visited colour. Should there be one?
 3. **The light theme is our inference.** The Linear source is dark-only. Does the maintainer want a warmer or cooler light surface than `#f6f7f7`?
 4. **The docs site's default colour scheme:** Linear is dark-first. We keep `system` (DESIGN.md principle 6). Should the docs default to `dark` for first-time visitors whose OS preference is light? Not recommended.
-5. **A compile test for `tailwind.css`** needs `tailwindcss` as a dev dependency (ADR).
+5. **A compile test for `tailwind.css`** needs `tailwindcss` as a dev dependency (needs the maintainer's approval).
 6. **Compact on touch:** the reset uses a width media query. `(pointer: coarse)` would be more precise, but it's less predictable on hybrid devices.

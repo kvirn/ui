@@ -83,7 +83,7 @@ export interface ThemeOptions {
   defaultColorScheme?: ColorSchemePreference | undefined
   /** Preference used until the user chooses. Default `'system'`. */
   defaultContrast?: ContrastPreference | undefined
-  /** Default `'local'`. Written only when the user selects a value (ADR-0006). */
+  /** Default `'local'`. Written only when the user selects a value. */
   storage?: ThemeStorage | undefined
 }
 
@@ -315,7 +315,7 @@ export function createThemeStore(
   const readPreference = (): ThemePreference => ({ ...defaults, ...storage.read() })
 
   // Only the axes that differ from the defaults are stored, so an unchanged default is
-  // never written, and with `system` defaults only non-system values are (ADR-0006, ADR-0008).
+  // never written, and with `system` defaults only non-system values are.
   const toStoredPreference = (preference: ThemePreference): StoredThemePreference | undefined => {
     const stored: StoredThemePreference = {
       ...(preference.colorScheme === defaults.colorScheme
@@ -448,7 +448,7 @@ export function createThemeStore(
 const themeStores = new WeakMap<object, ThemeStore>()
 
 /**
- * One theme store per document (ADR-0006): the first caller's options configure it, and
+ * One theme store per document: the first caller's options configure it, and
  * later callers share it. Without an `env` it returns a new detached store (server rendering).
  */
 export function getThemeStore(env: ThemeEnv | undefined, options: ThemeOptions = {}): ThemeStore {

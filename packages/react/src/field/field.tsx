@@ -20,7 +20,7 @@ export type { FieldMarker, FieldState } from './field-state.ts'
 export interface FieldRootProps extends ComponentPropsWithRef<'div'> {
   /**
    * Marks the field as invalid: `aria-invalid` on the control, `data-invalid` on every part, and
-   * the ErrorMessage renders. You decide when: KvirnUI holds no form state (ADR-0029).
+   * the ErrorMessage renders. You decide when: KvirnUI holds no form state.
    */
   invalid?: boolean | undefined
   /** `aria-required` on the control, and no optional text in the label. Not native `required`. */
@@ -61,7 +61,7 @@ export function OptionalMarker({ text }: { text: string | undefined }): ReactNod
 
 /**
  * One form question with one control: a `<div>` that wires its Label, hint (a `Prose`) and
- * ErrorMessage to the control inside it (ADR-0029, contract: field.a11y.md). It holds no form
+ * ErrorMessage to the control inside it (contract: field.a11y.md). It holds no form
  * state: pass `invalid`, `required` and `disabled` from your own form logic.
  *
  * @example
@@ -147,7 +147,7 @@ FieldRoot.displayName = 'Field'
 
 /**
  * The field's visible label, a `<label for>` that names the control. Adds the `field.optional`
- * text, for example `(valfritt)`, when the field isn't required (ADR-0029).
+ * text, for example `(valfritt)`, when the field isn't required.
  */
 export function FieldLabel({
   marker,
@@ -198,7 +198,7 @@ FieldLabel.displayName = 'Label'
 /**
  * The error message: says what's wrong and how to fix it. Renders only while its Field or
  * Fieldset is invalid, starts with the `field.errorPrefix` text ("Fel:") and the error icon, and
- * is part of the control's accessible description. Not a live region (ADR-0029).
+ * is part of the control's accessible description. Not a live region.
  */
 export function FieldErrorMessage({
   children,
@@ -259,9 +259,9 @@ export const Label = FieldLabel
 export const ErrorMessage = FieldErrorMessage
 
 /**
- * A form question with one control, and its label and error (ADR-0029): `<Field>` is the root,
- * with `<Label>`, `<Prose>` for the hint (ADR-0054) and `<ErrorMessage>` inside it. `Field.Root`,
- * `Field.Label`, `Field.Prose` and `Field.ErrorMessage` are the same components (ADR-0055).
+ * A form question with one control, and its label and error: `<Field>` is the root,
+ * with `<Label>`, `<Prose>` for the hint and `<ErrorMessage>` inside it. `Field.Root`,
+ * `Field.Label`, `Field.Prose` and `Field.ErrorMessage` are the same components.
  *
  * @example
  * <Field required>

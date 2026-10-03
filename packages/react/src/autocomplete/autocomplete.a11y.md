@@ -1,13 +1,13 @@
 # Accessibility contract: Autocomplete (Root, Control, Input, Toggle, Clear, and the popup parts)
 
-- **Scope:** Autocomplete, a text field that suggests (ADR-0037, item 5; Plan 0022). `Autocomplete.Root` with `Autocomplete.Input` and `Autocomplete.Popup` is the editable combobox for free text. The value is the text, which may match nothing. Autocomplete is built from the same hook, input and popup as Combobox, so its parts are the Combobox's, and the roles, states and keys that are the same are in [combobox.a11y.md](../combobox/combobox.a11y.md). This contract lists what differs, and its own Keyboard table. The popup parts (`Popup`, `List`, `Option`, `Group`, `GroupLabel`, `Empty`) are the Listbox's: [listbox.a11y.md](../listbox/listbox.a11y.md).
+- **Scope:** Autocomplete, a text field that suggests (Plan 0022). `Autocomplete.Root` with `Autocomplete.Input` and `Autocomplete.Popup` is the editable combobox for free text. The value is the text, which may match nothing. Autocomplete is built from the same hook, input and popup as Combobox, so its parts are the Combobox's, and the roles, states and keys that are the same are in [combobox.a11y.md](../combobox/combobox.a11y.md). This contract lists what differs, and its own Keyboard table. The popup parts (`Popup`, `List`, `Option`, `Group`, `GroupLabel`, `Empty`) are the Listbox's: [listbox.a11y.md](../listbox/listbox.a11y.md).
 - **APG pattern:** [Combobox: Editable Combobox With List Autocomplete](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/) (`aria-autocomplete="list"`, manual selection), with [Listbox](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/) for the popup's content.
-- **Deviations:** none from the APG keyboard practice. The choices ADR-0037 records are allowed by the pattern: no suggestion is active until an arrow key, arrows don't wrap, Page Up and Page Down move ten, Home, End, ArrowLeft and ArrowRight stay with the text field and return visual focus to it (no suggestion stays active), Tab closes the popup without picking, a second Escape doesn't clear the text, and there is no inline completion. The optional Toggle and Clear are not tab stops, for the reasons in the Combobox contract. Decisions: ADR-0037 (items 5, 6, 7, 8, 9, 10, 12, 13, 14), ADR-0046, ADR-0029, ADR-0039, ADR-0040 and ADR-0050.
+- **Deviations:** none from the APG keyboard practice. The choices (overlays-and-lists skill) are allowed by the pattern: no suggestion is active until an arrow key, arrows don't wrap, Page Up and Page Down move ten, Home, End, ArrowLeft and ArrowRight stay with the text field and return visual focus to it (no suggestion stays active), Tab closes the popup without picking, a second Escape doesn't clear the text, and there is no inline completion. The optional Toggle and Clear are not tab stops, for the reasons in the Combobox contract.
 - **Native elements used:** `<input type="text" role="combobox">` (Input), `<div popover="manual">` (Popup), `<div role="listbox">` (List), `<div role="option">`, `<div role="group">`, `<button type="button">` (Toggle, Clear).
 - **Status:** alpha candidate (Plan 0022, Phase 2). Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `autocomplete.test.tsx` next to this file. `autocomplete.stories.tsx` and `autocomplete.e2e.ts` in `apps/storybook/src/components/autocomplete/`.
 
-An Autocomplete is for a question whose answer is free text, where a list helps but isn't the answer: a street, a search, a place. The user types, suggestions appear, and they can pick one, which fills the field, or keep their own text. Suggestions never block other text: with no suggestion highlighted, Enter is the browser's own, so a form submits what was typed. The value is the text itself: `value`, `defaultValue` and `onValueChange` are yours, or `defaultValue` and `name` for a plain `<form>`, where the input carries the `name` (ADR-0029). It is never turned into a key. If the answer must be one of the options, use a Combobox.
+An Autocomplete is for a question whose answer is free text, where a list helps but isn't the answer: a street, a search, a place. The user types, suggestions appear, and they can pick one, which fills the field, or keep their own text. Suggestions never block other text: with no suggestion highlighted, Enter is the browser's own, so a form submits what was typed. The value is the text itself: `value`, `defaultValue` and `onValueChange` are yours, or `defaultValue` and `name` for a plain `<form>`, where the input carries the `name`. It is never turned into a key. If the answer must be one of the options, use a Combobox.
 
 ## Roles, states, properties
 
@@ -40,7 +40,7 @@ Rules, tested in `autocomplete.test.tsx` (and end to end in `autocomplete.e2e.ts
 
 ## Keyboard
 
-<!-- Format and rules: the `keyboard` skill (ADR-0039). Shown on the Storybook Docs page. -->
+<!-- Format and rules: the `keyboard` skill. Shown on the Storybook Docs page. -->
 
 - **Focus strategy:** aria-activedescendant. DOM focus stays on the input, and the active suggestion is `aria-activedescendant`
 - **Selection follows focus:** no (Enter, Alt+ArrowUp or a click picks a suggestion, and the arrow keys only move the highlight)
@@ -95,7 +95,7 @@ The input is one Tab stop. Toggle and Clear are not tab stops (`tabindex="-1"`):
 
 ## Virtualization
 
-`virtualize` is off by default. It renders only the suggestions that are scrolled into view, for a flat list of thousands (ADR-0059, item 3; ADR-0037, item 11). An Autocomplete suggests as the user types, so the list is often short: virtualize a list that stays long after filtering. The rules are the Combobox's (`combobox.a11y.md › Virtualization`), enforced in one place, `createListVirtualizer` in `@kvirn-ui/core`:
+`virtualize` is off by default. It renders only the suggestions that are scrolled into view, for a flat list of thousands. An Autocomplete suggests as the user types, so the list is often short: virtualize a list that stays long after filtering. The rules are the Combobox's (`combobox.a11y.md › Virtualization`), enforced in one place, `createListVirtualizer` in `@kvirn-ui/core`:
 
 - **Keep what matters mounted.** The active suggestion is always rendered, even when it is scrolled out of view, so `aria-activedescendant` on the input never points at nothing (4.1.2; `autocomplete.e2e.ts › virtualized: ArrowDown and ArrowUp always leave aria-activedescendant on a suggestion in the page`).
 - **Scroll before you point.** A key that moves the active suggestion scrolls to it, and the suggestion is rendered in the same commit that sets `aria-activedescendant` (2.4.3, 2.4.7; `autocomplete.e2e.ts › virtualized: ArrowUp activates the last suggestion, rendered and in view`). A pointer move doesn't scroll.
@@ -139,7 +139,7 @@ As the Combobox's. The input looks like an Input, and the popup like the Listbox
 
 | AT + browser + OS                        | Date    | Tester | Result | Notes |
 | ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| **Core (required for beta)**             |         |        |        |       |
 | NVDA + Firefox + Windows                 | pending |        |        |       |
 | VoiceOver + Safari + macOS               | pending |        |        |       |
 | VoiceOver + Safari + iOS                 | pending |        |        |       |
@@ -156,7 +156,7 @@ Research questions for the AT run: is the suggestion count read once, after typi
 
 ## Known issues
 
-- **`aria-activedescendant` on VoiceOver and TalkBack** has known gaps (ADR-0037). There is no native rendering, so the manual AT run must cover iOS and Android before `beta`.
+- **`aria-activedescendant` on VoiceOver and TalkBack** has known gaps. There is no native rendering, so the manual AT run must cover iOS and Android before `beta`.
 - **Filtering after a pick.** After a suggestion is picked the list stays filtered by it until the text changes, so ArrowDown then shows the suggestions that contain that text. Empty the text to see them all.
 - **Virtualization is opt-in and has limits.** See the Combobox contract and the Virtualization section above.
 - **WebKit not run locally.** CI runs the `webkit` and `mobile-safari` projects. `popover="manual"`, the outside press and Escape must be checked on Safari 17.

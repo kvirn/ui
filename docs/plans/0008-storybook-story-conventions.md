@@ -3,7 +3,7 @@
 - **Status:** Implemented, accessibility review pending
 - **Owner:** Magnus Vike / component-engineer
 - **Created:** 2026-10-01 · **Target:** M1
-- **Related:** [ADR-0023](../adr/0023-storybook-story-conventions.md), ADR-0013, ADR-0017, [storybook-presentation.md](../design/storybook-presentation.md)
+- **Related:** [storybook-presentation.md](../design/storybook-presentation.md)
 
 ## Goal
 
@@ -98,7 +98,7 @@ Unchanged for every component. Coverage after the change: each story × 4 themes
 
 ## Tasks
 
-- [x] ADR-0023 (Proposed)
+- [x] Story conventions decision (Proposed)
 - [x] Add `@storybook/addon-docs` to the catalog and the Storybook app
 - [x] `main.ts`, `preview.tsx`, `preview.css`, `Introduction.mdx`
 - [x] Four Vitest projects in `vite.config.ts`
@@ -106,7 +106,7 @@ Unchanged for every component. Coverage after the change: each story × 4 themes
 - [x] Foundation pages: drop fixed-theme exports and `layout: 'fullscreen'`, keep content
 - [x] Update the e2e specs for changed story IDs; select themes with `&globals=mode:dark;contrast:more`
 - [x] Update `.claude/skills/testing/references/templates.md` (Story template) and the testing SKILL row for stories
-- [x] Update note in `docs/design/storybook-presentation.md` pointing to ADR-0023
+- [x] Update note in `docs/design/storybook-presentation.md` pointing to the storybook-docs skill
 - [x] Foundation hierarchy: `Foundation/Colors` with three stories from plain page modules
 - [x] Foundation hierarchy: `Foundation/Typography` split into Type roles, Font families, Glyphs and Tabular figures, with the play assertions split to match
 - [x] Foundation hierarchy: Prose moved to `Foundation/Prose`

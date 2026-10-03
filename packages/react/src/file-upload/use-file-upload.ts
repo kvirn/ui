@@ -69,7 +69,7 @@ export interface UseFileUploadOptions<Result = unknown> extends FileUploadOption
    * list. The component already shows and announces them: use this to log or to block a submit.
    */
   onFilesReject?: ((rejections: readonly FileUploadRejection[]) => void) | undefined
-  /** Per-instance message overrides (ADR-0007). */
+  /** Per-instance message overrides. */
   messages?: Partial<KvirnMessages['fileUpload']> | undefined
 }
 
@@ -324,7 +324,7 @@ function hasSameFiles(input: HTMLInputElement, files: readonly File[]): boolean 
 }
 
 /**
- * A file upload's behaviour for your own elements (ADR-0038, contract: file-upload.a11y.md): one
+ * A file upload's behaviour for your own elements (contract: file-upload.a11y.md): one
  * native button that opens the system dialog, a hidden native input, an optional drop zone, the
  * list of accepted files, the upload queue and the announcements. It checks every file against
  * the limits (type, size, count, empty, duplicate, folder, your `validate`), keeps refused files out

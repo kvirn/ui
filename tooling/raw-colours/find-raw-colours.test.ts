@@ -57,7 +57,7 @@ describe('withoutPaletteBlock', () => {
   })
 })
 
-describe('theme.css and app CSS (ADR-0013)', () => {
+describe('theme.css and app CSS', () => {
   it('finds the files it checks', () => {
     const files = listCheckedCssFiles(repositoryRoot).map((file) => relative(repositoryRoot, file))
     expect(files).toEqual(

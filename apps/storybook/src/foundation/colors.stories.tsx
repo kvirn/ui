@@ -16,7 +16,7 @@ type Story = StoryObj<typeof meta>
 
 /**
  * The raw role scales, with white and black text measured on every step, in the toolbar's
- * theme: each storybook Vitest project checks one (ADR-0023).
+ * theme: each storybook Vitest project checks one.
  */
 export const Palette: Story = {
   render: () => <PalettePage />,

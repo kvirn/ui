@@ -33,7 +33,7 @@ export type ComboboxAnnouncement =
 /** Why the text changed: the user typed, an option was chosen, or the field was cleared. */
 export type ComboboxInputReason = 'input' | 'selection' | 'clear'
 
-/** Where focus goes after a value is removed (ADR-0037, item 4). */
+/** Where focus goes after a value is removed. */
 export type ComboboxFocusTarget = { type: 'removeButton'; key: string } | { type: 'input' }
 
 /** The parts of a `KeyboardEvent` the combobox reads. A DOM event satisfies it. */
@@ -122,7 +122,7 @@ export type Combobox<TItem> = ComponentStore<ComboboxState<TItem>, ComboboxActio
     getSelectedItems: () => TItem[]
   }
 
-/** How long to wait after the last change before announcing the result count (ADR-0037, item 9). */
+/** How long to wait after the last change before announcing the result count. */
 export const announcementDebounceMilliseconds = 500
 
 function deriveAnnouncement(
@@ -162,7 +162,7 @@ function keyResult(handled: boolean): ComboboxKeyResult {
 }
 
 /**
- * The state and keyboard behaviour behind Listbox, Combobox and Autocomplete (ADR-0037), built
+ * The state and keyboard behaviour behind Listbox, Combobox and Autocomplete, built
  * on `createListbox`. DOM focus stays on the trigger or the input, and the active option is
  * `activeKey` (`aria-activedescendant`).
  *

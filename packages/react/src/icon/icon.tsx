@@ -43,7 +43,7 @@ interface IconBaseProps
 }
 
 interface IconByNameProps {
-  /** A built-in or registered icon (ADR-0024). */
+  /** A built-in or registered icon. */
   name: IconName
   render?: never
   children?: never
@@ -66,7 +66,7 @@ const unknownNameProps = Object.freeze({ viewBox: '0 0 24 24' })
 
 /**
  * An icon: built-in, registered by name in `KvirnProvider`, a library component, or your own
- * SVG (ADR-0024, contract: icon.a11y.md). Decorative unless it has a `label`.
+ * SVG (contract: icon.a11y.md). Decorative unless it has a `label`.
  *
  * @example
  * <Icon name="close" />

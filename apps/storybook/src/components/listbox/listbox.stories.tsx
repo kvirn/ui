@@ -12,12 +12,12 @@ import type { VirtualizedPlace } from '../form/virtualized.fixture.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/Listbox: the stylable popup (Listbox.Root, Trigger, Value, Popup, List, Option,
-// Group, Empty), the APG select-only combobox (ADR-0037; contract: listbox.a11y.md). Listbox.Root
+// Group, Empty), the APG select-only combobox (contract: listbox.a11y.md). Listbox.Root
 // renders the browser's own <select> instead on touch devices (native="auto") and for
 // native="always". The popup stories use native="never" so they show the popup on any device, and
 // the stories named Native… show the native rendering with native="always".
 //
-// KvirnUI holds no form state (ADR-0029, item 0). The value is the chosen option's key: pass
+// KvirnUI holds no form state. The value is the chosen option's key: pass
 // `value` and `onValueChange` (Controlled), or `defaultValue` and `name` for a plain form
 // (PlainForm). Nothing here validates: an invalid story sets `invalid` itself. listbox.e2e.ts runs
 // the keyboard rows, forced colours, reduced motion and reflow checks against these stories.

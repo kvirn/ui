@@ -2,7 +2,7 @@
 '@kvirn-ui/theme': minor
 ---
 
-The default fonts are now IBM Plex Sans for text and controls and IBM Plex Serif for headings, instead of Inter (ADR-0027). **Headings are now serif.** To keep sans headings, set `--kv-font-family-heading: var(--kv-font-family-sans)`. To keep Inter, self-host it and set `--kv-font-family-body` and `--kv-font-family-heading` to it, and set the body roles' `--kv-font-*-feature-settings` back to `'cv05', 'cv08'`.
+The default fonts are now IBM Plex Sans for text and controls and IBM Plex Serif for headings, instead of Inter. **Headings are now serif.** To keep sans headings, set `--kv-font-family-heading: var(--kv-font-family-sans)`. To keep Inter, self-host it and set `--kv-font-family-body` and `--kv-font-family-heading` to it, and set the body roles' `--kv-font-*-feature-settings` back to `'cv05', 'cv08'`.
 
 What changed:
 

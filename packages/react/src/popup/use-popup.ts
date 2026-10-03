@@ -26,7 +26,7 @@ export interface UsePopupOptions {
   /** Make the popup as wide as the anchor, such as a listbox under its input. Default `false`. */
   matchAnchorWidth?: boolean | undefined
   /**
-   * The native `popover` mode (ADR-0046). `'auto'` (default) lets the platform close the popup
+   * The native `popover` mode. `'auto'` (default) lets the platform close the popup
    * on Escape and a press outside, and when another auto popup opens. `'manual'` leaves the
    * closing to you and to `useDismissableLayer`: use it where focus stays elsewhere, in a
    * Combobox's input, so the platform's light dismiss doesn't take part.
@@ -94,7 +94,7 @@ function setPopupShown(popup: HTMLElement, shown: boolean): void {
 }
 
 /**
- * The shared mechanics of a floating popup (ADR-0046): Popover, Menu, Select, Combobox. It puts
+ * The shared mechanics of a floating popup: Popover, Menu, Select, Combobox. It puts
  * the popup in the top layer with the native `popover` attribute, shows and hides it when `open`
  * changes, and places it next to the anchor with `computePlacement` from `@kvirn-ui/core`.
  *

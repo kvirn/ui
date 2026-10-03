@@ -16,7 +16,7 @@ export interface UseAutocompleteOptions<TItem> extends UseComboboxCommonOptions<
   defaultValue?: string | undefined
   /**
    * Called with the text when the user types, picks a suggestion (it fills the input) or clears.
-   * It only reports (ADR-0029).
+   * It only reports.
    */
   onValueChange?: ((value: string, details: ComboboxInputChangeDetails) => void) | undefined
   /** Put on the `<input>`, so a plain `<form>` sends the text. */
@@ -27,7 +27,7 @@ export interface UseAutocompleteOptions<TItem> extends UseComboboxCommonOptions<
 export type UseAutocompleteResult<TItem> = UseComboboxResult<TItem>
 
 /**
- * The state and props of an Autocomplete (ADR-0037, item 5; contract: autocomplete.a11y.md): a
+ * The state and props of an Autocomplete (contract: autocomplete.a11y.md): a
  * text field that suggests, whose value is the text, which may match nothing. It is the same
  * `role="combobox"` input and popup as a Combobox, with these differences:
  *

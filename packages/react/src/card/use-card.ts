@@ -29,7 +29,7 @@ const cardProps: UseCardResult = Object.freeze({
 })
 
 /**
- * A card's part classes for your own elements (ADR-0020, contract: card.a11y.md). A card is a
+ * A card's part classes for your own elements (contract: card.a11y.md). A card is a
  * plain container: pick the element (`<section aria-labelledby>`, `<article>`, `<li>`) and the
  * heading level yourself. Header and Footer are never `<header>` or `<footer>`.
  *

@@ -10,14 +10,14 @@ Tests are the definition of done. They come from the accessibility contract (`<n
 
 ## Layers and file names
 
-| Layer     | File                                                      | Runner                                                                                                                             | Proves                                                                   |
-| --------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Machine   | `packages/core/src/<name>/<name>.test.ts`                 | Vitest (node)                                                                                                                      | State transitions, pure logic                                            |
-| Component | `packages/react/src/<name>/<name>.test.tsx`               | Vitest browser mode (Playwright provider)                                                                                          | Rendering, ARIA, props, **axe**                                          |
-| Stories   | `apps/storybook/src/components/<name>/<name>.stories.tsx` | `vp test run` (Storybook `addon-vitest`, a11y addon: axe violations fail), once per theme in four `storybook*` projects (ADR-0023) | Every visual state, plus play functions, in every theme                  |
-| E2E       | `apps/storybook/src/components/<name>/<name>.e2e.ts`      | Playwright                                                                                                                         | **Every keyboard-table row** (incl. Shift+Tab, RTL arrows), focus, modes |
+| Layer     | File                                                      | Runner                                                                                                                  | Proves                                                                   |
+| --------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Machine   | `packages/core/src/<name>/<name>.test.ts`                 | Vitest (node)                                                                                                           | State transitions, pure logic                                            |
+| Component | `packages/react/src/<name>/<name>.test.tsx`               | Vitest browser mode (Playwright provider)                                                                               | Rendering, ARIA, props, **axe**                                          |
+| Stories   | `apps/storybook/src/components/<name>/<name>.stories.tsx` | `vp test run` (Storybook `addon-vitest`, a11y addon: axe violations fail), once per theme in four `storybook*` projects | Every visual state, plus play functions, in every theme                  |
+| E2E       | `apps/storybook/src/components/<name>/<name>.e2e.ts`      | Playwright                                                                                                              | **Every keyboard-table row** (incl. Shift+Tab, RTL arrows), focus, modes |
 
-Stories and e2e specs live in the Storybook app, not the package. They import components the way an adopter does (`@kvirn-ui/react`). A fixture that the package's own tests also use stays in the package, and the story imports it by relative source path. It's never exported.
+Vitest projects (root `vite.config.ts`): `node` (core, i18n, theme, tooling), `browser` (react, testing and the docs-site components, in Chromium) and the four `storybook*` projects. Stories and e2e specs live in the Storybook app, not the package. They import components the way an adopter does (`@kvirn-ui/react`). A fixture that the package's own tests also use stays in the package, and the story imports it by relative source path. It's never exported.
 
 ## TDD loop
 
@@ -34,9 +34,19 @@ Stories and e2e specs live in the Storybook app, not the package. They import co
 - **Test RTL, forced-colors, reduced-motion and 320px** using the Playwright projects or `page.emulateMedia({ forcedColors: 'active', reducedMotion: 'reduce' })`.
 - **Test in at least 2 locales** (`sv` + `en`) so hard-coded strings get caught.
 - **No mocking of the DOM or of focus.** Use browser mode, not jsdom, for components.
-- **Keyboard docs are checked** (ADR-0039): `tooling/keyboard-docs` fails when a stories file doesn't pass its contract as `parameters.a11yContract`, a Keyboard section is malformed, a row has no test, or a focusable component has no `Keyboard` story. See the `keyboard` skill.
+- **Keyboard docs are checked:** `tooling/keyboard-docs` fails when a stories file doesn't pass its contract as `parameters.a11yContract`, a Keyboard section is malformed, a row has no test, or a focusable component has no `Keyboard` story. See the `keyboard` skill.
 - **Test functionality and WCAG only.** Don't assert styles (computed values, tokens, class lists beyond the part-class contract): the look is reviewed visually, not tested.
 - **Never weaken a gate.** No `.skip`/`.only`, no disabled axe rules, no raised timeouts to hide flakiness, and no snapshot updates without reading the diff. Fix flaky tests at the root cause, which is usually a missing `await expect(...)` auto-wait.
+
+## Stories and themes
+
+Every story runs once per theme in four Vitest projects (`storybook`, `storybook-dark`, `storybook-light-contrast`, `storybook-dark-contrast`), and the initial toolbar globals come from `VITE_STORYBOOK_MODE` and `VITE_STORYBOOK_CONTRAST`. So a story state is checked with axe in all four themes, and story tests take about four times as long as one project. Docs pages share one `<html>`.
+
+- **No fixed-theme exports** (`Light`, `Dark`, …). A story that is only valid in one theme pins it with `globals` and a play check, and says why.
+- **Toolbars** are Mode (light, dark, system) and Contrast (standard, more). The Foundation theme stories first check that the toolbar theme reached `<html>`, with the shared play checks in `apps/storybook/src/components/theme-story-assertions.ts`. An e2e test picks a theme with `&globals=mode:…;contrast:…` in the story URL.
+- **One decorator, no wrapper.** The story view sets `lang`, `dir` and `data-forced-colors` on `<html>`, and Docs pages scope them per story on a `display: contents` div. The decorator connects the theme store and resets both axes to `system` on cleanup. A story that drives the store itself sets `parameters.themeStore: 'story'`.
+- **No initial Backgrounds value.** The addon's 0.3s transition races axe's contrast check. `preview.css` supplies the canvas colour and stays in the raw-colour check.
+- **Docs pages** use `@storybook/addon-docs` with `tags: ['autodocs']`. See the `storybook-docs` skill.
 
 ## Test budget
 
@@ -48,19 +58,20 @@ Run the smallest thing that proves the point. Each full gate run happens **once 
   - `vp test run <file>`
   - `vp test run --project browser <file> -t "<name>"`
 - No full-suite runs, and no `--changed` sweeps after every edit.
-- **Pass paths while working** (ADR-0051, AGENTS.md rule 11): `vp check <files>` and `vp test run <files>`, or `vp test related <files>`. Never run `vp check --fix` or `vp fmt` without paths. Run the whole-tree gates once, at the end.
+- **Pass paths while working** (AGENTS.md rule 11): `vp check <files>` and `vp test run <files>`, or `vp test related <files>`. Never run `vp check --fix` or `vp fmt` without paths. Run the whole-tree gates once, at the end.
 - A failure that predates your branch isn't caused by you, but the tree has one owner: fix it if it blocks the gates, or report it with the file names. Never skip or disable it.
 - No stress or repeat runs, unless a test actually flaked and you're investigating it.
+- **Worker caps.** Vitest runs at most 2 workers per project (`VITEST_MAX_WORKERS` overrides it for a one-off) and Playwright runs 3 (`E2E_WORKERS`). The caps are politeness for the machine, not gates: don't change a test, threshold or timeout to fit them. A whole-tree local run takes the Storybook projects one at a time, because running them in parallel flakes on dynamic imports.
 - E2E: one spec on one project, `vp run e2e <spec> --project chromium`, and only if story, fixture or keyboard behaviour changed.
   - Keep `vp run storybook` running in the background, so Playwright reuses it instead of booting a new server each run.
 
-**Who runs what:** only the main session (orchestrator) runs checks, and only after every subagent has reported done (AGENTS.md rule 12). Subagents never run them. Everything in this section describes what the orchestrator runs, scoped and sequential. Ignore "while iterating" advice if you are a subagent.
+**Who runs what:** only the main session (orchestrator) runs checks, and only after every subagent has reported done (AGENTS.md rule 12). Subagents never run them, except `test-runner`, which runs the changed modules one at a time once `node .claude/hooks/test-preflight.mjs` says CLEAR, and never a full-tree run. What its guard allows and blocks: `references/test-runner-guard.md`. Everything in this section describes what the orchestrator runs, scoped and sequential. Ignore "while iterating" advice if you are a subagent.
 
 **Final gates:** the orchestrator runs them once, at the end, in this order, stopping at the first failure:
 
 1. `vp check` (lint and types block, formatting is advisory; on your files while others may be editing; the whole tree only when you're the only one working)
 2. `vp test run`
-3. `vp run e2e <spec> --project chromium`: the `chromium` baseline (ADR-0048), for the specs you changed. A path-less run is blocked (ADR-0057); CI runs the whole suite. The display-mode projects and other browsers only for a dedicated sweep, with `E2E_BROWSERS=sweep|all`
+3. `vp run e2e <spec> --project chromium`: the `chromium` baseline (a development floor, not a browser-support claim), for the specs you changed. A path-less run is blocked (AGENTS.md rule 12); CI runs the whole suite. The display-mode projects and other browsers only for a dedicated sweep, with `E2E_BROWSERS=sweep|all`
 4. `vp run i18n:check`
 5. `vp run theme:check`
 
@@ -70,6 +81,11 @@ Run `vp run build` only if package config or exports changed.
 
 - Run the gates once per change. Re-run only the failed gate after a fix.
 - `accessibility-reviewer` runs nothing. It reads the orchestrator's gate output. If it lists a `NEEDS RUN` command, the orchestrator runs just that, e.g. the component's e2e spec on `chromium`, or on the sweep projects when a dedicated sweep is requested.
+
+## Maintainer preferences
+
+- Stories follow the args-first convention: the real component as `meta.component`, shared `args`, autodocs, and themes as test projects (see `references/templates.md`).
+- Test functionality and WCAG, not styles.
 
 ## Debugging failures
 

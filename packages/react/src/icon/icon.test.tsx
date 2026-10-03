@@ -22,7 +22,7 @@ import type { IconComponent, IconName, IconNameOf, IconsOf } from './icon-regist
 import { useIcon } from './use-icon.ts'
 import type { IconPartProps, UseIconOptions, UseIconResult } from './use-icon.ts'
 
-// Contract: icon.a11y.md. Plan 0009, ADR-0024.
+// Contract: icon.a11y.md. Plan 0009.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -163,7 +163,7 @@ describe('built-in icons', () => {
   })
 })
 
-describe('registry (ADR-0024)', () => {
+describe('registry', () => {
   test('name renders the registered component', async () => {
     const svg = await renderIcon(<RegisteredIcon name="lucide-trash" />)
     expect(svg.classList.contains('lucide-trash-2')).toBe(true)
@@ -308,7 +308,7 @@ describe('attributes', () => {
     expect(large?.getBoundingClientRect().width).toBe(40)
   })
 
-  test('values are attributes, never inline style (strict CSP, ADR-0024)', async () => {
+  test('values are attributes, never inline style (strict CSP)', async () => {
     const svg = await renderIcon(
       <RegisteredIcon
         name="lucide-trash"
@@ -344,7 +344,7 @@ describe('attributes', () => {
         <RegisteredIcon name="lucide-trash" size="sm" color="currentColor" />
       </KvirnProvider>,
     )
-    // The provider adds its two empty live regions (ADR-0040) after the icon, and they carry inline styles.
+    // The provider adds its two empty live regions after the icon, and they carry inline styles.
     const svg = html.slice(0, html.indexOf('</svg>') + '</svg>'.length)
     expect(svg).toMatch(/class="[^"]*\bkv-icon\b[^"]*"/)
     expect(svg).toMatch(/class="[^"]*\blucide\b[^"]*"/)
@@ -398,7 +398,7 @@ describe('library compatibility (Plan 0009, Background)', () => {
     expect(path && getComputedStyle(path).stroke).toBe('rgb(0, 0, 200)')
   })
 
-  test('a CSS custom property works as a colour (ADR-0024)', async () => {
+  test('a CSS custom property works as a colour', async () => {
     const { container } = await render(
       <div style={{ ['--test-colour' as string]: 'rgb(0, 128, 0)' }}>
         <RegisteredIcon name="heroicons-trash" color="var(--test-colour)" />

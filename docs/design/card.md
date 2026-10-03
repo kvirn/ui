@@ -2,11 +2,11 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-01
-- **Plan:** [Plan 0007](../plans/0007-card.md) · **Related ADRs:** [ADR-0020](../adr/0020-card-container.md) (Proposed), ADR-0013, ADR-0015, ADR-0017 (decision 10), ADR-0018
+- **Plan:** [Plan 0007](../plans/0007-card.md)
 - **Type:** component default styling (+ component tokens, + one prose change)
-- **Revised 2026-10-02 ([Section](section.md), ADR-0044, Plan 0018):** Card is elevation level 2 only. `kv-card--surface` and `kv-card--canvas` are removed, so a card is always `surface-raised`. Example A (a text block in a sidebar, and its `contact.*` strings) moved to a `Section`, Example D's nested card is `kv-card--radius-md` only, and the `Surfaces` and `SidebarTextBlock` stories are gone (`SurfaceLayers` moved to Section). Where §4, §5 (Example A and D), §6.1 (the surface row), §6.4, §6.5, §6.8, §7 and §9 (open question 4) of this spec mention a surface choice for a card, the Section spec wins. A card on a Section keeps its default look.
+- **Revised 2026-10-02 ([Section](section.md), the Section decision, Plan 0018):** Card is elevation level 2 only. `kv-card--surface` and `kv-card--canvas` are removed, so a card is always `surface-raised`. Example A (a text block in a sidebar, and its `contact.*` strings) moved to a `Section`, Example D's nested card is `kv-card--radius-md` only, and the `Surfaces` and `SidebarTextBlock` stories are gone (`SurfaceLayers` moved to Section). Where §4, §5 (Example A and D), §6.1 (the surface row), §6.4, §6.5, §6.8, §7 and §9 (open question 4) of this spec mention a surface choice for a card, the Section spec wins. A card on a Section keeps its default look.
 
-The component is decided in ADR-0020: `Card.Root`, `Header`, `Body` and `Footer`, each one `<div>` with its class, `kv-card`, `kv-card-header`, `kv-card-body` or `kv-card-footer`. There's no Title part, no clickable card, and no behaviour, ARIA or strings. This spec decides the **default theme's modifier classes and look**, how prose and Button behave inside a card, and the stories.
+The component is decided in the Card decision: `Card.Root`, `Header`, `Body` and `Footer`, each one `<div>` with its class, `kv-card`, `kv-card-header`, `kv-card-body` or `kv-card-footer`. There's no Title part, no clickable card, and no behaviour, ARIA or strings. This spec decides the **default theme's modifier classes and look**, how prose and Button behave inside a card, and the stories.
 
 ## 1. Brief
 
@@ -17,7 +17,7 @@ The component is decided in ADR-0020: `Card.Root`, `Header`, `Body` and `Footer`
 - **Hardest-case user:** a resident at 400% zoom (320 CSS px) in Finnish, using a screen magnifier, with a footer of two long button labels. Second: a Windows Contrast Themes user who has to see where one card ends and the next begins.
 - **Job to be done:** When I put related content on a surface, I want one container that looks right in every theme and at every width, so I don't hand-roll padding, radii and surfaces outside `theme:check`.
 - **Context:** any device. Resident use is infrequent and often stressed. Staff use is daily on a desktop, often in compact density.
-- **Constraints:** headless parts ship no CSS (hard rule 5). Choices are modifier classes, and `data-*` is only state (ADR-0013). Only DESIGN.md tokens. No third-party images (hard rule 7).
+- **Constraints:** headless parts ship no CSS (hard rule 5). Choices are modifier classes, and `data-*` is only state. Only DESIGN.md tokens. No third-party images (hard rule 7).
 - **Success criteria:**
   - 0 axe violations in every story, in all four themes and RTL.
   - No horizontal scroll at 320px with the Finnish fixture.
@@ -37,10 +37,10 @@ The component is decided in ADR-0020: `Card.Root`, `Header`, `Body` and `Footer`
 | `theme.css` Button, `kv-button-group`, prose, `kv-compact`                                   | Button group layout in the footer. The density switch. Prose for text in the body                   | Prose stops at a card boundary unless it's turned on inside the card (§6.6)                                                                |
 | [Designsystemet Card](https://designsystemet.no/en/components/docs/card/overview) (NO)       | Sections inside the card (`Card.Block`), dividers between sections, media that "extend to the edge" | No `data-color` or tinted variant: status and colour belong to a future Notification. Dividers are opt-in, not default. No whole-card link |
 | [GOV.UK responsive spacing](https://design-system.service.gov.uk/styles/spacing/)            | Padding steps that are smaller on small screens                                                     | Our 4px grid tokens and a `40rem` reference point                                                                                          |
-| [GOV.UK summary card](https://design-system.service.gov.uk/components/summary-list/)         | A card is plain grouping. Actions are real buttons and links with their own names                   | No grey title bar. Our card has no title part (ADR-0020)                                                                                   |
-| [Inclusive Components: Cards](https://inclusive-components.design/cards/) (Heydon Pickering) | One link per card, in the heading. Decorative images get `alt=""`. Lists of cards are `<ul>`        | No stretched link in this version (ADR-0020)                                                                                               |
+| [GOV.UK summary card](https://design-system.service.gov.uk/components/summary-list/)         | A card is plain grouping. Actions are real buttons and links with their own names                   | No grey title bar. Our card has no title part                                                                                              |
+| [Inclusive Components: Cards](https://inclusive-components.design/cards/) (Heydon Pickering) | One link per card, in the heading. Decorative images get `alt=""`. Lists of cards are `<ul>`        | No stretched link in this version                                                                                                          |
 
-No APG pattern: a card isn't a widget (ADR-0020).
+No APG pattern: a card isn't a widget.
 
 ## 3. Flow
 
@@ -53,7 +53,7 @@ A card has no flow of its own. Its "unhappy paths" are content and layout condit
 
 ## 4. Content
 
-**Component strings:** none. Card renders no text (ADR-0020, Plan 0007 "i18n strings").
+**Component strings:** none. Card renders no text (Plan 0007 "i18n strings").
 
 **Story fixture strings** go in `apps/storybook/src/components/card/card.fixture.tsx`, with keys local to the file and a value in all six locales (storybook-presentation.md §4). The `fi` strings below are designer drafts for length checks only. `fi`, `nb`, `nn` and `se` need a translator, and `se` falls back to `en` with `lang="en"` until it's reviewed. Times, dates and phone numbers are formatted with `Intl` where they're values.
 
@@ -143,7 +143,7 @@ At 320px with a 16px page gutter, the default card's text column is 320 − 32 �
 
 ### 6.1 Class API
 
-Every choice is a modifier class the consumer adds next to the part's own class (ADR-0013): `kv-<part>--<option>`. A card without one gets the default (**bold** below). `data-*` stays for state, and a card has none.
+Every choice is a modifier class the consumer adds next to the part's own class: `kv-<part>--<option>`. A card without one gets the default (**bold** below). `data-*` stays for state, and a card has none.
 
 | Classes                                                                                                                                                      | On                  | Values (default **bold**)                 | Why                                                                                                                                                                                                                                        |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -158,7 +158,7 @@ Also used, existing: `kv-button-group` on `Card.Footer` (§6.4), `kv-prose` on a
 
 **Not card surfaces:** `primary-subtle` and the status `-subtle` backgrounds.
 
-- Status messages need an inline-start bar, an icon and a status word (DESIGN.md Components). As a card surface they'd invite colour-only status (1.4.1). They belong to the Notification component ([notification.md](notification.md), ADR-0047, ADR-0020 follow-up).
+- Status messages need an inline-start bar, an icon and a status word (DESIGN.md Components). As a card surface they'd invite colour-only status (1.4.1). They belong to the Notification component ([notification.md](notification.md), the Notification decision, the Card decision follow-up).
 - `primary-subtle` is the secondary button's hover fill. On a `primary-subtle` card the hover fill would be invisible (1:1).
 
 ### 6.2 Padding
@@ -189,10 +189,10 @@ Also used, existing: `kv-button-group` on `Card.Footer` (§6.4), `kv-prose` on a
 
 ### 6.3 Root and parts
 
-| Part                 | Style                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Root                 | `box-sizing: border-box`. `background-color` from the surface class. `border: var(--kv-border-width) solid var(--kv-color-border-subtle)` on every surface. `border-radius: var(--kv-card-radius)`. `color: var(--kv-color-text)` (set with the background, so text always pairs with the surface). `min-inline-size: 0` and `max-inline-size: 100%` (grid and flex items can shrink at 320px). `hyphens: auto` and `hyphenate-limit-chars: 10 4 4` (never in code), then `overflow-wrap: break-word` (ADR-0028). No shadow, no `overflow`, no fixed size, no font change (the font inherits). |
-| Header, Body, Footer | `padding: var(--kv-card-padding)`, and the collapse and divider rules above. No background of their own, no `display` on Header or Footer (so `kv-button-group` on the Footer works). Body: `flex-grow: 1`                                                                                                                                                                                                                                                                                                                                                                                     |
+| Part                 | Style                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Root                 | `box-sizing: border-box`. `background-color` from the surface class. `border: var(--kv-border-width) solid var(--kv-color-border-subtle)` on every surface. `border-radius: var(--kv-card-radius)`. `color: var(--kv-color-text)` (set with the background, so text always pairs with the surface). `min-inline-size: 0` and `max-inline-size: 100%` (grid and flex items can shrink at 320px). `hyphens: auto` and `hyphenate-limit-chars: 10 4 4` (never in code), then `overflow-wrap: break-word`. No shadow, no `overflow`, no fixed size, no font change (the font inherits). |
+| Header, Body, Footer | `padding: var(--kv-card-padding)`, and the collapse and divider rules above. No background of their own, no `display` on Header or Footer (so `kv-button-group` on the Footer works). Body: `flex-grow: 1`                                                                                                                                                                                                                                                                                                                                                                          |
 
 **Full-bleed media without clipping.** The Root never sets `overflow: hidden` or `clip`, so a child's focus ring (2px plus a 2px offset) is never cut off (2.4.11, 2.4.13) and text spacing overrides never clip text (1.4.12). Instead, media that touches a rounded corner gets that corner's radius itself:
 
@@ -222,7 +222,7 @@ Also used, existing: `kv-button-group` on `Card.Footer` (§6.4), `kv-prose` on a
 
 `danger` as a fill is covered by its 4.5:1 text pairs. A disabled button's `border-control` dashed edge is covered (lowest 3.54:1, dark on `surface-raised`).
 
-**The dark hovered primary button on a card fails the project's own 3:1 rule** (2.98:1). It's a Button issue that a card exposes first, and it will also affect dialogs and popups, which are `surface-raised` too. A lighter hover isn't allowed (white text), and a darker one lowers the edge further. Recommended fix, for the maintainer to decide (Button style, ADR needed, open question 1): **a hovered primary button keeps a 1px `primary` border** instead of `transparent`, so its edge is `primary` on the surface (3.75:1 lowest, already required). Then `primary` replaces `primary-hover` in the "hovered primary edge" pairs. Until it's decided, the dark Example B story shows the gap.
+**The dark hovered primary button on a card fails the project's own 3:1 rule** (2.98:1). It's a Button issue that a card exposes first, and it will also affect dialogs and popups, which are `surface-raised` too. A lighter hover isn't allowed (white text), and a darker one lowers the edge further. Recommended fix, for the maintainer to decide (Button style, needs the maintainer's approval, open question 1): **a hovered primary button keeps a 1px `primary` border** instead of `transparent`, so its edge is `primary` on the surface (3.75:1 lowest, already required). Then `primary` replaces `primary-hover` in the "hovered primary edge" pairs. Until it's decided, the dark Example B story shows the gap.
 
 ### 6.5 Text on each surface
 
@@ -272,14 +272,14 @@ A card is never interactive. No hover change, shadow or pointer cursor, because 
 
 ### 6.9 New or changed tokens and pairs
 
-| Token or pair                                                       | Value per theme                                                      | Contrast                        | ADR                                                |
-| ------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------- | -------------------------------------------------- |
-| `--kv-card-padding-sm`                                              | `space-3` (all)                                                      | n/a                             | ADR-0020 (component tokens, no new values)         |
-| `--kv-card-padding-md`                                              | `space-4`; `space-6` from `40rem`; `space-4` in compact from `64rem` | n/a                             | ADR-0020                                           |
-| `--kv-card-padding-lg`                                              | `space-6`; `space-8` from `40rem`; `space-6` in compact from `64rem` | n/a                             | ADR-0020                                           |
-| `--kv-card-padding`, `--kv-card-radius`                             | Per card, from the modifier classes                                  | n/a                             | ADR-0020                                           |
-| Pair `primary-hover` on `surface-raised` (3:1)                      | –                                                                    | 5.91 / **2.98** / 12.65 / 11.79 | New ADR for the Button hover fix (open question 1) |
-| Pairs `danger-hover` on `canvas`, `surface`, `surface-raised` (3:1) | –                                                                    | lowest 7.73 (light, `surface`)  | Plan 0007 task (completeness, passes)              |
+| Token or pair                                                       | Value per theme                                                      | Contrast                        | Decision                                                |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------- |
+| `--kv-card-padding-sm`                                              | `space-3` (all)                                                      | n/a                             | The Card decision (component tokens, no new values)     |
+| `--kv-card-padding-md`                                              | `space-4`; `space-6` from `40rem`; `space-4` in compact from `64rem` | n/a                             | The Card decision                                       |
+| `--kv-card-padding-lg`                                              | `space-6`; `space-8` from `40rem`; `space-6` in compact from `64rem` | n/a                             | The Card decision                                       |
+| `--kv-card-padding`, `--kv-card-radius`                             | Per card, from the modifier classes                                  | n/a                             | The Card decision                                       |
+| Pair `primary-hover` on `surface-raised` (3:1)                      | –                                                                    | 5.91 / **2.98** / 12.65 / 11.79 | New decision for the Button hover fix (open question 1) |
+| Pairs `danger-hover` on `canvas`, `surface`, `surface-raised` (3:1) | –                                                                    | lowest 7.73 (light, `surface`)  | Plan 0007 task (completeness, passes)                   |
 
 **DESIGN.md changes** for the maintainer: the Components entry for cards (modifier classes, padding model, footer, one-link rule), `card` padding "24px, 16px below 40rem and in compact", the Theming class list, and `kv-card` in the Prose entry's not-prose list.
 
@@ -289,7 +289,7 @@ Draft input for `packages/react/src/card/card.a11y.md`. The plan's contract tabl
 
 - **Card never:**
   - adds a role, `aria-*`, `tabindex`, a click handler, a heading, a live region or text;
-  - renders `<header>`, `<footer>`, `<section>` or `<article>` by default (ADR-0020);
+  - renders `<header>`, `<footer>`, `<section>` or `<article>` by default;
   - sets `aria-hidden` or `inert`;
   - clips its children (`overflow`), which would hide focus rings (2.4.11, 2.4.13) or text under 1.4.12;
   - has a hover or pointer style that suggests it's clickable.
@@ -337,7 +337,7 @@ Draft input for `packages/react/src/card/card.a11y.md`. The plan's contract tabl
 
 ## 9. Open questions
 
-1. **Dark hovered primary button on cards (2.98:1).** Accept the recommended Button fix (a 1px `primary` border on hover, ADR needed), or choose another? It's outside Card's scope but blocks a clean dark Example B.
+1. **Dark hovered primary button on cards (2.98:1).** Accept the recommended Button fix (a 1px `primary` border on hover, needs the maintainer's approval), or choose another? It's outside Card's scope but blocks a clean dark Example B.
 2. **Prose re-enabled inside cards** (§6.6) makes cards differ from `kv-not-prose`, where prose can't be turned back on. Is that difference acceptable, or should a later prose change let the nearest `kv-prose` win everywhere (for example with `@scope`, once Safari 17.0–17.3 drop out of the support range)?
 3. **Card lists:** should the theme ship a list layout class (for example `kv-card-list` on a `ul`: grid, no markers, and a not-prose boundary), instead of story CSS and a `kv-not-prose` wrapper?
 4. **Surface names:** token names (`kv-card--surface`, `surface-raised` for the default) were chosen over shorter ones (`raised`) for one vocabulary. Confirm.

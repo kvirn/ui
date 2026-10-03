@@ -89,14 +89,14 @@ test.describe('KvirnProvider theme switcher keyboard contract', () => {
     await page.keyboard.press('Tab')
     await page.keyboard.press('ArrowUp')
     await expect(switcher.colorSchemeRadio('Mörkt')).toBeFocused()
-    // The provider's two live regions (ADR-0040) exist, and stay empty: nothing is announced.
+    // The provider's two live regions exist, and stay empty: nothing is announced.
     await expect(page.getByRole('status')).toHaveText('')
     await expect(page.getByRole('alert')).toHaveText('')
     await expect(page.locator('[aria-live]')).toHaveCount(2)
   })
 })
 
-test.describe('KvirnProvider theme persistence (ADR-0006)', () => {
+test.describe('KvirnProvider theme persistence', () => {
   test('nothing is stored until the user chooses', async ({ page }) => {
     await openThemeSwitcher(page)
     expect(await readStorage(page)).toBeNull()

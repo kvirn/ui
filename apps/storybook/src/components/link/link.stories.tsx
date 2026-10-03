@@ -18,7 +18,7 @@ import {
   useMockPathname,
 } from '../../../../../packages/react/src/link/link.fixture.tsx'
 
-// Components/Link: the headless Link, styled by @kvirn-ui/theme/theme.css (ADR-0013).
+// Components/Link: the headless Link, styled by @kvirn-ui/theme/theme.css.
 // link.e2e.ts runs its keyboard contract against Default, SamePageLink, CurrentPage, NewTab,
 // NewTabNoticeOverrides, RouterLink, OtherLanguage, RTL and ForcedColors, so their play
 // functions only read.
@@ -206,7 +206,7 @@ export const NewTab: Story = {
   },
 }
 
-/** ADR-0007: instance `messages` beat the provider, and children beat every message. */
+/** Instance `messages` beat the provider, and children beat every message. */
 export const NewTabNoticeOverrides: Story = {
   render: () => (
     <ul style={linkListStyle}>
@@ -257,7 +257,7 @@ function RouterNavigation() {
   )
 }
 
-/** The provider's registered router link renders every Link (ADR-0005). A mock router here. */
+/** The provider's registered router link renders every Link. A mock router here. */
 export const RouterLink: Story = {
   render: () => (
     <KvirnProvider linkComponent={mockRouterLinkComponent}>

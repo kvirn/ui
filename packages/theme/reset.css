@@ -14,7 +14,7 @@
  * licensed, Copyright (c) Tailwind Labs, Inc. The licence is at the end of this file. It is
  * based on modern-normalize and CSS Remedy.
  *
- * What differs from Preflight, and why (ADR-0056):
+ * What differs from Preflight, and why:
  *
  *   - Everything is in `@layer kv-reset`, declared before `@layer kv`, so theme.css and any
  *     CSS you write outside a layer always win, whatever their specificity.

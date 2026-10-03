@@ -1,7 +1,7 @@
 # Accessibility contract: <Component>
 
 - **APG pattern:** <link>
-- **Deviations:** none | ADR-NNNN
+- **Deviations:** none, or the deviation and where it is recorded (`keyboard` key tables for keys, `accessibility/references/apg-patterns.md` for roles and states), approved by the maintainer
 - **Native elements used:** …
 - **Status:** alpha | beta | stable
 - **Tests:** `<name>.test.tsx` next to this file. `<name>.stories.tsx` and `<name>.e2e.ts` in `apps/storybook/src/components/<name>/`.
@@ -15,7 +15,7 @@
 
 ## Keyboard
 
-<!-- Format and rules: the `keyboard` skill (ADR-0039). Shown on the Storybook Docs page. With no focusable part, replace everything below with: This component has no focusable parts and handles no keys. -->
+<!-- Format and rules: the `keyboard` skill. Shown on the Storybook Docs page. With no focusable part, replace everything below with: This component has no focusable parts and handles no keys. -->
 
 - **Focus strategy:** native | roving tabindex | aria-activedescendant
 - **Selection follows focus:** n/a | yes | no (Enter or Space selects)
@@ -62,7 +62,7 @@ What the consumer must provide, such as a label, a heading level or an error tex
 
 | AT + browser + OS                        | Date    | Tester | Result | Notes |
 | ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| **Core (required for beta)**             |         |        |        |       |
 | NVDA + Firefox + Windows                 | pending |        |        |       |
 | VoiceOver + Safari + macOS               | pending |        |        |       |
 | VoiceOver + Safari + iOS                 | pending |        |        |       |

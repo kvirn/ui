@@ -3,7 +3,7 @@ import type { ComponentPropsWithRef, MouseEvent, ReactNode } from 'react'
 import type { RegisteredLinkComponent } from '../provider/register.ts'
 
 // Test and story fixture: a minimal client-side router, standing in for Next.js or
-// TanStack Router (ADR-0005). It changes a pathname in state instead of loading a page.
+// TanStack Router. It changes a pathname in state instead of loading a page.
 
 interface MockRouter {
   pathname: string

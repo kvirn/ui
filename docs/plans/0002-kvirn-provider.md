@@ -3,7 +3,7 @@
 - **Status:** Done
 - **Owner:** Maintainer
 - **Created:** 2026-09-30 · **Target:** M0/M1
-- **Related:** ADR-0003, ADR-0005, ADR-0006, ADR-0007, Plan 0001
+- **Related:** Plan 0001
 
 ## Goal
 
@@ -14,7 +14,7 @@ One optional provider gives every KvirnUI component its locale, strings, text di
 - The Announcer live region (own roadmap item). The provider will host it later.
 - A theme switcher UI. That's a block or consumer markup built on `useTheme()`.
 - Theme tokens and CSS. Those are `@kvirn-ui/theme`.
-- Loading catalogs by locale string (ADR-0003).
+- Loading catalogs by locale string.
 
 ## Background
 
@@ -39,7 +39,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       messages={sv} // en is built in and used as the fallback
       timeZone="Europe/Stockholm" // explicit to avoid SSR/client date mismatch
       weekStart={1} // Monday (default)
-      linkComponent={NextLink} // ADR-0005
+      linkComponent={NextLink}
       theme={{ defaultColorScheme: 'system', defaultContrast: 'system' }}
     >
       {children}
@@ -47,7 +47,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   )
 }
 
-// Typed router props everywhere (ADR-0005)
+// Typed router props everywhere
 declare module '@kvirn-ui/react' {
   interface Register {
     linkComponent: typeof NextLink
@@ -61,7 +61,7 @@ declare module '@kvirn-ui/react' {
 ```
 
 ```tsx
-// Replacing strings (ADR-0007). Every provider's messages is deep-merged over its parent's; the root inherits en
+// Replacing strings. Every provider's messages is deep-merged over its parent's; the root inherits en
 import { defineMessages } from '@kvirn-ui/i18n'
 
 const messages = defineMessages(sv, {
@@ -100,13 +100,13 @@ theme.selectContrast('more')
 
 - **Optional.** Every component works without a provider: `en`, `ltr`, Monday, the runtime time zone, a native `<a>`, and theme following the OS.
 - **Nesting.** A nested provider inherits unset props from its parent. For a section in another language, the consumer spreads `locale.localeProps` on the section's element, so `lang` matches the strings (3.1.2). The provider itself renders no element.
-- **Messages** (ADR-0007):
+- **Messages**:
   - Resolution order: children of a text part, then the instance `messages` prop, then the nearest provider and its ancestors, then built-in `en`.
   - Parameterised keys are functions with a `format` helper built on `Intl` (plural, number, date, list).
   - An empty override triggers a dev warning and falls through, so an accessible name is never empty.
   - Falling back to `en` under a non-`en` locale triggers a dev warning.
 - **dir** comes from the locale (`Intl.Locale` text info, falling back to a small RTL list) and can be overridden with `dir`.
-- **Theme** (ADR-0006):
+- **Theme**:
   - Store lives in `core/src/theme/` (built on `createComponentStore`) and reads `matchMedia` through `Env`.
   - One store per document. Only the outermost provider creates it, and nested providers share it.
   - The provider writes `data-kv-color-scheme` and `data-kv-contrast` (resolved values) to `<html>` through `Env`.
@@ -120,7 +120,7 @@ theme.selectContrast('more')
 
 ### Implementation notes (settled 2026-09-30)
 
-**Package boundaries.** `core` must not depend on `i18n` (ADR-0003).
+**Package boundaries.** `core` must not depend on `i18n`.
 
 - **`core` holds generic logic:** message layer resolution, `createMessageFormat`, `resolveDirection` and the theme store. It never imports `KvirnMessages`.
 - **`i18n` holds types and catalogs:** `KvirnMessages`, `PartialMessages`, `MessageFormat` and `defineMessages`, plus the catalogs.
@@ -161,7 +161,7 @@ theme.selectContrast('more')
   - listens for the `storage` event, so other tabs stay in sync,
   - applies `data-kv-color-scheme` and `data-kv-contrast` to `document.documentElement`.
 - **Storage:**
-  - The key is `kvirn-ui:theme`, holding JSON `{ colorScheme?, contrast? }`. Only axes that differ from the configured default are written (ADR-0008). With the default `system` defaults, that means only non-`system` values, and the key is removed when both are `system`.
+  - The key is `kvirn-ui:theme`, holding JSON `{ colorScheme?, contrast? }`. Only axes that differ from the configured default are written. With the default `system` defaults, that means only non-`system` values, and the key is removed when both are `system`.
   - Every storage access is wrapped in `try/catch`, because storage can be disabled or in private mode.
   - Adapters: `'local'`, `'none'`, or `{ read(): StoredThemePreference | undefined, write(preference: StoredThemePreference | undefined): void }`.
 - **`KvirnThemeScript`** renders `<script nonce>` with source from `core`'s `createThemeScriptSource(options)`. It supports `storage: 'local'` only. With a custom adapter, the server renders the attributes itself.
@@ -201,7 +201,7 @@ None of its own.
 
 ## Tasks
 
-- [x] ADR-0003 (catalog loading), ADR-0005, ADR-0006, ADR-0007 reviewed and accepted
+- [x] The decisions on catalog loading, the registry, themes and messages reviewed and accepted
 - [x] `core`: locale utilities (`resolveDirection`, deep merge, message resolution with fallthrough, `format` helper), unit tests
 - [x] `i18n`: `KvirnMessages` type, `defineMessages`, type tests (key typos, missing parameters, partial overrides)
 - [x] `i18n:check`: function keys have matching parameters in all locales
@@ -214,7 +214,7 @@ None of its own.
 
 ## Risks & open questions
 
-- Implementation decisions not covered above are proposed in ADR-0008 (theme storage relative to non-`system` defaults), ADR-0009 (text keys accept `() => string`, resolved function keys bind `format`, `plural` `zero`) and ADR-0010 (`"use client"` banner on the react bundle).
+- Implementation decisions not covered above were proposed separately: theme storage relative to non-`system` defaults, text keys that accept `() => string` (resolved function keys bind `format`, `plural` `zero`), and the `"use client"` banner on the react bundle.
 - `i18n:check` compares function arity (`Function.length`). A locale whose function omits the unused `format` parameter would be reported as a mismatch even though the types accept it. No function keys exist yet; revisit with the first one.
 
 - ePrivacy Art. 5(3) covers localStorage as well as cookies. Storing a preference the user explicitly chose should fall under the "strictly necessary" exemption. `TODO(legal-verify)` via the regulations skill before release.

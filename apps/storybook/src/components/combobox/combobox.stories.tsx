@@ -26,11 +26,11 @@ import {
 import type { Municipality } from './combobox.fixture.tsx'
 
 // Components/Form/Combobox: Combobox.Root, Control, Input, Toggle, Clear, ValueList, Value and the
-// popup parts it shares with the Listbox (ADR-0037; contract: combobox.a11y.md). The Docs page
+// popup parts it shares with the Listbox (contract: combobox.a11y.md). The Docs page
 // opens with the package docs: how to use it. combobox.e2e.ts runs the keyboard rows, forced
 // colours, reduced motion and reflow checks against these stories.
 //
-// KvirnUI holds no form state (ADR-0029, item 0). The value is the chosen option's key: pass
+// KvirnUI holds no form state. The value is the chosen option's key: pass
 // `value` and `onValueChange` (Controlled), or `defaultValue` and `name` for a plain form
 // (PlainForm). Nothing here validates: an invalid story sets `invalid` itself.
 

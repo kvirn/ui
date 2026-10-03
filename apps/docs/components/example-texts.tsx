@@ -25,7 +25,7 @@ export interface ExampleTexts {
   density: { comfortable: string; compact: string }
   link: {
     applyInText: string
-    /** Each locale decides where the link goes in the sentence (ADR-0009). */
+    /** Each locale decides where the link goes in the sentence. */
     sentence: (parts: { link: ReactNode }) => ReactNode
     navLabel: string
     navOverview: string

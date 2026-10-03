@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor } from 'storybook/test'
 import { AnnouncerDemo, fixtureLocaleOf } from './announcer.fixture.tsx'
 
-// Components/Announcer: the shared live regions behind useAnnouncer() (ADR-0040). KvirnProvider
+// Components/Announcer: the shared live regions behind useAnnouncer(). KvirnProvider
 // renders them, so there is nothing to see: the fixture's buttons call announce() and list what
 // they sent. announcer.test.tsx proves the regions, the clear-then-set and the throttle.
 

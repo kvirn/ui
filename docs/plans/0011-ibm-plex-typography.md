@@ -1,9 +1,9 @@
 # Plan 0011: IBM Plex Sans and IBM Plex Serif replace Inter
 
 - **Status:** In progress
-- **Owner:** Main session (plan, ADR), ux-designer (spec), component-engineer (implementation)
+- **Owner:** Main session (plan, decision), ux-designer (spec), component-engineer (implementation)
 - **Created:** 2026-10-01 · **Target:** default theme 0.x
-- **Related:** ADR-0027 (this change), ADR-0014 (visual direction, Type bullet), ADR-0017 (decision 4, self-hosted font CSS), design spec [`docs/design/typography-ibm-plex.md`](../design/typography-ibm-plex.md)
+- **Related:** design spec [`docs/design/typography-ibm-plex.md`](../design/typography-ibm-plex.md)
 
 ## Goal
 
@@ -27,7 +27,7 @@ Body text, labels and controls are set in IBM Plex Sans, and headings in IBM Ple
 
 The token values, the serif surfaces, the feature settings and the DESIGN.md wording are in the design spec. In short:
 
-- Fonts: `apps/docs/fonts/ibm-plex/` (replaces `apps/docs/fonts/inter/`), with `ibm-plex.css` holding 15 `@font-face` blocks: Sans 400/500/600 and Serif 500/600, each in Latin1, Latin2 and Pi, under one family name per typeface (ADR-0017 decision 4 still holds).
+- Fonts: `apps/docs/fonts/ibm-plex/` (replaces `apps/docs/fonts/inter/`), with `ibm-plex.css` holding 15 `@font-face` blocks: Sans 400/500/600 and Serif 500/600, each in Latin1, Latin2 and Pi, under one family name per typeface (the self-hosted font CSS rule still holds).
 - Theme: `--kv-font-family-sans` starts with `'IBM Plex Sans'`, a new `--kv-font-family-serif` is `'IBM Plex Serif', var(--kv-font-family-system-serif)` (new: `ui-serif, Cambria, 'Noto Serif', Georgia, serif`), and headings read `var(--kv-font-family-heading, var(--kv-font-family-serif))`. `--kv-font-family-body` and `--kv-font-family-heading` stay adopter overrides. The theme still loads no font.
 - Body feature settings: Inter's `cv05`/`cv08` go. Numeric keeps `tnum` (a no-op in Plex, kept for a brand font).
 
@@ -47,8 +47,8 @@ New tokens `--kv-font-family-serif` and `--kv-font-family-system-serif`. Changed
 
 - [x] Vendor the official woff2 and OFL into `apps/docs/fonts/ibm-plex/`, write `ibm-plex.css`
 - [x] Design spec (ux-designer): `docs/design/typography-ibm-plex.md`
-- [x] ADR-0027
-- [x] ADR-0014 and ADR-0017 get an "Amended by ADR-0027" note
+- [x] Decision recorded
+- [x] The earlier theme decisions get an "Amended" note
 - [x] `theme.css`: family tokens, heading fallback, feature settings, comments
 - [x] Docs site (`apps/docs/app/layout.tsx`, `docs.css`) and Storybook (`preview.tsx`, `preview.css` text guide) import the new CSS; delete `apps/docs/fonts/inter/`
 - [x] Remove the temporary font trial (`font-trial.tsx` and its uses in `preview.tsx`)
@@ -64,7 +64,7 @@ New tokens `--kv-font-family-serif` and `--kv-font-family-system-serif`. Changed
 - The Icon's `vertical-align` was tuned to Inter's cap height. The spec gives the Plex value. Recheck the icon e2e.
 - Plex Serif headings with Inter-tuned negative tracking. The spec sets new values.
 - Line length: `--kv-prose-measure: 70ch` is about 92 characters, against DESIGN.md's 60–75, in Inter and Plex alike. Out of scope, its own change.
-- Historical plans and ADRs that mention Inter stay as written. They record what was true then.
+- Historical plans that mention Inter stay as written. They record what was true then.
 
 ## Testing strategy
 

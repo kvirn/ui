@@ -12,7 +12,7 @@ This is the component library a Nordic municipality can adopt without an accessi
 
 **Positioning:** best-in-class accessibility you can verify. Every component publishes its contract, its test evidence and its known issues.
 
-**Non-goals:** other frameworks (the core stays agnostic, but we ship React only), React versions before 19, a brand or full design system, and data grids (`role="grid"`, editable cells) or charts. Table is a native `<table>` (ADR-0035).
+**Non-goals:** other frameworks (the core stays agnostic, but we ship React only), React versions before 19, a brand or full design system, and data grids (`role="grid"`, editable cells) or charts. Table is a native `<table>`.
 
 **Success:** at least 3 public-sector adopters within 12 months of 1.0, zero open A/AA defects, and being referenced in tenders.
 
@@ -25,6 +25,6 @@ This is the component library a Nordic municipality can adopt without an accessi
 5. **Type-safe by inference.** Consumers rarely write generics. Invalid states should be unrepresentable where that's practical.
 6. **Controlled or uncontrolled, always.** Every stateful value supports `value` / `defaultValue` / `onValueChange`.
 7. **Compose, don't configure.** Small primitives over large prop surfaces. For example, Combobox is built from Popover, Listbox and Field.
-8. **Zero cost you didn't ask for.** The only runtime dependencies are `@tanstack/store` (ADR-0003), and `@tanstack/virtual-core` and `@tanstack/table-core`, which you only pay for when you render a Table or turn on virtualization (ADR-0059). Everything is ESM and tree-shakable, with per-component bundle budgets.
+8. **Zero cost you didn't ask for.** The only runtime dependencies are `@tanstack/store`, and `@tanstack/virtual-core` and `@tanstack/table-core`, which you only pay for when you render a Table or turn on virtualization. Everything is ESM and tree-shakable. Per-component bundle budgets are planned (see the roadmap, "Engineering").
 9. **Local by default.** Nordic locales, text direction and `Intl` formatting are first-class.
 10. **Boring, stable APIs.** Strict semver, deprecate before removing, codemods for breaking changes, and an LTS policy that public budgets can plan around.

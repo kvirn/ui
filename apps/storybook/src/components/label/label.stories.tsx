@@ -13,7 +13,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/Label: Label, a native <label for> that names the control. The
 // stories render it inside a Field, because the Field links it to the control and decides
-// whether it ends with the optional text (ADR-0029). The design spec is
+// whether it ends with the optional text. The design spec is
 // docs/design/form-fields.md §6.2. KvirnUI holds no form state: `required` is a prop.
 
 const meta = {

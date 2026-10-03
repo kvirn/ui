@@ -8,12 +8,11 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 import { MaskedField, maskTextsFor } from '../mask/mask.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/Form/Input: the native text <input>, styled by @kvirn-ui/theme/theme.css (ADR-0013,
-// design spec docs/design/form-fields.md §6.3 and §6.4). It lives in a Field, which gives it
+// Components/Form/Input: the native text <input>, styled by @kvirn-ui/theme/theme.css (design spec docs/design/form-fields.md §6.3 and §6.4). It lives in a Field, which gives it
 // its name, hint and error. Numbers are Input with `inputMode`, never `type="number"`
-// (ADR-0030): see Components/Form/Number.
+//: see Components/Form/Number.
 //
-// KvirnUI holds no form state (ADR-0029, item 0). An uncontrolled Input keeps its value in the
+// KvirnUI holds no form state. An uncontrolled Input keeps its value in the
 // browser and a form submit sends it (PlainForm). A controlled Input shows the `value` you give
 // it and reports changes through `onValueChange` (Controlled): here the value lives in the
 // story's `useState`, where your form library's state would live. Nothing here validates: an
@@ -27,7 +26,7 @@ const meta = {
     type: {
       control: 'select',
       options: ['text', 'email', 'tel', 'url', 'password', 'search'],
-      description: 'Never `number` or `date` (ADR-0030).',
+      description: 'Never `number` or `date`.',
     },
     value: { control: 'text', description: 'Controlled: the value from your form state.' },
     defaultValue: {
@@ -377,7 +376,7 @@ export const Compact: Story = {
 }
 
 /**
- * With a `mask` the input shapes what is typed (ADR-0032): here a Swedish personal identity
+ * With a `mask` the input shapes what is typed: here a Swedish personal identity
  * number, which takes ten or twelve digits with or without the hyphen. The hint says the
  * format, because the mask doesn't (3.3.2). More on Components/Form/Mask.
  */

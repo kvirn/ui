@@ -1,6 +1,6 @@
 /**
  * Shared by the theme store and `createThemeScriptSource`, so the blocking script and
- * the store can't drift apart on names (ADR-0006).
+ * the store can't drift apart on names.
  */
 export const themeStorageKey = 'kvirn-ui:theme'
 export const colorSchemeAttribute = 'data-kv-color-scheme'

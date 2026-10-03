@@ -6,7 +6,7 @@ import type { CardFixtureLocale } from '../card/card.fixture.tsx'
 
 // Story and e2e fixture: the design spec's examples A and B (docs/design/section.md §4, §5) and the
 // Section-or-Card example (§6.9). The `contact.*` strings moved here from the Card fixture: the
-// sidebar text block is a Section now (ADR-0044). Example B reuses the Card fixture's NewsList.
+// sidebar text block is a Section now. Example B reuses the Card fixture's NewsList.
 // sv and en are written. The fi strings are the designer's drafts, for length checks only. nb,
 // nn and se come from a translator, not an agent: until then those locales show the English
 // text, marked lang="en" (3.1.2). Times are values, formatted with Intl.

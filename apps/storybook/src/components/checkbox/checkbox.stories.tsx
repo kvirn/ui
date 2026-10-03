@@ -9,10 +9,10 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/Checkbox: the native <input type="checkbox">, styled by
-// @kvirn-ui/theme/theme.css (ADR-0013, design spec docs/design/form-fields.md §6.5). It sits
+// @kvirn-ui/theme/theme.css (design spec docs/design/form-fields.md §6.5). It sits
 // directly in a Field, before the label, which makes the whole row the click target.
 //
-// KvirnUI holds no form state (ADR-0029, item 0). An uncontrolled Checkbox keeps its state in
+// KvirnUI holds no form state. An uncontrolled Checkbox keeps its state in
 // the browser and a form submit sends it (PlainForm). A controlled Checkbox shows the `checked`
 // you give it and reports changes through `onCheckedChange` (Controlled): here the state lives
 // in the story's `useState`, where your form library's state would live. Nothing here

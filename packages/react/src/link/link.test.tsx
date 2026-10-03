@@ -204,7 +204,7 @@ describe('new tab', () => {
   })
 })
 
-describe('new-tab notice (ADR-0007 resolution)', () => {
+describe('new-tab notice resolution', () => {
   test('uses built-in en without a provider', async () => {
     await render(<LinkNewTabNotice />)
     await expect.element(page.getByText('(opens in a new tab)')).toBeVisible()
@@ -320,7 +320,7 @@ describe('new-tab notice (ADR-0007 resolution)', () => {
   })
 })
 
-describe('router link (ADR-0005)', () => {
+describe('router link', () => {
   function CurrentPathname() {
     return <p>Nuvarande sida: {useMockPathname()}</p>
   }
@@ -533,7 +533,7 @@ describe('server rendering', () => {
         </Link>
       </KvirnProvider>,
     )
-    // The provider adds its two empty live regions (ADR-0040) after the link.
+    // The provider adds its two empty live regions after the link.
     const link = html.slice(0, html.indexOf('</a>') + '</a>'.length)
     expect(link).toBe(
       '<a href="https://www.digg.se/" class="kv-link" target="_blank" rel="noopener noreferrer" aria-current="page" data-current="">Digg <span class="kv-link-new-tab-notice">(öppnas i en ny flik)</span></a>',

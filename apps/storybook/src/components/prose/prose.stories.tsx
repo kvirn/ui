@@ -15,7 +15,7 @@ import {
   requireElement,
 } from '../../foundation/typography-helpers.tsx'
 
-// Components/Prose: the headless Prose (ADR-0052), styled by @kvirn-ui/theme (docs/design/foundations-and-prose.md
+// Components/Prose: the headless Prose, styled by @kvirn-ui/theme (docs/design/foundations-and-prose.md
 // §6.1–6.6 and §7). The Default story is the small example. The others put kv-prose on the fixture
 // article, a municipality's guidance page that uses every element prose styles. The article follows
 // the Locale toolbar: sv and en are written, and the other locales show the English article marked

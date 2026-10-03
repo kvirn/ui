@@ -402,7 +402,7 @@ describe('icon-only button name (Plan 0009)', () => {
   )
 })
 
-describe('handlers on a render element (ADR-0016)', () => {
+describe('handlers on a render element', () => {
   test('a focusable disabled button blocks the element’s onClick on click, Enter and Space', async () => {
     const onElementClick = vi.fn<() => void>()
     await render(

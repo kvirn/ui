@@ -18,7 +18,7 @@ export interface UseFieldOptions {
   /**
    * `aria-required="true"` and `data-required` on the control, and no optional marker in the
    * label. Never native `required`: the browser's own validation bubbles don't replace yours
-   * (ADR-0029). For native validation, pass `required` on the control as well, and keep it
+   *. For native validation, pass `required` on the control as well, and keep it
    * here too, so the label doesn't say "(optional)" while assistive technology says "required".
    */
   required?: boolean | undefined
@@ -33,7 +33,7 @@ export interface UseFieldOptions {
   /**
    * The names of the descriptions you render with `getDescriptionProps(name)`, in the order you
    * render them: for example `['above', 'under']` for a hint above and a hint under the control
-   * (ADR-0031). The control's `aria-describedby` lists them in this order, then the error. Pass
+   *. The control's `aria-describedby` lists them in this order, then the error. Pass
    * the names from the first render, so server-rendered markup is complete. If you also set
    * `hasDescription`, that description (`descriptionProps`) comes first.
    */
@@ -45,10 +45,10 @@ export interface UseFieldOptions {
   hasErrorMessage?: boolean | undefined
   /**
    * `'none'` leaves the optional text out of the label. Default `'optional'`, and `'none'`
-   * inside a group fieldset, where an option or a date box is never optional (ADR-0029).
+   * inside a group fieldset, where an option or a date box is never optional.
    */
   marker?: FieldMarker | undefined
-  /** Per-instance message overrides (ADR-0007). */
+  /** Per-instance message overrides. */
   messages?: Partial<KvirnMessages['field']> | undefined
 }
 
@@ -70,7 +70,7 @@ export interface FieldLabelPartProps extends FieldStateAttributes {
   htmlFor: string
 }
 
-/** Spread on the hint: its class is `kv-prose` (ADR-0054). */
+/** Spread on the hint: its class is `kv-prose`. */
 export interface FieldDescriptionPartProps extends FieldStateAttributes {
   className: 'kv-prose'
   id: string
@@ -124,7 +124,7 @@ export interface UseFieldResult {
 /**
  * A field's wiring for your own elements: ids, `aria-describedby`, state attributes and the
  * two message texts (contract: field.a11y.md). The default order is label, description, control,
- * a second description under the control, then the error (ADR-0031), but you own the markup:
+ * a second description under the control, then the error, but you own the markup:
  * `aria-describedby` lists the descriptions in the order you give, then the error.
  *
  * With one description, set `hasDescription` and spread `descriptionProps`. With several, list

@@ -34,7 +34,7 @@ export interface FieldsetRootProps extends ComponentPropsWithRef<'fieldset'> {
   disabled?: boolean | undefined
   /**
    * One question answered with several controls (checkboxes, radios, a date). The legend gets
-   * the optional text, and the Fields inside drop theirs (ADR-0029, item 10).
+   * the optional text, and the Fields inside drop theirs.
    */
   group?: boolean | undefined
   /** Per-instance message overrides for the legend's optional text and the error prefix. */
@@ -61,7 +61,7 @@ const noState: FieldsetState = { isInvalid: false, isRequired: false, isDisabled
 
 /**
  * A native `<fieldset>` that groups questions, or the controls of one question, under its
- * legend (ADR-0029, contract: fieldset.a11y.md). A `Prose` inside it (the hint) and its
+ * legend (contract: fieldset.a11y.md). A `Prose` inside it (the hint) and its
  * ErrorMessage describe the group. It holds no form state.
  *
  * @example
@@ -220,9 +220,9 @@ export const FieldsetErrorMessage = FieldErrorMessage
 export const Legend = FieldsetLegend
 
 /**
- * A native fieldset with its legend and error (ADR-0029): `<Fieldset>` is the root, with
- * `<Legend>`, `<Prose>` for the hint (ADR-0054) and `<ErrorMessage>` inside it. `Fieldset.Root`,
- * `Fieldset.Legend`, `Fieldset.Prose` and `Fieldset.ErrorMessage` are the same components (ADR-0055).
+ * A native fieldset with its legend and error: `<Fieldset>` is the root, with
+ * `<Legend>`, `<Prose>` for the hint and `<ErrorMessage>` inside it. `Fieldset.Root`,
+ * `Fieldset.Legend`, `Fieldset.Prose` and `Fieldset.ErrorMessage` are the same components.
  */
 export const Fieldset = Object.assign(FieldsetRoot, {
   Root: FieldsetRoot,

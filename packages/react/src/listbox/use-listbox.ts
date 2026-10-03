@@ -38,7 +38,7 @@ export type {
 } from './use-list-virtualization.ts'
 
 /**
- * When the native `<select>` renders instead of the stylable popup (ADR-0037, item 2):
+ * When the native `<select>` renders instead of the stylable popup:
  * `'auto'` on devices whose primary pointer is coarse (touch), `'always'`, or `'never'`.
  * Single choice only: `multiple` is always the popup.
  */
@@ -108,11 +108,11 @@ interface UseListboxBaseOptions<TItem> {
   offset?: number | undefined
   /** The space kept to the edge of the viewport, in pixels. Default 8. */
   padding?: number | undefined
-  /** Per-instance message overrides (ADR-0007): `noResults` is the default text of `Listbox.Empty`. */
+  /** Per-instance message overrides: `noResults` is the default text of `Listbox.Empty`. */
   messages?: Partial<KvirnMessages['combobox']> | undefined
   /**
    * Renders only the options that are scrolled into view, plus the active and the chosen one, for
-   * a flat list of thousands (ADR-0059). `true` uses the defaults. The `Listbox.List` must be a
+   * a flat list of thousands. `true` uses the defaults. The `Listbox.List` must be a
    * scroll container with a height limit (the default theme makes it one). Not with `groups`
    * (they render in full, with a development warning), and the native `<select>` ignores it.
    * Filter or paginate first: unrendered options can't be found with find in page or printed.
@@ -127,7 +127,7 @@ export interface UseListboxSingleOptions<TItem> extends UseListboxBaseOptions<TI
   value?: string | null | undefined
   /** Uncontrolled: the key chosen to begin with. */
   defaultValue?: string | null | undefined
-  /** Called with the chosen key when the user chooses. It only reports (ADR-0029). */
+  /** Called with the chosen key when the user chooses. It only reports. */
   onValueChange?: ((value: string | null, details: ListboxValueChangeDetails) => void) | undefined
 }
 
@@ -310,7 +310,7 @@ const coarsePointerQuery = '(pointer: coarse)'
  * Internal. Whether the primary pointer is coarse. `false` while rendering on the server and
  * during hydration, then it is read **once**, right after mount (and again only if the wish
  * for it changes). It never listens for `change`: a rendering that swapped under the user would
- * drop their focus to the page, so the switch only happens before they interact (ADR-0037, item 2).
+ * drop their focus to the page, so the switch only happens before they interact.
  */
 function useCoarsePointer(isWanted: boolean): boolean {
   const env = useEnv()
@@ -484,7 +484,7 @@ function createListboxMachine<TItem>(
 }
 
 /**
- * The state and props of a Listbox (ADR-0037; contract: listbox.a11y.md): a stylable popup
+ * The state and props of a Listbox (contract: listbox.a11y.md): a stylable popup
  * for choosing one option or several, built on `createCombobox` in `'listbox'` mode (the APG
  * select-only combobox). On touch devices a single choice renders the native `<select>`
  * instead (`isNative`, `native: 'auto'`).
@@ -620,7 +620,7 @@ export function useListbox<TItem>(options: UseListboxOptions<TItem>): UseListbox
     if (native === 'always' && isMultiple) {
       warnOnce(
         'listbox-native-always-multiple',
-        'A Listbox got native="always" and multiple. A native <select multiple> is hard to use with a keyboard and a screen reader (ADR-0037, item 2), so the popup is rendered. For a short list of choices use a CheckboxGroup.',
+        'A Listbox got native="always" and multiple. A native <select multiple> is hard to use with a keyboard and a screen reader, so the popup is rendered. For a short list of choices use a CheckboxGroup.',
       )
     }
   }, [native, isMultiple])
@@ -654,7 +654,7 @@ export function useListbox<TItem>(options: UseListboxOptions<TItem>): UseListbox
     onDismiss: (reason) => close(reason === 'escape' ? 'escape' : 'outside-press'),
   })
 
-  // Clicking the Field's label focuses the trigger: `<label for>` doesn't name a `<div>` (ADR-0037, item 3).
+  // Clicking the Field's label focuses the trigger: `<label for>` doesn't name a `<div>`.
   const labelId = field?.labelId
   useEffect(() => {
     if (labelId === undefined || env === undefined || isNative || isDisabled) {

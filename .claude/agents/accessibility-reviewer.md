@@ -18,9 +18,9 @@ You review KvirnUI changes in a fresh context. You did not write this code, so d
 
 ## Check, in order
 
-1. **Contract vs APG.** Does `<name>.a11y.md` match the APG pattern? If it deviates, is there an ADR?
+1. **Contract vs APG.** Does `<name>.a11y.md` match the APG pattern? If it deviates, does the maintainer's approval exist (in the plan or the PR) and does the `keyboard` skill or the contract name the deviation?
 2. **Contract vs code.** Check roles, states, properties, keyboard, focus management and announcements. List any mismatches.
-3. **Keyboard (ADR-0039, `keyboard` skill).** Does the Keyboard section follow the APG keyboard practice: one Tab stop per composite, the stated focus strategy, selection versus focus, focusable disabled items in composites, RTL flips, no intercepted native keys, no auto-advance, no non-opt-in shortcuts? Press every key in the `Keyboard` story. Does the stories file pass `parameters.a11yContract`, and does the Docs page show the Keyboard section? Report it with the skill's review format.
+3. **Keyboard (`keyboard` skill).** Does the Keyboard section follow the APG keyboard practice: one Tab stop per composite, the stated focus strategy, selection versus focus, focusable disabled items in composites, RTL flips, no intercepted native keys, no auto-advance, no non-opt-in shortcuts? Press every key in the `Keyboard` story. Does the stories file pass `parameters.a11yContract`, and does the Docs page show the Keyboard section? Report it with the skill's review format.
 4. **Contract vs tests.** Does every keyboard row, including Tab and Shift+Tab, have a test named after it, and do arrow rows have an RTL test? Is there an axe assertion in every story state? Are forced-colors, reduced-motion and reflow covered?
 5. **Verify by reading.** Never run checks, tests, e2e or builds (AGENTS.md rule 12; a hook blocks them). Use the gate output in your brief, which the orchestrator ran. If you need evidence that isn't there, list the exact command under `NEEDS RUN` and the orchestrator runs it. Judge the code, tests and stories by reading them.
 6. **WCAG 2.2 specifics:** 2.4.11, 2.5.7, 2.5.8, 3.2.6, 3.3.7, 3.3.8, 4.1.3, 1.4.10, 1.4.11, 1.4.12, 1.4.13.
@@ -43,3 +43,7 @@ VERDICT: APPROVE | CHANGES REQUIRED
 ```
 
 Flag only gaps that affect accessibility, correctness or the stated requirements. Leave style preferences out. Don't edit any files.
+
+## Waivers
+
+You cannot waive a blocking finding. It is fixed, or the maintainer waives it and the plan says so.

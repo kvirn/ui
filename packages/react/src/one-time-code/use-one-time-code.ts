@@ -26,7 +26,7 @@ import { useMask } from '../mask/use-mask.ts'
 
 export interface UseOneTimeCodeOptions {
   /**
-   * The shape of the code, one symbol per position (ADR-0045): `9` a digit, `*` a letter or digit,
+   * The shape of the code, one symbol per position: `9` a digit, `*` a letter or digit,
    * `a` a letter, `A` an upper-case letter and `&` an upper-case letter or digit (lower case typed
    * is upper-cased), and `-` a separator between two of them, drawn as its own cell. ASCII only.
    * `'****-****'` is two groups of four. Default `'999999'`. An invalid pattern throws a
@@ -39,7 +39,7 @@ export interface UseOneTimeCodeOptions {
   defaultValue?: string | undefined
   /**
    * Called with the masked value on every change, with `{ reason: 'input', event }` and the mask
-   * details: `unmaskedValue`, `isComplete` and `rejected`. It only reports (ADR-0029, item 0).
+   * details: `unmaskedValue`, `isComplete` and `rejected`. It only reports.
    */
   onValueChange?: ((value: string, details: InputChangeDetails) => void) | undefined
   /**
@@ -54,7 +54,7 @@ export interface UseOneTimeCodeOptions {
   disabled?: boolean | undefined
   /** Announce, politely and throttled, when the mask drops a character (4.1.3). Default `true`. */
   announceRejections?: boolean | undefined
-  /** Per-instance message overrides for the rejection announcements (ADR-0007). */
+  /** Per-instance message overrides for the rejection announcements. */
   messages?: Partial<KvirnMessages['mask']> | undefined
 }
 
@@ -63,7 +63,7 @@ export interface UseOneTimeCodeOptions {
  * position in the pattern: position _i_ of the pattern draws position _i_ of the value.
  */
 export interface OneTimeCodeSlotState {
-  /** `'character'` takes a character of the code. `'separator'` is the pattern's `-` (ADR-0045). */
+  /** `'character'` takes a character of the code. `'separator'` is the pattern's `-`. */
   kind: 'character' | 'separator'
   /**
    * The character, or `''` when a character slot is empty. A separator always has `'-'`: it is the
@@ -232,7 +232,7 @@ function characterSlotAt(input: HTMLInputElement, clientX: number): number | und
 }
 
 /**
- * A one-time code's wiring for your own elements (ADR-0033 and ADR-0045, contract:
+ * A one-time code's wiring for your own elements (contract:
  * one-time-code.a11y.md): the props of one native `<input>`, the row, and one slot per position of
  * the pattern. The slots only draw the input's value, caret and selection: the input stays the one
  * operable element, so SMS autofill, paste, dictation and undo work. The hook moves no focus and
@@ -372,7 +372,7 @@ export function useOneTimeCode({
     autoComplete: 'one-time-code',
     spellCheck: false,
     autoCorrect: 'off',
-    // The pattern decides (ADR-0045 item 9): the mask suggests, the same as for an Input.
+    // The pattern decides: the mask suggests, the same as for an Input.
     ...(mask.attributes.inputMode === 'numeric' ? { inputMode: 'numeric' } : {}),
     ...(mask.attributes.autoCapitalize === 'characters' ? { autoCapitalize: 'characters' } : {}),
     dir: 'ltr',

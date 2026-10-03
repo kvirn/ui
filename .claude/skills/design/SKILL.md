@@ -27,7 +27,7 @@ Design for the resident who uses the service once, on a phone, under stress, in 
 4. **Write the content before the layout.** Real headings, labels, hints, errors and button text in plain language, in `en` and `sv`, with the longest `fi` string where length matters. Every string becomes an i18n key (AGENTS.md hard rule 4). Use `design:ux-copy` if it's available for a second opinion.
 5. **Structure.** A text wireframe per breakpoint (320px, 40rem, 64rem): landmarks, heading outline (h1 to h3), reading order equal to focus order, and where the primary action sits. Keep it low fidelity: boxes and words, not colours.
 6. **Specify.** For each part: which DESIGN.md tokens and component styles it uses, a state matrix (default, hover, focus-visible, active, disabled, invalid, loading, selected, open, empty), density, all four themes plus forced colours, RTL, motion and reduced motion, and the accessibility annotations (names, roles, Tab stops and keys per the `keyboard` skill, focus moves, announcements). The annotations are the draft of the plan's accessibility contract, not a replacement for it.
-   - Use only semantic tokens. If you need a new token or a changed value, propose it in the spec, check contrast with `vp run theme:check` or `packages/theme/src/contrast.ts`, and draft an ADR.
+   - Use only semantic tokens. If you need a new token or a changed value, propose it in the spec, check contrast with `vp run theme:check` or `packages/theme/src/contrast.ts`, and mark it for the maintainer's approval. An approved change updates `DESIGN.md` and `theme.css` in the same change.
 7. **Validate before handoff.** Walk the spec through [review-checklist.md](references/review-checklist.md) and fix every blocker. Add a usability test plan (tasks, participants including assistive-technology users and people with low digital confidence). Mark it `pending`: you can plan research, but never claim it happened.
 8. **Hand off.** Link the spec from the plan (`docs/plans/NNNN-*.md` → Design section), list open questions for the user, and add the spec to `docs/design/README.md`.
 
@@ -45,6 +45,17 @@ Review a story, block, page or screenshot against `DESIGN.md` and [review-checkl
    - **Minor:** inconsistent with DESIGN.md, but users can cope.
    - **Polish:** alignment, rhythm, optical tweaks.
 4. Say what works, too, so it doesn't get "fixed" away.
+
+## Maintainer preferences
+
+These are the maintainer's choices for the default theme. `DESIGN.md` holds the values. Keep the look and change the value until it passes WCAG 2.2 AA, never the other way round.
+
+- **Look:** Linear-inspired. Near-black and near-white canvases, a surface ladder with hairlines, one lavender accent and an 8px control radius.
+- **Buttons look like buttons:** gentle, subtle depth (a soft shadow and a tinted edge) in light and dark. Everything else stays flat.
+- **Colours are named by role** (primary, secondary, accent, neutral), so a brand can swap a scale. A lighter hover behind white text, low-contrast greys and faint control borders are not used.
+- **Type:** IBM Plex Sans for text, IBM Plex Serif for headings. Long words hyphenate, and large type steps down below 40rem.
+- **Prose** is styled like Tailwind's typography plugin, in our tokens.
+- **Card and Section:** a plain container with `render`, no clickable card. Notifications are classes and ready-made status components, not a `variant` prop on a Card or Section.
 
 ## Common mistakes (reject)
 
@@ -67,5 +78,5 @@ Review a story, block, page or screenshot against `DESIGN.md` and [review-checkl
 - [references/spec-template.md](references/spec-template.md): the design spec template (`docs/design/<slug>.md`)
 - [references/review-checklist.md](references/review-checklist.md): design review and self-check
 - `.claude/skills/accessibility/`: behaviour, ARIA and the `*.a11y.md` contract
-- `.claude/skills/keyboard/`: Tab stops, keys per APG pattern and the APG keyboard practice (ADR-0039)
+- `.claude/skills/keyboard/`: Tab stops, keys per APG pattern and the APG keyboard practice
 - `.claude/skills/regulations/`: accessibility statement, feedback and consent blocks, and any claim

@@ -13,7 +13,7 @@ function mergeNamespace<Name extends NamespaceName>(
 
 /**
  * Builds an adjusted catalog once: `overrides` replace keys of `base`, one namespace at a
- * time, and everything else is kept (ADR-0007).
+ * time, and everything else is kept.
  *
  * @example defineMessages(sv, { link: { newTabNotice: '(öppnas i nytt fönster)' } })
  */

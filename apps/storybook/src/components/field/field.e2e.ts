@@ -99,7 +99,7 @@ test.describe('Field keyboard contract', () => {
     await openStory(page, 'field', 'invalid')
     const input = page.getByRole('textbox', { name: 'E-postadress' })
     await expect(input).toHaveAttribute('aria-invalid', 'true')
-    // The hint first, then the error with its prefix (ADR-0029).
+    // The hint first, then the error with its prefix.
     await expect(input).toHaveAccessibleDescription(
       'Vi skickar beslutet till den här adressen. Fel: Ange en e-postadress i rätt format, till exempel namn@exempel.se',
     )

@@ -5,7 +5,7 @@ import { wcagTags } from '@kvirn-ui/testing'
 
 // Contract: packages/react/src/input/input.a11y.md › Keyboard, Focus management and Visual /
 // modes. One test per row, named after it. The Number page is the same Input with `inputMode`
-// (ADR-0030), so its stories are covered here. KvirnUI holds no form state: the Controlled and
+//, so its stories are covered here. KvirnUI holds no form state: the Controlled and
 // PlainForm stories keep their state in the story, or in the browser.
 
 /** `globals` selects the theme like the toolbar does, such as `mode:dark;contrast:more`. */

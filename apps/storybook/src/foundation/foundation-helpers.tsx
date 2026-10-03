@@ -246,7 +246,7 @@ function themeOfGlobals(globals: Record<string, unknown>): ThemeName | undefined
 
 /**
  * The toolbar's theme reached `<html>`: each storybook Vitest project starts in its own theme
- * (ADR-0023). Returns the theme the page shows.
+ *. Returns the theme the page shows.
  */
 export async function expectGlobalsThemeApplied(
   canvasElement: HTMLElement,

@@ -30,7 +30,7 @@ function resolveConcurrency(concurrency: number | undefined): number {
 const isImage = (file: File) => file.type.toLowerCase().startsWith('image/')
 
 /**
- * The file list and upload queue behind FileUpload (ADR-0038). It checks each added file against
+ * The file list and upload queue behind FileUpload. It checks each added file against
  * the limits (typed reasons, no text), keeps rejected files out of the list (they are in the add
  * result and in `rejections`, for the latest add only), and runs the consumer's
  * `upload` with at most `concurrency` at once. It does no network calls and has no timeouts

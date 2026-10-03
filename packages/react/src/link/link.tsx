@@ -23,7 +23,7 @@ export interface LinkState {
 }
 
 /**
- * The registered router link's props (ADR-0005), or `<a>` props when nothing is
+ * The registered router link's props, or `<a>` props when nothing is
  * registered. `aria-current` is set through `current` only.
  */
 export type LinkElementProps = Omit<ComponentPropsWithRef<RegisteredLinkComponent>, 'aria-current'>
@@ -31,14 +31,14 @@ export type LinkElementProps = Omit<ComponentPropsWithRef<RegisteredLinkComponen
 export type LinkProps = LinkElementProps & {
   /** Marks the link as the current item in a set, as `aria-current`. Link doesn't detect it. */
   current?: LinkCurrent | undefined
-  /** Per-instance message overrides for this link and its NewTabNotice (ADR-0007). */
+  /** Per-instance message overrides for this link and its NewTabNotice. */
   messages?: Partial<KvirnMessages['link']> | undefined
   /** Change the element, for example `render={<a />}` to bypass the router for a download. */
   render?: RenderProp<LinkElementProps, LinkState> | undefined
 }
 
 export interface LinkNewTabNoticeProps extends ComponentPropsWithRef<'span'> {
-  /** Your own text. Wins over every message (ADR-0007). */
+  /** Your own text. Wins over every message. */
   children?: ReactNode
   render?: RenderProp<ComponentPropsWithRef<'span'>, Record<string, never>> | undefined
 }
@@ -53,7 +53,7 @@ const LinkContext = createContext<LinkContextValue | null>(null)
 
 const noticeState: Record<string, never> = {}
 
-/** Empty, whitespace-only or boolean children fall through to the message (ADR-0007). */
+/** Empty, whitespace-only or boolean children fall through to the message. */
 function hasOwnText(children: ReactNode): boolean {
   if (children === undefined || children === null || typeof children === 'boolean') {
     return false
@@ -74,8 +74,8 @@ function LinkRoot({
   ref,
   ...otherProps
 }: LinkProps): ReactElement {
-  // A render element's own target and rel win (ADR-0015), and go through useLink so a new
-  // tab still gets `noopener noreferrer` and the missing-notice check (ADR-0016).
+  // A render element's own target and rel win, and go through useLink so a new
+  // tab still gets `noopener noreferrer` and the missing-notice check.
   const { render: renderWithoutTarget, takenProps } = takeRenderElementProps(render, [
     'target',
     'rel',
@@ -109,7 +109,7 @@ function LinkRoot({
       const rendered = describeElement(element)
       warnOnce(
         `link-not-an-anchor:${rendered}`,
-        `A Link must render an <a href> and forward its ref, but it rendered ${rendered}. Check the registered link component (ADR-0005) or the render prop.`,
+        `A Link must render an <a href> and forward its ref, but it rendered ${rendered}. Check the registered link component or the render prop.`,
       )
     }
     if (link.opensInNewTab && newTabNoticeCount.current === 0) {
@@ -166,7 +166,7 @@ export function LinkNewTabNotice({
 }
 
 /**
- * A native `<a href>`, rendered by the app's registered router link (ADR-0005), with
+ * A native `<a href>`, rendered by the app's registered router link, with
  * `aria-current`, safe new-tab `rel`, and a translated new-tab notice (contract: link.a11y.md).
  * No `disabled` prop: a disabled link isn't a thing.
  *

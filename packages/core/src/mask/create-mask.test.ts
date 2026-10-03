@@ -205,7 +205,7 @@ describe('rule 7: the value is only written back when the mask changed it', () =
   })
 })
 
-describe('rejected reasons (ADR-0032 item 6)', () => {
+describe('rejected reasons', () => {
   it('says digits for a letter in a digit position', () => {
     expect(insert(postalCode, '12|', 'x').rejected).toEqual([{ reason: 'digits', characters: 'x' }])
   })

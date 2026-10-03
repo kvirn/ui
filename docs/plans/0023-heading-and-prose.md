@@ -3,7 +3,6 @@
 - **Status:** Done (alpha. Manual AT pending before beta)
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-03 · **Target:** M1
-- **Related:** ADR-0052 (Accepted), ADR-0044
 
 ## Goal
 
@@ -12,7 +11,7 @@ Adopters write a page's text with two components instead of raw tags and a class
 ## Non-goals
 
 - Components for paragraphs, lists or links. `Link` exists, and the rest is plain HTML in Prose.
-- Automatic heading levels from context. A required `level` is the decision (ADR-0052).
+- Automatic heading levels from context. A required `level` is the decision.
 - New tokens. The CSS reuses the type role tokens.
 - Margins outside Prose.
 
@@ -49,7 +48,7 @@ None.
 - [x] Light tests: element per level, size classes, `render`, class joins, axe
 - [x] Stories: `Components/Heading` (Default, Sizes, Outline, Right to left, Forced colors) and `Components/Prose` (Default, Large). The Section stories use them
 - [x] The `Foundation/Prose` stories moved to `Components/Prose` (`components-prose--docs`): one Prose, one page. Links and the sidebar order updated
-- [x] Exports in `index.ts`, ADR-0052, roadmap rows, changeset
+- [x] Exports in `index.ts`, the decision record, roadmap rows, changeset
 - [ ] Manual AT matrix: `pending`
 
 ## Verification

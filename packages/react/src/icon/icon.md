@@ -2,7 +2,7 @@
 
 > **Draft** (Plan 0009). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [icon.a11y.md](icon.a11y.md), and the design spec is [docs/design/icon.md](../../../../docs/design/icon.md).
 
-One component for every icon: the built-in set, your own SVGs, and icons from libraries such as Lucide, Heroicons and Phosphor. Register them once by name in `KvirnProvider`, then write `<Icon name="close" />` everywhere (ADR-0024).
+One component for every icon: the built-in set, your own SVGs, and icons from libraries such as Lucide, Heroicons and Phosphor. Register them once by name in `KvirnProvider`, then write `<Icon name="close" />` everywhere.
 
 - **Decorative by default** (`aria-hidden="true"`). Give it a `label` from your translations when no text next to it says the same thing, and it becomes an image with that name.
 - **Sizes follow the text:** `sm`, `md` (default) and `lg` are 1em, 1.25em and 1.5em, which is 16, 20 and 24px next to 16px text. A number is pixels, and `'1rem'`, `'20px'` or `'2em'` work too.
@@ -149,4 +149,4 @@ It returns `iconProps`, `component` (`undefined` without a name, or for an unkno
 | Iconify     | Use its offline bundles. Its default mode fetches icons from a third-party server                               |
 | Icon fonts  | Not supported. Use SVG                                                                                          |
 
-Lucide, Heroicons and Phosphor are tested (ADR-0025).
+Lucide, Heroicons and Phosphor are tested.

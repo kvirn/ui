@@ -759,7 +759,7 @@ test.describe('Combobox focus and modes', () => {
     const control = await page.locator('.kv-combobox-control').first().boundingBox()
     const popup = await popupOf(page).boundingBox()
     expect(control?.width).toBeLessThanOrEqual((field?.width ?? 0) + 0.5)
-    // At least as wide as the box, never narrower (ADR-0037, item 13).
+    // At least as wide as the box, never narrower.
     expect(popup?.width).toBeGreaterThanOrEqual((control?.width ?? 0) - 1)
     // The chips wrap: a long chosen value stays inside its column.
     const chips = await page

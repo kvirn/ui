@@ -20,12 +20,12 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/RadioGroup: one question with one answer, in a native <fieldset> under a
-// <legend>, with native radios that share a name (ADR-0029, design spec
+// <legend>, with native radios that share a name (design spec
 // docs/design/form-fields.md §6.5). The browser does the keys: the group is one Tab stop, and
 // the arrow keys move and check, mirrored in right-to-left. KvirnUI holds no form state
-// (ADR-0029, item 0): `value` and `onValueChange` are the selected value, and without `value`
+//: `value` and `onValueChange` are the selected value, and without `value`
 // the native radios are uncontrolled. Nothing here validates: an invalid story sets `invalid`
-// itself. A radio never gets aria-invalid (ADR-0029, item 10): the group's error is its
+// itself. A radio never gets aria-invalid: the group's error is its
 // description. radio-group.e2e.ts runs the keyboard rows, forced colours and reflow checks.
 
 const meta = {

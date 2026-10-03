@@ -33,7 +33,7 @@ export interface UseCheckboxOptions {
   disabled?: boolean | undefined
   /**
    * Called with the new checked state on every change. It only reports: the state lives in
-   * your form logic, or in the native input when you don't pass `checked` (ADR-0029, item 0).
+   * your form logic, or in the native input when you don't pass `checked`.
    */
   onCheckedChange?: ((checked: boolean, details: CheckboxChangeDetails) => void) | undefined
 }
@@ -83,7 +83,7 @@ function nativeState(element: HTMLInputElement): CheckboxDataState {
 
 /**
  * A checkbox's props for your own `<input type="checkbox">`, wired to the nearest Field and
- * CheckboxGroup (ADR-0029, contract: checkbox.a11y.md). It holds no state: spread your form
+ * CheckboxGroup (contract: checkbox.a11y.md). It holds no state: spread your form
  * library's props next to it.
  *
  * @example

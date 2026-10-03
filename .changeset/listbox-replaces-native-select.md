@@ -5,9 +5,9 @@
 '@kvirn-ui/core': minor
 ---
 
-`NativeSelect` becomes `Listbox` (Plan 0022, ADR-0037 item 2): one component with a stylable popup, and the browser's `<select>` as its native rendering. The `combobox` i18n namespace is added.
+`NativeSelect` becomes `Listbox` (Plan 0022): one component with a stylable popup, and the browser's `<select>` as its native rendering. The `combobox` i18n namespace is added.
 
-**Breaking** (accepted before 1.0, ADR-0037):
+**Breaking** (accepted before 1.0):
 
 - `@kvirn-ui/react`: `NativeSelect`, `useNativeSelect` and their types (`NativeSelectProps`, `NativeSelectState`, `NativeSelectChangeDetails`, `NativeSelectPartProps`, `UseNativeSelectOptions`, `UseNativeSelectResult`) are removed. Use `<Listbox.Root native="always" items={…}>`: it renders the same native `<select>`, wired to its Field, from `items` or `groups`. The value is the chosen item's key (`itemToKey`), or `null`, and `onValueChange(value, { reason: 'native' })` reports it. There is no separate native part and no native hook.
 - `@kvirn-ui/theme`: the class `kv-native-select` is now `kv-listbox-native`, and the custom properties `--kv-native-select-chevron` and `--kv-native-select-stroke` are now `--kv-listbox-native-chevron` and `--kv-listbox-native-stroke`. Rename them in your own CSS.

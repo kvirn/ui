@@ -1,12 +1,12 @@
 # Roadmap & components
 
-Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core AT set passed, ADR-0004) → `stable` (API frozen). Update the status here when it changes.
+Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core AT set passed, see `docs/accessibility.md`) → `stable` (API frozen). Update the status here when it changes.
 
 ## Milestones
 
 | Milestone                                                                                                       | Exit criteria                                                                                  |
 | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| **M0 Foundation**: monorepo, Vite+, CI gates, Storybook, docs skeleton, core utilities, i18n and theme packages | All gates green on one real component (Button, Plan 0003). ADRs 0001–0004 accepted ✓           |
+| **M0 Foundation**: monorepo, Vite+, CI gates, Storybook, docs skeleton, core utilities, i18n and theme packages | All gates green on one real component (Button, Plan 0003) ✓                                    |
 | **M1 Forms & basics**                                                                                           | All M1 components `alpha`                                                                      |
 | **M2 Overlays & navigation**                                                                                    | M1 components `beta`                                                                           |
 | **M3 Advanced inputs**                                                                                          | First conformance JSON published. Public 0.x on npm                                            |
@@ -15,60 +15,83 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 
 ## Primitives
 
-| Component                                                                           | APG pattern                   | M   | Status      |
-| ----------------------------------------------------------------------------------- | ----------------------------- | --- | ----------- |
-| KvirnProvider (locale, dates, links, theme preference)                              | –                             | 0   | alpha       |
-| VisuallyHidden, SkipLink                                                            | –                             | 1   | planned     |
-| Announcer (`useAnnouncer`, KvirnProvider live regions)                              | –                             | 1   | alpha       |
-| FocusScope, Portal, DismissableLayer                                                | –                             | 1   | planned     |
-| Button                                                                              | Button                        | 1   | alpha       |
-| Icon (built-in set, name registry)                                                  | – (SVG, decorative or `img`)  | 1   | in progress |
-| Toggle                                                                              | Button                        | 1   | planned     |
-| Link                                                                                | – (native `<a>`)              | 1   | alpha       |
-| Card (Root, Header, Body, Footer)                                                   | – (native `<div>`)            | 1   | alpha       |
-| Section (level 1 container; Card becomes level 2 only)                              | – (native `<div>`)            | 1   | alpha       |
-| Heading (level, type-role size), Prose (`kv-prose`)                                 | – (native `<h1>`–`<h6>`)      | 1   | alpha       |
-| Kbd (`kv-kbd`, one key per element)                                                 | – (native `<kbd>`)            | 1   | alpha       |
-| Notification (Root; Info, Success, Warning, Danger; Title, Body, Actions; announce) | – (native `<div>`, Announcer) | 1   | in progress |
-| Field, Label, ErrorMessage, Fieldset (the hint is a `Prose`, Plan 0025)             | –                             | 1   | in progress |
-| Input, Textarea                                                                     | –                             | 1   | in progress |
-| InputGroup (Root, Addon: units, icons, a clear Button)                              | – (native `<input>`)          | 1   | in progress |
-| Input masks (core engine, presets, `useMask`)                                       | – (native `<input>`)          | 1   | alpha       |
-| OneTimeCode                                                                         | – (native `<input>`)          | 1   | alpha       |
-| Checkbox, CheckboxGroup                                                             | Checkbox                      | 1   | planned     |
-| RadioGroup                                                                          | Radio Group                   | 1   | planned     |
-| Switch                                                                              | Switch                        | 1   | planned     |
-| Disclosure, Accordion                                                               | Disclosure, Accordion         | 1   | planned     |
-| Dialog, AlertDialog                                                                 | Dialog (Modal), Alert Dialog  | 2   | planned     |
-| Popover (alpha candidate), Tooltip                                                  | –, Tooltip                    | 2   | in progress |
-| Menu, MenuButton                                                                    | Menu Button                   | 2   | planned     |
-| Tabs                                                                                | Tabs                          | 2   | planned     |
-| Listbox (alpha candidate: native and popup rendering)                               | Select-Only Combobox, Listbox | 2   | in progress |
-| Combobox, Autocomplete (alpha candidate: single, multiple, free text)               | Combobox (ARIA 1.2)           | 3   | in progress |
-| Table (alpha candidate: native table, TanStack Table, opt-in virtualization)        | Table, Sortable Table         | 3   | in progress |
-| Virtualized Listbox, Combobox, Autocomplete (`virtualize`, Plan 0026)               | Listbox, Combobox (ARIA 1.2)  | 3   | in progress |
-| Toast (reuses the Notification look and status words)                               | status / alert                | 3   | planned     |
-| Breadcrumb, Pagination                                                              | Breadcrumb                    | 3   | planned     |
-| Slider                                                                              | Slider                        | 3   | planned     |
-| DatePicker, Calendar                                                                | Date Picker Dialog, Grid      | 4   | planned     |
-| Stepper                                                                             | –                             | 4   | planned     |
-| FileUpload (alpha candidate: native button, drop zone, queue)                       | –                             | 4   | in progress |
-| NavigationMenu                                                                      | Disclosure Navigation         | 4   | planned     |
+| Component                                                                                                | APG pattern                   | M   | Status      |
+| -------------------------------------------------------------------------------------------------------- | ----------------------------- | --- | ----------- |
+| KvirnProvider (locale, dates, links, theme preference)                                                   | –                             | 0   | alpha       |
+| VisuallyHidden, SkipLink                                                                                 | –                             | 1   | planned     |
+| Announcer (`useAnnouncer`, KvirnProvider live regions)                                                   | –                             | 1   | alpha       |
+| FocusScope, Portal                                                                                       | –                             | 1   | planned     |
+| DismissableLayer (`useDismissableLayer`, core `createDismissableLayerStack`)                             | –                             | 1   | in progress |
+| Button                                                                                                   | Button                        | 1   | alpha       |
+| Icon (built-in set, name registry)                                                                       | – (SVG, decorative or `img`)  | 1   | in progress |
+| Toggle                                                                                                   | Button                        | 1   | planned     |
+| Link                                                                                                     | – (native `<a>`)              | 1   | alpha       |
+| Card (Root, Header, Body, Footer)                                                                        | – (native `<div>`)            | 1   | alpha       |
+| Section (level 1 container; Card becomes level 2 only)                                                   | – (native `<div>`)            | 1   | alpha       |
+| Heading (level, type-role size), Prose (`kv-prose`)                                                      | – (native `<h1>`–`<h6>`)      | 1   | alpha       |
+| Kbd (`kv-kbd`, one key per element)                                                                      | – (native `<kbd>`)            | 1   | alpha       |
+| Notification (Root; Info, Success, Warning, Danger; Title, Body, Actions; announce)                      | – (native `<div>`, Announcer) | 1   | in progress |
+| Field, Label, ErrorMessage, Fieldset (the hint is a `Prose`, Plan 0025)                                  | –                             | 1   | in progress |
+| Input, Textarea                                                                                          | –                             | 1   | in progress |
+| DateInput (three fields: Day, Month, Year, inside a Fieldset; the value is `{year, month, day}` strings) | – (native `<input>`)          | 1   | planned     |
+| InputGroup (Root, Addon: units, icons, a clear Button)                                                   | – (native `<input>`)          | 1   | in progress |
+| Input masks (core engine, presets, `useMask`)                                                            | – (native `<input>`)          | 1   | alpha       |
+| OneTimeCode                                                                                              | – (native `<input>`)          | 1   | alpha       |
+| Checkbox, CheckboxGroup                                                                                  | Checkbox                      | 1   | planned     |
+| RadioGroup                                                                                               | Radio Group                   | 1   | planned     |
+| Switch                                                                                                   | Switch                        | 1   | planned     |
+| Disclosure, Accordion                                                                                    | Disclosure, Accordion         | 1   | planned     |
+| Dialog, AlertDialog                                                                                      | Dialog (Modal), Alert Dialog  | 2   | planned     |
+| Popover (alpha candidate), Tooltip                                                                       | –, Tooltip                    | 2   | in progress |
+| Menu, MenuButton                                                                                         | Menu Button                   | 2   | planned     |
+| Tabs                                                                                                     | Tabs                          | 2   | planned     |
+| Listbox (alpha candidate: native and popup rendering)                                                    | Select-Only Combobox, Listbox | 2   | in progress |
+| Combobox, Autocomplete (alpha candidate: single, multiple, free text)                                    | Combobox (ARIA 1.2)           | 3   | in progress |
+| Table (alpha candidate: native table, TanStack Table, opt-in virtualization)                             | Table, Sortable Table         | 3   | in progress |
+| Virtualized Listbox, Combobox, Autocomplete (`virtualize`, Plan 0026)                                    | Listbox, Combobox (ARIA 1.2)  | 3   | in progress |
+| Toast (reuses the Notification look and status words)                                                    | status / alert                | 3   | planned     |
+| Breadcrumb, Pagination                                                                                   | Breadcrumb                    | 3   | planned     |
+| Slider                                                                                                   | Slider                        | 3   | planned     |
+| ScrollArea (native scrolling, no custom scrollbars; `Table.ScrollRegion` is the first use)               | – (native scrolling)          | 3   | planned     |
+| DatePicker, Calendar                                                                                     | Date Picker Dialog, Grid      | 4   | planned     |
+| Stepper                                                                                                  | –                             | 4   | planned     |
+| FileUpload (alpha candidate: native button, drop zone, queue)                                            | –                             | 4   | in progress |
+| NavigationMenu                                                                                           | Disclosure Navigation         | 4   | planned     |
 
 ## Theme and docs
 
-| Item                                                                                       | Plan | Status                                                                                                 |
-| ------------------------------------------------------------------------------------------ | ---- | ------------------------------------------------------------------------------------------------------ |
-| Default theme (`theme.css`: palette, tokens, Button and Link)                              | 0005 | accepted (ADR-0013, ADR-0014, ADR-0017, ADR-0019); e2e, design review and accessibility review pending |
-| Styled Storybook (`Components/*`, Theme toolbar with None, Introduction)                   | 0005 | prototype                                                                                              |
-| Docs site (shell and the Button page)                                                      | 0005 | prototype. The other pages come in Phase 2                                                             |
-| Prose (`kv-prose`) and the lead and shadow tokens                                          | 0006 | accepted (ADR-0018). The docs site's articles use it                                                   |
-| Storybook Foundation section                                                               | 0006 | in progress                                                                                            |
-| Storybook story conventions (args-first, autodocs, Mode and Contrast, four theme projects) | 0008 | implemented (ADR-0023 proposed); accessibility review pending                                          |
-| Button depth ("Grounded": soft shadow and tinted edge, flat in contrast themes)            | 0010 | implemented (ADR-0026 proposed); accessibility and design review pending                               |
-| IBM Plex Sans and Serif replace Inter (typography)                                         | 0011 | in progress (ADR-0027 proposed; design review pending)                                                 |
-| Hyphenation and smaller large type below 40rem                                             | 0012 | done (ADR-0028 proposed; design review pending)                                                        |
-| `Prose` is the description of a Field or Fieldset (`Field.Description` removed)            | 0025 | done in alpha (ADR-0054, ADR-0055 accepted; accessibility review and manual AT matrix pending)         |
+| Item                                                                                       | Plan | Status                                                                       |
+| ------------------------------------------------------------------------------------------ | ---- | ---------------------------------------------------------------------------- |
+| Default theme (`theme.css`: palette, tokens, Button and Link)                              | 0005 | accepted; e2e, design review and accessibility review pending                |
+| Styled Storybook (`Components/*`, Theme toolbar with None, Introduction)                   | 0005 | prototype                                                                    |
+| Docs site (shell and the Button page)                                                      | 0005 | prototype. The other pages come in Phase 2                                   |
+| Prose (`kv-prose`) and the lead and shadow tokens                                          | 0006 | accepted. The docs site's articles use it                                    |
+| Storybook Foundation section                                                               | 0006 | in progress                                                                  |
+| Storybook story conventions (args-first, autodocs, Mode and Contrast, four theme projects) | 0008 | implemented; accessibility review pending                                    |
+| Button depth ("Grounded": soft shadow and tinted edge, flat in contrast themes)            | 0010 | implemented; accessibility and design review pending; usability test pending |
+| IBM Plex Sans and Serif replace Inter (typography)                                         | 0011 | in progress (design review pending)                                          |
+| Hyphenation and smaller large type below 40rem                                             | 0012 | done (design review pending)                                                 |
+| `Prose` is the description of a Field or Fieldset (`Field.Description` removed)            | 0025 | done in alpha (accessibility review and manual AT matrix pending)            |
+
+## Engineering and open items
+
+Things the docs describe as planned, or that are known to be open. A row moves to `done` when it exists in the repo.
+
+| Item                                                                                                                                                                      | Status    |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| `core` coverage of at least 90% enforced in CI (no coverage step exists yet)                                                                                              | planned   |
+| Bundle budgets in CI: per component, and for `core` including the store, `table-core` and `virtual-core`, plus a tree-shaking check                                       | planned   |
+| A workflow for the WCAG display-mode sweep (`E2E_BROWSERS=sweep`): forced colours, reduced motion and 320px reflow. Today the maintainer or a sweep agent runs it by hand | planned   |
+| A Changesets release workflow (commit `chore(release): version packages`)                                                                                                 | planned   |
+| Next.js and TanStack Router link recipes verified in a sample app (`TODO(verify-recipe)` in the provider docs)                                                            | planned   |
+| Legal check that an explicit theme preference in `localStorage` is exempt under ePrivacy Art. 5(3) (`TODO(legal-verify)`)                                                 | open      |
+| Northern Sámi strings for FileUpload and the Notification status words are drafted by machine and need a native speaker. This blocks `beta`                               | open      |
+| Optional `@google/design.md` lint step for `DESIGN.md`                                                                                                                    | not built |
+| A guard test that the not-prose class list in `theme.css` grows with each new part or consumer class                                                                      | planned   |
+| A built-in `sort` icon (Table draws its own sort icon until then); sprite entries for Icon if asked                                                                       | planned   |
+| An own role token for inputs and checkboxes (they use `border-control`); a per-region brand needs its own decision                                                        | open      |
+| A `border-region` token, because a sidebar has no visible edge in the contrast themes                                                                                     | open      |
+| Clean-up: the empty `packages/react/src/panel` and `apps/storybook/src/components/panel` directories remain from the rename to Section                                    | planned   |
 
 ## Blocks (M4 and later)
 

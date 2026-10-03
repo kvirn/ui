@@ -73,7 +73,7 @@ export function compilePattern(
 }
 
 /**
- * The engine for pattern masks (ADR-0032, item 2). The rules that make it lenient (item 5):
+ * The engine for pattern masks. The rules that make it lenient:
  * literals are inserted lazily, a typed literal is accepted and not doubled, characters that
  * don't fit are dropped (separators silently from pasted text), and nothing is cut before the
  * value is normalised.

@@ -136,7 +136,7 @@ test.describe('CheckboxGroup focus and modes', () => {
     })
     await expect(group).toHaveAccessibleDescription('Välj alla som passar.')
     expect(await group.evaluate((element) => element.tagName)).toBe('FIELDSET')
-    // The options carry no optional marker (ADR-0029, item 10).
+    // The options carry no optional marker.
     await expect(box(page, 'E-post')).toBeVisible()
   })
 

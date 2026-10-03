@@ -1,6 +1,6 @@
 # InputGroup
 
-> **Draft** (Plan 0013, Phase 1b). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [input-group.a11y.md](input-group.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md) §6.13, and the decision is in ADR-0031.
+> **Draft** (Plan 0013, Phase 1b). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [input-group.a11y.md](input-group.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md) §6.13, and the decisions are in the forms skill.
 
 **KvirnUI holds no form state; bring your own form logic.** InputGroup renders what it's given. It keeps no value and doesn't validate: the value lives in your form state, or in the native input.
 
@@ -118,7 +118,7 @@ function Rent() {
 
 ### `render`
 
-Both parts take `render` to change their element. The part's props are merged into yours: class names join, handlers chain and refs merge (ADR-0015).
+Both parts take `render` to change their element. The part's props are merged into yours: class names join, handlers chain and refs merge.
 
 ```tsx
 <InputGroup.Root render={(props) => <div {...props} data-testid="rent-box" />}>…</InputGroup.Root>

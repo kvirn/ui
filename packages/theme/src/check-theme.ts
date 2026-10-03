@@ -6,7 +6,7 @@ import { readRootProperties, resolveThemeColors, themeEnvironment } from './read
 
 const hexColor = /^#(?:[\da-f]{3}|[\da-f]{6})$/i
 
-/** The button edge tints (ADR-0026): a hex colour and a percentage, in every theme. */
+/** The button edge tints: a hex colour and a percentage, in every theme. */
 const buttonEdgeTokens = ['--kv-button-edge-shade', '--kv-button-edge-highlight'] as const
 
 /** Returns one message per unmet contrast requirement or unknown token. */

@@ -41,7 +41,7 @@ interface NotificationPartComponentProps extends HTMLAttributes<HTMLElement> {
 export interface NotificationRootProps extends NotificationPartComponentProps {
   /**
    * Announces the Title and Body text once, when the notification mounts, through the shared
-   * Announcer (4.1.3, ADR-0040): `polite` for the result of what the user just did, `assertive`
+   * Announcer (4.1.3): `polite` for the result of what the user just did, `assertive`
    * only for something to act on right now. Set it only on a notification inserted after an
    * action, never on one present at load. Needs a `KvirnProvider`. Default: nothing is
    * announced.
@@ -254,7 +254,7 @@ NotificationActions.displayName = 'Notification.Actions'
 
 /**
  * A status message in the content: something people need to know now, or the result of what
- * they just did (ADR-0047, contract: notification.a11y.md). Use `Notification.Info`,
+ * they just did (contract: notification.a11y.md). Use `Notification.Info`,
  * `.Success`, `.Warning` or `.Danger`: each shows its status with an icon, a word and a colour,
  * never with colour alone. It doesn't announce itself unless you set `announce`, adds no role
  * or `aria-live` to its box, and never takes focus on its own. Status is a class, not a prop:

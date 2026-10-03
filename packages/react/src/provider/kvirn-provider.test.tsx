@@ -256,7 +256,7 @@ describe('nesting', () => {
   })
 })
 
-describe('message resolution (ADR-0007)', () => {
+describe('message resolution', () => {
   test('instance messages win over every provider', async () => {
     await render(
       <KvirnProvider locale="sv-SE" messages={sv}>

@@ -2,7 +2,7 @@ import type { ComponentStore } from '../store/create-component-store.ts'
 
 /**
  * Why a file was refused. These are data, not text: the React layer turns each into a sentence
- * from i18n (ADR-0007), naming the file and what is allowed (WCAG 3.3.1, 3.3.3). A refused file
+ * from i18n, naming the file and what is allowed (WCAG 3.3.1, 3.3.3). A refused file
  * never enters the list (design spec D4).
  */
 export type FileRejection =
@@ -142,7 +142,7 @@ export interface FileUploadOptions<Result = unknown> {
 
 /**
  * What the store needs from the page to make previews. `Env` satisfies it (the real
- * `window.URL`), and a Node test can pass two functions (ADR-0003). `undefined` while server
+ * `window.URL`), and a Node test can pass two functions. `undefined` while server
  * rendering: no previews.
  */
 export interface FileUploadEnv {

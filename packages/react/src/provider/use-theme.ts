@@ -24,7 +24,7 @@ export interface UseThemeResult {
    * They win over any choice, so a switcher should say so instead of claiming a theme is in use.
    */
   isForcedColors: boolean
-  /** Persists the choice (ADR-0006). `system` removes it from storage. */
+  /** Persists the choice. `system` removes it from storage. */
   selectColorScheme: (colorScheme: ColorSchemePreference) => void
   selectContrast: (contrast: ContrastPreference) => void
 }
@@ -60,7 +60,7 @@ export function useThemeStore(): ThemeStore {
 }
 
 /**
- * The document's theme preference, for a theme switcher (ADR-0006). Works without a
+ * The document's theme preference, for a theme switcher. Works without a
  * provider, with the defaults and `localStorage`. Only theme consumers re-render.
  */
 export function useTheme(): UseThemeResult {

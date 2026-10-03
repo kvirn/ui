@@ -1,7 +1,7 @@
 'use client'
 
-// Public API. The whole entry is client code (ADR-0010). `useStoreSelector`, `useMessages`,
-// `useEnv` and `useLinkComponent` are internal by design (ADR-0003, Plan 0002).
+// Public API. The whole entry is client code. `useStoreSelector`, `useMessages`,
+// `useEnv` and `useLinkComponent` are internal by design (Plan 0002).
 export { KvirnProvider } from './provider/kvirn-provider.tsx'
 export type { KvirnProviderProps } from './provider/kvirn-provider.tsx'
 export { KvirnThemeScript } from './provider/kvirn-theme-script.tsx'

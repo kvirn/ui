@@ -8,7 +8,7 @@ import { useMessages } from '../provider/use-messages.ts'
 export interface UseFieldsetOptions {
   /** The fieldset's id. Default: generated. The description and error ids are derived from it. */
   id?: string | undefined
-  /** `data-invalid` on every part. The Fields inside keep their own state (ADR-0029, item 10). */
+  /** `data-invalid` on every part. The Fields inside keep their own state. */
   invalid?: boolean | undefined
   /** `data-required`, and no optional text in the legend. A group has no `aria-required`. */
   required?: boolean | undefined
@@ -16,7 +16,7 @@ export interface UseFieldsetOptions {
   disabled?: boolean | undefined
   /**
    * `true` for one question answered with several controls: checkboxes, radios, a date. The
-   * legend then carries the optional text, and the Fields inside drop theirs (ADR-0029).
+   * legend then carries the optional text, and the Fields inside drop theirs.
    */
   group?: boolean | undefined
   /**
@@ -26,7 +26,7 @@ export interface UseFieldsetOptions {
   hasDescription?: boolean | undefined
   /**
    * The names of the descriptions you render with `getDescriptionProps(name)`, in the order you
-   * render them (ADR-0031). `aria-describedby` lists them in this order, then the error. Pass
+   * render them. `aria-describedby` lists them in this order, then the error. Pass
    * them from the first render, so server-rendered markup is complete. If you also set
    * `hasDescription`, that description (`descriptionProps`) comes first.
    */
@@ -35,7 +35,7 @@ export interface UseFieldsetOptions {
   hasErrorMessage?: boolean | undefined
   /** The legend's marker. Default `'optional'` in a group, `'none'` in a plain fieldset. */
   marker?: FieldMarker | undefined
-  /** Per-instance message overrides (ADR-0007). */
+  /** Per-instance message overrides. */
   messages?: Partial<KvirnMessages['field']> | undefined
 }
 
@@ -80,10 +80,10 @@ export interface UseFieldsetResult {
 }
 
 /**
- * A fieldset's wiring for your own elements (ADR-0029, contract: fieldset.a11y.md): the legend
+ * A fieldset's wiring for your own elements (contract: fieldset.a11y.md): the legend
  * names the group, and the descriptions and error describe it. It holds no form state.
  *
- * The default order is legend, description, the controls, then the error (ADR-0031). With one
+ * The default order is legend, description, the controls, then the error. With one
  * description, set `hasDescription` and spread `descriptionProps`. With several, list their
  * names in `descriptions` and spread `getDescriptionProps(name)` on each: every description has
  * its own id, so the markup is complete when rendered on the server.

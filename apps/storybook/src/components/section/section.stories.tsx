@@ -20,8 +20,7 @@ import {
 } from './section.fixture.tsx'
 import type { SectionFixtureLocale } from './section.fixture.tsx'
 
-// Components/Section: the headless Section, styled by @kvirn-ui/theme/theme.css (ADR-0013, ADR-0044,
-// design spec docs/design/section.md). Section has no focusable part, so there's no Keyboard story:
+// Components/Section: the headless Section, styled by @kvirn-ui/theme/theme.css (design spec docs/design/section.md). Section has no focusable part, so there's no Keyboard story:
 // section.e2e.ts runs its Tab rows against CardsOnASection, and its focus-ring, forced-colours and
 // reflow checks against Padding, ForcedColors, ImageInSection and LongFinnishText.
 

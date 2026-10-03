@@ -1,5 +1,5 @@
-// Story and e2e data for the Virtualized stories of Listbox, Combobox and Autocomplete (ADR-0059;
-// contracts: the "Virtualization" sections of listbox.a11y.md, combobox.a11y.md and
+// Story and e2e data for the Virtualized stories of Listbox, Combobox and Autocomplete
+// (contracts: the "Virtualization" sections of listbox.a11y.md, combobox.a11y.md and
 // autocomplete.a11y.md). 10 000 deterministic labels, in the Swedish alphabet, so typeahead and
 // filtering mean something: 40 stems that start with a-z and then å, ä and ö, each numbered 1 to
 // 250. The first label is "Alvik 1" and the last is "Österbo 250".

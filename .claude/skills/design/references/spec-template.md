@@ -2,7 +2,7 @@
 
 - **Status:** Draft <!-- Draft | In review | Approved | Superseded -->
 - **Designer:** <name / ux-designer agent> · **Date:** YYYY-MM-DD
-- **Plan:** docs/plans/NNNN-*.md · **Related ADRs:** ADR-NNNN
+- **Plan:** docs/plans/NNNN-*.md
 - **Type:** block | flow | component default styling | theme/token change | docs page
 
 ## 1. Brief
@@ -76,8 +76,8 @@ Per breakpoint (320px · 40rem · 64rem): landmarks, heading outline and reading
 
 ### New or changed tokens
 
-| Token | Value per theme | Contrast pair and measured ratio | ADR |
-| ----- | --------------- | -------------------------------- | --- |
+| Token | Value per theme | Contrast pair and measured ratio |
+| ----- | --------------- | -------------------------------- |
 
 ## 7. Accessibility annotations
 

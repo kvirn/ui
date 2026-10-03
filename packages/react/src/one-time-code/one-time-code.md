@@ -1,6 +1,6 @@
 # OneTimeCode
 
-> **Draft** (Plan 0014, Phase 3; the pattern is Plan 0019). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [one-time-code.a11y.md](one-time-code.a11y.md), the design spec is [docs/design/one-time-code.md](../../../../docs/design/one-time-code.md), and the decisions are in ADR-0033 and ADR-0045 (the pattern).
+> **Draft** (Plan 0014, Phase 3; the pattern is Plan 0019). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [one-time-code.a11y.md](one-time-code.a11y.md), the design spec is [docs/design/one-time-code.md](../../../../docs/design/one-time-code.md), and the decisions are in the forms skill (OneTimeCode).
 
 **KvirnUI holds no form state; bring your own form logic.** OneTimeCode renders what it's given. It keeps no value of its own and doesn't check the code: the value lives in your form state, or in the native input.
 
@@ -47,7 +47,7 @@ import { ErrorMessage, Field, Label, OneTimeCode, Prose } from '@kvirn-ui/react'
 | `onValueChange(value, details)`    |            | Every change, with `{ reason: 'input', event }` and the mask's `unmaskedValue`, `isComplete` and `rejected`. It only reports                                                                             |
 | `onComplete(value, unmaskedValue)` |            | A change left the code complete and different from before: the last character, a paste, an autofill. `value` has the dashes, `unmaskedValue` has none. It never submits and never moves focus. See below |
 | `disabled`                         |            | Native `disabled`. A disabled Field disables it too. Prefer `readOnly` on the Input while a code is being checked                                                                                        |
-| `announceRejections`, `messages`   | `true`     | The mask says politely, at most once every three seconds, when it drops a character ("Only digits can be entered here"). Needs a `KvirnProvider` (ADR-0040)                                              |
+| `announceRejections`, `messages`   | `true`     | The mask says politely, at most once every three seconds, when it drops a character ("Only digits can be entered here"). Needs a `KvirnProvider`                                                         |
 
 ### The pattern
 
@@ -129,7 +129,7 @@ It returns `rootProps`, `inputProps`, `getSlotProps(index)`, `slots` (one per po
 
 ### `render`
 
-All three parts take `render` to change their element. The part's props are merged into yours: class names join, handlers chain and refs merge (ADR-0015). The Slot's second argument is the slot's state.
+All three parts take `render` to change their element. The part's props are merged into yours: class names join, handlers chain and refs merge. The Slot's second argument is the slot's state.
 
 ```tsx
 <OneTimeCode.Slot index={0} render={(props, slot) => <b {...props}>{slot.character}</b>} />

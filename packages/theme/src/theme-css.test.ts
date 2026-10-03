@@ -13,7 +13,7 @@ import {
 } from './read-theme.ts'
 import type { ThemeEnvironment } from './read-theme.ts'
 
-// The shipped theme.css, the source of truth (ADR-0013). Only WCAG checks live here: contrast
+// The shipped theme.css, the source of truth. Only WCAG checks live here: contrast
 // (1.4.3, 1.4.6, 1.4.11), forced colours, and nothing that clips under 1.4.12. The look itself
 // is reviewed visually, not tested.
 const themeCss = readFileSync(new URL('../theme.css', import.meta.url), 'utf8')
@@ -87,7 +87,7 @@ describe('theme.css contrast and forced colours', () => {
     expect(pair('border-control', 'surface-raised')).toBe(3)
     expect(pair('secondary', 'surface-raised')).toBe(3)
     expect(pair('focus-ring', 'canvas')).toBe(3)
-    // ADR-0014 lists 42 required pairs per theme; the components and docs use a few more.
+    // The theme-css skill lists 42 required pairs per theme; the components and docs use a few more.
     expect(contrastRequirements[themeName].length).toBeGreaterThanOrEqual(42)
   })
 
@@ -130,7 +130,7 @@ describe('theme.css contrast and forced colours', () => {
     for (const background of ['canvas', 'surface', 'surface-raised']) {
       // A hovered danger button's edge is its fill.
       expect(minimumFor('danger-hover', background)).toBe(3)
-      // A hovered primary button's edge is its primary border (ADR-0021).
+      // A hovered primary button's edge is its primary border.
       expect(minimumFor('primary', background)).toBe(3)
     }
     expect(minimumFor('primary-hover', 'canvas')).toBe(3)
@@ -138,7 +138,7 @@ describe('theme.css contrast and forced colours', () => {
   })
 
   it.each(themeNames)(
-    '%s: a hovered filled button keeps a 3:1 edge on every plain surface (ADR-0021)',
+    '%s: a hovered filled button keeps a 3:1 edge on every plain surface',
     (themeName) => {
       const colors = resolveThemeColors(themeCss, themeName)
       const hovered = (variant: string) =>
@@ -149,7 +149,7 @@ describe('theme.css contrast and forced colours', () => {
             ),
           )?.declarations ?? [],
         )
-      // The edge is --kv-button-edge (ADR-0026), or the fill when that is transparent.
+      // The edge is --kv-button-edge, or the fill when that is transparent.
       const edgeToken = (variant: string) => {
         const border = hovered(variant)['--kv-button-edge'] ?? ''
         const fill = hovered(variant)['background-color'] ?? ''
@@ -165,7 +165,7 @@ describe('theme.css contrast and forced colours', () => {
     },
   )
 
-  it.each(themeNames)('%s: guards prose on the status notifications (ADR-0018)', (themeName) => {
+  it.each(themeNames)('%s: guards prose on the status notifications', (themeName) => {
     const textMinimum = themeName.endsWith('contrast') ? 7 : 4.5
     const minimumFor = (foreground: string, background: string) =>
       contrastRequirements[themeName].find(
@@ -201,7 +201,7 @@ describe('overrides', () => {
     expect(problems).toContain('dark: on-primary on primary is 4.37:1, needs 4.5:1')
   })
 
-  it('reports a button edge tint that lowers a boundary under 3:1 (ADR-0026)', () => {
+  it('reports a button edge tint that lowers a boundary under 3:1', () => {
     const problems = checkThemeCss(`${themeCss}\n:root { --kv-button-edge-shade: #ffffff 90%; }`)
     expect(problems).toContainEqual(
       expect.stringMatching(
@@ -256,7 +256,7 @@ const forcedColors = (themeName: ThemeName, source: 'attributes' | 'system'): Th
   return { ...environment, media: { ...environment.media, 'forced-colors': 'active' } }
 }
 
-describe('theme.css button depth (ADR-0026, docs/design/button-depth.md)', () => {
+describe('theme.css button depth (docs/design/button-depth.md)', () => {
   const sources = ['attributes', 'system'] as const
   const propertiesOf = (themeName: ThemeName, source: 'attributes' | 'system') =>
     readRootProperties(themeCss, themeEnvironment(themeName, source))
@@ -364,7 +364,7 @@ describe('theme.css button depth (ADR-0026, docs/design/button-depth.md)', () =>
   })
 })
 
-describe('theme.css prose (ADR-0018)', () => {
+describe('theme.css prose', () => {
   const proseRules = rules.filter((rule) =>
     rule.selectors.some((selector) => selector.includes('.kv-prose')),
   )
@@ -384,7 +384,7 @@ describe('theme.css prose (ADR-0018)', () => {
 
   it('never removes list markers or changes the display of tables and lists (1.3.1)', () => {
     // `list-style: none` drops list semantics in Safari with VoiceOver, and `display` on a
-    // table or list can drop its semantics in some browsers (ADR-0018).
+    // table or list can drop its semantics in some browsers.
     const removesMarkers = elementRules.filter((rule) =>
       rule.declarations.some(
         ([property, value]) =>
@@ -403,7 +403,7 @@ describe('theme.css prose (ADR-0018)', () => {
   })
 })
 
-describe('theme.css card (ADR-0020, docs/design/card.md)', () => {
+describe('theme.css card (docs/design/card.md)', () => {
   const isCardSelector = (selector: string) =>
     /\.kv-card\b/.test(selector) && !selector.includes('.kv-prose')
   const cardRules = rules.filter((rule) => rule.selectors.every(isCardSelector))
@@ -434,7 +434,7 @@ describe('theme.css card (ADR-0020, docs/design/card.md)', () => {
     ).toEqual([])
   })
 
-  it('is always surface-raised: it has no surface or canvas rules (ADR-0044)', () => {
+  it('is always surface-raised: it has no surface or canvas rules', () => {
     // A region of the page is a Section. The two classes are gone, and so are their rules.
     expect(themeCss).not.toContain('kv-card--surface')
     expect(themeCss).not.toContain('kv-card--canvas')
@@ -445,7 +445,7 @@ describe('theme.css card (ADR-0020, docs/design/card.md)', () => {
   })
 })
 
-describe('theme.css section (ADR-0044, docs/design/section.md)', () => {
+describe('theme.css section (docs/design/section.md)', () => {
   const isSectionSelector = (selector: string) =>
     /\.kv-section\b/.test(selector) && !selector.includes('.kv-prose')
   const sectionRules = rules.filter((rule) => rule.selectors.every(isSectionSelector))
@@ -575,7 +575,7 @@ describe('theme.css section (ADR-0044, docs/design/section.md)', () => {
   })
 })
 
-describe('theme.css form fields (ADR-0029, docs/design/form-fields.md)', () => {
+describe('theme.css form fields (docs/design/form-fields.md)', () => {
   const isFieldSelector = (selector: string) =>
     /\.kv-(?:field|fieldset|input)\b(?!-group)/.test(selector) && !selector.includes('.kv-prose')
   const fieldRules = rules.filter((rule) => rule.selectors.every(isFieldSelector))
@@ -621,7 +621,7 @@ describe('theme.css form fields (ADR-0029, docs/design/form-fields.md)', () => {
     ).toEqual([])
   })
 
-  it('draws an invalid input from data-invalid and aria-invalid, never :invalid (ADR-0029)', () => {
+  it('draws an invalid input from data-invalid and aria-invalid, never :invalid', () => {
     // The browser's own validity isn't the form's: the consumer decides when a field is invalid.
     const selectors = rules.flatMap((rule) => rule.selectors)
     expect(selectors.filter((selector) => /:(?:user-)?(?:in)?valid\b/.test(selector))).toEqual([])
@@ -718,7 +718,7 @@ describe('theme.css form fields (ADR-0029, docs/design/form-fields.md)', () => {
     expect(base).toContainEqual(['max-inline-size', '100%'])
   })
 
-  it('wraps and hyphenates long words in a field and a fieldset, as prose does (ADR-0028)', () => {
+  it('wraps and hyphenates long words in a field and a fieldset, as prose does', () => {
     for (const selector of ['.kv-field', '.kv-fieldset']) {
       const declarations = rules
         .filter((rule) => rule.media.length === 0 && rule.selectors.includes(selector))
@@ -734,7 +734,7 @@ describe('theme.css form fields (ADR-0029, docs/design/form-fields.md)', () => {
   it('keeps hints, errors and typed answers at 16px in compact density', () => {
     // Compact only changes the --kv-control-* tokens: the text parts must not read them, except
     // the labels, and the input reads the body size. The hint is a kv-prose that is a direct child
-    // of the field or fieldset (ADR-0054), so it is looked up in all the rules.
+    // of the field or fieldset, so it is looked up in all the rules.
     const declarationsOf = (selector: string) =>
       rules
         .filter((rule) => rule.media.length === 0 && rule.selectors.includes(selector))
@@ -759,7 +759,7 @@ describe('theme.css form fields (ADR-0029, docs/design/form-fields.md)', () => {
       expect(declarationsOf(selector)).toContainEqual(['font-size', 'var(--kv-font-body-size)'])
       expect(declarationsOf(selector)).toContainEqual(['margin', '0'])
     }
-    // A hint under the control is body-small, in the same colour (ADR-0054). A checkbox or
+    // A hint under the control is body-small, in the same colour. A checkbox or
     // radio, and a heading that holds the label, don't count as the control.
     for (const [host, label] of [
       ['.kv-field', '.kv-field-label'],
@@ -796,7 +796,7 @@ describe('theme.css form fields (ADR-0029, docs/design/form-fields.md)', () => {
     ).toBe(true)
   })
 
-  it('has no kv-field-description: the hint is a Prose in the field or fieldset (ADR-0054)', () => {
+  it('has no kv-field-description: the hint is a Prose in the field or fieldset', () => {
     expect(themeCss).not.toContain('kv-field-description')
   })
 
@@ -816,7 +816,7 @@ describe('theme.css form fields (ADR-0029, docs/design/form-fields.md)', () => {
     expect(selector).toContain(
       ':is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose)',
     )
-    // A table's parts keep the Table look in prose: its descendants are left alone too (ADR-0035).
+    // A table's parts keep the Table look in prose: its descendants are left alone too.
     expect(selector).toContain(':is(.kv-not-prose, .kv-nav, .kv-button-group, .kv-table) *')
     expect(selector).not.toContain(':is(.kv-not-prose, .kv-nav, .kv-button-group, .kv-field')
   })
@@ -835,7 +835,7 @@ describe('theme.css form fields (ADR-0029, docs/design/form-fields.md)', () => {
   })
 })
 
-describe('theme.css input group (ADR-0031, docs/design/form-fields.md)', () => {
+describe('theme.css input group (docs/design/form-fields.md)', () => {
   const isGroupSelector = (selector: string) =>
     /\.kv-input-group(?:-addon)?\b/.test(selector) && !selector.includes('.kv-prose')
   const groupRules = rules.filter((rule) => rule.selectors.every(isGroupSelector))
@@ -957,7 +957,7 @@ describe('theme.css input group (ADR-0031, docs/design/form-fields.md)', () => {
   })
 })
 
-describe('theme.css long words and small screens (ADR-0028)', () => {
+describe('theme.css long words and small screens', () => {
   const declarationsOf = (selector: string) =>
     rules
       .filter((rule) => rule.media.length === 0 && rule.selectors.includes(selector))
@@ -1008,7 +1008,7 @@ describe('theme.css long words and small screens (ADR-0028)', () => {
   })
 })
 
-describe('theme.css one-time code (ADR-0033, ADR-0045, docs/design/one-time-code.md)', () => {
+describe('theme.css one-time code (docs/design/one-time-code.md)', () => {
   const isOneTimeCode = (selector: string) => /\.kv-one-time-code/.test(selector)
   const oneTimeCodeRules = rules.filter((rule) => rule.selectors.some(isOneTimeCode))
   const declarationsOf = (found: typeof rules) => found.flatMap((rule) => rule.declarations)
@@ -1242,7 +1242,7 @@ describe('theme.css one-time code (ADR-0033, ADR-0045, docs/design/one-time-code
     ).toEqual([])
   })
 
-  it('draws no state from :invalid, only from the Field’s attributes (ADR-0029)', () => {
+  it('draws no state from :invalid, only from the Field’s attributes', () => {
     const selectors = oneTimeCodeRules.flatMap((rule) => rule.selectors)
     expect(selectors.filter((selector) => /:(?:user-)?(?:in)?valid\b/.test(selector))).toEqual([])
   })
@@ -1260,7 +1260,7 @@ describe('theme.css one-time code (ADR-0033, ADR-0045, docs/design/one-time-code
   })
 })
 
-describe('theme.css notification (ADR-0047, docs/design/notification.md)', () => {
+describe('theme.css notification (docs/design/notification.md)', () => {
   const isNotificationSelector = (selector: string) =>
     /\.kv-notification\b/.test(selector) && !selector.includes('.kv-prose')
   const notificationRules = rules.filter((rule) => rule.selectors.every(isNotificationSelector))
@@ -1463,7 +1463,7 @@ describe('theme.css notification (ADR-0047, docs/design/notification.md)', () =>
   })
 })
 
-describe('theme.css file upload (ADR-0038, ADR-0049, docs/design/file-upload.md)', () => {
+describe('theme.css file upload (docs/design/file-upload.md)', () => {
   const isFileUpload = (selector: string) => /\.kv-file-upload\b/.test(selector)
   const fileUploadRules = rules.filter((rule) => rule.selectors.every(isFileUpload))
   const fileUploadSelectors = fileUploadRules.flatMap((rule) => rule.selectors)
@@ -1505,7 +1505,7 @@ describe('theme.css file upload (ADR-0038, ADR-0049, docs/design/file-upload.md)
     expect(fileUploadSelectors.some((selector) => selector.includes(`.${className}`))).toBe(true)
   })
 
-  it('draws the drop zone only where a file can be dropped, never when disabled (ADR-0049)', () => {
+  it('draws the drop zone only where a file can be dropped, never when disabled', () => {
     // The bare class draws no edge: it's a plain wrapper until a file can be dropped.
     expect(
       declarationsOf('.kv-file-upload-drop-zone').filter(([property]) =>
@@ -1736,14 +1736,14 @@ describe('theme.css file upload (ADR-0038, ADR-0049, docs/design/file-upload.md)
     ).toEqual([])
   })
 
-  it('never styles from :invalid, so the consumer decides when a field is invalid (ADR-0029)', () => {
+  it('never styles from :invalid, so the consumer decides when a field is invalid', () => {
     expect(
       fileUploadSelectors.filter((selector) => /:(?:user-)?(?:in)?valid\b/.test(selector)),
     ).toEqual([])
   })
 })
 
-describe('theme.css headings in prose and Heading (ADR-0052)', () => {
+describe('theme.css headings in prose and Heading', () => {
   // Prose styles h1 to h6 and `.kv-heading` styles a Heading. The prose rules sit inside the
   // card-boundary selector, so they can't share a rule with the modifiers. This keeps the type
   // of the two the same, so a token change can't reach one and miss the other.
@@ -1788,7 +1788,7 @@ describe('theme.css headings in prose and Heading (ADR-0052)', () => {
   })
 })
 
-describe('theme.css prose covers the typography plugin (ADR-0054)', () => {
+describe('theme.css prose covers the typography plugin', () => {
   // The colour roles of @tailwindcss/typography (--tw-prose-*), under our names. Each is
   // declared on `.kv-prose`, so every theme resolves it, and each is read by a rule.
   const roles = [
@@ -1846,7 +1846,7 @@ describe('theme.css prose covers the typography plugin (ADR-0054)', () => {
     ).toContainEqual(['max-inline-size', 'none'])
   })
 
-  it('steps xl and 2xl down below 40rem (ADR-0028)', () => {
+  it('steps xl and 2xl down below 40rem', () => {
     const stepped = rules.filter(
       (rule) =>
         rule.media.some((condition) => condition.includes('40rem')) &&
@@ -1867,7 +1867,7 @@ describe('theme.css prose covers the typography plugin (ADR-0054)', () => {
   })
 })
 
-describe('reset.css (ADR-0056)', () => {
+describe('reset.css', () => {
   const resetCss = readFileSync(new URL('../reset.css', import.meta.url), 'utf8')
   const resetRules = parseCssRules(resetCss)
   const resetSelectors = resetRules.flatMap((rule) => rule.selectors)
@@ -1933,7 +1933,7 @@ describe('reset.css (ADR-0056)', () => {
   })
 })
 
-describe('theme.css table (ADR-0035, docs/design/table.md)', () => {
+describe('theme.css table (docs/design/table.md)', () => {
   const tableRules = rules.filter(
     (rule) =>
       rule.selectors.length > 0 &&
@@ -1942,9 +1942,7 @@ describe('theme.css table (ADR-0035, docs/design/table.md)', () => {
       ),
   )
   const declarationsOf = (include: (selector: string) => boolean) =>
-    tableRules
-      .filter((rule) => rule.selectors.some(include))
-      .flatMap((rule) => rule.declarations)
+    tableRules.filter((rule) => rule.selectors.some(include)).flatMap((rule) => rule.declarations)
   const isHiddenText = (selector: string) => selector.includes('.kv-table-visually-hidden')
 
   it('never changes the display of a table element (1.3.1)', () => {
@@ -1989,7 +1987,9 @@ describe('theme.css table (ADR-0035, docs/design/table.md)', () => {
     const physical =
       /^(?:(?:margin|padding|border)-(?:top|right|bottom|left)(?:-.+)?|(?:top|right|bottom|left)|(?:min-|max-)?(?:width|height)|float|clear)$/
     expect(
-      tableRules.flatMap((rule) => rule.declarations).filter(([property]) => physical.test(property)),
+      tableRules
+        .flatMap((rule) => rule.declarations)
+        .filter(([property]) => physical.test(property)),
     ).toEqual([])
   })
 
@@ -2004,12 +2004,10 @@ describe('theme.css table (ADR-0035, docs/design/table.md)', () => {
     expect(root).toContainEqual(['color', 'var(--kv-color-text)'])
   })
 
-  it('draws the head opaque with a CanvasText line in forced colours (ADR-0035 item 13)', () => {
+  it('draws the head opaque with a CanvasText line in forced colours', () => {
     const forced = tableRules
       .filter((rule) => rule.media.some((media) => media.includes('forced-colors')))
-      .flatMap((rule) =>
-        rule.selectors.map((selector) => [selector, rule.declarations] as const),
-      )
+      .flatMap((rule) => rule.selectors.map((selector) => [selector, rule.declarations] as const))
     const head = forced.filter(([selector]) => selector === '.kv-table-column-header')
     expect(head.flatMap(([, declarations]) => declarations)).toContainEqual([
       'border-block-end-color',
@@ -2042,7 +2040,9 @@ describe('theme.css table (ADR-0035, docs/design/table.md)', () => {
     const spacer = declarationsOf((selector) => selector === '.kv-table-spacer > td')
     expect(spacer).toContainEqual(['border', '0'])
     expect(spacer).toContainEqual(['padding', '0'])
-    const sticky = declarationsOf((selector) => selector === '.kv-table-scroll-region .kv-table-head')
+    const sticky = declarationsOf(
+      (selector) => selector === '.kv-table-scroll-region .kv-table-head',
+    )
     expect(sticky).toContainEqual(['position', 'sticky'])
   })
 })

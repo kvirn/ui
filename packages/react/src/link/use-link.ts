@@ -14,7 +14,7 @@ export interface UseLinkOptions {
   target?: string | undefined
   /** Your own `rel` tokens, kept. */
   rel?: string | undefined
-  /** Per-instance message overrides (ADR-0007). */
+  /** Per-instance message overrides. */
   messages?: Partial<KvirnMessages['link']> | undefined
 }
 

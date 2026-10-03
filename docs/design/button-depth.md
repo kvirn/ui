@@ -1,21 +1,21 @@
 # Design spec: Button depth
 
-- **Status:** Draft. **Decision: D, Grounded** ([ADR-0026](../adr/0026-button-depth-grounded.md), Proposed, 2026-10-01). The engineering handoff is [section 10](#10-handoff-to-engineering-variation-d).
+- **Status:** Draft. **Decision: D, Grounded** (Proposed, 2026-10-01). The engineering handoff is [section 10](#10-handoff-to-engineering-variation-d).
 - **Designer:** ux-designer agent · **Date:** 2026-10-01
-- **Plan:** to be written by the main session from section 10. · **Related ADRs:** ADR-0026 (this decision), ADR-0006 (themes), ADR-0013 and ADR-0018 (raw colours only in the palette), ADR-0021 (primary hover edge)
+- **Plan:** to be written by the main session from section 10.
 - **Type:** theme/token change (default-theme component styling)
 - **Prototype:** [prototypes/button-depth.html](prototypes/button-depth.html). Open it from disk, with no build and no network. Its palette is a copy of `theme.css` section 1 from 2026-10-01.
 
 The owner's request: "Buttons should look like buttons: slight highlights and shade, gentle, subtle. 5 variations of filled and outlined buttons, primary and secondary colors."
 
-This spec records the five variations in the prototype, their exact values, measured contrast, how each one degrades, and a recommendation. **The owner chose D, Grounded** (2026-10-01), for the three existing kinds only. `DESIGN.md` ("Elevation & Depth", "Button depth") and ADR-0026 record the decision, and section 10 is the handoff to engineering. Sections 1 to 8 are kept as the record of the exploration.
+This spec records the five variations in the prototype, their exact values, measured contrast, how each one degrades, and a recommendation. **The owner chose D, Grounded** (2026-10-01), for the three existing kinds only. `DESIGN.md` ("Elevation & Depth", "Button depth") and the button-depth decision record the decision, and section 10 is the handoff to engineering. Sections 1 to 8 are kept as the record of the exploration.
 
 ## 1. Brief
 
 - **Users:** both. Hardest case: a resident with low vision or low digital confidence, on a phone, who has to tell the one thing that submits the form from text, cards, badges and links. Second hardest: a Windows contrast-theme user, for whom every depth effect disappears.
 - **Job to be done:** When I reach the end of a step, I want to see at once what I can press, so I can move on without guessing.
 - **Context:** used once, often under stress. On light and dark canvases, and on `canvas`, `surface` and `surface-raised` backgrounds.
-- **Constraints:** WCAG 2.2 AA (1.4.3, 1.4.11, 2.4.7, 2.4.11, 2.5.8, 2.3.3 motion), `DESIGN.md` (flat look, surface ladder, "dark raised surfaces get lighter, not shadowed", no gradients behind text), the four themes plus forced colours (ADR-0006), and rebrandable primary and secondary scales (ADR-0019).
+- **Constraints:** WCAG 2.2 AA (1.4.3, 1.4.11, 2.4.7, 2.4.11, 2.5.8, 2.3.3 motion), `DESIGN.md` (flat look, surface ladder, "dark raised surfaces get lighter, not shadowed", no gradients behind text), the four themes plus forced colours, and rebrandable primary and secondary scales.
 - **Success criteria:** in a first-click test, more participants pick the primary action on the first try than with today's flat button, with no loss in the contrast themes or forced colours. No new contrast pair below its floor in `theme:check`.
 - **Evidence:** none. There is no KvirnUI research on button recognisability.
 - **Assumptions and research questions:**
@@ -26,7 +26,7 @@ This spec records the five variations in the prototype, their exact values, meas
 
 | Source                                                                                                             | What we reuse                                                                                                                                         | What we change and why                                                                                                           |
 | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| KvirnUI Button default theme (`theme.css` section 7, [default-theme-button-link.md](default-theme-button-link.md)) | Every colour token, the 44px height, hover darkens, the dashed disabled state, the ADR-0021 hover edge, and the 2px focus ring with a 2px offset      | Depth is added on top. No label ever sits on a lighter colour than its measured token.                                           |
+| KvirnUI Button default theme (`theme.css` section 7, [default-theme-button-link.md](default-theme-button-link.md)) | Every colour token, the 44px height, hover darkens, the dashed disabled state, primary hover edge, and the 2px focus ring with a 2px offset           | Depth is added on top. No label ever sits on a lighter colour than its measured token.                                           |
 | [GOV.UK Design System, Button](https://design-system.service.gov.uk/components/button/)                            | E copies its pattern: a solid 2px darker ledge under the button, and on press the button moves down onto it, with the hit area kept under the pointer | We use a tinted shade of the fill, not a fixed colour. The focus ring stays an outline with an offset, not GOV.UK's yellow fill. |
 | APG Button pattern                                                                                                 | Native `<button>`. Nothing changes in behaviour.                                                                                                      | None. This is purely visual.                                                                                                     |
 
@@ -48,12 +48,12 @@ Not applicable. Size, padding, gap and wrapping are today's (`min-block-size: 2.
 
 ### Shared by all variations (today's tokens, unchanged)
 
-| Kind                                   | Fill: rest → hover/pressed          | Label                 | Edge: rest → hover/pressed         |
-| -------------------------------------- | ----------------------------------- | --------------------- | ---------------------------------- |
-| Primary, filled (`kv-button--primary`) | `primary` → `primary-hover`         | `on-primary`          | transparent → `primary` (ADR-0021) |
-| Secondary, outlined (base `kv-button`) | `surface-raised` → `primary-subtle` | `text`                | `secondary` → `primary`            |
-| Secondary, filled (**proposed**)       | `secondary` → `secondary-hover`*    | `on-secondary`*       | transparent → `secondary`          |
-| Primary, outlined (**proposed**)       | `surface-raised` → `primary-subtle` | `link` → `link-hover` | `primary`                          |
+| Kind                                   | Fill: rest → hover/pressed          | Label                 | Edge: rest → hover/pressed |
+| -------------------------------------- | ----------------------------------- | --------------------- | -------------------------- |
+| Primary, filled (`kv-button--primary`) | `primary` → `primary-hover`         | `on-primary`          | transparent → `primary`    |
+| Secondary, outlined (base `kv-button`) | `surface-raised` → `primary-subtle` | `text`                | `secondary` → `primary`    |
+| Secondary, filled (**proposed**)       | `secondary` → `secondary-hover`*    | `on-secondary`*       | transparent → `secondary`  |
+| Primary, outlined (**proposed**)       | `surface-raised` → `primary-subtle` | `link` → `link-hover` | `primary`                  |
 
 `*` These are proposed tokens. `secondary-hover` is `secondary-600` (light and dark), `secondary-800` (light-contrast) or `secondary-100` (dark-contrast). `on-secondary` is `white`, except `black` in dark-contrast.
 
@@ -62,7 +62,7 @@ Not applicable. Size, padding, gap and wrapping are today's (`min-block-size: 2.
 - **Contrast themes:** flat in every variation (proposed). Every shadow, highlight and gradient is `none`, and D's tinted edges go back to the token edge.
 - **Motion:** with `prefers-reduced-motion: no-preference`, `background-color, border-color, color, box-shadow, transform` transition over `--kv-duration-fast` (120ms) with `--kv-easing-standard`. Under `reduce`, every change is instant.
 
-In the tables below, "ink" is `neutral-950` (`#0f1011`) in light and `black` (`#010102`) in dark. The prototype writes these as `rgb()` literals. In `theme.css` they must become `color-mix(in srgb, var(--kv-neutral-950) N%, transparent)` (or `--kv-black`, or `--kv-white`), so raw colours stay in the palette block (ADR-0013, ADR-0018).
+In the tables below, "ink" is `neutral-950` (`#0f1011`) in light and `black` (`#010102`) in dark. The prototype writes these as `rgb()` literals. In `theme.css` they must become `color-mix(in srgb, var(--kv-neutral-950) N%, transparent)` (or `--kv-black`, or `--kv-white`), so raw colours stay in the palette block.
 
 ### Baseline: today, flat
 
@@ -98,9 +98,9 @@ Two inner 1px lines, lighter on top and darker at the bottom, with nothing outsi
 | Rest and hover | `inset 0 1px 0 white/22%, inset 0 -1px 0 ink/20%` | `inset 0 1px 0 white/20%, inset 0 -1px 0 ink/30%` | `inset 0 -1px 0 ink/8%` | `inset 0 1px 0 white/8%, inset 0 -1px 0 ink/40%` |
 | Pressed        | `inset 0 1px 0 ink/20%, inset 0 -1px 0 white/10%` | `inset 0 1px 0 ink/30%, inset 0 -1px 0 white/8%`  | `inset 0 1px 0 ink/10%` | `inset 0 1px 0 ink/40%, inset 0 -1px 0 white/5%` |
 
-### D. Grounded (chosen, ADR-0026)
+### D. Grounded (chosen)
 
-Chosen with three changes from the exploration, all recorded in ADR-0026 and section 10: the shadow is removed on keyboard focus, the contrast themes and forced colours are flat, and it applies to the three existing kinds only.
+Chosen with three changes from the exploration, all recorded in the button-depth decision and section 10: the shadow is removed on keyboard focus, the contrast themes and forced colours are flat, and it applies to the three existing kinds only.
 
 An ambient drop shadow, plus a tinted 1px edge: darker at the bottom in light, lighter at the top in dark. Hover lifts the shadow a little, and pressing removes it and resets the edges.
 
@@ -151,7 +151,7 @@ So the worst label pair in every variation is the existing `on-primary` on `prim
 | ----------------------------------------------------- | -------------------------- | -------------------------- | ----------------------------------------------------------------------------------------- |
 | `secondary` edge on canvas / surface / surface-raised | 4.98 / 4.68 / 4.98         | 4.19 / 3.83 / 3.54         | Unchanged in every variation                                                              |
 | `primary` edge or fill on the same                    | 4.70 / 4.42 / 4.70         | 4.44 / 4.05 / 3.75         | Unchanged                                                                                 |
-| `primary-hover` fill on `surface-raised`              | 5.91                       | **2.98**                   | Why the hover keeps a `primary` edge (ADR-0021)                                           |
+| `primary-hover` fill on `surface-raised`              | 5.91                       | **2.98**                   | Why the hover keeps a `primary` edge                                                      |
 | `secondary-hover`* fill on `surface-raised`           | 6.21                       | **2.83**                   | The same fix: the proposed filled secondary keeps a `secondary` edge on hover             |
 | D, light bottom edge (tinted darker)                  | ≥ 7.51                     | –                          | Only raises the boundary                                                                  |
 | D, dark top edge (tinted lighter)                     | –                          | ≥ 5.78                     | Only raises the boundary                                                                  |
@@ -192,7 +192,7 @@ So the worst label pair in every variation is the existing `on-primary` on `prim
 
 ### Recommendation
 
-> **Outcome:** the owner chose D, not the recommended C. D's two risks below are addressed in ADR-0026: the ring-over-shadow pair goes away because the shadow is removed on keyboard focus, and the tinted edges get their own `theme:check` pairs, so rebrands are measured. D's weak dark result stays a known trade-off for usability testing.
+> **Outcome:** the owner chose D, not the recommended C. D's two risks below are addressed in the button-depth decision: the ring-over-shadow pair goes away because the shadow is removed on keyboard focus, and the tinted edges get their own `theme:check` pairs, so rebrands are measured. D's weak dark result stays a known trade-off for usability testing.
 
 The designer's recommendation before the decision: **C, Hairline bevel**, and if the owner wants a stronger cue in light, add **A's rest shade (`0 1px 2px ink/8–12%`) in light only**, with no hover lift.
 
@@ -221,7 +221,7 @@ Not recommended: B (it conflicts with an explicit Don't, for the smallest gain) 
 | Components, Buttons: add "buttons have gentle depth; disabled is always flat; the contrast themes are flat"                                                      | Yes                                       | Yes                          | Yes                                | Yes                               | Yes                       |
 | Components, Cards: "never interactive: no hover, shadow" (holds, and gets stronger: depth now means "press me")                                                  | –                                         | –                            | –                                  | –                                 | –                         |
 
-### New or changed tokens (each needs a Proposed ADR and `theme:check` coverage)
+### New or changed tokens (each needs the maintainer's approval and `theme:check` coverage)
 
 | Token                                                                                                                        | Needed by                        | Value per theme                                                                                                            |
 | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
@@ -261,10 +261,10 @@ For C alone, that's six `--kv-shadow-button-*` values per theme, and only four o
 
 ## 9. Open questions
 
-1. ~~**Which variation, if any?**~~ Resolved 2026-10-01: D, Grounded (ADR-0026). The usability test should now compare today's flat button with D.
-2. **New button kinds (still open, out of scope for ADR-0026).** The prototype shows a filled secondary and an outlined primary because the request named them. Neither exists today. Do we want them (new classes, plus `secondary-hover` and `on-secondary`)? An outlined primary next to a filled primary weakens "one primary button per view". A grey filled secondary must stay distinct from disabled, which it does today through its fill, white label and solid edge.
-3. ~~**Contrast themes flat?**~~ Resolved for D: the contrast themes are fully flat (ADR-0026). The rest of this question only applied to E. The proposal is that `prefers-contrast: more` users get no shadows, highlights, gradients or tinted edges. For E, the prototype drops the ledge but keeps the 2px move on press, which is a non-colour pressed cue. Keep the move, or make the contrast themes fully static? Confirm.
-4. ~~**The DESIGN.md change and the ADR.**~~ Done for D: ADR-0026 (Proposed) and `DESIGN.md` "Button depth". The engineering plan is next (section 10). No ring-on-shadow pair is needed: the shadow is removed on keyboard focus.
+1. ~~**Which variation, if any?**~~ Resolved 2026-10-01: D, Grounded. The usability test should now compare today's flat button with D.
+2. **New button kinds (still open, out of scope for the button-depth decision).** The prototype shows a filled secondary and an outlined primary because the request named them. Neither exists today. Do we want them (new classes, plus `secondary-hover` and `on-secondary`)? An outlined primary next to a filled primary weakens "one primary button per view". A grey filled secondary must stay distinct from disabled, which it does today through its fill, white label and solid edge.
+3. ~~**Contrast themes flat?**~~ Resolved for D: the contrast themes are fully flat. The rest of this question only applied to E. The proposal is that `prefers-contrast: more` users get no shadows, highlights, gradients or tinted edges. For E, the prototype drops the ledge but keeps the 2px move on press, which is a non-colour pressed cue. Keep the move, or make the contrast themes fully static? Confirm.
+4. ~~**The DESIGN.md change and the decision.**~~ Done for D: The button-depth decision (Proposed) and `DESIGN.md` "Button depth". The engineering plan is next (section 10). No ring-on-shadow pair is needed: the shadow is removed on keyboard focus.
 5. **Prior art.** Should Designsystemet (NO) and the Suomi.fi design system buttons be checked before the decision? They weren't reviewed here.
 6. **Inputs and other controls.** `DESIGN.md` now says depth means only "a button" (a new Don't). If selects, checkboxes or segmented controls should follow, that's a new decision outside this brief.
 7. **Touch hover.** On touch screens `:hover` can stick after a tap, so a tapped button keeps the hover shadow (as it keeps the hover fill today). Gate hover depth behind `@media (hover: hover)`? Not decided, and it applies to today's hover fill too.
@@ -272,12 +272,12 @@ For C alone, that's six `--kv-shadow-button-*` values per theme, and only four o
 
 ## 10. Handoff to engineering (variation D)
 
-The decision is [ADR-0026](../adr/0026-button-depth-grounded.md) (Proposed), and the rules are in `DESIGN.md`, "Elevation & Depth" → "Button depth". This section is what the plan needs. It's the default theme only: no change to `@kvirn-ui/react`, the a11y contract's behaviour rows, or i18n (no new strings).
+The decision is the button-depth decision (Proposed), and the rules are in `DESIGN.md`, "Elevation & Depth" → "Button depth". This section is what the plan needs. It's the default theme only: no change to `@kvirn-ui/react`, the a11y contract's behaviour rows, or i18n (no new strings).
 
 ### Scope
 
 - In: `.kv-button` (the base or secondary look), `kv-button--primary` and `kv-button--danger`, in every state, including `kv-button--icon-only` (it's a `.kv-button`).
-- Out: new kinds (a filled secondary, an outlined primary: open question 2), links, navigation items, cards, inputs, and the ADR-0021 forced-colours hover defect (separate fix, but don't make it worse).
+- Out: new kinds (a filled secondary, an outlined primary: open question 2), links, navigation items, cards, inputs, and the forced-colours hover defect of the primary hover edge (separate fix, but don't make it worse).
 
 ### Tokens (`packages/theme/theme.css`)
 
@@ -304,7 +304,7 @@ The idea: every state sets one internal property, `--kv-button-edge` (declared o
 | `.kv-button:not(:disabled, [data-disabled]):active` (split from hover, after it)                            | `--kv-button-edge: var(--kv-color-primary)`; `background-color: var(--kv-color-primary-subtle)`; `box-shadow: none`; `border-color: var(--kv-button-edge)` (all four sides, untinted)                                                                                                                                                                        |
 | `.kv-button:not(:disabled, [data-disabled]):is(:focus-visible, [data-focus-visible])`, after the hover rule | `box-shadow: none`. The outline stays in today's focus rule. It must beat hover (same specificity, later), and the pressed rule's `border-color` must still apply when focused and pressed                                                                                                                                                                   |
 | `.kv-button.kv-button--primary`                                                                             | `--kv-button-edge: transparent` instead of `border-color: transparent`                                                                                                                                                                                                                                                                                       |
-| `.kv-button.kv-button--primary:not(…):is(:hover, :active)`                                                  | `--kv-button-edge: var(--kv-color-primary)` instead of `border-color` (ADR-0021 unchanged)                                                                                                                                                                                                                                                                   |
+| `.kv-button.kv-button--primary:not(…):is(:hover, :active)`                                                  | `--kv-button-edge: var(--kv-color-primary)` instead of `border-color` (the primary hover edge is unchanged)                                                                                                                                                                                                                                                  |
 | `.kv-button.kv-button--danger` and its hover rule                                                           | `--kv-button-edge: transparent` instead of `border-color: transparent`                                                                                                                                                                                                                                                                                       |
 | `.kv-button:is(:disabled, [data-disabled])`                                                                 | Today's rule plus `box-shadow: none`. Its `border-color` already resets all four edges. It must come after every state rule that sets `box-shadow`                                                                                                                                                                                                           |
 | `@media (prefers-reduced-motion: no-preference) .kv-button`                                                 | `transition-property: background-color, border-color, color, box-shadow`. Nothing under `reduce`                                                                                                                                                                                                                                                             |

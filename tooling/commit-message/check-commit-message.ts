@@ -1,4 +1,4 @@
-/** Conventional Commits 1.0.0 (https://www.conventionalcommits.org/en/v1.0.0/), ADR-0012. */
+/** Conventional Commits 1.0.0 (https://www.conventionalcommits.org/en/v1.0.0/). */
 
 export const commitTypes = [
   'feat',

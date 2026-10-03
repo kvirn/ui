@@ -6,10 +6,10 @@ import { FieldStates, localeOf, textsFor, withFormLocale } from '../form/form.fi
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/Hint: a Prose directly in a Field or Fieldset is the description of the
-// control, or of a group inside a Fieldset (ADR-0054, which replaced Field.Description). A hint
+// control, or of a group inside a Fieldset (which replaced Field.Description). A hint
 // carries what the user needs to answer, so it is in the text colour in every density, never
 // muted: 16px above the control and for an option's hint, and 14px (body-small) under the control
-// (ADR-0054). Keep it to plain text and short paragraphs: an accessible description
+//. Keep it to plain text and short paragraphs: an accessible description
 // has no structure. The design spec is docs/design/form-fields.md §6.2. KvirnUI holds no form
 // state.
 
@@ -101,7 +101,7 @@ export const WithExample: Story = {
 }
 
 /**
- * Two hints in one Field (ADR-0031): what to answer and where to find it above the
+ * Two hints in one Field: what to answer and where to find it above the
  * input, and the format under it. Each has its own id. The input's `aria-describedby` lists
  * them in DOM order, then the error's, so a screen reader reads both hints, then "Fel: …".
  */

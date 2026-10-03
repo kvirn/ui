@@ -530,7 +530,7 @@ describe('the status word (i18n)', () => {
     }
   })
 
-  test('a per-instance message overrides the word, and the provider’s comes next (ADR-0007)', async () => {
+  test('a per-instance message overrides the word, and the provider’s comes next', async () => {
     await render(
       <KvirnProvider locale="sv-SE" messages={sv}>
         <KvirnProvider messages={{ notification: { dangerPrefix: 'Viktigt:' } }}>

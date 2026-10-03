@@ -1,7 +1,7 @@
 /*
  * Docs site shell and page template (docs/design/docs-site.md §6), in the default theme's
- * visual direction (ADR-0014). Plain, unlayered CSS, so it wins over @layer kv. Tokens only: no raw colours
- * (ADR-0013). The three --docs-* constants are layout, not theme tokens.
+ * visual direction. Plain, unlayered CSS, so it wins over @layer kv. Tokens only: no raw colours
+ *. The three --docs-* constants are layout, not theme tokens.
  */
 :root {
   --docs-sidebar-width: 15rem;
@@ -262,7 +262,7 @@ body {
   max-inline-size: var(--docs-content-max);
 }
 
-/* The article is kv-prose (ADR-0018): the theme sets its type, spacing, lists and code.
+/* The article is kv-prose: the theme sets its type, spacing, lists and code.
  * The column is wider than the prose measure so examples get room, and running text keeps
  * the measure. */
 .docs-article > :is(p, ul, ol, dl) {

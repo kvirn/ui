@@ -22,7 +22,7 @@ import {
 import type { NotificationFixtureLocale } from './notification.fixture.tsx'
 
 // Components/Notification: the headless Notification, styled by @kvirn-ui/theme/theme.css
-// (ADR-0013, ADR-0047, design spec docs/design/notification.md). notification.e2e.ts runs its
+// (design spec docs/design/notification.md). notification.e2e.ts runs its
 // keyboard rows, focus-ring, forced-colours and reflow checks against WithActions, SendFailed,
 // FocusTarget, Announced, LongFinnishText, AllExamples and ForcedColors. There is no Keyboard
 // story: a notification has no focusable part of its own.

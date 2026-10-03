@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# PreToolUse (Bash): block attempts to bypass git hooks, such as the Conventional Commits check (ADR-0012).
+# PreToolUse (Bash): block attempts to bypass git hooks, such as the Conventional Commits check (AGENTS.md, Conventions: commits).
 # Only real git/vp invocations are checked, so text that merely mentions a flag isn't blocked.
 # Exit 2 = block and feed stderr back to Claude.
 set -u
@@ -8,7 +8,7 @@ command="$(printf '%s' "$input" | node -e 'let s="";process.stdin.on("data",d=>s
 [ -z "$command" ] && exit 0
 
 block() {
-  echo "Blocked: $1 Git hooks enforce Conventional Commits (ADR-0012). Fix the commit message instead of bypassing the hook." >&2
+  echo "Blocked: $1 Git hooks enforce Conventional Commits (AGENTS.md, Conventions: commits). Fix the commit message instead of bypassing the hook." >&2
   exit 2
 }
 

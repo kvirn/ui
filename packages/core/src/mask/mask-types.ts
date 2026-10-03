@@ -1,5 +1,5 @@
 /**
- * Why the mask dropped a character (ADR-0032, item 1). The first four say what the field
+ * Why the mask dropped a character. The first four say what the field
  * accepts, so the message can be "Only digits can be entered here". `length` means the mask is
  * full.
  */
@@ -15,8 +15,7 @@ export interface MaskRejection {
 }
 
 /**
- * Attributes a preset suggests for the `<input>`. The consumer's own props win (ADR-0032,
- * item 3). A preset never sets `autocomplete`, because the right token depends on the question.
+ * Attributes a preset suggests for the `<input>`. The consumer's own props win. A preset never sets `autocomplete`, because the right token depends on the question.
  */
 export interface MaskAttributes {
   readonly inputMode?: 'text' | 'numeric' | 'decimal' | 'tel' | 'email'
@@ -67,7 +66,7 @@ export interface RegexpMaskDefinition {
 /**
  * A locale-aware number. Both `,` and `.` are accepted as typed and shown as the locale's
  * decimal separator. The unmasked value is the plain machine form (`-1234.5`). `min` and `max`
- * are reported as `isWithinRange` and never clamped (ADR-0032, item 4).
+ * are reported as `isWithinRange` and never clamped.
  */
 export interface NumberMaskDefinition {
   readonly type: 'number'
@@ -118,7 +117,7 @@ export interface MaskResult {
   readonly selectionEnd: number
   /** The value without literals and separators. */
   readonly unmaskedValue: string
-  /** The shape is complete. It doesn't mean the number exists (ADR-0032, item 4). */
+  /** The shape is complete. It doesn't mean the number exists. */
   readonly isComplete: boolean
   /** Number masks only: whether the number is within `min` and `max`. Never clamped. */
   readonly isWithinRange?: boolean

@@ -8,7 +8,7 @@ import { Field } from '../field/field.tsx'
 import { Listbox } from './listbox.tsx'
 import type { UseListboxMultipleOptions, UseListboxSingleOptions } from './use-listbox.ts'
 
-// Contract: listbox.a11y.md › Virtualization (ADR-0059, item 3; ADR-0037, item 11). The keys are
+// Contract: listbox.a11y.md › Virtualization. The keys are
 // also covered end to end in apps/storybook/src/components/listbox/listbox.e2e.ts. Component tests
 // load no theme, so the fixture gives the list the height limit and the scroll that the theme gives
 // it, and every option the 2rem height that `estimateSize` guesses.

@@ -890,7 +890,7 @@ test.describe('Listbox popup focus and modes', () => {
     const control = await page.locator('.kv-listbox-trigger').boundingBox()
     const popup = await popupOf(page).boundingBox()
     expect(control?.width).toBeLessThanOrEqual((field?.width ?? 0) + 0.5)
-    // At least as wide as the trigger, never narrower (ADR-0037, item 13).
+    // At least as wide as the trigger, never narrower.
     expect(popup?.width).toBeGreaterThanOrEqual((control?.width ?? 0) - 1)
   })
 

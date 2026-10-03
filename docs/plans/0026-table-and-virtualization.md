@@ -3,7 +3,7 @@
 - **Status:** In progress
 - **Owner:** Maintainer, with component-engineer and ux-designer
 - **Created:** 2026-10-03 · **Target:** M3 (Table), M2 follow-up (virtualization)
-- **Related:** ADR-0059 (supersedes ADR-0034), ADR-0035, ADR-0037, ADR-0050, design spec `docs/design/table.md`
+- **Related:** design spec `docs/design/table.md`
 
 ## Goal
 
@@ -11,16 +11,16 @@ People using public-sector services can read, sort and select rows in a data tab
 
 ## Non-goals
 
-- `role="grid"`, cell-by-cell arrow navigation and editable cells (ADR-0035 Option B; a future DataGrid needs its own ADR).
+- `role="grid"`, cell-by-cell arrow navigation and editable cells (a future DataGrid needs its own decision).
 - Column resizing, column reordering by drag, column virtualization, and pinned columns.
 - A Pagination component (M3, its own plan). Pagination works through TanStack's feature, and a story shows the recipe.
-- ScrollArea (ADR-0036). `Table.ScrollRegion` covers the table's need until it exists.
-- Virtualized groups in Listbox (ADR-0037 item 11), expansion combined with virtualization in Table, and multi-sort.
+- ScrollArea. `Table.ScrollRegion` covers the table's need until it exists.
+- Virtualized groups in Listbox, expansion combined with virtualization in Table, and multi-sort.
 - Virtualizing the touch-native `<select>` rendering of Listbox.
 
 ## Background
 
-- APG: Table pattern and Sortable Table example; Listbox and Combobox patterns (ADR-0037, ADR-0050).
+- APG: Table pattern and Sortable Table example; Listbox and Combobox patterns.
 - The Listbox and Combobox cores already navigate by index (`entries`, `size`, `activeIndex`, `getRequiredRenderKeys()` in `create-listbox.ts`). The React layer mounts every option and scrolls the active one with a per-option `scrollIntoView` (`listbox.tsx` `ListboxOption` effect). Option ids come from the data index (`getOptionId`), so they survive virtualization.
 - Prior art: GOV.UK Table, Adrian Roselli's sortable tables, React Aria's virtualized ListBox and Table, TanStack's own virtualized-table examples.
 - DESIGN.md: tables use `numeric` for figures, `surface` for the header row, `border-subtle` row dividers, no zebra stripes, and sortable headers are buttons with a visible sort indicator. Compact density (32px) is allowed for tables.
@@ -144,7 +144,7 @@ function Cases({ data }: { data: Case[] }) {
 
 - **`useTable(options)`** takes the TanStack table options (`features`, `columns`, `data`, `getRowId`, `state`, `on*Change`, `initialState`, …) plus KvirnUI's: `rowHeader?: string` (the column id whose cells render as `<th scope="row">`), `virtualize?`, `isLoading?`, `messages?: Partial<KvirnMessages['table']>`. It creates the instance once through core's `createTable`, keeps options in sync with `table.setOptions`, and re-renders on `table.store` changes through `useStoreSelector`.
 - **`UseTableResult`**: `table` (the TanStack instance) and the prop getters `tableProps`, `captionProps`, `scrollRegionProps`, `headProps`, `bodyProps`, `getColumnHeaderProps(header?)`, `getSortButtonProps(header)`, `getRowProps(row)`, `getCellProps(cell)`, `getSelectCheckboxProps(row)`, `getSelectAllCheckboxProps()`, `getExpandButtonProps(row)`, `getDetailRowProps(row)`, `emptyProps`, and `rows` (what `Table.Body` iterates: the row model, or the virtual segments).
-- **Parts** (ADR-0035 item 1), each one element, each a named export, `render` prop as everywhere:
+- **Parts**, each one element, each a named export, `render` prop as everywhere:
   - `Table.Root` `<table>`, `Table.Caption` `<caption>`, `Table.Head` `<thead>`, `Table.Body` `<tbody>`, `Table.Foot` `<tfoot>`, `Table.Row` `<tr>`.
   - `Table.ColumnHeader` `<th scope="col">`: with `header`, sets `colSpan` and `aria-sort`, and renders the header template when it has no children.
   - `Table.RowHeader` `<th scope="row">` for static tables.
@@ -211,7 +211,7 @@ Table: **Focus strategy:** native. **Selection follows focus:** n/a. **Arrows wr
 | empty            | No rows to show.                  | Det finns inga rader att visa.        |
 | rowDetails       | Details                           | Detaljer                              |
 
-`rowDetails` replaces ADR-0035's `expandRow`/`collapseRow`: the button's name stays the same and `aria-expanded` carries the state. fi, nb, nn and se get translations (se may start from the English placeholder, as other namespaces do).
+`rowDetails` replaces the earlier `expandRow`/`collapseRow`: the button's name stays the same and `aria-expanded` carries the state. fi, nb, nn and se get translations (se may start from the English placeholder, as other namespaces do).
 
 ### Theming surface
 
@@ -224,7 +224,7 @@ Table: **Focus strategy:** native. **Selection follows focus:** n/a. **Arrows wr
 
 Phase 0 (orchestrator)
 
-- [x] ADR-0059, this plan, ADR index and status lines (0034 superseded; 0035 and 0037 amended)
+- [x] The bundling decision, this plan and status lines
 - [x] AGENTS.md rule 6, `docs/architecture.md`, `docs/vision.md`
 - [x] Catalog pins, `@kvirn-ui/core` dependencies, lint boundaries, `pnpm install`
 
@@ -245,7 +245,7 @@ Phase 3 (orchestrator)
 
 ## Risks & open questions
 
-- **`aria-activedescendant` in virtualized lists** has known VoiceOver and TalkBack gaps (ADR-0037). Manual AT pending.
+- **`aria-activedescendant` in virtualized lists** has known VoiceOver and TalkBack gaps. Manual AT pending.
 - **`aria-rowcount` support** varies; NVDA and JAWS report it, VoiceOver partly. Manual AT pending.
 - **TanStack v9 type depth.** Re-exported generic types may slow type-checking. Measure `vp check` time before and after.
 - **`use-popup.ts` measurement** sets the popup's max height from its natural height. With the sizer, the natural height is the total size, which the existing `--kv-popup-height-limit` clamps. Verify the popup opens at the right size.

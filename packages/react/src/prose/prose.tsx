@@ -30,7 +30,7 @@ const proseState: ProseState = Object.freeze({})
 
 /**
  * The prose container: one `<div class="kv-prose">`. Inside a Field.Root or Fieldset.Root it is
- * also the description of the control or the group (ADR-0054): it registers, gets an id, and is
+ * also the description of the control or the group: it registers, gets an id, and is
  * listed in `aria-describedby` in DOM order, before the error.
  */
 export function ProseRoot({ render, ref, ...otherProps }: ProseRootProps): ReactElement {

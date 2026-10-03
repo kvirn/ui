@@ -36,7 +36,7 @@ export type AutocompleteRootProps<TItem> = UseAutocompleteOptions<TItem> & {
 }
 
 /**
- * Owns the state of an Autocomplete: the suggestions and the text (ADR-0037, item 5; contract:
+ * Owns the state of an Autocomplete: the suggestions and the text (contract:
  * autocomplete.a11y.md). It renders no element of its own: put an `Autocomplete.Input` and an
  * `Autocomplete.Popup` inside it, in a `Field`, the popup right after the input.
  *
@@ -91,7 +91,7 @@ export type AutocompletePopupProps = ComboboxPopupProps
 export type AutocompleteToggleProps = ComboboxToggleProps
 
 /**
- * The Autocomplete's parts (ADR-0037). `Root` with `Input` and `Popup` is the editable combobox
+ * The Autocomplete's parts. `Root` with `Input` and `Popup` is the editable combobox
  * for free text with suggestions (the APG combobox with list autocomplete): the value is the
  * text. `Control`, `Toggle` and `Clear` are optional. The parts are the Combobox's, so a Combobox
  * and an Autocomplete are built the same way.

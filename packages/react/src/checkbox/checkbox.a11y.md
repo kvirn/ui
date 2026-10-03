@@ -1,12 +1,12 @@
 # Accessibility contract: Checkbox
 
 - **APG pattern:** [Checkbox](https://www.w3.org/WAI/ARIA/apg/patterns/checkbox/). Dual-state and tri-state ("mixed") are both covered, with the native element: `<input type="checkbox">` and its `indeterminate` property. No ARIA is added.
-- **Deviations:** none from APG. Decisions: ADR-0029 (Field wiring, no form state, option labels have no optional marker) and ADR-0039 (keyboard).
+- **Deviations:** none from APG. Decisions (forms skill): Field wiring, no form state, option labels have no optional marker.
 - **Native elements used:** `<input type="checkbox">`, named by a `<label for>` (Label).
 - **Status:** alpha candidate (Plan 0013, Phase 2). Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `checkbox.test.tsx` next to this file. `checkbox.stories.tsx` and `checkbox.e2e.ts` in `apps/storybook/src/components/checkbox/`. A Checkbox inside a group: `checkbox-group.a11y.md`.
 
-A Checkbox is one yes-or-no answer: a declaration, a consent, a "select all" in a staff table. It is a native input, so the browser supplies the role, the Space key, the label click and form submission. Checkbox adds the Field's wiring, the part class, `indeterminate` and `data-state`. It holds no form state: pass `checked` and `onCheckedChange` from your form logic, or `defaultChecked` and `name` for a plain form (ADR-0029, item 0).
+A Checkbox is one yes-or-no answer: a declaration, a consent, a "select all" in a staff table. It is a native input, so the browser supplies the role, the Space key, the label click and form submission. Checkbox adds the Field's wiring, the part class, `indeterminate` and `data-state`. It holds no form state: pass `checked` and `onCheckedChange` from your form logic, or `defaultChecked` and `name` for a plain form.
 
 ## Roles, states, properties
 
@@ -19,7 +19,7 @@ A Checkbox is one yes-or-no answer: a declaration, a consent, a "select all" in 
 Rules, tested in `checkbox.test.tsx`:
 
 - **A native checkbox.** `<input type="checkbox">`, class `kv-checkbox`, no ARIA role and no `aria-checked` (`checkbox.test.tsx › renders a native <input type="checkbox"> with its class, outside a Field`).
-- **Named by its label.** In a Field the label's `for` matches the input's `id`; the accessible name is the label text, with "(optional)" in a standalone, non-required Field (`checkbox.test.tsx › the Field’s label is the name, and the description is the option’s hint`). The hint is a `Prose` in the option's Field (ADR-0054): its description is its text content, so keep it short and plain.
+- **Named by its label.** In a Field the label's `for` matches the input's `id`; the accessible name is the label text, with "(optional)" in a standalone, non-required Field (`checkbox.test.tsx › the Field’s label is the name, and the description is the option’s hint`). The hint is a `Prose` in the option's Field: its description is its text content, so keep it short and plain.
 - **`indeterminate` is a DOM property** set after render (it can't be set in markup): the checkbox exposes "mixed" and `data-state="indeterminate"`. The first server-rendered paint is unchecked. A click checks it (Space does the same) and calls `onCheckedChange(true)`; whether it stays indeterminate is the `indeterminate` prop's decision, not the browser's (`checkbox.test.tsx › indeterminate is the DOM property and data-state`).
 - **`data-state`** is `checked`, `unchecked` or `indeterminate`. It follows the props for a controlled checkbox, and the native state after each change for an uncontrolled one. The default theme styles `:checked` and `:indeterminate` first, so nothing depends on this attribute after a `form.reset()` (`checkbox.test.tsx › data-state follows the native state`).
 - **No form state.** `defaultChecked` and `name` work in a plain form (`FormData` has the value); `checked` and `onCheckedChange` give a controlled checkbox. The checkbox never copies `checked` into state (`checkbox.test.tsx › works in a plain form`, `checkbox.test.tsx › a controlled checkbox shows the checked it is given`).
@@ -58,7 +58,7 @@ The arrow keys, Home and End do nothing on a checkbox (native). Clicking the lab
 
 ## Announcements
 
-None. Nothing is live (ADR-0029). On focus a screen reader reads the label, "checkbox", the checked or "mixed" state, "required" when `aria-required` is set, and the description (the option's hint, then "Fel: …" when the standalone checkbox is invalid).
+None. Nothing is live. On focus a screen reader reads the label, "checkbox", the checked or "mixed" state, "required" when `aria-required` is set, and the description (the option's hint, then "Fel: …" when the standalone checkbox is invalid).
 
 ## Consumer responsibilities
 
@@ -92,7 +92,7 @@ None. Nothing is live (ADR-0029). On focus a screen reader reads the label, "che
 
 | AT + browser + OS                        | Date    | Tester | Result | Notes |
 | ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| **Core (required for beta)**             |         |        |        |       |
 | NVDA + Firefox + Windows                 | pending |        |        |       |
 | VoiceOver + Safari + macOS               | pending |        |        |       |
 | VoiceOver + Safari + iOS                 | pending |        |        |       |

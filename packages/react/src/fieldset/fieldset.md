@@ -1,14 +1,14 @@
 # Fieldset
 
-> **Draft** (Plan 0013). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [fieldset.a11y.md](fieldset.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md), and the decisions are in ADR-0029.
+> **Draft** (Plan 0013). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [fieldset.a11y.md](fieldset.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md), and the decisions are in the forms skill.
 
 **KvirnUI holds no form state; bring your own form logic.** Fieldset renders what it's given. `invalid`, `required` and `disabled` come from your form library or your own code, and you write the error message.
 
 A native `<fieldset>` with a `<legend>`: it groups related questions (an address) or the controls of one question (the options of a radio group, the three boxes of a date), under one accessible name. Its hint and error describe the group.
 
-- Three parts: `<Fieldset>` is the root (`<fieldset>`), `<Legend>` is the `<legend>` and `<ErrorMessage>` is the same component as [Field's](../field/field.md). `Fieldset.Root`, `Fieldset.Legend`, `Fieldset.Prose` and `Fieldset.ErrorMessage` are aliases of the same components (ADR-0055), and each is also exported on its own (`FieldsetRoot`, `FieldsetLegend`, …). The hint is a [Prose](../prose/prose.md): a `<Prose>` inside the Fieldset (and not inside a Field in it) is the group's description, and `Fieldset.Prose` is the same component under a name that reads as part of the Fieldset (ADR-0054).
+- Three parts: `<Fieldset>` is the root (`<fieldset>`), `<Legend>` is the `<legend>` and `<ErrorMessage>` is the same component as [Field's](../field/field.md). `Fieldset.Root`, `Fieldset.Legend`, `Fieldset.Prose` and `Fieldset.ErrorMessage` are aliases of the same components, and each is also exported on its own (`FieldsetRoot`, `FieldsetLegend`, …). The hint is a [Prose](../prose/prose.md): a `<Prose>` inside the Fieldset (and not inside a Field in it) is the group's description, and `Fieldset.Prose` is the same component under a name that reads as part of the Fieldset.
 - **A hint is text.** The accessible description is the Prose's text content, so a heading, list or link inside it loses its structure for a screen-reader user. Keep a hint short. A Prose that isn't a hint goes outside the Fieldset.
-- The legend is the group's name, and the browser maps the fieldset to the `group` role. `aria-describedby` on the fieldset lists every hint in DOM order and then the error, only for parts that are rendered. A fieldset can have several hints, each with its own id (ADR-0031), and one error: two `ErrorMessage`s give a dev warning.
+- The legend is the group's name, and the browser maps the fieldset to the `group` role. `aria-describedby` on the fieldset lists every hint in DOM order and then the error, only for parts that are rendered. A fieldset can have several hints, each with its own id, and one error: two `ErrorMessage`s give a dev warning.
 - `disabled` is native `fieldset[disabled]`: every control inside is disabled and skipped by Tab.
 - `invalid` marks the fieldset's own parts (`data-invalid`) and renders its ErrorMessage. It does **not** pass down to the Fields inside, so one message for the group doesn't mark every control: set `invalid` on each Field that is wrong. There is no `aria-invalid` on a fieldset, because ARIA doesn't support it on `group`: the error reaches users through the description.
 - `group` is for one question answered with several controls. The legend then ends with "(valfritt)" when the group isn't `required`, and the Fields inside drop their own marker: an option or a date box is never "(optional)". A plain Fieldset only groups questions, so its legend has no marker, and its Fields mark themselves.
@@ -42,7 +42,7 @@ import { ErrorMessage, Field, Fieldset, Input, Label, Legend, Prose } from '@kvi
 </Fieldset>
 ```
 
-The default order (ADR-0031) is the legend, the hint, the controls, then the error under them. Render another order and the spacing and the description still work. On submit, move focus to the first invalid control or the error summary, and keep `scroll-padding` on the page, so the message under the controls isn't hidden by the on-screen keyboard (see [Field](../field/field.md)).
+The default order is the legend, the hint, the controls, then the error under them. Render another order and the spacing and the description still work. On submit, move focus to the first invalid control or the error summary, and keep `scroll-padding` on the page, so the message under the controls isn't hidden by the on-screen keyboard (see [Field](../field/field.md)).
 
 Your part:
 

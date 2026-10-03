@@ -18,14 +18,14 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/InputGroup: an Input with a unit, a symbol, a decorative icon or a button
-// inside its box (ADR-0031, design spec docs/design/form-fields.md §6.13). InputGroup.Root is
+// inside its box (design spec docs/design/form-fields.md §6.13). InputGroup.Root is
 // the box: it draws the edge, the invalid and disabled state and the focus ring. InputGroup.Addon
 // is a short unit or a decorative icon: `aria-hidden`, never focusable, so the label always
 // carries the meaning ("Månadshyra i kronor", never "Månadshyra" plus a "kr" Addon). A real
 // Button (clear, show password) goes directly in the Root, never in an Addon: it keeps its own
 // name and Tab stop.
 //
-// KvirnUI holds no form state (ADR-0029, item 0). The clear Button of SearchWithClear keeps the
+// KvirnUI holds no form state. The clear Button of SearchWithClear keeps the
 // value in this story's `useState`, where your form library's state would live. Nothing here
 // validates: an invalid story sets `invalid` itself. input-group.e2e.ts runs the focus ring,
 // Tab order, RTL, forced-colours and reflow checks.

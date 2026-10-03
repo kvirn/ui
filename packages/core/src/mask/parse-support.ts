@@ -51,7 +51,7 @@ const letterPattern = /^\p{L}$/u
 const markPattern = /^\p{M}$/u
 const digitPattern = /^[0-9]$/
 // Whitespace, dashes, dots, commas, slashes, underscores and parentheses: what people put
-// between the groups of a number. Pasted separators are normalised, not refused (ADR-0032, 5.3).
+// between the groups of a number. Pasted separators are normalised, not refused.
 const separatorPattern = /^[\s\-‐-―−./,_()]$/u
 
 export const isDigit = (character: string): boolean => digitPattern.test(character)

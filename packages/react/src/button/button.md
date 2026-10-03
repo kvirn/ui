@@ -36,7 +36,7 @@ Change the element, which must still be a `<button>` (a dev warning says so othe
 </Button>
 ```
 
-An element keeps its own props, and the Button's props are merged in: handlers chain, class names join (ADR-0015). An element's own `onClick` goes through the Button too, so it's blocked while disabled (ADR-0016).
+An element keeps its own props, and the Button's props are merged in: handlers chain, class names join. An element's own `onClick` goes through the Button too, so it's blocked while disabled.
 
 In the function form, spread `buttonProps` and never override `buttonProps.onClick`: it is what blocks activation while disabled. Put your handler on the Button instead. `buttonProps.className` already holds `kv-button` and the Button's own `className`: keep it if you add a class of your own.
 
@@ -59,7 +59,7 @@ function SaveButton({ isSaving }: { isSaving: boolean }) {
 }
 ```
 
-Pass your click handler as `useButton({ onClick })`. A handler merged on top of `buttonProps` isn't blocked while disabled (ADR-0016). `buttonProps.className` is `kv-button`: add a variant class with `mergeProps`, which joins class names, instead of overriding it.
+Pass your click handler as `useButton({ onClick })`. A handler merged on top of `buttonProps` isn't blocked while disabled. `buttonProps.className` is `kv-button`: add a variant class with `mergeProps`, which joins class names, instead of overriding it.
 
 ```tsx
 <button {...mergeProps(button.buttonProps, { className: 'kv-button--primary' })}>Skicka</button>

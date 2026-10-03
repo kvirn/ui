@@ -49,7 +49,7 @@ export interface TakenRenderElementProps<PartProps, State, Key extends string> {
 /**
  * Internal. Takes props out of a `render` element, so the part routes them through its hook
  * instead of letting `mergeProps` pass them straight through. A disabled Button must gate the
- * element's `onClick`, and Link must resolve the element's `target` and `rel` (ADR-0016).
+ * element's `onClick`, and Link must resolve the element's `target` and `rel`.
  */
 export function takeRenderElementProps<PartProps, State, Key extends string>(
   render: RenderProp<PartProps, State> | undefined,

@@ -12,7 +12,7 @@ import type {
 } from './use-combobox.ts'
 
 // Internal. How the parts of a Combobox or an Autocomplete find each other, without DOM queries
-// (ADR-0037, item 7). The popup parts (`Popup`, `List`, `Option`, `Group`, `GroupLabel` and
+//. The popup parts (`Popup`, `List`, `Option`, `Group`, `GroupLabel` and
 // `Empty`) are the Listbox's, and read `ListboxListContext`, which each Root also provides. This
 // context holds what only the field needs: the input, its box and buttons, and the value list.
 //

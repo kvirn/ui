@@ -68,7 +68,7 @@ describe('Prose', () => {
   })
 })
 
-describe('Prose as the description of a Field or Fieldset (ADR-0054)', () => {
+describe('Prose as the description of a Field or Fieldset', () => {
   test('a Prose in a Field registers its id and the control’s aria-describedby lists it', async () => {
     await render(
       <Field.Root>

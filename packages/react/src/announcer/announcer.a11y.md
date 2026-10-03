@@ -1,14 +1,14 @@
 # Accessibility contract: Announcer
 
 - **APG pattern:** none. The Announcer is not a widget. It is the pair of live regions that WCAG 4.1.3 Status Messages needs ([ARIA `status` role](https://www.w3.org/TR/wai-aria-1.2/#status), [`alert` role](https://www.w3.org/TR/wai-aria-1.2/#alert), [technique ARIA22](https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA22) and [ARIA19](https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA19)).
-- **Deviations:** none. ADR-0040 records the decisions.
+- **Deviations:** none.
 - **Native elements used:** `<output>` for the polite region (its implicit role is `status`) and a `<div role="alert">` for the assertive one, which has no native element.
 - **Status:** in progress (Plan 0014, Phase 2 prerequisite). Gates 1–5 run, accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `announcer.test.tsx` next to this file, and `announcer.test.ts` in `packages/core/src/announcer/`. `announcer.stories.tsx` in `apps/storybook/src/components/announcer/`. There is no e2e spec: the component has no keys.
 
 The Announcer is how a component tells a screen reader that something changed without moving focus (4.1.3). The outermost `KvirnProvider` renders two live regions once, empty, after its children. Components and apps call `useAnnouncer().announce(message, options)`. The regions are the only part, and `Announcer` is not exported: rendering a second pair would make a screen reader read every message twice.
 
-The Announcer has no strings of its own. The caller passes text already resolved from i18n (ADR-0007), in the provider's language.
+The Announcer has no strings of its own. The caller passes text already resolved from i18n, in the provider's language.
 
 ## Roles, states, properties
 
@@ -86,7 +86,7 @@ Rules for callers (4.1.3):
 
 | AT + browser + OS                        | Date    | Tester | Result | Notes |
 | ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| **Core (required for beta)**             |         |        |        |       |
 | NVDA + Firefox + Windows                 | pending |        |        |       |
 | VoiceOver + Safari + macOS               | pending |        |        |       |
 | VoiceOver + Safari + iOS                 | pending |        |        |       |
@@ -103,8 +103,8 @@ What to check by ear: a polite message is read after the current speech, an asse
 
 ## Known issues
 
-- **Language of a message.** The regions inherit the page's `lang`. A message from a nested `KvirnProvider` with another locale is read with the page's voice. Fix later with a per-message `lang` (ADR-0040 follow-up).
-- **Modals silence the regions (4.1.3).** The regions sit in the app tree after the provider's children. A modal that makes the rest of the page inert or hidden (native `<dialog>` `showModal()`, `inert` on the app root, `aria-modal` in Safari) also silences them, so nothing announced from inside the dialog is heard. Follow-up: the future Dialog hosts its own regions or moves them into the top layer (ADR-0040).
+- **Language of a message.** The regions inherit the page's `lang`. A message from a nested `KvirnProvider` with another locale is read with the page's voice. Fix later with a per-message `lang`.
+- **Modals silence the regions (4.1.3).** The regions sit in the app tree after the provider's children. A modal that makes the rest of the page inert or hidden (native `<dialog>` `showModal()`, `inert` on the app root, `aria-modal` in Safari) also silences them, so nothing announced from inside the dialog is heard. Follow-up: the future Dialog hosts its own regions or moves them into the top layer.
 - **Latest wins.** Two messages for the same politeness inside 100 ms: the second replaces the first. There is no queue yet.
-- **Without a provider nothing is announced.** Components that announce (Input masks, Plan 0014) do nothing for screen reader users when no provider is mounted. ADR-0040 follow-up.
+- **Without a provider nothing is announced.** Components that announce (Input masks, Plan 0014) do nothing for screen reader users when no provider is mounted. Follow-up.
 - **Nested providers with their own `env`** (an iframe) share the outermost provider's regions, which live in the outer document.

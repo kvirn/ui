@@ -2,7 +2,7 @@
 '@kvirn-ui/theme': minor
 ---
 
-`kv-prose` now covers everything Tailwind's typography plugin does (ADR-0054), and there is an optional `reset.css` (ADR-0056).
+`kv-prose` now covers everything Tailwind's typography plugin does, and there is an optional `reset.css`.
 
 - Sizes: `kv-prose--small` (14px, for notes and metadata, not essential text), `kv-prose--xl` and `kv-prose--2xl`, next to `--large`. `--xl` and `--2xl` step down below 40rem. `kv-prose--full` lifts the 70ch measure, like `max-w-none`.
 - Colour roles, named like the plugin's `--tw-prose-*`: `--kv-prose-color-body`, `-headings`, `-lead`, `-links`, `-links-hover`, `-bold`, `-counters`, `-bullets`, `-hr`, `-quotes`, `-quote-borders`, `-captions`, `-code`, `-pre-code`, `-pre-bg`, `-th-borders` and `-td-borders`. They are declared on `.kv-prose`, so each theme resolves its own, and default to the semantic tokens. The colours don't change unless you set one.

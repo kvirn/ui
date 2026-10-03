@@ -3,7 +3,6 @@
 - **Status:** Done (alpha. Manual AT pending before beta)
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-03 · **Target:** M1
-- **Related:** ADR-0054 (Accepted), ADR-0055 (Accepted), ADR-0029, ADR-0031, ADR-0052
 
 ## Goal
 
@@ -27,11 +26,11 @@ A hint in a form is text set for reading, which `Prose` already is. Remove `Fiel
 
 ## Design
 
-- `Prose.Root` reads the internal `FieldTextHostContext`. When there is a host (Field.Root or Fieldset.Root), it does what `FieldDescription` did: a `useId()` name, a merged element ref, `registerDescription(name, ref)` in a layout effect, and `id`, `data-invalid` and `data-disabled` from `host.getDescriptionProps(name)`. Ids stay in DOM order (ADR-0031). Outside a host it is exactly today's Prose, with no warning.
+- `Prose.Root` reads the internal `FieldTextHostContext`. When there is a host (Field.Root or Fieldset.Root), it does what `FieldDescription` did: a `useId()` name, a merged element ref, `registerDescription(name, ref)` in a layout effect, and `id`, `data-invalid` and `data-disabled` from `host.getDescriptionProps(name)`. Ids stay in DOM order. Outside a host it is exactly today's Prose, with no warning.
 - Extract that logic into one internal hook, `useDescriptionPart`, used by Prose and by `FileUpload.Limits` (which stays, with class `kv-file-upload-limits`).
 - Remove `FieldDescription`, `Field.Description`, `FieldsetDescription`, `Fieldset.Description`, `FieldDescriptionProps` and the `field-description-outside-field` warning from the exports. `useField` and `useFieldset` keep `descriptionProps` and `getDescriptionProps`, and the class they return is `kv-prose` (was `kv-field-description`).
 - Default element stays `<div>`: a hint with several paragraphs is valid. `render` can still make it a `<p>`.
-- Theme: delete `.kv-field-description`. A `.kv-prose` inside `.kv-field` or `.kv-fieldset` is prose again, so the boundary rule at theme.css (~1089) must let the nearest `kv-prose` win, as it does for cards. The hint keeps the text colour in every density, is body size above the control and for an option's hint, and body-small under the control (ADR-0054, decided after this plan), its measure is `--kv-prose-measure`, and the checkbox/radio grid rule targets `> .kv-prose`. The `.kv-file-upload-limits` rule stays.
+- Theme: delete `.kv-field-description`. A `.kv-prose` inside `.kv-field` or `.kv-fieldset` is prose again, so the boundary rule at theme.css (~1089) must let the nearest `kv-prose` win, as it does for cards. The hint keeps the text colour in every density, is body size above the control and for an option's hint, and body-small under the control (decided after this plan), its measure is `--kv-prose-measure`, and the checkbox/radio grid rule targets `> .kv-prose`. The `.kv-file-upload-limits` rule stays.
 - The `Components/Form/Description` story file becomes a `Components/Form/Hint` story file, or is merged into the Field stories. Keep the same behaviours: in a field, in a fieldset, above and under, compact, long Finnish, RTL, forced colours.
 
 ### Accessibility contract (draft)
@@ -52,7 +51,7 @@ None.
 - [ ] Tests first: Prose in Field and Fieldset (id, DOM order, two hints, `aria-describedby`, outside a host, axe). Migrate the existing tests
 - [x] `theme.css`: remove `.kv-field-description`, boundary rule, grid rule, theme tests (including the heading and field tests that name the old class)
 - [ ] Migrate stories, fixtures, `*.md`, `*.a11y.md`, docs, `docs/design/form-fields.md`
-- [x] ADR-0054, roadmap, changeset (breaking, `!`)
+- [x] Decision record, roadmap, changeset (breaking, `!`)
 - [ ] Manual AT matrix: `pending`
 
 ## Verification
@@ -63,8 +62,8 @@ None.
 
 Added after the first version (AGENTS.md rule 10: the plan follows the scope).
 
-- **Typography parity (ADR-0054):** the colour roles `--kv-prose-color-*`, the sizes `kv-prose--small`, `--xl`, `--2xl` and `--full`, and the plugin's remaining element rules (bold and code in headings, links, quotes and table heads, `li` padding, flush table columns, `thead` and `tfoot`, `.kv-lead` on any element). Tests: `theme-css.test.ts` (roles, sizes, step-down, lead), `prose.stories.tsx` (`Sizes`, `Full width and colour roles`, `Forced colors`), `prose.e2e.ts` (320px reflow, step-down, forced colours, axe).
-- **Hint size (ADR-0054 §6):** a hint under the control is `body-small`. A hint above it (also when the label is the page's `h1`) and an option's hint stay 16px. Test: `hint.stories.tsx › SixteenAboveAndForOptions`, `theme-css.test.ts`.
-- **`reset.css` (ADR-0056):** an opt-in Preflight port in `@layer kv-reset`. Test: `theme-css.test.ts › reset.css`.
-- **Worker caps (ADR-0058):** `maxWorkers` in `vite.config.ts` and `workers` in `playwright.config.ts`.
+- **Typography parity:** the colour roles `--kv-prose-color-*`, the sizes `kv-prose--small`, `--xl`, `--2xl` and `--full`, and the plugin's remaining element rules (bold and code in headings, links, quotes and table heads, `li` padding, flush table columns, `thead` and `tfoot`, `.kv-lead` on any element). Tests: `theme-css.test.ts` (roles, sizes, step-down, lead), `prose.stories.tsx` (`Sizes`, `Full width and colour roles`, `Forced colors`), `prose.e2e.ts` (320px reflow, step-down, forced colours, axe).
+- **Hint size:** a hint under the control is `body-small`. A hint above it (also when the label is the page's `h1`) and an option's hint stay 16px. Test: `hint.stories.tsx › SixteenAboveAndForOptions`, `theme-css.test.ts`.
+- **`reset.css`:** an opt-in Preflight port in `@layer kv-reset`. Test: `theme-css.test.ts › reset.css`.
+- **Worker caps:** `maxWorkers` in `vite.config.ts` and `workers` in `playwright.config.ts`.
 - **Review:** `accessibility-reviewer` found two blockers (the under-hint selector was too broad, and the forced-colours and reflow claims had no tests). Both are fixed and covered by the tests above.

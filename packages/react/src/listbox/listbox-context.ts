@@ -13,7 +13,7 @@ import type {
 } from './use-listbox.ts'
 import type { ListboxVirtualization } from './use-list-virtualization.ts'
 
-// Internal. How the parts of a Listbox find each other, without DOM queries (ADR-0037, item 7).
+// Internal. How the parts of a Listbox find each other, without DOM queries.
 //
 // - ListboxListContext: what the popup and the options need. Listbox, Combobox and Autocomplete
 //   share the popup parts (`Listbox.Popup`, `List`, `Option`, `Group`, `GroupLabel` and `Empty`),

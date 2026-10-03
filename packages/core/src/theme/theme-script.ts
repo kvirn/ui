@@ -14,7 +14,7 @@ export type ThemeScriptOptions = Pick<ThemeOptions, 'defaultColorScheme' | 'defa
 
 /**
  * Source for the blocking inline script that sets the theme attributes on `<html>`
- * before first paint (ADR-0006). It mirrors the store's resolution for `storage: 'local'`;
+ * before first paint. It mirrors the store's resolution for `storage: 'local'`;
  * a browser test runs both for every preference × system combination to keep them in sync.
  *
  * Defaults are validated first, since they can come from untyped config, and every embedded

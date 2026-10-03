@@ -21,11 +21,11 @@ import {
 } from './autocomplete.fixture.tsx'
 
 // Components/Form/Autocomplete: Autocomplete.Root, Control, Input, Toggle, Clear and the popup
-// parts it shares with the Combobox and the Listbox (ADR-0037; contract: autocomplete.a11y.md).
+// parts it shares with the Combobox and the Listbox (contract: autocomplete.a11y.md).
 // The Docs page opens with the package docs: how to use it. autocomplete.e2e.ts runs the keyboard
 // rows, forced colours, reduced motion and reflow checks against these stories.
 //
-// KvirnUI holds no form state (ADR-0029, item 0). The value is the text: pass `value` and
+// KvirnUI holds no form state. The value is the text: pass `value` and
 // `onValueChange` (Controlled), or `defaultValue` and `name` for a plain form (PlainForm).
 // Nothing here validates: an invalid story sets `invalid` itself.
 

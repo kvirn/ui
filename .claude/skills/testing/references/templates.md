@@ -46,15 +46,15 @@ test('trigger exposes aria-expanded and toggles panel', async () => {
 
 ## Story
 
-`apps/storybook/src/components/<name>/<name>.stories.tsx`, following ADR-0023:
+`apps/storybook/src/components/<name>/<name>.stories.tsx`, following these conventions:
 
 - `meta.component` is the real component, with shared `args`, so the Docs page (autodocs) shows its props. `satisfies Meta<typeof X>`.
-- Most stories are `{}` or `{ args }`, with a one-line JSDoc that says what the story shows. `render` only for compositions (a matrix, a form, a navigation list). No `<main><h1>` page wrapper.
+- Most stories are `{}` or `{ args }`, with a one-line JSDoc that says what the story shows. `render` only for compositions (a matrix, a form, a navigation list). No `<main><h1>` page wrapper. `layout` stays `padded` (the default), and is `fullscreen` only for page stories.
 - Play functions take `canvas` and `userEvent` from the story context.
 - No fixed-theme exports (`Light`, `Dark`, …): `vp test run` runs every story in four theme projects. A story that is only valid in one theme pins it with `globals: { mode: 'light', contrast: 'standard' }` and says why.
 - Visible fixture text is in one locale, with a matching `globals: { locale }` (3.1.2).
 - Keep `RTL` and `ForcedColors`, and every story an e2e spec targets.
-- Pass the contract as `parameters.a11yContract` (a `?raw` import), so the Docs page renders its Keyboard section. A component with a focusable part has a story named `Keyboard`, the fixture its e2e keyboard tests drive (ADR-0039, the `keyboard` skill).
+- Pass the contract as `parameters.a11yContract` (a `?raw` import), so the Docs page renders its Keyboard section. A component with a focusable part has a story named `Keyboard`, the fixture its e2e keyboard tests drive (the `keyboard` skill).
 
 ```tsx
 import { Disclosure } from '@kvirn-ui/react'

@@ -1,127 +1,204 @@
 # Plan 0017: Close the Storybook feature gaps
 
-- **Status:** Draft
+- **Status:** Draft (rewritten 2026-10-04 after a re-audit)
 - **Owner:** Maintainer / Claude
 - **Created:** 2026-10-02 · **Target:** M1
-- **Related:** ADR-0039, ADR-0033, Plan 0014, Plan 0015, Plan 0016
+- **Related:** Plan 0027 (ADRs folded into skills), Plan 0028 (names), Plan 0029 (`Field.Hint`), Plan 0030 (rich options), storybook-docs skill
 
 ## Goal
 
-A reader who opens a component's Storybook page can find every public feature of that component there, without having to read the source or the `<component>.md` file.
+A reader who opens a component's Storybook page finds every public feature of that component there, without reading the source.
 
 ## Non-goals
 
-- No new components, props or behaviour. This plan only shows what already exists.
-- No change to the manual AT matrix.
-- No `form` or `number` component. Neither exists today.
-- The `se` catalog stays English until a native reviewer translates it. This plan only records it as a known issue on the Docs page.
+- No new behaviour. Plans 0028 to 0030 own the API changes, and this plan runs after them, so stories use the final names.
+- No hook pages and no theming pages per component. The storybook-docs skill leaves both for later.
+- No removal of core exports. Marking them internal is a separate, breaking change.
+- The `se` catalog stays English until a native reviewer translates it.
 
 ## Background
 
-An audit of `packages/{core,react,i18n}` against `apps/storybook/src/components/*` found public API that no story demonstrates. Two patterns explain most of it:
+The re-audit (2026-10-04) covered every component in `packages/react/src`. It replaces the first inventory. Three findings shape this plan:
 
-1. The Docs page (`apps/storybook/.storybook/preview.tsx`) renders the JSDoc, the controls, the `a11yContract` and the Keyboard section. It does not render `<component>.md`, so anything documented only there is hidden from Storybook.
-2. Every `render`, hook and `messages` argType is `control: false`, and no story uses them.
+1. **Docs pages:**
+   - 8 components open their Docs page with their `.md` (`usageGuide`): Card, Heading, Prose, Kbd, Notification, Section, Combobox and Autocomplete. The rest don't, including all 14 form components.
+   - Listbox and Popover pass a hand-written description.
+   - Checkbox, CheckboxGroup and RadioGroup have no `.md`.
+2. **Nothing cross-cutting is shown:**
+   - No story shows a dev warning, and there are about 90 codes.
+   - Only Icon shows both forms of `render`.
+   - No form story shows a `messages` override.
+3. **The fixtures cover three locales.** `form.fixture.tsx` has texts for sv, fi and en only, so nb and nn fall back to English. The mask fixture has sv and en.
 
-### Gap inventory
-
-**A. Mask and Input** (largest cluster)
-
-- `masks.oneTimeCode({ length, characters })` with `autoComplete="one-time-code"`.
-- `masks.number({ grouping, locale })` and `mask.withLocale()`. The "Number" stories only use `inputMode`.
-- `createMask`, function masks, `completeLengths` and the regexp `unmask` option.
-- `checks.organisationNumber` and `checks.iban`. NO and FI variants of `organisationNumber`, `postalCode` and `personalIdentityNumber`.
-- `details.rejected`, `isComplete` and `mask.apply()`/`MaskResult`.
-- The `maximumLength` rejection and `characterNotAllowed` in fi, nb, nn and se.
-- The `messages` prop and the `useMask` options.
-- Dev warnings: `input-mask-on-email`, `input-mask-without-description`, a missing announcer, `input-without-name`, `input-type-number`.
-
-**B. Field and Fieldset**
-
-- `Fieldset.Root`: `group`, `required`, `id`, and a user `aria-describedby`. `Fieldset.Legend`: `marker`.
-- `Field.Root`: `controlId` and the `messages` override (`field.optional`, `field.errorPrefix`). The same `messages` override on `Fieldset.Root`.
-- A fieldset with several descriptions. Field parts used outside a Field, with their warnings.
-- The WCAG 3.3.1 warning for an invalid field without an ErrorMessage.
-- `data-required`, `data-disabled` and `data-invalid` on each part.
-
-**C. InputGroup**
-
-- `invalid` and `disabled` on `InputGroup.Root` without a Field.
-- Pointer-down on the Addon focusing the Input. Today only e2e covers it.
-- `input-group-addon-outside-root` and `input-group-addon-focusable` warnings.
-
-**D. Button, Link, Card, Icon**
-
-- Link: `current` values other than the default, custom `rel` merging, `LinkNewTabNotice` `render`, `.kv-link-new-tab-notice`, and the `--kv-link-underline-*` properties.
-- Card: `kv-card-body--padding-*`, `kv-card--padding-md|lg`, the function form of `render`.
-- Icon: the `{ component, mirrorInRtl }` registry form, per-instance `mirrorInRtl`, `iconDefaults.size`, string sizes, the unknown-name placeholder.
-- Button: `type="reset"`, and the `button-not-a-button` and `button-without-name` warnings.
-
-**E. Announcer and Provider**
-
-- Announcer: `throttleMilliseconds`, the replacement within 100 ms, the 5 s auto-clear, and `announce` returning `false`.
-- Provider: `theme.defaultColorScheme`, `theme.defaultContrast`, `theme.storage` (`'none'` and a custom adapter), `KvirnThemeScript` with `nonce`, `env`, `defineMessages`, function-valued messages, nested partial `messages`, and the dev warnings.
-
-**F. Cross-cutting**
-
-- `render` (element and function form, with `*State`) on every component.
-- The hooks: `useInput`, `useInputGroup`, `useField`, `useFieldset`, `useButton`, `useLink`, `useCard`, `useIcon`.
-- Core exports with no mention anywhere: `createThemeStore`, `resolveThemeOptions`, `findInvalidThemeOptions`, `isSameThemeConfiguration`, `resolveMessageNamespace`, `getLanguage`, `themeStorageKey`. `@kvirn-ui/core` has no README.
-- `mergeProps` has no page of its own.
+The first inventory said a few items were already covered. Most of them were not.
 
 ## Design
 
-### Approach
+Following the storybook-docs skill: say each thing once, and add a story only when it shows something new.
 
-1. **Make the Docs page show the `.md`.** Decide whether to render `<component>.md` on the Docs page, next to the contract and the Keyboard section (ADR-0039). This fixes most of group F in one change. It needs an ADR.
-2. **Add one story per gap, grouped by component.** Use the story names `Render`, `Hook`, `Messages` and `DevWarnings` for the cross-cutting groups, so they are the same everywhere. Each story has a `play` function that asserts the behaviour it shows.
-3. **Use the existing fixtures** (`mask.fixture.tsx`, `card.fixture.tsx`, `form.fixture.tsx`) where they fit. Add a new fixture only when a story needs a custom hook consumer.
-4. **Show dev warnings as text,** not as console output: a story that renders the misuse and spies on the warning, and a table of codes in the Docs page.
-5. **Add a README for `@kvirn-ui/core`** that lists its public exports, and give `mergeProps` a short section in the architecture docs.
+1. **Every component opens with its `.md`.**
+   - Add `usageGuide` everywhere.
+   - Write `checkbox.md`, `checkbox-group.md` and `radio-group.md`.
+   - The Mask and Number pages take their prose from the matching sections of `input.md`.
+2. **Two Foundation pages instead of repeated stories:**
+   - **"Your own element":** `render` in element and function form, the `*State` argument, `mergeProps` (handler chaining, class join, style, refs, and the `merge-props-id` warning), and `className` joining.
+   - **"Dev warnings":** a table of every warning code, the component it comes from, what it means and the fix.
+     - A unit test greps `warnOnce('<code>'` across `packages/react/src`, then fails if the table and the code disagree.
+     - Each component's Docs page links to its rows.
+3. **Per-component stories,** only for the gaps listed below. Each has a `play` that asserts what it shows.
+4. **Fixtures get nb and nn texts.** `se` stays the English fallback, with the known-issue note.
+
+### Gap list (stories, unless marked .md)
+
+**Form**
+
+- **Input:**
+  - a controlled masked `value`, with the `onValueChange` details (`rejected`, `isWithinRange`);
+  - a per-instance `messages` override;
+  - your own `aria-describedby` ids appended after the Field's.
+- **Mask:**
+  - `masks.number({ grouping, locale })` and `mask.withLocale`;
+  - `masks.oneTimeCode` on a plain Input;
+  - a custom function mask with `completeLengths`;
+  - a regexp `unmask`;
+  - `masks.pattern` with `\`, `*` and `transform`;
+  - FI and NO `postalCode` and `organisationNumber`;
+  - `checks.organisationNumber`, `checks.iban`, and FI and NO `personalIdentityNumber`, with the reasons `format`, `date` and `country`;
+  - `allowSyntheticNumbers` (.md too);
+  - the `maximumLength` announcement, and `characterNotAllowed` for `letters`, `lettersAndDigits` and `other` in every locale;
+  - `announceRejections={false}`;
+  - `createMask` and `MaskResult` only if the core README calls them public.
+- **Number:** a `type="number"` anti-example, linked to the Mask page.
+- **OneTimeCode:**
+  - controlled `value`;
+  - `readOnly` while the code is checked;
+  - `onComplete` firing from typing;
+  - the lowercase `a` symbol and the `*` symbol;
+  - a static story for the slot `data-active`, `data-caret` and `data-selected` states;
+  - the invalid-pattern `RangeError` (.md).
+- **Field and Fieldset:**
+  - `controlId`;
+  - `messages` (`optional`, `errorPrefix`);
+  - Fieldset `group`, `required`, `id` and your own `aria-describedby`;
+  - Legend `marker`;
+  - Label and ErrorMessage used outside a host;
+  - two descriptions.
+- **InputGroup:** `invalid` and `disabled` on the Root without a Field.
+- **Checkbox, CheckboxGroup and RadioGroup:**
+  - a standalone Checkbox with `aria-label`;
+  - `required` groups;
+  - RadioGroup `value={null}`;
+  - a standalone Radio's state.
+- **FileUpload:**
+  - the rejections `tooSmall`, `tooMany`, `duplicate`, `folder` and `custom`, with their messages;
+  - `autoUpload={false}` with `uploadAll()`;
+  - `concurrency`;
+  - a non-retryable failure with a message;
+  - `messages`;
+  - `FileUpload.ItemError` (.md, the fixture and a story);
+  - the drag states.
+
+**Other**
+
+- **Button:** `type="reset"`, and an `onClick` that `disabled` blocks.
+- **Link:**
+  - `current` set to `step`, `location`, `date`, `time` and `true`;
+  - custom `rel` merging;
+  - `Link.NewTabNotice` `render`;
+  - `render={<a/>}` bypassing the router;
+  - `--kv-link-underline-*`.
+- **Card:** function-form `render`, `render` on the Header and Footer, and `kv-card-body--padding-*`.
+- **Icon:**
+  - the `{ component, mirrorInRtl }` registry form;
+  - per-instance `mirrorInRtl`;
+  - `iconDefaults.size`;
+  - string sizes;
+  - the unknown-name placeholder;
+  - nested provider `icons`.
+- **Heading:** `size` on levels 4 to 6, and `id` with `aria-labelledby`.
+- **Prose, Section and Kbd:** the documented `render` landmarks (`<article>`, `<nav>`, `<section aria-labelledby>`), and a plain `<kbd>` inside Prose.
+- **Notification:** `announce="assertive"`, the landmark form, `render` on the Body and Actions, and the `infoPrefix` and `successPrefix` messages.
+- **Listbox, Combobox and Autocomplete:**
+  - a custom `filter`;
+  - controlled `open` and `inputValue`, with the change reasons;
+  - `placement`, `offset` and `padding`;
+  - `announcementDebounceMilliseconds`;
+  - `messages`;
+  - `Listbox.Value` with a function child;
+  - a Combobox `virtualize` story;
+  - `virtualize` in the three `.md` files.
+- **Popover:** placement variants, the `onOpenChange` reasons, and `--kv-popup-height-limit` and `--kv-anchor-width`.
+- **Announcer:** `throttleMilliseconds` (including `0`), replacement within 100 ms, the 5 s auto-clear, blank messages, and `clear`.
+- **Provider:**
+  - `theme.defaultColorScheme`, `defaultContrast` and `storage` (`'none'` and a custom adapter);
+  - `KvirnThemeScript` with `nonce`;
+  - `env`, `defineMessages`, function-valued messages with `format.plural` and `format.number`, and nested partial `messages`;
+  - the `Register` augmentation (.md).
+
+### Bugs found by the audit (fixed here, since they're small)
+
+- `file-upload.md` names a type `UploadContext` that doesn't exist. It should be `FileUploadContext`.
+- `@kvirn-ui/react` doesn't re-export `FileUploadContext`, `FileUploadFailure` and `FileUploadRejection`, although `upload` and `onFilesReject` use them. Re-export them (changeset).
+- `packages/react/src/panel/` and `apps/storybook/src/components/panel/` are empty leftovers. Delete them.
+
+### Core
+
+- Add a `packages/core/README.md` that lists what adopters may use: `masks`, `checks`, `createAnnouncer`, and `createMask` (decide). It says that everything else serves `@kvirn-ui/react` and is not a stable API.
+- **Candidates to mark `@internal`** (in a separate breaking plan):
+  - `createComponentStore`, `createThemeStore`, `resolveTheme`, `resolveThemeOptions`, `findInvalidThemeOptions`, `isSameThemeConfiguration`, `resolveMessageNamespace`, `getLanguage`;
+  - `matchesText`, `startsWithText`;
+  - the `default*` constants.
 
 ### Accessibility contract (draft)
 
-No new interactive behaviour. Every new story must pass axe in all five rule sets, and every story that focuses something has a `Keyboard` row in the contract already (ADR-0039). Stories that demonstrate misuse (outside a Field, no ErrorMessage) must keep the misuse out of the axe run, or say why in the story.
+No new behaviour.
+
+- Every new story passes axe in all five rule sets.
+- A story that shows misuse keeps the misuse out of the axe run, or says why in its JSDoc.
+- Stories that focus something are already covered by the contract's Keyboard rows.
 
 ### i18n strings
 
-None added. The `characterNotAllowed` and `maximumLength` stories use the existing keys in all six locales.
+None added. Fixtures gain nb and nn story texts. These are adopter strings, not catalog keys.
 
 ### Theming surface
 
-None added. The Link and Card stories only show tokens and classes that exist in `theme.css`.
+None added.
 
 ## Tasks
 
-Do them in this order, one PR per group.
+Each group is one PR, run after Plans 0028 and 0029 (and 0030 for the option stories).
 
-- [ ] ADR: render `<component>.md` on the Docs page (or decide not to)
-- [ ] A. Mask and Input stories
-- [ ] B. Field and Fieldset stories
-- [ ] C. InputGroup stories
-- [ ] D. Button, Link, Card and Icon stories
-- [ ] E. Announcer and Provider stories
-- [ ] F. `render` and hook stories, core README, `mergeProps` section
-- [ ] Changeset only if a public API doc text changes
+- [ ] Bugs and the empty `panel/` dirs
+- [ ] `usageGuide` on every Docs page, and the three missing `.md` files
+- [ ] The "Your own element" and "Dev warnings" Foundation pages, with the drift test
+- [ ] Form gaps (Input, Mask, Number, OneTimeCode, Field and Fieldset, InputGroup, the choice controls)
+- [ ] FileUpload gaps
+- [ ] Button, Link, Card, Icon, Heading, Prose, Section, Kbd and Notification gaps
+- [ ] Listbox, Combobox, Autocomplete and Popover gaps
+- [ ] Announcer and Provider gaps
+- [ ] nb and nn fixture texts
+- [ ] Core README
+- [ ] Changeset for the type re-exports
 - [ ] Update `docs/roadmap.md`
 
 ## Risks & open questions
 
-- **Decision for the maintainer:** should the Docs page render `<component>.md`? Doing so duplicates the contract for some content, and the `.md` files are marked Draft.
-- A story per hook can read like a second copy of the `.md`. Keep each one to a single, short consumer.
-- Some gaps may be intentional (internal helpers such as `useMergedRef`). Confirm each core export is meant to be public before documenting it. If not, remove it from the index instead.
-- `masks.number({ locale })` and `withLocale` may overlap with the provider locale. Check ADR-0032 first.
+- **Story count.** The list is long. Merge gaps into one story wherever a single example shows several features naturally, such as a Provider story that sets the theme defaults and storage together.
+- **`createMask` and `MaskDefinition`.** They are public in core but not re-exported from react. Decide whether they are adopter API before writing their stories.
 
 ## Testing strategy
 
-`vp test run <story files>` for axe and `play` functions, then the whole-tree gates once at the end of each group. `vp run e2e` only where a story adds a keyboard row. A Storybook build proves that MDX and titles still compile.
+- `vp test run <story files>` for axe and the `play` functions, plus the dev-warnings drift test.
+- `vp run e2e` only where a story adds a keyboard row.
+- A Storybook build proves that the MDX pages and titles compile.
 
 ## Rollout
 
-Docs and stories only, so no version bump and no migration.
+Docs and stories, plus one additive type re-export (patch changeset).
 
 ## Done when
 
-- [ ] Every item in the gap inventory has a story, a Docs section, or an explicit "not public" decision
+- [ ] Every gap above has a story, a Docs section, or a recorded "not public" decision
 - [ ] All quality gates in AGENTS.md pass (manual AT may be `pending`)
 - [ ] Plan tasks ticked, `docs/roadmap.md` status updated

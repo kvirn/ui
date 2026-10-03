@@ -1,14 +1,14 @@
 # Accessibility contract: Notification
 
-- **APG pattern:** none for the visible block. APG's [Alert pattern](https://www.w3.org/WAI/ARIA/apg/patterns/alert/) is a live region, which the [Announcer](../announcer/announcer.a11y.md) already provides (ADR-0040), so the Notification never renders one.
-- **Deviations:** none. ADR-0047 records the decisions (no role on the box, `announce` through the Announcer, a plain Root and four ready-made status roots).
+- **APG pattern:** none for the visible block. APG's [Alert pattern](https://www.w3.org/WAI/ARIA/apg/patterns/alert/) is a live region, which the [Announcer](../announcer/announcer.a11y.md) already provides, so the Notification never renders one.
+- **Deviations:** none. No role on the box, `announce` goes through the Announcer, and there is a plain Root and four ready-made status roots.
 - **Native elements used:** `<div>` for the roots, Body and Actions; `<h2>` for the Title (`render` changes it to another heading or to `<p>`); `<svg>` for the decorative icon; `<span>` for the status word.
 - **Status:** in progress (Plan 0020). Gates run and green on the Notification files, accessibility-reviewer follow-up pending. Manual AT is `pending`.
 - **Tests:** `notification.test.tsx` next to this file. `notification.stories.tsx` and `notification.e2e.ts` in `apps/storybook/src/components/notification/`. Design spec: `docs/design/notification.md`.
 
 A Notification is a status message in the content: something people need to know now, or the result of what they just did. It shows its status with an icon, a word and a colour, never with colour alone (1.4.1). It doesn't announce itself unless the consumer asks (`announce`), and it never takes focus on its own.
 
-There are five roots. `Notification.Root` is plain: `kv-notification` only, no status class, no icon and no status word. `Notification.Info`, `.Success`, `.Warning` and `.Danger` (also exported as `NotificationInfo` and so on) are ready-made: each renders its status class, its icon and the status word from one internal table, so the colour, the icon and the word cannot disagree. Status is a class, not a prop (ADR-0013): you choose it by choosing the component, and there is no prop that changes a ready-made root's status.
+There are five roots. `Notification.Root` is plain: `kv-notification` only, no status class, no icon and no status word. `Notification.Info`, `.Success`, `.Warning` and `.Danger` (also exported as `NotificationInfo` and so on) are ready-made: each renders its status class, its icon and the status word from one internal table, so the colour, the icon and the word cannot disagree. Status is a class, not a prop: you choose it by choosing the component, and there is no prop that changes a ready-made root's status.
 
 ## Roles, states, properties
 
@@ -54,7 +54,7 @@ Enter, Space, Escape, arrow keys and Home / End are not handled. Children handle
 
 ## Announcements
 
-The visible notification is never a live region. When a notification must be heard without focus, a root with `announce="polite"` or `announce="assertive"` calls the shared Announcer once, when it mounts (4.1.3, ADR-0040). The announced text is the notification's own visible text: the Title (which starts with the status word on a ready-made root), then the Body, with block boundaries as spaces. Actions aren't announced: they're controls the user reaches with Tab.
+The visible notification is never a live region. When a notification must be heard without focus, a root with `announce="polite"` or `announce="assertive"` calls the shared Announcer once, when it mounts (4.1.3). The announced text is the notification's own visible text: the Title (which starts with the status word on a ready-made root), then the Body, with block boundaries as spaces. Actions aren't announced: they're controls the user reaches with Tab.
 
 | Event                                                               | Message key (i18n)                                                                                                                                                             | Politeness                                    |
 | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------- |
@@ -67,9 +67,9 @@ Rules:
 - **Inserted after an action, focus stays where it is:** `announce="polite"`, near the control that caused it. Polite waits for the screen reader to finish its own feedback on the button.
 - **Urgent, not caused by the current action, and the user must act now:** `Notification.Danger announce="assertive"`. Rare. Never for Info or Success (a development warning fires).
 - **Arrival after a page load or route change:** move focus to the root once (`tabIndex={-1}`) and don't set `announce`.
-- **Errors on submit:** the error summary moves focus and doesn't set `announce`. Field errors are read when each field gets focus (ADR-0029).
+- **Errors on submit:** the error summary moves focus and doesn't set `announce`. Field errors are read when each field gets focus.
 - **Its text changes while shown:** not supported by `announce`, which announces on mount, once. To announce again, call `useAnnouncer()` yourself. Remounting it with a new React `key` also announces again, but **only if nothing inside it holds focus**: if the action that causes the change is a button inside the notification (a "Try again" that fails again), a remount destroys the focused button and focus falls to the page (2.4.3). Keep the instance and use `useAnnouncer()` instead, or move focus to a stable target first.
-- Without a `KvirnProvider`, announcements are dropped after one development warning (ADR-0040): `announce` needs a provider. Inside a modal dialog the Announcer's regions are silenced (ADR-0040's modal follow-up), so a notification in a dialog isn't heard until that is fixed.
+- Without a `KvirnProvider`, announcements are dropped after one development warning: `announce` needs a provider. Inside a modal dialog the Announcer's regions are silenced (a follow-up for modal dialogs), so a notification in a dialog isn't heard until that is fixed.
 - A notification that is server-rendered with `announce` is announced after hydration. Set `announce` only from the state of the action that just happened.
 
 ## Consumer responsibilities
@@ -119,7 +119,7 @@ Headless: Notification ships no CSS. With `@kvirn-ui/theme/theme.css` (design sp
 
 | AT + browser + OS                        | Date    | Tester | Result | Notes |
 | ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| **Core (required for beta)**             |         |        |        |       |
 | NVDA + Firefox + Windows                 | pending |        |        |       |
 | VoiceOver + Safari + macOS               | pending |        |        |       |
 | VoiceOver + Safari + iOS                 | pending |        |        |       |

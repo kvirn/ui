@@ -5,7 +5,7 @@ import type { ComponentStore } from '../store/create-component-store.ts'
 
 /**
  * What the listbox needs from the page: timers, for the typeahead buffer. `Env` satisfies it, and
- * a Node test can pass a few functions instead of a DOM (ADR-0003).
+ * a Node test can pass a few functions instead of a DOM.
  */
 export interface ListboxEnv {
   readonly window: {
@@ -155,7 +155,7 @@ function sameKeys(first: readonly string[], second: readonly string[]): boolean 
 }
 
 /**
- * The state behind a listbox (ADR-0037): the entries, the active entry, the selection and
+ * The state behind a listbox: the entries, the active entry, the selection and
  * typeahead. It has no DOM and no keyboard handling: `createCombobox` adds the keys, the popup
  * and the input on top of it. Nothing is active until something asks for it, so Enter can never
  * pick an option the user didn't choose.

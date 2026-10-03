@@ -9,7 +9,7 @@ export interface PluralForms {
 }
 
 /**
- * The locale-aware helper passed to parameterised messages (ADR-0007). Built on `Intl`
+ * The locale-aware helper passed to parameterised messages. Built on `Intl`
  * only, with no ICU runtime. `@kvirn-ui/i18n`'s `MessageFormat` type describes the same
  * shape; a type test in `@kvirn-ui/react` keeps the two in step.
  */

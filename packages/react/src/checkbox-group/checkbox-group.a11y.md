@@ -1,12 +1,12 @@
 # Accessibility contract: CheckboxGroup (Root)
 
 - **APG pattern:** [Checkbox](https://www.w3.org/WAI/ARIA/apg/patterns/checkbox/), in a labelled group. The APG's checkbox examples group related boxes with `role="group"` and a label; the native equivalent is `<fieldset>` and `<legend>`, which is what Root renders. There is no composite keyboard model: each checkbox is its own Tab stop.
-- **Deviations:** none from APG. Decisions: ADR-0029 (Fieldset wiring, option labels carry no optional marker, a group's `invalid` doesn't cascade, no form state) and ADR-0039 (keyboard).
+- **Deviations:** none from APG. Decisions (forms skill): Fieldset wiring, option labels carry no optional marker, a group's `invalid` doesn't cascade, no form state.
 - **Native elements used:** `<fieldset>` and `<legend>` (Root and `Legend`), `<input type="checkbox">` (Checkbox), `<label for>` (Label).
 - **Status:** alpha candidate (Plan 0013, Phase 2). Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `checkbox-group.test.tsx` next to this file. `checkbox-group.stories.tsx` and `checkbox-group.e2e.ts` in `apps/storybook/src/components/checkbox-group/`. The box itself: `checkbox.a11y.md`. The fieldset parts (Legend, ErrorMessage, and a `Prose` as the hint): `fieldset.a11y.md`.
 
-A CheckboxGroup is one question with several answers that can all be true ("Hur vill du bli kontaktad?": e-post, sms, brev). `CheckboxGroup.Root` renders the `<fieldset>` and acts as a `Fieldset` with `group` set, so `Legend`, a hint (a `Prose` in the group) and `ErrorMessage` work inside it. It holds no form state: the selected values are the `value` prop, and each change is reported up (ADR-0029, item 0).
+A CheckboxGroup is one question with several answers that can all be true ("Hur vill du bli kontaktad?": e-post, sms, brev). `CheckboxGroup.Root` renders the `<fieldset>` and acts as a `Fieldset` with `group` set, so `Legend`, a hint (a `Prose` in the group) and `ErrorMessage` work inside it. It holds no form state: the selected values are the `value` prop, and each change is reported up.
 
 ## Roles, states, properties
 
@@ -14,7 +14,7 @@ A CheckboxGroup is one question with several answers that can all be true ("Hur 
 | ------------------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | CheckboxGroup.Root  | `<fieldset>` → `group`                              | As Fieldset: `aria-describedby` = descriptions, then the error. Native `disabled`. `data-invalid`, `data-required`, `data-disabled`. No `aria-invalid` and no `aria-required` (not supported on `group`) | Classes `kv-checkbox-group kv-fieldset`. Props: `name`, `value`, `defaultValue`, `onValueChange(value, { reason: 'input', event })`, `invalid`, `required`, `disabled`, `messages`, `render`, and every fieldset prop. `render` must stay a `<fieldset>` |
 | Legend              | `<legend>`, the group's name                        | As in `fieldset.a11y.md`                                                                                                                                                                                 | Ends with "(valfritt)" in a group that isn't `required`: the marker belongs to the question                                                                                                                                                              |
-| Field + Checkbox    | `<div>` with an `<input type="checkbox">` and label | The option's name is its label. No "(optional)" on an option (ADR-0029, item 10). The option's own hint is in that checkbox's `aria-describedby`                                                         | A Field inside a group defaults to `marker="none"`. The checkbox gets the group's `name` and `checked` from `value`                                                                                                                                      |
+| Field + Checkbox    | `<div>` with an `<input type="checkbox">` and label | The option's name is its label. No "(optional)" on an option. The option's own hint is in that checkbox's `aria-describedby`                                                                             | A Field inside a group defaults to `marker="none"`. The checkbox gets the group's `name` and `checked` from `value`                                                                                                                                      |
 | Checkbox in a group | `<input type="checkbox">`                           | `data-invalid` and `data-disabled` from the group, for styling. **No `aria-invalid`**: the group's error reaches users through the fieldset's `aria-describedby`                                         | `value` is required on a Checkbox in a group; a dev warning fires when it's missing, or when `checked` or `defaultChecked` are given next to the group's (the group's wins)                                                                              |
 | `useCheckboxGroup`  | the logic, for your own fieldset                    | returns `name`, `groupRef`, `getCheckboxProps(value)`                                                                                                                                                    | Options: `name`, `value`, `defaultValue`, `onValueChange`, `invalid`, `disabled`. Use it with `useFieldset({ group: true })` and your own markup. Attach `groupRef` to your `<fieldset>` so an uncontrolled group can report its next value              |
 
@@ -56,13 +56,13 @@ Checkboxes are independent, so each is its own Tab stop; the group is not a comp
 
 ## Announcements
 
-None. Nothing is live (ADR-0029). Entering the group, a screen reader reads the legend, "group", the hint and, when invalid, "Fel: …". Each checkbox is then read as in `checkbox.a11y.md`.
+None. Nothing is live. Entering the group, a screen reader reads the legend, "group", the hint and, when invalid, "Fel: …". Each checkbox is then read as in `checkbox.a11y.md`.
 
 ## Consumer responsibilities
 
 - A `Legend` that asks the question, first in the Root. Say how many answers are allowed in a hint, a `Prose` in the group ("Välj alla som passar"). A hint is text: its description is the Prose's text content, so keep it short and plain. A Prose directly in the group, not inside an option's Field, describes the group; a Prose that isn't a hint goes outside the group.
 - A `Field` with a direct-child `Checkbox` and a `Label` for each option; `value` on every Checkbox.
-- Keep the list short. About 15 options is the limit before a search or a different pattern is better (ADR-0037). Never `<select multiple>`.
+- Keep the list short. About 15 options is the limit before a search or a different pattern is better. Never `<select multiple>`.
 - Pass `value` and `onValueChange` from your form state, or `defaultValue` and `name` for a plain `<form>`.
 - Set `invalid` and render a `ErrorMessage`, then move focus to the first checkbox of the group on submit (or to the error summary).
 - "None of the above" is an option the consumer adds and handles; the group has no exclusive option.
@@ -85,7 +85,7 @@ None. Nothing is live (ADR-0029). Entering the group, a screen reader reads the 
 
 | AT + browser + OS                        | Date    | Tester | Result | Notes |
 | ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| **Core (required for beta)**             |         |        |        |       |
 | NVDA + Firefox + Windows                 | pending |        |        |       |
 | VoiceOver + Safari + macOS               | pending |        |        |       |
 | VoiceOver + Safari + iOS                 | pending |        |        |       |
@@ -102,7 +102,7 @@ Research questions for the AT run: is the group's hint and error read when the u
 
 ## Known issues
 
-- **A required group isn't announced as required.** `aria-required` isn't supported on `group` (ARIA 1.2), and ADR-0029 chooses `aria-required` over native `required`, so a required group has no "(valfritt)" in its legend and `data-required`, and nothing else. If the AT run shows a gap, the options are `role="radiogroup"` on the fieldset for RadioGroup (allowed on `<fieldset>`), or native `required` on one checkbox. Open question in Plan 0013.
+- **A required group isn't announced as required.** `aria-required` isn't supported on `group` (ARIA 1.2), and KvirnUI chooses `aria-required` over native `required`, so a required group has no "(valfritt)" in its legend and `data-required`, and nothing else. If the AT run shows a gap, the options are `role="radiogroup"` on the fieldset for RadioGroup (allowed on `<fieldset>`), or native `required` on one checkbox. Open question in Plan 0013.
 - **`aria-describedby` on a `<fieldset>` isn't announced consistently by TalkBack.** See `fieldset.a11y.md`.
 - **Uncontrolled `onValueChange` reads the DOM.** It reads the checked boxes of the group's `<fieldset>` when a box changes. A custom `render` that isn't a `<fieldset>` breaks that (and warns).
 - **`se` (Northern Sámi) is a placeholder in the fixtures.** See `field.a11y.md`.

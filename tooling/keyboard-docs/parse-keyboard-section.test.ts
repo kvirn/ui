@@ -6,7 +6,7 @@ import {
   splitKeyCell,
 } from './parse-keyboard-section.ts'
 
-// Inline fixtures: the parser reads only the `## Keyboard` section (ADR-0039, skill keyboard).
+// Inline fixtures: the parser reads only the `## Keyboard` section (skill keyboard).
 
 const focusLines = `- **Focus strategy:** native
 - **Selection follows focus:** n/a

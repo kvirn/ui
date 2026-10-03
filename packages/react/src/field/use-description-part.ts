@@ -20,7 +20,7 @@ export interface DescriptionPart<Instance extends Element> {
 /**
  * Internal. Makes an element one of the descriptions of the nearest Field or Fieldset: it
  * registers the element while mounted, and gets the id the host lists in `aria-describedby`, in
- * DOM order (ADR-0031, ADR-0054). Outside a host it does nothing and warns of nothing. Used by
+ * DOM order. Outside a host it does nothing and warns of nothing. Used by
  * `Prose` and `FileUpload.Limits`.
  */
 export function useDescriptionPart<Instance extends Element>(

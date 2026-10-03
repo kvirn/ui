@@ -1,6 +1,6 @@
 # KvirnUI project docs
 
-User-facing docs live in `apps/docs` (kvirn-ui.com). The working agreement for humans and agents is [AGENTS.md](../AGENTS.md).
+User-facing docs live in `apps/docs` (kvirn-ui.com). The working agreement for humans and agents is [AGENTS.md](../AGENTS.md). The procedures and the facts behind each rule live in the skills (`.claude/skills/`); there are no separate decision records, and git history holds the reasons.
 
 | Doc                                  | Contents                                                     |
 | ------------------------------------ | ------------------------------------------------------------ |
@@ -12,5 +12,4 @@ User-facing docs live in `apps/docs` (kvirn-ui.com). The working agreement for h
 | [roadmap.md](roadmap.md)             | Milestones and component/block status                        |
 | [../DESIGN.md](../DESIGN.md)         | Visual language: tokens, themes, typography, layout          |
 | [design/](design/README.md)          | Design specs (what users see and do)                         |
-| [adr/](adr/README.md)                | Decisions (why)                                              |
 | [plans/](plans/README.md)            | Implementation plans (how)                                   |

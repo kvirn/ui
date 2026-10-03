@@ -1,6 +1,6 @@
 # Accessibility contract: Kbd
 
-- **APG pattern:** none. Kbd is inline text, not a widget (ADR-0053).
+- **APG pattern:** none. Kbd is inline text, not a widget.
 - **Deviations:** none
 - **Native elements used:** `<kbd>`. The consumer can pick another element with `render`, and its own semantics apply.
 - **Status:** alpha candidate (Plan 0024). Gates pending. Manual AT is `pending`.
@@ -62,7 +62,7 @@ Headless: Kbd ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-kbd` (and a ba
 
 | AT + browser + OS                        | Date    | Tester | Result | Notes |
 | ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| **Core (required for beta)**             |         |        |        |       |
 | NVDA + Firefox + Windows                 | pending |        |        |       |
 | VoiceOver + Safari + macOS               | pending |        |        |       |
 | VoiceOver + Safari + iOS                 | pending |        |        |       |

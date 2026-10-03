@@ -4,7 +4,7 @@ import type { BuiltInIconName } from './built-in-icons.tsx'
 import type { IconSizeStep } from './use-icon.ts'
 
 /**
- * What Icon passes to an icon component (ADR-0024): attributes for the root `<svg>`, and a ref.
+ * What Icon passes to an icon component: attributes for the root `<svg>`, and a ref.
  * Optional fields are values or absent, so components that type them strictly (Phosphor) fit.
  */
 export interface IconComponentProps {
@@ -49,7 +49,7 @@ export type IconsOf<Registration> = Registration extends { icons: infer Icons } 
 export type IconNameOf<Registration> = BuiltInIconName | (keyof IconsOf<Registration> & string)
 
 /**
- * A name `<Icon name>` accepts: a built-in icon, or one the app registered (ADR-0024).
+ * A name `<Icon name>` accepts: a built-in icon, or one the app registered.
  *
  * ```ts
  * declare module '@kvirn-ui/react' {
@@ -62,7 +62,7 @@ export type IconNameOf<Registration> = BuiltInIconName | (keyof IconsOf<Registra
 export type IconName = IconNameOf<Register>
 
 /**
- * Types and freezes an icon registry for `KvirnProvider icons` (ADR-0024). Register its type
+ * Types and freezes an icon registry for `KvirnProvider icons`. Register its type
  * once, so `<Icon name>` checks names.
  *
  * @example

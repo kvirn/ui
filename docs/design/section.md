@@ -2,7 +2,7 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-02
-- **Plan:** to be written (links this spec in its Design section) · **Related ADRs:** ADR-0013, ADR-0015, ADR-0018, ADR-0020 (amended by the new ADR below), ADR-0022, ADR-0028, ADR-0039. **New ADR to draft** (main session, status _Proposed_, next free number, likely ADR-0044): "Section is the level 1 container, and Card is level 2 only"
+- **Plan:** to be written (links this spec in its Design section). **Decision to record:** "Section is the level 1 container, and Card is level 2 only"
 - **Type:** new component (headless, no behaviour) + default-theme styling + a breaking change to Card's modifier classes + DESIGN.md changes
 
 The component is decided by the maintainer, and this spec doesn't reopen it:
@@ -10,7 +10,7 @@ The component is decided by the maintainer, and this spec doesn't reopen it:
 - `Section` (also `Section.Root`) and `useSection()`, which returns `rootProps`. One part.
 - It renders `<div class="kv-section">` by default. `render` changes the element (`<section aria-labelledby>`, `<aside aria-labelledby>`, `<nav aria-labelledby>`, `<li>` …). Children pass through.
 - No Header, Body or Footer, no title, no behaviour, no role, no ARIA and no strings.
-- Choices are modifier classes on the Root (ADR-0013), not props.
+- Choices are modifier classes on the Root, not props.
 - A Section is a **region** of the page, elevation level 1. A Card is an **object** on the page, elevation level 2. Card loses `kv-card--surface` and `kv-card--canvas`.
 
 This spec decides the **default theme's look and classes**, the change to Card, the contrast coverage, the "which one" guidance, the stories, and every reference that has to change.
@@ -27,7 +27,7 @@ This spec decides the **default theme's look and classes**, the change to Card, 
   3. A resident at 400% zoom (320 CSS px) in Finnish, for whom the sidebar stacks under the main content and the padding eats the line length.
 - **Job to be done:** When I lay out a page, I want one container that sets a region apart (a sidebar, a band) without making it look like a clickable box, so the page's structure is clear and the colours stay inside `theme:check`.
 - **Context:** any device. Residents: rare, often stressed visits. Staff: daily, desktop, often `kv-compact`.
-- **Constraints:** headless parts ship no CSS (hard rule 5). Choices are classes and `data-*` is only state (ADR-0013). Only DESIGN.md tokens. Breaking change to Card while the packages are unreleased (`0.0.0`, and `.changeset/card.md` is still pending).
+- **Constraints:** headless parts ship no CSS (hard rule 5). Choices are classes and `data-*` is only state. Only DESIGN.md tokens. Breaking change to Card while the packages are unreleased (`0.0.0`, and `.changeset/card.md` is still pending).
 - **Success criteria:**
   - 0 axe violations in every Section story, in all four themes, RTL and forced colours.
   - No horizontal scroll at 320px with the Finnish fixture. Nothing is clipped under the 1.4.12 overrides.
@@ -44,7 +44,7 @@ This spec decides the **default theme's look and classes**, the change to Card, 
 | Source                                                                                                                                                        | What we reuse                                                                                                                 | What we change and why                                                                                                                            |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | DESIGN.md Elevation, level 1 (`surface`, `border-subtle`, no shadow, "Sections, sidebars")                                                                    | `surface` as the default, no shadow, square                                                                                   | The edge is a 1px **transparent** border, `CanvasText` in forced colours (§6.4). The Elevation table changes to say so                            |
-| KvirnUI Card (`docs/design/card.md`, ADR-0020, ADR-0022)                                                                                                      | One part with `render`, class-based choices, the padding steps and their responsive and compact behaviour, never clipping     | No radius, no parts, no padding model for parts, no full-bleed corners. Not a prose boundary (§6.6)                                               |
+| KvirnUI Card (`docs/design/card.md`)                                                                                                                          | One part with `render`, class-based choices, the padding steps and their responsive and compact behaviour, never clipping     | No radius, no parts, no padding model for parts, no full-bleed corners. Not a prose boundary (§6.6)                                               |
 | [Aksel (NAV, NO) `Box` primitive](https://aksel.nav.no/komponenter/primitives/box)                                                                            | A plain layout container whose background and padding come from tokens                                                        | Named steps instead of raw spacing steps, and only two surfaces, both in `theme:check`. No border, radius or shadow choices, which belong to Card |
 | [HTML-AAM: `section`](https://www.w3.org/TR/html-aam-1.0/#el-section) and [APG Landmark Regions](https://www.w3.org/WAI/ARIA/apg/practices/landmark-regions/) | A `<section>` without an accessible name maps to `generic`, not `region`. Landmarks should be few, named and worth jumping to | The default element is a `<div>`, so `Section` never pretends to be a landmark. The consumer opts in with a named `section`, `aside` or `nav`     |
 | Docs site sidebar (`docs/design/docs-site.md`)                                                                                                                | A `surface` sidebar with one hairline on the edge that meets the content                                                      | The theme draws no hairline. The consumer colours one edge of the transparent border if they want it (§6.4)                                       |
@@ -135,7 +135,7 @@ At 320px, a Section inside a 16px page gutter has a text column of 320 − 32 �
 
 ### 6.1 Class API
 
-The Root renders `kv-section`. Every choice is a modifier class next to it (ADR-0013). Without one, the default (**bold**) applies. A section has no state, so no `data-*`.
+The Root renders `kv-section`. Every choice is a modifier class next to it. Without one, the default (**bold**) applies. A section has no state, so no `data-*`.
 
 | Classes                                                            | Values (default **bold**)    | Why                                                                                                                                                                                                                         |
 | ------------------------------------------------------------------ | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -164,17 +164,17 @@ The same steps as Card, as section tokens (aliases of spacing steps, no new valu
 
 ### 6.3 Root
 
-| Property       | Value                                                                                                                                                                                                                                                                                 |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Layout         | `display: block` (so a Section rendered as `<li>` draws no marker), `box-sizing: border-box`, `min-inline-size: 0`, `max-inline-size: 100%`. No width, no height, no margin, no `gap`, no grid or flex                                                                                |
-| Surface        | `background-color: var(--kv-color-surface)`, or `canvas` with the class. `color: var(--kv-color-text)`, set together, so text always pairs with the surface                                                                                                                           |
-| Edge           | `border: var(--kv-border-width) solid transparent` on all four sides (§6.4). The background paints under it (`background-clip` stays `border-box`), so there's no 1px gap between stacked sections                                                                                    |
-| Corners, depth | `border-radius: 0`. No shadow. No transition                                                                                                                                                                                                                                          |
-| Padding        | `padding: var(--kv-section-padding)`                                                                                                                                                                                                                                                  |
-| Text           | `overflow-wrap: break-word` (inherited, and it doesn't change a table's min-content width). **No `hyphens`**: a section can hold navigation, forms and tables, and hyphenation stays a prose and card feature (ADR-0028). Put `kv-prose` on the Section or inside it for running text |
-| Overflow       | Never set. No `overflow`, `clip-path` or fixed size, so a child's focus ring is never clipped (2.4.11, 2.4.13) and text spacing never cuts text (1.4.12)                                                                                                                              |
-| Child margins  | `margin-block-start: 0` on the first child and `margin-block-end: 0` on the last, at zero specificity (`:where()`), so the padding is the real edge and the consumer's CSS still wins                                                                                                 |
-| Media          | Direct `img`, `video`, `svg` (not `.kv-icon`) and `picture > img` children: `max-inline-size: 100%`, `block-size: auto`, at zero specificity, so a wide image never scrolls the page at 320px (1.4.10). No radius                                                                     |
+| Property       | Value                                                                                                                                                                                                                                                                      |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Layout         | `display: block` (so a Section rendered as `<li>` draws no marker), `box-sizing: border-box`, `min-inline-size: 0`, `max-inline-size: 100%`. No width, no height, no margin, no `gap`, no grid or flex                                                                     |
+| Surface        | `background-color: var(--kv-color-surface)`, or `canvas` with the class. `color: var(--kv-color-text)`, set together, so text always pairs with the surface                                                                                                                |
+| Edge           | `border: var(--kv-border-width) solid transparent` on all four sides (§6.4). The background paints under it (`background-clip` stays `border-box`), so there's no 1px gap between stacked sections                                                                         |
+| Corners, depth | `border-radius: 0`. No shadow. No transition                                                                                                                                                                                                                               |
+| Padding        | `padding: var(--kv-section-padding)`                                                                                                                                                                                                                                       |
+| Text           | `overflow-wrap: break-word` (inherited, and it doesn't change a table's min-content width). **No `hyphens`**: a section can hold navigation, forms and tables, and hyphenation stays a prose and card feature. Put `kv-prose` on the Section or inside it for running text |
+| Overflow       | Never set. No `overflow`, `clip-path` or fixed size, so a child's focus ring is never clipped (2.4.11, 2.4.13) and text spacing never cuts text (1.4.12)                                                                                                                   |
+| Child margins  | `margin-block-start: 0` on the first child and `margin-block-end: 0` on the last, at zero specificity (`:where()`), so the padding is the real edge and the consumer's CSS still wins                                                                                      |
+| Media          | Direct `img`, `video`, `svg` (not `.kv-icon`) and `picture > img` children: `max-inline-size: 100%`, `block-size: auto`, at zero specificity, so a wide image never scrolls the page at 320px (1.4.10). No radius                                                          |
 
 ### 6.4 The edge: transparent, and why
 
@@ -208,7 +208,7 @@ A Section is drawn on `surface` or `canvas`. Everything a user reads or operates
 | `primary` (fill, selected and current indicators)          | 3:1                  | 4.42/4.70                                                | 4.05/4.44   | 9.29/9.89      | 10.17/11.14   | Yes                           |
 | `primary-hover` (hovered primary fill)                     | 3:1                  | 5.55/5.91                                                | 3.23/3.53   | 11.89/12.65    | 12.75/13.97   | Yes (`canvas`, `surface`)     |
 | `danger-hover` (hovered danger fill)                       | 3:1                  | 7.73/8.23                                                | 11.28/12.35 | 11.28/12.00    | 14.21/15.57   | Yes                           |
-| Tinted button edges (ADR-0026)                             | 3:1                  | measured by `theme:check` on all three plain backgrounds |             |                |               | Yes (button-edge check)       |
+| Tinted button edges                                        | 3:1                  | measured by `theme:check` on all three plain backgrounds |             |                |               | Yes (button-edge check)       |
 
 Measured on 2026-10-02 with `resolveThemeColors()` and `contrastRatio()` from `packages/theme/src` against the current `theme.css`. Lowest on a Section: `primary-hover` on `surface` in dark (3.23:1), and `border-control`/`secondary` on `surface` in dark (3.83:1).
 
@@ -272,20 +272,20 @@ The separate Foundation page (Containers and status) was removed: Section, Card 
 
 ### 6.11 New or changed tokens
 
-| Token                                | Value per theme                                                      | Contrast           | ADR                              |
-| ------------------------------------ | -------------------------------------------------------------------- | ------------------ | -------------------------------- |
-| `--kv-section-padding-sm`            | `space-3` (all)                                                      | n/a                | New ADR (aliases, no new values) |
-| `--kv-section-padding-md`            | `space-4`; `space-6` from `40rem`; `space-4` in compact from `64rem` | n/a                | New ADR                          |
-| `--kv-section-padding-lg`            | `space-6`; `space-8` from `40rem`; `space-6` in compact from `64rem` | n/a                | New ADR                          |
-| `--kv-section-padding` (per section) | From the padding class                                               | n/a                | New ADR                          |
-| Colour tokens                        | none new                                                             | §6.5: no new pairs | –                                |
+| Token                                | Value per theme                                                      | Contrast           | Decision                              |
+| ------------------------------------ | -------------------------------------------------------------------- | ------------------ | ------------------------------------- |
+| `--kv-section-padding-sm`            | `space-3` (all)                                                      | n/a                | New decision (aliases, no new values) |
+| `--kv-section-padding-md`            | `space-4`; `space-6` from `40rem`; `space-4` in compact from `64rem` | n/a                | New decision                          |
+| `--kv-section-padding-lg`            | `space-6`; `space-8` from `40rem`; `space-6` in compact from `64rem` | n/a                | New decision                          |
+| `--kv-section-padding` (per section) | From the padding class                                               | n/a                | New decision                          |
+| Colour tokens                        | none new                                                             | §6.5: no new pairs | –                                     |
 
 ## 7. Accessibility annotations
 
 Draft input for `packages/react/src/section/section.a11y.md`.
 
 - **APG pattern:** none. A section isn't a widget. **Deviations:** none.
-- **Element and role:** `<div>` → `generic` by default. No `role`, `aria-*`, `tabindex`, `inert`, `aria-hidden`, click handler, heading, live region or text, ever. Attributes (`id`, `lang`, `aria-*`, `data-*`) pass through. `className` joins `kv-section` (ADR-0015).
+- **Element and role:** `<div>` → `generic` by default. No `role`, `aria-*`, `tabindex`, `inert`, `aria-hidden`, click handler, heading, live region or text, ever. Attributes (`id`, `lang`, `aria-*`, `data-*`) pass through. `className` joins `kv-section`.
 - **Landmarks are opt-in, and named.**
   - `render={<aside aria-labelledby={headingId} />}`: complementary content (Example A, contact; Example C, case details).
   - `render={<section aria-labelledby={headingId} />}`: a region worth jumping to. A `<section>` without a name is `generic` (HTML-AAM), so it's useless as a landmark.
@@ -301,7 +301,7 @@ Draft input for `packages/react/src/section/section.a11y.md`.
 - **Visual:** text and control pairs on both surfaces are in `theme:check` (§6.5). The region's own boundary is decorative. Forced colours draw it. Reflow and text spacing as in §6.10.
 - **WCAG SCs of note:** 1.3.1, 1.3.2, 1.4.1, 1.4.3, 1.4.6 (contrast themes), 1.4.10, 1.4.11, 1.4.12, 2.4.1 (named landmarks help bypass), 2.4.3, 2.4.11, 2.4.13, 4.1.2.
 
-**Keyboard section** (ADR-0039):
+**Keyboard section**:
 
 ```md
 This component has no focusable parts and handles no keys.
@@ -356,9 +356,9 @@ Section is never a Tab stop and never changes the Tab order. Its children handle
 
 ## 9. Every reference that must change
 
-Found with `grep -rn` for `kv-card--surface`, `kv-card--canvas`, `sidebar`, `level 1` and `surface-layers` on 2026-10-02. `borders-elevation.stories.tsx` no longer exists: it's `apps/storybook/src/foundation/borders-elevation.mdx` now (ADR-0041).
+Found with `grep -rn` for `kv-card--surface`, `kv-card--canvas`, `sidebar`, `level 1` and `surface-layers` on 2026-10-02. `borders-elevation.stories.tsx` no longer exists: it's `apps/storybook/src/foundation/borders-elevation.mdx` now.
 
-**DESIGN.md** (with the new ADR):
+**DESIGN.md** (with the new decision):
 
 - Front matter `components`: add `section` (`backgroundColor: '{colors.surface}'`, `textColor: '{colors.text}'`, `rounded: '{rounded.none}'`, `padding: 24px`, with the comment "16px below 40rem, and in compact density from 64rem").
 - Colors table, Use column: `canvas` "Page background, and a canvas section (`kv-section--canvas`)"; `surface` "Sections (`Section`), sidebars, table headers, code".
@@ -394,10 +394,10 @@ Found with `grep -rn` for `kv-card--surface`, `kv-card--canvas`, `sidebar`, `lev
 - `apps/storybook/src/foundation/colors-semantic.tsx` line 53: `surface` "Sections, sidebars, table headers, code" (add `Section` if the page lists components).
 - Optional, not required: `.kv-story-surface` in `preview.css` (66–74), used by `link.stories.tsx` 44 and 159, could become a Section. It has a radius and a hairline, so it's a look of its own; leave it unless the plan wants it.
 
-**Docs, ADRs, changesets:**
+**Docs, changesets:**
 
 - `docs/design/card.md`: §4 (`contact.*` rows move), §5 Example A (→ Section) and Example D (nested card class), §6.1 (surface row removed), §6.4–6.5 (the cell headings: a card's own surface is `surface-raised`, and `surface`/`canvas` are where it sits), §6.8 nested cards, §7 stories, §9 open question 4 (answered). A status note that this spec supersedes those parts.
-- `docs/adr/0020-card-container.md` Context (line 11) and Decision 5 (line 48): a revision note pointing to the new ADR. ADR-0020 is still _Proposed_, so a "Revised" line is enough.
+- The Card decision, Context and Decision 5: a revision note pointing to the new Section decision. The Card decision was still _Proposed_, so a "Revised" line was enough.
 - `docs/architecture.md` line 105: the example `<Card.Root className="kv-card--surface">` → `<Section className="kv-section--canvas">`.
 - `.changeset/card.md` line 9: drop `kv-card--surface` and `kv-card--canvas`. New `.changeset/section.md`.
 - `docs/roadmap.md`: a Section row. `docs/design/README.md`: this spec's row (not added here: the brief limited edits to this file).
@@ -405,7 +405,7 @@ Found with `grep -rn` for `kv-card--surface`, `kv-card--canvas`, `sidebar`, `lev
 
 ## 10. Open questions
 
-1. **Region edges in the contrast themes.** With a transparent border, a sidebar is 1.06–1.10:1 from the page in light-contrast and dark-contrast too, while cards there have a 4.68–6.42:1 edge. Option: a semantic token, `--kv-color-border-region`: `transparent` in light and dark, `border-subtle` in the contrast themes, `CanvasText` in forced colours. It's decorative, so not a `theme:check` pair, but it's a new token (ADR, DESIGN.md, and a check that `transparent` passes the raw-colour lint). Recommended if the research question in §1 shows light-contrast users miss the edge. Ship without it now?
+1. **Region edges in the contrast themes.** With a transparent border, a sidebar is 1.06–1.10:1 from the page in light-contrast and dark-contrast too, while cards there have a 4.68–6.42:1 edge. Option: a semantic token, `--kv-color-border-region`: `transparent` in light and dark, `border-subtle` in the contrast themes, `CanvasText` in forced colours. It's decorative, so not a `theme:check` pair, but it's a new token (the maintainer's approval, DESIGN.md, and a check that `transparent` passes the raw-colour lint). Recommended if the research question in §1 shows light-contrast users miss the edge. Ship without it now?
 2. **A class for one edge** (for example `kv-section--edge-inline-end`) instead of the documented consumer CSS? It would make the docs site's sidebar a Section without custom CSS.
 3. **Shared padding steps.** `--kv-section-padding-*` and `--kv-card-padding-*` have the same values. Keep two sets (chosen: a site can change one without the other), or merge into `--kv-container-padding-*` later?
 4. **A site-wide default** (`--kv-section-padding-default`), like Card's? Left out until an adopter asks.

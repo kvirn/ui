@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# PreToolUse (Bash): an e2e run must name the spec it exercises (ADR-0057). A path-less `vp run e2e`
+# PreToolUse (Bash): an e2e run must name the spec it exercises (AGENTS.md, hard rule 12). A path-less `vp run e2e`
 # runs every spec and takes a lot of CPU, memory and time; the full run belongs to CI and the WCAG
 # sweep specialist. Applies to the main session and to subagents.
 # Exit 2 = block and feed stderr back to Claude.
@@ -41,7 +41,7 @@ process.stdin.on("data", (d) => (s += d)).on("end", () => {
       specs.push(token);
     }
     if (specs.some((spec) => !broad.has(spec.replace(/\/+$/, "")))) continue;
-    console.error("Blocked: name the e2e spec you are working on, e.g. `vp run e2e apps/storybook/src/components/<name>/<name>.e2e.ts --project chromium`. A path-less (or directory-wide) run executes every spec and costs a lot of CPU, memory and time. Test only what you changed. The full run belongs to CI and the WCAG sweep specialist (ADR-0057).");
+    console.error("Blocked: name the e2e spec you are working on, e.g. `vp run e2e apps/storybook/src/components/<name>/<name>.e2e.ts --project chromium`. A path-less (or directory-wide) run executes every spec and costs a lot of CPU, memory and time. Test only what you changed. The full run belongs to CI and the WCAG sweep specialist (AGENTS.md, hard rule 12).");
     process.exit(2);
   }
 });

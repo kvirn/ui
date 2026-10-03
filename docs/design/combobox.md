@@ -2,10 +2,10 @@
 
 - **Status:** In review (a design review of the built parts, with the target spec)
 - **Designer:** ux-designer agent · **Date:** 2026-10-02
-- **Plan:** [Plan 0022](../plans/0022-listbox-combobox-autocomplete.md) · **Related ADRs:** [ADR-0037](../adr/0037-select-combobox-autocomplete.md) (revised, with implementation notes), [ADR-0046](../adr/0046-overlay-layer-popover-attribute-and-core-placement.md), [ADR-0050](../adr/0050-combobox-and-autocomplete-react-implementation.md), ADR-0029, ADR-0031, ADR-0039
+- **Plan:** [Plan 0022](../plans/0022-listbox-combobox-autocomplete.md)
 - **Type:** component default styling (+ a design review, + proposed DESIGN.md wording)
 
-The parts and behaviour are decided in ADR-0037, ADR-0046 and ADR-0050, and specified in `listbox.a11y.md`, `combobox.a11y.md`, `autocomplete.a11y.md` and `popover.a11y.md`. This spec covers **what they look like** in the default theme (`packages/theme/theme.css`, the `kv-listbox-*`, `kv-combobox-*` and `kv-autocomplete-*` rules), and records the review of the built parts. The parts were built before this spec (Plan 0022, "Design spec: none yet"), so §6 describes the target and marks every difference from the build with **→ change** and a finding id from §8.
+The parts and behaviour are decided in the Listbox, overlay and Combobox decisions, and specified in `listbox.a11y.md`, `combobox.a11y.md`, `autocomplete.a11y.md` and `popover.a11y.md`. This spec covers **what they look like** in the default theme (`packages/theme/theme.css`, the `kv-listbox-*`, `kv-combobox-*` and `kv-autocomplete-*` rules), and records the review of the built parts. The parts were built before this spec (Plan 0022, "Design spec: none yet"), so §6 describes the target and marks every difference from the build with **→ change** and a finding id from §8.
 
 **How the review was done:** by reading `theme.css`, the stories, the fixtures, the package docs and the contracts, and by looking at six screenshots in light theme at desktop width and at 320px (`listbox-keyboard`, `listbox-groups`, `combobox-keyboard`, `combobox-multiple`, `autocomplete`, `combobox-320`), plus an older native-select screenshot. Nothing was run. Dark, the contrast themes, forced colours and RTL were reviewed **from the CSS only**: they need screenshots before this spec is approved (§8, Validation).
 
@@ -21,7 +21,7 @@ The parts and behaviour are decided in ADR-0037, ADR-0046 and ADR-0050, and spec
   4. A Windows Contrast Themes user who must see which option is highlighted and which are chosen, without the theme's colours.
   5. A staff member who uses only the keyboard, 50 times a day: one Tab stop, APG keys, nothing that slows them down.
 - **Job to be done:** When a service asks me to choose from a long list, I want to find my answer quickly by typing or scrolling, and see clearly what I've chosen, so I can move on with confidence.
-- **Context:** residents: rare, stressed, any device. On touch, a single-choice Listbox is the platform's own picker (ADR-0037 item 2), and Combobox and Autocomplete stay custom. Staff: daily, desktop, keyboard.
+- **Context:** residents: rare, stressed, any device. On touch, a single-choice Listbox is the platform's own picker, and Combobox and Autocomplete stay custom. Staff: daily, desktop, keyboard.
 - **Constraints:** headless packages ship no CSS (hard rule 5). Only DESIGN.md tokens. Every visible or announced string from `@kvirn-ui/i18n` in all six locales (hard rule 4).
 - **Success criteria:** the user completes the choice on the first try, sees the field while typing, can confirm their choice without reopening the list, and removes a single chosen value without losing the others.
 - **Evidence:** none from KvirnUI users yet. Prior art is cited in §2. Everything else is an assumption.
@@ -45,7 +45,7 @@ The parts and behaviour are decided in ADR-0037, ADR-0046 and ADR-0050, and spec
 
 Choosing in a Combobox, one value:
 
-1. Tab or click into the input (a click doesn't open, ADR-0050 item 4). The hint says "Börja skriva och välj sedan i listan."
+1. Tab or click into the input (a click doesn't open). The hint says "Börja skriva och välj sedan i listan."
 2. Type → the list filters and opens under the box. About 500 ms after typing stops, the count is announced.
 3. ArrowDown → the first option is active (bar and fill). Or press an option.
 4. Enter or press → its text fills the input, the popup closes, focus stays.
@@ -115,7 +115,7 @@ Hint                                   Hint
 Error
 ```
 
-Reading order and Tab order are the same as the visual order. In the built version (and ADR-0037 item 4) the chips come **before** the input. D2 recommends after.
+Reading order and Tab order are the same as the visual order. In the built version (and the Listbox decision) the chips come **before** the input. D2 recommends after.
 
 ## 6. Visual specification
 
@@ -163,9 +163,9 @@ Reading order and Tab order are the same as the visual order. In the built versi
 
 ### 6.4 New or changed tokens
 
-No new colour and no new palette step. Proposed (needs an ADR and `theme:check`, decision D4):
+No new colour and no new palette step. Proposed (needs the maintainer's approval and `theme:check`, decision D4):
 
-| Token                                                              | Value per theme                                                                                               | Contrast pair                                                                                                                                                                                                                                                            | ADR                             |
+| Token                                                              | Value per theme                                                                                               | Contrast pair                                                                                                                                                                                                                                                            | Decision                        |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------- |
 | `--kv-popup-edge` (a component alias, like `form-fields.md` §6.11) | light, light-contrast, dark-contrast: `var(--kv-color-border-subtle)`. dark: `var(--kv-color-border-control)` | In dark, `border-control` on `canvas`, `surface` and `surface-raised` is already held to ≥ 3:1 by `theme:check` (DESIGN.md, Colors). Add the alias to the measured pairs so a rebrand can't break it. Ratio to be measured with `vp run theme:check` by the main session | to be drafted if D4 is accepted |
 
@@ -176,7 +176,7 @@ No new colour and no new palette step. Proposed (needs an ADR and `theme:check`,
 The contracts are the source (`listbox.a11y.md`, `combobox.a11y.md`, `autocomplete.a11y.md`, `popover.a11y.md`). Design-relevant points:
 
 - **Names:** the trigger is named by the label then the value. Inputs by `<label for>`. Toggle and Clear have no visible text: **→ m2** name them with their own text plus the label.
-- **Tab stops:** Listbox: the trigger (1). Combobox: the remove buttons (several), then the input; Toggle and Clear are not tab stops (ADR-0050 item 5). D2 would move the remove buttons after the input.
+- **Tab stops:** Listbox: the trigger (1). Combobox: the remove buttons (several), then the input; Toggle and Clear are not tab stops. D2 would move the remove buttons after the input.
 - **Focus:** DOM focus stays on the trigger or input (`aria-activedescendant`). The active option is always visible: bar and fill, scrolled into view.
 - **Never obscured (2.4.11):** the popup must never cover its anchor. **It currently does in multiple mode (B1).**
 - **Announcements:** count, no results, loading, debounced, through the Announcer. Not the active option.
@@ -188,13 +188,13 @@ Severity follows the `design` skill. Each finding: location, issue, rule, who it
 
 ### Blocker
 
-- **B1. The popup covers its own input after the first choice in a Combobox with several values.** `combobox-multiple.png`: the popup's top (y≈127) sits just under the new "Malmö" chip, and the focused input (its ring shows at x≈13 and x≈657, y≈140–185) is entirely under the popup. The cause: `usePopup` places again on scroll, on window resize and when the anchor or popup **changes size** (`packages/react/src/popup/use-popup.ts:238–262`). When the value list appears or wraps to a new row, the Control **moves** without resizing, and the Combobox never calls `reposition`. — WCAG 2.4.11 Focus Not Obscured (Minimum), ADR-0037 item 13, `combobox.a11y.md` "the popup never covers the input". — Every sighted user choosing several values: they can't see what they type; magnifier users lose the field. — Fix: place again whenever the value list changes (observe the value list's size as well, or call `reposition` in a layout effect after the chosen values change), and add an e2e check that after the first choice the popup's top is at or below the Control's bottom. D2 removes the cause altogether.
+- **B1. The popup covers its own input after the first choice in a Combobox with several values.** `combobox-multiple.png`: the popup's top (y≈127) sits just under the new "Malmö" chip, and the focused input (its ring shows at x≈13 and x≈657, y≈140–185) is entirely under the popup. The cause: `usePopup` places again on scroll, on window resize and when the anchor or popup **changes size** (`packages/react/src/popup/use-popup.ts:238–262`). When the value list appears or wraps to a new row, the Control **moves** without resizing, and the Combobox never calls `reposition`. — WCAG 2.4.11 Focus Not Obscured (Minimum), the Listbox decision, `combobox.a11y.md` "the popup never covers the input". — Every sighted user choosing several values: they can't see what they type; magnifier users lose the field. — Fix: place again whenever the value list changes (observe the value list's size as well, or call `reposition` in a layout effect after the chosen values change), and add an e2e check that after the first choice the popup's top is at or below the Control's bottom. D2 removes the cause altogether.
 
 ### Major
 
 - **M1. Options move under the pointer in multiple mode.** The first chip row (≈54px) is inserted above the input while the popup stays open, and again whenever the chips wrap. Once B1 is fixed the popup moves with the input, so the next press lands on a different option. — No SC, but it causes wrong choices. — Tremor and magnifier users, fast mouse users. — Fix: D2 (the value list after the Control).
 - **M2. Clear removes every chosen value in multiple mode.** `hasClearableValue` counts chosen keys (`use-combobox.ts:834`), so one press on a 44px target next to the Toggle, named only "Rensa", empties the whole choice with no undo. — DESIGN.md (destructive actions need a confirmation step). — Anyone who misses the Toggle, especially on touch. — Fix: in multiple, Clear empties the text only and shows only while there is text (D3).
-- **M3. Nothing shows there's a list.** The docs' first example (`combobox.md`, "How it works"), `MultipleExample` and `MunicipalitiesCombobox` render a bare `Combobox.Input`, and a click doesn't open the list (ADR-0050 item 4). In `combobox-keyboard.png` the "Kommuner" input looks like any text field. — Clarity first (DESIGN.md principle 1). — Residents with low digital confidence, mouse and touch users. — Fix: make `Control` + `Clear` + `Toggle` the documented default for Combobox (one and several values). Keep the bare input as the `Minimal` story. Keep the hint "Börja skriva och välj sedan i listan." in every example (D1).
+- **M3. Nothing shows there's a list.** The docs' first example (`combobox.md`, "How it works"), `MultipleExample` and `MunicipalitiesCombobox` render a bare `Combobox.Input`, and a click doesn't open the list. In `combobox-keyboard.png` the "Kommuner" input looks like any text field. — Clarity first (DESIGN.md principle 1). — Residents with low digital confidence, mouse and touch users. — Fix: make `Control` + `Clear` + `Toggle` the documented default for Combobox (one and several values). Keep the bare input as the `Minimal` story. Keep the hint "Börja skriva och välj sedan i listan." in every example (D1).
 - **M4. The Listbox trigger truncates its value.** `.kv-listbox-value` is `nowrap` with an ellipsis (`theme.css` 3359–3365). With `multiple`, `Listbox.Value` joins every chosen text with commas, so chosen values disappear behind "…". At 320px a long Finnish name is cut, and more under 1.4.12. — DESIGN.md Layout ("use `overflow-wrap: anywhere` as a last resort, not truncation"). — Magnifier users who need to confirm their choice without reopening, anyone choosing several. — Fix: wrap the value, and let the trigger grow (§6.1).
 - **M5. Group labels are 14px `text-muted`** (`theme.css` 3480–3487, `listbox-groups.png`). — DESIGN.md Typography (`label-compact` is only for control labels in compact density) and Don'ts (no `text-muted` for what the user must read). A group name can be what tells two options apart (the same street name in two municipalities). — Low-vision users, second-language readers. — Fix: `label` in `text`, a `border-subtle` line between groups (§6.1).
 - **M6. "Inga resultat" and "Laddar resultat" are `text-muted`** (`theme.css` 3489–3492). — DESIGN.md Don'ts. It's the only explanation of an empty list. — Low-vision users. — Fix: `text`.
@@ -259,15 +259,15 @@ Severity follows the `design` skill. Each finding: location, issue, rule, who it
 
 ## 10. Open decisions for the maintainer
 
-1. **D1. Open the list on a click in the input?** ADR-0050 item 4 says no. **Recommendation:** keep it, and make the Toggle the documented default (M3). A click that only places the caret is right for editing, and the chevron is the visible way in.
-2. **D2. Where the chosen values go.** ADR-0037 item 4 puts the chips before the input, which moves the input and the open popup on the first choice and every new chip row (B1, M1). **Recommendation:** after the Control, in the DOM and on screen, so the input and the popup never move while choosing. The ticks in the open list show what's chosen meanwhile, and the Tab order becomes input, then remove buttons. The focus rule after a removal is unchanged. Needs an ADR-0037 amendment. Alternative: keep them before and fix only B1, accepting M1.
+1. **D1. Open the list on a click in the input?** The Combobox decision says no. **Recommendation:** keep it, and make the Toggle the documented default (M3). A click that only places the caret is right for editing, and the chevron is the visible way in.
+2. **D2. Where the chosen values go.** The Listbox decision puts the chips before the input, which moves the input and the open popup on the first choice and every new chip row (B1, M1). **Recommendation:** after the Control, in the DOM and on screen, so the input and the popup never move while choosing. The ticks in the open list show what's chosen meanwhile, and the Tab order becomes input, then remove buttons. The focus rule after a removal is unchanged. Needs an amendment to the Listbox decision. Alternative: keep them before and fix only B1, accepting M1.
 3. **D3. Clear with several values.** **Recommendation:** text only. If a "remove all" is wanted later, make it a visible text button ("Ta bort alla val") with its own key, never the × in the box.
-4. **D4. The popup edge in dark.** **Recommendation:** the `--kv-popup-edge` alias (§6.4): `border-control` in dark, `border-subtle` elsewhere, with an ADR and `theme:check` pairs. Alternative: `border-control` in every theme (what the Popover story does today), simpler but heavier in light.
-5. **D5. The Popover's default look.** **Recommendation:** level 3, `xl`, 16px padding (12px compact), `body`, at most 20rem wide, and DESIGN.md's Popups line reworded: "list popups (listboxes, menus) 8px padding with 44px items; content popovers 16px padding". Needs an ADR for the wording.
+4. **D4. The popup edge in dark.** **Recommendation:** the `--kv-popup-edge` alias (§6.4): `border-control` in dark, `border-subtle` elsewhere, with the maintainer's approval and `theme:check` pairs. Alternative: `border-control` in every theme (what the Popover story does today), simpler but heavier in light.
+5. **D5. The Popover's default look.** **Recommendation:** level 3, `xl`, 16px padding (12px compact), `body`, at most 20rem wide, and DESIGN.md's Popups line reworded: "list popups (listboxes, menus) 8px padding with 44px items; content popovers 16px padding". Needs the maintainer's approval for the wording.
 6. **D6. A Toggle in Autocomplete.** **Recommendation:** not in the default composition or the docs' first example; opt-in for a short, fixed suggestion list, then named "Visa förslag" (`autocomplete.showSuggestions`, proposed).
 7. **D7. Group label weight.** **Recommendation:** `label` (500) with the divider line. Alternative: 600, which sets groups apart more strongly but adds a weight use DESIGN.md reserves for `strong` and the current item.
 8. **D8. Truncation in the native select.** A closed `<select>` can't wrap. **Recommendation:** accept and document it in `listbox.md`: services with very long option names use `native="never"`.
-9. **D9. DESIGN.md wording** (one ADR with D4 and D5): add Listbox, Combobox and Autocomplete to Components (the box is `input`'s; Toggle and Clear are full-height marks with no divider because a Control has no Addons; the active option is a bar plus a fill; the chosen one a tick; chips use `sm`), and add `--kv-popup-height-limit` to Theming.
+9. **D9. DESIGN.md wording** (one decision with D4 and D5): add Listbox, Combobox and Autocomplete to Components (the box is `input`'s; Toggle and Clear are full-height marks with no divider because a Control has no Addons; the active option is a bar plus a fill; the chosen one a tick; chips use `sm`), and add `--kv-popup-height-limit` to Theming.
 
 ### Further questions
 

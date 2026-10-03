@@ -289,7 +289,7 @@ test.describe('Masked Input keyboard contract', () => {
     await page.keyboard.type('1234')
     await expect(input).toHaveValue('123 4')
     // Writing the value (to insert the space) clears the browser's undo history before that
-    // step (ADR-0032), so undo can't go back past it: nothing is undone and the value stays.
+    // step, so undo can't go back past it: nothing is undone and the value stays.
     await page.keyboard.press('ControlOrMeta+Z')
     await expect(input).toHaveValue('123 4')
   })

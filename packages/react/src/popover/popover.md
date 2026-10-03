@@ -1,6 +1,6 @@
 # Popover
 
-> **Draft** (Plan 0022, Phase 2). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [popover.a11y.md](popover.a11y.md), and the decisions are in ADR-0046 (the native `popover` attribute, placement and dismissal).
+> **Draft** (Plan 0022, Phase 2). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [popover.a11y.md](popover.a11y.md), and the decisions are in the overlays-and-lists skill.
 
 A Popover is a small floating panel that a button opens: a hint, a short form, a few controls. The browser puts it in the **top layer**, so no ancestor's `overflow` clips it and you never fight `z-index`. KvirnUI places it next to the button, flips it when there is no room, keeps it inside the viewport and lets it scroll inside when it is too tall.
 
@@ -37,7 +37,7 @@ import { Popover } from '@kvirn-ui/react'
 | `padding`                     | `8`              | The space kept to the edge of the viewport, in pixels                                                                                                                                                                                  |
 | `matchAnchorWidth`            | `false`          | Make the popup exactly as wide as the trigger                                                                                                                                                                                          |
 
-Every part takes `render` to change its element, and `className`, `style`, handlers and refs merge with its own (ADR-0015). `render` also receives the state: `{ isOpen }`.
+Every part takes `render` to change its element, and `className`, `style`, handlers and refs merge with its own. `render` also receives the state: `{ isOpen }`.
 
 ## Hook
 

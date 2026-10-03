@@ -9,7 +9,7 @@ import { virtualizedStreets } from '../form/virtualized.fixture.ts'
 // an adopter writes it. sv, en and fi are written, and nb, nn and se show the English text,
 // marked lang="en" (3.1.2), until a translator has been through them.
 //
-// KvirnUI holds no form state (ADR-0029, item 0). The value is the text: pass `value` and
+// KvirnUI holds no form state. The value is the text: pass `value` and
 // `onValueChange`, or `defaultValue` and `name` for a plain form. Nothing here validates.
 
 /** Street names, with å, ä and ö at the start and in the middle, for the filter and the keys. */

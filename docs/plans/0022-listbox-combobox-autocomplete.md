@@ -3,7 +3,6 @@
 - **Status:** In progress
 - **Owner:** main session (orchestrator) with component-engineer
 - **Created:** 2026-10-02 · **Target:** M2 (Popover, Listbox) and M3 (Combobox, Autocomplete), built together
-- **Related:** ADR-0037 (revised: Listbox replaces NativeSelect), ADR-0046 (overlay layer), ADR-0034, ADR-0036, ADR-0039, ADR-0040, ADR-0029
 - **Design spec:** [`docs/design/combobox.md`](../design/combobox.md), written as a design review after the build (status In review). The default-theme styling uses existing `--kv-*` tokens.
 
 ## Goal
@@ -12,10 +11,10 @@ A user can pick one or several options from a list, filter a long list by typing
 
 ## Non-goals
 
-- Inline completion (`aria-autocomplete="both"`), ADR-0037 item 6.
+- Inline completion (`aria-autocomplete="both"`).
 - Menu, Tooltip, Dialog, Portal (they reuse `usePopup` later).
-- CSS anchor positioning (ADR-0046, item 6).
-- ScrollArea (ADR-0036) and the virtualizer helper (ADR-0034). The popup scrolls natively (`overflow: auto`, max height) in this plan. Virtualization (`virtualizer` prop, `aria-setsize` and `aria-posinset`) is a follow-up plan, but the core API reserves the active-index and "always render active and selected" contract so it isn't a rewrite.
+- CSS anchor positioning (item 6).
+- ScrollArea and the virtualizer helper. The popup scrolls natively (`overflow: auto`, max height) in this plan. Virtualization (`virtualizer` prop, `aria-setsize` and `aria-posinset`) is a follow-up plan, but the core API reserves the active-index and "always render active and selected" contract so it isn't a rewrite.
 - The manual AT matrix. It stays `pending`.
 
 ## Background
@@ -52,7 +51,7 @@ Hooks: `usePopup`, `useDismissableLayer`, `useListbox`, `useCombobox`. Core: `co
 
 ### Accessibility contract (draft)
 
-Focus strategy: Listbox (custom) and Combobox keep DOM focus on the trigger or input and use `aria-activedescendant`. Arrows don't wrap (ADR-0037 item 8).
+Focus strategy: Listbox (custom) and Combobox keep DOM focus on the trigger or input and use `aria-activedescendant`. Arrows don't wrap.
 
 | Key (open popup)            | Listbox (select-only)                         | Combobox, Autocomplete                                                                     |
 | --------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------ |
@@ -92,22 +91,22 @@ Add the `combobox` namespace in `packages/i18n/src/types.ts` and all six locales
 
 ### Theming surface
 
-Classes and `data-*` as in ADR-0037 item 14 and ADR-0046 item 3. `kv-native-select` becomes `kv-listbox-native`. Popup: level 3 elevation (`--kv-shadow-popup`), `xl` radius, 8px padding, items at least 44px (32px compact), per `DESIGN.md`.
+Classes and `data-*` as in the overlays-and-lists skill. `kv-native-select` becomes `kv-listbox-native`. Popup: level 3 elevation (`--kv-shadow-popup`), `xl` radius, 8px padding, items at least 44px (32px compact), per `DESIGN.md`.
 
 ## Tasks
 
 Phase 1, core (pure, node tests, two engineers in parallel on separate folders):
 
-- [x] `core/src/overlay/`: `computePlacement` and `createDismissableLayerStack` + unit tests (ADR-0046)
+- [x] `core/src/overlay/`: `computePlacement` and `createDismissableLayerStack` + unit tests
 - [x] `core/src/listbox/` (`createListbox`: items, active index, selection single and multiple, typeahead, disabled, page jumps) and `core/src/combobox/` (`createCombobox`: modes, open state, input value, filter, no-silent-clear) and `filterItems` (`Intl.Collator`, sv/fi/en tests with å ä ö) + unit tests
 
 Phase 2, React (after phase 1):
 
 - [x] `usePopup`, `Popover`, `useDismissableLayer` (React, tests, `popover.a11y.md`, `popover.md`, stories and e2e written; gates not yet run)
 - [ ] `Listbox` custom and native rendering, replacing `NativeSelect` (rename files, stories, e2e, theme class, `index.ts`, Field docs, changeset)
-  - [x] Rename, native rendering only (superseded: the native select is no longer a public part, see ADR-0037 notes): `kv-listbox-native`, stories and e2e under `components/listbox/`, breaking changeset
+  - [x] Rename, native rendering only (superseded: the native select is no longer a public part): `kv-listbox-native`, stories and e2e under `components/listbox/`, breaking changeset
   - [x] Custom popup rendering (`Listbox.Root` and the popup parts), `native="auto"`, `useListbox`, an internal native select (not exported), contract `listbox.a11y.md`, `listbox.md`, stories (`listbox.stories.tsx`, with the Native… stories for `native="always"`), e2e `listbox.e2e.ts`, default-theme `kv-listbox-*` styles; gates not yet run
-- [x] `Combobox` (single, multiple) and `Autocomplete` (`useCombobox`, `useAutocomplete`, the compound parts, contracts `combobox.a11y.md` and `autocomplete.a11y.md`, `combobox.md` and `autocomplete.md`, tests, default-theme `kv-combobox-*` and `kv-autocomplete-*` styles, stories and e2e under `components/combobox/` and `components/autocomplete/`, ADR-0050; gates not yet run, manual AT `pending`)
+- [x] `Combobox` (single, multiple) and `Autocomplete` (`useCombobox`, `useAutocomplete`, the compound parts, contracts `combobox.a11y.md` and `autocomplete.a11y.md`, `combobox.md` and `autocomplete.md`, tests, default-theme `kv-combobox-*` and `kv-autocomplete-*` styles, stories and e2e under `components/combobox/` and `components/autocomplete/`; gates not yet run, manual AT `pending`)
 - [x] i18n keys in all six locales (`combobox` namespace; `se` machine-drafted, marked for native review)
 
 Phase 3:

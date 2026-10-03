@@ -18,7 +18,7 @@ export interface UseCheckboxGroupOptions {
   /**
    * Called with the next values when a box changes. Controlled, it's `value` with the box's
    * value added at the end or removed. Uncontrolled, it's read from the group's checked boxes.
-   * It only reports: the group stores nothing (ADR-0029, item 0).
+   * It only reports: the group stores nothing.
    */
   onValueChange?: ((value: string[], details: CheckboxGroupChangeDetails) => void) | undefined
   /** `data-invalid` on every box, for styling. No `aria-invalid`: the group's error describes it. */
@@ -58,7 +58,7 @@ function checkedValues(root: HTMLElement | null, name: string | undefined): stri
 }
 
 /**
- * The value logic of a group of checkboxes, for your own fieldset (ADR-0029, contract:
+ * The value logic of a group of checkboxes, for your own fieldset (contract:
  * checkbox-group.a11y.md). Pair it with `useFieldset({ group: true })` for the legend, hint and
  * error. It holds no state: it derives each box's props from `value` and reports the next value.
  *

@@ -17,12 +17,12 @@ import type { InputChangeDetails, InputProps } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 import { useState } from 'react'
 
-// Story and e2e fixture for Components/Form/Mask (Plan 0014, ADR-0032). sv and en are written
+// Story and e2e fixture for Components/Form/Mask (Plan 0014). sv and en are written
 // here. Every other locale shows the English text, marked lang="en" (3.1.2), until a translator
 // provides it. The numbers are the published test numbers from packages/core/src/mask/checks
 // tests (Skatteverket, DVV, Skatteetaten, the SWIFT registry), never real people's.
 //
-// KvirnUI holds no form state (ADR-0029, item 0). The mask shapes what is typed, and the form
+// KvirnUI holds no form state. The mask shapes what is typed, and the form
 // below it validates, here with the `checks.*` helpers on submit.
 
 export type MaskLocale = 'sv' | 'en'

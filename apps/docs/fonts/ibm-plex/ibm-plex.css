@@ -6,7 +6,7 @@
  * `npm pack` (their postinstall sends IBM telemetry, so they're not dependencies). A modified
  * or re-subset file couldn't keep the name.
  *
- * Three subsets per weight, one family name, split by unicode-range (ADR-0017, ADR-0027):
+ * Three subsets per weight, one family name, split by unicode-range:
  * Latin1 has å ä ö æ ø, Latin2 the Northern Sámi letters á č đ ŋ š ŧ ž, and Pi arrows, check
  * marks and spaces. Weights: Sans 400, 500 and 600, Serif 500 and 600. No italics: the browser
  * slants the roman, as it did with Inter. Shared by the docs site and Storybook.

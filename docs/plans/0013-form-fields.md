@@ -3,7 +3,7 @@
 - **Status:** In progress
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-02 · **Target:** M1
-- **Related:** ADR-0029, ADR-0030, ADR-0031 (Proposed), ADR-0007, ADR-0015, ADR-0023, design spec [form-fields.md](../design/form-fields.md)
+- **Related:** design spec [form-fields.md](../design/form-fields.md)
 
 ## Goal
 
@@ -13,16 +13,16 @@ Adopters build an accessible public-sector form from separate parts: a label, a 
 
 - Textarea, Select, Switch: they're on the roadmap and come after this plan. They reuse Field.
 - The error summary and form wizard blocks (M4).
-- The calendar DatePicker (M4, ADR-0030).
+- The calendar DatePicker (M4).
 - A validation engine. The consumer validates and sets `invalid`.
-- Form state of any kind (ADR-0029, item 0). Components hold no value, checked or validity state. They render what they're given and report changes up, so the implementor's form logic (TanStack Form, React Hook Form, plain `<form>`) owns it. No core machine either.
+- Form state of any kind (item 0). Components hold no value, checked or validity state. They render what they're given and report changes up, so the implementor's form logic (TanStack Form, React Hook Form, plain `<form>`) owns it. No core machine either.
 
 ## Background
 
 - APG: no pattern for fields. Checkbox and Radio Group are native inputs. Native radios already handle the arrow keys and the Tab stop the way the APG Radio Group pattern does.
 - WCAG: 1.3.1, 1.3.5, 1.4.1, 1.4.11, 2.5.3, 2.5.8, 3.3.1, 3.3.2, 3.3.3, 3.3.8, 4.1.2.
 - Prior art: GOV.UK (Text input, Date input, Error message, Fieldset), Designsystemet (NO, Field and Fieldset), Base UI Field, React Aria TextField.
-- Decisions: ADR-0029 covers the parts, wiring, required and optional, the error prefix and no live errors. ADR-0030 covers numbers as text with `inputMode` and dates as three fields.
+- Decisions (now in the forms skill): the parts, wiring, required and optional, the error prefix and no live errors; numbers as text with `inputMode` and dates as three fields.
 
 ## Design
 
@@ -39,7 +39,7 @@ The visual spec is [docs/design/form-fields.md](../design/form-fields.md) (ux-de
   <Input name="name" autoComplete="name" />
 </Field.Root>
 
-// Number (ADR-0030): Input with inputMode, never type="number"
+// Number: Input with inputMode, never type="number"
 <Field.Root>
   <Field.Label>Antal barn</Field.Label>
   <Input name="children" inputMode="numeric" spellCheck={false} className="kv-input--width-2" />
@@ -66,7 +66,7 @@ The visual spec is [docs/design/form-fields.md](../design/form-fields.md) (ux-de
   …
 </RadioGroup.Root>
 
-// Date (ADR-0030): three fields in a fieldset
+// Date: three fields in a fieldset
 <Fieldset.Root invalid={dateError !== undefined}>
   <Fieldset.Legend>När är du född?</Fieldset.Legend>
   <Fieldset.Description>Till exempel 1990 3 27</Fieldset.Description>
@@ -88,7 +88,7 @@ const field = useField({ invalid, required, hasDescription: true })
 
 Exports (each part also as a named export, for example `FieldLabel`): `Field` (`Root`, `Label`, `Description`, `ErrorMessage`), `Fieldset` (`Root`, `Legend`, `Description`, `ErrorMessage`), `Input`, `Checkbox`, `CheckboxGroup` (`Root`), `RadioGroup` (`Root`), `Radio`, `DateInput` (`Root`, `Day`, `Month`, `Year`). Hooks: `useField`, `useFieldset`, `useInput`, `useCheckbox`, `useCheckboxGroup`, `useRadioGroup`, `useRadio`, `useDateInput`. Types: `UseXOptions`, `UseXResult`, `XPartProps`, `XProps`, `XState`.
 
-Props follow docs/architecture.md. No component stores form state (ADR-0029, item 0): `defaultValue` and `defaultChecked` go straight to the native element, never into React state.
+Props follow docs/architecture.md. No component stores form state (item 0): `defaultValue` and `defaultChecked` go straight to the native element, never into React state.
 
 - Input: `value`/`defaultValue`/`onValueChange(value, { reason: 'input', event })`, plus every native prop.
 - Checkbox: `checked`/`defaultChecked`/`onCheckedChange(checked, details)`, and `indeterminate`, which sets the DOM property and `data-state="indeterminate"`.
@@ -120,7 +120,7 @@ Props follow docs/architecture.md. No component stores form state (ADR-0029, ite
 | click on the label        | Checkbox, Radio, Input | focuses or toggles the control (native `<label for>`)                                               |
 
 - Focus management: nothing moves focus. The error summary block (M4) owns focus on submit.
-- Announcements: none live (ADR-0029). The name, description, error, required, invalid and checked state are announced on focus.
+- Announcements: none live. The name, description, error, required, invalid and checked state are announced on focus.
 - WCAG SCs: listed under Background.
 
 ### i18n strings
@@ -137,7 +137,7 @@ The fi, nb and nn texts come from the design spec. se stays English with `TODO(n
 
 ### Theming surface
 
-The classes and `data-*` attributes are in ADR-0029, plus `kv-input`, `kv-checkbox`, `kv-radio`, `kv-checkbox-group`, `kv-radio-group`, `kv-date-input`, the width modifiers from the spec (for example `kv-input--width-2`) and `data-state` on Checkbox. Tokens come from the spec. Any new token gets contrast pairs in `contrast-requirements.ts`, at least `danger` as a 3:1 non-text pair on `canvas`, `surface` and `surface-raised`. All new part classes go in prose's exclusion list.
+The classes and `data-*` attributes are in the forms skill, plus `kv-input`, `kv-checkbox`, `kv-radio`, `kv-checkbox-group`, `kv-radio-group`, `kv-date-input`, the width modifiers from the spec (for example `kv-input--width-2`) and `data-state` on Checkbox. Tokens come from the spec. Any new token gets contrast pairs in `contrast-requirements.ts`, at least `danger` as a 3:1 non-text pair on `canvas`, `surface` and `surface-raised`. All new part classes go in prose's exclusion list.
 
 ## Tasks
 
@@ -145,9 +145,9 @@ Each phase is one PR and passes every gate on its own.
 
 ### Phase 0: decisions and design
 
-- [x] ADR-0029, ADR-0030 (Proposed)
+- [x] Decisions recorded (Proposed)
 - [x] Design spec `docs/design/form-fields.md` (ux-designer, Draft)
-- [ ] Maintainer approves the plan and the ADR defaults
+- [ ] Maintainer approves the plan and the defaults
 
 ### Phase 1: Field, Fieldset, Label, Description, ErrorMessage, Input (text and number)
 
@@ -165,7 +165,7 @@ Each phase is one PR and passes every gate on its own.
 - [x] Changeset (`react`, `theme`, `i18n` minor)
 - [x] accessibility-reviewer APPROVE (after one round: error linked from the first invalid render)
 
-### Phase 1b: field order and InputGroup (ADR-0031)
+### Phase 1b: field order and InputGroup
 
 Maintainer's instruction: implement everything first, then write and update the tests and run the gates once at the end.
 
@@ -185,14 +185,14 @@ The spec's open questions, resolved on 2026-10-02 as defaults the maintainer can
 - 14: keep the single date field with a decorative calendar icon. The docs say it's decorative until the M4 DatePicker turns it into a named button.
 - 15: Addon text uses `text`, not `text-muted`.
 - 16: no `scroll-margin` in the theme. The docs say to use `scroll-padding` on the page.
-- 17: a Button in a group is a flat segment with a divider (no ADR-0026 depth), and only the default look is supported.
+- 17: a Button in a group is a flat segment with a divider (no button depth), and only the default look is supported.
 
 - [x] Design spec update: the new default order, and InputGroup (ux-designer)
 - [x] Several Descriptions per Field and Fieldset: one id each, in DOM order in `aria-describedby`, then the error. `useField` and `useFieldset` support several descriptions with complete server-rendered markup. A dev warning when a Field renders two ErrorMessages
 - [x] `InputGroup.Root` and `InputGroup.Addon` (`useInputGroup`). Addons are `aria-hidden`, and clicking one focuses the Input. A dev warning for focusable content in an Addon. Field state on the Root. Buttons go directly in the Root
 - [x] theme.css: the new order's spacing, InputGroup (box, focus ring around the group, invalid, disabled, read-only, forced colours, compact, RTL, width classes), any new contrast pairs
 - [x] Stories: every Form page in the new order. A new `Components/Form/InputGroup` page (kr, %, km, search icon with a clear Button, calendar icon, RTL prefix, invalid, disabled, a long Finnish label at 320px)
-- [x] Docs: `field.md`, `input.md`, a new `input-group.md`, `input-group.a11y.md` (Keyboard section per the `keyboard` skill, ADR-0039: the text-input keys, addons never Tab stops, a Button in the group is its own stop), DESIGN.md wording per the spec, the changeset
+- [x] Docs: `field.md`, `input.md`, a new `input-group.md`, `input-group.a11y.md` (Keyboard section per the `keyboard` skill: the text-input keys, addons never Tab stops, a Button in the group is its own stop), DESIGN.md wording per the spec, the changeset
 - [x] Then the tests: component tests for several Descriptions and InputGroup, the updated story play functions, e2e for InputGroup (forced colours, RTL, reflow, focus ring, Tab order with a Button)
 - [x] Gates once at the end (e2e on Chromium only, by the maintainer's choice during heavy development)
 - [x] accessibility-reviewer APPROVE (no blocking findings). The hover fill no longer covers the group's edge, and the Tab row names both of its tests
@@ -203,18 +203,18 @@ The spec's open questions, resolved on 2026-10-02 as defaults the maintainer can
 
 ### Phase 2: Checkbox, CheckboxGroup, RadioGroup, Radio
 
-- [ ] Contracts, failing tests, hooks and components. Native inputs. Keyboard sections from the `keyboard` skill's Checkbox and Radio group tables (ADR-0039): each checkbox its own Tab stop, the radio group one Tab stop
+- [ ] Contracts, failing tests, hooks and components. Native inputs. Keyboard sections from the `keyboard` skill's Checkbox and Radio group tables: each checkbox its own Tab stop, the radio group one Tab stop
 - [ ] Theme: 24px marks per the spec, checked, indeterminate, forced colours (marks drawn so they survive), the whole label clickable
 - [ ] Stories: `Components/Form/Checkbox`, `/CheckboxGroup`, `/RadioGroup`, each with a `Keyboard` story and `parameters.a11yContract`
 - [ ] e2e: one test per keyboard row, including radio arrows in RTL
 - [ ] Docs, exports, changeset, accessibility-reviewer APPROVE
 
-### Phase 2b: NativeSelect (ADR-0037, item 2)
+### Phase 2b: NativeSelect (item 2)
 
 Scope: only the native `<select>` wired by Field. The custom `Select`, `Combobox` and `Autocomplete` need Listbox, Popover and DismissableLayer (all `planned`, M2) and get their own plan.
 
-- [ ] `native-select.a11y.md` contract. Native `<select>`: Tab stop, arrows, typeahead and Alt+Down are browser behaviour, documented per ADR-0039. No placeholder option as the only label
-- [ ] Failing tests first, then `useNativeSelect` and `NativeSelect` (Field wiring: `id`, `aria-describedby`, `aria-invalid`, `aria-required`, `disabled`). `value`/`defaultValue`/`onValueChange` with no stored state (ADR-0029, item 0). Children are plain `<option>` and `<optgroup>`
+- [ ] `native-select.a11y.md` contract. Native `<select>`: Tab stop, arrows, typeahead and Alt+Down are browser behaviour, documented per the `keyboard` skill. No placeholder option as the only label
+- [ ] Failing tests first, then `useNativeSelect` and `NativeSelect` (Field wiring: `id`, `aria-describedby`, `aria-invalid`, `aria-required`, `disabled`). `value`/`defaultValue`/`onValueChange` with no stored state (item 0). Children are plain `<option>` and `<optgroup>`
 - [ ] Theme: `kv-native-select` per the Input look, with a drawn chevron that survives forced colours. Tokens only, no new contrast pairs unless needed
 - [ ] Stories: `Components/Form/NativeSelect` (default, selected, with description, invalid, disabled, groups, RTL, forced colours, long Finnish label, `Keyboard`, `parameters.a11yContract`). e2e: Tab order, label click focuses, 320px reflow
 - [ ] Docs, export, changeset, roadmap row for NativeSelect, accessibility-reviewer APPROVE
@@ -234,22 +234,22 @@ Scope: only the native `<select>` wired by Field. The custom `Select`, `Combobox
 ## Risks & open questions
 
 - **Design spec open questions, resolved 2026-10-02** (spec §9):
-  1. Hints use `text` (ADR-0029, item 11). Update DESIGN.md's token table in Phase 1.
+  1. Hints use `text` (item 11). Update DESIGN.md's token table in Phase 1.
   2. The choice layout uses `.kv-field:has(> .kv-checkbox, > .kv-radio)`, so the control must be a direct child of Field.Root (documented). Width classes as in the spec.
   3. DateInput order follows the region via `Intl`, and month first becomes day first. `useDateInput` exposes the order. `se` needs the native reviewer. Phase 3.
   4. The consumer writes the date hint. The docs show one per locale. Revisit a `dateInput.example` message in Phase 3.
   5. No red inline-start bar on invalid fields for now.
   6. Description stays before the error in `aria-describedby`. Recorded as an AT research question.
-  7. No `aria-invalid` on radios (ADR-0029, item 10).
+  7. No `aria-invalid` on radios (item 10).
   8. Until the error summary block ships, the docs say: on submit, move focus to the first invalid field.
   9. Textarea, Yes/No radios side by side, currency affixes, show-password and pasting a whole date into the three boxes are out of scope.
   10. No `kv-form` class yet. Stories space questions with story CSS.
   11. Check and dot marks drawn with `::before` on the input must render in Firefox and WebKit. Phase 2 e2e checks this, with a hidden indicator element as the fallback.
-  12. and 13. "(optional)" on group options and DateInput boxes, and a Fieldset's `invalid` cascading down: resolved in ADR-0029, item 10.
+  12. and 13. "(optional)" on group options and DateInput boxes, and a Fieldset's `invalid` cascading down: resolved in the forms skill.
 
-- **Defaults chosen without the maintainer's answer** (2026-10-02): three-field date, `inputMode` numbers, mark optional rather than required, a visible-in-markup "Error:" prefix, phased PRs. All are in ADR-0029 and ADR-0030 as Proposed.
+- **Defaults chosen without the maintainer's answer** (2026-10-02): three-field date, `inputMode` numbers, mark optional rather than required, a visible-in-markup "Error:" prefix, phased PRs. All are in the forms skill.
 - `aria-describedby` on a `<fieldset>` isn't announced consistently by TalkBack. GOV.UK ships it, and the manual AT run checks it.
-- `aria-required` instead of native `required` (ADR-0029) is unusual. Revisit if AT testing shows a gap.
+- `aria-required` instead of native `required` is unusual. Revisit if AT testing shows a gap.
 - DateInput field order: following the locale (sv year first) against a fixed order. The design spec decides.
 - Indeterminate checkboxes: the native property can't be set in SSR markup, so it's set in an effect and the first paint is unchecked. The test covers it.
 

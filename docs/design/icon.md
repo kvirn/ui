@@ -2,10 +2,10 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-01
-- **Plan:** [Plan 0009](../plans/0009-icon.md) · **Related ADRs:** [ADR-0024](../adr/0024-icon-registry-and-svg-attributes.md) (Proposed), ADR-0005, ADR-0007, ADR-0013, ADR-0016
+- **Plan:** [Plan 0009](../plans/0009-icon.md)
 - **Type:** component default styling + built-in asset set + DESIGN.md rule change
 
-The API is decided in ADR-0024 and Plan 0009: a typed name registry in `KvirnProvider`, attributes on the root `<svg>`, `sm`/`md`/`lg` as 1em/1.25em/1.5em, and decorative by default. The maintainer has also decided (2026-10-01) that `@kvirn-ui/react` ships a **built-in set** as the registry's base layer. It's drawn in the Heroicons outline style, but every drawing is original. An app that registers the same name replaces the built-in.
+The API is decided in the Icon API decision and Plan 0009: a typed name registry in `KvirnProvider`, attributes on the root `<svg>`, `sm`/`md`/`lg` as 1em/1.25em/1.5em, and decorative by default. The maintainer has also decided (2026-10-01) that `@kvirn-ui/react` ships a **built-in set** as the registry's base layer. It's drawn in the Heroicons outline style, but every drawing is original. An app that registers the same name replaces the built-in.
 
 This spec decides:
 
@@ -26,7 +26,7 @@ This spec decides:
 - **Context:** every device. Residents meet these icons once, under stress (errors, deadlines). Staff see them all day in compact density.
 - **Constraints:**
   - No runtime dependency (hard rule 6), and no third-party requests (hard rule 7).
-  - The theme never sets size, stroke, fill or colour (ADR-0024 decision 6).
+  - The theme never sets size, stroke, fill or colour (the Icon API decision).
   - The headless package ships no CSS (hard rule 5). The built-ins are React components with SVG attributes only.
   - Original drawings: we don't copy Heroicons' path data.
 - **Success criteria:**
@@ -58,14 +58,14 @@ No APG pattern applies: an icon isn't a widget. Icon-only buttons follow the But
 
 An icon has no flow. Its unhappy paths:
 
-| Condition                                      | What the user gets                                                                                                                                            |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Unknown name (typo, icon not registered)       | An empty, sized, hidden `<svg>`, so the layout doesn't jump, plus a dev warning (ADR-0024). The placeholder needs `viewBox="0 0 24 24"` (see §6.2, card rule) |
-| App overrides a built-in with a library icon   | Kvirn's components show the app's icon. Mirroring follows the name, not the drawing (§4.2)                                                                    |
-| Hard-coded colour in forced colours            | Turned into the inherited system colour by the theme (§6.2)                                                                                                   |
-| Without the theme                              | Icons still size, colour and hide correctly (attributes). No RTL flip, no alignment rule, no icon-only square. The consumer styles `[data-mirror-in-rtl]`     |
-| 200% text and 400% zoom                        | `em` sizes grow with the text (1.4.4). Icon-only buttons grow with their `rem` minimum                                                                        |
-| Long Finnish label next to an icon in a Button | The label wraps, and the icon keeps its size (`flex-shrink: 0`) and stays centred on the label block                                                          |
+| Condition                                      | What the user gets                                                                                                                                        |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Unknown name (typo, icon not registered)       | An empty, sized, hidden `<svg>`, so the layout doesn't jump, plus a dev warning. The placeholder needs `viewBox="0 0 24 24"` (see §6.2, card rule)        |
+| App overrides a built-in with a library icon   | Kvirn's components show the app's icon. Mirroring follows the name, not the drawing (§4.2)                                                                |
+| Hard-coded colour in forced colours            | Turned into the inherited system colour by the theme (§6.2)                                                                                               |
+| Without the theme                              | Icons still size, colour and hide correctly (attributes). No RTL flip, no alignment rule, no icon-only square. The consumer styles `[data-mirror-in-rtl]` |
+| 200% text and 400% zoom                        | `em` sizes grow with the text (1.4.4). Icon-only buttons grow with their `rem` minimum                                                                    |
+| Long Finnish label next to an icon in a Button | The label wraps, and the icon keeps its size (`flex-shrink: 0`) and stays centred on the label block                                                      |
 
 ## 4. Content
 
@@ -117,13 +117,13 @@ That leaves one slot under the 25 cap, held for a table sort indicator (`sort`, 
 
 ### 4.2 Registry behaviour that affects users
 
-- **Built-ins are the lowest layer.** Merge order: built-ins, then each `KvirnProvider`'s `icons` from outer to inner, then instance props (ADR-0024's precedence, with the built-ins below the library defaults).
-- **Mirroring belongs to the name, not to the drawing.** When an app registers a plain component under a built-in name, for example `'arrow-forward': ArrowRight`, the built-in's `mirrorInRtl: true` still applies. Otherwise an override silently breaks RTL. An entry that sets `mirrorInRtl` explicitly wins. Recommended, and needs an ADR-0024 amendment (open question 2).
+- **Built-ins are the lowest layer.** Merge order: built-ins, then each `KvirnProvider`'s `icons` from outer to inner, then instance props (the Icon API decision's precedence, with the built-ins below the library defaults).
+- **Mirroring belongs to the name, not to the drawing.** When an app registers a plain component under a built-in name, for example `'arrow-forward': ArrowRight`, the built-in's `mirrorInRtl: true` still applies. Otherwise an override silently breaks RTL. An entry that sets `mirrorInRtl` explicitly wins. Recommended, and needs an amendment to the Icon API decision (open question 2).
 - **The built-ins use `stroke-width="1.5"` as their own default.** `iconDefaults.strokeWidth` and the `strokeWidth` prop override it. The drawing rules hold from 1 to 2 (§6.1).
 
 ### 4.3 Strings
 
-Icon and the built-ins render no text, and have no `<title>` or i18n keys. A label always comes from the caller: a Kvirn component's own messages (for example a future `dialog.close`), or the app's translations (ADR-0007).
+Icon and the built-ins render no text, and have no `<title>` or i18n keys. A label always comes from the caller: a Kvirn component's own messages (for example a future `dialog.close`), or the app's translations.
 
 **Story fixture strings** go in `apps/storybook/src/components/icon/icon.fixture.tsx`, in all six locales. The `fi` strings are designer drafts for length checks. `fi`, `nb`, `nn` and `se` need a translator, and `se` falls back to `en` with `lang="en"` until it's reviewed.
 
@@ -380,7 +380,7 @@ Button stories gain "Icon at start", "Icon at end" and "Icon only" rows, as in t
 
 ### 6.7 DESIGN.md Iconography: proposed replacement text
 
-The maintainer applies this with an ADR (a DESIGN.md rule change). It replaces the **Icons** bullet under Shapes:
+The maintainer applies this as a DESIGN.md rule change. It replaces the **Icons** bullet under Shapes:
 
 > - **Icons**: outline style, a 1.5 stroke on a 24 grid with round caps and joins, in `currentColor`. `@kvirn-ui/react` ships 24 built-in icons with semantic names, in the style of Heroicons outline but drawn from our own keylines (`docs/design/icon.md`). An app that registers the same name in `KvirnProvider` replaces a built-in, and Kvirn's components follow it.
 >   - **Sizes** are `sm` 1em, `md` 1.25em (default) and `lg` 1.5em: 16, 20 and 24px next to 16px text, and they grow with the text. Use `md` in buttons, because it equals their line height. Size, stroke and colour are SVG attributes. The theme never sets them, except in forced colours, where an icon takes its parent's system colour.
@@ -470,8 +470,8 @@ Draft input for `packages/react/src/icon/icon.a11y.md` and a new row in `button.
 
 ## 9. Open questions
 
-1. **Plan and ADR updates.** Plan 0009 still lists "Shipping an icon set" as a non-goal, with open question 3 unresolved, and ADR-0024 lists the built-in set as open. Record the maintainer's decision in an ADR-0024 amendment or a new ADR, and update the plan.
-2. **Mirroring belongs to the name.** Should an app's plain-component override of a built-in name keep the built-in's `mirrorInRtl` (recommended, §4.2)? It changes ADR-0024's precedence ("the entry's" value).
+1. **Plan and decision updates.** Plan 0009 still lists "Shipping an icon set" as a non-goal, with open question 3 unresolved, and the Icon API decision lists the built-in set as open. Record the maintainer's decision as an amendment to the Icon API decision, and update the plan.
+2. **Mirroring belongs to the name.** Should an app's plain-component override of a built-in name keep the built-in's `mirrorInRtl` (recommended, §4.2)? It changes the Icon API decision's precedence ("the entry's" value).
 3. **Stroke at `sm`.** At 16px the 1.5 stroke renders as 1px. That's fine for decorative icons, but thin for a meaningful icon. Keep it, or let `iconDefaults` take a per-size stroke later? This spec keeps it.
 4. **Slot 25.** Hold it for `sort` (Table) or `help`, or confirm the cuts in §4.1 (`remove`, `help`, `user`, `log-out`, `edit`, `mail`, `phone`, `home`).
 5. **Info colour.** `info` inherits the text colour here. The Notification spec should decide whether info gets a status colour token (none exists in DESIGN.md today).

@@ -19,7 +19,7 @@ export interface UseRadioGroupOptions {
   defaultValue?: string | undefined
   /**
    * Called with the value of the radio the user chose. It only reports: the group stores
-   * nothing (ADR-0029, item 0).
+   * nothing.
    */
   onValueChange?: ((value: string, details: RadioGroupChangeDetails) => void) | undefined
   /** `data-invalid` on every radio, for styling. No `aria-invalid`: the group's error describes it. */
@@ -36,7 +36,7 @@ export interface UseRadioGroupResult {
 }
 
 /**
- * The value logic of a group of radios, for your own fieldset (ADR-0029, contract:
+ * The value logic of a group of radios, for your own fieldset (contract:
  * radio-group.a11y.md). Pair it with `useFieldset({ group: true })` for the legend, hint and
  * error. The browser does the keys: radios that share a `name` are one Tab stop, and the arrow
  * keys move and check. It holds no state: it derives each radio's props from `value`.

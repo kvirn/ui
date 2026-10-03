@@ -68,7 +68,7 @@ describe('checkButtonEdges', () => {
     expect(buttonEdgePairsPerTheme).toBe(56)
   })
 
-  it('measures the four Notification backgrounds, because Actions hold buttons (ADR-0047)', () => {
+  it('measures the four Notification backgrounds, because Actions hold buttons', () => {
     const problems = checkButtonEdges(
       'light',
       { ...colors, 'warning-subtle': '#7a7e86' },

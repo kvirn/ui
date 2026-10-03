@@ -1,2 +1,2 @@
-# Conventional Commits 1.0.0 (ADR-0012). Never bypass with --no-verify or VP_GIT_HOOKS=0.
+# Conventional Commits 1.0.0. Never bypass with --no-verify or VP_GIT_HOOKS=0.
 node tooling/commit-message/commit-msg.ts "$1"

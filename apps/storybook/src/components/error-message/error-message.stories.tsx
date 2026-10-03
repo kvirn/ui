@@ -14,7 +14,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 // Components/Form/ErrorMessage: ErrorMessage, a <p> that renders only while its Field or
 // Fieldset is invalid. It starts with the `field.errorPrefix` text ("Fel:"), which the theme
 // hides visually, and the error icon, and it is part of the control's accessible description.
-// It isn't a live region (ADR-0029): it is heard when the user reaches the control. The
+// It isn't a live region: it is heard when the user reaches the control. The
 // consumer writes the message and decides when the field is invalid: KvirnUI validates nothing.
 // The design spec is docs/design/form-fields.md §6.2 and §4.3.
 
@@ -54,7 +54,7 @@ type Story = StoryObj<typeof meta>
 export const Keyboard: Story = {}
 
 /**
- * In a Field: the message under the input (ADR-0031), with the icon and the hidden prefix. Screen
+ * In a Field: the message under the input, with the icon and the hidden prefix. Screen
  * readers hear "Fel: Ange ditt fullständiga namn" as the input's description.
  */
 export const InField: Story = {

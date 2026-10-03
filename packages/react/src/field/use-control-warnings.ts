@@ -24,7 +24,7 @@ export interface UseControlWarningsOptions {
 }
 
 /**
- * Internal. The development warnings every native form control shares (ADR-0029): an `id` that
+ * Internal. The development warnings every native form control shares: an `id` that
  * a Field ignores, and a control without an accessible name. They run in development only, and
  * once per component name.
  */

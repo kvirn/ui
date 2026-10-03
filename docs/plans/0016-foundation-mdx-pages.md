@@ -3,7 +3,7 @@
 - **Status:** In progress
 - **Owner:** Maintainer / Claude
 - **Created:** 2026-10-02 · **Target:** M1
-- **Related:** ADR-0041, ADR-0023, Plan 0006, design spec [foundations-and-prose.md](../design/foundations-and-prose.md) §6.6
+- **Related:** Plan 0006, design spec [foundations-and-prose.md](../design/foundations-and-prose.md) §6.6
 
 ## Goal
 
@@ -26,12 +26,12 @@ Docs pages only, with no interactive parts. Tables use Markdown, so they get hea
 
 - [x] Nine MDX pages, replacing nine stories
 - [x] `tooling/foundation-docs` test: tokens and values match `theme.css`
-- [x] ADR-0041, design spec note, README link
+- [x] Decision recorded, design spec note, README link
 - [ ] Look at each page in Storybook in light, dark and the two high-contrast themes (manual)
 
 ## Risks & open questions
 
-- Docs pages aren't stories, so axe doesn't run on them. See ADR-0041.
+- Docs pages aren't stories, so axe doesn't run on them.
 - The Storybook `?path=` links between pages can't be checked by the test.
 
 ## Testing strategy

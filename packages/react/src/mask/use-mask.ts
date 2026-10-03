@@ -21,7 +21,7 @@ export interface UseMaskOptions {
   /**
    * Called with the masked value on every change, with `{ reason: 'input', event }` and the mask
    * details: `unmaskedValue`, `isComplete`, `isWithinRange` (number masks) and `rejected`. It
-   * only reports: the value lives in your form state, or in the native input (ADR-0029, item 0).
+   * only reports: the value lives in your form state, or in the native input.
    */
   onValueChange?: ((value: string, details: InputChangeDetails) => void) | undefined
   /**
@@ -30,7 +30,7 @@ export interface UseMaskOptions {
    * `KvirnProvider`: without one nothing is announced.
    */
   announceRejections?: boolean | undefined
-  /** Per-instance message overrides for the rejection announcements (ADR-0007). */
+  /** Per-instance message overrides for the rejection announcements. */
   messages?: Partial<KvirnMessages['mask']> | undefined
 }
 
@@ -236,7 +236,7 @@ export function useMaskedInput({
 }
 
 /**
- * Shapes what the user types into your own `<input>` with a mask (ADR-0032): drops characters
+ * Shapes what the user types into your own `<input>` with a mask: drops characters
  * that don't fit, inserts separators as the user types past them, and never rewrites during an
  * IME composition. The input stays native, so paste, autofill and undo keep working. Rejected
  * characters are announced (4.1.3), and the value is never clamped or corrected.

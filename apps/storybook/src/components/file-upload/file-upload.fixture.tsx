@@ -3,7 +3,7 @@ import type { FileUploadRootProps } from '@kvirn-ui/react'
 import { textsFor } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
-// Story and e2e fixture for Components/Form/FileUpload (Plan 0021, ADR-0038, design spec
+// Story and e2e fixture for Components/Form/FileUpload (Plan 0021, design spec
 // docs/design/file-upload.md). The component's own strings (the buttons, the status, the errors,
 // the announcements) come from the library catalogs through the provider decorator. What the
 // consumer writes is the label and the description: they name what to attach and why, so they
