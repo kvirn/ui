@@ -175,6 +175,93 @@ export const Large: Story = {
   ),
 }
 
+const sizes = [
+  { modifier: undefined, label: 'kv-prose', fontSize: 16 },
+  { modifier: 'kv-prose--small', label: 'kv-prose--small', fontSize: 14 },
+  { modifier: 'kv-prose--large', label: 'kv-prose--large', fontSize: 18 },
+  { modifier: 'kv-prose--xl', label: 'kv-prose--xl', fontSize: 20 },
+  { modifier: 'kv-prose--2xl', label: 'kv-prose--2xl', fontSize: 24 },
+] as const
+
+/**
+ * The sizes of Tailwind's typography plugin, by token swap: `--small` (14px, for notes and
+ * metadata, never for what a resident must read), the default, `--large`, `--xl` and `--2xl`.
+ * Headings keep their type roles, and `--xl` and `--2xl` step down below 40rem. `--full` lifts
+ * the 70ch measure, like `max-w-none`.
+ */
+export const Sizes: Story = {
+  render: () => (
+    <>
+      {sizes.map(({ modifier, label }) => (
+        <Prose
+          key={label}
+          className={modifier}
+          data-testid={label}
+          style={{ marginBlockEnd: '3rem' }}
+        >
+          <h2>{label}</h2>
+          <p className="kv-lead">Vi svarar vardagar 9–16.</p>
+          <p>
+            Skicka in ansökan senast den 1 mars. Du får beslut inom <strong>fyra veckor</strong>.
+          </p>
+          <ul>
+            <li>Personbevis</li>
+            <li>Kopia av hyresavtal</li>
+          </ul>
+        </Prose>
+      ))}
+    </>
+  ),
+  play: async ({ canvas }) => {
+    for (const { label, fontSize } of sizes) {
+      const root = canvas.getByTestId(label)
+      await expect(computedPixels(root, 'font-size')).toBe(fontSize)
+    }
+  },
+}
+
+/**
+ * Forced colours: the table rules, the quote bar and the rule stay borders, and a `mark` loses its
+ * background and gets an outline. The e2e suite checks them with real emulation.
+ */
+export const ForcedColors: Story = {
+  globals: { forcedColors: 'active' },
+  render: (_args, { globals }) => (
+    <>
+      <ArticlePage locale={fixtureLocaleOf(globals['locale'])} />
+      <Prose>
+        <p>
+          A <mark>highlight</mark> loses its background in forced colours.
+        </p>
+      </Prose>
+    </>
+  ),
+}
+
+/** `--full` fills its container, and a colour role is set on the block alone. */
+export const FullWidthAndRoles: Story = {
+  name: 'Full width and colour roles',
+  render: () => (
+    <Prose
+      className="kv-prose--full"
+      data-testid="full"
+      style={{ ['--kv-prose-color-links' as string]: 'var(--kv-color-text)' }}
+    >
+      <p>
+        <Link href="#epost">Mejla kundcenter</Link>, or a link in prose:{' '}
+        <a href="#epost">Mejla kundcenter</a>
+      </p>
+    </Prose>
+  ),
+  play: async ({ canvas }) => {
+    await expect(getComputedStyle(canvas.getByTestId('full')).maxInlineSize).toBe('none')
+    const link = canvas.getAllByRole('link')[1] as HTMLElement
+    await expect(getComputedStyle(link).color).toBe(
+      getComputedStyle(canvas.getByTestId('full')).color,
+    )
+  },
+}
+
 /** Logical properties only: markers, indents and the blockquote bar follow `dir`. */
 export const RightToLeft: Story = {
   name: 'Right to left',

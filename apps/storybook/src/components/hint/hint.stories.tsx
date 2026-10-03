@@ -1,4 +1,4 @@
-import { Field, Fieldset, Input, Label, Legend, Prose } from '@kvirn-ui/react'
+import { Checkbox, Field, Fieldset, Input, Label, Legend, Prose } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
@@ -7,8 +7,9 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/Hint: a Prose directly in a Field or Fieldset is the description of the
 // control, or of a group inside a Fieldset (ADR-0054, which replaced Field.Description). A hint
-// carries what the user needs to answer, so it is 16px in the text colour in every density,
-// never muted or small. Keep it to plain text and short paragraphs: an accessible description
+// carries what the user needs to answer, so it is in the text colour in every density, never
+// muted: 16px above the control and for an option's hint, and 14px (body-small) under the control
+// (ADR-0054). Keep it to plain text and short paragraphs: an accessible description
 // has no structure. The design spec is docs/design/form-fields.md §6.2. KvirnUI holds no form
 // state.
 
@@ -161,6 +162,45 @@ export const Compact: Story = {
   },
   play: async ({ canvas }) => {
     await expect(getComputedStyle(canvas.getByTestId('description')).fontSize).toBe('16px')
+    await expect(getComputedStyle(canvas.getByTestId('under')).fontSize).toBe('14px')
+  },
+}
+
+/**
+ * Only a hint under the control is 14px. A hint above it, in a Field whose label is the page's
+ * `h1` (one question per page), and an option's hint beside a checkbox are 16px: they are the
+ * instruction a resident reads first.
+ */
+export const SixteenAboveAndForOptions: Story = {
+  render: (_args, { globals }) => {
+    const { text, lang } = textsFor(localeOf(globals))
+    return (
+      <div lang={lang}>
+        <Field required>
+          <h1>
+            <Label className="kv-field-label--heading">{text.nameQuestion}</Label>
+          </h1>
+          <Prose data-testid="above">
+            <p>{text.nameHint}</p>
+          </Prose>
+          <Input name="name" autoComplete="name" />
+          <Prose data-testid="under">
+            <p>{text.registrationHint}</p>
+          </Prose>
+        </Field>
+        <Field>
+          <Checkbox value="email" />
+          <Label>{text.street}</Label>
+          <Prose data-testid="option">
+            <p>{text.addressHint}</p>
+          </Prose>
+        </Field>
+      </div>
+    )
+  },
+  play: async ({ canvas }) => {
+    await expect(getComputedStyle(canvas.getByTestId('above')).fontSize).toBe('16px')
+    await expect(getComputedStyle(canvas.getByTestId('option')).fontSize).toBe('16px')
     await expect(getComputedStyle(canvas.getByTestId('under')).fontSize).toBe('14px')
   },
 }

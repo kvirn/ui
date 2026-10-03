@@ -79,6 +79,9 @@
  *  14. File upload      kv-file-upload: drop zone, trigger, rejections, and the list of files
  */
 
+/* reset.css puts its rules in kv-reset. Declaring the order here too keeps it lowest, in whichever order the two files are imported. */
+@layer kv-reset, kv;
+
 @layer kv {
   /* 1. Palette ---------------------------------------------------------------------------
    * Role scales, Tailwind-style: 50 (lightest) to 950 (darkest), each darker than the last.
@@ -386,6 +389,7 @@
     --kv-prose-space-section: var(--kv-space-10);
     /* Relative, so they scale in headings and in the large size. */
     --kv-prose-list-indent: 1.75em;
+    --kv-prose-list-item-indent: 0.375em;
     --kv-prose-code-size: 0.875em;
   }
 
@@ -1028,8 +1032,31 @@
    * --kv-font-family-heading. Without the family settings, text is IBM Plex Sans and headings
    * are IBM Plex Serif. */
   :where(.kv-prose) {
+    /* The colour roles of Tailwind's typography plugin (--tw-prose-*), named for the same
+     * parts. They're set here, not on :root, so each theme gets its own values (a value on
+     * :root alone would apply in the dark themes too). To recolour one part, set its role on the
+     * kv-prose element, or on an element inside it: `.kv-prose { --kv-prose-color-links: var(--kv-accent-700) }`.
+     * Check the contrast of what you set (4.5:1 for text, 3:1 for a quote bar and a rule). */
+    --kv-prose-color-body: var(--kv-color-text);
+    --kv-prose-color-headings: var(--kv-color-heading);
+    --kv-prose-color-lead: var(--kv-color-text);
+    --kv-prose-color-links: var(--kv-color-link);
+    --kv-prose-color-links-hover: var(--kv-color-link-hover);
+    --kv-prose-color-bold: currentcolor;
+    --kv-prose-color-counters: var(--kv-color-text);
+    --kv-prose-color-bullets: var(--kv-color-text-muted);
+    --kv-prose-color-hr: var(--kv-color-border-subtle);
+    --kv-prose-color-quotes: var(--kv-color-text);
+    --kv-prose-color-quote-borders: var(--kv-color-border-control);
+    --kv-prose-color-captions: var(--kv-color-text-muted);
+    --kv-prose-color-code: currentcolor;
+    --kv-prose-color-pre-code: var(--kv-color-text);
+    --kv-prose-color-pre-bg: var(--kv-color-surface);
+    --kv-prose-color-th-borders: var(--kv-color-border-subtle);
+    --kv-prose-color-td-borders: var(--kv-color-border-subtle);
+
     max-inline-size: var(--kv-prose-measure);
-    color: var(--kv-color-text);
+    color: var(--kv-prose-color-body);
     font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
     font-size: var(--kv-prose-font-size);
     line-height: var(--kv-prose-line-height);
@@ -1059,6 +1086,61 @@
     --kv-prose-space: var(--kv-space-6);
     --kv-prose-space-block: var(--kv-space-10);
     --kv-prose-space-section: var(--kv-space-12);
+  }
+
+  /* The other sizes of the typography plugin (sm, xl, 2xl), and max-w-none, by the same
+   * token swap. Headings keep their type roles (DESIGN.md), and h4 to h6 follow the size.
+   * --small is 14px: for notes and metadata, never for the text a resident must read (DESIGN.md
+   * says essential content is never below 16px). --xl and --2xl step down below 40rem, so a
+   * long word fits a phone (ADR-0028). */
+  :where(.kv-prose--small) {
+    --kv-prose-font-size: var(--kv-font-body-small-size);
+    --kv-prose-line-height: var(--kv-font-body-small-line-height);
+    --kv-prose-feature-settings: var(--kv-font-body-small-feature-settings);
+    --kv-prose-lead-font-size: var(--kv-font-body-size);
+    --kv-prose-lead-line-height: var(--kv-font-body-line-height);
+    --kv-prose-space: var(--kv-space-4);
+    --kv-prose-space-item: var(--kv-space-1);
+    --kv-prose-space-block: var(--kv-space-6);
+    --kv-prose-space-section: var(--kv-space-8);
+  }
+
+  :where(.kv-prose--xl) {
+    --kv-prose-font-size: 1.25rem;
+    --kv-prose-line-height: 1.6;
+    --kv-prose-lead-font-size: 1.5rem;
+    --kv-prose-lead-line-height: 1.5;
+    --kv-prose-space: var(--kv-space-6);
+    --kv-prose-space-block: var(--kv-space-10);
+    --kv-prose-space-section: var(--kv-space-12);
+  }
+
+  :where(.kv-prose--2xl) {
+    --kv-prose-font-size: 1.5rem;
+    --kv-prose-line-height: 1.5;
+    --kv-prose-lead-font-size: 1.75rem;
+    --kv-prose-lead-line-height: 1.4;
+    --kv-prose-space: var(--kv-space-8);
+    --kv-prose-space-item: var(--kv-space-3);
+    --kv-prose-space-block: var(--kv-space-12);
+    --kv-prose-space-section: var(--kv-space-16);
+  }
+
+  @media (width < 40rem) {
+    :where(.kv-prose--xl, .kv-prose--2xl) {
+      --kv-prose-font-size: var(--kv-font-body-large-size);
+      --kv-prose-line-height: var(--kv-font-body-large-line-height);
+      --kv-prose-lead-font-size: var(--kv-font-lead-size);
+      --kv-prose-lead-line-height: var(--kv-font-lead-line-height);
+      --kv-prose-space: var(--kv-space-6);
+      --kv-prose-space-block: var(--kv-space-10);
+      --kv-prose-space-section: var(--kv-space-12);
+    }
+  }
+
+  /* Like max-w-none: the text fills its container instead of the measure. */
+  :where(.kv-prose--full) {
+    max-inline-size: none;
   }
 
   /* Everything inside prose that prose may style. This is the only place the not-prose list
@@ -1126,7 +1208,7 @@
       )
     ) {
       &:where(h1, h2, h3, h4, h5, h6) {
-        color: var(--kv-color-heading);
+        color: var(--kv-prose-color-headings, var(--kv-color-heading));
         font-family: var(--kv-font-family-heading, var(--kv-font-family-serif));
       }
 
@@ -1175,8 +1257,8 @@
       }
 
       /* One step up from the body. Essential content, so never text-muted. */
-      &:where(p.kv-lead) {
-        color: var(--kv-color-text);
+      &:where(.kv-lead) {
+        color: var(--kv-prose-color-lead);
         font-size: var(--kv-prose-lead-font-size);
         line-height: var(--kv-prose-lead-line-height);
       }
@@ -1184,7 +1266,7 @@
       /* Like the Link component. There is no visited style yet. */
       &:where(a) {
         border-radius: var(--kv-radius-sm);
-        color: var(--kv-color-link);
+        color: var(--kv-prose-color-links);
         text-decoration-line: underline;
         text-decoration-thickness: var(--kv-link-underline-thickness);
         text-underline-offset: var(--kv-link-underline-offset);
@@ -1193,7 +1275,7 @@
       }
 
       &:where(a:hover, a:active) {
-        color: var(--kv-color-link-hover);
+        color: var(--kv-prose-color-links-hover);
         text-decoration-thickness: var(--kv-link-underline-thickness-hover);
       }
 
@@ -1203,7 +1285,19 @@
       }
 
       &:where(strong, b) {
+        color: var(--kv-prose-color-bold);
         font-weight: 600;
+      }
+
+      /* Bold inside a heading, a link, a quote or a table head follows the part, a step
+       * heavier than the heading. */
+      &:where(:is(h1, h2, h3, h4, h5, h6) :is(strong, b)) {
+        color: inherit;
+        font-weight: bolder;
+      }
+
+      &:where(:is(a, blockquote, thead th) :is(strong, b)) {
+        color: inherit;
       }
 
       /* For short phrases only, never whole paragraphs. */
@@ -1247,13 +1341,19 @@
         margin-block: var(--kv-prose-space-item);
       }
 
+      /* Room between the marker and the text. */
+      &:where(:is(ul, ol) > li) {
+        padding-inline-start: var(--kv-prose-list-item-indent);
+      }
+
       /* Bullets are decoration. Step numbers are content ("step 3"), so they stay in text. */
       &:where(ul > li)::marker {
-        color: var(--kv-color-text-muted);
+        color: var(--kv-prose-color-bullets);
       }
 
       &:where(ol > li)::marker {
-        color: var(--kv-color-text);
+        color: var(--kv-prose-color-counters);
+        font-weight: 400;
       }
 
       &:where(li > :is(p, ul, ol)) {
@@ -1265,8 +1365,8 @@
         margin-block: var(--kv-prose-space-block);
         margin-inline: 0;
         padding-inline-start: var(--kv-space-4);
-        border-inline-start: var(--kv-indicator-width) solid var(--kv-color-border-control);
-        color: var(--kv-color-text);
+        border-inline-start: var(--kv-indicator-width) solid var(--kv-prose-color-quote-borders);
+        color: var(--kv-prose-color-quotes);
         font-style: normal;
       }
 
@@ -1275,7 +1375,7 @@
         margin-block: var(--kv-prose-space-section);
         margin-inline: 0;
         border: 0;
-        border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+        border-block-start: var(--kv-border-width) solid var(--kv-prose-color-hr);
       }
 
       /* Reference numbers have no break points, so inline code may break anywhere. */
@@ -1284,11 +1384,17 @@
         border: var(--kv-border-width) solid var(--kv-color-border-subtle);
         border-radius: var(--kv-radius-sm);
         background-color: var(--kv-color-surface);
+        color: var(--kv-prose-color-code);
         font-family: var(--kv-font-family-mono);
         font-size: var(--kv-prose-code-size);
         overflow-wrap: anywhere;
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
+      }
+
+      /* Code in a heading, a link, a quote or a table head follows the part. */
+      &:where(:is(h1, h2, h3, h4, h5, h6, a, blockquote, thead th) code) {
+        color: inherit;
       }
 
       /* Code blocks wrap instead of scrolling: there's nothing to scroll at 320px, and no
@@ -1299,7 +1405,8 @@
         padding: var(--kv-space-4);
         border: var(--kv-border-width) solid var(--kv-color-border-subtle);
         border-radius: var(--kv-radius-md);
-        background-color: var(--kv-color-surface);
+        background-color: var(--kv-prose-color-pre-bg);
+        color: var(--kv-prose-color-pre-code);
         font-family: var(--kv-font-family-mono);
         font-size: var(--kv-prose-code-size);
         line-height: var(--kv-font-code-line-height);
@@ -1311,6 +1418,7 @@
         padding: 0;
         border: 0;
         background: none;
+        color: inherit;
         font: inherit;
       }
 
@@ -1335,12 +1443,37 @@
       &:where(th, td) {
         padding-block: var(--kv-space-2);
         padding-inline: var(--kv-space-3);
-        border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+        border-block-end: var(--kv-border-width) solid var(--kv-prose-color-td-borders);
         text-align: start;
         vertical-align: top;
       }
 
+      /* The first and last column align with the text around the table. */
+      &:where(th:first-child, td:first-child) {
+        padding-inline-start: 0;
+      }
+
+      &:where(th:last-child, td:last-child) {
+        padding-inline-end: 0;
+      }
+
+      /* The head's rule is the heading's, and the last row has none under it: a foot has its own. */
+      &:where(thead th) {
+        border-block-end-color: var(--kv-prose-color-th-borders);
+        vertical-align: bottom;
+      }
+
+      &:where(tbody tr:last-child :is(th, td)) {
+        border-block-end-width: 0;
+      }
+
+      &:where(tfoot :is(th, td)) {
+        border-block-start: var(--kv-border-width) solid var(--kv-prose-color-th-borders);
+        border-block-end-width: 0;
+      }
+
       &:where(th) {
+        color: var(--kv-prose-color-headings, var(--kv-color-heading));
         font-weight: 600;
       }
 
@@ -1361,7 +1494,7 @@
       /* Metadata: source, photographer, date. The explanation belongs in the text. */
       &:where(figcaption) {
         margin-block-start: var(--kv-space-2);
-        color: var(--kv-color-text-muted);
+        color: var(--kv-prose-color-captions);
         font-size: var(--kv-font-body-small-size);
         line-height: var(--kv-font-body-small-line-height);
       }
@@ -1390,6 +1523,7 @@
 
       &:where(dt) {
         margin-block-start: var(--kv-prose-space);
+        color: var(--kv-prose-color-headings, var(--kv-color-heading));
         font-weight: 600;
       }
 
@@ -1507,7 +1641,7 @@
    * Only the type is set: margins come from kv-prose or from you. Zero specificity, after prose,
    * so it wins over prose's rule for the element and your own CSS wins over it. */
   :where(.kv-heading) {
-    color: var(--kv-color-heading);
+    color: var(--kv-prose-color-headings, var(--kv-color-heading));
     font-family: var(--kv-font-family-heading, var(--kv-font-family-serif));
     font-size: var(--kv-prose-font-size);
     font-weight: var(--kv-font-heading-3-weight);
@@ -2382,8 +2516,9 @@
   }
 
   /* The hint is an instruction, so it is in the text colour, in every density: never muted. A
-   * hint above the control is body text, and one under it (a sibling after the control, or after
-   * a hint above it) is body-small (ADR-0054). It is a kv-prose that is a direct child of the
+   * hint above the control is body text, and one under it (a sibling after the control) is
+   * body-small (ADR-0054). Not counted as the control: the label, a heading that holds the
+   * label (a question page), another hint, and a checkbox or radio (its option hint stays 16px). It is a kv-prose that is a direct child of the
    * field or fieldset, so its paragraphs, lists and links are prose; this only fixes the box and
    * the type, and gives it no margin of its own (the gap is the field's). */
   .kv-field > .kv-prose,
@@ -2396,8 +2531,18 @@
     line-height: var(--kv-font-body-line-height);
   }
 
-  .kv-field > :not(.kv-field-label, .kv-prose) ~ .kv-prose,
-  .kv-fieldset > :not(.kv-fieldset-legend, .kv-prose) ~ .kv-prose {
+  .kv-field
+    > :not(
+      .kv-field-label,
+      .kv-prose,
+      .kv-checkbox,
+      .kv-radio,
+      :is(h1, h2, h3, h4, h5, h6):has(> .kv-field-label)
+    )
+    ~ .kv-prose,
+  .kv-fieldset
+    > :not(.kv-fieldset-legend, .kv-prose, :is(h1, h2, h3, h4, h5, h6):has(> .kv-fieldset-legend))
+    ~ .kv-prose {
     font-size: var(--kv-font-body-small-size);
     font-weight: var(--kv-font-body-small-weight);
     line-height: var(--kv-font-body-small-line-height);

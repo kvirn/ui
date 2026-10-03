@@ -69,5 +69,10 @@ We record significant decisions as ADRs using a lightweight MADR-style format.
 | [0049](0049-file-upload-dashed-drop-zone.md)                        | The FileUpload drop zone has a dashed edge, the one that doesn't mean disabled                  | Proposed               |
 | [0050](0050-combobox-and-autocomplete-react-implementation.md)      | Combobox and Autocomplete share one hook and the Listbox's popup parts, and a Control anchors   | Proposed               |
 | [0051](0051-one-worktree-per-feature.md)                            | One git worktree per feature, and the Stop hook checks the whole tree                           | Proposed               |
-| [0052](0052-heading-and-prose.md)                                   | Heading takes a level and a type-role size, and Prose is `kv-prose` as a component              | Proposed               |
+| [0052](0052-heading-and-prose.md)                                   | Heading takes a level and a type-role size, and Prose is `kv-prose` as a component              | Accepted               |
 | [0053](0053-kbd.md)                                                 | Kbd is the native `<kbd>` with a `kv-kbd` class, one key per element                            | Proposed               |
+| [0054](0054-prose-is-the-description.md)                            | Prose is the description of a Field or Fieldset                                                 | Accepted               |
+| [0055](0055-flat-field-api.md)                                      | Field, Label, ErrorMessage, Fieldset and Legend are flat names                                  | Accepted               |
+| [0056](0056-reset-css.md)                                           | An optional reset.css, ported from Tailwind's Preflight                                         | Proposed               |
+| [0057](0057-e2e-runs-name-their-spec.md)                            | An e2e run must name its spec; the full run is for CI and the sweep specialist                  | Proposed               |
+| [0058](0058-worker-caps-for-tests.md)                               | Test runs cap their workers                                                                     | Proposed               |

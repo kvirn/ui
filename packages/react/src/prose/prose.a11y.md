@@ -6,7 +6,7 @@
 - **Status:** alpha candidate (Plan 0023). Gates pending. Manual AT is `pending`.
 - **Tests:** `prose.test.tsx` next to this file. `prose.stories.tsx` in `apps/storybook/src/components/prose/`.
 
-Prose is the `kv-prose` class as a component: a container whose headings, paragraphs, lists, links and tables the theme sets for reading. It adds no role, ARIA, text, `tabindex` or behaviour of its own, with one exception: inside a `Field.Root` or `Fieldset.Root` it is the description of the control or the group (below). The stories on this component's Docs page show the typography on a full article.
+Prose is the `kv-prose` class as a component: a container whose headings, paragraphs, lists, links and tables the theme sets for reading. It adds no role, ARIA, text, `tabindex` or behaviour of its own, with one exception: inside a `Field` or `Fieldset` it is the description of the control or the group (below). The stories on this component's Docs page show the typography on a full article.
 
 ## Roles, states, properties
 
@@ -21,7 +21,7 @@ Prose is the `kv-prose` class as a component: a container whose headings, paragr
 
 ## A Prose in a Field or Fieldset is its description (ADR-0054)
 
-A `Prose` inside a `Field.Root` or a `Fieldset.Root` registers itself with the nearest one, like `Field.ErrorMessage` does, and is the hint of that control or group. There is no `Field.Description` or `Fieldset.Description`.
+A `Prose` inside a `Field` or a `Fieldset` registers itself with the nearest one, like `ErrorMessage` does, and is the hint of that control or group. There is no `Field.Description` or `Fieldset.Description`.
 
 - **Registration is automatic** and has no opt-out. The control's (or group's) `aria-describedby` lists every registered Prose in DOM order, each with its own id, then the error. The id is listed only while the Prose is rendered (`prose.test.tsx › a Prose in a Field registers its id and the control’s aria-describedby lists it`, `prose.test.tsx › two Proses are listed in DOM order, then the error`, `prose.test.tsx › a Prose in a Fieldset describes the group`).
 - **The nearest host wins.** A Prose in a Field that is inside a Fieldset describes that Field's control, not the group (`prose.test.tsx › a Prose in a Field inside a Fieldset describes the Field’s control, not the group`).
@@ -60,16 +60,26 @@ Prose renders no text, so it has no message keys.
 - **Content from a CMS or Markdown** needs the same checks before it is rendered.
 - **A hint in a Field or Fieldset is short plain text.** Don't put a heading, list, table or link in it: the accessible description keeps only the text. Put such a Prose outside the Field.
 - **Language.** `lang` on prose in another language (3.1.2).
+- **Size and colour choices.** `kv-prose--small` only for notes and metadata, and the contrast of any `--kv-prose-color-*` you override (see Sizes, width and colour roles).
 
 ## Visual / modes
 
-Headless: Prose ships no CSS. With `@kvirn-ui/theme/theme.css` the `kv-prose` rules apply (design spec `docs/design/foundations-and-prose.md`): a 70ch measure, the body and heading type roles, link underline and focus ring, and reflow without fixed sizes. Contrast of text, links and code on `canvas` and `surface` is measured by `theme:check` (1.4.3, 1.4.11). Forced colours, reduced motion, 320px reflow and text spacing are covered by the Prose stories (`Components/Prose`) (1.4.10, 1.4.12).
+Headless: Prose ships no CSS. With `@kvirn-ui/theme/theme.css` the `kv-prose` rules apply (design spec `docs/design/foundations-and-prose.md`): a 70ch measure, the body and heading type roles, link underline and focus ring, and reflow without fixed sizes. Contrast of text, links and code on `canvas` and `surface` is measured by `theme:check` (1.4.3, 1.4.11). 320px reflow, the size step-down and forced colours are checked in `prose.e2e.ts` (`Prose reflow (1.4.10) › the article has no horizontal scrolling at 320px`, `… › kv-prose--xl and --2xl step down to the large size at 320px and do not scroll sideways`, `Prose forced colours (1.4.11) › the table rules, quote bar and rule stay borders, and a mark gets an outline`), and text spacing in the `Text spacing` story (1.4.12). Reduced motion: Prose animates only a link's colour, and only when motion is allowed.
+
+## Sizes, width and colour roles (ADR-0054)
+
+With the theme, `kv-prose--small` (14px), the default (16px), `kv-prose--large` (18px), `kv-prose--xl` (20px) and `kv-prose--2xl` (24px) are token swaps, and `kv-prose--xl` and `--2xl` step down to the large size below 40rem. `kv-prose--full` removes the 70ch measure. The text stays in rem and the line height has no fixed height, so it resizes to 200% (1.4.4) and the text-spacing overrides fit (1.4.12). The `--kv-prose-color-*` roles recolour one part and default to the theme's tokens, so each theme and the high-contrast and forced-colours themes still apply.
+
+- **`kv-prose--small` is for notes and metadata only.** DESIGN.md keeps essential content at 16px or more, so a resident's instructions are never `--small`. Nothing enforces this: it is a consumer responsibility.
+- **A colour you set is yours to check.** `theme:check` measures the default tokens, not an override: text and links 4.5:1, a quote bar or rule 3:1 against the surface it sits on, in every theme you ship (1.4.3, 1.4.11).
+- **Not carried from the typography plugin:** generated backticks and quote marks (generated content is read inconsistently), italics on a quote, and a scrolling `pre` (a scroller a keyboard user can't reach).
 
 ## WCAG SCs covered
 
 - 1.3.1 Info and Relationships: no role of its own, so the consumer's content decides the semantics (`prose.test.tsx`). In a Field or Fieldset the hint is in the accessible description of the control or group (`prose.test.tsx`, axe in both).
 - 3.3.2 Labels or Instructions: a hint in a Field is linked to its control.
-- 1.4.3, 1.4.10, 1.4.12: the `kv-prose` theme rules, as tested in the Prose stories.
+- 1.4.3, 1.4.10, 1.4.12: the `kv-prose` theme rules, as tested in the Prose stories. The sizes and the width option are checked in the `Sizes` and `Full width and colour roles` stories, and the colour roles by `theme-css.test.ts`.
+- 1.4.4 Resize Text: the sizes are in rem.
 
 ## AT test record
 

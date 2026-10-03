@@ -1,6 +1,6 @@
 # ADR-0055: Field, Label, ErrorMessage, Fieldset and Legend are flat names
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-10-03
 - **Deciders:** Magnus Vike (asked for `<Field required><Label>…`), proposed with ADR-0054
 - **Tags:** api

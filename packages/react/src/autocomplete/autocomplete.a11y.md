@@ -101,7 +101,7 @@ As the Combobox's: through the shared Announcer, about 500 ms after the last cha
 
 ## Consumer responsibilities
 
-- A `Field.Label` with a visible question, always. A placeholder is not a label. Outside a Field, give the input `aria-label` or `aria-labelledby`.
+- A `Label` with a visible question, always. A placeholder is not a label. Outside a Field, give the input `aria-label` or `aria-labelledby`.
 - Pass `items` (or `groups`) and a stable `itemToString`. For server suggestions pass `filter={false}`, `isLoading`, and your own debounce and fetch; keep the last result in `items` while the next one loads.
 - Set the right `autoComplete` where the field is for a known purpose (`street-address`, `address-line1`, 1.3.5) and know that the browser's own suggestions then compete with yours: use it only when ours add something.
 - Validate the text yourself. An Autocomplete does not require a suggestion, so don't say "Välj ett alternativ i listan" here; use a Combobox when only an option is valid.

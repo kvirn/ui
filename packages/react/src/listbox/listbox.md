@@ -90,7 +90,7 @@ With `native="auto"`, the server and the first client render are the popup, and 
 
 `NativeSelect` became `Listbox`: there is no separate native part. `<Listbox.Root native="always">` (and `native="auto"` on touch devices) renders one `<select class="kv-listbox-native">` from the same `items`, `groups`, `itemToString`, `itemToKey` and `isItemDisabled`, with `<option>` and `<optgroup>`. `Listbox.Trigger`, `Listbox.Popup` and the other children are not rendered then, so leave them in: they serve the popup.
 
-- Named by its `Field.Label`, described by the Field's hint and error. `aria-invalid`, `aria-required` and `disabled` come from the Field.
+- Named by its `Label`, described by the Field's hint and error. `aria-invalid`, `aria-required` and `disabled` come from the Field.
 - The same API as the popup: `value` (a key or `null`), `defaultValue`, `onValueChange(value, { reason: 'native' })`, `name` and `autoComplete`, which go on the `<select>`. No form state (ADR-0029, item 0).
 - An empty `<option value="">` stands for "nothing chosen" and carries `placeholder`. It goes once something is chosen, unless a placeholder is set. Choosing it reports `null`.
 - It takes plain text only: rich option content and `Listbox.Empty` don't apply, and `multiple` never renders it.

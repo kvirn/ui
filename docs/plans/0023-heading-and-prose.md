@@ -1,9 +1,9 @@
 # Plan 0023: Heading and Prose
 
-- **Status:** Done (alpha. Manual AT pending before beta. ADR-0052 still to be accepted)
+- **Status:** Done (alpha. Manual AT pending before beta)
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-03 · **Target:** M1
-- **Related:** ADR-0052 (Proposed), ADR-0044
+- **Related:** ADR-0052 (Accepted), ADR-0044
 
 ## Goal
 

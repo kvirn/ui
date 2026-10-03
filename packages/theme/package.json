@@ -5,6 +5,7 @@
   "license": "MIT",
   "files": [
     "dist",
+    "reset.css",
     "theme.css"
   ],
   "type": "module",
@@ -13,6 +14,7 @@
   ],
   "exports": {
     ".": "./src/index.ts",
+    "./reset.css": "./reset.css",
     "./theme.css": "./theme.css",
     "./package.json": "./package.json"
   },
@@ -22,6 +24,7 @@
         "types": "./dist/index.d.mts",
         "import": "./dist/index.mjs"
       },
+      "./reset.css": "./reset.css",
       "./theme.css": "./theme.css",
       "./package.json": "./package.json"
     },

@@ -115,7 +115,7 @@ A masked Input announces a rejection through the shared Announcer (4.1.3, ADR-00
 - With a `mask`, put the format and an example in a hint, a `Prose` in the Field (3.3.2, dev warning): the mask shapes input, it doesn't explain it. A hint is text: keep it short and plain, because its accessible description is only the Prose's text content (`field.a11y.md`). Wrap the app in `KvirnProvider` so refused characters are announced (4.1.3).
 - Validate in your form, after submit: the mask never says a value is wrong. Call `checks.personalIdentityNumber`, `checks.organisationNumber` and `checks.iban` and write a specific message from `reason`. Don't clamp numbers to `min` and `max`: show your own hint from `isWithinRange`.
 - Set `autoComplete` on masked fields yourself where a token exists (`postal-code`, `tel`, `email`). `masks.letters()` isn't for names: names have spaces, hyphens and apostrophes.
-- Don't pass an `id` inside a Field: the Field's id wins, so the label stays associated (dev warning). Use `<Field.Root controlId>`.
+- Don't pass an `id` inside a Field: the Field's id wins, so the label stays associated (dev warning). Use `<Field controlId>`.
 
 ## Visual / modes
 

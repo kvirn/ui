@@ -120,13 +120,16 @@ Fixture: _Kvirnby municipality_ (fictional), "Apply for a housing adaptation gra
 
 ### 6.1 Prose: API
 
-| Class                      | On                                   | Effect                                                                                                                                 |
-| -------------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `kv-prose`                 | a wrapper (`article`, `div`, `main`) | Default size: the `body` role (16px / 1.5)                                                                                             |
-| `kv-prose kv-prose--large` | a wrapper                            | The `body-large` role (18px / 1.6), for long resident-facing text (DESIGN.md Typography)                                               |
-| `kv-lead`                  | a `p`                                | Lead paragraph, one step up from the prose body                                                                                        |
-| `kv-not-prose`             | any element inside prose             | Prose stops styling it and everything inside it. The element itself keeps prose block spacing                                          |
-| `kv-scroll-region`         | a `div` around a wide table          | Scrolls horizontally, and has a focus ring. The consumer adds `role="region"`, `aria-labelledby` (the caption's id) and `tabindex="0"` |
+| Class                            | On                                   | Effect                                                                                                                                 |
+| -------------------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `kv-prose`                       | a wrapper (`article`, `div`, `main`) | Default size: the `body` role (16px / 1.5)                                                                                             |
+| `kv-prose kv-prose--large`       | a wrapper                            | The `body-large` role (18px / 1.6), for long resident-facing text (DESIGN.md Typography)                                               |
+| `kv-prose kv-prose--small`       | a wrapper                            | 14px / 1.5, for notes and metadata only (ADR-0054). Never for what a resident must read                                                |
+| `kv-prose kv-prose--xl`, `--2xl` | a wrapper                            | 20px and 24px, stepping down to the large size below 40rem (ADR-0054)                                                                  |
+| `kv-prose kv-prose--full`        | a wrapper                            | No 70ch measure: fills its container, like `max-w-none`                                                                                |
+| `kv-lead`                        | a `p`                                | Lead paragraph, one step up from the prose body                                                                                        |
+| `kv-not-prose`                   | any element inside prose             | Prose stops styling it and everything inside it. The element itself keeps prose block spacing                                          |
+| `kv-scroll-region`               | a `div` around a wide table          | Scrolls horizontally, and has a focus ring. The consumer adds `role="region"`, `aria-labelledby` (the caption's id) and `tabindex="0"` |
 
 **Why `kv-prose` classes, not `data-*` attributes:** ADR-0013 keeps `data-*` for state. Consumer choices are `kv-*` classes (`kv-compact`, `kv-nav`, `kv-button-group`), and prose is the same kind of choice. The `kv-` prefix keeps it apart from Tailwind's `.prose`. The modifier names are spelled out (`--large`, not `--lg`), following the API naming convention (no abbreviations).
 
@@ -141,7 +144,7 @@ Fixture: _Kvirnby municipality_ (fictional), "Apply for a housing adaptation gra
   - `.kv-not-prose` and its descendants,
   - descendants of `.kv-nav` and `.kv-button-group`. These are always "not prose", and the list is kept in one place in `theme.css`.
 - Known limitation, as in Tailwind: prose nested inside `kv-not-prose` isn't re-enabled.
-- `.kv-prose--large` only redefines `--kv-prose-*` tokens. It has no element rules of its own.
+- `.kv-prose--small`, `--large`, `--xl` and `--2xl` only redefine `--kv-prose-*` tokens. They have no element rules of their own. The colour roles `--kv-prose-color-*` (the plugin's `--tw-prose-*`) are declared on `.kv-prose`, so each theme resolves its own (ADR-0054).
 
 ### 6.2 Prose: the root
 

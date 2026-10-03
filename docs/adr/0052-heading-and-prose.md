@@ -1,6 +1,6 @@
 # ADR-0052: Heading takes a level and a type-role size, and Prose is `kv-prose` as a component
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-10-03
 - **Deciders:** Magnus Vike (asked for a Heading and a Prose component), proposed with Plan 0023
 - **Tags:** api, a11y

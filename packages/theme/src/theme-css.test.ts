@@ -759,17 +759,41 @@ describe('theme.css form fields (ADR-0029, docs/design/form-fields.md)', () => {
       expect(declarationsOf(selector)).toContainEqual(['font-size', 'var(--kv-font-body-size)'])
       expect(declarationsOf(selector)).toContainEqual(['margin', '0'])
     }
-    // A hint under the control is body-small, in the same colour (ADR-0054).
-    const under = [
-      '.kv-field > :not(.kv-field-label, .kv-prose) ~ .kv-prose',
-      '.kv-fieldset > :not(.kv-fieldset-legend, .kv-prose) ~ .kv-prose',
-    ]
-    for (const selector of under) {
-      expect(declarationsOf(selector)).toContainEqual([
+    // A hint under the control is body-small, in the same colour (ADR-0054). A checkbox or
+    // radio, and a heading that holds the label, don't count as the control.
+    for (const [host, label] of [
+      ['.kv-field', '.kv-field-label'],
+      ['.kv-fieldset', '.kv-fieldset-legend'],
+    ] as const) {
+      const under = rules.filter((rule) =>
+        rule.selectors.some(
+          (selector) =>
+            selector.replaceAll(/\s+/g, ' ').startsWith(`${host} > :not(`) &&
+            selector.endsWith('~ .kv-prose'),
+        ),
+      )
+      expect(under.length).toBeGreaterThan(0)
+      const selector =
+        under
+          .flatMap((rule) => rule.selectors)
+          .map((candidate) => candidate.replaceAll(/\s+/g, ' '))
+          .find((candidate) => candidate.startsWith(`${host} > :not(`)) ?? ''
+      expect(selector).toContain(label)
+      expect(selector).toContain(`:has(> ${label})`)
+      expect(under.flatMap((rule) => rule.declarations)).toContainEqual([
         'font-size',
         'var(--kv-font-body-small-size)',
       ])
     }
+    expect(
+      rules.some((rule) =>
+        rule.selectors.some(
+          (selector) =>
+            selector.replaceAll(/\s+/g, ' ').startsWith('.kv-field > :not(') &&
+            selector.includes('.kv-checkbox, .kv-radio'),
+        ),
+      ),
+    ).toBe(true)
   })
 
   it('has no kv-field-description: the hint is a Prose in the field or fieldset (ADR-0054)', () => {
@@ -1760,5 +1784,150 @@ describe('theme.css headings in prose and Heading (ADR-0052)', () => {
     const prose = typeOf(proseElement('h1, h2, h3, h4, h5, h6'))
     const proseSmall = typeOf(proseElement('h4, h5, h6'))
     expect({ ...prose, ...proseSmall }).toMatchObject(heading)
+  })
+})
+
+describe('theme.css prose covers the typography plugin (ADR-0054)', () => {
+  // The colour roles of @tailwindcss/typography (--tw-prose-*), under our names. Each is
+  // declared on `.kv-prose`, so every theme resolves it, and each is read by a rule.
+  const roles = [
+    'body',
+    'headings',
+    'lead',
+    'links',
+    'links-hover',
+    'bold',
+    'counters',
+    'bullets',
+    'hr',
+    'quotes',
+    'quote-borders',
+    'captions',
+    'code',
+    'pre-code',
+    'pre-bg',
+    'th-borders',
+    'td-borders',
+  ]
+
+  it.each(roles)('declares --kv-prose-color-%s on kv-prose and uses it', (role) => {
+    const property = `--kv-prose-color-${role}`
+    const declared = rules
+      .filter((rule) => rule.media.length === 0 && rule.selectors.includes(':where(.kv-prose)'))
+      .flatMap((rule) => rule.declarations)
+      .some(([name]) => name === property)
+    expect(declared).toBe(true)
+    expect(themeCss.split(`var(${property}`).length - 1).toBeGreaterThan(0)
+  })
+
+  it('does not declare the roles on :root, where each theme would share one value', () => {
+    const onRoot = rules
+      .filter((rule) => rule.selectors.some((selector) => selector.startsWith(':root')))
+      .flatMap((rule) => rule.declarations)
+      .filter(([name]) => name.startsWith('--kv-prose-color-'))
+    expect(onRoot).toEqual([])
+  })
+
+  it('has the sizes of the plugin and max-w-none, as token swaps with no element rules', () => {
+    for (const modifier of ['small', 'large', 'xl', '2xl']) {
+      const declarations = rules
+        .filter((rule) => rule.selectors.includes(`:where(.kv-prose--${modifier})`))
+        .flatMap((rule) => rule.declarations)
+      expect(declarations.map(([name]) => name)).toContain('--kv-prose-font-size')
+      for (const [name] of declarations) {
+        expect(name.startsWith('--kv-prose-')).toBe(true)
+      }
+    }
+    expect(
+      rules
+        .filter((rule) => rule.selectors.includes(':where(.kv-prose--full)'))
+        .flatMap((rule) => rule.declarations),
+    ).toContainEqual(['max-inline-size', 'none'])
+  })
+
+  it('steps xl and 2xl down below 40rem (ADR-0028)', () => {
+    const stepped = rules.filter(
+      (rule) =>
+        rule.media.some((condition) => condition.includes('40rem')) &&
+        rule.selectors.includes(':where(.kv-prose--xl, .kv-prose--2xl)'),
+    )
+    expect(stepped.length).toBeGreaterThan(0)
+  })
+
+  it('styles any .kv-lead like the plugin styles [class~=lead], not only a paragraph', () => {
+    expect(themeCss).not.toContain('p.kv-lead')
+    expect(themeCss).toContain(':where(.kv-lead)')
+  })
+
+  it('declares the layer order before the theme, so reset.css stays lowest in any import order', () => {
+    const order = themeCss.indexOf('@layer kv-reset, kv;')
+    expect(order).toBeGreaterThan(-1)
+    expect(order).toBeLessThan(themeCss.indexOf('@layer kv {'))
+  })
+})
+
+describe('reset.css (ADR-0056)', () => {
+  const resetCss = readFileSync(new URL('../reset.css', import.meta.url), 'utf8')
+  const resetRules = parseCssRules(resetCss)
+  const resetSelectors = resetRules.flatMap((rule) => rule.selectors)
+
+  it('is Preflight in plain CSS, with its licence', () => {
+    expect(resetCss).toContain('Tailwind CSS Preflight, MIT License')
+    expect(resetCss).toContain('Copyright (c) Tailwind Labs, Inc.')
+    expect(resetCss).not.toContain('--theme(')
+    expect(resetCss).not.toContain('@import')
+    expect(resetCss).not.toContain('url(')
+  })
+
+  it('puts every rule in the layer below the theme, and declares the order', () => {
+    expect(resetCss).toContain('@layer kv-reset, kv;')
+    expect(resetCss.replace(/\/\*[\s\S]*?\*\//g, '')).toMatch(
+      /^\s*@layer kv-reset, kv;\s*@layer kv-reset \{/,
+    )
+  })
+
+  it('has the rules that make elements unstyled', () => {
+    for (const selector of ['h1', 'a', 'img', 'textarea', 'table', 'hr', '::placeholder']) {
+      expect(resetSelectors.some((candidate) => candidate.includes(selector))).toBe(true)
+    }
+    expect(
+      resetRules
+        .filter((rule) => rule.selectors.includes('*'))
+        .flatMap((rule) => rule.declarations),
+    ).toEqual(
+      expect.arrayContaining([
+        ['box-sizing', 'border-box'],
+        ['margin', '0'],
+        ['padding', '0'],
+      ]),
+    )
+    expect(resetCss).toContain("[hidden]:where(:not([hidden='until-found']))")
+  })
+
+  it('keeps list markers, so lists stay lists in Safari with VoiceOver (1.3.1)', () => {
+    const declarations = resetRules.flatMap((rule) =>
+      rule.declarations.map(([name, value]) => `${name}: ${value}`),
+    )
+    expect(declarations).not.toContain('list-style: none')
+  })
+
+  it('keeps an indent on lists, so outside markers are not clipped', () => {
+    expect(
+      resetRules
+        .filter((rule) => rule.selectors.includes('ul'))
+        .flatMap((rule) => rule.declarations),
+    ).toContainEqual(['padding-inline-start', '1.5em'])
+  })
+
+  it('keeps an Icon inline', () => {
+    expect(resetSelectors).toContain('svg:not(.kv-icon)')
+    expect(resetSelectors).not.toContain('svg')
+  })
+
+  it('sets no outline or focus style of its own except the Firefox ring', () => {
+    const outlines = resetRules
+      .filter((rule) => rule.declarations.some(([name]) => name === 'outline'))
+      .flatMap((rule) => rule.selectors)
+    expect(outlines).toEqual([':-moz-focusring:where(:not(iframe))'])
   })
 })

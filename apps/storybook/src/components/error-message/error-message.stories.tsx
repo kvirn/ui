@@ -11,7 +11,7 @@ import {
 } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/Form/ErrorMessage: Field.ErrorMessage, a <p> that renders only while its Field or
+// Components/Form/ErrorMessage: ErrorMessage, a <p> that renders only while its Field or
 // Fieldset is invalid. It starts with the `field.errorPrefix` text ("Fel:"), which the theme
 // hides visually, and the error icon, and it is part of the control's accessible description.
 // It isn't a live region (ADR-0029): it is heard when the user reaches the control. The
