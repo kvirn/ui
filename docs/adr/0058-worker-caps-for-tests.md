@@ -1,6 +1,6 @@
 # ADR-0058: Test runs cap their workers
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-10-03
 - **Deciders:** Magnus Vike (the test runs made the machine unusable)
 - **Tags:** tooling

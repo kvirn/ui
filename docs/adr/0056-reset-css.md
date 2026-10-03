@@ -1,6 +1,6 @@
 # ADR-0056: An optional reset.css, ported from Tailwind's Preflight
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-10-03
 - **Deciders:** Magnus Vike (asked whether to use Tailwind's reset), proposed with ADR-0054
 - **Tags:** theme, a11y

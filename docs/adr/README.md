@@ -73,6 +73,6 @@ We record significant decisions as ADRs using a lightweight MADR-style format.
 | [0053](0053-kbd.md)                                                 | Kbd is the native `<kbd>` with a `kv-kbd` class, one key per element                            | Proposed               |
 | [0054](0054-prose-is-the-description.md)                            | Prose is the description of a Field or Fieldset                                                 | Accepted               |
 | [0055](0055-flat-field-api.md)                                      | Field, Label, ErrorMessage, Fieldset and Legend are flat names                                  | Accepted               |
-| [0056](0056-reset-css.md)                                           | An optional reset.css, ported from Tailwind's Preflight                                         | Proposed               |
+| [0056](0056-reset-css.md)                                           | An optional reset.css, ported from Tailwind's Preflight                                         | Accepted               |
 | [0057](0057-e2e-runs-name-their-spec.md)                            | An e2e run must name its spec; the full run is for CI and the sweep specialist                  | Proposed               |
-| [0058](0058-worker-caps-for-tests.md)                               | Test runs cap their workers                                                                     | Proposed               |
+| [0058](0058-worker-caps-for-tests.md)                               | Test runs cap their workers                                                                     | Accepted               |
