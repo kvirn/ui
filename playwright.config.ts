@@ -46,12 +46,18 @@ const projects = [...baselineProjects, ...sweepProjects, ...optionalProjects]
 
 // Keyboard contract, focus and display modes, run against Storybook (docs/engineering.md). The
 // specs live next to their stories in apps/storybook/src/components/<name>/.
+//
+// Workers: Playwright's default is half the CPU cores, which on a 28-thread machine is 14 Chrome
+// pages hammering one Storybook dev server, and makes the timing-based tests flaky. Three is
+// enough for the baseline. Raise it for a one-off with `E2E_WORKERS=6 vp run e2e <spec>`.
+const workers = Number(process.env['E2E_WORKERS'] ?? 3)
 export default defineConfig({
   testDir: 'apps/storybook/src',
   testMatch: ['**/*.e2e.ts'],
   forbidOnly: true,
   fullyParallel: true,
   retries: 0,
+  workers,
   reporter: process.env['CI'] === undefined ? 'list' : [['list'], ['html', { open: 'never' }]],
   use: {
     baseURL: storybookUrl,

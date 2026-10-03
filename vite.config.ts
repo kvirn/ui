@@ -64,6 +64,13 @@ const jsxA11yRules = Object.fromEntries(
   ].map((rule) => [`jsx-a11y/${rule}`, 'error' as const]),
 )
 
+// Workers per Vitest project. There are six projects and four of them start Chrome, each with its
+// own pool. The default is a worker per core, which on a 28-thread machine is dozens of Chrome
+// pages at once and makes the timing-based tests flaky (announcement throttles, 15s timeouts). A
+// project doesn't inherit the root option, so every project sets it. Raise it for a one-off with
+// `VITEST_MAX_WORKERS=4 vp test run <files>`.
+const maxWorkers = Number(process.env['VITEST_MAX_WORKERS'] ?? 2)
+
 /**
  * One Vitest project of Storybook stories. `env` sets the preview's initial Mode and Contrast
  * globals (apps/storybook/.storybook/preview.tsx), so every story starts in that theme.
@@ -72,6 +79,7 @@ const storybookProject = (name: string, mode: 'light' | 'dark', contrast: 'stand
   plugins: [storybookTest({ configDir: 'apps/storybook/.storybook' })],
   test: {
     name,
+    maxWorkers,
     env: { VITE_STORYBOOK_MODE: mode, VITE_STORYBOOK_CONTRAST: contrast },
     browser: {
       enabled: true,
@@ -126,10 +134,12 @@ export default defineConfig({
     ],
   },
   test: {
+    maxWorkers,
     projects: [
       {
         test: {
           name: 'node',
+          maxWorkers,
           environment: 'node',
           include: ['packages/{core,i18n,theme}/src/**/*.test.ts', 'tooling/**/*.test.ts'],
         },
@@ -137,6 +147,7 @@ export default defineConfig({
       {
         test: {
           name: 'browser',
+          maxWorkers,
           include: [
             'packages/{react,testing}/src/**/*.test.{ts,tsx}',
             // The docs site shell is built on KvirnUI and tested like a component (ADR-0017).
