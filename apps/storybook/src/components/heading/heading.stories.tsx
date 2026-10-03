@@ -34,9 +34,8 @@ export const Default: Story = {
   },
 }
 
-/** The level is the outline and `size` is the look: an `h3` set as heading-2, an `h1` as display. */
-export const Sizes: Story = {
-  render: () => (
+function AllSizes() {
+  return (
     <div className="kv-story-card-column">
       <Heading level={1} size="display">
         display (h1)
@@ -55,7 +54,12 @@ export const Sizes: Story = {
       </Heading>
       <Heading level={4}>h4 to h6: body size, heading-3 weight</Heading>
     </div>
-  ),
+  )
+}
+
+/** The level is the outline and `size` is the look: an `h3` set as heading-2, an `h1` as display. */
+export const Sizes: Story = {
+  render: () => <AllSizes />,
   play: async ({ canvas }) => {
     const sizeOf = (name: string) =>
       Number.parseFloat(getComputedStyle(canvas.getByRole('heading', { name })).fontSize)
@@ -79,5 +83,30 @@ export const Outline: Story = {
   play: async ({ canvas }) => {
     await expect(canvas.getAllByRole('heading')).toHaveLength(4)
     await expect(canvas.getByRole('heading', { level: 1 })).toBeVisible()
+  },
+}
+
+/** Right to left, in English: a heading starts at the right, and its size and weight don't change. */
+export const RightToLeft: Story = {
+  name: 'Right to left',
+  globals: { dir: 'rtl', locale: 'en' },
+  render: () => <AllSizes />,
+  play: async ({ canvas }) => {
+    const heading = canvas.getByRole('heading', { name: 'heading-2 (h2)' })
+    await expect(getComputedStyle(heading).direction).toBe('rtl')
+    await expect(getComputedStyle(heading).textAlign).toMatch(/^(start|right)$/)
+  },
+}
+
+/** Forced colours: a heading is drawn in the system text colour. It sets no background or edge, so there is nothing more to check. */
+export const ForcedColors: Story = {
+  globals: { forcedColors: 'active' },
+  render: () => <AllSizes />,
+  play: async ({ canvas }) => {
+    const heading = canvas.getByRole('heading', { name: 'heading-2 (h2)' })
+    await expect(heading).toBeVisible()
+    await expect(getComputedStyle(heading).color).toBe(
+      getComputedStyle(canvas.getByRole('heading', { name: 'display (h1)' })).color,
+    )
   },
 }

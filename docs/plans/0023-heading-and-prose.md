@@ -47,7 +47,7 @@ None.
 - [x] `packages/react/src/heading/` and `prose/`: component, hook (Prose), docs and contract
 - [x] `theme.css` 9a: `kv-heading` and the four size modifiers
 - [x] Light tests: element per level, size classes, `render`, class joins, axe
-- [x] Stories: `Components/Heading` (Default, Sizes, Outline) and `Components/Prose` (Default, Large). The Section stories use them
+- [x] Stories: `Components/Heading` (Default, Sizes, Outline, Right to left, Forced colors) and `Components/Prose` (Default, Large). The Section stories use them
 - [x] The `Foundation/Prose` stories moved to `Components/Prose` (`components-prose--docs`): one Prose, one page. Links and the sidebar order updated
 - [x] Exports in `index.ts`, ADR-0052, roadmap rows, changeset
 - [ ] Manual AT matrix: `pending`
