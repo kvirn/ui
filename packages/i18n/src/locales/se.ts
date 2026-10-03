@@ -213,4 +213,40 @@ export const se = {
     // TODO(native-review)
     announcementForField: ({ label, message }) => `${label}: ${message}`,
   },
+  // English placeholders for the whole `table` namespace (Plan 0026). A native speaker must
+  // translate every entry before `beta`. `se` has the plural forms one, two and other.
+  table: {
+    // TODO(native-review)
+    sortedAscending: ({ column }) => `Sorted by ${column}, ascending.`,
+    // TODO(native-review)
+    sortedDescending: ({ column }) => `Sorted by ${column}, descending.`,
+    // TODO(native-review)
+    sortCleared: ({ column }) => `No longer sorted by ${column}.`,
+    // TODO(native-review)
+    selectRow: 'Select',
+    // TODO(native-review)
+    selectRowNumber: ({ index }, format) => `Select row ${format.number(index)}`,
+    // TODO(native-review)
+    selectAllRows: 'Select all rows',
+    // TODO(native-review)
+    selectedCount: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 row selected.',
+        two: '2 rows selected.',
+        other: `${format.number(count)} rows selected.`,
+      }),
+    // TODO(native-review)
+    rowCount: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 row.',
+        two: '2 rows.',
+        other: `${format.number(count)} rows.`,
+      }),
+    // TODO(native-review)
+    loading: 'Loading rows.',
+    // TODO(native-review)
+    empty: 'No rows to show.',
+    // TODO(native-review)
+    rowDetails: 'Details',
+  },
 } satisfies KvirnMessages

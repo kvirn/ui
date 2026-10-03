@@ -7,12 +7,14 @@ import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
+import { virtualizedCount } from '../form/virtualized.fixture.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   AutocompleteStates,
   DefaultExample,
   KeyboardExample,
   StreetAutocomplete,
+  VirtualizedExample,
   autocompleteTextsFor,
   longList,
   streets,
@@ -50,6 +52,7 @@ interface AutocompleteStoryArgs {
   onOpenChange?: (open: boolean, details?: { reason?: string }) => void
   announcementDebounceMilliseconds?: number
   messages?: Record<string, unknown>
+  virtualize?: boolean | { estimateSize?: number; overscan?: number }
 }
 
 const meta = {
@@ -88,6 +91,11 @@ const meta = {
       description: 'How long after typing stops the count is announced. Default 500.',
     },
     messages: { control: false },
+    virtualize: {
+      control: false,
+      description:
+        'Renders only the suggestions in view, for a flat list of thousands. `true`, or `{ estimateSize, overscan }`. Not with `groups`.',
+    },
   },
   globals: { locale: 'sv' },
   decorators: [
@@ -371,6 +379,39 @@ export const LongList: Story = {
     await openWithKey(canvas, inputOf(canvas, text.street))
     await expect(canvas.getAllByRole('option')).toHaveLength(300)
   },
+}
+
+/**
+ * 10 000 suggestions with `virtualize`: only the ones in view (and the active one) are in the
+ * page, and every one says how big the list is and where it is in it (`aria-setsize`,
+ * `aria-posinset`). Type `v`, then try ArrowUp and Page Down: the keys reach suggestions that were
+ * never rendered, and `aria-activedescendant` always points at one that is.
+ */
+export const Virtualized: Story = {
+  parameters: showSource('autocomplete/autocomplete.fixture.tsx', 'VirtualizedExample'),
+  render: (_args, { globals }) => <VirtualizedExample locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = autocompleteTextsFor(localeOf(globals))
+    const input = inputOf(canvas, text.street)
+    await userEvent.type(input, 'v')
+    await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
+    await waitFor(() => expect(canvas.getAllByRole('option').length).toBeGreaterThan(5))
+    // Only a window is in the page, and the first suggestion knows where it is in the whole list.
+    await expect(canvas.getAllByRole('option').length).toBeLessThan(80)
+    const [first] = canvas.getAllByRole('option')
+    await expect(first).toHaveAttribute('aria-posinset', '1')
+    await expect(Number(first?.getAttribute('aria-setsize'))).toBeGreaterThan(1000)
+    await expect(Number(first?.getAttribute('aria-setsize'))).toBeLessThanOrEqual(virtualizedCount)
+  },
+}
+
+/**
+ * The Virtualized fixture with no play function, for the keyboard tests to drive from an empty
+ * input. Try typing, ArrowUp, ArrowDown and Page Down in the Keyboard section above.
+ */
+export const VirtualizedKeyboard: Story = {
+  parameters: showSource('autocomplete/autocomplete.fixture.tsx', 'VirtualizedExample'),
+  render: (_args, { globals }) => <VirtualizedExample locale={localeOf(globals)} />,
 }
 
 /** Groups: `role="group"` named by its label. */

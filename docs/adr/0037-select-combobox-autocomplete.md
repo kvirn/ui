@@ -1,6 +1,6 @@
 # ADR-0037: Listbox, Combobox and Autocomplete share one ARIA 1.2 combobox core, with opt-in virtualization
 
-- **Status:** Proposed
+- **Status:** Proposed (amended by ADR-0059, item 11)
 - **Date:** 2026-10-02
 - **Deciders:** Maintainer asked for a combobox, a select and an autocomplete, with virtualization. Revised the same day: `NativeSelect` is dropped and becomes `Listbox` (a stylable list that uses the native `<select>` on touch devices). The details below are proposed and open to change.
 - **Tags:** architecture, api, a11y, i18n

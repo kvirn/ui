@@ -12,8 +12,12 @@
       "Bash(git status*)",
       "Bash(git diff*)",
       "Bash(git log*)",
+      "Bash(git worktree add ../kvirn-*)",
+      "Bash(git worktree list*)",
       "Bash(sed *)",
-      "Bash(wc *)"
+      "Bash(wc *)",
+      "Read(//home/magnus-vike/Sites/kvirn-*/**)",
+      "Edit(//home/magnus-vike/Sites/kvirn-*/**)"
     ],
     "ask": [
       "Bash(git push*)",
@@ -22,6 +26,7 @@
       "Bash(git add*)",
       "Bash(git commit*)",
       "Bash(pnpm add*)",
+      "Bash(git worktree remove*)",
       "Bash(pnpm publish*)"
     ]
   },
@@ -50,17 +55,6 @@
         "matcher": "Edit|Write",
         "hooks": [
           { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/format.sh\"" }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/verify.sh\"",
-            "timeout": 600
-          }
         ]
       }
     ]

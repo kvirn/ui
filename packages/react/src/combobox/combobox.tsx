@@ -100,6 +100,7 @@ export function ComboboxProviders<TItem>({
           getGroupLabelProps: combobox.getGroupLabelProps,
           getEntry: combobox.getEntry,
           shouldScrollToActive: combobox.shouldScrollToActive,
+          virtualization: combobox.virtualization,
         }}
       >
         {children}

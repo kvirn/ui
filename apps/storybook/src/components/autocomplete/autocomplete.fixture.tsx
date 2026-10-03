@@ -2,6 +2,7 @@ import { Autocomplete, Button, ErrorMessage, Field, Label, Prose } from '@kvirn-
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
+import { virtualizedStreets } from '../form/virtualized.fixture.ts'
 
 // Story and e2e fixture for Components/Form/Autocomplete (contract: autocomplete.a11y.md). The
 // functions here are the examples the stories show with "Show code": each is one Autocomplete as
@@ -152,6 +153,35 @@ export function DefaultExample({ locale }: { locale: FormLocale }) {
         <p>{text.hint}</p>
       </Prose>
       <Autocomplete.Root items={streets} name="street">
+        <Autocomplete.Control>
+          <Autocomplete.Input />
+          <Autocomplete.Clear />
+          <Autocomplete.Toggle />
+        </Autocomplete.Control>
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field>
+  )
+}
+
+/**
+ * 10 000 suggestions with `virtualize`: only the suggestions in view, and the active one, are in
+ * the page. Each says how big the list is and where it is in it, so a screen reader still knows.
+ * Typing narrows the suggestions: the list is virtualized only while it stays long.
+ */
+export function VirtualizedExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Field lang={lang} controlId="street">
+      <Label>{text.street}</Label>
+      <Prose>
+        <p>{text.hint}</p>
+      </Prose>
+      <Autocomplete.Root virtualize items={virtualizedStreets} name="street">
         <Autocomplete.Control>
           <Autocomplete.Input />
           <Autocomplete.Clear />

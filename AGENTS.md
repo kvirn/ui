@@ -73,7 +73,7 @@ pnpm changeset
 
 ## Quality gates
 
-Nothing is done until all of these pass. A Stop hook enforces gates 1–2 on the whole tree (ADR-0051).
+Nothing is done until all of these pass. The orchestrator runs them; no hook runs them for you (ADR-0062).
 
 1. `vp check` has no lint or type errors. Formatting is advisory: run `vp fmt <files>` on the files you commit, but it never blocks (ADR-0048).
 2. `vp test run` passes, with 0 axe violations in every story state (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`).
@@ -90,7 +90,7 @@ Nothing is done until all of these pass. A Stop hook enforces gates 1–2 on the
 3. **`core` stays pure:** no React, and no `window` or `document` at module scope.
 4. **No hard-coded visible or announced strings.** Every string exists in all 6 locales and can be overridden per provider and per instance (ADR-0007).
 5. **Headless packages ship zero CSS.** State is exposed via `data-*`.
-6. **No runtime dependencies other than the sanctioned ones:** React as a peer, and `@tanstack/store` in `core` only, imported only in `core/src/store/` (ADR-0003). Any new dependency needs an ADR.
+6. **No runtime dependencies other than the sanctioned ones:** React as a peer, and in `core` only: `@tanstack/store` (imported only in `core/src/store/`, ADR-0003), `@tanstack/virtual-core` (only in `core/src/virtual/`) and `@tanstack/table-core` (only in `core/src/table/`, ADR-0059). Any new dependency needs an ADR.
 7. **No telemetry and no third-party network calls,** including in the docs site.
 8. **Never claim legal compliance.** Say "designed and tested to meet WCAG 2.2 AA".
 9. **Public API changes** need a changeset and a docs update.

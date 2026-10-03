@@ -26,3 +26,4 @@ Plans describe **how** we will build something. ADRs record **why** we chose an 
 | [0019](0019-one-time-code-pattern.md)         | OneTimeCode pattern                                                     | Done        |
 | [0020](0020-notification.md)                  | Notification                                                            | In progress |
 | [0021](0021-file-upload.md)                   | FileUpload                                                              | In progress |
+| [0026](0026-table-and-virtualization.md)      | Table, and virtualized Listbox, Combobox and Autocomplete               | In progress |

@@ -7,6 +7,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
+import { virtualizedCount } from '../form/virtualized.fixture.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   ComboboxStates,
@@ -15,6 +16,7 @@ import {
   MultipleExample,
   MunicipalitiesCombobox,
   MunicipalityCombobox,
+  VirtualizedExample,
   comboboxTextsFor,
   longList,
   municipalities,
@@ -60,6 +62,7 @@ interface ComboboxStoryArgs {
   onOpenChange?: (open: boolean, details?: { reason?: string }) => void
   announcementDebounceMilliseconds?: number
   messages?: Record<string, unknown>
+  virtualize?: boolean | { estimateSize?: number; overscan?: number }
 }
 
 const meta = {
@@ -97,6 +100,11 @@ const meta = {
       description: 'How long after typing stops the result count is announced. Default 500.',
     },
     messages: { control: false },
+    virtualize: {
+      control: false,
+      description:
+        'Renders only the options in view, for a flat list of thousands. `true`, or `{ estimateSize, overscan }`. Not with `groups`.',
+    },
   },
   globals: { locale: 'sv' },
   decorators: [
@@ -480,6 +488,37 @@ export const LongList: Story = {
     await openWithKey(canvas, inputOf(canvas, text.municipality))
     await expect(canvas.getAllByRole('option')).toHaveLength(300)
   },
+}
+
+/**
+ * 10 000 options with `virtualize`: only the ones in view (and the active and chosen option) are in
+ * the page, and every one says how big the list is and where it is in it (`aria-setsize`,
+ * `aria-posinset`). Try ArrowUp, Page Down, and typing to filter: the keys reach options that were
+ * never rendered, and `aria-activedescendant` always points at one that is.
+ */
+export const Virtualized: Story = {
+  parameters: showSource('combobox/combobox.fixture.tsx', 'VirtualizedExample'),
+  render: (_args, { globals }) => <VirtualizedExample locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = comboboxTextsFor(localeOf(globals))
+    await openWithKey(canvas, inputOf(canvas, text.municipality))
+    await waitFor(() => expect(canvas.getAllByRole('option').length).toBeGreaterThan(5))
+    // Only a window is in the page, and the first option knows where it is in the whole list.
+    await expect(canvas.getAllByRole('option').length).toBeLessThan(80)
+    const [first] = canvas.getAllByRole('option')
+    await expect(first).toHaveAttribute('aria-setsize', String(virtualizedCount))
+    await expect(first).toHaveAttribute('aria-posinset', '1')
+    await expect(canvas.queryByRole('option', { name: 'Österbo 250' })).toBeNull()
+  },
+}
+
+/**
+ * The Virtualized fixture with no play function, for the keyboard tests to drive from a closed
+ * popup. Try ArrowUp, ArrowDown, Page Down and typing in the Keyboard section above.
+ */
+export const VirtualizedKeyboard: Story = {
+  parameters: showSource('combobox/combobox.fixture.tsx', 'VirtualizedExample'),
+  render: (_args, { globals }) => <VirtualizedExample locale={localeOf(globals)} />,
 }
 
 /** A rich option: your own children replace the text. The name a screen reader reads is its text content. */

@@ -1,6 +1,6 @@
 # ADR-0034: TanStack Table and TanStack Virtual are brought by the consumer, not bundled
 
-- **Status:** Proposed
+- **Status:** Superseded by ADR-0059
 - **Date:** 2026-10-02
 - **Deciders:** Maintainer asked for a Table "used with TanStack Table" and virtualization "with TanStack Virtual" for large data in Table, ScrollArea, Select, Combobox and Autocomplete. The approach below is proposed and open to change.
 - **Tags:** architecture, api, a11y

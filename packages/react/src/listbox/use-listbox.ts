@@ -24,6 +24,18 @@ import type { Placement, PopupPartProps } from '../popup/use-popup.ts'
 import { useEnv } from '../provider/use-env.ts'
 import { useLocale } from '../provider/use-locale.ts'
 import { useMessages } from '../provider/use-messages.ts'
+import {
+  getFirstSelectedIndex,
+  getRequiredIndexes,
+  useListVirtualization,
+} from './use-list-virtualization.ts'
+import type { ListboxVirtualization, ListboxVirtualizeOption } from './use-list-virtualization.ts'
+
+export type { ListboxVirtualization, ListboxVirtualizeOption } from './use-list-virtualization.ts'
+export type {
+  ListboxVirtualOptionPartProps,
+  ListboxVirtualSizerPartProps,
+} from './use-list-virtualization.ts'
 
 /**
  * When the native `<select>` renders instead of the stylable popup (ADR-0037, item 2):
@@ -98,6 +110,14 @@ interface UseListboxBaseOptions<TItem> {
   padding?: number | undefined
   /** Per-instance message overrides (ADR-0007): `noResults` is the default text of `Listbox.Empty`. */
   messages?: Partial<KvirnMessages['combobox']> | undefined
+  /**
+   * Renders only the options that are scrolled into view, plus the active and the chosen one, for
+   * a flat list of thousands (ADR-0059). `true` uses the defaults. The `Listbox.List` must be a
+   * scroll container with a height limit (the default theme makes it one). Not with `groups`
+   * (they render in full, with a development warning), and the native `<select>` ignores it.
+   * Filter or paginate first: unrendered options can't be found with find in page or printed.
+   */
+  virtualize?: ListboxVirtualizeOption | undefined
 }
 
 /** One choice. `value` is the chosen key, or `null`. */
@@ -185,6 +205,10 @@ export interface ListboxListPartProps {
   className: 'kv-listbox-list'
   id: string
   role: 'listbox'
+  /** The scroll element of a virtualized list. */
+  ref: RefObject<HTMLDivElement | null>
+  /** Present while the options are virtualized: only some are rendered. */
+  'data-virtualized'?: ''
   'aria-multiselectable'?: true
   /** The Field's label. */
   'aria-labelledby'?: string | undefined
@@ -268,6 +292,8 @@ export interface UseListboxResult<TItem> {
   getEntry: (item: unknown) => ListboxEntry<unknown> | undefined
   /** `false` while the pointer moved the active option: it is already under the pointer. */
   shouldScrollToActive: () => boolean
+  /** Set while `virtualize` is on, the popup is open and the list is flat. `Listbox.List` renders it. */
+  virtualization: ListboxVirtualization | undefined
   /** For `Listbox.Root`: the hidden inputs of a plain form. Empty with the native rendering. */
   hiddenInputs: readonly ListboxHiddenInput[]
   /** For the native rendering: the chosen key, or `''`. */
@@ -496,6 +522,7 @@ export function useListbox<TItem>(options: UseListboxOptions<TItem>): UseListbox
     offset = 4,
     padding = 8,
     messages,
+    virtualize,
   } = options
   const isMultiple = options.multiple === true
   const field = useContext(FieldContext)
@@ -509,6 +536,7 @@ export function useListbox<TItem>(options: UseListboxOptions<TItem>): UseListbox
   const valueId = `${baseId}-value`
   const triggerRef = useRef<HTMLDivElement | null>(null)
   const popupRef = useRef<HTMLDivElement | null>(null)
+  const listRef = useRef<HTMLDivElement | null>(null)
   const activationRef = useRef<'keyboard' | 'pointer'>('keyboard')
   const [syncCount, requestSync] = useReducer((count: number) => count + 1, 0)
 
@@ -664,6 +692,19 @@ export function useListbox<TItem>(options: UseListboxOptions<TItem>): UseListbox
   const activeEntry =
     isOpen && state.activeKey !== undefined ? machine.getEntry(state.activeKey) : undefined
 
+  // After `usePopup`, so the popup is shown and placed when the scroll element is measured.
+  const virtualization = useListVirtualization({
+    virtualize,
+    hasGroups: groups !== undefined,
+    isOpen: isOpen && !isNative,
+    entries: state.entries,
+    getRequiredIndexes: () => getRequiredIndexes(machine),
+    activeIndex: activeEntry?.index,
+    initialScrollIndex: getFirstSelectedIndex(machine, selectedKeys),
+    shouldScrollToActive: () => activationRef.current !== 'pointer',
+    listRef,
+  })
+
   const triggerProps: ListboxTriggerPartProps = {
     className: 'kv-listbox-trigger',
     id: field?.controlProps.id ?? id ?? `${baseId}-trigger`,
@@ -785,6 +826,8 @@ export function useListbox<TItem>(options: UseListboxOptions<TItem>): UseListbox
       className: 'kv-listbox-list',
       id: listId,
       role: 'listbox',
+      ref: listRef,
+      ...(virtualization === undefined ? {} : { 'data-virtualized': '' as const }),
       ...(isMultiple ? { 'aria-multiselectable': true as const } : {}),
       'aria-labelledby': field?.labelId,
       ...(isOpen && state.size === 0 ? { hidden: true as const, 'data-empty': '' as const } : {}),
@@ -802,6 +845,7 @@ export function useListbox<TItem>(options: UseListboxOptions<TItem>): UseListbox
     }),
     getEntry: (item) => entryByItem.get(item),
     shouldScrollToActive: () => activationRef.current !== 'pointer',
+    virtualization,
     hiddenInputs,
     nativeValue: selectedKeys[0] ?? '',
     selectFromNative: (value) => {

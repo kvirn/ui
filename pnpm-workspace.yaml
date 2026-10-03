@@ -11,8 +11,10 @@ catalog:
   '@vitest/browser-playwright': 5.0.1
   typescript: ^7.0.2
   '@types/node': ^24
-  # The one sanctioned runtime dependency, pinned exactly (ADR-0003)
+  # The sanctioned runtime dependencies of core, pinned exactly (ADR-0003, ADR-0059)
   '@tanstack/store': 0.11.2
+  '@tanstack/table-core': 9.2.4
+  '@tanstack/virtual-core': 3.17.11
   # React 19+ only (docs/vision.md)
   react: ^19.3.0
   react-dom: ^19.3.0

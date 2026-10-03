@@ -36,6 +36,7 @@
  *     --kv-button-font-size: 1rem;
  *     --kv-button-font-weight: 600;
  *     --kv-button-line-height: 1.25;
+ *     --kv-table-scroll-region-max-block-size: 30rem;      limits a table's height, so its head sticks
  *   }
  *   .kv-card {
  *     --kv-card-padding-default: var(--kv-card-padding-lg);                  md by default
@@ -77,6 +78,8 @@
  *                      kv-combobox and kv-autocomplete (input, control, buttons, value chips)
  *  13. One-time code    kv-one-time-code: one input, drawn as boxes and dashes of its pattern
  *  14. File upload      kv-file-upload: drop zone, trigger, rejections, and the list of files
+ *  15. Table            kv-table: a native table, with sort buttons, selection, expanding and a
+ *                      scroll region
  */
 
 /* reset.css puts its rules in kv-reset. Declaring the order here too keeps it lowest, in whichever order the two files are imported. */
@@ -1172,7 +1175,7 @@
           .kv-radio,
           .kv-listbox-native
         ),
-        :is(.kv-not-prose, .kv-nav, .kv-button-group) *,
+        :is(.kv-not-prose, .kv-nav, .kv-button-group, .kv-table) *,
         :is(:is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose) *):not(
           :is(
             :is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose) .kv-prose *
@@ -1204,7 +1207,8 @@
         .kv-notification,
         .kv-section,
         .kv-field,
-        .kv-fieldset
+        .kv-fieldset,
+        .kv-table
       )
     ) {
       &:where(h1, h2, h3, h4, h5, h6) {
@@ -1586,7 +1590,8 @@
       .kv-notification,
       .kv-section,
       .kv-field,
-      .kv-fieldset
+      .kv-fieldset,
+      .kv-table
     ) {
       margin-block: var(--kv-prose-space-block);
       margin-inline: 0;
@@ -6114,6 +6119,389 @@
 
     .kv-file-upload-progress:indeterminate::-moz-progress-bar {
       background-color: transparent;
+    }
+  }
+  /* 15. Table --------------------------------------------------------------------------------
+   * <Table.Root> renders class="kv-table", and its parts one class each: kv-table-caption,
+   * -head, -body, -foot, -row, -column-header, -row-header, -cell, -sort-button, -sort-icon,
+   * -select-checkbox (with kv-checkbox), -expand-button, -expand-icon, -detail-row, -empty,
+   * -spacer and -scroll-region (with kv-scroll-region). State is data-sort, data-selected,
+   * data-expanded, data-busy, data-virtualized and data-overflowing (ADR-0035, ADR-0059).
+   * Design spec: docs/design/table.md.
+   *
+   *   <Table.ScrollRegion table={cases}>
+   *     <Table.Root table={cases}>
+   *       <Table.Caption>Öppna ärenden</Table.Caption>
+   *       …
+   *
+   * Never changes the display of a table element: display: block on a table, row or cell drops
+   * its semantics in some browsers (ADR-0035). Rows are 48px, and 32px in compact density from
+   * 64rem. The text stays 16px in both, since table data is essential content. A divider of 1px
+   * under every row, a filled head, no stripes, no vertical lines, no frame and no row hover: a
+   * row isn't something you press. The state of a selected row is the checked box, and the fill
+   * only helps. Controls that fill a cell get an inset focus ring, so the region and the sticky
+   * head can't clip or cover it. Quantities are aligned to the end with the classes
+   * kv-table-column-header--numeric, kv-table-cell--numeric and kv-table-row-header--numeric:
+   * identifiers and dates stay at the start.
+   *
+   * Site-wide, set where you like:
+   *   .kv-table-scroll-region { --kv-table-scroll-region-max-block-size: 30rem }
+   * It limits the height of the region, so its head sticks. A virtualized table needs a limit
+   * and gets 80svh when you set none. */
+  .kv-table {
+    --kv-table-cell-padding-block: var(--kv-space-3);
+    --kv-table-cell-padding-inline: var(--kv-space-3);
+    --kv-table-empty-padding-block: var(--kv-space-6);
+
+    inline-size: 100%;
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-feature-settings: var(--kv-font-numeric-feature-settings);
+    line-height: var(--kv-font-body-line-height);
+    table-layout: auto;
+  }
+
+  /* Columns take their widths from the head, which carries TanStack's sizes, so they don't
+   * jump while rows come and go. */
+  .kv-table[data-virtualized] {
+    table-layout: fixed;
+  }
+
+  /* Staff tools: 32px rows from 64rem. Below it touch is likely, so rows stay 48px. */
+  @media (width >= 64rem) {
+    .kv-compact .kv-table,
+    .kv-compact.kv-table {
+      --kv-table-cell-padding-block: var(--kv-space-1);
+      --kv-table-cell-padding-inline: var(--kv-space-2);
+      --kv-table-empty-padding-block: var(--kv-space-4);
+    }
+  }
+
+  .kv-table-caption {
+    padding-block: 0 var(--kv-space-2);
+    padding-inline: 0;
+    caption-side: top;
+    color: var(--kv-color-text);
+    font-weight: 600;
+    text-align: start;
+  }
+
+  .kv-table-head {
+    background-color: var(--kv-color-surface);
+  }
+
+  /* Header cells, row headers and cells draw everything: backgrounds and borders on a row are
+   * unreliable across browsers. */
+  .kv-table-column-header,
+  .kv-table-row-header,
+  .kv-table-cell {
+    box-sizing: border-box;
+    padding-block: var(--kv-table-cell-padding-block);
+    padding-inline: var(--kv-table-cell-padding-inline);
+    color: var(--kv-color-text);
+    overflow-wrap: break-word;
+    text-align: start;
+  }
+
+  .kv-table-column-header {
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    background-color: var(--kv-color-surface);
+    font-weight: 600;
+    vertical-align: bottom;
+  }
+
+  .kv-table-row-header,
+  .kv-table-cell {
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    vertical-align: top;
+  }
+
+  .kv-table-row-header {
+    font-weight: 600;
+  }
+
+  .kv-table-cell {
+    font-weight: 400;
+  }
+
+  .kv-table-column-header--numeric,
+  .kv-table-row-header--numeric,
+  .kv-table-cell--numeric {
+    text-align: end;
+  }
+
+  /* Visually hidden, never display: none: the text of the expand column's header, so it isn't an
+   * empty header (R2). Without this theme it shows, which is correct unstyled. */
+  .kv-table-visually-hidden {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* The sort button fills the header cell, so the cell is the target. */
+  .kv-table-column-header:has(> .kv-table-sort-button) {
+    padding: 0;
+  }
+
+  .kv-table-sort-button {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--kv-space-2);
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-inline-size: var(--kv-control-min-block-size);
+    margin: 0;
+    padding-block: var(--kv-table-cell-padding-block);
+    padding-inline: var(--kv-table-cell-padding-inline);
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    text-align: start;
+  }
+
+  /* A quantity: the icon first, so the label's end edge lines up with the figures. The order in
+   * the DOM is the same, and the icon is hidden from assistive technology. */
+  .kv-table-column-header--numeric > .kv-table-sort-button {
+    flex-direction: row-reverse;
+    text-align: end;
+  }
+
+  /* 20px, centred on the first line of the label, however many lines it wraps to. Three shapes:
+   * two chevrons (sortable), one up (ascending) and one down (descending). They don't mirror. */
+  .kv-table-sort-icon {
+    flex: none;
+    margin-block-start: calc((1lh - 1.25em) / 2);
+    color: var(--kv-color-text-muted);
+  }
+
+  .kv-table-sort-button[data-sort] .kv-table-sort-icon,
+  .kv-table-sort-button:is(:hover, :active) .kv-table-sort-icon {
+    color: var(--kv-color-text);
+  }
+
+  .kv-table-sort-button:is(:hover, :active),
+  .kv-table-expand-button:is(:hover, :active) {
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  /* A 2px ring inside the edge: the control fills its cell, so an outer ring would be clipped by
+   * the region and covered by the next cell of a sticky head (2.4.7, 2.4.11, 2.4.13). */
+  .kv-table-sort-button:is(:focus-visible, [data-focus-visible]),
+  .kv-table-expand-button:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: calc(-1 * var(--kv-focus-ring-width));
+  }
+
+  /* Selection. The checkbox is a Checkbox (kv-checkbox), with the table's own margin: the box is
+   * 24px, which meets 2.5.8. A pseudo-element can't grow its target: the browser clips what an
+   * input draws outside its box. */
+  .kv-table-select-checkbox {
+    margin: 0;
+  }
+
+  .kv-table-column-header:has(> .kv-table-select-checkbox),
+  .kv-table-cell:has(> .kv-table-select-checkbox) {
+    inline-size: calc(var(--kv-choice-size) + 2 * var(--kv-table-cell-padding-inline));
+  }
+
+  /* A selected row: primary-subtle behind its checked box. The tick carries the state, and the
+   * fill helps. No weight change, no bar: each would shift the columns. */
+  .kv-table-row[data-selected] > :is(.kv-table-row-header, .kv-table-cell) {
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  /* The row and its details read as one unit: the divider is under the details. */
+  .kv-table-row[data-expanded] > :is(.kv-table-row-header, .kv-table-cell) {
+    border-block-end-color: transparent;
+  }
+
+  /* Flat, like the sort button: the visible text and a chevron name it. Negative block margins
+   * seat a 44px (32px) button in a 48px (32px) row without growing it, and the inline margin
+   * lines its text up with the cell's text. */
+  .kv-table-expand-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--kv-space-2);
+    box-sizing: border-box;
+    min-block-size: var(--kv-control-min-block-size);
+    min-inline-size: var(--kv-control-min-block-size);
+    margin-block: calc((1lh - var(--kv-control-min-block-size)) / 2);
+    margin-inline: calc(-1 * var(--kv-space-2)) 0;
+    padding-block: 0;
+    padding-inline: var(--kv-space-2);
+    border: 0;
+    border-radius: var(--kv-radius-md);
+    background-color: transparent;
+    color: var(--kv-color-text);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 500;
+    text-align: start;
+  }
+
+  .kv-table-expand-icon {
+    flex: none;
+  }
+
+  .kv-table-detail-row > td {
+    padding-block: 0 calc(2 * var(--kv-table-cell-padding-block));
+    padding-inline: var(--kv-table-cell-padding-inline);
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    color: var(--kv-color-text);
+    font-weight: 400;
+    overflow-wrap: break-word;
+    text-align: start;
+    vertical-align: top;
+  }
+
+  /* What it says is essential, so text and not text-muted, at the start: a centred message of a
+   * wide table can sit out of view. */
+  .kv-table-empty > tr > td {
+    padding-block: var(--kv-table-empty-padding-block);
+    padding-inline: var(--kv-table-cell-padding-inline);
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    color: var(--kv-color-text);
+    text-align: start;
+  }
+
+  /* Busy: rows stay at full contrast. A static hatched bar runs along the lower edge of the
+   * head, the same as an indeterminate file upload. It never moves (2.2.2). Words carry the
+   * state: the announcement, and the empty row while there are no rows yet. */
+  .kv-table[data-busy] .kv-table-column-header {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      var(--kv-color-primary) 0 4px,
+      transparent 4px 8px
+    );
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    background-size: 100% var(--kv-indicator-width);
+  }
+
+  .kv-table[data-busy] .kv-table-body {
+    cursor: progress;
+  }
+
+  /* The region comes from kv-scroll-region: the sideways scroll and the focus ring. A limited
+   * height makes the head stick. Scroll padding is the head's height, so a focused control is
+   * never left under it (2.4.11). A virtualized table needs a limit; vh first, for browsers
+   * without svh, which doesn't change when a phone's address bar moves. */
+  .kv-table-scroll-region {
+    max-block-size: var(--kv-table-scroll-region-max-block-size, none);
+    border: var(--kv-border-width) solid transparent;
+    overflow-y: auto;
+    scroll-padding-block-start: var(--kv-table-head-block-size, 0px);
+  }
+
+  .kv-table-scroll-region:has(> .kv-table[data-virtualized]) {
+    max-block-size: var(--kv-table-scroll-region-max-block-size, 80vh);
+    max-block-size: var(--kv-table-scroll-region-max-block-size, 80svh);
+  }
+
+  /* While the table overflows, the region has an edge: the cut-off column is the only cue on
+   * systems with overlay scrollbars. */
+  .kv-table-scroll-region[data-overflowing] {
+    border-color: var(--kv-color-border-subtle);
+  }
+
+  .kv-table-scroll-region .kv-table-head {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+  }
+
+  /* The room of rows that aren't rendered. Nothing to see, in any theme. */
+  .kv-table-spacer,
+  .kv-table-spacer > td {
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    font-size: 0;
+    line-height: 0;
+  }
+
+  /* Touch on a large screen: compact controls are 44px again. */
+  @media (pointer: coarse) {
+    .kv-table-sort-button {
+      min-block-size: 2.75rem;
+    }
+
+    .kv-table-expand-button {
+      min-block-size: 2.75rem;
+      min-inline-size: 2.75rem;
+      margin-block: calc((1lh - 2.75rem) / 2);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .kv-table-sort-button,
+    .kv-table-expand-button {
+      transition-property: background-color;
+      transition-duration: var(--kv-duration-fast);
+      transition-timing-function: var(--kv-easing-standard);
+    }
+  }
+
+  /* System colours, set explicitly so nothing depends on a background the browser drops. The head
+   * is opaque, so rows still disappear under it, and its line is the visible border. A selected
+   * row loses its fill: the checked box is a Highlight fill with a tick. The busy bar becomes a
+   * dashed Highlight line of the same width. */
+  @media (forced-colors: active) {
+    .kv-table-head,
+    .kv-table-column-header {
+      background-color: Canvas;
+      color: CanvasText;
+    }
+
+    .kv-table-column-header {
+      border-block-end-color: CanvasText;
+    }
+
+    .kv-table-sort-button,
+    .kv-table-expand-button {
+      background-color: ButtonFace;
+      color: ButtonText;
+    }
+
+    .kv-table-sort-icon {
+      color: ButtonText;
+    }
+
+    .kv-table-sort-button:is(:focus-visible, [data-focus-visible]),
+    .kv-table-expand-button:is(:focus-visible, [data-focus-visible]) {
+      outline-color: Highlight;
+    }
+
+    .kv-table-row[data-selected] > :is(.kv-table-row-header, .kv-table-cell) {
+      background-color: Canvas;
+    }
+
+    .kv-table-row[data-expanded] > :is(.kv-table-row-header, .kv-table-cell) {
+      border-block-end-color: Canvas;
+    }
+
+    .kv-table[data-busy] .kv-table-column-header {
+      border-block-end-color: Highlight;
+      border-block-end-style: dashed;
+      background-image: none;
+    }
+
+    .kv-table-scroll-region {
+      border-color: Canvas;
+    }
+
+    .kv-table-scroll-region[data-overflowing] {
+      border-color: CanvasText;
     }
   }
 }

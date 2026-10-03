@@ -1,6 +1,6 @@
 'use client'
 import type { ListboxEntry, ListboxSection } from '@kvirn-ui/core'
-import { Fragment, useContext, useEffect, useLayoutEffect, useRef } from 'react'
+import { Fragment, useCallback, useContext, useEffect, useLayoutEffect, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldContext } from '../field/field-context.ts'
@@ -13,8 +13,10 @@ import {
   ListboxGroupContext,
   ListboxListContext,
   ListboxTriggerContext,
+  ListboxVirtualContext,
 } from './listbox-context.ts'
 import { useListbox } from './use-listbox.ts'
+import type { ListboxVirtualOptionPartProps } from './use-list-virtualization.ts'
 import type { UseListboxOptions, UseListboxResult } from './use-listbox.ts'
 import { ListboxNative } from './listbox-native.tsx'
 
@@ -38,6 +40,9 @@ function ownNameProps(own: AriaNameProps): AriaNameProps {
     ? { 'aria-labelledby': own['aria-labelledby'] }
     : {}
 }
+
+/** What an option gets from a virtualized list: nothing, when its list isn't virtualized. */
+const noVirtualProps: Partial<ListboxVirtualOptionPartProps> = {}
 
 function warnOutsideRoot(part: string): void {
   warnOnce(
@@ -142,6 +147,7 @@ export function ListboxRoot<TItem>(props: ListboxRootProps<TItem>): ReactElement
           getGroupLabelProps: listbox.getGroupLabelProps,
           getEntry: listbox.getEntry,
           shouldScrollToActive: listbox.shouldScrollToActive,
+          virtualization: listbox.virtualization,
         }}
       >
         {props.children}
@@ -344,17 +350,44 @@ export function ListboxList<TItem = unknown>({
   ...otherProps
 }: ListboxListProps<TItem>): ReactElement {
   const list = useContext(ListboxListContext)
-  const mergedRef = useMergedRef(ref, null)
+  const mergedRef = useMergedRef(ref, list?.listProps.ref ?? null)
   useEffect(() => {
     if (list === null) {
       warnOutsideRoot('List')
     }
   }, [list])
+  const isVirtualizedWithoutFunction =
+    list?.virtualization !== undefined && typeof children !== 'function'
+  useEffect(() => {
+    if (isVirtualizedWithoutFunction) {
+      warnOnce(
+        'listbox-virtualize-needs-function-children',
+        'A virtualized Listbox.List needs a function as its children, (item) => <Listbox.Option item={item} />, so it can render only the options that are in view. The children you gave are rendered as they are, and the list is not virtualized.',
+      )
+    }
+  }, [isVirtualizedWithoutFunction])
 
   let content: ReactNode = null
   if (list !== null && list.isOpen) {
     if (typeof children !== 'function') {
       content = children
+    } else if (list.virtualization !== undefined && list.sections === undefined) {
+      // Only the options in view and the ones the user is on, in a sizer as tall as the whole list.
+      const { sizerProps, items } = list.virtualization
+      content = (
+        <div {...sizerProps}>
+          <ListboxVirtualContext.Provider value>
+            {items.map((item) => {
+              const entry = list.entries[item.index]
+              return entry === undefined ? null : (
+                <Fragment key={entry.key}>
+                  {children(entry.item as TItem, entry as ListboxEntry<TItem>)}
+                </Fragment>
+              )
+            })}
+          </ListboxVirtualContext.Provider>
+        </div>
+      )
     } else if (list.sections === undefined) {
       // The context can't carry the item type, so the caller's `TItem` is taken on trust.
       content = list.entries.map((entry) => (
@@ -422,21 +455,34 @@ export function ListboxOption<TItem = unknown>({
   ...otherProps
 }: ListboxOptionProps<TItem>): ReactElement | null {
   const list = useContext(ListboxListContext)
+  const isInVirtualList = useContext(ListboxVirtualContext)
   const entry = list?.getEntry(item)
   const elementRef = useRef<HTMLDivElement | null>(null)
-  const mergedRef = useMergedRef(ref, elementRef)
+  // A virtualized list measures each option it renders, so an option that wraps gets its height.
+  const virtualization = isInVirtualList ? list?.virtualization : undefined
+  const measureElement = virtualization?.measureElement
+  const measuredRef = useCallback(
+    (element: HTMLDivElement | null) => {
+      elementRef.current = element
+      measureElement?.(element)
+    },
+    [measureElement],
+  )
+  const mergedRef = useMergedRef(ref, measuredRef)
   const optionProps = entry === undefined ? undefined : list?.getOptionProps(entry)
+  const virtualProps = entry === undefined ? undefined : virtualization?.getOptionProps(entry)
   const isActive = optionProps !== undefined && 'data-active' in optionProps
   const isSelected = optionProps?.['aria-selected'] === true
 
-  const scrollState = useRef({ list, isSelected })
+  const scrollState = useRef({ list, isSelected, isVirtual: virtualProps !== undefined })
   useLayoutEffect(() => {
-    scrollState.current = { list, isSelected }
+    scrollState.current = { list, isSelected, isVirtual: virtualProps !== undefined }
   })
   useEffect(() => {
     const element = elementRef.current
-    const { list: currentList, isSelected: isCurrentlySelected } = scrollState.current
-    if (element === null || currentList === null) {
+    const { list: currentList, isSelected: isCurrentlySelected, isVirtual } = scrollState.current
+    // A virtualized list scrolls by index (scrollToIndex), because the element may not exist yet.
+    if (element === null || currentList === null || isVirtual) {
       return
     }
     const shouldScroll = isActive
@@ -465,7 +511,7 @@ export function ListboxOption<TItem = unknown>({
     render,
     defaultElement: 'div',
     partProps: {
-      ...mergeProps(otherProps, optionProps),
+      ...mergeProps(otherProps, optionProps, virtualProps ?? noVirtualProps),
       ref: mergedRef,
       children: children ?? entry.label,
     },

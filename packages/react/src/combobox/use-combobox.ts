@@ -37,6 +37,15 @@ import type {
   ListboxOptionPartProps,
   ListboxPopupPartProps,
 } from '../listbox/use-listbox.ts'
+import {
+  getFirstSelectedIndex,
+  getRequiredIndexes,
+  useListVirtualization,
+} from '../listbox/use-list-virtualization.ts'
+import type {
+  ListboxVirtualization,
+  ListboxVirtualizeOption,
+} from '../listbox/use-list-virtualization.ts'
 import { isInsideElement, useDismissableLayer } from '../popup/use-dismissable-layer.ts'
 import { usePopup } from '../popup/use-popup.ts'
 import type { Placement } from '../popup/use-popup.ts'
@@ -123,6 +132,14 @@ export interface UseComboboxCommonOptions<TItem> {
   announcementDebounceMilliseconds?: number | undefined
   /** Per-instance message overrides (ADR-0007): the result count, "no results", "loading", and the names of the buttons. */
   messages?: Partial<KvirnMessages['combobox']> | undefined
+  /**
+   * Renders only the options that are scrolled into view, plus the active and the chosen one, for
+   * a flat list of thousands (ADR-0059). `true` uses the defaults. The `Combobox.List` must be a
+   * scroll container with a height limit (the default theme makes it one). Not with `groups`
+   * (they render in full, with a development warning). Let the user filter first: unrendered
+   * options can't be found with find in page or printed.
+   */
+  virtualize?: ListboxVirtualizeOption | undefined
 }
 
 interface UseComboboxBaseOptions<TItem> extends UseComboboxCommonOptions<TItem> {
@@ -314,6 +331,8 @@ export interface UseComboboxResult<TItem> {
   getEntry: (item: unknown) => ListboxEntry<unknown> | undefined
   /** `false` while the pointer moved the active option: it is already under the pointer. */
   shouldScrollToActive: () => boolean
+  /** Set while `virtualize` is on, the popup is open and the list is flat. `Combobox.List` renders it. */
+  virtualization: ListboxVirtualization | undefined
   /** For `Combobox.Root`: the hidden inputs of a plain form (Combobox only). */
   hiddenInputs: readonly ListboxHiddenInput[]
 }
@@ -580,6 +599,7 @@ export function useComboboxMachine<TItem>(
     messages,
     isLoading = false,
     announcementDebounceMilliseconds: debounceOption,
+    virtualize,
   } = options
   const field = useContext(FieldContext)
   const env = useEnv()
@@ -596,6 +616,7 @@ export function useComboboxMachine<TItem>(
   const clearRef = useRef<HTMLButtonElement | null>(null)
   const anchorRef = useRef<Element | null>(null)
   const popupRef = useRef<HTMLDivElement | null>(null)
+  const listRef = useRef<HTMLDivElement | null>(null)
   const activationRef = useRef<'keyboard' | 'pointer'>('keyboard')
   const removeButtons = useRef(new Map<string, HTMLButtonElement>())
   const pendingFocus = useRef<{ removedKey: string; target: ComboboxFocusTarget } | undefined>(
@@ -830,6 +851,18 @@ export function useComboboxMachine<TItem>(
   const isExpanded = isOpen && (state.size > 0 || state.isLoading)
   const activeEntry =
     isOpen && state.activeKey !== undefined ? machine.getEntry(state.activeKey) : undefined
+  // After `usePopup`, so the popup is shown and placed when the scroll element is measured.
+  const virtualization = useListVirtualization({
+    virtualize,
+    hasGroups: groups !== undefined,
+    isOpen,
+    entries: state.entries,
+    getRequiredIndexes: () => getRequiredIndexes(machine),
+    activeIndex: activeEntry?.index,
+    initialScrollIndex: getFirstSelectedIndex(machine, selectedKeys),
+    shouldScrollToActive: () => activationRef.current !== 'pointer',
+    listRef,
+  })
   const classPrefix = variant === 'autocomplete' ? 'kv-autocomplete' : 'kv-combobox'
   // With several choices the Clear button empties the text only: each chosen value has its own
   // remove button, so one press never throws away a whole selection.
@@ -1061,6 +1094,8 @@ export function useComboboxMachine<TItem>(
       className: 'kv-listbox-list',
       id: listId,
       role: 'listbox',
+      ref: listRef,
+      ...(virtualization === undefined ? {} : { 'data-virtualized': '' as const }),
       ...(isMultiple ? { 'aria-multiselectable': true as const } : {}),
       'aria-labelledby': field?.labelId,
       ...(isOpen && state.size === 0 ? { hidden: true as const, 'data-empty': '' as const } : {}),
@@ -1078,6 +1113,7 @@ export function useComboboxMachine<TItem>(
     }),
     getEntry: (item) => entryByItem.get(item),
     shouldScrollToActive: () => activationRef.current !== 'pointer',
+    virtualization,
     hiddenInputs,
   }
 }

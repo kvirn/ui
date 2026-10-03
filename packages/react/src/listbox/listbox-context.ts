@@ -11,6 +11,7 @@ import type {
   ListboxTriggerPartProps,
   ListboxValuePartProps,
 } from './use-listbox.ts'
+import type { ListboxVirtualization } from './use-list-virtualization.ts'
 
 // Internal. How the parts of a Listbox find each other, without DOM queries (ADR-0037, item 7).
 //
@@ -43,9 +44,17 @@ export interface ListboxListContextValue {
   getEntry(item: unknown): ListboxEntry<unknown> | undefined
   /** `false` while the pointer moved the active option: it is already under the pointer. */
   shouldScrollToActive(): boolean
+  /** Set while the list is virtualized: the options to render, the sizer and each option's place. */
+  virtualization: ListboxVirtualization | undefined
 }
 
 export const ListboxListContext = createContext<ListboxListContextValue | null>(null)
+
+/**
+ * `true` inside the virtualized list's sizer: the options `Listbox.List` renders there get their
+ * place and `aria-setsize`. An option you render yourself, outside it, gets neither.
+ */
+export const ListboxVirtualContext = createContext(false)
 
 export interface ListboxTriggerContextValue {
   isOpen: boolean

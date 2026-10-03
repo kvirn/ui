@@ -7,6 +7,8 @@ import { choiceTextsFor, logChange } from '../form/choice.fixture.tsx'
 import type { ChoiceTexts } from '../form/choice.fixture.tsx'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
+import { virtualizedCount, virtualizedPlaces } from '../form/virtualized.fixture.ts'
+import type { VirtualizedPlace } from '../form/virtualized.fixture.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/Listbox: the stylable popup (Listbox.Root, Trigger, Value, Popup, List, Option,
@@ -45,6 +47,7 @@ interface ListboxStoryArgs {
   defaultOpen?: boolean
   onOpenChange?: (open: boolean, details?: { reason?: string }) => void
   messages?: Record<string, unknown>
+  virtualize?: boolean | { estimateSize?: number; overscan?: number }
 }
 
 const meta = {
@@ -71,6 +74,11 @@ const meta = {
     defaultOpen: { control: false },
     onOpenChange: { control: false },
     messages: { control: false },
+    virtualize: {
+      control: false,
+      description:
+        'Renders only the options in view, for a flat list of thousands. `true`, or `{ estimateSize, overscan }`. Not with `groups`.',
+    },
   },
   args: { onValueChange: logChange('onValueChange') },
   globals: { locale: 'sv' },
@@ -561,6 +569,51 @@ export const LongList: Story = {
   play: async ({ canvas }) => {
     await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
     await expect(canvas.getAllByRole('option')).toHaveLength(300)
+  },
+}
+
+/**
+ * 10 000 options with `virtualize`: only the ones in view (and the active and chosen option) are in
+ * the page, and every one says how big the list is and where it is in it (`aria-setsize`,
+ * `aria-posinset`). Try End, Page Down, and typing å, ä, ö or o: the keys reach options that were
+ * never rendered, and `aria-activedescendant` always points at one that is.
+ */
+export const Virtualized: Story = {
+  render: (_args, { globals }) => {
+    const { text, lang } = choiceTextsFor(localeOf(globals))
+    return (
+      <Field required lang={lang} controlId="municipality">
+        <Label>{text.municipality}</Label>
+        <Listbox.Root
+          native="never"
+          virtualize
+          items={virtualizedPlaces}
+          itemToString={(place) => place.name}
+          itemToKey={(place) => place.code}
+          defaultOpen
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(place: VirtualizedPlace) => <Listbox.Option item={place} />}
+            </Listbox.List>
+            <Listbox.Empty />
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field>
+    )
+  },
+  play: async ({ canvas }) => {
+    await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
+    await waitFor(() => expect(canvas.getAllByRole('option').length).toBeGreaterThan(5))
+    // Only a window is in the page, and the first option knows where it is in the whole list.
+    await expect(canvas.getAllByRole('option').length).toBeLessThan(80)
+    const [first] = canvas.getAllByRole('option')
+    await expect(first).toHaveAttribute('aria-setsize', String(virtualizedCount))
+    await expect(first).toHaveAttribute('aria-posinset', '1')
+    await expect(canvas.queryByRole('option', { name: 'Österbo 250' })).toBeNull()
   },
 }
 

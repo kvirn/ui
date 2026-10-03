@@ -11,6 +11,17 @@ const tanstackStoreRestriction = {
   name: '@tanstack/store',
   message: 'Import createComponentStore from core/src/store/ instead (ADR-0003).',
 }
+// Only core/src/virtual/ may import @tanstack/virtual-core, and only core/src/table/ may import
+// @tanstack/table-core, subpaths included. Everything else uses core's wrappers (ADR-0059).
+const tanstackVirtualRestriction = {
+  group: ['@tanstack/virtual-core', '@tanstack/virtual-core/*'],
+  message: 'Import createListVirtualizer from @kvirn-ui/core instead (ADR-0059).',
+}
+const tanstackTableRestriction = {
+  group: ['@tanstack/table-core', '@tanstack/table-core/*'],
+  message: 'Import useTable and the table re-exports from @kvirn-ui/core or @kvirn-ui/react (ADR-0059).',
+}
+const tanstackPatterns = [tanstackVirtualRestriction, tanstackTableRestriction]
 // core reaches the page only through the injected Env (ADR-0003).
 const coreRestrictedGlobals = [
   'window',
@@ -106,7 +117,10 @@ export default defineConfig({
       ...jsxA11yRules,
       'vite-plus/prefer-vite-plus-imports': 'error',
       'react/iframe-missing-sandbox': 'error',
-      'no-restricted-imports': ['error', { paths: [tanstackStoreRestriction] }],
+      'no-restricted-imports': [
+        'error',
+        { paths: [tanstackStoreRestriction], patterns: tanstackPatterns },
+      ],
       'vitest/no-focused-tests': 'error',
       'vitest/no-disabled-tests': 'error',
       'typescript/no-explicit-any': 'error',
@@ -118,14 +132,46 @@ export default defineConfig({
         rules: {
           'no-restricted-imports': [
             'error',
-            { paths: [...coreRestrictedImports, tanstackStoreRestriction] },
+            {
+              paths: [...coreRestrictedImports, tanstackStoreRestriction],
+              patterns: tanstackPatterns,
+            },
           ],
           'no-restricted-globals': ['error', ...coreRestrictedGlobals],
         },
       },
       {
         files: ['packages/core/src/store/**'],
-        rules: { 'no-restricted-imports': ['error', { paths: coreRestrictedImports }] },
+        rules: {
+          'no-restricted-imports': [
+            'error',
+            { paths: coreRestrictedImports, patterns: tanstackPatterns },
+          ],
+        },
+      },
+      {
+        files: ['packages/core/src/virtual/**'],
+        rules: {
+          'no-restricted-imports': [
+            'error',
+            {
+              paths: [...coreRestrictedImports, tanstackStoreRestriction],
+              patterns: [tanstackTableRestriction],
+            },
+          ],
+        },
+      },
+      {
+        files: ['packages/core/src/table/**'],
+        rules: {
+          'no-restricted-imports': [
+            'error',
+            {
+              paths: [...coreRestrictedImports, tanstackStoreRestriction],
+              patterns: [tanstackVirtualRestriction],
+            },
+          ],
+        },
       },
       {
         files: ['packages/core/src/env/**'],

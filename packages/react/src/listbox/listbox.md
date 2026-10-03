@@ -62,6 +62,7 @@ interface Municipality {
 | `open`, `defaultOpen`, `onOpenChange`    | The popup's state. `onOpenChange(open, { reason })`: `'trigger-press'`, `'option-press'`, `'key'`, `'escape'`, `'outside-press'`, `'blur'` or `'light-dismiss'`.                                                                                  |
 | `placement`, `offset`, `padding`         | Where the popup goes (default `'bottom-start'`, 4px gap, 8px from the viewport's edge). It is as wide as the trigger, flips when there is no room and scrolls inside.                                                                             |
 | `messages`                               | Per-instance overrides of the `combobox` strings (ADR-0007). `noResults` is the default text of `Listbox.Empty`.                                                                                                                                  |
+| `virtualize`                             | `true`, or `{ estimateSize, overscan }`: renders only the options in view, for a flat list of thousands. Off by default. See Long lists. The native select ignores it.                                                                            |
 
 `invalid`, `required` and the description (a `Prose` in the Field) come from the Field, as for every control. The value is never copied into KvirnUI state: `value` and `onValueChange` are yours, or `defaultValue` and `name` for a plain form (ADR-0029).
 
@@ -85,6 +86,32 @@ Arrows move the highlight and don't wrap, Home and End go to the first and last 
 ### Native on touch devices
 
 With `native="auto"`, the server and the first client render are the popup, and a device whose primary pointer is coarse switches to the native select right after mount. Only a **single choice** switches, and the native `<select>` shows **plain text**: `Listbox.Empty`, rich option content and the popup's look don't apply there. The value, `name` and Field wiring are the same, a choice survives the switch, and the popup is closed when it happens. The pointer is read once, right after mount: the rendering never changes while the user is on the page, because a swap would drop their focus. A touch device sees one frame of the custom trigger first: use `native="always"` when that matters, or `native="never"` to keep the popup everywhere. The native select gets an empty option for "nothing chosen" (carrying `placeholder`), which reports `null` when chosen.
+
+## Long lists
+
+Filter first. A list that a user would search belongs in a Combobox, and a list that can be split (a county, then a municipality) is two shorter lists. `virtualize` is for a list that stays long after that: a register of thousands of entries, where the user knows the first letters and finds the rest with the keys.
+
+```tsx
+<Listbox.Root items={municipalities} virtualize>
+  …
+</Listbox.Root>
+
+<Listbox.Root items={streets} virtualize={{ estimateSize: 56, overscan: 8 }}>
+  …
+</Listbox.Root>
+```
+
+With `virtualize`, the popup renders only the options that are scrolled into view, plus the active and the chosen option, so a list of 10 000 opens at once. It is off by default. `true` uses the defaults; `{ estimateSize, overscan }` sets the height in pixels of an option that hasn't been measured (default 44, the default theme's option) and how many options to render beyond the visible ones (default 5). Every option is measured when it renders, so an option that wraps gets its real height.
+
+What stays the same for the user:
+
+- Every rendered option says how many options there are and where it is (`aria-setsize` and `aria-posinset`), so a screen reader reads "3 of 10 000".
+- Home, End, Page Up, Page Down, the arrows and typeahead work on the whole list, not on the options that happen to be rendered. The list scrolls to the active option.
+- The active option and the chosen option are always in the page, so `aria-activedescendant` never points at nothing. Opening the popup scrolls to the chosen option.
+
+What changes, and the caveat: options that aren't rendered can't be found with the browser's find in page, aren't printed, and are out of reach of a screen reader's browse mode, where the user moves through them with the keys. Don't virtualize a list that people need to print or search with the browser. It needs a flat list: with `groups` the list renders in full and a warning is logged in development. The native `<select>` ignores `virtualize` and shows every option, as the browser draws it. Screen-reader support for `aria-setsize` and `aria-activedescendant` in a long list varies, and the manual run on NVDA, JAWS, VoiceOver and TalkBack is still to do.
+
+The list is the scroll element, so give `Listbox.List` a height limit and `overflow-y: auto` (the default theme does, through the popup's room). It carries `data-virtualized`, and inside it one element (`kv-listbox-virtual-sizer`) has the height of the whole list, with each option absolutely positioned in it. That geometry is inline and nothing else is, so a virtualized list lays out without a theme. Write the function child of `Listbox.List`, as always: it is what lets the list render only some of the options.
 
 ## The native select
 

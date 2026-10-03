@@ -2,6 +2,7 @@ import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 import type { Locator, Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
+import { firstIndexOf, virtualizedCount } from '../form/virtualized.fixture.ts'
 
 // Contract: packages/react/src/listbox/listbox.a11y.md › Keyboard, Focus management
 // and Visual / modes. One test per row, named after it. The first half is the native rendering
@@ -944,6 +945,167 @@ test.describe('Listbox popup right to left', () => {
   })
 })
 
+/**
+ * The Virtualized story: 10 000 options (`virtualize`), open from the start, "Alvik 1" to
+ * "Österbo 250". The popup is the stylable rendering, so these tests are titled "popup: virtualized: …".
+ * Only the options in view, the active and the chosen one are in the page.
+ */
+const virtualizedTrigger = (page: Page) => page.locator('#municipality')
+
+/** `aria-activedescendant` points at an element that is in the page, right now (not after a retry). */
+const activeDescendantResolves = (page: Page) =>
+  page.evaluate(() => {
+    const id = document.querySelector('#municipality')?.getAttribute('aria-activedescendant')
+    const element = id === null || id === undefined ? null : document.getElementById(id)
+    return element !== null && element.getAttribute('role') === 'option'
+  })
+
+/** The active option is inside the list's box: it was scrolled into view, not just rendered. */
+async function expectActiveInView(page: Page) {
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const active = document.querySelector('[role="option"][data-active]')
+        const list = active?.closest('[role="listbox"]')
+        if (!active || !list) return false
+        const a = active.getBoundingClientRect()
+        const p = list.getBoundingClientRect()
+        return a.top >= p.top - 1 && a.bottom <= p.bottom + 1
+      }),
+    )
+    .toBe(true)
+}
+
+test.describe('Listbox popup virtualization keyboard contract', () => {
+  test('popup: virtualized: only a window of the options is in the page, each with its place in the list', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 640, height: 480 })
+    await openPopupStory(page, 'virtualized')
+    await expect(listOf(page)).toHaveAttribute('data-virtualized', '')
+    const options = page.getByRole('option')
+    await expect.poll(() => options.count()).toBeGreaterThan(5)
+    expect(await options.count()).toBeLessThan(80)
+    await expect(options.first()).toHaveAttribute('aria-setsize', String(virtualizedCount))
+    await expect(options.first()).toHaveAttribute('aria-posinset', '1')
+    await expect(options.last()).toHaveAttribute('aria-setsize', String(virtualizedCount))
+    const sizes = await listOf(page).evaluate((element) => ({
+      scrolls: element.scrollHeight > element.clientHeight * 100,
+      fits: element.getBoundingClientRect().bottom <= window.innerHeight + 1,
+    }))
+    expect(sizes).toEqual({ scrolls: true, fits: true })
+  })
+
+  test('popup: virtualized: Home and End reach the first and the last option, rendered and in view', async ({
+    page,
+  }) => {
+    await openPopupStory(page, 'virtualized')
+    await virtualizedTrigger(page).focus()
+    await page.keyboard.press('End')
+    await expectActive(page, 'Österbo 250', virtualizedTrigger(page))
+    await expect(activeOption(page)).toHaveAttribute('aria-posinset', String(virtualizedCount))
+    await expect(activeOption(page)).toHaveAttribute('aria-setsize', String(virtualizedCount))
+    await expectActiveInView(page)
+    await expect(option(page, 'Alvik 1')).toHaveCount(0)
+    expect(await page.getByRole('option').count()).toBeLessThan(80)
+    await page.keyboard.press('Home')
+    await expectActive(page, 'Alvik 1', virtualizedTrigger(page))
+    await expect(activeOption(page)).toHaveAttribute('aria-posinset', '1')
+    await expectActiveInView(page)
+    await expect(option(page, 'Österbo 250')).toHaveCount(0)
+  })
+
+  test('popup: virtualized: ArrowDown and ArrowUp always leave aria-activedescendant on an option in the page', async ({
+    page,
+  }) => {
+    await openPopupStory(page, 'virtualized')
+    await virtualizedTrigger(page).focus()
+    await page.keyboard.press('ArrowDown')
+    await expectActive(page, 'Alvik 1', virtualizedTrigger(page))
+    // Far past the first window: each key renders the next option before the trigger points at it.
+    for (let step = 0; step < 40; step += 1) {
+      await page.keyboard.press('ArrowDown')
+      expect(await activeDescendantResolves(page)).toBe(true)
+    }
+    await expectActive(page, 'Alvik 41', virtualizedTrigger(page))
+    await expectActiveInView(page)
+    for (let step = 0; step < 40; step += 1) {
+      await page.keyboard.press('ArrowUp')
+      expect(await activeDescendantResolves(page)).toBe(true)
+    }
+    await expectActive(page, 'Alvik 1', virtualizedTrigger(page))
+    await expectActiveInView(page)
+  })
+
+  test('popup: virtualized: PageDown and PageUp move ten options that may not be rendered', async ({
+    page,
+  }) => {
+    await openPopupStory(page, 'virtualized')
+    await virtualizedTrigger(page).focus()
+    await page.keyboard.press('ArrowDown')
+    for (let step = 0; step < 25; step += 1) {
+      await page.keyboard.press('PageDown')
+      expect(await activeDescendantResolves(page)).toBe(true)
+    }
+    // 1 + 25 × 10 = 251: the first option of the second place.
+    await expectActive(page, 'Backa 1', virtualizedTrigger(page))
+    await expect(activeOption(page)).toHaveAttribute('aria-posinset', '251')
+    await expectActiveInView(page)
+    await page.keyboard.press('PageUp')
+    await expectActive(page, 'Alvik 241', virtualizedTrigger(page))
+    await expect(activeOption(page)).toHaveAttribute('aria-posinset', '241')
+    await expectActiveInView(page)
+  })
+
+  test('popup: virtualized: typing a letter reaches an option that was not rendered', async ({
+    page,
+  }) => {
+    await openPopupStory(page, 'virtualized')
+    await virtualizedTrigger(page).focus()
+    // Å, ä and ö aren't on the US layout of the keyboard helper, so they are sent as a real keydown.
+    const pressLetter = (key: string) =>
+      page.evaluate((letter) => {
+        document.activeElement?.dispatchEvent(
+          new KeyboardEvent('keydown', { key: letter, bubbles: true, cancelable: true }),
+        )
+      }, key)
+    await expect(option(page, 'Orsa 1')).toHaveCount(0)
+    await page.keyboard.press('o')
+    await expectActive(page, 'Orsa 1', virtualizedTrigger(page))
+    await expect(activeOption(page)).toHaveAttribute('aria-posinset', String(firstIndexOf.o + 1))
+    await expectActiveInView(page)
+    await page.waitForTimeout(800)
+    await pressLetter('ö')
+    await expectActive(page, 'Ödeby 1', virtualizedTrigger(page))
+    await expect(activeOption(page)).toHaveAttribute('aria-posinset', String(firstIndexOf.ö + 1))
+    await expectActiveInView(page)
+    await page.waitForTimeout(800)
+    await pressLetter('å')
+    await expectActive(page, 'Åkerby 1', virtualizedTrigger(page))
+    await expect(activeOption(page)).toHaveAttribute('aria-posinset', String(firstIndexOf.å + 1))
+    await expectActiveInView(page)
+  })
+
+  test('popup: virtualized: opening with ArrowDown activates the chosen option far down, rendered and in view', async ({
+    page,
+  }) => {
+    await openPopupStory(page, 'virtualized')
+    await virtualizedTrigger(page).focus()
+    await page.keyboard.press('End')
+    await expectActive(page, 'Österbo 250', virtualizedTrigger(page))
+    await page.keyboard.press('Enter')
+    await expect(virtualizedTrigger(page).locator('.kv-listbox-value')).toHaveText('Österbo 250')
+    await expectClosed(virtualizedTrigger(page))
+    await page.keyboard.press('ArrowDown')
+    await expectOpen(virtualizedTrigger(page))
+    await expectActive(page, 'Österbo 250', virtualizedTrigger(page))
+    await expect(activeOption(page)).toHaveAttribute('aria-selected', 'true')
+    await expectActiveInView(page)
+    // The first window isn't rendered, but the chosen option is, and stays so.
+    await expect(option(page, 'Alvik 1')).toHaveCount(0)
+  })
+})
+
 test.describe('Listbox popup accessibility', () => {
   const themes = [
     'mode:light;contrast:standard',
@@ -964,6 +1126,7 @@ test.describe('Listbox popup accessibility', () => {
     ['groups'],
     ['multiple'],
     ['long-list'],
+    ['virtualized'],
     ['rich-options'],
     ['empty'],
     ['on-surfaces'],

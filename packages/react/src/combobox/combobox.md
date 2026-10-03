@@ -66,6 +66,7 @@ interface Municipality {
 | `disabled`, `id`                                        | `disabled` (a disabled Field disables it too), and the input's id outside a Field.                                                                                                                                                                                                                                                                                        |
 | `open`, `defaultOpen`, `onOpenChange`                   | The popup's state. `onOpenChange(open, { reason })`: `'input'`, `'key'`, `'escape'`, `'toggle-press'`, `'option-press'`, `'outside-press'`, `'blur'`, `'light-dismiss'` or `'clear'`.                                                                                                                                                                                     |
 | `placement`, `offset`, `padding`                        | Where the popup goes (default `'bottom-start'`, 4px gap, 8px from the viewport's edge). It is as wide as the input (or its Control), flips when there is no room and scrolls inside.                                                                                                                                                                                      |
+| `virtualize`                                            | `true`, or `{ estimateSize, overscan }`: renders only the options in view, for a flat list of thousands. Off by default. See Long lists.                                                                                                                                                                                                                                  |
 | `announcementDebounceMilliseconds`, `messages`          | How long after typing stops the count is announced (default 500), and per-instance overrides of the `combobox` strings (ADR-0007).                                                                                                                                                                                                                                        |
 
 `invalid`, `required` and the description (a `Prose` in the Field) come from the Field, as for every control. The value is never copied into KvirnUI state: `value` and `onValueChange` are yours, or `defaultValue` and `name` for a plain form (ADR-0029).
@@ -85,6 +86,28 @@ Every part renders exactly one element, takes `render` and your own `className`,
 ## Keys
 
 Typing filters. ArrowDown and ArrowUp open the popup and move the highlight, and don't wrap. Page Up and Page Down move ten. Enter chooses the highlighted option (with none highlighted it is the browser's own). Escape closes and keeps the text and the value. Tab closes without choosing and moves on. Alt+ArrowDown opens without highlighting, and Alt+ArrowUp chooses and closes. Home, End, ArrowLeft, ArrowRight and Space are the text field's own: the caret moves, and the four caret keys leave no option highlighted. The full table is the Keyboard section of [combobox.a11y.md](combobox.a11y.md), shown on the Docs page.
+
+## Long lists
+
+Let the user filter first: that is what a Combobox is for, and a list that shrinks as they type is short enough to render in full. `virtualize` is for a list that stays long after filtering, such as the first letters of a register of thousands of entries.
+
+```tsx
+<Combobox.Root items={streets} virtualize>
+  …
+</Combobox.Root>
+
+<Combobox.Root items={streets} virtualize={{ estimateSize: 56, overscan: 8 }}>
+  …
+</Combobox.Root>
+```
+
+With `virtualize`, the popup renders only the options that are scrolled into view, plus the active and the chosen ones, so a list of 10 000 opens at once. It is off by default. `true` uses the defaults; `{ estimateSize, overscan }` sets the height in pixels of an option that hasn't been measured (default 44) and how many options to render beyond the visible ones (default 5). Options are measured when they render, so an option that wraps gets its real height.
+
+What stays the same for the user: every rendered option says how many options there are after filtering and where it is (`aria-setsize` and `aria-posinset`), the arrows and Page Up and Page Down work on the whole filtered list, and the active and chosen options are always in the page, so `aria-activedescendant` on the input never points at nothing. Typing filters the whole list, and the size follows. Home and End still move the caret in the text field.
+
+The caveat: options that aren't rendered can't be found with the browser's find in page, aren't printed, and are out of reach of a screen reader's browse mode. It needs a flat list: with `groups` the list renders in full and a warning is logged in development. Screen-reader support for `aria-setsize` and `aria-activedescendant` in a long list varies, and the manual run on NVDA, JAWS, VoiceOver and TalkBack is still to do.
+
+The list is the scroll element, so give `Combobox.List` a height limit and `overflow-y: auto` (the default theme does). It carries `data-virtualized`, and inside it one element (`kv-listbox-virtual-sizer`) has the height of the whole list, with each option absolutely positioned in it. That geometry is inline and nothing else is. Write the function child of `Combobox.List`, as always: it is what lets the list render only some of the options.
 
 ## Several choices
 

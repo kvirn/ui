@@ -1,0 +1,169 @@
+# Accessibility contract: Table (Root, ScrollRegion, Caption, Head, Body, Foot, Row, ColumnHeader, RowHeader, Cell, SortButton, SelectCheckbox, SelectAllCheckbox, ExpandButton, DetailRow, Empty)
+
+- **APG pattern:** [Table](https://www.w3.org/WAI/ARIA/apg/patterns/table/) and the [Sortable Table example](https://www.w3.org/WAI/ARIA/apg/patterns/table/examples/sortable-table/). Not the Grid pattern: a read-only data table keeps the screen reader's table navigation, and the keys are the ones a web page already has.
+- **Deviations:** none from APG. Decisions: ADR-0035 (a native `<table>`, no `role="grid"`), ADR-0059 (TanStack Table is bundled in `core`, `useTable` creates the instance, multi-sort is off, `Table.ScrollRegion`, virtualization with spacer rows), ADR-0040 (the Announcer), ADR-0039 (keys), design spec `docs/design/table.md`.
+- **Native elements used:** `<table>`, `<caption>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<th scope>`, `<td>`, `<button>` (sort and expand), `<input type="checkbox">` (selection), `<div role="region">` (scroll region).
+- **Status:** alpha candidate (Plan 0026). Gates pass once accessibility-reviewer returns APPROVE. Manual AT is `pending`.
+- **Tests:** `table.test.tsx` next to this file. `table.stories.tsx` and `table.e2e.ts` in `apps/storybook/src/components/table/`. The unit tests of the TanStack wrapper (`createTable`, `createLocaleSortFn`, `renderTemplate`) are in `packages/core/src/table/`.
+
+A Table shows data in rows and columns. It renders a native `<table>`, so a screen reader reads its headers, rows and columns and says where you are. With `useTable` it sorts one column at a time, selects rows, expands a row to show its details, filters and paginates through TanStack Table, and can render only the rows near the scroll position. Without `useTable` every part is the plain native element, so a small static table needs none of it.
+
+## Roles, states, properties
+
+| Part                    | Element / role                                                 | ARIA / state                                                                                                                                                                                                                                                                       | Notes                                                                                                                                                                                  |
+| ----------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Table.Root              | `<table>` (implicit role `table`)                              | `aria-busy="true"` while `isLoading`. Virtualized: `aria-rowcount` (header rows and every row of the data). `data-busy`, `data-virtualized`                                                                                                                                        | Class `kv-table`. Never `display` other than native, so no `role` is ever needed on a table element. Named by `Table.Caption` or `aria-labelledby`: without one, a development warning |
+| Table.ScrollRegion | `<div role="region">` | `aria-labelledby` the caption's id. `tabindex="0"` and `data-overflowing` only while the table overflows | Classes `kv-scroll-region kv-table-scroll-region`. The virtualizer's scroll element. Sets `--kv-table-head-block-size` (the head's measured height, for `scroll-padding-block-start`). Your own `aria-labelledby` or `aria-label` replaces the caption's |
+| Table.Caption           | `<caption>`                                                    | none                                                                                                                                                                                                                                                                               | Class `kv-table-caption`. The table's name, and the region's                                                                                                                           |
+| Table.Head, Body, Foot  | `<thead>`, `<tbody>`, `<tfoot>`                                | none                                                                                                                                                                                                                                                                               | Classes `kv-table-head`, `kv-table-body`, `kv-table-foot`. Virtualized: the head stays in the DOM and is measured, so the theme can make it sticky                                     |
+| Table.Row               | `<tr>`                                                         | virtualized: `aria-rowindex`. `data-selected`, `data-expanded`. Never `aria-selected` (not allowed on a row in a table)                                                                                                                                                            | Class `kv-table-row`. `data-index` when virtualized                                                                                                                                    |
+| Table.ColumnHeader | `<th scope="col">` | `aria-sort="ascending\|descending"` on the sorted column only, with `data-sort`. A `colSpan` above 1 is `scope="colgroup"` | Class `kv-table-column-header`. With `header` it renders the column's `header` template when it has no children. Virtualized: an inline `inline-size` from the column size, which a fixed layout reads from the head. A quantity column adds `kv-table-column-header--numeric` |
+| Table.RowHeader, Cell | `<th scope="row">`, `<td>` | none | Classes `kv-table-row-header`, `kv-table-cell`. With `cell`, the `rowHeader` column is a `<th scope="row">`, and the cell template is rendered when there are no children. A quantity adds `kv-table-cell--numeric` (or `kv-table-row-header--numeric`) |
+| Table.SortButton | `<button type="button">` in the header | `data-sort`. The state is `aria-sort` on the header, never the icon | Class `kv-table-sort-button`. Its name is the header text. The icon is an `svg` (`kv-table-sort-icon`, `aria-hidden`) drawn by the component: two chevrons while sortable, one up chevron ascending, one down chevron descending, so the states differ in shape |
+| Table.SelectCheckbox | `<input type="checkbox">` | named "Select" then the row header cell: `aria-labelledby` = its own id then the row header's id, with `aria-label` "Select". Without a `rowHeader`: `aria-label` "Select row 3" | Classes `kv-checkbox kv-table-select-checkbox` (a Checkbox: the box is 24 px). Native `checked`. Disabled when the row can't be selected |
+| Table.SelectAllCheckbox | `<input type="checkbox">` | `aria-label` "Select all rows". `indeterminate` (the DOM property, exposed as mixed) while some rows are selected | Classes `kv-checkbox kv-table-select-checkbox`. It selects every row of the table, not only the rows of one page |
+| Table.ExpandButton | `<button type="button">` | `aria-expanded`. `aria-controls` the detail row while it is shown. Named by its visible text and the row header: `aria-labelledby` = its own id then the row header's id ("Details Anna Svensson") | Class `kv-table-expand-button`. Visible text "Details" and a chevron (`svg.kv-table-expand-icon`, `aria-hidden`): down while hidden, up while shown, never rotated. The name is the same open and closed. The expand column's header holds the same text, visually hidden |
+| Table.DetailRow         | `<tr>` with one `<td>` that spans every column                 | `data-expanded`                                                                                                                                                                                                                                                                    | Class `kv-table-detail-row`. Rendered only while the row is expanded. No `aria-level`: it isn't allowed outside a tree grid                                                            |
+| Table.Empty | `<tbody>` with one `<tr>` and one `<td>` spanning every column | none | Class `kv-table-empty`. Shown only when the row model is empty. While the table loads and has no rows it says "Loading rows." instead of the empty text, so it never claims there is nothing |
+| Spacer rows             | `<tr aria-hidden="true">` with one `<td>`                      | `aria-hidden`                                                                                                                                                                                                                                                                      | Class `kv-table-spacer`. Virtualized only: one for each gap of unrendered rows. The block size is inline: the one thing virtualization can't work without                              |
+| `useTable`              | the same attributes, for your own elements                     | `tableProps`, `captionProps`, `scrollRegionProps`, `headProps`, `bodyProps`, `getColumnHeaderProps`, `getSortButtonProps`, `getRowProps`, `getCellProps`, `getSelectCheckboxProps`, `getSelectAllCheckboxProps`, `getExpandButtonProps`, `getDetailRowProps`, `emptyProps`, `rows` | Options: TanStack Table's, plus `rowHeader`, `virtualize`, `isLoading` and `messages`. Spread each on its element                                                                      |
+
+Rules, tested in `table.test.tsx`:
+
+- **Native semantics first.** A table is `<table>`, with `<caption>`, `<th scope>` and `<td>`. Nothing changes the `display` of a table element, because some browsers then drop the table semantics. There is no `role="table"`, `row` or `cell` anywhere.
+- **A name is required.** `Table.Caption`, or `aria-labelledby` on the Root pointing at a visible heading. A table with neither warns once in development. The scroll region is named by the caption through `aria-labelledby`, so the table and its region are one thing to a user.
+- **`aria-sort` is on the sorted column only.** Not on the other sortable columns (`none` is left out), as the APG example. With one column sorted at a time, there is never a question which one is primary.
+- **One column at a time.** `enableMultiSort` is always `false` (ADR-0059): multi-sort needs Shift+click, a key the Table pattern doesn't define. Passing it is a type error. A Shift+click is a plain click.
+- **Sorting is announced,** because `aria-sort` changes aren't reliably read: "Sorted by Name, ascending.", "Sorted by Name, descending." or "No longer sorted by Name." The column is the header text when it is a string, and the sort button's text otherwise. The cycle is TanStack's: the first direction for the column's data, the other, then none.
+- **The locale decides the order.** `createLocaleSortFn(locale)` sorts with `Intl.Collator`, so å, ä and ö come after z in Swedish, Finnish and Norwegian. The default TanStack sort functions compare code points and get it wrong.
+- **Row checkboxes are named by their row.** "Select Anna Svensson": the checkbox is named by its own `aria-label` ("Select") and the row header cell, through `aria-labelledby`. Every checkbox has a different name, so a screen reader user hears which row, and a voice user can say "click select Anna Svensson". Without a `rowHeader` the name is "Select row 3", from the row's place in the row model.
+- **Selected rows have `data-selected`, never `aria-selected`.** ARIA 1.2 allows `aria-selected` on a row only in a grid or a tree grid. The state a screen reader reads is the row's checkbox.
+- **Select-all is indeterminate while some rows are selected,** and toggling it announces the count: "12 rows selected."
+- **Expanding follows the disclosure pattern.** The button has `aria-expanded` and `aria-controls` (the detail row while it is shown). Its visible text "Details" and the row header name it ("Details Anna Svensson"), so every button in the table has its own name and the visible text comes first (2.5.3). The name doesn't change: only `aria-expanded` does. The detail is the next row, with one cell that spans every column. The expand column has a header too, with the same text visually hidden, so it isn't an empty header.
+- **States.** `isLoading` sets `aria-busy="true"` and `data-busy` and announces "Loading rows." An empty row model shows `Table.Empty` ("No rows to show."). While loading with no rows yet, that row says "Loading rows." instead, so it never says there is nothing while rows are on their way. A filter change announces the number of rows ("3 rows."), after 500 ms without a change.
+- **Spacer and detail rows span what is drawn,** which includes cells that aren't columns (a checkbox cell). The column count is read from the header row once it is in the DOM.
+- **Virtualization is opt-in and never changes keys.** With `virtualize`, the rows outside the window are replaced by `aria-hidden` spacer rows. The table has `aria-rowcount` (the header rows plus every row of the data) and each rendered row has `aria-rowindex`, so a screen reader knows how big the table is and where a row is. The row that holds focus stays rendered while it is scrolled away (`focusin` on the body). The scroll padding is the sticky header's height (`--kv-table-head-block-size`, set on the scroll region and measured with a `ResizeObserver`), so a focused row is never under the header (2.4.11). `table-layout: fixed` comes from the theme, because spacer rows need columns that don't jump.
+- **Virtualization with expanding rows is not supported:** a development warning, and every row is rendered.
+- **`render` on every part,** with class names and handlers merged, and refs merged.
+- **Dev warnings:** no name, a function as the Body's children with no `table` on the Root, a select checkbox with no `rowSelectionFeature`, virtualize with `rowExpandingFeature`, a scroll region with no name, and a missing Announcer when something has to be announced.
+
+## Keyboard
+
+<!-- Format and rules: the `keyboard` skill (ADR-0039). Shown on the Storybook Docs page. -->
+
+- **Focus strategy:** native
+- **Selection follows focus:** n/a
+- **Arrows wrap:** n/a
+- **Shortcuts:** none
+
+| Key                    | Context                                      | Action                                                                                                                            | Test                                                                                                                                                   |
+| ---------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Tab                    | before the table                             | Moves to the scroll region when the table overflows, and otherwise to the first control in the table                              | `table.e2e.ts › Tab focuses the scroll region when the table overflows`, `table.e2e.ts › Tab skips the scroll region when nothing scrolls`             |
+| Tab                    | in the table                                 | Moves through the sort buttons, checkboxes, expand buttons and links in reading order. Header cells, rows and cells are not stops | `table.e2e.ts › Tab moves through the controls in reading order`                                                                                       |
+| Shift+Tab              | in the table                                 | Moves back through the same controls, and from the first one to the scroll region or the element before the table                 | `table.e2e.ts › Shift+Tab moves back through the controls`                                                                                             |
+| Enter                  | on a sort button                             | Sorts by that column, or changes its direction, and announces it                                                                  | `table.e2e.ts › Enter on a sort button sorts the column and announces it`                                                                              |
+| Space                  | on a sort button                             | Same as Enter                                                                                                                     | `table.e2e.ts › Space on a sort button sorts the column`                                                                                               |
+| Space                  | on a row checkbox                            | Selects or deselects the row                                                                                                      | `table.e2e.ts › Space on a row checkbox selects the row`                                                                                               |
+| Space                  | on the select-all checkbox                   | Selects or deselects every row, and announces the count                                                                           | `table.e2e.ts › Space on select-all selects every row and announces the count`                                                                         |
+| Enter                  | on an expand button                          | Shows the row's details                                                                                                           | `table.e2e.ts › Enter on an expand button shows the details`                                                                                           |
+| Space                  | on an expand button                          | Hides the row's details again                                                                                                     | `table.e2e.ts › Space on an expand button hides the details`                                                                                           |
+| Tab                    | on a control in a row of a virtualized table | Moves to the next control. The row that holds focus stays rendered, wherever the table is scrolled to                             | `table.e2e.ts › A focused row stays rendered while the virtualized table scrolls`                                                                      |
+| ArrowDown              | on the focused scroll region                 | Scrolls the table down (native)                                                                                                   | `table.e2e.ts › ArrowDown scrolls the focused scroll region`                                                                                           |
+| ArrowRight             | on the focused scroll region                 | Scrolls the table sideways (native, flips in RTL)                                                                                 | `table.e2e.ts › ArrowRight scrolls the focused scroll region sideways`, `table.e2e.ts › ArrowLeft scrolls the scroll region sideways in right-to-left` |
+| PageDown               | on the focused scroll region                 | Scrolls the table a page (native)                                                                                                 | `table.e2e.ts › PageDown scrolls the focused scroll region a page`                                                                                     |
+| Escape / any character | anywhere in the table                        | Nothing. There is no type-ahead and no shortcut                                                                                   | `table.e2e.ts › Escape and letters do nothing`                                                                                                         |
+
+## Focus management
+
+- **Initial focus:** none. The table never moves focus.
+- **Trap:** no. Tab always leaves the table.
+- **Restore to:** n/a. Sorting, selecting and expanding keep focus on the button or checkbox that was pressed. Sorting reorders the rows under it, and focus stays on the sort button.
+- **A focused row stays mounted while virtualized.** The body tracks `focusin` and `focusout`, and the row that holds focus is a required index of the virtualizer, so it is rendered wherever the table is scrolled. Focus never falls to `body` because a row was unmounted.
+- **Never obscured by:** the sticky header. The scroll padding of the scroll region is the header's height (`--kv-table-head-block-size`), re-measured when the header wraps, so Tab and a scroll to a row leave the focused control clear (2.4.11). The theme turns the variable into `scroll-padding-block-start`.
+- **The scroll region is a Tab stop only while it scrolls,** so a keyboard user can reach and scroll a table that overflows (2.1.1), and meets no empty stop when it doesn't.
+- **Virtualized tables skip what isn't rendered.** Tab goes through the rendered rows. A row outside the window and its overscan has no controls in the DOM until it is scrolled to.
+
+## Announcements
+
+| Event                                         | Message key (i18n)                                       | Politeness |
+| --------------------------------------------- | -------------------------------------------------------- | ---------- |
+| A sort button sorts a column ascending        | `table.sortedAscending` ("Sorted by Name, ascending.")   | polite     |
+| A sort button sorts a column descending       | `table.sortedDescending` ("Sorted by Name, descending.") | polite     |
+| A sort button removes the sort                | `table.sortCleared` ("No longer sorted by Name.")        | polite     |
+| The select-all checkbox changes the selection | `table.selectedCount` ("12 rows selected.", plural)      | polite     |
+| A filter changed the rows (after 500 ms)      | `table.rowCount` ("3 rows.", plural)                     | polite     |
+| `isLoading` became true                       | `table.loading` ("Loading rows.")                        | polite     |
+
+Through the shared Announcer (ADR-0040), politely, with no `key`: a sort is announced every time. Selecting a single row is not announced: the checkbox state is. Without a provider nothing is announced and a development warning says so.
+
+Names, not announcements, in `table`: `selectRow` ("Select"), `selectRowNumber` ("Select row 3"), `selectAllRows` ("Select all rows"), `rowDetails` ("Details") and `empty` ("No rows to show."). All are in six locales and can be overridden per provider and per instance (`messages`). `se` starts as English placeholders and blocks `beta`.
+
+## Consumer responsibilities
+
+- **Name the table** with `Table.Caption` or `aria-labelledby`, and say what the data is.
+- **Give the expand column a header** with the button text visually hidden: `<span className="kv-table-visually-hidden">{cases.expandButtonText}</span>` in a `Table.ColumnHeader`. Without a select-all checkbox, the select column's header needs hidden text too.
+- **Align quantities to the end** with `kv-table-column-header--numeric` on the header and `kv-table-cell--numeric` on each cell of the column (amounts, counts, percentages). Identifiers and dates stay at the start.
+- **Choose a `rowHeader`** (the name or case number that identifies the row). It names the row's checkbox and expand button, and screen readers read it as the row's title. Keep one link per row, in the row header, and put other actions in a menu: many interactive cells mean many Tab stops.
+- **Give the sort button's column a readable `header`.** A header template that returns something other than text is announced from the sort button's text.
+- **Say what "all rows" means.** The select-all checkbox selects every row of the table, including rows on other pages. With pagination, say so in the table's description, or override `messages.selectAllRows`.
+- **Replace the empty text** with something useful: why there are no rows, and what to do next.
+- **Large data: paginate or filter first, virtualize last.** Unrendered rows can't be found with find-in-page, aren't printed and are out of reach of screen-reader browse mode. If you virtualize, give the scroll region a height, keep rows to one measured size where you can, and provide a way to find a row by search or filter.
+- **Narrow screens.** Put the table in `Table.ScrollRegion`. A data table that needs two dimensions is exempt from reflow (1.4.10), but must be reachable and scrollable. Don't turn rows into cards with `display: block`: it drops the table semantics.
+- **Translate your own text:** the caption, the headers and the cells.
+- **Provide the Announcer** (`KvirnProvider`). Without one, nothing is announced.
+
+## Visual / modes
+
+- **Focus indicator:** the default theme draws the focus ring of every control in the table, and of the scroll region (`kv-scroll-region`). The sticky header never covers it.
+- **Target size:** sort buttons and expand buttons are at least 44 px high in comfortable density, 32 px in compact (44 px on coarse pointers). Checkboxes are 24 by 24 px (2.5.8), which is the Checkbox's own size, and the cell's padding keeps neighbouring targets apart.
+- **The sort icon is not the state.** `aria-sort`, `data-sort` and the icon's shape carry it, never colour alone (1.4.1).
+- **forced-colors:** the header, the row dividers and the sticky header's edge are borders, never a shadow or a background alone. Selected rows keep a visible mark that doesn't depend on colour.
+- **reduced-motion:** no motion. Sorting and expanding don't animate.
+- **Reflow and zoom:** the table scrolls inside its named region at 320 px and at 400% zoom. Text spacing (1.4.12) does not clip: cells have no fixed height.
+- **RTL:** logical properties, so the columns and the scroll direction mirror. The sort icon doesn't flip: up and down aren't directions of the reading order.
+
+## WCAG SCs covered
+
+| SC     | Name                         | How                                                                                           |
+| ------ | ---------------------------- | --------------------------------------------------------------------------------------------- |
+| 1.3.1  | Info and Relationships       | A native table, caption, `<th scope>`, `aria-sort`, and names for every checkbox and button   |
+| 1.3.2  | Meaningful Sequence          | The DOM order is the reading order. Spacer rows are hidden                                    |
+| 1.4.1  | Use of Color                 | Sort state, selection and expansion are in attributes, text and shape, never colour alone     |
+| 1.4.10 | Reflow                       | A data table is exempt, and it scrolls inside a named, focusable region                       |
+| 1.4.11 | Non-text Contrast            | Borders, checkboxes and the focus ring pass `theme:check`                                     |
+| 2.1.1  | Keyboard                     | Every control is a native button or checkbox. The scroll region is focusable while it scrolls |
+| 2.4.3  | Focus Order                  | Tab follows the reading order. A focused row stays rendered                                   |
+| 2.4.7  | Focus Visible                | Every control and the scroll region show focus                                                |
+| 2.4.11 | Focus Not Obscured (Minimum) | The scroll padding is the sticky header's height                                              |
+| 2.5.3  | Label in Name                | Visible text names its button: the header text, and the visible text of an expand button      |
+| 2.5.8  | Target Size (Minimum)        | Checkboxes 24 px, sort and expand buttons 32 to 44 px                                        |
+| 3.2.2  | On Input                     | Sorting, selecting and expanding change the table only, move no focus and submit nothing      |
+| 4.1.2  | Name, Role, Value            | Native roles. Checkboxes, sort buttons and expand buttons have names and states               |
+| 4.1.3  | Status Messages              | Sort, select-all count, loading and filtered row count are announced politely                 |
+
+## AT test record
+
+| AT + browser + OS                        | Date    | Tester | Result | Notes |
+| ---------------------------------------- | ------- | ------ | ------ | ----- |
+| **Core (required for beta, ADR-0004)**   |         |        |        |       |
+| NVDA + Firefox + Windows                 | pending |        |        |       |
+| VoiceOver + Safari + macOS               | pending |        |        |       |
+| VoiceOver + Safari + iOS                 | pending |        |        |       |
+| TalkBack + Chrome + Android              | pending |        |        |       |
+| Windows Contrast Themes + Edge           | pending |        |        |       |
+| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
+| **Release (before 1.0 and each minor)**  |         |        |        |       |
+| JAWS + Chrome + Windows                  | pending |        |        |       |
+| NVDA + Chrome + Windows                  | pending |        |        |       |
+| Narrator + Edge + Windows                | pending |        |        |       |
+| Dragon / Voice Control                   | pending |        |        |       |
+
+What the manual run must check: table navigation, the header announced with each cell, `aria-sort` and the sort announcement, the checkbox names, the select-all count, `aria-rowcount` and `aria-rowindex` in a virtualized table, and whether a self-referencing `aria-labelledby` (a checkbox named by its own `aria-label` and the row header) is read the same in every combination.
+
+## Known issues
+
+- Support for `aria-rowcount` and `aria-rowindex` varies: NVDA and JAWS report them, VoiceOver partly. Manual AT is pending.
+- A virtualized table can't be searched with find-in-page, isn't printed in full, and Tab can't reach a control in a row that isn't rendered. Pagination or a filter is the recommended default.
+- Shift+click range selection and multi-sort are not offered: each needs a key the pattern doesn't document. A later ADR can add them.
+- The select-all checkbox always means every row of the table. A "this page only" variant is not offered yet.
+- Northern Sámi (`se`) strings are English placeholders until a native speaker translates them.

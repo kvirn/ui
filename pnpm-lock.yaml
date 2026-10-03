@@ -195,6 +195,12 @@ catalogs:
     '@tanstack/store':
       specifier: 0.11.2
       version: 0.11.2
+    '@tanstack/table-core':
+      specifier: 9.2.4
+      version: 9.2.4
+    '@tanstack/virtual-core':
+      specifier: 3.17.11
+      version: 3.17.11
     '@types/node':
       specifier: ^24
       version: 24.19.0
@@ -396,6 +402,12 @@ importers:
       '@tanstack/store':
         specifier: 'catalog:'
         version: 0.11.2
+      '@tanstack/table-core':
+        specifier: 'catalog:'
+        version: 9.2.4
+      '@tanstack/virtual-core':
+        specifier: 'catalog:'
+        version: 3.17.11
     devDependencies:
       vite-plus:
         specifier: 'catalog:'
@@ -1711,6 +1723,13 @@ packages:
 
   '@tanstack/store@0.11.2':
     resolution: {integrity: sha512-sJ4mjol8uQsHV0gOJzzjwXfh2Fwm+Sz0+8deqiTm4jGbMdjzNSW+xZCFm0kUa870uhd8yi+DpKnZb5Kc4apa0Q==}
+
+  '@tanstack/table-core@9.2.4':
+    resolution: {integrity: sha512-GwdDyGGr6UXAtubF14yAwcXvdaogqfsQgIk89Suebjxob/Rjq2xvfmXsjDF1rQmKmhHsJm9TOY7myxv3i6geJw==}
+    engines: {node: '>=20'}
+
+  '@tanstack/virtual-core@3.17.11':
+    resolution: {integrity: sha512-+ILjvtHup6Y2hzQ6YzwMgX1Q+oQpxEGOXCEsCNaPoIP0VxMbizIBTmYTDtkerkIQS8/CbP1BRuyt8V/8BCsy1g==}
 
   '@testing-library/dom@10.4.2':
     resolution: {integrity: sha512-yzr2S9HyAIdhz2/6qHgbs665Q7PKVcDF05vsOlHPxG1mo36gKVesdYVeDLnXgfjJ03CrKRk08knc6+E/9m8v2Q==}
@@ -4139,6 +4158,12 @@ snapshots:
       tslib: 2.8.1
 
   '@tanstack/store@0.11.2': {}
+
+  '@tanstack/table-core@9.2.4':
+    dependencies:
+      '@tanstack/store': 0.11.2
+
+  '@tanstack/virtual-core@3.17.11': {}
 
   '@testing-library/dom@10.4.2':
     dependencies:

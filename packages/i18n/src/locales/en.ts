@@ -134,4 +134,22 @@ export const en = {
     fileRemoved: ({ name }) => `${name} removed.`,
     announcementForField: ({ label, message }) => `${label}: ${message}`,
   },
+  table: {
+    sortedAscending: ({ column }) => `Sorted by ${column}, ascending.`,
+    sortedDescending: ({ column }) => `Sorted by ${column}, descending.`,
+    sortCleared: ({ column }) => `No longer sorted by ${column}.`,
+    selectRow: 'Select',
+    selectRowNumber: ({ index }, format) => `Select row ${format.number(index)}`,
+    selectAllRows: 'Select all rows',
+    selectedCount: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 row selected.',
+        other: `${format.number(count)} rows selected.`,
+      }),
+    rowCount: ({ count }, format) =>
+      format.plural(count, { one: '1 row.', other: `${format.number(count)} rows.` }),
+    loading: 'Loading rows.',
+    empty: 'No rows to show.',
+    rowDetails: 'Details',
+  },
 } satisfies KvirnMessages

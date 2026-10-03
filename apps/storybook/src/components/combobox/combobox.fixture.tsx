@@ -2,6 +2,8 @@ import { Button, Combobox, ErrorMessage, Field, Label, Prose } from '@kvirn-ui/r
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
+import { virtualizedPlaces } from '../form/virtualized.fixture.ts'
+import type { VirtualizedPlace } from '../form/virtualized.fixture.ts'
 
 // Story and e2e fixture for Components/Form/Combobox (docs/design/form-fields.md; contract:
 // combobox.a11y.md). The functions here are the examples the stories show with "Show code": each
@@ -260,6 +262,42 @@ export function DefaultExample({ locale }: { locale: FormLocale }) {
         <Combobox.Popup>
           <Combobox.List>
             {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+          </Combobox.List>
+          <Combobox.Empty />
+        </Combobox.Popup>
+      </Combobox.Root>
+    </Field>
+  )
+}
+
+/**
+ * 10 000 options with `virtualize`: only the options in view, and the active and chosen one, are in
+ * the page. Each says how big the list is and where it is in it, so a screen reader still knows.
+ * The user types to filter first: the list is virtualized only while it stays long.
+ */
+export function VirtualizedExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = comboboxTextsFor(locale)
+  return (
+    <Field required lang={lang} controlId="municipality">
+      <Label>{text.municipality}</Label>
+      <Prose>
+        <p>{text.hint}</p>
+      </Prose>
+      <Combobox.Root
+        virtualize
+        items={virtualizedPlaces}
+        itemToString={(place) => place.name}
+        itemToKey={(place) => place.code}
+        name="municipality"
+      >
+        <Combobox.Control>
+          <Combobox.Input />
+          <Combobox.Clear />
+          <Combobox.Toggle />
+        </Combobox.Control>
+        <Combobox.Popup>
+          <Combobox.List>
+            {(place: VirtualizedPlace) => <Combobox.Option item={place} />}
           </Combobox.List>
           <Combobox.Empty />
         </Combobox.Popup>

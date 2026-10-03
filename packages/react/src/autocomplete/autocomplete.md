@@ -43,6 +43,7 @@ import { Autocomplete, Field, Label } from '@kvirn-ui/react'
 | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `value`, `defaultValue`, `onValueChange` | The text. `onValueChange(text, { reason })` has the reason `'input'` (the user typed), `'selection'` (a suggestion was picked) or `'clear'`. It only reports: a parent that doesn't update `value` leaves the text as it was.                                            |
 | `name`                                   | Put on the `<input>`, so a plain `<form>` and `FormData` send the text. There is no hidden input.                                                                                                                                                                        |
+| `virtualize`                             | `true`, or `{ estimateSize, overscan }`: renders only the suggestions in view, for a flat list of thousands. Off by default. See Long lists.                                                                                                                             |
 | `items`, `groups`, `filter`, `isLoading` | The suggestions. The default filter matches anywhere in the text, in the provider's locale (å, ä and ö are not a and o in Swedish). For suggestions that your server chooses, pass `filter={false}` and `isLoading` while it works, and keep the last result in `items`. |
 
 `invalid`, `required` and the description (a `Prose` in the Field) come from the Field, as for every control. The value is never copied into KvirnUI state (ADR-0029).
@@ -55,6 +56,20 @@ import { Autocomplete, Field, Label } from '@kvirn-ui/react'
 - **`useAutocomplete(options)`** returns the same props as `useCombobox`, for your own markup.
 
 Every part renders exactly one element, takes `render` and your own `className`, `ref` and handlers (merged with its own), and has a stable class: `kv-autocomplete-control`, `kv-autocomplete-input`, `kv-autocomplete-toggle`, `kv-autocomplete-clear`, and the Listbox's popup classes. With `@kvirn-ui/theme/theme.css` imported, the input looks like an Input and the popup like the Listbox's.
+
+## Long lists
+
+Let the typing narrow the suggestions first: a list that shrinks as the user types is short enough to render in full. `virtualize` is for suggestions that stay long, such as the first letters of a register of thousands of addresses. It is the Combobox's option, with the same rules.
+
+```tsx
+<Autocomplete.Root items={streets} virtualize>
+  …
+</Autocomplete.Root>
+```
+
+With `virtualize`, the popup renders only the suggestions that are scrolled into view, plus the active one, so a list of 10 000 opens at once. It is off by default. `true` uses the defaults; `{ estimateSize, overscan }` sets the height in pixels of a suggestion that hasn't been measured (default 44) and how many to render beyond the visible ones (default 5). Every rendered suggestion says how many there are and where it is (`aria-setsize` and `aria-posinset`), the arrows and Page Up and Page Down work on the whole list, and the active suggestion is always in the page, so `aria-activedescendant` never points at nothing.
+
+The caveat: suggestions that aren't rendered can't be found with the browser's find in page, aren't printed, and are out of reach of a screen reader's browse mode. It needs a flat list: with `groups` the list renders in full and a warning is logged in development. The list is the scroll element, so give `Autocomplete.List` a height limit and `overflow-y: auto` (the default theme does).
 
 ## Keys
 

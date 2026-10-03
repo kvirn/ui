@@ -51,7 +51,7 @@ We record significant decisions as ADRs using a lightweight MADR-style format.
 | [0031](0031-field-order-and-input-group.md)                         | Error below the control, several descriptions per field, and InputGroup for icons and add-ons   | Proposed               |
 | [0032](0032-input-masks.md)                                         | Our own input mask engine in core, lenient by default, with presets                             | Proposed               |
 | [0033](0033-one-time-code-single-input.md)                          | OneTimeCode is one native input, with presentational slots                                      | Proposed               |
-| [0034](0034-tanstack-table-and-virtual-bring-your-own.md)           | TanStack Table and TanStack Virtual are brought by the consumer, not bundled                    | Proposed               |
+| [0034](0034-tanstack-table-and-virtual-bring-your-own.md)           | TanStack Table and TanStack Virtual are brought by the consumer, not bundled                    | Superseded by 0059     |
 | [0035](0035-table-native-semantics.md)                              | Table renders a native `<table>`, with TanStack Table bindings and opt-in row virtualization    | Proposed               |
 | [0036](0036-scroll-area-native-scrolling.md)                        | ScrollArea uses native scrolling, is focusable and named when it overflows                      | Proposed               |
 | [0037](0037-select-combobox-autocomplete.md)                        | Listbox, Combobox and Autocomplete share one ARIA 1.2 combobox core                             | Proposed               |
@@ -76,3 +76,7 @@ We record significant decisions as ADRs using a lightweight MADR-style format.
 | [0056](0056-reset-css.md)                                           | An optional reset.css, ported from Tailwind's Preflight                                         | Accepted               |
 | [0057](0057-e2e-runs-name-their-spec.md)                            | An e2e run must name its spec; the full run is for CI and the sweep specialist                  | Accepted               |
 | [0058](0058-worker-caps-for-tests.md)                               | Test runs cap their workers                                                                     | Accepted               |
+| [0059](0059-bundle-tanstack-table-and-virtual.md)                   | TanStack Table and TanStack Virtual are bundled in `core`, and KvirnUI owns the instances       | Proposed               |
+| [0060](0060-virtualized-list-react-implementation.md)               | Virtualized Listbox, Combobox and Autocomplete share one hook, and a virtualizer lives only while the popup is open | Proposed               |
+| [0061](0061-table-react-binding.md) | Table's React binding: one instance per `useTable`, options handed over silently, and the names of the parts | Proposed |
+| [0062](0062-no-stop-hook.md)                                        | No Stop hook; the orchestrator runs the gates                                                   | Proposed               |

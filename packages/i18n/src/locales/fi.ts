@@ -150,4 +150,22 @@ export const fi = {
     fileRemoved: ({ name }) => `Tiedosto ${name} poistettu.`,
     announcementForField: ({ label, message }) => `${label}: ${message}`,
   },
+  table: {
+    sortedAscending: ({ column }) => `Lajiteltu sarakkeen ${column} mukaan, nouseva.`,
+    sortedDescending: ({ column }) => `Lajiteltu sarakkeen ${column} mukaan, laskeva.`,
+    sortCleared: ({ column }) => `Lajittelu sarakkeen ${column} mukaan on poistettu.`,
+    selectRow: 'Valitse',
+    selectRowNumber: ({ index }, format) => `Valitse rivi ${format.number(index)}`,
+    selectAllRows: 'Valitse kaikki rivit',
+    selectedCount: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 rivi valittu.',
+        other: `${format.number(count)} riviä valittu.`,
+      }),
+    rowCount: ({ count }, format) =>
+      format.plural(count, { one: '1 rivi.', other: `${format.number(count)} riviä.` }),
+    loading: 'Ladataan rivejä.',
+    empty: 'Ei näytettäviä rivejä.',
+    rowDetails: 'Lisätiedot',
+  },
 } satisfies KvirnMessages

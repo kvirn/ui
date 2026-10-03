@@ -14,7 +14,7 @@ packages/testing   @kvirn-ui/testing  a11y test helpers (dev only)
 tooling/           shared tsconfig + vite presets
 ```
 
-Dependencies only point downward: `blocks → theme, react → core, i18n (types + the built-in `en` catalog)`. `core` depends only on `@tanstack/store`, which is wrapped in `core/src/store/`. `react` depends only on React, `core` and `i18n` (ADR-0003).
+Dependencies only point downward: `blocks → theme, react → core, i18n (types + the built-in `en` catalog)`. `core` depends only on `@tanstack/store`, `@tanstack/virtual-core` and `@tanstack/table-core`, each wrapped in one directory: `core/src/store/`, `core/src/virtual/` and `core/src/table/` (ADR-0003, ADR-0059). `react` depends only on React, `core` and `i18n` (ADR-0003).
 
 - **core:** one store (`createComponentStore`, which wraps `@tanstack/store`) with typed actions per component, plus utilities for roving tabindex, typeahead, focus trap and restore, dismiss, scroll lock, `inert`, the announcer and IDs. It reaches the DOM only through an injected `Env`, which keeps it SSR-safe and unit-testable (ADR-0003).
 - **react:** binds to core stores via `useSyncExternalStore` (`useStoreSelector`). React 19 or later, RSC-aware (`"use client"` where needed), SSR and hydration safe. Composition works via the `render` prop (see API conventions).

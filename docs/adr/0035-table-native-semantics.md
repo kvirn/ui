@@ -1,6 +1,6 @@
 # ADR-0035: Table renders a native `<table>`, with TanStack Table bindings and opt-in row virtualization
 
-- **Status:** Proposed
+- **Status:** Proposed (amended by ADR-0059, items 8, 9 and 11)
 - **Date:** 2026-10-02
 - **Deciders:** Maintainer asked for a table component used with TanStack Table, and TanStack Virtual for large data. The details below are proposed and open to change.
 - **Tags:** api, a11y, i18n, theming

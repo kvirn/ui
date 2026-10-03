@@ -45,6 +45,8 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Tabs                                                                                | Tabs                          | 2   | planned     |
 | Listbox (alpha candidate: native and popup rendering)                               | Select-Only Combobox, Listbox | 2   | in progress |
 | Combobox, Autocomplete (alpha candidate: single, multiple, free text)               | Combobox (ARIA 1.2)           | 3   | in progress |
+| Table (alpha candidate: native table, TanStack Table, opt-in virtualization)        | Table, Sortable Table         | 3   | in progress |
+| Virtualized Listbox, Combobox, Autocomplete (`virtualize`, Plan 0026)               | Listbox, Combobox (ARIA 1.2)  | 3   | in progress |
 | Toast (reuses the Notification look and status words)                               | status / alert                | 3   | planned     |
 | Breadcrumb, Pagination                                                              | Breadcrumb                    | 3   | planned     |
 | Slider                                                                              | Slider                        | 3   | planned     |

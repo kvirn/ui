@@ -26,7 +26,9 @@
     "build": "vp pack"
   },
   "dependencies": {
-    "@tanstack/store": "catalog:"
+    "@tanstack/store": "catalog:",
+    "@tanstack/table-core": "catalog:",
+    "@tanstack/virtual-core": "catalog:"
   },
   "devDependencies": {
     "vite-plus": "catalog:"

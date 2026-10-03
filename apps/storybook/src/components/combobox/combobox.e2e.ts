@@ -2,6 +2,7 @@ import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 import type { Locator, Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
+import { virtualizedCount } from '../form/virtualized.fixture.ts'
 
 // Contract: packages/react/src/combobox/combobox.a11y.md › Keyboard, Focus management and
 // Visual / modes. One test per row, named after it. The stories are Components/Form/Combobox. The
@@ -824,6 +825,130 @@ test.describe('Combobox right to left', () => {
   })
 })
 
+/** `aria-activedescendant` points at an element that is in the page, right now (not after a retry). */
+const activeDescendantResolves = (page: Page) =>
+  page.evaluate(() => {
+    const id = document.querySelector('[role="combobox"]')?.getAttribute('aria-activedescendant')
+    const element = id === null || id === undefined ? null : document.getElementById(id)
+    return element !== null && element.getAttribute('role') === 'option'
+  })
+
+/** The active option is inside the list's box: it was scrolled into view, not just rendered. */
+async function expectActiveInView(page: Page) {
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const active = document.querySelector('[role="option"][data-active]')
+        const list = active?.closest('[role="listbox"]')
+        if (!active || !list) return false
+        const a = active.getBoundingClientRect()
+        const p = list.getBoundingClientRect()
+        return a.top >= p.top - 1 && a.bottom <= p.bottom + 1
+      }),
+    )
+    .toBe(true)
+}
+
+test.describe('Combobox virtualization keyboard contract', () => {
+  test('virtualized: only a window of the options is in the page, each with its place in the list', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 640, height: 480 })
+    await openStory(page, 'virtualized-keyboard')
+    await input(page).focus()
+    await page.keyboard.press('ArrowDown')
+    await expectOpen(input(page))
+    await expect(listOf(page)).toHaveAttribute('data-virtualized', '')
+    const options = page.getByRole('option')
+    await expect.poll(() => options.count()).toBeGreaterThan(5)
+    expect(await options.count()).toBeLessThan(80)
+    await expect(options.first()).toHaveAttribute('aria-setsize', String(virtualizedCount))
+    await expect(options.first()).toHaveAttribute('aria-posinset', '1')
+    await expect(options.last()).toHaveAttribute('aria-setsize', String(virtualizedCount))
+    const sizes = await listOf(page).evaluate((element) => ({
+      scrolls: element.scrollHeight > element.clientHeight * 100,
+      fits: element.getBoundingClientRect().bottom <= window.innerHeight + 1,
+    }))
+    expect(sizes).toEqual({ scrolls: true, fits: true })
+  })
+
+  test('virtualized: ArrowUp opens the popup and activates the last option, rendered and in view', async ({
+    page,
+  }) => {
+    await openStory(page, 'virtualized-keyboard')
+    await input(page).focus()
+    await page.keyboard.press('ArrowUp')
+    await expectOpen(input(page))
+    await expectActive(page, 'Österbo 250')
+    await expect(activeOption(page)).toHaveAttribute('aria-posinset', String(virtualizedCount))
+    await expect(activeOption(page)).toHaveAttribute('aria-setsize', String(virtualizedCount))
+    await expectActiveInView(page)
+    await expect(option(page, 'Alvik 1')).toHaveCount(0)
+    expect(await page.getByRole('option').count()).toBeLessThan(80)
+  })
+
+  test('virtualized: ArrowDown and ArrowUp always leave aria-activedescendant on an option in the page', async ({
+    page,
+  }) => {
+    await openStory(page, 'virtualized-keyboard')
+    await input(page).focus()
+    await page.keyboard.press('ArrowDown')
+    await expectActive(page, 'Alvik 1')
+    // Far past the first window: each key renders the next option before the input points at it.
+    for (let step = 0; step < 40; step += 1) {
+      await page.keyboard.press('ArrowDown')
+      expect(await activeDescendantResolves(page)).toBe(true)
+    }
+    await expectActive(page, 'Alvik 41')
+    await expectActiveInView(page)
+    for (let step = 0; step < 40; step += 1) {
+      await page.keyboard.press('ArrowUp')
+      expect(await activeDescendantResolves(page)).toBe(true)
+    }
+    await expectActive(page, 'Alvik 1')
+    await expectActiveInView(page)
+  })
+
+  test('virtualized: PageDown and PageUp move ten options that may not be rendered', async ({
+    page,
+  }) => {
+    await openStory(page, 'virtualized-keyboard')
+    await input(page).focus()
+    await page.keyboard.press('ArrowDown')
+    for (let step = 0; step < 25; step += 1) {
+      await page.keyboard.press('PageDown')
+      expect(await activeDescendantResolves(page)).toBe(true)
+    }
+    // 1 + 25 × 10 = 251: the first option of the second place.
+    await expectActive(page, 'Backa 1')
+    await expect(activeOption(page)).toHaveAttribute('aria-posinset', '251')
+    await expectActiveInView(page)
+    await page.keyboard.press('PageUp')
+    await expectActive(page, 'Alvik 241')
+    await expect(activeOption(page)).toHaveAttribute('aria-posinset', '241')
+    await expectActiveInView(page)
+  })
+
+  test('virtualized: typing filters the whole list, and the size of the set follows', async ({
+    page,
+  }) => {
+    await openStory(page, 'virtualized-keyboard')
+    await typeInto(input(page), page, 'Gammelby')
+    await expectOpen(input(page))
+    // 250 options contain the text: a smaller list, still virtualized, with its size set again.
+    await expect(page.getByRole('option').first()).toHaveAttribute('aria-setsize', '250')
+    await expect(page.getByRole('option').first()).toHaveText('Gammelby 1')
+    await expect(page.getByRole('option').first()).toHaveAttribute('aria-posinset', '1')
+    expect(await page.getByRole('option').count()).toBeLessThan(80)
+    // Nothing is active until a key moves there.
+    await expect(input(page)).not.toHaveAttribute('aria-activedescendant')
+    await page.keyboard.press('ArrowUp')
+    await expectActive(page, 'Gammelby 250')
+    await expect(activeOption(page)).toHaveAttribute('aria-posinset', '250')
+    await expectActiveInView(page)
+  })
+})
+
 test.describe('Combobox accessibility', () => {
   const themes = [
     'mode:light;contrast:standard',
@@ -847,6 +972,7 @@ test.describe('Combobox accessibility', () => {
     ['multiple-one'],
     ['multiple-many'],
     ['long-list'],
+    ['virtualized'],
     ['rich-options'],
     ['on-surfaces'],
     ['compact'],

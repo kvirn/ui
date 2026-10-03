@@ -816,7 +816,8 @@ describe('theme.css form fields (ADR-0029, docs/design/form-fields.md)', () => {
     expect(selector).toContain(
       ':is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose)',
     )
-    expect(selector).toContain(':is(.kv-not-prose, .kv-nav, .kv-button-group) *')
+    // A table's parts keep the Table look in prose: its descendants are left alone too (ADR-0035).
+    expect(selector).toContain(':is(.kv-not-prose, .kv-nav, .kv-button-group, .kv-table) *')
     expect(selector).not.toContain(':is(.kv-not-prose, .kv-nav, .kv-button-group, .kv-field')
   })
 
@@ -1929,5 +1930,119 @@ describe('reset.css (ADR-0056)', () => {
       .filter((rule) => rule.declarations.some(([name]) => name === 'outline'))
       .flatMap((rule) => rule.selectors)
     expect(outlines).toEqual([':-moz-focusring:where(:not(iframe))'])
+  })
+})
+
+describe('theme.css table (ADR-0035, docs/design/table.md)', () => {
+  const tableRules = rules.filter(
+    (rule) =>
+      rule.selectors.length > 0 &&
+      rule.selectors.every(
+        (selector) => /\.kv-table\b/.test(selector) && !selector.includes('.kv-prose'),
+      ),
+  )
+  const declarationsOf = (include: (selector: string) => boolean) =>
+    tableRules
+      .filter((rule) => rule.selectors.some(include))
+      .flatMap((rule) => rule.declarations)
+  const isHiddenText = (selector: string) => selector.includes('.kv-table-visually-hidden')
+
+  it('never changes the display of a table element (1.3.1)', () => {
+    expect(tableRules.length).toBeGreaterThan(20)
+    // Only the buttons are laid out with flex: a table, row or cell keeps its native display.
+    const withDisplay = tableRules.filter((rule) =>
+      rule.declarations.some(([property]) => property === 'display'),
+    )
+    expect(withDisplay.flatMap((rule) => rule.selectors).toSorted()).toEqual([
+      '.kv-table-expand-button',
+      '.kv-table-sort-button',
+    ])
+  })
+
+  it('never fixes a height and clips only the visually hidden text (1.4.12, 2.4.11)', () => {
+    const declarations = declarationsOf((selector) => !isHiddenText(selector))
+    expect(
+      declarations.filter(
+        ([property, value]) =>
+          /^(?:height|min-height|max-height)$/.test(property) ||
+          (property === 'block-size' && value !== 'auto'),
+      ),
+    ).toEqual([])
+    expect(
+      declarations.filter(([property]) => /^(?:overflow(?:-x)?|clip-path)$/.test(property)),
+    ).toEqual([])
+  })
+
+  it('has no shadow, no zebra stripes, no frame and no row hover', () => {
+    const declarations = tableRules.flatMap((rule) => rule.declarations)
+    expect(declarations.filter(([property]) => property === 'box-shadow')).toEqual([])
+    const selectors = tableRules.flatMap((rule) => rule.selectors)
+    expect(selectors.filter((selector) => /nth-child|nth-of-type/.test(selector))).toEqual([])
+    expect(
+      selectors.filter(
+        (selector) => /:hover/.test(selector) && !/sort-button|expand-button/.test(selector),
+      ),
+    ).toEqual([])
+  })
+
+  it('uses logical properties only, so right to left works', () => {
+    const physical =
+      /^(?:(?:margin|padding|border)-(?:top|right|bottom|left)(?:-.+)?|(?:top|right|bottom|left)|(?:min-|max-)?(?:width|height)|float|clear)$/
+    expect(
+      tableRules.flatMap((rule) => rule.declarations).filter(([property]) => physical.test(property)),
+    ).toEqual([])
+  })
+
+  it('steps the cell padding down in compact density from 64rem, and sets the text colour', () => {
+    const compact = tableRules
+      .filter((rule) => rule.media.some((media) => media.includes('64rem')))
+      .flatMap((rule) => rule.declarations)
+    expect(compact).toContainEqual(['--kv-table-cell-padding-block', 'var(--kv-space-1)'])
+    expect(compact).toContainEqual(['--kv-table-cell-padding-inline', 'var(--kv-space-2)'])
+    const root = declarationsOf((selector) => selector === '.kv-table')
+    expect(root).toContainEqual(['--kv-table-cell-padding-block', 'var(--kv-space-3)'])
+    expect(root).toContainEqual(['color', 'var(--kv-color-text)'])
+  })
+
+  it('draws the head opaque with a CanvasText line in forced colours (ADR-0035 item 13)', () => {
+    const forced = tableRules
+      .filter((rule) => rule.media.some((media) => media.includes('forced-colors')))
+      .flatMap((rule) =>
+        rule.selectors.map((selector) => [selector, rule.declarations] as const),
+      )
+    const head = forced.filter(([selector]) => selector === '.kv-table-column-header')
+    expect(head.flatMap(([, declarations]) => declarations)).toContainEqual([
+      'border-block-end-color',
+      'CanvasText',
+    ])
+    const fill = forced.filter(([selector]) => selector === '.kv-table-head')
+    expect(fill.flatMap(([, declarations]) => declarations)).toContainEqual([
+      'background-color',
+      'Canvas',
+    ])
+    const buttons = forced.filter(([selector]) => selector === '.kv-table-sort-button')
+    expect(buttons.flatMap(([, declarations]) => declarations)).toContainEqual([
+      'background-color',
+      'ButtonFace',
+    ])
+  })
+
+  it('moves only background-color, and only under no-preference (2.3.3)', () => {
+    const moving = tableRules.filter((rule) =>
+      rule.declarations.some(([property]) => property.startsWith('transition')),
+    )
+    expect(moving.length).toBeGreaterThan(0)
+    for (const rule of moving) {
+      expect(rule.media).toContain('(prefers-reduced-motion: no-preference)')
+      expect(rule.declarations).toContainEqual(['transition-property', 'background-color'])
+    }
+  })
+
+  it('keeps the sticky head and the spacer rows invisible and in place', () => {
+    const spacer = declarationsOf((selector) => selector === '.kv-table-spacer > td')
+    expect(spacer).toContainEqual(['border', '0'])
+    expect(spacer).toContainEqual(['padding', '0'])
+    const sticky = declarationsOf((selector) => selector === '.kv-table-scroll-region .kv-table-head')
+    expect(sticky).toContainEqual(['position', 'sticky'])
   })
 })

@@ -1,6 +1,6 @@
 # ADR-0051: One git worktree per feature, and the Stop hook checks the whole tree
 
-- **Status:** Proposed
+- **Status:** Proposed (Stop hook removed by ADR-0062)
 - **Date:** 2026-10-02
 - **Deciders:** Magnus Vike
 - **Tags:** tooling | process

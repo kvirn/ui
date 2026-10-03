@@ -70,7 +70,6 @@ Run `vp run build` only if package config or exports changed.
 
 - Run the gates once per change. Re-run only the failed gate after a fix.
 - `accessibility-reviewer` runs nothing. It reads the orchestrator's gate output. If it lists a `NEEDS RUN` command, the orchestrator runs just that, e.g. the component's e2e spec on `chromium`, or on the sweep projects when a dedicated sweep is requested.
-- The Stop hook skips work when nothing changed since its last green run.
 
 ## Debugging failures
 

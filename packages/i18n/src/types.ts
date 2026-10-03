@@ -216,6 +216,38 @@ export interface KvirnMessages {
      */
     announcementForField: MessageFunction<{ label: string; message: string }>
   }
+  /**
+   * Every visible, named and announced string of Table (Plan 0026, ADR-0035, ADR-0059). `column`
+   * is the column's label as text. Announced sentences end with their full stop, so the Announcer
+   * can join sentences with a space. Names and labels have none.
+   */
+  table: {
+    /** Announced when a column becomes sorted ascending, for example `Sorterad efter Namn, stigande.` */
+    sortedAscending: MessageFunction<{ column: string }>
+    /** Announced when a column becomes sorted descending. */
+    sortedDescending: MessageFunction<{ column: string }>
+    /** Announced when a column's sort is removed, for example `Inte längre sorterad efter Namn.` */
+    sortCleared: MessageFunction<{ column: string }>
+    /**
+     * The visually hidden start of a row checkbox's name, followed by the row's header cell:
+     * `Välj` then `Anna Svensson`.
+     */
+    selectRow: TextMessage
+    /** A row checkbox's name when the table has no row header column. `index` counts from 1. */
+    selectRowNumber: MessageFunction<{ index: number }>
+    /** The select-all checkbox's name. */
+    selectAllRows: TextMessage
+    /** Announced when the select-all checkbox changes the selection, for example `12 rader markerade.` Plural. */
+    selectedCount: MessageFunction<{ count: number }>
+    /** Announced after a filter changes the rows, for example `3 rader.` Plural. */
+    rowCount: MessageFunction<{ count: number }>
+    /** Announced while rows load. */
+    loading: TextMessage
+    /** The text of the empty row, for example `Det finns inga rader att visa.` Replace it with something useful. */
+    empty: TextMessage
+    /** The expand button's name. `aria-expanded` carries whether the details are shown. */
+    rowDetails: TextMessage
+  }
 }
 
 /** Any subset of namespaces and keys, for provider and `defineMessages` overrides. */

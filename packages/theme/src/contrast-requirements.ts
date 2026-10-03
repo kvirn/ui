@@ -73,6 +73,10 @@ const textPairs: readonly ColorPair[] = [
   ['text-muted', 'primary-subtle'],
   ['link', 'primary-subtle'],
   ['link-hover', 'primary-subtle'],
+  // Status words in the cells of a selected table row (docs/design/table.md §6.6).
+  ['danger', 'primary-subtle'],
+  ['success', 'primary-subtle'],
+  ['warning', 'primary-subtle'],
   // Prose on notifications: muted metadata, links and hovered links (ADR-0018).
   ...(['text-muted', 'link', 'link-hover'] as const).flatMap((foreground) =>
     statusBackgrounds.map((background): ColorPair => [foreground, background]),

@@ -145,4 +145,22 @@ export const nn = {
     fileRemoved: ({ name }) => `${name} er fjerna.`,
     announcementForField: ({ label, message }) => `${label}: ${message}`,
   },
+  table: {
+    sortedAscending: ({ column }) => `Sortert etter ${column}, stigande.`,
+    sortedDescending: ({ column }) => `Sortert etter ${column}, søkkande.`,
+    sortCleared: ({ column }) => `Ikkje lenger sortert etter ${column}.`,
+    selectRow: 'Vel',
+    selectRowNumber: ({ index }, format) => `Vel rad ${format.number(index)}`,
+    selectAllRows: 'Vel alle rader',
+    selectedCount: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 rad vald.',
+        other: `${format.number(count)} rader valde.`,
+      }),
+    rowCount: ({ count }, format) =>
+      format.plural(count, { one: '1 rad.', other: `${format.number(count)} rader.` }),
+    loading: 'Lastar rader.',
+    empty: 'Det er ingen rader å vise.',
+    rowDetails: 'Detaljar',
+  },
 } satisfies KvirnMessages
