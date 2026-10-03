@@ -67,6 +67,7 @@
  *   8. Link and navigation lists
  *   9. Prose            kv-prose: articles from a CMS or Markdown
  *  9a. Heading       kv-heading: the type role of a heading, apart from its level
+ *  9b. Kbd           kv-kbd: a key in running text
  *  10. Card
  *  10a. Section          kv-section: a region of the page, elevation level 1
  *  10b. Notification     kv-notification: a status message, by status class
@@ -1307,19 +1308,6 @@
         font: inherit;
       }
 
-      /* One key. An outer kbd that groups keys (<kbd><kbd>Ctrl</kbd>+<kbd>C</kbd></kbd>) stays
-       * plain. */
-      &:where(kbd):not(:where(:has(kbd))) {
-        padding-inline: var(--kv-space-1);
-        border: var(--kv-border-width) solid var(--kv-color-border-control);
-        border-block-end-width: 2px;
-        border-radius: var(--kv-radius-sm);
-        background-color: var(--kv-color-surface-raised);
-        font-family: var(--kv-font-family-mono);
-        font-size: var(--kv-prose-code-size);
-        white-space: nowrap;
-      }
-
       /* Tables keep the prose size and their display: display: block removes table semantics
        * in some browsers. Put a wide table in a kv-scroll-region. Aligning number
        * columns is up to your CSS. */
@@ -1554,6 +1542,47 @@
     line-height: var(--kv-font-heading-3-line-height);
     letter-spacing: var(--kv-font-heading-3-letter-spacing);
     font-feature-settings: var(--kv-font-heading-3-feature-settings);
+  }
+
+  /* 9b. Kbd -----------------------------------------------------------------------------------
+   * <Kbd> renders <kbd class="kv-kbd">: one key. A bare kbd in prose gets the same rule (outside
+   * kv-not-prose), so it looks the same in and out of prose. A flat key in the inline-code family:
+   * the same size, fill, radius and padding as code, told apart by the body font instead of mono and
+   * by a border-control edge instead of a hairline. No depth: depth means "press me" and is for
+   * buttons only. A kbd that groups keys (<Kbd><Kbd>Ctrl</Kbd>+<Kbd>C</Kbd></Kbd>) stays plain,
+   * inherits the font, stays on one line and spaces its keys by space-1. A key is never hyphenated.
+   * Zero specificity, so your own CSS wins. In forced colours the edge is CanvasText. */
+  :where(.kv-kbd, .kv-prose kbd:not(.kv-not-prose kbd)):not(:where(:has(.kv-kbd, kbd))) {
+    padding-inline: var(--kv-space-1);
+    border: var(--kv-border-width) solid var(--kv-color-border-control);
+    border-radius: var(--kv-radius-sm);
+    background-color: var(--kv-color-surface);
+    font-family: inherit;
+    font-size: var(--kv-prose-code-size);
+    white-space: nowrap;
+    hyphens: manual;
+  }
+
+  :where(.kv-kbd, .kv-prose kbd:not(.kv-not-prose kbd)):where(:has(.kv-kbd, kbd)) {
+    font-family: inherit;
+    white-space: nowrap;
+  }
+
+  :where(.kv-kbd, .kv-prose kbd:not(.kv-not-prose kbd)):where(:has(.kv-kbd, kbd))
+    > :where(.kv-kbd, kbd):where(:has(~ :is(.kv-kbd, kbd))) {
+    margin-inline-end: var(--kv-space-1);
+  }
+
+  :where(.kv-kbd, .kv-prose kbd:not(.kv-not-prose kbd)):where(:has(.kv-kbd, kbd))
+    > :where(.kv-kbd, kbd)
+    ~ :where(.kv-kbd, kbd) {
+    margin-inline-start: var(--kv-space-1);
+  }
+
+  @media (forced-colors: active) {
+    :where(.kv-kbd, .kv-prose kbd:not(.kv-not-prose kbd)):not(:where(:has(.kv-kbd, kbd))) {
+      border-color: CanvasText;
+    }
   }
 
   /* 10. Card ---------------------------------------------------------------------------------
@@ -3353,11 +3382,11 @@
    * input's edge, fill, radius and height, with a chevron drawn by ::after. <Listbox.Value>
    * renders kv-listbox-value, with [data-placeholder] while nothing is chosen. <Listbox.Popup>
    * renders kv-listbox-popup, a popover in the top layer that the script places (its position,
-   * width and --kv-popup-max-height are inline): level 3 elevation, xl radius, 8px padding.
-   * <Listbox.Option> renders kv-listbox-option, at least 44px high (32px compact), with
-   * [data-active], [data-selected] and [data-disabled]. The active option has a 4px bar at its
-   * inline start and a tinted fill; the chosen one has a tick at its end: neither is colour
-   * only, and both stay in forced colours. <Listbox.Group> and <Listbox.GroupLabel> render
+   * width and --kv-popup-max-height are inline): level 3 elevation, md radius, no padding.
+   * <Listbox.Option> renders kv-listbox-option, a flat full-width row like a native select's,
+   * at least 44px high (32px compact), with [data-active], [data-selected] and [data-disabled].
+   * The active option has a solid primary fill; the chosen one has a tick at its end, so the
+   * choice is not colour only, and both stay in forced colours. <Listbox.Group> and <Listbox.GroupLabel> render
    * kv-listbox-group and kv-listbox-group-label, <Listbox.Empty> kv-listbox-empty. */
   .kv-listbox-trigger {
     --kv-input-edge: var(--kv-color-border-control);
@@ -3459,9 +3488,10 @@
     --kv-popup-height-limit: 20rem;
     box-sizing: border-box;
     margin: 0;
-    padding: var(--kv-space-2);
+    padding: 0;
+    overflow: hidden;
     border: var(--kv-border-width) solid var(--kv-color-border-subtle);
-    border-radius: var(--kv-radius-xl);
+    border-radius: var(--kv-radius-md);
     background-color: var(--kv-color-surface-raised);
     box-shadow: var(--kv-shadow-popup);
     color: var(--kv-color-text);
@@ -3489,6 +3519,9 @@
   }
 
   .kv-listbox-option {
+    /* For a hint inside an option (color: var(--kv-listbox-option-hint)): muted, and the row's
+     * own colour on the active fill, where muted text would not be readable. */
+    --kv-listbox-option-hint: var(--kv-color-text-muted);
     display: flex;
     align-items: center;
     gap: var(--kv-space-3);
@@ -3496,16 +3529,15 @@
     min-block-size: var(--kv-control-min-block-size);
     padding-block: var(--kv-space-1);
     padding-inline: var(--kv-space-3);
-    border-inline-start: var(--kv-indicator-width) solid transparent;
-    border-radius: var(--kv-radius-md);
     cursor: pointer;
     overflow-wrap: anywhere;
   }
 
-  /* The active option (aria-activedescendant): a tinted fill and a bar at the inline start. */
+  /* The active option (aria-activedescendant): a solid fill across the row, as in a native select. */
   .kv-listbox-option[data-active] {
-    border-inline-start-color: var(--kv-color-primary);
-    background-color: var(--kv-color-primary-subtle);
+    --kv-listbox-option-hint: var(--kv-color-on-primary);
+    background-color: var(--kv-color-primary);
+    color: var(--kv-color-on-primary);
   }
 
   /* The chosen option: a tick at the inline end. Its borders are physical on purpose: a tick
@@ -3527,6 +3559,15 @@
     cursor: not-allowed;
   }
 
+  /* An active disabled option keeps its muted text, so it is outlined rather than filled. */
+  .kv-listbox-option[aria-disabled='true'][data-active] {
+    --kv-listbox-option-hint: var(--kv-color-text-muted);
+    background-color: var(--kv-color-primary-subtle);
+    color: var(--kv-color-text-muted);
+    outline: 2px solid var(--kv-color-primary);
+    outline-offset: -2px;
+  }
+
   /* A line between groups, so each group reads as one block. */
   .kv-listbox-group + .kv-listbox-group {
     margin-block-start: var(--kv-space-2);
@@ -3537,7 +3578,7 @@
   /* The label type style in the text colour: a group name is content, not a hint. */
   .kv-listbox-group-label {
     padding-block: var(--kv-space-2) var(--kv-space-1);
-    padding-inline: calc(var(--kv-space-3) + var(--kv-indicator-width)) var(--kv-space-3);
+    padding-inline: var(--kv-space-3);
     color: var(--kv-color-text);
     font-size: var(--kv-font-label-size);
     font-weight: var(--kv-font-label-weight);
@@ -3559,7 +3600,7 @@
   }
 
   /* System colours, set explicitly. The shapes carry the state: a 2px edge when invalid, a
-   * dashed edge when disabled, the bar and the fill of the active option, the tick of the chosen
+   * dashed edge when disabled, the fill of the active option, the tick of the chosen
    * one. The active option swaps to Highlight, so it is never only a shade. */
   @media (forced-colors: active) {
     .kv-listbox-trigger {
@@ -3603,14 +3644,22 @@
     }
 
     .kv-listbox-option[data-active] {
-      border-inline-start-color: HighlightText;
+      --kv-listbox-option-hint: HighlightText;
       background-color: Highlight;
       color: HighlightText;
       forced-color-adjust: none;
     }
 
     .kv-listbox-option[aria-disabled='true']:not([data-active]) {
+      --kv-listbox-option-hint: GrayText;
       color: GrayText;
+    }
+
+    .kv-listbox-option[aria-disabled='true'][data-active] {
+      --kv-listbox-option-hint: GrayText;
+      background-color: Canvas;
+      color: GrayText;
+      outline-color: Highlight;
     }
 
     .kv-listbox-group-label,

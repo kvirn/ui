@@ -28,6 +28,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Card (Root, Header, Body, Footer)                                                   | – (native `<div>`)            | 1   | alpha       |
 | Section (level 1 container; Card becomes level 2 only)                              | – (native `<div>`)            | 1   | alpha       |
 | Heading (level, type-role size), Prose (`kv-prose`)                                 | – (native `<h1>`–`<h6>`)      | 1   | alpha       |
+| Kbd (`kv-kbd`, one key per element)                                                 | – (native `<kbd>`)            | 1   | alpha       |
 | Notification (Root; Info, Success, Warning, Danger; Title, Body, Actions; announce) | – (native `<div>`, Announcer) | 1   | in progress |
 | Field, Label, Description, ErrorMessage, Fieldset                                   | –                             | 1   | in progress |
 | Input, Textarea                                                                     | –                             | 1   | in progress |

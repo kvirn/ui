@@ -583,7 +583,7 @@ export const RichOptions: Story = {
                 <Listbox.Option item={municipality}>
                   <span style={{ display: 'grid' }}>
                     <span>{municipality.name}</span>
-                    <small style={{ color: 'var(--kv-color-text-muted)' }}>
+                    <small style={{ color: 'var(--kv-listbox-option-hint)' }}>
                       {municipality.county}
                     </small>
                   </span>

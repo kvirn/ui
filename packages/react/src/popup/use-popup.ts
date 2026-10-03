@@ -196,7 +196,9 @@ export function usePopup({
       style.right = 'auto'
       style.bottom = 'auto'
       style.maxWidth = 'none'
-      style.maxHeight = 'none'
+      // Your own height limit counts while measuring: a popup placed above the anchor is positioned
+      // by its height, so measuring it taller than it ends up leaves a gap under it.
+      style.maxHeight = 'var(--kv-popup-height-limit, none)'
       style.width = matchAnchorWidth ? `${anchorRect.width}px` : ''
       const { width, height } = popup.getBoundingClientRect()
 

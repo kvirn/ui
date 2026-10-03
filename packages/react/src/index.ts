@@ -51,6 +51,10 @@ export type {
   UseHeadingOptions,
   UseHeadingResult,
 } from './heading/use-heading.ts'
+export { Kbd } from './kbd/kbd.tsx'
+export type { KbdElementProps, KbdProps, KbdState } from './kbd/kbd.tsx'
+export { useKbd } from './kbd/use-kbd.ts'
+export type { KbdPartProps, UseKbdResult } from './kbd/use-kbd.ts'
 export { Prose, ProseRoot } from './prose/prose.tsx'
 export type { ProseElementProps, ProseRootProps, ProseState } from './prose/prose.tsx'
 export { useProse } from './prose/use-prose.ts'
