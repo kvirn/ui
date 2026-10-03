@@ -1,4 +1,14 @@
-import { Button, Card, Checkbox, CheckboxGroup, Field, Fieldset } from '@kvirn-ui/react'
+import {
+  Button,
+  Card,
+  Checkbox,
+  CheckboxGroup,
+  ErrorMessage,
+  Field,
+  Label,
+  Legend,
+  Prose,
+} from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/checkbox-group/checkbox-group.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ComponentProps } from 'react'
@@ -70,23 +80,35 @@ function Contact({
   const { text, lang } = choiceTextsFor(locale)
   return (
     <CheckboxGroup.Root name="contact" lang={lang} {...groupProps}>
-      <Fieldset.Legend>{text.contactLegend}</Fieldset.Legend>
-      {hint ? <Fieldset.Description>{text.contactHint}</Fieldset.Description> : null}
-      <Field.Root>
+      <Legend>{text.contactLegend}</Legend>
+      {hint ? (
+        <Prose>
+          <p>{text.contactHint}</p>
+        </Prose>
+      ) : null}
+      <Field>
         <Checkbox value="email" />
-        <Field.Label>{text.contactEmail}</Field.Label>
-        {optionHints ? <Field.Description>{text.contactEmailHint}</Field.Description> : null}
-      </Field.Root>
-      <Field.Root>
+        <Label>{text.contactEmail}</Label>
+        {optionHints ? (
+          <Prose>
+            <p>{text.contactEmailHint}</p>
+          </Prose>
+        ) : null}
+      </Field>
+      <Field>
         <Checkbox value="text" />
-        <Field.Label>{text.contactText}</Field.Label>
-      </Field.Root>
-      <Field.Root>
+        <Label>{text.contactText}</Label>
+      </Field>
+      <Field>
         <Checkbox value="letter" />
-        <Field.Label>{text.contactLetter}</Field.Label>
-        {optionHints ? <Field.Description>{text.contactLetterHint}</Field.Description> : null}
-      </Field.Root>
-      {error ? <Fieldset.ErrorMessage>{text.contactError}</Fieldset.ErrorMessage> : null}
+        <Label>{text.contactLetter}</Label>
+        {optionHints ? (
+          <Prose>
+            <p>{text.contactLetterHint}</p>
+          </Prose>
+        ) : null}
+      </Field>
+      {error ? <ErrorMessage>{text.contactError}</ErrorMessage> : null}
     </CheckboxGroup.Root>
   )
 }

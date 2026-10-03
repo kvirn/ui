@@ -135,12 +135,12 @@ export function useFieldset({
       ...stateAttributes(state),
     }
     const descriptionProps: FieldDescriptionPartProps = {
-      className: 'kv-field-description',
+      className: 'kv-prose',
       id: descriptionId,
       ...stateAttributes(state, ['data-invalid', 'data-disabled']),
     }
     const getDescriptionProps = (name: string): FieldDescriptionPartProps => ({
-      className: 'kv-field-description',
+      className: 'kv-prose',
       id: `${descriptionId}-${name}`,
       ...stateAttributes(state, ['data-invalid', 'data-disabled']),
     })

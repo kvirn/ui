@@ -16,8 +16,8 @@ import {
 import type { ComponentPropsWithRef, MouseEventHandler, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldContext } from '../field/field-context.ts'
-import { FieldDescription } from '../field/field.tsx'
-import type { FieldDescriptionProps } from '../field/field.tsx'
+import type { FieldState } from '../field/field-state.ts'
+import { useDescriptionPart } from '../field/use-description-part.ts'
 import { joinIds } from '../field/field-state.ts'
 import { useFocusVisible } from '../focus-visible/use-focus-visible.ts'
 import { Icon } from '../icon/icon.tsx'
@@ -100,8 +100,12 @@ export interface FileUploadDropHintProps extends ComponentPropsWithRef<'p'> {
   render?: RenderProp<ComponentPropsWithRef<'p'>, FileUploadState> | undefined
 }
 
-/** The Limits is a Field description, so it takes the Field description's props. */
-export type FileUploadLimitsProps = FieldDescriptionProps
+const noFieldState: FieldState = { isInvalid: false, isRequired: false, isDisabled: false }
+
+/** The Limits is a description of the Field: it takes a `<p>`'s props, but not the `id`. */
+export interface FileUploadLimitsProps extends Omit<ComponentPropsWithRef<'p'>, 'id'> {
+  render?: RenderProp<ComponentPropsWithRef<'p'>, FieldState> | undefined
+}
 
 export interface FileUploadRejectionsProps extends ComponentPropsWithRef<'div'> {
   render?: RenderProp<ComponentPropsWithRef<'div'>, FileUploadState> | undefined
@@ -224,8 +228,8 @@ function toItemState(itemContext: FileUploadItemContextValue): FileUploadItemSta
  * no form state and makes no network calls: `upload` is yours.
  *
  * @example
- * <Field.Root>
- *   <Field.Label>Bilagor</Field.Label>
+ * <Field>
+ *   <Label>Bilagor</Label>
  *   <FileUpload.Root accept=".pdf,image/jpeg" multiple maxFiles={5} maxFileSize={10_000_000}>
  *     <FileUpload.Limits />
  *     <FileUpload.DropZone>
@@ -244,7 +248,7 @@ function toItemState(itemContext: FileUploadItemContextValue): FileUploadItemSta
  *     </FileUpload.List>
  *     <FileUpload.Input name="attachments" />
  *   </FileUpload.Root>
- * </Field.Root>
+ * </Field>
  */
 export function FileUploadRoot({
   accept,
@@ -484,7 +488,8 @@ FileUploadDropHint.displayName = 'FileUpload.DropHint'
 
 /**
  * The limits that are set (how many files, which types, how large), built from the Root's props so
- * the text can't disagree with them (3.3.2). A Field description: the Trigger is described by it.
+ * the text can't disagree with them (3.3.2). A description of the Field, like a `Prose` in it: the
+ * Trigger is described by it.
  */
 export function FileUploadLimits({
   children,
@@ -497,11 +502,27 @@ export function FileUploadLimits({
   if (text === undefined || text === '') {
     return null
   }
-  return (
-    <FieldDescription {...mergeProps(otherProps, { className: 'kv-file-upload-limits' })}>
-      {text}
-    </FieldDescription>
-  )
+  return <LimitsDescription {...otherProps} text={text} />
+}
+
+/** Internal. Only mounted when there is text, so no id is listed for an element that isn't there. */
+function LimitsDescription({
+  text,
+  render,
+  ref,
+  ...otherProps
+}: FileUploadLimitsProps & { text: ReactNode }): ReactElement {
+  const description = useDescriptionPart<HTMLParagraphElement>(ref)
+  return renderPart({
+    render,
+    defaultElement: 'p',
+    partProps: {
+      ...mergeProps(otherProps, description.partProps, { className: 'kv-file-upload-limits' }),
+      ref: description.ref,
+      children: text,
+    },
+    state: description.state ?? noFieldState,
+  })
 }
 FileUploadLimits.displayName = 'FileUpload.Limits'
 

@@ -29,6 +29,7 @@ import type {
   UseComboboxResult,
   UseComboboxSingleOptions,
 } from './use-combobox.ts'
+import { Prose } from '../prose/prose.tsx'
 
 // Contract: combobox.a11y.md. The keyboard rows are also covered end to end in
 // apps/storybook/src/components/combobox/combobox.e2e.ts. Component tests load no theme: the popup
@@ -99,7 +100,7 @@ function Example({
       </button>
       <Field.Root required>
         <Field.Label>Kommun</Field.Label>
-        <Field.Description>Där du är folkbokförd.</Field.Description>
+        <Prose>Där du är folkbokförd.</Prose>
         <Combobox.Root
           items={items}
           itemToString={(municipality) => municipality.name}

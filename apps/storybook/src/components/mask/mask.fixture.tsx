@@ -3,11 +3,14 @@ import { sv } from '@kvirn-ui/i18n/sv'
 import {
   Button,
   checks,
+  ErrorMessage,
   Field,
   Input,
   KvirnProvider,
+  Label,
   masks,
   mergeProps,
+  Prose,
   useMask,
 } from '@kvirn-ui/react'
 import type { InputChangeDetails, InputProps } from '@kvirn-ui/react'
@@ -231,11 +234,13 @@ interface MaskedFieldProps extends Pick<
 /** One masked question: a Field with a label, a hint that says the format, and the Input. */
 export function MaskedField({ label, hint, name, ...inputProps }: MaskedFieldProps) {
   return (
-    <Field.Root required>
-      <Field.Label>{label}</Field.Label>
-      <Field.Description>{hint}</Field.Description>
+    <Field required>
+      <Label>{label}</Label>
+      <Prose>
+        <p>{hint}</p>
+      </Prose>
       <Input name={name} {...inputProps} />
-    </Field.Root>
+    </Field>
   )
 }
 
@@ -387,9 +392,11 @@ export function NumberFields({ globals }: { globals: Record<string, unknown> }) 
   const [unmasked, setUnmasked] = useState('')
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.amount}</Field.Label>
-        <Field.Description>{text.amountHint}</Field.Description>
+      <Field required>
+        <Label>{text.amount}</Label>
+        <Prose>
+          <p>{text.amountHint}</p>
+        </Prose>
         <Input
           name="rent"
           mask={masks.number({ decimals: 2, min: 0, max: 100_000 })}
@@ -411,7 +418,7 @@ export function NumberFields({ globals }: { globals: Record<string, unknown> }) 
         <p className="kv-story-form-output" data-testid="unmasked">
           {text.unmasked}: {unmasked}
         </p>
-      </Field.Root>
+      </Field>
       <MaskedField
         label={text.temperature}
         hint={text.temperatureHint}
@@ -451,9 +458,11 @@ export function PersonalIdentityNumberForm({ globals }: { globals: Record<string
         )
       }}
     >
-      <Field.Root required invalid={error !== undefined}>
-        <Field.Label>{text.personalIdentityNumber}</Field.Label>
-        <Field.Description>{text.personalIdentityNumberHint}</Field.Description>
+      <Field required invalid={error !== undefined}>
+        <Label>{text.personalIdentityNumber}</Label>
+        <Prose>
+          <p>{text.personalIdentityNumberHint}</p>
+        </Prose>
         <Input
           name="personalIdentityNumber"
           mask={masks.personalIdentityNumber({ country: 'SE' })}
@@ -462,8 +471,8 @@ export function PersonalIdentityNumberForm({ globals }: { globals: Record<string
           value={value}
           onValueChange={setValue}
         />
-        <Field.ErrorMessage>{error}</Field.ErrorMessage>
-      </Field.Root>
+        <ErrorMessage>{error}</ErrorMessage>
+      </Field>
       <p className="kv-story-form-output">{text.checkAdvice}</p>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
@@ -487,9 +496,11 @@ export function StoredValueField({ globals }: { globals: Record<string, unknown>
   const [details, setDetails] = useState<InputChangeDetails | undefined>(undefined)
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.stored}</Field.Label>
-        <Field.Description>{text.storedHint}</Field.Description>
+      <Field required>
+        <Label>{text.stored}</Label>
+        <Prose>
+          <p>{text.storedHint}</p>
+        </Prose>
         <Input
           name="stored"
           mask={mask}
@@ -501,7 +512,7 @@ export function StoredValueField({ globals }: { globals: Record<string, unknown>
             setDetails(nextDetails)
           }}
         />
-      </Field.Root>
+      </Field>
       <p className="kv-story-form-output" data-testid="stored-details">
         {text.unmasked}: {mask.unmask(value)} · {text.complete}:{' '}
         {details?.isComplete === false ? text.no : text.yes}
@@ -520,9 +531,11 @@ export function OwnInputField({ globals }: { globals: Record<string, unknown> })
     }),
   })
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.ownInput}</Field.Label>
-      <Field.Description>{text.ownInputHint}</Field.Description>
+    <Field required lang={lang}>
+      <Label>{text.ownInput}</Label>
+      <Prose>
+        <p>{text.ownInputHint}</p>
+      </Prose>
       <Input
         name="ownInput"
         autoComplete="off"
@@ -530,7 +543,7 @@ export function OwnInputField({ globals }: { globals: Record<string, unknown> })
         // `mergeProps(mask.inputProps, ownProps)`: your own props come last and win.
         {...mergeProps(caseNumber.inputProps, { 'data-own': '' })}
       />
-    </Field.Root>
+    </Field>
   )
 }
 

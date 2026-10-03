@@ -8,16 +8,17 @@ Text set for reading: the `kv-prose` class as a component. It renders a `<div>`.
 - No role, no ARIA, no text and no strings. The headings, paragraphs, lists, links and tables inside keep their own semantics.
 - `render` changes the element: `<article>` or `<section aria-labelledby>`.
 - Headless: no CSS. The part renders its stable class `kv-prose`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, the text is styled. Add `kv-prose--large` for the larger size.
-- The rest of the type roles come with it: body (`kv-prose--large` for body-large), `p.kv-lead` for the lead paragraph, body-small for captions, and code, numeric and label styles for the elements that use them. A [Heading](../heading/heading.md) inside Prose keeps its own size.
+- The rest of the type roles come with it: body (`kv-prose--large` for body-large), `p.kv-lead` for the lead paragraph, body-small for captions, and code, numeric and label styles for the elements that use them. Write plain `<h1>` to `<h6>` inside Prose: it styles them, so it needs no Heading. Use [Heading](../heading/heading.md) where you need a look apart from the level, such as a `display` title, in or out of Prose.
+- **In a Field or Fieldset it is the hint** ([Field](../field/field.md), [Fieldset](../fieldset/fieldset.md), ADR-0054): a `<Prose>` inside a `Field.Root` or `Fieldset.Root` registers its id, so it is in the control's (or group's) `aria-describedby`, in DOM order, before the error. There is no opt-out. The description is its text content, so keep a hint to plain text and a few short paragraphs: a heading, list or link inside loses its structure for a screen-reader user. A Prose that isn't a hint goes outside the Field. Outside a Field or Fieldset a Prose has no id and no behaviour.
 - A Prose is not a container with a surface. For a region of the page, use [Section](../section/section.md), and put Prose inside it.
 
 ## Component
 
 ```tsx
-import { Heading, Prose } from '@kvirn-ui/react'
+import { Prose } from '@kvirn-ui/react'
 
 ;<Prose>
-  <Heading level={2}>Kontakta oss</Heading>
+  <h2>Kontakta oss</h2>
   <p>Vi svarar vardagar 9–16.</p>
 </Prose>
 ```

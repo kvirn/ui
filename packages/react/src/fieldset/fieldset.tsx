@@ -11,9 +11,10 @@ import {
 } from '../field/field-context.ts'
 import type { FieldTextHostContextValue } from '../field/field-context.ts'
 import type { FieldMarker, FieldState } from '../field/field-state.ts'
-import { FieldDescription, FieldErrorMessage, OptionalMarker } from '../field/field.tsx'
+import { FieldErrorMessage, OptionalMarker } from '../field/field.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { ProseRoot } from '../prose/prose.tsx'
 import { useMessages } from '../provider/use-messages.ts'
 import { renderPart } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
@@ -60,16 +61,18 @@ const noState: FieldsetState = { isInvalid: false, isRequired: false, isDisabled
 
 /**
  * A native `<fieldset>` that groups questions, or the controls of one question, under its
- * legend (ADR-0029, contract: fieldset.a11y.md). Its Description and ErrorMessage describe the
- * group. It holds no form state.
+ * legend (ADR-0029, contract: fieldset.a11y.md). A `Prose` inside it (the hint) and its
+ * ErrorMessage describe the group. It holds no form state.
  *
  * @example
- * <Fieldset.Root group invalid={errors.contact !== undefined}>
- *   <Fieldset.Legend>Hur vill du bli kontaktad?</Fieldset.Legend>
- *   <Fieldset.Description>Välj alla som passar.</Fieldset.Description>
- *   <Fieldset.ErrorMessage>{errors.contact}</Fieldset.ErrorMessage>
+ * <Fieldset group invalid={errors.contact !== undefined}>
+ *   <Legend>Hur vill du bli kontaktad?</Legend>
+ *   <Prose>
+ *     <p>Välj alla som passar.</p>
+ *   </Prose>
+ *   <ErrorMessage>{errors.contact}</ErrorMessage>
  *   …
- * </Fieldset.Root>
+ * </Fieldset>
  */
 export function FieldsetRoot({
   invalid = false,
@@ -160,7 +163,7 @@ export function FieldsetRoot({
     </FieldTextHostContext.Provider>
   )
 }
-FieldsetRoot.displayName = 'Fieldset.Root'
+FieldsetRoot.displayName = 'Fieldset'
 
 /**
  * The fieldset's `<legend>`: the question, and the group's accessible name. Render it first. In
@@ -208,17 +211,22 @@ export function FieldsetLegend({
     state: fieldset?.state ?? noState,
   })
 }
-FieldsetLegend.displayName = 'Fieldset.Legend'
+FieldsetLegend.displayName = 'Legend'
 
-/** The group's hint. The same component as `Field.Description`. */
-export const FieldsetDescription = FieldDescription
 /** The group's error message. The same component as `Field.ErrorMessage`. */
 export const FieldsetErrorMessage = FieldErrorMessage
 
-/** A native fieldset with its legend, hint and error (ADR-0029). */
-export const Fieldset = {
+/** The group's question. The same component as `Fieldset.Legend`. */
+export const Legend = FieldsetLegend
+
+/**
+ * A native fieldset with its legend and error (ADR-0029): `<Fieldset>` is the root, with
+ * `<Legend>`, `<Prose>` for the hint (ADR-0054) and `<ErrorMessage>` inside it. `Fieldset.Root`,
+ * `Fieldset.Legend`, `Fieldset.Prose` and `Fieldset.ErrorMessage` are the same components (ADR-0055).
+ */
+export const Fieldset = Object.assign(FieldsetRoot, {
   Root: FieldsetRoot,
   Legend: FieldsetLegend,
-  Description: FieldsetDescription,
+  Prose: ProseRoot,
   ErrorMessage: FieldsetErrorMessage,
-} as const
+})

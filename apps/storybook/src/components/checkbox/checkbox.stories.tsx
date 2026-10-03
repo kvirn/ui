@@ -1,4 +1,4 @@
-import { Button, Card, Checkbox, Field } from '@kvirn-ui/react'
+import { Button, Card, Checkbox, ErrorMessage, Field, Label, Prose } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/checkbox/checkbox.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
@@ -50,10 +50,10 @@ const meta = {
   render: (args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
+      <Field required lang={lang}>
         <Checkbox name="declaration" {...args} />
-        <Field.Label>{text.declaration}</Field.Label>
-      </Field.Root>
+        <Label>{text.declaration}</Label>
+      </Field>
     )
   },
   parameters: { a11yContract: contract },
@@ -104,11 +104,13 @@ export const WithDescription: Story = {
   render: (args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field.Root lang={lang}>
+      <Field lang={lang}>
         <Checkbox name="newsletter" {...args} />
-        <Field.Label>{text.newsletter}</Field.Label>
-        <Field.Description>{text.newsletterHint}</Field.Description>
-      </Field.Root>
+        <Label>{text.newsletter}</Label>
+        <Prose>
+          <p>{text.newsletterHint}</p>
+        </Prose>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -124,12 +126,14 @@ export const Invalid: Story = {
   render: (args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field.Root required invalid lang={lang}>
+      <Field required invalid lang={lang}>
         <Checkbox name="declaration" {...args} />
-        <Field.Label>{text.declaration}</Field.Label>
-        <Field.Description>{text.declarationHint}</Field.Description>
-        <Field.ErrorMessage>{text.declarationError}</Field.ErrorMessage>
-      </Field.Root>
+        <Label>{text.declaration}</Label>
+        <Prose>
+          <p>{text.declarationHint}</p>
+        </Prose>
+        <ErrorMessage>{text.declarationError}</ErrorMessage>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -168,10 +172,10 @@ export const LongLabel: Story = {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
       <div className="kv-story-narrow" data-testid="narrow">
-        <Field.Root required lang={lang}>
+        <Field required lang={lang}>
           <Checkbox name="consent" {...args} />
-          <Field.Label>{text.longLabel}</Field.Label>
-        </Field.Root>
+          <Label>{text.longLabel}</Label>
+        </Field>
       </div>
     )
   },
@@ -185,19 +189,19 @@ function KeyboardExample({ locale }: { locale: FormLocale }) {
   const { text, lang } = choiceTextsFor(locale)
   return (
     <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
-      <Field.Root>
+      <Field>
         <Checkbox name="newsletter" />
-        <Field.Label marker="none">{text.newsletter}</Field.Label>
-      </Field.Root>
+        <Label marker="none">{text.newsletter}</Label>
+      </Field>
       <SelectAllExample locale={locale} />
-      <Field.Root disabled>
+      <Field disabled>
         <Checkbox name="disabled" />
-        <Field.Label marker="none">{text.rowOne}</Field.Label>
-      </Field.Root>
-      <Field.Root required>
+        <Label marker="none">{text.rowOne}</Label>
+      </Field>
+      <Field required>
         <Checkbox name="declaration" />
-        <Field.Label>{text.declaration}</Field.Label>
-      </Field.Root>
+        <Label>{text.declaration}</Label>
+      </Field>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
           {text.send}
@@ -221,15 +225,15 @@ function SelectAllExample({ locale }: { locale: FormLocale }) {
   const { text, lang } = choiceTextsFor(locale)
   const [state, setState] = useState<'some' | 'all' | 'none'>('some')
   return (
-    <Field.Root lang={lang}>
+    <Field lang={lang}>
       <Checkbox
         name="all"
         checked={state === 'all'}
         indeterminate={state === 'some'}
         onCheckedChange={(checked) => setState(checked ? 'all' : 'none')}
       />
-      <Field.Label marker="none">{text.selectAll}</Field.Label>
-    </Field.Root>
+      <Label marker="none">{text.selectAll}</Label>
+    </Field>
   )
 }
 
@@ -239,10 +243,10 @@ function ControlledExample({ locale }: { locale: FormLocale }) {
   const [checked, setChecked] = useState(false)
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
+      <Field required>
         <Checkbox name="declaration" checked={checked} onCheckedChange={setChecked} />
-        <Field.Label>{text.declaration}</Field.Label>
-      </Field.Root>
+        <Label>{text.declaration}</Label>
+      </Field>
       <p className="kv-story-form-output" data-testid="mirror">
         {text.youChose}: {String(checked)}
       </p>
@@ -287,10 +291,10 @@ function PlainFormExample({ locale }: { locale: FormLocale }) {
         setSent(fieldText(data, 'declaration') === '' ? '–' : fieldText(data, 'declaration'))
       }}
     >
-      <Field.Root required>
+      <Field required>
         <Checkbox name="declaration" value="intygat" />
-        <Field.Label>{text.declaration}</Field.Label>
-      </Field.Root>
+        <Label>{text.declaration}</Label>
+      </Field>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
           {text.send}
@@ -325,11 +329,11 @@ export const OnSurfaces: Story = {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
       <Card.Root lang={lang}>
-        <Field.Root required invalid>
+        <Field required invalid>
           <Checkbox name="declaration" />
-          <Field.Label>{text.declaration}</Field.Label>
-          <Field.ErrorMessage>{text.declarationError}</Field.ErrorMessage>
-        </Field.Root>
+          <Label>{text.declaration}</Label>
+          <ErrorMessage>{text.declarationError}</ErrorMessage>
+        </Field>
       </Card.Root>
     )
   },
@@ -345,10 +349,10 @@ export const Compact: Story = {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
       <div className="kv-compact" lang={lang}>
-        <Field.Root required>
+        <Field required>
           <Checkbox name="declaration" defaultChecked />
-          <Field.Label>{text.declaration}</Field.Label>
-        </Field.Root>
+          <Label>{text.declaration}</Label>
+        </Field>
       </div>
     )
   },
@@ -363,31 +367,31 @@ function CheckboxStates({ locale }: { locale: FormLocale }) {
   const { text, lang } = choiceTextsFor(locale)
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
+      <Field required>
         <Checkbox name="unchecked" />
-        <Field.Label>{text.declaration}</Field.Label>
-      </Field.Root>
-      <Field.Root required>
+        <Label>{text.declaration}</Label>
+      </Field>
+      <Field required>
         <Checkbox name="checked" defaultChecked />
-        <Field.Label>{text.newsletter}</Field.Label>
-      </Field.Root>
-      <Field.Root required>
+        <Label>{text.newsletter}</Label>
+      </Field>
+      <Field required>
         <Checkbox name="indeterminate" indeterminate />
-        <Field.Label>{text.selectAll}</Field.Label>
-      </Field.Root>
-      <Field.Root required invalid>
+        <Label>{text.selectAll}</Label>
+      </Field>
+      <Field required invalid>
         <Checkbox name="invalid" />
-        <Field.Label>{text.longLabel}</Field.Label>
-        <Field.ErrorMessage>{text.declarationError}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root required disabled>
+        <Label>{text.longLabel}</Label>
+        <ErrorMessage>{text.declarationError}</ErrorMessage>
+      </Field>
+      <Field required disabled>
         <Checkbox name="disabled" />
-        <Field.Label>{text.rowOne}</Field.Label>
-      </Field.Root>
-      <Field.Root required disabled>
+        <Label>{text.rowOne}</Label>
+      </Field>
+      <Field required disabled>
         <Checkbox name="disabled-checked" defaultChecked />
-        <Field.Label>{text.rowTwo}</Field.Label>
-      </Field.Root>
+        <Label>{text.rowTwo}</Label>
+      </Field>
     </div>
   )
 }

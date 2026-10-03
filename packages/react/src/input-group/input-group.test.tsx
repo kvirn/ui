@@ -21,6 +21,7 @@ import type {
   UseInputGroupOptions,
   UseInputGroupResult,
 } from './use-input-group.ts'
+import { Prose } from '../prose/prose.tsx'
 
 // Contract: input-group.a11y.md. The keyboard rows are also covered end to end in
 // apps/storybook/src/components/input-group/input-group.e2e.ts.
@@ -51,7 +52,7 @@ function RentField({
         <Input name="rent" inputMode="decimal" className="kv-input--width-10" />
         <InputGroup.Addon data-testid="addon">kr</InputGroup.Addon>
       </InputGroup.Root>
-      <Field.Description>Till exempel 8450</Field.Description>
+      <Prose>Till exempel 8450</Prose>
       {invalid ? <Field.ErrorMessage>Ange hyran i hela kronor</Field.ErrorMessage> : null}
     </Field.Root>
   )

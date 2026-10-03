@@ -1,11 +1,12 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { useContext, useEffect, useId, useLayoutEffect, useMemo, useRef } from 'react'
+import { useContext, useEffect, useLayoutEffect, useMemo } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { ProseRoot } from '../prose/prose.tsx'
 import { useMessages } from '../provider/use-messages.ts'
 import { renderPart } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
@@ -39,10 +40,6 @@ export interface FieldLabelProps extends Omit<ComponentPropsWithRef<'label'>, 'h
   render?: RenderProp<ComponentPropsWithRef<'label'>, FieldState> | undefined
 }
 
-export interface FieldDescriptionProps extends Omit<ComponentPropsWithRef<'p'>, 'id'> {
-  render?: RenderProp<ComponentPropsWithRef<'p'>, FieldState> | undefined
-}
-
 export interface FieldErrorMessageProps extends Omit<ComponentPropsWithRef<'p'>, 'id'> {
   render?: RenderProp<ComponentPropsWithRef<'p'>, FieldState> | undefined
 }
@@ -63,17 +60,19 @@ export function OptionalMarker({ text }: { text: string | undefined }): ReactNod
 }
 
 /**
- * One form question with one control: a `<div>` that wires its Label, Description and
+ * One form question with one control: a `<div>` that wires its Label, hint (a `Prose`) and
  * ErrorMessage to the control inside it (ADR-0029, contract: field.a11y.md). It holds no form
  * state: pass `invalid`, `required` and `disabled` from your own form logic.
  *
  * @example
- * <Field.Root invalid={errors.phone !== undefined}>
- *   <Field.Label>Telefonnummer</Field.Label>
- *   <Field.Description>Vi ringer bara om något är fel.</Field.Description>
- *   <Field.ErrorMessage>{errors.phone}</Field.ErrorMessage>
+ * <Field invalid={errors.phone !== undefined}>
+ *   <Label>Telefonnummer</Label>
+ *   <Prose>
+ *     <p>Vi ringer bara om något är fel.</p>
+ *   </Prose>
+ *   <ErrorMessage>{errors.phone}</ErrorMessage>
  *   <Input name="phone" autoComplete="tel" />
- * </Field.Root>
+ * </Field>
  */
 export function FieldRoot({
   invalid = false,
@@ -144,7 +143,7 @@ export function FieldRoot({
     </FieldTextHostContext.Provider>
   )
 }
-FieldRoot.displayName = 'Field.Root'
+FieldRoot.displayName = 'Field'
 
 /**
  * The field's visible label, a `<label for>` that names the control. Adds the `field.optional`
@@ -194,46 +193,7 @@ export function FieldLabel({
     state: field?.state ?? noState,
   })
 }
-FieldLabel.displayName = 'Field.Label'
-
-/**
- * The hint: what the user needs to answer, such as the format. It's part of the control's
- * accessible description, or the group's in a Fieldset. A Field can have several: each has its
- * own id, and `aria-describedby` lists them in DOM order, then the error (ADR-0031). The default
- * order is label, a hint, the control, a hint under it, then the error.
- */
-export function FieldDescription({
-  render,
-  ref,
-  ...otherProps
-}: FieldDescriptionProps): ReactElement {
-  const host = useContext(FieldTextHostContext)
-  const name = useId()
-  const elementRef = useRef<Element | null>(null)
-  const mergedRef = useMergedRef(ref, elementRef)
-
-  const registerDescription = host?.registerDescription
-  useLayoutEffect(() => registerDescription?.(name, elementRef), [registerDescription, name])
-  useEffect(() => {
-    if (host === null) {
-      warnOnce(
-        'field-description-outside-field',
-        'A Field.Description is outside a Field.Root or Fieldset.Root, so no control is described by it. Put it inside one.',
-      )
-    }
-  }, [host])
-
-  const partProps =
-    host === null ? { className: 'kv-field-description' } : host.getDescriptionProps(name)
-
-  return renderPart({
-    render,
-    defaultElement: 'p',
-    partProps: { ...mergeProps(otherProps, partProps), ref: mergedRef },
-    state: host?.state ?? noState,
-  })
-}
-FieldDescription.displayName = 'Field.Description'
+FieldLabel.displayName = 'Label'
 
 /**
  * The error message: says what's wrong and how to fix it. Renders only while its Field or
@@ -290,12 +250,29 @@ export function FieldErrorMessage({
     state: host?.state ?? { ...noState, isInvalid: true },
   })
 }
-FieldErrorMessage.displayName = 'Field.ErrorMessage'
+FieldErrorMessage.displayName = 'ErrorMessage'
 
-/** A form question with one control, and its label, hint and error (ADR-0029). */
-export const Field = {
+/** The question's label. The same component as `Field.Label`. */
+export const Label = FieldLabel
+
+/** The question's error message. The same component as `Field.ErrorMessage`. */
+export const ErrorMessage = FieldErrorMessage
+
+/**
+ * A form question with one control, and its label and error (ADR-0029): `<Field>` is the root,
+ * with `<Label>`, `<Prose>` for the hint (ADR-0054) and `<ErrorMessage>` inside it. `Field.Root`,
+ * `Field.Label`, `Field.Prose` and `Field.ErrorMessage` are the same components (ADR-0055).
+ *
+ * @example
+ * <Field required>
+ *   <Label>E-postadress</Label>
+ *   <Prose><p>Vi skickar beslutet hit.</p></Prose>
+ *   <Input name="email" type="email" autoComplete="email" />
+ * </Field>
+ */
+export const Field = Object.assign(FieldRoot, {
   Root: FieldRoot,
   Label: FieldLabel,
-  Description: FieldDescription,
+  Prose: ProseRoot,
   ErrorMessage: FieldErrorMessage,
-} as const
+})

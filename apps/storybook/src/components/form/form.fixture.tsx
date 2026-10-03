@@ -5,7 +5,7 @@ import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
 import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
-import { Field, Input, KvirnProvider } from '@kvirn-ui/react'
+import { ErrorMessage, Field, Input, KvirnProvider, Label, Prose } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 
 // Story and e2e fixture for the Components/Form pages (docs/design/form-fields.md §4.2, §4.3).
@@ -27,9 +27,9 @@ export interface FormTexts {
   personalNumber: string
   personalNumberHint: string
   registration: string
-  /** The Description above the control: where to find the answer. */
+  /** The hint above the control: where to find the answer. */
   registrationWhere: string
-  /** The Description under the control: a format example (ADR-0031). */
+  /** The hint under the control: a format example (ADR-0031). */
   registrationHint: string
   /** The ErrorMessage, under the hint under the control. */
   registrationError: string
@@ -326,7 +326,7 @@ const messagesFor = (locale: FormLocale): KvirnMessages =>
 const asText = (message: TextMessage): string =>
   typeof message === 'function' ? message() : message
 
-/** The text `Field.Label` and `Field.ErrorMessage` add in a locale, for the plays' assertions. */
+/** The text `Label` and `ErrorMessage` add in a locale, for the plays' assertions. */
 export function fieldMessagesFor(locale: FormLocale): { optional: string; errorPrefix: string } {
   const { optional, errorPrefix } = messagesFor(locale).field
   return { optional: asText(optional), errorPrefix: asText(errorPrefix) }
@@ -354,30 +354,36 @@ export function FieldStates({ locale }: { locale: FormLocale }) {
   const { text, lang } = textsFor(locale)
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.name}</Field.Label>
-        <Field.Description>{text.nameHint}</Field.Description>
+      <Field required>
+        <Label>{text.name}</Label>
+        <Prose>
+          <p>{text.nameHint}</p>
+        </Prose>
         <Input name="name" autoComplete="name" />
-      </Field.Root>
-      <Field.Root required invalid>
-        <Field.Label>{text.email}</Field.Label>
-        <Field.Description>{text.emailHint}</Field.Description>
+      </Field>
+      <Field required invalid>
+        <Label>{text.email}</Label>
+        <Prose>
+          <p>{text.emailHint}</p>
+        </Prose>
         <Input name="email" type="email" autoComplete="email" defaultValue="anna@" />
-        <Field.ErrorMessage>{text.emailError}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root>
-        <Field.Label>{text.phone}</Field.Label>
+        <ErrorMessage>{text.emailError}</ErrorMessage>
+      </Field>
+      <Field>
+        <Label>{text.phone}</Label>
         <Input name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
-      </Field.Root>
-      <Field.Root required disabled>
-        <Field.Label>{text.registration}</Field.Label>
+      </Field>
+      <Field required disabled>
+        <Label>{text.registration}</Label>
         <Input name="registration" defaultValue="ABC 123" className="kv-input--width-10" />
-      </Field.Root>
-      <Field.Root required>
-        <Field.Label>{text.personalNumber}</Field.Label>
-        <Field.Description>{text.personalNumberHint}</Field.Description>
+      </Field>
+      <Field required>
+        <Label>{text.personalNumber}</Label>
+        <Prose>
+          <p>{text.personalNumberHint}</p>
+        </Prose>
         <Input name="personal-number" readOnly defaultValue="19900101-1234" />
-      </Field.Root>
+      </Field>
     </div>
   )
 }

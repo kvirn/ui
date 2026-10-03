@@ -5,7 +5,7 @@ import { wcagTags } from '@kvirn-ui/testing'
 
 // Contract: packages/react/src/field/field.a11y.md › Keyboard, Focus management and Visual /
 // modes. One test per row, named after it. Field handles no keys: these prove it never gets in
-// the controls' way. The Label, Description and ErrorMessage pages are covered here too: they
+// the controls' way. The Label, Hint (a Prose) and ErrorMessage pages are covered here too: they
 // are the same parts. KvirnUI holds no form state, so every story sets `invalid` itself.
 
 /** `globals` selects the theme like the toolbar does, such as `mode:dark;contrast:more`. */
@@ -51,10 +51,8 @@ test.describe('Field keyboard contract', () => {
     }
   })
 
-  test('Tab goes to the control on the Label, Description and ErrorMessage pages', async ({
-    page,
-  }) => {
-    for (const pageName of ['label', 'description', 'errormessage']) {
+  test('Tab goes to the control on the Label, Hint and ErrorMessage pages', async ({ page }) => {
+    for (const pageName of ['label', 'hint', 'errormessage']) {
       await openStory(page, pageName, 'keyboard')
       const input = page.getByRole('textbox', { name: 'Fullständigt namn' })
       await page.keyboard.press('Tab')
@@ -79,7 +77,7 @@ test.describe('Field keyboard contract', () => {
     await expect(page.getByRole('textbox', { name: 'Telefonnummer (valfritt)' })).toBeFocused()
   })
 
-  test('Tab skips the description and the error message', async ({ page }) => {
+  test('Tab skips the hint and the error message', async ({ page }) => {
     await openStory(page, 'field', 'invalid')
     const input = page.getByRole('textbox', { name: 'E-postadress' })
     await page.keyboard.press('Tab')
@@ -91,7 +89,7 @@ test.describe('Field keyboard contract', () => {
       expect(await page.evaluate(() => document.activeElement?.tagName)).toMatch(/^(?:INPUT|BODY)$/)
     }
     for (const text of await page
-      .locator('.kv-field-description, .kv-field-error-message, .kv-field-label')
+      .locator('.kv-field > .kv-prose, .kv-field-error-message, .kv-field-label')
       .all()) {
       await expect(text).not.toHaveAttribute('tabindex', /.*/)
     }
@@ -183,7 +181,7 @@ test.describe('Field focus and modes', () => {
     for (const [pageName, story] of [
       ['field', 'long-finnish'],
       ['label', 'long-finnish'],
-      ['description', 'long-finnish'],
+      ['hint', 'long-finnish'],
       ['errormessage', 'long-message'],
     ] as const) {
       await openStory(page, pageName, story)
@@ -227,7 +225,7 @@ test.describe('Field focus and modes', () => {
       await page.evaluate(() => {
         document.body.classList.add('kv-story-text-spacing')
       })
-      await expect(page.locator('.kv-field-description, .kv-field-label').first()).toHaveCSS(
+      await expect(page.locator('.kv-field > .kv-prose, .kv-field-label').first()).toHaveCSS(
         'letter-spacing',
         /^[1-9]/,
       )
@@ -328,11 +326,11 @@ test.describe('Field accessibility', () => {
     ['label', 'as-page-heading'],
     ['label', 'long-finnish'],
     ['label', 'compact'],
-    ['description', 'in-field'],
-    ['description', 'in-fieldset'],
-    ['description', 'with-example'],
-    ['description', 'compact'],
-    ['description', 'long-finnish'],
+    ['hint', 'in-field'],
+    ['hint', 'in-fieldset'],
+    ['hint', 'with-example'],
+    ['hint', 'compact'],
+    ['hint', 'long-finnish'],
     ['errormessage', 'in-field'],
     ['errormessage', 'not-invalid'],
     ['errormessage', 'in-fieldset'],

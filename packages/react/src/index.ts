@@ -96,14 +96,14 @@ export type {
   UseNotificationResult,
 } from './notification/use-notification.ts'
 export {
+  ErrorMessage,
   Field,
-  FieldDescription,
   FieldErrorMessage,
   FieldLabel,
   FieldRoot,
+  Label,
 } from './field/field.tsx'
 export type {
-  FieldDescriptionProps,
   FieldErrorMessageProps,
   FieldLabelProps,
   FieldMarker,
@@ -123,10 +123,10 @@ export type {
 } from './field/use-field.ts'
 export {
   Fieldset,
-  FieldsetDescription,
   FieldsetErrorMessage,
   FieldsetLegend,
   FieldsetRoot,
+  Legend,
 } from './fieldset/fieldset.tsx'
 export type { FieldsetLegendProps, FieldsetRootProps, FieldsetState } from './fieldset/fieldset.tsx'
 export { useFieldset } from './fieldset/use-fieldset.ts'

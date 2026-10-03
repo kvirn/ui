@@ -20,6 +20,7 @@ import type {
   UseCheckboxGroupOptions,
   UseCheckboxGroupResult,
 } from './use-checkbox-group.ts'
+import { Prose } from '../prose/prose.tsx'
 
 // Contract: checkbox-group.a11y.md. The keyboard rows are also covered end to end in
 // apps/storybook/src/components/checkbox-group/checkbox-group.e2e.ts.
@@ -67,14 +68,12 @@ function Contact({ withDescription = true, optionHint = false, ...rootProps }: C
   return (
     <CheckboxGroup.Root {...rootProps}>
       <Fieldset.Legend>Hur ska vi kontakta dig?</Fieldset.Legend>
-      {withDescription ? <Fieldset.Description>Välj alla som passar.</Fieldset.Description> : null}
+      {withDescription ? <Prose>Välj alla som passar.</Prose> : null}
       {options.map(([value, label]) => (
         <Field.Root key={value}>
           <Checkbox value={value} />
           <Field.Label>{label}</Field.Label>
-          {optionHint && value === 'letter' ? (
-            <Field.Description>Tar några dagar extra.</Field.Description>
-          ) : null}
+          {optionHint && value === 'letter' ? <Prose>Tar några dagar extra.</Prose> : null}
         </Field.Root>
       ))}
       <Fieldset.ErrorMessage>Välj hur vi ska kontakta dig</Fieldset.ErrorMessage>

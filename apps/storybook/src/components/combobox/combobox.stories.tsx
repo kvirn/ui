@@ -1,4 +1,4 @@
-import { Button, Card, Combobox, Field } from '@kvirn-ui/react'
+import { Button, Card, Combobox, ErrorMessage, Field, Label, Prose } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/combobox/combobox.a11y.md?raw'
 import guide from '../../../../../packages/react/src/combobox/combobox.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -181,10 +181,10 @@ export const Minimal: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = comboboxTextsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
+      <Field required lang={lang}>
+        <Label>{text.municipality}</Label>
         <MunicipalityCombobox withButtons={false} />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -200,10 +200,10 @@ export const Selected: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = comboboxTextsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
+      <Field required lang={lang}>
+        <Label>{text.municipality}</Label>
         <MunicipalityCombobox defaultValue="malmö" />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -224,11 +224,13 @@ export const Filtering: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = comboboxTextsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Field.Description>{text.hint}</Field.Description>
+      <Field required lang={lang}>
+        <Label>{text.municipality}</Label>
+        <Prose>
+          <p>{text.hint}</p>
+        </Prose>
         <MunicipalityCombobox />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -246,10 +248,10 @@ export const NoResults: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = comboboxTextsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
+      <Field required lang={lang}>
+        <Label>{text.municipality}</Label>
         <MunicipalityCombobox />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, canvasElement, globals }) => {
@@ -270,10 +272,10 @@ export const Loading: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = comboboxTextsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
+      <Field required lang={lang}>
+        <Label>{text.municipality}</Label>
         <MunicipalityCombobox items={[]} filter={false} isLoading />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, canvasElement, globals }) => {
@@ -324,10 +326,10 @@ export const Groups: Story = {
     const locale = localeOf(globals)
     const { text, lang } = comboboxTextsFor(locale)
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
+      <Field required lang={lang}>
+        <Label>{text.municipality}</Label>
         <GroupsCombobox locale={locale} />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -344,10 +346,10 @@ export const DisabledOption: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = comboboxTextsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
+      <Field required lang={lang}>
+        <Label>{text.municipality}</Label>
         <MunicipalityCombobox items={municipalitiesWithClosed} />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -366,12 +368,14 @@ export const Invalid: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = comboboxTextsFor(localeOf(globals))
     return (
-      <Field.Root required invalid lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Field.Description>{text.hint}</Field.Description>
+      <Field required invalid lang={lang}>
+        <Label>{text.municipality}</Label>
+        <Prose>
+          <p>{text.hint}</p>
+        </Prose>
         <MunicipalityCombobox defaultInputValue="Gö" />
-        <Field.ErrorMessage>{text.notInList}</Field.ErrorMessage>
-      </Field.Root>
+        <ErrorMessage>{text.notInList}</ErrorMessage>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -389,10 +393,10 @@ export const Disabled: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = comboboxTextsFor(localeOf(globals))
     return (
-      <Field.Root required disabled lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
+      <Field required disabled lang={lang}>
+        <Label>{text.municipality}</Label>
         <MunicipalityCombobox defaultValue="malmö" />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -406,11 +410,13 @@ export const Multiple: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = comboboxTextsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.several}</Field.Label>
-        <Field.Description>{text.severalHint}</Field.Description>
+      <Field required lang={lang}>
+        <Label>{text.several}</Label>
+        <Prose>
+          <p>{text.severalHint}</p>
+        </Prose>
         <MunicipalitiesCombobox />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -432,10 +438,10 @@ export const MultipleOne: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = comboboxTextsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.several}</Field.Label>
+      <Field required lang={lang}>
+        <Label>{text.several}</Label>
         <MunicipalitiesCombobox defaultValue={['malmö']} />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -463,10 +469,10 @@ export const LongList: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = comboboxTextsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
+      <Field required lang={lang}>
+        <Label>{text.municipality}</Label>
         <MunicipalityCombobox items={longList} />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -481,8 +487,8 @@ export const RichOptions: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = comboboxTextsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
+      <Field required lang={lang}>
+        <Label>{text.municipality}</Label>
         <Combobox.Root
           items={richMunicipalities}
           itemToString={(municipality) => municipality.name}
@@ -504,7 +510,7 @@ export const RichOptions: Story = {
             </Combobox.List>
           </Combobox.Popup>
         </Combobox.Root>
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -529,14 +535,14 @@ export const LongFinnish: Story = {
         data-testid="narrow"
         style={{ paddingInline: 'var(--kv-space-4)' }}
       >
-        <Field.Root required lang={lang}>
-          <Field.Label>{text.longLabel}</Field.Label>
+        <Field required lang={lang}>
+          <Label>{text.longLabel}</Label>
           <MunicipalityCombobox items={items} defaultValue="long" />
-        </Field.Root>
-        <Field.Root required lang={lang}>
-          <Field.Label>{shared.longSelectLabel}</Field.Label>
+        </Field>
+        <Field required lang={lang}>
+          <Label>{shared.longSelectLabel}</Label>
           <MunicipalitiesCombobox items={items} defaultValue={['long', 'ale']} />
-        </Field.Root>
+        </Field>
       </div>
     )
   },
@@ -554,11 +560,11 @@ export const OnSurfaces: Story = {
     const { text, lang } = comboboxTextsFor(localeOf(globals))
     return (
       <Card.Root lang={lang}>
-        <Field.Root required invalid>
-          <Field.Label>{text.municipality}</Field.Label>
+        <Field required invalid>
+          <Label>{text.municipality}</Label>
           <MunicipalityCombobox />
-          <Field.ErrorMessage>{text.notInList}</Field.ErrorMessage>
-        </Field.Root>
+          <ErrorMessage>{text.notInList}</ErrorMessage>
+        </Field>
       </Card.Root>
     )
   },
@@ -574,10 +580,10 @@ export const Compact: Story = {
     const { text, lang } = comboboxTextsFor(localeOf(globals))
     return (
       <div className="kv-compact" lang={lang}>
-        <Field.Root required>
-          <Field.Label>{text.municipality}</Field.Label>
+        <Field required>
+          <Label>{text.municipality}</Label>
           <MunicipalityCombobox />
-        </Field.Root>
+        </Field>
       </div>
     )
   },
@@ -593,10 +599,10 @@ function ControlledExample({ locale }: { locale: FormLocale }) {
   const [value, setValue] = useState<string | null>('göteborg')
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
+      <Field required>
+        <Label>{text.municipality}</Label>
         <MunicipalityCombobox value={value} onValueChange={setValue} />
-      </Field.Root>
+      </Field>
       <p className="kv-story-form-output" data-testid="mirror">
         {shared.youChose}: {value ?? '–'}
       </p>
@@ -638,10 +644,10 @@ function PlainFormExample({ locale }: { locale: FormLocale }) {
         setSent(typeof value === 'string' ? value : '')
       }}
     >
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
+      <Field required>
+        <Label>{text.municipality}</Label>
         <MunicipalityCombobox name="municipality" defaultValue="göteborg" />
-      </Field.Root>
+      </Field>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
           {shared.send}

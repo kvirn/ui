@@ -9,11 +9,11 @@ import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Input } from '../input/input.tsx'
+import { Prose } from '../prose/prose.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { FieldContext } from './field-context.ts'
-import { Field, FieldDescription, FieldErrorMessage, FieldLabel, FieldRoot } from './field.tsx'
+import { ErrorMessage, Field, FieldErrorMessage, FieldLabel, FieldRoot, Label } from './field.tsx'
 import type {
-  FieldDescriptionProps,
   FieldErrorMessageProps,
   FieldLabelProps,
   FieldRootProps,
@@ -78,9 +78,7 @@ function PhoneField({
   return (
     <Field.Root invalid={invalid} required={required} disabled={disabled}>
       <Field.Label marker={marker}>Telefonnummer</Field.Label>
-      {withDescription ? (
-        <Field.Description>Vi ringer bara om något är fel.</Field.Description>
-      ) : null}
+      {withDescription ? <Prose>Vi ringer bara om något är fel.</Prose> : null}
       <Field.ErrorMessage>Ange ett telefonnummer</Field.ErrorMessage>
       <Input name="phone" autoComplete="tel" />
     </Field.Root>
@@ -97,7 +95,9 @@ describe('rendering', () => {
     const { container } = await render(
       <Field.Root data-testid="root" invalid>
         <Field.Label data-testid="label">Namn</Field.Label>
-        <Field.Description data-testid="description">Som i passet.</Field.Description>
+        <Prose data-testid="description">
+          <p>Som i passet.</p>
+        </Prose>
         <Field.ErrorMessage data-testid="error">Ange ditt namn</Field.ErrorMessage>
         <Input />
       </Field.Root>,
@@ -109,7 +109,7 @@ describe('rendering', () => {
     const label = page.getByTestId('label').element()
     expect([label.tagName, label.className]).toEqual(['LABEL', 'kv-field-label'])
     const description = page.getByTestId('description').element()
-    expect([description.tagName, description.className]).toEqual(['P', 'kv-field-description'])
+    expect([description.tagName, description.className]).toEqual(['DIV', 'kv-prose'])
     const error = page.getByTestId('error').element()
     expect([error.tagName, error.className]).toEqual(['P', 'kv-field-error-message'])
     await expect.element(page.getByTestId('root')).not.toHaveAttribute('data-kv')
@@ -139,14 +139,14 @@ describe('rendering', () => {
         <Field.Label render={<EgenEtikett />} marker="none">
           Namn
         </Field.Label>
-        <Field.Description render={<div data-beskrivning="" />}>Som i passet.</Field.Description>
+        <Prose render={<p data-beskrivning="" />}>Som i passet.</Prose>
         <Input />
       </Field.Root>,
     )
     await expect.element(page.getByText('Namn')).toHaveAttribute('data-egen', '')
     const description = page.getByText('Som i passet.').element()
-    expect(description.tagName).toBe('DIV')
-    expect(description.className).toBe('kv-field-description')
+    expect(description.tagName).toBe('P')
+    expect(description.className).toBe('kv-prose')
   })
 
   test('render as a function gets the part’s props and the field’s state', async () => {
@@ -248,7 +248,7 @@ describe('wiring: name and description per state', () => {
     await render(<PhoneField invalid required />)
     const input = page.getByRole('textbox', { name: 'Telefonnummer' }).element()
     const [descriptionId, errorId] = (input.getAttribute('aria-describedby') ?? '').split(' ')
-    expect(document.getElementById(descriptionId ?? '')?.className).toBe('kv-field-description')
+    expect(document.getElementById(descriptionId ?? '')?.className).toBe('kv-prose')
     const error = document.getElementById(errorId ?? '')
     expect(error?.className).toBe('kv-field-error-message')
     expect(error?.querySelector('.kv-field-error-prefix')?.textContent).toBe('Error:')
@@ -274,7 +274,7 @@ describe('wiring: name and description per state', () => {
       return (
         <Field.Root>
           <Field.Label marker="none">Namn</Field.Label>
-          {show ? <Field.Description>Som i passet.</Field.Description> : null}
+          {show ? <Prose>Som i passet.</Prose> : null}
           <Input />
         </Field.Root>
       )
@@ -319,7 +319,7 @@ describe('wiring: name and description per state', () => {
     const { container } = await render(
       <Field.Root controlId="telefon">
         <Field.Label>Telefonnummer</Field.Label>
-        <Field.Description>Vi ringer bara om något är fel.</Field.Description>
+        <Prose>Vi ringer bara om något är fel.</Prose>
         <Input />
       </Field.Root>,
     )
@@ -383,7 +383,7 @@ describe('focus on submit (accessibility review, Plan 0013)', () => {
         >
           <Field.Root invalid={error !== undefined} required>
             <Field.Label>Telefonnummer</Field.Label>
-            <Field.Description>Vi ringer bara om något är fel.</Field.Description>
+            <Prose>Vi ringer bara om något är fel.</Prose>
             <Field.ErrorMessage>{error}</Field.ErrorMessage>
             <Input
               ref={inputRef}
@@ -419,7 +419,9 @@ describe('states', () => {
     await render(
       <Field.Root invalid data-testid="root">
         <Field.Label data-testid="label">Namn</Field.Label>
-        <Field.Description data-testid="description">Som i passet.</Field.Description>
+        <Prose data-testid="description">
+          <p>Som i passet.</p>
+        </Prose>
         <Field.ErrorMessage data-testid="error">Ange ditt namn</Field.ErrorMessage>
         <Input />
       </Field.Root>,
@@ -561,16 +563,16 @@ describe('parts outside a Field or Fieldset, and invalid without a message', () 
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('Field.Label')
   })
 
-  test('a Description and an ErrorMessage outside a Field warn, and render without an id', async () => {
+  test('an ErrorMessage outside a Field warns and renders without an id, a Prose outside one doesn’t warn', async () => {
     await render(
       <>
-        <FieldDescription data-testid="description">Som i passet.</FieldDescription>
+        <Prose data-testid="description">Som i passet.</Prose>
         <FieldErrorMessage data-testid="error">Fel</FieldErrorMessage>
       </>,
     )
     await expect.element(page.getByTestId('description')).not.toHaveAttribute('id')
+    await expect.element(page.getByTestId('error')).not.toHaveAttribute('id')
     expect(consoleWarn.mock.calls.map(([message]) => String(message))).toEqual([
-      expect.stringContaining('Field.Description'),
       expect.stringContaining('Field.ErrorMessage'),
     ])
   })
@@ -794,9 +796,9 @@ describe('several descriptions (ADR-0031)', () => {
     return (
       <Field.Root invalid={invalid} required>
         <Field.Label>Registreringsnummer</Field.Label>
-        <Field.Description data-testid="where">Det står på registreringsbeviset.</Field.Description>
+        <Prose data-testid="where">Det står på registreringsbeviset.</Prose>
         <Input name="registration" />
-        <Field.Description data-testid="format">Till exempel ABC 123</Field.Description>
+        <Prose data-testid="format">Till exempel ABC 123</Prose>
         <Field.ErrorMessage>Ange ett registreringsnummer</Field.ErrorMessage>
       </Field.Root>
     )
@@ -841,11 +843,9 @@ describe('several descriptions (ADR-0031)', () => {
       return (
         <Field.Root>
           <Field.Label marker="none">Registreringsnummer</Field.Label>
-          {showAbove ? (
-            <Field.Description data-testid="above">Ovanför fältet.</Field.Description>
-          ) : null}
+          {showAbove ? <Prose data-testid="above">Ovanför fältet.</Prose> : null}
           <Input />
-          <Field.Description data-testid="under">Under fältet.</Field.Description>
+          <Prose data-testid="under">Under fältet.</Prose>
           <button type="button" onClick={() => setShowAbove(true)}>
             Visa
           </button>
@@ -872,9 +872,9 @@ describe('several descriptions (ADR-0031)', () => {
       return (
         <Field.Root>
           <Field.Label marker="none">Registreringsnummer</Field.Label>
-          <Field.Description>Ovanför fältet.</Field.Description>
+          <Prose>Ovanför fältet.</Prose>
           <Input />
-          {showUnder ? <Field.Description>Under fältet.</Field.Description> : null}
+          {showUnder ? <Prose>Under fältet.</Prose> : null}
           <button type="button" onClick={() => setShowUnder(false)}>
             Dölj
           </button>
@@ -907,14 +907,14 @@ describe('several descriptions (ADR-0031)', () => {
         <>
           <Field.Root invalid={invalid}>
             <Field.Label marker="none">Registreringsnummer</Field.Label>
-            <Field.Description>Ovanför fältet.</Field.Description>
+            <Prose>Ovanför fältet.</Prose>
             <Input
               ref={inputRef}
               onFocus={(event) => {
                 describedByAtFocus.push(event.currentTarget.getAttribute('aria-describedby'))
               }}
             />
-            <Field.Description>Under fältet.</Field.Description>
+            <Prose>Under fältet.</Prose>
             <Field.ErrorMessage>Ange ett nummer</Field.ErrorMessage>
           </Field.Root>
           <button type="button" onClick={() => setInvalid(true)}>
@@ -948,31 +948,31 @@ describe('several descriptions (ADR-0031)', () => {
     expect(warnings[0]).toContain('one id')
   })
 
-  test('one ErrorMessage, or two Descriptions, don’t warn', async () => {
+  test('one ErrorMessage, or two hints, don’t warn', async () => {
     await render(<RegistrationField invalid />)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('the Description keeps its own props: class, state and ref, and render', async () => {
-    const ref = createRef<HTMLParagraphElement>()
+  test('a Prose hint keeps its own props: class, state and ref, and render', async () => {
+    const ref = createRef<HTMLElement>()
     await render(
       <Field.Root invalid disabled>
         <Field.Label marker="none">Namn</Field.Label>
-        <Field.Description ref={ref} className="egen" data-testid="first">
+        <Prose ref={ref} className="egen" data-testid="first">
           Ovanför.
-        </Field.Description>
-        <Field.Description render={<div />} data-testid="second">
+        </Prose>
+        <Prose render={<p />} data-testid="second">
           Under.
-        </Field.Description>
+        </Prose>
         <Input />
         <Field.ErrorMessage>Ange</Field.ErrorMessage>
       </Field.Root>,
     )
     expect(ref.current).toBe(page.getByTestId('first').element())
-    await expect.element(page.getByTestId('first')).toHaveClass('egen', 'kv-field-description')
+    await expect.element(page.getByTestId('first')).toHaveClass('egen', 'kv-prose')
     await expect.element(page.getByTestId('first')).toHaveAttribute('data-invalid', '')
     await expect.element(page.getByTestId('first')).toHaveAttribute('data-disabled', '')
-    expect(page.getByTestId('second').element().tagName).toBe('DIV')
+    expect(page.getByTestId('second').element().tagName).toBe('P')
     // A render element's own id is never needed: both are listed, so both have ids.
     expect(describedByIds('Namn')).toHaveLength(3)
   })
@@ -1004,7 +1004,6 @@ describe('types', () => {
   test('the parts can’t take an id or htmlFor that would break the wiring', () => {
     expectTypeOf<FieldLabelProps>().not.toHaveProperty('htmlFor')
     expectTypeOf<FieldLabelProps>().not.toHaveProperty('id')
-    expectTypeOf<FieldDescriptionProps>().not.toHaveProperty('id')
     expectTypeOf<FieldErrorMessageProps>().not.toHaveProperty('id')
     expectTypeOf<FieldLabelProps['marker']>().toEqualTypeOf<'optional' | 'none' | undefined>()
   })
@@ -1021,7 +1020,7 @@ describe('types', () => {
     expectTypeOf<UseFieldResult['rootProps']>().toEqualTypeOf<FieldRootPartProps>()
     expectTypeOf<FieldRootPartProps['className']>().toEqualTypeOf<'kv-field'>()
     expectTypeOf<FieldLabelPartProps['className']>().toEqualTypeOf<'kv-field-label'>()
-    expectTypeOf<FieldDescriptionPartProps['className']>().toEqualTypeOf<'kv-field-description'>()
+    expectTypeOf<FieldDescriptionPartProps['className']>().toEqualTypeOf<'kv-prose'>()
     expectTypeOf<
       FieldErrorMessagePartProps['className']
     >().toEqualTypeOf<'kv-field-error-message'>()
@@ -1033,7 +1032,36 @@ describe('types', () => {
   test('the compound and the named exports are the same parts', () => {
     expect(Field.Root).toBe(FieldRoot)
     expect(Field.Label).toBe(FieldLabel)
-    expect(Field.Description).toBe(FieldDescription)
+    expect(Field).not.toHaveProperty('Description')
+    expect(Field.Prose).toBe(Prose)
+    // The flat form (ADR-0055): <Field> is the root, and Label and ErrorMessage stand alone.
+    expect(Field).toBe(FieldRoot)
+    expect(Label).toBe(FieldLabel)
+    expect(ErrorMessage).toBe(FieldErrorMessage)
+    expect(Field.displayName).toBe('Field')
+    expect(Label.displayName).toBe('Label')
+    expect(ErrorMessage.displayName).toBe('ErrorMessage')
+    expect(Prose.displayName).toBe('Prose')
     expect(Field.ErrorMessage).toBe(FieldErrorMessage)
+  })
+
+  test('the flat form wires the label, the hint and the error like the compound form (ADR-0055)', async () => {
+    await render(
+      <Field required invalid>
+        <Label>E-postadress</Label>
+        <Prose>
+          <p>Vi skickar beslutet till den här adressen.</p>
+        </Prose>
+        <Input name="email" type="email" autoComplete="email" />
+        <ErrorMessage>Ange en adress</ErrorMessage>
+      </Field>,
+    )
+    const input = page.getByRole('textbox')
+    await expect.element(input).toHaveAccessibleName('E-postadress')
+    await expect
+      .element(input)
+      .toHaveAccessibleDescription(
+        'Vi skickar beslutet till den här adressen. Error: Ange en adress',
+      )
   })
 })

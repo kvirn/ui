@@ -12,15 +12,15 @@ Use a Combobox (a later part of Plan 0022) when the user should type to filter a
 ## The popup
 
 ```tsx
-import { Field, Listbox } from '@kvirn-ui/react'
+import { Field, Label, Listbox } from '@kvirn-ui/react'
 
 interface Municipality {
   code: string
   name: string
 }
 
-;<Field.Root required>
-  <Field.Label>Kommun</Field.Label>
+;<Field required>
+  <Label>Kommun</Label>
   <Listbox.Root
     items={municipalities}
     itemToString={(municipality) => municipality.name}
@@ -39,7 +39,7 @@ interface Municipality {
       <Listbox.Empty />
     </Listbox.Popup>
   </Listbox.Root>
-</Field.Root>
+</Field>
 ```
 
 ### Root
@@ -63,7 +63,7 @@ interface Municipality {
 | `placement`, `offset`, `padding`         | Where the popup goes (default `'bottom-start'`, 4px gap, 8px from the viewport's edge). It is as wide as the trigger, flips when there is no room and scrolls inside.                                                                             |
 | `messages`                               | Per-instance overrides of the `combobox` strings (ADR-0007). `noResults` is the default text of `Listbox.Empty`.                                                                                                                                  |
 
-`invalid`, `required` and the description come from the Field, as for every control. The value is never copied into KvirnUI state: `value` and `onValueChange` are yours, or `defaultValue` and `name` for a plain form (ADR-0029).
+`invalid`, `required` and the description (a `Prose` in the Field) come from the Field, as for every control. The value is never copied into KvirnUI state: `value` and `onValueChange` are yours, or `defaultValue` and `name` for a plain form (ADR-0029).
 
 ### Parts
 
@@ -96,8 +96,8 @@ With `native="auto"`, the server and the first client render are the popup, and 
 - It takes plain text only: rich option content and `Listbox.Empty` don't apply, and `multiple` never renders it.
 
 ```tsx
-<Field.Root required>
-  <Field.Label>Kommun</Field.Label>
+<Field required>
+  <Label>Kommun</Label>
   <Listbox.Root
     native="always"
     items={municipalities}
@@ -107,7 +107,7 @@ With `native="auto"`, the server and the first client render are the popup, and 
     name="municipality"
     autoComplete="address-level2"
   />
-</Field.Root>
+</Field>
 ```
 
 ## Migrating from `NativeSelect`

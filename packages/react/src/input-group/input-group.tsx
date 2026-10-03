@@ -39,13 +39,13 @@ const focusableSelector =
  * directly in the Root. It holds no form state.
  *
  * @example
- * <Field.Root>
- *   <Field.Label>Månadshyra i kronor</Field.Label>
+ * <Field>
+ *   <Label>Månadshyra i kronor</Label>
  *   <InputGroup.Root>
  *     <Input name="rent" inputMode="decimal" className="kv-input--width-10" />
  *     <InputGroup.Addon>kr</InputGroup.Addon>
  *   </InputGroup.Root>
- * </Field.Root>
+ * </Field>
  */
 export function InputGroupRoot({
   invalid,

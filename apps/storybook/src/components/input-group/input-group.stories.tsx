@@ -1,4 +1,14 @@
-import { Button, Card, Field, Icon, Input, InputGroup } from '@kvirn-ui/react'
+import {
+  Button,
+  Card,
+  ErrorMessage,
+  Field,
+  Icon,
+  Input,
+  InputGroup,
+  Label,
+  Prose,
+} from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/input-group/input-group.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useRef, useState } from 'react'
@@ -63,8 +73,8 @@ interface RentFieldProps {
 function RentField({ locale, invalid, disabled, readOnly, withError }: RentFieldProps) {
   const { text, lang, amountExample } = textsFor(locale)
   return (
-    <Field.Root required invalid={invalid} disabled={disabled} lang={lang}>
-      <Field.Label>{text.rentWithUnit}</Field.Label>
+    <Field required invalid={invalid} disabled={disabled} lang={lang}>
+      <Label>{text.rentWithUnit}</Label>
       <InputGroup.Root>
         <Input
           name="rent"
@@ -77,9 +87,11 @@ function RentField({ locale, invalid, disabled, readOnly, withError }: RentField
         />
         <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
       </InputGroup.Root>
-      <Field.Description>{text.rentUnitExample(amountExample)}</Field.Description>
-      {withError ? <Field.ErrorMessage>{text.rentError(amountExample)}</Field.ErrorMessage> : null}
-    </Field.Root>
+      <Prose>
+        <p>{text.rentUnitExample(amountExample)}</p>
+      </Prose>
+      {withError ? <ErrorMessage>{text.rentError(amountExample)}</ErrorMessage> : null}
+    </Field>
   )
 }
 
@@ -107,8 +119,8 @@ function SearchExample({
   const [value, setValue] = useState(initialValue)
   const inputRef = useRef<HTMLInputElement | null>(null)
   return (
-    <Field.Root disabled={disabled} lang={lang}>
-      <Field.Label marker="none">{text.searchServices}</Field.Label>
+    <Field disabled={disabled} lang={lang}>
+      <Label marker="none">{text.searchServices}</Label>
       <InputGroup.Root>
         <InputGroup.Addon>
           <Icon name="search" size="md" />
@@ -136,7 +148,7 @@ function SearchExample({
           </Button>
         )}
       </InputGroup.Root>
-    </Field.Root>
+    </Field>
   )
 }
 
@@ -181,8 +193,8 @@ export const Percentage: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.workTime}</Field.Label>
+      <Field required lang={lang}>
+        <Label>{text.workTime}</Label>
         <InputGroup.Root>
           <Input
             name="work-time"
@@ -193,8 +205,10 @@ export const Percentage: Story = {
           />
           <InputGroup.Addon>{text.workTimeUnit}</InputGroup.Addon>
         </InputGroup.Root>
-        <Field.Description>{text.workTimeExample}</Field.Description>
-      </Field.Root>
+        <Prose>
+          <p>{text.workTimeExample}</p>
+        </Prose>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -210,9 +224,11 @@ export const Distance: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.distance}</Field.Label>
-        <Field.Description>{text.distanceHint}</Field.Description>
+      <Field required lang={lang}>
+        <Label>{text.distance}</Label>
+        <Prose>
+          <p>{text.distanceHint}</p>
+        </Prose>
         <InputGroup.Root>
           <Input
             name="distance"
@@ -223,7 +239,7 @@ export const Distance: Story = {
           />
           <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
         </InputGroup.Root>
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -239,15 +255,15 @@ export const SearchIcon: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root lang={lang}>
-        <Field.Label marker="none">{text.searchServices}</Field.Label>
+      <Field lang={lang}>
+        <Label marker="none">{text.searchServices}</Label>
         <InputGroup.Root>
           <InputGroup.Addon>
             <Icon name="search" size="md" />
           </InputGroup.Addon>
           <Input type="search" name="search" enterKeyHint="search" autoComplete="off" />
         </InputGroup.Root>
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -308,8 +324,8 @@ export const CalendarIcon: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.visitDate}</Field.Label>
+      <Field required lang={lang}>
+        <Label>{text.visitDate}</Label>
         <InputGroup.Root>
           <Input
             name="visit-date"
@@ -321,8 +337,10 @@ export const CalendarIcon: Story = {
             <Icon name="calendar" size="md" />
           </InputGroup.Addon>
         </InputGroup.Root>
-        <Field.Description>{text.visitDateExample}</Field.Description>
-      </Field.Root>
+        <Prose>
+          <p>{text.visitDateExample}</p>
+        </Prose>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -398,8 +416,8 @@ export const LongFinnishLabel: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div className="kv-story-narrow" data-testid="narrow">
-        <Field.Root required lang={lang}>
-          <Field.Label>{text.grantWithUnit}</Field.Label>
+        <Field required lang={lang}>
+          <Label>{text.grantWithUnit}</Label>
           <InputGroup.Root>
             <Input
               name="grant"
@@ -410,7 +428,7 @@ export const LongFinnishLabel: Story = {
             />
             <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
           </InputGroup.Root>
-        </Field.Root>
+        </Field>
       </div>
     )
   },
@@ -443,8 +461,8 @@ export const RTL: Story = {
   render: () => {
     const { text, lang } = textsFor('en')
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.amountEuro}</Field.Label>
+      <Field required lang={lang}>
+        <Label>{text.amountEuro}</Label>
         <InputGroup.Root>
           <InputGroup.Addon>{text.amountEuroUnit}</InputGroup.Addon>
           <Input
@@ -455,7 +473,7 @@ export const RTL: Story = {
             className="kv-input--width-10 kv-input--numeric"
           />
         </InputGroup.Root>
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas }) => {
@@ -470,8 +488,8 @@ function GroupStates({ locale }: { locale: FormLocale }) {
   return (
     <div className="kv-story-form" lang={lang}>
       <RentField locale={locale} invalid withError />
-      <Field.Root required>
-        <Field.Label>{text.workTime}</Field.Label>
+      <Field required>
+        <Label>{text.workTime}</Label>
         <InputGroup.Root>
           <Input
             name="work-time"
@@ -480,10 +498,12 @@ function GroupStates({ locale }: { locale: FormLocale }) {
           />
           <InputGroup.Addon>{text.workTimeUnit}</InputGroup.Addon>
         </InputGroup.Root>
-        <Field.Description>{text.workTimeExample}</Field.Description>
-      </Field.Root>
-      <Field.Root required disabled>
-        <Field.Label>{text.distance}</Field.Label>
+        <Prose>
+          <p>{text.workTimeExample}</p>
+        </Prose>
+      </Field>
+      <Field required disabled>
+        <Label>{text.distance}</Label>
         <InputGroup.Root>
           <Input
             name="distance"
@@ -493,7 +513,7 @@ function GroupStates({ locale }: { locale: FormLocale }) {
           />
           <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
         </InputGroup.Root>
-      </Field.Root>
+      </Field>
       <SearchExample locale={locale} initialValue="parkering" />
     </div>
   )

@@ -16,6 +16,7 @@ import { Input } from './input.tsx'
 import type { InputChangeDetails, InputProps, InputState, InputType } from './input.tsx'
 import { useInput } from './use-input.ts'
 import type { InputPartProps, UseInputOptions, UseInputResult } from './use-input.ts'
+import { Prose } from '../prose/prose.tsx'
 
 // Contract: input.a11y.md. The keyboard rows are also covered end to end in
 // apps/storybook/src/components/input/input.e2e.ts.
@@ -184,7 +185,7 @@ describe('in a Field', () => {
         <p id="extra">Extra information.</p>
         <Field.Root>
           <Field.Label>Namn</Field.Label>
-          <Field.Description>Som i passet.</Field.Description>
+          <Prose>Som i passet.</Prose>
           <Input aria-describedby="extra" />
         </Field.Root>
       </>,
@@ -228,7 +229,7 @@ describe('in a Field', () => {
       <KvirnProvider locale="sv-SE" messages={sv}>
         <Field.Root invalid>
           <Field.Label>Telefonnummer</Field.Label>
-          <Field.Description>Vi ringer bara om något är fel.</Field.Description>
+          <Prose>Vi ringer bara om något är fel.</Prose>
           <Field.ErrorMessage>Ange ett telefonnummer</Field.ErrorMessage>
           <Input type="tel" autoComplete="tel" />
         </Field.Root>
@@ -395,7 +396,7 @@ describe('focus visible', () => {
       <>
         <Field.Root>
           <Field.Label marker="none">Ett</Field.Label>
-          <Field.Description>Hint</Field.Description>
+          <Prose>Hint</Prose>
           <Input />
         </Field.Root>
         <Field.Root>
@@ -564,7 +565,7 @@ describe('mask (ADR-0032, contract: input.a11y.md › Masked input)', () => {
       <KvirnProvider locale="sv" messages={sv}>
         <Field.Root required invalid>
           <Field.Label>Personnummer</Field.Label>
-          <Field.Description>12 siffror, till exempel 19900101-1234.</Field.Description>
+          <Prose>12 siffror, till exempel 19900101-1234.</Prose>
           <Field.ErrorMessage>Ange personnumret</Field.ErrorMessage>
           <Input name="personalIdentityNumber" mask={personalIdentityNumber} />
         </Field.Root>
@@ -724,7 +725,7 @@ describe('mask (ADR-0032, contract: input.a11y.md › Masked input)', () => {
     await expect.element(page.getByRole('status')).toBeEmptyDOMElement()
   })
 
-  test('a masked Input in a Field without a Field.Description warns once (3.3.2)', async () => {
+  test('a masked Input in a Field without a hint warns once (3.3.2)', async () => {
     await render(
       <Field.Root>
         <Field.Label>Personnummer</Field.Label>
@@ -735,7 +736,7 @@ describe('mask (ADR-0032, contract: input.a11y.md › Masked input)', () => {
       expect(consoleWarn).toHaveBeenCalledTimes(1)
     })
     const message = String(consoleWarn.mock.calls[0]?.[0])
-    expect(message).toContain('Field.Description')
+    expect(message).toContain('<Prose>')
     expect(message).toContain('3.3.2')
   })
 
@@ -745,7 +746,7 @@ describe('mask (ADR-0032, contract: input.a11y.md › Masked input)', () => {
         <Field.Root>
           <Field.Label>Personnummer</Field.Label>
           <Input mask={personalIdentityNumber} />
-          <Field.Description>12 siffror, till exempel 19900101-1234.</Field.Description>
+          <Prose>12 siffror, till exempel 19900101-1234.</Prose>
         </Field.Root>
         <Field.Root>
           <Field.Label>Postnummer</Field.Label>

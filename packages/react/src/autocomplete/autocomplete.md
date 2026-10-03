@@ -9,9 +9,9 @@ Use an Autocomplete for a question whose answer is free text: a street, a search
 ## How it works
 
 ```tsx
-import { Autocomplete, Field } from '@kvirn-ui/react'
-;<Field.Root>
-  <Field.Label>Gatuadress</Field.Label>
+import { Autocomplete, Field, Label } from '@kvirn-ui/react'
+;<Field>
+  <Label>Gatuadress</Label>
   <Autocomplete.Root items={streets} value={street} onValueChange={setStreet} name="street">
     <Autocomplete.Control>
       <Autocomplete.Input />
@@ -24,7 +24,7 @@ import { Autocomplete, Field } from '@kvirn-ui/react'
       </Autocomplete.List>
     </Autocomplete.Popup>
   </Autocomplete.Root>
-</Field.Root>
+</Field>
 ```
 
 - **Put the input in an `Autocomplete.Control` with a `Toggle` and a `Clear`.** That is the default way to build it: a bare input looks like a plain text field, and a click on it opens nothing. The Toggle shows that there are suggestions and opens them, and Clear empties the text. A bare `Autocomplete.Input` is the minimal variant, for a search field where the question itself says to type.
@@ -45,7 +45,7 @@ import { Autocomplete, Field } from '@kvirn-ui/react'
 | `name`                                   | Put on the `<input>`, so a plain `<form>` and `FormData` send the text. There is no hidden input.                                                                                                                                                                        |
 | `items`, `groups`, `filter`, `isLoading` | The suggestions. The default filter matches anywhere in the text, in the provider's locale (å, ä and ö are not a and o in Swedish). For suggestions that your server chooses, pass `filter={false}` and `isLoading` while it works, and keep the last result in `items`. |
 
-`invalid`, `required` and the description come from the Field, as for every control. The value is never copied into KvirnUI state (ADR-0029).
+`invalid`, `required` and the description (a `Prose` in the Field) come from the Field, as for every control. The value is never copied into KvirnUI state (ADR-0029).
 
 ## Parts
 

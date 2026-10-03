@@ -90,7 +90,7 @@ The same names are used across all components:
 | `Panel`                                | Inline revealed content (Disclosure, Accordion, Tabs)                                    |
 | `Popup`                                | Floating content (Popover, Menu, Select, Tooltip, Dialog)                                |
 | `Backdrop`, `Portal`, `Close`          | Overlay plumbing                                                                         |
-| `Label`, `Description`, `ErrorMessage` | Field text, wired automatically to the control                                           |
+| `Label`, `ErrorMessage`                | Field text, wired automatically to the control. The description is a `Prose` (ADR-0054)  |
 | `Item`, `Option`, `Tab`                | Collection members                                                                       |
 | `Indicator`                            | Visual state marker, `aria-hidden`                                                       |
 | `Info`, `Success`, `Warning`, `Danger` | A ready-made Root for one status: its class, its icon and its status word (Notification) |

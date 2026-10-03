@@ -39,8 +39,8 @@ export interface InputProps extends Omit<
   /**
    * Shapes what the user types (ADR-0032): a preset from `masks`, or your own. The input stays
    * native, so paste, autofill and undo work. `onValueChange` then also gets `unmaskedValue`,
-   * `isComplete`, `isWithinRange` (number masks) and `rejected`. Put the format in a
-   * `Field.Description` (3.3.2).
+   * `isComplete`, `isWithinRange` (number masks) and `rejected`. Put the format in a hint, a
+   * `<Prose>` in the Field (3.3.2).
    */
   mask?: Mask | undefined
   /**
@@ -69,10 +69,10 @@ function hasNameSource(input: HTMLInputElement): boolean {
  * props. Numbers are text with `inputMode` (ADR-0030).
  *
  * @example
- * <Field.Root>
- *   <Field.Label>Antal barn</Field.Label>
+ * <Field>
+ *   <Label>Antal barn</Label>
  *   <Input name="children" inputMode="numeric" spellCheck={false} className="kv-input--width-2" />
- * </Field.Root>
+ * </Field>
  */
 export function Input({
   type,
@@ -144,7 +144,7 @@ export function Input({
       if (element.ownerDocument.querySelector(`[id^="${CSS.escape(prefix)}"]`) === null) {
         warnOnce(
           'input-mask-without-description',
-          'A masked Input in a Field has no Field.Description. The mask shapes what is typed, but it doesn’t explain the format: say it in a visible hint, with an example (WCAG 3.3.2, ADR-0032).',
+          'A masked Input in a Field has no hint. The mask shapes what is typed, but it doesn’t explain the format: say it in a visible hint, a <Prose> in the Field, with an example (WCAG 3.3.2, ADR-0032, ADR-0054).',
         )
       }
     }

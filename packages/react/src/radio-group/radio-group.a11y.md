@@ -4,7 +4,7 @@
 - **Deviations:** none from APG. Decisions: ADR-0029 (Fieldset wiring, option labels carry no optional marker, **no `aria-invalid` on radios**, no form state) and ADR-0039 (keyboard).
 - **Native elements used:** `<fieldset>` and `<legend>` (Root and `Fieldset.Legend`), `<input type="radio">` (Radio), `<label for>` (Field.Label).
 - **Status:** alpha candidate (Plan 0013, Phase 2). Accessibility-reviewer pending. Manual AT is `pending`.
-- **Tests:** `radio-group.test.tsx` next to this file. `radio-group.stories.tsx` and `radio-group.e2e.ts` in `apps/storybook/src/components/radio-group/`. The fieldset parts (Legend, Description, ErrorMessage): `fieldset.a11y.md`.
+- **Tests:** `radio-group.test.tsx` next to this file. `radio-group.stories.tsx` and `radio-group.e2e.ts` in `apps/storybook/src/components/radio-group/`. The fieldset parts (Legend, ErrorMessage, and a `Prose` as the hint): `fieldset.a11y.md`.
 
 A RadioGroup is one question with exactly one answer ("Hur länge behöver du tillståndet?": 1, 6 or 12 månader). `RadioGroup.Root` renders the `<fieldset>` and acts as a `Fieldset.Root` with `group` set; `Radio` is a native radio. It holds no form state: the selected value is the `value` prop, and each change is reported up (ADR-0029, item 0).
 
@@ -21,7 +21,7 @@ A RadioGroup is one question with exactly one answer ("Hur länge behöver du ti
 
 Rules, tested in `radio-group.test.tsx`:
 
-- **The group is named by its legend and described by its hint and error** (`radio-group.test.tsx › the group is named by its legend and described by its hint and error`).
+- **The group is named by its legend and described by its hint and error** (`radio-group.test.tsx › the group is named by its legend and described by its hint and error`). The hint is a `Prose` in the group (ADR-0054): its description is its text content, so keep it short and plain. A Prose directly in the group describes the group, one inside an option's Field describes that radio, and a Prose that isn't a hint goes outside the group.
 - **One name, native grouping.** Every radio has the group's `name`, so the browser groups them. Without `name`, the group generates one (`useId`) (`radio-group.test.tsx › every radio gets the group’s name, generated when missing`).
 - **Controlled by `value`.** The radio whose `value` equals the group's `value` is checked. `null` means "controlled, nothing selected". A change calls `onValueChange(value, { reason: 'input', event })` with the radio's value. The group never stores it (`radio-group.test.tsx › a controlled group checks the radio whose value it is given`).
 - **Uncontrolled without `value`.** `defaultValue` sets `defaultChecked` on one radio; the browser keeps the state and a form submit sends it (`radio-group.test.tsx › uncontrolled: defaultValue and the form submit`).

@@ -18,6 +18,7 @@ import type {
 } from './listbox-native.tsx'
 import { useListboxNative } from './use-listbox-native.ts'
 import type { ListboxNativePartProps, UseListboxNativeResult } from './use-listbox-native.ts'
+import { Prose } from '../prose/prose.tsx'
 
 // Contract: listbox.a11y.md (native rendering). The keyboard rows are also covered end to end in
 // apps/storybook/src/components/listbox/listbox.e2e.ts.
@@ -133,7 +134,7 @@ describe('in a Field', () => {
     const { container } = await render(
       <Field.Root invalid required>
         <Field.Label>Kommun</Field.Label>
-        <Field.Description>Där du är folkbokförd.</Field.Description>
+        <Prose>Där du är folkbokförd.</Prose>
         <ListboxNative name="municipality">{municipalities}</ListboxNative>
         <Field.ErrorMessage>Välj en kommun</Field.ErrorMessage>
       </Field.Root>,
@@ -202,7 +203,7 @@ describe('in a Field', () => {
         <p id="extra">Mer information.</p>
         <Field.Root required>
           <Field.Label>Kommun</Field.Label>
-          <Field.Description>Där du bor.</Field.Description>
+          <Prose>Där du bor.</Prose>
           <ListboxNative aria-describedby="extra">{municipalities}</ListboxNative>
         </Field.Root>
       </>,

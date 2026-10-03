@@ -1,4 +1,4 @@
-import { Button, Combobox, Field } from '@kvirn-ui/react'
+import { Button, Combobox, ErrorMessage, Field, Label, Prose } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -241,9 +241,11 @@ export function MunicipalitiesCombobox({
 export function DefaultExample({ locale }: { locale: FormLocale }) {
   const { text, lang } = comboboxTextsFor(locale)
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Field.Description>{text.hint}</Field.Description>
+    <Field required lang={lang}>
+      <Label>{text.municipality}</Label>
+      <Prose>
+        <p>{text.hint}</p>
+      </Prose>
       <Combobox.Root
         items={municipalities}
         itemToString={(municipality) => municipality.name}
@@ -262,7 +264,7 @@ export function DefaultExample({ locale }: { locale: FormLocale }) {
           <Combobox.Empty />
         </Combobox.Popup>
       </Combobox.Root>
-    </Field.Root>
+    </Field>
   )
 }
 
@@ -273,9 +275,11 @@ export function DefaultExample({ locale }: { locale: FormLocale }) {
 export function MultipleExample({ locale }: { locale: FormLocale }) {
   const { text, lang } = comboboxTextsFor(locale)
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.several}</Field.Label>
-      <Field.Description>{text.severalHint}</Field.Description>
+    <Field required lang={lang}>
+      <Label>{text.several}</Label>
+      <Prose>
+        <p>{text.severalHint}</p>
+      </Prose>
       <Combobox.Root
         multiple
         items={municipalities}
@@ -293,7 +297,7 @@ export function MultipleExample({ locale }: { locale: FormLocale }) {
           <Combobox.Empty />
         </Combobox.Popup>
       </Combobox.Root>
-    </Field.Root>
+    </Field>
   )
 }
 
@@ -318,18 +322,18 @@ export function KeyboardExample({ locale }: { locale: FormLocale }) {
       <div className="kv-button-group">
         <Button type="button">Före</Button>
       </div>
-      <Field.Root required controlId="municipality">
-        <Field.Label>{text.municipality}</Field.Label>
+      <Field required controlId="municipality">
+        <Label>{text.municipality}</Label>
         <MunicipalityCombobox items={municipalitiesWithClosed} name="municipality" />
-      </Field.Root>
-      <Field.Root required disabled controlId="closed">
-        <Field.Label>{shared.longSelectLabel}</Field.Label>
+      </Field>
+      <Field required disabled controlId="closed">
+        <Label>{shared.longSelectLabel}</Label>
         <MunicipalityCombobox withButtons={false} name="closed" />
-      </Field.Root>
-      <Field.Root required controlId="several">
-        <Field.Label>{text.several}</Field.Label>
+      </Field>
+      <Field required controlId="several">
+        <Label>{text.several}</Label>
         <MunicipalitiesCombobox name="several" defaultValue={['malmö', 'uppsala']} withClear />
-      </Field.Root>
+      </Field>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
           {shared.send}
@@ -349,24 +353,26 @@ export function ComboboxStates({ locale }: { locale: FormLocale }) {
   const { text, shared, lang } = comboboxTextsFor(locale)
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Field.Description>{text.hint}</Field.Description>
+      <Field required>
+        <Label>{text.municipality}</Label>
+        <Prose>
+          <p>{text.hint}</p>
+        </Prose>
         <MunicipalityCombobox items={municipalitiesWithClosed.slice(0, 8)} defaultValue="ale" />
-      </Field.Root>
-      <Field.Root required invalid>
-        <Field.Label>{text.municipality}</Field.Label>
+      </Field>
+      <Field required invalid>
+        <Label>{text.municipality}</Label>
         <MunicipalityCombobox />
-        <Field.ErrorMessage>{text.notInList}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root required>
-        <Field.Label>{text.several}</Field.Label>
+        <ErrorMessage>{text.notInList}</ErrorMessage>
+      </Field>
+      <Field required>
+        <Label>{text.several}</Label>
         <MunicipalitiesCombobox defaultValue={['malmö', 'uppsala', 'göteborg']} />
-      </Field.Root>
-      <Field.Root required disabled>
-        <Field.Label>{shared.municipality}</Field.Label>
+      </Field>
+      <Field required disabled>
+        <Label>{shared.municipality}</Label>
         <MunicipalityCombobox defaultValue="malmö" />
-      </Field.Root>
+      </Field>
     </div>
   )
 }

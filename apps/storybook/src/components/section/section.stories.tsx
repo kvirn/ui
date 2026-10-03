@@ -1,4 +1,4 @@
-import { Card, Heading, Link, Prose, Section } from '@kvirn-ui/react'
+import { Card, Link, Prose, Section } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/section/section.a11y.md?raw'
 import guide from '../../../../../packages/react/src/section/section.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -41,7 +41,7 @@ const meta = {
   args: {
     children: (
       <Prose>
-        <Heading level={2}>Kontakta oss</Heading>
+        <h2>Kontakta oss</h2>
         <p>Vi svarar vardagar 9–16.</p>
       </Prose>
     ),
@@ -68,7 +68,7 @@ export const Default: Story = {
       source: {
         code: `<Section>
   <Prose>
-    <Heading level={2}>Kontakta oss</Heading>
+    <h2>Kontakta oss</h2>
     <p>Vi svarar vardagar 9–16.</p>
   </Prose>
 </Section>`,

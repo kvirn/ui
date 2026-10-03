@@ -1,4 +1,4 @@
-import { Autocomplete, Button, Field } from '@kvirn-ui/react'
+import { Autocomplete, Button, ErrorMessage, Field, Label, Prose } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -146,9 +146,11 @@ export function StreetAutocomplete({
 export function DefaultExample({ locale }: { locale: FormLocale }) {
   const { text, lang } = autocompleteTextsFor(locale)
   return (
-    <Field.Root lang={lang}>
-      <Field.Label>{text.street}</Field.Label>
-      <Field.Description>{text.hint}</Field.Description>
+    <Field lang={lang}>
+      <Label>{text.street}</Label>
+      <Prose>
+        <p>{text.hint}</p>
+      </Prose>
       <Autocomplete.Root items={streets} name="street">
         <Autocomplete.Control>
           <Autocomplete.Input />
@@ -161,7 +163,7 @@ export function DefaultExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.List>
         </Autocomplete.Popup>
       </Autocomplete.Root>
-    </Field.Root>
+    </Field>
   )
 }
 
@@ -186,14 +188,14 @@ export function KeyboardExample({ locale }: { locale: FormLocale }) {
       <div className="kv-button-group">
         <Button type="button">Före</Button>
       </div>
-      <Field.Root controlId="street">
-        <Field.Label>{text.street}</Field.Label>
+      <Field controlId="street">
+        <Label>{text.street}</Label>
         <StreetAutocomplete name="street" />
-      </Field.Root>
-      <Field.Root disabled controlId="closed">
-        <Field.Label>{text.longLabel}</Field.Label>
+      </Field>
+      <Field disabled controlId="closed">
+        <Label>{text.longLabel}</Label>
         <StreetAutocomplete withButtons={false} name="closed" />
-      </Field.Root>
+      </Field>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
           {shared.send}
@@ -213,24 +215,26 @@ export function AutocompleteStates({ locale }: { locale: FormLocale }) {
   const { text, lang } = autocompleteTextsFor(locale)
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field.Root>
-        <Field.Label>{text.street}</Field.Label>
-        <Field.Description>{text.hint}</Field.Description>
+      <Field>
+        <Label>{text.street}</Label>
+        <Prose>
+          <p>{text.hint}</p>
+        </Prose>
         <StreetAutocomplete items={streets.slice(0, 8)} defaultValue="Kung" />
-      </Field.Root>
-      <Field.Root required invalid>
-        <Field.Label>{text.street}</Field.Label>
+      </Field>
+      <Field required invalid>
+        <Label>{text.street}</Label>
         <StreetAutocomplete />
-        <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root>
-        <Field.Label>{text.street}</Field.Label>
+        <ErrorMessage>{text.error}</ErrorMessage>
+      </Field>
+      <Field>
+        <Label>{text.street}</Label>
         <StreetAutocomplete withButtons={false} placeholder={text.placeholder} />
-      </Field.Root>
-      <Field.Root disabled>
-        <Field.Label>{text.street}</Field.Label>
+      </Field>
+      <Field disabled>
+        <Label>{text.street}</Label>
         <StreetAutocomplete defaultValue="Storgatan" />
-      </Field.Root>
+      </Field>
     </div>
   )
 }

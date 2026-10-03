@@ -23,6 +23,7 @@ import type {
   UseRadioGroupOptions,
   UseRadioGroupResult,
 } from './use-radio-group.ts'
+import { Prose } from '../prose/prose.tsx'
 
 // Contract: radio-group.a11y.md. The keyboard rows are also covered end to end in
 // apps/storybook/src/components/radio-group/radio-group.e2e.ts.
@@ -70,14 +71,12 @@ function Duration({ disabledOption, optionHint = false, ...rootProps }: Duration
   return (
     <RadioGroup.Root {...rootProps}>
       <Fieldset.Legend>Hur länge behöver du tillståndet?</Fieldset.Legend>
-      <Fieldset.Description>Välj ett alternativ.</Fieldset.Description>
+      <Prose>Välj ett alternativ.</Prose>
       {options.map(([value, label]) => (
         <Field.Root key={value}>
           <Radio value={value} disabled={value === disabledOption} />
           <Field.Label>{label}</Field.Label>
-          {optionHint && value === '12' ? (
-            <Field.Description>Lägst pris per månad.</Field.Description>
-          ) : null}
+          {optionHint && value === '12' ? <Prose>Lägst pris per månad.</Prose> : null}
         </Field.Root>
       ))}
       <Fieldset.ErrorMessage>Välj hur länge du behöver tillståndet</Fieldset.ErrorMessage>

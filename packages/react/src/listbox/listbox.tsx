@@ -86,8 +86,8 @@ function renderNativeOptions<TItem>(listbox: UseListboxResult<TItem>): ReactElem
  * touch device shows before it switches. `multiple` always renders the popup.
  *
  * @example
- * <Field.Root>
- *   <Field.Label>Kommun</Field.Label>
+ * <Field>
+ *   <Label>Kommun</Label>
  *   <Listbox.Root items={municipalities} itemToString={(municipality) => municipality.name}
  *     itemToKey={(municipality) => municipality.code} name="municipality">
  *     <Listbox.Trigger><Listbox.Value placeholder="Välj kommun" /></Listbox.Trigger>
@@ -96,7 +96,7 @@ function renderNativeOptions<TItem>(listbox: UseListboxResult<TItem>): ReactElem
  *       <Listbox.Empty />
  *     </Listbox.Popup>
  *   </Listbox.Root>
- * </Field.Root>
+ * </Field>
  */
 export function ListboxRoot<TItem>(props: ListboxRootProps<TItem>): ReactElement {
   const listbox = useListbox(props)

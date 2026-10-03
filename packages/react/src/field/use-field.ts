@@ -70,9 +70,9 @@ export interface FieldLabelPartProps extends FieldStateAttributes {
   htmlFor: string
 }
 
-/** Spread on the hint. */
+/** Spread on the hint: its class is `kv-prose` (ADR-0054). */
 export interface FieldDescriptionPartProps extends FieldStateAttributes {
-  className: 'kv-field-description'
+  className: 'kv-prose'
   id: string
 }
 
@@ -178,12 +178,12 @@ export function useField({
       ...stateAttributes(state),
     }
     const descriptionProps: FieldDescriptionPartProps = {
-      className: 'kv-field-description',
+      className: 'kv-prose',
       id: descriptionId,
       ...stateAttributes(state, ['data-invalid', 'data-disabled']),
     }
     const getDescriptionProps = (name: string): FieldDescriptionPartProps => ({
-      className: 'kv-field-description',
+      className: 'kv-prose',
       id: `${descriptionId}-${name}`,
       ...stateAttributes(state, ['data-invalid', 'data-disabled']),
     })

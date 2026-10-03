@@ -1,4 +1,4 @@
-import { Field, Input } from '@kvirn-ui/react'
+import { ErrorMessage, Field, Input, Label, Prose } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
@@ -19,7 +19,7 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 
 const meta = {
   title: 'Components/Form/Field',
-  component: Field.Root,
+  component: Field,
   // A question most forms require: the label then has no "(optional)". See `Optional`.
   args: { required: true },
   argTypes: {
@@ -50,14 +50,14 @@ const meta = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root {...args} lang={lang}>
-        <Field.Label>{text.name}</Field.Label>
+      <Field {...args} lang={lang}>
+        <Label>{text.name}</Label>
         <Input name="name" autoComplete="name" />
-      </Field.Root>
+      </Field>
     )
   },
   parameters: { a11yContract: contract },
-} satisfies Meta<typeof Field.Root>
+} satisfies Meta<typeof Field>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -79,11 +79,13 @@ export const WithDescription: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root {...args} lang={lang}>
-        <Field.Label>{text.name}</Field.Label>
-        <Field.Description>{text.nameHint}</Field.Description>
+      <Field {...args} lang={lang}>
+        <Label>{text.name}</Label>
+        <Prose>
+          <p>{text.nameHint}</p>
+        </Prose>
         <Input name="name" autoComplete="name" />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -104,11 +106,13 @@ export const Optional: Story = {
     const locale = localeOf(globals)
     const { text, lang } = textsFor(locale)
     return (
-      <Field.Root {...args} lang={lang}>
-        <Field.Label>{text.phone}</Field.Label>
-        <Field.Description>{text.phoneHint}</Field.Description>
+      <Field {...args} lang={lang}>
+        <Label>{text.phone}</Label>
+        <Prose>
+          <p>{text.phoneHint}</p>
+        </Prose>
         <Input name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -126,11 +130,13 @@ export const Required: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root {...args} lang={lang}>
-        <Field.Label>{text.email}</Field.Label>
-        <Field.Description>{text.emailHint}</Field.Description>
+      <Field {...args} lang={lang}>
+        <Label>{text.email}</Label>
+        <Prose>
+          <p>{text.emailHint}</p>
+        </Prose>
         <Input name="email" type="email" autoComplete="email" />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -160,12 +166,16 @@ export const WithHintUnder: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root {...args} lang={lang}>
-        <Field.Label>{text.registration}</Field.Label>
-        <Field.Description>{text.registrationWhere}</Field.Description>
+      <Field {...args} lang={lang}>
+        <Label>{text.registration}</Label>
+        <Prose>
+          <p>{text.registrationWhere}</p>
+        </Prose>
         <Input name="registration" className="kv-input--width-10" />
-        <Field.Description>{text.registrationHint}</Field.Description>
-      </Field.Root>
+        <Prose>
+          <p>{text.registrationHint}</p>
+        </Prose>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -188,13 +198,17 @@ export const InvalidWithHintUnder: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root {...args} lang={lang}>
-        <Field.Label>{text.registration}</Field.Label>
-        <Field.Description>{text.registrationWhere}</Field.Description>
+      <Field {...args} lang={lang}>
+        <Label>{text.registration}</Label>
+        <Prose>
+          <p>{text.registrationWhere}</p>
+        </Prose>
         <Input name="registration" className="kv-input--width-10" defaultValue="AB 1" />
-        <Field.Description>{text.registrationHint}</Field.Description>
-        <Field.ErrorMessage>{text.registrationError}</Field.ErrorMessage>
-      </Field.Root>
+        <Prose>
+          <p>{text.registrationHint}</p>
+        </Prose>
+        <ErrorMessage>{text.registrationError}</ErrorMessage>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -219,12 +233,14 @@ export const Invalid: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root {...args} lang={lang}>
-        <Field.Label>{text.email}</Field.Label>
-        <Field.Description>{text.emailHint}</Field.Description>
+      <Field {...args} lang={lang}>
+        <Label>{text.email}</Label>
+        <Prose>
+          <p>{text.emailHint}</p>
+        </Prose>
         <Input name="email" type="email" autoComplete="email" defaultValue="anna@" />
-        <Field.ErrorMessage>{text.emailError}</Field.ErrorMessage>
-      </Field.Root>
+        <ErrorMessage>{text.emailError}</ErrorMessage>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -245,10 +261,10 @@ export const Disabled: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root {...args} lang={lang}>
-        <Field.Label>{text.registration}</Field.Label>
+      <Field {...args} lang={lang}>
+        <Label>{text.registration}</Label>
         <Input name="registration" defaultValue="ABC 123" className="kv-input--width-10" />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -262,11 +278,13 @@ export const ReadOnly: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root {...args} lang={lang}>
-        <Field.Label>{text.personalNumber}</Field.Label>
-        <Field.Description>{text.personalNumberHint}</Field.Description>
+      <Field {...args} lang={lang}>
+        <Label>{text.personalNumber}</Label>
+        <Prose>
+          <p>{text.personalNumberHint}</p>
+        </Prose>
         <Input name="personal-number" readOnly defaultValue="19900101-1234" />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -283,13 +301,15 @@ export const AsPageHeading: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root {...args} lang={lang}>
+      <Field {...args} lang={lang}>
         <h1>
-          <Field.Label className="kv-field-label--heading">{text.nameQuestion}</Field.Label>
+          <Label className="kv-field-label--heading">{text.nameQuestion}</Label>
         </h1>
-        <Field.Description>{text.nameHint}</Field.Description>
+        <Prose>
+          <p>{text.nameHint}</p>
+        </Prose>
         <Input name="name" autoComplete="name" />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -300,8 +320,9 @@ export const AsPageHeading: Story = {
 }
 
 /**
- * A form in prose: prose stops at a field, so the hint and the heading label get no prose
- * margins, and the field gets prose's block spacing.
+ * A form in prose: prose stops at a field, so the heading label gets no prose margins, and the
+ * field gets prose's block spacing. The hint is a Prose of its own inside the field (ADR-0054):
+ * its paragraphs are prose, and it has no margin, so it stays close to its label.
  */
 export const InsideProse: Story = {
   render: (args, { globals }) => {
@@ -310,17 +331,19 @@ export const InsideProse: Story = {
       <article className="kv-prose" lang={lang}>
         <h2>{text.proseHeading}</h2>
         <p>{text.proseText}</p>
-        <Field.Root {...args}>
-          <Field.Label>{text.name}</Field.Label>
-          <Field.Description data-testid="description">{text.nameHint}</Field.Description>
+        <Field {...args}>
+          <Label>{text.name}</Label>
+          <Prose data-testid="description">
+            <p>{text.nameHint}</p>
+          </Prose>
           <Input name="name" autoComplete="name" />
-        </Field.Root>
+        </Field>
         <p>{text.proseText}</p>
       </article>
     )
   },
   play: async ({ canvas }) => {
-    // Prose margins on a paragraph would push the hint away from its label.
+    // Prose margins on the hint would push it away from its label.
     const description = canvas.getByTestId('description')
     await expect(getComputedStyle(description).marginBlockStart).toBe('0px')
     await expect(getComputedStyle(description).marginBlockEnd).toBe('0px')
@@ -333,12 +356,14 @@ export const Compact: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div className="kv-compact" lang={lang}>
-        <Field.Root {...args} invalid>
-          <Field.Label>{text.email}</Field.Label>
-          <Field.Description>{text.emailHint}</Field.Description>
+        <Field {...args} invalid>
+          <Label>{text.email}</Label>
+          <Prose>
+            <p>{text.emailHint}</p>
+          </Prose>
           <Input name="email" type="email" autoComplete="email" defaultValue="anna@" />
-          <Field.ErrorMessage>{text.emailError}</Field.ErrorMessage>
-        </Field.Root>
+          <ErrorMessage>{text.emailError}</ErrorMessage>
+        </Field>
       </div>
     )
   },
@@ -355,11 +380,13 @@ export const LongFinnish: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div className="kv-story-narrow" data-testid="narrow">
-        <Field.Root {...args} lang={lang}>
-          <Field.Label>{text.longLabel}</Field.Label>
-          <Field.Description>{text.caseNumberHint}</Field.Description>
+        <Field {...args} lang={lang}>
+          <Label>{text.longLabel}</Label>
+          <Prose>
+            <p>{text.caseNumberHint}</p>
+          </Prose>
           <Input name="reference" inputMode="numeric" spellCheck={false} />
-        </Field.Root>
+        </Field>
       </div>
     )
   },

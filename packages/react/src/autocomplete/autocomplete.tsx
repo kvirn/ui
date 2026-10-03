@@ -47,15 +47,15 @@ export type AutocompleteRootProps<TItem> = UseAutocompleteOptions<TItem> & {
  * what was typed.
  *
  * @example
- * <Field.Root>
- *   <Field.Label>Gatuadress</Field.Label>
+ * <Field>
+ *   <Label>Gatuadress</Label>
  *   <Autocomplete.Root items={streets} value={street} onValueChange={setStreet} name="street">
  *     <Autocomplete.Input />
  *     <Autocomplete.Popup>
  *       <Autocomplete.List>{(street) => <Autocomplete.Option item={street} />}</Autocomplete.List>
  *     </Autocomplete.Popup>
  *   </Autocomplete.Root>
- * </Field.Root>
+ * </Field>
  */
 export function AutocompleteRoot<TItem>(props: AutocompleteRootProps<TItem>): ReactElement {
   const autocomplete = useAutocomplete(props)

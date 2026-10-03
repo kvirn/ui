@@ -23,18 +23,18 @@ export interface RadioGroupRootProps extends Omit<FieldsetRootProps, 'group'> {
 
 /**
  * A group of radios: the native `<fieldset>` of a `Fieldset.Root` with `group` set, so
- * `Fieldset.Legend`, `Fieldset.Description` and `Fieldset.ErrorMessage` work inside it
+ * `Fieldset.Legend`, a hint (`Prose`) and `Fieldset.ErrorMessage` work inside it
  * (ADR-0029, contract: radio-group.a11y.md). Radios that share a `name` are one Tab stop, and
  * the browser's arrow keys move and check, mirrored in right-to-left. It holds no form state:
  * pass `value` and `onValueChange`, or `defaultValue` and `name` for a plain form.
  *
  * @example
  * <RadioGroup.Root name="language" value={language} onValueChange={setLanguage} required>
- *   <Fieldset.Legend>Vilket språk vill du använda?</Fieldset.Legend>
- *   <Field.Root>
+ *   <Legend>Vilket språk vill du använda?</Legend>
+ *   <Field>
  *     <Radio value="sv" />
- *     <Field.Label>Svenska</Field.Label>
- *   </Field.Root>
+ *     <Label>Svenska</Label>
+ *   </Field>
  * </RadioGroup.Root>
  */
 export function RadioGroupRoot({

@@ -50,11 +50,11 @@ export interface CheckboxProps extends Omit<
  * the label.
  *
  * @example
- * <Field.Root required invalid={errors.declaration !== undefined}>
+ * <Field required invalid={errors.declaration !== undefined}>
  *   <Checkbox name="declaration" />
- *   <Field.Label>Jag intygar att uppgifterna är korrekta</Field.Label>
- *   <Field.ErrorMessage>{errors.declaration}</Field.ErrorMessage>
- * </Field.Root>
+ *   <Label>Jag intygar att uppgifterna är korrekta</Label>
+ *   <ErrorMessage>{errors.declaration}</ErrorMessage>
+ * </Field>
  */
 export function Checkbox({
   checked,

@@ -14,15 +14,15 @@
 ## Component
 
 ```tsx
-import { Field, Input } from '@kvirn-ui/react'
+import { ErrorMessage, Field, Input, Label, Prose } from '@kvirn-ui/react'
 
 // Controlled by your own state. The value lives in your useState, not in Input.
 const [name, setName] = useState('')
 
-<Field.Root required>
-  <Field.Label>Fullständigt namn</Field.Label>
+<Field required>
+  <Label>Fullständigt namn</Label>
   <Input name="name" autoComplete="name" value={name} onValueChange={setName} />
-</Field.Root>
+</Field>
 ```
 
 ### With TanStack Form
@@ -32,8 +32,8 @@ TanStack Form owns the value, the validity and the errors. Input and Field show 
 ```tsx
 <form.Field name="email">
   {(field) => (
-    <Field.Root invalid={!field.state.meta.isValid} required>
-      <Field.Label>E-postadress</Field.Label>
+    <Field invalid={!field.state.meta.isValid} required>
+      <Label>E-postadress</Label>
       <Input
         type="email"
         autoComplete="email"
@@ -42,8 +42,8 @@ TanStack Form owns the value, the validity and the errors. Input and Field show 
         onBlur={field.handleBlur}
         name={field.name}
       />
-      <Field.ErrorMessage>{field.state.meta.errors.join(', ')}</Field.ErrorMessage>
-    </Field.Root>
+      <ErrorMessage>{field.state.meta.errors.join(', ')}</ErrorMessage>
+    </Field>
   )}
 </form.Field>
 ```
@@ -63,14 +63,14 @@ No `value`, no handlers: each Input is uncontrolled, and the form's `FormData` h
     save({ name: data.get('name'), email: data.get('email') })
   }}
 >
-  <Field.Root required>
-    <Field.Label>Fullständigt namn</Field.Label>
+  <Field required>
+    <Label>Fullständigt namn</Label>
     <Input name="name" autoComplete="name" />
-  </Field.Root>
-  <Field.Root required>
-    <Field.Label>E-postadress</Field.Label>
+  </Field>
+  <Field required>
+    <Label>E-postadress</Label>
     <Input name="email" type="email" autoComplete="email" />
-  </Field.Root>
+  </Field>
   <Button type="submit">Skicka</Button>
 </form>
 ```
@@ -82,13 +82,17 @@ No `value`, no handlers: each Input is uncontrolled, and the form's `FormData` h
 The default order (ADR-0031) is label, hint, input, a second hint under the input, then the error ([Field](../field/field.md#the-default-order)). Put what to answer above the input, and a format example under it:
 
 ```tsx
-<Field.Root invalid={invalid}>
-  <Field.Label>Fordonets registreringsnummer</Field.Label>
-  <Field.Description>Det står på registreringsbeviset.</Field.Description>
+<Field invalid={invalid}>
+  <Label>Fordonets registreringsnummer</Label>
+  <Prose>
+    <p>Det står på registreringsbeviset.</p>
+  </Prose>
   <Input name="registration" className="kv-input--width-10" />
-  <Field.Description>Till exempel ABC 123</Field.Description>
-  <Field.ErrorMessage>{error}</Field.ErrorMessage>
-</Field.Root>
+  <Prose>
+    <p>Till exempel ABC 123</p>
+  </Prose>
+  <ErrorMessage>{error}</ErrorMessage>
+</Field>
 ```
 
 With the error under the input, the on-screen keyboard can cover it on a phone. On submit, move focus to the first invalid field (or the error summary), and keep `scroll-padding-block-end` on the page, so the browser scrolls the message into view.
@@ -119,13 +123,15 @@ A unit ("kr", "%"), a decorative icon or a button inside the input's box goes in
 A mask shapes what the user types: it drops characters that can't be valid, puts separators in as the user types past them, and limits the length. The control stays a native `<input>`, so paste, autofill, undo and dictation keep working (ADR-0032).
 
 ```tsx
-import { Field, Input, masks } from '@kvirn-ui/react'
+import { ErrorMessage, Field, Input, Label, masks, Prose } from '@kvirn-ui/react'
 
-;<Field.Root invalid={errors.personalIdentityNumber !== undefined} required>
-  <Field.Label>Personnummer</Field.Label>
+;<Field invalid={errors.personalIdentityNumber !== undefined} required>
+  <Label>Personnummer</Label>
   {/* The hint says the format. The mask doesn't (3.3.2): a masked Input without one warns. */}
-  <Field.Description>Tio eller tolv siffror, till exempel 19900101-2385.</Field.Description>
-  <Field.ErrorMessage>{errors.personalIdentityNumber}</Field.ErrorMessage>
+  <Prose>
+    <p>Tio eller tolv siffror, till exempel 19900101-2385.</p>
+  </Prose>
+  <ErrorMessage>{errors.personalIdentityNumber}</ErrorMessage>
   <Input
     name="personalIdentityNumber"
     mask={masks.personalIdentityNumber({ country: 'SE' })}
@@ -133,7 +139,7 @@ import { Field, Input, masks } from '@kvirn-ui/react'
       form.setValue('personalIdentityNumber', details.unmaskedValue)
     }
   />
-</Field.Root>
+</Field>
 ```
 
 Presets (all from `masks`, re-exported by `@kvirn-ui/react`):
@@ -178,11 +184,11 @@ const caseNumber = useMask({
 
 ### Your part
 
-- **A visible label** in a Field. The placeholder is not the label: put examples in the Description (3.3.2).
+- **A visible label** in a Field. The placeholder is not the label: put examples in a hint (3.3.2).
 - **`autoComplete`** on every input that asks for the user's own data (`name`, `email`, `tel`, `postal-code`, `bday`): 1.3.5. Never `autocomplete="off"` on a password, and never block paste.
-- **Read-only and disabled** are for staff tools. In a resident form, explain on submit instead, and say why in the Description if you must use them.
+- **Read-only and disabled** are for staff tools. In a resident form, explain on submit instead, and say why in the hint if you must use them.
 - **A hint with the format** for every masked Input, and the `KvirnProvider` around the app, so a refused character is announced.
-- **Don't pass `id`** to an Input inside a Field: the Field's id wins. Set `controlId` on `Field.Root`.
+- **Don't pass `id`** to an Input inside a Field: the Field's id wins. Set `controlId` on `Field`.
 
 ### Classes for the default theme
 

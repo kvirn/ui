@@ -1,4 +1,4 @@
-import { Field, Input } from '@kvirn-ui/react'
+import { Field, Input, Label } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
@@ -18,7 +18,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 const meta = {
   title: 'Components/Form/Label',
-  component: Field.Label,
+  component: Label,
   argTypes: {
     marker: {
       control: 'select',
@@ -40,14 +40,14 @@ const meta = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label {...args}>{text.name}</Field.Label>
+      <Field required lang={lang}>
+        <Label {...args}>{text.name}</Label>
         <Input name="name" autoComplete="name" />
-      </Field.Root>
+      </Field>
     )
   },
   parameters: { a11yContract: contract },
-} satisfies Meta<typeof Field.Label>
+} satisfies Meta<typeof Label>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -78,10 +78,10 @@ export const Optional: Story = {
     const locale = localeOf(globals)
     const { text, lang } = textsFor(locale)
     return (
-      <Field.Root lang={lang}>
-        <Field.Label {...args}>{text.phone}</Field.Label>
+      <Field lang={lang}>
+        <Label {...args}>{text.phone}</Label>
         <Input name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -99,10 +99,10 @@ export const WithoutMarker: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root lang={lang}>
-        <Field.Label {...args}>{text.search}</Field.Label>
+      <Field lang={lang}>
+        <Label {...args}>{text.search}</Label>
         <Input name="search" type="search" />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -116,12 +116,12 @@ export const AsPageHeading: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
+      <Field required lang={lang}>
         <h1>
-          <Field.Label className="kv-field-label--heading">{text.nameQuestion}</Field.Label>
+          <Label className="kv-field-label--heading">{text.nameQuestion}</Label>
         </h1>
         <Input name="name" autoComplete="name" />
-      </Field.Root>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -137,10 +137,10 @@ export const LongFinnish: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div className="kv-story-narrow" data-testid="narrow">
-        <Field.Root required lang={lang}>
-          <Field.Label>{text.longLabel}</Field.Label>
+        <Field required lang={lang}>
+          <Label>{text.longLabel}</Label>
           <Input name="reference" inputMode="numeric" spellCheck={false} />
-        </Field.Root>
+        </Field>
       </div>
     )
   },
@@ -158,10 +158,10 @@ export const Compact: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div className="kv-compact" lang={lang}>
-        <Field.Root required>
-          <Field.Label>{text.name}</Field.Label>
+        <Field required>
+          <Label>{text.name}</Label>
           <Input name="name" autoComplete="name" />
-        </Field.Root>
+        </Field>
       </div>
     )
   },

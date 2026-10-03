@@ -39,10 +39,10 @@ export interface RadioProps extends Omit<
  * stop, the arrow keys move and check. It never gets `aria-invalid` (ADR-0029, item 10).
  *
  * @example
- * <Field.Root>
+ * <Field>
  *   <Radio value="sv" />
- *   <Field.Label>Svenska</Field.Label>
- * </Field.Root>
+ *   <Label>Svenska</Label>
+ * </Field>
  */
 export function Radio({
   value,

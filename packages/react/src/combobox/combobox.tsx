@@ -126,8 +126,8 @@ export function ComboboxProviders<TItem>({
  * alternativ i listan" in your own validation. The text is never cleared silently.
  *
  * @example
- * <Field.Root>
- *   <Field.Label>Kommun</Field.Label>
+ * <Field>
+ *   <Label>Kommun</Label>
  *   <Combobox.Root items={municipalities} itemToString={(municipality) => municipality.name}
  *     itemToKey={(municipality) => municipality.code} name="municipality">
  *     <Combobox.Input />
@@ -136,7 +136,7 @@ export function ComboboxProviders<TItem>({
  *       <Combobox.Empty />
  *     </Combobox.Popup>
  *   </Combobox.Root>
- * </Field.Root>
+ * </Field>
  */
 export function ComboboxRoot<TItem>(props: ComboboxRootProps<TItem>): ReactElement {
   const combobox = useCombobox(props)

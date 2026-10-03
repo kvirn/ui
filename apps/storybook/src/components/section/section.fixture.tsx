@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
-import { Button, Card, Field, Fieldset, Input, Link, Section } from '@kvirn-ui/react'
+import { Button, Card, Field, Fieldset, Input, Label, Legend, Link, Section } from '@kvirn-ui/react'
 import { textsFor } from '../card/card.fixture.tsx'
 import type { CardFixtureLocale } from '../card/card.fixture.tsx'
 
@@ -201,12 +201,12 @@ export function NewsCard({ locale }: SectionFixtureProps) {
 export function ContactDetailsFieldset({ locale }: SectionFixtureProps) {
   const { text, lang } = sectionTextsFor(locale)
   return (
-    <Fieldset.Root lang={lang} data-testid="form-section">
-      <Fieldset.Legend>{text.details.legend}</Fieldset.Legend>
-      <Field.Root>
-        <Field.Label>{text.details.email}</Field.Label>
+    <Fieldset lang={lang} data-testid="form-section">
+      <Legend>{text.details.legend}</Legend>
+      <Field>
+        <Label>{text.details.email}</Label>
         <Input name="email" autoComplete="email" />
-      </Field.Root>
-    </Fieldset.Root>
+      </Field>
+    </Fieldset>
   )
 }

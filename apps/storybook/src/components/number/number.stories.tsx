@@ -1,4 +1,4 @@
-import { Field, Input, InputGroup } from '@kvirn-ui/react'
+import { ErrorMessage, Field, Input, InputGroup, Label, Prose } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/input/input.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
@@ -48,8 +48,8 @@ interface NumberFieldProps {
 function WholeNumberField({ locale, invalid = false }: NumberFieldProps) {
   const { text, lang } = textsFor(locale)
   return (
-    <Field.Root required invalid={invalid} lang={lang}>
-      <Field.Label>{text.children}</Field.Label>
+    <Field required invalid={invalid} lang={lang}>
+      <Label>{text.children}</Label>
       <Input
         name="children"
         inputMode="numeric"
@@ -58,8 +58,8 @@ function WholeNumberField({ locale, invalid = false }: NumberFieldProps) {
         defaultValue={invalid ? '2,5' : undefined}
         className="kv-input--width-2 kv-input--numeric"
       />
-      <Field.ErrorMessage>{text.childrenError}</Field.ErrorMessage>
-    </Field.Root>
+      <ErrorMessage>{text.childrenError}</ErrorMessage>
+    </Field>
   )
 }
 
@@ -67,9 +67,11 @@ function WholeNumberField({ locale, invalid = false }: NumberFieldProps) {
 function AmountField({ locale }: NumberFieldProps) {
   const { text, lang, rentExample } = textsFor(locale)
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.rent}</Field.Label>
-      <Field.Description>{text.rentHint(rentExample)}</Field.Description>
+    <Field required lang={lang}>
+      <Label>{text.rent}</Label>
+      <Prose>
+        <p>{text.rentHint(rentExample)}</p>
+      </Prose>
       <Input
         name="rent"
         inputMode="decimal"
@@ -77,7 +79,7 @@ function AmountField({ locale }: NumberFieldProps) {
         autoComplete="off"
         className="kv-input--width-10 kv-input--numeric"
       />
-    </Field.Root>
+    </Field>
   )
 }
 
@@ -85,9 +87,11 @@ function AmountField({ locale }: NumberFieldProps) {
 function ReferenceNumberField({ locale }: NumberFieldProps) {
   const { text, lang } = textsFor(locale)
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.caseNumber}</Field.Label>
-      <Field.Description>{text.caseNumberHint}</Field.Description>
+    <Field required lang={lang}>
+      <Label>{text.caseNumber}</Label>
+      <Prose>
+        <p>{text.caseNumberHint}</p>
+      </Prose>
       <Input
         name="case-number"
         inputMode="numeric"
@@ -96,7 +100,7 @@ function ReferenceNumberField({ locale }: NumberFieldProps) {
         defaultValue="004512"
         className="kv-input--width-6 kv-input--numeric"
       />
-    </Field.Root>
+    </Field>
   )
 }
 
@@ -104,9 +108,11 @@ function ReferenceNumberField({ locale }: NumberFieldProps) {
 function PostcodeField({ locale }: NumberFieldProps) {
   const { text, lang } = textsFor(locale)
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.postcode}</Field.Label>
-      <Field.Description>{text.postcodeHint}</Field.Description>
+    <Field required lang={lang}>
+      <Label>{text.postcode}</Label>
+      <Prose>
+        <p>{text.postcodeHint}</p>
+      </Prose>
       <Input
         name="postcode"
         inputMode="numeric"
@@ -114,7 +120,7 @@ function PostcodeField({ locale }: NumberFieldProps) {
         autoComplete="postal-code"
         className="kv-input--width-6 kv-input--numeric"
       />
-    </Field.Root>
+    </Field>
   )
 }
 
@@ -165,8 +171,8 @@ export const AmountWithUnit: Story = {
   render: (_args, { globals }) => {
     const { text, lang, amountExample } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.rentWithUnit}</Field.Label>
+      <Field required lang={lang}>
+        <Label>{text.rentWithUnit}</Label>
         <InputGroup.Root>
           <Input
             name="rent"
@@ -177,8 +183,10 @@ export const AmountWithUnit: Story = {
           />
           <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
         </InputGroup.Root>
-        <Field.Description>{text.rentUnitExample(amountExample)}</Field.Description>
-      </Field.Root>
+        <Prose>
+          <p>{text.rentUnitExample(amountExample)}</p>
+        </Prose>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {

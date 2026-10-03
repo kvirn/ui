@@ -65,14 +65,16 @@ function hasNameSource(input: HTMLInputElement): boolean {
  * says how many characters the code has and how they are grouped (ADR-0045).
  *
  * @example
- * <Field.Root>
- *   <Field.Label>Kod från sms:et</Field.Label>
- *   <Field.Description>Koden har 8 tecken i två grupper om 4.</Field.Description>
+ * <Field>
+ *   <Label>Kod från sms:et</Label>
+ *   <Prose>
+ *     <p>Koden har 8 tecken i två grupper om 4.</p>
+ *   </Prose>
  *   <OneTimeCode.Root pattern="&&&&-&&&&" onComplete={(value, unmaskedValue) => verify(unmaskedValue)}>
  *     <OneTimeCode.Input name="code" />
  *     {[...'&&&&-&&&&'].map((_, index) => <OneTimeCode.Slot key={index} index={index} />)}
  *   </OneTimeCode.Root>
- * </Field.Root>
+ * </Field>
  */
 export function OneTimeCodeRoot({
   pattern,
@@ -183,7 +185,7 @@ export function OneTimeCodeInput({
       if (element.ownerDocument.querySelector(`[id^="${CSS.escape(prefix)}"]`) === null) {
         warnOnce(
           'one-time-code-without-description',
-          'A OneTimeCode.Input in a Field has no Field.Description. The boxes are hidden from screen readers and disappear in the fallback, so say in a visible hint how many characters the code has, how they are grouped and where to find it (WCAG 3.3.2, ADR-0033, ADR-0045).',
+          'A OneTimeCode.Input in a Field has no hint. The boxes are hidden from screen readers and disappear in the fallback, so say in a visible hint (a <Prose> in the Field) how many characters the code has, how they are grouped and where to find it (WCAG 3.3.2, ADR-0033, ADR-0045, ADR-0054).',
         )
       }
     }

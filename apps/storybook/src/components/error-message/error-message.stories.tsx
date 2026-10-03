@@ -1,4 +1,4 @@
-import { Field, Fieldset, Input } from '@kvirn-ui/react'
+import { ErrorMessage, Field, Fieldset, Input, Label, Legend, Prose } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
@@ -20,7 +20,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 const meta = {
   title: 'Components/Form/ErrorMessage',
-  component: Field.ErrorMessage,
+  component: ErrorMessage,
   argTypes: { render: { control: false } },
   globals: { locale: 'sv' },
   decorators: [
@@ -34,15 +34,15 @@ const meta = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root required invalid lang={lang}>
-        <Field.Label>{text.name}</Field.Label>
+      <Field required invalid lang={lang}>
+        <Label>{text.name}</Label>
         <Input name="name" autoComplete="name" />
-        <Field.ErrorMessage {...args}>{text.nameError}</Field.ErrorMessage>
-      </Field.Root>
+        <ErrorMessage {...args}>{text.nameError}</ErrorMessage>
+      </Field>
     )
   },
   parameters: { a11yContract: contract },
-} satisfies Meta<typeof Field.ErrorMessage>
+} satisfies Meta<typeof ErrorMessage>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -75,11 +75,11 @@ export const NotInvalid: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.name}</Field.Label>
+      <Field required lang={lang}>
+        <Label>{text.name}</Label>
         <Input name="name" autoComplete="name" />
-        <Field.ErrorMessage {...args}>{text.nameError}</Field.ErrorMessage>
-      </Field.Root>
+        <ErrorMessage {...args}>{text.nameError}</ErrorMessage>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -96,15 +96,17 @@ export const InFieldset: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Fieldset.Root invalid lang={lang}>
-        <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
-        <Fieldset.Description>{text.addressHint}</Fieldset.Description>
-        <Field.Root required>
-          <Field.Label>{text.street}</Field.Label>
+      <Fieldset invalid lang={lang}>
+        <Legend>{text.addressLegend}</Legend>
+        <Prose>
+          <p>{text.addressHint}</p>
+        </Prose>
+        <Field required>
+          <Label>{text.street}</Label>
           <Input name="street" autoComplete="street-address" />
-        </Field.Root>
-        <Fieldset.ErrorMessage {...args}>{text.addressError}</Fieldset.ErrorMessage>
-      </Fieldset.Root>
+        </Field>
+        <ErrorMessage {...args}>{text.addressError}</ErrorMessage>
+      </Fieldset>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -127,12 +129,14 @@ export const UnderHint: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field.Root required invalid lang={lang}>
-        <Field.Label>{text.registration}</Field.Label>
+      <Field required invalid lang={lang}>
+        <Label>{text.registration}</Label>
         <Input name="registration" className="kv-input--width-10" defaultValue="AB 1" />
-        <Field.Description>{text.registrationHint}</Field.Description>
-        <Field.ErrorMessage {...args}>{text.registrationError}</Field.ErrorMessage>
-      </Field.Root>
+        <Prose>
+          <p>{text.registrationHint}</p>
+        </Prose>
+        <ErrorMessage {...args}>{text.registrationError}</ErrorMessage>
+      </Field>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -156,11 +160,11 @@ export const LongMessage: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div className="kv-story-narrow" data-testid="narrow">
-        <Field.Root required invalid lang={lang}>
-          <Field.Label>{text.email}</Field.Label>
+        <Field required invalid lang={lang}>
+          <Label>{text.email}</Label>
           <Input name="email" type="email" autoComplete="email" defaultValue="anna@" />
-          <Field.ErrorMessage {...args}>{text.emailError}</Field.ErrorMessage>
-        </Field.Root>
+          <ErrorMessage {...args}>{text.emailError}</ErrorMessage>
+        </Field>
       </div>
     )
   },
@@ -177,13 +181,13 @@ export const Compact: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div className="kv-compact" lang={lang}>
-        <Field.Root required invalid>
-          <Field.Label>{text.name}</Field.Label>
+        <Field required invalid>
+          <Label>{text.name}</Label>
           <Input name="name" autoComplete="name" />
-          <Field.ErrorMessage {...args} data-testid="error">
+          <ErrorMessage {...args} data-testid="error">
             {text.nameError}
-          </Field.ErrorMessage>
-        </Field.Root>
+          </ErrorMessage>
+        </Field>
       </div>
     )
   },

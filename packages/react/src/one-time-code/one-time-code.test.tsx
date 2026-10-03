@@ -21,6 +21,7 @@ import type {
 import type { InputChangeDetails } from '../input/use-input.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { useOneTimeCode } from './use-one-time-code.ts'
+import { Prose } from '../prose/prose.tsx'
 
 // Contract: one-time-code.a11y.md. The keyboard rows, the pointer, the theme's fallback and the
 // display modes are covered end to end in
@@ -70,7 +71,7 @@ function CodeField({
   return (
     <Field.Root invalid={invalid} disabled={disabled}>
       <Field.Label>Kod från sms:et</Field.Label>
-      <Field.Description>{hint}</Field.Description>
+      <Prose>{hint}</Prose>
       <OneTimeCode.Root pattern={pattern} data-testid="root" {...rootProps}>
         <OneTimeCode.Input name="code" readOnly={readOnly} ref={inputRef} />
         {Array.from({ length: slotCount }, (_, index) => (
@@ -197,7 +198,7 @@ describe('the input', () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">Kod</Field.Label>
-        <Field.Description>Hint</Field.Description>
+        <Prose>Hint</Prose>
         <OneTimeCode.Root>
           <OneTimeCode.Input aria-describedby="own" />
         </OneTimeCode.Root>
@@ -978,7 +979,7 @@ describe('patterns with separators (ADR-0045)', () => {
       await render(
         <Field.Root>
           <Field.Label marker="none">Kod</Field.Label>
-          <Field.Description>Åtta tecken.</Field.Description>
+          <Prose>Åtta tecken.</Prose>
           <OneTimeCode.Root pattern="****-****" defaultValue="abcd-12" style={{ display: 'flex' }}>
             <OneTimeCode.Input style={{ position: 'absolute' }} />
             {Array.from({ length: 9 }, (_, index) => (
@@ -1218,7 +1219,7 @@ describe('development warnings', () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">Kod</Field.Label>
-        <Field.Description>Sex siffror.</Field.Description>
+        <Prose>Sex siffror.</Prose>
         <OneTimeCode.Input />
       </Field.Root>,
     )
@@ -1276,7 +1277,7 @@ describe('development warnings', () => {
     ).toBe(true)
   })
 
-  test('an Input in a Field without a Field.Description warns: the length must be said (3.3.2)', async () => {
+  test('an Input in a Field without a hint warns: the length must be said (3.3.2)', async () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">Kod</Field.Label>
@@ -1285,9 +1286,7 @@ describe('development warnings', () => {
         </OneTimeCode.Root>
       </Field.Root>,
     )
-    expect(
-      consoleWarn.mock.calls.some((call) => String(call[0]).includes('Field.Description')),
-    ).toBe(true)
+    expect(consoleWarn.mock.calls.some((call) => String(call[0]).includes('<Prose>'))).toBe(true)
   })
 
   test('no warning for a complete, well-formed field', async () => {

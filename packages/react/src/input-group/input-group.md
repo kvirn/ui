@@ -17,10 +17,10 @@ An InputGroup puts a unit, a symbol, a decorative icon or a Button **inside the 
 ## Component
 
 ```tsx
-import { Field, Input, InputGroup } from '@kvirn-ui/react'
+import { ErrorMessage, Field, Input, InputGroup, Label, Prose } from '@kvirn-ui/react'
 
-;<Field.Root invalid={errors.rent !== undefined} required>
-  <Field.Label>Månadshyra i kronor</Field.Label>
+;<Field invalid={errors.rent !== undefined} required>
+  <Label>Månadshyra i kronor</Label>
   <InputGroup.Root>
     <Input
       name="rent"
@@ -31,9 +31,11 @@ import { Field, Input, InputGroup } from '@kvirn-ui/react'
     />
     <InputGroup.Addon>kr</InputGroup.Addon>
   </InputGroup.Root>
-  <Field.Description>Till exempel 8 450</Field.Description>
-  <Field.ErrorMessage>{errors.rent}</Field.ErrorMessage>
-</Field.Root>
+  <Prose>
+    <p>Till exempel 8 450</p>
+  </Prose>
+  <ErrorMessage>{errors.rent}</ErrorMessage>
+</Field>
 ```
 
 The label carries the unit, because the Addon is hidden from screen readers. The example is under the box, and the error under the example, in the default order ([Field](../field/field.md#the-default-order)).
@@ -46,8 +48,8 @@ The value lives in your own state. The clear Button renders only while there's a
 const [query, setQuery] = useState('')
 const inputRef = useRef<HTMLInputElement>(null)
 
-<Field.Root>
-  <Field.Label marker="none">Sök bland e-tjänster</Field.Label>
+<Field>
+  <Label marker="none">Sök bland e-tjänster</Label>
   <InputGroup.Root>
     <InputGroup.Addon>
       <Icon name="search" size="md" />
@@ -64,7 +66,7 @@ const inputRef = useRef<HTMLInputElement>(null)
       </Button>
     )}
   </InputGroup.Root>
-</Field.Root>
+</Field>
 ```
 
 - A text Button's name is its visible text. An icon-only Button (`className="kv-button--icon-only"`) needs an `aria-label` from your translations: "Rensa sökningen".
@@ -74,7 +76,7 @@ const inputRef = useRef<HTMLInputElement>(null)
 
 ### Your part
 
-- **The label says the unit.** "Månadshyra i kronor", not "Månadshyra" with a "kr" Addon. If the label can't say it, a Description above the control does.
+- **The label says the unit.** "Månadshyra i kronor", not "Månadshyra" with a "kr" Addon. If the label can't say it, a hint (a `Prose`) above the control does.
 - **Addon text is a symbol or a widely known abbreviation,** at most 4 characters: `kr`, `€`, `%`, `km`, `m²`. Never a word or a phrase ("per månad" goes in the label). Every Addon string comes from your translations.
 - **One Addon per side at most.** A start Addon and an end Addon, or an Addon and a Button, are fine.
 - **An icon Addon is decorative.** A calendar icon opens nothing until a date picker exists, so clicking it only focuses the Input. It repeats what the label says, and never looks like it does something it doesn't. Don't set `inputMode="numeric"` on a date field with separators.

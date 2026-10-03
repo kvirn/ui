@@ -10,13 +10,14 @@ import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
 import { Input } from '../input/input.tsx'
+import { Prose } from '../prose/prose.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import {
   Fieldset,
-  FieldsetDescription,
   FieldsetErrorMessage,
   FieldsetLegend,
   FieldsetRoot,
+  Legend,
 } from './fieldset.tsx'
 import type { FieldsetLegendProps, FieldsetRootProps, FieldsetState } from './fieldset.tsx'
 import { useFieldset } from './use-fieldset.ts'
@@ -76,7 +77,7 @@ function ContactGroup({
   return (
     <Fieldset.Root invalid={invalid} required={required} disabled={disabled} group={group}>
       <Fieldset.Legend>Hur ska vi kontakta dig om tillståndet?</Fieldset.Legend>
-      {withDescription ? <Fieldset.Description>Välj alla som passar.</Fieldset.Description> : null}
+      {withDescription ? <Prose>Välj alla som passar.</Prose> : null}
       <Fieldset.ErrorMessage>Välj hur vi ska kontakta dig</Fieldset.ErrorMessage>
       <Field.Root>
         <Field.Label>E-post</Field.Label>
@@ -95,7 +96,7 @@ describe('rendering', () => {
     const { container } = await render(
       <Fieldset.Root data-testid="root" invalid>
         <Fieldset.Legend data-testid="legend">Adress</Fieldset.Legend>
-        <Fieldset.Description data-testid="description">Där du bor.</Fieldset.Description>
+        <Prose data-testid="description">Där du bor.</Prose>
         <Fieldset.ErrorMessage data-testid="error">Ange din adress</Fieldset.ErrorMessage>
       </Fieldset.Root>,
     )
@@ -106,7 +107,7 @@ describe('rendering', () => {
     expect([legend.tagName, legend.className]).toEqual(['LEGEND', 'kv-fieldset-legend'])
     expect(root.firstElementChild).toBe(legend)
     const description = page.getByTestId('description').element()
-    expect([description.tagName, description.className]).toEqual(['P', 'kv-field-description'])
+    expect([description.tagName, description.className]).toEqual(['DIV', 'kv-prose'])
     const error = page.getByTestId('error').element()
     expect([error.tagName, error.className]).toEqual(['P', 'kv-field-error-message'])
   })
@@ -148,12 +149,17 @@ describe('rendering', () => {
     expect(seenStates.at(-1)).toEqual({ isInvalid: true, isRequired: true, isDisabled: false })
   })
 
-  test('the compound and the named exports are the same parts, and Description and ErrorMessage are Field’s', () => {
+  test('the compound and the named exports are the same parts, ErrorMessage is Field’s, and there is no Description', () => {
     expect(Fieldset.Root).toBe(FieldsetRoot)
     expect(Fieldset.Legend).toBe(FieldsetLegend)
-    expect(Fieldset.Description).toBe(FieldsetDescription)
+    expect(Fieldset).not.toHaveProperty('Description')
+    expect(Fieldset.Prose).toBe(Prose)
+    // The flat form (ADR-0055): <Fieldset> is the root, and Legend stands alone.
+    expect(Fieldset).toBe(FieldsetRoot)
+    expect(Legend).toBe(FieldsetLegend)
+    expect(Fieldset.displayName).toBe('Fieldset')
+    expect(Legend.displayName).toBe('Legend')
     expect(Fieldset.ErrorMessage).toBe(FieldsetErrorMessage)
-    expect(FieldsetDescription).toBe(Field.Description)
     expect(FieldsetErrorMessage).toBe(Field.ErrorMessage)
   })
 })
@@ -218,7 +224,7 @@ describe('wiring: name and description per state', () => {
     const { container } = await render(
       <Fieldset.Root invalid group required>
         <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
-        <Fieldset.Description>Till exempel 27 3 2007</Fieldset.Description>
+        <Prose>Till exempel 27 3 2007</Prose>
         <Fieldset.ErrorMessage>Ange ett datum</Fieldset.ErrorMessage>
         <Field.Root invalid>
           <Field.Label>År</Field.Label>
@@ -227,7 +233,7 @@ describe('wiring: name and description per state', () => {
         </Field.Root>
         <Field.Root>
           <Field.Label>Månad</Field.Label>
-          <Field.Description>Siffror</Field.Description>
+          <Prose>Siffror</Prose>
           <Input inputMode="numeric" />
         </Field.Root>
       </Fieldset.Root>,
@@ -300,7 +306,7 @@ describe('states', () => {
     await render(
       <Fieldset.Root invalid data-testid="root">
         <Fieldset.Legend data-testid="legend">Adress</Fieldset.Legend>
-        <Fieldset.Description data-testid="description">Där du bor.</Fieldset.Description>
+        <Prose data-testid="description">Där du bor.</Prose>
         <Fieldset.ErrorMessage data-testid="error">Ange din adress</Fieldset.ErrorMessage>
       </Fieldset.Root>,
     )
@@ -563,8 +569,8 @@ describe('several descriptions (ADR-0031)', () => {
     return (
       <Fieldset.Root invalid={invalid}>
         <Fieldset.Legend>Adress</Fieldset.Legend>
-        <Fieldset.Description data-testid="where">Där du är folkbokförd.</Fieldset.Description>
-        <Fieldset.Description data-testid="format">Gatan och numret.</Fieldset.Description>
+        <Prose data-testid="where">Där du är folkbokförd.</Prose>
+        <Prose data-testid="format">Gatan och numret.</Prose>
         <Field.Root>
           <Field.Label>Gatuadress</Field.Label>
           <Input />
@@ -598,8 +604,8 @@ describe('several descriptions (ADR-0031)', () => {
       return (
         <Fieldset.Root>
           <Fieldset.Legend>Adress</Fieldset.Legend>
-          <Fieldset.Description>Först.</Fieldset.Description>
-          {show ? <Fieldset.Description>Sist.</Fieldset.Description> : null}
+          <Prose>Först.</Prose>
+          {show ? <Prose>Sist.</Prose> : null}
           <button type="button" onClick={() => setShow(false)}>
             Dölj
           </button>
@@ -623,10 +629,8 @@ describe('several descriptions (ADR-0031)', () => {
       return (
         <Fieldset.Root>
           <Fieldset.Legend>Adress</Fieldset.Legend>
-          {showFirst ? (
-            <Fieldset.Description data-testid="first">Först.</Fieldset.Description>
-          ) : null}
-          <Fieldset.Description data-testid="last">Sist.</Fieldset.Description>
+          {showFirst ? <Prose data-testid="first">Först.</Prose> : null}
+          <Prose data-testid="last">Sist.</Prose>
           <button type="button" onClick={() => setShowFirst(true)}>
             Visa
           </button>

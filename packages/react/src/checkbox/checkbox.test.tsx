@@ -18,6 +18,7 @@ import type {
   UseCheckboxOptions,
   UseCheckboxResult,
 } from './use-checkbox.ts'
+import { Prose } from '../prose/prose.tsx'
 
 // Contract: checkbox.a11y.md. The keyboard rows are also covered end to end in
 // apps/storybook/src/components/checkbox/checkbox.e2e.ts.
@@ -128,7 +129,7 @@ describe('in a Field', () => {
       <Field.Root required>
         <Checkbox name="contact" />
         <Field.Label>E-post</Field.Label>
-        <Field.Description>Vi mejlar beslutet.</Field.Description>
+        <Prose>Vi mejlar beslutet.</Prose>
       </Field.Root>,
     )
     const checkbox = page.getByRole('checkbox', { name: 'E-post' })
@@ -166,7 +167,7 @@ describe('in a Field', () => {
       <Field.Root invalid required>
         <Checkbox />
         <Field.Label>Jag intygar att uppgifterna är korrekta</Field.Label>
-        <Field.Description>Du kan inte skicka utan intyget.</Field.Description>
+        <Prose>Du kan inte skicka utan intyget.</Prose>
         <Field.ErrorMessage>Bekräfta att uppgifterna är korrekta</Field.ErrorMessage>
       </Field.Root>,
     )
@@ -207,7 +208,7 @@ describe('in a Field', () => {
         <Field.Root required>
           <Checkbox aria-describedby="extra" />
           <Field.Label>Villkor</Field.Label>
-          <Field.Description>Läs villkoren.</Field.Description>
+          <Prose>Läs villkoren.</Prose>
         </Field.Root>
       </>,
     )

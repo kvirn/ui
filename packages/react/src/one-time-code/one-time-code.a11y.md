@@ -32,7 +32,7 @@ Rules, tested in `one-time-code.test.tsx`:
 - **No auto-advance, no auto-submit.** Typing the last character moves no focus and submits nothing. `onComplete(value)` is a callback for consumers who check early.
 - **Field state.** `data-invalid` and `data-disabled` come from the nearest Field (or the Root's `disabled`), on the Root and on every slot.
 - **`render` on all three parts,** with class and handlers merged, and refs merged (ADR-0015).
-- **Dev warnings:** an Input or Slot outside a Root, a Slot whose index is not a position of the pattern (separators count), an Input with no accessible name, and an Input in a Field with no description (the length and the groups must be said, 3.3.2).
+- **Dev warnings:** an Input or Slot outside a Root, a Slot whose index is not a position of the pattern (separators count), an Input with no accessible name, and an Input in a Field with no hint (a `Prose`: the length and the groups must be said, 3.3.2).
 
 ## Keyboard
 
@@ -90,7 +90,7 @@ Both are the mask's (ADR-0032 item 6, ADR-0040), throttled to one message per fi
 ## Consumer responsibilities
 
 - **A visible label that says where the code is,** in the user's words ("Kod från sms:et", "Code from your authenticator app"), not "OTP" or "verification code". The label is the accessible name (2.5.3).
-- **A `Field.Description` above the boxes with the length, the groups and where to find the code** ("Koden har 8 tecken i två grupper om 4. Du hittar den i sms:et som vi just skickade"). The slots are hidden from screen readers and disappear in the fallback, so the hint is the only place they learn the length and the groups (3.3.2, ADR-0045 item 10). A dev warning fires without one.
+- **A hint above the boxes, a `Prose` in the Field, with the length, the groups and where to find the code** ("Koden har 8 tecken i två grupper om 4. Du hittar den i sms:et som vi just skickade"). The slots are hidden from screen readers and disappear in the fallback, so the hint is the only place they learn the length and the groups (3.3.2, ADR-0045 item 10). A dev warning fires without one.
 - **Errors in text,** under the row, linked by the Field: "Enter all 6 digits of the code", "The code doesn't match the one we sent. Check the text message and enter the code again." Never blame, and keep the code in the field after a wrong-code error so the user can fix one digit (3.3.1, 3.3.3).
 - **Keep a submit button.** Never submit from `onComplete` without telling the user in advance that the code is checked as soon as it's entered (3.2.2), and never clear the field on a wrong code.
 - **While the code is being checked, use `readOnly`, not `disabled`,** so focus stays, and say "Checking the code" through the Announcer.

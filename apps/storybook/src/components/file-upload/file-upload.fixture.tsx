@@ -1,4 +1,4 @@
-import { Field, FileUpload } from '@kvirn-ui/react'
+import { ErrorMessage, Field, FileUpload, Label, Prose } from '@kvirn-ui/react'
 import type { FileUploadRootProps } from '@kvirn-ui/react'
 import { textsFor } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -63,9 +63,11 @@ export function FileUploadField({
 }: FileUploadFieldProps) {
   const { texts, lang } = fileUploadTextsFor(locale)
   return (
-    <Field.Root required={required} invalid={invalid} lang={lang}>
-      <Field.Label>{texts.label}</Field.Label>
-      <Field.Description>{texts.description}</Field.Description>
+    <Field required={required} invalid={invalid} lang={lang}>
+      <Label>{texts.label}</Label>
+      <Prose>
+        <p>{texts.description}</p>
+      </Prose>
       <FileUpload.Root {...options}>
         <FileUpload.DropZone>
           <FileUpload.Trigger />
@@ -93,13 +95,13 @@ export function FileUploadField({
           )}
         </FileUpload.List>
       </FileUpload.Root>
-      {invalid ? <Field.ErrorMessage>{texts.errorMissing}</Field.ErrorMessage> : null}
+      {invalid ? <ErrorMessage>{texts.errorMissing}</ErrorMessage> : null}
       {withSubmit ? (
         <button type="button" className="kv-button">
           {locale === 'sv' ? 'Skicka in' : 'Send'}
         </button>
       ) : null}
-    </Field.Root>
+    </Field>
   )
 }
 

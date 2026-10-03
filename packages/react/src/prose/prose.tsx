@@ -1,13 +1,18 @@
 'use client'
 import type { HTMLAttributes, ReactElement, Ref, RefCallback } from 'react'
+import type { FieldState } from '../field/field-state.ts'
+import { useDescriptionPart } from '../field/use-description-part.ts'
+import type { FieldDescriptionPartProps } from '../field/use-field.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
-import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { renderPart } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
 import { useProse } from './use-prose.ts'
 
-/** What `render` receives as its second argument. Prose has no state, so it's empty. */
-export type ProseState = Record<string, never>
+/**
+ * What `render` receives as its second argument. Empty, except in a Field or Fieldset, where it is
+ * that Field's or Fieldset's state (`isInvalid`, `isRequired`, `isDisabled`).
+ */
+export type ProseState = Partial<FieldState>
 
 /** What a `render` function gets to spread: your attributes, the class and a callback ref. */
 export interface ProseElementProps extends HTMLAttributes<HTMLElement> {
@@ -23,28 +28,39 @@ export interface ProseRootProps extends HTMLAttributes<HTMLElement> {
 
 const proseState: ProseState = Object.freeze({})
 
-/** The prose container: one `<div class="kv-prose">`. */
+/**
+ * The prose container: one `<div class="kv-prose">`. Inside a Field.Root or Fieldset.Root it is
+ * also the description of the control or the group (ADR-0054): it registers, gets an id, and is
+ * listed in `aria-describedby` in DOM order, before the error.
+ */
 export function ProseRoot({ render, ref, ...otherProps }: ProseRootProps): ReactElement {
+  const prose = useProse()
+  const description = useDescriptionPart<HTMLElement>(ref)
   // The class joins a prop's and a render element's own class names (mergeProps), so neither
-  // can remove it and the theme keeps styling the text.
-  const elementRef = useMergedRef(ref, null)
+  // can remove it and the theme keeps styling the text. In a host the description's props carry
+  // the same class, so only one of the two is merged.
+  const partProps: Partial<FieldDescriptionPartProps> =
+    description.state === null ? prose.rootProps : description.partProps
   return renderPart({
     render,
     defaultElement: 'div',
-    partProps: { ...mergeProps(otherProps, useProse().rootProps), ref: elementRef },
-    state: proseState,
+    partProps: { ...mergeProps(otherProps, partProps), ref: description.ref },
+    state: description.state ?? proseState,
   })
 }
+
+ProseRoot.displayName = 'Prose'
 
 /**
  * Text set for reading (contract: prose.a11y.md): a `<div class="kv-prose">` that the theme styles
  * for headings, paragraphs, lists, links and tables inside it. It has no role, ARIA or behaviour,
  * and `render` changes the element. Add `kv-prose--large` for the larger size.
- * `<Prose>` and `<Prose.Root>` are the same component.
+ * `<Prose>` and `<Prose.Root>` are the same component. Inside a `Field.Root` or
+ * `Fieldset.Root` it is the hint that describes the control or the group.
  *
  * @example
  * <Prose>
- *   <Heading level={2}>Kontakta oss</Heading>
+ *   <h2>Kontakta oss</h2>
  *   <p>Vi svarar vardagar 9–16.</p>
  * </Prose>
  */

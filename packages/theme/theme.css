@@ -1009,10 +1009,13 @@
    * Every rule has zero specificity, so component rules and your own CSS always win. Prose
    * never styles a component part (components style themselves), or anything inside
    * kv-not-prose, kv-nav or kv-button-group. Prose inside kv-not-prose isn't turned on again.
-   * A field (kv-field) and a fieldset (kv-fieldset) are boundaries like kv-not-prose: a form in
-   * prose gets prose's block margins on each question, and its hints, errors and heading
-   * labels get none. A card is a boundary too: a card in prose gets prose's block margins, and nothing inside
-   * it is prose-styled, unless you put kv-prose on the card or inside it. Then the nearest of the two wins, for two levels of nested cards.
+   * A card is a boundary: a card in prose gets prose's block margins, and nothing inside
+   * it is prose-styled, unless you put kv-prose on the card or inside it. Then the nearest of
+   * the two wins, for two levels of nested cards. A field (kv-field) and a fieldset
+   * (kv-fieldset) are boundaries the same way: a form in prose gets prose's block margins on
+   * each question, and its labels, errors and controls get none. The hint is a kv-prose that
+   * is a direct child of the field or fieldset (ADR-0054), so it is prose again: its own
+   * paragraphs, lists and links are styled, and nothing else in the field is.
    * A notification (kv-notification) is the same boundary as a card, so its title isn't styled as a prose heading. Only
    * logical properties are used, so right to left works, and nothing has a fixed height, so
    * the text-spacing overrides fit (1.4.12).
@@ -1060,15 +1063,16 @@
 
   /* Everything inside prose that prose may style. This is the only place the not-prose list
    * is written: add a new component part class (first line) or consumer class (second line)
-   * here. A card's or a section's Root isn't in the first line: it gets prose's margins. Nor are
-   * a field's or a fieldset's Root. They get margins, and everything inside them is excluded (second
-   * line), so their text parts and controls are covered without being listed. `&` has the
-   * specificity of this selector, which is zero.
+   * here. A card's, a section's, a field's or a fieldset's Root isn't in the first line: it
+   * gets prose's margins. A card, a notification, a field and a fieldset are boundaries (the
+   * last lines), so their text parts and controls are covered without being listed. `&` has
+   * the specificity of this selector, which is zero.
    *
-   * The last line is the card boundary. Inside a card (one without kv-prose), prose is off
-   * unless kv-prose sits between the card and the element. It reads: inside a card, but not
-   * (inside prose inside a card, but not (inside a card inside that, but not inside prose
-   * inside that)). So the nearest card or kv-prose wins, for two levels of cards.
+   * The last lines are the boundary. Inside a card, notification, field or fieldset (one
+   * without kv-prose), prose is off unless kv-prose sits between it and the element. It
+   * reads: inside a boundary, but not (inside prose inside a boundary, but not (inside a
+   * boundary inside that, but not inside prose inside that)). So the nearest boundary or
+   * kv-prose wins, for two levels. The hint of a field is such a kv-prose.
    * @scope would say it directly, once Safari 17.0 to 17.3 drop out of the support range. */
   :where(.kv-prose)
     :where(*):not(
@@ -1086,18 +1090,20 @@
           .kv-radio,
           .kv-listbox-native
         ),
-        :is(.kv-not-prose, .kv-nav, .kv-button-group, .kv-field, .kv-fieldset) *,
-        :is(:is(.kv-card, .kv-notification):not(.kv-prose) *):not(
-          :is(:is(.kv-card, .kv-notification):not(.kv-prose) .kv-prose *):not(
+        :is(.kv-not-prose, .kv-nav, .kv-button-group) *,
+        :is(:is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose) *):not(
+          :is(
+            :is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose) .kv-prose *
+          ):not(
             :is(
-              :is(.kv-card, .kv-notification):not(.kv-prose)
+              :is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose)
                 .kv-prose
-                :is(.kv-card, .kv-notification):not(.kv-prose)
+                :is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose)
                 *
             ):not(
-              :is(.kv-card, .kv-notification):not(.kv-prose)
+              :is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose)
                 .kv-prose
-                :is(.kv-card, .kv-notification):not(.kv-prose)
+                :is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose)
                 .kv-prose
                 *
             )
@@ -1105,8 +1111,8 @@
         )
       )
     ) {
-    /* Elements. kv-not-prose, kv-nav, kv-button-group, a card's or a section's Root and a field or
-     * fieldset Root only get margins. A section isn't a prose boundary: its content stays prose. */
+    /* Elements. kv-not-prose, kv-nav, kv-button-group, a card's, a section's, a field's or a
+     * fieldset's Root only get margins. A section isn't a prose boundary: its content stays prose. */
     &:not(
       :where(
         .kv-not-prose,
@@ -2194,7 +2200,7 @@
 
   /* 12. Form fields --------------------------------------------------------------------------
    * <Field.Root> renders class="kv-field", and its parts kv-field-label, kv-field-optional,
-   * kv-field-description, kv-field-error-message and kv-field-error-prefix. <Fieldset.Root>
+   * kv-field-error-message and kv-field-error-prefix. <Fieldset.Root>
    * renders kv-fieldset and its <legend> kv-fieldset-legend. <Input> renders kv-input.
    * <InputGroup.Root> renders kv-input-group, the box around an input and its units, icons or
    * button, and <InputGroup.Addon> renders kv-input-group-addon. KvirnUI holds no form state:
@@ -2210,11 +2216,15 @@
    *
    *   <Field.Root invalid={error !== undefined} required>
    *     <Field.Label>Postnummer</Field.Label>
-   *     <Field.Description>Fem siffror.</Field.Description>
+   *     <Prose><p>Fem siffror.</p></Prose>
    *     <Input name="postcode" inputMode="numeric" className="kv-input--width-6" />
-   *     <Field.Description>Till exempel 00100.</Field.Description>
+   *     <Prose><p>Till exempel 00100.</p></Prose>
    *     <Field.ErrorMessage>{error}</Field.ErrorMessage>
    *   </Field.Root>
+   *
+   * The hint is a <Prose> directly in the Field or Fieldset (ADR-0054): kv-prose, which the
+   * component registers as the description of the control or group. Keep it to plain text and
+   * short paragraphs, since an accessible description has no structure.
    *
    * The default order (ADR-0031) is label, hint, control, a second hint under the control, then
    * the error message. A fieldset is legend, hint, controls, error. Every part is one gap from
@@ -2371,14 +2381,26 @@
     font-weight: 400;
   }
 
-  /* The hint is an instruction, so it is body text in the text colour, in every density. */
-  .kv-field-description {
+  /* The hint is an instruction, so it is in the text colour, in every density: never muted. A
+   * hint above the control is body text, and one under it (a sibling after the control, or after
+   * a hint above it) is body-small (ADR-0054). It is a kv-prose that is a direct child of the
+   * field or fieldset, so its paragraphs, lists and links are prose; this only fixes the box and
+   * the type, and gives it no margin of its own (the gap is the field's). */
+  .kv-field > .kv-prose,
+  .kv-fieldset > .kv-prose {
     max-inline-size: var(--kv-prose-measure);
     margin: 0;
     color: var(--kv-color-text);
     font-size: var(--kv-font-body-size);
     font-weight: var(--kv-font-body-weight);
     line-height: var(--kv-font-body-line-height);
+  }
+
+  .kv-field > :not(.kv-field-label, .kv-prose) ~ .kv-prose,
+  .kv-fieldset > :not(.kv-fieldset-legend, .kv-prose) ~ .kv-prose {
+    font-size: var(--kv-font-body-small-size);
+    font-weight: var(--kv-font-body-small-weight);
+    line-height: var(--kv-font-body-small-line-height);
   }
 
   /* The error: label type at a fixed 16px, in danger, with the icon on the first line. The
@@ -2444,7 +2466,7 @@
     text-align: start;
   }
 
-  /* A hint at most: examples go in the Description. */
+  /* A hint at most: examples go in the hint (a Prose). */
   .kv-input::placeholder {
     color: var(--kv-color-text-muted);
     opacity: 1;
@@ -2971,7 +2993,7 @@
     cursor: pointer;
   }
 
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-field-description {
+  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-prose {
     grid-column: 2;
   }
 
@@ -4134,7 +4156,7 @@
    *
    *   <Field.Root>
    *     <Field.Label>Kod från e-postmeddelandet</Field.Label>
-   *     <Field.Description>Koden har 8 tecken, i 2 grupper om 4.</Field.Description>
+   *     <Prose><p>Koden har 8 tecken, i 2 grupper om 4.</p></Prose>
    *     <OneTimeCode.Root pattern="&&&&-&&&&">
    *       <OneTimeCode.Input name="code" />
    *       <OneTimeCode.Slot index={0} /> … <OneTimeCode.Slot index={8} />
@@ -5490,7 +5512,7 @@
     min-inline-size: 0;
   }
 
-  /* An instruction, so body text in the text colour, as a field description is. */
+  /* An instruction, so body text in the text colour, as a field hint is. */
   .kv-file-upload-limits {
     max-inline-size: var(--kv-prose-measure);
     margin: 0;

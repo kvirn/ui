@@ -1,4 +1,4 @@
-import { Button, Heading, Link, Prose } from '@kvirn-ui/react'
+import { Button, Link, Prose } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/prose/prose.a11y.md?raw'
 import guide from '../../../../../packages/react/src/prose/prose.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -27,7 +27,7 @@ const meta = {
   args: {
     children: (
       <>
-        <Heading level={2}>Kontakta oss</Heading>
+        <h2>Kontakta oss</h2>
         <p>Vi svarar vardagar 9–16.</p>
         <p>
           <Link href="#epost">Mejla kundcenter</Link>

@@ -4,9 +4,9 @@
 - **Deviations:** none from APG. Decisions: ADR-0029 (Fieldset wiring, option labels carry no optional marker, a group's `invalid` doesn't cascade, no form state) and ADR-0039 (keyboard).
 - **Native elements used:** `<fieldset>` and `<legend>` (Root and `Fieldset.Legend`), `<input type="checkbox">` (Checkbox), `<label for>` (Field.Label).
 - **Status:** alpha candidate (Plan 0013, Phase 2). Accessibility-reviewer pending. Manual AT is `pending`.
-- **Tests:** `checkbox-group.test.tsx` next to this file. `checkbox-group.stories.tsx` and `checkbox-group.e2e.ts` in `apps/storybook/src/components/checkbox-group/`. The box itself: `checkbox.a11y.md`. The fieldset parts (Legend, Description, ErrorMessage): `fieldset.a11y.md`.
+- **Tests:** `checkbox-group.test.tsx` next to this file. `checkbox-group.stories.tsx` and `checkbox-group.e2e.ts` in `apps/storybook/src/components/checkbox-group/`. The box itself: `checkbox.a11y.md`. The fieldset parts (Legend, ErrorMessage, and a `Prose` as the hint): `fieldset.a11y.md`.
 
-A CheckboxGroup is one question with several answers that can all be true ("Hur vill du bli kontaktad?": e-post, sms, brev). `CheckboxGroup.Root` renders the `<fieldset>` and acts as a `Fieldset.Root` with `group` set, so `Fieldset.Legend`, `Fieldset.Description` and `Fieldset.ErrorMessage` work inside it. It holds no form state: the selected values are the `value` prop, and each change is reported up (ADR-0029, item 0).
+A CheckboxGroup is one question with several answers that can all be true ("Hur vill du bli kontaktad?": e-post, sms, brev). `CheckboxGroup.Root` renders the `<fieldset>` and acts as a `Fieldset.Root` with `group` set, so `Fieldset.Legend`, a hint (a `Prose` in the group) and `Fieldset.ErrorMessage` work inside it. It holds no form state: the selected values are the `value` prop, and each change is reported up (ADR-0029, item 0).
 
 ## Roles, states, properties
 
@@ -60,7 +60,7 @@ None. Nothing is live (ADR-0029). Entering the group, a screen reader reads the 
 
 ## Consumer responsibilities
 
-- A `Fieldset.Legend` that asks the question, first in the Root. Say how many answers are allowed in a `Fieldset.Description` ("Välj alla som passar").
+- A `Fieldset.Legend` that asks the question, first in the Root. Say how many answers are allowed in a hint, a `Prose` in the group ("Välj alla som passar"). A hint is text: its description is the Prose's text content, so keep it short and plain. A Prose directly in the group, not inside an option's Field, describes the group; a Prose that isn't a hint goes outside the group.
 - A `Field.Root` with a direct-child `Checkbox` and a `Field.Label` for each option; `value` on every Checkbox.
 - Keep the list short. About 15 options is the limit before a search or a different pattern is better (ADR-0037). Never `<select multiple>`.
 - Pass `value` and `onValueChange` from your form state, or `defaultValue` and `name` for a plain `<form>`.

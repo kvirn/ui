@@ -30,7 +30,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Heading (level, type-role size), Prose (`kv-prose`)                                 | – (native `<h1>`–`<h6>`)      | 1   | alpha       |
 | Kbd (`kv-kbd`, one key per element)                                                 | – (native `<kbd>`)            | 1   | alpha       |
 | Notification (Root; Info, Success, Warning, Danger; Title, Body, Actions; announce) | – (native `<div>`, Announcer) | 1   | in progress |
-| Field, Label, Description, ErrorMessage, Fieldset                                   | –                             | 1   | in progress |
+| Field, Label, ErrorMessage, Fieldset (the hint is a `Prose`, Plan 0025)             | –                             | 1   | in progress |
 | Input, Textarea                                                                     | –                             | 1   | in progress |
 | InputGroup (Root, Addon: units, icons, a clear Button)                              | – (native `<input>`)          | 1   | in progress |
 | Input masks (core engine, presets, `useMask`)                                       | – (native `<input>`)          | 1   | alpha       |
@@ -66,6 +66,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Button depth ("Grounded": soft shadow and tinted edge, flat in contrast themes)            | 0010 | implemented (ADR-0026 proposed); accessibility and design review pending                               |
 | IBM Plex Sans and Serif replace Inter (typography)                                         | 0011 | in progress (ADR-0027 proposed; design review pending)                                                 |
 | Hyphenation and smaller large type below 40rem                                             | 0012 | done (ADR-0028 proposed; design review pending)                                                        |
+| `Prose` is the description of a Field or Fieldset (`Field.Description` removed)            | 0025 | in progress (ADR-0054 proposed; accessibility review and manual AT matrix pending)                     |
 
 ## Blocks (M4 and later)
 

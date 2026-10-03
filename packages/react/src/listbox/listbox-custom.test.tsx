@@ -19,6 +19,7 @@ import type {
   UseListboxResult,
   UseListboxSingleOptions,
 } from './use-listbox.ts'
+import { Prose } from '../prose/prose.tsx'
 
 // Contract: listbox.a11y.md (custom rendering). The keyboard rows are also covered end to end in
 // apps/storybook/src/components/listbox/listbox.e2e.ts. Component tests load no theme: the popup
@@ -72,7 +73,7 @@ function Example({ items = municipalities, ...rootProps }: SingleProps) {
       </button>
       <Field.Root required>
         <Field.Label>Kommun</Field.Label>
-        <Field.Description>Där du är folkbokförd.</Field.Description>
+        <Prose>Där du är folkbokförd.</Prose>
         <Listbox.Root
           items={items}
           itemToString={(municipality) => municipality.name}
@@ -1091,7 +1092,7 @@ describe('native rendering', () => {
     const { container } = await render(
       <Field.Root invalid required>
         <Field.Label>Kommun</Field.Label>
-        <Field.Description>Där du är folkbokförd.</Field.Description>
+        <Prose>Där du är folkbokförd.</Prose>
         <Listbox.Root
           native="always"
           items={municipalities}

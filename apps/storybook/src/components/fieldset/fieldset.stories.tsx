@@ -1,4 +1,4 @@
-import { Field, Fieldset, Input } from '@kvirn-ui/react'
+import { ErrorMessage, Field, Fieldset, Input, Label, Legend, Prose } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/fieldset/fieldset.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ComponentProps } from 'react'
@@ -15,7 +15,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 const meta = {
   title: 'Components/Form/Fieldset',
-  component: Fieldset.Root,
+  component: Fieldset,
   argTypes: {
     invalid: { control: 'boolean' },
     required: { control: 'boolean' },
@@ -39,7 +39,7 @@ const meta = {
   ],
   render: (args, { globals }) => <Address {...args} locale={localeOf(globals)} />,
   parameters: { a11yContract: contract },
-} satisfies Meta<typeof Fieldset.Root>
+} satisfies Meta<typeof Fieldset>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -54,7 +54,7 @@ interface AddressOptions {
   heading?: boolean
 }
 
-type AddressProps = AddressOptions & Omit<ComponentProps<typeof Fieldset.Root>, 'children'>
+type AddressProps = AddressOptions & Omit<ComponentProps<typeof Fieldset>, 'children'>
 
 /** A street, a postcode and a town: three questions in one group. */
 function Address({
@@ -66,21 +66,25 @@ function Address({
 }: AddressProps) {
   const { text, lang } = textsFor(locale)
   return (
-    <Fieldset.Root {...fieldsetProps} invalid={error || fieldsetProps.invalid} lang={lang}>
+    <Fieldset {...fieldsetProps} invalid={error || fieldsetProps.invalid} lang={lang}>
       {heading ? (
-        <Fieldset.Legend className="kv-fieldset-legend--heading">
+        <Legend className="kv-fieldset-legend--heading">
           <h1>{text.addressLegend}</h1>
-        </Fieldset.Legend>
+        </Legend>
       ) : (
-        <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
+        <Legend>{text.addressLegend}</Legend>
       )}
-      {hint ? <Fieldset.Description>{text.addressHint}</Fieldset.Description> : null}
-      <Field.Root required invalid={error}>
-        <Field.Label>{text.street}</Field.Label>
+      {hint ? (
+        <Prose>
+          <p>{text.addressHint}</p>
+        </Prose>
+      ) : null}
+      <Field required invalid={error}>
+        <Label>{text.street}</Label>
         <Input name="street" autoComplete="street-address" />
-      </Field.Root>
-      <Field.Root required>
-        <Field.Label>{text.postcode}</Field.Label>
+      </Field>
+      <Field required>
+        <Label>{text.postcode}</Label>
         <Input
           name="postcode"
           inputMode="numeric"
@@ -88,13 +92,13 @@ function Address({
           autoComplete="postal-code"
           className="kv-input--width-6"
         />
-      </Field.Root>
-      <Field.Root required>
-        <Field.Label>{text.town}</Field.Label>
+      </Field>
+      <Field required>
+        <Label>{text.town}</Label>
         <Input name="town" autoComplete="address-level2" className="kv-input--width-20" />
-      </Field.Root>
-      <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
-    </Fieldset.Root>
+      </Field>
+      <ErrorMessage>{text.addressError}</ErrorMessage>
+    </Fieldset>
   )
 }
 

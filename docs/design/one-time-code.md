@@ -170,7 +170,7 @@ Reading order equals DOM order equals visual order (1.3.2). The field adds no la
 ```
 div.kv-field
   label.kv-field-label[for=code]                 Kod från e-postmeddelandet
-  p.kv-field-description#hint                    Koden har 8 bokstäver och siffror, i 2 grupper om 4. Du hittar den i …
+  div.kv-prose#hint > p                        Koden har 8 bokstäver och siffror, i 2 grupper om 4. Du hittar den i …
   div.kv-one-time-code[data-ready][data-character-count=8][data-separator-count=1][data-invalid]   Root: the row, and the query container
     input.kv-one-time-code-input#code[type=text][autocomplete=one-time-code]
          [dir=ltr][spellcheck=false][autocorrect=off][aria-describedby="hint err"][aria-invalid=true]   value "K7QX-2M9P"
@@ -426,7 +426,8 @@ In the fallback, the boxes and separators are `display: none` (they're `aria-hid
 | Separator          | 12px wide, 44px high  | 12px wide, 32px high               | `space-3`. The group break is 28px / 20px, 3.5× / 5× a gap: clear in both |
 | Character and dash | 16px `numeric`        | **16px** `numeric`                 | Essential content, and no iOS zoom on iPad (form-fields §6.7)             |
 | Label              | `label` 16/500        | `label-compact` 14/500             | Field's control tokens                                                    |
-| Hint, error        | 16px                  | **16px**                           | Instructions and errors never go below 16px                               |
+| Hint above, error  | 16px                  | **16px**                           | Instructions and errors stay 16px                                         |
+| Hint under         | 14px                  | **14px**                           | `body-small` (ADR-0054)                                                   |
 | Target (the input) | the row, 44px high    | the row, 32px high                 | 2.5.5 in comfortable, 2.5.8 in compact                                    |
 | Fallback field     | 44px                  | 32px                               | Input                                                                     |
 

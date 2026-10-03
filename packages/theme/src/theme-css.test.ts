@@ -733,12 +733,18 @@ describe('theme.css form fields (ADR-0029, docs/design/form-fields.md)', () => {
 
   it('keeps hints, errors and typed answers at 16px in compact density', () => {
     // Compact only changes the --kv-control-* tokens: the text parts must not read them, except
-    // the labels, and the input reads the body size.
+    // the labels, and the input reads the body size. The hint is a kv-prose that is a direct child
+    // of the field or fieldset (ADR-0054), so it is looked up in all the rules.
     const declarationsOf = (selector: string) =>
-      fieldRules
+      rules
         .filter((rule) => rule.media.length === 0 && rule.selectors.includes(selector))
         .flatMap((rule) => rule.declarations)
-    for (const selector of ['.kv-field-description', '.kv-field-error-message', '.kv-input']) {
+    for (const selector of [
+      '.kv-field > .kv-prose',
+      '.kv-fieldset > .kv-prose',
+      '.kv-field-error-message',
+      '.kv-input',
+    ]) {
       const sizes = declarationsOf(selector).filter(([property]) =>
         /^(?:font-size|line-height)$/.test(property),
       )
@@ -748,10 +754,46 @@ describe('theme.css form fields (ADR-0029, docs/design/form-fields.md)', () => {
         expect(value).not.toContain('compact')
       }
     }
-    expect(declarationsOf('.kv-field-description')).toContainEqual([
-      'color',
-      'var(--kv-color-text)',
-    ])
+    for (const selector of ['.kv-field > .kv-prose', '.kv-fieldset > .kv-prose']) {
+      expect(declarationsOf(selector)).toContainEqual(['color', 'var(--kv-color-text)'])
+      expect(declarationsOf(selector)).toContainEqual(['font-size', 'var(--kv-font-body-size)'])
+      expect(declarationsOf(selector)).toContainEqual(['margin', '0'])
+    }
+    // A hint under the control is body-small, in the same colour (ADR-0054).
+    const under = [
+      '.kv-field > :not(.kv-field-label, .kv-prose) ~ .kv-prose',
+      '.kv-fieldset > :not(.kv-fieldset-legend, .kv-prose) ~ .kv-prose',
+    ]
+    for (const selector of under) {
+      expect(declarationsOf(selector)).toContainEqual([
+        'font-size',
+        'var(--kv-font-body-small-size)',
+      ])
+    }
+  })
+
+  it('has no kv-field-description: the hint is a Prose in the field or fieldset (ADR-0054)', () => {
+    expect(themeCss).not.toContain('kv-field-description')
+  })
+
+  it('treats a kv-prose in a field or fieldset as prose again, and the field itself as a boundary', () => {
+    // The boundary selector of the prose element rules lists the field and the fieldset next to
+    // the card, so the nearest of a boundary and a kv-prose wins. A field or fieldset isn't in
+    // the `.kv-not-prose` line, which would exclude the hint's own paragraphs for good.
+    const selector =
+      rules
+        .flatMap((rule) => rule.selectors)
+        .find(
+          (candidate) =>
+            candidate.includes(':where(.kv-prose) :where(*):not(') &&
+            candidate.endsWith(':where(h1)'),
+        ) ?? ''
+    expect(selector).not.toBe('')
+    expect(selector).toContain(
+      ':is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose)',
+    )
+    expect(selector).toContain(':is(.kv-not-prose, .kv-nav, .kv-button-group) *')
+    expect(selector).not.toContain(':is(.kv-not-prose, .kv-nav, .kv-button-group, .kv-field')
   })
 
   it.each(themeNames)('%s: the invalid edge is held to 3:1 on every plain background', (theme) => {
@@ -1378,7 +1420,9 @@ describe('theme.css notification (ADR-0047, docs/design/notification.md)', () =>
     // The boundary: nothing inside a notification is prose-styled, so an h2 Title keeps its look.
     expect(
       inProse.some((rule) =>
-        rule.selectors.some((s) => s.includes(':is(.kv-card, .kv-notification):not(.kv-prose) *')),
+        rule.selectors.some((s) =>
+          s.includes(':is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose) *'),
+        ),
       ),
     ).toBe(true)
     // The Root only gets margins.
@@ -1671,5 +1715,50 @@ describe('theme.css file upload (ADR-0038, ADR-0049, docs/design/file-upload.md)
     expect(
       fileUploadSelectors.filter((selector) => /:(?:user-)?(?:in)?valid\b/.test(selector)),
     ).toEqual([])
+  })
+})
+
+describe('theme.css headings in prose and Heading (ADR-0052)', () => {
+  // Prose styles h1 to h6 and `.kv-heading` styles a Heading. The prose rules sit inside the
+  // card-boundary selector, so they can't share a rule with the modifiers. This keeps the type
+  // of the two the same, so a token change can't reach one and miss the other.
+  const typeProperties = new Set([
+    'color',
+    'font-family',
+    'font-size',
+    'font-weight',
+    'line-height',
+    'letter-spacing',
+    'font-feature-settings',
+    'text-wrap',
+  ])
+  const typeOf = (matches: (selector: string) => boolean) =>
+    Object.fromEntries(
+      rules
+        .filter((rule) => rule.selectors.some(matches))
+        .flatMap((rule) => rule.declarations)
+        .filter(([property]) => typeProperties.has(property)),
+    )
+  const proseElement = (names: string) => (selector: string) =>
+    selector.includes('.kv-prose') && selector.endsWith(`:where(${names})`)
+
+  it.each([
+    ['h1', 'heading-1'],
+    ['h2', 'heading-2'],
+    ['h3', 'heading-3'],
+  ])('looks the same for %s and kv-heading--%s', (element, size) => {
+    const heading = typeOf((selector) => selector === `:where(.kv-heading--${size})`)
+    const prose = typeOf(proseElement(element))
+    expect(Object.keys(heading).length).toBeGreaterThan(0)
+    expect(heading).toEqual(
+      Object.fromEntries(Object.entries(prose).filter(([property]) => property in heading)),
+    )
+  })
+
+  it('looks the same for h4 to h6 and an unmodified kv-heading', () => {
+    const heading = typeOf((selector) => selector === ':where(.kv-heading)')
+    const prose = typeOf(proseElement('h1, h2, h3, h4, h5, h6'))
+    const proseSmall = typeOf(proseElement('h4, h5, h6'))
+    expect({ ...prose, ...proseSmall }).toMatchObject(heading)
   })
 })

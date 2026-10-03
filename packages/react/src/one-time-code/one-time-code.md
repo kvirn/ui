@@ -16,13 +16,15 @@ A OneTimeCode shows a code sent by text message or email, or made by an authenti
 ## Component
 
 ```tsx
-import { Field, OneTimeCode } from '@kvirn-ui/react'
+import { ErrorMessage, Field, Label, OneTimeCode, Prose } from '@kvirn-ui/react'
 
-;<Field.Root invalid={codeError !== undefined}>
-  <Field.Label>Kod från sms:et</Field.Label>
-  <Field.Description>
-    Koden har 8 tecken i två grupper om 4. Du hittar den i sms:et som vi just skickade till dig.
-  </Field.Description>
+;<Field invalid={codeError !== undefined}>
+  <Label>Kod från sms:et</Label>
+  <Prose>
+    <p>
+      Koden har 8 tecken i två grupper om 4. Du hittar den i sms:et som vi just skickade till dig.
+    </p>
+  </Prose>
   <OneTimeCode.Root
     pattern="&&&&-&&&&"
     onComplete={(value, unmaskedValue) => verifyCode(unmaskedValue)}
@@ -32,8 +34,8 @@ import { Field, OneTimeCode } from '@kvirn-ui/react'
       <OneTimeCode.Slot key={index} index={index} />
     ))}
   </OneTimeCode.Root>
-  <Field.ErrorMessage>{codeError}</Field.ErrorMessage>
-</Field.Root>
+  <ErrorMessage>{codeError}</ErrorMessage>
+</Field>
 ```
 
 `OneTimeCode.Root` takes the options. They're also the options of the hook:
@@ -69,7 +71,7 @@ import { Field, OneTimeCode } from '@kvirn-ui/react'
 ### Your part
 
 - **The label says where the code is,** in the user's words: "Kod från sms:et", "Code from your authenticator app". Not "OTP", "verification code" or "PIN".
-- **The hint is above the boxes and says how long the code is, how it is grouped, and where to find it** ("The code has 8 characters in two groups of 4"). The boxes are hidden from screen readers and disappear in the fallback, so the hint is the only place they learn the length and the groups (3.3.2). Screen readers read the dash in the value ("A B C D dash 1 2 3 4"). A dev warning fires without a `Field.Description`.
+- **The hint is above the boxes and says how long the code is, how it is grouped, and where to find it** ("The code has 8 characters in two groups of 4"). The boxes are hidden from screen readers and disappear in the fallback, so the hint is the only place they learn the length and the groups (3.3.2). Screen readers read the dash in the value ("A B C D dash 1 2 3 4"). A dev warning fires without a hint (a `Prose` in the Field).
 - **Errors say what's wrong and how to fix it,** under the row: "Enter all 6 digits of the code", "The code doesn't match the one we sent. Check the text message and enter the code again." Never blame. **Keep the code in the field after a wrong-code error,** so the user can compare it with the message and fix one digit.
 - **Keep a Continue button.** `onComplete` can verify early, but say so in the hint ("We check the code as soon as you have entered all 6 digits", 3.2.2) and never remove the button.
 - **While the code is being checked, use `readOnly`, not `disabled`.** A disabled input loses focus, which lands on `body`. Say "Checking the code" through the Announcer.
