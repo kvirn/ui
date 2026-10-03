@@ -1,6 +1,6 @@
 # ADR-0057: An e2e run must name its spec
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-10-03
 - **Deciders:** Magnus Vike
 - **Tags:** tooling | testing | process

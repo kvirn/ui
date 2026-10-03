@@ -74,5 +74,5 @@ We record significant decisions as ADRs using a lightweight MADR-style format.
 | [0054](0054-prose-is-the-description.md)                            | Prose is the description of a Field or Fieldset                                                 | Accepted               |
 | [0055](0055-flat-field-api.md)                                      | Field, Label, ErrorMessage, Fieldset and Legend are flat names                                  | Accepted               |
 | [0056](0056-reset-css.md)                                           | An optional reset.css, ported from Tailwind's Preflight                                         | Accepted               |
-| [0057](0057-e2e-runs-name-their-spec.md)                            | An e2e run must name its spec; the full run is for CI and the sweep specialist                  | Proposed               |
+| [0057](0057-e2e-runs-name-their-spec.md)                            | An e2e run must name its spec; the full run is for CI and the sweep specialist                  | Accepted               |
 | [0058](0058-worker-caps-for-tests.md)                               | Test runs cap their workers                                                                     | Accepted               |
