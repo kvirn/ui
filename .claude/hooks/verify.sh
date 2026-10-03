@@ -3,10 +3,18 @@
 # Formatting never blocks (ADR-0048): the edit hook formats, and format drift is fixed before commit.
 # Exit 2 = block and feed stderr back to Claude. No-ops until the repo is bootstrapped.
 #
-# One working tree per feature (a git worktree each), so every change in the tree is this session's.
+# Gates only sessions that edited code (format.sh records each code edit per session), so a
+# session that only talks, reads or runs git doesn't inherit someone else's work in the tree.
 set -u
+input="$(cat)"
 cd "${CLAUDE_PROJECT_DIR:-.}" || exit 0
 [ -f package.json ] || exit 0
+
+session="$(printf '%s' "$input" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{process.stdout.write(JSON.parse(s).session_id??"")}catch{}})' 2>/dev/null)"
+if [ -n "$session" ]; then
+  touched="$(git rev-parse --path-format=absolute --git-path "kvirn-touched-$session" 2>/dev/null)"
+  [ -n "$touched" ] && [ ! -s "$touched" ] && exit 0
+fi
 
 # The code and config paths the hook gates on. Docs-only changes pass through.
 code_paths=(packages apps tooling '*.ts' package.json pnpm-workspace.yaml pnpm-lock.yaml)
