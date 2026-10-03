@@ -16,7 +16,7 @@ Config lives in the root `vite.config.ts` (fmt, lint, test projects). Each packa
 
 - **Type checking** runs inside `vp check` (tsgolint, TypeScript 7), not as a separate `tsc` step.
 - **Tests import from `vite-plus/test`**, and browser APIs from `vite-plus/test/browser`, never from `vitest` directly.
-- **`vp run e2e <args>`** passes arguments straight to Playwright. Don't put `--` before them, or Playwright ignores the filters.
+- **`vp run e2e <args>`** passes arguments straight to Playwright. Don't put `--` before them, or Playwright ignores the filters. Always name the spec: a path-less run is blocked by `.claude/hooks/guard-e2e-scope.sh` (ADR-0057), and the whole-suite run is for CI and the sweep specialist.
 - **Telemetry is off:** Storybook (`core.disableTelemetry`) and Next.js (`NEXT_TELEMETRY_DISABLED=1`). Vite+ and Playwright send none.
 - **Playwright runs one project, `chromium`, by default** (ADR-0042, ADR-0048). `E2E_BROWSERS=sweep` adds forced colours, reduced motion and 320px reflow, `E2E_BROWSERS=all` adds everything, and `E2E_BROWSERS=firefox,webkit vp run e2e <spec> --project webkit` adds named projects. The full sweep is a dedicated workload. WebKit on Linux also needs system libraries (`sudo pnpm exec playwright install-deps webkit`).
 - **Formatting is advisory** (ADR-0048). The Stop hook and CI run `vp check --no-fmt`, and CI only warns on `vp fmt --check`. Run `vp fmt <files>` on what you commit.

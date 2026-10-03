@@ -60,7 +60,7 @@ Run the smallest thing that proves the point. Each full gate run happens **once 
 
 1. `vp check` (lint and types block, formatting is advisory; on your files while others may be editing; the whole tree only when you're the only one working)
 2. `vp test run`
-3. `vp run e2e`: the `chromium` baseline (ADR-0048). The display-mode projects and other browsers only for a dedicated sweep, with `E2E_BROWSERS=sweep|all`
+3. `vp run e2e <spec> --project chromium`: the `chromium` baseline (ADR-0048), for the specs you changed. A path-less run is blocked (ADR-0057); CI runs the whole suite. The display-mode projects and other browsers only for a dedicated sweep, with `E2E_BROWSERS=sweep|all`
 4. `vp run i18n:check`
 5. `vp run theme:check`
 

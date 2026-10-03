@@ -26,7 +26,7 @@ Use pnpm only. `vp` is the single CLI. Don't use ESLint or Prettier.
 ```sh
 vp check [files]            # fmt + lint + types. Pass your files while working. Formatting is advisory (ADR-0048)
 vp test run [files]         # Vitest unit/component + axe. Pass your files while working
-vp run e2e [file]           # Playwright, `chromium` only (no `--` before args). E2E_BROWSERS=sweep|all|<project> for the rest (ADR-0042, ADR-0048)
+vp run e2e <spec>           # Playwright, `chromium` only. A spec is required: a path-less run is blocked (ADR-0057). No `--` before args. E2E_BROWSERS=sweep|all|<project> for the rest (ADR-0042, ADR-0048)
 vp run i18n:check           # all locales complete
 vp run theme:check          # token contrast
 pnpm changeset
@@ -77,7 +77,7 @@ Nothing is done until all of these pass. A Stop hook enforces gates 1–2 on the
 
 1. `vp check` has no lint or type errors. Formatting is advisory: run `vp fmt <files>` on the files you commit, but it never blocks (ADR-0048).
 2. `vp test run` passes, with 0 axe violations in every story state (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`).
-3. `vp run e2e` (the `chromium` baseline, ADR-0048): every keyboard-contract row is tested and green. The forced-colors, reduced-motion and 320px reflow projects are a dedicated sweep (`E2E_BROWSERS=sweep`), run by a WCAG sweep agent or the maintainer, not per change.
+3. `vp run e2e <spec> --project chromium` (the `chromium` baseline, ADR-0048) for the specs you changed: every keyboard-contract row is tested and green. The whole-suite run is CI's, and a hook blocks it here (ADR-0057). The forced-colors, reduced-motion and 320px reflow projects are a dedicated sweep (`E2E_BROWSERS=sweep`), run by a WCAG sweep agent or the maintainer, not per change.
 4. `i18n:check` and `theme:check` pass.
 5. The component has a hook, a compound component, stories (every state, plus RTL and forced-colors, and a `Keyboard` story if it has a focusable part), and a complete `<name>.a11y.md` that matches the tests. Its Storybook Docs page shows the contract's Keyboard section (ADR-0039).
 6. accessibility-reviewer returns APPROVE.
@@ -100,7 +100,7 @@ Nothing is done until all of these pass. A Stop hook enforces gates 1–2 on the
     - Never run `vp check --fix` or `vp fmt` without paths. The edit hook formats each file you edit.
     - Never `git stash`, `git checkout -- <path>`, `git reset` or `git clean` over changes you didn't make, such as a subagent's.
 
-12. **Subagents never run checks.** No `vp check`, `vp test`, `vp run e2e`, `i18n:check`, `theme:check` or builds. The main session (orchestrator) runs the gates once, after every subagent has reported done, so parallel agents don't exhaust CPU and memory. A PreToolUse hook blocks it.
+12. **Subagents never run checks.** No `vp check`, `vp test`, `vp run e2e`, `i18n:check`, `theme:check` or builds. The main session (orchestrator) runs the gates once, after every subagent has reported done, so parallel agents don't exhaust CPU and memory. A PreToolUse hook blocks it. No agent runs `vp run e2e` without a spec, and the hook blocks that too (ADR-0057).
 
 ## Conventions
 
