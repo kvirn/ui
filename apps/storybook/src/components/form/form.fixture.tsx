@@ -9,10 +9,15 @@ import { Field, Input, KvirnProvider } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 
 // Story and e2e fixture for the Components/Form pages (docs/design/form-fields.md §4.2, §4.3).
-// sv, en and fi are written. The fi strings are the designer's drafts, for length checks
-// only. nb, nn and se come from a translator, not an agent: until then those locales show the
-// English text, marked lang="en" (3.1.2). The library's own strings ("(optional)", "Error:")
-// follow the locale through the provider decorator below, like an app's provider would.
+// sv, en and fi are written. The fi strings are the designer's drafts, for length checks only.
+// The Hint page's strings (personalNumberWhy, personalNumberFormat, personalNumberError,
+// messageLimit, grantReferenceHint and the date box labels) need a native speaker's review
+// (docs/design/field-hint.md §4.2, open question 7). The spec's option hint `durationHint` is
+// `duration12Hint` in choice.fixture.tsx, which has the same text. nb, nn and se come from a
+// translator, not an agent: until then those locales show the English text, marked lang="en"
+// (3.1.2), so the new keys need nb, nn and se strings when the translator delivers the locale.
+// The library's own strings ("(optional)", "Error:") follow the locale through the provider
+// decorator below, like an app's provider would.
 //
 // KvirnUI holds no form state. Nothing here validates: an "invalid" story
 // sets `invalid` and writes the message itself, as an implementor's form logic would.
@@ -25,6 +30,13 @@ export interface FormTexts {
   nameHint: string
   nameError: string
   personalNumber: string
+  /** The description above the control: why we ask. */
+  personalNumberWhy: string
+  /** The hint under the control: the format, in plain words first. */
+  personalNumberFormat: string
+  /** The ErrorMessage: repeats the format. */
+  personalNumberError: string
+  /** The hint under a read-only field: why the value can't change. */
   personalNumberHint: string
   registration: string
   /** The hint above the control: where to find the answer. */
@@ -51,6 +63,10 @@ export interface FormTexts {
   postcode: string
   postcodeHint: string
   longLabel: string
+  /** The hint under the long-label field: a long compound for the length check. */
+  grantReferenceHint: string
+  /** The hint under a textarea. Static: a live count is a later component. */
+  messageLimit: string
   // InputGroup (docs/design/form-fields.md §4.5). The label carries the unit, because an Addon
   // is aria-hidden.
   rentWithUnit: string
@@ -67,6 +83,10 @@ export interface FormTexts {
   searchClearName: string
   visitDate: string
   visitDateExample: string
+  /** The date boxes' labels, for the Fieldset.Hint example. */
+  visitDay: string
+  visitMonth: string
+  visitYear: string
   amountEuro: string
   amountEuroUnit: string
   grantWithUnit: string
@@ -91,6 +111,9 @@ const textsEn: FormTexts = {
   nameHint: 'As it appears on your passport.',
   nameError: 'Enter your full name',
   personalNumber: 'Personal identity number',
+  personalNumberWhy: 'We use it to get your details from the Swedish Tax Agency.',
+  personalNumberFormat: '12 digits, YYYYMMDD-NNNN',
+  personalNumberError: 'Enter your personal identity number with 12 digits, YYYYMMDD-NNNN',
   personalNumberHint: 'You can’t change your personal identity number here.',
   registration: 'Vehicle registration number',
   registrationWhere: 'You can find it on the vehicle registration certificate.',
@@ -114,6 +137,8 @@ const textsEn: FormTexts = {
   postcode: 'Postcode',
   postcodeHint: 'For example, 00100',
   longLabel: 'Reference number of your housing adaptation grant application',
+  grantReferenceHint: 'It’s on the decision about your housing adaptation grant.',
+  messageLimit: 'Up to 500 characters.',
   rentWithUnit: 'Monthly rent in kronor',
   rentUnit: 'kr',
   rentUnitExample: (example) => `For example, ${example}`,
@@ -128,6 +153,9 @@ const textsEn: FormTexts = {
   searchClearName: 'Clear search',
   visitDate: 'Date of the visit',
   visitDateExample: 'For example, 27/3/2026',
+  visitDay: 'Day',
+  visitMonth: 'Month',
+  visitYear: 'Year',
   amountEuro: 'Amount in euros',
   amountEuroUnit: '€',
   grantWithUnit: 'Amount of housing adaptation grant you are applying for, in kronor',
@@ -152,6 +180,9 @@ const textsSv: FormTexts = {
   nameHint: 'Som det står i ditt pass.',
   nameError: 'Ange ditt fullständiga namn',
   personalNumber: 'Personnummer',
+  personalNumberWhy: 'Vi använder det för att hämta dina uppgifter från Skatteverket.',
+  personalNumberFormat: '12 siffror, ÅÅÅÅMMDD-NNNN',
+  personalNumberError: 'Skriv personnumret med 12 siffror, ÅÅÅÅMMDD-NNNN',
   personalNumberHint: 'Du kan inte ändra ditt personnummer här.',
   registration: 'Fordonets registreringsnummer',
   registrationWhere: 'Det står på registreringsbeviset.',
@@ -175,6 +206,8 @@ const textsSv: FormTexts = {
   postcode: 'Postnummer',
   postcodeHint: 'Till exempel 123 45',
   longLabel: 'Referensnummer för din ansökan om bostadsanpassningsbidrag',
+  grantReferenceHint: 'Det står i beslutet om bostadsanpassningsbidrag.',
+  messageLimit: 'Högst 500 tecken.',
   rentWithUnit: 'Månadshyra i kronor',
   rentUnit: 'kr',
   rentUnitExample: (example) => `Till exempel ${example}`,
@@ -189,6 +222,9 @@ const textsSv: FormTexts = {
   searchClearName: 'Rensa sökningen',
   visitDate: 'Datum för besöket',
   visitDateExample: 'Till exempel 2026-03-27',
+  visitDay: 'Dag',
+  visitMonth: 'Månad',
+  visitYear: 'År',
   amountEuro: 'Belopp i euro',
   amountEuroUnit: '€',
   grantWithUnit: 'Belopp som du söker i bostadsanpassningsbidrag, i kronor',
@@ -214,6 +250,9 @@ const textsFi: FormTexts = {
   nameHint: 'Kuten se on passissasi.',
   nameError: 'Anna koko nimesi',
   personalNumber: 'Henkilötunnus',
+  personalNumberWhy: 'Haemme sen avulla tietosi Ruotsin verovirastosta (Skatteverket).',
+  personalNumberFormat: '12 numeroa, VVVVKKPP-NNNN',
+  personalNumberError: 'Kirjoita henkilötunnus 12 numerolla, VVVVKKPP-NNNN',
   personalNumberHint: 'Henkilötunnusta ei voi muuttaa täällä.',
   registration: 'Ajoneuvon rekisteritunnus',
   registrationWhere: 'Löydät sen ajoneuvon rekisteröintitodistuksesta.',
@@ -237,6 +276,10 @@ const textsFi: FormTexts = {
   postcode: 'Postinumero',
   postcodeHint: 'Esimerkiksi 00100',
   longLabel: 'Asunnonmuutostyöavustushakemuksen viitenumero',
+  // Soft hyphens (U+00AD) in the 34-letter compound: Chromium has no Finnish hyphenation
+  // dictionary, so they break the word in every browser (docs/design/field-hint.md §6).
+  grantReferenceHint: 'Löydät sen asunnon\u00ADmuutostyö\u00ADavustus\u00ADpäätöksestä.',
+  messageLimit: 'Enintään 500 merkkiä.',
   rentWithUnit: 'Kuukausivuokra kruunuina',
   rentUnit: 'kr',
   rentUnitExample: (example) => `Esimerkiksi ${example}`,
@@ -251,6 +294,9 @@ const textsFi: FormTexts = {
   searchClearName: 'Tyhjennä haku',
   visitDate: 'Käynnin päivämäärä',
   visitDateExample: 'Esimerkiksi 27.3.2026',
+  visitDay: 'Päivä',
+  visitMonth: 'Kuukausi',
+  visitYear: 'Vuosi',
   amountEuro: 'Summa euroina',
   amountEuroUnit: '€',
   grantWithUnit: 'Haettavan asunnonmuutostyöavustuksen määrä kruunuina',
@@ -347,8 +393,9 @@ export const withFormLocale: Decorator = (Story, { globals }) => {
 }
 
 /**
- * Every state of a text field in one column, in the default order (forms skill: label, hint,
- * control, error): with a hint, invalid, optional, disabled and read-only. The RTL and ForcedColors stories of each page render it.
+ * Every state of a text field in one column, in the default order (forms skill: label,
+ * description, control, hint, error): with a description above, invalid, optional, disabled and
+ * read-only with its hint under the box. The RTL and ForcedColors stories of each page render it.
  */
 export function FieldStates({ locale }: { locale: FormLocale }) {
   const { text, lang } = textsFor(locale)
@@ -379,10 +426,8 @@ export function FieldStates({ locale }: { locale: FormLocale }) {
       </Field.Root>
       <Field.Root required>
         <Field.Label>{text.personalNumber}</Field.Label>
-        <Field.Prose>
-          <p>{text.personalNumberHint}</p>
-        </Field.Prose>
         <Input name="personal-number" readOnly defaultValue="19900101-1234" />
+        <Field.Hint>{text.personalNumberHint}</Field.Hint>
       </Field.Root>
     </div>
   )

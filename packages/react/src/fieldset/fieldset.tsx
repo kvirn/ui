@@ -11,8 +11,8 @@ import {
 } from '../field/field-context.ts'
 import type { FieldTextHostContextValue } from '../field/field-context.ts'
 import type { FieldMarker, FieldState } from '../field/field-state.ts'
-import { FieldErrorMessage, OptionalMarker } from '../field/field.tsx'
-import type { FieldErrorMessageProps } from '../field/field.tsx'
+import { FieldErrorMessage, FieldHint, OptionalMarker } from '../field/field.tsx'
+import type { FieldErrorMessageProps, FieldHintProps } from '../field/field.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { ProseRoot } from '../prose/prose.tsx'
@@ -63,17 +63,18 @@ const noState: FieldsetState = { isInvalid: false, isRequired: false, isDisabled
 
 /**
  * A native `<fieldset>` that groups questions, or the controls of one question, under its
- * legend (contract: fieldset.a11y.md). A `Fieldset.Prose` inside it (the hint) and its
- * `Fieldset.ErrorMessage` describe the group. It holds no form state.
+ * legend (contract: fieldset.a11y.md). A `Fieldset.Prose` (the description), a `Fieldset.Hint`
+ * and its `Fieldset.ErrorMessage` describe the group. It holds no form state.
  *
  * @example
  * <Fieldset.Root group invalid={errors.contact !== undefined}>
  *   <Fieldset.Legend>Hur vill du bli kontaktad?</Fieldset.Legend>
  *   <Fieldset.Prose>
- *     <p>Välj alla som passar.</p>
+ *     <p>Vi kontaktar dig bara om beslutet.</p>
  *   </Fieldset.Prose>
- *   <Fieldset.ErrorMessage>{errors.contact}</Fieldset.ErrorMessage>
  *   …
+ *   <Fieldset.Hint>Välj alla som passar.</Fieldset.Hint>
+ *   <Fieldset.ErrorMessage>{errors.contact}</Fieldset.ErrorMessage>
  * </Fieldset.Root>
  */
 export function FieldsetRoot({
@@ -216,13 +217,24 @@ export function FieldsetLegend({
 FieldsetLegend.displayName = 'Fieldset.Legend'
 
 /**
- * The group's hint, a `Prose` that describes the group. It is the shared `Prose` under the name
- * an adopter writes (`Fieldset.Prose`), so it registers with the Fieldset the same way.
+ * The group's description, a `Prose` above the controls that describes the group. It is the
+ * shared `Prose` under the name an adopter writes (`Fieldset.Prose`), so it registers with the
+ * Fieldset the same way.
  */
 export function FieldsetProse(props: ProseRootProps): ReactElement {
   return <ProseRoot {...props} />
 }
 FieldsetProse.displayName = 'Fieldset.Prose'
+
+/**
+ * The group's hint: the `Field.Hint` behaviour under the name an adopter writes
+ * (`Fieldset.Hint`). A short instruction or example under the controls, in the group's
+ * description, for example the format of a date.
+ */
+export function FieldsetHint(props: FieldHintProps): ReactElement {
+  return <FieldHint {...props} />
+}
+FieldsetHint.displayName = 'Fieldset.Hint'
 
 /**
  * The group's error message: the `Field.ErrorMessage` behaviour under the name an adopter writes
@@ -238,7 +250,8 @@ export const Legend = FieldsetLegend
 
 /**
  * A native fieldset with its legend and error: `Fieldset.Root` is the root, with
- * `Fieldset.Legend`, `Fieldset.Prose` for the hint and `Fieldset.ErrorMessage` inside it. The
+ * `Fieldset.Legend`, `Fieldset.Prose` for the description, `Fieldset.Hint` for the hint and
+ * `Fieldset.ErrorMessage` inside it. The
  * callable `<Fieldset>` still works and is the same component as `Fieldset.Root`, but it isn't
  * shown in docs.
  */
@@ -246,5 +259,6 @@ export const Fieldset = Object.assign(FieldsetRoot, {
   Root: FieldsetRoot,
   Legend: FieldsetLegend,
   Prose: FieldsetProse,
+  Hint: FieldsetHint,
   ErrorMessage: FieldsetErrorMessage,
 })

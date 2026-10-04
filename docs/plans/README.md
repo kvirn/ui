@@ -29,6 +29,6 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0026](0026-table-and-virtualization.md)         | Table, and virtualized Listbox, Combobox and Autocomplete               | In progress |
 | [0027](0027-fold-adrs-into-skills.md)            | Fold the ADRs into skills and docs, then delete them                    | Done        |
 | [0028](0028-compound-naming-and-part-aliases.md) | Compound naming and part aliases                                        | Done        |
-| [0029](0029-field-hint.md)                       | Field.Hint                                                              | Draft       |
+| [0029](0029-field-hint.md)                       | Field.Hint                                                              | In progress |
 | [0030](0030-rich-listbox-options.md)             | Rich Listbox options                                                    | Draft       |
 | [0031](0031-pointer-focus-on-text-inputs.md)     | Pointer focus on text inputs                                            | In progress |

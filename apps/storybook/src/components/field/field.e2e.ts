@@ -5,8 +5,8 @@ import { wcagTags } from '@kvirn-ui/testing'
 
 // Contract: packages/react/src/field/field.a11y.md › Keyboard, Focus management and Visual /
 // modes. One test per row, named after it. Field handles no keys: these prove it never gets in
-// the controls' way. The Label, Hint (a Prose) and ErrorMessage pages are covered here too: they
-// are the same parts. KvirnUI holds no form state, so every story sets `invalid` itself.
+// the controls' way. The Label, Hint (`Field.Hint`, and `Field.Prose` as the description) and
+// ErrorMessage pages are covered here too: they are the same parts. KvirnUI holds no form state, so every story sets `invalid` itself.
 
 /** `globals` selects the theme like the toolbar does, such as `mode:dark;contrast:more`. */
 const storyUrl = (page: string, story: string, globals?: string) =>
@@ -52,9 +52,14 @@ test.describe('Field keyboard contract', () => {
   })
 
   test('Tab goes to the control on the Label, Hint and ErrorMessage pages', async ({ page }) => {
-    for (const pageName of ['label', 'hint', 'errormessage']) {
+    // The Hint page's fixture is a field with a description above and a hint under the input.
+    for (const [pageName, name] of [
+      ['label', 'Fullständigt namn'],
+      ['hint', 'Personnummer'],
+      ['errormessage', 'Fullständigt namn'],
+    ] as const) {
       await openStory(page, pageName, 'keyboard')
-      const input = page.getByRole('textbox', { name: 'Fullständigt namn' })
+      const input = page.getByRole('textbox', { name })
       await page.keyboard.press('Tab')
       await expect(input).toBeFocused()
       // The next Tab leaves the page or wraps to the control: never to the label or the text.
@@ -78,8 +83,9 @@ test.describe('Field keyboard contract', () => {
   })
 
   test('Tab skips the hint and the error message', async ({ page }) => {
-    await openStory(page, 'field', 'invalid')
-    const input = page.getByRole('textbox', { name: 'E-postadress' })
+    // The description above, the hint under the input and the error are all text.
+    await openStory(page, 'field', 'invalid-with-hint-under')
+    const input = page.getByRole('textbox', { name: 'Fordonets registreringsnummer' })
     await page.keyboard.press('Tab')
     await expect(input).toBeFocused()
     // Past the only control, focus leaves the page or wraps back to it: it never lands on the
@@ -89,7 +95,7 @@ test.describe('Field keyboard contract', () => {
       expect(await page.evaluate(() => document.activeElement?.tagName)).toMatch(/^(?:INPUT|BODY)$/)
     }
     for (const text of await page
-      .locator('.kv-field > .kv-prose, .kv-field-error-message, .kv-field-label')
+      .locator('.kv-field > .kv-prose, .kv-field-hint, .kv-field-error-message, .kv-field-label')
       .all()) {
       await expect(text).not.toHaveAttribute('tabindex', /.*/)
     }
@@ -214,6 +220,7 @@ test.describe('Field focus and modes', () => {
   // The WCAG 1.4.12 overrides (.storybook/preview.css: .kv-story-text-spacing), at 320px.
   for (const [pageName, story] of [
     ['field', 'long-finnish'],
+    ['hint', 'long-finnish'],
     ['field', 'invalid'],
     ['errormessage', 'long-message'],
   ] as const) {
@@ -326,11 +333,21 @@ test.describe('Field accessibility', () => {
     ['label', 'as-page-heading'],
     ['label', 'long-finnish'],
     ['label', 'compact'],
-    ['hint', 'in-field'],
+    ['field', 'with-hint-under'],
+    ['field', 'invalid-with-hint-under'],
+    ['hint', 'keyboard'],
+    ['hint', 'under-the-control'],
+    ['hint', 'with-description'],
+    ['hint', 'invalid'],
     ['hint', 'in-fieldset'],
-    ['hint', 'with-example'],
+    ['hint', 'option-hints'],
+    ['hint', 'size-follows-the-part'],
+    ['hint', 'disabled'],
+    ['hint', 'read-only'],
     ['hint', 'compact'],
     ['hint', 'long-finnish'],
+    ['hint', 'rtl'],
+    ['hint', 'forced-colors'],
     ['errormessage', 'in-field'],
     ['errormessage', 'not-invalid'],
     ['errormessage', 'in-fieldset'],

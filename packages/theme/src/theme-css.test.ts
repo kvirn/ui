@@ -734,10 +734,10 @@ describe('theme.css form fields (docs/design/form-fields.md)', () => {
     }
   })
 
-  it('keeps hints, errors and typed answers at 16px in compact density', () => {
+  it('keeps the description, hint, errors and typed answers off the compact tokens', () => {
     // Compact only changes the --kv-control-* tokens: the text parts must not read them, except
-    // the labels, and the input reads the body size. The hint is a kv-prose that is a direct child
-    // of the field or fieldset, so it is looked up in all the rules.
+    // the labels, and the input reads the body size. The description is a kv-prose that is a
+    // direct child of the field or fieldset, and the hint is kv-field-hint.
     const declarationsOf = (selector: string) =>
       rules
         .filter((rule) => rule.media.length === 0 && rule.selectors.includes(selector))
@@ -745,6 +745,7 @@ describe('theme.css form fields (docs/design/form-fields.md)', () => {
     for (const selector of [
       '.kv-field > .kv-prose',
       '.kv-fieldset > .kv-prose',
+      '.kv-field-hint',
       '.kv-field-error-message',
       '.kv-input',
     ]) {
@@ -757,56 +758,92 @@ describe('theme.css form fields (docs/design/form-fields.md)', () => {
         expect(value).not.toContain('compact')
       }
     }
+  })
+
+  it('sets a description (a kv-prose in a field or fieldset) in body type wherever it sits', () => {
+    const declarationsOf = (selector: string) =>
+      rules
+        .filter((rule) => rule.media.length === 0 && rule.selectors.includes(selector))
+        .flatMap((rule) => rule.declarations)
     for (const selector of ['.kv-field > .kv-prose', '.kv-fieldset > .kv-prose']) {
       expect(declarationsOf(selector)).toContainEqual(['color', 'var(--kv-color-text)'])
       expect(declarationsOf(selector)).toContainEqual(['font-size', 'var(--kv-font-body-size)'])
       expect(declarationsOf(selector)).toContainEqual(['margin', '0'])
     }
-    // A hint under the control is body-small, in the same colour. A checkbox or
-    // radio, and a heading that holds the label, don't count as the control.
-    for (const [host, label] of [
-      ['.kv-field', '.kv-field-label'],
-      ['.kv-fieldset', '.kv-fieldset-legend'],
-    ] as const) {
-      const under = rules.filter((rule) =>
-        rule.selectors.some(
-          (selector) =>
-            selector.replaceAll(/\s+/g, ' ').startsWith(`${host} > :not(`) &&
-            selector.endsWith('~ .kv-prose'),
-        ),
-      )
-      expect(under.length).toBeGreaterThan(0)
-      const selector =
-        under
-          .flatMap((rule) => rule.selectors)
-          .map((candidate) => candidate.replaceAll(/\s+/g, ' '))
-          .find((candidate) => candidate.startsWith(`${host} > :not(`)) ?? ''
-      expect(selector).toContain(label)
-      expect(selector).toContain(`:has(> ${label})`)
-      expect(under.flatMap((rule) => rule.declarations)).toContainEqual([
-        'font-size',
-        'var(--kv-font-body-small-size)',
-      ])
-    }
-    expect(
-      rules.some((rule) =>
-        rule.selectors.some(
-          (selector) =>
-            selector.replaceAll(/\s+/g, ' ').startsWith('.kv-field > :not(') &&
-            selector.includes('.kv-checkbox, .kv-radio'),
-        ),
-      ),
-    ).toBe(true)
+    // The old position-based rule is gone: no selector sizes a Prose by what comes before it.
+    const selectors = rules.flatMap((rule) => rule.selectors)
+    expect(selectors.filter((selector) => /~\s*\.kv-prose$/.test(selector.trim()))).toEqual([])
   })
 
-  it('has no kv-field-description: the hint is a Prose in the field or fieldset', () => {
-    expect(themeCss).not.toContain('kv-field-description')
+  it('sets a hint (kv-field-hint) in body-small and the text colour, in every density', () => {
+    const hint = rules
+      .filter((rule) => rule.media.length === 0 && rule.selectors.includes('.kv-field-hint'))
+      .flatMap((rule) => rule.declarations)
+    expect(hint).toContainEqual(['color', 'var(--kv-color-text)'])
+    expect(hint).toContainEqual(['font-size', 'var(--kv-font-body-small-size)'])
+    expect(hint).toContainEqual(['font-weight', 'var(--kv-font-body-small-weight)'])
+    expect(hint).toContainEqual(['line-height', 'var(--kv-font-body-small-line-height)'])
+    expect(hint).toContainEqual(['max-inline-size', 'var(--kv-prose-measure)'])
+    // No margin of its own: the gap is the field's.
+    expect(hint).toContainEqual(['margin', '0'])
+    // Not in a density block, and never muted.
+    expect(
+      rules.filter(
+        (rule) =>
+          rule.media.length > 0 &&
+          rule.selectors.some((selector) => selector.includes('.kv-field-hint')),
+      ),
+    ).toEqual([])
+    expect(hint.some(([, value]) => value.includes('text-muted'))).toBe(false)
+  })
+
+  it('never styles a hint by the field’s state: the error carries invalid, and disabled stays readable', () => {
+    const hintRules = rules.filter((rule) =>
+      rule.selectors.some((selector) => selector.includes('.kv-field-hint')),
+    )
+    expect(hintRules.length).toBeGreaterThan(0)
+    for (const rule of hintRules) {
+      for (const selector of rule.selectors) {
+        expect(selector).not.toMatch(/data-invalid|data-disabled|aria-invalid|:disabled|:invalid/)
+      }
+    }
+    // No rule recolours a hint: only its own rule sets a colour, and it is the text colour.
+    const colours = hintRules
+      .filter((rule) => rule.selectors.includes('.kv-field-hint'))
+      .flatMap((rule) => rule.declarations)
+      .filter(([property]) => property === 'color')
+    expect(colours).toEqual([['color', 'var(--kv-color-text)']])
+  })
+
+  it('puts an option hint in the second column, directly under its label (no gap)', () => {
+    const choiceRow = ':has(> :is(.kv-checkbox, .kv-radio))'
+    const placed = rules.filter((rule) =>
+      rule.selectors.some(
+        (selector) => selector.includes(choiceRow) && selector.endsWith('> .kv-field-hint'),
+      ),
+    )
+    expect(placed.flatMap((rule) => rule.declarations)).toContainEqual(['grid-column', '2'])
+    const tight = rules.filter((rule) =>
+      rule.selectors.some(
+        (selector) =>
+          selector.includes(choiceRow) && selector.endsWith('.kv-field-label + .kv-field-hint'),
+      ),
+    )
+    const margin = tight
+      .flatMap((rule) => rule.declarations)
+      .find(([property]) => property === 'margin-block-start')
+    // It cancels the row gap, which is the field gap.
+    expect(margin?.[1].replaceAll(/\s+/g, ' ')).toBe('calc(-1 * var(--kv-field-gap))')
+    // An option hint isn't given a size of its own: 14px like every hint.
+    expect(
+      tight.flatMap((rule) => rule.declarations).filter(([property]) => property === 'font-size'),
+    ).toEqual([])
   })
 
   it('treats a kv-prose in a field or fieldset as prose again, and the field itself as a boundary', () => {
     // The boundary selector of the prose element rules lists the field and the fieldset next to
     // the card, so the nearest of a boundary and a kv-prose wins. A field or fieldset isn't in
-    // the `.kv-not-prose` line, which would exclude the hint's own paragraphs for good.
+    // the `.kv-not-prose` line, which would exclude the description's own paragraphs for good.
     const selector =
       rules
         .flatMap((rule) => rule.selectors)

@@ -75,7 +75,7 @@ function Duration({ disabledOption, optionHint = false, ...rootProps }: Duration
         <Field.Root key={value}>
           <RadioGroup.Radio value={value} disabled={value === disabledOption} />
           <Field.Label>{label}</Field.Label>
-          {optionHint && value === '12' ? <Field.Prose>Lägst pris per månad.</Field.Prose> : null}
+          {optionHint && value === '12' ? <Field.Hint>Lägst pris per månad.</Field.Hint> : null}
         </Field.Root>
       ))}
       <Fieldset.ErrorMessage>Välj hur länge du behöver tillståndet</Fieldset.ErrorMessage>
@@ -152,6 +152,22 @@ describe('rendering', () => {
     await expect
       .element(page.getByRole('radio', { name: '12 månader' }))
       .toHaveAccessibleDescription('Lägst pris per månad.')
+  })
+
+  test('an option hint is a Field.Hint in that option’s Field, outside its label, and has no axe violations', async () => {
+    const { container } = await render(sweden(<Duration optionHint />))
+    const hint = page.getByText('Lägst pris per månad.').element()
+    expect([hint.tagName, hint.className]).toEqual(['P', 'kv-field-hint'])
+    // It is a sibling of the label, not inside it, so it isn't part of the radio's name or target.
+    expect(hint.closest('label')).toBeNull()
+    await expect.element(page.getByRole('radio', { name: '12 månader', exact: true })).toBeVisible()
+    // The group's description is its own hint, not the option's.
+    await expect
+      .element(page.getByRole('group', { name: 'Hur länge behöver du tillståndet? (valfritt)' }))
+      .toHaveAccessibleDescription('Välj ett alternativ.')
+    expectNoDanglingReferences(container)
+    await expectNoA11yViolations(container)
+    expect(consoleWarn).not.toHaveBeenCalled()
   })
 
   test('render as a function gets the part’s props and the state', async () => {
@@ -463,6 +479,7 @@ describe('the group’s own part names', () => {
     expect(RadioGroup.Radio.displayName).toBe('RadioGroup.Radio')
     expect(RadioGroup.Legend.displayName).toBe('RadioGroup.Legend')
     expect(RadioGroup.Prose.displayName).toBe('RadioGroup.Prose')
+    expect(RadioGroup.Hint.displayName).toBe('RadioGroup.Hint')
     expect(RadioGroup.ErrorMessage.displayName).toBe('RadioGroup.ErrorMessage')
     await render(
       <RadioGroup.Root name="language" invalid>
@@ -482,6 +499,28 @@ describe('the group’s own part names', () => {
     await expect
       .element(page.getByRole('radio', { name: 'Svenska' }))
       .toHaveAttribute('name', 'language')
+  })
+
+  test('RadioGroup.Hint is the group’s hint: after the description, before the error', async () => {
+    await render(
+      <RadioGroup.Root name="language" invalid>
+        <RadioGroup.Legend>Språk</RadioGroup.Legend>
+        <RadioGroup.Prose>
+          <p>Välj ett.</p>
+        </RadioGroup.Prose>
+        <Field.Root>
+          <RadioGroup.Radio value="sv" />
+          <Field.Label>Svenska</Field.Label>
+        </Field.Root>
+        <RadioGroup.Hint data-testid="hint">Du kan byta senare.</RadioGroup.Hint>
+        <RadioGroup.ErrorMessage>Välj språk</RadioGroup.ErrorMessage>
+      </RadioGroup.Root>,
+    )
+    const group = page.getByRole('group', { name: 'Språk (optional)' })
+    await expect
+      .element(group)
+      .toHaveAccessibleDescription('Välj ett. Du kan byta senare. Error: Välj språk')
+    await expect.element(page.getByTestId('hint')).toHaveClass('kv-field-hint')
   })
 })
 

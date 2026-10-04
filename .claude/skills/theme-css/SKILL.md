@@ -69,7 +69,7 @@ A new or changed token needs the maintainer's approval, with DESIGN.md updated i
 
 ## Rules every section follows
 
-Tests in `packages/theme/src/theme-css.test.ts` check most of these per section. Write the test first when you add a section.
+These rules are reviewed, not tested. Don't add tests that read `theme.css` for properties or values: `theme:check` (contrast, fallbacks, forced-colour mapping) is the only theme test, and the WCAG outcomes (target size, reflow, text spacing, forced colours) are measured in the browser (testing skill, "What we test, and what we never test").
 
 - **Logical properties only** (`margin-inline`, `inset-inline-start`, `padding-block`), so right to left works. No `left`/`right` except where the content is always `ltr`.
 - **Never clip, never fix a height.** No `overflow: hidden` that cuts text, no `height` or `max-height` on text containers, so text spacing overrides fit (1.4.12) and focus rings are never cut off (2.4.11).
@@ -121,7 +121,7 @@ The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@laye
 - Prose never styles a component part. The explicit list of part classes (first line of the `:not(...)` list in section 9: button, link, card parts, input group, checkbox, radio, native listbox) is written in one place. **When you add a part or a consumer class that appears inside prose, add it to that list.**
 - Prose also skips anything inside `kv-not-prose`, `kv-nav`, `kv-button-group` and `kv-table`.
 - A card, notification, field or fieldset Root in prose gets prose's block margins only. They are boundaries: nothing inside them is prose-styled unless a `kv-prose` sits between the element and the boundary. The nearest boundary or `kv-prose` wins, for two levels of nesting. Three levels are not supported. A Section is not a boundary.
-- The hint of a field or fieldset is a `kv-prose` that is a direct child, so it is prose again.
+- The description of a field or fieldset is a `kv-prose` that is a direct child, so it is prose again, in `body` (16px) wherever it sits. The hint (`kv-field-hint`, `Field.Hint`) is a plain paragraph in `body-small` (14px): its size belongs to the part, so no rule sizes a Prose by position, and the theme never styles a hint by `data-invalid` or `data-disabled`. An option's hint is the one spacing exception (column 2, 0 gap under its label).
 - Unlayered page CSS beats prose, so scope it away from prose.
 - Prose never removes list markers, never changes the `display` of a list or table, wraps `pre`, and fixes no heights. Markers, captions and lead text are at least 4.5:1 (7:1 in the contrast themes).
 - Sizes are token swaps on `.kv-prose`: default, `--small` (14px, never for essential text), `--large`, `--xl`, `--2xl` and `--full` (lifts the 70ch measure). `--xl` and `--2xl` step down below `40rem`. Colour roles are `--kv-prose-color-<role>`, declared on `.kv-prose`, never on `:root` (each theme needs its own value).
@@ -164,5 +164,4 @@ The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@laye
 
 ## Pending
 
-- Plan 0029 (Field.Hint) changes how a hint is sized in a field (today a position-based sibling selector sets 16px above the control and 14px below it).
 - Plan 0028 (naming) changes some part aliases. Read it before you rename a class.

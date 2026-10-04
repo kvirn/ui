@@ -99,6 +99,7 @@ export {
   ErrorMessage,
   Field,
   FieldErrorMessage,
+  FieldHint,
   FieldLabel,
   FieldProse,
   FieldRoot,
@@ -106,6 +107,8 @@ export {
 } from './field/field.tsx'
 export type {
   FieldErrorMessageProps,
+  FieldHintProps,
+  FieldHintState,
   FieldLabelProps,
   FieldMarker,
   FieldRootProps,
@@ -125,6 +128,7 @@ export type {
 export {
   Fieldset,
   FieldsetErrorMessage,
+  FieldsetHint,
   FieldsetLegend,
   FieldsetProse,
   FieldsetRoot,
@@ -243,6 +247,7 @@ export type {
 export {
   CheckboxGroup,
   CheckboxGroupErrorMessage,
+  CheckboxGroupHint,
   CheckboxGroupLegend,
   CheckboxGroupProse,
   CheckboxGroupRoot,
@@ -260,6 +265,7 @@ export type {
 export {
   RadioGroup,
   RadioGroupErrorMessage,
+  RadioGroupHint,
   RadioGroupLegend,
   RadioGroupProse,
   RadioGroupRadio,

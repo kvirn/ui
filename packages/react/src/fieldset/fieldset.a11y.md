@@ -1,12 +1,12 @@
-# Accessibility contract: Fieldset (Fieldset.Root, Fieldset.Legend, Fieldset.ErrorMessage, and Fieldset.Prose as the hint)
+# Accessibility contract: Fieldset (Fieldset.Root, Fieldset.Legend, Fieldset.ErrorMessage, Fieldset.Prose as the description and Fieldset.Hint as the hint)
 
 - **APG pattern:** none. A fieldset is native HTML: `<fieldset>` with a `<legend>` is the group's name, and the browser maps it to the `group` role.
-- **Deviations:** none from APG. Decisions (forms skill): parts, wiring, nesting, the legend marker, the default order, several hints, and a Prose in a Fieldset is the group's description (there is no Fieldset.Description).
-- **Native elements used:** `<fieldset>` (Fieldset.Root), `<legend>` (Fieldset.Legend), `<p>` (Fieldset.ErrorMessage, which behaves like Field.ErrorMessage), a `<div class="kv-prose">` for the hint (Fieldset.Prose), and a `<span>` for the optional marker.
+- **Deviations:** none from APG. Decisions (forms skill): parts, wiring, nesting, the legend marker, the default order, several descriptions and hints, a Prose in a Fieldset is the group's description (there is no Fieldset.Description), and the group's hint is `Fieldset.Hint` (Plan 0029, design spec `docs/design/field-hint.md`).
+- **Native elements used:** `<fieldset>` (Fieldset.Root), `<legend>` (Fieldset.Legend), `<p>` (Fieldset.ErrorMessage, which behaves like Field.ErrorMessage), a `<div class="kv-prose">` for the description (Fieldset.Prose), a `<p class="kv-field-hint">` for the hint (Fieldset.Hint), and a `<span>` for the optional marker.
 - **Status:** alpha candidate (Plan 0013, Phases 1 and 1b). Accessibility-reviewer pending for Phase 1b. Manual AT is `pending`.
 - **Tests:** `fieldset.test.tsx` next to this file. `fieldset.stories.tsx` and `fieldset.e2e.ts` in `apps/storybook/src/components/fieldset/`.
 
-A Fieldset groups related questions or the options of one question. Its legend is the group's name, and its hint (`Fieldset.Prose`) and error are the group's. Checkbox groups, radio groups and the date input (later phases) are built on it.
+A Fieldset groups related questions or the options of one question. Its legend is the group's name, and its description (`Fieldset.Prose`), hint (`Fieldset.Hint`) and error are the group's. Checkbox groups, radio groups and the date input (later phases) are built on it.
 
 ## Roles, states, properties
 
@@ -15,6 +15,7 @@ A Fieldset groups related questions or the options of one question. Its legend i
 | Fieldset.Root         | `<fieldset>` → `group`                                     | `aria-describedby` = every description id in DOM order, then the error id, only for parts rendered. Native `disabled`. `data-invalid`, `data-required`, `data-disabled` | Class `kv-fieldset`. Props: `invalid`, `required`, `disabled`, `group`, `messages`. `render` must stay a `<fieldset>`. No `aria-invalid`: ARIA doesn't support it on `group`, so the error reaches users through the description. `disabled` disables every control inside (native) |
 | Fieldset.Legend       | `<legend>`, the group's name                               | `data-invalid`, `data-required`, `data-disabled`                                                                                                                        | Class `kv-fieldset-legend`. Takes `marker`: appends `<span class="kv-field-optional">(valfritt)</span>` when `optional`. Default `optional` in a `group` fieldset that isn't `required`, and `none` in a plain Fieldset                                                             |
 | Fieldset.Prose        | `<div class="kv-prose" id>`, or the element `render` gives | In the fieldset's `aria-describedby`, in DOM order, before the error. `data-invalid`, `data-disabled`                                                                   | A `Fieldset.Prose` inside a Fieldset, and not inside a Field in it, registers itself and describes the group. Several are allowed, each with its own id. There is no `Fieldset.Description`                                                                                         |
+| Fieldset.Hint         | `<p class="kv-field-hint" id>`, or the element `render` gives. No role | In the fieldset's `aria-describedby`, in DOM order (with the Proses), before the error. `data-invalid`, `data-disabled` | The `Field.Hint` part under the group's name (see `field.a11y.md`): a short instruction or example under the controls, for example the format of a date. 14px. A `Fieldset.Hint` inside a Fieldset, and not inside a Field in it, registers itself and describes the group. Outside a Fieldset or Field it warns (`hint-outside-field`) and renders a plain paragraph with no id. Never focusable, never a live region |
 | Fieldset.ErrorMessage | `<p id>`, only while the fieldset is invalid               | In the fieldset's `aria-describedby`, after every description. `data-invalid`                                                                                           | Class `kv-field-error-message`. The same prefix and icon as Field's                                                                                                                                                                                                                 |
 | `useFieldset`         | the same attributes, for your own elements                 | `fieldsetProps`, `legendProps`, `descriptionProps`, `getDescriptionProps(name)`, `errorMessageProps`                                                                    | Options: `invalid`, `required`, `disabled`, `hasDescription`, `descriptions` (names, in render order), `hasErrorMessage` (default: `invalid`), `group`, `marker`, `messages`. Also returns `optionalMarker` and `errorPrefix`                                                       |
 
@@ -25,9 +26,9 @@ Rules, tested in `fieldset.test.tsx`:
 - A Field inside a `group` fieldset defaults to `marker="none"`: an option or a date box is never "(optional)". The group's legend carries the marker instead, when the group isn't `required` (`fieldset.test.tsx › marker defaults in a group`).
 - A plain Fieldset only groups questions (for example an address), so its legend has no marker, and its Fields mark themselves.
 - Nested fieldsets: the nearest Fieldset's text parts win, and a plain Fieldset inside a group fieldset stops the group defaults.
-- A Prose and the Fieldset.ErrorMessage attach to the nearest Field or Fieldset, as in `field.a11y.md`: a Prose in a Field in the Fieldset describes that Field's control, not the group (`prose.test.tsx › a Prose in a Field inside a Fieldset describes the Field’s control, not the group`).
-- A `Fieldset.Prose` in a Fieldset is the group's description (`prose.test.tsx › a Prose in a Fieldset describes the group`). It is the Prose's **text content**: a heading, list or link inside it is read as plain text, so keep a hint short. A Prose that isn't a hint goes outside the Fieldset.
-- Several hints are listed in DOM order, then the error, each with its own id. A second Fieldset.ErrorMessage gives a dev warning (`fieldset.test.tsx › several descriptions`). `useFieldset({ descriptions })` and `getDescriptionProps(name)` give the same markup on the server.
+- A Prose, a Hint and the Fieldset.ErrorMessage attach to the nearest Field or Fieldset, as in `field.a11y.md`: a Prose or a Hint in a Field in the Fieldset describes that Field's control, not the group (`fieldset.test.tsx › Fieldset.Hint (Plan 0029) › a Field’s own hint inside the group describes its input, not the group`, `prose.test.tsx › a Prose in a Field inside a Fieldset describes the Field’s control, not the group`).
+- A `Fieldset.Prose` in a Fieldset is the group's description (`prose.test.tsx › a Prose in a Fieldset describes the group`). It is the Prose's **text content**: a heading, list or link inside it is read as plain text, so keep a description short. A Prose that isn't a description goes outside the Fieldset. A hint is plain text only.
+- Several descriptions and hints are listed in DOM order, then the error, each with its own id. With the default order that is the description, the hint, then the error (`fieldset.test.tsx › Fieldset.Hint (Plan 0029) › aria-describedby lists the description, the hint, then the error`). A second Fieldset.ErrorMessage gives a dev warning (`fieldset.test.tsx › several descriptions`). `useFieldset({ descriptions })` and `getDescriptionProps(name)` give the same markup on the server.
 
 ## Keyboard
 
@@ -40,7 +41,7 @@ Fieldset handles no keys and moves no focus. A group's keys come from its contro
 
 | Key             | Context                | Action                                                                                         | Test                                                                                                                                                    |
 | --------------- | ---------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Tab / Shift+Tab | Fieldset with controls | Moves through the controls in DOM order. The fieldset, legend, hint and error aren't Tab stops | `fieldset.e2e.ts › Tab moves through the controls in DOM order`, `fieldset.e2e.ts › Tab never stops on the fieldset, its legend, its hint or its error` |
+| Tab / Shift+Tab | Fieldset with controls | Moves through the controls in DOM order. The fieldset, legend, description, hint and error aren't Tab stops | `fieldset.e2e.ts › Tab moves through the controls in DOM order`, `fieldset.e2e.ts › Tab never stops on the fieldset, its legend, its hint or its error` |
 | –               | `fieldset[disabled]`   | Disabled controls inside are skipped (native)                                                  | `fieldset.test.tsx › disabled disables every control inside, natively`, `fieldset.e2e.ts › Tab skips the controls of a disabled fieldset (native)`      |
 
 ## Focus management
@@ -75,7 +76,7 @@ Message keys are the Field's (`field.optional`, `field.errorPrefix`), resolved t
 
 - Focus indicator: on the controls inside. The fieldset has none.
 - Target size: no interactive area of its own.
-- Colour: the legend, hint and marker are `text`, the error `danger` with a prefix and an icon (1.4.1).
+- Colour: the legend, description, hint and marker are `text`, and a hint keeps `text` when the group is invalid or disabled, the error `danger` with a prefix and an icon (1.4.1).
 - forced-colors behaviour: nothing depends on colour. The error is `CanvasText` (`fieldset.e2e.ts › forced colours: the error message stays visible`).
 - reduced-motion behaviour: none.
 - Reflow: `min-inline-size: 0` on the fieldset, and the legend wraps, so a long Finnish legend never causes horizontal scrolling at 320px (`fieldset.e2e.ts › no horizontal scrolling at 320px with the Finnish legend and labels (1.4.10)`).

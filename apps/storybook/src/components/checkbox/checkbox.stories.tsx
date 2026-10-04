@@ -107,9 +107,7 @@ export const WithDescription: Story = {
       <Field.Root lang={lang}>
         <Checkbox name="newsletter" {...args} />
         <Field.Label>{text.newsletter}</Field.Label>
-        <Field.Prose>
-          <p>{text.newsletterHint}</p>
-        </Field.Prose>
+        <Field.Hint>{text.newsletterHint}</Field.Hint>
       </Field.Root>
     )
   },
@@ -129,9 +127,7 @@ export const Invalid: Story = {
       <Field.Root required invalid lang={lang}>
         <Checkbox name="declaration" {...args} />
         <Field.Label>{text.declaration}</Field.Label>
-        <Field.Prose>
-          <p>{text.declarationHint}</p>
-        </Field.Prose>
+        <Field.Hint>{text.declarationHint}</Field.Hint>
         <Field.ErrorMessage>{text.declarationError}</Field.ErrorMessage>
       </Field.Root>
     )

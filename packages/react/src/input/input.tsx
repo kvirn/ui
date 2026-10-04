@@ -144,7 +144,7 @@ export function Input({
       if (element.ownerDocument.querySelector(`[id^="${CSS.escape(prefix)}"]`) === null) {
         warnOnce(
           'input-mask-without-description',
-          'A masked Input in a Field has no hint. The mask shapes what is typed, but it doesn’t explain the format: say it in a visible hint, a <Prose> in the Field, with an example (WCAG 3.3.2).',
+          'A masked Input in a Field has no hint. The mask shapes what is typed, but it doesn’t explain the format: say it in a visible hint, a <Field.Hint> under the control, with an example (WCAG 3.3.2).',
         )
       }
     }

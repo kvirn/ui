@@ -42,7 +42,7 @@ NEEDS RUN (optional)
 VERDICT: APPROVE | CHANGES REQUIRED
 ```
 
-Flag only gaps that affect accessibility, correctness or the stated requirements. Leave style preferences out. Don't edit any files.
+Flag only gaps that affect accessibility, correctness or the stated requirements. Leave style preferences out. Flag, as blocking, any test in the diff that asserts CSS values, layout or `theme.css` text, or repeats a fact another layer already proves (AGENTS.md rule 13). Don't edit any files.
 
 ## Waivers
 

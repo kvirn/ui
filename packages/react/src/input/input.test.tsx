@@ -735,7 +735,7 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
       expect(consoleWarn).toHaveBeenCalledTimes(1)
     })
     const message = String(consoleWarn.mock.calls[0]?.[0])
-    expect(message).toContain('<Prose>')
+    expect(message).toContain('<Field.Hint>')
     expect(message).toContain('3.3.2')
   })
 
@@ -752,6 +752,25 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
           <Input mask={masks.postalCode({ country: 'SE' })} aria-describedby="eget-tips" />
         </Field.Root>
         <p id="eget-tips">Fem siffror.</p>
+      </>,
+    )
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('a masked Input with a Field.Hint, under or above it, counts as hinted and does not warn', async () => {
+    await render(
+      <>
+        <Field.Root>
+          <Field.Label>Personnummer</Field.Label>
+          <Input mask={personalIdentityNumber} />
+          <Field.Hint>12 siffror, ÅÅÅÅMMDD-NNNN</Field.Hint>
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>Postnummer</Field.Label>
+          <Field.Hint>Fem siffror.</Field.Hint>
+          <Input mask={masks.postalCode({ country: 'SE' })} />
+        </Field.Root>
       </>,
     )
     await new Promise((resolve) => setTimeout(resolve, 100))

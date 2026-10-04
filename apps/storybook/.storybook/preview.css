@@ -568,6 +568,13 @@ body {
   flex: 1 1 12rem;
 }
 
+/* The three boxes of a date side by side, each with its label above (Components/Form/Hint). */
+.kv-story-date-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kv-space-4);
+}
+
 /* A line of output under a controlled or submitted example. */
 .kv-story-form-output {
   margin: 0;

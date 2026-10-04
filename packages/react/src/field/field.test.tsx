@@ -16,6 +16,7 @@ import {
   ErrorMessage,
   Field,
   FieldErrorMessage,
+  FieldHint,
   FieldLabel,
   FieldProse,
   FieldRoot,
@@ -23,6 +24,8 @@ import {
 } from './field.tsx'
 import type {
   FieldErrorMessageProps,
+  FieldHintProps,
+  FieldHintState,
   FieldLabelProps,
   FieldRootProps,
   FieldState,
@@ -986,6 +989,217 @@ describe('several descriptions', () => {
   })
 })
 
+describe('Field.Hint (Plan 0029)', () => {
+  /** The design spec's personal identity number field: a description, the box, a hint, the error. */
+  function PersonalNumberField({
+    invalid = false,
+    disabled = false,
+  }: {
+    invalid?: boolean
+    disabled?: boolean
+  }) {
+    return (
+      <Field.Root invalid={invalid} disabled={disabled} required>
+        <Field.Label>Personnummer</Field.Label>
+        <Field.Prose data-testid="why">
+          <p>Vi använder det för att hämta dina uppgifter från Skatteverket.</p>
+        </Field.Prose>
+        <Input name="personalNumber" />
+        <Field.Hint data-testid="format">12 siffror, ÅÅÅÅMMDD-NNNN</Field.Hint>
+        <Field.ErrorMessage>Skriv personnumret med 12 siffror, ÅÅÅÅMMDD-NNNN</Field.ErrorMessage>
+      </Field.Root>
+    )
+  }
+
+  const describedByIds = (name: string) =>
+    (page.getByRole('textbox', { name }).element().getAttribute('aria-describedby') ?? '').split(
+      ' ',
+    )
+
+  test('renders a <p class="kv-field-hint"> with an id, and not the Prose class', async () => {
+    await render(<PersonalNumberField />)
+    const hint = page.getByTestId('format').element()
+    expect(hint.tagName).toBe('P')
+    expect(hint.className).toBe('kv-field-hint')
+    expect(hint.id).not.toBe('')
+    expect(page.getByTestId('why').element().className).toBe('kv-prose')
+  })
+
+  test('aria-describedby lists the description, then the hint, then the error', async () => {
+    const { container } = await render(<PersonalNumberField invalid />)
+    const ids = describedByIds('Personnummer')
+    expect(ids).toHaveLength(3)
+    expect(ids[0]).toBe(page.getByTestId('why').element().id)
+    expect(ids[1]).toBe(page.getByTestId('format').element().id)
+    expect(document.getElementById(ids[2] ?? '')?.className).toBe('kv-field-error-message')
+    await expect
+      .element(page.getByRole('textbox', { name: 'Personnummer' }))
+      .toHaveAccessibleDescription(
+        'Vi använder det för att hämta dina uppgifter från Skatteverket. 12 siffror, ÅÅÅÅMMDD-NNNN Error: Skriv personnumret med 12 siffror, ÅÅÅÅMMDD-NNNN',
+      )
+    expectNoDanglingReferences(container)
+  })
+
+  test('a hint alone is the control’s description, and a valid field lists no error', async () => {
+    await render(
+      <Field.Root>
+        <Field.Label marker="none">Registreringsnummer</Field.Label>
+        <Input />
+        <Field.Hint>Till exempel ABC 123</Field.Hint>
+        <Field.ErrorMessage>Ange numret</Field.ErrorMessage>
+      </Field.Root>,
+    )
+    await expect
+      .element(page.getByRole('textbox', { name: 'Registreringsnummer' }))
+      .toHaveAccessibleDescription('Till exempel ABC 123')
+    expect(describedByIds('Registreringsnummer')).toHaveLength(1)
+  })
+
+  test('is in DOM order when a hint above the control mounts after the one under it', async () => {
+    function LateHint() {
+      const [showAbove, setShowAbove] = useState(false)
+      return (
+        <Field.Root>
+          <Field.Label marker="none">Registreringsnummer</Field.Label>
+          {showAbove ? <Field.Hint data-testid="above">Ovanför fältet.</Field.Hint> : null}
+          <Input />
+          <Field.Hint data-testid="under">Under fältet.</Field.Hint>
+          <button type="button" onClick={() => setShowAbove(true)}>
+            Visa
+          </button>
+        </Field.Root>
+      )
+    }
+    const { container } = await render(<LateHint />)
+    await userEvent.click(page.getByRole('button', { name: 'Visa' }))
+    expect(describedByIds('Registreringsnummer')).toEqual([
+      page.getByTestId('above').element().id,
+      page.getByTestId('under').element().id,
+    ])
+    expectNoDanglingReferences(container)
+  })
+
+  test('a hint that unmounts leaves aria-describedby at once', async () => {
+    function RemovableHint() {
+      const [show, setShow] = useState(true)
+      return (
+        <Field.Root>
+          <Field.Label marker="none">Namn</Field.Label>
+          <Input />
+          {show ? <Field.Hint>Som i passet.</Field.Hint> : null}
+          <button type="button" onClick={() => setShow(false)}>
+            Dölj
+          </button>
+        </Field.Root>
+      )
+    }
+    const { container } = await render(<RemovableHint />)
+    await expect
+      .element(page.getByRole('textbox', { name: 'Namn' }))
+      .toHaveAccessibleDescription('Som i passet.')
+    await userEvent.click(page.getByRole('button', { name: 'Dölj' }))
+    await expect
+      .element(page.getByRole('textbox', { name: 'Namn' }))
+      .not.toHaveAttribute('aria-describedby')
+    expectNoDanglingReferences(container)
+  })
+
+  test('gets data-invalid and data-disabled from the Field, and none when the Field has neither', async () => {
+    const { rerender } = await render(<PersonalNumberField />)
+    await expect.element(page.getByTestId('format')).not.toHaveAttribute('data-invalid')
+    await expect.element(page.getByTestId('format')).not.toHaveAttribute('data-disabled')
+    await rerender(<PersonalNumberField invalid disabled />)
+    await expect.element(page.getByTestId('format')).toHaveAttribute('data-invalid', '')
+    await expect.element(page.getByTestId('format')).toHaveAttribute('data-disabled', '')
+  })
+
+  test('keeps its own props: class joins, ref and other props are forwarded, render swaps the element', async () => {
+    const ref = createRef<HTMLParagraphElement>()
+    const seenStates: FieldHintState[] = []
+    await render(
+      <Field.Root invalid disabled>
+        <Field.Label marker="none">Namn</Field.Label>
+        <Input />
+        <Field.Hint ref={ref} className="egen" lang="sv" data-testid="first">
+          Som i passet.
+        </Field.Hint>
+        <Field.Hint render={<div />} data-testid="second">
+          Ett till.
+        </Field.Hint>
+        <Field.Hint
+          render={(partProps, state) => {
+            seenStates.push(state)
+            return <p {...partProps} data-egen="" />
+          }}
+          data-testid="third"
+        >
+          Och ett.
+        </Field.Hint>
+        <Field.ErrorMessage>Ange</Field.ErrorMessage>
+      </Field.Root>,
+    )
+    expect(ref.current).toBe(page.getByTestId('first').element())
+    await expect.element(page.getByTestId('first')).toHaveClass('egen', 'kv-field-hint')
+    await expect.element(page.getByTestId('first')).toHaveAttribute('lang', 'sv')
+    expect(page.getByTestId('second').element().tagName).toBe('DIV')
+    await expect.element(page.getByTestId('second')).toHaveClass('kv-field-hint')
+    await expect.element(page.getByTestId('third')).toHaveAttribute('data-egen', '')
+    await expect.element(page.getByTestId('third')).toHaveClass('kv-field-hint')
+    expect(seenStates.at(-1)).toEqual({ isInvalid: true, isRequired: false, isDisabled: true })
+    // All three are listed, so each has an id: 3 hints and the error.
+    expect(describedByIds('Namn')).toHaveLength(4)
+  })
+
+  test('is never focusable and adds no role, live region or tabindex', async () => {
+    await render(<PersonalNumberField invalid />)
+    const hint = page.getByTestId('format').element()
+    expect(hint.hasAttribute('tabindex')).toBe(false)
+    expect(hint.hasAttribute('role')).toBe(false)
+    expect(hint.hasAttribute('aria-live')).toBe(false)
+  })
+
+  test('outside a Field or Fieldset it warns once and renders a plain <p class="kv-field-hint"> with no id', async () => {
+    await render(
+      <>
+        <FieldHint data-testid="one">Till exempel ABC 123</FieldHint>
+        <FieldHint data-testid="two">Ett till</FieldHint>
+      </>,
+    )
+    const hint = page.getByTestId('one').element()
+    expect([hint.tagName, hint.className]).toEqual(['P', 'kv-field-hint'])
+    expect(hint.hasAttribute('id')).toBe(false)
+    expect(page.getByTestId('two').element().hasAttribute('id')).toBe(false)
+    const warnings = consoleWarn.mock.calls.map(([message]) => String(message))
+    expect(warnings).toHaveLength(1)
+    expect(warnings[0]).toContain('Field.Hint')
+    expect(warnings[0]).toContain('outside')
+  })
+
+  test('inside a Field it does not warn', async () => {
+    await render(<PersonalNumberField invalid />)
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('a Field with a description, a hint and an error has no axe violations', async () => {
+    const { container } = await render(<PersonalNumberField invalid />)
+    await expectNoA11yViolations(container)
+  })
+
+  test('a disabled Field with a hint has no axe violations', async () => {
+    const { container } = await render(<PersonalNumberField disabled />)
+    await expectNoA11yViolations(container)
+  })
+
+  test('renders to a string with its id, for server rendering', () => {
+    const html = renderToString(
+      <KvirnProvider locale="sv-SE" messages={sv}>
+        <PersonalNumberField />
+      </KvirnProvider>,
+    )
+    expect(html).toContain('class="kv-field-hint"')
+  })
+})
+
 describe('server rendering', () => {
   test('renders the Field and its parts to a string without touching the page', () => {
     const html = renderToString(
@@ -1013,6 +1227,8 @@ describe('types', () => {
     expectTypeOf<FieldLabelProps>().not.toHaveProperty('htmlFor')
     expectTypeOf<FieldLabelProps>().not.toHaveProperty('id')
     expectTypeOf<FieldErrorMessageProps>().not.toHaveProperty('id')
+    expectTypeOf<FieldHintProps>().not.toHaveProperty('id')
+    expectTypeOf<FieldHintProps>().toHaveProperty('render')
     expectTypeOf<FieldLabelProps['marker']>().toEqualTypeOf<'optional' | 'none' | undefined>()
   })
 
@@ -1041,6 +1257,7 @@ describe('types', () => {
     expect(Field.Root).toBe(FieldRoot)
     expect(Field.Label).toBe(FieldLabel)
     expect(Field.Prose).toBe(FieldProse)
+    expect(Field.Hint).toBe(FieldHint)
     expect(Field.ErrorMessage).toBe(FieldErrorMessage)
     expect(Field).not.toHaveProperty('Description')
     // The callable root stays callable: <Field> is the same component as <Field.Root>.
@@ -1048,6 +1265,7 @@ describe('types', () => {
     expect(Field.Root.displayName).toBe('Field.Root')
     expect(Field.Label.displayName).toBe('Field.Label')
     expect(Field.Prose.displayName).toBe('Field.Prose')
+    expect(Field.Hint.displayName).toBe('Field.Hint')
     expect(Field.ErrorMessage.displayName).toBe('Field.ErrorMessage')
     // The shared Prose keeps its own name; Field.Prose is a wrapper around it.
     expect(Prose.displayName).toBe('Prose')

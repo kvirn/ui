@@ -44,14 +44,14 @@ An adopter can tell from a name alone how a component is built. Five rules:
 
 | Namespace       | Parts                                              |
 | --------------- | -------------------------------------------------- |
-| `Field`         | `Root`, `Label`, `Prose`, `ErrorMessage`           |
-| `Fieldset`      | `Root`, `Legend`, `Prose`, `ErrorMessage`          |
-| `CheckboxGroup` | `Root`, `Legend`, `Prose`, `ErrorMessage`          |
-| `RadioGroup`    | `Root`, `Radio`, `Legend`, `Prose`, `ErrorMessage` |
+| `Field`         | `Root`, `Label`, `Prose`, `Hint`, `ErrorMessage`   |
+| `Fieldset`      | `Root`, `Legend`, `Prose`, `Hint`, `ErrorMessage`  |
+| `CheckboxGroup` | `Root`, `Legend`, `Prose`, `Hint`, `ErrorMessage`  |
+| `RadioGroup`    | `Root`, `Radio`, `Legend`, `Prose`, `Hint`, `ErrorMessage` |
 | `InputGroup`    | `Root`, `Addon`, `Input`                           |
 | `Link`          | `Root`, `NewTabNotice`                             |
 
-`Hint` joins the field and group sets in Plan 0029. `Combobox` and `Autocomplete` offer the Listbox popup parts (`Popup`, `List`, `Option`, `Group`, `GroupLabel`, `Empty`) under their own names, and Autocomplete also wraps Combobox's `Control`, `Input`, `Toggle` and `Clear`.
+`Prose` is the description and `Hint` the hint (Plan 0029): a `Hint` is a thin typed wrapper over `Field.Hint`, and `Fieldset.Hint`, `CheckboxGroup.Hint` and `RadioGroup.Hint` wrap it with their own display names. `Combobox` and `Autocomplete` offer the Listbox popup parts (`Popup`, `List`, `Option`, `Group`, `GroupLabel`, `Empty`) under their own names, and Autocomplete also wraps Combobox's `Control`, `Input`, `Toggle` and `Clear`.
 
 **Callables stay callable.** `Field`, `Fieldset` and `Link` are `Object.assign(Root, parts)`, so `<Field>` still works and is the same function as `Field.Root`. A JSDoc `@deprecated` can't target `<Field>` without also hitting `Field.Root`, and a plain object would break adopters. Docs, stories and the naming test treat the callable form as banned, and the callable root is named after its Root (`Field.Root`).
 

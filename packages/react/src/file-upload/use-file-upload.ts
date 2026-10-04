@@ -943,7 +943,7 @@ export function useFileUpload<Result = unknown>(
       if (limitsWarning.current.hasLimitProps && !limitsWarning.current.hasLimits) {
         warnOnce(
           'file-upload-limits-unsaid',
-          'A FileUpload has `accept`, `maxFiles` or `maxFileSize`, but no <FileUpload.Limits /> and no hint, so users aren’t told the limits before they choose files (WCAG 3.3.2). Render <FileUpload.Limits /> or say them in a <Prose> in the Field.',
+          'A FileUpload has `accept`, `maxFiles` or `maxFileSize`, but no <FileUpload.Limits /> and no hint, so users aren’t told the limits before they choose files (WCAG 3.3.2). Render <FileUpload.Limits /> or say them in a <Field.Hint> in the Field.',
         )
       }
     }, 0)

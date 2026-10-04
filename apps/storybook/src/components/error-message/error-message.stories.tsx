@@ -132,9 +132,7 @@ export const UnderHint: Story = {
       <Field.Root required invalid lang={lang}>
         <Field.Label>{text.registration}</Field.Label>
         <Input name="registration" className="kv-input--width-10" defaultValue="AB 1" />
-        <Field.Prose>
-          <p>{text.registrationHint}</p>
-        </Field.Prose>
+        <Field.Hint>{text.registrationHint}</Field.Hint>
         <Field.ErrorMessage {...args}>{text.registrationError}</Field.ErrorMessage>
       </Field.Root>
     )

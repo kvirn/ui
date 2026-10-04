@@ -1029,9 +1029,10 @@
    * it is prose-styled, unless you put kv-prose on the card or inside it. Then the nearest of
    * the two wins, for two levels of nested cards. A field (kv-field) and a fieldset
    * (kv-fieldset) are boundaries the same way: a form in prose gets prose's block margins on
-   * each question, and its labels, errors and controls get none. The hint is a kv-prose that
-   * is a direct child of the field or fieldset, so it is prose again: its own
-   * paragraphs, lists and links are styled, and nothing else in the field is.
+   * each question, and its labels, errors and controls get none. The description is a kv-prose
+   * that is a direct child of the field or fieldset, so it is prose again: its own
+   * paragraphs, lists and links are styled, and nothing else in the field is. The hint
+   * (kv-field-hint) is a plain paragraph, not prose.
    * A notification (kv-notification) is the same boundary as a card, so its title isn't styled as a prose heading. Only
    * logical properties are used, so right to left works, and nothing has a fixed height, so
    * the text-spacing overrides fit (1.4.12).
@@ -1166,7 +1167,7 @@
    * without kv-prose), prose is off unless kv-prose sits between it and the element. It
    * reads: inside a boundary, but not (inside prose inside a boundary, but not (inside a
    * boundary inside that, but not inside prose inside that)). So the nearest boundary or
-   * kv-prose wins, for two levels. The hint of a field is such a kv-prose.
+   * kv-prose wins, for two levels. The description of a field is such a kv-prose.
    * @scope would say it directly, once Safari 17.0 to 17.3 drop out of the support range. */
   :where(.kv-prose)
     :where(*):not(
@@ -2348,8 +2349,9 @@
 
   /* 12. Form fields --------------------------------------------------------------------------
    * <Field.Root> renders class="kv-field", and its parts kv-field-label, kv-field-optional,
-   * kv-field-error-message and kv-field-error-prefix. <Fieldset.Root>
-   * renders kv-fieldset and its <legend> kv-fieldset-legend. <Input> renders kv-input.
+   * kv-field-hint (also <Fieldset.Hint>), kv-field-error-message and kv-field-error-prefix.
+   * <Fieldset.Root> renders kv-fieldset and its <legend> kv-fieldset-legend. A description is
+   * a <Field.Prose>: kv-prose. <Input> renders kv-input.
    * <InputGroup.Root> renders kv-input-group, the box around an input and its units, icons or
    * button, and <InputGroup.Addon> renders kv-input-group-addon. KvirnUI holds no form state:
    * the components render what they're given, and the theme styles the state attributes they
@@ -2364,19 +2366,27 @@
    *
    *   <Field.Root invalid={error !== undefined} required>
    *     <Field.Label>Postnummer</Field.Label>
-   *     <Prose><p>Fem siffror.</p></Prose>
+   *     <Field.Prose><p>Det står på brevet från kommunen.</p></Field.Prose>
    *     <Input name="postcode" inputMode="numeric" className="kv-input--width-6" />
-   *     <Prose><p>Till exempel 00100.</p></Prose>
+   *     <Field.Hint>Fem siffror, till exempel 00100.</Field.Hint>
    *     <Field.ErrorMessage>{error}</Field.ErrorMessage>
    *   </Field.Root>
    *
-   * The hint is a <Prose> directly in the Field or Fieldset: kv-prose, which the
-   * component registers as the description of the control or group. Keep it to plain text and
-   * short paragraphs, since an accessible description has no structure.
+   * The description is a Field.Prose directly in the Field or Fieldset: kv-prose, in body type
+   * (16px) wherever it sits, for what the user must read before answering. It may hold
+   * paragraphs, lists and links. The hint is a Field.Hint (Fieldset.Hint): a plain
+   * <p class="kv-field-hint"> in body-small (14px), in the text colour, for a short instruction,
+   * format example or limit, almost always under the control. The size belongs to the part, not
+   * to where it sits. Both are registered by the component as descriptions of the control or
+   * group, so keep them to plain text and short paragraphs: an accessible description has no
+   * structure. The hint takes data-invalid and data-disabled, which the theme doesn't style:
+   * the error carries the state.
    *
-   * The default order is label, hint, control, a second hint under the control, then
-   * the error message. A fieldset is legend, hint, controls, error. Every part is one gap from
-   * the next, so any order you render spaces correctly, and a part you leave out leaves no hole.
+   * The default order is label, description, control, hint, then the error message, so the
+   * visual order is the aria-describedby order. A fieldset is legend, description, controls,
+   * hint, error. Every part is one gap from the next, so any order you render spaces
+   * correctly, and a part you leave out leaves no hole. The one exception is an option's hint
+   * (a checkbox or radio, below), which sits directly under its label.
    *
    * An invalid input is drawn from [data-invalid] (set by Field.Root) or [aria-invalid="true"]:
    * a 2px danger edge and one pixel less padding, so the text never moves, plus the error
@@ -2418,8 +2428,8 @@
    * Site-wide defaults, on :root or on a container: --kv-field-gap (8px, and 4px compact) and
    * --kv-input-padding-inline (12px). --kv-control-border-width-invalid (2px) is shared by the
    * controls that show an invalid state. Compact density (section 6) gives inputs the
-   * 32px minimum height and labels 14px, but input text, hints and errors stay 16px: they
-   * are essential content, and iOS zooms into an input under 16px.
+   * 32px minimum height and labels 14px, but input text, descriptions and errors stay 16px, and
+   * a hint stays 14px: they are essential content, and iOS zooms into an input under 16px.
    */
   :root {
     --kv-field-gap: var(--kv-space-2);
@@ -2434,8 +2444,8 @@
     }
   }
 
-  /* One question with one control. Label, hint, error and control sit one gap apart. No
-   * margin of its own: the space between questions is the form's. */
+  /* One question with one control. Label, description, control, hint and error sit one gap
+   * apart. No margin of its own: the space between questions is the form's. */
   .kv-field {
     display: flex;
     flex-direction: column;
@@ -2500,8 +2510,8 @@
   }
 
   /* The label or legend is the page's heading: <h1><label …></h1> or <legend><h1>…</h1></legend>.
-   * A page heading isn't a control, so it never goes compact. 16px to the hint on top of the
-   * gap. */
+   * A page heading isn't a control, so it never goes compact. 16px to the next part on top of
+   * the gap. */
   .kv-field-label.kv-field-label--heading,
   .kv-fieldset-legend.kv-fieldset-legend--heading {
     margin-block-end: var(--kv-space-2);
@@ -2530,12 +2540,10 @@
     font-weight: 400;
   }
 
-  /* The hint is an instruction, so it is in the text colour, in every density: never muted. A
-   * hint above the control is body text, and one under it (a sibling after the control) is
-   * body-small. Not counted as the control: the label, a heading that holds the
-   * label (a question page), another hint, and a checkbox or radio (its option hint stays 16px). It is a kv-prose that is a direct child of the
-   * field or fieldset, so its paragraphs, lists and links are prose; this only fixes the box and
-   * the type, and gives it no margin of its own (the gap is the field's). */
+  /* The description is a kv-prose that is a direct child of the field or fieldset: body text,
+   * in the text colour, in every density and wherever it sits. Never muted: it is an
+   * instruction. Its paragraphs, lists and links are prose; this only fixes the box and the
+   * type, and gives it no margin of its own (the gap is the field's). */
   .kv-field > .kv-prose,
   .kv-fieldset > .kv-prose {
     max-inline-size: var(--kv-prose-measure);
@@ -2546,21 +2554,19 @@
     line-height: var(--kv-font-body-line-height);
   }
 
-  .kv-field
-    > :not(
-      .kv-field-label,
-      .kv-prose,
-      .kv-checkbox,
-      .kv-radio,
-      :is(h1, h2, h3, h4, h5, h6):has(> .kv-field-label)
-    )
-    ~ .kv-prose,
-  .kv-fieldset
-    > :not(.kv-fieldset-legend, .kv-prose, :is(h1, h2, h3, h4, h5, h6):has(> .kv-fieldset-legend))
-    ~ .kv-prose {
+  /* The hint (Field.Hint, Fieldset.Hint): a short instruction, format example or limit, almost
+   * always under the control. Body-small, in the text colour, in every density: never muted,
+   * and never changed by invalid, disabled or read-only (the error carries the state, 1.4.1).
+   * The size belongs to the part, so it is 14px above the control too. */
+  .kv-field-hint {
+    max-inline-size: var(--kv-prose-measure);
+    margin: 0;
+    color: var(--kv-color-text);
     font-size: var(--kv-font-body-small-size);
     font-weight: var(--kv-font-body-small-weight);
     line-height: var(--kv-font-body-small-line-height);
+    letter-spacing: var(--kv-font-body-small-letter-spacing);
+    font-feature-settings: var(--kv-font-body-small-feature-settings);
   }
 
   /* The error: label type at a fixed 16px, in danger, with the icon on the first line. The
@@ -2626,7 +2632,7 @@
     text-align: start;
   }
 
-  /* A hint at most: examples go in the hint (a Prose). */
+  /* A hint at most: examples go in the hint (a Field.Hint). */
   .kv-input::placeholder {
     color: var(--kv-color-text-muted);
     opacity: 1;
@@ -3155,8 +3161,9 @@
    * A control that is a direct child of kv-field makes the field a choice row: the box or the
    * circle at the start, 24px, centred on the label's first line, and the label across the
    * whole row, padded past the box, so the box, the space around it and the text are one
-   * target of at least 44px (32px compact). An option's hint goes under the label, an error under
-   * the row.
+   * target of at least 44px (32px compact). An option's hint (a Field.Hint in the option's field)
+   * goes in the second column directly under the label's box, outside the target, and an error
+   * under the row.
    *
    *   <Field.Root>
    *     <Checkbox name="declaration" />
@@ -3201,8 +3208,17 @@
     cursor: pointer;
   }
 
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-prose {
+  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-prose,
+  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-field-hint {
     grid-column: 2;
+  }
+
+  /* An option's hint sits directly under its label's box: the label is already padded to the
+   * control's minimum height, so the row gap would put the hint as far from its own label as
+   * from the next option's. The negative margin cancels the gap for the hint that follows the
+   * label. A description (a Prose) keeps the gap. */
+  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-field-label + .kv-field-hint {
+    margin-block-start: calc(-1 * var(--kv-field-gap));
   }
 
   .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-field-error-message {
@@ -5809,7 +5825,7 @@
     min-inline-size: 0;
   }
 
-  /* An instruction, so body text in the text colour, as a field hint is. */
+  /* An instruction, so body text in the text colour, as a field description is. */
   .kv-file-upload-limits {
     max-inline-size: var(--kv-prose-measure);
     margin: 0;

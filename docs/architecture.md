@@ -107,7 +107,7 @@ The same names are used across all components:
 | `Panel`                                | Inline revealed content (Disclosure, Accordion, Tabs)                                            |
 | `Popup`                                | Floating content (Popover, Menu, Select, Tooltip, Dialog)                                        |
 | `Backdrop`, `Portal`, `Close`          | Overlay plumbing                                                                                 |
-| `Label`, `ErrorMessage`                | Field text (`Field.Label`), wired automatically to the control. The description is `Field.Prose` |
+| `Label`, `ErrorMessage`                | Field text (`Field.Label`), wired automatically to the control. The description is `Field.Prose`, the hint `Field.Hint` |
 | `Item`, `Option`, `Tab`                | Collection members                                                                               |
 | `Indicator`                            | Visual state marker, `aria-hidden`                                                               |
 | `Info`, `Success`, `Warning`, `Danger` | A ready-made Root for one status: its class, its icon and its status word (Notification)         |

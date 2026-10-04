@@ -104,11 +104,7 @@ function Duration({
       <Field.Root>
         <RadioGroup.Radio value="12" />
         <Field.Label>{text.duration12}</Field.Label>
-        {optionHints ? (
-          <Field.Prose>
-            <p>{text.duration12Hint}</p>
-          </Field.Prose>
-        ) : null}
+        {optionHints ? <Field.Hint>{text.duration12Hint}</Field.Hint> : null}
       </Field.Root>
       <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
     </RadioGroup.Root>

@@ -183,9 +183,7 @@ export const AmountWithUnit: Story = {
           />
           <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
         </InputGroup.Root>
-        <Field.Prose>
-          <p>{text.rentUnitExample(amountExample)}</p>
-        </Field.Prose>
+        <Field.Hint>{text.rentUnitExample(amountExample)}</Field.Hint>
       </Field.Root>
     )
   },

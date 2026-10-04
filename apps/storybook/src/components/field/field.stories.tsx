@@ -74,7 +74,7 @@ export const Default: Story = {
   },
 }
 
-/** A hint between the label and the input: it is the input's accessible description. */
+/** A description between the label and the input: it is the input's accessible description. */
 export const WithDescription: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
@@ -158,9 +158,9 @@ export const Keyboard: Story = {
 }
 
 /**
- * Two hints, in the default order: what to answer and where to find it, above the
- * input, and the format under it. Each has its own id, and the input's `aria-describedby`
- * lists them in DOM order.
+ * A description and a hint, in the default order: what to answer and where to find it, above the
+ * input (`Field.Prose`), and the format under it (`Field.Hint`). Each has its own id, and the
+ * input's `aria-describedby` lists them in DOM order.
  */
 export const WithHintUnder: Story = {
   render: (args, { globals }) => {
@@ -172,9 +172,7 @@ export const WithHintUnder: Story = {
           <p>{text.registrationWhere}</p>
         </Field.Prose>
         <Input name="registration" className="kv-input--width-10" />
-        <Field.Prose>
-          <p>{text.registrationHint}</p>
-        </Field.Prose>
+        <Field.Hint>{text.registrationHint}</Field.Hint>
       </Field.Root>
     )
   },
@@ -189,9 +187,9 @@ export const WithHintUnder: Story = {
 }
 
 /**
- * The hint under the input and the error together: label, hint, input, hint, error. The two
- * differ in colour, weight, icon and indent, so they never read as one paragraph, and
- * the description lists the hints, then the error.
+ * The hint under the input and the error together: label, description, input, hint, error. The
+ * two differ in size, colour, weight, icon and indent, so they never read as one paragraph, and
+ * the input's description lists the description and the hint, then the error.
  */
 export const InvalidWithHintUnder: Story = {
   args: { invalid: true },
@@ -204,9 +202,7 @@ export const InvalidWithHintUnder: Story = {
           <p>{text.registrationWhere}</p>
         </Field.Prose>
         <Input name="registration" className="kv-input--width-10" defaultValue="AB 1" />
-        <Field.Prose>
-          <p>{text.registrationHint}</p>
-        </Field.Prose>
+        <Field.Hint>{text.registrationHint}</Field.Hint>
         <Field.ErrorMessage>{text.registrationError}</Field.ErrorMessage>
       </Field.Root>
     )
@@ -273,17 +269,15 @@ export const Disabled: Story = {
   },
 }
 
-/** Read-only is for staff tools: the input stays focusable, and the hint says why. */
+/** Read-only is for staff tools: the input stays focusable, and the hint under it says why. */
 export const ReadOnly: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <Field.Root {...args} lang={lang}>
         <Field.Label>{text.personalNumber}</Field.Label>
-        <Field.Prose>
-          <p>{text.personalNumberHint}</p>
-        </Field.Prose>
         <Input name="personal-number" readOnly defaultValue="19900101-1234" />
+        <Field.Hint>{text.personalNumberHint}</Field.Hint>
       </Field.Root>
     )
   },
@@ -321,7 +315,7 @@ export const AsPageHeading: Story = {
 
 /**
  * A form in prose: prose stops at a field, so the heading label gets no prose margins, and the
- * field gets prose's block spacing. The hint is a Prose of its own inside the field:
+ * field gets prose's block spacing. The description is a Prose of its own inside the field:
  * its paragraphs are prose, and it has no margin, so it stays close to its label.
  */
 export const InsideProse: Story = {
@@ -343,14 +337,17 @@ export const InsideProse: Story = {
     )
   },
   play: async ({ canvas }) => {
-    // Prose margins on the hint would push it away from its label.
+    // Prose margins on the description would push it away from its label.
     const description = canvas.getByTestId('description')
     await expect(getComputedStyle(description).marginBlockStart).toBe('0px')
     await expect(getComputedStyle(description).marginBlockEnd).toBe('0px')
   },
 }
 
-/** Staff density from 64rem: 32px inputs and 14px labels. Hints, errors and values stay 16px. */
+/**
+ * Staff density from 64rem: 32px inputs and 14px labels. Descriptions, errors and values stay
+ * 16px, and a hint stays 14px.
+ */
 export const Compact: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))

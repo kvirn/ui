@@ -8,6 +8,36 @@ when_to_use: write tests, TDD a component, failing CI, flaky test, add story, ru
 
 Tests are the definition of done. They come from the accessibility contract (`<name>.a11y.md`), not from the implementation.
 
+## What we test, and what we never test
+
+We test **behaviour, accessibility and requirements**. We never test CSS. Before you write a test, name what it proves: a contract row, a WCAG success criterion, or a requirement in the plan. If you can't, don't write it.
+
+**Test:**
+
+- Behaviour: state, values, events and callbacks, keys, focus moves, open and close, what's rendered and what isn't (`toBeVisible`, `toBeHidden`).
+- Accessibility: roles, accessible names and descriptions, ARIA states, `aria-describedby` and reading order, focus management, announcements, axe, and strings in at least 2 locales.
+- Requirements: the public API from the plan (props, `render`, refs, `mergeProps`, dev warnings) and the part-class contract, in **one** test per component.
+
+**Never test:**
+
+- Computed styles or CSS values: border, outline, line height, padding, margin, font, colour, display, overflow, transition, radius, shadow (`toHaveCSS`, `getComputedStyle`).
+- Layout and geometry: whether a part sits above, under or beside another, heights, widths, alignment, bounding boxes.
+- The text of `theme.css`: no parsing it for properties or values. `theme:check` covers contrast, fallbacks and the forced-colour mapping. That is the only theme test.
+- Class lists beyond the one part-class test, `tagName`s that aren't a role, and anything React or the browser already guarantees.
+- The same fact twice. Each fact is proved once, in the cheapest layer that can prove it: core, then component, then story, then e2e. E2E is for keyboard rows and what needs a real page, not a repeat of the component test.
+
+**The one exception: a WCAG criterion that can only be measured visually.** Assert the criterion's threshold on the outcome, never the theme's value, and put the SC number in the test name:
+
+| SC                      | Assert                                                  | Never assert                     |
+| ----------------------- | ------------------------------------------------------- | -------------------------------- |
+| 2.5.8 Target size       | the target is at least 24×24 CSS px                     | its padding or height            |
+| 2.4.7 Focus visible     | a focused part shows an indicator (outline is not none) | outline width, offset or colour  |
+| 1.4.10 Reflow           | no horizontal scroll at 320px (sweep project)           | grid or flex rules               |
+| 1.4.12 Text spacing     | with the SC's spacing applied, no text is clipped       | line height or `overflow` values |
+| 1.4.11 / forced colours | the boundary stays visible in forced colours (sweep)    | border width or system colours   |
+
+The look is reviewed by eye in Storybook, never by test. When a test you meet breaks these rules, delete it in the change that touches it, and say so in the summary.
+
 ## Layers and file names
 
 | Layer     | File                                                      | Runner                                                                                                                  | Proves                                                                   |
@@ -31,11 +61,11 @@ Vitest projects (root `vite.config.ts`): `node` (core, i18n, theme, tooling), `b
 - **Every story state gets an axe run** with the tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`.
 - **Assert the accessibility tree** with `expect(locator).toMatchAriaSnapshot(...)` for complex widgets.
 - **Test focus explicitly**: `toBeFocused()` after every interaction that moves focus, and restore on close.
-- **Test RTL, forced-colors, reduced-motion and 320px** using the Playwright projects or `page.emulateMedia({ forcedColors: 'active', reducedMotion: 'reduce' })`.
+- **Test RTL, forced-colors, reduced-motion and 320px** using the Playwright projects or `page.emulateMedia({ forcedColors: 'active', reducedMotion: 'reduce' })`. Assert the outcome (keys still work, nothing scrolls sideways, the boundary is visible), not CSS values.
 - **Test in at least 2 locales** (`sv` + `en`) so hard-coded strings get caught.
 - **No mocking of the DOM or of focus.** Use browser mode, not jsdom, for components.
 - **Keyboard docs are checked:** `tooling/keyboard-docs` fails when a stories file doesn't pass its contract as `parameters.a11yContract`, a Keyboard section is malformed, a row has no test, or a focusable component has no `Keyboard` story. See the `keyboard` skill.
-- **Test functionality and WCAG only.** Don't assert styles (computed values, tokens, class lists beyond the part-class contract): the look is reviewed visually, not tested.
+- **Behaviour, accessibility and requirements only.** No CSS, layout or `theme.css` tests (see "What we test, and what we never test").
 - **Never weaken a gate.** No `.skip`/`.only`, no disabled axe rules, no raised timeouts to hide flakiness, and no snapshot updates without reading the diff. Fix flaky tests at the root cause, which is usually a missing `await expect(...)` auto-wait.
 
 ## Stories and themes
@@ -85,7 +115,7 @@ Run `vp run build` only if package config or exports changed.
 ## Maintainer preferences
 
 - Stories follow the args-first convention: the real component as `meta.component`, shared `args`, autodocs, and themes as test projects (see `references/templates.md`).
-- Test functionality and WCAG, not styles.
+- Test behaviour, accessibility and requirements. Never CSS: no borders, line heights, spacing or "is this above that". Fewer tests that each prove something.
 
 ## Debugging failures
 

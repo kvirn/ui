@@ -185,7 +185,7 @@ export function OneTimeCodeInput({
       if (element.ownerDocument.querySelector(`[id^="${CSS.escape(prefix)}"]`) === null) {
         warnOnce(
           'one-time-code-without-description',
-          'A OneTimeCode.Input in a Field has no hint. The boxes are hidden from screen readers and disappear in the fallback, so say in a visible hint (a <Prose> in the Field) how many characters the code has, how they are grouped and where to find it (WCAG 3.3.2).',
+          'A OneTimeCode.Input in a Field has no hint. The boxes are hidden from screen readers and disappear in the fallback, so say in a visible hint (a <Field.Hint> under the boxes, or a <Prose> above them) how many characters the code has, how they are grouped and where to find it (WCAG 3.3.2).',
         )
       }
     }

@@ -118,12 +118,17 @@ describe('display names', () => {
     expect(api.Autocomplete.Option.displayName).toBe('Autocomplete.Option')
     expect(api.Field.Prose.displayName).toBe('Field.Prose')
     expect(api.Fieldset.Prose.displayName).toBe('Fieldset.Prose')
+    expect(api.Field.Hint.displayName).toBe('Field.Hint')
+    expect(api.Fieldset.Hint.displayName).toBe('Fieldset.Hint')
+    expect(api.CheckboxGroup.Hint.displayName).toBe('CheckboxGroup.Hint')
+    expect(api.RadioGroup.Hint.displayName).toBe('RadioGroup.Hint')
     expect(api.CheckboxGroup.Legend.displayName).toBe('CheckboxGroup.Legend')
     expect(api.RadioGroup.Radio.displayName).toBe('RadioGroup.Radio')
     expect(api.InputGroup.Input.displayName).toBe('InputGroup.Input')
     expect(api.Combobox.Option).not.toBe(api.Listbox.Option)
     expect(api.Autocomplete.Option).not.toBe(api.Combobox.Option)
     expect(api.Field.Prose).not.toBe(api.Prose)
+    expect(api.Fieldset.Hint).not.toBe(api.Field.Hint)
   })
 })
 
@@ -197,16 +202,16 @@ describe('alias sets', () => {
   test('each parent offers the parts of its decided alias set', () => {
     const keys = (value: unknown) => partsOf(value).map(([key]) => key)
     expect(keys(api.Field)).toEqual(
-      expect.arrayContaining(['Root', 'Label', 'Prose', 'ErrorMessage']),
+      expect.arrayContaining(['Root', 'Label', 'Prose', 'Hint', 'ErrorMessage']),
     )
     expect(keys(api.Fieldset)).toEqual(
-      expect.arrayContaining(['Root', 'Legend', 'Prose', 'ErrorMessage']),
+      expect.arrayContaining(['Root', 'Legend', 'Prose', 'Hint', 'ErrorMessage']),
     )
     expect(keys(api.CheckboxGroup)).toEqual(
-      expect.arrayContaining(['Root', 'Legend', 'Prose', 'ErrorMessage']),
+      expect.arrayContaining(['Root', 'Legend', 'Prose', 'Hint', 'ErrorMessage']),
     )
     expect(keys(api.RadioGroup)).toEqual(
-      expect.arrayContaining(['Root', 'Radio', 'Legend', 'Prose', 'ErrorMessage']),
+      expect.arrayContaining(['Root', 'Radio', 'Legend', 'Prose', 'Hint', 'ErrorMessage']),
     )
     expect(keys(api.InputGroup)).toEqual(expect.arrayContaining(['Root', 'Addon', 'Input']))
     expect(keys(api.Link)).toEqual(expect.arrayContaining(['Root', 'NewTabNotice']))

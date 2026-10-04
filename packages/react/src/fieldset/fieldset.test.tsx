@@ -14,6 +14,7 @@ import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import {
   Fieldset,
   FieldsetErrorMessage,
+  FieldsetHint,
   FieldsetLegend,
   FieldsetProse,
   FieldsetRoot,
@@ -153,6 +154,7 @@ describe('rendering', () => {
     expect(Fieldset.Root).toBe(FieldsetRoot)
     expect(Fieldset.Legend).toBe(FieldsetLegend)
     expect(Fieldset.Prose).toBe(FieldsetProse)
+    expect(Fieldset.Hint).toBe(FieldsetHint)
     expect(Fieldset.ErrorMessage).toBe(FieldsetErrorMessage)
     expect(Fieldset).not.toHaveProperty('Description')
     // The callable root stays callable: <Fieldset> is the same component as <Fieldset.Root>.
@@ -160,6 +162,9 @@ describe('rendering', () => {
     expect(Fieldset.Root.displayName).toBe('Fieldset.Root')
     expect(Fieldset.Legend.displayName).toBe('Fieldset.Legend')
     expect(Fieldset.Prose.displayName).toBe('Fieldset.Prose')
+    expect(Fieldset.Hint.displayName).toBe('Fieldset.Hint')
+    // Fieldset.Hint is its own component, not Field.Hint.
+    expect(Fieldset.Hint).not.toBe(Field.Hint)
     expect(Fieldset.ErrorMessage.displayName).toBe('Fieldset.ErrorMessage')
     // Fieldset.ErrorMessage is its own component, not Field.ErrorMessage.
     expect(Fieldset.ErrorMessage).not.toBe(Field.ErrorMessage)
@@ -722,6 +727,128 @@ describe('several descriptions', () => {
     expect(positions).toEqual(positions.toSorted((first, second) => first - second))
     expect(ids[0]).toMatch(/-description-where$/)
     expect(ids[1]).toMatch(/-description-format$/)
+  })
+})
+
+describe('Fieldset.Hint (Plan 0029)', () => {
+  /** The design spec's date question: the legend, the three boxes, a group hint under them. */
+  function VisitDate({ invalid = false, disabled = false }) {
+    return (
+      <Fieldset.Root group invalid={invalid} disabled={disabled}>
+        <Fieldset.Legend>När var besöket?</Fieldset.Legend>
+        <Fieldset.Prose data-testid="why">Välj dagen då du var hos oss.</Fieldset.Prose>
+        <Field.Root>
+          <Field.Label>Dag</Field.Label>
+          <Input inputMode="numeric" />
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>Månad</Field.Label>
+          <Input inputMode="numeric" />
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>År</Field.Label>
+          <Input inputMode="numeric" />
+        </Field.Root>
+        <Fieldset.Hint data-testid="example">Till exempel 2026-03-27</Fieldset.Hint>
+        <Fieldset.ErrorMessage>Skriv ett datum</Fieldset.ErrorMessage>
+      </Fieldset.Root>
+    )
+  }
+
+  const describedByIds = () =>
+    (
+      page
+        .getByRole('group', { name: 'När var besöket?', exact: false })
+        .element()
+        .getAttribute('aria-describedby') ?? ''
+    ).split(' ')
+
+  test('renders a <p class="kv-field-hint"> with an id, in the group’s description', async () => {
+    await render(<VisitDate />)
+    const hint = page.getByTestId('example').element()
+    expect([hint.tagName, hint.className]).toEqual(['P', 'kv-field-hint'])
+    expect(hint.id).not.toBe('')
+    await expect
+      .element(page.getByRole('group', { name: 'När var besöket?', exact: false }))
+      .toHaveAccessibleDescription('Välj dagen då du var hos oss. Till exempel 2026-03-27')
+  })
+
+  test('aria-describedby lists the description, the hint, then the error', async () => {
+    const { container } = await render(<VisitDate invalid />)
+    const ids = describedByIds()
+    expect(ids).toHaveLength(3)
+    expect(ids[0]).toBe(page.getByTestId('why').element().id)
+    expect(ids[1]).toBe(page.getByTestId('example').element().id)
+    expect(document.getElementById(ids[2] ?? '')?.className).toBe('kv-field-error-message')
+    expectNoDanglingReferences(container)
+  })
+
+  test('a Field’s own hint inside the group describes its input, not the group', async () => {
+    await render(
+      <Fieldset.Root group>
+        <Fieldset.Legend>När var besöket?</Fieldset.Legend>
+        <Field.Root>
+          <Field.Label>Dag</Field.Label>
+          <Input inputMode="numeric" />
+          <Field.Hint>Ett eller två tal.</Field.Hint>
+        </Field.Root>
+        <Fieldset.Hint>Till exempel 2026-03-27</Fieldset.Hint>
+      </Fieldset.Root>,
+    )
+    await expect
+      .element(page.getByRole('textbox', { name: 'Dag' }))
+      .toHaveAccessibleDescription('Ett eller två tal.')
+    await expect
+      .element(page.getByRole('group', { name: 'När var besöket?', exact: false }))
+      .toHaveAccessibleDescription('Till exempel 2026-03-27')
+  })
+
+  test('gets data-invalid and data-disabled from the Fieldset', async () => {
+    const { rerender } = await render(<VisitDate />)
+    await expect.element(page.getByTestId('example')).not.toHaveAttribute('data-invalid')
+    await expect.element(page.getByTestId('example')).not.toHaveAttribute('data-disabled')
+    await rerender(<VisitDate invalid disabled />)
+    await expect.element(page.getByTestId('example')).toHaveAttribute('data-invalid', '')
+    await expect.element(page.getByTestId('example')).toHaveAttribute('data-disabled', '')
+  })
+
+  test('keeps its own class, ref and render', async () => {
+    const ref = createRef<HTMLParagraphElement>()
+    await render(
+      <Fieldset.Root>
+        <Fieldset.Legend>Adress</Fieldset.Legend>
+        <Fieldset.Hint ref={ref} className="egen" data-testid="first">
+          Gatan och numret.
+        </Fieldset.Hint>
+        <Fieldset.Hint render={<div />} data-testid="second">
+          Och ort.
+        </Fieldset.Hint>
+      </Fieldset.Root>,
+    )
+    expect(ref.current).toBe(page.getByTestId('first').element())
+    await expect.element(page.getByTestId('first')).toHaveClass('egen', 'kv-field-hint')
+    expect(page.getByTestId('second').element().tagName).toBe('DIV')
+  })
+
+  test('outside a Fieldset it warns once and renders a plain <p class="kv-field-hint"> with no id', async () => {
+    await render(
+      <>
+        <FieldsetHint data-testid="one">Gatan och numret.</FieldsetHint>
+        <FieldsetHint data-testid="two">Och ort.</FieldsetHint>
+      </>,
+    )
+    const hint = page.getByTestId('one').element()
+    expect([hint.tagName, hint.className]).toEqual(['P', 'kv-field-hint'])
+    expect(hint.hasAttribute('id')).toBe(false)
+    const warnings = consoleWarn.mock.calls.map(([message]) => String(message))
+    expect(warnings).toHaveLength(1)
+    expect(warnings[0]).toContain('outside')
+  })
+
+  test('a group with a description, a hint and an error has no axe violations and no warnings', async () => {
+    const { container } = await render(sweden(<VisitDate invalid />))
+    await expectNoA11yViolations(container)
+    expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
 

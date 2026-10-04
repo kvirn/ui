@@ -77,9 +77,7 @@ function RentField({ locale, invalid, disabled, readOnly, withError }: RentField
         />
         <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
       </InputGroup.Root>
-      <Field.Prose>
-        <p>{text.rentUnitExample(amountExample)}</p>
-      </Field.Prose>
+      <Field.Hint>{text.rentUnitExample(amountExample)}</Field.Hint>
       {withError ? <Field.ErrorMessage>{text.rentError(amountExample)}</Field.ErrorMessage> : null}
     </Field.Root>
   )
@@ -195,9 +193,7 @@ export const Percentage: Story = {
           />
           <InputGroup.Addon>{text.workTimeUnit}</InputGroup.Addon>
         </InputGroup.Root>
-        <Field.Prose>
-          <p>{text.workTimeExample}</p>
-        </Field.Prose>
+        <Field.Hint>{text.workTimeExample}</Field.Hint>
       </Field.Root>
     )
   },
@@ -209,7 +205,7 @@ export const Percentage: Story = {
   },
 }
 
-/** A distance: "km" at the end, and the hint above the box, because it's read before typing. */
+/** A distance: "km" at the end, and a description above the box, because it's read before typing. */
 export const Distance: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
@@ -327,9 +323,7 @@ export const CalendarIcon: Story = {
             <Icon name="calendar" size="md" />
           </InputGroup.Addon>
         </InputGroup.Root>
-        <Field.Prose>
-          <p>{text.visitDateExample}</p>
-        </Field.Prose>
+        <Field.Hint>{text.visitDateExample}</Field.Hint>
       </Field.Root>
     )
   },
@@ -488,9 +482,7 @@ function GroupStates({ locale }: { locale: FormLocale }) {
           />
           <InputGroup.Addon>{text.workTimeUnit}</InputGroup.Addon>
         </InputGroup.Root>
-        <Field.Prose>
-          <p>{text.workTimeExample}</p>
-        </Field.Prose>
+        <Field.Hint>{text.workTimeExample}</Field.Hint>
       </Field.Root>
       <Field.Root required disabled>
         <Field.Label>{text.distance}</Field.Label>

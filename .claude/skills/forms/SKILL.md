@@ -1,12 +1,12 @@
 ---
 name: forms
-description: How KvirnUI form controls are built and wired - no form state, Field and Fieldset wiring (ids, aria-describedby, invalid, required, optional marker, errors, groups), the hint as a Prose, the default order, text inputs and numbers and dates, InputGroup, input masks and checks, OneTimeCode and FileUpload. Use when you add or change a form control, a Field or Fieldset, a mask, or review any of them.
+description: How KvirnUI form controls are built and wired - no form state, Field and Fieldset wiring (ids, aria-describedby, invalid, required, optional marker, errors, groups), the description (`Prose`) and the hint (`Field.Hint`), the default order, text inputs and numbers and dates, InputGroup, input masks and checks, OneTimeCode and FileUpload. Use when you add or change a form control, a Field or Fieldset, a mask, or review any of them.
 when_to_use: new form control, Field, Fieldset, Label, Legend, ErrorMessage, hint, Prose in a field, aria-describedby, invalid, required, optional marker, input mask, personal identity number, IBAN, postal code, number input, date input, OneTimeCode, verification code, InputGroup, unit or icon in an input, FileUpload, file validation, form story, error summary
 ---
 
 # Forms
 
-A form control reports changes up and renders what it is given. A Field wires the control to its label, hint and error. A Fieldset does the same for a group.
+A form control reports changes up and renders what it is given. A Field wires the control to its label, description, hint and error. A Fieldset does the same for a group.
 
 Load this with `accessibility` (names, errors, announcements), `keyboard` (keys) and `api-conventions` (hooks, parts, `render`, messages). The prop rules are in `docs/architecture.md`, API conventions.
 
@@ -20,19 +20,22 @@ Load this with `accessibility` (names, errors, announcements), `keyboard` (keys)
 
 ## Field and Fieldset wiring
 
-Hooks `useField` and `useFieldset` return the props. The components (`Field`, `Label`, `ErrorMessage`, `Fieldset`, `Legend`) are those hooks plus context. All parts also have named exports (`FieldRoot`, `FieldLabel`, `FieldErrorMessage`, `FieldsetRoot`, `FieldsetLegend`, `FieldsetErrorMessage`, `ProseRoot`).
+Hooks `useField` and `useFieldset` return the props. The components (`Field`, `Label`, `ErrorMessage`, `Fieldset`, `Legend`) are those hooks plus context. All parts also have named exports (`FieldRoot`, `FieldLabel`, `FieldHint`, `FieldErrorMessage`, `FieldsetRoot`, `FieldsetLegend`, `FieldsetHint`, `FieldsetErrorMessage`, `ProseRoot`).
 
-- **Parts:** `Field` renders a `div`, `Label` a `label`, `ErrorMessage` a `p`, `Fieldset` a `fieldset`, `Legend` a `legend`. The hint is a `Prose`.
+- **Parts:** `Field` renders a `div`, `Label` a `label`, `ErrorMessage` a `p`, `Fieldset` a `fieldset`, `Legend` a `legend`. **A description and a hint are different parts.** The description is a `Field.Prose` (a `div.kv-prose`, 16px, above the control, may hold paragraphs, lists and links: what to answer, why, where to find it). The hint is a `Field.Hint` (a `p.kv-field-hint`, 14px, almost always under the control, plain text: a format, an example or a limit). The group aliases are `Fieldset.Hint`, `CheckboxGroup.Hint` and `RadioGroup.Hint`.
 - **Ids come from `useId`.** `controlId` on the Field overrides the control's id (for an error-summary link). A control's own `id` inside a Field is ignored and warns. Derived ids: `<id>-label`, `<id>-description…`, `<id>-error`.
-- **The control gets** `id`, and the Label gets `htmlFor` and an `id`. `aria-describedby` lists every rendered Prose id in DOM order, then the error id. Only parts that render are listed. A Fieldset puts the same on its `<fieldset>`, and your own `aria-describedby` ids come after.
-- **A Prose in a Field or Fieldset registers itself** as a description at any depth, through `useDescriptionPart` (internal, also used by `FileUpload.Limits`). Outside a host it is a plain Prose and does not warn.
+- **The control gets** `id`, and the Label gets `htmlFor` and an `id`. `aria-describedby` lists every rendered Prose and Hint id in DOM order, then the error id. Only parts that render are listed. A Fieldset puts the same on its `<fieldset>`, and your own `aria-describedby` ids come after.
+- **A Prose or a Hint in a Field or Fieldset registers itself** as a description at any depth, through `useDescriptionPart` (internal, also used by `FileUpload.Limits`). Outside a host a Prose is a plain Prose and does not warn. A Hint outside a host warns once (`hint-outside-field`) and renders a plain `<p class="kv-field-hint">` with no id. A Hint gets `data-invalid` and `data-disabled` from its host, and the theme never styles them.
 - **`invalid`:** `aria-invalid="true"` on the control and `data-invalid` on every part. `ErrorMessage` renders only while invalid. The error is linked with `aria-describedby`, not `aria-errormessage`. An invalid owner lists the error id from its first render, so a focus-on-submit effect reads the error.
 - **`ErrorMessage`** starts with the error icon and a `kv-field-error-prefix` span holding `field.errorPrefix` ("Error:"). The theme hides the prefix visually and keeps it for screen readers. Render one `ErrorMessage` per owner, with all the text. It is not a live region.
 - **`required`:** `aria-required="true"` and `data-required`, never native `required`. For native validation, pass `required` on the control as well and keep it on the Field.
 - **Optional marker:** a Label appends `field.optional` ("(optional)") when the field is not required. `marker="none"` turns it off.
 - **`disabled`:** on a Field it is native `disabled` on the control and `data-disabled` on every part. On a Fieldset it is native `fieldset[disabled]`.
-- **Classes:** `kv-field`, `kv-field-label`, `kv-field-optional`, `kv-field-error-message`, `kv-field-error-prefix`, `kv-fieldset`, `kv-fieldset-legend`. State is `data-invalid`, `data-required`, `data-disabled`. The theme never styles `:invalid` or `:user-invalid`: validity is the form's, not the browser's.
-- **Hint colour is `text`,** never `text-muted`, in every density.
+- **Classes:** `kv-field`, `kv-field-label`, `kv-field-optional`, `kv-field-hint`, `kv-field-error-message`, `kv-field-error-prefix`, `kv-fieldset`, `kv-fieldset-legend`. State is `data-invalid`, `data-required`, `data-disabled`. The theme never styles `:invalid` or `:user-invalid`: validity is the form's, not the browser's.
+- **Hint and description colour is `text`,** never `text-muted`, in every density.
+- **The size belongs to the part, not its position.** A Prose is `body` (16px) and a Hint is `body-small` (14px), above or under the control, in a choice row or not, in both densities. The theme has no rule that sizes a Prose by what comes before it. A Hint above the control is allowed, rare and still 14px: text read before answering is a description.
+- **A hint is plain text, short and never alone.** One or two sentences or a format example, no link, list or heading (a screen reader reads it as one flat string, and a link in it can't be followed from the control). It is never the only place a format lives: the error repeats it. No dev warning for rich content. In a disabled or read-only field its copy says why.
+- **An option's hint** is a `Field.Hint` in the option's Field (a checkbox or radio is a direct child): column 2 of the choice row, 14px, directly under the label's box (0 gap) and outside the label, so it is not in the target or the name. It describes that option's input, not the group.
 
 ### Groups
 
@@ -51,8 +54,8 @@ Hooks `useField` and `useFieldset` return the props. The components (`Field`, `L
 
 ### Order and submit
 
-- **Default order:** label, Prose, control, an optional second Prose under the control (the 14px hint), then `ErrorMessage`. In a Fieldset: legend, Prose, controls, `ErrorMessage`. The order stays the consumer's, and `aria-describedby` follows the DOM.
-- **Several Prose per Field are allowed,** each with its own id. One `ErrorMessage`; a second warns.
+- **Default order:** label, description (`Prose`, optional), control, hint (`Field.Hint`, optional), then `ErrorMessage`. In a Fieldset: legend, description, controls, hint, `ErrorMessage`. The error goes last so the visual order is the `aria-describedby` order (1.3.2) and nothing moves when it appears. Every part is one `--kv-field-gap` from the next (an option hint is the one 0-gap exception). The order stays the consumer's, and `aria-describedby` follows the DOM.
+- **Several Prose and Hint per Field are allowed,** each with its own id. One `ErrorMessage`; a second warns.
 - **On submit,** move focus to the first invalid field or to an error summary. Keep `scroll-padding` so the message under the field is not hidden.
 
 ## Text inputs, numbers and dates
@@ -79,7 +82,7 @@ A mask shapes what the user types into a native input. The engine is pure, in `c
 - **Lenient, never silent.** Checksums and ranges are reported, never enforced. A rejected character is reported in `details.rejected` and announced politely, throttled (`mask.characterNotAllowed` or `mask.maximumLength`). `announceRejections={false}` turns it off. Announcing needs a `KvirnProvider`.
 - **The input stays native:** no placeholder characters in the value, no native `maxlength` or `pattern`, paste, drop, autofill and dictation are normalised, and undo keeps working because the value is written back only when the mask changed it.
 - **Never rewrite during IME composition.** `onChange` reports the raw value then, and the mask applies once at `compositionend`.
-- **A masked Input in a Field without a hint warns (3.3.2).** The mask does not explain the format: say it in a Prose with an example.
+- **A masked Input in a Field without a hint warns (3.3.2).** The mask does not explain the format: say it in a `Field.Hint` under the control, with an example. Any registered description (a `Field.Hint` or a `Field.Prose`, above or under the Input) counts, so the warning clears when one renders.
 - **Presets never set `autocomplete`;** the right token depends on the question. They suggest `inputMode`, `autoCapitalize`, `spellCheck={false}` and, for identifiers, `dir="ltr"`. The consumer's props win.
 
 ## OneTimeCode
@@ -109,12 +112,10 @@ A native `<input type="file">` is always present and always works. Parts, status
 
 ## Maintainer preferences
 
-- The label, the hint (a `Prose`) and the error text are separate components, and no form state is built in.
-- Order: label, hint, control, a hint under the control, then the error (the Designsystemet and Material order). Icons and add-ons sit inside the input's box.
+- The label, the description (a `Prose`), the hint (`Field.Hint`) and the error text are separate components, and no form state is built in.
+- Order: label, description, control, hint, then the error (the maintainer's rule of 2026-10-04: "a hint is a hint, 14px, almost always under the input; a Prose above the input is a description"). Icons and add-ons sit inside the input's box.
 - `type="number"` is left out of `Input`.
 - Masks are in-house, with zero dependencies, modelled on iMask and Alpine's Mask plugin.
 - OneTimeCode takes a `pattern` with the symbols `9`, `*`, `a`, `A`, `&` and `-`, not a length.
 - FileUpload offers preview, metadata, multiple files, a type restriction, a file-count limit and upload progress.
-- A hint under the control may be `body-small` (14px), in the `text` colour.
-
-Pending: Plan 0028 / 0029 changes these rules once it lands (`Field.Hint` and the compound names).
+- A hint is `body-small` (14px), in the `text` colour, in every position and density, and an option hint is 14px too. A description is `body` (16px).

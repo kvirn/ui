@@ -26,7 +26,7 @@ import '@kvirn-ui/theme/reset.css'
 import '@kvirn-ui/theme/theme.css'
 ```
 
-- Every component part renders its own class: `kv-button`, `kv-link`, `kv-link-new-tab-notice`, `kv-card`, `kv-card-header`, `kv-card-body`, `kv-card-footer`, `kv-section`, `kv-notification` and its parts (`kv-notification-icon`, `kv-notification-title`, `kv-notification-status`, `kv-notification-body`, `kv-notification-actions`), `kv-icon`, and for forms `kv-field`, `kv-field-label`, `kv-field-optional`, `kv-field-error-message`, `kv-field-error-prefix`, `kv-fieldset`, `kv-fieldset-legend` and `kv-input`. Your `className` joins it, never replaces it. The theme selects on it.
+- Every component part renders its own class: `kv-button`, `kv-link`, `kv-link-new-tab-notice`, `kv-card`, `kv-card-header`, `kv-card-body`, `kv-card-footer`, `kv-section`, `kv-notification` and its parts (`kv-notification-icon`, `kv-notification-title`, `kv-notification-status`, `kv-notification-body`, `kv-notification-actions`), `kv-icon`, and for forms `kv-field`, `kv-field-label`, `kv-field-optional`, `kv-field-hint`, `kv-field-error-message`, `kv-field-error-prefix`, `kv-fieldset`, `kv-fieldset-legend` and `kv-input`. Your `className` joins it, never replaces it. The theme selects on it.
 - State comes from the components as `data-*` attributes: `data-disabled`, `data-focus-visible`, `data-current`, `data-invalid` and `data-required` on form parts, and on icons `data-size` and `data-mirror-in-rtl`. Classes style, `data-*` is state.
 - Choices are classes you add:
   - `<Button className="kv-button--primary">` for the one main action per view, `kv-button--danger` for a destructive one. Without one, a Button is secondary.

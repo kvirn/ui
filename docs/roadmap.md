@@ -31,7 +31,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Heading (level, type-role size), Prose (`kv-prose`)                                                      | – (native `<h1>`–`<h6>`)      | 1   | alpha       |
 | Kbd (`kv-kbd`, one key per element)                                                                      | – (native `<kbd>`)            | 1   | alpha       |
 | Notification (Root; Info, Success, Warning, Danger; Title, Body, Actions; announce)                      | – (native `<div>`, Announcer) | 1   | in progress |
-| Field, Label, ErrorMessage, Fieldset (the hint is a `Prose`, Plan 0025)                                  | –                             | 1   | in progress |
+| Field, Label, ErrorMessage, Fieldset (the description is a `Prose`, Plan 0025, the hint is `Field.Hint`, Plan 0029) | –                             | 1   | in progress |
 | Input, Textarea                                                                                          | –                             | 1   | in progress |
 | DateInput (three fields: Day, Month, Year, inside a Fieldset; the value is `{year, month, day}` strings) | – (native `<input>`)          | 1   | planned     |
 | InputGroup (Root, Addon: units, icons, a clear Button)                                                   | – (native `<input>`)          | 1   | in progress |
@@ -73,6 +73,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | IBM Plex Sans and Serif replace Inter (typography)                                         | 0011 | in progress (design review pending)                                          |
 | Hyphenation and smaller large type below 40rem                                             | 0012 | done (design review pending)                                                 |
 | `Prose` is the description of a Field or Fieldset (`Field.Description` removed)            | 0025 | done in alpha (accessibility review and manual AT matrix pending)            |
+| `Field.Hint`: a 14px hint under the control, and the 16px `Prose` description above it     | 0029 | library side implemented (gates, Storybook and accessibility review pending; manual AT pending) |
 
 ## Engineering and open items
 

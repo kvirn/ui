@@ -1,9 +1,10 @@
 'use client'
 import { useMemo } from 'react'
 import type { ReactElement } from 'react'
-import type { FieldErrorMessageProps } from '../field/field.tsx'
+import type { FieldErrorMessageProps, FieldHintProps } from '../field/field.tsx'
 import {
   FieldsetErrorMessage,
+  FieldsetHint,
   FieldsetLegend,
   FieldsetProse,
   FieldsetRoot,
@@ -32,8 +33,8 @@ export interface RadioGroupRootProps extends Omit<FieldsetRootProps, 'group'> {
 
 /**
  * A group of radios: the native `<fieldset>` of a `Fieldset.Root` with `group` set, so
- * `RadioGroup.Legend`, `RadioGroup.Prose` (the hint) and `RadioGroup.ErrorMessage` work inside it
- * (contract: radio-group.a11y.md). Radios that share a `name` are one Tab stop, and
+ * `RadioGroup.Legend`, `RadioGroup.Prose` (the description), `RadioGroup.Hint` and
+ * `RadioGroup.ErrorMessage` work inside it (contract: radio-group.a11y.md). Radios that share a `name` are one Tab stop, and
  * the browser's arrow keys move and check, mirrored in right-to-left. It holds no form state:
  * pass `value` and `onValueChange`, or `defaultValue` and `name` for a plain form.
  *
@@ -91,11 +92,17 @@ export function RadioGroupLegend(props: FieldsetLegendProps): ReactElement {
 }
 RadioGroupLegend.displayName = 'RadioGroup.Legend'
 
-/** The group's hint: the `Fieldset.Prose` under the group's name. */
+/** The group's description: the `Fieldset.Prose` under the group's name. */
 export function RadioGroupProse(props: ProseRootProps): ReactElement {
   return <FieldsetProse {...props} />
 }
 RadioGroupProse.displayName = 'RadioGroup.Prose'
+
+/** The group's hint: the `Fieldset.Hint` under the group's name. */
+export function RadioGroupHint(props: FieldHintProps): ReactElement {
+  return <FieldsetHint {...props} />
+}
+RadioGroupHint.displayName = 'RadioGroup.Hint'
 
 /** The group's error message: the `Fieldset.ErrorMessage` under the group's name. */
 export function RadioGroupErrorMessage(props: FieldErrorMessageProps): ReactElement {
@@ -103,11 +110,12 @@ export function RadioGroupErrorMessage(props: FieldErrorMessageProps): ReactElem
 }
 RadioGroupErrorMessage.displayName = 'RadioGroup.ErrorMessage'
 
-/** A group of radios under a legend, with a hint and an error. */
+/** A group of radios under a legend, with a description, a hint and an error. */
 export const RadioGroup = {
   Root: RadioGroupRoot,
   Radio: RadioGroupRadio,
   Legend: RadioGroupLegend,
   Prose: RadioGroupProse,
+  Hint: RadioGroupHint,
   ErrorMessage: RadioGroupErrorMessage,
 } as const

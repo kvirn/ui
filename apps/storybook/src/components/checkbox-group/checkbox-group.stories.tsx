@@ -79,11 +79,7 @@ function Contact({
       <Field.Root>
         <Checkbox value="email" />
         <Field.Label>{text.contactEmail}</Field.Label>
-        {optionHints ? (
-          <Field.Prose>
-            <p>{text.contactEmailHint}</p>
-          </Field.Prose>
-        ) : null}
+        {optionHints ? <Field.Hint>{text.contactEmailHint}</Field.Hint> : null}
       </Field.Root>
       <Field.Root>
         <Checkbox value="text" />
@@ -92,11 +88,7 @@ function Contact({
       <Field.Root>
         <Checkbox value="letter" />
         <Field.Label>{text.contactLetter}</Field.Label>
-        {optionHints ? (
-          <Field.Prose>
-            <p>{text.contactLetterHint}</p>
-          </Field.Prose>
-        ) : null}
+        {optionHints ? <Field.Hint>{text.contactLetterHint}</Field.Hint> : null}
       </Field.Root>
       {error ? <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage> : null}
     </CheckboxGroup.Root>

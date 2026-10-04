@@ -73,7 +73,7 @@ function Contact({ withDescription = true, optionHint = false, ...rootProps }: C
           <Checkbox value={value} />
           <Field.Label>{label}</Field.Label>
           {optionHint && value === 'letter' ? (
-            <Field.Prose>Tar några dagar extra.</Field.Prose>
+            <Field.Hint>Tar några dagar extra.</Field.Hint>
           ) : null}
         </Field.Root>
       ))}
@@ -147,6 +147,44 @@ describe('rendering', () => {
     await expect
       .element(page.getByRole('checkbox', { name: 'E-post' }))
       .not.toHaveAttribute('aria-describedby')
+  })
+
+  test('an option hint is a Field.Hint in that option’s Field, outside its label, and has no axe violations', async () => {
+    const { container } = await render(sweden(<Contact optionHint />))
+    const hint = page.getByText('Tar några dagar extra.').element()
+    expect([hint.tagName, hint.className]).toEqual(['P', 'kv-field-hint'])
+    expect(hint.closest('label')).toBeNull()
+    // The group's description is its own hint, not the option's.
+    await expect
+      .element(page.getByRole('group', { name: 'Hur ska vi kontakta dig? (valfritt)' }))
+      .toHaveAccessibleDescription('Välj alla som passar.')
+    expectNoDanglingReferences(container)
+    await expectNoA11yViolations(container)
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('CheckboxGroup.Hint is the group’s hint: after the description, before the error', async () => {
+    expect(CheckboxGroup.Hint.displayName).toBe('CheckboxGroup.Hint')
+    await render(
+      sweden(
+        <CheckboxGroup.Root invalid>
+          <CheckboxGroup.Legend>Hur ska vi kontakta dig?</CheckboxGroup.Legend>
+          <CheckboxGroup.Prose>Välj alla som passar.</CheckboxGroup.Prose>
+          <Field.Root>
+            <Checkbox value="email" />
+            <Field.Label>E-post</Field.Label>
+          </Field.Root>
+          <CheckboxGroup.Hint data-testid="hint">Du kan ändra det senare.</CheckboxGroup.Hint>
+          <CheckboxGroup.ErrorMessage>Välj hur vi ska kontakta dig</CheckboxGroup.ErrorMessage>
+        </CheckboxGroup.Root>,
+      ),
+    )
+    await expect
+      .element(page.getByRole('group', { name: 'Hur ska vi kontakta dig? (valfritt)' }))
+      .toHaveAccessibleDescription(
+        'Välj alla som passar. Du kan ändra det senare. Fel: Välj hur vi ska kontakta dig',
+      )
+    await expect.element(page.getByTestId('hint')).toHaveClass('kv-field-hint')
   })
 
   test('render must stay a fieldset: another element warns once', async () => {

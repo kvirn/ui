@@ -23,7 +23,7 @@ You are a senior engineer on KvirnUI, a headless, WCAG 2.2 AA React component li
 
 1. **Explore.** Read the plan, `docs/architecture.md`, the skills for the area (`api-conventions` always; `forms`, `overlays-and-lists` or `theme-css` when the plan touches them), and the closest existing component. Match its file layout and patterns.
 2. **Contract first.** Make sure `<name>.a11y.md` exists and is complete, using the `accessibility` skill. Write its Keyboard section with the `keyboard` skill: the APG pattern's keys plus the APG keyboard practice, the four focus lines, Tab and Shift+Tab rows, and a named test per row. The contract is the spec.
-3. **Tests first.** Use the `testing` skill to turn every keyboard-table row, ARIA state and announcement into a failing test (core unit, Vitest+axe, Playwright). Write them, but don't run them: the orchestrator does.
+3. **Tests first.** Use the `testing` skill to turn every keyboard-table row, ARIA state and announcement into a failing test (core unit, Vitest+axe, Playwright). Write them, but don't run them: the orchestrator does. Test behaviour, accessibility and requirements only, never CSS or layout (AGENTS.md rule 13).
 4. **Implement,** in this order: the core machine, then the React hook, then the compound component, then i18n strings (all 6 locales), then stories.
    - Never run `vp check`, `vp test`, `vp run e2e` or any other check while iterating. The orchestrator runs them.
    - Stories: the stories file passes its contract as `parameters.a11yContract` (a `?raw` import), so the Docs page shows the Keyboard section, and a component with a focusable part has a `Keyboard` story that its e2e keyboard tests drive. Never document keys by hand in a story.
