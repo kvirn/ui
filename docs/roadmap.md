@@ -43,13 +43,12 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Switch                                                                                                              | Switch                        | 1   | planned                                    |
 | Disclosure, Accordion                                                                                               | Disclosure, Accordion         | 1   | planned                                    |
 | Dialog, AlertDialog                                                                                                 | Dialog (Modal), Alert Dialog  | 2   | planned                                    |
-| Popover (alpha candidate)                                                                                           | –                             | 2   | in progress                                |
-| Tooltip (name and shortcut on hover and keyboard focus, never on touch; Plan 0037)                                  | Tooltip                       | 2   | alpha                                      |
-| RichTextEditor (`@kvirn-ui/rich-text`, on Tiptap: toolbar, link and image forms, table group, Plan 0036)            | Toolbar, Dialog (non-modal)   | 3   | in progress (gates pending, AT `pending`)  |
+| Popover (alpha candidate), Tooltip                                                                                  | –, Tooltip                    | 2   | in progress                                |
 | Menu, MenuButton                                                                                                    | Menu Button                   | 2   | planned                                    |
 | Tabs                                                                                                                | Tabs                          | 2   | planned                                    |
 | Listbox (alpha candidate: native and popup rendering)                                                               | Select-Only Combobox, Listbox | 2   | in progress                                |
 | Combobox, Autocomplete (alpha candidate: single, multiple, free text)                                               | Combobox (ARIA 1.2)           | 3   | in progress                                |
+| RichTextEditor (`@kvirn-ui/rich-text`, on Tiptap: toolbar, link and image forms, table group, Plan 0036)            | Toolbar, Dialog (non-modal)   | 3   | in progress (gates pending, AT `pending`)  |
 | Table (alpha candidate: native table, TanStack Table, opt-in virtualization)                                        | Table, Sortable Table         | 3   | alpha                                      |
 | Virtualized Listbox, Combobox, Autocomplete (`virtualize`, Plan 0026)                                               | Listbox, Combobox (ARIA 1.2)  | 3   | alpha                                      |
 | Compound naming and part aliases (`Field.Root`, `Field.Label`, … Plan 0028)                                         | –                             | 1   | done                                       |
@@ -82,20 +81,28 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 
 Things the docs describe as planned, or that are known to be open. A row moves to `done` when it exists in the repo.
 
-| Item                                                                                                                                                                      | Status    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| `core` coverage of at least 90% enforced in CI (no coverage step exists yet)                                                                                              | planned   |
-| Bundle budgets in CI: per component, and for `core` including the store, `table-core` and `virtual-core`, plus a tree-shaking check                                       | planned   |
-| A workflow for the WCAG display-mode sweep (`E2E_BROWSERS=sweep`): forced colours, reduced motion and 320px reflow. Today the maintainer or a sweep agent runs it by hand | planned   |
-| A Changesets release workflow (commit `chore(release): version packages`)                                                                                                 | planned   |
-| Next.js and TanStack Router link recipes verified in a sample app (`TODO(verify-recipe)` in the provider docs)                                                            | planned   |
-| Legal check that an explicit theme preference in `localStorage` is exempt under ePrivacy Art. 5(3) (`TODO(legal-verify)`)                                                 | open      |
-| Optional `@google/design.md` lint step for `DESIGN.md`                                                                                                                    | not built |
-| A guard test that the not-prose class list in `theme.css` grows with each new part or consumer class                                                                      | planned   |
-| A built-in `sort` icon (Table draws its own sort icon until then); sprite entries for Icon if asked                                                                       | planned   |
-| An own role token for inputs and checkboxes (they use `border-control`); a per-region brand needs its own decision                                                        | open      |
-| A `border-region` token, because a sidebar has no visible edge in the contrast themes                                                                                     | open      |
-| Clean-up: the empty `packages/react/src/panel` and `apps/storybook/src/components/panel` directories remain from the rename to Section                                    | done      |
+| Item                                                                                                                                                                      | Status                                                              |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `core` coverage of at least 90% enforced in CI (no coverage step exists yet)                                                                                              | planned                                                             |
+| Bundle budgets in CI: per component, and for `core` including the store, `table-core` and `virtual-core`, plus a tree-shaking check                                       | planned                                                             |
+| A workflow for the WCAG display-mode sweep (`E2E_BROWSERS=sweep`): forced colours, reduced motion and 320px reflow. Today the maintainer or a sweep agent runs it by hand | planned                                                             |
+| A Changesets release workflow (commit `chore(release): version packages`)                                                                                                 | planned                                                             |
+| Next.js and TanStack Router link recipes verified in a sample app (`TODO(verify-recipe)` in the provider docs)                                                            | planned                                                             |
+| Legal check that an explicit theme preference in `localStorage` is exempt under ePrivacy Art. 5(3) (`TODO(legal-verify)`)                                                 | open                                                                |
+| Optional `@google/design.md` lint step for `DESIGN.md`                                                                                                                    | not built                                                           |
+| A guard test that the not-prose class list in `theme.css` grows with each new part or consumer class                                                                      | planned                                                             |
+| A built-in `sort` icon (Table draws its own sort icon until then); sprite entries for Icon if asked                                                                       | planned                                                             |
+| An own role token for inputs and checkboxes (they use `border-control`); a per-region brand needs its own decision                                                        | open                                                                |
+| A `border-region` token, because a sidebar has no visible edge in the contrast themes                                                                                     | open                                                                |
+| Clean-up: the empty `packages/react/src/panel` and `apps/storybook/src/components/panel` directories remain from the rename to Section                                    | done                                                                |
+| Developer ergonomics: `mask="personal-identity-number"` names resolved from the provider, `{pattern}` and RegExp masks, optional NumberInput mask (Plan 0039)             | gates green; review findings fixed, re-review and manual AT pending |
+| DateInput auto-advance (needs the maintainer's accessibility sign-off) (Plan 0040)                                                                                        | planned                                                             |
+| Rename `Hint` to `HelpText` (Plan 0041)                                                                                                                                   | planned                                                             |
+| Rename Notification to Alert (reverses a recorded design decision) (Plan 0042)                                                                                            | planned                                                             |
+| Navigation component replaces `kv-nav`, and the service link variant (Plan 0043)                                                                                          | planned                                                             |
+| `Icon icon={Component}` and Lucide/Heroicons stories (Plan 0044)                                                                                                          | gates green; review findings fixed, re-review and manual AT pending |
+| Docs-site Icon page: the three routes (`icon`, `name` + registry, `render`) once `apps/docs` has a content system (Plan 0044 follow-up)                                   | planned                                                             |
+| Rewrite stories whose Show code is not the real component API (Plan 0038)                                                                                                 | planned                                                             |
 
 ## Blocks (M4 and later)
 

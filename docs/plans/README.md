@@ -47,3 +47,10 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0035](0035-toggle-toolbar-button-group.md)       | Toggle, Toolbar and ButtonGroup                                             | Approved    |
 | [0036](0036-rich-text-editor.md)                  | Rich text editor (`@kvirn-ui/rich-text`, Tiptap)                            | Approved    |
 | [0037](0037-tooltip.md)                           | Tooltip                                                                     | In progress |
+| [0038](0038-stories-show-the-real-api.md)         | Stories show the real API                                                   | Draft       |
+| [0039](0039-masks-by-name.md) | Masks by name, optional masks, and a pattern | In progress |
+| [0040](0040-date-input-auto-advance.md) | DateInput moves to the next box when one is full | Draft |
+| [0041](0041-help-text.md) | `Hint` becomes `HelpText` | Draft |
+| [0042](0042-notification-to-alert.md) | Rename Notification to Alert | Draft |
+| [0043](0043-navigation-and-service-link.md) | Navigation as its own component, and a service link | Draft |
+| [0044](0044-icon-libraries.md) | Using Lucide and Heroicons with Icon | In progress |
