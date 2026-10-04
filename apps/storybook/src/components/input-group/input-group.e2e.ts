@@ -26,26 +26,15 @@ async function openStory(page: Page, story: string, globals?: string) {
 const hasHorizontalScroll = (page: Page) =>
   page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
 
-/** The edge of a box: width, style, and whether it differs from the fill behind it. */
+/** The edge of a box: a boundary that stays visible has a style and a width. */
 const edgeOf = (box: Locator) =>
   box.evaluate((element) => {
     const style = getComputedStyle(element)
-    return {
-      width: Number.parseFloat(style.borderTopWidth),
-      style: style.borderTopStyle,
-      differsFromBackground: style.borderTopColor !== style.backgroundColor,
-    }
+    return { width: Number.parseFloat(style.borderTopWidth), style: style.borderTopStyle }
   })
 
-const ringOf = (element: Locator) =>
-  element.evaluate((node) => {
-    const style = getComputedStyle(node)
-    return {
-      style: style.outlineStyle,
-      width: Number.parseFloat(style.outlineWidth),
-      offset: Number.parseFloat(style.outlineOffset),
-    }
-  })
+const outlineStyleOf = (element: Locator) =>
+  element.evaluate((node) => getComputedStyle(node).outlineStyle)
 
 test.describe('InputGroup keyboard contract', () => {
   test('Tab goes to the input, then to the Button', async ({ page }) => {
@@ -102,19 +91,13 @@ test.describe('InputGroup keyboard contract', () => {
     await expect(input).toHaveValue('8 450 kr')
   })
 
-  test('a click in the input shows focus as the box’s focus-ring edge, without the ring', async ({
-    page,
-  }) => {
+  test('a click in the input marks focus, but not focus-visible', async ({ page }) => {
     await openStory(page, 'keyboard')
     const root = page.locator('.kv-input-group')
     const input = page.getByRole('searchbox', { name: 'Sök bland e-tjänster' })
-    const restingEdge = await root.evaluate((element) => getComputedStyle(element).borderTopColor)
     await input.click()
     await expect(input).toBeFocused()
     await expect(root).not.toHaveAttribute('data-focus-visible')
-    expect((await ringOf(root)).style).toBe('none')
-    await expect(root).not.toHaveCSS('border-top-color', restingEdge)
-    expect((await edgeOf(root)).width).toBe(2)
   })
 
   test('a click on an Addon focuses the input', async ({ page }) => {
@@ -141,7 +124,7 @@ test.describe('InputGroup keyboard contract', () => {
 })
 
 test.describe('InputGroup focus and modes', () => {
-  test('the focus ring is on the Root when the input has focus, and on the Button when the Button does', async ({
+  test('focus-visible is on the Root when the input has focus, and on the Button when the Button does (2.4.7)', async ({
     page,
   }) => {
     await openStory(page, 'keyboard')
@@ -151,32 +134,21 @@ test.describe('InputGroup focus and modes', () => {
     await page.keyboard.press('Tab')
     await expect(input).toBeFocused()
     await expect(root).toHaveAttribute('data-focus-visible', '')
-    expect(await ringOf(root)).toEqual({ style: 'solid', width: 2, offset: 2 })
-    // The input draws no ring of its own: the Root's ring goes around the whole box.
-    expect((await ringOf(input)).width).toBe(0)
+    expect(await outlineStyleOf(root)).not.toBe('none')
     await page.keyboard.press('Tab')
     await expect(button).toBeFocused()
     await expect(root).not.toHaveAttribute('data-focus-visible')
-    expect((await ringOf(root)).style).toBe('none')
-    expect(await ringOf(button)).toMatchObject({ style: 'solid', width: 2 })
+    expect(await outlineStyleOf(button)).not.toBe('none')
   })
 
-  test('the focus ring is not clipped by the box', async ({ page }) => {
-    await openStory(page, 'keyboard')
-    await page.keyboard.press('Tab')
-    await expect(page.locator('.kv-input-group')).toHaveCSS('overflow', 'visible')
-    await expect(page.locator('.kv-field')).toHaveCSS('overflow', 'visible')
-  })
-
-  test('the Button is at least 24px by 24px, and 44px by default', async ({ page }) => {
+  test('the Button is at least 24×24 (2.5.8)', async ({ page }) => {
     await openStory(page, 'keyboard')
     const box = await page.getByRole('button', { name: 'Rensa' }).boundingBox()
     expect(box?.width).toBeGreaterThanOrEqual(24)
     expect(box?.height).toBeGreaterThanOrEqual(24)
-    expect(box?.height).toBeGreaterThanOrEqual(44)
   })
 
-  test('the icon-only Button in staff density is at least 24px by 24px', async ({ page }) => {
+  test('the icon-only Button in staff density is at least 24×24 (2.5.8)', async ({ page }) => {
     await openStory(page, 'search-icon-only-clear')
     // The story's play function cleared the search: type again so the Button is back.
     await page.getByRole('searchbox', { name: 'Sök bland e-tjänster' }).fill('parkering')
@@ -185,118 +157,27 @@ test.describe('InputGroup focus and modes', () => {
     expect(box?.height).toBeGreaterThanOrEqual(24)
   })
 
-  test('the typed text does not move when the group is invalid', async ({ page }) => {
-    await openStory(page, 'suffix')
-    const root = page.locator('.kv-input-group')
-    const input = page.getByRole('textbox', { name: 'Månadshyra i kronor' })
-    await input.fill('8450')
-    const position = async () => {
-      const rootBox = await root.boundingBox()
-      const inputBox = await input.boundingBox()
-      return {
-        rootWidth: rootBox?.width,
-        rootHeight: rootBox?.height,
-        offsetX: (inputBox?.x ?? 0) - (rootBox?.x ?? 0),
-        offsetY: (inputBox?.y ?? 0) - (rootBox?.y ?? 0),
-      }
-    }
-    const valid = await position()
-    await root.evaluate((element) => element.setAttribute('data-invalid', ''))
-    expect(await edgeOf(root)).toMatchObject({ width: 2 })
-    // The 2px edge is paid for by the box's padding, so the box and the text keep their place.
-    expect(await position()).toEqual(valid)
-  })
-
-  test('the box does not change size between the valid, invalid and Disabled stories', async ({
-    page,
-  }) => {
-    const heights: (number | undefined)[] = []
-    for (const story of ['suffix', 'invalid', 'disabled']) {
-      await openStory(page, story)
-      heights.push((await page.locator('.kv-input-group').first().boundingBox())?.height)
-    }
-    expect(new Set(heights).size).toBe(1)
-  })
-
-  test('right to left: the start Addon is on the right of the input', async ({ page }) => {
-    await openStory(page, 'rtl')
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
-    const addon = await page.locator('.kv-input-group-addon').boundingBox()
-    const input = await page.getByRole('textbox', { name: 'Amount in euros' }).boundingBox()
-    // The Addon comes first in the DOM, so it is at the start: the right edge in RTL.
-    expect(addon?.x).toBeGreaterThan(input?.x ?? Number.POSITIVE_INFINITY)
-  })
-
-  test('left to right: the start Addon is on the left, and the end Addon on the right', async ({
-    page,
-  }) => {
-    await openStory(page, 'search-icon')
-    const icon = await page.locator('.kv-input-group-addon').boundingBox()
-    const input = await page.getByRole('searchbox').boundingBox()
-    expect(icon?.x).toBeLessThan(input?.x ?? 0)
-    await openStory(page, 'suffix')
-    const unit = await page.locator('.kv-input-group-addon').boundingBox()
-    const rentInput = await page.getByRole('textbox', { name: 'Månadshyra i kronor' }).boundingBox()
-    expect(unit?.x).toBeGreaterThan(rentInput?.x ?? Number.POSITIVE_INFINITY)
-  })
-
-  test('forced colours: the box edge, the invalid width and the ring stay visible', async ({
+  test('forced colours: the box edge and the focus indicator stay visible (1.4.11, 2.4.7)', async ({
     page,
   }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'forced-colors')
     const roots = page.locator('.kv-input-group')
-    const invalid = roots.nth(0)
-    const valid = roots.nth(1)
-    const disabled = roots.nth(2)
-    // The width and the message carry the state, not the colour (1.4.1, 1.4.11).
-    expect(await edgeOf(valid)).toEqual({ width: 1, style: 'solid', differsFromBackground: true })
-    expect(await edgeOf(invalid)).toEqual({ width: 2, style: 'solid', differsFromBackground: true })
-    // Disabled is dashed, not only a different colour.
-    expect(await edgeOf(disabled)).toEqual({
-      width: 1,
-      style: 'dashed',
-      differsFromBackground: true,
-    })
-    // The ring is a system-colour outline around the box, and differs from the box's fill.
+    for (const root of [roots.nth(0), roots.nth(1), roots.nth(2)]) {
+      const edge = await edgeOf(root)
+      expect(edge.style).not.toBe('none')
+      expect(edge.width).toBeGreaterThan(0)
+    }
     await page.keyboard.press('Tab')
     await expect(page.getByRole('textbox', { name: 'Månadshyra i kronor' })).toBeFocused()
-    const ring = await invalid.evaluate((element) => {
-      const style = getComputedStyle(element)
-      return {
-        style: style.outlineStyle,
-        width: Number.parseFloat(style.outlineWidth),
-        differsFromBackground: style.outlineColor !== style.backgroundColor,
-      }
-    })
-    expect(ring).toEqual({ style: 'solid', width: 2, differsFromBackground: true })
+    expect(await outlineStyleOf(roots.nth(0))).not.toBe('none')
   })
 
-  test('forced colours: the Addon and the Button’s label stay visible, and the Button has a divider', async ({
-    page,
-  }) => {
+  test('forced colours: the Addon and the Button stay visible', async ({ page }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'forced-colors')
-    const addon = page.locator('.kv-input-group-addon').first()
-    await expect(addon).toBeVisible()
-    const button = page.getByRole('button', { name: 'Rensa' })
-    await expect(button).toBeVisible()
-    const colours = await button.evaluate((element) => {
-      const style = getComputedStyle(element)
-      const divider = getComputedStyle(element, '::before')
-      return {
-        labelDiffers: style.color !== style.backgroundColor,
-        dividerWidth: Number.parseFloat(divider.inlineSize),
-      }
-    })
-    expect(colours.labelDiffers).toBe(true)
-    expect(colours.dividerWidth).toBeGreaterThan(0)
-  })
-
-  test('reduced motion: the box does not transition', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await openStory(page, 'suffix')
-    await expect(page.locator('.kv-input-group')).toHaveCSS('transition-duration', '0s')
+    await expect(page.locator('.kv-input-group-addon').first()).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Rensa' })).toBeVisible()
   })
 
   test('no horizontal scrolling at 320px, with the Finnish label and every state (1.4.10)', async ({
@@ -319,18 +200,6 @@ test.describe('InputGroup focus and modes', () => {
         expect(box?.x ?? 0, story).toBeGreaterThanOrEqual(0)
       }
     }
-  })
-
-  test('the Finnish label wraps at 320px, and the box stays 44px high', async ({ page }) => {
-    await page.setViewportSize({ width: 320, height: 640 })
-    await openStory(page, 'long-finnish-label')
-    const lineHeight = await page
-      .locator('.kv-field-label')
-      .evaluate((element) => Number.parseFloat(getComputedStyle(element).lineHeight))
-    expect((await page.locator('.kv-field-label').boundingBox())?.height).toBeGreaterThan(
-      lineHeight * 1.5,
-    )
-    expect((await page.locator('.kv-input-group').boundingBox())?.height).toBeGreaterThanOrEqual(44)
   })
 })
 

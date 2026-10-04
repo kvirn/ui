@@ -448,41 +448,38 @@ test.describe('Autocomplete keyboard contract', () => {
 })
 
 test.describe('Autocomplete focus and modes', () => {
-  test('a click in the input shows focus as the box’s focus-ring edge, without the ring', async ({
-    page,
-  }) => {
+  test('a click in the input marks focus, but not focus-visible', async ({ page }) => {
     await openStory(page, 'keyboard')
     const box = page.locator('.kv-autocomplete-control').first()
-    const restingEdge = await box.evaluate((element) => getComputedStyle(element).borderTopColor)
     await input(page).click()
     await expect(input(page)).toBeFocused()
     await expect(input(page)).toHaveAttribute('data-focused', '')
     await expect(box).not.toHaveAttribute('data-focus-visible')
-    await expect(box).toHaveCSS('outline-style', 'none')
-    await expect(box).toHaveCSS('border-top-width', '2px')
-    await expect(box).not.toHaveCSS('border-top-color', restingEdge)
-    // A key press brings the ring back at the next focus.
+    // A key press brings focus-visible back at the next focus.
     await page.keyboard.press('Shift+Tab')
     await page.keyboard.press('Tab')
     await expect(box).toHaveAttribute('data-focus-visible', '')
-    await expect(box).toHaveCSS('outline-style', 'solid')
   })
 
-  test('the box and the options are 44px high, and the ring is 2px with a 2px offset (2.5.8)', async ({
-    page,
-  }) => {
+  test('a key-focused box shows a focus indicator (2.4.7)', async ({ page }) => {
     // The Keyboard story has no play function, so Tab starts from the top of a clean page.
     await openStory(page, 'keyboard')
     const box = page.locator('.kv-autocomplete-control').first()
-    expect((await box.boundingBox())?.height).toBeGreaterThanOrEqual(44)
-    // Reach the input with the keyboard, so the focus ring shows.
     await before(page).focus()
     await page.keyboard.press('Tab')
     await expect(input(page)).toBeFocused()
     await expect(box).toHaveAttribute('data-focus-visible', '')
-    await expect(box).toHaveCSS('outline-style', 'solid')
-    await expect(box).toHaveCSS('outline-width', '2px')
-    await expect(box).toHaveCSS('outline-offset', '2px')
+    expect(await box.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe('none')
+  })
+
+  test('the box, the options and the toggle are at least 24×24 (2.5.8)', async ({ page }) => {
+    await openStory(page, 'keyboard')
+    const box = page.locator('.kv-autocomplete-control').first()
+    const boxSize = await box.boundingBox()
+    expect(boxSize?.height).toBeGreaterThanOrEqual(24)
+    await before(page).focus()
+    await page.keyboard.press('Tab')
+    await expect(input(page)).toBeFocused()
     await page.keyboard.press('ArrowDown')
     const options = page.getByRole('option')
     await expect(options.first()).toBeVisible()
@@ -491,27 +488,22 @@ test.describe('Autocomplete focus and modes', () => {
     )
     expect(heights.length).toBeGreaterThan(0)
     for (const height of heights) {
-      expect(height).toBeGreaterThanOrEqual(44)
+      expect(height).toBeGreaterThanOrEqual(24)
     }
-    // Toggle is as wide as the theme's control height, and never under 24px (2.5.8).
     const toggle = await page.getByRole('button', { name: 'Visa alternativ' }).boundingBox()
-    expect(toggle?.width).toBeGreaterThanOrEqual(44)
+    expect(toggle?.width).toBeGreaterThanOrEqual(24)
     expect(toggle?.height).toBeGreaterThanOrEqual(24)
   })
 
-  test('an invalid box has a 2px edge, and the error is in the input’s description', async ({
-    page,
-  }) => {
+  test('the error is in the input’s description', async ({ page }) => {
     await openStory(page, 'invalid')
-    const box = page.locator('.kv-autocomplete-control')
-    await expect(box).toHaveCSS('border-top-width', '2px')
     await expect(page.locator('.kv-autocomplete-input')).toHaveAttribute('aria-invalid', 'true')
     await expect(page.locator('.kv-autocomplete-input')).toHaveAccessibleDescription(
       'Börja skriva så föreslår vi gator. Du kan också skriva en egen adress. Fel: Ange din gatuadress',
     )
   })
 
-  test('the popup is as wide as the box, under it, and never covers it', async ({ page }) => {
+  test('the popup never covers the box', async ({ page }) => {
     await openStory(page, 'keyboard')
     const box = page.locator('.kv-autocomplete-control').first()
     await page.getByRole('button', { name: 'Visa alternativ' }).click()
@@ -520,8 +512,6 @@ test.describe('Autocomplete focus and modes', () => {
     const popupBox = await popupOf(page).boundingBox()
     expect(boxBox).not.toBeNull()
     expect(popupBox).not.toBeNull()
-    expect(Math.abs((popupBox?.width ?? 0) - (boxBox?.width ?? 0))).toBeLessThanOrEqual(1)
-    expect(Math.abs((popupBox?.x ?? 0) - (boxBox?.x ?? 0))).toBeLessThanOrEqual(1)
     const boxBottom = (boxBox?.y ?? 0) + (boxBox?.height ?? 0)
     const popupBottom = (popupBox?.y ?? 0) + (popupBox?.height ?? 0)
     // Under the box, or above it when there is no room: never over it.
@@ -556,49 +546,18 @@ test.describe('Autocomplete focus and modes', () => {
     expect(inView).toBe(true)
   })
 
-  test('forced colours keep the edges, the cross and the chevron', async ({ page }) => {
+  test('forced colours keep the box edge visible (1.4.11)', async ({ page }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'forced-colors')
-    // The story's play function opens the first popup with ArrowDown: the active option is Highlight.
-    await expect(popupOf(page)).toBeVisible()
-    await expect(activeOption(page)).toHaveCount(1)
-    const active = await activeOption(page).evaluate((element) => {
-      const style = getComputedStyle(element)
-      const popupStyle = getComputedStyle(element.closest('.kv-listbox-popup') as Element)
-      return {
-        fillDiffers: style.backgroundColor !== popupStyle.backgroundColor,
-        textDiffers: style.color !== popupStyle.color,
-        bar: Number.parseFloat(style.borderInlineStartWidth),
-      }
-    })
-    expect(active).toEqual({ fillDiffers: true, textDiffers: true, bar: 4 })
     const boxes = page.locator('.kv-autocomplete-control')
-    // The 2px width carries invalid, the dashed edge carries disabled (1.4.1).
-    await expect(boxes.nth(0)).toHaveCSS('border-top-width', '1px')
-    await expect(boxes.nth(1)).toHaveCSS('border-top-width', '2px')
-    await expect(boxes.nth(2)).toHaveCSS('border-top-style', 'dashed')
-    const marks = await page.evaluate(() => {
-      const chevron = getComputedStyle(
-        document.querySelector('.kv-autocomplete-toggle') as Element,
-        '::after',
-      )
-      const cross = getComputedStyle(
-        document.querySelector('.kv-autocomplete-clear') as Element,
-        '::before',
-      )
-      return { chevron: chevron.borderBottomWidth, cross: cross.borderTopWidth }
-    })
-    // Borders, not backgrounds, so the system colours keep them.
-    expect(marks).toEqual({ chevron: '2px', cross: '2px' })
-  })
-
-  test('reduced motion: the input does not transition', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await openStory(page, 'keyboard')
-    await expect(page.locator('.kv-autocomplete-control').first()).toHaveCSS(
-      'transition-duration',
-      '0s',
-    )
+    for (let index = 0; index < (await boxes.count()); index += 1) {
+      const edge = await boxes.nth(index).evaluate((element) => {
+        const style = getComputedStyle(element)
+        return { style: style.borderTopStyle, width: Number.parseFloat(style.borderTopWidth) }
+      })
+      expect(edge.style).not.toBe('none')
+      expect(edge.width).toBeGreaterThan(0)
+    }
   })
 
   test('no horizontal scrolling at 320px with the popup open (1.4.10)', async ({ page }) => {
@@ -612,28 +571,6 @@ test.describe('Autocomplete focus and modes', () => {
       expect(box?.x ?? -1, story).toBeGreaterThanOrEqual(0)
       expect((box?.x ?? 0) + (box?.width ?? 0), story).toBeLessThanOrEqual(320)
     }
-    await openStory(page, 'long-finnish')
-    await expect(popupOf(page)).toBeVisible()
-    const field = await page.locator('.kv-field').first().boundingBox()
-    const control = await page.locator('.kv-autocomplete-control').first().boundingBox()
-    const popup = await popupOf(page).boundingBox()
-    expect(control?.width).toBeLessThanOrEqual((field?.width ?? 0) + 0.5)
-    // At least as wide as the box, never narrower.
-    expect(popup?.width).toBeGreaterThanOrEqual((control?.width ?? 0) - 1)
-  })
-
-  test('right to left: the chevron is at the inline end', async ({ page }) => {
-    await openStory(page, 'rtl')
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
-    const layout = await page.evaluate(() => {
-      const input = document.querySelector('.kv-autocomplete-input') as Element
-      const toggle = document.querySelector('.kv-autocomplete-toggle') as Element
-      return {
-        direction: getComputedStyle(input).direction,
-        toggleLeftOfInput: toggle.getBoundingClientRect().x < input.getBoundingClientRect().x,
-      }
-    })
-    expect(layout).toEqual({ direction: 'rtl', toggleLeftOfInput: true })
   })
 })
 

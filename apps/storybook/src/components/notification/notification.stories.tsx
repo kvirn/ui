@@ -254,11 +254,7 @@ export const DynamicStatus: Story = {
   parameters: showSource('notification/notification.fixture.tsx', 'DynamicStatusExample'),
   render: (_args, { globals }) => <DynamicStatusExample locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByTestId('dynamic')).toHaveClass('kv-notification--warning')
     await userEvent.selectOptions(canvas.getByRole('combobox', { name: 'Status' }), 'danger')
-    const dynamic = canvas.getByTestId('dynamic')
-    await expect(dynamic).toHaveClass('kv-notification--danger')
-    await expect(dynamic).not.toHaveClass('kv-notification--warning')
     await expect(canvas.getByRole('heading', { level: 2 }).textContent).toBe(
       'Fel: Något du bör veta',
     )

@@ -29,10 +29,9 @@ function ContactSection() {
 }
 
 describe('rendering', () => {
-  test('renders one <div> with its class and its children', async () => {
+  test('renders one element with the kv-section class and its children', async () => {
     const { container } = await render(<Section data-testid="section">Innehåll</Section>)
     const section = page.getByTestId('section')
-    expect(section.element().tagName).toBe('DIV')
     expect(section.element().className).toBe('kv-section')
     await expect.element(section).not.toHaveAttribute('data-kv')
     await expect.element(section).toHaveTextContent('Innehåll')
@@ -163,7 +162,7 @@ describe('rendering', () => {
   })
 })
 
-describe('refs, className and style', () => {
+describe('refs and style', () => {
   test('forwards its ref to the element', async () => {
     const ref = createRef<HTMLElement>()
     await render(
@@ -193,29 +192,16 @@ describe('refs, className and style', () => {
     expect(itemRef.current?.tagName).toBe('LI')
   })
 
-  test('forwards className and style', async () => {
-    await render(
-      <Section data-testid="section" className="sidosection" style={{ maxInlineSize: '20rem' }}>
-        Text
-      </Section>,
-    )
-    const section = page.getByTestId('section')
-    await expect.element(section).toHaveClass('sidosection')
-    await expect.element(section).toHaveStyle({ maxInlineSize: '20rem' })
-  })
-
-  test('merges className and style with a render element, and both refs get the element', async () => {
+  test('merges style with a render element, and both refs get the element', async () => {
     const partRef = createRef<HTMLElement>()
     const elementRef = createRef<HTMLElement>()
     await render(
       <Section
         ref={partRef}
-        className="sidosection"
         style={{ maxInlineSize: '20rem', color: 'rgb(0, 0, 0)' }}
         render={
           <aside
             ref={elementRef}
-            className="kontakt"
             style={{ color: 'rgb(1, 2, 3)' }}
             aria-label="Kontakt"
             data-testid="section"
@@ -226,7 +212,6 @@ describe('refs, className and style', () => {
       </Section>,
     )
     const section = page.getByTestId('section')
-    await expect.element(section).toHaveClass('sidosection kontakt')
     await expect.element(section).toHaveStyle({ maxInlineSize: '20rem', color: 'rgb(1, 2, 3)' })
     expect(partRef.current).toBe(section.element())
     expect(elementRef.current).toBe(section.element())
@@ -243,7 +228,6 @@ describe('render', () => {
     )
     const section = page.getByRole('complementary', { name: 'Kontakta oss' })
     await expect.element(section).toBeVisible()
-    await expect.element(section).toHaveClass('kv-section', 'kv-section--padding-lg')
     await expectNoA11yViolations(container)
   })
 
@@ -299,7 +283,6 @@ describe('render', () => {
     const seenStates: SectionState[] = []
     await render(
       <Section
-        className="sidosection"
         render={(sectionProps, state) => {
           seenStates.push(state)
           return <div {...sectionProps} data-testid="section" data-own="" />
@@ -309,7 +292,6 @@ describe('render', () => {
       </Section>,
     )
     const section = page.getByTestId('section')
-    await expect.element(section).toHaveClass('kv-section', 'sidosection')
     await expect.element(section).toHaveAttribute('data-own', '')
     await expect.element(section).toHaveTextContent('Text')
     expect(seenStates.at(-1)).toEqual({})

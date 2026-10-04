@@ -47,10 +47,10 @@ Enter, Space, Escape, arrow keys and Home / End are not handled. Children handle
 
 - Initial focus: not moved. A Notification never moves focus, never traps it and is not a Tab stop.
 - Trap: no.
-- Focus target: the consumer may make a root a focus target with `tabIndex={-1}` (an arrival message, the later error summary block). It then shows the focus ring on `:focus-visible`, Tab from it goes to the first link or button inside, and it never gets `tabIndex={0}`. Moving focus to a notification and setting `announce` on it would read it twice: use one of them. Test: `notification.e2e.ts › a focused root shows its focus ring`.
+- Focus target: the consumer may make a root a focus target with `tabIndex={-1}` (an arrival message, the later error summary block). It then shows the focus ring on `:focus-visible`, Tab from it goes to the first link or button inside, and it never gets `tabIndex={0}`. Moving focus to a notification and setting `announce` on it would read it twice: use one of them. Test: `notification.e2e.ts › a focused root shows a focus indicator (2.4.7)`.
 - Inserting a notification never moves focus away from the control the user pressed (3.2.2). Removing one that holds focus is the consumer's bug: move focus first.
 - Restore to: not applicable.
-- Never obscured by: the default theme never sets `overflow` or `clip-path` on a notification, so a link's or button's focus ring inside is never clipped (2.4.11, 2.4.13). With a sticky header, the page sets `scroll-padding` so a focused notification isn't hidden. Test: `notification.e2e.ts › the focus ring of an action is not clipped`.
+- Never obscured by: the default theme never sets `overflow` or `clip-path` on a notification, so a link's or button's focus ring inside is never clipped (2.4.11, 2.4.13). With a sticky header, the page sets `scroll-padding` so a focused notification isn't hidden. Test: `notification.e2e.ts › a key-focused action shows a focus indicator (2.4.7)`.
 
 ## Announcements
 

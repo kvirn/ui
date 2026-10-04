@@ -29,8 +29,6 @@ const localeOf = (globals: Record<string, unknown>): SectionFixtureLocale => {
   return isCardFixtureLocale(locale) ? locale : 'sv'
 }
 
-const pixels = (value: string): number => Number.parseFloat(value)
-
 // The Docs page opens with the package docs: how to use it, and how to build your own.
 const description = usageGuide(guide)
 
@@ -164,13 +162,6 @@ export const Surfaces: Story = {
       </>
     )
   },
-  play: async ({ canvas }) => {
-    const background = (testId: string) =>
-      getComputedStyle(canvas.getByTestId(testId)).backgroundColor
-    await expect(background('surface-on-page')).not.toBe(background('canvas-on-page'))
-    // On a surface frame, the canvas Section is the one that shows.
-    await expect(background('canvas-on-frame')).not.toBe(background('frame'))
-  },
 }
 
 /**
@@ -277,20 +268,6 @@ export const SurfaceLayers: Story = {
       </div>
     )
   },
-  play: async ({ canvas }) => {
-    // The section differs from the page and from the card on it. The page and the card can share
-    // a colour (white in the light themes), so the card's edge is checked below.
-    const [page, section, card] = ['canvas', 'surface', 'surface-raised'].map(
-      (id) => getComputedStyle(canvas.getByTestId(id)).backgroundColor,
-    )
-    await expect(section).not.toBe(page)
-    await expect(section).not.toBe(card)
-    // Every level from 1 up has a 1px border: a shadow can disappear (dark themes, forced
-    // colours), so the border is what shows the boundary where it is drawn.
-    for (const id of ['surface', 'surface-raised', 'popup', 'dialog']) {
-      await expect(getComputedStyle(canvas.getByTestId(id)).borderTopWidth).toBe('1px')
-    }
-  },
 }
 
 /**
@@ -317,13 +294,9 @@ export const CardOrSection: Story = {
   },
   play: async ({ canvas }) => {
     const users = canvas.getByTestId('section-with-actions')
-    await expect(users.classList.contains('kv-section')).toBe(true)
     await expect(within(users).getAllByRole('button')).toHaveLength(2)
     const news = canvas.getByTestId('news-card')
-    await expect(news.classList.contains('kv-card')).toBe(true)
     await expect(within(news).getAllByRole('link')).toHaveLength(1)
-    const form = canvas.getByTestId('form-section')
-    await expect(form.closest('.kv-section, .kv-card')).toBeNull()
     await expect(canvas.getByRole('group', { name: 'Kontaktuppgifter' })).toBeVisible()
   },
 }
@@ -388,14 +361,6 @@ export const ImageInSection: Story = {
   },
   play: async ({ canvas }) => {
     // A 640px image in a padded Section shrinks with it instead of overflowing (1.4.10).
-    const image = canvas.getByTestId('wide-image')
-    const section = image.parentElement as HTMLElement
-    const sectionStyle = getComputedStyle(section)
-    const contentWidth =
-      section.clientWidth -
-      pixels(sectionStyle.paddingInlineStart) -
-      pixels(sectionStyle.paddingInlineEnd)
-    await expect(image.getBoundingClientRect().width).toBeLessThanOrEqual(contentWidth + 0.5)
     await expectNoHorizontalOverflow(canvas.getByTestId('column'))
   },
 }

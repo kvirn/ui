@@ -102,7 +102,7 @@ function EgenEtikett(props: React.ComponentPropsWithRef<'label'>) {
 }
 
 describe('rendering', () => {
-  test('Root renders one <div class="kv-field"> and the parts render their elements and classes', async () => {
+  test('Root renders one element with the kv-field class and the parts render their part classes', async () => {
     const { container } = await render(
       <Field.Root data-testid="root" invalid>
         <Field.Label data-testid="label">Namn</Field.Label>
@@ -114,15 +114,14 @@ describe('rendering', () => {
       </Field.Root>,
     )
     const root = page.getByTestId('root').element()
-    expect(root.tagName).toBe('DIV')
     expect(root.className).toBe('kv-field')
     expect(container.firstElementChild).toBe(root)
     const label = page.getByTestId('label').element()
-    expect([label.tagName, label.className]).toEqual(['LABEL', 'kv-field-label'])
+    expect(label.className).toBe('kv-field-label')
     const description = page.getByTestId('description').element()
-    expect([description.tagName, description.className]).toEqual(['DIV', 'kv-prose'])
+    expect(description.className).toBe('kv-prose')
     const error = page.getByTestId('error').element()
-    expect([error.tagName, error.className]).toEqual(['P', 'kv-field-error-message'])
+    expect(error.className).toBe('kv-field-error-message')
     await expect.element(page.getByTestId('root')).not.toHaveAttribute('data-kv')
   })
 
@@ -140,7 +139,6 @@ describe('rendering', () => {
     expect(rootRef.current).toBe(page.getByTestId('root').element())
     await expect.element(page.getByTestId('root')).toHaveClass('egen', 'kv-field')
     await expect.element(page.getByTestId('root')).toHaveAttribute('lang', 'sv')
-    expect(labelRef.current?.tagName).toBe('LABEL')
     expect(labelRef.current?.className).toBe('egen-etikett kv-field-label')
   })
 
@@ -157,7 +155,6 @@ describe('rendering', () => {
     await expect.element(page.getByText('Namn')).toHaveAttribute('data-egen', '')
     const description = page.getByText('Som i passet.').element()
     expect(description.tagName).toBe('P')
-    expect(description.className).toBe('kv-prose')
   })
 
   test('render as a function gets the part’s props and the field’s state', async () => {
@@ -259,9 +256,8 @@ describe('wiring: name and description per state', () => {
     await render(<PhoneField invalid required />)
     const input = page.getByRole('textbox', { name: 'Telefonnummer' }).element()
     const [descriptionId, errorId] = (input.getAttribute('aria-describedby') ?? '').split(' ')
-    expect(document.getElementById(descriptionId ?? '')?.className).toBe('kv-prose')
+    expect(descriptionId).toBeTruthy()
     const error = document.getElementById(errorId ?? '')
-    expect(error?.className).toBe('kv-field-error-message')
     expect(error?.querySelector('.kv-field-error-prefix')?.textContent).toBe('Error:')
     // The icon is decorative.
     expect(error?.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true')
@@ -413,7 +409,7 @@ describe('focus on submit (accessibility review, Plan 0013)', () => {
     // Read synchronously when focus arrived, not after the attribute settles.
     const ids = describedByAtFocus.at(-1)?.split(' ') ?? []
     expect(ids).toHaveLength(2)
-    expect(document.getElementById(ids[1] ?? '')?.className).toBe('kv-field-error-message')
+    expect(document.getElementById(ids[1] ?? '')?.textContent).toContain('Ange ett telefonnummer')
     expectNoDanglingReferences(container)
   })
 
@@ -644,7 +640,6 @@ describe('useField', () => {
     await expect.element(input).toHaveAccessibleDescription('Som i passet. Fel: Ange ditt namn')
     await expect.element(input).toHaveAttribute('aria-invalid', 'true')
     await expect.element(input).toHaveAttribute('aria-required', 'true')
-    expect(container.querySelector('div')?.className).toBe('kv-field')
     expectNoDanglingReferences(container)
     await expectNoA11yViolations(container)
   })
@@ -827,7 +822,9 @@ describe('several descriptions', () => {
     expect(ids).toHaveLength(3)
     expect(ids[0]).toBe(page.getByTestId('where').element().id)
     expect(ids[1]).toBe(page.getByTestId('format').element().id)
-    expect(document.getElementById(ids[2] ?? '')?.className).toBe('kv-field-error-message')
+    expect(document.getElementById(ids[2] ?? '')?.textContent).toContain(
+      'Ange ett registreringsnummer',
+    )
     await expect
       .element(input)
       .toHaveAccessibleDescription(
@@ -939,7 +936,7 @@ describe('several descriptions', () => {
     await expect.element(page.getByRole('textbox', { name: 'Registreringsnummer' })).toHaveFocus()
     const ids = describedByAtFocus.at(-1)?.split(' ') ?? []
     expect(ids).toHaveLength(3)
-    expect(document.getElementById(ids[2] ?? '')?.className).toBe('kv-field-error-message')
+    expect(document.getElementById(ids[2] ?? '')?.textContent).toContain('Ange ett nummer')
     expectNoDanglingReferences(container)
   })
 
@@ -964,12 +961,12 @@ describe('several descriptions', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('a Prose hint keeps its own props: class, state and ref, and render', async () => {
+  test('a Prose hint keeps its own props: state and ref, and render', async () => {
     const ref = createRef<HTMLElement>()
     await render(
       <Field.Root invalid disabled>
         <Field.Label marker="none">Namn</Field.Label>
-        <Field.Prose ref={ref} className="egen" data-testid="first">
+        <Field.Prose ref={ref} data-testid="first">
           Ovanför.
         </Field.Prose>
         <Field.Prose render={<p />} data-testid="second">
@@ -980,7 +977,6 @@ describe('several descriptions', () => {
       </Field.Root>,
     )
     expect(ref.current).toBe(page.getByTestId('first').element())
-    await expect.element(page.getByTestId('first')).toHaveClass('egen', 'kv-prose')
     await expect.element(page.getByTestId('first')).toHaveAttribute('data-invalid', '')
     await expect.element(page.getByTestId('first')).toHaveAttribute('data-disabled', '')
     expect(page.getByTestId('second').element().tagName).toBe('P')
@@ -1016,10 +1012,9 @@ describe('Field.Hint (Plan 0029)', () => {
       ' ',
     )
 
-  test('renders a <p class="kv-field-hint"> with an id, and not the Prose class', async () => {
+  test('renders a hint with the kv-field-hint class and an id, and not the Prose class', async () => {
     await render(<PersonalNumberField />)
     const hint = page.getByTestId('format').element()
-    expect(hint.tagName).toBe('P')
     expect(hint.className).toBe('kv-field-hint')
     expect(hint.id).not.toBe('')
     expect(page.getByTestId('why').element().className).toBe('kv-prose')
@@ -1031,7 +1026,9 @@ describe('Field.Hint (Plan 0029)', () => {
     expect(ids).toHaveLength(3)
     expect(ids[0]).toBe(page.getByTestId('why').element().id)
     expect(ids[1]).toBe(page.getByTestId('format').element().id)
-    expect(document.getElementById(ids[2] ?? '')?.className).toBe('kv-field-error-message')
+    expect(document.getElementById(ids[2] ?? '')?.textContent).toContain(
+      'Skriv personnumret med 12 siffror',
+    )
     await expect
       .element(page.getByRole('textbox', { name: 'Personnummer' }))
       .toHaveAccessibleDescription(
@@ -1142,9 +1139,7 @@ describe('Field.Hint (Plan 0029)', () => {
     await expect.element(page.getByTestId('first')).toHaveClass('egen', 'kv-field-hint')
     await expect.element(page.getByTestId('first')).toHaveAttribute('lang', 'sv')
     expect(page.getByTestId('second').element().tagName).toBe('DIV')
-    await expect.element(page.getByTestId('second')).toHaveClass('kv-field-hint')
     await expect.element(page.getByTestId('third')).toHaveAttribute('data-egen', '')
-    await expect.element(page.getByTestId('third')).toHaveClass('kv-field-hint')
     expect(seenStates.at(-1)).toEqual({ isInvalid: true, isRequired: false, isDisabled: true })
     // All three are listed, so each has an id: 3 hints and the error.
     expect(describedByIds('Namn')).toHaveLength(4)
@@ -1158,7 +1153,7 @@ describe('Field.Hint (Plan 0029)', () => {
     expect(hint.hasAttribute('aria-live')).toBe(false)
   })
 
-  test('outside a Field or Fieldset it warns once and renders a plain <p class="kv-field-hint"> with no id', async () => {
+  test('outside a Field or Fieldset it warns once and renders a plain hint with no id', async () => {
     await render(
       <>
         <FieldHint data-testid="one">Till exempel ABC 123</FieldHint>
@@ -1166,7 +1161,6 @@ describe('Field.Hint (Plan 0029)', () => {
       </>,
     )
     const hint = page.getByTestId('one').element()
-    expect([hint.tagName, hint.className]).toEqual(['P', 'kv-field-hint'])
     expect(hint.hasAttribute('id')).toBe(false)
     expect(page.getByTestId('two').element().hasAttribute('id')).toBe(false)
     const warnings = consoleWarn.mock.calls.map(([message]) => String(message))
@@ -1196,7 +1190,7 @@ describe('Field.Hint (Plan 0029)', () => {
         <PersonalNumberField />
       </KvirnProvider>,
     )
-    expect(html).toContain('class="kv-field-hint"')
+    expect(html).toContain('12 siffror')
   })
 })
 
@@ -1207,7 +1201,6 @@ describe('server rendering', () => {
         <PhoneField invalid required />
       </KvirnProvider>,
     )
-    expect(html).toContain('class="kv-field"')
     expect(html).toContain('Telefonnummer')
     expect(html).toContain('Fel:')
   })

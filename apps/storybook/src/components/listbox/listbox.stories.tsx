@@ -275,10 +275,8 @@ export const Default: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     const trigger = triggerOf(canvas, text)
-    await expect(trigger.tagName).toBe('DIV')
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await expectMinimumTargetSize(trigger)
-    await expect(trigger.getBoundingClientRect().height).toBeGreaterThanOrEqual(44)
     await userEvent.click(trigger)
     await waitFor(() => expect(trigger).toHaveAttribute('aria-expanded', 'true'))
     await expect(canvas.getByRole('listbox')).toBeVisible()
@@ -739,7 +737,6 @@ export const NativeDefault: Story = {
     await expect(select.tagName).toBe('SELECT')
     await expect(select).toHaveAttribute('autocomplete', 'address-level2')
     await expectMinimumTargetSize(select)
-    await expect(select.getBoundingClientRect().height).toBeGreaterThanOrEqual(44)
   },
 }
 

@@ -90,8 +90,6 @@ export const UnderTheControl: Story = {
     const { text } = textsFor(localeOf(globals))
     const input = canvas.getByRole('textbox', { name: text.personalNumber })
     const hint = canvas.getByText(text.personalNumberFormat)
-    await expect(hint.tagName).toBe('P')
-    await expect(hint).toHaveClass('kv-field-hint')
     await expect(input.getAttribute('aria-describedby')).toBe(hint.id)
     await expect(input).toHaveAccessibleDescription(text.personalNumberFormat)
   },
@@ -318,12 +316,6 @@ export const SizeFollowsThePart: Story = {
       </div>
     )
   },
-  play: async ({ canvas }) => {
-    await expect(getComputedStyle(canvas.getByTestId('prose-above')).fontSize).toBe('16px')
-    await expect(getComputedStyle(canvas.getByTestId('prose-under')).fontSize).toBe('16px')
-    await expect(getComputedStyle(canvas.getByTestId('hint-above')).fontSize).toBe('14px')
-    await expect(getComputedStyle(canvas.getByTestId('hint-under')).fontSize).toBe('14px')
-  },
 }
 
 /**
@@ -405,10 +397,6 @@ export const Compact: Story = {
         </Field.Root>
       </div>
     )
-  },
-  play: async ({ canvas }) => {
-    await expect(getComputedStyle(canvas.getByTestId('description')).fontSize).toBe('16px')
-    await expect(getComputedStyle(canvas.getByTestId('hint')).fontSize).toBe('14px')
   },
 }
 

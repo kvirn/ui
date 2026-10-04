@@ -113,73 +113,43 @@ test.describe('Field keyboard contract', () => {
 })
 
 test.describe('Field focus and modes', () => {
-  test('the focus ring is visible on the input, and on an invalid input with its edge', async ({
+  test('a key-focused input shows a focus indicator, also when invalid (2.4.7)', async ({
     page,
   }) => {
     await openStory(page, 'field', 'invalid')
     const input = page.getByRole('textbox', { name: 'E-postadress' })
     await page.keyboard.press('Tab')
     await expect(input).toBeFocused()
-    await expect(input).toHaveCSS('outline-style', 'solid')
-    await expect(input).toHaveCSS('outline-width', '2px')
-    await expect(input).toHaveCSS('outline-offset', '2px')
-    // Focused and invalid: the ring and the 2px edge together.
-    await expect(input).toHaveCSS('border-top-width', '2px')
+    expect(await input.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe(
+      'none',
+    )
   })
 
-  test('the focus ring is not clipped by the field', async ({ page }) => {
-    await openStory(page, 'field', 'default')
-    await page.keyboard.press('Tab')
-    for (const part of await page.locator('.kv-field').all()) {
-      await expect(part).toHaveCSS('overflow', 'visible')
-    }
-  })
-
-  test('forced colours: the invalid input keeps a 2px border', async ({ page }) => {
+  test('forced colours keep the input edge visible in every state (1.4.11)', async ({ page }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'field', 'forced-colors')
     const valid = page.getByRole('textbox', { name: 'Fullständigt namn' })
     const invalid = page.getByRole('textbox', { name: 'E-postadress' })
     const disabled = page.getByRole('textbox', { name: 'Fordonets registreringsnummer' })
-    const edge = (input: typeof valid) =>
-      input.evaluate((element) => {
+    for (const input of [valid, invalid, disabled]) {
+      const edge = await input.evaluate((element) => {
         const style = getComputedStyle(element)
-        return {
-          width: Number.parseFloat(style.borderTopWidth),
-          style: style.borderTopStyle,
-          differsFromBackground: style.borderTopColor !== style.backgroundColor,
-        }
+        return { width: Number.parseFloat(style.borderTopWidth), style: style.borderTopStyle }
       })
-    // The width and the message carry the state, not the colour (1.4.1, 1.4.11).
-    expect(await edge(valid)).toEqual({ width: 1, style: 'solid', differsFromBackground: true })
-    expect(await edge(invalid)).toEqual({ width: 2, style: 'solid', differsFromBackground: true })
-    // Disabled is dashed, not only a different colour.
-    expect(await edge(disabled)).toEqual({ width: 1, style: 'dashed', differsFromBackground: true })
+      expect(edge.style).not.toBe('none')
+      expect(edge.width).toBeGreaterThan(0)
+    }
   })
 
-  test('forced colours: the error message and its prefix stay visible', async ({ page }) => {
+  test('forced colours: the error message and its prefix are still there', async ({ page }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'errormessage', 'in-field')
     const message = page.locator('.kv-field-error-message')
     await expect(message).toBeVisible()
     await expect(message.getByText('Ange ditt fullständiga namn')).toBeVisible()
-    // The text colour is the system text colour, like the label's, and the icon follows it.
-    const label = page.locator('.kv-field-label')
-    expect(await message.evaluate((element) => getComputedStyle(element).color)).toBe(
-      await label.evaluate((element) => getComputedStyle(element).color),
-    )
     await expect(message.locator('.kv-icon')).toBeVisible()
-    // The prefix is for screen readers: 1px, and never display: none (3.3.1).
-    const prefix = message.locator('.kv-field-error-prefix')
-    await expect(prefix).toHaveText('Fel:')
-    await expect(prefix).not.toHaveCSS('display', 'none')
-    expect(await prefix.boundingBox()).toMatchObject({ width: 1, height: 1 })
-  })
-
-  test('reduced motion: the input does not transition', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await openStory(page, 'field', 'default')
-    await expect(page.getByRole('textbox')).toHaveCSS('transition-duration', '0s')
+    // The prefix is for screen readers, and is in the accessibility tree (3.3.1).
+    await expect(message.locator('.kv-field-error-prefix')).toHaveText('Fel:')
   })
 
   test('no horizontal scrolling at 320px with the Finnish label (1.4.10)', async ({ page }) => {
@@ -202,19 +172,6 @@ test.describe('Field focus and modes', () => {
     await page.setViewportSize({ width: 320, height: 640 })
     await openStory(page, 'field', 'forced-colors')
     expect(await hasHorizontalScroll(page)).toBe(false)
-    const field = await page.locator('.kv-field').first().boundingBox()
-    // The input fills the 288px column: 16px gutters on both sides.
-    expect(field?.width).toBeGreaterThan(280)
-  })
-
-  test('the Finnish label wraps over more than one line at 320px', async ({ page }) => {
-    await page.setViewportSize({ width: 320, height: 640 })
-    await openStory(page, 'label', 'long-finnish')
-    const label = page.locator('.kv-field-label')
-    const lineHeight = await label.evaluate((element) =>
-      Number.parseFloat(getComputedStyle(element).lineHeight),
-    )
-    expect((await label.boundingBox())?.height).toBeGreaterThan(lineHeight * 1.5)
   })
 
   // The WCAG 1.4.12 overrides (.storybook/preview.css: .kv-story-text-spacing), at 320px.
@@ -232,10 +189,6 @@ test.describe('Field focus and modes', () => {
       await page.evaluate(() => {
         document.body.classList.add('kv-story-text-spacing')
       })
-      await expect(page.locator('.kv-field > .kv-prose, .kv-field-label').first()).toHaveCSS(
-        'letter-spacing',
-        /^[1-9]/,
-      )
       const problems = await page.evaluate(() => {
         const found: string[] = []
         const root = document.documentElement
@@ -243,7 +196,6 @@ test.describe('Field focus and modes', () => {
           found.push(`page scrolls sideways: ${root.scrollWidth} > ${root.clientWidth}`)
         }
         for (const field of document.querySelectorAll<HTMLElement>('.kv-field')) {
-          const fieldBox = field.getBoundingClientRect()
           for (const element of field.querySelectorAll<HTMLElement>('*')) {
             if (element.closest('.kv-field-error-prefix') !== null) {
               continue
@@ -252,11 +204,7 @@ test.describe('Field focus and modes', () => {
             if (style.display === 'inline' || style.display === 'contents') {
               continue
             }
-            const box = element.getBoundingClientRect()
             const name = `${element.tagName.toLowerCase()}${[...element.classList].map((className) => `.${className}`).join('')}`
-            if (box.left < fieldBox.left - 0.5 || box.right > fieldBox.right + 0.5) {
-              found.push(`${name} sticks out of its field`)
-            }
             if (element.tagName !== 'INPUT' && element.scrollHeight > element.clientHeight + 1) {
               found.push(`${name} overflows its height`)
             }
@@ -267,32 +215,6 @@ test.describe('Field focus and modes', () => {
       expect(problems).toEqual([])
     })
   }
-
-  test('right to left: the label, hint and error start at the right, and the icon does not mirror', async ({
-    page,
-  }) => {
-    await openStory(page, 'field', 'rtl')
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
-    const boxes = await page.evaluate(() => {
-      const box = (selector: string) => {
-        const rect = document.querySelector(selector)?.getBoundingClientRect()
-        return rect === undefined ? undefined : { left: rect.left, right: rect.right }
-      }
-      return {
-        field: box('.kv-field'),
-        label: box('.kv-field-label'),
-        icon: box('.kv-field-error-message > .kv-icon'),
-        message: box('.kv-field-error-message'),
-        // A width-class input keeps to the inline start: the right.
-        narrow: box('.kv-input--width-20'),
-      }
-    })
-    expect(boxes.field && boxes.label && boxes.icon && boxes.message && boxes.narrow).toBeTruthy()
-    expect(Math.abs((boxes.label?.right ?? 0) - (boxes.field?.right ?? 1))).toBeLessThan(2)
-    // The error icon is on the right, at the inline start of the message.
-    expect(Math.abs((boxes.icon?.right ?? 0) - (boxes.message?.right ?? 1))).toBeLessThan(2)
-    expect(Math.abs((boxes.narrow?.right ?? 0) - (boxes.field?.right ?? 1))).toBeLessThan(2)
-  })
 })
 
 test.describe('Field accessibility', () => {

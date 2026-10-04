@@ -27,7 +27,7 @@ A `Prose` inside a `Field.Root` or a `Fieldset.Root` registers itself with the n
 - **The nearest host wins.** A Prose in a Field that is inside a Fieldset describes that Field's control, not the group (`prose.test.tsx › a Prose in a Field inside a Fieldset describes the Field’s control, not the group`).
 - **The description is the Prose's text content.** A heading, list, table or link inside it is read as plain text, without its role or structure, and a link in it can't be followed from the description (`prose.test.tsx › the description is its text content: a heading, list and link inside lose their structure`). So keep a hint to plain text and a few short paragraphs.
 - **A Prose that isn't a hint goes outside the Field or Fieldset.** Every Prose inside a host registers.
-- **State and props.** The host's `data-invalid` and `data-disabled` are on the Prose, and `render` gets the host's state as its second argument (`isInvalid`, `isRequired`, `isDisabled`). The consumer's `ref`, `className` and other props are kept. The `id` is the host's: an `id` of your own gives a dev warning from `mergeProps` and the host's wins (`prose.test.tsx › invalid and disabled: …`, `prose.test.tsx › keeps the consumer’s ref and className next to the registration`).
+- **State and props.** The host's `data-invalid` and `data-disabled` are on the Prose, and `render` gets the host's state as its second argument (`isInvalid`, `isRequired`, `isDisabled`). The consumer's `ref`, `className` and other props are kept. The `id` is the host's: an `id` of your own gives a dev warning from `mergeProps` and the host's wins (`prose.test.tsx › invalid and disabled: …`, `prose.test.tsx › keeps the consumer’s ref next to the registration`).
 - **Outside a host** a Prose has no id, no `data-*` and no warning (`prose.test.tsx › a Prose outside a Field or Fieldset has no id and does not warn`).
 - **Element.** A `<div>` by default, so a hint can hold several paragraphs. `render={<p />}` makes a one-line hint a paragraph.
 
@@ -35,9 +35,9 @@ A `Prose` inside a `Field.Root` or a `Fieldset.Root` registers itself with the n
 
 This component has no focusable parts and handles no keys.
 
-| Key | Context | Action                                               | Test                                                                                   |
-| --- | ------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| –   | Prose   | No `tabindex` is rendered, so Prose never gets focus | `prose.test.tsx › renders one <div> with its class, no role or ARIA, and its children` |
+| Key | Context | Action                                               | Test                                                                                              |
+| --- | ------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| –   | Prose   | No `tabindex` is rendered, so Prose never gets focus | `prose.test.tsx › renders one element with the kv-prose class, no role or ARIA, and its children` |
 
 ## Focus management
 
@@ -64,7 +64,7 @@ Prose renders no text, so it has no message keys.
 
 ## Visual / modes
 
-Headless: Prose ships no CSS. With `@kvirn-ui/theme/theme.css` the `kv-prose` rules apply (design spec `docs/design/foundations-and-prose.md`): a 70ch measure, the body and heading type roles, link underline and focus ring, and reflow without fixed sizes. Contrast of text, links and code on `canvas` and `surface` is measured by `theme:check` (1.4.3, 1.4.11). 320px reflow, the size step-down and forced colours are checked in `prose.e2e.ts` (`Prose reflow (1.4.10) › the article has no horizontal scrolling at 320px`, `… › kv-prose--xl and --2xl step down to the large size at 320px and do not scroll sideways`, `Prose forced colours (1.4.11) › the table rules, quote bar and rule stay borders, and a mark gets an outline`), and text spacing in the `Text spacing` story (1.4.12). Reduced motion: Prose animates only a link's colour, and only when motion is allowed.
+Headless: Prose ships no CSS. With `@kvirn-ui/theme/theme.css` the `kv-prose` rules apply (design spec `docs/design/foundations-and-prose.md`): a 70ch measure, the body and heading type roles, link underline and focus ring, and reflow without fixed sizes. Contrast of text, links and code on `canvas` and `surface` is measured by `theme:check` (1.4.3, 1.4.11). 320px reflow and forced colours are checked in `prose.e2e.ts` (`Prose reflow (1.4.10) › the article has no horizontal scrolling at 320px`, `… › kv-prose--xl and --2xl do not scroll sideways at 320px`, `Prose forced colours (1.4.11) › the table rules, quote bar and rule stay borders, and a mark gets an outline`), and text spacing in the `Text spacing` story (1.4.12). Reduced motion: Prose animates only a link's colour, and only when motion is allowed.
 
 ## Sizes, width and colour roles
 
@@ -78,7 +78,7 @@ With the theme, `kv-prose--small` (14px), the default (16px), `kv-prose--large` 
 
 - 1.3.1 Info and Relationships: no role of its own, so the consumer's content decides the semantics (`prose.test.tsx`). In a Field or Fieldset the hint is in the accessible description of the control or group (`prose.test.tsx`, axe in both).
 - 3.3.2 Labels or Instructions: a hint in a Field is linked to its control.
-- 1.4.3, 1.4.10, 1.4.12: the `kv-prose` theme rules, as tested in the Prose stories. The sizes and the width option are checked in the `Sizes` and `Full width and colour roles` stories, and the colour roles by `theme-css.test.ts`.
+- 1.4.3, 1.4.10, 1.4.12: the `kv-prose` theme rules, as tested in the Prose stories. The sizes and the width option are checked in the `Sizes` and `Full width and colour roles` stories; the colour roles are held by `theme:check`.
 - 1.4.4 Resize Text: the sizes are in rem.
 
 ## AT test record

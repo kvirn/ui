@@ -41,7 +41,7 @@ Enter, Space, Escape, arrow keys and Home / End are not handled. Children handle
 - Initial focus: not moved. Card never moves focus.
 - Trap: no.
 - Restore to: not applicable.
-- Never obscured by: Card renders no overlay. The default theme never sets `overflow` on a card, so a child's focus ring (2px, 2px offset) is never clipped (2.4.11, 2.4.13). Media that touch a rounded corner get the corner's radius themselves instead. Test: `card.e2e.ts › the focus ring of a footer button is not clipped`.
+- Never obscured by: Card renders no overlay. The default theme never sets `overflow` on a card, so a child's focus ring (2px, 2px offset) is never clipped (2.4.11, 2.4.13). Media that touch a rounded corner get the corner's radius themselves instead. Test: `card.e2e.ts › a key-focused footer button shows a focus indicator (2.4.7)`.
 
 ## Announcements
 
@@ -72,7 +72,7 @@ Headless: Card ships no CSS. With `@kvirn-ui/theme/theme.css` (design spec `docs
 - Contrast: text, links, muted text and button edges are held to their minimums on `surface-raised`, the card's own surface, and on the surfaces a card sits on (`surface`, `canvas`) by `theme:check` (1.4.3, 1.4.11). The card's own edge is decorative (1.15–1.36:1 in the standard themes): grouping comes from structure and spacing.
 - forced-colors behaviour: every card keeps a 1px solid border in `CanvasText`, so its boundary and dividers survive. Test: `card.e2e.ts › the card border is visible in forced colours`, `› dividers are visible in forced colours` (`chromium-forced-colors`).
 - reduced-motion behaviour: no motion. No hover, transition or pointer style.
-- Reflow and text spacing: no fixed sizes, no `overflow`, `overflow-wrap: break-word`, and the card can shrink in a grid (`theme-css.test.ts › never clips, never fixes a height, and keeps its border for forced colours`). Media directly in a part or the Root never get wider than it. No horizontal scrolling at 320 CSS px with the Finnish fixture (`reflow-320`, `card.e2e.ts › an image in a padded body fits at 320px`, 1.4.10). With the 1.4.12 text-spacing overrides at 320px, the card grows and nothing is clipped or sticks out (`card.e2e.ts › text spacing overrides clip nothing at 320px`).
+- Reflow and text spacing: no fixed sizes, no `overflow`, `overflow-wrap: break-word`, and the card can shrink in a grid (reviewed in the Card stories and covered by the e2e specs below, not by a CSS test). Media directly in a part or the Root never get wider than it. No horizontal scrolling at 320 CSS px with the Finnish fixture (`reflow-320`, `card.e2e.ts › an image in a padded body fits at 320px`, 1.4.10). With the 1.4.12 text-spacing overrides at 320px, the card grows and nothing is clipped (`card.e2e.ts › text spacing overrides clip nothing at 320px`).
 
 ## WCAG SCs covered
 

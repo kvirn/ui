@@ -152,8 +152,6 @@ export const Default: Story = {
     const input = inputOf(canvas, text.street)
     await expect(input).toHaveAttribute('aria-expanded', 'false')
     await expect(input).toHaveAttribute('aria-autocomplete', 'list')
-    const box = input.closest('.kv-autocomplete-control')
-    await expect(box?.getBoundingClientRect().height).toBeGreaterThanOrEqual(44)
     await expectMinimumTargetSize(input)
     await userEvent.type(input, 'kung')
     await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
@@ -190,7 +188,6 @@ export const Minimal: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.street)
-    await expect(input.closest('.kv-autocomplete-control')).toBeNull()
     await expectMinimumTargetSize(input)
   },
 }

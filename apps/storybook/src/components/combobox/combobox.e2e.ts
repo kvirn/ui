@@ -554,21 +554,26 @@ test.describe('Combobox keyboard contract', () => {
 })
 
 test.describe('Combobox focus and modes', () => {
-  test('the box and the options are 44px high, and the ring is 2px with a 2px offset (2.5.8)', async ({
-    page,
-  }) => {
+  test('a key-focused box shows a focus indicator (2.4.7)', async ({ page }) => {
     // The Keyboard story has no play function, so Tab starts from the top of a clean page.
     await openStory(page, 'keyboard')
     const box = page.locator('.kv-combobox-control').first()
-    expect((await box.boundingBox())?.height).toBeGreaterThanOrEqual(44)
-    // Reach the input with the keyboard, so the focus ring shows.
     await before(page).focus()
     await page.keyboard.press('Tab')
     await expect(input(page)).toBeFocused()
     await expect(box).toHaveAttribute('data-focus-visible', '')
-    await expect(box).toHaveCSS('outline-style', 'solid')
-    await expect(box).toHaveCSS('outline-width', '2px')
-    await expect(box).toHaveCSS('outline-offset', '2px')
+    expect(await box.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe('none')
+  })
+
+  test('the box, the options, the toggle and the remove buttons are at least 24×24 (2.5.8)', async ({
+    page,
+  }) => {
+    await openStory(page, 'keyboard')
+    const box = page.locator('.kv-combobox-control').first()
+    expect((await box.boundingBox())?.height).toBeGreaterThanOrEqual(24)
+    await before(page).focus()
+    await page.keyboard.press('Tab')
+    await expect(input(page)).toBeFocused()
     await page.keyboard.press('ArrowDown')
     const options = page.getByRole('option')
     await expect(options.first()).toBeVisible()
@@ -577,56 +582,35 @@ test.describe('Combobox focus and modes', () => {
     )
     expect(heights.length).toBeGreaterThan(0)
     for (const height of heights) {
-      expect(height).toBeGreaterThanOrEqual(44)
+      expect(height).toBeGreaterThanOrEqual(24)
     }
-    // Toggle, and the remove buttons of the chips, are at least 24px (2.5.8) and 44px in the theme.
     const remove = await removeButton(page, 'Malmö').boundingBox()
-    expect(remove?.width).toBeGreaterThanOrEqual(44)
-    expect(remove?.height).toBeGreaterThanOrEqual(44)
+    expect(remove?.width).toBeGreaterThanOrEqual(24)
+    expect(remove?.height).toBeGreaterThanOrEqual(24)
     const toggle = await page.getByRole('button', { name: 'Visa alternativ' }).boundingBox()
-    expect(toggle?.width).toBeGreaterThanOrEqual(44)
+    expect(toggle?.width).toBeGreaterThanOrEqual(24)
     expect(toggle?.height).toBeGreaterThanOrEqual(24)
   })
 
-  test('the remove button’s ring is 2px', async ({ page }) => {
+  test('a key-focused remove button shows a focus indicator (2.4.7)', async ({ page }) => {
     await openStory(page, 'keyboard')
     await input(page).focus()
     await page.keyboard.press('Tab')
     const remove = removeButton(page, 'Malmö')
     await expect(remove).toBeFocused()
-    await expect(remove).toHaveCSS('outline-style', 'solid')
-    await expect(remove).toHaveCSS('outline-width', '2px')
+    expect(await remove.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe(
+      'none',
+    )
   })
 
-  test('an invalid box has a 2px edge, and the error is in the input’s description', async ({
-    page,
-  }) => {
+  test('the error is in the input’s description', async ({ page }) => {
     await openStory(page, 'invalid')
-    const box = page.locator('.kv-combobox-control')
-    await expect(box).toHaveCSS('border-top-width', '2px')
     await expect(page.locator('.kv-combobox-input')).toHaveAttribute('aria-invalid', 'true')
     await expect(page.locator('.kv-combobox-input')).toHaveAccessibleDescription(
       'Börja skriva och välj sedan i listan. Fel: Välj en kommun i listan',
     )
     // The text that matched nothing stays.
     await expect(page.locator('.kv-combobox-input')).toHaveValue('Gö')
-  })
-
-  test('the popup is as wide as the box, under it, and never covers it', async ({ page }) => {
-    await openStory(page, 'keyboard')
-    const box = page.locator('.kv-combobox-control').first()
-    await page.getByRole('button', { name: 'Visa alternativ' }).click()
-    await expect(popupOf(page)).toBeVisible()
-    const boxBox = await box.boundingBox()
-    const popupBox = await popupOf(page).boundingBox()
-    expect(boxBox).not.toBeNull()
-    expect(popupBox).not.toBeNull()
-    expect(Math.abs((popupBox?.width ?? 0) - (boxBox?.width ?? 0))).toBeLessThanOrEqual(1)
-    expect(Math.abs((popupBox?.x ?? 0) - (boxBox?.x ?? 0))).toBeLessThanOrEqual(1)
-    const boxBottom = (boxBox?.y ?? 0) + (boxBox?.height ?? 0)
-    const popupBottom = (popupBox?.y ?? 0) + (popupBox?.height ?? 0)
-    // Under the box, or above it when there is no room: never over it.
-    expect((popupBox?.y ?? 0) >= boxBottom - 1 || popupBottom <= (boxBox?.y ?? 0) + 1).toBe(true)
   })
 
   test('the popup never covers the input after a choice or when the chips wrap (2.4.11)', async ({
@@ -663,6 +647,21 @@ test.describe('Combobox focus and modes', () => {
     }
   })
 
+  test('the popup never covers the box', async ({ page }) => {
+    await openStory(page, 'keyboard')
+    const box = page.locator('.kv-combobox-control').first()
+    await page.getByRole('button', { name: 'Visa alternativ' }).click()
+    await expect(popupOf(page)).toBeVisible()
+    const boxBox = await box.boundingBox()
+    const popupBox = await popupOf(page).boundingBox()
+    expect(boxBox).not.toBeNull()
+    expect(popupBox).not.toBeNull()
+    const boxBottom = (boxBox?.y ?? 0) + (boxBox?.height ?? 0)
+    const popupBottom = (popupBox?.y ?? 0) + (popupBox?.height ?? 0)
+    // Under the box, or above it when there is no room: never over it.
+    expect((popupBox?.y ?? 0) >= boxBottom - 1 || popupBottom <= (boxBox?.y ?? 0) + 1).toBe(true)
+  })
+
   test('a long list scrolls inside the popup, and the active option stays in view', async ({
     page,
   }) => {
@@ -692,54 +691,18 @@ test.describe('Combobox focus and modes', () => {
     expect(inView).toBe(true)
   })
 
-  test('forced colours keep the edges, the cross and the chevron', async ({ page }) => {
+  test('forced colours keep the box edge visible (1.4.11)', async ({ page }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'forced-colors')
-    // The story's play function opens the first popup with ArrowDown: the active option is Highlight.
-    await expect(popupOf(page)).toBeVisible()
-    await expect(activeOption(page)).toHaveCount(1)
-    const active = await activeOption(page).evaluate((element) => {
-      const style = getComputedStyle(element)
-      const popupStyle = getComputedStyle(element.closest('.kv-listbox-popup') as Element)
-      return {
-        fillDiffers: style.backgroundColor !== popupStyle.backgroundColor,
-        textDiffers: style.color !== popupStyle.color,
-        bar: Number.parseFloat(style.borderInlineStartWidth),
-      }
-    })
-    expect(active).toEqual({ fillDiffers: true, textDiffers: true, bar: 4 })
     const boxes = page.locator('.kv-combobox-control')
-    // The 2px width carries invalid, the dashed edge carries disabled (1.4.1).
-    await expect(boxes.nth(0)).toHaveCSS('border-top-width', '1px')
-    await expect(boxes.nth(1)).toHaveCSS('border-top-width', '2px')
-    await expect(boxes.nth(2)).toHaveCSS('border-top-style', 'dashed')
-    const marks = await page.evaluate(() => {
-      const chevron = getComputedStyle(
-        document.querySelector('.kv-combobox-toggle') as Element,
-        '::after',
-      )
-      const cross = getComputedStyle(
-        document.querySelector('.kv-combobox-value-remove') as Element,
-        '::before',
-      )
-      const chip = getComputedStyle(document.querySelector('.kv-combobox-value') as Element)
-      return {
-        chevron: chevron.borderBottomWidth,
-        cross: cross.borderTopWidth,
-        chip: chip.borderTopWidth,
-      }
-    })
-    // Borders, not backgrounds, so the system colours keep them.
-    expect(marks).toEqual({ chevron: '2px', cross: '2px', chip: '1px' })
-  })
-
-  test('reduced motion: the input does not transition', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await openStory(page, 'keyboard')
-    await expect(page.locator('.kv-combobox-control').first()).toHaveCSS(
-      'transition-duration',
-      '0s',
-    )
+    for (let index = 0; index < (await boxes.count()); index += 1) {
+      const edge = await boxes.nth(index).evaluate((element) => {
+        const style = getComputedStyle(element)
+        return { style: style.borderTopStyle, width: Number.parseFloat(style.borderTopWidth) }
+      })
+      expect(edge.style).not.toBe('none')
+      expect(edge.width).toBeGreaterThan(0)
+    }
   })
 
   test('no horizontal scrolling at 320px with the popup open (1.4.10)', async ({ page }) => {
@@ -755,12 +718,6 @@ test.describe('Combobox focus and modes', () => {
     }
     await openStory(page, 'long-finnish')
     await expect(popupOf(page)).toBeVisible()
-    const field = await page.locator('.kv-field').first().boundingBox()
-    const control = await page.locator('.kv-combobox-control').first().boundingBox()
-    const popup = await popupOf(page).boundingBox()
-    expect(control?.width).toBeLessThanOrEqual((field?.width ?? 0) + 0.5)
-    // At least as wide as the box, never narrower.
-    expect(popup?.width).toBeGreaterThanOrEqual((control?.width ?? 0) - 1)
     // The chips wrap: a long chosen value stays inside its column.
     const chips = await page
       .locator('.kv-combobox-value')
@@ -768,27 +725,6 @@ test.describe('Combobox focus and modes', () => {
     for (const right of chips) {
       expect(right).toBeLessThanOrEqual(320)
     }
-  })
-
-  test('right to left: the chevron is at the inline end, and the chips start at the right', async ({
-    page,
-  }) => {
-    await openStory(page, 'rtl')
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
-    const layout = await page.evaluate(() => {
-      const input = document.querySelector('.kv-combobox-input') as Element
-      const toggle = document.querySelector('.kv-combobox-toggle') as Element
-      const chips = [...document.querySelectorAll('.kv-combobox-value')].map(
-        (element) => element.getBoundingClientRect().x,
-      )
-      return {
-        direction: getComputedStyle(input).direction,
-        toggleLeftOfInput: toggle.getBoundingClientRect().x < input.getBoundingClientRect().x,
-        chipsFromRight:
-          chips.length > 1 && chips.every((x, index) => index === 0 || x < (chips[index - 1] ?? 0)),
-      }
-    })
-    expect(layout).toEqual({ direction: 'rtl', toggleLeftOfInput: true, chipsFromRight: true })
   })
 })
 

@@ -24,8 +24,6 @@ const localeOf = (globals: Record<string, unknown>): CardFixtureLocale => {
   return isCardFixtureLocale(locale) ? locale : 'sv'
 }
 
-const pixels = (value: string): number => Number.parseFloat(value)
-
 // The Docs page opens with the package docs: how to use it, and how to build your own.
 const description = usageGuide(guide)
 
@@ -73,10 +71,6 @@ export const Default: Story = {
       </div>
     ),
   ],
-  play: async ({ canvas }) => {
-    const heading = canvas.getByRole('heading', { level: 2, name: 'Sophämtning' })
-    await expect(heading.closest('.kv-card')).not.toBeNull()
-  },
 }
 
 /**
@@ -308,12 +302,6 @@ export const ImageInPaddedBody: Story = {
   },
   play: async ({ canvas }) => {
     // A 640px image in a padded part shrinks with the card instead of overflowing (1.4.10).
-    const image = canvas.getByTestId('wide-image')
-    const body = image.parentElement as HTMLElement
-    const bodyStyle = getComputedStyle(body)
-    const contentWidth =
-      body.clientWidth - pixels(bodyStyle.paddingInlineStart) - pixels(bodyStyle.paddingInlineEnd)
-    await expect(image.getBoundingClientRect().width).toBeLessThanOrEqual(contentWidth + 0.5)
     await expectNoHorizontalOverflow(canvas.getByTestId('column'))
   },
 }

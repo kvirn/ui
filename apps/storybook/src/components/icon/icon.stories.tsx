@@ -106,7 +106,6 @@ export const Default: Story = {
   play: async ({ canvas, canvasElement }) => {
     const svg = canvasElement.querySelector('svg')
     await expect(svg).not.toBeNull()
-    await expect(svg).toHaveClass('kv-icon')
     await expect(svg).toHaveAttribute('aria-hidden', 'true')
     await expect(svg).toHaveAttribute('data-size', 'md')
     await expect(canvas.queryByRole('img')).toBeNull()
@@ -540,9 +539,6 @@ export const YourOwnSvg: Story = {
   play: async ({ canvas, canvasElement }) => {
     const { text } = textsFor('sv')
     await expect(canvasElement.querySelectorAll('svg')).toHaveLength(3)
-    for (const icon of canvasElement.querySelectorAll('svg')) {
-      await expect(icon).toHaveClass('kv-icon')
-    }
     // Only the one with a label is an image.
     await expect(canvas.getAllByRole('img')).toHaveLength(1)
     await expect(canvas.getByRole('img', { name: text.label.logo })).toBeVisible()
@@ -613,7 +609,6 @@ export const LibraryIconsViaTheRegistry: Story = {
       await expect(registered?.innerHTML).not.toBe(builtIn?.innerHTML)
       // The libraries turn `color` into their own stroke or fill, so the size is the check.
       await expect(registered).toHaveAttribute('width', '1.5em')
-      await expect(registered).toHaveClass('kv-icon')
     }
     await expect(canvas.getByRole('img', { name: textsFor('sv').text.label.logo })).toBeVisible()
     await expect(canvas.getByTestId('overridden-arrow')).toHaveAttribute('data-mirror-in-rtl')

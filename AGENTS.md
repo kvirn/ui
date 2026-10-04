@@ -110,6 +110,8 @@ Nothing is done until all of these pass. The orchestrator runs them; no hook run
 
 12. **Subagents never run checks.** No `vp check`, `vp test`, `vp run e2e`, `i18n:check`, `theme:check` or builds. The main session (orchestrator) runs the gates once, after every subagent has reported done, so parallel agents don't exhaust CPU and memory. A PreToolUse hook blocks it. The one exception is `test-runner`: scoped to the changed modules, one at a time, in the foreground, and only when no other run is going and nobody is editing. Full-tree runs stay with the orchestrator's sweeps and CI. No agent runs `vp run e2e` without a spec, and the hook blocks that too.
 
+13. **Test behaviour, accessibility and requirements, never CSS.** Every test proves a contract row, a WCAG success criterion or a plan requirement, once, in the cheapest layer. No computed styles, borders, line heights, spacing, layout ("is this above that") or `theme.css` text. A visual WCAG criterion (target size, focus visible, reflow, text spacing, forced colours) asserts its threshold, not the theme's value (`testing` skill).
+
 ## Conventions
 
 - Follow the API conventions in `docs/architecture.md#api-conventions`. In short: no abbreviated or single-letter names (`disclosure`, not `d`), prop objects named after their part (`triggerProps`), shared part names (Root, Trigger, Panel, Popup), locality of behaviour, and `render` instead of `asChild`.

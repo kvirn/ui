@@ -464,7 +464,6 @@ test.describe('Masked Input focus and modes', () => {
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
     const input = page.getByRole('textbox', { name: 'Personal identity number', exact: true })
     await expect(input).toHaveAttribute('dir', 'ltr')
-    await expect(input).toHaveCSS('direction', 'ltr')
     await input.focus()
     await page.keyboard.type('199001012385')
     await expect(input).toHaveValue('19900101-2385')
@@ -472,11 +471,13 @@ test.describe('Masked Input focus and modes', () => {
     expect(await caret(input)).toEqual([13, 13])
   })
 
-  test('forced colours: the masked input keeps a visible edge and the ring', async ({ page }) => {
+  test('forced colours: the masked input keeps a visible edge and a focus indicator (1.4.11, 2.4.7)', async ({
+    page,
+  }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'forced-colors')
     const input = personalIdentityNumber(page)
-    await expect(input).toHaveCSS('border-top-style', 'solid')
+    await expect(input).not.toHaveCSS('border-top-style', 'none')
     const width = await input.evaluate((element) =>
       parseFloat(getComputedStyle(element).borderTopWidth),
     )

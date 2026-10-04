@@ -482,8 +482,8 @@ Nothing exists yet, so every story is new. Only these are needed:
   - No `role`, `aria-live`, `aria-atomic` or `tabindex` on any root.
   - `announce` on every root calls the announcer once on mount with the Title and Body text and the politeness; not without `announce`; not on re-render; remount announces again.
   - The other dev warnings (1–4); `useNotification` without and with `variant` returns the same props as the Root and the matching ready-made root; server rendering.
-- `theme-css.test.ts`: the Notification never sets `overflow`, `clip-path`, a fixed height or a shadow; the bar is `--kv-indicator-width`; each status class sets only `--kv-notification-background` and `--kv-notification-accent`, to semantic tokens; the bare class has the neutral fallback; the two-column grid applies only with an icon child; the forced-colours rule sets `border-color: CanvasText`; `.kv-notification-status` is visually hidden, never `display: none`; `.kv-notification` is in the prose boundary list.
-- `notification.e2e.ts`: the keyboard rows; a11y snapshot (the heading's name starts with the status word; no `alert` or `status` role on the box); the polite region receives Example B's text after Save; forced colours draw the border on all four sides; no horizontal scroll at 320px with `fi`; text spacing clips nothing and the icon stays on the first line; a link's focus ring in Actions isn't clipped; a focused root's ring is visible.
+- `theme-css.test.ts` has no Notification tests: the CSS rules (no clipping, the bar, the status classes, forced colours, the visually hidden status word) are reviewed in Storybook and covered by e2e (AGENTS.md rule 13).
+- `notification.e2e.ts`: the keyboard rows; a11y snapshot (the heading's name starts with the status word; no `alert` or `status` role on the box); the polite region receives Example B's text after Save; forced colours draw the border on all four sides; no horizontal scroll at 320px with `fi`; text spacing clips nothing; a key-focused action and a focused root show a focus indicator (outline not `none`).
 - `i18n:check`: the four keys in all six locales.
 
 ## 8. Validation

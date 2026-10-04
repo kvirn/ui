@@ -54,5 +54,8 @@ export function hasHeaderSize<THeader extends object>(
  * so two row ids never give the same part.
  */
 export function toIdPart(value: string): string {
-  return value.replace(/[^A-Za-z0-9-]/g, (character) => `_${character.codePointAt(0)?.toString(16)}`)
+  return value.replace(
+    /[^A-Za-z0-9-]/g,
+    (character) => `_${character.codePointAt(0)?.toString(16)}`,
+  )
 }

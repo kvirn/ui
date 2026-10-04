@@ -337,15 +337,10 @@ No ring-over-shadow pair is needed: the shadow is `none` on keyboard focus, so t
 
 ### Tests the plan must include
 
-- **Theme tests** (`theme-css.test.ts`): all four tokens are defined in every theme. In light-contrast, dark-contrast (attributes and system) and forced colours, both shadows are `none` and both edge percentages are `0%`. The fallbacks equal their themes.
-- **e2e** (`apps/storybook/src/components/button/button.e2e.ts`), for each kind:
-  - Light: the computed `box-shadow` isn't `none` at rest, and changes on hover. Pressed: `none`, and the top and bottom border colours are equal.
-  - **Keyboard focus:** Tab to the button, then `box-shadow` is `none`. The same while the pointer hovers it. The outline is today's.
-  - Dark: the top border colour differs from the bottom, and the bottom equals the token edge.
-  - Contrast themes (the attribute and the emulated `prefers-contrast: more`): `box-shadow` is `none`, and all four border colours are equal.
-  - Disabled: `box-shadow` is `none`, the border is dashed, and all four colours are equal.
-  - `chromium-forced-colors`: `box-shadow` is `none`, and all four border colours are equal, at rest, on hover and when disabled.
-  - Reduced motion project: no transition on `box-shadow`.
+- **Theme tests** (`theme-css.test.ts`): the fallbacks equal their themes, and every tinted edge keeps 3:1 on canvas, surface and surface-raised. The token values and the flat contrast and forced-colours rules are reviewed in Storybook, not tested (AGENTS.md rule 13).
+- **e2e** (`apps/storybook/src/components/button/button.e2e.ts`), for each kind, asserts the WCAG outcome and never the look (the shadow, the tinted edges and the transitions are reviewed by eye in Storybook, `testing` skill):
+  - **Keyboard focus (2.4.7):** Tab to the button, then the outline is not `none`.
+  - **Forced colours (1.4.11):** the border is not `none` and has a width, at rest and when disabled.
 - **Stories:** each kind in rest, hover, pressed, focus-visible, focus-visible plus hover, and disabled, on `canvas`, `surface` and `surface-raised`, in all four themes plus forced colours and RTL. Look at them: the depth is subtle, and axe can't judge it.
 
 ### Docs

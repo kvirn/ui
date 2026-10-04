@@ -189,9 +189,6 @@ export const Compact: Story = {
       </div>
     )
   },
-  play: async ({ canvas }) => {
-    await expect(getComputedStyle(canvas.getByTestId('error')).fontSize).toBe('16px')
-  },
 }
 
 /** Right to left, in English: the icon and the text start at the right. */

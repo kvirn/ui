@@ -88,14 +88,12 @@ function SearchField({ onClear }: { onClear?: () => void }) {
 }
 
 describe('rendering', () => {
-  test('Root is a <div class="kv-input-group"> and Addon a <span class="kv-input-group-addon">', async () => {
+  test('Root has the kv-input-group part class and Addon the kv-input-group-addon one', async () => {
     const { container } = await render(<RentField />)
     const root = page.getByTestId('root').element()
     const addon = page.getByTestId('addon').element()
-    expect(root.tagName).toBe('DIV')
     expect(root.className).toBe('kv-input-group')
     expect(root.getAttribute('role')).toBeNull()
-    expect(addon.tagName).toBe('SPAN')
     expect(addon.className).toBe('kv-input-group-addon')
     expect(root.contains(addon)).toBe(true)
     expect(root.querySelector('input')).not.toBeNull()
@@ -122,8 +120,9 @@ describe('rendering', () => {
         </InputGroup.Root>
       </Field.Root>,
     )
-    const classes = [...page.getByTestId('root').element().children].map((child) => child.className)
-    expect(classes).toEqual(['kv-input-group-addon', 'kv-input', 'kv-input-group-addon'])
+    const children = [...page.getByTestId('root').element().children]
+    expect(children.map((child) => child.textContent)).toEqual(['€', '', ',00'])
+    expect(children[1]).toBeInstanceOf(HTMLInputElement)
   })
 
   test('works without a Field: the Input is named by its own aria-label', async () => {
@@ -259,7 +258,6 @@ describe('field state on the Root', () => {
       isDisabled: false,
       isFocusVisible: false,
     })
-    expect(document.querySelector('[data-egen]')?.className).toBe('kv-input-group')
     expect(document.querySelector('[data-egen-addon]')?.getAttribute('aria-hidden')).toBe('true')
   })
 })
@@ -529,7 +527,6 @@ describe('render and refs', () => {
       </Field.Root>,
     )
     expect(page.getByTestId('root').element().tagName).toBe('SECTION')
-    await expect.element(page.getByTestId('root')).toHaveClass('kv-input-group')
     expect(page.getByTestId('addon').element().tagName).toBe('ABBR')
     await expect.element(page.getByTestId('addon')).toHaveAttribute('aria-hidden', 'true')
   })
@@ -557,10 +554,8 @@ describe('useInputGroup', () => {
   test('gives spreadable props for your own elements, with the same behaviour', async () => {
     const { container } = await render(<HookGroup invalid />)
     const root = page.getByTestId('root')
-    expect(root.element().className).toBe('kv-input-group')
     await expect.element(root).toHaveAttribute('data-invalid', '')
     await expect.element(page.getByTestId('addon')).toHaveAttribute('aria-hidden', 'true')
-    await expect.element(page.getByTestId('addon')).toHaveClass('kv-input-group-addon')
     await userEvent.click(page.getByTestId('addon'))
     await expect.element(page.getByRole('textbox')).toHaveFocus()
     await expectNoA11yViolations(container)
@@ -596,8 +591,6 @@ describe('server rendering', () => {
         <RentField invalid disabled />
       </KvirnProvider>,
     )
-    expect(html).toContain('class="kv-input-group"')
-    expect(html).toContain('class="kv-input-group-addon"')
     expect(html).toContain('aria-hidden="true"')
     expect(html).toContain('data-invalid=""')
     expect(html).toContain('data-disabled=""')
@@ -614,8 +607,7 @@ describe('server rendering', () => {
       )
     }
     const html = renderToString(<Own />)
-    expect(html).toContain('class="kv-input-group"')
-    expect(html).toContain('<span class="kv-input-group-addon" aria-hidden="true">kr</span>')
+    expect(html).toContain('aria-hidden="true">kr</span>')
   })
 })
 

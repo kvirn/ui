@@ -32,12 +32,9 @@ afterEach(() => {
 })
 
 describe('rendering', () => {
-  test('renders a native <input type="text"> with its class, outside a Field', async () => {
+  test('renders a native <input type="text">, outside a Field', async () => {
     const { container } = await render(<Input aria-label="Namn" />)
     const input = page.getByRole('textbox', { name: 'Namn' })
-    const element = input.element()
-    expect(element.tagName).toBe('INPUT')
-    expect(element.className).toBe('kv-input')
     await expect.element(input).toHaveAttribute('type', 'text')
     await expect.element(input).not.toHaveAttribute('id')
     await expect.element(input).not.toHaveAttribute('aria-describedby')
@@ -48,7 +45,7 @@ describe('rendering', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('forwards its ref, className and native props', async () => {
+  test('forwards its ref and native props, and the part class kv-input joins a consumer’s', async () => {
     const ref = createRef<HTMLInputElement>()
     await render(
       <Input
@@ -481,7 +478,6 @@ describe('useInput', () => {
       </Field.Root>,
     )
     const input = page.getByRole('textbox', { name: 'Namn' })
-    await expect.element(input).toHaveClass('kv-input')
     await expect.element(input).toHaveAttribute('aria-invalid', 'true')
     await expect.element(input).toHaveAttribute('aria-required', 'true')
     await expect.element(input).toHaveAccessibleDescription('Error: Ange ditt namn')
@@ -516,7 +512,6 @@ describe('useInput', () => {
 describe('server rendering', () => {
   test('renders the input to a string without touching the page', () => {
     const html = renderToString(<Input aria-label="Namn" defaultValue="Maja" />)
-    expect(html).toContain('class="kv-input"')
     expect(html).toContain('type="text"')
   })
 })
@@ -559,7 +554,7 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('a mask shapes the value, adds no class or role, and keeps the Field wiring', async () => {
+  test('a mask shapes the value, adds no role, and keeps the Field wiring', async () => {
     const { container } = await render(
       <KvirnProvider locale="sv" messages={sv}>
         <Field.Root required invalid>
@@ -574,8 +569,6 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
     await userEvent.fill(input, '19900101 1234')
 
     await expect.element(input).toHaveValue('19900101-1234')
-    const element = input.element()
-    expect(element.className).toBe('kv-input')
     await expect.element(input).toHaveAttribute('type', 'text')
     await expect.element(input).toHaveAttribute('inputmode', 'numeric')
     await expect.element(input).toHaveAttribute('spellcheck', 'false')

@@ -221,7 +221,7 @@ test.describe('FileUpload: modes', () => {
     await expect(triggerEn(page)).toBeVisible()
   })
 
-  test('the Trigger is at least 24px', async ({ page }) => {
+  test('the Trigger is at least 24×24 (2.5.8)', async ({ page }) => {
     await openStory(page, 'default')
     const box = await trigger(page).boundingBox()
     expect(box?.height ?? 0).toBeGreaterThanOrEqual(24)

@@ -66,26 +66,23 @@ describe('rendering', () => {
     const { container } = await render(<Button>Spara</Button>)
     const button = page.getByRole('button', { name: 'Spara' })
     await expect.element(button).toHaveAttribute('type', 'button')
-    expect(button.element().tagName).toBe('BUTTON')
     await expect.element(button).not.toHaveAttribute('data-disabled')
     await expect.element(button).not.toHaveAttribute('aria-disabled')
     await expectNoA11yViolations(container)
   })
 
-  test('passes other button props, className and style through', async () => {
+  test('passes other button props through', async () => {
     await render(
-      <Button className="primar" style={{ margin: 0 }} name="atgard" value="spara" title="Spara">
+      <Button name="atgard" value="spara" title="Spara">
         Spara
       </Button>,
     )
     const button = page.getByRole('button', { name: 'Spara' })
-    await expect.element(button).toHaveClass('primar', 'kv-button')
     await expect.element(button).toHaveAttribute('name', 'atgard')
     await expect.element(button).toHaveAttribute('value', 'spara')
-    await expect.element(button).toHaveStyle({ margin: '0px' })
   })
 
-  test('marks its part with class="kv-button" and joins a variant class', async () => {
+  test('marks its part with class="kv-button" and joins a consumer class', async () => {
     await render(
       <>
         <Button>Spara</Button>
@@ -289,14 +286,12 @@ describe('render prop', () => {
   test('an element keeps its own props and gets the button behaviour', async () => {
     const onClick = vi.fn<() => void>()
     await render(
-      <Button onClick={onClick} className="fran-button" render={<StyledButton className="eget" />}>
+      <Button onClick={onClick} render={<StyledButton />}>
         Spara
       </Button>,
     )
     const button = page.getByRole('button', { name: 'Spara' })
     await expect.element(button).toHaveAttribute('name', 'primar')
-    // An element's own class joins the part's class, so the theme keeps styling it.
-    await expect.element(button).toHaveClass('kv-button', 'fran-button', 'eget')
     await userEvent.click(button)
     expect(onClick).toHaveBeenCalledTimes(1)
     expect(consoleWarn).not.toHaveBeenCalled()
@@ -476,7 +471,6 @@ describe('useButton', () => {
     const button = page.getByRole('button', { name: 'Skicka' })
     await expect.element(button).toHaveAttribute('type', 'button')
     await expect.element(button).toHaveAttribute('aria-disabled', 'true')
-    await expect.element(button).toHaveClass('kv-button', 'egen')
     await userEvent.click(button, { force: true })
     expect(onClick).not.toHaveBeenCalled()
     await expectNoA11yViolations(container)

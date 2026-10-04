@@ -30,14 +30,7 @@ export const Default: Story = {
     </p>
   ),
   play: async ({ canvas }) => {
-    const key = canvas.getByText('Tab')
-    await expect(key.tagName).toBe('KBD')
-    await expect(key).toHaveClass('kv-kbd')
-    const style = getComputedStyle(key)
-    await expect(style.whiteSpace).toBe('nowrap')
-    // Flat: depth means "press me" and is for buttons only. The key uses the text's own font.
-    await expect(style.borderBlockEndWidth).toBe('1px')
-    await expect(style.fontFamily).toBe(getComputedStyle(key.parentElement!).fontFamily)
+    await expect(canvas.getByText('Tab')).toBeVisible()
   },
 }
 
@@ -53,15 +46,8 @@ export const Combination: Story = {
     </p>
   ),
   play: async ({ canvas }) => {
-    const outer = canvas.getByTestId('combination')
-    const paragraph = outer.parentElement!
-    // The group is plain, in the text's font, so the line keeps its height.
-    await expect(getComputedStyle(outer).borderBlockEndWidth).toBe('0px')
-    await expect(getComputedStyle(outer).fontFamily).toBe(getComputedStyle(paragraph).fontFamily)
-    await expect(getComputedStyle(canvas.getByText('Ctrl')).borderBlockEndWidth).toBe('1px')
-    await expect(paragraph.getBoundingClientRect().height).toBe(
-      Number.parseFloat(getComputedStyle(paragraph).lineHeight),
-    )
+    await expect(canvas.getByText('Ctrl')).toBeVisible()
+    await expect(canvas.getByText('C', { selector: 'kbd' })).toBeVisible()
   },
 }
 
@@ -91,6 +77,6 @@ export const RTL: Story = {
     </p>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByText('Tab')).toHaveClass('kv-kbd')
+    await expect(canvas.getByText('Tab')).toBeVisible()
   },
 }

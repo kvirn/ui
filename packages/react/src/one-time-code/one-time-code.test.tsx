@@ -137,7 +137,6 @@ describe('the input', () => {
   test('is one native text input, named by its label and described by the hint', async () => {
     await render(<CodeField />)
     await expect.element(code()).toBeVisible()
-    expect(inputElement().tagName).toBe('INPUT')
     expect(inputElement().type).toBe('text')
     await expect.element(code()).toHaveAccessibleDescription('Koden har 6 siffror.')
     expect(page.getByRole('textbox').elements()).toHaveLength(1)
@@ -152,7 +151,6 @@ describe('the input', () => {
     await expect.element(input).toHaveAttribute('autocorrect', 'off')
     await expect.element(input).toHaveAttribute('dir', 'ltr')
     await expect.element(input).toHaveAttribute('name', 'code')
-    await expect.element(input).toHaveClass('kv-one-time-code-input')
   })
 
   test('has no maxlength, no pattern and is never a password field', async () => {
@@ -211,11 +209,10 @@ describe('the input', () => {
 })
 
 describe('the slots', () => {
-  test('are aria-hidden spans, one per character, never focusable', async () => {
+  test('are aria-hidden, one per character, never focusable', async () => {
     await render(<CodeField defaultValue="481" />)
     expect(slots()).toHaveLength(6)
     for (const slot of slots()) {
-      expect(slot.tagName).toBe('SPAN')
       expect(slot.getAttribute('aria-hidden')).toBe('true')
       expect(slot.hasAttribute('tabindex')).toBe(false)
       expect(slot.querySelector('a[href], button, input, select, textarea, [tabindex]')).toBeNull()
@@ -282,9 +279,8 @@ describe('the slots', () => {
 })
 
 describe('the root', () => {
-  test('is a div with the part class and no role', async () => {
+  test('has the kv-one-time-code part class and no role', async () => {
     await render(<CodeField />)
-    expect(root()?.tagName).toBe('DIV')
     expect(root()?.classList.contains('kv-one-time-code')).toBe(true)
     expect(root()?.hasAttribute('role')).toBe(false)
   })
@@ -323,7 +319,6 @@ describe('the root', () => {
 
   test('data-ready once the hook has started, and not in the server render', async () => {
     const html = renderToString(<CodeField defaultValue="481" />)
-    expect(html).toContain('kv-one-time-code')
     expect(html).not.toContain('data-ready')
     await render(<CodeField />)
     await expect.poll(() => root()?.hasAttribute('data-ready')).toBe(true)
@@ -680,14 +675,13 @@ describe('patterns with separators', () => {
     expect(separators()).toHaveLength([...pattern].filter((symbol) => symbol === '-').length)
   })
 
-  test('a separator is an aria-hidden span with its own class, and has no state', async () => {
+  test('a separator is aria-hidden with its own class, and has no state', async () => {
     await render(<CodeField pattern="****-****" hint={groupedHint} defaultValue="abcd-12" />)
     await userEvent.click(code())
     await userEvent.keyboard('{Control>}a{/Control}')
     await expect.poll(() => selectedSlots().length).toBe(6)
     expect(separators()).toHaveLength(1)
     const [separator] = separators()
-    expect(separator?.tagName).toBe('SPAN')
     expect(separator?.className).toBe('kv-one-time-code-separator')
     expect(separator?.getAttribute('aria-hidden')).toBe('true')
     expect(separator?.textContent).toBe('-')
@@ -1065,7 +1059,6 @@ describe('render, refs and merged props', () => {
     expect(document.querySelector('b[data-testid="bold"]')?.getAttribute('aria-hidden')).toBe(
       'true',
     )
-    expect(document.querySelector('b[data-testid="bold"]')?.className).toBe('kv-one-time-code-slot')
     expect(states.at(-1)).toMatchObject({
       kind: 'character',
       character: '4',
@@ -1084,7 +1077,6 @@ describe('render, refs and merged props', () => {
       </Field.Root>,
     )
     expect(root()?.tagName).toBe('SECTION')
-    expect(root()?.classList.contains('kv-one-time-code')).toBe(true)
   })
 })
 

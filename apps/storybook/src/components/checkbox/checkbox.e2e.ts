@@ -40,30 +40,11 @@ async function recordPreventedKeys(page: Page) {
   return (): Promise<string[]> => page.evaluate(() => Reflect.get(window, 'preventedKeys'))
 }
 
-/** What a CSS system colour keyword resolves to in this page, as the browser computes it. */
-async function systemColour(page: Page, keyword: string) {
-  return page.evaluate((value) => {
-    const probe = document.createElement('div')
-    probe.style.backgroundColor = value
-    document.body.append(probe)
-    const resolved = getComputedStyle(probe).backgroundColor
-    probe.remove()
-    return resolved
-  }, keyword)
-}
-
-/** The edge, fill and `::before` mark colours of a checkbox, as computed. */
-const paint = (box: Locator) =>
+/** The edge of a checkbox, as computed: a boundary that stays visible has a style and a width. */
+const edgeOf = (box: Locator) =>
   box.evaluate((element) => {
     const style = getComputedStyle(element)
-    const mark = getComputedStyle(element, '::before')
-    return {
-      edge: style.borderTopColor,
-      edgeWidth: Number.parseFloat(style.borderTopWidth),
-      edgeStyle: style.borderTopStyle,
-      fill: style.backgroundColor,
-      mark: mark.content === 'none' ? 'none' : mark.backgroundColor,
-    }
+    return { style: style.borderTopStyle, width: Number.parseFloat(style.borderTopWidth) }
   })
 
 const names = {
@@ -164,107 +145,47 @@ test.describe('Checkbox keyboard contract', () => {
 })
 
 test.describe('Checkbox focus and modes', () => {
-  test('the box is 24px and the row at least 44px high (2.5.8)', async ({ page }) => {
+  test('the box and the label are at least 24×24 (2.5.8)', async ({ page }) => {
     await openStory(page, 'unchecked')
     const box = await page.locator('.kv-checkbox').boundingBox()
-    expect([box?.width, box?.height]).toEqual([24, 24])
+    expect(box?.width).toBeGreaterThanOrEqual(24)
+    expect(box?.height).toBeGreaterThanOrEqual(24)
     const label = await page.locator('label.kv-field-label').boundingBox()
-    expect(label?.height).toBeGreaterThanOrEqual(44)
-    // The label starts at the box's edge, so the row is one target.
-    expect(Math.abs((label?.x ?? 0) - (box?.x ?? 1))).toBeLessThan(1)
+    expect(label?.height).toBeGreaterThanOrEqual(24)
   })
 
-  test('the focus ring is visible on keyboard focus: 2px, offset 2px', async ({ page }) => {
+  test('a key-focused checkbox shows a focus indicator (2.4.7)', async ({ page }) => {
     await openStory(page, 'unchecked')
     await page.keyboard.press('Tab')
     const checkbox = page.getByRole('checkbox')
     await expect(checkbox).toBeFocused()
     await expect(checkbox).toHaveAttribute('data-focus-visible', '')
-    await expect(checkbox).toHaveCSS('outline-style', 'solid')
-    await expect(checkbox).toHaveCSS('outline-width', '2px')
-    await expect(checkbox).toHaveCSS('outline-offset', '2px')
+    expect(await checkbox.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe(
+      'none',
+    )
   })
 
-  test('an invalid checkbox has a 2px edge and the message under the row', async ({ page }) => {
+  test('an invalid checkbox shows its error message', async ({ page }) => {
     await openStory(page, 'invalid')
-    const checkbox = page.getByRole('checkbox')
-    await expect(checkbox).toHaveCSS('border-top-width', '2px')
-    const message = page.locator('.kv-field-error-message')
-    await expect(message).toBeVisible()
-    const rowBox = await page.locator('label.kv-field-label').boundingBox()
-    const messageBox = await message.boundingBox()
-    expect(messageBox?.y).toBeGreaterThan((rowBox?.y ?? 0) + (rowBox?.height ?? 0) - 1)
-  })
-
-  test('the tick is drawn, not an image: it shows when checked and not when unchecked', async ({
-    page,
-  }) => {
-    await openStory(page, 'forced-colors')
-    expect((await paint(page.locator('input[name="unchecked"]'))).mark).toBe('none')
-    const checked = await paint(page.locator('input[name="checked"]'))
-    expect(checked.mark).not.toBe('none')
-    const box = await page.locator('input[name="checked"]').evaluate((element) => {
-      const mark = getComputedStyle(element, '::before')
-      return { width: mark.width, clipPath: mark.clipPath, image: mark.backgroundImage }
-    })
-    expect(box.width).toBe('16px')
-    expect(box.clipPath).toContain('polygon')
-    expect(box.image).toBe('none')
-  })
-
-  test('forced colours: checked, indeterminate, invalid and disabled stay distinguishable', async ({
-    page,
-  }) => {
-    await page.emulateMedia({ forcedColors: 'active' })
-    await openStory(page, 'forced-colors')
-    const colours = {
-      highlight: await systemColour(page, 'Highlight'),
-      highlightText: await systemColour(page, 'HighlightText'),
-      field: await systemColour(page, 'Field'),
-      canvasText: await systemColour(page, 'CanvasText'),
-      grayText: await systemColour(page, 'GrayText'),
-      buttonBorder: await systemColour(page, 'ButtonBorder'),
-    }
-    const unchecked = await paint(page.locator('input[name="unchecked"]'))
-    expect(unchecked).toEqual({
-      edge: colours.buttonBorder,
-      edgeWidth: 1,
-      edgeStyle: 'solid',
-      fill: colours.field,
-      mark: 'none',
-    })
-    // A tick and a dash: the shape says it, and the colours are the system's.
-    for (const name of ['checked', 'indeterminate']) {
-      expect(await paint(page.locator(`input[name="${name}"]`)), name).toEqual({
-        edge: colours.highlight,
-        edgeWidth: 1,
-        edgeStyle: 'solid',
-        fill: colours.highlight,
-        mark: colours.highlightText,
-      })
-    }
-    // The 2px width carries invalid, with the message (1.4.1).
-    expect(await paint(page.locator('input[name="invalid"]'))).toMatchObject({
-      edge: colours.canvasText,
-      edgeWidth: 2,
-      edgeStyle: 'solid',
-    })
-    expect(await paint(page.locator('input[name="disabled"]'))).toMatchObject({
-      edge: colours.grayText,
-      edgeStyle: 'dashed',
-    })
-    expect(await paint(page.locator('input[name="disabled-checked"]'))).toMatchObject({
-      edge: colours.grayText,
-      fill: colours.field,
-      mark: colours.grayText,
-    })
     await expect(page.locator('.kv-field-error-message')).toBeVisible()
   })
 
-  test('reduced motion: the checkbox does not transition', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await openStory(page, 'unchecked')
-    await expect(page.getByRole('checkbox')).toHaveCSS('transition-duration', '0s')
+  test('forced colours keep the box edge visible in every state (1.4.11)', async ({ page }) => {
+    await page.emulateMedia({ forcedColors: 'active' })
+    await openStory(page, 'forced-colors')
+    for (const name of [
+      'unchecked',
+      'checked',
+      'indeterminate',
+      'invalid',
+      'disabled',
+      'disabled-checked',
+    ]) {
+      const edge = await edgeOf(page.locator(`input[name="${name}"]`))
+      expect(edge.style, name).not.toBe('none')
+      expect(edge.width, name).toBeGreaterThan(0)
+    }
+    await expect(page.locator('.kv-field-error-message')).toBeVisible()
   })
 
   test('no horizontal scrolling at 320px with the long Finnish label (1.4.10)', async ({
@@ -275,23 +196,6 @@ test.describe('Checkbox focus and modes', () => {
       await openStory(page, story)
       expect(await hasHorizontalScroll(page), story).toBe(false)
     }
-    await openStory(page, 'long-label')
-    // The box stays beside the first line of a label that wraps over several lines.
-    const box = await page.locator('.kv-checkbox').boundingBox()
-    const label = await page.locator('label.kv-field-label').boundingBox()
-    expect(label?.height).toBeGreaterThan(60)
-    expect(box?.y).toBeLessThan((label?.y ?? 0) + 16)
-  })
-
-  test('right to left: the box is at the right of its label', async ({ page }) => {
-    await openStory(page, 'rtl')
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
-    const box = await page.locator('input[name="unchecked"]').boundingBox()
-    const label = await page.locator('.kv-field:has(input[name="unchecked"]) > label').boundingBox()
-    expect(box?.x).toBeGreaterThan((label?.x ?? 0) + (label?.width ?? 0) / 2 - 1)
-    expect(
-      Math.abs((box?.x ?? 0) + (box?.width ?? 0) - ((label?.x ?? 0) + (label?.width ?? 0))),
-    ).toBeLessThan(2)
   })
 })
 

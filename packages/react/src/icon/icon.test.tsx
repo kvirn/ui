@@ -143,7 +143,6 @@ describe('built-in icons', () => {
     const svg = svgIn(container)
     expect(svg.getAttribute('viewBox')).toBe('0 0 24 24')
     expect(svg.getAttribute('aria-hidden')).toBe('true')
-    expect(svg.getAttribute('class')).toBe('kv-icon')
     expect(svg.children.length).toBeGreaterThan(0)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
@@ -167,7 +166,6 @@ describe('registry', () => {
   test('name renders the registered component', async () => {
     const svg = await renderIcon(<RegisteredIcon name="lucide-trash" />)
     expect(svg.classList.contains('lucide-trash-2')).toBe(true)
-    expect(svg.classList.contains('kv-icon')).toBe(true)
   })
 
   test('a nested provider merges its icons over the parent’s by name', async () => {
@@ -293,7 +291,7 @@ describe('attributes', () => {
     expect(svg.hasAttribute('data-size')).toBe(false)
   })
 
-  test('the md size is 20px next to 16px text and grows with the text (1.4.4)', async () => {
+  test('the default size grows with the text it sits in (1.4.4)', async () => {
     const { container } = await render(
       <p style={{ fontSize: '16px' }}>
         <RegisteredIcon name="lucide-trash" />
@@ -304,8 +302,10 @@ describe('attributes', () => {
       { wrapper: ({ children }) => <KvirnProvider icons={libraryIcons}>{children}</KvirnProvider> },
     )
     const [normal, large] = container.querySelectorAll('svg')
-    expect(normal?.getBoundingClientRect().width).toBe(20)
-    expect(large?.getBoundingClientRect().width).toBe(40)
+    const normalWidth = normal?.getBoundingClientRect().width ?? 0
+    const largeWidth = large?.getBoundingClientRect().width ?? 0
+    expect(normalWidth).toBeGreaterThan(0)
+    expect(largeWidth / normalWidth).toBeCloseTo(2, 1)
   })
 
   test('values are attributes, never inline style (strict CSP)', async () => {
@@ -346,7 +346,6 @@ describe('attributes', () => {
     )
     // The provider adds its two empty live regions after the icon, and they carry inline styles.
     const svg = html.slice(0, html.indexOf('</svg>') + '</svg>'.length)
-    expect(svg).toMatch(/class="[^"]*\bkv-icon\b[^"]*"/)
     expect(svg).toMatch(/class="[^"]*\blucide\b[^"]*"/)
     expect(svg).toContain('width="1em"')
     expect(svg).toContain('aria-hidden="true"')
@@ -361,7 +360,6 @@ describe('library compatibility (Plan 0009, Background)', () => {
       const svg = await renderIcon(<RegisteredIcon name={name} size={32} color="rgb(200, 0, 0)" />)
       expect(svg.getAttribute('width')).toBe('32')
       expect(svg.getAttribute('height')).toBe('32')
-      expect(svg.getBoundingClientRect().width).toBe(32)
       // Each library routes color its own way (stroke, the color attribute, fill), and every
       // one ends up drawing in it.
       const painted = [svg, ...svg.querySelectorAll('path')].some((element) => {
@@ -487,7 +485,6 @@ describe('one-off icons without the registry', () => {
     )
     const svg = svgIn(container)
     expect(svg.getAttribute('viewBox')).toBe('0 0 24 24')
-    expect(svg.getAttribute('class')).toBe('kv-icon')
     expect(svg.getAttribute('aria-hidden')).toBe('true')
     expect(svg.querySelector('path')?.getAttribute('d')).toBe('M5 12h14')
   })

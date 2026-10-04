@@ -58,42 +58,18 @@ const withAttribute = (page: Page, attribute: string) =>
     attribute,
   )
 
-const edgeOf = (slot: Locator) =>
-  slot.evaluate((element) => {
+/** The edge of a field: a boundary that stays visible has a style and a width. */
+const edgeOf = (field: Locator) =>
+  field.evaluate((element) => {
     const style = getComputedStyle(element)
-    return {
-      width: Number.parseFloat(style.borderTopWidth),
-      style: style.borderTopStyle,
-      color: style.borderTopColor,
-      fill: style.backgroundColor,
-    }
+    return { width: Number.parseFloat(style.borderTopWidth), style: style.borderTopStyle }
   })
 
-const ringOf = (element: Locator) =>
-  element.evaluate((node) => {
-    const style = getComputedStyle(node)
-    return {
-      style: style.outlineStyle,
-      width: Number.parseFloat(style.outlineWidth),
-      offset: Number.parseFloat(style.outlineOffset),
-    }
-  })
+const outlineStyleOf = (element: Locator) =>
+  element.evaluate((node) => getComputedStyle(node).outlineStyle)
 
-/** Where the slot's character is drawn, relative to the slot's own box. */
-const characterOffset = (slot: Locator) =>
-  slot.evaluate((element) => {
-    const range = document.createRange()
-    range.selectNodeContents(element)
-    const text = range.getBoundingClientRect()
-    const box = element.getBoundingClientRect()
-    return { x: text.x - box.x, y: text.y - box.y }
-  })
-
-/** Whether the slots are drawn (displayed) or the theme shows the plain field. */
-const isDrawn = (page: Page) =>
-  slots(page)
-    .first()
-    .evaluate((element) => getComputedStyle(element).display !== 'none')
+/** Whether the slots are drawn, or the plain field shows instead. */
+const isDrawn = (page: Page) => slots(page).first().isVisible()
 
 const hasHorizontalScroll = (page: Page) =>
   page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
@@ -412,9 +388,6 @@ test.describe('OneTimeCode keyboard contract', () => {
     // The code reads left to right: ArrowRight is the next character, in the box on the right.
     expect(await caret(input)).toEqual([1, 1])
     await expect.poll(() => withAttribute(page, 'data-active')).toEqual([1])
-    const first = await slots(page).nth(0).boundingBox()
-    const second = await slots(page).nth(1).boundingBox()
-    expect(second?.x).toBeGreaterThan(first?.x ?? Number.POSITIVE_INFINITY)
     await page.keyboard.press('ArrowLeft')
     await expect.poll(() => withAttribute(page, 'data-active')).toEqual([0])
   })
@@ -459,8 +432,7 @@ test.describe('OneTimeCode keyboard contract', () => {
     await expect.poll(() => withAttribute(page, 'data-selected')).toEqual([0, 1, 2, 3, 4, 5])
     await expect.poll(() => withAttribute(page, 'data-active')).toEqual([])
     await expect(separators(page).first()).not.toHaveAttribute('data-selected', /.*/)
-    // The selected boxes have the 2px ring-coloured edge, and typing replaces the code.
-    expect((await edgeOf(slots(page).nth(0))).width).toBe(2)
+    // Typing replaces the code.
     await page.keyboard.type('7')
     await expect(emailCode(page)).toHaveValue('7')
   })
@@ -582,98 +554,35 @@ async function centerPoint(locator: Locator): Promise<[number, number]> {
 }
 
 test.describe('OneTimeCode focus, states and modes', () => {
-  test('the ring is the input’s, around the whole row, and no box has an outline', async ({
-    page,
-  }) => {
+  test('a key-focused input shows a focus indicator (2.4.7)', async ({ page }) => {
     await openStory(page, 'keyboard')
     await page.keyboard.press('Tab')
     const input = emailCode(page)
-    expect(await ringOf(input)).toEqual({ style: 'solid', width: 2, offset: 2 })
-    // The input's box is the row: the first box's start to the last box's end, the dash included.
-    const inputBox = await input.boundingBox()
-    const first = await slots(page).first().boundingBox()
-    const last = await slots(page).last().boundingBox()
-    expect(inputBox?.x).toBeCloseTo(first?.x ?? 0, 0)
-    expect((inputBox?.x ?? 0) + (inputBox?.width ?? 0)).toBeCloseTo(
-      (last?.x ?? 0) + (last?.width ?? 0),
-      0,
-    )
-    // Nothing inside the row is a second ring.
-    for (const cell of await cells(page).all()) {
-      expect((await ringOf(cell)).style).toBe('none')
-    }
+    await expect(input).toBeFocused()
+    expect(await outlineStyleOf(input)).not.toBe('none')
   })
 
-  test('a click shows no ring around the row: the active box’s edge shows the focus', async ({
-    page,
-  }) => {
+  test('a click marks focus, but not focus-visible, and a key brings it back', async ({ page }) => {
     await openStory(page, 'keyboard')
     const input = emailCode(page)
     await input.click()
     await expect(input).toBeFocused()
     await expect(input).toHaveAttribute('data-focused', '')
     await expect(input).not.toHaveAttribute('data-focus-visible')
-    // The browser's own ring gives way to a transparent one (forced colours paint it).
-    await expect(input).toHaveCSS('outline-color', 'rgba(0, 0, 0, 0)')
-    const active = page.locator('.kv-one-time-code-slot[data-active]')
-    await expect(active).toHaveCount(1)
-    expect((await edgeOf(active)).width).toBe(2)
-    // A key press brings the ring back at the next focus.
+    await expect(page.locator('.kv-one-time-code-slot[data-active]')).toHaveCount(1)
+    // A key press brings focus-visible back at the next focus.
     await page.keyboard.press('Shift+Tab')
     await page.keyboard.press('Tab')
     await expect(input).toHaveAttribute('data-focus-visible', '')
-    await expect(input).not.toHaveCSS('outline-color', 'rgba(0, 0, 0, 0)')
   })
 
-  test('the input is invisible and under the boxes: it has no edge and transparent text', async ({
-    page,
-  }) => {
-    await openStory(page, 'partly-filled')
-    const style = await code(page).evaluate((element) => {
-      const computed = getComputedStyle(element)
-      return {
-        position: computed.position,
-        border: Number.parseFloat(computed.borderTopWidth),
-        textFill: computed.webkitTextFillColor,
-        caretColor: computed.caretColor,
-      }
-    })
-    expect(style.position).toBe('absolute')
-    expect(style.border).toBe(0)
-    expect(style.textFill).toBe('rgba(0, 0, 0, 0)')
-    expect(style.caretColor).toBe('rgba(0, 0, 0, 0)')
-  })
-
-  test('the active box has a 2px ring-coloured edge and a caret, and its character does not move', async ({
-    page,
-  }) => {
-    await openStory(page, 'partly-filled')
-    const before = await characterOffset(slots(page).nth(1))
-    await page.keyboard.press('Tab')
-    await page.keyboard.press('Home')
-    await page.keyboard.press('ArrowRight')
-    const active = slots(page).nth(1)
-    await expect(active).toHaveAttribute('data-active', '')
-    const edge = await edgeOf(active)
-    expect(edge.width).toBe(2)
-    expect(edge.color).not.toBe((await edgeOf(slots(page).nth(0))).color)
-    const caretBox = await active.evaluate((element) => {
-      const style = getComputedStyle(element, '::before')
-      return { content: style.content, width: Number.parseFloat(style.width) }
-    })
-    expect(caretBox).toEqual({ content: '""', width: 2 })
-    // The edge goes from 1px to 2px inside the box, and the caret cancels its own width.
-    expect(await characterOffset(active)).toEqual(before)
-  })
-
-  test('the caret never blinks', async ({ page }) => {
+  test('the caret never blinks: nothing on the page repeats forever (2.2.2)', async ({ page }) => {
     await openStory(page, 'partly-filled')
     await page.keyboard.press('Tab')
     // Tab into a filled field selects the code: End puts the caret after it, in the next box.
     await page.keyboard.press('End')
     await expect(slots(page).nth(3)).toHaveAttribute('data-active', '')
-    // Nothing repeats on the page (a blink would), and the bar has no animation. A finished or
-    // running transition of an edge colour is not a loop.
+    // Nothing repeats on the page (a blink would). A finished or running transition is not a loop.
     expect(
       await page.evaluate(
         () =>
@@ -683,205 +592,50 @@ test.describe('OneTimeCode focus, states and modes', () => {
             .length,
       ),
     ).toBe(0)
-    expect(
-      await slots(page)
-        .nth(3)
-        .evaluate((element) => getComputedStyle(element, '::before').animationName),
-    ).toBe('none')
   })
 
-  test('invalid: every box has a 2px edge, and the characters do not move', async ({ page }) => {
-    await openStory(page, 'complete')
-    const valid: { x: number; y: number }[] = []
-    for (let index = 0; index < 6; index += 1) {
-      valid.push(await characterOffset(slots(page).nth(index)))
-    }
-    const validEdge = await edgeOf(slots(page).nth(0))
-    expect(validEdge.width).toBe(1)
-    await openStory(page, 'invalid')
-    for (let index = 0; index < 6; index += 1) {
-      const slot = slots(page).nth(index)
-      const edge = await edgeOf(slot)
-      expect(edge.width, `box ${index}`).toBe(2)
-      expect(edge.style).toBe('solid')
-      expect(edge.color).not.toBe(validEdge.color)
-      expect(await characterOffset(slot), `box ${index}`).toEqual(valid[index])
-    }
-    await expect(code(page)).toHaveAttribute('aria-invalid', 'true')
-  })
-
-  test('invalid and active: the active box shows the ring colour, the others stay danger', async ({
-    page,
-  }) => {
-    await openStory(page, 'invalid')
-    const danger = (await edgeOf(slots(page).nth(0))).color
-    await page.keyboard.press('Tab')
-    await page.keyboard.press('Home')
-    expect((await edgeOf(slots(page).nth(0))).color).not.toBe(danger)
-    expect((await edgeOf(slots(page).nth(0))).width).toBe(2)
-    expect((await edgeOf(slots(page).nth(1))).color).toBe(danger)
-  })
-
-  test('disabled: a dashed edge, and the field is not focusable', async ({ page }) => {
+  test('disabled: the field is not focusable', async ({ page }) => {
     await openStory(page, 'disabled')
-    expect((await edgeOf(slots(page).nth(0))).style).toBe('dashed')
     await expect(code(page)).toBeDisabled()
     await page.keyboard.press('Tab')
     await expect(code(page)).not.toBeFocused()
   })
 
-  test('complete has no look of its own', async ({ page }) => {
-    await openStory(page, 'complete')
-    const complete = await edgeOf(slots(page).nth(0))
-    expect(complete.width).toBe(1)
-    expect(complete.style).toBe('solid')
-    await expect(root(page)).toHaveAttribute('data-complete', '')
-    expect(await ringOf(root(page))).toMatchObject({ style: 'none' })
-  })
-
-  test('right to left: the boxes read left to right, at the right of the column', async ({
+  test('right to left: the code keeps its order and the input stays left to right', async ({
     page,
   }) => {
     // RTL is `AA-9999` holding `HT-4829`.
     await openStory(page, 'rtl', { globals: 'dir:rtl;locale:en' })
-    const first = await slots(page).first().boundingBox()
-    const last = await slots(page).last().boundingBox()
-    expect(first?.x).toBeLessThan(last?.x ?? 0)
-    // The cells keep the pattern's order from left to right: H, T, the dash, then 4, 8, 2, 9.
-    const placed = await cells(page).evaluateAll((elements) =>
-      elements.map((element) => ({
-        text: element.textContent,
-        x: element.getBoundingClientRect().x,
-      })),
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
+    // The cells keep the pattern's order: H, T, the dash, then 4, 8, 2, 9.
+    const texts = await cells(page).evaluateAll((elements) =>
+      elements.map((element) => element.textContent),
     )
-    expect(placed.toSorted((a, b) => a.x - b.x).map(({ text }) => text)).toEqual([
-      'H',
-      'T',
-      '-',
-      '4',
-      '8',
-      '2',
-      '9',
-    ])
-    expect(placed.map(({ text }) => text)).toEqual(['H', 'T', '-', '4', '8', '2', '9'])
-    const field = await page.locator('.kv-field').boundingBox()
-    expect((last?.x ?? 0) + (last?.width ?? 0)).toBeCloseTo(
-      (field?.x ?? 0) + (field?.width ?? 0),
-      0,
-    )
+    expect(texts).toEqual(['H', 'T', '-', '4', '8', '2', '9'])
     await expect(code(page, 'Code from the text message')).toHaveAttribute('dir', 'ltr')
-    // The input covers the row on the right.
-    const inputBox = await code(page, 'Code from the text message').boundingBox()
-    expect((inputBox?.x ?? 0) + (inputBox?.width ?? 0)).toBeCloseTo(
-      (last?.x ?? 0) + (last?.width ?? 0),
-      0,
-    )
-  })
-
-  test('a dash is a 12px cell of text between two boxes, with no edge or fill', async ({
-    page,
-  }) => {
-    await openStory(page, 'two-groups')
-    expect(await isDrawn(page)).toBe(true)
-    await expect(separators(page)).toHaveCount(1)
-    const dash = separators(page).first()
-    const dashBox = await dash.boundingBox()
-    const before = await slots(page).nth(3).boundingBox()
-    const after = await slots(page).nth(4).boundingBox()
-    if (dashBox === null || before === null || after === null) {
-      throw new Error('No box')
-    }
-    expect(dashBox.width).toBeCloseTo(12, 0)
-    // 8px between a box and the dash on each side, so the group break is 28px.
-    expect(dashBox.x - (before.x + before.width)).toBeCloseTo(8, 0)
-    expect(after.x - (dashBox.x + dashBox.width)).toBeCloseTo(8, 0)
-    expect(dashBox.height).toBeCloseTo(before.height, 0)
-    // The dash is text: the same colour as a character, no edge, no fill, never a state of a box.
-    const style = await dash.evaluate((element) => {
-      const computed = getComputedStyle(element)
-      const box = getComputedStyle(document.querySelector('.kv-one-time-code-slot') as Element)
-      const range = document.createRange()
-      range.selectNodeContents(element)
-      const text = range.getBoundingClientRect()
-      const cell = element.getBoundingClientRect()
-      return {
-        text: element.textContent,
-        color: computed.color,
-        boxColor: box.color,
-        border: Number.parseFloat(computed.borderTopWidth),
-        fill: computed.backgroundColor,
-        isInside: text.left >= cell.left && text.right <= cell.right,
-        pointerEvents: computed.pointerEvents,
-      }
-    })
-    expect(style.text).toBe('-')
-    expect(style.color).toBe(style.boxColor)
-    expect(style.border).toBe(0)
-    expect(style.fill).toBe('rgba(0, 0, 0, 0)')
-    expect(style.isInside).toBe(true)
-    expect(style.pointerEvents).toBe('none')
-    // It shrinks never: only the boxes do.
-    await page.setViewportSize({ width: 640, height: 800 })
-    expect((await dash.boundingBox())?.width).toBeCloseTo(12, 0)
-  })
-
-  test('compact: a dash is 12px wide, and the gaps are 4px', async ({ page }) => {
-    await openStory(page, 'two-groups')
-    await page.evaluate(() => document.querySelector('.kv-story-form')?.classList.add('kv-compact'))
-    await expect
-      .poll(async () => (await slots(page).first().boundingBox())?.width)
-      .toBeCloseTo(32, 0)
-    const dashBox = await separators(page).first().boundingBox()
-    const before = await slots(page).nth(3).boundingBox()
-    const after = await slots(page).nth(4).boundingBox()
-    if (dashBox === null || before === null || after === null) {
-      throw new Error('No box')
-    }
-    expect(dashBox.width).toBeCloseTo(12, 0)
-    expect(dashBox.x - (before.x + before.width)).toBeCloseTo(4, 0)
-    expect(after.x - (dashBox.x + dashBox.width)).toBeCloseTo(4, 0)
   })
 
   test('the dash never takes the selection or the active state of a box', async ({ page }) => {
     await openStory(page, 'two-groups')
     const dash = separators(page).first()
-    const before = await dash.evaluate((element) => {
-      const computed = getComputedStyle(element)
-      return {
-        color: computed.color,
-        border: computed.borderTopWidth,
-        fill: computed.backgroundColor,
-      }
-    })
     await page.keyboard.press('Tab')
     await page.keyboard.press('ControlOrMeta+A')
     await expect.poll(() => withAttribute(page, 'data-selected')).toEqual([0, 1, 2, 3, 4, 5, 6, 7])
-    // The boxes take the selection fill and the 2px edge. The dash stays as it was.
-    expect((await edgeOf(slots(page).nth(3))).width).toBe(2)
-    expect(
-      await dash.evaluate((element) => {
-        const computed = getComputedStyle(element)
-        return {
-          color: computed.color,
-          border: computed.borderTopWidth,
-          fill: computed.backgroundColor,
-        }
-      }),
-    ).toEqual(before)
     await expect(dash).not.toHaveAttribute('data-selected', /.*/)
     await expect(dash).not.toHaveAttribute('data-active', /.*/)
   })
 
-  test('compact: 32px boxes, and the input is at least 24px high', async ({ page }) => {
+  test('compact: the boxes and the input are at least 24px high (2.5.8)', async ({ page }) => {
     await openStory(page, 'compact')
     const box = await slots(page).first().boundingBox()
     const inputBox = await code(page, 'Kod från din autentiseringsapp').boundingBox()
     expect(box?.height).toBeGreaterThanOrEqual(24)
     expect(inputBox?.height).toBeGreaterThanOrEqual(24)
-    expect(box?.width).toBeCloseTo(32, 0)
   })
 
-  test('forced colours: the plain field shows and the boxes are hidden', async ({ page }) => {
+  test('forced colours: the plain field shows, with its edge and focus indicator visible (1.4.11, 2.4.7)', async ({
+    page,
+  }) => {
     await openStory(page, 'forced-colors', {
       forcedColors: 'active',
       globals: 'forcedColors:active',
@@ -890,62 +644,26 @@ test.describe('OneTimeCode focus, states and modes', () => {
     for (const cell of await cells(page).all()) {
       await expect(cell).toBeHidden()
     }
-    // The dash is not drawn either: it is in the value of the plain field.
-    expect(
-      await separators(page)
-        .first()
-        .evaluate((element) => getComputedStyle(element).display),
-    ).toBe('none')
     const inputs = page.locator('.kv-one-time-code-input')
     await expect(inputs).toHaveCount(4)
     for (const input of await inputs.all()) {
       await expect(input).toBeVisible()
-      const style = await input.evaluate((element) => {
-        const computed = getComputedStyle(element)
-        return {
-          position: computed.position,
-          width: Number.parseFloat(computed.borderTopWidth),
-          style: computed.borderTopStyle,
-          edgeDiffers: computed.borderTopColor !== computed.backgroundColor,
-          textVisible: computed.color !== computed.backgroundColor,
-          fits: element.scrollWidth <= element.clientWidth,
-        }
-      })
-      expect(style.position).toBe('static')
-      expect(style.edgeDiffers).toBe(true)
-      expect(style.textVisible).toBe(true)
-      expect(style.fits).toBe(true)
+      const edge = await edgeOf(input)
+      expect(edge.style).not.toBe('none')
+      expect(edge.width).toBeGreaterThan(0)
+      expect(await input.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
+        true,
+      )
     }
-    // The width and the dashes carry the state, not the colour (1.4.1, 1.4.11).
-    const edges = await Promise.all(
-      (await inputs.all()).map((input) =>
-        input.evaluate((element) => {
-          const computed = getComputedStyle(element)
-          return {
-            width: Number.parseFloat(computed.borderTopWidth),
-            style: computed.borderTopStyle,
-          }
-        }),
-      ),
-    )
-    expect(edges[0]).toEqual({ width: 1, style: 'solid' })
-    expect(edges[2]).toEqual({ width: 2, style: 'solid' })
-    expect(edges[3]).toEqual({ width: 1, style: 'dashed' })
-    // The focus ring is a system colour outline, and the value is kept, the dash included.
+    // The focus indicator is there, and the value is kept, the dash included.
     await page.keyboard.press('Tab')
     await expect(inputs.first()).toBeFocused()
-    expect(await ringOf(inputs.first())).toMatchObject({ style: 'solid', width: 2 })
+    expect(await outlineStyleOf(inputs.first())).not.toBe('none')
     await expect(inputs.nth(1)).toHaveValue('481')
     await expect(inputs.nth(2)).toHaveValue('K7QX-2M9P')
   })
 
-  test('reduced motion: the boxes do not transition', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await openStory(page, 'partly-filled')
-    await expect(slots(page).first()).toHaveCSS('transition-duration', '0s')
-  })
-
-  test('no horizontal scrolling at 320px: six boxes shrink to fit, in every story', async ({
+  test('no horizontal scrolling at 320px: six boxes fit, in every story (1.4.10)', async ({
     page,
   }) => {
     for (const story of [
@@ -966,26 +684,15 @@ test.describe('OneTimeCode focus, states and modes', () => {
     expect(await isDrawn(page)).toBe(true)
     const last = await slots(page).last().boundingBox()
     expect((last?.x ?? 0) + (last?.width ?? 0)).toBeLessThanOrEqual(320)
-    const first = await slots(page).first().boundingBox()
-    expect(first?.width).toBeGreaterThanOrEqual(32)
-    expect(first?.width).toBeLessThan(44)
   })
 
-  test('at 320px AA-9999 draws its boxes and its dash, shrunk to fit', async ({ page }) => {
+  test('at 320px AA-9999 draws its boxes and its dash, and fits (1.4.10)', async ({ page }) => {
     await openStory(page, 'letter-prefix', { viewport: { width: 320, height: 640 } })
     expect(await isDrawn(page)).toBe(true)
-    expect(
-      await separators(page)
-        .first()
-        .evaluate((element) => getComputedStyle(element).display),
-    ).not.toBe('none')
+    await expect(separators(page).first()).toBeVisible()
     expect(await hasHorizontalScroll(page)).toBe(false)
     const last = await slots(page).last().boundingBox()
     expect((last?.x ?? 0) + (last?.width ?? 0)).toBeLessThanOrEqual(320)
-    const first = await slots(page).first().boundingBox()
-    expect(first?.width).toBeGreaterThanOrEqual(32)
-    // The dash keeps its 12px: only the boxes shrink.
-    expect((await separators(page).first().boundingBox())?.width).toBeCloseTo(12, 0)
   })
 
   test('at 320px eight characters and a dash do not fit at 32px: the plain field shows', async ({
@@ -1002,7 +709,6 @@ test.describe('OneTimeCode focus, states and modes', () => {
       await expect(input).toBeVisible()
       // The same value, with its dashes, in a field as wide as the pattern: nothing scrolls inside it.
       await expect(input).toHaveValue(value)
-      expect(await input.evaluate((element) => getComputedStyle(element).position)).toBe('static')
       expect(await input.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
         true,
       )
@@ -1021,20 +727,12 @@ test.describe('OneTimeCode focus, states and modes', () => {
     for (const [index, drawn] of [true, true, true, false, false, false].entries()) {
       const root = roots.nth(index)
       const name = (await root.locator('input').getAttribute('name')) ?? ''
-      const firstSlot = root.locator('.kv-one-time-code-slot').first()
-      expect(
-        await firstSlot.evaluate((element) => getComputedStyle(element).display !== 'none'),
-        name,
-      ).toBe(drawn)
-      const position = await root
-        .locator('input')
-        .evaluate((element) => getComputedStyle(element).position)
-      expect(position === 'absolute', name).toBe(drawn)
+      expect(await root.locator('.kv-one-time-code-slot').first().isVisible(), name).toBe(drawn)
     }
     expect(await hasHorizontalScroll(page)).toBe(false)
   })
 
-  test('at 200% text on a phone the plain field shows, and on a desktop the boxes grow', async ({
+  test('at 200% text on a phone the plain field shows, and on a desktop the boxes stay', async ({
     page,
   }) => {
     await openStory(page, 'default', { viewport: { width: 320, height: 640 } })
@@ -1046,7 +744,6 @@ test.describe('OneTimeCode focus, states and modes', () => {
     await openStory(page, 'default')
     await page.addStyleTag({ content: 'html { font-size: 200%; }' })
     expect(await isDrawn(page)).toBe(true)
-    expect((await slots(page).first().boundingBox())?.width).toBeGreaterThanOrEqual(88)
   })
 
   test('resizing to 320px keeps the value, the caret and the focus', async ({ page }) => {
@@ -1074,40 +771,22 @@ test.describe('OneTimeCode focus, states and modes', () => {
   })
 
   for (const story of ['complete', 'two-groups']) {
-    test(`text spacing (1.4.12): each character stays inside its box, and nothing overlaps (${story})`, async ({
-      page,
-    }) => {
+    test(`text spacing (1.4.12): no character is clipped (${story})`, async ({ page }) => {
       await openStory(page, story)
       await page.addStyleTag({
         content:
           '* { line-height: 1.5 !important; letter-spacing: 0.12em !important; word-spacing: 0.16em !important; } p { margin-bottom: 2em !important; }',
       })
-      // Every cell: the boxes and the dash. The dash has to stay inside its 12px cell.
-      const boxes = await cells(page).evaluateAll((elements) =>
-        elements.map((element) => {
-          const box = element.getBoundingClientRect()
-          const range = document.createRange()
-          range.selectNodeContents(element)
-          const text = range.getBoundingClientRect()
-          return {
-            box: { left: box.left, right: box.right, top: box.top, bottom: box.bottom },
-            text: { left: text.left, right: text.right, top: text.top, bottom: text.bottom },
-            clipped:
-              element.scrollWidth > element.clientWidth ||
-              element.scrollHeight > element.clientHeight,
-          }
-        }),
+      // Every cell: the boxes and the dash.
+      const clipped = await cells(page).evaluateAll((elements) =>
+        elements.map(
+          (element) =>
+            element.scrollWidth > element.clientWidth ||
+            element.scrollHeight > element.clientHeight,
+        ),
       )
-      for (const [index, { box, text, clipped }] of boxes.entries()) {
-        expect(text.left, `cell ${index}`).toBeGreaterThanOrEqual(box.left)
-        expect(text.right, `cell ${index}`).toBeLessThanOrEqual(box.right)
-        expect(text.top, `cell ${index}`).toBeGreaterThanOrEqual(box.top)
-        expect(text.bottom, `cell ${index}`).toBeLessThanOrEqual(box.bottom)
-        expect(clipped, `cell ${index}`).toBe(false)
-        const next = boxes[index + 1]
-        if (next !== undefined) {
-          expect(box.right, `cell ${index}`).toBeLessThanOrEqual(next.box.left + 0.5)
-        }
+      for (const [index, isClipped] of clipped.entries()) {
+        expect(isClipped, `cell ${index}`).toBe(false)
       }
     })
   }
@@ -1118,7 +797,7 @@ test.describe('OneTimeCode focus, states and modes', () => {
     await root(page).evaluate((element) => element.removeAttribute('data-ready'))
     expect(await isDrawn(page)).toBe(false)
     const input = emailCode(page)
-    expect(await input.evaluate((element) => getComputedStyle(element).position)).toBe('static')
+    await expect(input).toBeVisible()
     await input.focus()
     await page.keyboard.type('AB')
     const colors = await input.evaluate((element) => {
@@ -1193,11 +872,10 @@ test.describe('OneTimeCode accessibility', () => {
     await expect(root(page).getByRole('textbox')).toHaveCount(1)
   })
 
-  test('the input is at least 44px high and as wide as the row', async ({ page }) => {
+  test('the input is at least 24px high (2.5.8)', async ({ page }) => {
     await openStory(page, 'default')
     const box = await code(page).boundingBox()
-    expect(box?.height).toBeGreaterThanOrEqual(44)
-    expect(box?.width).toBeGreaterThanOrEqual(160)
+    expect(box?.height).toBeGreaterThanOrEqual(24)
   })
 
   const stories = [

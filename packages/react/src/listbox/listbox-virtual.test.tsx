@@ -151,7 +151,6 @@ describe('virtualize: the window', () => {
     expect(list?.getAttribute('role')).toBe('listbox')
     const sizer = sizerElement()
     expect(sizer?.parentElement).toBe(list)
-    expect(sizer?.className).toBe('kv-listbox-virtual-sizer')
     expect(Number.parseFloat(sizer?.style.blockSize ?? '0')).toBeGreaterThan(count * 20)
     // The list scrolls: it is the scroll element.
     expect((list?.scrollHeight ?? 0) > (list?.clientHeight ?? 0)).toBe(true)
@@ -178,7 +177,6 @@ describe('virtualize: the window', () => {
     expect(indexes).toEqual([...indexes].sort((first, second) => first - second))
     for (const element of renderedOptions()) {
       expect(element.parentElement).toBe(sizerElement())
-      expect(element.style.position).toBe('absolute')
     }
   })
 

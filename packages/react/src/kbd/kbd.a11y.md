@@ -53,10 +53,10 @@ Headless: Kbd ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-kbd` (and a ba
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships: keyboard input is marked up as `<kbd>` and not as styled text (`kbd.test.tsx › renders a kbd with its class…`).
+- 1.3.1 Info and Relationships: keyboard input is marked up as `<kbd>` and not as styled text (`kbd.test.tsx › renders a kbd, no role…`).
 - 1.4.3 Contrast: the key's text on its background, measured by `theme:check`.
 - 1.4.4 Resize Text: the size is in rem.
-- 3.1.2 Language of Parts: the consumer's `lang` reaches the element (`kbd.test.tsx › renders a kbd with its class…`).
+- 3.1.2 Language of Parts: the consumer's `lang` reaches the element (`kbd.test.tsx › renders a kbd, no role…`).
 
 ## AT test record
 

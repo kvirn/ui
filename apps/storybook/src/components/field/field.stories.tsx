@@ -336,12 +336,6 @@ export const InsideProse: Story = {
       </article>
     )
   },
-  play: async ({ canvas }) => {
-    // Prose margins on the description would push it away from its label.
-    const description = canvas.getByTestId('description')
-    await expect(getComputedStyle(description).marginBlockStart).toBe('0px')
-    await expect(getComputedStyle(description).marginBlockEnd).toBe('0px')
-  },
 }
 
 /**

@@ -27,8 +27,8 @@ The regions are never focusable and never change the Tab order. These rows prove
 
 | Key       | Context                | Action                                                                           | Test                                                                                                   |
 | --------- | ---------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| Tab       | A page with a provider | The regions are skipped: no `tabindex`, no focusable content, nothing to land on | `announcer.test.tsx › the regions take no space and are not focusable`                                 |
-| Shift+Tab | A page with a provider | The regions are skipped in reverse order as well                                 | `announcer.test.tsx › the regions take no space and are not focusable`                                 |
+| Tab       | A page with a provider | The regions are skipped: no `tabindex`, no focusable content, nothing to land on | `announcer.test.tsx › the regions are not focusable`                                                   |
+| Shift+Tab | A page with a provider | The regions are skipped in reverse order as well                                 | `announcer.test.tsx › the regions are not focusable`                                                   |
 | –         | Calling `announce`     | Focus doesn't move. A message is information, never a change of context (3.2.1)  | `announcer.test.tsx › a polite message is added to the polite region after it was already in the page` |
 
 ## Focus management
@@ -78,7 +78,7 @@ Rules for callers (4.1.3):
 - 4.1.3 Status Messages: a polite and an assertive live region that exist before their text (`announcer.test.tsx › a polite message is added to the polite region after it was already in the page`, `› an assertive message goes to the alert region`).
 - 1.3.1 Info and Relationships, 4.1.2 Name, Role, Value: `status` and `alert` are the roles for these messages. The regions are never `aria-hidden`.
 - 3.2.1 On Focus: announcing never moves focus.
-- 2.1.1 Keyboard, 2.4.3 Focus Order: the regions add no stop to the Tab order (`announcer.test.tsx › the regions take no space and are not focusable`).
+- 2.1.1 Keyboard, 2.4.3 Focus Order: the regions add no stop to the Tab order (`announcer.test.tsx › the regions are not focusable`).
 - 3.1.2 Language of Parts: strings come from i18n in the provider's language (`announcer.test.tsx › text is passed through unchanged, in the provider language (sv and fi)`). A message in another language is a known issue.
 - Axe: no violations with both regions empty and with both holding a message (`announcer.test.tsx › axe`).
 

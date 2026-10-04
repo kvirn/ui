@@ -50,14 +50,13 @@ describe('rendering', () => {
     expect(ListboxNative.displayName).toBe('ListboxNative')
   })
 
-  test('renders a native <select> with its class, outside a Field', async () => {
+  test('renders a native <select>, outside a Field', async () => {
     const { container } = await render(
       <ListboxNative aria-label="Kommun">{municipalities}</ListboxNative>,
     )
     const select = page.getByRole('combobox', { name: 'Kommun' })
     const element = select.element()
     expect(element.tagName).toBe('SELECT')
-    expect(element.className).toBe('kv-listbox-native')
     await expect.element(select).not.toHaveAttribute('id')
     await expect.element(select).not.toHaveAttribute('aria-describedby')
     await expect.element(select).not.toHaveAttribute('aria-invalid')
@@ -399,7 +398,6 @@ describe('useListboxNative', () => {
     }
     await render(<Own />)
     const select = page.getByRole('combobox', { name: 'Egen' })
-    await expect.element(select).toHaveClass('kv-listbox-native')
     await userEvent.selectOptions(select, 'gbg')
     expect(onValueChange.mock.calls.at(-1)?.[0]).toBe('gbg')
   })

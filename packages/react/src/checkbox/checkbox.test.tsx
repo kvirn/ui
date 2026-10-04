@@ -41,12 +41,9 @@ const declaration = (
 )
 
 describe('rendering', () => {
-  test('renders a native <input type="checkbox"> with its class, outside a Field', async () => {
+  test('renders a native <input type="checkbox">, outside a Field', async () => {
     const { container } = await render(<Checkbox aria-label="Godkänn" />)
     const checkbox = page.getByRole('checkbox', { name: 'Godkänn' })
-    const element = checkbox.element()
-    expect(element.tagName).toBe('INPUT')
-    expect(element.className).toBe('kv-checkbox')
     await expect.element(checkbox).toHaveAttribute('type', 'checkbox')
     await expect.element(checkbox).toHaveAttribute('data-state', 'unchecked')
     await expect.element(checkbox).not.toHaveAttribute('id')
@@ -59,7 +56,7 @@ describe('rendering', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('forwards its ref, className and native props', async () => {
+  test('forwards its ref and native props, and has the part class kv-checkbox joined with a consumer’s', async () => {
     const ref = createRef<HTMLInputElement>()
     await render(
       <Checkbox
@@ -527,7 +524,6 @@ describe('useCheckbox', () => {
     await render(<Own />)
     const input = page.getByRole('checkbox', { name: 'Egen' })
     expect((input.element() as HTMLInputElement).indeterminate).toBe(true)
-    await expect.element(input).toHaveClass('kv-checkbox')
   })
 })
 

@@ -151,91 +151,43 @@ test.describe('Native listbox keyboard contract', () => {
 })
 
 test.describe('Native listbox focus and modes', () => {
-  test('the select is 44px high and keeps the ring: 2px, offset 2px (2.5.8)', async ({ page }) => {
+  test('the select is at least 24px high (2.5.8)', async ({ page }) => {
     await openNativeStory(page, 'default')
-    const box = await select(page).boundingBox()
-    expect(box?.height).toBeGreaterThanOrEqual(44)
+    expect((await select(page).boundingBox())?.height).toBeGreaterThanOrEqual(24)
+  })
+
+  test('a key-focused select shows a focus indicator (2.4.7)', async ({ page }) => {
+    await openNativeStory(page, 'default')
     await page.keyboard.press('Tab')
     await expect(select(page)).toBeFocused()
     await expect(select(page)).toHaveAttribute('data-focus-visible', '')
-    await expect(select(page)).toHaveCSS('outline-style', 'solid')
-    await expect(select(page)).toHaveCSS('outline-width', '2px')
-    await expect(select(page)).toHaveCSS('outline-offset', '2px')
+    expect(
+      await select(page).evaluate((element) => getComputedStyle(element).outlineStyle),
+    ).not.toBe('none')
   })
 
-  test('an invalid select is 2px, the text does not move, and the error is in its description', async ({
-    page,
-  }) => {
+  test('the error of an invalid select is in its description', async ({ page }) => {
     await openNativeStory(page, 'invalid')
     const invalid = select(page)
-    await expect(invalid).toHaveCSS('border-top-width', '2px')
     await expect(invalid).toHaveAttribute('aria-invalid', 'true')
     await expect(invalid).toHaveAccessibleDescription(
       'Kommunen där du är folkbokförd. Fel: Välj en kommun',
     )
-    // Border and padding add up to the same 12px, valid or invalid.
-    const inset = () =>
-      select(page).evaluate((element) => {
-        const style = getComputedStyle(element)
-        return (
-          Number.parseFloat(style.borderInlineStartWidth) +
-          Number.parseFloat(style.paddingInlineStart)
-        )
-      })
-    const invalidInset = await inset()
-    await openNativeStory(page, 'default')
-    expect(await inset()).toBe(invalidInset)
-    expect(invalidInset).toBe(13)
   })
 
-  test('the chevron is drawn on the select, not an image, and is muted when disabled', async ({
-    page,
-  }) => {
-    await openNativeStory(page, 'default')
-    const layers = await select(page).evaluate((element) => {
-      const style = getComputedStyle(element)
-      return { image: style.backgroundImage, appearance: style.appearance }
-    })
-    expect(layers.appearance).toBe('none')
-    expect(layers.image.match(/linear-gradient/g)).toHaveLength(2)
-    expect(layers.image).not.toContain('url(')
-  })
-
-  test('forced colours: the select keeps its edge, its invalid width and a native chevron', async ({
-    page,
-  }) => {
+  test('forced colours keep the select edge visible in every state (1.4.11)', async ({ page }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openNativeStory(page, 'forced-colors')
     const selects = page.locator('.kv-listbox-native')
-    const edge = (index: number) =>
-      selects.nth(index).evaluate((element) => {
+    for (const index of [0, 1, 3]) {
+      const edge = await selects.nth(index).evaluate((element) => {
         const style = getComputedStyle(element)
-        return {
-          width: Number.parseFloat(style.borderTopWidth),
-          style: style.borderTopStyle,
-          differsFromBackground: style.borderTopColor !== style.backgroundColor,
-          appearance: style.appearance,
-          image: style.backgroundImage,
-        }
+        return { width: Number.parseFloat(style.borderTopWidth), style: style.borderTopStyle }
       })
-    // The native appearance draws the arrow in a system colour; no gradient is left to drop.
-    expect(await edge(0)).toEqual({
-      width: 1,
-      style: 'solid',
-      differsFromBackground: true,
-      appearance: 'auto',
-      image: 'none',
-    })
-    // The 2px width carries invalid, together with the message (1.4.1).
-    expect(await edge(1)).toMatchObject({ width: 2, style: 'solid', differsFromBackground: true })
-    expect(await edge(3)).toMatchObject({ width: 1, style: 'dashed', differsFromBackground: true })
+      expect(edge.style).not.toBe('none')
+      expect(edge.width).toBeGreaterThan(0)
+    }
     await expect(page.locator('.kv-field-error-message')).toBeVisible()
-  })
-
-  test('reduced motion: the select does not transition', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await openNativeStory(page, 'default')
-    await expect(select(page)).toHaveCSS('transition-duration', '0s')
   })
 
   test('no horizontal scrolling at 320px with the long Finnish label (1.4.10)', async ({
@@ -246,31 +198,6 @@ test.describe('Native listbox focus and modes', () => {
       await openNativeStory(page, story)
       expect(await hasHorizontalScroll(page), story).toBe(false)
     }
-    await openNativeStory(page, 'long-finnish')
-    const field = await page.locator('.kv-field').boundingBox()
-    const control = await page.locator('.kv-listbox-native').boundingBox()
-    expect(control?.width).toBeLessThanOrEqual((field?.width ?? 0) + 0.5)
-  })
-
-  test('right to left: the chevron is at the inline end, on the left', async ({ page }) => {
-    await openNativeStory(page, 'rtl')
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
-    const positions = await page
-      .locator('.kv-listbox-native')
-      .first()
-      .evaluate((element) => {
-        const style = getComputedStyle(element)
-        return { position: style.backgroundPositionX, direction: style.direction }
-      })
-    expect(positions.direction).toBe('rtl')
-    // Both strokes are positioned from the left edge in right-to-left text, the "\\" stroke
-    // nearer to it than the "/" stroke.
-    expect(positions.position).toBe('12px, 18px')
-    await openNativeStory(page, 'default')
-    const ltr = await select(page).evaluate(
-      (element) => getComputedStyle(element).backgroundPositionX,
-    )
-    expect(ltr).toBe('calc(100% - 18px), calc(100% - 12px)')
   })
 })
 
@@ -744,49 +671,48 @@ test.describe('Listbox popup keyboard contract', () => {
 })
 
 test.describe('Listbox popup focus and modes', () => {
-  test('popup: the trigger and the options are 44px high, and the ring is 2px with a 2px offset (2.5.8)', async ({
-    page,
-  }) => {
+  test('popup: a key-focused trigger shows a focus indicator (2.4.7)', async ({ page }) => {
     // The Keyboard story has no play function, so Tab starts from the top of a clean page.
     await openPopupStory(page, 'keyboard')
     const control = page.locator('.kv-listbox-trigger').first()
-    expect((await control.boundingBox())?.height).toBeGreaterThanOrEqual(44)
-    // Reach the trigger with the keyboard, so the focus ring shows: step off it and back on.
+    // Reach the trigger with the keyboard: step off it and back on.
     await control.focus()
     await page.keyboard.press('Shift+Tab')
     await page.keyboard.press('Tab')
     await expect(control).toBeFocused()
     await expect(control).toHaveAttribute('data-focus-visible', '')
-    await expect(control).toHaveCSS('outline-style', 'solid')
-    await expect(control).toHaveCSS('outline-width', '2px')
-    await expect(control).toHaveCSS('outline-offset', '2px')
+    expect(await control.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe(
+      'none',
+    )
+  })
+
+  test('popup: the trigger and the options are at least 24px high (2.5.8)', async ({ page }) => {
+    await openPopupStory(page, 'keyboard')
+    const control = page.locator('.kv-listbox-trigger').first()
+    expect((await control.boundingBox())?.height).toBeGreaterThanOrEqual(24)
+    await control.focus()
     await page.keyboard.press('ArrowDown')
     const options = page.getByRole('option')
     await expect(options.first()).toBeVisible()
-    const boxes = await options.evaluateAll((elements) =>
+    const heights = await options.evaluateAll((elements) =>
       elements.map((element) => element.getBoundingClientRect().height),
     )
-    expect(boxes.length).toBeGreaterThan(0)
-    for (const height of boxes) {
-      expect(height).toBeGreaterThanOrEqual(44)
+    expect(heights.length).toBeGreaterThan(0)
+    for (const height of heights) {
+      expect(height).toBeGreaterThanOrEqual(24)
     }
   })
 
-  test('popup: an invalid trigger has a 2px edge, and the error is in its description', async ({
-    page,
-  }) => {
+  test('popup: the error of an invalid trigger is in its description', async ({ page }) => {
     await openPopupStory(page, 'invalid')
     const control = page.locator('.kv-listbox-trigger')
-    await expect(control).toHaveCSS('border-top-width', '2px')
     await expect(control).toHaveAttribute('aria-invalid', 'true')
     await expect(control).toHaveAccessibleDescription(
       'Kommunen där du är folkbokförd. Fel: Välj en kommun',
     )
   })
 
-  test('popup: the popup is as wide as the trigger, under it, and never covers it', async ({
-    page,
-  }) => {
+  test('popup: the popup never covers the trigger', async ({ page }) => {
     await openPopupStory(page, 'default')
     const control = page.locator('.kv-listbox-trigger')
     await control.click()
@@ -795,8 +721,6 @@ test.describe('Listbox popup focus and modes', () => {
     const popupBox = await popupOf(page).boundingBox()
     expect(triggerBox).not.toBeNull()
     expect(popupBox).not.toBeNull()
-    expect(Math.abs((popupBox?.width ?? 0) - (triggerBox?.width ?? 0))).toBeLessThanOrEqual(1)
-    expect(Math.abs((popupBox?.x ?? 0) - (triggerBox?.x ?? 0))).toBeLessThanOrEqual(1)
     const triggerBottom = (triggerBox?.y ?? 0) + (triggerBox?.height ?? 0)
     const popupBottom = (popupBox?.y ?? 0) + (popupBox?.height ?? 0)
     // Under the trigger, or above it when there is no room: never over it.
@@ -830,7 +754,7 @@ test.describe('Listbox popup focus and modes', () => {
     expect(inView).toBe(true)
   })
 
-  test('popup: forced colours keep the popup edge, the active option and the tick', async ({
+  test('popup: forced colours keep the popup edge and the trigger edges visible (1.4.11)', async ({
     page,
   }) => {
     await page.emulateMedia({ forcedColors: 'active' })
@@ -839,40 +763,19 @@ test.describe('Listbox popup focus and modes', () => {
     await first.focus()
     await page.keyboard.press('ArrowDown')
     await expect(activeOption(page)).toHaveCount(1)
-    const popup = await popupOf(page).evaluate((element) => {
+    const edgeOf = (element: Element) => {
       const style = getComputedStyle(element)
-      return {
-        borderWidth: Number.parseFloat(style.borderTopWidth),
-        edgeDiffers: style.borderTopColor !== style.backgroundColor,
-      }
-    })
-    expect(popup).toEqual({ borderWidth: 1, edgeDiffers: true })
-    const active = await activeOption(page).evaluate((element) => {
-      const style = getComputedStyle(element)
-      const popupStyle = getComputedStyle(element.closest('.kv-listbox-popup') as Element)
-      return {
-        fillDiffers: style.backgroundColor !== popupStyle.backgroundColor,
-        textDiffers: style.color !== popupStyle.color,
-        bar: Number.parseFloat(style.borderInlineStartWidth),
-      }
-    })
-    expect(active).toEqual({ fillDiffers: true, textDiffers: true, bar: 4 })
-    const tick = await page.locator('[role="option"][data-selected]').evaluate((element) => {
-      const style = getComputedStyle(element, '::after')
-      return { width: style.borderBottomWidth, content: style.content }
-    })
-    expect(tick.width).toBe('2px')
-    expect(tick.content).not.toBe('none')
-    // The 2px width carries invalid, the dashed edge carries disabled (1.4.1).
+      return { width: Number.parseFloat(style.borderTopWidth), style: style.borderTopStyle }
+    }
+    const popup = await popupOf(page).evaluate(edgeOf)
+    expect(popup.style).not.toBe('none')
+    expect(popup.width).toBeGreaterThan(0)
     const triggers = page.locator('.kv-listbox-trigger')
-    await expect(triggers.nth(1)).toHaveCSS('border-top-width', '2px')
-    await expect(triggers.nth(3)).toHaveCSS('border-top-style', 'dashed')
-  })
-
-  test('popup: reduced motion: the trigger does not transition', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await openPopupStory(page, 'default')
-    await expect(page.locator('.kv-listbox-trigger')).toHaveCSS('transition-duration', '0s')
+    for (const index of [0, 1, 3]) {
+      const edge = await triggers.nth(index).evaluate(edgeOf)
+      expect(edge.style).not.toBe('none')
+      expect(edge.width).toBeGreaterThan(0)
+    }
   })
 
   test('popup: no horizontal scrolling at 320px with the popup open (1.4.10)', async ({ page }) => {
@@ -885,43 +788,6 @@ test.describe('Listbox popup focus and modes', () => {
       expect(box?.x ?? -1, story).toBeGreaterThanOrEqual(0)
       expect((box?.x ?? 0) + (box?.width ?? 0), story).toBeLessThanOrEqual(320)
     }
-    await openPopupStory(page, 'long-finnish')
-    const field = await page.locator('.kv-field').boundingBox()
-    const control = await page.locator('.kv-listbox-trigger').boundingBox()
-    const popup = await popupOf(page).boundingBox()
-    expect(control?.width).toBeLessThanOrEqual((field?.width ?? 0) + 0.5)
-    // At least as wide as the trigger, never narrower.
-    expect(popup?.width).toBeGreaterThanOrEqual((control?.width ?? 0) - 1)
-  })
-
-  test('popup: right to left: the chevron and the tick are at the inline end', async ({ page }) => {
-    await openPopupStory(page, 'rtl')
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
-    const rtl = await page
-      .locator('.kv-listbox-trigger')
-      .first()
-      .evaluate((element) => {
-        const chevron = new DOMMatrix(getComputedStyle(element, '::after').transform)
-        const choice = document.querySelector('[role="option"][data-selected]')
-        const tick = choice === null ? undefined : getComputedStyle(choice, '::after')
-        return {
-          direction: getComputedStyle(element).direction,
-          // rotate(-45deg): the chevron is mirrored, so it still points down.
-          chevronB: chevron.b,
-          tickMarginLeft: Number.parseFloat(tick?.marginLeft ?? '0'),
-          tickMarginRight: Number.parseFloat(tick?.marginRight ?? '0'),
-        }
-      })
-    expect(rtl.direction).toBe('rtl')
-    expect(rtl.chevronB).toBeLessThan(0)
-    // The tick is pushed to the inline end, which is the left edge.
-    expect(rtl.tickMarginRight).toBeGreaterThan(0)
-    expect(rtl.tickMarginLeft).toBe(0)
-    await openPopupStory(page, 'open')
-    const ltr = await page.locator('.kv-listbox-trigger').evaluate((element) => ({
-      chevronB: new DOMMatrix(getComputedStyle(element, '::after').transform).b,
-    }))
-    expect(ltr.chevronB).toBeGreaterThan(0)
   })
 })
 

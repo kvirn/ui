@@ -594,20 +594,18 @@ Title `Components/Form/OneTimeCode`, args-first with autodocs, `parameters: { a1
 **e2e** (`apps/storybook/src/components/one-time-code/one-time-code.e2e.ts`), besides the keyboard rows:
 
 - Pointer: a press on box 5 of `PartlyFilled` focuses the input with the caret after "481"; a press on box 1 puts it at the start; a press in a gap focuses the input. On `ThreeGroups`, a press on the first separator puts the caret before box 4 ("K"). `document.elementFromPoint` over any box or separator is the input.
-- The ring is on the input and its box equals the row's (bounding boxes), separators included. No box or separator has an outline.
-- Active box: computed edge 2px `focus-ring`, the caret pseudo-element present; the character's box doesn't move when the caret arrives (bounding box before and after).
+- Focus visible (2.4.7): a key-focused input's outline is not `none`. A click sets `data-focused` and not `data-focus-visible`. The look of the ring, the active box and the caret is reviewed by eye in Storybook, never by test.
 - Caret at a separator (`Keyboard`, typed `ABCD12`): End, then ArrowLeft ×2 gives box 5 `data-caret="before"`; ArrowLeft again gives box 4 `data-caret="after"`; the separator never has `data-active`.
-- Separator geometry (`TwoGroups` at 1280): the separator is 12px wide, 8px from box 4 and from box 5, its glyph inside its cell, colour `text`, no border or background. Compact (`kv-compact` wrapper in the test page): 4px gaps, 12px separator.
-- Invalid: every box's computed edge is 2px `danger`, the separator unchanged, and the characters don't move between `Complete` and `Invalid`.
+- The separator never gets `data-selected` or `data-active`.
 - Selection: Control/Command+A sets `data-selected` on every filled box, none on separators, and removes `data-active`.
-- RTL: cell order left to right (H, T, dash, 4, 8, 2, 9), the row at the right edge of the column.
-- Fallback, `chromium-forced-colors`: boxes and separators not rendered (`display: none`), the input visible with `K7QX-2M9P`, `Field`/`FieldText`/`ButtonBorder`, invalid 2px `CanvasText`, focus `Highlight`, plus a screenshot.
+- RTL: cell order in the DOM (H, T, dash, 4, 8, 2, 9) and the input keeps `dir="ltr"`.
+- Fallback, `chromium-forced-colors`: boxes and separators hidden, the input visible with `K7QX-2M9P`, each input's border has a style and a width (1.4.11) and a key-focused input has an outline (2.4.7).
 - Fallback, `reflow-320`: `Default` and `LetterPrefix` show cells with no horizontal overflow; `TwoGroups` and `ThreeGroups` show the plain field, value with the dashes, and the input's `scrollWidth` equals its `clientWidth` (the whole pattern fits); `Default` with the root font size at 200% shows the plain field. Resizing from 1280 to 320 with focus in the field keeps the value, the caret and focus.
 - Limits: a test page with a 3-character and an 11-character pattern shows the plain field at 1280.
-- 1.4.12 overrides: each character's box lies inside its box, each dash inside its separator cell, unclipped, and nothing overlaps.
+- 1.4.12 overrides: no box and no dash cell clips its text (`scrollWidth` and `scrollHeight` within the client size).
 - Not ready: with the hook's `data-ready` removed (a test hook or a static render), the plain field shows and typed text is visible.
 
-**`theme-css.test.ts`**: no `kv-one-time-code--grouped` and no `:nth-child(… of …)` in the one-time-code section; a container rule for every (characters, separators) pair in the limits, with the threshold in §6.5; the separator uses only `space-3`, `text` and `text-muted`.
+**`theme-css.test.ts`**: no one-time-code tests. The container rules, the dash and the dotted zero are reviewed in Storybook and covered by e2e (AGENTS.md rule 13).
 
 ## 8. Validation
 

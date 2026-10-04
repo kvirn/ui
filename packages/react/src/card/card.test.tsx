@@ -47,16 +47,18 @@ function ServiceCard() {
 }
 
 describe('rendering', () => {
-  test.each(parts)('Card.%s renders one <div> with its class', async (_name, Part, className) => {
-    const { container } = await render(<Part data-testid="part">Innehåll</Part>)
-    const part = page.getByTestId('part')
-    expect(part.element().tagName).toBe('DIV')
-    expect(part.element().className).toBe(className)
-    await expect.element(part).not.toHaveAttribute('data-kv')
-    await expect.element(part).toHaveTextContent('Innehåll')
-    expect(container.children).toHaveLength(1)
-    expect(container.firstElementChild).toBe(part.element())
-  })
+  test.each(parts)(
+    'Card.%s renders one element with its part class',
+    async (_name, Part, className) => {
+      const { container } = await render(<Part data-testid="part">Innehåll</Part>)
+      const part = page.getByTestId('part')
+      expect(part.element().className).toBe(className)
+      await expect.element(part).not.toHaveAttribute('data-kv')
+      await expect.element(part).toHaveTextContent('Innehåll')
+      expect(container.children).toHaveLength(1)
+      expect(container.firstElementChild).toBe(part.element())
+    },
+  )
 
   test('adds no role, ARIA or tabindex', async () => {
     await render(<ServiceCard />)
@@ -184,7 +186,7 @@ describe('rendering', () => {
   })
 })
 
-describe('refs, className and style', () => {
+describe('refs and style', () => {
   test.each(parts)('Card.%s forwards its ref to the element', async (_name, Part) => {
     const ref = createRef<HTMLElement>()
     await render(
@@ -195,39 +197,19 @@ describe('refs, className and style', () => {
     expect(ref.current).toBe(page.getByTestId('part').element())
   })
 
-  test('forwards className and style', async () => {
-    await render(
-      <Card.Root data-testid="card" className="kort" style={{ maxInlineSize: '20rem' }}>
-        Text
-      </Card.Root>,
-    )
-    const card = page.getByTestId('card')
-    await expect.element(card).toHaveClass('kort')
-    await expect.element(card).toHaveStyle({ maxInlineSize: '20rem' })
-  })
-
-  test('merges className and style with a render element, and both refs get the element', async () => {
+  test('merges style with a render element, and both refs get the element', async () => {
     const partRef = createRef<HTMLElement>()
     const elementRef = createRef<HTMLElement>()
     await render(
       <Card.Root
         ref={partRef}
-        className="kort"
         style={{ maxInlineSize: '20rem', color: 'rgb(0, 0, 0)' }}
-        render={
-          <article
-            ref={elementRef}
-            className="nyhet"
-            style={{ color: 'rgb(1, 2, 3)' }}
-            data-testid="card"
-          />
-        }
+        render={<article ref={elementRef} style={{ color: 'rgb(1, 2, 3)' }} data-testid="card" />}
       >
         Text
       </Card.Root>,
     )
     const card = page.getByTestId('card')
-    await expect.element(card).toHaveClass('kort nyhet')
     await expect.element(card).toHaveStyle({ maxInlineSize: '20rem', color: 'rgb(1, 2, 3)' })
     expect(partRef.current).toBe(card.element())
     expect(elementRef.current).toBe(card.element())
@@ -235,7 +217,7 @@ describe('refs, className and style', () => {
 })
 
 describe('render', () => {
-  test('an element changes the element and keeps the part class and children', async () => {
+  test('an element changes the element and keeps the children', async () => {
     const { container } = await render(
       <main>
         <Card.Root render={<article />}>
@@ -246,9 +228,7 @@ describe('render', () => {
       </main>,
     )
     const card = page.getByRole('article')
-    await expect.element(card).toHaveClass('kv-card')
     const body = card.element().firstElementChild
-    expect(body?.className).toBe('kv-card-body')
     expect(body?.hasAttribute('data-own')).toBe(true)
     await expect.element(page.getByRole('heading', { name: 'Nyheter', level: 2 })).toBeVisible()
     await expectNoA11yViolations(container)
@@ -289,7 +269,6 @@ describe('render', () => {
     const seenStates: CardState[] = []
     await render(
       <Card.Footer
-        className="sidfot"
         render={(footerProps, state) => {
           seenStates.push(state)
           return <div {...footerProps} data-testid="footer" data-own="" />
@@ -299,7 +278,6 @@ describe('render', () => {
       </Card.Footer>,
     )
     const footer = page.getByTestId('footer')
-    await expect.element(footer).toHaveClass('kv-card-footer', 'sidfot')
     await expect.element(footer).toHaveAttribute('data-own', '')
     await expect.element(footer).toHaveTextContent('Text')
     expect(seenStates.at(-1)).toEqual({})

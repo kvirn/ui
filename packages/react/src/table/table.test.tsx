@@ -314,7 +314,9 @@ describe('native semantics', () => {
 
   test('both checkbox parts are Checkboxes: they render kv-checkbox too', async () => {
     const { container } = await renderInProvider(<CasesTable />)
-    expect(container.querySelectorAll('input[type="checkbox"].kv-checkbox.kv-table-select-checkbox')).toHaveLength(5)
+    expect(
+      container.querySelectorAll('input[type="checkbox"].kv-checkbox.kv-table-select-checkbox'),
+    ).toHaveLength(5)
   })
 
   test('without `table`, every part is the plain native element with its class', async () => {
@@ -624,7 +626,8 @@ describe('expanding', () => {
     const { container } = await renderInProvider(<ExpandableTable />)
     const button = page.getByRole('button', { name: 'Details Anna Svensson' })
     expect(button.element().textContent).toBe('Details')
-    const icon = () => button.element().querySelector('svg.kv-table-expand-icon path')?.getAttribute('d')
+    const icon = () =>
+      button.element().querySelector('svg.kv-table-expand-icon path')?.getAttribute('d')
     const collapsed = icon()
     expect(button.element().querySelector('svg')?.getAttribute('aria-hidden')).toBe('true')
     await userEvent.click(button)
@@ -661,7 +664,9 @@ describe('expanding', () => {
       )
     }
     await renderInProvider(<Custom />)
-    await expect.element(page.getByRole('button', { name: 'Show more Anna Svensson' })).toBeVisible()
+    await expect
+      .element(page.getByRole('button', { name: 'Show more Anna Svensson' }))
+      .toBeVisible()
   })
 
   test('Enter and Space show and hide the details', async () => {
@@ -861,7 +866,9 @@ describe('virtualized', () => {
     expect(Number.parseFloat(last.style.blockSize)).toBeGreaterThan(100_000)
     // A spacer spans what is drawn: the two columns.
     await expect
-      .poll(() => container.querySelector('tbody tr[aria-hidden="true"] td')?.getAttribute('colspan'))
+      .poll(() =>
+        container.querySelector('tbody tr[aria-hidden="true"] td')?.getAttribute('colspan'),
+      )
       .toBe('2')
   })
 
@@ -907,7 +914,9 @@ describe('virtualized', () => {
     const { container } = await renderInProvider(<VirtualTable />)
     const region = container.querySelector<HTMLElement>('.kv-table-scroll-region')
     await expect
-      .poll(() => Number.parseFloat(region?.style.getPropertyValue('--kv-table-head-block-size') ?? '0'))
+      .poll(() =>
+        Number.parseFloat(region?.style.getPropertyValue('--kv-table-head-block-size') ?? '0'),
+      )
       .toBeGreaterThan(0)
   })
 

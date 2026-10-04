@@ -330,7 +330,7 @@ Section is never a Tab stop and never changes the Tab order. Its children handle
 **Tests the plan should list:**
 
 - `section.test.tsx`: one `<div class="kv-section">`; `className` and a `render` element's class join it; `render` changes the element (`aside`, `section`, `li`); refs reach any element; `useSection()` returns `{ rootProps: { className: 'kv-section' } }`; no role, ARIA or `tabindex`; server rendering.
-- `theme-css.test.ts`: the Section rules never set `overflow`, `clip-path`, a fixed height, a radius other than 0 or a shadow; the Root always has a 1px border; the forced-colours rule sets `border-color: CanvasText`; Card has no surface rules left.
+- `theme-css.test.ts` has no Section tests: the rules (no clipping, no fixed height, the 1px border, `border-color: CanvasText` in forced colours) are reviewed in Storybook and covered by the e2e specs (AGENTS.md rule 13).
 - `section.e2e.ts`: the two keyboard rows; the border is drawn on all four sides in a colour other than the background in forced colours; a11y snapshots (Example A is a named `complementary`; `Default` exposes no landmark); no horizontal scroll at 320px with `fi`; text spacing clips nothing at 320px; a link's focus ring at the edge of a `padding-sm` Section isn't clipped; axe and overflow in every story and the four themes.
 
 ## 8. Validation
@@ -372,7 +372,7 @@ Found with `grep -rn` for `kv-card--surface`, `kv-card--canvas`, `sidebar`, `lev
 
 - `packages/theme/theme.css`: header comment line 10 (`kv-card--surface` example → `kv-section--canvas`); Card section comment line 1473 and the `.kv-card.kv-card--surface` and `.kv-card.kv-card--canvas` rules (lines 1548–1554) removed; a new Section section with tokens, Root, forced-colours rule; `.kv-section` in prose's "margins only" list (line 1089).
 - `packages/theme/src/contrast-requirements.ts`: no new pairs; the comment on the hovered-button pairs and `plainBackgrounds` names sections.
-- `packages/theme/src/theme-css.test.ts`: Section tests (§7), and Card has no surface rules.
+- `packages/theme/src/theme-css.test.ts`: nothing for the Section. Its CSS is not unit-tested.
 - `packages/theme/README.md` line 22 (part class list: add `kv-section`), line 29 (`kv-compact`: "less padding in cards and sections"), line 30 (Card bullet: drop the two surface classes), and a new Section bullet.
 
 **React package:**

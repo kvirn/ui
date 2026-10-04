@@ -172,104 +172,59 @@ test.describe('Input keyboard contract', () => {
 })
 
 test.describe('Input focus and modes', () => {
-  test('the focus ring is visible on keyboard focus: 2px, offset 2px', async ({ page }) => {
+  test('a key-focused input shows a focus indicator (2.4.7)', async ({ page }) => {
     await openStory(page, 'input', 'default')
     await page.keyboard.press('Tab')
     const input = page.getByRole('textbox', { name: 'Fullständigt namn' })
     await expect(input).toBeFocused()
     await expect(input).toHaveAttribute('data-focus-visible', '')
-    await expect(input).toHaveCSS('outline-style', 'solid')
-    await expect(input).toHaveCSS('outline-width', '2px')
-    await expect(input).toHaveCSS('outline-offset', '2px')
+    expect(await input.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe(
+      'none',
+    )
   })
 
-  test('a click shows focus as the focus-ring edge, without the ring', async ({ page }) => {
+  test('a click marks focus, but not focus-visible, and a key brings it back', async ({ page }) => {
     await openStory(page, 'input', 'default')
     const input = page.getByRole('textbox', { name: 'Fullständigt namn' })
-    const restingEdge = await input.evaluate((element) => getComputedStyle(element).borderTopColor)
-    // Where the text starts: the edge plus the padding, which stays put at 2px.
-    const textStart = () =>
-      input.evaluate((element) => {
-        const style = getComputedStyle(element)
-        return Number.parseFloat(style.borderLeftWidth) + Number.parseFloat(style.paddingLeft)
-      })
-    const restingTextStart = await textStart()
     await input.click()
     await expect(input).toBeFocused()
     await expect(input).not.toHaveAttribute('data-focus-visible')
-    // The browser's own ring gives way to a transparent one (forced colours paint it).
-    await expect(input).toHaveCSS('outline-color', 'rgba(0, 0, 0, 0)')
-    await expect(input).toHaveCSS('border-top-width', '2px')
-    await expect(input).not.toHaveCSS('border-top-color', restingEdge)
-    expect(await textStart()).toBe(restingTextStart)
-    // A key press after the click brings the ring back at the next focus.
+    // A key press after the click brings focus-visible back at the next focus.
     await page.keyboard.press('Shift+Tab')
     await page.keyboard.press('Tab')
     await expect(input).toBeFocused()
     await expect(input).toHaveAttribute('data-focus-visible', '')
-    await expect(input).not.toHaveCSS('outline-color', 'rgba(0, 0, 0, 0)')
   })
 
-  test('an invalid input is 2px, and its text does not move', async ({ page }) => {
-    await openStory(page, 'input', 'invalid')
-    const invalid = page.getByRole('textbox', { name: 'E-postadress' })
-    await expect(invalid).toHaveCSS('border-top-width', '2px')
-    await openStory(page, 'input', 'default')
-    const valid = page.getByRole('textbox', { name: 'Fullständigt namn' })
-    await expect(valid).toHaveCSS('border-top-width', '1px')
-    // Border and padding add up to the same 12px, valid or invalid.
-    const inset = (input: typeof valid) =>
-      input.evaluate((element) => {
-        const style = getComputedStyle(element)
-        return (
-          Number.parseFloat(style.borderInlineStartWidth) +
-          Number.parseFloat(style.paddingInlineStart)
-        )
-      })
-    expect(await inset(valid)).toBe(13)
-    await openStory(page, 'input', 'invalid')
-    expect(await inset(invalid)).toBe(13)
-  })
-
-  test('the input is 44px high, and 24px at the least (2.5.8)', async ({ page }) => {
+  test('the input is at least 24px high (2.5.8)', async ({ page }) => {
     await openStory(page, 'input', 'default')
     const box = await page.getByRole('textbox', { name: 'Fullständigt namn' }).boundingBox()
-    expect(box?.height).toBeGreaterThanOrEqual(44)
+    expect(box?.height).toBeGreaterThanOrEqual(24)
   })
 
-  test('forced colours: border and invalid state are visible', async ({ page }) => {
+  test('forced colours keep the input edge and the focus indicator visible (1.4.11, 2.4.7)', async ({
+    page,
+  }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'input', 'forced-colors')
     const valid = page.getByRole('textbox', { name: 'Fullständigt namn' })
     const invalid = page.getByRole('textbox', { name: 'E-postadress' })
     const disabled = page.getByRole('textbox', { name: 'Fordonets registreringsnummer' })
     const readOnly = page.getByRole('textbox', { name: 'Personnummer' })
-    const edge = (input: typeof valid) =>
-      input.evaluate((element) => {
+    for (const input of [valid, invalid, disabled, readOnly]) {
+      const edge = await input.evaluate((element) => {
         const style = getComputedStyle(element)
-        return {
-          width: Number.parseFloat(style.borderTopWidth),
-          style: style.borderTopStyle,
-          differsFromBackground: style.borderTopColor !== style.backgroundColor,
-        }
+        return { width: Number.parseFloat(style.borderTopWidth), style: style.borderTopStyle }
       })
-    expect(await edge(valid)).toEqual({ width: 1, style: 'solid', differsFromBackground: true })
-    // The 2px width carries the state, together with the message above it (1.4.1).
-    expect(await edge(invalid)).toEqual({ width: 2, style: 'solid', differsFromBackground: true })
-    expect(await edge(disabled)).toEqual({ width: 1, style: 'dashed', differsFromBackground: true })
-    expect(await edge(readOnly)).toEqual({ width: 1, style: 'solid', differsFromBackground: true })
-    // The ring is a system colour too.
+      expect(edge.style).not.toBe('none')
+      expect(edge.width).toBeGreaterThan(0)
+    }
     await valid.focus()
     await page.keyboard.press('Tab')
     await page.keyboard.press('Shift+Tab')
-    await expect(valid).toHaveCSS('outline-style', 'solid')
-    await expect(valid).toHaveCSS('outline-width', '2px')
-  })
-
-  test('reduced motion: the input does not transition', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await openStory(page, 'input', 'default')
-    await expect(page.getByRole('textbox')).toHaveCSS('transition-duration', '0s')
+    expect(await valid.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe(
+      'none',
+    )
   })
 
   test('no horizontal scrolling at 320px: widths, Finnish label and numbers (1.4.10)', async ({
@@ -288,19 +243,15 @@ test.describe('Input focus and modes', () => {
     }
   })
 
-  test('a width-class input shrinks to the 288px column at 320px (1.4.10)', async ({ page }) => {
+  test('no horizontal scrolling at 320px and 200% text size with a width-class input (1.4.10)', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 320, height: 640 })
     await openStory(page, 'input', 'widths')
-    const widest = await page.locator('.kv-input--width-20').boundingBox()
-    // 258px at 16px text fits the column without help.
-    expect(widest?.width).toBeLessThanOrEqual(288)
-    // At 200% text size it would be 516px: it shrinks to the column instead of overflowing.
     await page.evaluate(() => {
       document.documentElement.style.fontSize = '200%'
     })
     expect(await hasHorizontalScroll(page)).toBe(false)
-    const shrunk = await page.locator('.kv-input--width-20').boundingBox()
-    expect(shrunk?.width).toBeLessThanOrEqual(288)
   })
 
   // The WCAG 1.4.12 overrides (.storybook/preview.css: .kv-story-text-spacing).
@@ -319,24 +270,6 @@ test.describe('Input focus and modes', () => {
       const fits = await input.evaluate((element) => element.scrollWidth <= element.clientWidth)
       expect(fits, `kv-input--width-${className}`).toBe(true)
     }
-  })
-
-  test('right to left: the text starts at the right, and the edge is the same', async ({
-    page,
-  }) => {
-    await openStory(page, 'input', 'rtl')
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
-    const email = page.getByRole('textbox', { name: 'Email address' })
-    // `text-align: start` in a right-to-left page is the right.
-    await expect(email).toHaveCSS('direction', 'rtl')
-    await expect(email).toHaveCSS('text-align', 'start')
-    await expect(email).toHaveCSS('border-top-width', '2px')
-    // The narrow phone input sits at the inline start, the right.
-    const boxes = await page.evaluate(() => {
-      const box = (selector: string) => document.querySelector(selector)?.getBoundingClientRect()
-      return { field: box('.kv-field'), phone: box('.kv-input--width-20') }
-    })
-    expect(Math.abs((boxes.phone?.right ?? 0) - (boxes.field?.right ?? 1))).toBeLessThan(2)
   })
 })
 

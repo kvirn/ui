@@ -126,7 +126,7 @@ As the Combobox's: through the shared Announcer, about 500 ms after the last cha
 
 ## Visual / modes
 
-As the Combobox's. The input looks like an Input, and the popup like the Listbox's. The Toggle and Clear have a hit area of at least 44px (24px minimum). The active suggestion has a 4px bar at its inline start and a tinted fill, never colour alone, and becomes `Highlight` in forced colours (`autocomplete.e2e.ts › forced colours keep the edges, the cross and the chevron`). Nothing moves under reduced motion (`autocomplete.e2e.ts › reduced motion: the input does not transition`). At 320px the input fits its column and the popup is at least as wide and never wider than the viewport (`autocomplete.e2e.ts › no horizontal scrolling at 320px with the popup open (1.4.10)`). In right-to-left text the chevron and the tick are at the inline end (`autocomplete.e2e.ts › right to left: the chevron is at the inline end`).
+As the Combobox's. The input looks like an Input, and the popup like the Listbox's. The Toggle and Clear have a hit area of at least 44px (24px minimum). The active suggestion has a 4px bar at its inline start and a tinted fill, never colour alone, and becomes `Highlight` in forced colours (`autocomplete.e2e.ts › forced colours keep the box edge visible (1.4.11)`). Nothing moves under reduced motion. At 320px the input fits its column and the popup is at least as wide and never wider than the viewport (`autocomplete.e2e.ts › no horizontal scrolling at 320px with the popup open (1.4.10)`). In right-to-left text the chevron and the tick are at the inline end.
 
 ## WCAG SCs covered
 

@@ -38,7 +38,7 @@ Enter, Space, Escape, arrow keys and Home / End are not handled. Children handle
 - Initial focus: not moved. Section never moves focus.
 - Trap: no.
 - Restore to: not applicable.
-- Never obscured by: Section renders no overlay. The default theme never sets `overflow` on a section, so a child's focus ring (2px, 2px offset) is never clipped (2.4.11, 2.4.13). Test: `section.e2e.ts › the focus ring of a link at the edge of a small section is not clipped`.
+- Never obscured by: Section renders no overlay. The default theme never sets `overflow` on a section, so a child's focus ring (2px, 2px offset) is never clipped (2.4.11, 2.4.13). Test: `section.e2e.ts › a key-focused link in a small section shows a focus indicator (2.4.7)`.
 
 ## Announcements
 
@@ -68,7 +68,7 @@ Headless: Section ships no CSS. With `@kvirn-ui/theme/theme.css` (design spec `d
 - Contrast: text, links, muted text, control edges and focus rings are held to their minimums on `surface` and `canvas` by `theme:check` (1.4.3, 1.4.11). The section's own boundary is decorative (1.06–1.10:1 from the page): the region is identified by its position, its heading and, where it is worth it, its landmark.
 - forced-colors behaviour: `surface` and `canvas` both become `Canvas`, and the section's 1px border is `CanvasText` on all four sides. Test: `section.e2e.ts › the section border is visible in forced colours` (`chromium-forced-colors`).
 - reduced-motion behaviour: no motion. No hover, transition or pointer style.
-- Reflow and text spacing: no fixed sizes, no `overflow`, `overflow-wrap: break-word`, and the section can shrink in a grid (`theme-css.test.ts › never clips, never fixes a height, has no radius and no shadow`). Media directly in the section never get wider than it. No horizontal scrolling at 320 CSS px with the Finnish fixture (`reflow-320`, `section.e2e.ts › an image in a section fits at 320px (1.4.10)`). With the 1.4.12 text-spacing overrides at 320px, the section grows and nothing is clipped (`section.e2e.ts › text spacing overrides clip nothing at 320px (1.4.12): <story>`).
+- Reflow and text spacing: no fixed sizes, no `overflow`, `overflow-wrap: break-word`, and the section can shrink in a grid (reviewed in the Section stories and covered by the e2e specs below, not by a CSS test). Media directly in the section never get wider than it. No horizontal scrolling at 320 CSS px with the Finnish fixture (`reflow-320`, `section.e2e.ts › an image in a section fits at 320px (1.4.10)`). With the 1.4.12 text-spacing overrides at 320px, the section grows and nothing is clipped (`section.e2e.ts › text spacing overrides clip nothing at 320px (1.4.12): <story>`).
 - `kv-section--padding-none` with a focusable child flush to a viewport edge would push the ring's outer 4px off-screen: `none` is for frames whose children pad themselves, and for media.
 
 ## WCAG SCs covered

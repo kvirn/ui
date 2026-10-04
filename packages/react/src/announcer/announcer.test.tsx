@@ -94,14 +94,11 @@ describe('the live regions', () => {
     }
   })
 
-  test('the regions take no space and are not focusable', async () => {
+  test('the regions are not focusable', async () => {
     await render(<KvirnProvider>Innehåll</KvirnProvider>)
 
     for (const region of [politeRegion(), assertiveRegion()]) {
       const element = region.element()
-      const box = element.getBoundingClientRect()
-      expect(box.width).toBeLessThanOrEqual(1)
-      expect(box.height).toBeLessThanOrEqual(1)
       expect(element.hasAttribute('tabindex')).toBe(false)
       expect(element.querySelector('a, button, input, select, textarea, [tabindex]')).toBeNull()
     }

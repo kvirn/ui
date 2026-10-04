@@ -26,10 +26,9 @@ afterEach(() => {
 })
 
 describe('Prose', () => {
-  test('renders one <div> with its class, no role or ARIA, and its children', async () => {
+  test('renders one element with the kv-prose class, no role or ARIA, and its children', async () => {
     const { container } = await render(<Prose data-testid="prose">Innehåll</Prose>)
     const prose = page.getByTestId('prose').element()
-    expect(prose.tagName).toBe('DIV')
     expect(prose.className).toBe('kv-prose')
     expect(
       prose.getAttributeNames().filter((name) => name === 'role' || name.startsWith('aria-')),
@@ -82,7 +81,6 @@ describe('Prose as the description of a Field or Fieldset', () => {
     )
     const hint = page.getByTestId('hint').element()
     expect(hint.id).not.toBe('')
-    expect(hint.className).toBe('kv-prose')
     const input = page.getByRole('textbox')
     await expect.element(input).toHaveAttribute('aria-describedby', hint.id)
     await expect.element(input).toHaveAccessibleDescription('12 siffror, utan bindestreck.')
@@ -213,19 +211,18 @@ describe('Prose as the description of a Field or Fieldset', () => {
     expect(seenStates.at(-1)).toEqual({ isInvalid: true, isRequired: false, isDisabled: true })
   })
 
-  test('keeps the consumer’s ref and className next to the registration', async () => {
+  test('keeps the consumer’s ref next to the registration', async () => {
     const ref = createRef<HTMLElement>()
     await render(
       <Field.Root>
         <Field.Label>Namn</Field.Label>
-        <Field.Prose ref={ref} className="egen" data-testid="hint">
+        <Field.Prose ref={ref} data-testid="hint">
           Som i passet.
         </Field.Prose>
         <Input />
       </Field.Root>,
     )
     expect(ref.current).toBe(page.getByTestId('hint').element())
-    await expect.element(page.getByTestId('hint')).toHaveClass('egen', 'kv-prose')
     await expect.element(page.getByRole('textbox')).toHaveAccessibleDescription('Som i passet.')
   })
 

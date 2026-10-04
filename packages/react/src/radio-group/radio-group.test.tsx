@@ -84,7 +84,7 @@ function Duration({ disabledOption, optionHint = false, ...rootProps }: Duration
 }
 
 describe('rendering', () => {
-  test('renders a <fieldset> with its classes, a <legend> first, and forwards ref and props', async () => {
+  test('renders a group with its part classes, a <legend> first, and forwards ref and props', async () => {
     const ref = createRef<HTMLFieldSetElement>()
     const { container } = await render(
       <RadioGroup.Root ref={ref} className="egen" data-testid="root" lang="sv">
@@ -92,7 +92,6 @@ describe('rendering', () => {
       </RadioGroup.Root>,
     )
     const root = page.getByTestId('root').element()
-    expect(root.tagName).toBe('FIELDSET')
     expect(ref.current).toBe(root)
     expect(container.firstElementChild).toBe(root)
     expect(root.classList.contains('kv-radio-group')).toBe(true)
@@ -113,9 +112,7 @@ describe('rendering', () => {
       </RadioGroup.Root>,
     )
     const radio = page.getByRole('radio', { name: 'Svenska' })
-    const element = radio.element()
-    expect(element.tagName).toBe('INPUT')
-    expect(ref.current).toBe(element)
+    expect(ref.current).toBe(radio.element())
     await expect.element(radio).toHaveAttribute('type', 'radio')
     await expect.element(radio).toHaveClass('egen', 'kv-radio')
     await expect.element(radio).toHaveAttribute('value', 'sv')
@@ -157,7 +154,7 @@ describe('rendering', () => {
   test('an option hint is a Field.Hint in that option’s Field, outside its label, and has no axe violations', async () => {
     const { container } = await render(sweden(<Duration optionHint />))
     const hint = page.getByText('Lägst pris per månad.').element()
-    expect([hint.tagName, hint.className]).toEqual(['P', 'kv-field-hint'])
+    expect(hint.id).not.toBe('')
     // It is a sibling of the label, not inside it, so it isn't part of the radio's name or target.
     expect(hint.closest('label')).toBeNull()
     await expect.element(page.getByRole('radio', { name: '12 månader', exact: true })).toBeVisible()
@@ -454,7 +451,7 @@ describe('useRadioGroup and useRadio', () => {
       return <input aria-label="Egen" {...radio.inputProps} />
     }
     await render(<Own />)
-    await expect.element(page.getByRole('radio', { name: 'Egen' })).toHaveClass('kv-radio')
+    await expect.element(page.getByRole('radio', { name: 'Egen' })).toBeVisible()
   })
 
   test('server markup carries the name, checked and data-state', () => {
@@ -520,7 +517,6 @@ describe('the group’s own part names', () => {
     await expect
       .element(group)
       .toHaveAccessibleDescription('Välj ett. Du kan byta senare. Error: Välj språk')
-    await expect.element(page.getByTestId('hint')).toHaveClass('kv-field-hint')
   })
 })
 

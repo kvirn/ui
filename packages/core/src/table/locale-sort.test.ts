@@ -103,16 +103,18 @@ describe('createLocaleSortFn', () => {
     const entries = [new Date(2026, 5, 1), new Date(2025, 5, 1), new Date(2026, 0, 1)].map(
       (date, index) => ({ ...entryNamed('x', index), received: date }),
     )
-    expect(sortRows('sv', entries, 'received').map((entry) => entry.received.getFullYear())).toEqual(
-      [2025, 2026, 2026],
-    )
+    expect(
+      sortRows('sv', entries, 'received').map((entry) => entry.received.getFullYear()),
+    ).toEqual([2025, 2026, 2026])
   })
 
   it('sorts a missing value first, and reverses with a descending sort', () => {
     const entries = [5, null, 1].map((amount, index) => ({ ...entryNamed('x', index), amount }))
     expect(sortRows('sv', entries, 'amount').map((entry) => entry.amount)).toEqual([null, 1, 5])
     expect(sortRows('sv', entries, 'amount', true).map((entry) => entry.amount)).toEqual([
-      5, 1, null,
+      5,
+      1,
+      null,
     ])
   })
 

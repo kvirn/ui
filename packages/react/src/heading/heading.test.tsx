@@ -28,11 +28,10 @@ describe('Heading', () => {
     )
     const element = page.getByRole('heading').element()
     expect(element.getAttributeNames().sort()).toEqual(['class', 'id', 'lang'])
-    expect(element.className).toBe('kv-heading kv-heading--heading-2')
     expect(ref.current).toBe(element)
   })
 
-  test('the size is the look, apart from the level: levels 1 to 3 default to their own', async () => {
+  test('the part and size classes, apart from the level: levels 1 to 3 default to their own size, and a consumer class joins', async () => {
     await render(
       <>
         <Heading level={1}>Ett</Heading>
@@ -50,18 +49,15 @@ describe('Heading', () => {
     expect(classOf('Tre')).toBe('kv-heading kv-heading--display')
     expect(classOf('Fyra')).toBe('kv-heading')
     expect(classOf('Två')).toBe('annat kv-heading kv-heading--heading-3')
-    expect(page.getByRole('heading', { name: 'Tre' }).element().tagName).toBe('H3')
+    await expect.element(page.getByRole('heading', { name: 'Tre', level: 3 })).toBeVisible()
   })
 
-  test('useHeading gives the element, the size and the classes', () => {
-    expect(useHeading({ level: 5 })).toEqual({
-      element: 'h5',
-      size: undefined,
-      rootProps: { className: 'kv-heading' },
+  test('useHeading gives the element and the size', () => {
+    expect(useHeading({ level: 5 })).toMatchObject({ element: 'h5', size: undefined })
+    expect(useHeading({ level: 2, size: 'display' })).toMatchObject({
+      element: 'h2',
+      size: 'display',
     })
-    expect(useHeading({ level: 2, size: 'display' }).rootProps.className).toBe(
-      'kv-heading kv-heading--display',
-    )
   })
 
   test('render changes the element and the function form reads the level', async () => {

@@ -227,7 +227,7 @@ test.describe('Table: Keyboard', () => {
 })
 
 test.describe('Table: size, focus and the sticky head', () => {
-  test('a row checkbox is a 24px box that a click on its centre toggles, in compact density (2.5.8)', async ({
+  test('a row checkbox is at least 24×24 and a click on its centre toggles it, in compact density (2.5.8)', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 })
@@ -235,9 +235,12 @@ test.describe('Table: size, focus and the sticky head', () => {
     const checkbox = rowCheckbox(page, 'Elle Sara')
     await expect(checkbox).toBeChecked()
     const box = await checkbox.boundingBox()
-    expect(box?.width).toBe(24)
-    expect(box?.height).toBe(24)
-    await page.mouse.click((box?.x ?? 0) + 12, (box?.y ?? 0) + 12)
+    expect(box?.width).toBeGreaterThanOrEqual(24)
+    expect(box?.height).toBeGreaterThanOrEqual(24)
+    await page.mouse.click(
+      (box?.x ?? 0) + (box?.width ?? 0) / 2,
+      (box?.y ?? 0) + (box?.height ?? 0) / 2,
+    )
     await expect(checkbox).not.toBeChecked()
   })
 
@@ -261,15 +264,6 @@ test.describe('Table: size, focus and the sticky head', () => {
       return control.y - (head.y + head.height)
     }
     await expect.poll(gapUnderHead).toBeGreaterThanOrEqual(-1)
-  })
-
-  test('the head is sticky and the spacer rows draw nothing', async ({ page }) => {
-    await openStory(page, 'virtualized')
-    await expect(page.locator('.kv-table-head')).toHaveCSS('position', 'sticky')
-    await expect(page.locator('table.kv-table')).toHaveCSS('table-layout', 'fixed')
-    const spacer = page.locator('tr.kv-table-spacer > td').first()
-    await expect(spacer).toHaveCSS('padding-top', '0px')
-    await expect(spacer).toHaveCSS('border-top-width', '0px')
   })
 
   test('no horizontal scrolling at 320px: only the region scrolls (1.4.10)', async ({ page }) => {

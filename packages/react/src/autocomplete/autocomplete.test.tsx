@@ -151,12 +151,10 @@ describe('rendering', () => {
     const { container } = await render(<Example />)
     const element = inputElement()
     const popup = popupElement()
-    expect(element.tagName).toBe('INPUT')
     expect(element.getAttribute('role')).toBe('combobox')
     expect(element.getAttribute('aria-autocomplete')).toBe('list')
     expect(element.getAttribute('aria-expanded')).toBe('false')
     expect(element.getAttribute('autocomplete')).toBe('off')
-    expect(element.className).toBe('kv-autocomplete-input')
     expect(element.hasAttribute('aria-activedescendant')).toBe(false)
     const list = listElement()
     // The popup is the role-less shell, and the list inside it is the listbox that aria-controls points at.
@@ -286,7 +284,11 @@ describe('rendering', () => {
         </Field.Root>
       </KvirnProvider>,
     )
-    expect(inputElement().className).toBe('kv-autocomplete-input')
+    // Text that matches nothing stays: the Root makes the text the value, not the Input part.
+    await userEvent.fill(input(), 'zzz')
+    await userEvent.keyboard('{Escape}')
+    await userEvent.keyboard('{Tab}')
+    expect(inputElement().value).toBe('zzz')
   })
 })
 

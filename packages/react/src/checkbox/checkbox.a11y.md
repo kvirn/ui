@@ -74,10 +74,10 @@ None. Nothing is live. On focus a screen reader reads the label, "checkbox", the
 - Focus indicator: a 2px `focus-ring` outline, 2px offset, around the box (`sm` radius plus offset).
 - Target size: the box is 24×24px (2.5.8). The whole row is the target: the label spans the row and is at least 44px high (32px in `kv-compact`).
 - Colour: the 1px `border-control` edge (3:1); checked and indeterminate are filled `primary` with a drawn `on-primary` mark. Unchecked and checked differ in shape (a mark appears), not only in colour (1.4.1). Invalid is a 2px `danger` edge plus the error message (never colour alone). Disabled is a dashed edge on the `surface` colour.
-- forced-colors behaviour: the marks are drawn with `clip-path` on a `background-color`, and the colours are set explicitly: checked and indeterminate `Highlight` fill and edge with a `HighlightText` mark; invalid `CanvasText` at 2px; disabled dashed `GrayText` (`checkbox.e2e.ts › forced colours: checked, indeterminate, invalid and disabled stay distinguishable`).
-- reduced-motion behaviour: the edge and fill transition only under `no-preference`. The mark appears instantly (`checkbox.e2e.ts › reduced motion: the checkbox does not transition`).
+- forced-colors behaviour: the marks are drawn with `clip-path` on a `background-color`, and the colours are set explicitly: checked and indeterminate `Highlight` fill and edge with a `HighlightText` mark; invalid `CanvasText` at 2px; disabled dashed `GrayText` (`checkbox.e2e.ts › forced colours keep the box edge visible in every state (1.4.11)`).
+- reduced-motion behaviour: the edge and fill transition only under `no-preference`. The mark appears instantly.
 - Reflow: a label of three lines keeps the box beside its first line; no horizontal scrolling at 320px with the Finnish label (`checkbox.e2e.ts › no horizontal scrolling at 320px with the long Finnish label (1.4.10)`).
-- RTL: the box is at the right, the check mark doesn't mirror (`checkbox.e2e.ts › right to left: the box is at the right of its label`).
+- RTL: the box is at the right, the check mark doesn't mirror.
 
 ## WCAG SCs covered
 

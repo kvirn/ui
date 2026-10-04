@@ -144,10 +144,10 @@ They go through the shared Announcer, about 500 ms after the last change (`annou
 - Focus indicator: a 2px `focus-ring` outline, 2px offset, around the input (or around the Control, which draws the edge). The active option is shown by a 4px bar at its inline start and a tinted fill, never by colour alone; the chosen option by a tick (1.4.1, 2.4.7). The popup's look is the Listbox's.
 - Target size: the input and each option are at least 44px high (32px in `kv-compact`). Toggle and Clear are as high as the box (44px, 32px compact) and the remove buttons are 44px square (32px compact), and none is ever under 24px, even where the drawn mark is smaller (2.5.8).
 - Colour: the Input's look: 1px `border-control` edge, `canvas` fill, 2px `danger` edge when invalid, dashed edge on `surface` when disabled. The chosen values are chips on `surface` with a `border-control` edge, so they are not told apart by colour alone.
-- forced-colors behaviour: system colours. The input's and the chips' edges are `ButtonBorder`, invalid `CanvasText` at 2px, disabled dashed `GrayText`. The active option turns `Highlight` with `HighlightText`, and the cross and chevron take the text colour (`combobox.e2e.ts › forced colours keep the edges, the cross and the chevron`).
-- reduced-motion behaviour: nothing moves. The edge and fill transition only under `no-preference`; the popup does not animate its position or opacity (`combobox.e2e.ts › reduced motion: the input does not transition`).
+- forced-colors behaviour: system colours. The input's and the chips' edges are `ButtonBorder`, invalid `CanvasText` at 2px, disabled dashed `GrayText`. The active option turns `Highlight` with `HighlightText`, and the cross and chevron take the text colour (`combobox.e2e.ts › forced colours keep the box edge visible (1.4.11)`).
+- reduced-motion behaviour: nothing moves. The edge and fill transition only under `no-preference`; the popup does not animate its position or opacity.
 - Reflow: the input is as wide as its column and no wider, the popup is at least as wide as it and never wider than the viewport, the chips wrap, and long option text wraps (`combobox.e2e.ts › no horizontal scrolling at 320px with the popup open (1.4.10)`).
-- RTL: the text, the chips and the chevron follow the reading direction, and the tick is at the inline end (`combobox.e2e.ts › right to left: the chevron is at the inline end, and the chips start at the right`).
+- RTL: the text, the chips and the chevron follow the reading direction, and the tick is at the inline end.
 
 ## WCAG SCs covered
 

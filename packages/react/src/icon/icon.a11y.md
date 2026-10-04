@@ -60,7 +60,7 @@ Icon has no strings. A `label` comes from your own translations.
 - Target size: not applicable. An icon-only button's target is the Button's: the default theme makes `kv-button--icon-only` square and at least `--kv-button-min-block-size` (2.5.8).
 - forced-colors behaviour: icons draw in `currentColor`, which follows the system colour. The default theme turns an explicit `fill`, `stroke` or `color` on `.kv-icon` into `currentColor` in forced-colours mode, so a hard-coded colour can't vanish. Test: `icon.e2e.ts` in `chromium-forced-colors`.
 - reduced-motion behaviour: no motion.
-- Text resize and reflow: the size steps are `em`, so icons grow with text (1.4.4) and reflow at 320px (1.4.10). Test: `icon.test.tsx › attributes › the md size is 20px next to 16px text and grows with the text`.
+- Text resize and reflow: the size steps are `em`, so icons grow with text (1.4.4) and reflow at 320px (1.4.10). Test: `icon.test.tsx › attributes › the default size grows with the text it sits in (1.4.4)`.
 
 ## WCAG SCs covered
 

@@ -9,7 +9,7 @@ import { useKbd } from './use-kbd.ts'
 // Contract: kbd.a11y.md.
 
 describe('Kbd', () => {
-  test('renders a kbd with its class, no role or ARIA, and passes attributes and the ref through', async () => {
+  test('renders a kbd, no role or ARIA, and passes attributes and the ref through', async () => {
     const ref = createRef<HTMLElement>()
     await render(
       <p>
@@ -24,11 +24,10 @@ describe('Kbd', () => {
     expect(element.tagName).toBe('KBD')
     expect(element.textContent).toBe('Tab')
     expect(element.getAttributeNames().sort()).toEqual(['class', 'data-testid', 'id', 'lang'])
-    expect(element.className).toBe('kv-kbd')
     expect(ref.current).toBe(element)
   })
 
-  test("the class joins a consumer's", async () => {
+  test("the part class kv-kbd joins a consumer's", async () => {
     await render(
       <Kbd className="annan" data-testid="key">
         Esc
@@ -48,8 +47,8 @@ describe('Kbd', () => {
     expect(combination.textContent).toBe('Ctrl+C')
   })
 
-  test('useKbd gives the element and the class', () => {
-    expect(useKbd()).toEqual({ element: 'kbd', rootProps: { className: 'kv-kbd' } })
+  test('useKbd gives the element', () => {
+    expect(useKbd().element).toBe('kbd')
   })
 
   test('render changes the element', async () => {
@@ -60,7 +59,6 @@ describe('Kbd', () => {
       </>,
     )
     expect(page.getByTestId('element').element().tagName).toBe('SAMP')
-    expect(page.getByTestId('element').element().className).toBe('kv-kbd')
     expect(page.getByTestId('function').element().tagName).toBe('SAMP')
   })
 

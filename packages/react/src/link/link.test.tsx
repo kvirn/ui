@@ -39,7 +39,6 @@ describe('rendering', () => {
     const { container } = await render(<Link.Root href="#ansok">Ansök</Link.Root>)
     const link = page.getByRole('link', { name: 'Ansök' })
     await expect.element(link).toHaveAttribute('href', '#ansok')
-    expect(link.element().tagName).toBe('A')
     await expect.element(link).not.toHaveAttribute('aria-current')
     await expect.element(link).not.toHaveAttribute('data-current')
     await expect.element(link).not.toHaveAttribute('rel')
@@ -297,16 +296,15 @@ describe('new-tab notice resolution', () => {
     await expect.element(page.getByText('(opens in a new tab)')).toBeVisible()
   })
 
-  test('renders a <span> that takes span props and render', async () => {
+  test('takes span props and render', async () => {
     await render(
       <>
-        <Link.NewTabNotice className="visuellt-dold" />
+        <Link.NewTabNotice />
         <Link.NewTabNotice render={<em />}>(extern länk)</Link.NewTabNotice>
       </>,
     )
     const notice = page.getByText('(opens in a new tab)')
-    expect(notice.element().tagName).toBe('SPAN')
-    await expect.element(notice).toHaveClass('visuellt-dold', 'kv-link-new-tab-notice')
+    await expect.element(notice).toBeVisible()
     expect(page.getByText('(extern länk)').element().tagName).toBe('EM')
   })
 
@@ -507,7 +505,6 @@ describe('useLink', () => {
     await expect.element(link).toHaveAttribute('rel', 'noopener noreferrer')
     await expect.element(link).toHaveAttribute('target', '_blank')
     await expect.element(link).toHaveAttribute('aria-current', 'page')
-    await expect.element(link).toHaveClass('kv-link')
     await expectNoA11yViolations(container)
   })
 

@@ -140,12 +140,11 @@ test.describe('CheckboxGroup focus and modes', () => {
     await expect(box(page, 'E-post')).toBeVisible()
   })
 
-  test('an invalid group has 2px edges, no aria-invalid, and the error in the group’s description', async ({
+  test('an invalid group has no aria-invalid, and the error in the group’s description', async ({
     page,
   }) => {
     await openStory(page, 'invalid')
     for (const name of ['E-post', 'Sms', 'Brev']) {
-      await expect(box(page, name)).toHaveCSS('border-top-width', '2px')
       await expect(box(page, name)).not.toHaveAttribute('aria-invalid')
     }
     await expect(page.getByRole('group')).toHaveAccessibleDescription(
@@ -153,47 +152,24 @@ test.describe('CheckboxGroup focus and modes', () => {
     )
   })
 
-  test('options are one gap apart, 8px, not the 24px between text fields', async ({ page }) => {
-    await openStory(page, 'default')
-    const first = await page.locator('.kv-field').nth(0).boundingBox()
-    const second = await page.locator('.kv-field').nth(1).boundingBox()
-    expect(Math.round((second?.y ?? 0) - ((first?.y ?? 0) + (first?.height ?? 0)))).toBe(8)
-  })
-
-  test('forced colours: checked, invalid and disabled boxes stay distinguishable', async ({
-    page,
-  }) => {
+  test('forced colours keep the box edge visible in every state (1.4.11)', async ({ page }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'forced-colors')
     const edges = await page.evaluate(() => {
       const edge = (selector: string) => {
         const style = getComputedStyle(document.querySelector(selector) as Element)
-        return {
-          width: Number.parseFloat(style.borderTopWidth),
-          style: style.borderTopStyle,
-          colour: style.borderTopColor,
-        }
+        return { width: Number.parseFloat(style.borderTopWidth), style: style.borderTopStyle }
       }
-      const probe = document.createElement('div')
-      document.body.append(probe)
-      const colour = (value: string) => {
-        probe.style.backgroundColor = value
-        return getComputedStyle(probe).backgroundColor
-      }
-      const result = {
-        checked: edge('input[name="contact"][value="email"]'),
-        invalid: edge('input[name="invalid"][value="email"]'),
-        disabled: edge('input[name="disabled"][value="text"]'),
-        highlight: colour('Highlight'),
-        canvasText: colour('CanvasText'),
-        grayText: colour('GrayText'),
-      }
-      probe.remove()
-      return result
+      return [
+        edge('input[name="contact"][value="email"]'),
+        edge('input[name="invalid"][value="email"]'),
+        edge('input[name="disabled"][value="text"]'),
+      ]
     })
-    expect(edges.checked).toMatchObject({ width: 1, style: 'solid', colour: edges.highlight })
-    expect(edges.invalid).toMatchObject({ width: 2, style: 'solid', colour: edges.canvasText })
-    expect(edges.disabled).toMatchObject({ width: 1, style: 'dashed', colour: edges.grayText })
+    for (const edge of edges) {
+      expect(edge.style).not.toBe('none')
+      expect(edge.width).toBeGreaterThan(0)
+    }
     await expect(page.locator('.kv-field-error-message')).toBeVisible()
   })
 
@@ -205,20 +181,6 @@ test.describe('CheckboxGroup focus and modes', () => {
       await openStory(page, story)
       expect(await hasHorizontalScroll(page), story).toBe(false)
     }
-  })
-
-  test('right to left: the boxes are at the right of their labels', async ({ page }) => {
-    await openStory(page, 'rtl')
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
-    const checkbox = await page.locator('input[name="contact"][value="email"]').boundingBox()
-    const label = await page
-      .locator('.kv-field:has(input[name="contact"][value="email"]) > label')
-      .boundingBox()
-    expect(
-      Math.abs(
-        (checkbox?.x ?? 0) + (checkbox?.width ?? 0) - ((label?.x ?? 0) + (label?.width ?? 0)),
-      ),
-    ).toBeLessThan(2)
   })
 })
 
