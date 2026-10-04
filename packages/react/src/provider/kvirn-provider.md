@@ -112,12 +112,13 @@ Register your icons once, so `<Icon name>` works everywhere and names are checke
 ## Locale and direction
 
 ```tsx
-const locale = useLocale() // { locale, dir, localeProps: { lang, dir } }
+const locale = useLocale() // { locale, dir, country, localeProps: { lang, dir } }
 const dateSettings = useDateSettings() // { timeZone }
 ```
 
 - `locale` is a BCP 47 tag, such as `sv-SE`, `fi-FI` or `nn-NO`. It drives `Intl.*` formatting and `lang`.
 - `dir` comes from the locale. Use the `dir` prop to override it.
+- `country` is `SE`, `FI` or `NO`, for the masks that differ by country (`mask="postal-code"`, `"personal-identity-number"`, `"organisation-number"` on a TextInput). It is the `country` prop, else the region of the locale (`sv-FI` is `FI`), else its language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn`, `no` and `se` are `NO`), else `undefined` (`en`): then a country mask only takes digits and warns once. Set the prop where the locale doesn't say, such as `se` (Northern Sami) in Finland. A nested provider inherits the parent's `country` prop, so set it again when a section changes country.
 - Weeks always start on Monday, with ISO 8601 week numbers. That's the convention in every Nordic country and the EU, so there's no setting.
 
 ### A section in another language
@@ -338,6 +339,7 @@ On the server, read the same cookie and render the attributes on `<html>`. Rende
 | --------------- | --------------------------------------------------- | ------------------------------------------------------------------------------- |
 | `locale`        | `string` (BCP 47)                                   | `'en'`, or the parent's                                                         |
 | `dir`           | `'ltr' \| 'rtl'`                                    | From `locale`, or the parent's                                                  |
+| `country`       | `'SE' \| 'FI' \| 'NO'`                              | The parent's, else from `locale`: its region, then its language                 |
 | `messages`      | `PartialMessages` (a catalog or a partial override) | Inherited, then built-in `en`                                                   |
 | `timeZone`      | `string` (IANA)                                     | The parent's, or the runtime's zone                                             |
 | `linkComponent` | `RegisteredLinkComponent`                           | `'a'`, or the parent's                                                          |
@@ -350,7 +352,7 @@ On the server, read the same cookie and render the attributes on `<html>`. Rende
 
 | Hook                | Returns                                                                                                               |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `useLocale()`       | `{ locale, dir, localeProps: { lang, dir } }`                                                                         |
+| `useLocale()`       | `{ locale, dir, country, localeProps: { lang, dir } }`                                                                       |
 | `useDateSettings()` | `{ timeZone }`                                                                                                        |
 | `useTheme()`        | `{ colorScheme, contrast, resolvedColorScheme, resolvedContrast, isForcedColors, selectColorScheme, selectContrast }` |
 

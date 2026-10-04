@@ -2,6 +2,20 @@
 
 Source: `packages/core/src/mask/` (pure, no React, no DOM), re-exported from `@kvirn-ui/react` as `masks` and `checks`. React side: `packages/react/src/mask/use-mask.ts` and `TextInput`.
 
+## Masks by name (Plan 0039)
+
+`TextInput`, `NumberInput` and `useMask` take `mask` as `MaskInput`: `Mask | MaskName | { preset, country? } | { pattern, ...PatternMaskOptions } | RegExp`. `resolveMask(input, { locale, country? })` in `core/src/mask/resolve-mask.ts` turns it into a `Mask` and returns `{ mask, missingCountryFor }`. It is pure and never warns: the React hook warns (`mask-country-unresolved`) when `missingCountryFor` is set. A name the types rule out (a typo, `"number"`) is found with `unknownMaskName(input)` before resolving: the hook warns once (`mask-unknown-name:<name>`) and runs no mask. A `NumberInput` with its own `mask` in a Field with no hint warns like a masked TextInput (`number-input-mask-without-description`, 3.3.2).
+
+| Name                                                                                  | Preset                                          |
+| ------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `digits`, `letters`, `letters-and-digits`, `date`, `iban`, `email`, `telephone`       | `masks.digits()` and so on, with no country     |
+| `personal-identity-number` (alias `ssi`), `organisation-number`, `postal-code`        | `masks.personalIdentityNumber({ country })` and so on |
+
+- **Country resolution** (`maskCountryFromLocale(locale)`, `core/src/locale/mask-country.ts`): the instance's `country`, the provider's `country`, the region of the tag (`sv-FI` is `FI`, any case, after a script subtag too), the language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn`, `no` and `se` are `NO`), else `undefined`. A region that isn't SE, FI or NO falls through to the language.
+- **No country:** the mask is `digits`, `missingCountryFor` is the name, and the hook warns once. A name that needs no country never warns.
+- **Types:** `MaskName` (autocompletes), `MaskPresetOptions`, `MaskPatternOptions`, `MaskInput`, all re-exported from `@kvirn-ui/react`.
+- **NumberInput:** `mask` is `MaskInput | false`. Not set is `masks.number(...)`, `false` is a plain numeric text box (no mask details, keypad from `decimals` and `allowNegative`), anything else replaces the number mask and its `unmaskedValue`.
+
 ## The engine
 
 `createMask(definition)` returns a `Mask`, a bundle of pure functions with no state:
@@ -68,7 +82,7 @@ For the consumer to call when it validates. A mask never blocks a value on them,
 
 - `useMask({ mask, onValueChange, announceRejections, messages })` returns `inputProps`, `format` and `unmask`. The `inputProps` hold the preset's suggested attributes, the change, focus and composition handlers, and a ref that tracks the value before each edit.
 - `NumberInput` is `masks.number()` built into a text box (`decimals`, `allowNegative`, `grouping`, `min`, `max`), with `inputMode` from the mask and `type="text"`; `useNumberInput` is its hook. It reports through the same `onValueChange(value, details)`.
-- `TextInput` takes `mask`, `messages` and `announceRejections`. With a mask, `onValueChange(value, details)` is called once, with `reason: 'input'`, `event`, `unmaskedValue`, `isComplete`, `isWithinRange` (number masks) and `rejected`.
+- `TextInput` takes `mask` (a name, an object, a `RegExp` or a `Mask`), `messages` and `announceRejections`. With a mask, `onValueChange(value, details)` is called once, with `reason: 'input'`, `event`, `unmaskedValue`, `isComplete`, `isWithinRange` (number masks) and `rejected`.
 - During composition, `onChange` reports the raw value without `unmaskedValue`. The mask applies at `compositionend`, with the event as the `CompositionEvent`.
 - Autofill is an `input` event without `inputType`, or with `insertReplacementText`. The whole value counts as inserted.
 - The mask-aware attributes (`inputMode`, `autoCapitalize`, `spellCheck`, `dir`) come first in the merge, so the consumer's props win.

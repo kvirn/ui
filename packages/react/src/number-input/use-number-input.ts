@@ -1,5 +1,5 @@
 import { masks } from '@kvirn-ui/core'
-import type { Mask, NumberMaskOptions } from '@kvirn-ui/core'
+import type { Mask, MaskInput, NumberMaskOptions } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { useMemo } from 'react'
 import type {
@@ -25,12 +25,22 @@ export interface UseNumberInputOptions {
   min?: number | undefined
   /** Upper limit. Reported as `details.isWithinRange`, never clamped and never a `max` attribute. */
   max?: number | undefined
+  /**
+   * Replaces the number mask. `false`: no mask at all, a plain numeric text box that leaves
+   * nothing out (`decimals`, `allowNegative`, `grouping`, `min` and `max` then do nothing, except
+   * that `inputMode` still follows `decimals` and `allowNegative`). A name, `{ preset }`,
+   * `{ pattern }`, a `RegExp` or a finished mask from `masks` shapes the value instead, and the
+   * number options are ignored. Default: `masks.number()` from the props above.
+   */
+  mask?: MaskInput | false | undefined
   /** Native `disabled`. A disabled Field disables the input too. */
   disabled?: boolean | undefined
   /**
    * Called with the masked value on every change. `details.unmaskedValue` is the machine form
-   * (`-1234.5`), and `details.isWithinRange` reports `min` and `max`. It only reports: the value
-   * lives in your form state, or in the native input.
+   * (`-1234.5`) of the number mask, or the unmasked value of the `mask` you passed, and
+   * `details.isWithinRange` reports `min` and `max`. With `mask={false}` there are no mask
+   * details: read the value. It only reports: the value lives in your form state, or in the native
+   * input.
    */
   onValueChange?: ((value: string, details: TextInputChangeDetails) => void) | undefined
   /**
@@ -68,8 +78,11 @@ export interface NumberInputPartProps extends Omit<
 
 export interface UseNumberInputResult {
   inputProps: NumberInputPartProps
-  /** The `masks.number()` the options describe, before the provider's locale is applied. */
-  mask: Mask
+  /**
+   * The mask that runs, before the provider's locale is applied: the `masks.number()` the options
+   * describe, or the one `mask` resolved to. `undefined` when `mask` is `false`.
+   */
+  mask: Mask | undefined
   /** Formats a stored (unmasked) number for display, in the provider's locale. */
   format: (unmaskedValue: string) => string
   /** The machine form of a displayed number: `1 250,50` becomes `1250.50`. */
@@ -96,12 +109,13 @@ export function useNumberInput({
   grouping,
   min,
   max,
+  mask: maskOption,
   disabled,
   onValueChange,
   announceRejections,
   messages,
 }: UseNumberInputOptions = {}): UseNumberInputResult {
-  const mask = useMemo(() => {
+  const numberMask = useMemo(() => {
     const options: NumberMaskOptions = {
       ...(decimals === undefined ? {} : { decimals }),
       ...(allowNegative === undefined ? {} : { allowNegative }),
@@ -112,12 +126,34 @@ export function useNumberInput({
     return masks.number(options)
   }, [decimals, allowNegative, grouping, min, max])
 
-  // The mask reports the change, so the text input's own handler has nothing to report.
-  const input = useTextInput({ disabled })
-  const masked = useMaskedInput({ mask, onValueChange, announceRejections, messages })
-  const { inputMode, onChange, onFocus, onCompositionStart, onCompositionEnd, ref } =
-    masked.inputProps
+  // With a mask, the mask reports the change, so the text input's own handler has nothing to
+  // report. Without one (`mask={false}`) the text input reports a plain change.
+  const hasMask = maskOption !== false
+  const input = useTextInput({ disabled, onValueChange: hasMask ? undefined : onValueChange })
+  const masked = useMaskedInput({
+    mask: hasMask ? (maskOption ?? numberMask) : undefined,
+    onValueChange,
+    announceRejections,
+    messages,
+  })
+  const {
+    inputMode: maskInputMode,
+    onChange: maskOnChange,
+    onFocus,
+    onCompositionStart,
+    onCompositionEnd,
+    ref,
+  } = masked.inputProps
   const fieldProps = input.inputProps
+  // The keypad follows the props, as `masks.number()` suggests it: iOS's numeric pads have no minus.
+  const inputMode: MaskInputPartProps['inputMode'] = hasMask
+    ? maskInputMode
+    : allowNegative === true
+      ? 'text'
+      : (decimals ?? 0) > 0
+        ? 'decimal'
+        : 'numeric'
+  const onChange = hasMask ? maskOnChange : fieldProps.onChange
 
   const inputProps = useMemo<NumberInputPartProps>(
     () => ({
@@ -140,7 +176,7 @@ export function useNumberInput({
 
   return {
     inputProps,
-    mask,
+    mask: masked.mask,
     format: masked.format,
     unmask: masked.unmask,
     isInvalid: input.isInvalid,

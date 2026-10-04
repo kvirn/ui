@@ -1,4 +1,4 @@
-import { Button, Card, Field, masks, TextInput } from '@kvirn-ui/react'
+import { Button, Card, Field, KvirnProvider, masks, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/text-input/text-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/text-input/text-input.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -10,6 +10,7 @@ import { maskTextsFor } from '../mask/mask.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   ControlledName,
+  ExplicitPostcodeField,
   NameAndEmailForm,
   PersonalIdentityNumberField,
   PostcodeField,
@@ -66,9 +67,23 @@ const meta = {
       description: 'The native change handler. It still works next to `onValueChange`.',
     },
     mask: {
-      control: false,
+      control: 'select',
+      options: [
+        undefined,
+        'digits',
+        'letters',
+        'letters-and-digits',
+        'personal-identity-number',
+        'ssi',
+        'organisation-number',
+        'postal-code',
+        'date',
+        'iban',
+        'email',
+        'telephone',
+      ],
       description:
-        'Shapes what is typed, from `masks`: `masks.postalCode({ country: "SE" })`, `masks.digits()` and others. A control can’t print a preset call, so see the masked examples below. The field then needs a hint with the format (3.3.2).',
+        'Shapes what is typed. A name (the control lists them), `{ preset, country? }`, `{ pattern, ...options }`, a `RegExp` that accepts partial values, or a finished mask from `masks` (`masks.postalCode({ country: "SE" })`). The country masks read the country from the provider (`country`, else the locale). Objects, a RegExp and a mask can’t be typed into a control: see the masked examples below. The field then needs a hint with the format (3.3.2).',
     },
     announceRejections: {
       control: 'boolean',
@@ -138,6 +153,13 @@ const meta = {
   },
   globals: { locale: 'sv' },
   decorators: [
+    // The masked examples are Swedish whatever the toolbar's language, so the provider says so:
+    // without `country` the country masks follow the locale (nb is Norway, English has none).
+    (Story) => (
+      <KvirnProvider country="SE">
+        <Story />
+      </KvirnProvider>
+    ),
     (Story) => (
       <div className="kv-story-form">
         <Story />
@@ -461,6 +483,21 @@ export const MaskedPostcode: Story = {
     const { text } = maskTextsFor(globals)
     const input = canvas.getByRole('textbox', { name: new RegExp(`^${text.postalCode}`) })
     await expect(input).toHaveAccessibleDescription(text.postalCodeHint)
+    await userEvent.type(input, '12345')
+    await expect(input).toHaveValue('123 45')
+  },
+}
+
+/**
+ * The explicit form of a mask: `masks.postalCode({ country })` builds the same mask the name
+ * `"postal-code"` resolves to, without the provider's locale. Prefer the name.
+ */
+export const ExplicitMask: Story = {
+  parameters: showSource('text-input/text-input.fixture.tsx', 'ExplicitPostcodeField'),
+  render: (_args, { globals }) => <ExplicitPostcodeField locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = maskTextsFor(globals)
+    const input = canvas.getByRole('textbox', { name: new RegExp(`^${text.postalCode}`) })
     await userEvent.type(input, '12345')
     await expect(input).toHaveValue('123 45')
   },

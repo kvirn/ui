@@ -155,8 +155,7 @@ const textsNb: MaskTexts = {
   email: 'E-postadresse',
   emailHint: 'Mellomrom fjernes. Skjemaet kontrollerer formatet, ikke masken.',
   telephone: 'Telefonnummer',
-  telephoneHint:
-    'Siffer, pluss, mellomrom, bindestrek og parentes. For eksempel +47 912 34 567.',
+  telephoneHint: 'Siffer, pluss, mellomrom, bindestrek og parentes. For eksempel +47 912 34 567.',
   caseNumber: 'Saksnummer',
   caseNumberHint: 'To bokstaver og fire siffer, for eksempel AB-1234.',
   registration: 'Registreringsnummer',
@@ -211,8 +210,7 @@ const textsNn: MaskTexts = {
   email: 'E-postadresse',
   emailHint: 'Mellomrom blir fjerna. Skjemaet kontrollerer formatet, ikkje masken.',
   telephone: 'Telefonnummer',
-  telephoneHint:
-    'Siffer, pluss, mellomrom, bindestrek og parentes. Til dømes +47 912 34 567.',
+  telephoneHint: 'Siffer, pluss, mellomrom, bindestrek og parentes. Til dømes +47 912 34 567.',
   caseNumber: 'Saksnummer',
   caseNumberHint: 'To bokstavar og fire siffer, til dømes AB-1234.',
   registration: 'Registreringsnummer',
@@ -340,12 +338,14 @@ export const characterNotAllowedMessage = (
 
 /**
  * The provider, with the library strings in the page's language: the mask's announcements come
- * from its catalog. fi and se show English.
+ * from its catalog. fi and se show English. `country="SE"` because every example here is
+ * Swedish whatever the language: the country masks would otherwise follow the toolbar's locale
+ * (nb is Norway, and English has no country).
  */
 export const withMaskLocale: Decorator = (Story, { globals }) => {
   const locale = maskLocaleOf(globals)
   return (
-    <KvirnProvider locale={locale} messages={maskMessages[locale]}>
+    <KvirnProvider locale={locale} country="SE" messages={maskMessages[locale]}>
       <Story />
     </KvirnProvider>
   )
@@ -384,7 +384,7 @@ export function IdentifierFields({ globals }: { globals: Record<string, unknown>
         label={text.personalIdentityNumber}
         hint={text.personalIdentityNumberHint}
         name="personalIdentityNumber"
-        mask={masks.personalIdentityNumber({ country: 'SE' })}
+        mask="personal-identity-number"
         autoComplete="off"
         className="kv-input--width-20"
       />
@@ -392,7 +392,7 @@ export function IdentifierFields({ globals }: { globals: Record<string, unknown>
         label={text.personalIdentityNumberFi}
         hint={text.personalIdentityNumberFiHint}
         name="personalIdentityNumberFi"
-        mask={masks.personalIdentityNumber({ country: 'FI' })}
+        mask={{ preset: 'personal-identity-number', country: 'FI' }}
         autoComplete="off"
         className="kv-input--width-20"
       />
@@ -400,7 +400,7 @@ export function IdentifierFields({ globals }: { globals: Record<string, unknown>
         label={text.personalIdentityNumberNo}
         hint={text.personalIdentityNumberNoHint}
         name="personalIdentityNumberNo"
-        mask={masks.personalIdentityNumber({ country: 'NO' })}
+        mask={{ preset: 'personal-identity-number', country: 'NO' }}
         autoComplete="off"
         className="kv-input--width-20"
       />
@@ -408,7 +408,7 @@ export function IdentifierFields({ globals }: { globals: Record<string, unknown>
         label={text.organisationNumber}
         hint={text.organisationNumberHint}
         name="organisationNumber"
-        mask={masks.organisationNumber({ country: 'SE' })}
+        mask="organisation-number"
         autoComplete="off"
         className="kv-input--width-20"
       />
@@ -416,7 +416,7 @@ export function IdentifierFields({ globals }: { globals: Record<string, unknown>
         label={text.postalCode}
         hint={text.postalCodeHint}
         name="postalCode"
-        mask={masks.postalCode({ country: 'SE' })}
+        mask="postal-code"
         autoComplete="postal-code"
         className="kv-input--width-6"
       />
@@ -424,7 +424,7 @@ export function IdentifierFields({ globals }: { globals: Record<string, unknown>
         label={text.iban}
         hint={text.ibanHint}
         name="iban"
-        mask={masks.iban()}
+        mask="iban"
         autoComplete="off"
       />
     </div>
@@ -448,7 +448,7 @@ export function FilterFields({ globals }: { globals: Record<string, unknown> }) 
         label={text.letters}
         hint={text.lettersHint}
         name="letters"
-        mask={masks.letters()}
+        mask="letters"
         autoComplete="off"
         className="kv-input--width-10"
       />
@@ -456,7 +456,7 @@ export function FilterFields({ globals }: { globals: Record<string, unknown> }) 
         label={text.lettersAndDigits}
         hint={text.lettersAndDigitsHint}
         name="lettersAndDigits"
-        mask={masks.lettersAndDigits()}
+        mask="letters-and-digits"
         autoComplete="off"
         className="kv-input--width-10"
       />
@@ -465,7 +465,7 @@ export function FilterFields({ globals }: { globals: Record<string, unknown> }) 
         hint={text.emailHint}
         name="email"
         type="email"
-        mask={masks.email()}
+        mask="email"
         autoComplete="email"
       />
       <MaskedField
@@ -473,7 +473,7 @@ export function FilterFields({ globals }: { globals: Record<string, unknown> }) 
         hint={text.telephoneHint}
         name="telephone"
         type="tel"
-        mask={masks.telephone()}
+        mask="telephone"
         autoComplete="tel"
         className="kv-input--width-20"
       />
@@ -491,10 +491,11 @@ export function CustomMaskFields({ globals }: { globals: Record<string, unknown>
         hint={text.caseNumberHint}
         name="caseNumber"
         // `a` is a letter, `9` a digit, anything else a literal. The transform capitalises.
-        mask={masks.pattern('aa-9999', {
+        mask={{
+          pattern: 'aa-9999',
           transform: { a: (character) => character.toUpperCase() },
           attributes: { autoCapitalize: 'characters', spellCheck: false, dir: 'ltr' },
-        })}
+        }}
         autoComplete="off"
         className="kv-input--width-6"
       />
@@ -596,7 +597,7 @@ export function PersonalIdentityNumberForm({ globals }: { globals: Record<string
         </Field.Prose>
         <TextInput
           name="personalIdentityNumber"
-          mask={masks.personalIdentityNumber({ country: 'SE' })}
+          mask="personal-identity-number"
           autoComplete="off"
           className="kv-input--width-20"
           value={value}
@@ -656,10 +657,11 @@ export function StoredValueField({ globals }: { globals: Record<string, unknown>
 export function OwnInputField({ globals }: { globals: Record<string, unknown> }) {
   const { text, lang } = maskTextsFor(globals)
   const caseNumber = useMask({
-    mask: masks.pattern('aa-9999', {
+    mask: {
+      pattern: 'aa-9999',
       transform: { a: (character) => character.toUpperCase() },
       attributes: { autoCapitalize: 'characters', spellCheck: false, dir: 'ltr' },
-    }),
+    },
   })
   return (
     <Field.Root required lang={lang}>
@@ -704,7 +706,7 @@ export function KeyboardForm({ globals }: { globals: Record<string, unknown> }) 
         label={text.personalIdentityNumber}
         hint={text.personalIdentityNumberHint}
         name="personalIdentityNumber"
-        mask={masks.personalIdentityNumber({ country: 'SE' })}
+        mask="personal-identity-number"
         autoComplete="off"
         className="kv-input--width-20"
       />
@@ -712,7 +714,7 @@ export function KeyboardForm({ globals }: { globals: Record<string, unknown> }) 
         label={text.postalCode}
         hint={text.postalCodeHint}
         name="postalCode"
-        mask={masks.postalCode({ country: 'SE' })}
+        mask="postal-code"
         autoComplete="postal-code"
         className="kv-input--width-6"
       />
@@ -736,7 +738,7 @@ export function KeyboardForm({ globals }: { globals: Record<string, unknown> }) 
         label={text.quiet}
         hint={text.quietHint}
         name="quiet"
-        mask={masks.digits()}
+        mask="digits"
         announceRejections={false}
         autoComplete="off"
         className="kv-input--width-10"
@@ -745,7 +747,7 @@ export function KeyboardForm({ globals }: { globals: Record<string, unknown> }) 
         label={text.letters}
         hint={text.lettersHint}
         name="letters"
-        mask={masks.letters()}
+        mask="letters"
         autoComplete="off"
         className="kv-input--width-10"
       />

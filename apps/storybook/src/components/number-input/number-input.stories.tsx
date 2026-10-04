@@ -59,6 +59,12 @@ const meta = {
       description:
         'Upper limit. Reported as `details.isWithinRange`, never clamped, and never written as a `max` attribute.',
     },
+    mask: {
+      control: 'select',
+      options: [undefined, false, 'digits', 'letters-and-digits', 'telephone'],
+      description:
+        'Replaces the number mask. `false`: no mask, a plain numeric text box that leaves nothing out and reports no `unmaskedValue` (`decimals`, `allowNegative`, `grouping`, `min` and `max` then do nothing, but `inputmode` still follows `decimals` and `allowNegative`). A name, `{ pattern }`, a `RegExp` or a mask from `masks` shapes the value instead, and `unmaskedValue` is that mask’s. Default: the number mask.',
+    },
     value: {
       control: 'text',
       description:
@@ -262,6 +268,33 @@ export const Amount: Story = {
     // A currency sign is a letter to the mask: it is left out.
     await userEvent.type(input, ' kr')
     await expect(input).toHaveValue(rentExample)
+  },
+}
+
+/**
+ * Masks are optional: `mask={false}` is a plain numeric text box. Nothing is left out or
+ * announced, and `onValueChange` reports no `unmaskedValue`: read the typed value and parse it
+ * yourself. Use it where the number mask's filtering is in the way, for instance an amount pasted
+ * from a spreadsheet. The hint still says the format you expect.
+ */
+export const WithoutMask: Story = {
+  render: (_args, { globals }) => {
+    const { text, lang, rentExample } = textsFor(localeOf(globals))
+    return (
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.rent}</Field.Label>
+        <NumberInput name="rent" mask={false} decimals={2} className="kv-input--width-10" />
+        <Field.Hint>{text.rentHint(rentExample)}</Field.Hint>
+      </Field.Root>
+    )
+  },
+  play: async ({ canvas, globals }) => {
+    const { text } = textsFor(localeOf(globals))
+    const input = canvas.getByRole('textbox', { name: text.rent })
+    await expect(input).toHaveAttribute('inputmode', 'decimal')
+    // Nothing is left out: a letter and a currency sign stay as typed.
+    await userEvent.type(input, 'ca 1250 kr')
+    await expect(input).toHaveValue('ca 1250 kr')
   },
 }
 

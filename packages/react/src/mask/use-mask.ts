@@ -1,6 +1,7 @@
-import type { Mask, MaskAttributes } from '@kvirn-ui/core'
+import { resolveMask, unknownMaskName } from '@kvirn-ui/core'
+import type { Mask, MaskAttributes, MaskInput } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { useCallback, useContext, useId, useMemo, useRef } from 'react'
+import { useCallback, useContext, useEffect, useId, useMemo, useRef } from 'react'
 import type {
   ChangeEvent,
   ChangeEventHandler,
@@ -10,14 +11,19 @@ import type {
   RefCallback,
 } from 'react'
 import { useQuietAnnouncer, warnAnnouncerMissing } from '../announcer/use-announcer.ts'
+import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldContext } from '../field/field-context.ts'
 import type { TextInputChangeDetails } from '../text-input/use-text-input.ts'
 import { useLocale } from '../provider/use-locale.ts'
 import { useMessages } from '../provider/use-messages.ts'
 
 export interface UseMaskOptions {
-  /** A preset from `masks`, such as `masks.digits()`, or your own: `masks.pattern()` or `masks.regexp()`. */
-  mask: Mask
+  /**
+   * A name (`'postal-code'`, with the country from the provider's locale), `{ preset, country? }`,
+   * `{ pattern, ...options }`, a `RegExp` that accepts partial values, or a finished mask from
+   * `masks`, such as `masks.digits()`.
+   */
+  mask: MaskInput
   /**
    * Called with the masked value on every change, with `{ reason: 'input', event }` and the mask
    * details: `unmaskedValue`, `isComplete`, `isWithinRange` (number masks) and `rejected`. It
@@ -62,6 +68,12 @@ export interface UseMaskResult {
 
 /** Internal. `mask` may be `undefined` so `TextInput` can call the hook without a mask. */
 export interface UseMaskInternalOptions extends Omit<UseMaskOptions, 'mask'> {
+  mask: MaskInput | undefined
+}
+
+/** Internal. The result of `useMaskedInput`: also the resolved mask, for the callers' own checks. */
+export interface UseMaskedInputResult extends UseMaskResult {
+  /** The mask the `mask` option resolved to, before the provider's locale is applied. */
   mask: Mask | undefined
 }
 
@@ -87,22 +99,55 @@ export function useMaskedInput({
   onValueChange,
   announceRejections = true,
   messages,
-}: UseMaskInternalOptions): UseMaskResult {
+}: UseMaskInternalOptions): UseMaskedInputResult {
   const field = useContext(FieldContext)
   const generatedId = useId()
   const throttleKey = field?.controlProps.id ?? generatedId
-  const { locale } = useLocale()
+  const { locale, country } = useLocale()
   const maskMessages = useMessages('mask', messages)
   // Quiet: only a rejection that can't be announced warns, so a mask with no rejections or with
   // `announceRejections={false}` doesn't make noise without a provider.
   const { announce, isAvailable } = useQuietAnnouncer()
-  const localizedMask = useMemo(() => mask?.withLocale(locale), [mask, locale])
+  // A name or a pattern object is resolved here, with the provider's country, so the warnings and
+  // the attributes below read the mask that runs.
+  // The types rule out an unknown name, but a JavaScript user or a typo can pass one: it warns,
+  // and the input runs with no mask, because nothing is guessed.
+  const unknownName = useMemo(
+    () => (mask === undefined ? undefined : unknownMaskName(mask)),
+    [mask],
+  )
+  const resolved = useMemo(
+    () =>
+      mask === undefined || unknownName !== undefined
+        ? undefined
+        : resolveMask(mask, { locale, country }),
+    [mask, unknownName, locale, country],
+  )
+  const resolvedMask = resolved?.mask
+  const missingCountryFor = resolved?.missingCountryFor
+  const localizedMask = useMemo(() => resolvedMask?.withLocale(locale), [resolvedMask, locale])
+  useEffect(() => {
+    if (unknownName !== undefined) {
+      warnOnce(
+        `mask-unknown-name:${unknownName}`,
+        `The mask "${unknownName}" is not a mask name, so the input takes everything, unmasked. Use one of masks' names ("digits", "postal-code", …), { pattern }, a RegExp, or a mask from masks.`,
+      )
+    }
+  }, [unknownName])
+  useEffect(() => {
+    if (missingCountryFor !== undefined) {
+      warnOnce(
+        `mask-country-unresolved:${missingCountryFor}:${locale}`,
+        `The mask "${missingCountryFor}" needs a country and none resolved from the locale "${locale}", so it only takes digits. Pass { preset: "${missingCountryFor}", country: "SE" } (or FI, NO), or set <KvirnProvider country>.`,
+      )
+    }
+  }, [missingCountryFor, locale])
 
   /** The value before the edit in progress. Without it the whole value counts as inserted. */
   const previousValue = useRef<string | undefined>(undefined)
   const isComposing = useRef(false)
 
-  const hasMask = mask !== undefined
+  const hasMask = resolvedMask !== undefined
   const ref = useCallback<RefCallback<HTMLInputElement>>(
     (element) => {
       // No mask, nothing to track: an unmasked TextInput pays nothing for the hook.
@@ -240,6 +285,7 @@ export function useMaskedInput({
 
   return {
     inputProps,
+    mask: resolvedMask,
     format: (unmaskedValue) => localizedMask?.format(unmaskedValue) ?? unmaskedValue,
     unmask: (value) => localizedMask?.unmask(value) ?? value,
   }
@@ -255,9 +301,10 @@ export function useMaskedInput({
  * format in a visible hint (3.3.2).
  *
  * @example
- * const caseNumber = useMask({ mask: masks.pattern('aa-9999'), onValueChange: setValue })
+ * const caseNumber = useMask({ mask: { pattern: 'aa-9999' }, onValueChange: setValue })
  * <input {...mergeProps(caseNumber.inputProps, { name: 'caseNumber' })} />
  */
 export function useMask(options: UseMaskOptions): UseMaskResult {
-  return useMaskedInput(options)
+  const { inputProps, format, unmask } = useMaskedInput(options)
+  return { inputProps, format, unmask }
 }

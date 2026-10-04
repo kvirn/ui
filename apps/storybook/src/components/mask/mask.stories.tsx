@@ -28,7 +28,11 @@ const meta = {
   component: TextInput,
   globals: { locale: 'sv' },
   argTypes: {
-    mask: { control: false, description: 'A preset from `masks`, or your own pattern or regexp.' },
+    mask: {
+      control: false,
+      description:
+        'A name (`"postal-code"`), `{ preset, country? }`, `{ pattern, ...options }`, a `RegExp`, or a mask from `masks`. See the examples.',
+    },
     announceRejections: {
       control: 'boolean',
       description: 'Announce when the mask drops characters. Default true; needs KvirnProvider.',
@@ -241,9 +245,8 @@ export const RTL: Story = {
   render: (_args, { globals }) => <IdentifierFields globals={globals} />,
   play: async ({ canvas }) => {
     const input = canvas.getByRole('textbox', { name: /^Personal identity number$/ })
+    // Typing is proven in mask.e2e.ts. A play that typed too would race that test for the input.
     await expect(input).toHaveAttribute('dir', 'ltr')
-    await userEvent.type(input, '199001012385')
-    await expect(input).toHaveValue('19900101-2385')
   },
 }
 

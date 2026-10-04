@@ -8,7 +8,7 @@ import {
   isSameThemeConfiguration,
   resolveDirection,
 } from '@kvirn-ui/core'
-import type { Direction, Env, ThemeOptions } from '@kvirn-ui/core'
+import type { Direction, Env, MaskCountry, ThemeOptions } from '@kvirn-ui/core'
 import type { PartialMessages } from '@kvirn-ui/i18n'
 import { useContext, useEffect, useMemo } from 'react'
 import type { ReactNode } from 'react'
@@ -28,6 +28,13 @@ export interface KvirnProviderProps {
   locale?: string | undefined
   /** Overrides the direction derived from `locale`. */
   dir?: Direction | undefined
+  /**
+   * The country for the masks that differ by country (`personal-identity-number`, `postal-code`,
+   * `organisation-number`): `SE`, `FI` or `NO`. Default: the parent's, else the region of
+   * `locale` (`sv-FI` is `FI`), else its language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn`, `no` and
+   * `se` are `NO`). Set it where the locale doesn't say, such as `se` (Northern Sami) in Finland.
+   */
+  country?: MaskCountry | undefined
   /**
    * A catalog (`sv` from `@kvirn-ui/i18n/sv`) or a partial override. Resolved over the
    * parent provider's messages, and finally over built-in `en`.
@@ -65,6 +72,7 @@ export function KvirnProvider({
   children,
   locale: localeProp,
   dir: dirProp,
+  country: countryProp,
   messages,
   timeZone: timeZoneProp,
   linkComponent: linkComponentProp,
@@ -81,6 +89,7 @@ export function KvirnProvider({
   const locale = localeProp ?? parentConfig.locale
   const dir =
     dirProp ?? (localeProp === undefined ? parentConfig.dir : resolveDirection(localeProp))
+  const country = countryProp ?? parentConfig.country
   const timeZone = timeZoneProp ?? parentConfig.timeZone
   const linkComponent = linkComponentProp ?? parentConfig.linkComponent
   const explicitEnv = envProp ?? parentConfig.env
@@ -113,6 +122,7 @@ export function KvirnProvider({
     () => ({
       locale,
       dir,
+      country,
       timeZone,
       messageLayers,
       format,
@@ -121,7 +131,18 @@ export function KvirnProvider({
       iconDefaults,
       env: explicitEnv,
     }),
-    [locale, dir, timeZone, messageLayers, format, linkComponent, icons, iconDefaults, explicitEnv],
+    [
+      locale,
+      dir,
+      country,
+      timeZone,
+      messageLayers,
+      format,
+      linkComponent,
+      icons,
+      iconDefaults,
+      explicitEnv,
+    ],
   )
 
   const isOutermost = parentThemeStore === null

@@ -1,5 +1,5 @@
 'use client'
-import type { Mask } from '@kvirn-ui/core'
+import type { MaskInput } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { useContext, useEffect, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
@@ -37,12 +37,13 @@ export interface TextInputProps extends Omit<
   /** Reports each change, with `{ reason: 'input', event }`. `onChange` still works too. */
   onValueChange?: ((value: string, details: TextInputChangeDetails) => void) | undefined
   /**
-   * Shapes what the user types: a preset from `masks`, or your own. The input stays
-   * native, so paste, autofill and undo work. `onValueChange` then also gets `unmaskedValue`,
-   * `isComplete`, `isWithinRange` (number masks) and `rejected`. Put the format in a hint, a
-   * `<Prose>` in the Field (3.3.2).
+   * Shapes what the user types: a name (`"postal-code"`, with the country from the provider's
+   * locale), `{ preset, country? }`, `{ pattern, ...options }`, a `RegExp` that accepts partial
+   * values, or a finished mask from `masks`. The input stays native, so paste, autofill and undo
+   * work. `onValueChange` then also gets `unmaskedValue`, `isComplete`, `isWithinRange` (number
+   * masks) and `rejected`. Put the format in a hint, a `<Field.Hint>` in the Field (3.3.2).
    */
-  mask?: Mask | undefined
+  mask?: MaskInput | undefined
   /**
    * With a `mask`: announce, politely and at most once every few seconds, when it drops
    * characters. Default `true`. Needs a `KvirnProvider`: without one nothing is announced.
@@ -128,12 +129,14 @@ export function TextInput({
 
   const hasDescriptionText = ownDescribedBy !== undefined
   const controlId = field?.controlProps.id
+  // The mask that runs: a name or a pattern object is resolved by the hook, so these checks read it.
+  const resolvedMask = maskInput.mask
   useEffect(() => {
     const element = elementRef.current
-    if (mask === undefined || element === null) {
+    if (resolvedMask === undefined || element === null) {
       return
     }
-    if (type === 'email' && mask.attributes.inputMode !== 'email') {
+    if (type === 'email' && resolvedMask.attributes.inputMode !== 'email') {
       warnOnce(
         'text-input-mask-on-email',
         'A mask other than masks.email() is on a TextInput with type="email". The browser has no selection API for it, so the caret can’t be kept while the mask rewrites the value. Use type="text" with inputMode="email", or masks.email().',

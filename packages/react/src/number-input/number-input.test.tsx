@@ -1,3 +1,4 @@
+import type { MaskInput } from '@kvirn-ui/core'
 import { en } from '@kvirn-ui/i18n/en'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
@@ -10,6 +11,7 @@ import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
 import { InputGroup } from '../input-group/input-group.tsx'
+import { masks } from '../index.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import type { TextInputChangeDetails } from '../text-input/use-text-input.ts'
 import { NumberInput } from './number-input.tsx'
@@ -278,6 +280,33 @@ describe('rejections (contract: number-input.a11y.md › Announcements)', () => 
     },
   )
 
+  test('mask={false} announces nothing: a letter is kept and the live region stays empty', async () => {
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <NumberInput aria-label="Antal" mask={false} />
+      </KvirnProvider>,
+    )
+    const input = page.getByRole('textbox', { name: 'Antal' })
+    await userEvent.type(input, 'a')
+    await expect.element(input).toHaveValue('a')
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    await expect.element(page.getByRole('status')).toBeEmptyDOMElement()
+  })
+
+  test('a custom mask announces its own rejections, in the provider language', async () => {
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <NumberInput aria-label="Kod" mask="digits" />
+      </KvirnProvider>,
+    )
+    const input = page.getByRole('textbox', { name: 'Kod' })
+    await userEvent.type(input, 'a')
+    await expect.element(input).toHaveValue('')
+    await expect
+      .element(page.getByRole('status'))
+      .toHaveTextContent('Här kan du bara skriva siffror.')
+  })
+
   test('accepted digits announce nothing', async () => {
     await render(
       <KvirnProvider locale="sv" messages={sv}>
@@ -496,6 +525,46 @@ describe('dev warnings', () => {
   })
 })
 
+describe('dev warnings: your own mask', () => {
+  test('an own mask in a Field without a hint warns once (3.3.2)', async () => {
+    await render(
+      <Field.Root>
+        <Field.Label>Postnummer</Field.Label>
+        <NumberInput mask={{ pattern: '999 99' }} />
+      </Field.Root>,
+    )
+    await vi.waitFor(() => {
+      expect(consoleWarn).toHaveBeenCalledTimes(1)
+    })
+    const message = String(consoleWarn.mock.calls[0]?.[0])
+    expect(message).toContain('<Field.Hint>')
+    expect(message).toContain('3.3.2')
+  })
+
+  test('an own mask with a hint or your own description, and mask={false}, do not warn', async () => {
+    await render(
+      <>
+        <Field.Root>
+          <Field.Label>Postnummer</Field.Label>
+          <NumberInput mask="digits" />
+          <Field.Hint>Fem siffror, till exempel 123 45.</Field.Hint>
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>Kod</Field.Label>
+          <NumberInput mask={{ pattern: '99-99' }} aria-describedby="eget-tips" />
+        </Field.Root>
+        <p id="eget-tips">Fyra siffror, till exempel 12-34.</p>
+        <Field.Root>
+          <Field.Label>Belopp</Field.Label>
+          <NumberInput mask={false} />
+        </Field.Root>
+      </>,
+    )
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+})
+
 describe('useNumberInput', () => {
   function HookInput({ label, ...options }: UseNumberInputOptions & { label: string }) {
     const number = useNumberInput(options)
@@ -555,6 +624,102 @@ describe('useNumberInput', () => {
   })
 })
 
+describe('the mask is optional (Plan 0039)', () => {
+  test('mask={false} is a plain numeric text box: nothing is left out, and no mask details are reported', async () => {
+    const onValueChange = vi.fn<ValueChange>()
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <NumberInput aria-label="Antal" mask={false} onValueChange={onValueChange} />
+        <NumberInput aria-label="Belopp" mask={false} decimals={2} />
+        <NumberInput aria-label="Saldo" mask={false} allowNegative />
+      </KvirnProvider>,
+    )
+    const input = page.getByRole('textbox', { name: 'Antal' })
+    await userEvent.type(input, 'a2b,')
+    await expect.element(input).toHaveValue('a2b,')
+    const details = onValueChange.mock.lastCall?.[1]
+    expect(onValueChange.mock.lastCall?.[0]).toBe('a2b,')
+    expect(details?.reason).toBe('input')
+    expect(details?.unmaskedValue).toBeUndefined()
+    expect(details?.rejected).toBeUndefined()
+    // The keypad still follows the props.
+    await expect.element(input).toHaveAttribute('inputmode', 'numeric')
+    await expect
+      .element(page.getByRole('textbox', { name: 'Belopp' }))
+      .toHaveAttribute('inputmode', 'decimal')
+    await expect
+      .element(page.getByRole('textbox', { name: 'Saldo' }))
+      .toHaveAttribute('inputmode', 'text')
+    await expect.element(input).toHaveAttribute('type', 'text')
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('mask={false} with decimals needs no format hint: the page’s decimal mark is not applied', async () => {
+    await render(
+      <Field.Root>
+        <Field.Label>Belopp</Field.Label>
+        <NumberInput mask={false} decimals={2} />
+      </Field.Root>,
+    )
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('a name replaces the number mask, with that mask’s unmaskedValue', async () => {
+    const onValueChange = vi.fn<ValueChange>()
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <NumberInput
+          aria-label="Kod"
+          mask="digits"
+          decimals={2}
+          onValueChange={onValueChange}
+          announceRejections={false}
+        />
+      </KvirnProvider>,
+    )
+    const input = page.getByRole('textbox', { name: 'Kod' })
+    await userEvent.type(input, '0,15')
+    await expect.element(input).toHaveValue('015')
+    expect(onValueChange.mock.lastCall?.[1].unmaskedValue).toBe('015')
+  })
+
+  test('a finished mask or a pattern object replaces the number mask too', async () => {
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <NumberInput aria-label="Antal" mask={masks.number({ decimals: 1 })} />
+        <NumberInput aria-label="Postnummer" mask={{ pattern: '999 99' }} />
+      </KvirnProvider>,
+    )
+    await userEvent.type(page.getByRole('textbox', { name: 'Antal' }), '1.5')
+    await expect.element(page.getByRole('textbox', { name: 'Antal' })).toHaveValue('1,5')
+    await userEvent.type(page.getByRole('textbox', { name: 'Postnummer' }), '12345')
+    await expect.element(page.getByRole('textbox', { name: 'Postnummer' })).toHaveValue('123 45')
+  })
+
+  test('without a mask prop the number mask stays the default', async () => {
+    await render(<NumberInput aria-label="Antal" />)
+    const input = page.getByRole('textbox', { name: 'Antal' })
+    await userEvent.type(input, 'a2')
+    await expect.element(input).toHaveValue('2')
+  })
+
+  test('useNumberInput takes mask too, and its mask is undefined only for false', async () => {
+    const seen: Record<string, UseNumberInputResult['mask']> = {}
+    function Probe() {
+      seen['default'] = useNumberInput().mask
+      seen['off'] = useNumberInput({ mask: false }).mask
+      seen['named'] = useNumberInput({ mask: 'digits' }).mask
+      return null
+    }
+    await render(<Probe />)
+    expect(seen['default']).toBeDefined()
+    expect(seen['off']).toBeUndefined()
+    expect(seen['named']).toBeDefined()
+    expectTypeOf<UseNumberInputOptions['mask']>().toEqualTypeOf<MaskInput | false | undefined>()
+  })
+})
+
 describe('server rendering', () => {
   test('renders the input to a string without touching the page', () => {
     const html = renderToString(<NumberInput aria-label="Antal" defaultValue="4" />)
@@ -563,9 +728,9 @@ describe('server rendering', () => {
 })
 
 describe('types', () => {
-  test('there is no type or mask prop, and min and max are numbers', () => {
+  test('there is no type prop, mask is a mask or false, and min and max are numbers', () => {
     expectTypeOf<NumberInputProps>().not.toHaveProperty('type')
-    expectTypeOf<NumberInputProps>().not.toHaveProperty('mask')
+    expectTypeOf<NumberInputProps['mask']>().toEqualTypeOf<MaskInput | false | undefined>()
     expectTypeOf<NumberInputProps['min']>().toEqualTypeOf<number | undefined>()
     expectTypeOf<NumberInputProps['max']>().toEqualTypeOf<number | undefined>()
     expectTypeOf<NumberInputProps['decimals']>().toEqualTypeOf<number | undefined>()

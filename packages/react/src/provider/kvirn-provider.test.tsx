@@ -357,6 +357,55 @@ describe('performance', () => {
   })
 })
 
+describe('country for the masks (Plan 0039)', () => {
+  function CountryProbe({ label }: { label: string }) {
+    const { country } = useLocale()
+    return <p>{`${label}: ${country ?? 'none'}`}</p>
+  }
+
+  test('useLocale().country is the region of the locale, then its language, else undefined', async () => {
+    await render(
+      <>
+        <KvirnProvider locale="sv-FI" messages={sv}>
+          <CountryProbe label="sv-FI" />
+        </KvirnProvider>
+        <KvirnProvider locale="sv" messages={sv}>
+          <CountryProbe label="sv" />
+        </KvirnProvider>
+        <KvirnProvider locale="nb" messages={sv}>
+          <CountryProbe label="nb" />
+        </KvirnProvider>
+        <KvirnProvider locale="en">
+          <CountryProbe label="en" />
+        </KvirnProvider>
+        <CountryProbe label="no provider" />
+      </>,
+    )
+    await expect.element(page.getByText('sv-FI: FI')).toBeVisible()
+    await expect.element(page.getByText('sv: SE')).toBeVisible()
+    await expect.element(page.getByText('nb: NO')).toBeVisible()
+    await expect.element(page.getByText('en: none')).toBeVisible()
+    await expect.element(page.getByText('no provider: none')).toBeVisible()
+  })
+
+  test('the country prop wins over the locale, and a nested provider inherits it', async () => {
+    await render(
+      <KvirnProvider locale="se" country="FI" messages={sv}>
+        <CountryProbe label="own" />
+        <KvirnProvider>
+          <CountryProbe label="nested" />
+        </KvirnProvider>
+        <KvirnProvider country="SE">
+          <CountryProbe label="nested override" />
+        </KvirnProvider>
+      </KvirnProvider>,
+    )
+    await expect.element(page.getByText('own: FI')).toBeVisible()
+    await expect.element(page.getByText('nested: FI')).toBeVisible()
+    await expect.element(page.getByText('nested override: SE')).toBeVisible()
+  })
+})
+
 function createDocument(): Document {
   return document.implementation.createHTMLDocument('')
 }

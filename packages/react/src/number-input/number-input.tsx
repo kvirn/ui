@@ -1,4 +1,5 @@
 'use client'
+import type { MaskInput } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { useContext, useEffect, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
@@ -45,6 +46,14 @@ export interface NumberInputProps extends Omit<
   /** Upper limit. Reported as `isWithinRange`, never clamped, and never a `max` attribute. */
   max?: number | undefined
   /**
+   * Replaces the number mask. `false`: no mask, a plain numeric text box that leaves nothing out
+   * and reports no mask details (`decimals`, `allowNegative`, `grouping`, `min` and `max` then do
+   * nothing, but the keypad still follows `decimals` and `allowNegative`). A name, `{ preset }`,
+   * `{ pattern }`, a `RegExp` or a finished mask from `masks` shapes the value instead, and then
+   * `details.unmaskedValue` is that mask's. Default: the number mask from the props above.
+   */
+  mask?: MaskInput | false | undefined
+  /**
    * Announce, politely and at most once every few seconds, when a character is left out.
    * Default `true`. Needs a `KvirnProvider`: without one nothing is announced.
    */
@@ -84,6 +93,7 @@ export function NumberInput({
   grouping,
   min,
   max,
+  mask,
   disabled,
   onValueChange,
   announceRejections,
@@ -101,6 +111,7 @@ export function NumberInput({
     grouping,
     min,
     max,
+    mask,
     disabled,
     onValueChange,
     announceRejections,
@@ -138,20 +149,35 @@ export function NumberInput({
 
   const hasDescriptionText = ownDescribedBy !== undefined
   const controlId = field?.controlProps.id
-  const hasDecimals = (decimals ?? 0) > 0
+  // `decimals` only shapes the number mask: with your own mask, or `false`, there is no decimal mark.
+  const hasDecimals = mask === undefined && (decimals ?? 0) > 0
+  // Your own mask shapes what is typed, and like a masked TextInput it needs a hint (3.3.2).
+  const hasOwnMask = mask !== undefined && mask !== false
   useEffect(() => {
     const element = elementRef.current
-    if (!hasDecimals || element === null || controlId === undefined || hasDescriptionText) {
+    if (
+      !(hasDecimals || hasOwnMask) ||
+      element === null ||
+      controlId === undefined ||
+      hasDescriptionText
+    ) {
       return
     }
     // A whole number needs no format hint. The decimal mark does: it is a comma in some languages
     // and a point in others, so say it with an example.
     const prefix = `${controlId}-description`
     if (element.ownerDocument.querySelector(`[id^="${CSS.escape(prefix)}"]`) === null) {
-      warnOnce(
-        'number-input-decimals-without-hint',
-        'A NumberInput with decimals in a Field has no hint. The mask takes the decimal mark of the page’s language, but it doesn’t say so: add a visible hint, a <Field.Hint> under the control, with an example such as 1 250,50 (WCAG 3.3.2).',
-      )
+      if (hasDecimals) {
+        warnOnce(
+          'number-input-decimals-without-hint',
+          'A NumberInput with decimals in a Field has no hint. The mask takes the decimal mark of the page’s language, but it doesn’t say so: add a visible hint, a <Field.Hint> under the control, with an example such as 1 250,50 (WCAG 3.3.2).',
+        )
+      } else {
+        warnOnce(
+          'number-input-mask-without-description',
+          'A NumberInput with its own mask in a Field has no hint. The mask shapes what is typed, but it doesn’t explain the format: say it in a visible hint, a <Field.Hint> under the control, with an example (WCAG 3.3.2).',
+        )
+      }
     }
   })
 

@@ -76,7 +76,7 @@ export function NameAndEmailForm({ locale }: { locale: FormLocale }) {
 }
 
 /**
- * A Swedish personal identity number: ten or twelve digits, with or without the hyphen. The mask
+ * A Swedish personal identity number, by name: the country comes from the provider (`sv` is Sweden). Ten or twelve digits, with or without the hyphen. The mask
  * puts the hyphen in. The hint says the format, because the mask doesn't.
  */
 export function PersonalIdentityNumberField({ locale }: { locale: FormLocale }) {
@@ -86,7 +86,7 @@ export function PersonalIdentityNumberField({ locale }: { locale: FormLocale }) 
       <Field.Label>{text.personalIdentityNumber}</Field.Label>
       <TextInput
         name="personalIdentityNumber"
-        mask={masks.personalIdentityNumber({ country: 'SE' })}
+        mask="personal-identity-number"
         autoComplete="off"
         className="kv-input--width-20"
       />
@@ -97,6 +97,27 @@ export function PersonalIdentityNumberField({ locale }: { locale: FormLocale }) 
 
 /** A Swedish postcode: text, so the space is inserted as the user types past it. */
 export function PostcodeField({ locale }: { locale: FormLocale }) {
+  const { text, lang } = maskTextsFor({ locale })
+  return (
+    <Field.Root required lang={lang}>
+      <Field.Label>{text.postalCode}</Field.Label>
+      <TextInput
+        name="postalCode"
+        mask="postal-code"
+        autoComplete="postal-code"
+        className="kv-input--width-6"
+      />
+      <Field.Hint>{text.postalCodeHint}</Field.Hint>
+    </Field.Root>
+  )
+}
+
+/**
+ * The explicit form of the same mask: `masks.postalCode({ country })` builds it with no help
+ * from the provider's locale. Prefer the name (`mask="postal-code"`), and use this where you
+ * build masks outside React, or want the type of the mask itself.
+ */
+export function ExplicitPostcodeField({ locale }: { locale: FormLocale }) {
   const { text, lang } = maskTextsFor({ locale })
   return (
     <Field.Root required lang={lang}>

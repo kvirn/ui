@@ -9,7 +9,7 @@ For a quantity or an amount, use [NumberInput](../number-input/number-input.md).
 - A native `<input>` with a text-like `type`: `text` (the default), `email`, `tel`, `url`, `password` or `search`. The browser supplies the role, the keyboard, selection, paste and autofill.
 - Inside a Field it takes its `id`, `aria-describedby`, `aria-invalid`, `aria-required` and `disabled` from it. Outside a Field it needs `aria-label` or `aria-labelledby`: a dev warning says so.
 - **Controlled:** pass `value` and `onValueChange(value, { reason: 'input', event })`. **Uncontrolled:** pass `defaultValue` and `name`, and the browser keeps the value until a form submit reads it. `onChange` and every other native prop, `name` and `ref` pass through.
-- **Masks:** `mask={masks.personalIdentityNumber({ country: 'SE' })}` shapes what is typed. It stays a native `<input>`: paste, autofill and undo work, nothing is clamped or corrected, and a refused character is announced. See Masks below.
+- **Masks:** `mask="personal-identity-number"` shapes what is typed, in the country the provider's locale implies. It stays a native `<input>`: paste, autofill and undo work, nothing is clamped or corrected, and a refused character is announced. See Masks below.
 - Headless: no CSS. It renders `kv-input`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported it is styled.
 
 ## API
@@ -46,7 +46,7 @@ A width class follows the text size, includes the 1.4.12 letter-spacing allowanc
 
 Only a masked TextInput announces anything. The strings are in all six locales.
 
-What TextInput does on its own: it takes the control's `id` and `aria-describedby` from the Field (and ignores an `id` of its own inside one, with a dev warning, so the label stays linked); it keeps your own `aria-describedby` ids after the Field's; it moves no focus and handles no keys; with a `mask` it suggests `inputMode`, `autoCapitalize`, `spellCheck={false}` and, for identifiers, `dir="ltr"` (your own props win), warns once in development when a masked field in a Field has no hint, and announces refused characters through the Announcer.
+What TextInput does on its own: it takes the control's `id` and `aria-describedby` from the Field (and ignores an `id` of its own inside one, with a dev warning, so the label stays linked); it keeps your own `aria-describedby` ids after the Field's; it moves no focus and handles no keys; with a `mask` it suggests `inputMode`, `autoCapitalize`, `spellCheck={false}` and, for identifiers, `dir="ltr"` (your own props win), warns once in development when a masked field in a Field has no hint, when `mask` is a name that doesn't exist (`mask-unknown-name:<name>`: no mask runs), and announces refused characters through the Announcer.
 
 ## Component
 
@@ -158,13 +158,13 @@ A quantity or an amount is a [NumberInput](../number-input/number-input.md): it 
 A mask shapes what the user types: it drops characters that can't be valid, puts separators in as the user types past them, and limits the length. The control stays a native `<input>`, so paste, autofill, undo and dictation keep working.
 
 ```tsx
-import { Field, TextInput, masks } from '@kvirn-ui/react'
+import { Field, TextInput } from '@kvirn-ui/react'
 
 ;<Field.Root invalid={errors.personalIdentityNumber !== undefined} required>
   <Field.Label>Personnummer</Field.Label>
   <TextInput
     name="personalIdentityNumber"
-    mask={masks.personalIdentityNumber({ country: 'SE' })}
+    mask="personal-identity-number"
     onValueChange={(value, details) =>
       form.setValue('personalIdentityNumber', details.unmaskedValue)
     }
@@ -175,7 +175,29 @@ import { Field, TextInput, masks } from '@kvirn-ui/react'
 </Field.Root>
 ```
 
-Presets (all from `masks`, re-exported by `@kvirn-ui/react`):
+#### Masks by name
+
+`mask` takes a name, so you don't import anything or pass a country for the common case. It is a union:
+
+| `mask`                                                    | Is                                                                                                                                                                              |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A name: `"digits"`, `"letters"`, `"letters-and-digits"`   | The filters of the same name                                                                                                                                                    |
+| `"personal-identity-number"` (alias `"ssi"`), `"postal-code"`, `"organisation-number"` | The country mask for the country the provider implies (below)                                                                                         |
+| `"date"`, `"iban"`, `"email"`, `"telephone"`              | The presets of the same name                                                                                                                                                    |
+| `{ preset, country? }`                                    | A named preset with the country set for this one input: `{ preset: 'postal-code', country: 'FI' }`                                                                              |
+| `{ pattern, ...options }`                                 | A custom pattern with the pattern options (`transform`, `completeLengths`, `attributes`): `{ pattern: '999 99' }`                                                              |
+| A `RegExp`                                                | A custom filter that must accept partial values: `/^[A-Z]{0,2}\d{0,6}$/`                                                                                                       |
+| A `Mask` from `masks`                                     | The explicit, typed form: `masks.postalCode({ country: 'SE' })`. It stays supported and is what `@kvirn-ui/core` users build                                                    |
+
+`number` is not a name: a quantity or an amount is a [NumberInput](../number-input/number-input.md), which owns the number mask.
+
+**Where the country comes from.** The input's own `{ preset, country }`, else the provider's `country` prop, else the region of the provider's locale (`sv-FI` is Finland), else its language (`sv` is Sweden, `fi` is Finland, `nb`, `nn`, `no` and `se` are Norway). Nothing is guessed beyond that: with no country (`en`, `da-DK`) a country mask only takes digits, and a development warning says so once (`mask-country-unresolved:<name>:<locale>`). Pass `{ preset, country }` or set `<KvirnProvider country>`. `useLocale().country` reads the result. A name is resolved in the input, so one `mask="postal-code"` follows the locale of the provider it sits in.
+
+**A name keeps the preset's details.** `unmaskedValue`, `isComplete`, the suggested attributes and the announcements are the preset's, and the hint rule still holds (a masked TextInput in a Field without a hint warns).
+
+#### Presets
+
+Presets (all from `masks`, re-exported by `@kvirn-ui/react`; each preset has the kebab-case name above, such as `personalIdentityNumber` and `"personal-identity-number"`):
 
 | Preset                                                                                                                 | Shapes                                                                                                                                                                                                                                                                                                                     |
 | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -214,7 +236,7 @@ const caseNumber = useMask({
 <input {...mergeProps(caseNumber.inputProps, { name: 'caseNumber', autoComplete: 'off' })} />
 ```
 
-`useMask` returns `inputProps` (`onChange`, `onFocus`, `onCompositionStart`, `onCompositionEnd`, a `ref` that tracks the value before each edit, and the suggested attributes), plus `format` and `unmask` for the provider's locale. Inside a Field, spread `useTextInput`'s props too: they read the Field.
+`useMask` takes the same `mask` values as TextInput (a name, `{ preset }`, `{ pattern }`, a `RegExp` or a `Mask`). It returns `inputProps` (`onChange`, `onFocus`, `onCompositionStart`, `onCompositionEnd`, a `ref` that tracks the value before each edit, and the suggested attributes), plus `format` and `unmask` for the provider's locale. Inside a Field, spread `useTextInput`'s props too: they read the Field.
 
 ### Your part
 

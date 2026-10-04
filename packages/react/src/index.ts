@@ -227,8 +227,8 @@ export { useIcon } from './icon/use-icon.ts'
 export type {
   IconDefaults,
   IconPartProps,
+  IconScale,
   IconSize,
-  IconSizeStep,
   UseIconOptions,
   UseIconResult,
 } from './icon/use-icon.ts'
@@ -247,6 +247,11 @@ export type {
   Mask,
   MaskAllowedCharacters,
   MaskAttributes,
+  MaskCountry,
+  MaskInput,
+  MaskName,
+  MaskPatternOptions,
+  MaskPresetOptions,
   MaskRejection,
   MaskRejectionReason,
   MaskResult,

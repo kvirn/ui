@@ -1,5 +1,7 @@
-import type { Mask } from '@kvirn-ui/core'
+import type { MaskInput } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { fi } from '@kvirn-ui/i18n/fi'
+import { nb } from '@kvirn-ui/i18n/nb'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, useState } from 'react'
@@ -831,10 +833,149 @@ describe('mask (contract: text-input.a11y.md › Masked input)', () => {
   })
 
   test('the new props have types', () => {
-    expectTypeOf<TextInputProps['mask']>().toEqualTypeOf<Mask | undefined>()
+    expectTypeOf<TextInputProps['mask']>().toEqualTypeOf<MaskInput | undefined>()
     expectTypeOf<TextInputProps['announceRejections']>().toEqualTypeOf<boolean | undefined>()
     expectTypeOf<TextInputProps['messages']>().toEqualTypeOf<
       Partial<KvirnMessages['mask']> | undefined
     >()
+  })
+})
+
+describe('mask by name (Plan 0039)', () => {
+  const typeInto = async (name: string, text: string) => {
+    const input = page.getByRole('textbox', { name })
+    await userEvent.type(input, text)
+    return input
+  }
+
+  test.each([
+    ['sv', sv, 'SE'],
+    ['fi', fi, 'FI'],
+    ['nb', nb, 'NO'],
+  ] as const)(
+    'a named mask is the explicit one under a %s provider: postal-code, personal-identity-number and ssi',
+    async (locale, messages, country) => {
+      await render(
+        <KvirnProvider locale={locale} messages={messages}>
+          <TextInput aria-label="Postnummer" mask="postal-code" />
+          <TextInput aria-label="Postnummer explicit" mask={masks.postalCode({ country })} />
+          <TextInput aria-label="Personnummer" mask="personal-identity-number" />
+          <TextInput aria-label="Personnummer ssi" mask="ssi" />
+          <TextInput
+            aria-label="Personnummer explicit"
+            mask={masks.personalIdentityNumber({ country })}
+          />
+        </KvirnProvider>,
+      )
+      const postal = await typeInto('Postnummer', '12345')
+      const postalExplicit = await typeInto('Postnummer explicit', '12345')
+      const identity = await typeInto('Personnummer', '010190123')
+      const identitySsi = await typeInto('Personnummer ssi', '010190123')
+      const identityExplicit = await typeInto('Personnummer explicit', '010190123')
+      const value = (locator: typeof postal) => (locator.element() as HTMLInputElement).value
+      expect(value(postal)).toBe(value(postalExplicit))
+      expect(value(identity)).toBe(value(identityExplicit))
+      expect(value(identitySsi)).toBe(value(identityExplicit))
+    },
+  )
+
+  test('the region of the locale wins: sv-FI gives the Finnish postcode, and no space', async () => {
+    await render(
+      <KvirnProvider locale="sv-FI" messages={sv}>
+        <TextInput aria-label="Postnummer" mask="postal-code" />
+      </KvirnProvider>,
+    )
+    await expect.element(await typeInto('Postnummer', '00100')).toHaveValue('00100')
+  })
+
+  test('a provider country wins over the locale', async () => {
+    await render(
+      <KvirnProvider locale="sv" country="NO" messages={sv}>
+        <TextInput aria-label="Postnummer" mask="postal-code" announceRejections={false} />
+      </KvirnProvider>,
+    )
+    await expect.element(await typeInto('Postnummer', '12345')).toHaveValue('1234')
+  })
+
+  test('{ preset, country } overrides the provider for that one input', async () => {
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <TextInput aria-label="Postnummer" mask={{ preset: 'postal-code', country: 'FI' }} />
+      </KvirnProvider>,
+    )
+    await expect.element(await typeInto('Postnummer', '12345')).toHaveValue('12345')
+  })
+
+  test('{ pattern } and a RegExp make a custom mask, and names without a country work anywhere', async () => {
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <TextInput aria-label="Mönster" mask={{ pattern: '999 99' }} />
+        <TextInput aria-label="Uttryck" mask={/^\d{0,3}$/} announceRejections={false} />
+        <TextInput aria-label="Siffror" mask="digits" announceRejections={false} />
+      </KvirnProvider>,
+    )
+    await expect.element(await typeInto('Mönster', '12345')).toHaveValue('123 45')
+    await expect.element(await typeInto('Uttryck', 'a1234')).toHaveValue('123')
+    const digits = await typeInto('Siffror', '1a2')
+    await expect.element(digits).toHaveValue('12')
+    await expect.element(digits).toHaveAttribute('inputmode', 'numeric')
+  })
+
+  test('a name keeps the preset’s details: onValueChange gets unmaskedValue and isComplete', async () => {
+    const onValueChange = vi.fn<(value: string, details: TextInputChangeDetails) => void>()
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <TextInput aria-label="Postnummer" mask="postal-code" onValueChange={onValueChange} />
+      </KvirnProvider>,
+    )
+    await typeInto('Postnummer', '12345')
+    expect(onValueChange.mock.lastCall?.[0]).toBe('123 45')
+    expect(onValueChange.mock.lastCall?.[1].unmaskedValue).toBe('12345')
+    expect(onValueChange.mock.lastCall?.[1].isComplete).toBe(true)
+  })
+
+  test('a country mask with no country falls back to digits and warns once, naming the mask', async () => {
+    await render(
+      <KvirnProvider locale="en">
+        <TextInput aria-label="Postnummer" mask="postal-code" announceRejections={false} />
+        <TextInput aria-label="Postnummer två" mask="postal-code" announceRejections={false} />
+      </KvirnProvider>,
+    )
+    await expect.element(await typeInto('Postnummer', '12 a345')).toHaveValue('12345')
+    await vi.waitFor(() => {
+      expect(consoleWarn).toHaveBeenCalledTimes(1)
+    })
+    const message = String(consoleWarn.mock.calls[0]?.[0])
+    expect(message).toContain('postal-code')
+    expect(message).toContain('country')
+  })
+
+  test('the hint warning and the email warning read the resolved mask of a name', async () => {
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <Field.Root>
+          <Field.Label>Personnummer</Field.Label>
+          <TextInput mask="personal-identity-number" />
+        </Field.Root>
+        <TextInput aria-label="E-post" type="email" mask="digits" />
+        <TextInput aria-label="E-postadress" type="email" mask="email" />
+      </KvirnProvider>,
+    )
+    await vi.waitFor(() => {
+      expect(consoleWarn).toHaveBeenCalledTimes(2)
+    })
+    const messages = consoleWarn.mock.calls.map((call) => String(call[0]))
+    expect(messages.some((message) => message.includes('<Field.Hint>'))).toBe(true)
+    expect(messages.some((message) => message.includes('masks.email()'))).toBe(true)
+  })
+
+  test('the types: a name, a preset object, a pattern object and a RegExp are masks', () => {
+    expectTypeOf<'postal-code'>().toExtend<NonNullable<TextInputProps['mask']>>()
+    expectTypeOf<'ssi'>().toExtend<NonNullable<TextInputProps['mask']>>()
+    expectTypeOf<{ preset: 'postal-code'; country: 'FI' }>().toExtend<
+      NonNullable<TextInputProps['mask']>
+    >()
+    expectTypeOf<{ pattern: string }>().toExtend<NonNullable<TextInputProps['mask']>>()
+    expectTypeOf<RegExp>().toExtend<NonNullable<TextInputProps['mask']>>()
   })
 })

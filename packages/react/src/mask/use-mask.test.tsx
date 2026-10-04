@@ -85,6 +85,79 @@ describe('exports and types', () => {
   })
 })
 
+describe('a mask by name (Plan 0039)', () => {
+  test('useMask takes a name, and the provider’s country and locale make the mask', async () => {
+    let result: UseMaskResult | undefined
+    function Probe() {
+      result = useMask({ mask: 'postal-code' })
+      return null
+    }
+    await render(
+      <>
+        <KvirnProvider locale="sv" messages={sv}>
+          <MaskedInput options={{ mask: 'postal-code' }} />
+        </KvirnProvider>
+        <KvirnProvider locale="fi" messages={fi}>
+          <Probe />
+        </KvirnProvider>
+      </>,
+    )
+    await userEvent.type(field(), '12345')
+    await expect.element(field()).toHaveValue('123 45')
+    expect(result?.format('00100')).toBe('00100')
+    expect(result?.unmask('00100')).toBe('00100')
+  })
+
+  test('useMask takes { pattern } and a RegExp', async () => {
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <MaskedInput options={{ mask: { pattern: 'aa-9999' } }} label="Ärende" />
+        <MaskedInput
+          options={{ mask: /^\d{0,2}$/, announceRejections: false }}
+          label="Två siffror"
+        />
+      </KvirnProvider>,
+    )
+    await userEvent.type(page.getByRole('textbox', { name: 'Ärende' }), 'ab1234')
+    await expect.element(page.getByRole('textbox', { name: 'Ärende' })).toHaveValue('ab-1234')
+    await userEvent.type(page.getByRole('textbox', { name: 'Två siffror' }), '1x23')
+    await expect.element(page.getByRole('textbox', { name: 'Två siffror' })).toHaveValue('12')
+  })
+
+  test('an unknown name (a typo, or "number") warns once and runs no mask', async () => {
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <MaskedInput
+          options={{ mask: 'postcode' as unknown as UseMaskOptions['mask'] }}
+          label="Kod"
+        />
+        <MaskedInput
+          options={{ mask: { preset: 'number' } as unknown as UseMaskOptions['mask'] }}
+          label="Belopp"
+        />
+      </KvirnProvider>,
+    )
+    await userEvent.type(page.getByRole('textbox', { name: 'Kod' }), 'ab 12')
+    await expect.element(page.getByRole('textbox', { name: 'Kod' })).toHaveValue('ab 12')
+    await vi.waitFor(() => {
+      expect(consoleWarn).toHaveBeenCalledTimes(2)
+    })
+    const messages = consoleWarn.mock.calls.map((call) => String(call[0]))
+    expect(messages.some((message) => message.includes('"postcode"'))).toBe(true)
+    expect(messages.some((message) => message.includes('"number"'))).toBe(true)
+  })
+
+  test('the result is the same three keys: inputProps, format and unmask', async () => {
+    let result: UseMaskResult | undefined
+    function Probe() {
+      result = useMask({ mask: 'digits' })
+      return null
+    }
+    await render(<Probe />)
+    expect(Object.keys(result ?? {}).sort()).toEqual(['format', 'inputProps', 'unmask'])
+  })
+})
+
 describe('typing', () => {
   test('a literal is inserted only when the next character is typed (5.1)', async () => {
     await render(<MaskedInput options={{ mask: masks.pattern('999-999') }} />)

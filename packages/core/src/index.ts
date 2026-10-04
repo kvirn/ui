@@ -10,6 +10,7 @@ export type {
 export { getLanguage, resolveDirection } from './locale/resolve-direction.ts'
 export type { Direction } from './locale/resolve-direction.ts'
 export { dateInputOrder, dateSeparator } from './locale/date-order.ts'
+export { maskCountryFromLocale } from './locale/mask-country.ts'
 export type { DateInputPart } from './locale/date-order.ts'
 export { createMessageFormat } from './messages/create-message-format.ts'
 export type {
@@ -65,7 +66,6 @@ export type {
   AnnouncerPoliteness,
   AnnouncerState,
 } from './announcer/announcer.ts'
-export { createMask } from './mask/create-mask.ts'
 export {
   countCharacters,
   defaultCharacterCountAnnounceFrom,
@@ -76,7 +76,17 @@ export type {
   CharacterCountOptions,
   CharacterCountResult,
 } from './character-count/character-count.ts'
+export { createMask } from './mask/create-mask.ts'
 export { masks } from './mask/masks.ts'
+export { maskNames, resolveMask, unknownMaskName } from './mask/resolve-mask.ts'
+export type {
+  MaskInput,
+  MaskName,
+  MaskPatternOptions,
+  MaskPresetOptions,
+  ResolveMaskContext,
+  ResolvedMask,
+} from './mask/resolve-mask.ts'
 export type {
   CountryMaskOptions,
   DateMaskOptions,

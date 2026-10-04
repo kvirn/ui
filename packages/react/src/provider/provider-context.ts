@@ -1,5 +1,5 @@
 import { createMessageFormat } from '@kvirn-ui/core'
-import type { Direction, Env, MessageFormatter, ThemeStore } from '@kvirn-ui/core'
+import type { Direction, Env, MaskCountry, MessageFormatter, ThemeStore } from '@kvirn-ui/core'
 import type { PartialMessages } from '@kvirn-ui/i18n'
 import { createContext } from 'react'
 import type { IconRegistry } from '../icon/icon-registry.ts'
@@ -16,6 +16,8 @@ export type LinkComponentOrAnchor<LinkComponent> = LinkComponent | 'a'
 export interface KvirnConfig {
   locale: string
   dir: Direction
+  /** Set by `<KvirnProvider country>`. Without one, the country comes from the locale. */
+  country: MaskCountry | undefined
   timeZone: string | undefined
   /** Nearest provider first, root last. Built-in `en` is added by `useMessages`. */
   messageLayers: readonly PartialMessages[]
@@ -33,6 +35,7 @@ export interface KvirnConfig {
 export const defaultKvirnConfig: KvirnConfig = {
   locale: 'en',
   dir: 'ltr',
+  country: undefined,
   timeZone: undefined,
   messageLayers: [],
   format: createMessageFormat({ locale: 'en', timeZone: undefined }),
