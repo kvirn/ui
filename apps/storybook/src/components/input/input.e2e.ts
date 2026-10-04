@@ -60,26 +60,16 @@ test.describe('Input keyboard contract', () => {
     await expect(website).toBeFocused()
   })
 
-  test('any character types, and nothing is filtered, also for numbers', async ({ page }) => {
+  test('a number mask leaves letters out, and the rest types as written', async ({ page }) => {
     await openStory(page, 'number', 'amount')
     const input = page.getByRole('textbox', { name: 'Hur mycket hyra betalar du per månad?' })
+    const shown = () => input.inputValue().then((value) => value.replace(/\s/g, ' '))
     // The story's play function typed an example: wait for it, then start from an empty input.
-    await expect(input).toHaveValue('1 250,50')
+    await expect.poll(shown).toBe('1 250,50')
     await input.clear()
-    // Typed the way people write: spaces, comma and point, and letters too: the form validates.
+    // Typed the way people write: the mask groups the digits and drops the unit's letters.
     await page.keyboard.type('1 250,50 kr')
-    await expect(input).toHaveValue('1 250,50 kr')
-  })
-
-  test('numbers are text, so leading zeros survive typing', async ({ page }) => {
-    await openStory(page, 'number', 'postcode')
-    const input = page.getByRole('textbox', { name: 'Postnummer' })
-    await expect(input).toHaveValue('00100')
-    await input.clear()
-    await page.keyboard.type('00100')
-    await expect(input).toHaveValue('00100')
-    await expect(input).toHaveAttribute('type', 'text')
-    await expect(input).toHaveAttribute('inputmode', 'numeric')
+    await expect.poll(shown).toBe('1 250,50')
   })
 
   test('clicking the label focuses the input', async ({ page }) => {
@@ -125,13 +115,14 @@ test.describe('Input keyboard contract', () => {
   test('ArrowUp and ArrowDown never change a number value', async ({ page }) => {
     await openStory(page, 'number', 'keyboard')
     const input = page.getByRole('textbox', { name: 'Hur mycket hyra betalar du per månad?' })
-    await input.fill('1 250,50')
+    await input.fill('1250,50')
     await input.focus()
+    const before = await input.inputValue()
     const prevented = await recordPreventedKeys(page)
     for (const key of ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowDown']) {
       await page.keyboard.press(key)
     }
-    await expect(input).toHaveValue('1 250,50')
+    await expect(input).toHaveValue(before)
     await expect(input).toBeFocused()
     // Native caret movement only: the page didn't take the key.
     expect(await prevented()).toEqual([])

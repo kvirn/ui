@@ -12,7 +12,7 @@ Source: `packages/core/src/mask/` (pure, no React, no DOM), re-exported from `@k
   - `isWithinRange` is set for number masks only.
   - `rejected` is `{ reason, characters }[]`. `reason` is `digits`, `letters`, `lettersAndDigits`, `other` or `length`. `length` means the mask is full.
 - `format(unmaskedValue)` formats a stored value. `unmask(value)` strips literals.
-- `withLocale(locale)` returns the same mask with that locale's number separators. It returns the mask itself unless it is a number mask without its own `locale`.
+- `withLocale(locale)` returns the same mask with that locale's number separators, or its date order and separator. It returns the mask itself unless it is a number mask or a date mask without its own `locale`.
 - `attributes` are the suggested `inputMode`, `autoCapitalize`, `spellCheck` and `dir`.
 
 ### Definitions
@@ -43,6 +43,7 @@ Source: `packages/core/src/mask/` (pure, no React, no DOM), re-exported from `@k
 | `personalIdentityNumber({ country })` | SE: 10 or 12 digits, `-` or `+` before the last four. A separator typed after 6 or 8 digits decides the form. Plain input stays 10 digits, and the 11th makes it the 12-digit form with `-`. FI: `DDMMYY`, a century sign (`+`, `-`, `U`-`Y`, `A`-`F`), three digits and a check character (no `G I O Q Z`), upper-cased. NO: 11 digits. |
 | `postalCode({ country })`             | SE `999 99`, FI `99999`, NO `9999`.                                                                                                                                                                                                                                                                                                      |
 | `organisationNumber({ country })`     | SE `999999-9999`, FI `9999999-9`, NO `999 999 999`.                                                                                                                                                                                                                                                                                      |
+| `date({ locale? })`                   | A date in one field, in the locale's order and with its separator (`04.10.2026`, `2026-10-04`, `04/10/2026`), from `Intl` like DateInput (`sv-SE` is year, month, day, a locale that starts with the month becomes day first). Without its own `locale` it follows the provider's, else `en`. The separator is written when the next part starts. A `.`, `-`, `/` or space typed after at least one digit of a day or month closes it and is written as the locale's separator (`4.10.2026` stays as typed). Any other separator, or one in the wrong place, is refused with reason `other`. A pasted ISO date or eight digits in the locale's order is reformatted. `unmaskedValue` is the padded ISO date (`2026-10-04`) once complete, else an empty string, and `format(iso)` gives the padded locale form. The shape only: 31.02.2026 is complete (use `checks.date`). `inputMode="numeric"` and `spellCheck={false}`: iOS numeric pads have no `.` or `-`, so the short form needs a hardware keyboard, and two digits per part always work. |
 | `iban()`                              | Up to 34 letters and digits in groups of four, upper case. Complete at the country's length.                                                                                                                                                                                                                                             |
 | `email()`                             | Drops whitespace only. `inputMode="email"`, `autoCapitalize="off"`.                                                                                                                                                                                                                                                                      |
 | `telephone()`                         | Digits, `+`, space, `-`, `(` and `)`. There is no national format. `inputMode="tel"`.                                                                                                                                                                                                                                                    |
@@ -50,7 +51,7 @@ Source: `packages/core/src/mask/` (pure, no React, no DOM), re-exported from `@k
 | `regexp(expression, options)`         | A regexp definition.                                                                                                                                                                                                                                                                                                                     |
 | `oneTimeCode({ pattern })`            | See OneTimeCode in SKILL.md.                                                                                                                                                                                                                                                                                                             |
 
-There is no date preset. Identifier presets suggest `inputMode`, `spellCheck={false}` and `dir="ltr"`. Presets never set `autocomplete`.
+The date mask takes no `dir`, because a date reads in the page's direction. Identifier presets suggest `inputMode`, `spellCheck={false}` and `dir="ltr"`. Presets never set `autocomplete`.
 
 ## Checks (`checks.*`)
 
@@ -61,6 +62,7 @@ For the consumer to call when it validates. A mask never blocks a value on them,
 | `checks.personalIdentityNumber(value, { country, allowSyntheticNumbers? })` | `format`, `date`, `checkDigit`. Norwegian synthetic test numbers (month plus 80) are refused unless `allowSyntheticNumbers`. |
 | `checks.organisationNumber(value, { country })`                             | `format`, `checkDigit`                                                                                                       |
 | `checks.iban(value)`                                                        | `country` (unknown country), `format` (wrong length), `checkDigit`                                                           |
+| `checks.date(isoValue, { min?, max? })`                                     | `format` (not a complete ISO `YYYY-MM-DD`), `date` (no such day, such as 2026-02-31), `range` (before `min` or after `max`, both ISO and inclusive). Give it `details.unmaskedValue`. |
 
 ## React binding
 

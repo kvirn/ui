@@ -15,7 +15,8 @@ const storyUrl = (story: string, globals?: string) =>
 
 async function openStory(page: Page, story: string, globals?: string) {
   await page.goto(storyUrl(story, globals))
-  await expect(page.locator('.kv-date-input').first()).toBeVisible()
+  // The one-field stories are a single masked Input, with no DateInput boxes.
+  await expect(page.locator('.kv-date-input, .kv-input').first()).toBeVisible()
   if (globals !== undefined) {
     // The theme store resolved the selected theme onto <html>.
     const { mode, contrast } = Object.fromEntries(globals.split(';').map((pair) => pair.split(':')))
@@ -227,6 +228,8 @@ test.describe('DateInput accessibility', () => {
     ['finnish'],
     ['english'],
     ['own-order'],
+    ['one-field'],
+    ['one-field-finnish'],
     ['invalid-year'],
     ['invalid-date'],
     ['not-a-birthday'],

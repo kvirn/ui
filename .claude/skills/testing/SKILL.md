@@ -96,7 +96,7 @@ Run the smallest thing that proves the point. Each full gate run happens **once 
 - **Pass paths while working** (AGENTS.md rule 11): `vp check <files>` and `vp test run <files>`, or `vp test related <files>`. Never run `vp check --fix` or `vp fmt` without paths. Run the whole-tree gates once, at the end.
 - A failure that predates your branch isn't caused by you, but the tree has one owner: fix it if it blocks the gates, or report it with the file names. Never skip or disable it.
 - No stress or repeat runs, unless a test actually flaked and you're investigating it.
-- **Worker caps.** Vitest runs at most 2 workers per project (`VITEST_MAX_WORKERS` overrides it for a one-off) and Playwright runs 3 (`E2E_WORKERS`). The caps are politeness for the machine, not gates: don't change a test, threshold or timeout to fit them. A whole-tree local run takes the Storybook projects one at a time, because running them in parallel flakes on dynamic imports.
+- **Worker caps.** Vitest runs at most 2 workers per project (`VITEST_MAX_WORKERS` overrides it for a one-off) and Playwright runs 1 locally, serially, and 3 in CI (`E2E_WORKERS`). The caps are politeness for the machine, not gates: don't change a test, threshold or timeout to fit them. A whole-tree local run takes the Storybook projects one at a time, because running them in parallel flakes on dynamic imports.
 - E2E: one spec on one project, `vp run e2e <spec> --project chromium`, and only if story, fixture or keyboard behaviour changed.
   - Keep `vp run storybook` running in the background, so Playwright reuses it instead of booting a new server each run.
 

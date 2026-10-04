@@ -1,5 +1,6 @@
 import { ibanLengths } from './checks/iban.ts'
 import { createMask, createMaskFromEngine } from './create-mask.ts'
+import { createDateEngine } from './date-engine.ts'
 import type {
   Mask,
   MaskAttributes,
@@ -18,6 +19,14 @@ export interface DigitsMaskOptions {
 }
 
 export type NumberMaskOptions = Omit<NumberMaskDefinition, 'type' | 'attributes'>
+
+export interface DateMaskOptions {
+  /**
+   * BCP 47 locale for the order and the separator. Default: the provider's locale (through
+   * `withLocale`), else `en`.
+   */
+  readonly locale?: string | undefined
+}
 
 export interface CountryMaskOptions {
   readonly country: MaskCountry
@@ -165,6 +174,15 @@ function postalCode({ country }: CountryMaskOptions): Mask {
 function organisationNumber({ country }: CountryMaskOptions): Mask {
   const pattern = { SE: '999999-9999', FI: '9999999-9', NO: '999 999 999' }[country]
   return createMask({ type: 'pattern', pattern, attributes: identifierAttributes })
+}
+
+/**
+ * A date in one text field, in the locale's order and with its separator (`04.10.2026`,
+ * `2026-10-04`). The unmasked value is the ISO date, `YYYY-MM-DD`, once the date is complete. The
+ * mask checks the shape only: use `checks.date` for the calendar and a range.
+ */
+function date(options: DateMaskOptions = {}): Mask {
+  return createMaskFromEngine(createDateEngine({ locale: options.locale }))
 }
 
 /** Up to 34 letters and digits in groups of four, in upper case. Complete at the country's length. */
@@ -325,6 +343,7 @@ export const masks = {
   personalIdentityNumber,
   postalCode,
   organisationNumber,
+  date,
   iban,
   email,
   telephone,

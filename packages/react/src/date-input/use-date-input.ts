@@ -1,12 +1,12 @@
+import { dateInputOrder } from '@kvirn-ui/core'
+import type { DateInputPart } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { useMemo, useRef } from 'react'
 import type { ChangeEvent, ChangeEventHandler, RefCallback } from 'react'
 import { useLocale } from '../provider/use-locale.ts'
 import { useMessages } from '../provider/use-messages.ts'
-import { dateInputOrder } from './date-order.ts'
-import type { DateInputPart } from './date-order.ts'
 
-export type { DateInputPart } from './date-order.ts'
+export type { DateInputPart } from '@kvirn-ui/core'
 
 /** The date as the three boxes show it: strings, exactly as typed. Never parsed. */
 export interface DateInputValue {

@@ -17,7 +17,6 @@ import type { FieldsetRootProps } from '../fieldset/fieldset.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { DateInput } from './date-input.tsx'
 import type { DateInputRootProps } from './date-input.tsx'
-import { dateInputOrder } from './date-order.ts'
 import { useDateInput } from './use-date-input.ts'
 import type {
   DateInputChangeDetails,
@@ -232,10 +231,6 @@ describe('field order', () => {
       expect({ locale, order: boxOrder(container) }).toEqual({ locale, order: expected })
       await unmount()
     }
-  })
-
-  test('a locale Intl doesn’t know gives day, month, year', () => {
-    expect(dateInputOrder('not a locale!')).toEqual(['day', 'month', 'year'])
   })
 
   test('useDateInput exposes the order, and the order option replaces it', async () => {

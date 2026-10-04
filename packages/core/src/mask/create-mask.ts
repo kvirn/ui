@@ -195,13 +195,9 @@ function buildMask(engine: MaskEngine): Mask {
     }
     if (target < 0 || target >= previousValue.length) return undefined
 
-    const next = isForward
-      ? previousValue.slice(0, deletedStart) +
-        previousValue.slice(deletedEnd, target) +
-        previousValue.slice(target + 1)
-      : previousValue.slice(0, target) +
-        previousValue.slice(target + 1, deletedStart) +
-        previousValue.slice(deletedEnd)
+    // Only the neighbour goes: the literal stays, since in some masks (a date's separator) it
+    // decides how the characters around it are read.
+    const next = previousValue.slice(0, target) + previousValue.slice(target + 1)
     const caret = isForward ? deletedStart : target
     const outcome = activeEngine.parse(next, {
       insertedStart: caret,

@@ -1,3 +1,4 @@
+import { checkDate } from './date.ts'
 import { checkIban } from './iban.ts'
 import { checkOrganisationNumber } from './organisation-number.ts'
 import { checkPersonalIdentityNumber } from './personal-identity-number.ts'
@@ -11,4 +12,5 @@ export const checks = {
   personalIdentityNumber: checkPersonalIdentityNumber,
   organisationNumber: checkOrganisationNumber,
   iban: checkIban,
+  date: checkDate,
 }

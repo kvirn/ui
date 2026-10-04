@@ -9,6 +9,8 @@ export type {
 } from './store/create-component-store.ts'
 export { getLanguage, resolveDirection } from './locale/resolve-direction.ts'
 export type { Direction } from './locale/resolve-direction.ts'
+export { dateInputOrder, dateSeparator } from './locale/date-order.ts'
+export type { DateInputPart } from './locale/date-order.ts'
 export { createMessageFormat } from './messages/create-message-format.ts'
 export type {
   CreateMessageFormatOptions,
@@ -67,6 +69,7 @@ export { createMask } from './mask/create-mask.ts'
 export { masks } from './mask/masks.ts'
 export type {
   CountryMaskOptions,
+  DateMaskOptions,
   DigitsMaskOptions,
   MaskCountry,
   NumberMaskOptions,
@@ -75,6 +78,7 @@ export type {
   RegexpMaskOptions,
 } from './mask/masks.ts'
 export { checks } from './mask/checks/checks.ts'
+export type { DateCheck, DateCheckFailure, DateCheckOptions } from './mask/checks/date.ts'
 export type { IbanCheck, IbanFailure } from './mask/checks/iban.ts'
 export type {
   OrganisationNumberCheck,

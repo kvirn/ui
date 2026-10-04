@@ -5,7 +5,8 @@ import { useState } from 'react'
 import { expect, fn, userEvent } from 'storybook/test'
 import { FieldStates, localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
-import { MaskedField, maskTextsFor } from '../mask/mask.fixture.tsx'
+import { MaskedField, maskLocaleOf, maskTextsFor } from '../mask/mask.fixture.tsx'
+import type { MaskLocale } from '../mask/mask.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/Input: the native text <input>, styled by @kvirn-ui/theme/theme.css (design spec docs/design/form-fields.md §6.3 and §6.4). It lives in a Field, which gives it
@@ -18,6 +19,86 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 // story's `useState`, where your form library's state would live. Nothing here validates: an
 // invalid story sets `invalid` itself. input.e2e.ts runs the keyboard rows, focus ring,
 // forced-colours and reflow checks.
+
+/**
+ * The presets the `mask` control offers. A control can only hold text, so each choice is a name
+ * that `argTypes.mask.mapping` turns into the preset the Input gets. In your code, pass the
+ * preset itself: `<Input mask={masks.postalCode({ country: 'SE' })} />`.
+ */
+const maskChoices = {
+  none: undefined,
+  digits: masks.digits(),
+  number: masks.number(),
+  'number (2 decimals)': masks.number({ decimals: 2 }),
+  'postalCode SE': masks.postalCode({ country: 'SE' }),
+  'personalIdentityNumber SE': masks.personalIdentityNumber({ country: 'SE' }),
+  date: masks.date(),
+}
+type MaskChoice = keyof typeof maskChoices
+
+const isMaskChoice = (value: unknown): value is MaskChoice =>
+  typeof value === 'string' && value in maskChoices
+
+interface MaskExample {
+  label: string
+  hint: string
+  /** `en` when the label and hint are in English on a page in another language (3.1.2). */
+  lang: 'en' | undefined
+}
+
+/**
+ * A masked field needs a label that fits the mask and a hint with an example (3.3.2). One
+ * pair per choice, in sv, nb, nn and en. The other languages show the English pair, marked `lang="en"`.
+ */
+function maskExampleFor(
+  globals: Record<string, unknown>,
+  choice: unknown,
+): MaskExample | undefined {
+  if (!isMaskChoice(choice) || choice === 'none') return undefined
+  const { text, lang } = maskTextsFor(globals)
+  const locale: MaskLocale = maskLocaleOf(globals)
+  const pick = (sv: string, en: string, nb: string, nn: string): string =>
+    ({ sv, en, nb, nn })[locale]
+  // From the mask the field uses, in the provider's locale, so the example always types as shown.
+  // A day above 12 shows the order (3.3.2).
+  const dateExample = maskChoices.date.withLocale(localeOf(globals)).format('2026-10-27')
+  const examples: Record<Exclude<MaskChoice, 'none'>, { label: string; hint: string }> = {
+    digits: { label: text.digits, hint: text.digitsHint },
+    number: {
+      label: pick('Antal', 'Quantity', 'Antall', 'Tal'),
+      hint: pick(
+        'Skriv ett heltal, till exempel 12.',
+        'Enter a whole number, for example 12.',
+        'Skriv et heltall, for eksempel 12.',
+        'Skriv eit heiltal, til dømes 12.',
+      ),
+    },
+    'number (2 decimals)': {
+      label: pick('Belopp i kronor', 'Amount in kronor', 'Beløp i kroner', 'Beløp i kroner'),
+      hint: pick(
+        'Skriv med komma eller punkt, till exempel 1250,50.',
+        'Use a comma or a point, for example 1250.50.',
+        'Skriv med komma eller punktum, for eksempel 1250,50.',
+        'Skriv med komma eller punktum, til dømes 1250,50.',
+      ),
+    },
+    'postalCode SE': { label: text.postalCode, hint: text.postalCodeHint },
+    'personalIdentityNumber SE': {
+      label: text.personalIdentityNumber,
+      hint: text.personalIdentityNumberHint,
+    },
+    date: {
+      label: pick('Startdatum', 'Start date', 'Startdato', 'Startdato'),
+      hint: pick(
+        `Till exempel ${dateExample}.`,
+        `For example, ${dateExample}.`,
+        `For eksempel ${dateExample}.`,
+        `Til dømes ${dateExample}.`,
+      ),
+    },
+  }
+  return { ...examples[choice], lang }
+}
 
 const meta = {
   title: 'Components/Form/Input',
@@ -34,6 +115,13 @@ const meta = {
       description: 'Uncontrolled: the browser keeps the value, and a form submit sends it.',
     },
     onValueChange: { action: 'onValueChange' },
+    mask: {
+      control: 'select',
+      options: Object.keys(maskChoices),
+      mapping: maskChoices,
+      description:
+        'Shapes what is typed: `masks.digits()`, `masks.number({ decimals })`, `masks.postalCode({ country })`, `masks.personalIdentityNumber({ country })`, `masks.date()` and others. The control picks a preset, and the example adds the hint a masked field needs (3.3.2). See Components/Form/Mask.',
+    },
     disabled: { control: 'boolean' },
     readOnly: { control: 'boolean' },
     className: {
@@ -52,12 +140,15 @@ const meta = {
     ),
     withFormLocale,
   ],
-  render: (args, { globals }) => {
+  render: (args, { globals, unmappedArgs }) => {
     const { text, lang } = textsFor(localeOf(globals))
+    // The control holds the preset's name. Without a mask, a name field: with one, a field that fits it.
+    const example = maskExampleFor(globals, unmappedArgs?.['mask'])
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.name}</Field.Label>
-        <Input name="name" autoComplete="name" {...args} />
+      <Field.Root required lang={example?.lang ?? lang}>
+        <Field.Label>{example?.label ?? text.name}</Field.Label>
+        <Input name="name" autoComplete={example === undefined ? 'name' : 'off'} {...args} />
+        {example === undefined ? null : <Field.Hint>{example.hint}</Field.Hint>}
       </Field.Root>
     )
   },
@@ -67,7 +158,11 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** A text input in a Field: 44px high, a 1px edge, and a 2px ring on keyboard focus. */
+/**
+ * A text input in a Field: 44px high, a 1px edge, and a 2px ring on keyboard focus. Pick a
+ * `mask` in the controls to see how a masked field is written: the label and the hint fit the
+ * mask, and `autoComplete` is off because the field no longer asks for a name.
+ */
 export const Default: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = textsFor(localeOf(globals))

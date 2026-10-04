@@ -48,9 +48,10 @@ const projects = [...baselineProjects, ...sweepProjects, ...optionalProjects]
 // specs live next to their stories in apps/storybook/src/components/<name>/.
 //
 // Workers: Playwright's default is half the CPU cores, which on a 28-thread machine is 14 Chrome
-// pages hammering one Storybook dev server, and makes the timing-based tests flaky. Three is
-// enough for the baseline. Raise it for a one-off with `E2E_WORKERS=6 vp run e2e <spec>`.
-const workers = Number(process.env['E2E_WORKERS'] ?? 3)
+// pages hammering one Storybook dev server, and makes the timing-based tests flaky. Locally the
+// tests run one at a time, next to the dev server, the editor and other sessions; CI runs three.
+// Raise it for a one-off with `E2E_WORKERS=3 vp run e2e <spec>`.
+const workers = Number(process.env['E2E_WORKERS'] ?? (process.env['CI'] === undefined ? 1 : 3))
 export default defineConfig({
   testDir: 'apps/storybook/src',
   testMatch: ['**/*.e2e.ts'],

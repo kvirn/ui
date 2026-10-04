@@ -1,15 +1,23 @@
 import { sv } from '@kvirn-ui/i18n/sv'
-import { Button, DateInput, Fieldset, KvirnProvider, useDateInput } from '@kvirn-ui/react'
+import {
+  Button,
+  DateInput,
+  Field,
+  Fieldset,
+  Input,
+  KvirnProvider,
+  masks,
+  useDateInput,
+} from '@kvirn-ui/react'
 import type { DateInputRootProps, DateInputValue } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 import { useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Story and e2e fixture for Components/Form/DateInput (docs/design/form-fields.md §4.3, §6.6).
-// sv, en and fi are written. The fi strings are the designer's drafts, for length checks only.
-// nb, nn and se come from a translator, not an agent: until then those locales show the English
-// text, marked lang="en" (3.1.2). The library's own strings ("Dag", "Månad", "År", "(valfritt)",
-// "Fel:") follow the locale through the provider decorator in form.fixture.tsx.
+// sv, en, fi, nb and nn are written. The fi strings are the designer's drafts, for length checks
+// only. se: English, marked lang="en" (3.1.2). The library's own strings ("Dag", "Månad", "År",
+// "(valfritt)", "Fel:") follow the locale through the provider decorator in form.fixture.tsx.
 //
 // KvirnUI holds no form state and never validates the date. Nothing here does: an "invalid"
 // story sets `invalid` itself and writes the message, as an implementor's form logic would. The
@@ -33,6 +41,12 @@ export interface DateTexts {
   send: string
   sent: string
   youTyped: string
+  /** The label of the one-field date. */
+  oneFieldLabel: string
+  /** "For example, 2026-10-27": the example is written in the mask's form, so the two agree. */
+  oneFieldHint: (example: string) => string
+  /** "Stored as": the ISO date the form keeps. */
+  stored: string
 }
 
 const textsEn: DateTexts = {
@@ -46,6 +60,9 @@ const textsEn: DateTexts = {
   send: 'Send',
   sent: 'Sent',
   youTyped: 'You typed',
+  oneFieldLabel: 'Start date',
+  oneFieldHint: (example) => `For example, ${example}`,
+  stored: 'Stored as',
 }
 
 const textsSv: DateTexts = {
@@ -59,9 +76,12 @@ const textsSv: DateTexts = {
   send: 'Skicka',
   sent: 'Skickat',
   youTyped: 'Du skrev',
+  oneFieldLabel: 'Startdatum',
+  oneFieldHint: (example) => `Till exempel ${example}`,
+  stored: 'Sparas som',
 }
 
-/** Designer drafts (docs/design/form-fields.md §4.3), for length checks. Not reviewed. */
+/** Designer drafts (docs/design/form-fields.md §4.3), for length checks. */
 const textsFi: DateTexts = {
   legend: 'Syntymäaika',
   hintYearFirst: 'Esimerkiksi 1990 3 27',
@@ -73,19 +93,54 @@ const textsFi: DateTexts = {
   send: 'Lähetä',
   sent: 'Lähetetty',
   youTyped: 'Kirjoitit',
+  oneFieldLabel: 'Alkamispäivä',
+  oneFieldHint: (example) => `Esimerkiksi ${example}`,
+  stored: 'Tallennetaan muodossa',
 }
 
-/** nb, nn and se: `undefined` until a translator delivers them. */
+const textsNb: DateTexts = {
+  legend: 'Fødselsdato',
+  hintYearFirst: 'For eksempel 1990 3 27',
+  hintDayFirst: 'For eksempel 27 3 1990',
+  visitLegend: 'Dato for besøket',
+  errorYear: 'Fødselsdatoen må ha med år',
+  errorDate: 'Fødselsdatoen må være en gyldig dato',
+  back: 'Tilbake',
+  send: 'Send',
+  sent: 'Sendt',
+  youTyped: 'Du skrev',
+  oneFieldLabel: 'Startdato',
+  oneFieldHint: (example) => `For eksempel ${example}`,
+  stored: 'Lagres som',
+}
+
+const textsNn: DateTexts = {
+  legend: 'Fødselsdato',
+  hintYearFirst: 'Til dømes 1990 3 27',
+  hintDayFirst: 'Til dømes 27 3 1990',
+  visitLegend: 'Dato for besøket',
+  errorYear: 'Fødselsdatoen må ha med år',
+  errorDate: 'Fødselsdatoen må vere ein gyldig dato',
+  back: 'Tilbake',
+  send: 'Send',
+  sent: 'Sendt',
+  youTyped: 'Du skreiv',
+  oneFieldLabel: 'Startdato',
+  oneFieldHint: (example) => `Til dømes ${example}`,
+  stored: 'Vert lagra som',
+}
+
+/** se has no texts: it shows the English ones, marked lang="en". */
 const dateTexts: Record<FormLocale, DateTexts | undefined> = {
   sv: textsSv,
   fi: textsFi,
-  nb: undefined,
-  nn: undefined,
+  nb: textsNb,
+  nn: textsNn,
   se: undefined,
   en: textsEn,
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` until it's translated. */
+/** The fixture text in a locale, or the English text with `lang="en"` for se. */
 export function dateTextsFor(locale: FormLocale): { text: DateTexts; lang: 'en' | undefined } {
   const text = dateTexts[locale]
   return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }
@@ -259,5 +314,34 @@ export function KeyboardDate({ locale }: { locale: FormLocale }) {
         {text.sent}: {submits}
       </p>
     </form>
+  )
+}
+
+/**
+ * A date in one field: `masks.date()` follows the page's locale for the order and the separator
+ * (`2026-10-27` in sv, `27.10.2026` in fi, `27/10/2026` in en), and the hint gives an example in
+ * that form. The form keeps the ISO date, which `onValueChange` reports once the date is complete.
+ */
+export function OneFieldDate({ locale }: { locale: FormLocale }) {
+  const { text, lang } = dateTextsFor(locale)
+  const [stored, setStored] = useState('')
+  // The example comes from the mask itself, so the hint and the field never disagree.
+  const example = masks.date().withLocale(locale).format('2026-10-27')
+  return (
+    <div className="kv-story-form" lang={lang}>
+      <Field.Root required>
+        <Field.Label>{text.oneFieldLabel}</Field.Label>
+        <Input
+          name="start"
+          mask={masks.date()}
+          className="kv-input--width-10"
+          onValueChange={(_value, details) => setStored(details.unmaskedValue ?? '')}
+        />
+        <Field.Hint>{text.oneFieldHint(example)}</Field.Hint>
+      </Field.Root>
+      <p className="kv-story-form-output" data-testid="stored">
+        {text.stored}: {stored}
+      </p>
+    </div>
   )
 }

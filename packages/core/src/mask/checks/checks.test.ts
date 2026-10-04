@@ -211,3 +211,52 @@ describe('checks.iban', () => {
     expect(checks.iban(value)).toEqual(invalid(reason))
   })
 })
+
+describe('checks.date', () => {
+  it.each(['2026-10-04', '2024-02-29', '2000-02-29', '2026-12-31', '2026-01-01'])(
+    '%s is valid',
+    (value) => {
+      expect(checks.date(value)).toEqual(valid)
+    },
+  )
+
+  it.each(['', '2026-10', '2026-1-4', '04.10.2026', '20261004', '2026-10-04 ', 'abcd-ef-gh'])(
+    '%j is not a complete ISO date',
+    (value) => {
+      expect(checks.date(value)).toEqual(invalid('format'))
+    },
+  )
+
+  it.each([
+    '2026-02-31',
+    '2026-02-29',
+    '1900-02-29',
+    '2026-13-01',
+    '2026-00-10',
+    '2026-04-31',
+    '2026-10-00',
+  ])('%s is no such day', (value) => {
+    expect(checks.date(value)).toEqual(invalid('date'))
+  })
+
+  it('compares to min and max, both inclusive', () => {
+    const options = { min: '2026-01-01', max: '2026-12-31' }
+    expect(checks.date('2026-01-01', options)).toEqual(valid)
+    expect(checks.date('2026-12-31', options)).toEqual(valid)
+    expect(checks.date('2025-12-31', options)).toEqual(invalid('range'))
+    expect(checks.date('2027-01-01', options)).toEqual(invalid('range'))
+  })
+
+  it('takes min or max alone', () => {
+    expect(checks.date('2020-05-05', { min: '2026-01-01' })).toEqual(invalid('range'))
+    expect(checks.date('2030-05-05', { min: '2026-01-01' })).toEqual(valid)
+    expect(checks.date('2030-05-05', { max: '2026-01-01' })).toEqual(invalid('range'))
+    expect(checks.date('2020-05-05', { max: '2026-01-01' })).toEqual(valid)
+  })
+
+  it('reports the format before the date, and the date before the range', () => {
+    const options = { min: '2026-01-01' }
+    expect(checks.date('2020-2-31', options)).toEqual(invalid('format'))
+    expect(checks.date('2020-02-31', options)).toEqual(invalid('date'))
+  })
+})
