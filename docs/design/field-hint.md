@@ -103,7 +103,7 @@ When in doubt: if the user must read it before they start, it's a description. I
 
 ### 4.2 Example copy (story fixture keys)
 
-These live in `FormTexts` in `apps/storybook/src/components/form/form.fixture.tsx`, in all six locales. The library adds no message keys (Plan 0029: hint text is the adopter's). `nb`, `nn` and `se` need translators. The `fi` strings need a native speaker's review (open question 7).
+These live in `FormTexts` in `apps/storybook/src/components/form/form.fixture.tsx`, in all six locales. The library adds no message keys (Plan 0029: hint text is the adopter's).
 
 | Fixture key                              | en                                                                | sv                                                              | fi                                                               | Part                                                                                              |
 | ---------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -300,7 +300,7 @@ field-hint:
 
 > - Use all caps, justified text, italic paragraphs, or text smaller than 16px for errors, descriptions or an instruction above a control. The hint (`body-small`) is the one 14px instruction, and it goes under the control.
 
-Lines 332 and 503 are unchanged. Their disagreement about whether Prose has a smaller size is out of scope (open question 8).
+Lines 332 and 503 are unchanged. Their disagreement about whether Prose has a smaller size is out of scope (open question 7).
 
 ## 9. The Storybook Hint page
 
@@ -357,5 +357,4 @@ The fixtures in `FieldStates` and the form stories move every Prose that sits un
 4. **The date example moves under the boxes.** form-fields.md put "Till exempel 2026-03-27" above as a description. Under the new rule it's a `Fieldset.Hint` under the row. Confirmed 2026-10-04.
 5. **`FileUpload.Limits`** also registers as a description and is a hint in all but name. Should it take the `kv-field-hint` look in a later plan?
 6. **Digi (Arbetsförmedlingen)** wasn't verified, because its docs didn't render in this session. Check it before this spec is approved, if it matters for the Swedish audience.
-7. **Finnish copy** (`personalNumberWhy`, `personalNumberFormat`, `personalNumberError`, `grantReferenceHint`) needs a native speaker's review, and `nb`, `nn` and `se` need translators.
-8. **Out of scope, noticed:** DESIGN.md line 503 says Prose has "no smaller size", but line 332 lists `kv-prose--small` (14px).
+7. **Out of scope, noticed:** DESIGN.md line 503 says Prose has "no smaller size", but line 332 lists `kv-prose--small` (14px).

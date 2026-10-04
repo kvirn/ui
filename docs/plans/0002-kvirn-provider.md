@@ -129,7 +129,7 @@ theme.selectContrast('more')
 **Messages.**
 
 - **First real key.** The catalog gets `link.newTabNotice` in all 6 locales (strings from Plan 0003), so resolution is tested against real types. Plan 0003 still owns the Link component.
-  - `se` uses the English text with `// TODO(native-review)` until a native speaker provides it. It is listed under known issues.
+  - `se` uses the English text, marked `lang="en"`. It is listed under known issues.
 - **Catalog depth is fixed at `namespace.key`.**
   - `PartialMessages = { [N in keyof KvirnMessages]?: Partial<KvirnMessages[N]> }`.
   - `defineMessages(base: KvirnMessages, overrides: PartialMessages): KvirnMessages`.

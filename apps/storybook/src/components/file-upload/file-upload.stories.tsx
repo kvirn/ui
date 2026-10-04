@@ -2,6 +2,7 @@ import contract from '../../../../../packages/react/src/file-upload/file-upload.
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor } from 'storybook/test'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
+import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   controlledUpload,
@@ -24,6 +25,16 @@ import {
 // KvirnUI holds no form state. The Field's `invalid` and message stay with the
 // consumer, who decides whether a refused file blocks the form. file-upload.e2e.ts runs the keys,
 // the drop, focus after a removal, RTL, forced colours, reduced motion and reflow.
+
+/** The trigger's own text per locale (se shows the English catalog). */
+const chooseFiles: Record<FormLocale, string> = {
+  sv: 'Välj filer',
+  fi: 'Valitse tiedostot',
+  nb: 'Velg filer',
+  nn: 'Vel filer',
+  se: 'Choose files',
+  en: 'Choose files',
+}
 
 const meta = {
   title: 'Components/Form/FileUpload',
@@ -105,7 +116,7 @@ export const Default: Story = {
     const { texts } = fileUploadTextsFor(localeOf(globals))
     const trigger = triggerOf(canvasElement)
     await expect(trigger).toHaveAccessibleName(
-      new RegExp(`^${localeOf(globals) === 'sv' ? 'Välj filer' : 'Choose files'}.*${texts.label}`),
+      new RegExp(`^${chooseFiles[localeOf(globals)]}.*${texts.label}`),
     )
     await expect(itemsOf(canvasElement)).toHaveLength(0)
     await expectMinimumTargetSize(trigger)

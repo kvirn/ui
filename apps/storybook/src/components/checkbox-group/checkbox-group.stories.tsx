@@ -143,15 +143,20 @@ export const Default: Story = {
   },
 }
 
-/** The label of the button before the group: sv and fi are written, the rest show English. */
-const backTexts: Partial<Record<FormLocale, string>> = { sv: 'Tillbaka', fi: 'Takaisin' }
+/** The label of the button before the group. se shows English, marked lang="en". */
+const backTexts: Partial<Record<FormLocale, string>> = {
+  sv: 'Tillbaka',
+  fi: 'Takaisin',
+  nb: 'Tilbake',
+  nn: 'Tilbake',
+}
 
 function KeyboardExample({ locale }: { locale: FormLocale }) {
   const { text, lang } = choiceTextsFor(locale)
   return (
     <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
       <div className="kv-button-group">
-        {/* nb, nn and se come from a translator: until then the English text, marked as English (3.1.2). */}
+        {/* se: English, marked lang="en" (3.1.2). */}
         <Button type="button" lang={backTexts[locale] === undefined ? 'en' : undefined}>
           {backTexts[locale] ?? 'Back'}
         </Button>

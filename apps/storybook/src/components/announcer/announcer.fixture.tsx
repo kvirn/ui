@@ -2,11 +2,11 @@ import { Button, KvirnProvider, useAnnouncer } from '@kvirn-ui/react'
 import { useState } from 'react'
 
 // Story fixture for the shared Announcer. The buttons stand in for what a component
-// does when something changes: they call `announce`. sv, fi and en are written. Any other
-// locale shows the English text, marked lang="en" (3.1.2). In a real component these strings
+// does when something changes: they call `announce`. sv, fi, nb, nn and en are written. se
+// shows the English text, marked lang="en" (3.1.2). In a real component these strings
 // come from the catalogs; here they are fixture text, so the live region's output is readable.
 
-type AnnouncerFixtureLocale = 'sv' | 'fi' | 'en'
+type AnnouncerFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'en'
 
 interface AnnouncerTexts {
   heading: string
@@ -56,6 +56,38 @@ const texts: Record<AnnouncerFixtureLocale, AnnouncerTexts> = {
     accepted: 'lähetettiin',
     dropped: 'ohitettiin (liian tiheästi)',
     none: 'Ei vielä mitään',
+  },
+  nb: {
+    heading: 'Meldinger til skjermlesere',
+    intro:
+      'Knappene sender meldinger til de skjulte live-regionene, og en skjermleser leser dem opp. Denne listen viser hva som ble sendt.',
+    saved: 'Endringene er lagret',
+    expired: 'Økten har utløpt. Logg inn på nytt.',
+    digitsOnly: 'Her kan du bare skrive siffer',
+    polite: 'Si det høflig',
+    assertive: 'Si det med trykk',
+    repeat: 'Gjenta den samme meldingen',
+    throttled: 'Melding med nøkkel (høyst én hvert tredje sekund)',
+    lastLabel: 'Siste kall',
+    accepted: 'ble sendt',
+    dropped: 'ble forkastet (for tett)',
+    none: 'Ingenting ennå',
+  },
+  nn: {
+    heading: 'Meldingar til skjermlesarar',
+    intro:
+      'Knappane sender meldingar til dei skjulte live-regionane, og ein skjermlesar les dei opp. Denne lista viser kva som vart sendt.',
+    saved: 'Endringane er lagra',
+    expired: 'Økta har gått ut. Logg inn på nytt.',
+    digitsOnly: 'Her kan du berre skrive siffer',
+    polite: 'Sei det høfleg',
+    assertive: 'Sei det med trykk',
+    repeat: 'Gjenta den same meldinga',
+    throttled: 'Melding med nøkkel (høgst ein kvar tredje sekund)',
+    lastLabel: 'Siste kall',
+    accepted: 'vart sendt',
+    dropped: 'vart forkasta (for tett)',
+    none: 'Ingenting enno',
   },
   en: {
     heading: 'Messages for screen readers',
@@ -130,7 +162,7 @@ export function AnnouncerDemo({ locale }: { locale: AnnouncerFixtureLocale }) {
   )
 }
 
-/** The fixture's locale for a Storybook `locale` global: untranslated ones fall back to en. */
+/** The fixture's locale for a Storybook `locale` global: se falls back to en. */
 export const fixtureLocaleOf = (globals: Record<string, unknown>): AnnouncerFixtureLocale => {
   const locale = globals['locale']
   return isAnnouncerFixtureLocale(locale) ? locale : 'en'

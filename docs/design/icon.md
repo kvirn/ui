@@ -125,7 +125,7 @@ That leaves one slot under the 25 cap, held for a table sort indicator (`sort`, 
 
 Icon and the built-ins render no text, and have no `<title>` or i18n keys. A label always comes from the caller: a Kvirn component's own messages (for example a future `dialog.close`), or the app's translations.
 
-**Story fixture strings** go in `apps/storybook/src/components/icon/icon.fixture.tsx`, in all six locales. The `fi` strings are designer drafts for length checks. `fi`, `nb`, `nn` and `se` need a translator, and `se` falls back to `en` with `lang="en"` until it's reviewed.
+**Story fixture strings** go in `apps/storybook/src/components/icon/icon.fixture.tsx`, in all six locales. Agents write `fi`, `nb` and `nn`; `se` falls back to `en` with `lang="en"`.
 
 | Key                   | en                                      | sv                                 | longest: fi (draft)                      | Used as                                               |
 | --------------------- | --------------------------------------- | ---------------------------------- | ---------------------------------------- | ----------------------------------------------------- |

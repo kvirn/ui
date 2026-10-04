@@ -100,17 +100,17 @@ Without the augmentation, `LinkProps` falls back to `<a>` props and `IconName` i
 
 The same names are used across all components:
 
-| Part                                   | Meaning                                                                                          |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `Root`                                 | State owner, which renders a wrapper only if the semantics need one                              |
-| `Trigger`                              | Element that opens, closes or toggles                                                            |
-| `Panel`                                | Inline revealed content (Disclosure, Accordion, Tabs)                                            |
-| `Popup`                                | Floating content (Popover, Menu, Select, Tooltip, Dialog)                                        |
-| `Backdrop`, `Portal`, `Close`          | Overlay plumbing                                                                                 |
+| Part                                   | Meaning                                                                                                                 |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `Root`                                 | State owner, which renders a wrapper only if the semantics need one                                                     |
+| `Trigger`                              | Element that opens, closes or toggles                                                                                   |
+| `Panel`                                | Inline revealed content (Disclosure, Accordion, Tabs)                                                                   |
+| `Popup`                                | Floating content (Popover, Menu, Select, Tooltip, Dialog)                                                               |
+| `Backdrop`, `Portal`, `Close`          | Overlay plumbing                                                                                                        |
 | `Label`, `ErrorMessage`                | Field text (`Field.Label`), wired automatically to the control. The description is `Field.Prose`, the hint `Field.Hint` |
-| `Item`, `Option`, `Tab`                | Collection members                                                                               |
-| `Indicator`                            | Visual state marker, `aria-hidden`                                                               |
-| `Info`, `Success`, `Warning`, `Danger` | A ready-made Root for one status: its class, its icon and its status word (Notification)         |
+| `Item`, `Option`, `Tab`                | Collection members                                                                                                      |
+| `Indicator`                            | Visual state marker, `aria-hidden`                                                                                      |
+| `Info`, `Success`, `Warning`, `Danger` | A ready-made Root for one status: its class, its icon and its status word (Notification)                                |
 
 Both forms are exported: `Disclosure.Trigger` and the named export `DisclosureTrigger`, which tree-shakes well and is friendly to RSC.
 
@@ -129,7 +129,7 @@ Headless packages ship zero CSS. Classes style, and `data-*` attributes are stat
 | `data-state`                                                                 | `open`/`closed`, `checked`/`unchecked`/`indeterminate`, `active`/`inactive`                                                                |
 | `data-disabled`, `data-invalid`, `data-focus-visible`, `data-highlighted`    | present / absent                                                                                                                           |
 | `data-current`                                                               | present / absent                                                                                                                           |
-| `data-focused`                                                               | present / absent (text inputs: has focus, by click or key. The theme's sign that the script has run, so `:focus-visible` is the fallback) |
+| `data-focused`                                                               | present / absent (text inputs: has focus, by click or key. The theme's sign that the script has run, so `:focus-visible` is the fallback)  |
 | `data-filled`, `data-active`, `data-selected`, `data-complete`, `data-ready` | present / absent (OneTimeCode: a box holds a character, has the caret, is inside the selection; every box is filled; the hook has started) |
 | `data-character-count`, `data-separator-count`                               | a number (OneTimeCode root: the character symbols and the `-` of its pattern, always rendered, for the theme's row width and its fallback) |
 | `data-caret`                                                                 | `before` / `after` (OneTimeCode: on the active box, which side of its character the caret is)                                              |
@@ -146,7 +146,7 @@ The part classes, the modifier classes and the state attributes are part of the 
 
 ## Internationalisation
 
-- Required locales: `sv`, `fi`, `nb`, `nn`, `se` (Northern Sámi, reviewed by a native speaker) and `en` (the fallback). Finland is bilingual and Norway uses both written standards, so all are first-class.
+- Required locales: `sv`, `fi`, `nb`, `nn`, `se` (Northern Sámi) and `en` (the fallback). Finland is bilingual and Norway uses both written standards, so all are first-class.
 - No hard-coded visible or announced strings, and none that can't be replaced. Typed catalogs come through `<KvirnProvider messages>`, which is deep-merged over the parent provider and ultimately over built-in `en`. Any key can be overridden per instance with the component's `messages` prop, and visible text parts also take children. Missing keys fail the type check and `i18n:check`.
 - **Catalogs** are typed objects namespaced per component (`namespace.key`, depth fixed). A key without parameters is a string, or a `TextMessage` (a string or a `() => string`, called during render; shipped catalogs use strings, and `i18n:check` requires non-empty ones). A key with parameters is a function `(values, format)`, where `format` has `plural`, `number`, `date` and `list`, built on `Intl`. `plural` uses `forms.zero` for exactly 0 if given, otherwise the `Intl.PluralRules` category, falling back to `other`. `i18n:check` also compares the parameter counts of function keys across locales.
 - **Resolution, first match wins:** the children of a visible text part, then the component's or hook's `messages` prop, then the nearest provider and its ancestors (deep-merged), then built-in `en` (with a dev warning if the locale isn't `en`). `en` is always present, so no component renders an empty name without a provider. `defineMessages(base, overrides)` builds adjusted catalogs, and external i18n plugs in through function values.

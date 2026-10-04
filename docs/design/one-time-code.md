@@ -98,7 +98,7 @@ The `oneTimeCode.*` keys below are **story fixture** strings, with keys local to
 
 ### 4.2 Story fixture strings
 
-`fi` strings are designer drafts for length checks. The placeholders are small integers from the story, formatted with `Intl` (the same digits in every locale): `{length}` is the number of **characters**, never counting the dashes (the hook's `characterCount`), `{groupCount}` and `{groupLength}` describe equal groups, `{letters}` and `{digits}` an unequal prefix code. Numerals, not number words, so the hint reads the same as the boxes and works in every locale.
+Agents write the `fi` strings. The placeholders are small integers from the story, formatted with `Intl` (the same digits in every locale): `{length}` is the number of **characters**, never counting the dashes (the hook's `characterCount`), `{groupCount}` and `{groupLength}` describe equal groups, `{letters}` and `{digits}` an unequal prefix code. Numerals, not number words, so the hint reads the same as the boxes and works in every locale.
 
 | Key                           | en                                                                                                                               | sv                                                                                                                                                  | longest: fi (draft)                                                                                                                                                                    | Element                                                                                                    |
 | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
@@ -136,7 +136,7 @@ For `one-time-code.md` (the docs page), not the stories. Same three-column rule.
 
 ### 4.5 nb, nn and se
 
-The fixture keeps `nb`, `nn` and `se` `undefined` (English, marked `lang="en"`) until a translator delivers them, as for every form fixture. These drafts are **input for the translator**, not strings for an agent to ship. `se` stays English with `TODO(native-review)`.
+Agents write the `nb` and `nn` fixture strings below. The fixture keeps `se` `undefined` (English, marked `lang="en"`), as for every form fixture.
 
 | Key                           | nb (draft)                                                                                                                      | nn (draft)                                                                                                                 |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
@@ -610,7 +610,7 @@ Title `Components/Form/OneTimeCode`, args-first with autodocs, `parameters: { a1
 
 ## 8. Validation
 
-- [x] Self-review against `.claude/skills/design/references/review-checklist.md`. No open blockers. No component string; every fixture string has a key in en, sv and fi, with nb and nn drafts for the translator, and the hints state length and groups. No colour-only state: invalid is a 2px edge on every box plus a prefixed message, the active box and the selection are 2px edges as well as a caret or a fill, disabled is dashed. The separator is a character, not a colour. The focus ring is the input's 2px ring around the row. Targets: the row, 44px high (32px compact). Text is 16px in both densities, `text` or `text-muted` only when disabled. No motion beyond Input's edge transitions, and the caret never blinks. Reflow by falling back, never by scrolling, and the fallback fits the pattern. No compliance claim.
+- [x] Self-review against `.claude/skills/design/references/review-checklist.md`. No open blockers. No component string; every fixture string has a key in en, sv and fi, with nb and nn strings, and the hints state length and groups. No colour-only state: invalid is a 2px edge on every box plus a prefixed message, the active box and the selection are 2px edges as well as a caret or a fill, disabled is dashed. The separator is a character, not a colour. The focus ring is the input's 2px ring around the row. Targets: the row, 44px high (32px compact). Text is 16px in both densities, `text` or `text-muted` only when disabled. No motion beyond Input's edge transitions, and the caret never blinks. Reflow by falling back, never by scrolling, and the fallback fits the pattern. No compliance claim.
 - [x] Contrast: no new colour pair. The separator uses `text` (and `text-muted` when disabled) on `canvas`, `surface` and `surface-raised`, all already required by `theme:check` (§6.10). The orchestrator's `vp run theme:check` run confirms it; this agent doesn't run gates.
 - [x] Usability test plan written. Result: `pending`.
 
@@ -655,6 +655,5 @@ Title `Components/Form/OneTimeCode`, args-first with autodocs, `parameters: { a1
 13. **`data-complete` has no look.** Confirm that the default theme shows nothing for a complete code, so it never reads as "correct".
 14. **Stories use `*` patterns** (`****-****`, `***-***-***`) as the brief names them. §4.6 rule 5 recommends `&` for codes copied by hand. Switch `TwoGroups` and `ThreeGroups` to `&` so the stories show the recommended practice?
 15. **"You don't have to type the dash"** in the hint: helpful for low-confidence users, or noise? Left out until research (§1) says people hesitate.
-16. **nb, nn and se strings** need the translator. The nb and nn drafts in §4.5 are input for them.
 
 Resolved since the first draft: `data-caret`, `data-selected` and `data-ready` are in the hook (Plan 0019's slot object and `isReady`); `dir="ltr"` and upper-casing are decided in the OneTimeCode-pattern decision; grouping is the pattern's job, so the `--grouped` question is gone; the story stays `RTL`.

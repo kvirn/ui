@@ -4,9 +4,8 @@ import type { ReactNode } from 'react'
 import { scrollRegionTabIndex } from './foundation-helpers.tsx'
 
 // Fixture text for Components/Prose (docs/design/foundations-and-prose.md §4):
-// a fictional municipality's guidance page that uses every element prose styles. sv and en
-// are written. fi, nb, nn and se come from a translator, not an agent: until then those
-// locales show the English article, marked lang="en" (3.1.2).
+// a fictional municipality's guidance page that uses every element prose styles. sv, en, nb
+// and nn are written. fi and se: the English article, marked lang="en" (3.1.2).
 
 export type FixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
 
@@ -259,20 +258,210 @@ const sv: ArticleText = {
   updated: (date) => <>Senast uppdaterad {date}</>,
 }
 
-/** fi, nb, nn and se: `undefined` until a translator delivers them. */
+const nb: ArticleText = {
+  title: 'Søk om tilskudd til tilpasning av bolig',
+  lead: 'Hvis du har en funksjonsnedsettelse, kan du få tilskudd til å tilpasse boligen din, slik at du kan bo trygt hjemme. Tilskuddet avhenger ikke av inntekten din.',
+  who: {
+    heading: 'Hvem kan få tilskudd',
+    intro:
+      'Du kan få tilskudd hvis du har en varig funksjonsnedsettelse og må endre boligen din for å kunne bo hjemme. Du søker i kommunen der du bor, og det spiller ingen rolle hvor gammel du er.',
+    items: [
+      'Du bor i Kvirnby kommune, og boligen er din faste adresse.',
+      'Du har en funksjonsnedsettelse som varer i minst ett år.',
+      'Endringen er nødvendig på grunn av funksjonsnedsettelsen din, ikke fordi boligen er gammel.',
+    ],
+    tenure: {
+      intro: 'Du kan eie eller leie boligen:',
+      items: [
+        'Hvis du eier den, kan du søke med en gang.',
+        'Hvis du leier den, må eieren godkjenne endringene skriftlig.',
+      ],
+    },
+  },
+  what: {
+    heading: 'Hva tilskuddet kan dekke',
+    intro:
+      'Tilskuddet dekker endringer i selve boligen som du trenger på grunn av funksjonsnedsettelsen din. Det dekker ikke vanlig vedlikehold eller ting du kan ta med deg når du flytter.',
+    items: [
+      'Fjerne terskler og gjøre dørene bredere',
+      'Bytte badekar med dusj',
+      'Rampe ved inngangen',
+      'Trappeheis',
+    ],
+    figureLabel:
+      'Tegning av et bad. Badekaret langs den ene veggen er byttet ut med en dusjplass med nedfellbart sete og støttehåndtak, og døren er gjort bredere.',
+    figureCaption: 'Eksempeltegning: Kvirnby kommune, 2025.',
+  },
+  how: {
+    heading: 'Slik søker du',
+    steps: [
+      'Snakk med en ergoterapeut. Ergoterapeuten skriver en erklæring som beskriver hva du trenger.',
+      'Be en entreprenør om et tilbud på arbeidet.',
+      'Fyll ut søknaden på nett eller på papir, og legg ved dokumentene i listen nedenfor.',
+      'Vent på vedtaket vårt før arbeidet starter. Vi dekker ikke arbeid som allerede er utført.',
+    ],
+    quoteSteps: ['Spør minst to entreprenører.', 'Sjekk at tilbudet viser hva hver del koster.'],
+    keyboard: (key) => <>Du kan flytte mellom feltene i skjemaet med {key}.</>,
+  },
+  attach: {
+    heading: 'Dette skal du legge ved',
+    items: [
+      [
+        'Erklæring',
+        'Fra en ergoterapeut, fysioterapeut eller lege. Den beskriver funksjonsnedsettelsen din og hva du trenger.',
+      ],
+      ['Tegning', 'En enkel tegning av rommet, med endringene markert.'],
+      ['Tilbud', 'Fra entreprenøren, med kostnaden for hver del av arbeidet.'],
+    ],
+  },
+  paper: {
+    heading: 'Søk på papir',
+    text: 'Skriv ut skjemaet, eller ring oss, så sender vi det til deg. Skriv under og send det til oss sammen med dokumentene.',
+  },
+  send: {
+    heading: 'Hvor du sender det',
+    address: ['Kvirnby kommune', 'Boligtilpasning', 'Postboks 100', '0150 Kvirnby'],
+  },
+  times: {
+    heading: 'Hvor lang tid det tar',
+    intro:
+      'Vi avgjør som regel saken innen seks uker hvis søknaden er komplett. Større endringer tar lengre tid, fordi vi ofte må besøke boligen din først.',
+    caption: 'Vanlig saksbehandlingstid i 2025',
+    columns: ['Tilpasning', 'Saksbehandlingstid (uker)', 'Innvilgede tilskudd'],
+    rows: [
+      ['Bad', 6, 1412],
+      ['Rampe ved inngangen', 4, 238],
+      ['Trappeheis', 10, 57],
+    ],
+  },
+  caseNumber: (code) => <>Saksnummeret ditt ser slik ut: {code}. Oppgi det når du kontakter oss.</>,
+  sms: 'Send dette til 71120 for å se hvordan det går med saken din:',
+  quote: 'Nå kan jeg dusje selv igjen, og jeg trenger ikke vente på hjelp om morgenen.',
+  quoteSource: 'Innbygger i Kvirnby, 81 år',
+  contact: {
+    heading: 'Kontakt oss',
+    body: (link) => (
+      <>
+        Ring oss på <strong>800 12 345</strong> på hverdager mellom kl. 9 og 12.{' '}
+        <em>Ha saksnummeret klart.</em> Du kan også {link('skrive til oss i e-tjenesten')}.
+      </>
+    ),
+  },
+  easyRead: 'Les om tilskuddet på lettlest norsk',
+  otherLanguage: 'Sámegillii',
+  apply: 'Søk på nett',
+  updated: (date) => <>Sist oppdatert {date}</>,
+}
+
+const nn: ArticleText = {
+  title: 'Søk om tilskot til tilpassing av bustad',
+  lead: 'Viss du har ei funksjonsnedsetting, kan du få tilskot til å tilpasse bustaden din, slik at du kan bu trygt heime. Tilskotet er ikkje avhengig av inntekta di.',
+  who: {
+    heading: 'Kven kan få tilskot',
+    intro:
+      'Du kan få tilskot viss du har ei varig funksjonsnedsetting og må endre bustaden din for å kunne bu heime. Du søkjer i kommunen der du bur, og det spelar inga rolle kor gammal du er.',
+    items: [
+      'Du bur i Kvirnby kommune, og bustaden er den faste adressa di.',
+      'Du har ei funksjonsnedsetting som varer i minst eitt år.',
+      'Endringa er nødvendig på grunn av funksjonsnedsettinga di, ikkje fordi bustaden er gammal.',
+    ],
+    tenure: {
+      intro: 'Du kan eige eller leige bustaden:',
+      items: [
+        'Viss du eig han, kan du søkje med éin gong.',
+        'Viss du leiger han, må eigaren godkjenne endringane skriftleg.',
+      ],
+    },
+  },
+  what: {
+    heading: 'Kva tilskotet kan dekkje',
+    intro:
+      'Tilskotet dekkjer endringar i sjølve bustaden som du treng på grunn av funksjonsnedsettinga di. Det dekkjer ikkje vanleg vedlikehald eller ting du kan ta med deg når du flyttar.',
+    items: [
+      'Fjerne terskler og gjere dørene breiare',
+      'Byte ut badekar med dusj',
+      'Rampe ved inngangen',
+      'Trappeheis',
+    ],
+    figureLabel:
+      'Teikning av eit bad. Badekaret langs den eine veggen er bytt ut med ein dusjplass med nedfellbart sete og støttehandtak, og døra er gjord breiare.',
+    figureCaption: 'Døme på teikning: Kvirnby kommune, 2025.',
+  },
+  how: {
+    heading: 'Slik søkjer du',
+    steps: [
+      'Snakk med ein ergoterapeut. Ergoterapeuten skriv ei erklæring som skildrar kva du treng.',
+      'Be ein entreprenør om eit tilbod på arbeidet.',
+      'Fyll ut søknaden på nett eller på papir, og legg ved dokumenta i lista nedanfor.',
+      'Vent på vedtaket vårt før arbeidet startar. Vi dekkjer ikkje arbeid som alt er utført.',
+    ],
+    quoteSteps: ['Spør minst to entreprenørar.', 'Sjekk at tilbodet viser kva kvar del kostar.'],
+    keyboard: (key) => <>Du kan flytte mellom felta i skjemaet med {key}.</>,
+  },
+  attach: {
+    heading: 'Dette skal du leggje ved',
+    items: [
+      [
+        'Erklæring',
+        'Frå ein ergoterapeut, fysioterapeut eller lege. Ho skildrar funksjonsnedsettinga di og kva du treng.',
+      ],
+      ['Teikning', 'Ei enkel teikning av rommet, med endringane markerte.'],
+      ['Tilbod', 'Frå entreprenøren, med kostnaden for kvar del av arbeidet.'],
+    ],
+  },
+  paper: {
+    heading: 'Søk på papir',
+    text: 'Skriv ut skjemaet, eller ring oss, så sender vi det til deg. Skriv under og send det til oss saman med dokumenta.',
+  },
+  send: {
+    heading: 'Kvar du sender det',
+    address: ['Kvirnby kommune', 'Bustadtilpassing', 'Postboks 100', '0150 Kvirnby'],
+  },
+  times: {
+    heading: 'Kor lang tid det tek',
+    intro:
+      'Vi avgjer vanlegvis saka innan seks veker viss søknaden er komplett. Større endringar tek lengre tid, fordi vi ofte må besøkje bustaden din først.',
+    caption: 'Vanleg saksbehandlingstid i 2025',
+    columns: ['Tilpassing', 'Saksbehandlingstid (veker)', 'Innvilga tilskot'],
+    rows: [
+      ['Bad', 6, 1412],
+      ['Rampe ved inngangen', 4, 238],
+      ['Trappeheis', 10, 57],
+    ],
+  },
+  caseNumber: (code) => <>Saksnummeret ditt ser slik ut: {code}. Oppgi det når du kontaktar oss.</>,
+  sms: 'Send dette til 71120 for å sjå korleis det går med saka di:',
+  quote: 'No kan eg dusje sjølv igjen, og eg treng ikkje vente på hjelp om morgonen.',
+  quoteSource: 'Innbyggjar i Kvirnby, 81 år',
+  contact: {
+    heading: 'Kontakt oss',
+    body: (link) => (
+      <>
+        Ring oss på <strong>800 12 345</strong> på kvardagar mellom kl. 9 og 12.{' '}
+        <em>Ha saksnummeret klart.</em> Du kan òg {link('skrive til oss i e-tenesta')}.
+      </>
+    ),
+  },
+  easyRead: 'Les om tilskotet på lettlesen nynorsk',
+  otherLanguage: 'Sámegillii',
+  apply: 'Søk på nett',
+  updated: (date) => <>Sist oppdatert {date}</>,
+}
+
+/** fi and se have no article: they show the English one, marked lang="en". */
 const articleTexts: Record<FixtureLocale, ArticleText | undefined> = {
   sv,
   en,
   fi: undefined,
-  nb: undefined,
-  nn: undefined,
+  nb,
+  nn,
   se: undefined,
 }
 
 export const isFixtureLocale = (value: unknown): value is FixtureLocale =>
   typeof value === 'string' && value in articleTexts
 
-/** The article in a locale, or the English one with `lang="en"` until it's translated. */
+/** The article in a locale, or the English one with `lang="en"` for fi and se. */
 export function articleFor(locale: FixtureLocale): { text: ArticleText; lang?: 'en' } {
   const text = articleTexts[locale]
   return text === undefined ? { text: en, lang: 'en' } : { text }

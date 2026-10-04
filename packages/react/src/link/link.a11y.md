@@ -112,6 +112,6 @@ Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root mes
 
 ## Known issues
 
-- **`se` (Northern Sámi) is a placeholder. Blocks `beta`.** `link.newTabNotice` uses the English text, marked `TODO(native-review)`, until a native speaker provides it. Sámi users get English for this string under `lang="se"`, which fails 3.1.2 Language of Parts for that string. Link can't reach `beta` until the Sámi text is native-reviewed.
+- **`se` (Northern Sámi) shows English** for `link.newTabNotice`. Sámi users get English for this string under `lang="se"`, which fails 3.1.2 Language of Parts for that string.
 - **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.
 - **The missing-notice warning only sees `Link.NewTabNotice`.** A link that says "new tab" some other way still gets the dev warning.

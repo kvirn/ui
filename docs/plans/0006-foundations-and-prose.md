@@ -13,7 +13,7 @@ Designers and developers get a complete foundation to build on. `data-kv-prose` 
 
 - New components.
 - Video in the sample article.
-- Translated article texts for fi, nb, nn and se. They fall back to English, marked `lang="en"`, until a translator delivers them.
+- Translated article texts for fi, nb, nn and se. They fall back to English, marked `lang="en"`.
 
 ## Design
 

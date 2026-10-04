@@ -109,7 +109,6 @@ Research questions for the AT run: do screen-reader users know the unit from the
 
 ## Known issues
 
-- **`se` (Northern Sámi) is a placeholder in the fixtures.** The story texts for `nb`, `nn` and `se` show English until a translator delivers them, marked `lang="en"` (3.1.2).
 - **Autofill covers only the Input.** The browser's autofill fill doesn't paint behind an Addon. Known browser behaviour, accepted.
 - **A Button's transparent edges show in forced colours,** so it looks like a bordered button attached to the inside of the box. Accepted: it's the shape Contrast Themes users expect of a button.
 - **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.

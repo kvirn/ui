@@ -184,4 +184,3 @@ Research questions for the AT run: is the description read before or after the c
 - **The popup has no tab stop.** It scrolls natively, and keyboard users scroll it by moving the active option, which is scrolled into view. axe treats the combobox popup as exempt from `scrollable-region-focusable`.
 - **Keys differ by platform for the native rendering.** The Keyboard rows describe Chromium on Windows and Linux (tested); macOS and Safari open the list for the arrow keys. The AT run covers macOS.
 - **WebKit not run locally.** CI runs the `webkit` and `mobile-safari` projects. `popover="manual"`, the outside press and Escape must be checked on Safari 17.
-- **`se` (Northern Sámi) is a placeholder in the fixtures.** See `field.a11y.md`.

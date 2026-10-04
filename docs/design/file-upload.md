@@ -1,6 +1,6 @@
 # Design spec: FileUpload
 
-- **Status:** Draft, revised after the independent WCAG review (changelog at the end of §10). §9 Q4 and Q6 are still open
+- **Status:** Draft, revised after the independent WCAG review (changelog at the end of §10). §9 Q4 is still open
 - **Designer:** ux-designer agent · **Date:** 2026-10-02
 - **Plan:** [Plan 0021](../plans/0021-file-upload.md)
 - **Type:** new component (headless) + default-theme styling + one DESIGN.md rule addition (§6.4)
@@ -115,7 +115,7 @@ A click on the zone outside the button does nothing. A big click area that isn't
 Corrects the plan's draft table. Conventions:
 
 - `{count}` keys are plural functions (`format.plural`: `one`/`other` in en and sv; **`se` also has `two`**, and fi/nb/nn `one`/`other`). `{size}` and `{limit}` are `format.number(bytes, { style: 'unit', unit: 'megabyte' | 'kilobyte' | 'byte', maximumFractionDigits: 1 })`, decimal units, the same formatter for the file and the limit, so they compare (sv "14,2 MB", fi "14,2 Mt"). `{allowed}` is a disjunction list ("PDF, JPG eller PNG"), built from `accept` with the existing `format.list` helper in `@kvirn-ui/i18n` (`Intl.ListFormat`, `type: 'disjunction'`; §9 Q2). `{name}` is the file's name, inserted as plain text. Every message is a full sentence with its full stop, so the announcer can join sentences with a space.
-- `fi`, `nb`, `nn` are for a translator; `se` uses `en` with `TODO(native-review)`, which blocks `beta` (as `field.*`).
+- Agents write `fi`, `nb` and `nn`; `se` uses `en`, marked `lang="en"` (as `field.*`).
 - Errors name the file, say what's wrong in plain words, and say what to do. They never say "invalid", "not supported" or "error code", and never blame.
 
 **Visible text**
@@ -194,7 +194,7 @@ The Trigger's name has no key of its own: `aria-labelledby="<trigger> <label>"` 
 
 Dropped from the plan's draft: `statusPending` (split into `statusReady` and `statusQueued`, because "Redo" doesn't say whether anything was sent), and per-item `errorTooMany` without a name (every rejection line names its file).
 
-**Longest strings for layout** (`fi`, designer drafts): `errorTooLarge` "skannaus.jpg on 14,2 Mt. Valitse enintään 10 Mt:n kokoinen tiedosto. Voit pienentää kuvaa tai skannausta tallentamalla tai skannaamalla sen uudelleen pienemmällä tarkkuudella." · `summaryFull` "5/5 tiedostoa lisätty. Poista tiedosto, jos haluat lisätä toisen." · `errorType` "raportti.docx on tiedostomuodossa, jota emme voi käyttää. Valitse PDF-, JPG- tai PNG-muotoinen tiedosto." · `statusUploadingPercent` "Ladataan, 45 %" · `cancelFile` (name only) "Peruuta tiedoston raportti.pdf lataus".
+**Longest strings for layout** (`fi`): `errorTooLarge` "skannaus.jpg on 14,2 Mt. Valitse enintään 10 Mt:n kokoinen tiedosto. Voit pienentää kuvaa tai skannausta tallentamalla tai skannaamalla sen uudelleen pienemmällä tarkkuudella." · `summaryFull` "5/5 tiedostoa lisätty. Poista tiedosto, jos haluat lisätä toisen." · `errorType` "raportti.docx on tiedostomuodossa, jota emme voi käyttää. Valitse PDF-, JPG- tai PNG-muotoinen tiedosto." · `statusUploadingPercent` "Ladataan, 45 %" · `cancelFile` (name only) "Peruuta tiedoston raportti.pdf lataus".
 
 ### 4.2 Field copy (the consumer's; for the docs and the story fixture)
 
@@ -615,9 +615,7 @@ When Rejections clears, the Trigger's description loses it at the same time (the
    - **Open.** Needs the device check.
 5. **Remove all** for staff dropping many files. Not in v1; is there a known case?
    - **Decided (orchestrator): deferred.** Not in v1.
-6. **Northern Sámi** strings (all of §4.1) are English placeholders and block `beta`. Who translates? Note `se` has a `two` plural form.
-   - **Open.** Needs a Sámi translator. The new keys (`rejectedFilePosition`, `announcementForField`, the `one` form of `allUploadsComplete`) join the list.
-7. **The dashed drop zone** as the one dashed edge that doesn't mean disabled (§6.4). Accept the DESIGN.md addition, or use a solid edge and lose the convention?
+6. **The dashed drop zone** as the one dashed edge that doesn't mean disabled (§6.4). Accept the DESIGN.md addition, or use a solid edge and lose the convention?
    - **Decided (orchestrator): accepted, pending the maintainer's approval and `theme:check`.** DESIGN.md isn't edited until the decision is recorded and the orchestrator has run `theme:check`.
 
 ## 10. Decision changes proposed
@@ -656,4 +654,4 @@ Changes after the independent WCAG review (CHANGES REQUIRED), 2026-10-02:
 12. Duplicate names: `rejectedFilePosition` ("Fil 2 av 3, …") on rejection lines for files sharing a name (§4.1, §4.3).
 13. Copy: neutral `uploadFailedMessage`; `errorTooLarge` says how to get under the limit; `allUploadsComplete` gains a `one` form (§4.1).
 14. Manual AT matrix additions, `pending`: VoiceOver macOS dropping a polite message with a focus change; what iOS VoiceOver and TalkBack read on a focused `<li>` (§8, §7.3).
-15. §9 answers recorded: Q1, Q2 proceed; Q3 `allowDuplicates` opt-out; Q5 deferred; Q7 accepted pending the maintainer's approval and `theme:check`; Q4, Q6 open.
+15. §9 answers recorded: Q1, Q2 proceed; Q3 `allowDuplicates` opt-out; Q5 deferred; Q6 accepted pending the maintainer's approval and `theme:check`; Q4 open.

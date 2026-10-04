@@ -3,18 +3,14 @@ import type { KvirnMessages } from '../types.ts'
 
 export const nb = {
   link: { newTabNotice: '(åpnes i en ny fane)' },
-  // Draft from the design spec (docs/design/form-fields.md §4.1), for a translator to confirm.
   field: { optional: '(valgfritt)', errorPrefix: 'Feil:' },
-  // Draft for a translator to confirm.
   dateInput: { day: 'Dag', month: 'Måned', year: 'År' },
-  // Draft from the design spec (docs/design/notification.md §4.1), for a translator to confirm.
   notification: {
     infoPrefix: 'Informasjon:',
     successPrefix: 'Fullført:',
     warningPrefix: 'Advarsel:',
     dangerPrefix: 'Feil:',
   },
-  // Draft for a translator to confirm.
   combobox: {
     resultCount: ({ count }, format) =>
       format.plural(count, { one: '1 treff', other: `${format.number(count)} treff` }),
@@ -24,7 +20,6 @@ export const nb = {
     clear: 'Tøm',
     showOptions: 'Vis alternativer',
   },
-  // Draft for a translator to confirm.
   mask: {
     characterNotAllowed: ({ allowed }) =>
       ({
@@ -35,7 +30,6 @@ export const nb = {
       })[allowed],
     maximumLength: ({ length }) => `Du har skrevet alle ${length} tegnene.`,
   },
-  // Draft for a translator to confirm.
   fileUpload: {
     chooseFiles: 'Velg filer',
     chooseFile: 'Velg fil',
@@ -104,7 +98,7 @@ export const nb = {
     errorDuplicate: ({ name }) => `${name} er allerede i listen.`,
     errorFolder: ({ name }) => `${name} er en mappe. Åpne mappen og velg filene i den.`,
     uploadFailedMessage: ({ name }) =>
-      `Vi kunne ikke laste opp ${name}. Hvis det fortsetter å feile, kontakt oss.`,
+      `Vi kunne ikke laste opp ${name}. Hvis det fortsetter å feile, ta kontakt med oss.`,
     rejectedFilePosition: ({ position, total, message }) =>
       `Fil ${position} av ${total}, ${message}`,
     removeFile: ({ name }) => `Fjern ${name}`,

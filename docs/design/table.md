@@ -97,7 +97,7 @@ A table is not a flow, but each job has steps and unhappy paths.
 
 ### 4.1 Library strings (`table` namespace, from Plan 0026)
 
-The `fi` column is a **draft for length checks only**. The translator confirms fi, nb, nn and se.
+Agents write the `fi`, `nb` and `nn` columns; `se` falls back to `en` with `lang="en"`.
 
 | i18n key                 | en                                | sv                                    | fi (draft, longest)                           | Seen or heard        | Notes                                                                                                                                           |
 | ------------------------ | --------------------------------- | ------------------------------------- | --------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |

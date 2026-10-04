@@ -6,8 +6,8 @@ import { virtualizedStreets } from '../form/virtualized.fixture.ts'
 
 // Story and e2e fixture for Components/Form/Autocomplete (contract: autocomplete.a11y.md). The
 // functions here are the examples the stories show with "Show code": each is one Autocomplete as
-// an adopter writes it. sv, en and fi are written, and nb, nn and se show the English text,
-// marked lang="en" (3.1.2), until a translator has been through them.
+// an adopter writes it. sv, en, fi, nb and nn are written, and se shows the English text,
+// marked lang="en" (3.1.2).
 //
 // KvirnUI holds no form state. The value is the text: pass `value` and
 // `onValueChange`, or `defaultValue` and `name` for a plain form. Nothing here validates.
@@ -91,9 +91,23 @@ const autocompleteTexts: Partial<Record<FormLocale, AutocompleteTexts>> = {
     longLabel:
       'Katuosoite, jossa asut verohallinnon rekisterin mukaan, porraskäytävän ja asunnon numeron kanssa',
   },
+  nb: {
+    street: 'Gateadresse',
+    hint: 'Begynn å skrive, så foreslår vi gater. Du kan også skrive inn din egen adresse.',
+    error: 'Skriv inn gateadressen din',
+    placeholder: 'For eksempel Storgatan',
+    longLabel: 'Gateadressen der du bor ifølge Folkeregisteret, med oppgang og leilighetsnummer',
+  },
+  nn: {
+    street: 'Gateadresse',
+    hint: 'Byrj å skrive, så føreslår vi gater. Du kan òg skrive inn di eiga adresse.',
+    error: 'Skriv inn gateadressa di',
+    placeholder: 'Til dømes Storgatan',
+    longLabel: 'Gateadressa der du bur ifølgje Folkeregisteret, med oppgang og leilegheitsnummer',
+  },
 }
 
-/** The fixture text in a locale, with the shared form texts, or English with `lang="en"` until it's translated. */
+/** The fixture text in a locale, with the shared form texts, or English with `lang="en"` for se. */
 export function autocompleteTextsFor(locale: FormLocale) {
   const { text: shared, lang } = choiceTextsFor(locale)
   return { text: autocompleteTexts[locale] ?? textsEn, shared, lang }

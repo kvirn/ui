@@ -5,13 +5,12 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Story and e2e fixture for Components/Form/OneTimeCode (Plan 0014 and Plan 0019,
 // docs/design/one-time-code.md §4). The hint is built from the pattern: it says the length and the
-// groups, because the boxes are hidden from screen readers and disappear in the fallback
-//. The length is the characters, never the dashes. The numbers are small
+// groups, because the boxes are hidden from screen readers and disappear in the fallback.
+// The length is the characters, never the dashes. The numbers are small
 // integers, so they read the same in every locale (no number words). The component adds no strings of its own: the label and the hint belong to the consumer,
 // because they name the channel and the length. The strings below are fixture text, with keys
-// local to this file. sv, en and fi are written (the fi strings are the designer's drafts, for
-// length checks). nb, nn and se come from a translator, not an agent: until then those locales
-// show the English text, marked lang="en" (3.1.2). The library's own strings (the mask's
+// local to this file. sv, en, fi, nb and nn are written (the fi strings are the designer's drafts, for
+// length checks). se: English, marked lang="en" (3.1.2). The library's own strings (the mask's
 // rejection messages, "Error:") follow the locale through the shared provider decorator.
 //
 // KvirnUI holds no form state. Nothing here validates or checks the code: an
@@ -98,16 +97,53 @@ const textsFi: OneTimeCodeTexts = {
     'Koodi ei vastaa lähettämäämme koodia. Tarkista tekstiviesti ja kirjoita koodi uudelleen.',
 }
 
+const textsNb: OneTimeCodeTexts = {
+  smsLabel: 'Kode fra SMS-en',
+  smsHint: (length) => `Koden har ${length} siffer. Du finner den i SMS-en vi nettopp sendte deg.`,
+  emailLabel: 'Kode fra e-posten',
+  smsPrefixHint: (letters, digits) =>
+    `Koden har ${letters} bokstaver og deretter ${digits} siffer. Du finner den i SMS-en vi nettopp sendte deg.`,
+  emailGroupsHint: (length, groupCount, groupLength) =>
+    `Koden har ${length} bokstaver og siffer, i ${groupCount} grupper på ${groupLength}. Du finner den i e-posten vi nettopp sendte deg.`,
+  appLabel: 'Kode fra autentiseringsappen din',
+  appHint: (length) => `Åpne appen og skriv inn koden som vises. Koden har ${length} siffer.`,
+  signInLabel: 'Kode for innlogging',
+  lettersLabel: (length) => `Kode med ${length} store bokstaver`,
+  lettersHint: (length, groupCount, groupLength) =>
+    `Koden har ${length} store bokstaver${groupCount > 1 ? `, i ${groupCount} grupper på ${groupLength}` : ''}.`,
+  submit: 'Gå videre',
+  errorWrong: 'Koden stemmer ikke med den vi sendte. Sjekk SMS-en og skriv inn koden på nytt.',
+}
+
+const textsNn: OneTimeCodeTexts = {
+  smsLabel: 'Kode frå SMS-en',
+  smsHint: (length) => `Koden har ${length} siffer. Du finn koden i SMS-en vi nett sende deg.`,
+  emailLabel: 'Kode frå e-posten',
+  smsPrefixHint: (letters, digits) =>
+    `Koden har ${letters} bokstavar og deretter ${digits} siffer. Du finn koden i SMS-en vi nett sende deg.`,
+  emailGroupsHint: (length, groupCount, groupLength) =>
+    `Koden har ${length} bokstavar og siffer, i ${groupCount} grupper på ${groupLength}. Du finn koden i e-posten vi nett sende deg.`,
+  appLabel: 'Kode frå autentiseringsappen din',
+  appHint: (length) => `Opne appen og skriv inn koden som blir vist. Koden har ${length} siffer.`,
+  signInLabel: 'Kode for innlogging',
+  lettersLabel: (length) => `Kode med ${length} store bokstavar`,
+  lettersHint: (length, groupCount, groupLength) =>
+    `Koden har ${length} store bokstavar${groupCount > 1 ? `, i ${groupCount} grupper på ${groupLength}` : ''}.`,
+  submit: 'Gå vidare',
+  errorWrong: 'Koden stemmer ikkje med den vi sende. Sjekk SMS-en og skriv inn koden på nytt.',
+}
+
+/** se has no texts: it shows the English ones, marked lang="en". */
 const oneTimeCodeTexts: Record<FormLocale, OneTimeCodeTexts | undefined> = {
   sv: textsSv,
   fi: textsFi,
-  nb: undefined,
-  nn: undefined,
+  nb: textsNb,
+  nn: textsNn,
   se: undefined,
   en: textsEn,
 }
 
-/** The fixture text in a locale, or the English text until it's translated. */
+/** The fixture text in a locale, or the English text for se. */
 export function oneTimeCodeTextsFor(locale: FormLocale): OneTimeCodeTexts {
   return oneTimeCodeTexts[locale] ?? textsEn
 }

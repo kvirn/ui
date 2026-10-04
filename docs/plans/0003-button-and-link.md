@@ -1,6 +1,6 @@
 # Plan 0003: Button and Link
 
-- **Status:** Done (alpha. Manual AT and Sámi review pending before beta)
+- **Status:** Done (alpha. Manual AT pending before beta)
 - **Owner:** Maintainer
 - **Created:** 2026-09-30 · **Target:** M0 proof / M1
 - **Related:** Plan 0002
@@ -69,9 +69,9 @@ const button = useButton({ disabled, focusableWhenDisabled: true })
 
 ### i18n strings
 
-| Key                 | en                   | sv                    | fi                           | nb                   | nn                       | se                  |
-| ------------------- | -------------------- | --------------------- | ---------------------------- | -------------------- | ------------------------ | ------------------- |
-| `link.newTabNotice` | (opens in a new tab) | (öppnas i en ny flik) | (avautuu uuteen välilehteen) | (åpnes i en ny fane) | (blir opna i ei ny fane) | TODO(native-review) |
+| Key                 | en                   | sv                    | fi                           | nb                   | nn                       | se                   |
+| ------------------- | -------------------- | --------------------- | ---------------------------- | -------------------- | ------------------------ | -------------------- |
+| `link.newTabNotice` | (opens in a new tab) | (öppnas i en ny flik) | (avautuu uuteen välilehteen) | (åpnes i en ny fane) | (blir opna i ei ny fane) | English, `lang="en"` |
 
 Overridable via `<Link messages>`, provider `messages`, or `Link.NewTabNotice` children. Tests cover all three.
 
@@ -85,7 +85,7 @@ Overridable via `<Link messages>`, provider `messages`, or `Link.NewTabNotice` c
 - [x] Failing tests: Vitest + axe, Playwright rows above
 - [x] `core`: none expected (stateless). Revisit for Toggle
 - [x] `react`: `useButton`, `Button`, `useLink`, `Link`, `Link.NewTabNotice`, `mergeProps` (first user). Also internal `renderPart` (`render` prop), `useFocusVisible` and `useMergedRef`
-- [ ] i18n string in all 6 locales, Sámi reviewed by a native speaker. The key exists in all 6 locales (Plan 0002). `se` is still an English placeholder, `TODO(native-review)`: not reviewed. **Blocks `beta`** (3.1.2: English text under `lang="se"`)
+- [x] i18n string in all 6 locales. The key exists in all 6 locales (Plan 0002). `se` shows the English text, marked `lang="en"` (3.1.2)
 - [x] Stories: default, disabled, focusable-disabled, submit in a form, current page, new tab, router link (mock), RTL, forced-colors. Also new-tab notice overrides and other language. The smoke story and its e2e are deleted
 - [x] accessibility-reviewer APPROVE (second round, after the render-element fix)
 - [x] Roadmap: add Link, set status. Changeset
@@ -97,5 +97,5 @@ Overridable via `<Link messages>`, provider `messages`, or `Link.NewTabNotice` c
 
 ## Done when
 
-- [x] All quality gates in AGENTS.md pass (manual AT `pending`, Sámi native review open)
+- [x] All quality gates in AGENTS.md pass (manual AT `pending`)
 - [x] Plan tasks ticked, `docs/roadmap.md` updated

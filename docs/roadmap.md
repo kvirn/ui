@@ -87,7 +87,6 @@ Things the docs describe as planned, or that are known to be open. A row moves t
 | A Changesets release workflow (commit `chore(release): version packages`)                                                                                                 | planned   |
 | Next.js and TanStack Router link recipes verified in a sample app (`TODO(verify-recipe)` in the provider docs)                                                            | planned   |
 | Legal check that an explicit theme preference in `localStorage` is exempt under ePrivacy Art. 5(3) (`TODO(legal-verify)`)                                                 | open      |
-| Northern Sámi strings for FileUpload and the Notification status words are drafted by machine and need a native speaker. This blocks `beta`                               | open      |
 | Optional `@google/design.md` lint step for `DESIGN.md`                                                                                                                    | not built |
 | A guard test that the not-prose class list in `theme.css` grows with each new part or consumer class                                                                      | planned   |
 | A built-in `sort` icon (Table draws its own sort icon until then); sprite entries for Icon if asked                                                                       | planned   |

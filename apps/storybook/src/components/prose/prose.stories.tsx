@@ -17,8 +17,8 @@ import {
 // Components/Prose: the headless Prose, styled by @kvirn-ui/theme (docs/design/foundations-and-prose.md
 // §6.1–6.6 and §7). The Default story is the small example. The others put kv-prose on the fixture
 // article, a municipality's guidance page that uses every element prose styles. The article follows
-// the Locale toolbar: sv and en are written, and the other locales show the English article marked
-// lang="en" until a translator delivers them. Prose has no focusable part, so there's no Keyboard story.
+// the Locale toolbar: sv, nb, nn and en are written, and fi and se show the English article marked
+// lang="en". Prose has no focusable part, so there's no Keyboard story.
 
 const meta = {
   title: 'Components/Prose',

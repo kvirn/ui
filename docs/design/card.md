@@ -55,7 +55,7 @@ A card has no flow of its own. Its "unhappy paths" are content and layout condit
 
 **Component strings:** none. Card renders no text (Plan 0007 "i18n strings").
 
-**Story fixture strings** go in `apps/storybook/src/components/card/card.fixture.tsx`, with keys local to the file and a value in all six locales (storybook-presentation.md §4). The `fi` strings below are designer drafts for length checks only. `fi`, `nb`, `nn` and `se` need a translator, and `se` falls back to `en` with `lang="en"` until it's reviewed. Times, dates and phone numbers are formatted with `Intl` where they're values.
+**Story fixture strings** go in `apps/storybook/src/components/card/card.fixture.tsx`, with keys local to the file and a value in all six locales (storybook-presentation.md §4). Agents write `fi`, `nb` and `nn`; `se` falls back to `en` with `lang="en"`. Times, dates and phone numbers are formatted with `Intl` where they're values.
 
 | Key                      | en                                                                    | sv                                                                       | longest: fi (draft)                                                    | Element                |
 | ------------------------ | --------------------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------- | ---------------------- |

@@ -84,7 +84,7 @@ Rules:
 - **Actions:** at most two, verbs, Links for navigation and Buttons for actions. Don't put a destructive button in a notification.
 - **Not dismissible** in this version. Don't build a close button that hides an error or a warning.
 - **Replacement icons** (`defineIcons`) for `info`, `success`, `warning` or `error` must keep a distinct shape from the other three.
-- **Language.** `lang` on any text in another language (3.1.2). The status word follows the provider's locale. The `se` words are machine-drafted and need a native speaker to verify them.
+- **Language.** `lang` on any text in another language (3.1.2). The status word follows the provider's locale.
 
 ## Visual / modes
 
@@ -135,6 +135,5 @@ Headless: Notification ships no CSS. With `@kvirn-ui/theme/theme.css` (design sp
 ## Known issues
 
 - **4.1.3 and the box having no role.** The criterion asks that a status message be programmatically determinable through role or properties. Here the message reaches assistive technology through the Announcer's `status` or `alert` region with the same text, and the visible box has no role. We believe this meets the intent. The manual AT matrix must confirm it, in particular whether a polite announcement after Send is heard in time and not lost to the screen reader's own feedback on the button.
-- **`se` status words are machine-drafted.** The four Northern Sámi words need a native speaker to verify them (`packages/i18n/src/locales/se.ts`).
 - **Hidden status word (decision D4).** The word is visually hidden, as `ErrorMessage`'s "Fel:". The usability test (design spec §8, task 5) checks that people with colour-vision deficiency and in Contrast Themes tell the statuses apart by icon shape. Result: pending.
 - **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.

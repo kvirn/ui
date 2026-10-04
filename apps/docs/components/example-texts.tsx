@@ -7,8 +7,7 @@ import type { ReactNode } from 'react'
 // library text: library strings (`link.newTabNotice`) come from @kvirn-ui/i18n through the
 // provider.
 //
-// The nb, nn and fi texts are the designer's drafts and need a native review before the docs
-// site is public. The density labels are the engineer's drafts (Plan 0005, Phase 1).
+// se: English, marked lang="en".
 
 export interface ExampleTexts {
   heading: { buttons: string; links: string }
@@ -176,10 +175,7 @@ const nn: ExampleTexts = {
   },
 }
 
-/**
- * Northern Sámi: TODO(native-review). Until a native speaker supplies the texts, `se` shows
- * the English ones with `lang="en"` (3.1.2) and the `samiPendingNote`.
- */
+/** Northern Sámi has no texts: `se` shows the English ones with `lang="en"` (3.1.2) and the `samiPendingNote`. */
 const se: ExampleTexts | undefined = undefined
 
 export const exampleTexts: Record<LocaleCode, ExampleTexts | undefined> = {
@@ -191,9 +187,9 @@ export const exampleTexts: Record<LocaleCode, ExampleTexts | undefined> = {
   en,
 }
 
-/** Shown only for `se`, in English, because it can't be in Northern Sámi yet. */
+/** Shown only for `se`, in English, because the texts aren't in Northern Sámi. */
 export const samiPendingNote =
-  'Some text in this example is in English until a native speaker has reviewed the Northern Sámi translation.'
+  'Some text in this example is in English because it is not available in Northern Sámi.'
 
 export interface ExampleTextsResult {
   texts: ExampleTexts
@@ -222,7 +218,7 @@ export function useExampleTexts(): ExampleTextsResult {
   return getExampleTexts(useLocale().locale)
 }
 
-/** The English-only note under examples whose Sámi texts aren't reviewed yet. */
+/** The English-only note under examples that have no Northern Sámi texts. */
 export function SamiPendingNote({ className }: { className?: string | undefined }) {
   const { isSamiPending } = useExampleTexts()
   return isSamiPending ? (

@@ -11,10 +11,9 @@ import type { Decorator } from '@storybook/react-vite'
 import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 
-// Story and e2e fixture for Components/Notification (docs/design/notification.md §4.4, §5.2). sv
-// and en are written. The fi strings are the designer's drafts, for length checks only. nb, nn and
-// se come from a translator, not an agent: until then those locales show the English text,
-// marked lang="en" (3.1.2), and the library's own status words follow in English too. The
+// Story and e2e fixture for Components/Notification (docs/design/notification.md §4.4, §5.2). sv,
+// en, nb and nn are written. The fi strings are the designer's drafts, for length checks only. se:
+// English, marked lang="en" (3.1.2), and the library's own status words follow in English too. The
 // status words ("Klart:", "Varning:") come from the provider, like an app's would. Dates and
 // times are values, formatted with Intl.
 
@@ -133,7 +132,7 @@ const sv: NotificationTexts = {
   prose: { heading: 'Sommarjobb i kommunen' },
 }
 
-/** Designer drafts (docs/design/notification.md §4.4), for length checks. Not reviewed. */
+/** Designer drafts (docs/design/notification.md §4.4), for length checks. */
 const fi: NotificationTexts = {
   deadline: {
     title: (date) => <>Hakuaika päättyy {date}</>,
@@ -179,19 +178,101 @@ const fi: NotificationTexts = {
   prose: { heading: 'Kesätyöt kunnassa' },
 }
 
-/** nb, nn and se: `undefined` until a translator delivers them. */
+const nb: NotificationTexts = {
+  deadline: {
+    title: (date) => <>Fristen for å søke er {date}</>,
+    body: (replyDate) => (
+      <>Søk innen da hvis du vil ha sommerjobb i kommunen. Vi svarer alle innen {replyDate}.</>
+    ),
+  },
+  saved: { title: 'Endringene dine er lagret', save: 'Lagre' },
+  permit: {
+    title: (date) => <>Parkeringstillatelsen din utløper {date}</>,
+    body: 'Forny den før da, ellers kan du få parkeringsgebyr. Det tar omtrent 5 minutter.',
+    renew: 'Forny parkeringstillatelse',
+  },
+  consequence: { title: 'Du kan ikke endre svarene dine etter at du har sendt søknaden.' },
+  sendFailed: {
+    title: 'Vi kunne ikke sende søknaden din',
+    body: (phone, open, close) => (
+      <>
+        Det oppstod en feil hos oss. Svarene dine er lagret. Prøv igjen om noen minutter, eller ring
+        oss på {phone}, hverdager {open}–{close}.
+      </>
+    ),
+    retry: 'Prøv igjen',
+    send: 'Send søknad',
+  },
+  longFinnish: {
+    title: 'Behandlingen av søknaden din om tilskudd til tilpasning av bolig er satt på pause',
+  },
+  ownStatus: { word: 'Vær oppmerksom:' },
+  sample: { title: 'Noe du bør vite' },
+  override: {
+    danger: 'Viktig:',
+    warning: 'Obs:',
+    dangerTitle: 'Vi kunne ikke lagre svarene dine',
+    warningTitle: 'Sjekk svarene dine før du sender',
+  },
+  dynamic: { label: 'Status' },
+  prose: { heading: 'Sommerjobb i kommunen' },
+}
+
+const nn: NotificationTexts = {
+  deadline: {
+    title: (date) => <>Fristen for å søkje er {date}</>,
+    body: (replyDate) => (
+      <>Søk innan då viss du vil ha sommarjobb i kommunen. Vi svarer alle innan {replyDate}.</>
+    ),
+  },
+  saved: { title: 'Endringane dine er lagra', save: 'Lagre' },
+  permit: {
+    title: (date) => <>Parkeringsløyvet ditt går ut {date}</>,
+    body: 'Forny det før då, elles kan du få parkeringsgebyr. Det tek om lag 5 minutt.',
+    renew: 'Forny parkeringsløyve',
+  },
+  consequence: { title: 'Du kan ikkje endre svara dine etter at du har sendt søknaden.' },
+  sendFailed: {
+    title: 'Vi kunne ikkje sende søknaden din',
+    body: (phone, open, close) => (
+      <>
+        Det oppstod ein feil hos oss. Svara dine er lagra. Prøv igjen om nokre minutt, eller ring
+        oss på {phone}, kvardagar {open}–{close}.
+      </>
+    ),
+    retry: 'Prøv igjen',
+    send: 'Send søknad',
+  },
+  longFinnish: {
+    title: 'Behandlinga av søknaden din om tilskot til tilpassing av bustad er sett på pause',
+  },
+  ownStatus: { word: 'Vær merksam:' },
+  sample: { title: 'Noko du bør vite' },
+  override: {
+    danger: 'Viktig:',
+    warning: 'Obs:',
+    dangerTitle: 'Vi kunne ikkje lagre svara dine',
+    warningTitle: 'Sjekk svara dine før du sender',
+  },
+  dynamic: { label: 'Status' },
+  prose: { heading: 'Sommarjobb i kommunen' },
+}
+
+/** se has no texts: it shows the English ones, marked lang="en". */
 const notificationTexts: Record<NotificationFixtureLocale, NotificationTexts | undefined> = {
   sv,
   fi,
-  nb: undefined,
-  nn: undefined,
+  nb,
+  nn,
   se: undefined,
   en,
 }
 
-const formatLocales: Record<'sv' | 'fi' | 'en', string> = {
+const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
   sv: 'sv-SE',
   fi: 'fi-FI',
+  nb: 'nb-NO',
+  nn: 'nn-NO',
   en: 'en-GB',
 }
 
@@ -206,12 +287,12 @@ export const localeOf = (globals: Record<string, unknown>): NotificationFixtureL
 
 interface ResolvedTexts {
   text: NotificationTexts
-  /** `'en'` when the locale isn't translated yet: put it on the element (3.1.2). */
+  /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
   lang: 'en' | undefined
   formatLocale: string
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` until it's translated. */
+/** The fixture text in a locale, or the English text with `lang="en"` for se. */
 export function textsFor(locale: NotificationFixtureLocale): ResolvedTexts {
   const text = notificationTexts[locale]
   if (text === undefined) {
@@ -220,7 +301,7 @@ export function textsFor(locale: NotificationFixtureLocale): ResolvedTexts {
   return {
     text,
     lang: undefined,
-    formatLocale: formatLocales[locale === 'sv' || locale === 'fi' ? locale : 'en'],
+    formatLocale: formatLocales[locale === 'se' ? 'en' : locale],
   }
 }
 
@@ -233,14 +314,14 @@ const catalogs: Record<NotificationFixtureLocale, KvirnMessages> = {
   en: enMessages,
 }
 
-/** The library strings a story shows in a locale: English until the fixture is translated. */
+/** The library strings a story shows in a locale: English where the fixture has no texts (se). */
 const messagesFor = (locale: NotificationFixtureLocale): KvirnMessages =>
   notificationTexts[locale] === undefined ? enMessages : catalogs[locale]
 
 /**
  * The status words ("Klart:", "Varning:") follow the locale toolbar through a provider, like an
- * app's would. The provider also renders the live regions that `announce` needs. Until a
- * locale's fixture is translated, the words are English too, so a `lang="en"` element is all
+ * app's would. The provider also renders the live regions that `announce` needs. Where the
+ * fixture shows English (se), the words are English too, so a `lang="en"` element is all
  * English.
  */
 export const withNotificationLocale: Decorator = (Story, { globals }) => {
@@ -275,8 +356,9 @@ function TimeValue({ time, formatLocale }: { time: Date; formatLocale: string })
   return <time dateTime={time.toISOString().slice(11, 16)}>{text}</time>
 }
 
-/** An invented number, as the other fixtures use. */
-const phone = '0123-45 67 89'
+/** An invented number, as the other fixtures use, written the way the locale writes one. */
+const phoneFor = (locale: NotificationFixtureLocale): string =>
+  locale === 'nb' || locale === 'nn' ? '800 12 345' : '0123-45 67 89'
 
 export interface NotificationFixtureProps {
   locale: NotificationFixtureLocale
@@ -350,7 +432,7 @@ export function SendFailedNotification({ locale }: NotificationFixtureProps) {
       <Notification.Body>
         <p>
           {text.sendFailed.body(
-            phone,
+            phoneFor(locale),
             <TimeValue time={opensAt} formatLocale={formatLocale} />,
             <TimeValue time={closesAt} formatLocale={formatLocale} />,
           )}
@@ -411,7 +493,7 @@ export function SendFailedExample({ locale }: NotificationFixtureProps) {
           <Notification.Body>
             <p>
               {text.sendFailed.body(
-                phone,
+                phoneFor(locale),
                 <TimeValue time={opensAt} formatLocale={formatLocale} />,
                 <TimeValue time={closesAt} formatLocale={formatLocale} />,
               )}
@@ -456,7 +538,7 @@ export function FocusTargetExample({ locale }: NotificationFixtureProps) {
           <Notification.Body>
             <p>
               {text.sendFailed.body(
-                phone,
+                phoneFor(locale),
                 <TimeValue time={opensAt} formatLocale={formatLocale} />,
                 <TimeValue time={closesAt} formatLocale={formatLocale} />,
               )}

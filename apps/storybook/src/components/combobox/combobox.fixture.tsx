@@ -7,8 +7,8 @@ import type { VirtualizedPlace } from '../form/virtualized.fixture.ts'
 
 // Story and e2e fixture for Components/Form/Combobox (docs/design/form-fields.md; contract:
 // combobox.a11y.md). The functions here are the examples the stories show with "Show code": each
-// is one Combobox as an adopter writes it. sv, en and fi are written, and nb, nn and se show the
-// English text, marked lang="en" (3.1.2), until a translator has been through them.
+// is one Combobox as an adopter writes it. sv, en, fi, nb and nn are written, and se shows the
+// English text, marked lang="en" (3.1.2).
 //
 // KvirnUI holds no form state. The value is the chosen option's key: pass
 // `value` and `onValueChange`, or `defaultValue` and `name` for a plain form. Nothing here
@@ -138,9 +138,33 @@ const comboboxTexts: Partial<Record<FormLocale, ComboboxTexts>> = {
     groupEast: 'Itä-Ruotsi',
     groupSouth: 'Etelä-Ruotsi',
   },
+  nb: {
+    municipality: 'Kommune',
+    hint: 'Begynn å skrive, og velg deretter fra listen.',
+    notInList: 'Velg en kommune fra listen',
+    several: 'Kommuner',
+    severalHint: 'Du kan velge flere.',
+    longLabel:
+      'Kommunen der du er folkeregistrert ifølge Folkeregisteret, og der du søker om tilskuddet',
+    groupWest: 'Vest-Sverige',
+    groupEast: 'Øst-Sverige',
+    groupSouth: 'Sør-Sverige',
+  },
+  nn: {
+    municipality: 'Kommune',
+    hint: 'Byrj å skrive, og vel deretter frå lista.',
+    notInList: 'Vel ei kommune frå lista',
+    several: 'Kommunar',
+    severalHint: 'Du kan velje fleire.',
+    longLabel:
+      'Kommunen der du er folkeregistrert ifølgje Folkeregisteret, og der du søkjer om tilskotet',
+    groupWest: 'Vest-Sverige',
+    groupEast: 'Aust-Sverige',
+    groupSouth: 'Sør-Sverige',
+  },
 }
 
-/** The fixture text in a locale, with the shared form texts, or English with `lang="en"` until it's translated. */
+/** The fixture text in a locale, with the shared form texts, or English with `lang="en"` for se. */
 export function comboboxTextsFor(locale: FormLocale) {
   const { text: shared, lang } = choiceTextsFor(locale)
   return { text: comboboxTexts[locale] ?? textsEn, shared, lang }

@@ -160,4 +160,3 @@ Research questions for the AT run: is the suggestion count read once, after typi
 - **Filtering after a pick.** After a suggestion is picked the list stays filtered by it until the text changes, so ArrowDown then shows the suggestions that contain that text. Empty the text to see them all.
 - **Virtualization is opt-in and has limits.** See the Combobox contract and the Virtualization section above.
 - **WebKit not run locally.** CI runs the `webkit` and `mobile-safari` projects. `popover="manual"`, the outside press and Escape must be checked on Safari 17.
-- **`se` (Northern Sámi) is machine-drafted.** See `field.a11y.md`.

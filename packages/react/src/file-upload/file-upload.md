@@ -113,7 +113,7 @@ Through the shared Announcer (`KvirnProvider`), politely: files added and refuse
 
 ## Strings
 
-The component's strings (buttons, status, errors, announcements) are in the `fileUpload` namespace of all six locales, and can be overridden per provider and per instance (`messages`). **The label and the description are yours,** because they say what to attach and why. Northern Sámi starts as English placeholders and blocks `beta`.
+The component's strings (buttons, status, errors, announcements) are in the `fileUpload` namespace of all six locales, and can be overridden per provider and per instance (`messages`). **The label and the description are yours,** because they say what to attach and why. Northern Sámi starts as English.
 
 ## Hook
 

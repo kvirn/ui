@@ -18,4 +18,4 @@ Added:
 - `@kvirn-ui/react`: `usePopup` sets `data-detached` and `visibility: hidden` on a popup whose anchor is scrolled entirely out of view, so it doesn't float over other content.
 - `@kvirn-ui/core`: `computePlacement` never returns a `maxHeight` above the viewport minus `padding`, even when the anchor is scrolled out of view.
 - `@kvirn-ui/theme`: the default styles for the listbox popup: `kv-listbox-trigger`, `kv-listbox-value`, `kv-listbox-popup`, `kv-listbox-list`, `kv-listbox-option` (with `data-active`, `data-selected`, `data-disabled`), `kv-listbox-group`, `kv-listbox-group-label` and `kv-listbox-empty`. They use existing tokens, and keep their state visible in forced colours.
-- `@kvirn-ui/i18n`: the `combobox` namespace in all six locales: `resultCount` (plural), `noResults`, `loading`, `removeValue`, `clear` and `showOptions`. The `se` strings are machine-drafted and marked for a native speaker.
+- `@kvirn-ui/i18n`: the `combobox` namespace in all six locales: `resultCount` (plural), `noResults`, `loading`, `removeValue`, `clear` and `showOptions`.

@@ -49,7 +49,7 @@ Spec §7 is the draft input for `notification.a11y.md`. In short: no role on the
 
 ### i18n strings
 
-`notification.infoPrefix`, `successPrefix`, `warningPrefix`, `dangerPrefix` in sv, fi, nb, nn, se, en (spec §4.1). The `se` values are machine-drafted Northern Sámi (`Dieđut:`, `Gárvvis:`, `Váruhus:`, `Boasttuvuohta:`) and need a native speaker to verify them.
+`notification.infoPrefix`, `successPrefix`, `warningPrefix`, `dangerPrefix` in sv, fi, nb, nn, se, en (spec §4.1). The `se` values are Northern Sámi (`Dieđut:`, `Gárvvis:`, `Váruhus:`, `Boasttuvuohta:`).
 
 ### Theming surface
 
@@ -72,7 +72,7 @@ Classes `kv-notification`, `kv-notification--info|success|warning|danger`, and t
 
 ## Risks & open questions
 
-- Open in spec §11: who reviews the machine-drafted Northern Sámi status words, which cases need dismissible notifications later, and whether `useNotification` takes `variant` in v1 (the spec's call, to confirm).
+- Open in spec §11: which cases need dismissible notifications later, and whether `useNotification` takes `variant` in v1 (the spec's call, to confirm).
 - Known 4.1.3 risk: the box has no role, and the message reaches screen readers through the Announcer. Needs manual AT confirmation (`pending`).
 - Contrast: the lowest pairs are 3.13:1 and 3.32:1 in dark on `primary-subtle`. A rebrand of `--kv-primary-*` can break them first.
 

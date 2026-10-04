@@ -133,7 +133,7 @@ Props follow docs/architecture.md. No component stores form state (item 0): `def
 | `dateInput.month`   | Month      | Månad      |
 | `dateInput.year`    | Year       | År         |
 
-The fi, nb and nn texts come from the design spec. se stays English with `TODO(native-review)`, as for `link.newTabNotice`.
+The fi, nb and nn texts come from the design spec. se stays English, marked `lang="en"`, as for `link.newTabNotice`.
 
 ### Theming surface
 
@@ -242,7 +242,7 @@ Scope: only the native `<select>` wired by Field. The custom `Select`, `Combobox
 - **Design spec open questions, resolved 2026-10-02** (spec §9):
   1. Hints use `text` (item 11). Update DESIGN.md's token table in Phase 1.
   2. The choice layout uses `.kv-field:has(> .kv-checkbox, > .kv-radio)`, so the control must be a direct child of Field.Root (documented). Width classes as in the spec.
-  3. DateInput order follows the region via `Intl`, and month first becomes day first. `useDateInput` exposes the order. `se` needs the native reviewer. Phase 3.
+  3. DateInput order follows the region via `Intl`, and month first becomes day first. `useDateInput` exposes the order. Phase 3.
   4. The consumer writes the date hint. The docs show one per locale. Revisit a `dateInput.example` message in Phase 3.
   5. No red inline-start bar on invalid fields for now.
   6. Description stays before the error in `aria-describedby`. Recorded as an AT research question.
@@ -284,7 +284,7 @@ Alpha in the next 0.x, one minor per phase. New public API only.
 - `DateInput.Root` provides `FieldGroupContext`, so box labels never get the optional marker; `required` and `disabled` follow the Fieldset.
 - Dev warnings: a Root outside a `fieldset` or `role=group`; a box outside a Root.
 - `tooling/component-naming` lists `DateInput` as a namespace (extends the check to the new component).
-- Open: an invalid box isn't linked to the group's error (AT matrix question); the `se` order follows `Intl` and needs the native reviewer; DESIGN.md needs a DateInput line next to InputGroup (design spec §6.14).
+- Open: an invalid box isn't linked to the group's error (AT matrix question); DESIGN.md needs a DateInput line next to InputGroup (design spec §6.14).
 
 ## Review 2026-10-04 (choice controls)
 
@@ -337,7 +337,6 @@ Open follow-ups:
 - [ ] 1.4.12 Text Spacing for the year box (four characters plus the invalid edge): add to the WCAG sweep.
 - [x] Ruled 2026-10-04: keep them (testing skill, standing exception). Was: story `play` functions that repeat component tests, repo-wide (rule 13). The DateInput stories follow the existing pattern.
 - [ ] DESIGN.md: a DateInput line next to the InputGroup text and `kv-date-input`, `kv-date-input-day`, `-month` and `-year` in the class list (spec §6.14 has the wording).
-- [ ] `se` order: the contract says `se` follows `Intl` (year first in Norway and Sweden); a native reviewer confirms it, with the three `dateInput` labels.
 - [ ] Research question for the AT run: an invalid box is not linked to the group's error. Does a screen reader read the error on entering the group when only one box is invalid?
 
 ### Re-review (choice controls), 2026-10-04

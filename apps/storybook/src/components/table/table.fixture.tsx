@@ -21,9 +21,8 @@ import type { CSSProperties, ReactNode } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Story and e2e fixture for Components/Table (Plan 0026, design spec docs/design/table.md §4.2,
-// §6.17). sv, en and fi are written, and the fi strings are the designer's drafts for length
-// checks only. nb, nn and se come from a translator, not an agent: until then those locales show
-// the English text, marked lang="en" (3.1.2). The library's own strings (the checkbox names, the
+// §6.17). sv, en, fi, nb and nn are written, and the fi strings are the designer's drafts for length
+// checks only. se: English, marked lang="en" (3.1.2). The library's own strings (the checkbox names, the
 // announcements, "Detaljer") follow the locale through the provider decorator of the stories.
 // Numbers and dates are values, formatted with Intl.
 //
@@ -143,24 +142,83 @@ const fi: TableTexts = {
   keyboardCaption: 'Avoimet asiat',
 }
 
-const tableTexts: Partial<Record<FormLocale, TableTexts>> = { sv, fi, en }
+const nb: TableTexts = {
+  casesCaption: 'Åpne saker',
+  name: 'Navn',
+  caseNumber: 'Saksnummer',
+  received: 'Mottatt',
+  receivedLong: 'Dato da søknaden kom inn',
+  amount: 'Beløp (kr)',
+  handler: 'Saksbehandler',
+  handlerLabel: 'Saksbehandler',
+  decisionLabel: 'Vedtak',
+  paymentsCaption: 'Utbetalt bostøtte i 2026',
+  month: 'Måned',
+  payoutDate: 'Utbetalingsdato',
+  paymentAmount: 'Beløp (kr)',
+  total: 'Totalt',
+  emptyNoData: 'Du har ingen åpne saker.',
+  emptyFiltered: 'Ingen saker passer med søket. Endre søket eller fjern filteret.',
+  reloadCaption: 'Åpne saker, oppdateres',
+  firstLoadCaption: 'Åpne saker, første innlasting',
+  pagedCaption: (from, to, total) => `Åpne saker, rad ${from}–${to} av ${total}`,
+  previous: 'Forrige',
+  next: 'Neste',
+  virtualCaption: 'Alle saker',
+  keyboardCaption: 'Åpne saker',
+}
 
-const formatLocales: Record<'sv' | 'fi' | 'en', string> = { sv: 'sv', fi: 'fi', en: 'en' }
+const nn: TableTexts = {
+  casesCaption: 'Opne saker',
+  name: 'Namn',
+  caseNumber: 'Saksnummer',
+  received: 'Motteke',
+  receivedLong: 'Dato då søknaden kom inn',
+  amount: 'Beløp (kr)',
+  handler: 'Saksbehandlar',
+  handlerLabel: 'Saksbehandlar',
+  decisionLabel: 'Vedtak',
+  paymentsCaption: 'Utbetalt bustøtte i 2026',
+  month: 'Månad',
+  payoutDate: 'Utbetalingsdato',
+  paymentAmount: 'Beløp (kr)',
+  total: 'Totalt',
+  emptyNoData: 'Du har ingen opne saker.',
+  emptyFiltered: 'Ingen saker passar til søket. Endre søket eller fjern filteret.',
+  reloadCaption: 'Opne saker, blir oppdaterte',
+  firstLoadCaption: 'Opne saker, første lasting',
+  pagedCaption: (from, to, total) => `Opne saker, rad ${from}–${to} av ${total}`,
+  previous: 'Førre',
+  next: 'Neste',
+  virtualCaption: 'Alle saker',
+  keyboardCaption: 'Opne saker',
+}
+
+/** se has no texts: it shows the English ones, marked lang="en". */
+const tableTexts: Partial<Record<FormLocale, TableTexts>> = { sv, fi, nb, nn, en }
+
+const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
+  sv: 'sv',
+  fi: 'fi',
+  nb: 'nb',
+  nn: 'nn',
+  en: 'en',
+}
 
 interface ResolvedTexts {
   texts: TableTexts
-  /** `'en'` when the locale isn't translated yet: put it on the element (3.1.2). */
+  /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
   lang: 'en' | undefined
   formatLocale: string
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` until it's translated. */
+/** The fixture text in a locale, or the English text with `lang="en"` for se. */
 export function tableTextsFor(locale: FormLocale): ResolvedTexts {
   const texts = tableTexts[locale]
   return {
     texts: texts ?? en,
     lang: texts === undefined ? 'en' : undefined,
-    formatLocale: formatLocales[locale === 'sv' || locale === 'fi' ? locale : 'en'],
+    formatLocale: formatLocales[locale === 'se' ? 'en' : locale],
   }
 }
 

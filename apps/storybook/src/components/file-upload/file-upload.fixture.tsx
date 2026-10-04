@@ -1,14 +1,13 @@
 import { Field, FileUpload } from '@kvirn-ui/react'
 import type { FileUploadRootProps } from '@kvirn-ui/react'
-import { textsFor } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Story and e2e fixture for Components/Form/FileUpload (Plan 0021, design spec
 // docs/design/file-upload.md). The component's own strings (the buttons, the status, the errors,
 // the announcements) come from the library catalogs through the provider decorator. What the
 // consumer writes is the label and the description: they name what to attach and why, so they
-// belong to the form, not to the library. sv and en are written here. The other locales show the
-// English text, marked lang="en" (3.1.2), until a translator writes them.
+// belong to the form, not to the library. sv, fi, nb, nn and en are written here. se: English,
+// marked lang="en" (3.1.2).
 //
 // KvirnUI sends nothing anywhere (hard rule 7). `controlledUpload` stands in for the consumer's own
 // `upload`: it reports progress, then waits until the story or the test settles it.
@@ -17,24 +16,57 @@ export interface FileUploadTexts {
   label: string
   description: string
   errorMissing: string
+  submit: string
 }
 
 const textsEn: FileUploadTexts = {
   label: 'Attachments',
   description: 'Attach your doctor’s certificate and your receipts.',
   errorMissing: 'Attach at least one file before you send the application.',
+  submit: 'Send',
 }
 
 const textsSv: FileUploadTexts = {
   label: 'Bilagor',
   description: 'Bifoga ditt läkarintyg och dina kvitton.',
   errorMissing: 'Bifoga minst en fil innan du skickar in ansökan.',
+  submit: 'Skicka in',
+}
+
+const textsFi: FileUploadTexts = {
+  label: 'Liitteet',
+  description: 'Liitä mukaan lääkärintodistuksesi ja kuittisi.',
+  errorMissing: 'Liitä vähintään yksi tiedosto ennen hakemuksen lähettämistä.',
+  submit: 'Lähetä',
+}
+
+const textsNb: FileUploadTexts = {
+  label: 'Vedlegg',
+  description: 'Legg ved legeerklæringen og kvitteringene dine.',
+  errorMissing: 'Legg ved minst én fil før du sender inn søknaden.',
+  submit: 'Send inn',
+}
+
+const textsNn: FileUploadTexts = {
+  label: 'Vedlegg',
+  description: 'Legg ved legeerklæringa og kvitteringane dine.',
+  errorMissing: 'Legg ved minst éi fil før du sender inn søknaden.',
+  submit: 'Send inn',
+}
+
+/** se has no texts: it shows the English ones, marked lang="en". */
+const fileUploadTexts: Record<FormLocale, FileUploadTexts | undefined> = {
+  sv: textsSv,
+  fi: textsFi,
+  nb: textsNb,
+  nn: textsNn,
+  se: undefined,
+  en: textsEn,
 }
 
 export function fileUploadTextsFor(locale: FormLocale): { texts: FileUploadTexts; lang?: 'en' } {
-  const { lang } = textsFor(locale)
-  const texts = locale === 'sv' ? textsSv : textsEn
-  return lang === undefined ? { texts } : { texts, lang }
+  const texts = fileUploadTexts[locale]
+  return texts === undefined ? { texts: textsEn, lang: 'en' } : { texts }
 }
 
 export interface FileUploadFieldProps extends Partial<FileUploadRootProps> {
@@ -98,7 +130,7 @@ export function FileUploadField({
       {invalid ? <Field.ErrorMessage>{texts.errorMissing}</Field.ErrorMessage> : null}
       {withSubmit ? (
         <button type="button" className="kv-button">
-          {locale === 'sv' ? 'Skicka in' : 'Send'}
+          {texts.submit}
         </button>
       ) : null}
     </Field.Root>

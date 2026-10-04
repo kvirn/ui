@@ -68,7 +68,7 @@ A section has no flow. Its "unhappy paths" are layout conditions:
 
 > A plain container for a region of the page, such as a sidebar or a band of content. It renders a `<div>`. To make it a landmark, render it as a `<section>`, `<aside>` or `<nav>` with a name.
 
-**Story fixture strings** go in `apps/storybook/src/components/section/section.fixture.tsx`, with keys local to the file and a value in all six locales (storybook-presentation.md §4). `fi` here is a designer draft for length checks only. `fi`, `nb`, `nn` and `se` need a translator, and `se` falls back to `en` with `lang="en"` until it's reviewed.
+**Story fixture strings** go in `apps/storybook/src/components/section/section.fixture.tsx`, with keys local to the file and a value in all six locales (storybook-presentation.md §4). Agents write `fi`, `nb` and `nn`; `se` falls back to `en` with `lang="en"`.
 
 - The `contact.*` strings **move** from `card.fixture.tsx` to the Section fixture unchanged (`contact.heading`, `contact.phone`, `contact.hours`, `contact.email`, values as in `card.md` §4).
 - Example B reuses the Card fixture's `NewsList` (its strings stay in `card.fixture.tsx`).

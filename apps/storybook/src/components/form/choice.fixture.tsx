@@ -2,10 +2,10 @@ import { action } from 'storybook/actions'
 import type { FormLocale } from './form.fixture.tsx'
 
 // Story and e2e fixture for Components/Form/Checkbox, CheckboxGroup, RadioGroup and Listbox
-// (native rendering) (docs/design/form-fields.md §4.2, §4.3, §7.1). sv, en and fi are written.
-// The fi strings are designer drafts, for length checks only. nb, nn and se come from a translator, not
-// an agent: until then those locales show the English text, marked lang="en" (3.1.2). The
-// library's own strings ("(optional)", "Error:") follow the locale through `withFormLocale`.
+// (native rendering) (docs/design/form-fields.md §4.2, §4.3, §7.1). sv, en, fi, nb and nn are
+// written. The fi strings are designer drafts, for length checks only. se: English, marked
+// lang="en" (3.1.2). The library's own strings ("(optional)", "Error:") follow the locale
+// through `withFormLocale`.
 //
 // KvirnUI holds no form state. Nothing here validates: an "invalid" story
 // sets `invalid` and writes the message itself, as an implementor's form logic would.
@@ -141,7 +141,7 @@ const textsSv: ChoiceTexts = {
   surface: 'I ett kort',
 }
 
-/** Designer drafts (docs/design/form-fields.md §4), for length checks. Not reviewed. */
+/** Designer drafts (docs/design/form-fields.md §4), for length checks. */
 const textsFi: ChoiceTexts = {
   declaration: 'Vahvistan, että antamani tiedot ovat oikein',
   declarationHint: 'Hakemusta ei voi lähettää ilman vahvistusta.',
@@ -185,17 +185,105 @@ const textsFi: ChoiceTexts = {
   surface: 'Kortissa',
 }
 
-/** nb, nn and se: `undefined` until a translator delivers them. */
+const textsNb: ChoiceTexts = {
+  declaration: 'Jeg bekrefter at opplysningene jeg har gitt, er riktige',
+  declarationHint: 'Du kan ikke sende søknaden uten å bekrefte.',
+  declarationError: 'Bekreft at opplysningene du har gitt, er riktige',
+  newsletter: 'Send meg nyhetsbrevet',
+  newsletterHint: 'Fire ganger i året.',
+  selectAll: 'Velg alle rader',
+  rowOne: 'Sak 2026-0412',
+  rowTwo: 'Sak 2026-0413',
+  longLabel:
+    'Jeg samtykker til at kommunen bruker opplysningene mine i søknaden om tilskudd til tilpasning av bolig',
+  contactLegend: 'Hvordan skal vi kontakte deg om tillatelsen?',
+  contactHint: 'Velg alle som passer.',
+  contactEmail: 'E-post',
+  contactEmailHint: 'Vi sender vedtaket som en melding.',
+  contactText: 'SMS',
+  contactLetter: 'Brev',
+  contactLetterHint: 'Et brev tar noen dager lenger.',
+  contactError: 'Velg hvordan vi skal kontakte deg',
+  durationLegend: 'Hvor lenge trenger du tillatelsen?',
+  durationHint: 'Velg ett alternativ.',
+  duration1: '1 måned',
+  duration6: '6 måneder',
+  duration12: '12 måneder',
+  duration12Hint: 'Laveste pris per måned.',
+  durationError: 'Velg hvor lenge du trenger tillatelsen',
+  municipality: 'Kommune',
+  municipalityHint: 'Kommunen der du er folkeregistrert.',
+  municipalityPlaceholder: 'Velg kommune',
+  municipalityError: 'Velg en kommune',
+  municipalityGothenburg: 'Bergen',
+  municipalityStockholm: 'Oslo',
+  municipalityMalmo: 'Kristiansand',
+  municipalityUppsala: 'Drammen',
+  regionWest: 'Vestlandet',
+  regionEast: 'Østlandet',
+  regionSouth: 'Sørlandet',
+  longSelectLabel: 'Kommunen der tilskuddet til tilpasning av bolig skal utbetales',
+  youChose: 'Du valgte',
+  send: 'Send',
+  sent: 'Sendt',
+  surface: 'I et kort',
+}
+
+const textsNn: ChoiceTexts = {
+  declaration: 'Eg stadfestar at opplysningane eg har gitt, er riktige',
+  declarationHint: 'Du kan ikkje sende søknaden utan å stadfeste.',
+  declarationError: 'Stadfest at opplysningane du har gitt, er riktige',
+  newsletter: 'Send meg nyheitsbrevet',
+  newsletterHint: 'Fire gonger i året.',
+  selectAll: 'Vel alle rader',
+  rowOne: 'Sak 2026-0412',
+  rowTwo: 'Sak 2026-0413',
+  longLabel:
+    'Eg samtykkjer til at kommunen brukar opplysningane mine i søknaden om tilskot til tilpassing av bustad',
+  contactLegend: 'Korleis skal vi kontakte deg om løyvet?',
+  contactHint: 'Vel alle som passar.',
+  contactEmail: 'E-post',
+  contactEmailHint: 'Vi sender vedtaket som ei melding.',
+  contactText: 'SMS',
+  contactLetter: 'Brev',
+  contactLetterHint: 'Eit brev tek nokre dagar lenger.',
+  contactError: 'Vel korleis vi skal kontakte deg',
+  durationLegend: 'Kor lenge treng du løyvet?',
+  durationHint: 'Vel eitt alternativ.',
+  duration1: '1 månad',
+  duration6: '6 månader',
+  duration12: '12 månader',
+  duration12Hint: 'Lågaste pris per månad.',
+  durationError: 'Vel kor lenge du treng løyvet',
+  municipality: 'Kommune',
+  municipalityHint: 'Kommunen der du er folkeregistrert.',
+  municipalityPlaceholder: 'Vel kommune',
+  municipalityError: 'Vel ei kommune',
+  municipalityGothenburg: 'Bergen',
+  municipalityStockholm: 'Oslo',
+  municipalityMalmo: 'Kristiansand',
+  municipalityUppsala: 'Drammen',
+  regionWest: 'Vestlandet',
+  regionEast: 'Austlandet',
+  regionSouth: 'Sørlandet',
+  longSelectLabel: 'Kommunen der tilskotet til tilpassing av bustad skal utbetalast',
+  youChose: 'Du valde',
+  send: 'Send',
+  sent: 'Sendt',
+  surface: 'I eit kort',
+}
+
+/** se has no texts: it shows the English ones, marked lang="en". */
 const choiceTexts: Record<FormLocale, ChoiceTexts | undefined> = {
   sv: textsSv,
   fi: textsFi,
-  nb: undefined,
-  nn: undefined,
+  nb: textsNb,
+  nn: textsNn,
   se: undefined,
   en: textsEn,
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` until it's translated. */
+/** The fixture text in a locale, or the English text with `lang="en"` for se. */
 export function choiceTextsFor(locale: FormLocale): { text: ChoiceTexts; lang: 'en' | undefined } {
   const text = choiceTexts[locale]
   return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }

@@ -173,13 +173,17 @@ const longList: readonly Municipality[] = Array.from({ length: 300 }, (_, index)
 }))
 
 /** What the stories add to the shared fixture: the label of the list of several. */
-const extraTexts: Record<'sv' | 'en' | 'fi', { several: string; severalPlaceholder: string }> = {
+const extraTexts: Record<
+  'sv' | 'en' | 'fi' | 'nb' | 'nn',
+  { several: string; severalPlaceholder: string }
+> = {
   sv: { several: 'Kommuner', severalPlaceholder: 'Välj kommuner' },
   en: { several: 'Municipalities', severalPlaceholder: 'Choose municipalities' },
   fi: { several: 'Kunnat', severalPlaceholder: 'Valitse kunnat' },
+  nb: { several: 'Kommuner', severalPlaceholder: 'Velg kommuner' },
+  nn: { several: 'Kommunar', severalPlaceholder: 'Vel kommunar' },
 }
-const extraTextsFor = (locale: FormLocale) =>
-  extraTexts[locale === 'sv' || locale === 'fi' ? locale : 'en']
+const extraTextsFor = (locale: FormLocale) => extraTexts[locale === 'se' ? 'en' : locale]
 
 interface MunicipalityListboxProps {
   text: ChoiceTexts

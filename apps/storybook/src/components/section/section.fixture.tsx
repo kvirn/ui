@@ -7,9 +7,8 @@ import type { CardFixtureLocale } from '../card/card.fixture.tsx'
 // Story and e2e fixture: the design spec's examples A and B (docs/design/section.md §4, §5) and the
 // Section-or-Card example (§6.9). The `contact.*` strings moved here from the Card fixture: the
 // sidebar text block is a Section now. Example B reuses the Card fixture's NewsList.
-// sv and en are written. The fi strings are the designer's drafts, for length checks only. nb,
-// nn and se come from a translator, not an agent: until then those locales show the English
-// text, marked lang="en" (3.1.2). Times are values, formatted with Intl.
+// sv, en, nb and nn are written. The fi strings are the designer's drafts, for length checks only.
+// se: English, marked lang="en" (3.1.2). Times are values, formatted with Intl.
 
 export type SectionFixtureLocale = CardFixtureLocale
 
@@ -61,7 +60,7 @@ const sv: SectionTexts = {
   details: { legend: 'Kontaktuppgifter', email: 'E-postadress' },
 }
 
-/** Designer drafts (docs/design/section.md §4), for length checks. Not reviewed by a translator. */
+/** Designer drafts (docs/design/section.md §4), for length checks. */
 const fi: SectionTexts = {
   contact: {
     heading: 'Ota yhteyttä',
@@ -77,30 +76,62 @@ const fi: SectionTexts = {
   details: { legend: 'Yhteystiedot', email: 'Sähköpostiosoite' },
 }
 
-/** nb, nn and se: `undefined` until a translator delivers them. */
+const nb: SectionTexts = {
+  contact: {
+    heading: 'Kontakt oss',
+    phone: (phone) => <>Ring kundesenteret på {phone}.</>,
+    hours: (open, close) => (
+      <>
+        Vi svarer mandag–fredag kl. {open}–{close}.
+      </>
+    ),
+    email: 'Send e-post til kundesenteret',
+  },
+  users: { heading: 'Anna Lindqvist', edit: 'Rediger', delete: 'Slett' },
+  details: { legend: 'Kontaktopplysninger', email: 'E-postadresse' },
+}
+
+const nn: SectionTexts = {
+  contact: {
+    heading: 'Kontakt oss',
+    phone: (phone) => <>Ring kundesenteret på {phone}.</>,
+    hours: (open, close) => (
+      <>
+        Vi svarer måndag–fredag kl. {open}–{close}.
+      </>
+    ),
+    email: 'Send e-post til kundesenteret',
+  },
+  users: { heading: 'Anna Lindqvist', edit: 'Rediger', delete: 'Slett' },
+  details: { legend: 'Kontaktopplysingar', email: 'E-postadresse' },
+}
+
+/** se has no texts: it shows the English ones, marked lang="en". */
 const sectionTexts: Record<SectionFixtureLocale, SectionTexts | undefined> = {
   sv,
   fi,
-  nb: undefined,
-  nn: undefined,
+  nb,
+  nn,
   se: undefined,
   en,
 }
 
-const formatLocales: Record<'sv' | 'fi' | 'en', string> = {
+const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
   sv: 'sv-SE',
   fi: 'fi-FI',
+  nb: 'nb-NO',
+  nn: 'nn-NO',
   en: 'en-GB',
 }
 
 interface ResolvedSectionTexts {
   text: SectionTexts
-  /** `'en'` when the locale isn't translated yet: put it on the element (3.1.2). */
+  /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
   lang: 'en' | undefined
   formatLocale: string
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` until it's translated. */
+/** The fixture text in a locale, or the English text with `lang="en"` for se. */
 function sectionTextsFor(locale: SectionFixtureLocale): ResolvedSectionTexts {
   const text = sectionTexts[locale]
   if (text === undefined) {
@@ -109,7 +140,7 @@ function sectionTextsFor(locale: SectionFixtureLocale): ResolvedSectionTexts {
   return {
     text,
     lang: undefined,
-    formatLocale: formatLocales[locale === 'sv' || locale === 'fi' ? locale : 'en'],
+    formatLocale: formatLocales[locale === 'se' ? 'en' : locale],
   }
 }
 
@@ -151,7 +182,9 @@ export function ContactSection({ locale, hasEdge = false }: ContactSectionProps)
       lang={lang}
     >
       <h2 id={headingId}>{text.contact.heading}</h2>
-      <p>{text.contact.phone('0123-45 67 89')}</p>
+      <p>
+        {text.contact.phone(locale === 'nb' || locale === 'nn' ? '800 12 345' : '0123-45 67 89')}
+      </p>
       <p>
         {text.contact.hours(
           <TimeValue date={opens} formatLocale={formatLocale} />,

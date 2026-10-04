@@ -167,4 +167,4 @@ What the manual run must check: table navigation, the header announced with each
 - A virtualized table can't be searched with find-in-page, isn't printed in full, and Tab can't reach a control in a row that isn't rendered. Pagination or a filter is the recommended default.
 - Shift+click range selection and multi-sort are not offered: each needs a key the pattern doesn't document. A later ADR can add them.
 - The select-all checkbox always means every row of the table. A "this page only" variant is not offered yet.
-- Northern Sámi (`se`) strings are English placeholders until a native speaker translates them.
+- The Northern Sámi (`se`) strings are English, shown under `lang="se"` (3.1.2).

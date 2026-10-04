@@ -186,7 +186,6 @@ Open follow-ups:
 - [ ] AT matrix row: a dialog add announces the refused files as a count only (the Trigger's description carries the detail). Check with VoiceOver with hints off that the detail is still reachable. Consider announcing the first rejection line.
 - [ ] 1.4.12 text spacing and the forced-colours boundary (the dragging edge, the failed item's bar) are covered by the sweep only (`E2E_BROWSERS=sweep`).
 - [ ] Focus falls to `body` if the Field becomes disabled while the Trigger has focus (the native `disabled` drops it). Decide: move focus to the Field's label or leave it.
-- [ ] The `se` strings are English placeholders without `lang="en"` (3.1.2). This blocks `beta`.
 - [x] **Ruled 2026-10-04: keep it** (testing skill, standing exception). Was: the e2e axe loop is repeated in about 23 specs (rule 13: it re-runs what the story axe projects check). It was left in place here.
-- [ ] **Maintainer approval to record:** the DESIGN.md:506 rule for the dashed zone edge. The design spec §9 Q7 still says "pending".
+- [ ] **Maintainer approval to record:** the DESIGN.md:506 rule for the dashed zone edge. The design spec §9 Q6 still says "pending".
 - [ ] Maintainer to confirm: no `Multiple` story (Phase 4 says why).

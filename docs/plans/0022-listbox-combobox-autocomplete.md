@@ -107,7 +107,7 @@ Phase 2, React (after phase 1):
   - [x] Rename, native rendering only (superseded: the native select is no longer a public part): `kv-listbox-native`, stories and e2e under `components/listbox/`, breaking changeset
   - [x] Custom popup rendering (`Listbox.Root` and the popup parts), `native="auto"`, `useListbox`, an internal native select (not exported), contract `listbox.a11y.md`, `listbox.md`, stories (`listbox.stories.tsx`, with the Native… stories for `native="always"`), e2e `listbox.e2e.ts`, default-theme `kv-listbox-*` styles; gates not yet run
 - [x] `Combobox` (single, multiple) and `Autocomplete` (`useCombobox`, `useAutocomplete`, the compound parts, contracts `combobox.a11y.md` and `autocomplete.a11y.md`, `combobox.md` and `autocomplete.md`, tests, default-theme `kv-combobox-*` and `kv-autocomplete-*` styles, stories and e2e under `components/combobox/` and `components/autocomplete/`; gates not yet run, manual AT `pending`)
-- [x] i18n keys in all six locales (`combobox` namespace; `se` machine-drafted, marked for native review)
+- [x] i18n keys in all six locales (`combobox` namespace)
 
 Phase 3:
 

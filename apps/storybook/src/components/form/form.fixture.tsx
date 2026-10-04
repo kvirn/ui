@@ -9,13 +9,9 @@ import { Field, Input, KvirnProvider } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 
 // Story and e2e fixture for the Components/Form pages (docs/design/form-fields.md §4.2, §4.3).
-// sv, en and fi are written. The fi strings are the designer's drafts, for length checks only.
-// The Hint page's strings (personalNumberWhy, personalNumberFormat, personalNumberError,
-// messageLimit, grantReferenceHint and the date box labels) need a native speaker's review
-// (docs/design/field-hint.md §4.2, open question 7). The spec's option hint `durationHint` is
-// `duration12Hint` in choice.fixture.tsx, which has the same text. nb, nn and se come from a
-// translator, not an agent: until then those locales show the English text, marked lang="en"
-// (3.1.2), so the new keys need nb, nn and se strings when the translator delivers the locale.
+// sv, en, fi, nb and nn are written. The fi strings are the designer's drafts, for length checks.
+// se: English, marked lang="en" (3.1.2). The spec's option hint `durationHint` is
+// `duration12Hint` in choice.fixture.tsx, which has the same text.
 // The library's own strings ("(optional)", "Error:") follow the locale through the provider
 // decorator below, like an app's provider would.
 //
@@ -55,6 +51,10 @@ export interface FormTexts {
   search: string
   children: string
   childrenError: string
+  /** The hint under the whole-number field: the range the form checks. */
+  childrenHint: string
+  /** The ErrorMessage for a number the mask lets through but the form rejects (out of range). */
+  childrenRangeError: string
   rent: string
   rentHint: (example: string) => string
   rentError: (example: string) => string
@@ -131,13 +131,15 @@ const textsEn: FormTexts = {
   search: 'Search the service',
   children: 'How many children live with you?',
   childrenError: 'Enter the number of children as a whole number, like 2',
+  childrenHint: 'A whole number from 0 to 12, for example 2.',
+  childrenRangeError: 'Enter the number of children as a number from 0 to 12, like 2',
   rent: 'How much rent do you pay each month?',
   rentHint: (example) => `Enter the amount without a currency sign, like ${example}.`,
   rentError: (example) => `Enter the rent as an amount, like ${example}`,
   caseNumber: 'Case number',
   caseNumberHint: 'It’s at the top of our letter, for example 004512.',
   postcode: 'Postcode',
-  postcodeHint: 'For example, 00100',
+  postcodeHint: 'For example, 123 45',
   longLabel: 'Reference number of your housing adaptation grant application',
   grantReferenceHint: 'It’s on the decision about your housing adaptation grant.',
   messageLimit: 'Up to 500 characters.',
@@ -201,6 +203,8 @@ const textsSv: FormTexts = {
   search: 'Sök i tjänsten',
   children: 'Hur många barn bor hos dig?',
   childrenError: 'Ange antalet barn som en siffra, till exempel 2',
+  childrenHint: 'Ett heltal från 0 till 12, till exempel 2.',
+  childrenRangeError: 'Ange antalet barn som ett tal från 0 till 12, till exempel 2',
   rent: 'Hur mycket hyra betalar du per månad?',
   rentHint: (example) => `Skriv beloppet utan valutatecken, till exempel ${example}.`,
   rentError: (example) => `Ange hyran som ett belopp, till exempel ${example}`,
@@ -247,7 +251,7 @@ const textsSv: FormTexts = {
   proseText: 'Fyll i uppgifterna nedan. Fälten hör till formuläret, inte till artikeln.',
 }
 
-/** Designer drafts (docs/design/form-fields.md §4), for length checks. Not reviewed. */
+/** Designer drafts (docs/design/form-fields.md §4), for length checks. */
 const textsFi: FormTexts = {
   name: 'Koko nimi',
   nameQuestion: 'Mikä on koko nimesi?',
@@ -272,6 +276,8 @@ const textsFi: FormTexts = {
   search: 'Hae palvelusta',
   children: 'Montako lasta asuu kanssasi?',
   childrenError: 'Anna lasten määrä kokonaislukuna, esimerkiksi 2',
+  childrenHint: 'Kokonaisluku väliltä 0–12, esimerkiksi 2.',
+  childrenRangeError: 'Anna lasten määrä lukuna väliltä 0–12, esimerkiksi 2',
   rent: 'Paljonko maksat vuokraa kuukaudessa?',
   rentHint: (example) => `Kirjoita summa ilman valuuttamerkkiä, esimerkiksi ${example}.`,
   rentError: (example) => `Anna vuokra summana, esimerkiksi ${example}`,
@@ -320,19 +326,165 @@ const textsFi: FormTexts = {
   proseText: 'Täytä tiedot alla. Kentät kuuluvat lomakkeeseen, eivät artikkeliin.',
 }
 
-/** nb, nn and se: `undefined` until a translator delivers them. */
+const textsNb: FormTexts = {
+  name: 'Fullt navn',
+  nameQuestion: 'Hva er ditt fulle navn?',
+  nameHint: 'Slik det står i passet ditt.',
+  nameError: 'Skriv inn fullt navn',
+  personalNumber: 'Fødselsnummer',
+  personalNumberWhy: 'Vi bruker det til å hente opplysningene dine fra Skatteetaten.',
+  personalNumberFormat: '11 siffer, DDMMÅÅNNNNN',
+  personalNumberError: 'Skriv fødselsnummeret med 11 siffer, DDMMÅÅNNNNN',
+  personalNumberHint: 'Du kan ikke endre fødselsnummeret ditt her.',
+  registration: 'Kjøretøyets registreringsnummer',
+  registrationWhere: 'Du finner det i vognkortet.',
+  registrationHint: 'For eksempel AB 12345',
+  registrationError: 'Skriv inn et registreringsnummer i riktig format, for eksempel AB 12345',
+  email: 'E-postadresse',
+  emailHint: 'Vi sender vedtaket til denne adressen.',
+  emailError: 'Skriv inn en e-postadresse i riktig format, for eksempel navn@eksempel.no',
+  phone: 'Telefonnummer',
+  phoneHint: 'Vi ringer bare hvis noe er feil.',
+  website: 'Nettsted',
+  password: 'Passord',
+  search: 'Søk i tjenesten',
+  children: 'Hvor mange barn bor hos deg?',
+  childrenError: 'Skriv antall barn som et heltall, for eksempel 2',
+  childrenHint: 'Et helt tall fra 0 til 12, for eksempel 2.',
+  childrenRangeError: 'Skriv antall barn som et tall fra 0 til 12, for eksempel 2',
+  rent: 'Hvor mye betaler du i husleie hver måned?',
+  rentHint: (example) => `Skriv beløpet uten valutategn, for eksempel ${example}.`,
+  rentError: (example) => `Skriv husleien som et beløp, for eksempel ${example}`,
+  caseNumber: 'Saksnummer',
+  caseNumberHint: 'Det står øverst i brevet vårt, for eksempel 004512.',
+  postcode: 'Postnummer',
+  postcodeHint: 'For eksempel 0150',
+  longLabel: 'Referansenummer for søknaden din om tilskudd til tilpasning av bolig',
+  grantReferenceHint: 'Det står i vedtaket om tilskudd til tilpasning av bolig.',
+  messageLimit: 'Maks 500 tegn.',
+  rentWithUnit: 'Månedlig husleie i kroner',
+  rentUnit: 'kr',
+  rentUnitExample: (example) => `For eksempel ${example}`,
+  workTime: 'Arbeidstid i prosent av full stilling',
+  workTimeUnit: '%',
+  workTimeExample: 'For eksempel 75 eller 37,5',
+  distance: 'Avstand fra hjemmet til skolen i kilometer',
+  distanceHint: 'Mål den korteste gangveien.',
+  distanceUnit: 'km',
+  searchServices: 'Søk etter tjenester',
+  searchClear: 'Tøm',
+  searchClearName: 'Tøm søket',
+  visitDate: 'Dato for besøket',
+  visitDateExample: 'For eksempel 27.03.2026',
+  visitDay: 'Dag',
+  visitMonth: 'Måned',
+  visitYear: 'År',
+  amountEuro: 'Beløp i euro',
+  amountEuroUnit: '€',
+  grantWithUnit: 'Beløpet du søker om i tilskudd til tilpasning av bolig, i kroner',
+  addressLegend: 'Hvor bor du?',
+  addressHint: 'Adressen der du er folkeregistrert.',
+  addressFormat: 'Skriv adressen uten land.',
+  addressError: 'Skriv inn adressen din',
+  street: 'Gateadresse',
+  town: 'Poststed',
+  youTyped: 'Du skrev',
+  send: 'Send',
+  filter: 'Filtrer',
+  sent: 'Sendt',
+  surface: 'På en flate',
+  inCard: 'I et kort',
+  proseHeading: 'Opplysningene dine',
+  proseText: 'Fyll ut opplysningene nedenfor. Feltene hører til skjemaet, ikke til artikkelen.',
+}
+
+const textsNn: FormTexts = {
+  name: 'Fullt namn',
+  nameQuestion: 'Kva er det fulle namnet ditt?',
+  nameHint: 'Slik det står i passet ditt.',
+  nameError: 'Skriv inn fullt namn',
+  personalNumber: 'Fødselsnummer',
+  personalNumberWhy: 'Vi brukar det til å hente opplysningane dine frå Skatteetaten.',
+  personalNumberFormat: '11 siffer, DDMMÅÅNNNNN',
+  personalNumberError: 'Skriv fødselsnummeret med 11 siffer, DDMMÅÅNNNNN',
+  personalNumberHint: 'Du kan ikkje endre fødselsnummeret ditt her.',
+  registration: 'Registreringsnummeret til kjøretøyet',
+  registrationWhere: 'Du finn det i vognkortet.',
+  registrationHint: 'Til dømes AB 12345',
+  registrationError: 'Skriv inn eit registreringsnummer i riktig format, til dømes AB 12345',
+  email: 'E-postadresse',
+  emailHint: 'Vi sender vedtaket til denne adressa.',
+  emailError: 'Skriv inn ei e-postadresse i riktig format, til dømes namn@eksempel.no',
+  phone: 'Telefonnummer',
+  phoneHint: 'Vi ringer berre viss noko er feil.',
+  website: 'Nettstad',
+  password: 'Passord',
+  search: 'Søk i tenesta',
+  children: 'Kor mange barn bur hos deg?',
+  childrenError: 'Skriv talet på barn som eit heiltal, til dømes 2',
+  childrenHint: 'Eit heiltal frå 0 til 12, til dømes 2.',
+  childrenRangeError: 'Skriv talet på barn som eit tal frå 0 til 12, til dømes 2',
+  rent: 'Kor mykje betaler du i husleige kvar månad?',
+  rentHint: (example) => `Skriv beløpet utan valutateikn, til dømes ${example}.`,
+  rentError: (example) => `Skriv husleiga som eit beløp, til dømes ${example}`,
+  caseNumber: 'Saksnummer',
+  caseNumberHint: 'Det står øvst i brevet vårt, til dømes 004512.',
+  postcode: 'Postnummer',
+  postcodeHint: 'Til dømes 0150',
+  longLabel: 'Referansenummer for søknaden din om tilskot til tilpassing av bustad',
+  grantReferenceHint: 'Det står i vedtaket om tilskot til tilpassing av bustad.',
+  messageLimit: 'Maks 500 teikn.',
+  rentWithUnit: 'Månadleg husleige i kroner',
+  rentUnit: 'kr',
+  rentUnitExample: (example) => `Til dømes ${example}`,
+  workTime: 'Arbeidstid i prosent av full stilling',
+  workTimeUnit: '%',
+  workTimeExample: 'Til dømes 75 eller 37,5',
+  distance: 'Avstand frå heimen til skulen i kilometer',
+  distanceHint: 'Mål den kortaste gangvegen.',
+  distanceUnit: 'km',
+  searchServices: 'Søk etter tenester',
+  searchClear: 'Tøm',
+  searchClearName: 'Tøm søket',
+  visitDate: 'Dato for besøket',
+  visitDateExample: 'Til dømes 27.03.2026',
+  visitDay: 'Dag',
+  visitMonth: 'Månad',
+  visitYear: 'År',
+  amountEuro: 'Beløp i euro',
+  amountEuroUnit: '€',
+  grantWithUnit: 'Beløpet du søkjer om i tilskot til tilpassing av bustad, i kroner',
+  addressLegend: 'Kvar bur du?',
+  addressHint: 'Adressa der du er folkeregistrert.',
+  addressFormat: 'Skriv adressa utan land.',
+  addressError: 'Skriv inn adressa di',
+  street: 'Gateadresse',
+  town: 'Poststad',
+  youTyped: 'Du skreiv',
+  send: 'Send',
+  filter: 'Filtrer',
+  sent: 'Sendt',
+  surface: 'På ei flate',
+  inCard: 'I eit kort',
+  proseHeading: 'Opplysningane dine',
+  proseText: 'Fyll ut opplysningane nedanfor. Felta høyrer til skjemaet, ikkje til artikkelen.',
+}
+
+/** se has no texts: it shows the English ones, marked lang="en". */
 const formTexts: Record<FormLocale, FormTexts | undefined> = {
   sv: textsSv,
   fi: textsFi,
-  nb: undefined,
-  nn: undefined,
+  nb: textsNb,
+  nn: textsNn,
   se: undefined,
   en: textsEn,
 }
 
-const formatLocales: Record<'sv' | 'fi' | 'en', string> = {
+const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
   sv: 'sv-SE',
   fi: 'fi-FI',
+  nb: 'nb-NO',
+  nn: 'nn-NO',
   en: 'en-GB',
 }
 
@@ -347,7 +499,7 @@ export const localeOf = (globals: Record<string, unknown>): FormLocale => {
 
 interface ResolvedFormTexts {
   text: FormTexts
-  /** `'en'` when the locale isn't translated yet: put it on the element (3.1.2). */
+  /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
   lang: 'en' | undefined
   /** `1250.5` written the way the locale writes an amount: en `1,250.50`, sv `1 250,50`. */
   rentExample: string
@@ -355,11 +507,11 @@ interface ResolvedFormTexts {
   amountExample: string
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` until it's translated. */
+/** The fixture text in a locale, or the English text with `lang="en"` for se. */
 export function textsFor(locale: FormLocale): ResolvedFormTexts {
   const text = formTexts[locale]
   const known = text !== undefined
-  const formatLocale = formatLocales[locale === 'sv' || locale === 'fi' ? locale : 'en']
+  const formatLocale = formatLocales[locale === 'se' ? 'en' : locale]
   return {
     text: text ?? textsEn,
     lang: known ? undefined : 'en',
@@ -370,7 +522,7 @@ export function textsFor(locale: FormLocale): ResolvedFormTexts {
 
 const catalogs: Record<FormLocale, KvirnMessages> = { sv, fi, nb, nn, se, en }
 
-/** The library strings a story shows in a locale: English until the fixture is translated. */
+/** The library strings a story shows in a locale: English where the fixture has no texts (se). */
 const messagesFor = (locale: FormLocale): KvirnMessages =>
   formTexts[locale] === undefined ? en : catalogs[locale]
 
@@ -385,8 +537,8 @@ export function fieldMessagesFor(locale: FormLocale): { optional: string; errorP
 
 /**
  * Library strings ("(valfritt)", "Fel:") follow the locale toolbar, like an app's provider
- * would. The fixture text follows it through `textsFor`. Until a locale's fixture is
- * translated, the library strings are English too, so a `lang="en"` element is all English.
+ * would. The fixture text follows it through `textsFor`. Where the fixture shows English (se),
+ * the library strings are English too, so a `lang="en"` element is all English.
  */
 export const withFormLocale: Decorator = (Story, { globals }) => {
   const locale = localeOf(globals)

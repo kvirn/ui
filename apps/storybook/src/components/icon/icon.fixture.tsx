@@ -4,11 +4,10 @@ import { useCallback, useState } from 'react'
 import type { HTMLAttributes, ReactNode, Ref, SVGProps } from 'react'
 import { createPortal } from 'react-dom'
 
-// Story and e2e fixture: the design spec's strings (docs/design/icon.md §4.3). sv and en are
-// written. The fi strings are the designer's drafts, for length checks only. nb, nn and se come
-// from a translator, not an agent: until then those locales show the English text, marked
-// lang="en" (3.1.2). Icon names are code, so they aren't translated. Dates are values,
-// formatted with Intl.
+// Story and e2e fixture: the design spec's strings (docs/design/icon.md §4.3). sv, en, nb
+// and nn are written. The fi strings are the designer's drafts, for length checks only. se:
+// English, marked lang="en" (3.1.2). Icon names are code, so they aren't translated. Dates are
+// values, formatted with Intl.
 
 export type IconFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
 
@@ -146,7 +145,7 @@ const sv: IconTexts = {
   pagination: { previous: 'Föregående', next: 'Nästa' },
 }
 
-/** Designer drafts (docs/design/icon.md §4.3), for length checks. Not reviewed by a translator. */
+/** Designer drafts (docs/design/icon.md §4.3), for length checks. */
 const fi: IconTexts = {
   button: {
     addChild: 'Lisää toinen lapsi',
@@ -178,19 +177,77 @@ const fi: IconTexts = {
   pagination: { previous: 'Edellinen', next: 'Seuraava' },
 }
 
-/** nb, nn and se: `undefined` until a translator delivers them. */
+const nb: IconTexts = {
+  button: {
+    addChild: 'Legg til et barn til',
+    continue: 'Gå videre',
+    download: 'Last ned vedtaket som PDF',
+    close: 'Lukk',
+    search: 'Søk',
+    menu: 'Meny',
+    removeFile: (fileName) => `Fjern ${fileName}`,
+    showPassword: 'Vis passord',
+    hidePassword: 'Skjul passord',
+  },
+  status: {
+    error: { word: 'Feil', line: (example) => `Skriv datoen i formatet ${example}.` },
+    warning: { word: 'Advarsel', line: () => 'Økten din avsluttes om 5 minutter.' },
+    success: { word: 'Ferdig', line: () => 'Søknaden din er sendt.' },
+    info: { word: 'Greit å vite', line: () => 'Vi svarer innen 2 arbeidsdager.' },
+  },
+  text: {
+    collection: (date) => <>Neste tømming er {date}.</>,
+    guide: 'Les veiledningen',
+  },
+  label: { logo: 'Eksempelby kommune' },
+  language: { current: 'Svenska' },
+  gallery: { mirrors: 'Speiles i RTL', doesNotMirror: 'Speiles ikke i RTL' },
+  pagination: { previous: 'Forrige', next: 'Neste' },
+}
+
+const nn: IconTexts = {
+  button: {
+    addChild: 'Legg til eit barn til',
+    continue: 'Gå vidare',
+    download: 'Last ned vedtaket som PDF',
+    close: 'Lukk',
+    search: 'Søk',
+    menu: 'Meny',
+    removeFile: (fileName) => `Fjern ${fileName}`,
+    showPassword: 'Vis passord',
+    hidePassword: 'Skjul passord',
+  },
+  status: {
+    error: { word: 'Feil', line: (example) => `Skriv datoen i formatet ${example}.` },
+    warning: { word: 'Åtvaring', line: () => 'Økta di blir avslutta om 5 minutt.' },
+    success: { word: 'Ferdig', line: () => 'Søknaden din er send.' },
+    info: { word: 'Greitt å vite', line: () => 'Vi svarer innan 2 arbeidsdagar.' },
+  },
+  text: {
+    collection: (date) => <>Neste tømming er {date}.</>,
+    guide: 'Les rettleiinga',
+  },
+  label: { logo: 'Eksempelby kommune' },
+  language: { current: 'Svenska' },
+  gallery: { mirrors: 'Blir spegla i RTL', doesNotMirror: 'Blir ikkje spegla i RTL' },
+  pagination: { previous: 'Førre', next: 'Neste' },
+}
+
+/** se has no texts: it shows the English ones, marked lang="en". */
 const iconTexts: Record<IconFixtureLocale, IconTexts | undefined> = {
   sv,
   fi,
-  nb: undefined,
-  nn: undefined,
+  nb,
+  nn,
   se: undefined,
   en,
 }
 
-const formatLocales: Record<'sv' | 'fi' | 'en', string> = {
+const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
   sv: 'sv-SE',
   fi: 'fi-FI',
+  nb: 'nb-NO',
+  nn: 'nn-NO',
   en: 'en-GB',
 }
 
@@ -199,12 +256,12 @@ export const isIconFixtureLocale = (value: unknown): value is IconFixtureLocale 
 
 interface ResolvedTexts {
   text: IconTexts
-  /** `'en'` when the locale isn't translated yet: put it on the element (3.1.2). */
+  /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
   lang: 'en' | undefined
   formatLocale: string
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` until it's translated. */
+/** The fixture text in a locale, or the English text with `lang="en"` for se. */
 export function textsFor(locale: IconFixtureLocale): ResolvedTexts {
   const text = iconTexts[locale]
   if (text === undefined) {
@@ -213,7 +270,7 @@ export function textsFor(locale: IconFixtureLocale): ResolvedTexts {
   return {
     text,
     lang: undefined,
-    formatLocale: formatLocales[locale === 'sv' || locale === 'fi' ? locale : 'en'],
+    formatLocale: formatLocales[locale === 'se' ? 'en' : locale],
   }
 }
 
@@ -229,7 +286,7 @@ export function CollectionDate({ formatLocale }: { formatLocale: string }) {
   return <time dateTime={nextCollection.toISOString().slice(0, 10)}>{text}</time>
 }
 
-/** `31.12.2026` in fi, `2026-12-31` in sv: the date format the error line asks for. */
+/** `31.12.2026` in fi and nb, `2026-12-31` in sv: the date format the error line asks for. */
 const exampleDate = (formatLocale: string): string =>
   new Intl.DateTimeFormat(formatLocale, {
     year: 'numeric',

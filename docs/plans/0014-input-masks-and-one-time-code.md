@@ -112,7 +112,7 @@ const caseNumberMask = useMask({ mask: masks.pattern('aa-9999') })
 | `mask.characterNotAllowed` | Only digits can be entered here. (per `allowed`: digits, letters, letters and digits, or "That character can't be entered here.") | Här kan du bara skriva siffror. (and the same variants) |
 | `mask.maximumLength`       | You've entered all {length} characters.                                                                                           | Du har skrivit alla {length} tecken.                    |
 
-All six locales. fi, nn and se need translator review.
+All six locales.
 
 ### Theming surface
 

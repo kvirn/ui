@@ -3,18 +3,14 @@ import type { KvirnMessages } from '../types.ts'
 
 export const nn = {
   link: { newTabNotice: '(blir opna i ei ny fane)' },
-  // Draft from the design spec (docs/design/form-fields.md §4.1), for a translator to confirm.
   field: { optional: '(valfritt)', errorPrefix: 'Feil:' },
-  // Draft for a translator to confirm.
   dateInput: { day: 'Dag', month: 'Månad', year: 'År' },
-  // Draft from the design spec (docs/design/notification.md §4.1), for a translator to confirm.
   notification: {
     infoPrefix: 'Informasjon:',
     successPrefix: 'Fullført:',
     warningPrefix: 'Åtvaring:',
     dangerPrefix: 'Feil:',
   },
-  // Draft for a translator to confirm.
   combobox: {
     resultCount: ({ count }, format) =>
       format.plural(count, { one: '1 treff', other: `${format.number(count)} treff` }),
@@ -24,7 +20,6 @@ export const nn = {
     clear: 'Tøm',
     showOptions: 'Vis alternativ',
   },
-  // Draft for a translator to confirm.
   mask: {
     characterNotAllowed: ({ allowed }) =>
       ({
@@ -35,7 +30,6 @@ export const nn = {
       })[allowed],
     maximumLength: ({ length }) => `Du har skrive alle ${length} teikna.`,
   },
-  // Draft for a translator to confirm.
   fileUpload: {
     chooseFiles: 'Vel filer',
     chooseFile: 'Vel fil',
@@ -104,7 +98,7 @@ export const nn = {
     errorDuplicate: ({ name }) => `${name} er allereie i lista.`,
     errorFolder: ({ name }) => `${name} er ei mappe. Opne mappa og vel filene i ho.`,
     uploadFailedMessage: ({ name }) =>
-      `Vi kunne ikkje laste opp ${name}. Viss det held fram å feile, kontakt oss.`,
+      `Vi kunne ikkje laste opp ${name}. Viss det held fram å feile, ta kontakt med oss.`,
     rejectedFilePosition: ({ position, total, message }) =>
       `Fil ${position} av ${total}, ${message}`,
     removeFile: ({ name }) => `Fjern ${name}`,
@@ -149,7 +143,7 @@ export const nn = {
   },
   table: {
     sortedAscending: ({ column }) => `Sortert etter ${column}, stigande.`,
-    sortedDescending: ({ column }) => `Sortert etter ${column}, søkkande.`,
+    sortedDescending: ({ column }) => `Sortert etter ${column}, synkande.`,
     sortCleared: ({ column }) => `Ikkje lenger sortert etter ${column}.`,
     selectRow: 'Vel',
     selectRowNumber: ({ index }, format) => `Vel rad ${format.number(index)}`,

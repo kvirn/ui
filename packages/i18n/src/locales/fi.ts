@@ -3,18 +3,14 @@ import type { KvirnMessages } from '../types.ts'
 
 export const fi = {
   link: { newTabNotice: '(avautuu uuteen välilehteen)' },
-  // Draft from the design spec (docs/design/form-fields.md §4.1), for a translator to confirm.
   field: { optional: '(vapaaehtoinen)', errorPrefix: 'Virhe:' },
-  // Draft from the design spec (docs/design/form-fields.md §4.1), for a translator to confirm.
   dateInput: { day: 'Päivä', month: 'Kuukausi', year: 'Vuosi' },
-  // Draft from the design spec (docs/design/notification.md §4.1), for a translator to confirm.
   notification: {
     infoPrefix: 'Tiedoksi:',
     successPrefix: 'Valmis:',
     warningPrefix: 'Varoitus:',
     dangerPrefix: 'Virhe:',
   },
-  // Draft for a translator to confirm.
   combobox: {
     resultCount: ({ count }, format) =>
       format.plural(count, { one: '1 tulos', other: `${format.number(count)} tulosta` }),
@@ -24,7 +20,6 @@ export const fi = {
     clear: 'Tyhjennä',
     showOptions: 'Näytä vaihtoehdot',
   },
-  // Draft for a translator to confirm.
   mask: {
     characterNotAllowed: ({ allowed }) =>
       ({
@@ -35,7 +30,6 @@ export const fi = {
       })[allowed],
     maximumLength: ({ length }) => `Olet kirjoittanut kaikki ${length} merkkiä.`,
   },
-  // Draft for a translator to confirm.
   fileUpload: {
     chooseFiles: 'Valitse tiedostot',
     chooseFile: 'Valitse tiedosto',

@@ -65,7 +65,7 @@ The maintainer asked to build the spec. These are the defaults taken for its ope
 4. The date example moves under the boxes as a `Fieldset.Hint`.
 5. `FileUpload.Limits` keeps its look. A later plan.
 6. Digi stays unverified. Not blocking.
-7. Finnish copy is marked for review. `nb`, `nn` and `se` have no fixture strings yet: `form.fixture.tsx` falls back to the English text with `lang="en"` (3.1.2) until a translator delivers them, and says so in a comment.
+7. `se` has no fixture strings: `form.fixture.tsx` falls back to the English text with `lang="en"` (3.1.2), and says so in a comment.
 8. Out of scope.
 
 ### Decisions taken in the library implementation (2026-10-04)

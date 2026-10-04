@@ -118,4 +118,3 @@ Research questions for the AT run: without `aria-invalid` on radios, is the grou
 - **A radio has no focus state of its own.** `useRadio` returns no `isFocusVisible` and `RadioGroup.Radio` sets no `data-focus-visible`: a re-render while a radio has focus makes React write its `name` again, and Chromium then stops treating the group as one Tab stop. The theme styles focus with the native `:focus-visible` (the 2px `focus-ring`).
 - **`aria-describedby` on a `<fieldset>` isn't announced consistently by TalkBack.** See `fieldset.a11y.md`.
 - **Shift+Tab into an unchecked group.** Browsers differ on which radio gets focus: Chrome and Firefox focus the last, Safari the first. The e2e runs on Chromium; the optional engines run in CI.
-- **`se` (Northern Sámi) is a placeholder in the fixtures.** See `field.a11y.md`.

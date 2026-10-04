@@ -14,7 +14,7 @@ A reader who opens a component's Storybook page finds every public feature of th
 - No new behaviour. Plans 0028 to 0030 own the API changes, and this plan runs after them, so stories use the final names.
 - No hook pages and no theming pages per component. The storybook-docs skill leaves both for later.
 - No removal of core exports. Marking them internal is a separate, breaking change.
-- The `se` catalog stays English until a native reviewer translates it.
+- The `se` catalog stays English, marked `lang="en"`.
 
 ## Background
 

@@ -188,4 +188,3 @@ Research questions for the AT run: is the result count read once, after typing s
 - **A Combobox inside a form with an Enter shortcut.** Enter with an active option chooses it and never submits the form, as the pattern says. With no active option it submits (the browser's own). The text is not sent, only the hidden inputs are.
 - **Text that has no match is not an error by itself.** The Combobox reports `null` and leaves the message to the consumer, because the right words depend on the form.
 - **WebKit not run locally.** CI runs the `webkit` and `mobile-safari` projects. `popover="manual"`, the outside press and Escape must be checked on Safari 17.
-- **`se` (Northern Sámi) is machine-drafted.** See `field.a11y.md`.

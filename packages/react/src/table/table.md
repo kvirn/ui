@@ -224,7 +224,7 @@ Through the shared Announcer (`KvirnProvider`), politely: a sort, the count afte
 
 ## Strings
 
-The component's names and announcements are in the `table` namespace of all six locales, and can be overridden per provider and per instance (`messages`). **The caption, the headers and the cells are yours.** Northern Sámi starts as English placeholders and blocks `beta`.
+The component's names and announcements are in the `table` namespace of all six locales, and can be overridden per provider and per instance (`messages`). **The caption, the headers and the cells are yours.** Northern Sámi starts as English.
 
 ## Hook
 

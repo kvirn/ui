@@ -2,10 +2,9 @@ import type { ReactNode } from 'react'
 import { Button, Card, Link } from '@kvirn-ui/react'
 
 // Story and e2e fixture: the design spec's examples B–D (docs/design/card.md §4, §5). Example A,
-// the sidebar text block, is a Section now: see ../section/section.fixture.tsx. sv and en
-// are written. The fi strings are the designer's drafts, for length checks only. nb, nn and se
-// come from a translator, not an agent: until then those locales show the English text, marked
-// lang="en" (3.1.2). Dates and times are values, formatted with Intl.
+// the sidebar text block, is a Section now: see ../section/section.fixture.tsx. sv, en, nb and
+// nn are written. The fi strings are the designer's drafts, for length checks only. se: English,
+// marked lang="en" (3.1.2). Dates and times are values, formatted with Intl.
 
 export type CardFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
 
@@ -101,7 +100,7 @@ const sv: CardTexts = {
   },
 }
 
-/** Designer drafts (docs/design/card.md §4), for length checks. Not reviewed by a translator. */
+/** Designer drafts (docs/design/card.md §4), for length checks. */
 const fi: CardTexts = {
   waste: {
     heading: 'Jäteastioiden tyhjennys osoitteessa Storgatan 12',
@@ -134,19 +133,85 @@ const fi: CardTexts = {
   },
 }
 
-/** nb, nn and se: `undefined` until a translator delivers them. */
+const nb: CardTexts = {
+  waste: {
+    heading: 'Renovasjon på Storgata 12',
+    next: (date) => <>Neste tømming er {date}.</>,
+    plan: 'Matavfall og restavfall tømmes annenhver uke.',
+    orderExtra: 'Bestill ekstra tømming',
+    pause: 'Sett tømmingen på pause',
+  },
+  news: {
+    heading: 'Nyheter',
+    recycling: {
+      title: 'Nye åpningstider på gjenvinningsstasjonen',
+      excerpt: 'Fra 1. november er gjenvinningsstasjonen åpen til kl. 19 på hverdager.',
+    },
+    snow: {
+      title: 'Vintervedlikehold: slik brøyter vi',
+      excerpt: 'Vi brøyter hovedveier og bussruter først, deretter boliggater.',
+    },
+    grants: {
+      title: 'Søk om foreningstilskudd innen 1. desember',
+      excerpt: 'Idretts- og kulturforeninger kan søke om tilskudd for neste år.',
+    },
+    published: (date) => <>Publisert {date}</>,
+  },
+  case: {
+    heading: (caseNumber) => <>Sak {caseNumber}</>,
+    status: 'Tilskudd til tilpasning av bolig. Venter på vedtak.',
+    latestHeading: 'Siste hendelse',
+    latestText: (date) => <>Erklæringen fra ergoterapeuten kom inn {date}.</>,
+  },
+}
+
+const nn: CardTexts = {
+  waste: {
+    heading: 'Renovasjon på Storgata 12',
+    next: (date) => <>Neste tømming er {date}.</>,
+    plan: 'Matavfall og restavfall blir tømt annakvar veke.',
+    orderExtra: 'Bestill ekstra tømming',
+    pause: 'Set tømminga på pause',
+  },
+  news: {
+    heading: 'Nyheiter',
+    recycling: {
+      title: 'Nye opningstider på gjenvinningsstasjonen',
+      excerpt: 'Frå 1. november er gjenvinningsstasjonen open til kl. 19 på kvardagar.',
+    },
+    snow: {
+      title: 'Vintervedlikehald: slik brøytar vi',
+      excerpt: 'Vi brøytar hovudvegar og bussrutar først, deretter bustadgater.',
+    },
+    grants: {
+      title: 'Søk om foreiningstilskot innan 1. desember',
+      excerpt: 'Idretts- og kulturforeiningar kan søkje om tilskot for neste år.',
+    },
+    published: (date) => <>Publisert {date}</>,
+  },
+  case: {
+    heading: (caseNumber) => <>Sak {caseNumber}</>,
+    status: 'Tilskot til tilpassing av bustad. Ventar på vedtak.',
+    latestHeading: 'Siste hending',
+    latestText: (date) => <>Erklæringa frå ergoterapeuten kom inn {date}.</>,
+  },
+}
+
+/** se has no texts: it shows the English ones, marked lang="en". */
 const cardTexts: Record<CardFixtureLocale, CardTexts | undefined> = {
   sv,
   fi,
-  nb: undefined,
-  nn: undefined,
+  nb,
+  nn,
   se: undefined,
   en,
 }
 
-const formatLocales: Record<'sv' | 'fi' | 'en', string> = {
+const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
   sv: 'sv-SE',
   fi: 'fi-FI',
+  nb: 'nb-NO',
+  nn: 'nn-NO',
   en: 'en-GB',
 }
 
@@ -155,12 +220,12 @@ export const isCardFixtureLocale = (value: unknown): value is CardFixtureLocale 
 
 interface ResolvedTexts {
   text: CardTexts
-  /** `'en'` when the locale isn't translated yet: put it on the element (3.1.2). */
+  /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
   lang: 'en' | undefined
   formatLocale: string
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` until it's translated. */
+/** The fixture text in a locale, or the English text with `lang="en"` for se. */
 export function textsFor(locale: CardFixtureLocale): ResolvedTexts {
   const text = cardTexts[locale]
   if (text === undefined) {
@@ -169,7 +234,7 @@ export function textsFor(locale: CardFixtureLocale): ResolvedTexts {
   return {
     text,
     lang: undefined,
-    formatLocale: formatLocales[locale === 'sv' || locale === 'fi' ? locale : 'en'],
+    formatLocale: formatLocales[locale === 'se' ? 'en' : locale],
   }
 }
 

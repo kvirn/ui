@@ -53,7 +53,7 @@ People say surface, card, panel and notification for the same box. From now on e
 - **Assumptions and research questions:**
   - Assumption: an icon shape plus a title that states the outcome is enough for sighted users, so the status word can be visually hidden (as `Field.ErrorMessage`'s "Fel:" is; decided, §11 D4). → RQ: can participants with colour-vision deficiency, and Contrast Themes users, say which of four notifications is the error without reading the title? If not, revisit D4.
   - Assumption: a polite announcement after Send is heard in time and isn't lost to the screen reader's own feedback on the button. → RQ: in the AT run, is "Fel: Vi kunde inte skicka din ansökan" heard after pressing Send, in NVDA, JAWS, VoiceOver (macOS, iOS) and TalkBack?
-  - Assumption: residents don't look for a close button and aren't bothered that notifications can't be dismissed. → RQ: does anyone try to close one, and why? (§11, open question 2.)
+  - Assumption: residents don't look for a close button and aren't bothered that notifications can't be dismissed. → RQ: does anyone try to close one, and why? (§11, open question 1.)
 
 ## 2. Prior art
 
@@ -119,7 +119,7 @@ Notification.Danger tabIndex=-1 ref=summaryRef        (div.kv-notification.kv-no
 
 ### 4.1 Component strings (`@kvirn-ui/i18n`, all six locales)
 
-Each ready-made root's status word starts its Title. It includes its punctuation, like `field.errorPrefix`, so a locale controls it. `fi`, `nb` and `nn` are designer drafts for a translator to confirm. **The `se` (Northern Sámi) words are machine-drafted and need a native speaker to verify them** (the maintainer's decision, 2026-10-02: no English placeholders; the locale file says so in a comment; §11 open question 1).
+Each ready-made root's status word starts its Title. It includes its punctuation, like `field.errorPrefix`, so a locale controls it. Agents write `fi`, `nb` and `nn`. The `se` (Northern Sámi) words are real Sámi, not English placeholders (the maintainer's decision, 2026-10-02).
 
 | Key                          | Used by                | en             | sv             | fi (draft)  | nb (draft)     | nn (draft)     | se                       |
 | ---------------------------- | ---------------------- | -------------- | -------------- | ----------- | -------------- | -------------- | ------------------------ |
@@ -155,7 +155,7 @@ DESIGN.md Content & Voice applies. Specific to notifications:
 
 ### 4.4 Story fixture strings (`apps/storybook/src/components/notification/notification.fixture.tsx`)
 
-Keys are local to the fixture, with values in all six locales (storybook-presentation.md §4). `fi` is a designer draft for length; `fi`, `nb`, `nn` and `se` need a translator, and `se` falls back to `en` with `lang="en"` until reviewed. Variables are formatted with `Intl`.
+Keys are local to the fixture, with values in all six locales (storybook-presentation.md §4). Agents write `fi`, `nb` and `nn`; `se` falls back to `en` with `lang="en"`. Variables are formatted with `Intl`.
 
 | Key                 | en                                                                                                                                    | sv                                                                                                                            | longest: fi (draft)                                                                                                                                                    | Element                             |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
@@ -242,7 +242,7 @@ The icon stays beside the title at every width. At 231px a line holds about 26 c
 - **`announce?: AnnouncerPoliteness`** (`'polite' | 'assertive'`, the core type re-exported by `@kvirn-ui/react`), default none, on all five roots (§7.2).
 - **`messages?: Partial<KvirnMessages['notification']>`** on the ready-made roots. Each reads only its own key.
 - **Types:** `NotificationVariant` (`'info' | 'success' | 'warning' | 'danger'`, used by the hook and by dynamic selection), `UseNotificationOptions`, `UseNotificationResult`, `NotificationRootProps` (the plain Root), `NotificationStatusRootProps` (the four ready-made roots: `NotificationRootProps` plus `messages`), `NotificationTitleProps`, `NotificationBodyProps`, `NotificationActionsProps`.
-- **`useNotification({ variant?, announce, messages })`** for your own elements. Without `variant`, it's the plain Root: `rootProps` (`kv-notification`), `titleProps`, `bodyProps`, `actionsProps`. With `variant`, it's a ready-made root: `rootProps` also has the status class, and it returns `iconProps` (`name` and `className` for `<Icon>`) and `statusProps` (`className` and `children`, the resolved word), all from one table, so the hook gives the same agreement as the components. `titleProps` and `bodyProps` carry the refs the announcement reads. The hook option exists because the hook must offer what the components do (API conventions: hook and compound); it isn't a component prop (§11 open question 3).
+- **`useNotification({ variant?, announce, messages })`** for your own elements. Without `variant`, it's the plain Root: `rootProps` (`kv-notification`), `titleProps`, `bodyProps`, `actionsProps`. With `variant`, it's a ready-made root: `rootProps` also has the status class, and it returns `iconProps` (`name` and `className` for `<Icon>`) and `statusProps` (`className` and `children`, the resolved word), all from one table, so the hook gives the same agreement as the components. `titleProps` and `bodyProps` carry the refs the announcement reads. The hook option exists because the hook must offer what the components do (API conventions: hook and compound); it isn't a component prop (§11 open question 2).
 - **Dynamic selection (status from data)** in v1 is a typed map in the consumer's code, no prop needed:
 
   ```tsx
@@ -446,7 +446,7 @@ No `Keyboard` story is needed (no focusable part of its own), as for Section. Th
 - Errors and warnings must not be dismissible: the problem doesn't go away when the message does, and a resident under stress may close the one thing that told them what to do.
 - A close button adds a focus decision (where focus goes when the box is gone: never to `body`), a persistence decision (does it come back on the next page?), and an icon-only button with a name and, from M2, a tooltip. That's worth a decision of its own when there's a real case.
 - Designsystemet's guidance agrees: give the user actions that both resolve the message and move them on, instead of a generic close icon. The `Actions` part is for that.
-- Which cases need it later stays open (§11, open question 2).
+- Which cases need it later stays open (§11, open question 1).
 
 ### 7.6 WCAG success criteria of note
 
@@ -505,7 +505,7 @@ Nothing exists yet, so every story is new. Only these are needed:
   - Task completion, time on task, and the participant's own words for "what happened" and "what next".
   - Screen-reader users: whether the dynamic notifications (B, D) are heard, when, and whether anything is heard twice; whether they find A and C by heading navigation; whether "Varning:" in the heading helps or annoys.
   - Task 5: whether participants with colour-vision deficiency and in Contrast Themes tell the statuses apart by icon shape. This tests decision D4 (hidden status word).
-  - Whether anyone looks for a close button (open question 2).
+  - Whether anyone looks for a close button (open question 1).
   - Magnifier user: whether D, placed above Send, is seen after pressing Send.
 - **Result:** `pending`. Assistive-technology testing is also `pending`.
 
@@ -569,7 +569,7 @@ and add two rows after it:
 3. **Agreement guards:** no prop changes a ready-made root's status; dev warnings for a conflicting status class and for our status class on a plain Root.
 4. **The status words:** four i18n keys, visually hidden in the theme (§4.1, §6.3).
 5. **No role and no live region on the box;** `announce` opts in to one Announcer call on mount, on every root, with no per-status default (§7.2), with the 4.1.3 risk and the AT validation.
-6. **`variant`** is the only name for a status prop, if one is ever added (later sugar on `Notification.Root`); the hook's `variant` option in v1 (§6.1; open question 3).
+6. **`variant`** is the only name for a status prop, if one is ever added (later sugar on `Notification.Root`); the hook's `variant` option in v1 (§6.1; open question 2).
 7. **Not dismissible** in v1 (§7.5).
 8. **The error summary** is a block built on `Notification.Danger`, with the danger bar, and moves focus instead of announcing (§3.3).
 
@@ -592,6 +592,5 @@ and add two rows after it:
 
 ### Open
 
-1. **Northern Sámi:** the four status words are machine-drafted (`Dieđut:`, `Gárvvis:`, `Váruhus:`, `Boasttuvuohta:`) and need a native speaker to verify them. Who reviews them?
-2. **Dismissible notifications later:** which real cases need them (a staff "dismiss this tip", a "seen it" info)? Errors and warnings never.
-3. **The hook's `variant` option in v1** (§6.1). The components take no status prop, but `useNotification` needs a way to give hook users the matching class, icon and word together, or they lose the agreement guarantee. Keep it as a hook option, or ship a separate exported table instead?
+1. **Dismissible notifications later:** which real cases need them (a staff "dismiss this tip", a "seen it" info)? Errors and warnings never.
+2. **The hook's `variant` option in v1** (§6.1). The components take no status prop, but `useNotification` needs a way to give hook users the matching class, icon and word together, or they lose the agreement guarantee. Keep it as a hook option, or ship a separate exported table instead?
