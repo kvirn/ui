@@ -761,11 +761,9 @@ describe('Fieldset.Hint (Plan 0029)', () => {
         .getAttribute('aria-describedby') ?? ''
     ).split(' ')
 
-  test('renders a hint with the kv-field-hint class and an id, in the group’s description', async () => {
+  test('renders a hint with an id, in the group’s description', async () => {
     await render(<VisitDate />)
-    const hint = page.getByTestId('example').element()
-    expect(hint.className).toBe('kv-field-hint')
-    expect(hint.id).not.toBe('')
+    expect(page.getByTestId('example').element().id).not.toBe('')
     await expect
       .element(page.getByRole('group', { name: 'När var besöket?', exact: false }))
       .toHaveAccessibleDescription('Välj dagen då du var hos oss. Till exempel 2026-03-27')
@@ -810,35 +808,20 @@ describe('Fieldset.Hint (Plan 0029)', () => {
     await expect.element(page.getByTestId('example')).toHaveAttribute('data-disabled', '')
   })
 
-  test('keeps its own ref and render', async () => {
-    const ref = createRef<HTMLParagraphElement>()
+  test('a Fieldset.Hint before the group’s controls warns once', async () => {
     await render(
-      <Fieldset.Root>
-        <Fieldset.Legend>Adress</Fieldset.Legend>
-        <Fieldset.Hint ref={ref} data-testid="first">
-          Gatan och numret.
-        </Fieldset.Hint>
-        <Fieldset.Hint render={<div />} data-testid="second">
-          Och ort.
-        </Fieldset.Hint>
+      <Fieldset.Root group>
+        <Fieldset.Legend>När var besöket?</Fieldset.Legend>
+        <Fieldset.Hint>Till exempel 2026-03-27</Fieldset.Hint>
+        <Field.Root>
+          <Field.Label>Dag</Field.Label>
+          <Input inputMode="numeric" />
+        </Field.Root>
       </Fieldset.Root>,
     )
-    expect(ref.current).toBe(page.getByTestId('first').element())
-    expect(page.getByTestId('second').element().tagName).toBe('DIV')
-  })
-
-  test('outside a Fieldset it warns once and renders a plain hint with no id', async () => {
-    await render(
-      <>
-        <FieldsetHint data-testid="one">Gatan och numret.</FieldsetHint>
-        <FieldsetHint data-testid="two">Och ort.</FieldsetHint>
-      </>,
-    )
-    const hint = page.getByTestId('one').element()
-    expect(hint.hasAttribute('id')).toBe(false)
     const warnings = consoleWarn.mock.calls.map(([message]) => String(message))
     expect(warnings).toHaveLength(1)
-    expect(warnings[0]).toContain('outside')
+    expect(warnings[0]).toContain('before its control')
   })
 
   test('a group with a description, a hint and an error has no axe violations and no warnings', async () => {

@@ -57,6 +57,14 @@ export interface KvirnMessages {
      */
     errorPrefix: TextMessage
   }
+  dateInput: {
+    /** The label of the day box of a `DateInput`, for example `Dag`. Owned by DateInput (Plan 0013). */
+    day: TextMessage
+    /** The label of the month box, for example `Månad`. */
+    month: TextMessage
+    /** The label of the year box, for example `År`. */
+    year: TextMessage
+  }
   notification: {
     /**
      * The status word that starts the Title of `Notification.Info`, for example `Information:`.

@@ -76,7 +76,7 @@ const inputRef = useRef<HTMLInputElement>(null)
 
 ### Your part
 
-- **The label says the unit.** "Månadshyra i kronor", not "Månadshyra" with a "kr" Addon. If the label can't say it, a hint (a `Prose`) above the control does.
+- **The label says the unit.** "Månadshyra i kronor", not "Månadshyra" with a "kr" Addon. If the label can't say it, a description (a `Prose`) above the control does.
 - **Addon text is a symbol or a widely known abbreviation,** at most 4 characters: `kr`, `€`, `%`, `km`, `m²`. Never a word or a phrase ("per månad" goes in the label). Every Addon string comes from your translations.
 - **One Addon per side at most.** A start Addon and an end Addon, or an Addon and a Button, are fine.
 - **An icon Addon is decorative.** A calendar icon opens nothing until a date picker exists, so clicking it only focuses the Input. It repeats what the label says, and never looks like it does something it doesn't. Don't set `inputMode="numeric"` on a date field with separators.

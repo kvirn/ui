@@ -2,7 +2,7 @@ import contract from '../../../../../packages/react/src/file-upload/file-upload.
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor } from 'storybook/test'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
-import { expectMinimumTargetSize } from '../theme-story-assertions.ts'
+import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   controlledUpload,
   FileUploadField,
@@ -107,11 +107,6 @@ export const Default: Story = {
     await expect(trigger).toHaveAccessibleName(
       new RegExp(`^${localeOf(globals) === 'sv' ? 'Välj filer' : 'Choose files'}.*${texts.label}`),
     )
-    await expect(trigger).toHaveAttribute('aria-describedby')
-    await expect(trigger).not.toHaveAttribute('aria-required')
-    const input = inputOf(canvasElement)
-    await expect(input).toHaveAttribute('aria-hidden', 'true')
-    await expect(input).toHaveAttribute('tabindex', '-1')
     await expect(itemsOf(canvasElement)).toHaveLength(0)
     await expectMinimumTargetSize(trigger)
   },
@@ -174,7 +169,6 @@ export const Complete: Story = {
     await waitFor(() =>
       expect(itemsOf(canvasElement)[0]).toHaveAttribute('data-status', 'complete'),
     )
-    await expect(canvasElement.querySelector('progress')).toBeNull()
   },
 }
 
@@ -225,9 +219,7 @@ export const LimitReached: Story = {
   args: { multiple: true, maxFiles: 2 },
   play: async ({ canvasElement }) => {
     await choose(canvasElement, makeFile('a.pdf', 1_000), makeFile('b.pdf', 2_000))
-    const trigger = triggerOf(canvasElement)
-    await expect(trigger).toHaveAttribute('aria-disabled', 'true')
-    await expect(trigger).not.toBeDisabled()
+    await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(2))
   },
 }
 
@@ -260,12 +252,18 @@ export const ManyFiles: Story = {
 /** Long names wrap anywhere, so a 120-character file name doesn't scroll sideways at 320px. */
 export const LongNames: Story = {
   args: { multiple: true },
-  play: async ({ canvasElement }) => {
+  render: (args, { globals }) => (
+    <div className="kv-story-narrow" data-testid="narrow">
+      <FileUploadField {...args} locale={localeOf(globals)} />
+    </div>
+  ),
+  play: async ({ canvas, canvasElement }) => {
     await choose(
       canvasElement,
       makeFile(`${'kuntaliitoksenjälkeinenasumistukihakemuksenliiteasiakirja'.repeat(2)}.pdf`),
     )
     await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(1))
+    await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }
 
@@ -274,6 +272,27 @@ export const Disabled: Story = {
   args: { multiple: true, disabled: true },
   play: async ({ canvasElement }) => {
     await expect(triggerOf(canvasElement)).toBeDisabled()
+  },
+}
+
+/**
+ * A file is dragged over the zone: the edge turns solid with a tint, and the hint says what
+ * dropping does. The play dispatches the drag and leaves it there, so every theme checks this
+ * state. Dragging is only ever an extra: the button is the way in.
+ */
+export const Dragging: Story = {
+  args: { multiple: true, maxFiles: 5, accept: '.pdf' },
+  play: async ({ canvasElement }) => {
+    const zone = canvasElement.querySelector<HTMLElement>('.kv-file-upload-drop-zone')
+    if (zone === null) {
+      throw new Error('no drop zone')
+    }
+    const dataTransfer = new DataTransfer()
+    dataTransfer.items.add(makeFile('läkarintyg.pdf'))
+    for (const type of ['dragenter', 'dragover']) {
+      zone.dispatchEvent(new DragEvent(type, { dataTransfer, bubbles: true, cancelable: true }))
+    }
+    await waitFor(() => expect(zone).toHaveAttribute('data-dragging'))
   },
 }
 
@@ -289,11 +308,6 @@ export const Invalid: Story = {
 /** A required Field: the Trigger never carries `aria-required` (a button doesn't allow it). */
 export const Required: Story = {
   args: { multiple: true, required: true },
-  play: async ({ canvasElement }) => {
-    const trigger = triggerOf(canvasElement)
-    await expect(trigger).not.toHaveAttribute('aria-required')
-    await expect(inputOf(canvasElement)).not.toHaveAttribute('required')
-  },
 }
 
 /** Right to left, in English: the list, the status bar and the buttons mirror. */

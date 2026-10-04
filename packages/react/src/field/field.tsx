@@ -276,8 +276,9 @@ export function FieldProse(props: ProseRootProps): ReactElement {
 FieldProse.displayName = 'Field.Prose'
 
 /**
- * The field's hint: a short instruction, format example or limit, almost always under the
- * control (`<p class="kv-field-hint">`, 14px in the default theme). Plain text only: no links,
+ * The field's hint: a short instruction, format example or limit, always under the control
+ * (`<p class="kv-field-hint">`, 14px in the default theme). A hint rendered before its control
+ * warns in development. Plain text only: no links,
  * lists or headings. It registers with the Field or Fieldset like a `Field.Prose`, so the
  * control's `aria-describedby` lists it in DOM order, then the error. It is never focusable and
  * not a live region. Outside a Field or Fieldset it warns and renders a plain paragraph with no
@@ -294,6 +295,32 @@ export function FieldHint({ render, ref, ...otherProps }: FieldHintProps): React
       )
     }
   }, [isOutsideHost])
+  // In a Field the control is known by its id. In a Fieldset (no Field around the hint) it is the
+  // first form control inside the `<fieldset>`.
+  const field = useContext(FieldContext)
+  const hintId = description.partProps.id
+  const controlId = field?.controlProps.id
+  const isInField = field !== null
+  useEffect(() => {
+    if (hintId === undefined) {
+      return
+    }
+    const hint = document.getElementById(hintId)
+    const control = isInField
+      ? document.getElementById(controlId ?? '')
+      : (hint?.closest('fieldset')?.querySelector('input:not([type="hidden"]), select, textarea') ??
+        null)
+    if (
+      hint !== null &&
+      control !== null &&
+      hint.compareDocumentPosition(control) & Node.DOCUMENT_POSITION_FOLLOWING
+    ) {
+      warnOnce(
+        `hint-before-control:${(hint.textContent ?? '').slice(0, 60)}`,
+        'A Field.Hint or Fieldset.Hint comes before its control in the DOM. A hint goes under the control, so the visual order is the order a screen reader reads it in (WCAG 1.3.2, 3.3.2). Move it after the control. Text the user must read before answering is a description: use Field.Prose or Fieldset.Prose above the control.',
+      )
+    }
+  }, [hintId, controlId, isInField])
   return renderPart({
     render,
     defaultElement: 'p',

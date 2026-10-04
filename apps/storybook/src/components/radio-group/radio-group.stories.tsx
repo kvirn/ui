@@ -1,9 +1,11 @@
 import { Button, Card, Field, RadioGroup } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/radio-group/radio-group.a11y.md?raw'
+import guide from '../../../../../packages/react/src/radio-group/radio-group.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ComponentProps } from 'react'
 import { useId, useState } from 'react'
 import { expect, userEvent } from 'storybook/test'
+import { usageGuide } from '../../docs-source.ts'
 import { choiceTextsFor, logChange } from '../form/choice.fixture.tsx'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -12,11 +14,11 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 // Components/Form/RadioGroup: one question with one answer, in a native <fieldset> under a
 // <legend>, with native radios that share a name (design spec
 // docs/design/form-fields.md §6.5). The browser does the keys: the group is one Tab stop, and
-// the arrow keys move and check, mirrored in right-to-left. KvirnUI holds no form state
-//: `value` and `onValueChange` are the selected value, and without `value`
-// the native radios are uncontrolled. Nothing here validates: an invalid story sets `invalid`
-// itself. A radio never gets aria-invalid: the group's error is its
-// description. radio-group.e2e.ts runs the keyboard rows, forced colours and reflow checks.
+// the arrow keys move and check, mirrored in right-to-left. KvirnUI holds no form state:
+// `value` and `onValueChange` are the selected value, and without `value` the native radios are
+// uncontrolled. Nothing here validates: an invalid story sets `invalid` itself. A radio never
+// gets aria-invalid: the group's error is its description. radio-group.e2e.ts runs the keyboard
+// rows, forced colours and reflow checks.
 
 const meta = {
   title: 'Components/Form/RadioGroup',
@@ -27,13 +29,36 @@ const meta = {
       control: false,
       description: 'Controlled: the checked radio’s value, or `null` for none.',
     },
-    defaultValue: { control: 'text', description: 'Uncontrolled: the value checked at the start.' },
-    onValueChange: { control: false },
-    invalid: { control: 'boolean' },
-    required: { control: 'boolean' },
-    disabled: { control: 'boolean' },
-    messages: { control: false },
-    render: { control: false },
+    defaultValue: {
+      control: 'text',
+      description:
+        'Uncontrolled: the value checked at the start. The browser keeps the state after that.',
+    },
+    onValueChange: {
+      control: false,
+      description:
+        "Called with the chosen radio’s value and `{ reason: 'input', event }`. It only reports: the group stores nothing.",
+    },
+    invalid: {
+      control: 'boolean',
+      description:
+        'Sets `data-invalid` on the fieldset, its parts and every radio. No `aria-invalid` on radios: the error message describes the group.',
+    },
+    required: {
+      control: 'boolean',
+      description:
+        'Sets `data-required` and removes the legend’s optional text. Not announced as required (see the contract’s Known issues).',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Native `fieldset[disabled]`: every radio is disabled and skipped by Tab.',
+    },
+    messages: {
+      control: false,
+      description:
+        'Per-instance overrides of the legend’s optional text (`field.optional`) and the error prefix (`field.errorPrefix`).',
+    },
+    render: { control: false, description: 'Another element. It must still be a `<fieldset>`.' },
   },
   args: { onValueChange: logChange('onValueChange') },
   globals: { locale: 'sv' },
@@ -46,7 +71,10 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => <Duration {...args} locale={localeOf(globals)} />,
-  parameters: { a11yContract: contract },
+  parameters: {
+    a11yContract: contract,
+    docs: { description: { component: usageGuide(guide) } },
+  },
 } satisfies Meta<typeof RadioGroup.Root>
 
 export default meta
@@ -111,7 +139,7 @@ function Duration({
   )
 }
 
-/** None selected: the group is one Tab stop, and the first Tab lands on the first radio. */
+/** The main example: none selected. The group is one Tab stop, so Tab lands on the first radio. */
 export const Default: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
@@ -131,18 +159,27 @@ export const Default: Story = {
 }
 
 /**
- * The fixture the keyboard tests drive: the group and a button after it, in a form. Try the keys
- * in the Keyboard section above: Tab enters the group once, the arrow keys move and check, and
- * Space checks the focused radio.
+ * The fixture the keyboard tests drive: the group between a button before and a button after,
+ * in a form. Try the keys in the Keyboard section above: Tab enters the group once, the arrow
+ * keys move and check, and Space checks the focused radio.
  */
 export const Keyboard: Story = {
   render: (_args, { globals }) => <KeyboardExample locale={localeOf(globals)} />,
 }
 
+/** The label of the button before the group: sv and fi are written, the rest show English. */
+const backTexts: Partial<Record<FormLocale, string>> = { sv: 'Tillbaka', fi: 'Takaisin' }
+
 function KeyboardExample({ locale }: { locale: FormLocale }) {
   const { text, lang } = choiceTextsFor(locale)
   return (
     <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
+      <div className="kv-button-group">
+        {/* nb, nn and se come from a translator: until then the English text, marked as English (3.1.2). */}
+        <Button type="button" lang={backTexts[locale] === undefined ? 'en' : undefined}>
+          {backTexts[locale] ?? 'Back'}
+        </Button>
+      </div>
       <Duration locale={locale} />
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">

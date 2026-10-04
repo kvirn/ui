@@ -42,14 +42,15 @@ An adopter can tell from a name alone how a component is built. Five rules:
 
 **Alias sets:**
 
-| Namespace       | Parts                                              |
-| --------------- | -------------------------------------------------- |
-| `Field`         | `Root`, `Label`, `Prose`, `Hint`, `ErrorMessage`   |
-| `Fieldset`      | `Root`, `Legend`, `Prose`, `Hint`, `ErrorMessage`  |
-| `CheckboxGroup` | `Root`, `Legend`, `Prose`, `Hint`, `ErrorMessage`  |
+| Namespace       | Parts                                                      |
+| --------------- | ---------------------------------------------------------- |
+| `Field`         | `Root`, `Label`, `Prose`, `Hint`, `ErrorMessage`           |
+| `Fieldset`      | `Root`, `Legend`, `Prose`, `Hint`, `ErrorMessage`          |
+| `CheckboxGroup` | `Root`, `Legend`, `Prose`, `Hint`, `ErrorMessage`          |
 | `RadioGroup`    | `Root`, `Radio`, `Legend`, `Prose`, `Hint`, `ErrorMessage` |
-| `InputGroup`    | `Root`, `Addon`, `Input`                           |
-| `Link`          | `Root`, `NewTabNotice`                             |
+| `InputGroup`    | `Root`, `Addon`, `Input`                                   |
+| `DateInput`     | `Root`, `Day`, `Month`, `Year`                             |
+| `Link`          | `Root`, `NewTabNotice`                                     |
 
 `Prose` is the description and `Hint` the hint (Plan 0029): a `Hint` is a thin typed wrapper over `Field.Hint`, and `Fieldset.Hint`, `CheckboxGroup.Hint` and `RadioGroup.Hint` wrap it with their own display names. `Combobox` and `Autocomplete` offer the Listbox popup parts (`Popup`, `List`, `Option`, `Group`, `GroupLabel`, `Empty`) under their own names, and Autocomplete also wraps Combobox's `Control`, `Input`, `Toggle` and `Clear`.
 

@@ -203,6 +203,32 @@ export type {
   InputGroupRootProps,
   InputGroupState,
 } from './input-group/input-group.tsx'
+export {
+  DateInput,
+  DateInputDay,
+  DateInputMonth,
+  DateInputRoot,
+  DateInputYear,
+} from './date-input/date-input.tsx'
+export type {
+  DateInputBoxProps,
+  DateInputChangeDetails,
+  DateInputDayProps,
+  DateInputMonthProps,
+  DateInputPart,
+  DateInputRootProps,
+  DateInputState,
+  DateInputValue,
+  DateInputYearProps,
+} from './date-input/date-input.tsx'
+export { useDateInput } from './date-input/use-date-input.ts'
+export type {
+  DateInputBoxPartProps,
+  DateInputInputPartProps,
+  DateInputRootPartProps,
+  UseDateInputOptions,
+  UseDateInputResult,
+} from './date-input/use-date-input.ts'
 export { useInputGroup } from './input-group/use-input-group.ts'
 export type {
   InputGroupAddonPartProps,
@@ -584,6 +610,7 @@ export type {
   TableEmptyPartProps,
   TableExpandButtonPartProps,
   TableHeadPartProps,
+  TableRegion,
   TableRootPartProps,
   TableRowHeaderCellPartProps,
   TableRowPartProps,

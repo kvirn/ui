@@ -109,8 +109,11 @@ describe('rendering', () => {
         <Field.Prose data-testid="description">
           <p>Som i passet.</p>
         </Field.Prose>
-        <Field.ErrorMessage data-testid="error">Ange ditt namn</Field.ErrorMessage>
         <Input />
+        <Field.Hint data-testid="hint" className="egen">
+          Som i passet.
+        </Field.Hint>
+        <Field.ErrorMessage data-testid="error">Ange ditt namn</Field.ErrorMessage>
       </Field.Root>,
     )
     const root = page.getByTestId('root').element()
@@ -120,6 +123,9 @@ describe('rendering', () => {
     expect(label.className).toBe('kv-field-label')
     const description = page.getByTestId('description').element()
     expect(description.className).toBe('kv-prose')
+    // A hint is its own part, not a Prose, and a consumer class joins its part class.
+    const hint = page.getByTestId('hint').element()
+    expect(hint.className).toBe('egen kv-field-hint')
     const error = page.getByTestId('error').element()
     expect(error.className).toBe('kv-field-error-message')
     await expect.element(page.getByTestId('root')).not.toHaveAttribute('data-kv')
@@ -797,7 +803,7 @@ describe('useField', () => {
 })
 
 describe('several descriptions', () => {
-  /** The design spec's registration number field: a hint above the input, one under it. */
+  /** The design spec's registration number field: a description above the input, one under it. */
   function RegistrationField({ invalid = false }: { invalid?: boolean }) {
     return (
       <Field.Root invalid={invalid} required>
@@ -1012,12 +1018,9 @@ describe('Field.Hint (Plan 0029)', () => {
       ' ',
     )
 
-  test('renders a hint with the kv-field-hint class and an id, and not the Prose class', async () => {
+  test('renders a hint with an id', async () => {
     await render(<PersonalNumberField />)
-    const hint = page.getByTestId('format').element()
-    expect(hint.className).toBe('kv-field-hint')
-    expect(hint.id).not.toBe('')
-    expect(page.getByTestId('why').element().className).toBe('kv-prose')
+    expect(page.getByTestId('format').element().id).not.toBe('')
   })
 
   test('aria-describedby lists the description, then the hint, then the error', async () => {
@@ -1052,13 +1055,13 @@ describe('Field.Hint (Plan 0029)', () => {
     expect(describedByIds('Registreringsnummer')).toHaveLength(1)
   })
 
-  test('is in DOM order when a hint above the control mounts after the one under it', async () => {
-    function LateHint() {
+  test('is in DOM order when a description above the control mounts after the hint under it', async () => {
+    function LateDescription() {
       const [showAbove, setShowAbove] = useState(false)
       return (
         <Field.Root>
           <Field.Label marker="none">Registreringsnummer</Field.Label>
-          {showAbove ? <Field.Hint data-testid="above">Ovanför fältet.</Field.Hint> : null}
+          {showAbove ? <Field.Prose data-testid="above">Ovanför fältet.</Field.Prose> : null}
           <Input />
           <Field.Hint data-testid="under">Under fältet.</Field.Hint>
           <button type="button" onClick={() => setShowAbove(true)}>
@@ -1067,7 +1070,7 @@ describe('Field.Hint (Plan 0029)', () => {
         </Field.Root>
       )
     }
-    const { container } = await render(<LateHint />)
+    const { container } = await render(<LateDescription />)
     await userEvent.click(page.getByRole('button', { name: 'Visa' }))
     expect(describedByIds('Registreringsnummer')).toEqual([
       page.getByTestId('above').element().id,
@@ -1110,14 +1113,14 @@ describe('Field.Hint (Plan 0029)', () => {
     await expect.element(page.getByTestId('format')).toHaveAttribute('data-disabled', '')
   })
 
-  test('keeps its own props: class joins, ref and other props are forwarded, render swaps the element', async () => {
+  test('keeps its own props: ref and other props are forwarded, render swaps the element', async () => {
     const ref = createRef<HTMLParagraphElement>()
     const seenStates: FieldHintState[] = []
     await render(
       <Field.Root invalid disabled>
         <Field.Label marker="none">Namn</Field.Label>
         <Input />
-        <Field.Hint ref={ref} className="egen" lang="sv" data-testid="first">
+        <Field.Hint ref={ref} lang="sv" data-testid="first">
           Som i passet.
         </Field.Hint>
         <Field.Hint render={<div />} data-testid="second">
@@ -1136,7 +1139,6 @@ describe('Field.Hint (Plan 0029)', () => {
       </Field.Root>,
     )
     expect(ref.current).toBe(page.getByTestId('first').element())
-    await expect.element(page.getByTestId('first')).toHaveClass('egen', 'kv-field-hint')
     await expect.element(page.getByTestId('first')).toHaveAttribute('lang', 'sv')
     expect(page.getByTestId('second').element().tagName).toBe('DIV')
     await expect.element(page.getByTestId('third')).toHaveAttribute('data-egen', '')
@@ -1174,6 +1176,27 @@ describe('Field.Hint (Plan 0029)', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
+  test('a hint before its control warns once, and a hint under the control does not', async () => {
+    await render(
+      <>
+        <Field.Root>
+          <Field.Label marker="none">Postnummer</Field.Label>
+          <Field.Hint>Fem siffror.</Field.Hint>
+          <Input />
+        </Field.Root>
+        <Field.Root>
+          <Field.Label marker="none">Ort</Field.Label>
+          <Input />
+          <Field.Hint>Som i adressen.</Field.Hint>
+        </Field.Root>
+      </>,
+    )
+    const warnings = consoleWarn.mock.calls.map(([message]) => String(message))
+    expect(warnings).toHaveLength(1)
+    expect(warnings[0]).toContain('before its control')
+    expect(warnings[0]).toContain('Field.Prose')
+  })
+
   test('a Field with a description, a hint and an error has no axe violations', async () => {
     const { container } = await render(<PersonalNumberField invalid />)
     await expectNoA11yViolations(container)
@@ -1191,6 +1214,8 @@ describe('Field.Hint (Plan 0029)', () => {
       </KvirnProvider>,
     )
     expect(html).toContain('12 siffror')
+    // The id is rendered on the server. The host lists it in aria-describedby once it has mounted.
+    expect(/<p[^>]*\bid="[^"]+"[^>]*>12 siffror/.test(html)).toBe(true)
   })
 })
 

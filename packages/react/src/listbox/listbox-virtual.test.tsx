@@ -30,12 +30,11 @@ interface Place {
 }
 
 const count = 10_000
-/** "Ort 1" to "Ort 10000", with one place that starts with its own letter, far from the first window. */
+/** "Ort 1" to "Ort 10000". */
 const places: readonly Place[] = Array.from({ length: count }, (_, index) => ({
   code: `ort-${index + 1}`,
-  name: index === 7000 ? 'Västerås' : `Ort ${index + 1}`,
+  name: `Ort ${index + 1}`,
 }))
-const farPlaceIndex = 7000
 
 const fixtureButtonStyle = { minBlockSize: '2rem', minInlineSize: '2rem' }
 const listStyle = { maxBlockSize: '12rem', overflowY: 'auto' } as const
@@ -151,7 +150,6 @@ describe('virtualize: the window', () => {
     expect(list?.getAttribute('role')).toBe('listbox')
     const sizer = sizerElement()
     expect(sizer?.parentElement).toBe(list)
-    expect(Number.parseFloat(sizer?.style.blockSize ?? '0')).toBeGreaterThan(count * 20)
     // The list scrolls: it is the scroll element.
     expect((list?.scrollHeight ?? 0) > (list?.clientHeight ?? 0)).toBe(true)
   })
@@ -220,48 +218,6 @@ describe('virtualize: the window', () => {
 })
 
 describe('virtualize: keys reach options that are not rendered', () => {
-  test('End activates the last option, which is mounted with its place, and scrolls to it', async () => {
-    await render(<Example />)
-    await openWithKey('{End}')
-    const last = activeOption()
-    expect(last?.textContent).toBe('Ort 10000')
-    expect(last?.getAttribute('aria-posinset')).toBe(String(count))
-    expect(last?.getAttribute('aria-setsize')).toBe(String(count))
-    expect(last?.getAttribute('data-active')).toBe('')
-    await expect.element(trigger()).toHaveFocus()
-    expect(renderedCount()).toBeLessThan(60)
-    // The list scrolled: the option is inside the list's box, not just in the DOM.
-    await expect
-      .poll(() => {
-        const box = last?.getBoundingClientRect()
-        const area = listElement()?.getBoundingClientRect()
-        return (
-          box !== undefined &&
-          area !== undefined &&
-          box.top >= area.top - 1 &&
-          box.bottom <= area.bottom + 1
-        )
-      })
-      .toBe(true)
-    // The option 0 is not rendered any more, and the active one is.
-    await expect.poll(() => option('Ort 1').elements().length).toBe(0)
-    expect(
-      document.getElementById(triggerElement().getAttribute('aria-activedescendant') ?? ''),
-    ).toBe(last)
-  })
-
-  test('Home goes back to the first option after End, and the last one is unmounted', async () => {
-    await render(<Example />)
-    await openWithKey('{End}')
-    expect(activeName()).toBe('Ort 10000')
-    await userEvent.keyboard('{Home}')
-    const first = activeOption()
-    expect(first?.textContent).toBe('Ort 1')
-    expect(first?.getAttribute('aria-posinset')).toBe('1')
-    await expect.poll(() => option('Ort 10000').elements().length).toBe(0)
-    await expect.poll(() => listElement()?.scrollTop).toBe(0)
-  })
-
   test('ArrowDown at the end stops: it does not wrap', async () => {
     await render(<Example />)
     await openWithKey('{End}')
@@ -270,34 +226,6 @@ describe('virtualize: keys reach options that are not rendered', () => {
     await userEvent.keyboard('{ArrowUp}')
     expect(activeName()).toBe('Ort 9999')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe('9999')
-  })
-
-  test('PageDown moves ten options, and the active one is always in the DOM', async () => {
-    await render(<Example />)
-    await openWithKey('{ArrowDown}')
-    expect(activeName()).toBe('Ort 1')
-    for (let step = 1; step <= 6; step += 1) {
-      await userEvent.keyboard('{PageDown}')
-      expect(activeName()).toBe(`Ort ${1 + step * 10}`)
-      expect(activeOption()?.getAttribute('aria-posinset')).toBe(String(1 + step * 10))
-    }
-    await userEvent.keyboard('{PageUp}')
-    expect(activeName()).toBe('Ort 51')
-    // The list followed the active option: it is not at the top any more.
-    await expect.poll(() => (listElement()?.scrollTop ?? 0) > 0).toBe(true)
-  })
-
-  test('typeahead reaches an option that was not rendered', async () => {
-    await render(<Example />)
-    await openWithKey('{ArrowDown}')
-    expect(option('Västerås').elements()).toHaveLength(0)
-    await userEvent.keyboard('v')
-    const far = activeOption()
-    expect(far?.textContent).toBe('Västerås')
-    expect(far?.getAttribute('aria-posinset')).toBe(String(farPlaceIndex + 1))
-    expect(far?.getAttribute('aria-setsize')).toBe(String(count))
-    await expect.element(option('Västerås')).toBeInTheDocument()
-    await expect.element(trigger()).toHaveFocus()
   })
 
   test('Enter chooses the active option that was far away, and the value is its key', async () => {

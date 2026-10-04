@@ -56,22 +56,6 @@ test.describe('Fieldset keyboard contract', () => {
     await page.keyboard.press('Tab')
     await expect(page.locator(':focus')).toHaveCount(0)
   })
-
-  test('the group is named by its legend and described by its hint and error', async ({ page }) => {
-    await openStory(page, 'invalid')
-    const group = page.getByRole('group', { name: 'Var bor du?' })
-    await expect(group).toHaveAccessibleDescription(
-      'Adressen där du är folkbokförd. Fel: Ange din adress',
-    )
-    // The fieldset's invalid marks its own parts only: the street was marked on its own.
-    await expect(page.getByRole('textbox', { name: 'Gatuadress' })).toHaveAttribute(
-      'aria-invalid',
-      'true',
-    )
-    await expect(page.getByRole('textbox', { name: 'Postnummer' })).not.toHaveAttribute(
-      'aria-invalid',
-    )
-  })
 })
 
 test.describe('Fieldset focus and modes', () => {

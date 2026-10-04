@@ -9,6 +9,8 @@ export const se = {
   link: { newTabNotice: '(opens in a new tab)' },
   // TODO(native-review): Northern Sámi translation of "(optional)" and "Error:".
   field: { optional: '(optional)', errorPrefix: 'Error:' },
+  // TODO(native-review): Northern Sámi translation of "Day", "Month" and "Year".
+  dateInput: { day: 'Day', month: 'Month', year: 'Year' },
   // Machine-drafted Northern Sámi (docs/design/notification.md §4.1): a native speaker
   // must verify these four status words before they are relied on.
   notification: {

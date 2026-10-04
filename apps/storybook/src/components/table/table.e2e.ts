@@ -176,6 +176,20 @@ test.describe('Table: Keyboard', () => {
     await expect(checkbox).toBeAttached()
     await expect(checkbox).toBeFocused()
     await expect(page.locator('tbody tr[aria-rowindex="4"]')).toBeAttached()
+
+    // Tab leaves the kept row for the next control, which is in the rows now in view: never body.
+    await page.keyboard.press('Tab')
+    await expect(page.locator('tbody tr:has(:focus)')).toBeAttached()
+    const focusedIndex = await page.locator('tbody tr:has(:focus)').getAttribute('aria-rowindex')
+    expect(Number(focusedIndex)).toBeGreaterThan(1000)
+    // The row is released once focus has left it, so Shift+Tab goes back to the previous control
+    // that is rendered, in the rows in view: never body.
+    await expect(checkbox).not.toBeAttached()
+    await page.keyboard.press('Shift+Tab')
+    await expect(page.locator('tbody tr:has(:focus)')).toBeAttached()
+    const previousIndex = await page.locator('tbody tr:has(:focus)').getAttribute('aria-rowindex')
+    expect(Number(previousIndex)).toBeGreaterThan(1000)
+    expect(Number(previousIndex)).toBeLessThan(Number(focusedIndex))
   })
 
   test('ArrowDown scrolls the focused scroll region', async ({ page }) => {
@@ -226,24 +240,7 @@ test.describe('Table: Keyboard', () => {
   })
 })
 
-test.describe('Table: size, focus and the sticky head', () => {
-  test('a row checkbox is at least 24×24 and a click on its centre toggles it, in compact density (2.5.8)', async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 1280, height: 800 })
-    await openStory(page, 'selectable')
-    const checkbox = rowCheckbox(page, 'Elle Sara')
-    await expect(checkbox).toBeChecked()
-    const box = await checkbox.boundingBox()
-    expect(box?.width).toBeGreaterThanOrEqual(24)
-    expect(box?.height).toBeGreaterThanOrEqual(24)
-    await page.mouse.click(
-      (box?.x ?? 0) + (box?.width ?? 0) / 2,
-      (box?.y ?? 0) + (box?.height ?? 0) / 2,
-    )
-    await expect(checkbox).not.toBeChecked()
-  })
-
+test.describe('Table: the sticky head and reflow', () => {
   test('the sticky head never covers a focused control (2.4.11)', async ({ page }) => {
     await openStory(page, 'virtualized')
     await expect(page.locator('.kv-table-body > tr:not([aria-hidden])').first()).toBeVisible()
@@ -266,6 +263,29 @@ test.describe('Table: size, focus and the sticky head', () => {
     await expect.poll(gapUnderHead).toBeGreaterThanOrEqual(-1)
   })
 
+  test('the sticky head never covers a focused link in a static table (2.4.11)', async ({
+    page,
+  }) => {
+    await openStory(page, 'static-scrolling')
+    await waitForTabStop(page)
+    const links = page.locator('.kv-table-body a')
+    await region(page).evaluate((element) => {
+      element.scrollTop = 600
+    })
+    await expect.poll(async () => (await scrollOf(region(page))).top).toBeGreaterThan(500)
+    // A link above the viewport: focusing scrolls it back into view, and it must stop below the head.
+    await links.nth(2).focus()
+    await expect(links.nth(2)).toBeFocused()
+    await expect
+      .poll(async () => {
+        const head = await page.locator('.kv-table-head').boundingBox()
+        const link = await links.nth(2).boundingBox()
+        if (head === null || link === null) throw new Error('no box')
+        return link.y - (head.y + head.height)
+      })
+      .toBeGreaterThanOrEqual(-1)
+  })
+
   test('no horizontal scrolling at 320px: only the region scrolls (1.4.10)', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 640 })
     await openStory(page, 'narrow-screen')
@@ -283,6 +303,8 @@ test.describe('Table: size, focus and the sticky head', () => {
 test.describe('Table: accessibility', () => {
   for (const story of [
     'static',
+    'always-region',
+    'static-scrolling',
     'sortable',
     'selectable',
     'expandable',

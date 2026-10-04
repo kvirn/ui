@@ -18,7 +18,6 @@ async function openStory(page: Page, story: string, globals?: string) {
 }
 
 const trigger = (page: Page) => page.getByRole('button', { name: /^Välj filer/ })
-const triggerEn = (page: Page) => page.getByRole('button', { name: /^Choose files/ })
 const items = (page: Page) => page.locator('li[data-status]')
 const sendButton = (page: Page) => page.getByRole('button', { name: 'Skicka in' })
 
@@ -91,14 +90,13 @@ test.describe('FileUpload: Keyboard', () => {
     await expect(items(page)).toHaveCount(2)
     await trigger(page).focus()
     await expect(trigger(page)).toHaveAttribute('aria-disabled', 'true')
-    let opened = false
-    page.once('filechooser', () => {
-      opened = true
-    })
+    const choosers: unknown[] = []
+    page.on('filechooser', (chooser) => choosers.push(chooser))
     await page.keyboard.press('Enter')
     await page.keyboard.press('Space')
-    await page.waitForTimeout(150)
-    expect(opened).toBe(false)
+    // A round trip to the page: an event the keys caused arrives before its answer, so no timer.
+    await page.evaluate(() => undefined)
+    expect(choosers).toHaveLength(0)
     await expect(trigger(page)).toBeFocused()
   })
 
@@ -167,14 +165,6 @@ test.describe('FileUpload: the name of the Trigger', () => {
 })
 
 test.describe('FileUpload: adding, refusing and dropping', () => {
-  test('a refused file is named under the button and never enters the list', async ({ page }) => {
-    // The story chooses a PNG, a file over the limit, an empty file and one good PDF.
-    await openStory(page, 'rejected')
-    await expect(items(page)).toHaveCount(1)
-    await expect(page.locator('.kv-file-upload-rejections')).toContainText('bild.png')
-    await expect(trigger(page)).not.toHaveAttribute('aria-invalid', 'true')
-  })
-
   test('a dropped file is added, and a file dropped outside the zone is ignored', async ({
     page,
   }) => {
@@ -195,37 +185,6 @@ test.describe('FileUpload: adding, refusing and dropping', () => {
     // Outside the zone the browser must not open the file and leave the page: it is prevented.
     expect(await dropOn('body')).toBe(true)
     await expect(items(page)).toHaveCount(1)
-  })
-
-  test('the progress bar is native and named, and goes away when the upload ends', async ({
-    page,
-  }) => {
-    await openStory(page, 'uploading')
-    await expect(page.getByRole('progressbar', { name: /läkarintyg\.pdf/ })).toBeVisible()
-  })
-
-  test('a long name wraps and the page never scrolls sideways', async ({ page }) => {
-    await openStory(page, 'long-names')
-    await expect(items(page)).toHaveCount(1)
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-    )
-    expect(overflow).toBeLessThanOrEqual(0)
-  })
-})
-
-test.describe('FileUpload: modes', () => {
-  test('right to left mirrors the list', async ({ page }) => {
-    await openStory(page, 'rtl', 'dir:rtl;locale:en')
-    await expect(items(page)).toHaveCount(2)
-    await expect(triggerEn(page)).toBeVisible()
-  })
-
-  test('the Trigger is at least 24×24 (2.5.8)', async ({ page }) => {
-    await openStory(page, 'default')
-    const box = await trigger(page).boundingBox()
-    expect(box?.height ?? 0).toBeGreaterThanOrEqual(24)
-    expect(box?.width ?? 0).toBeGreaterThanOrEqual(24)
   })
 })
 

@@ -5,7 +5,8 @@ import { wcagTags } from '@kvirn-ui/testing'
 
 // Contract: packages/react/src/icon/icon.a11y.md › Keyboard, Visual / modes. One test per row,
 // named after it. An icon handles no keys: these prove it never takes a Tab stop. The mode
-// checks (forced colours, reflow, RTL mirroring, text resize) assert the outcome, not the look.
+// checks (forced colours, reflow) assert the outcome, not the look. RTL mirroring and text
+// resize are proven by attribute and size tests in icon.test.tsx, not here.
 
 const storyUrl = (story: string) => `/iframe.html?id=components-icon--${story}&viewMode=story`
 
@@ -41,11 +42,62 @@ test.describe('Icon keyboard contract', () => {
   })
 
   test('Shift+Tab never stops on an icon', async ({ page }) => {
-    await openStory(page, 'in-buttons')
-    const stops = await page.locator('button').count()
-    for (let count = 0; count <= stops; count += 1) {
-      await page.keyboard.press('Shift+Tab')
-      expect(await isFocusOnIcon(page), `Shift+Tab stop ${count + 1}`).toBe(false)
+    for (const story of ['in-buttons', 'decorative-and-meaningful']) {
+      await openStory(page, story)
+      const stops = await page.locator('button').count()
+      for (let count = 0; count <= stops; count += 1) {
+        await page.keyboard.press('Shift+Tab')
+        expect(await isFocusOnIcon(page), `${story}: Shift+Tab stop ${count + 1}`).toBe(false)
+      }
+    }
+  })
+})
+
+// Rule-13 exception, approved by the maintainer 2026-10-04 (testing skill, "Named exceptions"):
+// browser capability. The claim is that the engine resolves `var()` in SVG presentation
+// attributes, which only a real engine can show. It runs on chromium by default and on WebKit
+// with `E2E_BROWSERS=webkit vp run e2e icon.e2e.ts --project webkit`.
+test.describe('Icon custom property paint', () => {
+  test('a CSS custom property works as an icon colour in this engine (rule-13 exception: browser capability)', async ({
+    page,
+  }) => {
+    await openStory(page, 'token-channels')
+    const token = 'var(--kv-color-danger)'
+    const channels = await page.evaluate((value) => {
+      const svgNamespace = 'http://www.w3.org/2000/svg'
+      return (['color', 'fill', 'stroke'] as const).map((channel) => {
+        const icon = document.querySelector<SVGSVGElement>(`svg.kv-icon[${channel}="${value}"]`)
+        if (icon === null || icon.parentElement === null) {
+          return { channel, found: false, painted: '', resolvedToken: '', unset: '' }
+        }
+        const parent = icon.parentElement
+        // Probes next to the icon resolve the same custom property in the same engine, and
+        // serialise the colour the way the icon's own computed value is serialised.
+        const resolve = (style: string) => {
+          const probe = document.createElementNS(svgNamespace, 'svg')
+          probe.setAttribute('style', style)
+          parent.append(probe)
+          const resolved = getComputedStyle(probe)[channel]
+          probe.remove()
+          return resolved
+        }
+        return {
+          channel,
+          found: true,
+          painted: getComputedStyle(icon)[channel],
+          resolvedToken: resolve(`${channel}: ${value}`),
+          unset: resolve(''),
+        }
+      })
+    }, token)
+    for (const result of channels) {
+      expect(result.found, `an icon sets ${result.channel}="${token}"`).toBe(true)
+      // The token resolved to a colour: it is not the initial or inherited value.
+      expect(result.resolvedToken, `${result.channel}: the token resolves`).not.toBe(result.unset)
+      expect(result.painted, `${result.channel}: the icon paints the token`).toBe(
+        result.resolvedToken,
+      )
+      expect(result.painted, `${result.channel}: not the fallback`).not.toBe(result.unset)
     }
   })
 })
@@ -69,6 +121,14 @@ test.describe('Icon forced colours', () => {
   test('a hard-coded color, fill and stroke render in the system colour', async ({ page }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'forced-colors')
+    // Control: the story still hard-codes the colour on all three channels, so the test below
+    // can fail. Without it, a story that dropped the red would pass vacuously.
+    for (const channel of ['color', 'fill', 'stroke']) {
+      expect(
+        await page.locator(`svg.kv-icon[${channel}="#c00"]`).count(),
+        `the story sets ${channel}="#c00"`,
+      ).toBeGreaterThan(0)
+    }
     const paint = await paintOf(page)
     // Four groups (color, fill, stroke, token), each with an icon in text, a Button and a Link.
     expect(paint).toHaveLength(12)
@@ -79,21 +139,9 @@ test.describe('Icon forced colours', () => {
   })
 })
 
-test.describe('Icon reflow and target size', () => {
+test.describe('Icon reflow', () => {
   test.beforeEach(async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 640 })
-  })
-
-  test('the icon-only button is at least 24×24 at 320px (1.4.10, 2.5.8)', async ({ page }) => {
-    await openStory(page, 'in-buttons')
-    const buttons = await page.locator('.kv-button--icon-only').all()
-    expect(buttons.length).toBeGreaterThanOrEqual(9)
-    for (const button of buttons) {
-      const box = await button.boundingBox()
-      expect(box).not.toBeNull()
-      expect(box?.width ?? 0).toBeGreaterThanOrEqual(24)
-      expect(box?.height ?? 0).toBeGreaterThanOrEqual(24)
-    }
   })
 
   const stories = [
@@ -125,62 +173,6 @@ test.describe('Icon reflow and target size', () => {
   }
 })
 
-test.describe('Icon in right-to-left text', () => {
-  const scaleOf = (page: Page, selector: string) =>
-    page.locator(selector).evaluateAll((icons) => icons.map((icon) => getComputedStyle(icon).scale))
-
-  test('an icon with data-mirror-in-rtl is flipped under dir="rtl"', async ({ page }) => {
-    await openStory(page, 'rtl')
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
-    const mirrored = await scaleOf(page, 'svg.kv-icon[data-mirror-in-rtl]')
-    // Five in the gallery, the arrow in the button and the two chevrons in the pagination row.
-    expect(mirrored).toHaveLength(8)
-    expect(new Set(mirrored)).toEqual(new Set(['-1 1']))
-  })
-
-  test('an icon without data-mirror-in-rtl is not flipped under dir="rtl"', async ({ page }) => {
-    await openStory(page, 'rtl')
-    const staying = await scaleOf(page, 'svg.kv-icon:not([data-mirror-in-rtl])')
-    expect(staying.length).toBeGreaterThanOrEqual(3)
-    expect(new Set(staying)).toEqual(new Set(['none']))
-  })
-
-  test('no icon is flipped in left-to-right text', async ({ page }) => {
-    await openStory(page, 'built-in-set')
-    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr')
-    const all = await scaleOf(page, 'svg.kv-icon')
-    expect(all.length).toBeGreaterThan(24)
-    expect(new Set(all)).toEqual(new Set(['none']))
-  })
-
-  test('an overridden built-in name still flips, because mirroring belongs to the name', async ({
-    page,
-  }) => {
-    await openStory(page, 'library-icons-via-the-registry')
-    await expect(page.getByTestId('overridden-arrow')).toHaveCSS('scale', '-1 1')
-  })
-})
-
-test.describe('Icon text resize (1.4.4)', () => {
-  test('an icon grows with the text: doubling the text size doubles the icon', async ({ page }) => {
-    await openStory(page, 'sizes-next-to-text')
-    const widthOf = (testId: string) =>
-      page
-        .getByTestId(testId)
-        .locator('section[aria-label="body"] svg[data-size="md"]')
-        .first()
-        .evaluate((icon) => ({
-          width: icon.getBoundingClientRect().width,
-          height: icon.getBoundingClientRect().height,
-        }))
-    const normal = await widthOf('sizes-body')
-    const zoomed = await widthOf('sizes-200')
-    expect(normal.width).toBeGreaterThan(0)
-    expect(zoomed.width).toBeCloseTo(normal.width * 2, 1)
-    expect(zoomed.height).toBeCloseTo(normal.height * 2, 1)
-  })
-})
-
 test.describe('Icon accessibility', () => {
   test('a11y tree of decorative and meaningful icons', async ({ page }) => {
     await openStory(page, 'decorative-and-meaningful')
@@ -205,6 +197,7 @@ test.describe('Icon accessibility', () => {
     'in-buttons',
     'status-with-text',
     'colors',
+    'token-channels',
     'decorative-and-meaningful',
     'stroke-widths',
     'rtl',

@@ -3,6 +3,7 @@
 - **Status:** Draft · updated 2026-10-02 for the pattern (Plan 0019)
 - **Designer:** ux-designer agent · **Date:** 2026-10-02
 - **Plan:** [Plan 0019](../plans/0019-one-time-code-pattern.md) (the pattern), first built in [Plan 0014](../plans/0014-input-masks-and-one-time-code.md) (Phase 3)
+- **Terminology (Plan 0029, 2026-10-04):** "the hint above the boxes" in this spec is the description, a `Field.Prose` above the control. A `Field.Hint` goes under the control, never above it (see [field-hint.md](field-hint.md)).
 - **Type:** component default styling (+ Storybook page, + DESIGN.md wording). No new tokens
 
 the OneTimeCode decision decides the parts and the behaviour: `OneTimeCode.Root` (`<div>`, `kv-one-time-code`), `OneTimeCode.Input` (one native `<input type="text">`, `kv-one-time-code-input`, inside a Field, `autocomplete="one-time-code"`, the `masks.oneTimeCode()` mask) and `OneTimeCode.Slot` (`<span aria-hidden="true">`), which draws one cell. No auto-advance, no auto-submit, no form state. The OneTimeCode-pattern decision replaces `length` and `characters` with a `pattern` (`9` digit, `*` letter or digit, `a` letter, `A` capital letter, `&` capital letter or digit, `-` the only separator). One cell per pattern position: a **box** (`kv-one-time-code-slot`) for a character symbol, a **separator** (`kv-one-time-code-separator`) for `-`. `****-****` is 4 boxes, a dash and 4 boxes over one input. The value includes the dash (`ABCD-1234`).

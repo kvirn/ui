@@ -7,7 +7,7 @@ A hint and a description are now different parts (Plan 0029). A hint is a short 
 
 New in `@kvirn-ui/react`:
 
-- `Field.Hint`, `Fieldset.Hint`, `CheckboxGroup.Hint` and `RadioGroup.Hint` (also `FieldHint`, `FieldsetHint`, `CheckboxGroupHint` and `RadioGroupHint`). A hint renders `<p class="kv-field-hint">` with an id, and `render` can change the element. It registers as a description like `Field.Prose`, so the control's `aria-describedby` lists the descriptions and hints in DOM order, then the error. It takes `data-invalid` and `data-disabled` from its Field or Fieldset. Outside a Field or Fieldset it warns once (`hint-outside-field`) and renders a plain paragraph with no id. Types: `FieldHintProps` and `FieldHintState`.
+- `Field.Hint`, `Fieldset.Hint`, `CheckboxGroup.Hint` and `RadioGroup.Hint` (also `FieldHint`, `FieldsetHint`, `CheckboxGroupHint` and `RadioGroupHint`). A hint renders `<p class="kv-field-hint">` with an id, and `render` can change the element. It registers as a description like `Field.Prose`, so the control's `aria-describedby` lists the descriptions and hints in DOM order, then the error. It takes `data-invalid` and `data-disabled` from its Field or Fieldset. A hint always goes under the control: one rendered before its control in the DOM warns once in development (`hint-before-control`), and text read before answering is a `Field.Prose` above the control. Outside a Field or Fieldset it warns once (`hint-outside-field`) and renders a plain paragraph with no id. Types: `FieldHintProps` and `FieldHintState`.
 - The development warnings for a masked `Input`, a `OneTimeCode.Input` and a `FileUpload` with limits now suggest a `Field.Hint`. A `Field.Hint` clears them, as a `Field.Prose` did.
 
 New in `@kvirn-ui/theme`:

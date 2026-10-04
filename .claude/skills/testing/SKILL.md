@@ -25,6 +25,7 @@ We test **behaviour, accessibility and requirements**. We never test CSS. Before
 - The text of `theme.css`: no parsing it for properties or values. `theme:check` covers contrast, fallbacks and the forced-colour mapping. That is the only theme test.
 - Class lists beyond the one part-class test, `tagName`s that aren't a role, and anything React or the browser already guarantees.
 - The same fact twice. Each fact is proved once, in the cheapest layer that can prove it: core, then component, then story, then e2e. E2E is for keyboard rows and what needs a real page, not a repeat of the component test.
+  - Two standing exceptions (maintainer, 2026-10-04): a story's `play` may check the state it renders even when a component test proves it too, and every e2e spec keeps its axe loop over the stories it opens. Don't delete these as duplicates.
 
 **The one exception: a WCAG criterion that can only be measured visually.** Assert the criterion's threshold on the outcome, never the theme's value, and put the SC number in the test name:
 
@@ -35,6 +36,10 @@ We test **behaviour, accessibility and requirements**. We never test CSS. Before
 | 1.4.10 Reflow           | no horizontal scroll at 320px (sweep project)           | grid or flex rules               |
 | 1.4.12 Text spacing     | with the SC's spacing applied, no text is clipped       | line height or `overflow` values |
 | 1.4.11 / forced colours | the boundary stays visible in forced colours (sweep)    | border width or system colours   |
+
+**Named exceptions** (each approved by the maintainer):
+
+- Browser capability: `icon.e2e.ts › a CSS custom property works as an icon colour in this engine (rule-13 exception: browser capability)`, approved by the maintainer 2026-10-04. It reads computed paint because the claim is that the engine resolves `var()` in SVG presentation attributes; it runs on chromium and webkit.
 
 The look is reviewed by eye in Storybook, never by test. When a test you meet breaks these rules, delete it in the change that touches it, and say so in the summary.
 

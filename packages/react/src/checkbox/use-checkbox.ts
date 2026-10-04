@@ -83,8 +83,8 @@ function nativeState(element: HTMLInputElement): CheckboxDataState {
 
 /**
  * A checkbox's props for your own `<input type="checkbox">`, wired to the nearest Field and
- * CheckboxGroup (contract: checkbox.a11y.md). It holds no state: spread your form
- * library's props next to it.
+ * CheckboxGroup (contract: checkbox.a11y.md). It holds no state: spread your form library's
+ * props next to it.
  *
  * @example
  * const checkbox = useCheckbox({ indeterminate: someChecked && !allChecked })

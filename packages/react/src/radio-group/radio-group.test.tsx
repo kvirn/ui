@@ -24,8 +24,8 @@ import type {
   UseRadioGroupResult,
 } from './use-radio-group.ts'
 
-// Contract: radio-group.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/radio-group/radio-group.e2e.ts.
+// Contract: radio-group.a11y.md. The keyboard rows are tested once, end to end, in
+// apps/storybook/src/components/radio-group/radio-group.e2e.ts (testing skill, rule 13).
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -384,42 +384,6 @@ describe('state', () => {
     for (const [, label] of options) {
       await expect.element(page.getByRole('radio', { name: label })).toBeDisabled()
     }
-  })
-})
-
-describe('keyboard', () => {
-  test('the group handles no keys: the arrow keys and Tab are the browser’s', async () => {
-    await render(
-      sweden(
-        <>
-          <button type="button">Före</button>
-          <Duration name="duration" />
-          <button type="button">Efter</button>
-        </>,
-      ),
-    )
-    await userEvent.keyboard('{Tab}{Tab}')
-    await expect.element(page.getByRole('radio', { name: '1 månad' })).toHaveFocus()
-    await userEvent.keyboard('{ArrowDown}')
-    await expect.element(page.getByRole('radio', { name: '6 månader' })).toHaveFocus()
-    await expect.element(page.getByRole('radio', { name: '6 månader' })).toBeChecked()
-    await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
-  })
-
-  test('a group with a checked radio is one Tab stop', async () => {
-    await render(
-      sweden(
-        <>
-          <Duration name="duration" defaultValue="6" />
-          <button type="button">Efter</button>
-        </>,
-      ),
-    )
-    await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('radio', { name: '6 månader' })).toHaveFocus()
-    await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
   })
 })
 

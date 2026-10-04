@@ -59,8 +59,21 @@ export interface TableVirtualizeOptions {
   overscan?: number | undefined
 }
 
+/**
+ * When the scroll region is a named `region` landmark: `'overflow'` (the default) only while the
+ * table doesn't fit and scrolls, and `'always'` whether it scrolls or not. It is a Tab stop only
+ * while it scrolls, in both.
+ */
+export type TableRegion = 'overflow' | 'always'
+
 /** What KvirnUI adds to TanStack Table's options. */
 export interface UseTableExtraOptions {
+  /**
+   * When `scrollRegionProps` make the scroll region a named `region`: `'overflow'` (default) only
+   * while it scrolls, `'always'` for a landmark that screen reader users can list and jump to
+   * whether it scrolls or not. `Table.ScrollRegion`'s own `region` prop wins.
+   */
+  region?: TableRegion | undefined
   /**
    * The id of the column whose cells are `<th scope="row">`: the one that names the row, such as
    * the name or the case number. It names the row's checkbox and expand button too.
@@ -109,14 +122,16 @@ export interface TableCaptionPartProps {
 }
 
 /**
- * Spread on the `<div>` around the table: a named region that is a Tab stop only while it
- * scrolls, and the virtualizer's scroll element.
+ * Spread on the `<div>` around the table: a named region while it scrolls (or always, with
+ * `region: 'always'`), a Tab stop only while it scrolls, and the virtualizer's scroll element.
+ * Not scrolling, with the default `region`, it is a plain `<div>`: no role, no name, no tab stop.
  */
 export interface TableScrollRegionPartProps {
   className: 'kv-scroll-region kv-table-scroll-region'
-  role: 'region'
-  /** The caption's id. Replace it when the table is named by something else. */
-  'aria-labelledby': string
+  /** Only while the region is one: it scrolls, or `region` is `'always'`. */
+  role?: 'region'
+  /** The caption's id, while the region is one and the table has a `Table.Caption`. Replace it when the table is named by something else. */
+  'aria-labelledby'?: string
   /** The table is wider or taller than the region: it scrolls, and so it is a Tab stop. */
   tabIndex?: 0
   'data-overflowing'?: ''
@@ -261,7 +276,10 @@ export interface UseTableResult<TFeatures extends TableFeatures, TData extends R
   table: TanStackTable<TFeatures, TData>
   tableProps: TableRootPartProps
   captionProps: TableCaptionPartProps
+  /** The scroll region's props, for the `region` option (default `'overflow'`). */
   scrollRegionProps: TableScrollRegionPartProps
+  /** The scroll region's props for a given `region`: what `Table.ScrollRegion` uses for its own `region` prop. */
+  getScrollRegionProps: (region: TableRegion) => TableScrollRegionPartProps
   headProps: TableHeadPartProps
   bodyProps: TableBodyPartProps
   /** Without a header: the cell of a column you add yourself, such as the select-all checkbox. */
@@ -512,6 +530,16 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
 
   // Ids ----------------------------------------------------------------------------------------
   const captionId = `${baseId}-caption`
+  // Whether a caption is in the document, read like the header row above: the region points at it
+  // only while it exists, so a table without one doesn't reference a missing id.
+  const hasCaption = useSyncExternalStore(
+    subscribeNever,
+    () =>
+      scrollElement === null
+        ? undefined
+        : scrollElement.ownerDocument.getElementById(captionId) !== null,
+    () => undefined,
+  )
   const rowPart = (row: Row<TFeatures, TData>) => toIdPart(row.id)
   const rowHeaderCellId = (row: Row<TFeatures, TData>) => `${baseId}-row-${rowPart(row)}-header`
   const selectCheckboxId = (row: Row<TFeatures, TData>) => `${baseId}-row-${rowPart(row)}-select`
@@ -554,13 +582,20 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
     ...(isVirtualized ? { 'data-virtualized': '' } : {}),
   }
 
-  const scrollRegionProps: TableScrollRegionPartProps = {
+  // A region while it scrolls, or always. Before the scroll region is measured (the server render
+  // and the first client render) nothing overflows, so the default markup is a plain `<div>`.
+  const getScrollRegionProps = (mode: TableRegion): TableScrollRegionPartProps => ({
     className: 'kv-scroll-region kv-table-scroll-region',
-    role: 'region',
-    'aria-labelledby': captionId,
+    ...(mode === 'always' || isOverflowing
+      ? {
+          role: 'region' as const,
+          ...(hasCaption === false ? {} : { 'aria-labelledby': captionId }),
+        }
+      : {}),
     ...(isOverflowing ? { tabIndex: 0 as const, 'data-overflowing': '' } : {}),
     ref: setScrollElement,
-  }
+  })
+  const scrollRegionProps = getScrollRegionProps(options.region ?? 'overflow')
 
   const bodyProps: TableBodyPartProps = {
     className: 'kv-table-body',
@@ -742,6 +777,7 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
     tableProps,
     captionProps: { id: captionId, className: 'kv-table-caption' },
     scrollRegionProps,
+    getScrollRegionProps,
     headProps: { className: 'kv-table-head', ref: setHeadElement },
     bodyProps,
     getColumnHeaderProps,

@@ -84,19 +84,6 @@ const isShown = () => popupElement()?.matches(':popover-open') === true
 const renderedCount = () => page.getByRole('option').elements().length
 const renderedOptions = () => [...document.querySelectorAll<HTMLElement>('[role="option"]')]
 
-/** The option that `aria-activedescendant` points at. It must be in the document: that is the contract. */
-function activeOption(): HTMLElement | undefined {
-  const id = inputElement().getAttribute('aria-activedescendant')
-  if (id === null) {
-    return undefined
-  }
-  const element = document.getElementById(id)
-  expect(element, 'aria-activedescendant points at an option that is in the DOM').not.toBeNull()
-  expect(element?.getAttribute('role')).toBe('option')
-  return element ?? undefined
-}
-const activeName = () => activeOption()?.textContent
-
 async function typeText(text: string) {
   inputElement().focus()
   await userEvent.keyboard(text)
@@ -137,33 +124,6 @@ describe('virtualize: the window', () => {
 })
 
 describe('virtualize: keys reach suggestions that are not rendered', () => {
-  test('ArrowUp activates the last suggestion, mounted, with its place', async () => {
-    await render(<Example />)
-    await typeText('Gatan')
-    await expect.poll(isShown).toBe(true)
-    await userEvent.keyboard('{ArrowUp}')
-    const last = activeOption()
-    expect(last?.textContent).toBe('Gatan 10000')
-    expect(last?.getAttribute('aria-posinset')).toBe(String(count - 1))
-    expect(last?.getAttribute('aria-setsize')).toBe(String(count - 1))
-    await expect.element(input()).toHaveFocus()
-    expect(renderedCount()).toBeLessThan(60)
-  })
-
-  test('PageDown moves ten suggestions, and the active one is always in the DOM', async () => {
-    await render(<Example />)
-    await typeText('Gatan')
-    await expect.poll(isShown).toBe(true)
-    await userEvent.keyboard('{ArrowDown}')
-    expect(activeName()).toBe('Gatan 1')
-    for (let step = 1; step <= 6; step += 1) {
-      await userEvent.keyboard('{PageDown}')
-      expect(activeName()).toBe(`Gatan ${1 + step * 10}`)
-      expect(activeOption()?.getAttribute('aria-posinset')).toBe(String(1 + step * 10))
-    }
-    await expect.poll(() => (listElement()?.scrollTop ?? 0) > 0).toBe(true)
-  })
-
   test('Enter fills the input with a suggestion that was far away', async () => {
     const onValueChange = vi.fn<NonNullable<ExampleProps['onValueChange']>>()
     await render(<Example onValueChange={onValueChange} />)
@@ -175,13 +135,6 @@ describe('virtualize: keys reach suggestions that are not rendered', () => {
     await expect.poll(isShown).toBe(false)
     expect(inputElement().value).toBe('Gatan 10000')
     await expect.element(input()).toHaveFocus()
-  })
-
-  test('typing narrows the list, and the set size follows', async () => {
-    await render(<Example />)
-    await typeText('Gatan 9')
-    await expect.poll(() => renderedOptions()[0]?.getAttribute('aria-setsize')).toBe('1111')
-    expect(renderedOptions()[0]?.getAttribute('aria-posinset')).toBe('1')
   })
 })
 

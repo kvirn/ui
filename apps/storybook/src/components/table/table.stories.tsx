@@ -16,6 +16,7 @@ import {
   SelectableCases,
   SortableCases,
   StaticPayments,
+  StaticScrollingCases,
   VirtualizedCases,
 } from './table.fixture.tsx'
 
@@ -39,10 +40,16 @@ const meta = {
     expanded: { control: false },
     caption: { control: 'text', description: 'The table’s name: its `Table.Caption`.' },
     isLoading: { control: 'boolean', description: '`aria-busy`, and the loading announcement.' },
+    region: {
+      control: 'inline-radio',
+      options: ['overflow', 'always'],
+      description:
+        'When the scroll region is a named `region`: `overflow` (default) only while the table scrolls, `always` whether it scrolls or not. A Tab stop only while it scrolls. A `useTable` option too.',
+    },
     withLinks: { control: 'boolean' },
     longHeader: { control: 'boolean' },
   },
-  args: { locale: 'sv' },
+  args: { locale: 'sv', region: 'overflow' },
   decorators: [withFormLocale],
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
   render: (args, { globals }) => <SortableCases {...args} locale={localeOf(globals)} />,
@@ -79,6 +86,39 @@ export const Static: Story = {
   play: async ({ canvas, canvasElement }) => {
     await expect(canvas.getByRole('table', { name: 'Utbetalt bostadsbidrag 2026' })).toBeVisible()
     await expect(canvasElement.querySelector('[aria-sort]')).toBeNull()
+    // It fits, so the region around it is a plain `<div>`: no role, no name, no tab stop.
+    await expect(canvas.queryByRole('region')).toBeNull()
+    await expect(regionOf(canvasElement)).not.toHaveAttribute('tabindex')
+    await expect(regionOf(canvasElement)).not.toHaveAttribute('aria-labelledby')
+  },
+}
+
+/**
+ * The same table with `region="always"` on `Table.ScrollRegion`: a named `region` landmark even
+ * though nothing scrolls, for a page where a table should be something to jump to. It is still a
+ * Tab stop only while it scrolls.
+ */
+export const AlwaysRegion: Story = {
+  parameters: showSource('table/table.fixture.tsx', 'StaticPayments'),
+  render: (_args, { globals }) => <StaticPayments locale={localeOf(globals)} region="always" />,
+  play: async ({ canvas, canvasElement }) => {
+    await expect(canvas.getByRole('region', { name: 'Utbetalt bostadsbidrag 2026' })).toBeVisible()
+    await expect(regionOf(canvasElement)).not.toHaveAttribute('tabindex')
+  },
+}
+
+/**
+ * A static table taller than its region, with a link in each row: the region is a Tab stop, the
+ * head sticks, and a focused link is never hidden under it. No `useTable` is needed.
+ */
+export const StaticScrolling: Story = {
+  parameters: showSource('table/table.fixture.tsx', 'StaticScrollingCases'),
+  render: (_args, { globals }) => <StaticScrollingCases locale={localeOf(globals)} />,
+  play: async ({ canvas, canvasElement }) => {
+    await expect(canvas.getByRole('table', { name: 'Öppna ärenden' })).toBeVisible()
+    await waitFor(() => expect(regionOf(canvasElement)).toHaveAttribute('tabindex', '0'))
+    // It scrolls, so it is a region named by the caption.
+    await expect(canvas.getByRole('region', { name: 'Öppna ärenden' })).toBeVisible()
   },
 }
 

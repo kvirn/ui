@@ -4,18 +4,19 @@ Each is a `warnOnce` call (see SKILL.md, Developer warnings). Format of the key 
 
 ## Wrong element or wrong place
 
-| Where                                   | Fires when                                                           | Detected                      |
-| --------------------------------------- | -------------------------------------------------------------------- | ----------------------------- |
-| `Button`                                | `render` produced something that is not a `<button>`                 | `ref.current.tagName`, effect |
-| `Link`                                  | the registered component or `render` did not produce an `<a>`        | `ref.current.tagName`, effect |
-| `Fieldset.Root`                         | `render` did not produce a `<fieldset>`                              | `ref.current.tagName`, effect |
-| `Field.Label`                           | outside a Field                                                      | context is `null`             |
-| `Field.ErrorMessage`                    | outside a Field or Fieldset (it then always shows)                   | context is `null`             |
-| `Fieldset.Legend`                       | outside a Fieldset                                                   | context is `null`             |
-| `Field.Hint` (and the group aliases)    | outside a Field or Fieldset (`hint-outside-field`)                   | host context is `null`        |
-| `InputGroup.Addon`                      | outside an `InputGroup.Root`                                         | context is `null`             |
-| `OneTimeCode.Input`, `OneTimeCode.Slot` | outside a `OneTimeCode.Root`                                         | context is `null`             |
-| any `FileUpload` part                   | outside `FileUpload.Root`, or an item part outside `FileUpload.Item` | context is `null`             |
+| Where                                   | Fires when                                                           | Detected                          |
+| --------------------------------------- | -------------------------------------------------------------------- | --------------------------------- |
+| `Button`                                | `render` produced something that is not a `<button>`                 | `ref.current.tagName`, effect     |
+| `Link`                                  | the registered component or `render` did not produce an `<a>`        | `ref.current.tagName`, effect     |
+| `Fieldset.Root`                         | `render` did not produce a `<fieldset>`                              | `ref.current.tagName`, effect     |
+| `Field.Label`                           | outside a Field                                                      | context is `null`                 |
+| `Field.ErrorMessage`                    | outside a Field or Fieldset (it then always shows)                   | context is `null`                 |
+| `Fieldset.Legend`                       | outside a Fieldset                                                   | context is `null`                 |
+| `Field.Hint` (and the group aliases)    | outside a Field or Fieldset (`hint-outside-field`)                   | host context is `null`            |
+| `Field.Hint` (and the group aliases)    | before its control in the DOM (`hint-before-control:<text>`)         | `compareDocumentPosition`, effect |
+| `InputGroup.Addon`                      | outside an `InputGroup.Root`                                         | context is `null`                 |
+| `OneTimeCode.Input`, `OneTimeCode.Slot` | outside a `OneTimeCode.Root`                                         | context is `null`                 |
+| any `FileUpload` part                   | outside `FileUpload.Root`, or an item part outside `FileUpload.Item` | context is `null`                 |
 
 ## Missing accessible name or text
 

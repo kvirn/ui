@@ -164,7 +164,7 @@ const labelsFor = (texts: OneTimeCodeTexts, kind: CodeKind, pattern: string) => 
 }
 
 /**
- * Every story is a full Field: the label, the hint above the boxes (the length and the groups must
+ * Every story is a full Field: the label, the description above the boxes (the length and the groups must
  * be read before typing), the row, and the error under it when invalid. There is one slot per
  * position of the pattern, so a `-` gets its own slot, drawn as a separator.
  */

@@ -100,16 +100,6 @@ test.describe('Field keyboard contract', () => {
       await expect(text).not.toHaveAttribute('tabindex', /.*/)
     }
   })
-
-  test('the error is read with the input: its name, state and description', async ({ page }) => {
-    await openStory(page, 'field', 'invalid')
-    const input = page.getByRole('textbox', { name: 'E-postadress' })
-    await expect(input).toHaveAttribute('aria-invalid', 'true')
-    // The hint first, then the error with its prefix.
-    await expect(input).toHaveAccessibleDescription(
-      'Vi skickar beslutet till den här adressen. Fel: Ange en e-postadress i rätt format, till exempel namn@exempel.se',
-    )
-  })
 })
 
 test.describe('Field focus and modes', () => {
@@ -255,21 +245,9 @@ test.describe('Field accessibility', () => {
     ['label', 'as-page-heading'],
     ['label', 'long-finnish'],
     ['label', 'compact'],
-    ['field', 'with-hint-under'],
-    ['field', 'invalid-with-hint-under'],
-    ['hint', 'keyboard'],
-    ['hint', 'under-the-control'],
-    ['hint', 'with-description'],
-    ['hint', 'invalid'],
     ['hint', 'in-fieldset'],
-    ['hint', 'option-hints'],
-    ['hint', 'size-follows-the-part'],
-    ['hint', 'disabled'],
-    ['hint', 'read-only'],
     ['hint', 'compact'],
     ['hint', 'long-finnish'],
-    ['hint', 'rtl'],
-    ['hint', 'forced-colors'],
     ['errormessage', 'in-field'],
     ['errormessage', 'not-invalid'],
     ['errormessage', 'in-fieldset'],

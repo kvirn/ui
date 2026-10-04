@@ -32,7 +32,7 @@ export interface UseFieldOptions {
   hasDescription?: boolean | undefined
   /**
    * The names of the descriptions you render with `getDescriptionProps(name)`, in the order you
-   * render them: for example `['above', 'under']` for a hint above and a hint under the control
+   * render them: for example `['above', 'under']` for a description above and a hint under the control
    *. The control's `aria-describedby` lists them in this order, then the error. Pass
    * the names from the first render, so server-rendered markup is complete. If you also set
    * `hasDescription`, that description (`descriptionProps`) comes first.

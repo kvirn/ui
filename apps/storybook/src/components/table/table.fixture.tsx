@@ -305,14 +305,22 @@ interface CasesViewProps {
   caption: string
   selectable?: boolean
   expandable?: boolean
+  region?: 'overflow' | 'always'
   locale: FormLocale
 }
 
 /** The case list: the parts of the Table written out, with the numeric column applied. */
-function CasesView({ cases: list, caption, selectable, expandable, locale }: CasesViewProps) {
+function CasesView({
+  cases: list,
+  caption,
+  selectable,
+  expandable,
+  region,
+  locale,
+}: CasesViewProps) {
   const { texts } = tableTextsFor(locale)
   return (
-    <Table.ScrollRegion table={list}>
+    <Table.ScrollRegion table={list} region={region}>
       <Table.Root table={list}>
         <Table.Caption>{caption}</Table.Caption>
         <Table.Head>
@@ -394,6 +402,8 @@ export interface CasesExampleProps {
   withLinks?: boolean
   longHeader?: boolean
   caption?: string
+  /** When the scroll region is a named `region`: only while it overflows, or always. */
+  region?: 'overflow' | 'always'
 }
 
 /** The state a table starts in: the first column sorted, some rows selected, one expanded. */
@@ -435,10 +445,17 @@ function useCases(
 }
 
 /** A table that sorts: four sortable columns and one that isn't, sorted by name at first. */
-export function SortableCases({ locale, data, caption }: CasesExampleProps) {
+export function SortableCases({ locale, data, caption, region }: CasesExampleProps) {
   const { texts } = tableTextsFor(locale)
   const list = useCases(locale, { sorted: true, ...(data === undefined ? {} : { data }) })
-  return <CasesView cases={list} caption={caption ?? texts.casesCaption} locale={locale} />
+  return (
+    <CasesView
+      cases={list}
+      caption={caption ?? texts.casesCaption}
+      {...(region === undefined ? {} : { region })}
+      locale={locale}
+    />
+  )
 }
 
 /** A staff tool: compact rows, two selected, a link in the row header. Select all is mixed. */
@@ -549,8 +566,17 @@ export function KeyboardCases({ locale }: CasesExampleProps) {
   )
 }
 
-/** A resident's table, without `useTable`: plain parts, a numeric column and a foot. */
-export function StaticPayments({ locale }: { locale: FormLocale }) {
+/**
+ * A resident's table, without `useTable`: plain parts, a numeric column and a foot. The region
+ * around it is a plain `<div>` while the table fits; `region="always"` makes it a named region.
+ */
+export function StaticPayments({
+  locale,
+  region,
+}: {
+  locale: FormLocale
+  region?: 'overflow' | 'always'
+}) {
   const { texts, formatLocale } = tableTextsFor(locale)
   const captionId = useId()
   const payments = [
@@ -563,7 +589,7 @@ export function StaticPayments({ locale }: { locale: FormLocale }) {
   const months = new Intl.DateTimeFormat(formatLocale, { month: 'long', timeZone: 'UTC' })
   const total = payments.reduce((sum, payment) => sum + payment.amount, 0)
   return (
-    <Table.ScrollRegion aria-labelledby={captionId}>
+    <Table.ScrollRegion aria-labelledby={captionId} region={region}>
       <Table.Root>
         <Table.Caption id={captionId}>{texts.paymentsCaption}</Table.Caption>
         <Table.Head>
@@ -600,6 +626,46 @@ export function StaticPayments({ locale }: { locale: FormLocale }) {
         </Table.Foot>
       </Table.Root>
     </Table.ScrollRegion>
+  )
+}
+
+/** A static table taller than its region, with a link in each row: the head sticks without `useTable`. */
+export function StaticScrollingCases({ locale }: { locale: FormLocale }) {
+  const { texts, formatLocale } = tableTextsFor(locale)
+  const captionId = useId()
+  const numbers = numberFormat(formatLocale)
+  const dates = dateFormat(formatLocale)
+  const rows = manyCases(30)
+  return (
+    <div style={{ '--kv-table-scroll-region-max-block-size': '16rem' } as CSSProperties}>
+      <Table.ScrollRegion aria-labelledby={captionId}>
+        <Table.Root>
+          <Table.Caption id={captionId}>{texts.casesCaption}</Table.Caption>
+          <Table.Head>
+            <Table.Row>
+              <Table.ColumnHeader>{texts.name}</Table.ColumnHeader>
+              <Table.ColumnHeader>{texts.received}</Table.ColumnHeader>
+              <Table.ColumnHeader className="kv-table-column-header--numeric">
+                {texts.amount}
+              </Table.ColumnHeader>
+            </Table.Row>
+          </Table.Head>
+          <Table.Body>
+            {rows.map((entry) => (
+              <Table.Row key={entry.id}>
+                <Table.RowHeader>
+                  <Link.Root href={`#${entry.id}`}>{entry.name}</Link.Root>
+                </Table.RowHeader>
+                <Table.Cell>{dates.format(asDate(entry.received))}</Table.Cell>
+                <Table.Cell className="kv-table-cell--numeric">
+                  {numbers.format(entry.amount)}
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Root>
+      </Table.ScrollRegion>
+    </div>
   )
 }
 

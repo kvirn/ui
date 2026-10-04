@@ -56,8 +56,9 @@ ProseRoot.displayName = 'Prose'
  * for headings, paragraphs, lists, links and tables inside it. It has no role, ARIA or behaviour,
  * and `render` changes the element. Add `kv-prose--large` for the larger size.
  * A Prose is one element, so it is written `<Prose>`. Inside a `Field.Root` or
- * `Fieldset.Root` write `Field.Prose` or `Fieldset.Prose`: it is the hint that describes the
- * control or the group.
+ * `Fieldset.Root` write `Field.Prose` or `Fieldset.Prose`: it is the description of the control
+ * or the group, read before answering and shown above the control. A hint that helps while typing
+ * is a `Field.Hint`.
  *
  * @example
  * <Prose>

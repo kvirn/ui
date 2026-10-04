@@ -1,8 +1,10 @@
 import { Button, Card, Checkbox, Field } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/checkbox/checkbox.a11y.md?raw'
+import guide from '../../../../../packages/react/src/checkbox/checkbox.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { expect, fn, userEvent } from 'storybook/test'
+import { usageGuide } from '../../docs-source.ts'
 import { choiceTextsFor, logChange } from '../form/choice.fixture.tsx'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -32,10 +34,30 @@ const meta = {
       control: 'boolean',
       description: 'The mixed state, set as the DOM property after render.',
     },
-    value: { control: 'text' },
-    onCheckedChange: { control: false },
-    disabled: { control: 'boolean' },
-    render: { control: false },
+    value: {
+      control: 'text',
+      description:
+        'What a form submit sends when checked, and the item’s value inside a CheckboxGroup (required there).',
+    },
+    name: {
+      control: 'text',
+      description:
+        'The `name` a form submit uses. Inside a CheckboxGroup, the group’s `name` is the default.',
+    },
+    onCheckedChange: {
+      control: false,
+      description:
+        "Reports each change with the new checked state and `{ reason: 'input', event }`. `onChange` still works too.",
+    },
+    disabled: {
+      control: 'boolean',
+      description:
+        'Natively disabled: skipped by Tab. A disabled Field disables it too. Sets `data-disabled`.',
+    },
+    render: {
+      control: false,
+      description: 'Another element. It must still be an `<input type="checkbox">`.',
+    },
   },
   args: { onCheckedChange: logChange('onCheckedChange') },
   globals: { locale: 'sv' },
@@ -56,14 +78,17 @@ const meta = {
       </Field.Root>
     )
   },
-  parameters: { a11yContract: contract },
+  parameters: {
+    a11yContract: contract,
+    docs: { description: { component: usageGuide(guide) } },
+  },
 } satisfies Meta<typeof Checkbox>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** An unchecked box: 24px, with the whole 44px row as the click target. */
-export const Unchecked: Story = {
+/** The main example: an unchecked box, 24px, with the whole 44px row as the click target. */
+export const Default: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     const checkbox = canvas.getByRole('checkbox', { name: text.declaration })

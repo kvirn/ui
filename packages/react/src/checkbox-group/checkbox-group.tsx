@@ -36,21 +36,22 @@ export interface CheckboxGroupRootProps extends Omit<FieldsetRootProps, 'group'>
 /**
  * A group of checkboxes: the native `<fieldset>` of a `Fieldset.Root` with `group` set, so
  * `CheckboxGroup.Legend`, `CheckboxGroup.Prose` (the description), `CheckboxGroup.Hint` and
- * `CheckboxGroup.ErrorMessage` work inside it (contract: checkbox-group.a11y.md). It holds no form state: pass `value` and
- * `onValueChange`, or `defaultValue` and `name` for a plain form. Give each `Checkbox` a `value`.
+ * `CheckboxGroup.ErrorMessage` work inside it (contract: checkbox-group.a11y.md). It holds no
+ * form state: pass `value` and `onValueChange`, or `defaultValue` and `name` for a plain form.
+ * Give each `Checkbox` a `value`.
  *
  * @example
  * <CheckboxGroup.Root name="contact" value={contact} onValueChange={setContact}>
  *   <CheckboxGroup.Legend>Hur vill du bli kontaktad?</CheckboxGroup.Legend>
  *   <CheckboxGroup.Prose>
- *     <p>Vi kontaktar dig bara om beslutet.</p>
+ *     <p>Välj alla som passar. Vi kontaktar dig bara om beslutet.</p>
  *   </CheckboxGroup.Prose>
  *   <Field.Root>
  *     <Checkbox value="email" />
  *     <Field.Label>E-post</Field.Label>
  *     <Field.Hint>Beslutet kommer inom en vecka.</Field.Hint>
  *   </Field.Root>
- *   <CheckboxGroup.Hint>Välj alla som passar.</CheckboxGroup.Hint>
+ *   <CheckboxGroup.Hint>Du kan ändra dig senare under Mina sidor.</CheckboxGroup.Hint>
  * </CheckboxGroup.Root>
  */
 export function CheckboxGroupRoot({

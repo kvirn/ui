@@ -6,7 +6,7 @@
 - **Type:** component default styling, plus a DESIGN.md rule change (no token or colour change)
 - **Supersedes, in [form-fields.md](form-fields.md):** §4.4 "Which hint goes where", the hint rows of the §6.2 class table, the §6.4 spacing table rows that name a hint, the option-hint bullet in §6.5, the "hint above, error" and "hint under the control" rows of the §6.7 density table, and the date example's position (§6.6, open question 4). Everything else in that spec stands.
 
-The maintainer's rule (2026-10-04): _"hint is not a prose, hint is hint and should be the 14px text size, a hint is almost always underneath the input, and above input there can be a prose as a description."_
+The maintainer's rule (2026-10-04): _"hint is not a prose, hint is hint and should be the 14px text size, a hint is almost always underneath the input, and above input there can be a prose as a description."_ The same day he confirmed it as absolute: a hint is always under the control.
 
 ## 1. Brief
 
@@ -205,12 +205,12 @@ An option hint under a checkbox or radio label is a `Field.Hint` at 14px, like e
 
 An option that needs more than a hint (a paragraph, a link to the price list) puts a `Field.Prose` there instead. It's 16px, in column 2, with the normal 8px gap.
 
-### 6.3 Decision: a hint above the control is allowed, rare, and still 14px
+### 6.3 Decision: a hint is always under the control (maintainer, 2026-10-04)
 
-- **Allowed:** the consumer owns the markup, and `aria-describedby` follows the DOM. The theme spaces it with the same `--kv-field-gap` (8px, 4px compact) from the label and from the control.
-- **Still 14px:** the size belongs to the part, not the position. That's the point of Plan 0029: no hidden sibling selector.
-- **Rare, and the docs say so:** text above the control is read **before** answering, which makes it a description. Use `Field.Prose` (16px). DESIGN.md keeps "never `body-small` for an instruction above a control" as guidance: a Hint above is a choice the consumer makes knowingly, for example a one-line note in a dense staff form where nothing goes under the control. No warning fires.
-- The stories show it once, in `SizeFollowsThePart`, to document the size. No other story or fixture puts a Hint above.
+- **A hint goes under the control, never above it.** The first version of this spec allowed a rare hint above the control. The maintainer ruled it out: text the user reads before answering is a description, so it is a `Field.Prose` (16px) above the control, and a `Field.Hint` (14px) is only ever under it.
+- **The size still belongs to the part, not the position.** That is the point of Plan 0029: no hidden sibling selector.
+- **A guard:** a Hint rendered before its control in the DOM warns once in development (`hint-before-control`). The warning says to move it under the control, or to use a `Field.Prose` above.
+- The `SizeFollowsThePart` story is removed: with a Hint never above the control, it showed nothing the other stories don't. The DateInput fixtures had a `Fieldset.Hint` above the boxes. They now put it under them.
 
 ### States
 
@@ -268,7 +268,7 @@ field-hint:
 
 **Line 334:**
 
-> - `body-small` (14px) is for metadata and for the hint (`Field.Hint`, `kv-field-hint`), and never for errors or descriptions. A hint is a short instruction or format example, almost always under the control and read with it: always `text`, never `text-muted`, in every density. Anything the user must read before answering is a description: a `Prose` above the control, at `body`.
+> - `body-small` (14px) is for metadata and for the hint (`Field.Hint`, `kv-field-hint`), and never for errors or descriptions. A hint is a short instruction or format example, always under the control, never above it, and read with it: always `text`, never `text-muted`, in every density. Anything the user must read before answering is a description: a `Prose` above the control, at `body`.
 
 **Line 489 (Text inputs):**
 
@@ -276,7 +276,7 @@ field-hint:
 
 **Line 490 (Parts):**
 
-> - Parts: `Field.Root` with `Field.Label`, `Field.Prose` (the description), the control (`Input`), `Field.Hint` and `Field.ErrorMessage`, and `Fieldset.Root` with `Fieldset.Legend` and the same parts for a group. KvirnUI holds no form state: the form logic sets `invalid`, `required` and `disabled`, and writes the messages. A Prose or a Hint in a Field or Fieldset registers as a description, and a field can have several. The size belongs to the part, not its position: a Prose is `body` and a Hint is `body-small` wherever they sit. A Hint above the control is allowed but rare: what the user must read before answering is a description. This order is the default in the theme, the stories and the docs. The consumer owns the markup, and `aria-describedby` always lists the descriptions (Prose and Hint) in DOM order, then the error. On submit, move focus to the error summary (or the first invalid field) and keep `scroll-padding` on the page, so the on-screen keyboard doesn't cover the message under the field.
+> - Parts: `Field.Root` with `Field.Label`, `Field.Prose` (the description), the control (`Input`), `Field.Hint` and `Field.ErrorMessage`, and `Fieldset.Root` with `Fieldset.Legend` and the same parts for a group. KvirnUI holds no form state: the form logic sets `invalid`, `required` and `disabled`, and writes the messages. A Prose or a Hint in a Field or Fieldset registers as a description, and a field can have several. The size belongs to the part, not its position: a Prose is `body` and a Hint is `body-small` wherever they sit. A Hint goes under the control, never above it: what the user must read before answering is a description, a `Prose` above the control. This order is the default in the theme, the stories and the docs. The consumer owns the markup, and `aria-describedby` always lists the descriptions (Prose and Hint) in DOM order, then the error. On submit, move focus to the error summary (or the first invalid field) and keep `scroll-padding` on the page, so the on-screen keyboard doesn't cover the message under the field.
 
 **Line 493 (the third sentence onwards):**
 
@@ -306,21 +306,20 @@ Lines 332 and 503 are unchanged. Their disagreement about whether Prose has a sm
 
 `Components/Form/Hint`, with `component: Field.Hint` and the contract `field.a11y.md`. Locale `sv` by default, in `kv-story-form`. The stories replace `InField`, `WithExample`, `AboveAndUnder` and `SixteenAboveAndForOptions`.
 
-| Story                | Purpose                                                                                                                                                                |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Keyboard`           | The fixture the keyboard tests drive: Tab goes to the input and never stops on the description or the hint                                                             |
-| `UnderTheControl`    | The default: label, input, `Field.Hint` (`personalNumberFormat`) at 14px, listed in the input's `aria-describedby`                                                     |
-| `WithDescription`    | Label, description `Field.Prose` (16px), input, Hint (14px). `aria-describedby` is description, then hint, in DOM order, one id each                                   |
-| `Invalid`            | The same field with an error: the hint doesn't change, the error comes last, and the description reads "description hint Fel: …"                                       |
-| `InFieldset`         | `Fieldset.Hint` (`visitDateExample`) under the three date boxes, describing the group                                                                                  |
-| `OptionHints`        | A RadioGroup with option hints: 14px, in column 2, directly under the label's box, outside the 44px target                                                             |
-| `SizeFollowsThePart` | Prose above and under the control both 16px, Hint under and (rarely) above both 14px. The play function checks the computed sizes. The JSDoc says a hint above is rare |
-| `Disabled`           | A disabled field: the input is muted, and the hint stays `text` and says why                                                                                           |
-| `ReadOnly`           | A read-only personal identity number with the hint `personalNumberHint` saying why it can't change                                                                     |
-| `Compact`            | `kv-compact`: label 14px, gaps 4px, description 16px, hint 14px. The play function checks the sizes                                                                    |
-| `LongFinnish`        | `fi`, the long label and `grantReferenceHint` in a 320px column: no horizontal overflow (1.4.10)                                                                       |
-| `RTL`                | Right to left (en): the hint and an option hint align to the inline start, and the example sits in `<bdi>`                                                             |
-| `ForcedColors`       | Forced colours: the hint is `CanvasText`, and the error is still distinct by icon, weight, size and indent                                                             |
+| Story             | Purpose                                                                                                                              |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `Keyboard`        | The fixture the keyboard tests drive: Tab goes to the input and never stops on the description or the hint                           |
+| `UnderTheControl` | The default: label, input, `Field.Hint` (`personalNumberFormat`) at 14px, listed in the input's `aria-describedby`                   |
+| `WithDescription` | Label, description `Field.Prose` (16px), input, Hint (14px). `aria-describedby` is description, then hint, in DOM order, one id each |
+| `Invalid`         | The same field with an error: the hint doesn't change, the error comes last, and the description reads "description hint Fel: …"     |
+| `InFieldset`      | `Fieldset.Hint` (`visitDateExample`) under the three date boxes, describing the group                                                |
+| `OptionHints`     | A RadioGroup with option hints: 14px, in column 2, directly under the label's box, outside the 44px target                           |
+| `Disabled`        | A disabled field: the input is muted, and the hint stays `text` and says why                                                         |
+| `ReadOnly`        | A read-only personal identity number with the hint `personalNumberHint` saying why it can't change                                   |
+| `Compact`         | `kv-compact`: label 14px, gaps 4px, description 16px, hint 14px. Reviewed by eye: the sizes are not tested (rule 13)                 |
+| `LongFinnish`     | `fi`, the long label and `grantReferenceHint` in a 320px column: no horizontal overflow (1.4.10)                                     |
+| `RTL`             | Right to left (en): the hint and an option hint align to the inline start, and the example sits in `<bdi>`                           |
+| `ForcedColors`    | Forced colours: the hint is `CanvasText`, and the error is still distinct by icon, weight, size and indent                           |
 
 Text spacing (1.4.12) and 400% zoom are covered by the e2e sweep (`E2E_BROWSERS=sweep`), not a story. `hint-outside-field` is a unit test, not a story (it would warn in the console).
 
@@ -355,7 +354,7 @@ The fixtures in `FieldStates` and the form stories move every Prose that sits un
 1. **Compact option hints.** In compact, an option label and its hint are both 14px at weight 400, told apart only by position. Accept it, or give compact option labels something more? (Research question in §10.)
 2. **The review checklist's blocker** "no essential text in `body-small`" conflicts with the 14px hint. Reword it to "…except the hint under a control, which is never the only place essential information lives"?
 3. **A warning for rich content in a Hint.** Should `Field.Hint` warn in development when it contains a link, list or heading, like `InputGroup.Addon` warns on focusable content? This spec only states it in the docs.
-4. **The date example moves under the boxes.** form-fields.md put "Till exempel 2026-03-27" above as a description. Under the new rule it's a `Fieldset.Hint` under the row. Confirm.
+4. **The date example moves under the boxes.** form-fields.md put "Till exempel 2026-03-27" above as a description. Under the new rule it's a `Fieldset.Hint` under the row. Confirmed 2026-10-04.
 5. **`FileUpload.Limits`** also registers as a description and is a hint in all but name. Should it take the `kv-field-hint` look in a later plan?
 6. **Digi (Arbetsförmedlingen)** wasn't verified, because its docs didn't render in this session. Check it before this spec is approved, if it matters for the Swedish audience.
 7. **Finnish copy** (`personalNumberWhy`, `personalNumberFormat`, `personalNumberError`, `grantReferenceHint`) needs a native speaker's review, and `nb`, `nn` and `se` need translators.

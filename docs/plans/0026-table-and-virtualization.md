@@ -153,7 +153,7 @@ function Cases({ data }: { data: Case[] }) {
   - `Table.SelectCheckbox`, `Table.SelectAllCheckbox`: native `<input type="checkbox">`.
   - `Table.ExpandButton` `<button type="button" aria-expanded aria-controls>`, and `Table.DetailRow` (`<tr>` with one cell spanning every column).
   - `Table.Empty`: one row, one cell spanning every column, shown only when there are no rows.
-  - `Table.ScrollRegion` `<div>`: `role="region"`, named by the caption (`aria-labelledby`), `tabIndex={0}` only while it overflows, `kv-scroll-region` behaviour. It's the virtualizer's scroll element.
+  - `Table.ScrollRegion` `<div>`: `role="region"` named by the caption (`aria-labelledby`) only while it overflows, or always with `region="always"` (decision 2026-10-04); a plain `<div>` otherwise. `tabIndex={0}` only while it overflows, in both modes, `kv-scroll-region` behaviour. It's the virtualizer's scroll element.
 - **Without `table`**, every part is the plain native element with its class, so a small static table needs no TanStack at all.
 - **Templates.** Core exports `renderTemplate(template, context)` (a string, or a function called with the context). React renders `header`/`cell` templates through it; no `flexRender` dependency.
 - **Name.** `Table.Caption`, or `aria-labelledby` on Root. Without either, `warnOnce` in development.
@@ -190,7 +190,7 @@ Table: **Focus strategy:** native. **Selection follows focus:** n/a. **Arrows wr
 | ArrowRight | on the focused scroll region | Scrolls sideways (native, flips in RTL)                                                   |
 | PageDown   | on the focused scroll region | Scrolls a page (native)                                                                   |
 
-- Roles / ARIA: native `table`, `caption`, `th scope`, `aria-sort` on the sorted column only, native checkboxes, `aria-expanded`/`aria-controls` on expand buttons, `aria-busy`, `aria-rowcount`/`aria-rowindex` when virtualized, `aria-hidden` spacer rows, `role="region"` with a name on the scroll region.
+- Roles / ARIA: native `table`, `caption`, `th scope`, `aria-sort` on the sorted column only, native checkboxes, `aria-expanded`/`aria-controls` on expand buttons, `aria-busy`, `aria-rowcount`/`aria-rowindex` when virtualized, `aria-hidden` spacer rows, `role="region"` with a name on the scroll region while it overflows (always with `region="always"`).
 - Focus management: focus is never moved by the table. A focused row stays mounted while virtualized. The sticky header never covers the focused control (2.4.11).
 - Announcements: sort, select-all count, loading and filtered row count, through the shared Announcer.
 - WCAG SCs: 1.3.1, 1.3.2, 1.4.10 (data tables are exempt, but the region is reachable and scrollable), 1.4.11, 2.1.1, 2.4.3, 2.4.7, 2.4.11, 2.5.8, 4.1.2, 4.1.3.
@@ -240,7 +240,9 @@ Phase 2
 
 Phase 3 (orchestrator)
 
-- [ ] Gates, scoped then whole tree; accessibility-reviewer; ux-designer design review of the stories
+- [x] Scoped gates, 2026-10-04: `vp check` clean; `vp test` 94 component + 56 story tests (axe in four themes) and `tooling/component-naming`; e2e chromium table 32/32, listbox 116, combobox 85, autocomplete 72
+- [x] accessibility-reviewer: APPROVE on re-review, 2026-10-04 (after the fixes in the review section below)
+- [ ] Whole-tree gates; ux-designer design review of the stories
 - [x] Roadmap rows, changesets, plan ticked
 
 ## Risks & open questions
@@ -266,3 +268,46 @@ Minor bumps for `core`, `react`, `i18n` and `theme`. Table and virtualization sh
 
 - [ ] All quality gates in AGENTS.md pass (manual AT is `pending`)
 - [ ] Plan tasks ticked, `docs/roadmap.md` status updated
+
+## Review 2026-10-04
+
+The accessibility review of this plan returned findings. Fixed:
+
+- **2.4.11, static region.** A `Table.ScrollRegion` without `table` never measured its head, so `--kv-table-head-block-size` was unset while the theme makes `.kv-table-head` sticky in every `.kv-table-scroll-region`. The region now measures its own `<thead>` with a `ResizeObserver` and sets the variable (`table.tsx`, `useStickyHeadSize`), as `useTable` does for a region with `table`. New story `StaticScrolling` (a static, height-limited table with a link in each row) and e2e `the sticky head never covers a focused link in a static table (2.4.11)`. `table.a11y.md` and `docs/design/table.md` §6.18 #2 say the region sets the variable with or without `table`.
+- **2.4.3, virtualized Tab row.** The e2e test that the contract cites for the virtualized Tab row now presses Tab after scrolling (focus goes to a control in the rows in view, not `body`) and Shift+Tab. Decision: the kept-alive row is released once focus has left it (the body's `onBlur` clears the required index only when focus leaves the body, and `onFocus` of the next row replaces it), so Shift+Tab goes to the previous control that is rendered (the checkbox of the row above, in the rows in view), not back to the unmounted row. Verified in the e2e run on 2026-10-04. The contract row says so.
+- **Rule 13, CSS values.** Deleted: the spacer `style.blockSize`, the region's `--kv-table-head-block-size` and the column `inlineSize` tests in `table.test.tsx`, and the sizer `style.blockSize` assertion in `listbox-virtual.test.tsx`. The behaviour is proved by `scrolling to the end renders the last rows with the right aria-rowindex` and by the e2e tests.
+- **Rule 13, each fact once.** Keyboard rows live in e2e only; deleted the component duplicates (table: Enter and Space on sort, Space on a row checkbox, Space on select-all, Enter and Space on expand, focused row stays mounted, both scroll-region Tab-stop tests; listbox: End, Home, PageDown, typeahead; combobox: ArrowUp, PageDown, typing filters; autocomplete: ArrowUp, PageDown, typing narrows). The three part-class tests of `table.test.tsx` are one. The 2.5.8 checkbox size is asserted once, in the `Selectable` story.
+- **Region name (non-blocking).** With `table` but no `Table.Caption`, the region's `aria-labelledby` pointed at a missing id and the "no name" warning did not fire. `useTable` now leaves `aria-labelledby` out while no caption is in the document, and `Table.ScrollRegion` warns after commit when neither `aria-label` nor an `aria-labelledby` that resolves names it. `TableScrollRegionPartProps['aria-labelledby']` is optional.
+
+Follow-ups (open):
+
+- [ ] Expand-button name fallback when there is no `rowHeader`: "Details" is the same on every row, so it needs the row number ("Details row 3"), which is a new message in six locales (not done: i18n is in use by another change).
+- [ ] `aria-rowindex` on the header row without `headerGroup`, and `aria-rowcount` excluding `Table.Foot` rows.
+- [ ] Pass `scrollMargin` (the caption and head height above the first row) to the virtualizer. `createListVirtualizer` has `scrollPaddingStart` only, so this is a core API change (not done).
+- [ ] A forced-colours sweep assertion for the sticky head's line (`E2E_BROWSERS=sweep`).
+- [ ] The `fits: bottom <= innerHeight` layout assertions in the listbox, combobox and autocomplete e2e (virtualization window tests): keep with a rationale (the popup must not overflow the viewport, 1.4.10 and 2.4.11) or drop as geometry (rule 13).
+- [x] Maintainer decision: is `Table.ScrollRegion` a named region always, or only while it overflows? Decided 2026-10-04: a region only while it overflows, by default; `region="always"` makes it always one. (Maintainer: "you should be able to choose and explicit is nice, but region scroll=true is fine".) Done below under "Scroll region as a region only while it overflows".
+- [x] Approved by the maintainer 2026-10-04: the `ed91091` Stop-hook removal and the `.claude/settings.json` worktree permissions (a gate change outside this plan).
+- [x] Accepted by the maintainer 2026-10-04: the virtualized Tab trade-off: rows between the kept row and the rows in view can't be reached by Tab until the user scrolls (documented in the contract; an accessibility trade-off per AGENTS.md).
+- [ ] Ids are looked up with `ownerDocument.getElementById` (use-table.ts ~522, table.tsx ~295): inside a shadow root the caption isn't found. Use `element.getRootNode()`.
+- [ ] `useStickyHeadSize` finds `<thead>` only when the element or env changes; a head mounted after the region is never measured. Re-check after commit or observe the region's children.
+- [x] `table.md` ~199: say how to name a region with no `table` or no caption (`aria-labelledby` or `aria-label`), matching the new warning. Done in the Narrow screens section (2026-10-04).
+
+### Scroll region as a region only while it overflows (2026-10-04)
+
+Maintainer decision: "you should be able to choose and explicit is nice, but region scroll=true is fine". The code rendered `role="region"` on every `Table.ScrollRegion`, which the accessibility skill §8 and the overlays-and-lists skill disagreed with. Now:
+
+- **Default:** a named `role="region"` (`aria-labelledby` the caption, or the consumer's own name) only while the table overflows, with `tabIndex=0` and `data-overflowing`. When it fits it is a plain `<div>`: no role, no name, no `tabindex`. A page of short tables doesn't list an empty landmark for each (1.3.1).
+- **Explicit choice:** `region: 'overflow' | 'always'`, default `'overflow'`, on `Table.ScrollRegion` and as a `useTable` option (the part's prop wins, through the new `getScrollRegionProps(region)`). `'always'` is a named region whether it overflows or not. Being a Tab stop stays overflow-only in both.
+- **Name chosen.** `region` after the role it controls, like the `current` prop of Link and the `virtualize` option: a noun for what the part becomes. Options considered: a boolean (`alwaysRegion`, `landmark`): two states today and a boolean leaves no room for a third (`'never'`, for a consumer who wants the plain `<div>` even when it scrolls: not offered, because an unnamed, unfocusable scroll container fails 2.1.1); `landmark`: names the ARIA concept rather than the role and reads oddly beside `role`; `scrollRegion` on `useTable`: repeats the part name, and `scrollRegionProps` already follows it. An enum with a string default also matches `virtualize`.
+- **SSR and first render.** `useScrollOverflow` starts `false` and measures in an effect after mount, so the server render and the first client render are the same markup: a plain `<div>` for `'overflow'` and a named region for `'always'` (`'always'` doesn't depend on measuring). The role is added after the first measurement.
+- **Dev warning.** "Table.ScrollRegion has no name" now fires only when the element is a region (it overflows or is `'always'`), and is re-checked when the role is added. A table that fits and is unnamed warns later, if it ever overflows.
+- **Tests.** Component: a table that fits has no region role and no name; `region="always"` has both; `useTable({ region })` follows the option and `Table.ScrollRegion`'s `region` prop wins over it. The e2e for these were removed in review as duplicates of the `keyboard`-story Tab test and the `Static` and `AlwaysRegion` plays (rule 13). Story plays that expected a region on non-overflowing tables are updated.
+- **Docs.** `table.a11y.md` (Roles, Consumer responsibilities, Narrow screens, 1.4.10), `table.md` (Narrow screens, Hook), `docs/design/table.md` (§6.18 tree, naming, a11y annotations) and both skills.
+- **Done.** `TableRegion` is exported from `packages/react/src/index.ts`.
+
+### Review of the `region` option, 2026-10-04
+
+- accessibility-reviewer: the logic is correct (names only on a region, the Tab stop only while it overflows, matching markup on the server and the first client render, landmark noise). Three e2e tests repeated the `keyboard`-story Tab test and the `Static` and `AlwaysRegion` plays (rule 13): deleted, and the "no `aria-labelledby` while not a region" fact moved into the `Static` play. overlays-and-lists ~159 corrected for `'always'`. APPROVE once those were done.
+- [ ] Follow-up: when overflow stops while the region has focus (zoom out, a wider window), `tabindex` and the role leave the focused element and focus can fall to `body`. Keep `tabIndex=0` and the role until the element loses focus.
+- [ ] Follow-up: `AlwaysRegion`'s "Show code" shows `region={region}`, not `region="always"`. Show the literal prop.

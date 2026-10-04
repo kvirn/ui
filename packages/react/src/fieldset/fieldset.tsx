@@ -70,10 +70,10 @@ const noState: FieldsetState = { isInvalid: false, isRequired: false, isDisabled
  * <Fieldset.Root group invalid={errors.contact !== undefined}>
  *   <Fieldset.Legend>Hur vill du bli kontaktad?</Fieldset.Legend>
  *   <Fieldset.Prose>
- *     <p>Vi kontaktar dig bara om beslutet.</p>
+ *     <p>Välj alla som passar. Vi kontaktar dig bara om beslutet.</p>
  *   </Fieldset.Prose>
  *   …
- *   <Fieldset.Hint>Välj alla som passar.</Fieldset.Hint>
+ *   <Fieldset.Hint>Du kan ändra dig senare under Mina sidor.</Fieldset.Hint>
  *   <Fieldset.ErrorMessage>{errors.contact}</Fieldset.ErrorMessage>
  * </Fieldset.Root>
  */

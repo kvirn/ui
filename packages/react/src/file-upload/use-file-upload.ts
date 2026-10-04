@@ -361,6 +361,8 @@ export function useFileUpload<Result = unknown>(
   /** The files of the latest add, in the order given: where a rejected file stood in it. */
   const [selection, setSelection] = useState<readonly File[]>([])
   const focusedItemId = useRef<string | null>(null)
+  /** The element that last had focus inside the Root: if it is still connected, it wasn't removed. */
+  const focusedElement = useRef<Node | null>(null)
   const previousItemIds = useRef<readonly string[]>([])
   const announcementHandle = useRef<AnnouncementHandle | null>(null)
 
@@ -619,7 +621,7 @@ export function useFileUpload<Result = unknown>(
   // Cancel or Retry pressed, or an upload ended in the background), focus goes to the same item,
   // or when the item is gone to the next, else the previous, else the Trigger. Never to another
   // button: a held Enter would then act on a file the user never chose. When focus is elsewhere,
-  // nothing moves (3.2.1).
+  // or the user clicked away from an element that is still in the page, nothing moves (3.2.1).
   useLayoutEffect(() => {
     const ids = items.map((item) => item.id)
     const before = previousItemIds.current
@@ -631,6 +633,12 @@ export function useFileUpload<Result = unknown>(
     }
     const active = doc.activeElement
     if (active !== null && active !== doc.body && active !== doc.documentElement) {
+      return
+    }
+    // Focus is on the page, not on a control. It was lost because its element was removed only if
+    // that element is gone: a user who clicked away from a button that is still there keeps
+    // their place, however soon a progress tick renders (3.2.1). This is decided here, not by a timer.
+    if (focusedElement.current?.isConnected === true) {
       return
     }
     let targetId: string | undefined
@@ -812,6 +820,7 @@ export function useFileUpload<Result = unknown>(
     ...(isDisabled ? { 'data-disabled': '' } : {}),
     onFocus: (event) => {
       focusedItemId.current = findItemIdAt(event.target)
+      focusedElement.current = event.target instanceof Node ? event.target : null
     },
     onBlur: (event) => {
       const next = event.relatedTarget
@@ -819,6 +828,7 @@ export function useFileUpload<Result = unknown>(
         // Focus moves on: a focus event inside updates it, one outside clears it.
         if (!(next instanceof Node) || !event.currentTarget.contains(next)) {
           focusedItemId.current = null
+          focusedElement.current = null
         }
         return
       }
@@ -834,6 +844,7 @@ export function useFileUpload<Result = unknown>(
           target.isConnected
         ) {
           focusedItemId.current = null
+          focusedElement.current = null
         }
       }, 0)
     },

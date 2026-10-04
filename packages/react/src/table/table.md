@@ -111,7 +111,7 @@ function Cases({ data }: { data: Case[] }) {
 }
 ```
 
-`useTable` takes TanStack Table's options (`features`, `columns`, `data`, `getRowId`, `state`, `on…Change`, `initialState`, …) and three of its own: `rowHeader`, `virtualize` and `isLoading`, plus `messages` for per-instance strings. It creates the table once, keeps its options in sync on every render and re-renders when the table's state changes, so a sort or a selection shows without any wiring. `table` in its result is the TanStack Table instance: `table.getHeaderGroups()`, `table.setPageIndex(2)`, `table.getSelectedRowIds()`.
+`useTable` takes TanStack Table's options (`features`, `columns`, `data`, `getRowId`, `state`, `on…Change`, `initialState`, …) and four of its own: `rowHeader`, `virtualize`, `isLoading` and `region` (see [Narrow screens](#narrow-screens)), plus `messages` for per-instance strings. It creates the table once, keeps its options in sync on every render and re-renders when the table's state changes, so a sort or a selection shows without any wiring. `table` in its result is the TanStack Table instance: `table.getHeaderGroups()`, `table.setPageIndex(2)`, `table.getSelectedRowIds()`.
 
 Give the Root and the ScrollRegion the same result (`table={cases}`). The `rowHeader` is the id of the column whose cells are `<th scope="row">`.
 
@@ -196,7 +196,18 @@ Align a column of quantities to the end, so the figures line up: add `kv-table-c
 
 ## Narrow screens
 
-Put the table in `Table.ScrollRegion`. A data table that needs two dimensions is exempt from reflow (WCAG 1.4.10), but it must still be reachable and scrollable. The region is named by the caption and is a Tab stop only while the table overflows, so a keyboard user can scroll it with the arrow keys and Page Down, and meets no empty stop when nothing scrolls.
+Put the table in `Table.ScrollRegion`. A data table that needs two dimensions is exempt from reflow (WCAG 1.4.10), but it must still be reachable and scrollable. By default the region is a named `region` and a Tab stop only while the table overflows, so a keyboard user can scroll it with the arrow keys and Page Down, and meets no empty stop when nothing scrolls. When everything fits it is a plain `<div>`: no role, no name and no `tabindex`, so a page of short tables doesn't list an empty landmark for each.
+
+**`region`** chooses when the scroll region is a landmark. `'overflow'` (the default) is what the paragraph above describes. `'always'` makes it a named region whether it scrolls or not, for a page where a table should be something screen reader users can list and jump to. It is a Tab stop only while it scrolls, in both. Set it on `Table.ScrollRegion` (`<Table.ScrollRegion table={cases} region="always">`), or on `useTable({ region: 'always' })`, where `scrollRegionProps` follow it. The prop on the part wins. The server render and the first client render are the same markup (a plain `<div>`, unless `region="always"`), and the role follows once the region has been measured.
+
+**Name the region.** While it is a region it needs a name (WCAG 4.1.2). With `table={cases}` and a `Table.Caption` the caption names it. A table with no caption has no name to give it, so name the region yourself, with `aria-labelledby` pointing at a visible heading or with `aria-label`; without a name a development warning says so once the region is one. Name the table the same way, with `aria-labelledby` on `Table.Root`.
+
+```tsx
+<h2 id="fees-heading">Avgifter</h2>
+<Table.ScrollRegion aria-labelledby="fees-heading">
+  <Table.Root aria-labelledby="fees-heading">…</Table.Root>
+</Table.ScrollRegion>
+```
 
 The head sticks inside the region only while the region scrolls vertically, which needs a height limit: a virtualized table gets `80svh`, and for any other table set `--kv-table-scroll-region-max-block-size` on the region or a parent. Without a limit the region grows with the table, and its head scrolls with the page, because a container that scrolls sideways is the head's scroll container. In a flex or grid parent, give the region's parent `min-inline-size: 0`, or the table can widen the page. Keep captions short: a caption as wide as the table can run past the region's edge at 320px.
 
@@ -217,7 +228,7 @@ The component's names and announcements are in the `table` namespace of all six 
 
 ## Hook
 
-`useTable(options)` returns `table` (the TanStack Table instance), the prop objects `tableProps`, `captionProps`, `scrollRegionProps`, `headProps`, `bodyProps` and `emptyProps`, the getters `getColumnHeaderProps(header?)`, `getSortButtonProps(header)`, `getRowProps(row)`, `getCellProps(cell)`, `getSelectCheckboxProps(row)`, `getSelectAllCheckboxProps()`, `getExpandButtonProps(row)` and `getDetailRowProps(row)`, and `rows`, `isVirtualized`, `isLoading`, `isEmpty`, `columnCount`, `emptyText`, `loadingText` and `expandButtonText`. Spread each on your own element. See `table.a11y.md` for what each must carry.
+`useTable(options)` returns `table` (the TanStack Table instance), the prop objects `tableProps`, `captionProps`, `scrollRegionProps` (follows the `region` option, and has no `role` while the region isn't one), `headProps`, `bodyProps` and `emptyProps`, the getters `getScrollRegionProps(region)` (`scrollRegionProps` for another `region`, which `Table.ScrollRegion`'s own `region` prop uses), `getColumnHeaderProps(header?)`, `getSortButtonProps(header)`, `getRowProps(row)`, `getCellProps(cell)`, `getSelectCheckboxProps(row)`, `getSelectAllCheckboxProps()`, `getExpandButtonProps(row)` and `getDetailRowProps(row)`, and `rows`, `isVirtualized`, `isLoading`, `isEmpty`, `columnCount`, `emptyText`, `loadingText` and `expandButtonText`. Spread each on your own element. See `table.a11y.md` for what each must carry.
 
 ## `render`
 

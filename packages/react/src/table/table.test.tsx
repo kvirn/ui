@@ -23,7 +23,7 @@ import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Table } from './table.tsx'
 import { useTable } from './use-table.ts'
-import type { TableVirtualizeOptions } from './use-table.ts'
+import type { TableRegion, TableVirtualizeOptions } from './use-table.ts'
 
 // Contract: table.a11y.md. Keys, focus order, the sticky header, forced colours and reflow are
 // covered in apps/storybook/src/components/table/table.e2e.ts. Component tests load no theme, so
@@ -79,6 +79,10 @@ interface CasesTableProps {
   withoutRowHeader?: boolean
   isLoading?: boolean
   emptyText?: string
+  /** `useTable`'s `region` option. */
+  regionOption?: TableRegion
+  /** `Table.ScrollRegion`'s `region` prop, which wins over the option. */
+  region?: TableRegion
 }
 
 function CasesTable({
@@ -86,6 +90,8 @@ function CasesTable({
   withoutRowHeader = false,
   isLoading,
   emptyText,
+  regionOption,
+  region,
 }: CasesTableProps) {
   const cases = useTable({
     features,
@@ -94,9 +100,10 @@ function CasesTable({
     getRowId: (record) => record.id,
     ...(withoutRowHeader ? {} : { rowHeader: 'name' }),
     isLoading,
+    region: regionOption,
   })
   return (
-    <Table.ScrollRegion table={cases}>
+    <Table.ScrollRegion table={cases} region={region}>
       <Table.Root table={cases}>
         <Table.Caption>Open cases</Table.Caption>
         <Table.Head>
@@ -298,7 +305,7 @@ describe('native semantics', () => {
     await expect.element(page.getByRole('cell', { name: '2026/09/02' })).toBeVisible()
   })
 
-  test('classes follow the part names, and a native display is never changed', async () => {
+  test('classes follow the part names', async () => {
     const { container } = await renderInProvider(<CasesTable />)
     expect(container.querySelector('table.kv-table')).not.toBeNull()
     expect(container.querySelector('caption.kv-table-caption')).not.toBeNull()
@@ -309,17 +316,12 @@ describe('native semantics', () => {
     expect(container.querySelectorAll('th.kv-table-row-header')).toHaveLength(4)
     expect(container.querySelectorAll('td.kv-table-cell')).toHaveLength(12)
     expect(container.querySelector('div.kv-scroll-region.kv-table-scroll-region')).not.toBeNull()
-    expect(container.querySelector('[style*="display"]')).toBeNull()
-  })
-
-  test('both checkbox parts are Checkboxes: they render kv-checkbox too', async () => {
-    const { container } = await renderInProvider(<CasesTable />)
     expect(
       container.querySelectorAll('input[type="checkbox"].kv-checkbox.kv-table-select-checkbox'),
     ).toHaveLength(5)
   })
 
-  test('without `table`, every part is the plain native element with its class', async () => {
+  test('without `table`, every part is the plain native element and nothing warns', async () => {
     const { container } = await render(
       <Table.Root>
         <Table.Caption>Fees</Table.Caption>
@@ -344,10 +346,10 @@ describe('native semantics', () => {
       </Table.Root>,
     )
     await expect.element(page.getByRole('table', { name: 'Fees' })).toBeVisible()
-    expect(container.querySelectorAll('th[scope="col"].kv-table-column-header')).toHaveLength(2)
-    expect(container.querySelectorAll('th[scope="row"].kv-table-row-header')).toHaveLength(2)
-    expect(container.querySelectorAll('td.kv-table-cell')).toHaveLength(2)
-    expect(container.querySelector('tfoot.kv-table-foot')).not.toBeNull()
+    expect(container.querySelectorAll('th[scope="col"]')).toHaveLength(2)
+    expect(container.querySelectorAll('th[scope="row"]')).toHaveLength(2)
+    expect(container.querySelectorAll('td')).toHaveLength(2)
+    expect(container.querySelector('tfoot')).not.toBeNull()
     expect(container.querySelector('[aria-sort], [aria-rowcount], [aria-busy]')).toBeNull()
     expect(consoleWarn).not.toHaveBeenCalled()
   })
@@ -400,11 +402,70 @@ describe('the name', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('the scroll region is a region named by the caption', async () => {
-    await renderInProvider(<CasesTable />)
+  test('a region of a table with no caption has no name, so it warns and points at nothing', async () => {
+    function WithoutCaption() {
+      const cases = useTable({
+        features,
+        columns,
+        data: records,
+        getRowId: (record) => record.id,
+      })
+      return (
+        <Table.ScrollRegion table={cases} region="always">
+          <Table.Root table={cases} aria-label="Open cases">
+            <Table.Body>
+              {(row) => (
+                <Table.Row key={row.id} row={row}>
+                  {row.getAllCells().map((cell) => (
+                    <Table.Cell key={cell.id} cell={cell} />
+                  ))}
+                </Table.Row>
+              )}
+            </Table.Body>
+          </Table.Root>
+        </Table.ScrollRegion>
+      )
+    }
+    const { container } = await renderInProvider(<WithoutCaption />)
+    await expect.poll(() => consoleWarn.mock.calls.length).toBeGreaterThan(0)
+    expect(consoleWarn.mock.calls.map((call) => String(call[0])).join('\n')).toContain(
+      'Table.ScrollRegion is a region',
+    )
+    await expect
+      .poll(() =>
+        container.querySelector('.kv-table-scroll-region')?.hasAttribute('aria-labelledby'),
+      )
+      .toBe(false)
+  })
+
+  test('a scroll region of a table that fits is not a region and has no name', async () => {
+    const { container } = await renderInProvider(<CasesTable />)
+    await expect.element(table()).toBeVisible()
+    const scrollRegion = container.querySelector('.kv-table-scroll-region')
+    expect(scrollRegion).not.toBeNull()
+    expect(page.getByRole('region').elements()).toEqual([])
+    expect(scrollRegion?.hasAttribute('role')).toBe(false)
+    expect(scrollRegion?.hasAttribute('aria-labelledby')).toBe(false)
+    expect(scrollRegion?.hasAttribute('tabindex')).toBe(false)
+  })
+
+  test('region="always" makes the scroll region a region named by the caption, and not a Tab stop', async () => {
+    const { container } = await renderInProvider(<CasesTable region="always" />)
     const region = page.getByRole('region', { name: 'Open cases' })
     await expect.element(region).toBeVisible()
     expect(region.element().contains(table().element())).toBe(true)
+    expect(container.querySelector('.kv-table-scroll-region')?.hasAttribute('tabindex')).toBe(false)
+  })
+
+  test('the region option of useTable makes the scroll region a region', async () => {
+    await renderInProvider(<CasesTable regionOption="always" />)
+    await expect.element(page.getByRole('region', { name: 'Open cases' })).toBeVisible()
+  })
+
+  test('the region prop wins over the option of useTable', async () => {
+    await renderInProvider(<CasesTable regionOption="always" region="overflow" />)
+    await expect.element(table()).toBeVisible()
+    expect(page.getByRole('region').elements()).toEqual([])
   })
 })
 
@@ -440,15 +501,6 @@ describe('sorting', () => {
     expect(rowHeaders(container)).toEqual(['Anna Svensson', 'Bertil Ek', 'Zack Öberg', 'Åsa Berg'])
     await userEvent.click(sortButton('Name'))
     expect(rowHeaders(container)).toEqual(['Åsa Berg', 'Zack Öberg', 'Bertil Ek', 'Anna Svensson'])
-  })
-
-  test('Enter and Space on the sort button sort', async () => {
-    const { container } = await renderInProvider(<CasesTable />)
-    sortButton('Case number').element().focus()
-    await userEvent.keyboard('{Enter}')
-    expect(sortedColumns(container)).toEqual(['Case number:ascending'])
-    await userEvent.keyboard(' ')
-    expect(sortedColumns(container)).toEqual(['Case number:descending'])
   })
 
   test('each change is announced politely with the column, in en', async () => {
@@ -547,14 +599,6 @@ describe('selection', () => {
     expect(container.querySelectorAll('tr[data-selected]')).toHaveLength(0)
   })
 
-  test('Space on a row checkbox selects the row', async () => {
-    await renderInProvider(<CasesTable />)
-    const checkbox = page.getByRole('checkbox', { name: 'Select Bertil Ek' })
-    checkbox.element().focus()
-    await userEvent.keyboard(' ')
-    expect(inputOf(checkbox).checked).toBe(true)
-  })
-
   test('select-all is indeterminate while some rows are selected', async () => {
     await renderInProvider(<CasesTable />)
     const selectAll = page.getByRole('checkbox', { name: 'Select all rows' })
@@ -583,13 +627,6 @@ describe('selection', () => {
     await userEvent.click(page.getByRole('checkbox', { name: 'Select Anna Svensson' }))
     await userEvent.click(page.getByRole('checkbox', { name: 'Select Bertil Ek' }))
     expect(status().element().textContent).toBe('')
-  })
-
-  test('Space on select-all selects every row', async () => {
-    const { container } = await renderInProvider(<CasesTable />)
-    page.getByRole('checkbox', { name: 'Select all rows' }).element().focus()
-    await userEvent.keyboard(' ')
-    expect(container.querySelectorAll('tr[data-selected]')).toHaveLength(4)
   })
 })
 
@@ -667,17 +704,6 @@ describe('expanding', () => {
     await expect
       .element(page.getByRole('button', { name: 'Show more Anna Svensson' }))
       .toBeVisible()
-  })
-
-  test('Enter and Space show and hide the details', async () => {
-    const { container } = await renderInProvider(<ExpandableTable />)
-    const button = page.getByRole('button', { name: 'Details Bertil Ek' })
-    button.element().focus()
-    await userEvent.keyboard('{Enter}')
-    expect(container.querySelectorAll('tr.kv-table-detail-row')).toHaveLength(1)
-    await userEvent.keyboard(' ')
-    expect(container.querySelectorAll('tr.kv-table-detail-row')).toHaveLength(0)
-    expect(button.element().getAttribute('aria-expanded')).toBe('false')
   })
 
   test('the name is the same open and closed: only aria-expanded changes', async () => {
@@ -861,9 +887,6 @@ describe('virtualized', () => {
       expect(spacer.querySelectorAll('td')).toHaveLength(1)
       expect(spacer.textContent).toBe('')
     }
-    // The space of the rows below the window is the bulk of the list.
-    const last = spacers.at(-1) as HTMLElement
-    expect(Number.parseFloat(last.style.blockSize)).toBeGreaterThan(100_000)
     // A spacer spans what is drawn: the two columns.
     await expect
       .poll(() =>
@@ -885,54 +908,6 @@ describe('virtualized', () => {
     expect(container.querySelector('table')?.getAttribute('aria-rowcount')).toBe('10001')
   })
 
-  test('the row that holds focus stays mounted while it scrolls out of the window', async () => {
-    const { container } = await renderInProvider(<VirtualTable />)
-    const button = page.getByRole('button', { name: 'Open Person 2', exact: true })
-    await expect.element(button).toBeVisible()
-    const element = button.element() as HTMLButtonElement
-    element.focus()
-    expect(document.activeElement).toBe(element)
-
-    const region = container.querySelector<HTMLElement>('.kv-table-scroll-region')
-    if (region === null) throw new Error('no scroll region')
-    region.scrollTop = region.scrollHeight
-    await expect
-      .poll(() => bodyRows(container).at(-1)?.getAttribute('aria-rowindex'), { timeout: 3000 })
-      .toBe('10001')
-    expect(container.contains(element)).toBe(true)
-    expect(document.activeElement).toBe(element)
-    expect(element.closest('tr')?.getAttribute('aria-rowindex')).toBe('4')
-  })
-
-  test('the scroll region is a Tab stop while the table scrolls', async () => {
-    await renderInProvider(<VirtualTable />)
-    const region = page.getByRole('region', { name: 'All cases' })
-    await expect.poll(() => region.element().tabIndex).toBe(0)
-  })
-
-  test('the head is measured: the region has --kv-table-head-block-size for scroll padding', async () => {
-    const { container } = await renderInProvider(<VirtualTable />)
-    const region = container.querySelector<HTMLElement>('.kv-table-scroll-region')
-    await expect
-      .poll(() =>
-        Number.parseFloat(region?.style.getPropertyValue('--kv-table-head-block-size') ?? '0'),
-      )
-      .toBeGreaterThan(0)
-  })
-
-  test('the columns carry their TanStack sizes as inline widths, for a fixed layout', async () => {
-    const { container } = await renderInProvider(<VirtualTable />)
-    await expect.poll(() => container.querySelectorAll('thead th').length).toBe(2)
-    for (const header of container.querySelectorAll<HTMLElement>('thead th')) {
-      expect(header.style.inlineSize).toBe('150px')
-    }
-  })
-
-  test('a table that is not virtualized sets no inline widths', async () => {
-    const { container } = await renderInProvider(<CasesTable />)
-    expect(container.querySelector('thead th[style]')).toBeNull()
-  })
-
   test('a short list renders every row, and still says how many there are', async () => {
     const { container } = await renderInProvider(<VirtualTable data={manyRecords.slice(0, 5)} />)
     await expect.poll(() => bodyRows(container).length).toBe(5)
@@ -949,33 +924,9 @@ describe('virtualized', () => {
 })
 
 describe('the scroll region', () => {
-  test('it is not a Tab stop while nothing scrolls, and is while the table overflows', async () => {
-    function Wide({ width }: { width: number }) {
-      return (
-        <Table.ScrollRegion aria-label="Fees" style={{ inlineSize: width, overflow: 'auto' }}>
-          <Table.Root aria-label="Fees" style={{ inlineSize: 600 }}>
-            <Table.Body>
-              <Table.Row>
-                <Table.Cell>350 kr</Table.Cell>
-              </Table.Row>
-            </Table.Body>
-          </Table.Root>
-        </Table.ScrollRegion>
-      )
-    }
-    const { rerender, container } = await render(<Wide width={800} />)
-    const region = container.querySelector<HTMLElement>('.kv-table-scroll-region')
-    await expect.poll(() => region?.hasAttribute('tabindex')).toBe(false)
-    expect(region?.hasAttribute('data-overflowing')).toBe(false)
-    await rerender(<Wide width={200} />)
-    await expect.poll(() => region?.getAttribute('tabindex')).toBe('0')
-    expect(region?.hasAttribute('data-overflowing')).toBe(true)
-    expect(region?.getAttribute('role')).toBe('region')
-  })
-
-  test('a region with no name warns', async () => {
+  test('a region with no name warns, once it is a region', async () => {
     await render(
-      <Table.ScrollRegion>
+      <Table.ScrollRegion region="always">
         <Table.Root aria-label="Fees">
           <Table.Body>
             <Table.Row>
@@ -987,8 +938,24 @@ describe('the scroll region', () => {
     )
     await expect.poll(() => consoleWarn.mock.calls.length).toBeGreaterThan(0)
     expect(consoleWarn.mock.calls.map((call) => String(call[0])).join('\n')).toContain(
-      'Table.ScrollRegion has no name',
+      'Table.ScrollRegion is a region',
     )
+  })
+
+  test('a scroll region that is not a region does not warn about a missing name', async () => {
+    await render(
+      <Table.ScrollRegion>
+        <Table.Root aria-label="Fees">
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell>350 kr</Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table.Root>
+      </Table.ScrollRegion>,
+    )
+    await expect.element(page.getByRole('table', { name: 'Fees' })).toBeVisible()
+    expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
 

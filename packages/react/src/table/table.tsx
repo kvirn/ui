@@ -3,6 +3,7 @@ import { renderTemplate } from '@kvirn-ui/core'
 import type {
   Cell,
   CellContext,
+  Env,
   Header,
   HeaderContext,
   HeaderGroup,
@@ -15,6 +16,7 @@ import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
+import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { useEnv } from '../provider/use-env.ts'
 import { renderPart } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
@@ -25,6 +27,7 @@ import { useScrollOverflow } from './use-scroll-overflow.ts'
 import { getHeaderRowIndex } from './use-table.ts'
 import type {
   TableCellPartProps,
+  TableRegion,
   TableRowPartProps,
   TableSortDirection,
   UseTableResult,
@@ -70,6 +73,12 @@ export interface TableScrollRegionProps<
 > extends ComponentPropsWithRef<'div'> {
   /** The same `useTable()` result as the Root, so the region is named by its caption and is the virtualizer's scroll element. */
   table?: UseTableResult<TFeatures, TData> | undefined
+  /**
+   * When the region is a named `region` landmark. `'overflow'` (default): only while the table
+   * doesn't fit and scrolls, otherwise a plain `<div>`. `'always'`: whether it scrolls or not.
+   * It is a Tab stop only while it scrolls, in both. With `table`, this wins over `useTable`'s `region`.
+   */
+  region?: TableRegion | undefined
   render?: RenderProp<ComponentPropsWithRef<'div'>, TablePartState> | undefined
 }
 
@@ -284,44 +293,98 @@ export function TableRoot<TFeatures extends TableFeatures, TData extends RowData
 }
 TableRoot.displayName = 'Table.Root'
 
+/** Internal. `aria-label`, or an `aria-labelledby` with at least one id that is in the document. */
+function hasAccessibleName(element: HTMLElement): boolean {
+  if (element.hasAttribute('aria-label')) {
+    return true
+  }
+  const ids = (element.getAttribute('aria-labelledby') ?? '').split(/\s+/)
+  return ids.some((id) => id !== '' && element.ownerDocument.getElementById(id) !== null)
+}
+
 /**
- * The `<div>` around a wide table: a named `region` that is a Tab stop only while it scrolls, so a
- * keyboard user can scroll sideways (1.4.10, 2.1.1). It is also the scroll element of a virtualized
- * table. Named by the caption, through the `table` prop. Without `table`, name it yourself with
- * `aria-labelledby` or `aria-label`. Your own `aria-labelledby` and `tabIndex` win.
+ * Internal. A region without `useTable` measures its own `<thead>`, which the theme makes sticky, and
+ * sets `--kv-table-head-block-size` on the region. The theme reads it for `scroll-padding-block-start`,
+ * so scrolling to a focused control leaves it clear of the head (2.4.11). `useTable` does the same
+ * for a region that has `table`.
+ */
+function useStickyHeadSize(element: HTMLElement | null, env: Env | undefined): void {
+  useEffect(() => {
+    const head = element?.querySelector('thead')
+    if (element === null || env === undefined || head === null || head === undefined) {
+      return undefined
+    }
+    const measure = () =>
+      element.style.setProperty(
+        '--kv-table-head-block-size',
+        `${Math.ceil(head.getBoundingClientRect().height)}px`,
+      )
+    measure()
+    const observer = new env.window.ResizeObserver(measure)
+    observer.observe(head)
+    return () => {
+      observer.disconnect()
+      element.style.removeProperty('--kv-table-head-block-size')
+    }
+  }, [element, env])
+}
+
+/**
+ * The `<div>` around a wide table. While the table scrolls it is a named `region` and a Tab stop, so a
+ * keyboard user can scroll sideways (1.4.10, 2.1.1); when everything fits it is a plain `<div>`.
+ * `region="always"` makes it a named region whether it scrolls or not (it is a Tab stop only while
+ * it scrolls). It is also the scroll element of a virtualized table. Named by the caption, through
+ * the `table` prop. Without `table`, name it yourself with `aria-labelledby` or `aria-label`. Your
+ * own `aria-labelledby` and `tabIndex` win.
  */
 export function TableScrollRegion<TFeatures extends TableFeatures, TData extends RowData>({
   table,
+  region,
   render,
+  ref: consumerRef,
   ...otherProps
 }: TableScrollRegionProps<TFeatures, TData>): ReactElement {
   const env = useEnv()
   const [element, setElement] = useState<HTMLElement | null>(null)
   const ownOverflow = useScrollOverflow(table === undefined ? element : null, env)
-  const hasName =
-    table !== undefined ||
-    otherProps['aria-label'] !== undefined ||
-    otherProps['aria-labelledby'] !== undefined
+  useStickyHeadSize(table === undefined ? element : null, env)
+  const { ref: hookRef, ...hookProps } = (region === undefined
+    ? table?.scrollRegionProps
+    : table?.getScrollRegionProps(region)) ?? {
+    className: 'kv-scroll-region kv-table-scroll-region',
+    ...(region === 'always' || ownOverflow ? { role: 'region' as const } : {}),
+    ...(ownOverflow ? { tabIndex: 0, 'data-overflowing': '' } : {}),
+    ref: undefined,
+  }
+  // One ref for the hook's, this component's and the consumer's, stable so it isn't re-attached each render.
+  const ownRef = useMergedRef(hookRef, setElement)
+  const regionRef = useMergedRef(consumerRef, ownRef)
+  // The consumer's own props come last, so a name of their own replaces the caption's.
+  const mergedProps = mergeProps(hookProps, otherProps, { ref: regionRef })
+  const isRegion = mergedProps.role === 'region'
+  // A name on a `<div>` with no role is not allowed (ARIA), so a plain `<div>` carries none: the
+  // consumer's `aria-label` or `aria-labelledby` is applied once it is a region.
+  const partProps =
+    mergedProps.role === undefined
+      ? { ...mergedProps, 'aria-label': undefined, 'aria-labelledby': undefined }
+      : mergedProps
+
+  // A region is named by `aria-label`, or by an element its `aria-labelledby` points at: the
+  // caption, through `table`, or the consumer's own. Checked after commit, when the caption is in,
+  // and again when the region becomes one (it starts to scroll).
   useEffect(() => {
-    if (!hasName) {
+    if (isRegion && element !== null && !hasAccessibleName(element)) {
       warnOnce(
         'table-scroll-region-without-name',
-        'A Table.ScrollRegion has no name. Pass `table`, so the caption names it, or `aria-labelledby` or `aria-label`. A region without a name is read as an unlabelled landmark.',
+        'A Table.ScrollRegion is a region (it scrolls, or has `region="always"`) and has no name. Add a <Table.Caption> and pass `table`, or `aria-labelledby` or `aria-label`. A region without a name is read as an unlabelled landmark (WCAG 4.1.2).',
       )
     }
-  }, [hasName])
+  }, [element, isRegion])
 
-  const hookProps = table?.scrollRegionProps ?? {
-    className: 'kv-scroll-region kv-table-scroll-region',
-    role: 'region',
-    ...(ownOverflow ? { tabIndex: 0, 'data-overflowing': '' } : {}),
-    ref: setElement,
-  }
   return renderPart({
     render,
     defaultElement: 'div',
-    // The consumer's own props come last, so a name of their own replaces the caption's.
-    partProps: mergeProps(hookProps, otherProps),
+    partProps,
     state: toState(table),
   })
 }

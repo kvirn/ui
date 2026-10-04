@@ -49,11 +49,11 @@ export interface UseRadioResult {
 
 /**
  * A radio's props for your own `<input type="radio">`, wired to the nearest Field and
- * RadioGroup (contract: radio-group.a11y.md). Never `aria-invalid`, even in an
- * invalid Field: ARIA doesn't support it on `radio`, so the group's error is its description
- *. The browser does the keys. There's no `data-focus-visible` and no focus
- * state: a re-render while a radio has focus makes React write its `name` again, and Chromium
- * then stops treating the group as one Tab stop (radio-group.a11y.md, Known issues).
+ * RadioGroup (contract: radio-group.a11y.md). Never `aria-invalid`, even in an invalid Field:
+ * ARIA doesn't support it on `radio`, so the group's error is its description. The browser does
+ * the keys. There's no `data-focus-visible` and no focus state: a re-render while a radio has
+ * focus makes React write its `name` again, and Chromium then stops treating the group as one
+ * Tab stop (radio-group.a11y.md, Known issues). Style focus with `:focus-visible`.
  *
  * @example
  * const radio = useRadio({ value: 'sv' })

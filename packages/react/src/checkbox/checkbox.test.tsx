@@ -19,8 +19,8 @@ import type {
   UseCheckboxResult,
 } from './use-checkbox.ts'
 
-// Contract: checkbox.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/checkbox/checkbox.e2e.ts.
+// Contract: checkbox.a11y.md. The keyboard rows and the label click are tested once, end to end,
+// in apps/storybook/src/components/checkbox/checkbox.e2e.ts (testing skill, rule 13).
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -32,13 +32,6 @@ beforeEach(() => {
 afterEach(() => {
   consoleWarn.mockRestore()
 })
-
-const declaration = (
-  <Field.Root required>
-    <Checkbox name="declaration" />
-    <Field.Label>Jag intygar att uppgifterna är korrekta</Field.Label>
-  </Field.Root>
-)
 
 describe('rendering', () => {
   test('renders a native <input type="checkbox">, outside a Field', async () => {
@@ -125,7 +118,7 @@ describe('in a Field', () => {
       <Field.Root required>
         <Checkbox name="contact" />
         <Field.Label>E-post</Field.Label>
-        <Field.Prose>Vi mejlar beslutet.</Field.Prose>
+        <Field.Hint>Vi mejlar beslutet.</Field.Hint>
       </Field.Root>,
     )
     const checkbox = page.getByRole('checkbox', { name: 'E-post' })
@@ -225,15 +218,6 @@ describe('in a Field', () => {
     )
     const checkbox = page.getByRole('checkbox', { name: 'Nyhetsbrev (valfritt)' })
     await expect.element(checkbox).toHaveAccessibleDescription('Fel: Välj ett alternativ')
-  })
-
-  test('clicking the label toggles the checkbox', async () => {
-    await render(declaration)
-    const checkbox = page.getByRole('checkbox')
-    await userEvent.click(page.getByText('Jag intygar att uppgifterna är korrekta'))
-    await expect.element(checkbox).toBeChecked()
-    await userEvent.click(page.getByText('Jag intygar att uppgifterna är korrekta'))
-    await expect.element(checkbox).not.toBeChecked()
   })
 })
 
@@ -451,35 +435,6 @@ describe('data-state', () => {
     await expect
       .element(page.getByRole('checkbox', { name: 'Godkänn' }))
       .toHaveAttribute('data-state', 'checked')
-  })
-})
-
-describe('keyboard', () => {
-  test('Space toggles the checkbox and Tab moves on', async () => {
-    const onCheckedChange = vi.fn<(checked: boolean, details: CheckboxChangeDetails) => void>()
-    await render(
-      <>
-        <Checkbox aria-label="Ett" onCheckedChange={onCheckedChange} />
-        <Checkbox aria-label="Två" />
-      </>,
-    )
-    await userEvent.keyboard('{Tab}')
-    const first = page.getByRole('checkbox', { name: 'Ett' })
-    await expect.element(first).toHaveFocus()
-    await expect.element(first).toHaveAttribute('data-focus-visible', '')
-    await userEvent.keyboard(' ')
-    await expect.element(first).toBeChecked()
-    expect(onCheckedChange).toHaveBeenCalledWith(true, expect.objectContaining({ reason: 'input' }))
-    await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('checkbox', { name: 'Två' })).toHaveFocus()
-    await expect.element(first).not.toHaveAttribute('data-focus-visible')
-  })
-
-  test('Enter does not toggle the checkbox', async () => {
-    await render(<Checkbox aria-label="Ett" />)
-    await userEvent.keyboard('{Tab}')
-    await userEvent.keyboard('{Enter}')
-    await expect.element(page.getByRole('checkbox', { name: 'Ett' })).not.toBeChecked()
   })
 })
 

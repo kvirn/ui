@@ -3,7 +3,7 @@ import contract from '../../../../../packages/react/src/fieldset/fieldset.a11y.m
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ComponentProps } from 'react'
 import { expect } from 'storybook/test'
-import { localeOf, fieldMessagesFor, textsFor, withFormLocale } from '../form/form.fixture.tsx'
+import { localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
@@ -46,8 +46,10 @@ type Story = StoryObj<typeof meta>
 
 interface AddressOptions {
   locale: FormLocale
-  /** Show the hint under the legend. */
+  /** Show the description (a Prose) under the legend. */
   hint?: boolean
+  /** Show the group's hint (`Fieldset.Hint`) under the fields, before the error. */
+  groupHint?: boolean
   /** Show the group's error, and mark the street invalid under it. */
   error?: boolean
   /** The legend is the page's `h1`. */
@@ -60,6 +62,7 @@ type AddressProps = AddressOptions & Omit<ComponentProps<typeof Fieldset.Root>, 
 function Address({
   locale,
   hint = false,
+  groupHint = false,
   error = false,
   heading = false,
   ...fieldsetProps
@@ -97,6 +100,7 @@ function Address({
         <Field.Label>{text.town}</Field.Label>
         <Input name="town" autoComplete="address-level2" className="kv-input--width-20" />
       </Field.Root>
+      {groupHint ? <Fieldset.Hint>{text.addressFormat}</Fieldset.Hint> : null}
       <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
     </Fieldset.Root>
   )
@@ -104,6 +108,7 @@ function Address({
 
 /** An address: the legend names the group, and the fields are 24px apart. */
 export const Default: Story = {
+  render: (args, { globals }) => <Address {...args} locale={localeOf(globals)} groupHint />,
   play: async ({ canvas, globals }) => {
     const { text } = textsFor(localeOf(globals))
     const group = canvas.getByRole('group', { name: text.addressLegend })
@@ -115,14 +120,14 @@ export const Default: Story = {
 
 /**
  * The fixture the keyboard tests drive. Try the keys in the Keyboard section above: Tab and
- * Shift+Tab move through the three inputs only. The fieldset, its legend and its hint are never
- * Tab stops.
+ * Shift+Tab move through the three inputs only. The fieldset, its legend, its description and its
+ * hint are never Tab stops.
  */
 export const Keyboard: Story = {
-  render: (args, { globals }) => <Address {...args} locale={localeOf(globals)} hint />,
+  render: (args, { globals }) => <Address {...args} locale={localeOf(globals)} hint groupHint />,
 }
 
-/** The hint describes the group: it is announced when focus enters it. */
+/** The description (a Prose) describes the group: it is announced when focus enters it. */
 export const WithDescription: Story = {
   render: (args, { globals }) => <Address {...args} locale={localeOf(globals)} hint />,
   play: async ({ canvas, globals }) => {
@@ -138,15 +143,11 @@ export const WithDescription: Story = {
  * own parts only: the street is marked invalid on its own Field, so only that edge is red.
  */
 export const Invalid: Story = {
-  render: (args, { globals }) => <Address {...args} locale={localeOf(globals)} hint error />,
+  render: (args, { globals }) => (
+    <Address {...args} locale={localeOf(globals)} hint groupHint error />
+  ),
   play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = textsFor(locale)
-    await expect(
-      canvas.getByRole('group', { name: text.addressLegend }),
-    ).toHaveAccessibleDescription(
-      `${text.addressHint} ${fieldMessagesFor(locale).errorPrefix} ${text.addressError}`,
-    )
+    const { text } = textsFor(localeOf(globals))
     await expect(canvas.getByRole('textbox', { name: text.street })).toHaveAttribute(
       'aria-invalid',
       'true',

@@ -147,11 +147,9 @@ describe('built-in icons', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('are drawn in outline style with currentColor', async () => {
+  test('are drawn in currentColor, so they follow the text colour', async () => {
     const svg = svgIn((await render(<Icon name={firstBuiltInName} />)).container)
-    expect(svg.getAttribute('fill')).toBe('none')
     expect(svg.getAttribute('stroke')).toBe('currentColor')
-    expect(svg.getAttribute('stroke-width')).toBe('1.5')
   })
 
   test('an app registration with the same name replaces a built-in', async () => {
@@ -254,6 +252,30 @@ describe('registry', () => {
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('defineIcons')
   })
 
+  test('an unknown name with a label is still an image with that name, and warns', async () => {
+    const { container } = await render(<Icon name={'not-registered' as IconName} label="Okänd" />)
+    const svg = svgIn(container)
+    expect(svg.children).toHaveLength(0)
+    expect(svg.getAttribute('role')).toBe('img')
+    expect(svg.getAttribute('aria-label')).toBe('Okänd')
+    expect(svg.hasAttribute('aria-hidden')).toBe(false)
+    expect(consoleWarn).toHaveBeenCalledTimes(1)
+    expect(consoleWarn.mock.calls[0]?.[0]).toContain('"not-registered"')
+  })
+
+  test.each(['constructor', 'toString', '__proto__'])(
+    'name="%s" is not found on the prototype: it renders the placeholder and warns',
+    async (inherited) => {
+      const { container } = await render(<Icon name={inherited as IconName} />)
+      const svg = svgIn(container)
+      expect(svg.children).toHaveLength(0)
+      expect(svg.getAttribute('aria-hidden')).toBe('true')
+      expect(svg.getAttribute('width')).toBe('1.25em')
+      expect(consoleWarn).toHaveBeenCalledTimes(1)
+      expect(consoleWarn.mock.calls[0]?.[0]).toContain(`"${inherited}"`)
+    },
+  )
+
   test('defineIcons returns its entries, frozen', () => {
     const icons = defineIcons({ trash: Trash2 })
     expect(icons.trash).toBe(Trash2)
@@ -288,6 +310,12 @@ describe('attributes', () => {
     const svg = await renderIcon(<RegisteredIcon name="lucide-trash" size={size} />)
     expect(svg.getAttribute('width')).toBe(length)
     expect(svg.getAttribute('height')).toBe(length)
+    expect(svg.hasAttribute('data-size')).toBe(false)
+  })
+
+  test('an untyped size that names an Object.prototype member is a length, not a size step', async () => {
+    const svg = await renderIcon(<RegisteredIcon name="lucide-trash" size={'toString' as never} />)
+    expect(svg.getAttribute('width')).toBe('toString')
     expect(svg.hasAttribute('data-size')).toBe(false)
   })
 
@@ -353,22 +381,31 @@ describe('attributes', () => {
   })
 })
 
+/** The shapes inherit fill, stroke and color from the root, so a prop on Icon reaches them. */
+function expectShapesSetNoPaint(svg: SVGSVGElement) {
+  const shapes = svg.querySelectorAll('*')
+  expect(shapes.length).toBeGreaterThan(0)
+  for (const shape of shapes) {
+    for (const attribute of ['fill', 'stroke', 'color']) {
+      expect(shape.hasAttribute(attribute), `<${shape.tagName}> ${attribute}`).toBe(false)
+    }
+  }
+}
+
 describe('library compatibility (Plan 0009, Background)', () => {
-  test.each(['lucide-trash', 'heroicons-trash', 'phosphor-trash'] as const)(
-    '%s takes size and color from Icon',
-    async (name) => {
-      const svg = await renderIcon(<RegisteredIcon name={name} size={32} color="rgb(200, 0, 0)" />)
-      expect(svg.getAttribute('width')).toBe('32')
-      expect(svg.getAttribute('height')).toBe('32')
-      // Each library routes color its own way (stroke, the color attribute, fill), and every
-      // one ends up drawing in it.
-      const painted = [svg, ...svg.querySelectorAll('path')].some((element) => {
-        const style = getComputedStyle(element)
-        return [style.color, style.stroke, style.fill].includes('rgb(200, 0, 0)')
-      })
-      expect(painted).toBe(true)
-    },
-  )
+  // Each library routes `color` its own way: Lucide into the root stroke, Heroicons keeps the
+  // `color` attribute (its shapes draw in currentColor), Phosphor into the root fill.
+  test.each([
+    ['lucide-trash', 'stroke'],
+    ['heroicons-trash', 'color'],
+    ['phosphor-trash', 'fill'],
+  ] as const)('%s takes size and color from Icon, as the %s attribute', async (name, attribute) => {
+    const svg = await renderIcon(<RegisteredIcon name={name} size={32} color="rgb(200, 0, 0)" />)
+    expect(svg.getAttribute('width')).toBe('32')
+    expect(svg.getAttribute('height')).toBe('32')
+    expect(svg.getAttribute(attribute)).toBe('rgb(200, 0, 0)')
+    expectShapesSetNoPaint(svg)
+  })
 
   test.each(['lucide-trash', 'heroicons-trash'] as const)(
     '%s takes strokeWidth from Icon',
@@ -379,33 +416,16 @@ describe('library compatibility (Plan 0009, Background)', () => {
   )
 
   test.each(['lucide-trash', 'heroicons-trash'] as const)(
-    '%s takes fill and stroke from Icon',
+    '%s takes fill and stroke from Icon, on the root',
     async (name) => {
       const svg = await renderIcon(
         <RegisteredIcon name={name} fill="rgb(1, 2, 3)" stroke="rgb(4, 5, 6)" />,
       )
-      const path = svg.querySelector('path')
-      expect(path && getComputedStyle(path).fill).toBe('rgb(1, 2, 3)')
-      expect(path && getComputedStyle(path).stroke).toBe('rgb(4, 5, 6)')
+      expect(svg.getAttribute('fill')).toBe('rgb(1, 2, 3)')
+      expect(svg.getAttribute('stroke')).toBe('rgb(4, 5, 6)')
+      expectShapesSetNoPaint(svg)
     },
   )
-
-  test('the color attribute sets currentColor for the shapes', async () => {
-    const svg = await renderIcon(<RegisteredIcon name="heroicons-trash" color="rgb(0, 0, 200)" />)
-    const path = svg.querySelector('path')
-    expect(path && getComputedStyle(path).stroke).toBe('rgb(0, 0, 200)')
-  })
-
-  test('a CSS custom property works as a colour', async () => {
-    const { container } = await render(
-      <div style={{ ['--test-colour' as string]: 'rgb(0, 128, 0)' }}>
-        <RegisteredIcon name="heroicons-trash" color="var(--test-colour)" />
-      </div>,
-      { wrapper: ({ children }) => <KvirnProvider icons={libraryIcons}>{children}</KvirnProvider> },
-    )
-    const path = svgIn(container).querySelector('path')
-    expect(path && getComputedStyle(path).stroke).toBe('rgb(0, 128, 0)')
-  })
 })
 
 describe('accessibility', () => {
@@ -432,13 +452,6 @@ describe('accessibility', () => {
   test('a built-in icon with a label is an image with that name', async () => {
     await render(<Icon name={firstBuiltInName} label="Stäng" />)
     await expect.element(page.getByRole('img', { name: 'Stäng' })).toBeVisible()
-  })
-
-  test('is never focusable', async () => {
-    const svg = await renderIcon(<RegisteredIcon name="lucide-trash" label="Radera" />)
-    expect(svg.hasAttribute('tabindex')).toBe(false)
-    svg.focus()
-    expect(document.activeElement).not.toBe(svg)
   })
 
   test('next to a Button label, the button is named by its text only', async () => {

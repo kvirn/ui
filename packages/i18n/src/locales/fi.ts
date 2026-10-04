@@ -5,6 +5,8 @@ export const fi = {
   link: { newTabNotice: '(avautuu uuteen välilehteen)' },
   // Draft from the design spec (docs/design/form-fields.md §4.1), for a translator to confirm.
   field: { optional: '(vapaaehtoinen)', errorPrefix: 'Virhe:' },
+  // Draft from the design spec (docs/design/form-fields.md §4.1), for a translator to confirm.
+  dateInput: { day: 'Päivä', month: 'Kuukausi', year: 'Vuosi' },
   // Draft from the design spec (docs/design/notification.md §4.1), for a translator to confirm.
   notification: {
     infoPrefix: 'Tiedoksi:',

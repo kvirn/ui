@@ -16,6 +16,7 @@ const namespaces = [
   'Card',
   'CheckboxGroup',
   'Combobox',
+  'DateInput',
   'Field',
   'Fieldset',
   'FileUpload',

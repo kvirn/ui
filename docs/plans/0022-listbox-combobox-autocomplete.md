@@ -103,7 +103,7 @@ Phase 1, core (pure, node tests, two engineers in parallel on separate folders):
 Phase 2, React (after phase 1):
 
 - [x] `usePopup`, `Popover`, `useDismissableLayer` (React, tests, `popover.a11y.md`, `popover.md`, stories and e2e written; gates not yet run)
-- [ ] `Listbox` custom and native rendering, replacing `NativeSelect` (rename files, stories, e2e, theme class, `index.ts`, Field docs, changeset)
+- [x] `Listbox` custom and native rendering, replacing `NativeSelect` (407b8c5; `packages/react/src/native-select` is gone, `.changeset/listbox-replaces-native-select.md`) (rename files, stories, e2e, theme class, `index.ts`, Field docs, changeset)
   - [x] Rename, native rendering only (superseded: the native select is no longer a public part): `kv-listbox-native`, stories and e2e under `components/listbox/`, breaking changeset
   - [x] Custom popup rendering (`Listbox.Root` and the popup parts), `native="auto"`, `useListbox`, an internal native select (not exported), contract `listbox.a11y.md`, `listbox.md`, stories (`listbox.stories.tsx`, with the Native… stories for `native="always"`), e2e `listbox.e2e.ts`, default-theme `kv-listbox-*` styles; gates not yet run
 - [x] `Combobox` (single, multiple) and `Autocomplete` (`useCombobox`, `useAutocomplete`, the compound parts, contracts `combobox.a11y.md` and `autocomplete.a11y.md`, `combobox.md` and `autocomplete.md`, tests, default-theme `kv-combobox-*` and `kv-autocomplete-*` styles, stories and e2e under `components/combobox/` and `components/autocomplete/`; gates not yet run, manual AT `pending`)
@@ -112,8 +112,8 @@ Phase 2, React (after phase 1):
 Phase 3:
 
 - [ ] Stories (every state, RTL, forced colors, `Keyboard` story), e2e per contract row, 320px, reduced motion
-- [ ] `listbox.a11y.md`, `combobox.a11y.md`, `autocomplete.a11y.md`, `popover.a11y.md` and component `.md` docs
-- [ ] Changesets, roadmap rows (Listbox, Popover, Combobox, Autocomplete), `docs/plans/README.md`
+- [x] `listbox.a11y.md`, `combobox.a11y.md`, `autocomplete.a11y.md`, `popover.a11y.md` and component `.md` docs (all present under `packages/react/src/{listbox,combobox,autocomplete,popover}/`)
+- [x] Changesets (`listbox-replaces-native-select`, `combobox-autocomplete`, `popover`, `virtualized-listbox-combobox-autocomplete`), roadmap rows (Listbox, Popover, Combobox, Autocomplete), `docs/plans/README.md` row
 - [ ] Review: `accessibility-reviewer` on the diff, then `ux-designer` design review (and write `docs/design/combobox.md` if the review asks for one)
 
 ## Risks & open questions

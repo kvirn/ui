@@ -6,7 +6,7 @@
 
 A FileUpload attaches files to a form. **One native button opens the system file dialog**: that is the way in for the keyboard, voice, switch and touch. A drop zone around it is an extra for devices that drag. Behind the button is a hidden native `<input type="file">`.
 
-- Parts: `FileUpload.Root`, `.Trigger`, `.Input`, `.DropZone`, `.DropHint`, `.Limits`, `.Rejections`, `.Summary`, `.List`, `.Item`, `.Preview`, `.Name`, `.Type`, `.Size`, `.Status`, `.Progress`, `.Actions`, `.CancelButton`, `.RetryButton` and `.RemoveButton`. Each is also exported on its own (`FileUploadRoot`, …), and the hook is `useFileUpload`. The state machine is `createFileUpload` in `@kvirn-ui/core`.
+- Parts: `FileUpload.Root`, `.Trigger`, `.Input`, `.DropZone`, `.DropHint`, `.Limits`, `.Rejections`, `.Summary`, `.List`, `.Item`, `.Preview`, `.Name`, `.Type`, `.Size`, `.Status`, `.Progress`, `.ItemError`, `.Actions`, `.CancelButton`, `.RetryButton` and `.RemoveButton`. Each is also exported on its own (`FileUploadRoot`, …), and the hook is `useFileUpload`. The state machine is `createFileUpload` in `@kvirn-ui/core`.
 - **Every limit is checked here,** because a drop and "All files" skip the browser's checks: type (MIME type and extension), largest and smallest size, how many files, empty files, duplicates, folders, and your own `validate(file)`.
 - **A refused file never enters the list.** It is named under the button with how to fix it ("stor.pdf är 2 MB. Välj en fil som är högst 1 MB."). The Field is not marked invalid by it: you decide whether it blocks the form, from `onFilesReject`.
 - **Adding appends,** except with `multiple` off, where a new file replaces the old one.

@@ -74,8 +74,9 @@
  *  10b. Notification     kv-notification: a status message, by status class
  *  11. Icon
  *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-input-group,
- *                      kv-checkbox, kv-radio, kv-listbox-native, kv-listbox-trigger and popup,
- *                      kv-combobox and kv-autocomplete (input, control, buttons, value chips)
+ *                      kv-date-input, kv-checkbox, kv-radio, kv-listbox-native,
+ *                      kv-listbox-trigger and popup, kv-combobox and kv-autocomplete (input,
+ *                      control, buttons, value chips)
  *  13. One-time code    kv-one-time-code: one input, drawn as boxes and dashes of its pattern
  *  14. File upload      kv-file-upload: drop zone, trigger, rejections, and the list of files
  *  15. Table            kv-table: a native table, with sort buttons, selection, expanding and a
@@ -1662,6 +1663,12 @@
     font-weight: var(--kv-font-heading-3-weight);
     line-height: var(--kv-prose-line-height);
     letter-spacing: 0em;
+    /* Like prose: a long compound ("boendeparkeringstillstånd", 25 letters at 24px) splits at
+     * the hyphenation points, then wraps anywhere, so a heading outside prose never scrolls a
+     * 320px page sideways (1.4.10). */
+    hyphens: auto;
+    hyphenate-limit-chars: 10 4 4;
+    overflow-wrap: break-word;
   }
 
   :where(.kv-heading--display) {
@@ -2376,10 +2383,10 @@
    * (16px) wherever it sits, for what the user must read before answering. It may hold
    * paragraphs, lists and links. The hint is a Field.Hint (Fieldset.Hint): a plain
    * <p class="kv-field-hint"> in body-small (14px), in the text colour, for a short instruction,
-   * format example or limit, almost always under the control. The size belongs to the part, not
-   * to where it sits. Both are registered by the component as descriptions of the control or
-   * group, so keep them to plain text and short paragraphs: an accessible description has no
-   * structure. The hint takes data-invalid and data-disabled, which the theme doesn't style:
+   * format example or limit, always under the control. A Field.Prose is 16px and a Field.Hint
+   * 14px: the size belongs to the part. Both are registered by the component as descriptions of
+   * the control or group, so keep them to plain text and short paragraphs: an accessible
+   * description has no structure. The hint takes data-invalid and data-disabled, which the theme doesn't style:
    * the error carries the state.
    *
    * The default order is label, description, control, hint, then the error message, so the
@@ -2414,6 +2421,21 @@
    * no fill and no divider: it is not a control. A kv-button directly in the group is a flat
    * segment of the box with a divider, as tall as the box, and its own focus ring. Only the
    * default button look is styled there.
+   *
+   * A date is three boxes in a group fieldset, a row of fields (design spec §6.6):
+   *
+   *   <Fieldset.Root group required>
+   *     <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+   *     <DateInput.Root name="birth" autoComplete="bday" />
+   *     <Fieldset.Hint>Till exempel 2007 3 27</Fieldset.Hint>
+   *   </Fieldset.Root>
+   *
+   * kv-date-input is a row that wraps, 16px between the boxes (12px in compact density, from
+   * 64rem). Each box is a field with the class kv-date-input-day, -month or -year, so it is sized
+   * by what it holds whatever order the boxes are written in: two characters for the day and the
+   * month, four for the year. The boxes are plain kv-input with tabular figures, and their
+   * labels are lighter than the legend, so the legend reads as the question and Day, Month and
+   * Year as its parts. An invalid box is the input's own [data-invalid] or aria-invalid state.
    *
    * The width classes count characters in the input's own font, plus the 1.4.12 letter-spacing
    * allowance and the invalid edge, so the expected answer fits in every state. They are a
@@ -3151,6 +3173,52 @@
     .kv-input-group > .kv-button::before {
       background-color: ButtonText;
     }
+  }
+
+  /* A date (section 12, continued): the row of three boxes. It is a direct child of the
+   * fieldset, so the fieldset's gap spaces it from the legend, the hint and the error (8px, 4px
+   * compact). The boxes never shrink below their width, and wrap in order when the text is
+   * large. */
+  .kv-date-input {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--kv-space-4);
+    min-inline-size: 0;
+  }
+
+  @media (width >= 64rem) {
+    .kv-compact .kv-date-input,
+    .kv-compact.kv-date-input {
+      gap: var(--kv-space-3);
+    }
+  }
+
+  .kv-date-input > .kv-field {
+    flex: 0 0 auto;
+  }
+
+  /* Characters per box. The width itself is the input's, as for the width classes above. */
+  .kv-date-input-day,
+  .kv-date-input-month {
+    --kv-input-chars: 2;
+  }
+
+  .kv-date-input-year {
+    --kv-input-chars: 4;
+  }
+
+  .kv-date-input .kv-input {
+    inline-size: calc(
+      var(--kv-input-chars, 2) * (1ch + 0.12em) + 2 * var(--kv-input-padding-inline) + 4px
+    );
+    align-self: flex-start;
+    /* Dates line up (DESIGN.md, numeric). */
+    font-feature-settings: var(--kv-font-numeric-feature-settings);
+  }
+
+  /* Lighter than the legend: the legend is the question, these name its parts. */
+  .kv-date-input .kv-field-label {
+    font-weight: var(--kv-font-body-weight);
   }
 
   /* Checkbox, radio and native listbox (section 12, continued). <Checkbox> renders

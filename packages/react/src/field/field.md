@@ -49,11 +49,11 @@ Render the parts in this order: **label, description, control, hint, then the er
 ```
 
 - **The description, above the control:** what to answer, why we ask and where to find it: anything the user needs before they start typing. It may have paragraphs, a list or a link. It is 16px wherever it sits. Most fields have no description at all.
-- **The hint, under the control:** a format example or a limit that helps while typing. It is 14px wherever it sits, so the size belongs to the part and not to its position. Never the only instruction: a magnifier user may not see under the box until they've typed, so the error repeats the format when the format is the problem. A hint above the control is allowed and still 14px, but rare: text above the control is read before answering, which makes it a description.
+- **The hint, under the control:** a format example or a limit that helps while typing. It is 14px. Never the only instruction: a magnifier user may not see under the box until they've typed, so the error repeats the format when the format is the problem. A hint never goes above the control: text above the control is read before answering, which makes it a description. A `Field.Hint` rendered before its control gives a dev warning (`hint-before-control`).
 - **The error goes last,** after the hint, so the spoken order is the visual order and nothing moves when the error appears.
 - **Each description and hint has its own id.** The control's `aria-describedby` lists them in DOM order, then the error's, whatever the visual order: a screen-reader user hears the description, the hint, then "Fel: …". Don't give one an `id` of your own: the Field's wins, and a dev warning says so.
 - **One error per Field.** Two `Field.ErrorMessage`s share an id, so a dev warning fires. Put all the text in one.
-- **The order is yours.** The library doesn't enforce it: render the parts in another order and the spacing and the description still work. Put a hint after the error, or the error above the control, if your service needs it.
+- **The order is yours.** The library doesn't enforce it, except for one dev warning when a hint comes before its control: render the parts in another order and the spacing and the description still work. Put the error above the control, or a hint after the error, if your service needs it.
 - **An option's hint.** A checkbox or radio in its own Field takes a `Field.Hint` under its label, for example "Lägst pris per månad." It lines up with the label's text, sits directly under the label's box and outside the click target, and describes that option's input and not the group. An option that needs more than a hint puts a `Field.Prose` there instead.
 
 ### Focus on submit, on a phone

@@ -78,7 +78,7 @@ const sizeSteps: Readonly<Record<IconSizeStep, string>> = Object.freeze({
 })
 
 const isSizeStep = (size: IconSize): size is IconSizeStep =>
-  typeof size === 'string' && size in sizeSteps
+  typeof size === 'string' && Object.hasOwn(sizeSteps, size)
 
 /**
  * An icon's props, and the component for its name (contract: icon.a11y.md). The
@@ -100,8 +100,10 @@ export function useIcon({
   mirrorInRtl,
 }: UseIconOptions = {}): UseIconResult {
   const { icons, iconDefaults } = useContext(KvirnConfigContext)
-  const appEntry = name === undefined ? undefined : icons[name]
-  const builtInEntry = name === undefined ? undefined : builtInIcons[name]
+  // Own properties only: `name="constructor"` must not find `Object.prototype.constructor`.
+  const appEntry = name !== undefined && Object.hasOwn(icons, name) ? icons[name] : undefined
+  const builtInEntry =
+    name !== undefined && Object.hasOwn(builtInIcons, name) ? builtInIcons[name] : undefined
   const entryToUse = appEntry ?? builtInEntry
   const entry = entryToUse === undefined ? undefined : readIconEntry(entryToUse)
   // Mirroring belongs to the name: a plain override of a built-in keeps the built-in's.

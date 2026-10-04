@@ -4,6 +4,7 @@ import type { KvirnMessages } from '../types.ts'
 export const sv = {
   link: { newTabNotice: '(öppnas i en ny flik)' },
   field: { optional: '(valfritt)', errorPrefix: 'Fel:' },
+  dateInput: { day: 'Dag', month: 'Månad', year: 'År' },
   notification: {
     infoPrefix: 'Information:',
     successPrefix: 'Klart:',

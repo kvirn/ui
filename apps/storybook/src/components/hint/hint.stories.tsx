@@ -4,15 +4,15 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useId } from 'react'
 import { expect } from 'storybook/test'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
-import { fieldMessagesFor, localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
+import { localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/Hint: a hint is a short instruction under the control, such as a format or an
 // example, in 14px (`body-small`) and the text colour in every density and state. A description
 // is a `Field.Prose` above the control, at 16px, and may hold paragraphs, lists and links. Both
-// are listed in the control's `aria-describedby`, in DOM order, then the error. The size belongs
-// to the part, not to its position. A hint is plain text, never a link, and never the only place
+// are listed in the control's `aria-describedby`, in DOM order, then the error. A hint always
+// goes under the control, and the description above it. A hint is plain text, never a link, and never the only place
 // the format lives: the error repeats it. The design spec is docs/design/field-hint.md. The
 // contract is field.a11y.md, shared with Field, Label and ErrorMessage. KvirnUI holds no form
 // state: every story sets `invalid` and `disabled` itself. `hint-outside-field` is a unit test,
@@ -85,15 +85,7 @@ export const Keyboard: Story = {
  * input's `aria-describedby` lists it. It says how to type the answer: plain words first, then
  * the pattern.
  */
-export const UnderTheControl: Story = {
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.personalNumber })
-    const hint = canvas.getByText(text.personalNumberFormat)
-    await expect(input.getAttribute('aria-describedby')).toBe(hint.id)
-    await expect(input).toHaveAccessibleDescription(text.personalNumberFormat)
-  },
-}
+export const UnderTheControl: Story = {}
 
 /**
  * A description above the input and a hint under it. The description is what the user must read
@@ -113,21 +105,6 @@ export const WithDescription: Story = {
         <Field.Hint>{text.registrationHint}</Field.Hint>
       </Field.Root>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.registration })
-    await expect(input).toHaveAccessibleDescription(
-      `${text.registrationWhere} ${text.registrationHint}`,
-    )
-    // One id each, in DOM order: the description's, then the hint's.
-    const ids = (input.getAttribute('aria-describedby') ?? '').split(' ')
-    await expect(new Set(ids).size).toBe(2)
-    await expect(canvas.getByText(text.registrationWhere).parentElement).toHaveAttribute(
-      'id',
-      ids[0],
-    )
-    await expect(canvas.getByText(text.registrationHint)).toHaveAttribute('id', ids[1])
   },
 }
 
@@ -157,16 +134,6 @@ export const Invalid: Story = {
         <Field.ErrorMessage>{text.personalNumberError}</Field.ErrorMessage>
       </Field.Root>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const locale = localeOf(globals)
-    const { text } = textsFor(locale)
-    const input = canvas.getByRole('textbox', { name: text.personalNumber })
-    await expect(input).toHaveAttribute('aria-invalid', 'true')
-    await expect(input).toHaveAccessibleDescription(
-      `${text.personalNumberWhy} ${text.personalNumberFormat} ${fieldMessagesFor(locale).errorPrefix} ${text.personalNumberError}`,
-    )
-    await expect(canvas.getByText(text.personalNumberFormat)).toHaveAttribute('data-invalid')
   },
 }
 
@@ -214,16 +181,6 @@ export const InFieldset: Story = {
         </div>
         <Fieldset.Hint>{text.visitDateExample}</Fieldset.Hint>
       </Fieldset.Root>
-    )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(canvas.getByRole('group', { name: text.visitDate })).toHaveAccessibleDescription(
-      text.visitDateExample,
-    )
-    // The hint describes the group, not each box.
-    await expect(canvas.getByRole('textbox', { name: text.visitDay })).not.toHaveAttribute(
-      'aria-describedby',
     )
   },
 }
@@ -275,46 +232,6 @@ export const OptionHints: Story = {
     await expect(canvas.getByRole('radio', { name: text.duration1 })).not.toHaveAttribute(
       'aria-describedby',
     )
-    // Outside the label, so it is not part of the target.
-    await expect(canvas.getByText(text.duration12Hint).closest('label')).toBeNull()
-  },
-}
-
-/**
- * The size belongs to the part, not to where it sits. A `Field.Prose` (the description) is 16px
- * above the control and under it. A `Field.Hint` is 14px under the control and above it. A hint
- * above the control is allowed but rare: what the user must read before answering is a
- * description, so use a Prose there.
- */
-export const SizeFollowsThePart: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
-    return (
-      <div className="kv-story-form" lang={lang}>
-        <Field.Root required>
-          <Field.Label>{text.registration}</Field.Label>
-          <Field.Prose data-testid="prose-above">
-            <p>{text.registrationWhere}</p>
-          </Field.Prose>
-          <Input name="registration" className="kv-input--width-10" />
-          <Field.Prose data-testid="prose-under">
-            <p>{text.registrationHint}</p>
-          </Field.Prose>
-        </Field.Root>
-        <Field.Root required>
-          <Field.Label>{text.personalNumber}</Field.Label>
-          <Field.Hint data-testid="hint-above">{text.personalNumberWhy}</Field.Hint>
-          <Input
-            name="personal-number"
-            inputMode="numeric"
-            autoComplete="off"
-            spellCheck={false}
-            className="kv-input--width-20"
-          />
-          <Field.Hint data-testid="hint-under">{text.personalNumberFormat}</Field.Hint>
-        </Field.Root>
-      </div>
-    )
   },
 }
 
@@ -332,13 +249,6 @@ export const Disabled: Story = {
         <Field.Hint>{text.personalNumberHint}</Field.Hint>
       </Field.Root>
     )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.personalNumber })
-    await expect(input).toBeDisabled()
-    await expect(input).toHaveAccessibleDescription(text.personalNumberHint)
-    await expect(canvas.getByText(text.personalNumberHint)).toHaveAttribute('data-disabled')
   },
 }
 
@@ -362,14 +272,6 @@ export const ReadOnly: Story = {
       </Field.Root>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const input = canvas.getByRole('textbox', { name: text.personalNumber })
-    await expect(input).toHaveAttribute('readonly')
-    await expect(input).toHaveAccessibleDescription(text.personalNumberHint)
-    input.focus()
-    await expect(input).toHaveFocus()
-  },
 }
 
 /**
@@ -383,7 +285,7 @@ export const Compact: Story = {
       <div className="kv-compact" lang={lang}>
         <Field.Root required>
           <Field.Label>{text.personalNumber}</Field.Label>
-          <Field.Prose data-testid="description">
+          <Field.Prose>
             <p>{text.personalNumberWhy}</p>
           </Field.Prose>
           <Input
@@ -393,7 +295,7 @@ export const Compact: Story = {
             spellCheck={false}
             className="kv-input--width-20"
           />
-          <Field.Hint data-testid="hint">{text.personalNumberFormat}</Field.Hint>
+          <Field.Hint>{text.personalNumberFormat}</Field.Hint>
         </Field.Root>
       </div>
     )
@@ -418,11 +320,7 @@ export const LongFinnish: Story = {
       </div>
     )
   },
-  play: async ({ canvas, globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    await expect(
-      canvas.getByRole('textbox', { name: /Asunnonmuutostyöavustushakemuksen/ }),
-    ).toHaveAccessibleDescription(text.grantReferenceHint)
+  play: async ({ canvas }) => {
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }

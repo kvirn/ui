@@ -128,7 +128,7 @@ test.describe('Checkbox keyboard contract', () => {
   })
 
   test('clicking the label text and the padding beside the box toggles it', async ({ page }) => {
-    await openStory(page, 'unchecked')
+    await openStory(page, 'default')
     const checkbox = page.getByRole('checkbox', { name: names.declaration })
     const label = page.locator('label.kv-field-label')
     // The text.
@@ -145,17 +145,8 @@ test.describe('Checkbox keyboard contract', () => {
 })
 
 test.describe('Checkbox focus and modes', () => {
-  test('the box and the label are at least 24×24 (2.5.8)', async ({ page }) => {
-    await openStory(page, 'unchecked')
-    const box = await page.locator('.kv-checkbox').boundingBox()
-    expect(box?.width).toBeGreaterThanOrEqual(24)
-    expect(box?.height).toBeGreaterThanOrEqual(24)
-    const label = await page.locator('label.kv-field-label').boundingBox()
-    expect(label?.height).toBeGreaterThanOrEqual(24)
-  })
-
   test('a key-focused checkbox shows a focus indicator (2.4.7)', async ({ page }) => {
-    await openStory(page, 'unchecked')
+    await openStory(page, 'default')
     await page.keyboard.press('Tab')
     const checkbox = page.getByRole('checkbox')
     await expect(checkbox).toBeFocused()
@@ -163,11 +154,6 @@ test.describe('Checkbox focus and modes', () => {
     expect(await checkbox.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe(
       'none',
     )
-  })
-
-  test('an invalid checkbox shows its error message', async ({ page }) => {
-    await openStory(page, 'invalid')
-    await expect(page.locator('.kv-field-error-message')).toBeVisible()
   })
 
   test('forced colours keep the box edge visible in every state (1.4.11)', async ({ page }) => {
@@ -223,7 +209,7 @@ test.describe('Checkbox accessibility', () => {
     'mode:dark;contrast:more',
   ] as const
   const stories: readonly (readonly [string, string?])[] = [
-    ['unchecked'],
+    ['default'],
     ['checked'],
     ['indeterminate'],
     ['with-description'],

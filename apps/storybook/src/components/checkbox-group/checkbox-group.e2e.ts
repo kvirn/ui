@@ -52,10 +52,15 @@ const checkedValues = (page: Page) =>
 test.describe('CheckboxGroup keyboard contract', () => {
   test('Tab moves through every checkbox in DOM order', async ({ page }) => {
     await openStory(page, 'keyboard')
+    await page.keyboard.press('Tab')
+    await expect(page.getByRole('button', { name: 'Tillbaka' })).toBeFocused()
     for (const name of ['E-post', 'Sms', 'Brev']) {
       await page.keyboard.press('Tab')
       await expect(box(page, name)).toBeFocused()
     }
+    // Then out of the group, to the next focusable element.
+    await page.keyboard.press('Tab')
+    await expect(page.getByRole('button', { name: 'Skicka' })).toBeFocused()
     // The fieldset, the legend and the hint are not Tab stops.
     await expect(page.locator('.kv-checkbox-group')).not.toHaveAttribute('tabindex', /.*/)
     await expect(page.locator('.kv-fieldset-legend')).not.toHaveAttribute('tabindex', /.*/)
@@ -68,8 +73,9 @@ test.describe('CheckboxGroup keyboard contract', () => {
     await expect(box(page, 'Sms')).toBeFocused()
     await page.keyboard.press('Shift+Tab')
     await expect(box(page, 'E-post')).toBeFocused()
+    // Then out of the group, to the previous focusable element.
     await page.keyboard.press('Shift+Tab')
-    await expect(page.locator('.kv-checkbox:focus')).toHaveCount(0)
+    await expect(page.getByRole('button', { name: 'Tillbaka' })).toBeFocused()
   })
 
   test('Space toggles the focused checkbox and reports the next value', async ({ page }) => {
@@ -111,47 +117,9 @@ test.describe('CheckboxGroup keyboard contract', () => {
     await page.keyboard.press('Tab')
     await expect(page.locator(':focus')).toHaveCount(0)
   })
-
-  test('an uncontrolled group submits every checked value, and Space changes it', async ({
-    page,
-  }) => {
-    await openStory(page, 'plain-form')
-    // The story's play function checked E-post and submitted: wait for it, then use the keys.
-    await expect(page.getByTestId('sent')).toHaveText('Skickat: email, text')
-    await box(page, 'Brev').focus()
-    await page.keyboard.press('Space')
-    await page.getByRole('button', { name: 'Skicka' }).focus()
-    await page.keyboard.press('Enter')
-    await expect(page.getByTestId('sent')).toHaveText('Skickat: email, text, letter')
-  })
 })
 
 test.describe('CheckboxGroup focus and modes', () => {
-  test('the group is a fieldset named by its legend and described by its hint', async ({
-    page,
-  }) => {
-    await openStory(page, 'default')
-    const group = page.getByRole('group', {
-      name: 'Hur ska vi kontakta dig om tillståndet? (valfritt)',
-    })
-    await expect(group).toHaveAccessibleDescription('Välj alla som passar.')
-    expect(await group.evaluate((element) => element.tagName)).toBe('FIELDSET')
-    // The options carry no optional marker.
-    await expect(box(page, 'E-post')).toBeVisible()
-  })
-
-  test('an invalid group has no aria-invalid, and the error in the group’s description', async ({
-    page,
-  }) => {
-    await openStory(page, 'invalid')
-    for (const name of ['E-post', 'Sms', 'Brev']) {
-      await expect(box(page, name)).not.toHaveAttribute('aria-invalid')
-    }
-    await expect(page.getByRole('group')).toHaveAccessibleDescription(
-      'Välj alla som passar. Fel: Välj hur vi ska kontakta dig',
-    )
-  })
-
   test('forced colours keep the box edge visible in every state (1.4.11)', async ({ page }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'forced-colors')

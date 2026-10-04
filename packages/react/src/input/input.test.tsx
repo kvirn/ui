@@ -751,7 +751,7 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('a masked Input with a Field.Hint, under or above it, counts as hinted and does not warn', async () => {
+  test('a masked Input with a Field.Hint under it counts as hinted and does not warn', async () => {
     await render(
       <>
         <Field.Root>
@@ -761,8 +761,8 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
         </Field.Root>
         <Field.Root>
           <Field.Label>Postnummer</Field.Label>
-          <Field.Hint>Fem siffror.</Field.Hint>
           <Input mask={masks.postalCode({ country: 'SE' })} />
+          <Field.Hint>Fem siffror.</Field.Hint>
         </Field.Root>
       </>,
     )

@@ -10,12 +10,12 @@ An icon is decorative by default: text next to it already says what it means, so
 
 ## Roles, states, properties
 
-| Part | Element / role                    | ARIA                                                 | Notes                                                                                                                                            |
-| ---- | --------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Icon | `<svg>`, no role                  | `aria-hidden="true"`                                 | Default: decorative. `class="kv-icon"`                                                                                                           |
-|      | `<svg>` → `img`, with `label`     | `role="img"`, `aria-label={label}`, no `aria-hidden` | A library's own `aria-hidden` (Heroicons, Lucide) is removed. `aria-label`, `aria-hidden` and `role` can't be passed directly: `label` sets them |
-|      | unknown `name`                    | `aria-hidden="true"`, empty                          | Sized like the icon, so nothing moves. A dev warning names the missing icon                                                                      |
-|      | `data-size`, `data-mirror-in-rtl` | none                                                 | State for CSS: the size step, and whether the icon flips in right-to-left text                                                                   |
+| Part | Element / role                    | ARIA                                                 | Notes                                                                                                                                                                                                     |
+| ---- | --------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Icon | `<svg>`, no role                  | `aria-hidden="true"`                                 | Default: decorative. `class="kv-icon"`                                                                                                                                                                    |
+|      | `<svg>` → `img`, with `label`     | `role="img"`, `aria-label={label}`, no `aria-hidden` | A library's own `aria-hidden` (Heroicons, Lucide) is removed. `aria-label`, `aria-hidden` and `role` can't be passed directly: `label` sets them                                                          |
+|      | unknown `name`                    | `aria-hidden="true"`, empty                          | Sized like the icon, so nothing moves. A dev warning names the missing icon. With a `label` it is still `role="img"` with that name, so a screen-reader user keeps the name and the warning flags the bug |
+|      | `data-size`, `data-mirror-in-rtl` | none                                                 | State for CSS: the size step, and whether the icon flips in right-to-left text                                                                                                                            |
 
 `useIcon` gives the same `iconProps`, and the component for a name, for your own `<svg>`.
 
@@ -23,10 +23,10 @@ An icon is decorative by default: text next to it already says what it means, so
 
 This component has no focusable parts and handles no keys.
 
-| Key       | Context | Action                                                 | Test                                                 |
-| --------- | ------- | ------------------------------------------------------ | ---------------------------------------------------- |
-| Tab       | Icon    | Never stops on an icon: no `tabindex`, never focusable | `icon.test.tsx › accessibility › is never focusable` |
-| Shift+Tab | Icon    | Never stops on an icon when moving backwards           | `icon.e2e.ts › Shift+Tab never stops on an icon`     |
+| Key       | Context | Action                                                 | Test                                             |
+| --------- | ------- | ------------------------------------------------------ | ------------------------------------------------ |
+| Tab       | Icon    | Never stops on an icon: no `tabindex`, never focusable | `icon.e2e.ts › Tab never stops on an icon`       |
+| Shift+Tab | Icon    | Never stops on an icon when moving backwards           | `icon.e2e.ts › Shift+Tab never stops on an icon` |
 
 An icon that does something belongs inside a `Button` or `Link`, which is the focusable element.
 
@@ -58,9 +58,9 @@ Icon has no strings. A `label` comes from your own translations.
 
 - Focus indicator: not applicable. Icon is never focusable.
 - Target size: not applicable. An icon-only button's target is the Button's: the default theme makes `kv-button--icon-only` square and at least `--kv-button-min-block-size` (2.5.8).
-- forced-colors behaviour: icons draw in `currentColor`, which follows the system colour. The default theme turns an explicit `fill`, `stroke` or `color` on `.kv-icon` into `currentColor` in forced-colours mode, so a hard-coded colour can't vanish. Test: `icon.e2e.ts` in `chromium-forced-colors`.
+- forced-colors behaviour: icons draw in `currentColor`, which follows the system colour. The default theme turns an explicit `fill`, `stroke` or `color` on `.kv-icon` into `currentColor` in forced-colours mode, so a hard-coded colour can't vanish. Colours on child shapes are kept, so forced-colours contrast for a multi-colour, meaningful SVG is the consumer's job. Test: `icon.e2e.ts › a hard-coded color, fill and stroke render in the system colour` (it uses `emulateMedia({ forcedColors: 'active' })`, not the `chromium-forced-colors` project).
 - reduced-motion behaviour: no motion.
-- Text resize and reflow: the size steps are `em`, so icons grow with text (1.4.4) and reflow at 320px (1.4.10). Test: `icon.test.tsx › attributes › the default size grows with the text it sits in (1.4.4)`.
+- Text resize and reflow: the size steps are `em`, so icons grow with text (1.4.4) and reflow at 320px (1.4.10). Tests: `icon.test.tsx › attributes › the default size grows with the text it sits in (1.4.4)` and, for reflow, `icon.e2e.ts › no horizontal scrolling at 320px (1.4.10): in-running-text-and-links` (the same test runs once per story).
 
 ## WCAG SCs covered
 
@@ -90,6 +90,6 @@ Icon has no strings. A `label` comes from your own translations.
 
 ## Known issues
 
-- `var()` in SVG presentation attributes is verified in Chromium and Firefox, not yet in WebKit (Plan 0009, open question 4).
+- `var()` in SVG presentation attributes (`color="var(--kv-color-danger)"`, and `fill` and `stroke`) is checked by `icon.e2e.ts › a CSS custom property works as an icon colour in this engine (rule-13 exception: browser capability)` on chromium and webkit (a named rule-13 exception, maintainer 2026-10-04; Plan 0009, open question 6).
 - With Tabler icons, `stroke` sets the stroke width (Tabler's own prop), not the colour. Use `color`.
 - react-icons applies its own `size` after Icon's `width` and `height`. Size react-icons on the element.

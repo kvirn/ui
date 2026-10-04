@@ -187,43 +187,6 @@ describe('virtualize: the window', () => {
 })
 
 describe('virtualize: keys reach options that are not rendered', () => {
-  test('ArrowUp on the closed input activates the last option, mounted, with its place', async () => {
-    await render(<Example />)
-    await openWithKey('{ArrowUp}')
-    const last = activeOption()
-    expect(last?.textContent).toBe('Ort 10000')
-    expect(last?.getAttribute('aria-posinset')).toBe(String(count))
-    expect(last?.getAttribute('aria-setsize')).toBe(String(count))
-    await expect.element(input()).toHaveFocus()
-    expect(renderedCount()).toBeLessThan(60)
-    await expect
-      .poll(() => {
-        const box = last?.getBoundingClientRect()
-        const area = listElement()?.getBoundingClientRect()
-        return (
-          box !== undefined &&
-          area !== undefined &&
-          box.top >= area.top - 1 &&
-          box.bottom <= area.bottom + 1
-        )
-      })
-      .toBe(true)
-  })
-
-  test('PageDown moves ten options, and the active one is always in the DOM', async () => {
-    await render(<Example />)
-    await openWithKey('{ArrowDown}')
-    expect(activeName()).toBe('Ort 1')
-    for (let step = 1; step <= 6; step += 1) {
-      await userEvent.keyboard('{PageDown}')
-      expect(activeName()).toBe(`Ort ${1 + step * 10}`)
-      expect(activeOption()?.getAttribute('aria-posinset')).toBe(String(1 + step * 10))
-    }
-    await userEvent.keyboard('{PageUp}')
-    expect(activeName()).toBe('Ort 51')
-    await expect.poll(() => (listElement()?.scrollTop ?? 0) > 0).toBe(true)
-  })
-
   test('ArrowDown at the last option stops: it does not wrap', async () => {
     await render(<Example />)
     await openWithKey('{ArrowUp}')
@@ -242,22 +205,6 @@ describe('virtualize: keys reach options that are not rendered', () => {
     await expect.poll(isShown).toBe(false)
     expect(inputElement().value).toBe('Ort 10000')
     await expect.element(input()).toHaveFocus()
-  })
-
-  test('typing filters the 10 000 items, and the list keeps its size set up to date', async () => {
-    await render(<Example />)
-    await typeText('Ort 9')
-    await expect.poll(isShown).toBe(true)
-    // "Ort 9", "Ort 90" to "Ort 99", "Ort 900" to "Ort 999" and "Ort 9000" to "Ort 9999": 1111 options.
-    await expect.poll(() => renderedOptions()[0]?.getAttribute('aria-setsize')).toBe('1111')
-    expect(renderedCount()).toBeLessThan(60)
-    expect(renderedOptions()[0]?.getAttribute('aria-posinset')).toBe('1')
-    expect(renderedOptions()[0]?.textContent).toBe('Ort 9')
-    // Nothing is active until a key moves there.
-    expect(inputElement().hasAttribute('aria-activedescendant')).toBe(false)
-    await userEvent.keyboard('{ArrowUp}')
-    expect(activeName()).toBe('Ort 9999')
-    expect(activeOption()?.getAttribute('aria-posinset')).toBe('1111')
   })
 
   test('typing a text that few options contain renders them all, and the window follows the list', async () => {

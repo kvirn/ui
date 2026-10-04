@@ -76,9 +76,9 @@ None new. The theme fixture strings in the stories gain a pattern-aware hint (st
 
 Found while the Checkbox/Radio/NativeSelect session ran its gates. The session didn't touch these files, so they're recorded here for whoever owns this plan:
 
-- [ ] `packages/core/src/mask/masks.ts:263`: `assertOneTimeCodePattern` reads `source.length` with `source` undefined, because `masks.oneTimeCode` (line 298) is called without a `pattern` (for example with `{ length }` from `useOneTimeCode`, `use-one-time-code.ts:237`). Fix the call or keep the `length` option working next to `pattern`. Failing: `masks.test.ts` (1), `one-time-code.test.tsx` (70), `one-time-code.stories.tsx` (40, in all four theme projects)
-- [ ] `packages/core/src/mask/masks.test.ts` fails the format check. Run `vp check --fix packages/core/src/mask/masks.test.ts` (this one path only)
-- [ ] Re-run `vp check` and `vp test run` on the changed files until the Stop hook passes
+- [x] (fixed: `OneTimeCodeMaskOptions.pattern` is required, `useOneTimeCode` calls `masks.oneTimeCode({ pattern })` at `use-one-time-code.ts:269`, and every caller in `packages/` and `apps/` passes `pattern`) `packages/core/src/mask/masks.ts:263`: `assertOneTimeCodePattern` reads `source.length` with `source` undefined, because `masks.oneTimeCode` (line 298) is called without a `pattern` (for example with `{ length }` from `useOneTimeCode`, `use-one-time-code.ts:237`). Fix the call or keep the `length` option working next to `pattern`. Failing: `masks.test.ts` (1), `one-time-code.test.tsx` (70), `one-time-code.stories.tsx` (40, in all four theme projects)
+- [ ] `packages/core/src/mask/masks.test.ts` fails the format check. Run `vp check --fix packages/core/src/mask/masks.test.ts` (this one path only) (orchestrator to verify)
+- [ ] Re-run `vp check` and `vp test run` on the changed files until the Stop hook passes (orchestrator to verify)
 
 ## Verification
 

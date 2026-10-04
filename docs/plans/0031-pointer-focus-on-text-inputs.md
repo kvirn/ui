@@ -17,6 +17,7 @@ A click or tap in a text input shows focus as a primary-coloured edge only. Keyb
 ## Design
 
 **Modality.** `useFocusVisible` (internal, `packages/react/src/focus-visible/`) notes a `pointerdown` anywhere in the document, and clears it at the next `focusin` (bubble phase on the document, after React's handlers have read it), one task after the `click` (so a click on page text marks no later focus), on `pointercancel`, or at any key other than a lone modifier. A text-entry element (`textarea`, or an `input` that takes text) shows the ring when it matches `:focus-visible` and no pointer went down since the last focus. Every other element follows the browser, so Button, Link, Checkbox, Listbox and FileUpload are unchanged. The listeners are installed once, from an effect, so the module stays SSR-safe.
+
 - A focus with no pointer before it shows the ring: a screen reader's browse-mode focus, Tab back from the browser chrome, an access key, Ctrl+K, or a script after a click elsewhere. A script focus inside the click's own task still counts as a click (in Safari and macOS Firefox a button click doesn't focus the button), which affects only mouse users. This follows React Aria's "virtual" modality, and keeps 2.4.7 for those users (accessibility-reviewer, blocking finding 1).
 - Decision: keys pressed after a click (arrows in a Combobox) don't bring the ring back until the next focus. The edge and the caret stay.
 
@@ -48,9 +49,9 @@ A click or tap in a text input shows focus as a primary-coloured edge only. Keyb
 - [x] `useFocusVisible`: modality and `isFocused`. Input, OneTimeCode and Combobox: `data-focused`. InputGroup: modality
 - [x] theme.css: the edge on focus, the ring on keyboard focus, and forced colours
 - [x] Docs: DESIGN.md, `input.a11y.md`, `input-group.a11y.md`, `one-time-code.a11y.md`, the styling contract in `architecture.md`, and the `theme-css` skill
-- [x] Changeset (theme, react: patch)
-- [ ] Gates: `vp check`, `vp test run`, e2e for input, input-group, autocomplete, combobox and one-time-code, and `theme:check`
-- [x] accessibility-reviewer: APPROVE on the third pass (first pass: CHANGES REQUIRED, the three blocking findings fixed: modality reset per focus, text entry only, Autocomplete and drawn OneTimeCode click e2e. Second pass: the flag is also cleared after the click)
+- [x] Changeset (theme: minor, because `colorTokenNames` gains `border-focus`; react: patch)
+- [x] Gates, 2026-10-04: `vp check` 0 errors; `vp test run` 382; e2e chromium input 48, input-group 31, one-time-code 60, combobox 85, autocomplete 72; `theme:check` 628 pairs
+- [x] accessibility-reviewer: APPROVE on the fourth pass, 2026-10-04, after the Combobox and Autocomplete contracts were fixed (the third pass's APPROVE was followed by a CHANGES REQUIRED re-review). Earlier: APPROVE on the third pass (first pass: CHANGES REQUIRED, the three blocking findings fixed: modality reset per focus, text entry only, Autocomplete and drawn OneTimeCode click e2e. Second pass: the flag is also cleared after the click)
 
 ## Verification
 
@@ -59,3 +60,13 @@ A click or tap in a text input shows focus as a primary-coloured edge only. Keyb
 - The same in InputGroup, Combobox, Autocomplete and OneTimeCode (plain and drawn).
 - Invalid: the danger edge stays on focus.
 - Forced colours: the focused edge and the ring are `Highlight`.
+
+## Review 2026-10-04
+
+accessibility-reviewer re-reviewed 3ab7a38. It found the Combobox and Autocomplete contracts stale: they still described a 2px `focus-ring` outline on any focus. Fixed in this change (`combobox.a11y.md`, `autocomplete.a11y.md`), together with the 2.4.13 wording in DESIGN.md and the `theme-css` skill. Non-blocking findings, open follow-ups:
+
+- [ ] (a) In forced colours, a click inside a box (InputGroup, Combobox and Autocomplete Control) shows only a 1px `ButtonBorder` to `Highlight` change. Add a transparent outline to the box's `:has(…:focus)` rules, for parity with the Input.
+- [ ] (b) `use-focus-visible` treats screen-reader-synthesised "virtual" pointer events as a pointer. Treat them as keyboard, as React Aria does.
+- [ ] (c) An invalid field that is click-focused has no visual change besides the caret.
+- [ ] (d) The e2e test names say "focus-ring edge", but the edge is `border-focus`. (No test with that name was found in the tree on 2026-10-04: check the names when this is picked up.)
+- [ ] (e) No component test proves `data-focused` on the Combobox input.

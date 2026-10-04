@@ -18,11 +18,11 @@ A Checkbox is one yes-or-no answer: a declaration, a consent, a "select all" in 
 
 Rules, tested in `checkbox.test.tsx`:
 
-- **A native checkbox.** `<input type="checkbox">`, class `kv-checkbox`, no ARIA role and no `aria-checked` (`checkbox.test.tsx › renders a native <input type="checkbox"> with its class, outside a Field`).
-- **Named by its label.** In a Field the label's `for` matches the input's `id`; the accessible name is the label text, with "(optional)" in a standalone, non-required Field (`checkbox.test.tsx › the Field’s label is the name, and the description is the option’s hint`). The hint is a `Field.Prose` in the option's Field: its description is its text content, so keep it short and plain.
-- **`indeterminate` is a DOM property** set after render (it can't be set in markup): the checkbox exposes "mixed" and `data-state="indeterminate"`. The first server-rendered paint is unchecked. A click checks it (Space does the same) and calls `onCheckedChange(true)`; whether it stays indeterminate is the `indeterminate` prop's decision, not the browser's (`checkbox.test.tsx › indeterminate is the DOM property and data-state`).
+- **A native checkbox.** `<input type="checkbox">`, class `kv-checkbox`, no ARIA role and no `aria-checked` (`checkbox.test.tsx › renders a native <input type="checkbox">, outside a Field`).
+- **Named by its label.** In a Field the label's `for` matches the input's `id`; the accessible name is the label text, with "(optional)" in a standalone, non-required Field (`checkbox.test.tsx › the Field’s label is the name, and the description is the option’s hint`). The hint is a `Field.Hint` in the option's Field, outside the label: its description is its text content, so keep it short and plain.
+- **`indeterminate` is a DOM property** set after render (it can't be set in markup): the checkbox exposes "mixed" and `data-state="indeterminate"`. The first server-rendered paint is unchecked. A click or Space toggles the underlying `checked` state and calls `onCheckedChange` with it: with `checked={false}`, as in the docs example, that is `true`, so it checks the box. Whether it stays indeterminate is the `indeterminate` prop's decision, not the browser's (`checkbox.test.tsx › indeterminate is the DOM property and data-state`).
 - **`data-state`** is `checked`, `unchecked` or `indeterminate`. It follows the props for a controlled checkbox, and the native state after each change for an uncontrolled one. The default theme styles `:checked` and `:indeterminate` first, so nothing depends on this attribute after a `form.reset()` (`checkbox.test.tsx › data-state follows the native state`).
-- **No form state.** `defaultChecked` and `name` work in a plain form (`FormData` has the value); `checked` and `onCheckedChange` give a controlled checkbox. The checkbox never copies `checked` into state (`checkbox.test.tsx › works in a plain form`, `checkbox.test.tsx › a controlled checkbox shows the checked it is given`).
+- **No form state.** `defaultChecked` and `name` work in a plain form (`FormData` has the value); `checked` and `onCheckedChange` give a controlled checkbox. The checkbox never copies `checked` into state (`checkbox.test.tsx › works in a plain form: the browser keeps the state and FormData has it`, `checkbox.test.tsx › a controlled checkbox shows the checked it is given`).
 - **`aria-invalid` on a standalone Checkbox** when its Field is `invalid`. A Checkbox in a group gets only `data-invalid` from the group (`checkbox-group.a11y.md`).
 - **The error of a standalone checkbox** (a declaration) is the Field.ErrorMessage, under the row, in `aria-describedby` after the option's hint.
 - **Disabled.** A Field's `disabled` or the prop gives native `disabled` and `data-disabled`. The label of a disabled choice is muted by the theme, never hidden.
@@ -38,14 +38,14 @@ Rules, tested in `checkbox.test.tsx`:
 
 Each checkbox is its own Tab stop, also inside a CheckboxGroup: checkboxes are independent, not a composite. Nothing is intercepted: Space, Enter and Tab keep their native behaviour.
 
-| Key       | Context                 | Action                                                                           | Test                                                                          |
-| --------- | ----------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Tab       | before the checkbox     | Moves focus to the checkbox. Each checkbox is one Tab stop                       | `checkbox.e2e.ts › Tab moves to each checkbox, one stop each`                 |
-| Shift+Tab | on a checkbox           | Moves focus to the previous focusable element                                    | `checkbox.e2e.ts › Shift+Tab moves to the previous checkbox`                  |
-| Tab       | disabled checkbox       | Skips it (native `disabled` leaves the Tab sequence)                             | `checkbox.e2e.ts › Tab skips a disabled checkbox`                             |
-| Space     | on a checkbox           | Toggles it, and reports `onCheckedChange` (native)                               | `checkbox.e2e.ts › Space toggles the checkbox`                                |
-| Space     | on an indeterminate box | Checks it (native: a mixed checkbox becomes checked)                             | `checkbox.e2e.ts › Space on an indeterminate checkbox checks it`              |
-| Enter     | on a checkbox           | Doesn't toggle it. In a form the browser may submit it (native, never prevented) | `checkbox.e2e.ts › Enter does not toggle the checkbox and is not intercepted` |
+| Key       | Context                 | Action                                                                                              | Test                                                                          |
+| --------- | ----------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Tab       | before the checkbox     | Moves focus to the checkbox. Each checkbox is one Tab stop                                          | `checkbox.e2e.ts › Tab moves to each checkbox, one stop each`                 |
+| Shift+Tab | on a checkbox           | Moves focus to the previous focusable element                                                       | `checkbox.e2e.ts › Shift+Tab moves to the previous checkbox`                  |
+| Tab       | disabled checkbox       | Skips it (native `disabled` leaves the Tab sequence)                                                | `checkbox.e2e.ts › Tab skips a disabled checkbox`                             |
+| Space     | on a checkbox           | Toggles it, and reports `onCheckedChange` (native)                                                  | `checkbox.e2e.ts › Space toggles the checkbox`                                |
+| Space     | on an indeterminate box | Toggles the underlying state (native); with `checked={false}`, as in the docs example, it checks it | `checkbox.e2e.ts › Space on an indeterminate checkbox checks it`              |
+| Enter     | on a checkbox           | Doesn't toggle it. In a form the browser may submit it (native, never prevented)                    | `checkbox.e2e.ts › Enter does not toggle the checkbox and is not intercepted` |
 
 The arrow keys, Home and End do nothing on a checkbox (native). Clicking the label, or the padding around the box, toggles it and focuses it (`checkbox.e2e.ts › clicking the label text and the padding beside the box toggles it`).
 
@@ -109,7 +109,7 @@ Research questions for the AT run: is "mixed" announced on an indeterminate chec
 
 ## Known issues
 
-- **`indeterminate` can't be server-rendered.** The DOM property is set in a layout effect, so the first paint of server markup is unchecked. The component test covers the client; the e2e checks the mark.
+- **`indeterminate` can't be server-rendered.** The DOM property is set in a layout effect, so the first paint of server markup is unchecked. The component test covers the client (the DOM property and `data-state`). No automated test checks the drawn mark: it is reviewed by eye, and checked in the manual AT matrix (the Windows Contrast Themes row).
 - **`data-state` after `form.reset()`.** For an uncontrolled checkbox it's updated on change events, not on a form reset. The theme styles `:checked` and `:indeterminate`, so the look is right; read the native state, not the attribute, in your own code.
-- **WebKit not run locally.** The check and dash marks are drawn with `::before` and `clip-path` on the input: the `firefox` and `webkit` projects (CI) must render them (Plan 0013, open question 11). A hidden indicator element is the fallback if they don't.
+- **The check and dash marks are not tested automatically.** They are drawn with `::before` and `clip-path` on the input. The e2e tests that checked the marks were removed in commit 383f811, so nothing automated shows that Firefox and WebKit (WebKit is not run locally) draw them, or that checked and indeterminate differ visibly from unchecked. The marks are reviewed by eye and checked in the manual AT matrix (the Windows Contrast Themes row). A hidden indicator element is the fallback if a browser doesn't draw them (Plan 0013, open question 11).
 - **`se` (Northern Sámi) is a placeholder in the fixtures.** See `field.a11y.md`.

@@ -21,15 +21,15 @@ Prose is the `kv-prose` class as a component: a container whose headings, paragr
 
 ## A Prose in a Field or Fieldset is its description
 
-A `Prose` inside a `Field.Root` or a `Fieldset.Root` registers itself with the nearest one, like `Field.ErrorMessage` does, and is the hint of that control or group. Inside a host it is written `Field.Prose` or `Fieldset.Prose` (the same behaviour under the host's name; `CheckboxGroup.Prose` and `RadioGroup.Prose` are the group forms). There is no `Field.Description` or `Fieldset.Description`.
+A `Prose` inside a `Field.Root` or a `Fieldset.Root` registers itself with the nearest one, like `Field.ErrorMessage` does, and is the description of that control or group (above the control). The hint is a different part, `Field.Hint`, under the control; `field.a11y.md` owns it. Inside a host it is written `Field.Prose` or `Fieldset.Prose` (the same behaviour under the host's name; `CheckboxGroup.Prose` and `RadioGroup.Prose` are the group forms). There is no `Field.Description` or `Fieldset.Description`.
 
 - **Registration is automatic** and has no opt-out. The control's (or group's) `aria-describedby` lists every registered Prose in DOM order, each with its own id, then the error. The id is listed only while the Prose is rendered (`prose.test.tsx › a Prose in a Field registers its id and the control’s aria-describedby lists it`, `prose.test.tsx › two Proses are listed in DOM order, then the error`, `prose.test.tsx › a Prose in a Fieldset describes the group`).
 - **The nearest host wins.** A Prose in a Field that is inside a Fieldset describes that Field's control, not the group (`prose.test.tsx › a Prose in a Field inside a Fieldset describes the Field’s control, not the group`).
-- **The description is the Prose's text content.** A heading, list, table or link inside it is read as plain text, without its role or structure, and a link in it can't be followed from the description (`prose.test.tsx › the description is its text content: a heading, list and link inside lose their structure`). So keep a hint to plain text and a few short paragraphs.
-- **A Prose that isn't a hint goes outside the Field or Fieldset.** Every Prose inside a host registers.
+- **The description is the Prose's text content.** A heading, list, table or link inside it is read as plain text, without its role or structure, and a link in it can't be followed from the description (`prose.test.tsx › the description is its text content: a heading, list and link inside lose their structure`). So keep a description to plain text and a few short paragraphs.
+- **A Prose that isn't a description goes outside the Field or Fieldset.** Every Prose inside a host registers.
 - **State and props.** The host's `data-invalid` and `data-disabled` are on the Prose, and `render` gets the host's state as its second argument (`isInvalid`, `isRequired`, `isDisabled`). The consumer's `ref`, `className` and other props are kept. The `id` is the host's: an `id` of your own gives a dev warning from `mergeProps` and the host's wins (`prose.test.tsx › invalid and disabled: …`, `prose.test.tsx › keeps the consumer’s ref next to the registration`).
 - **Outside a host** a Prose has no id, no `data-*` and no warning (`prose.test.tsx › a Prose outside a Field or Fieldset has no id and does not warn`).
-- **Element.** A `<div>` by default, so a hint can hold several paragraphs. `render={<p />}` makes a one-line hint a paragraph.
+- **Element.** A `<div>` by default, so a description can hold several paragraphs. `render={<p />}` makes a one-line description a paragraph.
 
 ## Keyboard
 
@@ -58,7 +58,7 @@ Prose renders no text, so it has no message keys.
 
 - **The content's semantics.** Real headings in order, real lists, links that say where they go, tables with headers (1.3.1, 2.4.4). Prose styles what is there. It doesn't add structure.
 - **Content from a CMS or Markdown** needs the same checks before it is rendered.
-- **A hint in a Field or Fieldset is short plain text.** Don't put a heading, list, table or link in it: the accessible description keeps only the text. Put such a Prose outside the Field.
+- **A description in a Field or Fieldset is short plain text.** Don't put a heading, list, table or link in it: the accessible description keeps only the text. Put such a Prose outside the Field.
 - **Language.** `lang` on prose in another language (3.1.2).
 - **Size and colour choices.** `kv-prose--small` only for notes and metadata, and the contrast of any `--kv-prose-color-*` you override (see Sizes, width and colour roles).
 
@@ -76,8 +76,8 @@ With the theme, `kv-prose--small` (14px), the default (16px), `kv-prose--large` 
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships: no role of its own, so the consumer's content decides the semantics (`prose.test.tsx`). In a Field or Fieldset the hint is in the accessible description of the control or group (`prose.test.tsx`, axe in both).
-- 3.3.2 Labels or Instructions: a hint in a Field is linked to its control.
+- 1.3.1 Info and Relationships: no role of its own, so the consumer's content decides the semantics (`prose.test.tsx`). In a Field or Fieldset the description is in the accessible description of the control or group (`prose.test.tsx`, axe in both).
+- 3.3.2 Labels or Instructions: a description in a Field is linked to its control.
 - 1.4.3, 1.4.10, 1.4.12: the `kv-prose` theme rules, as tested in the Prose stories. The sizes and the width option are checked in the `Sizes` and `Full width and colour roles` stories; the colour roles are held by `theme:check`.
 - 1.4.4 Resize Text: the sizes are in rem.
 

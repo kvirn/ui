@@ -46,11 +46,11 @@ None.
 
 ## Tasks
 
-- [ ] `useDescriptionPart` hook, Prose registers, `FileUpload.Limits` uses the hook
-- [ ] Remove `Field.Description`, `Fieldset.Description` and their types and exports
-- [ ] Tests first: Prose in Field and Fieldset (id, DOM order, two hints, `aria-describedby`, outside a host, axe). Migrate the existing tests
+- [x] `useDescriptionPart` hook, Prose registers, `FileUpload.Limits` uses the hook (`packages/react/src/field/use-description-part.ts`, used by `prose.tsx`, `field.tsx`, `file-upload.tsx`)
+- [x] Remove `Field.Description`, `Fieldset.Description` and their types and exports (no source or story references remain; only the plans, changesets and historical design notes)
+- [x] Tests first: Prose in Field and Fieldset (id, DOM order, two hints, `aria-describedby`, outside a host, axe). Migrate the existing tests
 - [x] `theme.css`: remove `.kv-field-description`, boundary rule, grid rule, theme tests (including the heading and field tests that name the old class)
-- [ ] Migrate stories, fixtures, `*.md`, `*.a11y.md`, docs, `docs/design/form-fields.md`
+- [x] Migrate stories, fixtures, `*.md`, `*.a11y.md`, docs, `docs/design/form-fields.md` (the `*.a11y.md`, stories and fixtures say "no `Field.Description`"; the design spec records the decision)
 - [x] Decision record, roadmap, changeset (breaking, `!`)
 - [ ] Manual AT matrix: `pending`
 

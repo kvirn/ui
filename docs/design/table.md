@@ -88,7 +88,7 @@ A table is not a flow, but each job has steps and unhappy paths.
 | Reload with rows on screen               | Rows stay at full contrast (never dimmed). A static hatched bar runs along the head's lower edge and the body shows the progress cursor. `table.loading` is announced. The consumer should also show the status in words near the table (§6.10) |
 | Loading fails                            | The consumer's `Notification.Danger` above the table says what failed and what to do. The table keeps its last rows, or shows the empty row with the consumer's message. The table has no error state of its own                                |
 | Too many rows                            | Pagination is the recommended default. Virtualization only when people must scroll through everything                                                                                                                                           |
-| Wider than the screen                    | Only the region scrolls sideways. It becomes a named Tab stop, and its ring shows on focus                                                                                                                                                      |
+| Wider than the screen                    | Only the region scrolls sideways. It becomes a named region and a Tab stop, and its ring shows on focus                                                                                                                                         |
 | Focus goes under the sticky header       | It can't: the region's `scroll-padding-block-start` equals the head's height (§6.11)                                                                                                                                                            |
 | Virtualized: the focused row scrolls out | It stays mounted (plan). Nothing visual changes. It comes back into view when it's focused again                                                                                                                                                |
 | No theme loaded                          | A native table with browser defaults. Spacer rows still have their height (inline geometry), and the table is correct, only plain                                                                                                               |
@@ -134,7 +134,7 @@ No new keys are needed for the look. If D3 is rejected, `table.loading` stays an
 ### 5.1 Anatomy
 
 ```
-div.kv-scroll-region.kv-table-scroll-region   role=region, named by the caption, tabindex=0 only while it overflows
+div.kv-scroll-region.kv-table-scroll-region   role=region + named by the caption only while it overflows (or always, with region="always"), tabindex=0 only while it overflows
 └ table.kv-table                              [data-busy] [data-virtualized]
   ├ caption.kv-table-caption                  "Öppna ärenden"
   ├ thead.kv-table-head                       sticky inside the region
@@ -410,7 +410,7 @@ The reading-aid argument for row hover in wide tables is real, and it's an assum
 - `caption-side: top`, `text-align: start`, `padding-block-end: var(--kv-space-2)`, `padding-inline: 0` (the text lines up with the head fill's edge), `body` size at weight 600, `text`. It looks the same as a prose caption, so tables look alike in and out of prose.
 - No serif and no heading look: the caption names the table. The page's own heading, if any, comes before it.
 - It's inside the region, above the head, so it scrolls away vertically while the head stays. Sideways it's as wide as the table: a long caption on a table wider than the region can run past the region's edge at 320px (open question 3). The docs recommend short captions.
-- It names both the table and the region (`aria-labelledby`). With `aria-labelledby` on Root instead (a visible heading outside), there's no caption, and the region takes the same name.
+- It names both the table and the region (`aria-labelledby`). With `aria-labelledby` on Root instead (a visible heading outside), there's no caption, so the consumer names the region the same way (`aria-labelledby` or `aria-label` on `Table.ScrollRegion`).
 
 ### 6.14 Focus rings
 
@@ -489,7 +489,7 @@ No new stories beyond the plan's list. Compact density is shown in Selectable an
 These aren't theme rules, but the theme can't work without them. Each is small. Items 1–5 are plan amendments for the orchestrator, and 6 is a test change.
 
 1. **`Table.SelectCheckbox` and `Table.SelectAllCheckbox` render `kv-checkbox` as well as `kv-table-select-checkbox`.** Then they get the whole Checkbox look and its forced-colours rules without copying them.
-2. **`Table.ScrollRegion` renders `kv-scroll-region` as well as `kv-table-scroll-region`,** and sets `--kv-table-head-block-size` inline (in px) from a `ResizeObserver` on the head. That's the same as the plan's scroll-padding risk, and the same kind of inline geometry property as `--kv-popup-width` in `use-popup.ts`. The theme turns it into `scroll-padding-block-start`.
+2. **`Table.ScrollRegion` renders `kv-scroll-region` as well as `kv-table-scroll-region`,** and sets `--kv-table-head-block-size` inline (in px) from a `ResizeObserver` on the head, with `table` (measured by `useTable`) and without it (the region measures its own `<thead>`), because the theme makes the head sticky in every `kv-table-scroll-region`. That's the same as the plan's scroll-padding risk, and the same kind of inline geometry property as `--kv-popup-width` in `use-popup.ts`. The theme turns it into `scroll-padding-block-start`.
 3. **Column widths when virtualized:** `getColumnHeaderProps(header)` sets `inline-size` inline from `header.getSize()`, only when `virtualize` is on (layout-critical geometry).
 4. **New classes:** the numeric modifiers `kv-table-column-header--numeric`, `kv-table-cell--numeric` and `kv-table-row-header--numeric` (consumer-applied, in `table.md` and DESIGN.md Theming), and `kv-table-expand-icon` on the expand button's icon. Add them to the plan's "Theming surface".
 5. **Optional, decisions D3 and D5:** `Table.Empty` renders `table.loading` while busy, and `Table.ScrollRegion` sets `data-overflowing`.
@@ -516,12 +516,12 @@ These aren't theme rules, but the theme can't work without them. Each is small. 
 Draft input for `packages/react/src/table/table.a11y.md`. The plan's contract table stands, and this adds the visual and naming details.
 
 - **Accessible names (2.5.3: the visible label is in the name):**
-  - The table and the region are named by `Table.Caption`, or by `aria-labelledby` on Root pointing at a visible heading.
+  - The table is named by `Table.Caption`, or by `aria-labelledby` on Root pointing at a visible heading. The region is named by the caption too, while it is a region (decision, 2026-10-04: only while it overflows, or always with `region="always"`); with no caption the consumer names it.
   - Sort button: its visible text (the icon is `aria-hidden`).
   - Row checkbox: "Välj" + the row header ("Välj Anna Svensson"), or `selectRowNumber`. Select all: `selectAllRows`.
   - **R1 (recommendation): the expand button is named like the checkbox,** `aria-labelledby` = [its own text, the row header] → "Detaljer Anna Svensson". Today every expand button would be called "Detaljer", which is ambiguous in a list of buttons (2.4.6) and in a screen reader's list of controls. The visible text comes first, so 2.5.3 holds. It needs no new string.
   - **R2: the expand column has a header** with the visually hidden `table.rowDetails` text, so the column isn't an empty header. The select column's header holds select all. If a consumer leaves select all out, that header gets the visually hidden `table.selectRow`.
-- **Roles and native elements:** as in the plan (native `table`, `caption`, `th scope`, `aria-sort` on the sorted column only, native checkboxes, `aria-expanded` and `aria-controls`, `aria-busy`, `aria-rowcount` and `aria-rowindex` when virtualized, `aria-hidden` spacer rows, `role="region"` on the scroll region). The look adds no roles. `data-selected`, `data-sort`, `data-expanded`, `data-busy` and `data-virtualized` are styling only.
+- **Roles and native elements:** as in the plan (native `table`, `caption`, `th scope`, `aria-sort` on the sorted column only, native checkboxes, `aria-expanded` and `aria-controls`, `aria-busy`, `aria-rowcount` and `aria-rowindex` when virtualized, `aria-hidden` spacer rows, `role="region"` on the scroll region while it overflows, or always with `region="always"`). The look adds no roles. `data-selected`, `data-sort`, `data-expanded`, `data-busy` and `data-virtualized` are styling only.
 - **Keyboard** (plan, unchanged):
   - **Focus strategy:** native. **Selection follows focus:** n/a. **Arrows wrap:** n/a. **Shortcuts:** none.
   - **Tab stops, in order:** the scroll region (only while it overflows), select all, each sort button from the inline start, then for each row its checkbox, expand button and the consumer's links or buttons. The expand column at the start keeps this order equal to the visual order.

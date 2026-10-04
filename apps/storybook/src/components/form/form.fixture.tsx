@@ -39,7 +39,7 @@ export interface FormTexts {
   /** The hint under a read-only field: why the value can't change. */
   personalNumberHint: string
   registration: string
-  /** The hint above the control: where to find the answer. */
+  /** The description above the control (a `Field.Prose`): where to find the answer. */
   registrationWhere: string
   /** The hint under the control: a format example. */
   registrationHint: string
@@ -92,6 +92,8 @@ export interface FormTexts {
   grantWithUnit: string
   addressLegend: string
   addressHint: string
+  /** The group's hint under the address fields: what to leave out. */
+  addressFormat: string
   addressError: string
   street: string
   town: string
@@ -161,6 +163,7 @@ const textsEn: FormTexts = {
   grantWithUnit: 'Amount of housing adaptation grant you are applying for, in kronor',
   addressLegend: 'Where do you live?',
   addressHint: 'The address where you are registered.',
+  addressFormat: 'Enter the address without the country.',
   addressError: 'Enter your address',
   street: 'Street address',
   town: 'Town or city',
@@ -230,6 +233,7 @@ const textsSv: FormTexts = {
   grantWithUnit: 'Belopp som du söker i bostadsanpassningsbidrag, i kronor',
   addressLegend: 'Var bor du?',
   addressHint: 'Adressen där du är folkbokförd.',
+  addressFormat: 'Ange adressen utan land.',
   addressError: 'Ange din adress',
   street: 'Gatuadress',
   town: 'Postort',
@@ -302,6 +306,7 @@ const textsFi: FormTexts = {
   grantWithUnit: 'Haettavan asunnonmuutostyöavustuksen määrä kruunuina',
   addressLegend: 'Missä asut?',
   addressHint: 'Osoite, jossa olet kirjoilla.',
+  addressFormat: 'Anna osoite ilman maata.',
   addressError: 'Anna osoitteesi',
   street: 'Katuosoite',
   town: 'Postitoimipaikka',

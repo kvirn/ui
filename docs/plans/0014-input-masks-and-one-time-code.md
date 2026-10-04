@@ -149,7 +149,8 @@ Wrap-up
 - [x] accessibility-reviewer APPROVE for each phase's diff (engine and masked Input after four rounds on the number mask, OneTimeCode and Announcer after one fix round each)
 - [x] Docs pages (`input.md`, `one-time-code.md`, `announcer.md`), changesets, roadmap status
 
-- [ ] Follow-up, tracked in [Plan 0019](0019-one-time-code-pattern.md): `masks.oneTimeCode` breaks `useOneTimeCode` with `length` (`pattern` undefined), and `masks.test.ts` needs formatting. Until fixed, `OneTimeCode` tests and stories fail
+- [x] Follow-up, tracked in [Plan 0019](0019-one-time-code-pattern.md): `masks.oneTimeCode` breaks `useOneTimeCode` with `length` (`pattern` undefined). Fixed: `pattern` is required and every caller passes it
+- [ ] Follow-up, tracked in [Plan 0019](0019-one-time-code-pattern.md): `masks.test.ts` needs formatting, and `vp check` and `vp test run` need re-running (orchestrator to verify)
 
 ## Phase 1 notes: what the engine adds to the mask decision
 

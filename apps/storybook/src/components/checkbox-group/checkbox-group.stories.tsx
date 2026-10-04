@@ -1,9 +1,11 @@
 import { Button, Card, Checkbox, CheckboxGroup, Field } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/checkbox-group/checkbox-group.a11y.md?raw'
+import guide from '../../../../../packages/react/src/checkbox-group/checkbox-group.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ComponentProps } from 'react'
 import { useState } from 'react'
 import { expect, userEvent } from 'storybook/test'
+import { usageGuide } from '../../docs-source.ts'
 import { choiceTextsFor, logChange } from '../form/choice.fixture.tsx'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -20,15 +22,43 @@ const meta = {
   title: 'Components/Form/CheckboxGroup',
   component: CheckboxGroup.Root,
   argTypes: {
-    name: { control: 'text', description: 'The name every checkbox submits under.' },
-    value: { control: false, description: 'Controlled: the values of the checked boxes.' },
-    defaultValue: { control: false, description: 'Uncontrolled: the values checked at the start.' },
-    onValueChange: { control: false },
-    invalid: { control: 'boolean' },
-    required: { control: 'boolean' },
-    disabled: { control: 'boolean' },
-    messages: { control: false },
-    render: { control: false },
+    name: {
+      control: 'text',
+      description: 'The name every checkbox submits under. A checkbox’s own `name` wins.',
+    },
+    value: {
+      control: false,
+      description: 'Controlled: the values of the checked boxes, from your form logic.',
+    },
+    defaultValue: {
+      control: false,
+      description:
+        'Uncontrolled: the values checked at the start. The browser keeps the state after that.',
+    },
+    onValueChange: {
+      control: false,
+      description:
+        "Called with the next values and `{ reason: 'input', event }` when a box changes. It only reports: the group stores nothing.",
+    },
+    invalid: {
+      control: 'boolean',
+      description:
+        'Sets `data-invalid` on the fieldset, its parts and every box. No `aria-invalid`: the error message describes the group.',
+    },
+    required: {
+      control: 'boolean',
+      description: 'Sets `data-required` and removes the legend’s optional text.',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Native `fieldset[disabled]`: every box is disabled and skipped by Tab.',
+    },
+    messages: {
+      control: false,
+      description:
+        'Per-instance overrides of the legend’s optional text (`field.optional`) and the error prefix (`field.errorPrefix`).',
+    },
+    render: { control: false, description: 'Another element. It must still be a `<fieldset>`.' },
   },
   args: { onValueChange: logChange('onValueChange') },
   globals: { locale: 'sv' },
@@ -41,7 +71,10 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => <Contact {...args} locale={localeOf(globals)} />,
-  parameters: { a11yContract: contract },
+  parameters: {
+    a11yContract: contract,
+    docs: { description: { component: usageGuide(guide) } },
+  },
 } satisfies Meta<typeof CheckboxGroup.Root>
 
 export default meta
@@ -95,7 +128,7 @@ function Contact({
   )
 }
 
-/** Three options under a legend: the group is named by the question, each box by its option. */
+/** The main example: three options under a legend, the group named by the question. */
 export const Default: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
@@ -110,13 +143,42 @@ export const Default: Story = {
   },
 }
 
-/**
- * The fixture the keyboard tests drive. Try the keys in the Keyboard section above: every
- * checkbox is its own Tab stop, Space toggles the focused one, and the arrow keys do nothing.
- */
-export const Keyboard: Story = {}
+/** The label of the button before the group: sv and fi are written, the rest show English. */
+const backTexts: Partial<Record<FormLocale, string>> = { sv: 'Tillbaka', fi: 'Takaisin' }
 
-/** The legend asks the question, and the hint says how many answers are allowed. */
+function KeyboardExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = choiceTextsFor(locale)
+  return (
+    <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
+      <div className="kv-button-group">
+        {/* nb, nn and se come from a translator: until then the English text, marked as English (3.1.2). */}
+        <Button type="button" lang={backTexts[locale] === undefined ? 'en' : undefined}>
+          {backTexts[locale] ?? 'Back'}
+        </Button>
+      </div>
+      <Contact locale={locale} />
+      <div className="kv-button-group">
+        <Button type="submit" className="kv-button--primary">
+          {text.send}
+        </Button>
+      </div>
+    </form>
+  )
+}
+
+/**
+ * The fixture the keyboard tests drive: the group between a button before and a button after,
+ * in a form. Try the keys in the Keyboard section above: every checkbox is its own Tab stop,
+ * Space toggles the focused one, and the arrow keys do nothing.
+ */
+export const Keyboard: Story = {
+  render: (_args, { globals }) => <KeyboardExample locale={localeOf(globals)} />,
+}
+
+/**
+ * The description: a `CheckboxGroup.Prose` above the options says how many answers are allowed.
+ * It is read as the group's description. The main example shows it too.
+ */
 export const WithDescription: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))

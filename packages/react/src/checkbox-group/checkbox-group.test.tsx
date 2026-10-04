@@ -21,8 +21,8 @@ import type {
   UseCheckboxGroupResult,
 } from './use-checkbox-group.ts'
 
-// Contract: checkbox-group.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/checkbox-group/checkbox-group.e2e.ts.
+// Contract: checkbox-group.a11y.md. The keyboard rows are tested once, end to end, in
+// apps/storybook/src/components/checkbox-group/checkbox-group.e2e.ts (testing skill, rule 13).
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -287,6 +287,49 @@ describe('value', () => {
     expect(submitted?.getAll('contact')).toEqual(['text', 'letter'])
   })
 
+  test('a "select all" Checkbox in a group: onValueChange first, with its value added, then its own onCheckedChange', async () => {
+    const calls: string[] = []
+    const onValueChange = vi.fn<(value: string[], details: CheckboxGroupChangeDetails) => void>()
+    function SelectAll() {
+      const [value, setValue] = useState<string[]>(['email'])
+      return (
+        <CheckboxGroup.Root
+          name="contact"
+          value={value}
+          onValueChange={(next, details) => {
+            calls.push('onValueChange')
+            onValueChange(next, details)
+            setValue(next)
+          }}
+        >
+          <Fieldset.Legend>Hur ska vi kontakta dig?</Fieldset.Legend>
+          <Field.Root>
+            <Checkbox
+              value="all"
+              indeterminate={value.length > 0 && !value.includes('all')}
+              onCheckedChange={() => calls.push('onCheckedChange')}
+            />
+            <Field.Label>Alla sätt</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="email" />
+            <Field.Label>E-post</Field.Label>
+          </Field.Root>
+        </CheckboxGroup.Root>
+      )
+    }
+    await render(<SelectAll />)
+    const all = page.getByRole('checkbox', { name: 'Alla sätt' })
+    await expect.element(all).toBePartiallyChecked()
+    await userEvent.click(all)
+    expect(calls).toEqual(['onValueChange', 'onCheckedChange'])
+    expect(onValueChange.mock.calls.at(-1)?.[0]).toEqual(['email', 'all'])
+    await expect.element(all).toBeChecked()
+    await expect.element(all).not.toBePartiallyChecked()
+    await expect.element(all).toHaveAttribute('name', 'contact')
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
   test('a Checkbox in a group without a value warns once', async () => {
     await render(
       <CheckboxGroup.Root aria-label="Kontakt" name="contact">
@@ -321,24 +364,6 @@ describe('state', () => {
     expect((page.getByRole('group').element() as HTMLFieldSetElement).disabled).toBe(true)
     for (const [, label] of options) {
       await expect.element(page.getByRole('checkbox', { name: label })).toBeDisabled()
-    }
-  })
-
-  test('the group handles no keys', async () => {
-    await render(sweden(<Contact />))
-    await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('checkbox', { name: 'E-post' })).toHaveFocus()
-    await userEvent.keyboard('{ArrowDown}{ArrowRight}{ArrowDown}')
-    await expect.element(page.getByRole('checkbox', { name: 'E-post' })).toHaveFocus()
-    await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('checkbox', { name: 'Sms' })).toHaveFocus()
-  })
-
-  test('each checkbox is its own Tab stop, in DOM order', async () => {
-    await render(sweden(<Contact />))
-    for (const [, label] of options) {
-      await userEvent.keyboard('{Tab}')
-      await expect.element(page.getByRole('checkbox', { name: label })).toHaveFocus()
     }
   })
 

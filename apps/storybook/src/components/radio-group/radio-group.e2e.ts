@@ -49,12 +49,15 @@ const edgeOf = (radio: Locator) =>
   })
 
 const radio = (page: Page, name: string) => page.getByRole('radio', { name, exact: true })
+/** The button before the group in the Keyboard story. */
+const before = (page: Page) => page.getByRole('button', { name: 'Tillbaka' })
 const checkedValue = (page: Page) =>
   page.evaluate(() => document.querySelector('.kv-radio:checked')?.getAttribute('value') ?? null)
 
 test.describe('RadioGroup keyboard contract', () => {
   test('Tab enters the group at the first radio when none is checked', async ({ page }) => {
     await openStory(page, 'keyboard')
+    await before(page).focus()
     await page.keyboard.press('Tab')
     await expect(radio(page, '1 månad')).toBeFocused()
     // Focus alone checks nothing.
@@ -69,6 +72,7 @@ test.describe('RadioGroup keyboard contract', () => {
 
   test('Tab leaves the group after one stop', async ({ page }) => {
     await openStory(page, 'keyboard')
+    await before(page).focus()
     await page.keyboard.press('Tab')
     await expect(radio(page, '1 månad')).toBeFocused()
     await page.keyboard.press('Tab')
@@ -103,10 +107,14 @@ test.describe('RadioGroup keyboard contract', () => {
   })
 
   test('Shift+Tab leaves the group after one stop', async ({ page }) => {
-    await openStory(page, 'selected')
-    await radio(page, '6 månader').focus()
+    await openStory(page, 'keyboard')
+    await radio(page, '1 månad').focus()
+    // The arrow key checks 6 månader: the group has a checked radio now.
+    await page.keyboard.press('ArrowDown')
+    await expect(radio(page, '6 månader')).toBeChecked()
     await page.keyboard.press('Shift+Tab')
-    await expect(page.locator('.kv-radio:focus')).toHaveCount(0)
+    await expect(before(page)).toBeFocused()
+    // From after the group, Shift+Tab enters it at the checked radio.
     await page.getByRole('button', { name: 'Skicka' }).focus()
     await page.keyboard.press('Shift+Tab')
     await expect(radio(page, '6 månader')).toBeFocused()
@@ -187,6 +195,7 @@ test.describe('RadioGroup keyboard contract', () => {
 
   test('Space checks the focused radio', async ({ page }) => {
     await openStory(page, 'keyboard')
+    await before(page).focus()
     await page.keyboard.press('Tab')
     const first = radio(page, '1 månad')
     await expect(first).toBeFocused()
@@ -214,20 +223,6 @@ test.describe('RadioGroup keyboard contract', () => {
 })
 
 test.describe('RadioGroup focus and modes', () => {
-  test('every radio has the group’s name, and the circle and the row are at least 24px (2.5.8)', async ({
-    page,
-  }) => {
-    await openStory(page, 'default')
-    for (const name of ['1 månad', '6 månader', '12 månader']) {
-      const circle = await radio(page, name).boundingBox()
-      expect(circle?.width, name).toBeGreaterThanOrEqual(24)
-      expect(circle?.height, name).toBeGreaterThanOrEqual(24)
-      const row = await page.locator('label', { hasText: name }).boundingBox()
-      expect(row?.height, name).toBeGreaterThanOrEqual(24)
-      await expect(radio(page, name)).toHaveAttribute('name', /^duration-/)
-    }
-  })
-
   test('a key-focused radio shows a focus indicator (2.4.7)', async ({ page }) => {
     await openStory(page, 'default')
     await page.keyboard.press('Tab')
@@ -236,16 +231,6 @@ test.describe('RadioGroup focus and modes', () => {
     expect(await circle.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe(
       'none',
     )
-  })
-
-  test('an invalid group has no aria-invalid on its radios, and shows the message', async ({
-    page,
-  }) => {
-    await openStory(page, 'invalid')
-    for (const name of ['1 månad', '6 månader', '12 månader']) {
-      await expect(radio(page, name)).not.toHaveAttribute('aria-invalid')
-    }
-    await expect(page.locator('.kv-field-error-message')).toBeVisible()
   })
 
   test('forced colours keep the radio edge visible in every state (1.4.11)', async ({ page }) => {

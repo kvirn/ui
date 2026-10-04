@@ -23,7 +23,7 @@ The bar is WCAG 2.2 AA with real assistive technology, not just a clean axe run.
    - Targets of at least 24×24px (2.5.8).
    - Content must survive 1.4.12 text spacing and reflow at 320px (1.4.10).
    - Hover and focus content must be dismissible, hoverable and persistent (1.4.13).
-   - A scroll container is focusable and named only while it overflows, and native scrollbars are never hidden (`scrollbar-width: none`) or thinned.
+   - A scroll container is focusable and a named `region` only while it overflows, and native scrollbars are never hidden (`scrollbar-width: none`) or thinned. When it fits it is a plain `<div>`: no role, no name, no `tabindex`. A component may offer an explicit option that makes it a named region always (`Table.ScrollRegion`'s `region="always"`), but being a Tab stop stays overflow-only.
 9. **Modes.**
    - `forced-colors: active`: use system colours, and never convey state only through background or box-shadow.
    - `prefers-reduced-motion`: no non-essential motion.

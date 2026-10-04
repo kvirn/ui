@@ -32,9 +32,10 @@ import {
 import type { IconFixtureLocale } from './icon.fixture.tsx'
 
 // Components/Icon: the headless Icon and the built-in set, styled by @kvirn-ui/theme/theme.css
-// (design spec docs/design/icon.md §6.6). icon.e2e.ts runs its keyboard
-// row, forced-colours, reflow, RTL and text-resize checks against InButtons, ForcedColors, RTL,
-// SizesNextToText and InRunningTextAndLinks, so their play functions only read.
+// (design spec docs/design/icon.md §6.6). icon.e2e.ts runs its keyboard rows, forced-colours
+// and reflow checks against InButtons, ForcedColors and the other stories, so their play
+// functions only read. RTL mirroring is proven by the `data-mirror-in-rtl` plays of RTL and
+// LibraryIconsViaTheRegistry, and by icon.test.tsx.
 
 const catalogs: Record<string, KvirnMessages> = { sv, fi, nb, nn, se, en }
 
@@ -314,6 +315,36 @@ export const Colors: Story = {
     await expect(icons).toHaveLength(6)
     await expect(icons[0]?.hasAttribute('color')).toBe(false)
     await expect(icons[2]).toHaveAttribute('color', 'var(--kv-color-danger)')
+  },
+}
+
+/**
+ * A token works in `color`, `fill` and `stroke`: each channel takes `var(--kv-color-danger)`. The
+ * e2e suite checks that the browser engine paints them.
+ */
+export const TokenChannels: Story = {
+  render: () => (
+    <ul className="kv-story-inline-list">
+      <li className="kv-story-icon-row">
+        <Icon name="info" size="lg" color="var(--kv-color-danger)" />
+        <code>color</code>
+      </li>
+      <li className="kv-story-icon-row">
+        <Icon name="info" size="lg" fill="var(--kv-color-danger)" />
+        <code>fill</code>
+      </li>
+      <li className="kv-story-icon-row">
+        <Icon name="info" size="lg" stroke="var(--kv-color-danger)" />
+        <code>stroke</code>
+      </li>
+    </ul>
+  ),
+  play: async ({ canvasElement }) => {
+    const icons = canvasElement.querySelectorAll('svg')
+    await expect(icons).toHaveLength(3)
+    await expect(icons[0]).toHaveAttribute('color', 'var(--kv-color-danger)')
+    await expect(icons[1]).toHaveAttribute('fill', 'var(--kv-color-danger)')
+    await expect(icons[2]).toHaveAttribute('stroke', 'var(--kv-color-danger)')
   },
 }
 

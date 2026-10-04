@@ -55,7 +55,7 @@ interface CodeFieldProps {
   slotCount?: number
 }
 
-/** The design spec's field: label, hint above, the row of slots over the one input. */
+/** The design spec's field: label, description above, the row of slots over the one input. */
 function CodeField({
   pattern = '999999',
   hint = 'Koden har 6 siffror.',
