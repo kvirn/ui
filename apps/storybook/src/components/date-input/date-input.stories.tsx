@@ -132,7 +132,7 @@ const box = (canvasElement: HTMLElement, part: 'day' | 'month' | 'year') => {
 
 /**
  * The main example: a date of birth, with every option of `DateInput.Root` as a control. The
- * boxes follow the Locale toolbar: Swedish writes the year first, Finnish and English the day.
+ * boxes follow the Locale toolbar: Swedish writes the year first, Finnish, Norwegian and English the day.
  */
 export const Default: Story = {
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
@@ -191,7 +191,7 @@ export const SwedishFinland: Story = {
   },
 }
 
-/** Finnish: day, month, year. The strings are designer drafts until a translator checks them. */
+/** Finnish: day, month, year. The strings are designer drafts, for length checks. */
 export const Finnish: Story = {
   globals: { locale: 'fi' },
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),

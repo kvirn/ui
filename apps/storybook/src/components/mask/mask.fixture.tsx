@@ -1,4 +1,6 @@
 import { en } from '@kvirn-ui/i18n/en'
+import { nb } from '@kvirn-ui/i18n/nb'
+import { nn } from '@kvirn-ui/i18n/nn'
 import { sv } from '@kvirn-ui/i18n/sv'
 import {
   Button,
@@ -14,15 +16,14 @@ import type { InputChangeDetails, InputProps } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 import { useState } from 'react'
 
-// Story and e2e fixture for Components/Form/Mask (Plan 0014). sv and en are written
-// here. Every other locale shows the English text, marked lang="en" (3.1.2), until a translator
-// provides it. The numbers are the published test numbers from packages/core/src/mask/checks
+// Story and e2e fixture for Components/Form/Mask (Plan 0014). sv, nb, nn and en
+// are written here. fi and se: English, marked lang="en" (3.1.2). The numbers are the published test numbers from packages/core/src/mask/checks
 // tests (Skatteverket, DVV, Skatteetaten, the SWIFT registry), never real people's.
 //
 // KvirnUI holds no form state. The mask shapes what is typed, and the form
 // below it validates, here with the `checks.*` helpers on submit.
 
-export type MaskLocale = 'sv' | 'en'
+export type MaskLocale = 'sv' | 'nb' | 'nn' | 'en'
 
 export interface MaskTexts {
   personalIdentityNumber: string
@@ -131,6 +132,118 @@ const textsSv: MaskTexts = {
     'Bara siffror. Det här fältet säger inget högt när ett tecken nekas (announceRejections av).',
 }
 
+const textsNb: MaskTexts = {
+  personalIdentityNumber: 'Personnummer',
+  personalIdentityNumberHint:
+    'Ti eller tolv siffer, for eksempel 19900101-2385. Du kan skrive med eller uten bindestrek.',
+  personalIdentityNumberFi: 'Henkilötunnus',
+  personalIdentityNumberFiHint: 'For eksempel 131052-308T. Bokstavene blir store automatisk.',
+  personalIdentityNumberNo: 'Fødselsnummer',
+  personalIdentityNumberNoHint: 'Elleve siffer, for eksempel 01019049961.',
+  organisationNumber: 'Organisasjonsnummer',
+  organisationNumberHint: 'Ti siffer, for eksempel 556000-0001.',
+  postalCode: 'Postnummer',
+  postalCodeHint: 'Fem siffer, for eksempel 123 45.',
+  iban: 'IBAN',
+  ibanHint: 'For eksempel SE45 5000 0000 0583 9825 7466. Mellomrommene settes inn for deg.',
+  digits: 'Kode med seks siffer',
+  digitsHint: 'Bare siffer. For eksempel 004512.',
+  letters: 'Bokstaver',
+  lettersHint: 'Bare bokstaver, for eksempel Åse. Ikke bruk det til navn: navn kan ha mellomrom.',
+  lettersAndDigits: 'Bokstaver og siffer',
+  lettersAndDigitsHint: 'Bare bokstaver og siffer, for eksempel A1B2C3.',
+  email: 'E-postadresse',
+  emailHint: 'Mellomrom fjernes. Skjemaet kontrollerer formatet, ikke masken.',
+  telephone: 'Telefonnummer',
+  telephoneHint:
+    'Siffer, pluss, mellomrom, bindestrek og parentes. For eksempel +47 912 34 567.',
+  caseNumber: 'Saksnummer',
+  caseNumberHint: 'To bokstaver og fire siffer, for eksempel AB-1234.',
+  registration: 'Registreringsnummer',
+  registrationHint: 'Tre bokstaver og tre siffer, for eksempel ABC123.',
+  amount: 'Hvor mye betaler du i husleie hver måned?',
+  amountHint: 'Skriv beløpet i kroner, for eksempel 1250,50. Det skal være mellom 0 og 100 000.',
+  amountOutOfRange: 'Beløpet er utenfor 0 til 100 000. Vi endrer det ikke for deg.',
+  amountInRange: 'Beløpet er innenfor intervallet.',
+  temperature: 'Temperatur i grader',
+  temperatureHint: 'Du kan skrive minus, for eksempel -4,5.',
+  send: 'Send',
+  sent: 'Sendt',
+  checkFormat: 'Skriv tolv siffer, for eksempel 19900101-2385',
+  checkDate: 'Datoen i personnummeret finnes ikke. Kontroller år, måned og dag.',
+  checkDigit: 'Det siste sifferet stemmer ikke. Kontroller nummeret.',
+  checkAdvice:
+    'Masken former bare det du skriver. Sifrene kontrolleres når du sender, med checks.personalIdentityNumber.',
+  unmasked: 'Uten bindestrek',
+  complete: 'Fullstendig',
+  yes: 'ja',
+  no: 'nei',
+  stored: 'Lagret personnummer',
+  storedHint: 'Den lagrede verdien er 199001012385. Feltet viser nummeret formatert.',
+  ownInput: 'Eget felt med useMask',
+  ownInputHint:
+    'Et eget <input> med masken useMask. To bokstaver og fire siffer, for eksempel AB-1234.',
+  quiet: 'Stille felt',
+  quietHint:
+    'Bare siffer. Dette feltet sier ingenting høyt når et tegn nektes (announceRejections av).',
+}
+
+const textsNn: MaskTexts = {
+  personalIdentityNumber: 'Personnummer',
+  personalIdentityNumberHint:
+    'Ti eller tolv siffer, til dømes 19900101-2385. Du kan skrive med eller utan bindestrek.',
+  personalIdentityNumberFi: 'Henkilötunnus',
+  personalIdentityNumberFiHint: 'Til dømes 131052-308T. Bokstavane blir store automatisk.',
+  personalIdentityNumberNo: 'Fødselsnummer',
+  personalIdentityNumberNoHint: 'Elleve siffer, til dømes 01019049961.',
+  organisationNumber: 'Organisasjonsnummer',
+  organisationNumberHint: 'Ti siffer, til dømes 556000-0001.',
+  postalCode: 'Postnummer',
+  postalCodeHint: 'Fem siffer, til dømes 123 45.',
+  iban: 'IBAN',
+  ibanHint: 'Til dømes SE45 5000 0000 0583 9825 7466. Mellomromma blir sette inn for deg.',
+  digits: 'Kode med seks siffer',
+  digitsHint: 'Berre siffer. Til dømes 004512.',
+  letters: 'Bokstavar',
+  lettersHint: 'Berre bokstavar, til dømes Åse. Ikkje bruk det til namn: namn kan ha mellomrom.',
+  lettersAndDigits: 'Bokstavar og siffer',
+  lettersAndDigitsHint: 'Berre bokstavar og siffer, til dømes A1B2C3.',
+  email: 'E-postadresse',
+  emailHint: 'Mellomrom blir fjerna. Skjemaet kontrollerer formatet, ikkje masken.',
+  telephone: 'Telefonnummer',
+  telephoneHint:
+    'Siffer, pluss, mellomrom, bindestrek og parentes. Til dømes +47 912 34 567.',
+  caseNumber: 'Saksnummer',
+  caseNumberHint: 'To bokstavar og fire siffer, til dømes AB-1234.',
+  registration: 'Registreringsnummer',
+  registrationHint: 'Tre bokstavar og tre siffer, til dømes ABC123.',
+  amount: 'Kor mykje betaler du i husleige kvar månad?',
+  amountHint: 'Skriv beløpet i kroner, til dømes 1250,50. Det skal vere mellom 0 og 100 000.',
+  amountOutOfRange: 'Beløpet er utanfor 0 til 100 000. Vi endrar det ikkje for deg.',
+  amountInRange: 'Beløpet er innanfor intervallet.',
+  temperature: 'Temperatur i grader',
+  temperatureHint: 'Du kan skrive minus, til dømes -4,5.',
+  send: 'Send',
+  sent: 'Sendt',
+  checkFormat: 'Skriv tolv siffer, til dømes 19900101-2385',
+  checkDate: 'Datoen i personnummeret finst ikkje. Kontroller år, månad og dag.',
+  checkDigit: 'Det siste sifferet stemmer ikkje. Kontroller nummeret.',
+  checkAdvice:
+    'Masken formar berre det du skriv. Sifra blir kontrollerte når du sender, med checks.personalIdentityNumber.',
+  unmasked: 'Utan bindestrek',
+  complete: 'Fullstendig',
+  yes: 'ja',
+  no: 'nei',
+  stored: 'Lagra personnummer',
+  storedHint: 'Den lagra verdien er 199001012385. Feltet viser nummeret formatert.',
+  ownInput: 'Eige felt med useMask',
+  ownInputHint:
+    'Eit eige <input> med masken useMask. To bokstavar og fire siffer, til dømes AB-1234.',
+  quiet: 'Stille felt',
+  quietHint:
+    'Berre siffer. Dette feltet seier ingenting høgt når eit teikn blir nekta (announceRejections av).',
+}
+
 const textsEn: MaskTexts = {
   personalIdentityNumber: 'Personal identity number',
   personalIdentityNumberHint:
@@ -186,32 +299,53 @@ const textsEn: MaskTexts = {
     'Digits only. This field says nothing aloud when a character is refused (announceRejections off).',
 }
 
-export const maskLocaleOf = (globals: Record<string, unknown>): MaskLocale =>
-  globals['locale'] === 'sv' ? 'sv' : 'en'
+const maskTexts: Record<MaskLocale, MaskTexts> = {
+  sv: textsSv,
+  nb: textsNb,
+  nn: textsNn,
+  en: textsEn,
+}
 
-/** The fixture text, and `lang="en"` when the toolbar's locale isn't translated here (3.1.2). */
+/** The library catalogs behind the mask's announcements. */
+const maskMessages = { sv, nb, nn, en }
+
+const isMaskLocale = (value: unknown): value is MaskLocale =>
+  value === 'sv' || value === 'nb' || value === 'nn' || value === 'en'
+
+/** The toolbar's locale, or `en` for fi and se, which show English here. */
+export const maskLocaleOf = (globals: Record<string, unknown>): MaskLocale => {
+  const locale = globals['locale']
+  return isMaskLocale(locale) ? locale : 'en'
+}
+
+/** The fixture text, and `lang="en"` when the toolbar's locale has no texts here (fi, se; 3.1.2). */
 export function maskTextsFor(globals: Record<string, unknown>): {
   text: MaskTexts
   lang: 'en' | undefined
   locale: MaskLocale
 } {
   const locale = maskLocaleOf(globals)
-  const toolbar = globals['locale']
   return {
-    text: locale === 'sv' ? textsSv : textsEn,
-    lang: toolbar === 'sv' || toolbar === 'en' ? undefined : 'en',
+    text: maskTexts[locale],
+    lang: isMaskLocale(globals['locale']) ? undefined : 'en',
     locale,
   }
 }
 
+/** The mask's announcement for a refused character, in the page's language, for the plays. */
+export const characterNotAllowedMessage = (
+  locale: MaskLocale,
+  allowed: 'digits' | 'letters' | 'lettersAndDigits' | 'other',
+): string => maskMessages[locale].mask.characterNotAllowed({ allowed })
+
 /**
  * The provider, with the library strings in the page's language: the mask's announcements come
- * from its catalog. The toolbar's other locales show English until the page is translated.
+ * from its catalog. fi and se show English.
  */
 export const withMaskLocale: Decorator = (Story, { globals }) => {
   const locale = maskLocaleOf(globals)
   return (
-    <KvirnProvider locale={locale} messages={locale === 'sv' ? sv : en}>
+    <KvirnProvider locale={locale} messages={maskMessages[locale]}>
       <Story />
     </KvirnProvider>
   )

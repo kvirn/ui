@@ -94,16 +94,16 @@ Unhappy paths the components must support:
 
 ### 4.1 Component strings (`@kvirn-ui/i18n`)
 
-New namespaces `field` and `dateInput`, in all six locales. `fi` strings are designer drafts for length checks. `fi`, `nb`, `nn` and `se` need a translator, and `se` stays English (with a `TODO(native-review)`) until a native speaker provides it, as `link.newTabNotice` does today.
+New namespaces `field` and `dateInput`, in all six locales. Agents write `fi`, `nb` and `nn`; `se` stays English, marked `lang="en"`, as `link.newTabNotice` does today.
 
-| i18n key                            | en                     | sv                     | longest: fi (draft)   | Notes                                                                                                                                                                                                                                   |
-| ----------------------------------- | ---------------------- | ---------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `field.optional`                    | (optional)             | (valfritt)             | (vapaaehtoinen)       | Appended to the label or legend of an optional field, after a space, inside the `<label>` or `<legend>`, so it's part of the accessible name. `fi` alternative: "(valinnainen)". `sv` alternative: "(frivilligt)". Translator to choose |
-| `field.errorPrefix`                 | Error:                 | Fel:                   | Virhe:                | First child of every error message, visually hidden by the theme. Includes its colon, so a locale can change the punctuation                                                                                                            |
-| `dateInput.day`                     | Day                    | Dag                    | Päivä                 | Label of the day box                                                                                                                                                                                                                    |
-| `dateInput.month`                   | Month                  | Månad                  | Kuukausi              | Label of the month box                                                                                                                                                                                                                  |
-| `dateInput.year`                    | Year                   | År                     | Vuosi                 | Label of the year box                                                                                                                                                                                                                   |
-| `dateInput.example` (`{ example }`) | For example, {example} | Till exempel {example} | Esimerkiksi {example} | Optional helper for the hint (open question 4). `example` is the three numbers in the field order, separated by spaces, without leading zeros: en `27 3 2007`, sv-SE `2007 3 27`, fi `27 3 2007`                                        |
+| i18n key                            | en                     | sv                     | longest: fi (draft)   | Notes                                                                                                                                                                                                                              |
+| ----------------------------------- | ---------------------- | ---------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `field.optional`                    | (optional)             | (valfritt)             | (vapaaehtoinen)       | Appended to the label or legend of an optional field, after a space, inside the `<label>` or `<legend>`, so it's part of the accessible name. `fi` alternative: "(valinnainen)". `sv` alternative: "(frivilligt)". Agent to choose |
+| `field.errorPrefix`                 | Error:                 | Fel:                   | Virhe:                | First child of every error message, visually hidden by the theme. Includes its colon, so a locale can change the punctuation                                                                                                       |
+| `dateInput.day`                     | Day                    | Dag                    | Päivä                 | Label of the day box                                                                                                                                                                                                               |
+| `dateInput.month`                   | Month                  | Månad                  | Kuukausi              | Label of the month box                                                                                                                                                                                                             |
+| `dateInput.year`                    | Year                   | År                     | Vuosi                 | Label of the year box                                                                                                                                                                                                              |
+| `dateInput.example` (`{ example }`) | For example, {example} | Till exempel {example} | Esimerkiksi {example} | Optional helper for the hint (open question 4). `example` is the three numbers in the field order, separated by spaces, without leading zeros: en `27 3 2007`, sv-SE `2007 3 27`, fi `27 3 2007`                                   |
 
 The field-order decision adds no component strings. An Addon's text is the consumer's (one key per unit, §4.4), and a Button in a group gets its name from the consumer's translations.
 
@@ -172,7 +172,7 @@ Superseded by [field-hint.md](field-hint.md) §4.1.
 
 ### 4.5 InputGroup fixtures and content rules
 
-In `apps/storybook/src/components/input-group/input-group.fixture.tsx`, all six locales (fi drafts below, `nb`, `nn` and `se` from the translator, `se` English with `TODO(native-review)` until then).
+In `apps/storybook/src/components/input-group/input-group.fixture.tsx`, all six locales (fi strings below, `nb` and `nn` written by an agent, `se` English, marked `lang="en"`).
 
 **Content rules:**
 
@@ -447,16 +447,16 @@ At 320px all three fit in one row (about 206px). At 200% text size on a 320px sc
 
 **Field order follows the user's region, not only the language** (decision for review, open question 3):
 
-| Locale (`KvirnProvider locale`)       | `Intl` order     | DateInput order      | Hint example                        |
-| ------------------------------------- | ---------------- | -------------------- | ----------------------------------- |
-| `sv-SE`, `sv`                         | year, month, day | Year, Month, Day     | Till exempel 2007 3 27              |
-| `sv-FI`                               | day, month, year | Day, Month, Year     | Till exempel 27 3 2007              |
-| `fi`, `fi-FI`                         | day, month, year | Day, Month, Year     | Esimerkiksi 27 3 2007               |
-| `nb`, `nn` (and `-NO`)                | day, month, year | Day, Month, Year     | For eksempel 27 3 2007 (translator) |
-| `se-NO`, `se-SE`, `se`                | year, month, day | Year, Month, Day     | (native reviewer, RQ)               |
-| `se-FI`                               | day, month, year | Day, Month, Year     | (native reviewer)                   |
-| `en`, `en-US` (month first in `Intl`) | month, day, year | **Day, Month, Year** | For example, 27 3 2007              |
-| `en-GB`, `en-IE`                      | day, month, year | Day, Month, Year     | For example, 27 3 2007              |
+| Locale (`KvirnProvider locale`)       | `Intl` order     | DateInput order      | Hint example           |
+| ------------------------------------- | ---------------- | -------------------- | ---------------------- |
+| `sv-SE`, `sv`                         | year, month, day | Year, Month, Day     | Till exempel 2007 3 27 |
+| `sv-FI`                               | day, month, year | Day, Month, Year     | Till exempel 27 3 2007 |
+| `fi`, `fi-FI`                         | day, month, year | Day, Month, Year     | Esimerkiksi 27 3 2007  |
+| `nb`, `nn` (and `-NO`)                | day, month, year | Day, Month, Year     | For eksempel 27 3 2007 |
+| `se-NO`, `se-SE`, `se`                | year, month, day | Year, Month, Day     |                        |
+| `se-FI`                               | day, month, year | Day, Month, Year     |                        |
+| `en`, `en-US` (month first in `Intl`) | month, day, year | **Day, Month, Year** | For example, 27 3 2007 |
+| `en-GB`, `en-IE`                      | day, month, year | Day, Month, Year     | For example, 27 3 2007 |
 
 - **Why the region:** Finland is bilingual, and Finland-Swedish writes `27.3.2007`, while Sweden writes `2007-03-27`. The `sv` catalog serves both, so the language alone gives Finland-Swedish residents the wrong order. The provider already has the full BCP 47 locale (`sv-FI`), and `Intl.DateTimeFormat(locale).formatToParts()` gives the region's order with no data of our own (measured in Node, 2026-10-02, table above).
 - **Why not month first:** KvirnUI's default `en` resolves to `en-US` in `Intl` (month, day, year). KvirnUI's English readers are in the EU, where month first is read as day first and gives wrong dates (3 7 2007). So a month-first result becomes day, month, year. A consumer who really needs month first sets the order on the instance.
@@ -861,7 +861,7 @@ Questions 1 to 13 were resolved on 2026-10-02 (Plan 0013, Risks and open questio
 
 1. **Hint colour.** DESIGN.md's token table lists hints under `text-muted`, but its Don'ts forbid `text-muted` for anything the user must read, and `card.md` reads it as "metadata only". This spec uses `text` for hints. Confirm, and update the table's wording through the number-and-date decision.
 2. **The choice layout depends on the DOM shape in the Plan 0013 sketch:** each option is a `Field.Root` with the `Checkbox` or `Radio` as a **direct child**, then `Field.Label` and an optional hint (`Prose`). The theme finds it with `:has(> .kv-checkbox, > .kv-radio)`, so a wrapper between Field.Root and the input breaks the layout. Document it, or add a `kv-field--choice` class the components set? Also: the plan's sketch uses `kv-input--width-3`, which isn't in the proposed set (2, 4, 6, 10, 20). Number of children fits `--width-2`.
-3. **DateInput field order.** Follow the region via `Intl` (`sv-SE` year first, `sv-FI` day first), with month-first results turned into day first and a per-instance override? Alternatives: always day-month-year (GOV.UK, simplest, wrong for Sweden), or a catalog value per language (wrong for Finland-Swedish). The `se` order (CLDR `y-MM-dd` in Norway and Sweden) needs the native reviewer.
+3. **DateInput field order.** Follow the region via `Intl` (`sv-SE` year first, `sv-FI` day first), with month-first results turned into day first and a per-instance override? Alternatives: always day-month-year (GOV.UK, simplest, wrong for Sweden), or a catalog value per language (wrong for Finland-Swedish). The `se` order follows CLDR (`y-MM-dd` in Norway and Sweden).
 4. **The hint example.** Should DateInput provide the formatted example (`dateInput.example`, generated in the field order), or should the consumer write the whole hint? The helper keeps hint and order in step across `sv-SE` and `sv-FI`.
 5. **A red bar on invalid fields.** GOV.UK adds a thick red inline-start bar to an invalid field or group, which helps magnifier users find errors. It isn't in DESIGN.md (the 2px border and the message are), so it's not in this spec. Add it later (`danger`, `--kv-indicator-width`, on `.kv-field[data-invalid]` and the group roots)?
 6. **`aria-describedby` order.** Designsystemet puts the error first, so it's heard first. The Field-wiring decision has description first, matching the visual order. Keep it, and add it as a research question for the AT matrix?

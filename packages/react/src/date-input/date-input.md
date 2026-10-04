@@ -61,7 +61,7 @@ What the parts do on their own:
 | `dateInput.month` | `Månad` | `Month` | The month box's label |
 | `dateInput.year`  | `År`    | `Year`  | The year box's label  |
 
-Override them with `messages` on the Root, per provider, or in your catalog. `nb`, `nn` and `fi` are drafts for a translator, and `se` is English until a native speaker provides it.
+Override them with `messages` on the Root, per provider, or in your catalog. `se` is English.
 
 ## Component
 

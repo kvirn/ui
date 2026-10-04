@@ -3,6 +3,7 @@ import contract from '../../../../../packages/react/src/input/input.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor } from 'storybook/test'
 import {
+  characterNotAllowedMessage,
   CustomMaskFields,
   FilterFields,
   IdentifierFields,
@@ -127,13 +128,13 @@ export const Numbers: Story = {
     const { text, locale } = maskTextsFor(globals)
     const rent = canvas.getByRole('textbox', { name: new RegExp(`^${text.amount}`) })
     await userEvent.type(rent, '1250.5')
-    await expect(rent).toHaveValue(locale === 'sv' ? '1250,5' : '1250.5')
+    await expect(rent).toHaveValue(locale === 'en' ? '1250.5' : '1250,5')
     await expect(canvas.getByTestId('range')).toHaveTextContent(text.amountInRange)
     await expect(canvas.getByTestId('unmasked')).toHaveTextContent('1250.5')
 
     // Two decimals at most: the third is refused, not rounded.
     await userEvent.type(rent, '00')
-    await expect(rent).toHaveValue(locale === 'sv' ? '1250,50' : '1250.50')
+    await expect(rent).toHaveValue(locale === 'en' ? '1250.50' : '1250,50')
     await userEvent.clear(rent)
     await userEvent.type(rent, '200000')
     // Out of range, and still exactly what was typed.
@@ -208,7 +209,11 @@ export const RefusedCharacter: Story = {
     await expect(digits).toHaveValue('')
     await waitFor(() =>
       expect(canvas.getByRole('status')).toHaveTextContent(
-        locale === 'sv' ? 'Här kan du bara skriva siffror.' : 'Only digits can be entered here.',
+        locale === 'sv'
+          ? 'Här kan du bara skriva siffror.'
+          : locale === 'en'
+            ? 'Only digits can be entered here.'
+            : characterNotAllowedMessage(locale, 'digits'),
       ),
     )
   },

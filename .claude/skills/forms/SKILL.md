@@ -112,7 +112,7 @@ A native `<input type="file">` is always present and always works. Parts, status
 - **The library does no network calls** and has no timeouts. `upload(file, { signal, onProgress })` is the consumer's.
 - **When a focused button disappears** (Remove, Cancel, Retry), focus moves to the same item, else the next item's `<li tabIndex={-1}>`, else the previous, else the Trigger. Never `body`, and never another button.
 - **Progress** is a native `<progress>` named `fileUpload.uploadingFile`, in whole percent. Unknown size is a static indeterminate bar (2.2.2). Progress is never announced.
-- **Northern Sámi strings** for `fileUpload` and `table` are English placeholders until a native speaker reviews them, and they block `beta`.
+- **Languages.** Agents write nb and nn; `se` stays English, marked `lang="en"` (3.1.2). This holds for the `fileUpload` and `table` strings too.
 
 ## Maintainer preferences
 
