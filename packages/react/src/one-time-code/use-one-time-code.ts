@@ -129,6 +129,8 @@ export interface OneTimeCodeInputPartProps {
   'data-disabled'?: ''
   'data-invalid'?: ''
   'data-required'?: ''
+  /** While it has focus, however it got it. The theme's sign that the script has run. */
+  'data-focused'?: ''
   'data-focus-visible'?: ''
   ref: RefCallback<HTMLInputElement>
   onChange: ChangeEventHandler<HTMLInputElement>
@@ -258,7 +260,7 @@ export function useOneTimeCode({
   messages,
 }: UseOneTimeCodeOptions = {}): UseOneTimeCodeResult {
   const field = useContext(FieldContext)
-  const { isFocusVisible, focusVisibleProps } = useFocusVisible()
+  const { isFocused: isInputFocused, isFocusVisible, focusVisibleProps } = useFocusVisible()
   const isInvalid = field?.state.isInvalid ?? false
   const isDisabled = (field?.state.isDisabled ?? false) || disabled
   const controlProps = field?.controlProps
@@ -366,6 +368,7 @@ export function useOneTimeCode({
   const inputProps: OneTimeCodeInputPartProps = {
     ...controlProps,
     ...(isDisabled ? { disabled: true, 'data-disabled': '' } : {}),
+    ...(isInputFocused ? { 'data-focused': '' } : {}),
     ...(isFocusVisible ? { 'data-focus-visible': '' } : {}),
     className: 'kv-one-time-code-input',
     type: 'text',

@@ -31,3 +31,4 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0028](0028-compound-naming-and-part-aliases.md) | Compound naming and part aliases                                        | Done        |
 | [0029](0029-field-hint.md)                       | Field.Hint                                                              | Draft       |
 | [0030](0030-rich-listbox-options.md)             | Rich Listbox options                                                    | Draft       |
+| [0031](0031-pointer-focus-on-text-inputs.md)     | Pointer focus on text inputs                                            | In progress |

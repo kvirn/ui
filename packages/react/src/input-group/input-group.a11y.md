@@ -23,7 +23,7 @@ Rules, tested in `input-group.test.tsx`:
 - **Addons are `aria-hidden="true"`** and are never in the Input's accessible name or description. A unit shown in the box is also said by the label or a hint, a `Field.Prose` in the Field (if the Addon were linked to the Input, users would hear a unit the label already says, twice).
 - **Clicking an Addon, or the Root's padding, focuses the Input** (`mousedown` on the box, outside any control inside it). The whole box is one target, and the keyboard reaches the Input directly, so no key is needed for it. Disabled groups don't move focus.
 - **Field state on the Root:** `data-invalid` and `data-disabled` come from the nearest Field (or the Root's own props). The Input keeps `aria-invalid` and native `disabled` from the Field: the theme draws the box from the Root's attributes and from `:has(> .kv-input…)`, so it doesn't wait for JavaScript.
-- **`data-focus-visible` is set only while the Input has keyboard focus** (`:focus-visible`, which text inputs also match on a click). Focus on a Button inside the Root doesn't set it: the Button draws its own ring.
+- **`data-focus-visible` is set only while the Input has keyboard focus.** Text inputs also match `:focus-visible` on a click, so the hook tracks whether the last interaction was a pointer or a key. Focus on a Button inside the Root doesn't set it: the Button draws its own ring.
 - **A Button keeps its name and its Tab stop.** Tab goes Input, then Button, in DOM order.
 - **`render` on both parts,** with class and handlers merged, and refs merged.
 
@@ -68,10 +68,10 @@ None. Nothing is live. The Input's name, description and state are read on focus
 
 ## Visual / modes
 
-- Focus indicator: a 2px `focus-ring` outline, 2px offset, around the whole Root when the Input has keyboard focus (`[data-focus-visible]` or `:has(> .kv-input:focus-visible)`), and around the Button only when the Button has it. The Input inside has no ring of its own.
+- Focus indicator: a 2px `focus-ring` outline, 2px offset, around the whole Root when the Input has keyboard focus (`[data-focus-visible]`, or `:has(> .kv-input:focus-visible)` before the script runs), and around the Button only when the Button has it. A click in the Input shows focus as the Root's 2px `border-focus` edge, with no ring. The Input inside has no ring of its own.
 - Target size: the Root is 44px high (32px in `kv-compact` from 64rem), and the whole box is the click target for the Input. A Button in the group is 44×44px at least (32×32px compact), above 24×24px (2.5.8). An Addon makes the box larger, never smaller.
 - Colour: the edge is `border-control` (3:1), 2px `danger` when invalid (never colour alone: the message under the group and its 2px width carry it), dashed when disabled. Addon text and icon are `text` (`text-muted` when disabled). The Button's divider is `border-control`. Every pair is already in `theme:check`.
-- forced-colors behaviour: Root edge `ButtonBorder`, invalid `CanvasText` at 2px, disabled dashed `GrayText`, the focus outline `Highlight`, Addon `FieldText`, the Button's label `ButtonText` and its divider `ButtonText` (`input-group.e2e.ts › forced colours: …`).
+- forced-colors behaviour: Root edge `ButtonBorder`, invalid `CanvasText` at 2px, disabled dashed `GrayText`, the focus outline `Highlight` and, on any focus in the Input, the edge `Highlight` at 1px, Addon `FieldText`, the Button's label `ButtonText` and its divider `ButtonText` (`input-group.e2e.ts › forced colours: …`).
 - reduced-motion behaviour: the Root's border and fill and the Button's fill transition only under `no-preference`. The focus ring appears instantly.
 - Reflow: the Root never exceeds its column (`max-inline-size: 100%`). The Input shrinks, Addons and the Button don't. At 320px with a Finnish label there's no horizontal scrolling (`reflow-320`). The text Button is one short word, or icon-only where the label is long.
 - 1.4.12 text spacing: no fixed heights, and the Addon is centred with flex, so it isn't clipped.

@@ -183,13 +183,31 @@ test.describe('Input focus and modes', () => {
     await expect(input).toHaveCSS('outline-offset', '2px')
   })
 
-  test('the focus ring is visible on a click in the input too', async ({ page }) => {
+  test('a click shows focus as the focus-ring edge, without the ring', async ({ page }) => {
     await openStory(page, 'input', 'default')
-    await page.getByRole('textbox', { name: 'Fullständigt namn' }).click()
-    await expect(page.getByRole('textbox', { name: 'Fullständigt namn' })).toHaveCSS(
-      'outline-style',
-      'solid',
-    )
+    const input = page.getByRole('textbox', { name: 'Fullständigt namn' })
+    const restingEdge = await input.evaluate((element) => getComputedStyle(element).borderTopColor)
+    // Where the text starts: the edge plus the padding, which stays put at 2px.
+    const textStart = () =>
+      input.evaluate((element) => {
+        const style = getComputedStyle(element)
+        return Number.parseFloat(style.borderLeftWidth) + Number.parseFloat(style.paddingLeft)
+      })
+    const restingTextStart = await textStart()
+    await input.click()
+    await expect(input).toBeFocused()
+    await expect(input).not.toHaveAttribute('data-focus-visible')
+    // The browser's own ring gives way to a transparent one (forced colours paint it).
+    await expect(input).toHaveCSS('outline-color', 'rgba(0, 0, 0, 0)')
+    await expect(input).toHaveCSS('border-top-width', '2px')
+    await expect(input).not.toHaveCSS('border-top-color', restingEdge)
+    expect(await textStart()).toBe(restingTextStart)
+    // A key press after the click brings the ring back at the next focus.
+    await page.keyboard.press('Shift+Tab')
+    await page.keyboard.press('Tab')
+    await expect(input).toBeFocused()
+    await expect(input).toHaveAttribute('data-focus-visible', '')
+    await expect(input).not.toHaveCSS('outline-color', 'rgba(0, 0, 0, 0)')
   })
 
   test('an invalid input is 2px, and its text does not move', async ({ page }) => {

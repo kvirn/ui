@@ -29,7 +29,10 @@ interface TokenGroup {
 
 const tokenGroups: readonly TokenGroup[] = [
   { heading: 'Surfaces', tokens: ['canvas', 'surface', 'surface-raised'] },
-  { heading: 'Borders', tokens: ['border-subtle', 'border-control', 'secondary', 'focus-ring'] },
+  {
+    heading: 'Borders',
+    tokens: ['border-subtle', 'border-control', 'border-focus', 'secondary', 'focus-ring'],
+  },
   { heading: 'Text', tokens: ['text', 'heading', 'text-muted', 'link', 'link-hover'] },
   { heading: 'Primary', tokens: ['primary', 'primary-hover', 'on-primary', 'primary-subtle'] },
   {
@@ -54,6 +57,7 @@ const tokenUses: Record<ColorTokenName, string> = {
   'surface-raised': 'Cards, popups, dialogs, hovered navigation items',
   'border-subtle': 'Hairline dividers and decorative outlines only',
   'border-control': 'Borders that identify a control (inputs, checkboxes)',
+  'border-focus': 'A field’s edge while it has focus, a click included',
   secondary:
     'The secondary button’s edge. The secondary scale is the neutral steps by default, so it equals border-control until you give it a hue',
   'focus-ring': 'Focus indicator',

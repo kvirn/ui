@@ -665,7 +665,10 @@ describe('theme.css form fields (docs/design/form-fields.md)', () => {
       'var(--kv-control-border-width-invalid)',
     ])
     const forced = forcedFieldRules.flatMap((rule) => rule.declarations)
-    expect(forced.filter(([property]) => property === '--kv-input-edge-width')).toEqual([])
+    // The only width forced colours set is a focused edge's, back to 1px: 2px alone means invalid.
+    expect(forced.filter(([property]) => property === '--kv-input-edge-width')).toEqual([
+      ['--kv-input-edge-width', 'var(--kv-border-width)'],
+    ])
     expect(forced.filter(([property]) => /^border(?:-width)?$/.test(property))).toEqual([])
     // System colours, set explicitly: the edge, the field and its text.
     expect(forced).toContainEqual(['--kv-input-edge', 'ButtonBorder'])
@@ -904,7 +907,7 @@ describe('theme.css input group (docs/design/form-fields.md)', () => {
     )
     const selectors = ringRules.flatMap((rule) => rule.selectors).join(' ')
     expect(selectors).toContain('[data-focus-visible]')
-    expect(selectors).toContain(':has(> .kv-input:focus-visible)')
+    expect(selectors).toContain(':has(> .kv-input:focus-visible:where(:not([data-focused])))')
     // The input inside has no ring of its own: the group's is the one, and it is never doubled.
     expect(declarationsOf('.kv-input-group > .kv-input')).toContainEqual(['outline', '0'])
   })
@@ -932,7 +935,10 @@ describe('theme.css input group (docs/design/form-fields.md)', () => {
   it('sets system colours explicitly in forced colours, and never changes the edge width there', () => {
     const forced = forcedGroupRules.flatMap((rule) => rule.declarations)
     expect(forced.length).toBeGreaterThan(8)
-    expect(forced.filter(([property]) => property === '--kv-input-group-edge-width')).toEqual([])
+    // The only width set here is a focused box's, back to 1px: 2px alone means invalid.
+    expect(forced.filter(([property]) => property === '--kv-input-group-edge-width')).toEqual([
+      ['--kv-input-group-edge-width', 'var(--kv-border-width)'],
+    ])
     expect(forced.filter(([property]) => /^border(?:-width)?$/.test(property))).toEqual([])
     expect(forced).toContainEqual(['--kv-input-group-edge', 'ButtonBorder'])
     expect(forced).toContainEqual(['--kv-input-group-edge', 'CanvasText'])
@@ -955,6 +961,107 @@ describe('theme.css input group (docs/design/form-fields.md)', () => {
       expect(rule.media).toContain('(prefers-reduced-motion: no-preference)')
     }
   })
+})
+
+describe('theme.css focus on text inputs (plan 0031)', () => {
+  const textEntries = [
+    '.kv-input',
+    '.kv-one-time-code-input',
+    '.kv-combobox-input',
+    '.kv-autocomplete-input',
+  ] as const
+  const boxes = [
+    ['.kv-input-group', '--kv-input-group-edge'],
+    ['.kv-combobox-control', '--kv-combobox-edge'],
+    ['.kv-autocomplete-control', '--kv-combobox-edge'],
+  ] as const
+  const isForced = (rule: (typeof rules)[number]) =>
+    rule.media.some((media) => media.includes('forced-colors'))
+  const ringRulesOf = (part: string) =>
+    rules.filter(
+      (rule) =>
+        rule.selectors.some((selector) => selector.startsWith(`${part}:`)) &&
+        rule.declarations.some(
+          ([property, value]) =>
+            (property === 'outline' && value.includes('var(--kv-color-focus-ring)')) ||
+            (property === 'outline-color' && value === 'Highlight'),
+        ),
+    )
+
+  it.each(textEntries)(
+    '%s: the ring is for keyboard focus only, and :focus-visible only before the script runs (2.4.7)',
+    (part) => {
+      const ringRules = ringRulesOf(part)
+      expect(ringRules.length).toBeGreaterThanOrEqual(2)
+      for (const rule of ringRules) {
+        const selectors = rule.selectors.filter((selector) => selector.startsWith(`${part}:`))
+        for (const selector of selectors) {
+          expect(selector).toBe(
+            `${part}:is([data-focus-visible], :focus-visible:where(:not([data-focused])))`,
+          )
+        }
+      }
+    },
+  )
+
+  it.each(textEntries)(
+    '%s: any focus, a click included, turns the edge to border-focus at 2px, 1px in forced colours',
+    (part) => {
+      const focusRules = rules.filter((rule) =>
+        rule.selectors.some(
+          (selector) => selector.startsWith(`${part}:not(`) && selector.endsWith(':focus'),
+        ),
+      )
+      // A click replaces the browser's own ring with a transparent one, which forced colours paint.
+      expect(
+        rules
+          .filter((rule) => rule.media.length === 0 && rule.selectors.includes(`${part}:focus`))
+          .flatMap((rule) => rule.declarations),
+      ).toContainEqual(['outline', 'var(--kv-focus-ring-width) solid transparent'])
+      const plain = focusRules.filter((rule) => rule.media.length === 0)
+      expect(plain.flatMap((rule) => rule.declarations)).toEqual([
+        ['--kv-input-edge', 'var(--kv-color-border-focus)'],
+        ['--kv-input-edge-width', 'var(--kv-control-border-width-invalid)'],
+      ])
+      for (const rule of focusRules) {
+        const selector = rule.selectors.find((each) => each.startsWith(part))
+        // Invalid keeps its danger edge, and disabled its dashed one.
+        expect(selector).toContain("[aria-invalid='true']")
+        expect(selector).toContain(':disabled')
+      }
+      // In forced colours: Highlight at 1px, because there 2px alone means invalid.
+      expect(focusRules.filter(isForced).flatMap((rule) => rule.declarations)).toEqual([
+        ['--kv-input-edge', 'Highlight'],
+        ['--kv-input-edge-width', 'var(--kv-border-width)'],
+      ])
+    },
+  )
+
+  it.each(boxes)(
+    '%s: any focus in the input turns the box edge to border-focus, keyboard focus adds the ring',
+    (box, edge) => {
+      const focusRules = rules.filter((rule) =>
+        rule.selectors.some((selector) =>
+          selector.startsWith(`${box}:not([data-invalid], [data-disabled]):has(`),
+        ),
+      )
+      expect(
+        focusRules.filter((rule) => rule.media.length === 0).flatMap((rule) => rule.declarations),
+      ).toEqual([
+        [edge, 'var(--kv-color-border-focus)'],
+        [`${edge}-width`, 'var(--kv-control-border-width-invalid)'],
+      ])
+      expect(focusRules.filter(isForced).flatMap((rule) => rule.declarations)).toEqual([
+        [edge, 'Highlight'],
+        [`${edge}-width`, 'var(--kv-border-width)'],
+      ])
+      for (const rule of ringRulesOf(box)) {
+        const selector = rule.selectors.find((each) => each.startsWith(box)) ?? ''
+        expect(selector).toContain('[data-focus-visible]')
+        expect(selector).toContain(':focus-visible:where(:not([data-focused]))')
+      }
+    },
+  )
 })
 
 describe('theme.css long words and small screens', () => {
@@ -1202,8 +1309,11 @@ describe('theme.css one-time code (docs/design/one-time-code.md)', () => {
     expect(forced).toContainEqual(['background-color', 'Field'])
     expect(forced).toContainEqual(['color', 'FieldText'])
     expect(forced).toContainEqual(['outline-color', 'Highlight'])
-    // The edge keeps its width: invalid is 2px against 1px, so the width carries the state.
-    expect(forced.filter(([property]) => property === '--kv-input-edge-width')).toEqual([])
+    // The edge keeps its width: invalid is 2px against 1px, so the width carries the state. The
+    // only width set is a focused field's, back to 1px.
+    expect(forced.filter(([property]) => property === '--kv-input-edge-width')).toEqual([
+      ['--kv-input-edge-width', 'var(--kv-border-width)'],
+    ])
   })
 
   it('never animates the caret, never removes an outline, never clips (2.2.2, 2.4.7, 2.4.11)', () => {

@@ -56,6 +56,8 @@ export interface InputPartProps extends FieldStateAttributes {
   'aria-invalid'?: 'true'
   'aria-required'?: 'true'
   disabled?: true
+  /** While it has focus, however it got it. The theme's sign that the script has run. */
+  'data-focused'?: ''
   'data-focus-visible'?: ''
   onChange: ChangeEventHandler<HTMLInputElement>
   onFocus: FocusEventHandler<HTMLElement>
@@ -84,7 +86,7 @@ export function useInput({
   onValueChange,
 }: UseInputOptions = {}): UseInputResult {
   const field = useContext(FieldContext)
-  const { isFocusVisible, focusVisibleProps } = useFocusVisible()
+  const { isFocused, isFocusVisible, focusVisibleProps } = useFocusVisible()
   const isInvalid = field?.state.isInvalid ?? false
   const isRequired = field?.state.isRequired ?? false
   const isDisabled = (field?.state.isDisabled ?? false) || disabled
@@ -108,13 +110,14 @@ export function useInput({
       className: 'kv-input',
       type,
       ...(isDisabled ? { disabled: true, 'data-disabled': '' } : {}),
+      ...(isFocused ? { 'data-focused': '' } : {}),
       ...(isFocusVisible ? { 'data-focus-visible': '' } : {}),
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         onValueChange?.(event.currentTarget.value, { reason: 'input', event })
       },
       ...focusVisibleProps,
     }),
-    [controlProps, type, isDisabled, isFocusVisible, onValueChange, focusVisibleProps],
+    [controlProps, type, isDisabled, isFocused, isFocusVisible, onValueChange, focusVisibleProps],
   )
 
   return { inputProps, isInvalid, isRequired, isDisabled, isFocusVisible }

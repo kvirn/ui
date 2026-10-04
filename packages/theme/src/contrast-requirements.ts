@@ -21,6 +21,7 @@ export const colorTokenNames = [
   'surface-raised',
   'border-subtle',
   'border-control',
+  'border-focus',
   'secondary',
   'text',
   'heading',
@@ -94,14 +95,16 @@ const textPairs: readonly ColorPair[] = [
 /**
  * Control boundaries, focus rings and the selected or current indicator (1.4.11, 2.4.13),
  * including `primary` on `primary-subtle` for the current navigation item's bar. `secondary`
- * is the secondary button's edge, so it needs everything `border-control` does.
+ * is the secondary button's edge, and `border-focus` a focused field's, so both need everything
+ * `border-control` does.
  */
 const nonTextPairs: readonly ColorPair[] = [
-  ...(['border-control', 'secondary', 'focus-ring', 'primary'] as const).flatMap((foreground) =>
-    [...plainBackgrounds, 'primary-subtle' as const].map((background): ColorPair => [
-      foreground,
-      background,
-    ]),
+  ...(['border-control', 'border-focus', 'secondary', 'focus-ring', 'primary'] as const).flatMap(
+    (foreground) =>
+      [...plainBackgrounds, 'primary-subtle' as const].map((background): ColorPair => [
+        foreground,
+        background,
+      ]),
   ),
   // Hovered and pressed filled buttons on every surface they sit on: pages, sections, cards,
   // dialogs and popups (1.4.11).
@@ -114,8 +117,8 @@ const nonTextPairs: readonly ColorPair[] = [
   ['primary-hover', 'surface'],
   ...plainBackgrounds.map((background): ColorPair => ['danger-hover', background]),
   // Controls, blockquote bars and focus rings on notifications.
-  ...(['border-control', 'secondary', 'focus-ring'] as const).flatMap((foreground) =>
-    statusBackgrounds.map((background): ColorPair => [foreground, background]),
+  ...(['border-control', 'border-focus', 'secondary', 'focus-ring'] as const).flatMap(
+    (foreground) => statusBackgrounds.map((background): ColorPair => [foreground, background]),
   ),
   // Form fields (docs/design/form-fields.md §6.12). The invalid edge is `danger`
   // at 2px, so it's its own 3:1 requirement, kept even if `danger` is ever split into a text

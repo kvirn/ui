@@ -102,6 +102,21 @@ test.describe('InputGroup keyboard contract', () => {
     await expect(input).toHaveValue('8 450 kr')
   })
 
+  test('a click in the input shows focus as the box’s focus-ring edge, without the ring', async ({
+    page,
+  }) => {
+    await openStory(page, 'keyboard')
+    const root = page.locator('.kv-input-group')
+    const input = page.getByRole('searchbox', { name: 'Sök bland e-tjänster' })
+    const restingEdge = await root.evaluate((element) => getComputedStyle(element).borderTopColor)
+    await input.click()
+    await expect(input).toBeFocused()
+    await expect(root).not.toHaveAttribute('data-focus-visible')
+    expect((await ringOf(root)).style).toBe('none')
+    await expect(root).not.toHaveCSS('border-top-color', restingEdge)
+    expect((await edgeOf(root)).width).toBe(2)
+  })
+
   test('a click on an Addon focuses the input', async ({ page }) => {
     await openStory(page, 'suffix')
     const input = page.getByRole('textbox', { name: 'Månadshyra i kronor' })

@@ -211,6 +211,8 @@ export interface ComboboxInputPartProps extends FieldStateAttributes {
   name?: string | undefined
   value: string
   'data-open'?: ''
+  /** While it has focus, however it got it. The theme's sign that the script has run. */
+  'data-focused'?: ''
   'data-focus-visible'?: ''
   ref: RefObject<HTMLInputElement | null>
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
@@ -605,7 +607,7 @@ export function useComboboxMachine<TItem>(
   const env = useEnv()
   const { locale } = useLocale()
   const comboboxMessages = useMessages('combobox', messages)
-  const { isFocusVisible, focusVisibleProps } = useFocusVisible()
+  const { isFocused, isFocusVisible, focusVisibleProps } = useFocusVisible()
   const { announce, isAvailable } = useQuietAnnouncer()
   const baseId = useId()
   const popupId = `${baseId}-popup`
@@ -899,6 +901,7 @@ export function useComboboxMachine<TItem>(
     ...(variant === 'autocomplete' && name !== undefined && !isDisabled ? { name } : {}),
     value: options.inputValue ?? state.inputValue,
     ...(isOpen ? { 'data-open': '' as const } : {}),
+    ...(isFocused ? { 'data-focused': '' as const } : {}),
     ...(isFocusVisible ? { 'data-focus-visible': '' as const } : {}),
     ref: inputRef,
     onChange: (event) => {

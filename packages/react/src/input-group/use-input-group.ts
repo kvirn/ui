@@ -1,6 +1,7 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { FocusEvent, FocusEventHandler, MouseEvent, MouseEventHandler } from 'react'
 import { FieldContext } from '../field/field-context.ts'
+import { isKeyboardFocus, trackModality } from '../focus-visible/use-focus-visible.ts'
 
 export interface UseInputGroupOptions {
   /** `data-invalid` on the root. Default: the nearest Field's `invalid`. */
@@ -39,7 +40,7 @@ export interface UseInputGroupResult {
   addonProps: InputGroupAddonPartProps
   isInvalid: boolean
   isDisabled: boolean
-  /** `true` while the input inside has keyboard focus (`:focus-visible`). */
+  /** `true` while the input inside has keyboard focus (not focus from a click). */
   isFocusVisible: boolean
 }
 
@@ -80,6 +81,8 @@ export function useInputGroup({
   const isInvalid = invalid ?? field?.state.isInvalid ?? false
   const isDisabled = disabled ?? field?.state.isDisabled ?? false
 
+  useEffect(trackModality, [])
+
   const onMouseDown = useCallback(
     (event: MouseEvent<HTMLElement>) => {
       const target = event.target
@@ -107,7 +110,7 @@ export function useInputGroup({
   const onFocus = useCallback((event: FocusEvent<HTMLElement>) => {
     const target = event.target
     if (textEntryTags.has(target.tagName)) {
-      setIsFocusVisible(target.matches(':focus-visible'))
+      setIsFocusVisible(isKeyboardFocus(target))
     }
   }, [])
   const onBlur = useCallback((event: FocusEvent<HTMLElement>) => {

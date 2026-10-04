@@ -604,6 +604,27 @@ test.describe('OneTimeCode focus, states and modes', () => {
     }
   })
 
+  test('a click shows no ring around the row: the active box’s edge shows the focus', async ({
+    page,
+  }) => {
+    await openStory(page, 'keyboard')
+    const input = emailCode(page)
+    await input.click()
+    await expect(input).toBeFocused()
+    await expect(input).toHaveAttribute('data-focused', '')
+    await expect(input).not.toHaveAttribute('data-focus-visible')
+    // The browser's own ring gives way to a transparent one (forced colours paint it).
+    await expect(input).toHaveCSS('outline-color', 'rgba(0, 0, 0, 0)')
+    const active = page.locator('.kv-one-time-code-slot[data-active]')
+    await expect(active).toHaveCount(1)
+    expect((await edgeOf(active)).width).toBe(2)
+    // A key press brings the ring back at the next focus.
+    await page.keyboard.press('Shift+Tab')
+    await page.keyboard.press('Tab')
+    await expect(input).toHaveAttribute('data-focus-visible', '')
+    await expect(input).not.toHaveCSS('outline-color', 'rgba(0, 0, 0, 0)')
+  })
+
   test('the input is invisible and under the boxes: it has no edge and transparent text', async ({
     page,
   }) => {

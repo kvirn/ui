@@ -448,6 +448,26 @@ test.describe('Autocomplete keyboard contract', () => {
 })
 
 test.describe('Autocomplete focus and modes', () => {
+  test('a click in the input shows focus as the box’s focus-ring edge, without the ring', async ({
+    page,
+  }) => {
+    await openStory(page, 'keyboard')
+    const box = page.locator('.kv-autocomplete-control').first()
+    const restingEdge = await box.evaluate((element) => getComputedStyle(element).borderTopColor)
+    await input(page).click()
+    await expect(input(page)).toBeFocused()
+    await expect(input(page)).toHaveAttribute('data-focused', '')
+    await expect(box).not.toHaveAttribute('data-focus-visible')
+    await expect(box).toHaveCSS('outline-style', 'none')
+    await expect(box).toHaveCSS('border-top-width', '2px')
+    await expect(box).not.toHaveCSS('border-top-color', restingEdge)
+    // A key press brings the ring back at the next focus.
+    await page.keyboard.press('Shift+Tab')
+    await page.keyboard.press('Tab')
+    await expect(box).toHaveAttribute('data-focus-visible', '')
+    await expect(box).toHaveCSS('outline-style', 'solid')
+  })
+
   test('the box and the options are 44px high, and the ring is 2px with a 2px offset (2.5.8)', async ({
     page,
   }) => {

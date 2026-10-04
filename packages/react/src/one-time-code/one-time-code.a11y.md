@@ -69,7 +69,7 @@ Rules, tested in `one-time-code.test.tsx`:
 | Pointer press                                              | on a box or in a gap            | Focuses the field. A press on an empty box puts the caret at the end of the code, and on a filled box before its character                                                                                                                  | `one-time-code.e2e.ts › a press on a box focuses the input and places the caret` |
 | Pointer press                                              | on a separator                  | Focuses the field. The dash takes no press: the caret goes to the nearer box, before its character                                                                                                                                          | `one-time-code.e2e.ts › a press on a separator goes to the nearest box`          |
 
-Every key is the native text field's, and the component prevents none of them: no key moves focus between boxes, and none is a shortcut. The ring is the input's, around the whole row.
+Every key is the native text field's, and the component prevents none of them: no key moves focus between boxes, and none is a shortcut. The ring is the input's, around the whole row, on keyboard focus.
 
 ## Focus management
 
@@ -102,10 +102,10 @@ Both are the mask's, throttled to one message per field every three seconds, and
 
 ## Visual / modes
 
-- Focus indicator: the input's own 2px `focus-ring` outline, 2px offset, around the whole row. The box where the next character goes also has a 2px `focus-ring` edge and a static caret, and selected boxes a `primary-subtle` fill with the same edge, never colour alone.
+- Focus indicator: on keyboard focus, the input's own 2px `focus-ring` outline, 2px offset, around the whole row (`data-focus-visible`, or `:focus-visible` before the script runs). A click shows no ring: the active box's edge shows the focus, and the plain field's edge turns 2px `border-focus`. The box where the next character goes also has a 2px `focus-ring` edge and a static caret, and selected boxes a `primary-subtle` fill with the same edge, never colour alone.
 - Target size: the input covers the row, at least 160 by 44px in comfortable density (2.5.5) and 32px high in compact (2.5.8).
 - Colour: box edges are `border-control` (3:1), 2px `danger` when invalid on every box (never colour alone: the message under the row carries it), dashed when disabled. Characters are `text`, `text-muted` when disabled. Complete has no look of its own: a tick or green edge would read as "verified". Every pair is already in `theme:check`.
-- forced-colors behaviour: the theme shows the plain input as a normal text field (`Field`, `FieldText`, edge `ButtonBorder`, invalid 2px `CanvasText`, disabled dashed `GrayText`, focus `Highlight`), and hides the slots (`one-time-code.e2e.ts › forced colours: the plain field shows and the boxes are hidden`).
+- forced-colors behaviour: the theme shows the plain input as a normal text field (`Field`, `FieldText`, edge `ButtonBorder`, invalid 2px `CanvasText`, disabled dashed `GrayText`, focus edge and keyboard ring `Highlight`, and a click's transparent outline painted by the system), and hides the slots (`one-time-code.e2e.ts › forced colours: the plain field shows and the boxes are hidden`).
 - reduced-motion behaviour: the boxes' edge and fill transition only under `no-preference`. The caret never blinks, in any setting (2.2.2).
 - Reflow: the boxes shrink from 44px to 32px, then the plain field shows instead of wrapping, so there is never horizontal scrolling at 320px, in a card, at 200% text or at 400% zoom (`one-time-code.e2e.ts › at 320px …`). Switching is CSS only: the same input keeps its value, caret and focus.
 - 1.4.12 text spacing: the boxes don't depend on the input's text metrics, have no fixed height and are centred with flex, so characters are not clipped.
