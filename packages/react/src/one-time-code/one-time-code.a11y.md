@@ -90,7 +90,7 @@ Both are the mask's, throttled to one message per field every three seconds, and
 ## Consumer responsibilities
 
 - **A visible label that says where the code is,** in the user's words ("Kod från sms:et", "Code from your authenticator app"), not "OTP" or "verification code". The label is the accessible name (2.5.3).
-- **A hint above the boxes, a `Prose` in the Field, with the length, the groups and where to find the code** ("Koden har 8 tecken i två grupper om 4. Du hittar den i sms:et som vi just skickade"). The slots are hidden from screen readers and disappear in the fallback, so the hint is the only place they learn the length and the groups (3.3.2). A dev warning fires without one.
+- **A hint above the boxes, a `Field.Prose` in the Field, with the length, the groups and where to find the code** ("Koden har 8 tecken i två grupper om 4. Du hittar den i sms:et som vi just skickade"). The slots are hidden from screen readers and disappear in the fallback, so the hint is the only place they learn the length and the groups (3.3.2). A dev warning fires without one.
 - **Errors in text,** under the row, linked by the Field: "Enter all 6 digits of the code", "The code doesn't match the one we sent. Check the text message and enter the code again." Never blame, and keep the code in the field after a wrong-code error so the user can fix one digit (3.3.1, 3.3.3).
 - **Keep a submit button.** Never submit from `onComplete` without telling the user in advance that the code is checked as soon as it's entered (3.2.2), and never clear the field on a wrong code.
 - **While the code is being checked, use `readOnly`, not `disabled`,** so focus stays, and say "Checking the code" through the Announcer.

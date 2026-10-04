@@ -1,4 +1,4 @@
-import { Checkbox, Field, Fieldset, Input, Label, Legend, Prose } from '@kvirn-ui/react'
+import { Checkbox, Field, Fieldset, Input } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
@@ -15,7 +15,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 const meta = {
   title: 'Components/Form/Hint',
-  component: Prose,
+  component: Field.Prose,
   argTypes: { render: { control: false } },
   globals: { locale: 'sv' },
   decorators: [
@@ -29,17 +29,17 @@ const meta = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.name}</Label>
-        <Prose {...args}>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.name}</Field.Label>
+        <Field.Prose {...args}>
           <p>{text.nameHint}</p>
-        </Prose>
+        </Field.Prose>
         <Input name="name" autoComplete="name" />
-      </Field>
+      </Field.Root>
     )
   },
   parameters: { a11yContract: contract },
-} satisfies Meta<typeof Prose>
+} satisfies Meta<typeof Field.Prose>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -64,16 +64,16 @@ export const InFieldset: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Fieldset lang={lang}>
-        <Legend>{text.addressLegend}</Legend>
-        <Prose>
+      <Fieldset.Root lang={lang}>
+        <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
+        <Fieldset.Prose>
           <p>{text.addressHint}</p>
-        </Prose>
-        <Field required>
-          <Label>{text.street}</Label>
+        </Fieldset.Prose>
+        <Field.Root required>
+          <Field.Label>{text.street}</Field.Label>
           <Input name="street" autoComplete="street-address" />
-        </Field>
-      </Fieldset>
+        </Field.Root>
+      </Fieldset.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -89,13 +89,13 @@ export const WithExample: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.registration}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.registration}</Field.Label>
         <Input name="registration" className="kv-input--width-10" />
-        <Prose>
+        <Field.Prose>
           <p>{text.registrationHint}</p>
-        </Prose>
-      </Field>
+        </Field.Prose>
+      </Field.Root>
     )
   },
 }
@@ -109,16 +109,16 @@ export const AboveAndUnder: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.registration}</Label>
-        <Prose>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.registration}</Field.Label>
+        <Field.Prose>
           <p>{text.registrationWhere}</p>
-        </Prose>
+        </Field.Prose>
         <Input name="registration" className="kv-input--width-10" />
-        <Prose>
+        <Field.Prose>
           <p>{text.registrationHint}</p>
-        </Prose>
-      </Field>
+        </Field.Prose>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -147,16 +147,16 @@ export const Compact: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div className="kv-compact" lang={lang}>
-        <Field required>
-          <Label>{text.name}</Label>
-          <Prose data-testid="description">
+        <Field.Root required>
+          <Field.Label>{text.name}</Field.Label>
+          <Field.Prose data-testid="description">
             <p>{text.nameHint}</p>
-          </Prose>
+          </Field.Prose>
           <Input name="name" autoComplete="name" />
-          <Prose data-testid="under">
+          <Field.Prose data-testid="under">
             <p>{text.registrationHint}</p>
-          </Prose>
-        </Field>
+          </Field.Prose>
+        </Field.Root>
       </div>
     )
   },
@@ -176,25 +176,25 @@ export const SixteenAboveAndForOptions: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div lang={lang}>
-        <Field required>
+        <Field.Root required>
           <h1>
-            <Label className="kv-field-label--heading">{text.nameQuestion}</Label>
+            <Field.Label className="kv-field-label--heading">{text.nameQuestion}</Field.Label>
           </h1>
-          <Prose data-testid="above">
+          <Field.Prose data-testid="above">
             <p>{text.nameHint}</p>
-          </Prose>
+          </Field.Prose>
           <Input name="name" autoComplete="name" />
-          <Prose data-testid="under">
+          <Field.Prose data-testid="under">
             <p>{text.registrationHint}</p>
-          </Prose>
-        </Field>
-        <Field>
+          </Field.Prose>
+        </Field.Root>
+        <Field.Root>
           <Checkbox value="email" />
-          <Label>{text.street}</Label>
-          <Prose data-testid="option">
+          <Field.Label>{text.street}</Field.Label>
+          <Field.Prose data-testid="option">
             <p>{text.addressHint}</p>
-          </Prose>
-        </Field>
+          </Field.Prose>
+        </Field.Root>
       </div>
     )
   },
@@ -212,13 +212,13 @@ export const LongFinnish: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div className="kv-story-narrow" data-testid="narrow">
-        <Field required lang={lang}>
-          <Label>{text.caseNumber}</Label>
-          <Prose>
+        <Field.Root required lang={lang}>
+          <Field.Label>{text.caseNumber}</Field.Label>
+          <Field.Prose>
             <p>{text.caseNumberHint}</p>
-          </Prose>
+          </Field.Prose>
           <Input name="case-number" inputMode="numeric" spellCheck={false} />
-        </Field>
+        </Field.Root>
       </div>
     )
   },

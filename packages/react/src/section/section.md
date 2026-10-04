@@ -4,7 +4,7 @@
 
 A plain container for a region of the page, such as a sidebar or a band of content. It renders a `<div>`. To make it a landmark, render it as a `<section>`, `<aside>` or `<nav>` with a name.
 
-- One part: `Section` (also `Section.Root` and `SectionRoot`), one `<div class="kv-section">`. No Header, Body or Footer, no title and no behaviour.
+- One part: `Section` (also exported as `SectionRoot`; `Section.Root` still works but is deprecated), one `<div class="kv-section">`. No Header, Body or Footer, no title and no behaviour.
 - No role, no ARIA, no text and no strings. Children are whatever you pass, with their own semantics and focus order.
 - `render` changes the element: `<aside aria-labelledby>`, `<section aria-labelledby>`, `<nav aria-labelledby>` or `<li>`.
 - Headless: no CSS. The part renders its stable class `kv-section`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, it's styled, and you choose with modifier classes: `kv-section--canvas` and `kv-section--padding-sm`.
@@ -19,7 +19,7 @@ import { Link, Section } from '@kvirn-ui/react'
 <Section render={<aside aria-labelledby="kontakt" />} className="kv-section--padding-lg kv-prose">
   <h2 id="kontakt">Kontakta oss</h2>
   <p>Vi svarar vardagar 9–16.</p>
-  <p><Link href="/kontakt">Mejla kundcenter</Link></p>
+  <p><Link.Root href="/kontakt">Mejla kundcenter</Link.Root></p>
 </Section>
 
 // A band of related content: no landmark, a visual region only.

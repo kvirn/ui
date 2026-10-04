@@ -40,7 +40,7 @@ import { Button, Card, Link } from '@kvirn-ui/react'
   <Card.Root render={<li />}>
     <Card.Body className="kv-prose">
       <h3>
-        <Link href="/nyheter/atervinning">Nya öppettider på återvinningscentralen</Link>
+        <Link.Root href="/nyheter/atervinning">Nya öppettider på återvinningscentralen</Link.Root>
       </h3>
       <p>Från 1 november har återvinningscentralen öppet till kl. 19 på vardagar.</p>
     </Card.Body>

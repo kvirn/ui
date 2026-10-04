@@ -22,7 +22,7 @@ function ContactSection() {
       <h2 id={headingId}>Kontakta oss</h2>
       <p>Ring kundcenter på 0123-45 67 89.</p>
       <p>
-        <Link href="#epost">Mejla kundcenter</Link>
+        <Link.Root href="#epost">Mejla kundcenter</Link.Root>
       </p>
     </Section>
   )
@@ -87,8 +87,8 @@ describe('rendering', () => {
   test('the section is skipped by Tab: focus goes through its children in DOM order', async () => {
     await render(
       <Section>
-        <Link href="#forsta">Första länken</Link>
-        <Link href="#andra">Andra länken</Link>
+        <Link.Root href="#forsta">Första länken</Link.Root>
+        <Link.Root href="#andra">Andra länken</Link.Root>
       </Section>,
     )
     await userEvent.keyboard('{Tab}')
@@ -138,7 +138,8 @@ describe('rendering', () => {
     expect(page.getByTestId('section').element().className).toBe('kv-section')
   })
 
-  test('Section, Section.Root and SectionRoot are the same component', () => {
+  test('Section and SectionRoot are one component named Section, and the deprecated Section.Root is the same', () => {
+    expect(Section.displayName).toBe('Section')
     expect(Section.Root).toBe(SectionRoot)
     expect(Section).toBe(SectionRoot)
   })
@@ -270,7 +271,7 @@ describe('render', () => {
       return (
         <Section render={<nav aria-labelledby={headingId} />}>
           <h2 id={headingId}>Ärenden</h2>
-          <Link href="#aktuella">Aktuella ärenden</Link>
+          <Link.Root href="#aktuella">Aktuella ärenden</Link.Root>
         </Section>
       )
     }

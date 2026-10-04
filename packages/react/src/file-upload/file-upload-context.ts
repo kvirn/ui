@@ -1,4 +1,4 @@
-import type { FileUploadItem } from '@kvirn-ui/core'
+import type { FileUploadEntry } from '@kvirn-ui/core'
 import { createContext } from 'react'
 import type { UseFileUploadResult } from './use-file-upload.ts'
 
@@ -12,7 +12,7 @@ export type FileUploadItemPartName = 'status' | 'error'
 
 /** The Item an Item part sits in: which file, and which of its parts are rendered. */
 export interface FileUploadItemContextValue {
-  item: FileUploadItem
+  item: FileUploadEntry
   /** The name the list shows ("image.jpg (2)" for the second of two). */
   name: string
   index: number

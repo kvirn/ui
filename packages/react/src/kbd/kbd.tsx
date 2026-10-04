@@ -48,3 +48,4 @@ export function Kbd({ render, ref, ...otherProps }: KbdProps): ReactElement {
     state: kbdState,
   })
 }
+Kbd.displayName = 'Kbd'

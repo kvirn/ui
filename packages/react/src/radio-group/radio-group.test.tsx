@@ -23,7 +23,6 @@ import type {
   UseRadioGroupOptions,
   UseRadioGroupResult,
 } from './use-radio-group.ts'
-import { Prose } from '../prose/prose.tsx'
 
 // Contract: radio-group.a11y.md. The keyboard rows are also covered end to end in
 // apps/storybook/src/components/radio-group/radio-group.e2e.ts.
@@ -71,12 +70,12 @@ function Duration({ disabledOption, optionHint = false, ...rootProps }: Duration
   return (
     <RadioGroup.Root {...rootProps}>
       <Fieldset.Legend>Hur länge behöver du tillståndet?</Fieldset.Legend>
-      <Prose>Välj ett alternativ.</Prose>
+      <RadioGroup.Prose>Välj ett alternativ.</RadioGroup.Prose>
       {options.map(([value, label]) => (
         <Field.Root key={value}>
-          <Radio value={value} disabled={value === disabledOption} />
+          <RadioGroup.Radio value={value} disabled={value === disabledOption} />
           <Field.Label>{label}</Field.Label>
-          {optionHint && value === '12' ? <Prose>Lägst pris per månad.</Prose> : null}
+          {optionHint && value === '12' ? <Field.Prose>Lägst pris per månad.</Field.Prose> : null}
         </Field.Root>
       ))}
       <Fieldset.ErrorMessage>Välj hur länge du behöver tillståndet</Fieldset.ErrorMessage>
@@ -108,7 +107,7 @@ describe('rendering', () => {
     await render(
       <RadioGroup.Root aria-label="Språk" name="language">
         <Field.Root>
-          <Radio ref={ref} value="sv" className="egen" data-egen="" />
+          <RadioGroup.Radio ref={ref} value="sv" className="egen" data-egen="" />
           <Field.Label>Svenska</Field.Label>
         </Field.Root>
       </RadioGroup.Root>,
@@ -160,7 +159,7 @@ describe('rendering', () => {
     await render(
       <RadioGroup.Root aria-label="Språk" name="language" invalid>
         <Field.Root>
-          <Radio
+          <RadioGroup.Radio
             value="sv"
             render={(partProps, state) => {
               seenStates.push(state)
@@ -186,17 +185,17 @@ describe('name', () => {
       <>
         <RadioGroup.Root aria-label="Ett" name="eget">
           <Field.Root>
-            <Radio value="a" />
+            <RadioGroup.Radio value="a" />
             <Field.Label>A</Field.Label>
           </Field.Root>
         </RadioGroup.Root>
         <RadioGroup.Root aria-label="Två">
           <Field.Root>
-            <Radio value="b" />
+            <RadioGroup.Radio value="b" />
             <Field.Label>B</Field.Label>
           </Field.Root>
           <Field.Root>
-            <Radio value="c" />
+            <RadioGroup.Radio value="c" />
             <Field.Label>C</Field.Label>
           </Field.Root>
         </RadioGroup.Root>
@@ -290,7 +289,7 @@ describe('value', () => {
     await render(
       <RadioGroup.Root aria-label="Språk">
         <Field.Root>
-          <Radio />
+          <RadioGroup.Radio />
           <Field.Label>A</Field.Label>
         </Field.Root>
       </RadioGroup.Root>,
@@ -308,17 +307,17 @@ describe('value', () => {
           onValueChange={vi.fn<(value: string, details: RadioGroupChangeDetails) => void>()}
         >
           <Field.Root>
-            <Radio value="a" />
+            <RadioGroup.Radio value="a" />
             <Field.Label>A</Field.Label>
           </Field.Root>
           <Field.Root>
-            <Radio value="b" />
+            <RadioGroup.Radio value="b" />
             <Field.Label>B</Field.Label>
           </Field.Root>
         </RadioGroup.Root>
         <RadioGroup.Root aria-label="Två" name="två" defaultValue="c">
           <Field.Root>
-            <Radio value="c" />
+            <RadioGroup.Radio value="c" />
             <Field.Label>C</Field.Label>
           </Field.Root>
         </RadioGroup.Root>
@@ -348,7 +347,7 @@ describe('state', () => {
     await render(
       <RadioGroup.Root aria-label="Språk" name="language">
         <Field.Root invalid required>
-          <Radio value="sv" />
+          <RadioGroup.Radio value="sv" />
           <Field.Label>Svenska</Field.Label>
           <Field.ErrorMessage>Fel</Field.ErrorMessage>
         </Field.Root>
@@ -447,7 +446,7 @@ describe('useRadioGroup and useRadio', () => {
       <RadioGroup.Root name="duration" value="6" onValueChange={() => {}}>
         <Fieldset.Legend>Tid</Fieldset.Legend>
         <Field.Root controlId="sex">
-          <Radio value="6" />
+          <RadioGroup.Radio value="6" />
           <Field.Label>6 månader</Field.Label>
         </Field.Root>
       </RadioGroup.Root>,
@@ -456,6 +455,33 @@ describe('useRadioGroup and useRadio', () => {
     expect(markup).toContain('name="duration"')
     expect(markup).toContain('data-state="checked"')
     expect(markup).toContain('id="sex"')
+  })
+})
+
+describe('the group’s own part names', () => {
+  test('each part has its own display name, and the flat Radio is the same input', async () => {
+    expect(RadioGroup.Radio.displayName).toBe('RadioGroup.Radio')
+    expect(RadioGroup.Legend.displayName).toBe('RadioGroup.Legend')
+    expect(RadioGroup.Prose.displayName).toBe('RadioGroup.Prose')
+    expect(RadioGroup.ErrorMessage.displayName).toBe('RadioGroup.ErrorMessage')
+    await render(
+      <RadioGroup.Root name="language" invalid>
+        <RadioGroup.Legend>Språk</RadioGroup.Legend>
+        <RadioGroup.Prose>
+          <p>Välj ett.</p>
+        </RadioGroup.Prose>
+        <RadioGroup.ErrorMessage>Välj språk</RadioGroup.ErrorMessage>
+        <Field.Root>
+          <Radio value="sv" />
+          <Field.Label>Svenska</Field.Label>
+        </Field.Root>
+      </RadioGroup.Root>,
+    )
+    const group = page.getByRole('group', { name: 'Språk (optional)' })
+    await expect.element(group).toHaveAccessibleDescription('Välj ett. Error: Välj språk')
+    await expect
+      .element(page.getByRole('radio', { name: 'Svenska' }))
+      .toHaveAttribute('name', 'language')
   })
 })
 

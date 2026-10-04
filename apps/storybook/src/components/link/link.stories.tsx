@@ -45,13 +45,13 @@ function Navigation({
       <nav aria-label={label}>
         <ul className="kv-nav">
           <li>
-            <Link href="#sida-1" current="page">
+            <Link.Root href="#sida-1" current="page">
               {current}
-            </Link>
+            </Link.Root>
           </li>
           {others.map((item, index) => (
             <li key={item}>
-              <Link href={`#sida-${index + 2}`}>{item}</Link>
+              <Link.Root href={`#sida-${index + 2}`}>{item}</Link.Root>
             </li>
           ))}
         </ul>
@@ -63,14 +63,14 @@ function Navigation({
 function RunningTextLink() {
   return (
     <p>
-      Du kan <Link href="#ansokan">ansöka om parkeringstillstånd</Link> på webben.
+      Du kan <Link.Root href="#ansokan">ansöka om parkeringstillstånd</Link.Root> på webben.
     </p>
   )
 }
 
 const meta = {
   title: 'Components/Link',
-  component: Link,
+  component: Link.Root,
   args: { href: '#ansok', children: 'Ansök om bygglov' },
   argTypes: {
     current: {
@@ -93,7 +93,7 @@ const meta = {
     },
   ],
   parameters: { a11yContract: contract },
-} satisfies Meta<typeof Link>
+} satisfies Meta<typeof Link.Root>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -112,7 +112,7 @@ export const SamePageLink: Story = {
   render: (args) => (
     <>
       <p>
-        <Link {...args} />
+        <Link.Root {...args} />
       </p>
       <h2 id="ansok">Ansök</h2>
     </>
@@ -132,10 +132,10 @@ export const Keyboard: Story = {
   render: (args) => (
     <>
       <p>
-        <Link {...args} />
+        <Link.Root {...args} />
       </p>
       <p>
-        <Link href="#kontakt">Kontakta oss</Link>
+        <Link.Root href="#kontakt">Kontakta oss</Link.Root>
       </p>
     </>
   ),
@@ -160,15 +160,15 @@ export const CurrentPage: Story = {
       <nav aria-label="Huvudmeny">
         <ul className="kv-nav">
           <li>
-            <Link href="#start">Start</Link>
+            <Link.Root href="#start">Start</Link.Root>
           </li>
           <li>
-            <Link href="#ansok" current="page">
+            <Link.Root href="#ansok" current="page">
               Ansök
-            </Link>
+            </Link.Root>
           </li>
           <li>
-            <Link href="#kontakt">Kontakt</Link>
+            <Link.Root href="#kontakt">Kontakt</Link.Root>
           </li>
         </ul>
       </nav>
@@ -211,18 +211,18 @@ export const NewTabNoticeOverrides: Story = {
   render: () => (
     <ul style={linkListStyle}>
       <li>
-        <Link
+        <Link.Root
           href="https://www.digg.se/"
           target="_blank"
           messages={{ newTabNotice: '(öppnas i nytt fönster)' }}
         >
           Digg <Link.NewTabNotice />
-        </Link>
+        </Link.Root>
       </li>
       <li>
-        <Link href="https://www.riksdagen.se/" target="_blank">
+        <Link.Root href="https://www.riksdagen.se/" target="_blank">
           Riksdagen <Link.NewTabNotice>(extern länk, ny flik)</Link.NewTabNotice>
-        </Link>
+        </Link.Root>
       </li>
     </ul>
   ),
@@ -241,14 +241,14 @@ function RouterNavigation() {
       <nav aria-label="Huvudmeny">
         <ul className="kv-nav">
           <li>
-            <Link href="/start" current={pathname === '/start' ? 'page' : false}>
+            <Link.Root href="/start" current={pathname === '/start' ? 'page' : false}>
               Start
-            </Link>
+            </Link.Root>
           </li>
           <li>
-            <Link href="/ansok" current={pathname === '/ansok' ? 'page' : false}>
+            <Link.Root href="/ansok" current={pathname === '/ansok' ? 'page' : false}>
               Ansök
-            </Link>
+            </Link.Root>
           </li>
         </ul>
       </nav>
@@ -278,19 +278,19 @@ export const OtherLanguage: Story = {
   render: () => (
     <ul className="kv-story-inline-list">
       <li>
-        <Link href="#fi" lang="fi" hrefLang="fi">
+        <Link.Root href="#fi" lang="fi" hrefLang="fi">
           Suomeksi
-        </Link>
+        </Link.Root>
       </li>
       <li>
-        <Link href="#sv" lang="sv" hrefLang="sv">
+        <Link.Root href="#sv" lang="sv" hrefLang="sv">
           På svenska
-        </Link>
+        </Link.Root>
       </li>
       <li>
-        <Link href="#se" lang="se" hrefLang="se">
+        <Link.Root href="#se" lang="se" hrefLang="se">
           Sámegillii
-        </Link>
+        </Link.Root>
       </li>
     </ul>
   ),
@@ -377,10 +377,10 @@ export const RTL: Story = {
   render: () => (
     <>
       <p>
-        <Link href="#apply">Apply for a parking permit</Link>{' '}
-        <Link href="https://www.digg.se/" target="_blank">
+        <Link.Root href="#apply">Apply for a parking permit</Link.Root>{' '}
+        <Link.Root href="https://www.digg.se/" target="_blank">
           Digg <Link.NewTabNotice />
-        </Link>
+        </Link.Root>
       </p>
       <Navigation label="Parking permits" items={['Overview', 'Apply', 'Contact us']} />
     </>
@@ -396,22 +396,22 @@ export const ForcedColors: Story = {
   render: () => (
     <>
       <p>
-        Läs mer om <Link href="#parkering">parkering</Link>.
+        Läs mer om <Link.Root href="#parkering">parkering</Link.Root>.
       </p>
       <nav aria-label="Huvudmeny">
         <ul className="kv-nav">
           <li>
-            <Link href="#start">Start</Link>
+            <Link.Root href="#start">Start</Link.Root>
           </li>
           <li>
-            <Link href="#ansok" current="page">
+            <Link.Root href="#ansok" current="page">
               Ansök
-            </Link>
+            </Link.Root>
           </li>
           <li>
-            <Link href="https://www.digg.se/" target="_blank">
+            <Link.Root href="https://www.digg.se/" target="_blank">
               Digg <Link.NewTabNotice />
-            </Link>
+            </Link.Root>
           </li>
         </ul>
       </nav>

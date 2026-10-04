@@ -47,15 +47,15 @@ export type AutocompleteRootProps<TItem> = UseAutocompleteOptions<TItem> & {
  * what was typed.
  *
  * @example
- * <Field>
- *   <Label>Gatuadress</Label>
+ * <Field.Root>
+ *   <Field.Label>Gatuadress</Field.Label>
  *   <Autocomplete.Root items={streets} value={street} onValueChange={setStreet} name="street">
  *     <Autocomplete.Input />
  *     <Autocomplete.Popup>
  *       <Autocomplete.List>{(street) => <Autocomplete.Option item={street} />}</Autocomplete.List>
  *     </Autocomplete.Popup>
  *   </Autocomplete.Root>
- * </Field>
+ * </Field.Root>
  */
 export function AutocompleteRoot<TItem>(props: AutocompleteRootProps<TItem>): ReactElement {
   const autocomplete = useAutocomplete(props)
@@ -63,19 +63,10 @@ export function AutocompleteRoot<TItem>(props: AutocompleteRootProps<TItem>): Re
 }
 AutocompleteRoot.displayName = 'Autocomplete.Root'
 
-// The field's parts and the popup parts are the Combobox's: the Root decides how they behave.
-export {
-  ComboboxClear as AutocompleteClear,
-  ComboboxControl as AutocompleteControl,
-  ComboboxEmpty as AutocompleteEmpty,
-  ComboboxGroup as AutocompleteGroup,
-  ComboboxGroupLabel as AutocompleteGroupLabel,
-  ComboboxInput as AutocompleteInput,
-  ComboboxList as AutocompleteList,
-  ComboboxOption as AutocompleteOption,
-  ComboboxPopup as AutocompletePopup,
-  ComboboxToggle as AutocompleteToggle,
-}
+// The field's parts and the popup parts are the Combobox's: the Root decides how they behave. Each
+// is a thin wrapper that renders the Combobox part with all its props (ref included), so it has
+// the display name an adopter writes, and a generic `TItem` flows through.
+
 export type AutocompleteClearProps = ComboboxClearProps
 export type AutocompleteControlProps = ComboboxControlProps
 export type AutocompleteEmptyProps = ComboboxEmptyProps
@@ -90,6 +81,72 @@ export type AutocompletePartState = ComboboxPartState
 export type AutocompletePopupProps = ComboboxPopupProps
 export type AutocompleteToggleProps = ComboboxToggleProps
 
+/** The control's box: the `Combobox.Control` under the Autocomplete's name. */
+export function AutocompleteControl(props: AutocompleteControlProps): ReactElement {
+  return <ComboboxControl {...props} />
+}
+AutocompleteControl.displayName = 'Autocomplete.Control'
+
+/** The text input: the `Combobox.Input` under the Autocomplete's name. */
+export function AutocompleteInput(props: AutocompleteInputProps): ReactElement {
+  return <ComboboxInput {...props} />
+}
+AutocompleteInput.displayName = 'Autocomplete.Input'
+
+/** The button that opens the suggestions: the `Combobox.Toggle` under the Autocomplete's name. */
+export function AutocompleteToggle(props: AutocompleteToggleProps): ReactElement {
+  return <ComboboxToggle {...props} />
+}
+AutocompleteToggle.displayName = 'Autocomplete.Toggle'
+
+/** The button that clears the text: the `Combobox.Clear` under the Autocomplete's name. */
+export function AutocompleteClear(props: AutocompleteClearProps): ReactElement {
+  return <ComboboxClear {...props} />
+}
+AutocompleteClear.displayName = 'Autocomplete.Clear'
+
+/** The suggestions popup: the `Combobox.Popup` under the Autocomplete's name. */
+export function AutocompletePopup(props: AutocompletePopupProps): ReactElement {
+  return <ComboboxPopup {...props} />
+}
+AutocompletePopup.displayName = 'Autocomplete.Popup'
+
+/** The suggestions list inside the popup: the `Combobox.List` under the Autocomplete's name. */
+export function AutocompleteList<TItem = unknown>(
+  props: AutocompleteListProps<TItem>,
+): ReactElement {
+  return <ComboboxList<TItem> {...props} />
+}
+AutocompleteList.displayName = 'Autocomplete.List'
+
+/** One suggestion: the `Combobox.Option` under the Autocomplete's name. */
+export function AutocompleteOption<TItem = unknown>(
+  props: AutocompleteOptionProps<TItem>,
+): ReactElement {
+  return <ComboboxOption<TItem> {...props} />
+}
+AutocompleteOption.displayName = 'Autocomplete.Option'
+
+/** A group of suggestions: the `Combobox.Group` under the Autocomplete's name. */
+export function AutocompleteGroup<TItem = unknown>(
+  props: AutocompleteGroupProps<TItem>,
+): ReactElement {
+  return <ComboboxGroup<TItem> {...props} />
+}
+AutocompleteGroup.displayName = 'Autocomplete.Group'
+
+/** A group's label: the `Combobox.GroupLabel` under the Autocomplete's name. */
+export function AutocompleteGroupLabel(props: AutocompleteGroupLabelProps): ReactElement {
+  return <ComboboxGroupLabel {...props} />
+}
+AutocompleteGroupLabel.displayName = 'Autocomplete.GroupLabel'
+
+/** The no-results text: the `Combobox.Empty` under the Autocomplete's name. */
+export function AutocompleteEmpty(props: AutocompleteEmptyProps): ReactElement {
+  return <ComboboxEmpty {...props} />
+}
+AutocompleteEmpty.displayName = 'Autocomplete.Empty'
+
 /**
  * The Autocomplete's parts. `Root` with `Input` and `Popup` is the editable combobox
  * for free text with suggestions (the APG combobox with list autocomplete): the value is the
@@ -98,14 +155,14 @@ export type AutocompleteToggleProps = ComboboxToggleProps
  */
 export const Autocomplete = {
   Root: AutocompleteRoot,
-  Control: ComboboxControl,
-  Input: ComboboxInput,
-  Toggle: ComboboxToggle,
-  Clear: ComboboxClear,
-  Popup: ComboboxPopup,
-  List: ComboboxList,
-  Option: ComboboxOption,
-  Group: ComboboxGroup,
-  GroupLabel: ComboboxGroupLabel,
-  Empty: ComboboxEmpty,
+  Control: AutocompleteControl,
+  Input: AutocompleteInput,
+  Toggle: AutocompleteToggle,
+  Clear: AutocompleteClear,
+  Popup: AutocompletePopup,
+  List: AutocompleteList,
+  Option: AutocompleteOption,
+  Group: AutocompleteGroup,
+  GroupLabel: AutocompleteGroupLabel,
+  Empty: AutocompleteEmpty,
 } as const

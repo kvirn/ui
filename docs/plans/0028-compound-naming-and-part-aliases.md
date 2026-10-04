@@ -1,6 +1,6 @@
 # Plan 0028: Compound naming and part aliases
 
-- **Status:** Draft
+- **Status:** Done
 - **Owner:** Maintainer / Claude
 - **Created:** 2026-10-04 · **Target:** M1
 - **Related:** Plan 0027 (where the rules are recorded), Plan 0029 (`Field.Hint`), changes the flat naming rule in the api-conventions skill
@@ -84,14 +84,40 @@ None. Classes stay `kv-<part>`.
 
 ## Tasks
 
-- [ ] Display names on every exported component (rule 4), and thin wrappers for the Combobox and Autocomplete aliases
-- [ ] Namespaces for Field, Fieldset and Link, and the new alias parts on CheckboxGroup, RadioGroup and InputGroup
-- [ ] Deprecate the callable roots, flat `Label`, `ErrorMessage` and `Legend`, `Prose.Root` and `Section.Root`, and the core `FileUploadItem` type
-- [ ] Rewrite stories, fixtures, `.md` and `.a11y.md` to the new names (about 450 usages, mechanical)
-- [ ] Update tests that assert alias identity to assert display names instead
-- [ ] Enforcement tests
-- [ ] Record the rules in the `api-conventions` skill (Plan 0027), update `docs/architecture.md#api-conventions`
-- [ ] Changeset (minor: new aliases and deprecations)
+- [x] Display names on every exported component (rule 4), and thin wrappers for the Combobox and Autocomplete aliases
+- [x] Namespaces for Field, Fieldset and Link, and the new alias parts on CheckboxGroup, RadioGroup and InputGroup
+- [x] Deprecate the callable roots, flat `Label`, `ErrorMessage` and `Legend`, `Prose.Root` and `Section.Root`, and the core `FileUploadItem` type
+- [x] Rewrite stories, fixtures, `.md` and `.a11y.md` to the new names (about 450 usages, mechanical)
+- [x] Update tests that assert alias identity to assert display names instead
+- [x] Enforcement tests
+- [x] Record the rules in the `api-conventions` skill (Plan 0027), update `docs/architecture.md#api-conventions`
+- [x] Changeset (minor: new aliases and deprecations)
+
+## Decisions
+
+- **Callable roots stay callable.** `Field`, `Fieldset` and `Link` are `Object.assign(Root, parts)`. A JSDoc `@deprecated` can't target `<Field>` without also hitting `Field.Root`, and making them plain objects would break adopters. So `<Field>`, `<Fieldset>` and `<Link>` keep working. Docs and stories never show them, and the naming test bans them there.
+- **Alias sets** (2026-10-04):
+  - `Field`: `Root`, `Label`, `Prose`, `ErrorMessage`
+  - `Fieldset`: `Root`, `Legend`, `Prose`, `ErrorMessage`
+  - `CheckboxGroup`: `Root`, `Legend`, `Prose`, `ErrorMessage`
+  - `RadioGroup`: `Root`, `Radio`, `Legend`, `Prose`, `ErrorMessage`
+  - `InputGroup`: `Root`, `Addon`, `Input`
+  - `Link`: `Root`, `NewTabNotice`
+  - `Hint` joins the field and group sets in Plan 0029.
+- **Flat part exports are the Server Component path** (2026-10-04). A Server Component can't dot into a client module, so every namespace part keeps a flat named export (`FieldRoot`, `FieldProse`, `RadioGroupRadio`, `LinkRoot`), the same component as the part, and none is deprecated. Only the bare `Label`, `ErrorMessage`, `Legend` and `Radio` are. The naming test checks `<Export><Key>` for every part, and the skill and the changeset say so.
+- **Implementation choices** (2026-10-04):
+  - `Fieldset.ErrorMessage` and `FieldsetErrorMessage` are a wrapper with their own display name, not a duplicate of `Field.ErrorMessage`, so `FieldsetErrorMessage` is not deprecated. The group parts (`CheckboxGroup.Legend|Prose|ErrorMessage`, `RadioGroup.…`) wrap the Fieldset's parts.
+  - The flat `Radio` is deprecated too, in favour of `RadioGroup.Radio` (`RadioGroupRadio` in a Server Component), because it only works inside a group. `Fieldset.Prose` and `Field.Prose` wrap the shared `Prose`, which keeps the name `Prose` outside a host.
+  - Autocomplete's popup parts wrap Combobox's wrappers, which wrap Listbox's, so each hop has its own display name.
+  - `Link.Root` is the new `LinkRoot` export (it was a private function). Dev-warning text that says "a `<Prose>` in the Field" is unchanged.
+  - No `XxxProps` aliases for the new wrappers: they take the shared part's props type.
+- **Display names follow the alias.**
+  - An alias that is a different name for a shared component (`Field.Prose`, `Combobox.Option`, `CheckboxGroup.Legend`) is a thin wrapper with its own `displayName`.
+  - A callable root's own name is `X.Root`.
+
+- **Flat part exports are the Server Component form.** A React Server Component can't dot into a client module, so `Field.Root` fails in Next's App Router. Every namespace part and alias also has a flat named export (`FieldRoot`, `RadioGroupRadio`, `ComboboxOption`, …). These are not deprecated, and the naming test checks that they exist. Only the bare names `Label`, `ErrorMessage`, `Legend` and `Radio` are deprecated. `apps/docs` keeps the callable `<Link>`.
+
+- **One e2e change.** `input-group.e2e.ts` "a click on the Button keeps its own behaviour" now opens the `Keyboard` story. `SearchWithClear`'s play function types and clears the search itself, which raced the test. The meaning of the test is unchanged.
 
 ## Risks & open questions
 
@@ -110,6 +136,6 @@ Minor version. Deprecated names are removed at 1.0, together with a codemod note
 
 ## Done when
 
-- [ ] Enforcement tests pass, and no story or `.md` uses a deprecated name
-- [ ] All quality gates in AGENTS.md pass (manual AT may be `pending`)
-- [ ] Plan tasks ticked, `docs/roadmap.md` status updated
+- [x] Enforcement tests pass, and no story or `.md` uses a deprecated name
+- [x] All quality gates in AGENTS.md pass (manual AT may be `pending`)
+- [x] Plan tasks ticked, `docs/roadmap.md` status updated

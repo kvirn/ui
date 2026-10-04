@@ -24,7 +24,6 @@ import { Autocomplete } from './autocomplete.tsx'
 import type { AutocompleteRootProps } from './autocomplete.tsx'
 import { useAutocomplete } from './use-autocomplete.ts'
 import type { UseAutocompleteOptions, UseAutocompleteResult } from './use-autocomplete.ts'
-import { Prose } from '../prose/prose.tsx'
 
 // Contract: autocomplete.a11y.md. The keyboard rows are also covered end to end in
 // apps/storybook/src/components/autocomplete/autocomplete.e2e.ts. Component tests load no theme:
@@ -81,7 +80,7 @@ function Example({
       </button>
       <Field.Root required>
         <Field.Label>Gatuadress</Field.Label>
-        <Prose>Gatan där du bor.</Prose>
+        <Field.Prose>Gatan där du bor.</Field.Prose>
         <Autocomplete.Root items={items} {...rootProps}>
           {withButtons ? (
             <Autocomplete.Control>

@@ -19,13 +19,13 @@ A FileUpload attaches files to a form. **One native button opens the system file
 ## Component
 
 ```tsx
-import { Field, FileUpload, Label, Prose } from '@kvirn-ui/react'
+import { Field, FileUpload } from '@kvirn-ui/react'
 
-;<Field>
-  <Label>Bilagor</Label>
-  <Prose>
+;<Field.Root>
+  <Field.Label>Bilagor</Field.Label>
+  <Field.Prose>
     <p>Bifoga ditt läkarintyg och dina kvitton.</p>
-  </Prose>
+  </Field.Prose>
   <FileUpload.Root
     multiple
     maxFiles={5}
@@ -60,7 +60,7 @@ import { Field, FileUpload, Label, Prose } from '@kvirn-ui/react'
       )}
     </FileUpload.List>
   </FileUpload.Root>
-</Field>
+</Field.Root>
 ```
 
 Put it in a Field. The Trigger takes the Field's id, so the label and an error-summary link reach it, and its name is its own text then the label ("Välj filer Bilagor"). It never carries `aria-required`: a button doesn't allow it, and a required Field shows through the missing "(valfritt)".

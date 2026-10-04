@@ -4,6 +4,8 @@ import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { Input } from '../input/input.tsx'
+import type { InputProps } from '../input/input.tsx'
 import { renderPart } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
 import { inputGroupAddonProps, useInputGroup } from './use-input-group.ts'
@@ -39,13 +41,13 @@ const focusableSelector =
  * directly in the Root. It holds no form state.
  *
  * @example
- * <Field>
- *   <Label>Månadshyra i kronor</Label>
+ * <Field.Root>
+ *   <Field.Label>Månadshyra i kronor</Field.Label>
  *   <InputGroup.Root>
- *     <Input name="rent" inputMode="decimal" className="kv-input--width-10" />
+ *     <InputGroup.Input name="rent" inputMode="decimal" className="kv-input--width-10" />
  *     <InputGroup.Addon>kr</InputGroup.Addon>
  *   </InputGroup.Root>
- * </Field>
+ * </Field.Root>
  */
 export function InputGroupRoot({
   invalid,
@@ -117,8 +119,18 @@ export function InputGroupAddon({
 }
 InputGroupAddon.displayName = 'InputGroup.Addon'
 
+/**
+ * The box's input: the shared `Input` under the group's name, laid out by the box. It reads its
+ * Field and label the same way, so nothing else changes.
+ */
+export function InputGroupInput(props: InputProps): ReactElement {
+  return <Input {...props} />
+}
+InputGroupInput.displayName = 'InputGroup.Input'
+
 /** An input with units or icons inside its box. */
 export const InputGroup = {
   Root: InputGroupRoot,
   Addon: InputGroupAddon,
+  Input: InputGroupInput,
 } as const

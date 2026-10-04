@@ -5,7 +5,7 @@ import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
 import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
-import { ErrorMessage, Field, Input, KvirnProvider, Label, Prose } from '@kvirn-ui/react'
+import { Field, Input, KvirnProvider } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 
 // Story and e2e fixture for the Components/Form pages (docs/design/form-fields.md §4.2, §4.3).
@@ -354,36 +354,36 @@ export function FieldStates({ locale }: { locale: FormLocale }) {
   const { text, lang } = textsFor(locale)
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field required>
-        <Label>{text.name}</Label>
-        <Prose>
+      <Field.Root required>
+        <Field.Label>{text.name}</Field.Label>
+        <Field.Prose>
           <p>{text.nameHint}</p>
-        </Prose>
+        </Field.Prose>
         <Input name="name" autoComplete="name" />
-      </Field>
-      <Field required invalid>
-        <Label>{text.email}</Label>
-        <Prose>
+      </Field.Root>
+      <Field.Root required invalid>
+        <Field.Label>{text.email}</Field.Label>
+        <Field.Prose>
           <p>{text.emailHint}</p>
-        </Prose>
+        </Field.Prose>
         <Input name="email" type="email" autoComplete="email" defaultValue="anna@" />
-        <ErrorMessage>{text.emailError}</ErrorMessage>
-      </Field>
-      <Field>
-        <Label>{text.phone}</Label>
+        <Field.ErrorMessage>{text.emailError}</Field.ErrorMessage>
+      </Field.Root>
+      <Field.Root>
+        <Field.Label>{text.phone}</Field.Label>
         <Input name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
-      </Field>
-      <Field required disabled>
-        <Label>{text.registration}</Label>
+      </Field.Root>
+      <Field.Root required disabled>
+        <Field.Label>{text.registration}</Field.Label>
         <Input name="registration" defaultValue="ABC 123" className="kv-input--width-10" />
-      </Field>
-      <Field required>
-        <Label>{text.personalNumber}</Label>
-        <Prose>
+      </Field.Root>
+      <Field.Root required>
+        <Field.Label>{text.personalNumber}</Field.Label>
+        <Field.Prose>
           <p>{text.personalNumberHint}</p>
-        </Prose>
+        </Field.Prose>
         <Input name="personal-number" readOnly defaultValue="19900101-1234" />
-      </Field>
+      </Field.Root>
     </div>
   )
 }

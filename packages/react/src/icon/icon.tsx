@@ -101,3 +101,4 @@ export function Icon({
     state: { isDecorative: icon.isDecorative },
   })
 }
+Icon.displayName = 'Icon'

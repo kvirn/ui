@@ -15,16 +15,16 @@ A native `<a href>` for navigation, rendered by your router's link component whe
 ```tsx
 import { Link } from '@kvirn-ui/react'
 
-<Link href="/ansok" current="page">Ansök</Link>
+<Link.Root href="/ansok" current="page">Ansök</Link.Root>
 
-<Link href="https://www.digg.se/" target="_blank">
+<Link.Root href="https://www.digg.se/" target="_blank">
   Digg <Link.NewTabNotice />
-</Link>
+</Link.Root>
 
-<Link href="/fi" hrefLang="fi" lang="fi">Suomeksi</Link>
+<Link.Root href="/fi" hrefLang="fi" lang="fi">Suomeksi</Link.Root>
 ```
 
-In a React Server Component, use the named export `LinkNewTabNotice` instead of `Link.NewTabNotice`.
+In a React Server Component, use the named exports `LinkRoot` and `LinkNewTabNotice` instead of `Link.Root` and `Link.NewTabNotice`, because a server component can't dot into a client module. The callable `Link` still works, but docs write `Link.Root`.
 
 ### The new-tab notice text
 
@@ -32,7 +32,7 @@ First match wins:
 
 ```tsx
 <Link.NewTabNotice>(extern länk)</Link.NewTabNotice>          // 1. children
-<Link target="_blank" messages={{ newTabNotice: '(nytt fönster)' }}>  // 2. instance
+<Link.Root target="_blank" messages={{ newTabNotice: '(nytt fönster)' }}>  // 2. instance
 <KvirnProvider messages={{ link: { newTabNotice: '…' } }}>   // 3. provider, then its ancestors
                                                             // 4. built-in en
 ```
@@ -44,9 +44,9 @@ Keep the notice in the name. If you hide it visually, use a visually-hidden tech
 Register your router's link once, on the provider (see [KvirnProvider](../provider/kvirn-provider.md)). Every Link then renders it. To bypass the router for one link, for example a download, render a plain `<a>`:
 
 ```tsx
-<Link href="/blankett.pdf" download render={<a />}>
+<Link.Root href="/blankett.pdf" download render={<a />}>
   Blankett (PDF)
-</Link>
+</Link.Root>
 ```
 
 ## Hook

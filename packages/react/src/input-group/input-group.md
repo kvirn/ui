@@ -6,7 +6,7 @@
 
 An InputGroup puts a unit, a symbol, a decorative icon or a Button **inside the input's box**: "kr" after a rent, "%" after a percentage, a search icon before a query, a "Rensa" Button after it.
 
-- Two parts: `InputGroup.Root` (`<div>`, the box) and `InputGroup.Addon` (`<span>`, a unit or an icon). Each is also exported on its own (`InputGroupRoot`, `InputGroupAddon`), and the hook is `useInputGroup`.
+- Three parts: `InputGroup.Root` (`<div>`, the box), `InputGroup.Input` (the `Input`, laid out by the box) and `InputGroup.Addon` (`<span>`, a unit or an icon). Each is also exported on its own (`InputGroupRoot`, `InputGroupInput`, `InputGroupAddon`), which is the form to import in a React Server Component, and the hook is `useInputGroup`.
 - The Root looks exactly like an Input: same height, edge, radius, fill and states. It takes `data-invalid` and `data-disabled` from the nearest Field, and `data-focus-visible` while the Input has keyboard focus, so the focus ring goes around the whole box. The Input inside has no edge or ring of its own.
 - **Addons are visual only.** `aria-hidden="true"`, never focusable, and never the only place a meaning lives: the label says the unit.
 - **Start and end follow DOM order and reading direction.** An Addon before the Input is at the start, and it moves to the right in right-to-left. There's no `side` prop.
@@ -17,12 +17,12 @@ An InputGroup puts a unit, a symbol, a decorative icon or a Button **inside the 
 ## Component
 
 ```tsx
-import { ErrorMessage, Field, Input, InputGroup, Label, Prose } from '@kvirn-ui/react'
+import { Field, InputGroup } from '@kvirn-ui/react'
 
-;<Field invalid={errors.rent !== undefined} required>
-  <Label>Månadshyra i kronor</Label>
+;<Field.Root invalid={errors.rent !== undefined} required>
+  <Field.Label>Månadshyra i kronor</Field.Label>
   <InputGroup.Root>
-    <Input
+    <InputGroup.Input
       name="rent"
       inputMode="decimal"
       spellCheck={false}
@@ -31,11 +31,11 @@ import { ErrorMessage, Field, Input, InputGroup, Label, Prose } from '@kvirn-ui/
     />
     <InputGroup.Addon>kr</InputGroup.Addon>
   </InputGroup.Root>
-  <Prose>
+  <Field.Prose>
     <p>Till exempel 8 450</p>
-  </Prose>
-  <ErrorMessage>{errors.rent}</ErrorMessage>
-</Field>
+  </Field.Prose>
+  <Field.ErrorMessage>{errors.rent}</Field.ErrorMessage>
+</Field.Root>
 ```
 
 The label carries the unit, because the Addon is hidden from screen readers. The example is under the box, and the error under the example, in the default order ([Field](../field/field.md#the-default-order)).
@@ -48,13 +48,13 @@ The value lives in your own state. The clear Button renders only while there's a
 const [query, setQuery] = useState('')
 const inputRef = useRef<HTMLInputElement>(null)
 
-<Field>
-  <Label marker="none">Sök bland e-tjänster</Label>
+<Field.Root>
+  <Field.Label marker="none">Sök bland e-tjänster</Field.Label>
   <InputGroup.Root>
     <InputGroup.Addon>
       <Icon name="search" size="md" />
     </InputGroup.Addon>
-    <Input ref={inputRef} type="search" name="q" enterKeyHint="search" value={query} onValueChange={setQuery} />
+    <InputGroup.Input ref={inputRef} type="search" name="q" enterKeyHint="search" value={query} onValueChange={setQuery} />
     {query === '' ? null : (
       <Button
         onClick={() => {
@@ -66,7 +66,7 @@ const inputRef = useRef<HTMLInputElement>(null)
       </Button>
     )}
   </InputGroup.Root>
-</Field>
+</Field.Root>
 ```
 
 - A text Button's name is its visible text. An icon-only Button (`className="kv-button--icon-only"`) needs an `aria-label` from your translations: "Rensa sökningen".

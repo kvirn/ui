@@ -9,15 +9,15 @@ Use a Combobox when the list is too long to scan, about 15 options or more: a mu
 ## How it works
 
 ```tsx
-import { Combobox, Field, Label } from '@kvirn-ui/react'
+import { Combobox, Field } from '@kvirn-ui/react'
 
 interface Municipality {
   code: string
   name: string
 }
 
-;<Field required>
-  <Label>Kommun</Label>
+;<Field.Root required>
+  <Field.Label>Kommun</Field.Label>
   <Combobox.Root
     items={municipalities}
     itemToString={(municipality) => municipality.name}
@@ -38,7 +38,7 @@ interface Municipality {
       <Combobox.Empty />
     </Combobox.Popup>
   </Combobox.Root>
-</Field>
+</Field.Root>
 ```
 
 - **Put the input in a `Combobox.Control` with a `Combobox.Toggle` and a `Combobox.Clear`.** That is the default way to build it: a bare input looks like a plain text field, and a click on it opens nothing, so a user who doesn't know to type has no sign that there is a list. The Toggle (a chevron) says there is one and opens it. A bare `Combobox.Input` is the minimal variant, for when the question itself says to type.
@@ -69,7 +69,7 @@ interface Municipality {
 | `virtualize`                                            | `true`, or `{ estimateSize, overscan }`: renders only the options in view, for a flat list of thousands. Off by default. See Long lists.                                                                                                                                                                                                                                  |
 | `announcementDebounceMilliseconds`, `messages`          | How long after typing stops the count is announced (default 500), and per-instance overrides of the `combobox` strings.                                                                                                                                                                                                                                                   |
 
-`invalid`, `required` and the description (a `Prose` in the Field) come from the Field, as for every control. The value is never copied into KvirnUI state: `value` and `onValueChange` are yours, or `defaultValue` and `name` for a plain form.
+`invalid`, `required` and the description (a `Field.Prose` in the Field) come from the Field, as for every control. The value is never copied into KvirnUI state: `value` and `onValueChange` are yours, or `defaultValue` and `name` for a plain form.
 
 ## Parts
 

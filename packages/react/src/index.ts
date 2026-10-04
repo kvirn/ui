@@ -22,7 +22,7 @@ export { Button } from './button/button.tsx'
 export type { ButtonProps, ButtonState } from './button/button.tsx'
 export { useButton } from './button/use-button.ts'
 export type { ButtonPartProps, UseButtonOptions, UseButtonResult } from './button/use-button.ts'
-export { Link, LinkNewTabNotice } from './link/link.tsx'
+export { Link, LinkNewTabNotice, LinkRoot } from './link/link.tsx'
 export type { LinkElementProps, LinkNewTabNoticeProps, LinkProps, LinkState } from './link/link.tsx'
 export { useLink } from './link/use-link.ts'
 export type { LinkCurrent, LinkPartProps, UseLinkOptions, UseLinkResult } from './link/use-link.ts'
@@ -100,6 +100,7 @@ export {
   Field,
   FieldErrorMessage,
   FieldLabel,
+  FieldProse,
   FieldRoot,
   Label,
 } from './field/field.tsx'
@@ -125,6 +126,7 @@ export {
   Fieldset,
   FieldsetErrorMessage,
   FieldsetLegend,
+  FieldsetProse,
   FieldsetRoot,
   Legend,
 } from './fieldset/fieldset.tsx'
@@ -186,7 +188,12 @@ export type {
   ThemeStorage,
   ThemeStorageAdapter,
 } from '@kvirn-ui/core'
-export { InputGroup, InputGroupAddon, InputGroupRoot } from './input-group/input-group.tsx'
+export {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupRoot,
+} from './input-group/input-group.tsx'
 export type {
   InputGroupAddonProps,
   InputGroupRootProps,
@@ -233,7 +240,13 @@ export type {
   UseCheckboxOptions,
   UseCheckboxResult,
 } from './checkbox/use-checkbox.ts'
-export { CheckboxGroup, CheckboxGroupRoot } from './checkbox-group/checkbox-group.tsx'
+export {
+  CheckboxGroup,
+  CheckboxGroupErrorMessage,
+  CheckboxGroupLegend,
+  CheckboxGroupProse,
+  CheckboxGroupRoot,
+} from './checkbox-group/checkbox-group.tsx'
 export type {
   CheckboxGroupChangeDetails,
   CheckboxGroupRootProps,
@@ -244,9 +257,18 @@ export type {
   UseCheckboxGroupOptions,
   UseCheckboxGroupResult,
 } from './checkbox-group/use-checkbox-group.ts'
-export { RadioGroup, RadioGroupRoot } from './radio-group/radio-group.tsx'
+export {
+  RadioGroup,
+  RadioGroupErrorMessage,
+  RadioGroupLegend,
+  RadioGroupProse,
+  RadioGroupRadio,
+  RadioGroupRoot,
+} from './radio-group/radio-group.tsx'
 export type { RadioGroupChangeDetails, RadioGroupRootProps } from './radio-group/radio-group.tsx'
-export { Radio } from './radio-group/radio.tsx'
+import { Radio as RadioPart } from './radio-group/radio.tsx'
+/** @deprecated Write `RadioGroup.Radio`, or `RadioGroupRadio` in a Server Component. The flat `Radio` is removed in 1.0. */
+export const Radio = RadioPart
 export type { RadioProps, RadioState } from './radio-group/radio.tsx'
 export { useRadioGroup } from './radio-group/use-radio-group.ts'
 export type {

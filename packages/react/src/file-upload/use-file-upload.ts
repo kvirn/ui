@@ -4,7 +4,7 @@ import type {
   FileUpload,
   FileUploadAddResult,
   FileUploadInput,
-  FileUploadItem,
+  FileUploadEntry,
   FileUploadOptions,
   FileUploadRejection,
   FileUploadState,
@@ -63,7 +63,7 @@ export interface UseFileUploadOptions<Result = unknown> extends FileUploadOption
    * failed, or an item was retried. Not on every progress step. The list holds accepted files
    * only, and an item carries what `upload` resolved with in `result`.
    */
-  onFilesChange?: ((items: readonly FileUploadItem<Result>[]) => void) | undefined
+  onFilesChange?: ((items: readonly FileUploadEntry<Result>[]) => void) | undefined
   /**
    * Called when an add refused files, with the reasons (data, not text). They are not in the
    * list. The component already shows and announces them: use this to log or to block a submit.
@@ -199,21 +199,21 @@ export interface UseFileUploadResult<Result = unknown> {
   /** `id` is the one the Trigger's `aria-describedby` lists while you call `registerPart('rejections')`. */
   rejectionsProps: FileUploadRejectionsPartProps
   summaryProps: FileUploadSummaryPartProps
-  getItemProps: (item: FileUploadItem<Result>) => FileUploadItemPartProps
-  getProgressProps: (item: FileUploadItem<Result>) => FileUploadProgressPartProps
-  getStatusProps: (item: FileUploadItem<Result>) => FileUploadStatusPartProps
-  getItemErrorProps: (item: FileUploadItem<Result>) => FileUploadItemErrorPartProps
+  getItemProps: (item: FileUploadEntry<Result>) => FileUploadItemPartProps
+  getProgressProps: (item: FileUploadEntry<Result>) => FileUploadProgressPartProps
+  getStatusProps: (item: FileUploadEntry<Result>) => FileUploadStatusPartProps
+  getItemErrorProps: (item: FileUploadEntry<Result>) => FileUploadItemErrorPartProps
   getRemoveButtonProps: (
-    item: FileUploadItem<Result>,
+    item: FileUploadEntry<Result>,
   ) => FileUploadItemButtonPartProps<'kv-button kv-file-upload-remove'>
   getCancelButtonProps: (
-    item: FileUploadItem<Result>,
+    item: FileUploadEntry<Result>,
   ) => FileUploadItemButtonPartProps<'kv-button kv-file-upload-cancel'>
   getRetryButtonProps: (
-    item: FileUploadItem<Result>,
+    item: FileUploadEntry<Result>,
   ) => FileUploadItemButtonPartProps<'kv-button kv-file-upload-retry'>
   /** Accepted files only, in order. Rejected files never enter the list. */
-  items: readonly FileUploadItem<Result>[]
+  items: readonly FileUploadEntry<Result>[]
   /** The files the latest add refused, as data. */
   rejections: readonly FileUploadRejection[]
   /** One sentence per refused file: which file, and what to do. Start from `rejectedHeading`. */
@@ -229,17 +229,17 @@ export interface UseFileUploadResult<Result = unknown> {
   /** The drop hint, or the dragging one while a file is over the zone. */
   dropHintText: string
   /** The name the list shows: with "(2)" when two items share a file name. */
-  getItemName: (item: FileUploadItem<Result>) => string
+  getItemName: (item: FileUploadEntry<Result>) => string
   /** The size in the provider's locale, in decimal units: "2,4 MB". */
-  getItemSize: (item: FileUploadItem<Result>) => string
+  getItemSize: (item: FileUploadEntry<Result>) => string
   /** The extension in capitals ("PDF"), never the MIME type. */
-  getItemType: (item: FileUploadItem<Result>) => string
+  getItemType: (item: FileUploadEntry<Result>) => string
   /** The status as text, for example "Uploading, 45 %". */
-  getItemStatusText: (item: FileUploadItem<Result>) => string
+  getItemStatusText: (item: FileUploadEntry<Result>) => string
   /** The failed upload's text: the consumer's own, else a neutral one. `undefined` unless `failed`. */
-  getItemErrorText: (item: FileUploadItem<Result>) => string | undefined
+  getItemErrorText: (item: FileUploadEntry<Result>) => string | undefined
   /** Which buttons an item shows: one action per state (Cancel only while uploading). */
-  getItemActions: (item: FileUploadItem<Result>) => {
+  getItemActions: (item: FileUploadEntry<Result>) => {
     cancel: boolean
     retry: boolean
     remove: boolean
@@ -396,7 +396,7 @@ export function useFileUpload<Result = unknown>(
   const items = state.items
   const isFull = maxFiles !== undefined && items.length >= maxFiles
   const names = displayNames(items, messages)
-  const getItemName = (item: FileUploadItem<Result>) => names.get(item.id) ?? item.file.name
+  const getItemName = (item: FileUploadEntry<Result>) => names.get(item.id) ?? item.file.name
 
   // The newest values, for what runs outside a render: store subscriptions and announcements.
   const latest = useRef({ messages, env, labelId: field?.labelId, names })
@@ -902,8 +902,8 @@ export function useFileUpload<Result = unknown>(
     return callback
   }
 
-  const statusId = (item: FileUploadItem<Result>) => `${baseId}-item-${item.id}-status`
-  const errorId = (item: FileUploadItem<Result>) => `${baseId}-item-${item.id}-error`
+  const statusId = (item: FileUploadEntry<Result>) => `${baseId}-item-${item.id}-status`
+  const errorId = (item: FileUploadEntry<Result>) => `${baseId}-item-${item.id}-error`
 
   const limitsText = [
     maxFiles === undefined ? undefined : messages.limitsMaxFiles({ count: maxFiles }),
@@ -960,8 +960,10 @@ export function useFileUpload<Result = unknown>(
     }
   }, [field])
 
-  const named = (makeMessage: (values: { name: string }) => string, item: FileUploadItem<Result>) =>
-    makeMessage({ name: getItemName(item) })
+  const named = (
+    makeMessage: (values: { name: string }) => string,
+    item: FileUploadEntry<Result>,
+  ) => makeMessage({ name: getItemName(item) })
 
   return {
     rootProps,

@@ -21,7 +21,6 @@ import type {
 import type { InputChangeDetails } from '../input/use-input.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { useOneTimeCode } from './use-one-time-code.ts'
-import { Prose } from '../prose/prose.tsx'
 
 // Contract: one-time-code.a11y.md. The keyboard rows, the pointer, the theme's fallback and the
 // display modes are covered end to end in
@@ -71,7 +70,7 @@ function CodeField({
   return (
     <Field.Root invalid={invalid} disabled={disabled}>
       <Field.Label>Kod från sms:et</Field.Label>
-      <Prose>{hint}</Prose>
+      <Field.Prose>{hint}</Field.Prose>
       <OneTimeCode.Root pattern={pattern} data-testid="root" {...rootProps}>
         <OneTimeCode.Input name="code" readOnly={readOnly} ref={inputRef} />
         {Array.from({ length: slotCount }, (_, index) => (
@@ -198,7 +197,7 @@ describe('the input', () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">Kod</Field.Label>
-        <Prose>Hint</Prose>
+        <Field.Prose>Hint</Field.Prose>
         <OneTimeCode.Root>
           <OneTimeCode.Input aria-describedby="own" />
         </OneTimeCode.Root>
@@ -979,7 +978,7 @@ describe('patterns with separators', () => {
       await render(
         <Field.Root>
           <Field.Label marker="none">Kod</Field.Label>
-          <Prose>Åtta tecken.</Prose>
+          <Field.Prose>Åtta tecken.</Field.Prose>
           <OneTimeCode.Root pattern="****-****" defaultValue="abcd-12" style={{ display: 'flex' }}>
             <OneTimeCode.Input style={{ position: 'absolute' }} />
             {Array.from({ length: 9 }, (_, index) => (
@@ -1219,7 +1218,7 @@ describe('development warnings', () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">Kod</Field.Label>
-        <Prose>Sex siffror.</Prose>
+        <Field.Prose>Sex siffror.</Field.Prose>
         <OneTimeCode.Input />
       </Field.Root>,
     )

@@ -45,12 +45,13 @@ export function SectionRoot({ render, ref, ...otherProps }: SectionRootProps): R
     state: sectionState,
   })
 }
+SectionRoot.displayName = 'Section'
 
 /**
  * A plain container for a region of the page, such as a sidebar or a band of content (contract: section.a11y.md). It renders a `<div>` with no role, ARIA, text or behaviour, and
  * `render` changes the element. To make it a landmark, render it as a `<section>`, `<aside>` or
  * `<nav>` with a name. With `@kvirn-ui/theme`, add modifier classes: `kv-section--canvas` and
- * `kv-section--padding-none|sm|md|lg`. `<Section>` and `<Section.Root>` are the same component.
+ * `kv-section--padding-none|sm|md|lg`. A Section is one element, so it is written `<Section>`.
  *
  * @example
  * <Section render={<aside aria-labelledby="kontakt" />} className="kv-section--padding-lg kv-prose">
@@ -58,4 +59,7 @@ export function SectionRoot({ render, ref, ...otherProps }: SectionRootProps): R
  *   <p>Vi svarar vardagar 9–16.</p>
  * </Section>
  */
-export const Section = Object.assign(SectionRoot, { Root: SectionRoot })
+export const Section: typeof SectionRoot & {
+  /** @deprecated A Section is one element: write `<Section>`. `Section.Root` is removed in 1.0. */
+  Root: typeof SectionRoot
+} = Object.assign(SectionRoot, { Root: SectionRoot })

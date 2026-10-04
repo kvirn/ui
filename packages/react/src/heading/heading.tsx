@@ -62,3 +62,4 @@ export function Heading({ level, size, render, ref, ...otherProps }: HeadingProp
     state: { level, size: heading.size },
   })
 }
+Heading.displayName = 'Heading'

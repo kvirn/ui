@@ -315,7 +315,7 @@ export function PermitNotification({ locale }: NotificationFixtureProps) {
         <p>{text.permit.body}</p>
       </Notification.Body>
       <Notification.Actions>
-        <Link href="#renew">{text.permit.renew}</Link>
+        <Link.Root href="#renew">{text.permit.renew}</Link.Root>
       </Notification.Actions>
     </Notification.Warning>
   )
@@ -464,7 +464,7 @@ export function FocusTargetExample({ locale }: NotificationFixtureProps) {
           </Notification.Body>
           <Notification.Actions>
             <Button>{text.sendFailed.retry}</Button>
-            <Link href="#help">{text.permit.renew}</Link>
+            <Link.Root href="#help">{text.permit.renew}</Link.Root>
           </Notification.Actions>
         </Notification.Danger>
       ) : null}

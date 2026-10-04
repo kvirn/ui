@@ -16,7 +16,6 @@ import { Input } from './input.tsx'
 import type { InputChangeDetails, InputProps, InputState, InputType } from './input.tsx'
 import { useInput } from './use-input.ts'
 import type { InputPartProps, UseInputOptions, UseInputResult } from './use-input.ts'
-import { Prose } from '../prose/prose.tsx'
 
 // Contract: input.a11y.md. The keyboard rows are also covered end to end in
 // apps/storybook/src/components/input/input.e2e.ts.
@@ -185,7 +184,7 @@ describe('in a Field', () => {
         <p id="extra">Extra information.</p>
         <Field.Root>
           <Field.Label>Namn</Field.Label>
-          <Prose>Som i passet.</Prose>
+          <Field.Prose>Som i passet.</Field.Prose>
           <Input aria-describedby="extra" />
         </Field.Root>
       </>,
@@ -229,7 +228,7 @@ describe('in a Field', () => {
       <KvirnProvider locale="sv-SE" messages={sv}>
         <Field.Root invalid>
           <Field.Label>Telefonnummer</Field.Label>
-          <Prose>Vi ringer bara om något är fel.</Prose>
+          <Field.Prose>Vi ringer bara om något är fel.</Field.Prose>
           <Field.ErrorMessage>Ange ett telefonnummer</Field.ErrorMessage>
           <Input type="tel" autoComplete="tel" />
         </Field.Root>
@@ -396,7 +395,7 @@ describe('focus visible', () => {
       <>
         <Field.Root>
           <Field.Label marker="none">Ett</Field.Label>
-          <Prose>Hint</Prose>
+          <Field.Prose>Hint</Field.Prose>
           <Input />
         </Field.Root>
         <Field.Root>
@@ -565,7 +564,7 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
       <KvirnProvider locale="sv" messages={sv}>
         <Field.Root required invalid>
           <Field.Label>Personnummer</Field.Label>
-          <Prose>12 siffror, till exempel 19900101-1234.</Prose>
+          <Field.Prose>12 siffror, till exempel 19900101-1234.</Field.Prose>
           <Field.ErrorMessage>Ange personnumret</Field.ErrorMessage>
           <Input name="personalIdentityNumber" mask={personalIdentityNumber} />
         </Field.Root>
@@ -746,7 +745,7 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
         <Field.Root>
           <Field.Label>Personnummer</Field.Label>
           <Input mask={personalIdentityNumber} />
-          <Prose>12 siffror, till exempel 19900101-1234.</Prose>
+          <Field.Prose>12 siffror, till exempel 19900101-1234.</Field.Prose>
         </Field.Root>
         <Field.Root>
           <Field.Label>Postnummer</Field.Label>

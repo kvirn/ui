@@ -5,8 +5,8 @@ import type {
   FileUpload,
   FileUploadActions,
   FileUploadAddResult,
+  FileUploadEntry,
   FileUploadEnv,
-  FileUploadItem,
   FileUploadOptions,
   FileUploadRejection,
   FileUploadState,
@@ -43,7 +43,7 @@ export function createFileUpload<Result = unknown>(
   options: FileUploadOptions<Result> | (() => FileUploadOptions<Result>),
   env: FileUploadEnv | undefined,
 ): FileUpload<Result> {
-  type Item = FileUploadItem<Result>
+  type Item = FileUploadEntry<Result>
   const readOptions = typeof options === 'function' ? options : () => options
 
   return createComponentStore<FileUploadState<Result>, FileUploadActions<Result>>(

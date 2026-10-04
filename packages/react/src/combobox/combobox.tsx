@@ -4,7 +4,6 @@ import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldContext } from '../field/field-context.ts'
 import {
-  Listbox,
   ListboxEmpty,
   ListboxGroup,
   ListboxGroupLabel,
@@ -127,8 +126,8 @@ export function ComboboxProviders<TItem>({
  * alternativ i listan" in your own validation. The text is never cleared silently.
  *
  * @example
- * <Field>
- *   <Label>Kommun</Label>
+ * <Field.Root>
+ *   <Field.Label>Kommun</Field.Label>
  *   <Combobox.Root items={municipalities} itemToString={(municipality) => municipality.name}
  *     itemToKey={(municipality) => municipality.code} name="municipality">
  *     <Combobox.Input />
@@ -137,7 +136,7 @@ export function ComboboxProviders<TItem>({
  *       <Combobox.Empty />
  *     </Combobox.Popup>
  *   </Combobox.Root>
- * </Field>
+ * </Field.Root>
  */
 export function ComboboxRoot<TItem>(props: ComboboxRootProps<TItem>): ReactElement {
   const combobox = useCombobox(props)
@@ -459,15 +458,6 @@ export function ComboboxValue<TItem = unknown>({
 }
 ComboboxValue.displayName = 'Combobox.Value'
 
-// The popup parts are the Listbox's: each Root provides the same context.
-export {
-  ListboxEmpty as ComboboxEmpty,
-  ListboxGroup as ComboboxGroup,
-  ListboxGroupLabel as ComboboxGroupLabel,
-  ListboxList as ComboboxList,
-  ListboxOption as ComboboxOption,
-  ListboxPopup as ComboboxPopup,
-}
 export type ComboboxEmptyProps = ListboxEmptyProps
 export type ComboboxGroupLabelProps = ListboxGroupLabelProps
 export type ComboboxGroupProps<TItem = unknown> = ListboxGroupProps<TItem>
@@ -477,6 +467,46 @@ export type ComboboxOptionProps<TItem = unknown> = ListboxOptionProps<TItem>
 export type ComboboxOptionState<TItem = unknown> = ListboxOptionState<TItem>
 export type ComboboxPopupProps = ListboxPopupProps
 export type ComboboxPopupState = ListboxPartState
+
+// The popup parts are the Listbox's behaviour: each Root provides the same context. Each is a thin
+// wrapper that renders the Listbox part with all its props (ref included), so it has the display
+// name an adopter writes, and a generic `TItem` flows through to the Listbox part.
+
+/** The popup: the `Listbox.Popup` under the Combobox's name. */
+export function ComboboxPopup(props: ComboboxPopupProps): ReactElement {
+  return <ListboxPopup {...props} />
+}
+ComboboxPopup.displayName = 'Combobox.Popup'
+
+/** The listbox inside the popup: the `Listbox.List` under the Combobox's name. */
+export function ComboboxList<TItem = unknown>(props: ComboboxListProps<TItem>): ReactElement {
+  return <ListboxList<TItem> {...props} />
+}
+ComboboxList.displayName = 'Combobox.List'
+
+/** One option: the `Listbox.Option` under the Combobox's name. */
+export function ComboboxOption<TItem = unknown>(props: ComboboxOptionProps<TItem>): ReactElement {
+  return <ListboxOption<TItem> {...props} />
+}
+ComboboxOption.displayName = 'Combobox.Option'
+
+/** A group of options: the `Listbox.Group` under the Combobox's name. */
+export function ComboboxGroup<TItem = unknown>(props: ComboboxGroupProps<TItem>): ReactElement {
+  return <ListboxGroup<TItem> {...props} />
+}
+ComboboxGroup.displayName = 'Combobox.Group'
+
+/** A group's label: the `Listbox.GroupLabel` under the Combobox's name. */
+export function ComboboxGroupLabel(props: ComboboxGroupLabelProps): ReactElement {
+  return <ListboxGroupLabel {...props} />
+}
+ComboboxGroupLabel.displayName = 'Combobox.GroupLabel'
+
+/** The no-results text: the `Listbox.Empty` under the Combobox's name. */
+export function ComboboxEmpty(props: ComboboxEmptyProps): ReactElement {
+  return <ListboxEmpty {...props} />
+}
+ComboboxEmpty.displayName = 'Combobox.Empty'
 
 /**
  * The Combobox's parts. `Root` with `Input` and `Popup` is the editable combobox (the
@@ -492,10 +522,10 @@ export const Combobox = {
   Clear: ComboboxClear,
   ValueList: ComboboxValueList,
   Value: ComboboxValue,
-  Popup: Listbox.Popup,
-  List: Listbox.List,
-  Option: Listbox.Option,
-  Group: Listbox.Group,
-  GroupLabel: Listbox.GroupLabel,
-  Empty: Listbox.Empty,
+  Popup: ComboboxPopup,
+  List: ComboboxList,
+  Option: ComboboxOption,
+  Group: ComboboxGroup,
+  GroupLabel: ComboboxGroupLabel,
+  Empty: ComboboxEmpty,
 } as const

@@ -30,6 +30,7 @@ Dependencies only point downward: `react → core, i18n (types + the built-in `e
 - **Items in a collection use a function named after the part:** `getOptionProps(option)` and `getTabProps(tab)`. Use this form only when the props depend on an argument.
 - **State is read-only and descriptive:** `isOpen`, `isDisabled`, `highlightedOption`, `selectedOptions`.
 - **Actions are verbs:** `open()`, `close()`, `toggle()`, `select(option)`, `clearSelection()`. Don't expose generic setters like `setOpen` or `setState`.
+- **Namespace compound parts, flat single elements.** A component with parts is written `Field.Root` + `Field.Label`, a single element is written flat (`Button`, `Prose`), and a part of another component is aliased onto its parent (`Field.Prose`, `Combobox.Option`). In a React Server Component, import the flat part exports (`FieldRoot`, `FieldLabel`, …) instead, because a server component can't dot into a client module. Docs and stories show the namespace form. The rules, the alias sets and the deprecated names are in the `api-conventions` skill.
 
 ### Props
 
@@ -99,17 +100,17 @@ Without the augmentation, `LinkProps` falls back to `<a>` props and `IconName` i
 
 The same names are used across all components:
 
-| Part                                   | Meaning                                                                                  |
-| -------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `Root`                                 | State owner, which renders a wrapper only if the semantics need one                      |
-| `Trigger`                              | Element that opens, closes or toggles                                                    |
-| `Panel`                                | Inline revealed content (Disclosure, Accordion, Tabs)                                    |
-| `Popup`                                | Floating content (Popover, Menu, Select, Tooltip, Dialog)                                |
-| `Backdrop`, `Portal`, `Close`          | Overlay plumbing                                                                         |
-| `Label`, `ErrorMessage`                | Field text, wired automatically to the control. The description is a `Prose`             |
-| `Item`, `Option`, `Tab`                | Collection members                                                                       |
-| `Indicator`                            | Visual state marker, `aria-hidden`                                                       |
-| `Info`, `Success`, `Warning`, `Danger` | A ready-made Root for one status: its class, its icon and its status word (Notification) |
+| Part                                   | Meaning                                                                                          |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `Root`                                 | State owner, which renders a wrapper only if the semantics need one                              |
+| `Trigger`                              | Element that opens, closes or toggles                                                            |
+| `Panel`                                | Inline revealed content (Disclosure, Accordion, Tabs)                                            |
+| `Popup`                                | Floating content (Popover, Menu, Select, Tooltip, Dialog)                                        |
+| `Backdrop`, `Portal`, `Close`          | Overlay plumbing                                                                                 |
+| `Label`, `ErrorMessage`                | Field text (`Field.Label`), wired automatically to the control. The description is `Field.Prose` |
+| `Item`, `Option`, `Tab`                | Collection members                                                                               |
+| `Indicator`                            | Visual state marker, `aria-hidden`                                                               |
+| `Info`, `Success`, `Warning`, `Danger` | A ready-made Root for one status: its class, its icon and its status word (Notification)         |
 
 Both forms are exported: `Disclosure.Trigger` and the named export `DisclosureTrigger`, which tree-shakes well and is friendly to RSC.
 

@@ -1,4 +1,4 @@
-import { Button, Card, ErrorMessage, Field, Input, Label, masks, Prose } from '@kvirn-ui/react'
+import { Button, Card, Field, Input, masks } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/input/input.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
@@ -55,10 +55,10 @@ const meta = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.name}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.name}</Field.Label>
         <Input name="name" autoComplete="name" {...args} />
-      </Field>
+      </Field.Root>
     )
   },
   parameters: { a11yContract: contract },
@@ -109,26 +109,26 @@ export const Types: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div className="kv-story-form" lang={lang}>
-        <Field required>
-          <Label>{text.email}</Label>
+        <Field.Root required>
+          <Field.Label>{text.email}</Field.Label>
           <Input name="email" type="email" autoComplete="email" />
-        </Field>
-        <Field required>
-          <Label>{text.phone}</Label>
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.phone}</Field.Label>
           <Input name="phone" type="tel" autoComplete="tel" />
-        </Field>
-        <Field required>
-          <Label>{text.website}</Label>
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.website}</Field.Label>
           <Input name="website" type="url" autoComplete="url" />
-        </Field>
-        <Field required>
-          <Label>{text.password}</Label>
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.password}</Field.Label>
           <Input name="password" type="password" autoComplete="current-password" />
-        </Field>
-        <Field required>
-          <Label>{text.search}</Label>
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.search}</Field.Label>
           <Input name="search" type="search" />
-        </Field>
+        </Field.Root>
       </div>
     )
   },
@@ -159,19 +159,19 @@ export const Widths: Story = {
   render: () => (
     <div className="kv-story-form" data-testid="widths">
       {widths.map(([className, example]) => (
-        <Field key={className} required>
-          <Label>
+        <Field.Root key={className} required>
+          <Field.Label>
             <code>{className}</code>
-          </Label>
+          </Field.Label>
           <Input name={className} defaultValue={example} className={className} />
-        </Field>
+        </Field.Root>
       ))}
-      <Field required>
-        <Label>
+      <Field.Root required>
+        <Field.Label>
           <code>kv-input</code>
-        </Label>
+        </Field.Label>
         <Input name="full-width" />
-      </Field>
+      </Field.Root>
     </div>
   ),
   play: async ({ canvas }) => {
@@ -191,14 +191,14 @@ export const Invalid: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <Field required invalid lang={lang}>
-        <Label>{text.email}</Label>
-        <Prose>
+      <Field.Root required invalid lang={lang}>
+        <Field.Label>{text.email}</Field.Label>
+        <Field.Prose>
           <p>{text.emailHint}</p>
-        </Prose>
+        </Field.Prose>
         <Input name="email" type="email" autoComplete="email" defaultValue="anna@" />
-        <ErrorMessage>{text.emailError}</ErrorMessage>
-      </Field>
+        <Field.ErrorMessage>{text.emailError}</Field.ErrorMessage>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -238,10 +238,10 @@ function ControlledExample({ locale }: { locale: FormLocale }) {
   const [value, setValue] = useState('')
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field required>
-        <Label>{text.name}</Label>
+      <Field.Root required>
+        <Field.Label>{text.name}</Field.Label>
         <Input name="name" autoComplete="name" value={value} onValueChange={setValue} />
-      </Field>
+      </Field.Root>
       <p className="kv-story-form-output" data-testid="mirror">
         {text.youTyped}: {value}
       </p>
@@ -287,14 +287,14 @@ function PlainFormExample({ locale }: { locale: FormLocale }) {
         setSent({ name: fieldText(data, 'name'), email: fieldText(data, 'email') })
       }}
     >
-      <Field required>
-        <Label>{text.name}</Label>
+      <Field.Root required>
+        <Field.Label>{text.name}</Field.Label>
         <Input name="name" autoComplete="name" />
-      </Field>
-      <Field required>
-        <Label>{text.email}</Label>
+      </Field.Root>
+      <Field.Root required>
+        <Field.Label>{text.email}</Field.Label>
         <Input name="email" type="email" autoComplete="email" />
-      </Field>
+      </Field.Root>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
           {text.send}
@@ -334,17 +334,17 @@ export const OnSurfaces: Story = {
     return (
       <div className="kv-story-form" lang={lang}>
         <div className="kv-story-form-surface">
-          <Field required>
-            <Label>{text.surface}</Label>
+          <Field.Root required>
+            <Field.Label>{text.surface}</Field.Label>
             <Input name="on-surface" />
-          </Field>
+          </Field.Root>
         </div>
         <Card.Root>
-          <Field required invalid>
-            <Label>{text.inCard}</Label>
+          <Field.Root required invalid>
+            <Field.Label>{text.inCard}</Field.Label>
             <Input name="in-card" />
-            <ErrorMessage>{text.nameError}</ErrorMessage>
-          </Field>
+            <Field.ErrorMessage>{text.nameError}</Field.ErrorMessage>
+          </Field.Root>
         </Card.Root>
       </div>
     )
@@ -362,10 +362,10 @@ export const Compact: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div className="kv-compact" lang={lang}>
-        <Field required>
-          <Label>{text.name}</Label>
+        <Field.Root required>
+          <Field.Label>{text.name}</Field.Label>
           <Input name="name" autoComplete="name" defaultValue="Anna Andersson" />
-        </Field>
+        </Field.Root>
       </div>
     )
   },
@@ -439,14 +439,14 @@ export const InlineFilter: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <form className="kv-story-filter" lang={lang} onSubmit={(event) => event.preventDefault()}>
-        <Field>
-          <Label>{text.name}</Label>
+        <Field.Root>
+          <Field.Label>{text.name}</Field.Label>
           <Input name="name" autoComplete="off" />
-        </Field>
-        <Field>
-          <Label>{text.caseNumber}</Label>
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>{text.caseNumber}</Field.Label>
           <Input name="case" autoComplete="off" spellCheck={false} />
-        </Field>
+        </Field.Root>
         <Button type="submit" className="kv-button--primary">
           {text.filter}
         </Button>
@@ -475,14 +475,14 @@ export const InlineFilterCompact: Story = {
         lang={lang}
         onSubmit={(event) => event.preventDefault()}
       >
-        <Field>
-          <Label>{text.name}</Label>
+        <Field.Root>
+          <Field.Label>{text.name}</Field.Label>
           <Input name="name" autoComplete="off" />
-        </Field>
-        <Field>
-          <Label>{text.caseNumber}</Label>
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>{text.caseNumber}</Field.Label>
           <Input name="case" autoComplete="off" spellCheck={false} />
-        </Field>
+        </Field.Root>
         <Button type="submit" className="kv-button--primary">
           {text.filter}
         </Button>
@@ -507,10 +507,10 @@ export const LongFinnish: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div className="kv-story-narrow" data-testid="narrow">
-        <Field required lang={lang}>
-          <Label>{text.longLabel}</Label>
+        <Field.Root required lang={lang}>
+          <Field.Label>{text.longLabel}</Field.Label>
           <Input name="reference" inputMode="numeric" spellCheck={false} />
-        </Field>
+        </Field.Root>
       </div>
     )
   },

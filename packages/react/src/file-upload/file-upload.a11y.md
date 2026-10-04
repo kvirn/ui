@@ -38,7 +38,7 @@ Rules, tested in `file-upload.test.tsx`:
 - **Adding appends,** except with `multiple` off, where a new file replaces the old. A refused new file leaves the old one in place. With an `upload` function the input is reset after each add, so the same file can be chosen again. Without one, the input holds the list (through `DataTransfer`), so a plain form posts it.
 - **Statuses** are exposed as `data-status` and in text. A failure shows neutral words and never the raw error of the network. Only an error object that opts in (`retryable`, `message`) supplies text of its own.
 - **Retry reuses the stored `File`,** so nobody has to find it in a phone's picker again.
-- **The limits are said before anyone chooses** (3.3.2): `FileUpload.Limits` or a hint, a `Prose` in the Field. A development warning fires if `accept`, `maxFiles` or `maxFileSize` is set and neither exists.
+- **The limits are said before anyone chooses** (3.3.2): `FileUpload.Limits` or a hint, a `Field.Prose` in the Field. A development warning fires if `accept`, `maxFiles` or `maxFileSize` is set and neither exists.
 - **`render` on every part,** with class and handlers merged, and refs merged.
 - **Dev warnings:** a part outside a Root, the limits not said (3.3.2), and a missing Announcer when a message has to be announced. The types leave out `aria-required` and `required` on the Trigger and the input.
 
@@ -83,7 +83,7 @@ Rules, tested in `file-upload.test.tsx`:
 
 ## Consumer responsibilities
 
-- **Say the limits** with `FileUpload.Limits` or a hint (a `Prose` in the Field), and give the Field a label that says what to attach.
+- **Say the limits** with `FileUpload.Limits` or a hint (a `Field.Prose` in the Field), and give the Field a label that says what to attach.
 - **Check on the server.** A client check is not security: type, size and content are checked again where the file lands. Photos can carry location data, which the server should strip.
 - **Decide whether refused files block the form.** `onFilesReject` reports them as data. The Field's `invalid` and its message are yours.
 - **Write `upload`.** The library sends nothing. Report progress as a fraction from 0 to 1, honour the `signal`, and reject with an error object that has `retryable` and `message` to say more than the neutral text.

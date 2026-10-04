@@ -20,16 +20,45 @@ Load it with `accessibility` (what the component must expose) and `testing` (how
 - **Subscribe to a core store with `useStoreSelector(store, selector)`** (internal, `useSyncExternalStore`). Consumers never call `setState`. Don't use `@tanstack/react-store`.
 - **Internal hooks are not exported:** `useStoreSelector`, `useMessages`, `useEnv`, `useLinkComponent`.
 
-## Parts, `render` and aliases
+## Parts and `render`
 
 - **`renderPart({ render, defaultElement, partProps, state })`** (internal, `render/render-part.ts`) renders every part.
   - No `render`: `createElement(defaultElement, partProps)`.
   - Element form, `render={<a href="/help" />}`: the element is cloned with `mergeProps(partProps, element.props)`. Its own plain props win and handlers chain.
   - Function form, `render={(partProps, state) => <El {...partProps} />}`: the consumer spreads the props. Keep `className` when you do.
 - **A part that needs a specific element** (`<button>`, `<a>`, `<fieldset>`) checks `ref.current.tagName` in an effect after commit and warns when `render` produced something else. See the warnings reference.
-- **Namespaces** are written `X.Root` and `X.Part`. Build one with `Object.assign(Root, { … })` or a frozen object. Every part also has a named export (`CardHeader`) for tree-shaking and RSC, which cannot dot into a client module.
-- **An alias is the same component,** not a wrapper: `Field.Prose` is `Prose`, `Combobox.Option` reuses Listbox's. The alias shares the source's display name.
-- **Display names today:** the root of a callable-root compound is the flat name (`Field`, `Fieldset`, `Link`). `Label`, `ErrorMessage`, `Legend` and `Prose` are exported flat as well as aliased (`Field.Label`). Namespace parts are `X.Part` (`FileUpload.Trigger`). "Show code" prints the display name.
+
+## Naming: namespaces, single elements and aliases
+
+An adopter can tell from a name alone how a component is built. Five rules:
+
+1. **A component with two or more public parts is a namespace.** It is written `X.Root` + `X.Part` in docs, stories, fixtures and display names (`Card.Root`, `Field.Root`, `Link.Root`). Docs never show a callable root (`<Field>`).
+2. **A component that is one element is flat,** with no `.Root`: `Button`, `Heading`, `Kbd`, `Icon`, `Input`, `Checkbox`, `Prose` and `Section`. A leftover `.Root` on one (`Prose.Root`, `Section.Root`) is a `@deprecated` alias.
+3. **A component that is a structural part of another is aliased onto the parent.** Structural means the parent's contract registers it, names it or lays it out: a Field's label, hint and error, a group's legend, a Combobox's popup and options, a RadioGroup's radios. Controls placed inside a Field (Input, Checkbox, Listbox, Combobox, FileUpload, OneTimeCode) are content, not parts, and get no alias.
+4. **Every exported component has a display name, and it is the name an adopter writes:** `Field.Prose`, not `Prose`; `Combobox.Option`, not `Listbox.Option`. An alias that is a different name for a shared component is a **thin typed wrapper** with its own `displayName`: a function component that renders the shared one with all its props, ref included, so context is read the same way. A generic part (`ListboxOption<TItem>`) is a generic wrapper (`<ListboxOption<TItem> {...props} />`) so `TItem` still flows through. "Show code" prints the display name.
+5. **Every part also has a flat named export** (`FieldRoot`, `CardHeader`, `ComboboxOption`) from `index.ts`, and it is the same component as the namespace part. In a React Server Component, import the flat part exports instead, because a server component can't dot into a client module. Docs and stories show the namespace form. The flat part exports are not deprecated.
+
+`packages/react/src/naming.test.tsx` enforces the display names, the flat exports and the deprecated allowlist over `index.ts`. `tooling/component-naming` fails when a story, MDX page or package guide opens a deprecated or flat form in JSX.
+
+**Alias sets:**
+
+| Namespace       | Parts                                              |
+| --------------- | -------------------------------------------------- |
+| `Field`         | `Root`, `Label`, `Prose`, `ErrorMessage`           |
+| `Fieldset`      | `Root`, `Legend`, `Prose`, `ErrorMessage`          |
+| `CheckboxGroup` | `Root`, `Legend`, `Prose`, `ErrorMessage`          |
+| `RadioGroup`    | `Root`, `Radio`, `Legend`, `Prose`, `ErrorMessage` |
+| `InputGroup`    | `Root`, `Addon`, `Input`                           |
+| `Link`          | `Root`, `NewTabNotice`                             |
+
+`Hint` joins the field and group sets in Plan 0029. `Combobox` and `Autocomplete` offer the Listbox popup parts (`Popup`, `List`, `Option`, `Group`, `GroupLabel`, `Empty`) under their own names, and Autocomplete also wraps Combobox's `Control`, `Input`, `Toggle` and `Clear`.
+
+**Callables stay callable.** `Field`, `Fieldset` and `Link` are `Object.assign(Root, parts)`, so `<Field>` still works and is the same function as `Field.Root`. A JSDoc `@deprecated` can't target `<Field>` without also hitting `Field.Root`, and a plain object would break adopters. Docs, stories and the naming test treat the callable form as banned, and the callable root is named after its Root (`Field.Root`).
+
+**Deprecated, not removed** (until 1.0, with a codemod note in the changeset): the bare `Label`, `ErrorMessage` and `Legend` exports, `Prose.Root` and `Section.Root` (type the assigned object so the `Root` property carries the `@deprecated`), and the core type `FileUploadItem` (now `FileUploadEntry`, because the React component `FileUploadItem` has the same name). Add a new alias in the same PR as its wrapper, its flat export, its docs and its row in `naming.test.tsx`.
+
+- **Namespaces** are built with `Object.assign(Root, { … })` or a frozen object (`as const`).
+- **`displayName` is set on every function component** (`FieldLabel.displayName = 'Field.Label'`).
 
 ## `mergeProps(...propObjects)`
 
@@ -103,5 +132,4 @@ Every export of `@kvirn-ui/react` is client code. The directive is a JS banner i
 
 ## Maintainer preferences
 
-- Compound parts read as plain JSX, for example `<Field required><Label>…</Label></Field>`. The maintainer asked for this form.
-- Pending: Plan 0028 / 0029 changes these rules once it lands.
+- Compound parts read as namespaced JSX, for example `<Field.Root required><Field.Label>…</Field.Label></Field.Root>`. Flat names are for single elements (`<Button>`, `<Prose>`).

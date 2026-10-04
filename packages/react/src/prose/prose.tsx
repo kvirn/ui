@@ -55,8 +55,9 @@ ProseRoot.displayName = 'Prose'
  * Text set for reading (contract: prose.a11y.md): a `<div class="kv-prose">` that the theme styles
  * for headings, paragraphs, lists, links and tables inside it. It has no role, ARIA or behaviour,
  * and `render` changes the element. Add `kv-prose--large` for the larger size.
- * `<Prose>` and `<Prose.Root>` are the same component. Inside a `Field.Root` or
- * `Fieldset.Root` it is the hint that describes the control or the group.
+ * A Prose is one element, so it is written `<Prose>`. Inside a `Field.Root` or
+ * `Fieldset.Root` write `Field.Prose` or `Fieldset.Prose`: it is the hint that describes the
+ * control or the group.
  *
  * @example
  * <Prose>
@@ -64,4 +65,7 @@ ProseRoot.displayName = 'Prose'
  *   <p>Vi svarar vardagar 9–16.</p>
  * </Prose>
  */
-export const Prose = Object.assign(ProseRoot, { Root: ProseRoot })
+export const Prose: typeof ProseRoot & {
+  /** @deprecated A Prose is one element: write `<Prose>`. `Prose.Root` is removed in 1.0. */
+  Root: typeof ProseRoot
+} = Object.assign(ProseRoot, { Root: ProseRoot })

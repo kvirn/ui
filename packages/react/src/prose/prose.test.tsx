@@ -48,7 +48,8 @@ describe('Prose', () => {
     await expect.element(prose).toHaveClass('kv-prose', 'kv-prose--large', 'annat')
   })
 
-  test('Prose, Prose.Root and ProseRoot are the same, and useProse gives the class', () => {
+  test('Prose and ProseRoot are one component named Prose, the deprecated Prose.Root is the same, and useProse gives the class', () => {
+    expect(Prose.displayName).toBe('Prose')
     expect(Prose.Root).toBe(ProseRoot)
     expect(Prose).toBe(ProseRoot)
     expect(useProse().rootProps).toEqual({ className: 'kv-prose' })
@@ -73,9 +74,9 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await render(
       <Field.Root>
         <Field.Label>Personnummer</Field.Label>
-        <Prose data-testid="hint">
+        <Field.Prose data-testid="hint">
           <p>12 siffror, utan bindestreck.</p>
-        </Prose>
+        </Field.Prose>
         <Input name="pnr" />
       </Field.Root>,
     )
@@ -91,9 +92,9 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await render(
       <Field.Root invalid>
         <Field.Label>Registreringsnummer</Field.Label>
-        <Prose data-testid="first">Det står på registreringsbeviset.</Prose>
+        <Field.Prose data-testid="first">Det står på registreringsbeviset.</Field.Prose>
         <Input name="registration" />
-        <Prose data-testid="second">Till exempel ABC 123</Prose>
+        <Field.Prose data-testid="second">Till exempel ABC 123</Field.Prose>
         <Field.ErrorMessage>Ange numret</Field.ErrorMessage>
       </Field.Root>,
     )
@@ -115,9 +116,9 @@ describe('Prose as the description of a Field or Fieldset', () => {
       return (
         <Field.Root>
           <Field.Label>Namn</Field.Label>
-          {showFirst ? <Prose>Först.</Prose> : null}
+          {showFirst ? <Field.Prose>Först.</Field.Prose> : null}
           <Input />
-          <Prose>Sist.</Prose>
+          <Field.Prose>Sist.</Field.Prose>
         </Field.Root>
       )
     }
@@ -135,9 +136,9 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await render(
       <Fieldset.Root invalid>
         <Fieldset.Legend>Adress</Fieldset.Legend>
-        <Prose data-testid="hint">
+        <Fieldset.Prose data-testid="hint">
           <p>Där du är folkbokförd.</p>
-        </Prose>
+        </Fieldset.Prose>
         <Fieldset.ErrorMessage>Ange din adress</Fieldset.ErrorMessage>
       </Fieldset.Root>,
     )
@@ -154,10 +155,10 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await render(
       <Fieldset.Root>
         <Fieldset.Legend>Adress</Fieldset.Legend>
-        <Prose>Om gruppen.</Prose>
+        <Fieldset.Prose>Om gruppen.</Fieldset.Prose>
         <Field.Root>
           <Field.Label>Gata</Field.Label>
-          <Prose>Utan nummer.</Prose>
+          <Field.Prose>Utan nummer.</Field.Prose>
           <Input />
         </Field.Root>
       </Fieldset.Root>,
@@ -172,14 +173,14 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await render(
       <Field.Root>
         <Field.Label>Namn</Field.Label>
-        <Prose>
+        <Field.Prose>
           <h3>Rubrik</h3>
           <ul>
             <li>Ett</li>
             <li>Två</li>
           </ul>
           <a href="/hjalp">Hjälp</a>
-        </Prose>
+        </Field.Prose>
         <Input />
       </Field.Root>,
     )
@@ -192,7 +193,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await render(
       <Field.Root invalid disabled>
         <Field.Label>Namn</Field.Label>
-        <Prose
+        <Field.Prose
           data-testid="hint"
           render={(partProps, state) => {
             seenStates.push(state)
@@ -200,7 +201,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
           }}
         >
           Som i passet.
-        </Prose>
+        </Field.Prose>
         <Input />
         <Field.ErrorMessage>Ange namn</Field.ErrorMessage>
       </Field.Root>,
@@ -217,9 +218,9 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await render(
       <Field.Root>
         <Field.Label>Namn</Field.Label>
-        <Prose ref={ref} className="egen" data-testid="hint">
+        <Field.Prose ref={ref} className="egen" data-testid="hint">
           Som i passet.
-        </Prose>
+        </Field.Prose>
         <Input />
       </Field.Root>,
     )
@@ -241,9 +242,9 @@ describe('Prose as the description of a Field or Fieldset', () => {
     const { container } = await render(
       <Field.Root invalid>
         <Field.Label>Personnummer</Field.Label>
-        <Prose>
+        <Field.Prose>
           <p>12 siffror, utan bindestreck.</p>
-        </Prose>
+        </Field.Prose>
         <Input name="pnr" />
         <Field.ErrorMessage>Ange ditt personnummer</Field.ErrorMessage>
       </Field.Root>,
@@ -256,9 +257,9 @@ describe('Prose as the description of a Field or Fieldset', () => {
     const { container } = await render(
       <Fieldset.Root group>
         <Fieldset.Legend>Hur vill du bli kontaktad?</Fieldset.Legend>
-        <Prose>
+        <Fieldset.Prose>
           <p>Välj alla som passar.</p>
-        </Prose>
+        </Fieldset.Prose>
         <Field.Root>
           <Field.Label marker="none">E-post</Field.Label>
           <Input type="email" />

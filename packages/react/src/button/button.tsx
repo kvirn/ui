@@ -115,3 +115,4 @@ export function Button({
     state: { isDisabled: button.isDisabled, isFocusVisible: button.isFocusVisible },
   })
 }
+Button.displayName = 'Button'

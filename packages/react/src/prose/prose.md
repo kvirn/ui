@@ -4,7 +4,7 @@
 
 Text set for reading: the `kv-prose` class as a component. It renders a `<div>`.
 
-- One part: `Prose` (also `Prose.Root` and `ProseRoot`), one `<div class="kv-prose">`.
+- One part: `Prose` (also exported as `ProseRoot`; `Prose.Root` still works but is deprecated), one `<div class="kv-prose">`.
 - No role, no ARIA, no text and no strings. The headings, paragraphs, lists, links and tables inside keep their own semantics.
 - `render` changes the element: `<article>` or `<section aria-labelledby>`.
 - Headless: no CSS. The part renders its stable class `kv-prose`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, the text is styled. Add `kv-prose--large` for the larger size. The theme also has `kv-prose--small` (14px, for notes and metadata only), `kv-prose--xl`, `kv-prose--2xl` and `kv-prose--full` (no measure), and the colour roles `--kv-prose-color-*` to recolour one part of a block.

@@ -188,3 +188,4 @@ export function KvirnProvider({
     </KvirnConfigContext.Provider>
   )
 }
+KvirnProvider.displayName = 'KvirnProvider'

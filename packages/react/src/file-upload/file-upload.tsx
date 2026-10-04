@@ -1,6 +1,6 @@
 'use client'
 import type {
-  FileUploadItem as FileUploadItemData,
+  FileUploadEntry as FileUploadItemData,
   FileUploadStatus as FileUploadItemStatus,
 } from '@kvirn-ui/core'
 import {
@@ -228,8 +228,8 @@ function toItemState(itemContext: FileUploadItemContextValue): FileUploadItemSta
  * no form state and makes no network calls: `upload` is yours.
  *
  * @example
- * <Field>
- *   <Label>Bilagor</Label>
+ * <Field.Root>
+ *   <Field.Label>Bilagor</Field.Label>
  *   <FileUpload.Root accept=".pdf,image/jpeg" multiple maxFiles={5} maxFileSize={10_000_000}>
  *     <FileUpload.Limits />
  *     <FileUpload.DropZone>
@@ -248,7 +248,7 @@ function toItemState(itemContext: FileUploadItemContextValue): FileUploadItemSta
  *     </FileUpload.List>
  *     <FileUpload.Input name="attachments" />
  *   </FileUpload.Root>
- * </Field>
+ * </Field.Root>
  */
 export function FileUploadRoot({
   accept,

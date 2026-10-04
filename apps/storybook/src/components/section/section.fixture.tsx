@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
-import { Button, Card, Field, Fieldset, Input, Label, Legend, Link, Section } from '@kvirn-ui/react'
+import { Button, Card, Field, Fieldset, Input, Link, Section } from '@kvirn-ui/react'
 import { textsFor } from '../card/card.fixture.tsx'
 import type { CardFixtureLocale } from '../card/card.fixture.tsx'
 
@@ -159,7 +159,7 @@ export function ContactSection({ locale, hasEdge = false }: ContactSectionProps)
         )}
       </p>
       <p>
-        <Link href="mailto:kundcenter@kvirnby.example">{text.contact.email}</Link>
+        <Link.Root href="mailto:kundcenter@kvirnby.example">{text.contact.email}</Link.Root>
       </p>
     </Section>
   )
@@ -189,7 +189,7 @@ export function NewsCard({ locale }: SectionFixtureProps) {
     <Card.Root render={<article />} lang={lang} data-testid="news-card">
       <Card.Body className="kv-prose">
         <h2>
-          <Link href="#vintervaghallning">{text.news.snow.title}</Link>
+          <Link.Root href="#vintervaghallning">{text.news.snow.title}</Link.Root>
         </h2>
         <p>{text.news.snow.excerpt}</p>
       </Card.Body>
@@ -201,12 +201,12 @@ export function NewsCard({ locale }: SectionFixtureProps) {
 export function ContactDetailsFieldset({ locale }: SectionFixtureProps) {
   const { text, lang } = sectionTextsFor(locale)
   return (
-    <Fieldset lang={lang} data-testid="form-section">
-      <Legend>{text.details.legend}</Legend>
-      <Field>
-        <Label>{text.details.email}</Label>
+    <Fieldset.Root lang={lang} data-testid="form-section">
+      <Fieldset.Legend>{text.details.legend}</Fieldset.Legend>
+      <Field.Root>
+        <Field.Label>{text.details.email}</Field.Label>
         <Input name="email" autoComplete="email" />
-      </Field>
-    </Fieldset>
+      </Field.Root>
+    </Fieldset.Root>
   )
 }

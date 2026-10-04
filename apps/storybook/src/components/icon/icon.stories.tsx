@@ -493,9 +493,9 @@ export const ForcedColors: Story = {
               <Icon name="add" {...iconProps} />
               {text.button.addChild}
             </Button>
-            <Link href="#guide">
+            <Link.Root href="#guide">
               <Icon name="external" {...iconProps} /> {text.text.guide}
-            </Link>
+            </Link.Root>
           </div>
         ))}
       </div>
@@ -631,9 +631,9 @@ export const InRunningTextAndLinks: Story = {
           {text.text.collection(<CollectionDate formatLocale={formatLocale} />)}
         </p>
         <p>
-          <Link href="https://www.digg.se/" target="_blank">
+          <Link.Root href="https://www.digg.se/" target="_blank">
             {text.text.guide} <Link.NewTabNotice /> <Icon name="external" size="sm" />
-          </Link>
+          </Link.Root>
         </p>
       </div>
     )

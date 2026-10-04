@@ -114,7 +114,9 @@ test.describe('InputGroup keyboard contract', () => {
   })
 
   test('a click on the Button keeps its own behaviour', async ({ page }) => {
-    await openStory(page, 'search-with-clear')
+    // The Keyboard story only asserts in its play function. SearchWithClear's play types and
+    // clears the search itself, which races the clicks here.
+    await openStory(page, 'keyboard')
     const input = page.getByRole('searchbox', { name: 'Sök bland e-tjänster' })
     await input.fill('parkering')
     await page.getByRole('button', { name: 'Rensa' }).click()

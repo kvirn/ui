@@ -7,6 +7,7 @@ import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { ProseRoot } from '../prose/prose.tsx'
+import type { ProseRootProps } from '../prose/prose.tsx'
 import { useMessages } from '../provider/use-messages.ts'
 import { renderPart } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
@@ -60,19 +61,19 @@ export function OptionalMarker({ text }: { text: string | undefined }): ReactNod
 }
 
 /**
- * One form question with one control: a `<div>` that wires its Label, hint (a `Prose`) and
+ * One form question with one control: a `<div>` that wires its Label, hint (a `Field.Prose`) and
  * ErrorMessage to the control inside it (contract: field.a11y.md). It holds no form
  * state: pass `invalid`, `required` and `disabled` from your own form logic.
  *
  * @example
- * <Field invalid={errors.phone !== undefined}>
- *   <Label>Telefonnummer</Label>
- *   <Prose>
+ * <Field.Root invalid={errors.phone !== undefined}>
+ *   <Field.Label>Telefonnummer</Field.Label>
+ *   <Field.Prose>
  *     <p>Vi ringer bara om något är fel.</p>
- *   </Prose>
- *   <ErrorMessage>{errors.phone}</ErrorMessage>
+ *   </Field.Prose>
+ *   <Field.ErrorMessage>{errors.phone}</Field.ErrorMessage>
  *   <Input name="phone" autoComplete="tel" />
- * </Field>
+ * </Field.Root>
  */
 export function FieldRoot({
   invalid = false,
@@ -143,7 +144,7 @@ export function FieldRoot({
     </FieldTextHostContext.Provider>
   )
 }
-FieldRoot.displayName = 'Field'
+FieldRoot.displayName = 'Field.Root'
 
 /**
  * The field's visible label, a `<label for>` that names the control. Adds the `field.optional`
@@ -193,7 +194,7 @@ export function FieldLabel({
     state: field?.state ?? noState,
   })
 }
-FieldLabel.displayName = 'Label'
+FieldLabel.displayName = 'Field.Label'
 
 /**
  * The error message: says what's wrong and how to fix it. Renders only while its Field or
@@ -250,29 +251,38 @@ export function FieldErrorMessage({
     state: host?.state ?? { ...noState, isInvalid: true },
   })
 }
-FieldErrorMessage.displayName = 'ErrorMessage'
+FieldErrorMessage.displayName = 'Field.ErrorMessage'
 
-/** The question's label. The same component as `Field.Label`. */
+/**
+ * The field's hint, a `Prose` that describes the control. It is the shared `Prose` under the
+ * name an adopter writes (`Field.Prose`), so it registers with the Field the same way.
+ */
+export function FieldProse(props: ProseRootProps): ReactElement {
+  return <ProseRoot {...props} />
+}
+FieldProse.displayName = 'Field.Prose'
+
+/** @deprecated Write `Field.Label`. The flat `Label` is removed in 1.0. */
 export const Label = FieldLabel
 
-/** The question's error message. The same component as `Field.ErrorMessage`. */
+/** @deprecated Write `Field.ErrorMessage`. The flat `ErrorMessage` is removed in 1.0. */
 export const ErrorMessage = FieldErrorMessage
 
 /**
- * A form question with one control, and its label and error: `<Field>` is the root,
- * with `<Label>`, `<Prose>` for the hint and `<ErrorMessage>` inside it. `Field.Root`,
- * `Field.Label`, `Field.Prose` and `Field.ErrorMessage` are the same components.
+ * A form question with one control, and its label and error: `Field.Root` is the root, with
+ * `Field.Label`, `Field.Prose` for the hint and `Field.ErrorMessage` inside it. The callable
+ * `<Field.Root>` still works and is the same component as `Field.Root`, but it isn't shown in docs.
  *
  * @example
- * <Field required>
- *   <Label>E-postadress</Label>
- *   <Prose><p>Vi skickar beslutet hit.</p></Prose>
+ * <Field.Root required>
+ *   <Field.Label>E-postadress</Field.Label>
+ *   <Field.Prose><p>Vi skickar beslutet hit.</p></Field.Prose>
  *   <Input name="email" type="email" autoComplete="email" />
- * </Field>
+ * </Field.Root>
  */
 export const Field = Object.assign(FieldRoot, {
   Root: FieldRoot,
   Label: FieldLabel,
-  Prose: ProseRoot,
+  Prose: FieldProse,
   ErrorMessage: FieldErrorMessage,
 })

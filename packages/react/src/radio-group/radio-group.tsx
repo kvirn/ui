@@ -1,8 +1,17 @@
 'use client'
 import { useMemo } from 'react'
 import type { ReactElement } from 'react'
-import { FieldsetRoot } from '../fieldset/fieldset.tsx'
-import type { FieldsetRootProps } from '../fieldset/fieldset.tsx'
+import type { FieldErrorMessageProps } from '../field/field.tsx'
+import {
+  FieldsetErrorMessage,
+  FieldsetLegend,
+  FieldsetProse,
+  FieldsetRoot,
+} from '../fieldset/fieldset.tsx'
+import type { FieldsetLegendProps, FieldsetRootProps } from '../fieldset/fieldset.tsx'
+import type { ProseRootProps } from '../prose/prose.tsx'
+import { Radio } from './radio.tsx'
+import type { RadioProps } from './radio.tsx'
 import { RadioGroupContext } from './radio-group-context.ts'
 import type { RadioGroupContextValue } from './radio-group-context.ts'
 import { useRadioGroup } from './use-radio-group.ts'
@@ -23,18 +32,18 @@ export interface RadioGroupRootProps extends Omit<FieldsetRootProps, 'group'> {
 
 /**
  * A group of radios: the native `<fieldset>` of a `Fieldset.Root` with `group` set, so
- * `Fieldset.Legend`, a hint (`Prose`) and `Fieldset.ErrorMessage` work inside it
+ * `RadioGroup.Legend`, `RadioGroup.Prose` (the hint) and `RadioGroup.ErrorMessage` work inside it
  * (contract: radio-group.a11y.md). Radios that share a `name` are one Tab stop, and
  * the browser's arrow keys move and check, mirrored in right-to-left. It holds no form state:
  * pass `value` and `onValueChange`, or `defaultValue` and `name` for a plain form.
  *
  * @example
  * <RadioGroup.Root name="language" value={language} onValueChange={setLanguage} required>
- *   <Legend>Vilket språk vill du använda?</Legend>
- *   <Field>
- *     <Radio value="sv" />
- *     <Label>Svenska</Label>
- *   </Field>
+ *   <RadioGroup.Legend>Vilket språk vill du använda?</RadioGroup.Legend>
+ *   <Field.Root>
+ *     <RadioGroup.Radio value="sv" />
+ *     <Field.Label>Svenska</Field.Label>
+ *   </Field.Root>
  * </RadioGroup.Root>
  */
 export function RadioGroupRoot({
@@ -67,7 +76,38 @@ export function RadioGroupRoot({
 }
 RadioGroupRoot.displayName = 'RadioGroup.Root'
 
+/**
+ * One radio of the group: the shared `Radio` under the group's name. It only works inside a
+ * `RadioGroup.Root`, which gives it its `name` and checked state.
+ */
+export function RadioGroupRadio(props: RadioProps): ReactElement {
+  return <Radio {...props} />
+}
+RadioGroupRadio.displayName = 'RadioGroup.Radio'
+
+/** The group's question and its accessible name: the `Fieldset.Legend` under the group's name. */
+export function RadioGroupLegend(props: FieldsetLegendProps): ReactElement {
+  return <FieldsetLegend {...props} />
+}
+RadioGroupLegend.displayName = 'RadioGroup.Legend'
+
+/** The group's hint: the `Fieldset.Prose` under the group's name. */
+export function RadioGroupProse(props: ProseRootProps): ReactElement {
+  return <FieldsetProse {...props} />
+}
+RadioGroupProse.displayName = 'RadioGroup.Prose'
+
+/** The group's error message: the `Fieldset.ErrorMessage` under the group's name. */
+export function RadioGroupErrorMessage(props: FieldErrorMessageProps): ReactElement {
+  return <FieldsetErrorMessage {...props} />
+}
+RadioGroupErrorMessage.displayName = 'RadioGroup.ErrorMessage'
+
 /** A group of radios under a legend, with a hint and an error. */
 export const RadioGroup = {
   Root: RadioGroupRoot,
+  Radio: RadioGroupRadio,
+  Legend: RadioGroupLegend,
+  Prose: RadioGroupProse,
+  ErrorMessage: RadioGroupErrorMessage,
 } as const

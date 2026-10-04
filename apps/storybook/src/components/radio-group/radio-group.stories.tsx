@@ -1,14 +1,4 @@
-import {
-  Button,
-  Card,
-  ErrorMessage,
-  Field,
-  Label,
-  Legend,
-  Prose,
-  Radio,
-  RadioGroup,
-} from '@kvirn-ui/react'
+import { Button, Card, Field, RadioGroup } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/radio-group/radio-group.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ComponentProps } from 'react'
@@ -92,35 +82,35 @@ function Duration({
   return (
     <RadioGroup.Root name={name} lang={lang} {...groupProps}>
       {heading ? (
-        <Legend className="kv-fieldset-legend--heading">
+        <RadioGroup.Legend className="kv-fieldset-legend--heading">
           <h1>{text.durationLegend}</h1>
-        </Legend>
+        </RadioGroup.Legend>
       ) : (
-        <Legend>{text.durationLegend}</Legend>
+        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
       )}
       {hint ? (
-        <Prose>
+        <RadioGroup.Prose>
           <p>{text.durationHint}</p>
-        </Prose>
+        </RadioGroup.Prose>
       ) : null}
-      <Field>
-        <Radio value="1" />
-        <Label>{text.duration1}</Label>
-      </Field>
-      <Field>
-        <Radio value="6" disabled={disabledOption} />
-        <Label>{text.duration6}</Label>
-      </Field>
-      <Field>
-        <Radio value="12" />
-        <Label>{text.duration12}</Label>
+      <Field.Root>
+        <RadioGroup.Radio value="1" />
+        <Field.Label>{text.duration1}</Field.Label>
+      </Field.Root>
+      <Field.Root>
+        <RadioGroup.Radio value="6" disabled={disabledOption} />
+        <Field.Label>{text.duration6}</Field.Label>
+      </Field.Root>
+      <Field.Root>
+        <RadioGroup.Radio value="12" />
+        <Field.Label>{text.duration12}</Field.Label>
         {optionHints ? (
-          <Prose>
+          <Field.Prose>
             <p>{text.duration12Hint}</p>
-          </Prose>
+          </Field.Prose>
         ) : null}
-      </Field>
-      <ErrorMessage>{text.durationError}</ErrorMessage>
+      </Field.Root>
+      <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
     </RadioGroup.Root>
   )
 }

@@ -1,4 +1,4 @@
-import type { FileUploadItem, FileUploadRejection, ResolvedMessages } from '@kvirn-ui/core'
+import type { FileUploadEntry, FileUploadRejection, ResolvedMessages } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 
 // Internal. The pure helpers behind FileUpload's text: no React, no DOM.
@@ -65,7 +65,7 @@ type FileUploadMessages = ResolvedMessages<KvirnMessages['fileUpload']>
 
 /** The names the list shows: the second and later items with one file name get "(2)", "(3)". */
 export function displayNames(
-  items: readonly FileUploadItem[],
+  items: readonly FileUploadEntry[],
   messages: Pick<FileUploadMessages, 'duplicateName'>,
 ): ReadonlyMap<string, string> {
   const seen = new Map<string, number>()
@@ -144,7 +144,7 @@ export function rejectionLines(
 
 /** The status sentence of an item, for its Status part and the buttons' description. */
 export function statusText(
-  item: FileUploadItem,
+  item: FileUploadEntry,
   hasUpload: boolean,
   messages: FileUploadMessages,
 ): string {
@@ -166,7 +166,7 @@ export function statusText(
 
 /** The text of a failed item's error: the consumer's own message, else the neutral one. */
 export function itemErrorText(
-  item: FileUploadItem,
+  item: FileUploadEntry,
   name: string,
   messages: Pick<FileUploadMessages, 'uploadFailedMessage'>,
 ): string | undefined {

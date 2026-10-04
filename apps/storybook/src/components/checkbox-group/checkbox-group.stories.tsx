@@ -1,14 +1,4 @@
-import {
-  Button,
-  Card,
-  Checkbox,
-  CheckboxGroup,
-  ErrorMessage,
-  Field,
-  Label,
-  Legend,
-  Prose,
-} from '@kvirn-ui/react'
+import { Button, Card, Checkbox, CheckboxGroup, Field } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/checkbox-group/checkbox-group.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ComponentProps } from 'react'
@@ -80,35 +70,35 @@ function Contact({
   const { text, lang } = choiceTextsFor(locale)
   return (
     <CheckboxGroup.Root name="contact" lang={lang} {...groupProps}>
-      <Legend>{text.contactLegend}</Legend>
+      <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
       {hint ? (
-        <Prose>
+        <CheckboxGroup.Prose>
           <p>{text.contactHint}</p>
-        </Prose>
+        </CheckboxGroup.Prose>
       ) : null}
-      <Field>
+      <Field.Root>
         <Checkbox value="email" />
-        <Label>{text.contactEmail}</Label>
+        <Field.Label>{text.contactEmail}</Field.Label>
         {optionHints ? (
-          <Prose>
+          <Field.Prose>
             <p>{text.contactEmailHint}</p>
-          </Prose>
+          </Field.Prose>
         ) : null}
-      </Field>
-      <Field>
+      </Field.Root>
+      <Field.Root>
         <Checkbox value="text" />
-        <Label>{text.contactText}</Label>
-      </Field>
-      <Field>
+        <Field.Label>{text.contactText}</Field.Label>
+      </Field.Root>
+      <Field.Root>
         <Checkbox value="letter" />
-        <Label>{text.contactLetter}</Label>
+        <Field.Label>{text.contactLetter}</Field.Label>
         {optionHints ? (
-          <Prose>
+          <Field.Prose>
             <p>{text.contactLetterHint}</p>
-          </Prose>
+          </Field.Prose>
         ) : null}
-      </Field>
-      {error ? <ErrorMessage>{text.contactError}</ErrorMessage> : null}
+      </Field.Root>
+      {error ? <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage> : null}
     </CheckboxGroup.Root>
   )
 }

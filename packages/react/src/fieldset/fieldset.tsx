@@ -12,9 +12,11 @@ import {
 import type { FieldTextHostContextValue } from '../field/field-context.ts'
 import type { FieldMarker, FieldState } from '../field/field-state.ts'
 import { FieldErrorMessage, OptionalMarker } from '../field/field.tsx'
+import type { FieldErrorMessageProps } from '../field/field.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { ProseRoot } from '../prose/prose.tsx'
+import type { ProseRootProps } from '../prose/prose.tsx'
 import { useMessages } from '../provider/use-messages.ts'
 import { renderPart } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
@@ -61,18 +63,18 @@ const noState: FieldsetState = { isInvalid: false, isRequired: false, isDisabled
 
 /**
  * A native `<fieldset>` that groups questions, or the controls of one question, under its
- * legend (contract: fieldset.a11y.md). A `Prose` inside it (the hint) and its
- * ErrorMessage describe the group. It holds no form state.
+ * legend (contract: fieldset.a11y.md). A `Fieldset.Prose` inside it (the hint) and its
+ * `Fieldset.ErrorMessage` describe the group. It holds no form state.
  *
  * @example
- * <Fieldset group invalid={errors.contact !== undefined}>
- *   <Legend>Hur vill du bli kontaktad?</Legend>
- *   <Prose>
+ * <Fieldset.Root group invalid={errors.contact !== undefined}>
+ *   <Fieldset.Legend>Hur vill du bli kontaktad?</Fieldset.Legend>
+ *   <Fieldset.Prose>
  *     <p>Välj alla som passar.</p>
- *   </Prose>
- *   <ErrorMessage>{errors.contact}</ErrorMessage>
+ *   </Fieldset.Prose>
+ *   <Fieldset.ErrorMessage>{errors.contact}</Fieldset.ErrorMessage>
  *   …
- * </Fieldset>
+ * </Fieldset.Root>
  */
 export function FieldsetRoot({
   invalid = false,
@@ -163,7 +165,7 @@ export function FieldsetRoot({
     </FieldTextHostContext.Provider>
   )
 }
-FieldsetRoot.displayName = 'Fieldset'
+FieldsetRoot.displayName = 'Fieldset.Root'
 
 /**
  * The fieldset's `<legend>`: the question, and the group's accessible name. Render it first. In
@@ -211,22 +213,38 @@ export function FieldsetLegend({
     state: fieldset?.state ?? noState,
   })
 }
-FieldsetLegend.displayName = 'Legend'
+FieldsetLegend.displayName = 'Fieldset.Legend'
 
-/** The group's error message. The same component as `Field.ErrorMessage`. */
-export const FieldsetErrorMessage = FieldErrorMessage
+/**
+ * The group's hint, a `Prose` that describes the group. It is the shared `Prose` under the name
+ * an adopter writes (`Fieldset.Prose`), so it registers with the Fieldset the same way.
+ */
+export function FieldsetProse(props: ProseRootProps): ReactElement {
+  return <ProseRoot {...props} />
+}
+FieldsetProse.displayName = 'Fieldset.Prose'
 
-/** The group's question. The same component as `Fieldset.Legend`. */
+/**
+ * The group's error message: the `Field.ErrorMessage` behaviour under the name an adopter writes
+ * (`Fieldset.ErrorMessage`). It renders only while the Fieldset is invalid.
+ */
+export function FieldsetErrorMessage(props: FieldErrorMessageProps): ReactElement {
+  return <FieldErrorMessage {...props} />
+}
+FieldsetErrorMessage.displayName = 'Fieldset.ErrorMessage'
+
+/** @deprecated Write `Fieldset.Legend`. The flat `Legend` is removed in 1.0. */
 export const Legend = FieldsetLegend
 
 /**
- * A native fieldset with its legend and error: `<Fieldset>` is the root, with
- * `<Legend>`, `<Prose>` for the hint and `<ErrorMessage>` inside it. `Fieldset.Root`,
- * `Fieldset.Legend`, `Fieldset.Prose` and `Fieldset.ErrorMessage` are the same components.
+ * A native fieldset with its legend and error: `Fieldset.Root` is the root, with
+ * `Fieldset.Legend`, `Fieldset.Prose` for the hint and `Fieldset.ErrorMessage` inside it. The
+ * callable `<Fieldset>` still works and is the same component as `Fieldset.Root`, but it isn't
+ * shown in docs.
  */
 export const Fieldset = Object.assign(FieldsetRoot, {
   Root: FieldsetRoot,
   Legend: FieldsetLegend,
-  Prose: ProseRoot,
+  Prose: FieldsetProse,
   ErrorMessage: FieldsetErrorMessage,
 })

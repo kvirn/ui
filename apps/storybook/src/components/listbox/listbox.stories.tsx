@@ -1,4 +1,4 @@
-import { Button, Card, ErrorMessage, Field, Label, Listbox, Prose } from '@kvirn-ui/react'
+import { Button, Card, Field, Listbox } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/listbox/listbox.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useMemo, useState } from 'react'
@@ -266,10 +266,10 @@ export const Default: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <MunicipalityListbox text={text} name="municipality" />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -307,18 +307,18 @@ function KeyboardExample({ locale }: { locale: FormLocale }) {
       <div className="kv-button-group">
         <Button type="button">Före</Button>
       </div>
-      <Field required controlId="municipality">
-        <Label>{text.municipality}</Label>
+      <Field.Root required controlId="municipality">
+        <Field.Label>{text.municipality}</Field.Label>
         <MunicipalityListbox text={text} items={municipalitiesWithClosed} name="municipality" />
-      </Field>
-      <Field required disabled controlId="closed">
-        <Label>{text.longSelectLabel}</Label>
+      </Field.Root>
+      <Field.Root required disabled controlId="closed">
+        <Field.Label>{text.longSelectLabel}</Field.Label>
         <MunicipalityListbox text={text} name="disabled" />
-      </Field>
-      <Field required controlId="several">
-        <Label>{extra.several}</Label>
+      </Field.Root>
+      <Field.Root required controlId="several">
+        <Field.Label>{extra.several}</Field.Label>
         <MunicipalitiesListbox placeholder={extra.severalPlaceholder} name="several" />
-      </Field>
+      </Field.Root>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
           {text.send}
@@ -333,10 +333,10 @@ export const Selected: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <MunicipalityListbox text={text} defaultValue="malmö" />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -350,10 +350,10 @@ export const Open: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <MunicipalityListbox text={text} defaultValue="malmö" defaultOpen />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -372,13 +372,13 @@ export const WithDescription: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.municipality}</Label>
-        <Prose>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Field.Prose>
           <p>{text.municipalityHint}</p>
-        </Prose>
+        </Field.Prose>
         <MunicipalityListbox text={text} />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -392,10 +392,10 @@ export const Optional: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <MunicipalityListbox text={text} />
-      </Field>
+      </Field.Root>
     )
   },
 }
@@ -405,14 +405,14 @@ export const Invalid: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required invalid lang={lang}>
-        <Label>{text.municipality}</Label>
-        <Prose>
+      <Field.Root required invalid lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Field.Prose>
           <p>{text.municipalityHint}</p>
-        </Prose>
+        </Field.Prose>
         <MunicipalityListbox text={text} />
-        <ErrorMessage>{text.municipalityError}</ErrorMessage>
-      </Field>
+        <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -432,10 +432,10 @@ export const Disabled: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required disabled lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root required disabled lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <MunicipalityListbox text={text} defaultValue="malmö" />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -451,10 +451,10 @@ export const DisabledOption: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <MunicipalityListbox text={text} items={municipalitiesWithClosed} defaultOpen />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas }) => {
@@ -512,10 +512,10 @@ export const Groups: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <GroupsListbox text={text} defaultOpen />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -533,14 +533,14 @@ export const Multiple: Story = {
     const { lang } = choiceTextsFor(locale)
     const extra = extraTextsFor(locale)
     return (
-      <Field required lang={lang}>
-        <Label>{extra.several}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{extra.several}</Field.Label>
         <MunicipalitiesListbox
           placeholder={extra.severalPlaceholder}
           defaultValue={['malmö', 'uppsala']}
           defaultOpen
         />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas }) => {
@@ -560,10 +560,10 @@ export const LongList: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <MunicipalityListbox text={text} items={longList} defaultOpen />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas }) => {
@@ -582,8 +582,8 @@ export const Virtualized: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang} controlId="municipality">
-        <Label>{text.municipality}</Label>
+      <Field.Root required lang={lang} controlId="municipality">
+        <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
           native="never"
           virtualize
@@ -602,7 +602,7 @@ export const Virtualized: Story = {
             <Listbox.Empty />
           </Listbox.Popup>
         </Listbox.Root>
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas }) => {
@@ -622,8 +622,8 @@ export const RichOptions: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
           native="never"
           items={richMunicipalities}
@@ -649,7 +649,7 @@ export const RichOptions: Story = {
             </Listbox.List>
           </Listbox.Popup>
         </Listbox.Root>
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas }) => {
@@ -663,10 +663,10 @@ export const Empty: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <MunicipalityListbox text={text} items={[]} defaultOpen />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, canvasElement }) => {
@@ -727,10 +727,10 @@ export const NativeDefault: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <NativeListbox text={text} />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -756,14 +756,14 @@ function NativeKeyboardExample({ locale }: { locale: FormLocale }) {
   const { text, lang } = choiceTextsFor(locale)
   return (
     <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
-      <Field required>
-        <Label>{text.municipality}</Label>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
         <NativeListbox text={text} />
-      </Field>
-      <Field required disabled>
-        <Label>{text.longSelectLabel}</Label>
+      </Field.Root>
+      <Field.Root required disabled>
+        <Field.Label>{text.longSelectLabel}</Field.Label>
         <NativeListbox text={text} name="disabled" />
-      </Field>
+      </Field.Root>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
           {text.send}
@@ -778,10 +778,10 @@ export const NativeSelected: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <NativeListbox text={text} defaultValue="stockholm" />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -795,13 +795,13 @@ export const NativeWithDescription: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.municipality}</Label>
-        <Prose>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Field.Prose>
           <p>{text.municipalityHint}</p>
-        </Prose>
+        </Field.Prose>
         <NativeListbox text={text} />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -815,10 +815,10 @@ export const NativeOptional: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <NativeListbox text={text} />
-      </Field>
+      </Field.Root>
     )
   },
 }
@@ -828,14 +828,14 @@ export const NativeInvalid: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required invalid lang={lang}>
-        <Label>{text.municipality}</Label>
-        <Prose>
+      <Field.Root required invalid lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Field.Prose>
           <p>{text.municipalityHint}</p>
-        </Prose>
+        </Field.Prose>
         <NativeListbox text={text} />
-        <ErrorMessage>{text.municipalityError}</ErrorMessage>
-      </Field>
+        <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -855,10 +855,10 @@ export const NativeDisabled: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <NativeListbox text={text} disabled defaultValue="malmo" />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -872,10 +872,10 @@ export const NativeGroups: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <Field required lang={lang}>
-        <Label>{text.municipality}</Label>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.municipality}</Field.Label>
         <NativeGroupsListbox text={text} />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -927,11 +927,11 @@ export const OnSurfaces: Story = {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
       <Card.Root lang={lang}>
-        <Field required invalid>
-          <Label>{text.municipality}</Label>
+        <Field.Root required invalid>
+          <Field.Label>{text.municipality}</Field.Label>
           <MunicipalityListbox text={text} defaultOpen />
-          <ErrorMessage>{text.municipalityError}</ErrorMessage>
-        </Field>
+          <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
+        </Field.Root>
       </Card.Root>
     )
   },
@@ -947,10 +947,10 @@ export const Compact: Story = {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
       <div className="kv-compact" lang={lang}>
-        <Field required>
-          <Label>{text.municipality}</Label>
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
           <MunicipalityListbox text={text} defaultOpen />
-        </Field>
+        </Field.Root>
       </div>
     )
   },
@@ -975,10 +975,10 @@ export const LongFinnish: Story = {
         data-testid="narrow"
         style={{ paddingInline: 'var(--kv-space-4)' }}
       >
-        <Field required lang={lang}>
-          <Label>{text.longSelectLabel}</Label>
+        <Field.Root required lang={lang}>
+          <Field.Label>{text.longSelectLabel}</Field.Label>
           <MunicipalityListbox text={text} items={items} defaultValue="long" defaultOpen />
-        </Field>
+        </Field.Root>
       </div>
     )
   },
@@ -994,10 +994,10 @@ function ControlledExample({ locale }: { locale: FormLocale }) {
   const [value, setValue] = useState<string | null>('göteborg')
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field required>
-        <Label>{text.municipality}</Label>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
         <MunicipalityListbox text={text} value={value} onValueChange={setValue} />
-      </Field>
+      </Field.Root>
       <p className="kv-story-form-output" data-testid="mirror">
         {text.youChose}: {value ?? '–'}
       </p>
@@ -1037,10 +1037,10 @@ function PlainFormExample({ locale }: { locale: FormLocale }) {
         setSent(typeof value === 'string' ? value : '')
       }}
     >
-      <Field required>
-        <Label>{text.municipality}</Label>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
         <MunicipalityListbox text={text} name="municipality" defaultValue="göteborg" />
-      </Field>
+      </Field.Root>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
           {text.send}
@@ -1072,31 +1072,31 @@ function ListboxStates({ locale }: { locale: FormLocale }) {
   const { text, lang } = choiceTextsFor(locale)
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field required>
-        <Label>{text.municipality}</Label>
-        <Prose>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Field.Prose>
           <p>{text.municipalityHint}</p>
-        </Prose>
+        </Field.Prose>
         <MunicipalityListbox
           text={text}
           items={municipalitiesWithClosed.slice(0, 8)}
           defaultValue="ale"
           defaultOpen
         />
-      </Field>
-      <Field required invalid>
-        <Label>{text.municipality}</Label>
+      </Field.Root>
+      <Field.Root required invalid>
+        <Field.Label>{text.municipality}</Field.Label>
         <MunicipalityListbox text={text} />
-        <ErrorMessage>{text.municipalityError}</ErrorMessage>
-      </Field>
-      <Field>
-        <Label>{text.municipality}</Label>
+        <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
+      </Field.Root>
+      <Field.Root>
+        <Field.Label>{text.municipality}</Field.Label>
         <MunicipalityListbox text={text} />
-      </Field>
-      <Field required disabled>
-        <Label>{text.municipality}</Label>
+      </Field.Root>
+      <Field.Root required disabled>
+        <Field.Label>{text.municipality}</Field.Label>
         <MunicipalityListbox text={text} defaultValue="malmö" />
-      </Field>
+      </Field.Root>
     </div>
   )
 }
@@ -1119,11 +1119,11 @@ export const NativeOnSurfaces: Story = {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
       <Card.Root lang={lang}>
-        <Field required invalid>
-          <Label>{text.municipality}</Label>
+        <Field.Root required invalid>
+          <Field.Label>{text.municipality}</Field.Label>
           <NativeListbox text={text} />
-          <ErrorMessage>{text.municipalityError}</ErrorMessage>
-        </Field>
+          <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
+        </Field.Root>
       </Card.Root>
     )
   },
@@ -1139,10 +1139,10 @@ export const NativeCompact: Story = {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
       <div className="kv-compact" lang={lang}>
-        <Field required>
-          <Label>{text.municipality}</Label>
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
           <NativeListbox text={text} />
-        </Field>
+        </Field.Root>
       </div>
     )
   },
@@ -1159,10 +1159,10 @@ export const NativeLongFinnish: Story = {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
       <div className="kv-story-narrow" data-testid="narrow">
-        <Field required lang={lang}>
-          <Label>{text.longSelectLabel}</Label>
+        <Field.Root required lang={lang}>
+          <Field.Label>{text.longSelectLabel}</Field.Label>
           <NativeListbox text={text} />
-        </Field>
+        </Field.Root>
       </div>
     )
   },
@@ -1176,10 +1176,10 @@ function NativeControlledExample({ locale }: { locale: FormLocale }) {
   const [value, setValue] = useState<string | null>('gothenburg')
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field required>
-        <Label>{text.municipality}</Label>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
         <NativeListbox text={text} value={value} onValueChange={setValue} />
-      </Field>
+      </Field.Root>
       <p className="kv-story-form-output" data-testid="mirror">
         {text.youChose}: {value ?? '–'}
       </p>
@@ -1216,10 +1216,10 @@ function NativePlainFormExample({ locale }: { locale: FormLocale }) {
         setSent(typeof value === 'string' ? value : '')
       }}
     >
-      <Field required>
-        <Label>{text.municipality}</Label>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
         <NativeListbox text={text} defaultValue="gothenburg" />
-      </Field>
+      </Field.Root>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
           {text.send}
@@ -1250,26 +1250,26 @@ function NativeStates({ locale }: { locale: FormLocale }) {
   const { text, lang } = choiceTextsFor(locale)
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field required>
-        <Label>{text.municipality}</Label>
-        <Prose>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Field.Prose>
           <p>{text.municipalityHint}</p>
-        </Prose>
+        </Field.Prose>
         <NativeListbox text={text} name="default" defaultValue="stockholm" />
-      </Field>
-      <Field required invalid>
-        <Label>{text.municipality}</Label>
+      </Field.Root>
+      <Field.Root required invalid>
+        <Field.Label>{text.municipality}</Field.Label>
         <NativeListbox text={text} name="invalid" />
-        <ErrorMessage>{text.municipalityError}</ErrorMessage>
-      </Field>
-      <Field>
-        <Label>{text.municipality}</Label>
+        <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
+      </Field.Root>
+      <Field.Root>
+        <Field.Label>{text.municipality}</Field.Label>
         <NativeListbox text={text} name="optional" />
-      </Field>
-      <Field required disabled>
-        <Label>{text.municipality}</Label>
+      </Field.Root>
+      <Field.Root required disabled>
+        <Field.Label>{text.municipality}</Field.Label>
         <NativeListbox text={text} name="disabled" defaultValue="malmo" />
-      </Field>
+      </Field.Root>
     </div>
   )
 }

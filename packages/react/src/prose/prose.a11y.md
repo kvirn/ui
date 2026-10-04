@@ -10,18 +10,18 @@ Prose is the `kv-prose` class as a component: a container whose headings, paragr
 
 ## Roles, states, properties
 
-| Part       | Element / role             | ARIA                                     | Notes                                                                                                                                                                       |
-| ---------- | -------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Prose.Root | `<div>` → `generic`        | none                                     | `class="kv-prose"`. `Prose`, `Prose.Root` and `ProseRoot` are the same component. `render={<article />}` or `<section aria-labelledby>` change the element                  |
-| Prose.Root | attributes                 | passed through                           | The class is its own: a `className` prop and a `render` element's own `className` join it, never replace it. Add `kv-prose--large` for the larger size                      |
-| Prose.Root | never                      | no `role`, `aria-*`, `tabindex`, `inert` | No handler, no heading, no live region, no text                                                                                                                             |
-| Prose.Root | inside a Field or Fieldset | `id`, `data-invalid`, `data-disabled`    | It is the description: see below. The host lists its id in `aria-describedby`. `data-invalid` and `data-disabled` follow the host. Outside a host: none of this, no warning |
+| Part  | Element / role             | ARIA                                     | Notes                                                                                                                                                                             |
+| ----- | -------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Prose | `<div>` → `generic`        | none                                     | `class="kv-prose"`. `Prose` and `ProseRoot` are the same component (`Prose.Root` is a deprecated alias). `render={<article />}` or `<section aria-labelledby>` change the element |
+| Prose | attributes                 | passed through                           | The class is its own: a `className` prop and a `render` element's own `className` join it, never replace it. Add `kv-prose--large` for the larger size                            |
+| Prose | never                      | no `role`, `aria-*`, `tabindex`, `inert` | No handler, no heading, no live region, no text                                                                                                                                   |
+| Prose | inside a Field or Fieldset | `id`, `data-invalid`, `data-disabled`    | It is the description: see below. The host lists its id in `aria-describedby`. `data-invalid` and `data-disabled` follow the host. Outside a host: none of this, no warning       |
 
 `useProse()` gives the same `rootProps` (only `className`) for your own element.
 
 ## A Prose in a Field or Fieldset is its description
 
-A `Prose` inside a `Field` or a `Fieldset` registers itself with the nearest one, like `ErrorMessage` does, and is the hint of that control or group. There is no `Field.Description` or `Fieldset.Description`.
+A `Prose` inside a `Field.Root` or a `Fieldset.Root` registers itself with the nearest one, like `Field.ErrorMessage` does, and is the hint of that control or group. Inside a host it is written `Field.Prose` or `Fieldset.Prose` (the same behaviour under the host's name; `CheckboxGroup.Prose` and `RadioGroup.Prose` are the group forms). There is no `Field.Description` or `Fieldset.Description`.
 
 - **Registration is automatic** and has no opt-out. The control's (or group's) `aria-describedby` lists every registered Prose in DOM order, each with its own id, then the error. The id is listed only while the Prose is rendered (`prose.test.tsx › a Prose in a Field registers its id and the control’s aria-describedby lists it`, `prose.test.tsx › two Proses are listed in DOM order, then the error`, `prose.test.tsx › a Prose in a Fieldset describes the group`).
 - **The nearest host wins.** A Prose in a Field that is inside a Fieldset describes that Field's control, not the group (`prose.test.tsx › a Prose in a Field inside a Fieldset describes the Field’s control, not the group`).
@@ -35,9 +35,9 @@ A `Prose` inside a `Field` or a `Fieldset` registers itself with the nearest one
 
 This component has no focusable parts and handles no keys.
 
-| Key | Context    | Action                                               | Test                                                                                   |
-| --- | ---------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| –   | Prose.Root | No `tabindex` is rendered, so Prose never gets focus | `prose.test.tsx › renders one <div> with its class, no role or ARIA, and its children` |
+| Key | Context | Action                                               | Test                                                                                   |
+| --- | ------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| –   | Prose   | No `tabindex` is rendered, so Prose never gets focus | `prose.test.tsx › renders one <div> with its class, no role or ARIA, and its children` |
 
 ## Focus management
 

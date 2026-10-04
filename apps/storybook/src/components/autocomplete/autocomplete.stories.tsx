@@ -1,4 +1,4 @@
-import { Autocomplete, Button, Card, ErrorMessage, Field, Label, Prose } from '@kvirn-ui/react'
+import { Autocomplete, Button, Card, Field } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/autocomplete/autocomplete.a11y.md?raw'
 import guide from '../../../../../packages/react/src/autocomplete/autocomplete.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -181,10 +181,10 @@ export const Minimal: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = autocompleteTextsFor(localeOf(globals))
     return (
-      <Field lang={lang}>
-        <Label>{text.street}</Label>
+      <Field.Root lang={lang}>
+        <Field.Label>{text.street}</Field.Label>
         <StreetAutocomplete withButtons={false} placeholder={text.placeholder} />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -200,10 +200,10 @@ export const WithValue: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = autocompleteTextsFor(localeOf(globals))
     return (
-      <Field lang={lang}>
-        <Label>{text.street}</Label>
+      <Field.Root lang={lang}>
+        <Field.Label>{text.street}</Field.Label>
         <StreetAutocomplete defaultValue="Kung" />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -219,13 +219,13 @@ export const Suggestions: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = autocompleteTextsFor(localeOf(globals))
     return (
-      <Field lang={lang}>
-        <Label>{text.street}</Label>
-        <Prose>
+      <Field.Root lang={lang}>
+        <Field.Label>{text.street}</Field.Label>
+        <Field.Prose>
           <p>{text.hint}</p>
-        </Prose>
+        </Field.Prose>
         <StreetAutocomplete />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -243,8 +243,8 @@ export const NoSuggestions: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = autocompleteTextsFor(localeOf(globals))
     return (
-      <Field lang={lang}>
-        <Label>{text.street}</Label>
+      <Field.Root lang={lang}>
+        <Field.Label>{text.street}</Field.Label>
         <Autocomplete.Root items={streets}>
           <Autocomplete.Input />
           <Autocomplete.Popup>
@@ -254,7 +254,7 @@ export const NoSuggestions: Story = {
             <Autocomplete.Empty />
           </Autocomplete.Popup>
         </Autocomplete.Root>
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, canvasElement, globals }) => {
@@ -275,8 +275,8 @@ export const Loading: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = autocompleteTextsFor(localeOf(globals))
     return (
-      <Field lang={lang}>
-        <Label>{text.street}</Label>
+      <Field.Root lang={lang}>
+        <Field.Label>{text.street}</Field.Label>
         <Autocomplete.Root items={[]} filter={false} isLoading>
           <Autocomplete.Input />
           <Autocomplete.Popup>
@@ -286,7 +286,7 @@ export const Loading: Story = {
             <Autocomplete.Empty />
           </Autocomplete.Popup>
         </Autocomplete.Root>
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, canvasElement, globals }) => {
@@ -305,10 +305,10 @@ export const DisabledSuggestion: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = autocompleteTextsFor(localeOf(globals))
     return (
-      <Field lang={lang}>
-        <Label>{text.street}</Label>
+      <Field.Root lang={lang}>
+        <Field.Label>{text.street}</Field.Label>
         <StreetAutocomplete />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -327,14 +327,14 @@ export const Invalid: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = autocompleteTextsFor(localeOf(globals))
     return (
-      <Field required invalid lang={lang}>
-        <Label>{text.street}</Label>
-        <Prose>
+      <Field.Root required invalid lang={lang}>
+        <Field.Label>{text.street}</Field.Label>
+        <Field.Prose>
           <p>{text.hint}</p>
-        </Prose>
+        </Field.Prose>
         <StreetAutocomplete />
-        <ErrorMessage>{text.error}</ErrorMessage>
-      </Field>
+        <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -351,10 +351,10 @@ export const Disabled: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = autocompleteTextsFor(localeOf(globals))
     return (
-      <Field disabled lang={lang}>
-        <Label>{text.street}</Label>
+      <Field.Root disabled lang={lang}>
+        <Field.Label>{text.street}</Field.Label>
         <StreetAutocomplete defaultValue="Storgatan" />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -368,10 +368,10 @@ export const LongList: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = autocompleteTextsFor(localeOf(globals))
     return (
-      <Field lang={lang}>
-        <Label>{text.street}</Label>
+      <Field.Root lang={lang}>
+        <Field.Label>{text.street}</Field.Label>
         <StreetAutocomplete items={longList} />
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -423,8 +423,8 @@ export const Groups: Story = {
       { key: 'roads', label: 'Vägar', items: ['Björkvägen', 'Tallvägen'] },
     ]
     return (
-      <Field lang={lang}>
-        <Label>{text.street}</Label>
+      <Field.Root lang={lang}>
+        <Field.Label>{text.street}</Field.Label>
         <Autocomplete.Root groups={groups}>
           <Autocomplete.Input />
           <Autocomplete.Popup>
@@ -433,7 +433,7 @@ export const Groups: Story = {
             </Autocomplete.List>
           </Autocomplete.Popup>
         </Autocomplete.Root>
-      </Field>
+      </Field.Root>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -459,10 +459,10 @@ export const LongFinnish: Story = {
         data-testid="narrow"
         style={{ paddingInline: 'var(--kv-space-4)' }}
       >
-        <Field lang={lang}>
-          <Label>{text.longLabel}</Label>
+        <Field.Root lang={lang}>
+          <Field.Label>{text.longLabel}</Field.Label>
           <StreetAutocomplete items={items} defaultValue="Pohjois" />
-        </Field>
+        </Field.Root>
       </div>
     )
   },
@@ -480,11 +480,11 @@ export const OnSurfaces: Story = {
     const { text, lang } = autocompleteTextsFor(localeOf(globals))
     return (
       <Card.Root lang={lang}>
-        <Field required invalid>
-          <Label>{text.street}</Label>
+        <Field.Root required invalid>
+          <Field.Label>{text.street}</Field.Label>
           <StreetAutocomplete />
-          <ErrorMessage>{text.error}</ErrorMessage>
-        </Field>
+          <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
+        </Field.Root>
       </Card.Root>
     )
   },
@@ -500,10 +500,10 @@ export const Compact: Story = {
     const { text, lang } = autocompleteTextsFor(localeOf(globals))
     return (
       <div className="kv-compact" lang={lang}>
-        <Field>
-          <Label>{text.street}</Label>
+        <Field.Root>
+          <Field.Label>{text.street}</Field.Label>
           <StreetAutocomplete />
-        </Field>
+        </Field.Root>
       </div>
     )
   },
@@ -519,10 +519,10 @@ function ControlledExample({ locale }: { locale: FormLocale }) {
   const [value, setValue] = useState('Kung')
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field>
-        <Label>{text.street}</Label>
+      <Field.Root>
+        <Field.Label>{text.street}</Field.Label>
         <StreetAutocomplete value={value} onValueChange={setValue} />
-      </Field>
+      </Field.Root>
       <p className="kv-story-form-output" data-testid="mirror">
         {shared.youChose}: {value === '' ? '–' : value}
       </p>
@@ -563,10 +563,10 @@ function PlainFormExample({ locale }: { locale: FormLocale }) {
         setSent(typeof value === 'string' ? value : '')
       }}
     >
-      <Field>
-        <Label>{text.street}</Label>
+      <Field.Root>
+        <Field.Label>{text.street}</Field.Label>
         <StreetAutocomplete name="street" defaultValue="Storgatan" />
-      </Field>
+      </Field.Root>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
           {shared.send}

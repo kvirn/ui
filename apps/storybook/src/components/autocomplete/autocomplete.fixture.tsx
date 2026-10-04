@@ -1,4 +1,4 @@
-import { Autocomplete, Button, ErrorMessage, Field, Label, Prose } from '@kvirn-ui/react'
+import { Autocomplete, Button, Field } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -147,11 +147,11 @@ export function StreetAutocomplete({
 export function DefaultExample({ locale }: { locale: FormLocale }) {
   const { text, lang } = autocompleteTextsFor(locale)
   return (
-    <Field lang={lang}>
-      <Label>{text.street}</Label>
-      <Prose>
+    <Field.Root lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Field.Prose>
         <p>{text.hint}</p>
-      </Prose>
+      </Field.Prose>
       <Autocomplete.Root items={streets} name="street">
         <Autocomplete.Control>
           <Autocomplete.Input />
@@ -164,7 +164,7 @@ export function DefaultExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.List>
         </Autocomplete.Popup>
       </Autocomplete.Root>
-    </Field>
+    </Field.Root>
   )
 }
 
@@ -176,11 +176,11 @@ export function DefaultExample({ locale }: { locale: FormLocale }) {
 export function VirtualizedExample({ locale }: { locale: FormLocale }) {
   const { text, lang } = autocompleteTextsFor(locale)
   return (
-    <Field lang={lang} controlId="street">
-      <Label>{text.street}</Label>
-      <Prose>
+    <Field.Root lang={lang} controlId="street">
+      <Field.Label>{text.street}</Field.Label>
+      <Field.Prose>
         <p>{text.hint}</p>
-      </Prose>
+      </Field.Prose>
       <Autocomplete.Root virtualize items={virtualizedStreets} name="street">
         <Autocomplete.Control>
           <Autocomplete.Input />
@@ -193,7 +193,7 @@ export function VirtualizedExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.List>
         </Autocomplete.Popup>
       </Autocomplete.Root>
-    </Field>
+    </Field.Root>
   )
 }
 
@@ -218,14 +218,14 @@ export function KeyboardExample({ locale }: { locale: FormLocale }) {
       <div className="kv-button-group">
         <Button type="button">Före</Button>
       </div>
-      <Field controlId="street">
-        <Label>{text.street}</Label>
+      <Field.Root controlId="street">
+        <Field.Label>{text.street}</Field.Label>
         <StreetAutocomplete name="street" />
-      </Field>
-      <Field disabled controlId="closed">
-        <Label>{text.longLabel}</Label>
+      </Field.Root>
+      <Field.Root disabled controlId="closed">
+        <Field.Label>{text.longLabel}</Field.Label>
         <StreetAutocomplete withButtons={false} name="closed" />
-      </Field>
+      </Field.Root>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
           {shared.send}
@@ -245,26 +245,26 @@ export function AutocompleteStates({ locale }: { locale: FormLocale }) {
   const { text, lang } = autocompleteTextsFor(locale)
   return (
     <div className="kv-story-form" lang={lang}>
-      <Field>
-        <Label>{text.street}</Label>
-        <Prose>
+      <Field.Root>
+        <Field.Label>{text.street}</Field.Label>
+        <Field.Prose>
           <p>{text.hint}</p>
-        </Prose>
+        </Field.Prose>
         <StreetAutocomplete items={streets.slice(0, 8)} defaultValue="Kung" />
-      </Field>
-      <Field required invalid>
-        <Label>{text.street}</Label>
+      </Field.Root>
+      <Field.Root required invalid>
+        <Field.Label>{text.street}</Field.Label>
         <StreetAutocomplete />
-        <ErrorMessage>{text.error}</ErrorMessage>
-      </Field>
-      <Field>
-        <Label>{text.street}</Label>
+        <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
+      </Field.Root>
+      <Field.Root>
+        <Field.Label>{text.street}</Field.Label>
         <StreetAutocomplete withButtons={false} placeholder={text.placeholder} />
-      </Field>
-      <Field disabled>
-        <Label>{text.street}</Label>
+      </Field.Root>
+      <Field.Root disabled>
+        <Field.Label>{text.street}</Field.Label>
         <StreetAutocomplete defaultValue="Storgatan" />
-      </Field>
+      </Field.Root>
     </div>
   )
 }

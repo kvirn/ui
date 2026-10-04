@@ -54,7 +54,8 @@ export type FileUploadStatus = 'pending' | 'uploading' | 'complete' | 'failed' |
  */
 export type FileUploadInput = File & { readonly isDirectory?: boolean | undefined }
 
-export interface FileUploadItem<Result = unknown> {
+/** One accepted file in the list, with its status and progress. */
+export interface FileUploadEntry<Result = unknown> {
   /** Unique within one store. Stable for the item's life: use it as the list key. */
   readonly id: string
   readonly file: File
@@ -73,6 +74,9 @@ export interface FileUploadItem<Result = unknown> {
   readonly previewUrl: string | undefined
 }
 
+/** @deprecated Renamed to `FileUploadEntry`, because `FileUploadItem` is also a React component. */
+export type FileUploadItem<Result = unknown> = FileUploadEntry<Result>
+
 /** A file that was refused, and why. It is not in the list. */
 export interface FileUploadRejection {
   readonly file: File
@@ -81,7 +85,7 @@ export interface FileUploadRejection {
 
 export interface FileUploadState<Result = unknown> {
   /** Accepted files only. Rejected files never enter the list. */
-  readonly items: readonly FileUploadItem<Result>[]
+  readonly items: readonly FileUploadEntry<Result>[]
   /**
    * The files refused by the latest `add`, in the order given. Replaced by the next `add`, and
    * cleared by `remove` and `reset`.
@@ -156,7 +160,7 @@ export interface FileUploadEnv {
 
 export interface FileUploadAddResult<Result = unknown> {
   /** The files that passed every check, as new items (as they were when added: read the store for their status now). */
-  readonly accepted: readonly FileUploadItem<Result>[]
+  readonly accepted: readonly FileUploadEntry<Result>[]
   /** The files that failed a check, with the reason. They are not in the list. */
   readonly rejected: readonly FileUploadRejection[]
 }

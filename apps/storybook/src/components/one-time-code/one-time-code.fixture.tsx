@@ -1,4 +1,4 @@
-import { Button, ErrorMessage, Field, Label, OneTimeCode, Prose } from '@kvirn-ui/react'
+import { Button, Field, OneTimeCode } from '@kvirn-ui/react'
 import type { OneTimeCodeRootProps } from '@kvirn-ui/react'
 import { textsFor } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -182,19 +182,19 @@ export function OneTimeCodeField({
   const { lang } = textsFor(locale)
   const { label, hint } = labelsFor(texts, kind, pattern)
   const field = (
-    <Field invalid={invalid} lang={lang}>
-      <Label marker="none">{label}</Label>
-      <Prose>
+    <Field.Root invalid={invalid} lang={lang}>
+      <Field.Label marker="none">{label}</Field.Label>
+      <Field.Prose>
         <p>{hint}</p>
-      </Prose>
+      </Field.Prose>
       <OneTimeCode.Root pattern={pattern} {...rootProps}>
         <OneTimeCode.Input name={name} readOnly={readOnly} />
         {Array.from(pattern, (_, index) => (
           <OneTimeCode.Slot key={index} index={index} />
         ))}
       </OneTimeCode.Root>
-      {invalid ? <ErrorMessage>{texts.errorWrong}</ErrorMessage> : null}
-    </Field>
+      {invalid ? <Field.ErrorMessage>{texts.errorWrong}</Field.ErrorMessage> : null}
+    </Field.Root>
   )
   if (!withSubmit) {
     return field

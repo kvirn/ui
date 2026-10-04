@@ -12,7 +12,15 @@ import { Input } from '../input/input.tsx'
 import { Prose } from '../prose/prose.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { FieldContext } from './field-context.ts'
-import { ErrorMessage, Field, FieldErrorMessage, FieldLabel, FieldRoot, Label } from './field.tsx'
+import {
+  ErrorMessage,
+  Field,
+  FieldErrorMessage,
+  FieldLabel,
+  FieldProse,
+  FieldRoot,
+  Label,
+} from './field.tsx'
 import type {
   FieldErrorMessageProps,
   FieldLabelProps,
@@ -78,7 +86,7 @@ function PhoneField({
   return (
     <Field.Root invalid={invalid} required={required} disabled={disabled}>
       <Field.Label marker={marker}>Telefonnummer</Field.Label>
-      {withDescription ? <Prose>Vi ringer bara om något är fel.</Prose> : null}
+      {withDescription ? <Field.Prose>Vi ringer bara om något är fel.</Field.Prose> : null}
       <Field.ErrorMessage>Ange ett telefonnummer</Field.ErrorMessage>
       <Input name="phone" autoComplete="tel" />
     </Field.Root>
@@ -95,9 +103,9 @@ describe('rendering', () => {
     const { container } = await render(
       <Field.Root data-testid="root" invalid>
         <Field.Label data-testid="label">Namn</Field.Label>
-        <Prose data-testid="description">
+        <Field.Prose data-testid="description">
           <p>Som i passet.</p>
-        </Prose>
+        </Field.Prose>
         <Field.ErrorMessage data-testid="error">Ange ditt namn</Field.ErrorMessage>
         <Input />
       </Field.Root>,
@@ -139,7 +147,7 @@ describe('rendering', () => {
         <Field.Label render={<EgenEtikett />} marker="none">
           Namn
         </Field.Label>
-        <Prose render={<p data-beskrivning="" />}>Som i passet.</Prose>
+        <Field.Prose render={<p data-beskrivning="" />}>Som i passet.</Field.Prose>
         <Input />
       </Field.Root>,
     )
@@ -274,7 +282,7 @@ describe('wiring: name and description per state', () => {
       return (
         <Field.Root>
           <Field.Label marker="none">Namn</Field.Label>
-          {show ? <Prose>Som i passet.</Prose> : null}
+          {show ? <Field.Prose>Som i passet.</Field.Prose> : null}
           <Input />
         </Field.Root>
       )
@@ -319,7 +327,7 @@ describe('wiring: name and description per state', () => {
     const { container } = await render(
       <Field.Root controlId="telefon">
         <Field.Label>Telefonnummer</Field.Label>
-        <Prose>Vi ringer bara om något är fel.</Prose>
+        <Field.Prose>Vi ringer bara om något är fel.</Field.Prose>
         <Input />
       </Field.Root>,
     )
@@ -383,7 +391,7 @@ describe('focus on submit (accessibility review, Plan 0013)', () => {
         >
           <Field.Root invalid={error !== undefined} required>
             <Field.Label>Telefonnummer</Field.Label>
-            <Prose>Vi ringer bara om något är fel.</Prose>
+            <Field.Prose>Vi ringer bara om något är fel.</Field.Prose>
             <Field.ErrorMessage>{error}</Field.ErrorMessage>
             <Input
               ref={inputRef}
@@ -419,9 +427,9 @@ describe('states', () => {
     await render(
       <Field.Root invalid data-testid="root">
         <Field.Label data-testid="label">Namn</Field.Label>
-        <Prose data-testid="description">
+        <Field.Prose data-testid="description">
           <p>Som i passet.</p>
-        </Prose>
+        </Field.Prose>
         <Field.ErrorMessage data-testid="error">Ange ditt namn</Field.ErrorMessage>
         <Input />
       </Field.Root>,
@@ -796,9 +804,9 @@ describe('several descriptions', () => {
     return (
       <Field.Root invalid={invalid} required>
         <Field.Label>Registreringsnummer</Field.Label>
-        <Prose data-testid="where">Det står på registreringsbeviset.</Prose>
+        <Field.Prose data-testid="where">Det står på registreringsbeviset.</Field.Prose>
         <Input name="registration" />
-        <Prose data-testid="format">Till exempel ABC 123</Prose>
+        <Field.Prose data-testid="format">Till exempel ABC 123</Field.Prose>
         <Field.ErrorMessage>Ange ett registreringsnummer</Field.ErrorMessage>
       </Field.Root>
     )
@@ -843,9 +851,9 @@ describe('several descriptions', () => {
       return (
         <Field.Root>
           <Field.Label marker="none">Registreringsnummer</Field.Label>
-          {showAbove ? <Prose data-testid="above">Ovanför fältet.</Prose> : null}
+          {showAbove ? <Field.Prose data-testid="above">Ovanför fältet.</Field.Prose> : null}
           <Input />
-          <Prose data-testid="under">Under fältet.</Prose>
+          <Field.Prose data-testid="under">Under fältet.</Field.Prose>
           <button type="button" onClick={() => setShowAbove(true)}>
             Visa
           </button>
@@ -872,9 +880,9 @@ describe('several descriptions', () => {
       return (
         <Field.Root>
           <Field.Label marker="none">Registreringsnummer</Field.Label>
-          <Prose>Ovanför fältet.</Prose>
+          <Field.Prose>Ovanför fältet.</Field.Prose>
           <Input />
-          {showUnder ? <Prose>Under fältet.</Prose> : null}
+          {showUnder ? <Field.Prose>Under fältet.</Field.Prose> : null}
           <button type="button" onClick={() => setShowUnder(false)}>
             Dölj
           </button>
@@ -907,14 +915,14 @@ describe('several descriptions', () => {
         <>
           <Field.Root invalid={invalid}>
             <Field.Label marker="none">Registreringsnummer</Field.Label>
-            <Prose>Ovanför fältet.</Prose>
+            <Field.Prose>Ovanför fältet.</Field.Prose>
             <Input
               ref={inputRef}
               onFocus={(event) => {
                 describedByAtFocus.push(event.currentTarget.getAttribute('aria-describedby'))
               }}
             />
-            <Prose>Under fältet.</Prose>
+            <Field.Prose>Under fältet.</Field.Prose>
             <Field.ErrorMessage>Ange ett nummer</Field.ErrorMessage>
           </Field.Root>
           <button type="button" onClick={() => setInvalid(true)}>
@@ -958,12 +966,12 @@ describe('several descriptions', () => {
     await render(
       <Field.Root invalid disabled>
         <Field.Label marker="none">Namn</Field.Label>
-        <Prose ref={ref} className="egen" data-testid="first">
+        <Field.Prose ref={ref} className="egen" data-testid="first">
           Ovanför.
-        </Prose>
-        <Prose render={<p />} data-testid="second">
+        </Field.Prose>
+        <Field.Prose render={<p />} data-testid="second">
           Under.
-        </Prose>
+        </Field.Prose>
         <Input />
         <Field.ErrorMessage>Ange</Field.ErrorMessage>
       </Field.Root>,
@@ -1029,23 +1037,27 @@ describe('types', () => {
     expectTypeOf<UseFieldResult['errorPrefix']>().toEqualTypeOf<string>()
   })
 
-  test('the compound and the named exports are the same parts', () => {
+  test('the compound and the named exports are the same parts, each with its own display name', () => {
     expect(Field.Root).toBe(FieldRoot)
     expect(Field.Label).toBe(FieldLabel)
+    expect(Field.Prose).toBe(FieldProse)
+    expect(Field.ErrorMessage).toBe(FieldErrorMessage)
     expect(Field).not.toHaveProperty('Description')
-    expect(Field.Prose).toBe(Prose)
-    // The flat form: <Field> is the root, and Label and ErrorMessage stand alone.
+    // The callable root stays callable: <Field> is the same component as <Field.Root>.
     expect(Field).toBe(FieldRoot)
+    expect(Field.Root.displayName).toBe('Field.Root')
+    expect(Field.Label.displayName).toBe('Field.Label')
+    expect(Field.Prose.displayName).toBe('Field.Prose')
+    expect(Field.ErrorMessage.displayName).toBe('Field.ErrorMessage')
+    // The shared Prose keeps its own name; Field.Prose is a wrapper around it.
+    expect(Prose.displayName).toBe('Prose')
+    expect(Field.Prose).not.toBe(Prose)
+    // The deprecated bare names are the same components as Field.Label and Field.ErrorMessage.
     expect(Label).toBe(FieldLabel)
     expect(ErrorMessage).toBe(FieldErrorMessage)
-    expect(Field.displayName).toBe('Field')
-    expect(Label.displayName).toBe('Label')
-    expect(ErrorMessage.displayName).toBe('ErrorMessage')
-    expect(Prose.displayName).toBe('Prose')
-    expect(Field.ErrorMessage).toBe(FieldErrorMessage)
   })
 
-  test('the flat form wires the label, the hint and the error like the compound form', async () => {
+  test('the deprecated flat form wires the label, the hint and the error like the namespace form', async () => {
     await render(
       <Field required invalid>
         <Label>E-postadress</Label>

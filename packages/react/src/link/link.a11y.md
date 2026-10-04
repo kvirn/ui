@@ -12,10 +12,10 @@ Link navigates. An action is a Button. Link has no `disabled` prop, by type: a d
 
 | Part              | Element / role                         | ARIA                              | Notes                                                                                                                              |
 | ----------------- | -------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Link              | `<a href>` → `link`                    | `aria-current` from `current`     | `current`: `'page'`, `'step'`, `'location'`, `'date'`, `'time'` or `true`. `false` or absent sets nothing. `data-current` when set |
+| Link.Root         | `<a href>` → `link`                    | `aria-current` from `current`     | `current`: `'page'`, `'step'`, `'location'`, `'date'`, `'time'` or `true`. `false` or absent sets nothing. `data-current` when set |
 |                   | `target="_blank"`                      | none                              | `rel="noopener noreferrer"` is added to the consumer's own `rel` tokens, also when `target` and `rel` are on a `render` element    |
 |                   | keyboard focus                         | none                              | `data-focus-visible` while the link matches `:focus-visible`                                                                       |
-|                   | another language                       | `lang`, `hrefLang` passed through | `<Link href="/fi" hrefLang="fi" lang="fi">Suomeksi</Link>` (3.1.2)                                                                 |
+|                   | another language                       | `lang`, `hrefLang` passed through | `<Link.Root href="/fi" hrefLang="fi" lang="fi">Suomeksi</Link.Root>` (3.1.2)                                                       |
 | Link.NewTabNotice | `<span>`, part of the link's name      | none                              | Text from `link.newTabNotice`. The consumer decides whether to hide it visually. Also exported as `LinkNewTabNotice`               |
 |                   | `target="_blank"` without a notice     | –                                 | Dev warning, naming the link's text                                                                                                |
 |                   | link component doesn't render an `<a>` | –                                 | Dev warning: the registered component must forward its ref and render an `<a>`                                                     |
@@ -63,7 +63,7 @@ Link announces nothing. The new-tab notice is part of the link's accessible name
 | ------------------- | ----------------- | ---------------------- | ----------------------- |
 | `link.newTabNotice` | Link.NewTabNotice | `(opens in a new tab)` | `(öppnas i en ny flik)` |
 
-Resolution, first match wins: `Link.NewTabNotice` children, then `<Link messages>` (or `useLink({ messages })`), then the nearest provider's `messages` and its ancestors, then built-in `en`. An empty or whitespace-only value falls through to the next level, with a dev warning. Tests: `link.test.tsx › new-tab notice`.
+Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root messages>` (or `useLink({ messages })`), then the nearest provider's `messages` and its ancestors, then built-in `en`. An empty or whitespace-only value falls through to the next level, with a dev warning. Tests: `link.test.tsx › new-tab notice`.
 
 ## Consumer responsibilities
 

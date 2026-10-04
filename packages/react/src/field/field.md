@@ -6,28 +6,28 @@
 
 A Field joins one control to its label, an optional hint (a `Prose`) and an error message, so the accessible name, the description and the invalid state are right without you wiring ids.
 
-- Three parts: `<Field>` is the root (`<div>`), `<Label>` is the `<label for>` and `<ErrorMessage>` is the `<p>`. `Field.Root`, `Field.Label`, `Field.Prose` and `Field.ErrorMessage` are aliases of the same components, and each is also exported on its own (`FieldRoot`, `FieldLabel`, `FieldErrorMessage`). The hint is a [Prose](../prose/prose.md): a `<Prose>` inside a Field is its description, and `Field.Prose` is the same component under a name that reads as part of the Field.
+- Four parts: `<Field.Root>` is the root (`<div>`), `<Field.Label>` is the `<label for>`, `<Field.Prose>` is the hint and `<Field.ErrorMessage>` is the `<p>`. Each part is also exported on its own (`FieldRoot`, `FieldLabel`, `FieldProse`, `FieldErrorMessage`), which is the form to import in a React Server Component, because a server component can't dot into a client module. The hint is a [Prose](../prose/prose.md): it registers with the Field as its description, so inside a Field write `<Field.Prose>`, not a bare `<Prose>`. The older flat names `Label` and `ErrorMessage`, and the callable `Field`, still work but are deprecated.
 - The label names the control, and clicking it focuses the control. The hints and the error are in the control's `aria-describedby`: every hint in DOM order, then the error, and only the parts that are rendered.
 - A field can have several hints: one above the control and one under it. Each `Prose` has its own id.
 - **A hint is text.** The accessible description is the Prose's text content, so a heading, list or link inside it loses its structure for a screen-reader user, and a link in it can't be followed from there. Keep a hint to plain text and a few short paragraphs. A Prose that isn't a hint (an article, a list of links) goes outside the Field. Every `Prose` inside a Field, at any depth, registers as a description.
-- `invalid` puts `aria-invalid="true"` on the control and `data-invalid` on every part, and the ErrorMessage renders. Without `invalid` the ErrorMessage renders nothing, so a stale error is never referenced.
-- `required` puts `aria-required="true"` on the control, never native `required`: the browser shows no validation bubble of its own, in its own language. Required fields carry no visible marker. A field that isn't required ends its label with the `field.optional` text, "(valfritt)" in Swedish, which is part of the accessible name. `<Label marker="none">` leaves it out. If you also want the browser's native validation, put `required` on the control _and_ keep it on Field, or the label says "(optional)" while assistive technology announces "required".
+- `invalid` puts `aria-invalid="true"` on the control and `data-invalid` on every part, and the Field.ErrorMessage renders. Without `invalid` the Field.ErrorMessage renders nothing, so a stale error is never referenced.
+- `required` puts `aria-required="true"` on the control, never native `required`: the browser shows no validation bubble of its own, in its own language. Required fields carry no visible marker. A field that isn't required ends its label with the `field.optional` text, "(valfritt)" in Swedish, which is part of the accessible name. `<Field.Label marker="none">` leaves it out. If you also want the browser's native validation, put `required` on the control _and_ keep it on Field, or the label says "(optional)" while assistive technology announces "required".
 - The error starts with the `field.errorPrefix` text ("Fel:") and an error icon. The theme hides the prefix visually, so screen-reader users hear "Fel: Ange ditt namn" without relying on the colour. Errors are not live regions: they are read when the user reaches the control. On submit, move focus to the first invalid field (until the error summary block ships).
 - Headless: no CSS. The parts render `kv-field`, `kv-field-label`, `kv-field-error-message`, `kv-field-error-prefix` and `kv-field-optional`, and your `className` joins them. With `@kvirn-ui/theme/theme.css` imported they are styled.
 
 ## Component
 
 ```tsx
-import { ErrorMessage, Field, Input, Label, Prose } from '@kvirn-ui/react'
+import { Field, Input } from '@kvirn-ui/react'
 
-;<Field invalid={errors.phone !== undefined}>
-  <Label>Telefonnummer</Label>
-  <Prose>
+;<Field.Root invalid={errors.phone !== undefined}>
+  <Field.Label>Telefonnummer</Field.Label>
+  <Field.Prose>
     <p>Vi ringer bara om något är fel.</p>
-  </Prose>
+  </Field.Prose>
   <Input name="phone" type="tel" autoComplete="tel" />
-  <ErrorMessage>{errors.phone}</ErrorMessage>
-</Field>
+  <Field.ErrorMessage>{errors.phone}</Field.ErrorMessage>
+</Field.Root>
 ```
 
 ### The default order
@@ -35,23 +35,23 @@ import { ErrorMessage, Field, Input, Label, Prose } from '@kvirn-ui/react'
 Render the parts in this order: **label, hint, control, a second hint under the control, then the error**. The reading order, the DOM order and the visual order are then the same, and the theme spaces every part one gap from the next.
 
 ```tsx
-<Field invalid={errors.registration !== undefined}>
-  <Label>Fordonets registreringsnummer</Label>
-  <Prose>
+<Field.Root invalid={errors.registration !== undefined}>
+  <Field.Label>Fordonets registreringsnummer</Field.Label>
+  <Field.Prose>
     <p>Det står på registreringsbeviset.</p>
-  </Prose>
+  </Field.Prose>
   <Input name="registration" className="kv-input--width-10" />
-  <Prose>
+  <Field.Prose>
     <p>Till exempel ABC 123</p>
-  </Prose>
-  <ErrorMessage>{errors.registration}</ErrorMessage>
-</Field>
+  </Field.Prose>
+  <Field.ErrorMessage>{errors.registration}</Field.ErrorMessage>
+</Field.Root>
 ```
 
 - **Above the control:** what to answer and where to find it, anything the user needs before they start typing. Most fields have only this hint.
 - **Under the control:** a format example or a limit that helps while typing. Never the only instruction: a magnifier user may not see under the box until they've typed.
 - **Each hint has its own id.** The control's `aria-describedby` lists them in DOM order, then the error's, whatever the visual order: a screen-reader user hears both hints, then "Fel: …". Don't give a hint an `id` of your own: the Field's wins, and a dev warning says so.
-- **One error per Field.** Two `ErrorMessage`s share an id, so a dev warning fires. Put all the text in one.
+- **One error per Field.** Two `Field.ErrorMessage`s share an id, so a dev warning fires. Put all the text in one.
 - **The order is yours.** The library doesn't enforce it: render the parts in another order and the spacing and the description still work. Put a hint after the error, or the error above the control, if your service needs it.
 
 ### Focus on submit, on a phone
@@ -72,19 +72,19 @@ iOS doesn't always honour `scroll-padding` for its keyboard, so this is listed a
 Your part:
 
 - **A visible label on every control.** A placeholder isn't a label (3.3.2). Put examples in a hint.
-- **Say what's wrong and how to fix it,** in the field's own words, without blaming the user: "Ange ditt fullständiga namn", not "Ogiltigt värde". Plain text: the icon, the prefix and the text lay out as one line. Set `invalid` and render the ErrorMessage together.
+- **Say what's wrong and how to fix it,** in the field's own words, without blaming the user: "Ange ditt fullständiga namn", not "Ogiltigt värde". Plain text: the icon, the prefix and the text lay out as one line. Set `invalid` and render the Field.ErrorMessage together.
 - **Validate on submit, not on every key,** so content doesn't move under a magnifier. Keep what the user typed.
 - **`controlId`** gives the control the id you need to link to it, for example from an error summary. Don't pass an `id` to a control inside a Field: the Field's id wins, and a dev warning says so.
 - **`lang`** on a label whose text is in another language (3.1.2).
-- **Messages.** `field.optional` and `field.errorPrefix` come from `@kvirn-ui/i18n` in six languages, and can be overridden per provider and per instance: `<Field messages={{ optional: '(frivilligt)' }}>`.
-- **A checkbox or radio** must be a direct child of `Field` (later phase): the default theme finds its layout from `.kv-field:has(> .kv-checkbox, > .kv-radio)`.
+- **Messages.** `field.optional` and `field.errorPrefix` come from `@kvirn-ui/i18n` in six languages, and can be overridden per provider and per instance: `<Field.Root messages={{ optional: '(frivilligt)' }}>`.
+- **A checkbox or radio** must be a direct child of `Field.Root` (later phase): the default theme finds its layout from `.kv-field:has(> .kv-checkbox, > .kv-radio)`.
 
 ### Classes for the default theme
 
-| Class                                         | On                                        | Sets                                                      |
-| --------------------------------------------- | ----------------------------------------- | --------------------------------------------------------- |
-| `kv-field-label--heading`                     | Label                                     | the label is the page's `h1`: `<h1><Label className="…">` |
-| `kv-input--width-2`, `-4`, `-6`, `-10`, `-20` | Input (see [input.md](../input/input.md)) | a width by expected characters                            |
+| Class                                         | On                                        | Sets                                                            |
+| --------------------------------------------- | ----------------------------------------- | --------------------------------------------------------------- |
+| `kv-field-label--heading`                     | Field.Label                               | the label is the page's `h1`: `<h1><Field.Label className="…">` |
+| `kv-input--width-2`, `-4`, `-6`, `-10`, `-20` | Input (see [input.md](../input/input.md)) | a width by expected characters                                  |
 
 The default theme styles the parts as described in the design spec: labels 16px at weight 500 (14px in `kv-compact`), hints (a Prose) 16px in the text colour above the control and 14px (`body-small`) under it, errors 16px in `danger`. Errors never go below 16px, and a hint is never muted.
 
@@ -110,7 +110,7 @@ function NameField({ invalid }: { invalid: boolean }) {
 
 `useField` also returns `optionalMarker` (the text to put after the label, or `undefined`) and `errorPrefix`. Set `hasDescription` from the first render, so server-rendered markup has `aria-describedby`. The Root component learns about its parts when they mount, so it associates them after hydration.
 
-The description props carry the class `kv-prose`, so a hint on your own element is styled as prose, like a `Prose` in a Field.
+The description props carry the class `kv-prose`, so a hint on your own element is styled as prose, like a `Field.Prose` in a Field.
 
 ### Several descriptions
 
@@ -137,7 +137,7 @@ function RegistrationField({ invalid }: { invalid: boolean }) {
 
 ### `render`
 
-Every part takes `render` to change its element. The part's props are merged into yours: class names join, handlers chain and refs merge. The Label must stay a `<label>`, so the control keeps its name.
+Every part takes `render` to change its element. The part's props are merged into yours: class names join, handlers chain and refs merge. The Field.Label must stay a `<label>`, so the control keeps its name.
 
 ```tsx
 <Prose render={<p />}>Som det står i ditt pass.</Prose>

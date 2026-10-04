@@ -69,10 +69,10 @@ function hasNameSource(input: HTMLInputElement): boolean {
  * props. Numbers are text with `inputMode`.
  *
  * @example
- * <Field>
- *   <Label>Antal barn</Label>
+ * <Field.Root>
+ *   <Field.Label>Antal barn</Field.Label>
  *   <Input name="children" inputMode="numeric" spellCheck={false} className="kv-input--width-2" />
- * </Field>
+ * </Field.Root>
  */
 export function Input({
   type,
@@ -177,3 +177,4 @@ export function Input({
     },
   })
 }
+Input.displayName = 'Input'

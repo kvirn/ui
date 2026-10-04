@@ -126,6 +126,7 @@ export type {
   FileUploadActions,
   FileUploadAddResult,
   FileUploadContext,
+  FileUploadEntry,
   FileUploadEnv,
   FileUploadError,
   FileUploadFailure,

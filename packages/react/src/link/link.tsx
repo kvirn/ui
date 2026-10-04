@@ -65,7 +65,7 @@ function describeElement(element: Element | null): string {
   return element === null ? 'nothing it could reference' : `<${element.tagName.toLowerCase()}>`
 }
 
-function LinkRoot({
+export function LinkRoot({
   current,
   messages,
   render,
@@ -136,7 +136,7 @@ function LinkRoot({
     </LinkContext.Provider>
   )
 }
-LinkRoot.displayName = 'Link'
+LinkRoot.displayName = 'Link.Root'
 
 /**
  * Tells users that the link opens in a new tab: `(öppnas i en ny flik)` from
@@ -164,16 +164,18 @@ export function LinkNewTabNotice({
     state: noticeState,
   })
 }
+LinkNewTabNotice.displayName = 'Link.NewTabNotice'
 
 /**
- * A native `<a href>`, rendered by the app's registered router link, with
+ * A native `<a href>`, written `Link.Root`, rendered by the app's registered router link, with
  * `aria-current`, safe new-tab `rel`, and a translated new-tab notice (contract: link.a11y.md).
- * No `disabled` prop: a disabled link isn't a thing.
+ * No `disabled` prop: a disabled link isn't a thing. The callable `<Link>` still works and is the
+ * same component as `Link.Root`, but it isn't shown in docs.
  *
  * @example
- * <Link href="/ansok" current="page">Ansök</Link>
- * <Link href="https://www.digg.se/" target="_blank">
+ * <Link.Root href="/ansok" current="page">Ansök</Link.Root>
+ * <Link.Root href="https://www.digg.se/" target="_blank">
  *   Digg <Link.NewTabNotice />
- * </Link>
+ * </Link.Root>
  */
-export const Link = Object.assign(LinkRoot, { NewTabNotice: LinkNewTabNotice })
+export const Link = Object.assign(LinkRoot, { Root: LinkRoot, NewTabNotice: LinkNewTabNotice })

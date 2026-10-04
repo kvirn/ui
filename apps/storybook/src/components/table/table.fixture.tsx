@@ -282,7 +282,7 @@ function createCaseColumns(
       header: texts.name,
       sortFn: 'locale',
       cell: withLinks
-        ? (info) => <Link href={`#${info.row.id}`}>{info.getValue()}</Link>
+        ? (info) => <Link.Root href={`#${info.row.id}`}>{info.getValue()}</Link.Root>
         : (info) => info.getValue(),
     }),
     column.accessor('caseNumber', { header: texts.caseNumber }),

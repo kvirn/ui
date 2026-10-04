@@ -41,7 +41,7 @@ An `Input` with a `mask` (or `useMask` on your own `<input>`) shapes what the us
 - **Composition:** while composing, `onValueChange` reports the raw value without mask details, so a controlled field keeps following what the IME shows. At `compositionend` it reports once more, with the `CompositionEvent` as `details.event`.
 - **Numbers:** the decimal separator is the provider's locale (a comma in sv, fi, nb, nn and se), whichever separator is typed. The value is never clamped.
 - **Types:** a mask works on `text`, `tel`, `search`, `url` and `password`. On `type="email"` the browser has no selection API, so only `masks.email()` is accepted: another mask warns in development, and the caret goes to the end when the mask rewrites.
-- **Dev warnings:** a masked Input in a Field without a hint (a `Prose` in the Field) or an `aria-describedby` of its own (3.3.2: the mask doesn't explain the format), and a mask other than `masks.email()` on `type="email"`. Without a `KvirnProvider`, the first refused character warns once that nothing is announced.
+- **Dev warnings:** a masked Input in a Field without a hint (a `Field.Prose` in the Field) or an `aria-describedby` of its own (3.3.2: the mask doesn't explain the format), and a mask other than `masks.email()` on `type="email"`. Without a `KvirnProvider`, the first refused character warns once that nothing is announced.
 - **Format in text (3.3.2):** the hint says the format with an example. The mask is never the only explanation.
 
 ## Keyboard
@@ -51,7 +51,7 @@ An `Input` with a `mask` (or `useMask` on your own `<input>`) shapes what the us
 - **Arrows wrap:** n/a
 - **Shortcuts:** none
 
-All native: Input handles no keys itself and never calls `preventDefault` on one. A mask doesn't either: it reads the value after the browser's edit and rewrites it only when it must, and never moves focus or auto-advances. Number is the same Input with `inputMode`, so its rows are here too. The masked rows are in the Keyboard table and in Masked input above. In a Field, the Label, the hint (a `Prose`) and the ErrorMessage are not Tab stops (`field.a11y.md`).
+All native: Input handles no keys itself and never calls `preventDefault` on one. A mask doesn't either: it reads the value after the browser's edit and rewrites it only when it must, and never moves focus or auto-advances. Number is the same Input with `inputMode`, so its rows are here too. The masked rows are in the Keyboard table and in Masked input above. In a Field, the Field.Label, the hint (a `Prose`) and the Field.ErrorMessage are not Tab stops (`field.a11y.md`).
 
 | Key                                 | Context                    | Action                                                                                                             | Test                                                                                                                                                                                                      |
 | ----------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -74,7 +74,7 @@ All native: Input handles no keys itself and never calls `preventDefault` on one
 | Dead key, IME                       | Masked input               | Left alone until the composition ends, then the mask applies once                                                  | `mask.e2e.ts › an IME or dead key composition is left alone until compositionend`, `mask.e2e.ts › a composed character the mask accepts is kept, and nothing is rewritten during it`                      |
 | Enter                               | Masked input in a `<form>` | Submits the form with the masked value. Native, never prevented                                                    | `mask.e2e.ts › Enter in the form submits it with the masked values (native)`                                                                                                                              |
 | Escape                              | Masked input               | Does nothing: the value and the focus stay                                                                         | `mask.e2e.ts › Escape does nothing: the value and the focus stay`                                                                                                                                         |
-| –                                   | its Label                  | A click on the label focuses the input (native `<label for>`)                                                      | `input.e2e.ts › clicking the label focuses the input`                                                                                                                                                     |
+| –                                   | its Field.Label            | A click on the label focuses the input (native `<label for>`)                                                      | `input.e2e.ts › clicking the label focuses the input`                                                                                                                                                     |
 
 Copy, cut and undo (Control/Command+C, X and Z) are native too. Input adds no shortcuts.
 
@@ -106,16 +106,16 @@ A masked Input announces a rejection through the shared Announcer (4.1.3): a pol
 
 ## Consumer responsibilities
 
-- Put every Input in a Field with a Label, or give it `aria-label` or `aria-labelledby` from your translations (4.1.2).
-- Never use the placeholder as the label (3.3.2). Put an example in the hint (a `Prose` in the Field), not in the box.
+- Put every Input in a Field with a Field.Label, or give it `aria-label` or `aria-labelledby` from your translations (4.1.2).
+- Never use the placeholder as the label (3.3.2). Put an example in the hint (a `Field.Prose` in the Field), not in the box.
 - Set `autoComplete` on every input that asks for the user's own data (`name`, `email`, `tel`, `postal-code`, `bday`): 1.3.5. Never `autocomplete="off"` on a password, and never block paste (3.3.8).
-- Use `inputMode` for numbers, with `spellCheck={false}`. Don't use `type="number"` or `type="date"`. Validate ranges and formats yourself and say what's wrong in an ErrorMessage.
+- Use `inputMode` for numbers, with `spellCheck={false}`. Don't use `type="number"` or `type="date"`. Validate ranges and formats yourself and say what's wrong in a Field.ErrorMessage.
 - Choose a width class that fits the answer: `kv-input--width-2`, `-4`, `-6`, `-10`, `-20`. Width is a hint, never a limit: no `maxlength` comes from it.
 - Read-only is for staff tools showing a value the user can't change here. Say why in the hint. In a resident form, avoid both read-only and disabled.
-- With a `mask`, put the format and an example in a hint, a `Prose` in the Field (3.3.2, dev warning): the mask shapes input, it doesn't explain it. A hint is text: keep it short and plain, because its accessible description is only the Prose's text content (`field.a11y.md`). Wrap the app in `KvirnProvider` so refused characters are announced (4.1.3).
+- With a `mask`, put the format and an example in a hint, a `Field.Prose` in the Field (3.3.2, dev warning): the mask shapes input, it doesn't explain it. A hint is text: keep it short and plain, because its accessible description is only the Prose's text content (`field.a11y.md`). Wrap the app in `KvirnProvider` so refused characters are announced (4.1.3).
 - Validate in your form, after submit: the mask never says a value is wrong. Call `checks.personalIdentityNumber`, `checks.organisationNumber` and `checks.iban` and write a specific message from `reason`. Don't clamp numbers to `min` and `max`: show your own hint from `isWithinRange`.
 - Set `autoComplete` on masked fields yourself where a token exists (`postal-code`, `tel`, `email`). `masks.letters()` isn't for names: names have spaces, hyphens and apostrophes.
-- Don't pass an `id` inside a Field: the Field's id wins, so the label stays associated (dev warning). Use `<Field controlId>`.
+- Don't pass an `id` inside a Field: the Field's id wins, so the label stays associated (dev warning). Use `<Field.Root controlId>`.
 
 ## Visual / modes
 

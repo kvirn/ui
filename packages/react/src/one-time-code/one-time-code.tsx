@@ -65,16 +65,16 @@ function hasNameSource(input: HTMLInputElement): boolean {
  * says how many characters the code has and how they are grouped.
  *
  * @example
- * <Field>
- *   <Label>Kod från sms:et</Label>
- *   <Prose>
+ * <Field.Root>
+ *   <Field.Label>Kod från sms:et</Field.Label>
+ *   <Field.Prose>
  *     <p>Koden har 8 tecken i två grupper om 4.</p>
- *   </Prose>
+ *   </Field.Prose>
  *   <OneTimeCode.Root pattern="&&&&-&&&&" onComplete={(value, unmaskedValue) => verify(unmaskedValue)}>
  *     <OneTimeCode.Input name="code" />
  *     {[...'&&&&-&&&&'].map((_, index) => <OneTimeCode.Slot key={index} index={index} />)}
  *   </OneTimeCode.Root>
- * </Field>
+ * </Field.Root>
  */
 export function OneTimeCodeRoot({
   pattern,

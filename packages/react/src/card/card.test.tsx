@@ -104,7 +104,7 @@ describe('rendering', () => {
       <Card.Root>
         <Card.Body>
           <h3>
-            <Link href="#atervinning">Nya öppettider på återvinningscentralen</Link>
+            <Link.Root href="#atervinning">Nya öppettider på återvinningscentralen</Link.Root>
           </h3>
         </Card.Body>
         <Card.Footer className="kv-button-group">

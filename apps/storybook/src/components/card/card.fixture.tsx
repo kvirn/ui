@@ -268,7 +268,7 @@ export function NewsList({ locale }: CardFixtureProps) {
             ) : null}
             <Card.Body className="kv-prose">
               <h3>
-                <Link href={`#${id}`}>{item.title}</Link>
+                <Link.Root href={`#${id}`}>{item.title}</Link.Root>
               </h3>
               <p>{item.excerpt}</p>
               <p>

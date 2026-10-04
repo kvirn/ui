@@ -20,7 +20,7 @@ An InputGroup puts a unit ("kr", "%", "km"), a decorative icon or a Button insid
 
 Rules, tested in `input-group.test.tsx`:
 
-- **Addons are `aria-hidden="true"`** and are never in the Input's accessible name or description. A unit shown in the box is also said by the label or a hint, a `Prose` in the Field (if the Addon were linked to the Input, users would hear a unit the label already says, twice).
+- **Addons are `aria-hidden="true"`** and are never in the Input's accessible name or description. A unit shown in the box is also said by the label or a hint, a `Field.Prose` in the Field (if the Addon were linked to the Input, users would hear a unit the label already says, twice).
 - **Clicking an Addon, or the Root's padding, focuses the Input** (`mousedown` on the box, outside any control inside it). The whole box is one target, and the keyboard reaches the Input directly, so no key is needed for it. Disabled groups don't move focus.
 - **Field state on the Root:** `data-invalid` and `data-disabled` come from the nearest Field (or the Root's own props). The Input keeps `aria-invalid` and native `disabled` from the Field: the theme draws the box from the Root's attributes and from `:has(> .kv-input…)`, so it doesn't wait for JavaScript.
 - **`data-focus-visible` is set only while the Input has keyboard focus** (`:focus-visible`, which text inputs also match on a click). Focus on a Button inside the Root doesn't set it: the Button draws its own ring.

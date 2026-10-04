@@ -153,7 +153,7 @@ Only the catalogs you import are bundled.
 Resolution order, first match wins:
 
 1. Children of a visible text part, for example `<Link.NewTabNotice>(nytt fönster)</Link.NewTabNotice>`.
-2. The component's own `messages` prop, for example `<Link messages={{ newTabNotice: '(nytt fönster)' }}>`.
+2. The component's own `messages` prop, for example `<Link.Root messages={{ newTabNotice: '(nytt fönster)' }}>`.
 3. The nearest provider's `messages`, then its ancestors'.
 4. Built-in English. In development, you get a console warning when this happens under a non-English locale.
 

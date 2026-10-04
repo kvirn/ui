@@ -10,12 +10,12 @@ import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
 import { Input } from '../input/input.tsx'
-import { Prose } from '../prose/prose.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import {
   Fieldset,
   FieldsetErrorMessage,
   FieldsetLegend,
+  FieldsetProse,
   FieldsetRoot,
   Legend,
 } from './fieldset.tsx'
@@ -77,7 +77,7 @@ function ContactGroup({
   return (
     <Fieldset.Root invalid={invalid} required={required} disabled={disabled} group={group}>
       <Fieldset.Legend>Hur ska vi kontakta dig om tillståndet?</Fieldset.Legend>
-      {withDescription ? <Prose>Välj alla som passar.</Prose> : null}
+      {withDescription ? <Fieldset.Prose>Välj alla som passar.</Fieldset.Prose> : null}
       <Fieldset.ErrorMessage>Välj hur vi ska kontakta dig</Fieldset.ErrorMessage>
       <Field.Root>
         <Field.Label>E-post</Field.Label>
@@ -96,7 +96,7 @@ describe('rendering', () => {
     const { container } = await render(
       <Fieldset.Root data-testid="root" invalid>
         <Fieldset.Legend data-testid="legend">Adress</Fieldset.Legend>
-        <Prose data-testid="description">Där du bor.</Prose>
+        <Fieldset.Prose data-testid="description">Där du bor.</Fieldset.Prose>
         <Fieldset.ErrorMessage data-testid="error">Ange din adress</Fieldset.ErrorMessage>
       </Fieldset.Root>,
     )
@@ -149,18 +149,34 @@ describe('rendering', () => {
     expect(seenStates.at(-1)).toEqual({ isInvalid: true, isRequired: true, isDisabled: false })
   })
 
-  test('the compound and the named exports are the same parts, ErrorMessage is Field’s, and there is no Description', () => {
+  test('the compound and the named exports are the same parts, each with its own display name', () => {
     expect(Fieldset.Root).toBe(FieldsetRoot)
     expect(Fieldset.Legend).toBe(FieldsetLegend)
-    expect(Fieldset).not.toHaveProperty('Description')
-    expect(Fieldset.Prose).toBe(Prose)
-    // The flat form: <Fieldset> is the root, and Legend stands alone.
-    expect(Fieldset).toBe(FieldsetRoot)
-    expect(Legend).toBe(FieldsetLegend)
-    expect(Fieldset.displayName).toBe('Fieldset')
-    expect(Legend.displayName).toBe('Legend')
+    expect(Fieldset.Prose).toBe(FieldsetProse)
     expect(Fieldset.ErrorMessage).toBe(FieldsetErrorMessage)
-    expect(FieldsetErrorMessage).toBe(Field.ErrorMessage)
+    expect(Fieldset).not.toHaveProperty('Description')
+    // The callable root stays callable: <Fieldset> is the same component as <Fieldset.Root>.
+    expect(Fieldset).toBe(FieldsetRoot)
+    expect(Fieldset.Root.displayName).toBe('Fieldset.Root')
+    expect(Fieldset.Legend.displayName).toBe('Fieldset.Legend')
+    expect(Fieldset.Prose.displayName).toBe('Fieldset.Prose')
+    expect(Fieldset.ErrorMessage.displayName).toBe('Fieldset.ErrorMessage')
+    // Fieldset.ErrorMessage is its own component, not Field.ErrorMessage.
+    expect(Fieldset.ErrorMessage).not.toBe(Field.ErrorMessage)
+    // The deprecated bare Legend is the same component as Fieldset.Legend.
+    expect(Legend).toBe(FieldsetLegend)
+  })
+
+  test('the deprecated flat form wires the legend and the error like the namespace form', async () => {
+    await render(
+      <Fieldset invalid>
+        <Legend>Adress</Legend>
+        <FieldsetErrorMessage>Ange en adress</FieldsetErrorMessage>
+      </Fieldset>,
+    )
+    await expect
+      .element(page.getByRole('group', { name: 'Adress' }))
+      .toHaveAccessibleDescription('Error: Ange en adress')
   })
 })
 
@@ -224,7 +240,7 @@ describe('wiring: name and description per state', () => {
     const { container } = await render(
       <Fieldset.Root invalid group required>
         <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
-        <Prose>Till exempel 27 3 2007</Prose>
+        <Fieldset.Prose>Till exempel 27 3 2007</Fieldset.Prose>
         <Fieldset.ErrorMessage>Ange ett datum</Fieldset.ErrorMessage>
         <Field.Root invalid>
           <Field.Label>År</Field.Label>
@@ -233,7 +249,7 @@ describe('wiring: name and description per state', () => {
         </Field.Root>
         <Field.Root>
           <Field.Label>Månad</Field.Label>
-          <Prose>Siffror</Prose>
+          <Field.Prose>Siffror</Field.Prose>
           <Input inputMode="numeric" />
         </Field.Root>
       </Fieldset.Root>,
@@ -306,7 +322,7 @@ describe('states', () => {
     await render(
       <Fieldset.Root invalid data-testid="root">
         <Fieldset.Legend data-testid="legend">Adress</Fieldset.Legend>
-        <Prose data-testid="description">Där du bor.</Prose>
+        <Fieldset.Prose data-testid="description">Där du bor.</Fieldset.Prose>
         <Fieldset.ErrorMessage data-testid="error">Ange din adress</Fieldset.ErrorMessage>
       </Fieldset.Root>,
     )
@@ -569,8 +585,8 @@ describe('several descriptions', () => {
     return (
       <Fieldset.Root invalid={invalid}>
         <Fieldset.Legend>Adress</Fieldset.Legend>
-        <Prose data-testid="where">Där du är folkbokförd.</Prose>
-        <Prose data-testid="format">Gatan och numret.</Prose>
+        <Fieldset.Prose data-testid="where">Där du är folkbokförd.</Fieldset.Prose>
+        <Fieldset.Prose data-testid="format">Gatan och numret.</Fieldset.Prose>
         <Field.Root>
           <Field.Label>Gatuadress</Field.Label>
           <Input />
@@ -604,8 +620,8 @@ describe('several descriptions', () => {
       return (
         <Fieldset.Root>
           <Fieldset.Legend>Adress</Fieldset.Legend>
-          <Prose>Först.</Prose>
-          {show ? <Prose>Sist.</Prose> : null}
+          <Fieldset.Prose>Först.</Fieldset.Prose>
+          {show ? <Fieldset.Prose>Sist.</Fieldset.Prose> : null}
           <button type="button" onClick={() => setShow(false)}>
             Dölj
           </button>
@@ -629,8 +645,8 @@ describe('several descriptions', () => {
       return (
         <Fieldset.Root>
           <Fieldset.Legend>Adress</Fieldset.Legend>
-          {showFirst ? <Prose data-testid="first">Först.</Prose> : null}
-          <Prose data-testid="last">Sist.</Prose>
+          {showFirst ? <Fieldset.Prose data-testid="first">Först.</Fieldset.Prose> : null}
+          <Fieldset.Prose data-testid="last">Sist.</Fieldset.Prose>
           <button type="button" onClick={() => setShowFirst(true)}>
             Visa
           </button>

@@ -36,7 +36,7 @@ const description = usageGuide(guide)
 
 const meta = {
   title: 'Components/Section',
-  component: Section.Root,
+  component: Section,
   args: {
     children: (
       <Prose>
@@ -55,7 +55,7 @@ const meta = {
   },
   globals: { locale: 'sv' },
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
-} satisfies Meta<typeof Section.Root>
+} satisfies Meta<typeof Section>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -194,9 +194,9 @@ export const Padding: Story = {
               <code>{padding === 'md' ? 'kv-section' : `kv-section--padding-${padding}`}</code>
             </p>
             <p>
-              <Link href={`#${padding}`} data-testid={`${padding}-link`}>
+              <Link.Root href={`#${padding}`} data-testid={`${padding}-link`}>
                 {text.news.recycling.title}
-              </Link>
+              </Link.Root>
             </p>
           </Section>
         ))}

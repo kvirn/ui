@@ -12,15 +12,15 @@ Use a Combobox (a later part of Plan 0022) when the user should type to filter a
 ## The popup
 
 ```tsx
-import { Field, Label, Listbox } from '@kvirn-ui/react'
+import { Field, Listbox } from '@kvirn-ui/react'
 
 interface Municipality {
   code: string
   name: string
 }
 
-;<Field required>
-  <Label>Kommun</Label>
+;<Field.Root required>
+  <Field.Label>Kommun</Field.Label>
   <Listbox.Root
     items={municipalities}
     itemToString={(municipality) => municipality.name}
@@ -39,7 +39,7 @@ interface Municipality {
       <Listbox.Empty />
     </Listbox.Popup>
   </Listbox.Root>
-</Field>
+</Field.Root>
 ```
 
 ### Root
@@ -64,7 +64,7 @@ interface Municipality {
 | `messages`                               | Per-instance overrides of the `combobox` strings. `noResults` is the default text of `Listbox.Empty`.                                                                                                                                             |
 | `virtualize`                             | `true`, or `{ estimateSize, overscan }`: renders only the options in view, for a flat list of thousands. Off by default. See Long lists. The native select ignores it.                                                                            |
 
-`invalid`, `required` and the description (a `Prose` in the Field) come from the Field, as for every control. The value is never copied into KvirnUI state: `value` and `onValueChange` are yours, or `defaultValue` and `name` for a plain form.
+`invalid`, `required` and the description (a `Field.Prose` in the Field) come from the Field, as for every control. The value is never copied into KvirnUI state: `value` and `onValueChange` are yours, or `defaultValue` and `name` for a plain form.
 
 ### Parts
 
@@ -117,14 +117,14 @@ The list is the scroll element, so give `Listbox.List` a height limit and `overf
 
 `NativeSelect` became `Listbox`: there is no separate native part. `<Listbox.Root native="always">` (and `native="auto"` on touch devices) renders one `<select class="kv-listbox-native">` from the same `items`, `groups`, `itemToString`, `itemToKey` and `isItemDisabled`, with `<option>` and `<optgroup>`. `Listbox.Trigger`, `Listbox.Popup` and the other children are not rendered then, so leave them in: they serve the popup.
 
-- Named by its `Label`, described by the Field's hint and error. `aria-invalid`, `aria-required` and `disabled` come from the Field.
+- Named by its `Field.Label`, described by the Field's hint and error. `aria-invalid`, `aria-required` and `disabled` come from the Field.
 - The same API as the popup: `value` (a key or `null`), `defaultValue`, `onValueChange(value, { reason: 'native' })`, `name` and `autoComplete`, which go on the `<select>`. No form state.
 - An empty `<option value="">` stands for "nothing chosen" and carries `placeholder`. It goes once something is chosen, unless a placeholder is set. Choosing it reports `null`.
 - It takes plain text only: rich option content and `Listbox.Empty` don't apply, and `multiple` never renders it.
 
 ```tsx
-<Field required>
-  <Label>Kommun</Label>
+<Field.Root required>
+  <Field.Label>Kommun</Field.Label>
   <Listbox.Root
     native="always"
     items={municipalities}
@@ -134,7 +134,7 @@ The list is the scroll element, so give `Listbox.List` a height limit and `overf
     name="municipality"
     autoComplete="address-level2"
   />
-</Field>
+</Field.Root>
 ```
 
 ## Migrating from `NativeSelect`

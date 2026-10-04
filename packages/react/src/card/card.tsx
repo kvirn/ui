@@ -59,21 +59,25 @@ function useCardPart(
 export function CardRoot(props: CardRootProps): ReactElement {
   return useCardPart(props, useCard().rootProps)
 }
+CardRoot.displayName = 'Card.Root'
 
 /** For media or a title row that needs a divider. A `<div>`, never a `<header>` landmark. */
 export function CardHeader(props: CardHeaderProps): ReactElement {
   return useCardPart(props, useCard().headerProps)
 }
+CardHeader.displayName = 'Card.Header'
 
 /** The card's content. Put the heading at its top. */
 export function CardBody(props: CardBodyProps): ReactElement {
   return useCardPart(props, useCard().bodyProps)
 }
+CardBody.displayName = 'Card.Body'
 
 /** For actions. A `<div>`, never a `<footer>` landmark. */
 export function CardFooter(props: CardFooterProps): ReactElement {
   return useCardPart(props, useCard().footerProps)
 }
+CardFooter.displayName = 'Card.Footer'
 
 /**
  * A plain container for one thing on the page: a service, a news item, a case (contract: card.a11y.md). It is always `surface-raised`. A region of the page, such as a
@@ -90,7 +94,7 @@ export function CardFooter(props: CardFooterProps): ReactElement {
  *       <img src="/bibliotek.jpg" alt="" />
  *     </Card.Header>
  *     <Card.Body>
- *       <h3><Link href="/bibliotek">Biblioteket på Storgatan</Link></h3>
+ *       <h3><Link.Root href="/bibliotek">Biblioteket på Storgatan</Link.Root></h3>
  *       <p>Öppet alla dagar 10–19.</p>
  *     </Card.Body>
  *     <Card.Footer className="kv-button-group">

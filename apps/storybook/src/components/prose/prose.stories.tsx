@@ -23,14 +23,14 @@ import {
 
 const meta = {
   title: 'Components/Prose',
-  component: Prose.Root,
+  component: Prose,
   args: {
     children: (
       <>
         <h2>Kontakta oss</h2>
         <p>Vi svarar vardagar 9–16.</p>
         <p>
-          <Link href="#epost">Mejla kundcenter</Link>
+          <Link.Root href="#epost">Mejla kundcenter</Link.Root>
         </p>
       </>
     ),
@@ -46,7 +46,7 @@ const meta = {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
   },
-} satisfies Meta<typeof Prose.Root>
+} satisfies Meta<typeof Prose>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -248,7 +248,7 @@ export const FullWidthAndRoles: Story = {
       style={{ ['--kv-prose-color-links' as string]: 'var(--kv-color-text)' }}
     >
       <p>
-        <Link href="#epost">Mejla kundcenter</Link>, or a link in prose:{' '}
+        <Link.Root href="#epost">Mejla kundcenter</Link.Root>, or a link in prose:{' '}
         <a href="#epost">Mejla kundcenter</a>
       </p>
     </Prose>
@@ -320,13 +320,13 @@ function ComponentSamples({ navigationLabel }: { navigationLabel: string }): Rea
     <>
       <p>
         {notProseText.linkSentence}
-        <Link href="#guidance">{notProseText.link}</Link>.
+        <Link.Root href="#guidance">{notProseText.link}</Link.Root>.
       </p>
       <nav aria-label={navigationLabel}>
         <ul className="kv-nav">
           {notProseText.navigation.map((item) => (
             <li key={item}>
-              <Link href={`#${item.toLowerCase().replaceAll(' ', '-')}`}>{item}</Link>
+              <Link.Root href={`#${item.toLowerCase().replaceAll(' ', '-')}`}>{item}</Link.Root>
             </li>
           ))}
         </ul>
