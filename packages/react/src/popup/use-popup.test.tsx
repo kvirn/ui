@@ -374,6 +374,71 @@ describe('placement', () => {
   })
 })
 
+describe('the width limit', () => {
+  test('--kv-popup-width-limit caps the width, and the text wraps inside it', async () => {
+    function Limited() {
+      const anchorRef = useRef<HTMLButtonElement>(null)
+      const popupRef = useRef<HTMLDivElement>(null)
+      const popup = usePopup({ open: true, anchorRef, popupRef })
+      return (
+        <>
+          <button type="button" ref={anchorRef}>
+            Anchor
+          </button>
+          <div
+            ref={popupRef}
+            {...dialogAttributes}
+            {...popup.popupProps}
+            style={{ '--kv-popup-width-limit': '10rem' } as CSSProperties}
+          >
+            Content that is far too long to fit on one line inside ten rem, so it has to wrap
+          </div>
+        </>
+      )
+    }
+    await render(<Limited />)
+    await expect.poll(isShown).toBe(true)
+    const width = popupElement()?.getBoundingClientRect().width ?? 0
+    expect(width).toBeGreaterThan(0)
+    expect(width).toBeLessThanOrEqual(160)
+  })
+})
+
+describe('measuring at the width it will have', () => {
+  test('a popup narrowed to the viewport is placed by its narrowed height and never covers its anchor', async () => {
+    function Narrowed() {
+      const anchorRef = useRef<HTMLButtonElement>(null)
+      const popupRef = useRef<HTMLDivElement>(null)
+      // A padding that leaves 200px: the popup is measured wider and placed narrower, so its text wraps into more lines.
+      const padding = Math.max(0, Math.floor((window.innerWidth - 200) / 2))
+      const popup = usePopup({ open: true, anchorRef, popupRef, placement: 'top', padding })
+      return (
+        <>
+          <div style={{ height: 300 }} />
+          <button type="button" ref={anchorRef}>
+            Anchor
+          </button>
+          <div
+            ref={popupRef}
+            {...dialogAttributes}
+            {...popup.popupProps}
+            style={{ '--kv-popup-width-limit': '2000px' } as CSSProperties}
+          >
+            Text som måste brytas över flera rader när popupen blir smalare än den mättes. Text som
+            måste brytas över flera rader när popupen blir smalare än den mättes.
+          </div>
+        </>
+      )
+    }
+    await render(<Narrowed />)
+    await expect.poll(isShown).toBe(true)
+    const popupBox = popupElement()?.getBoundingClientRect()
+    const anchorBox = anchorElement().getBoundingClientRect()
+    expect(popupBox?.width).toBeLessThanOrEqual(200.5)
+    expect(popupBox?.bottom ?? Number.POSITIVE_INFINITY).toBeLessThanOrEqual(anchorBox.top + 0.5)
+  })
+})
+
 describe('server rendering and types', () => {
   test('renders the attributes on the server and touches no window', () => {
     const closed = renderToString(<PopupExample open={false} />)

@@ -18,7 +18,7 @@ Load `keyboard` and `accessibility` with this skill. Keys for these patterns are
 
 ### Native top layer
 
-- A popup is an element with the native `popover` attribute: `auto` for Popover and Menu, `manual` for Listbox, Combobox and Autocomplete (their focus stays on the trigger or input, so platform light dismiss must not take part).
+- A popup is an element with the native `popover` attribute: `auto` for Popover and Menu, `manual` for Listbox, Combobox, Autocomplete and Tooltip (their focus stays on the trigger or input, so platform light dismiss must not take part, and a tooltip never closes an open Popover).
 - There is no `Portal` for popups, no `z-index`, and no clipping by an ancestor's `overflow`. CSS anchor positioning is not used. No positioning dependency (no Floating UI).
 - `usePopup({ open, anchorRef, popupRef, placement, offset, padding, matchAnchorWidth, popover, onNativeDismiss })` is the shared mechanic. The popup element must stay rendered so it can be shown and hidden. Without the Popover API it falls back to `hidden`.
 - It moves no focus and handles no dismissal. Pair it with `useDismissableLayer`.
@@ -29,18 +29,19 @@ Load `keyboard` and `accessibility` with this skill. Keys for these patterns are
 - `computePlacement(anchorRect, popupRect, viewport, options)` in core is pure. Default `bottom-start`. Options: `placement`, `direction`, `offset`, `padding`, `matchAnchorWidth`, `minWidth`. It returns `{ x, y, placement, maxHeight, width }`.
 - It flips to the other side when the popup does not fit, shifts to stay inside the viewport, limits `maxHeight` to the room left, and never covers the anchor (2.4.11). `start` and `end` follow the reading direction and flip in right-to-left.
 - `usePopup` measures at natural size and applies inline `position: fixed` with `left` and `top`. It never animates position. It places again on scroll (any scroller), resize, size changes of the anchor or popup, and when the anchor moves (checked once per frame while open). Nothing reads `window` while rendering.
-- Exposed to the theme: `data-open`, `data-placement`, `data-detached` (the anchor is scrolled out of view; the popup is `visibility: hidden`), and the custom properties `--kv-popup-width`, `--kv-popup-max-height`, `--kv-anchor-width`. A consumer may set `--kv-popup-height-limit` (a length) to cap the height.
+- Exposed to the theme: `data-open`, `data-placement`, `data-detached` (the anchor is scrolled out of view; the popup is `visibility: hidden`), and the custom properties `--kv-popup-width`, `--kv-popup-max-height`, `--kv-anchor-width`. A consumer may set `--kv-popup-height-limit` and `--kv-popup-width-limit` (lengths) to cap the height and the width. The theme sets 20rem width on the tooltip.
 - Animation is opacity only, and none under reduced motion. At 320px the popup is at least the anchor's width and never wider than the viewport.
 - Popover and Listbox default to `offset` 4 and `padding` 8.
 
 ### The dismissable layer stack
 
-- `createDismissableLayerStack()` (core) holds the ordered layers. Only the **top** layer reacts to Escape and outside presses, so one Escape closes one layer. The registry in React is created lazily at first use, so importing reads no `window`.
-- `useDismissableLayer({ open, onDismiss, ref, ignore, dismissOnEscape, dismissOnOutsidePress })` reports `'escape'` or `'outside-press'`. The owner closes the layer and returns focus.
+- `createDismissableLayerStack()` (core) holds the ordered layers. Only the **top** layer reacts to Escape and outside presses, so one Escape closes one layer (outside presses skip a layer with `passOutsidePressThrough`, a tooltip). The registry in React is created lazily at first use, so importing reads no `window`.
+- `useDismissableLayer({ open, onDismiss, ref, ignore, dismissOnEscape, dismissOnOutsidePress, passOutsidePressThrough })` reports `'escape'` or `'outside-press'`. The owner closes the layer and returns focus.
   - Escape is read on the document after page handlers. It is ignored if a handler called `preventDefault()` on it or during IME composition. When it handles Escape it calls `preventDefault()` itself, so the browser's own close request does not close a second layer.
   - An outside press is read on `pointerdown`. A touch press is reported when the finger lifts, and not at all if the gesture becomes a scroll.
   - A press inside `ref` or on an `ignore` target (the anchor: a Popover trigger, a Combobox input and button) never dismisses.
 - A press in a layer further down the stack is still outside the top layer and dismisses it.
+- **`dismissOnOutsidePress: false` alone still shields** the layers below: an outside press reaches no layer (a modal Dialog). **`passOutsidePressThrough: true`** is for a non-modal layer with nothing to press, a tooltip: outside presses skip it and go to the next layer, so one press closes a Popover underneath even while a tooltip is open. Escape is not passed through: the top layer, the tooltip, takes it.
 
 ### Popover
 
@@ -50,6 +51,14 @@ Load `keyboard` and `accessibility` with this skill. Keys for these patterns are
 - A mouse or touch click on the trigger toggles from the state its press found (the platform may close the popup between press and click). Enter and Space toggle from the current state.
 - `onOpenChange(open, { reason, event })`, reasons `trigger-press | close-press | escape | outside-press | light-dismiss`.
 - A popover never makes the page `inert`. That is a Dialog's job.
+
+### Tooltip
+
+- Parts `Tooltip.Root`, `.Trigger`, `.Popup`, `.Name`, `.Shortcut`. Hook `useTooltip` (contract: `tooltip.a11y.md`, Plan 0037). The timing is a pure machine in core (`createTooltipMachine`: hover delay 500 ms, keyboard focus at once, 100 ms grace, no timeout), tested with fake time.
+- Popup: `popover="manual"`, `role="tooltip"`, always rendered and hidden while closed, so the trigger's `aria-describedby` resolves. It joins the layer stack with `dismissOnOutsidePress: false` and `passOutsidePressThrough: true`, so Escape closes the tooltip first and leaves a Popover underneath open, and an outside press goes through to that Popover in the same press. A focused open Listbox or Combobox handles Escape in its own key handler first, so the tooltip needs a second Escape (Known issues in the contract).
+- Name versus description: `Tooltip.Name` (repeats the trigger's name) is `aria-hidden`, `Tooltip.Shortcut` is the trigger's `aria-describedby`. A tooltip with only a Name adds nothing for AT, so the whole popup is `aria-hidden` (role kept; an open `role="tooltip"` with only hidden content fails axe `aria-tooltip-name`). The Root works the description out from the parts that register themselves, as `Link.NewTabNotice` does.
+- One delay for the page: `getTooltipGroup()` (core) remembers the open tooltip and when one last closed, so the next opens at once within 300 ms. `createTooltipGroup()` makes a separate one (`group` option, and every component test).
+- Keyboard focus opens it (`isKeyboardFocus`, so a click doesn't), touch opens nothing, and the trigger's `aria-expanded="true"` (it opened its own popup) closes it and keeps it closed.
 
 ## Listbox, Combobox and Autocomplete
 

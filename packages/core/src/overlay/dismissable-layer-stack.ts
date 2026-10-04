@@ -12,6 +12,13 @@ export interface DismissableLayerOptions {
   dismissOnEscape?: boolean | undefined
   /** Whether a press outside dismisses this layer. Default `true`. */
   dismissOnOutsidePress?: boolean | undefined
+  /**
+   * Whether outside presses look through this layer to the one below it. For a layer that is not
+   * modal and holds nothing to dismiss by a press, such as a tooltip: a press must still reach the
+   * Popover underneath. Default `false`: a layer that opts out of outside presses with
+   * `dismissOnOutsidePress` still shields the layers below it (a modal Dialog).
+   */
+  passOutsidePressThrough?: boolean | undefined
 }
 
 export interface DismissableLayerStack {
@@ -92,7 +99,7 @@ export function createDismissableLayerStack(): DismissableLayerStack {
       return top !== undefined && top.options.dismissOnEscape !== false ? top.id : undefined
     },
     handleOutsidePress: (target, contains) => {
-      const top = getTop()
+      const top = layers.findLast((layer) => layer.options.passOutsidePressThrough !== true)
       if (top === undefined || top.options.dismissOnOutsidePress === false) {
         return undefined
       }

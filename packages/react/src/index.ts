@@ -564,6 +564,35 @@ export type {
 export { useDismissableLayer } from './popup/use-dismissable-layer.ts'
 export type { DismissReason, UseDismissableLayerOptions } from './popup/use-dismissable-layer.ts'
 export {
+  Tooltip,
+  TooltipName,
+  TooltipPopup,
+  TooltipRoot,
+  TooltipShortcut,
+  TooltipTrigger,
+} from './tooltip/tooltip.tsx'
+export type {
+  TooltipNameProps,
+  TooltipPopupProps,
+  TooltipRootProps,
+  TooltipShortcutProps,
+  TooltipState,
+  TooltipTriggerProps,
+} from './tooltip/tooltip.tsx'
+export { useTooltip } from './tooltip/use-tooltip.ts'
+export type {
+  TooltipChangeDetails,
+  TooltipDescription,
+  TooltipNamePartProps,
+  TooltipPopupPartProps,
+  TooltipShortcutPartProps,
+  TooltipTriggerPartProps,
+  UseTooltipOptions,
+  UseTooltipResult,
+} from './tooltip/use-tooltip.ts'
+export { createTooltipGroup } from '@kvirn-ui/core'
+export type { TooltipChangeReason, TooltipGroup } from '@kvirn-ui/core'
+export {
   FileUpload,
   FileUploadActions,
   FileUploadCancelButton,

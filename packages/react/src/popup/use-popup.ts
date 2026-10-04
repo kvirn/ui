@@ -104,6 +104,7 @@ function setPopupShown(popup: HTMLElement, shown: boolean): void {
  *   with `left` and `top`: it never animates.
  * - **CSS variables** on the popup: `--kv-popup-width`, `--kv-popup-max-height` (the room left,
  *   so a long popup scrolls inside instead of leaving the screen, 1.4.10) and `--kv-anchor-width`.
+ *   Yours: `--kv-popup-height-limit` and `--kv-popup-width-limit` (lengths) cap the popup below the room that is left.
  * - **Attributes:** `data-open` and `data-placement` for your styles.
  * - **No focus changes.** It doesn't move focus or manage dismissal: pair it with
  *   `useDismissableLayer`.
@@ -195,37 +196,48 @@ export function usePopup({
       style.left = '0px'
       style.right = 'auto'
       style.bottom = 'auto'
-      style.maxWidth = 'none'
+      // Your own width limit counts while measuring, as the height limit does.
+      style.maxWidth = 'var(--kv-popup-width-limit, none)'
       // Your own height limit counts while measuring: a popup placed above the anchor is positioned
       // by its height, so measuring it taller than it ends up leaves a gap under it.
       style.maxHeight = 'var(--kv-popup-height-limit, none)'
       style.width = matchAnchorWidth ? `${anchorRect.width}px` : ''
-      const { width, height } = popup.getBoundingClientRect()
-
-      const result = computePlacement(
-        anchorRect,
-        { width, height },
-        {
-          x: 0,
-          y: 0,
-          width: viewportWidth,
-          height: viewportHeight,
-        },
-        {
-          placement,
-          direction: hostWindow.getComputedStyle(anchor).direction === 'rtl' ? 'rtl' : 'ltr',
-          offset,
-          padding,
-          matchAnchorWidth,
-        },
-      )
+      const place = (size: { width: number; height: number }) =>
+        computePlacement(
+          anchorRect,
+          size,
+          {
+            x: 0,
+            y: 0,
+            width: viewportWidth,
+            height: viewportHeight,
+          },
+          {
+            placement,
+            direction: hostWindow.getComputedStyle(anchor).direction === 'rtl' ? 'rtl' : 'ltr',
+            offset,
+            padding,
+            matchAnchorWidth,
+          },
+        )
+      const measured = popup.getBoundingClientRect()
+      let result = place({ width: measured.width, height: measured.height })
+      // Narrower than it was measured (the viewport minus the padding): its text wraps into more
+      // lines, so measure again at the width it will have. A popup above the anchor is positioned
+      // by its height, and one that ends up taller than it was measured would cover the anchor (2.4.11).
+      if (!matchAnchorWidth && result.width < measured.width - 0.5) {
+        style.maxWidth = `${result.width}px`
+        const narrowed = popup.getBoundingClientRect()
+        result = place({ width: narrowed.width, height: narrowed.height })
+      }
       style.setProperty('--kv-popup-width', `${result.width}px`)
       style.setProperty('--kv-popup-max-height', `${result.maxHeight}px`)
       style.setProperty('--kv-anchor-width', `${anchorRect.width}px`)
       style.left = `${result.x}px`
       style.top = `${result.y}px`
       style.width = matchAnchorWidth ? 'var(--kv-popup-width)' : ''
-      style.maxWidth = 'var(--kv-popup-width)'
+      // The room that is left, and your own limit if you set --kv-popup-width-limit (a length), as a tooltip does.
+      style.maxWidth = 'min(var(--kv-popup-width), var(--kv-popup-width-limit, 100vw))'
       // The room that is left, and your own limit if you set --kv-popup-height-limit (a length).
       style.maxHeight = 'min(var(--kv-popup-max-height), var(--kv-popup-height-limit, 100vh))'
       popup.scrollTop = scrollTop

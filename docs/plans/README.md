@@ -46,4 +46,4 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0034](0034-textarea.md)                          | Textarea                                                                    | Approved    |
 | [0035](0035-toggle-toolbar-button-group.md)       | Toggle, Toolbar and ButtonGroup                                             | Approved    |
 | [0036](0036-rich-text-editor.md)                  | Rich text editor (`@kvirn-ui/rich-text`, Tiptap)                            | Approved    |
-| [0037](0037-tooltip.md)                           | Tooltip                                                                     | Approved    |
+| [0037](0037-tooltip.md)                           | Tooltip                                                                     | In progress |

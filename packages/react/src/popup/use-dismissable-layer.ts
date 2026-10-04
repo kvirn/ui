@@ -26,6 +26,8 @@ export interface UseDismissableLayerOptions {
   dismissOnEscape?: boolean | undefined
   /** Whether a press outside dismisses this layer. Default `true`. */
   dismissOnOutsidePress?: boolean | undefined
+  /** Outside presses look through this layer to the one below it (a tooltip). Default `false`. */
+  passOutsidePressThrough?: boolean | undefined
 }
 
 interface LayerRegistry {
@@ -79,14 +81,27 @@ export function useDismissableLayer({
   ignore,
   dismissOnEscape = true,
   dismissOnOutsidePress = true,
+  passOutsidePressThrough = false,
 }: UseDismissableLayerOptions): void {
   const id = useId()
   const env = useEnv()
-  const latest = useRef({ onDismiss, ignore, dismissOnEscape, dismissOnOutsidePress })
+  const latest = useRef({
+    onDismiss,
+    ignore,
+    dismissOnEscape,
+    dismissOnOutsidePress,
+    passOutsidePressThrough,
+  })
 
   // The newest options, read by the listeners. Written before they can run, never during render.
   useLayoutEffect(() => {
-    latest.current = { onDismiss, ignore, dismissOnEscape, dismissOnOutsidePress }
+    latest.current = {
+      onDismiss,
+      ignore,
+      dismissOnEscape,
+      dismissOnOutsidePress,
+      passOutsidePressThrough,
+    }
   })
 
   useEffect(() => {
@@ -104,6 +119,9 @@ export function useDismissableLayer({
       },
       get dismissOnOutsidePress() {
         return latest.current.dismissOnOutsidePress
+      },
+      get passOutsidePressThrough() {
+        return latest.current.passOutsidePressThrough
       },
     })
 

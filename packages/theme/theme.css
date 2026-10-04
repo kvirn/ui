@@ -70,6 +70,7 @@
  *   9. Prose            kv-prose: articles from a CMS or Markdown
  *  9a. Heading       kv-heading: the type role of a heading, apart from its level
  *  9b. Kbd           kv-kbd: a key in running text
+ *  9c. Tooltip       kv-tooltip: a name and a shortcut for a control, level 3
  *  10. Card
  *  10a. Section          kv-section: a region of the page, elevation level 1
  *  10b. Notification     kv-notification: a status message, by status class
@@ -1866,6 +1867,75 @@
 
   /* 10. Card ---------------------------------------------------------------------------------
    * <Card.Root> renders class="kv-card", and its parts kv-card-header, kv-card-body and
+  /* 9c. Tooltip ------------------------------------------------------------------------------
+   * <Tooltip.Popup> renders <div class="kv-tooltip" popover="manual" role="tooltip">, a popover in
+   * the top layer that the script places (position, left, top and width are inline), above its
+   * trigger when there is room and never covering it. Level 3 elevation like every popup:
+   * surface-raised, a 1px border-subtle edge and the popup shadow (none in dark). The md radius,
+   * not the xl of a panel, because it is one line: a one-line box with 16px corners reads as a pill.
+   * Padding space-1 by space-2, body type. At most 20rem wide (the script reads --kv-popup-width-limit)
+   * and never wider than the viewport less 8px each side; text wraps. Text is never clipped (overflow: visible). In a viewport shorter than the tooltip needs, a long tooltip may overlap its trigger: that is transient, and it is hoverable and dismissable with Escape (1.4.13). It takes
+   * pointer events, because it must be hoverable (1.4.13): never pointer-events: none. Closed, it is
+   * display: none (the browser's own), so this sets no display.
+   *
+   * <Tooltip.Name> renders kv-tooltip-name: the label weight, so it stands apart from the keys.
+   * <Tooltip.Shortcut> renders kv-tooltip-shortcut: Kbd keys, left to right, 8px after the name.
+   * The keys are the Kbd rule at 14px (0.875em of the 16px tooltip), the smallest size the system has.
+   *
+   * It fades in over --kv-duration-fast, only when the user allows motion. No movement, no scale,
+   * and closing is instant in every setting. Forced colours: Canvas, CanvasText and a CanvasText
+   * edge, no shadow. */
+  .kv-tooltip {
+    --kv-popup-width-limit: 20rem;
+    box-sizing: border-box;
+    margin: 0;
+    padding-block: var(--kv-space-1);
+    padding-inline: var(--kv-space-2);
+    overflow: visible;
+    overflow-wrap: break-word;
+    hyphens: manual;
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-md);
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-shadow-popup);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    letter-spacing: normal;
+    pointer-events: auto;
+  }
+
+  .kv-tooltip-name {
+    font-weight: var(--kv-font-label-weight);
+  }
+
+  .kv-tooltip-name + .kv-tooltip-shortcut {
+    margin-inline-start: var(--kv-space-2);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .kv-tooltip:popover-open {
+      animation: kv-tooltip-fade-in var(--kv-duration-fast) var(--kv-easing-standard);
+    }
+
+    @keyframes kv-tooltip-fade-in {
+      from {
+        opacity: 0;
+      }
+    }
+  }
+
+  @media (forced-colors: active) {
+    .kv-tooltip {
+      border-color: CanvasText;
+      background-color: Canvas;
+      box-shadow: none;
+      color: CanvasText;
+    }
+  }
+
    * kv-card-footer. Elevation level 2: surface-raised, a 1px border-subtle edge, the lg radius
    * and no shadow. A card is never interactive, so it has no hover, focus or pointer style.
    * It is always surface-raised: a region of the page is a Section (section 10a).

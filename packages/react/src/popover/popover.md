@@ -71,6 +71,7 @@ The popup is placed with `position: fixed`, so it needs no positioned ancestor, 
 | `--kv-popup-max-height`   | The room left on its side of the trigger. The popup is limited to it and scrolls inside, so it fits at 320px and at 400% zoom                                   |
 | `--kv-popup-height-limit` | Yours: a length that caps the popup height below the room left (default none). The default theme sets 20rem on the listbox popup, so a long list scrolls inside |
 | `--kv-anchor-width`       | The trigger's width, for `min-width: var(--kv-anchor-width)`                                                                                                    |
+| `--kv-popup-width-limit`  | Yours: a length that caps the popup width below the room left (default none). The default theme sets 20rem on the tooltip, so long text wraps                   |
 
 It never covers the trigger (WCAG 2.4.11). It is placed again on scroll, on resize and when the trigger or the popup changes size.
 
@@ -79,7 +80,7 @@ It never covers the trigger (WCAG 2.4.11). It is placed again on scroll, on resi
 `usePopup` and `useDismissableLayer` are what Popover is built on, and what Listbox, Combobox, Menu and Select reuse:
 
 - `usePopup({ open, anchorRef, popupRef, placement, offset, padding, matchAnchorWidth, popover, onNativeDismiss })` shows and hides the element with the native `popover` attribute and places it. `popover: 'manual'` leaves the closing to you: use it where focus stays in an input. Where the Popover API is missing it toggles `hidden`.
-- `useDismissableLayer({ open, onDismiss, ref, ignore })` reports Escape and outside presses, with the reason `'escape'` or `'outside-press'`. Open layers share one stack and only the top one reacts. `ignore` takes predicates that make targets outside the layer, such as a Combobox's input and button, count as inside.
+- `useDismissableLayer({ open, onDismiss, ref, ignore, dismissOnEscape, dismissOnOutsidePress, passOutsidePressThrough })` reports Escape and outside presses, with the reason `'escape'` or `'outside-press'`. Open layers share one stack and only the top one reacts. `dismissOnOutsidePress: false` alone still shields the layers below it, and `passOutsidePressThrough: true` (a tooltip) lets an outside press go through to the next layer. `ignore` takes predicates that make targets outside the layer, such as a Combobox's input and button, count as inside.
 
 ## Accessibility
 

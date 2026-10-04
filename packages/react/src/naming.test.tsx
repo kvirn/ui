@@ -225,6 +225,9 @@ describe('alias sets', () => {
     expect(keys(api.Toolbar)).toEqual(
       expect.arrayContaining(['Root', 'Button', 'Toggle', 'Item', 'Group']),
     )
+    expect(keys(api.Tooltip)).toEqual(
+      expect.arrayContaining(['Root', 'Trigger', 'Popup', 'Name', 'Shortcut']),
+    )
   })
 })
 

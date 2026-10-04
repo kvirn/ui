@@ -31,6 +31,7 @@ const namespaces = [
   'Section',
   'Table',
   'Toolbar',
+  'Tooltip',
 ]
 
 interface BannedForm {

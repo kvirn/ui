@@ -115,6 +115,7 @@ Listbox: one Tab stop. Multi-select adds Space to toggle and Shift+Arrow to exte
 | Alert dialog | (as Dialog)     | Initial focus on the least destructive action                                             |
 | Popover      | Escape          | Closes, focus returns to the trigger. Tab may leave it (non-modal)                        |
 | Tooltip      | Escape          | Hides the tooltip without moving focus (1.4.13)                                           |
+| Tooltip      | Tab             | Keyboard focus on the trigger opens it at once. Focus never moves into it                 |
 
 ## Composite widgets (one Tab stop, roving tabindex unless stated)
 

@@ -43,7 +43,8 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Switch                                                                                                              | Switch                        | 1   | planned                                    |
 | Disclosure, Accordion                                                                                               | Disclosure, Accordion         | 1   | planned                                    |
 | Dialog, AlertDialog                                                                                                 | Dialog (Modal), Alert Dialog  | 2   | planned                                    |
-| Popover (alpha candidate), Tooltip                                                                                  | –, Tooltip                    | 2   | in progress                                |
+| Popover (alpha candidate)                                                                                           | –                             | 2   | in progress                                |
+| Tooltip (name and shortcut on hover and keyboard focus, never on touch; Plan 0037)                                  | Tooltip                       | 2   | alpha                                      |
 | Menu, MenuButton                                                                                                    | Menu Button                   | 2   | planned                                    |
 | Tabs                                                                                                                | Tabs                          | 2   | planned                                    |
 | Listbox (alpha candidate: native and popup rendering)                                                               | Select-Only Combobox, Listbox | 2   | in progress                                |

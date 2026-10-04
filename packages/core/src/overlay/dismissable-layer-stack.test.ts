@@ -167,6 +167,39 @@ describe('createDismissableLayerStack: outside press', () => {
   })
 })
 
+describe('createDismissableLayerStack: layers that pass outside presses through', () => {
+  const contains = containsFrom({})
+
+  test('a press goes to the layer below a see-through top layer', () => {
+    const stack = createDismissableLayerStack()
+    stack.push('popover')
+    stack.push('tooltip', { dismissOnOutsidePress: false, passOutsidePressThrough: true })
+    expect(stack.handleOutsidePress('page', contains)).toBe('popover')
+  })
+
+  test('a press inside the layer below is not outside it', () => {
+    const stack = createDismissableLayerStack()
+    stack.push('popover')
+    stack.push('tooltip', { passOutsidePressThrough: true })
+    const insidePopover = containsFrom({ popover: ['trigger'] })
+    expect(stack.handleOutsidePress('trigger', insidePopover)).toBeUndefined()
+  })
+
+  test('Escape still goes to the see-through layer first', () => {
+    const stack = createDismissableLayerStack()
+    stack.push('popover')
+    stack.push('tooltip', { passOutsidePressThrough: true })
+    expect(stack.handleEscape()).toBe('tooltip')
+  })
+
+  test('a modal layer that only opts out of presses still shields the layers below', () => {
+    const stack = createDismissableLayerStack()
+    stack.push('popover')
+    stack.push('dialog', { dismissOnOutsidePress: false })
+    expect(stack.handleOutsidePress('page', contains)).toBeUndefined()
+  })
+})
+
 describe('createDismissableLayerStack: ignore predicates', () => {
   const contains = containsFrom({ listbox: ['option'] })
   const isInput = (target: unknown) => target === 'input'

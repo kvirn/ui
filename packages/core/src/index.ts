@@ -276,3 +276,19 @@ export type {
 } from './table/table-exports.ts'
 export { getRovingTarget } from './roving-focus/get-roving-target.ts'
 export type { RovingOrientation, RovingTargetInput } from './roving-focus/get-roving-target.ts'
+export {
+  createTooltipGroup,
+  createTooltipMachine,
+  defaultTooltipCloseDelay,
+  defaultTooltipDelay,
+  defaultTooltipSkipDelay,
+  getTooltipGroup,
+} from './tooltip/tooltip-machine.ts'
+export type {
+  TooltipChangeReason,
+  TooltipGroup,
+  TooltipGroupOptions,
+  TooltipMachine,
+  TooltipMachineOptions,
+  TooltipTimers,
+} from './tooltip/tooltip-machine.ts'
