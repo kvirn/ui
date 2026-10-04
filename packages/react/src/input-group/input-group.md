@@ -6,8 +6,8 @@
 
 An InputGroup puts a unit, a symbol, a decorative icon or a Button **inside the input's box**: "kr" after a rent, "%" after a percentage, a search icon before a query, a "Rensa" Button after it.
 
-- Three parts: `InputGroup.Root` (`<div>`, the box), `InputGroup.Input` (the `Input`, laid out by the box) and `InputGroup.Addon` (`<span>`, a unit or an icon). Each is also exported on its own (`InputGroupRoot`, `InputGroupInput`, `InputGroupAddon`), which is the form to import in a React Server Component, and the hook is `useInputGroup`.
-- The Root looks exactly like an Input: same height, edge, radius, fill and states. It takes `data-invalid` and `data-disabled` from the nearest Field, and `data-focus-visible` while the Input has keyboard focus, so the focus ring goes around the whole box. The Input inside has no edge or ring of its own.
+- Three parts: `InputGroup.Root` (`<div>`, the box), `InputGroup.Input` (a `TextInput`, laid out by the box) and `InputGroup.Addon` (`<span>`, a unit or an icon). Each is also exported on its own (`InputGroupRoot`, `InputGroupInput`, `InputGroupAddon`), which is the form to import in a React Server Component, and the hook is `useInputGroup`.
+- The Root looks exactly like a TextInput: same height, edge, radius, fill and states. It takes `data-invalid` and `data-disabled` from the nearest Field, and `data-focus-visible` while the Input has keyboard focus, so the focus ring goes around the whole box. The Input inside has no edge or ring of its own.
 - **Addons are visual only.** `aria-hidden="true"`, never focusable, and never the only place a meaning lives: the label says the unit.
 - **Start and end follow DOM order and reading direction.** An Addon before the Input is at the start, and it moves to the right in right-to-left. There's no `side` prop.
 - Clicking an Addon, or the box's padding, focuses the Input, so the whole box is one target.

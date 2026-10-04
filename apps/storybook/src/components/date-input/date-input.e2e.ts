@@ -15,7 +15,7 @@ const storyUrl = (story: string, globals?: string) =>
 
 async function openStory(page: Page, story: string, globals?: string) {
   await page.goto(storyUrl(story, globals))
-  // The one-field stories are a single masked Input, with no DateInput boxes.
+  // The one-field stories are a single masked TextInput, with no DateInput boxes.
   await expect(page.locator('.kv-date-input, .kv-input').first()).toBeVisible()
   if (globals !== undefined) {
     // The theme store resolved the selected theme onto <html>.

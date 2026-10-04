@@ -20,7 +20,7 @@ import type {
 } from 'react'
 import { FieldContext } from '../field/field-context.ts'
 import { useFocusVisible } from '../focus-visible/use-focus-visible.ts'
-import type { InputChangeDetails } from '../input/use-input.ts'
+import type { TextInputChangeDetails } from '../text-input/use-text-input.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { useMask } from '../mask/use-mask.ts'
 
@@ -41,7 +41,7 @@ export interface UseOneTimeCodeOptions {
    * Called with the masked value on every change, with `{ reason: 'input', event }` and the mask
    * details: `unmaskedValue`, `isComplete` and `rejected`. It only reports.
    */
-  onValueChange?: ((value: string, details: InputChangeDetails) => void) | undefined
+  onValueChange?: ((value: string, details: TextInputChangeDetails) => void) | undefined
   /**
    * Called with the code when a change leaves it complete and different from before: typing the
    * last character, a paste, an autofill. `value` is what the input holds (`ABCD-1234`) and
@@ -287,7 +287,7 @@ export function useOneTimeCode({
   }, [])
 
   const handleValueChange = useCallback(
-    (nextValue: string, details: InputChangeDetails) => {
+    (nextValue: string, details: TextInputChangeDetails) => {
       setShownValue(nextValue)
       updateFocusAndSelection(readSelection(details.event.currentTarget))
       const before = previousValue.current
@@ -375,7 +375,7 @@ export function useOneTimeCode({
     autoComplete: 'one-time-code',
     spellCheck: false,
     autoCorrect: 'off',
-    // The pattern decides: the mask suggests, the same as for an Input.
+    // The pattern decides: the mask suggests, the same as for a TextInput.
     ...(mask.attributes.inputMode === 'numeric' ? { inputMode: 'numeric' } : {}),
     ...(mask.attributes.autoCapitalize === 'characters' ? { autoCapitalize: 'characters' } : {}),
     dir: 'ltr',

@@ -10,7 +10,7 @@ import { render } from 'vitest-browser-react'
 import { Button } from '../button/button.tsx'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
-import { Input } from '../input/input.tsx'
+import { TextInput } from '../text-input/text-input.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { InputGroup, InputGroupAddon, InputGroupRoot } from './input-group.tsx'
 import type { InputGroupAddonProps, InputGroupRootProps, InputGroupState } from './input-group.tsx'
@@ -48,7 +48,7 @@ function RentField({
     <Field.Root required invalid={invalid} disabled={disabled}>
       <Field.Label>Månadshyra i kronor</Field.Label>
       <InputGroup.Root data-testid="root">
-        <Input name="rent" inputMode="decimal" className="kv-input--width-10" />
+        <TextInput name="rent" inputMode="decimal" className="kv-input--width-10" />
         <InputGroup.Addon data-testid="addon">kr</InputGroup.Addon>
       </InputGroup.Root>
       <Field.Prose>Till exempel 8450</Field.Prose>
@@ -68,7 +68,7 @@ function SearchField({ onClear }: { onClear?: () => void }) {
           <InputGroup.Addon data-testid="addon">
             <svg viewBox="0 0 8 8" focusable="false" />
           </InputGroup.Addon>
-          <Input type="search" value={value} onValueChange={setValue} />
+          <TextInput type="search" value={value} onValueChange={setValue} />
           <Button
             onClick={() => {
               onClear?.()
@@ -115,7 +115,7 @@ describe('rendering', () => {
         <Field.Label marker="none">Belopp</Field.Label>
         <InputGroup.Root data-testid="root">
           <InputGroup.Addon>€</InputGroup.Addon>
-          <Input />
+          <TextInput />
           <InputGroup.Addon>,00</InputGroup.Addon>
         </InputGroup.Root>
       </Field.Root>,
@@ -128,7 +128,7 @@ describe('rendering', () => {
   test('works without a Field: the Input is named by its own aria-label', async () => {
     const { container } = await render(
       <InputGroup.Root>
-        <Input aria-label="Månadshyra i kronor" />
+        <TextInput aria-label="Månadshyra i kronor" />
         <InputGroup.Addon>kr</InputGroup.Addon>
       </InputGroup.Root>,
     )
@@ -218,7 +218,7 @@ describe('field state on the Root', () => {
         <Field.Label marker="none">Belopp</Field.Label>
         <Field.ErrorMessage>Ange ett belopp</Field.ErrorMessage>
         <InputGroup.Root data-testid="root" invalid={false} disabled>
-          <Input />
+          <TextInput />
         </InputGroup.Root>
       </Field.Root>,
     )
@@ -240,7 +240,7 @@ describe('field state on the Root', () => {
             return <div {...partProps} data-egen="" />
           }}
         >
-          <Input />
+          <TextInput />
           <InputGroup.Addon
             render={(partProps, state) => {
               seenByAddon.push(state)
@@ -296,7 +296,7 @@ describe('clicking an Addon focuses the Input', () => {
       <Field.Root>
         <Field.Label marker="none">Belopp</Field.Label>
         <InputGroup.Root disabled>
-          <Input />
+          <TextInput />
           <InputGroup.Addon data-testid="addon">kr</InputGroup.Addon>
         </InputGroup.Root>
         <button type="button">Efter</button>
@@ -411,7 +411,7 @@ describe('keyboard (contract rows)', () => {
         <Field.Root>
           <Field.Label marker="none">Belopp</Field.Label>
           <InputGroup.Root>
-            <Input defaultValue="8450" />
+            <TextInput defaultValue="8450" />
             <InputGroup.Addon>kr</InputGroup.Addon>
           </InputGroup.Root>
         </Field.Root>
@@ -434,7 +434,7 @@ describe('dev warnings', () => {
       <Field.Root>
         <Field.Label marker="none">Belopp</Field.Label>
         <InputGroup.Root>
-          <Input />
+          <TextInput />
           <InputGroup.Addon>
             <button type="button">Rensa</button>
           </InputGroup.Addon>
@@ -479,7 +479,7 @@ describe('render and refs', () => {
           data-testid="root"
           onMouseDown={onMouseDown}
         >
-          <Input />
+          <TextInput />
           <InputGroup.Addon ref={addonRef} className="egen-enhet" data-testid="addon">
             kr
           </InputGroup.Addon>
@@ -507,7 +507,7 @@ describe('render and refs', () => {
             event.preventDefault()
           }}
         >
-          <Input />
+          <TextInput />
           <InputGroup.Addon data-testid="addon">kr</InputGroup.Addon>
         </InputGroup.Root>
       </Field.Root>,
@@ -521,7 +521,7 @@ describe('render and refs', () => {
       <Field.Root>
         <Field.Label marker="none">Belopp</Field.Label>
         <InputGroup.Root render={<section data-testid="root" />}>
-          <Input />
+          <TextInput />
           <InputGroup.Addon render={<abbr data-testid="addon" />}>kr</InputGroup.Addon>
         </InputGroup.Root>
       </Field.Root>,
@@ -539,7 +539,7 @@ describe('useInputGroup', () => {
       <Field.Root>
         <Field.Label marker="none">Belopp</Field.Label>
         <div {...group.rootProps} data-testid="root">
-          <Input />
+          <TextInput />
           <span {...group.addonProps} data-testid="addon">
             kr
           </span>

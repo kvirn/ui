@@ -29,6 +29,7 @@ export const nb = {
         other: 'Du kan ikke skrive det tegnet her.',
       })[allowed],
     maximumLength: ({ length }) => `Du har skrevet alle ${length} tegnene.`,
+    maximumDecimals: 'Du kan ikke skrive flere desimaler.',
   },
   fileUpload: {
     chooseFiles: 'Velg filer',

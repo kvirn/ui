@@ -29,7 +29,7 @@ export function warnAnnouncerMissing(): void {
 
 /**
  * Internal. `useAnnouncer` without the warning, for a component that announces only sometimes
- * (a masked Input): it warns with `warnAnnouncerMissing` when it actually has something to say.
+ * (a masked TextInput): it warns with `warnAnnouncerMissing` when it actually has something to say.
  */
 export function useQuietAnnouncer(): UseAnnouncerResult & { isAvailable: boolean } {
   const announcer = useContext(AnnouncerContext)

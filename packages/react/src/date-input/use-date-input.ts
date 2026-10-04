@@ -120,7 +120,7 @@ const autoCompleteTokens = {
  *     {dateInput.order.map((part) => (
  *       <Field.Root key={part} {...dateInput.getBoxProps(part)}>
  *         <Field.Label>{dateInput.labels[part]}</Field.Label>
- *         <Input {...dateInput.getInputProps(part)} />
+ *         <TextInput {...dateInput.getInputProps(part)} />
  *       </Field.Root>
  *     ))}
  *   </div>

@@ -1,4 +1,4 @@
-import { Field, Fieldset, Input } from '@kvirn-ui/react'
+import { Field, Fieldset, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
@@ -36,7 +36,7 @@ const meta = {
     return (
       <Field.Root required invalid lang={lang}>
         <Field.Label>{text.name}</Field.Label>
-        <Input name="name" autoComplete="name" />
+        <TextInput name="name" autoComplete="name" />
         <Field.ErrorMessage {...args}>{text.nameError}</Field.ErrorMessage>
       </Field.Root>
     )
@@ -77,7 +77,7 @@ export const NotInvalid: Story = {
     return (
       <Field.Root required lang={lang}>
         <Field.Label>{text.name}</Field.Label>
-        <Input name="name" autoComplete="name" />
+        <TextInput name="name" autoComplete="name" />
         <Field.ErrorMessage {...args}>{text.nameError}</Field.ErrorMessage>
       </Field.Root>
     )
@@ -103,7 +103,7 @@ export const InFieldset: Story = {
         </Fieldset.Prose>
         <Field.Root required>
           <Field.Label>{text.street}</Field.Label>
-          <Input name="street" autoComplete="street-address" />
+          <TextInput name="street" autoComplete="street-address" />
         </Field.Root>
         <Fieldset.ErrorMessage {...args}>{text.addressError}</Fieldset.ErrorMessage>
       </Fieldset.Root>
@@ -131,7 +131,7 @@ export const UnderHint: Story = {
     return (
       <Field.Root required invalid lang={lang}>
         <Field.Label>{text.registration}</Field.Label>
-        <Input name="registration" className="kv-input--width-10" defaultValue="AB 1" />
+        <TextInput name="registration" className="kv-input--width-10" defaultValue="AB 1" />
         <Field.Hint>{text.registrationHint}</Field.Hint>
         <Field.ErrorMessage {...args}>{text.registrationError}</Field.ErrorMessage>
       </Field.Root>
@@ -160,7 +160,7 @@ export const LongMessage: Story = {
       <div className="kv-story-narrow" data-testid="narrow">
         <Field.Root required invalid lang={lang}>
           <Field.Label>{text.email}</Field.Label>
-          <Input name="email" type="email" autoComplete="email" defaultValue="anna@" />
+          <TextInput name="email" type="email" autoComplete="email" defaultValue="anna@" />
           <Field.ErrorMessage {...args}>{text.emailError}</Field.ErrorMessage>
         </Field.Root>
       </div>
@@ -181,7 +181,7 @@ export const Compact: Story = {
       <div className="kv-compact" lang={lang}>
         <Field.Root required invalid>
           <Field.Label>{text.name}</Field.Label>
-          <Input name="name" autoComplete="name" />
+          <TextInput name="name" autoComplete="name" />
           <Field.ErrorMessage {...args} data-testid="error">
             {text.nameError}
           </Field.ErrorMessage>

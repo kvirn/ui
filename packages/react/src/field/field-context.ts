@@ -16,7 +16,7 @@ import type {
 // - FieldTextHostContext: the nearest Field or Fieldset. A Prose (its description, see
 //   useDescriptionPart) and the ErrorMessage attach to it, and tell it when they mount, so
 //   `aria-describedby` only lists parts that exist.
-// - FieldContext: the nearest Field. Label and the control (Input and, later, Checkbox) read it.
+// - FieldContext: the nearest Field. Label and the control (TextInput and, later, Checkbox) read it.
 // - FieldGroupContext: `true` inside a group fieldset (a CheckboxGroup, a RadioGroup, a date
 //   input). A Field in it defaults to `marker="none"`. A Fieldset's `invalid` is never put on
 //   FieldContext, so it doesn't cascade to the Fields inside it.

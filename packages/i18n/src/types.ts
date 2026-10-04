@@ -114,6 +114,12 @@ export interface KvirnMessages {
      * `Du har skrivit alla 12 tecken.` `length` counts the characters without separators.
      */
     maximumLength: MessageFunction<{ length: number }>
+    /**
+     * Announced when a number mask refused a digit because the number already has all the
+     * decimals it takes, for example `Du kan inte skriva fler decimaler.` It has no count: the
+     * hint says how many.
+     */
+    maximumDecimals: TextMessage
   }
   /**
    * Every visible, named and announced string of FileUpload (Plan 0021, design spec

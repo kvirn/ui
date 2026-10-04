@@ -60,33 +60,33 @@ Hooks `useField` and `useFieldset` return the props. The components (`Field`, `L
 
 ## Text inputs, numbers and dates
 
-- **`Input` accepts** `text`, `email`, `tel`, `url`, `password` and `search`. `type="number"` and `type="date"` warn.
-- **Numbers are text:** `type="text"`, `inputMode="numeric"` or `"decimal"`, `autoComplete` where one applies, `spellCheck={false}`. The form validates ranges. Examples and stories add a mask (`masks.number()` for quantities, `masks.digits()` or a preset for codes that keep leading zeros), so letters are left out and announced. `Input` itself never adds one. A mask that allows a minus sign asks for the text keypad, because iOS numeric pads have no minus.
+- **`TextInput` accepts** `text`, `email`, `tel`, `url`, `password` and `search`. `type="number"` and `type="date"` warn.
+- **Numbers are text:** a quantity or an amount is a `NumberInput` (Plan 0033): a text box (`type="text"`, never `type="number"`, never a spinbutton) with `masks.number()` built in, in the provider's locale, so letters are left out and announced. Its props are `decimals`, `allowNegative`, `grouping`, `min` and `max`; `inputMode` follows them (`numeric`, `decimal`, or `text` when negatives are allowed, because iOS numeric pads have no minus) and `spellCheck` is `false`. `min` and `max` are reported as `details.isWithinRange`, never enforced and never written as attributes. A whole number needs no format hint, but `decimals` above 0 does (`number-input-decimals-without-hint`). ArrowUp and ArrowDown never step the value. **A code that keeps its leading zeros** (a postcode, a case number, a personal identity number) is a `TextInput` with a mask (`masks.digits()`, `masks.postalCode()`), never a NumberInput. Set `autoComplete` where one applies. `TextInput` itself never adds a mask.
 - **Dates are three text fields,** day, month and year, each a Field with a visible label inside a group Fieldset. `DateInput.Root` (a `div`, `kv-date-input`) holds `DateInput.Day`, `.Month` and `.Year`, and goes inside a `Fieldset.Root` with a legend, then the boxes, a `Fieldset.Hint` under them and a `Fieldset.ErrorMessage`. `autoComplete="bday"` on the Root gives `bday-day`, `bday-month` and `bday-year`, for a date of birth only (1.3.5). The consumer validates, and the value (`{ year, month, day }`, strings) is never parsed, padded or cut.
   - **The order follows the region through `Intl`:** `sv-SE` is year, month, day; `sv-FI`, `fi`, `nb` and `en-GB` are day, month, year; a result that starts with the month (`en`, `en-US`) becomes day, month, year. A Root without children renders the boxes in that order and `useDateInput().order` exposes it. The consumer's own children are the order they write. The hint is the consumer's, with an example in the order of the boxes (read `useDateInput().order`): there is no `dateInput.example` message.
-  - **Three Tab stops, no auto-advance, no arrow-key stepping,** and the boxes are plain `Input`s with `inputMode="numeric"`, `spellCheck={false}` and no `maxlength` or `pattern`.
+  - **Three Tab stops, no auto-advance, no arrow-key stepping,** and the boxes are plain `TextInput`s with `inputMode="numeric"`, `spellCheck={false}` and no `maxlength` or `pattern`.
   - **`invalid` is per box:** a box with `invalid` (or in the Root's `invalidParts`) gets `aria-invalid` and `data-invalid` on its input, label and field, set by the box itself and not by an invalid Field, so a box expects no `ErrorMessage`. The date has one message, the Fieldset's. `required` and `disabled` default to the Fieldset's, and `name` is a prefix (`birth-day`).
-- **One field is an option:** `Input` with `masks.date()` inside a Field with a label and a `Field.Hint` with an example in the locale's form, built with the field's own mask (`mask.withLocale(locale).format(iso)`) and with a day above 12 so the order shows (`kv-input--width-10`). The order and separator follow the locale (`withLocale`, like a number mask); `unmaskedValue` is the padded ISO date once complete, and `checks.date(iso, { min?, max? })` reports `format`, `date` or `range`. A separator typed after a day or month closes it (`4.10.2026`), a pasted ISO date or eight digits is reformatted, and the mask checks the shape only. Use it for dates read off a document and as the DatePicker's text field. A date of birth stays three boxes (`bday`, 1.3.5).
+- **One field is an option:** `TextInput` with `masks.date()` inside a Field with a label and a `Field.Hint` with an example in the locale's form, built with the field's own mask (`mask.withLocale(locale).format(iso)`) and with a day above 12 so the order shows (`kv-input--width-10`). The order and separator follow the locale (`withLocale`, like a number mask); `unmaskedValue` is the padded ISO date once complete, and `checks.date(iso, { min?, max? })` reports `format`, `date` or `range`. A separator typed after a day or month closes it (`4.10.2026`), a pasted ISO date or eight digits is reformatted, and the mask checks the shape only. Use it for dates read off a document and as the DatePicker's text field. A date of birth stays three boxes (`bday`, 1.3.5).
 - **A calendar DatePicker** is a later component and also accepts typed input, through `masks.date()`.
 
 ## InputGroup
 
-`InputGroup.Root` (a `div`, `kv-input-group`) carries the input's box: border, radius, invalid and disabled state, and the focus ring when its Input has keyboard focus (`data-focus-visible`).
+`InputGroup.Root` (a `div`, `kv-input-group`) carries the input's box: border, radius, invalid and disabled state, and the focus ring when its TextInput has keyboard focus (`data-focus-visible`).
 
 - **`InputGroup.Addon`** (a `span`, `kv-input-group-addon`) holds a short unit or a decorative Icon. It is `aria-hidden`, never focusable, and never the only place meaning lives: the label names the unit. It warns if it contains focusable content.
 - **Start and end follow DOM order** and the reading direction. There is no `side` prop.
-- **A pointer press on an Addon or the box's padding focuses the Input.**
+- **A pointer press on an Addon or the box's padding focuses the TextInput.**
 - **An interactive add-on** (clear, show password) is a real `Button` placed directly in the Root, with its own name and Tab stop.
 - State: `data-invalid`, `data-disabled`, `data-focus-visible`. It takes `invalid` and `disabled` from the Field.
 
 ## Masks
 
-A mask shapes what the user types into a native input. The engine is pure, in `core/src/mask/`. `Input` takes `mask`, and `useMask({ mask, onValueChange })` serves your own `<input>` (`mergeProps(mask.inputProps, ownProps)`). Details, presets and checks: [references/masks.md](references/masks.md).
+A mask shapes what the user types into a native input. The engine is pure, in `core/src/mask/`. `TextInput` takes `mask`, and `useMask({ mask, onValueChange })` serves your own `<input>` (`mergeProps(mask.inputProps, ownProps)`). Details, presets and checks: [references/masks.md](references/masks.md).
 
-- **Lenient, never silent.** Checksums and ranges are reported, never enforced. A rejected character is reported in `details.rejected` and announced politely, throttled (`mask.characterNotAllowed` or `mask.maximumLength`). `announceRejections={false}` turns it off. Announcing needs a `KvirnProvider`.
+- **Lenient, never silent.** Checksums and ranges are reported, never enforced. A rejected character is reported in `details.rejected` and announced politely, throttled (`mask.characterNotAllowed`, `mask.maximumLength`, or `mask.maximumDecimals` for a number past its decimals). `announceRejections={false}` turns it off. Announcing needs a `KvirnProvider`.
 - **The input stays native:** no placeholder characters in the value, no native `maxlength` or `pattern`, paste, drop, autofill and dictation are normalised, and undo keeps working because the value is written back only when the mask changed it.
 - **Never rewrite during IME composition.** `onChange` reports the raw value then, and the mask applies once at `compositionend`.
-- **A masked Input in a Field without a hint warns (3.3.2).** The mask does not explain the format: say it in a `Field.Hint` under the control, with an example. Any registered description (a `Field.Hint` or a `Field.Prose`, above or under the Input) counts, so the warning clears when one renders.
+- **A masked TextInput in a Field without a hint warns (3.3.2).** The mask does not explain the format: say it in a `Field.Hint` under the control, with an example. Any registered description (a `Field.Hint` or a `Field.Prose`, above or under the TextInput) counts, so the warning clears when one renders.
 - **Presets never set `autocomplete`;** the right token depends on the question. They suggest `inputMode`, `autoCapitalize`, `spellCheck={false}` and, for identifiers, `dir="ltr"`. The consumer's props win.
 
 ## OneTimeCode
@@ -118,7 +118,7 @@ A native `<input type="file">` is always present and always works. Parts, status
 
 - The label, the description (a `Prose`), the hint (`Field.Hint`) and the error text are separate components, and no form state is built in.
 - Order: label, description, control, hint, then the error (the maintainer's rule of 2026-10-04: "a hint is a hint, 14px, always under the input; a Prose above the input is a description"). Icons and add-ons sit inside the input's box.
-- `type="number"` is left out of `Input`.
+- `type="number"` is left out of `TextInput`.
 - Masks are in-house, with zero dependencies, modelled on iMask and Alpine's Mask plugin.
 - OneTimeCode takes a `pattern` with the symbols `9`, `*`, `a`, `A`, `&` and `-`, not a length.
 - FileUpload offers preview, metadata, multiple files, a type restriction, a file-count limit and upload progress.

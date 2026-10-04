@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
-import { Button, Card, Field, Fieldset, Input, Link, Section } from '@kvirn-ui/react'
+import { Button, Card, Field, Fieldset, Link, Section, TextInput } from '@kvirn-ui/react'
 import { textsFor } from '../card/card.fixture.tsx'
 import type { CardFixtureLocale } from '../card/card.fixture.tsx'
 
@@ -238,7 +238,7 @@ export function ContactDetailsFieldset({ locale }: SectionFixtureProps) {
       <Fieldset.Legend>{text.details.legend}</Fieldset.Legend>
       <Field.Root>
         <Field.Label>{text.details.email}</Field.Label>
-        <Input name="email" autoComplete="email" />
+        <TextInput name="email" autoComplete="email" />
       </Field.Root>
     </Fieldset.Root>
   )

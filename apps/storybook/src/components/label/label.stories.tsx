@@ -1,4 +1,4 @@
-import { Field, Input } from '@kvirn-ui/react'
+import { Field, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
@@ -42,7 +42,7 @@ const meta = {
     return (
       <Field.Root required lang={lang}>
         <Field.Label {...args}>{text.name}</Field.Label>
-        <Input name="name" autoComplete="name" />
+        <TextInput name="name" autoComplete="name" />
       </Field.Root>
     )
   },
@@ -80,7 +80,7 @@ export const Optional: Story = {
     return (
       <Field.Root lang={lang}>
         <Field.Label {...args}>{text.phone}</Field.Label>
-        <Input name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
+        <TextInput name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
       </Field.Root>
     )
   },
@@ -101,7 +101,7 @@ export const WithoutMarker: Story = {
     return (
       <Field.Root lang={lang}>
         <Field.Label {...args}>{text.search}</Field.Label>
-        <Input name="search" type="search" />
+        <TextInput name="search" type="search" />
       </Field.Root>
     )
   },
@@ -120,7 +120,7 @@ export const AsPageHeading: Story = {
         <h1>
           <Field.Label className="kv-field-label--heading">{text.nameQuestion}</Field.Label>
         </h1>
-        <Input name="name" autoComplete="name" />
+        <TextInput name="name" autoComplete="name" />
       </Field.Root>
     )
   },
@@ -139,7 +139,7 @@ export const LongFinnish: Story = {
       <div className="kv-story-narrow" data-testid="narrow">
         <Field.Root required lang={lang}>
           <Field.Label>{text.longLabel}</Field.Label>
-          <Input name="reference" inputMode="numeric" spellCheck={false} />
+          <TextInput name="reference" inputMode="numeric" spellCheck={false} />
         </Field.Root>
       </div>
     )
@@ -160,7 +160,7 @@ export const Compact: Story = {
       <div className="kv-compact" lang={lang}>
         <Field.Root required>
           <Field.Label>{text.name}</Field.Label>
-          <Input name="name" autoComplete="name" />
+          <TextInput name="name" autoComplete="name" />
         </Field.Root>
       </div>
     )

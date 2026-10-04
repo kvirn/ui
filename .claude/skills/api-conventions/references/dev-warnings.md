@@ -20,32 +20,33 @@ Each is a `warnOnce` call (see SKILL.md, Developer warnings). Format of the key 
 
 ## Missing accessible name or text
 
-| Where                                  | Fires when                                                                                                                |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `Button`                               | the only content is hidden from assistive technology (a decorative `Icon`)                                                |
-| `Input`, `Checkbox` and other controls | no label, `aria-label`, `aria-labelledby` or `title`. The text differs inside a Field (add `Field.Label`) and outside one |
-| `OneTimeCode.Input`                    | no accessible name                                                                                                        |
-| `Link`                                 | `target="_blank"` and no `Link.NewTabNotice` inside (once per link text)                                                  |
-| `FileUpload.Trigger`                   | no element with the `triggerTextId`, so the name does not start with the visible text (2.5.3)                             |
-| `Field` / `Fieldset`                   | `invalid` and no `ErrorMessage` rendered (3.3.1, 3.3.3), checked in a layout effect                                       |
-| `Field` / `Fieldset`                   | two `ErrorMessage`s (they share one id)                                                                                   |
-| masked `Input`                         | in a Field with no hint or description (3.3.2). Any `Field.Hint` or `Field.Prose` clears it                               |
-| `OneTimeCode.Input`                    | in a Field with no hint                                                                                                   |
-| `FileUpload`                           | `accept`, `maxFiles` or `maxFileSize` set and no `FileUpload.Limits` or hint; or outside a Field                          |
+| Where                                      | Fires when                                                                                                                |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `Button`                                   | the only content is hidden from assistive technology (a decorative `Icon`)                                                |
+| `TextInput`, `Checkbox` and other controls | no label, `aria-label`, `aria-labelledby` or `title`. The text differs inside a Field (add `Field.Label`) and outside one |
+| `OneTimeCode.Input`                        | no accessible name                                                                                                        |
+| `Link`                                     | `target="_blank"` and no `Link.NewTabNotice` inside (once per link text)                                                  |
+| `FileUpload.Trigger`                       | no element with the `triggerTextId`, so the name does not start with the visible text (2.5.3)                             |
+| `Field` / `Fieldset`                       | `invalid` and no `ErrorMessage` rendered (3.3.1, 3.3.3), checked in a layout effect                                       |
+| `Field` / `Fieldset`                       | two `ErrorMessage`s (they share one id)                                                                                   |
+| masked `TextInput`                         | in a Field with no hint or description (3.3.2). Any `Field.Hint` or `Field.Prose` clears it                               |
+| `OneTimeCode.Input`                        | in a Field with no hint                                                                                                   |
+| `FileUpload`                               | `accept`, `maxFiles` or `maxFileSize` set and no `FileUpload.Limits` or hint; or outside a Field                          |
 
 ## Wrong props or values
 
-| Where                                        | Fires when                                                                                                               |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `mergeProps`                                 | two different `id`s                                                                                                      |
-| `Input`                                      | `type="number"` or `type="date"`. The date text says "Use DateInput", which does not exist yet                           |
-| `Input`, `OneTimeCode.Input`, other controls | an `id` inside a Field (ignored: use `controlId` on the Field)                                                           |
-| `Input`                                      | a mask other than `masks.email()` on `type="email"` (no caret restore is possible)                                       |
-| `OneTimeCode.Root`                           | fewer `OneTimeCode.Slot`s than pattern positions                                                                         |
-| `InputGroup.Addon`                           | contains focusable content                                                                                               |
-| messages                                     | an empty override (falls through); a missing translation for a non-`en` locale                                           |
-| `Announcer` use                              | no `KvirnProvider`: `useAnnouncer` warns once and does nothing; a mask without one warns on the first refused character  |
-| `FileUpload`                                 | the browser cannot set the native input's `files` through `DataTransfer`; `Trigger` activated with no `FileUpload.Input` |
+| Where                                            | Fires when                                                                                                               |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| `mergeProps`                                     | two different `id`s                                                                                                      |
+| `TextInput`                                      | `type="number"` or `type="date"`. The number text says "Use NumberInput", the date text "Use DateInput"                  |
+| `TextInput`, `OneTimeCode.Input`, other controls | an `id` inside a Field (ignored: use `controlId` on the Field)                                                           |
+| `TextInput`                                      | a mask other than `masks.email()` on `type="email"` (no caret restore is possible)                                       |
+| `NumberInput`                                    | no accessible name; an `id` inside a Field; `decimals` above 0 in a Field with no hint (`number-input-*`; a whole number needs no hint) |
+| `OneTimeCode.Root`                               | fewer `OneTimeCode.Slot`s than pattern positions                                                                         |
+| `InputGroup.Addon`                               | contains focusable content                                                                                               |
+| messages                                         | an empty override (falls through); a missing translation for a non-`en` locale                                           |
+| `Announcer` use                                  | no `KvirnProvider`: `useAnnouncer` warns once and does nothing; a mask without one warns on the first refused character  |
+| `FileUpload`                                     | the browser cannot set the native input's `files` through `DataTransfer`; `Trigger` activated with no `FileUpload.Input` |
 
 ## Throws instead of warns
 

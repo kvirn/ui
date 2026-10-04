@@ -1,6 +1,6 @@
 # Accessibility contract: OneTimeCode (Root, Input, Slot)
 
-- **APG pattern:** none. A one-time code is one native text input. The name, description and state come from HTML and the Field (`field.a11y.md`, `input.a11y.md`), and the masked typing rules from the mask engine. Prior art: GOV.UK "Confirm a phone number" (one input for the code) and `input-otp` (one input with drawn slots).
+- **APG pattern:** none. A one-time code is one native text input. The name, description and state come from HTML and the Field (`field.a11y.md`, `text-input.a11y.md`), and the masked typing rules from the mask engine. Prior art: GOV.UK "Confirm a phone number" (one input for the code) and `input-otp` (one input with drawn slots).
 - **Deviations:** none from APG. Decisions (forms skill): one native input with presentational slots, `data-caret`, `data-selected` and `data-ready`, no auto-advance, no auto-submit, a `pattern` in place of a length with drawn separators, and the mask. Design spec `docs/design/one-time-code.md`.
 - **Native elements used:** `<input type="text">` (Input), `<div>` (Root, no role), `<span aria-hidden="true">` (Slot, and the separator).
 - **Status:** alpha candidate (Plan 0014, Phase 3). Gates pass, accessibility-reviewer APPROVE. Manual AT is `pending`.
@@ -98,7 +98,7 @@ Both are the mask's, throttled to one message per field every three seconds, and
 - **Write the `pattern` the way the message groups the code** (`****-****` for "ABCD-1234", `999999` for "481920"). A pattern that groups a code the message shows ungrouped, or the other way round, makes the user doubt what they see. Letters-and-digits codes should avoid look-alikes (`0`/`O`, `1`/`I`/`l`).
 - **A service that wants the code without the dash** reads `unmaskedValue` (`onValueChange` details, `onComplete`'s second argument), or strips the `-` from the submitted value.
 - **Countdowns, "Send a new code" and timeouts** belong to the login and verification blocks (M4), which must meet 2.2.1: an expiring code never ends the session without warning.
-- Everything in `input.a11y.md` and `field.a11y.md` still applies.
+- Everything in `text-input.a11y.md` and `field.a11y.md` still applies.
 
 ## Visual / modes
 

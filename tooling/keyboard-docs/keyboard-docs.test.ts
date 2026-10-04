@@ -17,12 +17,12 @@ const repositoryRoot = fileURLToPath(new URL('../..', import.meta.url))
 describe('importedContract', () => {
   it('finds the ?raw contract import and resolves it from the stories file', () => {
     const contract = importedContract(
-      '/repo/apps/storybook/src/components/input/input.stories.tsx',
-      `import contract from '../../../../../packages/react/src/input/input.a11y.md?raw'\n`,
+      '/repo/apps/storybook/src/components/text-input/text-input.stories.tsx',
+      `import contract from '../../../../../packages/react/src/text-input/text-input.a11y.md?raw'\n`,
     )
     expect(contract).toEqual({
       name: 'contract',
-      path: '/repo/packages/react/src/input/input.a11y.md',
+      path: '/repo/packages/react/src/text-input/text-input.a11y.md',
     })
   })
 
@@ -39,7 +39,7 @@ describe('Keyboard sections', () => {
     expect(stories).toEqual(
       expect.arrayContaining([
         'apps/storybook/src/components/button/button.stories.tsx',
-        'apps/storybook/src/components/input/input.stories.tsx',
+        'apps/storybook/src/components/text-input/text-input.stories.tsx',
         'apps/storybook/src/components/provider/kvirn-provider.stories.tsx',
       ]),
     )
@@ -47,7 +47,7 @@ describe('Keyboard sections', () => {
     expect(contracts).toEqual(
       expect.arrayContaining([
         'packages/react/src/button/button.a11y.md',
-        'packages/react/src/input/input.a11y.md',
+        'packages/react/src/text-input/text-input.a11y.md',
         'packages/react/src/provider/kvirn-provider.a11y.md',
       ]),
     )

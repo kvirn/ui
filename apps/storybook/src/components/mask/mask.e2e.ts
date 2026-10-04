@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 import type { Locator, Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
 
-// Contract: packages/react/src/input/input.a11y.md › Masked input and Keyboard. One test per
+// Contract: packages/react/src/text-input/text-input.a11y.md › Masked input and Keyboard. One test per
 // row, named after it. The Keyboard story is the fixture: masked fields in a plain form.
 // KvirnUI holds no form state: the fields are uncontrolled, and the form reads them on submit.
 //
@@ -141,7 +141,7 @@ async function compose(
   }, final)
 }
 
-test.describe('Masked Input keyboard contract', () => {
+test.describe('Masked TextInput keyboard contract', () => {
   test('Tab and Shift+Tab move through the masked inputs in DOM order', async ({ page }) => {
     await openStory(page, 'keyboard')
     const order = [
@@ -444,7 +444,7 @@ test.describe('Masked Input keyboard contract', () => {
   })
 })
 
-test.describe('Masked Input focus and modes', () => {
+test.describe('Masked TextInput focus and modes', () => {
   test('a number mask follows the page language: a comma in sv and a point in en', async ({
     page,
   }) => {
@@ -501,7 +501,7 @@ test.describe('Masked Input focus and modes', () => {
   })
 })
 
-test.describe('Masked Input accessibility', () => {
+test.describe('Masked TextInput accessibility', () => {
   test('axe: no violations with a refused character announced', async ({ page }) => {
     await openStory(page, 'keyboard')
     await digits(page).focus()

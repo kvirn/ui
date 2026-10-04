@@ -81,7 +81,7 @@ export function OptionalMarker({ text }: { text: string | undefined }): ReactNod
  *   <Field.Prose>
  *     <p>Vi ringer bara om något är fel.</p>
  *   </Field.Prose>
- *   <Input name="phone" autoComplete="tel" />
+ *   <TextInput name="phone" autoComplete="tel" />
  *   <Field.Hint>Till exempel 070-123 45 67</Field.Hint>
  *   <Field.ErrorMessage>{errors.phone}</Field.ErrorMessage>
  * </Field.Root>
@@ -350,7 +350,7 @@ export const ErrorMessage = FieldErrorMessage
  * <Field.Root required>
  *   <Field.Label>E-postadress</Field.Label>
  *   <Field.Prose><p>Vi skickar beslutet hit.</p></Field.Prose>
- *   <Input name="email" type="email" autoComplete="email" />
+ *   <TextInput name="email" type="email" autoComplete="email" />
  *   <Field.Hint>Till exempel namn@exempel.se</Field.Hint>
  * </Field.Root>
  */

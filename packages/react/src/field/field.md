@@ -19,14 +19,14 @@ A Field joins one control to its label, an optional description (a `Prose`), an 
 ## Component
 
 ```tsx
-import { Field, Input } from '@kvirn-ui/react'
+import { Field, TextInput } from '@kvirn-ui/react'
 
 ;<Field.Root invalid={errors.phone !== undefined}>
   <Field.Label>Telefonnummer</Field.Label>
   <Field.Prose>
     <p>Vi ringer bara om något är fel.</p>
   </Field.Prose>
-  <Input name="phone" type="tel" autoComplete="tel" />
+  <TextInput name="phone" type="tel" autoComplete="tel" />
   <Field.Hint>Till exempel 070-123 45 67</Field.Hint>
   <Field.ErrorMessage>{errors.phone}</Field.ErrorMessage>
 </Field.Root>
@@ -42,7 +42,7 @@ Render the parts in this order: **label, description, control, hint, then the er
   <Field.Prose>
     <p>Det står på registreringsbeviset.</p>
   </Field.Prose>
-  <Input name="registration" className="kv-input--width-10" />
+  <TextInput name="registration" className="kv-input--width-10" />
   <Field.Hint>Till exempel ABC 123</Field.Hint>
   <Field.ErrorMessage>{errors.registration}</Field.ErrorMessage>
 </Field.Root>
@@ -83,10 +83,10 @@ Your part:
 
 ### Classes for the default theme
 
-| Class                                         | On                                        | Sets                                                            |
-| --------------------------------------------- | ----------------------------------------- | --------------------------------------------------------------- |
-| `kv-field-label--heading`                     | Field.Label                               | the label is the page's `h1`: `<h1><Field.Label className="…">` |
-| `kv-input--width-2`, `-4`, `-6`, `-10`, `-20` | Input (see [input.md](../input/input.md)) | a width by expected characters                                  |
+| Class                                         | On                                                           | Sets                                                            |
+| --------------------------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------- |
+| `kv-field-label--heading`                     | Field.Label                                                  | the label is the page's `h1`: `<h1><Field.Label className="…">` |
+| `kv-input--width-2`, `-4`, `-6`, `-10`, `-20` | TextInput (see [text-input.md](../text-input/text-input.md)) | a width by expected characters                                  |
 
 The default theme styles the parts as described in the design spec: labels 16px at weight 500 (14px in `kv-compact`), descriptions (a Prose) 16px and hints (`kv-field-hint`) 14px (`body-small`), both in the text colour and in both densities, errors 16px in `danger`. Errors never go below 16px, and a description or hint is never muted. The size follows the part and never its position. The theme doesn't style `data-invalid` or `data-disabled` on a hint: the attributes are there for your own CSS. A `Prose` under a control used to be 14px and is now 16px: switch it to `Field.Hint`.
 

@@ -2358,7 +2358,7 @@
    * <Field.Root> renders class="kv-field", and its parts kv-field-label, kv-field-optional,
    * kv-field-hint (also <Fieldset.Hint>), kv-field-error-message and kv-field-error-prefix.
    * <Fieldset.Root> renders kv-fieldset and its <legend> kv-fieldset-legend. A description is
-   * a <Field.Prose>: kv-prose. <Input> renders kv-input.
+   * a <Field.Prose>: kv-prose. <TextInput> renders kv-input.
    * <InputGroup.Root> renders kv-input-group, the box around an input and its units, icons or
    * button, and <InputGroup.Addon> renders kv-input-group-addon. KvirnUI holds no form state:
    * the components render what they're given, and the theme styles the state attributes they
@@ -2367,14 +2367,14 @@
    *
    *   kv-field-label--heading, kv-fieldset-legend--heading   the label or legend is the page's
    *                                                          h1: heading-1 type, never compact
-   *   kv-input--width-2, -4, -6, -10, -20                    Input: a width by expected
+   *   kv-input--width-2, -4, -6, -10, -20                    TextInput: a width by expected
    *                                                          characters. Default: full width
-   *   kv-input--numeric                                      Input: tabular figures
+   *   kv-input--numeric                                      TextInput: tabular figures
    *
    *   <Field.Root invalid={error !== undefined} required>
    *     <Field.Label>Postnummer</Field.Label>
    *     <Field.Prose><p>Det står på brevet från kommunen.</p></Field.Prose>
-   *     <Input name="postcode" inputMode="numeric" className="kv-input--width-6" />
+   *     <TextInput name="postcode" inputMode="numeric" className="kv-input--width-6" />
    *     <Field.Hint>Fem siffror, till exempel 00100.</Field.Hint>
    *     <Field.ErrorMessage>{error}</Field.ErrorMessage>
    *   </Field.Root>
@@ -2406,7 +2406,7 @@
    *   <Field.Root>
    *     <Field.Label>Månadshyra i kronor</Field.Label>
    *     <InputGroup.Root>
-   *       <Input name="rent" inputMode="decimal" className="kv-input--width-10" />
+   *       <InputGroup.Input name="rent" inputMode="decimal" className="kv-input--width-10" />
    *       <InputGroup.Addon>kr</InputGroup.Addon>
    *     </InputGroup.Root>
    *   </Field.Root>

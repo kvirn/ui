@@ -5,8 +5,8 @@ import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldGroupContext, FieldTextHostContext } from '../field/field-context.ts'
 import { Field } from '../field/field.tsx'
-import { Input } from '../input/input.tsx'
-import type { InputProps } from '../input/input.tsx'
+import { TextInput } from '../text-input/text-input.tsx'
+import type { TextInputProps } from '../text-input/text-input.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { useMessages } from '../provider/use-messages.ts'
@@ -73,7 +73,7 @@ export interface DateInputRootProps extends Omit<
 }
 
 export interface DateInputBoxProps extends Omit<
-  InputProps,
+  TextInputProps,
   | 'type'
   | 'value'
   | 'defaultValue'
@@ -257,7 +257,7 @@ function DateInputBox({
       <Field.Label {...invalidAttributes}>{dateMessages[part]}</Field.Label>
       {renderPart({
         render: undefined,
-        defaultElement: Input,
+        defaultElement: TextInput,
         // The hook's props first, then the consumer's: class names join and handlers chain.
         partProps: {
           ...mergeProps(

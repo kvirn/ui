@@ -1,12 +1,18 @@
 /**
  * Why the mask dropped a character. The first four say what the field
  * accepts, so the message can be "Only digits can be entered here". `length` means the mask is
- * full.
+ * full, and `decimals` means a number has all the decimals it takes.
  */
-export type MaskRejectionReason = 'digits' | 'letters' | 'lettersAndDigits' | 'other' | 'length'
+export type MaskRejectionReason =
+  | 'digits'
+  | 'letters'
+  | 'lettersAndDigits'
+  | 'other'
+  | 'length'
+  | 'decimals'
 
 /** What a field accepts, as far as a message to the user can tell. */
-export type MaskAllowedCharacters = Exclude<MaskRejectionReason, 'length'>
+export type MaskAllowedCharacters = Exclude<MaskRejectionReason, 'length' | 'decimals'>
 
 /** The characters the mask dropped for one reason. */
 export interface MaskRejection {

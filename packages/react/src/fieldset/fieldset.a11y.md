@@ -37,7 +37,7 @@ Rules, tested in `fieldset.test.tsx`:
 - **Arrows wrap:** n/a
 - **Shortcuts:** none
 
-Fieldset handles no keys and moves no focus. A group's keys come from its controls (`input.a11y.md`, and later the checkbox and radio contracts). Enter, Space, Escape, the arrow keys, Home and End are not handled by Fieldset.
+Fieldset handles no keys and moves no focus. A group's keys come from its controls (`text-input.a11y.md`, and later the checkbox and radio contracts). Enter, Space, Escape, the arrow keys, Home and End are not handled by Fieldset.
 
 | Key             | Context                | Action                                                                                                      | Test                                                                                                                                                    |
 | --------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |

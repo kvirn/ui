@@ -9,7 +9,7 @@ import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
-import { Input } from '../input/input.tsx'
+import { TextInput } from '../text-input/text-input.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import {
   Fieldset,
@@ -82,11 +82,11 @@ function ContactGroup({
       <Fieldset.ErrorMessage>Välj hur vi ska kontakta dig</Fieldset.ErrorMessage>
       <Field.Root>
         <Field.Label>E-post</Field.Label>
-        <Input type="email" autoComplete="email" />
+        <TextInput type="email" autoComplete="email" />
       </Field.Root>
       <Field.Root>
         <Field.Label>Telefon</Field.Label>
-        <Input type="tel" autoComplete="tel" />
+        <TextInput type="tel" autoComplete="tel" />
       </Field.Root>
     </Fieldset.Root>
   )
@@ -250,12 +250,12 @@ describe('wiring: name and description per state', () => {
         <Field.Root invalid>
           <Field.Label>År</Field.Label>
           <Field.ErrorMessage>Ange ett år</Field.ErrorMessage>
-          <Input inputMode="numeric" />
+          <TextInput inputMode="numeric" />
         </Field.Root>
         <Field.Root>
           <Field.Label>Månad</Field.Label>
           <Field.Prose>Siffror</Field.Prose>
-          <Input inputMode="numeric" />
+          <TextInput inputMode="numeric" />
         </Field.Root>
       </Fieldset.Root>,
     )
@@ -298,7 +298,7 @@ describe('focus on submit (accessibility review, Plan 0013)', () => {
             <Fieldset.ErrorMessage>{error}</Fieldset.ErrorMessage>
             <Field.Root>
               <Field.Label>E-post</Field.Label>
-              <Input
+              <TextInput
                 ref={inputRef}
                 type="email"
                 onFocus={(event) => {
@@ -345,7 +345,7 @@ describe('states', () => {
         <Fieldset.ErrorMessage>Ange ett datum</Fieldset.ErrorMessage>
         <Field.Root data-testid="field">
           <Field.Label>Dag</Field.Label>
-          <Input />
+          <TextInput />
         </Field.Root>
       </Fieldset.Root>,
     )
@@ -390,7 +390,7 @@ describe('marker defaults in a group', () => {
         <Fieldset.Legend>Adress</Fieldset.Legend>
         <Field.Root>
           <Field.Label>Gata</Field.Label>
-          <Input />
+          <TextInput />
         </Field.Root>
       </Fieldset.Root>,
     )
@@ -443,7 +443,7 @@ describe('marker defaults in a group', () => {
         <Fieldset.Legend>Kontakt</Fieldset.Legend>
         <Field.Root>
           <Field.Label marker="optional">Telefon</Field.Label>
-          <Input />
+          <TextInput />
         </Field.Root>
       </Fieldset.Root>,
     )
@@ -458,7 +458,7 @@ describe('marker defaults in a group', () => {
           <Fieldset.Legend>Adress</Fieldset.Legend>
           <Field.Root>
             <Field.Label>Gata</Field.Label>
-            <Input />
+            <TextInput />
           </Field.Root>
         </Fieldset.Root>
       </Fieldset.Root>,
@@ -592,7 +592,7 @@ describe('several descriptions', () => {
         <Fieldset.Prose data-testid="format">Gatan och numret.</Fieldset.Prose>
         <Field.Root>
           <Field.Label>Gatuadress</Field.Label>
-          <Input />
+          <TextInput />
         </Field.Root>
         <Fieldset.ErrorMessage>Ange din adress</Fieldset.ErrorMessage>
       </Fieldset.Root>
@@ -737,15 +737,15 @@ describe('Fieldset.Hint (Plan 0029)', () => {
         <Fieldset.Prose data-testid="why">Välj dagen då du var hos oss.</Fieldset.Prose>
         <Field.Root>
           <Field.Label>Dag</Field.Label>
-          <Input inputMode="numeric" />
+          <TextInput inputMode="numeric" />
         </Field.Root>
         <Field.Root>
           <Field.Label>Månad</Field.Label>
-          <Input inputMode="numeric" />
+          <TextInput inputMode="numeric" />
         </Field.Root>
         <Field.Root>
           <Field.Label>År</Field.Label>
-          <Input inputMode="numeric" />
+          <TextInput inputMode="numeric" />
         </Field.Root>
         <Fieldset.Hint data-testid="example">Till exempel 2026-03-27</Fieldset.Hint>
         <Fieldset.ErrorMessage>Skriv ett datum</Fieldset.ErrorMessage>
@@ -785,7 +785,7 @@ describe('Fieldset.Hint (Plan 0029)', () => {
         <Fieldset.Legend>När var besöket?</Fieldset.Legend>
         <Field.Root>
           <Field.Label>Dag</Field.Label>
-          <Input inputMode="numeric" />
+          <TextInput inputMode="numeric" />
           <Field.Hint>Ett eller två tal.</Field.Hint>
         </Field.Root>
         <Fieldset.Hint>Till exempel 2026-03-27</Fieldset.Hint>
@@ -815,7 +815,7 @@ describe('Fieldset.Hint (Plan 0029)', () => {
         <Fieldset.Hint>Till exempel 2026-03-27</Fieldset.Hint>
         <Field.Root>
           <Field.Label>Dag</Field.Label>
-          <Input inputMode="numeric" />
+          <TextInput inputMode="numeric" />
         </Field.Root>
       </Fieldset.Root>,
     )

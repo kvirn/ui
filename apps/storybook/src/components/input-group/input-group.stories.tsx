@@ -7,7 +7,7 @@ import { localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/Form/InputGroup: an Input with a unit, a symbol, a decorative icon or a button
+// Components/Form/InputGroup: a TextInput with a unit, a symbol, a decorative icon or a button
 // inside its box (design spec docs/design/form-fields.md §6.13). InputGroup.Root is
 // the box: it draws the edge, the invalid and disabled state and the focus ring. InputGroup.Addon
 // is a short unit or a decorative icon: `aria-hidden`, never focusable, so the label always

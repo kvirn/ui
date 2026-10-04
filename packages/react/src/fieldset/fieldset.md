@@ -18,7 +18,7 @@ A native `<fieldset>` with a `<legend>`: it groups related questions (an address
 ## Component
 
 ```tsx
-import { Field, Fieldset, Input } from '@kvirn-ui/react'
+import { Field, Fieldset, TextInput } from '@kvirn-ui/react'
 
 ;<Fieldset.Root invalid={errors.address !== undefined}>
   <Fieldset.Legend>Var bor du?</Fieldset.Legend>
@@ -27,11 +27,11 @@ import { Field, Fieldset, Input } from '@kvirn-ui/react'
   </Fieldset.Prose>
   <Field.Root required>
     <Field.Label>Gatuadress</Field.Label>
-    <Input name="street" autoComplete="street-address" />
+    <TextInput name="street" autoComplete="street-address" />
   </Field.Root>
   <Field.Root required>
     <Field.Label>Postnummer</Field.Label>
-    <Input
+    <TextInput
       name="postcode"
       inputMode="numeric"
       spellCheck={false}

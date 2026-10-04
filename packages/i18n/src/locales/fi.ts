@@ -29,6 +29,7 @@ export const fi = {
         other: 'Tätä merkkiä ei voi kirjoittaa tähän.',
       })[allowed],
     maximumLength: ({ length }) => `Olet kirjoittanut kaikki ${length} merkkiä.`,
+    maximumDecimals: 'Desimaaleja ei voi kirjoittaa enempää.',
   },
   fileUpload: {
     chooseFiles: 'Valitse tiedostot',

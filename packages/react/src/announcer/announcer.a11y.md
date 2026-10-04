@@ -106,5 +106,5 @@ What to check by ear: a polite message is read after the current speech, an asse
 - **Language of a message.** The regions inherit the page's `lang`. A message from a nested `KvirnProvider` with another locale is read with the page's voice. Fix later with a per-message `lang`.
 - **Modals silence the regions (4.1.3).** The regions sit in the app tree after the provider's children. A modal that makes the rest of the page inert or hidden (native `<dialog>` `showModal()`, `inert` on the app root, `aria-modal` in Safari) also silences them, so nothing announced from inside the dialog is heard. Follow-up: the future Dialog hosts its own regions or moves them into the top layer.
 - **Latest wins.** Two messages for the same politeness inside 100 ms: the second replaces the first. There is no queue yet.
-- **Without a provider nothing is announced.** Components that announce (Input masks, Plan 0014) do nothing for screen reader users when no provider is mounted. Follow-up.
+- **Without a provider nothing is announced.** Components that announce (TextInput masks, Plan 0014) do nothing for screen reader users when no provider is mounted. Follow-up.
 - **Nested providers with their own `env`** (an iframe) share the outermost provider's regions, which live in the outer document.

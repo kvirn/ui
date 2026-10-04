@@ -8,7 +8,7 @@ import { page, userEvent } from 'vite-plus/test/browser'
 import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
-import { Input } from '../input/input.tsx'
+import { TextInput } from '../text-input/text-input.tsx'
 import { Prose } from '../prose/prose.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { FieldContext } from './field-context.ts'
@@ -91,7 +91,7 @@ function PhoneField({
       <Field.Label marker={marker}>Telefonnummer</Field.Label>
       {withDescription ? <Field.Prose>Vi ringer bara om något är fel.</Field.Prose> : null}
       <Field.ErrorMessage>Ange ett telefonnummer</Field.ErrorMessage>
-      <Input name="phone" autoComplete="tel" />
+      <TextInput name="phone" autoComplete="tel" />
     </Field.Root>
   )
 }
@@ -109,7 +109,7 @@ describe('rendering', () => {
         <Field.Prose data-testid="description">
           <p>Som i passet.</p>
         </Field.Prose>
-        <Input />
+        <TextInput />
         <Field.Hint data-testid="hint" className="egen">
           Som i passet.
         </Field.Hint>
@@ -139,7 +139,7 @@ describe('rendering', () => {
         <Field.Label ref={labelRef} className="egen-etikett" title="Namnet">
           Namn
         </Field.Label>
-        <Input />
+        <TextInput />
       </Field.Root>,
     )
     expect(rootRef.current).toBe(page.getByTestId('root').element())
@@ -155,7 +155,7 @@ describe('rendering', () => {
           Namn
         </Field.Label>
         <Field.Prose render={<p data-beskrivning="" />}>Som i passet.</Field.Prose>
-        <Input />
+        <TextInput />
       </Field.Root>,
     )
     await expect.element(page.getByText('Namn')).toHaveAttribute('data-egen', '')
@@ -176,7 +176,7 @@ describe('rendering', () => {
           Namn
         </Field.Label>
         <Field.ErrorMessage>Ange ditt namn</Field.ErrorMessage>
-        <Input />
+        <TextInput />
       </Field.Root>,
     )
     await expect.element(page.getByText('Namn')).toHaveAttribute('data-egen', '')
@@ -288,7 +288,7 @@ describe('wiring: name and description per state', () => {
         <Field.Root>
           <Field.Label marker="none">Namn</Field.Label>
           {show ? <Field.Prose>Som i passet.</Field.Prose> : null}
-          <Input />
+          <TextInput />
         </Field.Root>
       )
     }
@@ -333,7 +333,7 @@ describe('wiring: name and description per state', () => {
       <Field.Root controlId="telefon">
         <Field.Label>Telefonnummer</Field.Label>
         <Field.Prose>Vi ringer bara om något är fel.</Field.Prose>
-        <Input />
+        <TextInput />
       </Field.Root>,
     )
     const input = page.getByRole('textbox', { name: 'Telefonnummer (optional)' })
@@ -357,7 +357,7 @@ describe('wiring: name and description per state', () => {
     const { container } = await render(
       <Field.Root controlId="telefon">
         <Field.Label>Telefonnummer</Field.Label>
-        <Input />
+        <TextInput />
         <LabelIdReader />
       </Field.Root>,
     )
@@ -398,7 +398,7 @@ describe('focus on submit (accessibility review, Plan 0013)', () => {
             <Field.Label>Telefonnummer</Field.Label>
             <Field.Prose>Vi ringer bara om något är fel.</Field.Prose>
             <Field.ErrorMessage>{error}</Field.ErrorMessage>
-            <Input
+            <TextInput
               ref={inputRef}
               onFocus={(event) => {
                 describedByAtFocus.push(event.currentTarget.getAttribute('aria-describedby'))
@@ -436,7 +436,7 @@ describe('states', () => {
           <p>Som i passet.</p>
         </Field.Prose>
         <Field.ErrorMessage data-testid="error">Ange ditt namn</Field.ErrorMessage>
-        <Input />
+        <TextInput />
       </Field.Root>,
     )
     const input = page.getByRole('textbox')
@@ -486,7 +486,7 @@ describe('states', () => {
     await render(
       <Field.Root disabled data-testid="root">
         <Field.Label data-testid="label">Namn</Field.Label>
-        <Input />
+        <TextInput />
       </Field.Root>,
     )
     const input = page.getByRole('textbox')
@@ -540,7 +540,7 @@ describe('messages resolution', () => {
         <Field.Root invalid messages={{ optional: '(ej obligatoriskt)', errorPrefix: 'Problem:' }}>
           <Field.Label>Telefonnummer</Field.Label>
           <Field.ErrorMessage>Ange ett telefonnummer</Field.ErrorMessage>
-          <Input />
+          <TextInput />
         </Field.Root>
       </KvirnProvider>,
     )
@@ -553,7 +553,7 @@ describe('messages resolution', () => {
       <KvirnProvider locale="sv-SE" messages={sv}>
         <Field.Root messages={{ optional: ' ' }}>
           <Field.Label>Telefonnummer</Field.Label>
-          <Input />
+          <TextInput />
         </Field.Root>
       </KvirnProvider>,
     )
@@ -594,7 +594,7 @@ describe('parts outside a Field or Fieldset, and invalid without a message', () 
     await render(
       <Field.Root invalid>
         <Field.Label>Namn</Field.Label>
-        <Input />
+        <TextInput />
       </Field.Root>,
     )
     await expect.element(page.getByRole('textbox')).toHaveAttribute('aria-invalid', 'true')
@@ -809,7 +809,7 @@ describe('several descriptions', () => {
       <Field.Root invalid={invalid} required>
         <Field.Label>Registreringsnummer</Field.Label>
         <Field.Prose data-testid="where">Det står på registreringsbeviset.</Field.Prose>
-        <Input name="registration" />
+        <TextInput name="registration" />
         <Field.Prose data-testid="format">Till exempel ABC 123</Field.Prose>
         <Field.ErrorMessage>Ange ett registreringsnummer</Field.ErrorMessage>
       </Field.Root>
@@ -858,7 +858,7 @@ describe('several descriptions', () => {
         <Field.Root>
           <Field.Label marker="none">Registreringsnummer</Field.Label>
           {showAbove ? <Field.Prose data-testid="above">Ovanför fältet.</Field.Prose> : null}
-          <Input />
+          <TextInput />
           <Field.Prose data-testid="under">Under fältet.</Field.Prose>
           <button type="button" onClick={() => setShowAbove(true)}>
             Visa
@@ -887,7 +887,7 @@ describe('several descriptions', () => {
         <Field.Root>
           <Field.Label marker="none">Registreringsnummer</Field.Label>
           <Field.Prose>Ovanför fältet.</Field.Prose>
-          <Input />
+          <TextInput />
           {showUnder ? <Field.Prose>Under fältet.</Field.Prose> : null}
           <button type="button" onClick={() => setShowUnder(false)}>
             Dölj
@@ -922,7 +922,7 @@ describe('several descriptions', () => {
           <Field.Root invalid={invalid}>
             <Field.Label marker="none">Registreringsnummer</Field.Label>
             <Field.Prose>Ovanför fältet.</Field.Prose>
-            <Input
+            <TextInput
               ref={inputRef}
               onFocus={(event) => {
                 describedByAtFocus.push(event.currentTarget.getAttribute('aria-describedby'))
@@ -950,7 +950,7 @@ describe('several descriptions', () => {
     await render(
       <Field.Root invalid>
         <Field.Label>Namn</Field.Label>
-        <Input />
+        <TextInput />
         <Field.ErrorMessage>Ange ditt namn</Field.ErrorMessage>
         <Field.ErrorMessage>Ange ditt fullständiga namn</Field.ErrorMessage>
       </Field.Root>,
@@ -978,7 +978,7 @@ describe('several descriptions', () => {
         <Field.Prose render={<p />} data-testid="second">
           Under.
         </Field.Prose>
-        <Input />
+        <TextInput />
         <Field.ErrorMessage>Ange</Field.ErrorMessage>
       </Field.Root>,
     )
@@ -1006,7 +1006,7 @@ describe('Field.Hint (Plan 0029)', () => {
         <Field.Prose data-testid="why">
           <p>Vi använder det för att hämta dina uppgifter från Skatteverket.</p>
         </Field.Prose>
-        <Input name="personalNumber" />
+        <TextInput name="personalNumber" />
         <Field.Hint data-testid="format">12 siffror, ÅÅÅÅMMDD-NNNN</Field.Hint>
         <Field.ErrorMessage>Skriv personnumret med 12 siffror, ÅÅÅÅMMDD-NNNN</Field.ErrorMessage>
       </Field.Root>
@@ -1044,7 +1044,7 @@ describe('Field.Hint (Plan 0029)', () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">Registreringsnummer</Field.Label>
-        <Input />
+        <TextInput />
         <Field.Hint>Till exempel ABC 123</Field.Hint>
         <Field.ErrorMessage>Ange numret</Field.ErrorMessage>
       </Field.Root>,
@@ -1062,7 +1062,7 @@ describe('Field.Hint (Plan 0029)', () => {
         <Field.Root>
           <Field.Label marker="none">Registreringsnummer</Field.Label>
           {showAbove ? <Field.Prose data-testid="above">Ovanför fältet.</Field.Prose> : null}
-          <Input />
+          <TextInput />
           <Field.Hint data-testid="under">Under fältet.</Field.Hint>
           <button type="button" onClick={() => setShowAbove(true)}>
             Visa
@@ -1085,7 +1085,7 @@ describe('Field.Hint (Plan 0029)', () => {
       return (
         <Field.Root>
           <Field.Label marker="none">Namn</Field.Label>
-          <Input />
+          <TextInput />
           {show ? <Field.Hint>Som i passet.</Field.Hint> : null}
           <button type="button" onClick={() => setShow(false)}>
             Dölj
@@ -1119,7 +1119,7 @@ describe('Field.Hint (Plan 0029)', () => {
     await render(
       <Field.Root invalid disabled>
         <Field.Label marker="none">Namn</Field.Label>
-        <Input />
+        <TextInput />
         <Field.Hint ref={ref} lang="sv" data-testid="first">
           Som i passet.
         </Field.Hint>
@@ -1182,11 +1182,11 @@ describe('Field.Hint (Plan 0029)', () => {
         <Field.Root>
           <Field.Label marker="none">Postnummer</Field.Label>
           <Field.Hint>Fem siffror.</Field.Hint>
-          <Input />
+          <TextInput />
         </Field.Root>
         <Field.Root>
           <Field.Label marker="none">Ort</Field.Label>
-          <Input />
+          <TextInput />
           <Field.Hint>Som i adressen.</Field.Hint>
         </Field.Root>
       </>,
@@ -1300,7 +1300,7 @@ describe('types', () => {
         <Prose>
           <p>Vi skickar beslutet till den här adressen.</p>
         </Prose>
-        <Input name="email" type="email" autoComplete="email" />
+        <TextInput name="email" type="email" autoComplete="email" />
         <ErrorMessage>Ange en adress</ErrorMessage>
       </Field>,
     )

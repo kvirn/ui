@@ -1,4 +1,4 @@
-import { Field, Fieldset, Input, RadioGroup } from '@kvirn-ui/react'
+import { Field, Fieldset, RadioGroup, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useId } from 'react'
@@ -36,7 +36,7 @@ const meta = {
     return (
       <Field.Root required lang={lang}>
         <Field.Label>{text.personalNumber}</Field.Label>
-        <Input
+        <TextInput
           name="personal-number"
           inputMode="numeric"
           autoComplete="off"
@@ -67,7 +67,7 @@ export const Keyboard: Story = {
         <Field.Prose>
           <p>{text.personalNumberWhy}</p>
         </Field.Prose>
-        <Input
+        <TextInput
           name="personal-number"
           inputMode="numeric"
           autoComplete="off"
@@ -101,7 +101,7 @@ export const WithDescription: Story = {
         <Field.Prose>
           <p>{text.registrationWhere}</p>
         </Field.Prose>
-        <Input name="registration" className="kv-input--width-10" />
+        <TextInput name="registration" className="kv-input--width-10" />
         <Field.Hint>{text.registrationHint}</Field.Hint>
       </Field.Root>
     )
@@ -122,7 +122,7 @@ export const Invalid: Story = {
         <Field.Prose>
           <p>{text.personalNumberWhy}</p>
         </Field.Prose>
-        <Input
+        <TextInput
           name="personal-number"
           inputMode="numeric"
           autoComplete="off"
@@ -150,7 +150,7 @@ export const InFieldset: Story = {
         <div className="kv-story-date-boxes">
           <Field.Root>
             <Field.Label>{text.visitDay}</Field.Label>
-            <Input
+            <TextInput
               name="day"
               inputMode="numeric"
               autoComplete="off"
@@ -160,7 +160,7 @@ export const InFieldset: Story = {
           </Field.Root>
           <Field.Root>
             <Field.Label>{text.visitMonth}</Field.Label>
-            <Input
+            <TextInput
               name="month"
               inputMode="numeric"
               autoComplete="off"
@@ -170,7 +170,7 @@ export const InFieldset: Story = {
           </Field.Root>
           <Field.Root>
             <Field.Label>{text.visitYear}</Field.Label>
-            <Input
+            <TextInput
               name="year"
               inputMode="numeric"
               autoComplete="off"
@@ -245,7 +245,11 @@ export const Disabled: Story = {
     return (
       <Field.Root required disabled lang={lang}>
         <Field.Label>{text.personalNumber}</Field.Label>
-        <Input name="personal-number" defaultValue="19900101-1234" className="kv-input--width-20" />
+        <TextInput
+          name="personal-number"
+          defaultValue="19900101-1234"
+          className="kv-input--width-20"
+        />
         <Field.Hint>{text.personalNumberHint}</Field.Hint>
       </Field.Root>
     )
@@ -262,7 +266,7 @@ export const ReadOnly: Story = {
     return (
       <Field.Root required lang={lang}>
         <Field.Label>{text.personalNumber}</Field.Label>
-        <Input
+        <TextInput
           name="personal-number"
           readOnly
           defaultValue="19900101-1234"
@@ -288,7 +292,7 @@ export const Compact: Story = {
           <Field.Prose>
             <p>{text.personalNumberWhy}</p>
           </Field.Prose>
-          <Input
+          <TextInput
             name="personal-number"
             inputMode="numeric"
             autoComplete="off"
@@ -314,7 +318,7 @@ export const LongFinnish: Story = {
       <div className="kv-story-narrow" data-testid="narrow">
         <Field.Root required lang={lang}>
           <Field.Label>{text.longLabel}</Field.Label>
-          <Input name="reference" inputMode="numeric" spellCheck={false} />
+          <TextInput name="reference" inputMode="numeric" spellCheck={false} />
           <Field.Hint>{text.grantReferenceHint}</Field.Hint>
         </Field.Root>
       </div>
@@ -342,7 +346,7 @@ function HintStates({ locale }: { locale: FormLocale }) {
         <Field.Prose>
           <p>{text.registrationWhere}</p>
         </Field.Prose>
-        <Input name="registration" className="kv-input--width-10" />
+        <TextInput name="registration" className="kv-input--width-10" />
         {/* The example is neutral text at the edge of a right-to-left sentence: `bdi` keeps it in place. */}
         <Field.Hint>
           {lead}
@@ -351,7 +355,7 @@ function HintStates({ locale }: { locale: FormLocale }) {
       </Field.Root>
       <Field.Root required invalid>
         <Field.Label>{text.personalNumber}</Field.Label>
-        <Input
+        <TextInput
           name="personal-number"
           inputMode="numeric"
           autoComplete="off"
@@ -364,7 +368,11 @@ function HintStates({ locale }: { locale: FormLocale }) {
       </Field.Root>
       <Field.Root required disabled>
         <Field.Label>{text.personalNumber}</Field.Label>
-        <Input name="personal-number" defaultValue="19900101-1234" className="kv-input--width-20" />
+        <TextInput
+          name="personal-number"
+          defaultValue="19900101-1234"
+          className="kv-input--width-20"
+        />
         <Field.Hint>{text.personalNumberHint}</Field.Hint>
       </Field.Root>
       <DurationWithHint locale={locale} />

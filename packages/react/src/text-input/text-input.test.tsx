@@ -12,13 +12,22 @@ import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
 import { masks } from '../index.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
-import { Input } from './input.tsx'
-import type { InputChangeDetails, InputProps, InputState, InputType } from './input.tsx'
-import { useInput } from './use-input.ts'
-import type { InputPartProps, UseInputOptions, UseInputResult } from './use-input.ts'
+import { TextInput } from './text-input.tsx'
+import type {
+  TextInputChangeDetails,
+  TextInputProps,
+  TextInputState,
+  TextInputType,
+} from './text-input.tsx'
+import { useTextInput } from './use-text-input.ts'
+import type {
+  TextInputPartProps,
+  UseTextInputOptions,
+  UseTextInputResult,
+} from './use-text-input.ts'
 
-// Contract: input.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/input/input.e2e.ts.
+// Contract: text-input.a11y.md. The keyboard rows are also covered end to end in
+// apps/storybook/src/components/text-input/text-input.e2e.ts.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -33,7 +42,7 @@ afterEach(() => {
 
 describe('rendering', () => {
   test('renders a native <input type="text">, outside a Field', async () => {
-    const { container } = await render(<Input aria-label="Namn" />)
+    const { container } = await render(<TextInput aria-label="Namn" />)
     const input = page.getByRole('textbox', { name: 'Namn' })
     await expect.element(input).toHaveAttribute('type', 'text')
     await expect.element(input).not.toHaveAttribute('id')
@@ -48,7 +57,7 @@ describe('rendering', () => {
   test('forwards its ref and native props, and the part class kv-input joins a consumer’s', async () => {
     const ref = createRef<HTMLInputElement>()
     await render(
-      <Input
+      <TextInput
         ref={ref}
         aria-label="Namn"
         className="egen"
@@ -71,7 +80,7 @@ describe('rendering', () => {
   test.each(['text', 'email', 'tel', 'url', 'password', 'search'] as const)(
     'type="%s" renders that type',
     async (type) => {
-      const { container } = await render(<Input type={type} aria-label="Fält" />)
+      const { container } = await render(<TextInput type={type} aria-label="Fält" />)
       const element = container.querySelector('input')
       expect(element?.getAttribute('type')).toBe(type)
       expect(consoleWarn).not.toHaveBeenCalled()
@@ -85,13 +94,18 @@ describe('rendering', () => {
     ['url', 'textbox'],
     ['search', 'searchbox'],
   ] as const)('type="%s" has the role %s', async (type, role) => {
-    await render(<Input type={type} aria-label="Fält" />)
+    await render(<TextInput type={type} aria-label="Fält" />)
     await expect.element(page.getByRole(role, { name: 'Fält' })).toBeVisible()
   })
 
   test('passes autoComplete, inputMode and spellCheck for numbers', async () => {
     const { container } = await render(
-      <Input aria-label="Antal barn" inputMode="numeric" spellCheck={false} autoComplete="off" />,
+      <TextInput
+        aria-label="Antal barn"
+        inputMode="numeric"
+        spellCheck={false}
+        autoComplete="off"
+      />,
     )
     const input = page.getByRole('textbox', { name: 'Antal barn' })
     await expect.element(input).toHaveAttribute('inputmode', 'numeric')
@@ -101,12 +115,12 @@ describe('rendering', () => {
   })
 
   test('render as a function gets the part’s props and the state', async () => {
-    const seenStates: InputState[] = []
+    const seenStates: TextInputState[] = []
     await render(
       <Field.Root invalid disabled={false}>
         <Field.Label>Namn</Field.Label>
         <Field.ErrorMessage>Ange ditt namn</Field.ErrorMessage>
-        <Input
+        <TextInput
           render={(partProps, state) => {
             seenStates.push(state)
             return <input {...partProps} data-egen="" />
@@ -129,7 +143,7 @@ describe('in a Field', () => {
     const { container } = await render(
       <Field.Root required>
         <Field.Label>Fullständigt namn</Field.Label>
-        <Input name="name" autoComplete="name" />
+        <TextInput name="name" autoComplete="name" />
       </Field.Root>,
     )
     const input = page.getByRole('textbox', { name: 'Fullständigt namn' })
@@ -145,7 +159,7 @@ describe('in a Field', () => {
       <Field.Root invalid required>
         <Field.Label>Namn</Field.Label>
         <Field.ErrorMessage>Ange ditt namn</Field.ErrorMessage>
-        <Input />
+        <TextInput />
       </Field.Root>,
     )
     const input = page.getByRole('textbox', { name: 'Namn' })
@@ -161,11 +175,11 @@ describe('in a Field', () => {
       <>
         <Field.Root disabled>
           <Field.Label marker="none">Namn</Field.Label>
-          <Input />
+          <TextInput />
         </Field.Root>
         <Field.Root>
           <Field.Label marker="none">Efternamn</Field.Label>
-          <Input disabled />
+          <TextInput disabled />
         </Field.Root>
       </>,
     )
@@ -182,7 +196,7 @@ describe('in a Field', () => {
         <Field.Root>
           <Field.Label>Namn</Field.Label>
           <Field.Prose>Som i passet.</Field.Prose>
-          <Input aria-describedby="extra" />
+          <TextInput aria-describedby="extra" />
         </Field.Root>
       </>,
     )
@@ -198,7 +212,7 @@ describe('in a Field', () => {
         <p id="extra">Extra information.</p>
         <Field.Root>
           <Field.Label marker="none">Namn</Field.Label>
-          <Input aria-describedby="extra" />
+          <TextInput aria-describedby="extra" />
         </Field.Root>
       </>,
     )
@@ -207,11 +221,11 @@ describe('in a Field', () => {
       .toHaveAttribute('aria-describedby', 'extra')
   })
 
-  test('an id on the Input inside a Field is ignored with a dev warning: the label stays associated', async () => {
+  test('an id on the TextInput inside a Field is ignored with a dev warning: the label stays associated', async () => {
     await render(
       <Field.Root controlId="fältet">
         <Field.Label marker="none">Namn</Field.Label>
-        <Input id="annat" />
+        <TextInput id="annat" />
       </Field.Root>,
     )
     const input = page.getByRole('textbox', { name: 'Namn' })
@@ -227,7 +241,7 @@ describe('in a Field', () => {
           <Field.Label>Telefonnummer</Field.Label>
           <Field.Prose>Vi ringer bara om något är fel.</Field.Prose>
           <Field.ErrorMessage>Ange ett telefonnummer</Field.ErrorMessage>
-          <Input type="tel" autoComplete="tel" />
+          <TextInput type="tel" autoComplete="tel" />
         </Field.Root>
       </KvirnProvider>,
     )
@@ -240,9 +254,9 @@ describe('in a Field', () => {
 
 describe('value', () => {
   test('typing calls onValueChange with the value and the reason, and onChange too', async () => {
-    const onValueChange = vi.fn<(value: string, details: InputChangeDetails) => void>()
+    const onValueChange = vi.fn<(value: string, details: TextInputChangeDetails) => void>()
     const onChange = vi.fn<(event: React.ChangeEvent<HTMLInputElement>) => void>()
-    await render(<Input aria-label="Namn" onValueChange={onValueChange} onChange={onChange} />)
+    await render(<TextInput aria-label="Namn" onValueChange={onValueChange} onChange={onChange} />)
     const input = page.getByRole('textbox', { name: 'Namn' })
     await userEvent.type(input, 'Maja')
     expect(onValueChange.mock.calls.map(([value]) => value)).toEqual(['M', 'Ma', 'Maj', 'Maja'])
@@ -257,7 +271,7 @@ describe('value', () => {
       const [value, setValue] = useState('Maja')
       return (
         <>
-          <Input aria-label="Namn" value={value} onValueChange={setValue} />
+          <TextInput aria-label="Namn" value={value} onValueChange={setValue} />
           <output>{value}</output>
         </>
       )
@@ -271,7 +285,7 @@ describe('value', () => {
   })
 
   test('uncontrolled: defaultValue is kept', async () => {
-    await render(<Input aria-label="Namn" defaultValue="Maja" />)
+    await render(<TextInput aria-label="Namn" defaultValue="Maja" />)
     const input = page.getByRole('textbox', { name: 'Namn' })
     await userEvent.type(input, ' Berg')
     await expect.element(input).toHaveValue('Maja Berg')
@@ -289,7 +303,7 @@ describe('value', () => {
       >
         <Field.Root>
           <Field.Label marker="none">Namn</Field.Label>
-          <Input name="name" />
+          <TextInput name="name" />
         </Field.Root>
         <button type="submit">Skicka</button>
       </form>,
@@ -321,7 +335,7 @@ describe('value', () => {
     await render(
       <Field.Root required>
         <Field.Label>E-post</Field.Label>
-        <Input type="email" {...register('email')} />
+        <TextInput type="email" {...register('email')} />
       </Field.Root>,
     )
     const input = page.getByRole('textbox', { name: 'E-post' })
@@ -334,8 +348,8 @@ describe('value', () => {
   })
 
   test('paste is not blocked', async () => {
-    const onValueChange = vi.fn<(value: string, details: InputChangeDetails) => void>()
-    await render(<Input aria-label="Namn" onValueChange={onValueChange} />)
+    const onValueChange = vi.fn<(value: string, details: TextInputChangeDetails) => void>()
+    await render(<TextInput aria-label="Namn" onValueChange={onValueChange} />)
     const input = page.getByRole('textbox', { name: 'Namn' })
     await userEvent.click(input)
     await userEvent.fill(input, 'Inklistrat namn')
@@ -350,7 +364,7 @@ describe('value', () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">Ärendenummer</Field.Label>
-        <Input inputMode="numeric" spellCheck={false} />
+        <TextInput inputMode="numeric" spellCheck={false} />
       </Field.Root>,
     )
     const input = page.getByRole('textbox', { name: 'Ärendenummer' })
@@ -362,7 +376,7 @@ describe('value', () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">Namn</Field.Label>
-        <Input />
+        <TextInput />
       </Field.Root>,
     )
     await userEvent.click(page.getByText('Namn', { exact: true }))
@@ -374,8 +388,8 @@ describe('focus visible', () => {
   test('sets data-focus-visible on keyboard focus only', async () => {
     await render(
       <>
-        <Input aria-label="Ett" />
-        <Input aria-label="Två" />
+        <TextInput aria-label="Ett" />
+        <TextInput aria-label="Två" />
       </>,
     )
     const first = page.getByRole('textbox', { name: 'Ett' })
@@ -393,11 +407,11 @@ describe('focus visible', () => {
         <Field.Root>
           <Field.Label marker="none">Ett</Field.Label>
           <Field.Prose>Hint</Field.Prose>
-          <Input />
+          <TextInput />
         </Field.Root>
         <Field.Root>
           <Field.Label marker="none">Två</Field.Label>
-          <Input />
+          <TextInput />
         </Field.Root>
       </>,
     )
@@ -412,34 +426,34 @@ describe('focus visible', () => {
 
 describe('dev warnings', () => {
   test('type="number" warns once, with the reason, and still renders what was asked', async () => {
-    const props = { type: 'number', 'aria-label': 'Antal' } as unknown as InputProps
-    const { container } = await render(<Input {...props} />)
+    const props = { type: 'number', 'aria-label': 'Antal' } as unknown as TextInputProps
+    const { container } = await render(<TextInput {...props} />)
     expect(container.querySelector('input')?.getAttribute('type')).toBe('number')
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     const message = String(consoleWarn.mock.calls[0]?.[0])
     expect(message).toContain('type="number"')
-    expect(message).toContain('inputMode')
+    expect(message).toContain('NumberInput')
   })
 
   test('type="date" warns once', async () => {
-    const props = { type: 'date', 'aria-label': 'Datum' } as unknown as InputProps
-    await render(<Input {...props} />)
+    const props = { type: 'date', 'aria-label': 'Datum' } as unknown as TextInputProps
+    await render(<TextInput {...props} />)
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('type="date"')
   })
 
-  test('an Input without a label, outside a Field, warns once', async () => {
-    await render(<Input placeholder="Namn" />)
+  test('a TextInput without a label, outside a Field, warns once', async () => {
+    await render(<TextInput placeholder="Namn" />)
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     const message = String(consoleWarn.mock.calls[0]?.[0])
     expect(message).toContain('accessible name')
     expect(message).toContain('placeholder')
   })
 
-  test('an Input inside a Field without a Label warns once', async () => {
+  test('a TextInput inside a Field without a Label warns once', async () => {
     await render(
       <Field.Root>
-        <Input />
+        <TextInput />
       </Field.Root>,
     )
     expect(consoleWarn).toHaveBeenCalledTimes(1)
@@ -449,12 +463,12 @@ describe('dev warnings', () => {
   test('aria-label, aria-labelledby and a wrapping <label> are names enough', async () => {
     await render(
       <>
-        <Input aria-label="Sök" type="search" />
+        <TextInput aria-label="Sök" type="search" />
         <span id="rubrik">Postnummer</span>
-        <Input aria-labelledby="rubrik" />
+        <TextInput aria-labelledby="rubrik" />
         <label htmlFor="gata">
           Gata
-          <Input id="gata" />
+          <TextInput id="gata" />
         </label>
       </>,
     )
@@ -462,10 +476,10 @@ describe('dev warnings', () => {
   })
 })
 
-describe('useInput', () => {
-  function HookInput(options: UseInputOptions & { label: string }) {
+describe('useTextInput', () => {
+  function HookInput(options: UseTextInputOptions & { label: string }) {
     const { label, ...inputOptions } = options
-    const input = useInput(inputOptions)
+    const input = useTextInput(inputOptions)
     return <input aria-label={label} {...input.inputProps} />
   }
 
@@ -485,7 +499,7 @@ describe('useInput', () => {
   })
 
   test('onValueChange and type work without a Field', async () => {
-    const onValueChange = vi.fn<(value: string, details: InputChangeDetails) => void>()
+    const onValueChange = vi.fn<(value: string, details: TextInputChangeDetails) => void>()
     await render(<HookInput label="E-post" type="email" onValueChange={onValueChange} />)
     const input = page.getByRole('textbox', { name: 'E-post' })
     await expect.element(input).toHaveAttribute('type', 'email')
@@ -494,9 +508,9 @@ describe('useInput', () => {
   })
 
   test('reports its state', async () => {
-    const seen: Pick<UseInputResult, 'isInvalid' | 'isRequired' | 'isDisabled'>[] = []
+    const seen: Pick<UseTextInputResult, 'isInvalid' | 'isRequired' | 'isDisabled'>[] = []
     function Probe() {
-      const { isInvalid, isRequired, isDisabled } = useInput()
+      const { isInvalid, isRequired, isDisabled } = useTextInput()
       seen.push({ isInvalid, isRequired, isDisabled })
       return null
     }
@@ -511,41 +525,41 @@ describe('useInput', () => {
 
 describe('server rendering', () => {
   test('renders the input to a string without touching the page', () => {
-    const html = renderToString(<Input aria-label="Namn" defaultValue="Maja" />)
+    const html = renderToString(<TextInput aria-label="Namn" defaultValue="Maja" />)
     expect(html).toContain('type="text"')
   })
 })
 
 describe('types', () => {
   test('type is the text-like union, never number or date', () => {
-    expectTypeOf<InputType>().toEqualTypeOf<
+    expectTypeOf<TextInputType>().toEqualTypeOf<
       'text' | 'email' | 'tel' | 'url' | 'password' | 'search'
     >()
-    expectTypeOf<InputProps['type']>().toEqualTypeOf<InputType | undefined>()
+    expectTypeOf<TextInputProps['type']>().toEqualTypeOf<TextInputType | undefined>()
   })
 
   test('onValueChange takes the string value and details', () => {
-    expectTypeOf<InputProps['onValueChange']>().toEqualTypeOf<
-      ((value: string, details: InputChangeDetails) => void) | undefined
+    expectTypeOf<TextInputProps['onValueChange']>().toEqualTypeOf<
+      ((value: string, details: TextInputChangeDetails) => void) | undefined
     >()
-    expectTypeOf<InputChangeDetails['reason']>().toEqualTypeOf<'input'>()
-    expectTypeOf<InputProps['value']>().toEqualTypeOf<string | undefined>()
-    expectTypeOf<InputProps['defaultValue']>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<TextInputChangeDetails['reason']>().toEqualTypeOf<'input'>()
+    expectTypeOf<TextInputProps['value']>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<TextInputProps['defaultValue']>().toEqualTypeOf<string | undefined>()
   })
 
   test('exports the hook and part types', () => {
-    expectTypeOf<InputPartProps['className']>().toEqualTypeOf<'kv-input'>()
-    expectTypeOf<InputPartProps>().not.toHaveProperty('data-kv')
-    expectTypeOf<UseInputResult['inputProps']>().toEqualTypeOf<InputPartProps>()
-    expectTypeOf<UseInputResult['isFocusVisible']>().toEqualTypeOf<boolean>()
+    expectTypeOf<TextInputPartProps['className']>().toEqualTypeOf<'kv-input'>()
+    expectTypeOf<TextInputPartProps>().not.toHaveProperty('data-kv')
+    expectTypeOf<UseTextInputResult['inputProps']>().toEqualTypeOf<TextInputPartProps>()
+    expectTypeOf<UseTextInputResult['isFocusVisible']>().toEqualTypeOf<boolean>()
   })
 })
 
-describe('mask (contract: input.a11y.md › Masked input)', () => {
+describe('mask (contract: text-input.a11y.md › Masked input)', () => {
   const personalIdentityNumber = masks.personalIdentityNumber({ country: 'SE' })
 
   test('without a mask nothing changes: no suggested attributes, no announcer warning', async () => {
-    await render(<Input aria-label="Namn" />)
+    await render(<TextInput aria-label="Namn" />)
     const input = page.getByRole('textbox', { name: 'Namn' })
     await expect.element(input).not.toHaveAttribute('inputmode')
     await expect.element(input).not.toHaveAttribute('spellcheck')
@@ -561,7 +575,7 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
           <Field.Label>Personnummer</Field.Label>
           <Field.Prose>12 siffror, till exempel 19900101-1234.</Field.Prose>
           <Field.ErrorMessage>Ange personnumret</Field.ErrorMessage>
-          <Input name="personalIdentityNumber" mask={personalIdentityNumber} />
+          <TextInput name="personalIdentityNumber" mask={personalIdentityNumber} />
         </Field.Root>
       </KvirnProvider>,
     )
@@ -585,10 +599,10 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
   })
 
   test('onValueChange gets the masked value and the mask details, once per change', async () => {
-    const onValueChange = vi.fn<(value: string, details: InputChangeDetails) => void>()
+    const onValueChange = vi.fn<(value: string, details: TextInputChangeDetails) => void>()
     await render(
       <KvirnProvider>
-        <Input
+        <TextInput
           aria-label="Personnummer"
           mask={personalIdentityNumber}
           onValueChange={onValueChange}
@@ -607,7 +621,7 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
 
   test('your own inputMode, spellCheck and dir win over the preset’s', async () => {
     await render(
-      <Input
+      <TextInput
         aria-label="Personnummer"
         mask={personalIdentityNumber}
         inputMode="text"
@@ -626,7 +640,7 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
     const onFocus = vi.fn<(event: unknown) => void>()
     const ref = createRef<HTMLInputElement>()
     await render(
-      <Input
+      <TextInput
         ref={ref}
         aria-label="Postnummer"
         mask={masks.postalCode({ country: 'SE' })}
@@ -647,7 +661,7 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
       const [value, setValue] = useState('19900101 1234')
       return (
         <>
-          <Input
+          <TextInput
             aria-label="Personnummer"
             mask={personalIdentityNumber}
             value={value}
@@ -678,7 +692,7 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
           submitted = new FormData(event.currentTarget)
         }}
       >
-        <Input aria-label="Personnummer" name="pin" mask={personalIdentityNumber} />
+        <TextInput aria-label="Personnummer" name="pin" mask={personalIdentityNumber} />
         <button type="submit">Skicka</button>
       </form>,
     )
@@ -688,11 +702,11 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
     expect(personalIdentityNumber.unmask('19900101-1234')).toBe('199001011234')
   })
 
-  test('announces a refused character once per field, from the Input’s own messages too', async () => {
+  test('announces a refused character once per field, from the TextInput’s own messages too', async () => {
     await render(
       <KvirnProvider locale="sv" messages={sv}>
-        <Input aria-label="Antal" mask={masks.digits()} />
-        <Input
+        <TextInput aria-label="Antal" mask={masks.digits()} />
+        <TextInput
           aria-label="Kod"
           mask={masks.digits()}
           messages={{ characterNotAllowed: () => 'Bara siffror i koden.' }}
@@ -709,7 +723,7 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
   test('announceRejections={false} keeps the live region quiet', async () => {
     await render(
       <KvirnProvider>
-        <Input aria-label="Antal" mask={masks.digits()} announceRejections={false} />
+        <TextInput aria-label="Antal" mask={masks.digits()} announceRejections={false} />
       </KvirnProvider>,
     )
     await userEvent.type(page.getByRole('textbox', { name: 'Antal' }), 'a')
@@ -717,11 +731,11 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
     await expect.element(page.getByRole('status')).toBeEmptyDOMElement()
   })
 
-  test('a masked Input in a Field without a hint warns once (3.3.2)', async () => {
+  test('a masked TextInput in a Field without a hint warns once (3.3.2)', async () => {
     await render(
       <Field.Root>
         <Field.Label>Personnummer</Field.Label>
-        <Input mask={personalIdentityNumber} />
+        <TextInput mask={personalIdentityNumber} />
       </Field.Root>,
     )
     await vi.waitFor(() => {
@@ -732,17 +746,17 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
     expect(message).toContain('3.3.2')
   })
 
-  test('no description warning when the Field has one, or the Input has its own aria-describedby', async () => {
+  test('no description warning when the Field has one, or the TextInput has its own aria-describedby', async () => {
     await render(
       <>
         <Field.Root>
           <Field.Label>Personnummer</Field.Label>
-          <Input mask={personalIdentityNumber} />
+          <TextInput mask={personalIdentityNumber} />
           <Field.Prose>12 siffror, till exempel 19900101-1234.</Field.Prose>
         </Field.Root>
         <Field.Root>
           <Field.Label>Postnummer</Field.Label>
-          <Input mask={masks.postalCode({ country: 'SE' })} aria-describedby="eget-tips" />
+          <TextInput mask={masks.postalCode({ country: 'SE' })} aria-describedby="eget-tips" />
         </Field.Root>
         <p id="eget-tips">Fem siffror.</p>
       </>,
@@ -751,17 +765,17 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('a masked Input with a Field.Hint under it counts as hinted and does not warn', async () => {
+  test('a masked TextInput with a Field.Hint under it counts as hinted and does not warn', async () => {
     await render(
       <>
         <Field.Root>
           <Field.Label>Personnummer</Field.Label>
-          <Input mask={personalIdentityNumber} />
+          <TextInput mask={personalIdentityNumber} />
           <Field.Hint>12 siffror, ÅÅÅÅMMDD-NNNN</Field.Hint>
         </Field.Root>
         <Field.Root>
           <Field.Label>Postnummer</Field.Label>
-          <Input mask={masks.postalCode({ country: 'SE' })} />
+          <TextInput mask={masks.postalCode({ country: 'SE' })} />
           <Field.Hint>Fem siffror.</Field.Hint>
         </Field.Root>
       </>,
@@ -770,11 +784,11 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('an Input without a mask in a Field without a description does not warn about it', async () => {
+  test('a TextInput without a mask in a Field without a description does not warn about it', async () => {
     await render(
       <Field.Root>
         <Field.Label>Namn</Field.Label>
-        <Input />
+        <TextInput />
       </Field.Root>,
     )
     await new Promise((resolve) => setTimeout(resolve, 100))
@@ -782,7 +796,7 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
   })
 
   test('a mask other than masks.email() on type="email" warns once', async () => {
-    await render(<Input aria-label="E-post" type="email" mask={masks.digits()} />)
+    await render(<TextInput aria-label="E-post" type="email" mask={masks.digits()} />)
     await vi.waitFor(() => {
       expect(consoleWarn).toHaveBeenCalledTimes(1)
     })
@@ -792,7 +806,7 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
   test('masks.email() on type="email" is fine, and filters whitespace', async () => {
     await render(
       <KvirnProvider>
-        <Input aria-label="E-post" type="email" mask={masks.email()} />
+        <TextInput aria-label="E-post" type="email" mask={masks.email()} />
       </KvirnProvider>,
     )
     const input = page.getByRole('textbox', { name: 'E-post' })
@@ -805,9 +819,9 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
     await render(
       <>
         <KvirnProvider locale="sv" messages={sv}>
-          <Input aria-label="Belopp sv" mask={masks.number({ decimals: 2 })} />
+          <TextInput aria-label="Belopp sv" mask={masks.number({ decimals: 2 })} />
         </KvirnProvider>
-        <Input aria-label="Belopp en" mask={masks.number({ decimals: 2 })} />
+        <TextInput aria-label="Belopp en" mask={masks.number({ decimals: 2 })} />
       </>,
     )
     await userEvent.type(page.getByRole('textbox', { name: 'Belopp sv' }), '1.5')
@@ -817,9 +831,9 @@ describe('mask (contract: input.a11y.md › Masked input)', () => {
   })
 
   test('the new props have types', () => {
-    expectTypeOf<InputProps['mask']>().toEqualTypeOf<Mask | undefined>()
-    expectTypeOf<InputProps['announceRejections']>().toEqualTypeOf<boolean | undefined>()
-    expectTypeOf<InputProps['messages']>().toEqualTypeOf<
+    expectTypeOf<TextInputProps['mask']>().toEqualTypeOf<Mask | undefined>()
+    expectTypeOf<TextInputProps['announceRejections']>().toEqualTypeOf<boolean | undefined>()
+    expectTypeOf<TextInputProps['messages']>().toEqualTypeOf<
       Partial<KvirnMessages['mask']> | undefined
     >()
   })

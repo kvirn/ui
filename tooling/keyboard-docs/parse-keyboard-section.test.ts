@@ -39,8 +39,8 @@ describe('parseKeyboardSection', () => {
       contract(`${focusLines}
 
 ${tableHeader}
-| Tab | Before the box | Moves focus into the input | \`input.e2e.ts › Tab focuses the input\` |
-| Shift+Tab | In the input | Moves focus to the previous focusable | \`input.e2e.ts › Shift+Tab leaves the input\` |
+| Tab | Before the box | Moves focus into the input | \`text-input.e2e.ts › Tab focuses the input\` |
+| Shift+Tab | In the input | Moves focus to the previous focusable | \`text-input.e2e.ts › Shift+Tab leaves the input\` |
 `),
     )
     expect(problems).toEqual([])
@@ -55,13 +55,13 @@ ${tableHeader}
           key: 'Tab',
           context: 'Before the box',
           action: 'Moves focus into the input',
-          test: '`input.e2e.ts › Tab focuses the input`',
+          test: '`text-input.e2e.ts › Tab focuses the input`',
         },
         {
           key: 'Shift+Tab',
           context: 'In the input',
           action: 'Moves focus to the previous focusable',
-          test: '`input.e2e.ts › Shift+Tab leaves the input`',
+          test: '`text-input.e2e.ts › Shift+Tab leaves the input`',
         },
       ],
     })

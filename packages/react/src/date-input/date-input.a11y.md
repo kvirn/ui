@@ -4,9 +4,9 @@
 - **Deviations:** none from APG. Decisions (forms skill and Plan 0013, Phase 3): three native text inputs, never `type="date"`; the order follows the region through `Intl` and a month-first result becomes day first; three Tab stops, no auto-advance, no arrow-key stepping; the consumer writes the date hint; `Fieldset.Root`'s `invalid` does not cascade, each box has its own `invalid`.
 - **Native elements used:** `<fieldset>` and `<legend>` (the consumer's `Fieldset.Root` and `Fieldset.Legend`), `<div>` (`DateInput.Root`, and one per box), `<label for>` (the box label), `<input type="text">` with `inputmode="numeric"` (the boxes).
 - **Status:** alpha candidate (Plan 0013, Phase 3). Accessibility-reviewer pending. Manual AT is `pending`.
-- **Tests:** `date-input.test.tsx` next to this file. `date-input.stories.tsx` and `date-input.e2e.ts` in `apps/storybook/src/components/date-input/`. The group's parts (`Fieldset.Legend`, `Fieldset.Prose`, `Fieldset.Hint`, `Fieldset.ErrorMessage`): `fieldset.a11y.md`. The text keys of each box: `input.a11y.md`.
+- **Tests:** `date-input.test.tsx` next to this file. `date-input.stories.tsx` and `date-input.e2e.ts` in `apps/storybook/src/components/date-input/`. The group's parts (`Fieldset.Legend`, `Fieldset.Prose`, `Fieldset.Hint`, `Fieldset.ErrorMessage`): `fieldset.a11y.md`. The text keys of each box: `text-input.a11y.md`.
 
-A DateInput is one question ("Födelsedatum") answered with three boxes: day, month and year. `DateInput.Root` renders the row of boxes and goes inside a `Fieldset.Root`, whose legend is the question and names the group. Each box is a `Field` with a visible label ("Dag", "Månad", "År") and a native `Input`. It holds no form state: the value is the `value` prop and each change is reported up, or the native inputs keep it and a form submit reads it. It never parses or validates the date: that is the form's job.
+A DateInput is one question ("Födelsedatum") answered with three boxes: day, month and year. `DateInput.Root` renders the row of boxes and goes inside a `Fieldset.Root`, whose legend is the question and names the group. Each box is a `Field` with a visible label ("Dag", "Månad", "År") and a native `TextInput`. It holds no form state: the value is the `value` prop and each change is reported up, or the native inputs keep it and a form submit reads it. It never parses or validates the date: that is the form's job.
 
 ## Roles, states, properties
 
@@ -78,10 +78,10 @@ None. Nothing is live. On entering the first box a screen reader reads the legen
 
 ## Visual / modes
 
-- Focus indicator: the Input's own, a 2px `focus-ring` outline, 2px offset, on the focused box.
-- Target size: each box is as high as an Input (44px, 32px in `kv-compact`) and at least 51px wide (2.5.8). The year box is wider than day and month.
-- Colour: an invalid box takes the Input's invalid state, a 2px `danger` edge with no change of the text position, plus the group's message (never colour alone, 1.4.1). A disabled box is dashed; a read-only box has a solid `surface` edge.
-- forced-colors behaviour: the Input's system colours; every box keeps a visible edge and the message stays visible (`date-input.e2e.ts › forced colours keep the edge of every box visible (1.4.11)`). That an invalid box's 2px edge is thicker than a valid one's is reviewed by eye and in the AT matrix's Windows Contrast Themes row, not asserted.
+- Focus indicator: the TextInput's own, a 2px `focus-ring` outline, 2px offset, on the focused box.
+- Target size: each box is as high as a TextInput (44px, 32px in `kv-compact`) and at least 51px wide (2.5.8). The year box is wider than day and month.
+- Colour: an invalid box takes the TextInput's invalid state, a 2px `danger` edge with no change of the text position, plus the group's message (never colour alone, 1.4.1). A disabled box is dashed; a read-only box has a solid `surface` edge.
+- forced-colors behaviour: the TextInput's system colours; every box keeps a visible edge and the message stays visible (`date-input.e2e.ts › forced colours keep the edge of every box visible (1.4.11)`). That an invalid box's 2px edge is thicker than a valid one's is reviewed by eye and in the AT matrix's Windows Contrast Themes row, not asserted.
 - reduced-motion behaviour: no motion of its own.
 - Reflow: all three boxes fit one row at 320px, and wrap in order at 200% text size, never below their width (`date-input.e2e.ts › no horizontal scrolling at 320px in the Finnish and invalid stories (1.4.10)`).
 - RTL: the boxes flow right to left in DOM order; digits stay left to right.

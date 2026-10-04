@@ -3,10 +3,10 @@ import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
 
-// Contract: packages/react/src/input/input.a11y.md › Keyboard, Focus management and Visual /
-// modes. One test per row, named after it. The Number page is the same Input with `inputMode`
-//, so its stories are covered here. KvirnUI holds no form state: the Controlled and
-// PlainForm stories keep their state in the story, or in the browser.
+// Contract: packages/react/src/text-input/text-input.a11y.md › Keyboard, Focus management and Visual /
+// modes. One test per row, named after it. NumberInput has its own contract and spec (number-input.e2e.ts).
+// KvirnUI holds no form state: the Controlled and PlainForm stories keep their state in the
+// story, or in the browser.
 
 /** `globals` selects the theme like the toolbar does, such as `mode:dark;contrast:more`. */
 const storyUrl = (pageName: string, story: string, globals?: string) =>
@@ -28,7 +28,7 @@ const hasHorizontalScroll = (page: Page) =>
 
 /**
  * Listens for keys that a page handler cancelled. The listener sits on the document, so it runs
- * after every handler in the page: a key Input intercepted would show up here. Returns a
+ * after every handler in the page: a key TextInput intercepted would show up here. Returns a
  * function that reads the keys cancelled so far.
  */
 async function recordPreventedKeys(page: Page) {
@@ -42,9 +42,9 @@ async function recordPreventedKeys(page: Page) {
   return (): Promise<string[]> => page.evaluate(() => Reflect.get(window, 'preventedKeys'))
 }
 
-test.describe('Input keyboard contract', () => {
+test.describe('TextInput keyboard contract', () => {
   test('Tab moves through the inputs in DOM order', async ({ page }) => {
-    await openStory(page, 'input', 'types')
+    await openStory(page, 'textinput', 'types')
     const email = page.getByRole('textbox', { name: 'E-postadress' })
     const phone = page.getByRole('textbox', { name: 'Telefonnummer' })
     const website = page.getByRole('textbox', { name: 'Webbplats' })
@@ -60,38 +60,47 @@ test.describe('Input keyboard contract', () => {
     await expect(website).toBeFocused()
   })
 
-  test('a number mask leaves letters out, and the rest types as written', async ({ page }) => {
-    await openStory(page, 'number', 'amount')
-    const input = page.getByRole('textbox', { name: 'Hur mycket hyra betalar du per månad?' })
-    const shown = () => input.inputValue().then((value) => value.replace(/\s/g, ' '))
+  test('without a mask nothing is filtered, and a mask leaves out what it cannot take', async ({
+    page,
+  }) => {
+    await openStory(page, 'textinput', 'default')
+    const name = page.getByRole('textbox', { name: 'Fullständigt namn' })
+    await name.click()
+    await page.keyboard.type('Anna 12 -x!')
+    await expect(name).toHaveValue('Anna 12 -x!')
+
+    await openStory(page, 'textinput', 'masked-postcode')
+    const postcode = page.getByRole('textbox', { name: 'Postnummer' })
     // The story's play function typed an example: wait for it, then start from an empty input.
-    await expect.poll(shown).toBe('1 250,50')
-    await input.clear()
-    // Typed the way people write: the mask groups the digits and drops the unit's letters.
-    await page.keyboard.type('1 250,50 kr')
-    await expect.poll(shown).toBe('1 250,50')
+    await expect(postcode).toHaveValue('123 45')
+    await postcode.clear()
+    await postcode.click()
+    // The mask leaves the letters out and puts the space in; the digits type as written.
+    await page.keyboard.type('12x3y45')
+    await expect(postcode).toHaveValue('123 45')
   })
 
   test('clicking the label focuses the input', async ({ page }) => {
-    await openStory(page, 'input', 'default')
+    await openStory(page, 'textinput', 'default')
     await page.getByText('Fullständigt namn').click()
     await expect(page.getByRole('textbox', { name: 'Fullständigt namn' })).toBeFocused()
   })
 
   test('Enter in a plain form submits it with the typed values (native)', async ({ page }) => {
-    await openStory(page, 'input', 'plain-form')
+    await openStory(page, 'textinput', 'plain-form')
     // The story's play function fills and submits the form once: wait for it to finish.
-    await expect(page.getByTestId('sent')).toHaveText('Skickat: Anna Andersson, anna@example.se')
+    const sent = (text: string) => page.getByText(text, { exact: true })
+    await expect(sent('Skickat: Anna Andersson, anna@example.se')).toBeVisible()
     await page.getByRole('textbox', { name: 'Fullständigt namn' }).fill('Britta Berg')
     await page.getByRole('textbox', { name: 'E-postadress' }).fill('britta@example.se')
     await page.keyboard.press('Enter')
-    await expect(page.getByTestId('sent')).toHaveText('Skickat: Britta Berg, britta@example.se')
+    await expect(sent('Skickat: Britta Berg, britta@example.se')).toBeVisible()
   })
 
   test('ArrowLeft, ArrowRight, Home and End move the caret and are not intercepted', async ({
     page,
   }) => {
-    await openStory(page, 'input', 'keyboard')
+    await openStory(page, 'textinput', 'keyboard')
     const input = page.getByRole('textbox', { name: 'Fullständigt namn' })
     await input.fill('Anna')
     await input.focus()
@@ -112,24 +121,8 @@ test.describe('Input keyboard contract', () => {
     expect(await prevented()).toEqual([])
   })
 
-  test('ArrowUp and ArrowDown never change a number value', async ({ page }) => {
-    await openStory(page, 'number', 'keyboard')
-    const input = page.getByRole('textbox', { name: 'Hur mycket hyra betalar du per månad?' })
-    await input.fill('1250,50')
-    await input.focus()
-    const before = await input.inputValue()
-    const prevented = await recordPreventedKeys(page)
-    for (const key of ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowDown']) {
-      await page.keyboard.press(key)
-    }
-    await expect(input).toHaveValue(before)
-    await expect(input).toBeFocused()
-    // Native caret movement only: the page didn't take the key.
-    expect(await prevented()).toEqual([])
-  })
-
   test('Control/Command+A selects all the text', async ({ page }) => {
-    await openStory(page, 'input', 'keyboard')
+    await openStory(page, 'textinput', 'keyboard')
     const input = page.getByRole('textbox', { name: 'Fullständigt namn' })
     await input.fill('Anna Andersson')
     await input.focus()
@@ -142,7 +135,7 @@ test.describe('Input keyboard contract', () => {
   })
 
   test('Escape does nothing: the value and the focus stay', async ({ page }) => {
-    await openStory(page, 'input', 'keyboard')
+    await openStory(page, 'textinput', 'keyboard')
     const input = page.getByRole('textbox', { name: 'Fullständigt namn' })
     await input.fill('Anna')
     await input.focus()
@@ -154,17 +147,18 @@ test.describe('Input keyboard contract', () => {
   })
 
   test('a controlled input shows the value the story gives it', async ({ page }) => {
-    await openStory(page, 'input', 'controlled')
+    await openStory(page, 'textinput', 'controlled')
     // The story's play function typed "Anna": wait for it to finish.
-    await expect(page.getByTestId('mirror')).toHaveText('Du skrev: Anna')
+    const mirror = (text: string) => page.getByText(text, { exact: true })
+    await expect(mirror('Du skrev: Anna')).toBeVisible()
     await page.getByRole('textbox', { name: 'Fullständigt namn' }).fill('Britta')
-    await expect(page.getByTestId('mirror')).toHaveText('Du skrev: Britta')
+    await expect(mirror('Du skrev: Britta')).toBeVisible()
   })
 })
 
-test.describe('Input focus and modes', () => {
+test.describe('TextInput focus and modes', () => {
   test('a key-focused input shows a focus indicator (2.4.7)', async ({ page }) => {
-    await openStory(page, 'input', 'default')
+    await openStory(page, 'textinput', 'default')
     await page.keyboard.press('Tab')
     const input = page.getByRole('textbox', { name: 'Fullständigt namn' })
     await expect(input).toBeFocused()
@@ -175,7 +169,7 @@ test.describe('Input focus and modes', () => {
   })
 
   test('a click marks focus, but not focus-visible, and a key brings it back', async ({ page }) => {
-    await openStory(page, 'input', 'default')
+    await openStory(page, 'textinput', 'default')
     const input = page.getByRole('textbox', { name: 'Fullständigt namn' })
     await input.click()
     await expect(input).toBeFocused()
@@ -188,7 +182,7 @@ test.describe('Input focus and modes', () => {
   })
 
   test('the input is at least 24px high (2.5.8)', async ({ page }) => {
-    await openStory(page, 'input', 'default')
+    await openStory(page, 'textinput', 'default')
     const box = await page.getByRole('textbox', { name: 'Fullständigt namn' }).boundingBox()
     expect(box?.height).toBeGreaterThanOrEqual(24)
   })
@@ -197,7 +191,7 @@ test.describe('Input focus and modes', () => {
     page,
   }) => {
     await page.emulateMedia({ forcedColors: 'active' })
-    await openStory(page, 'input', 'forced-colors')
+    await openStory(page, 'textinput', 'forced-colors')
     const valid = page.getByRole('textbox', { name: 'Fullständigt namn' })
     const invalid = page.getByRole('textbox', { name: 'E-postadress' })
     const disabled = page.getByRole('textbox', { name: 'Fordonets registreringsnummer' })
@@ -218,19 +212,19 @@ test.describe('Input focus and modes', () => {
     )
   })
 
-  test('no horizontal scrolling at 320px: widths, Finnish label and numbers (1.4.10)', async ({
+  test('no horizontal scrolling at 320px: widths, Finnish label and masked fields (1.4.10)', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 320, height: 640 })
-    for (const [pageName, story] of [
-      ['input', 'widths'],
-      ['input', 'long-finnish'],
-      ['input', 'types'],
-      ['number', 'finnish'],
-      ['number', 'amount'],
+    for (const story of [
+      'widths',
+      'long-finnish',
+      'types',
+      'masked-personal-identity-number',
+      'masked-date',
     ] as const) {
-      await openStory(page, pageName, story)
-      expect(await hasHorizontalScroll(page), `${pageName}: ${story}`).toBe(false)
+      await openStory(page, 'textinput', story)
+      expect(await hasHorizontalScroll(page), story).toBe(false)
     }
   })
 
@@ -238,7 +232,7 @@ test.describe('Input focus and modes', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 320, height: 640 })
-    await openStory(page, 'input', 'widths')
+    await openStory(page, 'textinput', 'widths')
     await page.evaluate(() => {
       document.documentElement.style.fontSize = '200%'
     })
@@ -249,7 +243,7 @@ test.describe('Input focus and modes', () => {
   test('the expected answer stays visible in every width class, valid or invalid (1.4.12)', async ({
     page,
   }) => {
-    await openStory(page, 'input', 'widths')
+    await openStory(page, 'textinput', 'widths')
     await page.evaluate(() => {
       document.body.classList.add('kv-story-text-spacing')
       for (const input of document.querySelectorAll('.kv-input')) {
@@ -264,9 +258,9 @@ test.describe('Input focus and modes', () => {
   })
 })
 
-test.describe('Input accessibility', () => {
+test.describe('TextInput accessibility', () => {
   test('a11y tree of the types', async ({ page }) => {
-    await openStory(page, 'input', 'types')
+    await openStory(page, 'textinput', 'types')
     await expect(page.locator('.kv-story-form .kv-story-form')).toMatchAriaSnapshot(`
       - text: E-postadress
       - textbox "E-postadress"
@@ -281,7 +275,7 @@ test.describe('Input accessibility', () => {
     `)
   })
 
-  // The Input stories in each of the four themes, selected like the Mode and Contrast toolbars.
+  // The TextInput stories in each of the four themes, selected like the Mode and Contrast toolbars.
   const themes = [
     'mode:light;contrast:standard',
     'mode:dark;contrast:standard',
@@ -289,30 +283,29 @@ test.describe('Input accessibility', () => {
     'mode:dark;contrast:more',
   ] as const
   const stories: readonly (readonly [string, string, string?])[] = [
-    ['input', 'default'],
-    ['input', 'typing'],
-    ['input', 'types'],
-    ['input', 'widths'],
-    ['input', 'invalid'],
-    ['input', 'disabled'],
-    ['input', 'read-only'],
-    ['input', 'controlled'],
-    ['input', 'plain-form'],
-    ['input', 'on-surfaces'],
-    ['input', 'compact'],
-    ['input', 'long-finnish'],
-    ['input', 'rtl'],
-    ['input', 'forced-colors'],
-    ['number', 'whole-number'],
-    ['number', 'amount'],
-    ['number', 'reference-number'],
-    ['number', 'postcode'],
-    ['number', 'invalid'],
-    ['number', 'finnish'],
-    ['number', 'rtl'],
-    ['number', 'forced-colors'],
-    ...themes.map((theme) => ['input', 'forced-colors', theme] as const),
-    ...themes.map((theme) => ['input', 'on-surfaces', theme] as const),
+    ['textinput', 'default'],
+    ['textinput', 'keyboard'],
+    ['textinput', 'typing'],
+    ['textinput', 'types'],
+    ['textinput', 'widths'],
+    ['textinput', 'invalid'],
+    ['textinput', 'disabled'],
+    ['textinput', 'read-only'],
+    ['textinput', 'controlled'],
+    ['textinput', 'plain-form'],
+    ['textinput', 'on-surfaces'],
+    ['textinput', 'compact'],
+    ['textinput', 'masked-personal-identity-number'],
+    ['textinput', 'masked-postcode'],
+    ['textinput', 'masked-date'],
+    ['textinput', 'reference-number'],
+    ['textinput', 'inline-filter'],
+    ['textinput', 'inline-filter-compact'],
+    ['textinput', 'long-finnish'],
+    ['textinput', 'rtl'],
+    ['textinput', 'forced-colors'],
+    ...themes.map((theme) => ['textinput', 'forced-colors', theme] as const),
+    ...themes.map((theme) => ['textinput', 'on-surfaces', theme] as const),
   ]
 
   for (const [pageName, story, globals] of stories) {

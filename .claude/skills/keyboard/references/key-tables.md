@@ -6,7 +6,9 @@ These are starting points for a contract's Keyboard table. Every component also 
 
 ## Form inputs
 
-### Text input (Input, numbers as text, InputGroup)
+### Text input (TextInput, NumberInput, InputGroup)
+
+NumberInput is a text box too: its ArrowUp and ArrowDown move the caret and never step the value (`number-input.a11y.md`).
 
 | Key                                | Action                                                                 |
 | ---------------------------------- | ---------------------------------------------------------------------- |

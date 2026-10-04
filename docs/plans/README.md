@@ -42,3 +42,4 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0030](0030-rich-listbox-options.md)              | Rich Listbox options                                                        | Draft       |
 | [0031](0031-pointer-focus-on-text-inputs.md)      | Pointer focus on text inputs                                                | In progress |
 | [0032](0032-date-mask-and-masked-stories.md)      | A one-field date mask, and masks by default in the stories                  | Done        |
+| [0033](0033-text-input-and-number-input.md)      | TextInput and NumberInput                                                   | Done        |

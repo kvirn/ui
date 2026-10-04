@@ -5,7 +5,7 @@ import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
 import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
-import { Field, Input, KvirnProvider } from '@kvirn-ui/react'
+import { Field, KvirnProvider, TextInput } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 
 // Story and e2e fixture for the Components/Form pages (docs/design/form-fields.md §4.2, §4.3).
@@ -72,6 +72,9 @@ export interface FormTexts {
   rentWithUnit: string
   rentUnit: string
   rentUnitExample: (example: string) => string
+  /** The label of a number that can be below zero, and its hint with an example (a minus sign first). */
+  balance: string
+  balanceHint: (example: string) => string
   workTime: string
   workTimeUnit: string
   workTimeExample: string
@@ -146,6 +149,9 @@ const textsEn: FormTexts = {
   rentWithUnit: 'Monthly rent in kronor',
   rentUnit: 'kr',
   rentUnitExample: (example) => `For example, ${example}`,
+  balance: 'Balance on your account in kronor',
+  balanceHint: (example) =>
+    `If the balance is below zero, start with a minus sign, like ${example}.`,
   workTime: 'Working hours as a percentage of full time',
   workTimeUnit: '%',
   workTimeExample: 'For example, 75 or 37.5',
@@ -218,6 +224,9 @@ const textsSv: FormTexts = {
   rentWithUnit: 'Månadshyra i kronor',
   rentUnit: 'kr',
   rentUnitExample: (example) => `Till exempel ${example}`,
+  balance: 'Saldo på ditt konto i kronor',
+  balanceHint: (example) =>
+    `Om saldot är på minus skriver du ett minustecken först, till exempel ${example}.`,
   workTime: 'Arbetstid i procent av heltid',
   workTimeUnit: '%',
   workTimeExample: 'Till exempel 75 eller 37,5',
@@ -293,6 +302,9 @@ const textsFi: FormTexts = {
   rentWithUnit: 'Kuukausivuokra kruunuina',
   rentUnit: 'kr',
   rentUnitExample: (example) => `Esimerkiksi ${example}`,
+  balance: 'Tilisi saldo kruunuina',
+  balanceHint: (example) =>
+    `Jos saldo on miinuksella, kirjoita ensin miinusmerkki, esimerkiksi ${example}.`,
   workTime: 'Työaika prosentteina kokoaikatyöstä',
   workTimeUnit: '%',
   workTimeExample: 'Esimerkiksi 75 tai 37,5',
@@ -365,6 +377,9 @@ const textsNb: FormTexts = {
   rentWithUnit: 'Månedlig husleie i kroner',
   rentUnit: 'kr',
   rentUnitExample: (example) => `For eksempel ${example}`,
+  balance: 'Saldo på kontoen din i kroner',
+  balanceHint: (example) =>
+    `Hvis saldoen er negativ, skriver du et minustegn først, for eksempel ${example}.`,
   workTime: 'Arbeidstid i prosent av full stilling',
   workTimeUnit: '%',
   workTimeExample: 'For eksempel 75 eller 37,5',
@@ -437,6 +452,9 @@ const textsNn: FormTexts = {
   rentWithUnit: 'Månadleg husleige i kroner',
   rentUnit: 'kr',
   rentUnitExample: (example) => `Til dømes ${example}`,
+  balance: 'Saldo på kontoen din i kroner',
+  balanceHint: (example) =>
+    `Viss saldoen er negativ, skriv eit minusteikn først, til dømes ${example}.`,
   workTime: 'Arbeidstid i prosent av full stilling',
   workTimeUnit: '%',
   workTimeExample: 'Til dømes 75 eller 37,5',
@@ -563,27 +581,27 @@ export function FieldStates({ locale }: { locale: FormLocale }) {
         <Field.Prose>
           <p>{text.nameHint}</p>
         </Field.Prose>
-        <Input name="name" autoComplete="name" />
+        <TextInput name="name" autoComplete="name" />
       </Field.Root>
       <Field.Root required invalid>
         <Field.Label>{text.email}</Field.Label>
         <Field.Prose>
           <p>{text.emailHint}</p>
         </Field.Prose>
-        <Input name="email" type="email" autoComplete="email" defaultValue="anna@" />
+        <TextInput name="email" type="email" autoComplete="email" defaultValue="anna@" />
         <Field.ErrorMessage>{text.emailError}</Field.ErrorMessage>
       </Field.Root>
       <Field.Root>
         <Field.Label>{text.phone}</Field.Label>
-        <Input name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
+        <TextInput name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
       </Field.Root>
       <Field.Root required disabled>
         <Field.Label>{text.registration}</Field.Label>
-        <Input name="registration" defaultValue="ABC 123" className="kv-input--width-10" />
+        <TextInput name="registration" defaultValue="ABC 123" className="kv-input--width-10" />
       </Field.Root>
       <Field.Root required>
         <Field.Label>{text.personalNumber}</Field.Label>
-        <Input name="personal-number" readOnly defaultValue="19900101-1234" />
+        <TextInput name="personal-number" readOnly defaultValue="19900101-1234" />
         <Field.Hint>{text.personalNumberHint}</Field.Hint>
       </Field.Root>
     </div>

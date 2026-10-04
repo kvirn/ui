@@ -80,14 +80,14 @@ import { Field, OneTimeCode } from '@kvirn-ui/react'
 - **Countdowns, "Send a new code" and timeouts aren't part of it.** They belong to the login and verification blocks (M4), which must warn before a code expires (2.2.1).
 - **Don't disable paste, don't use `type="password"`,** and keep `autocomplete="one-time-code"` (3.3.8).
 
-A plain `<Input mask={masks.oneTimeCode({ pattern: '999999' })} />` is a valid choice too (the GOV.UK "security code" pattern), and is what the theme shows in the fallback anyway.
+A plain `<TextInput mask={masks.oneTimeCode({ pattern: '999999' })} />` is a valid choice too (the GOV.UK "security code" pattern), and is what the theme shows in the fallback anyway.
 
 ### Classes and state for the default theme
 
 | Class / attribute            | On                          | Sets                                                                                                                                                          |
 | ---------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `kv-one-time-code`           | Root                        | the row of boxes, and the container that decides whether they fit                                                                                             |
-| `kv-one-time-code-input`     | Input                       | the one input: invisible and under the boxes, or in the fallback exactly an `Input` with the code's width                                                     |
+| `kv-one-time-code-input`     | Input                       | the one input: invisible and under the boxes, or in the fallback exactly a `TextInput` with the code's width                                                  |
 | `kv-one-time-code-separator` | Slot (a `-` of the pattern) | the dash between two groups: `aria-hidden`, shows `-`, no state                                                                                               |
 | `kv-one-time-code-slot`      | Slot                        | one box: 44px (32px compact) and shrinks to 32px, `md` radius, a 1px `border-control` edge                                                                    |
 | `data-character-count`       | Root                        | the number of character symbols in the pattern (`8` for `****-****`), always rendered. The theme sizes the row and picks the fallback from it                 |
@@ -125,7 +125,7 @@ function Code() {
 }
 ```
 
-It returns `rootProps`, `inputProps`, `getSlotProps(index)`, `slots` (one per position of the pattern, each `{ kind, character, isFilled, isActive, caret, isSelected }`, where `kind` is `'character'` or `'separator'`), `value`, `pattern`, `characterCount` (the pattern without its dashes), `isComplete`, `isReady`, `isInvalid` and `isDisabled`. It reads the nearest Field, and builds on [`useMask`](../input/input.md) with `masks.oneTimeCode({ pattern })`. Use `mergeProps` when you have your own ref or handlers on the input: handlers chain and refs merge.
+It returns `rootProps`, `inputProps`, `getSlotProps(index)`, `slots` (one per position of the pattern, each `{ kind, character, isFilled, isActive, caret, isSelected }`, where `kind` is `'character'` or `'separator'`), `value`, `pattern`, `characterCount` (the pattern without its dashes), `isComplete`, `isReady`, `isInvalid` and `isDisabled`. It reads the nearest Field, and builds on [`useMask`](../text-input/text-input.md) with `masks.oneTimeCode({ pattern })`. Use `mergeProps` when you have your own ref or handlers on the input: handlers chain and refs merge.
 
 ### `render`
 

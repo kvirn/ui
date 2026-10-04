@@ -11,31 +11,31 @@ import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { useMaskedInput } from '../mask/use-mask.ts'
 import { renderPart } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
-import { useInput } from './use-input.ts'
-import type { InputChangeDetails, InputType } from './use-input.ts'
+import { useTextInput } from './use-text-input.ts'
+import type { TextInputChangeDetails, TextInputType } from './use-text-input.ts'
 
-export type { InputChangeDetails, InputType } from './use-input.ts'
+export type { TextInputChangeDetails, TextInputType } from './use-text-input.ts'
 
 /** What `render` receives as its second argument. */
-export interface InputState {
+export interface TextInputState {
   isInvalid: boolean
   isRequired: boolean
   isDisabled: boolean
   isFocusVisible: boolean
 }
 
-export interface InputProps extends Omit<
+export interface TextInputProps extends Omit<
   ComponentPropsWithRef<'input'>,
   'type' | 'value' | 'defaultValue'
 > {
   /** Default `'text'`. Never `number` or `date`. */
-  type?: InputType | undefined
+  type?: TextInputType | undefined
   /** Controlled: the value from your form state. */
   value?: string | undefined
   /** Uncontrolled: the native input keeps the value, and a form submit sends it. */
   defaultValue?: string | undefined
   /** Reports each change, with `{ reason: 'input', event }`. `onChange` still works too. */
-  onValueChange?: ((value: string, details: InputChangeDetails) => void) | undefined
+  onValueChange?: ((value: string, details: TextInputChangeDetails) => void) | undefined
   /**
    * Shapes what the user types: a preset from `masks`, or your own. The input stays
    * native, so paste, autofill and undo work. `onValueChange` then also gets `unmaskedValue`,
@@ -50,7 +50,7 @@ export interface InputProps extends Omit<
   announceRejections?: boolean | undefined
   /** With a `mask`: per-instance overrides for the rejection announcements. */
   messages?: Partial<KvirnMessages['mask']> | undefined
-  render?: RenderProp<ComponentPropsWithRef<'input'>, InputState> | undefined
+  render?: RenderProp<ComponentPropsWithRef<'input'>, TextInputState> | undefined
 }
 
 function hasNameSource(input: HTMLInputElement): boolean {
@@ -64,17 +64,17 @@ function hasNameSource(input: HTMLInputElement): boolean {
 
 /**
  * A native text `<input>`, wired to its Field: the label names it, and the hint and error
- * describe it (contract: input.a11y.md). It holds no form state: pass `value` and
+ * describe it (contract: text-input.a11y.md). It holds no form state: pass `value` and
  * `onValueChange`, or `defaultValue` and `name` for a plain form, or spread your form library's
- * props. Numbers are text with `inputMode`.
+ * props. For a quantity or an amount, use NumberInput.
  *
  * @example
  * <Field.Root>
  *   <Field.Label>Antal barn</Field.Label>
- *   <Input name="children" inputMode="numeric" spellCheck={false} className="kv-input--width-2" />
+ *   <TextInput name="children" inputMode="numeric" spellCheck={false} className="kv-input--width-2" />
  * </Field.Root>
  */
-export function Input({
+export function TextInput({
   type,
   disabled,
   onValueChange,
@@ -86,10 +86,10 @@ export function Input({
   render,
   ref,
   ...otherProps
-}: InputProps): ReactElement {
+}: TextInputProps): ReactElement {
   const field = useContext(FieldContext)
   // With a mask the mask's handler reports, so `onValueChange` is called once, with its details.
-  const input = useInput({
+  const input = useTextInput({
     type,
     disabled,
     onValueChange: mask === undefined ? onValueChange : undefined,
@@ -103,8 +103,8 @@ export function Input({
   useEffect(() => {
     if (field !== null && id !== undefined) {
       warnOnce(
-        'input-id-in-field',
-        `An Input inside a Field got id="${id}", which is ignored so the Field's label and hint stay linked. Set the id with controlId on Field.Root.`,
+        'text-input-id-in-field',
+        `A TextInput inside a Field got id="${id}", which is ignored so the Field's label and hint stay linked. Set the id with controlId on Field.Root.`,
       )
     }
   }, [field, id])
@@ -115,13 +115,13 @@ export function Input({
     }
     if (field !== null) {
       warnOnce(
-        'input-in-field-without-label',
-        'An Input in a Field has no Field.Label, so it has no accessible name (WCAG 1.3.1, 4.1.2). Add <Field.Label> to the Field.',
+        'text-input-in-field-without-label',
+        'A TextInput in a Field has no Field.Label, so it has no accessible name (WCAG 1.3.1, 4.1.2). Add <Field.Label> to the Field.',
       )
     } else {
       warnOnce(
-        'input-without-name',
-        'An Input has no accessible name. A placeholder isn’t a label: it disappears when the user types (WCAG 3.3.2). Put it in a Field with a Field.Label, or give it aria-labelledby.',
+        'text-input-without-name',
+        'A TextInput has no accessible name. A placeholder isn’t a label: it disappears when the user types (WCAG 3.3.2). Put it in a Field with a Field.Label, or give it aria-labelledby.',
       )
     }
   })
@@ -135,16 +135,16 @@ export function Input({
     }
     if (type === 'email' && mask.attributes.inputMode !== 'email') {
       warnOnce(
-        'input-mask-on-email',
-        'A mask other than masks.email() is on an Input with type="email". The browser has no selection API for it, so the caret can’t be kept while the mask rewrites the value. Use type="text" with inputMode="email", or masks.email().',
+        'text-input-mask-on-email',
+        'A mask other than masks.email() is on a TextInput with type="email". The browser has no selection API for it, so the caret can’t be kept while the mask rewrites the value. Use type="text" with inputMode="email", or masks.email().',
       )
     }
     if (controlId !== undefined && !hasDescriptionText) {
       const prefix = `${controlId}-description`
       if (element.ownerDocument.querySelector(`[id^="${CSS.escape(prefix)}"]`) === null) {
         warnOnce(
-          'input-mask-without-description',
-          'A masked Input in a Field has no hint. The mask shapes what is typed, but it doesn’t explain the format: say it in a visible hint, a <Field.Hint> under the control, with an example (WCAG 3.3.2).',
+          'text-input-mask-without-description',
+          'A masked TextInput in a Field has no hint. The mask shapes what is typed, but it doesn’t explain the format: say it in a visible hint, a <Field.Hint> under the control, with an example (WCAG 3.3.2).',
         )
       }
     }
@@ -177,4 +177,4 @@ export function Input({
     },
   })
 }
-Input.displayName = 'Input'
+TextInput.displayName = 'TextInput'

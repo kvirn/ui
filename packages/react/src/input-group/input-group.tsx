@@ -4,8 +4,8 @@ import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { Input } from '../input/input.tsx'
-import type { InputProps } from '../input/input.tsx'
+import { TextInput } from '../text-input/text-input.tsx'
+import type { TextInputProps } from '../text-input/text-input.tsx'
 import { renderPart } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
 import { inputGroupAddonProps, useInputGroup } from './use-input-group.ts'
@@ -36,7 +36,7 @@ const focusableSelector =
 
 /**
  * The input's box (contract: input-group.a11y.md): one `<div class="kv-input-group">`
- * that draws the edge, the invalid and disabled state and the focus ring around an `Input` and
+ * that draws the edge, the invalid and disabled state and the focus ring around a `TextInput` and
  * its addons. Put a unit or an icon in an `InputGroup.Addon`, and a Button (clear, show password)
  * directly in the Root. It holds no form state.
  *
@@ -120,11 +120,11 @@ export function InputGroupAddon({
 InputGroupAddon.displayName = 'InputGroup.Addon'
 
 /**
- * The box's input: the shared `Input` under the group's name, laid out by the box. It reads its
+ * The box's input: the shared `TextInput` under the group's name, laid out by the box. It reads its
  * Field and label the same way, so nothing else changes.
  */
-export function InputGroupInput(props: InputProps): ReactElement {
-  return <Input {...props} />
+export function InputGroupInput(props: TextInputProps): ReactElement {
+  return <TextInput {...props} />
 }
 InputGroupInput.displayName = 'InputGroup.Input'
 

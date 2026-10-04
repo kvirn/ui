@@ -1,5 +1,5 @@
-import { Input } from '@kvirn-ui/react'
-import contract from '../../../../../packages/react/src/input/input.a11y.md?raw'
+import { TextInput } from '@kvirn-ui/react'
+import contract from '../../../../../packages/react/src/text-input/text-input.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor } from 'storybook/test'
 import {
@@ -16,7 +16,7 @@ import {
   withMaskLocale,
 } from './mask.fixture.tsx'
 
-// Components/Form/Mask: an Input with a `mask` (Plan 0014). The input stays a native
+// Components/Form/Mask: a TextInput with a `mask` (Plan 0014). The input stays a native
 // <input>: paste, autofill and undo keep working, nothing is clamped or corrected, and a
 // refused character is announced politely (4.1.3) through the KvirnProvider's live region. The
 // mask shapes what is typed. It doesn't explain the format, so every field has a hint that does
@@ -25,7 +25,7 @@ import {
 
 const meta = {
   title: 'Components/Form/Mask',
-  component: Input,
+  component: TextInput,
   globals: { locale: 'sv' },
   argTypes: {
     mask: { control: false, description: 'A preset from `masks`, or your own pattern or regexp.' },
@@ -38,7 +38,7 @@ const meta = {
   },
   decorators: [withMaskLocale],
   parameters: { a11yContract: contract },
-} satisfies Meta<typeof Input>
+} satisfies Meta<typeof TextInput>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -171,7 +171,7 @@ export const PersonalIdentityNumberCheck: Story = {
 }
 
 /**
- * A stored value is the plain one. `mask.format()` shows it with its separators, and Input
+ * A stored value is the plain one. `mask.format()` shows it with its separators, and TextInput
  * renders the controlled `value` exactly as given: it never rewrites it.
  */
 export const StoredValue: Story = {

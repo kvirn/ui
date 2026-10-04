@@ -1,10 +1,10 @@
 # Accessibility contract: InputGroup (Root, Addon)
 
-- **APG pattern:** none. An input group is a visual wrapper around a native text input. The name, description and state come from HTML and the Field (`field.a11y.md`, `input.a11y.md`). A Button inside it follows the APG Button pattern (`button.a11y.md`).
+- **APG pattern:** none. An input group is a visual wrapper around a native text input. The name, description and state come from HTML and the Field (`field.a11y.md`, `text-input.a11y.md`). A Button inside it follows the APG Button pattern (`button.a11y.md`).
 - **Deviations:** none from APG. Decisions (forms skill): Addons are visual only and `aria-hidden`, interactive add-ons are real Buttons directly in the Root, start and end follow DOM order.
 - **Native elements used:** `<div>` (Root, no role), `<span>` (Addon, `aria-hidden`), the `<input>` (Input), and an optional `<button>` (Button) placed directly in the Root.
 - **Status:** alpha candidate (Plan 0013, Phase 1b). Gates pass, accessibility-reviewer pending. Manual AT is `pending`.
-- **Tests:** `input-group.test.tsx` next to this file. `input-group.stories.tsx` and `input-group.e2e.ts` in `apps/storybook/src/components/input-group/`, and `AmountWithUnit` in `number.stories.tsx`.
+- **Tests:** `input-group.test.tsx` next to this file. `input-group.stories.tsx` and `input-group.e2e.ts` in `apps/storybook/src/components/input-group/`, and `AmountWithUnit` in `number-input.stories.tsx`.
 
 An InputGroup puts a unit ("kr", "%", "km"), a decorative icon or a Button inside the input's box. The Root draws the box: the edge, the radius, the invalid and disabled state and the focus ring. Addons are visual only. The label always carries the meaning, so a screen-reader user never needs the Addon: "Månadshyra i kronor", never "Månadshyra" plus a "kr" Addon.
 
@@ -14,7 +14,7 @@ An InputGroup puts a unit ("kr", "%", "km"), a decorative icon or a Button insid
 | ------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | InputGroup.Root     | `<div>`, no role                                    | none. `data-invalid` and `data-disabled` from the nearest Field, `data-focus-visible` while the Input has keyboard focus | Class `kv-input-group`. Props: `invalid`, `disabled` (default: the Field's), `render`. No role: it holds one control, and an unnamed `group` would only add noise. Holds no form state                                                                                |
 | InputGroup.Addon    | `<span>`, hidden from the accessibility tree        | `aria-hidden="true"`                                                                                                     | Class `kv-input-group-addon`. A short unit or a decorative Icon. Never focusable (a dev warning fires when it contains focusable content), never the only place a meaning lives. At the start when it comes first in the DOM, and on the right in RTL. No `side` prop |
-| the Input           | `<input>` (`input.a11y.md`)                         | as in `input.a11y.md`. The Addon's text is **not** in its name or description                                            | Width classes stay on the Input. The Input has no edge or ring of its own: the Root draws them                                                                                                                                                                        |
+| the Input           | `<input>` (`text-input.a11y.md`)                    | as in `text-input.a11y.md`. The Addon's text is **not** in its name or description                                       | Width classes stay on the Input. The Input has no edge or ring of its own: the Root draws them                                                                                                                                                                        |
 | a Button (optional) | `<button>` (`button.a11y.md`), directly in the Root | its own name and Tab stop                                                                                                | Never inside an Addon. A text Button's name is its visible text ("Rensa"). An icon-only Button has an `aria-label` from your translations ("Rensa sökningen")                                                                                                         |
 | `useInputGroup`     | the same attributes, for your own elements          | `rootProps`, `addonProps`                                                                                                | Options: `invalid`, `disabled`. Also returns `isInvalid`, `isDisabled`, `isFocusVisible`. Spread `rootProps` on the box and `addonProps` on each Addon                                                                                                                |
 
@@ -54,7 +54,7 @@ Escape, arrow keys and Home / End keep the native text-field behaviour in the in
 
 ## Announcements
 
-None. Nothing is live. The Input's name, description and state are read on focus, as in `input.a11y.md`. Clearing a search announces nothing: the focused, empty Input is read as such.
+None. Nothing is live. The Input's name, description and state are read on focus, as in `text-input.a11y.md`. Clearing a search announces nothing: the focused, empty Input is read as such.
 
 ## Consumer responsibilities
 
@@ -64,7 +64,7 @@ None. Nothing is live. The Input's name, description and state are read on focus
 - **Interactive add-ons are Buttons placed directly in `InputGroup.Root`,** never inside an Addon. Give each a visible text name or, if it is icon-only, an `aria-label` from your translations. Disable the Button when the Field is disabled.
 - **A clear Button renders only while there's a value,** and on activation empties the value and moves focus to the Input. Don't add a clear Button to a read-only group.
 - **Don't set `inputMode="numeric"` on a date field with separators:** the iOS number pad has no "-" or ".".
-- Everything in `input.a11y.md` and `field.a11y.md` still applies: a visible label, `autocomplete`, errors in text, never blocking paste.
+- Everything in `text-input.a11y.md` and `field.a11y.md` still applies: a visible label, `autocomplete`, errors in text, never blocking paste.
 
 ## Visual / modes
 

@@ -3,7 +3,7 @@ import { Button } from '../button/button.tsx'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { Field } from '../field/field.tsx'
-import { Input } from '../input/input.tsx'
+import { TextInput } from '../text-input/text-input.tsx'
 import { InputGroup } from '../input-group/input-group.tsx'
 import { OneTimeCode } from '../one-time-code/one-time-code.tsx'
 
@@ -14,8 +14,8 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
   test('Input: a click sets data-focused only, Tab adds data-focus-visible', async () => {
     await render(
       <>
-        <Input aria-label="Ett" />
-        <Input aria-label="Två" />
+        <TextInput aria-label="Ett" />
+        <TextInput aria-label="Två" />
       </>,
     )
     const first = page.getByRole('textbox', { name: 'Ett' })
@@ -37,7 +37,7 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
         <button type="button" onClick={() => target?.focus()}>
           Ändra
         </button>
-        <Input
+        <TextInput
           aria-label="Namn"
           ref={(element) => {
             target = element
@@ -55,7 +55,7 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
     await render(
       <>
         <p>Fyll i ditt namn.</p>
-        <Input aria-label="Namn" />
+        <TextInput aria-label="Namn" />
       </>,
     )
     await userEvent.click(page.getByText('Fyll i ditt namn.'))
@@ -87,7 +87,7 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">Namn</Field.Label>
-        <Input />
+        <TextInput />
       </Field.Root>,
     )
     await userEvent.click(page.getByText('Namn', { exact: true }))
@@ -102,7 +102,7 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
       <>
         <button type="button">Före</button>
         <InputGroup.Root data-testid="root">
-          <Input aria-label="Månadshyra i kronor" />
+          <TextInput aria-label="Månadshyra i kronor" />
           <InputGroup.Addon>kr</InputGroup.Addon>
         </InputGroup.Root>
       </>,

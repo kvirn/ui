@@ -4,9 +4,9 @@ import {
   DateInput,
   Field,
   Fieldset,
-  Input,
   KvirnProvider,
   masks,
+  TextInput,
   useDateInput,
 } from '@kvirn-ui/react'
 import type { DateInputRootProps, DateInputValue } from '@kvirn-ui/react'
@@ -331,7 +331,7 @@ export function OneFieldDate({ locale }: { locale: FormLocale }) {
     <div className="kv-story-form" lang={lang}>
       <Field.Root required>
         <Field.Label>{text.oneFieldLabel}</Field.Label>
-        <Input
+        <TextInput
           name="start"
           mask={masks.date()}
           className="kv-input--width-10"

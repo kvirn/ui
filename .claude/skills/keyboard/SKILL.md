@@ -20,10 +20,10 @@ Load this together with the `accessibility` skill (roles, names, focus visibilit
 6. **Storybook** (Plan 0015). Never copy the table into a story or MDX by hand.
    - The stories file imports its contract and passes it to the Docs page:
      ```tsx
-     import contract from '../../../../../packages/react/src/input/input.a11y.md?raw'
-     const meta = { …, parameters: { a11yContract: contract } } satisfies Meta<typeof Input>
+     import contract from '../../../../../packages/react/src/text-input/text-input.a11y.md?raw'
+     const meta = { …, parameters: { a11yContract: contract } } satisfies Meta<typeof TextInput>
      ```
-     Parts documented in another component's contract (Label, Description and ErrorMessage in `field.a11y.md`, Number in `input.a11y.md`) import that one.
+     Parts documented in another component's contract (Label, Description and ErrorMessage in `field.a11y.md`) import that one.
    - The Docs page template renders the contract's Keyboard section (`<KeyboardSection />`, after Controls): the focus lines, and the table with Key, Context and Action. Keys show in `<kbd>`.
    - A component with a focusable part has a story named `Keyboard`: the fixture its e2e keyboard tests drive, with a JSDoc that says to try the keys in the table.
    - `tooling/keyboard-docs` fails `vp test run` when a stories file has no contract, a contract is used by no stories file, a contract has no valid Keyboard section, a focusable component has no Tab or Shift+Tab row, or a row has no test.
@@ -49,16 +49,16 @@ In `<name>.a11y.md`, under `## Keyboard`:
 - **Arrows wrap:** n/a | yes | no
 - **Shortcuts:** none
 
-| Key       | Context        | Action                                | Test                                   |
-| --------- | -------------- | ------------------------------------- | -------------------------------------- |
-| Tab       | before the box | Moves focus into the input            | `input.e2e.ts › Tab focuses the input` |
-| Shift+Tab | in the input   | Moves focus to the previous focusable | `input.e2e.ts › Shift+Tab leaves …`    |
+| Key       | Context        | Action                                | Test                                        |
+| --------- | -------------- | ------------------------------------- | ------------------------------------------- |
+| Tab       | before the box | Moves focus into the input            | `text-input.e2e.ts › Tab focuses the input` |
+| Shift+Tab | in the input   | Moves focus to the previous focusable | `text-input.e2e.ts › Shift+Tab leaves …`    |
 ```
 
 - Key names: `Tab`, `Shift+Tab`, `Enter`, `Space`, `Escape`, `ArrowUp`, `ArrowDown`, `ArrowLeft`, `ArrowRight`, `Home`, `End`, `PageUp`, `PageDown`, `Control+Home`, and `Control/Command+A` for platform pairs. RTL flips are their own rows or say "(flips in RTL)".
 - **Action** says what the user gets, not what the code does.
 - A component with no focusable part starts the section with exactly `This component has no focusable parts and handles no keys.` and has no focus lines. It may keep Tab rows that prove Tab passes over it. The Docs page shows the sentence.
-- A wrapper whose focusable part is another component (Field around Input) says which component owns the keys and links that contract.
+- A wrapper whose focusable part is another component (Field around TextInput) says which component owns the keys and links that contract.
 
 ## Maintainer preferences
 

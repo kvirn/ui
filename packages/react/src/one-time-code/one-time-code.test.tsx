@@ -18,7 +18,7 @@ import type {
   UseOneTimeCodeOptions,
   UseOneTimeCodeResult,
 } from '../index.ts'
-import type { InputChangeDetails } from '../input/use-input.ts'
+import type { TextInputChangeDetails } from '../text-input/use-text-input.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { useOneTimeCode } from './use-one-time-code.ts'
 
@@ -47,7 +47,7 @@ interface CodeFieldProps {
   invalid?: boolean
   disabled?: boolean
   readOnly?: boolean
-  onValueChange?: (value: string, details: InputChangeDetails) => void
+  onValueChange?: (value: string, details: TextInputChangeDetails) => void
   onComplete?: (value: string, unmaskedValue: string) => void
   inputRef?: Ref<HTMLInputElement>
   /** Rendered after the field, inside the form: a submit button, for the Enter test. */
@@ -473,7 +473,7 @@ describe('typing, paste and autofill', () => {
 
 describe('value, defaultValue and onValueChange', () => {
   test('onValueChange gets the masked value and the mask details', async () => {
-    const reports: { value: string; details: InputChangeDetails }[] = []
+    const reports: { value: string; details: TextInputChangeDetails }[] = []
     await render(
       <CodeField
         onValueChange={(value, details) => {
@@ -792,7 +792,7 @@ describe('patterns with separators', () => {
   })
 
   test('onValueChange and onComplete get the value with the dash, and the code without it', async () => {
-    const reports: { value: string; details: InputChangeDetails }[] = []
+    const reports: { value: string; details: TextInputChangeDetails }[] = []
     const onComplete = vi.fn<(value: string, unmaskedValue: string) => void>()
     await render(
       <CodeField

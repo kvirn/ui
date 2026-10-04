@@ -128,7 +128,7 @@ export function createNumberEngine(definition: NumberMaskDefinition): MaskEngine
 
     const recorder = createOutcomeRecorder(value, (character, start, end, record) => {
       const inserted = isInserted(context, start)
-      const reject = (reason: 'digits' | 'other' | 'length'): void => {
+      const reject = (reason: 'digits' | 'other' | 'decimals'): void => {
         if (context.isCanonical === true && !whitespacePattern.test(character)) isHalted = true
         record.reject(start, end, character, reason, false)
       }
@@ -140,9 +140,9 @@ export function createNumberEngine(definition: NumberMaskDefinition): MaskEngine
         return
       }
       if (context.skipped.has(start)) {
-        // Only a digit is refused because the value is full. A mark or a sign is refused because
-        // it doesn't fit where it is.
-        reject(isDigit(character) ? 'length' : 'other')
+        // Only a digit is refused because the decimals are full. A mark or a sign is refused
+        // because it doesn't fit where it is.
+        reject(isDigit(character) ? 'decimals' : 'other')
         return
       }
       if (isDigit(character)) {
@@ -152,7 +152,7 @@ export function createNumberEngine(definition: NumberMaskDefinition): MaskEngine
         }
         if (hasDecimalMark) {
           if (fractionDigits.length >= decimals) {
-            reject('length')
+            reject('decimals')
             return
           }
           fractionDigits += character

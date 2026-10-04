@@ -8,7 +8,7 @@ import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
 import { Fieldset } from '../fieldset/fieldset.tsx'
 import { Heading } from '../heading/heading.tsx'
-import { Input } from '../input/input.tsx'
+import { TextInput } from '../text-input/text-input.tsx'
 import { Prose, ProseRoot } from './prose.tsx'
 import { useProse } from './use-prose.ts'
 
@@ -76,7 +76,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
         <Field.Prose data-testid="hint">
           <p>12 siffror, utan bindestreck.</p>
         </Field.Prose>
-        <Input name="pnr" />
+        <TextInput name="pnr" />
       </Field.Root>,
     )
     const hint = page.getByTestId('hint').element()
@@ -91,7 +91,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
       <Field.Root invalid>
         <Field.Label>Registreringsnummer</Field.Label>
         <Field.Prose data-testid="first">Det står på registreringsbeviset.</Field.Prose>
-        <Input name="registration" />
+        <TextInput name="registration" />
         <Field.Prose data-testid="second">Till exempel ABC 123</Field.Prose>
         <Field.ErrorMessage>Ange numret</Field.ErrorMessage>
       </Field.Root>,
@@ -115,7 +115,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
         <Field.Root>
           <Field.Label>Namn</Field.Label>
           {showFirst ? <Field.Prose>Först.</Field.Prose> : null}
-          <Input />
+          <TextInput />
           <Field.Prose>Sist.</Field.Prose>
         </Field.Root>
       )
@@ -157,7 +157,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
         <Field.Root>
           <Field.Label>Gata</Field.Label>
           <Field.Prose>Utan nummer.</Field.Prose>
-          <Input />
+          <TextInput />
         </Field.Root>
       </Fieldset.Root>,
     )
@@ -179,7 +179,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
           </ul>
           <a href="/hjalp">Hjälp</a>
         </Field.Prose>
-        <Input />
+        <TextInput />
       </Field.Root>,
     )
     const input = page.getByRole('textbox')
@@ -200,7 +200,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
         >
           Som i passet.
         </Field.Prose>
-        <Input />
+        <TextInput />
         <Field.ErrorMessage>Ange namn</Field.ErrorMessage>
       </Field.Root>,
     )
@@ -219,7 +219,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
         <Field.Prose ref={ref} data-testid="hint">
           Som i passet.
         </Field.Prose>
-        <Input />
+        <TextInput />
       </Field.Root>,
     )
     expect(ref.current).toBe(page.getByTestId('hint').element())
@@ -242,7 +242,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
         <Field.Prose>
           <p>12 siffror, utan bindestreck.</p>
         </Field.Prose>
-        <Input name="pnr" />
+        <TextInput name="pnr" />
         <Field.ErrorMessage>Ange ditt personnummer</Field.ErrorMessage>
       </Field.Root>,
     )
@@ -259,7 +259,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
         </Fieldset.Prose>
         <Field.Root>
           <Field.Label marker="none">E-post</Field.Label>
-          <Input type="email" />
+          <TextInput type="email" />
         </Field.Root>
       </Fieldset.Root>,
     )

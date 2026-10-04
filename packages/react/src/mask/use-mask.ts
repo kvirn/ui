@@ -11,7 +11,7 @@ import type {
 } from 'react'
 import { useQuietAnnouncer, warnAnnouncerMissing } from '../announcer/use-announcer.ts'
 import { FieldContext } from '../field/field-context.ts'
-import type { InputChangeDetails } from '../input/use-input.ts'
+import type { TextInputChangeDetails } from '../text-input/use-text-input.ts'
 import { useLocale } from '../provider/use-locale.ts'
 import { useMessages } from '../provider/use-messages.ts'
 
@@ -23,7 +23,7 @@ export interface UseMaskOptions {
    * details: `unmaskedValue`, `isComplete`, `isWithinRange` (number masks) and `rejected`. It
    * only reports: the value lives in your form state, or in the native input.
    */
-  onValueChange?: ((value: string, details: InputChangeDetails) => void) | undefined
+  onValueChange?: ((value: string, details: TextInputChangeDetails) => void) | undefined
   /**
    * Announce, politely and at most once every few seconds per field, when the mask drops
    * characters (4.1.3). Default `true`. Turn it off when you show your own message. Needs a
@@ -60,7 +60,7 @@ export interface UseMaskResult {
   unmask: (value: string) => string
 }
 
-/** Internal. `mask` may be `undefined` so `Input` can call the hook without a mask. */
+/** Internal. `mask` may be `undefined` so `TextInput` can call the hook without a mask. */
 export interface UseMaskInternalOptions extends Omit<UseMaskOptions, 'mask'> {
   mask: Mask | undefined
 }
@@ -105,7 +105,7 @@ export function useMaskedInput({
   const hasMask = mask !== undefined
   const ref = useCallback<RefCallback<HTMLInputElement>>(
     (element) => {
-      // No mask, nothing to track: an unmasked Input pays nothing for the hook.
+      // No mask, nothing to track: an unmasked TextInput pays nothing for the hook.
       if (element === null || !hasMask) {
         return undefined
       }
@@ -155,11 +155,21 @@ export function useMaskedInput({
 
       if (announceRejections && result.rejected.length > 0) {
         // Say why a character was refused before saying the field is full.
-        const reported = result.rejected.find((rejection) => rejection.reason !== 'length')
-        const message =
-          reported === undefined || reported.reason === 'length'
-            ? maskMessages.maximumLength({ length: result.unmaskedValue.length })
-            : maskMessages.characterNotAllowed({ allowed: reported.reason })
+        const reported = result.rejected.find(
+          (rejection) => rejection.reason !== 'length' && rejection.reason !== 'decimals',
+        )
+        let message: string
+        if (
+          reported !== undefined &&
+          reported.reason !== 'length' &&
+          reported.reason !== 'decimals'
+        ) {
+          message = maskMessages.characterNotAllowed({ allowed: reported.reason })
+        } else if (result.rejected.some((rejection) => rejection.reason === 'decimals')) {
+          message = maskMessages.maximumDecimals
+        } else {
+          message = maskMessages.maximumLength({ length: result.unmaskedValue.length })
+        }
         if (isAvailable) {
           announce(message, { key: throttleKey })
         } else {

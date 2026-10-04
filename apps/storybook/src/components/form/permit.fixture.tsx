@@ -1,4 +1,12 @@
-import { Button, Checkbox, CheckboxGroup, Field, Heading, Input, RadioGroup } from '@kvirn-ui/react'
+import {
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  Field,
+  Heading,
+  RadioGroup,
+  TextInput,
+} from '@kvirn-ui/react'
 import { useId, useState } from 'react'
 import { BirthDate } from '../date-input/date-input.fixture.tsx'
 import { choiceTextsFor } from './choice.fixture.tsx'
@@ -100,7 +108,7 @@ export function PermitForm({ locale, errors = false, showSubmits = false }: Perm
 
       <Field.Root required invalid={errors}>
         <Field.Label>{text.name}</Field.Label>
-        <Input name="name" autoComplete="name" />
+        <TextInput name="name" autoComplete="name" />
         <Field.ErrorMessage>{text.nameError}</Field.ErrorMessage>
       </Field.Root>
 
@@ -111,7 +119,7 @@ export function PermitForm({ locale, errors = false, showSubmits = false }: Perm
         <Field.Prose>
           <p>{text.registrationWhere}</p>
         </Field.Prose>
-        <Input
+        <TextInput
           name="registration"
           autoCapitalize="characters"
           autoComplete="off"
@@ -126,12 +134,12 @@ export function PermitForm({ locale, errors = false, showSubmits = false }: Perm
         <Field.Prose>
           <p>{text.emailHint}</p>
         </Field.Prose>
-        <Input name="email" type="email" autoComplete="email" spellCheck={false} />
+        <TextInput name="email" type="email" autoComplete="email" spellCheck={false} />
       </Field.Root>
 
       <Field.Root>
         <Field.Label>{text.phone}</Field.Label>
-        <Input name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
+        <TextInput name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
       </Field.Root>
 
       <RadioGroup.Root name={durationName} required invalid={errors}>

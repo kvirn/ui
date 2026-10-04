@@ -4,7 +4,7 @@ import type { Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
 
 // Components/Form/Overview: the permit form with every control. The keys are each control's own
-// (input.a11y.md, date-input.a11y.md, radio-group.a11y.md, checkbox-group.a11y.md): these tests
+// (text-input.a11y.md, date-input.a11y.md, radio-group.a11y.md, checkbox-group.a11y.md): these tests
 // prove the controls compose, so Tab walks them in reading order, and that the form fits 320px.
 
 /** `globals` selects the theme like the toolbar does, such as `mode:dark;contrast:more`. */

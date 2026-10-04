@@ -142,10 +142,27 @@ export type {
   UseFieldsetOptions,
   UseFieldsetResult,
 } from './fieldset/use-fieldset.ts'
-export { Input } from './input/input.tsx'
-export type { InputChangeDetails, InputProps, InputState, InputType } from './input/input.tsx'
-export { useInput } from './input/use-input.ts'
-export type { InputPartProps, UseInputOptions, UseInputResult } from './input/use-input.ts'
+export { TextInput } from './text-input/text-input.tsx'
+export type {
+  TextInputChangeDetails,
+  TextInputProps,
+  TextInputState,
+  TextInputType,
+} from './text-input/text-input.tsx'
+export { useTextInput } from './text-input/use-text-input.ts'
+export type {
+  TextInputPartProps,
+  UseTextInputOptions,
+  UseTextInputResult,
+} from './text-input/use-text-input.ts'
+export { NumberInput } from './number-input/number-input.tsx'
+export type { NumberInputProps, NumberInputState } from './number-input/number-input.tsx'
+export { useNumberInput } from './number-input/use-number-input.ts'
+export type {
+  NumberInputPartProps,
+  UseNumberInputOptions,
+  UseNumberInputResult,
+} from './number-input/use-number-input.ts'
 export { useMask } from './mask/use-mask.ts'
 export type { MaskInputPartProps, UseMaskOptions, UseMaskResult } from './mask/use-mask.ts'
 export { Icon } from './icon/icon.tsx'

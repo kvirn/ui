@@ -6,13 +6,13 @@ import {
   Button,
   checks,
   Field,
-  Input,
   KvirnProvider,
   masks,
   mergeProps,
+  TextInput,
   useMask,
 } from '@kvirn-ui/react'
-import type { InputChangeDetails, InputProps } from '@kvirn-ui/react'
+import type { TextInputChangeDetails, TextInputProps } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 import { useState } from 'react'
 
@@ -352,17 +352,17 @@ export const withMaskLocale: Decorator = (Story, { globals }) => {
 }
 
 interface MaskedFieldProps extends Pick<
-  InputProps,
+  TextInputProps,
   'mask' | 'type' | 'autoComplete' | 'className' | 'defaultValue' | 'announceRejections'
 > {
   label: string
   hint: string
   name: string
   value?: string | undefined
-  onValueChange?: InputProps['onValueChange']
+  onValueChange?: TextInputProps['onValueChange']
 }
 
-/** One masked question: a Field with a label, a hint that says the format, and the Input. */
+/** One masked question: a Field with a label, a hint that says the format, and the TextInput. */
 export function MaskedField({ label, hint, name, ...inputProps }: MaskedFieldProps) {
   return (
     <Field.Root required>
@@ -370,7 +370,7 @@ export function MaskedField({ label, hint, name, ...inputProps }: MaskedFieldPro
       <Field.Prose>
         <p>{hint}</p>
       </Field.Prose>
-      <Input name={name} {...inputProps} />
+      <TextInput name={name} {...inputProps} />
     </Field.Root>
   )
 }
@@ -528,7 +528,7 @@ export function NumberFields({ globals }: { globals: Record<string, unknown> }) 
         <Field.Prose>
           <p>{text.amountHint}</p>
         </Field.Prose>
-        <Input
+        <TextInput
           name="rent"
           mask={masks.number({ decimals: 2, min: 0, max: 100_000 })}
           autoComplete="off"
@@ -594,7 +594,7 @@ export function PersonalIdentityNumberForm({ globals }: { globals: Record<string
         <Field.Prose>
           <p>{text.personalIdentityNumberHint}</p>
         </Field.Prose>
-        <Input
+        <TextInput
           name="personalIdentityNumber"
           mask={masks.personalIdentityNumber({ country: 'SE' })}
           autoComplete="off"
@@ -619,12 +619,12 @@ export function PersonalIdentityNumberForm({ globals }: { globals: Record<string
   )
 }
 
-/** A stored value is unmasked: the form shows it with `mask.format`, never rewritten by Input. */
+/** A stored value is unmasked: the form shows it with `mask.format`, never rewritten by TextInput. */
 export function StoredValueField({ globals }: { globals: Record<string, unknown> }) {
   const { text, lang } = maskTextsFor(globals)
   const mask = masks.personalIdentityNumber({ country: 'SE' })
   const [value, setValue] = useState(mask.format('199001012385'))
-  const [details, setDetails] = useState<InputChangeDetails | undefined>(undefined)
+  const [details, setDetails] = useState<TextInputChangeDetails | undefined>(undefined)
   return (
     <div className="kv-story-form" lang={lang}>
       <Field.Root required>
@@ -632,7 +632,7 @@ export function StoredValueField({ globals }: { globals: Record<string, unknown>
         <Field.Prose>
           <p>{text.storedHint}</p>
         </Field.Prose>
-        <Input
+        <TextInput
           name="stored"
           mask={mask}
           autoComplete="off"
@@ -667,7 +667,7 @@ export function OwnInputField({ globals }: { globals: Record<string, unknown> })
       <Field.Prose>
         <p>{text.ownInputHint}</p>
       </Field.Prose>
-      <Input
+      <TextInput
         name="ownInput"
         autoComplete="off"
         className="kv-input--width-6"

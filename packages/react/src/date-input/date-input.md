@@ -4,9 +4,9 @@
 
 **KvirnUI holds no form state; bring your own form logic.** DateInput renders what it's given. It keeps no value, never parses the date and doesn't validate it: the value is three strings in your form state, or in the native inputs.
 
-A DateInput asks for a date in three text boxes: day, month and year, in the order the user's region writes dates in. Use it for a date people know by heart, such as a date of birth or the date on a letter. For a date picked from a calendar near today, use the DatePicker when it exists (planned, M4); it will also accept typed input. When you want the date in one field, use `Input` with `masks.date()` (see "One field instead of three" below).
+A DateInput asks for a date in three text boxes: day, month and year, in the order the user's region writes dates in. Use it for a date people know by heart, such as a date of birth or the date on a letter. For a date picked from a calendar near today, use the DatePicker when it exists (planned, M4); it will also accept typed input. When you want the date in one field, use `TextInput` with `masks.date()` (see "One field instead of three" below).
 
-- Four parts: `DateInput.Root` (a `<div>`, the row of boxes) and `DateInput.Day`, `DateInput.Month` and `DateInput.Year`. Each box is a Field with a visible label and a native text `Input`. Each is also exported on its own (`DateInputRoot`, `DateInputDay`, `DateInputMonth`, `DateInputYear`), which is the form to import in a React Server Component, and the hook is `useDateInput`.
+- Four parts: `DateInput.Root` (a `<div>`, the row of boxes) and `DateInput.Day`, `DateInput.Month` and `DateInput.Year`. Each box is a Field with a visible label and a native text `TextInput`. Each is also exported on its own (`DateInputRoot`, `DateInputDay`, `DateInputMonth`, `DateInputYear`), which is the form to import in a React Server Component, and the hook is `useDateInput`.
 - It goes inside a `Fieldset.Root` (use `group`) whose `Fieldset.Legend` asks the question, then the boxes, a `Fieldset.Hint` under them with an example, and a `Fieldset.ErrorMessage`. The legend names the group, and the hint and the error describe it. Without a group the Root warns, and it warns when the Fieldset is neither `group` nor `required`: an optional date shows "(valfritt)" only on a `group` legend.
 - **The order follows the region.** `sv-SE` is year, month, day. `sv-FI`, `fi`, `nb`, `nn` and `en-GB` are day, month, year. A result that starts with the month (`en`, `en-US`) becomes day first, because month first reads as day first for the EU readers this library serves. The order comes from `Intl`, so we keep no data of our own.
 - **Three Tab stops, in that order.** Filling a box never moves focus to the next (3.2.2), and the arrow keys never step a value: numbers are text.
@@ -18,7 +18,7 @@ A DateInput asks for a date in three text boxes: day, month and year, in the ord
 | Part              | Renders                                                                      | Props                                                                                                                                                                         |
 | ----------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `DateInput.Root`  | `<div class="kv-date-input">`                                                | `name`, `value`, `defaultValue`, `onValueChange`, `autoComplete`, `order`, `required`, `disabled`, `readOnly`, `invalidParts`, `messages`, `render`, `ref` and every div prop |
-| `DateInput.Day`   | `<div class="kv-field kv-date-input-day">` with a `<label>` and an `<input>` | `invalid`, `render` (for the input), `ref` (the input) and every `Input` prop except `type`, `value`, `defaultValue`, `onValueChange` and `mask`. Spread on the `<input>`     |
+| `DateInput.Day`   | `<div class="kv-field kv-date-input-day">` with a `<label>` and an `<input>` | `invalid`, `render` (for the input), `ref` (the input) and every `TextInput` prop except `type`, `value`, `defaultValue`, `onValueChange` and `mask`. Spread on the `<input>`     |
 | `DateInput.Month` | the same, `kv-date-input-month`                                              | the same                                                                                                                                                                      |
 | `DateInput.Year`  | the same, `kv-date-input-year`                                               | the same                                                                                                                                                                      |
 
@@ -48,7 +48,7 @@ What the parts do on their own:
 | `data-invalid`       | the box's field, label and input | The box is `invalid` or in `invalidParts`. The input also gets `aria-invalid="true"` |
 | `data-required`      | the box's field and label        | The Fieldset or the Root is `required`                                               |
 | `data-disabled`      | the box's field, label and input | The Fieldset or the Root is `disabled`                                               |
-| `data-focus-visible` | the input                        | Keyboard focus (the `Input`'s own)                                                   |
+| `data-focus-visible` | the input                        | Keyboard focus (the `TextInput`'s own)                                                   |
 
 | Classes for the default theme          | On              | Sets                                                                         |
 | -------------------------------------- | --------------- | ---------------------------------------------------------------------------- |
@@ -117,14 +117,14 @@ A service that must match a paper form writes the parts itself. The hint then fo
 
 ### One field instead of three
 
-Three boxes suit a date people know by heart. Ask in one field when people read the date off a document, are used to typing `19850412`, or when you need a text field for another component. Use an `Input` with `masks.date()` inside a `Field`, not a DateInput:
+Three boxes suit a date people know by heart. Ask in one field when people read the date off a document, are used to typing `19850412`, or when you need a text field for another component. Use a `TextInput` with `masks.date()` inside a `Field`, not a DateInput:
 
 ```tsx
-import { Field, Input, masks, checks } from '@kvirn-ui/react'
+import { Field, TextInput, masks, checks } from '@kvirn-ui/react'
 
 ;<Field.Root required>
   <Field.Label>Startdatum</Field.Label>
-  <Input
+  <TextInput
     name="start"
     mask={masks.date()}
     className="kv-input--width-10"
@@ -137,7 +137,7 @@ import { Field, Input, masks, checks } from '@kvirn-ui/react'
 </Field.Root>
 ```
 
-The mask follows the page's locale like the boxes do (`2026-10-27` in sv, `27.10.2026` in fi and nb, `27/10/2026` in en), and the hint gives an example in that form. A separator typed after a day or month closes it (`4.10.2026`), a pasted or autofilled ISO date is reformatted, and the value you store is the ISO date. The mask checks the shape only: validate the day and any range with `checks.date`. It is a native text input with one Tab stop and the keys of [Input](../input/input.md). The calendar DatePicker is a later component and will use `masks.date()` for its text field. Don't set `autoComplete="bday"` on a one-field date of birth: use DateInput, whose boxes map to `bday-day`, `bday-month` and `bday-year`.
+The mask follows the page's locale like the boxes do (`2026-10-27` in sv, `27.10.2026` in fi and nb, `27/10/2026` in en), and the hint gives an example in that form. A separator typed after a day or month closes it (`4.10.2026`), a pasted or autofilled ISO date is reformatted, and the value you store is the ISO date. The mask checks the shape only: validate the day and any range with `checks.date`. It is a native text input with one Tab stop and the keys of [TextInput](../text-input/text-input.md). The calendar DatePicker is a later component and will use `masks.date()` for its text field. Don't set `autoComplete="bday"` on a one-field date of birth: use DateInput, whose boxes map to `bday-day`, `bday-month` and `bday-year`.
 
 ### Errors
 
@@ -170,7 +170,7 @@ Nothing is padded, cut or checked: `3` stays `3`, and `31` in the month box stay
 For your own markup, `useDateInput` returns the props:
 
 ```tsx
-import { Field, Fieldset, Input, useDateInput } from '@kvirn-ui/react'
+import { Field, Fieldset, TextInput, useDateInput } from '@kvirn-ui/react'
 
 function Birth() {
   const dateInput = useDateInput({ name: 'birth', autoComplete: 'bday' })
@@ -181,7 +181,7 @@ function Birth() {
         {dateInput.order.map((part) => (
           <Field.Root key={part} {...dateInput.getBoxProps(part)}>
             <Field.Label>{dateInput.labels[part]}</Field.Label>
-            <Input {...dateInput.getInputProps(part)} />
+            <TextInput {...dateInput.getInputProps(part)} />
           </Field.Root>
         ))}
       </div>

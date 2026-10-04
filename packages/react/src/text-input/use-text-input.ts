@@ -7,13 +7,13 @@ import type { FieldStateAttributes } from '../field/field-state.ts'
 import { useFocusVisible } from '../focus-visible/use-focus-visible.ts'
 
 /**
- * The text-like input types. Never `number` or `date`: for numbers use `inputMode`,
+ * The text-like input types. Never `number` or `date`: for numbers use NumberInput,
  * and for dates DateInput.
  */
-export type InputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search'
+export type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search'
 
 /** The second argument of `onValueChange`. */
-export interface InputChangeDetails {
+export interface TextInputChangeDetails {
   reason: 'input'
   /**
    * The change event. A masked input also reports at `compositionend`, when it applies the mask
@@ -30,26 +30,26 @@ export interface InputChangeDetails {
   rejected?: readonly MaskRejection[] | undefined
 }
 
-export interface UseInputOptions {
+export interface UseTextInputOptions {
   /** Default `'text'`. */
-  type?: InputType | undefined
+  type?: TextInputType | undefined
   /** Native `disabled`. A disabled Field disables the input too. */
   disabled?: boolean | undefined
   /**
    * Called with the new value on every change. It only reports: the value lives in your form
    * state, or in the native input when you don't pass `value`.
    */
-  onValueChange?: ((value: string, details: InputChangeDetails) => void) | undefined
+  onValueChange?: ((value: string, details: TextInputChangeDetails) => void) | undefined
 }
 
 /** Spread on the `<input>`. */
-export interface InputPartProps extends FieldStateAttributes {
+export interface TextInputPartProps extends FieldStateAttributes {
   /**
    * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-input`. Add a width class
    * next to it, for example `kv-input--width-10`, with `mergeProps`: class names join.
    */
   className: 'kv-input'
-  type: InputType
+  type: TextInputType
   /** From the Field: the control's id. */
   id?: string
   'aria-describedby'?: string
@@ -64,8 +64,8 @@ export interface InputPartProps extends FieldStateAttributes {
   onBlur: FocusEventHandler<HTMLElement>
 }
 
-export interface UseInputResult {
-  inputProps: InputPartProps
+export interface UseTextInputResult {
+  inputProps: TextInputPartProps
   isInvalid: boolean
   isRequired: boolean
   isDisabled: boolean
@@ -74,17 +74,17 @@ export interface UseInputResult {
 
 /**
  * A text input's props for your own `<input>`, wired to the nearest Field (contract:
- * input.a11y.md). It holds no value: spread your form library's props next to it.
+ * text-input.a11y.md). It holds no value: spread your form library's props next to it.
  *
  * @example
- * const input = useInput({ type: 'tel', onValueChange: (value) => form.setValue('phone', value) })
+ * const input = useTextInput({ type: 'tel', onValueChange: (value) => form.setValue('phone', value) })
  * <input {...input.inputProps} name="phone" autoComplete="tel" />
  */
-export function useInput({
+export function useTextInput({
   type = 'text',
   disabled = false,
   onValueChange,
-}: UseInputOptions = {}): UseInputResult {
+}: UseTextInputOptions = {}): UseTextInputResult {
   const field = useContext(FieldContext)
   const { isFocused, isFocusVisible, focusVisibleProps } = useFocusVisible()
   const isInvalid = field?.state.isInvalid ?? false
@@ -96,15 +96,15 @@ export function useInput({
     const askedType: string = type
     if (askedType === 'number' || askedType === 'date') {
       warnOnce(
-        `input-type-${askedType}`,
+        `text-input-type-${askedType}`,
         askedType === 'number'
-          ? 'An Input has type="number". It changes on scroll, drops leading zeros and rounds silently. Use type="text" with inputMode="numeric" (or "decimal") and spellCheck={false}, and validate in your form.'
-          : 'An Input has type="date". Its format and picker follow the browser, not the page language. Use DateInput: three fields for day, month and year.',
+          ? 'A TextInput has type="number". It changes on scroll, drops leading zeros and rounds silently. Use NumberInput for a quantity or an amount, or a TextInput with a mask for a code.'
+          : 'A TextInput has type="date". Its format and picker follow the browser, not the page language. Use DateInput: three fields for day, month and year.',
       )
     }
   }, [type])
 
-  const inputProps = useMemo<InputPartProps>(
+  const inputProps = useMemo<TextInputPartProps>(
     () => ({
       ...controlProps,
       className: 'kv-input',

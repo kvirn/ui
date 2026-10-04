@@ -29,6 +29,7 @@ export const nn = {
         other: 'Du kan ikkje skrive det teiknet her.',
       })[allowed],
     maximumLength: ({ length }) => `Du har skrive alle ${length} teikna.`,
+    maximumDecimals: 'Du kan ikkje skrive fleire desimalar.',
   },
   fileUpload: {
     chooseFiles: 'Vel filer',

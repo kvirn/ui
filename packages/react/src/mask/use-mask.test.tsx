@@ -9,14 +9,14 @@ import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { checks, masks, useMask } from '../index.ts'
 import type { MaskInputPartProps, UseMaskOptions, UseMaskResult } from '../index.ts'
-import type { InputChangeDetails } from '../input/use-input.ts'
+import type { TextInputChangeDetails } from '../text-input/use-text-input.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 
-// Contract: input.a11y.md (masked rows). The keys are also covered end to end in
+// Contract: text-input.a11y.md (masked rows). The keys are also covered end to end in
 // apps/storybook/src/components/mask/mask.e2e.ts.
 
-type Report = { value: string; details: InputChangeDetails }
+type Report = { value: string; details: TextInputChangeDetails }
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -79,9 +79,9 @@ describe('exports and types', () => {
   test('the option and result types', () => {
     expectTypeOf<UseMaskResult['inputProps']>().toEqualTypeOf<MaskInputPartProps>()
     expectTypeOf<UseMaskOptions['announceRejections']>().toEqualTypeOf<boolean | undefined>()
-    expectTypeOf<InputChangeDetails['unmaskedValue']>().toEqualTypeOf<string | undefined>()
-    expectTypeOf<InputChangeDetails['isComplete']>().toEqualTypeOf<boolean | undefined>()
-    expectTypeOf<InputChangeDetails['isWithinRange']>().toEqualTypeOf<boolean | undefined>()
+    expectTypeOf<TextInputChangeDetails['unmaskedValue']>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<TextInputChangeDetails['isComplete']>().toEqualTypeOf<boolean | undefined>()
+    expectTypeOf<TextInputChangeDetails['isWithinRange']>().toEqualTypeOf<boolean | undefined>()
   })
 })
 

@@ -1,4 +1,4 @@
-import { Field, Fieldset, Input } from '@kvirn-ui/react'
+import { Field, Fieldset, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/fieldset/fieldset.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ComponentProps } from 'react'
@@ -84,11 +84,11 @@ function Address({
       ) : null}
       <Field.Root required invalid={error}>
         <Field.Label>{text.street}</Field.Label>
-        <Input name="street" autoComplete="street-address" />
+        <TextInput name="street" autoComplete="street-address" />
       </Field.Root>
       <Field.Root required>
         <Field.Label>{text.postcode}</Field.Label>
-        <Input
+        <TextInput
           name="postcode"
           inputMode="numeric"
           spellCheck={false}
@@ -98,7 +98,7 @@ function Address({
       </Field.Root>
       <Field.Root required>
         <Field.Label>{text.town}</Field.Label>
-        <Input name="town" autoComplete="address-level2" className="kv-input--width-20" />
+        <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
       </Field.Root>
       {groupHint ? <Fieldset.Hint>{text.addressFormat}</Fieldset.Hint> : null}
       <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>

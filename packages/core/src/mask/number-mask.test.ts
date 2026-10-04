@@ -73,7 +73,7 @@ describe('number masks: typing', () => {
 
   it('refuses a second separator, too many decimals and letters, and says why', () => {
     expect(insert(rent, '12,5|', ',').rejected).toEqual([{ reason: 'other', characters: ',' }])
-    expect(insert(rent, '12,50|', '1').rejected).toEqual([{ reason: 'length', characters: '1' }])
+    expect(insert(rent, '12,50|', '1').rejected).toEqual([{ reason: 'decimals', characters: '1' }])
     expect(insert(rent, '12|', 'k').rejected).toEqual([{ reason: 'digits', characters: 'k' }])
   })
 
@@ -151,13 +151,13 @@ describe('number masks: a pasted separator is read as grouping only when it look
       mask: english,
       pasted: '1.000',
       after: '1.00',
-      rejected: [{ reason: 'length', characters: '0' }],
+      rejected: [{ reason: 'decimals', characters: '0' }],
     },
     {
       mask: swedish,
       pasted: '1,000',
       after: '1,00',
-      rejected: [{ reason: 'length', characters: '0' }],
+      rejected: [{ reason: 'decimals', characters: '0' }],
     },
     // Not grouping, because three digits don't follow: refused, and said so.
     {
@@ -364,14 +364,14 @@ describe('number masks: a mark is grouping only after one to three digits that a
       decimals: 2,
       pasted: '.500',
       after: ',50',
-      rejected: [{ reason: 'length', characters: '0' }],
+      rejected: [{ reason: 'decimals', characters: '0' }],
     },
     {
       locale: 'en',
       decimals: 2,
       pasted: ',500',
       after: '.50',
-      rejected: [{ reason: 'length', characters: '0' }],
+      rejected: [{ reason: 'decimals', characters: '0' }],
     },
     { locale: 'sv', decimals: 3, pasted: '0.500', after: '0,500', rejected: [] },
     { locale: 'en', decimals: 3, pasted: '0,500', after: '0.500', rejected: [] },
@@ -393,7 +393,7 @@ describe('number masks: a mark is grouping only after one to three digits that a
       .number({ decimals: 2, locale: 'en' })
       .apply({ value: '1234,567', previousValue: '' })
     expect(result.value).toBe('1234.56')
-    expect(result.rejected).toEqual([{ reason: 'length', characters: '7' }])
+    expect(result.rejected).toEqual([{ reason: 'decimals', characters: '7' }])
   })
 })
 
@@ -744,7 +744,7 @@ describe('number masks: the digits before a pasted mark count, also those alread
   it('reads ,000 pasted after 1234 as a fraction, and reports the digit that does not fit', () => {
     const result = insert(masks.number({ decimals: 2, locale: 'en' }), '1234|', ',000')
     expect(result.value).toBe('1234.00')
-    expect(result.rejected).toEqual([{ reason: 'length', characters: '0' }])
+    expect(result.rejected).toEqual([{ reason: 'decimals', characters: '0' }])
   })
 })
 
@@ -758,11 +758,13 @@ describe('number masks: a refusal that is not about length is not reported as le
   ])('$input into $before is other', ({ before, input }) => {
     const result = insert(amount, before, input)
     expect(result.rejected.length).toBeGreaterThan(0)
-    expect(result.rejected.every((rejection) => rejection.reason !== 'length')).toBe(true)
+    expect(result.rejected.every((rejection) => rejection.reason !== 'decimals')).toBe(true)
   })
 
-  it('still says length for a digit that does not fit', () => {
-    expect(insert(amount, '12.5|0', '1').rejected).toEqual([{ reason: 'length', characters: '1' }])
+  it('says decimals for a digit that does not fit', () => {
+    expect(insert(amount, '12.5|0', '1').rejected).toEqual([
+      { reason: 'decimals', characters: '1' },
+    ])
   })
 })
 

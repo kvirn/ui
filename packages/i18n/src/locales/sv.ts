@@ -29,6 +29,7 @@ export const sv = {
         other: 'Det tecknet kan inte skrivas här.',
       })[allowed],
     maximumLength: ({ length }) => `Du har skrivit alla ${length} tecken.`,
+    maximumDecimals: 'Du kan inte skriva fler decimaler.',
   },
   fileUpload: {
     chooseFiles: 'Välj filer',

@@ -30,6 +30,7 @@ export const se = {
         other: 'That character can’t be entered here.',
       })[allowed],
     maximumLength: ({ length }) => `You’ve entered all ${length} characters.`,
+    maximumDecimals: 'No more decimals can be entered here.',
   },
   fileUpload: {
     chooseFiles: 'Choose files',

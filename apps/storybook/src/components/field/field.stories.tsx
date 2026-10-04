@@ -1,4 +1,4 @@
-import { Field, Input } from '@kvirn-ui/react'
+import { Field, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
@@ -52,7 +52,7 @@ const meta = {
     return (
       <Field.Root {...args} lang={lang}>
         <Field.Label>{text.name}</Field.Label>
-        <Input name="name" autoComplete="name" />
+        <TextInput name="name" autoComplete="name" />
       </Field.Root>
     )
   },
@@ -84,7 +84,7 @@ export const WithDescription: Story = {
         <Field.Prose>
           <p>{text.nameHint}</p>
         </Field.Prose>
-        <Input name="name" autoComplete="name" />
+        <TextInput name="name" autoComplete="name" />
       </Field.Root>
     )
   },
@@ -111,7 +111,7 @@ export const Optional: Story = {
         <Field.Prose>
           <p>{text.phoneHint}</p>
         </Field.Prose>
-        <Input name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
+        <TextInput name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
       </Field.Root>
     )
   },
@@ -135,7 +135,7 @@ export const Required: Story = {
         <Field.Prose>
           <p>{text.emailHint}</p>
         </Field.Prose>
-        <Input name="email" type="email" autoComplete="email" />
+        <TextInput name="email" type="email" autoComplete="email" />
       </Field.Root>
     )
   },
@@ -171,7 +171,7 @@ export const WithHintUnder: Story = {
         <Field.Prose>
           <p>{text.registrationWhere}</p>
         </Field.Prose>
-        <Input name="registration" className="kv-input--width-10" />
+        <TextInput name="registration" className="kv-input--width-10" />
         <Field.Hint>{text.registrationHint}</Field.Hint>
       </Field.Root>
     )
@@ -201,7 +201,7 @@ export const InvalidWithHintUnder: Story = {
         <Field.Prose>
           <p>{text.registrationWhere}</p>
         </Field.Prose>
-        <Input name="registration" className="kv-input--width-10" defaultValue="AB 1" />
+        <TextInput name="registration" className="kv-input--width-10" defaultValue="AB 1" />
         <Field.Hint>{text.registrationHint}</Field.Hint>
         <Field.ErrorMessage>{text.registrationError}</Field.ErrorMessage>
       </Field.Root>
@@ -234,7 +234,7 @@ export const Invalid: Story = {
         <Field.Prose>
           <p>{text.emailHint}</p>
         </Field.Prose>
-        <Input name="email" type="email" autoComplete="email" defaultValue="anna@" />
+        <TextInput name="email" type="email" autoComplete="email" defaultValue="anna@" />
         <Field.ErrorMessage>{text.emailError}</Field.ErrorMessage>
       </Field.Root>
     )
@@ -259,7 +259,7 @@ export const Disabled: Story = {
     return (
       <Field.Root {...args} lang={lang}>
         <Field.Label>{text.registration}</Field.Label>
-        <Input name="registration" defaultValue="ABC 123" className="kv-input--width-10" />
+        <TextInput name="registration" defaultValue="ABC 123" className="kv-input--width-10" />
       </Field.Root>
     )
   },
@@ -276,7 +276,7 @@ export const ReadOnly: Story = {
     return (
       <Field.Root {...args} lang={lang}>
         <Field.Label>{text.personalNumber}</Field.Label>
-        <Input name="personal-number" readOnly defaultValue="19900101-1234" />
+        <TextInput name="personal-number" readOnly defaultValue="19900101-1234" />
         <Field.Hint>{text.personalNumberHint}</Field.Hint>
       </Field.Root>
     )
@@ -302,7 +302,7 @@ export const AsPageHeading: Story = {
         <Field.Prose>
           <p>{text.nameHint}</p>
         </Field.Prose>
-        <Input name="name" autoComplete="name" />
+        <TextInput name="name" autoComplete="name" />
       </Field.Root>
     )
   },
@@ -330,7 +330,7 @@ export const InsideProse: Story = {
           <Field.Prose data-testid="description">
             <p>{text.nameHint}</p>
           </Field.Prose>
-          <Input name="name" autoComplete="name" />
+          <TextInput name="name" autoComplete="name" />
         </Field.Root>
         <p>{text.proseText}</p>
       </article>
@@ -352,7 +352,7 @@ export const Compact: Story = {
           <Field.Prose>
             <p>{text.emailHint}</p>
           </Field.Prose>
-          <Input name="email" type="email" autoComplete="email" defaultValue="anna@" />
+          <TextInput name="email" type="email" autoComplete="email" defaultValue="anna@" />
           <Field.ErrorMessage>{text.emailError}</Field.ErrorMessage>
         </Field.Root>
       </div>
@@ -376,7 +376,7 @@ export const LongFinnish: Story = {
           <Field.Prose>
             <p>{text.caseNumberHint}</p>
           </Field.Prose>
-          <Input name="reference" inputMode="numeric" spellCheck={false} />
+          <TextInput name="reference" inputMode="numeric" spellCheck={false} />
         </Field.Root>
       </div>
     )
