@@ -355,6 +355,21 @@ describe('rendering', () => {
     expect(popupRef.current?.style.position).toBe('fixed')
   })
 
+  test('a tabIndex from the consumer wins over the trigger’s own tabindex="0"', async () => {
+    await render(
+      <Field.Root required>
+        <Field.Label>Kommun</Field.Label>
+        <Listbox.Root native="never" items={['Göteborg']}>
+          <Listbox.Trigger tabIndex={-1} />
+          <Listbox.Popup>
+            <Listbox.List>{(item: string) => <Listbox.Option item={item} />}</Listbox.List>
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>,
+    )
+    expect(triggerElement().getAttribute('tabindex')).toBe('-1')
+  })
+
   test('render replaces the element and gives the state', async () => {
     const optionStates: boolean[] = []
     await render(

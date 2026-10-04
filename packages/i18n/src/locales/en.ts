@@ -31,6 +31,19 @@ export const en = {
     maximumLength: ({ length }) => `You’ve entered all ${length} characters.`,
     maximumDecimals: 'No more decimals can be entered here.',
   },
+  characterCount: {
+    limit: ({ limit }, format) => `You can enter up to ${format.number(limit)} characters.`,
+    remaining: ({ count }, format) =>
+      format.plural(count, {
+        one: 'You have 1 character remaining.',
+        other: `You have ${format.number(count)} characters remaining.`,
+      }),
+    over: ({ count }, format) =>
+      format.plural(count, {
+        one: 'You have 1 character too many.',
+        other: `You have ${format.number(count)} characters too many.`,
+      }),
+  },
   fileUpload: {
     chooseFiles: 'Choose files',
     chooseFile: 'Choose file',

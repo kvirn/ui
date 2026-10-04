@@ -108,7 +108,11 @@ describe('display names', () => {
     expect(api.Icon.displayName).toBe('Icon')
     expect(api.TextInput.displayName).toBe('TextInput')
     expect(api.NumberInput.displayName).toBe('NumberInput')
+    expect(api.Textarea.displayName).toBe('Textarea')
+    expect(api.CharacterCount.displayName).toBe('CharacterCount')
     expect(api.Checkbox.displayName).toBe('Checkbox')
+    expect(api.Toggle.displayName).toBe('Toggle')
+    expect(api.ButtonGroup.displayName).toBe('ButtonGroup')
     expect(api.Prose.displayName).toBe('Prose')
     expect(api.Section.displayName).toBe('Section')
   })
@@ -126,6 +130,8 @@ describe('display names', () => {
     expect(api.CheckboxGroup.Legend.displayName).toBe('CheckboxGroup.Legend')
     expect(api.RadioGroup.Radio.displayName).toBe('RadioGroup.Radio')
     expect(api.InputGroup.Input.displayName).toBe('InputGroup.Input')
+    expect(api.Toolbar.Group.displayName).toBe('Toolbar.Group')
+    expect(api.Toolbar.Group).not.toBe(api.ButtonGroup)
     expect(api.Combobox.Option).not.toBe(api.Listbox.Option)
     expect(api.Autocomplete.Option).not.toBe(api.Combobox.Option)
     expect(api.Field.Prose).not.toBe(api.Prose)
@@ -216,6 +222,9 @@ describe('alias sets', () => {
     )
     expect(keys(api.InputGroup)).toEqual(expect.arrayContaining(['Root', 'Addon', 'Input']))
     expect(keys(api.Link)).toEqual(expect.arrayContaining(['Root', 'NewTabNotice']))
+    expect(keys(api.Toolbar)).toEqual(
+      expect.arrayContaining(['Root', 'Button', 'Toggle', 'Item', 'Group']),
+    )
   })
 })
 

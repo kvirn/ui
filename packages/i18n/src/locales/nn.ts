@@ -31,6 +31,19 @@ export const nn = {
     maximumLength: ({ length }) => `Du har skrive alle ${length} teikna.`,
     maximumDecimals: 'Du kan ikkje skrive fleire desimalar.',
   },
+  characterCount: {
+    limit: ({ limit }, format) => `Du kan skrive maks ${format.number(limit)} teikn.`,
+    remaining: ({ count }, format) =>
+      format.plural(count, {
+        one: 'Du har 1 teikn att.',
+        other: `Du har ${format.number(count)} teikn att.`,
+      }),
+    over: ({ count }, format) =>
+      format.plural(count, {
+        one: 'Du har 1 teikn for mykje.',
+        other: `Du har ${format.number(count)} teikn for mykje.`,
+      }),
+  },
   fileUpload: {
     chooseFiles: 'Vel filer',
     chooseFile: 'Vel fil',

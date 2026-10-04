@@ -85,7 +85,8 @@ const textPairs: readonly ColorPair[] = [
   ['danger', 'danger-subtle'],
   ['success', 'success-subtle'],
   ['warning', 'warning-subtle'],
-  // Labels on filled buttons, at rest and while hovered or pressed.
+  // Labels on filled buttons, at rest and while hovered or pressed. A pressed Toggle is the same
+  // fill with the same label, so it needs no pair of its own (docs/design/rich-text-editor.md §6.9).
   ['on-primary', 'primary'],
   ['on-primary', 'primary-hover'],
   ['on-danger', 'danger'],
@@ -107,7 +108,8 @@ const nonTextPairs: readonly ColorPair[] = [
       ]),
   ),
   // Hovered and pressed filled buttons on every surface they sit on: pages, sections, cards,
-  // dialogs and popups (1.4.11).
+  // dialogs and popups (1.4.11). A pressed Toggle is a `primary` fill with a `primary` edge on the
+  // same surfaces, and next to a hovered button (`primary-subtle`): both pairs are required above.
   // - Primary: the edge is a `primary` border in that state, and `primary` is
   //   required on every plain background above. `primary-hover` is also required where it
   //   reaches 3:1 on its own. It isn't required on `surface-raised`, where it's 2.98:1 in dark:

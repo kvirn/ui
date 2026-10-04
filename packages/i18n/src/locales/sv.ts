@@ -31,6 +31,19 @@ export const sv = {
     maximumLength: ({ length }) => `Du har skrivit alla ${length} tecken.`,
     maximumDecimals: 'Du kan inte skriva fler decimaler.',
   },
+  characterCount: {
+    limit: ({ limit }, format) => `Du kan skriva högst ${format.number(limit)} tecken.`,
+    remaining: ({ count }, format) =>
+      format.plural(count, {
+        one: 'Du har 1 tecken kvar.',
+        other: `Du har ${format.number(count)} tecken kvar.`,
+      }),
+    over: ({ count }, format) =>
+      format.plural(count, {
+        one: 'Du har 1 tecken för mycket.',
+        other: `Du har ${format.number(count)} tecken för mycket.`,
+      }),
+  },
   fileUpload: {
     chooseFiles: 'Välj filer',
     chooseFile: 'Välj fil',

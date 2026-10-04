@@ -66,6 +66,16 @@ export type {
   AnnouncerState,
 } from './announcer/announcer.ts'
 export { createMask } from './mask/create-mask.ts'
+export {
+  countCharacters,
+  defaultCharacterCountAnnounceFrom,
+  getCharacterCount,
+} from './character-count/character-count.ts'
+export type {
+  CharacterCountAnnouncement,
+  CharacterCountOptions,
+  CharacterCountResult,
+} from './character-count/character-count.ts'
 export { masks } from './mask/masks.ts'
 export type {
   CountryMaskOptions,
@@ -264,3 +274,5 @@ export type {
   TanStackTableOptions,
   Updater,
 } from './table/table-exports.ts'
+export { getRovingTarget } from './roving-focus/get-roving-target.ts'
+export type { RovingOrientation, RovingTargetInput } from './roving-focus/get-roving-target.ts'

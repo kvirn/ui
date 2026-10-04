@@ -22,6 +22,43 @@ export { Button } from './button/button.tsx'
 export type { ButtonProps, ButtonState } from './button/button.tsx'
 export { useButton } from './button/use-button.ts'
 export type { ButtonPartProps, UseButtonOptions, UseButtonResult } from './button/use-button.ts'
+export { Toggle } from './toggle/toggle.tsx'
+export type { TogglePressedChangeDetails, ToggleProps, ToggleState } from './toggle/toggle.tsx'
+export { useToggle } from './toggle/use-toggle.ts'
+export type { TogglePartProps, UseToggleOptions, UseToggleResult } from './toggle/use-toggle.ts'
+export { ButtonGroup } from './button-group/button-group.tsx'
+export type { ButtonGroupProps, ButtonGroupState } from './button-group/button-group.tsx'
+export { useButtonGroup } from './button-group/use-button-group.ts'
+export type {
+  ButtonGroupPartProps,
+  UseButtonGroupOptions,
+  UseButtonGroupResult,
+} from './button-group/use-button-group.ts'
+export {
+  Toolbar,
+  ToolbarButton,
+  ToolbarGroup,
+  ToolbarItem,
+  ToolbarRoot,
+  ToolbarToggle,
+} from './toolbar/toolbar.tsx'
+export type {
+  ToolbarButtonProps,
+  ToolbarGroupProps,
+  ToolbarItemProps,
+  ToolbarItemState,
+  ToolbarRootProps,
+  ToolbarState,
+  ToolbarToggleProps,
+} from './toolbar/toolbar.tsx'
+export { useToolbar } from './toolbar/use-toolbar.ts'
+export type {
+  ToolbarItemPartProps,
+  ToolbarRootPartProps,
+  UseToolbarOptions,
+  UseToolbarResult,
+} from './toolbar/use-toolbar.ts'
+export type { RovingOrientation } from '@kvirn-ui/core'
 export { Link, LinkNewTabNotice, LinkRoot } from './link/link.tsx'
 export type { LinkElementProps, LinkNewTabNoticeProps, LinkProps, LinkState } from './link/link.tsx'
 export { useLink } from './link/use-link.ts'
@@ -163,6 +200,25 @@ export type {
   UseNumberInputOptions,
   UseNumberInputResult,
 } from './number-input/use-number-input.ts'
+export { Textarea } from './textarea/textarea.tsx'
+export type { TextareaChangeDetails, TextareaProps, TextareaState } from './textarea/textarea.tsx'
+export { useTextarea } from './textarea/use-textarea.ts'
+export type {
+  TextareaPartProps,
+  UseTextareaOptions,
+  UseTextareaResult,
+} from './textarea/use-textarea.ts'
+export { CharacterCount } from './character-count/character-count.tsx'
+export type {
+  CharacterCountProps,
+  CharacterCountState,
+} from './character-count/character-count.tsx'
+export { useCharacterCount } from './character-count/use-character-count.ts'
+export type {
+  CharacterCountPartProps,
+  UseCharacterCountOptions,
+  UseCharacterCountResult,
+} from './character-count/use-character-count.ts'
 export { useMask } from './mask/use-mask.ts'
 export type { MaskInputPartProps, UseMaskOptions, UseMaskResult } from './mask/use-mask.ts'
 export { Icon } from './icon/icon.tsx'

@@ -5,6 +5,7 @@ Source: https://www.w3.org/WAI/ARIA/apg/patterns/. Re-check the live page before
 | KvirnUI component   | APG pattern                     | Key notes                                                                                                                             |
 | ------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | Button, Toggle      | Button                          | Native `<button>`. Toggle uses `aria-pressed`. Space and Enter activate                                                               |
+| Toolbar, ButtonGroup | Toolbar                        | `role=toolbar` with a name, one Tab stop, roving `tabindex`, arrows wrap, Home/End. Items are registered, not queried. Disabled items stay focusable. A control's own keys win. ButtonGroup is `role=group` with a name, only when named |
 | Checkbox            | Checkbox                        | Native input where possible. Mixed state uses `aria-checked="mixed"` / `indeterminate`                                                |
 | RadioGroup          | Radio Group                     | Arrows move and select, and wrap. Tab goes to the checked item, or the first if none                                                  |
 | Switch              | Switch                          | `role=switch` + `aria-checked`, or `<button>`. The label doesn't change when the state changes                                        |

@@ -168,7 +168,7 @@ Superseded by [field-hint.md](field-hint.md) §4.1.
 - **Above the control, a description (`Field.Prose`):** what to answer and where to find it. Anything the user needs **before** they start typing. Most fields have only this one.
 - **Under the control, a hint (`Field.Hint`):** a format example or a limit that helps **while** typing ("For example, ABC 123", "Up to 500 characters"). Never the only instruction: a magnifier user at 400% may not see under the box until they've typed.
 - A hint is never above the control (maintainer, 2026-10-04). A field may have a description, a hint, both or neither.
-- A character count that updates as you type is out of scope (a later Textarea and counter). Here a count is a static limit.
+- A character count that updates as you type belongs to Textarea (`characterCount`, Plan 0034, [rich-text-editor.md](rich-text-editor.md) §4.1 and §6.3). Elsewhere in this spec a count is a static limit in a hint.
 
 ### 4.5 InputGroup fixtures and content rules
 
@@ -867,7 +867,7 @@ Questions 1 to 13 were resolved on 2026-10-02 (Plan 0013, Risks and open questio
 6. **`aria-describedby` order.** Designsystemet puts the error first, so it's heard first. The Field-wiring decision has description first, matching the visual order. Keep it, and add it as a research question for the AT matrix?
 7. **`aria-invalid` on radios** isn't supported by ARIA 1.2 on the `radio` role (§7). The contract needs a decision.
 8. **Until the error summary ships (M4),** should the docs tell consumers to move focus to the first invalid field on submit?
-9. **Out of scope, for later:** Textarea (on the roadmap row with Input), inline radios for two short answers (Yes/No), a show-password button's behaviour (it can sit in an InputGroup), a live character count, and splitting a pasted "27.3.2007" across DateInput's boxes. Input prefixes and suffixes are now in scope (§6.13).
+9. **Out of scope, for later:** inline radios for two short answers (Yes/No), a show-password button's behaviour (it can sit in an InputGroup), and splitting a pasted "27.3.2007" across DateInput's boxes. Input prefixes and suffixes are now in scope (§6.13).
 10. **Form layout.** Should the theme ship a `kv-form` (or `kv-field-stack`) class for the 32px gap between questions and the not-prose boundary, as Card's open question asks for card lists, instead of story CSS?
 11. **The marks are `::before` on the input.** All target engines render pseudo-elements on an `appearance: none` checkbox, but the e2e screenshots in `firefox` and `webkit` must confirm it. The fallback would be an `aria-hidden` Indicator element after the input, which the Field-wiring decision would have to add.
 12. **"(optional)" on options and date parts.** The Field-wiring decision appends `field.optional` to every Field.Label whose field isn't required. Each checkbox or radio option and each DateInput box is a Field, so without a rule they'd read "Email (optional)" and "Day (optional)". Proposed: a Field inside a CheckboxGroup, RadioGroup or DateInput defaults to `marker="none"`, and the marker goes on the Legend instead, when the group or date isn't required. The Field-wiring decision doesn't yet say whether Fieldset.Legend appends it.

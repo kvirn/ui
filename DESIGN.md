@@ -265,33 +265,33 @@ Colours come in two tiers, both CSS custom properties in `theme.css`:
 
 - **Semantic tokens,** `--kv-color-<name>`. Components use only these. Each theme points them at palette steps. Four themes come from two preference axes, colour scheme and contrast, and only remap semantic tokens.
 
-| Token            | light           | dark            | light-contrast  | dark-contrast   | Use                                                                                                 |
-| ---------------- | --------------- | --------------- | --------------- | --------------- | --------------------------------------------------------------------------------------------------- |
-| `canvas`         | `white`         | `black`         | `white`         | `black`         | Page background, and a canvas section (`kv-section--canvas`)                                        |
-| `surface`        | `neutral-50`    | `neutral-950`   | `neutral-50`    | `neutral-950`   | Sections (`Section`), sidebars, table headers, code                                                 |
-| `surface-raised` | `white`         | `neutral-900`   | `white`         | `neutral-900`   | Cards, popups, dialogs, hovered navigation items                                                    |
-| `border-subtle`  | `neutral-100`   | `neutral-800`   | `neutral-500`   | `neutral-400`   | Hairline dividers and decorative outlines only                                                      |
-| `border-control` | `neutral-500`   | `neutral-500`   | `neutral-700`   | `neutral-200`   | Borders that identify a control (inputs, checkboxes)                                                |
-| `border-focus`   | `primary-600`   | `primary-400`   | `primary-800`   | `primary-200`   | A field's edge while it has focus, a click included. A step darker than `focus-ring` in light       |
-| `secondary`      | `secondary-500` | `secondary-500` | `secondary-700` | `secondary-200` | The secondary button's edge. Equal to `border-control` until `--kv-secondary-*` gets a hue          |
-| `text`           | `neutral-950`   | `neutral-50`    | `black`         | `white`         | Body text                                                                                           |
-| `heading`        | `neutral-950`   | `neutral-50`    | `black`         | `white`         | Headings in prose. The same step as `text` by default, so a site can set its own                    |
-| `text-muted`     | `neutral-600`   | `neutral-400`   | `neutral-700`   | `neutral-200`   | Secondary text and metadata. Never hints or descriptions: they are instructions, so they use `text` |
-| `primary`        | `primary-500`   | `primary-500`   | `primary-800`   | `primary-200`   | Primary button background, selected state, current-page indicator, info notification bar and icon   |
-| `primary-hover`  | `primary-600`   | `primary-600`   | `primary-900`   | `primary-100`   | Hover and pressed state of `primary`                                                                |
-| `on-primary`     | `white`         | `white`         | `white`         | `black`         | Text and icons on `primary`                                                                         |
-| `primary-subtle` | `primary-50`    | `primary-950`   | `primary-50`    | `primary-950`   | Current navigation item, secondary button hover, selected rows, info notifications                  |
-| `link`           | `primary-600`   | `primary-400`   | `primary-800`   | `primary-200`   | Link text, badge text                                                                               |
-| `link-hover`     | `primary-700`   | `primary-300`   | `primary-900`   | `primary-100`   | Link hover and pressed                                                                              |
-| `focus-ring`     | `primary-500`   | `primary-400`   | `primary-800`   | `primary-200`   | Focus indicator                                                                                     |
-| `danger`         | `danger-600`    | `danger-300`    | `danger-700`    | `danger-200`    | Errors, destructive actions, danger notification bar and icon                                       |
-| `danger-hover`   | `danger-700`    | `danger-200`    | `danger-800`    | `danger-100`    | Hover and pressed state of `danger`                                                                 |
-| `on-danger`      | `white`         | `black`         | `white`         | `black`         | Text and icons on `danger`                                                                          |
-| `danger-subtle`  | `danger-50`     | `danger-950`    | `danger-50`     | `danger-950`    | Danger notifications, including the error summary                                                   |
-| `success`        | `success-700`   | `success-300`   | `success-800`   | `success-200`   | Confirmation, completed steps, success notification bar and icon                                    |
-| `success-subtle` | `success-50`    | `success-950`   | `success-50`    | `success-950`   | Success notifications                                                                               |
-| `warning`        | `warning-700`   | `warning-300`   | `warning-800`   | `warning-200`   | Warnings, deadlines, warning notification bar and icon                                              |
-| `warning-subtle` | `warning-50`    | `warning-950`   | `warning-50`    | `warning-950`   | Warning notifications                                                                               |
+| Token            | light           | dark            | light-contrast  | dark-contrast   | Use                                                                                                                                                                   |
+| ---------------- | --------------- | --------------- | --------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `canvas`         | `white`         | `black`         | `white`         | `black`         | Page background, and a canvas section (`kv-section--canvas`)                                                                                                          |
+| `surface`        | `neutral-50`    | `neutral-950`   | `neutral-50`    | `neutral-950`   | Sections (`Section`), sidebars, table headers, code                                                                                                                   |
+| `surface-raised` | `white`         | `neutral-900`   | `white`         | `neutral-900`   | Cards, popups, dialogs, hovered navigation items                                                                                                                      |
+| `border-subtle`  | `neutral-100`   | `neutral-800`   | `neutral-500`   | `neutral-400`   | Hairline dividers and decorative outlines only                                                                                                                        |
+| `border-control` | `neutral-500`   | `neutral-500`   | `neutral-700`   | `neutral-200`   | Borders that identify a control (inputs, checkboxes)                                                                                                                  |
+| `border-focus`   | `primary-600`   | `primary-400`   | `primary-800`   | `primary-200`   | A field's edge while it has focus, a click included. A step darker than `focus-ring` in light                                                                         |
+| `secondary`      | `secondary-500` | `secondary-500` | `secondary-700` | `secondary-200` | The secondary button's edge. Equal to `border-control` until `--kv-secondary-*` gets a hue                                                                            |
+| `text`           | `neutral-950`   | `neutral-50`    | `black`         | `white`         | Body text                                                                                                                                                             |
+| `heading`        | `neutral-950`   | `neutral-50`    | `black`         | `white`         | Headings in prose. The same step as `text` by default, so a site can set its own                                                                                      |
+| `text-muted`     | `neutral-600`   | `neutral-400`   | `neutral-700`   | `neutral-200`   | Secondary text and metadata, and the fill of a disabled pressed toggle (with `surface` on it). Never hints or descriptions: they are instructions, so they use `text` |
+| `primary`        | `primary-500`   | `primary-500`   | `primary-800`   | `primary-200`   | Primary button background, selected state, current-page indicator, info notification bar and icon                                                                     |
+| `primary-hover`  | `primary-600`   | `primary-600`   | `primary-900`   | `primary-100`   | Hover and pressed state of `primary`                                                                                                                                  |
+| `on-primary`     | `white`         | `white`         | `white`         | `black`         | Text and icons on `primary`                                                                                                                                           |
+| `primary-subtle` | `primary-50`    | `primary-950`   | `primary-50`    | `primary-950`   | Current navigation item, secondary button hover, selected rows, info notifications                                                                                    |
+| `link`           | `primary-600`   | `primary-400`   | `primary-800`   | `primary-200`   | Link text, badge text                                                                                                                                                 |
+| `link-hover`     | `primary-700`   | `primary-300`   | `primary-900`   | `primary-100`   | Link hover and pressed                                                                                                                                                |
+| `focus-ring`     | `primary-500`   | `primary-400`   | `primary-800`   | `primary-200`   | Focus indicator                                                                                                                                                       |
+| `danger`         | `danger-600`    | `danger-300`    | `danger-700`    | `danger-200`    | Errors, destructive actions, danger notification bar and icon                                                                                                         |
+| `danger-hover`   | `danger-700`    | `danger-200`    | `danger-800`    | `danger-100`    | Hover and pressed state of `danger`                                                                                                                                   |
+| `on-danger`      | `white`         | `black`         | `white`         | `black`         | Text and icons on `danger`                                                                                                                                            |
+| `danger-subtle`  | `danger-50`     | `danger-950`    | `danger-50`     | `danger-950`    | Danger notifications, including the error summary                                                                                                                     |
+| `success`        | `success-700`   | `success-300`   | `success-800`   | `success-200`   | Confirmation, completed steps, success notification bar and icon                                                                                                      |
+| `success-subtle` | `success-50`    | `success-950`   | `success-50`    | `success-950`   | Success notifications                                                                                                                                                 |
+| `warning`        | `warning-700`   | `warning-300`   | `warning-800`   | `warning-200`   | Warnings, deadlines, warning notification bar and icon                                                                                                                |
+| `warning-subtle` | `warning-50`    | `warning-950`   | `warning-50`    | `warning-950`   | Warning notifications                                                                                                                                                 |
 
 The palette values are in `theme.css`, section 1. Measured contrast (2026-10-01, `vp run theme:check`, 81 contrast pairs and, since Plan 0020, 56 tinted button edges per theme):
 
@@ -362,12 +362,14 @@ One sans-serif family for text and controls, one serif family for headings, each
 
 Density is set on a container with `class="kv-compact"`. Comfortable is the default, and needs no class. On `<html>` or `<body>`, the class makes a whole staff tool compact.
 
-| Density               | Control min height | Label type      | Min target | Use                                                                                                                     |
-| --------------------- | ------------------ | --------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Comfortable (default) | 44px               | `label` (16px)  | 44×44px    | Everything resident-facing, and every primary action. Meets 2.5.5 Target Size (Enhanced)                                |
-| Compact (opt-in)      | 32px               | `label-compact` | 24×24px    | Staff tools, tables, toolbars, and the docs site chrome at 64rem and wider. Meets 2.5.8 only, and is documented as such |
+| Density               | Control min height | Label type      | Min target | Use                                                                                                           |
+| --------------------- | ------------------ | --------------- | ---------- | ------------------------------------------------------------------------------------------------------------- |
+| Comfortable (default) | 44px               | `label` (16px)  | 44×44px    | Everything resident-facing, and every primary action. Meets 2.5.5 Target Size (Enhanced)                      |
+| Compact (opt-in)      | 32px               | `label-compact` | 24×24px    | Staff tools, tables, and the docs site chrome at 64rem and wider. Meets 2.5.8 only, and is documented as such |
 
 Below `64rem`, where touch input is likely, compact chrome returns to comfortable.
+
+A toolbar has no density of its own: its controls follow the density around them, 44px by default and 32px only inside `kv-compact` from `64rem`. A toolbar that can sit in a resident-facing form, such as an editor's, is comfortable unless its container is compact.
 
 ## Elevation & Depth
 
@@ -470,6 +472,7 @@ Visual rules for the default theme. Behaviour, roles and keyboard are defined in
   - Labels are verbs ("Send application", "Book time").
   - Disabled buttons keep their label readable, with a dashed border as the non-colour cue. Prefer keeping them enabled and explaining what's missing on submit.
   - A hovered or pressed primary button keeps a 1px `primary` edge around its `primary-hover` fill, so its boundary stays at 3:1 on `surface-raised` in dark. A theme test checks that a hovered filled button's edge (its border, or its fill when transparent) reaches 3:1 on `canvas`, `surface` and `surface-raised`.
+  - A **toggle** (`kv-toggle`, `aria-pressed`) is a button that is on or off. Off, it is a button. On, it is a pressed-in primary button: a solid `primary` fill with `on-primary` text or icon, a 1px `primary` edge on all four sides and no depth, and flat in a toolbar. The state is a filled tile that is there or not, and the icon or label changes colour with it, so it never rests on hue alone (1.4.1). The fill is held to 3:1 against `canvas`, `surface`, `surface-raised` and a hovered button next to it (1.4.11). A disabled pressed toggle keeps its tile in grey (`text-muted` fill, `surface` icon or label, inside the dashed disabled edge), so it still says it is on. In forced colours a pressed toggle is a `Highlight` fill with `HighlightText`. The name never changes with the state.
   - Buttons have gentle depth in light and dark: a soft shadow that lifts a little on hover and goes on press and on keyboard focus, and a tinted edge. Disabled buttons, the contrast themes and forced colours are flat. So is a button inside an input group, which is part of the box. See [Button depth](#button-depth).
   - Size follows the density. A site can size every button without touching other controls with `--kv-button-min-block-size`, `--kv-button-padding-inline`, `--kv-button-font-size`, `--kv-button-font-weight` and `--kv-button-line-height`, which fall back to the `--kv-control-*` tokens. Set, they win over density, so the height never goes below 24px (2.5.8), and resident-facing buttons stay at 44px.
 - **Links** look like links (underlined `link`) and buttons look like buttons. Never swap the two. The hover state thickens the underline to 2px and uses `link-hover`.

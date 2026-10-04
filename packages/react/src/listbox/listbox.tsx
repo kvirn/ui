@@ -9,6 +9,7 @@ import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { renderPart } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
 import { useEnv } from '../provider/use-env.ts'
+import { ToolbarContext } from '../toolbar/toolbar-context.ts'
 import {
   ListboxGroupContext,
   ListboxListContext,
@@ -104,6 +105,17 @@ function renderNativeOptions<TItem>(listbox: UseListboxResult<TItem>): ReactElem
  */
 export function ListboxRoot<TItem>(props: ListboxRootProps<TItem>): ReactElement {
   const listbox = useListbox(props)
+  const isInToolbar = useContext(ToolbarContext) !== null
+  const isNative = listbox.isNative
+
+  useEffect(() => {
+    if (isInToolbar && isNative) {
+      warnOnce(
+        'listbox-native-in-toolbar',
+        'A Listbox in a Toolbar rendered a native <select> (native="auto" on a touch device, or native="always"), which replaces its children: the Toolbar.Item and the trigger\'s name are gone, and the select is not a toolbar item, so it has no accessible name from you and no roving tabindex (WCAG 4.1.2, 2.1.1). Set native="never" on the Listbox.Root.',
+      )
+    }
+  }, [isInToolbar, isNative])
 
   if (listbox.isNative) {
     return (
@@ -213,6 +225,8 @@ export function ListboxTrigger({
     partProps: {
       ...mergeProps(otherProps, trigger?.triggerProps ?? {}),
       ...ownNameProps(otherProps),
+      // The consumer's `tabIndex` wins: a Toolbar.Item sets the roving one.
+      ...(otherProps.tabIndex === undefined ? {} : { tabIndex: otherProps.tabIndex }),
       ref: mergedRef,
       children: children ?? <ListboxValue />,
     },

@@ -1,6 +1,6 @@
 # Plan 0035: Toggle, Toolbar and ButtonGroup
 
-- **Status:** Approved (the maintainer, 2026-10-04)
+- **Status:** Done (2026-10-04; manual AT `pending`)
 - **Owner:** orchestrator → component-engineer
 - **Created:** 2026-10-04 · **Target:** M1 (Toggle), M2 (Toolbar, ButtonGroup)
 - **Related:** [0003](0003-button-and-link.md), [0028](0028-compound-naming-and-part-aliases.md), [0036](0036-rich-text-editor.md) (the first user), [design spec](../design/rich-text-editor.md), `api-conventions`, `accessibility`, `keyboard`, `testing`, `storybook-docs`, `theme-css` and `overlays-and-lists` skills
@@ -122,18 +122,18 @@ None. Every name is the consumer's (`aria-label`), as for Button.
 
 ## Tasks
 
-- [ ] Core `getRovingTarget`, with unit tests first
-- [ ] Toggle: hook and component, tests first (controlled and uncontrolled, `aria-pressed`, focusable when disabled, `render`, the name warning, axe)
-- [ ] ButtonGroup: component, tests, and the name warning inside a Toolbar
-- [ ] Toolbar: hook, registry, parts, tests first (roving `tabIndex`, last focused, an unmounted active item, ignoring prevented and text-entry events, Item with `Listbox.Trigger` and `Popover.Trigger`, dev warnings)
-- [ ] Contracts: `toggle.a11y.md`, `toolbar.a11y.md` and `button-group.a11y.md`. Package docs: `toggle.md`, `toolbar.md` and `button-group.md`
-- [ ] Exports, and the naming tooling (`naming.test.tsx`, `tooling/component-naming`) for the `Toolbar` namespace and the `Toolbar.Group` alias
-- [ ] `theme.css`: `kv-toggle`, `kv-toolbar`, the group hairline, and groups in a toolbar. Then `vp run theme:check`
-- [ ] Stories (storybook-docs template): Toggle, Toolbar (text formatting, with a Listbox and a Popover item, a disabled control, wrapping at 320px, RTL, ForcedColors, Keyboard) and ButtonGroup (a Card footer, in a toolbar)
-- [ ] e2e: `toggle.e2e.ts` and `toolbar.e2e.ts`, every row (RTL included), and axe on every story
-- [ ] Update the `keyboard` skill's Toolbar row (wraps, disabled controls reachable, and an item's own keys win) and `docs/architecture.md` (roving focus is built, and where it lives)
-- [ ] Changesets: `@kvirn-ui/core`, `@kvirn-ui/react` and `@kvirn-ui/theme` minor
-- [ ] Gates, then accessibility-reviewer. Roadmap: Toggle `alpha`, and a new Toolbar and ButtonGroup row
+- [x] Core `getRovingTarget`, with unit tests first
+- [x] Toggle: hook and component, tests first (controlled and uncontrolled, `aria-pressed`, focusable when disabled, `render`, the name warning, axe)
+- [x] ButtonGroup: component, tests, and the name warning inside a Toolbar
+- [x] Toolbar: hook, registry, parts, tests first (roving `tabIndex`, last focused, an unmounted active item, ignoring prevented and text-entry events, Item with `Listbox.Trigger` and `Popover.Trigger`, dev warnings)
+- [x] Contracts: `toggle.a11y.md`, `toolbar.a11y.md` and `button-group.a11y.md`. Package docs: `toggle.md`, `toolbar.md` and `button-group.md`
+- [x] Exports, and the naming tooling (`naming.test.tsx`, `tooling/component-naming`) for the `Toolbar` namespace and the `Toolbar.Group` alias
+- [x] `theme.css`: `kv-toggle`, `kv-toolbar`, the group hairline, and groups in a toolbar. Then `vp run theme:check` (orchestrator: not run yet, and the pairs are all existing ones)
+- [x] Stories (storybook-docs template): Toggle, Toolbar (text formatting, with a Listbox and a Popover item, a disabled control, wrapping at 320px, RTL, ForcedColors, Keyboard) and ButtonGroup (a Card footer, in a toolbar)
+- [x] e2e: `toggle.e2e.ts` and `toolbar.e2e.ts`, every row (RTL included), and axe on every story
+- [x] Update the `keyboard` skill's Toolbar row (wraps, disabled controls reachable, and an item's own keys win) and `docs/architecture.md` (roving focus is built, and where it lives)
+- [x] Changesets: `@kvirn-ui/core`, `@kvirn-ui/react` and `@kvirn-ui/theme` minor
+- [x] Gates, then accessibility-reviewer (APPROVE on the third review, 2026-10-04). Roadmap: Toggle `alpha`, and a new Toolbar and ButtonGroup row
 
 ## Decisions
 
@@ -145,6 +145,49 @@ None. Every name is the consumer's (`aria-label`), as for Button.
 
 - **A Listbox trigger in a toolbar keeps its own Home and End** (the maintainer, 2026-10-04): on a closed Listbox they open it, as its contract says. APG makes both optional.
 - **DESIGN.md** gets the solid-fill pressed toggle and the toolbar density wording (the maintainer, 2026-10-04, design spec §6.10).
+
+### Implementation decisions (component-engineer, 2026-10-04)
+
+All unverified until the orchestrator runs the gates.
+
+- **Items register by key.** `getItemProps(key)` returns a ref callback cached per key (a part uses `useId()`), a `tabIndex` and an `onFocus`. A hook-level cache is what keeps the ref stable, so React never detaches it between renders. The order is published as one string (`'a\nb\nc'`), so a detach and attach in one commit (an inline consumer ref) writes the same state and React bails out instead of looping. The registry is sorted by `compareDocumentPosition`.
+- **Before the first commit, every item is `tabindex="-1"`** (items register in an effect). A server-rendered toolbar has no Tab stop until hydration, which is also when everything else starts to work. Noted in the contract's Known issues. **Superseded after review: every item is `tabindex="0"` until the items have registered** (see "Decisions after review").
+- **(Superseded after review: the layout effect is deleted, see "Decisions after review".) `Toolbar.Item` sets the roving `tabindex` in a layout effect as well as through props.** `Listbox.Trigger` merges its own `tabIndex: 0` last (`mergeProps(otherProps, triggerProps)`), so no `mergeProps` order from the Item can win. The effect puts the toolbar's value back after every Item render. Residual risk: a Listbox that re-renders alone (it toggles `disabled`) can rewrite its `tabindex` between Item renders. The alternative, if the reviewer dislikes this, is that `Listbox.Trigger` honours a `tabIndex` from the consumer (a one-line change in `listbox.tsx` and a line in its contract), which I didn't do because it is outside this plan.
+- **A key is the toolbar's only if it comes from an item.** The handler finds the item that contains the event target and ignores the event when there is none. That covers a Popover's popup, which sits right after its trigger inside the toolbar's DOM, without a separate rule. Also ignored: `defaultPrevented`, a text-entry element, and any key with Control, Alt, Meta or Shift.
+- **Natively disabled items are skipped** by the arrows and Home and End (`:disabled`), because `focus()` on them does nothing and the navigation would stick. `Toolbar.Button` and `Toolbar.Toggle` still default to `focusableWhenDisabled`, so this only applies when a consumer sets it to `false`. A disabled editor needs it (design spec §6.8: the whole toolbar leaves the Tab order). The contract warns not to mix them.
+- **`toolbar-with-few-controls` is skipped while the count is 0**, because the first commit has no items yet. It fires once, for 1 or 2.
+- **`ButtonGroup` has a hook, `useButtonGroup({ isNamed })`,** so the component follows the hook-plus-part rule. `Toolbar.Group` is a thin typed wrapper with its own display name.
+- **`hasNameSource` is exported from `button.tsx`** (internal, not in the public entry) so Toggle's missing-name warning is Button's.
+- **No new contrast pair.** A pressed Toggle uses `on-primary` on `primary` and `primary-hover`, a `primary` edge on the three plain surfaces and on `primary-subtle`, and `surface` on `text-muted`: all in `contrast-requirements.ts` already (two comments there say so). The look is `forced-color-adjust: none` on a pressed Toggle only, which the `theme-css` skill now lists.
+- **Separators draw from 40rem only** (design spec §6.5.2 and §9 Q4: the fallback). A line can land at the start of a wrapped row between 40rem and the width where the toolbar stops wrapping: accepted by the spec.
+- **`kv-toolbar--attached` and `kv-toolbar--labels` are not in this plan's CSS.** The editor renders them (Plan 0036), and flat buttons are only specified for the attached toolbar. A standalone `kv-toolbar` holds real Buttons.
+- **DESIGN.md:** the pressed toggle (Components, Buttons), the toolbar density line (Density), and `text-muted` as the fill of a disabled pressed toggle (Colors, design spec §9 Q13, accepted). The icon-only-in-toolbar wording (§6.10) lands with Plan 0036 or 0037, as the spec says.
+- **No ButtonGroup e2e spec and no ButtonGroup Keyboard story:** its contract has no focus lines. Its Tab row is a component test. The "in a toolbar" example is on the Toolbar stories, so it is said once.
+- **The roving helper is exported from core** (`getRovingTarget`, with its types), and `@kvirn-ui/react` re-exports only the `RovingOrientation` type that `UseToolbarOptions` uses.
+
+### Decisions after review (accessibility-reviewer, 2026-10-04)
+
+- **`Listbox.Trigger` now honours a consumer `tabIndex`, replacing the `Toolbar.Item` layout effect.** It is a one-line change in `listbox.tsx` and a line in `listbox.a11y.md`, and it is outside this plan's original scope (rule 10). It is approved by the orchestrator to unblock Plan 0036. It supersedes the "layout effect" decision above: the effect is deleted, and `Toolbar.Item`'s roving `tabindex` reaches the trigger through its props. The existing test "a Listbox.Trigger as an item has the roving tabindex, not its own" stays, and a Listbox test proves a consumer `tabIndex` wins.
+
+- **The Tab stop is never a natively disabled control** (reviewer, blocking: 2.1.1, 2.4.3, keyboard skill rule 5). It is the last focused item if it is still enabled, else the next enabled one in DOM order, else the nearest enabled one before it, and none only when every item is natively disabled (a disabled editor leaves the Tab order). The review text said "else the first enabled"; the nearest earlier one is used instead, because an item that unmounts at the end already hands over to the new last item (an existing test), and one rule is simpler than two. Any enabled control is a valid Tab stop, so no user-visible rule differs.
+- **How a disabled change is seen:** `useToolbar` watches the `disabled` attribute of the toolbar's subtree with a `MutationObserver` (created after mount, from the toolbar's own window), and re-reads `:disabled` when an item registers or unregisters. The hook needs no signal from the parts, so a hook-only toolbar gets it too. Items don't report `isNativelyDisabled` through `getItemProps`, because an element's `disabled` can come from `render`.
+- **Focus is not lost when the focused control becomes disabled:** the hook remembers the focused item (`onFocus`, and `onBlur` that keeps it when the blur is the browser's own, on a control that is now `:disabled`). When the observer sees that item disabled and focus is on it or on `body`, focus moves to the new Tab stop. If every control is disabled, focus can't stay in the toolbar.
+- **`Toolbar.Item` takes `disabled` and `focusableWhenDisabled`, as `Toolbar.Button` does** (default `true`): `aria-disabled="true"` and `data-disabled`, no native `disabled`, and a click, Enter or Space is stopped in the capture phase (`onClickCapture` with `preventDefault`, `onKeyDownCapture` for Enter and Space), so the rendered element's own handlers (a Popover trigger's) never run. `focusableWhenDisabled={false}` makes `disabled` native. A dev warning, `toolbar-item-natively-disabled:<tag>`, fires when the rendered element has `disabled` anyway and the prop isn't `false`. A Listbox is disabled on its own Root.
+- **Before registration every item is `tabindex="0"`** (reviewer, non-blocking): a server-rendered toolbar degrades to ordinary buttons instead of having no Tab stop. After the first commit one item keeps `0`. A test renders to a string and checks there is no `tabindex="-1"`.
+- **ButtonGroup has no `ForcedColors` story:** it draws nothing of its own that a mode could change (the buttons draw their own edges, and the hairline is the Toolbar's, shown by the Toolbar's `ForcedColors` story). It is exempt, as Kbd and Announcer are, and the exemption is in `button-group.a11y.md`.
+- **A vertical toolbar and a Listbox:** a Listbox item owns ArrowUp and ArrowDown (and Home and End), so in a vertical toolbar use Tab or a horizontal toolbar. A line in the contract and the guide says so. The theme ships horizontal toolbars only.
+- **Tests that repeated a fact were dropped:** the `kv-button` and `kv-toggle` class assertions in the Toolbar test (the part-class test covers them) and the `kv-button-group` assertion in the ButtonGroup `Default` story. The toggle e2e forced-colours test is retitled (it checks forced colours, not 1.4.1), and the contract cites the new title. The Toolbar focus-indicator row cites Toggle's 2.4.7 e2e test.
+
+### Decisions after the second review (accessibility-reviewer, 2026-10-04)
+
+- **A Listbox in a toolbar needs `native="never"`** (blocking, 4.1.2). `native="auto"` renders a `<select>` on a touch device and drops the Listbox's children, so the `Toolbar.Item` and the trigger's name never render. The contract, the guide and the `Toolbar.Item` docstring say so, and `ListboxRoot` warns (`listbox-native-in-toolbar`, via the internal toolbar context) when it renders natively inside a toolbar. This is a second small Listbox change outside the original scope, in the same file as the first, approved by the orchestrator in the same message. Making the Listbox render its popup inside a toolbar by itself was rejected: the native `<select>` is a deliberate touch choice, and a toolbar can't be its item.
+- **The hook's observer follows the element.** `toolbarProps.ref` is now a callback ref that also keeps the element in state, so the `MutationObserver` attaches when the element mounts late or `render` swaps it. `ToolbarRootPartProps['ref']` changes from a `RefObject` to a `RefCallback`; the hook is unreleased, so no break. `Toolbar.Root` keeps its own ref for the name warning.
+- **A window losing focus keeps the focused item:** `onBlur` doesn't clear it while `document.activeElement` is still that element.
+- **A disabled `Toolbar.Item` rendering a text field blocks Enter, Space and clicks only,** so the field stays editable. The contract and guide say to use `readOnly`. Blocking typing was rejected: it would mean a key filter on every text key, which the keyboard skill forbids ("never intercept native keys").
+- **The natively-disabled-first-control rows stay component tests.** The cheapest layer that proves them is a browser-mode component test in real Chromium (focus, Tab and `:disabled` are real there), and an e2e or story copy would test the same fact twice (testing skill). The Tab rows in the contract therefore name `toolbar.test.tsx`, as ButtonGroup's Tab row does.
+- **New tests:** a Listbox disabled on its Root is reached by the arrows, is `aria-disabled` and doesn't open; a Listbox that renders natively inside a Toolbar warns; a disabled change is still seen after `render` swaps the toolbar element.
+
+- **Follow-up for Plan 0036 (third review, non-blocking).** `ToolbarContext` reaches a Popover popup rendered inside `Toolbar.Root` (the editor's link and image forms). A `Toolbar.Button` placed in such a popup would register as a toolbar item, and a native Listbox there would get the `listbox-native-in-toolbar` warning. Plan 0036 makes `Popover.Popup` provide `ToolbarContext` as `null` before it puts forms in toolbar popovers.
 
 ## Risks & open questions
 
@@ -161,5 +204,5 @@ Minor releases of core, react and theme. No migration. `kv-button-group` is unch
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass (manual AT `pending`)
-- [ ] Plan tasks ticked, `docs/roadmap.md` status updated
+- [x] All quality gates in AGENTS.md pass (manual AT `pending`)
+- [x] Plan tasks ticked, `docs/roadmap.md` status updated

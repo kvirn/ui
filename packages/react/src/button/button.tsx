@@ -11,9 +11,9 @@ import { useButton } from './use-button.ts'
 /**
  * Whether a button has a source for its accessible name: its own label attributes, a `<label>`,
  * text outside `aria-hidden`, or a labelled image. A rough check for a dev warning, not the
- * accessible-name algorithm.
+ * accessible-name algorithm. Internal (not in the public entry): Toggle shares it.
  */
-function hasNameSource(button: HTMLButtonElement): boolean {
+export function hasNameSource(button: HTMLButtonElement): boolean {
   if (
     button.hasAttribute('aria-label') ||
     button.hasAttribute('aria-labelledby') ||

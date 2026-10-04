@@ -20,6 +20,19 @@ NumberInput is a text box too: its ArrowUp and ArrowDown move the caret and neve
 | Enter                              | Submits the form (implicit submission). Native, never prevented        |
 | Escape                             | Nothing, unless a pattern adds it (a combobox closes its popup)        |
 
+### Textarea (native `<textarea>`)
+
+Native like a text input, with two differences: Enter is a line break, and ArrowUp, ArrowDown, PageUp and PageDown move the caret between lines (`textarea.a11y.md`).
+
+| Key                                                                        | Action                                                                                     |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Tab / Shift+Tab                                                            | Moves focus in and out. Tab never inserts a tab character (never trap Tab for indentation) |
+| Characters                                                                 | Type. Native. Nothing is cut at a character limit (a count is not a `maxlength`)           |
+| Enter                                                                      | Inserts a line break. Never submits the form. Native, never prevented                      |
+| ArrowLeft / ArrowRight, ArrowUp / ArrowDown, Home / End, PageUp / PageDown | Move the caret. Native, never intercepted                                                  |
+| Control/Command+A, C, V, X, Z                                              | Select, copy, paste, cut, undo. Native. Paste is never blocked or cut (3.3.8)              |
+| Escape                                                                     | Nothing                                                                                    |
+
 ### Checkbox (native `<input type="checkbox">`)
 
 | Key             | Action                                                     |
@@ -105,25 +118,29 @@ Listbox: one Tab stop. Multi-select adds Space to toggle and Shift+Arrow to exte
 
 ## Composite widgets (one Tab stop, roving tabindex unless stated)
 
-| Pattern     | Key                           | Action                                                                                    |
-| ----------- | ----------------------------- | ----------------------------------------------------------------------------------------- |
-| Tabs        | ArrowLeft / ArrowRight        | Previous and next tab, wraps, flips in RTL. Automatic or manual activation (state it)     |
-| Tabs        | Home / End                    | First and last tab                                                                        |
-| Tabs        | Enter / Space                 | Activates the focused tab (manual activation)                                             |
-| Tabs        | Tab                           | From the tab list into the panel                                                          |
-| Menu button | Enter / Space / ArrowDown     | Opens the menu, focuses the first item. ArrowUp opens on the last item                    |
-| Menu        | ArrowDown / ArrowUp           | Next and previous item, wraps                                                             |
-| Menu        | Home / End, characters        | First and last item, typeahead                                                            |
-| Menu        | Enter / Space                 | Activates the item and closes                                                             |
-| Menu        | Escape                        | Closes, focus returns to the menu button                                                  |
-| Menu        | Tab                           | Closes the menu and moves on                                                              |
-| Toolbar     | ArrowLeft / ArrowRight        | Previous and next control, flips in RTL. Home / End to the ends                           |
-| Slider      | Arrow keys                    | One step. Right and Up increase, flips in RTL for the horizontal axis                     |
-| Slider      | PageUp / PageDown, Home / End | A larger step, the minimum and the maximum                                                |
-| Date grid   | Arrow keys                    | Day by day and week by week, flips in RTL                                                 |
-| Date grid   | PageUp / PageDown             | Previous and next month. Shift+PageUp / Shift+PageDown: previous and next year            |
-| Date grid   | Home / End                    | First and last day of the week (Monday start)                                             |
-| Date grid   | Enter / Space, Escape         | Selects the date and closes. Escape closes without selecting, focus returns to the button |
+| Pattern     | Key                           | Action                                                                                                                                                                                                                                                                            |
+| ----------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tabs        | ArrowLeft / ArrowRight        | Previous and next tab, wraps, flips in RTL. Automatic or manual activation (state it)                                                                                                                                                                                             |
+| Tabs        | Home / End                    | First and last tab                                                                                                                                                                                                                                                                |
+| Tabs        | Enter / Space                 | Activates the focused tab (manual activation)                                                                                                                                                                                                                                     |
+| Tabs        | Tab                           | From the tab list into the panel                                                                                                                                                                                                                                                  |
+| Menu button | Enter / Space / ArrowDown     | Opens the menu, focuses the first item. ArrowUp opens on the last item                                                                                                                                                                                                            |
+| Menu        | ArrowDown / ArrowUp           | Next and previous item, wraps                                                                                                                                                                                                                                                     |
+| Menu        | Home / End, characters        | First and last item, typeahead                                                                                                                                                                                                                                                    |
+| Menu        | Enter / Space                 | Activates the item and closes                                                                                                                                                                                                                                                     |
+| Menu        | Escape                        | Closes, focus returns to the menu button                                                                                                                                                                                                                                          |
+| Menu        | Tab                           | Closes the menu and moves on                                                                                                                                                                                                                                                      |
+| Toolbar     | ArrowLeft / ArrowRight        | Previous and next control, wraps (`loop`), flips in RTL. Up and Down when vertical                                                                                                                                                                                                |
+| Toolbar     | Home / End                    | First and last control                                                                                                                                                                                                                                                            |
+| Toolbar     | Tab                           | One Tab stop: enters at the control that last had focus, and leaves with the next Tab                                                                                                                                                                                             |
+| Toolbar     | (disabled control)            | Stays focusable with `aria-disabled`, so the arrows reach it. Activating it does nothing. A natively disabled one is skipped by the arrows and is never the Tab stop: that is the last focused control if it is enabled, else the next enabled one, else the previous enabled one |
+| Toolbar     | (an item's own keys)          | A key the item handled wins (a Listbox trigger's ArrowDown, Home and End). Text fields keep the arrows                                                                                                                                                                            |
+| Slider      | Arrow keys                    | One step. Right and Up increase, flips in RTL for the horizontal axis                                                                                                                                                                                                             |
+| Slider      | PageUp / PageDown, Home / End | A larger step, the minimum and the maximum                                                                                                                                                                                                                                        |
+| Date grid   | Arrow keys                    | Day by day and week by week, flips in RTL                                                                                                                                                                                                                                         |
+| Date grid   | PageUp / PageDown             | Previous and next month. Shift+PageUp / Shift+PageDown: previous and next year                                                                                                                                                                                                    |
+| Date grid   | Home / End                    | First and last day of the week (Monday start)                                                                                                                                                                                                                                     |
+| Date grid   | Enter / Space, Escape         | Selects the date and closes. Escape closes without selecting, focus returns to the button                                                                                                                                                                                         |
 
 ## Navigation (not composite)
 

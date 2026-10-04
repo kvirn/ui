@@ -31,6 +31,19 @@ export const nb = {
     maximumLength: ({ length }) => `Du har skrevet alle ${length} tegnene.`,
     maximumDecimals: 'Du kan ikke skrive flere desimaler.',
   },
+  characterCount: {
+    limit: ({ limit }, format) => `Du kan skrive maks ${format.number(limit)} tegn.`,
+    remaining: ({ count }, format) =>
+      format.plural(count, {
+        one: 'Du har 1 tegn igjen.',
+        other: `Du har ${format.number(count)} tegn igjen.`,
+      }),
+    over: ({ count }, format) =>
+      format.plural(count, {
+        one: 'Du har 1 tegn for mye.',
+        other: `Du har ${format.number(count)} tegn for mye.`,
+      }),
+  },
   fileUpload: {
     chooseFiles: 'Velg filer',
     chooseFile: 'Velg fil',

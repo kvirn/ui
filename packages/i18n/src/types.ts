@@ -122,6 +122,20 @@ export interface KvirnMessages {
     maximumDecimals: TextMessage
   }
   /**
+   * The text of a character count, `Textarea`'s `characterCount` (Plan 0034, design spec
+   * `docs/design/rich-text-editor.md` §4.1). It is shown under the box, and said in the Announcer
+   * (politely, debounced) from 80% of the limit and when the limit is crossed. Every sentence
+   * ends with its full stop. Counts are formatted with `format.number`.
+   */
+  characterCount: {
+    /** Shown while the box is empty, for example `Du kan skriva högst 500 tecken.` */
+    limit: MessageFunction<{ limit: number }>
+    /** Shown while typing, for example `Du har 120 tecken kvar.` Plural. */
+    remaining: MessageFunction<{ count: number }>
+    /** Shown over the limit, for example `Du har 12 tecken för mycket.` Plural. */
+    over: MessageFunction<{ count: number }>
+  }
+  /**
    * Every visible, named and announced string of FileUpload (Plan 0021, design spec
    * `docs/design/file-upload.md` §4.1). `name` is a file name, inserted as plain text. `size` and
    * `limit` are byte counts: a message formats them with `formatFileSize`, so a file and its limit

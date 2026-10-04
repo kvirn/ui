@@ -65,6 +65,7 @@
  *   5. Forced colours   Windows contrast themes: system colours win
  *   6. Density          kv-compact
  *   7. Button
+ *  7a. Toggle         kv-toggle: a button that is on or off. kv-toolbar and its groups
  *   8. Link and navigation lists
  *   9. Prose            kv-prose: articles from a CMS or Markdown
  *  9a. Heading       kv-heading: the type role of a heading, apart from its level
@@ -73,10 +74,10 @@
  *  10a. Section          kv-section: a region of the page, elevation level 1
  *  10b. Notification     kv-notification: a status message, by status class
  *  11. Icon
- *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-input-group,
- *                      kv-date-input, kv-checkbox, kv-radio, kv-listbox-native,
- *                      kv-listbox-trigger and popup, kv-combobox and kv-autocomplete (input,
- *                      control, buttons, value chips)
+ *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-textarea,
+ *                      kv-character-count, kv-input-group, kv-date-input, kv-checkbox,
+ *                      kv-radio, kv-listbox-native, kv-listbox-trigger and popup, kv-combobox
+ *                      and kv-autocomplete (input, control, buttons, value chips)
  *  13. One-time code    kv-one-time-code: one input, drawn as boxes and dashes of its pattern
  *  14. File upload      kv-file-upload: drop zone, trigger, rejections, and the list of files
  *  15. Table            kv-table: a native table, with sort buttons, selection, expanding and a
@@ -905,6 +906,121 @@
     }
   }
 
+  /* 7a. Toggle, toolbar and button group -------------------------------------------------------
+   * <Toggle> renders class="kv-button kv-toggle" and aria-pressed (data-pressed too, while on).
+   * Off, it is a Button. On, it is a pressed-in primary button: a solid primary fill with the
+   * on-primary icon or label, a 1px primary edge on all four sides and no shadow. The fill is a
+   * shape that is there or not, and the icon or label changes colour with it, so the state never
+   * rests on hue alone (1.4.1). The fill reaches 3:1 against the toolbar, card or page around it
+   * and next to a hovered button (1.4.11), and the icon on the fill 4.5:1: theme:check measures
+   * every pair. A disabled pressed toggle keeps its tile, in grey: a text-muted fill with a surface
+   * icon, inside the dashed edge, so it still says it is on. In forced colours the pressed button is
+   * a Highlight fill with HighlightText (forced-color-adjust: none on this one button), the way
+   * Windows draws a selected item.
+   *
+   * <Toolbar.Root> renders class="kv-toolbar": a row of groups and controls that wraps, group by
+   * group. Buttons keep their own look, and never shrink, scroll sideways or truncate (1.4.10).
+   * Its <ButtonGroup>s (Toolbar.Group) are rows that never stack: they keep their buttons together
+   * and wrap inside themselves only when one group alone is wider than the row. From 40rem a
+   * hairline separates a group from what comes before it. It is drawn by CSS, so no
+   * role="separator" is announced: the named groups carry the structure. Below 40rem, where the
+   * toolbar wraps and a line could land at the start of a row, the gap alone separates them.
+   * Density follows the surroundings: buttons are 44px, and 32px only inside kv-compact from 64rem.
+   */
+  .kv-button.kv-toggle:is([data-pressed], [aria-pressed='true']) {
+    --kv-button-edge: var(--kv-color-primary);
+    border-color: var(--kv-button-edge);
+    box-shadow: none;
+    background-color: var(--kv-color-primary);
+    color: var(--kv-color-on-primary);
+  }
+
+  /* The edge stays primary: primary-hover alone is under 3:1 on surface-raised in dark (1.4.11). */
+  .kv-button.kv-toggle:is([data-pressed], [aria-pressed='true']):not(:disabled, [data-disabled]):is(
+      :hover,
+      :active
+    ) {
+    background-color: var(--kv-color-primary-hover);
+  }
+
+  /* Disabled and pressed: still a tile, in grey, with the dashed edge that means disabled. The
+   * fill stops at the padding box, so the dashes show against what is around it. */
+  .kv-button.kv-toggle:is([data-pressed], [aria-pressed='true']):is(:disabled, [data-disabled]) {
+    border-style: dashed;
+    border-color: var(--kv-color-border-control);
+    background-color: var(--kv-color-text-muted);
+    background-clip: padding-box;
+    color: var(--kv-color-surface);
+  }
+
+  .kv-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--kv-space-1) var(--kv-space-2);
+    min-inline-size: 0;
+  }
+
+  /* A group in a toolbar is a row that never stacks, unlike a button group on its own. */
+  .kv-toolbar .kv-button-group {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--kv-space-1);
+    max-inline-size: 100%;
+  }
+
+  .kv-toolbar .kv-button-group > .kv-button {
+    inline-size: auto;
+  }
+
+  .kv-toolbar .kv-button-group > .kv-button.kv-button--icon-only {
+    align-self: auto;
+  }
+
+  @media (width >= 40rem) {
+    /* The line has 8px on each side: the toolbar's gap before it, and its margin plus the
+     * group's own 4px gap after it. As tall as an icon. */
+    .kv-toolbar .kv-button-group:not(:first-child)::before {
+      content: '';
+      flex: none;
+      align-self: center;
+      inline-size: var(--kv-border-width);
+      block-size: 1.25em;
+      margin-inline-end: calc(var(--kv-space-2) - var(--kv-space-1));
+      background-color: var(--kv-color-border-subtle);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .kv-button.kv-toggle:is([data-pressed], [aria-pressed='true']),
+    .kv-button.kv-toggle:is([data-pressed], [aria-pressed='true']):not(
+        :disabled,
+        [data-disabled]
+      ):is(:hover, :active) {
+      forced-color-adjust: none;
+      border-color: Highlight;
+      box-shadow: none;
+      background-color: Highlight;
+      color: HighlightText;
+    }
+
+    .kv-button.kv-toggle:is([data-pressed], [aria-pressed='true']):is(:disabled, [data-disabled]) {
+      border-style: dashed;
+      border-color: GrayText;
+      background-color: GrayText;
+      background-clip: padding-box;
+      color: Canvas;
+    }
+  }
+
+  @media (forced-colors: active) and (width >= 40rem) {
+    .kv-toolbar .kv-button-group:not(:first-child)::before {
+      background-color: GrayText;
+    }
+  }
+
   /* 8. Link and navigation lists ---------------------------------------------------------------
    * <Link> renders class="kv-link": the link colour and an underline, for running text.
    * Inside a list with class="kv-nav", links become navigation items instead: a row in the
@@ -1025,7 +1141,7 @@
    *
    * Every rule has zero specificity, so component rules and your own CSS always win. Prose
    * never styles a component part (components style themselves), or anything inside
-   * kv-not-prose, kv-nav or kv-button-group. Prose inside kv-not-prose isn't turned on again.
+   * kv-not-prose, kv-nav, kv-button-group or kv-toolbar. Prose inside kv-not-prose isn't turned on again.
    * A card is a boundary: a card in prose gets prose's block margins, and nothing inside
    * it is prose-styled, unless you put kv-prose on the card or inside it. Then the nearest of
    * the two wins, for two levels of nested cards. A field (kv-field) and a fieldset
@@ -1186,7 +1302,7 @@
           .kv-radio,
           .kv-listbox-native
         ),
-        :is(.kv-not-prose, .kv-nav, .kv-button-group, .kv-table) *,
+        :is(.kv-not-prose, .kv-nav, .kv-button-group, .kv-toolbar, .kv-table) *,
         :is(:is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose) *):not(
           :is(
             :is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose) .kv-prose *
@@ -1207,13 +1323,14 @@
         )
       )
     ) {
-    /* Elements. kv-not-prose, kv-nav, kv-button-group, a card's, a section's, a field's or a
+    /* Elements. kv-not-prose, kv-nav, kv-button-group, kv-toolbar, a card's, a section's, a field's or a
      * fieldset's Root only get margins. A section isn't a prose boundary: its content stays prose. */
     &:not(
       :where(
         .kv-not-prose,
         .kv-nav,
         .kv-button-group,
+        .kv-toolbar,
         .kv-card,
         .kv-notification,
         .kv-section,
@@ -2358,7 +2475,11 @@
    * <Field.Root> renders class="kv-field", and its parts kv-field-label, kv-field-optional,
    * kv-field-hint (also <Fieldset.Hint>), kv-field-error-message and kv-field-error-prefix.
    * <Fieldset.Root> renders kv-fieldset and its <legend> kv-fieldset-legend. A description is
-   * a <Field.Prose>: kv-prose. <TextInput> renders kv-input.
+   * a <Field.Prose>: kv-prose. <TextInput> renders kv-input, and <Textarea> renders kv-textarea,
+   * the same box with block padding, a height of its rows and vertical resize. Its
+   * characterCount renders <CharacterCount>: a kv-field-hint with kv-character-count, which adds
+   * only the over-the-limit look (data-over: weight 600 and the warning icon). Design spec:
+   * docs/design/rich-text-editor.md §6.2 and §6.3.
    * <InputGroup.Root> renders kv-input-group, the box around an input and its units, icons or
    * button, and <InputGroup.Addon> renders kv-input-group-addon. KvirnUI holds no form state:
    * the components render what they're given, and the theme styles the state attributes they
@@ -2625,7 +2746,7 @@
 
   /* The input. 44px high, or 32px in compact density, with a 1px edge. --kv-input-edge-width
    * is 2px when invalid, and the padding gives back the extra pixel, so the text stays put. */
-  .kv-input {
+  :is(.kv-input, .kv-textarea) {
     --kv-input-edge: var(--kv-color-border-control);
     --kv-input-edge-width: var(--kv-border-width);
 
@@ -2655,18 +2776,23 @@
   }
 
   /* A hint at most: examples go in the hint (a Field.Hint). */
-  .kv-input::placeholder {
+  :is(.kv-input, .kv-textarea)::placeholder {
     color: var(--kv-color-text-muted);
     opacity: 1;
   }
 
-  .kv-input:not(:disabled, [readonly], [data-invalid], [aria-invalid='true']):hover {
+  :is(.kv-input, .kv-textarea):not(
+      :disabled,
+      [readonly],
+      [data-invalid],
+      [aria-invalid='true']
+    ):hover {
     --kv-input-edge: var(--kv-color-text);
   }
 
   /* A click: the browser's own ring gives way to a transparent one, which forced colours paint,
    * so focus stays visible there. Keyboard focus draws the ring below. */
-  .kv-input:focus {
+  :is(.kv-input, .kv-textarea):focus {
     outline: var(--kv-focus-ring-width) solid transparent;
     outline-offset: var(--kv-focus-ring-offset);
   }
@@ -2674,7 +2800,12 @@
   /* Any focus, a click included: the edge takes border-focus at 2px. The padding gives the
    * pixel back, as for invalid, so nothing moves. An invalid input keeps its danger edge. After
    * the hover rule, so it wins. */
-  .kv-input:not(:disabled, [data-disabled], [data-invalid], [aria-invalid='true']):focus {
+  :is(.kv-input, .kv-textarea):not(
+      :disabled,
+      [data-disabled],
+      [data-invalid],
+      [aria-invalid='true']
+    ):focus {
     --kv-input-edge: var(--kv-color-border-focus);
     --kv-input-edge-width: var(--kv-control-border-width-invalid);
   }
@@ -2684,25 +2815,28 @@
    * [data-focus-visible] decides. Before that, :focus-visible draws it. :where() keeps the
    * specificity, so an input inside a group still draws no ring. An invalid input shows both its
    * edge and the ring. */
-  .kv-input:is([data-focus-visible], :focus-visible:where(:not([data-focused]))) {
+  :is(.kv-input, .kv-textarea):is(
+    [data-focus-visible],
+    :focus-visible:where(:not([data-focused]))
+  ) {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: var(--kv-focus-ring-offset);
   }
 
   /* Invalid: from Field.Root's [data-invalid], or your own aria-invalid. 2px danger. */
-  .kv-input:is([data-invalid], [aria-invalid='true']) {
+  :is(.kv-input, .kv-textarea):is([data-invalid], [aria-invalid='true']) {
     --kv-input-edge: var(--kv-color-danger);
     --kv-input-edge-width: var(--kv-control-border-width-invalid);
   }
 
   /* Read-only: a solid edge on the surface colour. It still takes focus. */
-  .kv-input[readonly] {
+  :is(.kv-input, .kv-textarea)[readonly] {
     background-color: var(--kv-color-surface);
   }
 
   /* Disabled, natively or from a Field: a dashed edge is the non-colour cue. It comes after
    * the invalid and read-only rules, so it wins. */
-  .kv-input:is(:disabled, [data-disabled]) {
+  :is(.kv-input, .kv-textarea):is(:disabled, [data-disabled]) {
     --kv-input-edge: var(--kv-color-border-control);
     --kv-input-edge-width: var(--kv-border-width);
     border-style: dashed;
@@ -2712,6 +2846,49 @@
     /* iOS draws a disabled input at 40% opacity with its own text fill. */
     opacity: 1;
     -webkit-text-fill-color: currentColor;
+  }
+
+  /* The textarea (<Textarea>) draws the input's box, edge, ring and states above. What differs: an
+   * input is one line with no block padding, a textarea has 8px above and below the text (one
+   * pixel less on a 2px edge, so the text never moves), it is always full width, and its height
+   * is its `rows` attribute (the component sets 5). Resize is vertical only: a wider box would
+   * break 1.4.10, and `none` would take the user's way to make it taller. Long words wrap. */
+  .kv-textarea {
+    padding-block: calc(var(--kv-space-2) - (var(--kv-input-edge-width) - var(--kv-border-width)));
+    overflow-wrap: break-word;
+    resize: vertical;
+  }
+
+  /* Grows with its text where the browser has both field-sizing and a typed attr(): in one
+   * @supports, because field-sizing alone would shrink the box to one line. `rows` stays the
+   * minimum. Elsewhere `rows` sets the height and the text scrolls inside. */
+  @supports (field-sizing: content) and (min-block-size: calc(attr(rows type(<number>), 5) * 1lh)) {
+    .kv-textarea {
+      field-sizing: content;
+      min-block-size: calc(
+        attr(rows type(<number>), 5) * 1lh + 2 * var(--kv-space-2) + 2 * var(--kv-border-width)
+      );
+    }
+  }
+
+  .kv-textarea:is(:disabled, [data-disabled]) {
+    resize: none;
+  }
+
+  /* The character count is a hint (kv-field-hint, above) and adds only what going over the limit
+   * needs: weight 600 and the warning icon at the inline start, laid out as the error message's
+   * icon is. The text stays the text colour: before submit it is a warning, not an error, and
+   * the weight, the icon and the words carry it, never colour alone (1.4.1). */
+  .kv-character-count[data-over] {
+    position: relative;
+    padding-inline-start: calc(1.25em + var(--kv-space-2));
+    font-weight: 600;
+  }
+
+  .kv-character-count > .kv-icon {
+    position: absolute;
+    inset-block-start: calc((1lh - 1.25em) / 2);
+    inset-inline-start: 0;
   }
 
   /* Width by expected characters: a character is 1ch in the input's own font plus 0.12em, the
@@ -3039,6 +3216,7 @@
 
   @media (prefers-reduced-motion: no-preference) {
     .kv-input,
+    .kv-textarea,
     .kv-input-group {
       transition-property: background-color, border-color;
       transition-duration: var(--kv-duration-fast);
@@ -3050,39 +3228,52 @@
    * edge keeps its width: an invalid input is 2px against 1px, so the width and the message
    * carry the state, and hover changes nothing. */
   @media (forced-colors: active) {
-    .kv-input {
+    :is(.kv-input, .kv-textarea) {
       --kv-input-edge: ButtonBorder;
 
       background-color: Field;
       color: FieldText;
     }
 
-    .kv-input:not(:disabled, [readonly], [data-invalid], [aria-invalid='true']):hover {
+    :is(.kv-input, .kv-textarea):not(
+        :disabled,
+        [readonly],
+        [data-invalid],
+        [aria-invalid='true']
+      ):hover {
       --kv-input-edge: ButtonBorder;
     }
 
-    .kv-input:is([data-invalid], [aria-invalid='true']) {
+    :is(.kv-input, .kv-textarea):is([data-invalid], [aria-invalid='true']) {
       --kv-input-edge: CanvasText;
     }
 
-    .kv-input:not(:disabled, [data-disabled], [data-invalid], [aria-invalid='true']):focus {
+    :is(.kv-input, .kv-textarea):not(
+        :disabled,
+        [data-disabled],
+        [data-invalid],
+        [aria-invalid='true']
+      ):focus {
       --kv-input-edge: Highlight;
       /* 1px: here the 2px width alone means invalid. The painted outline shows the focus. */
       --kv-input-edge-width: var(--kv-border-width);
     }
 
-    .kv-input:is([data-focus-visible], :focus-visible:where(:not([data-focused]))) {
+    :is(.kv-input, .kv-textarea):is(
+      [data-focus-visible],
+      :focus-visible:where(:not([data-focused]))
+    ) {
       outline-color: Highlight;
     }
 
-    .kv-input:is(:disabled, [data-disabled]) {
+    :is(.kv-input, .kv-textarea):is(:disabled, [data-disabled]) {
       --kv-input-edge: GrayText;
 
       color: GrayText;
       -webkit-text-fill-color: GrayText;
     }
 
-    .kv-input::placeholder {
+    :is(.kv-input, .kv-textarea)::placeholder {
       color: GrayText;
     }
 

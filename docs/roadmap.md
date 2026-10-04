@@ -24,7 +24,8 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | DismissableLayer (`useDismissableLayer`, core `createDismissableLayerStack`)                                        | –                             | 1   | in progress                                |
 | Button                                                                                                              | Button                        | 1   | alpha                                      |
 | Icon (built-in set, name registry)                                                                                  | – (SVG, decorative or `img`)  | 1   | alpha (the WebKit `var()` test runs in CI) |
-| Toggle                                                                                                              | Button                        | 1   | planned                                    |
+| Toggle (Plan 0035)                                                                                                  | Button                        | 1   | alpha                                      |
+| Toolbar (roving tabindex, `Toolbar.Item` for any control), ButtonGroup (Plan 0035)                                  | Toolbar                       | 2   | alpha                                      |
 | Link                                                                                                                | – (native `<a>`)              | 1   | alpha                                      |
 | Card (Root, Header, Body, Footer)                                                                                   | – (native `<div>`)            | 1   | alpha                                      |
 | Section (level 1 container; Card becomes level 2 only)                                                              | – (native `<div>`)            | 1   | alpha                                      |
@@ -32,7 +33,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Kbd (`kv-kbd`, one key per element)                                                                                 | – (native `<kbd>`)            | 1   | alpha                                      |
 | Notification (Root; Info, Success, Warning, Danger; Title, Body, Actions; announce)                                 | – (native `<div>`, Announcer) | 1   | alpha                                      |
 | Field, Label, ErrorMessage, Fieldset (the description is a `Prose`, Plan 0025, the hint is `Field.Hint`, Plan 0029) | –                             | 1   | in progress                                |
-| TextInput, NumberInput (Plan 0033), Textarea                                                                        | –                             | 1   | in progress                                |
+| TextInput, NumberInput (Plan 0033), Textarea and CharacterCount (Plan 0034)                                         | –                             | 1   | alpha                                      |
 | DateInput (three fields: Day, Month, Year, inside a Fieldset; the value is `{year, month, day}` strings)            | – (native `<input>`)          | 1   | alpha                                      |
 | InputGroup (Root, Addon: units, icons, a clear Button)                                                              | – (native `<input>`)          | 1   | in progress                                |
 | Input masks (core engine, presets, `useMask`)                                                                       | – (native `<input>`)          | 1   | alpha                                      |

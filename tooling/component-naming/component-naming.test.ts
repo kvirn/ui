@@ -30,6 +30,7 @@ const namespaces = [
   'RadioGroup',
   'Section',
   'Table',
+  'Toolbar',
 ]
 
 interface BannedForm {
@@ -157,6 +158,8 @@ describe('component naming in docs and stories', () => {
       '<CardHeader>',
       '<FieldLabel>',
       '<FieldsetLegend>',
+      '<ToolbarRoot>',
+      '<ToolbarGroup>',
     ]) {
       expect(hits(banned), banned).toBeGreaterThan(0)
     }
@@ -172,6 +175,10 @@ describe('component naming in docs and stories', () => {
       '<RadioGroup.Radio value="a" />',
       '<InputGroup.Input />',
       '<Card.Header>',
+      '<Toolbar.Root aria-label="Formatering">',
+      '<Toolbar.Group aria-label="Textstil">',
+      '<ButtonGroup aria-label="Ärendet">',
+      '<Toggle pressed={isOn}>',
       'the Field wires the Label',
       '`Label` is deprecated',
     ]) {

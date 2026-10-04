@@ -5,7 +5,7 @@
 Choosing one option from a list, or several. Listbox replaces `NativeSelect`. It has two renderings of one API:
 
 - **The popup** (`Listbox.Root`, `Listbox.Trigger`, `Listbox.Popup` and the parts inside it): a stylable popup in the browser's top layer, the APG select-only combobox. It holds groups and rich options, and it is the only rendering for `multiple`.
-- **The native select** (what `Listbox.Root` renders for `native="always"`, and on touch devices with `native="auto"`): the browser's own `<select>`, wired to its Field. On a phone it is better than anything custom.
+- **The native select** (what `Listbox.Root` renders for `native="always"`, and on touch devices with `native="auto"`): the browser's own `<select>`, wired to its Field. On a phone it is better than anything custom. In a `Toolbar`, set `native="never"`: the native select would drop the trigger and its `Toolbar.Item` (Plan 0035).
 
 Use a Combobox (a later part of Plan 0022) when the user should type to filter a long list, and a CheckboxGroup for up to about 15 choices that can all be shown.
 

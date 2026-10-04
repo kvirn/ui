@@ -3,7 +3,9 @@ import type { RefObject } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 
 /** Internal. Whether the browser gives a form control a name: a label, `aria-label` or similar. */
-function hasNameSource(control: HTMLInputElement | HTMLSelectElement): boolean {
+function hasNameSource(
+  control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement,
+): boolean {
   return (
     control.hasAttribute('aria-label') ||
     control.hasAttribute('aria-labelledby') ||
@@ -14,7 +16,7 @@ function hasNameSource(control: HTMLInputElement | HTMLSelectElement): boolean {
 
 export interface UseControlWarningsOptions {
   /** The control's element. */
-  elementRef: RefObject<HTMLInputElement | HTMLSelectElement | null>
+  elementRef: RefObject<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null>
   /** Whether the control is inside a Field. */
   isInField: boolean
   /** The `id` the consumer passed to the control. */

@@ -31,6 +31,19 @@ export const fi = {
     maximumLength: ({ length }) => `Olet kirjoittanut kaikki ${length} merkkiä.`,
     maximumDecimals: 'Desimaaleja ei voi kirjoittaa enempää.',
   },
+  characterCount: {
+    limit: ({ limit }, format) => `Voit kirjoittaa enintään ${format.number(limit)} merkkiä.`,
+    remaining: ({ count }, format) =>
+      format.plural(count, {
+        one: 'Sinulla on 1 merkki jäljellä.',
+        other: `Sinulla on ${format.number(count)} merkkiä jäljellä.`,
+      }),
+    over: ({ count }, format) =>
+      format.plural(count, {
+        one: 'Sinulla on 1 merkki liikaa.',
+        other: `Sinulla on ${format.number(count)} merkkiä liikaa.`,
+      }),
+  },
   fileUpload: {
     chooseFiles: 'Valitse tiedostot',
     chooseFile: 'Valitse tiedosto',

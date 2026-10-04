@@ -1,0 +1,14 @@
+---
+'@kvirn-ui/core': minor
+'@kvirn-ui/i18n': minor
+'@kvirn-ui/react': minor
+'@kvirn-ui/theme': minor
+---
+
+Add `Textarea`, `useTextarea` and `CharacterCount` (Plan 0034).
+
+- `@kvirn-ui/react`: `Textarea` is a native `<textarea>` wired to its Field like `TextInput`: label, description, hint and error, `aria-invalid`, `aria-required`, `disabled`, and your own `aria-describedby` ids after the Field's. `rows` is 5 unless set. It holds no form state (`value` and `onValueChange`, or `defaultValue` and `name`), handles no keys, and takes `render`. `useTextarea({ disabled, rows, onValueChange })` returns `textareaProps`, `isInvalid`, `isRequired`, `isDisabled`, `isFocused` and `isFocusVisible` for your own `<textarea>`. Types: `TextareaProps`, `TextareaState`, `TextareaChangeDetails`, `TextareaPartProps`, `UseTextareaOptions` and `UseTextareaResult`. Dev warnings: a Textarea with no accessible name, an `id` inside a Field, and `characterCount` without `maxLength`.
+- `@kvirn-ui/react`: `characterCount` with `maxLength` renders a count under the box ("Du har 120 tecken kvar."). `maxLength` is then the count's limit and is not written as the native `maxlength`, so a pasted text is never cut silently (3.3.8). Over the limit is a warning (`data-over` on the count and the box), not an error. The count is in the control's description, and is announced through the Announcer, politely, from 80% of the limit when typing pauses and at once when the limit is crossed, only for what the user types (a text set from code is silent). An uncontrolled box reads the browser's restored value on mount and on `pageshow`. In a Fieldset without a Field the count still describes the box. `onValueChange` details get `length`, `limit` and `isOverLimit`. `countCharacters` replaces how it counts, for a server that counts differently. `CharacterCount` (`value`, `limit`, `countCharacters`, `announceFrom`, `announcementDebounceMilliseconds`, `announceChanges`, `messages`) and `useCharacterCount` serve your own markup, with the types `CharacterCountProps`, `CharacterCountState`, `CharacterCountPartProps`, `UseCharacterCountOptions` and `UseCharacterCountResult`.
+- `@kvirn-ui/core`: `getCharacterCount({ value, limit, countCharacters?, announceFrom?, previousLength? })` (length, remaining, excess, over, near, and when to announce), `countCharacters` (grapheme clusters, a line break is one) and `defaultCharacterCountAnnounceFrom`.
+- `@kvirn-ui/i18n`: the `characterCount` namespace (`limit`, `remaining`, `over`) in all six locales. `se` is English until a native speaker writes it.
+- `@kvirn-ui/theme`: `kv-textarea` draws the `kv-input` box with block padding, full width, vertical resize only, and growing with its text where the browser supports `field-sizing`. `kv-character-count` is the hint's look and adds weight and the `warning` icon over the limit. No new tokens.

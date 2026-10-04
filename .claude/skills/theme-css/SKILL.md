@@ -110,7 +110,7 @@ The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@laye
 - The `forced-colors: active` block maps **every** semantic colour token to a system colour (`Canvas`, `CanvasText`, `ButtonBorder`, `Highlight`, `HighlightText`, `LinkText`). A test fails when a colour token is missing there. Status colours become `CanvasText`.
 - Its selector is `:root:is(*, [data-kv-color-scheme][data-kv-contrast])`, specificity (0,3,0), so it beats every theme selector.
 - Edges carry meaning in forced colours, because shadows and fills vanish. Give every control, card, section, popup and sticky head a visible `border` (use `CanvasText`, `ButtonBorder` or `Highlight`). Keep widths the same so nothing moves. Selected, active and dragging states use `Highlight` with a shape change, not colour alone.
-- Do not use `forced-color-adjust: none` to keep your own colours. The only uses are on an active Listbox option and the file upload progress fill, and both set system colours (`Highlight`, `HighlightText`) themselves.
+- Do not use `forced-color-adjust: none` to keep your own colours. The only uses are on an active Listbox option, the file upload progress fill and a pressed Toggle (`kv-toggle`), and all three set system colours (`Highlight`, `HighlightText`, and `GrayText` and `Canvas` for a disabled pressed toggle) themselves.
 - Buttons are flat in forced colours; hover changes the edge to `Highlight`.
 
 ## Prose and the boundary list
@@ -119,7 +119,7 @@ The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@laye
 
 - Every prose rule is a zero-specificity `:where()` rule in `@layer kv`, so component rules and consumer CSS win.
 - Prose never styles a component part. The explicit list of part classes (first line of the `:not(...)` list in section 9: button, link, card parts, input group, checkbox, radio, native listbox) is written in one place. **When you add a part or a consumer class that appears inside prose, add it to that list.**
-- Prose also skips anything inside `kv-not-prose`, `kv-nav`, `kv-button-group` and `kv-table`.
+- Prose also skips anything inside `kv-not-prose`, `kv-nav`, `kv-button-group`, `kv-toolbar` and `kv-table`.
 - A card, notification, field or fieldset Root in prose gets prose's block margins only. They are boundaries: nothing inside them is prose-styled unless a `kv-prose` sits between the element and the boundary. The nearest boundary or `kv-prose` wins, for two levels of nesting. Three levels are not supported. A Section is not a boundary.
 - The description of a field or fieldset is a `kv-prose` that is a direct child, so it is prose again, in `body` (16px) wherever it sits. The hint (`kv-field-hint`, `Field.Hint`) is a plain paragraph in `body-small` (14px): its size belongs to the part, so no rule sizes a Prose by position, and the theme never styles a hint by `data-invalid` or `data-disabled`. An option's hint is the one spacing exception (column 2, 0 gap under its label).
 - Unlayered page CSS beats prose, so scope it away from prose.

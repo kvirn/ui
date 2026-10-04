@@ -21,13 +21,20 @@ export interface DescriptionPart<Instance extends Element> {
  * Internal. Makes an element one of the descriptions of the nearest Field or Fieldset: it
  * registers the element while mounted, and gets the id the host lists in `aria-describedby`, in
  * DOM order. Outside a host it does nothing and warns of nothing: the part decides whether that is
- * worth a warning (`Field.Hint` warns, `Prose` doesn't). Used by `Prose`, `Field.Hint` and
- * `FileUpload.Limits`.
+ * worth a warning (`Field.Hint` warns, `Prose` doesn't). Used by `Prose`, `Field.Hint`,
+ * `FileUpload.Limits` and `CharacterCount`, which passes `isRegistering` false outside a Field so it
+ * never becomes a Fieldset's description.
  */
 export function useDescriptionPart<Instance extends Element>(
   consumerRef: Ref<Instance> | undefined,
+  /**
+   * `false`: ignore the host, as outside one. For a part that describes one control, such as a
+   * character count: a Fieldset's description is the group's, never a control's.
+   */
+  isRegistering = true,
 ): DescriptionPart<Instance> {
-  const host = useContext(FieldTextHostContext)
+  const contextHost = useContext(FieldTextHostContext)
+  const host = isRegistering ? contextHost : null
   const name = useId()
   const elementRef = useRef<Instance | null>(null)
   const ref = useMergedRef(consumerRef, elementRef)
