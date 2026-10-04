@@ -292,7 +292,7 @@ TooltipName.displayName = 'Tooltip.Name'
 /**
  * The part of the tooltip that adds information, such as the shortcut. It is the trigger's
  * `aria-describedby`, so a screen reader reads it after the trigger's name ("Fetstil, knapp, Ctrl+B").
- * It is left to right (`dir="ltr"`), because key names are Latin script. Put `Kbd` in it for keys.
+ * Put `Kbd` in it for keys.
  */
 export function TooltipShortcut({
   render,

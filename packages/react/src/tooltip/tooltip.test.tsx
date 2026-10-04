@@ -100,7 +100,6 @@ describe('rendering', () => {
     )
     expect(shortcut?.textContent).toBe('Ctrl+B')
     expect(popup?.contains(shortcut ?? null)).toBe(true)
-    expect(shortcut?.getAttribute('dir')).toBe('ltr')
     // The trigger keeps its own name and no tooltip state of its own.
     expect(triggerElement().getAttribute('aria-label')).toBe('Fetstil')
     expect(triggerElement().hasAttribute('data-open')).toBe(false)
@@ -513,7 +512,6 @@ describe('the public API', () => {
     expectTypeOf<UseTooltipResult['popupProps']['role']>().toEqualTypeOf<'tooltip'>()
     expectTypeOf<UseTooltipResult['popupProps']['className']>().toEqualTypeOf<'kv-tooltip'>()
     expectTypeOf<UseTooltipResult['nameProps']['aria-hidden']>().toEqualTypeOf<true>()
-    expectTypeOf<UseTooltipResult['shortcutProps']['dir']>().toEqualTypeOf<'ltr'>()
     expectTypeOf<TooltipChangeDetails['reason']>().toEqualTypeOf<
       'hover' | 'focus' | 'escape' | 'pointer-leave' | 'blur' | 'trigger-press'
     >()

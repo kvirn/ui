@@ -23,7 +23,7 @@ A short label for a control, shown when the pointer rests on it or it has keyboa
 | Tooltip.Trigger  | `<button type="button">`, or your `render`                 | `render` (for example `<Toolbar.Toggle aria-label="Fetstil" />`), and every `<button>` prop. Your `aria-describedby` is joined with the tooltip's. It gets no class and no state |
 | Tooltip.Popup    | `<div popover="manual" role="tooltip">`, always in the DOM | `render`, and every `<div>` prop. State: `data-open`, `data-placement`                                                                                                           |
 | Tooltip.Name     | `<span aria-hidden="true">`                                | `render`, and every `<span>` prop                                                                                                                                                |
-| Tooltip.Shortcut | `<span dir="ltr">`                                         | `render`, and every `<span>` prop. Put `Kbd` in it for keys                                                                                                                      |
+| Tooltip.Shortcut | `<span>`                                                   | `render`, and every `<span>` prop. Put `Kbd` in it for keys                                                                                                                      |
 
 Each part is also exported on its own (`TooltipRoot`, `TooltipTrigger`, `TooltipPopup`, `TooltipName`, `TooltipShortcut`), and the hook is `useTooltip`. Every part takes `render`, `ref`, `className` and handlers, which merge with its own. `render` also receives the state: `{ isOpen }`.
 
@@ -33,7 +33,7 @@ Each part is also exported on its own (`TooltipRoot`, `TooltipTrigger`, `Tooltip
 | ---------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Tooltip.Popup    | `kv-tooltip`          | `data-open` while open. `data-placement`: the side in use after flipping (`top`, `bottom`, …). `data-detached` while the trigger is outside the viewport |
 | Tooltip.Name     | `kv-tooltip-name`     | `aria-hidden="true"`                                                                                                                                     |
-| Tooltip.Shortcut | `kv-tooltip-shortcut` | `dir="ltr"`, and an `id` that is the trigger's `aria-describedby`                                                                                        |
+| Tooltip.Shortcut | `kv-tooltip-shortcut` | an `id` that is the trigger's `aria-describedby`                                                                                                         |
 
 The popup also carries the inline placement of [Popover](../popover/popover.md#placement-and-the-css-variables): `position: fixed`, `left`, `top`, and the variables `--kv-popup-width`, `--kv-popup-max-height` and `--kv-anchor-width`. The theme sets `--kv-popup-width-limit: 20rem` on it.
 

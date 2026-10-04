@@ -152,8 +152,6 @@ test.describe('Tooltip keyboard contract', () => {
     await expect(control(page, 'Bold')).toBeFocused()
     await expect(tooltip(page, 'Bold')).toBeVisible(atOnce)
     await expect(anyTooltip(page)).toHaveCount(1)
-    // The shortcut stays left to right.
-    await expect(page.locator('.kv-tooltip-shortcut').first()).toHaveAttribute('dir', 'ltr')
   })
 
   test('Enter and Space activate the trigger and the tooltip stays', async ({ page }) => {

@@ -88,8 +88,6 @@ export interface TooltipNamePartProps {
 export interface TooltipShortcutPartProps {
   className: 'kv-tooltip-shortcut'
   id: string
-  /** Key names are Latin script, read left to right, also in right-to-left text. */
-  dir: 'ltr'
 }
 
 export interface UseTooltipResult {
@@ -264,6 +262,6 @@ export function useTooltip({
       onPointerLeave: handlePointerLeave,
     },
     nameProps: { className: 'kv-tooltip-name', 'aria-hidden': true },
-    shortcutProps: { className: 'kv-tooltip-shortcut', id: shortcutId, dir: 'ltr' },
+    shortcutProps: { className: 'kv-tooltip-shortcut', id: shortcutId },
   }
 }

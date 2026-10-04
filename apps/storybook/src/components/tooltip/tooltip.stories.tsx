@@ -151,7 +151,6 @@ export const WithAShortcut: Story = {
     await expect(toggle).toHaveAttribute('aria-keyshortcuts', 'Control+B')
     const shortcut = document.getElementById(toggle.getAttribute('aria-describedby') ?? '')
     await expect(shortcut).toHaveTextContent('Ctrl+B')
-    await expect(shortcut).toHaveAttribute('dir', 'ltr')
   },
 }
 
@@ -297,7 +296,7 @@ export const LongText: Story = {
 
 /**
  * Right to left, in English: the toolbar's arrows flip, and each tooltip is centred on its
- * control, so nothing else flips. The shortcut stays left to right, because key names are Latin script.
+ * control, so nothing else flips.
  */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
