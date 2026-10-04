@@ -384,7 +384,7 @@ export function FileUploadTrigger({
     // name starts with the visible text whatever the engine does with a button that names itself.
     children: (
       <>
-        {children === undefined ? <Icon name="upload" size="md" /> : null}
+        {children === undefined ? <Icon name="upload" size={5} /> : null}
         <span id={fileUpload?.triggerTextId}>{children ?? fileUpload?.triggerText}</span>
       </>
     ),
@@ -559,7 +559,7 @@ export function FileUploadRejections({
       children: children ?? (
         <>
           <p>
-            <Icon name="error" size="md" />
+            <Icon name="error" size={5} />
             <span className="kv-field-error-prefix">{fieldMessages.errorPrefix}</span>{' '}
             {fileUpload.messages.rejectedHeading({ count: fileUpload.rejections.length })}
           </p>
@@ -755,7 +755,7 @@ export function FileUploadPreview({
         }
       : {
           ...mergeProps(otherProps, { className: 'kv-file-upload-preview' }),
-          children: children ?? <Icon name="document" size="lg" />,
+          children: children ?? <Icon name="document" size={6} />,
           ref: mergedRef,
         },
     state: toItemState(itemContext),
@@ -869,7 +869,7 @@ export function FileUploadStatus({
       ...mergeProps(otherProps, fileUpload.getStatusProps(item)),
       children: (
         <>
-          {icon === undefined ? null : <Icon name={icon} size="sm" />}
+          {icon === undefined ? null : <Icon name={icon} size={4} />}
           {children ?? fileUpload.getItemStatusText(item)}
         </>
       ),
@@ -938,7 +938,7 @@ export function FileUploadItemError({
       ...mergeProps(otherProps, fileUpload.getItemErrorProps(itemContext.item)),
       children: (
         <>
-          <Icon name="error" size="md" />
+          <Icon name="error" size={5} />
           <span className="kv-field-error-prefix">{fieldMessages.errorPrefix}</span>{' '}
           {children ?? fileUpload.getItemErrorText(itemContext.item)}
         </>
@@ -1024,7 +1024,7 @@ function ItemButton({
       ...(isFocusVisible ? { 'data-focus-visible': '' } : {}),
       children: children ?? (
         <>
-          {kind === 'remove' ? <Icon name="delete" size="md" /> : null}
+          {kind === 'remove' ? <Icon name="delete" size={5} /> : null}
           {visibleText}
         </>
       ),

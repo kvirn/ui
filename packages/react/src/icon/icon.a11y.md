@@ -6,7 +6,7 @@
 - **Status:** alpha candidate (Plan 0009). Manual AT is `pending`.
 - **Tests:** `icon.test.tsx` next to this file, and the icon-only rows in `button.test.tsx`. `icon.stories.tsx` and `icon.e2e.ts` in `apps/storybook/src/components/icon/`.
 
-An icon is decorative by default: text next to it already says what it means, so it's hidden from assistive technology. With a `label`, it's an image with that name. Icons come from the built-in set, from the app's registry (`KvirnProvider icons`), or from `render` and children for one-offs.
+An icon is decorative by default: text next to it already says what it means, so it's hidden from assistive technology. With a `label`, it's an image with that name. Icons come from the built-in set, from the app's registry (`KvirnProvider icons`), from a component reference (`icon`, Plan 0044), or from `render` and children for one-offs. Every route renders the same attributes: hidden unless there is a `label`, and Icon's `aria-hidden` replaces a library's own. The exception is `render` with an element: that element's own explicit `aria-*` and `role` win over Icon's.
 
 ## Roles, states, properties
 

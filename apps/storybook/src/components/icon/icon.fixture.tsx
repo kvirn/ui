@@ -1,5 +1,12 @@
-import { Button, Icon } from '@kvirn-ui/react'
+import {
+  ArrowRightIcon,
+  MagnifyingGlassIcon,
+  MapPinIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline'
+import { Button, defineIcons, Icon, KvirnProvider, Notification } from '@kvirn-ui/react'
 import type { BuiltInIconName } from '@kvirn-ui/react'
+import { ArrowRight, MapPin, Search, Trash2 } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import type { HTMLAttributes, ReactNode, Ref, SVGProps } from 'react'
 import { createPortal } from 'react-dom'
@@ -301,43 +308,39 @@ export interface IconFixtureProps {
   locale: IconFixtureLocale
 }
 
-/** A status line: the icon, the status word and the line, which is what carries the meaning. */
-export function StatusLine({ locale, status }: IconFixtureProps & { status: StatusKind }) {
+/**
+ * The four status notifications: the icon comes from the component, and the status word is the
+ * title, so the shapes never carry the meaning alone (1.4.1).
+ */
+export function StatusNotifications({ locale }: IconFixtureProps) {
   const { text, lang, formatLocale } = textsFor(locale)
-  const { word, line } = text.status[status]
+  const { info, success, warning, error } = text.status
   return (
-    <p lang={lang}>
-      <Icon
-        name={status}
-        color={status === 'info' ? undefined : `var(--kv-color-${statusColorToken[status]})`}
-      />{' '}
-      <strong>{word}:</strong> {line(exampleDate(formatLocale))}
-    </p>
-  )
-}
-
-const statusColorToken = {
-  success: 'success',
-  warning: 'warning',
-  error: 'danger',
-} as const satisfies Record<Exclude<StatusKind, 'info'>, string>
-
-/** The four status lines, each on its own, or each in its `-subtle` panel with a bar. */
-export function StatusLines({
-  locale,
-  panels = false,
-}: IconFixtureProps & { panels?: boolean | undefined }) {
-  return (
-    <div className="kv-story-status-lines">
-      {statusKinds.map((status) =>
-        panels ? (
-          <div key={status} className="kv-story-status-panel" data-status={status}>
-            <StatusLine locale={locale} status={status} />
-          </div>
-        ) : (
-          <StatusLine key={status} locale={locale} status={status} />
-        ),
-      )}
+    <div className="kv-story-status-lines" lang={lang}>
+      <Notification.Info>
+        <Notification.Title>{info.word}</Notification.Title>
+        <Notification.Body>
+          <p>{info.line(exampleDate(formatLocale))}</p>
+        </Notification.Body>
+      </Notification.Info>
+      <Notification.Success>
+        <Notification.Title>{success.word}</Notification.Title>
+        <Notification.Body>
+          <p>{success.line(exampleDate(formatLocale))}</p>
+        </Notification.Body>
+      </Notification.Success>
+      <Notification.Warning>
+        <Notification.Title>{warning.word}</Notification.Title>
+        <Notification.Body>
+          <p>{warning.line(exampleDate(formatLocale))}</p>
+        </Notification.Body>
+      </Notification.Warning>
+      <Notification.Danger>
+        <Notification.Title>{error.word}</Notification.Title>
+        <Notification.Body>
+          <p>{error.line(exampleDate(formatLocale))}</p>
+        </Notification.Body>
+      </Notification.Danger>
     </div>
   )
 }
@@ -516,6 +519,101 @@ export function NarrowButtons() {
           <Icon name="close" />
         </Button>
       </div>
+    </div>
+  )
+}
+
+/**
+ * Registered once, a library's drawings replace the built-in ones of the same names. Names that
+ * aren't built in need `Register` (see the Icon guide), so these three are overrides. Library
+ * defaults such as Lucide's 2 stroke go in `iconDefaults`.
+ */
+const lucideIcons = defineIcons({
+  search: Search,
+  delete: Trash2,
+  'arrow-forward': { component: ArrowRight, mirrorInRtl: true },
+})
+
+const heroiconsIcons = defineIcons({
+  search: MagnifyingGlassIcon,
+  delete: TrashIcon,
+  'arrow-forward': { component: ArrowRightIcon, mirrorInRtl: true },
+})
+
+/** Lucide, one-off: pass the component as `icon`. Icon's own props replace Lucide's. */
+export function LucideOneOff({ locale }: IconFixtureProps) {
+  const { text, lang } = textsFor(locale)
+  return (
+    <ul className="kv-story-inline-list" lang={lang}>
+      <li>
+        <Icon icon={Search} label={text.button.search} />
+      </li>
+      <li>
+        <Icon icon={MapPin} size={6} color="var(--kv-color-primary)" />
+      </li>
+      <li>
+        <Icon icon={Trash2} strokeWidth={1.5} />
+      </li>
+    </ul>
+  )
+}
+
+/** Lucide, registered: `<Icon name>` and every KvirnUI component use Lucide's drawings. */
+export function LucideRegistered({ locale }: IconFixtureProps) {
+  const { text, lang } = textsFor(locale)
+  return (
+    <div className="kv-story-section" lang={lang}>
+      <KvirnProvider icons={lucideIcons} iconDefaults={{ strokeWidth: 1.5 }}>
+        <div className="kv-button-group">
+          <Button>
+            <Icon name="search" />
+            {text.button.search}
+          </Button>
+          <Button>
+            {text.button.continue}
+            <Icon name="arrow-forward" />
+          </Button>
+        </div>
+      </KvirnProvider>
+    </div>
+  )
+}
+
+/** Heroicons, one-off: pass the component as `icon`. A `label` removes Heroicons' `aria-hidden`. */
+export function HeroiconsOneOff({ locale }: IconFixtureProps) {
+  const { text, lang } = textsFor(locale)
+  return (
+    <ul className="kv-story-inline-list" lang={lang}>
+      <li>
+        <Icon icon={MagnifyingGlassIcon} label={text.button.search} />
+      </li>
+      <li>
+        <Icon icon={MapPinIcon} size={6} color="var(--kv-color-primary)" />
+      </li>
+      <li>
+        <Icon icon={TrashIcon} strokeWidth={1.5} />
+      </li>
+    </ul>
+  )
+}
+
+/** Heroicons, registered: `<Icon name>` and every KvirnUI component use Heroicons' drawings. */
+export function HeroiconsRegistered({ locale }: IconFixtureProps) {
+  const { text, lang } = textsFor(locale)
+  return (
+    <div className="kv-story-section" lang={lang}>
+      <KvirnProvider icons={heroiconsIcons}>
+        <div className="kv-button-group">
+          <Button>
+            <Icon name="search" />
+            {text.button.search}
+          </Button>
+          <Button>
+            {text.button.continue}
+            <Icon name="arrow-forward" />
+          </Button>
+        </div>
+      </KvirnProvider>
     </div>
   )
 }

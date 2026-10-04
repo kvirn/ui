@@ -13,19 +13,24 @@ import contract from '../../../../../packages/react/src/icon/icon.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ArrowRight, X as LucideClose } from 'lucide-react'
 import { expect, within } from 'storybook/test'
+import { showSource } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   builtInIconNames,
   ButtonMatrix,
   CollectionDate,
+  HeroiconsOneOff,
+  HeroiconsRegistered,
   isIconFixtureLocale,
   isMirroredIcon,
+  LucideOneOff,
+  LucideRegistered,
   mirroredIconNames,
   MoreButtons,
   MunicipalityMark,
   NarrowButtons,
   ShadowIsland,
-  StatusLines,
+  StatusNotifications,
   statusKinds,
   textsFor,
 } from './icon.fixture.tsx'
@@ -44,14 +49,16 @@ const localeOf = (globals: Record<string, unknown>): IconFixtureLocale => {
   return isIconFixtureLocale(locale) ? locale : 'sv'
 }
 
-/** The sizes the steps and a pixel number give, as written in the props table. */
-const sizeOptions = ['sm', 'md', 'lg', 16, 32, '2em', '1.5rem', '20px'] as const
+/** Steps of the size scale, and the lengths a string gives, as written in the props table. */
+const sizeOptions = [4, 5, 6, 8, 12, 32, '2em', '1.5rem', '20px'] as const
 
 /**
- * `IconProps` is a union (`name`, or `render` and children), and Storybook's args can't hold a
- * union. The controls are for the `name` form, the common one once icons are registered.
+ * `IconProps` is a union (`name`, `icon`, `render` or children), and Storybook's args can't hold
+ * a union. The controls are for the `name` form, the common one once icons are registered.
  */
-type IconArgs = Omit<IconProps, 'name' | 'render' | 'children'> & { name: BuiltInIconName }
+type IconArgs = Omit<IconProps, 'name' | 'icon' | 'render' | 'children'> & {
+  name: BuiltInIconName
+}
 
 /** `Icon` for the controls and the Docs page: the same component, with plain args. */
 function NamedIcon(args: IconArgs) {
@@ -102,18 +109,18 @@ type Story = StoryObj<typeof meta>
 
 const iconNamed = (name: string): string => `icon-${name}`
 
-/** The default size is `md`, 1.25em. With no `label`, an icon is decorative: hidden from AT. */
+/** The default size is step 5, 1.25em. With no `label`, an icon is decorative: hidden from AT. */
 export const Default: Story = {
   play: async ({ canvas, canvasElement }) => {
     const svg = canvasElement.querySelector('svg')
     await expect(svg).not.toBeNull()
     await expect(svg).toHaveAttribute('aria-hidden', 'true')
-    await expect(svg).toHaveAttribute('data-size', 'md')
+    await expect(svg).toHaveAttribute('data-size', '5')
     await expect(canvas.queryByRole('img')).toBeNull()
   },
 }
 
-/** Every built-in icon at `sm`, `md` and `lg`, with the five that flip in right-to-left text. */
+/** Every built-in icon at sizes 4, 5 and 6, with the five that flip in right-to-left text. */
 export const BuiltInSet: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
@@ -122,9 +129,9 @@ export const BuiltInSet: Story = {
         {builtInIconNames.map((name) => (
           <li key={name} className="kv-story-icon-cell" data-testid={iconNamed(name)}>
             <span className="kv-story-icon-row">
-              <Icon name={name} size="sm" />
-              <Icon name={name} size="md" />
-              <Icon name={name} size="lg" />
+              <Icon name={name} size={4} />
+              <Icon name={name} size={5} />
+              <Icon name={name} size={6} />
             </span>
             <code>{name}</code>
             {isMirroredIcon(name) ? <span>{text.gallery.mirrors}</span> : null}
@@ -161,7 +168,7 @@ const textStyles = [
   { id: 'heading-2', className: 'kv-story-text-heading-2' },
 ] as const
 
-const iconSizes = ['sm', 'md', 'lg', 32] as const
+const iconSizes = [4, 5, 6, 8] as const
 
 function SizesBlock({ locale, testId }: { locale: IconFixtureLocale; testId: string }) {
   const { text, lang, formatLocale } = textsFor(locale)
@@ -185,8 +192,29 @@ function SizesBlock({ locale, testId }: { locale: IconFixtureLocale; testId: str
   )
 }
 
+const sizeScale = [
+  0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 9, 10, 12, 16, 20, 24, 32, 48, 64,
+] as const
+
+/** The size scale of Tailwind's `size-*`: a step is a quarter of an `em`, so `4` is 1em. */
+export const SizeScale: Story = {
+  render: () => (
+    <ul className="kv-story-inline-list">
+      {sizeScale.map((size) => (
+        <li key={size} className="kv-story-icon-row">
+          <Icon name="info" size={size} />
+          <code>{size}</code>
+        </li>
+      ))}
+    </ul>
+  ),
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelectorAll('svg[data-size]')).toHaveLength(sizeScale.length)
+  },
+}
+
 /**
- * `sm`, `md`, `lg` and `32` (px) inline in three text styles. The steps are `em`, so they grow
+ * Sizes 4, 5, 6 and 8 inline in three text styles. A step is `em` (step × 0.25em), so it grows
  * with the text; the lines mark the baseline and the capital height. Below, the same at 200%.
  */
 export const SizesNextToText: Story = {
@@ -201,11 +229,9 @@ export const SizesNextToText: Story = {
   play: async ({ canvas }) => {
     for (const testId of ['sizes-body', 'sizes-200']) {
       const block = canvas.getByTestId(testId)
-      for (const size of ['sm', 'md', 'lg']) {
+      for (const size of iconSizes) {
         await expect(block.querySelectorAll(`svg[data-size="${size}"]`)).toHaveLength(3)
       }
-      // The pixel size is a number: no step, so no `data-size`.
-      await expect(block.querySelectorAll('svg:not([data-size])')).toHaveLength(3)
     }
   },
 }
@@ -260,18 +286,18 @@ export const InButtons: Story = {
 
 /**
  * The four status icons differ in shape (a square, a circle, a triangle and an octagon), and
- * each comes with its status in words. On the canvas and on the `-subtle` panels, then a
- * greyscale copy: the shapes alone carry the difference (1.4.1).
+ * each notification comes with its status in words. Then a greyscale copy: the shapes alone
+ * carry the difference (1.4.1). The icon is the Notification's own.
  */
 export const StatusWithText: Story = {
+  parameters: showSource('icon/icon.fixture.tsx', 'StatusNotifications'),
   render: (_args, { globals }) => {
     const locale = localeOf(globals)
     return (
       <div className="kv-story-columns">
-        <StatusLines locale={locale} />
-        <StatusLines locale={locale} panels />
+        <StatusNotifications locale={locale} />
         <div className="kv-story-greyscale" data-testid="greyscale">
-          <StatusLines locale={locale} panels />
+          <StatusNotifications locale={locale} />
         </div>
       </div>
     )
@@ -279,10 +305,11 @@ export const StatusWithText: Story = {
   play: async ({ canvas }) => {
     const { text } = textsFor('sv')
     for (const status of statusKinds) {
-      // Three copies of each line, and none of them has a name of its own to be read twice.
-      await expect(canvas.getAllByText(`${text.status[status].word}:`)).toHaveLength(3)
+      // Two copies of each notification, and the status word is its title.
+      await expect(canvas.getAllByRole('heading', { name: text.status[status].word })).toHaveLength(
+        2,
+      )
     }
-    await expect(canvas.queryByRole('img')).toBeNull()
   },
 }
 
@@ -291,7 +318,7 @@ export const Colors: Story = {
   render: () => (
     <ul className="kv-story-inline-list">
       <li className="kv-story-icon-row">
-        <Icon name="info" size="lg" />
+        <Icon name="info" size={6} />
         <code>inherited</code>
       </li>
       {(
@@ -304,7 +331,7 @@ export const Colors: Story = {
         ] as const satisfies readonly string[]
       ).map((token) => (
         <li key={token} className="kv-story-icon-row">
-          <Icon name="info" size="lg" color={`var(--kv-color-${token})`} />
+          <Icon name="info" size={6} color={`var(--kv-color-${token})`} />
           <code>{token}</code>
         </li>
       ))}
@@ -326,15 +353,15 @@ export const TokenChannels: Story = {
   render: () => (
     <ul className="kv-story-inline-list">
       <li className="kv-story-icon-row">
-        <Icon name="info" size="lg" color="var(--kv-color-danger)" />
+        <Icon name="info" size={6} color="var(--kv-color-danger)" />
         <code>color</code>
       </li>
       <li className="kv-story-icon-row">
-        <Icon name="info" size="lg" fill="var(--kv-color-danger)" />
+        <Icon name="info" size={6} fill="var(--kv-color-danger)" />
         <code>fill</code>
       </li>
       <li className="kv-story-icon-row">
-        <Icon name="info" size="lg" stroke="var(--kv-color-danger)" />
+        <Icon name="info" size={6} stroke="var(--kv-color-danger)" />
         <code>stroke</code>
       </li>
     </ul>
@@ -406,7 +433,7 @@ export const StrokeWidths: Story = {
           <KvirnProvider iconDefaults={{ strokeWidth }}>
             <div className="kv-story-icon-strip">
               {builtInIconNames.map((name) => (
-                <Icon key={name} name={name} size="sm" />
+                <Icon key={name} name={name} size={4} />
               ))}
             </div>
           </KvirnProvider>
@@ -439,7 +466,7 @@ export const RTL: Story = {
           <ul className="kv-story-icon-strip" data-testid="mirrors">
             {mirroredIconNames.map((name) => (
               <li key={name} className="kv-story-icon-cell">
-                <Icon name={name} size="lg" />
+                <Icon name={name} size={6} />
                 <code>{name}</code>
                 <span>{text.gallery.mirrors}</span>
               </li>
@@ -448,7 +475,7 @@ export const RTL: Story = {
           <ul className="kv-story-icon-strip" data-testid="stays">
             {(['check', 'search', 'chevron-down'] as const).map((name) => (
               <li key={name} className="kv-story-icon-cell">
-                <Icon name={name} size="lg" />
+                <Icon name={name} size={6} />
                 <code>{name}</code>
                 <span>{text.gallery.doesNotMirror}</span>
               </li>
@@ -547,16 +574,16 @@ export const YourOwnSvg: Story = {
     return (
       <ul className="kv-story-inline-list" lang={lang}>
         <li>
-          <Icon viewBox="0 0 24 24" fill="none" stroke="currentColor" size="lg" strokeWidth={1.5}>
+          <Icon viewBox="0 0 24 24" fill="none" stroke="currentColor" size={6} strokeWidth={1.5}>
             <path d="M5 12h14M12 5v14" />
           </Icon>
         </li>
         <li>
-          <Icon render={<MunicipalityMark />} size="lg" label={text.label.logo} />
+          <Icon render={<MunicipalityMark />} size={6} label={text.label.logo} />
         </li>
         <li>
           <Icon
-            size="lg"
+            size={6}
             render={(props) => (
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
                 <rect x="5" y="5" width="14" height="14" rx="2" />
@@ -573,6 +600,72 @@ export const YourOwnSvg: Story = {
     // Only the one with a label is an image.
     await expect(canvas.getAllByRole('img')).toHaveLength(1)
     await expect(canvas.getByRole('img', { name: text.label.logo })).toBeVisible()
+  },
+}
+
+/**
+ * Lucide: `pnpm add lucide-react`, then pass the component as `icon`. Icon's `size`, `color`,
+ * `strokeWidth`, `label` and `className` replace Lucide's own, so there is nothing to
+ * repeat on the component. The second block registers the icons once with `defineIcons`, so
+ * `<Icon name>` and every KvirnUI component that draws a built-in icon use Lucide's.
+ * Library defaults such as Lucide's 2 stroke go in `iconDefaults`. To add names of your own,
+ * augment `Register` (see the Icon guide).
+ */
+export const Lucide: Story = {
+  parameters: showSource('icon/icon.fixture.tsx', 'LucideOneOff', 'LucideRegistered'),
+  render: (_args, { globals }) => (
+    <>
+      <LucideOneOff locale={localeOf(globals)} />
+      <LucideRegistered locale={localeOf(globals)} />
+    </>
+  ),
+  play: async ({ canvas, canvasElement }) => {
+    const { text } = textsFor('sv')
+    const icons = canvasElement.querySelectorAll('svg')
+    await expect(icons).toHaveLength(5)
+    // The one-off icons: Icon's size wins over Lucide's 24, and only the labelled one is an image.
+    await expect(icons[0]).toHaveClass('lucide-search')
+    await expect(icons[0]).toHaveAttribute('width', '1.25em')
+    await expect(icons[1]).toHaveAttribute('width', '1.5em')
+    await expect(icons[2]).toHaveAttribute('aria-hidden', 'true')
+    await expect(canvas.getByRole('img', { name: text.button.search })).toBeVisible()
+    // The registry: the same names, Lucide's drawings, decorative next to the button text.
+    await expect(icons[3]).toHaveClass('lucide-search')
+    await expect(icons[4]).toHaveClass('lucide-arrow-right')
+    await expect(icons[4]).toHaveAttribute('data-mirror-in-rtl')
+    await expect(canvas.getByRole('button', { name: text.button.search })).toBeVisible()
+  },
+}
+
+/**
+ * Heroicons: `pnpm add @heroicons/react`, then pass the component as `icon`. Heroicons marks
+ * its icons `aria-hidden` itself: a `label` on Icon removes that and makes the icon an image.
+ * The second block registers the icons once, so `<Icon name>` and every KvirnUI component that
+ * draws a built-in icon use Heroicons'. To add names of your own, augment `Register` (see the
+ * Icon guide).
+ */
+export const Heroicons: Story = {
+  parameters: showSource('icon/icon.fixture.tsx', 'HeroiconsOneOff', 'HeroiconsRegistered'),
+  render: (_args, { globals }) => (
+    <>
+      <HeroiconsOneOff locale={localeOf(globals)} />
+      <HeroiconsRegistered locale={localeOf(globals)} />
+    </>
+  ),
+  play: async ({ canvas, canvasElement }) => {
+    const { text } = textsFor('sv')
+    const icons = canvasElement.querySelectorAll('svg')
+    await expect(icons).toHaveLength(5)
+    await expect(icons[0]).toHaveAttribute('data-slot', 'icon')
+    await expect(icons[0]).toHaveAttribute('width', '1.25em')
+    await expect(icons[1]).toHaveAttribute('width', '1.5em')
+    await expect(icons[2]).toHaveAttribute('aria-hidden', 'true')
+    // Heroicons' own aria-hidden is gone once there is a label.
+    await expect(icons[0]).not.toHaveAttribute('aria-hidden')
+    await expect(canvas.getByRole('img', { name: text.button.search })).toBeVisible()
+    await expect(icons[3]).toHaveAttribute('data-slot', 'icon')
+    await expect(icons[4]).toHaveAttribute('data-mirror-in-rtl')
+    await expect(canvas.getByRole('button', { name: text.button.search })).toBeVisible()
   },
 }
 
@@ -603,12 +696,12 @@ export const LibraryIconsViaTheRegistry: Story = {
           {overridden.map((name) => (
             <li key={name} className="kv-story-icon-cell">
               <span className="kv-story-icon-row" data-testid={`built-in-${name}`}>
-                <Icon name={name} size="lg" color="var(--kv-color-primary)" />
+                <Icon name={name} size={6} color="var(--kv-color-primary)" />
                 <code>{name}</code>
               </span>
               <KvirnProvider icons={libraryIcons}>
                 <span className="kv-story-icon-row" data-testid={`registered-${name}`}>
-                  <Icon name={name} size="lg" color="var(--kv-color-primary)" />
+                  <Icon name={name} size={6} color="var(--kv-color-primary)" />
                   <code>{name}</code>
                 </span>
               </KvirnProvider>
@@ -616,7 +709,7 @@ export const LibraryIconsViaTheRegistry: Story = {
           ))}
           <li className="kv-story-icon-cell">
             <KvirnProvider icons={libraryIcons}>
-              <Icon name={logoName} size="lg" label={text.label.logo} />
+              <Icon name={logoName} size={6} label={text.label.logo} />
             </KvirnProvider>
             <code>logo</code>
           </li>
@@ -653,12 +746,12 @@ export const InRunningTextAndLinks: Story = {
     return (
       <div className="kv-story-narrow" data-testid="narrow" lang={lang}>
         <p>
-          <Icon name="calendar" size="sm" />{' '}
+          <Icon name="calendar" size={4} />{' '}
           {text.text.collection(<CollectionDate formatLocale={formatLocale} />)}
         </p>
         <p>
           <Link.Root href="https://www.digg.se/" target="_blank">
-            {text.text.guide} <Link.NewTabNotice /> <Icon name="external" size="sm" />
+            {text.text.guide} <Link.NewTabNotice /> <Icon name="external" size={4} />
           </Link.Root>
         </p>
       </div>
@@ -690,7 +783,7 @@ export const Unstyled: Story = {
           ))}
         </p>
         <p>
-          <Icon name="arrow-forward" size="lg" />
+          <Icon name="arrow-forward" size={6} />
         </p>
         <p>
           <Button aria-label={text.button.close}>

@@ -111,7 +111,7 @@ function SearchExample({
       <Field.Label marker="none">{text.searchServices}</Field.Label>
       <InputGroup.Root>
         <InputGroup.Addon>
-          <Icon name="search" size="md" />
+          <Icon name="search" size={5} />
         </InputGroup.Addon>
         <InputGroup.Input
           ref={inputRef}
@@ -132,7 +132,7 @@ function SearchExample({
               inputRef.current?.focus()
             }}
           >
-            {iconOnly ? <Icon name="close" size="md" /> : text.searchClear}
+            {iconOnly ? <Icon name="close" size={5} /> : text.searchClear}
           </Button>
         )}
       </InputGroup.Root>
@@ -245,7 +245,7 @@ export const SearchIcon: Story = {
         <Field.Label marker="none">{text.searchServices}</Field.Label>
         <InputGroup.Root>
           <InputGroup.Addon>
-            <Icon name="search" size="md" />
+            <Icon name="search" size={5} />
           </InputGroup.Addon>
           <InputGroup.Input type="search" name="search" enterKeyHint="search" autoComplete="off" />
         </InputGroup.Root>
@@ -320,7 +320,7 @@ export const CalendarIcon: Story = {
             className="kv-input--width-10 kv-input--numeric"
           />
           <InputGroup.Addon>
-            <Icon name="calendar" size="md" />
+            <Icon name="calendar" size={5} />
           </InputGroup.Addon>
         </InputGroup.Root>
         <Field.Hint>{text.visitDateExample}</Field.Hint>

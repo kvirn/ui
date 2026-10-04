@@ -52,7 +52,7 @@ const inputRef = useRef<HTMLInputElement>(null)
   <Field.Label marker="none">Sök bland e-tjänster</Field.Label>
   <InputGroup.Root>
     <InputGroup.Addon>
-      <Icon name="search" size="md" />
+      <Icon name="search" size={5} />
     </InputGroup.Addon>
     <InputGroup.Input ref={inputRef} type="search" name="q" enterKeyHint="search" value={query} onValueChange={setQuery} />
     {query === '' ? null : (

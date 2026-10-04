@@ -1,7 +1,6 @@
 import type { ComponentType, Ref } from 'react'
 import type { Register } from '../provider/register.ts'
 import type { BuiltInIconName } from './built-in-icons.tsx'
-import type { IconSizeStep } from './use-icon.ts'
 
 /**
  * What Icon passes to an icon component: attributes for the root `<svg>`, and a ref.
@@ -20,7 +19,7 @@ export interface IconComponentProps {
   /** `undefined` clears a library's own `aria-hidden` on a labelled icon. */
   'aria-hidden'?: 'true' | undefined
   'aria-label'?: string
-  'data-size'?: IconSizeStep
+  'data-size'?: string
   'data-mirror-in-rtl'?: ''
 }
 

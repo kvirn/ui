@@ -1867,8 +1867,6 @@
     }
   }
 
-  /* 10. Card ---------------------------------------------------------------------------------
-   * <Card.Root> renders class="kv-card", and its parts kv-card-header, kv-card-body and
   /* 9c. Tooltip ------------------------------------------------------------------------------
    * <Tooltip.Popup> renders <div class="kv-tooltip" popover="manual" role="tooltip">, a popover in
    * the top layer that the script places (position, left, top and width are inline), above its
@@ -1938,6 +1936,8 @@
     }
   }
 
+  /* 10. Card ---------------------------------------------------------------------------------
+   * <Card.Root> renders class="kv-card", and its parts kv-card-header, kv-card-body and
    * kv-card-footer. Elevation level 2: surface-raised, a 1px border-subtle edge, the lg radius
    * and no shadow. A card is never interactive, so it has no hover, focus or pointer style.
    * It is always surface-raised: a region of the page is a Section (section 10a).
@@ -2387,7 +2387,7 @@
   }
 
   /* Centred on the title's first line: (title line height - icon size) / 2. The icon is 1.25em
-   * (md), so 1.25em here is its own size. Under the 1.4.12 line height it stays on the line. */
+   * (step 5), so 1.25em here is its own size. Under the 1.4.12 line height it stays on the line. */
   .kv-notification > .kv-notification-icon {
     grid-column: 1;
     grid-row: 1;
@@ -2494,7 +2494,9 @@
    * attributes, so a prop would lose. Only forced colours do, so an icon can't disappear.
    * Design spec: docs/design/icon.md.
    *
-   *   data-size="sm|md|lg"   the size step: centred on the capital height in running text
+   *   data-size="<step>"     a step of Tailwind's size-* scale (width = step × 0.25em). Only the
+   *                          text-size steps 4, 5 and 6 (1em, 1.25em, 1.5em) are centred on the
+   *                          capital height in running text. Others keep `middle`.
    *   data-mirror-in-rtl     a directional icon, flipped in right-to-left text
    *
    * In a flex row (a Button, kv-button-group), the row's gap separates icon and text. In
@@ -2508,16 +2510,16 @@
 
   /* (capital height 0.7em − size) / 2. IBM Plex's capital height is 0.698em. Ignored in flex
    * rows, where align-items centres. */
-  .kv-icon[data-size='sm'] {
+  .kv-icon[data-size='4'] {
     vertical-align: -0.15em;
   }
 
-  .kv-icon[data-size='md'] {
+  .kv-icon[data-size='5'] {
     vertical-align: -0.275em;
   }
 
   /* Fits the line box from line height 1.5. */
-  .kv-icon[data-size='lg'] {
+  .kv-icon[data-size='6'] {
     vertical-align: -0.375em;
   }
 
@@ -6998,7 +7000,6 @@
       border-color: CanvasText;
     }
   }
-}
 
   /* 16. Rich text editor ---------------------------------------------------------------------
    * <RichTextEditor.Root> renders class="kv-rich-text": the box of a control, with an attached
@@ -7362,3 +7363,4 @@
       color: CanvasText;
     }
   }
+}

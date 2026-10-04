@@ -5,15 +5,55 @@ import { builtInIcons } from './built-in-icons.tsx'
 import { readIconEntry } from './icon-registry.ts'
 import type { IconComponent, IconName } from './icon-registry.ts'
 
-/** A size step. `sm` 1em, `md` 1.25em, `lg` 1.5em: 16, 20 and 24px next to 16px text. */
-export type IconSizeStep = 'sm' | 'md' | 'lg'
+/**
+ * A step of Tailwind's `size-*` scale. The size is the step times 0.25em, so it follows the text:
+ * 4 is 1em, 5 (the default) 1.25em, 6 1.5em, 8 2em. Next to 16px text, 4, 5 and 6 are 16, 20 and 24px.
+ */
+export type IconScale =
+  | 0
+  | 0.5
+  | 1
+  | 1.5
+  | 2
+  | 2.5
+  | 3
+  | 3.5
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12
+  | 14
+  | 16
+  | 20
+  | 24
+  | 28
+  | 32
+  | 36
+  | 40
+  | 44
+  | 48
+  | 52
+  | 56
+  | 60
+  | 64
+  | 72
+  | 80
+  | 96
 
-/** A step, pixels as a number, or a length that the `width` attribute accepts. */
-export type IconSize = IconSizeStep | number | `${number}em` | `${number}rem` | `${number}px`
+/**
+ * A step of the scale (a number), or a CSS length as a string (`'48px'`, `'2rem'`, `'1.5em'`).
+ * A bare number is a step, never pixels.
+ */
+export type IconSize = IconScale | string
 
 /** Defaults for every Icon below a `KvirnProvider`. Instance props win. */
 export interface IconDefaults {
-  /** Default `'md'`. */
+  /** Default `5` (1.25em). */
   size?: IconSize | undefined
   /** Unset by default: each icon keeps its own (the built-in set draws 1.5). */
   strokeWidth?: number | string | undefined
@@ -50,8 +90,8 @@ export interface IconPartProps {
   className: 'kv-icon'
   width: string | number
   height: string | number
-  /** The size step, when the size is one. */
-  'data-size'?: IconSizeStep
+  /** The step of the size scale (`'4'`), when the size is a number. */
+  'data-size'?: string
   'data-mirror-in-rtl'?: ''
   strokeWidth?: number | string
   color?: string
@@ -71,14 +111,11 @@ export interface UseIconResult {
   isDecorative: boolean
 }
 
-const sizeSteps: Readonly<Record<IconSizeStep, string>> = Object.freeze({
-  sm: '1em',
-  md: '1.25em',
-  lg: '1.5em',
-})
+const emPerStep = 0.25
 
-const isSizeStep = (size: IconSize): size is IconSizeStep =>
-  typeof size === 'string' && Object.hasOwn(sizeSteps, size)
+/** A number is a step: its length is the step times 0.25em (0.25 is exact in binary, so there is no rounding). */
+const sizeToLength = (size: IconSize): string =>
+  typeof size === 'number' ? `${size * emPerStep}em` : size
 
 /**
  * An icon's props, and the component for its name (contract: icon.a11y.md). The
@@ -118,18 +155,18 @@ export function useIcon({
     )
   }
 
-  const resolvedSize = size ?? iconDefaults.size ?? 'md'
+  const resolvedSize = size ?? iconDefaults.size ?? 5
   const resolvedStrokeWidth = strokeWidth ?? iconDefaults.strokeWidth
   const isMirroredInRtl = mirrorInRtl ?? entryMirrorInRtl ?? false
   const isDecorative = label === undefined
 
   const iconProps = useMemo<IconPartProps>(() => {
-    const length = isSizeStep(resolvedSize) ? sizeSteps[resolvedSize] : resolvedSize
+    const length = sizeToLength(resolvedSize)
     return {
       className: 'kv-icon',
       width: length,
       height: length,
-      ...(isSizeStep(resolvedSize) ? { 'data-size': resolvedSize } : {}),
+      ...(typeof resolvedSize === 'number' ? { 'data-size': String(resolvedSize) } : {}),
       ...(isMirroredInRtl ? { 'data-mirror-in-rtl': '' } : {}),
       ...(resolvedStrokeWidth === undefined ? {} : { strokeWidth: resolvedStrokeWidth }),
       ...(color === undefined ? {} : { color }),
