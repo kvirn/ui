@@ -46,12 +46,12 @@ export interface FieldErrorMessageProps extends Omit<ComponentPropsWithRef<'p'>,
   render?: RenderProp<ComponentPropsWithRef<'p'>, FieldState> | undefined
 }
 
-/** What a Hint's `render` receives as its second argument: the Field's or Fieldset's state. */
-export type FieldHintState = FieldState
+/** What a HelpText's `render` receives as its second argument: the Field's or Fieldset's state. */
+export type FieldHelpTextState = FieldState
 
-export interface FieldHintProps extends Omit<ComponentPropsWithRef<'p'>, 'id'> {
+export interface FieldHelpTextProps extends Omit<ComponentPropsWithRef<'p'>, 'id'> {
   /** Change the element: `render={<div />}`. Never to something interactive. */
-  render?: RenderProp<ComponentPropsWithRef<'p'>, FieldHintState> | undefined
+  render?: RenderProp<ComponentPropsWithRef<'p'>, FieldHelpTextState> | undefined
 }
 
 const noState: FieldState = { isInvalid: false, isRequired: false, isDisabled: false }
@@ -71,7 +71,7 @@ export function OptionalMarker({ text }: { text: string | undefined }): ReactNod
 
 /**
  * One form question with one control: a `<div>` that wires its Label, description (a
- * `Field.Prose`), hint (a `Field.Hint`) and ErrorMessage to the control inside it (contract:
+ * `Field.Prose`), help text (a `Field.HelpText`) and ErrorMessage to the control inside it (contract:
  * field.a11y.md). It holds no form state: pass `invalid`, `required` and `disabled` from your own
  * form logic.
  *
@@ -82,7 +82,7 @@ export function OptionalMarker({ text }: { text: string | undefined }): ReactNod
  *     <p>Vi ringer bara om något är fel.</p>
  *   </Field.Prose>
  *   <TextInput name="phone" autoComplete="tel" />
- *   <Field.Hint>Till exempel 070-123 45 67</Field.Hint>
+ *   <Field.HelpText>Till exempel 070-123 45 67</Field.HelpText>
  *   <Field.ErrorMessage>{errors.phone}</Field.ErrorMessage>
  * </Field.Root>
  */
@@ -268,7 +268,7 @@ FieldErrorMessage.displayName = 'Field.ErrorMessage'
  * The field's description, a `Prose` above the control that describes it: what to answer, why we
  * ask, where to find it. It is the shared `Prose` under the name an adopter writes
  * (`Field.Prose`), so it registers with the Field the same way. It is `body` size wherever it
- * sits. A short instruction under the control is a `Field.Hint`.
+ * sits. A short instruction under the control is a `Field.HelpText`.
  */
 export function FieldProse(props: ProseRootProps): ReactElement {
   return <ProseRoot {...props} />
@@ -276,63 +276,64 @@ export function FieldProse(props: ProseRootProps): ReactElement {
 FieldProse.displayName = 'Field.Prose'
 
 /**
- * The field's hint: a short instruction, format example or limit, always under the control
- * (`<p class="kv-field-hint">`, 14px in the default theme). A hint rendered before its control
+ * The field's help text: a short instruction, format example or limit, always under the control
+ * (`<p class="kv-field-help-text">`, 14px in the default theme). A help text rendered before its control
  * warns in development. Plain text only: no links,
  * lists or headings. It registers with the Field or Fieldset like a `Field.Prose`, so the
  * control's `aria-describedby` lists it in DOM order, then the error. It is never focusable and
  * not a live region. Outside a Field or Fieldset it warns and renders a plain paragraph with no
  * id.
  */
-export function FieldHint({ render, ref, ...otherProps }: FieldHintProps): ReactElement {
+export function FieldHelpText({ render, ref, ...otherProps }: FieldHelpTextProps): ReactElement {
   const description = useDescriptionPart<HTMLParagraphElement>(ref)
   const isOutsideHost = description.state === null
   useEffect(() => {
     if (isOutsideHost) {
       warnOnce(
-        'hint-outside-field',
-        'A Field.Hint or Fieldset.Hint is outside a Field.Root or Fieldset.Root, so it describes no control or group and has no id (WCAG 1.3.1, 3.3.2). Put it inside one, next to the control it explains.',
+        'help-text-outside-field',
+        'A Field.HelpText or Fieldset.HelpText is outside a Field.Root or Fieldset.Root, so it describes no control or group and has no id (WCAG 1.3.1, 3.3.2). Put it inside one, next to the control it explains.',
       )
     }
   }, [isOutsideHost])
-  // In a Field the control is known by its id. In a Fieldset (no Field around the hint) it is the
+  // In a Field the control is known by its id. In a Fieldset (no Field around the help text) it is the
   // first form control inside the `<fieldset>`.
   const field = useContext(FieldContext)
-  const hintId = description.partProps.id
+  const helpTextId = description.partProps.id
   const controlId = field?.controlProps.id
   const isInField = field !== null
   useEffect(() => {
-    if (hintId === undefined) {
+    if (helpTextId === undefined) {
       return
     }
-    const hint = document.getElementById(hintId)
+    const helpText = document.getElementById(helpTextId)
     const control = isInField
       ? document.getElementById(controlId ?? '')
-      : (hint?.closest('fieldset')?.querySelector('input:not([type="hidden"]), select, textarea') ??
-        null)
+      : (helpText
+          ?.closest('fieldset')
+          ?.querySelector('input:not([type="hidden"]), select, textarea') ?? null)
     if (
-      hint !== null &&
+      helpText !== null &&
       control !== null &&
-      hint.compareDocumentPosition(control) & Node.DOCUMENT_POSITION_FOLLOWING
+      helpText.compareDocumentPosition(control) & Node.DOCUMENT_POSITION_FOLLOWING
     ) {
       warnOnce(
-        `hint-before-control:${(hint.textContent ?? '').slice(0, 60)}`,
-        'A Field.Hint or Fieldset.Hint comes before its control in the DOM. A hint goes under the control, so the visual order is the order a screen reader reads it in (WCAG 1.3.2, 3.3.2). Move it after the control. Text the user must read before answering is a description: use Field.Prose or Fieldset.Prose above the control.',
+        `help-text-before-control:${(helpText.textContent ?? '').slice(0, 60)}`,
+        'A Field.HelpText or Fieldset.HelpText comes before its control in the DOM. A help text goes under the control, so the visual order is the order a screen reader reads it in (WCAG 1.3.2, 3.3.2). Move it after the control. Text the user must read before answering is a description: use Field.Prose or Fieldset.Prose above the control.',
       )
     }
-  }, [hintId, controlId, isInField])
+  }, [helpTextId, controlId, isInField])
   return renderPart({
     render,
     defaultElement: 'p',
-    // The host's id and state attributes, with the hint's own class in place of the Prose class.
+    // The host's id and state attributes, with the help text's own class in place of the Prose class.
     partProps: {
-      ...mergeProps(otherProps, { ...description.partProps, className: 'kv-field-hint' }),
+      ...mergeProps(otherProps, { ...description.partProps, className: 'kv-field-help-text' }),
       ref: description.ref,
     },
     state: description.state ?? noState,
   })
 }
-FieldHint.displayName = 'Field.Hint'
+FieldHelpText.displayName = 'Field.HelpText'
 
 /** @deprecated Write `Field.Label`. The flat `Label` is removed in 1.0. */
 export const Label = FieldLabel
@@ -342,7 +343,7 @@ export const ErrorMessage = FieldErrorMessage
 
 /**
  * A form question with one control, and its label and error: `Field.Root` is the root, with
- * `Field.Label`, `Field.Prose` for the description, `Field.Hint` for the hint and
+ * `Field.Label`, `Field.Prose` for the description, `Field.HelpText` for the help text and
  * `Field.ErrorMessage` inside it. The callable
  * `<Field.Root>` still works and is the same component as `Field.Root`, but it isn't shown in docs.
  *
@@ -351,13 +352,13 @@ export const ErrorMessage = FieldErrorMessage
  *   <Field.Label>E-postadress</Field.Label>
  *   <Field.Prose><p>Vi skickar beslutet hit.</p></Field.Prose>
  *   <TextInput name="email" type="email" autoComplete="email" />
- *   <Field.Hint>Till exempel namn@exempel.se</Field.Hint>
+ *   <Field.HelpText>Till exempel namn@exempel.se</Field.HelpText>
  * </Field.Root>
  */
 export const Field = Object.assign(FieldRoot, {
   Root: FieldRoot,
   Label: FieldLabel,
   Prose: FieldProse,
-  Hint: FieldHint,
+  HelpText: FieldHelpText,
   ErrorMessage: FieldErrorMessage,
 })

@@ -733,7 +733,7 @@ describe('mask (contract: text-input.a11y.md › Masked input)', () => {
     await expect.element(page.getByRole('status')).toBeEmptyDOMElement()
   })
 
-  test('a masked TextInput in a Field without a hint warns once (3.3.2)', async () => {
+  test('a masked TextInput in a Field without a help text warns once (3.3.2)', async () => {
     await render(
       <Field.Root>
         <Field.Label>Personnummer</Field.Label>
@@ -744,7 +744,7 @@ describe('mask (contract: text-input.a11y.md › Masked input)', () => {
       expect(consoleWarn).toHaveBeenCalledTimes(1)
     })
     const message = String(consoleWarn.mock.calls[0]?.[0])
-    expect(message).toContain('<Field.Hint>')
+    expect(message).toContain('<Field.HelpText>')
     expect(message).toContain('3.3.2')
   })
 
@@ -767,18 +767,18 @@ describe('mask (contract: text-input.a11y.md › Masked input)', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('a masked TextInput with a Field.Hint under it counts as hinted and does not warn', async () => {
+  test('a masked TextInput with a Field.HelpText under it counts as hinted and does not warn', async () => {
     await render(
       <>
         <Field.Root>
           <Field.Label>Personnummer</Field.Label>
           <TextInput mask={personalIdentityNumber} />
-          <Field.Hint>12 siffror, ÅÅÅÅMMDD-NNNN</Field.Hint>
+          <Field.HelpText>12 siffror, ÅÅÅÅMMDD-NNNN</Field.HelpText>
         </Field.Root>
         <Field.Root>
           <Field.Label>Postnummer</Field.Label>
           <TextInput mask={masks.postalCode({ country: 'SE' })} />
-          <Field.Hint>Fem siffror.</Field.Hint>
+          <Field.HelpText>Fem siffror.</Field.HelpText>
         </Field.Root>
       </>,
     )
@@ -950,7 +950,7 @@ describe('mask by name (Plan 0039)', () => {
     expect(message).toContain('country')
   })
 
-  test('the hint warning and the email warning read the resolved mask of a name', async () => {
+  test('the help text warning and the email warning read the resolved mask of a name', async () => {
     await render(
       <KvirnProvider locale="sv" messages={sv}>
         <Field.Root>
@@ -965,7 +965,7 @@ describe('mask by name (Plan 0039)', () => {
       expect(consoleWarn).toHaveBeenCalledTimes(2)
     })
     const messages = consoleWarn.mock.calls.map((call) => String(call[0]))
-    expect(messages.some((message) => message.includes('<Field.Hint>'))).toBe(true)
+    expect(messages.some((message) => message.includes('<Field.HelpText>'))).toBe(true)
     expect(messages.some((message) => message.includes('masks.email()'))).toBe(true)
   })
 

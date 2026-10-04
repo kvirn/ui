@@ -5,21 +5,21 @@ import { nb as nbMessages } from '@kvirn-ui/i18n/nb'
 import { nn as nnMessages } from '@kvirn-ui/i18n/nn'
 import { se as seMessages } from '@kvirn-ui/i18n/se'
 import { sv as svMessages } from '@kvirn-ui/i18n/sv'
-import { Button, KvirnProvider, Link, Notification, useAnnouncer } from '@kvirn-ui/react'
-import type { NotificationStatusRootProps, NotificationVariant } from '@kvirn-ui/react'
+import { Alert, Button, KvirnProvider, Link, useAnnouncer } from '@kvirn-ui/react'
+import type { AlertVariant } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 
-// Story and e2e fixture for Components/Notification (docs/design/notification.md §4.4, §5.2). sv,
+// Story and e2e fixture for Components/Alert (docs/design/alert.md §4.4, §5.2). sv,
 // en, nb and nn are written. The fi strings are the designer's drafts, for length checks only. se:
 // English, marked lang="en" (3.1.2), and the library's own status words follow in English too. The
 // status words ("Klart:", "Varning:") come from the provider, like an app's would. Dates and
 // times are values, formatted with Intl.
 
-export type NotificationFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
+export type AlertFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
 
-interface NotificationTexts {
+interface AlertTexts {
   deadline: {
     title: (date: ReactNode) => ReactNode
     body: (replyDate: ReactNode) => ReactNode
@@ -47,7 +47,7 @@ interface NotificationTexts {
   prose: { heading: string }
 }
 
-const en: NotificationTexts = {
+const en: AlertTexts = {
   deadline: {
     title: (date) => <>Applications close on {date}</>,
     body: (replyDate) => (
@@ -90,7 +90,7 @@ const en: NotificationTexts = {
   prose: { heading: 'Summer jobs in the municipality' },
 }
 
-const sv: NotificationTexts = {
+const sv: AlertTexts = {
   deadline: {
     title: (date) => <>Sista dag att ansöka är {date}</>,
     body: (replyDate) => (
@@ -132,8 +132,8 @@ const sv: NotificationTexts = {
   prose: { heading: 'Sommarjobb i kommunen' },
 }
 
-/** Designer drafts (docs/design/notification.md §4.4), for length checks. */
-const fi: NotificationTexts = {
+/** Designer drafts (docs/design/alert.md §4.4), for length checks. */
+const fi: AlertTexts = {
   deadline: {
     title: (date) => <>Hakuaika päättyy {date}</>,
     body: (replyDate) => (
@@ -178,7 +178,7 @@ const fi: NotificationTexts = {
   prose: { heading: 'Kesätyöt kunnassa' },
 }
 
-const nb: NotificationTexts = {
+const nb: AlertTexts = {
   deadline: {
     title: (date) => <>Fristen for å søke er {date}</>,
     body: (replyDate) => (
@@ -218,7 +218,7 @@ const nb: NotificationTexts = {
   prose: { heading: 'Sommerjobb i kommunen' },
 }
 
-const nn: NotificationTexts = {
+const nn: AlertTexts = {
   deadline: {
     title: (date) => <>Fristen for å søkje er {date}</>,
     body: (replyDate) => (
@@ -259,7 +259,7 @@ const nn: NotificationTexts = {
 }
 
 /** se has no texts: it shows the English ones, marked lang="en". */
-const notificationTexts: Record<NotificationFixtureLocale, NotificationTexts | undefined> = {
+const alertTexts: Record<AlertFixtureLocale, AlertTexts | undefined> = {
   sv,
   fi,
   nb,
@@ -276,25 +276,25 @@ const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
   en: 'en-GB',
 }
 
-export const isNotificationFixtureLocale = (value: unknown): value is NotificationFixtureLocale =>
-  typeof value === 'string' && value in notificationTexts
+export const isAlertFixtureLocale = (value: unknown): value is AlertFixtureLocale =>
+  typeof value === 'string' && value in alertTexts
 
 /** The Locale toolbar's value, `sv` when it's missing. */
-export const localeOf = (globals: Record<string, unknown>): NotificationFixtureLocale => {
+export const localeOf = (globals: Record<string, unknown>): AlertFixtureLocale => {
   const locale = globals['locale']
-  return isNotificationFixtureLocale(locale) ? locale : 'sv'
+  return isAlertFixtureLocale(locale) ? locale : 'sv'
 }
 
 interface ResolvedTexts {
-  text: NotificationTexts
+  text: AlertTexts
   /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
   lang: 'en' | undefined
   formatLocale: string
 }
 
 /** The fixture text in a locale, or the English text with `lang="en"` for se. */
-export function textsFor(locale: NotificationFixtureLocale): ResolvedTexts {
-  const text = notificationTexts[locale]
+export function textsFor(locale: AlertFixtureLocale): ResolvedTexts {
+  const text = alertTexts[locale]
   if (text === undefined) {
     return { text: en, lang: 'en', formatLocale: formatLocales.en }
   }
@@ -305,7 +305,7 @@ export function textsFor(locale: NotificationFixtureLocale): ResolvedTexts {
   }
 }
 
-const catalogs: Record<NotificationFixtureLocale, KvirnMessages> = {
+const catalogs: Record<AlertFixtureLocale, KvirnMessages> = {
   sv: svMessages,
   fi: fiMessages,
   nb: nbMessages,
@@ -315,8 +315,8 @@ const catalogs: Record<NotificationFixtureLocale, KvirnMessages> = {
 }
 
 /** The library strings a story shows in a locale: English where the fixture has no texts (se). */
-const messagesFor = (locale: NotificationFixtureLocale): KvirnMessages =>
-  notificationTexts[locale] === undefined ? enMessages : catalogs[locale]
+const messagesFor = (locale: AlertFixtureLocale): KvirnMessages =>
+  alertTexts[locale] === undefined ? enMessages : catalogs[locale]
 
 /**
  * The status words ("Klart:", "Varning:") follow the locale toolbar through a provider, like an
@@ -324,7 +324,7 @@ const messagesFor = (locale: NotificationFixtureLocale): KvirnMessages =>
  * fixture shows English (se), the words are English too, so a `lang="en"` element is all
  * English.
  */
-export const withNotificationLocale: Decorator = (Story, { globals }) => {
+export const withAlertLocale: Decorator = (Story, { globals }) => {
   const locale = localeOf(globals)
   return (
     <KvirnProvider locale={locale} messages={messagesFor(locale)}>
@@ -333,6 +333,17 @@ export const withNotificationLocale: Decorator = (Story, { globals }) => {
   )
 }
 
+/**
+ * The layout of every story: one column that can shrink to 320px, with room between examples, and
+ * the `lang` of the texts where the locale has none of its own (se shows English). It is a
+ * decorator so that the code a story shows is the alert and nothing around it.
+ */
+export const withAlertColumn: Decorator = (Story, { globals }) => (
+  <div className="kv-story-alert-column" lang={textsFor(localeOf(globals)).lang}>
+    <Story />
+  </div>
+)
+
 // Fixed instants, so stories and tests are deterministic. Formatted in UTC.
 const applicationsClose = new Date(Date.UTC(2026, 7, 31))
 const replyBy = new Date(Date.UTC(2026, 8, 30))
@@ -340,131 +351,198 @@ const permitExpires = new Date(Date.UTC(2026, 10, 12))
 const opensAt = new Date(Date.UTC(2026, 9, 1, 9, 0))
 const closesAt = new Date(Date.UTC(2026, 9, 1, 16, 0))
 
-function DateValue({ date, formatLocale }: { date: Date; formatLocale: string }) {
-  const text = new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long', timeZone: 'UTC' }).format(
-    date,
-  )
-  return <time dateTime={date.toISOString().slice(0, 10)}>{text}</time>
-}
+/** A date as the locale writes it, for the text inside a `<time>`. */
+const longDate = (date: Date, formatLocale: string): string =>
+  new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long', timeZone: 'UTC' }).format(date)
 
-function TimeValue({ time, formatLocale }: { time: Date; formatLocale: string }) {
-  const text = new Intl.DateTimeFormat(formatLocale, {
+/** A time of day as the locale writes it, for the text inside a `<time>`. */
+const shortTime = (date: Date, formatLocale: string): string =>
+  new Intl.DateTimeFormat(formatLocale, {
     hour: '2-digit',
     minute: '2-digit',
     timeZone: 'UTC',
-  }).format(time)
-  return <time dateTime={time.toISOString().slice(11, 16)}>{text}</time>
-}
+  }).format(date)
 
 /** An invented number, as the other fixtures use, written the way the locale writes one. */
-const phoneFor = (locale: NotificationFixtureLocale): string =>
+const phoneFor = (locale: AlertFixtureLocale): string =>
   locale === 'nb' || locale === 'nn' ? '800 12 345' : '0123-45 67 89'
 
-export interface NotificationFixtureProps {
-  locale: NotificationFixtureLocale
+export interface AlertFixtureProps {
+  locale: AlertFixtureLocale
 }
 
-/**
- * Example A, info, present at load: a deadline on a start page. No `announce`. The Docs page's
- * controls reach the root through `rootProps`.
- */
-export function DeadlineNotification({
-  locale,
-  ...rootProps
-}: NotificationFixtureProps & NotificationStatusRootProps) {
-  const { text, lang, formatLocale } = textsFor(locale)
+/** The four ready-made roots, each labelled with its component name, with the same title. */
+export function FourStatuses({ locale }: AlertFixtureProps) {
+  const { text } = textsFor(locale)
   return (
-    <Notification.Info lang={lang} data-testid="deadline" {...rootProps}>
-      <Notification.Title>
-        {text.deadline.title(<DateValue date={applicationsClose} formatLocale={formatLocale} />)}
-      </Notification.Title>
-      <Notification.Body>
-        <p>{text.deadline.body(<DateValue date={replyBy} formatLocale={formatLocale} />)}</p>
-      </Notification.Body>
-    </Notification.Info>
+    <>
+      <div>
+        <p>
+          <code>Alert.Info</code>
+        </p>
+        <Alert.Info>
+          <Alert.Title>{text.sample.title}</Alert.Title>
+        </Alert.Info>
+      </div>
+      <div>
+        <p>
+          <code>Alert.Success</code>
+        </p>
+        <Alert.Success>
+          <Alert.Title>{text.sample.title}</Alert.Title>
+        </Alert.Success>
+      </div>
+      <div>
+        <p>
+          <code>Alert.Warning</code>
+        </p>
+        <Alert.Warning>
+          <Alert.Title>{text.sample.title}</Alert.Title>
+        </Alert.Warning>
+      </div>
+      <div>
+        <p>
+          <code>Alert.Danger</code>
+        </p>
+        <Alert.Danger>
+          <Alert.Title>{text.sample.title}</Alert.Title>
+        </Alert.Danger>
+      </div>
+    </>
+  )
+}
+
+/** Example A, info, present at load: a deadline on a start page. No `announce`. */
+export function DeadlineAlert({ locale }: AlertFixtureProps) {
+  const { text, formatLocale } = textsFor(locale)
+  return (
+    <Alert.Info data-testid="deadline">
+      <Alert.Title>
+        {text.deadline.title(
+          <time dateTime="2026-08-31">{longDate(applicationsClose, formatLocale)}</time>,
+        )}
+      </Alert.Title>
+      <Alert.Body>
+        <p>
+          {text.deadline.body(<time dateTime="2026-09-30">{longDate(replyBy, formatLocale)}</time>)}
+        </p>
+      </Alert.Body>
+    </Alert.Info>
   )
 }
 
 /** Example C, warning with an action, present at load: a permit about to expire. */
-export function PermitNotification({ locale }: NotificationFixtureProps) {
-  const { text, lang, formatLocale } = textsFor(locale)
+export function PermitAlert({ locale }: AlertFixtureProps) {
+  const { text, formatLocale } = textsFor(locale)
   return (
-    <Notification.Warning lang={lang} data-testid="permit">
-      <Notification.Title>
-        {text.permit.title(<DateValue date={permitExpires} formatLocale={formatLocale} />)}
-      </Notification.Title>
-      <Notification.Body>
+    <Alert.Warning data-testid="permit">
+      <Alert.Title>
+        {text.permit.title(
+          <time dateTime="2026-11-12">{longDate(permitExpires, formatLocale)}</time>,
+        )}
+      </Alert.Title>
+      <Alert.Body>
         <p>{text.permit.body}</p>
-      </Notification.Body>
-      <Notification.Actions>
+      </Alert.Body>
+      <Alert.Actions>
         <Link.Root href="#renew">{text.permit.renew}</Link.Root>
-      </Notification.Actions>
-    </Notification.Warning>
+      </Alert.Actions>
+    </Alert.Warning>
   )
 }
 
 /** Example C2, warning text next to an action: the Title as a paragraph, no Body. */
-export function ConsequenceNotification({ locale }: NotificationFixtureProps) {
-  const { text, lang } = textsFor(locale)
+export function ConsequenceAlert({ locale }: AlertFixtureProps) {
+  const { text } = textsFor(locale)
   return (
-    <Notification.Warning lang={lang} data-testid="consequence">
-      <Notification.Title render={<p />}>{text.consequence.title}</Notification.Title>
-    </Notification.Warning>
+    <Alert.Warning data-testid="consequence">
+      <Alert.Title render={<p />}>{text.consequence.title}</Alert.Title>
+    </Alert.Warning>
   )
 }
 
 /** Example B as it looks once shown, without the button: a success with only a Title as `<p>`. */
-export function SavedNotification({ locale }: NotificationFixtureProps) {
-  const { text, lang } = textsFor(locale)
+export function SavedAlert({ locale }: AlertFixtureProps) {
+  const { text } = textsFor(locale)
   return (
-    <Notification.Success lang={lang} data-testid="saved">
-      <Notification.Title render={<p />}>{text.saved.title}</Notification.Title>
-    </Notification.Success>
+    <Alert.Success data-testid="saved">
+      <Alert.Title render={<p />}>{text.saved.title}</Alert.Title>
+    </Alert.Success>
   )
 }
 
 /** Example D as it looks once shown, without the announcement: a danger with a Button. */
-export function SendFailedNotification({ locale }: NotificationFixtureProps) {
-  const { text, lang, formatLocale } = textsFor(locale)
+export function SendFailedAlert({ locale }: AlertFixtureProps) {
+  const { text, formatLocale } = textsFor(locale)
   return (
-    <Notification.Danger lang={lang} data-testid="send-failed-notification">
-      <Notification.Title>{text.sendFailed.title}</Notification.Title>
-      <Notification.Body>
+    <Alert.Danger data-testid="send-failed-alert">
+      <Alert.Title>{text.sendFailed.title}</Alert.Title>
+      <Alert.Body>
         <p>
           {text.sendFailed.body(
             phoneFor(locale),
-            <TimeValue time={opensAt} formatLocale={formatLocale} />,
-            <TimeValue time={closesAt} formatLocale={formatLocale} />,
+            <time dateTime="09:00">{shortTime(opensAt, formatLocale)}</time>,
+            <time dateTime="16:00">{shortTime(closesAt, formatLocale)}</time>,
           )}
         </p>
-      </Notification.Body>
-      <Notification.Actions>
+      </Alert.Body>
+      <Alert.Actions>
         <Button>{text.sendFailed.retry}</Button>
-      </Notification.Actions>
-    </Notification.Danger>
+      </Alert.Actions>
+    </Alert.Danger>
   )
 }
 
 /**
- * Example B, success, inserted after Save: the Save button keeps focus, and the notification
+ * Examples B and D in `kv-compact`: less padding from 64rem, the title at 16px. For staff tools.
+ * Put `kv-compact` on any container.
+ */
+export function CompactAlerts({ locale }: AlertFixtureProps) {
+  const { text, formatLocale } = textsFor(locale)
+  return (
+    <div className="kv-compact">
+      <Alert.Success>
+        <Alert.Title render={<p />}>{text.saved.title}</Alert.Title>
+      </Alert.Success>
+      <Alert.Danger>
+        <Alert.Title>{text.sendFailed.title}</Alert.Title>
+        <Alert.Body>
+          <p>
+            {text.sendFailed.body(
+              phoneFor(locale),
+              <time dateTime="09:00">{shortTime(opensAt, formatLocale)}</time>,
+              <time dateTime="16:00">{shortTime(closesAt, formatLocale)}</time>,
+            )}
+          </p>
+        </Alert.Body>
+        <Alert.Actions>
+          <Button>{text.sendFailed.retry}</Button>
+        </Alert.Actions>
+      </Alert.Danger>
+    </div>
+  )
+}
+
+/**
+ * Example B, success, inserted after Save: the Save button keeps focus, and the alert
  * above it is announced politely once. Saving again shows it again and announces it again.
  */
-export function SavedExample({ locale }: NotificationFixtureProps) {
-  const { text, lang } = textsFor(locale)
+export function SavedExample({ locale }: AlertFixtureProps) {
+  const { text } = textsFor(locale)
   const [saveCount, setSaveCount] = useState(0)
   return (
-    <div className="kv-story-notification-column" lang={lang} data-testid="saved-example">
+    <>
       {saveCount === 0 ? null : (
-        <Notification.Success key={saveCount} announce="polite" data-testid="saved">
-          <Notification.Title render={<p />}>{text.saved.title}</Notification.Title>
-        </Notification.Success>
+        <Alert.Success key={saveCount} announce="polite" data-testid="saved">
+          <Alert.Title render={<p />}>{text.saved.title}</Alert.Title>
+        </Alert.Success>
       )}
       <div className="kv-button-group">
         <Button className="kv-button--primary" onClick={() => setSaveCount((count) => count + 1)}>
           {text.saved.save}
         </Button>
       </div>
-    </div>
+    </>
   )
 }
 
@@ -474,8 +552,8 @@ export function SavedExample({ locale }: NotificationFixtureProps) {
  * keeps the same instance, because "Försök igen" is inside it and a remount would drop the focus
  * to the page, and announces through `useAnnouncer()` instead.
  */
-export function SendFailedExample({ locale }: NotificationFixtureProps) {
-  const { text, lang, formatLocale } = textsFor(locale)
+export function SendFailedExample({ locale }: AlertFixtureProps) {
+  const { text, formatLocale } = textsFor(locale)
   const { announce } = useAnnouncer()
   const [failed, setFailed] = useState(false)
   const fail = () => {
@@ -486,114 +564,119 @@ export function SendFailedExample({ locale }: NotificationFixtureProps) {
     }
   }
   return (
-    <div className="kv-story-notification-column" lang={lang} data-testid="send-failed-example">
+    <>
       {failed ? (
-        <Notification.Danger announce="polite" data-testid="send-failed-notification">
-          <Notification.Title>{text.sendFailed.title}</Notification.Title>
-          <Notification.Body>
+        <Alert.Danger announce="polite" data-testid="send-failed-alert">
+          <Alert.Title>{text.sendFailed.title}</Alert.Title>
+          <Alert.Body>
             <p>
               {text.sendFailed.body(
                 phoneFor(locale),
-                <TimeValue time={opensAt} formatLocale={formatLocale} />,
-                <TimeValue time={closesAt} formatLocale={formatLocale} />,
+                <time dateTime="09:00">{shortTime(opensAt, formatLocale)}</time>,
+                <time dateTime="16:00">{shortTime(closesAt, formatLocale)}</time>,
               )}
             </p>
-          </Notification.Body>
-          <Notification.Actions>
+          </Alert.Body>
+          <Alert.Actions>
             <Button onClick={fail}>{text.sendFailed.retry}</Button>
-          </Notification.Actions>
-        </Notification.Danger>
+          </Alert.Actions>
+        </Alert.Danger>
       ) : null}
       <div className="kv-button-group">
         <Button className="kv-button--primary" onClick={fail}>
           {text.sendFailed.send}
         </Button>
       </div>
-    </div>
+    </>
   )
 }
 
 /**
- * The arrival pattern, and the mechanics of the later error summary: a danger notification that
+ * The arrival pattern, and the mechanics of the later error summary: a danger alert that
  * takes focus once when it mounts (`tabIndex={-1}`), with no `announce`, because focus already
  * reads it. Tab from it goes to its first action.
  */
-export function FocusTargetExample({ locale }: NotificationFixtureProps) {
-  const { text, lang, formatLocale } = textsFor(locale)
+export function FocusTargetExample({ locale }: AlertFixtureProps) {
+  const { text, formatLocale } = textsFor(locale)
   const ref = useRef<HTMLElement>(null)
   const [shown, setShown] = useState(false)
   useEffect(() => {
     // Only after the user asked for it: on a Docs page the stories share one document, and a
-    // notification that took focus on load would pull it away from the page.
+    // alert that took focus on load would pull it away from the page.
     if (shown) {
       ref.current?.focus()
     }
   }, [shown])
   return (
-    <div className="kv-story-notification-column" lang={lang}>
+    <>
       <Button onClick={() => setShown(true)}>{text.sendFailed.send}</Button>
       {shown ? (
-        <Notification.Danger ref={ref} tabIndex={-1} data-testid="focus-target">
-          <Notification.Title>{text.sendFailed.title}</Notification.Title>
-          <Notification.Body>
+        <Alert.Danger ref={ref} tabIndex={-1} data-testid="focus-target">
+          <Alert.Title>{text.sendFailed.title}</Alert.Title>
+          <Alert.Body>
             <p>
               {text.sendFailed.body(
                 phoneFor(locale),
-                <TimeValue time={opensAt} formatLocale={formatLocale} />,
-                <TimeValue time={closesAt} formatLocale={formatLocale} />,
+                <time dateTime="09:00">{shortTime(opensAt, formatLocale)}</time>,
+                <time dateTime="16:00">{shortTime(closesAt, formatLocale)}</time>,
               )}
             </p>
-          </Notification.Body>
-          <Notification.Actions>
+          </Alert.Body>
+          <Alert.Actions>
             <Button>{text.sendFailed.retry}</Button>
             <Link.Root href="#help">{text.permit.renew}</Link.Root>
-          </Notification.Actions>
-        </Notification.Danger>
+          </Alert.Actions>
+        </Alert.Danger>
       ) : null}
-    </div>
+    </>
   )
 }
 
-/** The statuses by their component, so a status that comes from data is a typed map. */
-const notificationFor = {
-  info: Notification.Info,
-  success: Notification.Success,
-  warning: Notification.Warning,
-  danger: Notification.Danger,
-} satisfies Record<NotificationVariant, unknown>
-
-export const notificationVariants = Object.keys(notificationFor) as NotificationVariant[]
-
-/** A status from data: a select picks it, and the typed map picks the component. */
-export function DynamicStatusExample({ locale }: NotificationFixtureProps) {
-  const { text, lang } = textsFor(locale)
-  const [variant, setVariant] = useState<NotificationVariant>('warning')
+/**
+ * A status from data: a select picks it, and a typed map picks the component, so the choice
+ * stays visible in the code. There is no status prop.
+ */
+export function DynamicStatusExample({ locale }: AlertFixtureProps) {
+  const { text } = textsFor(locale)
+  const [variant, setVariant] = useState<AlertVariant>('warning')
   const selectId = useId()
-  const ResultNotification = notificationFor[variant]
+  const variants = [
+    'info',
+    'success',
+    'warning',
+    'danger',
+  ] as const satisfies readonly AlertVariant[]
+  const alertFor = {
+    info: Alert.Info,
+    success: Alert.Success,
+    warning: Alert.Warning,
+    danger: Alert.Danger,
+  } satisfies Record<AlertVariant, unknown>
+  const ResultAlert = alertFor[variant]
   return (
-    <div className="kv-story-notification-column" lang={lang}>
+    <>
       <div>
         <label htmlFor={selectId}>{text.dynamic.label}</label>{' '}
         <select
           id={selectId}
           value={variant}
           onChange={(event) => {
-            const next = notificationVariants.find((name) => name === event.target.value)
+            const next = variants.find((name) => name === event.target.value)
             if (next !== undefined) {
               setVariant(next)
             }
           }}
         >
-          {notificationVariants.map((name) => (
+          {variants.map((name) => (
             <option key={name} value={name}>
               {name}
             </option>
           ))}
         </select>
       </div>
-      <ResultNotification data-testid="dynamic">
-        <Notification.Title>{text.sample.title}</Notification.Title>
-      </ResultNotification>
-    </div>
+      <ResultAlert data-testid="dynamic">
+        <Alert.Title>{text.sample.title}</Alert.Title>
+      </ResultAlert>
+    </>
   )
 }

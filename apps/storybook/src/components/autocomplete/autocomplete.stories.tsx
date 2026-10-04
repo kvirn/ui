@@ -1,23 +1,32 @@
-import { Autocomplete, Button, Card, Field } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/autocomplete/autocomplete.a11y.md?raw'
 import guide from '../../../../../packages/react/src/autocomplete/autocomplete.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useState } from 'react'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
-import type { FormLocale } from '../form/form.fixture.tsx'
 import { virtualizedCount } from '../form/virtualized.fixture.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   AutocompleteStates,
+  CompactExample,
+  ControlledExample,
   DefaultExample,
+  DisabledExample,
+  DisabledSuggestionExample,
+  GroupsExample,
+  InvalidExample,
   KeyboardExample,
-  StreetAutocomplete,
+  LoadingExample,
+  LongFinnishExample,
+  LongListExample,
+  MinimalExample,
+  NoSuggestionsExample,
+  OnSurfacesExample,
+  PlainFormExample,
+  SuggestionsExample,
   VirtualizedExample,
+  WithValueExample,
   autocompleteTextsFor,
-  longList,
-  streets,
 } from './autocomplete.fixture.tsx'
 
 // Components/Form/Autocomplete: Autocomplete.Root, Control, Input, Toggle, Clear and the popup
@@ -30,6 +39,9 @@ import {
 // Nothing here validates: an invalid story sets `invalid` itself.
 
 const description = usageGuide(guide)
+
+/** "Show code" prints the fixture function: each one is an Autocomplete as an adopter writes it. */
+const source = (name: string) => showSource('autocomplete/autocomplete.fixture.tsx', name)
 
 /**
  * The props the Controls and Docs pages describe. `Autocomplete.Root` is generic in its item,
@@ -145,7 +157,7 @@ async function openWithKey(canvas: Canvas, input: HTMLElement) {
  * that clears the text. Type a few letters and pick a suggestion, or keep your own text.
  */
 export const Default: Story = {
-  parameters: showSource('autocomplete/autocomplete.fixture.tsx', 'DefaultExample'),
+  parameters: source('DefaultExample'),
   render: (_args, { globals }) => <DefaultExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
@@ -171,20 +183,14 @@ export const Default: Story = {
  * Enter, Escape, Tab, Alt+ArrowDown and Alt+ArrowUp.
  */
 export const Keyboard: Story = {
+  parameters: source('KeyboardExample'),
   render: (_args, { globals }) => <KeyboardExample locale={localeOf(globals)} />,
 }
 
 /** Just the input and the popup, with no box and no buttons: the smallest Autocomplete. */
 export const Minimal: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = autocompleteTextsFor(localeOf(globals))
-    return (
-      <Field.Root lang={lang}>
-        <Field.Label>{text.street}</Field.Label>
-        <StreetAutocomplete withButtons={false} placeholder={text.placeholder} />
-      </Field.Root>
-    )
-  },
+  parameters: source('MinimalExample'),
+  render: (_args, { globals }) => <MinimalExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.street)
@@ -194,15 +200,8 @@ export const Minimal: Story = {
 
 /** A value to begin with: the text shows, and the popup stays closed until the user types or opens it. */
 export const WithValue: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = autocompleteTextsFor(localeOf(globals))
-    return (
-      <Field.Root lang={lang}>
-        <Field.Label>{text.street}</Field.Label>
-        <StreetAutocomplete defaultValue="Kung" />
-      </Field.Root>
-    )
-  },
+  parameters: source('WithValueExample'),
+  render: (_args, { globals }) => <WithValueExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.street)
@@ -213,18 +212,8 @@ export const WithValue: Story = {
 
 /** Typing filters the suggestions: å, ä and ö are not a and o in Swedish, so "ä" finds only the names that have it. */
 export const Suggestions: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = autocompleteTextsFor(localeOf(globals))
-    return (
-      <Field.Root lang={lang}>
-        <Field.Label>{text.street}</Field.Label>
-        <Field.Prose>
-          <p>{text.hint}</p>
-        </Field.Prose>
-        <StreetAutocomplete />
-      </Field.Root>
-    )
-  },
+  parameters: source('SuggestionsExample'),
+  render: (_args, { globals }) => <SuggestionsExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.street)
@@ -237,23 +226,8 @@ export const Suggestions: Story = {
 
 /** Nothing matches: the popup is open with no suggestions, and the typed text is a fine value. */
 export const NoSuggestions: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = autocompleteTextsFor(localeOf(globals))
-    return (
-      <Field.Root lang={lang}>
-        <Field.Label>{text.street}</Field.Label>
-        <Autocomplete.Root items={streets}>
-          <Autocomplete.Input />
-          <Autocomplete.Popup>
-            <Autocomplete.List>
-              {(street: string) => <Autocomplete.Option item={street} />}
-            </Autocomplete.List>
-            <Autocomplete.Empty />
-          </Autocomplete.Popup>
-        </Autocomplete.Root>
-      </Field.Root>
-    )
-  },
+  parameters: source('NoSuggestionsExample'),
+  render: (_args, { globals }) => <NoSuggestionsExample locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.street)
@@ -269,23 +243,8 @@ export const NoSuggestions: Story = {
 
 /** The suggestions are being fetched: the popup says "Laddar resultat", with `filter={false}` and `isLoading`. */
 export const Loading: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = autocompleteTextsFor(localeOf(globals))
-    return (
-      <Field.Root lang={lang}>
-        <Field.Label>{text.street}</Field.Label>
-        <Autocomplete.Root items={[]} filter={false} isLoading>
-          <Autocomplete.Input />
-          <Autocomplete.Popup>
-            <Autocomplete.List>
-              {(street: string) => <Autocomplete.Option item={street} />}
-            </Autocomplete.List>
-            <Autocomplete.Empty />
-          </Autocomplete.Popup>
-        </Autocomplete.Root>
-      </Field.Root>
-    )
-  },
+  parameters: source('LoadingExample'),
+  render: (_args, { globals }) => <LoadingExample locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     await userEvent.type(inputOf(canvas, text.street), 'a')
@@ -299,15 +258,8 @@ export const Loading: Story = {
 
 /** A disabled suggestion is reachable with the arrow keys, read as unavailable, and can't be picked. */
 export const DisabledSuggestion: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = autocompleteTextsFor(localeOf(globals))
-    return (
-      <Field.Root lang={lang}>
-        <Field.Label>{text.street}</Field.Label>
-        <StreetAutocomplete />
-      </Field.Root>
-    )
-  },
+  parameters: source('DisabledSuggestionExample'),
+  render: (_args, { globals }) => <DisabledSuggestionExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     await userEvent.type(inputOf(canvas, text.street), 'stora')
@@ -321,19 +273,8 @@ export const DisabledSuggestion: Story = {
 
 /** Invalid: a 2px edge and the message under the field. The text stays, whatever it is. */
 export const Invalid: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = autocompleteTextsFor(localeOf(globals))
-    return (
-      <Field.Root required invalid lang={lang}>
-        <Field.Label>{text.street}</Field.Label>
-        <Field.Prose>
-          <p>{text.hint}</p>
-        </Field.Prose>
-        <StreetAutocomplete />
-        <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
-      </Field.Root>
-    )
-  },
+  parameters: source('InvalidExample'),
+  render: (_args, { globals }) => <InvalidExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.street)
@@ -345,15 +286,8 @@ export const Invalid: Story = {
 
 /** Disabled: a dashed edge on the surface colour, no tab stop, and the popup never opens. */
 export const Disabled: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = autocompleteTextsFor(localeOf(globals))
-    return (
-      <Field.Root disabled lang={lang}>
-        <Field.Label>{text.street}</Field.Label>
-        <StreetAutocomplete defaultValue="Storgatan" />
-      </Field.Root>
-    )
-  },
+  parameters: source('DisabledExample'),
+  render: (_args, { globals }) => <DisabledExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     await expect(inputOf(canvas, text.street)).toBeDisabled()
@@ -362,15 +296,8 @@ export const Disabled: Story = {
 
 /** A long list scrolls inside the popup, which is never taller than the room that is left. */
 export const LongList: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = autocompleteTextsFor(localeOf(globals))
-    return (
-      <Field.Root lang={lang}>
-        <Field.Label>{text.street}</Field.Label>
-        <StreetAutocomplete items={longList} />
-      </Field.Root>
-    )
-  },
+  parameters: source('LongListExample'),
+  render: (_args, { globals }) => <LongListExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     await openWithKey(canvas, inputOf(canvas, text.street))
@@ -385,7 +312,7 @@ export const LongList: Story = {
  * never rendered, and `aria-activedescendant` always points at one that is.
  */
 export const Virtualized: Story = {
-  parameters: showSource('autocomplete/autocomplete.fixture.tsx', 'VirtualizedExample'),
+  parameters: source('VirtualizedExample'),
   render: (_args, { globals }) => <VirtualizedExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
@@ -407,32 +334,14 @@ export const Virtualized: Story = {
  * input. Try typing, ArrowUp, ArrowDown and Page Down in the Keyboard section above.
  */
 export const VirtualizedKeyboard: Story = {
-  parameters: showSource('autocomplete/autocomplete.fixture.tsx', 'VirtualizedExample'),
+  parameters: source('VirtualizedExample'),
   render: (_args, { globals }) => <VirtualizedExample locale={localeOf(globals)} />,
 }
 
 /** Groups: `role="group"` named by its label. */
 export const Groups: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = autocompleteTextsFor(localeOf(globals))
-    const groups = [
-      { key: 'streets', label: 'Gator', items: ['Storgatan', 'Kungsgatan'] },
-      { key: 'roads', label: 'Vägar', items: ['Björkvägen', 'Tallvägen'] },
-    ]
-    return (
-      <Field.Root lang={lang}>
-        <Field.Label>{text.street}</Field.Label>
-        <Autocomplete.Root groups={groups}>
-          <Autocomplete.Input />
-          <Autocomplete.Popup>
-            <Autocomplete.List>
-              {(street: string) => <Autocomplete.Option item={street} />}
-            </Autocomplete.List>
-          </Autocomplete.Popup>
-        </Autocomplete.Root>
-      </Field.Root>
-    )
-  },
+  parameters: source('GroupsExample'),
+  render: (_args, { globals }) => <GroupsExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     await openWithKey(canvas, inputOf(canvas, text.street))
@@ -444,25 +353,19 @@ export const Groups: Story = {
 /** A long label in a 320px column, and a long chosen suggestion: both wrap, and nothing overflows. */
 export const LongFinnish: Story = {
   globals: { locale: 'fi' },
-  render: (_args, { globals }) => {
-    const { text, lang } = autocompleteTextsFor(localeOf(globals))
-    const items = [
-      'Pohjois-Pohjanmaan sairaanhoitopiirin kuntayhtymän vanhustenhuollon palvelukeskus',
-      ...streets.slice(0, 3),
-    ]
-    return (
+  decorators: [
+    (Story) => (
       <div
         className="kv-story-narrow"
         data-testid="narrow"
         style={{ paddingInline: 'var(--kv-space-4)' }}
       >
-        <Field.Root lang={lang}>
-          <Field.Label>{text.longLabel}</Field.Label>
-          <StreetAutocomplete items={items} defaultValue="Pohjois" />
-        </Field.Root>
+        <Story />
       </div>
-    )
-  },
+    ),
+  ],
+  parameters: source('LongFinnishExample'),
+  render: (_args, { globals }) => <LongFinnishExample locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await userEvent.click(firstOf(canvas.getAllByRole('combobox')))
     await userEvent.keyboard('{ArrowDown}')
@@ -473,18 +376,8 @@ export const LongFinnish: Story = {
 
 /** In a card: the edge keeps 3:1 against `surface-raised` (1.4.11), and the popup its own edge. */
 export const OnSurfaces: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = autocompleteTextsFor(localeOf(globals))
-    return (
-      <Card.Root lang={lang}>
-        <Field.Root required invalid>
-          <Field.Label>{text.street}</Field.Label>
-          <StreetAutocomplete />
-          <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
-        </Field.Root>
-      </Card.Root>
-    )
-  },
+  parameters: source('OnSurfacesExample'),
+  render: (_args, { globals }) => <OnSurfacesExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     await expect(inputOf(canvas, text.street)).toBeVisible()
@@ -493,38 +386,12 @@ export const OnSurfaces: Story = {
 
 /** Staff density from 64rem: 32px high box and options, with the text still 16px. */
 export const Compact: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = autocompleteTextsFor(localeOf(globals))
-    return (
-      <div className="kv-compact" lang={lang}>
-        <Field.Root>
-          <Field.Label>{text.street}</Field.Label>
-          <StreetAutocomplete />
-        </Field.Root>
-      </div>
-    )
-  },
+  parameters: source('CompactExample'),
+  render: (_args, { globals }) => <CompactExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     await expectMinimumTargetSize(inputOf(canvas, text.street))
   },
-}
-
-/** Controlled by your form state: this story's `useState` stands in for TanStack Form or React Hook Form. */
-function ControlledExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, lang } = autocompleteTextsFor(locale)
-  const [value, setValue] = useState('Kung')
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root>
-        <Field.Label>{text.street}</Field.Label>
-        <StreetAutocomplete value={value} onValueChange={setValue} />
-      </Field.Root>
-      <p className="kv-story-form-output" data-testid="mirror">
-        {shared.youChose}: {value === '' ? '–' : value}
-      </p>
-    </div>
-  )
 }
 
 /**
@@ -533,6 +400,7 @@ function ControlledExample({ locale }: { locale: FormLocale }) {
  * that refuses a change leaves it as it was.
  */
 export const Controlled: Story = {
+  parameters: source('ControlledExample'),
   render: (_args, { globals }) => <ControlledExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text, shared } = autocompleteTextsFor(localeOf(globals))
@@ -545,41 +413,9 @@ export const Controlled: Story = {
   },
 }
 
-/** An uncontrolled form: the input carries the `name`, and the submit reads the text by it. Free text is sent as it is. */
-function PlainFormExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, lang } = autocompleteTextsFor(locale)
-  const [sent, setSent] = useState<string | undefined>()
-  return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const value = new FormData(event.currentTarget).get('street')
-        setSent(typeof value === 'string' ? value : '')
-      }}
-    >
-      <Field.Root>
-        <Field.Label>{text.street}</Field.Label>
-        <StreetAutocomplete name="street" defaultValue="Storgatan" />
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {shared.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {shared.sent}: {sent}
-        </p>
-      )}
-    </form>
-  )
-}
-
 /** A plain `<form>`: no `value` and no handlers. The form's `FormData` has the text by `name` on submit. */
 export const PlainForm: Story = {
+  parameters: source('PlainFormExample'),
   render: (_args, { globals }) => <PlainFormExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text, shared } = autocompleteTextsFor(localeOf(globals))
@@ -595,6 +431,7 @@ export const PlainForm: Story = {
 /** Right to left, in English: the chevron is at the left, and the text starts at the right. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
+  parameters: source('AutocompleteStates'),
   render: () => <AutocompleteStates locale="en" />,
   play: async ({ canvas }) => {
     await userEvent.click(firstOf(canvas.getAllByRole('combobox')))
@@ -606,6 +443,7 @@ export const RTL: Story = {
 /** The edges, the invalid width, the cross, the chevron and the active suggestion stay visible in forced colours. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
+  parameters: source('AutocompleteStates'),
   render: (_args, { globals }) => <AutocompleteStates locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await userEvent.click(firstOf(canvas.getAllByRole('combobox')))

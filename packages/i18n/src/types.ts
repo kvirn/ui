@@ -64,19 +64,26 @@ export interface KvirnMessages {
     month: TextMessage
     /** The label of the year box, for example `År`. */
     year: TextMessage
-  }
-  notification: {
     /**
-     * The status word that starts the Title of `Notification.Info`, for example `Information:`.
+     * The visible hint under the boxes that says focus moves to the next box when one is full,
+     * for example `Fokus flyttas till nästa ruta när en ruta är full.` It is in the group's
+     * `aria-describedby`, so users are advised before they type (WCAG 3.2.2). Rendered only while
+     * `autoAdvance` is on (Plan 0040).
+     */
+    autoAdvanceHint: TextMessage
+  }
+  alert: {
+    /**
+     * The status word that starts the Title of `Alert.Info`, for example `Information:`.
      * Includes its colon. Visually hidden by the theme, read by screen readers (WCAG 1.4.1).
-     * Owned by Notification (Plan 0020).
+     * Owned by Alert (Plan 0020).
      */
     infoPrefix: TextMessage
-    /** The status word of `Notification.Success`, for example `Klart:`. */
+    /** The status word of `Alert.Success`, for example `Klart:`. */
     successPrefix: TextMessage
-    /** The status word of `Notification.Warning`, for example `Varning:`. */
+    /** The status word of `Alert.Warning`, for example `Varning:`. */
     warningPrefix: TextMessage
-    /** The status word of `Notification.Danger`, for example `Fel:`. */
+    /** The status word of `Alert.Danger`, for example `Fel:`. */
     dangerPrefix: TextMessage
   }
   combobox: {

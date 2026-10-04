@@ -24,7 +24,7 @@ Design for the resident who uses the service once, on a phone, under stress, in 
    - The APG pattern (`accessibility` skill) for anything interactive.
    - Public-sector prior art: GOV.UK Design System, Designsystemet (NO), the Suomi.fi design system. Cite what you borrow and why it fits.
 3. **Flow first, pixels last.** Map the task as numbered steps (Mermaid or a list), including every unhappy path: validation errors, empty and loading states, no results, session timeout (2.2.1), save and return later, going back, a failed integration and the "I don't qualify" exit. Apply the one-thing-per-page pattern for residents.
-4. **Write the content before the layout.** Real headings, labels, hints, errors and button text in plain language, in `en` and `sv`, with the longest `fi` string where length matters. Every string becomes an i18n key (AGENTS.md hard rule 4). Use `design:ux-copy` if it's available for a second opinion.
+4. **Write the content before the layout.** Real headings, labels, help texts, errors and button text in plain language, in `en` and `sv`, with the longest `fi` string where length matters. Every string becomes an i18n key (AGENTS.md hard rule 4). Use `design:ux-copy` if it's available for a second opinion.
 5. **Structure.** A text wireframe per breakpoint (320px, 40rem, 64rem): landmarks, heading outline (h1 to h3), reading order equal to focus order, and where the primary action sits. Keep it low fidelity: boxes and words, not colours.
 6. **Specify.** For each part: which DESIGN.md tokens and component styles it uses, a state matrix (default, hover, focus-visible, active, disabled, invalid, loading, selected, open, empty), density, all four themes plus forced colours, RTL, motion and reduced motion, and the accessibility annotations (names, roles, Tab stops and keys per the `keyboard` skill, focus moves, announcements). The annotations are the draft of the plan's accessibility contract, not a replacement for it.
    - Use only semantic tokens. If you need a new token or a changed value, propose it in the spec, check contrast with `vp run theme:check` or `packages/theme/src/contrast.ts`, and mark it for the maintainer's approval. An approved change updates `DESIGN.md` and `theme.css` in the same change.
@@ -55,7 +55,7 @@ These are the maintainer's choices for the default theme. `DESIGN.md` holds the 
 - **Colours are named by role** (primary, secondary, accent, neutral), so a brand can swap a scale. A lighter hover behind white text, low-contrast greys and faint control borders are not used.
 - **Type:** IBM Plex Sans for text, IBM Plex Serif for headings. Long words hyphenate, and large type steps down below 40rem.
 - **Prose** is styled like Tailwind's typography plugin, in our tokens.
-- **Card and Section:** a plain container with `render`, no clickable card. Notifications are classes and ready-made status components, not a `variant` prop on a Card or Section.
+- **Card and Section:** a plain container with `render`, no clickable card. Alerts are classes and ready-made status components, not a `variant` prop on a Card or Section.
 
 ## Common mistakes (reject)
 

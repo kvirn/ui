@@ -43,6 +43,13 @@ export interface LinkNewTabNoticeProps extends ComponentPropsWithRef<'span'> {
   render?: RenderProp<ComponentPropsWithRef<'span'>, Record<string, never>> | undefined
 }
 
+export interface LinkIconProps extends ComponentPropsWithRef<'span'> {
+  /** The icon: `<Icon name="arrow-forward" size={6} />`, or any decorative SVG. */
+  children?: ReactNode
+  /** Another element. It must stay decorative: keep `aria-hidden` and the class. */
+  render?: RenderProp<ComponentPropsWithRef<'span'>, Record<string, never>> | undefined
+}
+
 interface LinkContextValue {
   messages: Partial<KvirnMessages['link']> | undefined
   /** A NewTabNotice inside the link registers itself. Returns the unregister function. */
@@ -167,6 +174,26 @@ export function LinkNewTabNotice({
 LinkNewTabNotice.displayName = 'Link.NewTabNotice'
 
 /**
+ * A decorative slot for an icon, first in the link: `<span class="kv-link-icon" aria-hidden="true">`.
+ * The link's name is its text, so the icon is never part of it (WCAG 2.5.3). With
+ * `@kvirn-ui/theme`, it is a plain inline icon in a link, and the filled block of a
+ * `kv-link--service` link.
+ */
+export function LinkIcon({ children, render, ...otherProps }: LinkIconProps): ReactElement {
+  return renderPart({
+    render,
+    defaultElement: 'span',
+    // Your class joins the part's class. aria-hidden comes last, so it can't be turned off.
+    partProps: {
+      ...mergeProps({ className: 'kv-link-icon' }, otherProps, { 'aria-hidden': true }),
+      children,
+    },
+    state: noticeState,
+  })
+}
+LinkIcon.displayName = 'Link.Icon'
+
+/**
  * A native `<a href>`, written `Link.Root`, rendered by the app's registered router link, with
  * `aria-current`, safe new-tab `rel`, and a translated new-tab notice (contract: link.a11y.md).
  * No `disabled` prop: a disabled link isn't a thing. The callable `<Link>` still works and is the
@@ -177,5 +204,13 @@ LinkNewTabNotice.displayName = 'Link.NewTabNotice'
  * <Link.Root href="https://www.digg.se/" target="_blank">
  *   Digg <Link.NewTabNotice />
  * </Link.Root>
+ * <Link.Root href="/bygglov" className="kv-link--service">
+ *   <Link.Icon><Icon name="arrow-forward" size={6} /></Link.Icon>
+ *   Ansök om bygglov
+ * </Link.Root>
  */
-export const Link = Object.assign(LinkRoot, { Root: LinkRoot, NewTabNotice: LinkNewTabNotice })
+export const Link = Object.assign(LinkRoot, {
+  Root: LinkRoot,
+  NewTabNotice: LinkNewTabNotice,
+  Icon: LinkIcon,
+})

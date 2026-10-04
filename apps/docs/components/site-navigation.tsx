@@ -1,5 +1,5 @@
 'use client'
-import { Link } from '@kvirn-ui/react'
+import { Link, Navigation } from '@kvirn-ui/react'
 import { messages } from '../messages/en.ts'
 
 const text = messages.docs.nav
@@ -30,37 +30,37 @@ const groups: readonly NavigationGroup[] = [
   },
 ]
 
-function NavigationItem({ page, pathname }: { page: NavigationPage; pathname: string }) {
+function PageItem({ page, pathname }: { page: NavigationPage; pathname: string }) {
   return (
-    <li>
+    <Navigation.Item>
       <Link href={page.href} current={page.href === pathname ? 'page' : undefined}>
         {page.label}
       </Link>
-    </li>
+    </Navigation.Item>
   )
 }
 
 /**
  * The documentation navigation: a list of links, not a menu (APG Disclosure Navigation).
- * `kv-nav` makes the theme style its links as navigation items.
+ * `Navigation` renders the labelled `<nav>`, and the theme styles its links as navigation items.
  * Below 64rem the Menu button shows and hides the list.
  */
 export function SiteNavigation({ pathname, isOpen }: { pathname: string; isOpen: boolean }) {
   return (
-    <nav aria-label={text.label} className="docs-sidebar kv-compact">
-      <ul id="docs-nav-list" className="docs-nav-list kv-nav" data-open={isOpen}>
-        <NavigationItem page={introduction} pathname={pathname} />
+    <Navigation.Root label={text.label} className="docs-sidebar kv-compact">
+      <Navigation.List id="docs-nav-list" className="docs-nav-list" data-open={isOpen}>
+        <PageItem page={introduction} pathname={pathname} />
         {groups.map((group) => (
-          <li key={group.label} className="docs-nav-group">
+          <Navigation.Item key={group.label} className="docs-nav-group">
             <span className="docs-nav-group-label">{group.label}</span>
-            <ul className="kv-nav">
+            <Navigation.List>
               {group.pages.map((page) => (
-                <NavigationItem key={page.href} page={page} pathname={pathname} />
+                <PageItem key={page.href} page={page} pathname={pathname} />
               ))}
-            </ul>
-          </li>
+            </Navigation.List>
+          </Navigation.Item>
         ))}
-      </ul>
-    </nav>
+      </Navigation.List>
+    </Navigation.Root>
   )
 }

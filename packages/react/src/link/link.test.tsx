@@ -9,8 +9,14 @@ import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
-import { Link, LinkNewTabNotice, LinkRoot } from './link.tsx'
-import type { LinkCurrent, LinkNewTabNoticeProps, LinkProps, LinkState } from './link.tsx'
+import { Link, LinkIcon, LinkNewTabNotice, LinkRoot } from './link.tsx'
+import type {
+  LinkCurrent,
+  LinkIconProps,
+  LinkNewTabNoticeProps,
+  LinkProps,
+  LinkState,
+} from './link.tsx'
 import {
   brokenLinkComponent,
   MockRouterProvider,
@@ -518,6 +524,67 @@ describe('useLink', () => {
       />,
     )
     await expect.element(page.getByRole('link', { name: 'Digg (new window)' })).toBeVisible()
+  })
+})
+
+describe('Link.Icon', () => {
+  test('is a decorative span: aria-hidden, class kv-link-icon, and not part of the link’s name', async () => {
+    const { container } = await render(
+      <Link.Root href="https://www.digg.se/" target="_blank" className="kv-link--service">
+        <Link.Icon data-testid="icon">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M4 12h16" />
+          </svg>
+        </Link.Icon>
+        Ansök om bygglov <Link.NewTabNotice />
+      </Link.Root>,
+    )
+    const icon = page.getByTestId('icon')
+    await expect.element(icon).toHaveAttribute('aria-hidden', 'true')
+    expect(icon.element().tagName).toBe('SPAN')
+    expect(icon.element().className).toBe('kv-link-icon')
+    // Visible label = name (2.5.3): the icon adds nothing to it.
+    await expect
+      .element(page.getByRole('link', { name: 'Ansök om bygglov (opens in a new tab)' }))
+      .toBeVisible()
+    await expect.element(page.getByRole('link')).toHaveClass('kv-link', 'kv-link--service')
+    await expectNoA11yViolations(container)
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('works in a plain link, and takes span props, a ref and render', async () => {
+    const ref = createRef<HTMLSpanElement>()
+    await render(
+      <Link.Root href="#ansok">
+        <Link.Icon ref={ref} className="min-ikon" data-testid="icon">
+          →
+        </Link.Icon>
+        Ansök
+      </Link.Root>,
+    )
+    const icon = page.getByTestId('icon')
+    expect(ref.current).toBe(icon.element())
+    await expect.element(icon).toHaveClass('kv-link-icon', 'min-ikon')
+    await expect.element(page.getByRole('link', { name: 'Ansök' })).toBeVisible()
+  })
+
+  test('render keeps the decoration: a function receives aria-hidden and the class', async () => {
+    await render(
+      <Link.Root href="#ansok">
+        <Link.Icon render={(iconProps) => <i {...iconProps} data-rendered="ja" />}>→</Link.Icon>
+        Ansök
+      </Link.Root>,
+    )
+    const icon = page.getByText('→')
+    await expect.element(icon).toHaveAttribute('data-rendered', 'ja')
+    await expect.element(icon).toHaveAttribute('aria-hidden', 'true')
+    await expect.element(icon).toHaveClass('kv-link-icon')
+  })
+
+  test('Link.Icon, LinkIcon and the display name agree', () => {
+    expect(Link.Icon).toBe(LinkIcon)
+    expect(LinkIcon.displayName).toBe('Link.Icon')
+    expectTypeOf<LinkIconProps>().toHaveProperty('render')
   })
 })
 

@@ -1,11 +1,12 @@
 import { Button, Card, Field, Icon, InputGroup } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/input-group/input-group.a11y.md?raw'
+import guide from '../../../../../packages/react/src/input-group/input-group.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useRef, useState } from 'react'
 import { expect, userEvent } from 'storybook/test'
+import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
-import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import { SearchBoxWithClear, SearchBoxWithIconOnlyClear } from './input-group.fixture.tsx'
 
 // Components/Form/InputGroup: a TextInput with a unit, a symbol, a decorative icon or a button
 // inside its box (design spec docs/design/form-fields.md §6.13). InputGroup.Root is
@@ -16,13 +17,15 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 // name and Tab stop.
 //
 // KvirnUI holds no form state. The clear Button of SearchWithClear keeps the
-// value in this story's `useState`, where your form library's state would live. Nothing here
+// value in the fixture's `useState`, where your form library's state would live. Nothing here
 // validates: an invalid story sets `invalid` itself. input-group.e2e.ts runs the focus ring,
 // Tab order, RTL, forced-colours and reflow checks.
 
 const meta = {
   title: 'Components/Form/InputGroup',
   component: InputGroup.Root,
+  // Every prop in input-group.tsx. `InputGroup.Input` takes every TextInput prop, and
+  // `InputGroup.Addon` is a `<span>` with the unit or the icon.
   argTypes: {
     invalid: {
       control: 'boolean',
@@ -32,9 +35,17 @@ const meta = {
       control: 'boolean',
       description: 'Default: the nearest Field’s `disabled`. `data-disabled` on the box.',
     },
-    render: { control: false },
+    className: {
+      control: 'text',
+      description: 'Your own classes, added to `kv-input-group`.',
+    },
+    render: { control: false, description: 'Another element for the box. It receives the state.' },
+    ref: { control: false, description: 'A ref to the box `<div>`.' },
   },
-  parameters: { a11yContract: contract },
+  parameters: {
+    a11yContract: contract,
+    docs: { description: { component: usageGuide(guide) } },
+  },
   globals: { locale: 'sv' },
   decorators: [
     (Story) => (
@@ -44,104 +55,32 @@ const meta = {
     ),
     withFormLocale,
   ],
-  render: (args, { globals }) => <RentField locale={localeOf(globals)} {...args} />,
+  render: (args, { globals }) => {
+    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    return (
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.rentWithUnit}</Field.Label>
+        <InputGroup.Root {...args}>
+          <InputGroup.Input
+            name="rent"
+            inputMode="decimal"
+            spellCheck={false}
+            autoComplete="off"
+            className="kv-input--width-10 kv-input--numeric"
+          />
+          <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+        </InputGroup.Root>
+        <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+      </Field.Root>
+    )
+  },
 } satisfies Meta<typeof InputGroup.Root>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-interface RentFieldProps {
-  locale: FormLocale
-  invalid?: boolean | undefined
-  disabled?: boolean | undefined
-  readOnly?: boolean
-  /** The error under the hint under the control, when invalid. */
-  withError?: boolean
-}
-
-/** Rent with "kr": the example under the box, and the error under the example. */
-function RentField({ locale, invalid, disabled, readOnly, withError }: RentFieldProps) {
-  const { text, lang, amountExample } = textsFor(locale)
-  return (
-    <Field.Root required invalid={invalid} disabled={disabled} lang={lang}>
-      <Field.Label>{text.rentWithUnit}</Field.Label>
-      <InputGroup.Root>
-        <InputGroup.Input
-          name="rent"
-          inputMode="decimal"
-          spellCheck={false}
-          autoComplete="off"
-          readOnly={readOnly}
-          defaultValue={invalid || readOnly || disabled ? '8450' : undefined}
-          className="kv-input--width-10 kv-input--numeric"
-        />
-        <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
-      </InputGroup.Root>
-      <Field.Hint>{text.rentUnitExample(amountExample)}</Field.Hint>
-      {withError ? <Field.ErrorMessage>{text.rentError(amountExample)}</Field.ErrorMessage> : null}
-    </Field.Root>
-  )
-}
-
-interface SearchExampleProps {
-  locale: FormLocale
-  /** The value the search starts with. */
-  initialValue?: string
-  /** An icon-only clear Button, named from the translations: staff and compact only. */
-  iconOnly?: boolean
-  disabled?: boolean
-}
-
 /**
- * A search with a start icon and a clear Button at the end. The Button renders only while there
- * is a value, and clearing moves focus to the Input, so focus never lands on the body when the
- * Button goes away. Nothing is announced: the focused, empty Input is read as such.
- */
-function SearchExample({
-  locale,
-  initialValue = '',
-  iconOnly = false,
-  disabled,
-}: SearchExampleProps) {
-  const { text, lang } = textsFor(locale)
-  const [value, setValue] = useState(initialValue)
-  const inputRef = useRef<HTMLInputElement | null>(null)
-  return (
-    <Field.Root disabled={disabled} lang={lang}>
-      <Field.Label marker="none">{text.searchServices}</Field.Label>
-      <InputGroup.Root>
-        <InputGroup.Addon>
-          <Icon name="search" size={5} />
-        </InputGroup.Addon>
-        <InputGroup.Input
-          ref={inputRef}
-          type="search"
-          name="search"
-          enterKeyHint="search"
-          autoComplete="off"
-          value={value}
-          onValueChange={setValue}
-        />
-        {value === '' ? null : (
-          <Button
-            disabled={disabled}
-            className={iconOnly ? 'kv-button--icon-only' : undefined}
-            aria-label={iconOnly ? text.searchClearName : undefined}
-            onClick={() => {
-              setValue('')
-              inputRef.current?.focus()
-            }}
-          >
-            {iconOnly ? <Icon name="close" size={5} /> : text.searchClear}
-          </Button>
-        )}
-      </InputGroup.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * A unit at the end: the "kr" is `aria-hidden`, so the label says it, and the example under the
+ * The main example: a unit at the end, with the box's options as controls. The "kr" is `aria-hidden`, so the label says it, and the example under the
  * box is the only description. The width class stays on the Input, and the box fits around it.
  */
 export const Suffix: Story = {
@@ -164,8 +103,9 @@ export const Suffix: Story = {
  * The icon is never a Tab stop, and a click on it focuses the input.
  */
 export const Keyboard: Story = {
+  parameters: showSource('input-group/input-group.fixture.tsx', 'SearchBoxWithClear'),
   render: (_args, { globals }) => (
-    <SearchExample locale={localeOf(globals)} initialValue="parkering" />
+    <SearchBoxWithClear locale={localeOf(globals)} initialValue="parkering" />
   ),
   play: async ({ canvas, globals }) => {
     const { text } = textsFor(localeOf(globals))
@@ -193,7 +133,7 @@ export const Percentage: Story = {
           />
           <InputGroup.Addon>{text.workTimeUnit}</InputGroup.Addon>
         </InputGroup.Root>
-        <Field.Hint>{text.workTimeExample}</Field.Hint>
+        <Field.HelpText>{text.workTimeExample}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -267,7 +207,8 @@ export const SearchIcon: Story = {
  * this story's `useState`. Clearing moves focus to the Input.
  */
 export const SearchWithClear: Story = {
-  render: (_args, { globals }) => <SearchExample locale={localeOf(globals)} />,
+  parameters: showSource('input-group/input-group.fixture.tsx', 'SearchBoxWithClear'),
+  render: (_args, { globals }) => <SearchBoxWithClear locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = textsFor(localeOf(globals))
     const input = canvas.getByRole('searchbox', { name: text.searchServices })
@@ -287,10 +228,16 @@ export const SearchWithClear: Story = {
  * control, so its name is an `aria-label` from the translations.
  */
 export const SearchIconOnlyClear: Story = {
+  decorators: [
+    (Story) => (
+      <div className="kv-compact">
+        <Story />
+      </div>
+    ),
+  ],
+  parameters: showSource('input-group/input-group.fixture.tsx', 'SearchBoxWithIconOnlyClear'),
   render: (_args, { globals }) => (
-    <div className="kv-compact">
-      <SearchExample locale={localeOf(globals)} initialValue="parkering" iconOnly />
-    </div>
+    <SearchBoxWithIconOnlyClear locale={localeOf(globals)} initialValue="parkering" />
   ),
   play: async ({ canvas, globals }) => {
     const { text } = textsFor(localeOf(globals))
@@ -323,7 +270,7 @@ export const CalendarIcon: Story = {
             <Icon name="calendar" size={5} />
           </InputGroup.Addon>
         </InputGroup.Root>
-        <Field.Hint>{text.visitDateExample}</Field.Hint>
+        <Field.HelpText>{text.visitDateExample}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -340,7 +287,27 @@ export const CalendarIcon: Story = {
  * The typed text doesn't move.
  */
 export const Invalid: Story = {
-  render: (_args, { globals }) => <RentField locale={localeOf(globals)} invalid withError />,
+  render: (_args, { globals }) => {
+    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    return (
+      <Field.Root required invalid lang={lang}>
+        <Field.Label>{text.rentWithUnit}</Field.Label>
+        <InputGroup.Root>
+          <InputGroup.Input
+            name="rent"
+            inputMode="decimal"
+            spellCheck={false}
+            autoComplete="off"
+            defaultValue="8450"
+            className="kv-input--width-10 kv-input--numeric"
+          />
+          <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+        </InputGroup.Root>
+        <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+        <Field.ErrorMessage>{text.rentError(amountExample)}</Field.ErrorMessage>
+      </Field.Root>
+    )
+  },
   play: async ({ canvas, globals }) => {
     const locale = localeOf(globals)
     const { text, amountExample } = textsFor(locale)
@@ -355,12 +322,44 @@ export const Invalid: Story = {
 
 /** Disabled: a dashed edge on the surface colour, the unit and the value muted. */
 export const Disabled: Story = {
-  render: (_args, { globals }) => (
-    <div className="kv-story-form">
-      <RentField locale={localeOf(globals)} disabled />
-      <SearchExample locale={localeOf(globals)} initialValue="parkering" disabled />
-    </div>
-  ),
+  render: (_args, { globals }) => {
+    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    return (
+      <>
+        <Field.Root required disabled lang={lang}>
+          <Field.Label>{text.rentWithUnit}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Input
+              name="rent"
+              inputMode="decimal"
+              spellCheck={false}
+              autoComplete="off"
+              defaultValue="8450"
+              className="kv-input--width-10 kv-input--numeric"
+            />
+            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+          <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+        </Field.Root>
+        <Field.Root disabled lang={lang}>
+          <Field.Label marker="none">{text.searchServices}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Addon>
+              <Icon name="search" size={5} />
+            </InputGroup.Addon>
+            <InputGroup.Input
+              type="search"
+              name="search"
+              enterKeyHint="search"
+              autoComplete="off"
+              defaultValue="parkering"
+            />
+            <Button disabled>{text.searchClear}</Button>
+          </InputGroup.Root>
+        </Field.Root>
+      </>
+    )
+  },
   play: async ({ canvas, globals }) => {
     const { text } = textsFor(localeOf(globals))
     await expect(canvas.getByRole('textbox', { name: text.rentWithUnit })).toBeDisabled()
@@ -370,7 +369,27 @@ export const Disabled: Story = {
 
 /** Read-only, in staff tools: a solid edge on the surface colour, and still focusable. */
 export const ReadOnly: Story = {
-  render: (_args, { globals }) => <RentField locale={localeOf(globals)} readOnly />,
+  render: (_args, { globals }) => {
+    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    return (
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.rentWithUnit}</Field.Label>
+        <InputGroup.Root>
+          <InputGroup.Input
+            name="rent"
+            inputMode="decimal"
+            spellCheck={false}
+            autoComplete="off"
+            readOnly
+            defaultValue="8450"
+            className="kv-input--width-10 kv-input--numeric"
+          />
+          <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+        </InputGroup.Root>
+        <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+      </Field.Root>
+    )
+  },
   play: async ({ canvas, globals }) => {
     const { text } = textsFor(localeOf(globals))
     const input = canvas.getByRole('textbox', { name: text.rentWithUnit })
@@ -382,11 +401,29 @@ export const ReadOnly: Story = {
 
 /** In a card: a `canvas` box on `surface-raised`, so the edge keeps 3:1 against it (1.4.11). */
 export const InCard: Story = {
-  render: (_args, { globals }) => (
-    <Card.Root>
-      <RentField locale={localeOf(globals)} invalid withError />
-    </Card.Root>
-  ),
+  render: (_args, { globals }) => {
+    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    return (
+      <Card.Root>
+        <Field.Root required invalid lang={lang}>
+          <Field.Label>{text.rentWithUnit}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Input
+              name="rent"
+              inputMode="decimal"
+              spellCheck={false}
+              autoComplete="off"
+              defaultValue="8450"
+              className="kv-input--width-10 kv-input--numeric"
+            />
+            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+          <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+          <Field.ErrorMessage>{text.rentError(amountExample)}</Field.ErrorMessage>
+        </Field.Root>
+      </Card.Root>
+    )
+  },
   play: async ({ canvas, globals }) => {
     const { text } = textsFor(localeOf(globals))
     await expect(canvas.getByRole('textbox', { name: text.rentWithUnit })).toBeVisible()
@@ -396,24 +433,29 @@ export const InCard: Story = {
 /** A long Finnish label that carries the unit wraps and hyphenates in a 320px column. */
 export const LongFinnishLabel: Story = {
   globals: { locale: 'fi' },
+  decorators: [
+    (Story) => (
+      <div className="kv-story-narrow" data-testid="narrow">
+        <Story />
+      </div>
+    ),
+  ],
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <div className="kv-story-narrow" data-testid="narrow">
-        <Field.Root required lang={lang}>
-          <Field.Label>{text.grantWithUnit}</Field.Label>
-          <InputGroup.Root>
-            <InputGroup.Input
-              name="grant"
-              inputMode="decimal"
-              spellCheck={false}
-              autoComplete="off"
-              className="kv-input--width-20 kv-input--numeric"
-            />
-            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
-          </InputGroup.Root>
-        </Field.Root>
-      </div>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.grantWithUnit}</Field.Label>
+        <InputGroup.Root>
+          <InputGroup.Input
+            name="grant"
+            inputMode="decimal"
+            spellCheck={false}
+            autoComplete="off"
+            className="kv-input--width-20 kv-input--numeric"
+          />
+          <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+        </InputGroup.Root>
+      </Field.Root>
     )
   },
   play: async ({ canvas }) => {
@@ -426,12 +468,50 @@ export const LongFinnishLabel: Story = {
 
 /** Staff density from 64rem: a 32px box, a 32px Button, and 16px values and units. */
 export const Compact: Story = {
-  render: (_args, { globals }) => (
-    <div className="kv-compact kv-story-form">
-      <RentField locale={localeOf(globals)} />
-      <SearchExample locale={localeOf(globals)} initialValue="parkering" />
-    </div>
-  ),
+  decorators: [
+    (Story) => (
+      <div className="kv-compact kv-story-form">
+        <Story />
+      </div>
+    ),
+  ],
+  render: (_args, { globals }) => {
+    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    return (
+      <>
+        <Field.Root required lang={lang}>
+          <Field.Label>{text.rentWithUnit}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Input
+              name="rent"
+              inputMode="decimal"
+              spellCheck={false}
+              autoComplete="off"
+              className="kv-input--width-10 kv-input--numeric"
+            />
+            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+          <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+        </Field.Root>
+        <Field.Root lang={lang}>
+          <Field.Label marker="none">{text.searchServices}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Addon>
+              <Icon name="search" size={5} />
+            </InputGroup.Addon>
+            <InputGroup.Input
+              type="search"
+              name="search"
+              enterKeyHint="search"
+              autoComplete="off"
+              defaultValue="parkering"
+            />
+            <Button>{text.searchClear}</Button>
+          </InputGroup.Root>
+        </Field.Root>
+      </>
+    )
+  },
   play: async ({ canvas, globals }) => {
     const { text } = textsFor(localeOf(globals))
     await expectMinimumTargetSize(canvas.getByRole('textbox', { name: text.rentWithUnit }))
@@ -466,43 +546,69 @@ export const RTL: Story = {
   },
 }
 
-/** Every state of the box in one column, with names that stay unique on the page. */
-function GroupStates({ locale }: { locale: FormLocale }) {
-  const { text, lang, amountExample } = textsFor(locale)
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <RentField locale={locale} invalid withError />
-      <Field.Root required>
-        <Field.Label>{text.workTime}</Field.Label>
-        <InputGroup.Root>
-          <InputGroup.Input
-            name="work-time"
-            inputMode="decimal"
-            className="kv-input--width-4 kv-input--numeric"
-          />
-          <InputGroup.Addon>{text.workTimeUnit}</InputGroup.Addon>
-        </InputGroup.Root>
-        <Field.Hint>{text.workTimeExample}</Field.Hint>
-      </Field.Root>
-      <Field.Root required disabled>
-        <Field.Label>{text.distance}</Field.Label>
-        <InputGroup.Root>
-          <InputGroup.Input
-            name="distance"
-            inputMode="decimal"
-            defaultValue={amountExample}
-            className="kv-input--width-6 kv-input--numeric"
-          />
-          <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
-        </InputGroup.Root>
-      </Field.Root>
-      <SearchExample locale={locale} initialValue="parkering" />
-    </div>
-  )
-}
-
 /** The edge, the invalid width, the unit and the Button's divider survive forced colours. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  render: (_args, { globals }) => <GroupStates locale={localeOf(globals)} />,
+  render: (_args, { globals }) => {
+    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    return (
+      <>
+        <Field.Root required invalid lang={lang}>
+          <Field.Label>{text.rentWithUnit}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Input
+              name="rent"
+              inputMode="decimal"
+              spellCheck={false}
+              autoComplete="off"
+              className="kv-input--width-10 kv-input--numeric"
+            />
+            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+          <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+          <Field.ErrorMessage>{text.rentError(amountExample)}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root required lang={lang}>
+          <Field.Label>{text.workTime}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Input
+              name="work-time"
+              inputMode="decimal"
+              className="kv-input--width-4 kv-input--numeric"
+            />
+            <InputGroup.Addon>{text.workTimeUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+          <Field.HelpText>{text.workTimeExample}</Field.HelpText>
+        </Field.Root>
+        <Field.Root required disabled lang={lang}>
+          <Field.Label>{text.distance}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Input
+              name="distance"
+              inputMode="decimal"
+              defaultValue={amountExample}
+              className="kv-input--width-6 kv-input--numeric"
+            />
+            <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+        </Field.Root>
+        <Field.Root lang={lang}>
+          <Field.Label marker="none">{text.searchServices}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Addon>
+              <Icon name="search" size={5} />
+            </InputGroup.Addon>
+            <InputGroup.Input
+              type="search"
+              name="search"
+              enterKeyHint="search"
+              autoComplete="off"
+              defaultValue="parkering"
+            />
+            <Button>{text.searchClear}</Button>
+          </InputGroup.Root>
+        </Field.Root>
+      </>
+    )
+  },
 }

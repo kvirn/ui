@@ -1,10 +1,13 @@
-import { Button, KvirnProvider, useAnnouncer } from '@kvirn-ui/react'
+import { Button, useAnnouncer } from '@kvirn-ui/react'
 import { useState } from 'react'
+import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Story fixture for the shared Announcer. The buttons stand in for what a component
 // does when something changes: they call `announce`. sv, fi, nb, nn and en are written. se
 // shows the English text, marked lang="en" (3.1.2). In a real component these strings
 // come from the catalogs; here they are fixture text, so the live region's output is readable.
+// The live regions come from the outermost KvirnProvider, which the stories' `withFormLocale`
+// decorator renders, like an app's provider would.
 
 type AnnouncerFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'en'
 
@@ -107,15 +110,27 @@ const texts: Record<AnnouncerFixtureLocale, AnnouncerTexts> = {
   },
 }
 
-export const isAnnouncerFixtureLocale = (value: unknown): value is AnnouncerFixtureLocale =>
-  typeof value === 'string' && value in texts
+/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+export function announcerTextsFor(locale: FormLocale): {
+  text: AnnouncerTexts
+  lang: 'en' | undefined
+} {
+  const known = locale !== 'se'
+  return { text: texts[known ? locale : 'en'], lang: known ? undefined : 'en' }
+}
 
 interface LastCall {
   message: string
   accepted: boolean
 }
 
-function AnnouncerButtons({ text }: { text: AnnouncerTexts }) {
+/**
+ * `useAnnouncer()` gives `announce`, and each button calls it from its click handler with text
+ * already resolved from your i18n. A message with a `key` is throttled, and `announce` returns
+ * `false` when it drops one. The app's `KvirnProvider` renders the live regions.
+ */
+export function AnnouncementButtons({ locale }: { locale: FormLocale }) {
+  const { text, lang } = announcerTextsFor(locale)
   const { announce } = useAnnouncer()
   const [lastCall, setLastCall] = useState<LastCall | undefined>()
 
@@ -124,7 +139,9 @@ function AnnouncerButtons({ text }: { text: AnnouncerTexts }) {
   }
 
   return (
-    <>
+    <div lang={lang}>
+      <h2>{text.heading}</h2>
+      <p>{text.intro}</p>
       <div className="kv-button-group">
         <Button onClick={() => say(text.saved)}>{text.polite}</Button>
         <Button onClick={() => say(text.expired, { politeness: 'assertive' })}>
@@ -141,29 +158,6 @@ function AnnouncerButtons({ text }: { text: AnnouncerTexts }) {
             : `${lastCall.message} (${lastCall.accepted ? text.accepted : text.dropped})`}
         </span>
       </p>
-    </>
+    </div>
   )
-}
-
-/**
- * The outermost provider, so it renders the live regions, then buttons that announce. The page
- * language follows the story's locale: the strings and `lang` match (3.1.2).
- */
-export function AnnouncerDemo({ locale }: { locale: AnnouncerFixtureLocale }) {
-  const text = texts[locale]
-  return (
-    <KvirnProvider locale={locale}>
-      <div lang={locale}>
-        <h2>{text.heading}</h2>
-        <p>{text.intro}</p>
-        <AnnouncerButtons text={text} />
-      </div>
-    </KvirnProvider>
-  )
-}
-
-/** The fixture's locale for a Storybook `locale` global: se falls back to en. */
-export const fixtureLocaleOf = (globals: Record<string, unknown>): AnnouncerFixtureLocale => {
-  const locale = globals['locale']
-  return isAnnouncerFixtureLocale(locale) ? locale : 'en'
 }

@@ -1,26 +1,24 @@
 import { Field, Fieldset, RadioGroup, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useId } from 'react'
 import { expect } from 'storybook/test'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import { localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
-import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
-// Components/Form/Hint: a hint is a short instruction under the control, such as a format or an
+// Components/Form/HelpText: a help text is a short instruction under the control, such as a format or an
 // example, in 14px (`body-small`) and the text colour in every density and state. A description
 // is a `Field.Prose` above the control, at 16px, and may hold paragraphs, lists and links. Both
-// are listed in the control's `aria-describedby`, in DOM order, then the error. A hint always
-// goes under the control, and the description above it. A hint is plain text, never a link, and never the only place
-// the format lives: the error repeats it. The design spec is docs/design/field-hint.md. The
+// are listed in the control's `aria-describedby`, in DOM order, then the error. A help text always
+// goes under the control, and the description above it. A help text is plain text, never a link, and never the only place
+// the format lives: the error repeats it. The design spec is docs/design/field-help-text.md. The
 // contract is field.a11y.md, shared with Field, Label and ErrorMessage. KvirnUI holds no form
-// state: every story sets `invalid` and `disabled` itself. `hint-outside-field` is a unit test,
+// state: every story sets `invalid` and `disabled` itself. `help-text-outside-field` is a unit test,
 // not a story, because it would warn in the console.
 
 const meta = {
-  title: 'Components/Form/Hint',
-  component: Field.Hint,
+  title: 'Components/Form/HelpText',
+  component: Field.HelpText,
   argTypes: { render: { control: false } },
   globals: { locale: 'sv' },
   decorators: [
@@ -43,20 +41,20 @@ const meta = {
           spellCheck={false}
           className="kv-input--width-20"
         />
-        <Field.Hint {...args}>{text.personalNumberFormat}</Field.Hint>
+        <Field.HelpText {...args}>{text.personalNumberFormat}</Field.HelpText>
       </Field.Root>
     )
   },
   parameters: { a11yContract: contract },
-} satisfies Meta<typeof Field.Hint>
+} satisfies Meta<typeof Field.HelpText>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
 /**
- * The fixture the keyboard tests drive: a description above the input and a hint under it. Try
+ * The fixture the keyboard tests drive: a description above the input and a help text under it. Try
  * the keys in the Keyboard section above: Tab goes to the input and never stops on the
- * description or the hint.
+ * description or the help text.
  */
 export const Keyboard: Story = {
   render: (args, { globals }) => {
@@ -74,22 +72,22 @@ export const Keyboard: Story = {
           spellCheck={false}
           className="kv-input--width-20"
         />
-        <Field.Hint {...args}>{text.personalNumberFormat}</Field.Hint>
+        <Field.HelpText {...args}>{text.personalNumberFormat}</Field.HelpText>
       </Field.Root>
     )
   },
 }
 
 /**
- * The default: label, input and a hint under it. The hint is a paragraph with its own id, and the
+ * The default: label, input and a help text under it. The help text is a paragraph with its own id, and the
  * input's `aria-describedby` lists it. It says how to type the answer: plain words first, then
  * the pattern.
  */
 export const UnderTheControl: Story = {}
 
 /**
- * A description above the input and a hint under it. The description is what the user must read
- * before answering (16px, and it may hold paragraphs and links), and the hint is what helps while
+ * A description above the input and a help text under it. The description is what the user must read
+ * before answering (16px, and it may hold paragraphs and links), and the help text is what helps while
  * typing (14px). Each has its own id, and `aria-describedby` lists them in DOM order.
  */
 export const WithDescription: Story = {
@@ -102,16 +100,16 @@ export const WithDescription: Story = {
           <p>{text.registrationWhere}</p>
         </Field.Prose>
         <TextInput name="registration" className="kv-input--width-10" />
-        <Field.Hint>{text.registrationHint}</Field.Hint>
+        <Field.HelpText>{text.registrationHint}</Field.HelpText>
       </Field.Root>
     )
   },
 }
 
 /**
- * Invalid: the hint does not change. The error comes last, repeats the format, and carries the
+ * Invalid: the help text does not change. The error comes last, repeats the format, and carries the
  * state with its icon, weight and "Fel:". A screen reader reads the label, the description, the
- * hint, then the error.
+ * help text, then the error.
  */
 export const Invalid: Story = {
   render: (_args, { globals }) => {
@@ -130,7 +128,7 @@ export const Invalid: Story = {
           defaultValue="19900101"
           className="kv-input--width-20"
         />
-        <Field.Hint>{text.personalNumberFormat}</Field.Hint>
+        <Field.HelpText>{text.personalNumberFormat}</Field.HelpText>
         <Field.ErrorMessage>{text.personalNumberError}</Field.ErrorMessage>
       </Field.Root>
     )
@@ -138,7 +136,7 @@ export const Invalid: Story = {
 }
 
 /**
- * In a Fieldset: a `Fieldset.Hint` under the three date boxes describes the group, and is read
+ * In a Fieldset: a `Fieldset.HelpText` under the three date boxes describes the group, and is read
  * when focus enters it. Each box is its own Field with no description of its own.
  */
 export const InFieldset: Story = {
@@ -179,52 +177,42 @@ export const InFieldset: Story = {
             />
           </Field.Root>
         </div>
-        <Fieldset.Hint>{text.visitDateExample}</Fieldset.Hint>
+        <Fieldset.HelpText>{text.visitDateExample}</Fieldset.HelpText>
       </Fieldset.Root>
     )
   },
 }
 
-interface DurationWithHintProps {
-  locale: FormLocale
-}
-
-/** A radio group whose longest option has a hint under its label. */
-function DurationWithHint({ locale }: DurationWithHintProps) {
-  const { text, lang } = choiceTextsFor(locale)
-  // Radios that share a name are one group for the whole document, so on a Docs page every
-  // story's radios would act as one. A name per instance keeps the stories apart.
-  const name = `duration-${useId()}`
-  return (
-    <RadioGroup.Root name={name} lang={lang}>
-      <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-      <RadioGroup.Prose>
-        <p>{text.durationHint}</p>
-      </RadioGroup.Prose>
-      <Field.Root>
-        <RadioGroup.Radio value="1" />
-        <Field.Label>{text.duration1}</Field.Label>
-      </Field.Root>
-      <Field.Root>
-        <RadioGroup.Radio value="6" />
-        <Field.Label>{text.duration6}</Field.Label>
-      </Field.Root>
-      <Field.Root>
-        <RadioGroup.Radio value="12" />
-        <Field.Label>{text.duration12}</Field.Label>
-        <Field.Hint>{text.duration12Hint}</Field.Hint>
-      </Field.Root>
-    </RadioGroup.Root>
-  )
-}
-
 /**
- * An option's hint is a `Field.Hint` in the option's Field. It is 14px, lines up with the
+ * An option's help text is a `Field.HelpText` in the option's Field. It is 14px, lines up with the
  * label's text, and sits directly under the label's box, outside the target: a tap on it checks
  * nothing. It describes that radio, not the group.
  */
-export const OptionHints: Story = {
-  render: (_args, { globals }) => <DurationWithHint locale={localeOf(globals)} />,
+export const OptionHelpTexts: Story = {
+  render: (_args, { globals }) => {
+    const { text, lang } = choiceTextsFor(localeOf(globals))
+    return (
+      <RadioGroup.Root name="duration" lang={lang}>
+        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+        <RadioGroup.Prose>
+          <p>{text.durationHint}</p>
+        </RadioGroup.Prose>
+        <Field.Root>
+          <RadioGroup.Radio value="1" />
+          <Field.Label>{text.duration1}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="6" />
+          <Field.Label>{text.duration6}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="12" />
+          <Field.Label>{text.duration12}</Field.Label>
+          <Field.HelpText>{text.duration12Hint}</Field.HelpText>
+        </Field.Root>
+      </RadioGroup.Root>
+    )
+  },
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     const radio = canvas.getByRole('radio', { name: text.duration12 })
@@ -236,7 +224,7 @@ export const OptionHints: Story = {
 }
 
 /**
- * A disabled field: the input is muted, and the hint stays in the text colour, because it often
+ * A disabled field: the input is muted, and the help text stays in the text colour, because it often
  * says why the field can't be used.
  */
 export const Disabled: Story = {
@@ -250,14 +238,14 @@ export const Disabled: Story = {
           defaultValue="19900101-1234"
           className="kv-input--width-20"
         />
-        <Field.Hint>{text.personalNumberHint}</Field.Hint>
+        <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
       </Field.Root>
     )
   },
 }
 
 /**
- * A read-only personal identity number: the input stays focusable, and the hint says why the
+ * A read-only personal identity number: the input stays focusable, and the help text says why the
  * value can't change.
  */
 export const ReadOnly: Story = {
@@ -272,7 +260,7 @@ export const ReadOnly: Story = {
           defaultValue="19900101-1234"
           className="kv-input--width-20"
         />
-        <Field.Hint>{text.personalNumberHint}</Field.Hint>
+        <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -280,7 +268,7 @@ export const ReadOnly: Story = {
 
 /**
  * Staff density from 64rem: the label is 14px and the gaps are 4px. The description stays 16px
- * and the hint stays 14px, so there is no smaller step.
+ * and the help text stays 14px, so there is no smaller step.
  */
 export const Compact: Story = {
   render: (_args, { globals }) => {
@@ -299,7 +287,7 @@ export const Compact: Story = {
             spellCheck={false}
             className="kv-input--width-20"
           />
-          <Field.Hint>{text.personalNumberFormat}</Field.Hint>
+          <Field.HelpText>{text.personalNumberFormat}</Field.HelpText>
         </Field.Root>
       </div>
     )
@@ -307,21 +295,26 @@ export const Compact: Story = {
 }
 
 /**
- * A long Finnish hint in a 320px column (1.4.10). The 34-letter compound has soft hyphens, so it
+ * A long Finnish help text in a 320px column (1.4.10). The 34-letter compound has soft hyphens, so it
  * breaks the same way in every browser, because Chromium has no Finnish hyphenation dictionary.
  */
 export const LongFinnish: Story = {
   globals: { locale: 'fi' },
+  decorators: [
+    (Story) => (
+      <div className="kv-story-narrow" data-testid="narrow">
+        <Story />
+      </div>
+    ),
+  ],
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <div className="kv-story-narrow" data-testid="narrow">
-        <Field.Root required lang={lang}>
-          <Field.Label>{text.longLabel}</Field.Label>
-          <TextInput name="reference" inputMode="numeric" spellCheck={false} />
-          <Field.Hint>{text.grantReferenceHint}</Field.Hint>
-        </Field.Root>
-      </div>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.longLabel}</Field.Label>
+        <TextInput name="reference" inputMode="numeric" spellCheck={false} />
+        <Field.HelpText>{text.grantReferenceHint}</Field.HelpText>
+      </Field.Root>
     )
   },
   play: async ({ canvas }) => {
@@ -330,67 +323,89 @@ export const LongFinnish: Story = {
 }
 
 /** Splits "For example, ABC 123" into the sentence and the example, so the example can go in `<bdi>`. */
-function splitExample(hint: string): { lead: string; example: string } {
-  const match = /^(.*?)(ABC.\d{3})$/.exec(hint)
-  return { lead: match?.[1] ?? hint, example: match?.[2] ?? '' }
+function splitExample(helpText: string): { lead: string; example: string } {
+  const match = /^(.*?)(ABC.\d{3})$/.exec(helpText)
+  return { lead: match?.[1] ?? helpText, example: match?.[2] ?? '' }
 }
 
-/** The hint's states in one column, for the RTL and forced-colours stories. */
-function HintStates({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
-  const { lead, example } = splitExample(text.registrationHint)
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.registration}</Field.Label>
-        <Field.Prose>
-          <p>{text.registrationWhere}</p>
-        </Field.Prose>
-        <TextInput name="registration" className="kv-input--width-10" />
-        {/* The example is neutral text at the edge of a right-to-left sentence: `bdi` keeps it in place. */}
-        <Field.Hint>
-          {lead}
-          {example === '' ? null : <bdi>{example}</bdi>}
-        </Field.Hint>
-      </Field.Root>
-      <Field.Root required invalid>
-        <Field.Label>{text.personalNumber}</Field.Label>
-        <TextInput
-          name="personal-number"
-          inputMode="numeric"
-          autoComplete="off"
-          spellCheck={false}
-          defaultValue="19900101"
-          className="kv-input--width-20"
-        />
-        <Field.Hint>{text.personalNumberFormat}</Field.Hint>
-        <Field.ErrorMessage>{text.personalNumberError}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root required disabled>
-        <Field.Label>{text.personalNumber}</Field.Label>
-        <TextInput
-          name="personal-number"
-          defaultValue="19900101-1234"
-          className="kv-input--width-20"
-        />
-        <Field.Hint>{text.personalNumberHint}</Field.Hint>
-      </Field.Root>
-      <DurationWithHint locale={locale} />
-    </div>
-  )
-}
+// The help text's states in one column, for the RTL and forced-colours stories: the same Fields
+// as the stories above. A radio group's name is document-wide, so each story passes its own.
+const renderHelpTextStates =
+  (radioName: string): NonNullable<Story['render']> =>
+  (_args, { globals }) => {
+    const { text, lang } = textsFor(localeOf(globals))
+    const { lead, example } = splitExample(text.registrationHint)
+    const choices = choiceTextsFor(localeOf(globals)).text
+    return (
+      <div lang={lang}>
+        <Field.Root required>
+          <Field.Label>{text.registration}</Field.Label>
+          <Field.Prose>
+            <p>{text.registrationWhere}</p>
+          </Field.Prose>
+          <TextInput name="registration" className="kv-input--width-10" />
+          {/* The example is neutral text at the edge of a right-to-left sentence: `bdi` keeps it in place. */}
+          <Field.HelpText>
+            {lead}
+            {example === '' ? null : <bdi>{example}</bdi>}
+          </Field.HelpText>
+        </Field.Root>
+        <Field.Root required invalid>
+          <Field.Label>{text.personalNumber}</Field.Label>
+          <TextInput
+            name="personal-number"
+            inputMode="numeric"
+            autoComplete="off"
+            spellCheck={false}
+            defaultValue="19900101"
+            className="kv-input--width-20"
+          />
+          <Field.HelpText>{text.personalNumberFormat}</Field.HelpText>
+          <Field.ErrorMessage>{text.personalNumberError}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root required disabled>
+          <Field.Label>{text.personalNumber}</Field.Label>
+          <TextInput
+            name="personal-number"
+            defaultValue="19900101-1234"
+            className="kv-input--width-20"
+          />
+          <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
+        </Field.Root>
+        <RadioGroup.Root name={radioName}>
+          <RadioGroup.Legend>{choices.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{choices.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{choices.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{choices.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{choices.duration12}</Field.Label>
+            <Field.HelpText>{choices.duration12Hint}</Field.HelpText>
+          </Field.Root>
+        </RadioGroup.Root>
+      </div>
+    )
+  }
 
-/** Right to left, in English: a hint and an option hint start at the right, the example in `<bdi>`. */
+/** Right to left, in English: a help text and an option help text start at the right, the example in `<bdi>`. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
-  render: () => <HintStates locale="en" />,
+  render: renderHelpTextStates('duration-rtl'),
 }
 
 /**
- * Forced colours: the hint is `CanvasText`, with no border or fill to lose. The error is still
+ * Forced colours: the help text is `CanvasText`, with no border or fill to lose. The error is still
  * told apart from it by its icon, weight, size, indent and the spoken "Fel:".
  */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  render: (_args, { globals }) => <HintStates locale={localeOf(globals)} />,
+  render: renderHelpTextStates('duration-forced-colors'),
 }

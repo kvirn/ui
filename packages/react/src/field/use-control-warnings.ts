@@ -40,7 +40,7 @@ export function useControlWarnings({
     if (isInField && id !== undefined) {
       warnOnce(
         `${componentName}-id-in-field`,
-        `A ${componentName} inside a Field got id="${id}", which is ignored so the Field's label and hint stay linked. Set the id with controlId on Field.Root.`,
+        `A ${componentName} inside a Field got id="${id}", which is ignored so the Field's label and help text stay linked. Set the id with controlId on Field.Root.`,
       )
     }
   }, [isInField, id, componentName])

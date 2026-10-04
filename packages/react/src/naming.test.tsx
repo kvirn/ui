@@ -99,6 +99,7 @@ describe('display names', () => {
     expect(api.Fieldset.displayName).toBe('Fieldset.Root')
     expect(api.Link.displayName).toBe('Link.Root')
     expect(api.Link.NewTabNotice.displayName).toBe('Link.NewTabNotice')
+    expect(api.Link.Icon.displayName).toBe('Link.Icon')
   })
 
   test('single elements are named flat', () => {
@@ -123,10 +124,10 @@ describe('display names', () => {
     expect(api.Autocomplete.Option.displayName).toBe('Autocomplete.Option')
     expect(api.Field.Prose.displayName).toBe('Field.Prose')
     expect(api.Fieldset.Prose.displayName).toBe('Fieldset.Prose')
-    expect(api.Field.Hint.displayName).toBe('Field.Hint')
-    expect(api.Fieldset.Hint.displayName).toBe('Fieldset.Hint')
-    expect(api.CheckboxGroup.Hint.displayName).toBe('CheckboxGroup.Hint')
-    expect(api.RadioGroup.Hint.displayName).toBe('RadioGroup.Hint')
+    expect(api.Field.HelpText.displayName).toBe('Field.HelpText')
+    expect(api.Fieldset.HelpText.displayName).toBe('Fieldset.HelpText')
+    expect(api.CheckboxGroup.HelpText.displayName).toBe('CheckboxGroup.HelpText')
+    expect(api.RadioGroup.HelpText.displayName).toBe('RadioGroup.HelpText')
     expect(api.CheckboxGroup.Legend.displayName).toBe('CheckboxGroup.Legend')
     expect(api.RadioGroup.Radio.displayName).toBe('RadioGroup.Radio')
     expect(api.InputGroup.Input.displayName).toBe('InputGroup.Input')
@@ -135,7 +136,7 @@ describe('display names', () => {
     expect(api.Combobox.Option).not.toBe(api.Listbox.Option)
     expect(api.Autocomplete.Option).not.toBe(api.Combobox.Option)
     expect(api.Field.Prose).not.toBe(api.Prose)
-    expect(api.Fieldset.Hint).not.toBe(api.Field.Hint)
+    expect(api.Fieldset.HelpText).not.toBe(api.Field.HelpText)
   })
 })
 
@@ -198,6 +199,13 @@ describe('flat part exports', () => {
     }
   })
 
+  test('Navigation is a namespace of its own parts, not a callable root', () => {
+    expect(api.Navigation.Root.displayName).toBe('Navigation.Root')
+    expect(api.Navigation.List.displayName).toBe('Navigation.List')
+    expect(api.Navigation.Item.displayName).toBe('Navigation.Item')
+    expect(typeof api.Navigation).toBe('object')
+  })
+
   test('callable roots stay callable and are the same function as their Root', () => {
     expect(api.Field).toBe(api.Field.Root)
     expect(api.Fieldset).toBe(api.Fieldset.Root)
@@ -209,19 +217,32 @@ describe('alias sets', () => {
   test('each parent offers the parts of its decided alias set', () => {
     const keys = (value: unknown) => partsOf(value).map(([key]) => key)
     expect(keys(api.Field)).toEqual(
-      expect.arrayContaining(['Root', 'Label', 'Prose', 'Hint', 'ErrorMessage']),
+      expect.arrayContaining(['Root', 'Label', 'Prose', 'HelpText', 'ErrorMessage']),
     )
     expect(keys(api.Fieldset)).toEqual(
-      expect.arrayContaining(['Root', 'Legend', 'Prose', 'Hint', 'ErrorMessage']),
+      expect.arrayContaining(['Root', 'Legend', 'Prose', 'HelpText', 'ErrorMessage']),
     )
     expect(keys(api.CheckboxGroup)).toEqual(
-      expect.arrayContaining(['Root', 'Legend', 'Prose', 'Hint', 'ErrorMessage']),
+      expect.arrayContaining(['Root', 'Legend', 'Prose', 'HelpText', 'ErrorMessage']),
     )
     expect(keys(api.RadioGroup)).toEqual(
-      expect.arrayContaining(['Root', 'Radio', 'Legend', 'Prose', 'Hint', 'ErrorMessage']),
+      expect.arrayContaining(['Root', 'Radio', 'Legend', 'Prose', 'HelpText', 'ErrorMessage']),
     )
     expect(keys(api.InputGroup)).toEqual(expect.arrayContaining(['Root', 'Addon', 'Input']))
-    expect(keys(api.Link)).toEqual(expect.arrayContaining(['Root', 'NewTabNotice']))
+    expect(keys(api.Link)).toEqual(expect.arrayContaining(['Root', 'NewTabNotice', 'Icon']))
+    expect(keys(api.Navigation)).toEqual(expect.arrayContaining(['Root', 'List', 'Item']))
+    expect(keys(api.Alert)).toEqual(
+      expect.arrayContaining([
+        'Root',
+        'Info',
+        'Success',
+        'Warning',
+        'Danger',
+        'Title',
+        'Body',
+        'Actions',
+      ]),
+    )
     expect(keys(api.Toolbar)).toEqual(
       expect.arrayContaining(['Root', 'Button', 'Toggle', 'Item', 'Group']),
     )

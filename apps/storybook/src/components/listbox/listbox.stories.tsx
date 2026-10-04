@@ -1,21 +1,59 @@
-import { Button, Card, Field, Listbox } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/listbox/listbox.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useMemo, useState } from 'react'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
+import { showSource } from '../../docs-source.ts'
 import { choiceTextsFor, logChange } from '../form/choice.fixture.tsx'
 import type { ChoiceTexts } from '../form/choice.fixture.tsx'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
-import type { FormLocale } from '../form/form.fixture.tsx'
-import { virtualizedCount, virtualizedPlaces } from '../form/virtualized.fixture.ts'
-import type { VirtualizedPlace } from '../form/virtualized.fixture.ts'
+import { virtualizedCount } from '../form/virtualized.fixture.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import {
+  CompactMunicipality,
+  ControlledMunicipality,
+  DisabledMunicipality,
+  GroupedMunicipalities,
+  InvalidMunicipality,
+  KeyboardForm,
+  LongFinnishMunicipality,
+  LongMunicipalityList,
+  MunicipalityField,
+  MunicipalityInCard,
+  MunicipalityStates,
+  MunicipalityWithClosedOption,
+  MunicipalityWithDescription,
+  NativeCompactMunicipality,
+  NativeControlledMunicipality,
+  NativeDisabledMunicipality,
+  NativeGroupedMunicipalities,
+  NativeInvalidMunicipality,
+  NativeKeyboardForm,
+  NativeLongFinnishMunicipality,
+  NativeMunicipalityField,
+  NativeMunicipalityInCard,
+  NativeMunicipalityStates,
+  NativeMunicipalityWithDescription,
+  NativeOptionalMunicipality,
+  NativePlainFormMunicipality,
+  NativeSelectedMunicipality,
+  NoMunicipalities,
+  OpenMunicipality,
+  OptionalMunicipality,
+  PlainFormMunicipality,
+  RichMunicipalities,
+  SelectedMunicipality,
+  SeveralMunicipalities,
+  VirtualizedPlaces,
+} from './listbox.fixture.tsx'
 
 // Components/Form/Listbox: the stylable popup (Listbox.Root, Trigger, Value, Popup, List, Option,
 // Group, Empty), the APG select-only combobox (contract: listbox.a11y.md). Listbox.Root
 // renders the browser's own <select> instead on touch devices (native="auto") and for
 // native="always". The popup stories use native="never" so they show the popup on any device, and
 // the stories named Native… show the native rendering with native="always".
+//
+// Every story renders a function of listbox.fixture.tsx, and its "Show code" prints that function
+// (`showSource`): the real Listbox parts, ready to paste. Storybook's own snippet can't print the
+// function child of Listbox.List or `itemToString`, which is why these are fixtures.
 //
 // KvirnUI holds no form state. The value is the chosen option's key: pass
 // `value` and `onValueChange` (Controlled), or `defaultValue` and `name` for a plain form
@@ -101,165 +139,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-interface Municipality {
-  code: string
-  name: string
-  /** Shown under the name in a rich option. */
-  county?: string
-  disabled?: boolean
-}
-
-/** In the Swedish alphabet: å, ä and ö come last, and typeahead keeps them apart from a and o. */
-const names = [
-  'Ale',
-  'Alingsås',
-  'Arvika',
-  'Borås',
-  'Eskilstuna',
-  'Falun',
-  'Gävle',
-  'Göteborg',
-  'Halmstad',
-  'Helsingborg',
-  'Jönköping',
-  'Kalmar',
-  'Karlstad',
-  'Kiruna',
-  'Linköping',
-  'Luleå',
-  'Lund',
-  'Malmö',
-  'Norrköping',
-  'Oskarshamn',
-  'Skellefteå',
-  'Stockholm',
-  'Sundsvall',
-  'Trollhättan',
-  'Umeå',
-  'Uppsala',
-  'Varberg',
-  'Västerås',
-  'Växjö',
-  'Åre',
-  'Ängelholm',
-  'Örebro',
-  'Östersund',
-]
-
-const municipalities: readonly Municipality[] = names.map((name) => ({
-  code: name.toLowerCase(),
-  name,
-}))
-
-/** The same list with one option that can't be chosen now: it stays reachable with the arrows. */
-const municipalitiesWithClosed: readonly Municipality[] = municipalities.map((municipality) =>
-  municipality.name === 'Stockholm' ? { ...municipality, disabled: true } : municipality,
-)
-
-const counties: Record<string, string> = {
-  Göteborg: 'Västra Götaland',
-  Malmö: 'Skåne',
-  Stockholm: 'Stockholm',
-  Uppsala: 'Uppsala',
-}
-
-const richMunicipalities: readonly Municipality[] = Object.entries(counties).map(
-  ([name, county]) => ({ code: name.toLowerCase(), name, county }),
-)
-
-const longList: readonly Municipality[] = Array.from({ length: 300 }, (_, index) => ({
-  code: `ort-${index + 1}`,
-  name: `Ort ${index + 1}`,
-}))
-
-/** What the stories add to the shared fixture: the label of the list of several. */
-const extraTexts: Record<
-  'sv' | 'en' | 'fi' | 'nb' | 'nn',
-  { several: string; severalPlaceholder: string }
-> = {
-  sv: { several: 'Kommuner', severalPlaceholder: 'Välj kommuner' },
-  en: { several: 'Municipalities', severalPlaceholder: 'Choose municipalities' },
-  fi: { several: 'Kunnat', severalPlaceholder: 'Valitse kunnat' },
-  nb: { several: 'Kommuner', severalPlaceholder: 'Velg kommuner' },
-  nn: { several: 'Kommunar', severalPlaceholder: 'Vel kommunar' },
-}
-const extraTextsFor = (locale: FormLocale) => extraTexts[locale === 'se' ? 'en' : locale]
-
-interface MunicipalityListboxProps {
-  text: ChoiceTexts
-  items?: readonly Municipality[]
-  name?: string
-  defaultValue?: string | null
-  defaultOpen?: boolean
-  value?: string | null
-  onValueChange?: (value: string | null) => void
-}
-
-/** A single-choice Listbox of municipalities. The popup parts are the same in every story. */
-function MunicipalityListbox({
-  text,
-  items = municipalities,
-  ...rootProps
-}: MunicipalityListboxProps) {
-  return (
-    <Listbox.Root
-      native="never"
-      items={items}
-      itemToString={(municipality) => municipality.name}
-      itemToKey={(municipality) => municipality.code}
-      isItemDisabled={(municipality) => municipality.disabled === true}
-      {...rootProps}
-    >
-      <Listbox.Trigger>
-        <Listbox.Value placeholder={text.municipalityPlaceholder} />
-      </Listbox.Trigger>
-      <Listbox.Popup>
-        <Listbox.List>
-          {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-        </Listbox.List>
-        <Listbox.Empty />
-      </Listbox.Popup>
-    </Listbox.Root>
-  )
-}
-
-/** A Listbox of several choices: the popup stays open, and the trigger lists what is chosen. */
-function MunicipalitiesListbox({
-  placeholder,
-  defaultOpen,
-  defaultValue,
-  name,
-}: {
-  placeholder: string
-  defaultOpen?: boolean
-  defaultValue?: readonly string[]
-  name?: string
-}) {
-  return (
-    <Listbox.Root
-      native="never"
-      multiple
-      items={municipalitiesWithClosed}
-      itemToString={(municipality) => municipality.name}
-      itemToKey={(municipality) => municipality.code}
-      isItemDisabled={(municipality) => municipality.disabled === true}
-      {...(defaultOpen === undefined ? {} : { defaultOpen })}
-      {...(defaultValue === undefined ? {} : { defaultValue })}
-      {...(name === undefined ? {} : { name })}
-    >
-      <Listbox.Trigger>
-        <Listbox.Value placeholder={placeholder} />
-      </Listbox.Trigger>
-      <Listbox.Popup>
-        <Listbox.List>
-          {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-        </Listbox.List>
-      </Listbox.Popup>
-    </Listbox.Root>
-  )
-}
-
-type Canvas = ReturnType<typeof within>
+type Canvas = ReturnType<typeof within> // what `within` returns: the queries of a story's canvas
 
 /** The trigger of the single-choice listbox: its name is the label, then the value. */
 const triggerOf = (canvas: Canvas, text: ChoiceTexts) =>
@@ -267,18 +147,10 @@ const triggerOf = (canvas: Canvas, text: ChoiceTexts) =>
 
 /** A listbox in a Field: 44px high, a 1px edge, a drawn chevron and a 2px ring on keyboard focus. */
 export const Default: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityListbox text={text} name="municipality" />
-      </Field.Root>
-    )
-  },
-  play: async ({ canvas, globals }) => {
-    const { text } = choiceTextsFor(localeOf(globals))
-    const trigger = triggerOf(canvas, text)
+  parameters: showSource('listbox/listbox.fixture.tsx', 'MunicipalityField'),
+  render: () => <MunicipalityField />,
+  play: async ({ canvas }) => {
+    const trigger = canvas.getByRole('combobox', { name: /Kommun/ })
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await expectMinimumTargetSize(trigger)
     await userEvent.click(trigger)
@@ -298,49 +170,14 @@ export const Default: Story = {
  * Space, Escape, Alt+ArrowDown and Alt+ArrowUp, and typing letters (try å, ä, ö and o).
  */
 export const Keyboard: Story = {
-  render: (_args, { globals }) => <KeyboardExample locale={localeOf(globals)} />,
-}
-
-function KeyboardExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const extra = extraTextsFor(locale)
-  return (
-    <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
-      <div className="kv-button-group">
-        <Button type="button">Före</Button>
-      </div>
-      <Field.Root required controlId="municipality">
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityListbox text={text} items={municipalitiesWithClosed} name="municipality" />
-      </Field.Root>
-      <Field.Root required disabled controlId="closed">
-        <Field.Label>{text.longSelectLabel}</Field.Label>
-        <MunicipalityListbox text={text} name="disabled" />
-      </Field.Root>
-      <Field.Root required controlId="several">
-        <Field.Label>{extra.several}</Field.Label>
-        <MunicipalitiesListbox placeholder={extra.severalPlaceholder} name="several" />
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-    </form>
-  )
+  parameters: showSource('listbox/listbox.fixture.tsx', 'KeyboardForm'),
+  render: (_args, { globals }) => <KeyboardForm locale={localeOf(globals)} />,
 }
 
 /** A chosen option shows in the closed trigger. */
 export const Selected: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityListbox text={text} defaultValue="malmö" />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'SelectedMunicipality'),
+  render: (_args, { globals }) => <SelectedMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expect(triggerOf(canvas, text)).toHaveTextContent('Malmö')
@@ -349,15 +186,8 @@ export const Selected: Story = {
 
 /** Open from the start, with the chosen option marked. The popup is the browser's top layer, under the trigger. */
 export const Open: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityListbox text={text} defaultValue="malmö" defaultOpen />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'OpenMunicipality'),
+  render: (_args, { globals }) => <OpenMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
@@ -369,20 +199,10 @@ export const Open: Story = {
   },
 }
 
-/** The hint is in the trigger's description. */
+/** The help text is in the trigger's description. */
 export const WithDescription: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Field.Prose>
-          <p>{text.municipalityHint}</p>
-        </Field.Prose>
-        <MunicipalityListbox text={text} />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'MunicipalityWithDescription'),
+  render: (_args, { globals }) => <MunicipalityWithDescription locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expect(triggerOf(canvas, text)).toHaveAccessibleDescription(text.municipalityHint)
@@ -391,32 +211,14 @@ export const WithDescription: Story = {
 
 /** Optional: the label says so ("valfritt"), as for every field that isn't required. */
 export const Optional: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityListbox text={text} />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'OptionalMunicipality'),
+  render: (_args, { globals }) => <OptionalMunicipality locale={localeOf(globals)} />,
 }
 
 /** Invalid: a 2px edge and the message under the listbox, with the choice kept as it was. */
 export const Invalid: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required invalid lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Field.Prose>
-          <p>{text.municipalityHint}</p>
-        </Field.Prose>
-        <MunicipalityListbox text={text} />
-        <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'InvalidMunicipality'),
+  render: (_args, { globals }) => <InvalidMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     const trigger = triggerOf(canvas, text)
@@ -431,15 +233,8 @@ export const Invalid: Story = {
 
 /** Disabled: a dashed edge on the surface colour, no tab stop, and the popup never opens. */
 export const Disabled: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required disabled lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityListbox text={text} defaultValue="malmö" />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'DisabledMunicipality'),
+  render: (_args, { globals }) => <DisabledMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     const trigger = triggerOf(canvas, text)
@@ -450,15 +245,8 @@ export const Disabled: Story = {
 
 /** A disabled option is reachable with the arrow keys, read as unavailable, and can't be chosen. */
 export const DisabledOption: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityListbox text={text} items={municipalitiesWithClosed} defaultOpen />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'MunicipalityWithClosedOption'),
+  render: (_args, { globals }) => <MunicipalityWithClosedOption locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
     await expect(canvas.getByRole('option', { name: 'Stockholm' })).toHaveAttribute(
@@ -469,57 +257,9 @@ export const DisabledOption: Story = {
 }
 
 /** Groups: `role="group"` named by its label. */
-function GroupsListbox({ text, defaultOpen }: { text: ChoiceTexts; defaultOpen?: boolean }) {
-  const groups = [
-    {
-      key: 'west',
-      label: text.regionWest,
-      items: [{ code: 'gothenburg', name: text.municipalityGothenburg }],
-    },
-    {
-      key: 'east',
-      label: text.regionEast,
-      items: [
-        { code: 'stockholm', name: text.municipalityStockholm },
-        { code: 'uppsala', name: text.municipalityUppsala },
-      ],
-    },
-    {
-      key: 'south',
-      label: text.regionSouth,
-      items: [{ code: 'malmo', name: text.municipalityMalmo }],
-    },
-  ]
-  return (
-    <Listbox.Root
-      native="never"
-      groups={groups}
-      itemToString={(municipality) => municipality.name}
-      itemToKey={(municipality) => municipality.code}
-      {...(defaultOpen === undefined ? {} : { defaultOpen })}
-    >
-      <Listbox.Trigger>
-        <Listbox.Value placeholder={text.municipalityPlaceholder} />
-      </Listbox.Trigger>
-      <Listbox.Popup>
-        <Listbox.List>
-          {(municipality: { code: string; name: string }) => <Listbox.Option item={municipality} />}
-        </Listbox.List>
-      </Listbox.Popup>
-    </Listbox.Root>
-  )
-}
-
 export const Groups: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <GroupsListbox text={text} defaultOpen />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'GroupedMunicipalities'),
+  render: (_args, { globals }) => <GroupedMunicipalities locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
@@ -530,21 +270,8 @@ export const Groups: Story = {
 
 /** Several choices: the popup stays open, each option toggles, and the trigger lists the choice. */
 export const Multiple: Story = {
-  render: (_args, { globals }) => {
-    const locale = localeOf(globals)
-    const { lang } = choiceTextsFor(locale)
-    const extra = extraTextsFor(locale)
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{extra.several}</Field.Label>
-        <MunicipalitiesListbox
-          placeholder={extra.severalPlaceholder}
-          defaultValue={['malmö', 'uppsala']}
-          defaultOpen
-        />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'SeveralMunicipalities'),
+  render: (_args, { globals }) => <SeveralMunicipalities locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
     await expect(canvas.getByRole('listbox')).toHaveAttribute('aria-multiselectable', 'true')
@@ -559,15 +286,8 @@ export const Multiple: Story = {
 
 /** A long list scrolls inside the popup, which is never taller than the room that is left. */
 export const LongList: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityListbox text={text} items={longList} defaultOpen />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'LongMunicipalityList'),
+  render: (_args, { globals }) => <LongMunicipalityList locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
     await expect(canvas.getAllByRole('option')).toHaveLength(300)
@@ -581,32 +301,8 @@ export const LongList: Story = {
  * never rendered, and `aria-activedescendant` always points at one that is.
  */
 export const Virtualized: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang} controlId="municipality">
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="never"
-          virtualize
-          items={virtualizedPlaces}
-          itemToString={(place) => place.name}
-          itemToKey={(place) => place.code}
-          defaultOpen
-        >
-          <Listbox.Trigger>
-            <Listbox.Value placeholder={text.municipalityPlaceholder} />
-          </Listbox.Trigger>
-          <Listbox.Popup>
-            <Listbox.List>
-              {(place: VirtualizedPlace) => <Listbox.Option item={place} />}
-            </Listbox.List>
-            <Listbox.Empty />
-          </Listbox.Popup>
-        </Listbox.Root>
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'VirtualizedPlaces'),
+  render: (_args, { globals }) => <VirtualizedPlaces locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
     await waitFor(() => expect(canvas.getAllByRole('option').length).toBeGreaterThan(5))
@@ -621,39 +317,8 @@ export const Virtualized: Story = {
 
 /** A rich option: your own children replace the text. The name a screen reader reads is its text content. */
 export const RichOptions: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="never"
-          items={richMunicipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          defaultOpen
-        >
-          <Listbox.Trigger>
-            <Listbox.Value placeholder={text.municipalityPlaceholder} />
-          </Listbox.Trigger>
-          <Listbox.Popup>
-            <Listbox.List>
-              {(municipality: Municipality) => (
-                <Listbox.Option item={municipality}>
-                  <span style={{ display: 'grid' }}>
-                    <span>{municipality.name}</span>
-                    <small style={{ color: 'var(--kv-listbox-option-hint)' }}>
-                      {municipality.county}
-                    </small>
-                  </span>
-                </Listbox.Option>
-              )}
-            </Listbox.List>
-          </Listbox.Popup>
-        </Listbox.Root>
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'RichMunicipalities'),
+  render: (_args, { globals }) => <RichMunicipalities locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
     await expect(canvas.getByRole('option', { name: /Göteborg/ })).toBeVisible()
@@ -662,15 +327,8 @@ export const RichOptions: Story = {
 
 /** No options: `Listbox.Empty` says so in the locale. */
 export const Empty: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityListbox text={text} items={[]} defaultOpen />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NoMunicipalities'),
+  render: (_args, { globals }) => <NoMunicipalities locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
     // Plain text beside a hidden listbox, not an option: no screen reader reads it as "option 1 of 1".
     await waitFor(() => expect(canvasElement.querySelector('.kv-listbox-empty')).toBeVisible())
@@ -678,63 +336,19 @@ export const Empty: Story = {
   },
 }
 
+const nativeSelectOf = (canvas: Canvas, text: ChoiceTexts) =>
+  canvas.getByRole('combobox', { name: text.municipality })
+
 /**
  * The native rendering: `native="always"` (and `native="auto"` on touch devices) for a single
  * choice renders the browser's own `<select>`, wired to its Field. It takes plain text only, so
  * rich options and `Listbox.Empty` don't apply, and the open list is the browser's: its keys are
- * native. The option keys are the select's values.
+ * native. The option keys are the select's values. A select in a Field: 44px high, a 1px edge, a
+ * drawn chevron and a 2px ring on keyboard focus.
  */
-function useNativeItems(text: ChoiceTexts): readonly Municipality[] {
-  return useMemo(
-    () => [
-      { code: 'gothenburg', name: text.municipalityGothenburg },
-      { code: 'malmo', name: text.municipalityMalmo },
-      { code: 'stockholm', name: text.municipalityStockholm },
-      { code: 'uppsala', name: text.municipalityUppsala },
-    ],
-    [text],
-  )
-}
-
-interface NativeListboxProps {
-  text: ChoiceTexts
-  name?: string
-  defaultValue?: string | null
-  value?: string | null
-  disabled?: boolean
-  onValueChange?: (value: string | null) => void
-}
-
-function NativeListbox({ text, name = 'municipality', ...rootProps }: NativeListboxProps) {
-  const items = useNativeItems(text)
-  return (
-    <Listbox.Root
-      native="always"
-      items={items}
-      itemToString={(municipality) => municipality.name}
-      itemToKey={(municipality) => municipality.code}
-      placeholder={text.municipalityPlaceholder}
-      name={name}
-      autoComplete="address-level2"
-      {...rootProps}
-    />
-  )
-}
-
-const nativeSelectOf = (canvas: Canvas, text: ChoiceTexts) =>
-  canvas.getByRole('combobox', { name: text.municipality })
-
-/** A select in a Field: 44px high, a 1px edge, a drawn chevron and a 2px ring on keyboard focus. */
 export const NativeDefault: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <NativeListbox text={text} />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativeMunicipalityField'),
+  render: (_args, { globals }) => <NativeMunicipalityField locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     const select = nativeSelectOf(canvas, text)
@@ -750,61 +364,24 @@ export const NativeDefault: Story = {
  * browser's).
  */
 export const NativeKeyboard: Story = {
-  render: (_args, { globals }) => <NativeKeyboardExample locale={localeOf(globals)} />,
-}
-
-function NativeKeyboardExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <NativeListbox text={text} />
-      </Field.Root>
-      <Field.Root required disabled>
-        <Field.Label>{text.longSelectLabel}</Field.Label>
-        <NativeListbox text={text} name="disabled" />
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-    </form>
-  )
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativeKeyboardForm'),
+  render: (_args, { globals }) => <NativeKeyboardForm locale={localeOf(globals)} />,
 }
 
 /** A chosen option shows in the closed box. */
 export const NativeSelected: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <NativeListbox text={text} defaultValue="stockholm" />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativeSelectedMunicipality'),
+  render: (_args, { globals }) => <NativeSelectedMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expect(nativeSelectOf(canvas, text)).toHaveValue('stockholm')
   },
 }
 
-/** The hint is in the select's description. */
+/** The help text is in the select's description. */
 export const NativeWithDescription: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Field.Prose>
-          <p>{text.municipalityHint}</p>
-        </Field.Prose>
-        <NativeListbox text={text} />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativeMunicipalityWithDescription'),
+  render: (_args, { globals }) => <NativeMunicipalityWithDescription locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expect(nativeSelectOf(canvas, text)).toHaveAccessibleDescription(text.municipalityHint)
@@ -813,32 +390,14 @@ export const NativeWithDescription: Story = {
 
 /** Optional: the label says so ("valfritt"), as for every field that isn't required. */
 export const NativeOptional: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <NativeListbox text={text} />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativeOptionalMunicipality'),
+  render: (_args, { globals }) => <NativeOptionalMunicipality locale={localeOf(globals)} />,
 }
 
 /** Invalid: a 2px edge and the message under the select, with the choice kept as it was. */
 export const NativeInvalid: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required invalid lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Field.Prose>
-          <p>{text.municipalityHint}</p>
-        </Field.Prose>
-        <NativeListbox text={text} />
-        <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativeInvalidMunicipality'),
+  render: (_args, { globals }) => <NativeInvalidMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     const select = nativeSelectOf(canvas, text)
@@ -853,15 +412,8 @@ export const NativeInvalid: Story = {
 
 /** Disabled: a dashed edge on the surface colour, and the chevron is muted. */
 export const NativeDisabled: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <NativeListbox text={text} disabled defaultValue="malmo" />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativeDisabledMunicipality'),
+  render: (_args, { globals }) => <NativeDisabledMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expect(nativeSelectOf(canvas, text)).toBeDisabled()
@@ -870,15 +422,8 @@ export const NativeDisabled: Story = {
 
 /** Groups: `<optgroup label>` names each group of options. */
 export const NativeGroups: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <NativeGroupsListbox text={text} />
-      </Field.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativeGroupedMunicipalities'),
+  render: (_args, { globals }) => <NativeGroupedMunicipalities locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     const select = nativeSelectOf(canvas, text)
@@ -886,56 +431,10 @@ export const NativeGroups: Story = {
   },
 }
 
-function NativeGroupsListbox({ text }: { text: ChoiceTexts }) {
-  const groups = useMemo(
-    () => [
-      {
-        key: 'west',
-        label: text.regionWest,
-        items: [{ code: 'gothenburg', name: text.municipalityGothenburg }],
-      },
-      {
-        key: 'east',
-        label: text.regionEast,
-        items: [
-          { code: 'stockholm', name: text.municipalityStockholm },
-          { code: 'uppsala', name: text.municipalityUppsala },
-        ],
-      },
-      {
-        key: 'south',
-        label: text.regionSouth,
-        items: [{ code: 'malmo', name: text.municipalityMalmo }],
-      },
-    ],
-    [text],
-  )
-  return (
-    <Listbox.Root
-      native="always"
-      groups={groups}
-      itemToString={(municipality) => municipality.name}
-      itemToKey={(municipality) => municipality.code}
-      placeholder={text.municipalityPlaceholder}
-      name="municipality"
-    />
-  )
-}
-
 /** In a card: the edge keeps 3:1 against `surface-raised` (1.4.11), and the popup its own edge. */
 export const OnSurfaces: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Card.Root lang={lang}>
-        <Field.Root required invalid>
-          <Field.Label>{text.municipality}</Field.Label>
-          <MunicipalityListbox text={text} defaultOpen />
-          <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
-        </Field.Root>
-      </Card.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'MunicipalityInCard'),
+  render: (_args, { globals }) => <MunicipalityInCard locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expect(triggerOf(canvas, text)).toBeVisible()
@@ -944,17 +443,8 @@ export const OnSurfaces: Story = {
 
 /** Staff density from 64rem: 32px high options and trigger, with the text still 16px. */
 export const Compact: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <div className="kv-compact" lang={lang}>
-        <Field.Root required>
-          <Field.Label>{text.municipality}</Field.Label>
-          <MunicipalityListbox text={text} defaultOpen />
-        </Field.Root>
-      </div>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'CompactMunicipality'),
+  render: (_args, { globals }) => <CompactMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expectMinimumTargetSize(triggerOf(canvas, text))
@@ -964,46 +454,23 @@ export const Compact: Story = {
 /** A long Finnish label and a long option in a 320px column: both wrap, and nothing overflows. */
 export const LongFinnish: Story = {
   globals: { locale: 'fi' },
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    const items: readonly Municipality[] = [
-      { code: 'long', name: 'Pohjois-Pohjanmaan sairaanhoitopiirin kuntayhtymä' },
-      ...municipalities.slice(0, 3),
-    ]
-    return (
+  decorators: [
+    (Story) => (
       <div
         className="kv-story-narrow"
         data-testid="narrow"
         style={{ paddingInline: 'var(--kv-space-4)' }}
       >
-        <Field.Root required lang={lang}>
-          <Field.Label>{text.longSelectLabel}</Field.Label>
-          <MunicipalityListbox text={text} items={items} defaultValue="long" defaultOpen />
-        </Field.Root>
+        <Story />
       </div>
-    )
-  },
+    ),
+  ],
+  parameters: showSource('listbox/listbox.fixture.tsx', 'LongFinnishMunicipality'),
+  render: (_args, { globals }) => <LongFinnishMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
-}
-
-/** Controlled by your form state: this story's `useState` stands in for TanStack Form or React Hook Form. */
-function ControlledExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const [value, setValue] = useState<string | null>('göteborg')
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityListbox text={text} value={value} onValueChange={setValue} />
-      </Field.Root>
-      <p className="kv-story-form-output" data-testid="mirror">
-        {text.youChose}: {value ?? '–'}
-      </p>
-    </div>
-  )
 }
 
 /**
@@ -1012,7 +479,8 @@ function ControlledExample({ locale }: { locale: FormLocale }) {
  * leaves it as it was.
  */
 export const Controlled: Story = {
-  render: (_args, { globals }) => <ControlledExample locale={localeOf(globals)} />,
+  parameters: showSource('listbox/listbox.fixture.tsx', 'ControlledMunicipality'),
+  render: (_args, { globals }) => <ControlledMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     const trigger = triggerOf(canvas, text)
@@ -1023,42 +491,10 @@ export const Controlled: Story = {
   },
 }
 
-/** An uncontrolled form: the hidden input carries the key, and the submit reads it by `name`. */
-function PlainFormExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const [sent, setSent] = useState<string | undefined>()
-  return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const value = new FormData(event.currentTarget).get('municipality')
-        setSent(typeof value === 'string' ? value : '')
-      }}
-    >
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityListbox text={text} name="municipality" defaultValue="göteborg" />
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {text.sent}: {sent}
-        </p>
-      )}
-    </form>
-  )
-}
-
 /** A plain `<form>`: no `value` and no handlers. The form's `FormData` has the key by `name` on submit. */
 export const PlainForm: Story = {
-  render: (_args, { globals }) => <PlainFormExample locale={localeOf(globals)} />,
+  parameters: showSource('listbox/listbox.fixture.tsx', 'PlainFormMunicipality'),
+  render: (_args, { globals }) => <PlainFormMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await userEvent.click(triggerOf(canvas, text))
@@ -1068,66 +504,24 @@ export const PlainForm: Story = {
   },
 }
 
-/** Every state in one column, for the RTL and forced-colours stories. The popup is open on the first. */
-function ListboxStates({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Field.Prose>
-          <p>{text.municipalityHint}</p>
-        </Field.Prose>
-        <MunicipalityListbox
-          text={text}
-          items={municipalitiesWithClosed.slice(0, 8)}
-          defaultValue="ale"
-          defaultOpen
-        />
-      </Field.Root>
-      <Field.Root required invalid>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityListbox text={text} />
-        <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityListbox text={text} />
-      </Field.Root>
-      <Field.Root required disabled>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityListbox text={text} defaultValue="malmö" />
-      </Field.Root>
-    </div>
-  )
-}
-
 /** Right to left, in English: the chevron and the tick are at the left, and the text starts at the right. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
-  render: () => <ListboxStates locale="en" />,
+  parameters: showSource('listbox/listbox.fixture.tsx', 'MunicipalityStates'),
+  render: () => <MunicipalityStates locale="en" />,
 }
 
 /** The edge, the invalid width, the active bar and the tick stay visible in forced colours. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  render: (_args, { globals }) => <ListboxStates locale={localeOf(globals)} />,
+  parameters: showSource('listbox/listbox.fixture.tsx', 'MunicipalityStates'),
+  render: (_args, { globals }) => <MunicipalityStates locale={localeOf(globals)} />,
 }
 
 /** In a card: the select's edge keeps 3:1 against `surface-raised` (1.4.11). */
 export const NativeOnSurfaces: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <Card.Root lang={lang}>
-        <Field.Root required invalid>
-          <Field.Label>{text.municipality}</Field.Label>
-          <NativeListbox text={text} />
-          <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
-        </Field.Root>
-      </Card.Root>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativeMunicipalityInCard'),
+  render: (_args, { globals }) => <NativeMunicipalityInCard locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expect(nativeSelectOf(canvas, text)).toBeVisible()
@@ -1136,17 +530,8 @@ export const NativeOnSurfaces: Story = {
 
 /** Staff density from 64rem: 32px high, with the text still 16px. */
 export const NativeCompact: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
-      <div className="kv-compact" lang={lang}>
-        <Field.Root required>
-          <Field.Label>{text.municipality}</Field.Label>
-          <NativeListbox text={text} />
-        </Field.Root>
-      </div>
-    )
-  },
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativeCompactMunicipality'),
+  render: (_args, { globals }) => <NativeCompactMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expectMinimumTargetSize(nativeSelectOf(canvas, text))
@@ -1156,36 +541,18 @@ export const NativeCompact: Story = {
 /** A long Finnish label in a 320px column: the label wraps, the select fills it, nothing overflows. */
 export const NativeLongFinnish: Story = {
   globals: { locale: 'fi' },
-  render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
-    return (
+  decorators: [
+    (Story) => (
       <div className="kv-story-narrow" data-testid="narrow">
-        <Field.Root required lang={lang}>
-          <Field.Label>{text.longSelectLabel}</Field.Label>
-          <NativeListbox text={text} />
-        </Field.Root>
+        <Story />
       </div>
-    )
-  },
+    ),
+  ],
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativeLongFinnishMunicipality'),
+  render: (_args, { globals }) => <NativeLongFinnishMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
-}
-
-function NativeControlledExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const [value, setValue] = useState<string | null>('gothenburg')
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <NativeListbox text={text} value={value} onValueChange={setValue} />
-      </Field.Root>
-      <p className="kv-story-form-output" data-testid="mirror">
-        {text.youChose}: {value ?? '–'}
-      </p>
-    </div>
-  )
 }
 
 /**
@@ -1193,7 +560,8 @@ function NativeControlledExample({ locale }: { locale: FormLocale }) {
  * through `onValueChange`. It never copies the value into state.
  */
 export const NativeControlled: Story = {
-  render: (_args, { globals }) => <NativeControlledExample locale={localeOf(globals)} />,
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativeControlledMunicipality'),
+  render: (_args, { globals }) => <NativeControlledMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     const select = nativeSelectOf(canvas, text)
@@ -1203,41 +571,10 @@ export const NativeControlled: Story = {
   },
 }
 
-function NativePlainFormExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const [sent, setSent] = useState<string | undefined>()
-  return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const value = new FormData(event.currentTarget).get('municipality')
-        setSent(typeof value === 'string' ? value : '')
-      }}
-    >
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <NativeListbox text={text} defaultValue="gothenburg" />
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {text.sent}: {sent}
-        </p>
-      )}
-    </form>
-  )
-}
-
 /** A plain `<form>`: the select carries the `name`, and the form's `FormData` has the key on submit. */
 export const NativePlainForm: Story = {
-  render: (_args, { globals }) => <NativePlainFormExample locale={localeOf(globals)} />,
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativePlainFormMunicipality'),
+  render: (_args, { globals }) => <NativePlainFormMunicipality locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await userEvent.selectOptions(nativeSelectOf(canvas, text), 'malmo')
@@ -1246,43 +583,16 @@ export const NativePlainForm: Story = {
   },
 }
 
-/** Every native state in one column, for the RTL and forced-colours stories. */
-function NativeStates({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Field.Prose>
-          <p>{text.municipalityHint}</p>
-        </Field.Prose>
-        <NativeListbox text={text} name="default" defaultValue="stockholm" />
-      </Field.Root>
-      <Field.Root required invalid>
-        <Field.Label>{text.municipality}</Field.Label>
-        <NativeListbox text={text} name="invalid" />
-        <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root>
-        <Field.Label>{text.municipality}</Field.Label>
-        <NativeListbox text={text} name="optional" />
-      </Field.Root>
-      <Field.Root required disabled>
-        <Field.Label>{text.municipality}</Field.Label>
-        <NativeListbox text={text} name="disabled" defaultValue="malmo" />
-      </Field.Root>
-    </div>
-  )
-}
-
 /** Right to left, in English: the select's chevron is at the left, and the text starts at the right. */
 export const NativeRTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
-  render: () => <NativeStates locale="en" />,
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativeMunicipalityStates'),
+  render: () => <NativeMunicipalityStates locale="en" />,
 }
 
 /** The select's edge, the invalid width and a native chevron stay visible in forced colours. */
 export const NativeForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  render: (_args, { globals }) => <NativeStates locale={localeOf(globals)} />,
+  parameters: showSource('listbox/listbox.fixture.tsx', 'NativeMunicipalityStates'),
+  render: (_args, { globals }) => <NativeMunicipalityStates locale={localeOf(globals)} />,
 }

@@ -1,7 +1,7 @@
 import { useId } from 'react'
-import type { CSSProperties, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { Button, Card, Field, Fieldset, Link, Section, TextInput } from '@kvirn-ui/react'
-import { textsFor } from '../card/card.fixture.tsx'
+import { NewsList, textsFor } from '../card/card.fixture.tsx'
 import type { CardFixtureLocale } from '../card/card.fixture.tsx'
 
 // Story and e2e fixture: the design spec's examples A and B (docs/design/section.md §4, §5) and the
@@ -148,37 +148,48 @@ function sectionTextsFor(locale: SectionFixtureLocale): ResolvedSectionTexts {
 const opens = new Date(Date.UTC(2026, 9, 1, 8, 0))
 const closes = new Date(Date.UTC(2026, 9, 1, 16, 0))
 
-function TimeValue({ date, formatLocale }: { date: Date; formatLocale: string }) {
-  const text = new Intl.DateTimeFormat(formatLocale, {
-    timeStyle: 'short',
-    timeZone: 'UTC',
-  }).format(date)
-  return <time dateTime={date.toISOString().slice(11, 16)}>{text}</time>
-}
+const shortTime = (date: Date, formatLocale: string): string =>
+  new Intl.DateTimeFormat(formatLocale, { timeStyle: 'short', timeZone: 'UTC' }).format(date)
 
 export interface SectionFixtureProps {
   locale: SectionFixtureLocale
 }
 
-export interface ContactSectionProps extends SectionFixtureProps {
-  /**
-   * The documented recipe for the one edge that meets the content: the transparent border is
-   * already there, so colouring one side moves nothing.
-   */
-  hasEdge?: boolean
+/** Example A: a text block in a sidebar, a Section rendered as a named `aside`, with prose. */
+export function ContactSection({ locale }: SectionFixtureProps) {
+  const { text, lang, formatLocale } = sectionTextsFor(locale)
+  const headingId = useId()
+  return (
+    <Section render={<aside aria-labelledby={headingId} />} className="kv-prose" lang={lang}>
+      <h2 id={headingId}>{text.contact.heading}</h2>
+      <p>
+        {text.contact.phone(locale === 'nb' || locale === 'nn' ? '800 12 345' : '0123-45 67 89')}
+      </p>
+      <p>
+        {text.contact.hours(
+          <time dateTime="08:00">{shortTime(opens, formatLocale)}</time>,
+          <time dateTime="16:00">{shortTime(closes, formatLocale)}</time>,
+        )}
+      </p>
+      <p>
+        <Link.Root href="mailto:kundcenter@kvirnby.example">{text.contact.email}</Link.Root>
+      </p>
+    </Section>
+  )
 }
 
-const oneEdge: CSSProperties = { borderInlineEndColor: 'var(--kv-color-border-subtle)' }
-
-/** Example A: a text block in a sidebar, a Section rendered as a named `aside`, with prose. */
-export function ContactSection({ locale, hasEdge = false }: ContactSectionProps) {
+/**
+ * The documented recipe for the one edge that meets the content: the 1px border is already
+ * there and transparent, so colouring one side moves nothing. It follows `dir`, and every theme.
+ */
+export function ContactSectionWithEdge({ locale }: SectionFixtureProps) {
   const { text, lang, formatLocale } = sectionTextsFor(locale)
   const headingId = useId()
   return (
     <Section
       render={<aside aria-labelledby={headingId} />}
       className="kv-prose"
-      style={hasEdge ? oneEdge : undefined}
+      style={{ borderInlineEndColor: 'var(--kv-color-border-subtle)' }}
       lang={lang}
     >
       <h2 id={headingId}>{text.contact.heading}</h2>
@@ -187,8 +198,8 @@ export function ContactSection({ locale, hasEdge = false }: ContactSectionProps)
       </p>
       <p>
         {text.contact.hours(
-          <TimeValue date={opens} formatLocale={formatLocale} />,
-          <TimeValue date={closes} formatLocale={formatLocale} />,
+          <time dateTime="08:00">{shortTime(opens, formatLocale)}</time>,
+          <time dateTime="16:00">{shortTime(closes, formatLocale)}</time>,
         )}
       </p>
       <p>
@@ -211,6 +222,18 @@ export function UserSection({ locale }: SectionFixtureProps) {
         <Button>{text.users.edit}</Button>
         <Button>{text.users.delete}</Button>
       </div>
+    </Section>
+  )
+}
+
+/**
+ * Example B: a band of cards. A Card on a Section keeps its default look, and the band is a
+ * visual region only: a `<div>`, no landmark.
+ */
+export function NewsBand({ locale }: SectionFixtureProps) {
+  return (
+    <Section data-testid="band">
+      <NewsList locale={locale} />
     </Section>
   )
 }

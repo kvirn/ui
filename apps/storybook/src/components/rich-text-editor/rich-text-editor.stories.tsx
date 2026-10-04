@@ -166,7 +166,7 @@ const meta = {
           <RichTextEditor.Toolbar />
           <RichTextEditor.Content />
         </RichTextEditor.Root>
-        <Field.Hint>{text.hint}</Field.Hint>
+        <Field.HelpText>{text.hint}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -181,7 +181,7 @@ type Story = StoryObj<typeof meta>
 
 /**
  * The main example: a rich text editor in a Field, with a description above, the default toolbar,
- * and the instruction and a hint under the box. Every option is a control below: try `labels`,
+ * and the instruction and a help text under the box. Every option is a control below: try `labels`,
  * `readOnly`, `disabled`, and `maxLength` with `characterCount`.
  */
 export const Default: Story = {

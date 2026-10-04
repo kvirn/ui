@@ -2,6 +2,8 @@ import { TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/text-input/text-input.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor } from 'storybook/test'
+import { showSource } from '../../docs-source.ts'
+import { localeOf } from '../form/form.fixture.tsx'
 import {
   characterNotAllowedMessage,
   CustomMaskFields,
@@ -19,7 +21,7 @@ import {
 // Components/Form/Mask: a TextInput with a `mask` (Plan 0014). The input stays a native
 // <input>: paste, autofill and undo keep working, nothing is clamped or corrected, and a
 // refused character is announced politely (4.1.3) through the KvirnProvider's live region. The
-// mask shapes what is typed. It doesn't explain the format, so every field has a hint that does
+// mask shapes what is typed. It doesn't explain the format, so every field has a help text that does
 // (3.3.2). KvirnUI holds no form state: the checks are helpers your form
 // calls. mask.e2e.ts runs the keys, paste styles, caret, undo, composition and the throttle.
 
@@ -40,7 +42,14 @@ const meta = {
     messages: { control: false },
     onValueChange: { action: 'onValueChange' },
   },
-  decorators: [withMaskLocale],
+  decorators: [
+    (Story) => (
+      <div className="kv-story-form">
+        <Story />
+      </div>
+    ),
+    withMaskLocale,
+  ],
   parameters: { a11yContract: contract },
 } satisfies Meta<typeof TextInput>
 
@@ -53,7 +62,8 @@ type Story = StoryObj<typeof meta>
  * separator style ends the same.
  */
 export const Identifiers: Story = {
-  render: (_args, { globals }) => <IdentifierFields globals={globals} />,
+  parameters: showSource('mask/mask.fixture.tsx', 'IdentifierFields'),
+  render: (_args, { globals }) => <IdentifierFields locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = maskTextsFor(globals)
     const personalIdentityNumber = canvas.getByRole('textbox', {
@@ -87,7 +97,8 @@ export const Identifiers: Story = {
  * fixed format, so your form checks it.
  */
 export const Filters: Story = {
-  render: (_args, { globals }) => <FilterFields globals={globals} />,
+  parameters: showSource('mask/mask.fixture.tsx', 'FilterFields'),
+  render: (_args, { globals }) => <FilterFields locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = maskTextsFor(globals)
     const digits = canvas.getByRole('textbox', { name: new RegExp(`^${text.digits}`) })
@@ -106,7 +117,8 @@ export const Filters: Story = {
 
 /** Your own pattern (`9` a digit, `a` a letter, the rest literals) and your own regular expression. */
 export const PatternAndRegexp: Story = {
-  render: (_args, { globals }) => <CustomMaskFields globals={globals} />,
+  parameters: showSource('mask/mask.fixture.tsx', 'CustomMaskFields'),
+  render: (_args, { globals }) => <CustomMaskFields locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = maskTextsFor(globals)
     const caseNumber = canvas.getByRole('textbox', { name: new RegExp(`^${text.caseNumber}`) })
@@ -124,10 +136,11 @@ export const PatternAndRegexp: Story = {
 /**
  * A number with `min` and `max`. The decimal separator is the page's: a comma in Swedish, a
  * point in English, whichever the user types. `isWithinRange` is reported and the number is
- * never clamped or corrected: this page only shows a hint.
+ * never clamped or corrected: this page only shows a help text.
  */
 export const Numbers: Story = {
-  render: (_args, { globals }) => <NumberFields globals={globals} />,
+  parameters: showSource('mask/mask.fixture.tsx', 'NumberFields'),
+  render: (_args, { globals }) => <NumberFields locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text, locale } = maskTextsFor(globals)
     const rent = canvas.getByRole('textbox', { name: new RegExp(`^${text.amount}`) })
@@ -153,7 +166,8 @@ export const Numbers: Story = {
  * and writes the message from its reason (`format`, `date` or `checkDigit`).
  */
 export const PersonalIdentityNumberCheck: Story = {
-  render: (_args, { globals }) => <PersonalIdentityNumberForm globals={globals} />,
+  parameters: showSource('mask/mask.fixture.tsx', 'PersonalIdentityNumberForm'),
+  render: (_args, { globals }) => <PersonalIdentityNumberForm locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = maskTextsFor(globals)
     const input = canvas.getByRole('textbox', {
@@ -179,7 +193,8 @@ export const PersonalIdentityNumberCheck: Story = {
  * renders the controlled `value` exactly as given: it never rewrites it.
  */
 export const StoredValue: Story = {
-  render: (_args, { globals }) => <StoredValueField globals={globals} />,
+  parameters: showSource('mask/mask.fixture.tsx', 'StoredValueField'),
+  render: (_args, { globals }) => <StoredValueField locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = maskTextsFor(globals)
     const input = canvas.getByRole('textbox', { name: new RegExp(`^${text.stored}`) })
@@ -190,7 +205,8 @@ export const StoredValue: Story = {
 
 /** The hook on your own `<input>`: put your own props after `mask.inputProps`, and they win. */
 export const OwnInput: Story = {
-  render: (_args, { globals }) => <OwnInputField globals={globals} />,
+  parameters: showSource('mask/mask.fixture.tsx', 'OwnInputField'),
+  render: (_args, { globals }) => <OwnInputField locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = maskTextsFor(globals)
     const input = canvas.getByRole('textbox', { name: new RegExp(`^${text.ownInput}`) })
@@ -205,7 +221,8 @@ export const OwnInput: Story = {
  * and at most once every few seconds per field. The characters stay out of the field.
  */
 export const RefusedCharacter: Story = {
-  render: (_args, { globals }) => <FilterFields globals={globals} />,
+  parameters: showSource('mask/mask.fixture.tsx', 'FilterFields'),
+  render: (_args, { globals }) => <FilterFields locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text, locale } = maskTextsFor(globals)
     const digits = canvas.getByRole('textbox', { name: new RegExp(`^${text.digits}`) })
@@ -230,19 +247,22 @@ export const RefusedCharacter: Story = {
  * Shift+Tab, and Enter, which submits the form.
  */
 export const Keyboard: Story = {
-  render: (_args, { globals }) => <KeyboardForm globals={globals} />,
+  parameters: showSource('mask/mask.fixture.tsx', 'KeyboardForm'),
+  render: (_args, { globals }) => <KeyboardForm locale={localeOf(globals)} />,
 }
 
 /** The same fixture in English: the number mask shows a decimal point, and the messages are English. */
 export const English: Story = {
   globals: { locale: 'en' },
-  render: (_args, { globals }) => <KeyboardForm globals={globals} />,
+  parameters: showSource('mask/mask.fixture.tsx', 'KeyboardForm'),
+  render: (_args, { globals }) => <KeyboardForm locale={localeOf(globals)} />,
 }
 
 /** Right to left, in English: identifiers stay left to right, and the text starts at the right. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
-  render: (_args, { globals }) => <IdentifierFields globals={globals} />,
+  parameters: showSource('mask/mask.fixture.tsx', 'IdentifierFields'),
+  render: (_args, { globals }) => <IdentifierFields locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     const input = canvas.getByRole('textbox', { name: /^Personal identity number$/ })
     // Typing is proven in mask.e2e.ts. A play that typed too would race that test for the input.
@@ -250,8 +270,9 @@ export const RTL: Story = {
   },
 }
 
-/** Edges, the ring and the hint text survive forced colours. */
+/** Edges, the ring and the help text survive forced colours. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  render: (_args, { globals }) => <IdentifierFields globals={globals} />,
+  parameters: showSource('mask/mask.fixture.tsx', 'IdentifierFields'),
+  render: (_args, { globals }) => <IdentifierFields locale={localeOf(globals)} />,
 }

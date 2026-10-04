@@ -3,18 +3,18 @@ import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
 
-// Contract: packages/react/src/notification/notification.a11y.md › Keyboard, Focus management,
-// Announcements and Visual / modes. One test per row, named after it. A notification handles no
+// Contract: packages/react/src/alert/alert.a11y.md › Keyboard, Focus management,
+// Announcements and Visual / modes. One test per row, named after it. An alert handles no
 // keys: these prove it is never a Tab stop and never gets in the way of its actions.
 
 /** `globals` selects the theme like the toolbar does, such as `mode:dark;contrast:more`. */
 const storyUrl = (story: string, globals?: string) =>
-  `/iframe.html?id=components-notification--${story}&viewMode=story${globals === undefined ? '' : `&globals=${globals}`}`
+  `/iframe.html?id=components-alert--${story}&viewMode=story${globals === undefined ? '' : `&globals=${globals}`}`
 
 async function openStory(page: Page, story: string, globals?: string) {
   await page.goto(storyUrl(story, globals))
-  // SendFailed shows its notification only after Send, so a button is enough to be ready.
-  await expect(page.locator('.kv-notification, .kv-button').first()).toBeVisible()
+  // SendFailed shows its alert only after Send, so a button is enough to be ready.
+  await expect(page.locator('.kv-alert, .kv-button').first()).toBeVisible()
   if (globals !== undefined) {
     // The theme store resolved the selected theme onto <html>.
     const { mode, contrast } = Object.fromEntries(globals.split(';').map((pair) => pair.split(':')))
@@ -23,44 +23,44 @@ async function openStory(page: Page, story: string, globals?: string) {
   }
 }
 
-test.describe('Notification keyboard contract', () => {
-  test('Tab skips the notification and reaches its link', async ({ page }) => {
+test.describe('Alert keyboard contract', () => {
+  test('Tab skips the alert and reaches its link', async ({ page }) => {
     await openStory(page, 'with-actions')
     await page.keyboard.press('Tab')
     await expect(page.getByRole('link', { name: 'Förnya parkeringstillstånd' })).toBeFocused()
-    // The notification itself is never a Tab stop.
-    await expect(page.locator('.kv-notification:focus')).toHaveCount(0)
+    // The alert itself is never a Tab stop.
+    await expect(page.locator('.kv-alert:focus')).toHaveCount(0)
     await page.keyboard.press('Tab')
     await expect(page.getByRole('button', { name: 'Försök igen' })).toBeFocused()
-    await expect(page.locator('.kv-notification:focus')).toHaveCount(0)
+    await expect(page.locator('.kv-alert:focus')).toHaveCount(0)
   })
 
-  test("Shift+Tab reaches the notification's action", async ({ page }) => {
+  test("Shift+Tab reaches the alert's action", async ({ page }) => {
     await openStory(page, 'send-failed')
-    // The story's play function has pressed Send, so the danger notification is above Send,
+    // The story's play function has pressed Send, so the danger alert is above Send,
     // and Send keeps focus when it appears (3.2.2).
     const send = page.getByRole('button', { name: 'Skicka ansökan' })
-    await expect(page.locator('.kv-notification--danger')).toBeVisible()
+    await expect(page.locator('.kv-alert--danger')).toBeVisible()
     await expect(send).toBeFocused()
     await page.keyboard.press('Shift+Tab')
     await expect(page.getByRole('button', { name: 'Försök igen' })).toBeFocused()
-    await expect(page.locator('.kv-notification:focus')).toHaveCount(0)
+    await expect(page.locator('.kv-alert:focus')).toHaveCount(0)
   })
 
   test('Enter on Försök igen keeps focus on Försök igen', async ({ page }) => {
     await openStory(page, 'send-failed')
-    await expect(page.locator('.kv-notification--danger')).toBeVisible()
+    await expect(page.locator('.kv-alert--danger')).toBeVisible()
     await page.keyboard.press('Shift+Tab')
     const retry = page.getByRole('button', { name: 'Försök igen' })
     await expect(retry).toBeFocused()
-    // The action sits inside the notification, so the notification is kept, never remounted:
+    // The action sits inside the alert, so the alert is kept, never remounted:
     // a remount would drop the focus to the page (2.4.3).
     await page.keyboard.press('Enter')
     await expect(retry).toBeFocused()
     await expect(page.getByRole('status')).toContainText('Vi kunde inte skicka din ansökan')
   })
 
-  test('Tab from a focused notification goes to its first action', async ({ page }) => {
+  test('Tab from a focused alert goes to its first action', async ({ page }) => {
     await openStory(page, 'focus-target')
     const root = page.getByTestId('focus-target')
     await expect(root).toBeFocused()
@@ -73,26 +73,24 @@ test.describe('Notification keyboard contract', () => {
   })
 })
 
-test.describe('Notification announcements', () => {
-  test('a notification present at load puts nothing in the live regions', async ({ page }) => {
+test.describe('Alert announcements', () => {
+  test('an alert present at load puts nothing in the live regions', async ({ page }) => {
     await openStory(page, 'default')
     await expect(page.getByRole('status')).toBeEmpty()
     await expect(page.getByRole('alert')).toBeEmpty()
   })
 
   test('the polite region receives the text once after Save', async ({ page }) => {
-    // The story's play function has pressed Save: the success notification is inserted after it.
+    // The story's play function has pressed Save: the success alert is inserted after it.
     await openStory(page, 'announced')
     const region = page.getByRole('status')
     await expect(region).toHaveText('Klart: Dina ändringar är sparade')
     await expect(page.getByRole('alert')).toBeEmpty()
     // The visible box has no role, so a screen reader doesn't read it a second time.
-    await expect(page.locator('.kv-notification[role], .kv-notification [aria-live]')).toHaveCount(
-      0,
-    )
+    await expect(page.locator('.kv-alert[role], .kv-alert [aria-live]')).toHaveCount(0)
   })
 
-  test('a notification that is focused on arrival is not announced', async ({ page }) => {
+  test('an alert that is focused on arrival is not announced', async ({ page }) => {
     await openStory(page, 'focus-target')
     await expect(page.getByTestId('focus-target')).toBeFocused()
     await expect(page.getByRole('status')).toBeEmpty()
@@ -104,12 +102,12 @@ test.describe('Notification announcements', () => {
     for (const word of ['Information:', 'Klart:', 'Varning:', 'Fel:']) {
       await expect(page.getByRole('heading', { name: `${word} Något du bör veta` })).toBeVisible()
     }
-    await expect(page.locator('.kv-notification[role]')).toHaveCount(0)
-    await expect(page.locator('.kv-notification-icon[aria-hidden="true"]')).toHaveCount(4)
+    await expect(page.locator('.kv-alert[role]')).toHaveCount(0)
+    await expect(page.locator('.kv-alert-icon[aria-hidden="true"]')).toHaveCount(4)
   })
 })
 
-test.describe('Notification focus and modes', () => {
+test.describe('Alert focus and modes', () => {
   /** A focused action shows a focus indicator (2.4.7). */
   async function expectFocusIndicator(page: Page, name: string, role: 'button' | 'link') {
     const control = page.getByRole(role, { name })
@@ -140,14 +138,14 @@ test.describe('Notification focus and modes', () => {
     )
   })
 
-  test('the notification border is visible in forced colours', async ({ page }) => {
+  test('the alert border is visible in forced colours', async ({ page }) => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'forced-colors')
-    const notifications = await page.locator('.kv-notification').all()
-    expect(notifications.length).toBeGreaterThanOrEqual(7)
-    for (const notification of notifications) {
+    const alerts = await page.locator('.kv-alert').all()
+    expect(alerts.length).toBeGreaterThanOrEqual(7)
+    for (const alert of alerts) {
       // A visible edge on every side (1.4.11).
-      const border = await notification.evaluate((element) => {
+      const border = await alert.evaluate((element) => {
         const style = getComputedStyle(element)
         const sides = ['top', 'right', 'bottom', 'left'].map((side) => ({
           width: Number.parseFloat(style.getPropertyValue(`border-${side}-width`)),
@@ -169,7 +167,7 @@ test.describe('Notification focus and modes', () => {
     await page.emulateMedia({ forcedColors: 'active' })
     await openStory(page, 'statuses')
     const shapes = await page
-      .locator('.kv-notification-icon')
+      .locator('.kv-alert-icon')
       .evaluateAll((icons) =>
         icons.map((icon) =>
           [...icon.querySelectorAll('path')].map((path) => path.getAttribute('d')).join('|'),
@@ -192,7 +190,7 @@ test.describe('Notification focus and modes', () => {
   })
 })
 
-test.describe('Notification reflow and text spacing', () => {
+test.describe('Alert reflow and text spacing', () => {
   // The WCAG 1.4.12 overrides (.storybook/preview.css: .kv-story-text-spacing), at 320px.
   for (const story of ['all-examples', 'with-actions', 'long-finnish-text'] as const) {
     test(`text spacing overrides clip nothing (1.4.12): ${story}`, async ({ page }) => {
@@ -208,11 +206,11 @@ test.describe('Notification reflow and text spacing', () => {
         if (root.scrollWidth > root.clientWidth) {
           found.push(`page scrolls sideways: ${root.scrollWidth} > ${root.clientWidth}`)
         }
-        for (const notification of document.querySelectorAll<HTMLElement>('.kv-notification')) {
+        for (const alert of document.querySelectorAll<HTMLElement>('.kv-alert')) {
           for (const element of [
-            notification,
-            ...notification.querySelectorAll<HTMLElement>(
-              ':scope > *, .kv-notification-body *, .kv-notification-actions *',
+            alert,
+            ...alert.querySelectorAll<HTMLElement>(
+              ':scope > *, .kv-alert-body *, .kv-alert-actions *',
             ),
           ]) {
             const style = getComputedStyle(element)
@@ -235,7 +233,7 @@ test.describe('Notification reflow and text spacing', () => {
   }
 })
 
-test.describe('Notification accessibility', () => {
+test.describe('Alert accessibility', () => {
   // Examples in each of the four themes, selected like the Mode and Contrast toolbars.
   const themes = [
     'mode:light;contrast:standard',
@@ -282,10 +280,10 @@ test.describe('Notification accessibility', () => {
     })
   }
 
-  test('axe finds no violation after an error notification is inserted', async ({ page }) => {
-    // The story's play function has pressed Send, so the notification is already inserted.
+  test('axe finds no violation after an error alert is inserted', async ({ page }) => {
+    // The story's play function has pressed Send, so the alert is already inserted.
     await openStory(page, 'send-failed')
-    await expect(page.locator('.kv-notification--danger')).toBeVisible()
+    await expect(page.locator('.kv-alert--danger')).toBeVisible()
     const axeResults = await new AxeBuilder({ page }).withTags([...wcagTags]).analyze()
     expect(axeResults.violations).toEqual([])
   })

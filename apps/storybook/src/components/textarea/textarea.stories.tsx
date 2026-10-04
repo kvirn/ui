@@ -17,7 +17,7 @@ import {
 
 // Components/Form/Textarea: the native multi-line <textarea>, styled by @kvirn-ui/theme/theme.css
 // like the TextInput (design spec docs/design/rich-text-editor.md §6.2 and §6.3). It lives in a
-// Field, which gives it its name, description, hint and error. With `characterCount` and
+// Field, which gives it its name, description, help text and error. With `characterCount` and
 // `maxLength` a count of the characters left follows it: the limit is not written as the native
 // `maxlength`, so a pasted text is kept whole. KvirnUI holds no form state: an uncontrolled
 // Textarea keeps its value in the browser and a form submit sends it (Keyboard), and a controlled
@@ -127,7 +127,7 @@ const meta = {
     'aria-describedby': {
       control: 'text',
       description:
-        'Your own description ids. They are kept, after the Field’s description, count, hint and error.',
+        'Your own description ids. They are kept, after the Field’s description, count, help text and error.',
     },
     ref: { control: false, description: 'A ref to the `<textarea>`.' },
     render: {
@@ -153,7 +153,7 @@ const meta = {
           <p>{text.description}</p>
         </Field.Prose>
         <Textarea {...args} />
-        <Field.Hint>{text.hint}</Field.Hint>
+        <Field.HelpText>{text.hint}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -167,7 +167,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /**
- * The main example: a textarea in a Field, with a description above and a hint under it, and
+ * The main example: a textarea in a Field, with a description above and a help text under it, and
  * every option as a control. Try `rows`, `maxLength` with `characterCount`, `disabled` and
  * `readOnly`.
  */
@@ -342,7 +342,7 @@ export const LongFinnish: Story = {
         <Field.Root required lang={lang}>
           <Field.Label>{text.longLabel}</Field.Label>
           <Textarea name="reasons" maxLength={500} characterCount />
-          <Field.Hint>{text.hint}</Field.Hint>
+          <Field.HelpText>{text.hint}</Field.HelpText>
         </Field.Root>
       </div>
     )

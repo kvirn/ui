@@ -5,7 +5,7 @@ import { wcagTags } from '@kvirn-ui/testing'
 
 // Contract: packages/react/src/field/field.a11y.md › Keyboard, Focus management and Visual /
 // modes. One test per row, named after it. Field handles no keys: these prove it never gets in
-// the controls' way. The Label, Hint (`Field.Hint`, and `Field.Prose` as the description) and
+// the controls' way. The Label, HelpText (`Field.HelpText`, and `Field.Prose` as the description) and
 // ErrorMessage pages are covered here too: they are the same parts. KvirnUI holds no form state, so every story sets `invalid` itself.
 
 /** `globals` selects the theme like the toolbar does, such as `mode:dark;contrast:more`. */
@@ -29,7 +29,7 @@ const hasHorizontalScroll = (page: Page) =>
 test.describe('Field keyboard contract', () => {
   test('Tab moves through the controls in DOM order', async ({ page }) => {
     // The Keyboard story shows every state: the disabled input is skipped, the read-only
-    // one is a Tab stop. Label, hint and error text never are.
+    // one is a Tab stop. Label, help text and error text never are.
     await openStory(page, 'field', 'keyboard')
     const names = ['Fullständigt namn', 'E-postadress', 'Telefonnummer (valfritt)', 'Personnummer']
     for (const name of names) {
@@ -51,11 +51,13 @@ test.describe('Field keyboard contract', () => {
     }
   })
 
-  test('Tab goes to the control on the Label, Hint and ErrorMessage pages', async ({ page }) => {
-    // The Hint page's fixture is a field with a description above and a hint under the input.
+  test('Tab goes to the control on the Label, HelpText and ErrorMessage pages', async ({
+    page,
+  }) => {
+    // The HelpText page's fixture is a field with a description above and a help text under the input.
     for (const [pageName, name] of [
       ['label', 'Fullständigt namn'],
-      ['hint', 'Personnummer'],
+      ['helptext', 'Personnummer'],
       ['errormessage', 'Fullständigt namn'],
     ] as const) {
       await openStory(page, pageName, 'keyboard')
@@ -82,20 +84,22 @@ test.describe('Field keyboard contract', () => {
     await expect(page.getByRole('textbox', { name: 'Telefonnummer (valfritt)' })).toBeFocused()
   })
 
-  test('Tab skips the hint and the error message', async ({ page }) => {
-    // The description above, the hint under the input and the error are all text.
-    await openStory(page, 'field', 'invalid-with-hint-under')
+  test('Tab skips the help text and the error message', async ({ page }) => {
+    // The description above, the help text under the input and the error are all text.
+    await openStory(page, 'field', 'invalid-with-help-text-under')
     const input = page.getByRole('textbox', { name: 'Fordonets registreringsnummer' })
     await page.keyboard.press('Tab')
     await expect(input).toBeFocused()
     // Past the only control, focus leaves the page or wraps back to it: it never lands on the
-    // label, the hint or the error. Browsers differ on which, so only the tag is asserted.
+    // label, the help text or the error. Browsers differ on which, so only the tag is asserted.
     for (let count = 0; count < 3; count += 1) {
       await page.keyboard.press('Tab')
       expect(await page.evaluate(() => document.activeElement?.tagName)).toMatch(/^(?:INPUT|BODY)$/)
     }
     for (const text of await page
-      .locator('.kv-field > .kv-prose, .kv-field-hint, .kv-field-error-message, .kv-field-label')
+      .locator(
+        '.kv-field > .kv-prose, .kv-field-help-text, .kv-field-error-message, .kv-field-label',
+      )
       .all()) {
       await expect(text).not.toHaveAttribute('tabindex', /.*/)
     }
@@ -147,7 +151,7 @@ test.describe('Field focus and modes', () => {
     for (const [pageName, story] of [
       ['field', 'long-finnish'],
       ['label', 'long-finnish'],
-      ['hint', 'long-finnish'],
+      ['helptext', 'long-finnish'],
       ['errormessage', 'long-message'],
     ] as const) {
       await openStory(page, pageName, story)
@@ -167,7 +171,7 @@ test.describe('Field focus and modes', () => {
   // The WCAG 1.4.12 overrides (.storybook/preview.css: .kv-story-text-spacing), at 320px.
   for (const [pageName, story] of [
     ['field', 'long-finnish'],
-    ['hint', 'long-finnish'],
+    ['helptext', 'long-finnish'],
     ['field', 'invalid'],
     ['errormessage', 'long-message'],
   ] as const) {
@@ -245,9 +249,9 @@ test.describe('Field accessibility', () => {
     ['label', 'as-page-heading'],
     ['label', 'long-finnish'],
     ['label', 'compact'],
-    ['hint', 'in-fieldset'],
-    ['hint', 'compact'],
-    ['hint', 'long-finnish'],
+    ['helptext', 'in-fieldset'],
+    ['helptext', 'compact'],
+    ['helptext', 'long-finnish'],
     ['errormessage', 'in-field'],
     ['errormessage', 'not-invalid'],
     ['errormessage', 'in-fieldset'],

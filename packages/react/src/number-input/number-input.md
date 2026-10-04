@@ -16,8 +16,8 @@ A quantity or an amount in a form: how many children live with you, the monthly 
 
 ### Parts
 
-| Part        | Renders                                   | Props                                                                                                                                                                                                                            |
-| ----------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Part        | Renders                                   | Props                                                                                                                                                                                                                                    |
+| ----------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | NumberInput | `<input type="text">` (flat, one element) | `decimals`, `allowNegative`, `grouping`, `min`, `max`, `mask`, `value`, `defaultValue`, `onValueChange`, `announceRejections`, `messages`, `render`, and every native input prop except `type`, `min`, `max`, `value` and `defaultValue` |
 
 `decimals` is the digits after the decimal mark (default 0, which accepts no mark), `allowNegative` accepts a leading minus sign (default `false`), `grouping` writes the whole digits in threes (default `false`), and `min` and `max` are numbers. They are the options of `masks.number()`, in the provider's locale: the mark is a comma in sv, fi, nb, nn and se, and a point in en. A typed `,` or `.` is read as the page's mark. `mask` replaces the number mask or turns it off: see Masks are optional below.
@@ -26,23 +26,23 @@ A quantity or an amount in a form: how many children live with you, the monthly 
 
 `value` is the number as shown, such as `1 250,50`. `details` is the same object as TextInput's with a mask:
 
-| Detail          | Meaning                                                                                 |
-| --------------- | --------------------------------------------------------------------------------------- |
-| `reason`        | Always `'input'`                                                                        |
-| `event`         | The change event, or the composition event at the end of an IME or dead key composition |
+| Detail          | Meaning                                                                                                                             |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `reason`        | Always `'input'`                                                                                                                    |
+| `event`         | The change event, or the composition event at the end of an IME or dead key composition                                             |
 | `unmaskedValue` | The machine form, `-1234.5`. Parse this, never the shown value. Not set with `mask={false}`, and the mask's own with another `mask` |
-| `isWithinRange` | Whether the number is within `min` and `max`. Only present when one of them is set      |
-| `isComplete`    | The shape is complete. It doesn't mean the number is right                              |
-| `rejected`      | The characters that were left out, by reason                                            |
+| `isWithinRange` | Whether the number is within `min` and `max`. Only present when one of them is set                                                  |
+| `isComplete`    | The shape is complete. It doesn't mean the number is right                                                                          |
+| `rejected`      | The characters that were left out, by reason                                                                                        |
 
 ### What it sets on the `<input>`
 
-| Attribute                                                 | Value                                                                                                                                                 |
-| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`, `spellcheck`                                      | `text`, `false`                                                                                                                                       |
+| Attribute                                                 | Value                                                                                                                                                                                                                                     |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`, `spellcheck`                                      | `text`, `false`                                                                                                                                                                                                                           |
 | `inputmode`                                               | `numeric`, `decimal` with `decimals`, or `text` when `allowNegative` is on, because iOS's numeric keypads have no minus sign. Also with `mask={false}`, from the same props. With a custom `mask`, the one that mask suggests. Yours wins |
-| `id`, `aria-describedby`, `aria-invalid`, `aria-required` | From the nearest Field. Your own `aria-describedby` ids come after the Field's, and your `id` is ignored in a Field (use `controlId` on `Field.Root`) |
-| `disabled`                                                | Natively, from `disabled` or a disabled Field                                                                                                         |
+| `id`, `aria-describedby`, `aria-invalid`, `aria-required` | From the nearest Field. Your own `aria-describedby` ids come after the Field's, and your `id` is ignored in a Field (use `controlId` on `Field.Root`)                                                                                     |
+| `disabled`                                                | Natively, from `disabled` or a disabled Field                                                                                                                                                                                             |
 
 | State attribute      | When                                           |
 | -------------------- | ---------------------------------------------- |
@@ -60,7 +60,7 @@ A quantity or an amount in a form: how many children live with you, the monthly 
 | `kv-input--numeric`                           | Tabular figures, so digits line up. NumberInput always sets it       |
 | `kv-input--width-2`, `-4`, `-6`, `-10`, `-20` | A width by expected characters. Without one, the input is full width |
 
-A width class is a hint, never a limit: no `maxlength` comes from it.
+A width class is a help text, never a limit: no `maxlength` comes from it.
 
 ### Strings
 
@@ -72,20 +72,20 @@ NumberInput has no strings of its own. The number mask, and a custom `mask`, use
 
 ### Development warnings
 
-Keyed `number-input-*`, English, for the developer only: no accessible name (`number-input-without-name`, `number-input-in-field-without-label`), an `id` inside a Field (`number-input-id-in-field`), `decimals` above 0 in a Field with no hint (`number-input-decimals-without-hint`), and a custom `mask` in a Field with no hint (`number-input-mask-without-description`, because a mask shapes the input but doesn't explain the format). A whole number with the default mask needs no format hint, and `mask={false}` applies no format, so neither warns. A `mask` that isn't a mask name warns once (`mask-unknown-name:<name>`) and runs no mask, and a country mask by name with no resolvable country warns (`mask-country-unresolved:<name>:<locale>`, then it takes digits only).
+Keyed `number-input-*`, English, for the developer only: no accessible name (`number-input-without-name`, `number-input-in-field-without-label`), an `id` inside a Field (`number-input-id-in-field`), `decimals` above 0 in a Field with no help text (`number-input-decimals-without-help-text`), and a custom `mask` in a Field with no help text (`number-input-mask-without-description`, because a mask shapes the input but doesn't explain the format). A whole number with the default mask needs no format help text, and `mask={false}` applies no format, so neither warns. A `mask` that isn't a mask name warns once (`mask-unknown-name:<name>`) and runs no mask, and a country mask by name with no resolvable country warns (`mask-country-unresolved:<name>:<locale>`, then it takes digits only).
 
 ## Masks are optional
 
 The number mask is the default, because a NumberInput that takes letters would be a TextInput. The `mask` prop changes that, and what `details.unmaskedValue` means follows the mask:
 
-| `mask`                                                                      | What the input does                                                                                              | `details.unmaskedValue`                                       |
-| --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| Not set                                                                     | `masks.number()` from `decimals`, `allowNegative`, `grouping`, `min` and `max`, in the provider's locale          | The machine form, `-1234.5`                                   |
-| `false`                                                                     | A plain numeric text box. Nothing is left out or announced, and no mask details are reported                     | Not set. Read `value`, a string as typed, and parse it yourself |
-| A name, `{ preset }`, `{ pattern }`, a `RegExp`, or a `Mask` from `masks`   | That mask replaces the number mask, with its separators, filter and announcements                                | That mask's: for `digits`, the digits typed                    |
+| `mask`                                                                    | What the input does                                                                                      | `details.unmaskedValue`                                         |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Not set                                                                   | `masks.number()` from `decimals`, `allowNegative`, `grouping`, `min` and `max`, in the provider's locale | The machine form, `-1234.5`                                     |
+| `false`                                                                   | A plain numeric text box. Nothing is left out or announced, and no mask details are reported             | Not set. Read `value`, a string as typed, and parse it yourself |
+| A name, `{ preset }`, `{ pattern }`, a `RegExp`, or a `Mask` from `masks` | That mask replaces the number mask, with its separators, filter and announcements                        | That mask's: for `digits`, the digits typed                     |
 
-- **`mask={false}`** keeps the keypad (`inputmode` still follows `decimals` and `allowNegative`), `type="text"`, the Field's wiring and the classes. `decimals`, `allowNegative`, `grouping`, `min` and `max` do nothing then, so there is no `isWithinRange`, and the decimal mark isn't applied: say in the hint what format you expect. Neither the `decimals` hint warning nor the mask hint warning is raised. Use it when your form library or your own code reads the typed value and the number mask's filtering is in the way, for instance an amount pasted from a spreadsheet.
-- **Another `mask`** ignores the number options too, and a NumberInput in a Field with no hint warns, as a masked TextInput does (3.3.2): say the format and an example in a `Field.Hint`. A code with leading zeros is still better as a [TextInput](../text-input/text-input.md) with `mask="digits"`.
+- **`mask={false}`** keeps the keypad (`inputmode` still follows `decimals` and `allowNegative`), `type="text"`, the Field's wiring and the classes. `decimals`, `allowNegative`, `grouping`, `min` and `max` do nothing then, so there is no `isWithinRange`, and the decimal mark isn't applied: say in the help text what format you expect. Neither the `decimals` help text warning nor the mask help text warning is raised. Use it when your form library or your own code reads the typed value and the number mask's filtering is in the way, for instance an amount pasted from a spreadsheet.
+- **Another `mask`** ignores the number options too, and a NumberInput in a Field with no help text warns, as a masked TextInput does (3.3.2): say the format and an example in a `Field.HelpText`. A code with leading zeros is still better as a [TextInput](../text-input/text-input.md) with `mask="digits"`.
 - **`useNumberInput().mask`** is the mask that runs, before the provider's locale is applied, and `undefined` for `mask={false}`.
 
 ## Component
@@ -96,19 +96,19 @@ import { Field, NumberInput } from '@kvirn-ui/react'
 ;<Field.Root required>
   <Field.Label>Hur många barn bor hos dig?</Field.Label>
   <NumberInput name="children" min={0} max={12} className="kv-input--width-2" />
-  <Field.Hint>Ett heltal från 0 till 12, till exempel 2.</Field.Hint>
+  <Field.HelpText>Ett heltal från 0 till 12, till exempel 2.</Field.HelpText>
 </Field.Root>
 ```
 
 ## Amounts
 
-With `decimals`, a number has a decimal mark that is a comma in some languages and a point in others, so the hint says it with an example (3.3.2). A NumberInput with `decimals` above 0 in a Field with no hint warns. Leave the currency sign out of the box and say it in the label or the hint ("Skriv beloppet utan valutatecken, till exempel 1 250,50."): a sign typed anyway is a letter to the mask and is left out.
+With `decimals`, a number has a decimal mark that is a comma in some languages and a point in others, so the help text says it with an example (3.3.2). A NumberInput with `decimals` above 0 in a Field with no help text warns. Leave the currency sign out of the box and say it in the label or the help text ("Skriv beloppet utan valutatecken, till exempel 1 250,50."): a sign typed anyway is a letter to the mask and is left out.
 
 ```tsx
 <Field.Root required>
   <Field.Label>Hur mycket hyra betalar du per månad?</Field.Label>
   <NumberInput name="rent" decimals={2} grouping min={0} className="kv-input--width-10" />
-  <Field.Hint>Skriv beloppet utan valutatecken, till exempel 1 250,50.</Field.Hint>
+  <Field.HelpText>Skriv beloppet utan valutatecken, till exempel 1 250,50.</Field.HelpText>
 </Field.Root>
 ```
 
@@ -123,13 +123,13 @@ A unit ("kr", "%", "km") goes in an [InputGroup](../input-group/input-group.md) 
     <NumberInput name="rent" grouping className="kv-input--width-10" />
     <InputGroup.Addon>kr</InputGroup.Addon>
   </InputGroup.Root>
-  <Field.Hint>Till exempel 8 450</Field.Hint>
+  <Field.HelpText>Till exempel 8 450</Field.HelpText>
 </Field.Root>
 ```
 
 ## Ranges and errors
 
-`min` and `max` are never enforced and never clamped: the number the user typed stays as typed. `details.isWithinRange` tells your form, which validates after submit and writes an error under the field that says what's wrong and how to fix it. The mask can't know the limit your service has, so state the range in the hint too (a screen reader doesn't read `min` and `max`, because they aren't attributes).
+`min` and `max` are never enforced and never clamped: the number the user typed stays as typed. `details.isWithinRange` tells your form, which validates after submit and writes an error under the field that says what's wrong and how to fix it. The mask can't know the limit your service has, so state the range in the help text too (a screen reader doesn't read `min` and `max`, because they aren't attributes).
 
 ```tsx
 <Field.Root required invalid={!isWithinRange}>
@@ -140,7 +140,7 @@ A unit ("kr", "%", "km") goes in an [InputGroup](../input-group/input-group.md) 
     max={12}
     onValueChange={(value, details) => setIsWithinRange(details.isWithinRange !== false)}
   />
-  <Field.Hint>Ett heltal från 0 till 12, till exempel 2.</Field.Hint>
+  <Field.HelpText>Ett heltal från 0 till 12, till exempel 2.</Field.HelpText>
   <Field.ErrorMessage>
     Ange antalet barn som ett tal från 0 till 12, till exempel 2
   </Field.ErrorMessage>
@@ -169,7 +169,7 @@ Parse `details.unmaskedValue` (the machine form `1250.5`), never the shown value
         onValueChange={(value, details) => field.handleChange(details.unmaskedValue ?? '')}
         onBlur={field.handleBlur}
       />
-      <Field.Hint>Skriv beloppet utan valutatecken, till exempel 1 250,50.</Field.Hint>
+      <Field.HelpText>Skriv beloppet utan valutatecken, till exempel 1 250,50.</Field.HelpText>
       <Field.ErrorMessage>{field.state.meta.errors.join(', ')}</Field.ErrorMessage>
     </Field.Root>
   )}
@@ -178,9 +178,9 @@ Parse `details.unmaskedValue` (the machine form `1250.5`), never the shown value
 
 ### Your part
 
-- A visible label in a Field, and a hint with the format when there are decimals. A placeholder is not the label (3.3.2).
+- A visible label in a Field, and a help text with the format when there are decimals. A placeholder is not the label (3.3.2).
 - `autoComplete` where a token exists, never `pattern`, and never block paste (3.3.8).
-- Put the unit in the label or the hint, and an Addon only as a visual repeat.
+- Put the unit in the label or the help text, and an Addon only as a visual repeat.
 - The `KvirnProvider` around the app, so a left-out character is announced.
 
 ## Hook

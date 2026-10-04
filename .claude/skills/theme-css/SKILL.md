@@ -60,8 +60,8 @@ A new or changed token needs the maintainer's approval, with DESIGN.md updated i
 ## Class naming
 
 - `kv-<part>`: a stable class on every part. Hooks put it in their part props `className`, so it is also there for a headless adopter. A consumer `className` joins it through `mergeProps` and never replaces it.
-- `kv-<part>--<option>`: a choice the consumer adds (`kv-button--primary`, `kv-section--canvas`, `kv-input--width-6`, `kv-prose--large`). A modifier changes the look only, never the element.
-- `kv-<name>`: a context the consumer sets on a container (`kv-compact`, `kv-nav`, `kv-button-group`, `kv-prose`, `kv-not-prose`, `kv-scroll-region`).
+- `kv-<part>--<option>`: a choice the consumer adds (`kv-button--primary`, `kv-link--service`, `kv-section--canvas`, `kv-input--width-6`, `kv-prose--large`). A modifier changes the look only, never the element.
+- `kv-<name>`: a context the consumer sets on a container (`kv-compact`, `kv-button-group`, `kv-prose`, `kv-not-prose`, `kv-scroll-region`).
 - `data-*` is state only (`data-disabled`, `data-invalid`, `data-focus-visible`, `data-current`, `data-open`, `data-active`, `data-selected`). The component sets it, the consumer never does.
 - Part, modifier and state names are public API: renaming one is a breaking change that needs a changeset.
 - One import styles everything. Never require a consumer to add a class or a prop for the default look. Choices (primary, danger, compact) are classes, never props.
@@ -99,7 +99,7 @@ When you use a colour on a new background, add the pair to `contrast-requirement
 - Links use the `link` and `link-hover` tokens, not `primary`, because primary as text can fall under 4.5:1.
 - A hovered filled primary button keeps a 1px `--kv-color-primary` edge around the `primary-hover` fill, so its boundary stays at least 3:1 on `canvas`, `surface` and `surface-raised` in all four themes. `primary-hover` alone is not required on `surface-raised`.
 - `danger-hover` on the three plain surfaces must be 3:1. If it drops below, give the danger button the same edge.
-- `status` colours (`danger`, `success`, `warning`) and their `-subtle` backgrounds are held to the text minimum wherever prose, links or controls sit on a notification.
+- `status` colours (`danger`, `success`, `warning`) and their `-subtle` backgrounds are held to the text minimum wherever prose, links or controls sit on an alert.
 - A new surface that content sits on needs its text, edge and focus pairs.
 - Colours are reviewed for look by eye, never by test. The test checks only contrast, fallbacks and forced-colour mapping.
 
@@ -119,9 +119,9 @@ The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@laye
 
 - Every prose rule is a zero-specificity `:where()` rule in `@layer kv`, so component rules and consumer CSS win.
 - Prose never styles a component part. The explicit list of part classes (first line of the `:not(...)` list in section 9: button, link, card parts, input group, checkbox, radio, native listbox) is written in one place. **When you add a part or a consumer class that appears inside prose, add it to that list.**
-- Prose also skips anything inside `kv-not-prose`, `kv-nav`, `kv-button-group`, `kv-toolbar` and `kv-table`.
-- A card, notification, field or fieldset Root in prose gets prose's block margins only. They are boundaries: nothing inside them is prose-styled unless a `kv-prose` sits between the element and the boundary. The nearest boundary or `kv-prose` wins, for two levels of nesting. Three levels are not supported. A Section is not a boundary.
-- The description of a field or fieldset is a `kv-prose` that is a direct child, so it is prose again, in `body` (16px) wherever it sits. The hint (`kv-field-hint`, `Field.Hint`) is a plain paragraph in `body-small` (14px): its size belongs to the part, so no rule sizes a Prose by position, and the theme never styles a hint by `data-invalid` or `data-disabled`. An option's hint is the one spacing exception (column 2, 0 gap under its label).
+- Prose also skips anything inside `kv-not-prose`, `kv-navigation`, `kv-button-group`, `kv-toolbar` and `kv-table`.
+- A card, alert, field or fieldset Root in prose gets prose's block margins only. They are boundaries: nothing inside them is prose-styled unless a `kv-prose` sits between the element and the boundary. The nearest boundary or `kv-prose` wins, for two levels of nesting. Three levels are not supported. A Section is not a boundary.
+- The description of a field or fieldset is a `kv-prose` that is a direct child, so it is prose again, in `body` (16px) wherever it sits. The help text (`kv-field-help-text`, `Field.HelpText`) is a plain paragraph in `body-small` (14px): its size belongs to the part, so no rule sizes a Prose by position, and the theme never styles a help text by `data-invalid` or `data-disabled`. An option's help text is the one spacing exception (column 2, 0 gap under its label).
 - Unlayered page CSS beats prose, so scope it away from prose.
 - Prose never removes list markers, never changes the `display` of a list or table, wraps `pre`, and fixes no heights. Markers, captions and lead text are at least 4.5:1 (7:1 in the contrast themes).
 - Sizes are token swaps on `.kv-prose`: default, `--small` (14px, never for essential text), `--large`, `--xl`, `--2xl` and `--full` (lifts the 70ch measure). `--xl` and `--2xl` step down below `40rem`. Colour roles are `--kv-prose-color-<role>`, declared on `.kv-prose`, never on `:root` (each theme needs its own value).
@@ -132,7 +132,7 @@ The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@laye
 
 ## Long words and small screens
 
-- `kv-prose`, `kv-card`, `kv-notification`, `kv-field` and `kv-fieldset` set `hyphens: auto`, `hyphenate-limit-chars: 10 4 4` and `overflow-wrap: break-word`. The break-word fallback covers Northern Sámi and a missing `lang`.
+- `kv-prose`, `kv-card`, `kv-alert`, `kv-field` and `kv-fieldset` set `hyphens: auto`, `hyphenate-limit-chars: 10 4 4` and `overflow-wrap: break-word`. The break-word fallback covers Northern Sámi and a missing `lang`.
 - `code`, `kbd`, `samp` and `pre` use `hyphens: manual`.
 - Hyphenation needs `lang` on `<html>` and on passages in another language. Browser dictionaries are incomplete (Northern Sámi has none, and Finnish was missing in Chromium when last measured), so only soft hyphens fix it everywhere. Hyphenation is visual only.
 - Below `40rem`, `display` is 2rem (no tracking), `heading-1` 1.5rem, `heading-2` 1.25rem and `lead` 1.125rem. `heading-3` and the body roles never change. Never make a role smaller than the one below it. At 200% zoom, headings grow less than 2x.

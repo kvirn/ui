@@ -6,8 +6,10 @@ import { wcagTags } from '@kvirn-ui/testing'
 // Contract: packages/react/src/date-input/date-input.a11y.md › Keyboard and Visual / modes. One
 // test per row, named after it. The keys are the browser's: the boxes are three native text
 // inputs, so these tests prove the component gets in their way nowhere: three Tab stops in the
-// order of the boxes, no auto-advance, no arrow-key stepping. The default story is Swedish with
-// no region (`sv`), which Intl writes year first: År, Månad, Dag.
+// order of the boxes, no arrow-key stepping. The one thing it adds is the auto-advance (Plan
+// 0040): typing the digit that fills a box moves focus to the next box, with a visible hint, and
+// `autoAdvance={false}` turns it off. The default story is Swedish with no region (`sv`), which
+// Intl writes year first: År, Månad, Dag.
 
 /** `globals` selects the theme like the toolbar does, such as `mode:dark;contrast:more`. */
 const storyUrl = (story: string, globals?: string) =>
@@ -95,20 +97,102 @@ test.describe('DateInput keyboard contract', () => {
     await expect(page.getByRole('button', { name: 'Tillbaka' })).toBeFocused()
   })
 
-  test('typing never moves focus to the next box and filters nothing', async ({ page }) => {
+  test('typing the digit that fills a box moves focus to the next box and selects it', async ({
+    page,
+  }) => {
     await openStory(page, 'keyboard')
+    const prevented = await recordPreventedKeys(page)
+    await textbox(page, 'Månad').fill('1')
+    await textbox(page, 'År').focus()
+    // Three digits is not a whole year: focus stays.
+    await page.keyboard.type('199')
+    await expect(textbox(page, 'År')).toBeFocused()
+    await page.keyboard.type('0')
+    // Year, then month (which held "1": the move selects it, so typing replaces it), then day.
+    await expect(textbox(page, 'Månad')).toBeFocused()
+    await page.keyboard.type('12')
+    await expect(textbox(page, 'Dag')).toBeFocused()
+    await expect(textbox(page, 'År')).toHaveValue('1990')
+    await expect(textbox(page, 'Månad')).toHaveValue('12')
+    // The hint said so beforehand (3.2.2), and it is visible.
+    await expect(page.getByText('Fokus flyttas till nästa ruta när en ruta är full.')).toBeVisible()
+    expect(await prevented()).toEqual([])
+  })
+
+  test('typing in the last box, or typing that does not fill a box, never moves focus and filters nothing', async ({
+    page,
+  }) => {
+    await openStory(page, 'keyboard')
+    const prevented = await recordPreventedKeys(page)
+    const dayBox = textbox(page, 'Dag')
+    await dayBox.focus()
+    // The last box is full at two digits, and focus stays: there is no box after it.
+    await page.keyboard.type('27')
+    await expect(dayBox).toBeFocused()
+    // Nothing is filtered or cut: more digits and letters are all typed.
+    await page.keyboard.type('12ab')
+    await expect(dayBox).toBeFocused()
+    await expect(dayBox).toHaveValue('2712ab')
+    // Four letters fill the year box and are not digits: focus stays.
+    const yearBox = textbox(page, 'År')
+    await yearBox.focus()
+    await page.keyboard.type('tjug')
+    await expect(yearBox).toBeFocused()
+    await expect(yearBox).toHaveValue('tjug')
+    await expect(textbox(page, 'Månad')).toHaveValue('')
+    expect(await prevented()).toEqual([])
+  })
+
+  test('editing a box that was already full never moves focus', async ({ page }) => {
+    await openStory(page, 'keyboard')
+    const yearBox = textbox(page, 'År')
+    await yearBox.focus()
+    await page.keyboard.type('1990')
+    await expect(textbox(page, 'Månad')).toBeFocused()
+    await page.keyboard.press('Shift+Tab')
+    await expect(yearBox).toBeFocused()
+    // A fifth digit, and replacing a character of the full box: focus stays.
+    await page.keyboard.press('End')
+    await page.keyboard.type('1')
+    await expect(yearBox).toBeFocused()
+    await expect(yearBox).toHaveValue('19901')
+    await page.keyboard.press('Backspace')
+    await page.keyboard.press('Shift+ArrowLeft')
+    await page.keyboard.type('2')
+    await expect(yearBox).toBeFocused()
+    await expect(yearBox).toHaveValue('1992')
+  })
+
+  test('Backspace and Delete never move focus, not even in an empty box', async ({ page }) => {
+    await openStory(page, 'keyboard')
+    const monthBox = textbox(page, 'Månad')
+    await monthBox.focus()
+    await page.keyboard.press('Backspace')
+    await page.keyboard.press('Delete')
+    await expect(monthBox).toBeFocused()
+    await page.keyboard.type('1')
+    await page.keyboard.press('Backspace')
+    await page.keyboard.press('Backspace')
+    await expect(monthBox).toBeFocused()
+    await expect(monthBox).toHaveValue('')
+  })
+
+  test('autoAdvance={false}: typing never moves focus to the next box, and there is no hint', async ({
+    page,
+  }) => {
+    await openStory(page, 'no-auto-advance')
     const prevented = await recordPreventedKeys(page)
     const yearBox = textbox(page, 'År')
     await yearBox.focus()
-    // Four digits is a whole year, and focus stays: there is no auto-advance (3.2.2).
     await page.keyboard.type('1990')
     await expect(yearBox).toBeFocused()
-    await expect(yearBox).toHaveValue('1990')
-    // Nothing is filtered or cut: more digits and letters are all typed.
-    await page.keyboard.type('12ab')
+    await page.keyboard.type('12')
     await expect(yearBox).toBeFocused()
-    await expect(yearBox).toHaveValue('199012ab')
+    await expect(yearBox).toHaveValue('199012')
     await expect(textbox(page, 'Månad')).toHaveValue('')
+    await expect(page.getByText('Fokus flyttas till nästa ruta när en ruta är full.')).toHaveCount(
+      0,
+    )
     expect(await prevented()).toEqual([])
   })
 
@@ -131,21 +215,22 @@ test.describe('DateInput keyboard contract', () => {
   }) => {
     await openStory(page, 'keyboard')
     const prevented = await recordPreventedKeys(page)
-    const yearBox = textbox(page, 'År')
-    await yearBox.focus()
-    await page.keyboard.type('1990')
+    // The year box is first: typing four digits in it would move on, so use the day box.
+    const dayBox = textbox(page, 'Dag')
+    await dayBox.focus()
+    await page.keyboard.type('27')
     await page.keyboard.press('Home')
-    expect(await caretOf(yearBox)).toBe(0)
+    expect(await caretOf(dayBox)).toBe(0)
     await page.keyboard.press('ArrowRight')
-    expect(await caretOf(yearBox)).toBe(1)
+    expect(await caretOf(dayBox)).toBe(1)
     await page.keyboard.press('End')
-    expect(await caretOf(yearBox)).toBe(4)
+    expect(await caretOf(dayBox)).toBe(2)
     await page.keyboard.press('ArrowLeft')
-    expect(await caretOf(yearBox)).toBe(3)
+    expect(await caretOf(dayBox)).toBe(1)
     // At the end of the text the next press does nothing: focus stays in the box.
     await page.keyboard.press('End')
     await page.keyboard.press('ArrowRight')
-    await expect(yearBox).toBeFocused()
+    await expect(dayBox).toBeFocused()
     await expect(textbox(page, 'Månad')).not.toBeFocused()
     expect(await prevented()).toEqual([])
   })
@@ -228,6 +313,7 @@ test.describe('DateInput accessibility', () => {
     ['finnish'],
     ['english'],
     ['own-order'],
+    ['no-auto-advance'],
     ['one-field'],
     ['one-field-finnish'],
     ['invalid-year'],

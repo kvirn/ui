@@ -19,7 +19,7 @@ import {
 } from './text-input.fixture.tsx'
 
 // Components/Form/TextInput: the native text <input>, styled by @kvirn-ui/theme/theme.css (design
-// spec docs/design/form-fields.md §6.3). It lives in a Field, which gives it its name, hint and
+// spec docs/design/form-fields.md §6.3). It lives in a Field, which gives it its name, help text and
 // error. A quantity or an amount is a NumberInput, never `type="number"`: see
 // Components/Form/NumberInput. KvirnUI holds no form state: an uncontrolled TextInput keeps its
 // value in the browser and a form submit sends it (PlainForm), and a controlled one shows the
@@ -83,7 +83,7 @@ const meta = {
         'telephone',
       ],
       description:
-        'Shapes what is typed. A name (the control lists them), `{ preset, country? }`, `{ pattern, ...options }`, a `RegExp` that accepts partial values, or a finished mask from `masks` (`masks.postalCode({ country: "SE" })`). The country masks read the country from the provider (`country`, else the locale). Objects, a RegExp and a mask can’t be typed into a control: see the masked examples below. The field then needs a hint with the format (3.3.2).',
+        'Shapes what is typed. A name (the control lists them), `{ preset, country? }`, `{ pattern, ...options }`, a `RegExp` that accepts partial values, or a finished mask from `masks` (`masks.postalCode({ country: "SE" })`). The country masks read the country from the provider (`country`, else the locale). Objects, a RegExp and a mask can’t be typed into a control: see the masked examples below. The field then needs a help text with the format (3.3.2).',
     },
     announceRejections: {
       control: 'boolean',
@@ -143,7 +143,8 @@ const meta = {
     },
     'aria-describedby': {
       control: 'text',
-      description: 'Your own description ids. They are kept, after the Field’s hint and error.',
+      description:
+        'Your own description ids. They are kept, after the Field’s help text and error.',
     },
     ref: { control: false, description: 'A ref to the `<input>`.' },
     render: {
@@ -273,7 +274,7 @@ const widths = [
 /**
  * The width reflects the expected answer: five steps by characters, and full width without a
  * class. Each is wide enough for its answer in the invalid state and under the text-spacing
- * overrides, and shrinks to fit a 320px screen. The width is a hint, never a limit.
+ * overrides, and shrinks to fit a 320px screen. The width is a help text, never a limit.
  */
 export const Widths: Story = {
   render: () => (
@@ -456,7 +457,7 @@ export const Compact: Story = {
 
 /**
  * A mask shapes what is typed: here a Swedish personal identity number, which takes ten or
- * twelve digits with or without the hyphen. The hint says the format, because the mask doesn't
+ * twelve digits with or without the hyphen. The help text says the format, because the mask doesn't
  * (3.3.2). More on Components/Form/Mask.
  */
 export const MaskedPersonalIdentityNumber: Story = {
@@ -505,7 +506,7 @@ export const ExplicitMask: Story = {
 
 /**
  * A date in one field, in the page's order and separator: `masks.date()` follows the provider's
- * locale. The hint's example is written from the field's own mask, with a day above 12. For a
+ * locale. The help text's example is written from the field's own mask, with a day above 12. For a
  * date of birth, use DateInput with three boxes.
  */
 export const MaskedDate: Story = {

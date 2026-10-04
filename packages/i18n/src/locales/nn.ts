@@ -4,8 +4,13 @@ import type { KvirnMessages } from '../types.ts'
 export const nn = {
   link: { newTabNotice: '(blir opna i ei ny fane)' },
   field: { optional: '(valfritt)', errorPrefix: 'Feil:' },
-  dateInput: { day: 'Dag', month: 'Månad', year: 'År' },
-  notification: {
+  dateInput: {
+    day: 'Dag',
+    month: 'Månad',
+    year: 'År',
+    autoAdvanceHint: 'Fokus blir flytta til neste felt når eit felt er fullt.',
+  },
+  alert: {
     infoPrefix: 'Informasjon:',
     successPrefix: 'Fullført:',
     warningPrefix: 'Åtvaring:',

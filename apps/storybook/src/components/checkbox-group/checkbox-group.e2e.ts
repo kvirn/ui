@@ -61,7 +61,7 @@ test.describe('CheckboxGroup keyboard contract', () => {
     // Then out of the group, to the next focusable element.
     await page.keyboard.press('Tab')
     await expect(page.getByRole('button', { name: 'Skicka' })).toBeFocused()
-    // The fieldset, the legend and the hint are not Tab stops.
+    // The fieldset, the legend and the help text are not Tab stops.
     await expect(page.locator('.kv-checkbox-group')).not.toHaveAttribute('tabindex', /.*/)
     await expect(page.locator('.kv-fieldset-legend')).not.toHaveAttribute('tabindex', /.*/)
   })
@@ -145,7 +145,7 @@ test.describe('CheckboxGroup focus and modes', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 320, height: 640 })
-    for (const story of ['long-finnish', 'with-option-hints', 'invalid', 'in-card']) {
+    for (const story of ['long-finnish', 'with-option-help-texts', 'invalid', 'in-card']) {
       await openStory(page, story)
       expect(await hasHorizontalScroll(page), story).toBe(false)
     }
@@ -180,7 +180,7 @@ test.describe('CheckboxGroup accessibility', () => {
     ['default'],
     ['keyboard'],
     ['with-description'],
-    ['with-option-hints'],
+    ['with-option-help-texts'],
     ['invalid'],
     ['disabled'],
     ['in-card'],

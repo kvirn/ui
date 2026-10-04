@@ -46,7 +46,7 @@ export interface UseOneTimeCodeOptions {
    * Called with the code when a change leaves it complete and different from before: typing the
    * last character, a paste, an autofill. `value` is what the input holds (`ABCD-1234`) and
    * `unmaskedValue` is the code without the separators (`ABCD1234`). It never submits and never
-   * moves focus (3.2.2). Say in the hint that the code is checked as soon as it's entered, and
+   * moves focus (3.2.2). Say in the help text that the code is checked as soon as it's entered, and
    * keep a submit button.
    */
   onComplete?: ((value: string, unmaskedValue: string) => void) | undefined
@@ -106,7 +106,7 @@ export interface OneTimeCodeRootPartProps {
 
 /** Spread on the one `<input>`. */
 export interface OneTimeCodeInputPartProps {
-  /** From the Field: the control's id, and the ids of its hint and error. */
+  /** From the Field: the control's id, and the ids of its help text and error. */
   id?: string
   'aria-describedby'?: string
   'aria-invalid'?: 'true'

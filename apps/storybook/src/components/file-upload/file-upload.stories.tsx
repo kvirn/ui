@@ -1,15 +1,23 @@
+import { FileUpload } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/file-upload/file-upload.a11y.md?raw'
+import guide from '../../../../../packages/react/src/file-upload/file-upload.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, userEvent, waitFor } from 'storybook/test'
+import { expect, fn, userEvent, waitFor } from 'storybook/test'
+import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
+  AttachmentsField,
+  AttachmentsPostedWithTheForm,
+  AttachmentsWithPreviews,
+  AttachmentsWithSendButton,
   controlledUpload,
-  FileUploadField,
   fileUploadTextsFor,
+  InvalidAttachments,
   makeFile,
   makeImage,
+  RequiredAttachments,
 } from './file-upload.fixture.tsx'
 
 // Components/Form/FileUpload: attach files to an application (Plan 0021, design spec
@@ -38,26 +46,88 @@ const chooseFiles: Record<FormLocale, string> = {
 
 const meta = {
   title: 'Components/Form/FileUpload',
-  component: FileUploadField,
-  globals: { locale: 'sv' },
+  component: FileUpload.Root,
+  // Every option at its default, so the main example starts where an adopter starts.
+  args: {
+    multiple: true,
+    allowDuplicates: false,
+    concurrency: 3,
+    autoUpload: true,
+    previews: false,
+    disabled: false,
+    onFilesChange: fn(),
+    onFilesReject: fn(),
+  },
+  // Every prop in file-upload.tsx and use-file-upload.ts. The other parts take no options of their
+  // own: see the API section for each part and the message keys.
   argTypes: {
-    accept: { control: 'text', description: 'Accepted types, like the native `accept`.' },
-    maxFiles: { control: 'number', description: 'How many files the list holds.' },
+    accept: {
+      control: 'text',
+      description:
+        'Accepted types: extensions (`.pdf`), MIME types and wildcards (`image/*`), comma separated. Checked here too, because a drop skips the dialog’s filter.',
+    },
+    multiple: {
+      control: 'boolean',
+      description: 'Default `true`. Off: a new file replaces the current one.',
+    },
+    maxFiles: {
+      control: 'number',
+      description: 'How many files the list holds. At the limit the Trigger is `aria-disabled`.',
+    },
     maxFileSize: { control: 'number', description: 'Largest file, in bytes.' },
     minFileSize: { control: 'number', description: 'Smallest file, in bytes.' },
-    multiple: { control: 'boolean', description: 'Default true. Off: a new file replaces.' },
+    allowDuplicates: {
+      control: 'boolean',
+      description: 'Default `false`: the same name, size and last-modified time is refused.',
+    },
     concurrency: { control: 'number', description: 'Uploads at once. Default 3.' },
-    allowDuplicates: { control: 'boolean' },
-    disabled: { control: 'boolean' },
-    upload: { control: false },
-    validate: { control: false },
-    onFilesChange: { control: false },
-    onFilesReject: { control: false },
-    messages: { control: false },
-    render: { control: false },
+    autoUpload: {
+      control: 'boolean',
+      description: 'Default `true`: uploads start when files are added.',
+    },
+    previews: {
+      control: 'boolean',
+      description:
+        'Make an object URL for every image in the Root. `FileUpload.Preview` makes its own when this is off.',
+    },
+    disabled: {
+      control: 'boolean',
+      description:
+        'Native `disabled` on the Trigger and the input. A disabled Field disables it too.',
+    },
+    upload: {
+      control: false,
+      description:
+        '`(file, { signal, onProgress }) => Promise<result>`: your own function. Without it, files stay `pending` and go with the form.',
+    },
+    validate: {
+      control: false,
+      description:
+        '`(file) => string | void`. A string refuses the file and is shown as its message.',
+    },
+    onFilesChange: {
+      control: false,
+      description: 'Called with the list when it changes. Not on every progress step.',
+    },
+    onFilesReject: {
+      control: false,
+      description: 'Called with the reasons (data, not text) when files were refused.',
+    },
+    messages: {
+      control: false,
+      description: 'Per-instance overrides for the `fileUpload` message keys.',
+    },
+    render: { control: false, description: 'Another element. It must still be a `<div>`.' },
+    ref: { control: false, description: 'A ref to the Root `<div>`.' },
   },
-  args: { locale: 'sv' },
-  parameters: { a11yContract: contract },
+  globals: { locale: 'sv' },
+  parameters: {
+    a11yContract: contract,
+    docs: {
+      description: { component: usageGuide(guide) },
+      ...showSource('file-upload/file-upload.fixture.tsx', 'AttachmentsField').docs,
+    },
+  },
   decorators: [
     (Story) => (
       <div className="kv-story-form">
@@ -66,8 +136,8 @@ const meta = {
     ),
     withFormLocale,
   ],
-  render: (args, { globals }) => <FileUploadField {...args} locale={localeOf(globals)} />,
-} satisfies Meta<typeof FileUploadField>
+  render: (args, { globals }) => <AttachmentsField {...args} locale={localeOf(globals)} />,
+} satisfies Meta<typeof FileUpload.Root>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -106,7 +176,8 @@ const choose = (canvasElement: HTMLElement, ...files: File[]) =>
   userEvent.setup({ applyAccept: false }).upload(inputOf(canvasElement), files)
 
 /**
- * Empty. One button opens the system dialog and is the way in. Its name is its own text, then the
+ * The main example: empty, with every option as a control. One button opens the system dialog and
+ * is the way in. Its name is its own text, then the
  * Field label, so voice users say "Välj filer". The limits are in its description, so they are
  * said before anyone chooses a file.
  */
@@ -136,7 +207,11 @@ export const SingleFile: Story = {
 
 /** Files added, with the form as their destination (no `upload`): ready, and posted with it. */
 export const WithFiles: Story = {
-  args: { multiple: true, maxFiles: 5, inputName: 'attachments' },
+  parameters: showSource('file-upload/file-upload.fixture.tsx', 'AttachmentsPostedWithTheForm'),
+  render: (args, { globals }) => (
+    <AttachmentsPostedWithTheForm {...args} locale={localeOf(globals)} />
+  ),
+  args: { multiple: true, maxFiles: 5 },
   play: async ({ canvasElement }) => {
     await choose(
       canvasElement,
@@ -236,7 +311,9 @@ export const LimitReached: Story = {
 
 /** Image previews: a decorative thumbnail from an object URL, revoked when the item goes away. */
 export const WithPreview: Story = {
-  args: { multiple: true, previews: true },
+  parameters: showSource('file-upload/file-upload.fixture.tsx', 'AttachmentsWithPreviews'),
+  render: (args, { globals }) => <AttachmentsWithPreviews {...args} locale={localeOf(globals)} />,
+  args: { multiple: true },
   play: async ({ canvasElement }) => {
     await choose(canvasElement, makeImage('foto.png'), makeFile('intyg.pdf'))
     await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(2))
@@ -263,11 +340,13 @@ export const ManyFiles: Story = {
 /** Long names wrap anywhere, so a 120-character file name doesn't scroll sideways at 320px. */
 export const LongNames: Story = {
   args: { multiple: true },
-  render: (args, { globals }) => (
-    <div className="kv-story-narrow" data-testid="narrow">
-      <FileUploadField {...args} locale={localeOf(globals)} />
-    </div>
-  ),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-narrow" data-testid="narrow">
+        <Story />
+      </div>
+    ),
+  ],
   play: async ({ canvas, canvasElement }) => {
     await choose(
       canvasElement,
@@ -309,7 +388,9 @@ export const Dragging: Story = {
 
 /** The consumer marks the Field invalid and writes the message: the Trigger is described by it. */
 export const Invalid: Story = {
-  args: { multiple: true, invalid: true },
+  parameters: showSource('file-upload/file-upload.fixture.tsx', 'InvalidAttachments'),
+  render: (args, { globals }) => <InvalidAttachments {...args} locale={localeOf(globals)} />,
+  args: { multiple: true },
   play: async ({ canvasElement }) => {
     const trigger = triggerOf(canvasElement)
     await expect(trigger).toHaveAttribute('aria-invalid', 'true')
@@ -318,7 +399,9 @@ export const Invalid: Story = {
 
 /** A required Field: the Trigger never carries `aria-required` (a button doesn't allow it). */
 export const Required: Story = {
-  args: { multiple: true, required: true },
+  parameters: showSource('file-upload/file-upload.fixture.tsx', 'RequiredAttachments'),
+  render: (args, { globals }) => <RequiredAttachments {...args} locale={localeOf(globals)} />,
+  args: { multiple: true },
 }
 
 /** Right to left, in English: the list, the status bar and the buttons mirror. */
@@ -351,7 +434,9 @@ export const ForcedColors: Story = {
  * moves focus to the next item, never to the page.
  */
 export const Keyboard: Story = {
-  args: { multiple: true, maxFiles: 5, withSubmit: true },
+  parameters: showSource('file-upload/file-upload.fixture.tsx', 'AttachmentsWithSendButton'),
+  render: (args, { globals }) => <AttachmentsWithSendButton {...args} locale={localeOf(globals)} />,
+  args: { multiple: true, maxFiles: 5 },
   play: async ({ canvasElement }) => {
     await expect(triggerOf(canvasElement)).toBeVisible()
   },

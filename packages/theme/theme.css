@@ -7,7 +7,7 @@
  * `kv-field`, `kv-input` and so on) and their state attributes (`data-disabled`,
  * `data-focus-visible`, `data-current`, `data-invalid`),
  * plus classes you add yourself: variants and options (`kv-button--primary`,
- * `kv-section--canvas`, `kv-input--width-6`), and context (`kv-compact`, `kv-nav`,
+ * `kv-section--canvas`, `kv-link--service`, `kv-input--width-6`), and context (`kv-compact`,
  * `kv-button-group`, `kv-prose`, `kv-lead`, `kv-heading--display`, `kv-not-prose`, `kv-scroll-region`). Classes style,
  * data-* attributes are state.
  *
@@ -66,14 +66,14 @@
  *   6. Density          kv-compact
  *   7. Button
  *  7a. Toggle         kv-toggle: a button that is on or off. kv-toolbar and its groups
- *   8. Link and navigation lists
+ *   8. Link, service link and Navigation
  *   9. Prose            kv-prose: articles from a CMS or Markdown
  *  9a. Heading       kv-heading: the type role of a heading, apart from its level
  *  9b. Kbd           kv-kbd: a key in running text
  *  9c. Tooltip       kv-tooltip: a name and a shortcut for a control, level 3
  *  10. Card
  *  10a. Section          kv-section: a region of the page, elevation level 1
- *  10b. Notification     kv-notification: a status message, by status class
+ *  10b. Alert            kv-alert: a status message, by status class
  *  11. Icon
  *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-textarea,
  *                      kv-character-count, kv-input-group, kv-date-input, kv-checkbox,
@@ -1024,14 +1024,27 @@
     }
   }
 
-  /* 8. Link and navigation lists ---------------------------------------------------------------
-   * <Link> renders class="kv-link": the link colour and an underline, for running text.
-   * Inside a list with class="kv-nav", links become navigation items instead: a row in the
-   * text colour, without an underline, because their place in a labelled <nav> is the cue.
-   * A link in running text keeps the font around it. A navigation item is a control, so it uses
+  /* 8. Link, service link and Navigation ---------------------------------------------------
+   * <Link.Root> renders class="kv-link": the link colour and an underline, for running text.
+   * In a <Navigation.Item>, a link becomes a navigation item instead: a row in the text colour,
+   * without an underline, because its place in a labelled <nav> is the cue. A link in running
+   * text keeps the font around it. A navigation item is a control, so it uses
    * --kv-font-family-body when you set it.
    *
-   *   <nav aria-label="…"><ul class="kv-nav"><li><Link current="page" …>…</Link></li></ul></nav>
+   *   <Navigation.Root label="…">
+   *     <Navigation.List>
+   *       <Navigation.Item><Link.Root current="page" …>…</Link.Root></Navigation.Item>
+   *       <Navigation.Item>…<Navigation.List>…</Navigation.List></Navigation.Item>
+   *     </Navigation.List>
+   *   </Navigation.Root>
+   *
+   * The one link that starts an e-service is className="kv-link--service": an outlined label,
+   * and with a <Link.Icon> first, a filled block with the icon. It is flat (no button depth),
+   * a link and not a button, and it has no disabled state.
+   *
+   *   <Link.Root href="…" className="kv-link--service">
+   *     <Link.Icon><Icon name="arrow-forward" size={6} /></Link.Icon>Ansök om bygglov
+   *   </Link.Root>
    */
   .kv-link {
     border-radius: var(--kv-radius-sm);
@@ -1058,7 +1071,7 @@
     outline-offset: var(--kv-focus-ring-offset);
   }
 
-  .kv-nav {
+  .kv-navigation-list {
     display: flex;
     flex-direction: column;
     gap: var(--kv-space-1);
@@ -1067,8 +1080,14 @@
     list-style: none;
   }
 
+  /* A nested list: indented, so the level shows without colour. */
+  .kv-navigation-list .kv-navigation-list {
+    margin-block-start: var(--kv-space-1);
+    padding-inline-start: var(--kv-space-4);
+  }
+
   /* A navigation item: 44px, or 32px in compact density. */
-  .kv-nav .kv-link {
+  .kv-navigation-item > .kv-link:not(.kv-link--service) {
     display: flex;
     align-items: center;
     box-sizing: border-box;
@@ -1086,19 +1105,92 @@
     overflow-wrap: break-word;
   }
 
-  .kv-nav .kv-link:is(:hover, :active) {
+  .kv-navigation-item > .kv-link:not(.kv-link--service):is(:hover, :active) {
     background-color: var(--kv-color-surface-raised);
   }
 
   /* The current page: a background, an inline-start bar and weight, plus aria-current. */
-  .kv-nav .kv-link:is([data-current], [aria-current]:not([aria-current='false'])) {
+  .kv-navigation-item
+    > .kv-link:not(.kv-link--service):is(
+      [data-current],
+      [aria-current]:not([aria-current='false'])
+    ) {
     border-inline-start-color: var(--kv-color-primary);
     background-color: var(--kv-color-primary-subtle);
     font-weight: 600;
   }
 
+  /* <Link.Icon>: a decorative slot. In a plain link it's inline, in the link colour. */
+  .kv-link-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* <Link.Root className="kv-link--service">: the one link that starts an e-service. The label
+   * is --kv-color-link, not primary: primary as text is 4.44:1 on the dark canvas. */
+  .kv-link.kv-link--service {
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    min-block-size: var(--kv-control-min-block-size);
+    max-inline-size: 100%;
+    /* From 1lh, so 1.4.12 line height grows the box instead of clipping the label. */
+    padding-block: max(
+      0px,
+      calc((var(--kv-control-min-block-size) - 1lh) / 2 - var(--kv-border-width))
+    );
+    padding-inline: var(--kv-space-4);
+    border: var(--kv-border-width) solid var(--kv-color-primary);
+    border-radius: var(--kv-radius-md);
+    background-color: transparent;
+    color: var(--kv-color-link);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-control-font-size);
+    font-weight: var(--kv-control-font-weight);
+    line-height: var(--kv-control-line-height);
+    text-decoration-line: none;
+    overflow-wrap: break-word;
+    vertical-align: middle;
+  }
+
+  /* Room for the icon block: a square at one line, then a gap. */
+  .kv-link.kv-link--service:has(> .kv-link-icon) {
+    padding-inline-start: calc(
+      var(--kv-control-min-block-size) - 2 * var(--kv-border-width) + var(--kv-space-3)
+    );
+  }
+
+  .kv-link.kv-link--service:is(:hover, :active) {
+    background-color: var(--kv-color-primary-subtle);
+    color: var(--kv-color-link-hover);
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+  }
+
+  .kv-link.kv-link--service:is([data-current], [aria-current]:not([aria-current='false'])) {
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  /* Square at one line, the full height when the label wraps. */
+  .kv-link--service > .kv-link-icon {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: calc(var(--kv-control-min-block-size) - 2 * var(--kv-border-width));
+    border-start-start-radius: calc(var(--kv-radius-md) - var(--kv-border-width));
+    border-end-start-radius: calc(var(--kv-radius-md) - var(--kv-border-width));
+    background-color: var(--kv-color-primary);
+    color: var(--kv-color-on-primary);
+  }
+
+  .kv-link--service:is(:hover, :active) > .kv-link-icon {
+    background-color: var(--kv-color-primary-hover);
+  }
+
   @media (prefers-reduced-motion: no-preference) {
-    .kv-link {
+    .kv-link,
+    .kv-link-icon {
       transition-property: color, text-decoration-thickness, background-color, border-color;
       transition-duration: var(--kv-duration-fast);
       transition-timing-function: var(--kv-easing-standard);
@@ -1116,14 +1208,39 @@
     }
 
     /* Forced colours would show every transparent bar, so only the current item keeps one. */
-    .kv-nav .kv-link {
+    .kv-navigation-item > .kv-link:not(.kv-link--service) {
       border-inline-start-color: Canvas;
       color: LinkText;
       text-decoration-line: none;
     }
 
-    .kv-nav .kv-link:is([data-current], [aria-current]:not([aria-current='false'])) {
+    .kv-navigation-item
+      > .kv-link:not(.kv-link--service):is(
+        [data-current],
+        [aria-current]:not([aria-current='false'])
+      ) {
       border-inline-start-color: LinkText;
+    }
+
+    /* The service link: a LinkText edge on Canvas. The block isn't filled (a fill would be
+     * replaced), so a LinkText divider keeps its edge, and the icon takes LinkText. */
+    .kv-link.kv-link--service {
+      border-color: LinkText;
+      background-color: Canvas;
+      color: LinkText;
+      text-decoration-line: none;
+    }
+
+    .kv-link.kv-link--service:is(:hover, :active) {
+      border-color: Highlight;
+      text-decoration-line: underline;
+    }
+
+    .kv-link--service > .kv-link-icon,
+    .kv-link--service:is(:hover, :active) > .kv-link-icon {
+      border-inline-end: var(--kv-border-width) solid LinkText;
+      background-color: Canvas;
+      color: LinkText;
     }
   }
 
@@ -1144,16 +1261,16 @@
    *
    * Every rule has zero specificity, so component rules and your own CSS always win. Prose
    * never styles a component part (components style themselves), or anything inside
-   * kv-not-prose, kv-nav, kv-button-group or kv-toolbar. Prose inside kv-not-prose isn't turned on again.
+   * kv-not-prose, kv-navigation, kv-button-group or kv-toolbar. Prose inside kv-not-prose isn't turned on again.
    * A card is a boundary: a card in prose gets prose's block margins, and nothing inside
    * it is prose-styled, unless you put kv-prose on the card or inside it. Then the nearest of
    * the two wins, for two levels of nested cards. A field (kv-field) and a fieldset
    * (kv-fieldset) are boundaries the same way: a form in prose gets prose's block margins on
    * each question, and its labels, errors and controls get none. The description is a kv-prose
    * that is a direct child of the field or fieldset, so it is prose again: its own
-   * paragraphs, lists and links are styled, and nothing else in the field is. The hint
-   * (kv-field-hint) is a plain paragraph, not prose.
-   * A notification (kv-notification) is the same boundary as a card, so its title isn't styled as a prose heading. Only
+   * paragraphs, lists and links are styled, and nothing else in the field is. The help text
+   * (kv-field-help-text) is a plain paragraph, not prose.
+   * An alert (kv-alert) is the same boundary as a card, so its title isn't styled as a prose heading. Only
    * logical properties are used, so right to left works, and nothing has a fixed height, so
    * the text-spacing overrides fit (1.4.12).
    *
@@ -1279,11 +1396,11 @@
   /* Everything inside prose that prose may style. This is the only place the not-prose list
    * is written: add a new component part class (first line) or consumer class (second line)
    * here. A card's, a section's, a field's or a fieldset's Root isn't in the first line: it
-   * gets prose's margins. A card, a notification, a field and a fieldset are boundaries (the
+   * gets prose's margins. A card, an alert, a field and a fieldset are boundaries (the
    * last lines), so their text parts and controls are covered without being listed. `&` has
    * the specificity of this selector, which is zero.
    *
-   * The last lines are the boundary. Inside a card, notification, field or fieldset (one
+   * The last lines are the boundary. Inside a card, alert, field or fieldset (one
    * without kv-prose), prose is off unless kv-prose sits between it and the element. It
    * reads: inside a boundary, but not (inside prose inside a boundary, but not (inside a
    * boundary inside that, but not inside prose inside that)). So the nearest boundary or
@@ -1296,6 +1413,7 @@
           .kv-button,
           .kv-link,
           .kv-link-new-tab-notice,
+          .kv-link-icon,
           .kv-card-header,
           .kv-card-body,
           .kv-card-footer,
@@ -1305,20 +1423,18 @@
           .kv-radio,
           .kv-listbox-native
         ),
-        :is(.kv-not-prose, .kv-nav, .kv-button-group, .kv-toolbar, .kv-table) *,
-        :is(:is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose) *):not(
-          :is(
-            :is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose) .kv-prose *
-          ):not(
+        :is(.kv-not-prose, .kv-navigation, .kv-button-group, .kv-toolbar, .kv-table) *,
+        :is(:is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose) *):not(
+          :is(:is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose) .kv-prose *):not(
             :is(
-              :is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose)
+              :is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose)
                 .kv-prose
-                :is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose)
+                :is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose)
                 *
             ):not(
-              :is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose)
+              :is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose)
                 .kv-prose
-                :is(.kv-card, .kv-notification, .kv-field, .kv-fieldset):not(.kv-prose)
+                :is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose)
                 .kv-prose
                 *
             )
@@ -1326,16 +1442,16 @@
         )
       )
     ) {
-    /* Elements. kv-not-prose, kv-nav, kv-button-group, kv-toolbar, a card's, a section's, a field's or a
+    /* Elements. kv-not-prose, kv-navigation, kv-button-group, kv-toolbar, a card's, a section's, a field's or a
      * fieldset's Root only get margins. A section isn't a prose boundary: its content stays prose. */
     &:not(
       :where(
         .kv-not-prose,
-        .kv-nav,
+        .kv-navigation,
         .kv-button-group,
         .kv-toolbar,
         .kv-card,
-        .kv-notification,
+        .kv-alert,
         .kv-section,
         .kv-field,
         .kv-fieldset,
@@ -1718,7 +1834,7 @@
       .kv-not-prose,
       .kv-scroll-region,
       .kv-card,
-      .kv-notification,
+      .kv-alert,
       .kv-section,
       .kv-field,
       .kv-fieldset,
@@ -2280,74 +2396,74 @@
     }
   }
 
-  /* 10b. Notification --------------------------------------------------------------------
-   * <Notification.Info|Success|Warning|Danger> render class="kv-notification" plus a status class,
-   * kv-notification--info|success|warning|danger, an icon and a visually hidden status word.
-   * <Notification.Root> renders kv-notification only. Parts: kv-notification-icon,
-   * kv-notification-title, kv-notification-status, kv-notification-body and
-   * kv-notification-actions. Design spec: docs/design/notification.md.
+  /* 10b. Alert --------------------------------------------------------------------
+   * <Alert.Info|Success|Warning|Danger> render class="kv-alert" plus a status class,
+   * kv-alert--info|success|warning|danger, an icon and a visually hidden status word.
+   * <Alert.Root> renders kv-alert only. Parts: kv-alert-icon,
+   * kv-alert-title, kv-alert-status, kv-alert-body and
+   * kv-alert-actions. Design spec: docs/design/alert.md.
    *
    * The look of a status is only CSS on its class, through two tokens. Nothing in the
    * components knows about colour, so you restyle with the tokens, or drop the class:
    *
-   *   --kv-notification-background    the background
-   *   --kv-notification-accent        the inline-start bar and the icon
+   *   --kv-alert-background    the background
+   *   --kv-alert-accent        the inline-start bar and the icon
    *
-   *   .kv-notification--warning {
-   *     --kv-notification-background: var(--kv-color-warning-subtle);
-   *     --kv-notification-accent: var(--kv-color-warning);
+   *   .kv-alert--warning {
+   *     --kv-alert-background: var(--kv-color-warning-subtle);
+   *     --kv-alert-accent: var(--kv-color-warning);
    *   }
    *
-   * A bare .kv-notification is a neutral surface with a border-control bar, so your own status
-   * class only has to set the two tokens. A notification is never interactive, never moves and
+   * A bare .kv-alert is a neutral surface with a border-control bar, so your own status
+   * class only has to set the two tokens. An alert is never interactive, never moves and
    * never clips: no hover, no shadow, no transition, no overflow, no fixed size (1.4.12,
    * 2.4.11, 2.4.13). It is a prose boundary like a card: nothing inside is prose-styled unless
    * kv-prose sits between.
    */
   :root {
-    --kv-notification-padding-block: var(--kv-space-4);
-    --kv-notification-padding-inline: var(--kv-space-3);
-    --kv-notification-gap: var(--kv-space-2);
+    --kv-alert-padding-block: var(--kv-space-4);
+    --kv-alert-padding-inline: var(--kv-space-3);
+    --kv-alert-gap: var(--kv-space-2);
     /* The title's size and line height, which place the icon on the title's first line. */
-    --kv-notification-title-size: 1.125rem;
-    --kv-notification-title-line-height: 1.4;
+    --kv-alert-title-size: 1.125rem;
+    --kv-alert-title-line-height: 1.4;
   }
 
   @media (width >= 40rem) {
     :root {
-      --kv-notification-padding-inline: var(--kv-space-4);
-      --kv-notification-gap: var(--kv-space-3);
+      --kv-alert-padding-inline: var(--kv-space-4);
+      --kv-alert-gap: var(--kv-space-3);
     }
   }
 
   /* Compact density steps down from 64rem, with compact controls (section 6). */
   @media (width >= 64rem) {
     .kv-compact {
-      --kv-notification-padding-block: var(--kv-space-3);
-      --kv-notification-padding-inline: var(--kv-space-3);
-      --kv-notification-gap: var(--kv-space-2);
-      --kv-notification-title-size: 1rem;
-      --kv-notification-title-line-height: 1.5;
+      --kv-alert-padding-block: var(--kv-space-3);
+      --kv-alert-padding-inline: var(--kv-space-3);
+      --kv-alert-gap: var(--kv-space-2);
+      --kv-alert-title-size: 1rem;
+      --kv-alert-title-line-height: 1.5;
     }
   }
 
-  .kv-notification {
-    --kv-notification-background: var(--kv-color-surface);
-    --kv-notification-accent: var(--kv-color-border-control);
+  .kv-alert {
+    --kv-alert-background: var(--kv-color-surface);
+    --kv-alert-accent: var(--kv-color-border-control);
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     box-sizing: border-box;
-    /* A notification in a grid or flex row can shrink to 320px. */
+    /* An alert in a grid or flex row can shrink to 320px. */
     min-inline-size: 0;
     max-inline-size: 100%;
-    padding: var(--kv-notification-padding-block) var(--kv-notification-padding-inline);
+    padding: var(--kv-alert-padding-block) var(--kv-alert-padding-inline);
     /* The bar is the inline-start edge, 4px. The other three sides are a 1px transparent
      * border, which forced colours draw in CanvasText. The sm radius has no inner curve at
      * 4px, so the bar stays straight. */
     border: var(--kv-border-width) solid transparent;
-    border-inline-start: var(--kv-indicator-width) solid var(--kv-notification-accent);
+    border-inline-start: var(--kv-indicator-width) solid var(--kv-alert-accent);
     border-radius: var(--kv-radius-sm);
-    background-color: var(--kv-notification-background);
+    background-color: var(--kv-alert-background);
     color: var(--kv-color-text);
     /* Like prose and a card: long words split at hyphenation points, then wrap. */
     hyphens: auto;
@@ -2355,65 +2471,65 @@
     overflow-wrap: break-word;
   }
 
-  .kv-notification.kv-notification--info {
-    --kv-notification-background: var(--kv-color-primary-subtle);
-    --kv-notification-accent: var(--kv-color-primary);
+  .kv-alert.kv-alert--info {
+    --kv-alert-background: var(--kv-color-primary-subtle);
+    --kv-alert-accent: var(--kv-color-primary);
   }
 
-  .kv-notification.kv-notification--success {
-    --kv-notification-background: var(--kv-color-success-subtle);
-    --kv-notification-accent: var(--kv-color-success);
+  .kv-alert.kv-alert--success {
+    --kv-alert-background: var(--kv-color-success-subtle);
+    --kv-alert-accent: var(--kv-color-success);
   }
 
-  .kv-notification.kv-notification--warning {
-    --kv-notification-background: var(--kv-color-warning-subtle);
-    --kv-notification-accent: var(--kv-color-warning);
+  .kv-alert.kv-alert--warning {
+    --kv-alert-background: var(--kv-color-warning-subtle);
+    --kv-alert-accent: var(--kv-color-warning);
   }
 
-  .kv-notification.kv-notification--danger {
-    --kv-notification-background: var(--kv-color-danger-subtle);
-    --kv-notification-accent: var(--kv-color-danger);
+  .kv-alert.kv-alert--danger {
+    --kv-alert-background: var(--kv-color-danger-subtle);
+    --kv-alert-accent: var(--kv-color-danger);
   }
 
   /* With an icon, two columns: the icon in the first, every other child in the second, in DOM
    * order. Without one, a single column. */
-  .kv-notification:has(> .kv-notification-icon) {
+  .kv-alert:has(> .kv-alert-icon) {
     grid-template-columns: auto minmax(0, 1fr);
-    column-gap: var(--kv-notification-gap);
+    column-gap: var(--kv-alert-gap);
   }
 
-  .kv-notification:has(> .kv-notification-icon) > :not(.kv-notification-icon) {
+  .kv-alert:has(> .kv-alert-icon) > :not(.kv-alert-icon) {
     grid-column: 2;
   }
 
   /* Centred on the title's first line: (title line height - icon size) / 2. The icon is 1.25em
    * (step 5), so 1.25em here is its own size. Under the 1.4.12 line height it stays on the line. */
-  .kv-notification > .kv-notification-icon {
+  .kv-alert > .kv-alert-icon {
     grid-column: 1;
     grid-row: 1;
     align-self: start;
     margin-block-start: calc(
-      (var(--kv-notification-title-size) * var(--kv-notification-title-line-height) - 1.25em) / 2
+      (var(--kv-alert-title-size) * var(--kv-alert-title-line-height) - 1.25em) / 2
     );
-    color: var(--kv-notification-accent);
+    color: var(--kv-alert-accent);
   }
 
   /* A message label, not a section heading: the body family, so it doesn't read as new page
    * structure. The heading level is the consumer's. */
-  .kv-notification-title {
+  .kv-alert-title {
     max-inline-size: var(--kv-prose-measure);
     margin: 0;
     color: var(--kv-color-text);
     font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
-    font-size: var(--kv-notification-title-size);
+    font-size: var(--kv-alert-title-size);
     font-weight: 600;
-    line-height: var(--kv-notification-title-line-height);
+    line-height: var(--kv-alert-title-line-height);
   }
 
   /* Visually hidden, never display: none: the status word is how a screen reader says what
    * kind of message this is (1.4.1), and it is in the heading list. Any consumer's own span with
    * this class behaves the same. Without this theme it shows, which is correct unstyled. */
-  .kv-notification-status {
+  .kv-alert-status {
     position: absolute;
     inline-size: 1px;
     block-size: 1px;
@@ -2422,7 +2538,7 @@
     white-space: nowrap;
   }
 
-  .kv-notification-body {
+  .kv-alert-body {
     max-inline-size: var(--kv-prose-measure);
     margin-block: var(--kv-space-2) 0;
     color: var(--kv-color-text);
@@ -2432,42 +2548,42 @@
 
   /* The Body's own blocks: no outer margins, space-2 between them, lists keep their markers.
    * Zero specificity, so your CSS and kv-prose on the Body win. */
-  :where(.kv-notification-body > *) {
+  :where(.kv-alert-body > *) {
     margin-block: 0;
   }
 
-  :where(.kv-notification-body > * + *) {
+  :where(.kv-alert-body > * + *) {
     margin-block-start: var(--kv-space-2);
   }
 
-  :where(.kv-notification-body :is(ul, ol)) {
+  :where(.kv-alert-body :is(ul, ol)) {
     padding-inline-start: var(--kv-space-6);
   }
 
   /* The built-in button group: a wrapping row, start-aligned. Below 40rem a column of
    * full-width buttons, and links stay links. */
-  .kv-notification-actions {
+  .kv-alert-actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--kv-space-3);
-    margin-block-start: var(--kv-notification-padding-block);
+    margin-block-start: var(--kv-alert-padding-block);
   }
 
   @media (width < 40rem) {
-    .kv-notification-actions {
+    .kv-alert-actions {
       flex-direction: column;
       align-items: flex-start;
     }
 
-    .kv-notification-actions > .kv-button {
+    .kv-alert-actions > .kv-button {
       align-self: stretch;
     }
   }
 
   /* Only when the consumer made the root a focus target (tabIndex={-1}): the ring is outside
    * the box and follows the radius (2.4.7, 2.4.13). */
-  .kv-notification:is(:focus-visible, [data-focus-visible]) {
+  .kv-alert:is(:focus-visible, [data-focus-visible]) {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: var(--kv-focus-ring-offset);
   }
@@ -2475,15 +2591,15 @@
   /* All four statuses share one colour here, so the icon's shape, the status word and the
    * title carry the status. The border is drawn on all four sides, and the bar keeps its 4px. */
   @media (forced-colors: active) {
-    .kv-notification {
+    .kv-alert {
       border-color: CanvasText;
     }
 
-    .kv-notification > .kv-notification-icon {
+    .kv-alert > .kv-alert-icon {
       color: CanvasText;
     }
 
-    .kv-notification:is(:focus-visible, [data-focus-visible]) {
+    .kv-alert:is(:focus-visible, [data-focus-visible]) {
       outline-color: Highlight;
     }
   }
@@ -2547,11 +2663,11 @@
 
   /* 12. Form fields --------------------------------------------------------------------------
    * <Field.Root> renders class="kv-field", and its parts kv-field-label, kv-field-optional,
-   * kv-field-hint (also <Fieldset.Hint>), kv-field-error-message and kv-field-error-prefix.
+   * kv-field-help-text (also <Fieldset.HelpText>), kv-field-error-message and kv-field-error-prefix.
    * <Fieldset.Root> renders kv-fieldset and its <legend> kv-fieldset-legend. A description is
    * a <Field.Prose>: kv-prose. <TextInput> renders kv-input, and <Textarea> renders kv-textarea,
    * the same box with block padding, a height of its rows and vertical resize. Its
-   * characterCount renders <CharacterCount>: a kv-field-hint with kv-character-count, which adds
+   * characterCount renders <CharacterCount>: a kv-field-help-text with kv-character-count, which adds
    * only the over-the-limit look (data-over: weight 600 and the warning icon). Design spec:
    * docs/design/rich-text-editor.md §6.2 and §6.3.
    * <InputGroup.Root> renders kv-input-group, the box around an input and its units, icons or
@@ -2570,24 +2686,24 @@
    *     <Field.Label>Postnummer</Field.Label>
    *     <Field.Prose><p>Det står på brevet från kommunen.</p></Field.Prose>
    *     <TextInput name="postcode" inputMode="numeric" className="kv-input--width-6" />
-   *     <Field.Hint>Fem siffror, till exempel 00100.</Field.Hint>
+   *     <Field.HelpText>Fem siffror, till exempel 00100.</Field.HelpText>
    *     <Field.ErrorMessage>{error}</Field.ErrorMessage>
    *   </Field.Root>
    *
    * The description is a Field.Prose directly in the Field or Fieldset: kv-prose, in body type
    * (16px) wherever it sits, for what the user must read before answering. It may hold
-   * paragraphs, lists and links. The hint is a Field.Hint (Fieldset.Hint): a plain
-   * <p class="kv-field-hint"> in body-small (14px), in the text colour, for a short instruction,
-   * format example or limit, always under the control. A Field.Prose is 16px and a Field.Hint
+   * paragraphs, lists and links. The help text is a Field.HelpText (Fieldset.HelpText): a plain
+   * <p class="kv-field-help-text"> in body-small (14px), in the text colour, for a short instruction,
+   * format example or limit, always under the control. A Field.Prose is 16px and a Field.HelpText
    * 14px: the size belongs to the part. Both are registered by the component as descriptions of
    * the control or group, so keep them to plain text and short paragraphs: an accessible
-   * description has no structure. The hint takes data-invalid and data-disabled, which the theme doesn't style:
+   * description has no structure. The help text takes data-invalid and data-disabled, which the theme doesn't style:
    * the error carries the state.
    *
-   * The default order is label, description, control, hint, then the error message, so the
+   * The default order is label, description, control, help text, then the error message, so the
    * visual order is the aria-describedby order. A fieldset is legend, description, controls,
-   * hint, error. Every part is one gap from the next, so any order you render spaces
-   * correctly, and a part you leave out leaves no hole. The one exception is an option's hint
+   * help text, error. Every part is one gap from the next, so any order you render spaces
+   * correctly, and a part you leave out leaves no hole. The one exception is an option's help text
    * (a checkbox or radio, below), which sits directly under its label.
    *
    * An invalid input is drawn from [data-invalid] (set by Field.Root) or [aria-invalid="true"]:
@@ -2622,7 +2738,7 @@
    *   <Fieldset.Root group required>
    *     <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
    *     <DateInput.Root name="birth" autoComplete="bday" />
-   *     <Fieldset.Hint>Till exempel 2007 3 27</Fieldset.Hint>
+   *     <Fieldset.HelpText>Till exempel 2007 3 27</Fieldset.HelpText>
    *   </Fieldset.Root>
    *
    * kv-date-input is a row that wraps, 16px between the boxes (12px in compact density, from
@@ -2634,7 +2750,7 @@
    *
    * The width classes count characters in the input's own font, plus the 1.4.12 letter-spacing
    * allowance and the invalid edge, so the expected answer fits in every state. They are a
-   * hint and never a limit (no maxlength), and they shrink to fit a 320px screen (1.4.10).
+   * help text and never a limit (no maxlength), and they shrink to fit a 320px screen (1.4.10).
    *
    * Nothing here clips, and nothing has a fixed height: min-block-size only, so the text
    * spacing overrides fit (1.4.12). Every part wraps, hyphenated like prose. The
@@ -2646,7 +2762,7 @@
    * --kv-input-padding-inline (12px). --kv-control-border-width-invalid (2px) is shared by the
    * controls that show an invalid state. Compact density (section 6) gives inputs the
    * 32px minimum height and labels 14px, but input text, descriptions and errors stay 16px, and
-   * a hint stays 14px: they are essential content, and iOS zooms into an input under 16px.
+   * a help text stays 14px: they are essential content, and iOS zooms into an input under 16px.
    */
   :root {
     --kv-field-gap: var(--kv-space-2);
@@ -2661,7 +2777,7 @@
     }
   }
 
-  /* One question with one control. Label, description, control, hint and error sit one gap
+  /* One question with one control. Label, description, control, help text and error sit one gap
    * apart. No margin of its own: the space between questions is the form's. */
   .kv-field {
     display: flex;
@@ -2771,11 +2887,11 @@
     line-height: var(--kv-font-body-line-height);
   }
 
-  /* The hint (Field.Hint, Fieldset.Hint): a short instruction, format example or limit, almost
+  /* The help text (Field.HelpText, Fieldset.HelpText): a short instruction, format example or limit, almost
    * always under the control. Body-small, in the text colour, in every density: never muted,
    * and never changed by invalid, disabled or read-only (the error carries the state, 1.4.1).
    * The size belongs to the part, so it is 14px above the control too. */
-  .kv-field-hint {
+  .kv-field-help-text {
     max-inline-size: var(--kv-prose-measure);
     margin: 0;
     color: var(--kv-color-text);
@@ -2849,7 +2965,7 @@
     text-align: start;
   }
 
-  /* A hint at most: examples go in the hint (a Field.Hint). */
+  /* A help text at most: examples go in the help text (a Field.HelpText). */
   :is(.kv-input, .kv-textarea)::placeholder {
     color: var(--kv-color-text-muted);
     opacity: 1;
@@ -2949,7 +3065,7 @@
     resize: none;
   }
 
-  /* The character count is a hint (kv-field-hint, above) and adds only what going over the limit
+  /* The character count is a help text (kv-field-help-text, above) and adds only what going over the limit
    * needs: weight 600 and the warning icon at the inline start, laid out as the error message's
    * icon is. The text stays the text colour: before submit it is a warning, not an error, and
    * the weight, the icon and the words carry it, never colour alone (1.4.1). */
@@ -3441,7 +3557,7 @@
   }
 
   /* A date (section 12, continued): the row of three boxes. It is a direct child of the
-   * fieldset, so the fieldset's gap spaces it from the legend, the hint and the error (8px, 4px
+   * fieldset, so the fieldset's gap spaces it from the legend, the help text and the error (8px, 4px
    * compact). The boxes never shrink below their width, and wrap in order when the text is
    * large. */
   .kv-date-input {
@@ -3494,7 +3610,7 @@
    * A control that is a direct child of kv-field makes the field a choice row: the box or the
    * circle at the start, 24px, centred on the label's first line, and the label across the
    * whole row, padded past the box, so the box, the space around it and the text are one
-   * target of at least 44px (32px compact). An option's hint (a Field.Hint in the option's field)
+   * target of at least 44px (32px compact). An option's help text (a Field.HelpText in the option's field)
    * goes in the second column directly under the label's box, outside the target, and an error
    * under the row.
    *
@@ -3542,15 +3658,15 @@
   }
 
   .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-prose,
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-field-hint {
+  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-field-help-text {
     grid-column: 2;
   }
 
-  /* An option's hint sits directly under its label's box: the label is already padded to the
-   * control's minimum height, so the row gap would put the hint as far from its own label as
-   * from the next option's. The negative margin cancels the gap for the hint that follows the
+  /* An option's help text sits directly under its label's box: the label is already padded to the
+   * control's minimum height, so the row gap would put the help text as far from its own label as
+   * from the next option's. The negative margin cancels the gap for the help text that follows the
    * label. A description (a Prose) keeps the gap. */
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-field-label + .kv-field-hint {
+  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-field-label + .kv-field-help-text {
     margin-block-start: calc(-1 * var(--kv-field-gap));
   }
 
@@ -4154,7 +4270,7 @@
     border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
   }
 
-  /* The label type style in the text colour: a group name is content, not a hint. */
+  /* The label type style in the text colour: a group name is content, not a help text. */
   .kv-listbox-group-label {
     padding-block: var(--kv-space-2) var(--kv-space-1);
     padding-inline: var(--kv-space-3);
@@ -7006,8 +7122,8 @@
    * toolbar (<RichTextEditor.Toolbar>: kv-toolbar kv-toolbar--attached, and kv-toolbar--labels
    * with labels="icon-and-text") above the editable text (<RichTextEditor.Content>: the
    * contenteditable gets kv-rich-text-content kv-prose). Under the box come the keyboard
-   * instruction (kv-field-hint kv-rich-text-keyboard-hint) and the count (kv-character-count),
-   * which are hints and have no style of their own here. Link and Image forms open in
+   * instruction (kv-field-help-text kv-rich-text-keyboard-hint) and the count (kv-character-count),
+   * which are help texts and have no style of their own here. Link and Image forms open in
    * kv-rich-text-popover, rendered after the toolbar in kv-rich-text-popups.
    * State is data-*: data-focused, data-focus-visible, data-invalid, data-required, data-disabled,
    * data-readonly and data-empty. Design spec: docs/design/rich-text-editor.md §6.5 to §6.9.
@@ -7025,7 +7141,9 @@
   .kv-rich-text {
     --kv-rich-text-edge: var(--kv-color-border-control);
     --kv-rich-text-edge-width: var(--kv-border-width);
-    --kv-rich-text-inset: calc(var(--kv-control-border-width-invalid) - var(--kv-rich-text-edge-width));
+    --kv-rich-text-inset: calc(
+      var(--kv-control-border-width-invalid) - var(--kv-rich-text-edge-width)
+    );
 
     box-sizing: border-box;
     inline-size: 100%;
@@ -7052,9 +7170,9 @@
   /* Keyboard focus in the text: the ring is around the whole box. Before the script runs
    * ([data-focused]), :focus-visible draws it. */
   .kv-rich-text:is(
-      [data-focus-visible],
-      :not([data-focused]):has(.kv-rich-text-content:focus-visible)
-    ) {
+    [data-focus-visible],
+    :not([data-focused]):has(.kv-rich-text-content:focus-visible)
+  ) {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: var(--kv-focus-ring-offset);
   }
@@ -7119,11 +7237,22 @@
   }
 
   .kv-toolbar--attached
-    .kv-button:not([aria-pressed='true'], [data-pressed], :disabled, [data-disabled], [aria-disabled='true']):is(:hover, :active) {
+    .kv-button:not(
+      [aria-pressed='true'],
+      [data-pressed],
+      :disabled,
+      [data-disabled],
+      [aria-disabled='true']
+    ):is(:hover, :active) {
     background-color: var(--kv-color-primary-subtle);
   }
 
-  .kv-toolbar--attached .kv-button:not([aria-pressed='true'], [data-pressed]):is(:disabled, [data-disabled], [aria-disabled='true']) {
+  .kv-toolbar--attached
+    .kv-button:not([aria-pressed='true'], [data-pressed]):is(
+      :disabled,
+      [data-disabled],
+      [aria-disabled='true']
+    ) {
     color: var(--kv-color-text-muted);
     cursor: not-allowed;
   }
@@ -7249,9 +7378,9 @@
     margin: 0;
     padding-inline: var(--kv-space-2);
     padding-block-start: var(--kv-space-2);
-    font-size: var(--kv-notification-title-size);
+    font-size: var(--kv-alert-title-size);
     font-weight: 600;
-    line-height: var(--kv-notification-title-line-height);
+    line-height: var(--kv-alert-title-line-height);
   }
 
   .kv-rich-text-popover-form {
@@ -7296,9 +7425,9 @@
     }
 
     .kv-rich-text:is(
-        [data-focus-visible],
-        :not([data-focused]):has(.kv-rich-text-content:focus-visible)
-      ) {
+      [data-focus-visible],
+      :not([data-focused]):has(.kv-rich-text-content:focus-visible)
+    ) {
       outline-color: Highlight;
     }
 
@@ -7329,13 +7458,25 @@
       color: ButtonText;
     }
 
-    .kv-toolbar--attached .kv-button:not([aria-pressed='true'], [data-pressed], :disabled, [data-disabled], [aria-disabled='true']):is(:hover, :active),
+    .kv-toolbar--attached
+      .kv-button:not(
+        [aria-pressed='true'],
+        [data-pressed],
+        :disabled,
+        [data-disabled],
+        [aria-disabled='true']
+      ):is(:hover, :active),
     .kv-toolbar--attached .kv-button[aria-expanded='true'] {
       border-color: Highlight;
       background-color: ButtonFace;
     }
 
-    .kv-toolbar--attached .kv-button:not([aria-pressed='true'], [data-pressed]):is(:disabled, [data-disabled], [aria-disabled='true']) {
+    .kv-toolbar--attached
+      .kv-button:not([aria-pressed='true'], [data-pressed]):is(
+        :disabled,
+        [data-disabled],
+        [aria-disabled='true']
+      ) {
       border-color: GrayText;
       color: GrayText;
     }

@@ -1,5 +1,5 @@
 // "Show code" and the Docs description show what an adopter writes. A story that
-// renders a fixture component would otherwise show `<DeadlineNotification locale="sv" />`, which
+// renders a fixture component would otherwise show `<DeadlineAlert locale="sv" />`, which
 // says nothing about the component. These helpers show the fixture's own source instead, so the
 // code on the page is the code that renders the example and cannot drift from it.
 
@@ -29,7 +29,7 @@ export function sourceOf(raw: string, name: string): string {
 /**
  * `parameters.docs.source` for a story whose `render` is made of fixture components: the source of
  * each named function, one after the other. `file` is relative to `src/components/`, such as
- * `notification/notification.fixture.tsx`.
+ * `alert/alert.fixture.tsx`.
  */
 export function showSource(file: string, ...names: string[]) {
   const raw = sources[`./components/${file}`]

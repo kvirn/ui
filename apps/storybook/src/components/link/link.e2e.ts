@@ -83,6 +83,52 @@ test.describe('Link keyboard contract', () => {
   })
 })
 
+test.describe('Link service look', () => {
+  test('the service link edge and icon divider are visible in forced colours (1.4.11)', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ forcedColors: 'active' })
+    await openStory(page, 'service', 'Ansök om bygglov (öppnas i en ny flik)')
+    const edges = await page.locator('.kv-link--service').evaluate((link) => {
+      const icon = link.querySelector('.kv-link-icon')
+      const isDrawn = (element: Element, side: string) => {
+        const style = getComputedStyle(element)
+        return (
+          Number.parseFloat(style.getPropertyValue(`border-${side}-width`)) > 0 &&
+          !['none', 'hidden'].includes(style.getPropertyValue(`border-${side}-style`))
+        )
+      }
+      // The block isn't filled in forced colours, so its divider (the right edge in this
+      // left-to-right story) keeps its edge.
+      return {
+        link: ['top', 'right', 'bottom', 'left'].every((side) => isDrawn(link, side)),
+        icon: icon !== null && isDrawn(icon, 'right'),
+      }
+    })
+    expect(edges).toEqual({ link: true, icon: true })
+  })
+
+  test('a key-focused service link shows a focus indicator (2.4.7)', async ({ page }) => {
+    const link = await openStory(page, 'service', 'Ansök om bygglov (öppnas i en ny flik)')
+    await page.keyboard.press('Tab')
+    await expect(link).toBeFocused()
+    expect(await link.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe(
+      'none',
+    )
+  })
+
+  test('no horizontal scrolling at 320px with the Finnish service link (1.4.10)', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 640 })
+    await openStory(page, 'service-long-finnish-text', 'Hae rakennuslupaa sähköisesti')
+    const hasHorizontalScroll = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    )
+    expect(hasHorizontalScroll).toBe(false)
+  })
+})
+
 test.describe('Link accessibility', () => {
   test('a11y tree of the current page navigation', async ({ page }) => {
     await openStory(page, 'current-page', 'Ansök')
@@ -116,6 +162,8 @@ test.describe('Link accessibility', () => {
     ['default', 'Ansök om bygglov'],
     ['same-page-link', 'Ansök om bygglov'],
     ['current-page', 'Ansök'],
+    ['service', 'Ansök om bygglov (öppnas i en ny flik)'],
+    ['service-long-finnish-text', 'Hae rakennuslupaa sähköisesti'],
     ['new-tab', 'Digg (öppnas i en ny flik)'],
     ['new-tab-notice-overrides', 'Digg (öppnas i nytt fönster)'],
     ['router-link', 'Start'],

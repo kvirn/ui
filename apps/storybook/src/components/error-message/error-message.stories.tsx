@@ -2,6 +2,7 @@ import { Field, Fieldset, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
+import { showSource } from '../../docs-source.ts'
 import {
   FieldStates,
   localeOf,
@@ -121,18 +122,18 @@ export const InFieldset: Story = {
 }
 
 /**
- * After a hint under the input: the hint, then the error, one gap apart. The hint is `text` in
+ * After a help text under the input: the help text, then the error, one gap apart. The help text is `text` in
  * regular weight, and the error is `danger` in medium weight with the icon, so they never read
- * as one paragraph. The input's description lists the hint, then the error.
+ * as one paragraph. The input's description lists the help text, then the error.
  */
-export const UnderHint: Story = {
+export const UnderHelpText: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <Field.Root required invalid lang={lang}>
         <Field.Label>{text.registration}</Field.Label>
         <TextInput name="registration" className="kv-input--width-10" defaultValue="AB 1" />
-        <Field.Hint>{text.registrationHint}</Field.Hint>
+        <Field.HelpText>{text.registrationHint}</Field.HelpText>
         <Field.ErrorMessage {...args}>{text.registrationError}</Field.ErrorMessage>
       </Field.Root>
     )
@@ -194,11 +195,13 @@ export const Compact: Story = {
 /** Right to left, in English: the icon and the text start at the right. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
+  parameters: showSource('form/form.fixture.tsx', 'FieldStates'),
   render: () => <FieldStates locale="en" />,
 }
 
 /** The message is drawn in the system text colour, with its icon, and the input's edge is 2px. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
+  parameters: showSource('form/form.fixture.tsx', 'FieldStates'),
   render: (_args, { globals }) => <FieldStates locale={localeOf(globals)} />,
 }

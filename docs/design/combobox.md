@@ -37,7 +37,7 @@ The parts and behaviour are decided in the Listbox, overlay and Combobox decisio
 | KvirnUI `kv-input`, `kv-input-group` (`form-fields.md` §6.3, §6.13) | The box: 1px `border-control`, `md` radius, 44px, hover to `text`, 2px `danger` invalid with padding compensation, dashed disabled on `surface`, the ring around the whole box | The Combobox Control's buttons have no divider (the input group's button has one so it isn't mistaken for an Addon; a Control has no Addons). Record it in DESIGN.md (D9) |
 | KvirnUI `kv-listbox-native` (the native select's look)              | The trigger's box and chevron, so touch and desktop look like the same field                                                                                                   | One chevron geometry for all three (P1)                                                                                                                                   |
 | APG Select-Only Combobox, Editable Combobox With List Autocomplete  | Structure, keys, `aria-activedescendant`, the visible active option                                                                                                            | None                                                                                                                                                                      |
-| GOV.UK Design System: Select, and `accessible-autocomplete`         | No dropdown arrow on a free-text autocomplete by default (`showAllValues` adds one), a "No results found" message, hint text over placeholders                                 | We keep a chevron on Combobox (closed list) and drop it from Autocomplete's default (m3, D6)                                                                              |
+| GOV.UK Design System: Select, and `accessible-autocomplete`         | No dropdown arrow on a free-text autocomplete by default (`showAllValues` adds one), a "No results found" message, help text over placeholders                                 | We keep a chevron on Combobox (closed list) and drop it from Autocomplete's default (m3, D6)                                                                              |
 | Designsystemet (NO): Combobox                                       | Chips for several values, a clear button                                                                                                                                       | Designsystemet puts chips inside the field. We keep them outside the box, so each chip can be a 44px target and wraps on its own line                                     |
 | React Aria: ComboBox, Select                                        | The trigger named by label plus value. Buttons labelled with their own text plus the field's label                                                                             | Applied to Toggle and Clear names (m2)                                                                                                                                    |
 
@@ -45,7 +45,7 @@ The parts and behaviour are decided in the Listbox, overlay and Combobox decisio
 
 Choosing in a Combobox, one value:
 
-1. Tab or click into the input (a click doesn't open). The hint says "Börja skriva och välj sedan i listan."
+1. Tab or click into the input (a click doesn't open). The help text says "Börja skriva och välj sedan i listan."
 2. Type → the list filters and opens under the box. About 500 ms after typing stops, the count is announced.
 3. ArrowDown → the first option is active (bar and fill). Or press an option.
 4. Enter or press → its text fills the input, the popup closes, focus stays.
@@ -79,15 +79,15 @@ Unhappy paths:
 
 ### 4.2 Consumer copy the docs and stories should model
 
-| Where                        | sv                                                                                     | en                                                                                | Notes                                                                                                              |
-| ---------------------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Combobox hint                | Börja skriva och välj sedan i listan.                                                  | Start typing, then choose from the list.                                          | Already in the fixture. Make it the documented default: a click doesn't open the list, so the hint says what to do |
-| Several values hint          | Du kan välja flera.                                                                    | You can choose several.                                                           | Already in the fixture                                                                                             |
-| Not in the list (error)      | Välj en kommun i listan                                                                | Choose a municipality from the list                                               | Already in the fixture. Good: says what to do                                                                      |
-| `Combobox.Empty`, contextual | Ingen kommun matchar det du skrev. Kontrollera stavningen eller skriv färre bokstäver. | No municipality matches what you typed. Check the spelling or type fewer letters. | Recommend in `combobox.md` as an example child of `Combobox.Empty`. Long: it wraps, so check it at 320px           |
-| Autocomplete hint            | Börja skriva så föreslår vi gator. Du kan också skriva en egen adress.                 | Start typing and we'll suggest streets. You can also type your own address.       | Good. Put the example ("Till exempel Storgatan") here, not in a placeholder (m9)                                   |
-| Listbox placeholder          | Välj kommun                                                                            | Choose a municipality                                                             | Never the label. Fine                                                                                              |
-| Disabled option reason       | Stockholm – stängd för ansökningar                                                     | Stockholm – closed for applications                                               | As a rich option's second line (m5)                                                                                |
+| Where                        | sv                                                                                     | en                                                                                | Notes                                                                                                                   |
+| ---------------------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Combobox help text           | Börja skriva och välj sedan i listan.                                                  | Start typing, then choose from the list.                                          | Already in the fixture. Make it the documented default: a click doesn't open the list, so the help text says what to do |
+| Several values help text     | Du kan välja flera.                                                                    | You can choose several.                                                           | Already in the fixture                                                                                                  |
+| Not in the list (error)      | Välj en kommun i listan                                                                | Choose a municipality from the list                                               | Already in the fixture. Good: says what to do                                                                           |
+| `Combobox.Empty`, contextual | Ingen kommun matchar det du skrev. Kontrollera stavningen eller skriv färre bokstäver. | No municipality matches what you typed. Check the spelling or type fewer letters. | Recommend in `combobox.md` as an example child of `Combobox.Empty`. Long: it wraps, so check it at 320px                |
+| Autocomplete help text       | Börja skriva så föreslår vi gator. Du kan också skriva en egen adress.                 | Start typing and we'll suggest streets. You can also type your own address.       | Good. Put the example ("Till exempel Storgatan") here, not in a placeholder (m9)                                        |
+| Listbox placeholder          | Välj kommun                                                                            | Choose a municipality                                                             | Never the label. Fine                                                                                                   |
+| Disabled option reason       | Stockholm – stängd för ansökningar                                                     | Stockholm – closed for applications                                               | As a rich option's second line (m5)                                                                                     |
 
 ## 5. Structure
 
@@ -96,20 +96,20 @@ The same at every breakpoint: the control is as wide as its column (the 40rem fo
 ```
 Listbox (custom)                      Combobox, one value
 Label                                 Label
-Hint                                  Hint
+Help text                             Help text
 [ Value or placeholder        ˅ ]     [ typed text          ×   ˅ ]   ← Control: input, Clear, Toggle
 ┌──────────────────────────────┐      ┌──────────────────────────────┐
 │ Group label                  │      │ ▌Option (active)          ✓ │   ← bar + fill, tick = chosen
 │ ▌Option (active)          ✓ │      │  Option                      │
 │  Option                      │      │  Option (half a row shows)   │
 │ ───────────────────────────  │      └──────────────────────────────┘
-│ Group label                  │      Hint under the box, Error
+│ Group label                  │      Help text under the box, Error
 │  Option                      │
 └──────────────────────────────┘
 
 Combobox, several values (target, D2)  Autocomplete
 Label                                  Label (valfritt)
-Hint                                   Hint
+Help text                              Help text
 [ typed text                   ˅ ]     [ typed text              × ]   ← no Toggle by default (D6)
 [Malmö | ×] [Uppsala | ×]              suggestions popup
 Error
@@ -194,7 +194,7 @@ Severity follows the `design` skill. Each finding: location, issue, rule, who it
 
 - **M1. Options move under the pointer in multiple mode.** The first chip row (≈54px) is inserted above the input while the popup stays open, and again whenever the chips wrap. Once B1 is fixed the popup moves with the input, so the next press lands on a different option. — No SC, but it causes wrong choices. — Tremor and magnifier users, fast mouse users. — Fix: D2 (the value list after the Control).
 - **M2. Clear removes every chosen value in multiple mode.** `hasClearableValue` counts chosen keys (`use-combobox.ts:834`), so one press on a 44px target next to the Toggle, named only "Rensa", empties the whole choice with no undo. — DESIGN.md (destructive actions need a confirmation step). — Anyone who misses the Toggle, especially on touch. — Fix: in multiple, Clear empties the text only and shows only while there is text (D3).
-- **M3. Nothing shows there's a list.** The docs' first example (`combobox.md`, "How it works"), `MultipleExample` and `MunicipalitiesCombobox` render a bare `Combobox.Input`, and a click doesn't open the list. In `combobox-keyboard.png` the "Kommuner" input looks like any text field. — Clarity first (DESIGN.md principle 1). — Residents with low digital confidence, mouse and touch users. — Fix: make `Control` + `Clear` + `Toggle` the documented default for Combobox (one and several values). Keep the bare input as the `Minimal` story. Keep the hint "Börja skriva och välj sedan i listan." in every example (D1).
+- **M3. Nothing shows there's a list.** The docs' first example (`combobox.md`, "How it works"), `MultipleExample` and `MunicipalitiesCombobox` render a bare `Combobox.Input`, and a click doesn't open the list. In `combobox-keyboard.png` the "Kommuner" input looks like any text field. — Clarity first (DESIGN.md principle 1). — Residents with low digital confidence, mouse and touch users. — Fix: make `Control` + `Clear` + `Toggle` the documented default for Combobox (one and several values). Keep the bare input as the `Minimal` story. Keep the help text "Börja skriva och välj sedan i listan." in every example (D1).
 - **M4. The Listbox trigger truncates its value.** `.kv-listbox-value` is `nowrap` with an ellipsis (`theme.css` 3359–3365). With `multiple`, `Listbox.Value` joins every chosen text with commas, so chosen values disappear behind "…". At 320px a long Finnish name is cut, and more under 1.4.12. — DESIGN.md Layout ("use `overflow-wrap: anywhere` as a last resort, not truncation"). — Magnifier users who need to confirm their choice without reopening, anyone choosing several. — Fix: wrap the value, and let the trigger grow (§6.1).
 - **M5. Group labels are 14px `text-muted`** (`theme.css` 3480–3487, `listbox-groups.png`). — DESIGN.md Typography (`label-compact` is only for control labels in compact density) and Don'ts (no `text-muted` for what the user must read). A group name can be what tells two options apart (the same street name in two municipalities). — Low-vision users, second-language readers. — Fix: `label` in `text`, a `border-subtle` line between groups (§6.1).
 - **M6. "Inga resultat" and "Laddar resultat" are `text-muted`** (`theme.css` 3489–3492). — DESIGN.md Don'ts. It's the only explanation of an empty list. — Low-vision users. — Fix: `text`.
@@ -209,8 +209,8 @@ Severity follows the `design` skill. Each finding: location, issue, rule, who it
 - **m5.** A disabled option is told apart by colour only. Fix: show the reason in words in the option (the `DisabledOption` stories should show "stängd för ansökningar"). No strike-through, which hurts reading.
 - **m6.** A disabled Combobox with a value renders a disabled Clear (`hasClearableValue` ignores `disabled`). It's noise. Fix: don't render Clear while disabled (verify in the `ComboboxStates` disabled field).
 - **m7.** Popover has no default-theme styles (`popover.md`: "The default theme doesn't style Popover yet"). The stories draw it with inline styles, a `border-control` edge and hard-coded fallbacks. Fix: D5.
-- **m8.** The 20rem height limit shows 6.9 options in comfortable density. The 7th row is cut by about 4px and looks complete (`combobox-multiple.png`, `autocomplete.png`), so there's no hint that the list scrolls, and macOS hides scrollbars. Fix: the 6.5-row limit in §6.1.
-- **m9.** The Autocomplete placeholder "Till exempel Storgatan" repeats the hint and disappears on typing. Fix: the example goes in the hint.
+- **m8.** The 20rem height limit shows 6.9 options in comfortable density. The 7th row is cut by about 4px and looks complete (`combobox-multiple.png`, `autocomplete.png`), so there's no help text that the list scrolls, and macOS hides scrollbars. Fix: the 6.5-row limit in §6.1.
+- **m9.** The Autocomplete placeholder "Till exempel Storgatan" repeats the help text and disappears on typing. Fix: the example goes in the help text.
 - **m10.** The Combobox Toggle's chevron flips when open, the Listbox's and the native select's don't. Fix: no flip anywhere. The open popup is the cue.
 
 ### Polish
@@ -233,7 +233,7 @@ Severity follows the `design` skill. Each finding: location, issue, rule, who it
 - A popup with nothing to show draws nothing.
 - Marks drawn with borders in `currentColor`, which survive forced colours.
 - No popup animation. Transitions only under `no-preference`.
-- Content: the hints, the "Välj en kommun i listan" error and the Autocomplete hint are plain and say what to do. å, ä and ö filtering is visible in `autocomplete.png` ("ä" finds Järnvägsgatan and Älvgatan, not "a").
+- Content: the help texts, the "Välj en kommun i listan" error and the Autocomplete help text are plain and say what to do. å, ä and ö filtering is visible in `autocomplete.png` ("ä" finds Järnvägsgatan and Älvgatan, not "a").
 
 **VERDICT: CHANGES REQUIRED** (B1, plus M1 to M7).
 
@@ -272,6 +272,6 @@ Severity follows the `design` skill. Each finding: location, issue, rule, who it
 ### Further questions
 
 1. Is the 4px gap between the anchor and the popup (`offset = 4`, `use-listbox.ts`, `use-combobox.ts`) meant to be `--kv-space-1`? It matches. Say so in the docs, so a rebrand doesn't have to guess.
-2. The popup covers a hint or error under the box while open (`combobox-320.png` shows a fragment of the next line under the popup). It's expected for a dismissible popup, but an error under the box goes out of sight while the user fixes it. Research question for the usability run.
+2. The popup covers a help text or error under the box while open (`combobox-320.png` shows a fragment of the next line under the popup). It's expected for a dismissible popup, but an error under the box goes out of sight while the user fixes it. Research question for the usability run.
 3. On phones, does the placement use the visual viewport, so the on-screen keyboard doesn't hide the lower options of a Combobox? Check on iOS Safari and Android Chrome.
 4. Many chosen values (20 or more) push the input far down. Is a count summary ("12 valda") needed for staff tools? Out of scope here.

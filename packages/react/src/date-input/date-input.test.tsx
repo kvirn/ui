@@ -30,6 +30,10 @@ import type {
 // Contract: date-input.a11y.md. The keyboard rows are covered end to end in
 // apps/storybook/src/components/date-input/date-input.e2e.ts.
 
+/** `dateInput.autoAdvanceHint` in the two locales the tests use. */
+const svHint = sv.dateInput.autoAdvanceHint
+const enHint = en.dateInput.autoAdvanceHint
+
 let consoleWarn: MockInstance<Console['warn']>
 
 beforeEach(() => {
@@ -65,13 +69,13 @@ interface BirthProps extends DateInputRootProps {
   fieldset?: Omit<FieldsetRootProps, 'children'>
 }
 
-/** The design spec's question, in Swedish: a legend, the boxes, a hint with an example, an error. */
+/** The design spec's question, in Swedish: a legend, the boxes, a help text with an example, an error. */
 function Birth({ fieldset, ...dateProps }: BirthProps) {
   return (
     <Fieldset.Root group required {...fieldset}>
       <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
       <DateInput.Root {...dateProps} />
-      <Fieldset.Hint>Till exempel 2007 3 27</Fieldset.Hint>
+      <Fieldset.HelpText>Till exempel 2007 3 27</Fieldset.HelpText>
       <Fieldset.ErrorMessage>Ange ditt födelsedatum</Fieldset.ErrorMessage>
     </Fieldset.Root>
   )
@@ -192,15 +196,66 @@ describe('the group’s description', () => {
     const { container } = await render(
       inLocale('sv-SE', sv, <Birth fieldset={{ invalid: true }} />),
     )
+    // The auto-advance hint comes first: it sits right under the boxes, before the consumer's.
     await expect
       .element(page.getByRole('group', { name: 'Födelsedatum', exact: true }))
-      .toHaveAccessibleDescription('Till exempel 2007 3 27 Fel: Ange ditt födelsedatum')
+      .toHaveAccessibleDescription(`${svHint} Till exempel 2007 3 27 Fel: Ange ditt födelsedatum`)
     // The boxes are described by their labels only.
     for (const box of [day(), month(), year()]) {
       await expect.element(box).not.toHaveAttribute('aria-describedby')
     }
     expectNoDanglingReferences(container)
     await expectNoA11yViolations(container)
+  })
+
+  test('the hint is visible, and autoAdvance={false} takes it out of the description', async () => {
+    const { container } = await render(inLocale('sv-SE', sv, <Birth autoAdvance={false} />))
+    await expect
+      .element(page.getByRole('group', { name: 'Födelsedatum', exact: true }))
+      .toHaveAccessibleDescription('Till exempel 2007 3 27')
+    expect(page.getByText(svHint).elements()).toHaveLength(0)
+    expectNoDanglingReferences(container)
+    await expectNoA11yViolations(container)
+  })
+
+  test('the hint is visible text, in the group’s description, in sv and en', async () => {
+    const swedish = await render(inLocale('sv-SE', sv, <Birth />))
+    await expect.element(page.getByText(svHint)).toBeVisible()
+    await expect
+      .element(page.getByRole('group'))
+      .toHaveAccessibleDescription(new RegExp(`^${svHint}`))
+    await swedish.unmount()
+    await render(
+      inLocale(
+        'en-GB',
+        en,
+        <Fieldset.Root group>
+          <Fieldset.Legend>Date of birth</Fieldset.Legend>
+          <DateInput.Root />
+        </Fieldset.Root>,
+      ),
+    )
+    await expect.element(page.getByText(enHint)).toBeVisible()
+    await expect.element(page.getByRole('group')).toHaveAccessibleDescription(enHint)
+  })
+
+  test('the instance’s messages replace the hint, and the hint needs no Fieldset hint', async () => {
+    await render(
+      inLocale(
+        'en-GB',
+        en,
+        <Fieldset.Root group>
+          <Fieldset.Legend>Date of birth</Fieldset.Legend>
+          <DateInput.Root
+            messages={{ autoAdvanceHint: 'Typing a full box jumps to the next one.' }}
+          />
+        </Fieldset.Root>,
+      ),
+    )
+    await expect
+      .element(page.getByRole('group'))
+      .toHaveAccessibleDescription('Typing a full box jumps to the next one.')
+    expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
 
@@ -271,6 +326,227 @@ describe('field order', () => {
       ['Dag', 'Månad', 'År'],
       ['Månad', 'År', 'Dag'],
     ])
+  })
+})
+
+/**
+ * Fires what a browser fires for text that did not come from a key: `beforeinput`, then `input`,
+ * with the given input type (`insertFromPaste`, `insertFromDrop`, `insertReplacementText` for
+ * autofill, `deleteContentBackward`). The value is set the way a user agent sets it.
+ */
+function changeBox(box: HTMLInputElement, text: string, inputType: string) {
+  box.focus()
+  box.dispatchEvent(
+    new InputEvent('beforeinput', { inputType, data: text, bubbles: true, cancelable: true }),
+  )
+  Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set?.call(box, text)
+  box.dispatchEvent(new InputEvent('input', { inputType, data: text, bubbles: true }))
+}
+
+const selectedText = (box: HTMLInputElement) =>
+  box.value.slice(box.selectionStart ?? 0, box.selectionEnd ?? 0)
+
+describe('auto-advance', () => {
+  test('typing the last digit of a box moves focus to the next box: year, month, day for sv-SE, and never from the last', async () => {
+    await render(inLocale('sv-SE', sv, <Birth />))
+    await userEvent.type(year(), '199')
+    await expect.element(year()).toHaveFocus()
+    await userEvent.keyboard('0')
+    await expect.element(month()).toHaveFocus()
+    await userEvent.keyboard('1')
+    await expect.element(month()).toHaveFocus()
+    await userEvent.keyboard('2')
+    await expect.element(day()).toHaveFocus()
+    // The last box: full, and focus stays.
+    await userEvent.keyboard('27')
+    await expect.element(day()).toHaveFocus()
+    await expect.element(year()).toHaveValue('1990')
+    await expect.element(month()).toHaveValue('12')
+    await expect.element(day()).toHaveValue('27')
+  })
+
+  test('it follows the order of the boxes: day, month, year, and month, day, year', async () => {
+    const dayFirst = await render(inLocale('fi', fi, <Birth />))
+    await userEvent.type(page.getByRole('textbox', { name: 'Päivä', exact: true }), '27')
+    await expect.element(page.getByRole('textbox', { name: 'Kuukausi', exact: true })).toHaveFocus()
+    await userEvent.keyboard('03')
+    await expect.element(page.getByRole('textbox', { name: 'Vuosi', exact: true })).toHaveFocus()
+    await dayFirst.unmount()
+
+    await render(inLocale('en-GB', en, <Birth order={['month', 'day', 'year']} />))
+    const box = (name: string) => page.getByRole('textbox', { name, exact: true })
+    await userEvent.type(box('Month'), '12')
+    await expect.element(box('Day')).toHaveFocus()
+    await userEvent.keyboard('27')
+    await expect.element(box('Year')).toHaveFocus()
+  })
+
+  test('your own order of children is the order it follows, not the locale’s', async () => {
+    await render(
+      inLocale(
+        'sv-SE',
+        sv,
+        <Fieldset.Root group>
+          <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+          <DateInput.Root>
+            <DateInput.Day />
+            <DateInput.Month />
+            <DateInput.Year />
+          </DateInput.Root>
+        </Fieldset.Root>,
+      ),
+    )
+    await userEvent.type(day(), '27')
+    await expect.element(month()).toHaveFocus()
+    await userEvent.keyboard('03')
+    await expect.element(year()).toHaveFocus()
+  })
+
+  test('right to left: it still follows the DOM order', async () => {
+    await render(
+      <div dir="rtl">{inLocale('en-GB', en, <Birth order={['day', 'month', 'year']} />)}</div>,
+    )
+    await userEvent.type(page.getByRole('textbox', { name: 'Day', exact: true }), '27')
+    await expect.element(page.getByRole('textbox', { name: 'Month', exact: true })).toHaveFocus()
+  })
+
+  test('a box that is not full, and text that is not digits, never advance', async () => {
+    await render(inLocale('sv-SE', sv, <Birth />))
+    await userEvent.type(year(), '199')
+    await expect.element(year()).toHaveFocus()
+    await userEvent.clear(year())
+    // Four characters that are not digits: nothing is filtered, and focus stays.
+    await userEvent.type(year(), 'tjug')
+    await expect.element(year()).toHaveFocus()
+    await expect.element(year()).toHaveValue('tjug')
+    await expect.element(month()).toHaveValue('')
+  })
+
+  test('an edit of a box that was already full never advances', async () => {
+    await render(
+      inLocale('sv-SE', sv, <Birth defaultValue={{ year: '1990', month: '12', day: '27' }} />),
+    )
+    // More digits than the box takes: no advance.
+    await userEvent.click(year())
+    await userEvent.keyboard('{End}1')
+    await expect.element(year()).toHaveFocus()
+    await expect.element(year()).toHaveValue('19901')
+    // Replacing one character of a full box leaves it full: no advance.
+    await userEvent.click(month())
+    await userEvent.keyboard('{End}{Shift>}{ArrowLeft}{/Shift}3')
+    await expect.element(month()).toHaveValue('13')
+    await expect.element(month()).toHaveFocus()
+  })
+
+  test('paste, drop, autofill and deletion never advance', async () => {
+    await render(inLocale('sv-SE', sv, <Birth />))
+    const yearBox = year().element() as HTMLInputElement
+    const monthBox = month().element() as HTMLInputElement
+    for (const inputType of ['insertFromPaste', 'insertFromDrop', 'insertReplacementText']) {
+      changeBox(yearBox, '1990', inputType)
+      await expect.element(year()).toHaveValue('1990')
+      await expect.element(year()).toHaveFocus()
+    }
+    // Deleting down to a full box, or to nothing, moves nothing.
+    changeBox(monthBox, '12', 'deleteContentBackward')
+    await expect.element(month()).toHaveFocus()
+    // An input event that no `beforeinput` announced, such as some autofill: no advance either.
+    yearBox.focus()
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set?.call(yearBox, '2007')
+    yearBox.dispatchEvent(new InputEvent('input', { bubbles: true }))
+    await expect.element(year()).toHaveFocus()
+  })
+
+  test('Backspace and Delete never move focus, not even in an empty box', async () => {
+    await render(inLocale('sv-SE', sv, <Birth defaultValue={{ day: '7' }} />))
+    await userEvent.click(month())
+    await userEvent.keyboard('{Backspace}')
+    await expect.element(month()).toHaveFocus()
+    await userEvent.keyboard('{Delete}')
+    await expect.element(month()).toHaveFocus()
+    await userEvent.click(day())
+    await userEvent.keyboard('{Backspace}{Backspace}')
+    await expect.element(day()).toHaveFocus()
+    await expect.element(day()).toHaveValue('')
+  })
+
+  test('a value that changes from outside never moves focus', async () => {
+    const empty: DateInputValue = { year: '', month: '', day: '' }
+    const onValueChange = vi.fn<(value: DateInputValue, details: DateInputChangeDetails) => void>()
+    const screen = await render(
+      inLocale('sv-SE', sv, <Birth value={empty} onValueChange={onValueChange} />),
+    )
+    year().element().focus()
+    await screen.rerender(
+      inLocale(
+        'sv-SE',
+        sv,
+        <Birth value={{ year: '1990', month: '12', day: '27' }} onValueChange={onValueChange} />,
+      ),
+    )
+    await expect.element(year()).toHaveValue('1990')
+    await expect.element(year()).toHaveFocus()
+  })
+
+  test('moving focus selects the whole next box, so typing replaces a prefilled value', async () => {
+    await render(inLocale('sv-SE', sv, <Birth defaultValue={{ month: '12', day: '27' }} />))
+    await userEvent.type(year(), '1990')
+    await expect.element(month()).toHaveFocus()
+    expect(selectedText(month().element() as HTMLInputElement)).toBe('12')
+    await userEvent.keyboard('5')
+    await expect.element(month()).toHaveValue('5')
+  })
+
+  test('a disabled next box keeps focus where it is', async () => {
+    await render(
+      inLocale(
+        'sv-SE',
+        sv,
+        <Fieldset.Root group>
+          <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+          <DateInput.Root>
+            <DateInput.Year />
+            <DateInput.Month disabled />
+            <DateInput.Day />
+          </DateInput.Root>
+        </Fieldset.Root>,
+      ),
+    )
+    await userEvent.type(year(), '1990')
+    await expect.element(year()).toHaveFocus()
+  })
+
+  test('autoAdvance={false}: typing never moves focus, and the hint is gone', async () => {
+    await render(inLocale('sv-SE', sv, <Birth autoAdvance={false} />))
+    await userEvent.type(year(), '1990')
+    await expect.element(year()).toHaveFocus()
+    await userEvent.keyboard('12')
+    await expect.element(year()).toHaveFocus()
+    await expect.element(year()).toHaveValue('199012')
+    await expect.element(month()).toHaveValue('')
+  })
+
+  test('the hook alone: getInputProps moves focus, and autoAdvanceHint is the message while it is on', async () => {
+    function Probe({ autoAdvance }: { autoAdvance?: boolean }) {
+      const dateInput = useDateInput({ order: ['month', 'day'], autoAdvance })
+      return (
+        <form>
+          {(['month', 'day'] as const).map((part) => (
+            <input key={part} aria-label={part} {...dateInput.getInputProps(part)} />
+          ))}
+          <output data-testid="hint">{dateInput.autoAdvanceHint ?? 'none'}</output>
+        </form>
+      )
+    }
+    const on = await render(inLocale('en-GB', en, <Probe />))
+    await expect.element(page.getByTestId('hint')).toHaveTextContent(enHint)
+    await userEvent.type(page.getByRole('textbox', { name: 'month' }), '12')
+    await expect.element(page.getByRole('textbox', { name: 'day' })).toHaveFocus()
+    await on.unmount()
+    await render(inLocale('en-GB', en, <Probe autoAdvance={false} />))
+    await expect.element(page.getByTestId('hint')).toHaveTextContent('none')
+    await userEvent.type(page.getByRole('textbox', { name: 'month' }), '12')
+    await expect.element(page.getByRole('textbox', { name: 'month' })).toHaveFocus()
   })
 })
 
@@ -599,6 +875,8 @@ describe('dev warnings', () => {
 describe('types', () => {
   test('the hook’s options and results are typed', () => {
     expectTypeOf<UseDateInputOptions['autoComplete']>().toEqualTypeOf<'bday' | undefined>()
+    expectTypeOf<UseDateInputOptions['autoAdvance']>().toEqualTypeOf<boolean | undefined>()
+    expectTypeOf<UseDateInputResult['autoAdvanceHint']>().toEqualTypeOf<string | undefined>()
     expectTypeOf<UseDateInputResult['order']>().toEqualTypeOf<readonly DateInputPart[]>()
     expectTypeOf<ReturnType<UseDateInputResult['getBoxProps']>>().toHaveProperty('className')
     expectTypeOf<DateInputInputPartProps['inputMode']>().toEqualTypeOf<'numeric'>()

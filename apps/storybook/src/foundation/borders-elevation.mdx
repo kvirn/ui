@@ -8,10 +8,10 @@ Depth comes from the surface ladder (`canvas`, `surface`, `surface-raised`) and 
 
 ## Tokens
 
-| Token                  | Value | Use                                                                      |
-| ---------------------- | ----- | ------------------------------------------------------------------------ |
-| `--kv-border-width`    | `1px` | Hairlines and control edges                                              |
-| `--kv-indicator-width` | `4px` | The current navigation item's bar, notification bars and blockquote bars |
+| Token                  | Value | Use                                                               |
+| ---------------------- | ----- | ----------------------------------------------------------------- |
+| `--kv-border-width`    | `1px` | Hairlines and control edges                                       |
+| `--kv-indicator-width` | `4px` | The current navigation item's bar, alert bars and blockquote bars |
 
 ## Border colours
 
@@ -49,18 +49,18 @@ Start at level 0 and go up only when the content needs it. Each level has one jo
 | 1     | Setting a region of the page apart from the page: a `Section` for a sidebar, a filter section, a block of related cards | A single piece of content. That is a card                                                  |
 | 2     | One unit of content: a card, an item in a list of cards                                                                 | A card inside a card, more than one level deep, or anything that can be clicked as a whole |
 | 3     | Something that opens over the page and closes again: a menu, a listbox, a popover                                       | Content that is always on the page                                                         |
-| 4     | A dialog that takes over the page, over a backdrop, with the page behind it `inert`                                     | A message that doesn't need an answer. Use a notification                                  |
+| 4     | A dialog that takes over the page, over a backdrop, with the page behind it `inert`                                     | A message that doesn't need an answer. Use an alert                                        |
 
 - Use the surface ladder first. Put a card (level 2) on a section (level 1) or on the page, not on another card.
 - Don't add a shadow to levels 1 and 2. Depth there comes from the surface and the border.
 - Every level from 1 up has a 1px border: transparent at level 1, except in forced colours.
 - Level 1 has no visible edge. To mark the one edge that meets the content, colour it yourself: `border-inline-end-color: var(--kv-color-border-subtle)`.
-- A status message is not an elevation level. It is a `Notification`: a tinted block in the content, at the level of what it sits on, with no shadow. Its edge is a 4px bar in the status colour, and it has an icon and a status word.
+- A status message is not an elevation level. It is an `Alert`: a tinted block in the content, at the level of what it sits on, with no shadow. Its edge is a 4px bar in the status colour, and it has an icon and a status word.
 - A new border or indicator width is a token change, not a one-off value.
 
 ## Containers
 
-A `Section` is level 1: a region of the page. A `Card` is level 2: one thing with one primary destination, never a form section. A `Notification` is a status message, not a level. Each has its own Docs page.
+A `Section` is level 1: a region of the page. A `Card` is level 2: one thing with one primary destination, never a form section. An `Alert` is a status message, not a level. Each has its own Docs page.
 
 ## Accessibility
 

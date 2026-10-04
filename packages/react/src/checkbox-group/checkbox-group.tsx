@@ -2,10 +2,10 @@
 import { useMemo } from 'react'
 import type { ReactElement } from 'react'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import type { FieldErrorMessageProps, FieldHintProps } from '../field/field.tsx'
+import type { FieldErrorMessageProps, FieldHelpTextProps } from '../field/field.tsx'
 import {
   FieldsetErrorMessage,
-  FieldsetHint,
+  FieldsetHelpText,
   FieldsetLegend,
   FieldsetProse,
   FieldsetRoot,
@@ -35,7 +35,7 @@ export interface CheckboxGroupRootProps extends Omit<FieldsetRootProps, 'group'>
 
 /**
  * A group of checkboxes: the native `<fieldset>` of a `Fieldset.Root` with `group` set, so
- * `CheckboxGroup.Legend`, `CheckboxGroup.Prose` (the description), `CheckboxGroup.Hint` and
+ * `CheckboxGroup.Legend`, `CheckboxGroup.Prose` (the description), `CheckboxGroup.HelpText` and
  * `CheckboxGroup.ErrorMessage` work inside it (contract: checkbox-group.a11y.md). It holds no
  * form state: pass `value` and `onValueChange`, or `defaultValue` and `name` for a plain form.
  * Give each `Checkbox` a `value`.
@@ -49,9 +49,9 @@ export interface CheckboxGroupRootProps extends Omit<FieldsetRootProps, 'group'>
  *   <Field.Root>
  *     <Checkbox value="email" />
  *     <Field.Label>E-post</Field.Label>
- *     <Field.Hint>Beslutet kommer inom en vecka.</Field.Hint>
+ *     <Field.HelpText>Beslutet kommer inom en vecka.</Field.HelpText>
  *   </Field.Root>
- *   <CheckboxGroup.Hint>Du kan ändra dig senare under Mina sidor.</CheckboxGroup.Hint>
+ *   <CheckboxGroup.HelpText>Du kan ändra dig senare under Mina sidor.</CheckboxGroup.HelpText>
  * </CheckboxGroup.Root>
  */
 export function CheckboxGroupRoot({
@@ -99,11 +99,11 @@ export function CheckboxGroupProse(props: ProseRootProps): ReactElement {
 }
 CheckboxGroupProse.displayName = 'CheckboxGroup.Prose'
 
-/** The group's hint: the `Fieldset.Hint` under the group's name. */
-export function CheckboxGroupHint(props: FieldHintProps): ReactElement {
-  return <FieldsetHint {...props} />
+/** The group's help text: the `Fieldset.HelpText` under the group's name. */
+export function CheckboxGroupHelpText(props: FieldHelpTextProps): ReactElement {
+  return <FieldsetHelpText {...props} />
 }
-CheckboxGroupHint.displayName = 'CheckboxGroup.Hint'
+CheckboxGroupHelpText.displayName = 'CheckboxGroup.HelpText'
 
 /** The group's error message: the `Fieldset.ErrorMessage` under the group's name. */
 export function CheckboxGroupErrorMessage(props: FieldErrorMessageProps): ReactElement {
@@ -111,11 +111,11 @@ export function CheckboxGroupErrorMessage(props: FieldErrorMessageProps): ReactE
 }
 CheckboxGroupErrorMessage.displayName = 'CheckboxGroup.ErrorMessage'
 
-/** A group of checkboxes under a legend, with a description, a hint and an error. */
+/** A group of checkboxes under a legend, with a description, a help text and an error. */
 export const CheckboxGroup = {
   Root: CheckboxGroupRoot,
   Legend: CheckboxGroupLegend,
   Prose: CheckboxGroupProse,
-  Hint: CheckboxGroupHint,
+  HelpText: CheckboxGroupHelpText,
   ErrorMessage: CheckboxGroupErrorMessage,
 } as const

@@ -59,11 +59,11 @@ const options = [
 
 interface ContactProps extends Omit<CheckboxGroupRootProps, 'children'> {
   withDescription?: boolean
-  optionHint?: boolean
+  optionHelpText?: boolean
 }
 
 /** The design spec's contact question, in Swedish. */
-function Contact({ withDescription = true, optionHint = false, ...rootProps }: ContactProps) {
+function Contact({ withDescription = true, optionHelpText = false, ...rootProps }: ContactProps) {
   return (
     <CheckboxGroup.Root {...rootProps}>
       <Fieldset.Legend>Hur ska vi kontakta dig?</Fieldset.Legend>
@@ -72,8 +72,8 @@ function Contact({ withDescription = true, optionHint = false, ...rootProps }: C
         <Field.Root key={value}>
           <Checkbox value={value} />
           <Field.Label>{label}</Field.Label>
-          {optionHint && value === 'letter' ? (
-            <Field.Hint>Tar några dagar extra.</Field.Hint>
+          {optionHelpText && value === 'letter' ? (
+            <Field.HelpText>Tar några dagar extra.</Field.HelpText>
           ) : null}
         </Field.Root>
       ))}
@@ -102,7 +102,7 @@ describe('rendering', () => {
     expect(root.firstElementChild).toBe(page.getByTestId('legend').element())
   })
 
-  test('the group is named by its legend and described by its hint and error', async () => {
+  test('the group is named by its legend and described by its help text and error', async () => {
     const { container } = await render(sweden(<Contact invalid />))
     const group = page.getByRole('group', { name: 'Hur ska vi kontakta dig? (valfritt)' })
     await expect
@@ -138,8 +138,8 @@ describe('rendering', () => {
       .toHaveAttribute('data-required', '')
   })
 
-  test('an option’s own hint is in that checkbox’s description', async () => {
-    await render(sweden(<Contact optionHint />))
+  test('an option’s own help text is in that checkbox’s description', async () => {
+    await render(sweden(<Contact optionHelpText />))
     await expect
       .element(page.getByRole('checkbox', { name: 'Brev' }))
       .toHaveAccessibleDescription('Tar några dagar extra.')
@@ -148,12 +148,12 @@ describe('rendering', () => {
       .not.toHaveAttribute('aria-describedby')
   })
 
-  test('an option hint is a Field.Hint in that option’s Field, outside its label, and has no axe violations', async () => {
-    const { container } = await render(sweden(<Contact optionHint />))
-    const hint = page.getByText('Tar några dagar extra.').element()
-    expect(hint.id).not.toBe('')
-    expect(hint.closest('label')).toBeNull()
-    // The group's description is its own hint, not the option's.
+  test('an option help text is a Field.HelpText in that option’s Field, outside its label, and has no axe violations', async () => {
+    const { container } = await render(sweden(<Contact optionHelpText />))
+    const helpText = page.getByText('Tar några dagar extra.').element()
+    expect(helpText.id).not.toBe('')
+    expect(helpText.closest('label')).toBeNull()
+    // The group's description is its own help text, not the option's.
     await expect
       .element(page.getByRole('group', { name: 'Hur ska vi kontakta dig? (valfritt)' }))
       .toHaveAccessibleDescription('Välj alla som passar.')
@@ -162,8 +162,8 @@ describe('rendering', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('CheckboxGroup.Hint is the group’s hint: after the description, before the error', async () => {
-    expect(CheckboxGroup.Hint.displayName).toBe('CheckboxGroup.Hint')
+  test('CheckboxGroup.HelpText is the group’s help text: after the description, before the error', async () => {
+    expect(CheckboxGroup.HelpText.displayName).toBe('CheckboxGroup.HelpText')
     await render(
       sweden(
         <CheckboxGroup.Root invalid>
@@ -173,7 +173,9 @@ describe('rendering', () => {
             <Checkbox value="email" />
             <Field.Label>E-post</Field.Label>
           </Field.Root>
-          <CheckboxGroup.Hint data-testid="hint">Du kan ändra det senare.</CheckboxGroup.Hint>
+          <CheckboxGroup.HelpText data-testid="helpText">
+            Du kan ändra det senare.
+          </CheckboxGroup.HelpText>
           <CheckboxGroup.ErrorMessage>Välj hur vi ska kontakta dig</CheckboxGroup.ErrorMessage>
         </CheckboxGroup.Root>,
       ),

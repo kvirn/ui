@@ -11,7 +11,7 @@ import {
 } from '@kvirn-ui/react'
 import type { DateInputRootProps, DateInputValue } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Story and e2e fixture for Components/Form/DateInput (docs/design/form-fields.md §4.3, §6.6).
@@ -21,15 +21,15 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 //
 // KvirnUI holds no form state and never validates the date. Nothing here does: an "invalid"
 // story sets `invalid` itself and writes the message, as an implementor's form logic would. The
-// hint is the consumer's: it gives an example in the order the boxes are in, which the fixture
-// reads from `useDateInput().order`, so the hint and the boxes never disagree.
+// help text is the consumer's: it gives an example in the order the boxes are in, which the fixture
+// reads from `useDateInput().order`, so the help text and the boxes never disagree.
 
 export interface DateTexts {
   /** The legend of a date of birth. */
   legend: string
-  /** The hint when the boxes are year, month, day. */
+  /** The help text when the boxes are year, month, day. */
   hintYearFirst: string
-  /** The hint when the boxes are day, month, year. */
+  /** The help text when the boxes are day, month, year. */
   hintDayFirst: string
   /** The legend of a date that isn't a birthday (no `autoComplete`). */
   visitLegend: string
@@ -166,7 +166,7 @@ export interface BirthDateProps extends Omit<DateInputRootProps, 'children'> {
 
 /**
  * A date of birth: a group with the question as its legend, the three boxes in the region's
- * order, a hint under them with an example in that order, and one message for the whole date. Only
+ * order, a help text under them with an example in that order, and one message for the whole date. Only
  * the wrong boxes are marked invalid.
  */
 export function BirthDate({ locale, error, ...dateProps }: BirthDateProps) {
@@ -184,7 +184,9 @@ export function BirthDate({ locale, error, ...dateProps }: BirthDateProps) {
         }
         {...dateProps}
       />
-      <Fieldset.Hint>{order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}</Fieldset.Hint>
+      <Fieldset.HelpText>
+        {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
+      </Fieldset.HelpText>
       <Fieldset.ErrorMessage>
         {error === 'year' ? text.errorYear : text.errorDate}
       </Fieldset.ErrorMessage>
@@ -193,7 +195,7 @@ export function BirthDate({ locale, error, ...dateProps }: BirthDateProps) {
 }
 
 /**
- * Your own order: a service that must match a paper form writes the parts itself, and the hint
+ * Your own order: a service that must match a paper form writes the parts itself, and the help text
  * follows the order it chose. Here, day, month, year in Sweden.
  */
 export function PaperFormDate({ locale }: { locale: FormLocale }) {
@@ -206,7 +208,7 @@ export function PaperFormDate({ locale }: { locale: FormLocale }) {
         <DateInput.Month />
         <DateInput.Year />
       </DateInput.Root>
-      <Fieldset.Hint>{text.hintDayFirst}</Fieldset.Hint>
+      <Fieldset.HelpText>{text.hintDayFirst}</Fieldset.HelpText>
     </Fieldset.Root>
   )
 }
@@ -222,7 +224,9 @@ export function VisitDate({ locale }: { locale: FormLocale }) {
     <Fieldset.Root group lang={lang}>
       <Fieldset.Legend>{text.visitLegend}</Fieldset.Legend>
       <DateInput.Root name="visit" />
-      <Fieldset.Hint>{order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}</Fieldset.Hint>
+      <Fieldset.HelpText>
+        {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
+      </Fieldset.HelpText>
     </Fieldset.Root>
   )
 }
@@ -234,9 +238,17 @@ export function VisitDate({ locale }: { locale: FormLocale }) {
 export function ControlledDate({ locale }: { locale: FormLocale }) {
   const { text, lang } = dateTextsFor(locale)
   const [value, setValue] = useState<DateInputValue>({ year: '1990', month: '3', day: '' })
+  // The example is written in the order the boxes are in.
+  const { order } = useDateInput()
   return (
     <div className="kv-story-form" lang={lang}>
-      <BirthDate locale={locale} value={value} onValueChange={setValue} />
+      <Fieldset.Root group required>
+        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+        <DateInput.Root name="birth" autoComplete="bday" value={value} onValueChange={setValue} />
+        <Fieldset.HelpText>
+          {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
+        </Fieldset.HelpText>
+      </Fieldset.Root>
       <p className="kv-story-form-output" data-testid="mirror">
         {text.youTyped}: {value.year}-{value.month}-{value.day}
       </p>
@@ -250,6 +262,7 @@ export function ControlledDate({ locale }: { locale: FormLocale }) {
  */
 export function PlainFormDate({ locale }: { locale: FormLocale }) {
   const { text, lang } = dateTextsFor(locale)
+  const { order } = useDateInput()
   const [sent, setSent] = useState<string | undefined>()
   return (
     <form
@@ -269,7 +282,13 @@ export function PlainFormDate({ locale }: { locale: FormLocale }) {
         )
       }}
     >
-      <BirthDate locale={locale} />
+      <Fieldset.Root group required>
+        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+        <DateInput.Root name="birth" autoComplete="bday" />
+        <Fieldset.HelpText>
+          {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
+        </Fieldset.HelpText>
+      </Fieldset.Root>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
           {text.send}
@@ -290,6 +309,7 @@ export function PlainFormDate({ locale }: { locale: FormLocale }) {
  */
 export function KeyboardDate({ locale }: { locale: FormLocale }) {
   const { text, lang } = dateTextsFor(locale)
+  const { order } = useDateInput()
   const [submits, setSubmits] = useState(0)
   return (
     <form
@@ -304,7 +324,13 @@ export function KeyboardDate({ locale }: { locale: FormLocale }) {
       <div className="kv-button-group">
         <Button type="button">{text.back}</Button>
       </div>
-      <BirthDate locale={locale} />
+      <Fieldset.Root group required>
+        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+        <DateInput.Root name="birth" autoComplete="bday" />
+        <Fieldset.HelpText>
+          {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
+        </Fieldset.HelpText>
+      </Fieldset.Root>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
           {text.send}
@@ -318,14 +344,81 @@ export function KeyboardDate({ locale }: { locale: FormLocale }) {
 }
 
 /**
+ * Every state of the date in one column: filled, the Year box wrong, the whole date wrong,
+ * disabled and read only. `invalidParts` marks only the wrong boxes, and the message is under
+ * them, once.
+ */
+export function DateStates({ locale }: { locale: FormLocale }) {
+  const { text, lang } = dateTextsFor(locale)
+  const id = useId()
+  const { order } = useDateInput()
+  const hint = order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst
+  return (
+    <div className="kv-story-form" lang={lang}>
+      <Fieldset.Root group required>
+        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+        <DateInput.Root
+          name={`filled-${id}`}
+          autoComplete="bday"
+          defaultValue={{ year: '1990', month: '3', day: '27' }}
+        />
+        <Fieldset.HelpText>{hint}</Fieldset.HelpText>
+      </Fieldset.Root>
+      <Fieldset.Root group required invalid>
+        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+        <DateInput.Root
+          name={`year-${id}`}
+          autoComplete="bday"
+          invalidParts={['year']}
+          defaultValue={{ month: '3', day: '27' }}
+        />
+        <Fieldset.HelpText>{hint}</Fieldset.HelpText>
+        <Fieldset.ErrorMessage>{text.errorYear}</Fieldset.ErrorMessage>
+      </Fieldset.Root>
+      <Fieldset.Root group required invalid>
+        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+        <DateInput.Root
+          name={`date-${id}`}
+          autoComplete="bday"
+          invalidParts={['day', 'month', 'year']}
+          defaultValue={{ year: '1990', month: '13', day: '27' }}
+        />
+        <Fieldset.HelpText>{hint}</Fieldset.HelpText>
+        <Fieldset.ErrorMessage>{text.errorDate}</Fieldset.ErrorMessage>
+      </Fieldset.Root>
+      <Fieldset.Root group required>
+        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+        <DateInput.Root
+          name={`disabled-${id}`}
+          autoComplete="bday"
+          disabled
+          defaultValue={{ year: '1990', month: '3', day: '27' }}
+        />
+        <Fieldset.HelpText>{hint}</Fieldset.HelpText>
+      </Fieldset.Root>
+      <Fieldset.Root group required>
+        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+        <DateInput.Root
+          name={`readonly-${id}`}
+          autoComplete="bday"
+          readOnly
+          defaultValue={{ year: '1990', month: '3', day: '27' }}
+        />
+        <Fieldset.HelpText>{hint}</Fieldset.HelpText>
+      </Fieldset.Root>
+    </div>
+  )
+}
+
+/**
  * A date in one field: `masks.date()` follows the page's locale for the order and the separator
- * (`2026-10-27` in sv, `27.10.2026` in fi, `27/10/2026` in en), and the hint gives an example in
+ * (`2026-10-27` in sv, `27.10.2026` in fi, `27/10/2026` in en), and the help text gives an example in
  * that form. The form keeps the ISO date, which `onValueChange` reports once the date is complete.
  */
 export function OneFieldDate({ locale }: { locale: FormLocale }) {
   const { text, lang } = dateTextsFor(locale)
   const [stored, setStored] = useState('')
-  // The example comes from the mask itself, so the hint and the field never disagree.
+  // The example comes from the mask itself, so the help text and the field never disagree.
   const example = masks.date().withLocale(locale).format('2026-10-27')
   return (
     <div className="kv-story-form" lang={lang}>
@@ -337,7 +430,7 @@ export function OneFieldDate({ locale }: { locale: FormLocale }) {
           className="kv-input--width-10"
           onValueChange={(_value, details) => setStored(details.unmaskedValue ?? '')}
         />
-        <Field.Hint>{text.oneFieldHint(example)}</Field.Hint>
+        <Field.HelpText>{text.oneFieldHint(example)}</Field.HelpText>
       </Field.Root>
       <p className="kv-story-form-output" data-testid="stored">
         {text.stored}: {stored}

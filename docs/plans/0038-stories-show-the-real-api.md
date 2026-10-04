@@ -1,6 +1,6 @@
 # Plan 0038: Stories show the real API
 
-- **Status:** Draft
+- **Status:** Accepted, implemented; gates pending (orchestrator runs `vp check`, `vp test run`, the e2e specs of the changed components, `i18n:check`)
 - **Owner:** orchestrator → component-engineer (one component per task)
 - **Created:** 2026-10-04 · **Target:** M2
 - **Related:** `storybook-docs` and `testing` skills, `apps/storybook/src/docs-source.ts`, [0033](0033-text-input-and-number-input.md) (the first args-first stories), [0032](0032-date-mask-and-masked-stories.md)
@@ -101,20 +101,27 @@ Total: 248 stories in 27 files render a wrapper with no `showSource`, plus about
 
 ## Tasks
 
-- [ ] Maintainer approves the rule, and the `storybook-docs` skill edit (a fixture shown by `showSource` must contain the compound parts)
-- [ ] Priority 1 components, one `component-engineer` task each (CheckboxGroup, RadioGroup, Fieldset, FileUpload, Listbox, OneTimeCode, Popover, Prose, Announcer, InputGroup)
-- [ ] Priority 2 components, two or three tasks at a time (Combobox, Autocomplete, Checkbox, Button, Icon, Link, Mask, Hint, Heading, KvirnProvider, Notification, Section, Card, Table, DateInput, Form)
-- [ ] Priority 3: Field, Label, ErrorMessage matrices; check the `apps/docs` snippets
-- [ ] Update `.claude/skills/storybook-docs/SKILL.md` ("Show code shows what an adopter writes", checklist item 7)
-- [ ] Consider a guard (see Decisions) and add it only with approval
-- [ ] Changeset: none (no public API change). `docs/roadmap.md` row set to `done`
+- [x] Maintainer approves the rule, and the `storybook-docs` skill edit (a fixture shown by `showSource` must contain the compound parts)
+- [x] Priority 1 components, one `component-engineer` task each (CheckboxGroup, RadioGroup, Fieldset, FileUpload, Listbox, OneTimeCode, Popover, Prose, Announcer, InputGroup)
+- [x] Priority 2 components, two or three tasks at a time (Combobox, Autocomplete, Checkbox, Button, Icon, Link, Mask, Hint, Heading, KvirnProvider, Notification, Section, Card, Table, DateInput, Form)
+- [x] Priority 3: Field, Label, ErrorMessage matrices (`showSource` on `FieldStates`); the `apps/docs` Button snippets checked against `button.tsx` and `use-button.ts`: no drift, nothing changed
+- [x] Update `.claude/skills/storybook-docs/SKILL.md` ("Show code shows what an adopter writes", checklist item 7)
+- [x] Consider a guard (see Decisions) and add it only with approval: **not built**, it needs the maintainer's approval
+- [x] Changeset: none (no public API change). `docs/roadmap.md` row set to `implemented; gates pending`
 
 ## Decisions
 
 - **Inline first, fixture second.** Inline `args` and JSX keep Show code honest with no extra mechanism. `showSource` stays for the few examples that are too long, as the skill says today. Needs the maintainer's approval because it tightens a rule in the owning skill.
 - **Locale is a decorator and a text lookup, not a prop on a wrapper.** `withFormLocale` and `globals` already exist. Stories read their strings with `choiceTextsFor(locale)` in the `render` body. The text lookup is plumbing at the top, the parts are what a reader sees.
 - **State matrices keep a function, with `showSource`.** An RTL or ForcedColors story exists for axe and e2e, so it may share one function, as long as the function's body is the real parts.
-- **A guard against regression (proposed, needs approval as it is a new check):** a test in `tooling/` (or an addition to `docs-source.ts`) that fails when a story's `render` returns a JSX tag that is neither imported from `@kvirn-ui/react` nor an intrinsic element, unless the story sets `showSource`. A scan like that found these 248 stories. Not built until approved.
+- **Stateful and long stories use `showSource` fixtures, with `locale` as a prop of the fixture** (as `text-input` does): the fixture function is the example, and the text lookup sits at the top. Inline stories read the locale from `globals` and the `withFormLocale` decorator. (Implementation decision.)
+- **Listbox, Combobox and Autocomplete all use `showSource` fixtures.** Storybook's source printer can't show function props or function children: `Combobox.List` and `Listbox.List` with a render function child, `itemToString` and inline handlers print as `{function noRefCheck() {}}`. The skill now says so. (Implementation decision.)
+- **The logging `onValueChange` is removed from `meta.args` on the stories that are shown inline** (it printed as `() => {}`), so the Actions panel no longer logs their changes. Stories shown by a fixture may keep `logChange`, as DateInput's `Default` does. (Implementation decision.)
+- **Announcer has no `meta.component`.** `Announcer` isn't an exported component, the `useAnnouncer` hook is documented through the guide. (Implementation decision.)
+- **Radio group names are `duration-${id}`** (`useId`), so radios on one Docs page don't act as one group. (Implementation decision.)
+- **Popover's popup style comes from a decorator `<style>`**, not an inline `style` in the shown code. (Implementation decision.)
+- **DateInput and Form:** `ControlledDate`, `PlainFormDate`, `KeyboardDate` and `PermitForm` write `Fieldset.Root`, `DateInput.Root` and `Fieldset.HelpText` themselves, with `useDateInput().order` for the help text's example, instead of calling `<BirthDate />`. `BirthDate` stays as the fixture of `Default` and the locale and error variants, since its function body is the real parts. `DateStates` moved to the fixture file and is shown by RTL and ForcedColors. Plan 0040's auto-advance and `NoAutoAdvance` are unchanged. The Form variants (Finnish, Compact, RTL, ForcedColors, Keyboard) share `PermitForm`'s `showSource`. Field, Label and ErrorMessage show `FieldStates` from `form/form.fixture.tsx`. (Implementation decision.)
+- **A guard against regression (proposed, needs approval as it is a new check):** a test in `tooling/` (or an addition to `docs-source.ts`) that fails when a story's `render` returns a JSX tag that is neither imported from `@kvirn-ui/react` nor an intrinsic element, unless the story sets `showSource`. A scan like that found these 248 stories. **Not built:** it still needs the maintainer's approval.
 
 ## Risks & open questions
 
@@ -137,4 +144,4 @@ Part of M2 docs work. One PR per priority group (one concern per PR). No version
 - [ ] `meta.component` is a real export for every component
 - [ ] Orchestrator gates, run once at the end, scoped to the changed files: `vp check <files>`, `vp test run <files>` (stories with axe), `vp run e2e <spec> --project chromium` for each component whose stories changed, `vp run i18n:check` if text moved into the catalogs
 - [ ] `storybook-docs` skill updated, and `docs/roadmap.md` row set to `done`
-- [ ] Plan tasks ticked
+- [x] Plan tasks ticked

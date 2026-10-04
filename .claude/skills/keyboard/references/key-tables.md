@@ -54,15 +54,16 @@ One Tab stop for the group. Focus strategy: native.
 
 ### DateInput (three fields; planned, see the roadmap)
 
-| Key                 | Action                                                            |
-| ------------------- | ----------------------------------------------------------------- |
-| Tab / Shift+Tab     | Day, month and year are separate Tab stops, in the locale's order |
-| Characters          | Type. Focus never auto-advances when a field is full (3.2.2)      |
-| ArrowUp / ArrowDown | Native caret movement only. Never step the value                  |
+| Key                 | Action                                                                                                                                                                                         |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tab / Shift+Tab     | Day, month and year are separate Tab stops, in the locale's order                                                                                                                              |
+| Digit               | Types. The digit that fills a box moves focus forward to the next box, selected (Plan 0040, the one approved exception to 3.2.2: guarded, with a visible hint, off with `autoAdvance={false}`) |
+| Backspace / Delete  | Edit the box. Never move focus                                                                                                                                                                 |
+| ArrowUp / ArrowDown | Native caret movement only. Never step the value                                                                                                                                               |
 
 ### One-time code
 
-Prefer one input with `autocomplete="one-time-code"`. If there are several boxes, the same rules as DateInput apply: no auto-advance, and paste of the whole code fills them all.
+Prefer one input with `autocomplete="one-time-code"`. If there are several boxes, DateInput's other rules apply (no arrow-key stepping), but **never auto-advance**: that exception is DateInput's alone (Plan 0040). Paste of the whole code fills them all.
 
 ### Switch
 
@@ -147,20 +148,20 @@ Listbox: one Tab stop. Multi-select adds Space to toggle and Shift+Arrow to exte
 
 The one place shortcuts are on by default and Tab can act: the keyboard skill's rule 7 exception for text editors. The toolbar is the Toolbar row above. The text is native, with these on top (design spec `docs/design/rich-text-editor.md` §6.6.6 and §7.4).
 
-| Context                                | Key                                            | Action                                                                                                                           |
-| -------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Text, outside lists and tables         | Tab / Shift+Tab                                | Leaves: the next focusable element, or back to the toolbar                                                                        |
-| Text, in a list item                   | Tab                                            | Nests the item under the one above, only when that is possible. Otherwise leaves. The new level is announced                      |
-| Text, in a nested list item            | Shift+Tab                                      | Outdents one level. In a top-level item it leaves, and never lifts the item out of its list                                       |
-| Text, in a table cell                  | Tab / Shift+Tab                                | Next and previous cell, selecting its text. In the last cell Tab leaves and never adds a row, and in the first Shift+Tab leaves   |
-| Text, anywhere                         | Escape, then Tab or Shift+Tab                  | Leaves forwards or backwards. Any key other than a modifier cancels it. Escape is not passed on the first time (a Dialog stays)   |
-| Text                                   | Alt+F10 (Option+F10 on macOS)                  | Moves focus to the toolbar's remembered control. Escape in the toolbar goes back, after a tooltip or popup has taken its Escape |
-| Text                                   | Control/Command+B, I, U                        | Bold, italic, underline on or off, announced ("Fetstil på")                                                                      |
-| Text                                   | Control/Command+K                              | Opens the link form                                                                                                              |
-| Text                                   | Control/Command+Z; +Shift+Z, Control+Y         | Undo; redo                                                                                                                       |
-| Text                                   | Control+Alt + a key (AltGr)                    | Types the character. Never a shortcut                                                                                             |
-| Link or image form                     | Enter / Escape                                 | Submits; closes without changes, and focus goes back to the text at the selection                                                 |
-| Native                                 | Arrows, Home, End, Shift+arrows, Enter, Shift+Enter | The caret, selection, a new paragraph, a line break. Never bound                                                              |
+| Context                        | Key                                                 | Action                                                                                                                          |
+| ------------------------------ | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Text, outside lists and tables | Tab / Shift+Tab                                     | Leaves: the next focusable element, or back to the toolbar                                                                      |
+| Text, in a list item           | Tab                                                 | Nests the item under the one above, only when that is possible. Otherwise leaves. The new level is announced                    |
+| Text, in a nested list item    | Shift+Tab                                           | Outdents one level. In a top-level item it leaves, and never lifts the item out of its list                                     |
+| Text, in a table cell          | Tab / Shift+Tab                                     | Next and previous cell, selecting its text. In the last cell Tab leaves and never adds a row, and in the first Shift+Tab leaves |
+| Text, anywhere                 | Escape, then Tab or Shift+Tab                       | Leaves forwards or backwards. Any key other than a modifier cancels it. Escape is not passed on the first time (a Dialog stays) |
+| Text                           | Alt+F10 (Option+F10 on macOS)                       | Moves focus to the toolbar's remembered control. Escape in the toolbar goes back, after a tooltip or popup has taken its Escape |
+| Text                           | Control/Command+B, I, U                             | Bold, italic, underline on or off, announced ("Fetstil på")                                                                     |
+| Text                           | Control/Command+K                                   | Opens the link form                                                                                                             |
+| Text                           | Control/Command+Z; +Shift+Z, Control+Y              | Undo; redo                                                                                                                      |
+| Text                           | Control+Alt + a key (AltGr)                         | Types the character. Never a shortcut                                                                                           |
+| Link or image form             | Enter / Escape                                      | Submits; closes without changes, and focus goes back to the text at the selection                                               |
+| Native                         | Arrows, Home, End, Shift+arrows, Enter, Shift+Enter | The caret, selection, a new paragraph, a line break. Never bound                                                                |
 
 Alternatives for every shortcut are toolbar buttons. The instruction that tells users how to leave is visible text, in the text's `aria-describedby`.
 

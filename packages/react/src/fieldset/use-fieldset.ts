@@ -89,10 +89,10 @@ export interface UseFieldsetResult {
  * its own id, so the markup is complete when rendered on the server.
  *
  * @example
- * const fieldset = useFieldset({ invalid, group: true, descriptions: ['hint'] })
+ * const fieldset = useFieldset({ invalid, group: true, descriptions: ['helpText'] })
  * <fieldset {...fieldset.fieldsetProps}>
  *   <legend {...fieldset.legendProps}>Hur vill du bli kontaktad? {fieldset.optionalMarker}</legend>
- *   <p {...fieldset.getDescriptionProps('hint')}>Välj alla som passar.</p>
+ *   <p {...fieldset.getDescriptionProps('helpText')}>Välj alla som passar.</p>
  *   …
  *   {invalid ? <p {...fieldset.errorMessageProps}>{fieldset.errorPrefix} Välj ett sätt</p> : null}
  * </fieldset>

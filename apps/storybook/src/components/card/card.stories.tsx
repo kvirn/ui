@@ -79,11 +79,14 @@ export const Default: Story = {
  */
 export const ServiceCard: Story = {
   parameters: showSource('card/card.fixture.tsx', 'ServiceCard'),
-  render: (_args, { globals }) => (
-    <div className="kv-story-card-column">
-      <ServiceCardExample locale={localeOf(globals)} />
-    </div>
-  ),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-card-column">
+        <Story />
+      </div>
+    ),
+  ],
+  render: (_args, { globals }) => <ServiceCardExample locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     const card = canvas.getByTestId('service-card')
     await expect(within(card).getByRole('heading', { level: 2 })).toBeVisible()
@@ -118,10 +121,17 @@ export const NestedCard: Story = {
  * flush card, or neither for lg.
  */
 export const Radii: Story = {
+  decorators: [
+    (Story) => (
+      <div className="kv-story-columns">
+        <Story />
+      </div>
+    ),
+  ],
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <div className="kv-story-columns">
+      <>
         {(
           [
             ['lg', 'kv-card'],
@@ -141,7 +151,7 @@ export const Radii: Story = {
             <p>{text.waste.plan}</p>
           </Card.Root>
         ))}
-      </div>
+      </>
     )
   },
 }
@@ -196,10 +206,17 @@ export const Padding: Story = {
 
 /** `kv-card--dividers`: a hairline between parts, and every part keeps its padding. */
 export const Dividers: Story = {
+  decorators: [
+    (Story) => (
+      <div className="kv-story-columns">
+        <Story />
+      </div>
+    ),
+  ],
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <div className="kv-story-columns">
+      <>
         <Card.Root className="kv-card--dividers" data-testid="dividers" lang={lang}>
           <Card.Header className="kv-prose">
             <h2>{text.waste.heading}</h2>
@@ -222,7 +239,7 @@ export const Dividers: Story = {
             <Button>{text.waste.pause}</Button>
           </Card.Footer>
         </Card.Root>
-      </div>
+      </>
     )
   },
 }
@@ -273,14 +290,19 @@ export const ProseAndCards: Story = {
 
 /** A Root with plain children: it stays a block, so a link in the text stays inline. */
 export const PlainChildren: Story = {
+  decorators: [
+    (Story) => (
+      <div className="kv-story-card-column">
+        <Story />
+      </div>
+    ),
+  ],
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <div className="kv-story-card-column">
-        <Card.Root data-testid="plain" lang={lang}>
-          {text.waste.plan}
-        </Card.Root>
-      </div>
+      <Card.Root data-testid="plain" lang={lang}>
+        {text.waste.plan}
+      </Card.Root>
     )
   },
 }
@@ -311,21 +333,26 @@ export const ImageInPaddedBody: Story = {
  * see its parts and pads itself too, so the padding doubles. Don't do this.
  */
 export const WrapperBetweenParts: Story = {
+  decorators: [
+    (Story) => (
+      <div className="kv-story-card-column">
+        <Story />
+      </div>
+    ),
+  ],
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
-      <div className="kv-story-card-column">
-        <Card.Root data-testid="wrapped" lang={lang}>
-          <div>
-            <Card.Body>
-              <p>
-                <code>Card.Root &gt; div &gt; Card.Body</code>
-              </p>
-              <p>{text.waste.plan}</p>
-            </Card.Body>
-          </div>
-        </Card.Root>
-      </div>
+      <Card.Root data-testid="wrapped" lang={lang}>
+        <div>
+          <Card.Body>
+            <p>
+              <code>Card.Root &gt; div &gt; Card.Body</code>
+            </p>
+            <p>{text.waste.plan}</p>
+          </Card.Body>
+        </div>
+      </Card.Root>
     )
   },
 }
@@ -333,11 +360,15 @@ export const WrapperBetweenParts: Story = {
 /** Finnish text in a narrow column: the cards wrap instead of overflowing (1.4.10). */
 export const LongFinnishText: Story = {
   globals: { locale: 'fi' },
-  render: () => (
-    <div className="kv-story-narrow" data-testid="narrow">
-      <ServiceCardExample locale="fi" />
-    </div>
-  ),
+  parameters: showSource('card/card.fixture.tsx', 'ServiceCard'),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-narrow" data-testid="narrow">
+        <Story />
+      </div>
+    ),
+  ],
+  render: () => <ServiceCardExample locale="fi" />,
   play: async ({ canvas }) => {
     await expect(
       canvas.getByRole('button', { name: 'Keskeytä jäteastioiden tyhjennykset' }),
@@ -346,7 +377,7 @@ export const LongFinnishText: Story = {
   },
 }
 
-/** Examples B–D on one page. */
+/** Examples B–D on one page: layout only, for axe and e2e. */
 function AllExamplesPage({ locale }: { locale: CardFixtureLocale }) {
   return (
     <>
@@ -363,23 +394,32 @@ function AllExamplesPage({ locale }: { locale: CardFixtureLocale }) {
   )
 }
 
+/** The functions the page is made of: the real parts of every example on it. */
+const allExamplesSource = showSource('card/card.fixture.tsx', 'ServiceCard', 'NewsList', 'CaseCard')
+
 /** Examples B–D together: the design spec's uses of a card on one page. */
 export const AllExamples: Story = {
+  parameters: allExamplesSource,
   render: (_args, { globals }) => <AllExamplesPage locale={localeOf(globals)} />,
 }
 
 /** Right to left, in English: the image, text and actions follow `dir`. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
-  render: () => (
-    <div className="kv-story-card-column">
-      <ServiceCardExample locale="en" />
-    </div>
-  ),
+  parameters: showSource('card/card.fixture.tsx', 'ServiceCard'),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-card-column">
+        <Story />
+      </div>
+    ),
+  ],
+  render: () => <ServiceCardExample locale="en" />,
 }
 
 /** The card edge survives forced colours. The e2e suite checks it with real emulation. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
+  parameters: allExamplesSource,
   render: (_args, { globals }) => <AllExamplesPage locale={localeOf(globals)} />,
 }

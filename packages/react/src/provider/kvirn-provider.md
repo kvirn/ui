@@ -352,7 +352,7 @@ On the server, read the same cookie and render the attributes on `<html>`. Rende
 
 | Hook                | Returns                                                                                                               |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `useLocale()`       | `{ locale, dir, country, localeProps: { lang, dir } }`                                                                       |
+| `useLocale()`       | `{ locale, dir, country, localeProps: { lang, dir } }`                                                                |
 | `useDateSettings()` | `{ timeZone }`                                                                                                        |
 | `useTheme()`        | `{ colorScheme, contrast, resolvedColorScheme, resolvedContrast, isForcedColors, selectColorScheme, selectContrast }` |
 

@@ -2,14 +2,13 @@ import { Button, Card, Field, RadioGroup } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/radio-group/radio-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/radio-group/radio-group.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import type { ComponentProps } from 'react'
-import { useId, useState } from 'react'
 import { expect, userEvent } from 'storybook/test'
-import { usageGuide } from '../../docs-source.ts'
-import { choiceTextsFor, logChange } from '../form/choice.fixture.tsx'
+import { showSource, usageGuide } from '../../docs-source.ts'
+import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import { ControlledDurationGroup, DurationForm } from './radio-group.fixture.tsx'
 
 // Components/Form/RadioGroup: one question with one answer, in a native <fieldset> under a
 // <legend>, with native radios that share a name (design spec
@@ -23,6 +22,8 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 const meta = {
   title: 'Components/Form/RadioGroup',
   component: RadioGroup.Root,
+  // Every option at its default, so the main example starts where an adopter starts.
+  args: { invalid: false, required: false, disabled: false },
   argTypes: {
     name: { control: 'text', description: 'The name every radio shares. Default: generated.' },
     value: {
@@ -60,7 +61,6 @@ const meta = {
     },
     render: { control: false, description: 'Another element. It must still be a `<fieldset>`.' },
   },
-  args: { onValueChange: logChange('onValueChange') },
   globals: { locale: 'sv' },
   decorators: [
     (Story) => (
@@ -70,7 +70,35 @@ const meta = {
     ),
     withFormLocale,
   ],
-  render: (args, { globals }) => <Duration {...args} locale={localeOf(globals)} />,
+  // The design spec's duration question: three radios under a legend. The localised text is
+  // taken at the top, and the locale comes from the toolbar through `withFormLocale`. Radios that
+  // share a name are one group for the whole document, so the name carries the story's id: on a
+  // Docs page every story's radios would otherwise act as one. In your own form, use a plain
+  // `name="duration"`.
+  render: (args, { globals, id }) => {
+    const { text, lang } = choiceTextsFor(localeOf(globals))
+    return (
+      <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
+        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+        <RadioGroup.Prose>
+          <p>{text.durationHint}</p>
+        </RadioGroup.Prose>
+        <Field.Root>
+          <RadioGroup.Radio value="1" />
+          <Field.Label>{text.duration1}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="6" />
+          <Field.Label>{text.duration6}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="12" />
+          <Field.Label>{text.duration12}</Field.Label>
+        </Field.Root>
+        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+      </RadioGroup.Root>
+    )
+  },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
@@ -79,65 +107,6 @@ const meta = {
 
 export default meta
 type Story = StoryObj<typeof meta>
-
-interface DurationOptions {
-  locale: FormLocale
-  /** Show the hint under the legend. */
-  hint?: boolean
-  /** Show a hint under the 12 month option. */
-  optionHints?: boolean
-  /** The 6 month option is disabled. */
-  disabledOption?: boolean
-  /** The legend is the page's `h1`. */
-  heading?: boolean
-}
-
-type DurationProps = DurationOptions & Omit<ComponentProps<typeof RadioGroup.Root>, 'children'>
-
-/** The design spec's duration question: three radios under a legend. */
-function Duration({
-  locale,
-  hint = true,
-  optionHints = false,
-  disabledOption = false,
-  heading = false,
-  ...groupProps
-}: DurationProps) {
-  const { text, lang } = choiceTextsFor(locale)
-  // Radios that share a name are one group for the whole document, so on a Docs page every
-  // story's radios would act as one. A name per instance keeps the stories apart.
-  const name = `duration-${useId()}`
-  return (
-    <RadioGroup.Root name={name} lang={lang} {...groupProps}>
-      {heading ? (
-        <RadioGroup.Legend className="kv-fieldset-legend--heading">
-          <h1>{text.durationLegend}</h1>
-        </RadioGroup.Legend>
-      ) : (
-        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-      )}
-      {hint ? (
-        <RadioGroup.Prose>
-          <p>{text.durationHint}</p>
-        </RadioGroup.Prose>
-      ) : null}
-      <Field.Root>
-        <RadioGroup.Radio value="1" />
-        <Field.Label>{text.duration1}</Field.Label>
-      </Field.Root>
-      <Field.Root>
-        <RadioGroup.Radio value="6" disabled={disabledOption} />
-        <Field.Label>{text.duration6}</Field.Label>
-      </Field.Root>
-      <Field.Root>
-        <RadioGroup.Radio value="12" />
-        <Field.Label>{text.duration12}</Field.Label>
-        {optionHints ? <Field.Hint>{text.duration12Hint}</Field.Hint> : null}
-      </Field.Root>
-      <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
-    </RadioGroup.Root>
-  )
-}
 
 /** The main example: none selected. The group is one Tab stop, so Tab lands on the first radio. */
 export const Default: Story = {
@@ -158,15 +127,6 @@ export const Default: Story = {
   },
 }
 
-/**
- * The fixture the keyboard tests drive: the group between a button before and a button after,
- * in a form. Try the keys in the Keyboard section above: Tab enters the group once, the arrow
- * keys move and check, and Space checks the focused radio.
- */
-export const Keyboard: Story = {
-  render: (_args, { globals }) => <KeyboardExample locale={localeOf(globals)} />,
-}
-
 /** The label of the button before the group. se shows English, marked lang="en". */
 const backTexts: Partial<Record<FormLocale, string>> = {
   sv: 'Tillbaka',
@@ -175,44 +135,86 @@ const backTexts: Partial<Record<FormLocale, string>> = {
   nn: 'Tilbake',
 }
 
-function KeyboardExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
-      <div className="kv-button-group">
-        {/* se: English, marked lang="en" (3.1.2). */}
-        <Button type="button" lang={backTexts[locale] === undefined ? 'en' : undefined}>
-          {backTexts[locale] ?? 'Back'}
-        </Button>
-      </div>
-      <Duration locale={locale} />
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-    </form>
-  )
+/**
+ * The fixture the keyboard tests drive: the group between a button before and a button after,
+ * in a form. Try the keys in the Keyboard section above: Tab enters the group once, the arrow
+ * keys move and check, and Space checks the focused radio.
+ */
+export const Keyboard: Story = {
+  render: (_args, { globals, id }) => {
+    const locale = localeOf(globals)
+    const { text, lang } = choiceTextsFor(locale)
+    return (
+      <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
+        <div className="kv-button-group">
+          {/* se: English, marked lang="en" (3.1.2). */}
+          <Button type="button" lang={backTexts[locale] === undefined ? 'en' : undefined}>
+            {backTexts[locale] ?? 'Back'}
+          </Button>
+        </div>
+        <RadioGroup.Root name={`duration-${id}`}>
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+          </Field.Root>
+          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {text.send}
+          </Button>
+        </div>
+      </form>
+    )
+  },
 }
 
 /** One radio is checked: Tab goes straight to it, and passes the others. */
 export const Selected: Story = {
   args: { defaultValue: '6' },
-  render: (args, { globals }) => (
-    <form
-      className="kv-story-form"
-      noValidate
-      onSubmit={(e) => e.preventDefault()}
-      lang={choiceTextsFor(localeOf(globals)).lang}
-    >
-      <Duration {...args} locale={localeOf(globals)} />
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {choiceTextsFor(localeOf(globals)).text.send}
-        </Button>
-      </div>
-    </form>
-  ),
+  render: (args, { globals, id }) => {
+    const { text, lang } = choiceTextsFor(localeOf(globals))
+    return (
+      <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
+        <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+          </Field.Root>
+          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {text.send}
+          </Button>
+        </div>
+      </form>
+    )
+  },
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expect(canvas.getByRole('radio', { name: text.duration6 })).toBeChecked()
@@ -220,9 +222,33 @@ export const Selected: Story = {
   },
 }
 
-/** An option's own hint is in that radio's description, under its label. */
-export const WithOptionHints: Story = {
-  render: (args, { globals }) => <Duration {...args} locale={localeOf(globals)} optionHints />,
+/** An option's own help text is in that radio's description, under its label. */
+export const WithOptionHelpTexts: Story = {
+  render: (args, { globals, id }) => {
+    const { text, lang } = choiceTextsFor(localeOf(globals))
+    return (
+      <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
+        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+        <RadioGroup.Prose>
+          <p>{text.durationHint}</p>
+        </RadioGroup.Prose>
+        <Field.Root>
+          <RadioGroup.Radio value="1" />
+          <Field.Label>{text.duration1}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="6" />
+          <Field.Label>{text.duration6}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="12" />
+          <Field.Label>{text.duration12}</Field.Label>
+          <Field.HelpText>{text.duration12Hint}</Field.HelpText>
+        </Field.Root>
+        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+      </RadioGroup.Root>
+    )
+  },
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expect(canvas.getByRole('radio', { name: text.duration12 })).toHaveAccessibleDescription(
@@ -249,7 +275,30 @@ export const Invalid: Story = {
 /** One option is disabled: a dashed circle, skipped by Tab and by the arrow keys. */
 export const DisabledOption: Story = {
   args: { defaultValue: '1' },
-  render: (args, { globals }) => <Duration {...args} locale={localeOf(globals)} disabledOption />,
+  render: (args, { globals, id }) => {
+    const { text, lang } = choiceTextsFor(localeOf(globals))
+    return (
+      <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
+        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+        <RadioGroup.Prose>
+          <p>{text.durationHint}</p>
+        </RadioGroup.Prose>
+        <Field.Root>
+          <RadioGroup.Radio value="1" />
+          <Field.Label>{text.duration1}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="6" disabled />
+          <Field.Label>{text.duration6}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="12" />
+          <Field.Label>{text.duration12}</Field.Label>
+        </Field.Root>
+        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+      </RadioGroup.Root>
+    )
+  },
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expect(canvas.getByRole('radio', { name: text.duration6 })).toBeDisabled()
@@ -269,7 +318,32 @@ export const Disabled: Story = {
 
 /** One question per page: the legend is the page's heading (an `h1` inside the legend). */
 export const AsPageHeading: Story = {
-  render: (args, { globals }) => <Duration {...args} locale={localeOf(globals)} heading />,
+  render: (args, { globals, id }) => {
+    const { text, lang } = choiceTextsFor(localeOf(globals))
+    return (
+      <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
+        <RadioGroup.Legend className="kv-fieldset-legend--heading">
+          <h1>{text.durationLegend}</h1>
+        </RadioGroup.Legend>
+        <RadioGroup.Prose>
+          <p>{text.durationHint}</p>
+        </RadioGroup.Prose>
+        <Field.Root>
+          <RadioGroup.Radio value="1" />
+          <Field.Label>{text.duration1}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="6" />
+          <Field.Label>{text.duration6}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="12" />
+          <Field.Label>{text.duration12}</Field.Label>
+        </Field.Root>
+        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+      </RadioGroup.Root>
+    )
+  },
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expect(canvas.getByRole('heading', { level: 1, name: text.durationLegend })).toBeVisible()
@@ -279,11 +353,32 @@ export const AsPageHeading: Story = {
 /** In a card: the edges keep 3:1 against `surface-raised` (1.4.11). */
 export const InCard: Story = {
   args: { invalid: true, defaultValue: '6' },
-  render: (args, { globals }) => (
-    <Card.Root>
-      <Duration {...args} locale={localeOf(globals)} />
-    </Card.Root>
-  ),
+  render: (args, { globals, id }) => {
+    const { text, lang } = choiceTextsFor(localeOf(globals))
+    return (
+      <Card.Root>
+        <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+          </Field.Root>
+          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+      </Card.Root>
+    )
+  },
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expect(canvas.getByRole('radio', { name: text.duration6 })).toBeChecked()
@@ -292,11 +387,32 @@ export const InCard: Story = {
 
 /** Staff density from 64rem: the rows are 32px high, the circles still 24px. */
 export const Compact: Story = {
-  render: (args, { globals }) => (
-    <div className="kv-compact">
-      <Duration {...args} locale={localeOf(globals)} />
-    </div>
-  ),
+  render: (args, { globals, id }) => {
+    const { text, lang } = choiceTextsFor(localeOf(globals))
+    return (
+      <div className="kv-compact">
+        <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+          </Field.Root>
+          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+      </div>
+    )
+  },
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await expectMinimumTargetSize(canvas.getByRole('radio', { name: text.duration1 }))
@@ -306,28 +422,41 @@ export const Compact: Story = {
 /** A long Finnish legend and options in a 320px column: they wrap and nothing overflows. */
 export const LongFinnish: Story = {
   globals: { locale: 'fi' },
-  render: (args, { globals }) => (
-    <div className="kv-story-narrow" data-testid="narrow">
-      <Duration {...args} locale={localeOf(globals)} optionHints />
-    </div>
-  ),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-narrow" data-testid="narrow">
+        <Story />
+      </div>
+    ),
+  ],
+  render: (args, { globals, id }) => {
+    const { text, lang } = choiceTextsFor(localeOf(globals))
+    return (
+      <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
+        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+        <RadioGroup.Prose>
+          <p>{text.durationHint}</p>
+        </RadioGroup.Prose>
+        <Field.Root>
+          <RadioGroup.Radio value="1" />
+          <Field.Label>{text.duration1}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="6" />
+          <Field.Label>{text.duration6}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="12" />
+          <Field.Label>{text.duration12}</Field.Label>
+          <Field.HelpText>{text.duration12Hint}</Field.HelpText>
+        </Field.Root>
+        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+      </RadioGroup.Root>
+    )
+  },
   play: async ({ canvas }) => {
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
-}
-
-/** Controlled: the value lives in this story's `useState`; the group reports the chosen value. */
-function ControlledExample({ locale }: { locale: FormLocale }) {
-  const { text } = choiceTextsFor(locale)
-  const [value, setValue] = useState<string | null>('6')
-  return (
-    <div className="kv-story-form">
-      <Duration locale={locale} value={value} onValueChange={setValue} />
-      <p className="kv-story-form-output" data-testid="mirror">
-        {text.youChose}: {value}
-      </p>
-    </div>
-  )
 }
 
 /**
@@ -336,7 +465,8 @@ function ControlledExample({ locale }: { locale: FormLocale }) {
  * none), and calls `onValueChange(value, { reason: 'input', event })`. It never stores it.
  */
 export const Controlled: Story = {
-  render: (_args, { globals }) => <ControlledExample locale={localeOf(globals)} />,
+  parameters: showSource('radio-group/radio-group.fixture.tsx', 'ControlledDurationGroup'),
+  render: (_args, { globals }) => <ControlledDurationGroup locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await userEvent.click(canvas.getByRole('radio', { name: text.duration12 }))
@@ -346,43 +476,13 @@ export const Controlled: Story = {
   },
 }
 
-/** An uncontrolled form: the browser keeps the state, and the submit reads the checked radio. */
-function PlainFormExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const [sent, setSent] = useState<string | undefined>()
-  return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const radio = event.currentTarget.querySelector<HTMLInputElement>('input[type=radio]')
-        const value = new FormData(event.currentTarget).get(radio?.name ?? '')
-        setSent(typeof value === 'string' ? value : '–')
-      }}
-    >
-      <Duration locale={locale} defaultValue="1" />
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {text.sent}: {sent}
-        </p>
-      )}
-    </form>
-  )
-}
-
 /**
  * A plain `<form>`: no `value` and no handlers, only `defaultValue` and `name`. The radios are
  * uncontrolled, and the form's `FormData` has the checked value under the group's name.
  */
 export const PlainForm: Story = {
-  render: (_args, { globals }) => <PlainFormExample locale={localeOf(globals)} />,
+  parameters: showSource('radio-group/radio-group.fixture.tsx', 'DurationForm'),
+  render: (_args, { globals }) => <DurationForm locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await userEvent.click(canvas.getByRole('radio', { name: text.duration12 }))
@@ -391,14 +491,70 @@ export const PlainForm: Story = {
   },
 }
 
-/** Every state of the group in one column, for the RTL and forced-colours stories. */
-function GroupStates({ locale }: { locale: FormLocale }) {
-  const id = useId()
+// Every state of the group in one column: checked, invalid and disabled. The RTL and ForcedColors
+// stories render it, so a reader of either sees the real parts.
+const renderGroupStates: NonNullable<Story['render']> = (_args, { globals, id }) => {
+  const { text, lang } = choiceTextsFor(localeOf(globals))
   return (
-    <div className="kv-story-form">
-      <Duration locale={locale} name={`selected-${id}`} defaultValue="6" optionHints />
-      <Duration locale={locale} name={`invalid-${id}`} invalid />
-      <Duration locale={locale} name={`disabled-${id}`} disabled defaultValue="12" />
+    <div className="kv-story-form" lang={lang}>
+      <RadioGroup.Root name={`selected-${id}`} defaultValue="6">
+        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+        <RadioGroup.Prose>
+          <p>{text.durationHint}</p>
+        </RadioGroup.Prose>
+        <Field.Root>
+          <RadioGroup.Radio value="1" />
+          <Field.Label>{text.duration1}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="6" />
+          <Field.Label>{text.duration6}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="12" />
+          <Field.Label>{text.duration12}</Field.Label>
+          <Field.HelpText>{text.duration12Hint}</Field.HelpText>
+        </Field.Root>
+        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+      </RadioGroup.Root>
+      <RadioGroup.Root name={`invalid-${id}`} invalid>
+        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+        <RadioGroup.Prose>
+          <p>{text.durationHint}</p>
+        </RadioGroup.Prose>
+        <Field.Root>
+          <RadioGroup.Radio value="1" />
+          <Field.Label>{text.duration1}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="6" />
+          <Field.Label>{text.duration6}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="12" />
+          <Field.Label>{text.duration12}</Field.Label>
+        </Field.Root>
+        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+      </RadioGroup.Root>
+      <RadioGroup.Root name={`disabled-${id}`} disabled defaultValue="12">
+        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+        <RadioGroup.Prose>
+          <p>{text.durationHint}</p>
+        </RadioGroup.Prose>
+        <Field.Root>
+          <RadioGroup.Radio value="1" />
+          <Field.Label>{text.duration1}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="6" />
+          <Field.Label>{text.duration6}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="12" />
+          <Field.Label>{text.duration12}</Field.Label>
+        </Field.Root>
+        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+      </RadioGroup.Root>
     </div>
   )
 }
@@ -406,11 +562,11 @@ function GroupStates({ locale }: { locale: FormLocale }) {
 /** Right to left, in English: the circles are at the right, and the arrow keys are mirrored. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
-  render: () => <GroupStates locale="en" />,
+  render: renderGroupStates,
 }
 
 /** Checked, invalid and disabled circles stay distinguishable in forced colours. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  render: (_args, { globals }) => <GroupStates locale={localeOf(globals)} />,
+  render: renderGroupStates,
 }

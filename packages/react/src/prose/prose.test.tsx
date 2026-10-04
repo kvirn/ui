@@ -73,16 +73,16 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await render(
       <Field.Root>
         <Field.Label>Personnummer</Field.Label>
-        <Field.Prose data-testid="hint">
+        <Field.Prose data-testid="description">
           <p>12 siffror, utan bindestreck.</p>
         </Field.Prose>
         <TextInput name="pnr" />
       </Field.Root>,
     )
-    const hint = page.getByTestId('hint').element()
-    expect(hint.id).not.toBe('')
+    const descriptionPart = page.getByTestId('description').element()
+    expect(descriptionPart.id).not.toBe('')
     const input = page.getByRole('textbox')
-    await expect.element(input).toHaveAttribute('aria-describedby', hint.id)
+    await expect.element(input).toHaveAttribute('aria-describedby', descriptionPart.id)
     await expect.element(input).toHaveAccessibleDescription('12 siffror, utan bindestreck.')
   })
 
@@ -134,16 +134,18 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await render(
       <Fieldset.Root invalid>
         <Fieldset.Legend>Adress</Fieldset.Legend>
-        <Fieldset.Prose data-testid="hint">
+        <Fieldset.Prose data-testid="description">
           <p>Där du är folkbokförd.</p>
         </Fieldset.Prose>
         <Fieldset.ErrorMessage>Ange din adress</Fieldset.ErrorMessage>
       </Fieldset.Root>,
     )
     const group = page.getByRole('group', { name: 'Adress' })
-    const [hintId, errorId] = (group.element().getAttribute('aria-describedby') ?? '').split(' ')
-    expect(hintId).toBe(page.getByTestId('hint').element().id)
-    expect(errorId).not.toBe(hintId)
+    const [descriptionId, errorId] = (group.element().getAttribute('aria-describedby') ?? '').split(
+      ' ',
+    )
+    expect(descriptionId).toBe(page.getByTestId('description').element().id)
+    expect(errorId).not.toBe(descriptionId)
     await expect
       .element(group)
       .toHaveAccessibleDescription('Där du är folkbokförd. Error: Ange din adress')
@@ -192,7 +194,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
       <Field.Root invalid disabled>
         <Field.Label>Namn</Field.Label>
         <Field.Prose
-          data-testid="hint"
+          data-testid="description"
           render={(partProps, state) => {
             seenStates.push(state)
             return <p {...partProps} />
@@ -204,10 +206,10 @@ describe('Prose as the description of a Field or Fieldset', () => {
         <Field.ErrorMessage>Ange namn</Field.ErrorMessage>
       </Field.Root>,
     )
-    const hint = page.getByTestId('hint')
-    await expect.element(hint).toHaveAttribute('data-invalid', '')
-    await expect.element(hint).toHaveAttribute('data-disabled', '')
-    expect(hint.element().tagName).toBe('P')
+    const descriptionPart = page.getByTestId('description')
+    await expect.element(descriptionPart).toHaveAttribute('data-invalid', '')
+    await expect.element(descriptionPart).toHaveAttribute('data-disabled', '')
+    expect(descriptionPart.element().tagName).toBe('P')
     expect(seenStates.at(-1)).toEqual({ isInvalid: true, isRequired: false, isDisabled: true })
   })
 
@@ -216,13 +218,13 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await render(
       <Field.Root>
         <Field.Label>Namn</Field.Label>
-        <Field.Prose ref={ref} data-testid="hint">
+        <Field.Prose ref={ref} data-testid="description">
           Som i passet.
         </Field.Prose>
         <TextInput />
       </Field.Root>,
     )
-    expect(ref.current).toBe(page.getByTestId('hint').element())
+    expect(ref.current).toBe(page.getByTestId('description').element())
     await expect.element(page.getByRole('textbox')).toHaveAccessibleDescription('Som i passet.')
   })
 
@@ -235,7 +237,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('a Field with a Prose hint has no axe violations', async () => {
+  test('a Field with a Prose help text has no axe violations', async () => {
     const { container } = await render(
       <Field.Root invalid>
         <Field.Label>Personnummer</Field.Label>
@@ -250,7 +252,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await expectNoA11yViolations(container)
   })
 
-  test('a Fieldset with a Prose hint has no axe violations', async () => {
+  test('a Fieldset with a Prose help text has no axe violations', async () => {
     const { container } = await render(
       <Fieldset.Root group>
         <Fieldset.Legend>Hur vill du bli kontaktad?</Fieldset.Legend>

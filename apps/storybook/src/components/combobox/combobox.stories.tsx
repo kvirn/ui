@@ -1,29 +1,37 @@
-import { Button, Card, Combobox, Field } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/combobox/combobox.a11y.md?raw'
 import guide from '../../../../../packages/react/src/combobox/combobox.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useState } from 'react'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
-import type { FormLocale } from '../form/form.fixture.tsx'
 import { virtualizedCount } from '../form/virtualized.fixture.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   ComboboxStates,
+  CompactExample,
+  ControlledExample,
   DefaultExample,
+  DisabledExample,
+  DisabledOptionExample,
+  FilteringExample,
+  GroupsExample,
+  InvalidExample,
   KeyboardExample,
+  LoadingExample,
+  LongFinnishExample,
+  LongListExample,
+  MinimalExample,
   MultipleExample,
-  MunicipalitiesCombobox,
-  MunicipalityCombobox,
+  MultipleNoneChosenExample,
+  MultipleOneChosenExample,
+  OnSurfacesExample,
+  PlainFormExample,
+  RichOptionsExample,
+  SelectedExample,
   VirtualizedExample,
   comboboxTextsFor,
-  longList,
   municipalities,
-  municipalitiesWithClosed,
-  richMunicipalities,
 } from './combobox.fixture.tsx'
-import type { Municipality } from './combobox.fixture.tsx'
 
 // Components/Form/Combobox: Combobox.Root, Control, Input, Toggle, Clear, ValueList, Value and the
 // popup parts it shares with the Listbox (contract: combobox.a11y.md). The Docs page
@@ -35,6 +43,9 @@ import type { Municipality } from './combobox.fixture.tsx'
 // (PlainForm). Nothing here validates: an invalid story sets `invalid` itself.
 
 const description = usageGuide(guide)
+
+/** "Show code" prints the fixture function: each one is a Combobox as an adopter writes it. */
+const source = (name: string) => showSource('combobox/combobox.fixture.tsx', name)
 
 /**
  * The props the Controls and Docs pages describe. `Combobox.Root` is generic in its item and has
@@ -152,7 +163,7 @@ async function openWithKey(canvas: Canvas, input: HTMLElement) {
  * clears the text. Type a few letters (try ö) and choose from the list.
  */
 export const Default: Story = {
-  parameters: showSource('combobox/combobox.fixture.tsx', 'DefaultExample'),
+  parameters: source('DefaultExample'),
   render: (_args, { globals }) => <DefaultExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
@@ -179,20 +190,14 @@ export const Default: Story = {
  * Space on the remove buttons.
  */
 export const Keyboard: Story = {
+  parameters: source('KeyboardExample'),
   render: (_args, { globals }) => <KeyboardExample locale={localeOf(globals)} />,
 }
 
 /** Just the input and the popup, with no box and no buttons: the smallest Combobox. */
 export const Minimal: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = comboboxTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityCombobox withButtons={false} />
-      </Field.Root>
-    )
-  },
+  parameters: source('MinimalExample'),
+  render: (_args, { globals }) => <MinimalExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.municipality)
@@ -202,15 +207,8 @@ export const Minimal: Story = {
 
 /** A chosen option shows its text in the input, and the whole list is there when it opens again. */
 export const Selected: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = comboboxTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityCombobox defaultValue="malmö" />
-      </Field.Root>
-    )
-  },
+  parameters: source('SelectedExample'),
+  render: (_args, { globals }) => <SelectedExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.municipality)
@@ -226,18 +224,8 @@ export const Selected: Story = {
 
 /** Typing filters the list: å, ä and ö are not a and o in Swedish, so "ä" finds only the names that have it. */
 export const Filtering: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = comboboxTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Field.Prose>
-          <p>{text.hint}</p>
-        </Field.Prose>
-        <MunicipalityCombobox />
-      </Field.Root>
-    )
-  },
+  parameters: source('FilteringExample'),
+  render: (_args, { globals }) => <FilteringExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.municipality)
@@ -250,15 +238,8 @@ export const Filtering: Story = {
 
 /** Nothing matches: the popup says so (and the screen reader is told), and the typed text stays. */
 export const NoResults: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = comboboxTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityCombobox />
-      </Field.Root>
-    )
-  },
+  parameters: source('FilteringExample'),
+  render: (_args, { globals }) => <FilteringExample locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.municipality)
@@ -274,15 +255,8 @@ export const NoResults: Story = {
 
 /** The options are being fetched: the popup says "Laddar resultat", with `filter={false}` and `isLoading`. */
 export const Loading: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = comboboxTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityCombobox items={[]} filter={false} isLoading />
-      </Field.Root>
-    )
-  },
+  parameters: source('LoadingExample'),
+  render: (_args, { globals }) => <LoadingExample locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.municipality)
@@ -295,48 +269,10 @@ export const Loading: Story = {
   },
 }
 
-function GroupsCombobox({ locale }: { locale: FormLocale }) {
-  const { text } = comboboxTextsFor(locale)
-  const pick = (...picked: string[]) =>
-    municipalities.filter((municipality) => picked.includes(municipality.name))
-  const groups = [
-    { key: 'west', label: text.groupWest, items: pick('Göteborg', 'Borås') },
-    { key: 'east', label: text.groupEast, items: pick('Stockholm', 'Uppsala') },
-    { key: 'south', label: text.groupSouth, items: pick('Malmö') },
-  ]
-  return (
-    <Combobox.Root
-      groups={groups}
-      itemToString={(municipality: Municipality) => municipality.name}
-      itemToKey={(municipality: Municipality) => municipality.code}
-    >
-      <Combobox.Control>
-        <Combobox.Input />
-        <Combobox.Clear />
-        <Combobox.Toggle />
-      </Combobox.Control>
-      <Combobox.Popup>
-        <Combobox.List>
-          {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-        </Combobox.List>
-        <Combobox.Empty />
-      </Combobox.Popup>
-    </Combobox.Root>
-  )
-}
-
 /** Groups: `role="group"` named by its label. A group left with no match is not shown while filtering. */
 export const Groups: Story = {
-  render: (_args, { globals }) => {
-    const locale = localeOf(globals)
-    const { text, lang } = comboboxTextsFor(locale)
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <GroupsCombobox locale={locale} />
-      </Field.Root>
-    )
-  },
+  parameters: source('GroupsExample'),
+  render: (_args, { globals }) => <GroupsExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const locale = localeOf(globals)
     const { text } = comboboxTextsFor(locale)
@@ -348,15 +284,8 @@ export const Groups: Story = {
 
 /** A disabled option is reachable with the arrow keys, read as unavailable, and can't be chosen. */
 export const DisabledOption: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = comboboxTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityCombobox items={municipalitiesWithClosed} />
-      </Field.Root>
-    )
-  },
+  parameters: source('DisabledOptionExample'),
+  render: (_args, { globals }) => <DisabledOptionExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     await userEvent.type(inputOf(canvas, text.municipality), 'stock')
@@ -370,19 +299,8 @@ export const DisabledOption: Story = {
 
 /** Invalid: a 2px edge and the message under the field. The text that matched nothing stays. */
 export const Invalid: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = comboboxTextsFor(localeOf(globals))
-    return (
-      <Field.Root required invalid lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Field.Prose>
-          <p>{text.hint}</p>
-        </Field.Prose>
-        <MunicipalityCombobox defaultInputValue="Gö" />
-        <Field.ErrorMessage>{text.notInList}</Field.ErrorMessage>
-      </Field.Root>
-    )
-  },
+  parameters: source('InvalidExample'),
+  render: (_args, { globals }) => <InvalidExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.municipality)
@@ -395,15 +313,8 @@ export const Invalid: Story = {
 
 /** Disabled: a dashed edge on the surface colour, no tab stop, and the popup never opens. */
 export const Disabled: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = comboboxTextsFor(localeOf(globals))
-    return (
-      <Field.Root required disabled lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityCombobox defaultValue="malmö" />
-      </Field.Root>
-    )
-  },
+  parameters: source('DisabledExample'),
+  render: (_args, { globals }) => <DisabledExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     await expect(inputOf(canvas, text.municipality)).toBeDisabled()
@@ -412,18 +323,8 @@ export const Disabled: Story = {
 
 /** Several choices, none chosen yet: the first choice appears as a chip before the input. */
 export const Multiple: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = comboboxTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.several}</Field.Label>
-        <Field.Prose>
-          <p>{text.severalHint}</p>
-        </Field.Prose>
-        <MunicipalitiesCombobox />
-      </Field.Root>
-    )
-  },
+  parameters: source('MultipleNoneChosenExample'),
+  render: (_args, { globals }) => <MultipleNoneChosenExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.several)
@@ -440,15 +341,8 @@ export const Multiple: Story = {
 
 /** Several choices with one chosen: a chip with its remove button. Removing it moves focus to the input. */
 export const MultipleOne: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = comboboxTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.several}</Field.Label>
-        <MunicipalitiesCombobox defaultValue={['malmö']} />
-      </Field.Root>
-    )
-  },
+  parameters: source('MultipleOneChosenExample'),
+  render: (_args, { globals }) => <MultipleOneChosenExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     const remove = canvas.getByRole('button', { name: /Malmö/ })
@@ -461,6 +355,7 @@ export const MultipleOne: Story = {
 
 /** Several choices with many chosen: the chips wrap, and every one has its own remove button. */
 export const MultipleMany: Story = {
+  parameters: source('MultipleExample'),
   render: (_args, { globals }) => <MultipleExample locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await expect(canvas.getAllByRole('listitem')).toHaveLength(2)
@@ -471,15 +366,8 @@ export const MultipleMany: Story = {
 
 /** A long list scrolls inside the popup, which is never taller than the room that is left. */
 export const LongList: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = comboboxTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityCombobox items={longList} />
-      </Field.Root>
-    )
-  },
+  parameters: source('LongListExample'),
+  render: (_args, { globals }) => <LongListExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     await openWithKey(canvas, inputOf(canvas, text.municipality))
@@ -494,7 +382,7 @@ export const LongList: Story = {
  * never rendered, and `aria-activedescendant` always points at one that is.
  */
 export const Virtualized: Story = {
-  parameters: showSource('combobox/combobox.fixture.tsx', 'VirtualizedExample'),
+  parameters: source('VirtualizedExample'),
   render: (_args, { globals }) => <VirtualizedExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
@@ -514,41 +402,14 @@ export const Virtualized: Story = {
  * popup. Try ArrowUp, ArrowDown, Page Down and typing in the Keyboard section above.
  */
 export const VirtualizedKeyboard: Story = {
-  parameters: showSource('combobox/combobox.fixture.tsx', 'VirtualizedExample'),
+  parameters: source('VirtualizedExample'),
   render: (_args, { globals }) => <VirtualizedExample locale={localeOf(globals)} />,
 }
 
 /** A rich option: your own children replace the text. The name a screen reader reads is its text content. */
 export const RichOptions: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = comboboxTextsFor(localeOf(globals))
-    return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Combobox.Root
-          items={richMunicipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-        >
-          <Combobox.Input />
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => (
-                <Combobox.Option item={municipality}>
-                  <span style={{ display: 'grid' }}>
-                    <span>{municipality.name}</span>
-                    <small style={{ color: 'var(--kv-listbox-option-hint)' }}>
-                      {municipality.county}
-                    </small>
-                  </span>
-                </Combobox.Option>
-              )}
-            </Combobox.List>
-          </Combobox.Popup>
-        </Combobox.Root>
-      </Field.Root>
-    )
-  },
+  parameters: source('RichOptionsExample'),
+  render: (_args, { globals }) => <RichOptionsExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     await openWithKey(canvas, inputOf(canvas, text.municipality))
@@ -559,29 +420,19 @@ export const RichOptions: Story = {
 /** A long label in a 320px column, and a long chosen option: both wrap, and nothing overflows. */
 export const LongFinnish: Story = {
   globals: { locale: 'fi' },
-  render: (_args, { globals }) => {
-    const { text, shared, lang } = comboboxTextsFor(localeOf(globals))
-    const items: readonly Municipality[] = [
-      { code: 'long', name: 'Pohjois-Pohjanmaan sairaanhoitopiirin kuntayhtymä' },
-      ...municipalities.slice(0, 3),
-    ]
-    return (
+  decorators: [
+    (Story) => (
       <div
         className="kv-story-narrow"
         data-testid="narrow"
         style={{ paddingInline: 'var(--kv-space-4)' }}
       >
-        <Field.Root required lang={lang}>
-          <Field.Label>{text.longLabel}</Field.Label>
-          <MunicipalityCombobox items={items} defaultValue="long" />
-        </Field.Root>
-        <Field.Root required lang={lang}>
-          <Field.Label>{shared.longSelectLabel}</Field.Label>
-          <MunicipalitiesCombobox items={items} defaultValue={['long', 'ale']} />
-        </Field.Root>
+        <Story />
       </div>
-    )
-  },
+    ),
+  ],
+  parameters: source('LongFinnishExample'),
+  render: (_args, { globals }) => <LongFinnishExample locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await userEvent.click(firstOf(canvas.getAllByRole('combobox')))
     await userEvent.keyboard('{ArrowDown}')
@@ -592,18 +443,8 @@ export const LongFinnish: Story = {
 
 /** In a card: the edge keeps 3:1 against `surface-raised` (1.4.11), and the popup its own edge. */
 export const OnSurfaces: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = comboboxTextsFor(localeOf(globals))
-    return (
-      <Card.Root lang={lang}>
-        <Field.Root required invalid>
-          <Field.Label>{text.municipality}</Field.Label>
-          <MunicipalityCombobox />
-          <Field.ErrorMessage>{text.notInList}</Field.ErrorMessage>
-        </Field.Root>
-      </Card.Root>
-    )
-  },
+  parameters: source('OnSurfacesExample'),
+  render: (_args, { globals }) => <OnSurfacesExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     await expect(inputOf(canvas, text.municipality)).toBeVisible()
@@ -612,38 +453,12 @@ export const OnSurfaces: Story = {
 
 /** Staff density from 64rem: 32px high box and options, with the text still 16px. */
 export const Compact: Story = {
-  render: (_args, { globals }) => {
-    const { text, lang } = comboboxTextsFor(localeOf(globals))
-    return (
-      <div className="kv-compact" lang={lang}>
-        <Field.Root required>
-          <Field.Label>{text.municipality}</Field.Label>
-          <MunicipalityCombobox />
-        </Field.Root>
-      </div>
-    )
-  },
+  parameters: source('CompactExample'),
+  render: (_args, { globals }) => <CompactExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     await expectMinimumTargetSize(inputOf(canvas, text.municipality))
   },
-}
-
-/** Controlled by your form state: this story's `useState` stands in for TanStack Form or React Hook Form. */
-function ControlledExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, lang } = comboboxTextsFor(locale)
-  const [value, setValue] = useState<string | null>('göteborg')
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityCombobox value={value} onValueChange={setValue} />
-      </Field.Root>
-      <p className="kv-story-form-output" data-testid="mirror">
-        {shared.youChose}: {value ?? '–'}
-      </p>
-    </div>
-  )
 }
 
 /**
@@ -652,6 +467,7 @@ function ControlledExample({ locale }: { locale: FormLocale }) {
  * the value into state, so a parent that refuses a change leaves it as it was.
  */
 export const Controlled: Story = {
+  parameters: source('ControlledExample'),
   render: (_args, { globals }) => <ControlledExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text, shared } = comboboxTextsFor(localeOf(globals))
@@ -665,41 +481,9 @@ export const Controlled: Story = {
   },
 }
 
-/** An uncontrolled form: the hidden input carries the key, and the submit reads it by `name`. The typed text is never sent. */
-function PlainFormExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, lang } = comboboxTextsFor(locale)
-  const [sent, setSent] = useState<string | undefined>()
-  return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const value = new FormData(event.currentTarget).get('municipality')
-        setSent(typeof value === 'string' ? value : '')
-      }}
-    >
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <MunicipalityCombobox name="municipality" defaultValue="göteborg" />
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {shared.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {shared.sent}: {sent}
-        </p>
-      )}
-    </form>
-  )
-}
-
 /** A plain `<form>`: no `value` and no handlers. The form's `FormData` has the key by `name` on submit. */
 export const PlainForm: Story = {
+  parameters: source('PlainFormExample'),
   render: (_args, { globals }) => <PlainFormExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text, shared } = comboboxTextsFor(localeOf(globals))
@@ -715,6 +499,7 @@ export const PlainForm: Story = {
 /** Right to left, in English: the chevron is at the left, and the chips start at the right. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
+  parameters: source('ComboboxStates'),
   render: () => <ComboboxStates locale="en" />,
   play: async ({ canvas }) => {
     await userEvent.click(firstOf(canvas.getAllByRole('combobox')))
@@ -726,6 +511,7 @@ export const RTL: Story = {
 /** The edges, the invalid width, the cross, the chevron and the active option stay visible in forced colours. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
+  parameters: source('ComboboxStates'),
   render: (_args, { globals }) => <ComboboxStates locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await userEvent.click(firstOf(canvas.getAllByRole('combobox')))

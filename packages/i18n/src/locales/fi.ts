@@ -4,8 +4,13 @@ import type { KvirnMessages } from '../types.ts'
 export const fi = {
   link: { newTabNotice: '(avautuu uuteen välilehteen)' },
   field: { optional: '(vapaaehtoinen)', errorPrefix: 'Virhe:' },
-  dateInput: { day: 'Päivä', month: 'Kuukausi', year: 'Vuosi' },
-  notification: {
+  dateInput: {
+    day: 'Päivä',
+    month: 'Kuukausi',
+    year: 'Vuosi',
+    autoAdvanceHint: 'Kohdistus siirtyy seuraavaan kenttään, kun kenttä on täynnä.',
+  },
+  alert: {
     infoPrefix: 'Tiedoksi:',
     successPrefix: 'Valmis:',
     warningPrefix: 'Varoitus:',

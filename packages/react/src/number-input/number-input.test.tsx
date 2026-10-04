@@ -48,7 +48,7 @@ describe('rendering', () => {
       <Field.Root required>
         <Field.Label>Hur många barn bor hos dig?</Field.Label>
         <NumberInput name="children" min={0} max={12} />
-        <Field.Hint>Ett heltal från 0 till 12.</Field.Hint>
+        <Field.HelpText>Ett heltal från 0 till 12.</Field.HelpText>
       </Field.Root>,
     )
     const input = page.getByRole('textbox', { name: /Hur många barn bor hos dig\?/ })
@@ -369,12 +369,12 @@ describe('keys and paste (contract: number-input.a11y.md › Keyboard)', () => {
 })
 
 describe('in a Field', () => {
-  test('the label names it, the hint and the error describe it, and the state is on it', async () => {
+  test('the label names it, the help text and the error describe it, and the state is on it', async () => {
     const { container } = await render(
       <Field.Root required invalid>
         <Field.Label>Hur många barn bor hos dig?</Field.Label>
         <NumberInput name="children" max={12} />
-        <Field.Hint>Ett heltal från 0 till 12, till exempel 2.</Field.Hint>
+        <Field.HelpText>Ett heltal från 0 till 12, till exempel 2.</Field.HelpText>
         <Field.ErrorMessage>Ange antalet barn som ett tal från 0 till 12</Field.ErrorMessage>
       </Field.Root>,
     )
@@ -418,7 +418,7 @@ describe('in a Field', () => {
         <Field.Root>
           <Field.Label marker="none">Belopp</Field.Label>
           <NumberInput decimals={2} aria-describedby="extra" />
-          <Field.Hint>Till exempel 1 250,50.</Field.Hint>
+          <Field.HelpText>Till exempel 1 250,50.</Field.HelpText>
         </Field.Root>
       </>,
     )
@@ -437,7 +437,7 @@ describe('inside an InputGroup', () => {
           <NumberInput name="rent" grouping className="kv-input--width-10" />
           <InputGroup.Addon data-testid="addon">kr</InputGroup.Addon>
         </InputGroup.Root>
-        <Field.Hint>Till exempel 8 450</Field.Hint>
+        <Field.HelpText>Till exempel 8 450</Field.HelpText>
       </Field.Root>,
     )
     const input = page.getByRole('textbox', { name: /Månadshyra i kronor/ })
@@ -486,7 +486,7 @@ describe('dev warnings', () => {
     expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('controlId')
   })
 
-  test('decimals in a Field without a hint warn once (3.3.2)', async () => {
+  test('decimals in a Field without a help text warn once (3.3.2)', async () => {
     await render(
       <Field.Root>
         <Field.Label>Hyra</Field.Label>
@@ -497,11 +497,11 @@ describe('dev warnings', () => {
       expect(consoleWarn).toHaveBeenCalledTimes(1)
     })
     const message = String(consoleWarn.mock.calls[0]?.[0])
-    expect(message).toContain('<Field.Hint>')
+    expect(message).toContain('<Field.HelpText>')
     expect(message).toContain('3.3.2')
   })
 
-  test('a whole number needs no hint, and decimals with a hint or your own description do not warn', async () => {
+  test('a whole number needs no help text, and decimals with a help text or your own description do not warn', async () => {
     await render(
       <>
         <Field.Root>
@@ -511,7 +511,7 @@ describe('dev warnings', () => {
         <Field.Root>
           <Field.Label>Hyra</Field.Label>
           <NumberInput decimals={2} />
-          <Field.Hint>Till exempel 1 250,50.</Field.Hint>
+          <Field.HelpText>Till exempel 1 250,50.</Field.HelpText>
         </Field.Root>
         <Field.Root>
           <Field.Label>Skuld</Field.Label>
@@ -526,7 +526,7 @@ describe('dev warnings', () => {
 })
 
 describe('dev warnings: your own mask', () => {
-  test('an own mask in a Field without a hint warns once (3.3.2)', async () => {
+  test('an own mask in a Field without a help text warns once (3.3.2)', async () => {
     await render(
       <Field.Root>
         <Field.Label>Postnummer</Field.Label>
@@ -537,17 +537,17 @@ describe('dev warnings: your own mask', () => {
       expect(consoleWarn).toHaveBeenCalledTimes(1)
     })
     const message = String(consoleWarn.mock.calls[0]?.[0])
-    expect(message).toContain('<Field.Hint>')
+    expect(message).toContain('<Field.HelpText>')
     expect(message).toContain('3.3.2')
   })
 
-  test('an own mask with a hint or your own description, and mask={false}, do not warn', async () => {
+  test('an own mask with a help text or your own description, and mask={false}, do not warn', async () => {
     await render(
       <>
         <Field.Root>
           <Field.Label>Postnummer</Field.Label>
           <NumberInput mask="digits" />
-          <Field.Hint>Fem siffror, till exempel 123 45.</Field.Hint>
+          <Field.HelpText>Fem siffror, till exempel 123 45.</Field.HelpText>
         </Field.Root>
         <Field.Root>
           <Field.Label>Kod</Field.Label>
@@ -578,7 +578,7 @@ describe('useNumberInput', () => {
         <Field.Root invalid required>
           <Field.Label>Belopp</Field.Label>
           <HookInput label="Belopp" decimals={2} onValueChange={onValueChange} />
-          <Field.Hint>Till exempel 1 250,50.</Field.Hint>
+          <Field.HelpText>Till exempel 1 250,50.</Field.HelpText>
           <Field.ErrorMessage>Ange ett belopp</Field.ErrorMessage>
         </Field.Root>
       </KvirnProvider>,
@@ -654,7 +654,7 @@ describe('the mask is optional (Plan 0039)', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('mask={false} with decimals needs no format hint: the page’s decimal mark is not applied', async () => {
+  test('mask={false} with decimals needs no format help text: the page’s decimal mark is not applied', async () => {
     await render(
       <Field.Root>
         <Field.Label>Belopp</Field.Label>

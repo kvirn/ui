@@ -170,13 +170,13 @@ describe('in a Field', () => {
     await expect.element(page.getByRole('textbox', { name: 'Beskrivning' })).toBeDisabled()
   })
 
-  test('the description lists the description, the hint and the error, in DOM order', async () => {
+  test('the description lists the description, the help text and the error, in DOM order', async () => {
     const { container } = await render(
       <Field.Root invalid>
         <Field.Label>Beskrivning</Field.Label>
         <Field.Prose>Skriv vad som har hänt.</Field.Prose>
         <Textarea />
-        <Field.Hint>Svenska eller engelska.</Field.Hint>
+        <Field.HelpText>Svenska eller engelska.</Field.HelpText>
         <Field.ErrorMessage>Beskriv ärendet</Field.ErrorMessage>
       </Field.Root>,
     )
@@ -682,7 +682,7 @@ describe('characterCount', () => {
         <Field.Label>Beskriv din situation</Field.Label>
         <Field.Prose>Berätta vad som har hänt.</Field.Prose>
         <Textarea characterCount maxLength={20} />
-        <Field.Hint>Svenska eller engelska.</Field.Hint>
+        <Field.HelpText>Svenska eller engelska.</Field.HelpText>
         <Field.ErrorMessage>Beskriv din situation</Field.ErrorMessage>
       </Field.Root>,
     )

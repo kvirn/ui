@@ -4,12 +4,12 @@
 
 **KvirnUI holds no form state; bring your own form logic.** Fieldset renders what it's given. `invalid`, `required` and `disabled` come from your form library or your own code, and you write the error message.
 
-A native `<fieldset>` with a `<legend>`: it groups related questions (an address) or the controls of one question (the options of a radio group, the three boxes of a date), under one accessible name. Its description, hint and error describe the group.
+A native `<fieldset>` with a `<legend>`: it groups related questions (an address) or the controls of one question (the options of a radio group, the three boxes of a date), under one accessible name. Its description, help text and error describe the group.
 
-- Five parts: `<Fieldset.Root>` is the root (`<fieldset>`), `<Fieldset.Legend>` is the `<legend>`, `<Fieldset.Prose>` is the description, `<Fieldset.Hint>` is the hint (`<p>`) and `<Fieldset.ErrorMessage>` behaves like [Field's](../field/field.md). Each part is also exported on its own (`FieldsetRoot`, `FieldsetLegend`, `FieldsetProse`, `FieldsetHint`, `FieldsetErrorMessage`), which is the form to import in a React Server Component, because a server component can't dot into a client module. The description is a [Prose](../prose/prose.md): inside the Fieldset (and not inside a Field in it) it is the group's description, so write `<Fieldset.Prose>`, not a bare `<Prose>`. The hint is [Field's](../field/field.md) `Hint` under the group's name. The older flat name `Legend`, and the callable `Fieldset`, still work but are deprecated.
-- **A description and a hint are different things,** as in a Field. The description (`Fieldset.Prose`) is what the user must read before answering, above the controls, in 16px. The hint (`Fieldset.Hint`) is a short instruction that helps while answering, such as the format of a date ("Till exempel 2026-03-27"), under the controls, in 14px.
-- **A description and a hint are text.** The accessible description is the text content, so a heading, list or link inside it loses its structure for a screen-reader user. Keep a hint to one or two short sentences or an example, with no links. A Prose that isn't a description goes outside the Fieldset. A `Fieldset.Hint` outside a Fieldset warns in development and renders a plain paragraph with no id.
-- The legend is the group's name, and the browser maps the fieldset to the `group` role. `aria-describedby` on the fieldset lists every description and hint in DOM order and then the error, only for parts that are rendered. A fieldset can have several of each, each with its own id, and one error: two `Fieldset.ErrorMessage`s give a dev warning.
+- Five parts: `<Fieldset.Root>` is the root (`<fieldset>`), `<Fieldset.Legend>` is the `<legend>`, `<Fieldset.Prose>` is the description, `<Fieldset.HelpText>` is the help text (`<p>`) and `<Fieldset.ErrorMessage>` behaves like [Field's](../field/field.md). Each part is also exported on its own (`FieldsetRoot`, `FieldsetLegend`, `FieldsetProse`, `FieldsetHelpText`, `FieldsetErrorMessage`), which is the form to import in a React Server Component, because a server component can't dot into a client module. The description is a [Prose](../prose/prose.md): inside the Fieldset (and not inside a Field in it) it is the group's description, so write `<Fieldset.Prose>`, not a bare `<Prose>`. The help text is [Field's](../field/field.md) `HelpText` under the group's name. The older flat name `Legend`, and the callable `Fieldset`, still work but are deprecated.
+- **A description and a help text are different things,** as in a Field. The description (`Fieldset.Prose`) is what the user must read before answering, above the controls, in 16px. The help text (`Fieldset.HelpText`) is a short instruction that helps while answering, such as the format of a date ("Till exempel 2026-03-27"), under the controls, in 14px.
+- **A description and a help text are text.** The accessible description is the text content, so a heading, list or link inside it loses its structure for a screen-reader user. Keep a help text to one or two short sentences or an example, with no links. A Prose that isn't a description goes outside the Fieldset. A `Fieldset.HelpText` outside a Fieldset warns in development and renders a plain paragraph with no id.
+- The legend is the group's name, and the browser maps the fieldset to the `group` role. `aria-describedby` on the fieldset lists every description and help text in DOM order and then the error, only for parts that are rendered. A fieldset can have several of each, each with its own id, and one error: two `Fieldset.ErrorMessage`s give a dev warning.
 - `disabled` is native `fieldset[disabled]`: every control inside is disabled and skipped by Tab.
 - `invalid` marks the fieldset's own parts (`data-invalid`) and renders its Fieldset.ErrorMessage. It does **not** pass down to the Fields inside, so one message for the group doesn't mark every control: set `invalid` on each Field that is wrong. There is no `aria-invalid` on a fieldset, because ARIA doesn't support it on `group`: the error reaches users through the description.
 - `group` is for one question answered with several controls. The legend then ends with "(valfritt)" when the group isn't `required`, and the Fields inside drop their own marker: an option or a date box is never "(optional)". A plain Fieldset only groups questions, so its legend has no marker, and its Fields mark themselves.
@@ -39,12 +39,12 @@ import { Field, Fieldset, TextInput } from '@kvirn-ui/react'
       className="kv-input--width-6"
     />
   </Field.Root>
-  <Fieldset.Hint>Gatan och numret, till exempel Storgatan 12.</Fieldset.Hint>
+  <Fieldset.HelpText>Gatan och numret, till exempel Storgatan 12.</Fieldset.HelpText>
   <Fieldset.ErrorMessage>{errors.address}</Fieldset.ErrorMessage>
 </Fieldset.Root>
 ```
 
-The default order is the legend, the description, the controls, the hint, then the error under them, so the visual order is the spoken order. Render another order and the spacing and the description still work. On submit, move focus to the first invalid control or the error summary, and keep `scroll-padding` on the page, so the message under the controls isn't hidden by the on-screen keyboard (see [Field](../field/field.md)).
+The default order is the legend, the description, the controls, the help text, then the error under them, so the visual order is the spoken order. Render another order and the spacing and the description still work. On submit, move focus to the first invalid control or the error summary, and keep `scroll-padding` on the page, so the message under the controls isn't hidden by the on-screen keyboard (see [Field](../field/field.md)).
 
 Your part:
 
@@ -83,7 +83,7 @@ For several descriptions, list their names in `descriptions` and spread `getDesc
 ```tsx
 const fieldset = useFieldset({ invalid, descriptions: ['where', 'format'] })
 <p {...fieldset.getDescriptionProps('where')}>Adressen där du är folkbokförd.</p>
-<p {...fieldset.getDescriptionProps('format')} className="kv-field-hint">
+<p {...fieldset.getDescriptionProps('format')} className="kv-field-help-text">
   Gatan och numret, till exempel Storgatan 12.
 </p>
 ```

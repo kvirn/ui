@@ -144,8 +144,14 @@ Notes in prose: choices, pitfalls, combinations. Code blocks here are for packag
 ## "Show code" shows what an adopter writes
 
 - A story that renders the component inline (`args`, or JSX in `render`) needs nothing: Storybook shows that markup.
-- A story whose `render` is a **fixture component** (`<DeadlineNotification locale="sv" />`) would show that wrapper, which says nothing. Give it `parameters: showSource('<name>/<name>.fixture.tsx', 'FunctionName', …)`. It shows the fixture function's own source, read from the file, so it can't drift. A good fixture function is the example: the real `Notification.Info` with its Title and Body, readable on its own.
-- So write fixtures to be read: one exported function per example, the component usage visible, localisation plumbing at the top and nothing else clever. Name the function after the example.
+- A story whose `render` is a **fixture component** (`<DeadlineAlert locale="sv" />`) would show that wrapper, which says nothing. Give it `parameters: showSource('<name>/<name>.fixture.tsx', 'FunctionName', …)`. It shows the fixture function's own source, read from the file, so it can't drift.
+- **The shown function must contain the compound parts.** `Alert.Info` with its Title and Body, `Fieldset.Root` with `DateInput.Root`, `Field.Root` with `TextInput`: all written in the function, readable on its own. A function that renders another local component which holds the real markup (`<BirthDate />`, `<CasesView />`, `<ResultAlert />`) hides the API, so it fails this rule. Inline the parts, or show the function that has them.
+- **No story-only plumbing in the shown code:**
+  - no local wrapper component (`Contact`, `Duration`, `*Example`, `*Page`), and no `locale` prop on a wrapper that is shown as the example. A fixture shown by `showSource` may take `locale` as its own prop (as the `text-input` fixtures do) because the function is the example, with the text lookup at the top. An inline story reads the locale from `globals` and the `withFormLocale` decorator.
+  - no `kv-story-*` layout wrappers, test counters or inline `style` for the preview: put them in a decorator or a `play`.
+  - no hand-written code string (`parameters.docs.source.code`).
+- **Storybook's source printer can't show function props or function children.** `Combobox.List`, `Listbox.List` (a render function child), `itemToString`, `onValueChange={(value) => …}` and the like print as `{function noRefCheck() {}}`. A story that has one is not rendered inline: it uses a `showSource` fixture whose function contains the real parts. So `meta.args` never holds a logging handler such as `fn()` or `logChange(…)` on a story that is shown inline (it prints as `() => {}`): drop it, or use a fixture.
+- So write fixtures to be read: one exported function per example, the component usage visible, localisation plumbing at the top and nothing else clever. Name the function after the example. A state matrix (RTL, ForcedColors, Keyboard) is such a function too: its body is the real parts in each state, shown with `showSource`.
 - Never hand-write a code string for a story. It will drift.
 
 ## Stories fill gaps
@@ -178,6 +184,6 @@ Cross-component guidance lives once on a Foundation page (`apps/storybook/src/fo
 4. `meta` has `description.component = usageGuide(guide)`.
 5. `Default` is the first story, and `meta.args` and `meta.argTypes` cover every prop in `<name>.tsx`, each with a description.
 6. Every part, prop, `data-*` attribute, class and message key in the component is on the page.
-7. Every example's "Show code" is how an adopter should write it. Every story with a fixture `render` has `showSource`.
+7. Every example's "Show code" is how an adopter should write it: the real compound parts and hooks, no local wrapper, no `locale` prop on a shown wrapper, no `{function noRefCheck() {}}`, no hand-written source string. Every story with a fixture `render` has `showSource`, on a function that contains the parts.
 8. No table or paragraph copied from another page: a link instead.
 9. No story that repeats another.

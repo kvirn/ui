@@ -4,12 +4,12 @@ Source: `packages/core/src/mask/` (pure, no React, no DOM), re-exported from `@k
 
 ## Masks by name (Plan 0039)
 
-`TextInput`, `NumberInput` and `useMask` take `mask` as `MaskInput`: `Mask | MaskName | { preset, country? } | { pattern, ...PatternMaskOptions } | RegExp`. `resolveMask(input, { locale, country? })` in `core/src/mask/resolve-mask.ts` turns it into a `Mask` and returns `{ mask, missingCountryFor }`. It is pure and never warns: the React hook warns (`mask-country-unresolved`) when `missingCountryFor` is set. A name the types rule out (a typo, `"number"`) is found with `unknownMaskName(input)` before resolving: the hook warns once (`mask-unknown-name:<name>`) and runs no mask. A `NumberInput` with its own `mask` in a Field with no hint warns like a masked TextInput (`number-input-mask-without-description`, 3.3.2).
+`TextInput`, `NumberInput` and `useMask` take `mask` as `MaskInput`: `Mask | MaskName | { preset, country? } | { pattern, ...PatternMaskOptions } | RegExp`. `resolveMask(input, { locale, country? })` in `core/src/mask/resolve-mask.ts` turns it into a `Mask` and returns `{ mask, missingCountryFor }`. It is pure and never warns: the React hook warns (`mask-country-unresolved`) when `missingCountryFor` is set. A name the types rule out (a typo, `"number"`) is found with `unknownMaskName(input)` before resolving: the hook warns once (`mask-unknown-name:<name>`) and runs no mask. A `NumberInput` with its own `mask` in a Field with no help text warns like a masked TextInput (`number-input-mask-without-description`, 3.3.2).
 
-| Name                                                                                  | Preset                                          |
-| ------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| `digits`, `letters`, `letters-and-digits`, `date`, `iban`, `email`, `telephone`       | `masks.digits()` and so on, with no country     |
-| `personal-identity-number` (alias `ssi`), `organisation-number`, `postal-code`        | `masks.personalIdentityNumber({ country })` and so on |
+| Name                                                                            | Preset                                                |
+| ------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `digits`, `letters`, `letters-and-digits`, `date`, `iban`, `email`, `telephone` | `masks.digits()` and so on, with no country           |
+| `personal-identity-number` (alias `ssi`), `organisation-number`, `postal-code`  | `masks.personalIdentityNumber({ country })` and so on |
 
 - **Country resolution** (`maskCountryFromLocale(locale)`, `core/src/locale/mask-country.ts`): the instance's `country`, the provider's `country`, the region of the tag (`sv-FI` is `FI`, any case, after a script subtag too), the language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn`, `no` and `se` are `NO`), else `undefined`. A region that isn't SE, FI or NO falls through to the language.
 - **No country:** the mask is `digits`, `missingCountryFor` is the name, and the hook warns once. A name that needs no country never warns.

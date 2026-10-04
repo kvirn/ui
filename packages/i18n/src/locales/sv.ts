@@ -4,8 +4,13 @@ import type { KvirnMessages } from '../types.ts'
 export const sv = {
   link: { newTabNotice: '(öppnas i en ny flik)' },
   field: { optional: '(valfritt)', errorPrefix: 'Fel:' },
-  dateInput: { day: 'Dag', month: 'Månad', year: 'År' },
-  notification: {
+  dateInput: {
+    day: 'Dag',
+    month: 'Månad',
+    year: 'År',
+    autoAdvanceHint: 'Fokus flyttas till nästa ruta när en ruta är full.',
+  },
+  alert: {
     infoPrefix: 'Information:',
     successPrefix: 'Klart:',
     warningPrefix: 'Varning:',

@@ -1,5 +1,5 @@
 import { contrastRatio } from './contrast.ts'
-import { notificationBackgrounds } from './contrast-requirements.ts'
+import { alertBackgrounds } from './contrast-requirements.ts'
 import type { ColorTokenName, ThemeName } from './contrast-requirements.ts'
 
 // Button depth: a button's edge is tinted, darker at the bottom in light and lighter
@@ -62,17 +62,17 @@ export const buttonEdgeBases = ['secondary', 'primary', 'danger', 'danger-hover'
 const plainBackgrounds = ['canvas', 'surface', 'surface-raised'] as const
 
 /**
- * Where a button sits: the plain backgrounds, and the four Notification backgrounds, because a
- * Notification's Actions hold buttons (design spec notification.md §6.6).
+ * Where a button sits: the plain backgrounds, and the four Alert backgrounds, because a
+ * Alert's Actions hold buttons (design spec alert.md §6.6).
  */
-const buttonBackgrounds = [...plainBackgrounds, ...notificationBackgrounds] as const
+const buttonBackgrounds = [...plainBackgrounds, ...alertBackgrounds] as const
 
 /** How many pairs `checkButtonEdges` measures per theme: 4 bases × 2 tints × 7 backgrounds. */
 export const buttonEdgePairsPerTheme = buttonEdgeBases.length * 2 * buttonBackgrounds.length
 
 /**
  * Requires every tinted button edge to keep 3:1 against `canvas`, `surface`, `surface-raised`
- * and the four Notification backgrounds (`primary-subtle`, `success-subtle`, `warning-subtle`
+ * and the four Alert backgrounds (`primary-subtle`, `success-subtle`, `warning-subtle`
  * and `danger-subtle`) (1.4.11). At 0% the result is the token itself, which the colour pairs
  * already require. Returns one message per unmet pair or unknown token.
  */

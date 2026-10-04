@@ -1,11 +1,13 @@
-import { Button, Card, Icon, Section } from '@kvirn-ui/react'
+import { Button, ButtonGroup, Card, Icon, Section } from '@kvirn-ui/react'
 import type { ButtonProps } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/button/button.a11y.md?raw'
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useId, useState } from 'react'
-import type { CSSProperties } from 'react'
+import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
+import { useState } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { expect, fn, waitFor, within } from 'storybook/test'
+import { showSource } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import { ApplicationForm } from './button.fixture.tsx'
 
 // Components/Button: the headless Button, styled by @kvirn-ui/theme/theme.css.
 // button.e2e.ts runs its keyboard contract against Default, Activation, Disabled,
@@ -37,18 +39,21 @@ const fiSaveLong = 'Tallenna rakennuslupahakemuksen luonnos'
 /** Secondary is the base look, with no class. */
 const variantClasses = ['kv-button--primary', 'kv-button--danger', 'kv-button--icon-only'] as const
 
-/** One button and a click counter: the keyboard contract's fixture. */
-function WithClickCount({ onClick, ...buttonProps }: ButtonProps) {
+const variants = ['primary', 'secondary', 'danger'] as const
+const variantClass = (variant: (typeof variants)[number]) =>
+  variant === 'secondary' ? undefined : `kv-button--${variant}`
+
+/**
+ * Counts the clicks the Button lets through, under the story. The keyboard contract's e2e tests
+ * read the count: it stays at 0 while a focusable disabled button is activated. The Button never
+ * calls `onClick` while it is disabled, so the count is the proof. It sits in a decorator, so
+ * "Show code" shows only the Button.
+ */
+function ClickCounter({ children }: { children: (countClick: () => void) => ReactNode }) {
   const [clickCount, setClickCount] = useState(0)
   return (
     <>
-      <Button
-        {...buttonProps}
-        onClick={(event) => {
-          setClickCount((count) => count + 1)
-          onClick?.(event)
-        }}
-      />
+      {children(() => setClickCount((count) => count + 1))}
       <p>
         {sv.clickCount}: {clickCount}
       </p>
@@ -56,55 +61,64 @@ function WithClickCount({ onClick, ...buttonProps }: ButtonProps) {
   )
 }
 
-/** Primary first: it is the main next step, and comes first in DOM and focus order. */
-function VariantsGroup({
-  labels = [sv.send, sv.saveDraft, sv.deleteDraft],
-}: {
-  labels?: readonly [string, string, string]
-}) {
-  const [primary, secondary, danger] = labels
+const withClickCount: Decorator = (Story, { args }) => {
+  const onClick = args['onClick'] as ButtonProps['onClick']
   return (
-    <div className="kv-button-group">
-      <Button className="kv-button--primary">{primary}</Button>
-      <Button>{secondary}</Button>
-      <Button className="kv-button--danger">{danger}</Button>
-    </div>
+    <ClickCounter>
+      {(countClick) =>
+        Story({
+          args: {
+            ...args,
+            onClick: (event: Parameters<NonNullable<ButtonProps['onClick']>>[0]) => {
+              countClick()
+              onClick?.(event)
+            },
+          },
+        })
+      }
+    </ClickCounter>
   )
 }
 
-const variants = ['primary', 'secondary', 'danger'] as const
-const variantClass = (variant: (typeof variants)[number]) =>
-  variant === 'secondary' ? undefined : `kv-button--${variant}`
+/** Primary first: it is the main next step, and comes first in DOM and focus order. */
+function variantsGroup(
+  labels: readonly [string, string, string] = [sv.send, sv.saveDraft, sv.deleteDraft],
+) {
+  const [primary, secondary, danger] = labels
+  return (
+    <ButtonGroup>
+      <Button className="kv-button--primary">{primary}</Button>
+      <Button>{secondary}</Button>
+      <Button className="kv-button--danger">{danger}</Button>
+    </ButtonGroup>
+  )
+}
 
 /** Each variant in each state. The state name comes before the button, not in its label. */
-function StatesMatrix() {
-  return (
-    <>
-      {variants.map((variant) => (
-        <section key={variant} className="kv-story-section" aria-labelledby={`states-${variant}`}>
-          <h2 id={`states-${variant}`}>{sv.variants[variant]}</h2>
-          <div className="kv-story-states">
-            <div className="kv-story-state">
-              <p>{sv.states.default}</p>
-              <Button className={variantClass(variant)}>{sv.send}</Button>
-            </div>
-            <div className="kv-story-state">
-              <p>{sv.states.disabled}</p>
-              <Button className={variantClass(variant)} disabled>
-                {sv.send}
-              </Button>
-            </div>
-            <div className="kv-story-state">
-              <p>{sv.states.focusableDisabled}</p>
-              <Button className={variantClass(variant)} disabled focusableWhenDisabled>
-                {sv.send}
-              </Button>
-            </div>
-          </div>
-        </section>
-      ))}
-    </>
-  )
+function statesMatrix(idPrefix: string) {
+  return variants.map((variant) => (
+    <section key={variant} className="kv-story-section" aria-labelledby={`${idPrefix}-${variant}`}>
+      <h2 id={`${idPrefix}-${variant}`}>{sv.variants[variant]}</h2>
+      <div className="kv-story-states">
+        <div className="kv-story-state">
+          <p>{sv.states.default}</p>
+          <Button className={variantClass(variant)}>{sv.send}</Button>
+        </div>
+        <div className="kv-story-state">
+          <p>{sv.states.disabled}</p>
+          <Button className={variantClass(variant)} disabled>
+            {sv.send}
+          </Button>
+        </div>
+        <div className="kv-story-state">
+          <p>{sv.states.focusableDisabled}</p>
+          <Button className={variantClass(variant)} disabled focusableWhenDisabled>
+            {sv.send}
+          </Button>
+        </div>
+      </div>
+    </section>
+  ))
 }
 
 const meta = {
@@ -193,9 +207,9 @@ export const IconOnly: Story = {
   },
 }
 
-/** Enter and Space activate it: the counter shows each click. */
+/** Enter and Space activate it: the click count under the button shows each activation. */
 export const Activation: Story = {
-  render: (args) => <WithClickCount {...args} />,
+  decorators: [withClickCount],
   play: async ({ canvas }) => {
     const button = canvas.getByRole('button', { name: 'Spara' })
     await expect(button).toHaveAttribute('type', 'button')
@@ -205,16 +219,17 @@ export const Activation: Story = {
 }
 
 /**
- * The fixture the keyboard tests drive: a button with a click counter, then a second button. Try
+ * The fixture the keyboard tests drive: a button with a click count, then a second button. Try
  * the keys in the Keyboard section above: Tab and Shift+Tab move between the two, and Enter and
  * Space activate the first.
  */
 export const Keyboard: Story = {
+  decorators: [withClickCount],
   render: (args) => (
-    <div className="kv-button-group">
-      <WithClickCount {...args} />
+    <ButtonGroup>
+      <Button {...args} />
       <Button>Avbryt</Button>
-    </div>
+    </ButtonGroup>
   ),
 }
 
@@ -222,7 +237,7 @@ export const Keyboard: Story = {
 export const Variants: Story = {
   render: () => (
     <>
-      <VariantsGroup />
+      {variantsGroup()}
       <p>{sv.dangerNote}</p>
     </>
   ),
@@ -238,7 +253,7 @@ export const Variants: Story = {
 
 /** Every variant: enabled, disabled, and disabled but focusable. */
 export const States: Story = {
-  render: () => <StatesMatrix />,
+  render: () => <>{statesMatrix('states')}</>,
   play: async ({ canvas }) => {
     const buttons = canvas.getAllByRole('button', { name: sv.send })
     await expect(buttons).toHaveLength(9)
@@ -257,26 +272,16 @@ export const States: Story = {
 export const Disabled: Story = {
   args: { children: 'Skicka', disabled: true },
   render: (args) => (
-    <div className="kv-button-group">
+    <ButtonGroup>
       <Button {...args} />
       <Button>Avbryt</Button>
-    </div>
+    </ButtonGroup>
   ),
   play: async ({ canvas }) => {
     const button = canvas.getByRole('button', { name: 'Skicka' })
     await expect(button).toBeDisabled()
     await expect(button).toHaveAttribute('data-disabled', '')
   },
-}
-
-function FocusableWhenDisabledStory(buttonProps: ButtonProps) {
-  const reasonId = useId()
-  return (
-    <>
-      <p id={reasonId}>{sv.reason}</p>
-      <WithClickCount {...buttonProps} aria-describedby={reasonId} />
-    </>
-  )
 }
 
 /** Stays in the Tab order with `aria-disabled`, and says why it's disabled. */
@@ -287,7 +292,13 @@ export const FocusableWhenDisabled: Story = {
     disabled: true,
     focusableWhenDisabled: true,
   },
-  render: (args) => <FocusableWhenDisabledStory {...args} />,
+  decorators: [withClickCount],
+  render: (args) => (
+    <>
+      <p id="send-reason">{sv.reason}</p>
+      <Button {...args} aria-describedby="send-reason" />
+    </>
+  ),
   play: async ({ canvas }) => {
     const button = canvas.getByRole('button', { name: 'Skicka' })
     await expect(button).toHaveAttribute('aria-disabled', 'true')
@@ -296,54 +307,10 @@ export const FocusableWhenDisabled: Story = {
   },
 }
 
-function SubmitInFormStory() {
-  const [name, setName] = useState('')
-  const [submittedName, setSubmittedName] = useState<string>()
-  return (
-    <>
-      <form
-        aria-label="Ansökan"
-        onSubmit={(event) => {
-          event.preventDefault()
-          setSubmittedName(name)
-        }}
-      >
-        <p>
-          <label>
-            Namn{' '}
-            <input
-              name="namn"
-              autoComplete="name"
-              value={name}
-              onChange={(event) => setName(event.currentTarget.value)}
-            />
-          </label>
-        </p>
-        <div className="kv-button-group">
-          <Button type="submit" className="kv-button--primary">
-            Skicka ansökan
-          </Button>
-          <Button
-            onClick={() => {
-              setName('')
-              setSubmittedName(undefined)
-            }}
-          >
-            Börja om
-          </Button>
-        </div>
-      </form>
-      {/* The live region is in the DOM before its message, so the message is announced. */}
-      <output>
-        {submittedName === undefined ? '' : `Ansökan skickad för ${submittedName || 'okänt namn'}`}
-      </output>
-    </>
-  )
-}
-
 /** `type="submit"` submits. The default `type="button"` never does. */
 export const SubmitInForm: Story = {
-  render: () => <SubmitInFormStory />,
+  parameters: showSource('button/button.fixture.tsx', 'ApplicationForm'),
+  render: () => <ApplicationForm />,
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('button', { name: 'Skicka ansökan' })).toHaveAttribute(
       'type',
@@ -369,11 +336,18 @@ export const FocusVisible: Story = {
 /** A long Finnish label wraps inside a narrow column instead of overflowing (1.4.10). */
 export const LongFinnishLabel: Story = {
   globals: { locale: 'fi' },
+  decorators: [
+    (Story) => (
+      <div className="kv-story-narrow" data-testid="narrow">
+        <Story />
+      </div>
+    ),
+  ],
   render: () => (
-    <div className="kv-story-narrow kv-button-group" data-testid="narrow">
+    <ButtonGroup>
       <Button className="kv-button--primary">{fiSaveLong}</Button>
       <Button>{fiSaveLong}</Button>
-    </div>
+    </ButtonGroup>
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getAllByRole('button', { name: fiSaveLong })).toHaveLength(2)
@@ -387,11 +361,11 @@ export const CompactDensity: Story = {
     <>
       <section className="kv-story-section" aria-labelledby="density-comfortable">
         <h2 id="density-comfortable">{sv.comfortable}</h2>
-        <VariantsGroup />
+        {variantsGroup()}
       </section>
       <section className="kv-story-section kv-compact" aria-labelledby="density-compact">
         <h2 id="density-compact">{sv.compact}</h2>
-        <VariantsGroup />
+        {variantsGroup()}
       </section>
     </>
   ),
@@ -419,11 +393,18 @@ const siteWideButtonSizing = {
 
 /** The `--kv-button-*` sizing properties at their documented floor: still 24 × 24 (2.5.8). */
 export const SiteWideSizing: Story = {
+  decorators: [
+    (Story) => (
+      <div style={siteWideButtonSizing} data-testid="site-wide-sizing">
+        <Story />
+      </div>
+    ),
+  ],
   render: () => (
-    <div style={siteWideButtonSizing} data-testid="site-wide-sizing">
-      <VariantsGroup labels={['OK', sv.saveDraft, sv.deleteDraft]} />
-      <StatesMatrix />
-    </div>
+    <>
+      {variantsGroup(['OK', sv.saveDraft, sv.deleteDraft])}
+      {statesMatrix('site-wide-states')}
+    </>
   ),
   play: async ({ canvas }) => {
     const buttons = within(canvas.getByTestId('site-wide-sizing')).getAllByRole('button')
@@ -447,17 +428,25 @@ const municipalTeal = {
 } as CSSProperties
 
 /**
- * Your own class (`my-button`) and re-pointed tokens on a wrapper beat the theme's layer. The
- * teal is a light-theme rebrand, so the story stays light in every theme project: a real
- * rebrand overrides each theme's scale (Foundation/Theming).
+ * Your own class (`my-button`) beats the theme's layer, and re-pointed tokens on a wrapper
+ * (the story's decorator) recolour the buttons inside it. The teal is a light-theme rebrand, so
+ * the story stays light in every theme project: a real rebrand overrides each theme's scale
+ * (Foundation/Theming).
  */
 export const ThemeOverride: Story = {
   globals: { mode: 'light', contrast: 'standard' },
+  decorators: [
+    (Story) => (
+      <div style={municipalTeal}>
+        <Story />
+      </div>
+    ),
+  ],
   render: () => (
-    <div style={municipalTeal} className="kv-button-group">
+    <ButtonGroup>
       <Button className="my-button kv-button--primary">{sv.send}</Button>
       <Button>{sv.saveDraft}</Button>
-    </div>
+    </ButtonGroup>
   ),
   play: async ({ canvasElement }) => {
     const root = canvasElement.ownerDocument.documentElement
@@ -469,7 +458,7 @@ export const ThemeOverride: Story = {
 /** Right to left, in English: the group starts on the right. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
-  render: () => <VariantsGroup labels={['Send application', 'Save', 'Delete draft']} />,
+  render: () => variantsGroup(['Send application', 'Save', 'Delete draft']),
 }
 
 /** Every state with the forced-colors marker. The e2e suite checks it with real emulation. */
@@ -478,7 +467,7 @@ export const ForcedColors: Story = {
   render: (args) => (
     <>
       <Button {...args} />
-      <StatesMatrix />
+      {statesMatrix('forced-states')}
     </>
   ),
 }
@@ -496,8 +485,7 @@ const depthText = {
   note: 'Hovring och tryckt läge går inte att visa statiskt. För hovring, för pekaren över en knapp. För tryckt läge, håll ned musknappen på den.',
 } as const
 
-function DepthSurface({ heading }: { heading: string }) {
-  const headingId = useId()
+function depthSurface(heading: string, headingId: string) {
   return (
     <section aria-labelledby={headingId} className="kv-story-section">
       <h2 id={headingId}>{heading}</h2>
@@ -531,32 +519,26 @@ function DepthSurface({ heading }: { heading: string }) {
   )
 }
 
-/** Every kind on the page (canvas), a surface and a raised surface, at rest, with focus and disabled. */
-function DepthMatrix() {
-  return (
-    <>
-      <p>{depthText.note}</p>
-      <DepthSurface heading={depthText.surfaces.canvas} />
-      <Section className="kv-story-section">
-        <DepthSurface heading={depthText.surfaces.surface} />
-      </Section>
-      <Card.Root className="kv-story-section">
-        <Card.Body>
-          <DepthSurface heading={depthText.surfaces.raised} />
-        </Card.Body>
-      </Card.Root>
-    </>
-  )
-}
-
 /**
  * Button depth: a soft shadow, and a tinted edge (darker at the bottom in light,
  * lighter at the top in dark). It's the default in light and dark, and flat in the contrast
  * themes: use the Theme and Contrast toolbars to compare. The depth is subtle and axe can't
- * judge it, so look at it. Keyboard focus shows only the ring, never a shadow.
+ * judge it, so look at it. Keyboard focus shows only the ring, never a shadow. Every kind on
+ * the page (canvas), a surface and a raised surface, at rest, with focus and disabled.
  */
 export const Depth: Story = {
-  render: () => <DepthMatrix />,
+  render: () => (
+    <>
+      <p>{depthText.note}</p>
+      {depthSurface(depthText.surfaces.canvas, 'depth-canvas')}
+      <Section className="kv-story-section">
+        {depthSurface(depthText.surfaces.surface, 'depth-surface')}
+      </Section>
+      <Card.Root className="kv-story-section">
+        <Card.Body>{depthSurface(depthText.surfaces.raised, 'depth-raised')}</Card.Body>
+      </Card.Root>
+    </>
+  ),
   play: async ({ canvas }) => {
     const buttons = canvas.getAllByRole('button')
     await expect(buttons).toHaveLength(27)

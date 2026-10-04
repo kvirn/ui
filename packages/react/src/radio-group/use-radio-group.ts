@@ -37,7 +37,7 @@ export interface UseRadioGroupResult {
 
 /**
  * The value logic of a group of radios, for your own fieldset (contract:
- * radio-group.a11y.md). Pair it with `useFieldset({ group: true })` for the legend, hint and
+ * radio-group.a11y.md). Pair it with `useFieldset({ group: true })` for the legend, help text and
  * error. The browser does the keys: radios that share a `name` are one Tab stop, and the arrow
  * keys move and check. It holds no state: it derives each radio's props from `value`.
  *

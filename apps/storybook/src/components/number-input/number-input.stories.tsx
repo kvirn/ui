@@ -37,7 +37,7 @@ const meta = {
     decimals: {
       control: { type: 'number', min: 0, max: 4, step: 1 },
       description:
-        'Digits after the decimal mark. Default `0`: no mark is accepted. The mark is the page’s language: a comma in sv, fi, nb, nn and se, a point in en. Sets `inputmode="decimal"`. With decimals, add a hint with an example (3.3.2).',
+        'Digits after the decimal mark. Default `0`: no mark is accepted. The mark is the page’s language: a comma in sv, fi, nb, nn and se, a point in en. Sets `inputmode="decimal"`. With decimals, add a help text with an example (3.3.2).',
     },
     allowNegative: {
       control: 'boolean',
@@ -138,7 +138,8 @@ const meta = {
     },
     'aria-describedby': {
       control: 'text',
-      description: 'Your own description ids. They are kept, after the Field’s hint and error.',
+      description:
+        'Your own description ids. They are kept, after the Field’s help text and error.',
     },
     ref: { control: false, description: 'A ref to the `<input>`.' },
     render: {
@@ -161,7 +162,7 @@ const meta = {
       <Field.Root required lang={lang}>
         <Field.Label>{text.children}</Field.Label>
         <NumberInput {...args} />
-        <Field.Hint>{text.childrenHint}</Field.Hint>
+        <Field.HelpText>{text.childrenHint}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -212,7 +213,7 @@ export const Keyboard: Story = {
       <Field.Root required lang={lang}>
         <Field.Label>{text.rent}</Field.Label>
         <NumberInput name="rent" decimals={2} grouping className="kv-input--width-10" />
-        <Field.Hint>{text.rentHint(rentExample)}</Field.Hint>
+        <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -229,7 +230,7 @@ export const WholeNumber: Story = {
       <Field.Root required lang={lang}>
         <Field.Label>{text.children}</Field.Label>
         <NumberInput name="children" min={0} max={12} className="kv-input--width-2" />
-        <Field.Hint>{text.childrenHint}</Field.Hint>
+        <Field.HelpText>{text.childrenHint}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -244,7 +245,7 @@ export const WholeNumber: Story = {
 
 /**
  * An amount: two decimals and grouping. The decimal mark and the grouping are the page’s
- * language, and the hint shows the amount that way and says to leave out the currency sign.
+ * language, and the help text shows the amount that way and says to leave out the currency sign.
  */
 export const Amount: Story = {
   render: (_args, { globals }) => {
@@ -253,7 +254,7 @@ export const Amount: Story = {
       <Field.Root required lang={lang}>
         <Field.Label>{text.rent}</Field.Label>
         <NumberInput name="rent" decimals={2} grouping min={0} className="kv-input--width-10" />
-        <Field.Hint>{text.rentHint(rentExample)}</Field.Hint>
+        <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -275,7 +276,7 @@ export const Amount: Story = {
  * Masks are optional: `mask={false}` is a plain numeric text box. Nothing is left out or
  * announced, and `onValueChange` reports no `unmaskedValue`: read the typed value and parse it
  * yourself. Use it where the number mask's filtering is in the way, for instance an amount pasted
- * from a spreadsheet. The hint still says the format you expect.
+ * from a spreadsheet. The help text still says the format you expect.
  */
 export const WithoutMask: Story = {
   render: (_args, { globals }) => {
@@ -284,7 +285,7 @@ export const WithoutMask: Story = {
       <Field.Root required lang={lang}>
         <Field.Label>{text.rent}</Field.Label>
         <NumberInput name="rent" mask={false} decimals={2} className="kv-input--width-10" />
-        <Field.Hint>{text.rentHint(rentExample)}</Field.Hint>
+        <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -313,7 +314,7 @@ export const AmountWithUnit: Story = {
           <NumberInput name="rent" grouping className="kv-input--width-10" />
           <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
         </InputGroup.Root>
-        <Field.Hint>{text.rentUnitExample(amountExample)}</Field.Hint>
+        <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -329,7 +330,7 @@ export const AmountWithUnit: Story = {
 
 /**
  * A number that can be below zero: `allowNegative` takes a leading minus sign. The keypad shows
- * text, because iOS's numeric keypads have no minus sign, and the hint shows how to write it.
+ * text, because iOS's numeric keypads have no minus sign, and the help text shows how to write it.
  */
 export const Negative: Story = {
   render: (_args, { globals }) => {
@@ -338,7 +339,7 @@ export const Negative: Story = {
       <Field.Root required lang={lang}>
         <Field.Label>{text.balance}</Field.Label>
         <NumberInput name="balance" allowNegative className="kv-input--width-10" />
-        <Field.Hint>{text.balanceHint('-8450')}</Field.Hint>
+        <Field.HelpText>{text.balanceHint('-8450')}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -370,7 +371,7 @@ export const OutOfRange: Story = {
           defaultValue="25"
           className="kv-input--width-2"
         />
-        <Field.Hint>{text.childrenHint}</Field.Hint>
+        <Field.HelpText>{text.childrenHint}</Field.HelpText>
         <Field.ErrorMessage>{text.childrenRangeError}</Field.ErrorMessage>
       </Field.Root>
     )
@@ -382,7 +383,7 @@ export const OutOfRange: Story = {
     await expect(input).toHaveValue('25')
     // The range is only reported: it isn't an attribute on the input.
     await expect(input).not.toHaveAttribute('max')
-    // The hint stays, and the error joins it in the description.
+    // The help text stays, and the error joins it in the description.
     await expect(input).toHaveAccessibleDescription(expect.stringContaining(text.childrenHint))
     await expect(input).toHaveAccessibleDescription(
       expect.stringContaining(text.childrenRangeError),
@@ -400,12 +401,12 @@ export const Finnish: Story = {
         <Field.Root required lang={lang}>
           <Field.Label>{text.children}</Field.Label>
           <NumberInput name="children" min={0} max={12} className="kv-input--width-2" />
-          <Field.Hint>{text.childrenHint}</Field.Hint>
+          <Field.HelpText>{text.childrenHint}</Field.HelpText>
         </Field.Root>
         <Field.Root required lang={lang}>
           <Field.Label>{text.rent}</Field.Label>
           <NumberInput name="rent" decimals={2} grouping className="kv-input--width-10" />
-          <Field.Hint>{text.rentHint(rentExample)}</Field.Hint>
+          <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
         </Field.Root>
       </div>
     )
@@ -422,7 +423,7 @@ export const Finnish: Story = {
   },
 }
 
-/** Right to left, in English: the label and hint start at the right, and the keys still work. */
+/** Right to left, in English: the label and help text start at the right, and the keys still work. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
   render: (_args, { globals }) => {
@@ -432,12 +433,12 @@ export const RTL: Story = {
         <Field.Root required lang={lang}>
           <Field.Label>{text.rent}</Field.Label>
           <NumberInput name="rent" decimals={2} grouping className="kv-input--width-10" />
-          <Field.Hint>{text.rentHint(rentExample)}</Field.Hint>
+          <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
         </Field.Root>
         <Field.Root required invalid lang={lang}>
           <Field.Label>{text.children}</Field.Label>
           <NumberInput name="children" defaultValue="25" className="kv-input--width-2" />
-          <Field.Hint>{text.childrenHint}</Field.Hint>
+          <Field.HelpText>{text.childrenHint}</Field.HelpText>
           <Field.ErrorMessage>{text.childrenRangeError}</Field.ErrorMessage>
         </Field.Root>
       </>
@@ -455,12 +456,12 @@ export const ForcedColors: Story = {
         <Field.Root required lang={lang}>
           <Field.Label>{text.rent}</Field.Label>
           <NumberInput name="rent" decimals={2} grouping className="kv-input--width-10" />
-          <Field.Hint>{text.rentHint(rentExample)}</Field.Hint>
+          <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
         </Field.Root>
         <Field.Root required invalid lang={lang}>
           <Field.Label>{text.children}</Field.Label>
           <NumberInput name="children" defaultValue="25" className="kv-input--width-2" />
-          <Field.Hint>{text.childrenHint}</Field.Hint>
+          <Field.HelpText>{text.childrenHint}</Field.HelpText>
           <Field.ErrorMessage>{text.childrenRangeError}</Field.ErrorMessage>
         </Field.Root>
       </>

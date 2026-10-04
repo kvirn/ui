@@ -62,11 +62,11 @@ const options = [
 
 interface DurationProps extends Omit<RadioGroupRootProps, 'children'> {
   disabledOption?: string
-  optionHint?: boolean
+  optionHelpText?: boolean
 }
 
 /** The design spec's duration question, in Swedish. */
-function Duration({ disabledOption, optionHint = false, ...rootProps }: DurationProps) {
+function Duration({ disabledOption, optionHelpText = false, ...rootProps }: DurationProps) {
   return (
     <RadioGroup.Root {...rootProps}>
       <Fieldset.Legend>Hur länge behöver du tillståndet?</Fieldset.Legend>
@@ -75,7 +75,9 @@ function Duration({ disabledOption, optionHint = false, ...rootProps }: Duration
         <Field.Root key={value}>
           <RadioGroup.Radio value={value} disabled={value === disabledOption} />
           <Field.Label>{label}</Field.Label>
-          {optionHint && value === '12' ? <Field.Hint>Lägst pris per månad.</Field.Hint> : null}
+          {optionHelpText && value === '12' ? (
+            <Field.HelpText>Lägst pris per månad.</Field.HelpText>
+          ) : null}
         </Field.Root>
       ))}
       <Fieldset.ErrorMessage>Välj hur länge du behöver tillståndet</Fieldset.ErrorMessage>
@@ -121,7 +123,7 @@ describe('rendering', () => {
     await expect.element(radio).not.toHaveAttribute('aria-checked')
   })
 
-  test('the group is named by its legend and described by its hint and error', async () => {
+  test('the group is named by its legend and described by its help text and error', async () => {
     const { container } = await render(sweden(<Duration invalid />))
     const group = page.getByRole('group', { name: 'Hur länge behöver du tillståndet? (valfritt)' })
     await expect
@@ -144,21 +146,21 @@ describe('rendering', () => {
     await expect.element(group).not.toHaveAttribute('aria-required')
   })
 
-  test('an option’s own hint is in that radio’s description', async () => {
-    await render(sweden(<Duration optionHint />))
+  test('an option’s own help text is in that radio’s description', async () => {
+    await render(sweden(<Duration optionHelpText />))
     await expect
       .element(page.getByRole('radio', { name: '12 månader' }))
       .toHaveAccessibleDescription('Lägst pris per månad.')
   })
 
-  test('an option hint is a Field.Hint in that option’s Field, outside its label, and has no axe violations', async () => {
-    const { container } = await render(sweden(<Duration optionHint />))
-    const hint = page.getByText('Lägst pris per månad.').element()
-    expect(hint.id).not.toBe('')
+  test('an option help text is a Field.HelpText in that option’s Field, outside its label, and has no axe violations', async () => {
+    const { container } = await render(sweden(<Duration optionHelpText />))
+    const helpText = page.getByText('Lägst pris per månad.').element()
+    expect(helpText.id).not.toBe('')
     // It is a sibling of the label, not inside it, so it isn't part of the radio's name or target.
-    expect(hint.closest('label')).toBeNull()
+    expect(helpText.closest('label')).toBeNull()
     await expect.element(page.getByRole('radio', { name: '12 månader', exact: true })).toBeVisible()
-    // The group's description is its own hint, not the option's.
+    // The group's description is its own help text, not the option's.
     await expect
       .element(page.getByRole('group', { name: 'Hur länge behöver du tillståndet? (valfritt)' }))
       .toHaveAccessibleDescription('Välj ett alternativ.')
@@ -440,7 +442,7 @@ describe('the group’s own part names', () => {
     expect(RadioGroup.Radio.displayName).toBe('RadioGroup.Radio')
     expect(RadioGroup.Legend.displayName).toBe('RadioGroup.Legend')
     expect(RadioGroup.Prose.displayName).toBe('RadioGroup.Prose')
-    expect(RadioGroup.Hint.displayName).toBe('RadioGroup.Hint')
+    expect(RadioGroup.HelpText.displayName).toBe('RadioGroup.HelpText')
     expect(RadioGroup.ErrorMessage.displayName).toBe('RadioGroup.ErrorMessage')
     await render(
       <RadioGroup.Root name="language" invalid>
@@ -462,7 +464,7 @@ describe('the group’s own part names', () => {
       .toHaveAttribute('name', 'language')
   })
 
-  test('RadioGroup.Hint is the group’s hint: after the description, before the error', async () => {
+  test('RadioGroup.HelpText is the group’s help text: after the description, before the error', async () => {
     await render(
       <RadioGroup.Root name="language" invalid>
         <RadioGroup.Legend>Språk</RadioGroup.Legend>
@@ -473,7 +475,7 @@ describe('the group’s own part names', () => {
           <RadioGroup.Radio value="sv" />
           <Field.Label>Svenska</Field.Label>
         </Field.Root>
-        <RadioGroup.Hint data-testid="hint">Du kan byta senare.</RadioGroup.Hint>
+        <RadioGroup.HelpText data-testid="helpText">Du kan byta senare.</RadioGroup.HelpText>
         <RadioGroup.ErrorMessage>Välj språk</RadioGroup.ErrorMessage>
       </RadioGroup.Root>,
     )

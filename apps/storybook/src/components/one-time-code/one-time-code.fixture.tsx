@@ -1,13 +1,11 @@
-import { Button, Field, OneTimeCode } from '@kvirn-ui/react'
-import type { OneTimeCodeRootProps } from '@kvirn-ui/react'
 import { textsFor } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
-// Story and e2e fixture for Components/Form/OneTimeCode (Plan 0014 and Plan 0019,
-// docs/design/one-time-code.md §4). The hint is built from the pattern: it says the length and the
+// Fixture text for Components/Form/OneTimeCode (Plan 0014 and Plan 0019,
+// docs/design/one-time-code.md §4). The help text is built from the pattern: it says the length and the
 // groups, because the boxes are hidden from screen readers and disappear in the fallback.
 // The length is the characters, never the dashes. The numbers are small
-// integers, so they read the same in every locale (no number words). The component adds no strings of its own: the label and the hint belong to the consumer,
+// integers, so they read the same in every locale (no number words). The component adds no strings of its own: the label and the help text belong to the consumer,
 // because they name the channel and the length. The strings below are fixture text, with keys
 // local to this file. sv, en, fi, nb and nn are written (the fi strings are the designer's drafts, for
 // length checks). se: English, marked lang="en" (3.1.2). The library's own strings (the mask's
@@ -148,21 +146,8 @@ export function oneTimeCodeTextsFor(locale: FormLocale): OneTimeCodeTexts {
   return oneTimeCodeTexts[locale] ?? textsEn
 }
 
-/** Where the code comes from: it decides the label and the hint. */
+/** Where the code comes from: it decides the label and the help text. */
 export type CodeKind = 'sms' | 'email' | 'app' | 'signIn' | 'letters'
-
-export interface OneTimeCodeFieldProps extends Pick<
-  OneTimeCodeRootProps,
-  'pattern' | 'defaultValue' | 'disabled' | 'announceRejections' | 'onComplete' | 'onValueChange'
-> {
-  locale: FormLocale
-  kind?: CodeKind
-  invalid?: boolean | undefined
-  readOnly?: boolean
-  /** A Continue button after the field, in a form that does nothing on submit. */
-  withSubmit?: boolean
-  name?: string
-}
 
 /** The shape of a pattern: its groups (split at the dashes) and its characters, dashes not counted. */
 function shapeOf(pattern: string) {
@@ -200,51 +185,13 @@ const labelsFor = (texts: OneTimeCodeTexts, kind: CodeKind, pattern: string) => 
 }
 
 /**
- * Every story is a full Field: the label, the description above the boxes (the length and the groups must
- * be read before typing), the row, and the error under it when invalid. There is one slot per
- * position of the pattern, so a `-` gets its own slot, drawn as a separator.
+ * What a story's Field says, in a locale: the label, the description above the boxes (the length
+ * and the groups must be read before typing), the error for a wrong code, and the Continue button.
+ * `lang` is `'en'` where the fixture shows English (se): put it on the Field (3.1.2).
  */
-export function OneTimeCodeField({
-  locale,
-  kind = 'sms',
-  pattern = '999999',
-  invalid,
-  readOnly,
-  withSubmit = false,
-  name = 'code',
-  ...rootProps
-}: OneTimeCodeFieldProps) {
+export function codeTextsFor(locale: FormLocale, kind: CodeKind, pattern: string) {
   const texts = oneTimeCodeTextsFor(locale)
   const { lang } = textsFor(locale)
   const { label, hint } = labelsFor(texts, kind, pattern)
-  const field = (
-    <Field.Root invalid={invalid} lang={lang}>
-      <Field.Label marker="none">{label}</Field.Label>
-      <Field.Prose>
-        <p>{hint}</p>
-      </Field.Prose>
-      <OneTimeCode.Root pattern={pattern} {...rootProps}>
-        <OneTimeCode.Input name={name} readOnly={readOnly} />
-        {Array.from(pattern, (_, index) => (
-          <OneTimeCode.Slot key={index} index={index} />
-        ))}
-      </OneTimeCode.Root>
-      {invalid ? <Field.ErrorMessage>{texts.errorWrong}</Field.ErrorMessage> : null}
-    </Field.Root>
-  )
-  if (!withSubmit) {
-    return field
-  }
-  return (
-    <form noValidate onSubmit={(event) => event.preventDefault()}>
-      <div className="kv-story-form">
-        {field}
-        <div className="kv-button-group">
-          <Button type="submit" className="kv-button--primary">
-            {texts.submit}
-          </Button>
-        </div>
-      </div>
-    </form>
-  )
+  return { label, hint, lang, errorWrong: texts.errorWrong, submit: texts.submit }
 }

@@ -36,7 +36,7 @@ TextInput is one element, so it has no `.Root`. The props are the controls above
 | `kv-input--width-2`, `-4`, `-6`, `-10`, `-20` | TextInput | A width by expected characters. Without one, the input is full width        |
 | `kv-input--numeric`                           | TextInput | Tabular figures, for reference numbers and codes                            |
 
-A width class follows the text size, includes the 1.4.12 letter-spacing allowance and the 2px invalid edge, and shrinks to fit a 320px screen. Width is a hint, never a limit: no `maxlength` comes from it. Inputs are 44px high (32px in `kv-compact` from 64rem), and the value text stays 16px. An invalid input has a 2px `danger` edge, drawn from `data-invalid` or `aria-invalid="true"`, never from `:invalid`.
+A width class follows the text size, includes the 1.4.12 letter-spacing allowance and the 2px invalid edge, and shrinks to fit a 320px screen. Width is a help text, never a limit: no `maxlength` comes from it. Inputs are 44px high (32px in `kv-compact` from 64rem), and the value text stays 16px. An invalid input has a 2px `danger` edge, drawn from `data-invalid` or `aria-invalid="true"`, never from `:invalid`.
 
 | Message key (`messages`)   | Says by default (en)                                                                          |
 | -------------------------- | --------------------------------------------------------------------------------------------- |
@@ -46,7 +46,7 @@ A width class follows the text size, includes the 1.4.12 letter-spacing allowanc
 
 Only a masked TextInput announces anything. The strings are in all six locales.
 
-What TextInput does on its own: it takes the control's `id` and `aria-describedby` from the Field (and ignores an `id` of its own inside one, with a dev warning, so the label stays linked); it keeps your own `aria-describedby` ids after the Field's; it moves no focus and handles no keys; with a `mask` it suggests `inputMode`, `autoCapitalize`, `spellCheck={false}` and, for identifiers, `dir="ltr"` (your own props win), warns once in development when a masked field in a Field has no hint, when `mask` is a name that doesn't exist (`mask-unknown-name:<name>`: no mask runs), and announces refused characters through the Announcer.
+What TextInput does on its own: it takes the control's `id` and `aria-describedby` from the Field (and ignores an `id` of its own inside one, with a dev warning, so the label stays linked); it keeps your own `aria-describedby` ids after the Field's; it moves no focus and handles no keys; with a `mask` it suggests `inputMode`, `autoCapitalize`, `spellCheck={false}` and, for identifiers, `dir="ltr"` (your own props win), warns once in development when a masked field in a Field has no help text, when `mask` is a name that doesn't exist (`mask-unknown-name:<name>`: no mask runs), and announces refused characters through the Announcer.
 
 ## Component
 
@@ -114,9 +114,9 @@ No `value`, no handlers: each TextInput is uncontrolled, and the form's `FormDat
 
 `noValidate` on the form keeps the browser's own validation bubbles (in the browser's language, gone after a moment, and not linked to the field) from replacing your messages.
 
-### Hints and errors: the order
+### HelpTexts and errors: the order
 
-The default order is label, description, input, hint, then the error ([Field](../field/field.md#the-default-order)). Put what the user must read before answering in a description above the input, and a format example in a hint under it:
+The default order is label, description, input, help text, then the error ([Field](../field/field.md#the-default-order)). Put what the user must read before answering in a description above the input, and a format example in a help text under it:
 
 ```tsx
 <Field.Root invalid={invalid}>
@@ -125,7 +125,7 @@ The default order is label, description, input, hint, then the error ([Field](..
     <p>Det står på registreringsbeviset.</p>
   </Field.Prose>
   <TextInput name="registration" className="kv-input--width-10" />
-  <Field.Hint>Till exempel ABC 123</Field.Hint>
+  <Field.HelpText>Till exempel ABC 123</Field.HelpText>
   <Field.ErrorMessage>{error}</Field.ErrorMessage>
 </Field.Root>
 ```
@@ -169,8 +169,8 @@ import { Field, TextInput } from '@kvirn-ui/react'
       form.setValue('personalIdentityNumber', details.unmaskedValue)
     }
   />
-  {/* The hint says the format. The mask doesn't (3.3.2): a masked TextInput without one warns. */}
-  <Field.Hint>Tio eller tolv siffror, till exempel 19900101-2385.</Field.Hint>
+  {/* The help text says the format. The mask doesn't (3.3.2): a masked TextInput without one warns. */}
+  <Field.HelpText>Tio eller tolv siffror, till exempel 19900101-2385.</Field.HelpText>
   <Field.ErrorMessage>{errors.personalIdentityNumber}</Field.ErrorMessage>
 </Field.Root>
 ```
@@ -179,21 +179,21 @@ import { Field, TextInput } from '@kvirn-ui/react'
 
 `mask` takes a name, so you don't import anything or pass a country for the common case. It is a union:
 
-| `mask`                                                    | Is                                                                                                                                                                              |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A name: `"digits"`, `"letters"`, `"letters-and-digits"`   | The filters of the same name                                                                                                                                                    |
-| `"personal-identity-number"` (alias `"ssi"`), `"postal-code"`, `"organisation-number"` | The country mask for the country the provider implies (below)                                                                                         |
-| `"date"`, `"iban"`, `"email"`, `"telephone"`              | The presets of the same name                                                                                                                                                    |
-| `{ preset, country? }`                                    | A named preset with the country set for this one input: `{ preset: 'postal-code', country: 'FI' }`                                                                              |
-| `{ pattern, ...options }`                                 | A custom pattern with the pattern options (`transform`, `completeLengths`, `attributes`): `{ pattern: '999 99' }`                                                              |
-| A `RegExp`                                                | A custom filter that must accept partial values: `/^[A-Z]{0,2}\d{0,6}$/`                                                                                                       |
-| A `Mask` from `masks`                                     | The explicit, typed form: `masks.postalCode({ country: 'SE' })`. It stays supported and is what `@kvirn-ui/core` users build                                                    |
+| `mask`                                                                                 | Is                                                                                                                           |
+| -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| A name: `"digits"`, `"letters"`, `"letters-and-digits"`                                | The filters of the same name                                                                                                 |
+| `"personal-identity-number"` (alias `"ssi"`), `"postal-code"`, `"organisation-number"` | The country mask for the country the provider implies (below)                                                                |
+| `"date"`, `"iban"`, `"email"`, `"telephone"`                                           | The presets of the same name                                                                                                 |
+| `{ preset, country? }`                                                                 | A named preset with the country set for this one input: `{ preset: 'postal-code', country: 'FI' }`                           |
+| `{ pattern, ...options }`                                                              | A custom pattern with the pattern options (`transform`, `completeLengths`, `attributes`): `{ pattern: '999 99' }`            |
+| A `RegExp`                                                                             | A custom filter that must accept partial values: `/^[A-Z]{0,2}\d{0,6}$/`                                                     |
+| A `Mask` from `masks`                                                                  | The explicit, typed form: `masks.postalCode({ country: 'SE' })`. It stays supported and is what `@kvirn-ui/core` users build |
 
 `number` is not a name: a quantity or an amount is a [NumberInput](../number-input/number-input.md), which owns the number mask.
 
 **Where the country comes from.** The input's own `{ preset, country }`, else the provider's `country` prop, else the region of the provider's locale (`sv-FI` is Finland), else its language (`sv` is Sweden, `fi` is Finland, `nb`, `nn`, `no` and `se` are Norway). Nothing is guessed beyond that: with no country (`en`, `da-DK`) a country mask only takes digits, and a development warning says so once (`mask-country-unresolved:<name>:<locale>`). Pass `{ preset, country }` or set `<KvirnProvider country>`. `useLocale().country` reads the result. A name is resolved in the input, so one `mask="postal-code"` follows the locale of the provider it sits in.
 
-**A name keeps the preset's details.** `unmaskedValue`, `isComplete`, the suggested attributes and the announcements are the preset's, and the hint rule still holds (a masked TextInput in a Field without a hint warns).
+**A name keeps the preset's details.** `unmaskedValue`, `isComplete`, the suggested attributes and the announcements are the preset's, and the help text rule still holds (a masked TextInput in a Field without a help text warns).
 
 #### Presets
 
@@ -240,10 +240,10 @@ const caseNumber = useMask({
 
 ### Your part
 
-- **A visible label** in a Field. The placeholder is not the label: put examples in a hint (3.3.2).
+- **A visible label** in a Field. The placeholder is not the label: put examples in a help text (3.3.2).
 - **`autoComplete`** on every input that asks for the user's own data (`name`, `email`, `tel`, `postal-code`, `bday`): 1.3.5. Never `autocomplete="off"` on a password, and never block paste.
-- **Read-only and disabled** are for staff tools. In a resident form, explain on submit instead, and say why in the hint if you must use them.
-- **A hint with the format** for every masked TextInput, and the `KvirnProvider` around the app, so a refused character is announced.
+- **Read-only and disabled** are for staff tools. In a resident form, explain on submit instead, and say why in the help text if you must use them.
+- **A help text with the format** for every masked TextInput, and the `KvirnProvider` around the app, so a refused character is announced.
 - **Don't pass `id`** to a TextInput inside a Field: the Field's id wins. Set `controlId` on `Field.Root`.
 
 ## Hook

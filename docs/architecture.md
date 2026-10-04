@@ -20,7 +20,7 @@ Dependencies only point downward: `react → core, i18n (types + the built-in `e
 - **react:** binds to core stores with `useSyncExternalStore`, through the internal `useStoreSelector(store, selector)` (there is no `@tanstack/react-store`). React 19 or later, SSR and hydration safe. Every export is client code: the whole `@kvirn-ui/react` entry is marked `'use client'`, by a banner in the pack config and at the top of `src/index.ts`, because bundling drops directives. `KvirnThemeScript` is a client component that server layouts can still render. A future server-only export needs a separate entry. Composition works via the `render` prop (see API conventions).
 - **Rich text editor (`@kvirn-ui/rich-text`):** a separate package on **Tiptap 3**, so `@kvirn-ui/react` has no Tiptap code or types. `@tiptap/core`, `@tiptap/pm`, `@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extension-table`, `@tiptap/extension-image` and `@tiptap/extensions` are all **peer dependencies** (`^3.31.0`), so the app owns one version of each and ProseMirror is never duplicated (two copies break `instanceof` and plugin keys silently). They are pinned exactly in the pnpm catalog as dev dependencies, and the pack config never bundles `@tiptap/*` or `@kvirn-ui/*`. ProseMirror is imported only through `@tiptap/pm/*`, and `@tiptap/*` only in `packages/rich-text` and the Storybook app (lint rule). Tiptap is MIT, has no install scripts and makes no network calls. Only the open-source extensions are used: nothing from `@tiptap-pro` or Tiptap Cloud, which call third-party servers. The package needs `useMessages` and the Field wiring, which are internal to `@kvirn-ui/react`: they are exported from the `@kvirn-ui/react/internal` subpath, which is unstable, documented as for Kvirn packages only, and never re-exported from the public entry (a test proves it).
 - **Table and virtualization:** `@tanstack/table-core` and `@tanstack/virtual-core` are runtime dependencies of `@kvirn-ui/core`, pinned exactly (`@kvirn-ui/react` adds none), and you only pay for them when you render a Table or turn on `virtualize`. `virtual-core` is imported only in `core/src/virtual/` and `table-core` only in `core/src/table/`; everything else uses core's wrappers (`createListVirtualizer`, `createTable`, `createLocaleSortFn`). `@kvirn-ui/core` and `@kvirn-ui/react` re-export the tested table features (sorting, selection, expansion, pagination, filtering, global filtering, column visibility, row models, `createColumnHelper`, `tableFeatures`, types), and what is not re-exported is not supported. A TanStack Table major release therefore forces a KvirnUI major, and consumers cannot pass their own instance.
-- **blocks (planned, M4):** public-sector patterns such as the site header, footer, accessibility statement, feedback form, consent banner, form wizard and error summary (built on `Notification.Danger`). They are not built yet. Planned as a package and via a copy-in CLI.
+- **blocks (planned, M4):** public-sector patterns such as the site header, footer, accessibility statement, feedback form, consent banner, form wizard and error summary (built on `Alert.Danger`). They are not built yet. Planned as a package and via a copy-in CLI.
 
 ## API conventions
 
@@ -102,17 +102,17 @@ Without the augmentation, `LinkProps` falls back to `<a>` props and `IconName` i
 
 The same names are used across all components:
 
-| Part                                   | Meaning                                                                                                                 |
-| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `Root`                                 | State owner, which renders a wrapper only if the semantics need one                                                     |
-| `Trigger`                              | Element that opens, closes or toggles                                                                                   |
-| `Panel`                                | Inline revealed content (Disclosure, Accordion, Tabs)                                                                   |
-| `Popup`                                | Floating content (Popover, Menu, Select, Tooltip, Dialog)                                                               |
-| `Backdrop`, `Portal`, `Close`          | Overlay plumbing                                                                                                        |
-| `Label`, `ErrorMessage`                | Field text (`Field.Label`), wired automatically to the control. The description is `Field.Prose`, the hint `Field.Hint` |
-| `Item`, `Option`, `Tab`                | Collection members                                                                                                      |
-| `Indicator`                            | Visual state marker, `aria-hidden`                                                                                      |
-| `Info`, `Success`, `Warning`, `Danger` | A ready-made Root for one status: its class, its icon and its status word (Notification)                                |
+| Part                                   | Meaning                                                                                                                          |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `Root`                                 | State owner, which renders a wrapper only if the semantics need one                                                              |
+| `Trigger`                              | Element that opens, closes or toggles                                                                                            |
+| `Panel`                                | Inline revealed content (Disclosure, Accordion, Tabs)                                                                            |
+| `Popup`                                | Floating content (Popover, Menu, Select, Tooltip, Dialog)                                                                        |
+| `Backdrop`, `Portal`, `Close`          | Overlay plumbing                                                                                                                 |
+| `Label`, `ErrorMessage`                | Field text (`Field.Label`), wired automatically to the control. The description is `Field.Prose`, the help text `Field.HelpText` |
+| `Item`, `Option`, `Tab`                | Collection members                                                                                                               |
+| `Indicator`                            | Visual state marker, `aria-hidden`                                                                                               |
+| `Info`, `Success`, `Warning`, `Danger` | A ready-made Root for one status: its class, its icon and its status word (Alert)                                                |
 
 Both forms are exported: `Disclosure.Trigger` and the named export `DisclosureTrigger`, which tree-shakes well and is friendly to RSC.
 
@@ -122,7 +122,7 @@ Headless packages ship zero CSS. Classes style, and `data-*` attributes are stat
 
 **Parts are classes.** Every part renders its own stable class, `kv-<part>`: `kv-button`, `kv-link`, `kv-link-new-tab-notice`, `kv-card`, `kv-card-header`, `kv-card-body`, `kv-card-footer`, … Hooks put it in their part props as `className` (`buttonProps.className: 'kv-button'`). A consumer's `className`, on the component or on a `render` element, joins it through `mergeProps` and never replaces it, so the theme keeps styling the part. In the `render` function form, keep `className` when you spread the part props. Naming: `kv-<name>` is a context the consumer sets on a container, `kv-<part>` is a part, and `kv-<part>--<option>` is a consumer choice. Variants never change the element.
 
-**Variants and options are modifier classes** the consumer adds, never props of the headless component: `kv-<part>--<option>`, for example `<Button className="kv-button--primary">` or `<Section className="kv-section--canvas">`. Context the consumer sets on a container is a class too: `kv-compact`, `kv-nav`, `kv-button-group`, `kv-prose`.
+**Variants and options are modifier classes** the consumer adds, never props of the headless component: `kv-<part>--<option>`, for example `<Button className="kv-button--primary">` or `<Section className="kv-section--canvas">`. Context the consumer sets on a container is a class too: `kv-compact`, `kv-button-group`, `kv-prose`.
 
 **State is `data-*`,** set by the components and never by the consumer:
 

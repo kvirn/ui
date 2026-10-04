@@ -21,7 +21,7 @@ export interface DescriptionPart<Instance extends Element> {
  * Internal. Makes an element one of the descriptions of the nearest Field or Fieldset: it
  * registers the element while mounted, and gets the id the host lists in `aria-describedby`, in
  * DOM order. Outside a host it does nothing and warns of nothing: the part decides whether that is
- * worth a warning (`Field.Hint` warns, `Prose` doesn't). Used by `Prose`, `Field.Hint`,
+ * worth a warning (`Field.HelpText` warns, `Prose` doesn't). Used by `Prose`, `Field.HelpText`,
  * `FileUpload.Limits` and `CharacterCount`, which passes `isRegistering` false outside a Field so it
  * never becomes a Fieldset's description.
  */

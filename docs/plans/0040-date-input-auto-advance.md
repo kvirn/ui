@@ -1,6 +1,6 @@
 # Plan 0040: DateInput moves to the next box when one is full
 
-- **Status:** Draft (needs the maintainer's approval of the accessibility trade-off below)
+- **Status:** Accepted (the maintainer approved the accessibility trade-off, guards 1 to 6, on by default with the `autoAdvance={false}` opt-out, 2026-10-04). Implemented; gates and accessibility-reviewer pending
 - **Owner:** orchestrator → component-engineer → accessibility-reviewer
 - **Created:** 2026-10-04 · **Target:** M2
 - **Related:** [0013](0013-form-fields.md), `keyboard`, `forms`, `accessibility` skills, `date-input.a11y.md`
@@ -58,18 +58,25 @@ Guards that make this a trade-off and not a free pass:
 
 ## Tasks
 
-- [ ] Maintainer approves the trade-off (guards 1 to 6)
-- [ ] Failing tests first: unit (advance on fill, not on paste/delete/controlled change, not from last box, order `ÅÅÅÅ-MM-DD`/`DD.MM.YYYY`/`MM/DD/YYYY`, RTL) and e2e (replace the "typing never moves focus" test)
-- [ ] `use-date-input.ts` `autoAdvance` option, `DateInput.Root` prop, the hint message through `useMessages`
-- [ ] i18n in six locales, `i18n:check`
-- [ ] Update `date-input.a11y.md`, `date-input.md`, `forms/SKILL.md:67`, `keyboard/SKILL.md:35` (state the DateInput exception and why), the Keyboard story and Docs section
+- [x] Maintainer approves the trade-off (guards 1 to 6)
+- [x] Failing tests first (written, not run: the orchestrator runs them): unit (advance on fill, not on paste/delete/controlled change, not from last box, order `ÅÅÅÅ-MM-DD`/`DD.MM.YYYY`/`MM/DD/YYYY`, RTL) and e2e (replace the "typing never moves focus" test)
+- [x] `use-date-input.ts` `autoAdvance` option, `DateInput.Root` prop, the hint message through `useMessages`
+- [x] i18n in six locales (`se` is an English placeholder, see Decisions), `i18n:check` pending the orchestrator
+- [x] Update `date-input.a11y.md`, `date-input.md`, `forms/SKILL.md:67`, `keyboard/SKILL.md:35` (state the DateInput exception and why), the Keyboard story and Docs section
 - [ ] accessibility-reviewer APPROVE. Manual AT (NVDA, VoiceOver, TalkBack): focus moves are announced as a new field: `pending`, never claimed by an agent
-- [ ] Changeset (minor, behaviour change of a default: call it out)
+- [x] Changeset (minor, behaviour change of a default: call it out)
 
 ## Decisions
 
 - **On by default, opt-out,** as the maintainer asked. The default is the risky side: **needs the maintainer's approval and the skill updates in the same PR** (AGENTS.md "Decisions").
 - Auto-advance lives in the hook, so a custom DateInput gets it too.
+
+- **The next box is the next one in the DOM, not `order[index + 1]`.** The hook's `order` is the locale's, but a consumer who writes `DateInput.Day`, `.Month`, `.Year` as children has a different DOM order, and advancing by `order` would move focus backwards. The hook reads its three inputs' DOM positions (`compareDocumentPosition`), so "next" is always the next Tab stop and equals `order[index + 1]` when the Root renders the boxes. A disabled next box keeps focus where it is.
+- **Detection is `beforeinput` (`insertText`) plus the box's length before the key,** read in the hook's per-box ref callback (a native listener, with a React 19 ref cleanup), and the decision is taken in `onChange`. Full also requires digits only: letters ("tjug") never advance. This matters for guard 2 ("the box was already full"): the box held fewer characters before the key.
+- **The hint is a `<p class="kv-field-help-text">` that `DateInput.Root` renders after the row,** registered through `useDescriptionPart`, not a `Fieldset.HelpText`: a native `<fieldset>` of your own (no Kvirn host) still gets visible text and no dev warning. It is listed before the consumer's `Fieldset.HelpText` in DOM order. The hook returns `autoAdvanceHint` for custom markup.
+- **`se` keeps an English placeholder** for `dateInput.autoAdvanceHint`, like its other `dateInput` keys (the file's own rule: English placeholders except the combobox and notification messages), because a wrong Northern Sami sentence would be worse than a marked English one on an accessibility notice. It needs a native review. sv, fi, nb and nn are written and also need the language review.
+- **The Keyboard rows replace "Characters: never moves focus"** with five rows (digit that fills a box, last box and non-filling input, already full box, Backspace and Delete, `autoAdvance={false}`). Paste, drop and autofill are proved in the unit test only (an e2e paste needs clipboard permissions).
+- `forms/SKILL.md`, `keyboard/SKILL.md` (practice rule 3, the common mistake, the DateInput and one-time code rows in `key-tables.md`) now state the DateInput exception and why. `.claude/agents/component-engineer.md:41` still says "never auto-advance focus between fields": the maintainer should decide whether it also names the DateInput exception.
 
 ## Risks & open questions
 
@@ -87,5 +94,5 @@ Minor with a clear changeset note. No codemod.
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass (manual AT may be `pending`)
+- [ ] All quality gates in AGENTS.md pass (manual AT may be `pending`: NVDA, VoiceOver, TalkBack announcement of the focus move)
 - [ ] Plan tasks ticked, `docs/roadmap.md` status updated

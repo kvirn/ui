@@ -15,7 +15,7 @@ A Checkbox is one yes-or-no answer: a declaration, a consent, or a "select all" 
 
 ## API
 
-Checkbox is a single part, `<Checkbox>`, and it renders an `<input type="checkbox">`. `type` is fixed. There are no sub-parts: the label, hint and error are the [Field's](../field/field.md).
+Checkbox is a single part, `<Checkbox>`, and it renders an `<input type="checkbox">`. `type` is fixed. There are no sub-parts: the label, help text and error are the [Field's](../field/field.md).
 
 | Prop              | Type                                            | Meaning                                                                                                                                                    |
 | ----------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -36,7 +36,7 @@ Checkbox is a single part, `<Checkbox>`, and it renders an `<input type="checkbo
 | `data-disabled`      | The Field, the group or the prop disables it                                                                                             |
 | `data-focus-visible` | Focus came from the keyboard                                                                                                             |
 
-- **ARIA it sets:** `aria-invalid="true"` and `aria-required="true"` from the Field, and `aria-describedby` with the option's hint, then the error, followed by your own ids. A Checkbox in an invalid group gets only `data-invalid`, never `aria-invalid`. `aria-checked` is never written: the native state is the truth.
+- **ARIA it sets:** `aria-invalid="true"` and `aria-required="true"` from the Field, and `aria-describedby` with the option's help text, then the error, followed by your own ids. A Checkbox in an invalid group gets only `data-invalid`, never `aria-invalid`. `aria-checked` is never written: the native state is the truth.
 - **Class:** `kv-checkbox`, always. Your `className` joins it.
 - **Dev warnings (once):** a Checkbox in a Field with no `Field.Label`; an `id` inside a Field (set `controlId` on the Field instead); a Checkbox in a CheckboxGroup with no `value`; and `checked` or `defaultChecked` next to the group's (the group wins).
 - **No message keys.** Checkbox has no strings of its own. The Field's optional marker and error prefix are `field.optional` and `field.errorPrefix`, see [Field](../field/field.md).
@@ -59,7 +59,7 @@ Your part:
 - **Write the label as a sentence that can be answered "yes".** For a declaration or a consent, the label is the whole sentence ("Jag intygar att uppgifterna är korrekta"). Always show a visible label.
 - **Set `required` on the Field for a single consent or declaration,** so the label has no "(optional)" and the box is `aria-required`; or use `marker="none"`. Inside a group, an option never carries an optional marker.
 - **Set `invalid` and render a `Field.ErrorMessage` together,** with text that says what to do ("Bekräfta att uppgifterna är korrekta"). Validate on submit, and move focus to the first invalid control.
-- **A hint for one option** is a `Field.Hint` in that option's Field, outside the label. It is part of the box's description, so keep it to a short plain sentence with no links.
+- **A help text for one option** is a `Field.HelpText` in that option's Field, outside the label. It is part of the box's description, so keep it to a short plain sentence with no links.
 - **Own `indeterminate`.** Set it from your data (some, but not all, children are checked), and pass `false` once the user has chosen. Don't use it for a box that was never answered. The first server-rendered paint is unchecked, because the DOM property can only be set after render.
 - **Don't use a checkbox where a switch or a button is meant,** and don't use one for a yes-or-no question that needs both answers: use a RadioGroup.
 - **After `form.reset()`** an uncontrolled box keeps a stale `data-state` until its next change. The theme styles `:checked` and `:indeterminate`, so the look is right. Read the native state, not the attribute, in your own code.

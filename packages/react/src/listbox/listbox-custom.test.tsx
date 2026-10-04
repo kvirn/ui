@@ -204,7 +204,7 @@ describe('rendering', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('the Field’s label and the value name the trigger, and the hint describes it', async () => {
+  test('the Field’s label and the value name the trigger, and the help text describes it', async () => {
     await render(<Example />)
     const element = triggerElement()
     const label = document.querySelector('label')

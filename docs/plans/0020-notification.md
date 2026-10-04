@@ -1,9 +1,11 @@
 # Plan 0020: Notification
 
+> **Renamed.** The component is now `Alert` (Plan 0042). This plan keeps the names it was written with: `Notification`, `useNotification`, `kv-notification*` and `notification.*` are today `Alert`, `useAlert`, `kv-alert*` and `alert.*`.
+
 - **Status:** Done (alpha. Manual AT pending before beta. The decision is still to be accepted by the maintainer)
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-02 · **Target:** M1
-- **Related:** design spec [notification.md](../design/notification.md)
+- **Related:** design spec [alert.md](../design/alert.md)
 
 ## Goal
 
@@ -22,7 +24,7 @@ Adopters show a status message (info, success, warning or danger) with one compo
 
 ## Design
 
-Design spec: [docs/design/notification.md](../design/notification.md) (ux-designer, Draft). Name `Notification`. Decisions (2026-10-02, maintainer): choices are classes (the classes-not-props rule holds, no exception), so the look is CSS on `kv-notification--info|success|warning|danger` and easy to drop or restyle. A plain `Notification.Root` (`kv-notification` only), plus four ready-made roots `Notification.Info|Success|Warning|Danger` (named exports `NotificationInfo`, …) that add the class, the icon and the status word from one table, so colour, icon and word cannot disagree. Parts Title (required, `h2` by default), Body, Actions, and `useNotification({ variant })`. No `variant` prop on Root in v1 (the only allowed name if one is added later). Four i18n keys `notification.infoPrefix|successPrefix|warningPrefix|dangerPrefix` (visually hidden status word, first inside the Title). No role, `aria-live` or `aria-atomic` on the box. An `announce="polite|assertive"` prop on any root makes one `useAnnouncer()` call on mount. Look: `-subtle` background, 4px inline-start bar, a status icon, radius `sm`, through two tokens. No new colour tokens and no new contrast pairs. Every file to change is in spec §9, and the stories and tests are in §7.
+Design spec: [docs/design/alert.md](../design/alert.md) (ux-designer, Draft). Name `Notification`. Decisions (2026-10-02, maintainer): choices are classes (the classes-not-props rule holds, no exception), so the look is CSS on `kv-notification--info|success|warning|danger` and easy to drop or restyle. A plain `Notification.Root` (`kv-notification` only), plus four ready-made roots `Notification.Info|Success|Warning|Danger` (named exports `NotificationInfo`, …) that add the class, the icon and the status word from one table, so colour, icon and word cannot disagree. Parts Title (required, `h2` by default), Body, Actions, and `useNotification({ variant })`. No `variant` prop on Root in v1 (the only allowed name if one is added later). Four i18n keys `notification.infoPrefix|successPrefix|warningPrefix|dangerPrefix` (visually hidden status word, first inside the Title). No role, `aria-live` or `aria-atomic` on the box. An `announce="polite|assertive"` prop on any root makes one `useAnnouncer()` call on mount. Look: `-subtle` background, 4px inline-start bar, a status icon, radius `sm`, through two tokens. No new colour tokens and no new contrast pairs. Every file to change is in spec §9, and the stories and tests are in §7.
 
 ### API sketch
 
@@ -57,7 +59,7 @@ Classes `kv-notification`, `kv-notification--info|success|warning|danger`, and t
 
 ## Tasks
 
-- [x] Design spec `docs/design/notification.md` (ux-designer)
+- [x] Design spec `docs/design/alert.md` (renamed) (ux-designer)
 - [x] The maintainer's answers recorded in the spec (§11), and the decision drafted
 - [ ] The Notification decision accepted by the maintainer
 - [x] i18n keys in all six locales (`i18n:check` pending, the orchestrator runs it)

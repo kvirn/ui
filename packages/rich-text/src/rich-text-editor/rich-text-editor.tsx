@@ -399,7 +399,7 @@ function KeyboardHintText({
     partProps: {
       ...mergeProps(otherProps, {
         ...description.partProps,
-        className: 'kv-field-hint kv-rich-text-keyboard-hint',
+        className: 'kv-field-help-text kv-rich-text-keyboard-hint',
         id,
         ref: description.ref,
       }),
@@ -412,8 +412,8 @@ function KeyboardHintText({
 /**
  * The visible instruction for leaving the editable text (WCAG 2.1.2): "To leave the text field,
  * press Esc and then Tab. In lists, Tab indents, and in tables it moves to the next cell." Tab
- * does more than move focus in lists and tables, so the user is told how to get out. It is a hint
- * (`kv-field-hint`) that the editable text lists in its `aria-describedby`, always visible so
+ * does more than move focus in lists and tables, so the user is told how to get out. It is a help text
+ * (`kv-field-help-text`) that the editable text lists in its `aria-describedby`, always visible so
  * nothing jumps, and rendered only while the text is editable and lists or tables are on.
  * `Root` renders it under the box unless `keyboardHint={false}`.
  */

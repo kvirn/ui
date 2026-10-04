@@ -97,7 +97,7 @@ export interface UseNumberInputResult {
  * A number input's props for your own `<input>`: a text box with `masks.number()` built in, in
  * the provider's locale, wired to the nearest Field (contract: number-input.a11y.md). It holds no
  * value, never steps with the arrow keys and never clamps: spread your form library's props
- * next to it, and put the format in a visible hint when there are decimals (3.3.2).
+ * next to it, and put the format in a visible help text when there are decimals (3.3.2).
  *
  * @example
  * const rent = useNumberInput({ decimals: 2, grouping: true, onValueChange: (value, details) => form.setValue('rent', details.unmaskedValue) })

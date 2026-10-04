@@ -142,7 +142,7 @@ The Root renders `kv-section`. Every choice is a modifier class next to it. With
 | `kv-section--surface`, `kv-section--canvas`                        | **`surface`**, `canvas`      | `surface` is level 1 by definition. `canvas` is level 0: a region that reads as the page inside a `surface` frame or band. `kv-section--surface` sets the default explicitly, so markup can say it and a CMS can offer both |
 | `kv-section--padding-none`, `kv-section--padding-sm`, `-md`, `-lg` | **`md`**, `none`, `sm`, `lg` | Card's named steps (§6.2), so a section's content edge and a card's line up. `none` is for a frame whose children pad themselves, or for full-bleed media                                                                   |
 
-**Not section surfaces:** `surface-raised` (that's level 2, a card: a raised, square box with no edge would read as a broken card), `primary-subtle` and the status `-subtle` backgrounds (status belongs to a Notification, [notification.md](notification.md), with a bar, an icon and a status word, never colour alone, 1.4.1).
+**Not section surfaces:** `surface-raised` (that's level 2, a card: a raised, square box with no edge would read as a broken card), `primary-subtle` and the status `-subtle` backgrounds (status belongs to an Alert, [alert.md](alert.md), with a bar, an icon and a status word, never colour alone, 1.4.1).
 
 **No site-wide default properties** in this version (Card has `--kv-card-padding-default` and `--kv-card-radius-default`). The explicit `--surface` and `--padding-md` classes leave room to add one later without new classes (open question 4).
 
@@ -256,9 +256,9 @@ Card is level 2 only.
 
 A section is never interactive: no hover, no pointer cursor, no shadow. Children keep their own states.
 
-### 6.9 Section, Card, Notification or a surface token: when to use which
+### 6.9 Section, Card, Alert or a surface token: when to use which
 
-The separate Foundation page (Containers and status) was removed: Section, Card and Notification are different enough that one decision table didn't help. A light note on the elevation levels lives in Foundation / Borders and elevation.
+The separate Foundation page (Containers and status) was removed: Section, Card and Alert are different enough that one decision table didn't help. A light note on the elevation levels lives in Foundation / Borders and elevation.
 
 ### 6.10 Modes
 

@@ -2,13 +2,16 @@ import {
   Button,
   Checkbox,
   CheckboxGroup,
+  DateInput,
   Field,
+  Fieldset,
   Heading,
   RadioGroup,
   TextInput,
+  useDateInput,
 } from '@kvirn-ui/react'
 import { useId, useState } from 'react'
-import { BirthDate } from '../date-input/date-input.fixture.tsx'
+import { dateTextsFor } from '../date-input/date-input.fixture.tsx'
 import { choiceTextsFor } from './choice.fixture.tsx'
 import { textsFor } from './form.fixture.tsx'
 import type { FormLocale } from './form.fixture.tsx'
@@ -81,8 +84,8 @@ export interface PermitFormProps {
 }
 
 /**
- * The Overview form: a text field with a hint, a date, a field with a description above and
- * a hint under, an email, an optional phone number, a radio group, a checkbox group, a declaration and a
+ * The Overview form: a text field with a help text, a date, a field with a description above and
+ * a help text under, an email, an optional phone number, a radio group, a checkbox group, a declaration and a
  * submit button, in one column with `novalidate`. Every question is required but the phone
  * number. After a failed submit, move focus to the first invalid field.
  */
@@ -90,6 +93,9 @@ export function PermitForm({ locale, errors = false, showSubmits = false }: Perm
   const permit = permitTextsFor(locale)
   const { text, lang } = textsFor(locale)
   const { text: choice } = choiceTextsFor(locale)
+  const { text: date } = dateTextsFor(locale)
+  // The date's example is written in the order the boxes are in.
+  const { order } = useDateInput()
   // Radios that share a name are one group for the whole document, so on a Docs page every
   // story's radios would act as one. A name per instance keeps the stories apart.
   const durationName = `duration-${useId()}`
@@ -112,7 +118,18 @@ export function PermitForm({ locale, errors = false, showSubmits = false }: Perm
         <Field.ErrorMessage>{text.nameError}</Field.ErrorMessage>
       </Field.Root>
 
-      <BirthDate locale={locale} error={errors ? 'year' : undefined} />
+      <Fieldset.Root group required invalid={errors}>
+        <Fieldset.Legend>{date.legend}</Fieldset.Legend>
+        <DateInput.Root
+          name="birth"
+          autoComplete="bday"
+          invalidParts={errors ? ['year'] : undefined}
+        />
+        <Fieldset.HelpText>
+          {order[0] === 'year' ? date.hintYearFirst : date.hintDayFirst}
+        </Fieldset.HelpText>
+        <Fieldset.ErrorMessage>{date.errorYear}</Fieldset.ErrorMessage>
+      </Fieldset.Root>
 
       <Field.Root required>
         <Field.Label>{text.registration}</Field.Label>
@@ -126,7 +143,7 @@ export function PermitForm({ locale, errors = false, showSubmits = false }: Perm
           spellCheck={false}
           className="kv-input--width-10"
         />
-        <Field.Hint>{text.registrationHint}</Field.Hint>
+        <Field.HelpText>{text.registrationHint}</Field.HelpText>
       </Field.Root>
 
       <Field.Root required>
@@ -158,7 +175,7 @@ export function PermitForm({ locale, errors = false, showSubmits = false }: Perm
         <Field.Root>
           <RadioGroup.Radio value="12" />
           <Field.Label>{choice.duration12}</Field.Label>
-          <Field.Hint>{choice.duration12Hint}</Field.Hint>
+          <Field.HelpText>{choice.duration12Hint}</Field.HelpText>
         </Field.Root>
         <RadioGroup.ErrorMessage>{choice.durationError}</RadioGroup.ErrorMessage>
       </RadioGroup.Root>

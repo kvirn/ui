@@ -26,7 +26,7 @@ The parts and their roles are the Combobox's (see its contract): `Autocomplete.C
 
 Rules, tested in `autocomplete.test.tsx` (and end to end in `autocomplete.e2e.ts`):
 
-- **The same ARIA 1.2 combobox as a Combobox** (`autocomplete.test.tsx › a closed autocomplete: a native input wired to a hidden listbox popup`). Named by `<label for>`, described by the hint and error (`autocomplete.test.tsx › the Field’s label names the input, and the hint describes it`). `aria-activedescendant` always points at a rendered option (`autocomplete.test.tsx › aria-activedescendant always points at a rendered option`).
+- **The same ARIA 1.2 combobox as a Combobox** (`autocomplete.test.tsx › a closed autocomplete: a native input wired to a hidden listbox popup`). Named by `<label for>`, described by the help text and error (`autocomplete.test.tsx › the Field’s label names the input, and the help text describes it`). `aria-activedescendant` always points at a rendered option (`autocomplete.test.tsx › aria-activedescendant always points at a rendered option`).
 - **Picking a suggestion fills the input** and closes the popup, with the reason `'selection'`; no option is ever `aria-selected` (`autocomplete.test.tsx › Enter on an active suggestion fills the input and closes the popup`, `autocomplete.test.tsx › no suggestion is selected, and Autocomplete.Empty says "No results" when nothing matches`).
 - **Suggestions never block other text.** Enter with no active suggestion is not intercepted, and the form submits what was typed (`autocomplete.test.tsx › Enter with no active suggestion is the browser’s own: the form submits what was typed`).
 - **The text is never cleared silently.** Escape, Tab and a blur keep it (`autocomplete.test.tsx › the text is never cleared silently: Escape and Tab keep it`). Only the Clear button empties it, and then the popup closes.
@@ -132,7 +132,7 @@ As the Combobox's, including the focus indicator: the 2px `focus-ring` outline o
 
 - 1.3.1, 4.1.2: the ARIA 1.2 combobox structure and the label. 1.3.5: `autoComplete`.
 - 1.4.1, 1.4.10, 1.4.11, 1.4.13 (not applicable), 2.1.1, 2.1.2, 2.4.3, 2.4.7, 2.4.11, 2.4.13, 2.5.3, 2.5.8, 3.2.1, 3.2.2.
-- 3.3.1, 3.3.2, 3.3.3, 3.3.7: the Field's label, hint and error, and text that is kept.
+- 3.3.1, 3.3.2, 3.3.3, 3.3.7: the Field's label, help text and error, and text that is kept.
 - 4.1.3: the result count, "no results" and "loading", polite and debounced.
 
 ## AT test record
@@ -152,7 +152,7 @@ As the Combobox's, including the focus indicator: the 2px `focus-ring` outline o
 | Narrator + Edge + Windows                | pending |        |        |       |
 | Dragon / Voice Control                   | pending |        |        |       |
 
-Research questions for the AT run: is the suggestion count read once, after typing stops, and not over the typed letters? Is a picked suggestion read as the input's new value? Does a screen reader user understand that other text is allowed, or should the hint say so? Does `aria-activedescendant` read each suggestion on VoiceOver (macOS and iOS) and TalkBack?
+Research questions for the AT run: is the suggestion count read once, after typing stops, and not over the typed letters? Is a picked suggestion read as the input's new value? Does a screen reader user understand that other text is allowed, or should the help text say so? Does `aria-activedescendant` read each suggestion on VoiceOver (macOS and iOS) and TalkBack?
 
 ## Known issues
 

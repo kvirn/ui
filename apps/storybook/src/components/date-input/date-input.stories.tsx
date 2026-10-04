@@ -2,16 +2,15 @@ import { DateInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/date-input/date-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/date-input/date-input.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useId } from 'react'
 import { expect, userEvent } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { logChange } from '../form/choice.fixture.tsx'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
-import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   BirthDate,
   ControlledDate,
+  DateStates,
   dateTextsFor,
   KeyboardDate,
   OneFieldDate,
@@ -24,10 +23,11 @@ import {
 // Components/Form/DateInput: a date of three text boxes, day, month and year, in a group
 // fieldset (design spec docs/design/form-fields.md §6.6). The order follows the region through
 // `Intl` (sv-SE year first, sv-FI day first, month first becomes day first). Three Tab stops in
-// that order, no auto-advance, the arrow keys never step a value, and the value is three
-// strings that nothing parses. KvirnUI holds no form state: `value` and `onValueChange` are the
+// that order, focus moves to the next box when typing fills one (Plan 0040: on by default, with
+// a visible hint, `autoAdvance={false}` turns it off), the arrow keys never step a value, and the
+// value is three strings that nothing parses. KvirnUI holds no form state: `value` and `onValueChange` are the
 // date, and without `value` the native inputs are uncontrolled. Nothing here validates: an
-// invalid story sets `invalid` itself, on the wrong boxes only. The hint is the consumer's,
+// invalid story sets `invalid` itself, on the wrong boxes only. The help text is the consumer's,
 // with an example in the order of the boxes. date-input.e2e.ts runs the keyboard rows, forced
 // colours and reflow checks.
 
@@ -37,6 +37,7 @@ const meta = {
   args: {
     name: 'birth',
     autoComplete: 'bday',
+    autoAdvance: true,
     onValueChange: logChange('onValueChange'),
   },
   argTypes: {
@@ -87,6 +88,11 @@ const meta = {
         'Native `disabled` and `data-disabled` on the three boxes. Default: the Fieldset’s `disabled`.',
     },
     readOnly: { control: 'boolean', description: 'Native `readOnly` on the three boxes.' },
+    autoAdvance: {
+      control: 'boolean',
+      description:
+        'Default `true`: focus moves to the next box, with its text selected, when the user’s typing fills a box (two digits for day and month, four for year). Never from the last box, and never on paste, drop, autofill, deletion or a change of `value`. It shows a visible hint under the boxes (`dateInput.autoAdvanceHint`) that is part of the group’s description (3.2.2). `false` turns both off: typing never moves focus.',
+    },
     invalidParts: {
       control: 'object',
       description:
@@ -94,7 +100,8 @@ const meta = {
     },
     messages: {
       control: false,
-      description: 'Per-instance overrides for `dateInput.day`, `.month` and `.year`.',
+      description:
+        'Per-instance overrides for `dateInput.day`, `.month`, `.year` and `.autoAdvanceHint`.',
     },
     render: { control: false, description: 'Another element. Day, Month and Year take it too.' },
   },
@@ -149,10 +156,10 @@ export const Default: Story = {
       await expect(textbox).not.toHaveAttribute('aria-invalid')
     }
     await expect(box(canvasElement, 'day')).toHaveAttribute('autocomplete', 'bday-day')
-    // The hint, with an example in the order of the boxes, describes the whole date.
+    // The auto-advance hint and then the example, in the order of the boxes, describe the whole date.
     const yearFirst = canvasElement.querySelector('input')?.name === 'birth-year'
     await expect(group).toHaveAccessibleDescription(
-      yearFirst ? text.hintYearFirst : text.hintDayFirst,
+      new RegExp(`${yearFirst ? text.hintYearFirst : text.hintDayFirst}$`),
     )
   },
 }
@@ -160,15 +167,36 @@ export const Default: Story = {
 /**
  * The fixture the keyboard tests drive: a back button before the date, the date and a submit
  * button, in a form. Try the keys in the Keyboard section above: Tab goes box to box in the order
- * of the boxes (Shift+Tab leaves the first box for the back button), typing never moves
- * focus, the arrow keys never step a value, and Enter in a box submits the form.
+ * of the boxes (Shift+Tab leaves the first box for the back button), typing the digit that fills
+ * a box moves focus to the next one, Backspace never does, the arrow keys never step a value, and
+ * Enter in a box submits the form.
  */
 export const Keyboard: Story = {
   parameters: showSource('date-input/date-input.fixture.tsx', 'KeyboardDate'),
   render: (_args, { globals }) => <KeyboardDate locale={localeOf(globals)} />,
 }
 
-/** `sv-SE`: year, month, day, and the hint's example is written in that order. */
+/**
+ * Turn the auto-advance off with `autoAdvance={false}`, for a service that follows the stricter
+ * reading of 3.2.2: typing never moves focus, and the hint under the boxes is gone.
+ */
+export const NoAutoAdvance: Story = {
+  args: { autoAdvance: false },
+  parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
+  play: async ({ canvas, canvasElement, globals }) => {
+    const { text } = dateTextsFor(localeOf(globals))
+    const yearFirst = canvasElement.querySelector('input')?.name === 'birth-year'
+    await userEvent.type(box(canvasElement, 'year'), '1990')
+    await expect(box(canvasElement, 'year')).toHaveFocus()
+    await expect(box(canvasElement, 'year')).toHaveValue('1990')
+    // Only the example describes the group: the auto-advance hint is gone.
+    await expect(
+      canvas.getByRole('group', { name: new RegExp(`^${text.legend}`) }),
+    ).toHaveAccessibleDescription(yearFirst ? text.hintYearFirst : text.hintDayFirst)
+  },
+}
+
+/** `sv-SE`: year, month, day, and the help text's example is written in that order. */
 export const SwedishSweden: Story = {
   decorators: [withRegion('sv-SE')],
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
@@ -214,7 +242,7 @@ export const English: Story = {
 }
 
 /**
- * Your own order: a service that must match a paper form writes the parts itself, and the hint
+ * Your own order: a service that must match a paper form writes the parts itself, and the help text
  * follows the order it chose.
  */
 export const OwnOrder: Story = {
@@ -238,7 +266,7 @@ export const OneField: Story = {
     const field = canvas.getByRole('textbox', { name: new RegExp(`^${text.oneFieldLabel}`) })
     await expectMinimumTargetSize(field)
     await expect(field).toHaveAttribute('inputmode', 'numeric')
-    // The hint, with an example in the locale's form, describes the field.
+    // The help text, with an example in the locale's form, describes the field.
     await expect(field).toHaveAccessibleDescription(text.oneFieldHint('2026-10-27'))
     // Eight digits are enough: the mask puts the separators in.
     await userEvent.type(field, '20261004')
@@ -370,9 +398,9 @@ export const Controlled: Story = {
   render: (_args, { globals }) => <ControlledDate locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement, globals }) => {
     const { text } = dateTextsFor(localeOf(globals))
-    await userEvent.type(box(canvasElement, 'day'), '027')
-    // Nothing is padded or parsed: the day is what was typed.
-    await expect(canvas.getByTestId('mirror')).toHaveTextContent(`${text.youTyped}: 1990-3-027`)
+    await userEvent.type(box(canvasElement, 'day'), '27')
+    // Nothing is padded or parsed: the month stays `3`, the day is what was typed.
+    await expect(canvas.getByTestId('mirror')).toHaveTextContent(`${text.youTyped}: 1990-3-27`)
   },
 }
 
@@ -390,52 +418,16 @@ export const PlainForm: Story = {
   },
 }
 
-/** Every state of the date in one column, for the RTL and forced-colours stories. */
-function DateStates({ locale }: { locale: FormLocale }) {
-  const id = useId()
-  return (
-    <div className="kv-story-form">
-      <BirthDate
-        locale={locale}
-        name={`filled-${id}`}
-        defaultValue={{ year: '1990', month: '3', day: '27' }}
-      />
-      <BirthDate
-        locale={locale}
-        name={`year-${id}`}
-        error="year"
-        defaultValue={{ month: '3', day: '27' }}
-      />
-      <BirthDate
-        locale={locale}
-        name={`date-${id}`}
-        error="date"
-        defaultValue={{ year: '1990', month: '13', day: '27' }}
-      />
-      <BirthDate
-        locale={locale}
-        name={`disabled-${id}`}
-        disabled
-        defaultValue={{ year: '1990', month: '3', day: '27' }}
-      />
-      <BirthDate
-        locale={locale}
-        name={`readonly-${id}`}
-        readOnly
-        defaultValue={{ year: '1990', month: '3', day: '27' }}
-      />
-    </div>
-  )
-}
-
 /** Right to left, in English: the boxes flow right to left in DOM order, and Tab follows it. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
+  parameters: showSource('date-input/date-input.fixture.tsx', 'DateStates'),
   render: () => <DateStates locale="en" />,
 }
 
 /** Filled, invalid, disabled and read-only boxes stay distinguishable in forced colours. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
+  parameters: showSource('date-input/date-input.fixture.tsx', 'DateStates'),
   render: (_args, { globals }) => <DateStates locale={localeOf(globals)} />,
 }

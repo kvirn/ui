@@ -276,7 +276,7 @@ export function InvalidEditor({ locale }: { locale: FormLocale }) {
         <RichTextEditor.Toolbar />
         <RichTextEditor.Content />
       </RichTextEditor.Root>
-      <Field.Hint>{text.hint}</Field.Hint>
+      <Field.HelpText>{text.hint}</Field.HelpText>
       <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
     </Field.Root>
   )
@@ -456,7 +456,7 @@ export function CountedEditor({ locale }: { locale: FormLocale }) {
         <RichTextEditor.Toolbar />
         <RichTextEditor.Content />
       </RichTextEditor.Root>
-      <Field.Hint>{text.hint}</Field.Hint>
+      <Field.HelpText>{text.hint}</Field.HelpText>
     </Field.Root>
   )
 }

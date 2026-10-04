@@ -14,7 +14,7 @@ import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import {
   Fieldset,
   FieldsetErrorMessage,
-  FieldsetHint,
+  FieldsetHelpText,
   FieldsetLegend,
   FieldsetProse,
   FieldsetRoot,
@@ -154,7 +154,7 @@ describe('rendering', () => {
     expect(Fieldset.Root).toBe(FieldsetRoot)
     expect(Fieldset.Legend).toBe(FieldsetLegend)
     expect(Fieldset.Prose).toBe(FieldsetProse)
-    expect(Fieldset.Hint).toBe(FieldsetHint)
+    expect(Fieldset.HelpText).toBe(FieldsetHelpText)
     expect(Fieldset.ErrorMessage).toBe(FieldsetErrorMessage)
     expect(Fieldset).not.toHaveProperty('Description')
     // The callable root stays callable: <Fieldset> is the same component as <Fieldset.Root>.
@@ -162,9 +162,9 @@ describe('rendering', () => {
     expect(Fieldset.Root.displayName).toBe('Fieldset.Root')
     expect(Fieldset.Legend.displayName).toBe('Fieldset.Legend')
     expect(Fieldset.Prose.displayName).toBe('Fieldset.Prose')
-    expect(Fieldset.Hint.displayName).toBe('Fieldset.Hint')
-    // Fieldset.Hint is its own component, not Field.Hint.
-    expect(Fieldset.Hint).not.toBe(Field.Hint)
+    expect(Fieldset.HelpText.displayName).toBe('Fieldset.HelpText')
+    // Fieldset.HelpText is its own component, not Field.HelpText.
+    expect(Fieldset.HelpText).not.toBe(Field.HelpText)
     expect(Fieldset.ErrorMessage.displayName).toBe('Fieldset.ErrorMessage')
     // Fieldset.ErrorMessage is its own component, not Field.ErrorMessage.
     expect(Fieldset.ErrorMessage).not.toBe(Field.ErrorMessage)
@@ -583,7 +583,7 @@ describe('useFieldset', () => {
 })
 
 describe('several descriptions', () => {
-  /** The default order: legend, hints, controls, then the error. */
+  /** The default order: legend, help texts, controls, then the error. */
   function AddressGroup({ invalid = false }: { invalid?: boolean }) {
     return (
       <Fieldset.Root invalid={invalid}>
@@ -643,7 +643,7 @@ describe('several descriptions', () => {
   })
 
   test('a Description that mounts later is listed in DOM order, with its own id', async () => {
-    function LateHint() {
+    function LateHelpText() {
       const [showFirst, setShowFirst] = useState(false)
       return (
         <Fieldset.Root>
@@ -656,7 +656,7 @@ describe('several descriptions', () => {
         </Fieldset.Root>
       )
     }
-    const { container } = await render(<LateHint />)
+    const { container } = await render(<LateHelpText />)
     const group = page.getByRole('group', { name: 'Adress' })
     expect(group.element().getAttribute('aria-describedby')).toBe(
       page.getByTestId('last').element().id,
@@ -702,8 +702,8 @@ describe('several descriptions', () => {
     expect(warnings).toHaveLength(1)
   })
 
-  test('useFieldset: descriptions gives each hint its own id, in order, then the error, on the server', () => {
-    function TwoHints() {
+  test('useFieldset: descriptions gives each help text its own id, in order, then the error, on the server', () => {
+    function TwoHelpTexts() {
       const fieldset = useFieldset({ invalid: true, descriptions: ['where', 'format'] })
       return (
         <fieldset {...fieldset.fieldsetProps}>
@@ -714,7 +714,7 @@ describe('several descriptions', () => {
         </fieldset>
       )
     }
-    const html = renderToString(<TwoHints />)
+    const html = renderToString(<TwoHelpTexts />)
     const ids = (html.match(/aria-describedby="([^"]+)"/)?.[1] ?? '').split(' ')
     expect(ids).toHaveLength(3)
     expect(new Set(ids).size).toBe(3)
@@ -728,8 +728,8 @@ describe('several descriptions', () => {
   })
 })
 
-describe('Fieldset.Hint (Plan 0029)', () => {
-  /** The design spec's date question: the legend, the three boxes, a group hint under them. */
+describe('Fieldset.HelpText (Plan 0029)', () => {
+  /** The design spec's date question: the legend, the three boxes, a group help text under them. */
   function VisitDate({ invalid = false, disabled = false }) {
     return (
       <Fieldset.Root group invalid={invalid} disabled={disabled}>
@@ -747,7 +747,7 @@ describe('Fieldset.Hint (Plan 0029)', () => {
           <Field.Label>År</Field.Label>
           <TextInput inputMode="numeric" />
         </Field.Root>
-        <Fieldset.Hint data-testid="example">Till exempel 2026-03-27</Fieldset.Hint>
+        <Fieldset.HelpText data-testid="example">Till exempel 2026-03-27</Fieldset.HelpText>
         <Fieldset.ErrorMessage>Skriv ett datum</Fieldset.ErrorMessage>
       </Fieldset.Root>
     )
@@ -761,7 +761,7 @@ describe('Fieldset.Hint (Plan 0029)', () => {
         .getAttribute('aria-describedby') ?? ''
     ).split(' ')
 
-  test('renders a hint with an id, in the group’s description', async () => {
+  test('renders a help text with an id, in the group’s description', async () => {
     await render(<VisitDate />)
     expect(page.getByTestId('example').element().id).not.toBe('')
     await expect
@@ -769,7 +769,7 @@ describe('Fieldset.Hint (Plan 0029)', () => {
       .toHaveAccessibleDescription('Välj dagen då du var hos oss. Till exempel 2026-03-27')
   })
 
-  test('aria-describedby lists the description, the hint, then the error', async () => {
+  test('aria-describedby lists the description, the help text, then the error', async () => {
     const { container } = await render(<VisitDate invalid />)
     const ids = describedByIds()
     expect(ids).toHaveLength(3)
@@ -779,16 +779,16 @@ describe('Fieldset.Hint (Plan 0029)', () => {
     expectNoDanglingReferences(container)
   })
 
-  test('a Field’s own hint inside the group describes its input, not the group', async () => {
+  test('a Field’s own help text inside the group describes its input, not the group', async () => {
     await render(
       <Fieldset.Root group>
         <Fieldset.Legend>När var besöket?</Fieldset.Legend>
         <Field.Root>
           <Field.Label>Dag</Field.Label>
           <TextInput inputMode="numeric" />
-          <Field.Hint>Ett eller två tal.</Field.Hint>
+          <Field.HelpText>Ett eller två tal.</Field.HelpText>
         </Field.Root>
-        <Fieldset.Hint>Till exempel 2026-03-27</Fieldset.Hint>
+        <Fieldset.HelpText>Till exempel 2026-03-27</Fieldset.HelpText>
       </Fieldset.Root>,
     )
     await expect
@@ -808,11 +808,11 @@ describe('Fieldset.Hint (Plan 0029)', () => {
     await expect.element(page.getByTestId('example')).toHaveAttribute('data-disabled', '')
   })
 
-  test('a Fieldset.Hint before the group’s controls warns once', async () => {
+  test('a Fieldset.HelpText before the group’s controls warns once', async () => {
     await render(
       <Fieldset.Root group>
         <Fieldset.Legend>När var besöket?</Fieldset.Legend>
-        <Fieldset.Hint>Till exempel 2026-03-27</Fieldset.Hint>
+        <Fieldset.HelpText>Till exempel 2026-03-27</Fieldset.HelpText>
         <Field.Root>
           <Field.Label>Dag</Field.Label>
           <TextInput inputMode="numeric" />
@@ -824,7 +824,7 @@ describe('Fieldset.Hint (Plan 0029)', () => {
     expect(warnings[0]).toContain('before its control')
   })
 
-  test('a group with a description, a hint and an error has no axe violations and no warnings', async () => {
+  test('a group with a description, a help text and an error has no axe violations and no warnings', async () => {
     const { container } = await render(sweden(<VisitDate invalid />))
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()

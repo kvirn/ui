@@ -16,7 +16,7 @@ import {
   ErrorMessage,
   Field,
   FieldErrorMessage,
-  FieldHint,
+  FieldHelpText,
   FieldLabel,
   FieldProse,
   FieldRoot,
@@ -24,8 +24,8 @@ import {
 } from './field.tsx'
 import type {
   FieldErrorMessageProps,
-  FieldHintProps,
-  FieldHintState,
+  FieldHelpTextProps,
+  FieldHelpTextState,
   FieldLabelProps,
   FieldRootProps,
   FieldState,
@@ -110,9 +110,9 @@ describe('rendering', () => {
           <p>Som i passet.</p>
         </Field.Prose>
         <TextInput />
-        <Field.Hint data-testid="hint" className="egen">
+        <Field.HelpText data-testid="helpText" className="egen">
           Som i passet.
-        </Field.Hint>
+        </Field.HelpText>
         <Field.ErrorMessage data-testid="error">Ange ditt namn</Field.ErrorMessage>
       </Field.Root>,
     )
@@ -123,9 +123,9 @@ describe('rendering', () => {
     expect(label.className).toBe('kv-field-label')
     const description = page.getByTestId('description').element()
     expect(description.className).toBe('kv-prose')
-    // A hint is its own part, not a Prose, and a consumer class joins its part class.
-    const hint = page.getByTestId('hint').element()
-    expect(hint.className).toBe('egen kv-field-hint')
+    // A help text is its own part, not a Prose, and a consumer class joins its part class.
+    const helpText = page.getByTestId('helpText').element()
+    expect(helpText.className).toBe('egen kv-field-help-text')
     const error = page.getByTestId('error').element()
     expect(error.className).toBe('kv-field-error-message')
     await expect.element(page.getByTestId('root')).not.toHaveAttribute('data-kv')
@@ -738,8 +738,8 @@ describe('useField', () => {
     }
   })
 
-  test('descriptions gives each hint its own id, in the order given, then the error, on the server', () => {
-    function TwoHints({ invalid }: { invalid: boolean }) {
+  test('descriptions gives each help text its own id, in the order given, then the error, on the server', () => {
+    function TwoHelpTexts({ invalid }: { invalid: boolean }) {
       const field = useField({ invalid, descriptions: ['above', 'under'] })
       return (
         <div {...field.rootProps}>
@@ -753,7 +753,7 @@ describe('useField', () => {
         </div>
       )
     }
-    const html = renderToString(<TwoHints invalid />)
+    const html = renderToString(<TwoHelpTexts invalid />)
     const describedBy = html.match(/aria-describedby="([^"]+)"/)?.[1] ?? ''
     const ids = describedBy.split(' ')
     expect(ids).toHaveLength(3)
@@ -791,11 +791,11 @@ describe('useField', () => {
   })
 
   test('without descriptions or hasDescription, aria-describedby is absent', async () => {
-    function NoHint() {
+    function NoHelpText() {
       const field = useField()
       return <input {...field.controlProps} aria-label="Namn" />
     }
-    await render(<NoHint />)
+    await render(<NoHelpText />)
     await expect
       .element(page.getByRole('textbox', { name: 'Namn' }))
       .not.toHaveAttribute('aria-describedby')
@@ -852,7 +852,7 @@ describe('several descriptions', () => {
   })
 
   test('is in DOM order whichever Description mounted first', async () => {
-    function LateHint() {
+    function LateHelpText() {
       const [showAbove, setShowAbove] = useState(false)
       return (
         <Field.Root>
@@ -866,7 +866,7 @@ describe('several descriptions', () => {
         </Field.Root>
       )
     }
-    const { container } = await render(<LateHint />)
+    const { container } = await render(<LateHelpText />)
     expect(describedByIds('Registreringsnummer')).toEqual([page.getByTestId('under').element().id])
     await userEvent.click(page.getByRole('button', { name: 'Visa' }))
     // The late one mounted last but comes first in the DOM, so it comes first in the list.
@@ -881,7 +881,7 @@ describe('several descriptions', () => {
   })
 
   test('a Description that unmounts leaves aria-describedby at once and never leaves a missing id', async () => {
-    function RemovableHint() {
+    function RemovableHelpText() {
       const [showUnder, setShowUnder] = useState(true)
       return (
         <Field.Root>
@@ -895,7 +895,7 @@ describe('several descriptions', () => {
         </Field.Root>
       )
     }
-    const { container } = await render(<RemovableHint />)
+    const { container } = await render(<RemovableHelpText />)
     await expect
       .element(page.getByRole('textbox', { name: 'Registreringsnummer' }))
       .toHaveAccessibleDescription('Ovanför fältet. Under fältet.')
@@ -962,12 +962,12 @@ describe('several descriptions', () => {
     expect(warnings[0]).toContain('one id')
   })
 
-  test('one ErrorMessage, or two hints, don’t warn', async () => {
+  test('one ErrorMessage, or two help texts, don’t warn', async () => {
     await render(<RegistrationField invalid />)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('a Prose hint keeps its own props: state and ref, and render', async () => {
+  test('a Prose help text keeps its own props: state and ref, and render', async () => {
     const ref = createRef<HTMLElement>()
     await render(
       <Field.Root invalid disabled>
@@ -991,8 +991,8 @@ describe('several descriptions', () => {
   })
 })
 
-describe('Field.Hint (Plan 0029)', () => {
-  /** The design spec's personal identity number field: a description, the box, a hint, the error. */
+describe('Field.HelpText (Plan 0029)', () => {
+  /** The design spec's personal identity number field: a description, the box, a help text, the error. */
   function PersonalNumberField({
     invalid = false,
     disabled = false,
@@ -1007,7 +1007,7 @@ describe('Field.Hint (Plan 0029)', () => {
           <p>Vi använder det för att hämta dina uppgifter från Skatteverket.</p>
         </Field.Prose>
         <TextInput name="personalNumber" />
-        <Field.Hint data-testid="format">12 siffror, ÅÅÅÅMMDD-NNNN</Field.Hint>
+        <Field.HelpText data-testid="format">12 siffror, ÅÅÅÅMMDD-NNNN</Field.HelpText>
         <Field.ErrorMessage>Skriv personnumret med 12 siffror, ÅÅÅÅMMDD-NNNN</Field.ErrorMessage>
       </Field.Root>
     )
@@ -1018,12 +1018,12 @@ describe('Field.Hint (Plan 0029)', () => {
       ' ',
     )
 
-  test('renders a hint with an id', async () => {
+  test('renders a help text with an id', async () => {
     await render(<PersonalNumberField />)
     expect(page.getByTestId('format').element().id).not.toBe('')
   })
 
-  test('aria-describedby lists the description, then the hint, then the error', async () => {
+  test('aria-describedby lists the description, then the help text, then the error', async () => {
     const { container } = await render(<PersonalNumberField invalid />)
     const ids = describedByIds('Personnummer')
     expect(ids).toHaveLength(3)
@@ -1040,12 +1040,12 @@ describe('Field.Hint (Plan 0029)', () => {
     expectNoDanglingReferences(container)
   })
 
-  test('a hint alone is the control’s description, and a valid field lists no error', async () => {
+  test('a help text alone is the control’s description, and a valid field lists no error', async () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">Registreringsnummer</Field.Label>
         <TextInput />
-        <Field.Hint>Till exempel ABC 123</Field.Hint>
+        <Field.HelpText>Till exempel ABC 123</Field.HelpText>
         <Field.ErrorMessage>Ange numret</Field.ErrorMessage>
       </Field.Root>,
     )
@@ -1055,7 +1055,7 @@ describe('Field.Hint (Plan 0029)', () => {
     expect(describedByIds('Registreringsnummer')).toHaveLength(1)
   })
 
-  test('is in DOM order when a description above the control mounts after the hint under it', async () => {
+  test('is in DOM order when a description above the control mounts after the help text under it', async () => {
     function LateDescription() {
       const [showAbove, setShowAbove] = useState(false)
       return (
@@ -1063,7 +1063,7 @@ describe('Field.Hint (Plan 0029)', () => {
           <Field.Label marker="none">Registreringsnummer</Field.Label>
           {showAbove ? <Field.Prose data-testid="above">Ovanför fältet.</Field.Prose> : null}
           <TextInput />
-          <Field.Hint data-testid="under">Under fältet.</Field.Hint>
+          <Field.HelpText data-testid="under">Under fältet.</Field.HelpText>
           <button type="button" onClick={() => setShowAbove(true)}>
             Visa
           </button>
@@ -1079,21 +1079,21 @@ describe('Field.Hint (Plan 0029)', () => {
     expectNoDanglingReferences(container)
   })
 
-  test('a hint that unmounts leaves aria-describedby at once', async () => {
-    function RemovableHint() {
+  test('a help text that unmounts leaves aria-describedby at once', async () => {
+    function RemovableHelpText() {
       const [show, setShow] = useState(true)
       return (
         <Field.Root>
           <Field.Label marker="none">Namn</Field.Label>
           <TextInput />
-          {show ? <Field.Hint>Som i passet.</Field.Hint> : null}
+          {show ? <Field.HelpText>Som i passet.</Field.HelpText> : null}
           <button type="button" onClick={() => setShow(false)}>
             Dölj
           </button>
         </Field.Root>
       )
     }
-    const { container } = await render(<RemovableHint />)
+    const { container } = await render(<RemovableHelpText />)
     await expect
       .element(page.getByRole('textbox', { name: 'Namn' }))
       .toHaveAccessibleDescription('Som i passet.')
@@ -1115,18 +1115,18 @@ describe('Field.Hint (Plan 0029)', () => {
 
   test('keeps its own props: ref and other props are forwarded, render swaps the element', async () => {
     const ref = createRef<HTMLParagraphElement>()
-    const seenStates: FieldHintState[] = []
+    const seenStates: FieldHelpTextState[] = []
     await render(
       <Field.Root invalid disabled>
         <Field.Label marker="none">Namn</Field.Label>
         <TextInput />
-        <Field.Hint ref={ref} lang="sv" data-testid="first">
+        <Field.HelpText ref={ref} lang="sv" data-testid="first">
           Som i passet.
-        </Field.Hint>
-        <Field.Hint render={<div />} data-testid="second">
+        </Field.HelpText>
+        <Field.HelpText render={<div />} data-testid="second">
           Ett till.
-        </Field.Hint>
-        <Field.Hint
+        </Field.HelpText>
+        <Field.HelpText
           render={(partProps, state) => {
             seenStates.push(state)
             return <p {...partProps} data-egen="" />
@@ -1134,7 +1134,7 @@ describe('Field.Hint (Plan 0029)', () => {
           data-testid="third"
         >
           Och ett.
-        </Field.Hint>
+        </Field.HelpText>
         <Field.ErrorMessage>Ange</Field.ErrorMessage>
       </Field.Root>,
     )
@@ -1143,31 +1143,31 @@ describe('Field.Hint (Plan 0029)', () => {
     expect(page.getByTestId('second').element().tagName).toBe('DIV')
     await expect.element(page.getByTestId('third')).toHaveAttribute('data-egen', '')
     expect(seenStates.at(-1)).toEqual({ isInvalid: true, isRequired: false, isDisabled: true })
-    // All three are listed, so each has an id: 3 hints and the error.
+    // All three are listed, so each has an id: 3 help texts and the error.
     expect(describedByIds('Namn')).toHaveLength(4)
   })
 
   test('is never focusable and adds no role, live region or tabindex', async () => {
     await render(<PersonalNumberField invalid />)
-    const hint = page.getByTestId('format').element()
-    expect(hint.hasAttribute('tabindex')).toBe(false)
-    expect(hint.hasAttribute('role')).toBe(false)
-    expect(hint.hasAttribute('aria-live')).toBe(false)
+    const helpText = page.getByTestId('format').element()
+    expect(helpText.hasAttribute('tabindex')).toBe(false)
+    expect(helpText.hasAttribute('role')).toBe(false)
+    expect(helpText.hasAttribute('aria-live')).toBe(false)
   })
 
-  test('outside a Field or Fieldset it warns once and renders a plain hint with no id', async () => {
+  test('outside a Field or Fieldset it warns once and renders a plain help text with no id', async () => {
     await render(
       <>
-        <FieldHint data-testid="one">Till exempel ABC 123</FieldHint>
-        <FieldHint data-testid="two">Ett till</FieldHint>
+        <FieldHelpText data-testid="one">Till exempel ABC 123</FieldHelpText>
+        <FieldHelpText data-testid="two">Ett till</FieldHelpText>
       </>,
     )
-    const hint = page.getByTestId('one').element()
-    expect(hint.hasAttribute('id')).toBe(false)
+    const helpText = page.getByTestId('one').element()
+    expect(helpText.hasAttribute('id')).toBe(false)
     expect(page.getByTestId('two').element().hasAttribute('id')).toBe(false)
     const warnings = consoleWarn.mock.calls.map(([message]) => String(message))
     expect(warnings).toHaveLength(1)
-    expect(warnings[0]).toContain('Field.Hint')
+    expect(warnings[0]).toContain('Field.HelpText')
     expect(warnings[0]).toContain('outside')
   })
 
@@ -1176,18 +1176,18 @@ describe('Field.Hint (Plan 0029)', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('a hint before its control warns once, and a hint under the control does not', async () => {
+  test('a help text before its control warns once, and a help text under the control does not', async () => {
     await render(
       <>
         <Field.Root>
           <Field.Label marker="none">Postnummer</Field.Label>
-          <Field.Hint>Fem siffror.</Field.Hint>
+          <Field.HelpText>Fem siffror.</Field.HelpText>
           <TextInput />
         </Field.Root>
         <Field.Root>
           <Field.Label marker="none">Ort</Field.Label>
           <TextInput />
-          <Field.Hint>Som i adressen.</Field.Hint>
+          <Field.HelpText>Som i adressen.</Field.HelpText>
         </Field.Root>
       </>,
     )
@@ -1197,12 +1197,12 @@ describe('Field.Hint (Plan 0029)', () => {
     expect(warnings[0]).toContain('Field.Prose')
   })
 
-  test('a Field with a description, a hint and an error has no axe violations', async () => {
+  test('a Field with a description, a help text and an error has no axe violations', async () => {
     const { container } = await render(<PersonalNumberField invalid />)
     await expectNoA11yViolations(container)
   })
 
-  test('a disabled Field with a hint has no axe violations', async () => {
+  test('a disabled Field with a help text has no axe violations', async () => {
     const { container } = await render(<PersonalNumberField disabled />)
     await expectNoA11yViolations(container)
   })
@@ -1245,8 +1245,8 @@ describe('types', () => {
     expectTypeOf<FieldLabelProps>().not.toHaveProperty('htmlFor')
     expectTypeOf<FieldLabelProps>().not.toHaveProperty('id')
     expectTypeOf<FieldErrorMessageProps>().not.toHaveProperty('id')
-    expectTypeOf<FieldHintProps>().not.toHaveProperty('id')
-    expectTypeOf<FieldHintProps>().toHaveProperty('render')
+    expectTypeOf<FieldHelpTextProps>().not.toHaveProperty('id')
+    expectTypeOf<FieldHelpTextProps>().toHaveProperty('render')
     expectTypeOf<FieldLabelProps['marker']>().toEqualTypeOf<'optional' | 'none' | undefined>()
   })
 
@@ -1275,7 +1275,7 @@ describe('types', () => {
     expect(Field.Root).toBe(FieldRoot)
     expect(Field.Label).toBe(FieldLabel)
     expect(Field.Prose).toBe(FieldProse)
-    expect(Field.Hint).toBe(FieldHint)
+    expect(Field.HelpText).toBe(FieldHelpText)
     expect(Field.ErrorMessage).toBe(FieldErrorMessage)
     expect(Field).not.toHaveProperty('Description')
     // The callable root stays callable: <Field> is the same component as <Field.Root>.
@@ -1283,7 +1283,7 @@ describe('types', () => {
     expect(Field.Root.displayName).toBe('Field.Root')
     expect(Field.Label.displayName).toBe('Field.Label')
     expect(Field.Prose.displayName).toBe('Field.Prose')
-    expect(Field.Hint.displayName).toBe('Field.Hint')
+    expect(Field.HelpText.displayName).toBe('Field.HelpText')
     expect(Field.ErrorMessage.displayName).toBe('Field.ErrorMessage')
     // The shared Prose keeps its own name; Field.Prose is a wrapper around it.
     expect(Prose.displayName).toBe('Prose')
@@ -1293,7 +1293,7 @@ describe('types', () => {
     expect(ErrorMessage).toBe(FieldErrorMessage)
   })
 
-  test('the deprecated flat form wires the label, the hint and the error like the namespace form', async () => {
+  test('the deprecated flat form wires the label, the help text and the error like the namespace form', async () => {
     await render(
       <Field required invalid>
         <Label>E-postadress</Label>

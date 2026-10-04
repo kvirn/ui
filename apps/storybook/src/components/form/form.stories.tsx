@@ -8,7 +8,7 @@ import { localeOf, textsFor, withFormLocale } from './form.fixture.tsx'
 import { permitTextsFor, PermitForm } from './permit.fixture.tsx'
 
 // Components/Form/Overview: "Apply for a resident parking permit", a short form with every
-// control (design spec docs/design/form-fields.md §5): a text field, a date, a field with a hint
+// control (design spec docs/design/form-fields.md §5): a text field, a date, a field with a help text
 // above and an example under, an email, an optional phone number, a radio group, a checkbox
 // group, a declaration and a button. One column, `novalidate`, so the browser's own bubbles never
 // replace our errors. It is a component showcase: a real resident service asks one thing per
@@ -28,7 +28,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** Every control in one form: text, date, hints, email, optional phone, radios, checkboxes. */
+/** Every control in one form: text, date, help texts, email, optional phone, radios, checkboxes. */
 export const ShortForm: Story = {
   parameters: showSource('form/permit.fixture.tsx', 'PermitForm'),
   render: (_args, { globals }) => <PermitForm locale={localeOf(globals)} />,

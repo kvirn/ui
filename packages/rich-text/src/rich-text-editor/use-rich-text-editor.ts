@@ -201,7 +201,7 @@ export function getRichTextFeatures(extensions: Extensions): RichTextFeatures {
 /**
  * A rich text editor's state and props for your own markup (contract: rich-text-editor.a11y.md),
  * on Tiptap's `useEditor`. It is wired to the nearest Field: the Field's label names the editable
- * text, and its description, hint and error describe it. It creates the editor after the first
+ * text, and its description, help text and error describe it. It creates the editor after the first
  * render (`immediatelyRender: false`), so it is safe to server-render.
  *
  * The value is HTML (`''` when empty) or Tiptap's JSON (`null` when empty). A hidden input with

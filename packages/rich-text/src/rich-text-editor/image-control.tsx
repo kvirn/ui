@@ -121,7 +121,7 @@ function ImageForm({ editor, onClose }: ImageFormProps): ReactElement {
           value={address}
           onValueChange={setAddress}
         />
-        <Field.Hint>{messages.imageUrlHint}</Field.Hint>
+        <Field.HelpText>{messages.imageUrlHint}</Field.HelpText>
         <Field.ErrorMessage>
           {problems.address === undefined ? undefined : addressMessages[problems.address]}
         </Field.ErrorMessage>
@@ -133,7 +133,7 @@ function ImageForm({ editor, onClose }: ImageFormProps): ReactElement {
       >
         <Field.Label marker="none">{messages.imageAlt}</Field.Label>
         <TextInput ref={altInput} value={alt} onValueChange={setAlt} />
-        <Field.Hint>{messages.imageAltHint}</Field.Hint>
+        <Field.HelpText>{messages.imageAltHint}</Field.HelpText>
         <Field.ErrorMessage>{messages.imageAltMissing}</Field.ErrorMessage>
       </Field.Root>
       <Field.Root>
@@ -147,7 +147,7 @@ function ImageForm({ editor, onClose }: ImageFormProps): ReactElement {
           }}
         />
         <Field.Label marker="none">{messages.imageDecorative}</Field.Label>
-        <Field.Hint>{messages.imageDecorativeHint}</Field.Hint>
+        <Field.HelpText>{messages.imageDecorativeHint}</Field.HelpText>
       </Field.Root>
       <ButtonGroup>
         <Button type="submit" className="kv-button--primary">

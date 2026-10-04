@@ -298,7 +298,7 @@ export function useMaskedInput({
  * characters are announced (4.1.3), and the value is never clamped or corrected.
  *
  * The hook holds no value. Spread `inputProps` after your form library's props, and put the
- * format in a visible hint (3.3.2).
+ * format in a visible help text (3.3.2).
  *
  * @example
  * const caseNumber = useMask({ mask: { pattern: 'aa-9999' }, onValueChange: setValue })

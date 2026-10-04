@@ -10,15 +10,18 @@ Link navigates. An action is a Button. Link has no `disabled` prop, by type: a d
 
 ## Roles, states, properties
 
-| Part              | Element / role                         | ARIA                              | Notes                                                                                                                              |
-| ----------------- | -------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Link.Root         | `<a href>` → `link`                    | `aria-current` from `current`     | `current`: `'page'`, `'step'`, `'location'`, `'date'`, `'time'` or `true`. `false` or absent sets nothing. `data-current` when set |
-|                   | `target="_blank"`                      | none                              | `rel="noopener noreferrer"` is added to the consumer's own `rel` tokens, also when `target` and `rel` are on a `render` element    |
-|                   | keyboard focus                         | none                              | `data-focus-visible` while the link matches `:focus-visible`                                                                       |
-|                   | another language                       | `lang`, `hrefLang` passed through | `<Link.Root href="/fi" hrefLang="fi" lang="fi">Suomeksi</Link.Root>` (3.1.2)                                                       |
-| Link.NewTabNotice | `<span>`, part of the link's name      | none                              | Text from `link.newTabNotice`. The consumer decides whether to hide it visually. Also exported as `LinkNewTabNotice`               |
-|                   | `target="_blank"` without a notice     | –                                 | Dev warning, naming the link's text                                                                                                |
-|                   | link component doesn't render an `<a>` | –                                 | Dev warning: the registered component must forward its ref and render an `<a>`                                                     |
+| Part              | Element / role                         | ARIA                              | Notes                                                                                                                                                                     |
+| ----------------- | -------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Link.Root         | `<a href>` → `link`                    | `aria-current` from `current`     | `current`: `'page'`, `'step'`, `'location'`, `'date'`, `'time'` or `true`. `false` or absent sets nothing. `data-current` when set                                        |
+|                   | `target="_blank"`                      | none                              | `rel="noopener noreferrer"` is added to the consumer's own `rel` tokens, also when `target` and `rel` are on a `render` element                                           |
+|                   | keyboard focus                         | none                              | `data-focus-visible` while the link matches `:focus-visible`                                                                                                              |
+|                   | another language                       | `lang`, `hrefLang` passed through | `<Link.Root href="/fi" hrefLang="fi" lang="fi">Suomeksi</Link.Root>` (3.1.2)                                                                                              |
+| Link.Icon         | `<span>`, decorative                   | `aria-hidden="true"`              | `class="kv-link-icon"`. Always hidden: `aria-hidden` can't be turned off, so the icon is never part of the link's name (2.5.3). Put it first. Also exported as `LinkIcon` |
+| Link.NewTabNotice | `<span>`, part of the link's name      | none                              | Text from `link.newTabNotice`. The consumer decides whether to hide it visually. Also exported as `LinkNewTabNotice`                                                      |
+|                   | `target="_blank"` without a notice     | –                                 | Dev warning, naming the link's text                                                                                                                                       |
+|                   | link component doesn't render an `<a>` | –                                 | Dev warning: the registered component must forward its ref and render an `<a>`                                                                                            |
+
+The service link is `className="kv-link--service"` on a Link: a look and not a role, so the element, the role and the keys are the same as any link. It has no disabled state, because a link has none (an unavailable e-service is text, not a dimmed link).
 
 `useLink` gives the same `linkProps` and the resolved `newTabNotice` text for your own `<a>` or router link.
 
@@ -79,8 +82,8 @@ Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root mes
 ## Visual / modes
 
 - Focus indicator: headless. The browser's native ring by default. The default theme restyles it to at least 2px at 3:1 (2.4.7, 2.4.13).
-- Target size: inline links in a sentence are exempt from 2.5.8. The default theme gives standalone links at least 24 × 24 CSS px. Test: `link.stories.tsx › Compact navigation`.
-- forced-colors behaviour: a native `<a href>`, so the system's `LinkText` applies. The current page must not be shown by background alone in the default theme: it's also heavier (1.4.1, `link.stories.tsx › Current Page`). A link in running text is underlined (1.4.1, `link.stories.tsx › In running text`). The e2e suite passes in `chromium-forced-colors`.
+- Target size: inline links in a sentence are exempt from 2.5.8. The default theme gives standalone links at least 24 × 24 CSS px, and the service link and a [Navigation](../navigation/navigation.a11y.md) item are `control-min-block-size` high (44px, 32px compact). Test: `link.stories.tsx › Compact navigation`.
+- forced-colors behaviour: a native `<a href>`, so the system's `LinkText` applies. The service link keeps a 1px `LinkText` edge, and its icon block is not filled: it has a `LinkText` divider, so the boundary survives (1.4.11, `link.e2e.ts › the service link edge and icon divider are visible in forced colours (1.4.11)`). The current page must not be shown by background alone in the default theme: it's also heavier (1.4.1, `link.stories.tsx › Current Page`). A link in running text is underlined (1.4.1, `link.stories.tsx › In running text`). The e2e suite passes in `chromium-forced-colors`.
 - reduced-motion behaviour: no motion. Passes in `chromium-reduced-motion`.
 - Reflow: no horizontal scrolling at 320 CSS px (`reflow-320`, 1.4.10).
 

@@ -1,21 +1,31 @@
 import contract from '../../../../../packages/react/src/announcer/announcer.a11y.md?raw'
+import guide from '../../../../../packages/react/src/announcer/announcer.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor } from 'storybook/test'
-import { AnnouncerDemo, fixtureLocaleOf } from './announcer.fixture.tsx'
+import { showSource, usageGuide } from '../../docs-source.ts'
+import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
+import { AnnouncementButtons } from './announcer.fixture.tsx'
 
 // Components/Announcer: the shared live regions behind useAnnouncer(). KvirnProvider
-// renders them, so there is nothing to see: the fixture's buttons call announce() and list what
-// they sent. announcer.test.tsx proves the regions, the clear-then-set and the throttle.
+// renders them (the withFormLocale decorator is the app's provider here), so there is nothing to
+// see: the fixture's buttons call announce() and list what they sent. The regions are internal
+// and not exported, so the page has no `component` and no controls: the public API is the hook,
+// and every story shows the function that calls it. announcer.test.tsx proves the regions, the
+// clear-then-set and the throttle.
 
 const meta = {
   title: 'Components/Announcer',
-  component: AnnouncerDemo,
-  args: { locale: 'sv' },
-  argTypes: { locale: { control: false } },
   globals: { locale: 'sv' },
-  parameters: { a11yContract: contract },
-  render: (_args, { globals }) => <AnnouncerDemo locale={fixtureLocaleOf(globals)} />,
-} satisfies Meta<typeof AnnouncerDemo>
+  decorators: [withFormLocale],
+  parameters: {
+    a11yContract: contract,
+    docs: {
+      description: { component: usageGuide(guide) },
+      ...showSource('announcer/announcer.fixture.tsx', 'AnnouncementButtons').docs,
+    },
+  },
+  render: (_args, { globals }) => <AnnouncementButtons locale={localeOf(globals)} />,
+} satisfies Meta
 
 export default meta
 type Story = StoryObj<typeof meta>

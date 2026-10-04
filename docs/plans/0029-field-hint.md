@@ -3,7 +3,7 @@
 - **Status:** In progress
 - **Owner:** Maintainer / Claude
 - **Created:** 2026-10-04 · **Target:** M1
-- **Related:** Plan 0028 (names), changes the hint rule in the forms skill, design spec [docs/design/field-hint.md](../design/field-hint.md)
+- **Related:** Plan 0028 (names), changes the hint rule in the forms skill, design spec [docs/design/field-hint.md](../design/field-help-text.md)
 
 ## Goal
 
@@ -53,7 +53,7 @@ A Hint part has never existed (`git log -S "Field.Hint"` is empty). The old `Fie
 
 ### Design spec
 
-Design spec: [docs/design/field-hint.md](../design/field-hint.md). Order: label, description (`Prose`, 16px, optional), control, hint (`Field.Hint`, `kv-field-hint`, `body-small` 14px, line height 1.5, `text`, prose measure), error last, so the visual order is the `aria-describedby` order. Every part is one `--kv-field-gap` apart (8px, 4px compact), except an option hint, which sits directly under its label's box (0 gap) in column 2. Option hints are 14px (no exception). A hint is always under the control, never above it (maintainer, 2026-10-04). The hint never changes with invalid, disabled or read-only. No new token. DESIGN.md text in §8 of the spec. Stories: §9.
+Design spec: [docs/design/field-hint.md](../design/field-help-text.md). Order: label, description (`Prose`, 16px, optional), control, hint (`Field.Hint`, `kv-field-hint`, `body-small` 14px, line height 1.5, `text`, prose measure), error last, so the visual order is the `aria-describedby` order. Every part is one `--kv-field-gap` apart (8px, 4px compact), except an option hint, which sits directly under its label's box (0 gap) in column 2. Option hints are 14px (no exception). A hint is always under the control, never above it (maintainer, 2026-10-04). The hint never changes with invalid, disabled or read-only. No new token. DESIGN.md text in §8 of the spec. Stories: §9.
 
 ### Decisions on the spec's open questions (2026-10-04)
 

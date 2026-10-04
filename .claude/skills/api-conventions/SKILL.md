@@ -34,7 +34,7 @@ An adopter can tell from a name alone how a component is built. Five rules:
 
 1. **A component with two or more public parts is a namespace.** It is written `X.Root` + `X.Part` in docs, stories, fixtures and display names (`Card.Root`, `Field.Root`, `Link.Root`). Docs never show a callable root (`<Field>`).
 2. **A component that is one element is flat,** with no `.Root`: `Button`, `Toggle`, `ButtonGroup`, `Heading`, `Kbd`, `Icon`, `TextInput`, `NumberInput`, `Checkbox`, `Prose` and `Section`. A leftover `.Root` on one (`Prose.Root`, `Section.Root`) is a `@deprecated` alias.
-3. **A component that is a structural part of another is aliased onto the parent.** Structural means the parent's contract registers it, names it or lays it out: a Field's label, hint and error, a group's legend, a Combobox's popup and options, a RadioGroup's radios. Controls placed inside a Field (TextInput, NumberInput, Checkbox, Listbox, Combobox, FileUpload, OneTimeCode) are content, not parts, and get no alias.
+3. **A component that is a structural part of another is aliased onto the parent.** Structural means the parent's contract registers it, names it or lays it out: a Field's label, help text and error, a group's legend, a Combobox's popup and options, a RadioGroup's radios. Controls placed inside a Field (TextInput, NumberInput, Checkbox, Listbox, Combobox, FileUpload, OneTimeCode) are content, not parts, and get no alias.
 4. **Every exported component has a display name, and it is the name an adopter writes:** `Field.Prose`, not `Prose`; `Combobox.Option`, not `Listbox.Option`. An alias that is a different name for a shared component is a **thin typed wrapper** with its own `displayName`: a function component that renders the shared one with all its props, ref included, so context is read the same way. A generic part (`ListboxOption<TItem>`) is a generic wrapper (`<ListboxOption<TItem> {...props} />`) so `TItem` still flows through. "Show code" prints the display name.
 5. **Every part also has a flat named export** (`FieldRoot`, `CardHeader`, `ComboboxOption`) from `index.ts`, and it is the same component as the namespace part. In a React Server Component, import the flat part exports instead, because a server component can't dot into a client module. Docs and stories show the namespace form. The flat part exports are not deprecated.
 
@@ -42,22 +42,24 @@ An adopter can tell from a name alone how a component is built. Five rules:
 
 **Alias sets:**
 
-| Namespace       | Parts                                                      |
-| --------------- | ---------------------------------------------------------- |
-| `Field`         | `Root`, `Label`, `Prose`, `Hint`, `ErrorMessage`           |
-| `Fieldset`      | `Root`, `Legend`, `Prose`, `Hint`, `ErrorMessage`          |
-| `CheckboxGroup` | `Root`, `Legend`, `Prose`, `Hint`, `ErrorMessage`          |
-| `RadioGroup`    | `Root`, `Radio`, `Legend`, `Prose`, `Hint`, `ErrorMessage` |
-| `InputGroup`    | `Root`, `Addon`, `Input`                                   |
-| `DateInput`     | `Root`, `Day`, `Month`, `Year`                             |
-| `Link`          | `Root`, `NewTabNotice`                                     |
-| `Toolbar`       | `Root`, `Button`, `Toggle`, `Item`, `Group`                |
+| Namespace       | Parts                                                          |
+| --------------- | -------------------------------------------------------------- |
+| `Field`         | `Root`, `Label`, `Prose`, `HelpText`, `ErrorMessage`           |
+| `Fieldset`      | `Root`, `Legend`, `Prose`, `HelpText`, `ErrorMessage`          |
+| `CheckboxGroup` | `Root`, `Legend`, `Prose`, `HelpText`, `ErrorMessage`          |
+| `RadioGroup`    | `Root`, `Radio`, `Legend`, `Prose`, `HelpText`, `ErrorMessage` |
+| `InputGroup`    | `Root`, `Addon`, `Input`                                       |
+| `DateInput`     | `Root`, `Day`, `Month`, `Year`                                 |
+| `Link`          | `Root`, `NewTabNotice`, `Icon`                                 |
+| `Toolbar`       | `Root`, `Button`, `Toggle`, `Item`, `Group`                    |
 
 `Toolbar` is a namespace object (it has no callable root). Its `Button` and `Toggle` are Button and Toggle wrapped to join the toolbar, `Item` makes any focusable control one through `render`, and `Group` is a thin typed wrapper over `ButtonGroup` (Plan 0035). `Toggle` and `ButtonGroup` are single elements, so they are flat.
 
+`Navigation` is a namespace of its own parts, not aliases and not callable: `Root` (`<nav>`, named by `label`), `List` and `Item` (Plan 0043). A nested `Navigation.List` inside an `Item` is the second level. `Link.Icon` is the decorative `aria-hidden` slot for the service link's icon; the service look itself is a class (`kv-link--service`), not a prop.
+
 `Tooltip` is a namespace of its own parts, not aliases: `Root`, `Trigger`, `Popup`, `Name` and `Shortcut` (Plan 0037). Its `Trigger` makes any focusable control the anchor through `render` (`Toolbar.Toggle`, `Button`, `Toolbar.Item`), and joins its `aria-describedby` with yours.
 
-`Prose` is the description and `Hint` the hint (Plan 0029): a `Hint` is a thin typed wrapper over `Field.Hint`, and `Fieldset.Hint`, `CheckboxGroup.Hint` and `RadioGroup.Hint` wrap it with their own display names. `Combobox` and `Autocomplete` offer the Listbox popup parts (`Popup`, `List`, `Option`, `Group`, `GroupLabel`, `Empty`) under their own names, and Autocomplete also wraps Combobox's `Control`, `Input`, `Toggle` and `Clear`.
+`Prose` is the description and `HelpText` the help text (Plans 0029 and 0041, renamed from `Hint`): `Fieldset.HelpText`, `CheckboxGroup.HelpText` and `RadioGroup.HelpText` are thin typed wrappers over `Field.HelpText` with their own display names. `Combobox` and `Autocomplete` offer the Listbox popup parts (`Popup`, `List`, `Option`, `Group`, `GroupLabel`, `Empty`) under their own names, and Autocomplete also wraps Combobox's `Control`, `Input`, `Toggle` and `Clear`.
 
 **Callables stay callable.** `Field`, `Fieldset` and `Link` are `Object.assign(Root, parts)`, so `<Field>` still works and is the same function as `Field.Root`. A JSDoc `@deprecated` can't target `<Field>` without also hitting `Field.Root`, and a plain object would break adopters. Docs, stories and the naming test treat the callable form as banned, and the callable root is named after its Root (`Field.Root`).
 

@@ -1,12 +1,17 @@
 import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
 
-// se: English placeholders, except the combobox and notification messages.
+// se: English placeholders, except the combobox and alert messages.
 export const se = {
   link: { newTabNotice: '(opens in a new tab)' },
   field: { optional: '(optional)', errorPrefix: 'Error:' },
-  dateInput: { day: 'Day', month: 'Month', year: 'Year' },
-  notification: {
+  dateInput: {
+    day: 'Day',
+    month: 'Month',
+    year: 'Year',
+    autoAdvanceHint: 'Focus moves to the next box when a box is full.',
+  },
+  alert: {
     infoPrefix: 'Dieđut:',
     successPrefix: 'Gárvvis:',
     warningPrefix: 'Váruhus:',

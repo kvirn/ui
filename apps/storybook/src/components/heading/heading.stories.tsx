@@ -32,32 +32,42 @@ export const Default: Story = {
   },
 }
 
-function AllSizes() {
-  return (
+// The six sizes, for the Sizes, RightToLeft and ForcedColors stories: the same markup, so a reader
+// of any of them sees the real Headings.
+const renderSizes: NonNullable<Story['render']> = () => (
+  <>
+    <Heading level={1} size="display">
+      display (h1)
+    </Heading>
+    <Heading level={1} size="heading-1">
+      heading-1 (h1)
+    </Heading>
+    <Heading level={2} size="heading-2">
+      heading-2 (h2)
+    </Heading>
+    <Heading level={3} size="heading-3">
+      heading-3 (h3)
+    </Heading>
+    <Heading level={3} size="heading-2">
+      heading-2 on an h3
+    </Heading>
+    <Heading level={4}>h4 to h6: body size, heading-3 weight</Heading>
+  </>
+)
+
+// The column the sizes stack in is layout, so it is a decorator and not part of the example.
+const inColumn: NonNullable<Story['decorators']> = [
+  (Story) => (
     <div className="kv-story-card-column">
-      <Heading level={1} size="display">
-        display (h1)
-      </Heading>
-      <Heading level={1} size="heading-1">
-        heading-1 (h1)
-      </Heading>
-      <Heading level={2} size="heading-2">
-        heading-2 (h2)
-      </Heading>
-      <Heading level={3} size="heading-3">
-        heading-3 (h3)
-      </Heading>
-      <Heading level={3} size="heading-2">
-        heading-2 on an h3
-      </Heading>
-      <Heading level={4}>h4 to h6: body size, heading-3 weight</Heading>
+      <Story />
     </div>
-  )
-}
+  ),
+]
 
 /** The level is the outline and `size` is the look: an `h3` set as heading-2, an `h1` as display. */
 export const Sizes: Story = {
-  render: () => <AllSizes />,
+  decorators: inColumn,
+  render: renderSizes,
   play: async ({ canvas }) => {
     // The level is the outline, whatever the size: the h3 set as heading-2 is still an h3.
     await expect(
@@ -86,13 +96,15 @@ export const Outline: Story = {
 export const RightToLeft: Story = {
   name: 'Right to left',
   globals: { dir: 'rtl', locale: 'en' },
-  render: () => <AllSizes />,
+  decorators: inColumn,
+  render: renderSizes,
 }
 
 /** Forced colours: a heading is drawn in the system text colour. It sets no background or edge, so there is nothing more to check. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  render: () => <AllSizes />,
+  decorators: inColumn,
+  render: renderSizes,
   play: async ({ canvas }) => {
     const heading = canvas.getByRole('heading', { name: 'heading-2 (h2)' })
     await expect(heading).toBeVisible()

@@ -151,7 +151,7 @@ describe('theme.css contrast and forced colours', () => {
     },
   )
 
-  it.each(themeNames)('%s: guards prose on the status notifications', (themeName) => {
+  it.each(themeNames)('%s: guards prose on the status alerts', (themeName) => {
     const textMinimum = themeName.endsWith('contrast') ? 7 : 4.5
     const minimumFor = (foreground: string, background: string) =>
       contrastRequirements[themeName].find(

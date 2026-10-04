@@ -21,7 +21,7 @@ Evidence-based defaults for municipal and agency services. Deviate only with a r
 
 - **Start page.** What the service is for, who can use it, what you need before you start (ID, documents), how long it takes, and one "Start now" button. Mention other ways to apply (phone, visit).
 - **One thing per page.** One question, or one closely related group (an address), per page. The question is the page's `h1` or the `legend`.
-- **Question pages.** Label or legend is the question, a hint explains the format, and inputs are sized to the answer. Use `autocomplete` for personal data (1.3.5, 3.3.8).
+- **Question pages.** Label or legend is the question, a help text explains the format, and inputs are sized to the answer. Use `autocomplete` for personal data (1.3.5, 3.3.8).
 - **Don't ask what you already know.** Prefill from login (BankID, Suomi.fi, ID-porten) and earlier answers (3.3.7), and let the user correct it.
 - **Validation.** Validate on submit, not on every keystroke. Show an error summary at the top with links to fields, and an inline message above each invalid field. Keep what the user typed.
 - **Check your answers.** A summary list of every answer with a "Change" link per row, which returns to the summary afterwards. Required before any legally binding submit (3.3.4).
@@ -47,7 +47,7 @@ Evidence-based defaults for municipal and agency services. Deviate only with a r
 7. **Flexibility.** Staff tools support shortcuts. Resident services stay linear and simple.
 8. **Minimalist design.** Every element earns its place. Remove before adding.
 9. **Recover from errors.** Plain-language errors that say how to fix the problem.
-10. **Help and documentation.** Inline hints first, then a consistent help link, then a human.
+10. **Help and documentation.** Inline help texts first, then a consistent help link, then a human.
 
 ## Inspiration (verify before citing)
 

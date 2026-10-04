@@ -48,8 +48,8 @@ export interface UseCharacterCountOptions {
 
 /** Spread on the `<p>`. */
 export interface CharacterCountPartProps extends FieldStateAttributes {
-  /** The hint's class and the count's own: `.kv-field-hint .kv-character-count`. */
-  className: 'kv-field-hint kv-character-count'
+  /** The help text's class and the count's own: `.kv-field-help-text .kv-character-count`. */
+  className: 'kv-field-help-text kv-character-count'
   /** Inside a Field, the Field's id for this description. Otherwise `id`, or a generated one. */
   id: string
   /** Over the limit. The theme adds weight and an icon, so it never rests on colour alone. */
@@ -174,7 +174,7 @@ export function useCharacterCount({
   const countProps: CharacterCountPartProps = {
     // The host's state attributes first, then the part's own: never the host's `kv-prose` class.
     ...description.partProps,
-    className: 'kv-field-hint kv-character-count',
+    className: 'kv-field-help-text kv-character-count',
     id: description.partProps.id ?? id ?? ownId,
     ...(count.isOver ? { 'data-over': '' as const } : {}),
     ...(count.isNear ? { 'data-near': '' as const } : {}),

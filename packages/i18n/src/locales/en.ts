@@ -4,8 +4,13 @@ import type { KvirnMessages } from '../types.ts'
 export const en = {
   link: { newTabNotice: '(opens in a new tab)' },
   field: { optional: '(optional)', errorPrefix: 'Error:' },
-  dateInput: { day: 'Day', month: 'Month', year: 'Year' },
-  notification: {
+  dateInput: {
+    day: 'Day',
+    month: 'Month',
+    year: 'Year',
+    autoAdvanceHint: 'Focus moves to the next box when a box is full.',
+  },
+  alert: {
     infoPrefix: 'Information:',
     successPrefix: 'Success:',
     warningPrefix: 'Warning:',

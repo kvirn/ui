@@ -377,8 +377,8 @@ body {
   max-inline-size: 30rem;
 }
 
-/* Components/Notification: one column that can shrink to 320px, with room between examples. */
-.kv-story-notification-column {
+/* Components/Alert: one column that can shrink to 320px, with room between examples. */
+.kv-story-alert-column {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--kv-space-6);
@@ -387,9 +387,9 @@ body {
 
 /* RestyleWithTokens: your own unlayered rule beats @layer kv, so two tokens recolour a status
    and the icon, the status word and announce stay. */
-.kv-story-notification-rebrand .kv-notification--warning {
-  --kv-notification-background: var(--kv-color-primary-subtle);
-  --kv-notification-accent: var(--kv-color-primary);
+.kv-story-alert-rebrand .kv-alert--warning {
+  --kv-alert-background: var(--kv-color-primary-subtle);
+  --kv-alert-accent: var(--kv-color-primary);
 }
 
 /* RestyleWithTokens: our class dropped through the render function form, and a look of your own. */
@@ -404,18 +404,18 @@ body {
   color: var(--kv-color-text);
 }
 
-.kv-story-my-warning > :not(.kv-notification-icon) {
+.kv-story-my-warning > :not(.kv-alert-icon) {
   grid-column: 2;
 }
 
-.kv-story-my-warning > .kv-notification-icon {
+.kv-story-my-warning > .kv-alert-icon {
   color: var(--kv-color-warning);
 }
 
 /* BringYourOwn: your own class on the plain Root only has to set the two tokens. */
 .kv-story-my-notice {
-  --kv-notification-background: var(--kv-color-primary-subtle);
-  --kv-notification-accent: var(--kv-color-primary);
+  --kv-alert-background: var(--kv-color-primary-subtle);
+  --kv-alert-accent: var(--kv-color-primary);
 }
 
 /* Components/Icon: the built-in set as a grid of cells, 2 columns at 320px and 6 at 64rem. */
@@ -568,7 +568,7 @@ body {
   flex: 1 1 12rem;
 }
 
-/* The three boxes of a date side by side, each with its label above (Components/Form/Hint). */
+/* The three boxes of a date side by side, each with its label above (Components/Form/HelpText). */
 .kv-story-date-boxes {
   display: flex;
   flex-wrap: wrap;

@@ -1,4 +1,4 @@
-import { Field, FileUpload } from '@kvirn-ui/react'
+import { Button, Field, FileUpload } from '@kvirn-ui/react'
 import type { FileUploadRootProps } from '@kvirn-ui/react'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
@@ -69,33 +69,21 @@ export function fileUploadTextsFor(locale: FormLocale): { texts: FileUploadTexts
   return texts === undefined ? { texts: textsEn, lang: 'en' } : { texts }
 }
 
-export interface FileUploadFieldProps extends Partial<FileUploadRootProps> {
+/** Every `FileUpload.Root` option, plus the story's locale (the label and description are yours). */
+export interface AttachmentsProps extends FileUploadRootProps {
   locale: FormLocale
-  required?: boolean
-  invalid?: boolean
-  /** Show a preview thumbnail beside each name. */
-  previews?: boolean
-  /** The accepted types and limits are said by `FileUpload.Limits`, built from the props. */
-  withLimits?: boolean
-  inputName?: string
-  /** A Continue button after the field, for the Keyboard story. */
-  withSubmit?: boolean
 }
 
+// Each function below is one example, and the story's "Show code" prints it (`showSource`), so it
+// reads the way an adopter writes it: a Field around the real FileUpload parts, with the localised
+// text taken at the top. `options` stands for the props you pass to `FileUpload.Root` (`accept`,
+// `maxFiles`, `upload`, ...): the controls drive them.
+
 /** A Field with a drop zone, the limits, the rejections, the summary and the list. */
-export function FileUploadField({
-  locale,
-  required,
-  invalid,
-  previews,
-  withLimits = true,
-  inputName,
-  withSubmit,
-  ...options
-}: FileUploadFieldProps) {
+export function AttachmentsField({ locale, ...options }: AttachmentsProps) {
   const { texts, lang } = fileUploadTextsFor(locale)
   return (
-    <Field.Root required={required} invalid={invalid} lang={lang}>
+    <Field.Root lang={lang}>
       <Field.Label>{texts.label}</Field.Label>
       <Field.Prose>
         <p>{texts.description}</p>
@@ -105,14 +93,12 @@ export function FileUploadField({
           <FileUpload.Trigger />
           <FileUpload.DropHint />
         </FileUpload.DropZone>
-        {withLimits ? <FileUpload.Limits /> : null}
+        <FileUpload.Limits />
         <FileUpload.Rejections />
         <FileUpload.Summary />
-        {inputName === undefined ? null : <FileUpload.Input name={inputName} />}
         <FileUpload.List>
           {(item) => (
             <FileUpload.Item key={item.id} item={item}>
-              {previews ? <FileUpload.Preview /> : null}
               <FileUpload.Name />
               <FileUpload.Type />
               <FileUpload.Size />
@@ -127,12 +113,212 @@ export function FileUploadField({
           )}
         </FileUpload.List>
       </FileUpload.Root>
-      {invalid ? <Field.ErrorMessage>{texts.errorMissing}</Field.ErrorMessage> : null}
-      {withSubmit ? (
-        <button type="button" className="kv-button">
+    </Field.Root>
+  )
+}
+
+/** A thumbnail beside each name: opt in by rendering `FileUpload.Preview` in the item. */
+export function AttachmentsWithPreviews({ locale, ...options }: AttachmentsProps) {
+  const { texts, lang } = fileUploadTextsFor(locale)
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{texts.label}</Field.Label>
+      <Field.Prose>
+        <p>{texts.description}</p>
+      </Field.Prose>
+      <FileUpload.Root {...options}>
+        <FileUpload.DropZone>
+          <FileUpload.Trigger />
+          <FileUpload.DropHint />
+        </FileUpload.DropZone>
+        <FileUpload.Limits />
+        <FileUpload.Rejections />
+        <FileUpload.Summary />
+        <FileUpload.List>
+          {(item) => (
+            <FileUpload.Item key={item.id} item={item}>
+              <FileUpload.Preview />
+              <FileUpload.Name />
+              <FileUpload.Type />
+              <FileUpload.Size />
+              <FileUpload.Status />
+              <FileUpload.Progress />
+              <FileUpload.Actions>
+                <FileUpload.CancelButton />
+                <FileUpload.RetryButton />
+                <FileUpload.RemoveButton />
+              </FileUpload.Actions>
+            </FileUpload.Item>
+          )}
+        </FileUpload.List>
+      </FileUpload.Root>
+    </Field.Root>
+  )
+}
+
+/**
+ * No `upload`: the files stay `pending` and go with the form. Give the hidden input a `name`
+ * (`FileUpload.Input`) and a plain `<form>` posts them.
+ */
+export function AttachmentsPostedWithTheForm({ locale, ...options }: AttachmentsProps) {
+  const { texts, lang } = fileUploadTextsFor(locale)
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{texts.label}</Field.Label>
+      <Field.Prose>
+        <p>{texts.description}</p>
+      </Field.Prose>
+      <FileUpload.Root {...options}>
+        <FileUpload.DropZone>
+          <FileUpload.Trigger />
+          <FileUpload.DropHint />
+        </FileUpload.DropZone>
+        <FileUpload.Limits />
+        <FileUpload.Rejections />
+        <FileUpload.Summary />
+        <FileUpload.Input name="attachments" />
+        <FileUpload.List>
+          {(item) => (
+            <FileUpload.Item key={item.id} item={item}>
+              <FileUpload.Name />
+              <FileUpload.Type />
+              <FileUpload.Size />
+              <FileUpload.Status />
+              <FileUpload.Progress />
+              <FileUpload.Actions>
+                <FileUpload.CancelButton />
+                <FileUpload.RetryButton />
+                <FileUpload.RemoveButton />
+              </FileUpload.Actions>
+            </FileUpload.Item>
+          )}
+        </FileUpload.List>
+      </FileUpload.Root>
+    </Field.Root>
+  )
+}
+
+/** The field, then the button that sends the application. Tab goes on from the field to it. */
+export function AttachmentsWithSendButton({ locale, ...options }: AttachmentsProps) {
+  const { texts, lang } = fileUploadTextsFor(locale)
+  return (
+    <>
+      <Field.Root lang={lang}>
+        <Field.Label>{texts.label}</Field.Label>
+        <Field.Prose>
+          <p>{texts.description}</p>
+        </Field.Prose>
+        <FileUpload.Root {...options}>
+          <FileUpload.DropZone>
+            <FileUpload.Trigger />
+            <FileUpload.DropHint />
+          </FileUpload.DropZone>
+          <FileUpload.Limits />
+          <FileUpload.Rejections />
+          <FileUpload.Summary />
+          <FileUpload.List>
+            {(item) => (
+              <FileUpload.Item key={item.id} item={item}>
+                <FileUpload.Name />
+                <FileUpload.Type />
+                <FileUpload.Size />
+                <FileUpload.Status />
+                <FileUpload.Progress />
+                <FileUpload.Actions>
+                  <FileUpload.CancelButton />
+                  <FileUpload.RetryButton />
+                  <FileUpload.RemoveButton />
+                </FileUpload.Actions>
+              </FileUpload.Item>
+            )}
+          </FileUpload.List>
+        </FileUpload.Root>
+      </Field.Root>
+      <div className="kv-button-group">
+        <Button type="button" className="kv-button--primary">
           {texts.submit}
-        </button>
-      ) : null}
+        </Button>
+      </div>
+    </>
+  )
+}
+
+/**
+ * You decide whether a missing file blocks the form: mark the Field `invalid` and write the
+ * message. The Trigger is described by it.
+ */
+export function InvalidAttachments({ locale, ...options }: AttachmentsProps) {
+  const { texts, lang } = fileUploadTextsFor(locale)
+  return (
+    <Field.Root invalid lang={lang}>
+      <Field.Label>{texts.label}</Field.Label>
+      <Field.Prose>
+        <p>{texts.description}</p>
+      </Field.Prose>
+      <FileUpload.Root {...options}>
+        <FileUpload.DropZone>
+          <FileUpload.Trigger />
+          <FileUpload.DropHint />
+        </FileUpload.DropZone>
+        <FileUpload.Limits />
+        <FileUpload.Rejections />
+        <FileUpload.Summary />
+        <FileUpload.List>
+          {(item) => (
+            <FileUpload.Item key={item.id} item={item}>
+              <FileUpload.Name />
+              <FileUpload.Type />
+              <FileUpload.Size />
+              <FileUpload.Status />
+              <FileUpload.Progress />
+              <FileUpload.Actions>
+                <FileUpload.CancelButton />
+                <FileUpload.RetryButton />
+                <FileUpload.RemoveButton />
+              </FileUpload.Actions>
+            </FileUpload.Item>
+          )}
+        </FileUpload.List>
+      </FileUpload.Root>
+      <Field.ErrorMessage>{texts.errorMissing}</Field.ErrorMessage>
+    </Field.Root>
+  )
+}
+
+/** A required Field: the Trigger never carries `aria-required` (a button doesn't allow it). */
+export function RequiredAttachments({ locale, ...options }: AttachmentsProps) {
+  const { texts, lang } = fileUploadTextsFor(locale)
+  return (
+    <Field.Root required lang={lang}>
+      <Field.Label>{texts.label}</Field.Label>
+      <Field.Prose>
+        <p>{texts.description}</p>
+      </Field.Prose>
+      <FileUpload.Root {...options}>
+        <FileUpload.DropZone>
+          <FileUpload.Trigger />
+          <FileUpload.DropHint />
+        </FileUpload.DropZone>
+        <FileUpload.Limits />
+        <FileUpload.Rejections />
+        <FileUpload.Summary />
+        <FileUpload.List>
+          {(item) => (
+            <FileUpload.Item key={item.id} item={item}>
+              <FileUpload.Name />
+              <FileUpload.Type />
+              <FileUpload.Size />
+              <FileUpload.Status />
+              <FileUpload.Progress />
+              <FileUpload.Actions>
+                <FileUpload.CancelButton />
+                <FileUpload.RetryButton />
+                <FileUpload.RemoveButton />
+              </FileUpload.Actions>
+            </FileUpload.Item>
+          )}
+        </FileUpload.List>
+      </FileUpload.Root>
     </Field.Root>
   )
 }

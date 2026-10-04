@@ -59,7 +59,7 @@ function checkedValues(root: HTMLElement | null, name: string | undefined): stri
 
 /**
  * The value logic of a group of checkboxes, for your own fieldset (contract:
- * checkbox-group.a11y.md). Pair it with `useFieldset({ group: true })` for the legend, hint and
+ * checkbox-group.a11y.md). Pair it with `useFieldset({ group: true })` for the legend, help text and
  * error. It holds no state: it derives each box's props from `value` and reports the next value.
  *
  * @example

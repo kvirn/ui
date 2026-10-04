@@ -44,7 +44,7 @@ export interface CheckboxProps extends Omit<
 
 /**
  * A native `<input type="checkbox">`, wired to its Field and CheckboxGroup: the label names it,
- * and the option's hint and the error describe it (contract: checkbox.a11y.md). It holds no
+ * and the option's help text and the error describe it (contract: checkbox.a11y.md). It holds no
  * form state: pass `checked` and `onCheckedChange`, or `defaultChecked` and `name` for a plain
  * form, or spread your form library's props. Put it directly in `Field.Root`, before the label.
  *

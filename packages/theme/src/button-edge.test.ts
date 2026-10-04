@@ -63,12 +63,12 @@ describe('checkButtonEdges', () => {
   const shade = { color: '#0f1011', percent: 35 }
   const highlight = { color: '#ffffff', percent: 0 }
 
-  it('measures every base, tinted by both partners, on every plain and Notification background', () => {
+  it('measures every base, tinted by both partners, on every plain and Alert background', () => {
     expect(buttonEdgeBases).toEqual(['secondary', 'primary', 'danger', 'danger-hover'])
     expect(buttonEdgePairsPerTheme).toBe(56)
   })
 
-  it('measures the four Notification backgrounds, because Actions hold buttons', () => {
+  it('measures the four Alert backgrounds, because Actions hold buttons', () => {
     const problems = checkButtonEdges(
       'light',
       { ...colors, 'warning-subtle': '#7a7e86' },

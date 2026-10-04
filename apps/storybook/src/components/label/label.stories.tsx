@@ -2,6 +2,7 @@ import { Field, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
+import { showSource } from '../../docs-source.ts'
 import {
   FieldStates,
   localeOf,
@@ -170,11 +171,13 @@ export const Compact: Story = {
 /** Right to left, in English. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
+  parameters: showSource('form/form.fixture.tsx', 'FieldStates'),
   render: () => <FieldStates locale="en" />,
 }
 
 /** The label keeps its text colour in forced colours. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
+  parameters: showSource('form/form.fixture.tsx', 'FieldStates'),
   render: (_args, { globals }) => <FieldStates locale={localeOf(globals)} />,
 }

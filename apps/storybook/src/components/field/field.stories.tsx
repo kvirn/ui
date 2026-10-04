@@ -2,6 +2,7 @@ import { Field, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
+import { showSource } from '../../docs-source.ts'
 import {
   FieldStates,
   localeOf,
@@ -15,7 +16,7 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 // spec docs/design/form-fields.md). KvirnUI holds no form state: every story
 // passes `invalid`, `required` and `disabled` itself, and writes its own error text, as an
 // implementor's form logic would. field.e2e.ts runs the keyboard rows, focus, forced-colours and
-// reflow checks against Default, Invalid, InvalidWithHintUnder, LongFinnish and ForcedColors.
+// reflow checks against Default, Invalid, InvalidWithHelpTextUnder, LongFinnish and ForcedColors.
 
 const meta = {
   title: 'Components/Form/Field',
@@ -150,19 +151,20 @@ export const Required: Story = {
 /**
  * The fixture the keyboard tests drive: every state of a text field in one form. Try the keys
  * in the Keyboard section above: Tab and Shift+Tab move through the inputs only. The label and
- * the hint text and the error are never Tab stops, a disabled input is skipped, and a read-only
+ * the help text and the error are never Tab stops, a disabled input is skipped, and a read-only
  * one is a Tab stop.
  */
 export const Keyboard: Story = {
+  parameters: showSource('form/form.fixture.tsx', 'FieldStates'),
   render: (_args, { globals }) => <FieldStates locale={localeOf(globals)} />,
 }
 
 /**
- * A description and a hint, in the default order: what to answer and where to find it, above the
- * input (`Field.Prose`), and the format under it (`Field.Hint`). Each has its own id, and the
+ * A description and a help text, in the default order: what to answer and where to find it, above the
+ * input (`Field.Prose`), and the format under it (`Field.HelpText`). Each has its own id, and the
  * input's `aria-describedby` lists them in DOM order.
  */
-export const WithHintUnder: Story = {
+export const WithHelpTextUnder: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
     return (
@@ -172,7 +174,7 @@ export const WithHintUnder: Story = {
           <p>{text.registrationWhere}</p>
         </Field.Prose>
         <TextInput name="registration" className="kv-input--width-10" />
-        <Field.Hint>{text.registrationHint}</Field.Hint>
+        <Field.HelpText>{text.registrationHint}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -187,11 +189,11 @@ export const WithHintUnder: Story = {
 }
 
 /**
- * The hint under the input and the error together: label, description, input, hint, error. The
+ * The help text under the input and the error together: label, description, input, help text, error. The
  * two differ in size, colour, weight, icon and indent, so they never read as one paragraph, and
- * the input's description lists the description and the hint, then the error.
+ * the input's description lists the description and the help text, then the error.
  */
-export const InvalidWithHintUnder: Story = {
+export const InvalidWithHelpTextUnder: Story = {
   args: { invalid: true },
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
@@ -202,7 +204,7 @@ export const InvalidWithHintUnder: Story = {
           <p>{text.registrationWhere}</p>
         </Field.Prose>
         <TextInput name="registration" className="kv-input--width-10" defaultValue="AB 1" />
-        <Field.Hint>{text.registrationHint}</Field.Hint>
+        <Field.HelpText>{text.registrationHint}</Field.HelpText>
         <Field.ErrorMessage>{text.registrationError}</Field.ErrorMessage>
       </Field.Root>
     )
@@ -220,8 +222,8 @@ export const InvalidWithHintUnder: Story = {
 }
 
 /**
- * Invalid: the label, the hint, the input and then the error, under it. The input
- * gets `aria-invalid`, and its description lists the hint and then the error, which starts with
+ * Invalid: the label, the help text, the input and then the error, under it. The input
+ * gets `aria-invalid`, and its description lists the help text and then the error, which starts with
  * the hidden "Fel:". The error isn't a live region: it's heard when the user reaches the input.
  */
 export const Invalid: Story = {
@@ -269,7 +271,7 @@ export const Disabled: Story = {
   },
 }
 
-/** Read-only is for staff tools: the input stays focusable, and the hint under it says why. */
+/** Read-only is for staff tools: the input stays focusable, and the help text under it says why. */
 export const ReadOnly: Story = {
   render: (args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
@@ -277,7 +279,7 @@ export const ReadOnly: Story = {
       <Field.Root {...args} lang={lang}>
         <Field.Label>{text.personalNumber}</Field.Label>
         <TextInput name="personal-number" readOnly defaultValue="19900101-1234" />
-        <Field.Hint>{text.personalNumberHint}</Field.Hint>
+        <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -340,7 +342,7 @@ export const InsideProse: Story = {
 
 /**
  * Staff density from 64rem: 32px inputs and 14px labels. Descriptions, errors and values stay
- * 16px, and a hint stays 14px.
+ * 16px, and a help text stays 14px.
  */
 export const Compact: Story = {
   render: (args, { globals }) => {
@@ -389,14 +391,16 @@ export const LongFinnish: Story = {
   },
 }
 
-/** Right to left, in English: labels, hints and errors start at the right. */
+/** Right to left, in English: labels, help texts and errors start at the right. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
+  parameters: showSource('form/form.fixture.tsx', 'FieldStates'),
   render: () => <FieldStates locale="en" />,
 }
 
 /** Edges, the invalid state and disabled survive forced colours. The e2e suite emulates it. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
+  parameters: showSource('form/form.fixture.tsx', 'FieldStates'),
   render: (_args, { globals }) => <FieldStates locale={localeOf(globals)} />,
 }

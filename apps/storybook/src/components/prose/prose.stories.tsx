@@ -1,24 +1,32 @@
-import { Button, Link, Prose } from '@kvirn-ui/react'
+import { Link, Prose } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/prose/prose.a11y.md?raw'
 import guide from '../../../../../packages/react/src/prose/prose.md?raw'
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useId } from 'react'
-import type { CSSProperties, ReactNode } from 'react'
+import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
-import { usageGuide } from '../../docs-source.ts'
-import { ProseArticle, articleFor, updatedDate } from '../../foundation/foundations.fixture.tsx'
-import type { FixtureLocale } from '../../foundation/foundations.fixture.tsx'
+import { showSource, usageGuide } from '../../docs-source.ts'
+import { articleFor } from '../../foundation/foundations.fixture.tsx'
+import { fixtureLocaleOf, requireElement } from '../../foundation/typography-helpers.tsx'
 import {
-  caseNumberSample,
-  fixtureLocaleOf,
-  requireElement,
-} from '../../foundation/typography-helpers.tsx'
+  ComponentsInProse,
+  GuidanceArticle,
+  HighlightProse,
+  ProseOnSurfaces,
+} from './prose.fixture.tsx'
 
 // Components/Prose: the headless Prose, styled by @kvirn-ui/theme (docs/design/foundations-and-prose.md
-// §6.1–6.6 and §7). The Default story is the small example. The others put kv-prose on the fixture
-// article, a municipality's guidance page that uses every element prose styles. The article follows
-// the Locale toolbar: sv, nb, nn and en are written, and fi and se show the English article marked
-// lang="en". Prose has no focusable part, so there's no Keyboard story.
+// §6.1–6.6 and §7). The Default story is the small example. The others put `<Prose>` around the
+// fixture article, a municipality's guidance page that uses every element prose styles. The article
+// follows the Locale toolbar: sv, nb, nn and en are written, and fi and se show the English article
+// marked lang="en". Prose has no focusable part, so there's no Keyboard story. The articles are
+// fixtures (prose.fixture.tsx) that the stories show with `showSource`: the `<main>` landmark a page
+// puts around them is a decorator.
+
+/** A page's landmark around the article: a decorator, so it isn't part of the code shown. */
+const inMain: Decorator = (Story) => (
+  <main>
+    <Story />
+  </main>
+)
 
 const meta = {
   title: 'Components/Prose',
@@ -59,93 +67,6 @@ export const Default: Story = {
   },
 }
 
-/** The article in a page, as an adopter would put it. */
-function ArticlePage({
-  locale,
-  size,
-  className,
-}: {
-  locale: FixtureLocale
-  size?: 'large'
-  className?: string
-}): ReactNode {
-  return (
-    <main className={className}>
-      <ProseArticle locale={locale} size={size} />
-    </main>
-  )
-}
-
-const surfaces: readonly { name: string; className: string; style?: CSSProperties }[] = [
-  {
-    name: 'On surface',
-    className: 'kv-story-panel',
-    style: { backgroundColor: 'var(--kv-color-surface)' },
-  },
-  {
-    name: 'On surface-raised',
-    className: 'kv-story-panel',
-    style: { backgroundColor: 'var(--kv-color-surface-raised)' },
-  },
-  {
-    name: 'On a warning panel (warning-subtle, with a warning bar)',
-    className: 'kv-story-panel kv-story-warning-panel',
-  },
-]
-
-/**
- * Short prose blocks on surface, surface-raised and a warning panel: the link, muted text,
- * code and blockquote bar on each background (§6.5). The surface names are English
- * maintainer text; the prose is fixture text in the locale.
- */
-function SurfacePanels({ locale }: { locale: FixtureLocale }): ReactNode {
-  const { text, lang } = articleFor(locale)
-  const contentLang = lang ?? locale
-  const date = new Intl.DateTimeFormat(contentLang, { dateStyle: 'long' })
-  const ids = useId()
-  return (
-    <div className="kv-story-columns" lang="en">
-      {surfaces.map((surface, index) => (
-        <div key={surface.name}>
-          <h2 id={`${ids}-${index}`}>{surface.name}</h2>
-          <section
-            lang={contentLang}
-            className={`${surface.className} kv-prose`}
-            style={surface.style}
-            aria-labelledby={`${ids}-${index}`}
-          >
-            <h3>{text.paper.heading}</h3>
-            <p>{text.paper.text}</p>
-            <p>{text.caseNumber(<code>{caseNumberSample}</code>)}</p>
-            <blockquote>
-              <p>{text.quote}</p>
-            </blockquote>
-            <p>
-              {text.contact.body((linkText) => (
-                <a href="https://kvirnby.example/e-tjanst">{linkText}</a>
-              ))}
-            </p>
-            <p>
-              <small>
-                {text.updated(<time dateTime="2026-09-14">{date.format(updatedDate)}</time>)}
-              </small>
-            </p>
-          </section>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function SurfacesPage({ locale }: { locale: FixtureLocale }): ReactNode {
-  return (
-    <main>
-      <h1 lang="en">Prose on surfaces</h1>
-      <SurfacePanels locale={locale} />
-    </main>
-  )
-}
-
 const articleOf = (canvasElement: HTMLElement) => requireElement(canvasElement, 'article.kv-prose')
 
 /** The wide table is in a labelled, focusable region (2.1.1, 1.4.10). */
@@ -156,7 +77,9 @@ async function expectScrollRegion(canvasElement: HTMLElement, caption: string) {
 
 /** The fixture in the toolbar locale, at the default 16px size. */
 export const Article: Story = {
-  render: (_args, { globals }) => <ArticlePage locale={fixtureLocaleOf(globals['locale'])} />,
+  decorators: [inMain],
+  parameters: showSource('prose/prose.fixture.tsx', 'GuidanceArticle'),
+  render: (_args, { globals }) => <GuidanceArticle locale={fixtureLocaleOf(globals['locale'])} />,
   play: async ({ canvasElement, globals }) => {
     const { text, lang } = articleFor(fixtureLocaleOf(globals['locale']))
     const canvas = within(canvasElement)
@@ -169,8 +92,10 @@ export const Article: Story = {
 
 /** `kv-prose kv-prose--large`: the body-large role, for long resident-facing text. */
 export const Large: Story = {
+  decorators: [inMain],
+  parameters: showSource('prose/prose.fixture.tsx', 'GuidanceArticle'),
   render: (_args, { globals }) => (
-    <ArticlePage locale={fixtureLocaleOf(globals['locale'])} size="large" />
+    <GuidanceArticle locale={fixtureLocaleOf(globals['locale'])} className="kv-prose--large" />
   ),
 }
 
@@ -189,15 +114,25 @@ const sizes = [
  * the 70ch measure, like `max-w-none`.
  */
 export const Sizes: Story = {
+  // Space between the blocks, so each size reads on its own.
+  decorators: [
+    (Story) => (
+      <>
+        <style>{`
+.kv-story-prose-stack > .kv-prose {
+  margin-block-end: 3rem;
+}
+`}</style>
+        <div className="kv-story-prose-stack">
+          <Story />
+        </div>
+      </>
+    ),
+  ],
   render: () => (
     <>
       {sizes.map(({ modifier, label }) => (
-        <Prose
-          key={label}
-          className={modifier}
-          data-testid={label}
-          style={{ marginBlockEnd: '3rem' }}
-        >
+        <Prose key={label} className={modifier}>
           <h2>{label}</h2>
           <p className="kv-lead">Vi svarar vardagar 9–16.</p>
           <p>
@@ -219,14 +154,12 @@ export const Sizes: Story = {
  */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
+  decorators: [inMain],
+  parameters: showSource('prose/prose.fixture.tsx', 'GuidanceArticle', 'HighlightProse'),
   render: (_args, { globals }) => (
     <>
-      <ArticlePage locale={fixtureLocaleOf(globals['locale'])} />
-      <Prose>
-        <p>
-          A <mark>highlight</mark> loses its background in forced colours.
-        </p>
-      </Prose>
+      <GuidanceArticle locale={fixtureLocaleOf(globals['locale'])} />
+      <HighlightProse />
     </>
   ),
 }
@@ -237,7 +170,6 @@ export const FullWidthAndRoles: Story = {
   render: () => (
     <Prose
       className="kv-prose--full"
-      data-testid="full"
       style={{ ['--kv-prose-color-links' as string]: 'var(--kv-color-text)' }}
     >
       <p>
@@ -252,15 +184,24 @@ export const FullWidthAndRoles: Story = {
 export const RightToLeft: Story = {
   name: 'Right to left',
   globals: { dir: 'rtl', locale: 'en' },
-  render: () => <ArticlePage locale="en" />,
+  decorators: [inMain],
+  parameters: showSource('prose/prose.fixture.tsx', 'GuidanceArticle'),
+  render: () => <GuidanceArticle locale="en" />,
 }
 
 /** WCAG 1.4.12's overrides, as a user's bookmarklet sets them: nothing clips or overlaps. */
 export const TextSpacing: Story = {
   name: 'Text spacing',
-  render: (_args, { globals }) => (
-    <ArticlePage locale={fixtureLocaleOf(globals['locale'])} className="kv-story-text-spacing" />
-  ),
+  // The overrides sit on the page, as a bookmarklet or a user stylesheet would set them.
+  decorators: [
+    (Story) => (
+      <main className="kv-story-text-spacing">
+        <Story />
+      </main>
+    ),
+  ],
+  parameters: showSource('prose/prose.fixture.tsx', 'GuidanceArticle'),
+  render: (_args, { globals }) => <GuidanceArticle locale={fixtureLocaleOf(globals['locale'])} />,
   play: async ({ canvasElement }) => {
     const article = articleOf(canvasElement)
     // No horizontal overflow: long words, code and pre wrap, and the table scrolls in its region.
@@ -272,102 +213,64 @@ export const TextSpacing: Story = {
   },
 }
 
+/** Prose on surface, surface-raised and a warning panel: one named region per surface. */
 export const OnSurfaces: Story = {
   name: 'On surfaces',
-  render: (_args, { globals }) => <SurfacesPage locale={fixtureLocaleOf(globals['locale'])} />,
+  // The page: a heading, and a grid that holds the three panels.
+  decorators: [
+    (Story) => (
+      <main>
+        <h1 lang="en">Prose on surfaces</h1>
+        <div className="kv-story-columns" lang="en">
+          <Story />
+        </div>
+      </main>
+    ),
+  ],
+  parameters: showSource('prose/prose.fixture.tsx', 'ProseOnSurfaces'),
+  render: (_args, { globals }) => <ProseOnSurfaces locale={fixtureLocaleOf(globals['locale'])} />,
   play: async ({ canvasElement }) => {
     // One named region per surface.
-    await expect(within(canvasElement).getAllByRole('region')).toHaveLength(surfaces.length)
+    await expect(within(canvasElement).getAllByRole('region')).toHaveLength(3)
   },
 }
 
-const notProseText = {
-  title: 'Components inside prose',
-  intro:
-    'Prose never styles a component part, such as kv-button or kv-link, so KvirnUI components keep their own look anywhere in an article. kv-nav and kv-button-group are never prose either. Wrap anything else prose shouldn’t touch, such as a card or your own widget, in kv-not-prose: it then only gets prose’s block spacing.',
+/** The names the Not prose story's play looks for: the section headings, a link and the navigation. */
+const notProseLabels = {
   without: 'Without kv-not-prose',
   with: 'With kv-not-prose',
   link: 'read the guidance on housing adaptation',
-  linkSentence: 'Before you apply, ',
   navigation: ['Apply', 'Your cases', 'Contact'] as const,
-  apply: 'Apply online',
-  saveDraft: 'Save draft',
-  proseList: 'This list is in prose, so it gets prose’s markers and indent.',
-  plainList: 'This list is inside kv-not-prose, so it keeps the browser’s own style.',
-}
-
-/** A running-text Link, a navigation list and a button group: the components' own look. */
-function ComponentSamples({ navigationLabel }: { navigationLabel: string }): ReactNode {
-  return (
-    <>
-      <p>
-        {notProseText.linkSentence}
-        <Link.Root href="#guidance">{notProseText.link}</Link.Root>.
-      </p>
-      <nav aria-label={navigationLabel}>
-        <ul className="kv-nav">
-          {notProseText.navigation.map((item) => (
-            <li key={item}>
-              <Link.Root href={`#${item.toLowerCase().replaceAll(' ', '-')}`}>{item}</Link.Root>
-            </li>
-          ))}
-        </ul>
-      </nav>
-      <div className="kv-button-group">
-        <Button className="kv-button--primary">{notProseText.apply}</Button>
-        <Button>{notProseText.saveDraft}</Button>
-      </div>
-    </>
-  )
-}
-
-function NotProsePage(): ReactNode {
-  return (
-    <main lang="en">
-      <article className="kv-prose">
-        <h1>{notProseText.title}</h1>
-        <p>{notProseText.intro}</p>
-        <section aria-labelledby="not-prose-without">
-          <h2 id="not-prose-without">{notProseText.without}</h2>
-          <ComponentSamples navigationLabel={`Example navigation, ${notProseText.without}`} />
-          <ul>
-            <li>{notProseText.proseList}</li>
-          </ul>
-        </section>
-        <section aria-labelledby="not-prose-with">
-          <h2 id="not-prose-with">{notProseText.with}</h2>
-          <div className="kv-not-prose">
-            <ComponentSamples navigationLabel={`Example navigation, ${notProseText.with}`} />
-            <ul>
-              <li>{notProseText.plainList}</li>
-            </ul>
-          </div>
-        </section>
-      </article>
-    </main>
-  )
 }
 
 /** Components look the same with and without kv-not-prose. Maintainer text, in English. */
 export const NotProse: Story = {
   name: 'Not prose',
   globals: { locale: 'en' },
-  render: () => <NotProsePage />,
+  decorators: [
+    (Story) => (
+      <main lang="en">
+        <Story />
+      </main>
+    ),
+  ],
+  parameters: showSource('prose/prose.fixture.tsx', 'ComponentsInProse'),
+  render: () => <ComponentsInProse />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const without = within(canvas.getByRole('region', { name: notProseText.without }))
-    const withNotProse = within(canvas.getByRole('region', { name: notProseText.with }))
+    const without = within(canvas.getByRole('region', { name: notProseLabels.without }))
+    const withNotProse = within(canvas.getByRole('region', { name: notProseLabels.with }))
     for (const section of [without, withNotProse]) {
       // Prose doesn't shrink the components inside it below 24 × 24 (2.5.8).
       for (const control of [
         ...section.getAllByRole('button'),
-        ...notProseText.navigation.map((name) => section.getByRole('link', { name })),
+        ...notProseLabels.navigation.map((name) => section.getByRole('link', { name })),
       ]) {
         const { width, height } = control.getBoundingClientRect()
         await expect(width).toBeGreaterThanOrEqual(24)
         await expect(height).toBeGreaterThanOrEqual(24)
       }
-      await expect(section.getByRole('link', { name: notProseText.link })).toBeVisible()
+      await expect(section.getByRole('link', { name: notProseLabels.link })).toBeVisible()
     }
   },
 }

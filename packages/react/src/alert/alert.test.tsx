@@ -12,33 +12,29 @@ import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Icon } from '../icon/icon.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import {
-  Notification,
-  NotificationActions,
-  NotificationBody,
-  NotificationDanger,
-  NotificationInfo,
-  NotificationRoot,
-  NotificationSuccess,
-  NotificationTitle,
-  NotificationWarning,
-} from './notification.tsx'
+  Alert,
+  AlertActions,
+  AlertBody,
+  AlertDanger,
+  AlertInfo,
+  AlertRoot,
+  AlertSuccess,
+  AlertTitle,
+  AlertWarning,
+} from './alert.tsx'
 import type {
-  NotificationActionsProps,
-  NotificationBodyProps,
-  NotificationRootProps,
-  NotificationState,
-  NotificationStatusRootProps,
-  NotificationTitleProps,
-} from './notification.tsx'
-import { useNotification } from './use-notification.ts'
-import type {
-  NotificationVariant,
-  UseNotificationOptions,
-  UseNotificationResult,
-} from './use-notification.ts'
+  AlertActionsProps,
+  AlertBodyProps,
+  AlertRootProps,
+  AlertState,
+  AlertStatusRootProps,
+  AlertTitleProps,
+} from './alert.tsx'
+import { useAlert } from './use-alert.ts'
+import type { AlertVariant, UseAlertOptions, UseAlertResult } from './use-alert.ts'
 
-// Contract: notification.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/notification/notification.e2e.ts.
+// Contract: alert.a11y.md. The keyboard rows are also covered end to end in
+// apps/storybook/src/components/alert/alert.e2e.ts.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -59,8 +55,8 @@ const warnings = () => consoleWarn.mock.calls.map(([message]) => String(message)
 const statuses = [
   {
     variant: 'info',
-    Root: Notification.Info,
-    className: 'kv-notification--info',
+    Root: Alert.Info,
+    className: 'kv-alert--info',
     iconName: 'info',
     word: 'Information:',
     svWord: 'Information:',
@@ -69,8 +65,8 @@ const statuses = [
   },
   {
     variant: 'success',
-    Root: Notification.Success,
-    className: 'kv-notification--success',
+    Root: Alert.Success,
+    className: 'kv-alert--success',
     iconName: 'success',
     word: 'Success:',
     svWord: 'Klart:',
@@ -79,8 +75,8 @@ const statuses = [
   },
   {
     variant: 'warning',
-    Root: Notification.Warning,
-    className: 'kv-notification--warning',
+    Root: Alert.Warning,
+    className: 'kv-alert--warning',
     iconName: 'warning',
     word: 'Warning:',
     svWord: 'Varning:',
@@ -89,8 +85,8 @@ const statuses = [
   },
   {
     variant: 'danger',
-    Root: Notification.Danger,
-    className: 'kv-notification--danger',
+    Root: Alert.Danger,
+    className: 'kv-alert--danger',
     iconName: 'error',
     word: 'Error:',
     svWord: 'Fel:',
@@ -102,17 +98,17 @@ const statuses = [
 const allStatusClasses = statuses.map((status) => status.className)
 
 /** Example C from the design spec: a warning with a title, text and a link. */
-function PermitWarning(props: NotificationStatusRootProps) {
+function PermitWarning(props: AlertStatusRootProps) {
   return (
-    <Notification.Warning data-testid="notification" {...props}>
-      <Notification.Title>Your parking permit expires on 12 November 2026</Notification.Title>
-      <Notification.Body>
+    <Alert.Warning data-testid="alert" {...props}>
+      <Alert.Title>Your parking permit expires on 12 November 2026</Alert.Title>
+      <Alert.Body>
         <p>Renew it before then, or you may get a parking fine.</p>
-      </Notification.Body>
-      <Notification.Actions>
+      </Alert.Body>
+      <Alert.Actions>
         <a href="#renew">Renew parking permit</a>
-      </Notification.Actions>
-    </Notification.Warning>
+      </Alert.Actions>
+    </Alert.Warning>
   )
 }
 
@@ -122,42 +118,42 @@ const iconPaths = (svg: Element | null) =>
   Array.from(svg?.querySelectorAll('path') ?? [], (path) => path.getAttribute('d')).join('|')
 
 describe('rendering', () => {
-  test('Notification.Root renders one element with the kv-notification class and no status class, icon or word', async () => {
+  test('Alert.Root renders one element with the kv-alert class and no status class, icon or word', async () => {
     const { container } = await render(
-      <Notification.Root data-testid="notification">
-        <Notification.Title>Observera</Notification.Title>
-      </Notification.Root>,
+      <Alert.Root data-testid="alert">
+        <Alert.Title>Observera</Alert.Title>
+      </Alert.Root>,
     )
-    const root = page.getByTestId('notification').element()
-    expect(root.className).toBe('kv-notification')
+    const root = page.getByTestId('alert').element()
+    expect(root.className).toBe('kv-alert')
     expect(root.querySelector('svg')).toBeNull()
-    expect(root.querySelector('.kv-notification-status')).toBeNull()
+    expect(root.querySelector('.kv-alert-status')).toBeNull()
     expect(page.getByRole('heading', { level: 2 }).element().textContent).toBe('Observera')
     expect(container.children).toHaveLength(1)
   })
 
   test.each(statuses)(
-    'Notification.$variant renders its status class, its icon first and its status word first in the Title',
+    'Alert.$variant renders its status class, its icon first and its status word first in the Title',
     async ({ Root, className, iconName, word }) => {
       await render(
         <main>
-          <Root data-testid="notification">
-            <Notification.Title>Your application was not sent</Notification.Title>
+          <Root data-testid="alert">
+            <Alert.Title>Your application was not sent</Alert.Title>
           </Root>
           <Icon name={iconName} data-testid="expected-icon" />
         </main>,
       )
-      const root = page.getByTestId('notification').element()
-      expect(root.className).toBe(`kv-notification ${className}`)
+      const root = page.getByTestId('alert').element()
+      expect(root.className).toBe(`kv-alert ${className}`)
       // The icon comes first, is decorative, and has the shape of this status.
       const icon = root.firstElementChild
-      expect(classesOf(icon)).toEqual(expect.arrayContaining(['kv-notification-icon', 'kv-icon']))
+      expect(classesOf(icon)).toEqual(expect.arrayContaining(['kv-alert-icon', 'kv-icon']))
       expect(icon?.getAttribute('aria-hidden')).toBe('true')
       expect(iconPaths(icon)).toBe(iconPaths(page.getByTestId('expected-icon').element()))
       expect(iconPaths(icon)).not.toBe('')
       // The word comes first in the Title, then a normal space, then the consumer's text.
       const title = page.getByRole('heading', { level: 2 }).element()
-      expect(classesOf(title.firstElementChild)).toContain('kv-notification-status')
+      expect(classesOf(title.firstElementChild)).toContain('kv-alert-status')
       expect(title.firstElementChild?.textContent).toBe(word)
       expect(title.textContent).toBe(`${word} Your application was not sent`)
     },
@@ -168,7 +164,7 @@ describe('rendering', () => {
       <main>
         {statuses.map(({ variant, Root }) => (
           <Root key={variant} data-testid={variant}>
-            <Notification.Title>Same title</Notification.Title>
+            <Alert.Title>Same title</Alert.Title>
           </Root>
         ))}
       </main>,
@@ -186,9 +182,9 @@ describe('rendering', () => {
   test('the heading name starts with the status word', async () => {
     await render(
       <main>
-        <Notification.Warning>
-          <Notification.Title>Your parking permit expires on 12 November 2026</Notification.Title>
-        </Notification.Warning>
+        <Alert.Warning>
+          <Alert.Title>Your parking permit expires on 12 November 2026</Alert.Title>
+        </Alert.Warning>
       </main>,
     )
     await expect
@@ -202,27 +198,27 @@ describe('rendering', () => {
   })
 
   const roots = [
-    ['Root', Notification.Root],
-    ['Info', Notification.Info],
-    ['Success', Notification.Success],
-    ['Warning', Notification.Warning],
-    ['Danger', Notification.Danger],
+    ['Root', Alert.Root],
+    ['Info', Alert.Info],
+    ['Success', Alert.Success],
+    ['Warning', Alert.Warning],
+    ['Danger', Alert.Danger],
   ] as const
 
-  test.each(roots)('Notification.%s adds no role, live region or tabindex', async (_name, Root) => {
+  test.each(roots)('Alert.%s adds no role, live region or tabindex', async (_name, Root) => {
     await render(
-      <Root data-testid="notification">
-        <Notification.Title>Title</Notification.Title>
-        <Notification.Body>Body</Notification.Body>
-        <Notification.Actions>
+      <Root data-testid="alert">
+        <Alert.Title>Title</Alert.Title>
+        <Alert.Body>Body</Alert.Body>
+        <Alert.Actions>
           <a href="#next">Next</a>
-        </Notification.Actions>
+        </Alert.Actions>
       </Root>,
     )
     const elements = [
-      page.getByTestId('notification').element(),
+      page.getByTestId('alert').element(),
       ...document.querySelectorAll(
-        '.kv-notification-title, .kv-notification-body, .kv-notification-actions, .kv-notification-status, .kv-notification-icon',
+        '.kv-alert-title, .kv-alert-body, .kv-alert-actions, .kv-alert-status, .kv-alert-icon',
       ),
     ]
     expect(elements.length).toBeGreaterThanOrEqual(4)
@@ -242,32 +238,27 @@ describe('rendering', () => {
   test('Title, Body and Actions each have their part class', async () => {
     await render(<PermitWarning />)
     const title = page.getByRole('heading', { level: 2 }).element()
-    expect(title.className).toBe('kv-notification-title')
-    const body = document.querySelector('.kv-notification-body')
-    const actions = document.querySelector('.kv-notification-actions')
-    expect(body?.className).toBe('kv-notification-body')
-    expect(actions?.className).toBe('kv-notification-actions')
+    expect(title.className).toBe('kv-alert-title')
+    const body = document.querySelector('.kv-alert-body')
+    const actions = document.querySelector('.kv-alert-actions')
+    expect(body?.className).toBe('kv-alert-body')
+    expect(actions?.className).toBe('kv-alert-actions')
   })
 
   test('the children come after the icon in DOM order: icon, title, body, actions', async () => {
     await render(<PermitWarning />)
-    const root = page.getByTestId('notification').element()
+    const root = page.getByTestId('alert').element()
     expect(
       Array.from(root.children, (child) => child.getAttribute('class')?.split(' ')[0]),
-    ).toEqual([
-      'kv-notification-icon',
-      'kv-notification-title',
-      'kv-notification-body',
-      'kv-notification-actions',
-    ])
+    ).toEqual(['kv-alert-icon', 'kv-alert-title', 'kv-alert-body', 'kv-alert-actions'])
   })
 
   test('the Title can be any heading level, or a paragraph, with render', async () => {
     await render(
       <main>
         <h2>Mina sidor</h2>
-        <Notification.Success>
-          <Notification.Title
+        <Alert.Success>
+          <Alert.Title
             render={(props) => (
               <h3 {...props} data-testid="level-3">
                 {props.children}
@@ -275,13 +266,11 @@ describe('rendering', () => {
             )}
           >
             Saved
-          </Notification.Title>
-        </Notification.Success>
-        <Notification.Success>
-          <Notification.Title render={<p data-testid="paragraph" />}>
-            Saved again
-          </Notification.Title>
-        </Notification.Success>
+          </Alert.Title>
+        </Alert.Success>
+        <Alert.Success>
+          <Alert.Title render={<p data-testid="paragraph" />}>Saved again</Alert.Title>
+        </Alert.Success>
       </main>,
     )
     await expect
@@ -295,13 +284,13 @@ describe('rendering', () => {
 
   test('passes attributes through: id, lang and title on the consumer’s element', async () => {
     await render(
-      <Notification.Info data-testid="notification" id="deadline" lang="en" title="Info">
-        <Notification.Title id="deadline-title" lang="sv">
+      <Alert.Info data-testid="alert" id="deadline" lang="en" title="Info">
+        <Alert.Title id="deadline-title" lang="sv">
           Sista dag
-        </Notification.Title>
-      </Notification.Info>,
+        </Alert.Title>
+      </Alert.Info>,
     )
-    const root = page.getByTestId('notification')
+    const root = page.getByTestId('alert')
     await expect.element(root).toHaveAttribute('id', 'deadline')
     await expect.element(root).toHaveAttribute('lang', 'en')
     await expect.element(root).toHaveAttribute('title', 'Info')
@@ -311,108 +300,102 @@ describe('rendering', () => {
 
   test('keeps its own class: a consumer className joins it instead of replacing it', async () => {
     await render(
-      <Notification.Danger data-testid="notification" className="mitt-meddelande">
-        <Notification.Title className="min-rubrik">Title</Notification.Title>
-        <Notification.Body className="min-text">Body</Notification.Body>
-        <Notification.Actions className="mina-knappar">
+      <Alert.Danger data-testid="alert" className="mitt-meddelande">
+        <Alert.Title className="min-rubrik">Title</Alert.Title>
+        <Alert.Body className="min-text">Body</Alert.Body>
+        <Alert.Actions className="mina-knappar">
           <a href="#next">Next</a>
-        </Notification.Actions>
-      </Notification.Danger>,
+        </Alert.Actions>
+      </Alert.Danger>,
     )
     await expect
-      .element(page.getByTestId('notification'))
-      .toHaveClass('kv-notification', 'kv-notification--danger', 'mitt-meddelande')
-    await expect
-      .element(page.getByRole('heading'))
-      .toHaveClass('kv-notification-title', 'min-rubrik')
-    expect(classesOf(document.querySelector('.kv-notification-body'))).toContain('min-text')
-    expect(classesOf(document.querySelector('.kv-notification-actions'))).toContain('mina-knappar')
+      .element(page.getByTestId('alert'))
+      .toHaveClass('kv-alert', 'kv-alert--danger', 'mitt-meddelande')
+    await expect.element(page.getByRole('heading')).toHaveClass('kv-alert-title', 'min-rubrik')
+    expect(classesOf(document.querySelector('.kv-alert-body'))).toContain('min-text')
+    expect(classesOf(document.querySelector('.kv-alert-actions'))).toContain('mina-knappar')
   })
 
   test.each(statuses)(
-    'Notification.$variant keeps its class and icon when a render element sets another class',
+    'Alert.$variant keeps its class and icon when a render element sets another class',
     async ({ Root, className }) => {
       await render(
-        <Root render={<section className="annat" aria-labelledby="t" data-testid="notification" />}>
-          <Notification.Title id="t">Title</Notification.Title>
+        <Root render={<section className="annat" aria-labelledby="t" data-testid="alert" />}>
+          <Alert.Title id="t">Title</Alert.Title>
         </Root>,
       )
-      const root = page.getByTestId('notification').element()
+      const root = page.getByTestId('alert').element()
       expect(root.tagName).toBe('SECTION')
-      expect(classesOf(root)).toEqual(
-        expect.arrayContaining(['kv-notification', className, 'annat']),
-      )
+      expect(classesOf(root)).toEqual(expect.arrayContaining(['kv-alert', className, 'annat']))
       expect(root.querySelector('svg')).not.toBeNull()
-      expect(root.querySelector('.kv-notification-status')).not.toBeNull()
+      expect(root.querySelector('.kv-alert-status')).not.toBeNull()
     },
   )
 
   test('the render function form can replace the class: the icon and the word stay', async () => {
     await render(
-      <Notification.Warning
+      <Alert.Warning
         render={(rootProps) => <div {...rootProps} className="my-warning" data-testid="own" />}
       >
-        <Notification.Title>Check your answers</Notification.Title>
-      </Notification.Warning>,
+        <Alert.Title>Check your answers</Alert.Title>
+      </Alert.Warning>,
     )
     const root = page.getByTestId('own').element()
     expect(root.className).toBe('my-warning')
-    expect(root.querySelector('svg.kv-notification-icon')).not.toBeNull()
+    expect(root.querySelector('svg.kv-alert-icon')).not.toBeNull()
     expect(page.getByRole('heading').element().textContent).toBe('Warning: Check your answers')
     // Our own class was dropped on purpose: that is not a conflict.
     expect(warnings()).toEqual([])
   })
 
   test('the render function gets the part props and an empty state', async () => {
-    const seen: NotificationState[] = []
+    const seen: AlertState[] = []
     await render(
-      <Notification.Actions
+      <Alert.Actions
         render={(actionsProps, state) => {
           seen.push(state)
           return <div {...actionsProps} data-testid="actions" />
         }}
       >
         <a href="#next">Next</a>
-      </Notification.Actions>,
+      </Alert.Actions>,
     )
     await expect.element(page.getByTestId('actions')).toBeVisible()
     expect(seen.at(-1)).toEqual({})
   })
 
   test('the named exports are the compound parts', () => {
-    expect(NotificationRoot).toBe(Notification.Root)
-    expect(NotificationInfo).toBe(Notification.Info)
-    expect(NotificationSuccess).toBe(Notification.Success)
-    expect(NotificationWarning).toBe(Notification.Warning)
-    expect(NotificationDanger).toBe(Notification.Danger)
-    expect(NotificationTitle).toBe(Notification.Title)
-    expect(NotificationBody).toBe(Notification.Body)
-    expect(NotificationActions).toBe(Notification.Actions)
+    expect(AlertRoot).toBe(Alert.Root)
+    expect(AlertInfo).toBe(Alert.Info)
+    expect(AlertSuccess).toBe(Alert.Success)
+    expect(AlertWarning).toBe(Alert.Warning)
+    expect(AlertDanger).toBe(Alert.Danger)
+    expect(AlertTitle).toBe(Alert.Title)
+    expect(AlertBody).toBe(Alert.Body)
+    expect(AlertActions).toBe(Alert.Actions)
   })
 
   test('the plain Root renders the same box, so the compound has no status of its own', async () => {
     await render(
-      <Notification.Root className="kv-notification--custom" data-testid="notification">
-        <Notification.Title>Title</Notification.Title>
-      </Notification.Root>,
+      <Alert.Root className="kv-alert--custom" data-testid="alert">
+        <Alert.Title>Title</Alert.Title>
+      </Alert.Root>,
     )
-    expect(page.getByTestId('notification').element().className).toBe(
-      'kv-notification--custom kv-notification',
-    )
+    expect(page.getByTestId('alert').element().className).toBe('kv-alert--custom kv-alert')
   })
 
-  test.each(statuses)('Notification.$variant has no axe violations', async ({ Root }) => {
+  test.each(statuses)('Alert.$variant has no axe violations', async ({ Root }) => {
     const { container } = await render(
       <main>
         <h1>Mina sidor</h1>
         <Root>
-          <Notification.Title>Your parking permit expires on 12 November 2026</Notification.Title>
-          <Notification.Body>
+          <Alert.Title>Your parking permit expires on 12 November 2026</Alert.Title>
+          <Alert.Body>
             <p>Renew it before then.</p>
-          </Notification.Body>
-          <Notification.Actions>
+          </Alert.Body>
+          <Alert.Actions>
             <a href="#renew">Renew parking permit</a>
-          </Notification.Actions>
+          </Alert.Actions>
         </Root>
       </main>,
     )
@@ -424,12 +407,12 @@ describe('rendering', () => {
     const { container } = await render(
       <main>
         <h1>Mina sidor</h1>
-        <Notification.Root className="my-notice">
-          <Icon name="info" className="kv-notification-icon" />
-          <Notification.Title>
-            <span className="kv-notification-status">Observera:</span> Kontoret är stängt på fredag
-          </Notification.Title>
-        </Notification.Root>
+        <Alert.Root className="my-notice">
+          <Icon name="info" className="kv-alert-icon" />
+          <Alert.Title>
+            <span className="kv-alert-status">Observera:</span> Kontoret är stängt på fredag
+          </Alert.Title>
+        </Alert.Root>
       </main>,
     )
     await expect.element(page.getByRole('heading', { level: 2 })).toBeVisible()
@@ -444,32 +427,29 @@ describe('refs', () => {
     const bodyRef = createRef<HTMLElement>()
     const actionsRef = createRef<HTMLElement>()
     await render(
-      <Notification.Danger ref={rootRef} data-testid="notification">
-        <Notification.Title ref={titleRef}>Title</Notification.Title>
-        <Notification.Body ref={bodyRef}>Body</Notification.Body>
-        <Notification.Actions ref={actionsRef}>
+      <Alert.Danger ref={rootRef} data-testid="alert">
+        <Alert.Title ref={titleRef}>Title</Alert.Title>
+        <Alert.Body ref={bodyRef}>Body</Alert.Body>
+        <Alert.Actions ref={actionsRef}>
           <a href="#next">Next</a>
-        </Notification.Actions>
-      </Notification.Danger>,
+        </Alert.Actions>
+      </Alert.Danger>,
     )
-    expect(rootRef.current).toBe(page.getByTestId('notification').element())
+    expect(rootRef.current).toBe(page.getByTestId('alert').element())
     expect(titleRef.current).toBe(page.getByRole('heading').element())
-    expect(bodyRef.current).toBe(document.querySelector('.kv-notification-body'))
-    expect(actionsRef.current).toBe(document.querySelector('.kv-notification-actions'))
+    expect(bodyRef.current).toBe(document.querySelector('.kv-alert-body'))
+    expect(actionsRef.current).toBe(document.querySelector('.kv-alert-actions'))
   })
 
   test('both the consumer’s ref and a render element’s ref get the element', async () => {
     const partRef = createRef<HTMLElement>()
     const elementRef = createRef<HTMLElement>()
     await render(
-      <Notification.Info
-        ref={partRef}
-        render={<aside ref={elementRef} data-testid="notification" />}
-      >
-        <Notification.Title>Title</Notification.Title>
-      </Notification.Info>,
+      <Alert.Info ref={partRef} render={<aside ref={elementRef} data-testid="alert" />}>
+        <Alert.Title>Title</Alert.Title>
+      </Alert.Info>,
     )
-    const element = page.getByTestId('notification').element()
+    const element = page.getByTestId('alert').element()
     expect(partRef.current).toBe(element)
     expect(elementRef.current).toBe(element)
   })
@@ -477,11 +457,11 @@ describe('refs', () => {
 
 describe('the status word (i18n)', () => {
   test.each(statuses)(
-    'Notification.$variant says "$word" in en without a provider, "$svWord" in sv and "$fiWord" in fi',
+    'Alert.$variant says "$word" in en without a provider, "$svWord" in sv and "$fiWord" in fi',
     async ({ Root, word, svWord, fiWord }) => {
       const english = await render(
         <Root>
-          <Notification.Title>Title</Notification.Title>
+          <Alert.Title>Title</Alert.Title>
         </Root>,
       )
       await expect.element(page.getByRole('heading')).toHaveTextContent(`${word} Title`)
@@ -490,7 +470,7 @@ describe('the status word (i18n)', () => {
       const swedish = await render(
         <KvirnProvider locale="sv-SE" messages={sv}>
           <Root>
-            <Notification.Title>Rubrik</Notification.Title>
+            <Alert.Title>Rubrik</Alert.Title>
           </Root>
         </KvirnProvider>,
       )
@@ -500,7 +480,7 @@ describe('the status word (i18n)', () => {
       await render(
         <KvirnProvider locale="fi-FI" messages={fi}>
           <Root>
-            <Notification.Title>Otsikko</Notification.Title>
+            <Alert.Title>Otsikko</Alert.Title>
           </Root>
         </KvirnProvider>,
       )
@@ -510,7 +490,7 @@ describe('the status word (i18n)', () => {
 
   test('the status words of every shipped locale are filled in and end with a colon', () => {
     for (const catalog of [sv, fi]) {
-      for (const text of Object.values(catalog.notification)) {
+      for (const text of Object.values(catalog.alert)) {
         expect(typeof text === 'string' ? text.trim() : '').toMatch(/:$/)
       }
     }
@@ -519,16 +499,16 @@ describe('the status word (i18n)', () => {
   test('a per-instance message overrides the word, and the provider’s comes next', async () => {
     await render(
       <KvirnProvider locale="sv-SE" messages={sv}>
-        <KvirnProvider messages={{ notification: { dangerPrefix: 'Viktigt:' } }}>
-          <Notification.Danger>
-            <Notification.Title>Vi kunde inte skicka</Notification.Title>
-          </Notification.Danger>
-          <Notification.Warning>
-            <Notification.Title>Förnya</Notification.Title>
-          </Notification.Warning>
-          <Notification.Danger messages={{ dangerPrefix: 'Stopp:' }}>
-            <Notification.Title>Inte sparat</Notification.Title>
-          </Notification.Danger>
+        <KvirnProvider messages={{ alert: { dangerPrefix: 'Viktigt:' } }}>
+          <Alert.Danger>
+            <Alert.Title>Vi kunde inte skicka</Alert.Title>
+          </Alert.Danger>
+          <Alert.Warning>
+            <Alert.Title>Förnya</Alert.Title>
+          </Alert.Warning>
+          <Alert.Danger messages={{ dangerPrefix: 'Stopp:' }}>
+            <Alert.Title>Inte sparat</Alert.Title>
+          </Alert.Danger>
         </KvirnProvider>
       </KvirnProvider>,
     )
@@ -542,44 +522,44 @@ describe('the status word (i18n)', () => {
 
   test('each ready-made root reads only its own key', async () => {
     await render(
-      <Notification.Warning messages={{ dangerPrefix: 'Viktigt:', infoPrefix: 'Notis:' }}>
-        <Notification.Title>Title</Notification.Title>
-      </Notification.Warning>,
+      <Alert.Warning messages={{ dangerPrefix: 'Viktigt:', infoPrefix: 'Notis:' }}>
+        <Alert.Title>Title</Alert.Title>
+      </Alert.Warning>,
     )
     await expect.element(page.getByRole('heading')).toHaveTextContent('Warning: Title')
   })
 
   test('an override changes the word, never the status class or the icon', async () => {
     await render(
-      <Notification.Danger messages={{ dangerPrefix: 'Viktigt:' }} data-testid="notification">
-        <Notification.Title>Title</Notification.Title>
-      </Notification.Danger>,
+      <Alert.Danger messages={{ dangerPrefix: 'Viktigt:' }} data-testid="alert">
+        <Alert.Title>Title</Alert.Title>
+      </Alert.Danger>,
     )
-    const root = page.getByTestId('notification').element()
-    expect(classesOf(root)).toContain('kv-notification--danger')
-    expect(root.querySelector('.kv-notification-icon')).not.toBeNull()
+    const root = page.getByTestId('alert').element()
+    expect(classesOf(root)).toContain('kv-alert--danger')
+    expect(root.querySelector('.kv-alert-icon')).not.toBeNull()
     await expect.element(page.getByRole('heading')).toHaveTextContent('Viktigt: Title')
   })
 
   test('an empty or whitespace-only override falls through and warns', async () => {
     await render(
       <KvirnProvider locale="sv-SE" messages={sv}>
-        <Notification.Danger messages={{ dangerPrefix: ' ' }}>
-          <Notification.Title>Rubrik</Notification.Title>
-        </Notification.Danger>
+        <Alert.Danger messages={{ dangerPrefix: ' ' }}>
+          <Alert.Title>Rubrik</Alert.Title>
+        </Alert.Danger>
       </KvirnProvider>,
     )
     await expect.element(page.getByRole('heading')).toHaveTextContent('Fel: Rubrik')
     expect(warnings()).toHaveLength(1)
-    expect(warnings()[0]).toContain('notification.dangerPrefix')
+    expect(warnings()[0]).toContain('alert.dangerPrefix')
   })
 
   test('the plain Root uses none of the four keys', async () => {
     await render(
       <KvirnProvider locale="sv-SE" messages={sv}>
-        <Notification.Root>
-          <Notification.Title>Observera</Notification.Title>
-        </Notification.Root>
+        <Alert.Root>
+          <Alert.Title>Observera</Alert.Title>
+        </Alert.Root>
       </KvirnProvider>,
     )
     expect(page.getByRole('heading').element().textContent).toBe('Observera')
@@ -611,16 +591,16 @@ describe('announce', () => {
     await view.rerender(
       <KvirnProvider locale="sv-SE" messages={sv}>
         <main>
-          <Notification.Success announce="polite">
-            <Notification.Title render={<p />}>Dina ändringar är sparade</Notification.Title>
-            <Notification.Body>
+          <Alert.Success announce="polite">
+            <Alert.Title render={<p />}>Dina ändringar är sparade</Alert.Title>
+            <Alert.Body>
               <p>Du får ett beslut inom 4 veckor.</p>
               <p>Du behöver inte göra något mer.</p>
-            </Notification.Body>
-            <Notification.Actions>
+            </Alert.Body>
+            <Alert.Actions>
               <a href="#next">Gå vidare</a>
-            </Notification.Actions>
-          </Notification.Success>
+            </Alert.Actions>
+          </Alert.Success>
         </main>
       </KvirnProvider>,
     )
@@ -649,10 +629,10 @@ describe('announce', () => {
     await view.rerender(
       <KvirnProvider>
         <main>
-          <Notification.Danger announce="assertive">
-            <Notification.Title>Connection lost</Notification.Title>
-            <Notification.Body>What you type now is not saved.</Notification.Body>
-          </Notification.Danger>
+          <Alert.Danger announce="assertive">
+            <Alert.Title>Connection lost</Alert.Title>
+            <Alert.Body>What you type now is not saved.</Alert.Body>
+          </Alert.Danger>
         </main>
       </KvirnProvider>,
     )
@@ -664,13 +644,13 @@ describe('announce', () => {
   })
 
   test.each([
-    ['Root', Notification.Root, 'Observera Kontoret är stängt'],
-    ['Info', Notification.Info, 'Information: Observera Kontoret är stängt'],
-    ['Success', Notification.Success, 'Success: Observera Kontoret är stängt'],
-    ['Warning', Notification.Warning, 'Warning: Observera Kontoret är stängt'],
-    ['Danger', Notification.Danger, 'Error: Observera Kontoret är stängt'],
+    ['Root', Alert.Root, 'Observera Kontoret är stängt'],
+    ['Info', Alert.Info, 'Information: Observera Kontoret är stängt'],
+    ['Success', Alert.Success, 'Success: Observera Kontoret är stängt'],
+    ['Warning', Alert.Warning, 'Warning: Observera Kontoret är stängt'],
+    ['Danger', Alert.Danger, 'Error: Observera Kontoret är stängt'],
   ] as const)(
-    'Notification.%s takes announce and announces its visible text',
+    'Alert.%s takes announce and announces its visible text',
     async (_name, Root, expected) => {
       const view = await render(
         <KvirnProvider>
@@ -682,8 +662,8 @@ describe('announce', () => {
         <KvirnProvider>
           <main>
             <Root announce="polite">
-              <Notification.Title>Observera</Notification.Title>
-              <Notification.Body>Kontoret är stängt</Notification.Body>
+              <Alert.Title>Observera</Alert.Title>
+              <Alert.Body>Kontoret är stängt</Alert.Body>
             </Root>
           </main>
         </KvirnProvider>,
@@ -696,9 +676,9 @@ describe('announce', () => {
     const view = await render(
       <KvirnProvider>
         <main>
-          <Notification.Info>
-            <Notification.Title>Applications close on 31 August</Notification.Title>
-          </Notification.Info>
+          <Alert.Info>
+            <Alert.Title>Applications close on 31 August</Alert.Title>
+          </Alert.Info>
         </main>
       </KvirnProvider>,
     )
@@ -706,12 +686,12 @@ describe('announce', () => {
     await view.rerender(
       <KvirnProvider>
         <main>
-          <Notification.Info>
-            <Notification.Title>Applications close on 31 August</Notification.Title>
-          </Notification.Info>
-          <Notification.Danger>
-            <Notification.Title>We couldn’t send your application</Notification.Title>
-          </Notification.Danger>
+          <Alert.Info>
+            <Alert.Title>Applications close on 31 August</Alert.Title>
+          </Alert.Info>
+          <Alert.Danger>
+            <Alert.Title>We couldn’t send your application</Alert.Title>
+          </Alert.Danger>
         </main>
       </KvirnProvider>,
     )
@@ -733,9 +713,9 @@ describe('announce', () => {
     const example = (key: string, text: string) => (
       <KvirnProvider>
         <main>
-          <Notification.Danger key={key} announce="polite">
-            <Notification.Title>{text}</Notification.Title>
-          </Notification.Danger>
+          <Alert.Danger key={key} announce="polite">
+            <Alert.Title>{text}</Alert.Title>
+          </Alert.Danger>
         </main>
       </KvirnProvider>
     )
@@ -751,7 +731,7 @@ describe('announce', () => {
     await settle()
     expect(seen.filter((text) => text !== '')).toEqual(['Error: We couldn’t send your application'])
 
-    // A new key is a new notification: it announces itself again, even with the same text.
+    // A new key is a new alert: it announces itself again, even with the same text.
     await view.rerender(example('second', 'We couldn’t send your application'))
     await vi.waitFor(() => {
       expect(seen.filter((text) => text !== '')).toHaveLength(2)
@@ -773,9 +753,9 @@ describe('announce', () => {
       <StrictMode>
         <KvirnProvider>
           <main>
-            <Notification.Success announce="polite">
-              <Notification.Title>Saved</Notification.Title>
-            </Notification.Success>
+            <Alert.Success announce="polite">
+              <Alert.Title>Saved</Alert.Title>
+            </Alert.Success>
           </main>
         </KvirnProvider>
       </StrictMode>,
@@ -788,9 +768,9 @@ describe('announce', () => {
 
   test('without a KvirnProvider the announcement is dropped and one warning says why', async () => {
     await render(
-      <Notification.Info announce="polite">
-        <Notification.Title>Saved</Notification.Title>
-      </Notification.Info>,
+      <Alert.Info announce="polite">
+        <Alert.Title>Saved</Alert.Title>
+      </Alert.Info>,
     )
     expect(warnings()).toHaveLength(1)
     expect(warnings()[0]).toContain('KvirnProvider')
@@ -798,9 +778,9 @@ describe('announce', () => {
 
   test('without announce and without a provider there is no warning', async () => {
     await render(
-      <Notification.Info>
-        <Notification.Title>Saved</Notification.Title>
-      </Notification.Info>,
+      <Alert.Info>
+        <Alert.Title>Saved</Alert.Title>
+      </Alert.Info>,
     )
     expect(warnings()).toEqual([])
   })
@@ -809,9 +789,9 @@ describe('announce', () => {
 describe('development warnings', () => {
   test('a root without a Title warns that it needs one', async () => {
     await render(
-      <Notification.Info>
-        <Notification.Body>Text without a title</Notification.Body>
-      </Notification.Info>,
+      <Alert.Info>
+        <Alert.Body>Text without a title</Alert.Body>
+      </Alert.Info>,
     )
     expect(warnings()).toHaveLength(1)
     expect(warnings()[0]).toContain('needs a Title')
@@ -825,19 +805,19 @@ describe('development warnings', () => {
   test('a Title, Body or Actions outside a root each warn once', async () => {
     await render(
       <>
-        <Notification.Title>Loose title</Notification.Title>
-        <Notification.Body>Loose body</Notification.Body>
-        <Notification.Actions>Loose actions</Notification.Actions>
+        <Alert.Title>Loose title</Alert.Title>
+        <Alert.Body>Loose body</Alert.Body>
+        <Alert.Actions>Loose actions</Alert.Actions>
       </>,
     )
     const messages = warnings()
     expect(messages).toHaveLength(3)
-    expect(messages.some((message) => message.includes('Notification.Title'))).toBe(true)
-    expect(messages.some((message) => message.includes('Notification.Body'))).toBe(true)
-    expect(messages.some((message) => message.includes('Notification.Actions'))).toBe(true)
+    expect(messages.some((message) => message.includes('Alert.Title'))).toBe(true)
+    expect(messages.some((message) => message.includes('Alert.Body'))).toBe(true)
+    expect(messages.some((message) => message.includes('Alert.Actions'))).toBe(true)
     // They still render, and have no status word.
     await expect.element(page.getByText('Loose title')).toBeVisible()
-    expect(document.querySelector('.kv-notification-status')).toBeNull()
+    expect(document.querySelector('.kv-alert-status')).toBeNull()
   })
 
   test.each([
@@ -846,9 +826,9 @@ describe('development warnings', () => {
     ['aria-live', { 'aria-live': 'polite' }],
   ] as const)('a root given %s warns that the Announcer already does it', async (_name, props) => {
     await render(
-      <Notification.Info {...props}>
-        <Notification.Title>Title</Notification.Title>
-      </Notification.Info>,
+      <Alert.Info {...props}>
+        <Alert.Title>Title</Alert.Title>
+      </Alert.Info>,
     )
     expect(warnings()).toHaveLength(1)
     expect(warnings()[0]).toContain('Announcer')
@@ -858,9 +838,9 @@ describe('development warnings', () => {
     await render(
       <KvirnProvider>
         <main>
-          <Notification.Danger tabIndex={-1} announce="polite">
-            <Notification.Title>Title</Notification.Title>
-          </Notification.Danger>
+          <Alert.Danger tabIndex={-1} announce="polite">
+            <Alert.Title>Title</Alert.Title>
+          </Alert.Danger>
         </main>
       </KvirnProvider>,
     )
@@ -870,31 +850,31 @@ describe('development warnings', () => {
 
   test('a root with tabindex and no announce does not warn', async () => {
     await render(
-      <Notification.Danger tabIndex={-1}>
-        <Notification.Title>Title</Notification.Title>
-      </Notification.Danger>,
+      <Alert.Danger tabIndex={-1}>
+        <Alert.Title>Title</Alert.Title>
+      </Alert.Danger>,
     )
     expect(warnings()).toEqual([])
   })
 
   test('a render element with aria-live warns the same way', async () => {
     await render(
-      <Notification.Info render={<section aria-live="polite" />}>
-        <Notification.Title>Title</Notification.Title>
-      </Notification.Info>,
+      <Alert.Info render={<section aria-live="polite" />}>
+        <Alert.Title>Title</Alert.Title>
+      </Alert.Info>,
     )
     expect(warnings()).toHaveLength(1)
     expect(warnings()[0]).toContain('Announcer')
   })
 
   test.each([
-    ['Info', Notification.Info],
-    ['Success', Notification.Success],
-  ] as const)('announce="assertive" on Notification.%s warns', async (_name, Root) => {
+    ['Info', Alert.Info],
+    ['Success', Alert.Success],
+  ] as const)('announce="assertive" on Alert.%s warns', async (_name, Root) => {
     await render(
       <KvirnProvider>
         <Root announce="assertive">
-          <Notification.Title>Title</Notification.Title>
+          <Alert.Title>Title</Alert.Title>
         </Root>
       </KvirnProvider>,
     )
@@ -903,13 +883,13 @@ describe('development warnings', () => {
   })
 
   test.each([
-    ['Warning', Notification.Warning],
-    ['Danger', Notification.Danger],
-  ] as const)('announce="assertive" on Notification.%s does not warn', async (_name, Root) => {
+    ['Warning', Alert.Warning],
+    ['Danger', Alert.Danger],
+  ] as const)('announce="assertive" on Alert.%s does not warn', async (_name, Root) => {
     await render(
       <KvirnProvider>
         <Root announce="assertive">
-          <Notification.Title>Title</Notification.Title>
+          <Alert.Title>Title</Alert.Title>
         </Root>
       </KvirnProvider>,
     )
@@ -918,70 +898,70 @@ describe('development warnings', () => {
 
   test('a ready-made root with another status class in className warns that the colour would disagree', async () => {
     await render(
-      <Notification.Warning className="kv-notification--danger">
-        <Notification.Title>Title</Notification.Title>
-      </Notification.Warning>,
+      <Alert.Warning className="kv-alert--danger">
+        <Alert.Title>Title</Alert.Title>
+      </Alert.Warning>,
     )
     expect(warnings()).toHaveLength(1)
-    expect(warnings()[0]).toContain('kv-notification--danger')
-    expect(warnings()[0]).toContain('Notification.Danger')
+    expect(warnings()[0]).toContain('kv-alert--danger')
+    expect(warnings()[0]).toContain('Alert.Danger')
   })
 
   test('a ready-made root with another status class on a render element warns too', async () => {
     await render(
-      <Notification.Success render={<div className="kv-notification--warning" />}>
-        <Notification.Title>Title</Notification.Title>
-      </Notification.Success>,
+      <Alert.Success render={<div className="kv-alert--warning" />}>
+        <Alert.Title>Title</Alert.Title>
+      </Alert.Success>,
     )
     expect(warnings()).toHaveLength(1)
-    expect(warnings()[0]).toContain('kv-notification--warning')
+    expect(warnings()[0]).toContain('kv-alert--warning')
   })
 
   test('a ready-made root with its own status class again does not warn', async () => {
     await render(
-      <Notification.Warning className="kv-notification--warning">
-        <Notification.Title>Title</Notification.Title>
-      </Notification.Warning>,
+      <Alert.Warning className="kv-alert--warning">
+        <Alert.Title>Title</Alert.Title>
+      </Alert.Warning>,
     )
     expect(warnings()).toEqual([])
   })
 
   test('the plain Root with one of our status classes warns that the icon and the word are missing', async () => {
     await render(
-      <Notification.Root className="kv-notification--danger">
-        <Notification.Title>Title</Notification.Title>
-      </Notification.Root>,
+      <Alert.Root className="kv-alert--danger">
+        <Alert.Title>Title</Alert.Title>
+      </Alert.Root>,
     )
     expect(warnings()).toHaveLength(1)
-    expect(warnings()[0]).toContain('Notification.Danger')
+    expect(warnings()[0]).toContain('Alert.Danger')
   })
 
   test('the plain Root with your own class does not warn', async () => {
     await render(
-      <Notification.Root className="my-notice kv-notification--custom">
-        <Notification.Title>Title</Notification.Title>
-      </Notification.Root>,
+      <Alert.Root className="my-notice kv-alert--custom">
+        <Alert.Title>Title</Alert.Title>
+      </Alert.Root>,
     )
     expect(warnings()).toEqual([])
   })
 })
 
-describe('useNotification', () => {
-  function HookNotification({ options }: { options?: UseNotificationOptions }) {
-    const notification = useNotification(options)
+describe('useAlert', () => {
+  function HookAlert({ options }: { options?: UseAlertOptions }) {
+    const alert = useAlert(options)
     return (
-      <div {...notification.rootProps} data-testid="notification">
-        {notification.iconProps === undefined ? null : <Icon {...notification.iconProps} />}
-        <h2 {...notification.titleProps}>
-          {notification.statusProps === undefined ? null : (
+      <div {...alert.rootProps} data-testid="alert">
+        {alert.iconProps === undefined ? null : <Icon {...alert.iconProps} />}
+        <h2 {...alert.titleProps}>
+          {alert.statusProps === undefined ? null : (
             <>
-              <span {...notification.statusProps} />{' '}
+              <span {...alert.statusProps} />{' '}
             </>
           )}
           Din ansökan
         </h2>
-        <div {...notification.bodyProps}>Text</div>
-        <div {...notification.actionsProps}>
+        <div {...alert.bodyProps}>Text</div>
+        <div {...alert.actionsProps}>
           <a href="#next">Nästa</a>
         </div>
       </div>
@@ -990,47 +970,47 @@ describe('useNotification', () => {
 
   test('without variant it is the plain Root: only the classes, no icon and no word', async () => {
     function Probe() {
-      const notification = useNotification()
+      const alert = useAlert()
       return (
         <pre data-testid="result">
           {JSON.stringify({
-            root: notification.rootProps.className,
-            title: notification.titleProps.className,
-            body: notification.bodyProps.className,
-            actions: notification.actionsProps.className,
-            hasIcon: notification.iconProps !== undefined,
-            hasStatus: notification.statusProps !== undefined,
+            root: alert.rootProps.className,
+            title: alert.titleProps.className,
+            body: alert.bodyProps.className,
+            actions: alert.actionsProps.className,
+            hasIcon: alert.iconProps !== undefined,
+            hasStatus: alert.statusProps !== undefined,
           })}
         </pre>
       )
     }
     await render(<Probe />)
     expect(JSON.parse(page.getByTestId('result').element().textContent)).toEqual({
-      root: 'kv-notification',
-      title: 'kv-notification-title',
-      body: 'kv-notification-body',
-      actions: 'kv-notification-actions',
+      root: 'kv-alert',
+      title: 'kv-alert-title',
+      body: 'kv-alert-body',
+      actions: 'kv-alert-actions',
       hasIcon: false,
       hasStatus: false,
     })
   })
 
   test.each(statuses)(
-    'with variant "$variant" it returns the class, the icon and the word of Notification.$variant',
+    'with variant "$variant" it returns the class, the icon and the word of Alert.$variant',
     async ({ variant, className, iconName, word }) => {
       await render(
         <main>
-          <HookNotification options={{ variant }} />
+          <HookAlert options={{ variant }} />
           <Icon name={iconName} data-testid="expected-icon" />
         </main>,
       )
-      const root = page.getByTestId('notification').element()
-      expect(root.className).toBe(`kv-notification ${className}`)
+      const root = page.getByTestId('alert').element()
+      expect(root.className).toBe(`kv-alert ${className}`)
       expect(iconPaths(root.querySelector('svg'))).toBe(
         iconPaths(page.getByTestId('expected-icon').element()),
       )
-      expect(classesOf(root.querySelector('svg'))).toContain('kv-notification-icon')
-      expect(root.querySelector('.kv-notification-status')?.textContent).toBe(word)
+      expect(classesOf(root.querySelector('svg'))).toContain('kv-alert-icon')
+      expect(root.querySelector('.kv-alert-status')?.textContent).toBe(word)
       expect(page.getByRole('heading').element().textContent).toBe(`${word} Din ansökan`)
       expect(warnings()).toEqual([])
     },
@@ -1039,8 +1019,8 @@ describe('useNotification', () => {
   test('the hook’s `messages` and the provider’s change the word', async () => {
     await render(
       <KvirnProvider locale="sv-SE" messages={sv}>
-        <HookNotification options={{ variant: 'warning' }} />
-        <HookNotification options={{ variant: 'warning', messages: { warningPrefix: 'Obs:' } }} />
+        <HookAlert options={{ variant: 'warning' }} />
+        <HookAlert options={{ variant: 'warning', messages: { warningPrefix: 'Obs:' } }} />
       </KvirnProvider>,
     )
     expect(
@@ -1061,7 +1041,7 @@ describe('useNotification', () => {
     await view.rerender(
       <KvirnProvider>
         <main>
-          <HookNotification options={{ variant: 'danger', announce: 'polite' }} />
+          <HookAlert options={{ variant: 'danger', announce: 'polite' }} />
         </main>
       </KvirnProvider>,
     )
@@ -1069,9 +1049,9 @@ describe('useNotification', () => {
   })
 
   test('returns the same objects for the same options', async () => {
-    const seen = new Set<UseNotificationResult>()
+    const seen = new Set<UseAlertResult>()
     function Probe({ tick }: { tick: number }) {
-      seen.add(useNotification({ variant: 'info' }))
+      seen.add(useAlert({ variant: 'info' }))
       return <p>{tick}</p>
     }
     const view = await render(<Probe tick={1} />)
@@ -1083,11 +1063,11 @@ describe('useNotification', () => {
 describe('server rendering', () => {
   test('renders every part to a string without touching the page', () => {
     const html = renderToString(
-      <Notification.Warning className="mitt">
-        <Notification.Title>Din ansökan</Notification.Title>
-        <Notification.Body>Text</Notification.Body>
-        <Notification.Actions />
-      </Notification.Warning>,
+      <Alert.Warning className="mitt">
+        <Alert.Title>Din ansökan</Alert.Title>
+        <Alert.Body>Text</Alert.Body>
+        <Alert.Actions />
+      </Alert.Warning>,
     ).replaceAll('<!-- -->', '')
     expect(html).toContain('Warning:')
     expect(html).toContain('Din ansökan')
@@ -1097,9 +1077,9 @@ describe('server rendering', () => {
 
   test('renders the plain Root to a string with no icon and no word', () => {
     const html = renderToString(
-      <Notification.Root>
-        <Notification.Title>Observera</Notification.Title>
-      </Notification.Root>,
+      <Alert.Root>
+        <Alert.Title>Observera</Alert.Title>
+      </Alert.Root>,
     )
     expect(html).toContain('Observera')
     expect(html).not.toContain('<svg')
@@ -1109,28 +1089,22 @@ describe('server rendering', () => {
 
 describe('types', () => {
   test('exports the variant, hook and part prop types', () => {
-    expectTypeOf<NotificationVariant>().toEqualTypeOf<'info' | 'success' | 'warning' | 'danger'>()
-    expectTypeOf<UseNotificationOptions['variant']>().toEqualTypeOf<
-      NotificationVariant | undefined
-    >()
-    expectTypeOf<UseNotificationOptions['announce']>().toEqualTypeOf<
-      'polite' | 'assertive' | undefined
-    >()
-    expectTypeOf<NotificationRootProps['announce']>().toEqualTypeOf<
-      'polite' | 'assertive' | undefined
-    >()
-    expectTypeOf<NotificationStatusRootProps>().toExtend<NotificationRootProps>()
-    expectTypeOf<NotificationStatusRootProps['messages']>().not.toBeNever()
-    expectTypeOf<NotificationState>().toEqualTypeOf<Record<string, never>>()
+    expectTypeOf<AlertVariant>().toEqualTypeOf<'info' | 'success' | 'warning' | 'danger'>()
+    expectTypeOf<UseAlertOptions['variant']>().toEqualTypeOf<AlertVariant | undefined>()
+    expectTypeOf<UseAlertOptions['announce']>().toEqualTypeOf<'polite' | 'assertive' | undefined>()
+    expectTypeOf<AlertRootProps['announce']>().toEqualTypeOf<'polite' | 'assertive' | undefined>()
+    expectTypeOf<AlertStatusRootProps>().toExtend<AlertRootProps>()
+    expectTypeOf<AlertStatusRootProps['messages']>().not.toBeNever()
+    expectTypeOf<AlertState>().toEqualTypeOf<Record<string, never>>()
   })
 
   test('every part takes HTML attributes, a ref to any element and render', () => {
     for (const props of [
-      {} as NotificationRootProps,
-      {} as NotificationStatusRootProps,
-      {} as NotificationTitleProps,
-      {} as NotificationBodyProps,
-      {} as NotificationActionsProps,
+      {} as AlertRootProps,
+      {} as AlertStatusRootProps,
+      {} as AlertTitleProps,
+      {} as AlertBodyProps,
+      {} as AlertActionsProps,
     ]) {
       expectTypeOf(props.className).toEqualTypeOf<string | undefined>()
       expectTypeOf(props.ref).toEqualTypeOf<Ref<HTMLElement> | undefined>()
@@ -1139,7 +1113,7 @@ describe('types', () => {
   })
 
   test('a status prop does not exist: choose the status by the component', () => {
-    expectTypeOf<NotificationStatusRootProps>().not.toHaveProperty('variant')
-    expectTypeOf<NotificationRootProps>().not.toHaveProperty('variant')
+    expectTypeOf<AlertStatusRootProps>().not.toHaveProperty('variant')
+    expectTypeOf<AlertRootProps>().not.toHaveProperty('variant')
   })
 })

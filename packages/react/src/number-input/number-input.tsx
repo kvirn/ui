@@ -84,7 +84,7 @@ function hasNameSource(input: HTMLInputElement): boolean {
  * <Field.Root required>
  *   <Field.Label>Hur mycket hyra betalar du per månad?</Field.Label>
  *   <NumberInput name="rent" decimals={2} grouping min={0} className="kv-input--width-10" />
- *   <Field.Hint>I kronor, till exempel 1 250,50.</Field.Hint>
+ *   <Field.HelpText>I kronor, till exempel 1 250,50.</Field.HelpText>
  * </Field.Root>
  */
 export function NumberInput({
@@ -125,7 +125,7 @@ export function NumberInput({
     if (field !== null && id !== undefined) {
       warnOnce(
         'number-input-id-in-field',
-        `A NumberInput inside a Field got id="${id}", which is ignored so the Field's label and hint stay linked. Set the id with controlId on Field.Root.`,
+        `A NumberInput inside a Field got id="${id}", which is ignored so the Field's label and help text stay linked. Set the id with controlId on Field.Root.`,
       )
     }
   }, [field, id])
@@ -151,7 +151,7 @@ export function NumberInput({
   const controlId = field?.controlProps.id
   // `decimals` only shapes the number mask: with your own mask, or `false`, there is no decimal mark.
   const hasDecimals = mask === undefined && (decimals ?? 0) > 0
-  // Your own mask shapes what is typed, and like a masked TextInput it needs a hint (3.3.2).
+  // Your own mask shapes what is typed, and like a masked TextInput it needs a help text (3.3.2).
   const hasOwnMask = mask !== undefined && mask !== false
   useEffect(() => {
     const element = elementRef.current
@@ -163,19 +163,19 @@ export function NumberInput({
     ) {
       return
     }
-    // A whole number needs no format hint. The decimal mark does: it is a comma in some languages
+    // A whole number needs no format help text. The decimal mark does: it is a comma in some languages
     // and a point in others, so say it with an example.
     const prefix = `${controlId}-description`
     if (element.ownerDocument.querySelector(`[id^="${CSS.escape(prefix)}"]`) === null) {
       if (hasDecimals) {
         warnOnce(
-          'number-input-decimals-without-hint',
-          'A NumberInput with decimals in a Field has no hint. The mask takes the decimal mark of the page’s language, but it doesn’t say so: add a visible hint, a <Field.Hint> under the control, with an example such as 1 250,50 (WCAG 3.3.2).',
+          'number-input-decimals-without-help-text',
+          'A NumberInput with decimals in a Field has no help text. The mask takes the decimal mark of the page’s language, but it doesn’t say so: add a visible help text, a <Field.HelpText> under the control, with an example such as 1 250,50 (WCAG 3.3.2).',
         )
       } else {
         warnOnce(
           'number-input-mask-without-description',
-          'A NumberInput with its own mask in a Field has no hint. The mask shapes what is typed, but it doesn’t explain the format: say it in a visible hint, a <Field.Hint> under the control, with an example (WCAG 3.3.2).',
+          'A NumberInput with its own mask in a Field has no help text. The mask shapes what is typed, but it doesn’t explain the format: say it in a visible help text, a <Field.HelpText> under the control, with an example (WCAG 3.3.2).',
         )
       }
     }

@@ -834,7 +834,7 @@ test.describe('OneTimeCode focus, states and modes', () => {
 })
 
 test.describe('OneTimeCode accessibility', () => {
-  test('a11y tree: one textbox named by the label, with the hint as its description', async ({
+  test('a11y tree: one textbox named by the label, with the help text as its description', async ({
     page,
   }) => {
     await openStory(page, 'partly-filled')

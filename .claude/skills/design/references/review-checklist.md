@@ -24,7 +24,7 @@ Use it for self-review before handoff and for reviewing stories, blocks and page
 - [ ] **(B)** Text contrast is at least 4.5:1 (7:1 in contrast themes). Control boundaries and focus are at least 3:1 (1.4.3, 1.4.11).
 - [ ] **(B)** Nothing relies on colour alone (1.4.1).
 - [ ] **(B)** Focus is visible on every interactive element: 2px ring, 2px offset (2.4.7, 2.4.13).
-- [ ] **(B)** No essential text in `text-muted`, `body-small`, tooltips or images of text, except the hint under a control (`Field.Hint`), which is `body-small` in the `text` colour and is never the only place essential information lives (the error repeats the format, and anything needed before answering is a 16px description).
+- [ ] **(B)** No essential text in `text-muted`, `body-small`, tooltips or images of text, except the help text under a control (`Field.HelpText`), which is `body-small` in the `text` colour and is never the only place essential information lives (the error repeats the format, and anything needed before answering is a 16px description).
 - [ ] Only semantic tokens are used. New values have a measured contrast pair and the maintainer's approval.
 - [ ] Controls use `border-control`, never `border-subtle`, as their edge.
 - [ ] Typography follows the scale. Body text is 16px or larger, sentence case, and prose lines are no longer than about 70 characters.

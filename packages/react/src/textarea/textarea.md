@@ -37,7 +37,7 @@ Textarea is one element, so it has no `.Root`. The props are the controls above,
 | Class                | On             | Sets                                                                                                                          |
 | -------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `kv-textarea`        | Textarea       | The part class. The theme styles the box, its edge, its ring and its states, as for `kv-input`, with block padding and `rows` |
-| `kv-field-hint`      | CharacterCount | The hint's own class: 14px, the text colour. Never changed by the field's state                                               |
+| `kv-field-help-text` | CharacterCount | The help text's own class: 14px, the text colour. Never changed by the field's state                                          |
 | `kv-character-count` | CharacterCount | Adds only the over-the-limit look: weight 600 and the `warning` icon (`data-over`)                                            |
 
 There is no width class: a Textarea is the full width of its field, so the box never grows wider than a 320px screen. The height is `rows`. It is 44px at the least, the value text stays 16px in compact density, and an invalid box has a 2px `danger` edge, drawn from `data-invalid` or `aria-invalid="true"`, never from `:invalid`.
@@ -50,7 +50,7 @@ There is no width class: a Textarea is the full width of its field, so the box n
 
 A Textarea without `characterCount` announces nothing. The strings are in all six locales (`se` is English until a native speaker writes it).
 
-What Textarea does on its own: it takes the control's `id` and `aria-describedby` from the Field (and ignores an `id` of its own inside one, with a dev warning, so the label stays linked); it keeps your own `aria-describedby` ids after the Field's; it sets `rows` to 5; it moves no focus and handles no keys. With `characterCount` it also leaves `maxlength` off the element, renders the count after the box, registers the count as one of the control's descriptions (so it is read when the box gets focus, between the description above and the hint and error below), keeps the count's text up to date, and announces it through the Announcer.
+What Textarea does on its own: it takes the control's `id` and `aria-describedby` from the Field (and ignores an `id` of its own inside one, with a dev warning, so the label stays linked); it keeps your own `aria-describedby` ids after the Field's; it sets `rows` to 5; it moves no focus and handles no keys. With `characterCount` it also leaves `maxlength` off the element, renders the count after the box, registers the count as one of the control's descriptions (so it is read when the box gets focus, between the description above and the help text and error below), keeps the count's text up to date, and announces it through the Announcer.
 
 ## Component
 
@@ -114,9 +114,9 @@ No `value`, no handlers: the Textarea is uncontrolled, and the form's `FormData`
 </form>
 ```
 
-### Hints and errors: the order
+### HelpTexts and errors: the order
 
-The default order is label, description, box, count, hint, then the error ([Field](../field/field.md#the-default-order)). Put what the user must read before answering in a description above the box, and a short instruction in a hint under it. The count is placed for you, directly under the box:
+The default order is label, description, box, count, help text, then the error ([Field](../field/field.md#the-default-order)). Put what the user must read before answering in a description above the box, and a short instruction in a help text under it. The count is placed for you, directly under the box:
 
 ```tsx
 <Field.Root invalid={invalid} required>
@@ -125,7 +125,7 @@ The default order is label, description, box, count, hint, then the error ([Fiel
     <p>Berätta vad som har hänt och vad du behöver hjälp med.</p>
   </Field.Prose>
   <Textarea name="situation" maxLength={1000} characterCount />
-  <Field.Hint>Du kan svara på svenska, finska eller engelska.</Field.Hint>
+  <Field.HelpText>Du kan svara på svenska, finska eller engelska.</Field.HelpText>
   <Field.ErrorMessage>{error}</Field.ErrorMessage>
 </Field.Root>
 ```
@@ -145,7 +145,7 @@ Use a count when the limit is real (a form field with a size in the register, an
 - **`characterCount` without `maxLength`** warns once in development and renders nothing.
 - **An uncontrolled box** keeps its value in the element. With `characterCount` it reads that value on mount and on `pageshow` (the browser restores a form without an input event), and after a form reset. For any other change from code, pass `value`.
 - **In a Fieldset without a Field,** the count still describes the box, not the `<fieldset>`: the Textarea gives it its own id and lists it in its own `aria-describedby`. A `CharacterCount` of your own directly in a Fieldset works the same way: pass it an `id` and list that id in your control's `aria-describedby`.
-- **Your own markup:** `useTextarea` for the box and `CharacterCount` for the count. Inside a Field the count registers with the Field like a hint, so nothing more is needed:
+- **Your own markup:** `useTextarea` for the box and `CharacterCount` for the count. Inside a Field the count registers with the Field like a help text, so nothing more is needed:
 
 ```tsx
 const { textareaProps, isFocused } = useTextarea({ onValueChange: setValue })
@@ -161,7 +161,7 @@ Outside a Field, nothing links the count to the box: pass the count an `id` and 
 
 ### Your part
 
-- **A visible label** in a Field. The placeholder is not the label: put examples in the description or the hint (3.3.2).
+- **A visible label** in a Field. The placeholder is not the label: put examples in the description or the help text (3.3.2).
 - **`autoComplete`** where a token exists for the question (1.3.5), and never block paste (3.3.8).
 - **Read-only and disabled** are for staff tools. In a resident form, explain on submit instead.
 - **A session that doesn't expire under a long answer** (2.2.1): warn and let the user extend it, and save drafts in staff tools.

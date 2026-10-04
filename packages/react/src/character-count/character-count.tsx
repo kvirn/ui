@@ -51,8 +51,8 @@ export interface CharacterCountProps extends Omit<ComponentPropsWithRef<'p'>, 'c
 }
 
 /**
- * How much room is left in a box with a limit: "Du har 120 tecken kvar." It is a hint
- * (`<p class="kv-field-hint kv-character-count">`) that goes directly under the control. In a
+ * How much room is left in a box with a limit: "Du har 120 tecken kvar." It is a help text
+ * (`<p class="kv-field-help-text kv-character-count">`) that goes directly under the control. In a
  * Field it describes the control, so a screen reader reads it on focus, and it is announced
  * through the Announcer from 80% of the limit when typing pauses, and when the limit is crossed.
  * Over the limit is a warning, not an error: it never cuts the text, and your form decides on

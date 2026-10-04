@@ -132,7 +132,7 @@ describe('rendering', () => {
     )
     const count = container.querySelector('p')
     expect(ref.current).toBe(count)
-    expect(count?.className).toBe('egen kv-field-hint kv-character-count')
+    expect(count?.className).toBe('egen kv-field-help-text kv-character-count')
     expect(count?.getAttribute('id')).toBe('eget')
     expect(count?.getAttribute('data-testid')).toBe('count')
   })
@@ -201,7 +201,7 @@ describe('strings', () => {
 })
 
 describe('in a Field', () => {
-  test('the control’s description lists the description, the count, the hint and the error, in DOM order', async () => {
+  test('the control’s description lists the description, the count, the help text and the error, in DOM order', async () => {
     await render(
       <Field.Root required invalid>
         <Field.Label>Beskriv</Field.Label>
@@ -210,7 +210,7 @@ describe('in a Field', () => {
         </Field.Prose>
         <TextInput />
         <CharacterCount value="abc" limit={10} />
-        <Field.Hint>Svenska eller engelska.</Field.Hint>
+        <Field.HelpText>Svenska eller engelska.</Field.HelpText>
         <Field.ErrorMessage>Beskriv ärendet</Field.ErrorMessage>
       </Field.Root>,
     )
@@ -429,7 +429,7 @@ describe('types', () => {
   test('the props and the part props are exported', () => {
     expectTypeOf<
       CharacterCountPartProps['className']
-    >().toEqualTypeOf<'kv-field-hint kv-character-count'>()
+    >().toEqualTypeOf<'kv-field-help-text kv-character-count'>()
     expectTypeOf<CharacterCountProps['value']>().toEqualTypeOf<string>()
     expectTypeOf<CharacterCountProps['limit']>().toEqualTypeOf<number>()
     expectTypeOf<UseCharacterCountOptions['limit']>().toEqualTypeOf<number>()

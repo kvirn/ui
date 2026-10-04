@@ -41,7 +41,7 @@ export interface ListboxNativeProps extends Omit<
 /**
  * The native rendering of a Listbox, rendered by `Listbox.Root` for `native="always"` and `native="auto"`
  * on touch devices: a native `<select>`, wired to its Field. The label names
- * it, and the hint and error describe it (contract: listbox.a11y.md).
+ * it, and the help text and error describe it (contract: listbox.a11y.md).
  * Children are plain `<option>` and `<optgroup>`. It holds no form state: pass `value` and
  * `onValueChange`, or `defaultValue` and `name` for a plain form, or spread your form library's
  * props. A single choice only: for several, use a CheckboxGroup.

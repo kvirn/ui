@@ -1,11 +1,13 @@
-import { OneTimeCode } from '@kvirn-ui/react'
+import { Button, Field, OneTimeCode } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/one-time-code/one-time-code.a11y.md?raw'
+import guide from '../../../../../packages/react/src/one-time-code/one-time-code.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
+import { usageGuide } from '../../docs-source.ts'
 import { logChange } from '../form/choice.fixture.tsx'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize } from '../theme-story-assertions.ts'
-import { OneTimeCodeField, oneTimeCodeTextsFor } from './one-time-code.fixture.tsx'
+import { codeTextsFor, oneTimeCodeTextsFor } from './one-time-code.fixture.tsx'
 
 // Components/Form/OneTimeCode: a code from a text message, an email or an authenticator app,
 // shown as a row of boxes over ONE native input (Plan 0014, Plan 0019, design
@@ -25,28 +27,52 @@ const meta = {
   title: 'Components/Form/OneTimeCode',
   component: OneTimeCode.Root,
   globals: { locale: 'sv' },
+  // Every option at its default, so the main example starts where an adopter starts. Not `action`
+  // for `onValueChange`: it serializes the React event in the second argument on every keystroke,
+  // which lags the canvas (see logChange).
+  args: {
+    pattern: '999999',
+    disabled: false,
+    announceRejections: true,
+    onValueChange: logChange('onValueChange'),
+  },
+  // Every prop in one-time-code.tsx and use-one-time-code.ts. `OneTimeCode.Input` takes `name` and
+  // `readOnly`, and `OneTimeCode.Slot` takes `index`: see the API section.
   argTypes: {
     pattern: {
       control: 'text',
       description:
         'The shape of the code, one symbol per position: `9` digit, `*` letter or digit, `a` letter, `A` capital letter, `&` capital letter or digit (lower case typed becomes a capital), `-` a separator between two of them, drawn as its own cell and kept in the value. ASCII only. Default `999999`. An invalid pattern throws a `RangeError`.',
     },
-    value: { control: false },
+    value: {
+      control: false,
+      description: 'Controlled: the value from your form state. Pair it with `onValueChange`.',
+    },
     defaultValue: { control: 'text', description: 'Uncontrolled: the input keeps the value.' },
-    disabled: { control: 'boolean' },
+    disabled: {
+      control: 'boolean',
+      description:
+        'Natively disabled: skipped by Tab. Prefer `readOnly` on the Input while a code is checked.',
+    },
     announceRejections: {
       control: 'boolean',
       description: 'Announce when the mask drops a character. Default true; needs KvirnProvider.',
     },
-    messages: { control: false },
-    onValueChange: { control: false },
+    messages: {
+      control: false,
+      description: 'Per-instance overrides for the rejection announcements.',
+    },
+    onValueChange: {
+      control: false,
+      description: 'Called with the new value on every change. It only reports.',
+    },
     onComplete: { action: 'onComplete', description: 'Never submits and never moves focus.' },
-    render: { control: false },
+    render: { control: false, description: 'Another element. It must still be a `<div>`.' },
   },
-  // Not `action`: it serializes the React event in the second argument on every keystroke, which
-  // lags the canvas (see logChange).
-  args: { onValueChange: logChange('onValueChange') },
-  parameters: { a11yContract: contract },
+  parameters: {
+    a11yContract: contract,
+    docs: { description: { component: usageGuide(guide) } },
+  },
   decorators: [
     (Story) => (
       <div className="kv-story-form">
@@ -55,7 +81,24 @@ const meta = {
     ),
     withFormLocale,
   ],
-  render: (args, { globals }) => <OneTimeCodeField locale={localeOf(globals)} {...args} />,
+  render: (args, { globals }) => {
+    const pattern = args.pattern ?? '999999'
+    const { label, hint, lang } = codeTextsFor(localeOf(globals), 'sms', pattern)
+    return (
+      <Field.Root lang={lang}>
+        <Field.Label marker="none">{label}</Field.Label>
+        <Field.Prose>
+          <p>{hint}</p>
+        </Field.Prose>
+        <OneTimeCode.Root {...args}>
+          <OneTimeCode.Input name="code" />
+          {Array.from(pattern, (_, index) => (
+            <OneTimeCode.Slot key={index} index={index} />
+          ))}
+        </OneTimeCode.Root>
+      </Field.Root>
+    )
+  },
 } satisfies Meta<typeof OneTimeCode.Root>
 
 export default meta
@@ -80,7 +123,7 @@ const separatorIndexes = (canvasElement: HTMLElement) =>
   )
 
 /**
- * An empty six-digit code from a text message. The label says where the code is, and the hint
+ * An empty six-digit code from a text message. The label says where the code is, and the help text
  * above the boxes says how many digits it has: the boxes are hidden from screen readers. Press a
  * box, or Tab in, and type, paste "481 920", or accept the SMS suggestion: it's one field.
  */
@@ -142,9 +185,36 @@ export const Complete: Story = {
  */
 export const Invalid: Story = {
   args: { defaultValue: '481920' },
-  render: (args, { globals }) => (
-    <OneTimeCodeField locale={localeOf(globals)} invalid withSubmit {...args} />
-  ),
+  render: (args, { globals }) => {
+    const pattern = args.pattern ?? '999999'
+    const { label, hint, lang, errorWrong, submit } = codeTextsFor(
+      localeOf(globals),
+      'sms',
+      pattern,
+    )
+    return (
+      <form className="kv-story-form" noValidate onSubmit={(event) => event.preventDefault()}>
+        <Field.Root invalid lang={lang}>
+          <Field.Label marker="none">{label}</Field.Label>
+          <Field.Prose>
+            <p>{hint}</p>
+          </Field.Prose>
+          <OneTimeCode.Root {...args}>
+            <OneTimeCode.Input name="code" />
+            {Array.from(pattern, (_, index) => (
+              <OneTimeCode.Slot key={index} index={index} />
+            ))}
+          </OneTimeCode.Root>
+          <Field.ErrorMessage>{errorWrong}</Field.ErrorMessage>
+        </Field.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {submit}
+          </Button>
+        </div>
+      </form>
+    )
+  },
   play: async ({ canvas, canvasElement, globals }) => {
     const texts = oneTimeCodeTextsFor(localeOf(globals))
     const input = canvas.getByRole('textbox', { name: texts.smsLabel })
@@ -179,9 +249,24 @@ export const Disabled: Story = {
  */
 export const TwoGroups: Story = {
   args: { pattern: '&&&&-&&&&', defaultValue: 'K7QX-2M9P' },
-  render: (args, { globals }) => (
-    <OneTimeCodeField locale={localeOf(globals)} kind="email" {...args} />
-  ),
+  render: (args, { globals }) => {
+    const pattern = args.pattern ?? '999999'
+    const { label, hint, lang } = codeTextsFor(localeOf(globals), 'email', pattern)
+    return (
+      <Field.Root lang={lang}>
+        <Field.Label marker="none">{label}</Field.Label>
+        <Field.Prose>
+          <p>{hint}</p>
+        </Field.Prose>
+        <OneTimeCode.Root {...args}>
+          <OneTimeCode.Input name="code" />
+          {Array.from(pattern, (_, index) => (
+            <OneTimeCode.Slot key={index} index={index} />
+          ))}
+        </OneTimeCode.Root>
+      </Field.Root>
+    )
+  },
   play: async ({ canvas, canvasElement, globals }) => {
     const texts = oneTimeCodeTextsFor(localeOf(globals))
     const input = canvas.getByRole('textbox', { name: texts.emailLabel })
@@ -209,9 +294,24 @@ export const TwoGroups: Story = {
  */
 export const ThreeGroups: Story = {
   args: { pattern: '&&&-&&&-&&&', defaultValue: 'H4T-K92' },
-  render: (args, { globals }) => (
-    <OneTimeCodeField locale={localeOf(globals)} kind="email" {...args} />
-  ),
+  render: (args, { globals }) => {
+    const pattern = args.pattern ?? '999999'
+    const { label, hint, lang } = codeTextsFor(localeOf(globals), 'email', pattern)
+    return (
+      <Field.Root lang={lang}>
+        <Field.Label marker="none">{label}</Field.Label>
+        <Field.Prose>
+          <p>{hint}</p>
+        </Field.Prose>
+        <OneTimeCode.Root {...args}>
+          <OneTimeCode.Input name="code" />
+          {Array.from(pattern, (_, index) => (
+            <OneTimeCode.Slot key={index} index={index} />
+          ))}
+        </OneTimeCode.Root>
+      </Field.Root>
+    )
+  },
   play: async ({ canvas, canvasElement, globals }) => {
     const texts = oneTimeCodeTextsFor(localeOf(globals))
     const input = canvas.getByRole('textbox', { name: texts.emailLabel })
@@ -227,7 +327,7 @@ export const ThreeGroups: Story = {
 
 /**
  * Two capital letters, a dash and four digits (`AA-9999`): `HT-4829`. Lower case typed in the
- * letters becomes a capital, and the digits refuse letters. The hint says "2 letters and then 4
+ * letters becomes a capital, and the digits refuse letters. The help text says "2 letters and then 4
  * digits". Boxes draw at 320px in the page column. Plex's dotted zero tells 0 from O.
  */
 export const LetterPrefix: Story = {
@@ -255,18 +355,25 @@ const plainPatterns = ['AAA', 'AAAAAAAAAAA', 'AA-AA-AA-AA'] as const
  */
 export const PatternLimits: Story = {
   render: (args, { globals }) => (
-    <div className="kv-story-form">
-      {[...drawnPatterns, ...plainPatterns].map((pattern) => (
-        <OneTimeCodeField
-          key={pattern}
-          locale={localeOf(globals)}
-          kind="letters"
-          name={pattern}
-          {...args}
-          pattern={pattern}
-        />
-      ))}
-    </div>
+    <>
+      {[...drawnPatterns, ...plainPatterns].map((pattern) => {
+        const { label, hint, lang } = codeTextsFor(localeOf(globals), 'letters', pattern)
+        return (
+          <Field.Root key={pattern} lang={lang}>
+            <Field.Label marker="none">{label}</Field.Label>
+            <Field.Prose>
+              <p>{hint}</p>
+            </Field.Prose>
+            <OneTimeCode.Root {...args} pattern={pattern}>
+              <OneTimeCode.Input name={pattern} />
+              {Array.from(pattern, (_, index) => (
+                <OneTimeCode.Slot key={index} index={index} />
+              ))}
+            </OneTimeCode.Root>
+          </Field.Root>
+        )
+      })}
+    </>
   ),
 }
 
@@ -280,9 +387,24 @@ export const Compact: Story = {
       </div>
     ),
   ],
-  render: (args, { globals }) => (
-    <OneTimeCodeField locale={localeOf(globals)} kind="app" {...args} />
-  ),
+  render: (args, { globals }) => {
+    const pattern = args.pattern ?? '999999'
+    const { label, hint, lang } = codeTextsFor(localeOf(globals), 'app', pattern)
+    return (
+      <Field.Root lang={lang}>
+        <Field.Label marker="none">{label}</Field.Label>
+        <Field.Prose>
+          <p>{hint}</p>
+        </Field.Prose>
+        <OneTimeCode.Root {...args}>
+          <OneTimeCode.Input name="code" />
+          {Array.from(pattern, (_, index) => (
+            <OneTimeCode.Slot key={index} index={index} />
+          ))}
+        </OneTimeCode.Root>
+      </Field.Root>
+    )
+  },
   play: async ({ canvas, globals }) => {
     const texts = oneTimeCodeTextsFor(localeOf(globals))
     await expectMinimumTargetSize(canvas.getByRole('textbox', { name: texts.appLabel }))
@@ -305,31 +427,6 @@ export const RTL: Story = {
   },
 }
 
-/** Every state in one column, with names that stay unique on the page. */
-function ForcedColorsStates({ locale }: { locale: ReturnType<typeof localeOf> }) {
-  return (
-    <div className="kv-story-form">
-      <OneTimeCodeField locale={locale} name="empty" />
-      <OneTimeCodeField locale={locale} kind="app" name="partly" defaultValue="481" />
-      <OneTimeCodeField
-        locale={locale}
-        kind="email"
-        pattern="&&&&-&&&&"
-        name="invalid"
-        invalid
-        defaultValue="K7QX-2M9P"
-      />
-      <OneTimeCodeField
-        locale={locale}
-        kind="signIn"
-        name="disabled"
-        defaultValue="481920"
-        disabled
-      />
-    </div>
-  )
-}
-
 /**
  * In forced colours the theme shows the plain input: system colours, a 2px edge when invalid, a
  * dashed edge when disabled, and the boxes and dashes hidden. The dash is part of the value, so
@@ -338,7 +435,66 @@ function ForcedColorsStates({ locale }: { locale: ReturnType<typeof localeOf> })
  */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  render: (_args, { globals }) => <ForcedColorsStates locale={localeOf(globals)} />,
+  render: (args, { globals }) => {
+    const locale = localeOf(globals)
+    const empty = codeTextsFor(locale, 'sms', '999999')
+    const partly = codeTextsFor(locale, 'app', '999999')
+    const invalid = codeTextsFor(locale, 'email', '&&&&-&&&&')
+    const disabled = codeTextsFor(locale, 'signIn', '999999')
+    return (
+      <>
+        <Field.Root lang={empty.lang}>
+          <Field.Label marker="none">{empty.label}</Field.Label>
+          <Field.Prose>
+            <p>{empty.hint}</p>
+          </Field.Prose>
+          <OneTimeCode.Root {...args} pattern="999999">
+            <OneTimeCode.Input name="empty" />
+            {Array.from('999999', (_, index) => (
+              <OneTimeCode.Slot key={index} index={index} />
+            ))}
+          </OneTimeCode.Root>
+        </Field.Root>
+        <Field.Root lang={partly.lang}>
+          <Field.Label marker="none">{partly.label}</Field.Label>
+          <Field.Prose>
+            <p>{partly.hint}</p>
+          </Field.Prose>
+          <OneTimeCode.Root {...args} pattern="999999" defaultValue="481">
+            <OneTimeCode.Input name="partly" />
+            {Array.from('999999', (_, index) => (
+              <OneTimeCode.Slot key={index} index={index} />
+            ))}
+          </OneTimeCode.Root>
+        </Field.Root>
+        <Field.Root invalid lang={invalid.lang}>
+          <Field.Label marker="none">{invalid.label}</Field.Label>
+          <Field.Prose>
+            <p>{invalid.hint}</p>
+          </Field.Prose>
+          <OneTimeCode.Root {...args} pattern="&&&&-&&&&" defaultValue="K7QX-2M9P">
+            <OneTimeCode.Input name="invalid" />
+            {Array.from('&&&&-&&&&', (_, index) => (
+              <OneTimeCode.Slot key={index} index={index} />
+            ))}
+          </OneTimeCode.Root>
+          <Field.ErrorMessage>{invalid.errorWrong}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root lang={disabled.lang}>
+          <Field.Label marker="none">{disabled.label}</Field.Label>
+          <Field.Prose>
+            <p>{disabled.hint}</p>
+          </Field.Prose>
+          <OneTimeCode.Root {...args} pattern="999999" defaultValue="481920" disabled>
+            <OneTimeCode.Input name="disabled" />
+            {Array.from('999999', (_, index) => (
+              <OneTimeCode.Slot key={index} index={index} />
+            ))}
+          </OneTimeCode.Root>
+        </Field.Root>
+      </>
+    )
+  },
 }
 
 /**
@@ -350,9 +506,31 @@ export const ForcedColors: Story = {
  */
 export const Keyboard: Story = {
   args: { pattern: '****-****' },
-  render: (args, { globals }) => (
-    <OneTimeCodeField locale={localeOf(globals)} kind="email" withSubmit {...args} />
-  ),
+  render: (args, { globals }) => {
+    const pattern = args.pattern ?? '999999'
+    const { label, hint, lang, submit } = codeTextsFor(localeOf(globals), 'email', pattern)
+    return (
+      <form className="kv-story-form" noValidate onSubmit={(event) => event.preventDefault()}>
+        <Field.Root lang={lang}>
+          <Field.Label marker="none">{label}</Field.Label>
+          <Field.Prose>
+            <p>{hint}</p>
+          </Field.Prose>
+          <OneTimeCode.Root {...args}>
+            <OneTimeCode.Input name="code" />
+            {Array.from(pattern, (_, index) => (
+              <OneTimeCode.Slot key={index} index={index} />
+            ))}
+          </OneTimeCode.Root>
+        </Field.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {submit}
+          </Button>
+        </div>
+      </form>
+    )
+  },
   play: async ({ canvas, globals }) => {
     const texts = oneTimeCodeTextsFor(localeOf(globals))
     await expect(canvas.getByRole('textbox', { name: texts.emailLabel })).toHaveValue('')

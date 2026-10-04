@@ -128,14 +128,14 @@ function LinkForm({ editor, onClose }: LinkFormProps): ReactElement {
           value={address}
           onValueChange={setAddress}
         />
-        <Field.Hint>{messages.linkUrlHint}</Field.Hint>
+        <Field.HelpText>{messages.linkUrlHint}</Field.HelpText>
         <Field.ErrorMessage>{addressMessage}</Field.ErrorMessage>
       </Field.Root>
       {needsText ? (
         <Field.Root required invalid={problems.text !== undefined}>
           <Field.Label marker="none">{messages.linkText}</Field.Label>
           <TextInput ref={textInput} value={text} onValueChange={setText} />
-          <Field.Hint>{messages.linkTextHint}</Field.Hint>
+          <Field.HelpText>{messages.linkTextHint}</Field.HelpText>
           <Field.ErrorMessage>{messages.linkTextMissing}</Field.ErrorMessage>
         </Field.Root>
       ) : null}

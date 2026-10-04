@@ -5,18 +5,13 @@ import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
 import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
-import { KvirnProvider, Link } from '@kvirn-ui/react'
+import { Icon, KvirnProvider, Link, Navigation } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/link/link.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import type { CSSProperties } from 'react'
 import { expect, waitFor } from 'storybook/test'
+import { showSource } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
-// Package-internal fixture, shared with link.test.tsx. Not part of the public API.
-import {
-  MockRouterProvider,
-  mockRouterLinkComponent,
-  useMockPathname,
-} from '../../../../../packages/react/src/link/link.fixture.tsx'
+import { AppRoot, RoutedNavigation } from './link.fixture.tsx'
 
 // Components/Link: the headless Link, styled by @kvirn-ui/theme/theme.css.
 // link.e2e.ts runs its keyboard contract against Default, SamePageLink, CurrentPage, NewTab,
@@ -25,54 +20,17 @@ import {
 
 const catalogs: Record<string, KvirnMessages> = { sv, fi, nb, nn, se, en }
 
-// 2.5.8: a plain list of inline links is about 24px tall per row. The gap keeps each link's
-// 24px target circle clear of its neighbours, as a theme would. Link itself ships no CSS.
-const linkListStyle: CSSProperties = { display: 'grid', gap: '0.5rem' }
-
-/** A labelled navigation list: `kv-nav` turns its links into navigation items. */
-function Navigation({
-  label = 'Parkeringstillstånd',
-  items = ['Översikt', 'Ansök', 'Kontakta oss'],
-  density,
-}: {
-  label?: string
-  items?: readonly [string, string, string]
-  density?: 'compact' | undefined
-}) {
-  const [current, ...others] = items
-  return (
-    <div className={density === 'compact' ? 'kv-story-surface kv-compact' : 'kv-story-surface'}>
-      <nav aria-label={label}>
-        <ul className="kv-nav">
-          <li>
-            <Link.Root href="#sida-1" current="page">
-              {current}
-            </Link.Root>
-          </li>
-          {others.map((item, index) => (
-            <li key={item}>
-              <Link.Root href={`#sida-${index + 2}`}>{item}</Link.Root>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </div>
-  )
-}
-
-function RunningTextLink() {
-  return (
-    <p>
-      Du kan <Link.Root href="#ansokan">ansöka om parkeringstillstånd</Link.Root> på webben.
-    </p>
-  )
-}
-
 const meta = {
   title: 'Components/Link',
   component: Link.Root,
   args: { href: '#ansok', children: 'Ansök om bygglov' },
   argTypes: {
+    className: {
+      control: 'select',
+      options: [undefined, 'kv-link--service'],
+      description:
+        'Joins `kv-link`. The theme styles `kv-link--service`: the one link per view that starts an e-service. Put a `Link.Icon` first for the filled icon block.',
+    },
     current: {
       control: 'select',
       options: [undefined, 'page', 'step', 'location', 'date', 'time', true],
@@ -142,7 +100,11 @@ export const Keyboard: Story = {
 
 /** In a sentence, a link is told apart by its underline, not colour alone (1.4.1). */
 export const InRunningText: Story = {
-  render: () => <RunningTextLink />,
+  render: () => (
+    <p>
+      Du kan <Link.Root href="#ansokan">ansöka om parkeringstillstånd</Link.Root> på webben.
+    </p>
+  ),
   play: async ({ canvas }) => {
     const link = canvas.getByRole('link', { name: 'ansöka om parkeringstillstånd' })
     await expect(link.closest('p')).toHaveTextContent(
@@ -151,26 +113,31 @@ export const InRunningText: Story = {
   },
 }
 
-/** Inside `kv-nav` the current page gets a background, a bar and weight. */
+/** Inside a `Navigation.Item` the current page gets a background, a bar and weight. */
 export const CurrentPage: Story = {
+  decorators: [
+    (Story) => (
+      <div className="kv-story-surface">
+        <Story />
+      </div>
+    ),
+  ],
   render: () => (
-    <div className="kv-story-surface">
-      <nav aria-label="Huvudmeny">
-        <ul className="kv-nav">
-          <li>
-            <Link.Root href="#start">Start</Link.Root>
-          </li>
-          <li>
-            <Link.Root href="#ansok" current="page">
-              Ansök
-            </Link.Root>
-          </li>
-          <li>
-            <Link.Root href="#kontakt">Kontakt</Link.Root>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <Navigation.Root label="Huvudmeny">
+      <Navigation.List>
+        <Navigation.Item>
+          <Link.Root href="#start">Start</Link.Root>
+        </Navigation.Item>
+        <Navigation.Item>
+          <Link.Root href="#ansok" current="page">
+            Ansök
+          </Link.Root>
+        </Navigation.Item>
+        <Navigation.Item>
+          <Link.Root href="#kontakt">Kontakt</Link.Root>
+        </Navigation.Item>
+      </Navigation.List>
+    </Navigation.Root>
   ),
   play: async ({ canvas }) => {
     const current = canvas.getByRole('link', { name: 'Ansök' })
@@ -181,6 +148,65 @@ export const CurrentPage: Story = {
       await expect(link).not.toHaveAttribute('aria-current')
       await expect(link).not.toHaveAttribute('data-current')
     }
+  },
+}
+
+/**
+ * `className="kv-link--service"` is the one link per view that starts an e-service: an
+ * outlined label, and with a `Link.Icon` first, a filled block with the icon. It is a link,
+ * not a button: it navigates, so it keeps the router, `current` and the new-tab notice.
+ */
+export const Service: Story = {
+  args: {
+    href: 'https://eservice.example/bygglov',
+    className: 'kv-link--service',
+    target: '_blank',
+    children: (
+      <>
+        <Link.Icon>
+          <Icon name="arrow-forward" size={6} />
+        </Link.Icon>
+        Ansök om bygglov <Link.NewTabNotice />
+      </>
+    ),
+  },
+  play: async ({ canvas }) => {
+    const link = canvas.getByRole('link', { name: 'Ansök om bygglov (öppnas i en ny flik)' })
+    await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+    await expect(link).toHaveClass('kv-link', 'kv-link--service')
+    await expectMinimumTargetSize(link)
+    // The icon block is decorative: it is not in the name (2.5.3).
+    await expect(link.querySelector('.kv-link-icon')).toHaveAttribute('aria-hidden', 'true')
+  },
+}
+
+/** A service link that wraps: the icon block stretches to the full height of the label. */
+export const ServiceLongFinnishText: Story = {
+  args: {
+    href: 'https://eservice.example/rakennuslupa',
+    className: 'kv-link--service',
+    children: (
+      <>
+        <Link.Icon>
+          <Icon name="arrow-forward" size={6} />
+        </Link.Icon>
+        Hae rakennuslupaa sähköisesti
+      </>
+    ),
+  },
+  globals: { locale: 'fi' },
+  decorators: [
+    (Story) => (
+      <div className="kv-story-narrow" data-testid="narrow">
+        <p>
+          <Story />
+        </p>
+      </div>
+    ),
+  ],
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('link', { name: 'Hae rakennuslupaa sähköisesti' })).toBeVisible()
+    await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }
 
@@ -204,7 +230,7 @@ export const NewTab: Story = {
 /** Instance `messages` beat the provider, and children beat every message. */
 export const NewTabNoticeOverrides: Story = {
   render: () => (
-    <ul style={linkListStyle}>
+    <ul className="kv-story-inline-list">
       <li>
         <Link.Root
           href="https://www.digg.se/"
@@ -229,37 +255,17 @@ export const NewTabNoticeOverrides: Story = {
   },
 }
 
-function RouterNavigation() {
-  const pathname = useMockPathname()
-  return (
-    <>
-      <nav aria-label="Huvudmeny">
-        <ul className="kv-nav">
-          <li>
-            <Link.Root href="/start" current={pathname === '/start' ? 'page' : false}>
-              Start
-            </Link.Root>
-          </li>
-          <li>
-            <Link.Root href="/ansok" current={pathname === '/ansok' ? 'page' : false}>
-              Ansök
-            </Link.Root>
-          </li>
-        </ul>
-      </nav>
-      <p>Nuvarande sida: {pathname}</p>
-    </>
-  )
-}
-
-/** The provider's registered router link renders every Link. A mock router here. */
+/**
+ * Register your router's link once, on the provider: every Link then renders it, and the router
+ * handles the click. `current` comes from the router's pathname. The mock router here stands in
+ * for your own (`NextLink`, TanStack Router's link).
+ */
 export const RouterLink: Story = {
+  parameters: showSource('link/link.fixture.tsx', 'AppRoot', 'RoutedNavigation'),
   render: () => (
-    <KvirnProvider linkComponent={mockRouterLinkComponent}>
-      <MockRouterProvider initialPathname="/start">
-        <RouterNavigation />
-      </MockRouterProvider>
-    </KvirnProvider>
+    <AppRoot>
+      <RoutedNavigation />
+    </AppRoot>
   ),
   play: async ({ canvas }) => {
     const start = canvas.getByRole('link', { name: 'Start' })
@@ -306,8 +312,24 @@ export const OtherLanguage: Story = {
 export const FocusVisible: Story = {
   render: () => (
     <>
-      <RunningTextLink />
-      <Navigation />
+      <p>
+        Du kan <Link.Root href="#ansokan">ansöka om parkeringstillstånd</Link.Root> på webben.
+      </p>
+      <Navigation.Root label="Parkeringstillstånd">
+        <Navigation.List>
+          <Navigation.Item>
+            <Link.Root href="#sida-1" current="page">
+              Översikt
+            </Link.Root>
+          </Navigation.Item>
+          <Navigation.Item>
+            <Link.Root href="#sida-2">Ansök</Link.Root>
+          </Navigation.Item>
+          <Navigation.Item>
+            <Link.Root href="#sida-3">Kontakta oss</Link.Root>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
     </>
   ),
   play: async ({ canvas, userEvent }) => {
@@ -357,7 +379,30 @@ export const LongFinnishText: Story = {
 
 /** `kv-compact` navigation: items stay at least 24 × 24 (2.5.8). */
 export const CompactNavigation: Story = {
-  render: () => <Navigation density="compact" />,
+  decorators: [
+    (Story) => (
+      <div className="kv-story-surface kv-compact">
+        <Story />
+      </div>
+    ),
+  ],
+  render: () => (
+    <Navigation.Root label="Parkeringstillstånd">
+      <Navigation.List>
+        <Navigation.Item>
+          <Link.Root href="#sida-1" current="page">
+            Översikt
+          </Link.Root>
+        </Navigation.Item>
+        <Navigation.Item>
+          <Link.Root href="#sida-2">Ansök</Link.Root>
+        </Navigation.Item>
+        <Navigation.Item>
+          <Link.Root href="#sida-3">Kontakta oss</Link.Root>
+        </Navigation.Item>
+      </Navigation.List>
+    </Navigation.Root>
+  ),
   play: async ({ canvas }) => {
     const links = canvas.getAllByRole('link')
     for (const link of links) {
@@ -378,7 +423,21 @@ export const RTL: Story = {
           Digg <Link.NewTabNotice />
         </Link.Root>
       </p>
-      <Navigation label="Parking permits" items={['Overview', 'Apply', 'Contact us']} />
+      <Navigation.Root label="Parking permits">
+        <Navigation.List>
+          <Navigation.Item>
+            <Link.Root href="#sida-1" current="page">
+              Overview
+            </Link.Root>
+          </Navigation.Item>
+          <Navigation.Item>
+            <Link.Root href="#sida-2">Apply</Link.Root>
+          </Navigation.Item>
+          <Navigation.Item>
+            <Link.Root href="#sida-3">Contact us</Link.Root>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
     </>
   ),
   play: async ({ canvas }) => {
@@ -394,23 +453,31 @@ export const ForcedColors: Story = {
       <p>
         Läs mer om <Link.Root href="#parkering">parkering</Link.Root>.
       </p>
-      <nav aria-label="Huvudmeny">
-        <ul className="kv-nav">
-          <li>
+      <Navigation.Root label="Huvudmeny">
+        <Navigation.List>
+          <Navigation.Item>
             <Link.Root href="#start">Start</Link.Root>
-          </li>
-          <li>
+          </Navigation.Item>
+          <Navigation.Item>
             <Link.Root href="#ansok" current="page">
               Ansök
             </Link.Root>
-          </li>
-          <li>
+          </Navigation.Item>
+          <Navigation.Item>
             <Link.Root href="https://www.digg.se/" target="_blank">
               Digg <Link.NewTabNotice />
             </Link.Root>
-          </li>
-        </ul>
-      </nav>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
+      <p>
+        <Link.Root href="#bygglov" className="kv-link--service">
+          <Link.Icon>
+            <Icon name="arrow-forward" size={6} />
+          </Link.Icon>
+          Starta e-tjänsten
+        </Link.Root>
+      </p>
     </>
   ),
 }

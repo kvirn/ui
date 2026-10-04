@@ -61,7 +61,7 @@ function hasNameSource(input: HTMLInputElement): boolean {
  * The row of a one-time code (contract: one-time-code.a11y.md): one
  * `<div class="kv-one-time-code">` that holds the one native input and the slots that draw it.
  * It takes the options (`pattern`, `value`, `defaultValue`, `onValueChange`, `onComplete`), holds
- * no form state, and never moves focus or submits. Put it in a Field with a label and a hint that
+ * no form state, and never moves focus or submits. Put it in a Field with a label and a help text that
  * says how many characters the code has and how they are grouped.
  *
  * @example
@@ -123,7 +123,7 @@ OneTimeCodeRoot.displayName = 'OneTimeCode.Root'
 
 /**
  * The one native `<input>`: it takes the typing, paste, autofill, dictation and the pointer, and
- * the slots only draw its value. It is named by the Field's label and described by its hint and
+ * the slots only draw its value. It is named by the Field's label and described by its help text and
  * error. `autocomplete="one-time-code"`, no `maxlength`, never `type="password"`: the
  * user has to see the code (3.3.8). Pass `name`, `readOnly`, `required` and so on as on an Input.
  */
@@ -152,7 +152,7 @@ export function OneTimeCodeInput({
     if (field !== null && id !== undefined) {
       warnOnce(
         'one-time-code-id-in-field',
-        `A OneTimeCode.Input inside a Field got id="${id}", which is ignored so the Field's label and hint stay linked. Set the id with controlId on Field.Root.`,
+        `A OneTimeCode.Input inside a Field got id="${id}", which is ignored so the Field's label and help text stay linked. Set the id with controlId on Field.Root.`,
       )
     }
   }, [field, id])
@@ -185,14 +185,14 @@ export function OneTimeCodeInput({
       if (element.ownerDocument.querySelector(`[id^="${CSS.escape(prefix)}"]`) === null) {
         warnOnce(
           'one-time-code-without-description',
-          'A OneTimeCode.Input in a Field has no hint. The boxes are hidden from screen readers and disappear in the fallback, so say in a visible hint (a <Field.Hint> under the boxes, or a <Prose> above them) how many characters the code has, how they are grouped and where to find it (WCAG 3.3.2).',
+          'A OneTimeCode.Input in a Field has no help text. The boxes are hidden from screen readers and disappear in the fallback, so say in a visible help text (a <Field.HelpText> under the boxes, or a <Prose> above them) how many characters the code has, how they are grouped and where to find it (WCAG 3.3.2).',
         )
       }
     }
   })
 
   const ownId = field === null ? { id } : {}
-  // Outside a Root there's no hook: the Field's wiring alone keeps the label and hint linked.
+  // Outside a Root there's no hook: the Field's wiring alone keeps the label and help text linked.
   const inputProps = oneTimeCode === null ? field?.controlProps : oneTimeCode.inputProps
   const describedBy = joinIds(inputProps?.['aria-describedby'], ownDescribedBy)
   const state: OneTimeCodeState = {
@@ -220,7 +220,7 @@ OneTimeCodeInput.displayName = 'OneTimeCode.Input'
  * default theme, never takes a press: every press goes to the input. Render one per position of
  * the pattern, with `index` from 0 to `pattern.length - 1`: a character slot draws one character,
  * and a `-` in the pattern is a separator slot (class `kv-one-time-code-separator`) that shows `-`
- * and is never filled or active. The hint, not the slots, tells screen-reader users the length and
+ * and is never filled or active. The help text, not the slots, tells screen-reader users the length and
  * the groups.
  */
 export function OneTimeCodeSlot({

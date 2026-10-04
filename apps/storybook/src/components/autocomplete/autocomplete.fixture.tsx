@@ -1,4 +1,4 @@
-import { Autocomplete, Button, Field } from '@kvirn-ui/react'
+import { Autocomplete, Button, Card, Field } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -45,11 +45,6 @@ export const streets: readonly string[] = [
   'Ängsvägen',
   'Öbacken',
 ]
-
-/** The one suggestion that can't be picked now: it stays reachable with the arrows. */
-export const closedStreet = 'Stora Torget'
-
-export const isClosedStreet = (street: string) => street === closedStreet
 
 export const longList: readonly string[] = Array.from(
   { length: 300 },
@@ -113,48 +108,8 @@ export function autocompleteTextsFor(locale: FormLocale) {
   return { text: autocompleteTexts[locale] ?? textsEn, shared, lang }
 }
 
-interface StreetAutocompleteProps {
-  items?: readonly string[]
-  /** The input, with a button that opens the list and one that clears it, in one box. */
-  withButtons?: boolean
-  name?: string
-  defaultValue?: string
-  value?: string
-  onValueChange?: (value: string) => void
-  filter?: false
-  isLoading?: boolean
-  placeholder?: string
-}
-
-/** An Autocomplete of street names. The popup parts are the same in every story. */
-export function StreetAutocomplete({
-  items = streets,
-  withButtons = true,
-  placeholder,
-  ...rootProps
-}: StreetAutocompleteProps) {
-  return (
-    <Autocomplete.Root items={items} isItemDisabled={isClosedStreet} {...rootProps}>
-      {withButtons ? (
-        <Autocomplete.Control>
-          <Autocomplete.Input placeholder={placeholder} />
-          <Autocomplete.Clear />
-          <Autocomplete.Toggle />
-        </Autocomplete.Control>
-      ) : (
-        <Autocomplete.Input placeholder={placeholder} />
-      )}
-      <Autocomplete.Popup>
-        <Autocomplete.List>
-          {(street: string) => <Autocomplete.Option item={street} />}
-        </Autocomplete.List>
-      </Autocomplete.Popup>
-    </Autocomplete.Root>
-  )
-}
-
 /**
- * An Autocomplete as an adopter writes it: a Field with its label and hint, the input with a
+ * An Autocomplete as an adopter writes it: a Field with its label and help text, the input with a
  * button that opens the list and one that clears it, and the popup with its suggestions. The value
  * is the text, which may match nothing, and `name` puts it in a plain `<form>`.
  */
@@ -211,6 +166,377 @@ export function VirtualizedExample({ locale }: { locale: FormLocale }) {
   )
 }
 
+/** Just the input and the popup, with no box and no buttons: the smallest Autocomplete. */
+export function MinimalExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Autocomplete.Root items={streets} isItemDisabled={(street) => street === 'Stora Torget'}>
+        <Autocomplete.Input placeholder={text.placeholder} />
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
+  )
+}
+
+/** A value to begin with: the text shows, and the popup stays closed until the user types or opens it. */
+export function WithValueExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Autocomplete.Root items={streets} defaultValue="Kung">
+        <Autocomplete.Control>
+          <Autocomplete.Input />
+          <Autocomplete.Clear />
+          <Autocomplete.Toggle />
+        </Autocomplete.Control>
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
+  )
+}
+
+/** Typing filters the suggestions, and a Field's help text says that the text may be your own. */
+export function SuggestionsExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Field.Prose>
+        <p>{text.hint}</p>
+      </Field.Prose>
+      <Autocomplete.Root items={streets} isItemDisabled={(street) => street === 'Stora Torget'}>
+        <Autocomplete.Control>
+          <Autocomplete.Input />
+          <Autocomplete.Clear />
+          <Autocomplete.Toggle />
+        </Autocomplete.Control>
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
+  )
+}
+
+/** Nothing matches: `Autocomplete.Empty` says so, and the typed text is a fine value. */
+export function NoSuggestionsExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Autocomplete.Root items={streets}>
+        <Autocomplete.Input />
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+          <Autocomplete.Empty />
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
+  )
+}
+
+/** Suggestions that a server has chosen: `filter={false}` turns the built-in filter off, and `isLoading` makes `Autocomplete.Empty` say "Laddar resultat". */
+export function LoadingExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Autocomplete.Root items={[]} filter={false} isLoading>
+        <Autocomplete.Input />
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+          <Autocomplete.Empty />
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
+  )
+}
+
+/** A disabled suggestion: `isItemDisabled` keeps it reachable with the arrow keys, but it can't be picked. */
+export function DisabledSuggestionExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Autocomplete.Root items={streets} isItemDisabled={(street) => street === 'Stora Torget'}>
+        <Autocomplete.Control>
+          <Autocomplete.Input />
+          <Autocomplete.Clear />
+          <Autocomplete.Toggle />
+        </Autocomplete.Control>
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
+  )
+}
+
+/** Invalid: `invalid` on the Field, with the error under the field. The text stays, whatever it is. */
+export function InvalidExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Field.Root required invalid lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Field.Prose>
+        <p>{text.hint}</p>
+      </Field.Prose>
+      <Autocomplete.Root items={streets} isItemDisabled={(street) => street === 'Stora Torget'}>
+        <Autocomplete.Control>
+          <Autocomplete.Input />
+          <Autocomplete.Clear />
+          <Autocomplete.Toggle />
+        </Autocomplete.Control>
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+      <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
+    </Field.Root>
+  )
+}
+
+/** Disabled: `disabled` on the Field disables the Autocomplete too, and the popup never opens. */
+export function DisabledExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Field.Root disabled lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Autocomplete.Root items={streets} defaultValue="Storgatan">
+        <Autocomplete.Control>
+          <Autocomplete.Input />
+          <Autocomplete.Clear />
+          <Autocomplete.Toggle />
+        </Autocomplete.Control>
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
+  )
+}
+
+/** A long list scrolls inside the popup, which is never taller than the room that is left. */
+export function LongListExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Autocomplete.Root items={longList}>
+        <Autocomplete.Control>
+          <Autocomplete.Input />
+          <Autocomplete.Clear />
+          <Autocomplete.Toggle />
+        </Autocomplete.Control>
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
+  )
+}
+
+/** Groups: `groups` takes `{ key, label, items }`, and each group is named by its label. */
+export function GroupsExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  const groups = [
+    { key: 'streets', label: 'Gator', items: ['Storgatan', 'Kungsgatan'] },
+    { key: 'roads', label: 'Vägar', items: ['Björkvägen', 'Tallvägen'] },
+  ]
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Autocomplete.Root groups={groups}>
+        <Autocomplete.Input />
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
+  )
+}
+
+/** A long label and a long chosen suggestion: both wrap, and nothing overflows. */
+export function LongFinnishExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  const items = [
+    'Pohjois-Pohjanmaan sairaanhoitopiirin kuntayhtymän vanhustenhuollon palvelukeskus',
+    ...streets.slice(0, 3),
+  ]
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{text.longLabel}</Field.Label>
+      <Autocomplete.Root items={items} defaultValue="Pohjois">
+        <Autocomplete.Control>
+          <Autocomplete.Input />
+          <Autocomplete.Clear />
+          <Autocomplete.Toggle />
+        </Autocomplete.Control>
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
+  )
+}
+
+/** In a card: the edge keeps 3:1 against `surface-raised` (1.4.11), and the popup its own edge. */
+export function OnSurfacesExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Card.Root lang={lang}>
+      <Field.Root required invalid>
+        <Field.Label>{text.street}</Field.Label>
+        <Autocomplete.Root items={streets}>
+          <Autocomplete.Control>
+            <Autocomplete.Input />
+            <Autocomplete.Clear />
+            <Autocomplete.Toggle />
+          </Autocomplete.Control>
+          <Autocomplete.Popup>
+            <Autocomplete.List>
+              {(street: string) => <Autocomplete.Option item={street} />}
+            </Autocomplete.List>
+          </Autocomplete.Popup>
+        </Autocomplete.Root>
+        <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
+      </Field.Root>
+    </Card.Root>
+  )
+}
+
+/** Staff density from 64rem: `kv-compact` on an ancestor makes the box and the options 32px high. */
+export function CompactExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <div className="kv-compact" lang={lang}>
+      <Field.Root>
+        <Field.Label>{text.street}</Field.Label>
+        <Autocomplete.Root items={streets}>
+          <Autocomplete.Control>
+            <Autocomplete.Input />
+            <Autocomplete.Clear />
+            <Autocomplete.Toggle />
+          </Autocomplete.Control>
+          <Autocomplete.Popup>
+            <Autocomplete.List>
+              {(street: string) => <Autocomplete.Option item={street} />}
+            </Autocomplete.List>
+          </Autocomplete.Popup>
+        </Autocomplete.Root>
+      </Field.Root>
+    </div>
+  )
+}
+
+/**
+ * Controlled by your form state. This `useState` stands in for TanStack Form, React Hook Form or
+ * your own reducer: the Autocomplete shows the `value` it is given and calls `onValueChange` with
+ * the text when the user types, picks a suggestion or clears.
+ */
+export function ControlledExample({ locale }: { locale: FormLocale }) {
+  const { text, shared, lang } = autocompleteTextsFor(locale)
+  const [value, setValue] = useState('Kung')
+  return (
+    <div className="kv-story-form" lang={lang}>
+      <Field.Root>
+        <Field.Label>{text.street}</Field.Label>
+        <Autocomplete.Root items={streets} value={value} onValueChange={setValue}>
+          <Autocomplete.Control>
+            <Autocomplete.Input />
+            <Autocomplete.Clear />
+            <Autocomplete.Toggle />
+          </Autocomplete.Control>
+          <Autocomplete.Popup>
+            <Autocomplete.List>
+              {(street: string) => <Autocomplete.Option item={street} />}
+            </Autocomplete.List>
+          </Autocomplete.Popup>
+        </Autocomplete.Root>
+      </Field.Root>
+      <p className="kv-story-form-output" data-testid="mirror">
+        {shared.youChose}: {value === '' ? '–' : value}
+      </p>
+    </div>
+  )
+}
+
+/**
+ * A plain `<form>`: no `value` and no handlers, only `defaultValue` and `name`. The input carries
+ * the `name`, and `FormData` has the text by it on submit. Free text is sent as it is.
+ */
+export function PlainFormExample({ locale }: { locale: FormLocale }) {
+  const { text, shared, lang } = autocompleteTextsFor(locale)
+  const [sent, setSent] = useState<string | undefined>()
+  return (
+    <form
+      className="kv-story-form"
+      lang={lang}
+      noValidate
+      onSubmit={(event) => {
+        event.preventDefault()
+        const value = new FormData(event.currentTarget).get('street')
+        setSent(typeof value === 'string' ? value : '')
+      }}
+    >
+      <Field.Root>
+        <Field.Label>{text.street}</Field.Label>
+        <Autocomplete.Root items={streets} name="street" defaultValue="Storgatan">
+          <Autocomplete.Control>
+            <Autocomplete.Input />
+            <Autocomplete.Clear />
+            <Autocomplete.Toggle />
+          </Autocomplete.Control>
+          <Autocomplete.Popup>
+            <Autocomplete.List>
+              {(street: string) => <Autocomplete.Option item={street} />}
+            </Autocomplete.List>
+          </Autocomplete.Popup>
+        </Autocomplete.Root>
+      </Field.Root>
+      <div className="kv-button-group">
+        <Button type="submit" className="kv-button--primary">
+          {shared.send}
+        </Button>
+      </div>
+      {sent === undefined ? null : (
+        <p className="kv-story-form-output" data-testid="sent">
+          {shared.sent}: {sent}
+        </p>
+      )}
+    </form>
+  )
+}
+
 /**
  * The fixture the keyboard tests drive: a button, an Autocomplete with a disabled suggestion and
  * its two buttons, a disabled Autocomplete, and a submit button in a form that shows what it sent.
@@ -234,11 +560,33 @@ export function KeyboardExample({ locale }: { locale: FormLocale }) {
       </div>
       <Field.Root controlId="street">
         <Field.Label>{text.street}</Field.Label>
-        <StreetAutocomplete name="street" />
+        <Autocomplete.Root
+          items={streets}
+          isItemDisabled={(street) => street === 'Stora Torget'}
+          name="street"
+        >
+          <Autocomplete.Control>
+            <Autocomplete.Input />
+            <Autocomplete.Clear />
+            <Autocomplete.Toggle />
+          </Autocomplete.Control>
+          <Autocomplete.Popup>
+            <Autocomplete.List>
+              {(street: string) => <Autocomplete.Option item={street} />}
+            </Autocomplete.List>
+          </Autocomplete.Popup>
+        </Autocomplete.Root>
       </Field.Root>
       <Field.Root disabled controlId="closed">
         <Field.Label>{text.longLabel}</Field.Label>
-        <StreetAutocomplete withButtons={false} name="closed" />
+        <Autocomplete.Root items={streets} name="closed">
+          <Autocomplete.Input />
+          <Autocomplete.Popup>
+            <Autocomplete.List>
+              {(street: string) => <Autocomplete.Option item={street} />}
+            </Autocomplete.List>
+          </Autocomplete.Popup>
+        </Autocomplete.Root>
       </Field.Root>
       <div className="kv-button-group">
         <Button type="submit" className="kv-button--primary">
@@ -254,7 +602,10 @@ export function KeyboardExample({ locale }: { locale: FormLocale }) {
   )
 }
 
-/** Every state in one column, for the RTL and forced-colours stories. */
+/**
+ * Every state in one column, for the RTL and forced-colours stories: with a value, invalid,
+ * with a placeholder and no buttons, and disabled.
+ */
 export function AutocompleteStates({ locale }: { locale: FormLocale }) {
   const { text, lang } = autocompleteTextsFor(locale)
   return (
@@ -264,20 +615,64 @@ export function AutocompleteStates({ locale }: { locale: FormLocale }) {
         <Field.Prose>
           <p>{text.hint}</p>
         </Field.Prose>
-        <StreetAutocomplete items={streets.slice(0, 8)} defaultValue="Kung" />
+        <Autocomplete.Root
+          items={streets.slice(0, 8)}
+          isItemDisabled={(street) => street === 'Stora Torget'}
+          defaultValue="Kung"
+        >
+          <Autocomplete.Control>
+            <Autocomplete.Input />
+            <Autocomplete.Clear />
+            <Autocomplete.Toggle />
+          </Autocomplete.Control>
+          <Autocomplete.Popup>
+            <Autocomplete.List>
+              {(street: string) => <Autocomplete.Option item={street} />}
+            </Autocomplete.List>
+          </Autocomplete.Popup>
+        </Autocomplete.Root>
       </Field.Root>
       <Field.Root required invalid>
         <Field.Label>{text.street}</Field.Label>
-        <StreetAutocomplete />
+        <Autocomplete.Root items={streets}>
+          <Autocomplete.Control>
+            <Autocomplete.Input />
+            <Autocomplete.Clear />
+            <Autocomplete.Toggle />
+          </Autocomplete.Control>
+          <Autocomplete.Popup>
+            <Autocomplete.List>
+              {(street: string) => <Autocomplete.Option item={street} />}
+            </Autocomplete.List>
+          </Autocomplete.Popup>
+        </Autocomplete.Root>
         <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
       </Field.Root>
       <Field.Root>
         <Field.Label>{text.street}</Field.Label>
-        <StreetAutocomplete withButtons={false} placeholder={text.placeholder} />
+        <Autocomplete.Root items={streets}>
+          <Autocomplete.Input placeholder={text.placeholder} />
+          <Autocomplete.Popup>
+            <Autocomplete.List>
+              {(street: string) => <Autocomplete.Option item={street} />}
+            </Autocomplete.List>
+          </Autocomplete.Popup>
+        </Autocomplete.Root>
       </Field.Root>
       <Field.Root disabled>
         <Field.Label>{text.street}</Field.Label>
-        <StreetAutocomplete defaultValue="Storgatan" />
+        <Autocomplete.Root items={streets} defaultValue="Storgatan">
+          <Autocomplete.Control>
+            <Autocomplete.Input />
+            <Autocomplete.Clear />
+            <Autocomplete.Toggle />
+          </Autocomplete.Control>
+          <Autocomplete.Popup>
+            <Autocomplete.List>
+              {(street: string) => <Autocomplete.Option item={street} />}
+            </Autocomplete.List>
+          </Autocomplete.Popup>
+        </Autocomplete.Root>
       </Field.Root>
     </div>
   )

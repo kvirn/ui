@@ -1,6 +1,8 @@
+import { Table } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/table/table.a11y.md?raw'
 import guide from '../../../../../packages/react/src/table/table.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { CSSProperties } from 'react'
 import { expect, userEvent, waitFor } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
@@ -31,32 +33,32 @@ const description = usageGuide(guide)
 
 const meta = {
   title: 'Components/Table',
-  component: SortableCases,
+  component: Table.Root,
   globals: { locale: 'sv' },
   argTypes: {
-    locale: { control: false },
-    data: { control: false },
-    selected: { control: false },
-    expanded: { control: false },
-    caption: { control: 'text', description: 'The table’s name: its `Table.Caption`.' },
-    isLoading: { control: 'boolean', description: '`aria-busy`, and the loading announcement.' },
-    region: {
-      control: 'inline-radio',
-      options: ['overflow', 'always'],
+    table: {
+      control: false,
       description:
-        'When the scroll region is a named `region`: `overflow` (default) only while the table scrolls, `always` whether it scrolls or not. A Tab stop only while it scrolls. A `useTable` option too.',
+        'The result of `useTable()`. Without it every part is the plain native element, so a small static table needs no TanStack Table. Pass it to `Table.ScrollRegion` too, so the region is named by the caption.',
     },
-    withLinks: { control: 'boolean' },
-    longHeader: { control: 'boolean' },
+    className: {
+      control: 'text',
+      description: 'Your own classes, added to `kv-table`.',
+    },
+    render: { control: false, description: 'Another element. It must still be a `<table>`.' },
   },
-  args: { locale: 'sv', region: 'overflow' },
   decorators: [withFormLocale],
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
-  render: (args, { globals }) => <SortableCases {...args} locale={localeOf(globals)} />,
-} satisfies Meta<typeof SortableCases>
+} satisfies Meta<typeof Table.Root>
 
 export default meta
 type Story = StoryObj<typeof meta>
+
+/** A region narrower than the table and limited in height: it scrolls both ways and the head sticks. */
+const limitedRegion = {
+  maxInlineSize: '40rem',
+  '--kv-table-scroll-region-max-block-size': '22rem',
+} as CSSProperties
 
 /** The sort buttons of a canvas: the header text is the button. */
 const sortButtons = (canvasElement: HTMLElement) => [
@@ -113,6 +115,13 @@ export const AlwaysRegion: Story = {
  */
 export const StaticScrolling: Story = {
   parameters: showSource('table/table.fixture.tsx', 'StaticScrollingCases'),
+  decorators: [
+    (Story) => (
+      <div style={{ '--kv-table-scroll-region-max-block-size': '16rem' } as CSSProperties}>
+        <Story />
+      </div>
+    ),
+  ],
   render: (_args, { globals }) => <StaticScrollingCases locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
     await expect(canvas.getByRole('table', { name: 'Öppna ärenden' })).toBeVisible()
@@ -129,6 +138,7 @@ export const StaticScrolling: Story = {
  */
 export const Sortable: Story = {
   parameters: showSource('table/table.fixture.tsx', 'SortableCases'),
+  render: (_args, { globals }) => <SortableCases locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
     await expect(canvas.getByRole('table', { name: 'Öppna ärenden' })).toBeVisible()
     await expect(sortedHeaders(canvasElement)).toHaveLength(1)
@@ -306,6 +316,13 @@ export const RightToLeft: Story = {
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   parameters: showSource('table/table.fixture.tsx', 'EverythingCases'),
+  decorators: [
+    (Story) => (
+      <div style={limitedRegion}>
+        <Story />
+      </div>
+    ),
+  ],
   render: (_args, { globals }) => <EverythingCases locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
     await expect(canvas.getByRole('table', { name: 'Öppna ärenden' })).toBeVisible()
@@ -323,6 +340,13 @@ export const ForcedColors: Story = {
  */
 export const Keyboard: Story = {
   parameters: showSource('table/table.fixture.tsx', 'KeyboardCases'),
+  decorators: [
+    (Story) => (
+      <div style={{ maxInlineSize: '30rem' }}>
+        <Story />
+      </div>
+    ),
+  ],
   render: (_args, { globals }) => <KeyboardCases locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
     await expect(canvas.getByRole('table', { name: 'Öppna ärenden' })).toBeVisible()

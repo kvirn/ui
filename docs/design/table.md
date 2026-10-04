@@ -86,7 +86,7 @@ A table is not a flow, but each job has steps and unhappy paths.
 | A filter leaves no rows                  | The same row, with a message that says what to do ("Inga ärenden matchar sökningen. Ändra sökningen eller rensa filtret."). The new count is announced (`table.rowCount`), debounced                                                            |
 | First load, no rows yet                  | The empty row shows the loading text instead of "No rows to show" (decision D3). `aria-busy`, and `table.loading` is announced                                                                                                                  |
 | Reload with rows on screen               | Rows stay at full contrast (never dimmed). A static hatched bar runs along the head's lower edge and the body shows the progress cursor. `table.loading` is announced. The consumer should also show the status in words near the table (§6.10) |
-| Loading fails                            | The consumer's `Notification.Danger` above the table says what failed and what to do. The table keeps its last rows, or shows the empty row with the consumer's message. The table has no error state of its own                                |
+| Loading fails                            | The consumer's `Alert.Danger` above the table says what failed and what to do. The table keeps its last rows, or shows the empty row with the consumer's message. The table has no error state of its own                                       |
 | Too many rows                            | Pagination is the recommended default. Virtualization only when people must scroll through everything                                                                                                                                           |
 | Wider than the screen                    | Only the region scrolls sideways. It becomes a named region and a Tab stop, and its ring shows on focus                                                                                                                                         |
 | Focus goes under the sticky header       | It can't: the region's `scroll-padding-block-start` equals the head's height (§6.11)                                                                                                                                                            |
@@ -230,7 +230,7 @@ Two internal custom properties on `.kv-table`, stepped down for compact density 
 | `--kv-table-cell-padding-block`  | `--kv-space-3` (12px) | `--kv-space-1` (4px)               | Every header, row header and cell, the sort button, the detail row |
 | `--kv-table-cell-padding-inline` | `--kv-space-3` (12px) | `--kv-space-2` (8px)               | The same, the first and the last column included                   |
 
-These are internal names, like the input group's. Whether to document them as site-wide properties, like `--kv-notification-padding-block`, is open question 6.
+These are internal names, like the input group's. Whether to document them as site-wide properties, like `--kv-alert-padding-block`, is open question 6.
 
 Resulting sizes (16px text, line height 1.5, so one line is 24px):
 
@@ -374,7 +374,7 @@ The reading-aid argument for row hover in wide tables is real, and it's an assum
 - `cursor: progress` on the body.
 - **Words carry the state, not the bar.** The announcement (`table.loading`) is for screen-reader users. For sighted users:
   - During a **first load with no rows**, the empty row shows `table.loading` instead of `table.empty` (decision D3, a behaviour change in `Table.Empty`).
-  - During a **reload with rows**, the docs tell the consumer to show the status in words near the table, such as in the caption's status line or a `Notification.Info`. A dedicated status part is out of scope (open question 7).
+  - During a **reload with rows**, the docs tell the consumer to show the status in words near the table, such as in the caption's status line or an `Alert.Info`. A dedicated status part is out of scope (open question 7).
 - Forced colours drop gradient backgrounds, so there the head cells' block-end border becomes `dashed` in `Highlight` instead (same 1px width, so nothing moves).
 
 ### 6.11 Scroll region and sticky header
@@ -580,5 +580,5 @@ Draft input for `packages/react/src/table/table.a11y.md`. The plan's contract ta
 3. A long caption on a table wider than its region can run past the region's edge at 320px. Accept and document "keep captions short", or have the engineer prototype a caption that stays in view (a sticky inner span, if Table.Caption gains one)?
 4. API shorthand for numeric columns: should `Table.Cell` and `Table.ColumnHeader` read `columnDef.meta` (for example `meta: { numeric: true }`) and add the modifier themselves? That's a plan decision. The theme works either way.
 5. No zebra stripes and no row hover (DESIGN.md). If task 5 in the test shows staff losing rows in wide tables, revisit with a measured, non-colour reading aid, not stripes.
-6. Should `--kv-table-cell-padding-block` and `--kv-table-cell-padding-inline` be documented site-wide properties, like the notification's?
+6. Should `--kv-table-cell-padding-block` and `--kv-table-cell-padding-inline` be documented site-wide properties, like the alert's?
 7. Busy with rows: is a visible status the consumer's job (docs), or should the table get a status part later?

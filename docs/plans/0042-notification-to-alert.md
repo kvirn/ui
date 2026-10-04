@@ -1,6 +1,6 @@
 # Plan 0042: Rename Notification to Alert?
 
-- **Status:** Draft (blocked on a maintainer decision that overturns `docs/design/notification.md` §3.1)
+- **Status:** Accepted by the maintainer 2026-10-04 (rename, the recommended option). Implemented; gates pending (orchestrator), manual AT `pending`
 - **Owner:** orchestrator → component-engineer
 - **Created:** 2026-10-04 · **Target:** M2
 - **Related:** [0020](0020-notification.md), `docs/design/notification.md`, `DESIGN.md`, `accessibility`, `api-conventions` skills
@@ -40,14 +40,18 @@ About 1,300 lines across `react`, `i18n`, `theme`, `storybook` and docs. Unrelat
 
 ## Tasks
 
-- [ ] Maintainer decision: rename (recommended) or keep, then edit §3.1 of the design doc and `DESIGN.md:463` in the same PR
-- [ ] `naming.test.tsx` and `component-naming.test.ts` first, then rename code, i18n, theme, stories, e2e
-- [ ] Docs, contracts (`.a11y.md` row 4.1.3 wording), skills, roadmap, changeset (breaking)
+- [x] Maintainer decision: rename (accepted, 2026-10-04). §3.1 of the design doc (now `docs/design/alert.md`) and `DESIGN.md` Components are rewritten in the same change
+- [x] `naming.test.tsx` and `component-naming.test.ts` first, then rename code, i18n, theme, stories, e2e
+- [x] Docs, contracts (`.a11y.md` row 4.1.3 wording), skills, roadmap, changeset (breaking)
 
 ## Decisions
 
-- **Recommendation: rename,** keeping every behaviour, and rewrite §3.1 to say the name `Alert` is the component and `role="alert"` stays an Announcer detail. **Needs the maintainer's approval** (it reverses a recorded decision, and renames public classes and tokens).
-- Do it after 0041 (HelpText) lands, or in a separate worktree, to limit rebase conflicts.
+- **Decided (maintainer, 2026-10-04): rename,** keeping every behaviour, and §3.1 now says the name `Alert` is the component and `role="alert"` stays an Announcer detail. It reverses a recorded decision and renames public classes and tokens.
+- **Hard rename, no alias.** Breaking in 0.x (minor), with the rename map in `.changeset/notification-becomes-alert.md`. The older `.changeset/notification.md` (unreleased) is left as written: the new changeset supersedes its names.
+- **The "not assertive" note** is the first paragraph of `alert.md` (kept by `usageGuide`, so it opens the Docs page), and is recorded in the design spec §4.3.
+- **Historical documents keep their old names:** plans 0020, 0038, 0040 and the changeset above still say Notification. Plan 0020 has a note and its design-doc links point to `alert.md`. The GOV.UK "notification banner" stays under its own name in the prior-art table.
+- **Renamed in the table docs too.** `packages/react/src/table/table.md` and `docs/design/table.md` name `Notification.Info` and `Notification.Danger` as components, so they now say `Alert.Info` and `Alert.Danger`. Unrelated hits are untouched: `notifications` in core tests and `create-table.ts`, `disableWhatsNewNotifications`, and `overlays-and-lists/SKILL.md`.
+- Done on the main tree while other agents were editing (Navigation and Link, HelpText and DateInput renames), with targeted replacements.
 
 ## Risks & open questions
 

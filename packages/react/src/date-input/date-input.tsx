@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldGroupContext, FieldTextHostContext } from '../field/field-context.ts'
+import { useDescriptionPart } from '../field/use-description-part.ts'
 import { Field } from '../field/field.tsx'
 import { TextInput } from '../text-input/text-input.tsx'
 import type { TextInputProps } from '../text-input/text-input.tsx'
@@ -62,11 +63,17 @@ export interface DateInputRootProps extends Omit<
   /** Native `readOnly` on the three boxes. */
   readOnly?: boolean | undefined
   /**
+   * Focus moves to the next box, with its text selected, when the user's typing fills a box.
+   * Default: `true`, with a visible hint under the boxes (`dateInput.autoAdvanceHint`) that is
+   * part of the group's description. `false` turns both off: typing never moves focus.
+   */
+  autoAdvance?: boolean | undefined
+  /**
    * The boxes that are wrong: `aria-invalid` and `data-invalid` on them only. For boxes the Root
    * renders itself; with your own children, set `invalid` on each box.
    */
   invalidParts?: readonly DateInputPart[] | undefined
-  /** Per-instance message overrides for the three labels. */
+  /** Per-instance message overrides for the three labels and the auto-advance hint. */
   messages?: Partial<KvirnMessages['dateInput']> | undefined
   /** Change the element: `render={<section />}`. */
   render?: RenderProp<ComponentPropsWithRef<'div'>, DateInputState> | undefined
@@ -105,6 +112,21 @@ interface DateInputContextValue {
 
 const DateInputContext = createContext<DateInputContextValue | null>(null)
 
+/**
+ * The auto-advance hint: visible text under the row of boxes, and one of the descriptions of the
+ * nearest Fieldset, so its id is in the group's `aria-describedby` in DOM order (WCAG 3.2.2:
+ * users are told before they type). It looks like a `Fieldset.HelpText` but never warns:
+ * outside a Fieldset (a native `<fieldset>` of your own) it is plain text with no id.
+ */
+function DateInputAutoAdvanceHint({ children }: { children: string }): ReactElement {
+  const description = useDescriptionPart<HTMLParagraphElement>(undefined)
+  return (
+    <p {...description.partProps} className="kv-field-help-text" ref={description.ref}>
+      {children}
+    </p>
+  )
+}
+
 /** The attributes a box has even outside a Root. */
 const bareInputProps: Partial<DateInputInputPartProps> = Object.freeze({
   inputMode: 'numeric',
@@ -114,17 +136,18 @@ const bareInputProps: Partial<DateInputInputPartProps> = Object.freeze({
 /**
  * A date of three text boxes: day, month and year, in the order the region writes dates in
  * (contract: date-input.a11y.md). Put it inside a `Fieldset.Root` whose `Fieldset.Legend` asks the
- * question, then the boxes, then a `Fieldset.Hint` under them with an example in the same order
+ * question, then the boxes, then a `Fieldset.HelpText` under them with an example in the same order
  * and a `Fieldset.ErrorMessage`. Without children it renders `DateInput.Day`, `.Month` and `.Year` in
  * the locale's order; write them yourself to use another order. It holds no form state, never
- * parses or validates the date, never moves focus between the boxes, and the arrow keys never
- * step a value.
+ * parses or validates the date, and the arrow keys never step a value. By default (`autoAdvance`)
+ * focus moves to the next box when typing fills one, and a visible hint under the boxes, in the
+ * group's description, says so; `autoAdvance={false}` turns both off.
  *
  * @example
  * <Fieldset.Root group required invalid={error !== undefined}>
  *   <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
  *   <DateInput.Root name="birth" autoComplete="bday" invalidParts={error?.parts} />
- *   <Fieldset.Hint>Till exempel 1990 3 27</Fieldset.Hint>
+ *   <Fieldset.HelpText>Till exempel 1990 3 27</Fieldset.HelpText>
  *   <Fieldset.ErrorMessage>{error?.message}</Fieldset.ErrorMessage>
  * </Fieldset.Root>
  */
@@ -138,6 +161,7 @@ export function DateInputRoot({
   required,
   disabled,
   readOnly,
+  autoAdvance,
   invalidParts,
   messages,
   children,
@@ -159,6 +183,7 @@ export function DateInputRoot({
     autoComplete,
     order,
     readOnly,
+    autoAdvance,
     messages,
   })
   const elementRef = useRef<HTMLDivElement | null>(null)
@@ -212,6 +237,9 @@ export function DateInputRoot({
           },
           state,
         })}
+        {dateInput.autoAdvanceHint === undefined ? null : (
+          <DateInputAutoAdvanceHint>{dateInput.autoAdvanceHint}</DateInputAutoAdvanceHint>
+        )}
       </DateInputContext.Provider>
     </FieldGroupContext.Provider>
   )

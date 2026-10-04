@@ -14,7 +14,7 @@ export interface TextareaTexts {
   label: string
   /** The description above the box: what to answer. */
   description: string
-  /** The hint under the box: a short instruction. */
+  /** The help text under the box: a short instruction. */
   hint: string
   /** The ErrorMessage, after submit with nothing written. */
   error: string
@@ -22,7 +22,7 @@ export interface TextareaTexts {
   draft: string
   /** One sentence, repeated to make a text of any length. */
   sentence: string
-  /** The hint under a read-only box: why it can't change. */
+  /** The help text under a read-only box: why it can't change. */
   readOnlyHint: string
   /** A long label, for the 320px check. */
   longLabel: string
@@ -198,7 +198,7 @@ export function CountedSituation({ locale }: { locale: FormLocale }) {
           <p>{text.description}</p>
         </Field.Prose>
         <Textarea name="situation" maxLength={200} characterCount />
-        <Field.Hint>{text.hint}</Field.Hint>
+        <Field.HelpText>{text.hint}</Field.HelpText>
       </Field.Root>
     </div>
   )
@@ -242,8 +242,8 @@ export function CountStates({ locale }: { locale: FormLocale }) {
 
 /**
  * Every state of the box in one column, in the default order (label, description, box, count,
- * hint, error): a description above, invalid, over the limit, disabled and read-only with its
- * hint under the box. The RTL and ForcedColors stories render it.
+ * help text, error): a description above, invalid, over the limit, disabled and read-only with its
+ * help text under the box. The RTL and ForcedColors stories render it.
  */
 export function TextareaStates({ locale }: { locale: FormLocale }) {
   const { text, lang } = textareaTextsFor(locale)
@@ -255,7 +255,7 @@ export function TextareaStates({ locale }: { locale: FormLocale }) {
           <p>{text.description}</p>
         </Field.Prose>
         <Textarea name="situation" maxLength={500} characterCount />
-        <Field.Hint>{text.hint}</Field.Hint>
+        <Field.HelpText>{text.hint}</Field.HelpText>
       </Field.Root>
       <Field.Root required invalid>
         <Field.Label>{`${text.label} (invalid)`}</Field.Label>
@@ -279,7 +279,7 @@ export function TextareaStates({ locale }: { locale: FormLocale }) {
       <Field.Root>
         <Field.Label>{`${text.label} (read-only)`}</Field.Label>
         <Textarea name="read-only" rows={3} readOnly defaultValue={text.draft} />
-        <Field.Hint>{text.readOnlyHint}</Field.Hint>
+        <Field.HelpText>{text.readOnlyHint}</Field.HelpText>
       </Field.Root>
     </div>
   )

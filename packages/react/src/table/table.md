@@ -215,7 +215,7 @@ Don't turn rows into cards with `display: block` on cells: some browsers then dr
 
 ## States
 
-- **Loading.** `isLoading` sets `aria-busy="true"` and `data-busy` on the table and announces "Laddar rader." Rows already on screen stay at full contrast, and the head gets a static hatched bar, so the table never looks dimmed. A first load with no rows yet shows "Laddar rader." in the empty row instead of the empty text, so the table never says there is nothing while rows are on their way. A reload with rows is the one case where words matter: show the status near the table, such as in the caption or a `Notification.Info`.
+- **Loading.** `isLoading` sets `aria-busy="true"` and `data-busy` on the table and announces "Laddar rader." Rows already on screen stay at full contrast, and the head gets a static hatched bar, so the table never looks dimmed. A first load with no rows yet shows "Laddar rader." in the empty row instead of the empty text, so the table never says there is nothing while rows are on their way. A reload with rows is the one case where words matter: show the status near the table, such as in the caption or an `Alert.Info`.
 - **Empty.** `Table.Empty` is one row with one cell that spans every column, shown when there are no rows. Its text is "Det finns inga rader att visa." Pass children to say something useful: why, and what to do next.
 
 ## Announcements

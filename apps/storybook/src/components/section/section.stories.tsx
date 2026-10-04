@@ -15,6 +15,8 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   ContactDetailsFieldset,
   ContactSection,
+  ContactSectionWithEdge,
+  NewsBand,
   NewsCard,
   UserSection,
 } from './section.fixture.tsx'
@@ -29,27 +31,34 @@ const localeOf = (globals: Record<string, unknown>): SectionFixtureLocale => {
   return isCardFixtureLocale(locale) ? locale : 'sv'
 }
 
+/**
+ * "Show code" of a story that composes examples from more than one fixture file: each function's
+ * own source, one after the other, as `showSource` reads it.
+ */
+const showSources = (...sources: ReturnType<typeof showSource>[]) =>
+  ({
+    docs: {
+      source: {
+        code: sources.map((source) => source.docs.source.code).join('\n\n'),
+        language: 'tsx',
+        type: 'code',
+      },
+    },
+  }) as const
+
 // The Docs page opens with the package docs: how to use it, and how to build your own.
 const description = usageGuide(guide)
 
 const meta = {
   title: 'Components/Section',
   component: Section,
-  args: {
-    children: (
-      <Prose>
-        <h2>Kontakta oss</h2>
-        <p>Vi svarar vardagar 9–16.</p>
-      </Prose>
-    ),
-  },
   argTypes: {
     className: {
       control: 'text',
       description:
         'Your own classes, added to `kv-section`. The theme styles `kv-section--surface`, `kv-section--canvas` and `kv-section--padding-none|sm|md|lg`.',
     },
-    render: { control: false },
+    render: { control: false, description: 'Another element, such as `<aside>` or `<section>`.' },
   },
   globals: { locale: 'sv' },
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
@@ -60,20 +69,6 @@ type Story = StoryObj<typeof meta>
 
 /** A Section with a heading and a paragraph: a `<div>`, so it adds no landmark. */
 export const Default: Story = {
-  parameters: {
-    docs: {
-      source: {
-        code: `<Section>
-  <Prose>
-    <h2>Kontakta oss</h2>
-    <p>Vi svarar vardagar 9–16.</p>
-  </Prose>
-</Section>`,
-        language: 'tsx',
-        type: 'code',
-      },
-    },
-  },
   decorators: [
     (Story) => (
       <div className="kv-story-card-column">
@@ -81,6 +76,14 @@ export const Default: Story = {
       </div>
     ),
   ],
+  render: (args) => (
+    <Section {...args}>
+      <Prose>
+        <h2>Kontakta oss</h2>
+        <p>Vi svarar vardagar 9–16.</p>
+      </Prose>
+    </Section>
+  ),
   play: async ({ canvas }) => {
     const heading = canvas.getByRole('heading', { level: 2, name: 'Kontakta oss' })
     await expect(heading.closest('.kv-section')).not.toBeNull()
@@ -95,11 +98,14 @@ export const Default: Story = {
  */
 export const SidebarTextBlock: Story = {
   parameters: showSource('section/section.fixture.tsx', 'ContactSection'),
-  render: (_args, { globals }) => (
-    <div className="kv-story-card-column">
-      <ContactSection locale={localeOf(globals)} />
-    </div>
-  ),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-card-column">
+        <Story />
+      </div>
+    ),
+  ],
+  render: (_args, { globals }) => <ContactSection locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     const region = canvas.getByRole('complementary', { name: 'Kontakta oss' })
     await expect(within(region).getByRole('heading', { level: 2 })).toBeVisible()
@@ -115,11 +121,11 @@ export const SidebarTextBlock: Story = {
  * visual region only: a `<div>`, no landmark.
  */
 export const CardsOnASection: Story = {
-  render: (_args, { globals }) => (
-    <Section data-testid="band">
-      <NewsList locale={localeOf(globals)} />
-    </Section>
+  parameters: showSources(
+    showSource('section/section.fixture.tsx', 'NewsBand'),
+    showSource('card/card.fixture.tsx', 'NewsList'),
   ),
+  render: (_args, { globals }) => <NewsBand locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     const band = canvas.getByTestId('band')
     await expect(within(band).getAllByRole('listitem')).toHaveLength(3)
@@ -171,10 +177,17 @@ export const Surfaces: Story = {
  * that its focus ring isn't clipped.
  */
 export const Padding: Story = {
+  decorators: [
+    (Story) => (
+      <div className="kv-story-columns">
+        <Story />
+      </div>
+    ),
+  ],
   render: (_args, { globals }) => {
     const { text } = textsFor(localeOf(globals))
     return (
-      <div className="kv-story-columns">
+      <>
         {(['none', 'sm', 'md', 'lg'] as const).map((padding) => (
           <Section
             key={padding}
@@ -191,7 +204,7 @@ export const Padding: Story = {
             </p>
           </Section>
         ))}
-      </div>
+      </>
     )
   },
 }
@@ -202,12 +215,15 @@ export const Padding: Story = {
  * var(--kv-color-border-subtle)` moves nothing. It follows `dir`, and every theme.
  */
 export const OneEdge: Story = {
-  parameters: showSource('section/section.fixture.tsx', 'ContactSection'),
-  render: (_args, { globals }) => (
-    <div className="kv-story-card-column">
-      <ContactSection locale={localeOf(globals)} hasEdge />
-    </div>
-  ),
+  parameters: showSource('section/section.fixture.tsx', 'ContactSectionWithEdge'),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-card-column">
+        <Story />
+      </div>
+    ),
+  ],
+  render: (_args, { globals }) => <ContactSectionWithEdge locale={localeOf(globals)} />,
 }
 
 /**
@@ -282,14 +298,21 @@ export const CardOrSection: Story = {
     'NewsCard',
     'UserSection',
   ),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-columns">
+        <Story />
+      </div>
+    ),
+  ],
   render: (_args, { globals }) => {
     const locale = localeOf(globals)
     return (
-      <div className="kv-story-columns">
+      <>
         <UserSection locale={locale} />
         <NewsCard locale={locale} />
         <ContactDetailsFieldset locale={locale} />
-      </div>
+      </>
     )
   },
   play: async ({ canvas }) => {
@@ -368,13 +391,24 @@ export const ImageInSection: Story = {
 /** Finnish text in a narrow column: the Section wraps instead of overflowing (1.4.10). */
 export const LongFinnishText: Story = {
   globals: { locale: 'fi' },
+  parameters: showSources(
+    showSource('section/section.fixture.tsx', 'ContactSection'),
+    showSource('card/card.fixture.tsx', 'ServiceCard'),
+  ),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-narrow" data-testid="narrow">
+        <Story />
+      </div>
+    ),
+  ],
   render: () => (
-    <div className="kv-story-narrow" data-testid="narrow">
+    <>
       <ContactSection locale="fi" />
       <Section className="kv-story-section">
         <ServiceCard locale="fi" />
       </Section>
-    </div>
+    </>
   ),
   play: async ({ canvas }) => {
     await expect(
@@ -385,7 +419,7 @@ export const LongFinnishText: Story = {
   },
 }
 
-/** Examples A and B, and Section, Card or neither, on one page. */
+/** Examples A and B, and Section, Card or neither, on one page: layout only, for axe and e2e. */
 function AllExamplesPage({ locale }: { locale: SectionFixtureLocale }) {
   return (
     <>
@@ -402,24 +436,46 @@ function AllExamplesPage({ locale }: { locale: SectionFixtureLocale }) {
   )
 }
 
+/** The functions the page is made of: the real parts of every example on it. */
+const allExamplesSource = showSources(
+  showSource(
+    'section/section.fixture.tsx',
+    'ContactSection',
+    'UserSection',
+    'NewsCard',
+    'ContactDetailsFieldset',
+  ),
+  showSource('card/card.fixture.tsx', 'NewsList'),
+)
+
 /** The Section examples together: a sidebar, a band of cards, and Section, Card or neither. */
 export const AllExamples: Story = {
+  parameters: allExamplesSource,
   render: (_args, { globals }) => <AllExamplesPage locale={localeOf(globals)} />,
 }
 
 /** Right to left, in English: the padding, the text and the one edge follow `dir`. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
+  parameters: showSource('section/section.fixture.tsx', 'ContactSectionWithEdge', 'UserSection'),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-columns">
+        <Story />
+      </div>
+    ),
+  ],
   render: () => (
-    <div className="kv-story-columns">
-      <ContactSection locale="en" hasEdge />
+    <>
+      <ContactSectionWithEdge locale="en" />
       <UserSection locale="en" />
-    </div>
+    </>
   ),
 }
 
 /** The Section edge survives forced colours. The e2e suite checks it with real emulation. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
+  parameters: allExamplesSource,
   render: (_args, { globals }) => <AllExamplesPage locale={localeOf(globals)} />,
 }

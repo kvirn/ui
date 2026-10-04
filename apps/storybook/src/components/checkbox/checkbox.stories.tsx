@@ -1,14 +1,18 @@
-import { Button, Card, Checkbox, Field } from '@kvirn-ui/react'
+import { Card, Checkbox, Field } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/checkbox/checkbox.a11y.md?raw'
 import guide from '../../../../../packages/react/src/checkbox/checkbox.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useState } from 'react'
 import { expect, fn, userEvent } from 'storybook/test'
-import { usageGuide } from '../../docs-source.ts'
-import { choiceTextsFor, logChange } from '../form/choice.fixture.tsx'
+import { showSource, usageGuide } from '../../docs-source.ts'
+import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
-import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import {
+  ControlledDeclaration,
+  DeclarationForm,
+  KeyboardForm,
+  SelectAllCheckbox,
+} from './checkbox.fixture.tsx'
 
 // Components/Form/Checkbox: the native <input type="checkbox">, styled by
 // @kvirn-ui/theme/theme.css (design spec docs/design/form-fields.md §6.5). It sits
@@ -59,7 +63,8 @@ const meta = {
       description: 'Another element. It must still be an `<input type="checkbox">`.',
     },
   },
-  args: { onCheckedChange: logChange('onCheckedChange') },
+  // Every option at its default, so the main example starts where an adopter starts.
+  args: { name: 'declaration', indeterminate: false, disabled: false },
   globals: { locale: 'sv' },
   decorators: [
     (Story) => (
@@ -73,7 +78,7 @@ const meta = {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
       <Field.Root required lang={lang}>
-        <Checkbox name="declaration" {...args} />
+        <Checkbox {...args} />
         <Field.Label>{text.declaration}</Field.Label>
       </Field.Root>
     )
@@ -112,7 +117,8 @@ export const Checked: Story = {
 
 /** A staff "select all rows" box, mixed while some rows are chosen. It's a DOM property. */
 export const Indeterminate: Story = {
-  render: (_args, { globals }) => <SelectAllExample locale={localeOf(globals)} />,
+  parameters: showSource('checkbox/checkbox.fixture.tsx', 'SelectAllCheckbox'),
+  render: (_args, { globals }) => <SelectAllCheckbox locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     const checkbox = canvas.getByRole('checkbox', { name: text.selectAll })
@@ -124,15 +130,15 @@ export const Indeterminate: Story = {
   },
 }
 
-/** An option's hint is in the checkbox's description. */
+/** An option's help text is in the checkbox's description. */
 export const WithDescription: Story = {
   render: (args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
       <Field.Root lang={lang}>
-        <Checkbox name="newsletter" {...args} />
+        <Checkbox {...args} name="newsletter" />
         <Field.Label>{text.newsletter}</Field.Label>
-        <Field.Hint>{text.newsletterHint}</Field.Hint>
+        <Field.HelpText>{text.newsletterHint}</Field.HelpText>
       </Field.Root>
     )
   },
@@ -150,9 +156,9 @@ export const Invalid: Story = {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
       <Field.Root required invalid lang={lang}>
-        <Checkbox name="declaration" {...args} />
+        <Checkbox {...args} />
         <Field.Label>{text.declaration}</Field.Label>
-        <Field.Hint>{text.declarationHint}</Field.Hint>
+        <Field.HelpText>{text.declarationHint}</Field.HelpText>
         <Field.ErrorMessage>{text.declarationError}</Field.ErrorMessage>
       </Field.Root>
     )
@@ -189,47 +195,25 @@ export const DisabledChecked: Story = {
 /** A long label wraps over lines, and the box stays beside the first line. */
 export const LongLabel: Story = {
   globals: { locale: 'fi' },
+  decorators: [
+    (Story) => (
+      <div className="kv-story-narrow" data-testid="narrow">
+        <Story />
+      </div>
+    ),
+  ],
   render: (args, { globals }) => {
     const { text, lang } = choiceTextsFor(localeOf(globals))
     return (
-      <div className="kv-story-narrow" data-testid="narrow">
-        <Field.Root required lang={lang}>
-          <Checkbox name="consent" {...args} />
-          <Field.Label>{text.longLabel}</Field.Label>
-        </Field.Root>
-      </div>
+      <Field.Root required lang={lang}>
+        <Checkbox {...args} name="consent" />
+        <Field.Label>{text.longLabel}</Field.Label>
+      </Field.Root>
     )
   },
   play: async ({ canvas }) => {
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
-}
-
-/** The fixture the keyboard tests drive: four checkboxes in a form. Try the keys in the table. */
-function KeyboardExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
-      <Field.Root>
-        <Checkbox name="newsletter" />
-        <Field.Label marker="none">{text.newsletter}</Field.Label>
-      </Field.Root>
-      <SelectAllExample locale={locale} />
-      <Field.Root disabled>
-        <Checkbox name="disabled" />
-        <Field.Label marker="none">{text.rowOne}</Field.Label>
-      </Field.Root>
-      <Field.Root required>
-        <Checkbox name="declaration" />
-        <Field.Label>{text.declaration}</Field.Label>
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-    </form>
-  )
 }
 
 /**
@@ -238,41 +222,8 @@ function KeyboardExample({ locale }: { locale: FormLocale }) {
  * one and checks the mixed one, and Enter does nothing to a checkbox.
  */
 export const Keyboard: Story = {
-  render: (_args, { globals }) => <KeyboardExample locale={localeOf(globals)} />,
-}
-
-/** A "select all" box: mixed while some rows are chosen, checked once the user chooses it. */
-function SelectAllExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const [state, setState] = useState<'some' | 'all' | 'none'>('some')
-  return (
-    <Field.Root lang={lang}>
-      <Checkbox
-        name="all"
-        checked={state === 'all'}
-        indeterminate={state === 'some'}
-        onCheckedChange={(checked) => setState(checked ? 'all' : 'none')}
-      />
-      <Field.Label marker="none">{text.selectAll}</Field.Label>
-    </Field.Root>
-  )
-}
-
-/** Controlled: the state lives in this story's `useState`, and Checkbox reports changes up. */
-function ControlledExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const [checked, setChecked] = useState(false)
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Checkbox name="declaration" checked={checked} onCheckedChange={setChecked} />
-        <Field.Label>{text.declaration}</Field.Label>
-      </Field.Root>
-      <p className="kv-story-form-output" data-testid="mirror">
-        {text.youChose}: {String(checked)}
-      </p>
-    </div>
-  )
+  parameters: showSource('checkbox/checkbox.fixture.tsx', 'KeyboardForm'),
+  render: (_args, { globals }) => <KeyboardForm locale={localeOf(globals)} />,
 }
 
 /**
@@ -281,7 +232,8 @@ function ControlledExample({ locale }: { locale: FormLocale }) {
  * `onCheckedChange(checked, { reason: 'input', event })`. It never copies the state of its own.
  */
 export const Controlled: Story = {
-  render: (_args, { globals }) => <ControlledExample locale={localeOf(globals)} />,
+  parameters: showSource('checkbox/checkbox.fixture.tsx', 'ControlledDeclaration'),
+  render: (_args, { globals }) => <ControlledDeclaration locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     const checkbox = canvas.getByRole('checkbox', { name: text.declaration })
@@ -291,51 +243,13 @@ export const Controlled: Story = {
   },
 }
 
-/** A form's text field value, `''` when the field is missing. */
-const fieldText = (data: FormData, name: string): string => {
-  const value = data.get(name)
-  return typeof value === 'string' ? value : ''
-}
-
-/** An uncontrolled form: the browser keeps the state, and the submit reads it. */
-function PlainFormExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const [sent, setSent] = useState<string | undefined>()
-  return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const data = new FormData(event.currentTarget)
-        setSent(fieldText(data, 'declaration') === '' ? '–' : fieldText(data, 'declaration'))
-      }}
-    >
-      <Field.Root required>
-        <Checkbox name="declaration" value="intygat" />
-        <Field.Label>{text.declaration}</Field.Label>
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {text.sent}: {sent}
-        </p>
-      )}
-    </form>
-  )
-}
-
 /**
  * A plain `<form>`: no `checked` and no handlers. The Checkbox is uncontrolled, the browser
  * keeps its state, and the form's `FormData` has it by `name` and `value` on submit.
  */
 export const PlainForm: Story = {
-  render: (_args, { globals }) => <PlainFormExample locale={localeOf(globals)} />,
+  parameters: showSource('checkbox/checkbox.fixture.tsx', 'DeclarationForm'),
+  render: (_args, { globals }) => <DeclarationForm locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = choiceTextsFor(localeOf(globals))
     await userEvent.click(canvas.getByRole('checkbox', { name: text.declaration }))
@@ -383,9 +297,10 @@ export const Compact: Story = {
   },
 }
 
-/** Every state in one column, for the RTL and forced-colours stories. */
-function CheckboxStates({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
+// Every state in one column. The RTL and ForcedColors stories render it, so a reader of either
+// sees the real parts.
+const renderCheckboxStates: NonNullable<Story['render']> = (_args, { globals }) => {
+  const { text, lang } = choiceTextsFor(localeOf(globals))
   return (
     <div className="kv-story-form" lang={lang}>
       <Field.Root required>
@@ -420,13 +335,13 @@ function CheckboxStates({ locale }: { locale: FormLocale }) {
 /** Right to left, in English: the box is at the right, and the tick doesn't mirror. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
-  render: () => <CheckboxStates locale="en" />,
+  render: renderCheckboxStates,
 }
 
 /** Checked, indeterminate, invalid and disabled stay distinguishable in forced colours. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  render: (_args, { globals }) => <CheckboxStates locale={localeOf(globals)} />,
+  render: renderCheckboxStates,
 }
 
 /** A change reaches `onCheckedChange` with the new state and the reason. */

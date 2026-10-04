@@ -8,7 +8,7 @@ import { maskTextsFor } from '../mask/mask.fixture.tsx'
 // Fixtures for Components/Form/TextInput. Each function is one example, and the story's "Show
 // code" prints it (`showSource`), so it reads the way an adopter writes it: the real parts and
 // props, with the localised text taken at the top. KvirnUI holds no form state and nothing here
-// validates. Every masked field has a hint that says the format with an example (3.3.2).
+// validates. Every masked field has a help text that says the format with an example (3.3.2).
 
 /**
  * Controlled: the value lives in this `useState`, where your form library's state would live.
@@ -77,7 +77,7 @@ export function NameAndEmailForm({ locale }: { locale: FormLocale }) {
 
 /**
  * A Swedish personal identity number, by name: the country comes from the provider (`sv` is Sweden). Ten or twelve digits, with or without the hyphen. The mask
- * puts the hyphen in. The hint says the format, because the mask doesn't.
+ * puts the hyphen in. The help text says the format, because the mask doesn't.
  */
 export function PersonalIdentityNumberField({ locale }: { locale: FormLocale }) {
   const { text, lang } = maskTextsFor({ locale })
@@ -90,7 +90,7 @@ export function PersonalIdentityNumberField({ locale }: { locale: FormLocale }) 
         autoComplete="off"
         className="kv-input--width-20"
       />
-      <Field.Hint>{text.personalIdentityNumberHint}</Field.Hint>
+      <Field.HelpText>{text.personalIdentityNumberHint}</Field.HelpText>
     </Field.Root>
   )
 }
@@ -107,7 +107,7 @@ export function PostcodeField({ locale }: { locale: FormLocale }) {
         autoComplete="postal-code"
         className="kv-input--width-6"
       />
-      <Field.Hint>{text.postalCodeHint}</Field.Hint>
+      <Field.HelpText>{text.postalCodeHint}</Field.HelpText>
     </Field.Root>
   )
 }
@@ -128,15 +128,15 @@ export function ExplicitPostcodeField({ locale }: { locale: FormLocale }) {
         autoComplete="postal-code"
         className="kv-input--width-6"
       />
-      <Field.Hint>{text.postalCodeHint}</Field.Hint>
+      <Field.HelpText>{text.postalCodeHint}</Field.HelpText>
     </Field.Root>
   )
 }
 
 /**
  * A date in one field. `masks.date()` follows the provider's locale for the order and the
- * separator. The hint's example comes from the field's own mask, with a day above 12 so the order
- * is clear, and so the hint and the field never disagree.
+ * separator. The help text's example comes from the field's own mask, with a day above 12 so the order
+ * is clear, and so the help text and the field never disagree.
  */
 export function StartDateField({ locale }: { locale: FormLocale }) {
   const { text, lang } = dateTextsFor(locale)
@@ -150,7 +150,7 @@ export function StartDateField({ locale }: { locale: FormLocale }) {
         autoComplete="off"
         className="kv-input--width-10"
       />
-      <Field.Hint>{text.oneFieldHint(example)}</Field.Hint>
+      <Field.HelpText>{text.oneFieldHint(example)}</Field.HelpText>
     </Field.Root>
   )
 }
@@ -171,7 +171,7 @@ export function ReferenceNumberField({ locale }: { locale: FormLocale }) {
         defaultValue="004512"
         className="kv-input--width-6 kv-input--numeric"
       />
-      <Field.Hint>{text.caseNumberHint}</Field.Hint>
+      <Field.HelpText>{text.caseNumberHint}</Field.HelpText>
     </Field.Root>
   )
 }

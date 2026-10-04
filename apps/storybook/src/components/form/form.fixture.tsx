@@ -10,7 +10,7 @@ import type { Decorator } from '@storybook/react-vite'
 
 // Story and e2e fixture for the Components/Form pages (docs/design/form-fields.md §4.2, §4.3).
 // sv, en, fi, nb and nn are written. The fi strings are the designer's drafts, for length checks.
-// se: English, marked lang="en" (3.1.2). The spec's option hint `durationHint` is
+// se: English, marked lang="en" (3.1.2). The spec's option help text `durationHint` is
 // `duration12Hint` in choice.fixture.tsx, which has the same text.
 // The library's own strings ("(optional)", "Error:") follow the locale through the provider
 // decorator below, like an app's provider would.
@@ -28,18 +28,18 @@ export interface FormTexts {
   personalNumber: string
   /** The description above the control: why we ask. */
   personalNumberWhy: string
-  /** The hint under the control: the format, in plain words first. */
+  /** The help text under the control: the format, in plain words first. */
   personalNumberFormat: string
   /** The ErrorMessage: repeats the format. */
   personalNumberError: string
-  /** The hint under a read-only field: why the value can't change. */
+  /** The help text under a read-only field: why the value can't change. */
   personalNumberHint: string
   registration: string
   /** The description above the control (a `Field.Prose`): where to find the answer. */
   registrationWhere: string
-  /** The hint under the control: a format example. */
+  /** The help text under the control: a format example. */
   registrationHint: string
-  /** The ErrorMessage, under the hint under the control. */
+  /** The ErrorMessage, under the help text under the control. */
   registrationError: string
   email: string
   emailHint: string
@@ -51,7 +51,7 @@ export interface FormTexts {
   search: string
   children: string
   childrenError: string
-  /** The hint under the whole-number field: the range the form checks. */
+  /** The help text under the whole-number field: the range the form checks. */
   childrenHint: string
   /** The ErrorMessage for a number the mask lets through but the form rejects (out of range). */
   childrenRangeError: string
@@ -63,16 +63,16 @@ export interface FormTexts {
   postcode: string
   postcodeHint: string
   longLabel: string
-  /** The hint under the long-label field: a long compound for the length check. */
+  /** The help text under the long-label field: a long compound for the length check. */
   grantReferenceHint: string
-  /** The hint under a textarea. Static: a live count is a later component. */
+  /** The help text under a textarea. Static: a live count is a later component. */
   messageLimit: string
   // InputGroup (docs/design/form-fields.md §4.5). The label carries the unit, because an Addon
   // is aria-hidden.
   rentWithUnit: string
   rentUnit: string
   rentUnitExample: (example: string) => string
-  /** The label of a number that can be below zero, and its hint with an example (a minus sign first). */
+  /** The label of a number that can be below zero, and its help text with an example (a minus sign first). */
   balance: string
   balanceHint: (example: string) => string
   workTime: string
@@ -86,7 +86,7 @@ export interface FormTexts {
   searchClearName: string
   visitDate: string
   visitDateExample: string
-  /** The date boxes' labels, for the Fieldset.Hint example. */
+  /** The date boxes' labels, for the Fieldset.HelpText example. */
   visitDay: string
   visitMonth: string
   visitYear: string
@@ -95,7 +95,7 @@ export interface FormTexts {
   grantWithUnit: string
   addressLegend: string
   addressHint: string
-  /** The group's hint under the address fields: what to leave out. */
+  /** The group's help text under the address fields: what to leave out. */
   addressFormat: string
   addressError: string
   street: string
@@ -296,7 +296,7 @@ const textsFi: FormTexts = {
   postcodeHint: 'Esimerkiksi 00100',
   longLabel: 'Asunnonmuutostyöavustushakemuksen viitenumero',
   // Soft hyphens (U+00AD) in the 34-letter compound: Chromium has no Finnish hyphenation
-  // dictionary, so they break the word in every browser (docs/design/field-hint.md §6).
+  // dictionary, so they break the word in every browser (docs/design/field-help-text.md §6).
   grantReferenceHint: 'Löydät sen asunnon\u00ADmuutostyö\u00ADavustus\u00ADpäätöksestä.',
   messageLimit: 'Enintään 500 merkkiä.',
   rentWithUnit: 'Kuukausivuokra kruunuina',
@@ -569,8 +569,8 @@ export const withFormLocale: Decorator = (Story, { globals }) => {
 
 /**
  * Every state of a text field in one column, in the default order (forms skill: label,
- * description, control, hint, error): with a description above, invalid, optional, disabled and
- * read-only with its hint under the box. The RTL and ForcedColors stories of each page render it.
+ * description, control, help text, error): with a description above, invalid, optional, disabled and
+ * read-only with its help text under the box. The RTL and ForcedColors stories of each page render it.
  */
 export function FieldStates({ locale }: { locale: FormLocale }) {
   const { text, lang } = textsFor(locale)
@@ -602,7 +602,7 @@ export function FieldStates({ locale }: { locale: FormLocale }) {
       <Field.Root required>
         <Field.Label>{text.personalNumber}</Field.Label>
         <TextInput name="personal-number" readOnly defaultValue="19900101-1234" />
-        <Field.Hint>{text.personalNumberHint}</Field.Hint>
+        <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
       </Field.Root>
     </div>
   )

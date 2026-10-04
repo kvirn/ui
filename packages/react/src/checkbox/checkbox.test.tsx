@@ -113,12 +113,12 @@ describe('rendering', () => {
 })
 
 describe('in a Field', () => {
-  test('the Field’s label is the name, and the description is the option’s hint', async () => {
+  test('the Field’s label is the name, and the description is the option’s help text', async () => {
     const { container } = await render(
       <Field.Root required>
         <Checkbox name="contact" />
         <Field.Label>E-post</Field.Label>
-        <Field.Hint>Vi mejlar beslutet.</Field.Hint>
+        <Field.HelpText>Vi mejlar beslutet.</Field.HelpText>
       </Field.Root>,
     )
     const checkbox = page.getByRole('checkbox', { name: 'E-post' })

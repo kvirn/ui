@@ -40,7 +40,7 @@ afterEach(() => {
 
 interface CodeFieldProps {
   pattern?: string
-  /** The hint under the label. Default: the six digits of the default pattern. */
+  /** The help text under the label. Default: the six digits of the default pattern. */
   hint?: string
   value?: string
   defaultValue?: string
@@ -134,7 +134,7 @@ describe('exports and types', () => {
 })
 
 describe('the input', () => {
-  test('is one native text input, named by its label and described by the hint', async () => {
+  test('is one native text input, named by its label and described by the help text', async () => {
     await render(<CodeField />)
     await expect.element(code()).toBeVisible()
     expect(inputElement().type).toBe('text')
@@ -184,7 +184,7 @@ describe('the input', () => {
     await expect.element(input).toBeDisabled()
   })
 
-  test('the error is part of its description, after the hint', async () => {
+  test('the error is part of its description, after the help text', async () => {
     await render(<CodeField invalid />)
     await expect
       .element(code())
@@ -1268,7 +1268,7 @@ describe('development warnings', () => {
     ).toBe(true)
   })
 
-  test('an Input in a Field without a hint warns: the length must be said (3.3.2)', async () => {
+  test('an Input in a Field without a help text warns: the length must be said (3.3.2)', async () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">Kod</Field.Label>

@@ -8,7 +8,9 @@ A native `<a href>` for navigation, rendered by your router's link component whe
 - `target="_blank"` adds `rel="noopener noreferrer"` to your own `rel`.
 - `Link.NewTabNotice` renders the translated new-tab notice, `(öppnas i en ny flik)`, as part of the link's name (WCAG 3.2.5, G201). A dev warning fires when a `target="_blank"` link has none.
 - No `disabled` prop: a disabled link isn't a thing. Remove the link or render text.
-- Headless: no CSS. It renders `class="kv-link"` (and `class="kv-link-new-tab-notice"` on the notice), the part's stable class, and your `className` joins it. Style `.kv-link` and the state attributes `[data-current]` and `[data-focus-visible]` (or `:focus-visible`). With `@kvirn-ui/theme/theme.css` imported, it is styled, and links inside a list with `class="kv-nav"` become navigation items.
+- `Link.Icon` is a decorative slot for an icon, first in the link: `<span class="kv-link-icon" aria-hidden="true">`. The link's name stays its text.
+- Headless: no CSS. It renders `class="kv-link"` (and `class="kv-link-new-tab-notice"` on the notice and `class="kv-link-icon"` on the icon), the part's stable class, and your `className` joins it. Style `.kv-link` and the state attributes `[data-current]` and `[data-focus-visible]` (or `:focus-visible`). With `@kvirn-ui/theme/theme.css` imported, it is styled: links in a list of [Navigation](../navigation/navigation.md) become navigation items, and `className="kv-link--service"` makes the one link that starts an e-service (below).
+- A list of page links with a current page is [Navigation](../navigation/navigation.md), not a class on a list.
 
 ## Component
 
@@ -25,6 +27,29 @@ import { Link } from '@kvirn-ui/react'
 ```
 
 In a React Server Component, use the named exports `LinkRoot` and `LinkNewTabNotice` instead of `Link.Root` and `Link.NewTabNotice`, because a server component can't dot into a client module. The callable `Link` still works, but docs write `Link.Root`.
+
+### The service link
+
+`className="kv-link--service"` is the look of the one link that starts an e-service (the "Länk till e-tjänst" of a webmanual): an outlined label, and with a `Link.Icon` first, a filled block with the icon. It is still a `<a href>` that navigates, with the router, `current` and the new-tab notice. It is a class and not a prop, as a Button's `kv-button--primary` is: the headless Link ships no CSS.
+
+```tsx
+import { Icon, Link } from '@kvirn-ui/react'
+
+;<Link.Root href="https://eservice.example/bygglov" className="kv-link--service">
+  <Link.Icon>
+    <Icon name="arrow-forward" size={6} />
+  </Link.Icon>
+  Ansök om bygglov
+</Link.Root>
+```
+
+Your part:
+
+- **One per view,** for starting an e-service. It is flat, with no button depth: DESIGN.md reserves depth for buttons. An action that submits or changes something is a [Button](../button/button.md).
+- **Label** starts with a verb and names the service ("Ansök om bygglov"). Don't write "länk" in it: the role says it.
+- **Put the icon first,** and keep it decorative: `Link.Icon` is `aria-hidden`. The built-in `arrow-forward` at `size={6}` mirrors in right-to-left text.
+- **No disabled service link.** Link has no `disabled`. When the e-service is closed, render a sentence and, when it reopens, a date, for example in an [Alert](../alert/alert.md).
+- **A new tab** needs `<Link.NewTabNotice />` inside the label, as for any link. It wraps with the label.
 
 ### The new-tab notice text
 

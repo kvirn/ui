@@ -50,7 +50,7 @@ function Editor(props: Partial<RichTextEditorRootProps>) {
 const scriptAddress = ['javascript', ':alert(1)'].join('')
 
 /**
- * What describes a field, as one text: its hint and its error. The error is "Fel: <message>" in a
+ * What describes a field, as one text: its help text and its error. The error is "Fel: <message>" in a
  * `<p>` with the prefix in a span, which `getByText` doesn't match as one string.
  */
 function descriptionOf(field: { element: () => Element }): string {

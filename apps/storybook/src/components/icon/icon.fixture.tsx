@@ -4,9 +4,10 @@ import {
   MapPinIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
-import { Button, defineIcons, Icon, KvirnProvider, Notification } from '@kvirn-ui/react'
-import type { BuiltInIconName } from '@kvirn-ui/react'
-import { ArrowRight, MapPin, Search, Trash2 } from 'lucide-react'
+import { Alert, Button, ButtonGroup, defineIcons, Icon, KvirnProvider } from '@kvirn-ui/react'
+import type { BuiltInIconName, IconName } from '@kvirn-ui/react'
+import { Warning as PhosphorWarning } from '@phosphor-icons/react'
+import { ArrowRight, MapPin, Search, Trash2, X as LucideClose } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import type { HTMLAttributes, ReactNode, Ref, SVGProps } from 'react'
 import { createPortal } from 'react-dom'
@@ -286,7 +287,7 @@ const nextCollection = new Date(Date.UTC(2026, 9, 14))
 const exampleDeadline = new Date(Date.UTC(2026, 11, 31))
 
 /** The next collection: a `<time>`, in the locale's long date format. */
-export function CollectionDate({ formatLocale }: { formatLocale: string }) {
+export function collectionDate(formatLocale: string) {
   const text = new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long', timeZone: 'UTC' }).format(
     nextCollection,
   )
@@ -309,38 +310,38 @@ export interface IconFixtureProps {
 }
 
 /**
- * The four status notifications: the icon comes from the component, and the status word is the
+ * The four status alerts: the icon comes from the component, and the status word is the
  * title, so the shapes never carry the meaning alone (1.4.1).
  */
-export function StatusNotifications({ locale }: IconFixtureProps) {
+export function StatusAlerts({ locale }: IconFixtureProps) {
   const { text, lang, formatLocale } = textsFor(locale)
   const { info, success, warning, error } = text.status
   return (
     <div className="kv-story-status-lines" lang={lang}>
-      <Notification.Info>
-        <Notification.Title>{info.word}</Notification.Title>
-        <Notification.Body>
+      <Alert.Info>
+        <Alert.Title>{info.word}</Alert.Title>
+        <Alert.Body>
           <p>{info.line(exampleDate(formatLocale))}</p>
-        </Notification.Body>
-      </Notification.Info>
-      <Notification.Success>
-        <Notification.Title>{success.word}</Notification.Title>
-        <Notification.Body>
+        </Alert.Body>
+      </Alert.Info>
+      <Alert.Success>
+        <Alert.Title>{success.word}</Alert.Title>
+        <Alert.Body>
           <p>{success.line(exampleDate(formatLocale))}</p>
-        </Notification.Body>
-      </Notification.Success>
-      <Notification.Warning>
-        <Notification.Title>{warning.word}</Notification.Title>
-        <Notification.Body>
+        </Alert.Body>
+      </Alert.Success>
+      <Alert.Warning>
+        <Alert.Title>{warning.word}</Alert.Title>
+        <Alert.Body>
           <p>{warning.line(exampleDate(formatLocale))}</p>
-        </Notification.Body>
-      </Notification.Warning>
-      <Notification.Danger>
-        <Notification.Title>{error.word}</Notification.Title>
-        <Notification.Body>
+        </Alert.Body>
+      </Alert.Warning>
+      <Alert.Danger>
+        <Alert.Title>{error.word}</Alert.Title>
+        <Alert.Body>
           <p>{error.line(exampleDate(formatLocale))}</p>
-        </Notification.Body>
-      </Notification.Danger>
+        </Alert.Body>
+      </Alert.Danger>
     </div>
   )
 }
@@ -390,11 +391,14 @@ export function ShadowIsland({
   )
 }
 
+const joinClasses = (...classNames: (string | undefined)[]): string =>
+  classNames.filter((className) => className !== undefined).join(' ')
+
 /** The icon in the right place: start, end or alone. Names come from the fixture. */
-function ButtonsRow({ locale, className }: IconFixtureProps & { className?: string | undefined }) {
+function buttonsRow(locale: IconFixtureLocale, className?: string) {
   const { text, lang } = textsFor(locale)
   return (
-    <div className="kv-button-group" lang={lang}>
+    <ButtonGroup lang={lang}>
       <Button className={className}>
         <Icon name="add" />
         {text.button.addChild}
@@ -415,18 +419,15 @@ function ButtonsRow({ locale, className }: IconFixtureProps & { className?: stri
       >
         <Icon name="search" />
       </Button>
-    </div>
+    </ButtonGroup>
   )
 }
 
-const joinClasses = (...classNames: (string | undefined)[]): string =>
-  classNames.filter((className) => className !== undefined).join(' ')
-
 /** The same row disabled. A disabled button's icon takes the muted text colour. */
-function DisabledButtonsRow({ locale }: IconFixtureProps) {
+function disabledButtonsRow(locale: IconFixtureLocale) {
   const { text, lang } = textsFor(locale)
   return (
-    <div className="kv-button-group" lang={lang}>
+    <ButtonGroup lang={lang}>
       <Button disabled>
         <Icon name="add" />
         {text.button.addChild}
@@ -441,7 +442,7 @@ function DisabledButtonsRow({ locale }: IconFixtureProps) {
       <Button className="kv-button--icon-only" aria-label={text.button.search} disabled>
         <Icon name="search" />
       </Button>
-    </div>
+    </ButtonGroup>
   )
 }
 
@@ -453,9 +454,10 @@ const buttonGroups = [
 
 /**
  * Icon at the start, icon at the end and icon-only, in secondary, primary, danger and
- * disabled. The group names are class names, so they aren't translated.
+ * disabled. The group names are class names, so they aren't translated. Called as a function
+ * in the story, so "Show code" shows the Buttons.
  */
-export function ButtonMatrix({ locale }: IconFixtureProps) {
+export function buttonMatrix(locale: IconFixtureLocale) {
   return (
     <div className="kv-story-states">
       {buttonGroups.map((group) => (
@@ -463,24 +465,24 @@ export function ButtonMatrix({ locale }: IconFixtureProps) {
           <p>
             <code>{group.label}</code>
           </p>
-          <ButtonsRow locale={locale} className={group.className} />
+          {buttonsRow(locale, group.className)}
         </div>
       ))}
       <div className="kv-story-state">
         <p>
           <code>disabled</code>
         </p>
-        <DisabledButtonsRow locale={locale} />
+        {disabledButtonsRow(locale)}
       </div>
     </div>
   )
 }
 
 /** More actions with an icon at the start: remove a file, the password toggle, menu, language. */
-export function MoreButtons({ locale }: IconFixtureProps) {
+export function moreButtons(locale: IconFixtureLocale) {
   const { text, lang } = textsFor(locale)
   return (
-    <div className="kv-button-group" lang={lang}>
+    <ButtonGroup lang={lang}>
       <Button>
         <Icon name="delete" />
         {text.button.removeFile(exampleFileName)}
@@ -501,16 +503,16 @@ export function MoreButtons({ locale }: IconFixtureProps) {
         <Icon name="language" />
         <span lang="sv">{text.language.current}</span>
       </Button>
-    </div>
+    </ButtonGroup>
   )
 }
 
 /** A long Finnish label next to its icon, in a narrow column: the label wraps, the icon stays. */
-export function NarrowButtons() {
+export function narrowButtons() {
   const { text } = textsFor('fi')
   return (
     <div className="kv-story-narrow" lang="fi" data-testid="narrow-buttons">
-      <div className="kv-button-group">
+      <ButtonGroup>
         <Button className="kv-button--primary" data-testid="download-button">
           <Icon name="download" />
           {text.button.download}
@@ -518,27 +520,10 @@ export function NarrowButtons() {
         <Button className="kv-button--icon-only" aria-label={text.button.close}>
           <Icon name="close" />
         </Button>
-      </div>
+      </ButtonGroup>
     </div>
   )
 }
-
-/**
- * Registered once, a library's drawings replace the built-in ones of the same names. Names that
- * aren't built in need `Register` (see the Icon guide), so these three are overrides. Library
- * defaults such as Lucide's 2 stroke go in `iconDefaults`.
- */
-const lucideIcons = defineIcons({
-  search: Search,
-  delete: Trash2,
-  'arrow-forward': { component: ArrowRight, mirrorInRtl: true },
-})
-
-const heroiconsIcons = defineIcons({
-  search: MagnifyingGlassIcon,
-  delete: TrashIcon,
-  'arrow-forward': { component: ArrowRightIcon, mirrorInRtl: true },
-})
 
 /** Lucide, one-off: pass the component as `icon`. Icon's own props replace Lucide's. */
 export function LucideOneOff({ locale }: IconFixtureProps) {
@@ -558,24 +543,32 @@ export function LucideOneOff({ locale }: IconFixtureProps) {
   )
 }
 
-/** Lucide, registered: `<Icon name>` and every KvirnUI component use Lucide's drawings. */
+/**
+ * Lucide, registered: `<Icon name>` and every KvirnUI component use Lucide's drawings. Call
+ * `defineIcons` once at module level in your app, next to the provider: a library's drawings
+ * replace the built-in ones of the same names, and library defaults such as Lucide's 2 stroke go
+ * in `iconDefaults`. Names that aren't built in need `Register` (see the Icon guide).
+ */
 export function LucideRegistered({ locale }: IconFixtureProps) {
   const { text, lang } = textsFor(locale)
+  const icons = defineIcons({
+    search: Search,
+    delete: Trash2,
+    'arrow-forward': { component: ArrowRight, mirrorInRtl: true },
+  })
   return (
-    <div className="kv-story-section" lang={lang}>
-      <KvirnProvider icons={lucideIcons} iconDefaults={{ strokeWidth: 1.5 }}>
-        <div className="kv-button-group">
-          <Button>
-            <Icon name="search" />
-            {text.button.search}
-          </Button>
-          <Button>
-            {text.button.continue}
-            <Icon name="arrow-forward" />
-          </Button>
-        </div>
-      </KvirnProvider>
-    </div>
+    <KvirnProvider icons={icons} iconDefaults={{ strokeWidth: 1.5 }}>
+      <ButtonGroup lang={lang}>
+        <Button>
+          <Icon name="search" />
+          {text.button.search}
+        </Button>
+        <Button>
+          {text.button.continue}
+          <Icon name="arrow-forward" />
+        </Button>
+      </ButtonGroup>
+    </KvirnProvider>
   )
 }
 
@@ -600,20 +593,101 @@ export function HeroiconsOneOff({ locale }: IconFixtureProps) {
 /** Heroicons, registered: `<Icon name>` and every KvirnUI component use Heroicons' drawings. */
 export function HeroiconsRegistered({ locale }: IconFixtureProps) {
   const { text, lang } = textsFor(locale)
+  const icons = defineIcons({
+    search: MagnifyingGlassIcon,
+    delete: TrashIcon,
+    'arrow-forward': { component: ArrowRightIcon, mirrorInRtl: true },
+  })
   return (
-    <div className="kv-story-section" lang={lang}>
-      <KvirnProvider icons={heroiconsIcons}>
-        <div className="kv-button-group">
-          <Button>
-            <Icon name="search" />
-            {text.button.search}
-          </Button>
+    <KvirnProvider icons={icons}>
+      <ButtonGroup lang={lang}>
+        <Button>
+          <Icon name="search" />
+          {text.button.search}
+        </Button>
+        <Button>
+          {text.button.continue}
+          <Icon name="arrow-forward" />
+        </Button>
+      </ButtonGroup>
+    </KvirnProvider>
+  )
+}
+
+/**
+ * Registered over the built-ins, a library's drawing replaces the built-in one for every
+ * component, with the same `size` and `color`. A plain component under `arrow-forward` still
+ * mirrors in right-to-left text, because mirroring belongs to the name (design spec §4.2).
+ * `logo` isn't built in: an app adds it by augmenting `Register`, so this story casts the name.
+ */
+export function LibraryIcons({ locale }: IconFixtureProps) {
+  const { text, lang } = textsFor(locale)
+  const icons = defineIcons({
+    close: LucideClose,
+    delete: TrashIcon,
+    warning: PhosphorWarning,
+    'arrow-forward': ArrowRight,
+    logo: MunicipalityMark,
+  })
+  const overridden = ['close', 'delete', 'warning', 'arrow-forward'] as const
+  return (
+    <div lang={lang}>
+      <ul className="kv-story-icon-strip" data-testid="registry">
+        {overridden.map((name) => (
+          <li key={name} className="kv-story-icon-cell">
+            <span className="kv-story-icon-row" data-testid={`built-in-${name}`}>
+              <Icon name={name} size={6} color="var(--kv-color-primary)" />
+              <code>{name}</code>
+            </span>
+            <KvirnProvider icons={icons}>
+              <span className="kv-story-icon-row" data-testid={`registered-${name}`}>
+                <Icon name={name} size={6} color="var(--kv-color-primary)" />
+                <code>{name}</code>
+              </span>
+            </KvirnProvider>
+          </li>
+        ))}
+        <li className="kv-story-icon-cell">
+          <KvirnProvider icons={icons}>
+            <Icon name={'logo' as IconName} size={6} label={text.label.logo} />
+          </KvirnProvider>
+          <code>logo</code>
+        </li>
+      </ul>
+      <div dir="rtl">
+        <KvirnProvider icons={icons}>
           <Button>
             {text.button.continue}
-            <Icon name="arrow-forward" />
+            <Icon name="arrow-forward" data-testid="overridden-arrow" />
           </Button>
-        </div>
-      </KvirnProvider>
+        </KvirnProvider>
+      </div>
     </div>
+  )
+}
+
+/**
+ * Without the theme: the icons render in a shadow root, where `theme.css` doesn't reach.
+ * `ShadowIsland` stands in for a page that doesn't load the theme, so only the Icon and Button
+ * inside it are what you write.
+ */
+export function UnstyledIcons({ locale }: IconFixtureProps) {
+  const { text, lang } = textsFor(locale)
+  return (
+    <ShadowIsland data-testid="unstyled" dir="rtl" lang={lang}>
+      <p>
+        {(['sm', 'md', 'lg'] as const).map((size) => (
+          <Icon key={size} name="check" size={size} color="var(--kv-color-success)" />
+        ))}
+      </p>
+      <p>
+        <Icon name="arrow-forward" size={6} />
+      </p>
+      <p>
+        <Button aria-label={text.button.close}>
+          <Icon name="close" />
+        </Button>
+      </p>
+    </ShadowIsland>
   )
 }

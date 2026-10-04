@@ -247,12 +247,8 @@ const publishedDates = {
   grants: new Date(Date.UTC(2026, 8, 14)),
 }
 
-function DateValue({ date, formatLocale }: { date: Date; formatLocale: string }) {
-  const text = new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long', timeZone: 'UTC' }).format(
-    date,
-  )
-  return <time dateTime={date.toISOString().slice(0, 10)}>{text}</time>
-}
+const longDate = (date: Date, formatLocale: string): string =>
+  new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long', timeZone: 'UTC' }).format(date)
 
 /** A local file, never a network request (hard rule 7): an SVG as a data URI. */
 const svgDataUri = (svg: string) => `data:image/svg+xml,${encodeURIComponent(svg)}`
@@ -298,7 +294,11 @@ export function ServiceCard({ locale }: CardFixtureProps) {
       </Card.Header>
       <Card.Body className="kv-prose">
         <h2>{text.waste.heading}</h2>
-        <p>{text.waste.next(<DateValue date={nextCollection} formatLocale={formatLocale} />)}</p>
+        <p>
+          {text.waste.next(
+            <time dateTime="2026-10-14">{longDate(nextCollection, formatLocale)}</time>,
+          )}
+        </p>
         <p>{text.waste.plan}</p>
       </Card.Body>
       <Card.Footer className="kv-button-group">
@@ -338,7 +338,11 @@ export function NewsList({ locale }: CardFixtureProps) {
               <p>{item.excerpt}</p>
               <p>
                 <small>
-                  {text.news.published(<DateValue date={published} formatLocale={formatLocale} />)}
+                  {text.news.published(
+                    <time dateTime={published.toISOString().slice(0, 10)}>
+                      {longDate(published, formatLocale)}
+                    </time>,
+                  )}
                 </small>
               </p>
             </Card.Body>
@@ -362,7 +366,7 @@ export function CaseCard({ locale }: CardFixtureProps) {
             <h3>{text.case.latestHeading}</h3>
             <p>
               {text.case.latestText(
-                <DateValue date={certificateArrived} formatLocale={formatLocale} />,
+                <time dateTime="2026-09-30">{longDate(certificateArrived, formatLocale)}</time>,
               )}
             </p>
           </Card.Root>

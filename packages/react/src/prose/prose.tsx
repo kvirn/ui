@@ -57,8 +57,8 @@ ProseRoot.displayName = 'Prose'
  * and `render` changes the element. Add `kv-prose--large` for the larger size.
  * A Prose is one element, so it is written `<Prose>`. Inside a `Field.Root` or
  * `Fieldset.Root` write `Field.Prose` or `Fieldset.Prose`: it is the description of the control
- * or the group, read before answering and shown above the control. A hint that helps while typing
- * is a `Field.Hint`.
+ * or the group, read before answering and shown above the control. A help text that helps while typing
+ * is a `Field.HelpText`.
  *
  * @example
  * <Prose>

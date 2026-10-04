@@ -255,7 +255,7 @@ test.describe('RadioGroup focus and modes', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 320, height: 640 })
-    for (const story of ['long-finnish', 'with-option-hints', 'as-page-heading', 'invalid']) {
+    for (const story of ['long-finnish', 'with-option-help-texts', 'as-page-heading', 'invalid']) {
       await openStory(page, story)
       expect(await hasHorizontalScroll(page), story).toBe(false)
     }
@@ -264,7 +264,7 @@ test.describe('RadioGroup focus and modes', () => {
 
 test.describe('RadioGroup accessibility', () => {
   test('a11y tree of the group', async ({ page }) => {
-    await openStory(page, 'with-option-hints')
+    await openStory(page, 'with-option-help-texts')
     await expect(page.getByRole('group')).toMatchAriaSnapshot(`
       - group "Hur länge behöver du tillståndet? (valfritt)":
         - text: Hur länge behöver du tillståndet? (valfritt)
@@ -290,7 +290,7 @@ test.describe('RadioGroup accessibility', () => {
     ['default'],
     ['keyboard'],
     ['selected'],
-    ['with-option-hints'],
+    ['with-option-help-texts'],
     ['invalid'],
     ['disabled-option'],
     ['disabled'],

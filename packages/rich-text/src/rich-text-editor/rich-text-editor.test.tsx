@@ -85,7 +85,7 @@ describe('in a Field', () => {
         <RichTextEditor.Root name="description">
           <RichTextEditor.Content />
         </RichTextEditor.Root>
-        <Field.Hint>Du kan använda rubriker och listor.</Field.Hint>
+        <Field.HelpText>Du kan använda rubriker och listor.</Field.HelpText>
         <Field.ErrorMessage>Beskriv ärendet</Field.ErrorMessage>
       </Field.Root>,
     )
@@ -106,7 +106,7 @@ describe('in a Field', () => {
     expect(kvirnWarnings()).toEqual([])
   })
 
-  test('it is described by the description, the keyboard instruction, the hint and the error, in that order', async () => {
+  test('it is described by the description, the keyboard instruction, the help text and the error, in that order', async () => {
     await render(<Described />)
     const box = textbox()
     await expect.element(box).toBeInTheDocument()

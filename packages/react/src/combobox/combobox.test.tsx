@@ -240,7 +240,7 @@ describe('rendering', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('the Field’s label names the input, and the hint describes it', async () => {
+  test('the Field’s label names the input, and the help text describes it', async () => {
     await render(<Example />)
     const label = document.querySelector('label')
     expect(inputElement().id).toBe(label?.getAttribute('for'))

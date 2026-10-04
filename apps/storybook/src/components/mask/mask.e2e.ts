@@ -511,7 +511,7 @@ test.describe('Masked TextInput accessibility', () => {
     expect(results.violations).toEqual([])
   })
 
-  test('a11y tree: a masked input is a plain textbox with its hint as its description', async ({
+  test('a11y tree: a masked input is a plain textbox with its help text as its description', async ({
     page,
   }) => {
     await openStory(page, 'keyboard')

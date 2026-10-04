@@ -38,7 +38,9 @@ test.describe('Fieldset keyboard contract', () => {
     await expect(page.getByRole('textbox', { name: 'Gatuadress' })).toBeFocused()
   })
 
-  test('Tab never stops on the fieldset, its legend, its hint or its error', async ({ page }) => {
+  test('Tab never stops on the fieldset, its legend, its help text or its error', async ({
+    page,
+  }) => {
     await openStory(page, 'invalid')
     // Past the last control, focus leaves the page or wraps back to the first: browsers differ,
     // so only the tag is asserted.

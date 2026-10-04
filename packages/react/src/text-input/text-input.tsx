@@ -41,7 +41,7 @@ export interface TextInputProps extends Omit<
    * locale), `{ preset, country? }`, `{ pattern, ...options }`, a `RegExp` that accepts partial
    * values, or a finished mask from `masks`. The input stays native, so paste, autofill and undo
    * work. `onValueChange` then also gets `unmaskedValue`, `isComplete`, `isWithinRange` (number
-   * masks) and `rejected`. Put the format in a hint, a `<Field.Hint>` in the Field (3.3.2).
+   * masks) and `rejected`. Put the format in a help text, a `<Field.HelpText>` in the Field (3.3.2).
    */
   mask?: MaskInput | undefined
   /**
@@ -64,7 +64,7 @@ function hasNameSource(input: HTMLInputElement): boolean {
 }
 
 /**
- * A native text `<input>`, wired to its Field: the label names it, and the hint and error
+ * A native text `<input>`, wired to its Field: the label names it, and the help text and error
  * describe it (contract: text-input.a11y.md). It holds no form state: pass `value` and
  * `onValueChange`, or `defaultValue` and `name` for a plain form, or spread your form library's
  * props. For a quantity or an amount, use NumberInput.
@@ -105,7 +105,7 @@ export function TextInput({
     if (field !== null && id !== undefined) {
       warnOnce(
         'text-input-id-in-field',
-        `A TextInput inside a Field got id="${id}", which is ignored so the Field's label and hint stay linked. Set the id with controlId on Field.Root.`,
+        `A TextInput inside a Field got id="${id}", which is ignored so the Field's label and help text stay linked. Set the id with controlId on Field.Root.`,
       )
     }
   }, [field, id])
@@ -147,7 +147,7 @@ export function TextInput({
       if (element.ownerDocument.querySelector(`[id^="${CSS.escape(prefix)}"]`) === null) {
         warnOnce(
           'text-input-mask-without-description',
-          'A masked TextInput in a Field has no hint. The mask shapes what is typed, but it doesn’t explain the format: say it in a visible hint, a <Field.Hint> under the control, with an example (WCAG 3.3.2).',
+          'A masked TextInput in a Field has no help text. The mask shapes what is typed, but it doesn’t explain the format: say it in a visible help text, a <Field.HelpText> under the control, with an example (WCAG 3.3.2).',
         )
       }
     }
