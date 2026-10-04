@@ -21,7 +21,20 @@ const tanstackTableRestriction = {
   group: ['@tanstack/table-core', '@tanstack/table-core/*'],
   message: 'Import useTable and the table re-exports from @kvirn-ui/core or @kvirn-ui/react.',
 }
+// ProseMirror is reached only through `@tiptap/pm/*`, so the editor has one copy of it (two copies
+// break `instanceof` and plugin keys silently). Tiptap lives in `@kvirn-ui/rich-text` and the
+// Storybook app only (Plan 0036): `@kvirn-ui/react` and `core` never import it.
+const prosemirrorRestriction = {
+  group: ['prosemirror-*', 'prosemirror-*/*'],
+  message: 'Import ProseMirror through @tiptap/pm/* so there is one copy of it.',
+}
+const tiptapRestriction = {
+  group: ['@tiptap/*', '@tiptap/*/*'],
+  message:
+    'Tiptap is used in @kvirn-ui/rich-text only. Keep Tiptap code out of the other packages.',
+}
 const tanstackPatterns = [tanstackVirtualRestriction, tanstackTableRestriction]
+const editorPatterns = [prosemirrorRestriction, tiptapRestriction]
 // core reaches the page only through the injected Env.
 const coreRestrictedGlobals = [
   'window',
@@ -119,7 +132,7 @@ export default defineConfig({
       'react/iframe-missing-sandbox': 'error',
       'no-restricted-imports': [
         'error',
-        { paths: [tanstackStoreRestriction], patterns: tanstackPatterns },
+        { paths: [tanstackStoreRestriction], patterns: [...tanstackPatterns, ...editorPatterns] },
       ],
       'vitest/no-focused-tests': 'error',
       'vitest/no-disabled-tests': 'error',
@@ -134,7 +147,7 @@ export default defineConfig({
             'error',
             {
               paths: [...coreRestrictedImports, tanstackStoreRestriction],
-              patterns: tanstackPatterns,
+              patterns: [...tanstackPatterns, ...editorPatterns],
             },
           ],
           'no-restricted-globals': ['error', ...coreRestrictedGlobals],
@@ -145,7 +158,7 @@ export default defineConfig({
         rules: {
           'no-restricted-imports': [
             'error',
-            { paths: coreRestrictedImports, patterns: tanstackPatterns },
+            { paths: coreRestrictedImports, patterns: [...tanstackPatterns, ...editorPatterns] },
           ],
         },
       },
@@ -156,7 +169,7 @@ export default defineConfig({
             'error',
             {
               paths: [...coreRestrictedImports, tanstackStoreRestriction],
-              patterns: [tanstackTableRestriction],
+              patterns: [tanstackTableRestriction, ...editorPatterns],
             },
           ],
         },
@@ -168,7 +181,7 @@ export default defineConfig({
             'error',
             {
               paths: [...coreRestrictedImports, tanstackStoreRestriction],
-              patterns: [tanstackVirtualRestriction],
+              patterns: [tanstackVirtualRestriction, ...editorPatterns],
             },
           ],
         },
@@ -176,6 +189,20 @@ export default defineConfig({
       {
         files: ['packages/core/src/env/**'],
         rules: { 'no-restricted-globals': 'off' },
+      },
+      {
+        // Tiptap is allowed here and in the Storybook app. ProseMirror is still only through
+        // @tiptap/pm/*.
+        files: ['packages/rich-text/**', 'apps/storybook/**'],
+        rules: {
+          'no-restricted-imports': [
+            'error',
+            {
+              paths: [tanstackStoreRestriction],
+              patterns: [...tanstackPatterns, prosemirrorRestriction],
+            },
+          ],
+        },
       },
     ],
   },
@@ -195,7 +222,7 @@ export default defineConfig({
           name: 'browser',
           maxWorkers,
           include: [
-            'packages/{react,testing}/src/**/*.test.{ts,tsx}',
+            'packages/{react,testing,rich-text}/src/**/*.test.{ts,tsx}',
             // The docs site shell is built on KvirnUI and tested like a component.
             'apps/docs/components/**/*.test.tsx',
           ],

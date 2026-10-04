@@ -276,6 +276,120 @@ export interface KvirnMessages {
     /** The expand button's name. `aria-expanded` carries whether the details are shown. */
     rowDetails: TextMessage
   }
+  /**
+   * Every visible, named and announced string of the rich text editor (`@kvirn-ui/rich-text`,
+   * Plan 0036, design spec `docs/design/rich-text-editor.md` §4.3). Control names are the same in
+   * both label modes: an icon-only button's `aria-label` and its tooltip, or its visible text.
+   * Announced sentences end with their full stop. Key names in shortcuts are not translated.
+   */
+  richText: {
+    /** The visually hidden first part of the toolbar's name: `Formatering`, then the field's label. */
+    toolbar: TextMessage
+    /** Group names: history, text style, lists, insert and the contextual table group. */
+    groupHistory: TextMessage
+    groupTextStyle: TextMessage
+    groupLists: TextMessage
+    groupInsert: TextMessage
+    groupTable: TextMessage
+    undo: TextMessage
+    redo: TextMessage
+    /** The block type picker's name. Its visible text is the current value. */
+    blockType: TextMessage
+    blockParagraph: TextMessage
+    blockHeading2: TextMessage
+    blockHeading3: TextMessage
+    /** Only when the configured heading levels include 4. */
+    blockHeading4: TextMessage
+    blockQuote: TextMessage
+    blockCode: TextMessage
+    /** The picker's value when the selection spans different block types. */
+    blockMixed: TextMessage
+    bold: TextMessage
+    /** Writes `<em>`: the word users know from Word and Google Docs. */
+    italic: TextMessage
+    underline: TextMessage
+    strike: TextMessage
+    code: TextMessage
+    bulletList: TextMessage
+    orderedList: TextMessage
+    indent: TextMessage
+    outdent: TextMessage
+    link: TextMessage
+    image: TextMessage
+    table: TextMessage
+    clearFormatting: TextMessage
+    addRowAbove: TextMessage
+    addRowBelow: TextMessage
+    /** Left and right follow what the user sees: they swap in right-to-left text. */
+    addColumnLeft: TextMessage
+    addColumnRight: TextMessage
+    deleteRow: TextMessage
+    deleteColumn: TextMessage
+    deleteTable: TextMessage
+    headerRow: TextMessage
+    /**
+     * The visible keyboard instruction under the box (WCAG 2.1.2), by what is enabled. The way out
+     * comes first. Plain text: messages are never JSX, so key names are not `Kbd`.
+     */
+    keyboardHintListsAndTables: TextMessage
+    keyboardHintLists: TextMessage
+    keyboardHintTables: TextMessage
+    linkAddTitle: TextMessage
+    linkEditTitle: TextMessage
+    linkUrl: TextMessage
+    linkUrlHint: TextMessage
+    linkText: TextMessage
+    linkTextHint: TextMessage
+    linkAdd: TextMessage
+    save: TextMessage
+    linkRemove: TextMessage
+    cancel: TextMessage
+    linkUrlMissing: TextMessage
+    linkUrlInvalid: TextMessage
+    linkTextMissing: TextMessage
+    imageAddTitle: TextMessage
+    imageEditTitle: TextMessage
+    imageUrl: TextMessage
+    imageUrlHint: TextMessage
+    imageAlt: TextMessage
+    imageAltHint: TextMessage
+    imageDecorative: TextMessage
+    imageDecorativeHint: TextMessage
+    imageAdd: TextMessage
+    imageRemove: TextMessage
+    imageUrlMissing: TextMessage
+    imageUrlInvalid: TextMessage
+    /** The address is outside the allowed image sources (`imageSources`). */
+    imageUrlNotAllowed: TextMessage
+    imageAltMissing: TextMessage
+    linkAdded: TextMessage
+    linkUpdated: TextMessage
+    linkRemoved: TextMessage
+    imageAdded: TextMessage
+    imageUpdated: TextMessage
+    imageRemoved: TextMessage
+    /** Announced when focus moves into the new table's first cell. Plural in both counts. */
+    tableInserted: MessageFunction<{ columns: number; rows: number }>
+    rowAdded: TextMessage
+    columnAdded: TextMessage
+    rowDeleted: TextMessage
+    columnDeleted: TextMessage
+    /** Announced with focus back in the text. `shortcut` is the platform's undo key, for example `Ctrl+Z`. */
+    tableDeleted: MessageFunction<{ shortcut: string }>
+    /** Announced after an indent or outdent, for example `Nivå 2`. Nothing visible says how deep. */
+    listLevel: MessageFunction<{ level: number }>
+    formattingCleared: TextMessage
+    /** Announced from the toolbar button only: the shortcut is the browser's own undo. */
+    undone: TextMessage
+    redone: TextMessage
+    /** Announced after a formatting shortcut in the text. `name` is the control's name, for example `Fetstil`. */
+    formatOn: MessageFunction<{ name: string }>
+    formatOff: MessageFunction<{ name: string }>
+    /** Announced when a pasted or dropped image file is ignored. */
+    imagePasteNotSupported: TextMessage
+    /** Announced when a pasted image's address is outside the allowed image sources. */
+    imageSourceNotAllowed: TextMessage
+  }
 }
 
 /** Any subset of namespaces and keys, for provider and `defineMessages` overrides. */

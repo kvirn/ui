@@ -60,8 +60,10 @@ export function trackModality(): void {
   document.addEventListener('focusin', clearPointer, { passive: true })
 }
 
+// A contenteditable takes text too (the rich text editor, Plan 0036): browsers match `:focus-visible`
+// on a click in it, as they do in a text input.
 const textEntrySelector =
-  'textarea, input:not([type="button"], [type="checkbox"], [type="color"], [type="file"], [type="hidden"], [type="image"], [type="radio"], [type="range"], [type="reset"], [type="submit"])'
+  'textarea, [contenteditable]:not([contenteditable="false"]), input:not([type="button"], [type="checkbox"], [type="color"], [type="file"], [type="hidden"], [type="image"], [type="radio"], [type="range"], [type="reset"], [type="submit"])'
 
 /**
  * Whether the focus on `element` should show the focus ring. Browsers match `:focus-visible` on

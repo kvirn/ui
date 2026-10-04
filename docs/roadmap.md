@@ -45,6 +45,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Dialog, AlertDialog                                                                                                 | Dialog (Modal), Alert Dialog  | 2   | planned                                    |
 | Popover (alpha candidate)                                                                                           | –                             | 2   | in progress                                |
 | Tooltip (name and shortcut on hover and keyboard focus, never on touch; Plan 0037)                                  | Tooltip                       | 2   | alpha                                      |
+| RichTextEditor (`@kvirn-ui/rich-text`, on Tiptap: toolbar, link and image forms, table group, Plan 0036)            | Toolbar, Dialog (non-modal)   | 3   | in progress (gates pending, AT `pending`)  |
 | Menu, MenuButton                                                                                                    | Menu Button                   | 2   | planned                                    |
 | Tabs                                                                                                                | Tabs                          | 2   | planned                                    |
 | Listbox (alpha candidate: native and popup rendering)                                                               | Select-Only Combobox, Listbox | 2   | in progress                                |

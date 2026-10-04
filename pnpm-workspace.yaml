@@ -25,6 +25,15 @@ catalog:
   axe-core: 4.13.0
   '@axe-core/playwright': 4.13.0
   '@playwright/test': 1.63.0
+  # Tiptap, the rich text editor's engine: peers of @kvirn-ui/rich-text, devDependencies here.
+  # One version for every package, pinned exactly, so ProseMirror is never duplicated.
+  '@tiptap/core': 3.31.4
+  '@tiptap/pm': 3.31.4
+  '@tiptap/react': 3.31.4
+  '@tiptap/starter-kit': 3.31.4
+  '@tiptap/extension-table': 3.31.4
+  '@tiptap/extension-image': 3.31.4
+  '@tiptap/extensions': 3.31.4
   # Icon libraries: devDependencies only, for Icon's compatibility tests and stories.
   # Pinned exactly, so a release that changes how a library builds its <svg> is a reviewed bump.
   lucide-react: 1.49.0

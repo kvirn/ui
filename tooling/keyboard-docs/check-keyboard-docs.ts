@@ -29,6 +29,31 @@ function walk(directory: string, keep: (name: string) => boolean): string[] {
   })
 }
 
+/**
+ * `packages/<name>/src` for every package that has one. Contracts and component tests live in the
+ * package that owns the component (`@kvirn-ui/react`, and `@kvirn-ui/rich-text` since Plan 0036).
+ */
+export function listPackageSourceDirectories(repositoryRoot: string): string[] {
+  const packagesDirectory = join(repositoryRoot, 'packages')
+  let entries
+  try {
+    entries = readdirSync(packagesDirectory, { withFileTypes: true })
+  } catch {
+    return []
+  }
+  return entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => join(packagesDirectory, entry.name, 'src'))
+    .filter((directory) => {
+      try {
+        return readdirSync(directory).length > 0
+      } catch {
+        return false
+      }
+    })
+    .toSorted()
+}
+
 /** `apps/storybook/src/components/<name>/<name>.stories.tsx` */
 export function listStoriesFiles(repositoryRoot: string): string[] {
   return walk(join(repositoryRoot, 'apps/storybook/src/components'), (name) =>
@@ -36,11 +61,11 @@ export function listStoriesFiles(repositoryRoot: string): string[] {
   ).toSorted()
 }
 
-/** `packages/react/src/**\/*.a11y.md` */
+/** `packages/*\/src/**\/*.a11y.md` */
 export function listContracts(repositoryRoot: string): string[] {
-  return walk(join(repositoryRoot, 'packages/react/src'), (name) =>
-    name.endsWith('.a11y.md'),
-  ).toSorted()
+  return listPackageSourceDirectories(repositoryRoot)
+    .flatMap((directory) => walk(directory, (name) => name.endsWith('.a11y.md')))
+    .toSorted()
 }
 
 const rawContractImport = /^import\s+(\w+)\s+from\s+'([^']+\.a11y\.md)\?raw'/m
@@ -62,7 +87,9 @@ function listTestFiles(repositoryRoot: string): Map<string, string> {
     ...walk(join(repositoryRoot, 'apps/storybook/src/components'), (name) =>
       name.endsWith('.e2e.ts'),
     ),
-    ...walk(join(repositoryRoot, 'packages/react/src'), (name) => name.endsWith('.test.tsx')),
+    ...listPackageSourceDirectories(repositoryRoot).flatMap((directory) =>
+      walk(directory, (name) => name.endsWith('.test.tsx')),
+    ),
   ].toSorted()
   const byName = new Map<string, string>()
   for (const file of files) {

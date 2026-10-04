@@ -83,6 +83,8 @@
  *  14. File upload      kv-file-upload: drop zone, trigger, rejections, and the list of files
  *  15. Table            kv-table: a native table, with sort buttons, selection, expanding and a
  *                      scroll region
+ *  16. Rich text editor  kv-rich-text: the box, its attached toolbar and content, and the Link and
+ *                      Image popovers
  */
 
 /* reset.css puts its rules in kv-reset. Declaring the order here too keeps it lowest, in whichever order the two files are imported. */
@@ -6997,3 +6999,366 @@
     }
   }
 }
+
+  /* 16. Rich text editor ---------------------------------------------------------------------
+   * <RichTextEditor.Root> renders class="kv-rich-text": the box of a control, with an attached
+   * toolbar (<RichTextEditor.Toolbar>: kv-toolbar kv-toolbar--attached, and kv-toolbar--labels
+   * with labels="icon-and-text") above the editable text (<RichTextEditor.Content>: the
+   * contenteditable gets kv-rich-text-content kv-prose). Under the box come the keyboard
+   * instruction (kv-field-hint kv-rich-text-keyboard-hint) and the count (kv-character-count),
+   * which are hints and have no style of their own here. Link and Image forms open in
+   * kv-rich-text-popover, rendered after the toolbar in kv-rich-text-popups.
+   * State is data-*: data-focused, data-focus-visible, data-invalid, data-required, data-disabled,
+   * data-readonly and data-empty. Design spec: docs/design/rich-text-editor.md §6.5 to §6.9.
+   *
+   * The box draws what .kv-input-group draws: the 1px control edge, which goes to 2px on any focus
+   * inside it, 2px danger when invalid, dashed when disabled. The edge plus the padding is always
+   * 2px, so nothing moves when the edge changes, and the toolbar covers the padding with a negative
+   * margin so its fill meets the edge. No overflow: no ring is clipped (2.4.11, 2.4.13). The ring
+   * is around the whole box when the text has keyboard focus, and on the focused button only when
+   * the toolbar has it. Content is exactly kv-prose, scaled to the field, and never hyphenated while
+   * you edit. Tiptap injects its own base rules unlayered, so the few that need a different
+   * look (the gap cursor) are overridden with !important, which wins over an unlayered rule from
+   * a layer.
+   */
+  .kv-rich-text {
+    --kv-rich-text-edge: var(--kv-color-border-control);
+    --kv-rich-text-edge-width: var(--kv-border-width);
+    --kv-rich-text-inset: calc(var(--kv-control-border-width-invalid) - var(--kv-rich-text-edge-width));
+
+    box-sizing: border-box;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    padding: var(--kv-rich-text-inset);
+    border: var(--kv-rich-text-edge-width) solid var(--kv-rich-text-edge);
+    border-radius: var(--kv-radius-md);
+    background-color: var(--kv-color-canvas);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+  }
+
+  .kv-rich-text:not([data-invalid], [data-disabled], [data-readonly]):hover {
+    --kv-rich-text-edge: var(--kv-color-text);
+  }
+
+  /* Any focus inside, toolbar and popover forms included: the 2px focus edge. */
+  .kv-rich-text:not([data-invalid], [data-disabled]):focus-within {
+    --kv-rich-text-edge: var(--kv-color-border-focus);
+    --kv-rich-text-edge-width: var(--kv-control-border-width-invalid);
+  }
+
+  /* Keyboard focus in the text: the ring is around the whole box. Before the script runs
+   * ([data-focused]), :focus-visible draws it. */
+  .kv-rich-text:is(
+      [data-focus-visible],
+      :not([data-focused]):has(.kv-rich-text-content:focus-visible)
+    ) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-rich-text[data-invalid] {
+    --kv-rich-text-edge: var(--kv-color-danger);
+    --kv-rich-text-edge-width: var(--kv-control-border-width-invalid);
+  }
+
+  .kv-rich-text[data-readonly] {
+    background-color: var(--kv-color-surface);
+  }
+
+  .kv-rich-text[data-disabled] {
+    --kv-rich-text-edge: var(--kv-color-border-control);
+    --kv-rich-text-edge-width: var(--kv-border-width);
+
+    border-style: dashed;
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+  }
+
+  /* The toolbar's name, for assistive technology only: never display: none. */
+  .kv-rich-text-toolbar-name {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* The popovers' slot adds no box: the popups are in the top layer. */
+  .kv-rich-text-popups {
+    display: contents;
+  }
+
+  /* The attached toolbar: part of the control's box, on the surface colour, a hairline under it. It
+   * covers the box's padding on the three outer sides, so its fill meets the edge, and rounds its
+   * own top corners to the box's inner radius. */
+  .kv-toolbar.kv-toolbar--attached {
+    margin-block-start: calc(-1 * var(--kv-rich-text-inset));
+    margin-inline: calc(-1 * var(--kv-rich-text-inset));
+    padding: var(--kv-space-1);
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-start-start-radius: calc(var(--kv-radius-md) - var(--kv-rich-text-edge-width));
+    border-start-end-radius: calc(var(--kv-radius-md) - var(--kv-rich-text-edge-width));
+    background-color: var(--kv-color-surface);
+  }
+
+  /* Flat buttons, like an input group's: no depth, no fill, an edge that is there and transparent,
+   * so a button never changes size. A pressed toggle is section 7a's solid tile. */
+  .kv-toolbar--attached .kv-button:not([aria-pressed='true'], [data-pressed]) {
+    border-color: transparent;
+    box-shadow: none;
+    background-color: transparent;
+    color: var(--kv-color-text);
+  }
+
+  .kv-toolbar--attached
+    .kv-button:not([aria-pressed='true'], [data-pressed], :disabled, [data-disabled], [aria-disabled='true']):is(:hover, :active) {
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  .kv-toolbar--attached .kv-button:not([aria-pressed='true'], [data-pressed]):is(:disabled, [data-disabled], [aria-disabled='true']) {
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+  }
+
+  /* A popover that is open (Link, Image): not a toggle, so not filled solid. The popup under it is
+   * the cue, and a primary edge says which button it belongs to. */
+  .kv-toolbar--attached .kv-button[aria-expanded='true'] {
+    border-color: var(--kv-color-primary);
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  /* Icon and text: the name after the icon, at the inline start. A name wraps inside its button
+   * and never truncates. */
+  .kv-toolbar--labels .kv-button {
+    inline-size: auto;
+    padding-inline: var(--kv-space-3);
+    gap: var(--kv-space-2);
+    text-align: start;
+  }
+
+  .kv-rich-text-control-label {
+    overflow-wrap: break-word;
+  }
+
+  /* The block type picker in the toolbar: flat, like the buttons, never a boxed field. Its width
+   * is a floor for the longest option name, so the buttons after it don't shift as the value changes. */
+  .kv-toolbar--attached .kv-listbox-trigger {
+    --kv-input-edge: transparent;
+
+    inline-size: auto;
+    min-inline-size: 12em;
+    border-color: transparent;
+    background-color: transparent;
+    font-size: var(--kv-font-label-size);
+    font-weight: var(--kv-font-label-weight);
+  }
+
+  .kv-toolbar--attached .kv-listbox-trigger:not([aria-disabled='true'], [data-disabled]):hover {
+    --kv-input-edge: transparent;
+
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  .kv-toolbar--attached .kv-listbox-trigger[aria-expanded='true'] {
+    --kv-input-edge: var(--kv-color-primary);
+
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  .kv-toolbar--attached .kv-listbox-trigger:is([aria-disabled='true'], [data-disabled]) {
+    border-style: solid;
+    background-color: transparent;
+  }
+
+  /* The editable text: exactly the published prose (kv-prose), at least five lines, growing with
+   * its content with no scroll area of its own. No hyphenation while editing: the hyphens prose
+   * adds would look like typos. */
+  .kv-rich-text-content {
+    box-sizing: border-box;
+    min-block-size: calc(5 * 1lh + 2 * var(--kv-space-3));
+    padding: var(--kv-space-3);
+    outline: none;
+    hyphens: manual;
+    overflow-wrap: break-word;
+    cursor: text;
+  }
+
+  .kv-rich-text[data-disabled] .kv-rich-text-content,
+  .kv-rich-text[data-readonly] .kv-rich-text-content {
+    cursor: default;
+  }
+
+  /* A table wider than the box scrolls inside its own wrapper (1.4.10 allows it for tables). */
+  .kv-rich-text-content .tableWrapper {
+    max-inline-size: 100%;
+    overflow-x: auto;
+  }
+
+  /* A selected image, and selected cells: a shape, not only a tint. */
+  .kv-rich-text-content .ProseMirror-selectednode {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-primary);
+    outline-offset: 2px;
+  }
+
+  .kv-rich-text-content .selectedCell {
+    background-color: var(--kv-color-primary-subtle);
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-primary);
+    outline-offset: calc(-1 * var(--kv-focus-ring-width));
+  }
+
+  /* The gap cursor Tiptap draws between blocks that can't hold a caret. Its injected rule is
+   * black and blinks, so it is restyled here: !important because an unlayered rule beats a layered
+   * one, and the layered !important beats it back. The blink stops under reduced motion. */
+  .kv-rich-text-content .ProseMirror-gapcursor::after {
+    border-block-start-color: var(--kv-color-text) !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .kv-rich-text-content .ProseMirror-gapcursor::after {
+      animation: none !important;
+    }
+  }
+
+  /* The Link and Image forms: a level 3 popup, with the form padded inside the popup's 8px. */
+  .kv-rich-text-popover {
+    --kv-popup-width-limit: 24rem;
+    box-sizing: border-box;
+    margin: 0;
+    padding: var(--kv-space-2);
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-xl);
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-shadow-popup);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    letter-spacing: normal;
+  }
+
+  .kv-rich-text-popover-title {
+    margin: 0;
+    padding-inline: var(--kv-space-2);
+    padding-block-start: var(--kv-space-2);
+    font-size: var(--kv-notification-title-size);
+    font-weight: 600;
+    line-height: var(--kv-notification-title-line-height);
+  }
+
+  .kv-rich-text-popover-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--kv-space-4);
+    padding: var(--kv-space-2);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .kv-toolbar--attached .kv-button {
+      transition:
+        background-color var(--kv-duration-fast) var(--kv-easing-standard),
+        border-color var(--kv-duration-fast) var(--kv-easing-standard);
+    }
+
+    .kv-rich-text-popover:popover-open {
+      animation: kv-rich-text-popover-in var(--kv-duration-medium) var(--kv-easing-standard);
+    }
+
+    @keyframes kv-rich-text-popover-in {
+      from {
+        opacity: 0;
+      }
+    }
+  }
+
+  @media (forced-colors: active) {
+    .kv-rich-text {
+      --kv-rich-text-edge: ButtonBorder;
+
+      background-color: Canvas;
+      color: CanvasText;
+    }
+
+    .kv-rich-text:not([data-invalid], [data-disabled], [data-readonly]):hover {
+      --kv-rich-text-edge: Highlight;
+    }
+
+    .kv-rich-text:not([data-invalid], [data-disabled]):focus-within {
+      --kv-rich-text-edge: Highlight;
+    }
+
+    .kv-rich-text:is(
+        [data-focus-visible],
+        :not([data-focused]):has(.kv-rich-text-content:focus-visible)
+      ) {
+      outline-color: Highlight;
+    }
+
+    .kv-rich-text[data-invalid] {
+      --kv-rich-text-edge: CanvasText;
+    }
+
+    .kv-rich-text[data-disabled] {
+      --kv-rich-text-edge: GrayText;
+
+      background-color: Canvas;
+      color: GrayText;
+    }
+
+    .kv-rich-text[data-readonly] {
+      background-color: Canvas;
+    }
+
+    .kv-toolbar.kv-toolbar--attached {
+      border-block-end-color: CanvasText;
+      background-color: Canvas;
+    }
+
+    /* Every control keeps a border in forced colours, so each target's bounds show. */
+    .kv-toolbar--attached .kv-button:not([aria-pressed='true'], [data-pressed]) {
+      border-color: ButtonText;
+      background-color: ButtonFace;
+      color: ButtonText;
+    }
+
+    .kv-toolbar--attached .kv-button:not([aria-pressed='true'], [data-pressed], :disabled, [data-disabled], [aria-disabled='true']):is(:hover, :active),
+    .kv-toolbar--attached .kv-button[aria-expanded='true'] {
+      border-color: Highlight;
+      background-color: ButtonFace;
+    }
+
+    .kv-toolbar--attached .kv-button:not([aria-pressed='true'], [data-pressed]):is(:disabled, [data-disabled], [aria-disabled='true']) {
+      border-color: GrayText;
+      color: GrayText;
+    }
+
+    .kv-toolbar--attached .kv-listbox-trigger {
+      --kv-input-edge: ButtonText;
+
+      border-color: ButtonText;
+    }
+
+    .kv-rich-text-content .ProseMirror-selectednode,
+    .kv-rich-text-content .selectedCell {
+      outline-color: Highlight;
+      background-color: Canvas;
+    }
+
+    .kv-rich-text-content .ProseMirror-gapcursor::after {
+      border-block-start-color: CanvasText !important;
+    }
+
+    .kv-rich-text-popover {
+      border-color: CanvasText;
+      background-color: Canvas;
+      box-shadow: none;
+      color: CanvasText;
+    }
+  }

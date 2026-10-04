@@ -5,6 +5,7 @@ import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { renderPart } from '../render/render-part.ts'
+import { ToolbarContext } from '../toolbar/toolbar-context.ts'
 import type { RenderProp } from '../render/render-part.ts'
 import { usePopover } from './use-popover.ts'
 import type { UsePopoverOptions, UsePopoverResult } from './use-popover.ts'
@@ -119,15 +120,22 @@ export function PopoverPopup({ render, ref, ...otherProps }: PopoverPopupProps):
       )
     }
   })
-  return renderPart({
-    render,
-    defaultElement: 'div',
-    partProps: {
-      ...mergeProps(otherProps, popover?.popupProps ?? {}),
-      ref: mergedRef,
-    },
-    state: { isOpen: popover?.isOpen ?? false },
-  })
+  // The popup holds a form or other content, never toolbar items. A Popover trigger can be a
+  // Toolbar.Item, so the popup sits in the toolbar's React tree: leave it, so a ButtonGroup or a
+  // Listbox in it doesn't act as if it were in the toolbar (Plan 0036).
+  return (
+    <ToolbarContext.Provider value={null}>
+      {renderPart({
+        render,
+        defaultElement: 'div',
+        partProps: {
+          ...mergeProps(otherProps, popover?.popupProps ?? {}),
+          ref: mergedRef,
+        },
+        state: { isOpen: popover?.isOpen ?? false },
+      })}
+    </ToolbarContext.Provider>
+  )
 }
 PopoverPopup.displayName = 'Popover.Popup'
 

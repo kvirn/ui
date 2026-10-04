@@ -22,6 +22,7 @@ Config lives in the root `vite.config.ts` (fmt, lint, test projects). Each packa
 - **Lint boundaries** (root `vite.config.ts`):
   - All 36 jsx-a11y rules in Oxlint, plus `react/iframe-missing-sandbox`, are errors. Turning one off needs the maintainer's approval.
   - `@tanstack/store` is importable only in `core/src/store/`, `@tanstack/virtual-core` only in `core/src/virtual/` and `@tanstack/table-core` only in `core/src/table/`.
+  - `prosemirror-*` is importable nowhere: ProseMirror comes only through `@tiptap/pm/*`, so the editor has one copy of it. `@tiptap/*` is importable only in `packages/rich-text` and `apps/storybook`. Tiptap is a peer and a pinned dev dependency of `@kvirn-ui/rich-text`, so `@kvirn-ui/react` and `core` contain no Tiptap code.
   - `core` imports no React and uses no `window`, `document`, `navigator`, `localStorage`, `sessionStorage` or `matchMedia` outside `core/src/env/`.
   - `.only`, `.skip`, `any` and `@ts-ignore` / `@ts-expect-error` are errors.
 - **`vp run e2e <args>`** passes arguments straight to Playwright. Don't put `--` before them, or Playwright ignores the filters. Always name the spec. A path-less run, or a filter that still matches everything (`.`, `e2e`, `apps/storybook/src/components`), is blocked by `.claude/hooks/guard-e2e-scope.sh`, for the main session and for subagents. The hook parses command text, so a wrapper script isn't caught. Run one spec on one project, and only if story, fixture or keyboard behaviour changed. The whole-suite run belongs to CI and the sweep specialist.

@@ -143,6 +143,27 @@ Listbox: one Tab stop. Multi-select adds Space to toggle and Shift+Arrow to exte
 | Date grid   | Home / End                    | First and last day of the week (Monday start)                                                                                                                                                                                                                                     |
 | Date grid   | Enter / Space, Escape         | Selects the date and closes. Escape closes without selecting, focus returns to the button                                                                                                                                                                                         |
 
+## Rich text editor (a toolbar plus a multi-line text; Plan 0036)
+
+The one place shortcuts are on by default and Tab can act: the keyboard skill's rule 7 exception for text editors. The toolbar is the Toolbar row above. The text is native, with these on top (design spec `docs/design/rich-text-editor.md` §6.6.6 and §7.4).
+
+| Context                                | Key                                            | Action                                                                                                                           |
+| -------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Text, outside lists and tables         | Tab / Shift+Tab                                | Leaves: the next focusable element, or back to the toolbar                                                                        |
+| Text, in a list item                   | Tab                                            | Nests the item under the one above, only when that is possible. Otherwise leaves. The new level is announced                      |
+| Text, in a nested list item            | Shift+Tab                                      | Outdents one level. In a top-level item it leaves, and never lifts the item out of its list                                       |
+| Text, in a table cell                  | Tab / Shift+Tab                                | Next and previous cell, selecting its text. In the last cell Tab leaves and never adds a row, and in the first Shift+Tab leaves   |
+| Text, anywhere                         | Escape, then Tab or Shift+Tab                  | Leaves forwards or backwards. Any key other than a modifier cancels it. Escape is not passed on the first time (a Dialog stays)   |
+| Text                                   | Alt+F10 (Option+F10 on macOS)                  | Moves focus to the toolbar's remembered control. Escape in the toolbar goes back, after a tooltip or popup has taken its Escape |
+| Text                                   | Control/Command+B, I, U                        | Bold, italic, underline on or off, announced ("Fetstil på")                                                                      |
+| Text                                   | Control/Command+K                              | Opens the link form                                                                                                              |
+| Text                                   | Control/Command+Z; +Shift+Z, Control+Y         | Undo; redo                                                                                                                       |
+| Text                                   | Control+Alt + a key (AltGr)                    | Types the character. Never a shortcut                                                                                             |
+| Link or image form                     | Enter / Escape                                 | Submits; closes without changes, and focus goes back to the text at the selection                                                 |
+| Native                                 | Arrows, Home, End, Shift+arrows, Enter, Shift+Enter | The caret, selection, a new paragraph, a line break. Never bound                                                              |
+
+Alternatives for every shortcut are toolbar buttons. The instruction that tells users how to leave is visible text, in the text's `aria-describedby`.
+
 ## Navigation (not composite)
 
 | Pattern                | Key           | Action                                                                                            |

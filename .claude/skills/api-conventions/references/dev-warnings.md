@@ -66,6 +66,18 @@ Each is a `warnOnce` call (see SKILL.md, Developer warnings). Format of the key 
 | `Tooltip.Popup`   | it holds interactive content: a link, a button, a field or anything with a `tabindex` (`tooltip-interactive-content`, 1.4.13, 2.1.1, effect). A Popover is for that |
 | `Tooltip.*`       | a part outside a `Tooltip.Root` (`tooltip-<part>-outside-root`, effect)                                                                                             |
 
+## RichTextEditor (`@kvirn-ui/rich-text`)
+
+| Where                                      | Fires when                                                                                                                                                          |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RichTextEditor.Root`, `useRichTextEditor` | the editable text has no accessible name outside a Field: no `aria-label` or `aria-labelledby` on `Content` (`rich-text-editor-without-name`, 1.3.1, 4.1.2, effect) |
+| `RichTextEditor.Root`, `useRichTextEditor` | a Field has no `Field.Label`, so the label id the text points at doesn't exist (`rich-text-editor-in-field-without-label`, effect)                                  |
+| `RichTextEditor.Root`                      | `characterCount` without `maxLength`: no limit to count against, so no count is rendered (`rich-text-editor-character-count-without-limit`, 3.3.8, effect)          |
+| `RichTextEditor.Toolbar`                   | icon-only controls with `tooltips={false}`: nothing shows their names (`rich-text-editor-icon-only-without-tooltips`, effect)                                       |
+| `RichTextEditor.BlockFormat`               | a configured heading level other than 2 to 4: the picker has no name for it (`rich-text-editor-heading-level-without-name`, effect)                                 |
+| any part                                   | outside `RichTextEditor.Root`: it **throws** (`useRichTextEditorContext`), because the part can't work without the editor                                           |
+| the announcements                          | no `KvirnProvider`, when a shortcut, a command or a form has something to announce (`announcer-without-provider`, shared)                                           |
+
 ## Throws instead of warns
 
 - `masks.oneTimeCode({ pattern })` and `OneTimeCode.Root pattern`: an invalid pattern throws a `RangeError`, in production too.

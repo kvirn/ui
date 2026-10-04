@@ -11,6 +11,7 @@ DESIGN.md          visual language: tokens, themes, typography, layout (default 
 apps/docs  apps/storybook
 packages/core      state machines. NO React, NO DOM at import time
 packages/react     useX hooks + X.Root/X.Trigger components
+packages/rich-text the rich text editor on Tiptap (peers). The only package that imports @tiptap/*
 packages/i18n      sv fi nb nn se en
 packages/theme     theme.css: --kv-* palette + tokens, default styles (opt-in)
 packages/testing   a11y test helpers
@@ -98,7 +99,7 @@ Nothing is done until all of these pass. The orchestrator runs them; no hook run
 3. **`core` stays pure:** no React, and no `window` or `document` at module scope.
 4. **No hard-coded visible or announced strings.** Every string exists in all 6 locales and can be overridden per provider and per instance (`api-conventions` skill: messages).
 5. **Headless packages ship zero CSS.** State is exposed via `data-*`.
-6. **No runtime dependencies other than the sanctioned ones:** React as a peer, and in `core` only: `@tanstack/store` (imported only in `core/src/store/`), `@tanstack/virtual-core` (only in `core/src/virtual/`) and `@tanstack/table-core` (only in `core/src/table/`). Any new dependency, runtime or dev, needs the maintainer's approval. A runtime dependency also updates the docs that list it (`docs/architecture.md`, the `regulations` skill) in the same PR. A dev dependency is pinned exactly in the pnpm catalog and recorded, with its licence, network and install-script check, in the PR description.
+6. **No runtime dependencies other than the sanctioned ones:** React as a peer, and in `core` only: `@tanstack/store` (imported only in `core/src/store/`), `@tanstack/virtual-core` (only in `core/src/virtual/`) and `@tanstack/table-core` (only in `core/src/table/`), and Tiptap (`@tiptap/*`) as peers of `@kvirn-ui/rich-text` only (imported only in `packages/rich-text` and the Storybook app, and ProseMirror only through `@tiptap/pm/*`). Any new dependency, runtime or dev, needs the maintainer's approval. A runtime dependency also updates the docs that list it (`docs/architecture.md`, the `regulations` skill) in the same PR. A dev dependency is pinned exactly in the pnpm catalog and recorded, with its licence, network and install-script check, in the PR description.
 7. **No telemetry and no third-party network calls,** including in the docs site.
 8. **Never claim legal compliance.** Say "designed and tested to meet WCAG 2.2 AA".
 9. **Public API changes** need a changeset and a docs update.

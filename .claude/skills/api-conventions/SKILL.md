@@ -18,7 +18,7 @@ Load it with `accessibility` (what the component must expose) and `testing` (how
 - **Types:** export `UseXOptions`, `UseXResult`, `XPartProps` (the hook's prop object) and `XProps` (the component's). A part's `render` receives `(partProps, state)`, where `state` is a small typed object (`ButtonState`).
 - **Components take `ref` as a normal prop** (`ComponentPropsWithRef<'button'>`, React 19). A part that needs its own ref merges it with the consumer's through `useMergedRef(consumerRef, ownRef)` (internal, in `merge-props/`). It is stable while the refs are, so React does not detach and re-attach it each render.
 - **Subscribe to a core store with `useStoreSelector(store, selector)`** (internal, `useSyncExternalStore`). Consumers never call `setState`. Don't use `@tanstack/react-store`.
-- **Internal hooks are not exported:** `useStoreSelector`, `useMessages`, `useEnv`, `useLinkComponent`.
+- **Internal hooks are not exported** from the public entry: `useStoreSelector`, `useMessages`, `useEnv`, `useLinkComponent`. The one exception is for Kvirn's own packages: `@kvirn-ui/react/internal` (`src/internal.ts`) exports `useMessages`, the Field's context and `useDescriptionPart`, `useFocusVisible` and a few helpers to `@kvirn-ui/rich-text` (Plan 0036). It is unstable, documented as for Kvirn packages only, and `internal.test.tsx` proves the public entry never re-exports any of it. Add to it only when a Kvirn package needs the piece.
 
 ## Parts and `render`
 

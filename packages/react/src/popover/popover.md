@@ -9,6 +9,7 @@ A Popover is a small floating panel that a button opens: a hint, a short form, a
 - **Escape and a press outside close it,** and focus goes back to the button if it was in the popup. Pressing the button again toggles.
 - **Opening never moves focus.** The popup follows the trigger in the Tab order, so render `Popover.Popup` right after `Popover.Trigger`.
 - **Name the popup** with `aria-label` or `aria-labelledby`: its role is `dialog`. A development warning fires without a name.
+- **In a toolbar.** A `Popover.Trigger` can be a `Toolbar.Item`. The popup then sits in the toolbar's React tree, so `Popover.Popup` leaves the toolbar's context: a form in it never registers as toolbar items, and its `ButtonGroup` or `Listbox` doesn't act as if it were in the toolbar (Plan 0036).
 - No strings of its own: the labels are yours, in the page's language.
 - Headless: no CSS. The parts render `kv-popover-trigger`, `kv-popover-popup` and `kv-popover-close`, and your `className` joins them. The only inline styles are the placement: `position: fixed`, `left`, `top`, `box-sizing`, `max-width` and `max-height`. The default theme doesn't style Popover yet.
 
@@ -70,8 +71,8 @@ The popup is placed with `position: fixed`, so it needs no positioned ancestor, 
 | `--kv-popup-width`        | The popup's width: never more than the viewport minus `padding`                                                                                                 |
 | `--kv-popup-max-height`   | The room left on its side of the trigger. The popup is limited to it and scrolls inside, so it fits at 320px and at 400% zoom                                   |
 | `--kv-popup-height-limit` | Yours: a length that caps the popup height below the room left (default none). The default theme sets 20rem on the listbox popup, so a long list scrolls inside |
-| `--kv-anchor-width`       | The trigger's width, for `min-width: var(--kv-anchor-width)`                                                                                                    |
 | `--kv-popup-width-limit`  | Yours: a length that caps the popup width below the room left (default none). The default theme sets 20rem on the tooltip, so long text wraps                   |
+| `--kv-anchor-width`       | The trigger's width, for `min-width: var(--kv-anchor-width)`                                                                                                    |
 
 It never covers the trigger (WCAG 2.4.11). It is placed again on scroll, on resize and when the trigger or the popup changes size.
 

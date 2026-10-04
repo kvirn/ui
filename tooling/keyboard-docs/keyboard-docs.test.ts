@@ -1,10 +1,13 @@
-import { relative } from 'node:path'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vite-plus/test'
 import {
   findKeyboardDocsProblems,
   importedContract,
   listContracts,
+  listPackageSourceDirectories,
   listStoriesFiles,
 } from './check-keyboard-docs.ts'
 
@@ -30,6 +33,30 @@ describe('importedContract', () => {
     expect(
       importedContract('/a/b.stories.tsx', `import { Button } from '@kvirn-ui/react'`),
     ).toBeUndefined()
+  })
+})
+
+describe('listPackageSourceDirectories', () => {
+  it('scans every package that has a src folder, not only @kvirn-ui/react', () => {
+    const directories = listPackageSourceDirectories(repositoryRoot).map((directory) =>
+      relative(repositoryRoot, directory),
+    )
+    expect(directories).toEqual(
+      expect.arrayContaining(['packages/react/src', 'packages/rich-text/src']),
+    )
+  })
+
+  it('finds a contract in another package than react', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'keyboard-docs-'))
+    try {
+      mkdirSync(join(directory, 'packages/rich-text/src/editor'), { recursive: true })
+      writeFileSync(join(directory, 'packages/rich-text/src/editor/editor.a11y.md'), '# Editor\n')
+      expect(listContracts(directory).map((file) => relative(directory, file))).toEqual([
+        'packages/rich-text/src/editor/editor.a11y.md',
+      ])
+    } finally {
+      rmSync(directory, { recursive: true, force: true })
+    }
   })
 })
 

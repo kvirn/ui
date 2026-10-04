@@ -7,7 +7,16 @@ import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
-import { Popover, PopoverClose, PopoverPopup, PopoverRoot, PopoverTrigger } from '../index.ts'
+import {
+  Button,
+  ButtonGroup,
+  Popover,
+  PopoverClose,
+  PopoverPopup,
+  PopoverRoot,
+  PopoverTrigger,
+  Toolbar,
+} from '../index.ts'
 import type {
   PopoverChangeDetails,
   PopoverChangeReason,
@@ -571,6 +580,40 @@ describe('development warnings', () => {
     expect(text).toContain('Popover.Trigger is outside a Popover.Root')
     expect(text).toContain('Popover.Popup is outside a Popover.Root')
     expect(text).toContain('Popover.Close is outside a Popover.Root')
+  })
+})
+
+describe('in a Toolbar (Plan 0036)', () => {
+  // A Popover's popup holds a form, not toolbar items. It sits in the toolbar's React tree, so it
+  // must not inherit the toolbar: a ButtonGroup in it would warn about a missing name, and a
+  // Toolbar part in it would register as an item of a toolbar it isn't in.
+  test('the popup is outside the toolbar: its form does not register as items or warn', async () => {
+    await render(
+      <Toolbar.Root aria-label="Formatering">
+        <Toolbar.Button>Ett</Toolbar.Button>
+        <Toolbar.Button>Två</Toolbar.Button>
+        <Popover.Root defaultOpen>
+          <Toolbar.Item render={<Popover.Trigger />}>Länk</Toolbar.Item>
+          <Popover.Popup aria-label="Lägg till länk">
+            <ButtonGroup>
+              <Button>Spara</Button>
+              <Popover.Close>Avbryt</Popover.Close>
+            </ButtonGroup>
+            <Toolbar.Button>Utanför</Toolbar.Button>
+          </Popover.Popup>
+        </Popover.Root>
+      </Toolbar.Root>,
+    )
+    await expect.element(page.getByRole('button', { name: 'Spara' })).toBeVisible()
+    const messages = consoleWarn.mock.calls.map(([message]) => String(message))
+    // The unnamed ButtonGroup is no toolbar group, so it has nothing to warn about.
+    expect(messages.some((message) => message.includes('<ButtonGroup> in a <Toolbar>'))).toBe(false)
+    // The Toolbar.Button in the popup is outside any toolbar, and says so.
+    expect(messages.some((message) => message.includes('Toolbar.Button is outside'))).toBe(true)
+    // Arrow keys in the popup never move the toolbar's focus.
+    await userEvent.click(page.getByRole('button', { name: 'Spara' }))
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(page.getByRole('button', { name: 'Spara' })).toHaveFocus()
   })
 })
 

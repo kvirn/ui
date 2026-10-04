@@ -1,0 +1,61 @@
+{
+  "name": "@kvirn-ui/rich-text",
+  "version": "0.0.0",
+  "description": "An accessible rich text editor for KvirnUI, built on Tiptap.",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.mts",
+        "import": "./dist/index.mjs"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack"
+  },
+  "dependencies": {
+    "@kvirn-ui/core": "workspace:*",
+    "@kvirn-ui/i18n": "workspace:*",
+    "@kvirn-ui/react": "workspace:*"
+  },
+  "devDependencies": {
+    "@kvirn-ui/testing": "workspace:*",
+    "@tiptap/core": "catalog:",
+    "@tiptap/extension-image": "catalog:",
+    "@tiptap/extension-table": "catalog:",
+    "@tiptap/extensions": "catalog:",
+    "@tiptap/pm": "catalog:",
+    "@tiptap/react": "catalog:",
+    "@tiptap/starter-kit": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitest/browser-playwright": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "vite-plus": "catalog:",
+    "vitest-browser-react": "catalog:"
+  },
+  "peerDependencies": {
+    "@tiptap/core": "^3.31.0",
+    "@tiptap/extension-image": "^3.31.0",
+    "@tiptap/extension-table": "^3.31.0",
+    "@tiptap/extensions": "^3.31.0",
+    "@tiptap/pm": "^3.31.0",
+    "@tiptap/react": "^3.31.0",
+    "@tiptap/starter-kit": "^3.31.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0"
+  }
+}

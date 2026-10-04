@@ -66,12 +66,11 @@ import Highlight from '@tiptap/extension-highlight'
     <RichTextEditor.DefaultControls exclude={['table', 'image']} />
     <RichTextEditor.Group aria-label="Markering">
       <RichTextEditor.CommandToggle
-        aria-label="Markera"
+        label="Markera"
+        icon={<RichTextEditor.Icon paths={highlightPaths} />}
         isPressed={(editor) => editor.isActive('highlight')}
-        onPress={(editor) => editor.chain().focus().toggleHighlight().run()}
-      >
-        <Icon name="highlight" />
-      </RichTextEditor.CommandToggle>
+        onPress={(editor) => editor.chain().toggleHighlight().run()}
+      />
     </RichTextEditor.Group>
   </RichTextEditor.Toolbar>
   <RichTextEditor.Content />
@@ -174,31 +173,38 @@ A new `richText` namespace in `KvirnMessages` (`packages/i18n/src/types.ts`) and
 - `kv-rich-text`, `kv-rich-text__toolbar` and `kv-rich-text__content` in a new `theme.css` section, from the design spec. The content uses `kv-prose` typography for headings, lists, quotes, code and tables, scaled to the field.
 - State: `data-focused`, `data-focus-visible`, `data-invalid`, `data-required`, `data-disabled`, `data-readonly` and `data-empty` on the root.
 
+## Phases
+
+The work is split in two, because the toolbar parts wait for [Plan 0037](0037-tooltip.md) (Tooltip):
+
+- **Phase A (written 2026-10-04, gates not yet run):** the gate and tooling changes, the dependencies and their docs, the `@kvirn-ui/rich-text` scaffold, the `@kvirn-ui/react/internal` subpath, the `richText` messages, `defaultExtensions` with the Kvirn keymap, and `useRichTextEditor` with `Root`, `Content` and `KeyboardHint`.
+- **Phase B (written 2026-10-04, gates not yet run):** `Toolbar`, `DefaultControls`, `CommandButton`, `CommandToggle`, `Group`, `BlockFormat`, `LinkControl`, `ImageControl`, `TableControls`, `Icon`, the `labels` and `tooltips` options, the contract and docs, the `theme.css` section, the stories and the e2e spec. Plan 0037 (Tooltip) and Plan 0035 (Toolbar, Toggle, ButtonGroup) are built, and the toolbar uses them.
+
 ## Tasks
 
-- [ ] **Gate and tooling changes (approved 2026-10-04):**
+- [x] **Gate and tooling changes (approved 2026-10-04):**
   - Root `vite.config.ts` test projects include `packages/rich-text`.
   - `tooling/keyboard-docs` scans `packages/*/src`.
   - `no-restricted-imports` bans `prosemirror-*`, and `@tiptap/*` outside `packages/rich-text` and storybook.
-- [ ] **Dependencies (maintainer approval, given 2026-10-04):** catalog entries pinned exactly. In the PR description: licence (MIT), network (none) and install scripts (none).
-- [ ] **Dependency docs:** update `docs/architecture.md`, `docs/vision.md` (principle 8), `docs/engineering.md` and the `regulations` skill.
-- [ ] **Scaffold:** `packages/rich-text` (package.json, vite pack config with `@tiptap/*` never bundled, index with `'use client'`), the storybook dependency, then `pnpm install`.
-- [ ] **`@kvirn-ui/react/internal` subpath (approved 2026-10-04):** exports `useMessages` (and `useFocusVisible` if needed), with a test that the public entry doesn't export them.
-- [ ] **`richText` messages:** in `types.ts` and all six locales, then `vp run i18n:check`.
-- [ ] **`defaultExtensions` and the Kvirn keymap,** tests first: link protocols, image `src`, Tab in lists and tables (only where it can act, last and first cell leave, never adds a row), Escape then Tab, Alt+F10, Mod-k, the removed shortcuts, input rules off, and every AltGr character on the sv, fi and nb Windows layouts typed as text.
-- [ ] **`useRichTextEditor`, `Root` and `Content`,** tests first: Field wiring, the hidden input and form reset, empty is `''`, controlled and uncontrolled value, html and json, disabled and read-only, the label click, dev warnings, axe.
-- [ ] **Toolbar parts,** tests first: `CommandButton`, `CommandToggle`, `DefaultControls` include and exclude, `BlockFormat`, `LinkControl`, `ImageControl`, `TableControls`, focus return, re-render scope.
-- [ ] **Contract and docs:** `rich-text-editor.a11y.md`, plus `rich-text-editor.md` (usage, adapting with Tiptap, server-side sanitizing, lazy loading, SSR).
-- [ ] **`theme.css`:** the section and content styles, then `vp run theme:check`.
-- [ ] **Stories in `apps/storybook/src/components/rich-text-editor/`:**
+- [x] **Dependencies (maintainer approval, given 2026-10-04):** catalog entries pinned exactly. In the PR description: licence (MIT), network (none) and install scripts (none). (Audited: every one of the 52 added packages is MIT and has no install script, see the PR description.)
+- [x] **Dependency docs:** update `docs/architecture.md`, `docs/vision.md` (principle 8), `docs/engineering.md` and the `regulations` skill. (And AGENTS.md rule 6 and the repo maps.)
+- [x] **Scaffold:** `packages/rich-text` (package.json, vite pack config with `@tiptap/*` never bundled, index with `'use client'`), the storybook dependency, then `pnpm install`.
+- [x] **`@kvirn-ui/react/internal` subpath (approved 2026-10-04):** exports `useMessages` (and `useFocusVisible` if needed), with a test that the public entry doesn't export them.
+- [x] **`richText` messages:** in `types.ts` and all six locales, then `vp run i18n:check`. (Written; `i18n:check` is the orchestrator's.)
+- [x] **`defaultExtensions` and the Kvirn keymap,** tests first: link protocols, image `src`, Tab in lists and tables (only where it can act, last and first cell leave, never adds a row), Escape then Tab, Alt+F10, Mod-k, the removed shortcuts, input rules off, and every AltGr character on the sv, fi and nb Windows layouts typed as text. (Tests written, not yet run.)
+- [x] **`useRichTextEditor`, `Root` and `Content`,** tests first: Field wiring, the hidden input and form reset, empty is `''`, controlled and uncontrolled value, html and json, disabled and read-only, the label click, dev warnings, axe. (Tests written, not yet run. `KeyboardHint` is in this phase too.)
+- [x] **Toolbar parts,** tests first: `CommandButton`, `CommandToggle`, `DefaultControls` include and exclude, `BlockFormat`, `LinkControl`, `ImageControl`, `TableControls`, focus return, re-render scope. (`rich-text-toolbar.test.tsx` and `link-image-forms.test.tsx` written, not yet run. Re-render scope: the controls read flat primitives through `useEditorState`, and the context value is memoized, but no test measures renders.)
+- [x] **Contract and docs:** `rich-text-editor.a11y.md`, plus `rich-text-editor.md` (usage, adapting with Tiptap, server-side sanitizing, lazy loading, SSR). (Also the keyboard skill's rule 7 exception and an editor table in `key-tables.md`, and the editor's rows in `dev-warnings.md`.)
+- [x] **`theme.css`:** the section and content styles, then `vp run theme:check`. (Section 16 written. `theme:check` is the orchestrator's.)
+- [x] **Stories in `apps/storybook/src/components/rich-text-editor/`:** (written, not yet run)
   - Default (every option a control).
   - Keyboard.
   - In a form (post and reset), Invalid, Disabled, ReadOnly, Controlled (JSON).
   - Custom extension (Highlight), Without tables and images, Long Finnish content.
   - RTL, ForcedColors, and the 320px reflow check.
-- [ ] **`rich-text-editor.e2e.ts`:** every keyboard row (the link and image forms, the table group, Tab never traps), and axe on every story.
-- [ ] **Changesets:** `@kvirn-ui/rich-text` (new), `@kvirn-ui/react` (the internal subpath), `@kvirn-ui/i18n` and `@kvirn-ui/theme`.
-- [ ] **Finish:** gates, then accessibility-reviewer. Roadmap: a new RichTextEditor row.
+- [x] **`rich-text-editor.e2e.ts`:** every keyboard row (the link and image forms, the table group, Tab never traps), and axe on every story. (Written, not yet run. The AltGr characters are unit-tested only: Playwright on Linux can't type AltGr.)
+- [x] **Changesets:** `@kvirn-ui/rich-text` (new), `@kvirn-ui/react` (the internal subpath), `@kvirn-ui/i18n` and `@kvirn-ui/theme`. (`rich-text-editor-foundation.md` and `rich-text-editor-toolbar.md`.)
+- [ ] **Finish:** gates, then accessibility-reviewer. (The roadmap row is added: `in progress`.)
 
 ## Decisions
 
@@ -221,6 +227,39 @@ A new `richText` namespace in `KvirnMessages` (`packages/i18n/src/types.ts`) and
 - **Deleting a table needs no confirmation** (the maintainer, 2026-10-04; an exception to DESIGN.md's rule for destructive actions, written there): it is undoable with Mod-z, and it's announced politely ("Tabellen togs bort. Ångra med Ctrl+Z"), like every other edit in the text.
 - **`imageSources`** (the maintainer, 2026-10-04): an allow-list of image origins. The default is same-origin and relative addresses only, so a resident's text never loads images from a third-party server (GDPR, rule 7). An address outside the list gets an inline error in the image form, and a pasted image from outside the list is dropped with a polite message.
 - **The visual items in the design specs are accepted** (the maintainer, 2026-10-04): a disabled pressed toggle as a grey tile (`text-muted` as a fill), tooltips with the `md` radius and 16px text, and the DESIGN.md wording for icon-only formatting buttons and toolbar density.
+
+### Decisions taken in phase A
+
+- **Keys are decided in one place, a plugin's `handleDOMEvents.keydown`, not in Tiptap's keymaps.** ProseMirror runs a plugin's DOM handlers before its own key handling and skips that handling when one returns `true`. That is the only way to let Tab leave (or Escape then Tab leave) without ListItem's, ListKeymap's or the table's own Tab binding acting behind it, and without `stopPropagation`, so a Dialog's own Tab handling still sees the key. Tiptap's ListKeymap also binds Tab at the start of a paragraph after a list, which pulls the paragraph into the list: it is skipped the same way. The same handler keeps Control+Alt (and Command+Option) chords and the removed shortcuts (Mod+Shift+S, Mod+E, Mod+Shift+B, Mod+Shift+7 and 8) away from ProseMirror, so AltGr always types: ProseMirror matches `@` by its key code (`2`), which Tiptap binds to a heading.
+- **The first Escape is consumed (`preventDefault` and `stopPropagation`),** per the accepted Q12, so a native `<dialog>` or a Popover around the editor doesn't close on it. The second Escape passes on.
+- **The keymap's callbacks live in `editor.storage.kvirnKeymap`,** set by the Root after the editor exists (`onFocusToolbar`, `onOpenLinkForm`, `onFormatToggle`, `onListLevelChange`), so `defaultExtensions()` stays plain data and an adopter can spread it into their own list.
+- **Typing rules are switched off by the keymap extension** (`onBeforeCreate` sets the editor's `enableInputRules`), because that is an editor option in Tiptap, not an extension option, and `defaultExtensions({ inputRules: true })` has to turn it back on.
+- **`@kvirn-ui/react/internal` exports more than `useMessages`:** the Field's context and `useDescriptionPart` (so the editor is wired to its Field and the instruction registers as one of its descriptions), `joinIds`, `renderPart`, `useMergedRef`, `warnOnce`, the quiet announcer, and `isKeyboardFocus` with `trackModality` (the editor's focus ring, not `useFocusVisible`, because its handler reads `currentTarget`, which is the wrapper). Each is the minimum the editor needs. All are unstable.
+- **`isKeyboardFocus` treats a contenteditable as text entry** (`use-focus-visible.ts`), so a click in the editor shows only the 2px edge and Tab shows the ring, as for text inputs (Plan 0031). A one-selector change in `@kvirn-ui/react`.
+- **Empty is wider than the spec's wording:** a document with no text and no image, table or other non-text content is `''` (or `null` as JSON), so an empty heading or list item counts as empty too, not only a single empty paragraph. Otherwise `required` would pass on an empty heading. Whitespace-only text is empty.
+- **The keyboard instruction is rendered by the Root, under the box** (`keyboardHint`, default true), not by `DefaultControls`: the design spec puts it outside the box, after it, and `DefaultControls` renders inside the toolbar. `keyboardHint={false}` plus a `RichTextEditor.KeyboardHint` of your own places it elsewhere. The part registers as one of the Field's descriptions, in DOM order, and is not rendered (and not registered) while the editor is read-only, disabled, or has neither lists nor tables. The dev warning for a custom toolbar with lists and no instruction is therefore not needed: the Root always has one unless it was turned off on purpose.
+- **Two message keys beyond the design spec's table:** `richText.imageUrlNotAllowed` (an address outside `imageSources`, as an inline error in the image form) and `richText.imageSourceNotAllowed` (a pasted image dropped because of it). Both are added to the spec's §4.3. The paste announcement is wired in phase B with the Image control.
+- **No `dir` anywhere** (the maintainer, 2026-10-04): the editor writes no `dir` attribute and sets no `textDirection`; the direction comes from `KvirnProvider` and the page, so a table inherits it and the column buttons follow its computed direction.
+- **Links carry no `target` and no `rel`,** and typing or pasting an address autolinks only an allowed one. A pasted link that already has a `target` keeps it (Tiptap parses any declared attribute): sanitize on the server.
+- **Tiptap injects a small `<style>` of ProseMirror's structural rules at runtime** (`injectCSS`, `white-space: pre-wrap`, the gap cursor). They are needed for editing to work without the theme, so the default stays on. `editorOptions.injectCSS: false` plus `injectNonce` turns it off or adds a CSP nonce. Open for the maintainer (rule 5, "headless packages ship zero CSS"): the gap cursor is `black` and blinks without checking `prefers-reduced-motion`, and phase B's theme section should restyle it and the hide-selection rule.
+
+### Decisions taken in phase B
+
+- **Controls take `label` and `icon`, not `aria-label` and children.** The plan's sketch (`aria-label="Markera"` with an icon as children) can't show the name in `labels="icon-and-text"` mode, so `CommandButton` and `CommandToggle` take `label` (the name: `aria-label` and the tooltip's first line when icon-only, the visible text otherwise), `icon`, `shortcut` (`['Mod-b']`, for `aria-keyshortcuts` and the tooltip), `isAvailable(editor)`, and `isPressed(editor)` and `onPress(editor)`. A control with no `icon` is a text button in both modes (the table actions). The sketch in the API section is updated to match.
+- **Icons are the editor's own.** The built-in set has no bold, italic or list icons, and the `Icon` component's API is changing in another plan, so `RichTextEditor.Icon` draws `name` (fifteen built-in editor icons) or `paths` (your own) as a decorative `<svg class="kv-icon">`. It takes `currentColor` and the text size.
+- **Pointer press keeps focus in the text, keyboard press keeps focus on the button.** `mousedown` is prevented on every control. Commands never chain `.focus()`. `CommandButton`'s `onPress` can, if the command should move focus into the text.
+- **Popovers render into a slot after the toolbar** (`createPortal` into `div.kv-rich-text-popups`, `display: contents`), so they are siblings of the toolbar as the spec's §5.5 says. This needed the Plan 0035 follow-up: `Popover.Popup` provides `ToolbarContext` as `null`, so the forms inside don't register as items or make an unnamed `ButtonGroup` warn. The Toolbar's key handler already ignores keys from elements that aren't items.
+- **Focus after Escape, Cancel and Apply goes to the text, at the selection,** also when the form was opened with the toolbar button (the brief and the plan's Link form text; the design spec §7.4 says "where it was opened from"). A press outside a popover leaves focus where the user pressed. The contract says so. Revisit if the review prefers the spec's wording.
+- **Link and Image anchor to their toolbar button, also for Control+K,** not to the caret's line (the spec §6.6.7). Placing a popover at the caret needs a virtual anchor the Popover doesn't have yet. Recorded as a known issue in the contract.
+- **The Link button is not `aria-pressed` on a link** (the plan's table said "pressed on a link"). It is a popup button (`aria-haspopup`, `aria-expanded`), and a button that is both a toggle and a popup is a muddled role. The form's title ("Ändra länk") and the "Ta bort länk" button say it is on a link.
+- **Link and image address checks.** A link must be a full `https`, `http`, `mailto` or `tel` address, or a path or fragment on this site. A bare `www.exempel.se` gets the format error, because guessing a scheme would link somewhere the author didn't see. An image address must be `http(s)` or a path, and whether its origin is allowed is the editor's answer (`editor.can().setImage`), so the allow-list lives in one place, the Image extension.
+- **The picker is not the Field's control.** `BlockFormat` wraps its Listbox in `FieldContext` as `null`: otherwise it would take the Field's id (a duplicate of the text's), description and state.
+- **The toolbar's name** is a visually hidden "Formatering" followed by the Field's label (`aria-labelledby`), and `aria-label="Formatering"` outside a Field. The toolbar is not rendered while the editor is read-only, and while it is disabled the controls are natively disabled with no tooltips.
+- **Escape on the toolbar** is handled in the capture phase: a control with an open popup (`aria-expanded="true"`) and an open tooltip take it first, otherwise it goes back to the text.
+- **`richText.tableDeleted` takes `{ shortcut }`** (the platform's undo key, "Ctrl+Z" or "⌘Z"), so the announcement says how to undo (the maintainer's decision, written into the spec's §4.3).
+- **The picker names heading levels 2 to 4.** Other configured levels have no message and warn. Levels 1, 5 and 6 are outside the design (the page owns the H1).
+- **Stories use a `Highlight` mark of our own** for Custom extension, not `@tiptap/extension-highlight`, which would be a new dependency. `@tiptap/core` is a devDependency of the Storybook app for it.
+- **Not built:** the inactive-selection highlight while focus is on a toolbar button (the browser's own is used), the picker's stacked-option width (a `min-inline-size` floor of 12em instead), a sticky toolbar option, and the paste handler that announces `imageSourceNotAllowed`: the parse rule already drops the image, but nothing says so yet.
 
 ## Risks & open questions
 
