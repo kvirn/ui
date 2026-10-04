@@ -86,3 +86,35 @@ export function usageGuide(raw: string): string {
     .replaceAll(/\n{3,}/g, '\n\n')
     .trim()
 }
+
+/** The three prose parts of a usage guide, in the order the Docs page template shows them. */
+export interface UsageGuideParts {
+  /** Before the first `##`: what the component is, and when and where to use it. */
+  lead: string
+  /** The body of `## API`, without its heading: parts, props the controls can't show, states. */
+  api: string
+  /** Every other `##` section: anything else worth noting. */
+  notes: string
+}
+
+/**
+ * Splits a usage guide (`usageGuide`'s output) for the Docs page template: the lead goes above
+ * the main example, the `## API` body under the controls, and the rest before the examples.
+ */
+export function splitUsageGuide(guide: string): UsageGuideParts {
+  const lead: string[] = []
+  const api: string[] = []
+  const notes: string[] = []
+  let current = lead
+  for (const line of guide.split('\n')) {
+    if (line.startsWith('## ')) {
+      current = line === '## API' ? api : notes
+      if (current === api) {
+        continue
+      }
+    }
+    current.push(line)
+  }
+  const tidy = (lines: string[]) => lines.join('\n').trim()
+  return { lead: tidy(lead), api: tidy(api), notes: tidy(notes) }
+}

@@ -1,11 +1,4 @@
-import {
-  Controls,
-  Description,
-  Primary,
-  Stories,
-  Subtitle,
-  Title,
-} from '@storybook/addon-docs/blocks'
+import { Controls, Primary, Stories, Subtitle, Title } from '@storybook/addon-docs/blocks'
 import type { Decorator, Preview } from '@storybook/react-vite'
 import { getDefaultEnv, getThemeStore } from '@kvirn-ui/core'
 import type { ColorSchemePreference, ContrastPreference } from '@kvirn-ui/core'
@@ -19,6 +12,7 @@ import '../../docs/fonts/ibm-plex/ibm-plex.css'
 import '@kvirn-ui/theme/theme.css'
 import './preview.css'
 import { KeyboardSection } from './keyboard-section.tsx'
+import { ApiSection, UsageSection } from './usage-section.tsx'
 
 /** The Mode toolbar: a colour scheme, or `system` to follow the device. */
 type StoryMode = ColorSchemePreference
@@ -197,19 +191,23 @@ const preview: Preview = {
         surface: { name: 'Surface', value: 'var(--kv-color-surface)' },
       },
     },
-    // The default DocsPage, except the primary story isn't repeated under "Stories", and the
-    // contract's Keyboard section follows the controls. A meta without a contract
-    // (the Foundation pages) shows nothing.
+    // The Docs page template (storybook-docs skill): the name, the usage guide's lead (what and
+    // where), the main example with every option as a control, the API (controls and the guide's
+    // `## API`), the contract's Keyboard section, the guide's other notes, then the examples.
+    // A meta without a guide or a contract (the Foundation pages) skips those parts.
     docs: {
       page: () => (
         <>
           <Title />
           <Subtitle />
-          <Description />
+          <UsageSection part="lead" />
           <Primary />
-          <Controls />
+          <ApiSection>
+            <Controls />
+          </ApiSection>
           <KeyboardSection />
-          <Stories includePrimary={false} />
+          <UsageSection part="notes" />
+          <Stories title="Examples" includePrimary={false} />
         </>
       ),
     },
