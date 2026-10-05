@@ -1141,7 +1141,9 @@
     font-weight: var(--kv-control-font-weight);
     line-height: var(--kv-control-line-height);
     text-decoration: none;
-    overflow-wrap: break-word;
+    /* anywhere, not break-word: the link is a flex container, and only anywhere lets a long word
+     * shrink its min-content width, so a Finnish compound wraps at 320px. */
+    overflow-wrap: anywhere;
   }
 
   .kv-navigation-item > .kv-link:not(.kv-link--service):is(:hover, :active) {
