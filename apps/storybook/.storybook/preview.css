@@ -58,6 +58,24 @@ body {
   margin-block-start: var(--kv-space-8);
 }
 
+/* The visible title of a table: a Heading above it. It lines up with the text of the first column
+ * (the cell's own padding), and keeps a gap to the table. A second title keeps its distance too. */
+.kv-story-table-title {
+  margin-block: 0 var(--kv-space-3);
+  padding-inline: var(--kv-space-3);
+}
+
+.kv-story-table-title:not(:first-child) {
+  margin-block-start: var(--kv-space-8);
+}
+
+@media (width >= 64rem) {
+  .kv-compact .kv-story-table-title {
+    margin-block-end: var(--kv-space-2);
+    padding-inline: var(--kv-space-2);
+  }
+}
+
 /* A narrow wrapper for the wrapping examples. */
 .kv-story-narrow {
   max-inline-size: 20rem;

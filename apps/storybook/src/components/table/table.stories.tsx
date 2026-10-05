@@ -8,6 +8,7 @@ import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize } from '../theme-story-assertions.ts'
 import {
+  AlwaysRegionPayments,
   EmptyCases,
   EverythingCases,
   ExpandableCases,
@@ -17,6 +18,7 @@ import {
   PaginatedCases,
   SelectableCases,
   SortableCases,
+  StaticLateHeadCases,
   StaticPayments,
   StaticScrollingCases,
   VirtualizedCases,
@@ -25,7 +27,8 @@ import {
 // Components/Table: a native table with TanStack Table bundled (Plan 0026,
 // design spec docs/design/table.md). A static table needs no `useTable`: every part is
 // the plain native element. With `useTable` it sorts one column at a time, selects, expands,
-// paginates and virtualizes. Every story has a caption, which names the table and its region.
+// paginates and virtualizes. Every story names its table and its region: the small resident tables with
+// a `Table.Caption`, and the staff lists with a visible `Heading` that `aria-labelledby` points at.
 // table.e2e.ts runs the keys of the Keyboard story, the sticky head, RTL, forced colours and 320px.
 
 // The Docs page opens with the package docs: how to use it, and how to build your own.
@@ -101,8 +104,8 @@ export const Static: Story = {
  * Tab stop only while it scrolls.
  */
 export const AlwaysRegion: Story = {
-  parameters: showSource('table/table.fixture.tsx', 'StaticPayments'),
-  render: (_args, { globals }) => <StaticPayments locale={localeOf(globals)} region="always" />,
+  parameters: showSource('table/table.fixture.tsx', 'AlwaysRegionPayments'),
+  render: (_args, { globals }) => <AlwaysRegionPayments locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
     await expect(canvas.getByRole('region', { name: 'Utbetalt bostadsbidrag 2026' })).toBeVisible()
     await expect(regionOf(canvasElement)).not.toHaveAttribute('tabindex')
@@ -128,6 +131,28 @@ export const StaticScrolling: Story = {
     await waitFor(() => expect(regionOf(canvasElement)).toHaveAttribute('tabindex', '0'))
     // It scrolls, so it is a region named by the caption.
     await expect(canvas.getByRole('region', { name: 'Öppna ärenden' })).toBeVisible()
+  },
+}
+
+/**
+ * The same table, with its head added after the region has mounted, like a table that renders once
+ * its data has arrived. The region finds the head and measures it, so a focused link is still never
+ * hidden under the sticky head.
+ */
+export const StaticLateHead: Story = {
+  parameters: showSource('table/table.fixture.tsx', 'StaticLateHeadCases'),
+  decorators: [
+    (Story) => (
+      <div style={{ '--kv-table-scroll-region-max-block-size': '16rem' } as CSSProperties}>
+        <Story />
+      </div>
+    ),
+  ],
+  render: (_args, { globals }) => <StaticLateHeadCases locale={localeOf(globals)} />,
+  play: async ({ canvas, canvasElement }) => {
+    await expect(canvas.getByRole('table', { name: 'Öppna ärenden' })).toBeVisible()
+    await waitFor(() => expect(canvasElement.querySelector('thead')).not.toBeNull())
+    await waitFor(() => expect(regionOf(canvasElement)).toHaveAttribute('tabindex', '0'))
   },
 }
 
@@ -235,7 +260,7 @@ export const Loading: Story = {
 }
 
 /**
- * The recipe until the Pagination component exists: 312 rows, 20 a page, a caption that says which
+ * The recipe until the Pagination component exists: 312 rows, 20 a page, a title that says which
  * rows are shown, and Previous and Next in a button group after the table. The table has no
  * `aria-rowcount`: each page is its own small table.
  */
@@ -285,7 +310,7 @@ export const Virtualized: Story = {
 
 /**
  * A 320px screen in Finnish, with a long header that wraps. The table is wider than its region, so
- * only the region scrolls and it is a Tab stop with the caption as its name. Open this story in a
+ * only the region scrolls and it is a Tab stop, named by the table's title. Open this story in a
  * 320px viewport: the e2e test does.
  */
 export const NarrowScreen: Story = {

@@ -673,6 +673,7 @@ test.describe('Combobox focus and modes', () => {
     await control.focus()
     const scrolls = await listOf(page).evaluate((element) => ({
       scrolls: element.scrollHeight > element.clientHeight,
+      // A WCAG threshold, not a theme value: the popup stays inside the viewport, so no option is out of reach (1.4.10, 2.4.11).
       fits: element.getBoundingClientRect().bottom <= window.innerHeight + 1,
     }))
     expect(scrolls).toEqual({ scrolls: true, fits: true })
@@ -803,6 +804,7 @@ test.describe('Combobox virtualization keyboard contract', () => {
     await expect(options.last()).toHaveAttribute('aria-setsize', String(virtualizedCount))
     const sizes = await listOf(page).evaluate((element) => ({
       scrolls: element.scrollHeight > element.clientHeight * 100,
+      // A WCAG threshold, not a theme value: the popup stays inside the viewport, so no option is out of reach (1.4.10, 2.4.11).
       fits: element.getBoundingClientRect().bottom <= window.innerHeight + 1,
     }))
     expect(sizes).toEqual({ scrolls: true, fits: true })

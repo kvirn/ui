@@ -1,5 +1,6 @@
 import {
   Button,
+  Heading,
   Link,
   Table,
   columnSizingFeature,
@@ -15,7 +16,7 @@ import {
   tableFeatures,
   useTable,
 } from '@kvirn-ui/react'
-import { useId, useMemo } from 'react'
+import { useEffect, useId, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
@@ -386,43 +387,48 @@ export function SortableCases({ locale }: { locale: FormLocale }) {
     rowHeader: 'name',
     initialState: { sorting: [{ id: 'name', desc: false }] },
   })
+  const titleId = useId()
   return (
-    <Table.ScrollRegion table={list}>
-      <Table.Root table={list}>
-        <Table.Caption>{texts.casesCaption}</Table.Caption>
-        <Table.Head>
-          {list.table.getHeaderGroups().map((headerGroup) => (
-            <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
-              {headerGroup.headers.map((header) => (
-                <Table.ColumnHeader
-                  key={header.id}
-                  header={header}
-                  className={
-                    header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
-                  }
-                >
-                  {header.column.getCanSort() ? <Table.SortButton header={header} /> : null}
-                </Table.ColumnHeader>
-              ))}
-            </Table.Row>
-          ))}
-        </Table.Head>
-        <Table.Body>
-          {(row) => (
-            <Table.Row key={row.id} row={row}>
-              {row.getAllCells().map((cell) => (
-                <Table.Cell
-                  key={cell.id}
-                  cell={cell}
-                  className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
-                />
-              ))}
-            </Table.Row>
-          )}
-        </Table.Body>
-        <Table.Empty />
-      </Table.Root>
-    </Table.ScrollRegion>
+    <>
+      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+        {texts.casesCaption}
+      </Heading>
+      <Table.ScrollRegion table={list} aria-labelledby={titleId}>
+        <Table.Root table={list} aria-labelledby={titleId}>
+          <Table.Head>
+            {list.table.getHeaderGroups().map((headerGroup) => (
+              <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
+                {headerGroup.headers.map((header) => (
+                  <Table.ColumnHeader
+                    key={header.id}
+                    header={header}
+                    className={
+                      header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
+                    }
+                  >
+                    {header.column.getCanSort() ? <Table.SortButton header={header} /> : null}
+                  </Table.ColumnHeader>
+                ))}
+              </Table.Row>
+            ))}
+          </Table.Head>
+          <Table.Body>
+            {(row) => (
+              <Table.Row key={row.id} row={row}>
+                {row.getAllCells().map((cell) => (
+                  <Table.Cell
+                    key={cell.id}
+                    cell={cell}
+                    className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
+                  />
+                ))}
+              </Table.Row>
+            )}
+          </Table.Body>
+          <Table.Empty />
+        </Table.Root>
+      </Table.ScrollRegion>
+    </>
   )
 }
 
@@ -444,11 +450,14 @@ export function SelectableCases({ locale }: { locale: FormLocale }) {
       rowSelection: { c1: true, c3: true },
     },
   })
+  const titleId = useId()
   return (
     <div className="kv-compact">
-      <Table.ScrollRegion table={list}>
-        <Table.Root table={list}>
-          <Table.Caption>{texts.casesCaption}</Table.Caption>
+      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+        {texts.casesCaption}
+      </Heading>
+      <Table.ScrollRegion table={list} aria-labelledby={titleId}>
+        <Table.Root table={list} aria-labelledby={titleId}>
           <Table.Head>
             {list.table.getHeaderGroups().map((headerGroup) => (
               <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
@@ -505,59 +514,64 @@ export function ExpandableCases({ locale }: { locale: FormLocale }) {
     rowHeader: 'name',
     initialState: { expanded: { c2: true } },
   })
+  const titleId = useId()
   return (
-    <Table.ScrollRegion table={list}>
-      <Table.Root table={list}>
-        <Table.Caption>{texts.casesCaption}</Table.Caption>
-        <Table.Head>
-          {list.table.getHeaderGroups().map((headerGroup) => (
-            <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
-              <Table.ColumnHeader>
-                <span className="kv-table-visually-hidden">{list.expandButtonText}</span>
-              </Table.ColumnHeader>
-              {headerGroup.headers.map((header) => (
-                <Table.ColumnHeader
-                  key={header.id}
-                  header={header}
-                  className={
-                    header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
-                  }
-                >
-                  {header.column.getCanSort() ? <Table.SortButton header={header} /> : null}
+    <>
+      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+        {texts.casesCaption}
+      </Heading>
+      <Table.ScrollRegion table={list} aria-labelledby={titleId}>
+        <Table.Root table={list} aria-labelledby={titleId}>
+          <Table.Head>
+            {list.table.getHeaderGroups().map((headerGroup) => (
+              <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
+                <Table.ColumnHeader>
+                  <span className="kv-table-visually-hidden">{list.expandButtonText}</span>
                 </Table.ColumnHeader>
-              ))}
-            </Table.Row>
-          ))}
-        </Table.Head>
-        <Table.Body>
-          {(row) => (
-            <>
-              <Table.Row key={row.id} row={row}>
-                <Table.Cell>
-                  <Table.ExpandButton row={row} />
-                </Table.Cell>
-                {row.getAllCells().map((cell) => (
-                  <Table.Cell
-                    key={cell.id}
-                    cell={cell}
-                    className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
-                  />
+                {headerGroup.headers.map((header) => (
+                  <Table.ColumnHeader
+                    key={header.id}
+                    header={header}
+                    className={
+                      header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
+                    }
+                  >
+                    {header.column.getCanSort() ? <Table.SortButton header={header} /> : null}
+                  </Table.ColumnHeader>
                 ))}
               </Table.Row>
-              <Table.DetailRow row={row}>
-                <dl>
-                  <dt>{texts.handlerLabel}</dt>
-                  <dd>{list.table.getRow(row.id).original.handler}</dd>
-                  <dt>{texts.decisionLabel}</dt>
-                  <dd>{list.table.getRow(row.id).original.decision}</dd>
-                </dl>
-              </Table.DetailRow>
-            </>
-          )}
-        </Table.Body>
-        <Table.Empty />
-      </Table.Root>
-    </Table.ScrollRegion>
+            ))}
+          </Table.Head>
+          <Table.Body>
+            {(row) => (
+              <>
+                <Table.Row key={row.id} row={row}>
+                  <Table.Cell>
+                    <Table.ExpandButton row={row} />
+                  </Table.Cell>
+                  {row.getAllCells().map((cell) => (
+                    <Table.Cell
+                      key={cell.id}
+                      cell={cell}
+                      className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
+                    />
+                  ))}
+                </Table.Row>
+                <Table.DetailRow row={row}>
+                  <dl>
+                    <dt>{texts.handlerLabel}</dt>
+                    <dd>{list.table.getRow(row.id).original.handler}</dd>
+                    <dt>{texts.decisionLabel}</dt>
+                    <dd>{list.table.getRow(row.id).original.decision}</dd>
+                  </dl>
+                </Table.DetailRow>
+              </>
+            )}
+          </Table.Body>
+          <Table.Empty />
+        </Table.Root>
+      </Table.ScrollRegion>
+    </>
   )
 }
 
@@ -572,26 +586,31 @@ export function EmptyCases({ locale }: { locale: FormLocale }) {
     getRowId: (record) => record.id,
     rowHeader: 'name',
   })
+  const titleId = useId()
   return (
-    <Table.ScrollRegion table={list}>
-      <Table.Root table={list}>
-        <Table.Caption>{texts.casesCaption}</Table.Caption>
-        <Table.Head>
-          {list.table.getHeaderGroups().map((headerGroup) => (
-            <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
-              <Table.ColumnHeader>
-                <Table.SelectAllCheckbox />
-              </Table.ColumnHeader>
-              {headerGroup.headers.map((header) => (
-                <Table.ColumnHeader key={header.id} header={header} />
-              ))}
-            </Table.Row>
-          ))}
-        </Table.Head>
-        <Table.Body>{() => null}</Table.Body>
-        <Table.Empty>{texts.emptyFiltered}</Table.Empty>
-      </Table.Root>
-    </Table.ScrollRegion>
+    <>
+      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+        {texts.casesCaption}
+      </Heading>
+      <Table.ScrollRegion table={list} aria-labelledby={titleId}>
+        <Table.Root table={list} aria-labelledby={titleId}>
+          <Table.Head>
+            {list.table.getHeaderGroups().map((headerGroup) => (
+              <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
+                <Table.ColumnHeader>
+                  <Table.SelectAllCheckbox />
+                </Table.ColumnHeader>
+                {headerGroup.headers.map((header) => (
+                  <Table.ColumnHeader key={header.id} header={header} />
+                ))}
+              </Table.Row>
+            ))}
+          </Table.Head>
+          <Table.Body>{() => null}</Table.Body>
+          <Table.Empty>{texts.emptyFiltered}</Table.Empty>
+        </Table.Root>
+      </Table.ScrollRegion>
+    </>
   )
 }
 
@@ -618,11 +637,15 @@ export function LoadingCases({ locale }: { locale: FormLocale }) {
     rowHeader: 'name',
     isLoading: true,
   })
+  const reloadTitleId = useId()
+  const firstLoadTitleId = useId()
   return (
     <>
-      <Table.ScrollRegion table={reload}>
-        <Table.Root table={reload}>
-          <Table.Caption>{texts.reloadCaption}</Table.Caption>
+      <Heading level={2} size="heading-3" id={reloadTitleId} className="kv-story-table-title">
+        {texts.reloadCaption}
+      </Heading>
+      <Table.ScrollRegion table={reload} aria-labelledby={reloadTitleId}>
+        <Table.Root table={reload} aria-labelledby={reloadTitleId}>
           <Table.Head>
             {reload.table.getHeaderGroups().map((headerGroup) => (
               <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
@@ -656,9 +679,11 @@ export function LoadingCases({ locale }: { locale: FormLocale }) {
           <Table.Empty />
         </Table.Root>
       </Table.ScrollRegion>
-      <Table.ScrollRegion table={firstLoad}>
-        <Table.Root table={firstLoad}>
-          <Table.Caption>{texts.firstLoadCaption}</Table.Caption>
+      <Heading level={2} size="heading-3" id={firstLoadTitleId} className="kv-story-table-title">
+        {texts.firstLoadCaption}
+      </Heading>
+      <Table.ScrollRegion table={firstLoad} aria-labelledby={firstLoadTitleId}>
+        <Table.Root table={firstLoad} aria-labelledby={firstLoadTitleId}>
           <Table.Head>
             {firstLoad.table.getHeaderGroups().map((headerGroup) => (
               <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
@@ -709,65 +734,70 @@ export function EverythingCases({ locale }: { locale: FormLocale }) {
       expanded: { c2: true },
     },
   })
+  const titleId = useId()
   return (
-    <Table.ScrollRegion table={list}>
-      <Table.Root table={list}>
-        <Table.Caption>{texts.casesCaption}</Table.Caption>
-        <Table.Head>
-          {list.table.getHeaderGroups().map((headerGroup) => (
-            <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
-              <Table.ColumnHeader>
-                <Table.SelectAllCheckbox />
-              </Table.ColumnHeader>
-              <Table.ColumnHeader>
-                <span className="kv-table-visually-hidden">{list.expandButtonText}</span>
-              </Table.ColumnHeader>
-              {headerGroup.headers.map((header) => (
-                <Table.ColumnHeader
-                  key={header.id}
-                  header={header}
-                  className={
-                    header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
-                  }
-                >
-                  {header.column.getCanSort() ? <Table.SortButton header={header} /> : null}
+    <>
+      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+        {texts.casesCaption}
+      </Heading>
+      <Table.ScrollRegion table={list} aria-labelledby={titleId}>
+        <Table.Root table={list} aria-labelledby={titleId}>
+          <Table.Head>
+            {list.table.getHeaderGroups().map((headerGroup) => (
+              <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
+                <Table.ColumnHeader>
+                  <Table.SelectAllCheckbox />
                 </Table.ColumnHeader>
-              ))}
-            </Table.Row>
-          ))}
-        </Table.Head>
-        <Table.Body>
-          {(row) => (
-            <>
-              <Table.Row key={row.id} row={row}>
-                <Table.Cell>
-                  <Table.SelectCheckbox row={row} />
-                </Table.Cell>
-                <Table.Cell>
-                  <Table.ExpandButton row={row} />
-                </Table.Cell>
-                {row.getAllCells().map((cell) => (
-                  <Table.Cell
-                    key={cell.id}
-                    cell={cell}
-                    className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
-                  />
+                <Table.ColumnHeader>
+                  <span className="kv-table-visually-hidden">{list.expandButtonText}</span>
+                </Table.ColumnHeader>
+                {headerGroup.headers.map((header) => (
+                  <Table.ColumnHeader
+                    key={header.id}
+                    header={header}
+                    className={
+                      header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
+                    }
+                  >
+                    {header.column.getCanSort() ? <Table.SortButton header={header} /> : null}
+                  </Table.ColumnHeader>
                 ))}
               </Table.Row>
-              <Table.DetailRow row={row}>
-                <dl>
-                  <dt>{texts.handlerLabel}</dt>
-                  <dd>{list.table.getRow(row.id).original.handler}</dd>
-                  <dt>{texts.decisionLabel}</dt>
-                  <dd>{list.table.getRow(row.id).original.decision}</dd>
-                </dl>
-              </Table.DetailRow>
-            </>
-          )}
-        </Table.Body>
-        <Table.Empty />
-      </Table.Root>
-    </Table.ScrollRegion>
+            ))}
+          </Table.Head>
+          <Table.Body>
+            {(row) => (
+              <>
+                <Table.Row key={row.id} row={row}>
+                  <Table.Cell>
+                    <Table.SelectCheckbox row={row} />
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Table.ExpandButton row={row} />
+                  </Table.Cell>
+                  {row.getAllCells().map((cell) => (
+                    <Table.Cell
+                      key={cell.id}
+                      cell={cell}
+                      className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
+                    />
+                  ))}
+                </Table.Row>
+                <Table.DetailRow row={row}>
+                  <dl>
+                    <dt>{texts.handlerLabel}</dt>
+                    <dd>{list.table.getRow(row.id).original.handler}</dd>
+                    <dt>{texts.decisionLabel}</dt>
+                    <dd>{list.table.getRow(row.id).original.decision}</dd>
+                  </dl>
+                </Table.DetailRow>
+              </>
+            )}
+          </Table.Body>
+          <Table.Empty />
+        </Table.Root>
+      </Table.ScrollRegion>
+    </>
   )
 }
 
@@ -786,11 +816,14 @@ export function NarrowCases({ locale }: { locale: FormLocale }) {
     rowHeader: 'name',
     initialState: { sorting: [{ id: 'name', desc: false }] },
   })
+  const titleId = useId()
   return (
     <div className="kv-compact">
-      <Table.ScrollRegion table={list}>
-        <Table.Root table={list}>
-          <Table.Caption>{texts.casesCaption}</Table.Caption>
+      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+        {texts.casesCaption}
+      </Heading>
+      <Table.ScrollRegion table={list} aria-labelledby={titleId}>
+        <Table.Root table={list} aria-labelledby={titleId}>
           <Table.Head>
             {list.table.getHeaderGroups().map((headerGroup) => (
               <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
@@ -847,78 +880,77 @@ export function KeyboardCases({ locale }: { locale: FormLocale }) {
     getRowCanExpand: () => true,
     rowHeader: 'name',
   })
+  const titleId = useId()
   return (
-    <Table.ScrollRegion table={list}>
-      <Table.Root table={list}>
-        <Table.Caption>{texts.keyboardCaption}</Table.Caption>
-        <Table.Head>
-          {list.table.getHeaderGroups().map((headerGroup) => (
-            <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
-              <Table.ColumnHeader>
-                <Table.SelectAllCheckbox />
-              </Table.ColumnHeader>
-              <Table.ColumnHeader>
-                <span className="kv-table-visually-hidden">{list.expandButtonText}</span>
-              </Table.ColumnHeader>
-              {headerGroup.headers.map((header) => (
-                <Table.ColumnHeader
-                  key={header.id}
-                  header={header}
-                  className={
-                    header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
-                  }
-                >
-                  {header.column.getCanSort() ? <Table.SortButton header={header} /> : null}
+    <>
+      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+        {texts.keyboardCaption}
+      </Heading>
+      <Table.ScrollRegion table={list} aria-labelledby={titleId}>
+        <Table.Root table={list} aria-labelledby={titleId}>
+          <Table.Head>
+            {list.table.getHeaderGroups().map((headerGroup) => (
+              <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
+                <Table.ColumnHeader>
+                  <Table.SelectAllCheckbox />
                 </Table.ColumnHeader>
-              ))}
-            </Table.Row>
-          ))}
-        </Table.Head>
-        <Table.Body>
-          {(row) => (
-            <>
-              <Table.Row key={row.id} row={row}>
-                <Table.Cell>
-                  <Table.SelectCheckbox row={row} />
-                </Table.Cell>
-                <Table.Cell>
-                  <Table.ExpandButton row={row} />
-                </Table.Cell>
-                {row.getAllCells().map((cell) => (
-                  <Table.Cell
-                    key={cell.id}
-                    cell={cell}
-                    className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
-                  />
+                <Table.ColumnHeader>
+                  <span className="kv-table-visually-hidden">{list.expandButtonText}</span>
+                </Table.ColumnHeader>
+                {headerGroup.headers.map((header) => (
+                  <Table.ColumnHeader
+                    key={header.id}
+                    header={header}
+                    className={
+                      header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
+                    }
+                  >
+                    {header.column.getCanSort() ? <Table.SortButton header={header} /> : null}
+                  </Table.ColumnHeader>
                 ))}
               </Table.Row>
-              <Table.DetailRow row={row}>
-                <dl>
-                  <dt>{texts.handlerLabel}</dt>
-                  <dd>{list.table.getRow(row.id).original.handler}</dd>
-                  <dt>{texts.decisionLabel}</dt>
-                  <dd>{list.table.getRow(row.id).original.decision}</dd>
-                </dl>
-              </Table.DetailRow>
-            </>
-          )}
-        </Table.Body>
-        <Table.Empty />
-      </Table.Root>
-    </Table.ScrollRegion>
+            ))}
+          </Table.Head>
+          <Table.Body>
+            {(row) => (
+              <>
+                <Table.Row key={row.id} row={row}>
+                  <Table.Cell>
+                    <Table.SelectCheckbox row={row} />
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Table.ExpandButton row={row} />
+                  </Table.Cell>
+                  {row.getAllCells().map((cell) => (
+                    <Table.Cell
+                      key={cell.id}
+                      cell={cell}
+                      className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
+                    />
+                  ))}
+                </Table.Row>
+                <Table.DetailRow row={row}>
+                  <dl>
+                    <dt>{texts.handlerLabel}</dt>
+                    <dd>{list.table.getRow(row.id).original.handler}</dd>
+                    <dt>{texts.decisionLabel}</dt>
+                    <dd>{list.table.getRow(row.id).original.decision}</dd>
+                  </dl>
+                </Table.DetailRow>
+              </>
+            )}
+          </Table.Body>
+          <Table.Empty />
+        </Table.Root>
+      </Table.ScrollRegion>
+    </>
   )
 }
 /**
  * A resident's table, without `useTable`: plain parts, a numeric column and a foot. The region
- * around it is a plain `<div>` while the table fits; `region="always"` makes it a named region.
+ * around it is a plain `<div>` while the table fits.
  */
-export function StaticPayments({
-  locale,
-  region,
-}: {
-  locale: FormLocale
-  region?: 'overflow' | 'always'
-}) {
+export function StaticPayments({ locale }: { locale: FormLocale }) {
   const { texts, formatLocale } = tableTextsFor(locale)
   const captionId = useId()
   const payments = [
@@ -931,7 +963,64 @@ export function StaticPayments({
   const months = new Intl.DateTimeFormat(formatLocale, { month: 'long', timeZone: 'UTC' })
   const total = payments.reduce((sum, payment) => sum + payment.amount, 0)
   return (
-    <Table.ScrollRegion aria-labelledby={captionId} region={region}>
+    <Table.ScrollRegion aria-labelledby={captionId}>
+      <Table.Root>
+        <Table.Caption id={captionId}>{texts.paymentsCaption}</Table.Caption>
+        <Table.Head>
+          <Table.Row>
+            <Table.ColumnHeader>{texts.month}</Table.ColumnHeader>
+            <Table.ColumnHeader>{texts.payoutDate}</Table.ColumnHeader>
+            <Table.ColumnHeader className="kv-table-column-header--numeric">
+              {texts.paymentAmount}
+            </Table.ColumnHeader>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
+          {payments.map((payment) => {
+            const month = months.format(asDate(payment.date))
+            return (
+              <Table.Row key={payment.id}>
+                <Table.RowHeader>
+                  {month.charAt(0).toLocaleUpperCase(formatLocale) + month.slice(1)}
+                </Table.RowHeader>
+                <Table.Cell>{dates.format(asDate(payment.date))}</Table.Cell>
+                <Table.Cell className="kv-table-cell--numeric">
+                  {numbers.format(payment.amount)}
+                </Table.Cell>
+              </Table.Row>
+            )
+          })}
+        </Table.Body>
+        <Table.Foot>
+          <Table.Row>
+            <Table.RowHeader>{texts.total}</Table.RowHeader>
+            <Table.Cell />
+            <Table.Cell className="kv-table-cell--numeric">{numbers.format(total)}</Table.Cell>
+          </Table.Row>
+        </Table.Foot>
+      </Table.Root>
+    </Table.ScrollRegion>
+  )
+}
+
+/**
+ * The same table with `region="always"`: the region around it is a named `region` landmark even
+ * though nothing scrolls, for a page where a table should be something to jump to.
+ */
+export function AlwaysRegionPayments({ locale }: { locale: FormLocale }) {
+  const { texts, formatLocale } = tableTextsFor(locale)
+  const captionId = useId()
+  const payments = [
+    { id: 'p1', date: '2026-01-23', amount: 1050 },
+    { id: 'p2', date: '2026-02-25', amount: 1050 },
+    { id: 'p3', date: '2026-03-25', amount: 1050 },
+  ]
+  const numbers = numberFormat(formatLocale)
+  const dates = dateFormat(formatLocale)
+  const months = new Intl.DateTimeFormat(formatLocale, { month: 'long', timeZone: 'UTC' })
+  const total = payments.reduce((sum, payment) => sum + payment.amount, 0)
+  return (
+    <Table.ScrollRegion aria-labelledby={captionId} region="always">
       <Table.Root>
         <Table.Caption id={captionId}>{texts.paymentsCaption}</Table.Caption>
         <Table.Head>
@@ -1013,6 +1102,55 @@ export function StaticScrollingCases({ locale }: { locale: FormLocale }) {
   )
 }
 
+/**
+ * The same table, whose head appears after the region has mounted, the way a table does when it
+ * renders once its data has arrived. The region measures the head when it appears, so the sticky
+ * head still never covers a focused link.
+ */
+export function StaticLateHeadCases({ locale }: { locale: FormLocale }) {
+  const { texts, formatLocale } = tableTextsFor(locale)
+  const captionId = useId()
+  const numbers = numberFormat(formatLocale)
+  const dates = dateFormat(formatLocale)
+  const rows = manyCases(30)
+  const [hasHead, setHasHead] = useState(false)
+  useEffect(() => {
+    const timer = setTimeout(() => setHasHead(true), 50)
+    return () => clearTimeout(timer)
+  }, [])
+  return (
+    <Table.ScrollRegion aria-labelledby={captionId}>
+      <Table.Root>
+        <Table.Caption id={captionId}>{texts.casesCaption}</Table.Caption>
+        {hasHead ? (
+          <Table.Head>
+            <Table.Row>
+              <Table.ColumnHeader>{texts.name}</Table.ColumnHeader>
+              <Table.ColumnHeader>{texts.received}</Table.ColumnHeader>
+              <Table.ColumnHeader className="kv-table-column-header--numeric">
+                {texts.amount}
+              </Table.ColumnHeader>
+            </Table.Row>
+          </Table.Head>
+        ) : null}
+        <Table.Body>
+          {rows.map((entry) => (
+            <Table.Row key={entry.id}>
+              <Table.RowHeader>
+                <Link.Root href={`#${entry.id}`}>{entry.name}</Link.Root>
+              </Table.RowHeader>
+              <Table.Cell>{dates.format(asDate(entry.received))}</Table.Cell>
+              <Table.Cell className="kv-table-cell--numeric">
+                {numbers.format(entry.amount)}
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table.Root>
+    </Table.ScrollRegion>
+  )
+}
+
 const pagedCases = manyCases(312)
 const pageSize = 20
 
@@ -1041,11 +1179,14 @@ export function PaginatedCases({ locale }: { locale: FormLocale }) {
   const { pageIndex } = list.table.store.state.pagination
   const from = pageIndex * pageSize + 1
   const to = Math.min(from + pageSize - 1, pagedCases.length)
+  const titleId = useId()
   return (
     <>
-      <Table.ScrollRegion table={list}>
-        <Table.Root table={list}>
-          <Table.Caption>{texts.pagedCaption(from, to, pagedCases.length)}</Table.Caption>
+      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+        {texts.pagedCaption(from, to, pagedCases.length)}
+      </Heading>
+      <Table.ScrollRegion table={list} aria-labelledby={titleId}>
+        <Table.Root table={list} aria-labelledby={titleId}>
           <Table.Head>
             {list.table.getHeaderGroups().map((headerGroup) => (
               <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
@@ -1129,11 +1270,14 @@ export function VirtualizedCases({ locale }: { locale: FormLocale }): ReactNode 
     rowHeader: 'name',
     virtualize: { estimateSize: 32, overscan: 8 },
   })
+  const titleId = useId()
   return (
     <div className="kv-compact">
-      <Table.ScrollRegion table={list}>
-        <Table.Root table={list}>
-          <Table.Caption>{texts.virtualCaption}</Table.Caption>
+      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+        {texts.virtualCaption}
+      </Heading>
+      <Table.ScrollRegion table={list} aria-labelledby={titleId}>
+        <Table.Root table={list} aria-labelledby={titleId}>
           <Table.Head>
             {list.table.getHeaderGroups().map((headerGroup) => (
               <Table.Row key={headerGroup.id} headerGroup={headerGroup}>

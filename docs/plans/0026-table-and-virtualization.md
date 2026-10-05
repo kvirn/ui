@@ -266,7 +266,7 @@ Minor bumps for `core`, `react`, `i18n` and `theme`. Table and virtualization sh
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass (manual AT is `pending`)
+- [x] All quality gates in AGENTS.md pass (manual AT is `pending`): 2026-10-05, `vp check`, the scoped tests of core, i18n, the Table, the three list components and their stories, `i18n:check`, `theme:check`, and the table, combobox and autocomplete e2e on chromium (listbox: the virtualization tests; the listbox stories and spec were being edited in another session). The ux-designer review of the stories is still open
 - [ ] Plan tasks ticked, `docs/roadmap.md` status updated
 
 ## Review 2026-10-04
@@ -281,16 +281,16 @@ The accessibility review of this plan returned findings. Fixed:
 
 Follow-ups (open):
 
-- [ ] Expand-button name fallback when there is no `rowHeader`: "Details" is the same on every row, so it needs the row number ("Details row 3"), which is a new message in six locales (not done: i18n is in use by another change).
-- [ ] `aria-rowindex` on the header row without `headerGroup`, and `aria-rowcount` excluding `Table.Foot` rows.
-- [ ] Pass `scrollMargin` (the caption and head height above the first row) to the virtualizer. `createListVirtualizer` has `scrollPaddingStart` only, so this is a core API change (not done).
-- [ ] A forced-colours sweep assertion for the sticky head's line (`E2E_BROWSERS=sweep`).
-- [ ] The `fits: bottom <= innerHeight` layout assertions in the listbox, combobox and autocomplete e2e (virtualization window tests): keep with a rationale (the popup must not overflow the viewport, 1.4.10 and 2.4.11) or drop as geometry (rule 13).
+- [x] Expand-button name fallback when there is no `rowHeader`: the name is `table.rowDetailsNumber` ("Details row 3", a new message in six locales), which starts with the visible text (2.5.3). Your own children or your own `aria-label` replace it (2026-10-05).
+- [x] `aria-rowindex` on a header row without `headerGroup` (numbered by its place in the head) and on footer rows (after every other row), and `aria-rowcount` counting the rows of `Table.Foot`. New on the hook: `footProps` and `footRowOffset` (2026-10-05).
+- [x] Pass `scrollMargin` (how far the first row is from the start of the region: the caption and the head) to the virtualizer. `createListVirtualizer` gets a `scrollMargin` option; item offsets and segments stay relative to the list, and `useTable` measures the body's place (not the head's, which moves while it is sticky) (2026-10-05).
+- [x] A forced-colours assertion for the sticky head's line: the e2e emulates forced colours itself, so it runs in the baseline project and needs no sweep. It asserts the line is drawn and is not the colour of the head's fill (2026-10-05).
+- [x] The `fits: bottom <= innerHeight` assertions in the listbox, combobox and autocomplete e2e (virtualization window tests): kept, with the rationale in a comment at each. They assert a WCAG threshold (the popup stays inside the viewport, so no option is out of reach, 1.4.10 and 2.4.11), not a value of the theme (2026-10-05).
 - [x] Maintainer decision: is `Table.ScrollRegion` a named region always, or only while it overflows? Decided 2026-10-04: a region only while it overflows, by default; `region="always"` makes it always one. (Maintainer: "you should be able to choose and explicit is nice, but region scroll=true is fine".) Done below under "Scroll region as a region only while it overflows".
 - [x] Approved by the maintainer 2026-10-04: the `ed91091` Stop-hook removal and the `.claude/settings.json` worktree permissions (a gate change outside this plan).
 - [x] Accepted by the maintainer 2026-10-04: the virtualized Tab trade-off: rows between the kept row and the rows in view can't be reached by Tab until the user scrolls (documented in the contract; an accessibility trade-off per AGENTS.md).
-- [ ] Ids are looked up with `ownerDocument.getElementById` (use-table.ts ~522, table.tsx ~295): inside a shadow root the caption isn't found. Use `element.getRootNode()`.
-- [ ] `useStickyHeadSize` finds `<thead>` only when the element or env changes; a head mounted after the region is never measured. Re-check after commit or observe the region's children.
+- [x] Ids are looked up through the element's own root (`getRootNode()`, the internal `hasElementWithId`), so a caption inside a shadow root is found (2026-10-05).
+- [x] `useStickyHeadSize` watches the region with a `MutationObserver` and measures a head that is added later. New story `StaticLateHead` and an e2e test that fails without it (2026-10-05).
 - [x] `table.md` ~199: say how to name a region with no `table` or no caption (`aria-labelledby` or `aria-label`), matching the new warning. Done in the Narrow screens section (2026-10-04).
 
 ### Scroll region as a region only while it overflows (2026-10-04)
@@ -309,5 +309,9 @@ Maintainer decision: "you should be able to choose and explicit is nice, but reg
 ### Review of the `region` option, 2026-10-04
 
 - accessibility-reviewer: the logic is correct (names only on a region, the Tab stop only while it overflows, matching markup on the server and the first client render, landmark noise). Three e2e tests repeated the `keyboard`-story Tab test and the `Static` and `AlwaysRegion` plays (rule 13): deleted, and the "no `aria-labelledby` while not a region" fact moved into the `Static` play. overlays-and-lists ~159 corrected for `'always'`. APPROVE once those were done.
-- [ ] Follow-up: when overflow stops while the region has focus (zoom out, a wider window), `tabindex` and the role leave the focused element and focus can fall to `body`. Keep `tabIndex=0` and the role until the element loses focus.
-- [ ] Follow-up: `AlwaysRegion`'s "Show code" shows `region={region}`, not `region="always"`. Show the literal prop.
+- [x] Follow-up: when overflow stops while the region has focus (zoom out, a wider window), it keeps `tabIndex=0` and the role until focus leaves (`useScrollOverflow` tracks the region's own focus) (2026-10-05).
+- [x] Follow-up: `AlwaysRegion`'s "Show code" shows the literal `region="always"`: it has its own fixture, `AlwaysRegionPayments` (2026-10-05).
+
+### Staff lists name their table with a Heading (2026-10-05)
+
+Maintainer decision: the staff cases tables ("Öppna ärenden") are titled by a visible `Heading` above the table, with the table and its region named by `aria-labelledby`, instead of a `Table.Caption`. The two small resident tables keep their caption, so both patterns are in the stories. The caption's own look is unchanged. `Heading` sets only the type, so the story class `kv-story-table-title` gives it the cells' inline padding and a gap to the table (`preview.css`).

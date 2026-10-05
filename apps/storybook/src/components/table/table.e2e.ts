@@ -35,6 +35,32 @@ const scrollOf = (target: Locator) =>
 /** Waits until the region is a Tab stop: the table overflows and the state has caught up. */
 const waitForTabStop = (page: Page) => expect(region(page)).toHaveAttribute('tabindex', '0')
 
+/**
+ * Scrolls a link of a static table to just under the sticky head, and focuses it: the browser has to
+ * bring it out from under the head (2.4.11). A link that is out of view altogether would be centred
+ * by any browser, so it is put where it is in view but covered.
+ */
+async function expectFocusedLinkClearOfHead(page: Page) {
+  const link = page.locator('.kv-table-body a').nth(5)
+  await link.evaluate((element) => {
+    const scroller = element.closest('.kv-table-scroll-region')
+    if (scroller === null) throw new Error('no region')
+    const offset = element.getBoundingClientRect().top - scroller.getBoundingClientRect().top
+    scroller.scrollTop += offset - 2
+  })
+  const gapUnderHead = async () => {
+    const head = await page.locator('.kv-table-head').boundingBox()
+    const box = await link.boundingBox()
+    if (head === null || box === null) throw new Error('no box')
+    return box.y - (head.y + head.height)
+  }
+  // The set-up: the link is in the region and the head covers it.
+  expect(await gapUnderHead()).toBeLessThan(0)
+  await link.focus()
+  await expect(link).toBeFocused()
+  await expect.poll(gapUnderHead).toBeGreaterThanOrEqual(-1)
+}
+
 test.describe('Table: Keyboard', () => {
   test('Tab focuses the scroll region when the table overflows', async ({ page }) => {
     await openStory(page, 'keyboard')
@@ -268,22 +294,40 @@ test.describe('Table: the sticky head and reflow', () => {
   }) => {
     await openStory(page, 'static-scrolling')
     await waitForTabStop(page)
-    const links = page.locator('.kv-table-body a')
-    await region(page).evaluate((element) => {
-      element.scrollTop = 600
-    })
-    await expect.poll(async () => (await scrollOf(region(page))).top).toBeGreaterThan(500)
-    // A link above the viewport: focusing scrolls it back into view, and it must stop below the head.
-    await links.nth(2).focus()
-    await expect(links.nth(2)).toBeFocused()
-    await expect
-      .poll(async () => {
-        const head = await page.locator('.kv-table-head').boundingBox()
-        const link = await links.nth(2).boundingBox()
-        if (head === null || link === null) throw new Error('no box')
-        return link.y - (head.y + head.height)
+    await expectFocusedLinkClearOfHead(page)
+  })
+
+  test('the sticky head of a table that mounts after the region never covers a focused link (2.4.11)', async ({
+    page,
+  }) => {
+    await openStory(page, 'static-late-head')
+    await expect(page.locator('.kv-table-head')).toBeVisible()
+    await waitForTabStop(page)
+    await expectFocusedLinkClearOfHead(page)
+  })
+
+  test('forced colours: the sticky head ends in a line the rows can be told from (1.4.11)', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ forcedColors: 'active' })
+    await openStory(page, 'static-scrolling')
+    await waitForTabStop(page)
+    // A threshold, not a theme value: the line is drawn, and it is not the colour of the head's own fill.
+    const line = await page
+      .locator('.kv-table-head th')
+      .first()
+      .evaluate((cell) => {
+        const style = getComputedStyle(cell)
+        return {
+          width: Number.parseFloat(style.borderBottomWidth),
+          style: style.borderBottomStyle,
+          color: style.borderBottomColor,
+          fill: style.backgroundColor,
+        }
       })
-      .toBeGreaterThanOrEqual(-1)
+    expect(line.width).toBeGreaterThan(0)
+    expect(line.style).not.toBe('none')
+    expect(line.color).not.toBe(line.fill)
   })
 
   test('no horizontal scrolling at 320px: only the region scrolls (1.4.10)', async ({ page }) => {
@@ -305,6 +349,7 @@ test.describe('Table: accessibility', () => {
     'static',
     'always-region',
     'static-scrolling',
+    'static-late-head',
     'sortable',
     'selectable',
     'expandable',
