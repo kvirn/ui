@@ -3,7 +3,7 @@
 - **Status:** Accepted (the maintainer accepted the plan, 2026-10-04). Implemented; gates pending, manual AT `pending`
 - **Owner:** orchestrator → ux-designer → component-engineer → accessibility-reviewer
 - **Created:** 2026-10-04 · **Target:** M2
-- **Related:** [0003](0003-button-and-link.md), `DESIGN.md`, `design`, `theme-css`, `accessibility`, `keyboard` skills
+- **Related:** 0003, `DESIGN.md`, `design`, `theme-css`, `accessibility`, `keyboard` skills
 
 ## Goal
 

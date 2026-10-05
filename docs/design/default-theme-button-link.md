@@ -2,7 +2,7 @@
 
 - **Status:** Draft. Revised 2026-10-01 for the Linear-inspired direction
 - **Designer:** ux-designer agent · **Date:** 2026-10-01
-- **Plan:** Plan 0005, a visible prototype (to be written; [docs-site.md](docs-site.md) §10 has the proposed Design section and tasks) · builds on [Plan 0003](../plans/0003-button-and-link.md) and [Plan 0004](../plans/0004-design-md-and-ux-designer.md)
+- **Plan:** Plan 0005, a visible prototype (to be written; [docs-site.md](docs-site.md) §10 has the proposed Design section and tasks) · builds on Plan 0003 and Plan 0004
 - **Type:** component default styling + theme/token change
 - **Companion specs:** [storybook-presentation.md](storybook-presentation.md) and [docs-site.md](docs-site.md). Both use what this spec defines.
 

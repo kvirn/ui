@@ -2,7 +2,7 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-01
-- **Plan:** Plan 0005 (to be written) · component stories themselves: [Plan 0002](../plans/0002-kvirn-provider.md), [Plan 0003](../plans/0003-button-and-link.md)
+- **Plan:** Plan 0005 (to be written) · component stories themselves: Plan 0002, Plan 0003
 - **Type:** docs page (workbench presentation)
 - **Depends on:** [default-theme-button-link.md](default-theme-button-link.md) for tokens, recipes and states
 

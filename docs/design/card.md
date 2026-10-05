@@ -2,7 +2,7 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-01
-- **Plan:** [Plan 0007](../plans/0007-card.md)
+- **Plan:** Plan 0007
 - **Type:** component default styling (+ component tokens, + one prose change)
 - **Revised 2026-10-02 ([Section](section.md), the Section decision, Plan 0018):** Card is elevation level 2 only. `kv-card--surface` and `kv-card--canvas` are removed, so a card is always `surface-raised`. Example A (a text block in a sidebar, and its `contact.*` strings) moved to a `Section`, Example D's nested card is `kv-card--radius-md` only, and the `Surfaces` and `SidebarTextBlock` stories are gone (`SurfaceLayers` moved to Section). Where §4, §5 (Example A and D), §6.1 (the surface row), §6.4, §6.5, §6.8, §7 and §9 (open question 4) of this spec mention a surface choice for a card, the Section spec wins. A card on a Section keeps its default look.
 

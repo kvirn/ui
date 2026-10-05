@@ -2,7 +2,7 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-01
-- **Plan:** [0011](../plans/0011-ibm-plex-typography.md)
+- **Plan:** 0011
 - **Type:** theme/token change
 
 The maintainer has decided (2026-10-01): IBM Plex Sans for body text, labels and controls, and IBM Plex Serif for headings. This spec says how. Figures marked _measured_ come from fontTools on the committed woff2 files in `apps/docs/fonts/ibm-plex/`, or from a Playwright render of them, both run here on 2026-10-01.

@@ -2,7 +2,7 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-04
-- **Plan:** [docs/plans/0029-field-hint.md](../plans/0029-field-hint.md)
+- **Plan:** Plan 0029
 - **Type:** component default styling, plus a DESIGN.md rule change (no token or colour change)
 - **Supersedes, in [form-fields.md](form-fields.md):** §4.4 "Which help text goes where", the help text rows of the §6.2 class table, the §6.4 spacing table rows that name a help text, the option help text bullet in §6.5, the "help text above, error" and "help text under the control" rows of the §6.7 density table, and the date example's position (§6.6, open question 4). Everything else in that spec stands.
 

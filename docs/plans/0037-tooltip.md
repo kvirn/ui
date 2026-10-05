@@ -3,7 +3,7 @@
 - **Status:** In progress (the maintainer approved it, 2026-10-04). Code, docs, theme, stories, e2e and changeset are done and have been through the gates and two accessibility-reviews: the roadmap row and the final review are the orchestrator's
 - **Owner:** orchestrator → component-engineer
 - **Created:** 2026-10-04 · **Target:** M2
-- **Related:** [0035](0035-toggle-toolbar-button-group.md), [0036](0036-rich-text-editor.md) (the first user), Popover and the dismissable layer stack, [design spec](../design/tooltip.md), `overlays-and-lists`, `accessibility`, `keyboard`, `api-conventions`, `testing`, `storybook-docs` and `theme-css` skills
+- **Related:** 0035, [0036](0036-rich-text-editor.md) (the first user), Popover and the dismissable layer stack, [design spec](../design/tooltip.md), `overlays-and-lists`, `accessibility`, `keyboard`, `api-conventions`, `testing`, `storybook-docs` and `theme-css` skills
 
 ## Goal
 

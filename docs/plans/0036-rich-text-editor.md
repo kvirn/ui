@@ -1,10 +1,10 @@
 # Plan 0036: Rich text editor (`@kvirn-ui/rich-text`)
 
 - **Status:** Approved (the maintainer, 2026-10-04)
-- **Superseded 2026-10-05 (Plan 0045):** there is no "Escape, then Tab" way out, no `KeyboardHint` and no keyboard instruction under the box: Tab acts only where it can and leaves everywhere else. The editor and the Textarea take their direction from the page, with no `dir` prop. Where this plan says otherwise, [0045](0045-maintainer-answers-round-1.md) and the contract win.
+- **Superseded 2026-10-05 (Plan 0045):** there is no "Escape, then Tab" way out, no `KeyboardHint` and no keyboard instruction under the box: Tab acts only where it can and leaves everywhere else. The editor and the Textarea take their direction from the page, with no `dir` prop. Where this plan says otherwise, 0045 and the contract win.
 - **Owner:** orchestrator → component-engineer
 - **Created:** 2026-10-04 · **Target:** M3
-- **Related:** [0034](0034-textarea.md), [0035](0035-toggle-toolbar-button-group.md) (Toolbar, ButtonGroup and Toggle, a prerequisite), [0037](0037-tooltip.md) (Tooltip, a prerequisite), [0034](0034-textarea.md) (CharacterCount), [0022](0022-listbox-combobox-autocomplete.md) (Listbox), the Popover, [design spec](../design/rich-text-editor.md), `api-conventions`, `accessibility`, `keyboard`, `testing`, `storybook-docs`, `forms`, `overlays-and-lists`, `theme-css` and `regulations` skills
+- **Related:** 0034, 0035 (Toolbar, ButtonGroup and Toggle, a prerequisite), [0037](0037-tooltip.md) (Tooltip, a prerequisite), 0034 (CharacterCount), [0022](0022-listbox-combobox-autocomplete.md) (Listbox), the Popover, [design spec](../design/rich-text-editor.md), `api-conventions`, `accessibility`, `keyboard`, `testing`, `storybook-docs`, `forms`, `overlays-and-lists`, `theme-css` and `regulations` skills
 
 ## Goal
 

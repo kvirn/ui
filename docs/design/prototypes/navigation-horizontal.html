@@ -358,14 +358,22 @@
       }
 
       /* The current item: the solid fill. It doesn't darken on hover. */
-      .kv-navigation-item > .kv-link:not(.kv-link--service):is([data-current], [aria-current]:not([aria-current='false'])) {
+      .kv-navigation-item
+        > .kv-link:not(.kv-link--service):is(
+          [data-current],
+          [aria-current]:not([aria-current='false'])
+        ) {
         background-color: var(--kv-color-primary);
         color: var(--kv-color-on-primary);
         font-weight: 600;
       }
 
       /* The trail: every ancestor of the current link gets the quiet fill and weight. */
-      .kv-navigation-item:has(> .kv-navigation-list .kv-link:is([data-current], [aria-current]:not([aria-current='false']))) > .kv-link:not(.kv-link--service),
+      .kv-navigation-item:has(
+          > .kv-navigation-list
+            .kv-link:is([data-current], [aria-current]:not([aria-current='false']))
+        )
+        > .kv-link:not(.kv-link--service),
       .kv-navigation-item > .kv-link:not(.kv-link--service).is-trail {
         background-color: var(--kv-color-primary-subtle);
         font-weight: 600;
@@ -382,7 +390,10 @@
         min-inline-size: min(var(--kv-control-min-block-size), 100%);
         max-inline-size: 100%;
       }
-      .kv-navigation--horizontal > .kv-navigation-list > .kv-navigation-item > .kv-link:not(.kv-link--service) {
+      .kv-navigation--horizontal
+        > .kv-navigation-list
+        > .kv-navigation-item
+        > .kv-link:not(.kv-link--service) {
         padding-inline: var(--kv-space-3);
       }
 
@@ -406,11 +417,19 @@
           color: LinkText;
           text-decoration-line: none;
         }
-        .kv-navigation-item > .kv-link:not(.kv-link--service):is([data-current], [aria-current]:not([aria-current='false'])) {
+        .kv-navigation-item
+          > .kv-link:not(.kv-link--service):is(
+            [data-current],
+            [aria-current]:not([aria-current='false'])
+          ) {
           background-color: Canvas;
           color: LinkText;
         }
-        .kv-navigation-item > .kv-link:not(.kv-link--service):is([data-current], [aria-current]:not([aria-current='false']))::before {
+        .kv-navigation-item
+          > .kv-link:not(.kv-link--service):is(
+            [data-current],
+            [aria-current]:not([aria-current='false'])
+          )::before {
           content: '';
           position: absolute;
           inset-block: var(--kv-space-2);
@@ -420,7 +439,13 @@
           forced-color-adjust: none;
           background-color: LinkText;
         }
-        .kv-navigation--horizontal > .kv-navigation-list > .kv-navigation-item > .kv-link:not(.kv-link--service):is([data-current], [aria-current]:not([aria-current='false']))::before {
+        .kv-navigation--horizontal
+          > .kv-navigation-list
+          > .kv-navigation-item
+          > .kv-link:not(.kv-link--service):is(
+            [data-current],
+            [aria-current]:not([aria-current='false'])
+          )::before {
           inset-block: auto 0;
           inset-inline: var(--kv-space-3);
           inline-size: auto;
@@ -441,8 +466,8 @@
         <h1>Navigation: the horizontal bar and the chosen look</h1>
         <p class="p-text">
           A throwaway prototype for
-          <a class="p-link" href="../navigation-link-options.md">the design spec</a>, sections 12
-          to 13. It shows the look the maintainer chose:
+          <a class="p-link" href="../navigation-link-options.md">the design spec</a>, sections 12 to
+          13. It shows the look the maintainer chose:
         </p>
         <ul class="p-text">
           <li>C, the current page as a solid fill;</li>
@@ -451,23 +476,37 @@
           <li>a horizontal bar made with <code>kv-navigation--horizontal</code>.</li>
         </ul>
         <p class="p-text">
-          “Today’s” rules in <code>theme.css</code> are overridden by unlayered CSS that mimics
-          Plan 0047’s section 8.
+          “Today’s” rules in <code>theme.css</code> are overridden by unlayered CSS that mimics Plan
+          0047’s section 8.
         </p>
         <ul class="p-text">
-          <li>Forced colours: in Chrome or Edge DevTools, open Rendering and set “Emulate CSS media feature forced-colors” to “active”. The current item’s bar moves to the bottom in a bar.</li>
-          <li>Reflow: the Finnish bar is as wide as the content of a 320px screen. Narrow the window to see the whole page reflow.</li>
+          <li>
+            Forced colours: in Chrome or Edge DevTools, open Rendering and set “Emulate CSS media
+            feature forced-colors” to “active”. The current item’s bar moves to the bottom in a bar.
+          </li>
+          <li>
+            Reflow: the Finnish bar is as wide as the content of a 320px screen. Narrow the window
+            to see the whole page reflow.
+          </li>
           <li>Reduced motion: nothing here adds motion.</li>
         </ul>
         <div class="p-controls">
           <fieldset>
             <legend>Theme contrast</legend>
-            <label><input type="radio" name="p-contrast" id="p-contrast-standard" checked /> Standard</label>
-            <label><input type="radio" name="p-contrast" id="p-contrast-more" /> More: the contrast themes</label>
+            <label
+              ><input type="radio" name="p-contrast" id="p-contrast-standard" checked />
+              Standard</label
+            >
+            <label
+              ><input type="radio" name="p-contrast" id="p-contrast-more" /> More: the contrast
+              themes</label
+            >
           </fieldset>
           <fieldset>
             <legend>Text spacing (WCAG 1.4.12)</legend>
-            <label><input type="checkbox" id="p-spacing" /> Apply the overrides to the examples</label>
+            <label
+              ><input type="checkbox" id="p-spacing" /> Apply the overrides to the examples</label
+            >
           </fieldset>
         </div>
         <nav class="p-toc" aria-label="Contents">
@@ -483,202 +522,370 @@
         <section class="p-section" id="page" aria-labelledby="page-title">
           <h2 id="page-title">A bar next to a sidebar (spec 13.6)</h2>
           <p class="p-text">
-            Two navigations, each named and each with one <code>aria-current</code>. The bar
-            marks the section with <code>aria-current="true"</code>, because the page isn’t in it.
-            The sidebar marks the page with <code>aria-current="page"</code>. “Bygglov” is a
-            collapsed group, rendered with <code>hidden</code>. The left column shows the approved
-            rule, where every <code>aria-current</code> is solid. The right column shows Q-N2,
-            where <code>true</code> takes the trail look.
+            Two navigations, each named and each with one <code>aria-current</code>. The bar marks
+            the section with <code>aria-current="true"</code>, because the page isn’t in it. The
+            sidebar marks the page with <code>aria-current="page"</code>. “Bygglov” is a collapsed
+            group, rendered with <code>hidden</code>. The left column shows the approved rule, where
+            every <code>aria-current</code> is solid. The right column shows Q-N2, where
+            <code>true</code> takes the trail look.
           </p>
           <div class="p-panels">
-          <div class="p-panel t-light">
-            <h3>Approved rule, light: the section is solid</h3>
-            <div class="p-mock p-demo">
-              <div class="p-band">
-                <nav class="kv-navigation kv-navigation--horizontal" aria-label="Huvudmeny, approved, light" lang="sv">
-                  <ul class="kv-navigation-list">
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-1">Start</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-2" aria-current="true" data-current="">Bygga och bo</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-3">Trafik och gator</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-4">Uppleva och göra</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-5">Om kommunen</a></li>
-                  </ul>
-                </nav>
-              </div>
-              <div class="p-layout">
-                <div class="p-sidebar">
-                  <nav class="kv-navigation" aria-label="I det här avsnittet, approved, light" lang="sv">
+            <div class="p-panel t-light">
+              <h3>Approved rule, light: the section is solid</h3>
+              <div class="p-mock p-demo">
+                <div class="p-band">
+                  <nav
+                    class="kv-navigation kv-navigation--horizontal"
+                    aria-label="Huvudmeny, approved, light"
+                    lang="sv"
+                  >
                     <ul class="kv-navigation-list">
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-6">Bygglov</a>
-                        <ul class="kv-navigation-list" hidden>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-7">Ansök om bygglov</a></li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-8">Avgifter för bygglov</a></li>
-                        </ul>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-1">Start</a>
                       </li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-9">Mark och tomt</a>
-                        <ul class="kv-navigation-list">
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-10">Strandskydd</a></li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-11" aria-current="page" data-current="">Dispens från strandskyddet</a>
-                            <ul class="kv-navigation-list">
-                              <li class="kv-navigation-item"><a class="kv-link" href="#demo-12">Blanketter</a></li>
-                              <li class="kv-navigation-item"><a class="kv-link" href="#demo-13">Handläggningstid</a></li>
-                            </ul>
-                          </li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-14">Detaljplaner</a></li>
-                        </ul>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-2" aria-current="true" data-current=""
+                          >Bygga och bo</a
+                        >
                       </li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-15">Bygga om</a></li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-3">Trafik och gator</a>
+                      </li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-4">Uppleva och göra</a>
+                      </li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-5">Om kommunen</a>
+                      </li>
                     </ul>
                   </nav>
                 </div>
-                <div class="p-main" lang="sv">
-                  <h3>Dispens från strandskyddet</h3>
-                  <p>Du behöver dispens om du vill bygga nära en strand. Ansök hos kommunen innan du börjar.</p>
+                <div class="p-layout">
+                  <div class="p-sidebar">
+                    <nav
+                      class="kv-navigation"
+                      aria-label="I det här avsnittet, approved, light"
+                      lang="sv"
+                    >
+                      <ul class="kv-navigation-list">
+                        <li class="kv-navigation-item">
+                          <a class="kv-link" href="#demo-6">Bygglov</a>
+                          <ul class="kv-navigation-list" hidden>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-7">Ansök om bygglov</a>
+                            </li>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-8">Avgifter för bygglov</a>
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="kv-navigation-item">
+                          <a class="kv-link" href="#demo-9">Mark och tomt</a>
+                          <ul class="kv-navigation-list">
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-10">Strandskydd</a>
+                            </li>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-11" aria-current="page" data-current=""
+                                >Dispens från strandskyddet</a
+                              >
+                              <ul class="kv-navigation-list">
+                                <li class="kv-navigation-item">
+                                  <a class="kv-link" href="#demo-12">Blanketter</a>
+                                </li>
+                                <li class="kv-navigation-item">
+                                  <a class="kv-link" href="#demo-13">Handläggningstid</a>
+                                </li>
+                              </ul>
+                            </li>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-14">Detaljplaner</a>
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="kv-navigation-item">
+                          <a class="kv-link" href="#demo-15">Bygga om</a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                  <div class="p-main" lang="sv">
+                    <h3>Dispens från strandskyddet</h3>
+                    <p>
+                      Du behöver dispens om du vill bygga nära en strand. Ansök hos kommunen innan
+                      du börjar.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="p-panel t-light">
-            <h3>Q-N2 proposed, light: the section takes the trail look</h3>
-            <div class="p-mock p-demo q-n2">
-              <div class="p-band">
-                <nav class="kv-navigation kv-navigation--horizontal" aria-label="Huvudmeny, Q-N2, light" lang="sv">
-                  <ul class="kv-navigation-list">
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-16">Start</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-17" aria-current="true" data-current="">Bygga och bo</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-18">Trafik och gator</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-19">Uppleva och göra</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-20">Om kommunen</a></li>
-                  </ul>
-                </nav>
-              </div>
-              <div class="p-layout">
-                <div class="p-sidebar">
-                  <nav class="kv-navigation" aria-label="I det här avsnittet, Q-N2, light" lang="sv">
+            <div class="p-panel t-light">
+              <h3>Q-N2 proposed, light: the section takes the trail look</h3>
+              <div class="p-mock p-demo q-n2">
+                <div class="p-band">
+                  <nav
+                    class="kv-navigation kv-navigation--horizontal"
+                    aria-label="Huvudmeny, Q-N2, light"
+                    lang="sv"
+                  >
                     <ul class="kv-navigation-list">
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-21">Bygglov</a>
-                        <ul class="kv-navigation-list" hidden>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-22">Ansök om bygglov</a></li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-23">Avgifter för bygglov</a></li>
-                        </ul>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-16">Start</a>
                       </li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-24">Mark och tomt</a>
-                        <ul class="kv-navigation-list">
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-25">Strandskydd</a></li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-26" aria-current="page" data-current="">Dispens från strandskyddet</a>
-                            <ul class="kv-navigation-list">
-                              <li class="kv-navigation-item"><a class="kv-link" href="#demo-27">Blanketter</a></li>
-                              <li class="kv-navigation-item"><a class="kv-link" href="#demo-28">Handläggningstid</a></li>
-                            </ul>
-                          </li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-29">Detaljplaner</a></li>
-                        </ul>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-17" aria-current="true" data-current=""
+                          >Bygga och bo</a
+                        >
                       </li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-30">Bygga om</a></li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-18">Trafik och gator</a>
+                      </li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-19">Uppleva och göra</a>
+                      </li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-20">Om kommunen</a>
+                      </li>
                     </ul>
                   </nav>
                 </div>
-                <div class="p-main" lang="sv">
-                  <h3>Dispens från strandskyddet</h3>
-                  <p>Du behöver dispens om du vill bygga nära en strand. Ansök hos kommunen innan du börjar.</p>
+                <div class="p-layout">
+                  <div class="p-sidebar">
+                    <nav
+                      class="kv-navigation"
+                      aria-label="I det här avsnittet, Q-N2, light"
+                      lang="sv"
+                    >
+                      <ul class="kv-navigation-list">
+                        <li class="kv-navigation-item">
+                          <a class="kv-link" href="#demo-21">Bygglov</a>
+                          <ul class="kv-navigation-list" hidden>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-22">Ansök om bygglov</a>
+                            </li>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-23">Avgifter för bygglov</a>
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="kv-navigation-item">
+                          <a class="kv-link" href="#demo-24">Mark och tomt</a>
+                          <ul class="kv-navigation-list">
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-25">Strandskydd</a>
+                            </li>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-26" aria-current="page" data-current=""
+                                >Dispens från strandskyddet</a
+                              >
+                              <ul class="kv-navigation-list">
+                                <li class="kv-navigation-item">
+                                  <a class="kv-link" href="#demo-27">Blanketter</a>
+                                </li>
+                                <li class="kv-navigation-item">
+                                  <a class="kv-link" href="#demo-28">Handläggningstid</a>
+                                </li>
+                              </ul>
+                            </li>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-29">Detaljplaner</a>
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="kv-navigation-item">
+                          <a class="kv-link" href="#demo-30">Bygga om</a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                  <div class="p-main" lang="sv">
+                    <h3>Dispens från strandskyddet</h3>
+                    <p>
+                      Du behöver dispens om du vill bygga nära en strand. Ansök hos kommunen innan
+                      du börjar.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="p-panel t-dark">
-            <h3>Approved rule, dark: the section is solid</h3>
-            <div class="p-mock p-demo">
-              <div class="p-band">
-                <nav class="kv-navigation kv-navigation--horizontal" aria-label="Huvudmeny, approved, dark" lang="sv">
-                  <ul class="kv-navigation-list">
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-31">Start</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-32" aria-current="true" data-current="">Bygga och bo</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-33">Trafik och gator</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-34">Uppleva och göra</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-35">Om kommunen</a></li>
-                  </ul>
-                </nav>
-              </div>
-              <div class="p-layout">
-                <div class="p-sidebar">
-                  <nav class="kv-navigation" aria-label="I det här avsnittet, approved, dark" lang="sv">
+            <div class="p-panel t-dark">
+              <h3>Approved rule, dark: the section is solid</h3>
+              <div class="p-mock p-demo">
+                <div class="p-band">
+                  <nav
+                    class="kv-navigation kv-navigation--horizontal"
+                    aria-label="Huvudmeny, approved, dark"
+                    lang="sv"
+                  >
                     <ul class="kv-navigation-list">
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-36">Bygglov</a>
-                        <ul class="kv-navigation-list" hidden>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-37">Ansök om bygglov</a></li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-38">Avgifter för bygglov</a></li>
-                        </ul>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-31">Start</a>
                       </li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-39">Mark och tomt</a>
-                        <ul class="kv-navigation-list">
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-40">Strandskydd</a></li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-41" aria-current="page" data-current="">Dispens från strandskyddet</a>
-                            <ul class="kv-navigation-list">
-                              <li class="kv-navigation-item"><a class="kv-link" href="#demo-42">Blanketter</a></li>
-                              <li class="kv-navigation-item"><a class="kv-link" href="#demo-43">Handläggningstid</a></li>
-                            </ul>
-                          </li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-44">Detaljplaner</a></li>
-                        </ul>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-32" aria-current="true" data-current=""
+                          >Bygga och bo</a
+                        >
                       </li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-45">Bygga om</a></li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-33">Trafik och gator</a>
+                      </li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-34">Uppleva och göra</a>
+                      </li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-35">Om kommunen</a>
+                      </li>
                     </ul>
                   </nav>
                 </div>
-                <div class="p-main" lang="sv">
-                  <h3>Dispens från strandskyddet</h3>
-                  <p>Du behöver dispens om du vill bygga nära en strand. Ansök hos kommunen innan du börjar.</p>
+                <div class="p-layout">
+                  <div class="p-sidebar">
+                    <nav
+                      class="kv-navigation"
+                      aria-label="I det här avsnittet, approved, dark"
+                      lang="sv"
+                    >
+                      <ul class="kv-navigation-list">
+                        <li class="kv-navigation-item">
+                          <a class="kv-link" href="#demo-36">Bygglov</a>
+                          <ul class="kv-navigation-list" hidden>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-37">Ansök om bygglov</a>
+                            </li>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-38">Avgifter för bygglov</a>
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="kv-navigation-item">
+                          <a class="kv-link" href="#demo-39">Mark och tomt</a>
+                          <ul class="kv-navigation-list">
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-40">Strandskydd</a>
+                            </li>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-41" aria-current="page" data-current=""
+                                >Dispens från strandskyddet</a
+                              >
+                              <ul class="kv-navigation-list">
+                                <li class="kv-navigation-item">
+                                  <a class="kv-link" href="#demo-42">Blanketter</a>
+                                </li>
+                                <li class="kv-navigation-item">
+                                  <a class="kv-link" href="#demo-43">Handläggningstid</a>
+                                </li>
+                              </ul>
+                            </li>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-44">Detaljplaner</a>
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="kv-navigation-item">
+                          <a class="kv-link" href="#demo-45">Bygga om</a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                  <div class="p-main" lang="sv">
+                    <h3>Dispens från strandskyddet</h3>
+                    <p>
+                      Du behöver dispens om du vill bygga nära en strand. Ansök hos kommunen innan
+                      du börjar.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="p-panel t-dark">
-            <h3>Q-N2 proposed, dark: the section takes the trail look</h3>
-            <div class="p-mock p-demo q-n2">
-              <div class="p-band">
-                <nav class="kv-navigation kv-navigation--horizontal" aria-label="Huvudmeny, Q-N2, dark" lang="sv">
-                  <ul class="kv-navigation-list">
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-46">Start</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-47" aria-current="true" data-current="">Bygga och bo</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-48">Trafik och gator</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-49">Uppleva och göra</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-50">Om kommunen</a></li>
-                  </ul>
-                </nav>
-              </div>
-              <div class="p-layout">
-                <div class="p-sidebar">
-                  <nav class="kv-navigation" aria-label="I det här avsnittet, Q-N2, dark" lang="sv">
+            <div class="p-panel t-dark">
+              <h3>Q-N2 proposed, dark: the section takes the trail look</h3>
+              <div class="p-mock p-demo q-n2">
+                <div class="p-band">
+                  <nav
+                    class="kv-navigation kv-navigation--horizontal"
+                    aria-label="Huvudmeny, Q-N2, dark"
+                    lang="sv"
+                  >
                     <ul class="kv-navigation-list">
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-51">Bygglov</a>
-                        <ul class="kv-navigation-list" hidden>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-52">Ansök om bygglov</a></li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-53">Avgifter för bygglov</a></li>
-                        </ul>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-46">Start</a>
                       </li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-54">Mark och tomt</a>
-                        <ul class="kv-navigation-list">
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-55">Strandskydd</a></li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-56" aria-current="page" data-current="">Dispens från strandskyddet</a>
-                            <ul class="kv-navigation-list">
-                              <li class="kv-navigation-item"><a class="kv-link" href="#demo-57">Blanketter</a></li>
-                              <li class="kv-navigation-item"><a class="kv-link" href="#demo-58">Handläggningstid</a></li>
-                            </ul>
-                          </li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-59">Detaljplaner</a></li>
-                        </ul>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-47" aria-current="true" data-current=""
+                          >Bygga och bo</a
+                        >
                       </li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-60">Bygga om</a></li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-48">Trafik och gator</a>
+                      </li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-49">Uppleva och göra</a>
+                      </li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-50">Om kommunen</a>
+                      </li>
                     </ul>
                   </nav>
                 </div>
-                <div class="p-main" lang="sv">
-                  <h3>Dispens från strandskyddet</h3>
-                  <p>Du behöver dispens om du vill bygga nära en strand. Ansök hos kommunen innan du börjar.</p>
+                <div class="p-layout">
+                  <div class="p-sidebar">
+                    <nav
+                      class="kv-navigation"
+                      aria-label="I det här avsnittet, Q-N2, dark"
+                      lang="sv"
+                    >
+                      <ul class="kv-navigation-list">
+                        <li class="kv-navigation-item">
+                          <a class="kv-link" href="#demo-51">Bygglov</a>
+                          <ul class="kv-navigation-list" hidden>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-52">Ansök om bygglov</a>
+                            </li>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-53">Avgifter för bygglov</a>
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="kv-navigation-item">
+                          <a class="kv-link" href="#demo-54">Mark och tomt</a>
+                          <ul class="kv-navigation-list">
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-55">Strandskydd</a>
+                            </li>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-56" aria-current="page" data-current=""
+                                >Dispens från strandskyddet</a
+                              >
+                              <ul class="kv-navigation-list">
+                                <li class="kv-navigation-item">
+                                  <a class="kv-link" href="#demo-57">Blanketter</a>
+                                </li>
+                                <li class="kv-navigation-item">
+                                  <a class="kv-link" href="#demo-58">Handläggningstid</a>
+                                </li>
+                              </ul>
+                            </li>
+                            <li class="kv-navigation-item">
+                              <a class="kv-link" href="#demo-59">Detaljplaner</a>
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="kv-navigation-item">
+                          <a class="kv-link" href="#demo-60">Bygga om</a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                  <div class="p-main" lang="sv">
+                    <h3>Dispens från strandskyddet</h3>
+                    <p>
+                      Du behöver dispens om du vill bygga nära en strand. Ansök hos kommunen innan
+                      du börjar.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
           </div>
         </section>
         <section class="p-section" id="states" aria-labelledby="states-title">
@@ -688,176 +895,436 @@
             outside the pill, and the 8px gaps keep it off its neighbours.
           </p>
           <div class="p-panels">
-          <div class="p-panel t-light p-demo">
-            <table class="p-states">
-              <caption>Light: every state of a bar item, forced</caption>
-              <thead>
-                <tr>
-                  <th scope="col">State</th>
-                  <th scope="col">On canvas, then on surface</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">Default</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Hover, pressed</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-hover">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-hover">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Focus-visible</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-focus">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-focus">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Current</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link" data-current="">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link" data-current="">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Current, hover</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-hover" data-current="">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-hover" data-current="">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Current, focus-visible</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-focus" data-current="">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-focus" data-current="">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Trail</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-trail">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-trail">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Trail, focus-visible</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-trail is-focus">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-trail is-focus">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="p-panel t-dark p-demo">
-            <table class="p-states">
-              <caption>Dark: every state of a bar item, forced</caption>
-              <thead>
-                <tr>
-                  <th scope="col">State</th>
-                  <th scope="col">On canvas, then on surface</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">Default</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Hover, pressed</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-hover">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-hover">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Focus-visible</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-focus">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-focus">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Current</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link" data-current="">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link" data-current="">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Current, hover</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-hover" data-current="">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-hover" data-current="">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Current, focus-visible</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-focus" data-current="">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-focus" data-current="">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Trail</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-trail">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-trail">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Trail, focus-visible</th>
-                  <td>
-                    <div class="p-pair">
-                      <div class="p-swatch p-on-canvas"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-trail is-focus">Bygga och bo</span></li></ul></div></div>
-                      <div class="p-swatch p-on-surface"><div class="kv-navigation kv-navigation--horizontal"><ul class="kv-navigation-list"><li class="kv-navigation-item"><span class="kv-link is-trail is-focus">Bygga och bo</span></li></ul></div></div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+            <div class="p-panel t-light p-demo">
+              <table class="p-states">
+                <caption>
+                  Light: every state of a bar item, forced
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">State</th>
+                    <th scope="col">On canvas, then on surface</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Default</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Hover, pressed</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-hover">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-hover">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Focus-visible</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-focus">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-focus">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Current</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link" data-current="">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link" data-current="">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Current, hover</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-hover" data-current="">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-hover" data-current="">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Current, focus-visible</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-focus" data-current="">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-focus" data-current="">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Trail</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-trail">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-trail">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Trail, focus-visible</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-trail is-focus">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-trail is-focus">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="p-panel t-dark p-demo">
+              <table class="p-states">
+                <caption>
+                  Dark: every state of a bar item, forced
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">State</th>
+                    <th scope="col">On canvas, then on surface</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Default</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Hover, pressed</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-hover">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-hover">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Focus-visible</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-focus">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-focus">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Current</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link" data-current="">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link" data-current="">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Current, hover</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-hover" data-current="">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-hover" data-current="">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Current, focus-visible</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-focus" data-current="">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-focus" data-current="">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Trail</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-trail">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-trail">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Trail, focus-visible</th>
+                    <td>
+                      <div class="p-pair">
+                        <div class="p-swatch p-on-canvas">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-trail is-focus">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="p-swatch p-on-surface">
+                          <div class="kv-navigation kv-navigation--horizontal">
+                            <ul class="kv-navigation-list">
+                              <li class="kv-navigation-item">
+                                <span class="kv-link is-trail is-focus">Bygga och bo</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
         <section class="p-section t-light" id="q-n1" aria-labelledby="q-n1-title">
@@ -868,23 +1335,49 @@
           </p>
           <div class="p-mock p-demo">
             <div class="p-band">
-              <nav class="kv-navigation kv-navigation--horizontal" aria-label="Huvudmeny, two bars" lang="sv">
+              <nav
+                class="kv-navigation kv-navigation--horizontal"
+                aria-label="Huvudmeny, two bars"
+                lang="sv"
+              >
                 <ul class="kv-navigation-list">
                   <li class="kv-navigation-item"><a class="kv-link" href="#demo-61">Start</a></li>
-                  <li class="kv-navigation-item"><a class="kv-link" href="#demo-62" aria-current="true" data-current="">Bygga och bo</a></li>
-                  <li class="kv-navigation-item"><a class="kv-link" href="#demo-63">Trafik och gator</a></li>
-                  <li class="kv-navigation-item"><a class="kv-link" href="#demo-64">Uppleva och göra</a></li>
-                  <li class="kv-navigation-item"><a class="kv-link" href="#demo-65">Om kommunen</a></li>
+                  <li class="kv-navigation-item">
+                    <a class="kv-link" href="#demo-62" aria-current="true" data-current=""
+                      >Bygga och bo</a
+                    >
+                  </li>
+                  <li class="kv-navigation-item">
+                    <a class="kv-link" href="#demo-63">Trafik och gator</a>
+                  </li>
+                  <li class="kv-navigation-item">
+                    <a class="kv-link" href="#demo-64">Uppleva och göra</a>
+                  </li>
+                  <li class="kv-navigation-item">
+                    <a class="kv-link" href="#demo-65">Om kommunen</a>
+                  </li>
                 </ul>
               </nav>
             </div>
             <div class="p-band">
-              <nav class="kv-navigation kv-navigation--horizontal" aria-label="I det här avsnittet, two bars" lang="sv">
+              <nav
+                class="kv-navigation kv-navigation--horizontal"
+                aria-label="I det här avsnittet, two bars"
+                lang="sv"
+              >
                 <ul class="kv-navigation-list">
                   <li class="kv-navigation-item"><a class="kv-link" href="#demo-66">Bygglov</a></li>
-                  <li class="kv-navigation-item"><a class="kv-link" href="#demo-67" aria-current="page" data-current="">Mark och tomt</a></li>
-                  <li class="kv-navigation-item"><a class="kv-link" href="#demo-68">Bygga om</a></li>
-                  <li class="kv-navigation-item"><a class="kv-link" href="#demo-69">Detaljplaner</a></li>
+                  <li class="kv-navigation-item">
+                    <a class="kv-link" href="#demo-67" aria-current="page" data-current=""
+                      >Mark och tomt</a
+                    >
+                  </li>
+                  <li class="kv-navigation-item">
+                    <a class="kv-link" href="#demo-68">Bygga om</a>
+                  </li>
+                  <li class="kv-navigation-item">
+                    <a class="kv-link" href="#demo-69">Detaljplaner</a>
+                  </li>
                 </ul>
               </nav>
             </div>
@@ -898,7 +1391,9 @@
           <div class="p-order-picture" lang="sv">
             <div class="p-order-row">
               <span class="p-order-item"><span class="p-order-badge">1</span>Start</span>
-              <span class="p-order-item" data-on-trail><span class="p-order-badge">2</span>Bygga och bo</span>
+              <span class="p-order-item" data-on-trail
+                ><span class="p-order-badge">2</span>Bygga och bo</span
+              >
               <span class="p-order-item"><span class="p-order-badge">7</span>Trafik och gator</span>
               <span class="p-order-item"><span class="p-order-badge">8</span>Om kommunen</span>
             </div>
@@ -914,16 +1409,39 @@
           <h2 id="stress-title">Stress cases, light (spec 13.4)</h2>
           <div class="p-stress-grid">
             <div>
-              <p class="p-label">As wide as a 320px screen, Finnish: the bar wraps, and a long label wraps inside its pill</p>
+              <p class="p-label">
+                As wide as a 320px screen, Finnish: the bar wraps, and a long label wraps inside its
+                pill
+              </p>
               <div class="p-band p-narrow p-demo">
-                <nav class="kv-navigation kv-navigation--horizontal" aria-label="Päävalikko, 320px" lang="fi">
+                <nav
+                  class="kv-navigation kv-navigation--horizontal"
+                  aria-label="Päävalikko, 320px"
+                  lang="fi"
+                >
                   <ul class="kv-navigation-list">
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-70">Etusivu</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-71" aria-current="true" data-current="">Asuminen ja rakentaminen</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-72">Liikenne ja kadut</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-73">Kulttuuri ja vapaa-aika</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-74">Rakennusvalvontaviranomaisyhteistyö</a></li>
-                    <li class="kv-navigation-item"><a class="kv-link" href="#demo-75">Rakennus- ja toimenpidelupahakemuksen liitteet</a></li>
+                    <li class="kv-navigation-item">
+                      <a class="kv-link" href="#demo-70">Etusivu</a>
+                    </li>
+                    <li class="kv-navigation-item">
+                      <a class="kv-link" href="#demo-71" aria-current="true" data-current=""
+                        >Asuminen ja rakentaminen</a
+                      >
+                    </li>
+                    <li class="kv-navigation-item">
+                      <a class="kv-link" href="#demo-72">Liikenne ja kadut</a>
+                    </li>
+                    <li class="kv-navigation-item">
+                      <a class="kv-link" href="#demo-73">Kulttuuri ja vapaa-aika</a>
+                    </li>
+                    <li class="kv-navigation-item">
+                      <a class="kv-link" href="#demo-74">Rakennusvalvontaviranomaisyhteistyö</a>
+                    </li>
+                    <li class="kv-navigation-item">
+                      <a class="kv-link" href="#demo-75"
+                        >Rakennus- ja toimenpidelupahakemuksen liitteet</a
+                      >
+                    </li>
                   </ul>
                 </nav>
               </div>
@@ -932,27 +1450,50 @@
               <p class="p-label">Right to left: the bar and a sidebar</p>
               <div class="p-mock p-demo" dir="rtl" lang="en">
                 <div class="p-band">
-                  <nav class="kv-navigation kv-navigation--horizontal" aria-label="Main menu, right to left">
+                  <nav
+                    class="kv-navigation kv-navigation--horizontal"
+                    aria-label="Main menu, right to left"
+                  >
                     <ul class="kv-navigation-list">
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-76">Start</a></li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-77" aria-current="true" data-current="">Building and living</a></li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-78">Roads and traffic</a></li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-79">About the municipality</a></li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-76">Start</a>
+                      </li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-77" aria-current="true" data-current=""
+                          >Building and living</a
+                        >
+                      </li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-78">Roads and traffic</a>
+                      </li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-79">About the municipality</a>
+                      </li>
                     </ul>
                   </nav>
                 </div>
                 <div class="p-sidebar">
                   <nav class="kv-navigation" aria-label="In this section, right to left">
                     <ul class="kv-navigation-list">
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-80">Building permits</a>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-80">Building permits</a>
                         <ul class="kv-navigation-list" hidden>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-81">Apply</a></li>
+                          <li class="kv-navigation-item">
+                            <a class="kv-link" href="#demo-81">Apply</a>
+                          </li>
                         </ul>
                       </li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-82">Land and plots</a>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-82">Land and plots</a>
                         <ul class="kv-navigation-list">
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-83">Shoreline protection</a></li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-84" aria-current="page" data-current="">Shoreline exemption</a></li>
+                          <li class="kv-navigation-item">
+                            <a class="kv-link" href="#demo-83">Shoreline protection</a>
+                          </li>
+                          <li class="kv-navigation-item">
+                            <a class="kv-link" href="#demo-84" aria-current="page" data-current=""
+                              >Shoreline exemption</a
+                            >
+                          </li>
                         </ul>
                       </li>
                     </ul>
@@ -961,35 +1502,63 @@
               </div>
             </div>
             <div>
-              <p class="p-label">Compact: 32px items with 14px labels from 64rem wide, 44px below</p>
+              <p class="p-label">
+                Compact: 32px items with 14px labels from 64rem wide, 44px below
+              </p>
               <div class="p-mock p-demo kv-compact" lang="sv">
                 <div class="p-band">
-                  <nav class="kv-navigation kv-navigation--horizontal" aria-label="Huvudmeny, compact">
+                  <nav
+                    class="kv-navigation kv-navigation--horizontal"
+                    aria-label="Huvudmeny, compact"
+                  >
                     <ul class="kv-navigation-list">
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-85" aria-current="true" data-current="">Ärenden</a></li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-86">Kunder</a></li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-87">Rapporter</a></li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-88">Inställningar</a></li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-85" aria-current="true" data-current=""
+                          >Ärenden</a
+                        >
+                      </li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-86">Kunder</a>
+                      </li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-87">Rapporter</a>
+                      </li>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-88">Inställningar</a>
+                      </li>
                     </ul>
                   </nav>
                 </div>
                 <div class="p-sidebar">
                   <nav class="kv-navigation" aria-label="Ärenden, compact">
                     <ul class="kv-navigation-list">
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-89">Bygglov</a>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-89">Bygglov</a>
                         <ul class="kv-navigation-list">
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-90">Nya</a></li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-91" aria-current="page" data-current="">Pågående</a>
+                          <li class="kv-navigation-item">
+                            <a class="kv-link" href="#demo-90">Nya</a>
+                          </li>
+                          <li class="kv-navigation-item">
+                            <a class="kv-link" href="#demo-91" aria-current="page" data-current=""
+                              >Pågående</a
+                            >
                             <ul class="kv-navigation-list">
-                              <li class="kv-navigation-item"><a class="kv-link" href="#demo-92">Väntar på komplettering</a></li>
+                              <li class="kv-navigation-item">
+                                <a class="kv-link" href="#demo-92">Väntar på komplettering</a>
+                              </li>
                             </ul>
                           </li>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-93">Avslutade</a></li>
+                          <li class="kv-navigation-item">
+                            <a class="kv-link" href="#demo-93">Avslutade</a>
+                          </li>
                         </ul>
                       </li>
-                      <li class="kv-navigation-item"><a class="kv-link" href="#demo-94">Strandskydd</a>
+                      <li class="kv-navigation-item">
+                        <a class="kv-link" href="#demo-94">Strandskydd</a>
                         <ul class="kv-navigation-list" hidden>
-                          <li class="kv-navigation-item"><a class="kv-link" href="#demo-95">Nya</a></li>
+                          <li class="kv-navigation-item">
+                            <a class="kv-link" href="#demo-95">Nya</a>
+                          </li>
                         </ul>
                       </li>
                     </ul>

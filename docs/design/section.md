@@ -401,7 +401,7 @@ Found with `grep -rn` for `kv-card--surface`, `kv-card--canvas`, `sidebar`, `lev
 - `docs/architecture.md` line 105: the example `<Card.Root className="kv-card--surface">` → `<Section className="kv-section--canvas">`.
 - `.changeset/card.md` line 9: drop `kv-card--surface` and `kv-card--canvas`. New `.changeset/section.md`.
 - `docs/roadmap.md`: a Section row. `docs/design/README.md`: this spec's row (not added here: the brief limited edits to this file).
-- `docs/plans/0007-card.md`: a historical record, left as is.
+- Plan 0007 (Card, in git history): a historical record, left as is.
 
 ## 10. Open questions
 

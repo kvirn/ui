@@ -2,7 +2,7 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-03
-- **Plan:** [0024](../plans/0024-kbd.md)
+- **Plan:** 0024
 - **Type:** component default styling (`kv-kbd` and prose `kbd`)
 - **Revises:** the `kbd` row in [foundations-and-prose.md §6.3](foundations-and-prose.md) and the Kbd decision
 

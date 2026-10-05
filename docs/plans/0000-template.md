@@ -56,8 +56,7 @@ Keyboard per the `keyboard` skill: focus strategy, selection follows focus, arro
 - [ ] React hook + component
 - [ ] i18n strings (all locales)
 - [ ] Stories (all states, RTL, forced-colors, a `Keyboard` story, `parameters.a11yContract`)
-- [ ] Vitest + axe
-- [ ] Playwright keyboard tests
+- [ ] Vitest browser tests: every keyboard row, ARIA state and axe
 - [ ] AT matrix run + `*.a11y.md`
 - [ ] Docs page
 - [ ] Changeset

@@ -2,7 +2,7 @@
 
 - **Status:** Draft · updated 2026-10-02 for the pattern (Plan 0019)
 - **Designer:** ux-designer agent · **Date:** 2026-10-02
-- **Plan:** [Plan 0019](../plans/0019-one-time-code-pattern.md) (the pattern), first built in [Plan 0014](../plans/0014-input-masks-and-one-time-code.md) (Phase 3)
+- **Plan:** Plan 0019 (the pattern), first built in Plan 0014 (Phase 3)
 - **Terminology (Plan 0029, 2026-10-04):** "the help text above the boxes" in this spec is the description, a `Field.Prose` above the control. A `Field.HelpText` goes under the control, never above it (see [field-help-text.md](field-help-text.md)).
 - **Type:** component default styling (+ Storybook page, + DESIGN.md wording). No new tokens
 

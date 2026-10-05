@@ -2,7 +2,7 @@
 
 - **Status:** Draft. Renamed from Notification to Alert by Plan 0042 (maintainer's decision, 2026-10-04: §3.1 reverses the original name decision). Revised 2026-10-02 with the maintainer's answers: status by class, content by ready-made roots; the decisions are in §11). Plan 0020 implements it
 - **Designer:** ux-designer agent · **Date:** 2026-10-02
-- **Plan:** [0020](../plans/0020-notification.md). **Decision:** "Alert: one plain Root and four ready-made status roots, no role, announced through the Announcer" (§10). It follows the classes-not-props rule and makes no exception to it
+- **Plan:** 0020. **Decision:** "Alert: one plain Root and four ready-made status roots, no role, announced through the Announcer" (§10). It follows the classes-not-props rule and makes no exception to it
 - **Type:** new component (headless: a plain Root, four ready-made status roots that add an icon and a status word, and an optional announcement) + default-theme styling + DESIGN.md vocabulary and rule changes
 
 The maintainer's framing, which this spec doesn't reopen: a status block is **its own component, not a variant of a container**. Status is chosen **by class**, like Card and Section, so the look is plain CSS that's easy to change or replace. The accessible content that must agree with the colour (the icon and the status word) comes from **ready-made roots**, one per status. This spec decides the name, what is and isn't an Alert, its parts, its semantics and announcements, its look, its content rules, and the vocabulary that separates it from Surface, Section and Card.

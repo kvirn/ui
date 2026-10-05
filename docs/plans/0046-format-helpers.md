@@ -3,7 +3,7 @@
 - **Status:** Implemented, gates green 2026-10-05 (maintainer chose option (a) and added the week-start rule)
 - **Owner:** orchestrator
 - **Created:** 2026-10-05 · **Target:** M2
-- **Related:** [0002](0002-kvirn-provider.md), [0039](0039-masks-by-name.md), `api-conventions`, `testing` skills
+- **Related:** 0002, 0039, `api-conventions`, `testing` skills
 
 ## Goal
 

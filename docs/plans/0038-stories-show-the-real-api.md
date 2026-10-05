@@ -3,7 +3,7 @@
 - **Status:** Accepted, implemented; gates pending (orchestrator runs `vp check`, `vp test run`, the e2e specs of the changed components, `i18n:check`)
 - **Owner:** orchestrator → component-engineer (one component per task)
 - **Created:** 2026-10-04 · **Target:** M2
-- **Related:** `storybook-docs` and `testing` skills, `apps/storybook/src/docs-source.ts`, [0033](0033-text-input-and-number-input.md) (the first args-first stories), [0032](0032-date-mask-and-masked-stories.md)
+- **Related:** `storybook-docs` and `testing` skills, `apps/storybook/src/docs-source.ts`, 0033 (the first args-first stories), 0032
 
 ## Goal
 
