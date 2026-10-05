@@ -1,0 +1,140 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Foundation/Your own element" />
+
+# Your own element
+
+Every part renders exactly one element, and you can change which one. `render` swaps the element, `className` and `style` add to the part's own, and `mergeProps` joins your props with a hook's props when you build the element yourself. This page says once how they behave. The Docs page of each component only says which element it needs.
+
+## `render`
+
+`render` takes an element or a function. There is no `asChild`.
+
+| Form         | You write                                              | What happens                                                                                                     |
+| ------------ | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| **Element**  | `render={<aside aria-labelledby="kontakt" />}`         | The element is cloned with the part's props merged into its own. Its own plain props win, and its handlers chain |
+| **Function** | `render={(partProps, state) => <li {...partProps} />}` | You get the part's props and its state and spread the props yourself. The part does no merging for you           |
+
+Use the element form when you only want another tag or a component with its own props. Use the function form when you need the state, or when your component takes the props under other names.
+
+```tsx
+import { Button, Section } from '@kvirn-ui/react'
+
+// Element form: a landmark instead of a div, named by its heading.
+<Section render={<aside aria-labelledby="kontakt" />}>
+  <h2 id="kontakt">Kontakta oss</h2>
+</Section>
+
+// Element form: your design system's button. It must still render a <button>.
+<Button render={<AcmeButton tone="quiet" />}>Spara</Button>
+
+// Function form: spread the props, and keep className.
+<Section render={(sectionProps) => <li {...sectionProps} />}>…</Section>
+```
+
+### The element must still do the job
+
+A part that needs a specific element checks after it has mounted what `render` produced, and logs a development warning when it is wrong. Render the element the warning names and forward its `ref`. The checks:
+
+| Part                              | Needs                                                             |
+| --------------------------------- | ----------------------------------------------------------------- |
+| `Button`, `Toggle`, `Alert.Close` | A `<button>`. For navigation use `Link.Root`                      |
+| `Link.Root`                       | An `<a href>`, also when you register a router link               |
+| `Fieldset.Root`                   | A `<fieldset>`: the group name comes from its `<legend>`          |
+| `Toolbar.Item`                    | An element that is focusable by itself, and not natively disabled |
+
+The codes are in [Dev warnings](?path=/docs/foundation-dev-warnings--docs). Landmarks, headings and list items have no such check: a `Section` as `<nav>` needs a name, and the page is responsible for the outline.
+
+### The state argument
+
+The function form gets the part's state as its second argument. It is a small typed object named after the part, such as `ButtonState`, and it holds the same facts that the part puts in its `data-*` attributes.
+
+```tsx
+<Button
+  render={(buttonProps, { isDisabled, isFocusVisible }) => (
+    <AcmeButton {...buttonProps} tone={isDisabled ? 'muted' : 'quiet'} />
+  )}
+>
+  Spara
+</Button>
+```
+
+| State type                                         | Fields                                         |
+| -------------------------------------------------- | ---------------------------------------------- |
+| `ButtonState`, `AlertCloseState`                   | `isDisabled`, `isFocusVisible`                 |
+| `ToggleState`                                      | `isPressed`, `isDisabled`, `isFocusVisible`    |
+| `LinkState`                                        | `isCurrent`, `isFocusVisible`, `opensInNewTab` |
+| `HeadingState`                                     | `level`, `size`                                |
+| `IconState`                                        | `isDecorative`                                 |
+| `PopoverState`, `TooltipState`, `ListboxPartState` | `isOpen`                                       |
+| `ListboxValueState`                                | `isPlaceholder`                                |
+| `SectionState`                                     | none: the object is empty                      |
+
+Every part exports its own state type from `@kvirn-ui/react`, named after the part. The Docs page of the component says which ones it has.
+
+## `mergeProps`
+
+When you spread a hook's props on your own element, `mergeProps` joins them with yours. It is public, and `render` uses the same function.
+
+```tsx
+import { mergeProps, useButton } from '@kvirn-ui/react'
+
+// Two objects, merged: the result is one object for one element.
+mergeProps(
+  { className: 'acme-save', onClick: logClick, style: { color: 'red' } },
+  { className: 'kv-button', onClick: save, style: { color: 'blue', margin: 0 } },
+)
+// { className: 'acme-save kv-button',
+//   onClick: calls logClick, then save,
+//   style: { color: 'blue', margin: 0 } }
+
+// With a hook: your props first, the hook's last.
+function SaveButton() {
+  const button = useButton()
+  return <button {...mergeProps({ className: 'acme-save' }, button.buttonProps)}>Spara</button>
+}
+```
+
+It merges from left to right, for one element:
+
+| Prop                 | Result                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| Handlers (`onClick`) | **Chained**: every handler is called, in argument order, with the same arguments            |
+| `className`          | **Joined** with a space, never replaced                                                     |
+| `style`              | **Merged** by property: the later object wins for a property both set                       |
+| `ref`                | **Merged** into one callback ref: every ref gets the element, and each is cleared on detach |
+| `id`                 | The later one wins, and two different ids give a development warning (see below)            |
+| Anything else        | The later defined value wins. `undefined` never overrides                                   |
+
+The order decides who wins. Put your props first and the hook's last when the hook must win, and put yours last when yours should. `mergeProps(a, b, c)` accepts any number of objects.
+
+### Two ids
+
+An `id` on the part is what a label's `htmlFor` or an `aria-describedby` points at. When two different ids are merged, the later one wins and the first is gone, so the label or description points at nothing. In development that logs `merge-props-id:<first>:<second>`. Pass one id, or let the part set it. Inside a Field, set the control's id with `controlId` on `Field.Root`.
+
+### What merging cannot do
+
+- **It cannot block an activation.** A disabled Button must not call your `onClick`, so `Button` takes `onClick` off a `render` element and passes it through its hook. Merging your own `onClick` over `buttonProps`, or replacing `buttonProps.onClick`, is not supported: in the function form, keep `buttonProps.onClick`.
+- **It does not repair markup.** Merging props onto the wrong element still gives the wrong element.
+
+## `className`
+
+A part renders its own stable class, such as `kv-button`, and the default theme styles it. Your `className` joins it and never replaces it, on the component and on a `render` element alike. So `className="kv-button--primary"` adds the theme's variant, and `className="acme-save"` adds yours, and the theme keeps styling the part.
+
+In the function form, spread `partProps` and keep its `className`. If you write `className="acme-save"` after the spread, you have replaced the part's class: join them yourself, for example `className={[partProps.className, 'acme-save'].join(' ')}`.
+
+State is in `data-*` attributes (`data-disabled`, `data-open`), never in classes, so your CSS can select on it.
+
+## Accessibility
+
+- **Semantics come from the element.** A part chooses the element that gives the role, the keys and the disabled state. Swapping it for the wrong one removes them, which is why the parts that need a specific element warn.
+- **Names move with you.** A landmark you create with `render` (a `<nav>`, `<aside>` or `<section>`) needs its own name (2.4.1, 2.4.6). A dialog you create needs one too (4.1.2).
+- **Keep the focus ring.** Do not set `outline: none` on your element. The part's class and `data-focus-visible` draw the ring (2.4.7).
+- **Keep the ref.** Focus management, the position of a popup and the checks above read the element through the ref, so a component you render must forward it.
+
+## Related
+
+- [Dev warnings](?path=/docs/foundation-dev-warnings--docs): every code, including the wrong-element ones
+- [Icon](?path=/docs/components-icon--docs): `render` for your own SVG, in both forms
+- [Section](?path=/docs/components-section--docs): the landmark examples
+- [Focus ring](?path=/docs/foundation-focus-ring--docs): what the part's class draws
