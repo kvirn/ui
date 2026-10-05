@@ -6,7 +6,7 @@ import {
   parseTestCell,
 } from './parse-keyboard-section.ts'
 
-// Plan 0015: every component's Docs page shows its contract's Keyboard section. The
+// every component's Docs page shows its contract's Keyboard section. The
 // page reads the contract the stories file imports (`?raw`) and passes as `a11yContract`, so the
 // check walks the stories files and the contracts, and reports every gap.
 

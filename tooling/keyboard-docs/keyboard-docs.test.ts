@@ -11,7 +11,7 @@ import {
   listStoriesFiles,
 } from './check-keyboard-docs.ts'
 
-// Plan 0015: every component's Docs page shows its contract's Keyboard section, and
+// every component's Docs page shows its contract's Keyboard section, and
 // every key in it names a test. Like raw-colours: assert the walk found the files first, so an
 // empty walk can't pass.
 

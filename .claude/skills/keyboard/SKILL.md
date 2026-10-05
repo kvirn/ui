@@ -17,7 +17,7 @@ Load this together with the `accessibility` skill (roles, names, focus visibilit
 3. **Apply the practice rules** below. Decide and write down the focus strategy, whether selection follows focus, and whether arrows wrap.
 4. **Write the Keyboard table** in `<name>.a11y.md` (format below). Every key the component handles, plus Tab and Shift+Tab. Every row names its e2e test.
 5. **Tests first.** One e2e test per row in `apps/storybook/src/components/<name>/<name>.e2e.ts`, named after the row. Arrow rows get an RTL test as well.
-6. **Storybook** (Plan 0015). Never copy the table into a story or MDX by hand.
+6. **Storybook**. Never copy the table into a story or MDX by hand.
    - The stories file imports its contract and passes it to the Docs page:
      ```tsx
      import contract from '../../../../../packages/react/src/text-input/text-input.a11y.md?raw'
