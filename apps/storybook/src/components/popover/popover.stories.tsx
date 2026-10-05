@@ -1,8 +1,9 @@
 import { Button, Popover } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/popover/popover.a11y.md?raw'
+import guide from '../../../../../packages/react/src/popover/popover.md?raw'
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor } from 'storybook/test'
-import { showSource } from '../../docs-source.ts'
+import { showSource, usageGuide } from '../../docs-source.ts'
 import { ControlledPopover } from './popover.fixture.tsx'
 
 // Components/Popover: a button that opens a small floating panel in the browser's top layer
@@ -11,9 +12,7 @@ import { ControlledPopover } from './popover.fixture.tsx'
 // the keyboard rows, the placement and the display modes against Keyboard, Nested, FlipsAtTheEdge,
 // LongContent, RTL and ForcedColors.
 
-const description = `A small floating panel that a button opens: a hint, a short form, a few controls. It is a non-modal dialog in the top layer, so no ancestor clips it and no z-index is needed. It is placed next to the button, flips when there is no room and scrolls inside when it is too tall.
-
-Escape and a press outside close it, and focus returns to the button. Opening never moves focus: the panel follows the button in the Tab order, so render \`Popover.Popup\` right after \`Popover.Trigger\`. **Name the popup** with \`aria-label\` or \`aria-labelledby\`.`
+const description = usageGuide(guide)
 
 /**
  * What the default theme will draw: a raised surface, a 1px edge and a popup shadow. The popup is
@@ -110,6 +109,9 @@ type Story = StoryObj<typeof meta>
 const isPopupOpen = () =>
   document.querySelector('.kv-popover-popup')?.matches(':popover-open') === true
 
+/** The popup that is open now, for a story with several popovers. */
+const openPopup = () => document.querySelector('.kv-popover-popup:popover-open')
+
 /** Closed: a button that says it has a popup (`aria-haspopup="dialog"`) and is collapsed. */
 export const Default: Story = {
   play: async ({ canvas }) => {
@@ -193,12 +195,24 @@ export const Controlled: Story = {
   ],
   render: () => <ControlledPopover />,
   play: async ({ canvas }) => {
+    const reason = canvas.getByTestId('reason')
+    // Your own button opens it: the popup follows `open`, and no request is made.
     await userEvent.click(canvas.getByRole('button', { name: 'Visa från sidan' }))
     await waitFor(() => expect(isPopupOpen()).toBe(true))
     await expect(canvas.getByTestId('state')).toHaveTextContent('öppen')
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(isPopupOpen()).toBe(false))
     await expect(canvas.getByTestId('state')).toHaveTextContent('stängd')
+    await expect(reason).toHaveTextContent('escape')
+    // Each way of asking has its own reason.
+    await userEvent.click(canvas.getByRole('button', { name: 'Om tjänsten' }))
+    await waitFor(() => expect(reason).toHaveTextContent('trigger-press'))
+    await userEvent.click(canvas.getByRole('button', { name: 'Stäng' }))
+    await waitFor(() => expect(reason).toHaveTextContent('close-press'))
+    await userEvent.click(canvas.getByRole('button', { name: 'Om tjänsten' }))
+    await userEvent.click(canvas.getByTestId('state'))
+    await waitFor(() => expect(reason).toHaveTextContent('outside-press'))
+    await waitFor(() => expect(isPopupOpen()).toBe(false))
   },
 }
 
@@ -280,6 +294,108 @@ export const MatchAnchorWidth: Story = {
       <Popover.Popup aria-label="Så når vi dig">Vi ringer eller skickar ett sms.</Popover.Popup>
     </Popover.Root>
   ),
+}
+
+/**
+ * Where the popup goes: `placement` is a side (`top`, `bottom`, `start`, `end`), then `-start`,
+ * `-center` or `-end`. `start` and `end` follow the reading direction. Each button here opens a
+ * popup with another placement, and `data-placement` on the popup says which one is in use.
+ */
+export const Placements: Story = {
+  decorators: [
+    (Story) => (
+      <div style={{ paddingBlock: '10rem' }}>
+        <Story />
+      </div>
+    ),
+  ],
+  render: () => (
+    <div className="kv-button-group">
+      <Popover.Root placement="top-start">
+        <Popover.Trigger className="kv-button">Ovanför</Popover.Trigger>
+        <Popover.Popup aria-label="Ovanför">Rutan ligger ovanför knappen.</Popover.Popup>
+      </Popover.Root>
+      <Popover.Root placement="bottom-end">
+        <Popover.Trigger className="kv-button">Under, till slutet</Popover.Trigger>
+        <Popover.Popup aria-label="Under, till slutet">
+          Rutan slutar där knappen slutar.
+        </Popover.Popup>
+      </Popover.Root>
+      <Popover.Root placement="bottom">
+        <Popover.Trigger className="kv-button">Under, i mitten</Popover.Trigger>
+        <Popover.Popup aria-label="Under, i mitten">
+          Rutan är centrerad under knappen.
+        </Popover.Popup>
+      </Popover.Root>
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    for (const [name, placement] of [
+      ['Ovanför', 'top-start'],
+      ['Under, till slutet', 'bottom-end'],
+      ['Under, i mitten', 'bottom'],
+    ] as const) {
+      await userEvent.click(canvas.getByRole('button', { name }))
+      await waitFor(() => expect(openPopup()).not.toBeNull())
+      await waitFor(() =>
+        expect(canvas.getByRole('dialog', { name })).toHaveAttribute('data-placement', placement),
+      )
+      await userEvent.keyboard('{Escape}')
+      await waitFor(() => expect(openPopup()).toBeNull())
+    }
+  },
+}
+
+/**
+ * Size the popup with the two variables it sets and reads. `--kv-popup-height-limit` (yours, a
+ * length) caps the height below the room that is left, so a long popup scrolls inside, and
+ * `--kv-anchor-width` (set on the popup, the trigger's width) lets the CSS use it, here as a minimum
+ * width. The class that does it is in this story's decorator:
+ * `.kv-popover-sized { --kv-popup-height-limit: 8rem; min-inline-size: var(--kv-anchor-width); overflow-y: auto; }`.
+ * The popup holds a link, so the region that scrolls has focusable content and a keyboard user can
+ * reach the text below the fold (WCAG 2.1.1).
+ */
+export const SizedWithVariables: Story = {
+  decorators: [
+    (Story) => (
+      <>
+        <style>{`
+.kv-popover-sized {
+  --kv-popup-height-limit: 8rem;
+  min-inline-size: var(--kv-anchor-width);
+  overflow-y: auto;
+}
+`}</style>
+        <Story />
+      </>
+    ),
+    withRoomBelow,
+  ],
+  render: (args) => (
+    <Popover.Root {...args}>
+      <Popover.Trigger className="kv-button">Villkor</Popover.Trigger>
+      <Popover.Popup aria-label="Villkor" className="kv-popover-sized">
+        {Array.from({ length: 12 }, (_, index) => (
+          <p key={index}>Villkor {index + 1}: uppgifter du lämnar används bara för ditt ärende.</p>
+        ))}
+        <a href="#villkor">Läs hela villkoren</a>
+      </Popover.Popup>
+    </Popover.Root>
+  ),
+  play: async ({ canvas }) => {
+    const trigger = canvas.getByRole('button', { name: 'Villkor' })
+    await userEvent.click(trigger)
+    await waitFor(() => expect(isPopupOpen()).toBe(true))
+    const popup = canvas.getByRole('dialog', { name: 'Villkor' })
+    // The popup publishes the trigger's width, and the long content scrolls inside it (1.4.10).
+    await waitFor(() =>
+      expect(parseFloat(popup.style.getPropertyValue('--kv-anchor-width'))).toBeCloseTo(
+        trigger.getBoundingClientRect().width,
+        0,
+      ),
+    )
+    await expect(popup.scrollHeight).toBeGreaterThan(popup.clientHeight)
+  },
 }
 
 /** A popup taller than the room scrolls inside: its height is limited by `--kv-popup-max-height` (1.4.10). */

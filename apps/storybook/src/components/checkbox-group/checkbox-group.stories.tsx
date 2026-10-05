@@ -236,6 +236,21 @@ export const Invalid: Story = {
   },
 }
 
+/**
+ * Required: the legend has no optional text (the other examples end with "(valfritt)") and the
+ * fieldset gets `data-required`. ARIA has no `aria-required` on a group, so it is not announced
+ * as required: say what is required in the legend or the description.
+ */
+export const Required: Story = {
+  args: { required: true },
+  play: async ({ canvas, globals }) => {
+    const { text } = choiceTextsFor(localeOf(globals))
+    const group = canvas.getByRole('group', { name: text.contactLegend })
+    await expect(group).toHaveAttribute('data-required')
+    await expect(group).not.toHaveAttribute('aria-required')
+  },
+}
+
 /** Disabled: native `fieldset[disabled]`, so every checkbox is disabled and skipped by Tab. */
 export const Disabled: Story = {
   args: { disabled: true, defaultValue: ['email'] },

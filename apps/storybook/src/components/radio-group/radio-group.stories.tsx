@@ -8,7 +8,12 @@ import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
-import { ControlledDurationGroup, DurationForm } from './radio-group.fixture.tsx'
+import {
+  ControlledDurationGroup,
+  ControlledEmptyDurationGroup,
+  DurationForm,
+  StandaloneDurationRadios,
+} from './radio-group.fixture.tsx'
 
 // Components/Form/RadioGroup: one question with one answer, in a native <fieldset> under a
 // <legend>, with native radios that share a name (design spec
@@ -272,6 +277,21 @@ export const Invalid: Story = {
   },
 }
 
+/**
+ * Required: the legend has no optional text (the other examples end with "(valfritt)") and the
+ * fieldset gets `data-required`. ARIA has no `aria-required` on a group or a radio, so it is not
+ * announced as required: say what is required in the legend or the description.
+ */
+export const Required: Story = {
+  args: { required: true },
+  play: async ({ canvas, globals }) => {
+    const { text } = choiceTextsFor(localeOf(globals))
+    const group = canvas.getByRole('group', { name: text.durationLegend })
+    await expect(group).toHaveAttribute('data-required')
+    await expect(group).not.toHaveAttribute('aria-required')
+  },
+}
+
 /** One option is disabled: a dashed circle, skipped by Tab and by the arrow keys. */
 export const DisabledOption: Story = {
   args: { defaultValue: '1' },
@@ -473,6 +493,44 @@ export const Controlled: Story = {
     await expect(canvas.getByTestId('mirror')).toHaveTextContent(`${text.youChose}: 12`)
     await expect(canvas.getByRole('radio', { name: text.duration12 })).toBeChecked()
     await expect(canvas.getByRole('radio', { name: text.duration6 })).not.toBeChecked()
+  },
+}
+
+/**
+ * Controlled, with nothing chosen yet: `value={null}`. Nothing is checked, Tab enters the group at
+ * its first radio, and the group follows the `value` your state gives it once a radio is chosen.
+ */
+export const ControlledEmpty: Story = {
+  parameters: showSource('radio-group/radio-group.fixture.tsx', 'ControlledEmptyDurationGroup'),
+  render: (_args, { globals }) => <ControlledEmptyDurationGroup locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = choiceTextsFor(localeOf(globals))
+    await expect(canvas.queryAllByRole('radio', { checked: true })).toHaveLength(0)
+    await expect(canvas.getByTestId('mirror')).toHaveTextContent(`${text.youChose}: –`)
+    await userEvent.click(canvas.getByRole('radio', { name: text.duration6 }))
+    await expect(canvas.getByRole('radio', { name: text.duration6 })).toBeChecked()
+    await expect(canvas.getByTestId('mirror')).toHaveTextContent(`${text.youChose}: 6`)
+  },
+}
+
+/**
+ * Radios outside a RadioGroup, in a Fieldset: each takes its own `name`, `value` and `checked`.
+ * The controlled radios carry `data-state`, and none gets `aria-invalid` (ARIA doesn't allow it on
+ * a radio).
+ */
+export const Standalone: Story = {
+  parameters: showSource('radio-group/radio-group.fixture.tsx', 'StandaloneDurationRadios'),
+  render: (_args, { globals }) => <StandaloneDurationRadios locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = choiceTextsFor(localeOf(globals))
+    const six = canvas.getByRole('radio', { name: text.duration6 })
+    const one = canvas.getByRole('radio', { name: text.duration1 })
+    await expect(six).toHaveAttribute('data-state', 'checked')
+    await expect(one).toHaveAttribute('data-state', 'unchecked')
+    await userEvent.click(one)
+    await expect(one).toHaveAttribute('data-state', 'checked')
+    await expect(six).toHaveAttribute('data-state', 'unchecked')
+    await expect(one).not.toHaveAttribute('aria-invalid')
   },
 }
 

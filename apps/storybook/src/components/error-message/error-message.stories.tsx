@@ -1,8 +1,9 @@
 import { Field, Fieldset, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
+import guide from '../../../../../packages/react/src/field/field-error-message.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
-import { showSource } from '../../docs-source.ts'
+import { showSource, usageGuide } from '../../docs-source.ts'
 import {
   FieldStates,
   localeOf,
@@ -22,7 +23,17 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 const meta = {
   title: 'Components/Form/ErrorMessage',
   component: Field.ErrorMessage,
-  argTypes: { render: { control: false } },
+  argTypes: {
+    className: {
+      control: 'text',
+      description: 'Your own classes, added to `kv-field-error-message`.',
+    },
+    render: {
+      control: false,
+      description: 'Another element for the message. It receives the host’s state.',
+    },
+    ref: { control: false, description: 'A ref to the `<p>`.' },
+  },
   globals: { locale: 'sv' },
   decorators: [
     (Story) => (
@@ -42,17 +53,14 @@ const meta = {
       </Field.Root>
     )
   },
-  parameters: { a11yContract: contract },
+  parameters: {
+    a11yContract: contract,
+    docs: { description: { component: usageGuide(guide) } },
+  },
 } satisfies Meta<typeof Field.ErrorMessage>
 
 export default meta
 type Story = StoryObj<typeof meta>
-
-/**
- * The fixture the keyboard tests drive. Try the keys in the Keyboard section above: Tab goes
- * to the input and never stops on the error message.
- */
-export const Keyboard: Story = {}
 
 /**
  * In a Field: the message under the input, with the icon and the hidden prefix. Screen
@@ -70,6 +78,12 @@ export const InField: Story = {
     await expect(canvas.getByText(text.nameError)).toBeVisible()
   },
 }
+
+/**
+ * The fixture the keyboard tests drive. Try the keys in the Keyboard section above: Tab goes
+ * to the input and never stops on the error message.
+ */
+export const Keyboard: Story = {}
 
 /** Valid: the message isn't rendered, so no stale error is ever referenced. */
 export const NotInvalid: Story = {

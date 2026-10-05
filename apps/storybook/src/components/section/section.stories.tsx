@@ -18,6 +18,7 @@ import {
   ContactSectionWithEdge,
   NewsBand,
   NewsCard,
+  RenderedSections,
   UserSection,
 } from './section.fixture.tsx'
 import type { SectionFixtureLocale } from './section.fixture.tsx'
@@ -366,6 +367,31 @@ export const ProseAndSections: Story = {
         </Section>
       </>
     )
+  },
+}
+
+/**
+ * `render` as a named `<section>`, as a `<nav>` through the function form, and as `<li>` items in
+ * a list. Only the first two are landmarks, and both are named by their heading.
+ */
+export const RenderedAsLandmarks: Story = {
+  parameters: showSource('section/section.fixture.tsx', 'RenderedSections'),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-card-column">
+        <Story />
+      </div>
+    ),
+  ],
+  render: (_args, { globals }) => <RenderedSections locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('region', { name: 'Sophämtning vid Storgatan 12' })).toBeVisible()
+    await expect(canvas.getByRole('navigation', { name: 'Nyheter' })).toBeVisible()
+    // The list of Sections: two plain items, no landmark.
+    const lists = canvas.getAllByRole('list')
+    await expect(
+      within(lists[lists.length - 1] as HTMLElement).getAllByRole('listitem'),
+    ).toHaveLength(2)
   },
 }
 

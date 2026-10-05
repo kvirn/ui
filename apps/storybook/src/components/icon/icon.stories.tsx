@@ -7,9 +7,10 @@ import { sv } from '@kvirn-ui/i18n/sv'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { Button, ButtonGroup, Icon, KvirnProvider, Link } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/icon/icon.a11y.md?raw'
+import guide from '../../../../../packages/react/src/icon/icon.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
-import { showSource } from '../../docs-source.ts'
+import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   builtInIconNames,
@@ -26,12 +27,13 @@ import {
   moreButtons,
   MunicipalityMark,
   narrowButtons,
+  RegistryEntries,
   StatusAlerts,
   statusKinds,
   textsFor,
   UnstyledIcons,
 } from './icon.fixture.tsx'
-import type { BuiltInIconName, IconProps } from '@kvirn-ui/react'
+import type { BuiltInIconName, IconName, IconProps } from '@kvirn-ui/react'
 import type { IconFixtureLocale } from './icon.fixture.tsx'
 
 // Components/Icon: the headless Icon and the built-in set, styled by @kvirn-ui/theme/theme.css
@@ -115,7 +117,10 @@ const meta = {
       )
     },
   ],
-  parameters: { a11yContract: contract },
+  parameters: {
+    a11yContract: contract,
+    docs: { description: { component: usageGuide(guide) } },
+  },
 } satisfies Meta<IconArgs>
 
 export default meta
@@ -219,7 +224,13 @@ const sizeScale = [
   0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 9, 10, 12, 16, 20, 24, 32, 48, 64,
 ] as const
 
-/** The size scale of Tailwind's `size-*`: a step is a quarter of an `em`, so `4` is 1em. */
+/** String sizes are CSS lengths, not steps: `'48px'` is 48 pixels, and `'2rem'` ignores the text size. */
+const sizeLengths = ['20px', '1.5rem', '48px'] as const
+
+/**
+ * The size scale of Tailwind's `size-*`: a step is a quarter of an `em`, so `4` is 1em. A string
+ * is a CSS length instead (`'48px'`, `'1.5rem'`), and a bare number is never pixels.
+ */
 export const SizeScale: Story = {
   render: () => (
     <ul className="kv-story-inline-list">
@@ -229,10 +240,23 @@ export const SizeScale: Story = {
           <code>{size}</code>
         </li>
       ))}
+      {sizeLengths.map((size) => (
+        <li key={size} className="kv-story-icon-row">
+          <Icon name="info" size={size} />
+          <code>{`'${size}'`}</code>
+        </li>
+      ))}
     </ul>
   ),
   play: async ({ canvasElement }) => {
     await expect(canvasElement.querySelectorAll('svg[data-size]')).toHaveLength(sizeScale.length)
+    // A length has no step, and is the svg's width and height as written.
+    for (const size of sizeLengths) {
+      const icon = canvasElement.querySelector(`svg[width="${size}"]`)
+      await expect(icon).not.toBeNull()
+      await expect(icon).toHaveAttribute('height', size)
+      await expect(icon).not.toHaveAttribute('data-size')
+    }
   },
 }
 
@@ -538,6 +562,49 @@ export const RTL: Story = {
     }
     await expect(canvas.getByRole('button', { name: text.button.continue })).toBeVisible()
     await expect(canvas.getByRole('button', { name: text.pagination.next })).toBeVisible()
+  },
+}
+
+/**
+ * The registry's `{ component, mirrorInRtl }` form sets the flip per name, `mirrorInRtl` on an
+ * Icon wins over it, `iconDefaults.size` sizes every Icon below, and a nested provider adds icons
+ * and changes only the fields it sets. The row is right to left.
+ */
+export const RegistryEntriesAndDefaults: Story = {
+  parameters: showSource('icon/icon.fixture.tsx', 'RegistryEntries'),
+  render: (_args, { globals }) => <RegistryEntries locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    const iconIn = (testId: string) => canvas.getByTestId(testId).querySelector('svg')
+    await expect(iconIn('entry-says-no-flip')).not.toHaveAttribute('data-mirror-in-rtl')
+    await expect(iconIn('instance-flips')).toHaveAttribute('data-mirror-in-rtl')
+    // iconDefaults.size is 6 (1.5em) until an icon sets its own.
+    await expect(iconIn('default-size')).toHaveAttribute('width', '1.5em')
+    await expect(iconIn('own-size')).toHaveAttribute('width', '1em')
+    // The nested provider adds `delete` and its stroke, keeps the parent's size and `search`.
+    await expect(iconIn('nested-delete')).toHaveAttribute('stroke-width', '2')
+    await expect(iconIn('nested-delete')).toHaveAttribute('width', '1.5em')
+    await expect(iconIn('nested-keeps-parent')).toHaveAttribute('width', '1.5em')
+    await expect(iconIn('nested-keeps-parent')).toHaveClass('lucide-search')
+  },
+}
+
+/**
+ * A name that isn't built in or registered renders an empty, decorative `<svg>` at the right size,
+ * and warns once in development. The type checker rejects the name, so this story casts it: it
+ * shows what a typo does (the layout holds, nothing is drawn), not code to copy.
+ */
+export const UnknownName: Story = {
+  render: () => (
+    <p>
+      Spara <Icon name={'delte' as IconName} size={6} />
+    </p>
+  ),
+  play: async ({ canvasElement }) => {
+    const icon = canvasElement.querySelector('svg')
+    await expect(icon).toHaveAttribute('aria-hidden', 'true')
+    await expect(icon).toHaveAttribute('width', '1.5em')
+    await expect(icon).toHaveAttribute('viewBox', '0 0 24 24')
+    await expect(icon?.children).toHaveLength(0)
   },
 }
 

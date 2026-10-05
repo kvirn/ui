@@ -1,8 +1,10 @@
 import { Field, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
+import guide from '../../../../../packages/react/src/field/field.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
-import { showSource } from '../../docs-source.ts'
+import { showSource, usageGuide } from '../../docs-source.ts'
+import { gapTextsFor } from '../form/form-gaps.fixture.tsx'
 import {
   FieldStates,
   localeOf,
@@ -34,10 +36,24 @@ const meta = {
       description:
         '`aria-required` on the control, and no "(optional)" in the label. Not native `required`.',
     },
-    disabled: { control: 'boolean' },
-    controlId: { control: 'text' },
-    messages: { control: false },
-    render: { control: false },
+    disabled: {
+      control: 'boolean',
+      description:
+        'Native `disabled` on the control, and `data-disabled` on every part. Say why on submit instead, where you can.',
+    },
+    controlId: {
+      control: 'text',
+      description:
+        'The control’s id, so you can link to it, for example from an error summary. Default: generated. The label, description and error ids derive from it.',
+    },
+    messages: {
+      control: false,
+      description:
+        'Per-instance overrides of the label’s optional text (`optional`) and the hidden prefix of the error (`errorPrefix`). See `OwnMessages`.',
+    },
+    className: { control: 'text', description: 'Your own classes, added to `kv-field`.' },
+    render: { control: false, description: 'Another element for the root. It receives the state.' },
+    ref: { control: false, description: 'A ref to the root `<div>`.' },
   },
   globals: { locale: 'sv' },
   decorators: [
@@ -57,7 +73,10 @@ const meta = {
       </Field.Root>
     )
   },
-  parameters: { a11yContract: contract },
+  parameters: {
+    a11yContract: contract,
+    docs: { description: { component: usageGuide(guide) } },
+  },
 } satisfies Meta<typeof Field.Root>
 
 export default meta
@@ -250,6 +269,127 @@ export const Invalid: Story = {
       `${text.emailHint} ${fieldMessagesFor(locale).errorPrefix} ${text.emailError}`,
     )
     await expect(canvas.getByText(text.emailError)).toBeVisible()
+  },
+}
+
+/**
+ * Several descriptions: each `Field.Prose` and `Field.HelpText` has its own id, and the input's
+ * `aria-describedby` lists them in DOM order, then the error. Here two descriptions above the
+ * input (where to find the number, and why we ask) and a help text under it.
+ */
+export const SeveralDescriptions: Story = {
+  render: (args, { globals }) => {
+    const locale = localeOf(globals)
+    const { text, lang } = textsFor(locale)
+    const { text: gap } = gapTextsFor(locale)
+    return (
+      <Field.Root {...args} lang={lang}>
+        <Field.Label>{text.registration}</Field.Label>
+        <Field.Prose>
+          <p>{text.registrationWhere}</p>
+        </Field.Prose>
+        <Field.Prose>
+          <p>{gap.registrationWhy}</p>
+        </Field.Prose>
+        <TextInput name="registration" className="kv-input--width-10" />
+        <Field.HelpText>{text.registrationHint}</Field.HelpText>
+      </Field.Root>
+    )
+  },
+  play: async ({ canvas, globals }) => {
+    const locale = localeOf(globals)
+    const { text } = textsFor(locale)
+    const { text: gap } = gapTextsFor(locale)
+    const input = canvas.getByRole('textbox', { name: text.registration })
+    await expect(input).toHaveAccessibleDescription(
+      `${text.registrationWhere} ${gap.registrationWhy} ${text.registrationHint}`,
+    )
+    await expect((input.getAttribute('aria-describedby') ?? '').split(' ')).toHaveLength(3)
+  },
+}
+
+/**
+ * `controlId` gives the control an id you choose, so an error summary can link to it. The link
+ * lands on the input itself, not on the label. Without it the id is generated.
+ */
+export const LinkedFromErrorSummary: Story = {
+  args: { invalid: true, controlId: 'kontakt-telefon' },
+  render: (args, { globals }) => {
+    const locale = localeOf(globals)
+    const { text, lang } = textsFor(locale)
+    const { text: gap } = gapTextsFor(locale)
+    return (
+      <div lang={lang}>
+        <div className="kv-prose">
+          <h2>{gap.summaryHeading}</h2>
+          <ul>
+            <li>
+              <a href={`#${args.controlId}`}>{gap.phoneError}</a>
+            </li>
+          </ul>
+        </div>
+        <Field.Root {...args}>
+          <Field.Label>{text.phone}</Field.Label>
+          <TextInput
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            defaultValue="070 abc"
+            className="kv-input--width-20"
+          />
+          <Field.ErrorMessage>{gap.phoneError}</Field.ErrorMessage>
+        </Field.Root>
+      </div>
+    )
+  },
+  play: async ({ canvas, args, globals }) => {
+    const locale = localeOf(globals)
+    const { text } = textsFor(locale)
+    const { text: gap } = gapTextsFor(locale)
+    const input = canvas.getByRole('textbox', { name: text.phone })
+    await expect(input).toHaveAttribute('id', args.controlId)
+    await expect(canvas.getByRole('link', { name: gap.phoneError })).toHaveAttribute(
+      'href',
+      `#${args.controlId}`,
+    )
+  },
+}
+
+/**
+ * `messages` rewords the two strings the Field adds, for this one Field: the text after a label
+ * that isn't required, and the hidden word before an error. The rest of the page keeps the
+ * provider's wording. Both are part of the input's accessible name and description.
+ */
+export const OwnMessages: Story = {
+  args: { required: false, invalid: true },
+  render: (args, { globals }) => {
+    const locale = localeOf(globals)
+    const { text, lang } = textsFor(locale)
+    const { text: gap } = gapTextsFor(locale)
+    return (
+      <Field.Root
+        {...args}
+        lang={lang}
+        messages={{ optional: gap.ownOptional, errorPrefix: gap.ownErrorPrefix }}
+      >
+        <Field.Label>{text.phone}</Field.Label>
+        <TextInput
+          name="phone"
+          type="tel"
+          autoComplete="tel"
+          defaultValue="070 abc"
+          className="kv-input--width-20"
+        />
+        <Field.ErrorMessage>{gap.phoneError}</Field.ErrorMessage>
+      </Field.Root>
+    )
+  },
+  play: async ({ canvas, globals }) => {
+    const locale = localeOf(globals)
+    const { text } = textsFor(locale)
+    const { text: gap } = gapTextsFor(locale)
+    const input = canvas.getByRole('textbox', { name: `${text.phone} ${gap.ownOptional}` })
+    await expect(input).toHaveAccessibleDescription(`${gap.ownErrorPrefix} ${gap.phoneError}`)
   },
 }
 

@@ -266,3 +266,44 @@ export function ContactDetailsFieldset({ locale }: SectionFixtureProps) {
     </Fieldset.Root>
   )
 }
+
+/**
+ * `render` gives a Section the element its role needs: a `<section>` and a `<nav>`, each named by
+ * its heading (`aria-labelledby`), and an `<li>` in a list. The function form spreads the
+ * props, so `kv-section` stays. A `<div>` is not a landmark, so keep these few.
+ */
+export function RenderedSections({ locale }: SectionFixtureProps) {
+  const { text, lang } = textsFor(locale)
+  const statusId = useId()
+  const navigationId = useId()
+  return (
+    <div lang={lang}>
+      <Section render={<section aria-labelledby={statusId} />} data-testid="status-section">
+        <h2 id={statusId}>{text.waste.heading}</h2>
+        <p>{text.waste.plan}</p>
+      </Section>
+      <Section
+        render={(sectionProps) => <nav {...sectionProps} aria-labelledby={navigationId} />}
+        data-testid="news-navigation"
+      >
+        <h2 id={navigationId}>{text.news.heading}</h2>
+        <ul>
+          <li>
+            <Link.Root href="#atervinning">{text.news.recycling.title}</Link.Root>
+          </li>
+          <li>
+            <Link.Root href="#vintervaghallning">{text.news.snow.title}</Link.Root>
+          </li>
+        </ul>
+      </Section>
+      <ul>
+        <Section render={<li />}>
+          <p>{text.news.grants.title}</p>
+        </Section>
+        <Section render={<li />}>
+          <p>{text.news.snow.title}</p>
+        </Section>
+      </ul>
+    </div>
+  )
+}

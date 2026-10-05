@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
-import { AnnouncementButtons } from './announcer.fixture.tsx'
+import { AnnouncementButtons, BurstsAndBlanks } from './announcer.fixture.tsx'
 
 // Components/Announcer: the shared live regions behind useAnnouncer(). KvirnProvider
 // renders them (the withFormLocale decorator is the app's provider here), so there is nothing to
@@ -82,6 +82,29 @@ export const Throttled: Story = {
     await expect(canvas.getByTestId('last-call')).toHaveTextContent('skickades')
     await userEvent.click(button)
     await expect(canvas.getByTestId('last-call')).toHaveTextContent('släpptes')
+  },
+}
+
+/**
+ * `throttleMilliseconds: 0` turns the throttle off for a key. Two messages inside 100 ms leave
+ * only the second in the region, so batch related changes into one sentence. A blank message is
+ * dropped. A message is also removed from the region after 5 seconds.
+ */
+export const BurstsAndBlankMessages: Story = {
+  parameters: showSource('announcer/announcer.fixture.tsx', 'BurstsAndBlanks'),
+  render: (_args, { globals }) => <BurstsAndBlanks locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    const unthrottled = canvas.getByRole('button', { name: 'Samma nyckel, utan spärr' })
+    await userEvent.click(unthrottled)
+    await userEvent.click(unthrottled)
+    await expect(canvas.getByTestId('last-call')).toHaveTextContent('skickades')
+    await userEvent.click(canvas.getByRole('button', { name: 'Två meddelanden på en gång' }))
+    await waitFor(() =>
+      expect(canvas.getByRole('status')).toHaveTextContent('Sessionen har gått ut. Logga in igen.'),
+    )
+    await expect(canvas.getByRole('status')).not.toHaveTextContent('Ändringarna är sparade')
+    await userEvent.click(canvas.getByRole('button', { name: 'Tomt meddelande' }))
+    await expect(canvas.getByTestId('last-call')).toHaveTextContent('släpptes (tomt)')
   },
 }
 

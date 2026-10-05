@@ -649,6 +649,47 @@ export function LibraryIcons({ locale }: IconFixtureProps) {
 }
 
 /**
+ * What a registry can say and what an instance can override. An entry `{ component,
+ * mirrorInRtl }` sets the direction per name (here `false` turns the built-in arrow's flip off),
+ * and `mirrorInRtl` on an Icon wins over the entry. `iconDefaults.size` sizes every Icon below,
+ * and a nested provider adds icons and replaces fields, over its parent's.
+ */
+export function RegistryEntries({ locale }: IconFixtureProps) {
+  const { lang } = textsFor(locale)
+  const icons = defineIcons({
+    search: Search,
+    'arrow-forward': { component: ArrowRight, mirrorInRtl: false },
+  })
+  const nestedIcons = defineIcons({ delete: Trash2 })
+  return (
+    <KvirnProvider icons={icons} iconDefaults={{ size: 6 }}>
+      <ul className="kv-story-inline-list" lang={lang} dir="rtl">
+        <li data-testid="entry-says-no-flip">
+          <Icon name="arrow-forward" />
+        </li>
+        <li data-testid="instance-flips">
+          <Icon name="arrow-forward" mirrorInRtl />
+        </li>
+        <li data-testid="default-size">
+          <Icon name="search" />
+        </li>
+        <li data-testid="own-size">
+          <Icon name="search" size={4} />
+        </li>
+        <KvirnProvider icons={nestedIcons} iconDefaults={{ strokeWidth: 2 }}>
+          <li data-testid="nested-delete">
+            <Icon name="delete" />
+          </li>
+          <li data-testid="nested-keeps-parent">
+            <Icon name="search" />
+          </li>
+        </KvirnProvider>
+      </ul>
+    </KvirnProvider>
+  )
+}
+
+/**
  * Without the theme: the icons render in a shadow root, where `theme.css` doesn't reach.
  * `ShadowIsland` stands in for a page that doesn't load the theme, so only the Icon and Button
  * inside it are what you write.

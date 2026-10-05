@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import contract from '../../../../../packages/react/src/fieldset/fieldset.a11y.md?raw'
-import { showSource } from '../../docs-source.ts'
+import guide from '../../../../../packages/react/src/field/form.md?raw'
+import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { choiceTextsFor } from './choice.fixture.tsx'
 import { localeOf, textsFor, withFormLocale } from './form.fixture.tsx'
@@ -22,7 +23,10 @@ const meta = {
   title: 'Components/Form/Overview',
   globals: { locale: 'sv' },
   decorators: [withFormLocale],
-  parameters: { a11yContract: contract },
+  parameters: {
+    a11yContract: contract,
+    docs: { description: { component: usageGuide(guide) } },
+  },
 } satisfies Meta
 
 export default meta

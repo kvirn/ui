@@ -320,6 +320,65 @@ export const Invalid: Story = {
   },
 }
 
+/**
+ * Without a Field: `invalid` and `disabled` on the Root draw the box's edge (`data-invalid`,
+ * `data-disabled`), and everything else is yours. Name the Input with a native `<label for>`,
+ * mark it with `aria-invalid` or native `disabled`, and point `aria-describedby` at the message.
+ * Inside a Field, the Field does all of this and the Root follows it.
+ */
+export const WithoutField: Story = {
+  render: (_args, { globals }) => {
+    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    return (
+      <div lang={lang}>
+        <label htmlFor="rent-without-field" className="kv-field-label">
+          {text.rentWithUnit}
+        </label>
+        <InputGroup.Root invalid>
+          <InputGroup.Input
+            id="rent-without-field"
+            name="rent"
+            inputMode="decimal"
+            spellCheck={false}
+            autoComplete="off"
+            defaultValue="8450"
+            aria-invalid="true"
+            aria-describedby="rent-without-field-error"
+            className="kv-input--width-10 kv-input--numeric"
+          />
+          <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+        </InputGroup.Root>
+        <p id="rent-without-field-error">{text.rentError(amountExample)}</p>
+        <label htmlFor="distance-without-field" className="kv-field-label">
+          {text.distance}
+        </label>
+        <InputGroup.Root disabled>
+          <InputGroup.Input
+            id="distance-without-field"
+            name="distance"
+            inputMode="decimal"
+            spellCheck={false}
+            autoComplete="off"
+            defaultValue="12"
+            disabled
+            className="kv-input--width-6 kv-input--numeric"
+          />
+          <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
+        </InputGroup.Root>
+      </div>
+    )
+  },
+  play: async ({ canvas, globals }) => {
+    const { text, amountExample } = textsFor(localeOf(globals))
+    const invalid = canvas.getByRole('textbox', { name: text.rentWithUnit })
+    await expect(invalid.closest('.kv-input-group')).toHaveAttribute('data-invalid')
+    await expect(invalid).toHaveAccessibleDescription(text.rentError(amountExample))
+    const disabled = canvas.getByRole('textbox', { name: text.distance })
+    await expect(disabled).toBeDisabled()
+    await expect(disabled.closest('.kv-input-group')).toHaveAttribute('data-disabled')
+  },
+}
+
 /** Disabled: a dashed edge on the surface colour, the unit and the value muted. */
 export const Disabled: Story = {
   render: (_args, { globals }) => {

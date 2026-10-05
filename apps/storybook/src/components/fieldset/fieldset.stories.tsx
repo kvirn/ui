@@ -4,7 +4,8 @@ import guide from '../../../../../packages/react/src/fieldset/fieldset.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
-import { localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
+import { gapTextsFor } from '../form/form-gaps.fixture.tsx'
+import { fieldMessagesFor, localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Form/Fieldset: the native <fieldset> and <legend>, grouping questions under one
@@ -43,7 +44,19 @@ const meta = {
       description:
         'Per-instance overrides of the legend’s optional text (`field.optional`) and the error prefix (`field.errorPrefix`).',
     },
+    id: {
+      control: 'text',
+      description:
+        'The fieldset’s id, to link to the group. Default: generated. The description and error ids derive from it.',
+    },
+    'aria-describedby': {
+      control: 'text',
+      description:
+        'Ids of your own descriptions elsewhere on the page. They come after the group’s own descriptions and error.',
+    },
+    className: { control: 'text', description: 'Your own classes, added to `kv-fieldset`.' },
     render: { control: false, description: 'Another element. It must still be a `<fieldset>`.' },
+    ref: { control: false, description: 'A ref to the `<fieldset>`.' },
   },
   globals: { locale: 'sv' },
   decorators: [
@@ -238,6 +251,140 @@ export const Disabled: Story = {
     const { text } = textsFor(localeOf(globals))
     await expect(canvas.getByRole('textbox', { name: text.street })).toBeDisabled()
     await expect(canvas.getByRole('textbox', { name: text.town })).toBeDisabled()
+  },
+}
+
+/**
+ * `group` is one question answered with several controls. The legend then ends with the optional
+ * text (`group` without `required`), and the Fields inside drop theirs: a box in a group is never
+ * "optional" on its own. A plain Fieldset only groups questions, and its Fields mark themselves.
+ */
+export const AsGroup: Story = {
+  args: { group: true },
+  render: (args, { globals }) => {
+    const locale = localeOf(globals)
+    const { text, lang } = textsFor(locale)
+    const { text: gap } = gapTextsFor(locale)
+    return (
+      <Fieldset.Root {...args} lang={lang}>
+        <Fieldset.Legend>{gap.groupLegend}</Fieldset.Legend>
+        <Fieldset.Prose>
+          <p>{gap.groupHint}</p>
+        </Fieldset.Prose>
+        <Field.Root>
+          <Field.Label>{text.phone}</Field.Label>
+          <TextInput name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>{text.email}</Field.Label>
+          <TextInput name="email" type="email" autoComplete="email" />
+        </Field.Root>
+      </Fieldset.Root>
+    )
+  },
+  play: async ({ canvas, globals }) => {
+    const locale = localeOf(globals)
+    const { text } = textsFor(locale)
+    const { text: gap } = gapTextsFor(locale)
+    await expect(
+      canvas.getByRole('group', {
+        name: `${gap.groupLegend} ${fieldMessagesFor(locale).optional}`,
+      }),
+    ).toBeVisible()
+    // The Fields inside carry no optional text of their own.
+    await expect(canvas.getByRole('textbox', { name: text.phone })).toBeVisible()
+    await expect(canvas.getByRole('textbox', { name: text.email })).toBeVisible()
+  },
+}
+
+/**
+ * A required group: the legend has no optional text and the fieldset gets `data-required`, but it
+ * is not announced as required (ARIA has no `aria-required` on a group), so the question says so.
+ * `id` names the group, for a link from an error summary, and your own `aria-describedby` is
+ * added after the group's description.
+ */
+export const RequiredGroup: Story = {
+  args: { group: true, required: true, id: 'kontakt-grupp' },
+  render: (args, { globals }) => {
+    const locale = localeOf(globals)
+    const { text, lang } = textsFor(locale)
+    const { text: gap } = gapTextsFor(locale)
+    return (
+      <>
+        <Fieldset.Root {...args} aria-describedby="kontakt-grupp-integritet" lang={lang}>
+          <Fieldset.Legend>{gap.groupLegend}</Fieldset.Legend>
+          <Fieldset.Prose>
+            <p>{gap.groupHint}</p>
+          </Fieldset.Prose>
+          <Field.Root>
+            <Field.Label>{text.phone}</Field.Label>
+            <TextInput name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
+          </Field.Root>
+          <Field.Root>
+            <Field.Label>{text.email}</Field.Label>
+            <TextInput name="email" type="email" autoComplete="email" />
+          </Field.Root>
+        </Fieldset.Root>
+        <div className="kv-prose" lang={lang}>
+          <p id="kontakt-grupp-integritet">{gap.groupNote}</p>
+        </div>
+      </>
+    )
+  },
+  play: async ({ canvas, args, globals }) => {
+    const locale = localeOf(globals)
+    const { text: gap } = gapTextsFor(locale)
+    const group = canvas.getByRole('group', { name: gap.groupLegend })
+    await expect(group).toHaveAttribute('id', args.id)
+    await expect(group).toHaveAttribute('data-required')
+    await expect(group).not.toHaveAttribute('aria-required')
+    await expect(group).toHaveAccessibleDescription(`${gap.groupHint} ${gap.groupNote}`)
+  },
+}
+
+/**
+ * An optional section of a form: a plain Fieldset whose legend asks for the optional text with
+ * `marker="optional"`, so a person can skip the whole section. `messages` rewords that text for
+ * this section only. The Fields inside are `required` once the section is started.
+ */
+export const OptionalSection: Story = {
+  render: (args, { globals }) => {
+    const locale = localeOf(globals)
+    const { text, lang } = textsFor(locale)
+    const { text: gap } = gapTextsFor(locale)
+    return (
+      <Fieldset.Root {...args} lang={lang} messages={{ optional: gap.ownOptional }}>
+        <Fieldset.Legend marker="optional">{gap.sectionLegend}</Fieldset.Legend>
+        <Fieldset.Prose>
+          <p>{gap.sectionHint}</p>
+        </Fieldset.Prose>
+        <Field.Root required>
+          <Field.Label>{text.name}</Field.Label>
+          <TextInput name="contact-name" autoComplete="off" />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.phone}</Field.Label>
+          <TextInput
+            name="contact-phone"
+            type="tel"
+            autoComplete="off"
+            className="kv-input--width-20"
+          />
+        </Field.Root>
+      </Fieldset.Root>
+    )
+  },
+  play: async ({ canvas, globals }) => {
+    const locale = localeOf(globals)
+    const { text } = textsFor(locale)
+    const { text: gap } = gapTextsFor(locale)
+    await expect(
+      canvas.getByRole('group', { name: `${gap.sectionLegend} ${gap.ownOptional}` }),
+    ).toHaveAccessibleDescription(gap.sectionHint)
+    await expect(canvas.getByRole('textbox', { name: text.name })).toHaveAttribute(
+      'aria-required',
+      'true',
+    )
   },
 }
 

@@ -1,7 +1,9 @@
 import { Field, Fieldset, RadioGroup, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
+import guide from '../../../../../packages/react/src/field/field-help-text.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
+import { usageGuide } from '../../docs-source.ts'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import { localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
@@ -19,7 +21,14 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 const meta = {
   title: 'Components/Form/HelpText',
   component: Field.HelpText,
-  argTypes: { render: { control: false } },
+  argTypes: {
+    className: { control: 'text', description: 'Your own classes, added to `kv-field-help-text`.' },
+    render: {
+      control: false,
+      description: 'Another element: `render={<div />}`. Never something interactive.',
+    },
+    ref: { control: false, description: 'A ref to the `<p>`.' },
+  },
   globals: { locale: 'sv' },
   decorators: [
     (Story) => (
@@ -45,11 +54,21 @@ const meta = {
       </Field.Root>
     )
   },
-  parameters: { a11yContract: contract },
+  parameters: {
+    a11yContract: contract,
+    docs: { description: { component: usageGuide(guide) } },
+  },
 } satisfies Meta<typeof Field.HelpText>
 
 export default meta
 type Story = StoryObj<typeof meta>
+
+/**
+ * The default: label, input and a help text under it. The help text is a paragraph with its own id, and the
+ * input's `aria-describedby` lists it. It says how to type the answer: plain words first, then
+ * the pattern.
+ */
+export const UnderTheControl: Story = {}
 
 /**
  * The fixture the keyboard tests drive: a description above the input and a help text under it. Try
@@ -77,13 +96,6 @@ export const Keyboard: Story = {
     )
   },
 }
-
-/**
- * The default: label, input and a help text under it. The help text is a paragraph with its own id, and the
- * input's `aria-describedby` lists it. It says how to type the answer: plain words first, then
- * the pattern.
- */
-export const UnderTheControl: Story = {}
 
 /**
  * A description above the input and a help text under it. The description is what the user must read

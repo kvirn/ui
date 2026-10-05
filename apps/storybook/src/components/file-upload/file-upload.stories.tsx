@@ -10,6 +10,10 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 import {
   AttachmentsField,
   AttachmentsPostedWithTheForm,
+  AttachmentsSentByHand,
+  AttachmentsWithFailureReasons,
+  AttachmentsWithOwnChecks,
+  AttachmentsWithOwnWords,
   AttachmentsWithPreviews,
   AttachmentsWithSendButton,
   controlledUpload,
@@ -156,6 +160,26 @@ const itemsOf = (canvasElement: HTMLElement) => [
   ...canvasElement.querySelectorAll<HTMLElement>('li[data-status]'),
 ]
 
+/** The `data-status` of every item, in list order. */
+const statusesOf = (canvasElement: HTMLElement) =>
+  itemsOf(canvasElement).map((item) => item.dataset['status'])
+
+/** The Root and the drop zone of the field in the canvas. */
+const rootOf = (canvasElement: HTMLElement) => {
+  const root = canvasElement.querySelector<HTMLElement>('.kv-file-upload')
+  if (root === null) {
+    throw new Error('no Root')
+  }
+  return root
+}
+const dropZoneOf = (canvasElement: HTMLElement) => {
+  const zone = canvasElement.querySelector<HTMLElement>('.kv-file-upload-drop-zone')
+  if (zone === null) {
+    throw new Error('no drop zone')
+  }
+  return zone
+}
+
 /**
  * The Trigger, found by its class: its text is the first part of its name, so a role query by
  * name would need the locale's own wording.
@@ -300,12 +324,122 @@ export const Rejected: Story = {
   },
 }
 
+/**
+ * The other reasons a file is refused: smaller than `minFileSize`, more than `maxFiles`, a copy of
+ * a file already in the list, a folder, and your own `validate`, whose message is shown as it is.
+ * Each is named under the button with how to fix it, and none enters the list. The play marks a
+ * file as a folder the way a drop does (`isDirectory`), because a script can't drop a real one.
+ */
+export const RejectedForOtherReasons: Story = {
+  parameters: showSource('file-upload/file-upload.fixture.tsx', 'AttachmentsWithOwnChecks'),
+  render: (args, { globals }) => <AttachmentsWithOwnChecks {...args} locale={localeOf(globals)} />,
+  args: { multiple: true, minFileSize: 10_000, maxFiles: 2 },
+  play: async ({ canvasElement, globals }) => {
+    const { texts } = fileUploadTextsFor(localeOf(globals))
+    const folder = Object.defineProperty(makeFile('mapp', 20_000), 'isDirectory', { value: true })
+    const kept = makeFile('läkarintyg.pdf', 20_000)
+    await choose(
+      canvasElement,
+      makeFile('liten.pdf', 500),
+      folder,
+      makeFile('mitt intyg.pdf', 20_000),
+      kept,
+      kept,
+      makeFile('kvitto.pdf', 20_000),
+      makeFile('extra.pdf', 20_000),
+    )
+    await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(2))
+    const rejections = canvasElement.querySelector('.kv-file-upload-rejections')
+    await expect(rejections?.querySelectorAll('li')).toHaveLength(5)
+    await expect(rejections).toHaveTextContent(texts.nameWithSpaces)
+  },
+}
+
 /** The list is full: the button stays focusable but says why it does nothing. */
 export const LimitReached: Story = {
   args: { multiple: true, maxFiles: 2 },
   play: async ({ canvasElement }) => {
     await choose(canvasElement, makeFile('a.pdf', 1_000), makeFile('b.pdf', 2_000))
     await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(2))
+  },
+}
+
+/**
+ * Uploads that start when you say so: `autoUpload` is off, so every file waits as `pending`, and
+ * `uploadAll()` starts them, here one at a time (`concurrency={1}`) while the others wait for a
+ * slot. No part exposes `uploadAll()`, so this one builds its elements from `useFileUpload`.
+ */
+export const UploadAllByHand: Story = {
+  parameters: showSource(
+    'file-upload/file-upload.fixture.tsx',
+    'AttachmentsSentByHand',
+    'QueuedAttachments',
+  ),
+  render: (_args, { globals }) => <AttachmentsSentByHand locale={localeOf(globals)} />,
+  play: async ({ canvas, canvasElement, globals }) => {
+    const { texts } = fileUploadTextsFor(localeOf(globals))
+    await choose(
+      canvasElement,
+      makeFile('a.pdf', 1_000),
+      makeFile('b.pdf', 2_000),
+      makeFile('c.pdf', 3_000),
+    )
+    await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(3))
+    await expect(statusesOf(canvasElement)).toEqual(['pending', 'pending', 'pending'])
+    await userEvent.click(canvas.getByRole('button', { name: texts.submit }))
+    await waitFor(() =>
+      expect(statusesOf(canvasElement)).toEqual(['uploading', 'pending', 'pending']),
+    )
+  },
+}
+
+/**
+ * Why an upload failed. `FileUpload.ItemError` states the reason in the item. The PDF fails the
+ * ordinary way: a neutral sentence and Retry. The photo is refused for good by the server: it
+ * rejects with `retryable: false` and its own message, and only Remove is left.
+ */
+export const FailureReasons: Story = {
+  parameters: showSource('file-upload/file-upload.fixture.tsx', 'AttachmentsWithFailureReasons'),
+  render: (args, { globals }) => (
+    <AttachmentsWithFailureReasons {...args} locale={localeOf(globals)} />
+  ),
+  args: { multiple: true },
+  play: async ({ canvasElement, globals }) => {
+    const { texts } = fileUploadTextsFor(localeOf(globals))
+    await choose(
+      canvasElement,
+      makeFile('läkarintyg.pdf'),
+      makeFile('foto.jpg', 90_000, 'image/jpeg'),
+    )
+    await waitFor(() => expect(statusesOf(canvasElement)).toEqual(['failed', 'failed']))
+    const errors = canvasElement.querySelectorAll('.kv-file-upload-item-error')
+    await expect(errors).toHaveLength(2)
+    await expect(errors[1]).toHaveTextContent(texts.notAccepted('foto.jpg'))
+    // Retry only where trying again can help.
+    await expect(canvasElement.querySelectorAll('.kv-file-upload-retry')).toHaveLength(1)
+    await expect(canvasElement.querySelectorAll('.kv-file-upload-remove')).toHaveLength(2)
+  },
+}
+
+/**
+ * Your own words: `messages` replaces the Trigger's text and the Remove button's text and name for
+ * this one upload. The name still starts with the visible text (2.5.3), because `remove` and
+ * `removeFile` change together.
+ */
+export const OwnWords: Story = {
+  parameters: showSource('file-upload/file-upload.fixture.tsx', 'AttachmentsWithOwnWords'),
+  render: (args, { globals }) => <AttachmentsWithOwnWords {...args} locale={localeOf(globals)} />,
+  args: { multiple: true },
+  play: async ({ canvas, canvasElement, globals }) => {
+    const { texts } = fileUploadTextsFor(localeOf(globals))
+    await expect(triggerOf(canvasElement)).toHaveAccessibleName(
+      new RegExp(`^${texts.ownChooseFiles}`),
+    )
+    await choose(canvasElement, makeFile('läkarintyg.pdf'))
+    await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(1))
+    await expect(
+      canvas.getByRole('button', { name: `${texts.ownRemove} läkarintyg.pdf` }),
+    ).toBeVisible()
   },
 }
 
@@ -367,22 +501,41 @@ export const Disabled: Story = {
 
 /**
  * A file is dragged over the zone: the edge turns solid with a tint, and the hint says what
- * dropping does. The play dispatches the drag and leaves it there, so every theme checks this
- * state. Dragging is only ever an extra: the button is the way in.
+ * dropping does. The zone has `data-dragging` and the Root `data-drag-active`. The play dispatches
+ * the drag and leaves it there, so every theme checks this state. Dragging is only ever an extra:
+ * the button is the way in.
  */
 export const Dragging: Story = {
   args: { multiple: true, maxFiles: 5, accept: '.pdf' },
   play: async ({ canvasElement }) => {
-    const zone = canvasElement.querySelector<HTMLElement>('.kv-file-upload-drop-zone')
-    if (zone === null) {
-      throw new Error('no drop zone')
-    }
+    const zone = dropZoneOf(canvasElement)
     const dataTransfer = new DataTransfer()
     dataTransfer.items.add(makeFile('läkarintyg.pdf'))
     for (const type of ['dragenter', 'dragover']) {
       zone.dispatchEvent(new DragEvent(type, { dataTransfer, bubbles: true, cancelable: true }))
     }
     await waitFor(() => expect(zone).toHaveAttribute('data-dragging'))
+    await expect(zone).toHaveAttribute('data-droppable')
+    await expect(rootOf(canvasElement)).toHaveAttribute('data-drag-active')
+  },
+}
+
+/**
+ * A file is dragged over the page, not yet over the zone. The Root has `data-drag-active` and the
+ * zone is drawn (`data-droppable`), which is how a device without a precise pointer finds it, but
+ * the zone is not `data-dragging` until the file is over it.
+ */
+export const DraggedOverThePage: Story = {
+  args: { multiple: true, maxFiles: 5, accept: '.pdf' },
+  play: async ({ canvasElement }) => {
+    const dataTransfer = new DataTransfer()
+    dataTransfer.items.add(makeFile('läkarintyg.pdf'))
+    canvasElement.ownerDocument.body.dispatchEvent(
+      new DragEvent('dragover', { dataTransfer, bubbles: true, cancelable: true }),
+    )
+    await waitFor(() => expect(rootOf(canvasElement)).toHaveAttribute('data-drag-active'))
+    await expect(dropZoneOf(canvasElement)).toHaveAttribute('data-droppable')
+    await expect(dropZoneOf(canvasElement)).not.toHaveAttribute('data-dragging')
   },
 }
 

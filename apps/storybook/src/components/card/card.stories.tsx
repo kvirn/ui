@@ -6,6 +6,7 @@ import { expect, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
+  ArticleCard as ArticleCardExample,
   binsImage,
   CaseCard as CaseCardExample,
   isCardFixtureLocale,
@@ -117,6 +118,28 @@ export const NestedCard: Story = {
 }
 
 /**
+ * `render` on all three parts: the Root's function form turns it into an `<article>` named by its
+ * heading, the Header into a `<figure>`, and the Footer adds a class of its own. Each part keeps
+ * its `kv-card-*` class, so the theme still styles it.
+ */
+export const RenderForms: Story = {
+  parameters: showSource('card/card.fixture.tsx', 'ArticleCard'),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-card-column">
+        <Story />
+      </div>
+    ),
+  ],
+  render: (_args, { globals }) => <ArticleCardExample locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    const article = canvas.getByRole('article', { name: 'Nya öppettider på återvinningscentralen' })
+    await expect(article.querySelector('figure')).not.toBeNull()
+    await expect(within(article).getByRole('button', { name: 'Pausa hämtningen' })).toBeVisible()
+  },
+}
+
+/**
  * `kv-card--radius-md` on the Root for a card nested in a card, `kv-card--radius-none` for a
  * flush card, or neither for lg.
  */
@@ -160,7 +183,8 @@ export const Radii: Story = {
  * `kv-card--padding-none`, `-sm` or `-lg` on the Root sets every part's padding (md without
  * one), and a part's own class (`kv-card-header--padding-lg`) overrides the Root. All four steps
  * are allowed per part, but mixed steps misalign the parts' edges, so per-part values are
- * normally `none`, for full-bleed media.
+ * normally `none`, for full-bleed media: `kv-card-body--padding-none` lets an image in the Body
+ * reach the card's edge, as in the last card.
  */
 export const Padding: Story = {
   render: (_args, { globals }) => {
@@ -198,9 +222,17 @@ export const Padding: Story = {
               <Button>{text.waste.pause}</Button>
             </Card.Footer>
           </Card.Root>
+          <Card.Root className="kv-story-section" data-testid="body-padding-none" lang={lang}>
+            <Card.Body className="kv-card-body--padding-none">
+              <img src={binsImage} alt="" width={640} height={240} />
+            </Card.Body>
+          </Card.Root>
         </div>
       </>
     )
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByTestId('body-padding-none').querySelector('img')).toBeVisible()
   },
 }
 

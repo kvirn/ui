@@ -1,8 +1,9 @@
 import { Field, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
+import guide from '../../../../../packages/react/src/field/field-label.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
-import { showSource } from '../../docs-source.ts'
+import { showSource, usageGuide } from '../../docs-source.ts'
 import {
   FieldStates,
   localeOf,
@@ -27,7 +28,14 @@ const meta = {
       description:
         '`none` leaves out the optional text, for a lone search field or a single consent checkbox.',
     },
-    render: { control: false },
+    className: {
+      control: 'select',
+      options: [undefined, 'kv-field-label--heading'],
+      description:
+        'Joins `kv-field-label`. The theme styles `kv-field-label--heading`, for a label that is the page’s `h1`.',
+    },
+    render: { control: false, description: 'Another element. It must still be a `<label>`.' },
+    ref: { control: false, description: 'A ref to the `<label>`.' },
   },
   globals: { locale: 'sv' },
   decorators: [
@@ -47,17 +55,14 @@ const meta = {
       </Field.Root>
     )
   },
-  parameters: { a11yContract: contract },
+  parameters: {
+    a11yContract: contract,
+    docs: { description: { component: usageGuide(guide) } },
+  },
 } satisfies Meta<typeof Field.Label>
 
 export default meta
 type Story = StoryObj<typeof meta>
-
-/**
- * The fixture the keyboard tests drive. Try the keys in the Keyboard section above: Tab goes
- * to the input and never stops on the label, and a click on the label focuses the input.
- */
-export const Keyboard: Story = {}
 
 /** The label names the input: clicking it focuses the input (2.5.3, 3.3.2). */
 export const Default: Story = {
@@ -69,6 +74,12 @@ export const Default: Story = {
     await expect(label).toHaveAttribute('for', input.id)
   },
 }
+
+/**
+ * The fixture the keyboard tests drive. Try the keys in the Keyboard section above: Tab goes
+ * to the input and never stops on the label, and a click on the label focuses the input.
+ */
+export const Keyboard: Story = {}
 
 /**
  * In a field that isn't required, the label ends with the `field.optional` text. It is part

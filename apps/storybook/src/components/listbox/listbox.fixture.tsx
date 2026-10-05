@@ -86,6 +86,9 @@ export const longList: readonly Municipality[] = Array.from({ length: 300 }, (_,
   name: `Ort ${index + 1}`,
 }))
 
+/** Five of them: a list short enough to fit above a trigger. */
+export const fewMunicipalities: readonly Municipality[] = municipalities.slice(0, 5)
+
 /** A list with nothing in it, for the empty state. */
 export const emptyList: readonly Municipality[] = []
 
@@ -95,16 +98,46 @@ export const longNameMunicipalities: readonly Municipality[] = [
   ...municipalities.slice(0, 3),
 ]
 
-/** What the examples add to the shared fixture text: the label of the list of several. */
+/** What the examples add to the shared fixture text: the list of several, its count, and a custom empty text. */
 const extraTexts: Record<
   'sv' | 'en' | 'fi' | 'nb' | 'nn',
-  { several: string; severalPlaceholder: string }
+  {
+    several: string
+    severalPlaceholder: string
+    selectedCount: (count: number) => string
+    noneMessage: string
+  }
 > = {
-  sv: { several: 'Kommuner', severalPlaceholder: 'Välj kommuner' },
-  en: { several: 'Municipalities', severalPlaceholder: 'Choose municipalities' },
-  fi: { several: 'Kunnat', severalPlaceholder: 'Valitse kunnat' },
-  nb: { several: 'Kommuner', severalPlaceholder: 'Velg kommuner' },
-  nn: { several: 'Kommunar', severalPlaceholder: 'Vel kommunar' },
+  sv: {
+    several: 'Kommuner',
+    severalPlaceholder: 'Välj kommuner',
+    selectedCount: (count) => `${count} kommuner valda`,
+    noneMessage: 'Inga kommuner att välja',
+  },
+  en: {
+    several: 'Municipalities',
+    severalPlaceholder: 'Choose municipalities',
+    selectedCount: (count) => `${count} municipalities chosen`,
+    noneMessage: 'No municipalities to choose from',
+  },
+  fi: {
+    several: 'Kunnat',
+    severalPlaceholder: 'Valitse kunnat',
+    selectedCount: (count) => `${count} kuntaa valittu`,
+    noneMessage: 'Ei valittavia kuntia',
+  },
+  nb: {
+    several: 'Kommuner',
+    severalPlaceholder: 'Velg kommuner',
+    selectedCount: (count) => `${count} kommuner valgt`,
+    noneMessage: 'Ingen kommuner å velge mellom',
+  },
+  nn: {
+    several: 'Kommunar',
+    severalPlaceholder: 'Vel kommunar',
+    selectedCount: (count) => `${count} kommunar valde`,
+    noneMessage: 'Ingen kommunar å velje mellom',
+  },
 }
 
 /** The text of the list of several in a locale (se shows the English text). */
@@ -634,6 +667,146 @@ export function NoMunicipalities({ locale }: { locale: FormLocale }) {
         </Listbox.Popup>
       </Listbox.Root>
     </Field.Root>
+  )
+}
+
+/**
+ * The chosen options as your own text: a function child of `Listbox.Value` gets the chosen items,
+ * here to show a count instead of a long list of names. The trigger's name is still the Field's
+ * label followed by this text.
+ */
+export function SeveralMunicipalitiesAsCount({ locale }: { locale: FormLocale }) {
+  const { lang } = choiceTextsFor(locale)
+  const extra = extraTextsFor(locale)
+  return (
+    <Field.Root required lang={lang}>
+      <Field.Label>{extra.several}</Field.Label>
+      <Listbox.Root
+        native="never"
+        multiple
+        items={municipalities}
+        itemToString={(municipality) => municipality.name}
+        itemToKey={(municipality) => municipality.code}
+        defaultValue={['malmö', 'uppsala']}
+      >
+        <Listbox.Trigger>
+          <Listbox.Value placeholder={extra.severalPlaceholder}>
+            {(chosen: readonly Municipality[]) => extra.selectedCount(chosen.length)}
+          </Listbox.Value>
+        </Listbox.Trigger>
+        <Listbox.Popup>
+          <Listbox.List>
+            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+          </Listbox.List>
+        </Listbox.Popup>
+      </Listbox.Root>
+    </Field.Root>
+  )
+}
+
+/**
+ * Your own empty text: `messages` on the Root replaces the default "Inga resultat" that
+ * `Listbox.Empty` shows, for this listbox only. A provider's `messages` change it for every one.
+ */
+export function MunicipalitiesWithOwnEmptyText({ locale }: { locale: FormLocale }) {
+  const { text, lang } = choiceTextsFor(locale)
+  const extra = extraTextsFor(locale)
+  return (
+    <Field.Root required lang={lang}>
+      <Field.Label>{text.municipality}</Field.Label>
+      <Listbox.Root
+        native="never"
+        items={emptyList}
+        itemToString={(municipality) => municipality.name}
+        itemToKey={(municipality) => municipality.code}
+        messages={{ noResults: extra.noneMessage }}
+        defaultOpen
+      >
+        <Listbox.Trigger>
+          <Listbox.Value placeholder={text.municipalityPlaceholder} />
+        </Listbox.Trigger>
+        <Listbox.Popup>
+          <Listbox.List>
+            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+          </Listbox.List>
+          <Listbox.Empty />
+        </Listbox.Popup>
+      </Listbox.Root>
+    </Field.Root>
+  )
+}
+
+/**
+ * The popup above the trigger, with your own gap and edge distance: `placement` (a side, then
+ * `-start`, `-center` or `-end`), `offset` and `padding` in pixels. It flips to the other side
+ * when there is no room, and `data-placement` says which side it is on.
+ */
+export function MunicipalityPlacedAbove({ locale }: { locale: FormLocale }) {
+  const { text, lang } = choiceTextsFor(locale)
+  return (
+    <Field.Root required lang={lang}>
+      <Field.Label>{text.municipality}</Field.Label>
+      <Listbox.Root
+        native="never"
+        items={fewMunicipalities}
+        itemToString={(municipality) => municipality.name}
+        itemToKey={(municipality) => municipality.code}
+        placement="top-start"
+        offset={12}
+        padding={16}
+      >
+        <Listbox.Trigger>
+          <Listbox.Value placeholder={text.municipalityPlaceholder} />
+        </Listbox.Trigger>
+        <Listbox.Popup>
+          <Listbox.List>
+            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+          </Listbox.List>
+        </Listbox.Popup>
+      </Listbox.Root>
+    </Field.Root>
+  )
+}
+
+/**
+ * Controlled by your state: the popup shows the `open` it is given, and `onOpenChange(open, { reason })`
+ * reports every request to open or close and why. The printed line is the last one. With `open`
+ * set, nothing opens or closes until you change it.
+ */
+export function ControlledOpenMunicipality({ locale }: { locale: FormLocale }) {
+  const { text, lang } = choiceTextsFor(locale)
+  const [open, setOpen] = useState(false)
+  const [reason, setReason] = useState('–')
+  return (
+    <div className="kv-story-form" lang={lang}>
+      <Button type="button">Före</Button>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Listbox.Root
+          native="never"
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          open={open}
+          onOpenChange={(nextOpen, details) => {
+            setOpen(nextOpen)
+            setReason(details.reason)
+          }}
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+            </Listbox.List>
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+      <p className="kv-story-form-output" data-testid="open">
+        open: {String(open)}, reason: {reason}
+      </p>
+    </div>
   )
 }
 

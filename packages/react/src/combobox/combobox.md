@@ -113,6 +113,10 @@ The list is the scroll element, so give `Combobox.List` a height limit and `over
 
 With `multiple`, each choice moves out of the field and into the value list, and the popup stays open so the next one is a few keys away. The chosen option stays in the list, marked, and choosing it again takes the value away. The remove buttons are normal buttons in the Tab order, before the input.
 
+## Developer warnings
+
+In development, a Combobox warns once when its input has no accessible name (outside a Field with no `aria-label`, or in a Field with no `Field.Label`), when a part is outside `Combobox.Root`, when `Combobox.Value` is given an item that is not chosen, and when `virtualize` is used with `groups`. Each has a code, an explanation and a fix on the Foundation page Dev warnings.
+
 ## Your own look
 
 Spread the hook's props on your own elements, or put your own `className` on a part. The parts carry stable classes and `data-*` state, and the default theme is opt-in.

@@ -150,6 +150,38 @@ export const WithDescription: Story = {
   },
 }
 
+/**
+ * Without a visible label of its own, such as a row selector where the row's text is the label: a
+ * Checkbox outside a Field names itself with `aria-label`, and the name repeats the text beside it
+ * (2.5.3). It has no Field wiring, so no description and no invalid state. Wherever a person has
+ * to read a question, use a Field with a `Field.Label`.
+ */
+export const Standalone: Story = {
+  render: (_args, { globals }) => {
+    const { text, lang } = choiceTextsFor(localeOf(globals))
+    return (
+      <div lang={lang}>
+        <p>
+          <Checkbox name="row-1" aria-label={text.rowOne} /> {text.rowOne}
+        </p>
+        <p>
+          <Checkbox name="row-2" aria-label={text.rowTwo} defaultChecked /> {text.rowTwo}
+        </p>
+      </div>
+    )
+  },
+  play: async ({ canvas, globals }) => {
+    const { text } = choiceTextsFor(localeOf(globals))
+    const first = canvas.getByRole('checkbox', { name: text.rowOne })
+    await expect(first).not.toBeChecked()
+    await expect(first).not.toHaveAttribute('aria-describedby')
+    await expect(canvas.getByRole('checkbox', { name: text.rowTwo })).toBeChecked()
+    await expectMinimumTargetSize(first)
+    await userEvent.click(first)
+    await expect(first).toBeChecked()
+  },
+}
+
 /** The declaration is required: a 2px edge and the message under the row. */
 export const Invalid: Story = {
   render: (args, { globals }) => {

@@ -391,6 +391,40 @@ export const OutOfRange: Story = {
   },
 }
 
+/**
+ * What to avoid: a native `type="number"`. The browser reads the text as a number, so a code with
+ * leading zeros loses them (`004512` becomes 4512), the mouse wheel and the arrow keys change the
+ * value, and the decimal mark follows the browser's language, not the page's. It has a label and
+ * passes axe, so the harm is in behaviour, not in markup. A quantity or an amount is a NumberInput,
+ * and a code with leading zeros is a TextInput with a mask: see Components/Form/Mask.
+ */
+export const NativeNumberType: Story = {
+  render: (_args, { globals }) => {
+    const { text, lang } = textsFor(localeOf(globals))
+    return (
+      <div lang={lang}>
+        <label className="kv-field-label" htmlFor="native-case-number">
+          {text.caseNumber}
+        </label>
+        <input
+          id="native-case-number"
+          className="kv-input kv-input--width-6"
+          type="number"
+          name="caseNumber"
+        />
+      </div>
+    )
+  },
+  play: async ({ canvas, globals }) => {
+    const { text } = textsFor(localeOf(globals))
+    // A spinbutton, not the text box a NumberInput is.
+    const input = canvas.getByRole('spinbutton', { name: text.caseNumber })
+    await userEvent.type(input, '004512')
+    // The browser reads the text as a number: the zeros are gone from the value.
+    await expect(input).toHaveValue(4512)
+  },
+}
+
 /** Finnish: longer labels, and the decimal comma. Nothing overflows in a 320px column. */
 export const Finnish: Story = {
   globals: { locale: 'fi' },

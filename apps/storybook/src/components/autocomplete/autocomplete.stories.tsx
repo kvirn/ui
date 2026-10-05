@@ -10,6 +10,7 @@ import {
   AutocompleteStates,
   CompactExample,
   ControlledExample,
+  ControlledOpenAndTextExample,
   DefaultExample,
   DisabledExample,
   DisabledSuggestionExample,
@@ -22,11 +23,15 @@ import {
   MinimalExample,
   NoSuggestionsExample,
   OnSurfacesExample,
+  OwnAnnouncementExample,
+  PlacedAboveExample,
   PlainFormExample,
+  StartsWithFilterExample,
   SuggestionsExample,
   VirtualizedExample,
   WithValueExample,
   autocompleteTextsFor,
+  streets,
 } from './autocomplete.fixture.tsx'
 
 // Components/Form/Autocomplete: Autocomplete.Root, Control, Input, Toggle, Clear and the popup
@@ -62,6 +67,9 @@ interface AutocompleteStoryArgs {
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean, details?: { reason?: string }) => void
+  placement?: string
+  offset?: number
+  padding?: number
   announcementDebounceMilliseconds?: number
   messages?: Record<string, unknown>
   virtualize?: boolean | { estimateSize?: number; overscan?: number }
@@ -95,14 +103,32 @@ const meta = {
     },
     isLoading: { control: false, description: 'The suggestions are being fetched.' },
     name: { control: false, description: 'Put on the input, so a plain form sends the text.' },
-    open: { control: false },
-    defaultOpen: { control: false },
-    onOpenChange: { control: false },
+    open: { control: false, description: 'Controlled: whether the popup is open.' },
+    defaultOpen: { control: false, description: 'Uncontrolled: whether it starts open.' },
+    onOpenChange: {
+      control: false,
+      description:
+        'Called with the new state and `{ reason }`: `input`, `key`, `escape`, `toggle-press`, `option-press`, `outside-press`, `blur`, `light-dismiss` or `clear`.',
+    },
+    placement: {
+      control: false,
+      description:
+        'Where the popup goes when there is room. Default `bottom-start`. It flips when it does not fit.',
+    },
+    offset: { control: false, description: 'The gap to the input in pixels. Default 4.' },
+    padding: {
+      control: false,
+      description: 'The space kept to the edge of the viewport in pixels. Default 8.',
+    },
     announcementDebounceMilliseconds: {
       control: false,
       description: 'How long after typing stops the count is announced. Default 500.',
     },
-    messages: { control: false },
+    messages: {
+      control: false,
+      description:
+        'Per-instance overrides of the `combobox` strings: `resultCount`, `noResults`, `loading`, `clear` and `showOptions`.',
+    },
     virtualize: {
       control: false,
       description:
@@ -391,6 +417,94 @@ export const Compact: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     await expectMinimumTargetSize(inputOf(canvas, text.street))
+  },
+}
+
+/**
+ * Your own filter: `filter(item, query)` replaces the built-in one, which matches anywhere in the
+ * text. This one matches the start of the name: "k" finds Kungsgatan and Kyrkogatan, not Skolgatan.
+ */
+export const StartsWithFilter: Story = {
+  parameters: source('StartsWithFilterExample'),
+  render: (_args, { globals }) => <StartsWithFilterExample locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = autocompleteTextsFor(localeOf(globals))
+    await userEvent.type(inputOf(canvas, text.street), 'k')
+    await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
+    await expect(canvas.getByRole('option', { name: 'Kungsgatan' })).toBeVisible()
+    await expect(canvas.getByRole('option', { name: 'Kyrkogatan' })).toBeVisible()
+    await expect(canvas.queryByRole('option', { name: 'Skolgatan' })).toBeNull()
+  },
+}
+
+/**
+ * The popup and the text in your state: `open` and `value` are controlled, and `onOpenChange` and
+ * `onValueChange` say why each changed. Typing opens the popup and changes the text (`input`), and
+ * picking a suggestion closes it (`option-press`) and fills the text (`selection`).
+ */
+export const ControlledOpenAndText: Story = {
+  parameters: source('ControlledOpenAndTextExample'),
+  render: (_args, { globals }) => <ControlledOpenAndTextExample locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = autocompleteTextsFor(localeOf(globals))
+    const input = inputOf(canvas, text.street)
+    await userEvent.type(input, 'kung')
+    await waitFor(() =>
+      expect(canvas.getByTestId('open')).toHaveTextContent('open: true, reason: input'),
+    )
+    await expect(canvas.getByTestId('text')).toHaveTextContent('text: kung, reason: input')
+    await userEvent.click(await canvas.findByRole('option', { name: 'Kungsgatan' }))
+    await waitFor(() =>
+      expect(canvas.getByTestId('open')).toHaveTextContent('open: false, reason: option-press'),
+    )
+    await expect(canvas.getByTestId('text')).toHaveTextContent(
+      'text: Kungsgatan, reason: selection',
+    )
+    await expect(input).toHaveValue('Kungsgatan')
+  },
+}
+
+/**
+ * The popup above the input, with your own gap and edge distance: `placement`, `offset` and
+ * `padding`. It flips to the other side when there is no room, and `data-placement` says which
+ * side it is on.
+ */
+export const PlacedAbove: Story = {
+  decorators: [
+    (Story) => (
+      <div style={{ paddingBlockStart: '18rem' }}>
+        <Story />
+      </div>
+    ),
+  ],
+  parameters: source('PlacedAboveExample'),
+  render: (_args, { globals }) => <PlacedAboveExample locale={localeOf(globals)} />,
+  play: async ({ canvas, canvasElement, globals }) => {
+    const { text } = autocompleteTextsFor(localeOf(globals))
+    await openWithKey(canvas, inputOf(canvas, text.street))
+    await expect(canvasElement.querySelector('.kv-listbox-popup')).toHaveAttribute(
+      'data-placement',
+      'top-start',
+    )
+  },
+}
+
+/**
+ * Your own announcement: `messages.resultCount` replaces the built-in count with your wording,
+ * and `announcementDebounceMilliseconds={0}` says it as soon as the list has changed. The words are
+ * read from the live region, which is empty while the user types.
+ */
+export const OwnAnnouncement: Story = {
+  parameters: source('OwnAnnouncementExample'),
+  render: (_args, { globals }) => <OwnAnnouncementExample locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = autocompleteTextsFor(localeOf(globals))
+    await userEvent.type(inputOf(canvas, text.street), 'gatan')
+    const count = streets.filter((street) => street.toLowerCase().includes('gatan')).length
+    await waitFor(
+      () => expect(canvas.getByRole('status')).toHaveTextContent(text.countMessage(count)),
+      { timeout: 3000 },
+    )
   },
 }
 

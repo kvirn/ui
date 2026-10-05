@@ -1,13 +1,14 @@
 import { Button, ButtonGroup, Card, Icon, Section } from '@kvirn-ui/react'
 import type { ButtonProps } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/button/button.a11y.md?raw'
+import guide from '../../../../../packages/react/src/button/button.md?raw'
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { expect, fn, waitFor, within } from 'storybook/test'
-import { showSource } from '../../docs-source.ts'
+import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
-import { ApplicationForm } from './button.fixture.tsx'
+import { ApplicationForm, ChangeAddressForm } from './button.fixture.tsx'
 
 // Components/Button: the headless Button, styled by @kvirn-ui/theme/theme.css.
 // button.e2e.ts runs its keyboard contract against Default, Activation, Disabled,
@@ -136,7 +137,10 @@ const meta = {
     render: { control: false },
   },
   globals: { locale: 'sv' },
-  parameters: { a11yContract: contract },
+  parameters: {
+    a11yContract: contract,
+    docs: { description: { component: usageGuide(guide) } },
+  },
 } satisfies Meta<typeof Button>
 
 export default meta
@@ -317,6 +321,28 @@ export const SubmitInForm: Story = {
       'submit',
     )
     await expect(canvas.getByRole('button', { name: 'Börja om' })).toHaveAttribute('type', 'button')
+  },
+}
+
+/**
+ * `type="reset"` restores the form's fields. A disabled button with `focusableWhenDisabled` stays
+ * in the Tab order, and clicking it neither calls its `onClick` nor submits the form.
+ */
+export const ResetAndBlockedClick: Story = {
+  parameters: showSource('button/button.fixture.tsx', 'ChangeAddressForm'),
+  render: () => <ChangeAddressForm />,
+  play: async ({ canvas, userEvent }) => {
+    const address = canvas.getByRole('textbox', { name: 'Gatuadress' })
+    const reset = canvas.getByRole('button', { name: 'Återställ' })
+    const save = canvas.getByRole('button', { name: 'Spara adress' })
+    await expect(reset).toHaveAttribute('type', 'reset')
+    await expect(save).toHaveAttribute('aria-disabled', 'true')
+    await userEvent.clear(address)
+    await userEvent.type(address, 'Kungsgatan 5')
+    await userEvent.click(save)
+    await expect(canvas.getByRole('status')).toBeEmptyDOMElement()
+    await userEvent.click(reset)
+    await expect(address).toHaveValue('Storgatan 1')
   },
 }
 

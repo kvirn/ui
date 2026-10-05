@@ -1,6 +1,6 @@
 # Plan 0017: Close the Storybook feature gaps
 
-- **Status:** Draft (rewritten 2026-10-04 after a re-audit)
+- **Status:** Implemented (2026-10-05); the rich-option stories wait for Plan 0030
 - **Owner:** Maintainer / Claude
 - **Created:** 2026-10-02 · **Target:** M1
 - **Related:** Plan 0027 (ADRs folded into skills), Plan 0028 (names), Plan 0029 (`Field.Hint`), Plan 0030 (rich options), storybook-docs skill
@@ -169,23 +169,34 @@ None added.
 
 Each group is one PR, run after Plans 0028 and 0029 (and 0030 for the option stories).
 
-- [ ] Bugs and the empty `panel/` dirs
-- [ ] `usageGuide` on every Docs page, and the three missing `.md` files
-- [ ] The "Your own element" and "Dev warnings" Foundation pages, with the drift test
-- [ ] Form gaps (Input, Mask, Number, OneTimeCode, Field and Fieldset, InputGroup, the choice controls)
-- [ ] FileUpload gaps
-- [ ] Button, Link, Card, Icon, Heading, Prose, Section, Kbd and Notification gaps
-- [ ] Listbox, Combobox, Autocomplete and Popover gaps
-- [ ] Announcer and Provider gaps
-- [ ] nb and nn fixture texts
-- [ ] Core README
-- [ ] Changeset for the type re-exports
-- [ ] Update `docs/roadmap.md`
+- [x] Bugs and the empty `panel/` dirs
+- [x] `usageGuide` on every Docs page, and the three missing `.md` files
+- [x] The "Your own element" and "Dev warnings" Foundation pages, with the drift test
+- [x] Form gaps (Input, Mask, Number, OneTimeCode, Field and Fieldset, InputGroup, the choice controls)
+- [x] FileUpload gaps
+- [x] Button, Link, Card, Icon, Heading, Prose, Section, Kbd and Notification gaps
+- [x] Listbox, Combobox, Autocomplete and Popover gaps (rich-option stories wait for Plan 0030)
+- [x] Announcer and Provider gaps
+- [x] nb and nn fixture texts
+- [x] Core README
+- [x] Changeset for the type re-exports
+- [x] Update `docs/roadmap.md`
+
+## Decisions taken during implementation
+
+- **The dev-warnings table is the Foundation page itself.** `apps/storybook/src/foundation/dev-warnings.mdx` holds one markdown table per group, so it renders like the other Foundation pages and there is no second copy of the data. `tooling/dev-warnings/dev-warnings.test.ts` (the `node` project, next to the other repo checks) reads the MDX and the source of every `packages/*/src`, and fails when a `warnOnce` code has no row or a row has no call. A code with a variable part is written `${…}` in the source and `<name>` on the page (`toggle-not-a-button:<element>`). The test also fails on a `warnOnce` whose key is not a string or template literal.
+- **The rows link to the component's Docs page, not the other way round.** Each component's `.md` (Listbox, Combobox, Autocomplete, Popover, Table) gets a short "Developer warnings" note that names the Foundation page. Other components' pages are other agents' files.
+- **Listbox, Combobox and Autocomplete gaps:** Combobox virtualize (story and `.md`) and the three `virtualize` sections already existed, so nothing was added for them. The custom `filter`, `inputValue` and `announcementDebounceMilliseconds` gaps apply to Combobox and Autocomplete only (Listbox has none of them), and Autocomplete has no `inputValue` (its `value` is the text). The popup `placement`, `offset` and `padding` are one story per component, `PlacedAbove`.
+- **Popover:** the `onOpenChange` reasons extend the existing `Controlled` story instead of adding another one.
+
+- **Fixes found by the gates:** the sized-popup story scrolled with no focusable content (axe `scrollable-region-focusable`), so it now holds a link. Fixtures use `ButtonGroup`, `<output>` and a function-form `render` on the anchor, because the lint rules reject `role="group"`, `role="status"` and `<a />` without content.
+- **Skipped, with reasons:** Label and ErrorMessage outside a host (misuse that only warns, covered by unit tests, documented in the `.md`), Announcer `clear` (core only), the 5 s auto-clear (unit-tested, a story would wait 5 s per theme project), Provider `storage: 'none'` (documented), Alert `render` on `Alert.Close`, and the rich-option stories (Plan 0030).
+- **Docs moved:** the Masks section of `text-input.md` is now `mask.md`; Label, ErrorMessage, HelpText and Form got their own `.md` files in `packages/react/src/field/`.
 
 ## Risks & open questions
 
 - **Story count.** The list is long. Merge gaps into one story wherever a single example shows several features naturally, such as a Provider story that sets the theme defaults and storage together.
-- **`createMask` and `MaskDefinition`.** They are public in core but not re-exported from react. Decide whether they are adopter API before writing their stories.
+- **`createMask` and `MaskDefinition`.** Decided: not adopter API (`packages/core/README.md`), so no stories.
 
 ## Testing strategy
 
@@ -199,6 +210,6 @@ Docs and stories, plus one additive type re-export (patch changeset).
 
 ## Done when
 
-- [ ] Every gap above has a story, a Docs section, or a recorded "not public" decision
-- [ ] All quality gates in AGENTS.md pass (manual AT may be `pending`)
-- [ ] Plan tasks ticked, `docs/roadmap.md` status updated
+- [x] Every gap above has a story, a Docs section, or a recorded "not public" decision
+- [x] All quality gates in AGENTS.md pass (manual AT may be `pending`)
+- [x] Plan tasks ticked, `docs/roadmap.md` status updated

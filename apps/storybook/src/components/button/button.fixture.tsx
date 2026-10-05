@@ -52,3 +52,39 @@ export function ApplicationForm() {
     </>
   )
 }
+
+/**
+ * `type="reset"` puts the form's fields back to their starting values. A disabled button never
+ * calls its `onClick` and never submits, even when `focusableWhenDisabled` keeps it in the Tab
+ * order, so the reason beside it stays reachable. The `<output>` is in the DOM before its message.
+ */
+export function ChangeAddressForm() {
+  const [sentCount, setSentCount] = useState(0)
+  return (
+    <>
+      <form aria-label="Ändra adress" onSubmit={(event) => event.preventDefault()}>
+        <p>
+          <label>
+            Gatuadress{' '}
+            <input name="gatuadress" autoComplete="street-address" defaultValue="Storgatan 1" />
+          </label>
+        </p>
+        <p id="address-reason">Adressen kan inte ändras förrän du har fyllt i ett datum.</p>
+        <ButtonGroup>
+          <Button
+            type="submit"
+            className="kv-button--primary"
+            disabled
+            focusableWhenDisabled
+            aria-describedby="address-reason"
+            onClick={() => setSentCount((count) => count + 1)}
+          >
+            Spara adress
+          </Button>
+          <Button type="reset">Återställ</Button>
+        </ButtonGroup>
+      </form>
+      <output>{sentCount === 0 ? '' : `Adressen sparades ${sentCount} gånger`}</output>
+    </>
+  )
+}

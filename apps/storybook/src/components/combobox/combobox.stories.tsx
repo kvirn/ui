@@ -10,6 +10,7 @@ import {
   ComboboxStates,
   CompactExample,
   ControlledExample,
+  ControlledOpenAndTextExample,
   DefaultExample,
   DisabledExample,
   DisabledOptionExample,
@@ -25,9 +26,12 @@ import {
   MultipleNoneChosenExample,
   MultipleOneChosenExample,
   OnSurfacesExample,
+  OwnAnnouncementExample,
+  PlacedAboveExample,
   PlainFormExample,
   RichOptionsExample,
   SelectedExample,
+  StartsWithFilterExample,
   VirtualizedExample,
   comboboxTextsFor,
   municipalities,
@@ -71,6 +75,9 @@ interface ComboboxStoryArgs {
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean, details?: { reason?: string }) => void
+  placement?: string
+  offset?: number
+  padding?: number
   announcementDebounceMilliseconds?: number
   messages?: Record<string, unknown>
   virtualize?: boolean | { estimateSize?: number; overscan?: number }
@@ -95,7 +102,7 @@ const meta = {
       description: 'Called with the key (or keys) and `{ reason }`.',
     },
     inputValue: { control: false, description: 'Controlled: the text in the input.' },
-    defaultInputValue: { control: false },
+    defaultInputValue: { control: false, description: 'Uncontrolled: the text to begin with.' },
     onInputValueChange: { control: false, description: 'Called with the text and `{ reason }`.' },
     filter: {
       control: false,
@@ -103,14 +110,32 @@ const meta = {
     },
     isLoading: { control: false, description: 'The options are being fetched.' },
     name: { control: false, description: 'A hidden input per chosen key, for a plain form.' },
-    open: { control: false },
-    defaultOpen: { control: false },
-    onOpenChange: { control: false },
+    open: { control: false, description: 'Controlled: whether the popup is open.' },
+    defaultOpen: { control: false, description: 'Uncontrolled: whether it starts open.' },
+    onOpenChange: {
+      control: false,
+      description:
+        'Called with the new state and `{ reason }`: `input`, `key`, `escape`, `toggle-press`, `option-press`, `outside-press`, `blur`, `light-dismiss` or `clear`.',
+    },
+    placement: {
+      control: false,
+      description:
+        'Where the popup goes when there is room. Default `bottom-start`. It flips when it does not fit.',
+    },
+    offset: { control: false, description: 'The gap to the input in pixels. Default 4.' },
+    padding: {
+      control: false,
+      description: 'The space kept to the edge of the viewport in pixels. Default 8.',
+    },
     announcementDebounceMilliseconds: {
       control: false,
       description: 'How long after typing stops the result count is announced. Default 500.',
     },
-    messages: { control: false },
+    messages: {
+      control: false,
+      description:
+        'Per-instance overrides of the `combobox` strings: `resultCount`, `noResults`, `loading`, `removeValue`, `clear` and `showOptions`.',
+    },
     virtualize: {
       control: false,
       description:
@@ -404,6 +429,94 @@ export const Virtualized: Story = {
 export const VirtualizedKeyboard: Story = {
   parameters: source('VirtualizedExample'),
   render: (_args, { globals }) => <VirtualizedExample locale={localeOf(globals)} />,
+}
+
+/**
+ * Your own filter: `filter(item, query)` replaces the built-in one, which matches anywhere in the
+ * text. This one matches the start of the name: "al" finds Ale and Alingsås, not Kalmar.
+ */
+export const StartsWithFilter: Story = {
+  parameters: source('StartsWithFilterExample'),
+  render: (_args, { globals }) => <StartsWithFilterExample locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = comboboxTextsFor(localeOf(globals))
+    await userEvent.type(inputOf(canvas, text.municipality), 'al')
+    await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
+    await expect(canvas.getByRole('option', { name: 'Ale' })).toBeVisible()
+    await expect(canvas.getByRole('option', { name: 'Alingsås' })).toBeVisible()
+    await expect(canvas.queryByRole('option', { name: 'Kalmar' })).toBeNull()
+  },
+}
+
+/**
+ * The popup and the text in your state: `open` and `inputValue` are controlled, and
+ * `onOpenChange` and `onInputValueChange` say why each changed. Typing opens the popup
+ * (`input`), and choosing an option closes it (`option-press`) and fills the text (`selection`).
+ */
+export const ControlledOpenAndText: Story = {
+  parameters: source('ControlledOpenAndTextExample'),
+  render: (_args, { globals }) => <ControlledOpenAndTextExample locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = comboboxTextsFor(localeOf(globals))
+    const input = inputOf(canvas, text.municipality)
+    await userEvent.type(input, 'upp')
+    await waitFor(() =>
+      expect(canvas.getByTestId('open')).toHaveTextContent('open: true, reason: input'),
+    )
+    await expect(canvas.getByTestId('text')).toHaveTextContent('text: upp, reason: input')
+    await userEvent.click(await canvas.findByRole('option', { name: 'Uppsala' }))
+    await waitFor(() =>
+      expect(canvas.getByTestId('open')).toHaveTextContent('open: false, reason: option-press'),
+    )
+    await expect(canvas.getByTestId('text')).toHaveTextContent('text: Uppsala, reason: selection')
+    await expect(input).toHaveValue('Uppsala')
+  },
+}
+
+/**
+ * The popup above the input, with your own gap and edge distance: `placement`, `offset` and
+ * `padding`. It flips to the other side when there is no room, and `data-placement` says which
+ * side it is on.
+ */
+export const PlacedAbove: Story = {
+  decorators: [
+    (Story) => (
+      <div style={{ paddingBlockStart: '18rem' }}>
+        <Story />
+      </div>
+    ),
+  ],
+  parameters: source('PlacedAboveExample'),
+  render: (_args, { globals }) => <PlacedAboveExample locale={localeOf(globals)} />,
+  play: async ({ canvas, canvasElement, globals }) => {
+    const { text } = comboboxTextsFor(localeOf(globals))
+    await openWithKey(canvas, inputOf(canvas, text.municipality))
+    await expect(canvasElement.querySelector('.kv-listbox-popup')).toHaveAttribute(
+      'data-placement',
+      'top-start',
+    )
+  },
+}
+
+/**
+ * Your own announcement: `messages.resultCount` replaces the built-in count with your wording,
+ * and `announcementDebounceMilliseconds={0}` says it as soon as the list has changed. The words are
+ * read from the live region, which is empty while the user types.
+ */
+export const OwnAnnouncement: Story = {
+  parameters: source('OwnAnnouncementExample'),
+  render: (_args, { globals }) => <OwnAnnouncementExample locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = comboboxTextsFor(localeOf(globals))
+    await userEvent.type(inputOf(canvas, text.municipality), 'ka')
+    const count = municipalities.filter((municipality) =>
+      municipality.name.toLowerCase().includes('ka'),
+    ).length
+    await waitFor(
+      () => expect(canvas.getByRole('status')).toHaveTextContent(text.countMessage(count)),
+      { timeout: 3000 },
+    )
+  },
 }
 
 /** A rich option: your own children replace the text. The name a screen reader reads is its text content. */

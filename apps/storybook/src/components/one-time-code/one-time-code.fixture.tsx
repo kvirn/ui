@@ -1,3 +1,5 @@
+import { Button, Field, OneTimeCode, useAnnouncer } from '@kvirn-ui/react'
+import { useState } from 'react'
 import { textsFor } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
@@ -33,6 +35,16 @@ export interface OneTimeCodeTexts {
   lettersHint: (length: number, groupCount: number, groupLength: number) => string
   submit: string
   errorWrong: string
+  /** A code of some letters, a dash and then letters or digits in the case as typed (`aa-****`). */
+  caseLabel: string
+  caseHint: (letters: number, others: number) => string
+  /** Said in the help text when the form checks the code on its own (3.2.2). */
+  autoCheckHint: (length: number) => string
+  /** Shown and announced while the code is being checked. */
+  checking: string
+  slotActive: string
+  slotComplete: string
+  slotSelected: string
 }
 
 const textsEn: OneTimeCodeTexts = {
@@ -53,6 +65,14 @@ const textsEn: OneTimeCodeTexts = {
   submit: 'Continue',
   errorWrong:
     'The code doesn’t match the one we sent. Check the text message and enter the code again.',
+  caseLabel: 'Booking code',
+  caseHint: (letters, others) =>
+    `The code has ${letters} letters and then ${others} letters or digits. Capitals and lower case are different, so type it as it appears in the confirmation.`,
+  autoCheckHint: (length) => `We check the code as soon as you have entered all ${length} digits.`,
+  checking: 'Checking the code',
+  slotActive: 'The box that takes the next character, with its caret before it',
+  slotComplete: 'A complete code: the caret is after the last character',
+  slotSelected: 'A selection: the boxes it covers are marked',
 }
 
 const textsSv: OneTimeCodeTexts = {
@@ -72,6 +92,14 @@ const textsSv: OneTimeCodeTexts = {
     `Koden har ${length} versaler${groupCount > 1 ? `, i ${groupCount} grupper om ${groupLength}` : ''}.`,
   submit: 'Fortsätt',
   errorWrong: 'Koden stämmer inte med den vi skickade. Kontrollera sms:et och skriv koden igen.',
+  caseLabel: 'Bokningskod',
+  caseHint: (letters, others) =>
+    `Koden har ${letters} bokstäver och sedan ${others} bokstäver eller siffror. Stora och små bokstäver är olika, så skriv som det står i bekräftelsen.`,
+  autoCheckHint: (length) => `Vi kontrollerar koden så fort du har skrivit alla ${length} siffror.`,
+  checking: 'Vi kontrollerar koden',
+  slotActive: 'Rutan som tar nästa tecken, med markören före',
+  slotComplete: 'En komplett kod: markören står efter det sista tecknet',
+  slotSelected: 'En markering: rutorna den täcker är markerade',
 }
 
 const textsFi: OneTimeCodeTexts = {
@@ -93,6 +121,15 @@ const textsFi: OneTimeCodeTexts = {
   submit: 'Jatka',
   errorWrong:
     'Koodi ei vastaa lähettämäämme koodia. Tarkista tekstiviesti ja kirjoita koodi uudelleen.',
+  caseLabel: 'Varauskoodi',
+  caseHint: (letters, others) =>
+    `Koodissa on ensin ${letters} kirjainta ja sitten ${others} kirjainta tai numeroa. Isot ja pienet kirjaimet ovat eri merkkejä, joten kirjoita koodi täsmälleen niin kuin se on vahvistuksessa.`,
+  autoCheckHint: (length) =>
+    `Tarkistamme koodin heti, kun olet kirjoittanut kaikki ${length} numeroa.`,
+  checking: 'Tarkistamme koodia',
+  slotActive: 'Ruutu, johon seuraava merkki tulee, ja kohdistin sen edessä',
+  slotComplete: 'Valmis koodi: kohdistin on viimeisen merkin jälkeen',
+  slotSelected: 'Valinta: sen kattamat ruudut on merkitty',
 }
 
 const textsNb: OneTimeCodeTexts = {
@@ -111,6 +148,14 @@ const textsNb: OneTimeCodeTexts = {
     `Koden har ${length} store bokstaver${groupCount > 1 ? `, i ${groupCount} grupper på ${groupLength}` : ''}.`,
   submit: 'Gå videre',
   errorWrong: 'Koden stemmer ikke med den vi sendte. Sjekk SMS-en og skriv inn koden på nytt.',
+  caseLabel: 'Bestillingskode',
+  caseHint: (letters, others) =>
+    `Koden har ${letters} bokstaver og deretter ${others} bokstaver eller siffer. Store og små bokstaver er forskjellige, så skriv som det står i bekreftelsen.`,
+  autoCheckHint: (length) => `Vi sjekker koden så snart du har skrevet alle ${length} sifrene.`,
+  checking: 'Vi sjekker koden',
+  slotActive: 'Ruten som tar neste tegn, med markøren foran',
+  slotComplete: 'En fullstendig kode: markøren står etter det siste tegnet',
+  slotSelected: 'Et utvalg: rutene det dekker er markert',
 }
 
 const textsNn: OneTimeCodeTexts = {
@@ -129,6 +174,14 @@ const textsNn: OneTimeCodeTexts = {
     `Koden har ${length} store bokstavar${groupCount > 1 ? `, i ${groupCount} grupper på ${groupLength}` : ''}.`,
   submit: 'Gå vidare',
   errorWrong: 'Koden stemmer ikkje med den vi sende. Sjekk SMS-en og skriv inn koden på nytt.',
+  caseLabel: 'Bestillingskode',
+  caseHint: (letters, others) =>
+    `Koden har ${letters} bokstavar og deretter ${others} bokstavar eller siffer. Store og små bokstavar er ulike, så skriv som det står i stadfestinga.`,
+  autoCheckHint: (length) => `Vi sjekkar koden så snart du har skrive alle ${length} sifra.`,
+  checking: 'Vi sjekkar koden',
+  slotActive: 'Ruta som tek neste teikn, med markøren framfor',
+  slotComplete: 'Ei fullstendig kode: markøren står etter det siste teiknet',
+  slotSelected: 'Eit utval: rutene det dekkjer er markerte',
 }
 
 /** se has no texts: it shows the English ones, marked lang="en". */
@@ -147,7 +200,7 @@ export function oneTimeCodeTextsFor(locale: FormLocale): OneTimeCodeTexts {
 }
 
 /** Where the code comes from: it decides the label and the help text. */
-export type CodeKind = 'sms' | 'email' | 'app' | 'signIn' | 'letters'
+export type CodeKind = 'sms' | 'email' | 'app' | 'signIn' | 'letters' | 'case'
 
 /** The shape of a pattern: its groups (split at the dashes) and its characters, dashes not counted. */
 function shapeOf(pattern: string) {
@@ -167,6 +220,11 @@ const labelsFor = (texts: OneTimeCodeTexts, kind: CodeKind, pattern: string) => 
       return { label: texts.appLabel, hint: texts.appHint(characterCount) }
     case 'signIn':
       return { label: texts.signInLabel, hint: texts.appHint(characterCount) }
+    case 'case':
+      return {
+        label: texts.caseLabel,
+        hint: texts.caseHint(groups[0]?.length ?? 0, groups[1]?.length ?? 0),
+      }
     case 'letters':
       return {
         label: texts.lettersLabel(characterCount),
@@ -194,4 +252,128 @@ export function codeTextsFor(locale: FormLocale, kind: CodeKind, pattern: string
   const { lang } = textsFor(locale)
   const { label, hint } = labelsFor(texts, kind, pattern)
   return { label, hint, lang, errorWrong: texts.errorWrong, submit: texts.submit }
+}
+
+/**
+ * A code you control, checked as soon as it is complete. `onComplete` starts the check, and the
+ * Input is `readOnly` while it runs: a disabled input would lose focus to the body. The check is
+ * announced through the Announcer and shown, the Continue button stays, and the wrong code stays
+ * in the field with the error under it.
+ */
+export function CheckedCodeForm({ locale }: { locale: FormLocale }) {
+  const { label, hint, lang, errorWrong, submit } = codeTextsFor(locale, 'sms', '999999')
+  const texts = oneTimeCodeTextsFor(locale)
+  const { announce } = useAnnouncer()
+  const [value, setValue] = useState('')
+  const [isChecking, setIsChecking] = useState(false)
+  const [isWrong, setIsWrong] = useState(false)
+  return (
+    <form className="kv-story-form" noValidate onSubmit={(event) => event.preventDefault()}>
+      <Field.Root invalid={isWrong} lang={lang}>
+        <Field.Label marker="none">{label}</Field.Label>
+        <Field.Prose>
+          <p>
+            {hint} {texts.autoCheckHint(6)}
+          </p>
+        </Field.Prose>
+        <OneTimeCode.Root
+          pattern="999999"
+          value={value}
+          onValueChange={(next) => {
+            setValue(next)
+            setIsWrong(false)
+          }}
+          onComplete={() => {
+            setIsChecking(true)
+            announce(texts.checking)
+            // Your own check goes here. This one always finds the code wrong.
+            setTimeout(() => {
+              setIsChecking(false)
+              setIsWrong(true)
+            }, 1000)
+          }}
+        >
+          <OneTimeCode.Input name="code" readOnly={isChecking} />
+          {Array.from('999999', (_, index) => (
+            <OneTimeCode.Slot key={index} index={index} />
+          ))}
+        </OneTimeCode.Root>
+        <Field.ErrorMessage>{errorWrong}</Field.ErrorMessage>
+      </Field.Root>
+      <p className="kv-story-form-output" data-testid="checking">
+        {isChecking ? texts.checking : ''}
+      </p>
+      <div className="kv-button-group">
+        <Button type="submit" className="kv-button--primary">
+          {submit}
+        </Button>
+      </div>
+    </form>
+  )
+}
+
+/**
+ * The states a box shows, drawn by hand with the attributes `OneTimeCode.Slot` sets, so they can
+ * be seen side by side: the active box with its caret before the character, the last box of a
+ * complete code with the caret after, and a selection. In a real field they come from focus and
+ * the selection of the one input, and only one field has focus at a time.
+ */
+export function SlotStatesRows({ locale }: { locale: FormLocale }) {
+  const texts = oneTimeCodeTextsFor(locale)
+  const { lang } = textsFor(locale)
+  const rows: {
+    caption: string
+    code: string
+    states: Record<
+      number,
+      { 'data-active'?: ''; 'data-caret'?: 'before' | 'after'; 'data-selected'?: '' }
+    >
+  }[] = [
+    {
+      caption: texts.slotActive,
+      code: '481',
+      states: { 3: { 'data-active': '', 'data-caret': 'before' } },
+    },
+    {
+      caption: texts.slotComplete,
+      code: '481920',
+      states: { 5: { 'data-active': '', 'data-caret': 'after' } },
+    },
+    {
+      caption: texts.slotSelected,
+      code: '481920',
+      states: {
+        1: { 'data-selected': '' },
+        2: { 'data-selected': '' },
+        3: { 'data-selected': '' },
+      },
+    },
+  ]
+  return (
+    <div className="kv-story-form" lang={lang}>
+      {rows.map(({ caption, code, states }) => (
+        <div key={caption}>
+          <p>{caption}</p>
+          <div
+            className="kv-one-time-code"
+            data-ready=""
+            data-character-count="6"
+            data-separator-count="0"
+          >
+            {Array.from('999999', (_, index) => (
+              <span
+                key={index}
+                className="kv-one-time-code-slot"
+                aria-hidden="true"
+                {...(code.charAt(index) === '' ? {} : { 'data-filled': '' })}
+                {...states[index]}
+              >
+                {code.charAt(index)}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
 }

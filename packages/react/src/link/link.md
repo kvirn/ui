@@ -4,8 +4,8 @@
 
 A native `<a href>` for navigation, rendered by your router's link component when you register one. For actions, use [Button](../button/button.md).
 
-- `current` sets `aria-current`, for example `current="page"` in navigation. Link doesn't detect the current page itself.
-- `target="_blank"` adds `rel="noopener noreferrer"` to your own `rel`.
+- `current` sets `aria-current`, for example `current="page"` in navigation. The other values are `step` (a step in a process), `location`, `date` and `time`; `true` gives `aria-current="true"`, and `false` or no value gives none. Link doesn't detect the current page itself.
+- `target="_blank"` adds `rel="noopener noreferrer"` to your own `rel`: `rel="author"` becomes `author noopener noreferrer`, and a token you already wrote is not repeated.
 - `Link.NewTabNotice` renders the translated new-tab notice, `(öppnas i en ny flik)`, as part of the link's name (WCAG 3.2.5, Level AAA; technique G201). A link that opens a new window or tab must say so, so put it in every `target="_blank"` link. Nothing checks that you did: there is no type error and no dev warning.
 - No `disabled` prop: a disabled link isn't a thing. Remove the link or render text.
 - `Link.Icon` is a decorative slot for an icon, first in the link: `<span class="kv-link-icon" aria-hidden="true">`. The link's name stays its text.
@@ -62,7 +62,7 @@ First match wins:
                                                             // 4. built-in en
 ```
 
-Keep the notice in the name. If you hide it visually, use a visually-hidden technique, not `display: none` or `aria-hidden`.
+Keep the notice in the name. If you hide it visually, use a visually-hidden technique, not `display: none` or `aria-hidden`. `Link.NewTabNotice` takes `render` like every part, for example `render={<small />}`: it keeps its class and its text.
 
 ### Router links and `render`
 
@@ -73,6 +73,10 @@ Register your router's link once, on the provider (see [KvirnProvider](../provid
   Blankett (PDF)
 </Link.Root>
 ```
+
+## Your own look
+
+The underline of a link is three properties, set once on `:root` or on a container: `--kv-link-underline-thickness` (at rest, `1px`), `--kv-link-underline-thickness-hover` (`2px`) and `--kv-link-underline-offset` (`0.15em`). Links are underlined on hover only, because their colour is 3:1 against the text around them (1.4.1). Keep that contrast if you change the colour; the contrast themes keep the underline at rest.
 
 ## Hook
 

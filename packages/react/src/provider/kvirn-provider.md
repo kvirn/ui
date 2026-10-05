@@ -91,15 +91,17 @@ Register your router's link component once, and every KvirnUI component that ren
 ```ts
 // kvirn-ui.d.ts
 import type NextLink from 'next/link'
+import type { icons } from './icons'
 
 declare module '@kvirn-ui/react' {
   interface Register {
     linkComponent: typeof NextLink
+    icons: typeof icons
   }
 }
 ```
 
-Without the augmentation, `linkComponent` only accepts `'a'`, and link props are native `<a>` props. The registered component must forward its ref and render an `<a>`.
+Without the augmentation, `linkComponent` only accepts `'a'`, and link props are native `<a>` props. The registered component must forward its ref and render an `<a>`. `icons` is the registry you pass to `<KvirnProvider icons>` (see below): registering its type adds your names to `IconName`, so a misspelt `<Icon name>` is a type error. Both keys are optional and independent.
 
 ## Icons: `icons` and `iconDefaults`
 

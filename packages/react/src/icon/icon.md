@@ -126,7 +126,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 <Icon name="delte" /> // type error, and a warning in development
 ```
 
-- An entry is a component, or `{ component, mirrorInRtl }`. A component must forward its ref and spread SVG props onto one `<svg>`. Lucide, Heroicons, Phosphor, Tabler and SVGR output all do.
+- An entry is a component, or `{ component, mirrorInRtl }`. `mirrorInRtl: false` turns off the flip a built-in name has (`arrow-forward`), and `mirrorInRtl` on an `<Icon>` wins over the entry. A component must forward its ref and spread SVG props onto one `<svg>`. Lucide, Heroicons, Phosphor, Tabler and SVGR output all do.
 - A nested `KvirnProvider` adds icons and replaces names, over its parent's. `iconDefaults` (`size`, `strokeWidth`) merge field by field.
 - Which value wins, lowest first: the icon's own defaults, the built-in's mirroring for that name, `iconDefaults`, your entry, then the props on `<Icon>`.
 - An unknown name renders an empty `<svg>` at the right size and warns once in development.

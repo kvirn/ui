@@ -113,6 +113,38 @@ export const Outline: Story = {
   },
 }
 
+/**
+ * `size` works on every level, also h4 to h6: here an `h4` set as heading-3, an `h5` as heading-4
+ * and an `h6` as heading-5. `id` on a Heading names the `<section>` it labels (`aria-labelledby`),
+ * which makes the section a region users can jump to.
+ */
+export const SizeOnDeepLevelsAndLabelledRegion: Story = {
+  decorators: inColumn,
+  render: () => (
+    <section aria-labelledby="oppettider">
+      <Heading level={4} size="heading-3" id="oppettider">
+        Öppettider
+      </Heading>
+      <Heading level={5} size="heading-4">
+        Helger
+      </Heading>
+      <Heading level={6} size="heading-5">
+        Midsommarafton
+      </Heading>
+    </section>
+  ),
+  play: async ({ canvas }) => {
+    const region = canvas.getByRole('region', { name: 'Öppettider' })
+    await expect(region).toBeVisible()
+    await expect(canvas.getByRole('heading', { level: 4, name: 'Öppettider' })).toHaveAttribute(
+      'id',
+      'oppettider',
+    )
+    await expect(canvas.getByRole('heading', { level: 5, name: 'Helger' })).toBeVisible()
+    await expect(canvas.getByRole('heading', { level: 6, name: 'Midsommarafton' })).toBeVisible()
+  },
+}
+
 /** Right to left, in English: a heading starts at the right, and its size and weight don't change. */
 export const RightToLeft: Story = {
   name: 'Right to left',

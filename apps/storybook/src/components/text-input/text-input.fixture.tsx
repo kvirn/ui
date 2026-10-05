@@ -1,4 +1,5 @@
 import { Button, Field, masks, TextInput } from '@kvirn-ui/react'
+import type { TextInputChangeDetails } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { dateTextsFor } from '../date-input/date-input.fixture.tsx'
 import { textsFor } from '../form/form.fixture.tsx'
@@ -173,5 +174,86 @@ export function ReferenceNumberField({ locale }: { locale: FormLocale }) {
       />
       <Field.HelpText>{text.caseNumberHint}</Field.HelpText>
     </Field.Root>
+  )
+}
+
+/**
+ * A masked value you control, and everything `onValueChange` reports: the unmasked value, whether
+ * the shape is complete and the characters the mask dropped (`rejected`). The mask's own
+ * announcement is off (`announceRejections={false}`) because this field says it in its own words,
+ * in a live region that is on the page before the message.
+ */
+export function ChangeDetailsField({ locale }: { locale: FormLocale }) {
+  const { text, lang } = maskTextsFor({ locale })
+  const [value, setValue] = useState('')
+  const [details, setDetails] = useState<TextInputChangeDetails | undefined>(undefined)
+  const rejected = details?.rejected ?? []
+  return (
+    <Field.Root required lang={lang}>
+      <Field.Label>{text.digits}</Field.Label>
+      <TextInput
+        name="code"
+        mask={masks.digits({ length: 6 })}
+        announceRejections={false}
+        autoComplete="off"
+        className="kv-input--width-10"
+        value={value}
+        onValueChange={(next, nextDetails) => {
+          setValue(next)
+          setDetails(nextDetails)
+        }}
+      />
+      <Field.HelpText>{text.digitsHint}</Field.HelpText>
+      <output className="kv-story-form-output" data-testid="own-message">
+        {rejected.some(({ reason }) => reason === 'digits') ? text.ownRejection : ''}
+      </output>
+      <p className="kv-story-form-output" data-testid="details">
+        {text.rejected}:{' '}
+        {rejected.map(({ characters, reason }) => `${characters} (${reason})`).join(', ')} ·{' '}
+        {text.unmasked}: {details?.unmaskedValue ?? ''} · {text.complete}:{' '}
+        {details?.isComplete === true ? text.yes : text.no}
+      </p>
+    </Field.Root>
+  )
+}
+
+/**
+ * Your own words for the mask's announcement, for this one input: `messages` replaces
+ * `characterNotAllowed` here and leaves the provider's other strings alone.
+ */
+export function OwnMessagesField({ locale }: { locale: FormLocale }) {
+  const { text, lang } = maskTextsFor({ locale })
+  return (
+    <Field.Root required lang={lang}>
+      <Field.Label>{text.digits}</Field.Label>
+      <TextInput
+        name="code"
+        mask={masks.digits({ length: 6 })}
+        autoComplete="off"
+        className="kv-input--width-10"
+        messages={{ characterNotAllowed: () => text.ownRejection }}
+      />
+      <Field.HelpText>{text.digitsHint}</Field.HelpText>
+    </Field.Root>
+  )
+}
+
+/**
+ * Your own `aria-describedby` ids are kept: the Field's help text comes first, then yours. Here
+ * a note that sits outside the Field, such as one that belongs to several fields.
+ */
+export function OwnDescribedByField({ locale }: { locale: FormLocale }) {
+  const { text, lang } = maskTextsFor({ locale })
+  return (
+    <>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.caseNumber}</Field.Label>
+        <TextInput name="caseNumber" autoComplete="off" aria-describedby="case-number-where" />
+        <Field.HelpText>{text.caseNumberHint}</Field.HelpText>
+      </Field.Root>
+      <p id="case-number-where" lang={lang}>
+        {text.describedByNote}
+      </p>
+    </>
   )
 }

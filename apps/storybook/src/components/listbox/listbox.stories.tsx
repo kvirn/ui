@@ -1,7 +1,8 @@
 import contract from '../../../../../packages/react/src/listbox/listbox.a11y.md?raw'
+import guide from '../../../../../packages/react/src/listbox/listbox.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
-import { showSource } from '../../docs-source.ts'
+import { showSource, usageGuide } from '../../docs-source.ts'
 import { choiceTextsFor, logChange } from '../form/choice.fixture.tsx'
 import type { ChoiceTexts } from '../form/choice.fixture.tsx'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
@@ -10,14 +11,17 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 import {
   CompactMunicipality,
   ControlledMunicipality,
+  ControlledOpenMunicipality,
   DisabledMunicipality,
   GroupedMunicipalities,
   InvalidMunicipality,
   KeyboardForm,
   LongFinnishMunicipality,
   LongMunicipalityList,
+  MunicipalitiesWithOwnEmptyText,
   MunicipalityField,
   MunicipalityInCard,
+  MunicipalityPlacedAbove,
   MunicipalityStates,
   MunicipalityWithClosedOption,
   MunicipalityWithDescription,
@@ -42,7 +46,9 @@ import {
   RichMunicipalities,
   SelectedMunicipality,
   SeveralMunicipalities,
+  SeveralMunicipalitiesAsCount,
   VirtualizedPlaces,
+  extraTextsFor,
 } from './listbox.fixture.tsx'
 
 // Components/Form/Listbox: the stylable popup (Listbox.Root, Trigger, Value, Popup, List, Option,
@@ -60,9 +66,7 @@ import {
 // (PlainForm). Nothing here validates: an invalid story sets `invalid` itself. listbox.e2e.ts runs
 // the keyboard rows, forced colours, reduced motion and reflow checks against these stories.
 
-const description = `A choice of one option (or several) from a list, with no typing of text. On a desktop it is a stylable popup: groups, rich options, and a look that is yours. On a phone, a single choice is the browser's own \`<select>\` (\`native="auto"\`).
-
-**DOM focus stays on the trigger** and the active option is \`aria-activedescendant\`. No option is active until an arrow key or a letter, so Enter never chooses something you didn't move to. The value is the chosen option's key (\`itemToKey\`). Render \`Listbox.Popup\` right after \`Listbox.Trigger\`, inside a \`Field\`, and annotate the item in the \`Listbox.List\` function (\`(item: Municipality) => …\`) to type it.`
+const description = usageGuide(guide)
 
 /**
  * The props the Controls and Docs pages describe. `Listbox.Root` is generic in its item and has
@@ -84,6 +88,9 @@ interface ListboxStoryArgs {
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean, details?: { reason?: string }) => void
+  placement?: string
+  offset?: number
+  padding?: number
   messages?: Record<string, unknown>
   virtualize?: boolean | { estimateSize?: number; overscan?: number }
 }
@@ -108,10 +115,28 @@ const meta = {
       description: '`auto` (default): a native select on touch devices, for one choice.',
     },
     name: { control: false, description: 'A hidden input per chosen key, for a plain form.' },
-    open: { control: false },
-    defaultOpen: { control: false },
-    onOpenChange: { control: false },
-    messages: { control: false },
+    open: { control: false, description: 'Controlled: whether the popup is open.' },
+    defaultOpen: { control: false, description: 'Uncontrolled: whether it starts open.' },
+    onOpenChange: {
+      control: false,
+      description:
+        'Called with the new state and `{ reason }`: `trigger-press`, `option-press`, `key`, `escape`, `outside-press`, `blur` or `light-dismiss`.',
+    },
+    placement: {
+      control: false,
+      description:
+        'Where the popup goes when there is room. Default `bottom-start`. It flips when it does not fit.',
+    },
+    offset: { control: false, description: 'The gap to the trigger in pixels. Default 4.' },
+    padding: {
+      control: false,
+      description: 'The space kept to the edge of the viewport in pixels. Default 8.',
+    },
+    messages: {
+      control: false,
+      description:
+        'Per-instance overrides of the `combobox` strings. `noResults` is the text of `Listbox.Empty`.',
+    },
     virtualize: {
       control: false,
       description:
@@ -333,6 +358,91 @@ export const Empty: Story = {
     // Plain text beside a hidden listbox, not an option: no screen reader reads it as "option 1 of 1".
     await waitFor(() => expect(canvasElement.querySelector('.kv-listbox-empty')).toBeVisible())
     await expect(canvas.queryAllByRole('option')).toHaveLength(0)
+  },
+}
+
+/**
+ * Your own empty text: `messages={{ noResults }}` on the Root replaces the default text of
+ * `Listbox.Empty` for this listbox. The provider's `messages` change it for all of them.
+ */
+export const OwnEmptyText: Story = {
+  parameters: showSource('listbox/listbox.fixture.tsx', 'MunicipalitiesWithOwnEmptyText'),
+  render: (_args, { globals }) => <MunicipalitiesWithOwnEmptyText locale={localeOf(globals)} />,
+  play: async ({ canvasElement, globals }) => {
+    const extra = extraTextsFor(localeOf(globals))
+    await waitFor(() => expect(canvasElement.querySelector('.kv-listbox-empty')).toBeVisible())
+    await expect(canvasElement.querySelector('.kv-listbox-empty')).toHaveTextContent(
+      extra.noneMessage,
+    )
+  },
+}
+
+/**
+ * The chosen options as your own text: a function child of `Listbox.Value` gets the chosen items,
+ * here to show a count. The trigger's name is the Field's label followed by that text.
+ */
+export const ValueAsCount: Story = {
+  parameters: showSource('listbox/listbox.fixture.tsx', 'SeveralMunicipalitiesAsCount'),
+  render: (_args, { globals }) => <SeveralMunicipalitiesAsCount locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const extra = extraTextsFor(localeOf(globals))
+    const trigger = canvas.getByRole('combobox', { name: new RegExp(extra.several) })
+    await expect(trigger).toHaveTextContent(extra.selectedCount(2))
+    await userEvent.click(trigger)
+    await userEvent.click(await canvas.findByRole('option', { name: 'Göteborg' }))
+    await waitFor(() => expect(trigger).toHaveTextContent(extra.selectedCount(3)))
+  },
+}
+
+/**
+ * The popup above the trigger, with your own gap and edge distance: `placement`, `offset` and
+ * `padding`. It flips to the other side when there is no room, and `data-placement` says which
+ * side it is on.
+ */
+export const PlacedAbove: Story = {
+  decorators: [
+    (Story) => (
+      <div style={{ paddingBlockStart: '18rem' }}>
+        <Story />
+      </div>
+    ),
+  ],
+  parameters: showSource('listbox/listbox.fixture.tsx', 'MunicipalityPlacedAbove'),
+  render: (_args, { globals }) => <MunicipalityPlacedAbove locale={localeOf(globals)} />,
+  play: async ({ canvas, canvasElement, globals }) => {
+    const { text } = choiceTextsFor(localeOf(globals))
+    await userEvent.click(triggerOf(canvas, text))
+    await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
+    await expect(canvasElement.querySelector('.kv-listbox-popup')).toHaveAttribute(
+      'data-placement',
+      'top-start',
+    )
+  },
+}
+
+/**
+ * Controlled by your state: the popup shows the `open` it is given, and `onOpenChange(open, { reason })`
+ * says why every request came: the trigger, an option, Escape or a press outside. With `open` set,
+ * nothing opens or closes until you change it.
+ */
+export const ControlledOpen: Story = {
+  parameters: showSource('listbox/listbox.fixture.tsx', 'ControlledOpenMunicipality'),
+  render: (_args, { globals }) => <ControlledOpenMunicipality locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = choiceTextsFor(localeOf(globals))
+    const trigger = triggerOf(canvas, text)
+    const state = canvas.getByTestId('open')
+    await userEvent.click(trigger)
+    await waitFor(() => expect(state).toHaveTextContent('open: true, reason: trigger-press'))
+    await userEvent.click(await canvas.findByRole('option', { name: 'Malmö' }))
+    await waitFor(() => expect(state).toHaveTextContent('open: false, reason: option-press'))
+    await userEvent.click(trigger)
+    await userEvent.keyboard('{Escape}')
+    await waitFor(() => expect(state).toHaveTextContent('open: false, reason: escape'))
+    await userEvent.click(trigger)
+    await waitFor(() => expect(state).toHaveTextContent('open: true, reason: trigger-press'))
+    await userEvent.click(canvas.getByRole('button', { name: 'Före' }))
+    await waitFor(() => expect(state).toHaveTextContent('open: false, reason: outside-press'))
   },
 }
 

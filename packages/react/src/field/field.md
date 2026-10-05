@@ -16,6 +16,29 @@ A Field joins one control to its label, an optional description (a `Prose`), an 
 - The error starts with the `field.errorPrefix` text ("Fel:") and an error icon. The theme hides the prefix visually, so screen-reader users hear "Fel: Ange ditt namn" without relying on the colour. Errors are not live regions: they are read when the user reaches the control. On submit, move focus to the first invalid field (until the error summary block ships).
 - Headless: no CSS. The parts render `kv-field`, `kv-field-label`, `kv-field-help-text`, `kv-field-error-message`, `kv-field-error-prefix` and `kv-field-optional`, and your `className` joins them. With `@kvirn-ui/theme/theme.css` imported they are styled.
 
+## API
+
+| Part                 | Renders                                                       | What it is                                                                                                                                                      |
+| -------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Field.Root`         | `<div class="kv-field">`                                      | The field. Takes `invalid`, `required`, `disabled`, `controlId`, `messages` and every `<div>` prop. Gives the control inside it its id, `aria-*` and `disabled` |
+| `Field.Label`        | `<label for class="kv-field-label">`                          | The visible label. `marker` is `'optional'` (the default) or `'none'`, and `'none'` in a group. It must stay a `<label>`                                        |
+| `Field.Prose`        | a [Prose](../prose/prose.md) (`<div class="kv-prose">`)       | The description, above the control: what to answer, why we ask, where to find it. Registers with the Field, so write `Field.Prose` and not a bare `Prose`       |
+| `Field.HelpText`     | `<p class="kv-field-help-text">`                              | The help text, under the control: a format, an example or a limit. Plain text                                                                                   |
+| `Field.ErrorMessage` | `<p class="kv-field-error-message">` with the icon and prefix | The error. It renders only while the Field is invalid. One per Field                                                                                            |
+
+| State attribute | Where and when                                                             |
+| --------------- | -------------------------------------------------------------------------- |
+| `data-invalid`  | On every part and on the control, when `invalid`                           |
+| `data-required` | On every part except the descriptions, and on the control, when `required` |
+| `data-disabled` | On every part and on the control, when `disabled`                          |
+
+- **ARIA it sets on the control:** `id` (the `controlId`, else generated), `aria-describedby` (every description and help text in DOM order, then the error, then the ids you pass yourself), `aria-invalid="true"` and `aria-required="true"`, and native `disabled`. On the label: `for` and an `id` (`<controlId>-label`).
+- **Ids:** the label is `<controlId>-label`, the error `<controlId>-error` and each description `<controlId>-description-<generated>`. Don't give a control inside a Field its own `id`.
+- **`render`** on every part receives the Field's state (`isInvalid`, `isRequired`, `isDisabled`).
+- **Classes:** `kv-field`, `kv-field-label`, `kv-field-optional` (the optional text in the label), `kv-field-help-text`, `kv-field-error-message` and `kv-field-error-prefix`. Your `className` joins them.
+- **Messages (`messages`):** `optional` (the text after a label that isn't required: "(valfritt)") and `errorPrefix` (the hidden word before an error: "Fel:"). Both are in `@kvirn-ui/i18n` in six languages.
+- **Dev warnings (once):** a `Field.Label` outside a `Field.Root` (`field-label-outside-field`) renders a plain `<label>` that names nothing; a `Field.ErrorMessage` outside a Field or Fieldset (`field-error-message-outside-field`) always shows and describes nothing; a `Field.HelpText` outside one (`help-text-outside-field`) or before its control (`help-text-before-control`); two error messages in one Field; a control with an `id` of its own; a control with no label.
+
 ## Component
 
 ```tsx

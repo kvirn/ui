@@ -75,6 +75,10 @@ The caveat: suggestions that aren't rendered can't be found with the browser's f
 
 Typing filters and opens the popup. ArrowDown and ArrowUp open it and move the highlight, and don't wrap. Page Up and Page Down move ten. Enter picks the highlighted suggestion (with none highlighted it is the browser's own). Escape closes and keeps the text. Tab closes without picking and moves on. Alt+ArrowDown opens without highlighting, and Alt+ArrowUp picks and closes. Home, End, ArrowLeft, ArrowRight and Space are the text field's own: the caret moves, and the four caret keys leave no suggestion highlighted. The full table is the Keyboard section of [autocomplete.a11y.md](autocomplete.a11y.md), shown on the Docs page.
 
+## Developer warnings
+
+In development, an Autocomplete warns once when its input has no accessible name (outside a Field with no `aria-label`, or in a Field with no `Field.Label`), when a part is outside `Autocomplete.Root`, and when `virtualize` is used with `groups`. The codes are the Combobox's, and each has an explanation and a fix on the Foundation page Dev warnings.
+
 ## Your own look
 
 Spread the hook's props on your own elements, or put your own `className` on a part. The parts carry stable classes and `data-*` state, and the default theme is opt-in.

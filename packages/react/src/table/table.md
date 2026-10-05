@@ -234,6 +234,10 @@ The component's names and announcements are in the `table` namespace of all six 
 
 Every part takes `render` (an element or a function) to change the element it renders. Class names and handlers merge, and refs are merged. Keep the native element for the table, the rows and the cells: a `render` that swaps them for a `div` removes the table semantics.
 
+## Developer warnings
+
+In development, a Table warns once when it has no name (no `Table.Caption` or `aria-labelledby`), when a `Table.ScrollRegion` that is a region has no name, when `virtualize` is combined with `rowExpandingFeature`, when `Table.SelectCheckbox` is used without `rowSelectionFeature`, and when `Table.Body` has a function child but the Root has no `table`. Each has a code, an explanation and a fix on the Foundation page Dev warnings.
+
 ## Your own look
 
 The Table is headless: it sets no CSS of its own except the inline geometry a virtualized table can't work without (the block size of a spacer row and the width of a column). Style the classes below, or copy the theme's Table section into your project and change it. Never set `display` on a table element, a row or a cell: some browsers then drop the table semantics.

@@ -46,6 +46,9 @@ export const streets: readonly string[] = [
   'Öbacken',
 ]
 
+/** Five of them: a list short enough to fit above the input. */
+export const fewStreets: readonly string[] = streets.slice(0, 5)
+
 export const longList: readonly string[] = Array.from(
   { length: 300 },
   (_, index) => `Gata ${index + 1}`,
@@ -57,6 +60,10 @@ export interface AutocompleteTexts {
   error: string
   placeholder: string
   longLabel: string
+  /** The help text of an Autocomplete whose own filter matches the start of the name. */
+  startsWithHint: string
+  /** Your own suggestion count, announced after typing: replaces the built-in "4 resultat". */
+  countMessage: (count: number) => string
 }
 
 const textsEn: AutocompleteTexts = {
@@ -66,6 +73,8 @@ const textsEn: AutocompleteTexts = {
   placeholder: 'For example Storgatan',
   longLabel:
     'The street address where you live according to the tax agency, with the number of the entrance and the apartment',
+  startsWithHint: 'The list shows streets that start with what you type.',
+  countMessage: (count) => `${count} streets to choose from`,
 }
 
 const autocompleteTexts: Partial<Record<FormLocale, AutocompleteTexts>> = {
@@ -77,6 +86,8 @@ const autocompleteTexts: Partial<Record<FormLocale, AutocompleteTexts>> = {
     placeholder: 'Till exempel Storgatan',
     longLabel:
       'Gatuadressen där du bor enligt Skatteverkets register, med uppgång och lägenhetsnummer',
+    startsWithHint: 'Listan visar gator som börjar med det du skriver.',
+    countMessage: (count) => `${count} gator att välja`,
   },
   fi: {
     street: 'Katuosoite',
@@ -85,6 +96,8 @@ const autocompleteTexts: Partial<Record<FormLocale, AutocompleteTexts>> = {
     placeholder: 'Esimerkiksi Storgatan',
     longLabel:
       'Katuosoite, jossa asut verohallinnon rekisterin mukaan, porraskäytävän ja asunnon numeron kanssa',
+    startsWithHint: 'Luettelossa näkyvät kadut, joiden nimi alkaa kirjoittamallasi.',
+    countMessage: (count) => `${count} katua valittavana`,
   },
   nb: {
     street: 'Gateadresse',
@@ -92,6 +105,8 @@ const autocompleteTexts: Partial<Record<FormLocale, AutocompleteTexts>> = {
     error: 'Skriv inn gateadressen din',
     placeholder: 'For eksempel Storgatan',
     longLabel: 'Gateadressen der du bor ifølge Folkeregisteret, med oppgang og leilighetsnummer',
+    startsWithHint: 'Listen viser gater som begynner med det du skriver.',
+    countMessage: (count) => `${count} gater å velge mellom`,
   },
   nn: {
     street: 'Gateadresse',
@@ -99,6 +114,8 @@ const autocompleteTexts: Partial<Record<FormLocale, AutocompleteTexts>> = {
     error: 'Skriv inn gateadressa di',
     placeholder: 'Til dømes Storgatan',
     longLabel: 'Gateadressa der du bur ifølgje Folkeregisteret, med oppgang og leilegheitsnummer',
+    startsWithHint: 'Lista viser gater som byrjar med det du skriv.',
+    countMessage: (count) => `${count} gater å velje mellom`,
   },
 }
 
@@ -455,6 +472,148 @@ export function CompactExample({ locale }: { locale: FormLocale }) {
         </Autocomplete.Root>
       </Field.Root>
     </div>
+  )
+}
+
+/**
+ * Your own filter: `filter(item, query)` replaces the built-in one, which matches anywhere in the
+ * text and keeps å, ä and ö apart from a and o. This one matches the start of the name. It runs
+ * on every keystroke and decides which suggestions stay in the list.
+ */
+export function StartsWithFilterExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Field.Prose>
+        <p>{text.startsWithHint}</p>
+      </Field.Prose>
+      <Autocomplete.Root
+        items={streets}
+        filter={(street, query) => street.toLowerCase().startsWith(query.toLowerCase())}
+      >
+        <Autocomplete.Control>
+          <Autocomplete.Input />
+          <Autocomplete.Clear />
+          <Autocomplete.Toggle />
+        </Autocomplete.Control>
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
+  )
+}
+
+/**
+ * The popup and the text in your state: `open` and `value` are controlled, and `onOpenChange` and
+ * `onValueChange` say why each changed (`input`, `selection`, `clear`, `option-press` and more).
+ * The two printed lines are the last change of each.
+ */
+export function ControlledOpenAndTextExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  const [open, setOpen] = useState(false)
+  const [openReason, setOpenReason] = useState('–')
+  const [value, setValue] = useState('')
+  const [valueReason, setValueReason] = useState('–')
+  return (
+    <div className="kv-story-form" lang={lang}>
+      <Field.Root>
+        <Field.Label>{text.street}</Field.Label>
+        <Autocomplete.Root
+          items={streets}
+          open={open}
+          onOpenChange={(nextOpen, details) => {
+            setOpen(nextOpen)
+            setOpenReason(details.reason)
+          }}
+          value={value}
+          onValueChange={(nextText, details) => {
+            setValue(nextText)
+            setValueReason(details.reason)
+          }}
+        >
+          <Autocomplete.Control>
+            <Autocomplete.Input />
+            <Autocomplete.Clear />
+            <Autocomplete.Toggle />
+          </Autocomplete.Control>
+          <Autocomplete.Popup>
+            <Autocomplete.List>
+              {(street: string) => <Autocomplete.Option item={street} />}
+            </Autocomplete.List>
+          </Autocomplete.Popup>
+        </Autocomplete.Root>
+      </Field.Root>
+      <p className="kv-story-form-output" data-testid="open">
+        open: {String(open)}, reason: {openReason}
+      </p>
+      <p className="kv-story-form-output" data-testid="text">
+        text: {value}, reason: {valueReason}
+      </p>
+    </div>
+  )
+}
+
+/**
+ * The popup above the input, with your own gap and edge distance: `placement` (a side, then
+ * `-start`, `-center` or `-end`), `offset` and `padding` in pixels. It flips to the other side
+ * when there is no room, and `data-placement` says which side it is on.
+ */
+export function PlacedAboveExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Autocomplete.Root items={fewStreets} placement="top-start" offset={12} padding={16}>
+        <Autocomplete.Control>
+          <Autocomplete.Input />
+          <Autocomplete.Clear />
+          <Autocomplete.Toggle />
+        </Autocomplete.Control>
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
+  )
+}
+
+/**
+ * Your own announcement: `messages` replaces the built-in "4 resultat" with your wording (a
+ * function gets the count), and `announcementDebounceMilliseconds` is how long after the last
+ * keystroke it is said. Nothing is announced while the user types; `0` says it as soon as the
+ * list has changed.
+ */
+export function OwnAnnouncementExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Field.Prose>
+        <p>{text.hint}</p>
+      </Field.Prose>
+      <Autocomplete.Root
+        items={streets}
+        announcementDebounceMilliseconds={0}
+        messages={{ resultCount: ({ count }) => text.countMessage(count) }}
+      >
+        <Autocomplete.Control>
+          <Autocomplete.Input />
+          <Autocomplete.Clear />
+          <Autocomplete.Toggle />
+        </Autocomplete.Control>
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
   )
 }
 

@@ -25,6 +25,10 @@ interface AnnouncerTexts {
   accepted: string
   dropped: string
   none: string
+  unthrottled: string
+  burst: string
+  blank: string
+  blankDropped: string
 }
 
 const texts: Record<AnnouncerFixtureLocale, AnnouncerTexts> = {
@@ -43,6 +47,10 @@ const texts: Record<AnnouncerFixtureLocale, AnnouncerTexts> = {
     accepted: 'skickades',
     dropped: 'släpptes (för tätt)',
     none: 'Inget än',
+    unthrottled: 'Samma nyckel, utan spärr',
+    burst: 'Två meddelanden på en gång',
+    blank: 'Tomt meddelande',
+    blankDropped: 'släpptes (tomt)',
   },
   fi: {
     heading: 'Ilmoitukset ruudunlukijalle',
@@ -59,6 +67,10 @@ const texts: Record<AnnouncerFixtureLocale, AnnouncerTexts> = {
     accepted: 'lähetettiin',
     dropped: 'ohitettiin (liian tiheästi)',
     none: 'Ei vielä mitään',
+    unthrottled: 'Sama avain, ei estoa',
+    burst: 'Kaksi ilmoitusta kerralla',
+    blank: 'Tyhjä ilmoitus',
+    blankDropped: 'ohitettiin (tyhjä)',
   },
   nb: {
     heading: 'Meldinger til skjermlesere',
@@ -75,6 +87,10 @@ const texts: Record<AnnouncerFixtureLocale, AnnouncerTexts> = {
     accepted: 'ble sendt',
     dropped: 'ble forkastet (for tett)',
     none: 'Ingenting ennå',
+    unthrottled: 'Samme nøkkel, uten sperre',
+    burst: 'To meldinger samtidig',
+    blank: 'Tom melding',
+    blankDropped: 'ble forkastet (tom)',
   },
   nn: {
     heading: 'Meldingar til skjermlesarar',
@@ -91,6 +107,10 @@ const texts: Record<AnnouncerFixtureLocale, AnnouncerTexts> = {
     accepted: 'vart sendt',
     dropped: 'vart forkasta (for tett)',
     none: 'Ingenting enno',
+    unthrottled: 'Same nøkkel, utan sperre',
+    burst: 'To meldingar samtidig',
+    blank: 'Tom melding',
+    blankDropped: 'vart forkasta (tom)',
   },
   en: {
     heading: 'Messages for screen readers',
@@ -107,6 +127,10 @@ const texts: Record<AnnouncerFixtureLocale, AnnouncerTexts> = {
     accepted: 'sent',
     dropped: 'dropped (too soon)',
     none: 'Nothing yet',
+    unthrottled: 'Same key, no throttle',
+    burst: 'Two messages at once',
+    blank: 'Empty message',
+    blankDropped: 'dropped (empty)',
   },
 }
 
@@ -156,6 +180,54 @@ export function AnnouncementButtons({ locale }: { locale: FormLocale }) {
           {lastCall === undefined
             ? text.none
             : `${lastCall.message} (${lastCall.accepted ? text.accepted : text.dropped})`}
+        </span>
+      </p>
+    </div>
+  )
+}
+
+/**
+ * More of what `announce` does with its options. A key with `throttleMilliseconds: 0` is never
+ * throttled, two messages inside 100 ms leave only the second in the region (the first call still
+ * returns `true`), and a blank message is dropped and returns `false`. Pass text already resolved
+ * from your i18n; the app's `KvirnProvider` renders the live regions.
+ */
+export function BurstsAndBlanks({ locale }: { locale: FormLocale }) {
+  const { text, lang } = announcerTextsFor(locale)
+  const { announce } = useAnnouncer()
+  const [lastCall, setLastCall] = useState<LastCall | undefined>()
+
+  return (
+    <div lang={lang}>
+      <div className="kv-button-group">
+        <Button
+          onClick={() =>
+            setLastCall({
+              message: text.digitsOnly,
+              accepted: announce(text.digitsOnly, { key: 'phone', throttleMilliseconds: 0 }),
+            })
+          }
+        >
+          {text.unthrottled}
+        </Button>
+        <Button
+          onClick={() => {
+            announce(text.saved)
+            setLastCall({ message: text.expired, accepted: announce(text.expired) })
+          }}
+        >
+          {text.burst}
+        </Button>
+        <Button onClick={() => setLastCall({ message: '', accepted: announce('   ') })}>
+          {text.blank}
+        </Button>
+      </div>
+      <p>
+        {text.lastLabel}:{' '}
+        <span data-testid="last-call">
+          {lastCall === undefined
+            ? text.none
+            : `${lastCall.message} (${lastCall.accepted ? text.accepted : text.blankDropped})`}
         </span>
       </p>
     </div>

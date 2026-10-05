@@ -7,6 +7,7 @@ import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   ClosableAlerts,
+  CloseButtonNames,
   CompactAlerts,
   ConsequenceAlert,
   DeadlineAlert,
@@ -15,6 +16,8 @@ import {
   FocusTargetExample,
   FourStatuses,
   localeOf,
+  MissingAnswersAlert,
+  OutageAlert,
   PermitAlert,
   SavedExample,
   SavedAlert,
@@ -260,6 +263,54 @@ export const WithCloseButton: Story = {
 }
 
 /**
+ * A site-wide outage: the one case for a landmark and for `announce="assertive"`. `render` makes
+ * the root a `<section>` named by its Title, and the assertive announcement interrupts, so use
+ * both rarely and never for Info or Success. The button stands in for the outage starting.
+ */
+export const SiteWideOutage: Story = {
+  parameters: showSource('alert/alert.fixture.tsx', 'OutageAlert'),
+  render: (_args, { globals }) => <OutageAlert locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'Visa en driftstörning' }))
+    await expect(canvas.getByRole('region', { name: 'Fel: Tjänsten är nere' })).toBeVisible()
+    // Assertive goes to the Announcer's `alert` region, and the visible box has no role of its own.
+    await waitFor(() =>
+      expect(canvas.getByRole('alert').textContent).toMatch(/^Fel: Tjänsten är nere /),
+    )
+    await expect(canvas.getByRole('status')).toBeEmptyDOMElement()
+  },
+}
+
+/**
+ * `render` on the Body and the Actions: here the Body is a list of what's missing, and the Actions
+ * a paragraph with the one link. They keep their classes, so the theme styles them as before.
+ */
+export const BodyAndActionsAsElements: Story = {
+  parameters: showSource('alert/alert.fixture.tsx', 'MissingAnswersAlert'),
+  render: (_args, { globals }) => <MissingAnswersAlert locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    const alert = within(canvas.getByTestId('missing'))
+    await expect(alert.getAllByRole('listitem')).toHaveLength(2)
+    await expect(alert.getByRole('link', { name: 'Gå till dina svar' })).toBeVisible()
+  },
+}
+
+/**
+ * Name the close button three ways: `messages` on the root, `messages` on the button, and visible
+ * text in its children, which replaces the icon. A visible label becomes the name (2.5.3).
+ */
+export const CloseButtonNaming: Story = {
+  parameters: showSource('alert/alert.fixture.tsx', 'CloseButtonNames'),
+  render: (_args, { globals }) => <CloseButtonNames locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    await expect(canvas.getAllByRole('button', { name: 'Dölj tipset' })).toHaveLength(2)
+    const visible = canvas.getByRole('button', { name: 'Dölj' })
+    await expect(visible).toHaveTextContent('Dölj')
+    await expect(visible.querySelector('svg')).toBeNull()
+  },
+}
+
+/**
  * A status that comes from data: a typed map from the status to the component, so the choice
  * stays visible in the code. There is no status prop.
  */
@@ -337,8 +388,9 @@ export const BringYourOwn: Story = {
 }
 
 /**
- * `messages` change the status word, never the status: one Danger with `dangerPrefix` on the
- * instance, and a Warning below a provider that overrides `alert.warningPrefix`.
+ * `messages` change the status word, never the status: `dangerPrefix`, `infoPrefix` and
+ * `successPrefix` on the instance, and a Warning below a provider that overrides
+ * `alert.warningPrefix`.
  */
 export const MessagesOverride: Story = {
   render: (_args, { globals }) => {
@@ -353,6 +405,12 @@ export const MessagesOverride: Story = {
             <Alert.Title>{text.override.warningTitle}</Alert.Title>
           </Alert.Warning>
         </KvirnProvider>
+        <Alert.Info messages={{ infoPrefix: text.override.info }}>
+          <Alert.Title>{text.sample.title}</Alert.Title>
+        </Alert.Info>
+        <Alert.Success messages={{ successPrefix: text.override.success }}>
+          <Alert.Title>{text.sample.title}</Alert.Title>
+        </Alert.Success>
       </>
     )
   },
@@ -365,6 +423,12 @@ export const MessagesOverride: Story = {
         level: 2,
         name: 'Obs: Kontrollera dina svar innan du skickar',
       }),
+    ).toBeVisible()
+    await expect(
+      canvas.getByRole('heading', { level: 2, name: 'Tips: Något du bör veta' }),
+    ).toBeVisible()
+    await expect(
+      canvas.getByRole('heading', { level: 2, name: 'Sparat: Något du bör veta' }),
     ).toBeVisible()
   },
 }

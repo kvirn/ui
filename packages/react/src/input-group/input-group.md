@@ -14,6 +14,20 @@ An InputGroup puts a unit, a symbol, a decorative icon or a Button **inside the 
 - **Interactive add-ons are real Buttons,** placed directly in the Root, never inside an Addon.
 - Headless: no CSS. They render `kv-input-group` and `kv-input-group-addon`, and your `className` joins them. With `@kvirn-ui/theme/theme.css` imported they are styled.
 
+## API
+
+| Part               | Renders                                                                   | What it is                                                                                                |
+| ------------------ | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `InputGroup.Root`  | `<div class="kv-input-group">`                                            | The box. Takes `invalid`, `disabled` and every `<div>` prop. A Button goes directly in it                 |
+| `InputGroup.Input` | the [TextInput](../text-input/text-input.md) (`<input class="kv-input">`) | The one input. Takes every TextInput prop and reads the Field the same way                                |
+| `InputGroup.Addon` | `<span class="kv-input-group-addon" aria-hidden="true">`                  | A unit, a symbol or a decorative icon. Visual only: never focusable, never the only place a meaning lives |
+
+- **`invalid` and `disabled` on the Root** default to the nearest Field's. Without a Field, set them on the Root for the box's edge (`data-invalid`, `data-disabled`) **and** on the Input for the control (`aria-invalid`, native `disabled`): the Root only draws and, when `disabled`, stops clicks from focusing the Input. A disabled box ignores a click on its Addon.
+- **Without a Field** name the Input with a native `<label for>` (or `aria-labelledby`) and describe it with `aria-describedby`: nothing else wires them.
+- **State the Root exposes:** `data-invalid`, `data-disabled` and `data-focus-visible` (see the table below). `render` on the Root and the Addon receives `isInvalid`, `isDisabled` and `isFocusVisible`.
+- **Messages:** none. An Addon's text and a Button's name are yours, in the page's language.
+- **Dev warnings (once):** an Addon outside a Root (`input-group-addon-outside-root`); focusable content inside an Addon (`input-group-addon-focusable`).
+
 ## Component
 
 ```tsx

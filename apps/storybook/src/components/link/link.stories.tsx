@@ -7,11 +7,13 @@ import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { Icon, KvirnProvider, Link, Navigation } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/link/link.a11y.md?raw'
+import guide from '../../../../../packages/react/src/link/link.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { CSSProperties } from 'react'
 import { expect, waitFor } from 'storybook/test'
-import { showSource } from '../../docs-source.ts'
+import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
-import { AppRoot, RoutedNavigation } from './link.fixture.tsx'
+import { AppRoot, RoutedNavigation, RouterAndPlainLinks } from './link.fixture.tsx'
 
 // Components/Link: the headless Link, styled by @kvirn-ui/theme/theme.css.
 // link.e2e.ts runs its keyboard contract against Default, SamePageLink, CurrentPage, NewTab,
@@ -50,7 +52,10 @@ const meta = {
       )
     },
   ],
-  parameters: { a11yContract: contract },
+  parameters: {
+    a11yContract: contract,
+    docs: { description: { component: usageGuide(guide) } },
+  },
 } satisfies Meta<typeof Link.Root>
 
 export default meta
@@ -110,6 +115,114 @@ export const InRunningText: Story = {
     await expect(link.closest('p')).toHaveTextContent(
       'Du kan ansöka om parkeringstillstånd på webben.',
     )
+  },
+}
+
+/**
+ * `current` is not only `page`: `step` marks the step in a process, `location`, `date` and `time`
+ * the current item of a set, and `true` a plain `aria-current="true"`. `false` gives none.
+ */
+export const CurrentKinds: Story = {
+  render: () => (
+    <ul>
+      <li>
+        <Link.Root href="#steg-1" current="step">
+          Steg 1: Fyll i uppgifter
+        </Link.Root>
+      </li>
+      <li>
+        <Link.Root href="#plats" current="location">
+          Du är här: Bygglov
+        </Link.Root>
+      </li>
+      <li>
+        <Link.Root href="#datum" current="date">
+          Idag
+        </Link.Root>
+      </li>
+      <li>
+        <Link.Root href="#tid" current="time">
+          Nu
+        </Link.Root>
+      </li>
+      <li>
+        <Link.Root href="#aktuell" current>
+          Aktuellt val
+        </Link.Root>
+      </li>
+      <li>
+        <Link.Root href="#andra" current={false}>
+          Andra val
+        </Link.Root>
+      </li>
+    </ul>
+  ),
+  play: async ({ canvas }) => {
+    for (const [name, value] of [
+      ['Steg 1: Fyll i uppgifter', 'step'],
+      ['Du är här: Bygglov', 'location'],
+      ['Idag', 'date'],
+      ['Nu', 'time'],
+      ['Aktuellt val', 'true'],
+    ] as const) {
+      await expect(canvas.getByRole('link', { name })).toHaveAttribute('aria-current', value)
+    }
+    await expect(canvas.getByRole('link', { name: 'Andra val' })).not.toHaveAttribute(
+      'aria-current',
+    )
+  },
+}
+
+/**
+ * Next to a registered router: `render={<a />}` bypasses the router for one link (a download), your
+ * own `rel` joins `noopener noreferrer` on a new-tab link, and the notice takes `render` too.
+ */
+export const BypassRouterAndKeepRel: Story = {
+  parameters: showSource('link/link.fixture.tsx', 'RouterAndPlainLinks'),
+  render: () => <RouterAndPlainLinks />,
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('link', { name: 'Ansök' })).toHaveAttribute(
+      'data-router-link',
+      '',
+    )
+    await expect(canvas.getByRole('link', { name: 'Blankett (PDF)' })).not.toHaveAttribute(
+      'data-router-link',
+    )
+    const external = canvas.getByRole('link', { name: 'Digg (öppnas i en ny flik)' })
+    await expect(external).toHaveAttribute('rel', 'author noopener noreferrer')
+    await expect(external.querySelector('small')).toHaveClass('kv-link-new-tab-notice')
+  },
+}
+
+/**
+ * The underline is three custom properties (`--kv-link-underline-thickness`,
+ * `--kv-link-underline-thickness-hover`, `--kv-link-underline-offset`). Set them once on `:root`,
+ * or on a container as here. Keep the link colour 3:1 against the text, which is what lets the
+ * underline show on hover only (1.4.1).
+ */
+export const UnderlineProperties: Story = {
+  decorators: [
+    (Story) => (
+      <div
+        style={
+          {
+            '--kv-link-underline-thickness': '2px',
+            '--kv-link-underline-thickness-hover': '3px',
+            '--kv-link-underline-offset': '0.3em',
+          } as CSSProperties
+        }
+      >
+        <Story />
+      </div>
+    ),
+  ],
+  render: () => (
+    <p>
+      Du kan <Link.Root href="#ansokan">ansöka om parkeringstillstånd</Link.Root> på webben.
+    </p>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('link', { name: 'ansöka om parkeringstillstånd' })).toBeVisible()
   },
 }
 

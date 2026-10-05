@@ -2,16 +2,19 @@ import { Button, Card, Field, KvirnProvider, masks, TextInput } from '@kvirn-ui/
 import contract from '../../../../../packages/react/src/text-input/text-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/text-input/text-input.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, fn, userEvent } from 'storybook/test'
+import { expect, fn, userEvent, waitFor } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { dateTextsFor } from '../date-input/date-input.fixture.tsx'
 import { FieldStates, localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import { maskTextsFor } from '../mask/mask.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
+  ChangeDetailsField,
   ControlledName,
   ExplicitPostcodeField,
   NameAndEmailForm,
+  OwnDescribedByField,
+  OwnMessagesField,
   PersonalIdentityNumberField,
   PostcodeField,
   ReferenceNumberField,
@@ -542,6 +545,66 @@ export const ReferenceNumber: Story = {
     // A letter is left out, and the zeros stay.
     await userEvent.type(input, '00x4513')
     await expect(input).toHaveValue('004513')
+  },
+}
+
+/**
+ * A masked value you control, and what `onValueChange` reports besides the value: `unmaskedValue`,
+ * `isComplete` and `rejected` (the characters the mask dropped, by reason). The mask's announcement
+ * is off here (`announceRejections={false}`) because the field says it in its own words, in a
+ * live region that is already on the page. `isWithinRange` is for number masks: see
+ * Components/Form/Mask.
+ */
+export const ChangeDetails: Story = {
+  parameters: showSource('text-input/text-input.fixture.tsx', 'ChangeDetailsField'),
+  render: (_args, { globals }) => <ChangeDetailsField locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = maskTextsFor(globals)
+    const input = canvas.getByRole('textbox', { name: text.digits })
+    await userEvent.type(input, '12345a')
+    await expect(input).toHaveValue('12345')
+    await expect(canvas.getByTestId('own-message')).toHaveTextContent(text.ownRejection)
+    await expect(canvas.getByTestId('details')).toHaveTextContent(
+      `${text.rejected}: a (digits) · ${text.unmasked}: 12345 · ${text.complete}: ${text.no}`,
+    )
+    // The next change has nothing to refuse: the message goes, and the code is complete.
+    await userEvent.type(input, '6')
+    await expect(canvas.getByTestId('own-message')).toBeEmptyDOMElement()
+    await expect(canvas.getByTestId('details')).toHaveTextContent(
+      `${text.unmasked}: 123456 · ${text.complete}: ${text.yes}`,
+    )
+  },
+}
+
+/**
+ * Your own words for the announcement of one input: `messages` replaces `characterNotAllowed`
+ * here, and the provider's strings still apply to every other field.
+ */
+export const OwnMessages: Story = {
+  parameters: showSource('text-input/text-input.fixture.tsx', 'OwnMessagesField'),
+  render: (_args, { globals }) => <OwnMessagesField locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = maskTextsFor(globals)
+    const input = canvas.getByRole('textbox', { name: text.digits })
+    await userEvent.type(input, 'a')
+    await expect(input).toHaveValue('')
+    await waitFor(() => expect(canvas.getByRole('status')).toHaveTextContent(text.ownRejection))
+  },
+}
+
+/**
+ * Your own `aria-describedby` is kept: the Field's help text is read first and your ids after it.
+ * Use it for a note that belongs to the field but sits elsewhere.
+ */
+export const OwnDescribedBy: Story = {
+  parameters: showSource('text-input/text-input.fixture.tsx', 'OwnDescribedByField'),
+  render: (_args, { globals }) => <OwnDescribedByField locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = maskTextsFor(globals)
+    const input = canvas.getByRole('textbox', { name: text.caseNumber })
+    await expect(input).toHaveAccessibleDescription(
+      `${text.caseNumberHint} ${text.describedByNote}`,
+    )
   },
 }
 

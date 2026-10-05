@@ -2,12 +2,17 @@ import { Button, Field, OneTimeCode } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/one-time-code/one-time-code.a11y.md?raw'
 import guide from '../../../../../packages/react/src/one-time-code/one-time-code.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect } from 'storybook/test'
-import { usageGuide } from '../../docs-source.ts'
+import { expect, userEvent, waitFor } from 'storybook/test'
+import { showSource, usageGuide } from '../../docs-source.ts'
 import { logChange } from '../form/choice.fixture.tsx'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize } from '../theme-story-assertions.ts'
-import { codeTextsFor, oneTimeCodeTextsFor } from './one-time-code.fixture.tsx'
+import {
+  CheckedCodeForm,
+  codeTextsFor,
+  oneTimeCodeTextsFor,
+  SlotStatesRows,
+} from './one-time-code.fixture.tsx'
 
 // Components/Form/OneTimeCode: a code from a text message, an email or an authenticator app,
 // shown as a row of boxes over ONE native input (Plan 0014, Plan 0019, design
@@ -341,6 +346,82 @@ export const LetterPrefix: Story = {
     await expect(input).toHaveAccessibleDescription(texts.smsPrefixHint(2, 4))
     await expect(cellsOf(canvasElement)).toHaveLength(7)
     await expect(separatorIndexes(canvasElement)).toEqual([2])
+  },
+}
+
+/**
+ * Letters and characters in the case as typed: `aa-****` uses the lower-case symbols `a` and `*`,
+ * which keep what the user types, where `A` and `&` make capitals. The input asks for no capitals
+ * on a phone, and the first box refuses a digit. Use them where the service tells `K` from `k`.
+ */
+export const CaseAsTyped: Story = {
+  args: { pattern: 'aa-****' },
+  render: (args, { globals }) => {
+    const pattern = args.pattern ?? '999999'
+    const { label, hint, lang } = codeTextsFor(localeOf(globals), 'case', pattern)
+    return (
+      <Field.Root lang={lang}>
+        <Field.Label marker="none">{label}</Field.Label>
+        <Field.Prose>
+          <p>{hint}</p>
+        </Field.Prose>
+        <OneTimeCode.Root {...args}>
+          <OneTimeCode.Input name="code" />
+          {Array.from(pattern, (_, index) => (
+            <OneTimeCode.Slot key={index} index={index} />
+          ))}
+        </OneTimeCode.Root>
+      </Field.Root>
+    )
+  },
+  play: async ({ canvas, globals }) => {
+    const texts = oneTimeCodeTextsFor(localeOf(globals))
+    const input = canvas.getByRole('textbox', { name: texts.caseLabel })
+    await expect(input).not.toHaveAttribute('autocapitalize')
+    await userEvent.type(input, '1')
+    await expect(input).toHaveValue('')
+    await userEvent.type(input, 'abc3D9')
+    await expect(input).toHaveValue('ab-c3D9')
+  },
+}
+
+/**
+ * A code you control, checked as soon as it is complete. `value` and `onValueChange` hold it in
+ * your state, `onComplete` fires when typing fills the last box and starts the check, and the Input
+ * is `readOnly` meanwhile: it keeps focus, where `disabled` would drop it on the body. Nothing
+ * submits or moves on its own, the Continue button stays, and the wrong code stays in the field.
+ */
+export const CodeBeingChecked: Story = {
+  parameters: showSource('one-time-code/one-time-code.fixture.tsx', 'CheckedCodeForm'),
+  render: (_args, { globals }) => <CheckedCodeForm locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const texts = oneTimeCodeTextsFor(localeOf(globals))
+    const input = canvas.getByRole('textbox', { name: texts.smsLabel })
+    await userEvent.type(input, '481920')
+    await expect(input).toHaveValue('481920')
+    await expect(input).toHaveAttribute('readonly')
+    await expect(input).toHaveFocus()
+    await expect(canvas.getByTestId('checking')).toHaveTextContent(texts.checking)
+    await waitFor(() => expect(input).toHaveAttribute('aria-invalid', 'true'), { timeout: 3000 })
+    await expect(input).not.toHaveAttribute('readonly')
+    await expect(input).toHaveValue('481920')
+  },
+}
+
+/**
+ * The states of the boxes side by side: the active box with its caret (`data-active`,
+ * `data-caret`), the last box of a complete code with the caret after it, and a selection
+ * (`data-selected`). They are drawn by hand here, because in a real field they follow focus and the
+ * selection of the one input, and only one field has focus at a time.
+ */
+export const SlotStates: Story = {
+  parameters: showSource('one-time-code/one-time-code.fixture.tsx', 'SlotStatesRows'),
+  render: (_args, { globals }) => <SlotStatesRows locale={localeOf(globals)} />,
+  play: async ({ canvasElement }) => {
+    const active = [...canvasElement.querySelectorAll('[data-active]')]
+    await expect(active.map((slot) => slot.getAttribute('data-caret'))).toEqual(['before', 'after'])
+    await expect(canvasElement.querySelectorAll('[data-selected]')).toHaveLength(3)
+    await expect(canvasElement.querySelectorAll('[data-filled]')).toHaveLength(15)
   },
 }
 

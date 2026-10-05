@@ -5,9 +5,9 @@
 Choosing one option from a list, or several. Listbox replaces `NativeSelect`. It has two renderings of one API:
 
 - **The popup** (`Listbox.Root`, `Listbox.Trigger`, `Listbox.Popup` and the parts inside it): a stylable popup in the browser's top layer, the APG select-only combobox. It holds groups and rich options, and it is the only rendering for `multiple`.
-- **The native select** (what `Listbox.Root` renders for `native="always"`, and on touch devices with `native="auto"`): the browser's own `<select>`, wired to its Field. On a phone it is better than anything custom. In a `Toolbar`, set `native="never"`: the native select would drop the trigger and its `Toolbar.Item` (Plan 0035).
+- **The native select** (what `Listbox.Root` renders for `native="always"`, and on touch devices with `native="auto"`): the browser's own `<select>`, wired to its Field. On a phone it is better than anything custom. In a `Toolbar`, set `native="never"`: the native select would drop the trigger and its `Toolbar.Item`.
 
-Use a Combobox (a later part of Plan 0022) when the user should type to filter a long list, and a CheckboxGroup for up to about 15 choices that can all be shown.
+Use a [Combobox](../combobox/combobox.md) when the user should type to filter a long list, and a CheckboxGroup for up to about 15 choices that can all be shown.
 
 ## The popup
 
@@ -136,6 +136,10 @@ The list is the scroll element, so give `Listbox.List` a height limit and `overf
   />
 </Field.Root>
 ```
+
+## Developer warnings
+
+In development, a Listbox warns once when it has no accessible name (a trigger outside a Field with no `aria-label`, or in a Field with no `Field.Label`), when a part is outside `Listbox.Root`, when an option is given an item that is not in the Root's items, when `virtualize` has no function child or is used with `groups`, and when a native select is asked for `multiple` or sits in a Toolbar. Each has a code, an explanation and a fix on the Foundation page Dev warnings.
 
 ## Migrating from `NativeSelect`
 

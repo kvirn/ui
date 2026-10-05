@@ -9,11 +9,11 @@ A Popover is a small floating panel that a button opens: a hint, a short form, a
 - **Escape and a press outside close it,** and focus goes back to the button if it was in the popup. Pressing the button again toggles.
 - **Opening never moves focus.** The popup follows the trigger in the Tab order, so render `Popover.Popup` right after `Popover.Trigger`.
 - **Name the popup** with `aria-label` or `aria-labelledby`: its role is `dialog`. A development warning fires without a name.
-- **In a toolbar.** A `Popover.Trigger` can be a `Toolbar.Item`. The popup then sits in the toolbar's React tree, so `Popover.Popup` leaves the toolbar's context: a form in it never registers as toolbar items, and its `ButtonGroup` or `Listbox` doesn't act as if it were in the toolbar (Plan 0036).
+- **In a toolbar.** A `Popover.Trigger` can be a `Toolbar.Item`. The popup then sits in the toolbar's React tree, so `Popover.Popup` leaves the toolbar's context: a form in it never registers as toolbar items, and its `ButtonGroup` or `Listbox` doesn't act as if it were in the toolbar.
 - No strings of its own: the labels are yours, in the page's language.
 - Headless: no CSS. The parts render `kv-popover-trigger`, `kv-popover-popup` and `kv-popover-close`, and your `className` joins them. The only inline styles are the placement: `position: fixed`, `left`, `top`, `box-sizing`, `max-width` and `max-height`. The default theme doesn't style Popover yet.
 
-## Component
+## API
 
 ```tsx
 import { Popover } from '@kvirn-ui/react'
@@ -26,6 +26,13 @@ import { Popover } from '@kvirn-ui/react'
   </Popover.Popup>
 </Popover.Root>
 ```
+
+| Part              | Renders                                  | Class                | Props                                                                           |
+| ----------------- | ---------------------------------------- | -------------------- | ------------------------------------------------------------------------------- |
+| `Popover.Root`    | No element                               |                      | The options below                                                               |
+| `Popover.Trigger` | `<button>` with `aria-haspopup="dialog"` | `kv-popover-trigger` | Its own `aria-expanded` and `aria-controls`, and `data-open`                    |
+| `Popover.Popup`   | `<div popover="auto" role="dialog">`     | `kv-popover-popup`   | `aria-label` or `aria-labelledby` (required), and `data-open`, `data-placement` |
+| `Popover.Close`   | `<button>` that closes the popup         | `kv-popover-close`   | Reports the reason `'close-press'`                                              |
 
 `Popover.Root` takes the options. They're also the options of the hook:
 
@@ -82,6 +89,10 @@ It never covers the trigger (WCAG 2.4.11). It is placed again on scroll, on resi
 
 - `usePopup({ open, anchorRef, popupRef, placement, offset, padding, matchAnchorWidth, popover, onNativeDismiss })` shows and hides the element with the native `popover` attribute and places it. `popover: 'manual'` leaves the closing to you: use it where focus stays in an input. Where the Popover API is missing it toggles `hidden`.
 - `useDismissableLayer({ open, onDismiss, ref, ignore, dismissOnEscape, dismissOnOutsidePress, passOutsidePressThrough })` reports Escape and outside presses, with the reason `'escape'` or `'outside-press'`. Open layers share one stack and only the top one reacts. `dismissOnOutsidePress: false` alone still shields the layers below it, and `passOutsidePressThrough: true` (a tooltip) lets an outside press go through to the next layer. `ignore` takes predicates that make targets outside the layer, such as a Combobox's input and button, count as inside.
+
+## Developer warnings
+
+In development, a Popover warns once when `Popover.Popup` has no accessible name, and when a part is outside `Popover.Root`. Each has a code, an explanation and a fix on the Foundation page Dev warnings.
 
 ## Accessibility
 

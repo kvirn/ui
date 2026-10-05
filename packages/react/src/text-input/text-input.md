@@ -175,68 +175,9 @@ import { Field, TextInput } from '@kvirn-ui/react'
 </Field.Root>
 ```
 
-#### Masks by name
+`mask` takes a name (`"postal-code"`), `{ preset, country? }`, `{ pattern, ...options }`, a `RegExp` or a mask from `masks`. `onValueChange(value, details)` reports `unmaskedValue`, `isComplete`, `isWithinRange` (number masks) and `rejected` (the characters dropped, by reason). **A controlled `value` is rendered as given and never rewritten**: for a stored, unmasked value use the mask's `format`, `value={mask.format(stored)}`. `announceRejections={false}` turns the announcement off, for a message of your own (put it in a live region), and `messages` overrides the strings per instance.
 
-`mask` takes a name, so you don't import anything or pass a country for the common case. It is a union:
-
-| `mask`                                                                                 | Is                                                                                                                           |
-| -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| A name: `"digits"`, `"letters"`, `"letters-and-digits"`                                | The filters of the same name                                                                                                 |
-| `"personal-identity-number"` (alias `"ssi"`), `"postal-code"`, `"organisation-number"` | The country mask for the country the provider implies (below)                                                                |
-| `"date"`, `"iban"`, `"email"`, `"telephone"`                                           | The presets of the same name                                                                                                 |
-| `{ preset, country? }`                                                                 | A named preset with the country set for this one input: `{ preset: 'postal-code', country: 'FI' }`                           |
-| `{ pattern, ...options }`                                                              | A custom pattern with the pattern options (`transform`, `completeLengths`, `attributes`): `{ pattern: '999 99' }`            |
-| A `RegExp`                                                                             | A custom filter that must accept partial values: `/^[A-Z]{0,2}\d{0,6}$/`                                                     |
-| A `Mask` from `masks`                                                                  | The explicit, typed form: `masks.postalCode({ country: 'SE' })`. It stays supported and is what `@kvirn-ui/core` users build |
-
-`number` is not a name: a quantity or an amount is a [NumberInput](../number-input/number-input.md), which owns the number mask.
-
-**Where the country comes from.** The input's own `{ preset, country }`, else the provider's `country` prop, else the region of the provider's locale (`sv-FI` is Finland), else its language (`sv` is Sweden, `fi` is Finland, `nb`, `nn`, `no` and `se` are Norway). Nothing is guessed beyond that: with no country (`en`, `da-DK`) a country mask only takes digits, and a development warning says so once (`mask-country-unresolved:<name>:<locale>`). Pass `{ preset, country }` or set `<KvirnProvider country>`. `useLocale().country` reads the result. A name is resolved in the input, so one `mask="postal-code"` follows the locale of the provider it sits in.
-
-**A name keeps the preset's details.** `unmaskedValue`, `isComplete`, the suggested attributes and the announcements are the preset's, and the help text rule still holds (a masked TextInput in a Field without a help text warns).
-
-#### Presets
-
-Presets (all from `masks`, re-exported by `@kvirn-ui/react`; each preset has the kebab-case name above, such as `personalIdentityNumber` and `"personal-identity-number"`):
-
-| Preset                                                                                                                 | Shapes                                                                                                                                                                                                                                                                                                                     |
-| ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `digits({ length? })`, `letters()`, `lettersAndDigits()`                                                               | Filters. `letters()` isn't for names: names have spaces, hyphens and apostrophes                                                                                                                                                                                                                                           |
-| `number({ decimals?, allowNegative?, grouping?, min?, max? })` (for a quantity or an amount, NumberInput builds it in) | A number with the page's decimal separator. `min` and `max` are reported as `isWithinRange`, never clamped                                                                                                                                                                                                                 |
-| `personalIdentityNumber({ country })`                                                                                  | SE: 10 or 12 digits and `-` or `+`. FI: `DDMMYY`, the century sign and `NNNC`, in capitals. NO: 11 digits                                                                                                                                                                                                                  |
-| `date({ locale? })`                                                                                                    | A date in one field in the page's order and separator (`2026-10-04` in sv, `04.10.2026` in fi). A separator after a day or month closes it, a pasted ISO date is reformatted, and `unmaskedValue` is the ISO date once complete. The shape only: check it with `checks.date`. See [DateInput](../date-input/date-input.md) |
-| `organisationNumber({ country })`, `postalCode({ country })`, `iban()`                                                 | `556000-0001`, `123 45`, `SE45 5000 0000 0583 9825 7466`                                                                                                                                                                                                                                                                   |
-| `email()`, `telephone()`                                                                                               | Filters: spaces out of an address, and digits, `+`, space, `-`, `(`, `)` for a number. No national format                                                                                                                                                                                                                  |
-| `pattern('aa-9999', { transform? })`, `regexp(/^[A-Z]{0,3}\d{0,3}$/, { allowed?, complete? })`                         | Your own. In a pattern `9` is a digit, `a` a letter (å, ø, đ, ŋ count), `*` either, and the rest are literals. A regexp must accept partial values                                                                                                                                                                         |
-| `oneTimeCode({ pattern })`                                                                                             | For a one-time code: `9` digit, `*` letter or digit, `a` letter, `A` and `&` upper-case, `-` a separator. ASCII only                                                                                                                                                                                                       |
-
-A preset suggests `inputMode`, `autoCapitalize`, `spellCheck={false}` and, for identifiers, `dir="ltr"`. Your own props win. It never sets `autocomplete`: that depends on the question.
-
-What a mask does, and doesn't:
-
-- **Lenient.** A pasted `19900101 2385`, `199001012385` or `19900101-2385` all end as `19900101-2385`. A typed literal is accepted once. There are no placeholder characters in the value, and no `maxlength` or `pattern`.
-- **Backspace and Delete always remove a character**, also next to a separator. The caret stays after the character the user typed. A dead key or IME composition is left alone until it ends.
-- **The value is written back only when the mask changed it**, so plain typing keeps the browser's undo history. When the mask inserts a separator, undo for that step is lost.
-- **Reported, never enforced.** `onValueChange(value, details)` gets `details.unmaskedValue`, `isComplete` (the shape is complete, not that the number exists), `isWithinRange` (number masks) and `rejected` (the characters dropped, grouped by reason). Check the number yourself when you validate, with `checks.personalIdentityNumber(value, { country })`, `checks.organisationNumber`, `checks.iban` and `checks.date(isoValue, { min?, max? })`: each returns `{ isValid, reason }` with `reason` `'format'`, `'date'`, `'checkDigit'` (and `'country'` for an IBAN), and for a date `'format'`, `'date'` and `'range'`, so you can write a specific message.
-- **A controlled `value` is rendered as given and never rewritten.** For a stored, unmasked value use the mask's `format`: `value={mask.format(stored)}`. A form submit sends the formatted value, and `mask.unmask(value)` gives the plain one.
-- **Rejected characters are announced** (4.1.3): a polite message from the shared Announcer, "Här kan du bara skriva siffror." or "Du har skrivit alla 12 tecken.", at most once every three seconds per field. The strings are in all six locales (`mask.characterNotAllowed`, `mask.maximumLength`), and you can override them per provider or per instance: `messages={{ characterNotAllowed: () => '…' }}`. `announceRejections={false}` turns it off, for example when you show your own message. **The `KvirnProvider` is required for announcements:** without one the mask still works, nothing is announced, and a development warning says so once.
-- **Numbers and dates** use the provider's locale for the separator (a comma in sv, fi, nb, nn and se) and for the order of a date, whichever separator is typed. Pass `useMask`'s `format` or `mask.withLocale(locale)` to show a stored number the same way.
-- **Types.** A mask works on `type` `text`, `tel`, `search`, `url` and `password`. On `type="email"` there is no caret control, so use only `masks.email()` there: another mask warns in development.
-
-#### `useMask` on your own `<input>`
-
-```tsx
-import { masks, mergeProps, useMask } from '@kvirn-ui/react'
-
-const caseNumber = useMask({
-  mask: masks.pattern('aa-9999', { transform: { a: (letter) => letter.toUpperCase() } }),
-  onValueChange: (value, details) => setCaseNumber(details.unmaskedValue),
-})
-// Your own props last, so they win over the preset's suggestions. The handlers chain.
-<input {...mergeProps(caseNumber.inputProps, { name: 'caseNumber', autoComplete: 'off' })} />
-```
-
-`useMask` takes the same `mask` values as TextInput (a name, `{ preset }`, `{ pattern }`, a `RegExp` or a `Mask`). It returns `inputProps` (`onChange`, `onFocus`, `onCompositionStart`, `onCompositionEnd`, a `ref` that tracks the value before each edit, and the suggested attributes), plus `format` and `unmask` for the provider's locale. Inside a Field, spread `useTextInput`'s props too: they read the Field.
+The names, the country rules, every preset, the checks (`checks.personalIdentityNumber`, `checks.organisationNumber`, `checks.iban`, `checks.date`, with their reasons) and `useMask` on your own input are on the [Mask](../mask/mask.md) page.
 
 ### Your part
 

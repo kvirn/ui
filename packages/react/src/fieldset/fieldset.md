@@ -15,6 +15,28 @@ A native `<fieldset>` with a `<legend>`: it groups related questions (an address
 - `group` is for one question answered with several controls. The legend then ends with "(valfritt)" when the group isn't `required`, and the Fields inside drop their own marker: an option or a date box is never "(optional)". A plain Fieldset only groups questions, so its legend has no marker, and its Fields mark themselves.
 - Headless: no CSS. It renders `kv-fieldset` and `kv-fieldset-legend`. With `@kvirn-ui/theme/theme.css` imported it is styled: no border, and a gap between the parts.
 
+## API
+
+| Part                    | Renders                                                 | What it is                                                                                                                                                     |
+| ----------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Fieldset.Root`         | `<fieldset class="kv-fieldset">`                        | The group. Takes `invalid`, `required`, `disabled`, `group`, `messages`, `id`, `aria-describedby` and every fieldset prop. `render` must return a `<fieldset>` |
+| `Fieldset.Legend`       | `<legend class="kv-fieldset-legend">`                   | The question and the group's name. Put it first. `marker` is `'optional'` (the default in a `group` that isn't `required`) or `'none'`                         |
+| `Fieldset.Prose`        | a [Prose](../prose/prose.md) (`<div class="kv-prose">`) | The description, above the controls                                                                                                                            |
+| `Fieldset.HelpText`     | `<p class="kv-field-help-text">`                        | The help text, under the controls: [Field's](../field/field-help-text.md) `HelpText` under the group's name                                                    |
+| `Fieldset.ErrorMessage` | `<p class="kv-field-error-message">`                    | The error. It renders only while the Fieldset is `invalid`. One per Fieldset                                                                                   |
+
+| State attribute | Where and when                                                                              |
+| --------------- | ------------------------------------------------------------------------------------------- |
+| `data-invalid`  | On the fieldset, its legend, description, help text and error, when `invalid`. Not cascaded |
+| `data-required` | On the fieldset and its legend, when `required`                                             |
+| `data-disabled` | On the fieldset and its parts, when `disabled`                                              |
+
+- **`id`** is the fieldset's own id (default: generated). The description and error ids are derived from it (`<id>-description-…`, `<id>-error`), so give it one when you link to the group, for example from an error summary.
+- **`aria-describedby`** that you pass is kept: the fieldset's own ids (every description and help text in DOM order, then the error) come first, and yours follow.
+- **`group`** is for one question answered with several controls. The Legend then ends with the optional text unless `required`, and the Fields inside drop theirs.
+- **Messages (`messages`):** `optional` (after a legend) and `errorPrefix`, resolved like [Field's](../field/field.md). There is no `aria-invalid` and no `aria-required` on a fieldset: ARIA doesn't support them on `group`.
+- **Dev warnings (once):** a `Fieldset.Legend` outside a `Fieldset.Root` (`fieldset-legend-outside-fieldset`); a `render` that isn't a `<fieldset>`; two error messages in one Fieldset; an `invalid` Fieldset with no error message.
+
 ## Component
 
 ```tsx
@@ -51,6 +73,9 @@ Your part:
 - **Put the Fieldset.Legend first** inside the Fieldset. It asks the question or names the group.
 - **A legend that is the page's heading:** `<Fieldset.Legend className="kv-fieldset-legend--heading"><h1>Var bor du?</h1></Fieldset.Legend>`. One question per page, as in a service flow.
 - **Don't wrap every Field in a fieldset.** A fieldset announces itself, and nested ones get noisy. Use one for options and for one question asked in several controls.
+- **An optional section.** A plain Fieldset's legend has no marker, but `<Fieldset.Legend marker="optional">` adds the optional text, for a section the user may skip whole ("Kontaktperson (valfritt)"). The Fields inside keep their own state, so a section that is optional but complete once started has `required` Fields. `messages` on the Fieldset rewords the text for that one section.
+- **A required group.** `required` on a `group` removes the optional text from the legend and sets `data-required`. It is not announced as required (no `aria-required` on `group`), so say what is required in the legend or the description.
+- **Your own description.** Pass `aria-describedby` with the id of a paragraph elsewhere on the page and it is appended after the group's own descriptions.
 - **Set `invalid` and render a Fieldset.ErrorMessage together,** with text that says what's wrong and how to fix it. Until the error summary block ships, move focus to the first invalid control on submit.
 - **Messages.** The optional text and the error prefix are `field.optional` and `field.errorPrefix`, resolved like Field's. Override per instance with `messages`.
 

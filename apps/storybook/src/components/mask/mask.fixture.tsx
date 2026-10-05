@@ -16,6 +16,7 @@ import type { TextInputChangeDetails } from '@kvirn-ui/react'
 import type { FormLocale } from '../form/form.fixture.tsx'
 import type { Decorator } from '@storybook/react-vite'
 import { useState } from 'react'
+import { codeTextsFor } from '../one-time-code/one-time-code.fixture.tsx'
 
 // Story and e2e fixture for Components/Form/Mask (Plan 0014). sv, nb, nn and en
 // are written here. fi and se: English, marked lang="en" (3.1.2). The numbers are the published test numbers from packages/core/src/mask/checks
@@ -75,6 +76,38 @@ export interface MaskTexts {
   ownInputHint: string
   quiet: string
   quietHint: string
+  organisationNumberFi: string
+  organisationNumberFiHint: string
+  organisationNumberNo: string
+  organisationNumberNoHint: string
+  postalCodeFi: string
+  postalCodeFiHint: string
+  postalCodeNo: string
+  postalCodeNoHint: string
+  /** The error for a check that fails with `format`, whichever number it checks. */
+  checkFormatGeneric: string
+  /** The error for a check digit or check character that doesn't match. */
+  checkControl: string
+  /** The error for an IBAN whose country code is not in the registry. */
+  checkCountry: string
+  /** The sentence that says a form also takes the test registry's numbers. */
+  syntheticNote: string
+  customerNumber: string
+  customerNumberHint: string
+  accountNumber: string
+  accountNumberHint: string
+  bookingCode: string
+  bookingCodeHint: string
+  groupedAmount: string
+  groupedAmountHint: (example: string) => string
+  finnishAmount: string
+  finnishAmountHint: (example: string) => string
+  storedAmount: string
+  /** The message a field shows and announces instead of the library's own (`messages` override). */
+  ownRejection: string
+  rejected: string
+  /** A note outside the Field, linked to the input with the input's own `aria-describedby`. */
+  describedByNote: string
 }
 
 const textsSv: MaskTexts = {
@@ -131,6 +164,37 @@ const textsSv: MaskTexts = {
   quiet: 'Tyst fält',
   quietHint:
     'Bara siffror. Det här fältet säger inget högt när ett tecken nekas (announceRejections av).',
+  organisationNumberFi: 'Organisationsnummer (Finland)',
+  organisationNumberFiHint:
+    'Sju siffror, bindestreck och en kontrollsiffra, till exempel 0112038-9.',
+  organisationNumberNo: 'Organisasjonsnummer (Norge)',
+  organisationNumberNoHint: 'Nio siffror, till exempel 974 760 673.',
+  postalCodeFi: 'Postnummer (Finland)',
+  postalCodeFiHint: 'Fem siffror, till exempel 00100.',
+  postalCodeNo: 'Postnummer (Norge)',
+  postalCodeNoHint: 'Fyra siffror, till exempel 0150.',
+  checkFormatGeneric: 'Numret har fel antal siffror eller tecken. Kontrollera numret.',
+  checkControl: 'Kontrollsiffran stämmer inte. Kontrollera numret.',
+  checkCountry: 'Landskoden i IBAN-numret finns inte. Kontrollera de två första bokstäverna.',
+  syntheticNote: 'Formuläret godtar också testnummer från Skatteetatens testregister.',
+  customerNumber: 'Kundnummer',
+  customerNumberHint: 'Åtta eller tio siffror. Under fältet står om numret är komplett.',
+  accountNumber: 'Kontonummer',
+  accountNumberHint:
+    'Minst åtta siffror. Du får skriva mellanrum och bindestreck, men de sparas inte.',
+  bookingCode: 'Bokningskod',
+  bookingCodeHint:
+    'Börjar alltid med 9, sedan två bokstäver eller siffror, ett bindestreck och tre siffror, till exempel 9K2-407. Bokstäverna blir stora automatiskt.',
+  groupedAmount: 'Belopp, skrivet på sidans språk',
+  groupedAmountHint: (example) =>
+    `Skriv beloppet i kronor, till exempel ${example}. Tusentalen och decimaltecknet följer sidans språk.`,
+  finnishAmount: 'Belopp, alltid skrivet på finska',
+  finnishAmountHint: (example) =>
+    `Skriv beloppet i euro, till exempel ${example}. Fältet har alltid finskt decimaltecken, också när sidan är på ett annat språk.`,
+  storedAmount: 'Sparat belopp 1250000.5 visat på sidans språk',
+  ownRejection: 'Skriv bara siffror, utan bokstäver eller mellanrum.',
+  rejected: 'Utelämnade tecken',
+  describedByNote: 'Du hittar numret överst i brevet från oss, bredvid datumet.',
 }
 
 const textsNb: MaskTexts = {
@@ -186,6 +250,36 @@ const textsNb: MaskTexts = {
   quiet: 'Stille felt',
   quietHint:
     'Bare siffer. Dette feltet sier ingenting høyt når et tegn nektes (announceRejections av).',
+  organisationNumberFi: 'Organisasjonsnummer (Finland)',
+  organisationNumberFiHint: 'Sju siffer, bindestrek og et kontrollsiffer, for eksempel 0112038-9.',
+  organisationNumberNo: 'Organisasjonsnummer (Norge)',
+  organisationNumberNoHint: 'Ni siffer, for eksempel 974 760 673.',
+  postalCodeFi: 'Postnummer (Finland)',
+  postalCodeFiHint: 'Fem siffer, for eksempel 00100.',
+  postalCodeNo: 'Postnummer (Norge)',
+  postalCodeNoHint: 'Fire siffer, for eksempel 0150.',
+  checkFormatGeneric: 'Nummeret har feil antall siffer eller tegn. Kontroller nummeret.',
+  checkControl: 'Kontrollsifferet stemmer ikke. Kontroller nummeret.',
+  checkCountry: 'Landskoden i IBAN-nummeret finnes ikke. Kontroller de to første bokstavene.',
+  syntheticNote: 'Skjemaet godtar også testnumre fra Skatteetatens testregister.',
+  customerNumber: 'Kundenummer',
+  customerNumberHint: 'Åtte eller ti siffer. Under feltet står det om nummeret er komplett.',
+  accountNumber: 'Kontonummer',
+  accountNumberHint:
+    'Minst åtte siffer. Du kan skrive mellomrom og bindestrek, men de lagres ikke.',
+  bookingCode: 'Bestillingskode',
+  bookingCodeHint:
+    'Starter alltid med 9, så to bokstaver eller siffer, en bindestrek og tre siffer, for eksempel 9K2-407. Bokstavene blir store automatisk.',
+  groupedAmount: 'Beløp, skrevet på sidens språk',
+  groupedAmountHint: (example) =>
+    `Skriv beløpet i kroner, for eksempel ${example}. Tusenskilletegn og desimaltegn følger sidens språk.`,
+  finnishAmount: 'Beløp, alltid skrevet på finsk',
+  finnishAmountHint: (example) =>
+    `Skriv beløpet i euro, for eksempel ${example}. Feltet har alltid finsk desimaltegn, også når siden er på et annet språk.`,
+  storedAmount: 'Lagret beløp 1250000.5 vist på sidens språk',
+  ownRejection: 'Skriv bare siffer, uten bokstaver eller mellomrom.',
+  rejected: 'Utelatte tegn',
+  describedByNote: 'Du finner nummeret øverst i brevet fra oss, ved siden av datoen.',
 }
 
 const textsNn: MaskTexts = {
@@ -241,6 +335,36 @@ const textsNn: MaskTexts = {
   quiet: 'Stille felt',
   quietHint:
     'Berre siffer. Dette feltet seier ingenting høgt når eit teikn blir nekta (announceRejections av).',
+  organisationNumberFi: 'Organisasjonsnummer (Finland)',
+  organisationNumberFiHint: 'Sju siffer, bindestrek og eit kontrollsiffer, til dømes 0112038-9.',
+  organisationNumberNo: 'Organisasjonsnummer (Noreg)',
+  organisationNumberNoHint: 'Ni siffer, til dømes 974 760 673.',
+  postalCodeFi: 'Postnummer (Finland)',
+  postalCodeFiHint: 'Fem siffer, til dømes 00100.',
+  postalCodeNo: 'Postnummer (Noreg)',
+  postalCodeNoHint: 'Fire siffer, til dømes 0150.',
+  checkFormatGeneric: 'Nummeret har feil tal på siffer eller teikn. Kontroller nummeret.',
+  checkControl: 'Kontrollsifferet stemmer ikkje. Kontroller nummeret.',
+  checkCountry: 'Landskoden i IBAN-nummeret finst ikkje. Kontroller dei to første bokstavane.',
+  syntheticNote: 'Skjemaet godtek også testnummer frå testregisteret til Skatteetaten.',
+  customerNumber: 'Kundenummer',
+  customerNumberHint: 'Åtte eller ti siffer. Under feltet står det om nummeret er komplett.',
+  accountNumber: 'Kontonummer',
+  accountNumberHint:
+    'Minst åtte siffer. Du kan skrive mellomrom og bindestrek, men dei blir ikkje lagra.',
+  bookingCode: 'Bestillingskode',
+  bookingCodeHint:
+    'Startar alltid med 9, så to bokstavar eller siffer, ein bindestrek og tre siffer, til dømes 9K2-407. Bokstavane blir store automatisk.',
+  groupedAmount: 'Beløp, skrive på språket til sida',
+  groupedAmountHint: (example) =>
+    `Skriv beløpet i kroner, til dømes ${example}. Tusenskiljeteikn og desimalteikn følgjer språket til sida.`,
+  finnishAmount: 'Beløp, alltid skrive på finsk',
+  finnishAmountHint: (example) =>
+    `Skriv beløpet i euro, til dømes ${example}. Feltet har alltid finsk desimalteikn, også når sida er på eit anna språk.`,
+  storedAmount: 'Lagra beløp 1250000.5 vist på språket til sida',
+  ownRejection: 'Skriv berre siffer, utan bokstavar eller mellomrom.',
+  rejected: 'Utelatne teikn',
+  describedByNote: 'Du finn nummeret øvst i brevet frå oss, ved sida av datoen.',
 }
 
 const textsEn: MaskTexts = {
@@ -296,6 +420,38 @@ const textsEn: MaskTexts = {
   quiet: 'Quiet field',
   quietHint:
     'Digits only. This field says nothing aloud when a character is refused (announceRejections off).',
+  organisationNumberFi: 'Organisation number (Finland)',
+  organisationNumberFiHint: 'Seven digits, a hyphen and a check digit, for example 0112038-9.',
+  organisationNumberNo: 'Organisation number (Norway)',
+  organisationNumberNoHint: 'Nine digits, for example 974 760 673.',
+  postalCodeFi: 'Postcode (Finland)',
+  postalCodeFiHint: 'Five digits, for example 00100.',
+  postalCodeNo: 'Postcode (Norway)',
+  postalCodeNoHint: 'Four digits, for example 0150.',
+  checkFormatGeneric: 'The number has the wrong number of digits or characters. Check the number.',
+  checkControl: 'The check digit doesn’t match. Check the number.',
+  checkCountry: 'The country code of the IBAN doesn’t exist. Check the first two letters.',
+  syntheticNote:
+    'The form also accepts test numbers from the Norwegian Tax Administration’s test registry.',
+  customerNumber: 'Customer number',
+  customerNumberHint:
+    'Eight or ten digits. Below the field it says whether the number is complete.',
+  accountNumber: 'Account number',
+  accountNumberHint:
+    'At least eight digits. You can type spaces and hyphens, but they aren’t saved.',
+  bookingCode: 'Booking code',
+  bookingCodeHint:
+    'Always starts with 9, then two letters or digits, a hyphen and three digits, for example 9K2-407. The letters become capitals automatically.',
+  groupedAmount: 'Amount, written in the page’s language',
+  groupedAmountHint: (example) =>
+    `Enter the amount in kronor, for example ${example}. The thousands separator and the decimal mark follow the page’s language.`,
+  finnishAmount: 'Amount, always written in Finnish',
+  finnishAmountHint: (example) =>
+    `Enter the amount in euros, for example ${example}. The field always uses the Finnish decimal mark, also when the page is in another language.`,
+  storedAmount: 'Saved amount 1250000.5 shown in the page’s language',
+  ownRejection: 'Enter digits only, with no letters or spaces.',
+  rejected: 'Characters left out',
+  describedByNote: 'You’ll find the number at the top of our letter, next to the date.',
 }
 
 const maskTexts: Record<MaskLocale, MaskTexts> = {
@@ -336,6 +492,10 @@ export const characterNotAllowedMessage = (
   locale: MaskLocale,
   allowed: 'digits' | 'letters' | 'lettersAndDigits' | 'other',
 ): string => maskMessages[locale].mask.characterNotAllowed({ allowed })
+
+/** The mask's announcement for a field that is full, in the page's language, for the plays. */
+export const maximumLengthMessage = (locale: MaskLocale, length: number): string =>
+  maskMessages[locale].mask.maximumLength({ length })
 
 /**
  * The provider, with the library strings in the page's language: the mask's announcements come
@@ -701,6 +861,381 @@ export function OwnInputField({ locale }: { locale: FormLocale }) {
         {...mergeProps(caseNumber.inputProps, { 'data-own': '' })}
       />
     </Field.Root>
+  )
+}
+
+/** Finland's and Norway's postcodes and organisation numbers, each by `{ preset, country }`. */
+export function NordicCountryFields({ locale }: { locale: FormLocale }) {
+  const { text, lang } = maskTextsFor({ locale })
+  return (
+    <>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.postalCodeFi}</Field.Label>
+        <Field.Prose>
+          <p>{text.postalCodeFiHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="postalCodeFi"
+          mask={{ preset: 'postal-code', country: 'FI' }}
+          autoComplete="postal-code"
+          className="kv-input--width-6"
+        />
+      </Field.Root>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.postalCodeNo}</Field.Label>
+        <Field.Prose>
+          <p>{text.postalCodeNoHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="postalCodeNo"
+          mask={{ preset: 'postal-code', country: 'NO' }}
+          autoComplete="postal-code"
+          className="kv-input--width-6"
+        />
+      </Field.Root>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.organisationNumberFi}</Field.Label>
+        <Field.Prose>
+          <p>{text.organisationNumberFiHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="organisationNumberFi"
+          mask={{ preset: 'organisation-number', country: 'FI' }}
+          autoComplete="off"
+          className="kv-input--width-10"
+        />
+      </Field.Root>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.organisationNumberNo}</Field.Label>
+        <Field.Prose>
+          <p>{text.organisationNumberNoHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="organisationNumberNo"
+          mask={{ preset: 'organisation-number', country: 'NO' }}
+          autoComplete="off"
+          className="kv-input--width-10"
+        />
+      </Field.Root>
+    </>
+  )
+}
+
+/**
+ * The checks your form calls on submit, one per number: Finnish personal identity number,
+ * Norwegian personal identity number (with the test registry's numbers allowed), Norwegian
+ * organisation number and IBAN. Each failure has a reason, so the error says what is wrong.
+ */
+export function IdentifierChecksForm({ locale }: { locale: FormLocale }) {
+  const { text, lang } = maskTextsFor({ locale })
+  const [errors, setErrors] = useState<
+    Record<'finnish' | 'norwegian' | 'organisation' | 'iban', string | undefined>
+  >({ finnish: undefined, norwegian: undefined, organisation: undefined, iban: undefined })
+  const reasons = {
+    format: text.checkFormatGeneric,
+    date: text.checkDate,
+    checkDigit: text.checkControl,
+    country: text.checkCountry,
+  }
+  return (
+    <form
+      className="kv-story-form"
+      lang={lang}
+      noValidate
+      onSubmit={(event) => {
+        event.preventDefault()
+        const data = new FormData(event.currentTarget)
+        const read = (name: string) => {
+          const value = data.get(name)
+          return typeof value === 'string' ? value : ''
+        }
+        const finnish = checks.personalIdentityNumber(read('finnish'), { country: 'FI' })
+        // Only for test data: the test registry's numbers add 80 to the month. Off by default.
+        const norwegian = checks.personalIdentityNumber(read('norwegian'), {
+          country: 'NO',
+          allowSyntheticNumbers: true,
+        })
+        const organisation = checks.organisationNumber(read('organisation'), { country: 'NO' })
+        const iban = checks.iban(read('iban'))
+        setErrors({
+          finnish: finnish.isValid ? undefined : reasons[finnish.reason],
+          norwegian: norwegian.isValid ? undefined : reasons[norwegian.reason],
+          organisation: organisation.isValid ? undefined : reasons[organisation.reason],
+          iban: iban.isValid ? undefined : reasons[iban.reason],
+        })
+      }}
+    >
+      <Field.Root required invalid={errors.finnish !== undefined}>
+        <Field.Label>{text.personalIdentityNumberFi}</Field.Label>
+        <Field.Prose>
+          <p>{text.personalIdentityNumberFiHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="finnish"
+          mask={{ preset: 'personal-identity-number', country: 'FI' }}
+          autoComplete="off"
+          className="kv-input--width-20"
+        />
+        <Field.ErrorMessage>{errors.finnish}</Field.ErrorMessage>
+      </Field.Root>
+      <Field.Root required invalid={errors.norwegian !== undefined}>
+        <Field.Label>{text.personalIdentityNumberNo}</Field.Label>
+        <Field.Prose>
+          <p>
+            {text.personalIdentityNumberNoHint} {text.syntheticNote}
+          </p>
+        </Field.Prose>
+        <TextInput
+          name="norwegian"
+          mask={{ preset: 'personal-identity-number', country: 'NO' }}
+          autoComplete="off"
+          className="kv-input--width-20"
+        />
+        <Field.ErrorMessage>{errors.norwegian}</Field.ErrorMessage>
+      </Field.Root>
+      <Field.Root required invalid={errors.organisation !== undefined}>
+        <Field.Label>{text.organisationNumberNo}</Field.Label>
+        <Field.Prose>
+          <p>{text.organisationNumberNoHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="organisation"
+          mask={{ preset: 'organisation-number', country: 'NO' }}
+          autoComplete="off"
+          className="kv-input--width-10"
+        />
+        <Field.ErrorMessage>{errors.organisation}</Field.ErrorMessage>
+      </Field.Root>
+      <Field.Root required invalid={errors.iban !== undefined}>
+        <Field.Label>{text.iban}</Field.Label>
+        <Field.Prose>
+          <p>{text.ibanHint}</p>
+        </Field.Prose>
+        <TextInput name="iban" mask="iban" autoComplete="off" />
+        <Field.ErrorMessage>{errors.iban}</Field.ErrorMessage>
+      </Field.Root>
+      <div className="kv-button-group">
+        <Button type="submit" className="kv-button--primary">
+          {text.send}
+        </Button>
+      </div>
+    </form>
+  )
+}
+
+/**
+ * A number with grouping: one follows the page's language (`mask.withLocale` is what the
+ * provider does for you), the other pins its own `locale`. The hint's example is written from the
+ * field's own mask, so the hint and the field never disagree.
+ */
+export function GroupedNumberFields({ locale }: { locale: FormLocale }) {
+  const { text, lang, locale: maskLocale } = maskTextsFor({ locale })
+  const pageMask = masks.number({ decimals: 2, grouping: true })
+  const finnishMask = masks.number({ decimals: 2, grouping: true, locale: 'fi' })
+  const pageExample = pageMask.withLocale(maskLocale).format('1250000.5')
+  const finnishExample = finnishMask.format('1250000.5')
+  return (
+    <>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.groupedAmount}</Field.Label>
+        <Field.Prose>
+          <p>{text.groupedAmountHint(pageExample)}</p>
+        </Field.Prose>
+        <TextInput
+          name="amount"
+          mask={pageMask}
+          autoComplete="off"
+          className="kv-input--width-10 kv-input--numeric"
+        />
+      </Field.Root>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.finnishAmount}</Field.Label>
+        <Field.Prose>
+          <p>{text.finnishAmountHint(finnishExample)}</p>
+        </Field.Prose>
+        <TextInput
+          name="amountFi"
+          mask={finnishMask}
+          autoComplete="off"
+          className="kv-input--width-10 kv-input--numeric"
+        />
+      </Field.Root>
+      <p className="kv-story-form-output" data-testid="stored">
+        {text.storedAmount}: {pageExample}
+      </p>
+    </>
+  )
+}
+
+/** A one-time code on a plain TextInput: `masks.oneTimeCode` with the code's pattern. */
+export function PlainCodeField({ locale }: { locale: FormLocale }) {
+  const { label, hint, lang } = codeTextsFor(locale, 'email', '&&&&-&&&&')
+  return (
+    <Field.Root required lang={lang}>
+      <Field.Label>{label}</Field.Label>
+      <Field.Prose>
+        <p>{hint}</p>
+      </Field.Prose>
+      <TextInput
+        name="code"
+        mask={masks.oneTimeCode({ pattern: '&&&&-&&&&' })}
+        autoComplete="one-time-code"
+        className="kv-input--width-10"
+      />
+    </Field.Root>
+  )
+}
+
+/**
+ * The options of a custom mask. A pattern with a literal `9` (`\9`) and a `*` that is made a
+ * capital; a pattern that is complete at two lengths; and a regular expression that strips
+ * the spaces and hyphens for the value you store.
+ */
+export function PatternOptionFields({ locale }: { locale: FormLocale }) {
+  const { text, lang } = maskTextsFor({ locale })
+  const [isCustomerNumberComplete, setIsCustomerNumberComplete] = useState(false)
+  const [account, setAccount] = useState({ unmaskedValue: '', isComplete: false })
+  return (
+    <>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.bookingCode}</Field.Label>
+        <Field.Prose>
+          <p>{text.bookingCodeHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="bookingCode"
+          // `\9` is a literal 9, not a digit. `*` takes a letter or a digit, here in capitals.
+          mask={{
+            pattern: String.raw`\9**-999`,
+            transform: { '*': (character) => character.toUpperCase() },
+            attributes: { autoCapitalize: 'characters', spellCheck: false, dir: 'ltr' },
+          }}
+          autoComplete="off"
+          className="kv-input--width-6"
+        />
+      </Field.Root>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.customerNumber}</Field.Label>
+        <Field.Prose>
+          <p>{text.customerNumberHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="customerNumber"
+          // Complete at eight digits and at ten, but not at nine.
+          mask={{ pattern: '9999999999', completeLengths: [8, 10] }}
+          autoComplete="off"
+          className="kv-input--width-10"
+          onValueChange={(_value, details) =>
+            setIsCustomerNumberComplete(details.isComplete === true)
+          }
+        />
+        <p className="kv-story-form-output" data-testid="customer-complete">
+          {text.complete}: {isCustomerNumberComplete ? text.yes : text.no}
+        </p>
+      </Field.Root>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.accountNumber}</Field.Label>
+        <Field.Prose>
+          <p>{text.accountNumberHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="accountNumber"
+          // The expression accepts partial values. `unmask` is what you store; `complete` says when
+          // there are enough digits.
+          mask={masks.regexp(/^[\d -]*$/, {
+            unmask: (value) => value.replaceAll(/\D/g, ''),
+            complete: /^(?:[ -]*\d){8}[\d -]*$/,
+            attributes: { inputMode: 'numeric', spellCheck: false },
+          })}
+          autoComplete="off"
+          className="kv-input--width-20"
+          onValueChange={(_value, details) =>
+            setAccount({
+              unmaskedValue: details.unmaskedValue ?? '',
+              isComplete: details.isComplete === true,
+            })
+          }
+        />
+        <p className="kv-story-form-output" data-testid="account-details">
+          {text.unmasked}: {account.unmaskedValue} · {text.complete}:{' '}
+          {account.isComplete ? text.yes : text.no}
+        </p>
+      </Field.Root>
+    </>
+  )
+}
+
+/**
+ * Every reason a character is refused, each in its own field (the announcement is throttled per
+ * field): digits only, the field is full, letters only, letters and digits only, and "other" for
+ * a filter with a custom set of characters.
+ */
+export function RefusalFields({ locale }: { locale: FormLocale }) {
+  const { text, lang } = maskTextsFor({ locale })
+  return (
+    <>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.digits}</Field.Label>
+        <Field.Prose>
+          <p>{text.digitsHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="digits"
+          mask={masks.digits({ length: 6 })}
+          autoComplete="off"
+          className="kv-input--width-10"
+        />
+      </Field.Root>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.postalCode}</Field.Label>
+        <Field.Prose>
+          <p>{text.postalCodeHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="postalCode"
+          mask="postal-code"
+          autoComplete="postal-code"
+          className="kv-input--width-6"
+        />
+      </Field.Root>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.letters}</Field.Label>
+        <Field.Prose>
+          <p>{text.lettersHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="letters"
+          mask="letters"
+          autoComplete="off"
+          className="kv-input--width-10"
+        />
+      </Field.Root>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.lettersAndDigits}</Field.Label>
+        <Field.Prose>
+          <p>{text.lettersAndDigitsHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="lettersAndDigits"
+          mask="letters-and-digits"
+          autoComplete="off"
+          className="kv-input--width-10"
+        />
+      </Field.Root>
+      <Field.Root required lang={lang}>
+        <Field.Label>{text.telephone}</Field.Label>
+        <Field.Prose>
+          <p>{text.telephoneHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="telephone"
+          type="tel"
+          mask="telephone"
+          autoComplete="tel"
+          className="kv-input--width-20"
+        />
+      </Field.Root>
+    </>
   )
 }
 

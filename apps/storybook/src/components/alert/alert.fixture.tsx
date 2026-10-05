@@ -42,7 +42,20 @@ interface AlertTexts {
   /** The same title on all four statuses, so the icon and the colour are the only difference. */
   sample: { title: string }
   /** The words that replace the status word in MessagesOverride. */
-  override: { danger: string; warning: string; dangerTitle: string; warningTitle: string }
+  override: {
+    danger: string
+    warning: string
+    info: string
+    success: string
+    dangerTitle: string
+    warningTitle: string
+  }
+  /** Site-wide outage (landmark and assertive), a list in the Body, and the close button options. */
+  more: {
+    outage: { title: string; body: string; simulate: string }
+    missing: { title: string; items: readonly [string, string]; fix: string }
+    close: { visibleText: string; customName: string; tip: string }
+  }
   dynamic: { label: string }
   prose: { heading: string }
   /** A dismissible info alert on a page with a heading, and the button that brings it back. */
@@ -93,8 +106,27 @@ const en: AlertTexts = {
     warning: 'Note:',
     dangerTitle: 'We couldn’t save your answers',
     warningTitle: 'Check your answers before you send',
+    info: 'Tip:',
+    success: 'Saved:',
   },
   dynamic: { label: 'Status' },
+  more: {
+    outage: {
+      title: 'The service is down',
+      body: 'We are working on it. You can’t send applications right now.',
+      simulate: 'Simulate an outage',
+    },
+    missing: {
+      title: 'Check your answers before you send',
+      items: ['Your personal identity number is missing', 'Your phone number is incomplete'],
+      fix: 'Go to your answers',
+    },
+    close: {
+      visibleText: 'Hide',
+      customName: 'Hide the tip',
+      tip: 'You can save a draft at any time',
+    },
+  },
   prose: { heading: 'Summer jobs in the municipality' },
   dismissible: {
     heading: 'Your cases',
@@ -142,8 +174,27 @@ const sv: AlertTexts = {
     warning: 'Obs:',
     dangerTitle: 'Vi kunde inte spara dina svar',
     warningTitle: 'Kontrollera dina svar innan du skickar',
+    info: 'Tips:',
+    success: 'Sparat:',
   },
   dynamic: { label: 'Status' },
+  more: {
+    outage: {
+      title: 'Tjänsten är nere',
+      body: 'Vi arbetar med felet. Du kan inte skicka in ansökningar just nu.',
+      simulate: 'Visa en driftstörning',
+    },
+    missing: {
+      title: 'Kontrollera dina svar innan du skickar',
+      items: ['Personnummer saknas', 'Telefonnumret är ofullständigt'],
+      fix: 'Gå till dina svar',
+    },
+    close: {
+      visibleText: 'Dölj',
+      customName: 'Dölj tipset',
+      tip: 'Du kan spara ett utkast när som helst',
+    },
+  },
   prose: { heading: 'Sommarjobb i kommunen' },
   dismissible: {
     heading: 'Dina ärenden',
@@ -195,8 +246,27 @@ const fi: AlertTexts = {
     warning: 'Huom:',
     dangerTitle: 'Emme voineet tallentaa vastauksiasi',
     warningTitle: 'Tarkista vastauksesi ennen lähettämistä',
+    info: 'Vinkki:',
+    success: 'Tallennettu:',
   },
   dynamic: { label: 'Tila' },
+  more: {
+    outage: {
+      title: 'Palvelu ei ole käytettävissä',
+      body: 'Korjaamme vikaa. Hakemuksia ei voi lähettää juuri nyt.',
+      simulate: 'Näytä käyttökatko',
+    },
+    missing: {
+      title: 'Tarkista vastauksesi ennen lähettämistä',
+      items: ['Henkilötunnus puuttuu', 'Puhelinnumero on epätäydellinen'],
+      fix: 'Siirry vastauksiisi',
+    },
+    close: {
+      visibleText: 'Piilota',
+      customName: 'Piilota vinkki',
+      tip: 'Voit tallentaa luonnoksen milloin tahansa',
+    },
+  },
   prose: { heading: 'Kesätyöt kunnassa' },
   dismissible: {
     heading: 'Asiasi',
@@ -242,8 +312,27 @@ const nb: AlertTexts = {
     warning: 'Obs:',
     dangerTitle: 'Vi kunne ikke lagre svarene dine',
     warningTitle: 'Sjekk svarene dine før du sender',
+    info: 'Tips:',
+    success: 'Lagret:',
   },
   dynamic: { label: 'Status' },
+  more: {
+    outage: {
+      title: 'Tjenesten er nede',
+      body: 'Vi jobber med feilen. Du kan ikke sende inn søknader akkurat nå.',
+      simulate: 'Vis en driftsforstyrrelse',
+    },
+    missing: {
+      title: 'Sjekk svarene dine før du sender',
+      items: ['Fødselsnummer mangler', 'Telefonnummeret er ufullstendig'],
+      fix: 'Gå til svarene dine',
+    },
+    close: {
+      visibleText: 'Skjul',
+      customName: 'Skjul tipset',
+      tip: 'Du kan lagre et utkast når som helst',
+    },
+  },
   prose: { heading: 'Sommerjobb i kommunen' },
   dismissible: {
     heading: 'Sakene dine',
@@ -289,8 +378,27 @@ const nn: AlertTexts = {
     warning: 'Obs:',
     dangerTitle: 'Vi kunne ikkje lagre svara dine',
     warningTitle: 'Sjekk svara dine før du sender',
+    info: 'Tips:',
+    success: 'Lagra:',
   },
   dynamic: { label: 'Status' },
+  more: {
+    outage: {
+      title: 'Tenesta er nede',
+      body: 'Vi arbeider med feilen. Du kan ikkje sende inn søknader akkurat no.',
+      simulate: 'Vis ei driftsforstyrring',
+    },
+    missing: {
+      title: 'Sjekk svara dine før du sender',
+      items: ['Fødselsnummer manglar', 'Telefonnummeret er ufullstendig'],
+      fix: 'Gå til svara dine',
+    },
+    close: {
+      visibleText: 'Skjul',
+      customName: 'Skjul tipset',
+      tip: 'Du kan lagre eit utkast når som helst',
+    },
+  },
   prose: { heading: 'Sommarjobb i kommunen' },
   dismissible: {
     heading: 'Sakene dine',
@@ -797,6 +905,80 @@ export function ClosableAlerts({ locale }: AlertFixtureProps) {
         </Alert.Title>
         <Alert.Close />
       </Alert.Root>
+    </>
+  )
+}
+
+/**
+ * One site-wide alert as a landmark, announced assertively: `render` gives the root a named
+ * `<section>` (the Title's `id` names it), and `announce="assertive"` interrupts, which is only for
+ * something urgent that the user must act on now. The button stands in for the outage starting.
+ */
+export function OutageAlert({ locale }: AlertFixtureProps) {
+  const { text } = textsFor(locale)
+  const titleId = useId()
+  const [hasOutage, setHasOutage] = useState(false)
+  return (
+    <>
+      <Button onClick={() => setHasOutage(true)}>{text.more.outage.simulate}</Button>
+      {hasOutage ? (
+        <Alert.Danger
+          announce="assertive"
+          render={<section aria-labelledby={titleId} />}
+          data-testid="outage"
+        >
+          <Alert.Title id={titleId}>{text.more.outage.title}</Alert.Title>
+          <Alert.Body>
+            <p>{text.more.outage.body}</p>
+          </Alert.Body>
+        </Alert.Danger>
+      ) : null}
+    </>
+  )
+}
+
+/**
+ * `render` on the Body and the Actions: the Body is a list of what's missing, the Actions a
+ * paragraph with the one link. Each part keeps its class, so the theme still styles it.
+ */
+export function MissingAnswersAlert({ locale }: AlertFixtureProps) {
+  const { text } = textsFor(locale)
+  return (
+    <Alert.Warning data-testid="missing">
+      <Alert.Title>{text.more.missing.title}</Alert.Title>
+      <Alert.Body render={<ul />}>
+        {text.more.missing.items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </Alert.Body>
+      <Alert.Actions render={<p />}>
+        <Link.Root href="#answers">{text.more.missing.fix}</Link.Root>
+      </Alert.Actions>
+    </Alert.Warning>
+  )
+}
+
+/**
+ * Three ways to name the close button: `messages` on the root changes its name, `messages` on the
+ * button changes only that button's, and visible text in its children replaces the icon and
+ * becomes the name. The buttons do nothing here: see `DismissibleExample` for the working version.
+ */
+export function CloseButtonNames({ locale }: AlertFixtureProps) {
+  const { text } = textsFor(locale)
+  return (
+    <>
+      <Alert.Info messages={{ close: text.more.close.customName }}>
+        <Alert.Title render={<p />}>{text.more.close.tip}</Alert.Title>
+        <Alert.Close />
+      </Alert.Info>
+      <Alert.Info>
+        <Alert.Title render={<p />}>{text.more.close.tip}</Alert.Title>
+        <Alert.Close messages={{ close: text.more.close.customName }} />
+      </Alert.Info>
+      <Alert.Info>
+        <Alert.Title render={<p />}>{text.more.close.tip}</Alert.Title>
+        <Alert.Close>{text.more.close.visibleText}</Alert.Close>
+      </Alert.Info>
     </>
   )
 }
