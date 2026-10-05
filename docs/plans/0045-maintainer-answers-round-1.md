@@ -1,6 +1,6 @@
 # Plan 0045: Maintainer answers to the open questions, round 1
 
-- **Status:** In progress
+- **Status:** Done (2026-10-05). The accessibility-reviewer second pass was waived by the maintainer; the manual AT matrix stays `pending`
 - **Owner:** orchestrator → component-engineer
 - **Created:** 2026-10-05 · **Target:** M2
 - **Related:** [0003](0003-button-and-link.md), [0006](0006-foundations-and-prose.md), [0013](0013-form-fields.md), [0014](0014-input-masks-and-one-time-code.md), [0020](0020-notification.md), [0034](0034-textarea.md), [0036](0036-rich-text-editor.md), [0037](0037-tooltip.md)
@@ -57,7 +57,7 @@ Apply the maintainer's answers of 2026-10-05 to the open questions, and record e
 
 - **API as built.** `Alert.Close` (also `AlertClose`): a native `<button type="button" class="kv-alert-close">` with `<Icon name="close" />` (decorative). Props: every `<button>` attribute except `type` and `aria-disabled`, `onClick` (repo naming; Button and Toggle use `onClick`, not `onPress`), `disabled` (native, gates `onClick` through `useButton`, also for a `render` element's `onClick` via `takeRenderElementProps`), `messages` (`{ close }`), `children` (visible text replaces the icon and the `aria-label`), `render` (must stay a `<button>`: dev warning `alert-close-not-a-button:<tag>`), `ref`. `useAlert` gets `closeProps` (`className`, `type`, resolved `aria-label`), so the hook user can build their own; no separate hook, because the part reuses `useButton` and `useAlert` already holds the message resolution. Exported types: `AlertCloseProps`, `AlertCloseState`, `AlertClosePartProps`.
 - **Name resolution.** `alert.close` is one new key in all six locales: sv "Stäng meddelandet", fi "Sulje ilmoitus", nb "Lukk meldingen", nn "Lukk meldinga", en "Close message", se "Close message". Order: `messages` on `Alert.Close`, then `messages` on the root, then the provider, then built-in `en`. A longer name than "Stäng" on purpose: it tells several alerts' buttons apart in a button list.
-- **Decision for the maintainer: `se`.** `se` keeps the English placeholder, as for most `se` strings; it is marked in the `se.ts` header comment and needs translator review. I did not guess North Sami.
+- **`se`.** "Gidde dieđáhusa" (2026-10-05), a first translation that a native speaker should review.
 - **Decision for the maintainer: names.** The orchestrator's draft was "Stäng"/"Sulje"/"Lukk". I chose the longer, noun-bearing names above (see Name resolution). Say if you prefer the short ones; it is one string per locale.
 - **Decision: placement.** DOM order is the consumer's, and the docs say "last in the root" (the last Tab stop after the Actions). The theme places the button in the last grid column of the first row wherever it is in the DOM, so Tab order differs from the visual position only in that the button is read after the actions. Alternative (first in DOM, right after the Title) was rejected: it puts a button between the heading and the text for screen reader users.
 - **Decision: guidance not enforcement.** The design spec said errors and warnings must not be dismissible. The decision is now "optional", with guidance in the contract, `alert.md` and the design spec (§7.5 rewritten, D12 superseded). Nothing in code stops `Alert.Danger` from having a close button. No dev warning. Say if you want one.
@@ -82,10 +82,14 @@ Apply the maintainer's answers of 2026-10-05 to the open questions, and record e
 - **DateInput.** A typed digit past the box's length (2, 2, 4) is refused in `beforeinput`. It is not the native `maxlength`, which would cut a paste silently (3.3.8), so a paste stays whole and the consumer validates it. The `forms` skill, `date-input.md` and `date-input.a11y.md` say so.
 - **Links.** Underline on hover only. The maintainer chose "hover only everywhere, adjust the colours". The light and dark themes meet 3:1 against body text (dark `--kv-primary-400` is `#7784f2`; `theme:check` now measures the pair). The two contrast themes cannot (3:1 against text and 7:1 on the canvas conflict), so they keep the resting underline through `--kv-link-decoration-line`; the maintainer to confirm or waive.
 - **accessibility-reviewer round 1 (CHANGES REQUIRED), fixed:** links in grey or red text, in forced colours and in the contrast themes keep the resting underline (1.4.1); `Alert.Close` with `null`/`false` children keeps its name (4.1.2); the editor's Escape-arms-exit is removed (the first Escape is still consumed, Tab never reads it) and its tests replaced; the DateInput contract and e2e describe the digit limit; duplicate Alert component tests cut (rule 13); "3.2.5, Level AAA" named in the Link docs. A second review pass has not been run.
-- **Still open for the maintainer:** `se` translation of `alert.close`, and whether `builtInIconNames` becomes a public export.
+- **Still open for the maintainer:** whether `builtInIconNames` becomes a public export, and a native review of the `se` strings.
 
 ## Verification
 
 Run on 2026-10-05: `i18n:check`, `theme:check` and `vp check` (0 errors) pass; scoped `vp test run` (react alert, link, heading, icon, textarea, date-input, rich-text, i18n, theme, tooling, and the Storybook stories of the changed components) passes; e2e `chromium` passes for alert, link, rich-text-editor and textarea. Two icon stories (`Status With Text`, `Unstyled`) were already failing from the earlier Alert and Icon size commits and are fixed here.
 
 Orchestrator runs `vp check`, `vp test run` and `i18n:check` scoped to the changed files, `theme:check` if `theme.css` changed, and `vp run e2e <spec> --project chromium` for the changed specs. accessibility-reviewer on the Alert close button and the editor keyboard change.
+
+## Closed 2026-10-05
+
+`docs/design/rich-text-editor.md` now matches the code (no way-out arming, no instruction, no `dir`), `se` has `alert.close`, and the superseded notes are in plan 0036 and the changesets. The second accessibility review was skipped by the maintainer's decision.

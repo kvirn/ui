@@ -1,8 +1,8 @@
 import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
 
-// se: English placeholders, except the combobox messages and the alert's status words
-// (alert.close is still an English placeholder: needs translator review).
+// se: English placeholders, except the combobox messages and the alert's strings (the status
+// words and alert.close: a native speaker should review them).
 export const se = {
   link: { newTabNotice: '(opens in a new tab)' },
   field: { optional: '(optional)', errorPrefix: 'Error:' },
@@ -17,7 +17,7 @@ export const se = {
     successPrefix: 'Gárvvis:',
     warningPrefix: 'Váruhus:',
     dangerPrefix: 'Boasttuvuohta:',
-    close: 'Close message',
+    close: 'Gidde dieđáhusa',
   },
   combobox: {
     resultCount: ({ count }, format) =>

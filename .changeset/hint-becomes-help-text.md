@@ -13,6 +13,6 @@ Rename map:
 - Class (theme): `kv-field-hint` to `kv-field-help-text`. If you style the old class, or put it on your own element after spreading `getDescriptionProps(name)` from `useField` or `useFieldset`, use the new one.
 - Development warnings (English, for the developer): `hint-outside-field` to `help-text-outside-field`, `hint-before-control:<text>` to `help-text-before-control:<text>`, and `number-input-decimals-without-hint` to `number-input-decimals-without-help-text`.
 
-Unchanged: `FileUpload.DropHint` and `kv-file-upload-drop-hint`, the Listbox option hint (`optionHint`, `--kv-listbox-option-hint`), `RichTextEditor.KeyboardHint`, and every message key (`dateInput.autoAdvanceHint`, `richText.linkUrlHint`, and so on).
+Unchanged: `FileUpload.DropHint` and `kv-file-upload-drop-hint`, the Listbox option hint (`optionHint`, `--kv-listbox-option-hint`), and every message key (`dateInput.autoAdvanceHint`, `richText.linkUrlHint`, and so on).
 
 To migrate, search your code for `.Hint`, `FieldHint`, `FieldsetHint`, `CheckboxGroupHint`, `RadioGroupHint` and `kv-field-hint`, and replace them with the names above.
