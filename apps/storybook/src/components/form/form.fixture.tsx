@@ -541,7 +541,7 @@ export function textsFor(locale: FormLocale): ResolvedFormTexts {
 const catalogs: Record<FormLocale, KvirnMessages> = { sv, fi, nb, nn, se, en }
 
 /** The library strings a story shows in a locale: English where the fixture has no texts (se). */
-const messagesFor = (locale: FormLocale): KvirnMessages =>
+export const messagesFor = (locale: FormLocale): KvirnMessages =>
   formTexts[locale] === undefined ? en : catalogs[locale]
 
 const asText = (message: TextMessage): string =>

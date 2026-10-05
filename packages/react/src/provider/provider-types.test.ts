@@ -6,10 +6,12 @@ import { describe, expectTypeOf, it } from 'vite-plus/test'
 import type {
   KvirnProviderProps,
   RegisteredLinkComponent,
+  UseFormatResult,
   UseLocaleResult,
   UseThemeResult,
 } from '../index.ts'
 import type { LinkComponentOf } from './register.ts'
+import type { useFormat } from './use-format.ts'
 import type { useMessages } from './use-messages.ts'
 
 // Type tests: they run in `vp check` (tsgolint). A wrong type is a type error, not a runtime failure.
@@ -66,6 +68,13 @@ describe('hook results', () => {
       lang: string
       dir: 'ltr' | 'rtl'
     }>()
+  })
+
+  it("useFormat returns core's formatter, and date takes an instant or a calendar date (Plan 0046)", () => {
+    expectTypeOf<UseFormatResult>().toEqualTypeOf<MessageFormatter>()
+    expectTypeOf<ReturnType<typeof useFormat>>().toEqualTypeOf<MessageFormatter>()
+    expectTypeOf<UseFormatResult['date']>().parameter(0).toEqualTypeOf<Date | number | string>()
+    expectTypeOf<UseFormatResult>().toExtend<MessageFormat>()
   })
 
   it('useTheme exposes preferences, resolved values and verb actions', () => {

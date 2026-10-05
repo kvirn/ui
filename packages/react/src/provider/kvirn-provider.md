@@ -118,7 +118,7 @@ const locale = useLocale() // { locale, dir, country, localeProps: { lang, dir }
 const dateSettings = useDateSettings() // { timeZone }
 ```
 
-- `locale` is a BCP 47 tag, such as `sv-SE`, `fi-FI` or `nn-NO`. It drives `Intl.*` formatting and `lang`.
+- `locale` is a BCP 47 tag, such as `sv-SE`, `fi-FI` or `nn-NO`. It drives `Intl.*` formatting and `lang`. `sv`, `fi`, `nb` and `nn` need no region, but `Intl` reads a bare `en` as US English (`10/14/26`, `October 14, 2026`). Pass `en-GB` for English written the way the rest of Europe writes it (`14/10/2026`, `14 October 2026`).
 - `dir` comes from the locale. Use the `dir` prop to override it.
 - `country` is `SE`, `FI` or `NO`, for the masks that differ by country (`mask="postal-code"`, `"personal-identity-number"`, `"organisation-number"` on a TextInput). It is the `country` prop, else the region of the locale (`sv-FI` is `FI`), else its language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn`, `no` and `se` are `NO`), else `undefined` (`en`): then a country mask only takes digits and warns once. Set the prop where the locale doesn't say, such as `se` (Northern Sami) in Finland. A nested provider inherits the parent's `country` prop, so set it again when a section changes country.
 - Weeks always start on Monday, with ISO 8601 week numbers. That's the convention in every Nordic country and the EU, so there's no setting.
@@ -141,6 +141,36 @@ function FinnishSection({ children }: { children: ReactNode }) {
   return <section {...locale.localeProps}>{children}</section>
 }
 ```
+
+## Formatting: `useFormat`
+
+`useFormat()` writes numbers, dates, lists and plurals the way the nearest provider's `locale` does. It is the same `format` that [messages](#strings-messages) receive, so a number reads the same in a message and in a table cell. You build no `Intl.*` object, keep no locale map and set no time zone by hand:
+
+```tsx
+import { useFormat } from '@kvirn-ui/react'
+
+function Payment({ date, amount }: { date: string; amount: number }) {
+  const format = useFormat()
+  return (
+    <p>
+      {format.date(date, { dateStyle: 'long' })}: {format.number(amount)}
+    </p>
+  )
+}
+```
+
+| Method                           | Formats                                                                                                                      |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `format.number(value, options?)` | `Intl.NumberFormat`: decimals, percent, currency (`{ style: 'currency', currency: 'SEK' }`) and units                        |
+| `format.date(value, options?)`   | `Intl.DateTimeFormat`: `{ dateStyle: 'long' }`, `{ timeStyle: 'short' }`, `{ month: 'long' }`. See below for what a value is |
+| `format.list(items, options?)`   | `Intl.ListFormat`: `sv, fi och en`, or `{ type: 'disjunction' }` for "or"                                                    |
+| `format.plural(count, forms)`    | The form for the locale's plural rules: `{ one, other }`, and `zero` for exactly 0                                           |
+
+- **An instant** (a `Date` or milliseconds) is shown in the provider's `timeZone`, or the runtime's when there is none. `options.timeZone` wins. Set `timeZone` on the provider, so the server and the browser agree.
+- **A calendar date** is a string written `YYYY-MM-DD`: a day with no time of day and no time zone, such as a date of birth or a decision date from an API. It is shown on that day in every zone, because it is read as UTC and shown in UTC, so it never moves to the day before or after. Any other string (a time, `2026-02-30`, an empty one) throws a `RangeError`, as an invalid `Date` does. Check a missing value yourself.
+- **`Intl` objects are reused**, so a table can call `format.number(amount)` in every cell. The `format` object stays the same until the locale or the time zone changes, so it is safe in a dependency list.
+- **Without a provider** it is `en` and the runtime's time zone.
+- **Outside React**, such as in a server component, build the same thing with `createMessageFormat({ locale, timeZone })` from `@kvirn-ui/core`. A hook can't run in a server component.
 
 ## Strings: `messages`
 
@@ -197,7 +227,7 @@ const messages = defineMessages(sv, {
 })
 ```
 
-Keys with parameters are always functions. They receive their values and a `format` helper built on `Intl` for the active locale (`plural`, `number`, `date` in the provider's `timeZone`, and `list`):
+Keys with parameters are always functions. They receive their values and a `format` helper built on `Intl` for the active locale (`plural`, `number`, `date` in the provider's `timeZone`, and `list`), the same one [`useFormat()`](#formatting-useformat) returns:
 
 ```ts
 resultCount: ({ count }, format) =>
@@ -356,6 +386,7 @@ On the server, read the same cookie and render the attributes on `<html>`. Rende
 | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | `useLocale()`       | `{ locale, dir, country, localeProps: { lang, dir } }`                                                                |
 | `useDateSettings()` | `{ timeZone }`                                                                                                        |
+| `useFormat()`       | `{ number, date, list, plural }`: the `format` that messages receive ([Formatting](#formatting-useformat))            |
 | `useTheme()`        | `{ colorScheme, contrast, resolvedColorScheme, resolvedContrast, isForcedColors, selectColorScheme, selectContrast }` |
 
 ### `KvirnThemeScript` props

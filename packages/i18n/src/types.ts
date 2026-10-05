@@ -20,7 +20,12 @@ export interface MessageFormat {
   /** Picks a form by the locale's plural rules. `zero` is used for exactly 0 when given. */
   plural: (count: number, forms: PluralForms) => string
   number: (value: number, options?: Intl.NumberFormatOptions) => string
-  date: (value: Date | number, options?: Intl.DateTimeFormatOptions) => string
+  /**
+   * A `Date` or milliseconds is an instant, shown in the provider's `timeZone`. A string is a
+   * calendar date written `YYYY-MM-DD`, shown in UTC so it never moves a day. Any other string
+   * throws a `RangeError`.
+   */
+  date: (value: Date | number | string, options?: Intl.DateTimeFormatOptions) => string
   list: (items: readonly string[], options?: Intl.ListFormatOptions) => string
 }
 

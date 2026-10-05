@@ -7,7 +7,10 @@ function createFormat(locale: string): MessageFormat {
   return {
     plural: (_count, forms) => forms.other,
     number: (value, options) => new Intl.NumberFormat(locale, options).format(value),
-    date: (value, options) => new Intl.DateTimeFormat(locale, options).format(value),
+    date: (value, options) =>
+      new Intl.DateTimeFormat(locale, options).format(
+        typeof value === 'string' ? new Date(value) : value,
+      ),
     list: (items, options) => new Intl.ListFormat(locale, options).format(items),
   }
 }

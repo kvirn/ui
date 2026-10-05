@@ -53,3 +53,4 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0042](0042-notification-to-alert.md)             | Rename Notification to Alert                                                | Done                                  |
 | [0043](0043-navigation-and-service-link.md)       | Navigation as its own component, and a service link                         | Accepted, implemented (gates pending) |
 | [0044](0044-icon-libraries.md)                    | Using Lucide and Heroicons with Icon                                        | In progress                           |
+| [0046](0046-format-helpers.md)                    | `useFormat()` and calendar dates                                            | Implemented                           |
