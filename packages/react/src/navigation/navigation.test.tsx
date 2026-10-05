@@ -313,6 +313,132 @@ describe('development warnings', () => {
     )
     expect(consoleWarn).not.toHaveBeenCalled()
   })
+
+  // One current item per navigation: ARIA allows one per set, and the theme draws every
+  // aria-current as the current page, so an ancestor marked too would look like the page.
+  test('warns once, naming the navigation, when more than one link is current', async () => {
+    await render(
+      <Navigation.Root label="Huvudmeny">
+        <Navigation.List>
+          <Navigation.Item>
+            <Link.Root href="#bygga" current="page">
+              Bygga och bo
+            </Link.Root>
+            <Navigation.List>
+              <Navigation.Item>
+                <Link.Root href="#bygglov" current="page">
+                  Bygglov
+                </Link.Root>
+              </Navigation.Item>
+              <Navigation.Item>
+                <Link.Root href="#bygga-om" current>
+                  Bygga om
+                </Link.Root>
+              </Navigation.Item>
+            </Navigation.List>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>,
+    )
+    const matching = warnings().filter((text) => text.includes('marked current'))
+    expect(matching).toHaveLength(1)
+    expect(matching[0]).toContain('"Huvudmeny"')
+    expect(matching[0]).toContain('4.1.2')
+  })
+
+  test('a current link inside a hidden group counts too', async () => {
+    await render(
+      <Navigation.Root label="Huvudmeny">
+        <Navigation.List>
+          <Navigation.Item>
+            <Link.Root href="#bygga" current>
+              Bygga och bo
+            </Link.Root>
+            <Navigation.List hidden>
+              <Navigation.Item>
+                <Link.Root href="#bygglov" current="page">
+                  Bygglov
+                </Link.Root>
+              </Navigation.Item>
+            </Navigation.List>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>,
+    )
+    expect(warnings().filter((text) => text.includes('marked current'))).toHaveLength(1)
+  })
+
+  test('one current link does not warn, and aria-current="false" is not current', async () => {
+    await render(
+      <Navigation.Root label="Huvudmeny">
+        <Navigation.List>
+          <Navigation.Item>
+            <a href="#start" aria-current="false">
+              Start
+            </a>
+          </Navigation.Item>
+          <Navigation.Item>
+            <Link.Root href="#bygglov" current="page">
+              Bygglov
+            </Link.Root>
+          </Navigation.Item>
+          <Navigation.Item>
+            <Link.Root href="#om-oss" current={false}>
+              Om oss
+            </Link.Root>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>,
+    )
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('two navigations with one current link each do not warn', async () => {
+    await render(
+      <>
+        <Navigation.Root label="Huvudmeny">
+          <Navigation.List>
+            <Navigation.Item>
+              <Link.Root href="#bygga" current="page">
+                Bygga och bo
+              </Link.Root>
+            </Navigation.Item>
+          </Navigation.List>
+        </Navigation.Root>
+        <Navigation.Root label="I det här avsnittet">
+          <Navigation.List>
+            <Navigation.Item>
+              <Link.Root href="#bygglov" current="page">
+                Bygglov
+              </Link.Root>
+            </Navigation.Item>
+          </Navigation.List>
+        </Navigation.Root>
+      </>,
+    )
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('an unnamed navigation with two current links warns about both problems', async () => {
+    await render(
+      <Navigation.Root>
+        <Navigation.List>
+          <Navigation.Item>
+            <Link.Root href="#start" current="page">
+              Start
+            </Link.Root>
+          </Navigation.Item>
+          <Navigation.Item>
+            <Link.Root href="#om-oss" current="page">
+              Om oss
+            </Link.Root>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>,
+    )
+    expect(warnings().filter((text) => text.includes('<Navigation.Root>'))).toHaveLength(1)
+    expect(warnings().filter((text) => text.includes('marked current'))).toHaveLength(1)
+  })
 })
 
 describe('useNavigation', () => {
@@ -386,5 +512,12 @@ describe('types', () => {
     expectTypeOf<NavigationItemPartProps['className']>().toEqualTypeOf<'kv-navigation-item'>()
     expectTypeOf<UseNavigationResult['rootProps']>().toEqualTypeOf<NavigationRootPartProps>()
     expectTypeOf<NavigationRootPartProps>().not.toHaveProperty('data-kv')
+  })
+
+  test('has no orientation prop: a horizontal bar is the class kv-navigation--horizontal', () => {
+    // Links are plain Tab stops, so orientation changes no keys: it is a look, and a look is a
+    // class (Plan 0047). Tabs and Toolbar take an orientation prop because it changes their keys.
+    expectTypeOf<NavigationRootProps>().not.toHaveProperty('orientation')
+    expectTypeOf<UseNavigationOptions>().not.toHaveProperty('orientation')
   })
 })

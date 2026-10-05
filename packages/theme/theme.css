@@ -7,7 +7,7 @@
  * `kv-field`, `kv-input` and so on) and their state attributes (`data-disabled`,
  * `data-focus-visible`, `data-current`, `data-invalid`),
  * plus classes you add yourself: variants and options (`kv-button--primary`,
- * `kv-section--canvas`, `kv-link--service`, `kv-input--width-6`), and context (`kv-compact`,
+ * `kv-section--canvas`, `kv-link--service`, `kv-navigation--horizontal`, `kv-input--width-6`), and context (`kv-compact`,
  * `kv-button-group`, `kv-prose`, `kv-lead`, `kv-heading--display`, `kv-not-prose`, `kv-scroll-region`). Classes style,
  * data-* attributes are state.
  *
@@ -67,6 +67,8 @@
  *   7. Button
  *  7a. Toggle         kv-toggle: a button that is on or off. kv-toolbar and its groups
  *   8. Link, service link and Navigation
+ *  8a. Tabs             kv-tabs: a list of tabs, and the panel each one shows
+ *  8b. Table of contents  kv-table-of-contents: a page's headings, styled as navigation items
  *   9. Prose            kv-prose: articles from a CMS or Markdown
  *  9a. Heading       kv-heading: the type role of a heading, apart from its level
  *  9b. Kbd           kv-kbd: a key in running text
@@ -1054,9 +1056,14 @@
   /* 8. Link, service link and Navigation ---------------------------------------------------
    * <Link.Root> renders class="kv-link": the link colour and an underline, for running text.
    * In a <Navigation.Item>, a link becomes a navigation item instead: a row in the text colour,
-   * without an underline, because its place in a labelled <nav> is the cue. A link in running
-   * text keeps the font around it. A navigation item is a control, so it uses
-   * --kv-font-family-body when you set it.
+   * weight 400, with an underline only on hover, because its place in a labelled <nav> is the
+   * cue. The current page (aria-current) is a solid primary fill at weight 600, and every
+   * ancestor of it, the trail, is the quiet fill at weight 600, found with :has() so it needs
+   * no prop. A link in running text keeps the font around it. A navigation item is a control,
+   * so it uses --kv-font-family-body when you set it. className="kv-navigation--horizontal" on
+   * <Navigation.Root> lays the top level out as a row that wraps. A table of contents (section
+   * 8b) shares the list, item, trail and current rules below: each selector names its parts
+   * beside the navigation's.
    *
    *   <Navigation.Root label="…">
    *     <Navigation.List>
@@ -1110,7 +1117,7 @@
     outline-offset: var(--kv-focus-ring-offset);
   }
 
-  .kv-navigation-list {
+  :is(.kv-navigation-list, .kv-table-of-contents-list) {
     display: flex;
     flex-direction: column;
     gap: var(--kv-space-1);
@@ -1119,26 +1126,49 @@
     list-style: none;
   }
 
+  /* The list sets display, which beats the browser's [hidden], so restate it: a collapsed group
+   * stays collapsed without reset.css. */
+  :is(.kv-navigation-list, .kv-table-of-contents-list)[hidden] {
+    display: none;
+  }
+
   /* A nested list: indented, so the level shows without colour. */
-  .kv-navigation-list .kv-navigation-list {
+  :is(
+    .kv-navigation-list .kv-navigation-list,
+    .kv-table-of-contents-list .kv-table-of-contents-list
+  ) {
     margin-block-start: var(--kv-space-1);
     padding-inline-start: var(--kv-space-4);
   }
 
-  /* A navigation item: 44px, or 32px in compact density. */
-  .kv-navigation-item > .kv-link:not(.kv-link--service) {
+  /* kv-navigation--horizontal: the top level in a row that wraps and never scrolls. Each item is
+   * as wide as its label (and at least a target wide). A nested list stays a column. */
+  .kv-navigation--horizontal > .kv-navigation-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--kv-space-2);
+  }
+
+  .kv-navigation--horizontal > .kv-navigation-list > .kv-navigation-item {
+    min-inline-size: min(var(--kv-control-min-block-size), 100%);
+    max-inline-size: 100%;
+  }
+
+  /* A navigation item: 44px, or 32px in compact density. Weight 400 at rest. */
+  :is(.kv-navigation-item, .kv-table-of-contents-item) > .kv-link:not(.kv-link--service) {
+    position: relative;
     display: flex;
     align-items: center;
     box-sizing: border-box;
     min-block-size: var(--kv-control-min-block-size);
     padding-block: var(--kv-space-1);
-    padding-inline: var(--kv-space-3);
-    border-inline-start: var(--kv-indicator-width) solid transparent;
+    padding-inline: var(--kv-space-4) var(--kv-space-3);
     border-radius: var(--kv-radius-md);
     color: var(--kv-color-text);
     font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
     font-size: var(--kv-control-font-size);
-    font-weight: var(--kv-control-font-weight);
+    font-weight: var(--kv-font-body-weight);
     line-height: var(--kv-control-line-height);
     text-decoration: none;
     /* anywhere, not break-word: the link is a flex container, and only anywhere lets a long word
@@ -1146,18 +1176,42 @@
     overflow-wrap: anywhere;
   }
 
-  .kv-navigation-item > .kv-link:not(.kv-link--service):is(:hover, :active) {
-    background-color: var(--kv-color-surface-raised);
+  /* In a row the pill has 12px on both sides, so the label sits in its middle. */
+  .kv-navigation--horizontal
+    > .kv-navigation-list
+    > .kv-navigation-item
+    > .kv-link:not(.kv-link--service) {
+    padding-inline: var(--kv-space-3);
   }
 
-  /* The current page: a background, an inline-start bar and weight, plus aria-current. */
-  .kv-navigation-item
+  /* Hover and press: the link's own underline, in the text colour. No fill: none shows on both
+   * the canvas and a surface in light. */
+  :is(.kv-navigation-item, .kv-table-of-contents-item)
+    > .kv-link:not(.kv-link--service):is(:hover, :active) {
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+  }
+
+  /* The trail: every ancestor of the current page (or of the heading being read), found by
+   * :has(), so it needs no prop. It is the quiet fill and weight 600. The :where() keeps it
+   * below the current rule. */
+  :is(.kv-navigation-item, .kv-table-of-contents-item):has(
+      > :is(.kv-navigation-list, .kv-table-of-contents-list)
+        :where(.kv-link:is([data-current], [aria-current]:not([aria-current='false'])))
+    )
+    > .kv-link:not(.kv-link--service) {
+    background-color: var(--kv-color-primary-subtle);
+    font-weight: 600;
+  }
+
+  /* The current page, or the heading being read: a solid fill and weight 600, plus aria-current. */
+  :is(.kv-navigation-item, .kv-table-of-contents-item)
     > .kv-link:not(.kv-link--service):is(
       [data-current],
       [aria-current]:not([aria-current='false'])
     ) {
-    border-inline-start-color: var(--kv-color-primary);
-    background-color: var(--kv-color-primary-subtle);
+    background-color: var(--kv-color-primary);
+    color: var(--kv-color-on-primary);
     font-weight: 600;
   }
 
@@ -1248,19 +1302,53 @@
       outline-color: Highlight;
     }
 
-    /* Forced colours would show every transparent bar, so only the current item keeps one. */
-    .kv-navigation-item > .kv-link:not(.kv-link--service) {
-      border-inline-start-color: Canvas;
+    /* Fills drop to Canvas and labels are LinkText. The current item keeps a straight LinkText
+     * bar: a ::before, never a border, which would follow the rounded corners. The trail keeps
+     * weight 600. */
+    :is(
+      :is(.kv-navigation-item, .kv-table-of-contents-item) > .kv-link:not(.kv-link--service),
+      :is(.kv-navigation-item, .kv-table-of-contents-item)
+        > .kv-link:not(.kv-link--service):is(
+          [data-current],
+          [aria-current]:not([aria-current='false'])
+        ),
+      :is(.kv-navigation-item, .kv-table-of-contents-item):has(
+          > :is(.kv-navigation-list, .kv-table-of-contents-list)
+            :where(.kv-link:is([data-current], [aria-current]:not([aria-current='false'])))
+        )
+        > .kv-link:not(.kv-link--service)
+    ) {
+      background-color: Canvas;
       color: LinkText;
-      text-decoration-line: none;
     }
 
-    .kv-navigation-item
+    :is(.kv-navigation-item, .kv-table-of-contents-item)
       > .kv-link:not(.kv-link--service):is(
         [data-current],
         [aria-current]:not([aria-current='false'])
-      ) {
-      border-inline-start-color: LinkText;
+      )::before {
+      content: '';
+      position: absolute;
+      inset-block: var(--kv-space-2);
+      inset-inline-start: var(--kv-space-1);
+      inline-size: var(--kv-indicator-width);
+      border-radius: var(--kv-radius-full);
+      background-color: LinkText;
+      forced-color-adjust: none;
+    }
+
+    /* In a row the bar moves to the block end, under the label. */
+    .kv-navigation--horizontal
+      > .kv-navigation-list
+      > .kv-navigation-item
+      > .kv-link:not(.kv-link--service):is(
+        [data-current],
+        [aria-current]:not([aria-current='false'])
+      )::before {
+      inset-block: auto 0;
+      inset-inline: var(--kv-space-3);
+      inline-size: auto;
+      block-size: var(--kv-indicator-width);
     }
 
     /* The service link: a LinkText edge on Canvas. The block isn't filled (a fill would be
@@ -1285,6 +1373,196 @@
     }
   }
 
+  /* 8a. Tabs ---------------------------------------------------------------------------------
+   * <Tabs.Root> renders class="kv-tabs", <Tabs.List> kv-tabs-list, <Tabs.Tab> kv-tabs-tab and
+   * <Tabs.Panel> kv-tabs-panel (design spec docs/design/tabs.md). A tab is a quiet text button, in
+   * the text colour at weight 400, like a navigation item. It has no fill: a solid primary fill
+   * already means a pressed Toggle or the active option of a listbox. The selected tab is weight
+   * 600 plus a straight 4px primary bar at its own block-end edge (its inline-end edge when
+   * vertical), drawn by ::after and never as a border on a rounded box, so the state is a shape
+   * and a weight and never colour alone (1.4.1). A hairline runs along the list. Hover and press
+   * add the 2px link underline in the text colour. A disabled tab (aria-disabled, still
+   * focusable) is text-muted, with no hover. Nothing animates.
+   *
+   * The list wraps and never scrolls (1.4.10). When it wraps, each row's selected tab keeps its
+   * own bar at its own edge, and the hairline is under the last row. A vertical set of tabs
+   * (data-orientation="vertical" on the root) is a row of the list and the panel, and stacks
+   * below 40rem. The panel has tabindex 0, so it has its own focus ring. It has no display rule:
+   * that would beat hidden. Density follows the surroundings: 44px tabs, and 32px inside
+   * kv-compact from 64rem.
+   */
+  .kv-tabs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--kv-space-1);
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  .kv-tabs-tab {
+    position: relative;
+    box-sizing: border-box;
+    min-block-size: var(--kv-control-min-block-size);
+    margin: 0;
+    padding-block: var(--kv-space-1);
+    padding-inline: var(--kv-space-4);
+    border: 0;
+    border-radius: var(--kv-radius-sm);
+    background-color: transparent;
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-control-font-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-control-line-height);
+    letter-spacing: normal;
+    text-align: start;
+    text-decoration: none;
+    text-underline-offset: var(--kv-link-underline-offset);
+    /* anywhere, not break-word: a tab is a flex item, and only anywhere lets a long word shrink
+     * its min-content width, so a Finnish compound wraps at 320px. */
+    overflow-wrap: anywhere;
+    cursor: pointer;
+  }
+
+  .kv-tabs-tab[aria-selected='true'] {
+    font-weight: 600;
+  }
+
+  /* The selected bar: straight, at the tab's own block-end edge, across the whole tab. */
+  .kv-tabs-tab[aria-selected='true']::after {
+    content: '';
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline: 0;
+    block-size: var(--kv-indicator-width);
+    background-color: var(--kv-color-primary);
+  }
+
+  /* Hover and press: the link's own underline, in the text colour. No fill. */
+  .kv-tabs-tab:not([aria-disabled='true']):is(:hover, :active) {
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+  }
+
+  .kv-tabs-tab[aria-disabled='true'] {
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+  }
+
+  /* The panel has tabindex 0, so it is focusable and shows the same ring as a tab or a link. */
+  .kv-tabs-tab:focus-visible,
+  .kv-tabs-panel:focus-visible {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-tabs-panel {
+    padding-block-start: var(--kv-space-4);
+    border-radius: var(--kv-radius-sm);
+  }
+
+  /* Vertical: the list is a column with its hairline at the inline end, and the bar of the
+   * selected tab moves there too. */
+  .kv-tabs-list[aria-orientation='vertical'] {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    border-block-end: 0;
+    border-inline-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  .kv-tabs-list[aria-orientation='vertical'] > .kv-tabs-tab[aria-selected='true']::after {
+    inset-block: 0;
+    inset-inline: auto 0;
+    inline-size: var(--kv-indicator-width);
+    block-size: auto;
+  }
+
+  /* The root is a row: the list, then the panel beside it. The list is at most 40% of the row, and
+   * its labels wrap inside it. */
+  .kv-tabs[data-orientation='vertical'] {
+    display: flex;
+  }
+
+  .kv-tabs[data-orientation='vertical'] > .kv-tabs-list {
+    flex: none;
+    max-inline-size: 40%;
+  }
+
+  .kv-tabs[data-orientation='vertical'] > .kv-tabs-panel {
+    flex: 1;
+    min-inline-size: 0;
+    padding-block-start: 0;
+    padding-inline-start: var(--kv-space-4);
+  }
+
+  /* Below 40rem a vertical set stacks: the list on top, still a column, with its hairline under it. */
+  @media (width < 40rem) {
+    .kv-tabs[data-orientation='vertical'] {
+      flex-direction: column;
+    }
+
+    .kv-tabs[data-orientation='vertical'] > .kv-tabs-list {
+      max-inline-size: none;
+      border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+      border-inline-end: 0;
+    }
+
+    .kv-tabs[data-orientation='vertical'] > .kv-tabs-panel {
+      padding-block-start: var(--kv-space-4);
+      padding-inline-start: 0;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .kv-tabs-list {
+      border-color: CanvasText;
+    }
+
+    .kv-tabs-tab {
+      color: CanvasText;
+    }
+
+    /* A background is replaced in forced colours, so the bar opts out and stays CanvasText. */
+    .kv-tabs-tab[aria-selected='true']::after {
+      background-color: CanvasText;
+      forced-color-adjust: none;
+    }
+
+    .kv-tabs-tab[aria-disabled='true'] {
+      color: GrayText;
+    }
+
+    .kv-tabs-tab:focus-visible,
+    .kv-tabs-panel:focus-visible {
+      outline-color: Highlight;
+    }
+  }
+
+  /* 8b. Table of contents ------------------------------------------------------------------
+   * <TableOfContents.Root> renders class="kv-table-of-contents", with kv-table-of-contents-list,
+   * kv-table-of-contents-item and a kv-link on each link. It is a navigation of a page's
+   * headings, so it has no rules of its own: section 8 names its parts beside the navigation's
+   * in every selector that styles a list, an item, the trail or the current item, and the look
+   * is the same.
+   *
+   *   <TableOfContents.Root aria-labelledby="contents-title" items={…} />
+   *
+   * - A link is a row in the text colour at weight 400, underlined on hover.
+   * - The heading being read (aria-current="location") is the solid primary fill at weight 600.
+   *   Nothing is current until the reader has passed the first heading.
+   * - The headings above it, its ancestors in the tree, are the quiet fill at weight 600 (the
+   *   trail), found with :has() so it needs no prop.
+   * - A nested list is indented 16px per level, and a long heading wraps.
+   * - In forced colours the fills drop: the current link gets a straight LinkText bar at the
+   *   inline start, and the trail keeps its weight.
+   *
+   * There is no horizontal table of contents, so kv-navigation--horizontal doesn't take its
+   * parts. The component is never sticky: where it sits is the page's layout. Its title is a
+   * heading of your own (the heading-4 look beside an article), and kv-table-of-contents is a
+   * prose boundary (section 9).
+   */
+
   /* 9. Prose ---------------------------------------------------------------------------------
    * Put class="kv-prose" on the element around content you don't control, such as an article
    * from a CMS or Markdown, and its headings, paragraphs, lists, tables, code and figures get
@@ -1302,7 +1580,7 @@
    *
    * Every rule has zero specificity, so component rules and your own CSS always win. Prose
    * never styles a component part (components style themselves), or anything inside
-   * kv-not-prose, kv-navigation, kv-button-group or kv-toolbar. Prose inside kv-not-prose isn't turned on again.
+   * kv-not-prose, kv-navigation, kv-table-of-contents, kv-button-group or kv-toolbar. Prose inside kv-not-prose isn't turned on again.
    * A card is a boundary: a card in prose gets prose's block margins, and nothing inside
    * it is prose-styled, unless you put kv-prose on the card or inside it. Then the nearest of
    * the two wins, for two levels of nested cards. A field (kv-field) and a fieldset
@@ -1464,7 +1742,15 @@
           .kv-radio,
           .kv-listbox-native
         ),
-        :is(.kv-not-prose, .kv-navigation, .kv-button-group, .kv-toolbar, .kv-table) *,
+        :is(
+            .kv-not-prose,
+            .kv-navigation,
+            .kv-table-of-contents,
+            .kv-button-group,
+            .kv-toolbar,
+            .kv-table
+          )
+          *,
         :is(:is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose) *):not(
           :is(:is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose) .kv-prose *):not(
             :is(
@@ -1483,12 +1769,13 @@
         )
       )
     ) {
-    /* Elements. kv-not-prose, kv-navigation, kv-button-group, kv-toolbar, a card's, a section's, a field's or a
+    /* Elements. kv-not-prose, kv-navigation, kv-table-of-contents, kv-button-group, kv-toolbar, a card's, a section's, a field's or a
      * fieldset's Root only get margins. A section isn't a prose boundary: its content stays prose. */
     &:not(
       :where(
         .kv-not-prose,
         .kv-navigation,
+        .kv-table-of-contents,
         .kv-button-group,
         .kv-toolbar,
         .kv-card,

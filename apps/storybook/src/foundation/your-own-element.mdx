@@ -39,6 +39,7 @@ A part that needs a specific element checks after it has mounted what `render` p
 | Part                              | Needs                                                             |
 | --------------------------------- | ----------------------------------------------------------------- |
 | `Button`, `Toggle`, `Alert.Close` | A `<button>`. For navigation use `Link.Root`                      |
+| `Tabs.Tab`                        | A `<button>`. For other pages use `Navigation`                    |
 | `Link.Root`                       | An `<a href>`, also when you register a router link               |
 | `Fieldset.Root`                   | A `<fieldset>`: the group name comes from its `<legend>`          |
 | `Toolbar.Item`                    | An element that is focusable by itself, and not natively disabled |
@@ -63,6 +64,9 @@ The function form gets the part's state as its second argument. It is a small ty
 | -------------------------------------------------- | ---------------------------------------------- |
 | `ButtonState`, `AlertCloseState`                   | `isDisabled`, `isFocusVisible`                 |
 | `ToggleState`                                      | `isPressed`, `isDisabled`, `isFocusVisible`    |
+| `TabsState`                                        | `value`, `orientation`, `activationMode`       |
+| `TabsTabState`                                     | `isSelected`, `isDisabled`                     |
+| `TabsPanelState`                                   | `isSelected`                                   |
 | `LinkState`                                        | `isCurrent`, `isFocusVisible`, `opensInNewTab` |
 | `HeadingState`                                     | `level`, `size`                                |
 | `IconState`                                        | `isDecorative`                                 |

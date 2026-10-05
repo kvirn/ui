@@ -1,4 +1,4 @@
-import { KvirnProvider, Link, Navigation } from '@kvirn-ui/react'
+import { KvirnProvider, Link } from '@kvirn-ui/react'
 import type { ReactNode } from 'react'
 // Package-internal fixture, shared with link.test.tsx. It stands in for a router: not part of
 // the public API.
@@ -8,8 +8,10 @@ import {
   useMockPathname,
 } from '../../../../../packages/react/src/link/link.fixture.tsx'
 
-// Fixtures for Components/Link. The RouterLink story's "Show code" prints both functions
-// (`showSource`): how an app registers its router's link, and the Links that then use it.
+// Fixtures for Components/Link. The RoutedLinks story's "Show code" prints AppRoot and
+// RoutedLinkList (`showSource`): how an app registers its router's link, and the Links that then
+// use it. The same router with a list of links in a navigation is Components/Navigation's
+// RouterLink.
 
 /**
  * The root of an app with a client-side router. Register the router's link once, on the
@@ -27,28 +29,25 @@ export function AppRoot({ children }: { children: ReactNode }) {
 }
 
 /**
- * Links in a navigation. Each is a native `<a href>` that the router's link renders. `current`
- * comes from your router's pathname (here the mock's), so the current page is marked with
- * `aria-current="page"`.
+ * Links that the router's link renders. Each is a native `<a href>`. `current` comes from your
+ * router's pathname (here the mock's), so the current page is marked with `aria-current="page"`.
  */
-export function RoutedNavigation() {
+export function RoutedLinkList() {
   const pathname = useMockPathname()
   return (
     <>
-      <Navigation.Root label="Huvudmeny">
-        <Navigation.List>
-          <Navigation.Item>
-            <Link.Root href="/start" current={pathname === '/start' ? 'page' : false}>
-              Start
-            </Link.Root>
-          </Navigation.Item>
-          <Navigation.Item>
-            <Link.Root href="/ansok" current={pathname === '/ansok' ? 'page' : false}>
-              Ansök
-            </Link.Root>
-          </Navigation.Item>
-        </Navigation.List>
-      </Navigation.Root>
+      <ul>
+        <li>
+          <Link.Root href="/start" current={pathname === '/start' ? 'page' : false}>
+            Start
+          </Link.Root>
+        </li>
+        <li>
+          <Link.Root href="/ansok" current={pathname === '/ansok' ? 'page' : false}>
+            Ansök
+          </Link.Root>
+        </li>
+      </ul>
       <p>Nuvarande sida: {pathname}</p>
     </>
   )

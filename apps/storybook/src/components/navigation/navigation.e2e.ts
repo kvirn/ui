@@ -63,6 +63,32 @@ test.describe('Navigation keyboard contract', () => {
       await page.keyboard.press(key)
       await expect(start).toBeFocused()
     }
+    // The same in a horizontal bar, left to right and right to left: no key moves focus.
+    for (const story of ['horizontal', 'rtl']) {
+      await openStory(page, story, story === 'rtl' ? 'Main menu' : 'Huvudmeny')
+      const first = page.getByRole('navigation').first().getByRole('link').first()
+      await first.focus()
+      for (const key of ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'End', 'Home']) {
+        await page.keyboard.press(key)
+        await expect(first).toBeFocused()
+      }
+    }
+  })
+
+  test('Tab skips a collapsed group', async ({ page }) => {
+    await openStory(page, 'collapsed-groups')
+    // The two groups sit between these links in the DOM. A hidden link that took focus would
+    // show up here, in place of the next visible one.
+    for (const name of ['Start', 'Bygga och bo', 'Trafik och resor', 'Om kommunen']) {
+      await page.keyboard.press('Tab')
+      await expect(link(page, name)).toBeFocused()
+    }
+    // The groups are collapsed with hidden, never unmounted: their links are still in the DOM.
+    for (const name of ['Bygglov', 'Bygga om', 'Parkering', 'Kollektivtrafik']) {
+      const collapsed = page.getByRole('link', { name, exact: true, includeHidden: true })
+      await expect(collapsed).toHaveCount(1)
+      await expect(collapsed).toBeHidden()
+    }
   })
 })
 
@@ -81,6 +107,18 @@ test.describe('Navigation focus and modes', () => {
   test('no horizontal scrolling at 320px with the Finnish text (1.4.10)', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 640 })
     await openStory(page, 'long-finnish-text', 'Päävalikko')
+    await expect(link(page, 'Rakennus- ja toimenpidelupahakemuksen liitteet')).toBeVisible()
+    const hasHorizontalScroll = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    )
+    expect(hasHorizontalScroll).toBe(false)
+  })
+
+  test('no horizontal scrolling at 320px with the horizontal Finnish text (1.4.10)', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 640 })
+    await openStory(page, 'horizontal-long-finnish-text', 'Päävalikko')
     await expect(link(page, 'Rakennus- ja toimenpidelupahakemuksen liitteet')).toBeVisible()
     const hasHorizontalScroll = await page.evaluate(
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
@@ -120,11 +158,18 @@ test.describe('Navigation accessibility', () => {
   const stories = [
     ['default', 'Huvudmeny'],
     ['keyboard', 'Huvudmeny'],
+    ['horizontal', 'Huvudmeny'],
+    ['active-trail', 'Handläggning'],
+    ['collapsed-groups', 'Huvudmeny'],
+    ['page-not-in-the-menu', 'Huvudmeny'],
     ['labelled-by-heading', 'I det här avsnittet'],
     ['two-navigations', 'Huvudmeny'],
     ['with-service-link', 'Huvudmeny'],
     ['compact-density', 'Huvudmeny'],
     ['long-finnish-text', 'Päävalikko'],
+    ['horizontal-long-finnish-text', 'Päävalikko'],
+    ['focus-visible', 'Huvudmeny'],
+    ['router-link', 'Huvudmeny'],
     ['rtl', 'Main menu'],
     ['forced-colors', 'Huvudmeny'],
   ] as const

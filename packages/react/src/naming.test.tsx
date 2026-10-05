@@ -206,6 +206,22 @@ describe('flat part exports', () => {
     expect(typeof api.Navigation).toBe('object')
   })
 
+  test('TableOfContents is a namespace of its own parts, not a callable root', () => {
+    expect(api.TableOfContents.Root.displayName).toBe('TableOfContents.Root')
+    expect(api.TableOfContents.List.displayName).toBe('TableOfContents.List')
+    expect(api.TableOfContents.Item.displayName).toBe('TableOfContents.Item')
+    expect(api.TableOfContents.Link.displayName).toBe('TableOfContents.Link')
+    expect(typeof api.TableOfContents).toBe('object')
+  })
+
+  test('Tabs is a namespace of its own parts, not a callable root', () => {
+    expect(api.Tabs.Root.displayName).toBe('Tabs.Root')
+    expect(api.Tabs.List.displayName).toBe('Tabs.List')
+    expect(api.Tabs.Tab.displayName).toBe('Tabs.Tab')
+    expect(api.Tabs.Panel.displayName).toBe('Tabs.Panel')
+    expect(typeof api.Tabs).toBe('object')
+  })
+
   test('callable roots stay callable and are the same function as their Root', () => {
     expect(api.Field).toBe(api.Field.Root)
     expect(api.Fieldset).toBe(api.Fieldset.Root)
@@ -231,6 +247,10 @@ describe('alias sets', () => {
     expect(keys(api.InputGroup)).toEqual(expect.arrayContaining(['Root', 'Addon', 'Input']))
     expect(keys(api.Link)).toEqual(expect.arrayContaining(['Root', 'NewTabNotice', 'Icon']))
     expect(keys(api.Navigation)).toEqual(expect.arrayContaining(['Root', 'List', 'Item']))
+    expect(keys(api.TableOfContents)).toEqual(
+      expect.arrayContaining(['Root', 'List', 'Item', 'Link']),
+    )
+    expect(keys(api.Tabs)).toEqual(expect.arrayContaining(['Root', 'List', 'Tab', 'Panel']))
     expect(keys(api.Alert)).toEqual(
       expect.arrayContaining([
         'Root',

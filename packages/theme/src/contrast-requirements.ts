@@ -95,7 +95,7 @@ const textPairs: readonly ColorPair[] = [
 
 /**
  * Control boundaries, focus rings and the selected or current indicator (1.4.11, 2.4.13),
- * including `primary` on `primary-subtle` for the current navigation item's bar. `secondary`
+ * including `primary` on `surface` and `canvas` for the current navigation item's fill. `secondary`
  * is the secondary button's edge, and `border-focus` a focused field's, so both need everything
  * `border-control` does.
  */

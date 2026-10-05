@@ -81,13 +81,67 @@ body {
   max-inline-size: 20rem;
 }
 
-/* Like the docs sidebar: a surface panel with a hairline. */
+/* Like the docs sidebar: a square surface panel with one hairline where it meets the content. */
 .kv-story-surface {
   box-sizing: border-box;
   max-inline-size: 15rem;
   padding: var(--kv-space-4) var(--kv-space-3);
-  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
-  border-radius: var(--kv-radius-lg);
+  border-inline-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  background-color: var(--kv-color-surface);
+}
+
+/* A header band for a horizontal navigation: no width cap, the hairline at the block end. */
+.kv-story-surface--wide {
+  max-inline-size: none;
+  border-inline-end-width: 0;
+  border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+}
+
+/* Components/TableOfContents: a page long enough to scroll, so the contents list has something to
+ * follow. Every section is tall, so any heading but the last can reach the top. */
+.kv-story-contents-page section {
+  min-block-size: 70vh;
+}
+
+/* On a Docs page ten stories share one document: shorter sections keep the page a page. It still
+ * scrolls, and the list follows the Docs page's scrolling. */
+.docs-story .kv-story-contents-page section {
+  min-block-size: 10rem;
+}
+
+/* The design spec's layout from 64rem: the contents list in a sticky column at the inline start,
+ * the article beside it. It is the page's layout, never the component's. */
+@media (width >= 64rem) {
+  .kv-story-contents-columns {
+    display: grid;
+    grid-template-columns: 16rem minmax(0, 1fr);
+    align-items: start;
+    column-gap: var(--kv-space-8);
+  }
+
+  .kv-story-contents-columns > :first-child {
+    position: sticky;
+    inset-block-start: var(--kv-space-4);
+  }
+}
+
+/* A title above the list keeps a gap to it: kv-heading sets no margin, so it is the page's. */
+.kv-story-contents-columns > :first-child > .kv-heading {
+  margin-block-end: var(--kv-space-2);
+}
+
+/* A sticky header of 64px covers what a link or focus scrolls to, unless the page sets
+ * scroll-padding-top on the root. The contents list's offset is the same value. */
+.kv-story-sticky-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  block-size: 64px;
+  padding-inline: var(--kv-space-4);
+  border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
   background-color: var(--kv-color-surface);
 }
 

@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en" data-kv-color-scheme="light" data-kv-contrast="standard">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>TableOfContents: the chosen look · KvirnUI design exploration</title>
+    <!-- Throwaway prototype for docs/design/table-of-contents.md (Plan 0049). No network requests
+     and no script, so nothing tracks the scroll: each layout forces "Avgifter" as the current
+     heading. It links the real theme (packages/theme/theme.css) and the docs site's IBM Plex files
+     by relative path, so open it from the repository on disk. Generated once from a script, then
+     committed as plain HTML. Not library code. -->
+    <link rel="stylesheet" href="../../../apps/docs/fonts/ibm-plex/ibm-plex.css" />
+    <link rel="stylesheet" href="../../../packages/theme/theme.css" />
+    <style>
+      /* ---------------------------------------------------------------------------------------
+       * Page chrome. Not part of the proposal. Tokens only, from the linked theme.css.
+       * ------------------------------------------------------------------------------------- */
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background-color: var(--kv-color-canvas);
+        color: var(--kv-color-text);
+        font-family: var(--kv-font-family-sans);
+        font-size: var(--kv-font-body-size);
+        line-height: var(--kv-font-body-line-height);
+      }
+      .p-page {
+        max-inline-size: 96rem;
+        margin-inline: auto;
+        padding: var(--kv-space-8) var(--kv-space-4) var(--kv-space-16);
+      }
+      .p-page > header :is(h1, h2),
+      .p-section > h2,
+      .p-panel > h3 {
+        font-family: var(--kv-font-family-serif);
+      }
+      .p-page > header h1 {
+        margin: 0 0 var(--kv-space-4);
+        font-size: var(--kv-font-heading-1-size);
+        font-weight: 600;
+        line-height: 1.2;
+      }
+      .p-section > h2 {
+        margin: 0 0 var(--kv-space-3);
+        font-size: var(--kv-font-heading-2-size);
+        font-weight: 500;
+        line-height: 1.25;
+      }
+      .p-panel > h3 {
+        margin: 0 0 var(--kv-space-4);
+        font-size: var(--kv-font-heading-3-size);
+        font-weight: 600;
+        line-height: 1.4;
+      }
+      .p-text {
+        max-inline-size: 70ch;
+        margin: 0 0 var(--kv-space-4);
+      }
+      .p-text li {
+        margin-block-end: var(--kv-space-1);
+      }
+      .p-link {
+        color: var(--kv-color-link);
+        text-underline-offset: 0.15em;
+      }
+      code {
+        font-family: var(--kv-font-family-mono);
+        font-size: 0.875em;
+      }
+      :is(.p-link, .p-controls input):focus-visible {
+        outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+        outline-offset: var(--kv-focus-ring-offset);
+      }
+      .p-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--kv-space-4);
+        margin: 0 0 var(--kv-space-6);
+      }
+      .p-controls fieldset {
+        margin: 0;
+        padding: var(--kv-space-2) var(--kv-space-4) var(--kv-space-3);
+        border: var(--kv-border-width) solid var(--kv-color-border-control);
+        border-radius: var(--kv-radius-lg);
+      }
+      .p-controls legend {
+        padding-inline: var(--kv-space-1);
+        font-weight: 600;
+      }
+      .p-controls label {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--kv-space-2);
+        min-block-size: var(--kv-control-min-block-size);
+        margin-inline-end: var(--kv-space-4);
+      }
+      .p-controls input {
+        inline-size: 1.25rem;
+        block-size: 1.25rem;
+        margin: 0;
+        accent-color: var(--kv-color-primary);
+      }
+      .p-toc ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--kv-space-1) var(--kv-space-6);
+        margin: 0 0 var(--kv-space-4);
+        padding: 0;
+        list-style: none;
+      }
+      .p-section {
+        padding-block: var(--kv-space-8);
+        border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+      }
+      .p-panels {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 44rem), 1fr));
+        gap: var(--kv-space-6);
+      }
+      .p-panel {
+        min-inline-size: 0;
+        padding: var(--kv-space-5);
+        border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+        border-radius: var(--kv-radius-lg);
+        background-color: var(--kv-color-canvas);
+        color: var(--kv-color-text);
+      }
+
+      /* A page: the contents list first in the DOM, then the article. In the side layout the
+       * list is a column at the inline start, so the visual order is the DOM order. */
+      .p-doc {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--kv-space-6);
+        align-items: start;
+      }
+      .p-doc--side {
+        grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+      }
+      @media (width < 48rem) {
+        .p-doc--side {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+      .p-doc--narrow {
+        max-inline-size: 18rem;
+      }
+      .p-contents > .kv-heading {
+        margin: 0 0 var(--kv-space-2);
+      }
+      .p-article > .kv-heading {
+        margin: var(--kv-space-6) 0 var(--kv-space-2);
+      }
+      .p-article > .kv-heading:first-child {
+        margin-block-start: 0;
+      }
+      .p-article > p {
+        max-inline-size: 60ch;
+        margin: 0;
+      }
+      .p-article > .p-lead {
+        font-size: var(--kv-font-body-large-size);
+        line-height: var(--kv-font-body-large-line-height);
+      }
+      .p-article > .p-active {
+        scroll-margin-top: var(--kv-space-4);
+      }
+
+      /* ---------------------------------------------------------------------------------------
+       * Themes per panel. The page root is pinned to light standard (data-kv-* on <html>). The
+       * dark and contrast mappings repeat theme.css section 3, for the tokens used here, on
+       * 2026-10-05. Off in forced colours, so theme.css section 5 reaches every panel.
+       * ------------------------------------------------------------------------------------- */
+      @media (forced-colors: none) {
+        .t-dark {
+          color-scheme: dark;
+          --kv-color-canvas: var(--kv-black);
+          --kv-color-surface: var(--kv-neutral-950);
+          --kv-color-surface-raised: var(--kv-neutral-900);
+          --kv-color-border-subtle: var(--kv-neutral-800);
+          --kv-color-border-control: var(--kv-neutral-500);
+          --kv-color-text: var(--kv-neutral-50);
+          --kv-color-heading: var(--kv-neutral-50);
+          --kv-color-text-muted: var(--kv-neutral-400);
+          --kv-color-primary: var(--kv-primary-500);
+          --kv-color-primary-hover: var(--kv-primary-600);
+          --kv-color-on-primary: var(--kv-white);
+          --kv-color-primary-subtle: var(--kv-primary-950);
+          --kv-color-link: var(--kv-primary-400);
+          --kv-color-link-hover: var(--kv-primary-300);
+          --kv-color-focus-ring: var(--kv-primary-400);
+        }
+        body:has(#p-contrast-more:checked) .t-light {
+          --kv-color-border-subtle: var(--kv-neutral-500);
+          --kv-color-border-control: var(--kv-neutral-700);
+          --kv-color-text: var(--kv-black);
+          --kv-color-heading: var(--kv-black);
+          --kv-color-text-muted: var(--kv-neutral-700);
+          --kv-color-primary: var(--kv-primary-800);
+          --kv-color-primary-hover: var(--kv-primary-900);
+          --kv-color-on-primary: var(--kv-white);
+          --kv-color-primary-subtle: var(--kv-primary-50);
+          --kv-color-link: var(--kv-primary-800);
+          --kv-color-link-hover: var(--kv-primary-900);
+          --kv-color-focus-ring: var(--kv-primary-800);
+          --kv-link-decoration-line: underline;
+        }
+        body:has(#p-contrast-more:checked) .t-dark {
+          --kv-color-border-subtle: var(--kv-neutral-400);
+          --kv-color-border-control: var(--kv-neutral-200);
+          --kv-color-text: var(--kv-white);
+          --kv-color-heading: var(--kv-white);
+          --kv-color-text-muted: var(--kv-neutral-200);
+          --kv-color-primary: var(--kv-primary-200);
+          --kv-color-primary-hover: var(--kv-primary-100);
+          --kv-color-on-primary: var(--kv-black);
+          --kv-color-primary-subtle: var(--kv-primary-950);
+          --kv-color-link: var(--kv-primary-200);
+          --kv-color-link-hover: var(--kv-primary-100);
+          --kv-color-focus-ring: var(--kv-primary-200);
+          --kv-link-decoration-line: underline;
+        }
+      }
+
+      /* WCAG 1.4.12 text spacing, as a user's bookmarklet sets it. */
+      body:has(#p-spacing:checked) .p-demo,
+      body:has(#p-spacing:checked) .p-demo * {
+        line-height: 1.5 !important;
+        letter-spacing: 0.12em !important;
+        word-spacing: 0.16em !important;
+      }
+
+      /* ---------------------------------------------------------------------------------------
+       * The proposal (Plans 0047 and 0049): Navigation's section 8 rules as selector lists that
+       * include the table of contents' parts. Unlayered, so it wins over today's theme.css.
+       * ------------------------------------------------------------------------------------- */
+
+      /* The table of contents' list, as theme.css styles .kv-navigation-list. */
+      .kv-table-of-contents-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--kv-space-1);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      :is(.kv-navigation-list, .kv-table-of-contents-list) :is(.kv-navigation-list, .kv-table-of-contents-list) {
+        margin-block-start: var(--kv-space-1);
+        padding-inline-start: var(--kv-space-4);
+      }
+      :is(.kv-navigation-list, .kv-table-of-contents-list)[hidden] {
+        display: none;
+      }
+
+      /* An item at rest, as theme.css styles navigation items, plus the chosen changes. */
+      :is(.kv-navigation-item, .kv-table-of-contents-item) > .kv-link:not(.kv-link--service) {
+        position: relative;
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+        min-block-size: var(--kv-control-min-block-size);
+        padding-block: var(--kv-space-1);
+        padding-inline: var(--kv-space-4) var(--kv-space-3);
+        border-inline-start: 0;
+        border-radius: var(--kv-radius-md);
+        background-color: transparent;
+        color: var(--kv-color-text);
+        font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+        font-size: var(--kv-control-font-size);
+        font-weight: var(--kv-font-body-weight);
+        line-height: var(--kv-control-line-height);
+        text-decoration: none;
+        overflow-wrap: anywhere;
+      }
+      :is(.kv-navigation-item, .kv-table-of-contents-item) > .kv-link:not(.kv-link--service):is(:hover, :active, .is-hover) {
+        text-decoration-line: underline;
+        text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+      }
+      :is(.kv-navigation-item, .kv-table-of-contents-item) > .kv-link:not(.kv-link--service):is([data-current], [aria-current]:not([aria-current='false'])) {
+        background-color: var(--kv-color-primary);
+        color: var(--kv-color-on-primary);
+        font-weight: 600;
+      }
+      :is(.kv-navigation-item, .kv-table-of-contents-item):has(> :is(.kv-navigation-list, .kv-table-of-contents-list) .kv-link:is([data-current], [aria-current]:not([aria-current='false']))) > .kv-link:not(.kv-link--service) {
+        background-color: var(--kv-color-primary-subtle);
+        font-weight: 600;
+      }
+
+      /* Q-C1's fallback, for comparison only: the quiet fill for the current heading. It can't be
+       * told from its own trail without colour, which is why the spec chooses the solid fill. */
+      .q-c1-quiet :is(.kv-navigation-item, .kv-table-of-contents-item) > .kv-link:not(.kv-link--service):is([data-current], [aria-current]:not([aria-current='false'])) {
+        background-color: var(--kv-color-primary-subtle);
+        color: var(--kv-color-text);
+      }
+
+      .p-demo .kv-link.is-focus {
+        outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+        outline-offset: var(--kv-focus-ring-offset);
+      }
+
+      @media (forced-colors: active) {
+        :is(.kv-navigation-item, .kv-table-of-contents-item) > .kv-link:not(.kv-link--service) {
+          color: LinkText;
+          text-decoration-line: none;
+        }
+        :is(.kv-navigation-item, .kv-table-of-contents-item) > .kv-link:not(.kv-link--service):is([data-current], [aria-current]:not([aria-current='false'])) {
+          background-color: Canvas;
+          color: LinkText;
+        }
+        :is(.kv-navigation-item, .kv-table-of-contents-item) > .kv-link:not(.kv-link--service):is([data-current], [aria-current]:not([aria-current='false']))::before {
+          content: '';
+          position: absolute;
+          inset-block: var(--kv-space-2);
+          inset-inline-start: var(--kv-space-1);
+          inline-size: var(--kv-indicator-width);
+          border-radius: var(--kv-radius-full);
+          forced-color-adjust: none;
+          background-color: LinkText;
+        }
+        .p-demo .kv-link.is-focus {
+          outline-color: Highlight;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="p-page">
+      <header>
+        <h1>TableOfContents: the chosen look</h1>
+        <p class="p-text">
+          A throwaway prototype for
+          <a class="p-link" href="../table-of-contents.md">the design spec</a>. The contents list
+          shares Navigation’s item rules:
+        </p>
+        <ul class="p-text">
+          <li>weight 400 at rest, and an underline on hover;</li>
+          <li>a solid <code>primary</code> row for the heading being read (<code>aria-current="location"</code>);</li>
+          <li>the quiet fill at weight 600 for the headings above it.</li>
+        </ul>
+        <p class="p-text">
+          The title is the page’s own heading, with the <code>heading-4</code> look, and it names
+          the list with <code>aria-labelledby</code>. There’s no script, so “Avgifter” is forced
+          as current. The links still jump to their headings.
+        </p>
+        <ul class="p-text">
+          <li>Forced colours: in Chrome or Edge DevTools, open Rendering and set “Emulate CSS media feature forced-colors” to “active”.</li>
+          <li>Reflow: the Finnish page is as wide as the content of a 320px screen.</li>
+        </ul>
+        <div class="p-controls">
+          <fieldset>
+            <legend>Theme contrast</legend>
+            <label><input type="radio" name="p-contrast" id="p-contrast-standard" checked /> Standard</label>
+            <label><input type="radio" name="p-contrast" id="p-contrast-more" /> More: the contrast themes</label>
+          </fieldset>
+          <fieldset>
+            <legend>Text spacing (WCAG 1.4.12)</legend>
+            <label><input type="checkbox" id="p-spacing" /> Apply the overrides to the examples</label>
+          </fieldset>
+        </div>
+        <nav class="p-toc" aria-label="Contents of this prototype">
+          <ul>
+            <li><a class="p-link" href="#side">A side column</a></li>
+            <li><a class="p-link" href="#q-c1">Q-C1: solid or quiet</a></li>
+            <li><a class="p-link" href="#stress">Stress cases</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main>
+        <section class="p-section" id="side" aria-labelledby="side-title">
+          <h2 id="side-title">A side column, light and dark (spec 6.1–6.5)</h2>
+          <p class="p-text">
+            The list comes first in the DOM, in a column at the inline start, so the visual order
+            is the DOM order. Below 48rem the column stacks above the article.
+          </p>
+          <div class="p-panels">
+          <div class="p-panel t-light">
+            <h3>Light</h3>
+            <div class="p-doc p-doc--side p-demo" lang="sv">
+              <div class="p-contents">
+                <h4 id="light-contents-title" class="kv-heading kv-heading--heading-4">På den här sidan</h4>
+                <nav class="kv-table-of-contents" aria-labelledby="light-contents-title">
+                  <ul class="kv-table-of-contents-list">
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#light-vem">Vem behöver bygglov?</a></li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#light-ansok">Så ansöker du</a>
+                      <ul class="kv-table-of-contents-list">
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#light-ritningar">Ritningar</a></li>
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#light-avgifter" aria-current="location">Avgifter</a></li>
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#light-tid">Handläggningstid</a></li>
+                      </ul>
+                    </li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#light-beslut">Efter beslutet</a>
+                      <ul class="kv-table-of-contents-list">
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#light-startbesked">Startbesked</a></li>
+                      </ul>
+                    </li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#light-kontakt">Kontakta oss</a></li>
+                  </ul>
+                </nav>
+              </div>
+              <div class="p-article">
+                <h4 class="kv-heading kv-heading--heading-1">Bygglov: så går det till</h4>
+                <p class="p-lead">Här ser du vem som behöver bygglov, hur du ansöker och vad som händer efter beslutet.</p>
+                  <h5 id="light-vem" class="kv-heading kv-heading--heading-2">Vem behöver bygglov?</h5>
+                  <p>Du behöver oftast bygglov för att bygga nytt, bygga till eller ändra hur ett hus används.</p>
+                  <h5 id="light-ansok" class="kv-heading kv-heading--heading-2">Så ansöker du</h5>
+                  <p>Ansök i e-tjänsten. Skicka med ritningar och en beskrivning av vad du vill bygga.</p>
+                  <h6 id="light-ritningar" class="kv-heading kv-heading--heading-3">Ritningar</h6>
+                  <p>Ritningarna ska vara skalenliga och visa fasader, planer och sektioner.</p>
+                  <h6 id="light-avgifter" class="kv-heading kv-heading--heading-3 p-active">Avgifter</h6>
+                  <p>Du betalar en avgift när vi har fattat beslut. Den beror på hur stort det du bygger är.</p>
+                  <h6 id="light-tid" class="kv-heading kv-heading--heading-3">Handläggningstid</h6>
+                  <p>Vi fattar beslut inom tio veckor från att din ansökan är komplett.</p>
+                  <h5 id="light-beslut" class="kv-heading kv-heading--heading-2">Efter beslutet</h5>
+                  <p>Beslutet kungörs i Post- och Inrikes Tidningar. Andra kan överklaga inom fyra veckor.</p>
+                  <h6 id="light-startbesked" class="kv-heading kv-heading--heading-3">Startbesked</h6>
+                  <p>Du får börja bygga först när du har fått ett startbesked.</p>
+                  <h5 id="light-kontakt" class="kv-heading kv-heading--heading-2">Kontakta oss</h5>
+                  <p>Ring bygglovsenheten eller skicka ett meddelande i e-tjänsten.</p>
+              </div>
+            </div>
+          </div>
+          <div class="p-panel t-dark">
+            <h3>Dark</h3>
+            <div class="p-doc p-doc--side p-demo" lang="sv">
+              <div class="p-contents">
+                <h4 id="dark-contents-title" class="kv-heading kv-heading--heading-4">På den här sidan</h4>
+                <nav class="kv-table-of-contents" aria-labelledby="dark-contents-title">
+                  <ul class="kv-table-of-contents-list">
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#dark-vem">Vem behöver bygglov?</a></li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#dark-ansok">Så ansöker du</a>
+                      <ul class="kv-table-of-contents-list">
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#dark-ritningar">Ritningar</a></li>
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#dark-avgifter" aria-current="location">Avgifter</a></li>
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#dark-tid">Handläggningstid</a></li>
+                      </ul>
+                    </li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#dark-beslut">Efter beslutet</a>
+                      <ul class="kv-table-of-contents-list">
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#dark-startbesked">Startbesked</a></li>
+                      </ul>
+                    </li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#dark-kontakt">Kontakta oss</a></li>
+                  </ul>
+                </nav>
+              </div>
+              <div class="p-article">
+                <h4 class="kv-heading kv-heading--heading-1">Bygglov: så går det till</h4>
+                <p class="p-lead">Här ser du vem som behöver bygglov, hur du ansöker och vad som händer efter beslutet.</p>
+                  <h5 id="dark-vem" class="kv-heading kv-heading--heading-2">Vem behöver bygglov?</h5>
+                  <p>Du behöver oftast bygglov för att bygga nytt, bygga till eller ändra hur ett hus används.</p>
+                  <h5 id="dark-ansok" class="kv-heading kv-heading--heading-2">Så ansöker du</h5>
+                  <p>Ansök i e-tjänsten. Skicka med ritningar och en beskrivning av vad du vill bygga.</p>
+                  <h6 id="dark-ritningar" class="kv-heading kv-heading--heading-3">Ritningar</h6>
+                  <p>Ritningarna ska vara skalenliga och visa fasader, planer och sektioner.</p>
+                  <h6 id="dark-avgifter" class="kv-heading kv-heading--heading-3 p-active">Avgifter</h6>
+                  <p>Du betalar en avgift när vi har fattat beslut. Den beror på hur stort det du bygger är.</p>
+                  <h6 id="dark-tid" class="kv-heading kv-heading--heading-3">Handläggningstid</h6>
+                  <p>Vi fattar beslut inom tio veckor från att din ansökan är komplett.</p>
+                  <h5 id="dark-beslut" class="kv-heading kv-heading--heading-2">Efter beslutet</h5>
+                  <p>Beslutet kungörs i Post- och Inrikes Tidningar. Andra kan överklaga inom fyra veckor.</p>
+                  <h6 id="dark-startbesked" class="kv-heading kv-heading--heading-3">Startbesked</h6>
+                  <p>Du får börja bygga först när du har fått ett startbesked.</p>
+                  <h5 id="dark-kontakt" class="kv-heading kv-heading--heading-2">Kontakta oss</h5>
+                  <p>Ring bygglovsenheten eller skicka ett meddelande i e-tjänsten.</p>
+              </div>
+            </div>
+          </div>
+          </div>
+        </section>
+        <section class="p-section" id="q-c1" aria-labelledby="q-c1-title">
+          <h2 id="q-c1-title">Q-C1: the solid fill or the quiet fill for the heading being read (spec 6.3)</h2>
+          <p class="p-text">
+            On the left, the decision: the solid fill. “Avgifter” ranks above its trail, “Så
+            ansöker du”, without colour. On the right, the quiet fallback: the current heading and
+            its trail look the same, except for a 1.07–1.34:1 tint.
+          </p>
+          <div class="p-panels">
+          <div class="p-panel t-light">
+            <h3>Solid (chosen)</h3>
+            <div class="p-doc p-doc--side p-demo" lang="sv">
+              <div class="p-contents">
+                <h4 id="solid-contents-title" class="kv-heading kv-heading--heading-4">På den här sidan</h4>
+                <nav class="kv-table-of-contents" aria-labelledby="solid-contents-title">
+                  <ul class="kv-table-of-contents-list">
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#solid-vem">Vem behöver bygglov?</a></li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#solid-ansok">Så ansöker du</a>
+                      <ul class="kv-table-of-contents-list">
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#solid-ritningar">Ritningar</a></li>
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#solid-avgifter" aria-current="location">Avgifter</a></li>
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#solid-tid">Handläggningstid</a></li>
+                      </ul>
+                    </li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#solid-beslut">Efter beslutet</a>
+                      <ul class="kv-table-of-contents-list">
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#solid-startbesked">Startbesked</a></li>
+                      </ul>
+                    </li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#solid-kontakt">Kontakta oss</a></li>
+                  </ul>
+                </nav>
+              </div>
+              <div class="p-article">
+                <h4 class="kv-heading kv-heading--heading-1">Bygglov: så går det till</h4>
+                <p class="p-lead">Här ser du vem som behöver bygglov, hur du ansöker och vad som händer efter beslutet.</p>
+                  <h5 id="solid-vem" class="kv-heading kv-heading--heading-2">Vem behöver bygglov?</h5>
+                  <p>Du behöver oftast bygglov för att bygga nytt, bygga till eller ändra hur ett hus används.</p>
+                  <h5 id="solid-ansok" class="kv-heading kv-heading--heading-2">Så ansöker du</h5>
+                  <p>Ansök i e-tjänsten. Skicka med ritningar och en beskrivning av vad du vill bygga.</p>
+                  <h6 id="solid-ritningar" class="kv-heading kv-heading--heading-3">Ritningar</h6>
+                  <p>Ritningarna ska vara skalenliga och visa fasader, planer och sektioner.</p>
+                  <h6 id="solid-avgifter" class="kv-heading kv-heading--heading-3 p-active">Avgifter</h6>
+                  <p>Du betalar en avgift när vi har fattat beslut. Den beror på hur stort det du bygger är.</p>
+                  <h6 id="solid-tid" class="kv-heading kv-heading--heading-3">Handläggningstid</h6>
+                  <p>Vi fattar beslut inom tio veckor från att din ansökan är komplett.</p>
+                  <h5 id="solid-beslut" class="kv-heading kv-heading--heading-2">Efter beslutet</h5>
+                  <p>Beslutet kungörs i Post- och Inrikes Tidningar. Andra kan överklaga inom fyra veckor.</p>
+                  <h6 id="solid-startbesked" class="kv-heading kv-heading--heading-3">Startbesked</h6>
+                  <p>Du får börja bygga först när du har fått ett startbesked.</p>
+                  <h5 id="solid-kontakt" class="kv-heading kv-heading--heading-2">Kontakta oss</h5>
+                  <p>Ring bygglovsenheten eller skicka ett meddelande i e-tjänsten.</p>
+              </div>
+            </div>
+          </div>
+          <div class="p-panel t-light">
+            <h3>Quiet (the fallback)</h3>
+            <div class="p-doc p-doc--side p-demo q-c1-quiet" lang="sv">
+              <div class="p-contents">
+                <h4 id="quiet-contents-title" class="kv-heading kv-heading--heading-4">På den här sidan</h4>
+                <nav class="kv-table-of-contents" aria-labelledby="quiet-contents-title">
+                  <ul class="kv-table-of-contents-list">
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#quiet-vem">Vem behöver bygglov?</a></li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#quiet-ansok">Så ansöker du</a>
+                      <ul class="kv-table-of-contents-list">
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#quiet-ritningar">Ritningar</a></li>
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#quiet-avgifter" aria-current="location">Avgifter</a></li>
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#quiet-tid">Handläggningstid</a></li>
+                      </ul>
+                    </li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#quiet-beslut">Efter beslutet</a>
+                      <ul class="kv-table-of-contents-list">
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#quiet-startbesked">Startbesked</a></li>
+                      </ul>
+                    </li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#quiet-kontakt">Kontakta oss</a></li>
+                  </ul>
+                </nav>
+              </div>
+              <div class="p-article">
+                <h4 class="kv-heading kv-heading--heading-1">Bygglov: så går det till</h4>
+                <p class="p-lead">Här ser du vem som behöver bygglov, hur du ansöker och vad som händer efter beslutet.</p>
+                  <h5 id="quiet-vem" class="kv-heading kv-heading--heading-2">Vem behöver bygglov?</h5>
+                  <p>Du behöver oftast bygglov för att bygga nytt, bygga till eller ändra hur ett hus används.</p>
+                  <h5 id="quiet-ansok" class="kv-heading kv-heading--heading-2">Så ansöker du</h5>
+                  <p>Ansök i e-tjänsten. Skicka med ritningar och en beskrivning av vad du vill bygga.</p>
+                  <h6 id="quiet-ritningar" class="kv-heading kv-heading--heading-3">Ritningar</h6>
+                  <p>Ritningarna ska vara skalenliga och visa fasader, planer och sektioner.</p>
+                  <h6 id="quiet-avgifter" class="kv-heading kv-heading--heading-3 p-active">Avgifter</h6>
+                  <p>Du betalar en avgift när vi har fattat beslut. Den beror på hur stort det du bygger är.</p>
+                  <h6 id="quiet-tid" class="kv-heading kv-heading--heading-3">Handläggningstid</h6>
+                  <p>Vi fattar beslut inom tio veckor från att din ansökan är komplett.</p>
+                  <h5 id="quiet-beslut" class="kv-heading kv-heading--heading-2">Efter beslutet</h5>
+                  <p>Beslutet kungörs i Post- och Inrikes Tidningar. Andra kan överklaga inom fyra veckor.</p>
+                  <h6 id="quiet-startbesked" class="kv-heading kv-heading--heading-3">Startbesked</h6>
+                  <p>Du får börja bygga först när du har fått ett startbesked.</p>
+                  <h5 id="quiet-kontakt" class="kv-heading kv-heading--heading-2">Kontakta oss</h5>
+                  <p>Ring bygglovsenheten eller skicka ett meddelande i e-tjänsten.</p>
+              </div>
+            </div>
+          </div>
+          </div>
+        </section>
+        <section class="p-section" id="stress" aria-labelledby="stress-title">
+          <h2 id="stress-title">Stress cases, light (spec 6.4 and 6.6)</h2>
+          <div class="p-panels">
+          <div class="p-panel t-light">
+            <h3>As wide as a 320px screen, Finnish: the list above the article, long headings wrap</h3>
+            <div class="p-doc p-doc--narrow p-demo" lang="fi">
+              <div class="p-contents">
+                <h4 id="fi-contents-title" class="kv-heading kv-heading--heading-4">Tällä sivulla</h4>
+                <nav class="kv-table-of-contents" aria-labelledby="fi-contents-title">
+                  <ul class="kv-table-of-contents-list">
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#fi-kuka">Kuka tarvitsee rakennusluvan?</a></li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#fi-haku">Rakennus- ja toimenpidelupahakemuksen liitteet</a>
+                      <ul class="kv-table-of-contents-list">
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#fi-maksut" aria-current="location">Rakennusvalvontaviranomaisen maksut ja käsittelyaika</a></li>
+                      </ul>
+                    </li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#fi-paatos">Päätöksen jälkeen</a></li>
+                  </ul>
+                </nav>
+              </div>
+              <div class="p-article">
+                <h4 class="kv-heading kv-heading--heading-1">Rakennuslupa</h4>
+                <p class="p-lead">Näin haet lupaa ja mitä päätöksen jälkeen tapahtuu.</p>
+                  <h5 id="fi-kuka" class="kv-heading kv-heading--heading-2">Kuka tarvitsee rakennusluvan?</h5>
+                  <p>Tarvitset luvan useimpiin uudisrakennuksiin ja laajennuksiin.</p>
+                  <h5 id="fi-haku" class="kv-heading kv-heading--heading-2">Rakennus- ja toimenpidelupahakemuksen liitteet</h5>
+                  <p>Liitä hakemukseen piirustukset ja selvitykset.</p>
+                  <h6 id="fi-maksut" class="kv-heading kv-heading--heading-3 p-active">Rakennusvalvontaviranomaisen maksut ja käsittelyaika</h6>
+                  <p>Maksu määräytyy rakennuksen koon mukaan.</p>
+                  <h5 id="fi-paatos" class="kv-heading kv-heading--heading-2">Päätöksen jälkeen</h5>
+                  <p>Päätöksestä voi valittaa neljän viikon kuluessa.</p>
+              </div>
+            </div>
+          </div>
+          <div class="p-panel t-light" dir="rtl" lang="en">
+            <h3>Right to left</h3>
+            <div class="p-doc p-doc--side p-demo" lang="en">
+              <div class="p-contents">
+                <h4 id="rtl-contents-title" class="kv-heading kv-heading--heading-4">On this page</h4>
+                <nav class="kv-table-of-contents" aria-labelledby="rtl-contents-title">
+                  <ul class="kv-table-of-contents-list">
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#rtl-who">Who needs a permit?</a></li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#rtl-apply">How to apply</a>
+                      <ul class="kv-table-of-contents-list">
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#rtl-fees" aria-current="location">Fees</a></li>
+                      </ul>
+                    </li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#rtl-after">After the decision</a></li>
+                  </ul>
+                </nav>
+              </div>
+              <div class="p-article">
+                <h4 class="kv-heading kv-heading--heading-1">Building permits</h4>
+                <p class="p-lead">Who needs one, how to apply and what happens next.</p>
+                  <h5 id="rtl-who" class="kv-heading kv-heading--heading-2">Who needs a permit?</h5>
+                  <p>Most new buildings and extensions need one.</p>
+                  <h5 id="rtl-apply" class="kv-heading kv-heading--heading-2">How to apply</h5>
+                  <p>Apply online and attach your drawings.</p>
+                  <h6 id="rtl-fees" class="kv-heading kv-heading--heading-3 p-active">Fees</h6>
+                  <p>You pay when we have decided.</p>
+                  <h5 id="rtl-after" class="kv-heading kv-heading--heading-2">After the decision</h5>
+                  <p>Others can appeal within four weeks.</p>
+              </div>
+            </div>
+          </div>
+          <div class="p-panel t-light">
+            <h3>Compact: 32px rows with 14px labels from 64rem wide</h3>
+            <div class="p-doc p-doc--side p-demo kv-compact" lang="sv">
+              <div class="p-contents">
+                <h4 id="compact-contents-title" class="kv-heading kv-heading--heading-4">På den här sidan</h4>
+                <nav class="kv-table-of-contents" aria-labelledby="compact-contents-title">
+                  <ul class="kv-table-of-contents-list">
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#compact-vem">Vem behöver bygglov?</a></li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#compact-ansok">Så ansöker du</a>
+                      <ul class="kv-table-of-contents-list">
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#compact-ritningar">Ritningar</a></li>
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#compact-avgifter" aria-current="location">Avgifter</a></li>
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#compact-tid">Handläggningstid</a></li>
+                      </ul>
+                    </li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#compact-beslut">Efter beslutet</a>
+                      <ul class="kv-table-of-contents-list">
+                        <li class="kv-table-of-contents-item"><a class="kv-link" href="#compact-startbesked">Startbesked</a></li>
+                      </ul>
+                    </li>
+                    <li class="kv-table-of-contents-item"><a class="kv-link" href="#compact-kontakt">Kontakta oss</a></li>
+                  </ul>
+                </nav>
+              </div>
+              <div class="p-article">
+                <h4 class="kv-heading kv-heading--heading-1">Bygglov: så går det till</h4>
+                <p class="p-lead">Här ser du vem som behöver bygglov, hur du ansöker och vad som händer efter beslutet.</p>
+                  <h5 id="compact-vem" class="kv-heading kv-heading--heading-2">Vem behöver bygglov?</h5>
+                  <p>Du behöver oftast bygglov för att bygga nytt, bygga till eller ändra hur ett hus används.</p>
+                  <h5 id="compact-ansok" class="kv-heading kv-heading--heading-2">Så ansöker du</h5>
+                  <p>Ansök i e-tjänsten. Skicka med ritningar och en beskrivning av vad du vill bygga.</p>
+                  <h6 id="compact-ritningar" class="kv-heading kv-heading--heading-3">Ritningar</h6>
+                  <p>Ritningarna ska vara skalenliga och visa fasader, planer och sektioner.</p>
+                  <h6 id="compact-avgifter" class="kv-heading kv-heading--heading-3 p-active">Avgifter</h6>
+                  <p>Du betalar en avgift när vi har fattat beslut. Den beror på hur stort det du bygger är.</p>
+                  <h6 id="compact-tid" class="kv-heading kv-heading--heading-3">Handläggningstid</h6>
+                  <p>Vi fattar beslut inom tio veckor från att din ansökan är komplett.</p>
+                  <h5 id="compact-beslut" class="kv-heading kv-heading--heading-2">Efter beslutet</h5>
+                  <p>Beslutet kungörs i Post- och Inrikes Tidningar. Andra kan överklaga inom fyra veckor.</p>
+                  <h6 id="compact-startbesked" class="kv-heading kv-heading--heading-3">Startbesked</h6>
+                  <p>Du får börja bygga först när du har fått ett startbesked.</p>
+                  <h5 id="compact-kontakt" class="kv-heading kv-heading--heading-2">Kontakta oss</h5>
+                  <p>Ring bygglovsenheten eller skicka ett meddelande i e-tjänsten.</p>
+              </div>
+            </div>
+          </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

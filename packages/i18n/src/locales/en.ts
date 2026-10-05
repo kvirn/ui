@@ -263,4 +263,5 @@ export const en = {
     imageSourceNotAllowed:
       'The pasted image wasn’t added, because it comes from an address that isn’t allowed.',
   },
+  tableOfContents: { label: 'On this page' },
 } satisfies KvirnMessages

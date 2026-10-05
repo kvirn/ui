@@ -271,4 +271,5 @@ export const sv = {
     imageSourceNotAllowed:
       'Den inklistrade bilden lades inte till, eftersom den kommer från en adress som inte är tillåten.',
   },
+  tableOfContents: { label: 'På den här sidan' },
 } satisfies KvirnMessages

@@ -392,7 +392,7 @@ Found with `grep -rn` for `kv-card--surface`, `kv-card--canvas`, `sidebar`, `lev
 - New `apps/storybook/src/components/section/` (`section.stories.tsx`, `section.fixture.tsx`, `section.e2e.ts`).
 - `apps/storybook/src/foundation/borders-elevation.mdx`: the level 1 row (33), the links to `components-card--surface-layers` (38, 75) → `components-section--surface-layers`, the "Which level to use" table (49: "a block of related cards" stays, add "a `Section`"), "Give every level from 1 up a border" (56) → "Every level from 1 up has a 1px border: transparent at level 1, except in forced colours", and the §6.9 table.
 - `apps/storybook/src/foundation/colors-semantic.tsx` line 53: `surface` "Sections, sidebars, table headers, code" (add `Section` if the page lists components).
-- Optional, not required: `.kv-story-surface` in `preview.css` (66–74), used by `link.stories.tsx` 44 and 159, could become a Section. It has a radius and a hairline, so it's a look of its own; leave it unless the plan wants it.
+- `.kv-story-surface` in `preview.css`, used by the Navigation stories, became a square `surface` panel with one inline-end hairline in Plan 0047, the Section look of a sidebar (`.kv-story-surface--wide` is the header band for a horizontal bar). It stays a story-only class: it is not a Section, so Navigation's stories don't import one.
 
 **Docs, changesets:**
 

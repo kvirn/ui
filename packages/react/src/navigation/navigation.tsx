@@ -100,16 +100,29 @@ export function NavigationRoot({ label, ref, ...otherProps }: NavigationRootProp
         'navigation-without-name',
         'A <Navigation.Root> has no name, so a screen reader user hears "navigation" and nothing else, and can\'t tell two apart. Give it label from your translations, or aria-labelledby pointing at a visible heading (WCAG 2.4.1, 2.4.6).',
       )
-      return
-    }
-    for (const other of element.ownerDocument.querySelectorAll('nav, [role="navigation"]')) {
-      if (other !== element && landmarkName(other) === name) {
-        warnOnce(
-          `navigation-duplicate-name:${name}`,
-          `Two navigation landmarks are both named "${name}", so a screen reader user can't tell them apart in the landmarks list. Give each its own name, for example "Huvudmeny" and "I det här avsnittet" (WCAG 2.4.1, 2.4.6).`,
-        )
-        return
+    } else {
+      for (const other of element.ownerDocument.querySelectorAll('nav, [role="navigation"]')) {
+        if (other !== element && landmarkName(other) === name) {
+          warnOnce(
+            `navigation-duplicate-name:${name}`,
+            `Two navigation landmarks are both named "${name}", so a screen reader user can't tell them apart in the landmarks list. Give each its own name, for example "Huvudmeny" and "I det här avsnittet" (WCAG 2.4.1, 2.4.6).`,
+          )
+          break
+        }
       }
+    }
+    // One current item per navigation. Every aria-current counts, a nested or hidden one too: the
+    // default theme draws each as the current page, and a hidden link is not exposed to assistive
+    // technology, so the deepest item shown carries it instead.
+    const currentCount = element.querySelectorAll(
+      '[aria-current]:not([aria-current="false"])',
+    ).length
+    if (currentCount > 1) {
+      const subject = name === '' ? 'A navigation' : `The navigation "${name}"`
+      warnOnce(
+        `navigation-multiple-current:${name}`,
+        `${subject} has ${currentCount} links marked current (aria-current). ARIA allows one current item in a set, so a screen reader user hears "current" more than once and can't tell which link is the page, and the default theme draws each one as the current page. Mark one: current="page" on the link to the page, or current on the deepest item shown when the page is not in the navigation. Never mark an ancestor of the page, or a link inside a hidden group (WCAG 1.3.1, 4.1.2).`,
+      )
     }
   })
 
@@ -119,7 +132,9 @@ NavigationRoot.displayName = 'Navigation.Root'
 
 /**
  * A `<ul class="kv-navigation-list">`. For a sub-navigation, put another `Navigation.List`
- * inside a `Navigation.Item`: the lists nest natively, so the level is announced.
+ * inside a `Navigation.Item`: the lists nest natively, so the level is announced. A group you
+ * collapse is rendered with `hidden` and never unmounted: its links leave the Tab sequence and
+ * the accessibility tree, and the default theme keeps it collapsed.
  */
 export function NavigationList({ ref, ...otherProps }: NavigationListProps): ReactElement {
   const navigation = useNavigation()
@@ -139,9 +154,12 @@ NavigationItem.displayName = 'Navigation.Item'
 /**
  * A labelled `<nav>` landmark around a list of page links, with an optional second level
  * (contract: navigation.a11y.md). Mark the current page with `current` on its `Link`, which sets
- * `aria-current="page"`. It's a vertical list at every width: a disclosure menu with a
- * collapsing header is NavigationMenu. With `@kvirn-ui/theme`, the links become navigation items
- * and the current page gets a bar and weight.
+ * `aria-current="page"`: one current link per navigation and never an ancestor (when the page
+ * isn't listed, `current` goes on the deepest item shown). It is a vertical list by default, and
+ * a row that wraps with `className="kv-navigation--horizontal"` on the root. Orientation is a
+ * class and not a prop, because links are plain Tab stops and the layout changes no keys. A menu
+ * with flyouts or a collapsing header is NavigationMenu. With `@kvirn-ui/theme`, the links become
+ * navigation items: the current page is a solid fill, and its ancestors are a quiet bold trail.
  *
  * @example
  * <Navigation.Root label="Huvudmeny">

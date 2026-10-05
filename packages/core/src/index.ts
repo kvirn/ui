@@ -286,6 +286,13 @@ export type {
 } from './table/table-exports.ts'
 export { getRovingTarget } from './roving-focus/get-roving-target.ts'
 export type { RovingOrientation, RovingTargetInput } from './roving-focus/get-roving-target.ts'
+export { getTableOfContentsTree } from './table-of-contents/get-table-of-contents-tree.ts'
+export type {
+  TableOfContentsEntry,
+  TableOfContentsNode,
+} from './table-of-contents/get-table-of-contents-tree.ts'
+export { getActiveHeading } from './table-of-contents/get-active-heading.ts'
+export type { ActiveHeadingInput, HeadingPosition } from './table-of-contents/get-active-heading.ts'
 export {
   createTooltipGroup,
   createTooltipMachine,

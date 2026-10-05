@@ -27,7 +27,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Toggle (Plan 0035)                                                                                                                     | Button                            | 1   | alpha                                                     |
 | Toolbar (roving tabindex, `Toolbar.Item` for any control), ButtonGroup (Plan 0035)                                                     | Toolbar                           | 2   | alpha                                                     |
 | Link                                                                                                                                   | – (native `<a>`)                  | 1   | alpha                                                     |
-| Navigation (Root, List, Item; nested lists; `Link.Icon`, the service link) (Plan 0043)                                                 | – (native `<nav>`, `<ul>`, `<a>`) | 1   | alpha candidate; gates green, reviewer and AT `pending`   |
+| Navigation (Root, List, Item; nested lists, the trail; `kv-navigation--horizontal`; `Link.Icon`, the service link) (Plans 0043, 0047)  | – (native `<nav>`, `<ul>`, `<a>`) | 1   | alpha candidate; gates green, reviewer and AT `pending`   |
 | Card (Root, Header, Body, Footer)                                                                                                      | – (native `<div>`)                | 1   | alpha                                                     |
 | Section (level 1 container; Card becomes level 2 only)                                                                                 | – (native `<div>`)                | 1   | alpha                                                     |
 | Heading (level, type-role size), Prose (`kv-prose`)                                                                                    | – (native `<h1>`–`<h6>`)          | 1   | alpha; h1–h6 roles (Plan 0045), gates pending             |
@@ -46,7 +46,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Dialog, AlertDialog                                                                                                                    | Dialog (Modal), Alert Dialog      | 2   | planned                                                   |
 | Popover (alpha candidate), Tooltip                                                                                                     | –, Tooltip                        | 2   | in progress                                               |
 | Menu, MenuButton                                                                                                                       | Menu Button                       | 2   | planned                                                   |
-| Tabs                                                                                                                                   | Tabs                              | 2   | planned                                                   |
+| Tabs (Root, List, Tab, Panel; automatic and manual activation, vertical) (Plan 0048)                                                   | Tabs                              | 2   | implemented; gates, reviewer and AT `pending`             |
 | Listbox (alpha candidate: native and popup rendering)                                                                                  | Select-Only Combobox, Listbox     | 2   | in progress                                               |
 | Combobox, Autocomplete (alpha candidate: single, multiple, free text)                                                                  | Combobox (ARIA 1.2)               | 3   | in progress                                               |
 | RichTextEditor (`@kvirn-ui/rich-text`, on Tiptap: toolbar, link and image forms, table group, Plan 0036)                               | Toolbar, Dialog (non-modal)       | 3   | in progress (gates green; reviewer and AT `pending`)      |
@@ -61,6 +61,7 @@ Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core
 | Stepper                                                                                                                                | –                                 | 4   | planned                                                   |
 | FileUpload (alpha candidate: native button, drop zone, queue)                                                                          | –                                 | 4   | alpha                                                     |
 | NavigationMenu                                                                                                                         | Disclosure Navigation             | 4   | planned                                                   |
+| TableOfContents (scroll-spy over plain `#id` links; `useTableOfContents`) (Plan 0049)                                                  | – (native `<nav>`, `<ul>`, `<a>`) | 2   | in progress                                               |
 
 ## Theme and docs
 

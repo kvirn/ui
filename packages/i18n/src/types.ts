@@ -406,6 +406,14 @@ export interface KvirnMessages {
     /** Announced when a pasted image's address is outside the allowed image sources. */
     imageSourceNotAllowed: TextMessage
   }
+  tableOfContents: {
+    /**
+     * The name of the `<nav>` landmark when the page has no visible title to point
+     * `aria-labelledby` at, for example `På den här sidan`. The same words as the visible title
+     * (WCAG 2.5.3). Owned by TableOfContents (Plan 0049).
+     */
+    label: TextMessage
+  }
 }
 
 /** Any subset of namespaces and keys, for provider and `defineMessages` overrides. */

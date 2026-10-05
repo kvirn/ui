@@ -55,7 +55,9 @@ Copy rules: the service link label starts with the verb and names the service ("
 
 ## 5. Structure
 
-All breakpoints (320px · 40rem · 64rem) are the same: Navigation is a vertical list at every width (as `.kv-nav` was). A horizontal header bar and collapsing are NavigationMenu (M4), or the consumer's layout.
+All breakpoints (320px · 40rem · 64rem) are the same: Navigation is a vertical list by default, at every width (as `.kv-nav` was), and a row that wraps with `kv-navigation--horizontal` on the root. A bar of plain links is Navigation; flyouts and collapsing are NavigationMenu (M4), or the consumer's layout.
+
+> **Replaced in part (Plan 0047).** The horizontal bar is [navigation-link-options.md](navigation-link-options.md) §13, and the current-page and trail look is its §12. This section's structure (the three parts and the nested list) stands.
 
 ```
 [nav aria-label="Huvudmeny"]        Navigation.Root   .kv-navigation
@@ -93,6 +95,8 @@ Service link, inline-level, in a paragraph or on its own line:
 
 ### 6.2 States
 
+> **The Navigation item row is replaced by [navigation-link-options.md](navigation-link-options.md) §12** (Plan 0047): weight 400 at rest with no fill, an underline on hover, the current page as a solid fill, and its ancestors as the trail. The `nav-item` tokens in §6.1 follow it. The service link and icon block rows stand.
+
 | Part               | default                                            | hover / active                                                                   | focus-visible                                        | current (`aria-current`)                                                | disabled                          |
 | ------------------ | -------------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------- | --------------------------------- |
 | Navigation item    | `text`, no underline, transparent inline-start bar | `surface-raised` background                                                      | 2px `focus-ring`, 2px offset (`.kv-link`)            | `primary-subtle` background, 4px `primary` inline-start bar, weight 600 | n/a: no disabled link             |
@@ -102,6 +106,8 @@ Service link, inline-level, in a paragraph or on its own line:
 The underline on hover keeps a link's own cue; the weight keeps current from relying on colour. The service link never gets a shadow or a tinted edge.
 
 ### 6.3 Modes
+
+> **Navigation's forced-colours, RTL and 320px rules are replaced by [navigation-link-options.md](navigation-link-options.md) §12 and §13** (Plan 0047): the fills drop, the current item gets a straight `LinkText` bar (at the block end in a horizontal bar), the trail keeps its weight, and the nested indent and the bar sit at the inline start. The service link bullets stand.
 
 - **Dark, light-contrast, dark-contrast:** the tokens remap; nothing theme-specific. In dark-contrast `on-primary` is black on a light `primary-200` block.
 - **Forced colours:** navigation as today (`LinkText`, only the current item keeps its bar, in `LinkText`). Service link: `LinkText` text and 1px `LinkText` edge on `Canvas`, no underline; hover and active turn the edge `Highlight` and add the underline; focus ring `Highlight`. The block is not filled: `Canvas` with a 1px `LinkText` inline-end divider and a `LinkText` icon (`.kv-icon` inherits). Current keeps weight 600.
@@ -125,6 +131,8 @@ No new tokens and no new pairs: every pair used is already required in `packages
 Why the label is `link` and not `primary` (the plan's "primary text"): `primary` as text is 4.44:1 on the dark canvas (DESIGN.md, Colors). `link` is the same scale, a step that passes.
 
 ### 6.5 theme.css changes (section 8, "Link and navigation lists")
+
+> **The navigation item rules (steps 2 and 3) are replaced by [navigation-link-options.md](navigation-link-options.md) §12 and §13** (Plan 0047; `theme.css` §8 holds the result). The service link and icon rules stand.
 
 1. Rename the section to "Link, service link and Navigation". Replace the `kv-nav` example in its comment with `<Navigation.Root label=…>` and add the service link example. In the file header (lines 9–11) drop `kv-nav` from the context classes and add `kv-link--service` to the choices.
 2. Replace `.kv-nav` with:
@@ -251,7 +259,7 @@ No `[data-disabled]` rule for links. The theme never styles a disabled link.
 
 - **Roles:** `Navigation.Root` is a native `<nav>` (landmark), `List` a `<ul>`, `Item` an `<li>`. Nesting is native lists, so the level is announced (1.3.1). WebKit keeps list semantics inside `<nav>` despite `list-style: none`, so no `role="list"`.
 - **Names:** `label` sets `aria-label`; `aria-labelledby` (a visible heading) is accepted instead and preferred where a heading exists. Dev warning when neither, and when two navs share a name (2.4.1, 2.4.6). The service link's name is its text (plus the new-tab notice); the icon block is `aria-hidden` (Link.Icon renders it), so visible label = name (2.5.3).
-- **Current:** `current` on Link sets `aria-current="page"`. One per navigation. Visual cue never by colour alone: bar and weight in navigation, weight in the service link (1.4.1).
+- **Current:** `current` on Link sets `aria-current="page"`. One per navigation. Visual cue never by colour alone: a solid fill and weight in navigation ([navigation-link-options.md](navigation-link-options.md) §12), weight in the service link (1.4.1).
 - **Keyboard:** Navigation has no focusable part of its own; the links own the keys (`link.a11y.md`). It is not a composite: each link is a Tab stop, and there are no arrow keys (it is not a menu).
 
   | Key       | Context                      | Action                                                     |
@@ -273,7 +281,7 @@ No `[data-disabled]` rule for links. The theme never styles a disabled link.
 - **No disabled service link.** Link has no `disabled`. An unavailable e-service is text plus a notice (§3), so the plan's "`data-disabled` follows Button's" is dropped.
 - **Flat, not button depth.** DESIGN.md reserves depth for buttons.
 - **Label colour `link`, not `primary`**, for 4.5:1 in dark (§6.4).
-- **Vertical only.** Today's `.kv-nav` has one orientation; no `orientation` prop.
+- **Vertical by default, `kv-navigation--horizontal` on the root, no prop** (Plan 0047, [navigation-link-options.md](navigation-link-options.md) §13). This replaces "vertical only, no `orientation` prop". The links are plain Tab stops, so orientation is a look and not behaviour: it is a class, as options are in `architecture.md`.
 - **Navigation item selector excludes `kv-link--service`,** so a service link inside a navigation keeps its look.
 
 ## 9. Validation
@@ -290,6 +298,6 @@ No `[data-disabled]` rule for links. The theme never styles a disabled link.
 
 ## 10. Open questions
 
-- Should an ancestor of the current page (the parent section in a nested list) get a cue, and `aria-current="true"`? Not in scope; today only the page itself is marked.
+- Should an ancestor of the current page (the parent section in a nested list) get a cue, and `aria-current="true"`? Answered by Plan 0047: every ancestor gets a visual trail (CSS `:has()`), and `aria-current` stays on the page only ([navigation-link-options.md](navigation-link-options.md) §12).
 - A group label inside a navigation (the docs site's `docs-nav-group-label`, a non-link heading for a nested list): a `Navigation.Group` part later, or stays consumer CSS?
 - One service link per view as a rule, like one primary button? The spec says so in DESIGN.md; confirm.

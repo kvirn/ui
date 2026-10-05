@@ -61,6 +61,29 @@ export type {
   UseToolbarResult,
 } from './toolbar/use-toolbar.ts'
 export type { RovingOrientation } from '@kvirn-ui/core'
+export { Tabs, TabsList, TabsPanel, TabsRoot, TabsTab } from './tabs/tabs.tsx'
+export type {
+  TabsListProps,
+  TabsPanelProps,
+  TabsPanelState,
+  TabsRootProps,
+  TabsState,
+  TabsTabProps,
+  TabsTabState,
+} from './tabs/tabs.tsx'
+export { useTabs } from './tabs/use-tabs.ts'
+export type {
+  TabsActivationMode,
+  TabsChangeDetails,
+  TabsChangeReason,
+  TabsListPartProps,
+  TabsPanelPartProps,
+  TabsRootPartProps,
+  TabsTabPartProps,
+  UseTabsOptions,
+  UseTabsResult,
+  UseTabsTabOptions,
+} from './tabs/use-tabs.ts'
 export { Link, LinkIcon, LinkNewTabNotice, LinkRoot } from './link/link.tsx'
 export type {
   LinkElementProps,
@@ -92,6 +115,33 @@ export type {
   UseNavigationOptions,
   UseNavigationResult,
 } from './navigation/use-navigation.ts'
+export {
+  TableOfContents,
+  TableOfContentsItem,
+  TableOfContentsLink,
+  TableOfContentsList,
+  TableOfContentsRoot,
+} from './table-of-contents/table-of-contents.tsx'
+export type {
+  TableOfContentsChildrenState,
+  TableOfContentsElementProps,
+  TableOfContentsEntry,
+  TableOfContentsItemProps,
+  TableOfContentsLinkProps,
+  TableOfContentsListProps,
+  TableOfContentsNode,
+  TableOfContentsRootProps,
+  TableOfContentsState,
+} from './table-of-contents/table-of-contents.tsx'
+export { useTableOfContents } from './table-of-contents/use-table-of-contents.ts'
+export type {
+  TableOfContentsItemPartProps,
+  TableOfContentsLinkPartProps,
+  TableOfContentsListPartProps,
+  TableOfContentsRootPartProps,
+  UseTableOfContentsOptions,
+  UseTableOfContentsResult,
+} from './table-of-contents/use-table-of-contents.ts'
 export { Card, CardBody, CardFooter, CardHeader, CardRoot } from './card/card.tsx'
 export type {
   CardBodyProps,

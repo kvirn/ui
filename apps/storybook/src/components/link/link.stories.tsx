@@ -5,7 +5,7 @@ import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
 import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
-import { Icon, KvirnProvider, Link, Navigation } from '@kvirn-ui/react'
+import { Icon, KvirnProvider, Link } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/link/link.a11y.md?raw'
 import guide from '../../../../../packages/react/src/link/link.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -13,12 +13,12 @@ import type { CSSProperties } from 'react'
 import { expect, waitFor } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
-import { AppRoot, RoutedNavigation, RouterAndPlainLinks } from './link.fixture.tsx'
+import { AppRoot, RoutedLinkList, RouterAndPlainLinks } from './link.fixture.tsx'
 
 // Components/Link: the headless Link, styled by @kvirn-ui/theme/theme.css.
-// link.e2e.ts runs its keyboard contract against Default, SamePageLink, CurrentPage, NewTab,
-// NewTabNoticeOverrides, RouterLink, OtherLanguage, RTL and ForcedColors, so their play
-// functions only read.
+// link.e2e.ts runs its keyboard contract against Keyboard, SamePageLink, RoutedLinks, NewTab and
+// Service, and its axe and reflow checks against the other stories, so their play functions
+// only read. A list of page links with a current page is Components/Navigation.
 
 const catalogs: Record<string, KvirnMessages> = { sv, fi, nb, nn, se, en }
 
@@ -226,44 +226,6 @@ export const UnderlineProperties: Story = {
   },
 }
 
-/** Inside a `Navigation.Item` the current page gets a background, a bar and weight. */
-export const CurrentPage: Story = {
-  decorators: [
-    (Story) => (
-      <div className="kv-story-surface">
-        <Story />
-      </div>
-    ),
-  ],
-  render: () => (
-    <Navigation.Root label="Huvudmeny">
-      <Navigation.List>
-        <Navigation.Item>
-          <Link.Root href="#start">Start</Link.Root>
-        </Navigation.Item>
-        <Navigation.Item>
-          <Link.Root href="#ansok" current="page">
-            Ansök
-          </Link.Root>
-        </Navigation.Item>
-        <Navigation.Item>
-          <Link.Root href="#kontakt">Kontakt</Link.Root>
-        </Navigation.Item>
-      </Navigation.List>
-    </Navigation.Root>
-  ),
-  play: async ({ canvas }) => {
-    const current = canvas.getByRole('link', { name: 'Ansök' })
-    await expect(current).toHaveAttribute('aria-current', 'page')
-    await expect(current).toHaveAttribute('data-current', '')
-    for (const name of ['Start', 'Kontakt']) {
-      const link = canvas.getByRole('link', { name })
-      await expect(link).not.toHaveAttribute('aria-current')
-      await expect(link).not.toHaveAttribute('data-current')
-    }
-  },
-}
-
 /**
  * `className="kv-link--service"` is the one link per view that starts an e-service: an
  * outlined label, and with a `Link.Icon` first, a filled block with the icon. It is a link,
@@ -375,13 +337,14 @@ export const NewTabNoticeOverrides: Story = {
 /**
  * Register your router's link once, on the provider: every Link then renders it, and the router
  * handles the click. `current` comes from the router's pathname. The mock router here stands in
- * for your own (`NextLink`, TanStack Router's link).
+ * for your own (`NextLink`, TanStack Router's link). A list of these in a navigation is
+ * Components/Navigation's RouterLink.
  */
-export const RouterLink: Story = {
-  parameters: showSource('link/link.fixture.tsx', 'AppRoot', 'RoutedNavigation'),
+export const RoutedLinks: Story = {
+  parameters: showSource('link/link.fixture.tsx', 'AppRoot', 'RoutedLinkList'),
   render: () => (
     <AppRoot>
-      <RoutedNavigation />
+      <RoutedLinkList />
     </AppRoot>
   ),
   play: async ({ canvas }) => {
@@ -425,29 +388,15 @@ export const OtherLanguage: Story = {
   },
 }
 
-/** Keyboard focus shows a 2px ring, in running text and in navigation (2.4.7, 2.4.13). */
+/**
+ * Keyboard focus shows a 2px ring in running text (2.4.7, 2.4.13). A link in a navigation has its
+ * own FocusVisible in Components/Navigation.
+ */
 export const FocusVisible: Story = {
   render: () => (
-    <>
-      <p>
-        Du kan <Link.Root href="#ansokan">ansöka om parkeringstillstånd</Link.Root> på webben.
-      </p>
-      <Navigation.Root label="Parkeringstillstånd">
-        <Navigation.List>
-          <Navigation.Item>
-            <Link.Root href="#sida-1" current="page">
-              Översikt
-            </Link.Root>
-          </Navigation.Item>
-          <Navigation.Item>
-            <Link.Root href="#sida-2">Ansök</Link.Root>
-          </Navigation.Item>
-          <Navigation.Item>
-            <Link.Root href="#sida-3">Kontakta oss</Link.Root>
-          </Navigation.Item>
-        </Navigation.List>
-      </Navigation.Root>
-    </>
+    <p>
+      Du kan <Link.Root href="#ansokan">ansöka om parkeringstillstånd</Link.Root> på webben.
+    </p>
   ),
   play: async ({ canvas, userEvent }) => {
     const inText = canvas.getByRole('link', { name: 'ansöka om parkeringstillstånd' })
@@ -456,10 +405,6 @@ export const FocusVisible: Story = {
     await waitFor(() => expect(inText).toHaveAttribute('data-focus-visible'))
     // 2.4.7: a focused link shows an indicator.
     await expect(getComputedStyle(inText).outlineStyle).not.toBe('none')
-    const navigationItem = canvas.getByRole('link', { name: 'Översikt' })
-    await userEvent.tab()
-    await expect(navigationItem).toHaveFocus()
-    await expect(getComputedStyle(navigationItem).outlineStyle).not.toBe('none')
   },
 }
 
@@ -494,68 +439,16 @@ export const LongFinnishText: Story = {
   },
 }
 
-/** `kv-compact` navigation: items stay at least 24 × 24 (2.5.8). */
-export const CompactNavigation: Story = {
-  decorators: [
-    (Story) => (
-      <div className="kv-story-surface kv-compact">
-        <Story />
-      </div>
-    ),
-  ],
-  render: () => (
-    <Navigation.Root label="Parkeringstillstånd">
-      <Navigation.List>
-        <Navigation.Item>
-          <Link.Root href="#sida-1" current="page">
-            Översikt
-          </Link.Root>
-        </Navigation.Item>
-        <Navigation.Item>
-          <Link.Root href="#sida-2">Ansök</Link.Root>
-        </Navigation.Item>
-        <Navigation.Item>
-          <Link.Root href="#sida-3">Kontakta oss</Link.Root>
-        </Navigation.Item>
-      </Navigation.List>
-    </Navigation.Root>
-  ),
-  play: async ({ canvas }) => {
-    const links = canvas.getAllByRole('link')
-    for (const link of links) {
-      await expectMinimumTargetSize(link)
-    }
-    await expect(links[0]).toHaveAttribute('aria-current', 'page')
-  },
-}
-
-/** Right to left, in English: the notice and the navigation follow `dir`. */
+/** Right to left, in English: the new-tab notice follows `dir`. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
   render: () => (
-    <>
-      <p>
-        <Link.Root href="#apply">Apply for a parking permit</Link.Root>{' '}
-        <Link.Root href="https://www.digg.se/" target="_blank">
-          Digg <Link.NewTabNotice />
-        </Link.Root>
-      </p>
-      <Navigation.Root label="Parking permits">
-        <Navigation.List>
-          <Navigation.Item>
-            <Link.Root href="#sida-1" current="page">
-              Overview
-            </Link.Root>
-          </Navigation.Item>
-          <Navigation.Item>
-            <Link.Root href="#sida-2">Apply</Link.Root>
-          </Navigation.Item>
-          <Navigation.Item>
-            <Link.Root href="#sida-3">Contact us</Link.Root>
-          </Navigation.Item>
-        </Navigation.List>
-      </Navigation.Root>
-    </>
+    <p>
+      <Link.Root href="#apply">Apply for a parking permit</Link.Root>{' '}
+      <Link.Root href="https://www.digg.se/" target="_blank">
+        Digg <Link.NewTabNotice />
+      </Link.Root>
+    </p>
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('link', { name: 'Digg (opens in a new tab)' })).toBeVisible()
@@ -570,23 +463,11 @@ export const ForcedColors: Story = {
       <p>
         Läs mer om <Link.Root href="#parkering">parkering</Link.Root>.
       </p>
-      <Navigation.Root label="Huvudmeny">
-        <Navigation.List>
-          <Navigation.Item>
-            <Link.Root href="#start">Start</Link.Root>
-          </Navigation.Item>
-          <Navigation.Item>
-            <Link.Root href="#ansok" current="page">
-              Ansök
-            </Link.Root>
-          </Navigation.Item>
-          <Navigation.Item>
-            <Link.Root href="https://www.digg.se/" target="_blank">
-              Digg <Link.NewTabNotice />
-            </Link.Root>
-          </Navigation.Item>
-        </Navigation.List>
-      </Navigation.Root>
+      <p>
+        <Link.Root href="https://www.digg.se/" target="_blank">
+          Digg <Link.NewTabNotice />
+        </Link.Root>
+      </p>
       <p>
         <Link.Root href="#bygglov" className="kv-link--service">
           <Link.Icon>

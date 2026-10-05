@@ -273,4 +273,5 @@ export const fi = {
     imagePasteNotSupported: 'Kuvia ei voi liittää. Käytä Kuva-painiketta.',
     imageSourceNotAllowed: 'Liitettyä kuvaa ei lisätty, koska se on osoitteesta, jota ei sallita.',
   },
+  tableOfContents: { label: 'Tällä sivulla' },
 } satisfies KvirnMessages

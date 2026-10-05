@@ -43,7 +43,7 @@ test.describe('Link keyboard contract', () => {
   })
 
   test('Enter follows a router link without a page load', async ({ page }) => {
-    await openStory(page, 'router-link', 'Start')
+    await openStory(page, 'routed-links', 'Start')
     const apply = page.getByRole('link', { name: 'Ansök' })
     const urlBefore = page.url()
     await page.evaluate(() => {
@@ -130,22 +130,6 @@ test.describe('Link service look', () => {
 })
 
 test.describe('Link accessibility', () => {
-  test('a11y tree of the current page navigation', async ({ page }) => {
-    await openStory(page, 'current-page', 'Ansök')
-    await expect(page.getByRole('navigation', { name: 'Huvudmeny' })).toMatchAriaSnapshot(`
-      - navigation "Huvudmeny":
-        - list:
-          - listitem:
-            - link "Start"
-          - listitem:
-            - link "Ansök"
-          - listitem:
-            - link "Kontakt"
-    `)
-    await expect(page.getByRole('link', { name: 'Ansök' })).toHaveAttribute('aria-current', 'page')
-    await expect(page.getByRole('link', { name: 'Start' })).not.toHaveAttribute('aria-current')
-  })
-
   test('the new-tab notice is part of the name, in the provider’s language', async ({ page }) => {
     const link = await openStory(page, 'new-tab', 'Digg (öppnas i en ny flik)')
     await expect(link).toHaveAttribute('target', '_blank')
@@ -161,15 +145,14 @@ test.describe('Link accessibility', () => {
   const stories = [
     ['default', 'Ansök om bygglov'],
     ['same-page-link', 'Ansök om bygglov'],
-    ['current-page', 'Ansök'],
     ['service', 'Ansök om bygglov (öppnas i en ny flik)'],
     ['service-long-finnish-text', 'Hae rakennuslupaa sähköisesti'],
     ['new-tab', 'Digg (öppnas i en ny flik)'],
     ['new-tab-notice-overrides', 'Digg (öppnas i nytt fönster)'],
-    ['router-link', 'Start'],
+    ['routed-links', 'Start'],
     ['other-language', 'Suomeksi'],
     ['rtl', 'Digg (opens in a new tab)'],
-    ['forced-colors', 'Ansök'],
+    ['forced-colors', 'Starta e-tjänsten'],
   ] as const
 
   for (const [story, linkName] of stories) {

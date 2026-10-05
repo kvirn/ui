@@ -2,7 +2,8 @@ import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
 
 // se: English placeholders, except the combobox messages and the alert's strings (the status
-// words and alert.close: a native speaker should review them).
+// words and alert.close: a native speaker should review them). tableOfContents.label is an
+// English placeholder too ("On this page"): a native speaker still has to write it (Plan 0049).
 export const se = {
   link: { newTabNotice: '(opens in a new tab)' },
   field: { optional: '(optional)', errorPrefix: 'Error:' },
@@ -288,4 +289,5 @@ export const se = {
     imageSourceNotAllowed:
       'The pasted image wasn’t added, because it comes from an address that isn’t allowed.',
   },
+  tableOfContents: { label: 'On this page' },
 } satisfies KvirnMessages

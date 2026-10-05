@@ -268,4 +268,5 @@ export const nb = {
     imageSourceNotAllowed:
       'Det innlimte bildet ble ikke lagt til, fordi det kommer fra en adresse som ikke er tillatt.',
   },
+  tableOfContents: { label: 'På denne siden' },
 } satisfies KvirnMessages

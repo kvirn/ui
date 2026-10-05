@@ -52,7 +52,10 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0040](0040-date-input-auto-advance.md)           | DateInput moves to the next box when one is full                            | Accepted                              |
 | [0041](0041-help-text.md)                         | `Hint` becomes `HelpText`                                                   | Done                                  |
 | [0042](0042-notification-to-alert.md)             | Rename Notification to Alert                                                | Done                                  |
-| [0043](0043-navigation-and-service-link.md)       | Navigation as its own component, and a service link                         | Accepted, implemented (gates pending) |
+| [0043](0043-navigation-and-service-link.md)       | Navigation as its own component, and a service link                         | Implemented (reviewer and AT pending) |
 | [0044](0044-icon-libraries.md)                    | Using Lucide and Heroicons with Icon                                        | In progress                           |
 | [0046](0046-format-helpers.md)                    | `useFormat()` and calendar dates                                            | Implemented                           |
+| [0047](0047-navigation-t3c-and-horizontal.md)     | Navigation: the T3 C look and a horizontal bar                              | Accepted                              |
+| [0048](0048-tabs.md)                              | Tabs                                                                        | Accepted                              |
+| [0049](0049-table-of-contents.md)                 | TableOfContents with scroll-spy                                             | Accepted                              |
 | [0050](0050-agent-token-budget.md)                | Agent token budget: scout, effort per agent, scoped self-checks             | Done                                  |

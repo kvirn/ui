@@ -30,7 +30,10 @@ const namespaces = [
   'Prose',
   'RadioGroup',
   'Section',
+  // Before Table: the first prefix that matches a flat export names the fix.
+  'TableOfContents',
   'Table',
+  'Tabs',
   'Toolbar',
   'Tooltip',
 ]
@@ -78,6 +81,10 @@ function exportedNames(): string[] {
 function flatPartForms(): BannedForm[] {
   const forms: BannedForm[] = []
   for (const name of exportedNames()) {
+    // A namespace is not a flat part of a shorter one: `TableOfContents` is not `Table` + a part.
+    if (namespaces.includes(name)) {
+      continue
+    }
     const namespace = namespaces.find(
       (candidate) => name.startsWith(candidate) && /^[A-Z]/.test(name.slice(candidate.length)),
     )
@@ -162,6 +169,10 @@ describe('component naming in docs and stories', () => {
       '<FieldsetLegend>',
       '<ToolbarRoot>',
       '<ToolbarGroup>',
+      '<TableOfContentsRoot items={items} />',
+      '<TableOfContentsLink item={item} />',
+      '<TabsRoot defaultValue="uppgifter">',
+      '<TabsTab value="uppgifter">',
     ]) {
       expect(hits(banned), banned).toBeGreaterThan(0)
     }
@@ -179,6 +190,10 @@ describe('component naming in docs and stories', () => {
       '<Card.Header>',
       '<Toolbar.Root aria-label="Formatering">',
       '<Toolbar.Group aria-label="Textstil">',
+      '<TableOfContents.Root items={items} />',
+      '<TableOfContents.Link item={item} />',
+      '<Tabs.Root defaultValue="uppgifter">',
+      '<Tabs.Tab value="uppgifter">',
       '<ButtonGroup aria-label="Ärendet">',
       '<Toggle pressed={isOn}>',
       'the Field wires the Label',
@@ -196,6 +211,8 @@ describe('component naming in docs and stories', () => {
     // A namespace itself, and a different component that shares a prefix, are not flat parts.
     expect(patterns).not.toContain('<InputGroup(?!\\w)')
     expect(patterns).not.toContain('<CheckboxGroup(?!\\w)')
+    expect(patterns).not.toContain('<TableOfContents(?!\\w)')
+    expect(patterns).toContain('<TableOfContentsRoot(?!\\w)')
   })
 
   it('scans the stories, the MDX and the package guides', () => {
