@@ -122,7 +122,7 @@ export interface RichTextHiddenInputPartProps {
   disabled?: true
 }
 
-/** What the extensions let the text contain: lists and tables decide the keyboard instruction. */
+/** What the extensions let the text contain: lists and tables decide which controls and keys apply. */
 export interface RichTextFeatures {
   lists: boolean
   tables: boolean
@@ -164,7 +164,7 @@ export interface UseRichTextEditorResult {
   isRequired: boolean
   /** Whether the text can be edited. */
   isEditable: boolean
-  /** What the extensions allow: lists and tables decide the keyboard instruction. */
+  /** What the extensions allow: lists and tables decide which controls and keys apply. */
   features: RichTextFeatures
   /** The editable text's id: the Field's control id, else a generated one. */
   contentId: string

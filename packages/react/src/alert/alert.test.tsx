@@ -1,4 +1,8 @@
+import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
+import { nb } from '@kvirn-ui/i18n/nb'
+import { nn } from '@kvirn-ui/i18n/nn'
+import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, StrictMode } from 'react'
@@ -6,7 +10,7 @@ import type { Ref } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
-import { page } from 'vite-plus/test/browser'
+import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Icon } from '../icon/icon.tsx'
@@ -15,6 +19,7 @@ import {
   Alert,
   AlertActions,
   AlertBody,
+  AlertClose,
   AlertDanger,
   AlertInfo,
   AlertRoot,
@@ -25,6 +30,7 @@ import {
 import type {
   AlertActionsProps,
   AlertBodyProps,
+  AlertCloseProps,
   AlertRootProps,
   AlertState,
   AlertStatusRootProps,
@@ -490,7 +496,9 @@ describe('the status word (i18n)', () => {
 
   test('the status words of every shipped locale are filled in and end with a colon', () => {
     for (const catalog of [sv, fi]) {
-      for (const text of Object.values(catalog.alert)) {
+      const words = Object.entries(catalog.alert).filter(([key]) => key.endsWith('Prefix'))
+      expect(words).toHaveLength(4)
+      for (const [, text] of words) {
         expect(typeof text === 'string' ? text.trim() : '').toMatch(/:$/)
       }
     }
@@ -1048,6 +1056,21 @@ describe('useAlert', () => {
     await expect.element(politeRegion()).toHaveTextContent('Error: Din ansökan Text')
   })
 
+  test('closeProps give a named button of its own: the class, the type and the resolved name', async () => {
+    function Probe() {
+      const alert = useAlert()
+      return <button {...alert.closeProps} data-testid="close" />
+    }
+    await render(
+      <KvirnProvider locale="sv-SE" messages={sv}>
+        <Probe />
+      </KvirnProvider>,
+    )
+    const button = page.getByRole('button', { name: 'Stäng meddelandet' })
+    await expect.element(button).toHaveAttribute('type', 'button')
+    expect(button.element().className).toBe('kv-alert-close')
+  })
+
   test('returns the same objects for the same options', async () => {
     const seen = new Set<UseAlertResult>()
     function Probe({ tick }: { tick: number }) {
@@ -1057,6 +1080,319 @@ describe('useAlert', () => {
     const view = await render(<Probe tick={1} />)
     await view.rerender(<Probe tick={2} />)
     expect(seen.size).toBe(1)
+  })
+})
+
+describe('Alert.Close', () => {
+  const closeIconPaths = () =>
+    iconPaths(document.querySelector('[data-testid="expected-close-icon"]'))
+
+  test('is a native button of type button with the decorative close icon, named by alert.close', async () => {
+    await render(
+      <main>
+        <Alert.Info>
+          <Alert.Title>Title</Alert.Title>
+          <Alert.Close />
+        </Alert.Info>
+        <Icon name="close" data-testid="expected-close-icon" />
+      </main>,
+    )
+    const button = page.getByRole('button', { name: 'Close message' })
+    await expect.element(button).toHaveAttribute('type', 'button')
+    expect(button.element().tagName).toBe('BUTTON')
+    expect(button.element().className).toBe('kv-alert-close')
+    const icon = button.element().querySelector('svg')
+    expect(icon?.getAttribute('aria-hidden')).toBe('true')
+    expect(iconPaths(icon)).toBe(closeIconPaths())
+    expect(iconPaths(icon)).not.toBe('')
+    expect(button.element().textContent).toBe('')
+  })
+
+  test('the alert box stays without a role, a live region, a tabindex or a name of its own', async () => {
+    await render(
+      <Alert.Warning data-testid="alert">
+        <Alert.Title>Title</Alert.Title>
+        <Alert.Close />
+      </Alert.Warning>,
+    )
+    const root = page.getByTestId('alert').element()
+    expect(
+      root
+        .getAttributeNames()
+        .filter((name) =>
+          [
+            'role',
+            'aria-live',
+            'aria-atomic',
+            'aria-label',
+            'aria-labelledby',
+            'tabindex',
+          ].includes(name),
+        ),
+    ).toEqual([])
+    expect(page.getByRole('alert').elements()).toHaveLength(0)
+    expect(page.getByRole('status').elements()).toHaveLength(0)
+  })
+
+  test('a plain Alert.Root takes a close button too', async () => {
+    await render(
+      <Alert.Root>
+        <Alert.Title>Title</Alert.Title>
+        <Alert.Close />
+      </Alert.Root>,
+    )
+    await expect.element(page.getByRole('button', { name: 'Close message' })).toBeVisible()
+    expect(warnings()).toEqual([])
+  })
+
+  test('is exported by its flat name and as a part of the Alert namespace', () => {
+    expect(AlertClose).toBe(Alert.Close)
+    expect(Alert.Close.displayName).toBe('Alert.Close')
+  })
+
+  test.each([
+    ['sv-SE', sv, 'Stäng meddelandet'],
+    ['fi-FI', fi, 'Sulje ilmoitus'],
+    ['en', en, 'Close message'],
+  ] as const)('its name follows the locale (%s)', async (locale, messages, name) => {
+    await render(
+      <KvirnProvider locale={locale} messages={messages}>
+        <Alert.Danger>
+          <Alert.Title>Title</Alert.Title>
+          <Alert.Close />
+        </Alert.Danger>
+      </KvirnProvider>,
+    )
+    await expect.element(page.getByRole('button', { name })).toBeVisible()
+  })
+
+  test('every shipped locale has a non-empty name for it', () => {
+    for (const catalog of [sv, fi, nb, nn, se, en]) {
+      expect(typeof catalog.alert.close === 'string' ? catalog.alert.close.trim() : '').not.toBe('')
+    }
+  })
+
+  test('the name can be overridden per provider, per alert and per button, the closest first', async () => {
+    await render(
+      <KvirnProvider locale="sv-SE" messages={sv}>
+        <KvirnProvider messages={{ alert: { close: 'Dölj' } }}>
+          <Alert.Info>
+            <Alert.Title>Provider</Alert.Title>
+            <Alert.Close />
+          </Alert.Info>
+          <Alert.Info messages={{ close: 'Göm' }}>
+            <Alert.Title>Alert</Alert.Title>
+            <Alert.Close />
+          </Alert.Info>
+          <Alert.Info messages={{ close: 'Göm' }}>
+            <Alert.Title>Button</Alert.Title>
+            <Alert.Close messages={{ close: 'Avfärda' }} />
+          </Alert.Info>
+        </KvirnProvider>
+      </KvirnProvider>,
+    )
+    expect(
+      page
+        .getByRole('button')
+        .elements()
+        .map((button) => button.getAttribute('aria-label')),
+    ).toEqual(['Dölj', 'Göm', 'Avfärda'])
+  })
+
+  test('an empty override falls through to the locale text and warns', async () => {
+    await render(
+      <KvirnProvider locale="sv-SE" messages={sv}>
+        <Alert.Info>
+          <Alert.Title>Title</Alert.Title>
+          <Alert.Close messages={{ close: ' ' }} />
+        </Alert.Info>
+      </KvirnProvider>,
+    )
+    await expect.element(page.getByRole('button', { name: 'Stäng meddelandet' })).toBeVisible()
+    expect(warnings().some((message) => message.includes('alert.close'))).toBe(true)
+  })
+
+  test('the consumer’s aria-label replaces ours, and visible children name the button instead', async () => {
+    await render(
+      <Alert.Info>
+        <Alert.Title>Title</Alert.Title>
+        <Alert.Close aria-label="Stäng rutan" />
+        <Alert.Close>Dölj</Alert.Close>
+        <Alert.Close>{null}</Alert.Close>
+        <Alert.Close>{false}</Alert.Close>
+      </Alert.Info>,
+    )
+    // Children that render nothing leave the icon and the name in place (4.1.2).
+    expect(page.getByRole('button', { name: 'Close message' }).elements()).toHaveLength(2)
+    await expect.element(page.getByRole('button', { name: 'Stäng rutan' })).toBeVisible()
+    const labelled = page.getByRole('button', { name: 'Dölj' })
+    await expect.element(labelled).toBeVisible()
+    await expect.element(labelled).not.toHaveAttribute('aria-label')
+    expect(labelled.element().querySelector('svg')).toBeNull()
+  })
+
+  test('onClick runs on click, and the alert owns no state: it stays until you remove it', async () => {
+    const onClick = vi.fn<() => void>()
+    await render(
+      <Alert.Info data-testid="alert">
+        <Alert.Title>Title</Alert.Title>
+        <Alert.Close onClick={onClick} />
+      </Alert.Info>,
+    )
+    const button = page.getByRole('button', { name: 'Close message' })
+    await userEvent.click(button)
+    expect(onClick).toHaveBeenCalledTimes(1)
+    await expect.element(page.getByTestId('alert')).toBeVisible()
+  })
+
+  test('dismissing does not change politeness: announce reads the Title and Body, never the button', async () => {
+    await render(
+      <KvirnProvider>
+        <Alert.Success announce="polite">
+          <Alert.Title>Sparat</Alert.Title>
+          <Alert.Body>Dina ändringar är sparade</Alert.Body>
+          <Alert.Close />
+        </Alert.Success>
+      </KvirnProvider>,
+    )
+    await expect
+      .element(politeRegion())
+      .toHaveTextContent('Success: Sparat Dina ändringar är sparade')
+    await expect.element(politeRegion()).not.toHaveTextContent('Close message')
+    await expect.element(assertiveRegion()).toBeEmptyDOMElement()
+  })
+
+  test('disabled is native: no handler on click, skipped by Tab', async () => {
+    const onClick = vi.fn<() => void>()
+    await render(
+      <>
+        <Alert.Info>
+          <Alert.Title>Title</Alert.Title>
+          <Alert.Close disabled onClick={onClick} />
+        </Alert.Info>
+        <button type="button">After</button>
+      </>,
+    )
+    const button = page.getByRole('button', { name: 'Close message' })
+    await expect.element(button).toBeDisabled()
+    await expect.element(button).toHaveAttribute('data-disabled', '')
+    await userEvent.click(button, { force: true })
+    expect(onClick).not.toHaveBeenCalled()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
+  })
+
+  test('a render element keeps its attributes, and its own onClick is gated by disabled', async () => {
+    const elementClick = vi.fn<() => void>()
+    const propClick = vi.fn<() => void>()
+    await render(
+      <Alert.Info>
+        <Alert.Title>Title</Alert.Title>
+        <Alert.Close
+          onClick={propClick}
+          render={
+            <button data-testid="own" className="mitt" onClick={elementClick} aria-label="Own" />
+          }
+        />
+        <Alert.Close
+          disabled
+          onClick={propClick}
+          render={<button data-testid="own-disabled" onClick={elementClick} aria-label="Own" />}
+        />
+      </Alert.Info>,
+    )
+    const own = page.getByTestId('own')
+    expect(own.element().className).toBe('kv-alert-close mitt')
+    await userEvent.click(own)
+    expect(elementClick).toHaveBeenCalledTimes(1)
+    expect(propClick).toHaveBeenCalledTimes(1)
+    await userEvent.click(page.getByTestId('own-disabled'), { force: true })
+    expect(elementClick).toHaveBeenCalledTimes(1)
+    expect(propClick).toHaveBeenCalledTimes(1)
+  })
+
+  test('the function form of render gets the button props and the state', async () => {
+    await render(
+      <Alert.Info>
+        <Alert.Title>Title</Alert.Title>
+        <Alert.Close
+          render={(props, state) => (
+            <button {...props} data-testid="own" data-state={String(state.isDisabled)} />
+          )}
+        />
+      </Alert.Info>,
+    )
+    const own = page.getByTestId('own')
+    await expect.element(own).toHaveAttribute('aria-label', 'Close message')
+    await expect.element(own).toHaveAttribute('data-state', 'false')
+    expect(own.element().className).toBe('kv-alert-close')
+  })
+
+  test('forwards its ref to the button, merged with a render element’s ref', async () => {
+    const partRef = createRef<HTMLButtonElement>()
+    const elementRef = createRef<HTMLButtonElement>()
+    await render(
+      <Alert.Info>
+        <Alert.Title>Title</Alert.Title>
+        <Alert.Close
+          ref={partRef}
+          render={<button ref={elementRef} data-testid="own" aria-label="Own" />}
+        />
+      </Alert.Info>,
+    )
+    const element = page.getByTestId('own').element()
+    expect(partRef.current).toBe(element)
+    expect(elementRef.current).toBe(element)
+  })
+
+  test('warns once outside an Alert root, and when render is not a button', async () => {
+    await render(
+      <>
+        <Alert.Close />
+        <Alert.Info>
+          <Alert.Title>Title</Alert.Title>
+          <Alert.Close render={<div />} />
+        </Alert.Info>
+      </>,
+    )
+    expect(warnings().filter((message) => message.includes('Alert.Close is outside'))).toHaveLength(
+      1,
+    )
+    expect(warnings().some((message) => message.includes('must render a <button>'))).toBe(true)
+  })
+
+  test.each(statuses)(
+    'Alert.$variant with a close button has no axe violations',
+    async ({ Root }) => {
+      const { container } = await render(
+        <main>
+          <h1>Mina sidor</h1>
+          <Root>
+            <Alert.Title>Your parking permit expires on 12 November 2026</Alert.Title>
+            <Alert.Body>
+              <p>Renew it before then.</p>
+            </Alert.Body>
+            <Alert.Actions>
+              <a href="#renew">Renew parking permit</a>
+            </Alert.Actions>
+            <Alert.Close />
+          </Root>
+        </main>,
+      )
+      await expect.element(page.getByRole('button', { name: 'Close message' })).toBeVisible()
+      await expectNoA11yViolations(container)
+    },
+  )
+
+  test('renders to a string on the server', () => {
+    const html = renderToString(
+      <Alert.Info>
+        <Alert.Title>Din ansökan</Alert.Title>
+        <Alert.Close />
+      </Alert.Info>,
+    )
+    expect(html).toContain('aria-label="Close message"')
+    expect(html).toContain('type="button"')
   })
 })
 
@@ -1110,6 +1446,16 @@ describe('types', () => {
       expectTypeOf(props.ref).toEqualTypeOf<Ref<HTMLElement> | undefined>()
       expectTypeOf(props.render).not.toBeNever()
     }
+  })
+
+  test('the close button takes button attributes, a button ref, messages and render', () => {
+    const props = {} as AlertCloseProps
+    expectTypeOf(props.onClick).not.toBeNever()
+    expectTypeOf(props.disabled).toEqualTypeOf<boolean | undefined>()
+    expectTypeOf(props.ref).not.toBeNever()
+    expectTypeOf(props.messages).not.toBeNever()
+    expectTypeOf(props.render).not.toBeNever()
+    expectTypeOf<AlertCloseProps>().not.toHaveProperty('type')
   })
 
   test('a status prop does not exist: choose the status by the component', () => {

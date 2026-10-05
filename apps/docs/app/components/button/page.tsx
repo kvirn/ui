@@ -150,7 +150,7 @@ import '@kvirn-ui/theme/theme.css'`}
   --kv-primary-100: #cdf0f0;
   --kv-primary-200: #9be0e2;
   --kv-primary-300: #5fc6cb;
-  --kv-primary-400: #26a4ac;
+  --kv-primary-400: #1e9ca4;
   --kv-primary-500: #007d86;
   --kv-primary-600: #00707a;
   --kv-primary-700: #005a62;

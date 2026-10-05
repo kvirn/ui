@@ -15,6 +15,7 @@ export const sv = {
     successPrefix: 'Klart:',
     warningPrefix: 'Varning:',
     dangerPrefix: 'Fel:',
+    close: 'Stäng meddelandet',
   },
   combobox: {
     resultCount: ({ count }, format) =>
@@ -218,11 +219,6 @@ export const sv = {
     deleteColumn: 'Ta bort kolumnen',
     deleteTable: 'Ta bort tabellen',
     headerRow: 'Rubrikrad',
-    keyboardHintListsAndTables:
-      'Lämna textfältet med Esc och sedan Tabb. I listor gör Tabb indrag, och i tabeller går Tabb till nästa cell.',
-    keyboardHintLists: 'Lämna textfältet med Esc och sedan Tabb. I listor gör Tabb indrag.',
-    keyboardHintTables:
-      'Lämna textfältet med Esc och sedan Tabb. I tabeller går Tabb till nästa cell.',
     linkAddTitle: 'Lägg till länk',
     linkEditTitle: 'Ändra länk',
     linkUrl: 'Webbadress',

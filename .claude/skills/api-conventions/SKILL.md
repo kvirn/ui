@@ -91,7 +91,7 @@ Merging can't stop an activation. A part that must control a prop takes it out o
 - **Link:** `target` and `rel` on a `render` element go through `useLink` (it adds `noopener noreferrer` for `_blank` and keeps the consumer's own `rel` tokens, once each). The element's own values win.
   - `current` is `'page' | 'step' | 'location' | 'date' | 'time' | boolean`. `true` gives `aria-current="true"`. `false` or absent gives none.
   - `useLink` returns `linkProps`, `isCurrent`, `isFocusVisible`, `opensInNewTab` and `newTabNotice` (from `useMessages('link', messages)`).
-  - `Link.NewTabNotice` registers itself with the Link through context in an effect. The Link counts registrations in its own effect, which runs after its children's, and warns once per link text when a `_blank` link has none. `LinkNewTabNotice` is also a named export.
+  - `Link.NewTabNotice` reads the Link's `messages` through context. A `_blank` link with no notice gets no type error and no dev warning (maintainer, 2026-10-05): the docs say a link that opens a new tab must say so. `LinkNewTabNotice` is also a named export.
 
 ## Messages
 
@@ -129,7 +129,7 @@ declare module '@kvirn-ui/react' {
 - **Detect production with the literal `process.env.NODE_ENV`,** so the consumer's bundler replaces it. Where `process` does not exist (Vitest browser mode), the ReferenceError counts as development.
 - **Warnings are for the developer.** English, not in the catalogs, never shown to or announced for users.
 - **A message says** what is wrong, why it matters (with the WCAG criterion), and what to do instead.
-- **Key by what is wrong, plus the identifying text** when one page can hit it several times (`link-new-tab-without-notice:<link text>`).
+- **Key by what is wrong, plus the identifying text** when one page can hit it several times (`navigation-duplicate-name:<name>`).
 - **Check in an effect after commit,** from the DOM or a registration count. Never during render.
 - **A development warning never replaces a rule.** If the rule must hold, make it a type error or a throw (the OneTimeCode `pattern` throws a `RangeError`, also in production).
 - Warnings that exist today are listed in [references/dev-warnings.md](references/dev-warnings.md).

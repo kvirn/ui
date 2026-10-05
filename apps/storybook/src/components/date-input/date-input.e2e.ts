@@ -119,7 +119,7 @@ test.describe('DateInput keyboard contract', () => {
     expect(await prevented()).toEqual([])
   })
 
-  test('typing in the last box, or typing that does not fill a box, never moves focus and filters nothing', async ({
+  test('typing in the last box, or typing that does not fill a box, never moves focus and takes no more than its length', async ({
     page,
   }) => {
     await openStory(page, 'keyboard')
@@ -129,10 +129,10 @@ test.describe('DateInput keyboard contract', () => {
     // The last box is full at two digits, and focus stays: there is no box after it.
     await page.keyboard.type('27')
     await expect(dayBox).toBeFocused()
-    // Nothing is filtered or cut: more digits and letters are all typed.
+    // A box takes no more than its own length: the keys past it are refused.
     await page.keyboard.type('12ab')
     await expect(dayBox).toBeFocused()
-    await expect(dayBox).toHaveValue('2712ab')
+    await expect(dayBox).toHaveValue('27')
     // Four letters fill the year box and are not digits: focus stays.
     const yearBox = textbox(page, 'År')
     await yearBox.focus()
@@ -151,12 +151,11 @@ test.describe('DateInput keyboard contract', () => {
     await expect(textbox(page, 'Månad')).toBeFocused()
     await page.keyboard.press('Shift+Tab')
     await expect(yearBox).toBeFocused()
-    // A fifth digit, and replacing a character of the full box: focus stays.
+    // A fifth digit is refused, and replacing a character of the full box: focus stays.
     await page.keyboard.press('End')
     await page.keyboard.type('1')
     await expect(yearBox).toBeFocused()
-    await expect(yearBox).toHaveValue('19901')
-    await page.keyboard.press('Backspace')
+    await expect(yearBox).toHaveValue('1990')
     await page.keyboard.press('Shift+ArrowLeft')
     await page.keyboard.type('2')
     await expect(yearBox).toBeFocused()
@@ -188,7 +187,7 @@ test.describe('DateInput keyboard contract', () => {
     await expect(yearBox).toBeFocused()
     await page.keyboard.type('12')
     await expect(yearBox).toBeFocused()
-    await expect(yearBox).toHaveValue('199012')
+    await expect(yearBox).toHaveValue('1990')
     await expect(textbox(page, 'Månad')).toHaveValue('')
     await expect(page.getByText('Fokus flyttas till nästa ruta när en ruta är full.')).toHaveCount(
       0,

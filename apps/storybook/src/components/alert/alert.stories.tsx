@@ -6,9 +6,11 @@ import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
+  ClosableAlerts,
   CompactAlerts,
   ConsequenceAlert,
   DeadlineAlert,
+  DismissibleExample,
   DynamicStatusExample,
   FocusTargetExample,
   FourStatuses,
@@ -26,9 +28,9 @@ import type { AlertFixtureLocale } from './alert.fixture.tsx'
 
 // Components/Alert: the headless Alert, styled by @kvirn-ui/theme/theme.css
 // (design spec docs/design/alert.md). alert.e2e.ts runs its
-// keyboard rows, focus-ring, forced-colours and reflow checks against WithActions, SendFailed,
-// FocusTarget, Announced, LongFinnishText, AllExamples and ForcedColors. There is no Keyboard
-// story: an alert has no focusable part of its own.
+// keyboard rows, focus-ring, forced-colours and reflow checks against Keyboard, WithActions,
+// SendFailed, FocusTarget, Announced, LongFinnishText, AllExamples and ForcedColors. The Keyboard
+// story is the dismissible example: the optional close button is the alert's only focusable part.
 
 // The Docs page opens with the package docs: how to use it, and how to build your own.
 const description = usageGuide(guide)
@@ -223,6 +225,41 @@ export const FocusTarget: Story = {
 }
 
 /**
+ * The optional close button, and the focus rule that comes with it (WCAG 2.4.3). Try the keys in
+ * the table below: Tab reaches the link and then the close button, and Enter or Space on it
+ * removes the alert. The Alert owns no state, so your `onClick` removes it, and moves focus to
+ * the page heading first: the button that had focus is gone. "Visa meddelandet igen" brings it back.
+ */
+export const Keyboard: Story = {
+  parameters: showSource('alert/alert.fixture.tsx', 'DismissibleExample'),
+  render: (_args, { globals }) => <DismissibleExample locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    const alert = within(canvas.getByTestId('dismissible'))
+    await expect(alert.getByRole('button', { name: 'Stäng meddelandet' })).toBeVisible()
+    // Present at load: content, not announced, and the box itself is not a Tab stop.
+    await expect(canvas.getByRole('status')).toBeEmptyDOMElement()
+    await expect(canvas.getByTestId('dismissible')).not.toHaveAttribute('tabindex')
+  },
+}
+
+/**
+ * The close button on each layout, for review (the buttons do nothing here): a full alert, a
+ * title-only one, a warning with actions, and the plain Root without a status icon. Offer it on
+ * a message the user can safely be done with. See Keyboard for the working example.
+ */
+export const WithCloseButton: Story = {
+  parameters: showSource('alert/alert.fixture.tsx', 'ClosableAlerts'),
+  render: (_args, { globals }) => <ClosableAlerts locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    const buttons = canvas.getAllByRole('button', { name: 'Stäng meddelandet' })
+    await expect(buttons).toHaveLength(4)
+    for (const button of buttons) {
+      await expect(button.querySelector('svg[aria-hidden="true"]')).not.toBeNull()
+    }
+  },
+}
+
+/**
  * A status that comes from data: a typed map from the status to the component, so the choice
  * stays visible in the code. There is no status prop.
  */
@@ -388,7 +425,10 @@ export const Compact: Story = {
   render: (_args, { globals }) => <CompactAlerts locale={localeOf(globals)} />,
 }
 
-/** Finnish text in a narrow column: the title hyphenates or wraps instead of overflowing (1.4.10). */
+/**
+ * Finnish text in a narrow column, with the close button: the title hyphenates or wraps instead of
+ * overflowing, and the button keeps its size (1.4.10, 2.5.8).
+ */
 export const LongFinnishText: Story = {
   globals: { locale: 'fi' },
   decorators: [
@@ -409,10 +449,12 @@ export const LongFinnishText: Story = {
         <Alert.Actions>
           <a href="#renew">{text.permit.renew}</a>
         </Alert.Actions>
+        <Alert.Close />
       </Alert.Info>
     )
   },
   play: async ({ canvas }) => {
+    await expect(canvas.getByRole('button', { name: 'Sulje ilmoitus' })).toBeVisible()
     await expect(
       canvas.getByRole('heading', {
         level: 2,
@@ -432,6 +474,7 @@ function AllExamplesPage({ locale }: { locale: AlertFixtureLocale }) {
       <ConsequenceAlert locale={locale} />
       <SavedExample locale={locale} />
       <SendFailedExample locale={locale} />
+      <DismissibleExample locale={locale} />
     </>
   )
 }
@@ -443,9 +486,10 @@ const allExamplesSource = [
   'ConsequenceAlert',
   'SavedExample',
   'SendFailedExample',
+  'DismissibleExample',
 ] as const
 
-/** Examples A, B, C, C2 and D together: the design spec's uses of an alert on one page. */
+/** Examples A, B, C, C2, D and the dismissible one together: the design spec's uses of an alert on one page. */
 export const AllExamples: Story = {
   parameters: showSource('alert/alert.fixture.tsx', ...allExamplesSource),
   render: (_args, { globals }) => <AllExamplesPage locale={localeOf(globals)} />,

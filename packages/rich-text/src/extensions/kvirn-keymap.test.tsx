@@ -139,56 +139,13 @@ describe('Tab and Shift+Tab outside lists and tables', () => {
   })
 })
 
-describe('Escape, then Tab or Shift+Tab', () => {
-  test('Escape then Tab leaves forwards from anywhere, even where Tab would nest', async () => {
-    const { editor, after } = create(list)
-    placeCaret(editor, 'Två')
-    await userEvent.keyboard('{Escape}{Tab}')
-    expect(document.activeElement).toBe(after)
-    expect(editor.view.dom.querySelectorAll('ul ul')).toHaveLength(0)
-  })
-
-  test('Escape then Shift+Tab leaves backwards from anywhere, even where Shift+Tab would outdent', async () => {
-    const { editor, before } = create(nestedList)
-    placeCaret(editor, 'Två')
-    await userEvent.keyboard('{Escape}{Shift>}{Tab}{/Shift}')
-    expect(document.activeElement).toBe(before)
-    expect(editor.view.dom.querySelectorAll('ul ul')).toHaveLength(1)
-  })
-
-  test('Escape then Tab leaves from a table cell that isn’t the last', async () => {
-    const { editor, after } = create(table)
-    placeCaret(editor, 'A1')
-    await userEvent.keyboard('{Escape}{Tab}')
-    expect(document.activeElement).toBe(after)
-  })
-
-  test('Escape then any other key cancels it: the key types, and a later Tab nests as usual', async () => {
+describe('Escape', () => {
+  test('Escape is not a way out: Tab after it still nests a list item', async () => {
     const { editor } = create(list)
     placeCaret(editor, 'Två')
-    await userEvent.keyboard('{Escape}x{Tab}')
-    expect(currentBlockText(editor)).toBe('Tvåx')
+    await userEvent.keyboard('{Escape}{Tab}')
     expect(editor.view.dom.querySelectorAll('ul ul li')).toHaveLength(1)
     expect(document.activeElement).toBe(editor.view.dom)
-  })
-
-  test('Shift, Control, Alt and Meta alone do not cancel it', async () => {
-    const { editor, before } = create(nestedList)
-    placeCaret(editor, 'Två')
-    await userEvent.keyboard('{Escape}{Control>}{/Control}{Alt>}{/Alt}{Shift>}{Tab}{/Shift}')
-    // Still armed: it left, where Shift+Tab alone would have outdented the nested item.
-    expect(document.activeElement).toBe(before)
-    expect(editor.view.dom.querySelectorAll('ul ul')).toHaveLength(1)
-  })
-
-  test('the exit is one-shot: after it, Tab acts as usual', async () => {
-    const { editor, after } = create(list)
-    placeCaret(editor, 'Två')
-    await userEvent.keyboard('{Escape}{Tab}')
-    expect(document.activeElement).toBe(after)
-    placeCaret(editor, 'Två')
-    await userEvent.keyboard('{Tab}')
-    expect(editor.view.dom.querySelectorAll('ul ul li')).toHaveLength(1)
   })
 
   test('the first Escape is not passed on, so a Dialog around the editor stays open; a second one is', async () => {
@@ -206,13 +163,13 @@ describe('Escape, then Tab or Shift+Tab', () => {
     expect(escapes).toHaveBeenCalledTimes(1)
   })
 
-  test('clicking in the text cancels it', async () => {
+  test('clicking in the text starts over: the next Escape is consumed again', async () => {
     const { editor } = create(list)
     placeCaret(editor, 'Två')
     await userEvent.keyboard('{Escape}')
-    expect(editor.storage.kvirnKeymap.isExitArmed).toBe(true)
+    expect(editor.storage.kvirnKeymap.isEscapeConsumed).toBe(true)
     editor.view.dom.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
-    expect(editor.storage.kvirnKeymap.isExitArmed).toBe(false)
+    expect(editor.storage.kvirnKeymap.isEscapeConsumed).toBe(false)
   })
 })
 

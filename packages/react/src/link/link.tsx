@@ -1,6 +1,6 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react'
+import { createContext, useContext, useEffect, useMemo, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
@@ -52,8 +52,6 @@ export interface LinkIconProps extends ComponentPropsWithRef<'span'> {
 
 interface LinkContextValue {
   messages: Partial<KvirnMessages['link']> | undefined
-  /** A NewTabNotice inside the link registers itself. Returns the unregister function. */
-  registerNewTabNotice: () => () => void
 }
 
 const LinkContext = createContext<LinkContextValue | null>(null)
@@ -82,7 +80,7 @@ export function LinkRoot({
   ...otherProps
 }: LinkProps): ReactElement {
   // A render element's own target and rel win, and go through useLink so a new
-  // tab still gets `noopener noreferrer` and the missing-notice check.
+  // tab still gets `noopener noreferrer`.
   const { render: renderWithoutTarget, takenProps } = takeRenderElementProps(render, [
     'target',
     'rel',
@@ -96,20 +94,8 @@ export function LinkRoot({
   const linkComponent = useLinkComponent()
   const elementRef = useRef<HTMLAnchorElement | null>(null)
   const mergedRef = useMergedRef(ref, elementRef)
-  const newTabNoticeCount = useRef(0)
+  const context = useMemo(() => ({ messages }), [messages])
 
-  const registerNewTabNotice = useCallback(() => {
-    newTabNoticeCount.current += 1
-    return () => {
-      newTabNoticeCount.current -= 1
-    }
-  }, [])
-  const context = useMemo(
-    () => ({ messages, registerNewTabNotice }),
-    [messages, registerNewTabNotice],
-  )
-
-  // Runs after the NewTabNotice children's effects, so their registration is visible here.
   useEffect(() => {
     const element = elementRef.current
     if (element === null || element.tagName !== 'A') {
@@ -117,13 +103,6 @@ export function LinkRoot({
       warnOnce(
         `link-not-an-anchor:${rendered}`,
         `A Link must render an <a href> and forward its ref, but it rendered ${rendered}. Check the registered link component or the render prop.`,
-      )
-    }
-    if (link.opensInNewTab && newTabNoticeCount.current === 0) {
-      const text = element?.textContent?.trim() ?? ''
-      warnOnce(
-        `link-new-tab-without-notice:${text}`,
-        `The link "${text}" opens in a new tab (target="_blank") but has no <Link.NewTabNotice />, so users aren't told before it opens (WCAG 3.2.5, G201). Put <Link.NewTabNotice /> inside the link.`,
       )
     }
   })
@@ -148,7 +127,8 @@ LinkRoot.displayName = 'Link.Root'
 /**
  * Tells users that the link opens in a new tab: `(öppnas i en ny flik)` from
  * `link.newTabNotice`. It's part of the link's name. Hide it visually if you must, but keep
- * it for screen readers (WCAG 3.2.5, G201).
+ * it for screen readers (WCAG 3.2.5, G201). A link that opens a new tab must say so; nothing
+ * checks that you did.
  */
 export function LinkNewTabNotice({
   children,
@@ -157,8 +137,6 @@ export function LinkNewTabNotice({
 }: LinkNewTabNoticeProps): ReactElement {
   const link = useContext(LinkContext)
   const linkMessages = useMessages('link', link?.messages)
-
-  useEffect(() => link?.registerNewTabNotice(), [link])
 
   return renderPart({
     render,

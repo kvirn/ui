@@ -45,6 +45,14 @@ interface AlertTexts {
   override: { danger: string; warning: string; dangerTitle: string; warningTitle: string }
   dynamic: { label: string }
   prose: { heading: string }
+  /** A dismissible info alert on a page with a heading, and the button that brings it back. */
+  dismissible: {
+    heading: string
+    title: string
+    body: string
+    link: string
+    showAgain: string
+  }
 }
 
 const en: AlertTexts = {
@@ -88,6 +96,13 @@ const en: AlertTexts = {
   },
   dynamic: { label: 'Status' },
   prose: { heading: 'Summer jobs in the municipality' },
+  dismissible: {
+    heading: 'Your cases',
+    title: 'The service is slower than usual today',
+    body: 'Searching can take up to a minute. Your answers are still saved.',
+    link: 'See service status',
+    showAgain: 'Show the message again',
+  },
 }
 
 const sv: AlertTexts = {
@@ -130,6 +145,13 @@ const sv: AlertTexts = {
   },
   dynamic: { label: 'Status' },
   prose: { heading: 'Sommarjobb i kommunen' },
+  dismissible: {
+    heading: 'Dina ärenden',
+    title: 'Tjänsten är långsammare än vanligt i dag',
+    body: 'Det kan ta upp till en minut att söka. Dina svar sparas som vanligt.',
+    link: 'Se driftinformation',
+    showAgain: 'Visa meddelandet igen',
+  },
 }
 
 /** Designer drafts (docs/design/alert.md §4.4), for length checks. */
@@ -176,6 +198,13 @@ const fi: AlertTexts = {
   },
   dynamic: { label: 'Tila' },
   prose: { heading: 'Kesätyöt kunnassa' },
+  dismissible: {
+    heading: 'Asiasi',
+    title: 'Palvelu on tänään tavallista hitaampi',
+    body: 'Haku voi kestää jopa minuutin. Vastauksesi tallentuvat silti.',
+    link: 'Katso palvelun tila',
+    showAgain: 'Näytä ilmoitus uudelleen',
+  },
 }
 
 const nb: AlertTexts = {
@@ -216,6 +245,13 @@ const nb: AlertTexts = {
   },
   dynamic: { label: 'Status' },
   prose: { heading: 'Sommerjobb i kommunen' },
+  dismissible: {
+    heading: 'Sakene dine',
+    title: 'Tjenesten er tregere enn vanlig i dag',
+    body: 'Det kan ta opptil ett minutt å søke. Svarene dine blir lagret som vanlig.',
+    link: 'Se driftsinformasjon',
+    showAgain: 'Vis meldingen igjen',
+  },
 }
 
 const nn: AlertTexts = {
@@ -256,6 +292,13 @@ const nn: AlertTexts = {
   },
   dynamic: { label: 'Status' },
   prose: { heading: 'Sommarjobb i kommunen' },
+  dismissible: {
+    heading: 'Sakene dine',
+    title: 'Tenesta er tregare enn vanleg i dag',
+    body: 'Det kan ta opptil eitt minutt å søkje. Svara dine blir lagra som vanleg.',
+    link: 'Sjå driftsinformasjon',
+    showAgain: 'Vis meldinga igjen',
+  },
 }
 
 /** se has no texts: it shows the English ones, marked lang="en". */
@@ -677,6 +720,83 @@ export function DynamicStatusExample({ locale }: AlertFixtureProps) {
       <ResultAlert data-testid="dynamic">
         <Alert.Title>{text.sample.title}</Alert.Title>
       </ResultAlert>
+    </>
+  )
+}
+
+/**
+ * The optional close button, and the focus rule that comes with it (WCAG 2.4.3): the Alert owns no
+ * open or closed state, so you remove it in `onClick`, and because the button that had focus is gone
+ * you move focus to a sensible place first. Here that is the heading of the part of the page the
+ * alert belonged to (`tabIndex={-1}`). Without that, focus falls to the page.
+ */
+export function DismissibleExample({ locale }: AlertFixtureProps) {
+  const { text } = textsFor(locale)
+  const [isShown, setIsShown] = useState(true)
+  const heading = useRef<HTMLHeadingElement>(null)
+  return (
+    <>
+      <h2 ref={heading} tabIndex={-1} data-testid="dismissible-heading">
+        {text.dismissible.heading}
+      </h2>
+      {isShown ? (
+        <Alert.Info data-testid="dismissible">
+          <Alert.Title render={(props) => <h3 {...props}>{props.children}</h3>}>
+            {text.dismissible.title}
+          </Alert.Title>
+          <Alert.Body>
+            <p>{text.dismissible.body}</p>
+          </Alert.Body>
+          <Alert.Actions>
+            <Link.Root href="#status">{text.dismissible.link}</Link.Root>
+          </Alert.Actions>
+          <Alert.Close
+            onClick={() => {
+              setIsShown(false)
+              heading.current?.focus()
+            }}
+          />
+        </Alert.Info>
+      ) : (
+        <Button onClick={() => setIsShown(true)}>{text.dismissible.showAgain}</Button>
+      )}
+    </>
+  )
+}
+
+/**
+ * The close button on each layout, for review: a full alert, a title-only one, a warning with
+ * actions, and the plain Root without a status icon. The buttons do nothing here: see
+ * `DismissibleExample` for the working version.
+ */
+export function ClosableAlerts({ locale }: AlertFixtureProps) {
+  const { text } = textsFor(locale)
+  return (
+    <>
+      <Alert.Info>
+        <Alert.Title>{text.dismissible.title}</Alert.Title>
+        <Alert.Body>
+          <p>{text.dismissible.body}</p>
+        </Alert.Body>
+        <Alert.Close />
+      </Alert.Info>
+      <Alert.Success>
+        <Alert.Title render={<p />}>{text.saved.title}</Alert.Title>
+        <Alert.Close />
+      </Alert.Success>
+      <Alert.Warning>
+        <Alert.Title>{text.sample.title}</Alert.Title>
+        <Alert.Actions>
+          <Link.Root href="#status">{text.dismissible.link}</Link.Root>
+        </Alert.Actions>
+        <Alert.Close />
+      </Alert.Warning>
+      <Alert.Root>
+        <Alert.Title>
+          <span className="kv-alert-status">{text.ownStatus.word}</span> {text.sample.title}
+        </Alert.Title>
+        <Alert.Close />
+      </Alert.Root>
     </>
   )
 }

@@ -1,7 +1,8 @@
 import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
 
-// se: English placeholders, except the combobox and alert messages.
+// se: English placeholders, except the combobox messages and the alert's status words
+// (alert.close is still an English placeholder: needs translator review).
 export const se = {
   link: { newTabNotice: '(opens in a new tab)' },
   field: { optional: '(optional)', errorPrefix: 'Error:' },
@@ -16,6 +17,7 @@ export const se = {
     successPrefix: 'Gárvvis:',
     warningPrefix: 'Váruhus:',
     dangerPrefix: 'Boasttuvuohta:',
+    close: 'Close message',
   },
   combobox: {
     resultCount: ({ count }, format) =>
@@ -234,11 +236,6 @@ export const se = {
     deleteColumn: 'Delete column',
     deleteTable: 'Delete table',
     headerRow: 'Header row',
-    keyboardHintListsAndTables:
-      'To leave the text field, press Esc and then Tab. In lists, Tab indents, and in tables it moves to the next cell.',
-    keyboardHintLists: 'To leave the text field, press Esc and then Tab. In lists, Tab indents.',
-    keyboardHintTables:
-      'To leave the text field, press Esc and then Tab. In tables, Tab moves to the next cell.',
     linkAddTitle: 'Add link',
     linkEditTitle: 'Edit link',
     linkUrl: 'Web address',

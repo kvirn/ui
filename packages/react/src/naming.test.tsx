@@ -241,6 +241,7 @@ describe('alias sets', () => {
         'Title',
         'Body',
         'Actions',
+        'Close',
       ]),
     )
     expect(keys(api.Toolbar)).toEqual(

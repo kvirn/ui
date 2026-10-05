@@ -131,6 +131,7 @@ export {
   Alert,
   AlertActions,
   AlertBody,
+  AlertClose,
   AlertDanger,
   AlertInfo,
   AlertRoot,
@@ -141,6 +142,8 @@ export {
 export type {
   AlertActionsProps,
   AlertBodyProps,
+  AlertCloseProps,
+  AlertCloseState,
   AlertElementProps,
   AlertRootProps,
   AlertState,
@@ -152,6 +155,7 @@ export { useAlert } from './alert/use-alert.ts'
 export type {
   AlertActionsPartProps,
   AlertBodyPartProps,
+  AlertClosePartProps,
   AlertIconPartProps,
   AlertRootPartProps,
   AlertStatusPartProps,

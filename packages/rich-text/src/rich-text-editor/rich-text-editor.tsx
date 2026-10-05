@@ -7,8 +7,6 @@ import {
   FieldContext,
   joinIds,
   renderPart,
-  useDescriptionPart,
-  useMessages,
   useQuietAnnouncer,
   warnAnnouncerMissing,
   warnOnce,
@@ -56,11 +54,6 @@ export interface RichTextEditorRootProps<Format extends RichTextFormat = 'html'>
       'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'onFocusToolbar' | 'onOpenLinkForm'
     > {
   /**
-   * Renders the keyboard instruction under the box (WCAG 2.1.2) when lists or tables are on.
-   * Default `true`. Set `false` to place a `RichTextEditor.KeyboardHint` yourself.
-   */
-  keyboardHint?: boolean | undefined
-  /**
    * How the toolbar's icon controls show their names. `'icon'` (default): only the icon, with a
    * tooltip and an `aria-label`. `'icon-and-text'`: the name next to the icon, which suits small,
    * resident-facing editors and touch screens. A `Toolbar` can set its own.
@@ -86,9 +79,9 @@ const subscribeToNothing = () => () => {}
 
 /**
  * The editor's box: it creates the Tiptap editor, wires it to its Field, and renders the parts you
- * put in it (`Content`, and the toolbar parts) inside the box. Under the box it renders the keyboard
- * instruction, the character count and a hidden input that submits the value under `name`
- * (contract: rich-text-editor.a11y.md). The value is HTML or JSON, and is never sanitized: sanitize
+ * put in it (`Content`, and the toolbar parts) inside the box. Under the box it renders the
+ * character count and a hidden input that submits the value under `name` (contract:
+ * rich-text-editor.a11y.md). The value is HTML or JSON, and is never sanitized: sanitize
  * it on the server.
  *
  * @example
@@ -115,7 +108,6 @@ export function RichTextEditorRoot<Format extends RichTextFormat = 'html'>({
   messages: messageOverrides,
   countMessages,
   editorOptions,
-  keyboardHint = true,
   labels = 'icon',
   tooltips = true,
   children,
@@ -126,7 +118,6 @@ export function RichTextEditorRoot<Format extends RichTextFormat = 'html'>({
   const field = useContext(FieldContext)
   const countId = useId()
   const [naming, setNaming] = useState(noNaming)
-  const [keyboardHintId, setKeyboardHintId] = useState<string | undefined>(undefined)
   const focusToolbar = useRef<(() => boolean) | null>(null)
   const openLinkForm = useRef<(() => void) | null>(null)
   // The server and the first client render say false, so they match: the platform is read after.
@@ -136,13 +127,9 @@ export function RichTextEditorRoot<Format extends RichTextFormat = 'html'>({
   const limit = characterCount ? maxLength : undefined
   const hasCount = limit !== undefined
   const isOutsideField = field === null
-  // Inside a Field, the Field lists the instruction and the count as its descriptions. Outside
-  // one the editable text lists them itself.
-  const describedBy = joinIds(
-    naming.describedBy,
-    isOutsideField ? keyboardHintId : undefined,
-    isOutsideField && hasCount ? countId : undefined,
-  )
+  // Inside a Field, the Field lists the count as one of its descriptions. Outside one the
+  // editable text lists it itself.
+  const describedBy = joinIds(naming.describedBy, isOutsideField && hasCount ? countId : undefined)
 
   const richText = useRichTextEditor<Format>({
     extensions,
@@ -186,12 +173,6 @@ export function RichTextEditorRoot<Format extends RichTextFormat = 'html'>({
         ? previous
         : next,
     )
-  }, [])
-  const registerKeyboardHint = useCallback((id: string) => {
-    setKeyboardHintId(id)
-    return () => {
-      setKeyboardHintId((current) => (current === id ? undefined : current))
-    }
   }, [])
   const registerToolbar = useCallback((focus: () => boolean) => {
     focusToolbar.current = focus
@@ -284,7 +265,6 @@ export function RichTextEditorRoot<Format extends RichTextFormat = 'html'>({
       focusText,
       registerLinkForm,
       setContentNaming,
-      registerKeyboardHint,
       registerToolbar,
     }),
     [
@@ -302,7 +282,6 @@ export function RichTextEditorRoot<Format extends RichTextFormat = 'html'>({
       focusText,
       registerLinkForm,
       setContentNaming,
-      registerKeyboardHint,
       registerToolbar,
     ],
   )
@@ -316,7 +295,6 @@ export function RichTextEditorRoot<Format extends RichTextFormat = 'html'>({
   return (
     <RichTextEditorContext value={context}>
       {box}
-      {keyboardHint ? <RichTextEditorKeyboardHint /> : null}
       {limit === undefined ? null : (
         <CharacterCount
           id={countId}
@@ -369,65 +347,6 @@ export function RichTextEditorContent({
 }
 RichTextEditorContent.displayName = 'RichTextEditor.Content'
 
-export interface RichTextEditorKeyboardHintProps extends Omit<
-  ComponentPropsWithRef<'p'>,
-  'children' | 'id'
-> {
-  render?: RenderProp<ComponentPropsWithRef<'p'>, RichTextEditorState> | undefined
-}
-
-function KeyboardHintText({
-  render,
-  ref,
-  ...otherProps
-}: RichTextEditorKeyboardHintProps): ReactElement {
-  const { state, features, messageOverrides, registerKeyboardHint } = useRichTextEditorContext(
-    'RichTextEditor.KeyboardHint',
-  )
-  const messages = useMessages('richText', messageOverrides)
-  const description = useDescriptionPart<HTMLParagraphElement>(ref)
-  const ownId = useId()
-  const id = description.partProps.id ?? ownId
-  useLayoutEffect(() => registerKeyboardHint(id), [registerKeyboardHint, id])
-  let text = messages.keyboardHintTables
-  if (features.lists) {
-    text = features.tables ? messages.keyboardHintListsAndTables : messages.keyboardHintLists
-  }
-  return renderPart({
-    render,
-    defaultElement: 'p',
-    partProps: {
-      ...mergeProps(otherProps, {
-        ...description.partProps,
-        className: 'kv-field-help-text kv-rich-text-keyboard-hint',
-        id,
-        ref: description.ref,
-      }),
-      children: text,
-    },
-    state,
-  })
-}
-
-/**
- * The visible instruction for leaving the editable text (WCAG 2.1.2): "To leave the text field,
- * press Esc and then Tab. In lists, Tab indents, and in tables it moves to the next cell." Tab
- * does more than move focus in lists and tables, so the user is told how to get out. It is a help text
- * (`kv-field-help-text`) that the editable text lists in its `aria-describedby`, always visible so
- * nothing jumps, and rendered only while the text is editable and lists or tables are on.
- * `Root` renders it under the box unless `keyboardHint={false}`.
- */
-export function RichTextEditorKeyboardHint(
-  props: RichTextEditorKeyboardHintProps,
-): ReactElement | null {
-  const { state, features } = useRichTextEditorContext('RichTextEditor.KeyboardHint')
-  if (!state.isEditable || !(features.lists || features.tables)) {
-    return null
-  }
-  return <KeyboardHintText {...props} />
-}
-RichTextEditorKeyboardHint.displayName = 'RichTextEditor.KeyboardHint'
-
 /**
  * The rich text editor: `RichTextEditor.Root` with `Toolbar` and `Content` inside it. The toolbar
  * holds `DefaultControls`, or your own `Group`s of `CommandButton` and `CommandToggle`. `BlockFormat`,
@@ -446,6 +365,5 @@ export const RichTextEditor = {
   ImageControl,
   TableControls,
   Content: RichTextEditorContent,
-  KeyboardHint: RichTextEditorKeyboardHint,
   Icon: ToolbarIcon,
 } as const

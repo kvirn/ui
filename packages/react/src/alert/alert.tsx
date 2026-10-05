@@ -1,13 +1,22 @@
 'use client'
 import type { AnnouncerPoliteness } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { useContext, useEffect } from 'react'
-import type { HTMLAttributes, ReactElement, Ref, RefCallback } from 'react'
+import { useContext, useEffect, useRef } from 'react'
+import type {
+  ComponentPropsWithRef,
+  HTMLAttributes,
+  MouseEventHandler,
+  ReactElement,
+  Ref,
+  RefCallback,
+} from 'react'
+import { useButton } from '../button/use-button.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
+import { useMessages } from '../provider/use-messages.ts'
+import { renderPart, takeRenderElementProps } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
 import { AlertContext } from './alert-context.ts'
 import { useAlert } from './use-alert.ts'
@@ -58,6 +67,35 @@ export interface AlertStatusRootProps extends AlertRootProps {
 export type AlertTitleProps = AlertPartComponentProps
 export type AlertBodyProps = AlertPartComponentProps
 export type AlertActionsProps = AlertPartComponentProps
+
+/** What `render` receives as its second argument for `Alert.Close`. */
+export interface AlertCloseState {
+  isDisabled: boolean
+  isFocusVisible: boolean
+}
+
+/**
+ * `aria-disabled` and `type` are left out: the close button is always `type="button"`, and
+ * `disabled` blocks `onClick`.
+ */
+export interface AlertCloseProps extends Omit<
+  ComponentPropsWithRef<'button'>,
+  'aria-disabled' | 'type'
+> {
+  /**
+   * Per-instance override of the button's name (`close`). Without it, the alert root's
+   * `messages`, then the provider's, then the built-in English text.
+   */
+  messages?: Partial<KvirnMessages['alert']> | undefined
+  /**
+   * Change the element. It must still be a `<button>`. An element's own `onClick` is gated like
+   * the button's. In the function form, keep `className` and the handlers you spread.
+   */
+  render?: RenderProp<ComponentPropsWithRef<'button'>, AlertCloseState> | undefined
+}
+
+const isClickHandler = (value: unknown): value is MouseEventHandler<HTMLButtonElement> =>
+  typeof value === 'function'
 
 const alertState: AlertState = Object.freeze({})
 
@@ -245,6 +283,77 @@ export function AlertActions({ render, ref, ...otherProps }: AlertActionsProps):
 AlertActions.displayName = 'Alert.Actions'
 
 /**
+ * The optional close (dismiss) button: a native `<button type="button">` with the decorative
+ * `close` icon, named by `alert.close` ("Stäng meddelandet"). The Alert owns no open or closed
+ * state: remove the alert in `onClick`, then move focus to a sensible place, because the button
+ * that had focus is gone (WCAG 2.4.3). Put it last in the root: the theme shows it at the inline
+ * end of the first line, and it is the last Tab stop of the alert. It never changes how the
+ * alert is announced. Give `children` for a visible label of your own, which then names it.
+ */
+export function AlertClose({
+  disabled,
+  onClick,
+  messages,
+  render,
+  ref,
+  children,
+  ...otherProps
+}: AlertCloseProps): ReactElement {
+  const alert = useContext(AlertContext)
+  useWarnOutsideRoot(alert === null, 'Close')
+  const ownMessages = useMessages('alert', messages)
+  // The root's own override of `close` counts, unless this button has its own.
+  const name =
+    messages?.close === undefined && alert !== null
+      ? alert.closeProps['aria-label']
+      : ownMessages.close
+  // `null`, `false` and `''` render nothing, so they leave the icon and the name in place.
+  const hasVisibleText =
+    children !== undefined && children !== null && children !== false && children !== ''
+  // The element's onClick goes through useButton too, so a disabled button blocks it.
+  const { render: renderWithoutClick, takenProps } = takeRenderElementProps(render, ['onClick'])
+  const elementOnClick = takenProps.onClick
+  const activationHandler = isClickHandler(elementOnClick)
+    ? mergeProps({ onClick }, { onClick: elementOnClick }).onClick
+    : onClick
+  const button = useButton({ disabled, onClick: activationHandler })
+  const elementRef = useRef<HTMLButtonElement | null>(null)
+  const mergedRef = useMergedRef(ref, elementRef)
+
+  useEffect(() => {
+    const element = elementRef.current
+    if (element !== null && element.tagName !== 'BUTTON') {
+      const rendered = `<${element.tagName.toLowerCase()}>`
+      warnOnce(
+        `alert-close-not-a-button:${rendered}`,
+        `<Alert.Close render> must render a <button> and forward its ref, but it rendered ${rendered}. Keyboard activation and the disabled state come from the native element (WCAG 4.1.2).`,
+      )
+    }
+  })
+
+  return renderPart({
+    render: renderWithoutClick,
+    defaultElement: 'button',
+    partProps: {
+      // The consumer's props come last, so their own `aria-label` replaces ours.
+      ...mergeProps(
+        {
+          ...button.buttonProps,
+          // Not the Button's look: a quiet icon button of the alert's own.
+          className: 'kv-alert-close',
+          ...(hasVisibleText ? {} : { 'aria-label': name }),
+        },
+        otherProps,
+      ),
+      ref: mergedRef,
+      children: hasVisibleText ? children : <Icon name="close" />,
+    },
+    state: { isDisabled: button.isDisabled, isFocusVisible: button.isFocusVisible },
+  })
+}
+AlertClose.displayName = 'Alert.Close'
+
+/**
  * A status message in the content: something people need to know now, or the result of what
  * they just did (contract: alert.a11y.md). Use `Alert.Info`,
  * `.Success`, `.Warning` or `.Danger`: each shows its status with an icon, a word and a colour,
@@ -262,6 +371,7 @@ AlertActions.displayName = 'Alert.Actions'
  *   <Alert.Actions>
  *     <Button>Förnya tillståndet</Button>
  *   </Alert.Actions>
+ *   <Alert.Close onClick={dismiss} />
  * </Alert.Warning>
  */
 export const Alert = {
@@ -273,4 +383,5 @@ export const Alert = {
   Title: AlertTitle,
   Body: AlertBody,
   Actions: AlertActions,
+  Close: AlertClose,
 } as const

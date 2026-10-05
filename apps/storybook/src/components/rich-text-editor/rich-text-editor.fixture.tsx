@@ -9,9 +9,9 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 // Fixtures for Components/Form/Rich text editor. Each exported function is one example, written to
 // be read: the stories show its source as "Show code" (`showSource`). The texts are fixture text
 // in the resident's or case worker's language, so they are plain strings here, where an app would
-// take them from its translations. The library's own strings (the toolbar's names, the instruction
-// under the box) follow the locale toolbar through the provider. KvirnUI holds no form state and
-// the editor's output is never sanitized: a real app sanitizes it on the server.
+// take them from its translations. The library's own strings (the toolbar's names, the forms)
+// follow the locale toolbar through the provider. KvirnUI holds no form state and the editor's
+// output is never sanitized: a real app sanitizes it on the server.
 
 export interface EditorTexts {
   label: string
@@ -297,8 +297,7 @@ export function DisabledEditor({ locale }: { locale: FormLocale }) {
 }
 
 /**
- * Read-only: no toolbar and no instruction, because there is nothing to format and Tab works as
- * everywhere else. The text is focusable, selectable and copyable. To show saved text on a page
+ * Read-only: no toolbar, because there is nothing to format and Tab works as everywhere else. The text is focusable, selectable and copyable. To show saved text on a page
  * (not in a form), render it as `Prose` instead.
  */
 export function ReadOnlyEditor({ locale }: { locale: FormLocale }) {
@@ -377,7 +376,7 @@ export function HighlightEditor({ locale }: { locale: FormLocale }) {
   )
 }
 
-/** No tables and no images: their buttons, the Table group and the table half of the instruction are gone. */
+/** No tables and no images: their buttons, the Table group are gone. */
 export function PlainEditor({ locale }: { locale: FormLocale }) {
   const { text, lang } = editorTextsFor(locale)
   return (
@@ -432,7 +431,7 @@ export function LongContentEditor({ locale }: { locale: FormLocale }) {
   )
 }
 
-/** A right-to-left paragraph in a left-to-right page: each block takes its own direction. */
+/** A paragraph in Arabic. The direction comes from the page: the RTL story sets it through the provider. */
 export function BidirectionalEditor({ locale }: { locale: FormLocale }) {
   const { text, lang } = editorTextsFor(locale)
   return (

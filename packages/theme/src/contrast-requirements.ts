@@ -147,6 +147,12 @@ function requirementsFor(themeName: ThemeName): ContrastRequirement[] {
       background,
       minimum: 3,
     })),
+    // A link is underlined on hover only, so at rest its colour is told apart from the body text
+    // around it by 3:1 (1.4.1). The contrast themes can't have that and 7:1 on the canvas, so they
+    // keep the underline at rest.
+    ...(isContrastTheme(themeName)
+      ? []
+      : [{ foreground: 'link', background: 'text', minimum: 3 } satisfies ContrastRequirement]),
   ]
 }
 

@@ -7,11 +7,32 @@
 A status message in the content: something people need to know now, or the result of what they just did. Use `Alert.Info`, `Alert.Success`, `Alert.Warning` or `Alert.Danger`: each shows its status with an icon, a word and a colour, never with colour alone. It doesn't announce itself unless you ask, and it never takes focus on its own.
 
 - Five roots: the plain `Alert.Root`, and four ready-made ones, `Alert.Info`, `.Success`, `.Warning` and `.Danger` (also named exports: `AlertRoot`, `AlertInfo`, `AlertSuccess`, `AlertWarning`, `AlertDanger`).
-- Three parts inside them: `Alert.Title` (required, an `h2` by default), `Alert.Body` and `Alert.Actions` (both optional).
+- Four parts inside them: `Alert.Title` (required, an `h2` by default), `Alert.Body`, `Alert.Actions` and `Alert.Close` (all three optional).
 - No role, no `aria-live` and no `aria-atomic` on the box. A screen reader reads it in reading order, and finds the Title in the heading list.
 - Status is a class, not a prop: you choose it by choosing the component. There is no `variant` prop.
 - Headless: no CSS. Every part renders its stable class, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, it's styled.
-- Not dismissible in this version. Never on a timer. A Toast (transient) is a later component.
+- Dismissing is optional: add `Alert.Close`, an icon button, and remove the alert yourself when it is pressed. The alert owns no state. Never on a timer. A Toast (transient) is a later component.
+
+## API
+
+| Part                                            | Renders                                                                          | Props                                                                                                                                                                                                                               |
+| ----------------------------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Alert.Root`                                    | `<div class="kv-alert">`                                                         | `announce`, `render`, `ref`, any `<div>` attribute                                                                                                                                                                                  |
+| `Alert.Info`, `.Success`, `.Warning`, `.Danger` | `<div>` with the status class, icon and word                                     | The same, and `messages` (`infoPrefix`, … or `close`)                                                                                                                                                                               |
+| `Alert.Title`                                   | `<h2 class="kv-alert-title">`                                                    | `render` (another heading, or `<p />`), `ref`                                                                                                                                                                                       |
+| `Alert.Body`                                    | `<div class="kv-alert-body">`                                                    | `render`, `ref`                                                                                                                                                                                                                     |
+| `Alert.Actions`                                 | `<div class="kv-alert-actions">`                                                 | `render`, `ref`                                                                                                                                                                                                                     |
+| `Alert.Close`                                   | `<button type="button" class="kv-alert-close">` with the decorative `close` icon | `onClick` (never called while `disabled`), `disabled`, `messages` (`{ close }`), `children` (visible text replaces the icon and the `aria-label`), `render` (must stay a `<button>`), `ref`, any `<button>` attribute except `type` |
+
+| Message key (`messages.alert`)                                 | Default (sv)            | Used by                                                       |
+| -------------------------------------------------------------- | ----------------------- | ------------------------------------------------------------- |
+| `infoPrefix`, `successPrefix`, `warningPrefix`, `dangerPrefix` | Information:, Klart:, … | The status word of each ready-made root                       |
+| `close`                                                        | Stäng meddelandet       | `Alert.Close`'s accessible name. Per provider, root or button |
+
+| State attribute      | When                             |
+| -------------------- | -------------------------------- |
+| `data-disabled`      | `Alert.Close` is `disabled`      |
+| `data-focus-visible` | `Alert.Close` has keyboard focus |
 
 ## Component
 
@@ -122,8 +143,37 @@ Development warnings help you keep the agreement: a ready-made root whose `class
 | `kv-alert`                                                                                | every root           | the box: neutral `surface` and a `border-control` bar, if no status class                      |
 | `kv-alert--info`, `--success`, `--warning`, `--danger`                                    | the ready-made roots | the two tokens: `--kv-alert-background` (`-subtle`) and `--kv-alert-accent`                    |
 | `kv-alert-icon`, `kv-alert-title`, `kv-alert-status`, `kv-alert-body`, `kv-alert-actions` | the parts            | the icon beside the first line, the title, the visually hidden word, the text, the actions row |
+| `kv-alert-close`                                                                          | `Alert.Close`        | a quiet icon button at the control size, in the last column of the first row                   |
 
-The look: a `-subtle` background, a 4px inline-start bar in the status colour, the icon, the `sm` radius, no shadow and no motion. In forced colours all four statuses share one colour, so the icon's shape and the status word carry the status. Compact density (`kv-compact`) reduces padding from 64rem. Add `kv-prose` to the Body for CMS content. An alert may sit on the page, in a Section or in a Card body. Never a Card or a Section inside an Alert, and never an Alert in an Alert.
+The close button is at least 24 by 24 CSS px (the control size, 44px, or 32px in `kv-compact`), shows the focus ring, uses `ButtonText` in forced colours and is hidden in print. The look: a `-subtle` background, a 4px inline-start bar in the status colour, the icon, the `sm` radius, no shadow and no motion. In forced colours all four statuses share one colour, so the icon's shape and the status word carry the status. Compact density (`kv-compact`) reduces padding from 64rem. Add `kv-prose` to the Body for CMS content. An alert may sit on the page, in a Section or in a Card body. Never a Card or a Section inside an Alert, and never an Alert in an Alert.
+
+### Dismissing
+
+`Alert.Close` is optional. Put it last in the root: it is then the last Tab stop of the alert, and the theme shows it at the inline end of the first line. It is a native `<button type="button">` with the decorative `close` icon, named by `alert.close` ("Stäng meddelandet"). Override the name per provider, per alert (`messages` on the root) or per button (`messages` on `Alert.Close`), the usual order. A visible label of your own goes in its children and then names the button.
+
+```tsx
+const heading = useRef<HTMLHeadingElement>(null)
+const [isShown, setIsShown] = useState(true)
+
+<h2 ref={heading} tabIndex={-1}>Dina ärenden</h2>
+{isShown ? (
+  <Alert.Info>
+    <Alert.Title render={<h3 />}>Tjänsten är långsammare än vanligt i dag</Alert.Title>
+    <Alert.Close
+      onClick={() => {
+        setIsShown(false)
+        heading.current?.focus()
+      }}
+    />
+  </Alert.Info>
+) : null}
+```
+
+- **The alert owns no state.** It never hides itself: you remove it in `onClick`. Whether it comes back on the next page is your decision, and it writes nothing to storage.
+- **Move focus in the same handler (2.4.3).** The button had focus and goes with the alert, and a removed element sends focus to the page. Move it to the heading of the part of the page the alert belonged to (`tabIndex={-1}`), to the control that caused the alert, or to a control that brings the message back.
+- **Offer it only where the user can safely be done with the message:** a tip, an info, a saved confirmation. Not on an error or a warning they still have to act on.
+- Pressing it announces nothing, and `announce` never reads the button. It does not change an alert's politeness.
+- A `disabled` close button is skipped by Tab and runs no `onClick`.
 
 ### One site-wide alert as a landmark
 
@@ -160,4 +210,4 @@ function PermitNotice() {
 }
 ```
 
-`useAlert({ variant?, announce?, messages? })` returns `rootProps`, `titleProps`, `bodyProps` and `actionsProps` (class names, plus callback refs for the root, Title and Body). With a `variant` it also returns `iconProps` (`name` and `className`, for `<Icon>`) and `statusProps` (`className` and the resolved word as `children`), from the same table as the components. Without one, it is the plain Root: no status class, `iconProps` and `statusProps` are `undefined`. Attach `titleProps` and `bodyProps` so `announce` can read their text. Merge your own classes with `mergeProps`.
+`useAlert({ variant?, announce?, messages? })` returns `rootProps`, `titleProps`, `bodyProps`, `actionsProps` and `closeProps` (class names, plus callback refs for the root, Title and Body; `closeProps` is the close button's class, `type="button"` and the resolved `aria-label`, for your own `<button>` with your own `onClick`). With a `variant` it also returns `iconProps` (`name` and `className`, for `<Icon>`) and `statusProps` (`className` and the resolved word as `children`), from the same table as the components. Without one, it is the plain Root: no status class, `iconProps` and `statusProps` are `undefined`. Attach `titleProps` and `bodyProps` so `announce` can read their text. Merge your own classes with `mergeProps`.

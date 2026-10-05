@@ -42,7 +42,6 @@ const meta = {
     characterCount: false,
     labels: 'icon',
     tooltips: true,
-    keyboardHint: true,
     onValueChange: fn(),
   },
   // Every prop of RichTextEditor.Root in rich-text-editor.tsx and use-rich-text-editor.ts. Any
@@ -91,7 +90,7 @@ const meta = {
     readOnly: {
       control: 'boolean',
       description:
-        'Not editable, but focusable, selectable and copyable, with `aria-readonly`. The toolbar and the keyboard instruction are not rendered. Sets `data-readonly`.',
+        'Not editable, but focusable, selectable and copyable, with `aria-readonly`. The toolbar is not rendered. Sets `data-readonly`.',
     },
     maxLength: {
       control: 'number',
@@ -118,15 +117,10 @@ const meta = {
       description:
         'Whether icon-only controls get a tooltip with their name and shortcut. Default `true`. With `labels="icon"` and no tooltips nothing shows the names, and a development warning says so.',
     },
-    keyboardHint: {
-      control: 'boolean',
-      description:
-        'Renders the keyboard instruction under the box when lists or tables are on (WCAG 2.1.2). `false` lets you place a `RichTextEditor.KeyboardHint` yourself.',
-    },
     messages: {
       control: 'object',
       description:
-        'Per-instance overrides for the editor’s texts: the `richText` namespace (toolbar names, the instruction, the forms, the announcements).',
+        'Per-instance overrides for the editor’s texts: the `richText` namespace (toolbar names, the forms, the announcements).',
     },
     countMessages: {
       control: 'object',
@@ -181,7 +175,7 @@ type Story = StoryObj<typeof meta>
 
 /**
  * The main example: a rich text editor in a Field, with a description above, the default toolbar,
- * and the instruction and a help text under the box. Every option is a control below: try `labels`,
+ * and a help text under the box. Every option is a control below: try `labels`,
  * `readOnly`, `disabled`, and `maxLength` with `characterCount`.
  */
 export const Default: Story = {
@@ -200,8 +194,8 @@ export const Default: Story = {
 /**
  * The fixture the keyboard tests drive: a button before, an editor holding a paragraph, a list and
  * a table, and a button after. Try the keys in the Keyboard section above: Tab into the toolbar and
- * on into the text, Tab and Shift+Tab to nest a list item and to move between cells, Escape then
- * Tab to leave from anywhere, Alt+F10 to the toolbar, and Control+B, I, U and K.
+ * on into the text, Tab and Shift+Tab to nest a list item and to move between cells (anywhere else
+ * Tab leaves the editor), Alt+F10 to the toolbar, and Control+B, I, U and K.
  */
 export const Keyboard: Story = {
   parameters: showSource('rich-text-editor/rich-text-editor.fixture.tsx', 'KeyboardEditor'),
@@ -247,7 +241,7 @@ export const Disabled: Story = {
   },
 }
 
-/** Read-only: no toolbar and no instruction. The text is focusable, selectable and copyable. */
+/** Read-only: no toolbar. The text is focusable, selectable and copyable. */
 export const ReadOnly: Story = {
   parameters: showSource('rich-text-editor/rich-text-editor.fixture.tsx', 'ReadOnlyEditor'),
   render: (_args, { globals }) => <ReadOnlyEditor locale={localeOf(globals)} />,
@@ -290,7 +284,7 @@ export const CustomExtension: Story = {
   },
 }
 
-/** Without tables and images: their buttons and the Table group are gone, and so is the table half of the instruction. */
+/** Without tables and images: their buttons and the Table group are gone. */
 export const WithoutTablesAndImages: Story = {
   parameters: showSource('rich-text-editor/rich-text-editor.fixture.tsx', 'PlainEditor'),
   render: (_args, { globals }) => <PlainEditor locale={localeOf(globals)} />,
@@ -341,7 +335,7 @@ export const LongFinnish: Story = {
   },
 }
 
-/** Right to left, in English: the toolbar flows right to left and the arrows flip. A block in Arabic takes its own direction. */
+/** Right to left, in English: the direction comes from the page (the provider's `dir`): the toolbar flows right to left and the arrows flip. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
   parameters: showSource('rich-text-editor/rich-text-editor.fixture.tsx', 'BidirectionalEditor'),

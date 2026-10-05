@@ -61,8 +61,6 @@ export interface RichTextEditorContextValue {
   registerLinkForm: (open: () => void) => () => void
   /** `Content` says what names it, outside a Field. */
   setContentNaming: (naming: RichTextContentNaming) => void
-  /** `KeyboardHint` registers its id while it renders, for the editor's `aria-describedby`. */
-  registerKeyboardHint: (id: string) => () => void
   /**
    * The toolbar registers how to focus it, for Alt+F10 (Option+F10). Return `false` when it
    * can't. Returns the unregister function.

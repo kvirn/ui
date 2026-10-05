@@ -18,7 +18,7 @@ Link navigates. An action is a Button. Link has no `disabled` prop, by type: a d
 |                   | another language                       | `lang`, `hrefLang` passed through | `<Link.Root href="/fi" hrefLang="fi" lang="fi">Suomeksi</Link.Root>` (3.1.2)                                                                                              |
 | Link.Icon         | `<span>`, decorative                   | `aria-hidden="true"`              | `class="kv-link-icon"`. Always hidden: `aria-hidden` can't be turned off, so the icon is never part of the link's name (2.5.3). Put it first. Also exported as `LinkIcon` |
 | Link.NewTabNotice | `<span>`, part of the link's name      | none                              | Text from `link.newTabNotice`. The consumer decides whether to hide it visually. Also exported as `LinkNewTabNotice`                                                      |
-|                   | `target="_blank"` without a notice     | –                                 | Dev warning, naming the link's text                                                                                                                                       |
+|                   | `target="_blank"` without a notice     | –                                 | Nothing: no type error and no dev warning (maintainer, 2026-10-05). Adding the notice is the consumer's responsibility                                                    |
 |                   | link component doesn't render an `<a>` | –                                 | Dev warning: the registered component must forward its ref and render an `<a>`                                                                                            |
 
 The service link is `className="kv-link--service"` on a Link: a look and not a role, so the element, the role and the keys are the same as any link. It has no disabled state, because a link has none (an unavailable e-service is text, not a dimmed link).
@@ -71,7 +71,7 @@ Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root mes
 ## Consumer responsibilities
 
 - Give every link text that says where it goes, in context (2.4.4). No "click here".
-- Put `<Link.NewTabNotice />` inside every `target="_blank"` link, or better, don't open new tabs (3.2.5, G201). With `useLink`, render `link.newTabNotice` inside the link yourself.
+- A link that opens a new window or tab must say so: put `<Link.NewTabNotice />` inside every `target="_blank"` link, or better, don't open new tabs (3.2.5, G201). Link does not check this: there is no type error and no dev warning. With `useLink`, render `link.newTabNotice` inside the link yourself.
 - If you hide the notice visually, hide it with a visually-hidden technique, not `display: none` or `aria-hidden`, so it stays in the name. Consider showing it: sighted users benefit too.
 - Set `current="page"` on the link to the current page, for example in navigation. Link doesn't detect it from the router.
 - For a link in another language, set `lang` (the text's language) and `hrefLang` (the target's language) (3.1.2).
@@ -83,7 +83,7 @@ Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root mes
 
 - Focus indicator: headless. The browser's native ring by default. The default theme restyles it to at least 2px at 3:1 (2.4.7, 2.4.13).
 - Target size: inline links in a sentence are exempt from 2.5.8. The default theme gives standalone links at least 24 × 24 CSS px, and the service link and a [Navigation](../navigation/navigation.a11y.md) item are `control-min-block-size` high (44px, 32px compact). Test: `link.stories.tsx › Compact navigation`.
-- forced-colors behaviour: a native `<a href>`, so the system's `LinkText` applies. The service link keeps a 1px `LinkText` edge, and its icon block is not filled: it has a `LinkText` divider, so the boundary survives (1.4.11, `link.e2e.ts › the service link edge and icon divider are visible in forced colours (1.4.11)`). The current page must not be shown by background alone in the default theme: it's also heavier (1.4.1, `link.stories.tsx › Current Page`). A link in running text is underlined (1.4.1, `link.stories.tsx › In running text`). The e2e suite passes in `chromium-forced-colors`.
+- forced-colors behaviour: a native `<a href>`, so the system's `LinkText` applies. The service link keeps a 1px `LinkText` edge, and its icon block is not filled: it has a `LinkText` divider, so the boundary survives (1.4.11, `link.e2e.ts › the service link edge and icon divider are visible in forced colours (1.4.11)`). The current page must not be shown by background alone in the default theme: it's also heavier (1.4.1, `link.stories.tsx › Current Page`). A link in running text is 3:1 against the body text (`theme:check`) and underlined on hover; the contrast themes, forced colours and a link in grey or red text (a caption, `small`, help text, an error message) keep the underline at rest (1.4.1, `link.stories.tsx › In running text`). The e2e suite passes in `chromium-forced-colors`.
 - reduced-motion behaviour: no motion. Passes in `chromium-reduced-motion`.
 - Reflow: no horizontal scrolling at 320 CSS px (`reflow-320`, 1.4.10).
 
@@ -93,7 +93,7 @@ Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root mes
 - 2.4.4 Link Purpose (In Context): consumer text, plus the new-tab notice in the name.
 - 2.4.7 Focus Visible: `data-focus-visible`.
 - 3.1.2 Language of Parts: `lang` and `hrefLang` passed through (`link.test.tsx › passes lang and hrefLang through`).
-- 3.2.5 Change on Request (G201): translated new-tab notice, and a dev warning when it's missing.
+- 3.2.5 Change on Request (G201): translated new-tab notice. Using it is the consumer's job: Link doesn't warn when it's missing.
 - 4.1.2 Name, Role, Value: role `link`, `aria-current` (`link.test.tsx`, e2e a11y tree).
 
 ## AT test record
@@ -117,4 +117,4 @@ Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root mes
 
 - **`se` (Northern Sámi) shows English** for `link.newTabNotice`. Sámi users get English for this string under `lang="se"`, which fails 3.1.2 Language of Parts for that string.
 - **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.
-- **The missing-notice warning only sees `Link.NewTabNotice`.** A link that says "new tab" some other way still gets the dev warning.
+- **A `target="_blank"` link with no notice is not flagged.** Neither a type error nor a dev warning catches it (maintainer decision 2026-10-05, Plan 0045), so review it by hand.

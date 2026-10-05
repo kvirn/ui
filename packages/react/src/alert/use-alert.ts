@@ -65,7 +65,10 @@ export interface UseAlertOptions {
    * inserted after an action, never on one present at load. Default: nothing is announced.
    */
   announce?: AnnouncerPoliteness | undefined
-  /** Per-instance overrides for the status word. Only the key of `variant` is read. */
+  /**
+   * Per-instance overrides: the status word (only the key of `variant` is read) and the name
+   * of the close button (`close`).
+   */
   messages?: Partial<KvirnMessages['alert']> | undefined
 }
 
@@ -92,6 +95,18 @@ export interface AlertActionsPartProps {
   className: 'kv-alert-actions'
 }
 
+/**
+ * Spread on the close `<button>`: `<button {...alert.closeProps} onClick={dismiss}><Icon name="close" /></button>`.
+ * The name is the resolved `alert.close` message. Drop `aria-label` when the button has visible
+ * text of your own.
+ */
+export interface AlertClosePartProps {
+  className: 'kv-alert-close'
+  type: 'button'
+  /** The resolved `alert.close` message, for example `Stäng meddelandet`. */
+  'aria-label': string
+}
+
 /** Spread on `<Icon>`: `<Icon {...alert.iconProps} />`. Decorative: the status is text. */
 export interface AlertIconPartProps {
   name: 'info' | 'success' | 'warning' | 'error'
@@ -110,6 +125,11 @@ export interface UseAlertResult {
   titleProps: AlertTitlePartProps
   bodyProps: AlertBodyPartProps
   actionsProps: AlertActionsPartProps
+  /**
+   * The optional close button. The alert owns no open or closed state: you remove it in the
+   * button's `onClick`, then move focus (WCAG 2.4.3).
+   */
+  closeProps: AlertClosePartProps
   /** The status icon. `undefined` without a `variant`: you bring your own. */
   iconProps: AlertIconPartProps | undefined
   /** The status word's span. `undefined` without a `variant`: you bring your own. */
@@ -250,6 +270,7 @@ export function useAlert({ variant, announce, messages }: UseAlertOptions = {}):
   })
 
   const word = variant === undefined ? undefined : alertMessages[statuses[variant].messageKey]
+  const closeName = alertMessages.close
 
   return useMemo<UseAlertResult>(() => {
     const status = variant === undefined ? undefined : statuses[variant]
@@ -261,10 +282,11 @@ export function useAlert({ variant, announce, messages }: UseAlertOptions = {}):
       titleProps: { className: 'kv-alert-title', ref: titleRef },
       bodyProps: { className: 'kv-alert-body', ref: bodyRef },
       actionsProps: { className: 'kv-alert-actions' },
+      closeProps: { className: 'kv-alert-close', type: 'button', 'aria-label': closeName },
       iconProps:
         status === undefined ? undefined : { name: status.iconName, className: 'kv-alert-icon' },
       statusProps:
         word === undefined ? undefined : { className: 'kv-alert-status', children: word },
     }
-  }, [variant, word, rootRef, titleRef, bodyRef])
+  }, [variant, word, closeName, rootRef, titleRef, bodyRef])
 }

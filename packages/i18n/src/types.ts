@@ -85,6 +85,11 @@ export interface KvirnMessages {
     warningPrefix: TextMessage
     /** The status word of `Alert.Danger`, for example `Fel:`. */
     dangerPrefix: TextMessage
+    /**
+     * The accessible name of `Alert.Close`, the optional dismiss button (an icon with no visible
+     * text), for example `Stäng meddelandet`. Owned by Alert (Plan 0045).
+     */
+    close: TextMessage
   }
   combobox: {
     /**
@@ -334,13 +339,6 @@ export interface KvirnMessages {
     deleteColumn: TextMessage
     deleteTable: TextMessage
     headerRow: TextMessage
-    /**
-     * The visible keyboard instruction under the box (WCAG 2.1.2), by what is enabled. The way out
-     * comes first. Plain text: messages are never JSX, so key names are not `Kbd`.
-     */
-    keyboardHintListsAndTables: TextMessage
-    keyboardHintLists: TextMessage
-    keyboardHintTables: TextMessage
     linkAddTitle: TextMessage
     linkEditTitle: TextMessage
     linkUrl: TextMessage

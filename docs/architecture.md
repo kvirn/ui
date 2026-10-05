@@ -108,7 +108,7 @@ The same names are used across all components:
 | `Trigger`                              | Element that opens, closes or toggles                                                                                            |
 | `Panel`                                | Inline revealed content (Disclosure, Accordion, Tabs)                                                                            |
 | `Popup`                                | Floating content (Popover, Menu, Select, Tooltip, Dialog)                                                                        |
-| `Backdrop`, `Portal`, `Close`          | Overlay plumbing                                                                                                                 |
+| `Backdrop`, `Portal`, `Close`          | Overlay plumbing. `Close` is also an Alert's optional dismiss button (`Alert.Close`): it owns no state                           |
 | `Label`, `ErrorMessage`                | Field text (`Field.Label`), wired automatically to the control. The description is `Field.Prose`, the help text `Field.HelpText` |
 | `Item`, `Option`, `Tab`                | Collection members                                                                                                               |
 | `Indicator`                            | Visual state marker, `aria-hidden`                                                                                               |

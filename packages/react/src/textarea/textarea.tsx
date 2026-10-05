@@ -29,7 +29,7 @@ export interface TextareaState {
 
 export interface TextareaProps extends Omit<
   ComponentPropsWithRef<'textarea'>,
-  'value' | 'defaultValue'
+  'value' | 'defaultValue' | 'dir'
 > {
   /** Controlled: the value from your form state. */
   value?: string | undefined
@@ -59,7 +59,8 @@ export interface TextareaProps extends Omit<
  * A native multi-line `<textarea>`, wired to its Field: the label names it, and the description,
  * help text and error describe it (contract: textarea.a11y.md). It holds no form state: pass `value`
  * and `onValueChange`, or `defaultValue` and `name` for a plain form, or spread your form
- * library's props. `rows` is 5 unless you set it. With `characterCount` and `maxLength` a count
+ * library's props. The text direction is the page's, from the provider (there is no `dir` prop).
+ * `rows` is 5 unless you set it. With `characterCount` and `maxLength` a count
  * of the characters left follows the box.
  *
  * @example

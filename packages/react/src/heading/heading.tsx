@@ -10,8 +10,8 @@ import type { HeadingLevel, HeadingSize } from './use-heading.ts'
 /** What `render` receives as its second argument. */
 export interface HeadingState {
   level: HeadingLevel
-  /** The size that applies. `undefined` for levels 4 to 6 without a `size`. */
-  size: HeadingSize | undefined
+  /** The size that applies: the one given, or the level's own. */
+  size: HeadingSize
 }
 
 /** What a `render` function gets to spread: your attributes, the classes and a callback ref. */
@@ -26,9 +26,9 @@ export interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
    */
   level: HeadingLevel
   /**
-   * The look, apart from the level: `display`, `heading-1`, `heading-2` or `heading-3`, the type
-   * roles. Levels 1 to 3 look like `heading-1` to `heading-3` unless you say otherwise, and levels
-   * 4 to 6 are body size in the heading-3 weight.
+   * The look, apart from the level: `display` or `heading-1` to `heading-6`, the type roles.
+   * Each level looks like the role of its number (`level={4}` is `heading-4`) unless you say
+   * otherwise.
    */
   size?: HeadingSize | undefined
   ref?: Ref<HTMLHeadingElement> | undefined

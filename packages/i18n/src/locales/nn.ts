@@ -15,6 +15,7 @@ export const nn = {
     successPrefix: 'Fullført:',
     warningPrefix: 'Åtvaring:',
     dangerPrefix: 'Feil:',
+    close: 'Lukk meldinga',
   },
   combobox: {
     resultCount: ({ count }, format) =>
@@ -216,11 +217,6 @@ export const nn = {
     deleteColumn: 'Slett kolonna',
     deleteTable: 'Slett tabellen',
     headerRow: 'Overskriftsrad',
-    keyboardHintListsAndTables:
-      'Forlat tekstfeltet med Esc og deretter Tab. I lister gjev Tab innrykk, og i tabellar går Tab til neste celle.',
-    keyboardHintLists: 'Forlat tekstfeltet med Esc og deretter Tab. I lister gjev Tab innrykk.',
-    keyboardHintTables:
-      'Forlat tekstfeltet med Esc og deretter Tab. I tabellar går Tab til neste celle.',
     linkAddTitle: 'Legg til lenkje',
     linkEditTitle: 'Endre lenkje',
     linkUrl: 'Nettadresse',

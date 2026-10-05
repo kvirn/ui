@@ -20,9 +20,36 @@ Icon's `size`, `color`, `strokeWidth`, `label` replace the library component's o
 
 These work with no setup:
 
-`chevron-down`, `chevron-up`, `chevron-back`, `chevron-forward`, `arrow-back`, `arrow-forward`, `external`, `close`, `menu`, `search`, `add`, `check`, `info`, `success`, `warning`, `error`, `calendar`, `upload`, `download`, `document`, `delete`, `language`, `eye`, `eye-off`.
+The Storybook page **Components/Icon › Built In Set** shows every one of them, generated from the set itself. The drawings are decorative: the name is the text beside each.
 
-They're original outline drawings in the style of Heroicons, on a 24 grid with a 1.5 stroke. The four status icons differ in shape, not only colour: info a square, success a circle, warning a triangle, error an octagon. `chevron-forward`, `chevron-back`, `arrow-forward`, `arrow-back` and `external` flip in right-to-left text. KvirnUI's own components use these names, so when you register an icon under the same name, every component uses yours. A plain override keeps the built-in's mirroring.
+| Name              | Use                                       | Mirrors in right-to-left text |
+| ----------------- | ----------------------------------------- | ----------------------------- |
+| `chevron-down`    | Opens a section or a menu, or points down | no                            |
+| `chevron-up`      | Closes a section, or points up            | no                            |
+| `chevron-back`    | Back or previous in reading direction     | yes                           |
+| `chevron-forward` | Forward or next in reading direction      | yes                           |
+| `arrow-back`      | Back to the previous page or step         | yes                           |
+| `arrow-forward`   | Continue to the next page or step         | yes                           |
+| `external`        | A link that leaves the site               | yes                           |
+| `close`           | Closes a dialog, a panel or a message     | no                            |
+| `menu`            | Opens the navigation menu                 | no                            |
+| `search`          | Search                                    | no                            |
+| `add`             | Adds an item                              | no                            |
+| `check`           | Done or selected                          | no                            |
+| `info`            | Information (a square)                    | no                            |
+| `success`         | Success (a circle)                        | no                            |
+| `warning`         | Warning (a triangle)                      | no                            |
+| `error`           | Error (an octagon)                        | no                            |
+| `calendar`        | A date or a date picker                   | no                            |
+| `upload`          | Sends a file                              | no                            |
+| `download`        | Downloads a file                          | no                            |
+| `document`        | A document or a file                      | no                            |
+| `delete`          | Removes an item                           | no                            |
+| `language`        | Changes the language                      | no                            |
+| `eye`             | Shows a hidden value, such as a password  | no                            |
+| `eye-off`         | Hides a shown value                       | no                            |
+
+They're original outline drawings in the style of Heroicons, on a 24 grid with a 1.5 stroke. The four status icons differ in shape, not only colour: info a square, success a circle, warning a triangle, error an octagon. The five that say "yes" in the table flip in right-to-left text. KvirnUI's own components use these names, so when you register an icon under the same name, every component uses yours. A plain override keeps the built-in's mirroring.
 
 ```tsx
 import { Button, Icon } from '@kvirn-ui/react'

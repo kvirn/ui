@@ -43,7 +43,7 @@ What the parts do on their own:
 - `name="birth"` gives the boxes `birth-day`, `birth-month` and `birth-year`. A `name` on one box wins.
 - `autoComplete="bday"` gives `bday-day`, `bday-month` and `bday-year`.
 - While `autoAdvance` is on, the Root renders the hint (`<p class="kv-field-help-text">`) right after the row of boxes and registers it as one of the Fieldset's descriptions, so the group's `aria-describedby` lists it in DOM order, before your own `Fieldset.HelpText`. Outside a Fieldset (a native `<fieldset>` of your own) it is plain text with no id.
-- Every box has `inputMode="numeric"` and `spellCheck={false}`. There is no `maxLength`, no `pattern` and no placeholder.
+- Every box has `inputMode="numeric"` and `spellCheck={false}`. There is no native `maxlength`, no `pattern` and no placeholder. Typing stops at the box's own number of digits (two for day and month, four for year): the key that would go past it is refused. A paste is never cut, so the consumer validates it.
 
 | State attribute      | On                               | When                                                                                 |
 | -------------------- | -------------------------------- | ------------------------------------------------------------------------------------ |

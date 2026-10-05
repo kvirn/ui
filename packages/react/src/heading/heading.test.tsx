@@ -31,7 +31,7 @@ describe('Heading', () => {
     expect(ref.current).toBe(element)
   })
 
-  test('the part and size classes, apart from the level: levels 1 to 3 default to their own size, and a consumer class joins', async () => {
+  test('the part and size classes, apart from the level: every level defaults to its own size, h1 to h6, and a consumer class joins', async () => {
     await render(
       <>
         <Heading level={1}>Ett</Heading>
@@ -47,13 +47,14 @@ describe('Heading', () => {
     const classOf = (name: string) => page.getByRole('heading', { name }).element().className
     expect(classOf('Ett')).toBe('kv-heading kv-heading--heading-1')
     expect(classOf('Tre')).toBe('kv-heading kv-heading--display')
-    expect(classOf('Fyra')).toBe('kv-heading')
+    expect(classOf('Fyra')).toBe('kv-heading kv-heading--heading-4')
     expect(classOf('Två')).toBe('annat kv-heading kv-heading--heading-3')
     await expect.element(page.getByRole('heading', { name: 'Tre', level: 3 })).toBeVisible()
   })
 
   test('useHeading gives the element and the size', () => {
-    expect(useHeading({ level: 5 })).toMatchObject({ element: 'h5', size: undefined })
+    expect(useHeading({ level: 5 })).toMatchObject({ element: 'h5', size: 'heading-5' })
+    expect(useHeading({ level: 6 }).size).toBe('heading-6')
     expect(useHeading({ level: 2, size: 'display' })).toMatchObject({
       element: 'h2',
       size: 'display',

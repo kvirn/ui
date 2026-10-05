@@ -154,7 +154,7 @@ The one place shortcuts are on by default and Tab can act: the keyboard skill's 
 | Text, in a list item           | Tab                                                 | Nests the item under the one above, only when that is possible. Otherwise leaves. The new level is announced                    |
 | Text, in a nested list item    | Shift+Tab                                           | Outdents one level. In a top-level item it leaves, and never lifts the item out of its list                                     |
 | Text, in a table cell          | Tab / Shift+Tab                                     | Next and previous cell, selecting its text. In the last cell Tab leaves and never adds a row, and in the first Shift+Tab leaves |
-| Text, anywhere                 | Escape, then Tab or Shift+Tab                       | Leaves forwards or backwards. Any key other than a modifier cancels it. Escape is not passed on the first time (a Dialog stays) |
+| Text                           | Escape                                              | Not passed on the first time, so a Dialog around the editor stays open and the text is kept. The second Escape is passed on     |
 | Text                           | Alt+F10 (Option+F10 on macOS)                       | Moves focus to the toolbar's remembered control. Escape in the toolbar goes back, after a tooltip or popup has taken its Escape |
 | Text                           | Control/Command+B, I, U                             | Bold, italic, underline on or off, announced ("Fetstil på")                                                                     |
 | Text                           | Control/Command+K                                   | Opens the link form                                                                                                             |
@@ -163,7 +163,7 @@ The one place shortcuts are on by default and Tab can act: the keyboard skill's 
 | Link or image form             | Enter / Escape                                      | Submits; closes without changes, and focus goes back to the text at the selection                                               |
 | Native                         | Arrows, Home, End, Shift+arrows, Enter, Shift+Enter | The caret, selection, a new paragraph, a line break. Never bound                                                                |
 
-Alternatives for every shortcut are toolbar buttons. The instruction that tells users how to leave is visible text, in the text's `aria-describedby`.
+Alternatives for every shortcut are toolbar buttons. Tab leaves the editor wherever it does not act, so there is no instruction under the box and no Escape-then-Tab way out.
 
 ## Navigation (not composite)
 

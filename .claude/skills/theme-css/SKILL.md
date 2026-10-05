@@ -135,7 +135,7 @@ The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@laye
 - `kv-prose`, `kv-card`, `kv-alert`, `kv-field` and `kv-fieldset` set `hyphens: auto`, `hyphenate-limit-chars: 10 4 4` and `overflow-wrap: break-word`. The break-word fallback covers Northern Sámi and a missing `lang`.
 - `code`, `kbd`, `samp` and `pre` use `hyphens: manual`.
 - Hyphenation needs `lang` on `<html>` and on passages in another language. Browser dictionaries are incomplete (Northern Sámi has none, and Finnish was missing in Chromium when last measured), so only soft hyphens fix it everywhere. Hyphenation is visual only.
-- Below `40rem`, `display` is 2rem (no tracking), `heading-1` 1.5rem, `heading-2` 1.25rem and `lead` 1.125rem. `heading-3` and the body roles never change. Never make a role smaller than the one below it. At 200% zoom, headings grow less than 2x.
+- Below `40rem`, `display` is 2rem (no tracking), `heading-1` 1.5rem, `heading-2` 1.25rem and `lead` 1.125rem. `heading-3` to `heading-6` and the body roles never change. `heading-4` to `heading-6` are 1rem (told apart by weight and tracking), so a heading is never below the 16px floor, and prose `h1` to `h6` keep their roles in every prose size. Never make a role smaller than the one below it. At 200% zoom, headings grow less than 2x.
 - Do not use `clamp()` with `vw` for type.
 
 ## Fonts

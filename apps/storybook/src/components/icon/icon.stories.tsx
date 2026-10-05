@@ -134,7 +134,11 @@ export const Default: Story = {
   },
 }
 
-/** Every built-in icon at sizes 4, 5 and 6, with the five that flip in right-to-left text. */
+/**
+ * Every built-in icon, read from the package's own set, so none is missing: its name as text,
+ * the drawing at sizes 4, 5 and 6, and whether it flips in right-to-left text (the five
+ * directional ones do). The drawings are decorative, and the name is what a screen reader reads.
+ */
 export const BuiltInSet: Story = {
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
@@ -148,13 +152,14 @@ export const BuiltInSet: Story = {
               <Icon name={name} size={6} />
             </span>
             <code>{name}</code>
-            {isMirroredIcon(name) ? <span>{text.gallery.mirrors}</span> : null}
+            <span>{isMirroredIcon(name) ? text.gallery.mirrors : text.gallery.doesNotMirror}</span>
           </li>
         ))}
       </ul>
     )
   },
   play: async ({ canvas }) => {
+    const { text } = textsFor('sv')
     const cells = within(canvas.getByRole('list')).getAllByRole('listitem')
     await expect(cells).toHaveLength(builtInIconNames.length)
     for (const [index, cell] of cells.entries()) {
@@ -164,6 +169,11 @@ export const BuiltInSet: Story = {
       }
       // The name is the text, and the three drawings are decorative.
       await expect(within(cell).getByText(name)).toBeVisible()
+      await expect(
+        within(cell).getByText(
+          isMirroredIcon(name) ? text.gallery.mirrors : text.gallery.doesNotMirror,
+        ),
+      ).toBeVisible()
       const icons = cell.querySelectorAll('svg')
       await expect(icons).toHaveLength(3)
       for (const icon of icons) {
@@ -318,10 +328,13 @@ export const StatusWithText: Story = {
   play: async ({ canvas }) => {
     const { text } = textsFor('sv')
     for (const status of statusKinds) {
-      // Two copies of each alert, and the status word is its title.
-      await expect(canvas.getAllByRole('heading', { name: text.status[status].word })).toHaveLength(
-        2,
-      )
+      // Two copies of each alert, and the status word is its title (after the alert's own
+      // status prefix in the accessible name).
+      await expect(
+        canvas.getAllByRole('heading', {
+          name: (name) => name.endsWith(text.status[status].word),
+        }),
+      ).toHaveLength(2)
     }
   },
 }

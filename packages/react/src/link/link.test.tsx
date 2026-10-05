@@ -196,16 +196,17 @@ describe('new tab', () => {
       .toHaveAttribute('rel', 'help')
   })
 
-  test('warns in development when a target="_blank" link has no notice', async () => {
+  // Maintainer decision 2026-10-05 (Plan 0045): no dev warning and no type error. The docs say a
+  // link that opens a new tab must say so (WCAG 3.2.5, G201).
+  test('a target="_blank" link without a notice still gets rel and no dev warning', async () => {
     await render(
       <Link.Root href="https://www.digg.se/" target="_blank">
         Digg
       </Link.Root>,
     )
-    await expect.element(page.getByRole('link', { name: 'Digg' })).toBeVisible()
-    expect(consoleWarn).toHaveBeenCalledTimes(1)
-    expect(consoleWarn.mock.calls[0]?.[0]).toContain('NewTabNotice')
-    expect(consoleWarn.mock.calls[0]?.[0]).toContain('"Digg"')
+    const link = page.getByRole('link', { name: 'Digg' })
+    await expect.element(link).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
 
@@ -389,7 +390,7 @@ describe('router link', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('a render element with target="_blank" and no notice gets the dev warning', async () => {
+  test('a render element with target="_blank" and no notice gets rel and no dev warning', async () => {
     const newTabAnchor = createElement('a', { target: '_blank' })
     await render(
       <Link.Root render={newTabAnchor} href="https://www.digg.se/">
@@ -398,8 +399,7 @@ describe('router link', () => {
     )
     const link = page.getByRole('link', { name: 'Digg' })
     await expect.element(link).toHaveAttribute('rel', 'noopener noreferrer')
-    expect(consoleWarn).toHaveBeenCalledTimes(1)
-    expect(consoleWarn.mock.calls[0]?.[0]).toContain('NewTabNotice')
+    expect(consoleWarn).not.toHaveBeenCalled()
   })
 
   test('render with a plain <a> opts out of the router', async () => {

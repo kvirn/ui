@@ -13,7 +13,8 @@ import type { FixtureLocale } from './foundations.fixture.tsx'
 import { caseNumberSample, fixtureLocaleOf } from './typography-helpers.tsx'
 
 // Foundation/Typography (docs/design/foundations-and-prose.md §6.6): every type role, rendered
-// in its own tokens and with its values read live from the page, then the font families, the
+// in its own tokens and with its values read live from the page, the six heading levels in
+// prose, then the font families, the
 // glyphs a font must cover and the tabular figures, one story each. The samples are fixture
 // text in the toolbar locale; the pages around them are English maintainer text.
 
@@ -44,6 +45,24 @@ const typeRoles: readonly TypeRole[] = [
     label: 'heading-3',
     family: 'heading',
     sample: (text) => text.attach.heading,
+  },
+  {
+    role: 'heading-4',
+    label: 'heading-4',
+    family: 'heading',
+    sample: (text) => text.paper.heading,
+  },
+  {
+    role: 'heading-5',
+    label: 'heading-5',
+    family: 'heading',
+    sample: (text) => text.send.heading,
+  },
+  {
+    role: 'heading-6',
+    label: 'heading-6',
+    family: 'heading',
+    sample: (text) => text.times.heading,
   },
   { role: 'lead', label: 'lead', sample: (text) => text.how.quoteSteps[0] },
   { role: 'body-large', label: 'body-large', sample: (text) => text.how.quoteSteps[1] },
@@ -399,10 +418,48 @@ function TypeRolesPage({ locale }: { locale: FixtureLocale }): ReactNode {
           {lang === undefined
             ? null
             : 'This locale has no translated fixture yet, so they are in English.'}{' '}
-          <code>lead</code> is only for the lead paragraph of large prose.
+          <code>lead</code> is only for the lead paragraph of large prose. Below 40rem{' '}
+          <code>display</code>, <code>heading-1</code>, <code>heading-2</code> and <code>lead</code>{' '}
+          step down; <code>heading-3</code> to <code>heading-6</code> and the body roles never do.
+          The Heading levels story shows <code>h1</code> to <code>h6</code> together.
         </p>
         <TypeRolesTable locale={locale} roles={roles} />
       </div>
+    </FoundationPage>
+  )
+}
+
+/**
+ * The six heading levels as an adopter writes them: plain `h1` to `h6` in prose, each level in
+ * turn. The article is a self-contained sample with its own h1, so it is not a skipped level.
+ */
+function HeadingLevelsPage({ locale }: { locale: FixtureLocale }): ReactNode {
+  const { text, lang } = articleFor(locale)
+  const sampleLang = lang ?? locale
+  return (
+    <FoundationPage title="Heading levels">
+      <p>
+        Prose styles <code>h1</code> to <code>h6</code> with the type roles <code>heading-1</code>{' '}
+        to <code>heading-6</code>, and the Heading component does the same through its level. The
+        values are in the Type roles table. <code>heading-4</code> to <code>heading-6</code> stay at
+        16px, because essential content is never smaller. They are told apart by weight and
+        tracking, so stop at <code>h3</code> in text a resident reads where you can, and never pick
+        a level for its look: set the type role with <code>size</code> instead.
+      </p>
+      <article className="kv-prose" lang={sampleLang}>
+        <h1>{text.title}</h1>
+        <p>{text.lead}</p>
+        <h2>{text.who.heading}</h2>
+        <p>{text.who.intro}</p>
+        <h3>{text.what.heading}</h3>
+        <p>{text.what.intro}</p>
+        <h4>{text.paper.heading}</h4>
+        <p>{text.paper.text}</p>
+        <h5>{text.send.heading}</h5>
+        <p>{text.send.address.join(', ')}</p>
+        <h6>{text.times.heading}</h6>
+        <p>{text.times.intro}</p>
+      </article>
     </FoundationPage>
   )
 }
@@ -478,6 +535,19 @@ export const TypeRoles: Story = {
       await expect(within(table).getByRole('rowheader', { name: typeRole.label })).toBeVisible()
     }
     await expect(within(table).getAllByText(text.title)).toHaveLength(2)
+  },
+}
+
+/** The six levels in turn, h1 to h6 in prose, with no level skipped. */
+export const HeadingLevels: Story = {
+  name: 'Heading levels',
+  render: (_args, { globals }) => <HeadingLevelsPage locale={fixtureLocaleOf(globals['locale'])} />,
+  play: async ({ canvas }) => {
+    // The sample has every level from 1 to 6, so the outline never skips one.
+    const article = canvas.getByRole('article')
+    for (const level of [1, 2, 3, 4, 5, 6]) {
+      await expect(within(article).getAllByRole('heading', { level })).toHaveLength(1)
+    }
   },
 }
 

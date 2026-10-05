@@ -14,6 +14,21 @@ const meta = {
   args: { level: 2, children: 'Kontakta oss' },
   argTypes: {
     level: { control: 'inline-radio', options: [1, 2, 3, 4, 5, 6] },
+    size: {
+      control: 'select',
+      options: [
+        undefined,
+        'display',
+        'heading-1',
+        'heading-2',
+        'heading-3',
+        'heading-4',
+        'heading-5',
+        'heading-6',
+      ],
+      description:
+        'The look, apart from the level: a type role. Without it each level looks like the role of its number (`level={4}` is `heading-4`). Sets the modifier class `kv-heading--<size>`.',
+    },
     render: { control: false },
   },
   parameters: {
@@ -32,7 +47,7 @@ export const Default: Story = {
   },
 }
 
-// The six sizes, for the Sizes, RightToLeft and ForcedColors stories: the same markup, so a reader
+// The sizes, display and heading-1 to heading-6, for the Sizes, RightToLeft and ForcedColors stories: the same markup, so a reader
 // of any of them sees the real Headings.
 const renderSizes: NonNullable<Story['render']> = () => (
   <>
@@ -51,7 +66,9 @@ const renderSizes: NonNullable<Story['render']> = () => (
     <Heading level={3} size="heading-2">
       heading-2 on an h3
     </Heading>
-    <Heading level={4}>h4 to h6: body size, heading-3 weight</Heading>
+    <Heading level={4}>heading-4 (h4)</Heading>
+    <Heading level={5}>heading-5 (h5)</Heading>
+    <Heading level={6}>heading-6 (h6)</Heading>
   </>
 )
 
@@ -64,7 +81,7 @@ const inColumn: NonNullable<Story['decorators']> = [
   ),
 ]
 
-/** The level is the outline and `size` is the look: an `h3` set as heading-2, an `h1` as display. */
+/** The level is the outline and `size` is the look: an `h3` set as heading-2, an `h1` as display. Each level has its own size by default, h1 to h6. */
 export const Sizes: Story = {
   decorators: inColumn,
   render: renderSizes,
@@ -76,18 +93,22 @@ export const Sizes: Story = {
   },
 }
 
-/** An outline: one `h1`, then `h2` and `h3` without skipping a level. */
+/** An outline with all six levels: one `h1`, then each level in turn without skipping one. */
 export const Outline: Story = {
   render: () => (
     <div className="kv-prose">
       <Heading level={1}>Tjänster</Heading>
       <Heading level={2}>Avfall och återvinning</Heading>
       <Heading level={3}>Sophämtning</Heading>
+      <Heading level={4}>Öppettider</Heading>
+      <Heading level={5}>Helger</Heading>
+      <Heading level={6}>Midsommarafton</Heading>
       <Heading level={3}>Återvinningscentral</Heading>
     </div>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('heading')).toHaveLength(4)
+    await expect(canvas.getAllByRole('heading')).toHaveLength(7)
+    await expect(canvas.getByRole('heading', { level: 6, name: 'Midsommarafton' })).toBeVisible()
     await expect(canvas.getByRole('heading', { level: 1 })).toBeVisible()
   },
 }

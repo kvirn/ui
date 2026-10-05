@@ -201,38 +201,6 @@ test.describe('Rich text editor keyboard contract', () => {
     await focusIn(tabStop(page))
   })
 
-  test('Escape then Tab leaves the editor from a list item', async ({ page }) => {
-    await openStory(page)
-    await caretAtEndOf(page, 'Lån')
-    await page.keyboard.press('Escape')
-    await page.keyboard.press('Tab')
-    await focusIn(control(page, 'Efter'))
-    // Tab would have nested the item: it left instead.
-    await expect(text(page).locator('ul ul')).toHaveCount(0)
-  })
-
-  test('Escape then Shift+Tab goes to the toolbar from a list item', async ({ page }) => {
-    await openStory(page)
-    await caretAtEndOf(page, 'Lån')
-    await page.keyboard.press('Tab')
-    await page.keyboard.press('Escape')
-    await page.keyboard.press('Shift+Tab')
-    await focusIn(tabStop(page))
-    // Shift+Tab would have outdented the nested item: it left instead.
-    await expect(text(page).locator('ul ul li')).toHaveCount(1)
-  })
-
-  test('Escape then another key cancels the way out', async ({ page }) => {
-    await openStory(page)
-    await caretAtEndOf(page, 'Lån')
-    await page.keyboard.press('Escape')
-    await page.keyboard.type('x')
-    await page.keyboard.press('Tab')
-    await expect(text(page).locator('ul ul li')).toHaveCount(1)
-    await expect(text(page)).toContainText('Lånx')
-    await focusIn(text(page))
-  })
-
   test('Alt+F10 moves focus to the toolbar', async ({ page }) => {
     await openStory(page)
     await text(page).getByText('Biblioteket har öppet', { exact: false }).click()
@@ -475,13 +443,8 @@ test.describe('Rich text editor display and axe', () => {
     })
   }
 
-  test('the keyboard instruction is visible under the box, and a read-only editor has none', async ({
-    page,
-  }) => {
-    await openStory(page)
-    await expect(page.getByText('Lämna textfältet med Esc och sedan Tabb.')).toBeVisible()
+  test('a read-only editor has no toolbar', async ({ page }) => {
     await openStory(page, 'read-only')
-    await expect(page.getByText('Lämna textfältet')).toHaveCount(0)
     await expect(toolbar(page)).toHaveCount(0)
   })
 

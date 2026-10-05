@@ -56,7 +56,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** On its own, a link has the link colour and an underline. */
+/** On its own, a link has the link colour, and an underline on hover. */
 export const Default: Story = {
   play: async ({ canvas }) => {
     const link = canvas.getByRole('link', { name: 'Ansök om bygglov' })
@@ -98,7 +98,7 @@ export const Keyboard: Story = {
   ),
 }
 
-/** In a sentence, a link is told apart by its underline, not colour alone (1.4.1). */
+/** In a sentence, a link is told apart by 3:1 contrast with the text around it and an underline on hover (1.4.1). */
 export const InRunningText: Story = {
   render: () => (
     <p>
@@ -210,7 +210,11 @@ export const ServiceLongFinnishText: Story = {
   },
 }
 
-/** `target="_blank"` with a visible NewTabNotice, in the provider's language. */
+/**
+ * `target="_blank"` with a visible NewTabNotice, in the provider's language. A link that opens a
+ * new window or tab must say so: that is a WCAG requirement (3.2.5, Level AAA; technique G201). Link doesn't check it
+ * for you, so there is no type error and no warning when the notice is missing.
+ */
 export const NewTab: Story = {
   args: {
     href: 'https://www.digg.se/',

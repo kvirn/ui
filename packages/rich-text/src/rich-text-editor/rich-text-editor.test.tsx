@@ -10,7 +10,6 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/tes
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
-import { defaultExtensions } from '../extensions/default-extensions.ts'
 import { useRichTextEditorContext } from './rich-text-editor-context.ts'
 import { RichTextEditor } from './rich-text-editor.tsx'
 import { useRichTextEditor } from './use-rich-text-editor.ts'
@@ -38,16 +37,6 @@ const kvirnWarnings = () =>
 const status = () => page.getByRole('status')
 const textbox = (name = 'Beskriv ärendet') => page.getByRole('textbox', { name })
 
-// Tiptap reads the extensions when it creates the editor: keep them stable, as the docs say.
-const withoutTables = defaultExtensions({ table: false })
-const withoutLists = defaultExtensions({
-  starterKit: { bulletList: false, orderedList: false, listItem: false, listKeymap: false },
-})
-const withoutBoth = defaultExtensions({
-  table: false,
-  starterKit: { bulletList: false, orderedList: false, listItem: false, listKeymap: false },
-})
-
 function inSwedish(children: ReactNode) {
   return (
     <KvirnProvider locale="sv" messages={sv}>
@@ -71,8 +60,6 @@ function formValue(container: Element, name: string): FormDataEntryValue | null 
   }
   return new FormData(form).get(name)
 }
-
-const keyboardHintText = sv.richText.keyboardHintListsAndTables
 
 describe('in a Field', () => {
   function Described() {
@@ -106,13 +93,12 @@ describe('in a Field', () => {
     expect(kvirnWarnings()).toEqual([])
   })
 
-  test('it is described by the description, the keyboard instruction, the help text and the error, in that order', async () => {
+  test('it is described by the description, the help text and the error, in that order', async () => {
     await render(<Described />)
     const box = textbox()
     await expect.element(box).toBeInTheDocument()
     expect(describedByTexts(box.element())).toEqual([
       'Skriv så att vi förstår vad som hänt.',
-      keyboardHintText,
       'Du kan använda rubriker och listor.',
       expect.stringContaining('Beskriv ärendet'),
     ])
@@ -146,8 +132,7 @@ describe('in a Field', () => {
     await expect.element(box).toHaveAttribute('contenteditable', 'false')
     await expect.element(box).not.toHaveAttribute('tabindex')
     expect(formValue(container, 'description')).toBeNull()
-    // No instruction: Tab works as everywhere else.
-    expect(container.querySelector('.kv-rich-text-keyboard-hint')).toBeNull()
+    // Not editable: Tab works as everywhere else.
     await userEvent.click(page.getByRole('button', { name: 'Före' }))
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
@@ -168,7 +153,7 @@ describe('outside a Field', () => {
     )
     const box = textbox('Nyhetstext')
     await expect.element(box).toBeInTheDocument()
-    expect(describedByTexts(box.element())).toEqual(['Fler ord.', keyboardHintText])
+    expect(describedByTexts(box.element())).toEqual(['Fler ord.'])
     expect(kvirnWarnings()).toEqual([])
   })
 
@@ -194,85 +179,6 @@ describe('outside a Field', () => {
     await vi.waitFor(() => {
       expect(kvirnWarnings().join('\n')).toContain('has no Field.Label')
     })
-  })
-})
-
-describe('the keyboard instruction', () => {
-  test('is under the box, always visible, and says how to leave and what Tab does in lists and tables', async () => {
-    const { container } = await render(
-      inSwedish(
-        <RichTextEditor.Root>
-          <RichTextEditor.Content aria-label="Text" />
-        </RichTextEditor.Root>,
-      ),
-    )
-    await expect.element(page.getByText(keyboardHintText)).toBeVisible()
-    const box = container.querySelector('.kv-rich-text')
-    expect(box?.nextElementSibling?.textContent).toBe(keyboardHintText)
-  })
-
-  test.each([
-    ['lists, when tables are off', withoutTables, sv.richText.keyboardHintLists],
-    ['tables, when lists are off', withoutLists, sv.richText.keyboardHintTables],
-  ])('names only what is on: %s', async (_name, extensions, text) => {
-    await render(
-      inSwedish(
-        <RichTextEditor.Root extensions={extensions}>
-          <RichTextEditor.Content aria-label="Text" />
-        </RichTextEditor.Root>,
-      ),
-    )
-    await expect.element(page.getByText(text)).toBeVisible()
-  })
-
-  test('is not rendered when neither lists nor tables are on, because Tab then always leaves', async () => {
-    await render(
-      inSwedish(
-        <RichTextEditor.Root extensions={withoutBoth}>
-          <RichTextEditor.Content aria-label="Text" />
-        </RichTextEditor.Root>,
-      ),
-    )
-    await expect.element(textbox('Text')).toBeInTheDocument()
-    await expect
-      .element(page.getByText('Lämna textfältet', { exact: false }))
-      .not.toBeInTheDocument()
-  })
-
-  test('is left out of a read-only editor, where Tab is not used', async () => {
-    await render(
-      inSwedish(
-        <RichTextEditor.Root readOnly defaultValue="<p>Sparad text</p>">
-          <RichTextEditor.Content aria-label="Text" />
-        </RichTextEditor.Root>,
-      ),
-    )
-    await expect.element(textbox('Text')).toBeInTheDocument()
-    await expect
-      .element(page.getByText('Lämna textfältet', { exact: false }))
-      .not.toBeInTheDocument()
-  })
-
-  test('keyboardHint={false} lets you place the instruction yourself, and it still describes the text', async () => {
-    await render(
-      inSwedish(
-        <>
-          <RichTextEditor.Root keyboardHint={false}>
-            <RichTextEditor.Content aria-label="Text" />
-          </RichTextEditor.Root>
-          <RichTextEditor.Root keyboardHint={false}>
-            <RichTextEditor.Content aria-label="Egen plats" />
-            <RichTextEditor.KeyboardHint />
-          </RichTextEditor.Root>
-        </>,
-      ),
-    )
-    const first = textbox('Text')
-    const second = textbox('Egen plats')
-    await expect.element(first).toBeInTheDocument()
-    await expect.element(second).toBeInTheDocument()
-    expect(first.element().hasAttribute('aria-describedby')).toBe(false)
-    expect(describedByTexts(second.element())).toEqual([keyboardHintText])
   })
 })
 
@@ -547,7 +453,6 @@ describe('character count', () => {
     await expect.element(page.getByText('Du har 17 tecken kvar.')).toBeVisible()
     await userEvent.keyboard('a'.repeat(20))
     await expect.element(page.getByText('Du har 3 tecken för mycket.')).toBeVisible()
-    expect(describedByTexts(box.element())).toContain(keyboardHintText)
     expect(describedByTexts(box.element()).some((text) => text.includes('tecken för mycket'))).toBe(
       true,
     )
@@ -604,14 +509,13 @@ describe('the hook and the parts', () => {
     })
   })
 
-  test('renders on the server without an editor, with the instruction already in place', () => {
+  test('renders on the server without an editor', () => {
     const html = renderToString(
       <RichTextEditor.Root>
         <RichTextEditor.Content aria-label="Text" />
       </RichTextEditor.Root>,
     )
     expect(html).not.toContain('contenteditable')
-    expect(html).toContain('To leave the text field')
   })
 
   test('part classes, data-* state, ref, and the class of the editable text', async () => {

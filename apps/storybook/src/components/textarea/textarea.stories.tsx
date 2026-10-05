@@ -95,12 +95,6 @@ const meta = {
       control: 'boolean',
       description: 'Native spell checking. On by default in a text box.',
     },
-    dir: {
-      control: 'select',
-      options: [undefined, 'auto', 'ltr', 'rtl'],
-      description:
-        'Text direction. `auto` follows the first strong character, so a resident writing Arabic gets right-to-left text on a left-to-right page. Not the default.',
-    },
     placeholder: {
       control: 'text',
       description: 'Native placeholder. Never the label (3.3.2): put examples in the description.',

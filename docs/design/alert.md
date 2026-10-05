@@ -431,7 +431,7 @@ Details:
 ```md
 This component has no focusable parts and handles no keys.
 
-An Alert is never a Tab stop of its own. Links and buttons in its Body and Actions keep their own keys (see `button.a11y.md` and `link.a11y.md`). Dismissing isn't supported in this version.
+An Alert is never a Tab stop of its own. Links and buttons in its Body and Actions keep their own keys (see `button.a11y.md` and `link.a11y.md`). The optional close button (§7.5) is the one part with a key of its own: it is a native button, so Enter and Space press it.
 
 | Key       | Context                                         | Action                                         | Test                                                                 |
 | --------- | ----------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------- |
@@ -441,16 +441,17 @@ An Alert is never a Tab stop of its own. Links and buttons in its Body and Actio
 | –         | Every root                                      | No `tabindex` is rendered by default           | `alert.test.tsx › rendering › adds no role, live region or tabindex` |
 ```
 
-No `Keyboard` story is needed (no focusable part of its own), as for Section. The e2e rows run on the `WithActions` and `FocusTarget` stories.
+The optional `Alert.Close` is a focusable part, so there is a `Keyboard` story (the dismissible example). The e2e rows run on the `Keyboard`, `WithActions` and `FocusTarget` stories.
 
-### 7.5 Dismissing: not in v1
+### 7.5 Dismissing: optional `Alert.Close`
 
-**Decision: not dismissible in this version.**
+**Decision (maintainer, 2026-10-05, Plan 0045, reverses D12 of v1): dismissing is optional.** `Alert.Close` is a native `<button type="button">` with the built-in `close` icon (decorative), named by `alert.close` ("Stäng meddelandet", all six locales, overridable per provider, root and button). It is `kv-alert-close`, a quiet icon button at the control size (44px, 32px compact, always at least 24px, 2.5.8), in the last column of the first row, at the inline end, and it is last in the DOM.
 
-- Errors and warnings must not be dismissible: the problem doesn't go away when the message does, and a resident under stress may close the one thing that told them what to do.
-- A close button adds a focus decision (where focus goes when the box is gone: never to `body`), a persistence decision (does it come back on the next page?), and an icon-only button with a name and, from M2, a tooltip. That's worth a decision of its own when there's a real case.
-- Designsystemet's guidance agrees: give the user actions that both resolve the message and move them on, instead of a generic close icon. The `Actions` part is for that.
-- Which cases need it later stays open (§11, open question 1).
+- The Alert owns no state: the consumer removes it in `onClick`. Persistence (does it come back on the next page?) is the consumer's decision, and nothing is written to storage.
+- **Focus decision (2.4.3):** the consumer moves focus in the same handler, to the heading of the part of the page the alert belonged to (`tabIndex={-1}`), to the control that caused the alert, or to a control that brings the message back. Never to `body`. The `Keyboard` story shows it.
+- Dismissing never changes the politeness: it announces nothing, and `announce` never reads the button.
+- Guidance: offer it only where the user can safely be done with the message (a tip, an info, a saved confirmation). Errors and warnings the user still has to act on should not be dismissible: the problem doesn't go away when the message does, and a resident under stress may close the one thing that told them what to do. Designsystemet's guidance is to give actions that resolve the message instead of a generic close icon. This stays guidance, not a rule in code.
+- From M2 the icon-only button may get a tooltip (Plan 0037); its name is already the accessible name.
 
 ### 7.6 WCAG success criteria of note
 
@@ -539,7 +540,7 @@ and add two rows after it:
 - **Colors table, Use column:** `primary` adds "info alert bar and icon"; `primary-subtle` "… selected rows, info alerts"; `danger-subtle` "Danger alerts, including the error summary"; `success-subtle` "Success alerts"; `warning-subtle` "Warning alerts". The `danger`, `success` and `warning` rows add "alert bar and icon".
 - **Elevation:** one sentence: an alert isn't a level. It's a tinted block in the content at the level of whatever it sits on, with no shadow, and its edge is its bar.
 - **Shapes, radii:** `sm` (4px) adds "alerts". **Lines:** "the 4px indicator bar (`--kv-indicator-width`) marks the current navigation item, a blockquote and an alert".
-- **Components, Alerts bullet,** replaced by: "**Alerts** are status messages in the content. Use `Alert.Info`, `.Success`, `.Warning` or `.Danger`: each renders its status class (`kv-alert--info|success|warning|danger`), its icon (square, circle, triangle, octagon) and a status word at the start of the title (visually hidden, from i18n), so colour, icon and word always agree. The look is only CSS on the class: the `-subtle` background and a 4px inline-start bar in the status colour, through `--kv-alert-background` and `--kv-alert-accent`. The `sm` radius, 16px padding, a sans title at 18px weight 600, no shadow. `Alert.Root` is the plain base, with no status, for your own design: you bring the icon and the word. Never colour alone. The title is a heading at the consumer's level, or a `<p>` for one sentence. Not dismissible. Announced only with `announce`, through the Announcer. The design spec is `docs/design/alert.md`."
+- **Components, Alerts bullet,** replaced by: "**Alerts** are status messages in the content. Use `Alert.Info`, `.Success`, `.Warning` or `.Danger`: each renders its status class (`kv-alert--info|success|warning|danger`), its icon (square, circle, triangle, octagon) and a status word at the start of the title (visually hidden, from i18n), so colour, icon and word always agree. The look is only CSS on the class: the `-subtle` background and a 4px inline-start bar in the status colour, through `--kv-alert-background` and `--kv-alert-accent`. The `sm` radius, 16px padding, a sans title at 18px weight 600, no shadow. `Alert.Root` is the plain base, with no status, for your own design: you bring the icon and the word. Never colour alone. The title is a heading at the consumer's level, or a `<p>` for one sentence. Dismissing is optional (`Alert.Close`, §7.5). Announced only with `announce`, through the Announcer. The design spec is `docs/design/alert.md`."
 - **Components, Error summary bullet:** "An `Alert.Danger` at the top of `main` with the heading 'Det finns ett problem' and a list of links to each invalid field, worded like the field errors. It receives focus on submit and isn't announced." (Replaces "`danger` border with `danger-subtle` background".)
 - **Components, Cards bullet:** "status belongs in an alert" links to the Alert. **Components intro:** list Alert and this spec.
 - **Typography, Families:** one clause: an alert's title uses the body family (it's a message label, not a section heading).
@@ -574,7 +575,7 @@ and add two rows after it:
 4. **The status words:** four i18n keys, visually hidden in the theme (§4.1, §6.3).
 5. **No role and no live region on the box;** `announce` opts in to one Announcer call on mount, on every root, with no per-status default (§7.2), with the 4.1.3 risk and the AT validation.
 6. **`variant`** is the only name for a status prop, if one is ever added (later sugar on `Alert.Root`); the hook's `variant` option in v1 (§6.1; open question 2).
-7. **Not dismissible** in v1 (§7.5).
+7. **Dismissing is optional** (`Alert.Close`, §7.5; was "not dismissible" in v1).
 8. **The error summary** is a block built on `Alert.Danger`, with the danger bar, and moves focus instead of announcing (§3.3).
 
 ## 11. Decisions and open questions
@@ -592,9 +593,9 @@ and add two rows after it:
 - **D9. Toast (M3) reuses the Alert look,** the status words and the icons.
 - **D10. The landmark option is documented:** `render={<section aria-labelledby>}` for one site-wide alert only.
 - **D11. Inset text** isn't an Alert, and gets no class now: a paragraph or prose's `blockquote`. Revisit if adopters ask.
-- **D12. Not dismissible in v1** (§7.5).
+- **D12. Dismissing is optional** (§7.5). Superseded: v1 had no close button; the maintainer added an optional one on 2026-10-05 (Plan 0045).
 
 ### Open
 
-1. **Dismissible alerts later:** which real cases need them (a staff "dismiss this tip", a "seen it" info)? Errors and warnings never.
+1. **Dismissible alerts:** `Alert.Close` exists. Which real cases use it, and whether errors and warnings ever should (guidance says no)? Ask in the usability test.
 2. **The hook's `variant` option in v1** (§6.1). The components take no status prop, but `useAlert` needs a way to give hook users the matching class, icon and word together, or they lose the agreement guarantee. Keep it as a hook option, or ship a separate exported table instead?

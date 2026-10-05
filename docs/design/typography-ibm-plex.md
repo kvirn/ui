@@ -48,7 +48,7 @@ The maintainer has decided (2026-10-01): IBM Plex Sans for body text, labels and
 | Prose `h1`–`h6` (`theme.css`, the existing heading rule, new fallback only)                                                                                                       | Body, lead and all body roles, links in body text, `strong`                                                        |
 | The `display` role, including the docs home page's `.docs-display`. It's an `h1` inside `.docs-article.kv-prose`, so it inherits the family from prose. Check it renders in serif | Buttons, labels, form legends, navigation (`.kv-nav`), the docs header and its controls                            |
 | Docs-site page headings (`PageHeading`, `.docs-article > h2/h3`), through prose                                                                                                   | Tables (`th`, `td`, which use `numeric`), `caption`, `figcaption`                                                  |
-| Storybook Foundation page headings (`.kv-story-foundation.kv-prose`), and the Type roles specimens for display and heading-1 to heading-3                                         | Storybook swatch titles (`.kv-story-card-title` is a `<p>`), badges and tags, metadata                             |
+| Storybook Foundation page headings (`.kv-story-foundation.kv-prose`), and the Type roles specimens for display and heading-1 to heading-6                                         | Storybook swatch titles (`.kv-story-card-title` is a `<p>`), badges and tags, metadata                             |
 | Card titles where they are headings inside `kv-prose` (card.md: `h2`, and `h3 > Link`). A link keeps the serif of its heading                                                     | A card header outside `kv-prose` isn't styled by the theme. The consumer uses the heading family if it's a heading |
 
 **Rule:** the serif is for document headings, meaning real `h1`–`h6` elements and the `display` role. Anything users operate or scan as data stays sans. Future component titles (Dialog, Alert, ErrorSummary) follow this rule in their own specs: a heading element gets the serif, and an inline status title stays sans.
@@ -63,7 +63,9 @@ Sizes and weights stay as they are. Changed values are in **bold**.
 | heading-1     | serif  | 1.75rem  | 600    | 1.2                | **0em** (was −0.021)     | normal                            |
 | heading-2     | serif  | 1.375rem | 500    | 1.25               | **0em** (was −0.018)     | normal                            |
 | heading-3     | serif  | 1.125rem | 600    | 1.4                | 0em                      | normal                            |
-| prose h4–h6   | serif  | 1rem     | 600    | body               | 0em                      | normal                            |
+| heading-4     | serif  | 1rem     | 600    | 1.4                | 0em                      | normal                            |
+| heading-5     | serif  | 1rem     | 500    | 1.5                | 0em                      | normal                            |
+| heading-6     | serif  | 1rem     | 500    | 1.5                | 0.03em                   | normal                            |
 | lead          | sans   | 1.25rem  | 400    | 1.5                | 0em                      | **normal** (was cv05, cv08)       |
 | body-large    | sans   | 1.125rem | 400    | 1.6                | 0em                      | **normal**                        |
 | body          | sans   | 1rem     | 400    | 1.5                | 0em                      | **normal**                        |

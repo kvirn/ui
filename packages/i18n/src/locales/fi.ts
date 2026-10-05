@@ -15,6 +15,7 @@ export const fi = {
     successPrefix: 'Valmis:',
     warningPrefix: 'Varoitus:',
     dangerPrefix: 'Virhe:',
+    close: 'Sulje ilmoitus',
   },
   combobox: {
     resultCount: ({ count }, format) =>
@@ -221,12 +222,6 @@ export const fi = {
     deleteColumn: 'Poista sarake',
     deleteTable: 'Poista taulukko',
     headerRow: 'Otsikkorivi',
-    keyboardHintListsAndTables:
-      'Poistu tekstikentästä painamalla Esc ja sitten sarkainta. Luetteloissa sarkain sisentää ja taulukoissa siirtää seuraavaan soluun.',
-    keyboardHintLists:
-      'Poistu tekstikentästä painamalla Esc ja sitten sarkainta. Luetteloissa sarkain sisentää.',
-    keyboardHintTables:
-      'Poistu tekstikentästä painamalla Esc ja sitten sarkainta. Taulukoissa sarkain siirtää seuraavaan soluun.',
     linkAddTitle: 'Lisää linkki',
     linkEditTitle: 'Muokkaa linkkiä',
     linkUrl: 'Verkko-osoite',

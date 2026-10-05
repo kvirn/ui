@@ -35,7 +35,6 @@ Each is a `warnOnce` call (see SKILL.md, Developer warnings). Format of the key 
 | `ButtonGroup`                              | in a `Toolbar.Root` with no `aria-label` or `aria-labelledby` (`button-group-in-toolbar-without-name`)                    |
 | `TextInput`, `Checkbox` and other controls | no label, `aria-label`, `aria-labelledby` or `title`. The text differs inside a Field (add `Field.Label`) and outside one |
 | `OneTimeCode.Input`                        | no accessible name                                                                                                        |
-| `Link`                                     | `target="_blank"` and no `Link.NewTabNotice` inside (once per link text)                                                  |
 | `FileUpload.Trigger`                       | no element with the `triggerTextId`, so the name does not start with the visible text (2.5.3)                             |
 | `Field` / `Fieldset`                       | `invalid` and no `ErrorMessage` rendered (3.3.1, 3.3.3), checked in a layout effect                                       |
 | `Field` / `Fieldset`                       | two `ErrorMessage`s (they share one id)                                                                                   |

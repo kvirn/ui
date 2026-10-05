@@ -179,6 +179,20 @@ export function useDateInput({
           return undefined
         }
         const record = (event: InputEvent) => {
+          // A box holds its own number of digits: the key that would go past it is refused. It is
+          // not the native `maxlength`, which would cut a paste silently (3.3.8).
+          if (
+            event.inputType === 'insertText' &&
+            element.value.length -
+              (element.selectionEnd ?? 0) +
+              (element.selectionStart ?? 0) +
+              (event.data?.length ?? 1) >
+              boxLength[part]
+          ) {
+            event.preventDefault()
+            typing.current = null
+            return
+          }
           typing.current =
             event.inputType === 'insertText' ? { part, lengthBefore: element.value.length } : null
         }

@@ -121,7 +121,7 @@
     --kv-primary-100: #cdd0ff;
     --kv-primary-200: #b3b8ff;
     --kv-primary-300: #a3acff;
-    --kv-primary-400: #828fff;
+    --kv-primary-400: #7784f2;
     --kv-primary-500: #5e6ad2;
     --kv-primary-600: #4f5ac0;
     --kv-primary-700: #434db3;
@@ -299,6 +299,24 @@
     --kv-font-heading-3-line-height: 1.4;
     --kv-font-heading-3-letter-spacing: 0em;
     --kv-font-heading-3-feature-settings: normal;
+    /* heading-4 to heading-6 stay at the body size (16px): essential content is never smaller,
+     * so they are told apart by weight, line height and tracking, not by shrinking. They never
+     * step down on a small screen. Resident-facing text stops at h3 where it can. */
+    --kv-font-heading-4-size: 1rem;
+    --kv-font-heading-4-weight: 600;
+    --kv-font-heading-4-line-height: 1.4;
+    --kv-font-heading-4-letter-spacing: 0em;
+    --kv-font-heading-4-feature-settings: normal;
+    --kv-font-heading-5-size: 1rem;
+    --kv-font-heading-5-weight: 500;
+    --kv-font-heading-5-line-height: 1.5;
+    --kv-font-heading-5-letter-spacing: 0em;
+    --kv-font-heading-5-feature-settings: normal;
+    --kv-font-heading-6-size: 1rem;
+    --kv-font-heading-6-weight: 500;
+    --kv-font-heading-6-line-height: 1.5;
+    --kv-font-heading-6-letter-spacing: 0.03em;
+    --kv-font-heading-6-feature-settings: normal;
     --kv-font-body-large-size: 1.125rem;
     --kv-font-body-large-weight: 400;
     --kv-font-body-large-line-height: 1.6;
@@ -374,7 +392,10 @@
     --kv-duration-slow: 240ms;
     --kv-easing-standard: cubic-bezier(0.2, 0, 0, 1);
 
-    /* Links thicken their underline on hover, a cue that doesn't rely on colour. */
+    /* Links are underlined on hover only, a cue that doesn't rely on colour. The link colour is 3:1
+     * against body text (1.4.1). The contrast themes can't reach that and 7:1 on the canvas too,
+     * so they keep the underline at rest. */
+    --kv-link-decoration-line: none;
     --kv-link-underline-thickness: 1px;
     --kv-link-underline-thickness-hover: 2px;
     --kv-link-underline-offset: 0.15em;
@@ -405,7 +426,7 @@
 
   /* Below 40rem the large roles step down, so a long word or a heading fits a phone:
    * display 32px with no tracking, heading-1 24px, heading-2 20px and lead 18px. Body text and
-   * heading-3 never change. In rem, so they still grow with the browser's text size (1.4.4). */
+   * heading-3 to heading-6 never change. In rem, so they still grow with the browser's text size (1.4.4). */
   @media (width < 40rem) {
     :root {
       --kv-font-display-size: 2rem;
@@ -479,6 +500,7 @@
     --kv-color-primary-subtle: var(--kv-primary-50);
     --kv-color-link: var(--kv-primary-800);
     --kv-color-link-hover: var(--kv-primary-900);
+    --kv-link-decoration-line: underline;
     --kv-color-focus-ring: var(--kv-primary-800);
     --kv-color-danger: var(--kv-danger-700);
     --kv-color-danger-hover: var(--kv-danger-800);
@@ -515,6 +537,7 @@
     --kv-color-primary-subtle: var(--kv-primary-950);
     --kv-color-link: var(--kv-primary-200);
     --kv-color-link-hover: var(--kv-primary-100);
+    --kv-link-decoration-line: underline;
     --kv-color-focus-ring: var(--kv-primary-200);
     --kv-color-danger: var(--kv-danger-200);
     --kv-color-danger-hover: var(--kv-danger-100);
@@ -598,6 +621,7 @@
       --kv-color-primary-subtle: var(--kv-primary-50);
       --kv-color-link: var(--kv-primary-800);
       --kv-color-link-hover: var(--kv-primary-900);
+      --kv-link-decoration-line: underline;
       --kv-color-focus-ring: var(--kv-primary-800);
       --kv-color-danger: var(--kv-danger-700);
       --kv-color-danger-hover: var(--kv-danger-800);
@@ -635,6 +659,7 @@
       --kv-color-primary-subtle: var(--kv-primary-950);
       --kv-color-link: var(--kv-primary-200);
       --kv-color-link-hover: var(--kv-primary-100);
+      --kv-link-decoration-line: underline;
       --kv-color-focus-ring: var(--kv-primary-200);
       --kv-color-danger: var(--kv-danger-200);
       --kv-color-danger-hover: var(--kv-danger-100);
@@ -672,6 +697,8 @@
       --kv-color-text: CanvasText;
       --kv-color-heading: CanvasText;
       --kv-color-text-muted: CanvasText;
+      /* LinkText and CanvasText have no 3:1 guarantee (1.4.1), so links stay underlined. */
+      --kv-link-decoration-line: underline;
       --kv-color-primary: Highlight;
       --kv-color-primary-hover: Highlight;
       --kv-color-on-primary: HighlightText;
@@ -1049,7 +1076,7 @@
   .kv-link {
     border-radius: var(--kv-radius-sm);
     color: var(--kv-color-link);
-    text-decoration-line: underline;
+    text-decoration-line: var(--kv-link-decoration-line);
     text-decoration-thickness: var(--kv-link-underline-thickness);
     text-underline-offset: var(--kv-link-underline-offset);
     /* A wrapped link gets a ring on every line. */
@@ -1059,7 +1086,19 @@
 
   .kv-link:is(:hover, :active) {
     color: var(--kv-color-link-hover);
+    text-decoration-line: underline;
     text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+  }
+
+  /* Grey or red text isn't 3:1 against the link colour (1.4.1), so a link in it keeps its underline. */
+  :is(
+    .kv-prose figcaption,
+    .kv-prose small,
+    .kv-field-help-text,
+    .kv-field-error-message,
+    .kv-character-count
+  ) {
+    --kv-link-decoration-line: underline;
   }
 
   .kv-link:is([data-current], [aria-current]:not([aria-current='false'])) {
@@ -1339,7 +1378,7 @@
   }
 
   /* The other sizes of the typography plugin (sm, xl, 2xl), and max-w-none, by the same
-   * token swap. Headings keep their type roles (DESIGN.md), and h4 to h6 follow the size.
+   * token swap. Headings, h1 to h6, keep their type roles (DESIGN.md) in every size.
    * --small is 14px: for notes and metadata, never for the text a resident must read (DESIGN.md
    * says essential content is never below 16px). --xl and --2xl step down below 40rem, so a
    * long word fits a phone. */
@@ -1492,14 +1531,34 @@
         font-feature-settings: var(--kv-font-heading-3-feature-settings);
       }
 
-      /* Body size in the heading-3 weight. In the large size h4 looks like h3, so resident
-       * content should stop at h3. */
-      &:where(h4, h5, h6) {
+      /* h4 to h6 have their own roles and keep them in every prose size, as h1 to h3 do. They
+       * stay at 1rem, so they are told apart by weight and tracking. In the large sizes they are
+       * smaller than the body text, so resident content stops at h3. */
+      &:where(h4) {
         margin-block: var(--kv-space-6) var(--kv-space-2);
-        font-size: var(--kv-prose-font-size);
-        font-weight: var(--kv-font-heading-3-weight);
-        line-height: var(--kv-prose-line-height);
-        letter-spacing: 0em;
+        font-size: var(--kv-font-heading-4-size);
+        font-weight: var(--kv-font-heading-4-weight);
+        line-height: var(--kv-font-heading-4-line-height);
+        letter-spacing: var(--kv-font-heading-4-letter-spacing);
+        font-feature-settings: var(--kv-font-heading-4-feature-settings);
+      }
+
+      &:where(h5) {
+        margin-block: var(--kv-space-6) var(--kv-space-2);
+        font-size: var(--kv-font-heading-5-size);
+        font-weight: var(--kv-font-heading-5-weight);
+        line-height: var(--kv-font-heading-5-line-height);
+        letter-spacing: var(--kv-font-heading-5-letter-spacing);
+        font-feature-settings: var(--kv-font-heading-5-feature-settings);
+      }
+
+      &:where(h6) {
+        margin-block: var(--kv-space-6) var(--kv-space-2);
+        font-size: var(--kv-font-heading-6-size);
+        font-weight: var(--kv-font-heading-6-weight);
+        line-height: var(--kv-font-heading-6-line-height);
+        letter-spacing: var(--kv-font-heading-6-letter-spacing);
+        font-feature-settings: var(--kv-font-heading-6-feature-settings);
       }
 
       &:where(p) {
@@ -1518,7 +1577,7 @@
       &:where(a) {
         border-radius: var(--kv-radius-sm);
         color: var(--kv-prose-color-links);
-        text-decoration-line: underline;
+        text-decoration-line: var(--kv-link-decoration-line);
         text-decoration-thickness: var(--kv-link-underline-thickness);
         text-underline-offset: var(--kv-link-underline-offset);
         -webkit-box-decoration-break: clone;
@@ -1527,6 +1586,7 @@
 
       &:where(a:hover, a:active) {
         color: var(--kv-prose-color-links-hover);
+        text-decoration-line: underline;
         text-decoration-thickness: var(--kv-link-underline-thickness-hover);
       }
 
@@ -1886,19 +1946,20 @@
   /* 9a. Heading ------------------------------------------------------------------------------
    * <Heading level={2}> renders <h2 class="kv-heading kv-heading--heading-2">: the level is the
    * page's outline, and the modifier is the look. Choose the look apart from the level with
-   * kv-heading--display, --heading-1, --heading-2 or --heading-3, the type roles of the same names
-   * (a card's title can be an h3 set as heading-2, and a page's h1 can be display). Without a
-   * modifier, a heading looks like prose's h4 to h6: the body size in the heading-3 weight. The
-   * Heading component adds the modifier for levels 1 to 3. It works in prose and outside it.
+   * kv-heading--display or --heading-1 to --heading-6, the type roles of the same names (a
+   * card's title can be an h3 set as heading-2, and a page's h1 can be display). The Heading
+   * component adds the modifier of its level, so all six levels have a look, and a bare
+   * kv-heading (your own element) looks like heading-4. It works in prose and outside it.
    * Only the type is set: margins come from kv-prose or from you. Zero specificity, after prose,
    * so it wins over prose's rule for the element and your own CSS wins over it. */
   :where(.kv-heading) {
     color: var(--kv-prose-color-headings, var(--kv-color-heading));
     font-family: var(--kv-font-family-heading, var(--kv-font-family-serif));
-    font-size: var(--kv-prose-font-size);
-    font-weight: var(--kv-font-heading-3-weight);
-    line-height: var(--kv-prose-line-height);
-    letter-spacing: 0em;
+    font-size: var(--kv-font-heading-4-size);
+    font-weight: var(--kv-font-heading-4-weight);
+    line-height: var(--kv-font-heading-4-line-height);
+    letter-spacing: var(--kv-font-heading-4-letter-spacing);
+    font-feature-settings: var(--kv-font-heading-4-feature-settings);
     /* Like prose: a long compound ("boendeparkeringstillstånd", 25 letters at 24px) splits at
      * the hyphenation points, then wraps anywhere, so a heading outside prose never scrolls a
      * 320px page sideways (1.4.10). */
@@ -1940,6 +2001,30 @@
     line-height: var(--kv-font-heading-3-line-height);
     letter-spacing: var(--kv-font-heading-3-letter-spacing);
     font-feature-settings: var(--kv-font-heading-3-feature-settings);
+  }
+
+  :where(.kv-heading--heading-4) {
+    font-size: var(--kv-font-heading-4-size);
+    font-weight: var(--kv-font-heading-4-weight);
+    line-height: var(--kv-font-heading-4-line-height);
+    letter-spacing: var(--kv-font-heading-4-letter-spacing);
+    font-feature-settings: var(--kv-font-heading-4-feature-settings);
+  }
+
+  :where(.kv-heading--heading-5) {
+    font-size: var(--kv-font-heading-5-size);
+    font-weight: var(--kv-font-heading-5-weight);
+    line-height: var(--kv-font-heading-5-line-height);
+    letter-spacing: var(--kv-font-heading-5-letter-spacing);
+    font-feature-settings: var(--kv-font-heading-5-feature-settings);
+  }
+
+  :where(.kv-heading--heading-6) {
+    font-size: var(--kv-font-heading-6-size);
+    font-weight: var(--kv-font-heading-6-weight);
+    line-height: var(--kv-font-heading-6-line-height);
+    letter-spacing: var(--kv-font-heading-6-letter-spacing);
+    font-feature-settings: var(--kv-font-heading-6-feature-settings);
   }
 
   /* 9b. Kbd -----------------------------------------------------------------------------------
@@ -2400,8 +2485,9 @@
    * <Alert.Info|Success|Warning|Danger> render class="kv-alert" plus a status class,
    * kv-alert--info|success|warning|danger, an icon and a visually hidden status word.
    * <Alert.Root> renders kv-alert only. Parts: kv-alert-icon,
-   * kv-alert-title, kv-alert-status, kv-alert-body and
-   * kv-alert-actions. Design spec: docs/design/alert.md.
+   * kv-alert-title, kv-alert-status, kv-alert-body,
+   * kv-alert-actions and the optional kv-alert-close (the dismiss button, placed at the inline end of the
+   * first line wherever it sits in the DOM). Design spec: docs/design/alert.md.
    *
    * The look of a status is only CSS on its class, through two tokens. Nothing in the
    * components knows about colour, so you restyle with the tokens, or drop the class:
@@ -2415,9 +2501,9 @@
    *   }
    *
    * A bare .kv-alert is a neutral surface with a border-control bar, so your own status
-   * class only has to set the two tokens. An alert is never interactive, never moves and
+   * class only has to set the two tokens. The box is never interactive, never moves and
    * never clips: no hover, no shadow, no transition, no overflow, no fixed size (1.4.12,
-   * 2.4.11, 2.4.13). It is a prose boundary like a card: nothing inside is prose-styled unless
+   * 2.4.11, 2.4.13). Only its close button is interactive. It is a prose boundary like a card: nothing inside is prose-styled unless
    * kv-prose sits between.
    */
   :root {
@@ -2498,8 +2584,24 @@
     column-gap: var(--kv-alert-gap);
   }
 
-  .kv-alert:has(> .kv-alert-icon) > :not(.kv-alert-icon) {
+  .kv-alert:has(> .kv-alert-icon) > :not(.kv-alert-icon, .kv-alert-close) {
     grid-column: 2;
+  }
+
+  /* With a close button, a last column of its own: [icon] content close. Without an icon, the
+   * content is the first column. The button sits in the last column of the first row, wherever
+   * it is in the DOM. */
+  .kv-alert:has(> .kv-alert-close) {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--kv-alert-gap);
+  }
+
+  .kv-alert:has(> .kv-alert-icon):has(> .kv-alert-close) {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .kv-alert:has(> .kv-alert-close):not(:has(> .kv-alert-icon)) > :not(.kv-alert-close) {
+    grid-column: 1;
   }
 
   /* Centred on the title's first line: (title line height - icon size) / 2. The icon is 1.25em
@@ -2581,6 +2683,55 @@
     }
   }
 
+  /* The optional close button (Alert.Close): a quiet icon button at the control size (44px, 32px
+   * compact), so the target is never under 24px (2.5.8). It is centred on the title's first line with
+   * a negative block margin, so it reaches into the padding and the first row keeps the title's
+   * height. The icon is the decorative close icon, drawn in currentColor. */
+  .kv-alert > .kv-alert-close {
+    grid-column: -2 / -1;
+    grid-row: 1;
+    align-self: start;
+    display: inline-grid;
+    place-items: center;
+    box-sizing: border-box;
+    min-inline-size: var(--kv-control-min-block-size);
+    min-block-size: var(--kv-control-min-block-size);
+    margin-block: calc(
+      (var(--kv-alert-title-size) * var(--kv-alert-title-line-height) -
+          var(--kv-control-min-block-size)) /
+        2
+    );
+    margin-inline-end: calc(-0.5 * var(--kv-alert-padding-inline));
+    padding: 0;
+    border: 0;
+    border-radius: var(--kv-radius-md);
+    background-color: transparent;
+    color: var(--kv-color-text);
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .kv-alert-close:hover {
+    background-color: var(--kv-color-surface-raised);
+  }
+
+  .kv-alert-close:is(:disabled, [data-disabled]) {
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+  }
+
+  .kv-alert-close:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  /* Dismissing paper does nothing. */
+  @media print {
+    .kv-alert-close {
+      display: none;
+    }
+  }
+
   /* Only when the consumer made the root a focus target (tabIndex={-1}): the ring is outside
    * the box and follows the radius (2.4.7, 2.4.13). */
   .kv-alert:is(:focus-visible, [data-focus-visible]) {
@@ -2600,6 +2751,18 @@
     }
 
     .kv-alert:is(:focus-visible, [data-focus-visible]) {
+      outline-color: Highlight;
+    }
+
+    .kv-alert-close {
+      color: ButtonText;
+    }
+
+    .kv-alert-close:is(:disabled, [data-disabled]) {
+      color: GrayText;
+    }
+
+    .kv-alert-close:is(:focus-visible, [data-focus-visible]) {
       outline-color: Highlight;
     }
   }
@@ -7121,9 +7284,8 @@
    * <RichTextEditor.Root> renders class="kv-rich-text": the box of a control, with an attached
    * toolbar (<RichTextEditor.Toolbar>: kv-toolbar kv-toolbar--attached, and kv-toolbar--labels
    * with labels="icon-and-text") above the editable text (<RichTextEditor.Content>: the
-   * contenteditable gets kv-rich-text-content kv-prose). Under the box come the keyboard
-   * instruction (kv-field-help-text kv-rich-text-keyboard-hint) and the count (kv-character-count),
-   * which are help texts and have no style of their own here. Link and Image forms open in
+   * contenteditable gets kv-rich-text-content kv-prose). Under the box comes the count
+   * (kv-character-count), which is a help text and has no style of its own here. Link and Image forms open in
    * kv-rich-text-popover, rendered after the toolbar in kv-rich-text-popups.
    * State is data-*: data-focused, data-focus-visible, data-invalid, data-required, data-disabled,
    * data-readonly and data-empty. Design spec: docs/design/rich-text-editor.md §6.5 to §6.9.

@@ -208,7 +208,7 @@ describe('Tab, Alt+F10 and Escape between the toolbar and the text', () => {
     await expect.element(button('Ångra')).toHaveFocus()
     await userEvent.keyboard('{Tab}')
     await expect.element(textbox()).toHaveFocus()
-    await userEvent.keyboard('{Escape}{Tab}')
+    await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     await expect.element(textbox()).toHaveFocus()

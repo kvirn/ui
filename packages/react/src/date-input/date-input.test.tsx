@@ -426,16 +426,26 @@ describe('auto-advance', () => {
     await render(
       inLocale('sv-SE', sv, <Birth defaultValue={{ year: '1990', month: '12', day: '27' }} />),
     )
-    // More digits than the box takes: no advance.
+    // More digits than the box takes are refused: nothing changes and nothing advances.
     await userEvent.click(year())
     await userEvent.keyboard('{End}1')
     await expect.element(year()).toHaveFocus()
-    await expect.element(year()).toHaveValue('19901')
+    await expect.element(year()).toHaveValue('1990')
     // Replacing one character of a full box leaves it full: no advance.
     await userEvent.click(month())
     await userEvent.keyboard('{End}{Shift>}{ArrowLeft}{/Shift}3')
     await expect.element(month()).toHaveValue('13')
     await expect.element(month()).toHaveFocus()
+  })
+
+  test('a box takes only its own number of digits when typed in, and a paste is never cut', async () => {
+    await render(inLocale('sv-SE', sv, <Birth />))
+    await userEvent.type(day(), '2789')
+    await expect.element(day()).toHaveValue('27')
+    await userEvent.type(month(), '123')
+    await expect.element(month()).toHaveValue('12')
+    changeBox(year().element() as HTMLInputElement, '19901', 'insertFromPaste')
+    await expect.element(year()).toHaveValue('19901')
   })
 
   test('paste, drop, autofill and deletion never advance', async () => {
@@ -522,7 +532,8 @@ describe('auto-advance', () => {
     await expect.element(year()).toHaveFocus()
     await userEvent.keyboard('12')
     await expect.element(year()).toHaveFocus()
-    await expect.element(year()).toHaveValue('199012')
+    // Typing stops at the box's four digits: the extra keys are refused, and nothing moves.
+    await expect.element(year()).toHaveValue('1990')
     await expect.element(month()).toHaveValue('')
   })
 
@@ -692,13 +703,13 @@ describe('name, value and autocomplete', () => {
   test('the value is the typed text: nothing is parsed or padded', async () => {
     const onValueChange = vi.fn<(value: DateInputValue, details: DateInputChangeDetails) => void>()
     await render(inLocale('sv-SE', sv, <Birth onValueChange={onValueChange} />))
-    await userEvent.type(day(), '007')
+    await userEvent.type(day(), '07')
     await userEvent.type(month(), '13')
-    await userEvent.type(year(), 'tjugo')
+    await userEvent.type(year(), 'tjug')
     expect(onValueChange.mock.calls.at(-1)?.[0]).toEqual({
-      year: 'tjugo',
+      year: 'tjug',
       month: '13',
-      day: '007',
+      day: '07',
     })
   })
 

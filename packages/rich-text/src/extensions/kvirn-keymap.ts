@@ -31,8 +31,8 @@ export interface KvirnKeymapStorage {
   onFormatToggle: ((format: FormatShortcutName, isOn: boolean) => void) | undefined
   /** After Tab or Shift+Tab indented or outdented a list item: the item's new level, from 1. */
   onListLevelChange: ((level: number) => void) | undefined
-  /** Escape was pressed in the text, and the next Tab or Shift+Tab leaves the editor. */
-  isExitArmed: boolean
+  /** Escape was pressed in the text and consumed; the next Escape passes on. */
+  isEscapeConsumed: boolean
 }
 
 declare module '@tiptap/core' {
@@ -186,9 +186,9 @@ function runTab(editor: Editor, storage: KvirnKeymapStorage, isShift: boolean): 
  * - **Tab and Shift+Tab** indent or outdent a list item, or move between table cells, only where
  *   that is possible. Elsewhere they leave the editor, and Tab in a table's last cell never adds
  *   a row. Every other Tab binding in Tiptap is skipped, so none acts behind this one.
- * - **Escape, then Tab or Shift+Tab** leaves from anywhere. Escape arms a one-shot exit, and any
- *   key other than a modifier cancels it, as does a click or leaving the text. While an IME
- *   composition is open, Escape belongs to the IME.
+ * - **Escape** in the text is consumed once, so a Dialog around the editor doesn't close and lose
+ *   the text, and the next Escape passes on. Any other key, a click or leaving the text starts
+ *   over. It is not a way out: Tab leaves on its own, where it doesn't act (Plan 0045). While an IME composition is open, Escape belongs to the IME.
  * - **Alt+F10** (Option+F10) goes to the toolbar, **Mod-k** opens the link form, and **Mod-b,
  *   Mod-i and Mod-u** toggle a mark and report it, so it can be announced.
  * - **Never shortcuts:** Control+Alt chords (AltGr) and the Tiptap shortcuts that clash with
@@ -210,7 +210,7 @@ export const KvirnKeymap = Extension.create<KvirnKeymapOptions, KvirnKeymapStora
       onOpenLinkForm: undefined,
       onFormatToggle: undefined,
       onListLevelChange: undefined,
-      isExitArmed: false,
+      isEscapeConsumed: false,
     }
   },
 
@@ -244,8 +244,8 @@ export const KvirnKeymap = Extension.create<KvirnKeymapOptions, KvirnKeymapStora
   addProseMirrorPlugins() {
     const storage = this.storage
     const editor = this.editor
-    const disarm = () => {
-      storage.isExitArmed = false
+    const resetEscape = () => {
+      storage.isEscapeConsumed = false
       return false
     }
     return [
@@ -267,11 +267,11 @@ export const KvirnKeymap = Extension.create<KvirnKeymapOptions, KvirnKeymapStora
               }
               const hasNoModifier = !event.ctrlKey && !event.altKey && !event.metaKey
               if (event.key === 'Escape' && hasNoModifier && !event.shiftKey) {
-                if (storage.isExitArmed) {
-                  // A second Escape is another key: it cancels the exit and passes on.
-                  return disarm()
+                if (storage.isEscapeConsumed) {
+                  // A second Escape passes on.
+                  return resetEscape()
                 }
-                storage.isExitArmed = true
+                storage.isEscapeConsumed = true
                 // The first Escape is consumed, so a Dialog around the editor doesn't close
                 // and lose the text.
                 event.preventDefault()
@@ -279,21 +279,17 @@ export const KvirnKeymap = Extension.create<KvirnKeymapOptions, KvirnKeymapStora
                 return true
               }
               if (event.key === 'Tab' && hasNoModifier) {
-                if (storage.isExitArmed) {
-                  disarm()
-                  return true
-                }
                 if (runTab(editor, storage, event.shiftKey) === 'acted') {
                   event.preventDefault()
                 }
                 return true
               }
-              disarm()
+              resetEscape()
               // Not a shortcut: ProseMirror never sees the key, so the browser types the character.
               return isNeverShortcut(event)
             },
-            blur: disarm,
-            mousedown: disarm,
+            blur: resetEscape,
+            mousedown: resetEscape,
           },
         },
       }),

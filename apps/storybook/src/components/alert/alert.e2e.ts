@@ -4,8 +4,8 @@ import type { Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
 
 // Contract: packages/react/src/alert/alert.a11y.md › Keyboard, Focus management,
-// Announcements and Visual / modes. One test per row, named after it. An alert handles no
-// keys: these prove it is never a Tab stop and never gets in the way of its actions.
+// Announcements and Visual / modes. One test per row, named after it. An alert is never a Tab
+// stop; its only key handling is the optional close button's (a native button: Enter and Space).
 
 /** `globals` selects the theme like the toolbar does, such as `mode:dark;contrast:more`. */
 const storyUrl = (story: string, globals?: string) =>
@@ -71,6 +71,47 @@ test.describe('Alert keyboard contract', () => {
     // It was focused by script only: `tabindex` is -1, never 0.
     await expect(root).toHaveAttribute('tabindex', '-1')
   })
+
+  test('Tab reaches the close button after the actions', async ({ page }) => {
+    await openStory(page, 'keyboard')
+    await page.keyboard.press('Tab')
+    await expect(page.getByRole('link', { name: 'Se driftinformation' })).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(page.getByRole('button', { name: 'Stäng meddelandet' })).toBeFocused()
+    // The alert itself is never a Tab stop.
+    await expect(page.locator('.kv-alert:focus')).toHaveCount(0)
+  })
+
+  test('Shift+Tab from the close button goes back to the link', async ({ page }) => {
+    await openStory(page, 'keyboard')
+    await page.getByRole('button', { name: 'Stäng meddelandet' }).focus()
+    await page.keyboard.press('Shift+Tab')
+    await expect(page.getByRole('link', { name: 'Se driftinformation' })).toBeFocused()
+  })
+
+  test('Enter on the close button dismisses the alert and moves focus to the heading', async ({
+    page,
+  }) => {
+    await openStory(page, 'keyboard')
+    await page.getByRole('button', { name: 'Stäng meddelandet' }).focus()
+    await page.keyboard.press('Enter')
+    await expect(page.getByTestId('dismissible')).toHaveCount(0)
+    // Never the page (2.4.3): the consumer moved focus on before the button went.
+    await expect(page.getByTestId('dismissible-heading')).toBeFocused()
+  })
+
+  test('Space on the close button dismisses the alert and moves focus to the heading', async ({
+    page,
+  }) => {
+    await openStory(page, 'keyboard')
+    await page.getByRole('button', { name: 'Stäng meddelandet' }).focus()
+    await page.keyboard.press('Space')
+    await expect(page.getByTestId('dismissible')).toHaveCount(0)
+    await expect(page.getByTestId('dismissible-heading')).toBeFocused()
+    // Tab goes on to the control that brings the message back, not back to the top of the page.
+    await page.keyboard.press('Tab')
+    await expect(page.getByRole('button', { name: 'Visa meddelandet igen' })).toBeFocused()
+  })
 })
 
 test.describe('Alert announcements', () => {
@@ -123,6 +164,34 @@ test.describe('Alert focus and modes', () => {
     await expectFocusIndicator(page, 'Förnya parkeringstillstånd', 'link')
     await page.keyboard.press('Tab')
     await expectFocusIndicator(page, 'Försök igen', 'button')
+  })
+
+  test('a key-focused close button shows a focus indicator (2.4.7)', async ({ page }) => {
+    await openStory(page, 'keyboard')
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Tab')
+    await expectFocusIndicator(page, 'Stäng meddelandet', 'button')
+  })
+
+  test('the close button is at least 24 by 24 CSS pixels (2.5.8)', async ({ page }) => {
+    await openStory(page, 'with-close-button')
+    const buttons = await page.getByRole('button', { name: 'Stäng meddelandet' }).all()
+    expect(buttons).toHaveLength(4)
+    for (const button of buttons) {
+      const box = await button.boundingBox()
+      expect(box?.width).toBeGreaterThanOrEqual(24)
+      expect(box?.height).toBeGreaterThanOrEqual(24)
+    }
+  })
+
+  test('a key-focused close button keeps a focus indicator in forced colours (2.4.7)', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ forcedColors: 'active' })
+    await openStory(page, 'keyboard')
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Tab')
+    await expectFocusIndicator(page, 'Stäng meddelandet', 'button')
   })
 
   test('a focused root shows a focus indicator (2.4.7)', async ({ page }) => {
@@ -192,7 +261,12 @@ test.describe('Alert focus and modes', () => {
 
 test.describe('Alert reflow and text spacing', () => {
   // The WCAG 1.4.12 overrides (.storybook/preview.css: .kv-story-text-spacing), at 320px.
-  for (const story of ['all-examples', 'with-actions', 'long-finnish-text'] as const) {
+  for (const story of [
+    'all-examples',
+    'with-actions',
+    'with-close-button',
+    'long-finnish-text',
+  ] as const) {
     test(`text spacing overrides clip nothing (1.4.12): ${story}`, async ({ page }) => {
       await page.setViewportSize({ width: 320, height: 640 })
       await openStory(page, story)
@@ -249,6 +323,8 @@ test.describe('Alert accessibility', () => {
     ['announced'],
     ['send-failed'],
     ['focus-target'],
+    ['keyboard'],
+    ['with-close-button'],
     ['dynamic-status'],
     ['restyle-with-tokens'],
     ['bring-your-own'],

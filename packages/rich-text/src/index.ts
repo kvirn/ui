@@ -23,12 +23,10 @@ export type { RichTextFormat, RichTextValue } from './value/document-value.ts'
 export {
   RichTextEditor,
   RichTextEditorContent,
-  RichTextEditorKeyboardHint,
   RichTextEditorRoot,
 } from './rich-text-editor/rich-text-editor.tsx'
 export type {
   RichTextEditorContentProps,
-  RichTextEditorKeyboardHintProps,
   RichTextEditorRootProps,
   RichTextEditorState,
 } from './rich-text-editor/rich-text-editor.tsx'

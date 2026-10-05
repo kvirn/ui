@@ -6,6 +6,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { Alert, Button, ButtonGroup, defineIcons, Icon, KvirnProvider } from '@kvirn-ui/react'
 import type { BuiltInIconName, IconName } from '@kvirn-ui/react'
+import { builtInIcons } from '../../../../../packages/react/src/icon/built-in-icons.tsx'
 import { Warning as PhosphorWarning } from '@phosphor-icons/react'
 import { ArrowRight, MapPin, Search, Trash2, X as LucideClose } from 'lucide-react'
 import { useCallback, useState } from 'react'
@@ -19,45 +20,26 @@ import { createPortal } from 'react-dom'
 
 export type IconFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
 
-/** The 24 built-in icons, in the order of the design spec (§4.1). */
-export const builtInIconNames = [
-  'chevron-down',
-  'chevron-up',
-  'chevron-back',
-  'chevron-forward',
-  'arrow-back',
-  'arrow-forward',
-  'external',
-  'close',
-  'menu',
-  'search',
-  'add',
-  'check',
-  'info',
-  'success',
-  'warning',
-  'error',
-  'calendar',
-  'upload',
-  'download',
-  'document',
-  'delete',
-  'language',
-  'eye',
-  'eye-off',
-] as const satisfies readonly BuiltInIconName[]
+/**
+ * Every built-in icon, in the order of the design spec (§4.1). Read from `builtInIcons`, the
+ * package's own set, so the gallery can't drift from it: a new icon shows up here, and in the
+ * gallery, with no edit. The set is not a public export, so this is the one place a fixture
+ * reads the package source by relative path.
+ */
+export const builtInIconNames = Object.keys(builtInIcons) as BuiltInIconName[]
 
-/** Icons 3–7 show a horizontal direction, so they flip in right-to-left text (§4.1). */
-export const mirroredIconNames = [
-  'chevron-back',
-  'chevron-forward',
-  'arrow-back',
-  'arrow-forward',
-  'external',
-] as const satisfies readonly BuiltInIconName[]
+/** The built-ins whose entry sets `mirrorInRtl`: the horizontal-direction icons, flipped in RTL (§4.1). */
+export const mirroredIconNames = builtInIconNames.filter((name) => {
+  const entry = builtInIcons[name]
+  return (
+    typeof entry === 'object' &&
+    entry !== null &&
+    'mirrorInRtl' in entry &&
+    entry.mirrorInRtl === true
+  )
+})
 
-export const isMirroredIcon = (name: BuiltInIconName): boolean =>
-  (mirroredIconNames as readonly BuiltInIconName[]).includes(name)
+export const isMirroredIcon = (name: BuiltInIconName): boolean => mirroredIconNames.includes(name)
 
 export type StatusKind = 'info' | 'success' | 'warning' | 'error'
 export const statusKinds = [
@@ -676,7 +658,7 @@ export function UnstyledIcons({ locale }: IconFixtureProps) {
   return (
     <ShadowIsland data-testid="unstyled" dir="rtl" lang={lang}>
       <p>
-        {(['sm', 'md', 'lg'] as const).map((size) => (
+        {([4, 5, 6] as const).map((size) => (
           <Icon key={size} name="check" size={size} color="var(--kv-color-success)" />
         ))}
       </p>

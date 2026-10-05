@@ -25,7 +25,7 @@ const tealBrandScale: Record<string, string> = {
   '100': '#cdf0f0',
   '200': '#9be0e2',
   '300': '#5fc6cb',
-  '400': '#26a4ac',
+  '400': '#1e9ca4',
   '500': '#007d86',
   '600': '#00707a',
   '700': '#005a62',
@@ -237,7 +237,7 @@ describe('overrides', () => {
     )
     expect(drifted).not.toBe(themeCss)
     expect(checkThemeCss(drifted)).toContain(
-      'dark: --kv-color-link is #828fff, but #a3acff in the system fallback',
+      'dark: --kv-color-link is #7784f2, but #a3acff in the system fallback',
     )
   })
 })

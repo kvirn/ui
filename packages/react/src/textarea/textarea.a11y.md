@@ -134,7 +134,7 @@ Research questions for the AT run: is the count read once with the value when th
 
 ## Known issues
 
-- **`dir="auto"` is not the default.** The design spec (§6.2, Q8) recommends it so a resident writing Arabic gets right-to-left text in a left-to-right page. It is still open: set `dir="auto"` yourself where it applies.
+- **The direction is the page's.** The Textarea has no `dir` prop and never sets `dir="auto"` (maintainer, 2026-10-05, Plan 0045). It inherits the direction like every input: set it with the provider (`dir`, or an RTL `locale`) and put `useLocale().localeProps` where the language is set. A resident who writes Arabic in a left-to-right page gets left-aligned text; that is a page-language question, not a per-box one.
 - **Auto-grow needs `field-sizing: content` and typed `attr()`.** Elsewhere `rows` sets the height and the text scrolls inside, with a native scrollbar and a resize handle. There is no JavaScript auto-grow, by decision (Plan 0034).
 - **An uncontrolled box with `characterCount` doesn't see a value set from code.** It counts typing, follows a native form reset, and reads the element's value on mount and on `pageshow` (the browser restores a form without an input event). A value you write to the element later is not seen: pass `value`.
 - **Manual AT is `pending`.** The debounce (500 ms) and the 80% threshold need NVDA, VoiceOver, TalkBack and Dragon.

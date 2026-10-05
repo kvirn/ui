@@ -165,7 +165,7 @@ Outside a Field, nothing links the count to the box: pass the count an `id` and 
 - **`autoComplete`** where a token exists for the question (1.3.5), and never block paste (3.3.8).
 - **Read-only and disabled** are for staff tools. In a resident form, explain on submit instead.
 - **A session that doesn't expire under a long answer** (2.2.1): warn and let the user extend it, and save drafts in staff tools.
-- **`dir="auto"`** on the Textarea where residents may write in a right-to-left language: it is not the default (an open question in the design spec).
+- **The direction** is the page's, from the provider: the Textarea has no `dir` prop and never sets `dir="auto"`. Set the provider's `dir` (or its RTL `locale`) and put `useLocale().localeProps` where the language is set, on `<html>` or a wrapper, and the text starts at the right in a right-to-left page.
 - **The `KvirnProvider`** around the app, so the count is announced.
 - **Don't pass `id`** to a Textarea inside a Field: the Field's id wins. Set `controlId` on `Field.Root`.
 

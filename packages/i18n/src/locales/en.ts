@@ -15,6 +15,7 @@ export const en = {
     successPrefix: 'Success:',
     warningPrefix: 'Warning:',
     dangerPrefix: 'Error:',
+    close: 'Close message',
   },
   combobox: {
     resultCount: ({ count }, format) =>
@@ -210,11 +211,6 @@ export const en = {
     deleteColumn: 'Delete column',
     deleteTable: 'Delete table',
     headerRow: 'Header row',
-    keyboardHintListsAndTables:
-      'To leave the text field, press Esc and then Tab. In lists, Tab indents, and in tables it moves to the next cell.',
-    keyboardHintLists: 'To leave the text field, press Esc and then Tab. In lists, Tab indents.',
-    keyboardHintTables:
-      'To leave the text field, press Esc and then Tab. In tables, Tab moves to the next cell.',
     linkAddTitle: 'Add link',
     linkEditTitle: 'Edit link',
     linkUrl: 'Web address',
