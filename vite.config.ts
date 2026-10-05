@@ -96,7 +96,8 @@ const jsxA11yRules = Object.fromEntries(
 const maxWorkers = Number(process.env['VITEST_MAX_WORKERS'] ?? 2)
 
 /**
- * One Vitest project of Storybook stories. `env` sets the preview's initial Mode and Contrast
+ * One Vitest project of Storybook stories. Run them one per `vp test run` (`vp run test`): several
+ * `storybookTest()` servers in one process make story files fail to load at random. `env` sets the preview's initial Mode and Contrast
  * globals (apps/storybook/.storybook/preview.tsx), so every story starts in that theme.
  */
 const storybookProject = (name: string, mode: 'light' | 'dark', contrast: 'standard' | 'more') => ({

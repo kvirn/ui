@@ -2,7 +2,7 @@
 
 ```sh
 corepack enable && pnpm install   # also installs the git hooks (vp config)
-vp check && vp test run
+vp check && vp run test
 ```
 
 Humans and AI agents follow the same workflow, quality gates and hard rules. They're all in [AGENTS.md](AGENTS.md). In short:

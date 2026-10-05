@@ -59,12 +59,14 @@ Vitest projects in the root `vite.config.ts`:
 - `browser`: react and testing tests, plus the docs-site components (`apps/docs/components/**/*.test.tsx`), in Chromium. The docs shell is built on KvirnUI and tested like a component, and takes `pathname` as a prop.
 - `storybook`, `storybook-dark`, `storybook-light-contrast` and `storybook-dark-contrast`: every story, once per theme, through `addon-vitest`. The a11y addon runs with `test: 'error'` and the WCAG 2.2 AA tags, so axe runs in `vp test run`.
 
+The whole tree runs through `vp run test`, which runs the four Storybook projects one at a time. Each `storybookTest()` project starts its own Vite server, and two or more in one Vitest process make random story files fail with `Failed to fetch dynamically imported module` (a single project is stable). Scoped runs of a stories file name one project: `vp test run --project storybook <file>`.
+
 ## CI
 
 `.github/workflows/ci.yml` pins Actions to commit SHAs, uses read-only `contents` permission and installs Chromium only (add browsers to the `playwright install` line to widen it). It runs:
 
 - `commits`: every PR commit and the PR title against the Conventional Commits rules.
-- `gates`: `vp check --no-fmt`, `vp fmt --check` (advisory), `vp test run`, `i18n:check`, `theme:check` and `vp run build` (every package, the Storybook build and the docs site).
+- `gates`: `vp check --no-fmt`, `vp fmt --check` (advisory), `vp run test`, `i18n:check`, `theme:check` and `vp run build` (every package, the Storybook build and the docs site).
 
 These are the [AGENTS.md quality gates](../AGENTS.md#quality-gates) 1 to 3. The WCAG display-mode sweep isn't run by any workflow yet, and neither are core coverage nor per-component bundle budgets: see the roadmap, "Engineering".
 

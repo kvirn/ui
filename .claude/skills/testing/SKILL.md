@@ -98,7 +98,7 @@ Run the smallest thing that proves the point. Each full gate run happens **once 
 **Final gates:** the orchestrator runs them once, at the end, in this order, stopping at the first failure:
 
 1. `vp check` (lint and types block, formatting is advisory; on your files while others may be editing; the whole tree only when you're the only one working)
-2. `vp test run`
+2. `vp run test` (whole tree)
 3. `vp run i18n:check`
 4. `vp run theme:check`
 

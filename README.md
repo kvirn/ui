@@ -62,7 +62,7 @@ pnpm install
 vp run storybook     # component workbench (apps/storybook)
 vp run docs          # docs site (apps/docs, Next.js)
 vp check             # format + lint + typecheck
-vp test run          # Vitest: core, components in a real browser (keyboard, axe) and every story
+vp run test          # Vitest: core, components in a real browser (keyboard, axe) and every story
 ```
 
 Project docs: [docs/](docs/README.md). Rules for humans and agents: [AGENTS.md](AGENTS.md). Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
