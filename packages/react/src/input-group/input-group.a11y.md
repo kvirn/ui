@@ -22,6 +22,7 @@ Rules, tested in `input-group.test.tsx`:
 
 - **Addons are `aria-hidden="true"`** and are never in the Input's accessible name or description. A unit shown in the box is also said by the label or a help text, a `Field.Prose` in the Field (if the Addon were linked to the Input, users would hear a unit the label already says, twice).
 - **Clicking an Addon, or the Root's padding, focuses the Input** (`mousedown` on the box, outside any control inside it). The whole box is one target, and the keyboard reaches the Input directly, so no key is needed for it. Disabled groups don't move focus.
+- **Dev warning on a mismatch:** when the Root's own `invalid` or `disabled` disagrees with the Input inside it (`aria-invalid`, `:disabled`), a warning fires once (`input-group-invalid-mismatch`, `input-group-disabled-mismatch`). Without own props the Root follows the Field, and nothing is compared.
 - **Field state on the Root:** `data-invalid` and `data-disabled` come from the nearest Field (or the Root's own props). The Input keeps `aria-invalid` and native `disabled` from the Field: the theme draws the box from the Root's attributes and from `:has(> .kv-input…)`, so it doesn't wait for JavaScript.
 - **`data-focus-visible` is set only while the Input has keyboard focus.** Text inputs also match `:focus-visible` on a click, so the hook tracks whether the last interaction was a pointer or a key. Focus on a Button inside the Root doesn't set it: the Button draws its own ring.
 - **A Button keeps its name and its Tab stop.** Tab goes Input, then Button, in DOM order.
@@ -34,16 +35,19 @@ Rules, tested in `input-group.test.tsx`:
 - **Arrows wrap:** n/a
 - **Shortcuts:** none
 
-| Key           | Context                    | Action                                                                                  | Test                                                                                                                                                 |
-| ------------- | -------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Tab           | before the group           | Moves focus into the input. The Addons are skipped                                      | `input-group.e2e.ts › Tab goes to the input, then to the Button`                                                                                     |
-| Tab           | in the input               | Moves focus to the Button when the group has one, otherwise out of the group            | `input-group.e2e.ts › Tab goes to the input, then to the Button`, `input-group.e2e.ts › the Addons are never Tab stops, in a group without a Button` |
-| Shift+Tab     | on the Button              | Moves focus back to the input                                                           | `input-group.e2e.ts › Tab goes to the input, then to the Button`                                                                                     |
-| Enter / Space | on the Button              | Activates the Button (native), for example clearing the search                          | `input-group.e2e.ts › clearing the search moves focus to the input`                                                                                  |
-| any character | in the input               | Types it. Nothing is filtered, and a unit typed in the box is fine (the form parses it) | `input-group.e2e.ts › any character types, and the unit can be typed too`                                                                            |
-| click         | on an Addon or the padding | Focuses the input (the Addon isn't a control)                                           | `input-group.e2e.ts › a click on an Addon focuses the input`                                                                                         |
+| Key           | Context          | Action                                                                                  | Test                                                                                                                                                 |
+| ------------- | ---------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tab           | before the group | Moves focus into the input. The Addons are skipped                                      | `input-group.e2e.ts › Tab goes to the input, then to the Button`                                                                                     |
+| Tab           | in the input     | Moves focus to the Button when the group has one, otherwise out of the group            | `input-group.e2e.ts › Tab goes to the input, then to the Button`, `input-group.e2e.ts › the Addons are never Tab stops, in a group without a Button` |
+| Shift+Tab     | on the Button    | Moves focus back to the input                                                           | `input-group.e2e.ts › Tab goes to the input, then to the Button`                                                                                     |
+| Enter / Space | on the Button    | Activates the Button (native), for example clearing the search                          | `input-group.e2e.ts › clearing the search moves focus to the input`                                                                                  |
+| any character | in the input     | Types it. Nothing is filtered, and a unit typed in the box is fine (the form parses it) | `input-group.e2e.ts › any character types, and the unit can be typed too`                                                                            |
 
 Escape, arrow keys and Home / End keep the native text-field behaviour in the input. The Addons handle no keys and are never focusable.
+
+## Pointer
+
+A click is not a key, so it isn't in the Keyboard table. Clicking an Addon, or the box's padding, focuses the Input (the Addon isn't a control), and the keyboard reaches the Input directly with Tab. A disabled box ignores the click. Tested in `input-group.e2e.ts › a click on an Addon focuses the input` and `input-group.test.tsx › clicking an Addon focuses the Input`.
 
 ## Focus management
 
@@ -62,6 +66,7 @@ None. Nothing is live. The Input's name, description and state are read on focus
 - **Addon text is a symbol or a widely known abbreviation,** at most 4 characters (`kr`, `€`, `%`, `km`, `m²`). Every Addon string comes from your translations, even `%`.
 - **One Addon per side at most.** An icon Addon repeats something the label already says (a search, a date) and never looks like it does something it doesn't. A calendar icon is decorative until a date picker exists: it focuses the Input, nothing more.
 - **Interactive add-ons are Buttons placed directly in `InputGroup.Root`,** never inside an Addon. Give each a visible text name or, if it is icon-only, an `aria-label` from your translations. Disable the Button when the Field is disabled.
+- **`invalid` and `disabled` on the Root change only the box's look** (the edge, and a disabled box ignores clicks). They don't mark the Input: set `aria-invalid` and native `disabled` on it too (3.3.1, 4.1.2), or put the group in a Field, which sets both. A dev warning fires when they disagree.
 - **A clear Button renders only while there's a value,** and on activation empties the value and moves focus to the Input. Don't add a clear Button to a read-only group.
 - **Don't set `inputMode="numeric"` on a date field with separators:** the iOS number pad has no "-" or ".".
 - Everything in `text-input.a11y.md` and `field.a11y.md` still applies: a visible label, `autocomplete`, errors in text, never blocking paste.

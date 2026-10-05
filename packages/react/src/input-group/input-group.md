@@ -22,11 +22,11 @@ An InputGroup puts a unit, a symbol, a decorative icon or a Button **inside the 
 | `InputGroup.Input` | the [TextInput](../text-input/text-input.md) (`<input class="kv-input">`) | The one input. Takes every TextInput prop and reads the Field the same way                                |
 | `InputGroup.Addon` | `<span class="kv-input-group-addon" aria-hidden="true">`                  | A unit, a symbol or a decorative icon. Visual only: never focusable, never the only place a meaning lives |
 
-- **`invalid` and `disabled` on the Root** default to the nearest Field's. Without a Field, set them on the Root for the box's edge (`data-invalid`, `data-disabled`) **and** on the Input for the control (`aria-invalid`, native `disabled`): the Root only draws and, when `disabled`, stops clicks from focusing the Input. A disabled box ignores a click on its Addon.
+- **`invalid` and `disabled` on the Root change only the box's look** (`data-invalid`, `data-disabled`) and, when `disabled`, stop a click on the box or an Addon from focusing the Input. They never reach the control: a screen reader hears the error only from `aria-invalid` on the Input, and the Input stays editable and in the Tab sequence until it is natively `disabled`. They default to the nearest Field's, which sets both the box and the Input. Without a Field, set them on the Root **and** on the Input (`aria-invalid`, native `disabled`). When the Root's own prop disagrees with the Input, a dev warning says so.
 - **Without a Field** name the Input with a native `<label for>` (or `aria-labelledby`) and describe it with `aria-describedby`: nothing else wires them.
 - **State the Root exposes:** `data-invalid`, `data-disabled` and `data-focus-visible` (see the table below). `render` on the Root and the Addon receives `isInvalid`, `isDisabled` and `isFocusVisible`.
 - **Messages:** none. An Addon's text and a Button's name are yours, in the page's language.
-- **Dev warnings (once):** an Addon outside a Root (`input-group-addon-outside-root`); focusable content inside an Addon (`input-group-addon-focusable`).
+- **Dev warnings (once):** an Addon outside a Root (`input-group-addon-outside-root`); focusable content inside an Addon (`input-group-addon-focusable`); the Root's own `invalid` or `disabled` disagreeing with the input inside it (`input-group-invalid-mismatch`, `input-group-disabled-mismatch`). Inside a Field the Root takes the Field's state, so nothing is compared.
 
 ## Component
 

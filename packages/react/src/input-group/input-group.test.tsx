@@ -465,6 +465,79 @@ describe('dev warnings', () => {
   })
 })
 
+describe('dev warnings: the Root’s invalid and disabled against the input inside', () => {
+  const warningsAbout = (text: string) =>
+    consoleWarn.mock.calls.map(([message]) => String(message)).filter((m) => m.includes(text))
+
+  test('invalid on the Root while the input has no aria-invalid warns once, and says what to do', async () => {
+    await render(
+      <>
+        <label htmlFor="rent-a">Hyra</label>
+        <InputGroup.Root invalid>
+          <InputGroup.Input id="rent-a" />
+        </InputGroup.Root>
+        <label htmlFor="rent-b">Avgift</label>
+        <InputGroup.Root invalid>
+          <InputGroup.Input id="rent-b" />
+        </InputGroup.Root>
+      </>,
+    )
+    const warnings = warningsAbout('InputGroup.Root invalid does not match')
+    expect(warnings).toHaveLength(1)
+    expect(warnings[0]).toContain('aria-invalid')
+    expect(warnings[0]).toContain('Field.Root')
+  })
+
+  test('invalid={false} on the Root while the input is aria-invalid warns too', async () => {
+    await render(
+      <>
+        <label htmlFor="rent-c">Hyra</label>
+        <InputGroup.Root invalid={false}>
+          <InputGroup.Input id="rent-c" aria-invalid="true" />
+        </InputGroup.Root>
+      </>,
+    )
+    expect(warningsAbout('InputGroup.Root invalid does not match')).toHaveLength(1)
+  })
+
+  test('disabled on the Root while the input is enabled warns once, and says what to do', async () => {
+    await render(
+      <>
+        <label htmlFor="rent-d">Hyra</label>
+        <InputGroup.Root disabled>
+          <InputGroup.Input id="rent-d" />
+        </InputGroup.Root>
+      </>,
+    )
+    const warnings = warningsAbout('InputGroup.Root disabled does not match')
+    expect(warnings).toHaveLength(1)
+    expect(warnings[0]).toContain('disabled')
+    expect(warnings[0]).toContain('Field.Root')
+  })
+
+  test('a Root that agrees with its input doesn’t warn', async () => {
+    await render(
+      <>
+        <label htmlFor="rent-e">Hyra</label>
+        <InputGroup.Root invalid disabled>
+          <InputGroup.Input id="rent-e" aria-invalid="true" disabled />
+        </InputGroup.Root>
+        <label htmlFor="rent-f">Avgift</label>
+        <InputGroup.Root invalid={false} disabled={false}>
+          <InputGroup.Input id="rent-f" />
+        </InputGroup.Root>
+      </>,
+    )
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('inside a Field the Root takes the Field’s state, so there is nothing to warn about', async () => {
+    await render(<RentField invalid disabled />)
+    await render(<RentField />)
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+})
+
 describe('render and refs', () => {
   test('both parts forward refs, class names and native props, and join handlers', async () => {
     const rootRef = createRef<HTMLDivElement>()

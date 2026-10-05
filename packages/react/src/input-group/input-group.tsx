@@ -58,12 +58,39 @@ export function InputGroupRoot({
   ...otherProps
 }: InputGroupRootProps): ReactElement {
   const group = useInputGroup({ invalid, disabled })
-  const mergedRef = useMergedRef(ref, null)
+  const elementRef = useRef<HTMLDivElement | null>(null)
+  const mergedRef = useMergedRef(ref, elementRef)
   const state: InputGroupState = {
     isInvalid: group.isInvalid,
     isDisabled: group.isDisabled,
     isFocusVisible: group.isFocusVisible,
   }
+
+  // The Root only draws the box. When its own props disagree with the input inside, the box and
+  // the control say different things. Without own props the Root follows the Field, as the input does.
+  useEffect(() => {
+    const input = elementRef.current?.querySelector('input')
+    if (input === null || input === undefined) {
+      return
+    }
+    if (invalid !== undefined) {
+      const inputIsInvalid = input.hasAttribute('aria-invalid')
+        ? input.getAttribute('aria-invalid') !== 'false'
+        : false
+      if (invalid !== inputIsInvalid) {
+        warnOnce(
+          'input-group-invalid-mismatch',
+          'InputGroup.Root invalid does not match the input inside it (aria-invalid): the Root only draws the box’s edge, so assistive technology would not hear the error, or would hear one the box does not show (WCAG 1.3.1, 3.3.1, 4.1.2). Set aria-invalid on the input too, or put the group in <Field.Root invalid>, which sets both.',
+        )
+      }
+    }
+    if (disabled !== undefined && disabled !== input.matches(':disabled')) {
+      warnOnce(
+        'input-group-disabled-mismatch',
+        'InputGroup.Root disabled does not match the input inside it (disabled): the Root only draws the dashed edge and stops clicks from focusing the input, so the input would stay editable and in the Tab sequence, or look enabled while it is disabled (WCAG 1.3.1, 4.1.2). Set disabled on the input too, or put the group in <Field.Root disabled>, which sets both.',
+      )
+    }
+  })
 
   return (
     <InputGroupStateContext.Provider value={state}>
