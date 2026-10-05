@@ -100,7 +100,7 @@ Run the smallest thing that proves the point. Each full gate run happens **once 
 - E2E: one spec on one project, `vp run e2e <spec> --project chromium`, and only if story, fixture or keyboard behaviour changed.
   - Keep `vp run storybook` running in the background, so Playwright reuses it instead of booting a new server each run.
 
-**Who runs what:** only the main session (orchestrator) runs checks, and only after every subagent has reported done (AGENTS.md rule 12). Subagents never run them, except `test-runner`, which runs the changed modules one at a time once `node .claude/hooks/test-preflight.mjs` says CLEAR, and never a full-tree run. What its guard allows and blocks: `references/test-runner-guard.md`. Everything in this section describes what the orchestrator runs, scoped and sequential. Ignore "while iterating" advice if you are a subagent.
+**Who runs what:** the orchestrator runs the gates, once, after every subagent has reported done (AGENTS.md rule 12). While working, `component-engineer` runs `vp check <files>` and `vp test run <file>` on its own files, and `test-runner` runs one scoped gate for triage. Both go through the scoped-run guard (`references/test-runner-guard.md`): one module per command, real paths, foreground, never while another run is going, and for `test-runner` only once `test-preflight.mjs` says CLEAR. Every other command in this section is the orchestrator's.
 
 **Final gates:** the orchestrator runs them once, at the end, in this order, stopping at the first failure:
 

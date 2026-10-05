@@ -1,5 +1,7 @@
 # Plan NNNN: <Title>
 
+<!-- Under 250 lines: a Sonnet agent reads this at every spawn. Link prior art, don't paste it. The contract table is the spec. -->
+
 - **Status:** Draft <!-- Draft | Approved | In progress | Done | Abandoned -->
 - **Owner:** <name / agent>
 - **Created:** YYYY-MM-DD · **Target:** <milestone>

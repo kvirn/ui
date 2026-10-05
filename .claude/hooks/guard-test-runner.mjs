@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// PreToolUse (Bash), test-runner subagent only. Called by guard-subagent-checks.sh.
-// The test-runner may run tests, but only scoped to the work at hand, one module per command, in the
-// foreground, and only when no other run is going and nobody is editing. Full-tree runs belong to the
-// orchestrator's sweeps and CI.
+// PreToolUse (Bash), test-runner and component-engineer only. Called by guard-subagent-checks.sh.
+// They may run tests, but only scoped to the work at hand, one module per command, in the foreground,
+// and only when no other run is going (and, for the test-runner, nobody is editing). Full-tree runs
+// belong to the orchestrator's sweeps and CI.
 // Exit 2 = block and feed stderr back to Claude.
 import { existsSync } from 'node:fs'
 import path from 'node:path'
@@ -15,16 +15,20 @@ const input = await new Promise((resolve) => {
 
 let toolInput = {}
 let startDirectory = process.cwd()
+let agentType = 'subagent'
 try {
   const parsed = JSON.parse(input)
   toolInput = parsed.tool_input ?? {}
   startDirectory = parsed.cwd ?? startDirectory
+  agentType = parsed.agent_type ?? agentType
 } catch {
   process.exit(0)
 }
 
 function block(message) {
-  console.error(`Blocked (test-runner, see the testing skill, test-runner-guard): ${message}`)
+  console.error(
+    `Blocked (${agentType}, scoped-run guard; see the testing skill, test-runner-guard): ${message}`,
+  )
   process.exit(2)
 }
 
@@ -141,10 +145,12 @@ for (const raw of segments) {
       continue
     }
     block(
-      `\`vp run ${third ?? ''}\` is not a test task. The test-runner runs \`vp test\`, \`vp check\`, \`vp run e2e\`, \`i18n:check\` and \`theme:check\` only.`,
+      `\`vp run ${third ?? ''}\` is not a test task. Scoped runs are \`vp test\`, \`vp check\`, \`vp run e2e\`, \`i18n:check\` and \`theme:check\` only.`,
     )
   } else if (second === 'fmt' || second === 'build' || second === 'pack' || second === 'install') {
-    block(`the test-runner never edits, formats or builds (\`vp ${second}\`).`)
+    block(
+      `\`vp ${second}\` isn't a scoped test run. The edit hook formats files, and builds are the orchestrator's.`,
+    )
   } else {
     continue
   }

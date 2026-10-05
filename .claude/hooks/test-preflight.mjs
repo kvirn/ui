@@ -14,7 +14,8 @@
 //                                                            list files changed since <stamp> (from a
 //                                                            previous run's `stamp=` line); exit 1 if any
 //
-// KVIRN_TEST_QUIET_SECONDS sets the quiet window (default 20, or 90 with another session here).
+// KVIRN_TEST_QUIET_SECONDS sets the quiet window (default 20, or 90 with another session here; 0 turns it off,
+// which guard-subagent-checks.sh uses for component-engineer, whose own edits are what it tests).
 // The guard (`guard-test-runner.mjs`) imports `preflight()` and blocks the test-runner while BUSY.
 import { execFileSync } from 'node:child_process'
 import { readlinkSync, statSync } from 'node:fs'
@@ -101,7 +102,8 @@ export function preflight(cwd = process.cwd()) {
     return directory !== undefined && isInside(directory, root)
   })
 
-  const quietSeconds = sessions.length > 0 ? quietWithOtherSession : quietDefault
+  const quietSeconds =
+    quietDefault === 0 ? 0 : sessions.length > 0 ? quietWithOtherSession : quietDefault
   const since = Date.now() - quietSeconds * 1000
   const edits = changedFiles(root).filter((entry) => entry.modified > since)
 

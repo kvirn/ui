@@ -5,6 +5,7 @@ Plans describe **how** we will build something. Decisions live in the skills and
 - Copy `0000-template.md` to `NNNN-short-title.md`.
 - Statuses: `Draft` → `Approved` → `In progress` → `Done` | `Abandoned`.
 - Keep the task checklist current. Agents should tick items off as they go.
+- Keep a plan under 250 lines: a Sonnet agent reads it at every spawn. Link prior art instead of pasting it.
 
 ## Index
 
@@ -54,3 +55,4 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0043](0043-navigation-and-service-link.md)       | Navigation as its own component, and a service link                         | Accepted, implemented (gates pending) |
 | [0044](0044-icon-libraries.md)                    | Using Lucide and Heroicons with Icon                                        | In progress                           |
 | [0046](0046-format-helpers.md)                    | `useFormat()` and calendar dates                                            | Implemented                           |
+| [0050](0050-agent-token-budget.md)                | Agent token budget: scout, effort per agent, scoped self-checks             | Done                                  |
