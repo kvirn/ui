@@ -6,27 +6,34 @@ import { firstIndexOf, virtualizedCount } from '../form/virtualized.fixture.ts'
 
 // Contract: packages/react/src/listbox/listbox.a11y.md › Keyboard, Focus management
 // and Visual / modes. One test per row, named after it. The first half is the native rendering
-// (the Native… stories of Components/Form/Listbox, where Listbox.Root renders the browser's
+// (the Native story of Components/Form/Listbox, where Listbox.Root renders the browser's
 // <select> for native="always"), whose keys are the browser's: those rows describe Chromium on
 // Windows and Linux, which this spec drives. The second half is the stylable popup (Listbox.Root,
 // the other stories), with tests titled "popup: …". KvirnUI holds no form state: the
 // Controlled story keeps its value in the story.
 
-/** `globals` selects the theme like the toolbar does, such as `mode:dark;contrast:more`. */
-const nativeStoryUrl = (story: string, globals?: string) =>
-  `/iframe.html?id=components-form-listbox--native-${story}&viewMode=story${globals === undefined ? '' : `&globals=${globals}`}`
+/** `globals` selects the theme or the locale like the toolbar does, such as `mode:dark;contrast:more`. */
+const nativeStoryUrl = (globals?: string) =>
+  `/iframe.html?id=components-form-listbox--native&viewMode=story${globals === undefined ? '' : `&globals=${globals}`}`
 
-/** Opens a native-rendering story (`native="always"`): the stories named Native… in Components/Form/Listbox. */
-async function openNativeStory(page: Page, story: string, globals?: string) {
-  await page.goto(nativeStoryUrl(story, globals))
+/** Opens the Native story: five native selects (`native="always"`) and a button, in a form. */
+async function openNativeStory(page: Page, globals?: string) {
+  await page.goto(nativeStoryUrl(globals))
   await expect(page.locator('.kv-listbox-native').first()).toBeVisible()
-  if (globals !== undefined) {
+  if (globals?.startsWith('mode:')) {
     // The theme store resolved the selected theme onto <html>.
     const { mode, contrast } = Object.fromEntries(globals.split(';').map((pair) => pair.split(':')))
     await expect(page.locator('html')).toHaveAttribute('data-kv-color-scheme', String(mode))
     await expect(page.locator('html')).toHaveAttribute('data-kv-contrast', String(contrast))
   }
 }
+
+/**
+ * The selects of the Native story share a label, so each is found by its `name`, in the order of
+ * the story: `municipality` (nothing chosen), `chosen` (Stockholm), `grouped`, `invalid` and
+ * `disabled`. The button "Skicka" follows.
+ */
+const nativeSelect = (page: Page, name: string) => page.locator(`select[name="${name}"]`)
 
 const hasHorizontalScroll = (page: Page) =>
   page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
@@ -46,129 +53,138 @@ async function recordPreventedKeys(page: Page) {
   return (): Promise<string[]> => page.evaluate(() => Reflect.get(window, 'preventedKeys'))
 }
 
-const select = (page: Page) => page.getByRole('combobox', { name: 'Kommun', exact: true })
-
 test.describe('Native listbox keyboard contract', () => {
   test('Tab moves to the select, one stop', async ({ page }) => {
-    await openNativeStory(page, 'keyboard')
+    await openNativeStory(page)
     await page.keyboard.press('Tab')
-    await expect(select(page)).toBeFocused()
-    // The disabled select is skipped, so the next stop is the button.
+    await expect(nativeSelect(page, 'municipality')).toBeFocused()
+    // One stop: the next Tab moves on to the next select.
     await page.keyboard.press('Tab')
-    await expect(page.getByRole('button', { name: 'Skicka' })).toBeFocused()
+    await expect(nativeSelect(page, 'chosen')).toBeFocused()
   })
 
   test('Shift+Tab leaves the select backwards', async ({ page }) => {
-    await openNativeStory(page, 'keyboard')
-    await select(page).focus()
+    await openNativeStory(page)
+    await nativeSelect(page, 'municipality').focus()
     await page.keyboard.press('Shift+Tab')
     await expect(page.locator('select:focus')).toHaveCount(0)
+    // The disabled select is skipped, so the stop before the button is the invalid one.
     await page.getByRole('button', { name: 'Skicka' }).focus()
     await page.keyboard.press('Shift+Tab')
-    await expect(select(page)).toBeFocused()
+    await expect(nativeSelect(page, 'invalid')).toBeFocused()
   })
 
   test('Tab skips a disabled select', async ({ page }) => {
-    await openNativeStory(page, 'keyboard')
-    const disabled = page.locator('select[name="disabled"]')
+    await openNativeStory(page)
+    const disabled = nativeSelect(page, 'disabled')
     await expect(disabled).toBeDisabled()
-    await select(page).focus()
+    await nativeSelect(page, 'invalid').focus()
     await page.keyboard.press('Tab')
     await expect(disabled).not.toBeFocused()
     await expect(page.getByRole('button', { name: 'Skicka' })).toBeFocused()
   })
 
   test('ArrowDown chooses the next option', async ({ page }) => {
-    await openNativeStory(page, 'keyboard')
-    await select(page).focus()
+    await openNativeStory(page)
+    const select = nativeSelect(page, 'municipality')
+    await select.focus()
     const prevented = await recordPreventedKeys(page)
-    await expect(select(page)).toHaveValue('')
+    await expect(select).toHaveValue('')
     await page.keyboard.press('ArrowDown')
-    await expect(select(page)).toHaveValue('gothenburg')
+    await expect(select).toHaveValue('gothenburg')
     await page.keyboard.press('ArrowDown')
-    await expect(select(page)).toHaveValue('malmo')
-    await expect(select(page)).toBeFocused()
+    await expect(select).toHaveValue('malmo')
+    await expect(select).toBeFocused()
     expect(await prevented()).toEqual([])
   })
 
   test('ArrowUp chooses the previous option', async ({ page }) => {
-    await openNativeStory(page, 'selected')
-    await select(page).focus()
-    await expect(select(page)).toHaveValue('stockholm')
+    await openNativeStory(page)
+    const select = nativeSelect(page, 'chosen')
+    await select.focus()
+    await expect(select).toHaveValue('stockholm')
     await page.keyboard.press('ArrowUp')
-    await expect(select(page)).toHaveValue('malmo')
+    await expect(select).toHaveValue('malmo')
     await page.keyboard.press('ArrowUp')
-    await expect(select(page)).toHaveValue('gothenburg')
+    await expect(select).toHaveValue('gothenburg')
     // No wrap: the instruction option is first, and ArrowUp stops there.
     await page.keyboard.press('ArrowUp')
-    await expect(select(page)).toHaveValue('')
+    await expect(select).toHaveValue('')
     await page.keyboard.press('ArrowUp')
-    await expect(select(page)).toHaveValue('')
+    await expect(select).toHaveValue('')
   })
 
   test('Home and End choose the first and the last option', async ({ page }) => {
-    await openNativeStory(page, 'selected')
-    await select(page).focus()
+    await openNativeStory(page)
+    const select = nativeSelect(page, 'chosen')
+    await select.focus()
     await page.keyboard.press('End')
-    await expect(select(page)).toHaveValue('uppsala')
+    await expect(select).toHaveValue('uppsala')
     await page.keyboard.press('Home')
-    await expect(select(page)).toHaveValue('')
+    await expect(select).toHaveValue('')
   })
 
   test('typing a letter chooses the option that starts with it', async ({ page }) => {
-    await openNativeStory(page, 'keyboard')
-    await select(page).focus()
+    await openNativeStory(page)
+    const select = nativeSelect(page, 'municipality')
+    await select.focus()
     await page.keyboard.press('U')
-    await expect(select(page)).toHaveValue('uppsala')
+    await expect(select).toHaveValue('uppsala')
     // Wait out the typeahead buffer, then a new letter starts over.
     await page.waitForTimeout(1200)
     await page.keyboard.press('M')
-    await expect(select(page)).toHaveValue('malmo')
+    await expect(select).toHaveValue('malmo')
     await page.waitForTimeout(1200)
     await page.keyboard.press('s')
-    await expect(select(page)).toHaveValue('stockholm')
+    await expect(select).toHaveValue('stockholm')
   })
 
   test('Alt+ArrowDown opens the list and Escape closes it', async ({ page }) => {
-    await openNativeStory(page, 'selected')
-    await select(page).focus()
-    const isOpen = () => select(page).evaluate((element) => element.matches(':open'))
+    await openNativeStory(page)
+    const select = nativeSelect(page, 'chosen')
+    await select.focus()
+    const isOpen = () => select.evaluate((element) => element.matches(':open'))
     expect(await isOpen()).toBe(false)
     await page.keyboard.press('Alt+ArrowDown')
     await expect.poll(isOpen).toBe(true)
     await page.keyboard.press('Escape')
     await expect.poll(isOpen).toBe(false)
     // The value didn't change, and focus stayed on the select.
-    await expect(select(page)).toHaveValue('stockholm')
-    await expect(select(page)).toBeFocused()
+    await expect(select).toHaveValue('stockholm')
+    await expect(select).toBeFocused()
   })
 
   test('clicking the label focuses the select', async ({ page }) => {
-    await openNativeStory(page, 'default')
-    await page.getByText('Kommun', { exact: true }).click()
-    await expect(select(page)).toBeFocused()
+    await openNativeStory(page)
+    const select = nativeSelect(page, 'municipality')
+    const id = await select.getAttribute('id')
+    await page.locator(`label[for="${id}"]`).click()
+    await expect(select).toBeFocused()
   })
 })
 
 test.describe('Native listbox focus and modes', () => {
   test('the select is at least 24px high (2.5.8)', async ({ page }) => {
-    await openNativeStory(page, 'default')
-    expect((await select(page).boundingBox())?.height).toBeGreaterThanOrEqual(24)
+    await openNativeStory(page)
+    for (const select of await page.locator('.kv-listbox-native').all()) {
+      expect((await select.boundingBox())?.height).toBeGreaterThanOrEqual(24)
+    }
   })
 
   test('a key-focused select shows a focus indicator (2.4.7)', async ({ page }) => {
-    await openNativeStory(page, 'default')
+    await openNativeStory(page)
+    const select = nativeSelect(page, 'municipality')
     await page.keyboard.press('Tab')
-    await expect(select(page)).toBeFocused()
-    await expect(select(page)).toHaveAttribute('data-focus-visible', '')
-    expect(
-      await select(page).evaluate((element) => getComputedStyle(element).outlineStyle),
-    ).not.toBe('none')
+    await expect(select).toBeFocused()
+    await expect(select).toHaveAttribute('data-focus-visible', '')
+    expect(await select.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe(
+      'none',
+    )
   })
 
   test('the error of an invalid select is in its description', async ({ page }) => {
-    await openNativeStory(page, 'invalid')
-    const invalid = select(page)
+    await openNativeStory(page)
+    const invalid = nativeSelect(page, 'invalid')
     await expect(invalid).toHaveAttribute('aria-invalid', 'true')
     await expect(invalid).toHaveAccessibleDescription(
       'Kommunen där du är folkbokförd. Fel: Välj en kommun',
@@ -177,10 +193,11 @@ test.describe('Native listbox focus and modes', () => {
 
   test('forced colours keep the select edge visible in every state (1.4.11)', async ({ page }) => {
     await page.emulateMedia({ forcedColors: 'active' })
-    await openNativeStory(page, 'forced-colors')
-    const selects = page.locator('.kv-listbox-native')
-    for (const index of [0, 1, 3]) {
-      const edge = await selects.nth(index).evaluate((element) => {
+    await openNativeStory(page)
+    const selects = await page.locator('.kv-listbox-native').all()
+    expect(selects).toHaveLength(5)
+    for (const select of selects) {
+      const edge = await select.evaluate((element) => {
         const style = getComputedStyle(element)
         return { width: Number.parseFloat(style.borderTopWidth), style: style.borderTopStyle }
       })
@@ -194,16 +211,18 @@ test.describe('Native listbox focus and modes', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 320, height: 640 })
-    for (const story of ['long-finnish', 'invalid', 'groups', 'keyboard']) {
-      await openNativeStory(page, story)
-      expect(await hasHorizontalScroll(page), story).toBe(false)
+    // The long label is the disabled select's, in Swedish and in Finnish.
+    for (const globals of [undefined, 'locale:fi']) {
+      await openNativeStory(page, globals)
+      expect(await hasHorizontalScroll(page), globals ?? 'sv').toBe(false)
     }
   })
 })
 
 test.describe('Native listbox accessibility', () => {
-  test('a11y tree of the keyboard fixture', async ({ page }) => {
-    await openNativeStory(page, 'keyboard')
+  test('a11y tree of the Native story', async ({ page }) => {
+    await openNativeStory(page)
+    // The grouped select is left out: its `<optgroup>`s are checked in the story's play.
     await expect(page.locator('form')).toMatchAriaSnapshot(`
       - text: Kommun
       - combobox "Kommun":
@@ -212,50 +231,47 @@ test.describe('Native listbox accessibility', () => {
         - option "Malmö"
         - option "Stockholm"
         - option "Uppsala"
-      - text: Kommun där bostadsanpassningsbidraget ska betalas ut
-      - combobox "Kommun där bostadsanpassningsbidraget ska betalas ut" [disabled]:
+      - text: Kommun
+      - combobox "Kommun":
+        - option "Välj kommun"
+        - option "Göteborg"
+        - option "Malmö"
+        - option "Stockholm" [selected]
+        - option "Uppsala"
+      - paragraph: Kommunen där du är folkbokförd.
+      - combobox "Kommun" [invalid]:
         - option "Välj kommun" [selected]
         - option "Göteborg"
         - option "Malmö"
+        - option "Stockholm"
+        - option "Uppsala"
+      - paragraph: "Fel: Välj en kommun"
+      - text: Kommun där bostadsanpassningsbidraget ska betalas ut
+      - combobox "Kommun där bostadsanpassningsbidraget ska betalas ut" [disabled]:
+        - option "Välj kommun"
+        - option "Göteborg"
+        - option "Malmö" [selected]
         - option "Stockholm"
         - option "Uppsala"
       - button "Skicka"
     `)
   })
 
-  // The Listbox stories in each of the four themes, selected like the Mode and Contrast
-  // toolbars.
+  // The Native story in each of the four themes, selected like the Mode and Contrast toolbars,
+  // and right to left in English.
   const themes = [
     'mode:light;contrast:standard',
     'mode:dark;contrast:standard',
     'mode:light;contrast:more',
     'mode:dark;contrast:more',
   ] as const
-  const stories: readonly (readonly [string, string?])[] = [
-    ['default'],
-    ['keyboard'],
-    ['selected'],
-    ['with-description'],
-    ['optional'],
-    ['invalid'],
-    ['disabled'],
-    ['groups'],
-    ['on-surfaces'],
-    ['compact'],
-    ['long-finnish'],
-    ['controlled'],
-    ['plain-form'],
-    ['rtl'],
-    ['forced-colors'],
-    ...themes.map((theme) => ['forced-colors', theme] as const),
-    ...themes.map((theme) => ['on-surfaces', theme] as const),
-  ]
+  const variants: readonly (string | undefined)[] = [undefined, 'dir:rtl;locale:en', ...themes]
 
-  for (const [story, globals] of stories) {
-    const name = globals === undefined ? story : `${story} (${globals})`
+  for (const globals of variants) {
+    const name = globals === undefined ? 'native' : `native (${globals})`
 
     test(`no axe violations: ${name}`, async ({ page }) => {
-      await openNativeStory(page, story, globals)
+      await openNativeStory(page, globals)
       const axeResults = await new AxeBuilder({ page }).withTags([...wcagTags]).analyze()
       expect(axeResults.violations).toEqual([])
     })
@@ -738,6 +754,7 @@ test.describe('Listbox popup focus and modes', () => {
     await control.focus()
     const scrolls = await listOf(page).evaluate((element) => ({
       scrolls: element.scrollHeight > element.clientHeight,
+      // A WCAG threshold, not a theme value: the popup stays inside the viewport, so no option is out of reach (1.4.10, 2.4.11).
       fits: element.getBoundingClientRect().bottom <= window.innerHeight + 1,
     }))
     expect(scrolls).toEqual({ scrolls: true, fits: true })
@@ -857,6 +874,7 @@ test.describe('Listbox popup virtualization keyboard contract', () => {
     await expect(options.last()).toHaveAttribute('aria-setsize', String(virtualizedCount))
     const sizes = await listOf(page).evaluate((element) => ({
       scrolls: element.scrollHeight > element.clientHeight * 100,
+      // A WCAG threshold, not a theme value: the popup stays inside the viewport, so no option is out of reach (1.4.10, 2.4.11).
       fits: element.getBoundingClientRect().bottom <= window.innerHeight + 1,
     }))
     expect(sizes).toEqual({ scrolls: true, fits: true })

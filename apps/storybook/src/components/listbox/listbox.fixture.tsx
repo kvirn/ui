@@ -11,7 +11,7 @@ import type { VirtualizedPlace } from '../form/virtualized.fixture.ts'
 // props, with the localised text taken at the top. The function child of `Listbox.List` and the
 // `itemToString` and `itemToKey` functions are why these are fixtures: Storybook's own snippet
 // can't print a function. The popup stories use native="never" so they show the popup on any
-// device, and the Native… ones use native="always" for the browser's own `<select>`. KvirnUI
+// device, and the Native one uses native="always" for the browser's own `<select>`. KvirnUI
 // holds no form state and nothing here validates: an invalid example sets `invalid` itself.
 
 export interface Municipality {
@@ -1136,30 +1136,15 @@ export function MunicipalityStates({ locale }: { locale: FormLocale }) {
 // items. It takes plain text only, so rich options and `Listbox.Empty` don't apply, and the
 // open list is the browser's: its keys are native. The option keys are the select's values.
 
-/** A select in a Field: `native="always"` and `autoComplete` for the question (1.3.5). */
-export function NativeMunicipalityField({ locale }: { locale: FormLocale }) {
+/**
+ * The native rendering in a form: nothing chosen (with the `autoComplete` of the question, 1.3.5),
+ * one chosen with `defaultValue`, `groups` as `<optgroup>`s, an invalid one with its help text and
+ * message, and a disabled one. The examples share a label, so each has its own `name`.
+ */
+export function NativeMunicipalities({ locale }: { locale: FormLocale }) {
   const { text, lang } = choiceTextsFor(locale)
   const items = useNativeMunicipalities(text)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="always"
-        items={items}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        placeholder={text.municipalityPlaceholder}
-        name="municipality"
-        autoComplete="address-level2"
-      />
-    </Field.Root>
-  )
-}
-
-/** A select, a disabled select and a button, in a form. */
-export function NativeKeyboardForm({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const items = useNativeMunicipalities(text)
+  const groups = useMunicipalityGroups(text)
   return (
     <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
       <Field.Root required>
@@ -1174,302 +1159,30 @@ export function NativeKeyboardForm({ locale }: { locale: FormLocale }) {
           autoComplete="address-level2"
         />
       </Field.Root>
-      <Field.Root required disabled>
-        <Field.Label>{text.longSelectLabel}</Field.Label>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
           native="always"
           items={items}
           itemToString={(municipality) => municipality.name}
           itemToKey={(municipality) => municipality.code}
           placeholder={text.municipalityPlaceholder}
-          name="disabled"
-          autoComplete="address-level2"
+          name="chosen"
+          defaultValue="stockholm"
         />
       </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-    </form>
-  )
-}
-
-/** A chosen option shows in the closed box: `defaultValue` is its key. */
-export function NativeSelectedMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const items = useNativeMunicipalities(text)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="always"
-        items={items}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        placeholder={text.municipalityPlaceholder}
-        name="municipality"
-        autoComplete="address-level2"
-        defaultValue="stockholm"
-      />
-    </Field.Root>
-  )
-}
-
-/** The `Field.Prose` is the select's description. */
-export function NativeMunicipalityWithDescription({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const items = useNativeMunicipalities(text)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Field.Prose>
-        <p>{text.municipalityHint}</p>
-      </Field.Prose>
-      <Listbox.Root
-        native="always"
-        items={items}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        placeholder={text.municipalityPlaceholder}
-        name="municipality"
-        autoComplete="address-level2"
-      />
-    </Field.Root>
-  )
-}
-
-/** Optional: a Field without `required`. Its label says so, as for every field that isn't required. */
-export function NativeOptionalMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const items = useNativeMunicipalities(text)
-  return (
-    <Field.Root lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="always"
-        items={items}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        placeholder={text.municipalityPlaceholder}
-        name="municipality"
-        autoComplete="address-level2"
-      />
-    </Field.Root>
-  )
-}
-
-/** Invalid: `invalid` on the Field, and the message in `Field.ErrorMessage` under the select. */
-export function NativeInvalidMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const items = useNativeMunicipalities(text)
-  return (
-    <Field.Root required invalid lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Field.Prose>
-        <p>{text.municipalityHint}</p>
-      </Field.Prose>
-      <Listbox.Root
-        native="always"
-        items={items}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        placeholder={text.municipalityPlaceholder}
-        name="municipality"
-        autoComplete="address-level2"
-      />
-      <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
-    </Field.Root>
-  )
-}
-
-/** Disabled with `disabled` on the Listbox (a disabled Field does the same). */
-export function NativeDisabledMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const items = useNativeMunicipalities(text)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="always"
-        items={items}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        placeholder={text.municipalityPlaceholder}
-        name="municipality"
-        autoComplete="address-level2"
-        disabled
-        defaultValue="malmo"
-      />
-    </Field.Root>
-  )
-}
-
-/** Groups: `groups` instead of `items`. `<optgroup label>` names each group of options. */
-export function NativeGroupedMunicipalities({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const groups = useMunicipalityGroups(text)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="always"
-        groups={groups}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        placeholder={text.municipalityPlaceholder}
-        name="municipality"
-      />
-    </Field.Root>
-  )
-}
-
-/** In a card: the select's edge keeps 3:1 against `surface-raised` (1.4.11). */
-export function NativeMunicipalityInCard({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const items = useNativeMunicipalities(text)
-  return (
-    <Card.Root lang={lang}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Listbox.Root
+          native="always"
+          groups={groups}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          placeholder={text.municipalityPlaceholder}
+          name="grouped"
+        />
+      </Field.Root>
       <Field.Root required invalid>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="always"
-          items={items}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          placeholder={text.municipalityPlaceholder}
-          name="municipality"
-          autoComplete="address-level2"
-        />
-        <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
-      </Field.Root>
-    </Card.Root>
-  )
-}
-
-/** Staff density: `kv-compact` on a parent gives a 32px select from 64rem. */
-export function NativeCompactMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const items = useNativeMunicipalities(text)
-  return (
-    <div className="kv-compact" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="always"
-          items={items}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          placeholder={text.municipalityPlaceholder}
-          name="municipality"
-          autoComplete="address-level2"
-        />
-      </Field.Root>
-    </div>
-  )
-}
-
-/** A long label wraps in a narrow column and the select fills it: nothing overflows. */
-export function NativeLongFinnishMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const items = useNativeMunicipalities(text)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.longSelectLabel}</Field.Label>
-      <Listbox.Root
-        native="always"
-        items={items}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        placeholder={text.municipalityPlaceholder}
-        name="municipality"
-        autoComplete="address-level2"
-      />
-    </Field.Root>
-  )
-}
-
-/**
- * Controlled: the value lives in this `useState`, where your form library's state would live.
- * The select shows the `value` it is given and reports changes through `onValueChange`.
- */
-export function NativeControlledMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const items = useNativeMunicipalities(text)
-  const [value, setValue] = useState<string | null>('gothenburg')
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="always"
-          items={items}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          placeholder={text.municipalityPlaceholder}
-          name="municipality"
-          autoComplete="address-level2"
-          value={value}
-          onValueChange={setValue}
-        />
-      </Field.Root>
-      <p className="kv-story-form-output" data-testid="mirror">
-        {text.youChose}: {value ?? '–'}
-      </p>
-    </div>
-  )
-}
-
-/** A plain `<form>`: the select carries the `name`, and the form's `FormData` has the key on submit. */
-export function NativePlainFormMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const items = useNativeMunicipalities(text)
-  const [sent, setSent] = useState<string | undefined>()
-  return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const value = new FormData(event.currentTarget).get('municipality')
-        setSent(typeof value === 'string' ? value : '')
-      }}
-    >
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="always"
-          items={items}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          placeholder={text.municipalityPlaceholder}
-          name="municipality"
-          autoComplete="address-level2"
-          defaultValue="gothenburg"
-        />
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {text.sent}: {sent}
-        </p>
-      )}
-    </form>
-  )
-}
-
-/** Every native state in one column: described, invalid, optional and disabled. */
-export function NativeMunicipalityStates({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const items = useNativeMunicipalities(text)
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Field.Prose>
           <p>{text.municipalityHint}</p>
@@ -1480,38 +1193,12 @@ export function NativeMunicipalityStates({ locale }: { locale: FormLocale }) {
           itemToString={(municipality) => municipality.name}
           itemToKey={(municipality) => municipality.code}
           placeholder={text.municipalityPlaceholder}
-          name="default"
-          autoComplete="address-level2"
-          defaultValue="stockholm"
-        />
-      </Field.Root>
-      <Field.Root required invalid>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="always"
-          items={items}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          placeholder={text.municipalityPlaceholder}
           name="invalid"
-          autoComplete="address-level2"
         />
         <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
       </Field.Root>
-      <Field.Root>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="always"
-          items={items}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          placeholder={text.municipalityPlaceholder}
-          name="optional"
-          autoComplete="address-level2"
-        />
-      </Field.Root>
       <Field.Root required disabled>
-        <Field.Label>{text.municipality}</Field.Label>
+        <Field.Label>{text.longSelectLabel}</Field.Label>
         <Listbox.Root
           native="always"
           items={items}
@@ -1519,10 +1206,14 @@ export function NativeMunicipalityStates({ locale }: { locale: FormLocale }) {
           itemToKey={(municipality) => municipality.code}
           placeholder={text.municipalityPlaceholder}
           name="disabled"
-          autoComplete="address-level2"
           defaultValue="malmo"
         />
       </Field.Root>
-    </div>
+      <div className="kv-button-group">
+        <Button type="submit" className="kv-button--primary">
+          {text.send}
+        </Button>
+      </div>
+    </form>
   )
 }

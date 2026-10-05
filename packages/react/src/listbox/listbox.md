@@ -173,6 +173,6 @@ In development, a Listbox warns once when it has no accessible name (a trigger o
 | `value="gbg"` and `onValueChange(value)`    | `value="gbg"` (the item's key) and `onValueChange(key \| null, details)` |
 | `useNativeSelect()` and `selectProps`       | removed: spread your own `<select>` with the Field's `useField` props    |
 | `.kv-native-select`, `--kv-native-select-*` | `.kv-listbox-native`, `--kv-listbox-native-*`                            |
-| story title `Components/Form/NativeSelect`  | `Components/Form/Listbox` (the Native… stories)                          |
+| story title `Components/Form/NativeSelect`  | `Components/Form/Listbox` (the Native story)                             |
 
 Markup and keys of the native select are unchanged. `useListbox` and `UseListboxOptions` are the popup's hook and types.
