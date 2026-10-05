@@ -1,31 +1,32 @@
 # KvirnUI
 
-**Headless, accessible React components, built for public services in the Nordics and the EU.**
+**Headless, accessible React components for public services in the Nordics and the EU.**
 
-KvirnUI is a spiritual successor to Headless UI and Tailwind Plus, built on the TanStack way of working: a typed headless core, and you own the markup. Every component targets **WCAG 2.2 AA** as a floor, not a goal. The aim is to be the best-in-class accessible component library for municipalities and public-sector teams in Sweden, Finland, Norway and the rest of the EU.
+A typed headless core with thin React bindings, built the TanStack way: behaviour, state, focus management and ARIA come from KvirnUI, markup and styling come from you. A spiritual successor to Headless UI, for municipalities and public-sector teams in Sweden, Finland, Norway and the rest of the EU. Every component targets **WCAG 2.2 AA** as a floor, not a goal.
 
-→ [kvirn-ui.com](https://kvirn-ui.com)
+→ [ui.kvirn.com](https://ui.kvirn.com)
 
 > Status: pre-alpha. APIs will change. See [docs/roadmap.md](docs/roadmap.md).
 
 ## Why KvirnUI
 
 - **Accessible by default.** WCAG 2.2 AA, EN 301 549 and the EAA are the baseline. Every component ships with a documented accessibility contract, automated axe checks and a manual screen reader test record.
-- **Headless, with you in control.** Behaviour, state, focus management and ARIA come from us. Markup and styling come from you. Hooks for full control and thin components for convenience.
-- **Easy to theme.** State is exposed through `data-*` attributes and design tokens are CSS custom properties. Use Tailwind, CSS Modules or plain CSS. An optional default theme passes contrast checks in light, dark and forced-colors modes.
-- **Built for Nordic public services.** Swedish, Finnish, Norwegian (Bokmål and Nynorsk), Northern Sámi and English strings ship as standard. Blocks cover real public-sector patterns such as e-service forms, accessibility statements and consent.
+- **Headless, with you in control.** Hooks for full control, thin components for convenience.
+- **Easy to theme.** State is exposed through `data-*` attributes and design tokens are CSS custom properties, so Tailwind, CSS Modules or plain CSS all work. An optional default theme passes contrast checks in light, dark and forced-colors modes.
+- **Built for Nordic public services.** Swedish, Finnish, Norwegian (Bokmål and Nynorsk), Northern Sámi and English strings ship as standard.
 - **Compliance you can hand to procurement.** Each release comes with a per-component conformance report, an SBOM and no telemetry. Licensed MIT.
 
 ## Packages
 
-| Package             | Purpose                                                                       |
-| ------------------- | ----------------------------------------------------------------------------- |
-| `@kvirn-ui/core`    | Framework-agnostic state machines, focus and keyboard logic (TypeScript)      |
-| `@kvirn-ui/react`   | Headless React hooks and components                                           |
-| `@kvirn-ui/i18n`    | Locale strings for sv, fi, nb, nn, se and en                                  |
-| `@kvirn-ui/theme`   | Optional default theme: one readable `theme.css` you import, override or copy |
-| `@kvirn-ui/blocks`  | Copy-in styled patterns for public-sector UIs (the Tailwind Plus equivalent)  |
-| `@kvirn-ui/testing` | a11y test helpers for Vitest and Playwright                                   |
+| Package               | Purpose                                                                       |
+| --------------------- | ----------------------------------------------------------------------------- |
+| `@kvirn-ui/core`      | Framework-agnostic state machines, focus and keyboard logic (TypeScript)      |
+| `@kvirn-ui/react`     | Headless React hooks and components                                           |
+| `@kvirn-ui/rich-text` | Rich text editor on Tiptap (peer dependencies)                                |
+| `@kvirn-ui/i18n`      | Locale strings for sv, fi, nb, nn, se and en                                  |
+| `@kvirn-ui/theme`     | Optional default theme: one readable `theme.css` you import, override or copy |
+| `@kvirn-ui/testing`   | a11y test helpers for Vitest                                                  |
+| `@kvirn-ui/blocks`    | Planned: copy-in styled patterns for public-sector UIs                        |
 
 ## Quick look
 
@@ -61,11 +62,10 @@ pnpm install
 vp run storybook     # component workbench (apps/storybook)
 vp run docs          # docs site (apps/docs, Next.js)
 vp check             # format + lint + typecheck
-vp test run          # unit + a11y (Vitest + axe)
-vp run e2e           # Playwright keyboard/AT flows
+vp test run          # Vitest: core, components in a real browser (keyboard, axe) and every story
 ```
 
-Project docs: [docs/](docs/README.md). Workflow and rules for humans and agents: [AGENTS.md](AGENTS.md). Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
+Project docs: [docs/](docs/README.md). Rules for humans and agents: [AGENTS.md](AGENTS.md). Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 

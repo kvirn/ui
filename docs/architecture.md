@@ -3,8 +3,8 @@
 ## Packages
 
 ```
-apps/docs          Next.js (App Router, MDX) → kvirn-ui.com
-apps/storybook     Storybook (Vite builder): every story and e2e spec (src/components/<name>/)
+apps/docs          Next.js (App Router, MDX) → ui.kvirn.com
+apps/storybook     Storybook (Vite builder): every story (src/components/<name>/)
 packages/core      @kvirn-ui/core     state machines, focus/keyboard utilities
 packages/react     @kvirn-ui/react    hooks + compound components
 packages/rich-text @kvirn-ui/rich-text the rich text editor, on Tiptap (peers)

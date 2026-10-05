@@ -24,7 +24,7 @@ when_to_use: compliance claim, marketing copy, accessibility statement, tillgän
 - ✅ "Designed and tested to meet WCAG 2.2 Level AA."
 - ✅ "Helps you meet the requirements of the Web Accessibility Directive and the EAA."
 - ❌ "Compliant", "certified", "guarantees compliance", or "fully accessible". Conformance belongs to the final site, not to the library.
-- Every claim on kvirn-ui.com links to its evidence: the conformance JSON, test records and known issues.
+- Every claim on ui.kvirn.com links to its evidence: the conformance JSON, test records and known issues.
 
 ## Accessibility statement block, per country
 

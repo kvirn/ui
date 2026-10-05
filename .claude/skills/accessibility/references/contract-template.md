@@ -4,7 +4,7 @@
 - **Deviations:** none, or the deviation and where it is recorded (`keyboard` key tables for keys, `accessibility/references/apg-patterns.md` for roles and states), approved by the maintainer
 - **Native elements used:** …
 - **Status:** alpha | beta | stable
-- **Tests:** `<name>.test.tsx` next to this file. `<name>.stories.tsx` and `<name>.e2e.ts` in `apps/storybook/src/components/<name>/`.
+- **Tests:** `<name>.test.tsx` next to this file. `<name>.stories.tsx` in `apps/storybook/src/components/<name>/`.
 
 ## Roles, states, properties
 
@@ -22,14 +22,14 @@
 - **Arrows wrap:** n/a | yes | no
 - **Shortcuts:** none
 
-| Key                    | Context | Action | Test                |
-| ---------------------- | ------- | ------ | ------------------- |
-| Tab                    |         |        | `<name>.e2e.ts › …` |
-| Shift+Tab              |         |        |                     |
-| Enter / Space          |         |        |                     |
-| Escape                 |         |        |                     |
-| Arrow keys (RTL flips) |         |        |                     |
-| Home / End             |         |        |                     |
+| Key                    | Context | Action | Test                  |
+| ---------------------- | ------- | ------ | --------------------- |
+| Tab                    |         |        | `<name>.test.tsx › …` |
+| Shift+Tab              |         |        |                       |
+| Enter / Space          |         |        |                       |
+| Escape                 |         |        |                       |
+| Arrow keys (RTL flips) |         |        |                       |
+| Home / End             |         |        |                       |
 
 ## Focus management
 

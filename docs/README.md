@@ -1,6 +1,6 @@
 # KvirnUI project docs
 
-User-facing docs live in `apps/docs` (kvirn-ui.com). The working agreement for humans and agents is [AGENTS.md](../AGENTS.md). The procedures and the facts behind each rule live in the skills (`.claude/skills/`); there are no separate decision records, and git history holds the reasons.
+User-facing docs live in `apps/docs` (ui.kvirn.com). The working agreement for humans and agents is [AGENTS.md](../AGENTS.md). The procedures and the facts behind each rule live in the skills (`.claude/skills/`); there are no separate decision records, and git history holds the reasons.
 
 | Doc                                  | Contents                                                     |
 | ------------------------------------ | ------------------------------------------------------------ |

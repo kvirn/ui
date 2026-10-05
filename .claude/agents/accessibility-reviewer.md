@@ -21,9 +21,9 @@ The diff (`git diff main...HEAD`), the plan path and the component name, plus th
 
 1. **Contract vs APG.** Does `<name>.a11y.md` match the APG pattern? A deviation needs the maintainer's approval (in the plan or the PR) and a note in the `keyboard` skill or the contract.
 2. **Contract vs code.** Roles, states, properties, keyboard, focus management and announcements. List every mismatch.
-3. **Keyboard (`keyboard` skill).** One Tab stop per composite, the stated focus strategy, selection versus focus, focusable disabled items, RTL flips, no intercepted native keys, no auto-advance, no non-opt-in shortcuts. Read the `Keyboard` story and the e2e spec against the table. The stories file passes `parameters.a11yContract`, and the Docs page shows the Keyboard section.
+3. **Keyboard (`keyboard` skill).** One Tab stop per composite, the stated focus strategy, selection versus focus, focusable disabled items, RTL flips, no intercepted native keys, no auto-advance, no non-opt-in shortcuts. Read the `Keyboard` story and the keyboard tests against the table. The stories file passes `parameters.a11yContract`, and the Docs page shows the Keyboard section.
 4. **Contract vs tests.** Every keyboard row, Tab and Shift+Tab included, has a test named after it; arrow rows have an RTL test; every story state has an axe assertion; forced-colors, reduced-motion and reflow are covered.
-5. **Verify by reading.** Never run checks, tests, e2e or builds (AGENTS.md rule 12; a hook blocks them). Use the gate output in your brief. Missing evidence goes under `NEEDS RUN` as an exact command.
+5. **Verify by reading.** Never run checks, tests or builds (AGENTS.md rule 12). Use the gate output in your brief. Missing evidence goes under `NEEDS RUN` as an exact command.
 6. **WCAG 2.2 specifics:** 2.4.11, 2.5.7, 2.5.8, 3.2.6, 3.3.7, 3.3.8, 4.1.3, 1.4.10, 1.4.11, 1.4.12, 1.4.13.
 7. **Gate tampering:** `.skip` or `.only`, disabled axe rules, loosened thresholds, updated snapshots, `@ts-expect-error`.
 8. **Strings:** no hard-coded visible or announced strings; all 6 locales present.
@@ -39,7 +39,7 @@ BLOCKING
 - [file:line] <defect> — <WCAG SC / rule> — <who it fails> — <fix>
 NON-BLOCKING
 - …
-GATES: vp check · vp test · e2e (as reported by the orchestrator)
+GATES: vp check · vp test (as reported by the orchestrator)
 NEEDS RUN
 - <exact command, and why>
 VERDICT: APPROVE | CHANGES REQUIRED

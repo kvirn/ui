@@ -51,7 +51,7 @@ Write `## API` in the `.md` as tables and short bullets (see `announcer.md`). Do
 ### 5. Keyboard: always right after the API
 
 - Every Docs page has a Keyboard section directly under the API. It renders the `## Keyboard` section of `<name>.a11y.md` (the focus lines and the key table), so **every stories file passes `parameters.a11yContract`** (a `?raw` import). Without it the page has no Keyboard section, which fails the template.
-- Never write keys by hand in the `.md`, an `argTypes` description or a story: the contract is the one source, and its rows are tested in e2e (`keyboard` skill).
+- Never write keys by hand in the `.md`, an `argTypes` description or a story: the contract is the one source, and its rows are tested in the component test (`keyboard` skill).
 - A component with no focusable part still gets the section: its contract says so, and the page shows "This component has no focusable parts and handles no keys."
 - A component with a focusable part has a `Keyboard` story (an example) where readers can try the keys.
 
@@ -158,7 +158,7 @@ Notes in prose: choices, pitfalls, combinations. Code blocks here are for packag
 
 - Add a story only if it shows something the others don't: a state, a composition, a hard case (long Finnish text at 320px, RTL, forced colours), a way to build your own. Don't add one to have one.
 - One-line JSDoc per story says what it shows and when to use it.
-- Every state gets axe in the four theme projects, and the e2e covers reflow, forced colours and the keyboard rows (testing skill).
+- Every state gets axe in the four theme projects, the component test covers the keyboard rows, and the display-mode sweep covers reflow and forced colours (testing skill).
 - Strings in the story are real: a sentence a resident would read, in sv by default, with the locale toolbar switching them.
 
 ## Foundation pages

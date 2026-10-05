@@ -6,7 +6,7 @@ when_to_use: new component, form input or control, keyboard or focus bug, Tab or
 
 # Keyboard
 
-Every component with a focusable or keyboard-operable part follows the APG practice [Developing a Keyboard Interface](https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/) **and** its APG pattern's key table. Every key it handles is documented in its contract, tested in e2e and shown on its Storybook Docs page. A deviation needs the maintainer's approval and this skill (or the pattern's key table) updated in the same PR (hard rule 2).
+Every component with a focusable or keyboard-operable part follows the APG practice [Developing a Keyboard Interface](https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/) **and** its APG pattern's key table. Every key it handles is documented in its contract, tested in its component test and shown on its Storybook Docs page. A deviation needs the maintainer's approval and this skill (or the pattern's key table) updated in the same PR (hard rule 2).
 
 Load this together with the `accessibility` skill (roles, names, focus visibility) and the `testing` skill (how to write the tests).
 
@@ -15,8 +15,8 @@ Load this together with the `accessibility` skill (roles, names, focus visibilit
 1. **Find the key table.** Look up the component in [references/key-tables.md](references/key-tables.md). Re-check the live APG pattern page, because APG gets updated. No pattern fits: stop and get the maintainer's approval before inventing keys.
 2. **Native first.** A native control already has its keys: text editing in `<input>`, Space on a checkbox, arrows in a native radio group, Enter submitting a form. Don't re-implement them, don't `preventDefault` them, and document them anyway, because users read the table to learn the component.
 3. **Apply the practice rules** below. Decide and write down the focus strategy, whether selection follows focus, and whether arrows wrap.
-4. **Write the Keyboard table** in `<name>.a11y.md` (format below). Every key the component handles, plus Tab and Shift+Tab. Every row names its e2e test.
-5. **Tests first.** One e2e test per row in `apps/storybook/src/components/<name>/<name>.e2e.ts`, named after the row. Arrow rows get an RTL test as well.
+4. **Write the Keyboard table** in `<name>.a11y.md` (format below). Every key the component handles, plus Tab and Shift+Tab. Every row names its test.
+5. **Tests first.** One test per row in `packages/<package>/src/<name>/<name>.test.tsx` (Vitest browser mode, real key events through `userEvent.keyboard`), named after the row. Arrow rows get an RTL test as well.
 6. **Storybook**. Never copy the table into a story or MDX by hand.
    - The stories file imports its contract and passes it to the Docs page:
      ```tsx
@@ -25,7 +25,7 @@ Load this together with the `accessibility` skill (roles, names, focus visibilit
      ```
      Parts documented in another component's contract (Label, Description and ErrorMessage in `field.a11y.md`) import that one.
    - The Docs page template renders the contract's Keyboard section (`<KeyboardSection />`, after Controls): the focus lines, and the table with Key, Context and Action. Keys show in `<kbd>`.
-   - A component with a focusable part has a story named `Keyboard`: the fixture its e2e keyboard tests drive, with a JSDoc that says to try the keys in the table.
+   - A component with a focusable part has a story named `Keyboard`: the fixture for trying the keys by hand, with a JSDoc that says to try the keys in the table.
    - `tooling/keyboard-docs` fails `vp test run` when a stories file has no contract, a contract is used by no stories file, a contract has no valid Keyboard section, a focusable component has no Tab or Shift+Tab row, or a row has no test.
 
 ## Practice rules
@@ -51,10 +51,10 @@ In `<name>.a11y.md`, under `## Keyboard`:
 - **Arrows wrap:** n/a | yes | no
 - **Shortcuts:** none
 
-| Key       | Context        | Action                                | Test                                        |
-| --------- | -------------- | ------------------------------------- | ------------------------------------------- |
-| Tab       | before the box | Moves focus into the input            | `text-input.e2e.ts › Tab focuses the input` |
-| Shift+Tab | in the input   | Moves focus to the previous focusable | `text-input.e2e.ts › Shift+Tab leaves …`    |
+| Key       | Context        | Action                                | Test                                          |
+| --------- | -------------- | ------------------------------------- | --------------------------------------------- |
+| Tab       | before the box | Moves focus into the input            | `text-input.test.tsx › Tab focuses the input` |
+| Shift+Tab | in the input   | Moves focus to the previous focusable | `text-input.test.tsx › Shift+Tab leaves …`    |
 ```
 
 - Key names: `Tab`, `Shift+Tab`, `Enter`, `Space`, `Escape`, `ArrowUp`, `ArrowDown`, `ArrowLeft`, `ArrowRight`, `Home`, `End`, `PageUp`, `PageDown`, `Control+Home`, and `Control/Command+A` for platform pairs. RTL flips are their own rows or say "(flips in RTL)".
@@ -76,12 +76,12 @@ In `<name>.a11y.md`, under `## Keyboard`:
 - A disabled composite item removed from navigation with native `disabled`, so it can't be discovered.
 - Single character shortcuts that can't be turned off. Shortcuts with no `aria-keyshortcuts`.
 - Escape that closes more than the innermost layer, or doesn't return focus.
-- A keyboard row with no e2e test, a test with no row, or arrows with no RTL test.
+- A keyboard row with no test, a test with no row, or arrows with no RTL test.
 - Keys documented in a story's JSDoc or MDX by hand instead of in the contract.
 
 ## Review mode
 
-Check, in order: the contract's table against the APG pattern and the rules above; the code against the table (press every key in the `Keyboard` story); every row against its e2e test; and the Docs page shows the Keyboard section. Report findings as `file:line — defect — SC (2.1.1, 2.1.2, 2.1.4, 2.4.3, 2.4.7, 3.2.1, 3.2.2) — affected users — fix`.
+Check, in order: the contract's table against the APG pattern and the rules above; the code against the table (press every key in the `Keyboard` story); every row against its test; and the Docs page shows the Keyboard section. Report findings as `file:line — defect — SC (2.1.1, 2.1.2, 2.1.4, 2.4.3, 2.4.7, 3.2.1, 3.2.2) — affected users — fix`.
 
 ## References
 

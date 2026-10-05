@@ -44,6 +44,33 @@ test('trigger exposes aria-expanded and toggles panel', async () => {
 
 `expectNoA11yViolations` wraps `axe.run(element, { runOnly: { type: 'tag', values: ['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa'] } })` and fails with a readable list of violations.
 
+## Keyboard rows (same component test)
+
+One test per contract row, named after it. `userEvent` sends real key events, so these are the keyboard contract's proof (the Test cell names the file and the title).
+
+```tsx
+test('Enter toggles the panel and keeps focus on the trigger', async () => {
+  await render(<Fixture />)
+  const trigger = page.getByRole('button', { name: 'Visa mer' })
+  await userEvent.tab()
+  await expect.element(trigger).toHaveFocus()
+  await userEvent.keyboard('{Enter}')
+  await expect.element(trigger).toHaveAttribute('aria-expanded', 'true')
+  await expect.element(trigger).toHaveFocus()
+})
+
+test('ArrowLeft moves to the next item in RTL', async () => {
+  await render(
+    <div dir="rtl">
+      <Fixture />
+    </div>,
+  )
+  /* press the key, then assert focus and the active item */
+})
+```
+
+Press keys only after the element is in the page (`await expect.element(...).toBeVisible()`), and assert focus after every key that should move it.
+
 ## Story
 
 `apps/storybook/src/components/<name>/<name>.stories.tsx`, following these conventions:
@@ -53,8 +80,8 @@ test('trigger exposes aria-expanded and toggles panel', async () => {
 - Play functions take `canvas` and `userEvent` from the story context.
 - No fixed-theme exports (`Light`, `Dark`, …): `vp test run` runs every story in four theme projects. A story that is only valid in one theme pins it with `globals: { mode: 'light', contrast: 'standard' }` and says why.
 - Visible fixture text is in one locale, with a matching `globals: { locale }` (3.1.2).
-- Keep `RTL` and `ForcedColors`, and every story an e2e spec targets.
-- Pass the contract as `parameters.a11yContract` (a `?raw` import), so the Docs page renders its Keyboard section. A component with a focusable part has a story named `Keyboard`, the fixture its e2e keyboard tests drive (the `keyboard` skill).
+- Keep `RTL` and `ForcedColors`.
+- Pass the contract as `parameters.a11yContract` (a `?raw` import), so the Docs page renders its Keyboard section. A component with a focusable part has a story named `Keyboard`, the fixture for trying the keys by hand (the `keyboard` skill).
 
 ```tsx
 import { Disclosure } from '@kvirn-ui/react'
@@ -111,57 +138,10 @@ export const RTL: Story = {
   },
 }
 
-/** With the forced-colors marker. The e2e suite checks it with real emulation. */
+/** With the forced-colors marker. The display-mode sweep checks it with real emulation. */
 export const ForcedColors: Story = { globals: { forcedColors: 'active' } }
 ```
 
 Stories that drive the theme store themselves (the `KvirnProvider` stories) opt out of the preview's Mode and Contrast with `parameters: { themeStore: 'story' }`.
 
-## E2E (Playwright)
-
-`apps/storybook/src/components/<name>/<name>.e2e.ts` (Playwright finds `**/*.e2e.ts` under `apps/storybook/src`):
-
-```ts
-import { test, expect } from '@playwright/test'
-import AxeBuilder from '@axe-core/playwright'
-import { wcagTags } from '@kvirn-ui/testing'
-
-const url = '/iframe.html?id=components-disclosure--keyboard'
-
-test.describe('Disclosure keyboard contract', () => {
-  test('Enter toggles', async ({ page }) => {
-    await page.goto(url)
-    const trigger = page.getByRole('button', { name: 'Visa mer' })
-    await expect(trigger).toBeVisible()
-    await page.keyboard.press('Tab')
-    await expect(trigger).toBeFocused()
-    await page.keyboard.press('Enter')
-    await expect(trigger).toHaveAttribute('aria-expanded', 'true')
-  })
-
-  test('Space toggles', async ({ page }) => {
-    /* … */
-  })
-
-  test('a11y tree', async ({ page }) => {
-    await page.goto(url)
-    await expect(page.locator('#storybook-root')).toMatchAriaSnapshot(`
-      - button "Visa mer" [expanded=false]
-    `)
-  })
-
-  test('no axe violations', async ({ page }) => {
-    await page.goto(url)
-    const axeResults = await new AxeBuilder({ page }).withTags([...wcagTags]).analyze()
-    expect(axeResults.violations).toEqual([])
-  })
-})
-```
-
-Playwright projects: `chromium`, `firefox`, `webkit`, `chromium-forced-colors`, `chromium-reduced-motion`, `mobile-safari`, `mobile-chrome`, `reflow-320`.
-
-Wait for the story to render (`await expect(locator).toBeVisible()`) before pressing keys. Otherwise the first `Tab` can land before the story mounts.
-
 Stories need no axe code: the a11y addon runs axe with the WCAG 2.2 AA tags on every story in `vp test run`, once in each of the four `storybook*` projects (light, dark, light and dark with more contrast), and any violation fails the test (`parameters.a11y.test: 'error'` in `apps/storybook/.storybook/preview.tsx`).
-
-An e2e spec selects a theme the way the toolbar does: `/iframe.html?id=<story-id>&viewMode=story&globals=mode:dark;contrast:more`. Assert that `<html>` got `data-kv-color-scheme` and `data-kv-contrast`, so an ignored parameter can't pass silently.

@@ -38,7 +38,7 @@ Review a story, block, page or screenshot against `DESIGN.md` and [review-checkl
 1. Read the spec, the plan and `DESIGN.md`. Read the code only for classes, tokens and `data-*` styling.
 2. If there's a running Storybook (`vp run storybook`, port 6006), take screenshots into a temp directory, never into the repo, and look at them with Read:
    `pnpm exec playwright screenshot --viewport-size=320,800 --full-page "http://localhost:6006/iframe.html?id=<story-id>&viewMode=story" /tmp/kv-<story>-320.png`
-   Repeat at 1280 wide and with `--color-scheme=dark`. The forced-colours check comes from the e2e project `chromium-forced-colors`.
+   Repeat at 1280 wide and with `--color-scheme=dark`. The forced-colours check belongs to the display-mode sweep (Plan 0051).
 3. Report findings as `location — issue — DESIGN.md rule or WCAG SC — who it affects — fix`, grouped by severity:
    - **Blocker:** fails WCAG 2.2 AA, breaks a DESIGN.md rule that protects accessibility, or stops a user completing the task.
    - **Major:** users will likely struggle, make errors or lose trust.
