@@ -14,8 +14,6 @@ import {
 
 // Components/Toolbar: one Tab stop for a row of related controls, with the arrow keys between
 // them (APG Toolbar, contract: toolbar.a11y.md), styled by @kvirn-ui/theme/theme.css.
-// toolbar.e2e.ts runs its keyboard contract against Keyboard, RTL and Vertical, and the display
-// modes against the others.
 
 const meta = {
   title: 'Components/Toolbar',

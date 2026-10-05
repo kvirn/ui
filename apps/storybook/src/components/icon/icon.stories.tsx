@@ -37,9 +37,8 @@ import type { BuiltInIconName, IconName, IconProps } from '@kvirn-ui/react'
 import type { IconFixtureLocale } from './icon.fixture.tsx'
 
 // Components/Icon: the headless Icon and the built-in set, styled by @kvirn-ui/theme/theme.css
-// (design spec docs/design/icon.md §6.6). icon.e2e.ts runs its keyboard rows, forced-colours
-// and reflow checks against InButtons, ForcedColors and the other stories, so their play
-// functions only read. RTL mirroring is proven by the `data-mirror-in-rtl` plays of RTL and
+// (design spec docs/design/icon.md §6.6). The keyboard rows are proved in icon.test.tsx, so the
+// play functions only read. RTL mirroring is proven by the `data-mirror-in-rtl` plays of RTL and
 // LibraryIconsViaTheRegistry, and by icon.test.tsx.
 
 const catalogs: Record<string, KvirnMessages> = { sv, fi, nb, nn, se, en }
@@ -396,8 +395,7 @@ export const Colors: Story = {
 }
 
 /**
- * A token works in `color`, `fill` and `stroke`: each channel takes `var(--kv-color-danger)`. The
- * e2e suite checks that the browser engine paints them.
+ * A token works in `color`, `fill` and `stroke`: each channel takes `var(--kv-color-danger)`.
  */
 export const TokenChannels: Story = {
   render: () => (
@@ -614,7 +612,7 @@ const hardCodedRed = '#c00'
 /**
  * Icons with `color`, `fill` and `stroke` set to a hard-coded red, and to a token, in text, in
  * a Button and in a Link. In forced colours the theme turns them into the system colour, so
- * they can't vanish. The e2e suite checks it with real emulation.
+ * they can't vanish.
  */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },

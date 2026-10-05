@@ -21,9 +21,8 @@ import {
 import { ServerHead, ThemedApp, TranslatedApp } from './kvirn-provider.fixture.tsx'
 
 // Foundation/KvirnProvider: the provider and a fixture that shows what it gives components.
-// kvirn-provider.e2e.ts runs its keyboard contract against Swedish, ThemeSwitcher, NestedLocale
-// and RightToLeftOverride, so their play functions only read. These stories drive the theme
-// store themselves, so the preview's Mode and Contrast don't apply to them.
+// These stories drive the theme store themselves, so the preview's Mode and Contrast don't apply
+// to them.
 
 const meta = {
   title: 'Foundation/KvirnProvider',
@@ -170,8 +169,8 @@ export const UntranslatedSection: Story = {
 }
 
 /**
- * A theme switcher of native radio groups on `useTheme()`. The e2e keyboard contract runs
- * against this story, so its play function only reads: it must not change the persisted theme.
+ * A theme switcher of native radio groups on `useTheme()`. Its play function only
+ * reads: it must not change the persisted theme.
  */
 export const ThemeSwitcher: Story = {
   play: async ({ canvas }) => {
@@ -276,5 +275,5 @@ export const ThemeScriptWithNonce: Story = {
   },
 }
 
-/** With the forced-colors marker. The e2e suite checks it with real emulation. */
+/** With the forced-colors marker. */
 export const ForcedColors: Story = { globals: { forcedColors: 'active' } }

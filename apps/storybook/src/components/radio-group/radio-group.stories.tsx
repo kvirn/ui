@@ -21,8 +21,7 @@ import {
 // the arrow keys move and check, mirrored in right-to-left. KvirnUI holds no form state:
 // `value` and `onValueChange` are the selected value, and without `value` the native radios are
 // uncontrolled. Nothing here validates: an invalid story sets `invalid` itself. A radio never
-// gets aria-invalid: the group's error is its description. radio-group.e2e.ts runs the keyboard
-// rows, forced colours and reflow checks.
+// gets aria-invalid: the group's error is its description.
 
 const meta = {
   title: 'Components/Form/RadioGroup',

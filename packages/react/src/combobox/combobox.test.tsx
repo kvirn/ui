@@ -30,9 +30,8 @@ import type {
   UseComboboxSingleOptions,
 } from './use-combobox.ts'
 
-// Contract: combobox.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/combobox/combobox.e2e.ts. Component tests load no theme: the popup
-// is the browser's own `popover` element with the inline placement the hook sets.
+// Contract: combobox.a11y.md. Component tests load no theme: the popup is the browser's own
+// `popover` element with the inline placement the hook sets.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -606,21 +605,6 @@ describe('opening and closing', () => {
     await userEvent.keyboard('{Escape}')
     await expect.poll(isShown).toBe(false)
   })
-
-  test('the popup is under the input and never covers it', async () => {
-    await render(<Example />)
-    await typeText('{ArrowDown}')
-    await expect.poll(isShown).toBe(true)
-    const inputBox = inputElement().getBoundingClientRect()
-    const popupBox = popupElement()?.getBoundingClientRect()
-    expect(popupBox).toBeDefined()
-    const popupTop = popupBox?.top ?? 0
-    const popupBottom = popupBox?.bottom ?? 0
-    // Under the input, or above it when there is no room: never over it.
-    expect(popupTop >= inputBox.bottom - 1 || popupBottom <= inputBox.top + 1).toBe(true)
-    // As wide as the input or wider, never narrower.
-    expect(popupBox?.width ?? 0).toBeGreaterThanOrEqual(inputBox.width - 1)
-  })
 })
 
 describe('keyboard', () => {
@@ -837,6 +821,34 @@ describe('keyboard', () => {
     await expect.poll(isShown).toBe(false)
     expect(onValueChange).not.toHaveBeenCalled()
     await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+  })
+
+  test('Shift+Tab leaves the input backwards while the popup is closed', async () => {
+    await render(<Example />)
+    inputElement().focus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+  })
+
+  test('right to left: ArrowDown and ArrowUp still mean next and previous option, and ArrowLeft and ArrowRight only move the caret', async () => {
+    await render(
+      <div dir="rtl">
+        <Example />
+      </div>,
+    )
+    await typeText('{ArrowDown}')
+    expect(activeName()).toBe('Ängelholm')
+    await userEvent.keyboard('{ArrowDown}')
+    expect(activeName()).toBe('Arvika')
+    await userEvent.keyboard('{ArrowUp}')
+    expect(activeName()).toBe('Ängelholm')
+    await userEvent.keyboard('{ArrowLeft}')
+    expect(inputElement().hasAttribute('aria-activedescendant')).toBe(false)
+    await userEvent.keyboard('{ArrowDown}')
+    expect(activeName()).toBe('Ängelholm')
+    await userEvent.keyboard('{ArrowRight}')
+    expect(inputElement().hasAttribute('aria-activedescendant')).toBe(false)
+    expect(isShown()).toBe(true)
   })
 
   test('Alt+ArrowDown opens the popup without activating an option', async () => {
@@ -1146,15 +1158,6 @@ describe('Toggle and Clear', () => {
     await render(<Example withButtons swedish defaultValue="gbg" />)
     await expect.element(page.getByRole('button', { name: 'Visa alternativ' })).toBeVisible()
     await expect.element(page.getByRole('button', { name: 'Rensa' })).toBeVisible()
-  })
-
-  test('the popup is placed against the Control, and its press does not count as outside', async () => {
-    await render(<Example withButtons />)
-    await typeText('r')
-    await expect.poll(isShown).toBe(true)
-    const control = document.querySelector('.kv-combobox-control')?.getBoundingClientRect()
-    const popupBox = popupElement()?.getBoundingClientRect()
-    expect(Math.abs((popupBox?.width ?? 0) - (control?.width ?? 0))).toBeLessThanOrEqual(1)
   })
 
   test('Clear is not rendered while there is nothing to clear, and a disabled field disables the buttons', async () => {

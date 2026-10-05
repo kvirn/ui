@@ -28,8 +28,7 @@ import type {
   UseTextInputResult,
 } from './use-text-input.ts'
 
-// Contract: text-input.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/text-input/text-input.e2e.ts.
+// Contract: text-input.a11y.md.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -423,6 +422,80 @@ describe('focus visible', () => {
     await expect.element(page.getByRole('textbox', { name: 'Två' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     await expect.element(page.getByRole('textbox', { name: 'Ett' })).toHaveFocus()
+  })
+})
+
+describe('keyboard', () => {
+  function recordPreventedKeys() {
+    const keys: string[] = []
+    const listener = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) keys.push(event.key)
+    }
+    document.addEventListener('keydown', listener)
+    return { keys, stop: () => document.removeEventListener('keydown', listener) }
+  }
+
+  test('ArrowLeft, ArrowRight, Home and End move the caret and are not intercepted', async () => {
+    await render(<TextInput aria-label="Namn" defaultValue="Anna" />)
+    const input = page.getByRole('textbox', { name: 'Namn' })
+    await userEvent.click(input)
+    const element = input.element() as HTMLInputElement
+    const recorder = recordPreventedKeys()
+    await userEvent.keyboard('{Home}')
+    expect(element.selectionStart).toBe(0)
+    await userEvent.keyboard('{End}')
+    expect(element.selectionStart).toBe(4)
+    await userEvent.keyboard('{ArrowLeft}{ArrowLeft}')
+    expect(element.selectionStart).toBe(2)
+    await userEvent.keyboard('{ArrowRight}')
+    expect(element.selectionStart).toBe(3)
+    recorder.stop()
+    expect(element.value).toBe('Anna')
+    await expect.element(input).toHaveFocus()
+    expect(recorder.keys).toEqual([])
+  })
+
+  test('Control/Command+A selects all the text', async () => {
+    await render(<TextInput aria-label="Namn" defaultValue="Anna Andersson" />)
+    const input = page.getByRole('textbox', { name: 'Namn' })
+    await userEvent.click(input)
+    await userEvent.keyboard('{Control>}a{/Control}')
+    const element = input.element() as HTMLInputElement
+    expect([element.selectionStart, element.selectionEnd]).toEqual([0, 'Anna Andersson'.length])
+  })
+
+  test('Enter in a plain form submits it with the typed values (native)', async () => {
+    const onSubmit = vi.fn<(data: FormData) => void>()
+    await render(
+      <form
+        aria-label="Ansökan"
+        onSubmit={(event) => {
+          event.preventDefault()
+          onSubmit(new FormData(event.currentTarget))
+        }}
+      >
+        <Field.Root>
+          <Field.Label marker="none">Namn</Field.Label>
+          <TextInput name="name" />
+        </Field.Root>
+        <button type="submit">Skicka</button>
+      </form>,
+    )
+    await userEvent.type(page.getByRole('textbox', { name: 'Namn' }), 'Britta{Enter}')
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+    expect(onSubmit.mock.calls[0]?.[0].get('name')).toBe('Britta')
+  })
+
+  test('Escape does nothing: the value and the focus stay', async () => {
+    await render(<TextInput aria-label="Namn" defaultValue="Anna" />)
+    const input = page.getByRole('textbox', { name: 'Namn' })
+    await userEvent.click(input)
+    const recorder = recordPreventedKeys()
+    await userEvent.keyboard('{Escape}')
+    recorder.stop()
+    await expect.element(input).toHaveValue('Anna')
+    await expect.element(input).toHaveFocus()
+    expect(recorder.keys).toEqual([])
   })
 })
 

@@ -16,9 +16,8 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 import { AppRoot, RoutedLinkList, RouterAndPlainLinks } from './link.fixture.tsx'
 
 // Components/Link: the headless Link, styled by @kvirn-ui/theme/theme.css.
-// link.e2e.ts runs its keyboard contract against Keyboard, SamePageLink, RoutedLinks, NewTab and
-// Service, and its axe and reflow checks against the other stories, so their play functions
-// only read. A list of page links with a current page is Components/Navigation.
+// The keyboard contract is proved in link.test.tsx, so the play functions only read. A list of
+// page links with a current page is Components/Navigation.
 
 const catalogs: Record<string, KvirnMessages> = { sv, fi, nb, nn, se, en }
 
@@ -455,7 +454,7 @@ export const RTL: Story = {
   },
 }
 
-/** Every link style with the forced-colors marker. The e2e suite checks it with real emulation. */
+/** Every link style with the forced-colors marker. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   render: () => (

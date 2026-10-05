@@ -13,7 +13,7 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 // button: the arrow keys move the caret and never step the value. A code (a postcode, a case
 // number) is a TextInput with a mask, because a number would drop its leading zeros: see
 // Components/Form/TextInput. KvirnUI holds no form state, and nothing here validates: an invalid
-// story sets `invalid` itself. number-input.e2e.ts runs the keyboard rows and the reflow check.
+// story sets `invalid` itself.
 
 const meta = {
   title: 'Components/Form/NumberInput',

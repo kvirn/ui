@@ -39,8 +39,7 @@ import {
 
 // Components/Form/Combobox: Combobox.Root, Control, Input, Toggle, Clear, ValueList, Value and the
 // popup parts it shares with the Listbox (contract: combobox.a11y.md). The Docs page
-// opens with the package docs: how to use it. combobox.e2e.ts runs the keyboard rows, forced
-// colours, reduced motion and reflow checks against these stories.
+// opens with the package docs: how to use it.
 //
 // KvirnUI holds no form state. The value is the chosen option's key: pass
 // `value` and `onValueChange` (Controlled), or `defaultValue` and `name` for a plain form

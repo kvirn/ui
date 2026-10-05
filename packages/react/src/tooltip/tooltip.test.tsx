@@ -16,9 +16,8 @@ import type {
 
 // Contract: tooltip.a11y.md. The timing is proved in core (tooltip-machine.test.ts, with fake
 // time); here the delays are short real ones, so a hover waits for what the browser really does.
-// The keyboard and pointer rows are also covered end to end in
-// apps/storybook/src/components/tooltip/tooltip.e2e.ts. Component tests load no theme: the popup
-// is the browser's own `popover` element with the inline placement the hook sets.
+// Component tests load no theme: the popup is the browser's own `popover` element with the inline
+// placement the hook sets.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -424,6 +423,239 @@ describe('controlled and uncontrolled', () => {
       [true, 'hover'],
       [false, 'trigger-press'],
     ])
+  })
+})
+
+describe('keyboard and pointer contract', () => {
+  const shownTooltips = () =>
+    [...document.querySelectorAll<HTMLElement>('.kv-tooltip')].filter((popup) =>
+      popup.matches(':popover-open'),
+    )
+  const shownTooltipTexts = () => shownTooltips().map((popup) => popup.textContent)
+  const control = (name: string) => page.getByRole('button', { name, exact: true })
+
+  function ContractToolbar({ delay = 5000 }: { delay?: number }) {
+    const [group] = useState(() => createTooltipGroup())
+    return (
+      <>
+        <button type="button" style={buttonStyle}>
+          Före
+        </button>
+        <Toolbar.Root aria-label="Formatering">
+          {['Ångra', 'Fetstil', 'Kursiv'].map((name) => (
+            <Tooltip.Root key={name} delay={delay} group={group}>
+              <Tooltip.Trigger render={<Toolbar.Toggle aria-label={name} style={buttonStyle} />}>
+                {name.slice(0, 1)}
+              </Tooltip.Trigger>
+              <Tooltip.Popup>
+                <Tooltip.Name>{name}</Tooltip.Name>
+              </Tooltip.Popup>
+            </Tooltip.Root>
+          ))}
+          <Popover.Root>
+            <Tooltip.Root delay={delay} group={group}>
+              <Tooltip.Trigger
+                render={<Toolbar.Item render={<Popover.Trigger style={buttonStyle} />} />}
+              >
+                Länk
+              </Tooltip.Trigger>
+              <Tooltip.Popup>
+                <Tooltip.Name>Länk</Tooltip.Name>
+              </Tooltip.Popup>
+            </Tooltip.Root>
+            <Popover.Popup aria-label="Lägg till länk">Webbadress</Popover.Popup>
+          </Popover.Root>
+        </Toolbar.Root>
+        <button type="button" style={buttonStyle}>
+          Efter
+        </button>
+      </>
+    )
+  }
+
+  test('Tab focuses the trigger and its tooltip opens at once', async () => {
+    await render(<Example delay={5000} />)
+    await tabToTrigger()
+    await expect.poll(isShown, { timeout: 300 }).toBe(true)
+  })
+
+  test('Shift+Tab leaves the trigger and its tooltip closes', async () => {
+    await render(<Example delay={5000} />)
+    await tabToTrigger()
+    await expect.poll(isShown).toBe(true)
+    await userEvent.tab({ shift: true })
+    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.poll(isShown).toBe(false)
+  })
+
+  test('arrowing along a toolbar shows each tooltip at once', async () => {
+    await render(<ContractToolbar />)
+    await userEvent.tab()
+    await userEvent.tab()
+    await expect.element(control('Ångra')).toHaveFocus()
+    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Ångra'])
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(control('Fetstil')).toHaveFocus()
+    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Fetstil'])
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(control('Kursiv')).toHaveFocus()
+    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Kursiv'])
+    await userEvent.tab()
+    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.poll(shownTooltipTexts).toEqual([])
+  })
+
+  test('right to left: arrowing along a toolbar shows each tooltip at once', async () => {
+    await render(
+      <div dir="rtl">
+        <ContractToolbar />
+      </div>,
+    )
+    await userEvent.tab()
+    await userEvent.tab()
+    await expect.element(control('Ångra')).toHaveFocus()
+    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Ångra'])
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.element(control('Fetstil')).toHaveFocus()
+    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Fetstil'])
+  })
+
+  test('Enter and Space activate the trigger and the tooltip stays', async () => {
+    await render(<ContractToolbar delay={20} />)
+    const bold = control('Fetstil')
+    bold.element().focus()
+    await expect.poll(shownTooltipTexts).toEqual(['Fetstil'])
+    await userEvent.keyboard('{Enter}')
+    await expect.element(bold).toHaveAttribute('aria-pressed', 'true')
+    await userEvent.keyboard(' ')
+    await expect.element(bold).toHaveAttribute('aria-pressed', 'false')
+    await expect.element(bold).toHaveFocus()
+    await wait(150)
+    expect(shownTooltipTexts()).toEqual(['Fetstil'])
+  })
+
+  test('a trigger that opens a popup closes its tooltip while the popup is open', async () => {
+    await render(<ContractToolbar delay={20} />)
+    const link = control('Länk')
+    link.element().focus()
+    await expect.poll(shownTooltipTexts).toEqual(['Länk'])
+    await userEvent.keyboard('{Enter}')
+    await expect.element(link).toHaveAttribute('aria-expanded', 'true')
+    await expect.poll(shownTooltipTexts).toEqual([])
+    await wait(150)
+    expect(shownTooltipTexts()).toEqual([])
+    await expect.element(link).toHaveFocus()
+  })
+
+  test('Escape hides the tooltip and focus stays', async () => {
+    await render(<Example delay={5000} />)
+    await tabToTrigger()
+    await expect.poll(isShown).toBe(true)
+    await userEvent.keyboard('{Escape}')
+    await expect.poll(isShown).toBe(false)
+    await expect.element(trigger()).toHaveFocus()
+  })
+
+  test('Escape closes only the tooltip when a popover is open underneath', async () => {
+    await render(
+      <Popover.Root>
+        <Popover.Trigger style={buttonStyle}>Fler åtgärder</Popover.Trigger>
+        <Popover.Popup aria-label="Fler åtgärder">
+          <Tooltip.Root delay={5000}>
+            <Tooltip.Trigger aria-label="Kopiera" style={buttonStyle}>
+              K
+            </Tooltip.Trigger>
+            <Tooltip.Popup>
+              <Tooltip.Name>Kopiera</Tooltip.Name>
+            </Tooltip.Popup>
+          </Tooltip.Root>
+        </Popover.Popup>
+      </Popover.Root>,
+    )
+    const popover = () => document.querySelector<HTMLElement>('.kv-popover-popup')
+    await userEvent.click(page.getByRole('button', { name: 'Fler åtgärder' }))
+    await expect.poll(() => popover()?.matches(':popover-open')).toBe(true)
+    await userEvent.tab()
+    await expect.element(control('Kopiera')).toHaveFocus()
+    await expect.poll(shownTooltipTexts).toEqual(['Kopiera'])
+    await userEvent.keyboard('{Escape}')
+    await expect.poll(shownTooltipTexts).toEqual([])
+    expect(popover()?.matches(':popover-open')).toBe(true)
+    await expect.element(control('Kopiera')).toHaveFocus()
+    await userEvent.keyboard('{Escape}')
+    await expect.poll(() => popover()?.matches(':popover-open')).toBe(false)
+  })
+
+  test('after Escape the tooltip stays hidden until focus leaves and comes back', async () => {
+    await render(<Example delay={20} />)
+    await tabToTrigger()
+    await expect.poll(isShown).toBe(true)
+    await userEvent.keyboard('{Escape}')
+    await expect.poll(isShown).toBe(false)
+    await wait(150)
+    expect(isShown()).toBe(false)
+    await userEvent.tab()
+    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(trigger()).toHaveFocus()
+    await expect.poll(isShown).toBe(true)
+  })
+
+  test('Escape does nothing when no tooltip is open', async () => {
+    await render(<Example />)
+    const preventedKeys: string[] = []
+    const record = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) {
+        preventedKeys.push(event.key)
+      }
+    }
+    document.addEventListener('keydown', record)
+    page.getByRole('button', { name: 'Före' }).element().focus()
+    await userEvent.keyboard('{Escape}')
+    document.removeEventListener('keydown', record)
+    expect(isShown()).toBe(false)
+    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    expect(preventedKeys).toEqual([])
+  })
+
+  test('hover opens the tooltip after the delay', async () => {
+    await render(<Example delay={400} />)
+    await userEvent.hover(trigger())
+    await wait(150)
+    expect(isShown()).toBe(false)
+    await expect.poll(isShown).toBe(true)
+    expect(document.activeElement).not.toBe(triggerElement())
+    await userEvent.unhover(document.body)
+  })
+
+  test('the pointer can move onto the tooltip and it stays (hoverable)', async () => {
+    await render(<Example />)
+    await userEvent.hover(trigger())
+    await expect.poll(isShown).toBe(true)
+    const popup = popupElement()
+    if (popup === null) {
+      throw new Error('the tooltip popup is missing')
+    }
+    await userEvent.hover(popup)
+    await wait(250)
+    expect(isShown()).toBe(true)
+    await userEvent.unhover(document.body)
+    await expect.poll(isShown).toBe(false)
+  })
+
+  test('after Escape the tooltip stays hidden until the pointer leaves and comes back', async () => {
+    await render(<Example />)
+    await userEvent.hover(trigger())
+    await expect.poll(isShown).toBe(true)
+    await userEvent.keyboard('{Escape}')
+    await expect.poll(isShown).toBe(false)
+    await wait(200)
+    expect(isShown()).toBe(false)
+    await userEvent.unhover(document.body)
+    await wait(150)
+    await userEvent.hover(trigger())
+    await expect.poll(isShown).toBe(true)
+    await userEvent.unhover(document.body)
   })
 })
 

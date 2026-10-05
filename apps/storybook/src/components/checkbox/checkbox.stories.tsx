@@ -22,8 +22,7 @@ import {
 // the browser and a form submit sends it (PlainForm). A controlled Checkbox shows the `checked`
 // you give it and reports changes through `onCheckedChange` (Controlled): here the state lives
 // in the story's `useState`, where your form library's state would live. Nothing here
-// validates: an invalid story sets `invalid` itself. checkbox.e2e.ts runs the keyboard rows,
-// the click target, forced colours and reflow checks.
+// validates: an invalid story sets `invalid` itself.
 
 const meta = {
   title: 'Components/Form/Checkbox',

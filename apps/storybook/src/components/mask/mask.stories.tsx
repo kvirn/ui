@@ -32,7 +32,7 @@ import {
 // refused character is announced politely (4.1.3) through the KvirnProvider's live region. The
 // mask shapes what is typed. It doesn't explain the format, so every field has a help text that does
 // (3.3.2). KvirnUI holds no form state: the checks are helpers your form
-// calls. mask.e2e.ts runs the keys, paste styles, caret, undo, composition and the throttle.
+// calls.
 
 const meta = {
   title: 'Components/Form/Mask',
@@ -476,7 +476,6 @@ export const RTL: Story = {
   render: (_args, { globals }) => <IdentifierFields locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     const input = canvas.getByRole('textbox', { name: /^Personal identity number$/ })
-    // Typing is proven in mask.e2e.ts. A play that typed too would race that test for the input.
     await expect(input).toHaveAttribute('dir', 'ltr')
   },
 }

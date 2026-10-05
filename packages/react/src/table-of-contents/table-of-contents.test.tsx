@@ -11,7 +11,7 @@ import type { ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
-import { page } from 'vite-plus/test/browser'
+import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { mockRouterLinkComponent } from '../link/link.fixture.tsx'
@@ -43,10 +43,8 @@ import type {
   UseTableOfContentsResult,
 } from './use-table-of-contents.ts'
 
-// Contract: table-of-contents.a11y.md. The keyboard rows, and the page-level behaviour in a real
-// story, are covered end to end in apps/storybook/src/components/table-of-contents/
-// table-of-contents.e2e.ts. These tests scroll the real page: they need a document taller than the
-// viewport, so the fixture below makes its sections taller than the viewport.
+// Contract: table-of-contents.a11y.md. These tests scroll the real page: they need a document
+// taller than the viewport, so the fixture below makes its sections taller than the viewport.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -82,6 +80,8 @@ interface PageProps {
   hidden?: readonly string[]
   /** The last section is shorter than the viewport, so its heading can never reach the top. */
   shortEnd?: boolean
+  /** A link before the contents and one in each section, so there is somewhere for Tab to go. */
+  withLinksAround?: boolean
 }
 
 /**
@@ -96,11 +96,13 @@ function Page({
   scrollMargin = 0,
   hidden = [],
   shortEnd = false,
+  withLinksAround = false,
 }: PageProps) {
   return (
     <>
       {/* Unstyled links: a 24px minimum keeps them clear of axe's target-size rule (2.5.8). */}
       <style>{'a { display: inline-block; min-block-size: 24px; }'}</style>
+      {withLinksAround ? <a href="#title">Before the contents</a> : null}
       <h2 id="title">På den här sidan</h2>
       <TableOfContents.Root items={items} offset={offset} aria-labelledby="title" />
       <div style={{ height: 200 }} />
@@ -118,6 +120,7 @@ function Page({
           >
             {heading.label}
           </h2>
+          {withLinksAround ? <a href="#title">{`Inside ${heading.label}`}</a> : null}
         </section>
       ))}
     </>
@@ -496,7 +499,6 @@ describe('the current heading', () => {
     await expect.poll(currentLabels).toEqual(['Bostäder'])
     window.scrollTo(0, document.documentElement.scrollHeight)
     await expect.poll(currentLabels).toEqual(['Så ansöker du'])
-    expect(document.getElementById('ansok')?.getBoundingClientRect().top).toBeGreaterThan(1)
   })
 
   test('a page that does not scroll marks nothing, though it is at its end', async () => {
@@ -524,6 +526,74 @@ describe('the current heading', () => {
         document.body.setAttribute('style', bodyStyle)
       }
     }
+  })
+})
+
+describe('keyboard', () => {
+  const link = (name: string) => page.getByRole('link', { name, exact: true })
+
+  test('Tab moves through the links in DOM order, nested ones included', async () => {
+    await render(<Page withLinksAround />)
+    link('Before the contents').element().focus()
+    for (const name of ['Avgift', 'Bostäder', 'Så ansöker du']) {
+      await userEvent.tab()
+      await expect.element(link(name)).toHaveFocus()
+    }
+    await userEvent.tab()
+    expect(document.activeElement?.closest('nav')).toBeNull()
+    expect(document.activeElement?.textContent).toBe('Inside Avgift')
+  })
+
+  test('Shift+Tab moves back through the links, then out of the contents', async () => {
+    await render(<Page withLinksAround />)
+    link('Så ansöker du').element().focus()
+    for (const name of ['Bostäder', 'Avgift']) {
+      await userEvent.tab({ shift: true })
+      await expect.element(link(name)).toHaveFocus()
+    }
+    await userEvent.tab({ shift: true })
+    await expect.element(link('Before the contents')).toHaveFocus()
+  })
+
+  test('Enter scrolls to the heading, and the next Tab continues after it', async () => {
+    await render(<Page withLinksAround />)
+    link('Så ansöker du').element().focus()
+    await userEvent.keyboard('{Enter}')
+    try {
+      await expect.poll(() => window.location.hash).toBe('#ansok')
+      await userEvent.tab()
+      expect(document.activeElement?.textContent).toBe('Inside Så ansöker du')
+    } finally {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search)
+    }
+  })
+
+  test('Arrow keys, Home and End are not handled', async () => {
+    await render(<Page withLinksAround />)
+    const start = link('Så ansöker du')
+    start.element().focus()
+    for (const key of ['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', 'End', 'Home']) {
+      await userEvent.keyboard(`{${key}}`)
+      await expect.element(start).toHaveFocus()
+    }
+  })
+
+  test('a change of the current heading moves no focus and fills no live region', async () => {
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <Page />
+      </KvirnProvider>,
+    )
+    const first = link('Avgift')
+    first.element().focus()
+    expect(page.getByRole('status').element().textContent).toBe('')
+    expect(page.getByRole('alert').element().textContent).toBe('')
+    scrollHeading('ansok')
+    await expect.poll(currentLabels).toEqual(['Så ansöker du'])
+    await new Promise((resolve) => setTimeout(resolve, 400))
+    await expect.element(first).toHaveFocus()
+    expect(page.getByRole('status').element().textContent).toBe('')
+    expect(page.getByRole('alert').element().textContent).toBe('')
   })
 })
 

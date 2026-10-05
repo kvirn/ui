@@ -8,8 +8,7 @@ import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Toggle: a button that is on or off, styled by @kvirn-ui/theme/theme.css (contract:
-// toggle.a11y.md). toggle.e2e.ts runs its keyboard contract against Keyboard and
-// FocusableWhenDisabled, and the display modes against the others.
+// toggle.a11y.md).
 
 /** Fixture text. Stories set `locale` to match it, so `lang` matches the content (3.1.2). */
 const sv = {
@@ -335,8 +334,7 @@ export const RTL: Story = {
 
 /**
  * Forced colours: a pressed toggle is a `Highlight` fill with `HighlightText`, and an unpressed
- * one is a plain button, so the state never rests on colour alone. The e2e suite checks it with
- * real emulation.
+ * one is a plain button, so the state never rests on colour alone.
  */
 export const ForcedColors: Story = {
   parameters: showSource('toggle/toggle.stories.tsx', 'Matrix'),

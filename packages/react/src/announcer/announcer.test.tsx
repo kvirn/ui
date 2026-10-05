@@ -13,7 +13,7 @@ import { useMessages } from '../provider/use-messages.ts'
 import { useAnnouncer } from './use-announcer.ts'
 import type { UseAnnouncerResult } from './use-announcer.ts'
 
-// Contract: announcer.a11y.md. The component has no keys, so there is no e2e spec.
+// Contract: announcer.a11y.md. The component has no keys.
 
 type Announce = UseAnnouncerResult['announce']
 

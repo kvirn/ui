@@ -310,3 +310,22 @@ describe('AltGr', () => {
     expect(chord({ key: '€', altKey: true })).toBe(false)
   })
 })
+
+describe('the keys the text leaves to the browser and Tiptap', () => {
+  test('the arrow keys, Home and End move the caret in the text', async () => {
+    const { editor } = create('<p>Biblioteket har öppet på torsdagar.</p>')
+    placeCaret(editor, 'Biblioteket')
+    await userEvent.keyboard('{Home}{ArrowRight}{ArrowRight}{ArrowRight}X')
+    expect(editor.view.dom.textContent).toContain('BibXlioteket')
+    await userEvent.keyboard('{End}Y')
+    expect(editor.view.dom.textContent).toContain('torsdagar.Y')
+  })
+
+  test('Enter starts a new paragraph and Shift+Enter a line break', async () => {
+    const { editor } = create('<p>Välkommen in.</p>')
+    placeCaret(editor, 'Välkommen in.')
+    await userEvent.keyboard('{Enter}Ny{Shift>}{Enter}{/Shift}Rad')
+    expect(editor.view.dom.querySelectorAll(':scope > p')).toHaveLength(2)
+    expect(editor.view.dom.querySelectorAll('p br:not(.ProseMirror-trailingBreak)')).toHaveLength(1)
+  })
+})

@@ -18,10 +18,8 @@ import {
 } from './navigation.fixture.tsx'
 
 // Components/Navigation: the headless Navigation, styled by @kvirn-ui/theme/theme.css (design
-// specs docs/design/navigation.md and docs/design/navigation-link-options.md). navigation.e2e.ts
-// runs its keyboard rows against Keyboard and CollapsedGroups, and its axe, reflow and landmark
-// checks against the other stories, so their play functions only read (FocusVisible tabs onto
-// the link to check the ring). Navigation has no library strings: the labels and links are the
+// specs docs/design/navigation.md and docs/design/navigation-link-options.md). Their play
+// functions only read (FocusVisible tabs onto the link to check the ring). Navigation has no library strings: the labels and links are the
 // story's own, in sv by default.
 
 // The Docs page opens with the package docs: how to use it, and how to build your own.

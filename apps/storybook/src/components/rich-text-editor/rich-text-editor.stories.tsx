@@ -25,9 +25,8 @@ import {
 
 // Components/Form/Rich text editor: a formatted-text field on Tiptap (design spec
 // docs/design/rich-text-editor.md, Plan 0036), styled by @kvirn-ui/theme/theme.css. It lives in a
-// Field, which names, describes and validates it like any control. rich-text-editor.e2e.ts runs
-// its keyboard rows, the popover forms, the Table group, forced colours and reflow checks. The
-// output is never sanitized: a real app sanitizes it on the server.
+// Field, which names, describes and validates it like any control. The output is never
+// sanitized: a real app sanitizes it on the server.
 
 const meta = {
   title: 'Components/Form/Rich text editor',

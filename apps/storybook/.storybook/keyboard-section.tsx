@@ -10,7 +10,7 @@ import type { KeyboardSection as ParsedSection } from '../../../tooling/keyboard
 // The Keyboard section of a Docs page. It renders the `## Keyboard`
 // section of the contract that the stories file passes as `parameters.a11yContract` (a `?raw`
 // import of the `<name>.a11y.md`), so the table is written once, in the contract, and tested in
-// e2e. Docs strings are English, like the rest of the Docs pages: they aren't component strings.
+// its component test. Docs strings are English, like the rest of the Docs pages: they aren't component strings.
 
 /** `code` between backticks becomes `<code>`. */
 function withInlineCode(text: string): ReactNode {

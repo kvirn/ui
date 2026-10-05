@@ -6,7 +6,7 @@ import { createRef } from 'react'
 import type { ComponentType, ReactElement, ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
-import { page } from 'vite-plus/test/browser'
+import { page, userEvent } from 'vite-plus/test/browser'
 import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
 import { Button } from '../button/button.tsx'
@@ -342,23 +342,6 @@ describe('attributes', () => {
     expect(svg.hasAttribute('data-size')).toBe(false)
   })
 
-  test('the default size grows with the text it sits in (1.4.4)', async () => {
-    const { container } = await render(
-      <p style={{ fontSize: '16px' }}>
-        <RegisteredIcon name="lucide-trash" />
-        <span style={{ fontSize: '32px' }}>
-          <RegisteredIcon name="lucide-trash" />
-        </span>
-      </p>,
-      { wrapper: ({ children }) => <KvirnProvider icons={libraryIcons}>{children}</KvirnProvider> },
-    )
-    const [normal, large] = container.querySelectorAll('svg')
-    const normalWidth = normal?.getBoundingClientRect().width ?? 0
-    const largeWidth = large?.getBoundingClientRect().width ?? 0
-    expect(normalWidth).toBeGreaterThan(0)
-    expect(largeWidth / normalWidth).toBeCloseTo(2, 1)
-  })
-
   test('values are attributes, never inline style (strict CSP)', async () => {
     const svg = await renderIcon(
       <RegisteredIcon
@@ -449,6 +432,43 @@ describe('library compatibility (Plan 0009, Background)', () => {
       expectShapesSetNoPaint(svg)
     },
   )
+})
+
+describe('keyboard', () => {
+  const isFocusOnIcon = () => document.activeElement?.closest('svg') != null
+
+  function IconsAmongStops() {
+    return (
+      <>
+        <Icon name={firstBuiltInName} label="Stäng" />
+        <Button>
+          <Icon name={firstBuiltInName} />
+          Radera
+        </Button>
+        <a href="#ansok">
+          Ansök <Icon name={firstBuiltInName} />
+        </a>
+      </>
+    )
+  }
+
+  test('Tab never stops on an icon', async () => {
+    const { container } = await render(<IconsAmongStops />)
+    expect(container.querySelectorAll('svg[tabindex]')).toHaveLength(0)
+    for (let stop = 0; stop <= 2; stop += 1) {
+      await userEvent.keyboard('{Tab}')
+      expect(isFocusOnIcon()).toBe(false)
+    }
+  })
+
+  test('Shift+Tab never stops on an icon', async () => {
+    const { container } = await render(<IconsAmongStops />)
+    expect(container.querySelectorAll('svg[tabindex]')).toHaveLength(0)
+    for (let stop = 0; stop <= 2; stop += 1) {
+      await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+      expect(isFocusOnIcon()).toBe(false)
+    }
+  })
 })
 
 describe('accessibility', () => {

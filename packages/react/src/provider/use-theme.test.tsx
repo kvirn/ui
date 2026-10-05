@@ -228,3 +228,62 @@ describe('theme preference', () => {
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('defaultColorScheme, storage')
   })
 })
+
+describe('theme switcher keyboard', () => {
+  test('Tab moves focus to the checked radio of the colour-scheme group', async () => {
+    await renderSwitcher(createEnv())
+    await userEvent.tab()
+
+    await expect.element(radio('Följ systemet').first()).toHaveFocus()
+    await expect.element(radio('Följ systemet').first()).toBeChecked()
+  })
+
+  test('Tab moves to the next group: one Tab stop per radio group', async () => {
+    await renderSwitcher(createEnv())
+    await userEvent.tab()
+    await userEvent.tab()
+    await expect.element(radio('Följ systemet').last()).toHaveFocus()
+
+    await userEvent.tab({ shift: true })
+    await expect.element(radio('Följ systemet').first()).toHaveFocus()
+  })
+
+  test('ArrowUp / ArrowLeft select the previous option and keep focus on it', async () => {
+    const env = createEnv()
+    await renderSwitcher(env)
+    await userEvent.tab()
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.element(radio('Mörkt')).toBeChecked()
+    await expect.element(radio('Mörkt')).toHaveFocus()
+
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.element(radio('Ljust')).toBeChecked()
+    await expect.element(radio('Ljust')).toHaveFocus()
+    expect(readAttributes(env).colorScheme).toBe('light')
+  })
+
+  test('ArrowDown / ArrowRight select the next option and wrap around', async () => {
+    const env = createEnv()
+    await renderSwitcher(env)
+    await userEvent.tab()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(radio('Ljust')).toBeChecked()
+
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(radio('Mörkt')).toBeChecked()
+    await expect.element(radio('Mörkt')).toHaveFocus()
+    expect(readAttributes(env).colorScheme).toBe('dark')
+  })
+
+  test('Arrow keys change the contrast group independently', async () => {
+    const env = createEnv()
+    await renderSwitcher(env)
+    await userEvent.tab()
+    await userEvent.tab()
+    await userEvent.keyboard('{ArrowUp}')
+
+    await expect.element(radio('Hög kontrast')).toBeChecked()
+    await expect.element(radio('Följ systemet').first()).toBeChecked()
+    expect(readAttributes(env).contrast).toBe('more')
+  })
+})

@@ -8,7 +8,6 @@
     "build": "storybook build --output-dir storybook-static"
   },
   "devDependencies": {
-    "@axe-core/playwright": "catalog:",
     "@heroicons/react": "catalog:",
     "@kvirn-ui/core": "workspace:*",
     "@kvirn-ui/i18n": "workspace:*",
@@ -17,7 +16,6 @@
     "@kvirn-ui/testing": "workspace:*",
     "@kvirn-ui/theme": "workspace:*",
     "@phosphor-icons/react": "catalog:",
-    "@playwright/test": "catalog:",
     "@storybook/addon-a11y": "catalog:",
     "@storybook/addon-docs": "catalog:",
     "@storybook/addon-vitest": "catalog:",

@@ -29,9 +29,8 @@ import type {
   UseTabsResult,
 } from './use-tabs.ts'
 
-// Contract: tabs.a11y.md. The keyboard rows are covered end to end in
-// apps/storybook/src/components/tabs/tabs.e2e.ts, once each: this file proves the roles, the
-// states, the ids, the callbacks and the warnings. Component tests load no theme.
+// Contract: tabs.a11y.md. This file proves the keyboard rows, the roles, the states, the ids, the
+// callbacks and the warnings. Component tests load no theme.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -453,6 +452,195 @@ describe('selection', () => {
       ['handlingar', 'press'],
     ])
     await expect.element(tab('Handlingar')).toHaveAttribute('aria-selected', 'true')
+  })
+})
+
+describe('keyboard contract', () => {
+  const panel = (name: string) => page.getByRole('tabpanel', { name, exact: true })
+  const selectedAndFocused = async (name: string) => {
+    await expect.element(tab(name)).toHaveFocus()
+    await expect.element(tab(name)).toHaveAttribute('aria-selected', 'true')
+  }
+
+  function KeyboardTabs({
+    activationMode,
+    orientation,
+  }: Pick<CaseTabsProps, 'activationMode' | 'orientation'>) {
+    return (
+      <>
+        <button type="button">Före</button>
+        <Tabs.Root
+          defaultValue="uppgifter"
+          activationMode={activationMode}
+          orientation={orientation}
+        >
+          <Tabs.List aria-label="Ärendet">
+            <Tabs.Tab value="uppgifter" style={fixtureTabStyle}>
+              Uppgifter
+            </Tabs.Tab>
+            <Tabs.Tab value="handlingar" style={fixtureTabStyle}>
+              Handlingar
+            </Tabs.Tab>
+            <Tabs.Tab value="historik" disabled style={fixtureTabStyle}>
+              Historik
+            </Tabs.Tab>
+            <Tabs.Tab value="kontakt" style={fixtureTabStyle}>
+              Kontakt
+            </Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panel value="uppgifter">Uppgifterna om ärendet.</Tabs.Panel>
+          <Tabs.Panel value="handlingar" tabIndex={-1}>
+            <a href="#beslut">Läs beslutet</a>
+          </Tabs.Panel>
+          <Tabs.Panel value="historik">Ärendets historik.</Tabs.Panel>
+          <Tabs.Panel value="kontakt">Kontaktuppgifter.</Tabs.Panel>
+        </Tabs.Root>
+        <button type="button">Efter</button>
+      </>
+    )
+  }
+
+  test('Tab enters at the selected tab', async () => {
+    await render(<KeyboardTabs />)
+    await userEvent.tab()
+    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(tab('Uppgifter')).toHaveFocus()
+    await userEvent.keyboard('{End}')
+    await selectedAndFocused('Kontakt')
+    await userEvent.tab({ shift: true })
+    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(tab('Kontakt')).toHaveFocus()
+  })
+
+  test('Tab leaves the tab list for the panel', async () => {
+    await render(<KeyboardTabs />)
+    tab('Uppgifter').element().focus()
+    await userEvent.tab()
+    await expect.element(panel('Uppgifter')).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+
+    tab('Uppgifter').element().focus()
+    await userEvent.keyboard('{End}')
+    await selectedAndFocused('Kontakt')
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.element(tab('Historik')).toHaveFocus()
+    await expect.element(tab('Kontakt')).toHaveAttribute('aria-selected', 'true')
+    await userEvent.tab()
+    await expect.element(panel('Kontakt')).toHaveFocus()
+
+    tab('Kontakt').element().focus()
+    await userEvent.keyboard('{Home}')
+    await userEvent.keyboard('{ArrowRight}')
+    await selectedAndFocused('Handlingar')
+    await userEvent.tab()
+    await expect.element(page.getByRole('link', { name: 'Läs beslutet' })).toHaveFocus()
+  })
+
+  test('Shift+Tab returns to the selected tab and leaves the list', async () => {
+    await render(<KeyboardTabs />)
+    tab('Uppgifter').element().focus()
+    await userEvent.tab()
+    await expect.element(panel('Uppgifter')).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(tab('Uppgifter')).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+  })
+
+  test('ArrowRight and ArrowLeft move, wrap and select', async () => {
+    await render(<KeyboardTabs />)
+    tab('Uppgifter').element().focus()
+    await userEvent.keyboard('{ArrowLeft}')
+    await selectedAndFocused('Kontakt')
+    await userEvent.keyboard('{ArrowRight}')
+    await selectedAndFocused('Uppgifter')
+    await userEvent.keyboard('{ArrowRight}')
+    await selectedAndFocused('Handlingar')
+    await userEvent.keyboard('{ArrowLeft}')
+    await selectedAndFocused('Uppgifter')
+    await expect.element(tab('Uppgifter')).toHaveAttribute('aria-selected', 'true')
+  })
+
+  test('right to left: the arrows flip', async () => {
+    await render(
+      <div dir="rtl">
+        <KeyboardTabs />
+      </div>,
+    )
+    tab('Uppgifter').element().focus()
+    await userEvent.keyboard('{ArrowLeft}')
+    await selectedAndFocused('Handlingar')
+    await userEvent.keyboard('{ArrowRight}')
+    await selectedAndFocused('Uppgifter')
+    await userEvent.keyboard('{ArrowRight}')
+    await selectedAndFocused('Kontakt')
+    await expect.element(tab('Kontakt')).toHaveAttribute('aria-selected', 'true')
+  })
+
+  test('vertical: ArrowDown and ArrowUp move', async () => {
+    await render(<KeyboardTabs orientation="vertical" />)
+    await expect.element(page.getByRole('tablist')).toHaveAttribute('aria-orientation', 'vertical')
+    tab('Uppgifter').element().focus()
+    await userEvent.keyboard('{ArrowDown}')
+    await selectedAndFocused('Handlingar')
+    await userEvent.keyboard('{ArrowRight}')
+    await selectedAndFocused('Handlingar')
+    await userEvent.keyboard('{ArrowUp}')
+    await selectedAndFocused('Uppgifter')
+    await userEvent.keyboard('{ArrowUp}')
+    await selectedAndFocused('Kontakt')
+    await userEvent.keyboard('{ArrowDown}')
+    await selectedAndFocused('Uppgifter')
+  })
+
+  test('Home and End go to the ends', async () => {
+    await render(<KeyboardTabs />)
+    tab('Uppgifter').element().focus()
+    await userEvent.keyboard('{End}')
+    await selectedAndFocused('Kontakt')
+    await userEvent.keyboard('{Home}')
+    await selectedAndFocused('Uppgifter')
+    await expect.element(tab('Uppgifter')).toHaveAttribute('aria-selected', 'true')
+  })
+
+  test('manual activation: arrows move focus, Enter and Space select', async () => {
+    await render(<KeyboardTabs activationMode="manual" />)
+    tab('Handlingar').element().focus()
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.element(tab('Uppgifter')).toHaveFocus()
+    await expect.element(tab('Uppgifter')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(tab('Handlingar')).toHaveAttribute('aria-selected', 'false')
+    await userEvent.keyboard('{End}')
+    await expect.element(tab('Kontakt')).toHaveFocus()
+    await expect.element(tab('Kontakt')).toHaveAttribute('aria-selected', 'false')
+    await userEvent.keyboard('{Enter}')
+    await selectedAndFocused('Kontakt')
+    await userEvent.keyboard('{Home}')
+    await expect.element(tab('Uppgifter')).toHaveFocus()
+    await expect.element(tab('Kontakt')).toHaveAttribute('aria-selected', 'true')
+    await userEvent.keyboard(' ')
+    await selectedAndFocused('Uppgifter')
+  })
+
+  test('a disabled tab is reachable and never selected', async () => {
+    await render(<KeyboardTabs />)
+    tab('Uppgifter').element().focus()
+    await userEvent.keyboard('{ArrowRight}')
+    await selectedAndFocused('Handlingar')
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(tab('Historik')).toHaveFocus()
+    await expect.element(tab('Historik')).toHaveAttribute('aria-disabled', 'true')
+    await expect.element(tab('Historik')).toHaveAttribute('aria-selected', 'false')
+    await expect.element(tab('Handlingar')).toHaveAttribute('aria-selected', 'true')
+    await userEvent.keyboard('{Enter}')
+    await userEvent.keyboard(' ')
+    await expect.element(tab('Historik')).toHaveAttribute('aria-selected', 'false')
+    await expect.element(tab('Handlingar')).toHaveAttribute('aria-selected', 'true')
+    await userEvent.keyboard('{ArrowRight}')
+    await selectedAndFocused('Kontakt')
   })
 })
 

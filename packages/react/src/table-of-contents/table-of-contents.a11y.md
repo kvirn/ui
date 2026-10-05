@@ -4,7 +4,7 @@
 - **Deviations:** none
 - **Native elements used:** `<nav>` (the `navigation` landmark), `<ul>` and `<li>`, and native `<a href="#id">` links. The page's own headings are the targets.
 - **Status:** in progress (Plan 0049). Gates 1–5 pending, accessibility-reviewer pending. Manual AT is `pending`.
-- **Tests:** `table-of-contents.test.tsx` next to this file, and the pure maths in `packages/core/src/table-of-contents/`. `table-of-contents.stories.tsx` and `table-of-contents.e2e.ts` in `apps/storybook/src/components/table-of-contents/`. Design spec: `docs/design/table-of-contents.md`.
+- **Tests:** `table-of-contents.test.tsx` next to this file, and the pure maths in `packages/core/src/table-of-contents/`. `table-of-contents.stories.tsx` in `apps/storybook/src/components/table-of-contents/`. Design spec: `docs/design/table-of-contents.md`.
 
 TableOfContents lists the headings of a long page as plain links, and marks the one the reader is in. It adds no `tabindex`, no key handling, no live region and no focus movement: the links are native, they are the focusable parts, and the browser owns what following one does. It is not a composite widget, so every link is a Tab stop and the arrow keys do nothing.
 
@@ -41,12 +41,12 @@ TableOfContents lists the headings of a long page as plain links, and marks the 
 
 Each link is a native `<a href>` and its own Tab stop, in DOM order, which is also the visual order. There is no roving tabindex and no arrow-key navigation: this is a list of links, not a menu or a tree. The component never moves focus. When the current heading changes while the reader scrolls, focus stays where it is.
 
-| Key               | Context               | Action                                                                                                                                              | Test                                                                                           |
-| ----------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Tab               | before or in the list | Moves to the next link, nested ones in DOM order included, then out of the list                                                                     | `table-of-contents.e2e.ts › Tab moves through the links in DOM order, nested ones included`    |
-| Shift+Tab         | on a link             | Moves to the previous link, then out of the list                                                                                                    | `table-of-contents.e2e.ts › Shift+Tab moves back through the links, then out of the contents`  |
-| Enter             | on a link             | Follows the hash, natively: the page scrolls to the heading (below a sticky header, by the page's `scroll-padding-top`), and the next Tab continues after the heading | `table-of-contents.e2e.ts › Enter scrolls to the heading, and the next Tab continues after it` |
-| Arrows, Home, End | on a link             | Not handled: they scroll the page, as anywhere. Focus stays on the link                                                                             | `table-of-contents.e2e.ts › Arrow keys, Home and End are not handled`                          |
+| Key               | Context               | Action                                                                                                                                                                | Test                                                                                             |
+| ----------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Tab               | before or in the list | Moves to the next link, nested ones in DOM order included, then out of the list                                                                                       | `table-of-contents.test.tsx › Tab moves through the links in DOM order, nested ones included`    |
+| Shift+Tab         | on a link             | Moves to the previous link, then out of the list                                                                                                                      | `table-of-contents.test.tsx › Shift+Tab moves back through the links, then out of the contents`  |
+| Enter             | on a link             | Follows the hash, natively: the page scrolls to the heading (below a sticky header, by the page's `scroll-padding-top`), and the next Tab continues after the heading | `table-of-contents.test.tsx › Enter scrolls to the heading, and the next Tab continues after it` |
+| Arrows, Home, End | on a link             | Not handled: they scroll the page, as anywhere. Focus stays on the link                                                                                               | `table-of-contents.test.tsx › Arrow keys, Home and End are not handled`                          |
 
 Space and Escape are not handled. Space scrolls the page, as on any link.
 
@@ -88,13 +88,13 @@ Nothing is announced and nothing is live: there is no live region, because the c
 
 Headless: TableOfContents ships no CSS. With `@kvirn-ui/theme/theme.css` (design spec `docs/design/table-of-contents.md`), it uses the navigation item rules:
 
-- Focus indicator: the `.kv-link` ring, 2px at 3:1 (2.4.7, 2.4.13). Test: `table-of-contents.e2e.ts › a key-focused table of contents link shows a focus indicator (2.4.7)`.
+- Focus indicator: the `.kv-link` ring, 2px at 3:1 (2.4.7, 2.4.13). Reviewed by eye in the stories.
 - Target size: every item is at least 24 × 24 CSS px, 44px by default and 32px in compact density (2.5.8). Test: `table-of-contents.stories.tsx › CompactDensity` (play) asserts the 24px threshold.
 - The current heading: a solid `primary` fill with an `on-primary` label at weight 600, and `aria-current`, so it is never colour alone (1.4.1). The headings above it, the trail, get the quiet fill at weight 600. In forced colours the fills drop: the current item gets a straight `LinkText` bar at the inline start and the trail keeps its weight.
 - Contrast: every pair is Navigation's, already in `theme:check` (1.4.3, 1.4.11): `text` on `primary-subtle`, `on-primary` on `primary`, and `primary` on the plain backgrounds.
 - reduced-motion behaviour: the component never scrolls the page. The current fill fades over 120ms only under `prefers-reduced-motion: no-preference`.
 - RTL: logical properties only. The indent and the forced-colours bar sit at the inline start, on the right.
-- Reflow and text spacing: a vertical list at every width, with `overflow-wrap: anywhere` and nothing fixed. No horizontal scrolling at 320 CSS px with the Finnish fixture (`table-of-contents.e2e.ts › no horizontal scrolling at 320px with the Finnish text (1.4.10)`).
+- Reflow and text spacing: a vertical list at every width, with `overflow-wrap: anywhere` and nothing fixed. No horizontal scrolling at 320 CSS px with the Finnish fixture (the `LongFinnishText` story, in the dedicated sweep).
 
 ## WCAG SCs covered
 
@@ -102,13 +102,13 @@ Headless: TableOfContents ships no CSS. With `@kvirn-ui/theme/theme.css` (design
 - 1.4.1 Use of Color: the current heading has a fill and weight as well as colour, and the trail has weight (default theme).
 - 1.4.3 Contrast (Minimum), 1.4.11 Non-text Contrast: `theme:check` pairs.
 - 1.4.10 Reflow, 1.4.12 Text Spacing: the Finnish fixture at 320px, `overflow-wrap`, no fixed heights.
-- 2.1.1 Keyboard, 2.4.3 Focus Order: native links in DOM order (e2e rows above).
+- 2.1.1 Keyboard, 2.4.3 Focus Order: native links in DOM order (the Keyboard rows above).
 - 2.4.1 Bypass Blocks: a named landmark of links to the sections (G124), with a dev warning for a link that has no target (`table-of-contents.test.tsx › a missing heading warns once, naming the id, and its link stays`).
 - 2.4.4 Link Purpose (In Context), 2.4.6 Headings and Labels: the link text is the heading's text, and the landmark has a name (`table-of-contents.test.tsx › renders a navigation landmark named by aria-labelledby, with no aria-label`).
 - 2.4.7 Focus Visible, 2.4.13 Focus Appearance: the link ring.
-- 2.4.11 Focus Not Obscured: with `scroll-padding-top` on `html` equal to the sticky header's height, a focused link or a heading reached by a link is never under the header (the consumer's part; `table-of-contents.e2e.ts › StickyOffset: Shift+Tab after following a link is not under the header (2.4.11)`).
+- 2.4.11 Focus Not Obscured: with `scroll-padding-top` on `html` equal to the sticky header's height, a focused link or a heading reached by a link is never under the header (the consumer's part; the `StickyOffset` story shows it).
 - 2.5.8 Target Size (Minimum): the 24px threshold in the compact story.
-- 3.2.1 On Focus: nothing moves focus and nothing changes context when the current heading changes (`table-of-contents.e2e.ts › no focus movement and no live region on change`).
+- 3.2.1 On Focus: nothing moves focus and nothing changes context when the current heading changes (`table-of-contents.test.tsx › a change of the current heading moves no focus and fills no live region`).
 - 4.1.2 Name, Role, Value: the landmark's name, `aria-current="location"` on the link (`table-of-contents.test.tsx › scrolling to a heading makes its link the one aria-current="location"`).
 
 ## AT test record

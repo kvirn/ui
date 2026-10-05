@@ -24,8 +24,7 @@ import type {
   UseRadioGroupResult,
 } from './use-radio-group.ts'
 
-// Contract: radio-group.a11y.md. The keyboard rows are tested once, end to end, in
-// apps/storybook/src/components/radio-group/radio-group.e2e.ts (testing skill, rule 13).
+// Contract: radio-group.a11y.md. The keyboard rows are in the `keyboard` block.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -483,6 +482,184 @@ describe('the group’s own part names', () => {
     await expect
       .element(group)
       .toHaveAccessibleDescription('Välj ett. Du kan byta senare. Error: Välj språk')
+  })
+})
+
+describe('keyboard', () => {
+  const radio = (name: string) => page.getByRole('radio', { name, exact: true })
+  const before = () => page.getByRole('button', { name: 'Tillbaka' })
+  const after = () => page.getByRole('button', { name: 'Skicka' })
+  const checkedValue = () =>
+    document.querySelector<HTMLInputElement>('.kv-radio:checked')?.value ?? null
+
+  function recordPreventedKeys() {
+    const keys: string[] = []
+    const listener = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) keys.push(event.key)
+    }
+    document.addEventListener('keydown', listener)
+    return { keys, stop: () => document.removeEventListener('keydown', listener) }
+  }
+
+  const surrounded = (group: ReactNode) =>
+    sweden(
+      <>
+        <button type="button">Tillbaka</button>
+        {group}
+        <button type="button">Skicka</button>
+      </>,
+    )
+
+  test('Tab enters the group at the first radio when none is checked', async () => {
+    await render(surrounded(<Duration name="duration" />))
+    before().element().focus()
+    await userEvent.tab()
+    await expect.element(radio('1 månad')).toHaveFocus()
+    expect(checkedValue()).toBeNull()
+  })
+
+  test('Tab enters the group at the checked radio', async () => {
+    await render(surrounded(<Duration name="duration" defaultValue="6" />))
+    before().element().focus()
+    await userEvent.tab()
+    await expect.element(radio('6 månader')).toHaveFocus()
+  })
+
+  test('Tab leaves the group after one stop', async () => {
+    await render(surrounded(<Duration name="duration" defaultValue="6" />))
+    before().element().focus()
+    await userEvent.tab()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(radio('12 månader')).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(after()).toHaveFocus()
+  })
+
+  test('a controlled group is still one Tab stop after an arrow key', async () => {
+    function Controlled() {
+      const [value, setValue] = useState('12')
+      return <Duration name="duration" value={value} onValueChange={setValue} />
+    }
+    await render(surrounded(<Controlled />))
+    radio('12 månader').element().focus()
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.element(radio('6 månader')).toHaveFocus()
+    await expect.element(radio('6 månader')).toBeChecked()
+    await userEvent.tab()
+    await expect.element(after()).toHaveFocus()
+  })
+
+  test('Shift+Tab enters the group at the last radio when none is checked', async () => {
+    await render(surrounded(<Duration name="duration" />))
+    after().element().focus()
+    await userEvent.tab({ shift: true })
+    await expect.element(radio('12 månader')).toHaveFocus()
+    expect(checkedValue()).toBeNull()
+  })
+
+  test('Shift+Tab leaves the group after one stop', async () => {
+    await render(surrounded(<Duration name="duration" />))
+    radio('1 månad').element().focus()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(radio('6 månader')).toBeChecked()
+    await userEvent.tab({ shift: true })
+    await expect.element(before()).toHaveFocus()
+    after().element().focus()
+    await userEvent.tab({ shift: true })
+    await expect.element(radio('6 månader')).toHaveFocus()
+  })
+
+  test('ArrowDown and ArrowRight move to the next radio and check it, wrapping', async () => {
+    await render(surrounded(<Duration name="duration" />))
+    radio('1 månad').element().focus()
+    const prevented = recordPreventedKeys()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(radio('6 månader')).toHaveFocus()
+    await expect.element(radio('6 månader')).toBeChecked()
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(radio('12 månader')).toHaveFocus()
+    await expect.element(radio('12 månader')).toBeChecked()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(radio('1 månad')).toHaveFocus()
+    await expect.element(radio('1 månad')).toBeChecked()
+    expect(checkedValue()).toBe('1')
+    prevented.stop()
+    expect(prevented.keys).toEqual([])
+  })
+
+  test('ArrowUp and ArrowLeft move to the previous radio and check it, wrapping', async () => {
+    await render(surrounded(<Duration name="duration" />))
+    radio('1 månad').element().focus()
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.element(radio('12 månader')).toHaveFocus()
+    await expect.element(radio('12 månader')).toBeChecked()
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.element(radio('6 månader')).toHaveFocus()
+    await expect.element(radio('6 månader')).toBeChecked()
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.element(radio('1 månad')).toHaveFocus()
+    expect(checkedValue()).toBe('1')
+  })
+
+  test('right to left: ArrowLeft moves to the next radio and ArrowRight to the previous', async () => {
+    await render(
+      sweden(
+        <div dir="rtl">
+          <Duration name="duration" />
+        </div>,
+      ),
+    )
+    radio('1 månad').element().focus()
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.element(radio('6 månader')).toHaveFocus()
+    await expect.element(radio('6 månader')).toBeChecked()
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.element(radio('12 månader')).toHaveFocus()
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(radio('6 månader')).toHaveFocus()
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(radio('1 månad')).toHaveFocus()
+    await expect.element(radio('1 månad')).toBeChecked()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(radio('6 månader')).toHaveFocus()
+  })
+
+  test('Arrow keys skip a disabled radio', async () => {
+    await render(surrounded(<Duration name="duration" disabledOption="6" />))
+    await expect.element(radio('6 månader')).toBeDisabled()
+    before().element().focus()
+    await userEvent.tab()
+    await expect.element(radio('1 månad')).toHaveFocus()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(radio('12 månader')).toHaveFocus()
+    await expect.element(radio('12 månader')).toBeChecked()
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.element(radio('1 månad')).toHaveFocus()
+    await expect.element(radio('6 månader')).not.toBeChecked()
+  })
+
+  test('Space checks the focused radio', async () => {
+    await render(surrounded(<Duration name="duration" />))
+    before().element().focus()
+    await userEvent.tab()
+    const first = radio('1 månad')
+    await expect.element(first).toHaveFocus()
+    await expect.element(first).not.toBeChecked()
+    const prevented = recordPreventedKeys()
+    await userEvent.keyboard(' ')
+    await expect.element(first).toBeChecked()
+    await userEvent.keyboard(' ')
+    await expect.element(first).toBeChecked()
+    await expect.element(first).toHaveFocus()
+    prevented.stop()
+    expect(prevented.keys).toEqual([])
+  })
+
+  test('clicking the label text selects the radio', async () => {
+    await render(surrounded(<Duration name="duration" />))
+    await userEvent.click(page.getByText('6 månader'))
+    await expect.element(radio('6 månader')).toBeChecked()
+    await expect.element(radio('6 månader')).toHaveFocus()
   })
 })
 

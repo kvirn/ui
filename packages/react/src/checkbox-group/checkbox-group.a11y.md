@@ -4,7 +4,7 @@
 - **Deviations:** none from APG. Decisions (forms skill): Fieldset wiring, option labels carry no optional marker, a group's `invalid` doesn't cascade, no form state.
 - **Native elements used:** `<fieldset>` and `<legend>` (`CheckboxGroup.Root` and `CheckboxGroup.Legend`), `<input type="checkbox">` (Checkbox), `<label for>` (`Field.Label`).
 - **Status:** alpha candidate (Plan 0013, Phase 2). Accessibility-reviewer pending. Manual AT is `pending`.
-- **Tests:** `checkbox-group.test.tsx` next to this file. `checkbox-group.stories.tsx` and `checkbox-group.e2e.ts` in `apps/storybook/src/components/checkbox-group/`. The box itself: `checkbox.a11y.md`. The fieldset parts (`CheckboxGroup.Legend`, `CheckboxGroup.ErrorMessage`, `CheckboxGroup.Prose` as the description and `CheckboxGroup.HelpText` as the help text): `fieldset.a11y.md`. They are the Fieldset's parts under the group's name.
+- **Tests:** `checkbox-group.test.tsx` next to this file. `checkbox-group.stories.tsx` in `apps/storybook/src/components/checkbox-group/`. The box itself: `checkbox.a11y.md`. The fieldset parts (`CheckboxGroup.Legend`, `CheckboxGroup.ErrorMessage`, `CheckboxGroup.Prose` as the description and `CheckboxGroup.HelpText` as the help text): `fieldset.a11y.md`. They are the Fieldset's parts under the group's name.
 
 A CheckboxGroup is one question with several answers that can all be true ("Hur vill du bli kontaktad?": e-post, sms, brev). `CheckboxGroup.Root` renders the `<fieldset>` and acts as a `Fieldset.Root` with `group` set, so `CheckboxGroup.Legend`, a description (`CheckboxGroup.Prose`), a help text (`CheckboxGroup.HelpText`) and `CheckboxGroup.ErrorMessage` work inside it. It holds no form state: the selected values are the `value` prop, and each change is reported up.
 
@@ -27,7 +27,7 @@ Rules, tested in `checkbox-group.test.tsx`:
 - **`invalid` marks the group's own parts** (legend, help text, error: `data-invalid`) and every option input (`data-invalid`, styling only). It doesn't cascade to the Fields' `invalid`, and no checkbox gets `aria-invalid` from it (`checkbox-group.test.tsx › invalid styles every option and sets no aria-invalid`).
 - **`required`** removes "(valfritt)" from the legend and sets `data-required`. A group has no `aria-required`; see Known issues.
 - **`disabled`** is native `fieldset[disabled]`: every checkbox inside is disabled and leaves the Tab sequence (`checkbox-group.test.tsx › disabled disables every checkbox natively`).
-- **No arrow-key model.** The root attaches no key handler (`checkbox-group.e2e.ts › Arrow keys do not move focus between checkboxes`). Each checkbox is its own Tab stop, in DOM order (`checkbox-group.e2e.ts › Tab moves through every checkbox in DOM order`).
+- **No arrow-key model.** The root attaches no key handler (`checkbox-group.test.tsx › Arrow keys do not move focus between checkboxes`). Each checkbox is its own Tab stop, in DOM order (`checkbox-group.test.tsx › Tab moves through every checkbox in DOM order`).
 
 ## Keyboard
 
@@ -38,13 +38,13 @@ Rules, tested in `checkbox-group.test.tsx`:
 
 Checkboxes are independent, so each is its own Tab stop; the group is not a composite widget and arrow keys do nothing. The keys of one box are in `checkbox.a11y.md`.
 
-| Key                                          | Context          | Action                                                                                    | Test                                                                                    |
-| -------------------------------------------- | ---------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| Tab                                          | before the group | Moves focus to the first checkbox. Each checkbox in the group is a Tab stop, in DOM order | `checkbox-group.e2e.ts › Tab moves through every checkbox in DOM order`                 |
-| Shift+Tab                                    | on a checkbox    | Moves focus to the previous checkbox, then out of the group                               | `checkbox-group.e2e.ts › Shift+Tab moves back through the checkboxes`                   |
-| Space                                        | on a checkbox    | Toggles that checkbox only, and reports the next `value` (native)                         | `checkbox-group.e2e.ts › Space toggles the focused checkbox and reports the next value` |
-| ArrowDown / ArrowUp / ArrowLeft / ArrowRight | on a checkbox    | Nothing: focus and the checked boxes stay (native, not a composite)                       | `checkbox-group.e2e.ts › Arrow keys do not move focus between checkboxes`               |
-| Tab                                          | disabled group   | Skips every checkbox of a disabled group (native `fieldset[disabled]`)                    | `checkbox-group.e2e.ts › Tab skips the checkboxes of a disabled group (native)`         |
+| Key                                          | Context          | Action                                                                                    | Test                                                                                      |
+| -------------------------------------------- | ---------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Tab                                          | before the group | Moves focus to the first checkbox. Each checkbox in the group is a Tab stop, in DOM order | `checkbox-group.test.tsx › Tab moves through every checkbox in DOM order`                 |
+| Shift+Tab                                    | on a checkbox    | Moves focus to the previous checkbox, then out of the group                               | `checkbox-group.test.tsx › Shift+Tab moves back through the checkboxes`                   |
+| Space                                        | on a checkbox    | Toggles that checkbox only, and reports the next `value` (native)                         | `checkbox-group.test.tsx › Space toggles the focused checkbox and reports the next value` |
+| ArrowDown / ArrowUp / ArrowLeft / ArrowRight | on a checkbox    | Nothing: focus and the checked boxes stay (native, not a composite)                       | `checkbox-group.test.tsx › Arrow keys do not move focus between checkboxes`               |
+| Tab                                          | disabled group   | Skips every checkbox of a disabled group (native `fieldset[disabled]`)                    | `checkbox-group.test.tsx › Tab skips the checkboxes of a disabled group (native)`         |
 
 ## Focus management
 
@@ -71,7 +71,6 @@ None. Nothing is live. Entering the group, a screen reader reads the legend, "gr
 
 - As Fieldset (`fieldset.a11y.md`) and Checkbox (`checkbox.a11y.md`). The options are one `--kv-field-gap` apart (8px, 4px in `kv-compact`), the legend is 16px above the description.
 - forced-colors behaviour: as Checkbox. The group has no border of its own.
-- Reflow: a long Finnish legend and option labels wrap. No horizontal scrolling at 320px (`checkbox-group.e2e.ts › no horizontal scrolling at 320px with the long Finnish legend and options (1.4.10)`).
 - RTL: the boxes are at the inline start, the right.
 
 ## WCAG SCs covered

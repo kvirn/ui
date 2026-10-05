@@ -19,8 +19,7 @@ import type {
   UseToolbarResult,
 } from './use-toolbar.ts'
 
-// Contract: toolbar.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/toolbar/toolbar.e2e.ts. Component tests load no theme.
+// Contract: toolbar.a11y.md. Component tests load no theme.
 
 let consoleWarn: MockInstance<Console['warn']>
 

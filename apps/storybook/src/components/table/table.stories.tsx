@@ -30,7 +30,6 @@ import {
 // the plain native element. With `useTable` it sorts one column at a time, selects, expands,
 // paginates and virtualizes. Every story names its table and its region: the small resident tables with
 // a `Table.Caption`, and the staff lists with a visible `Heading` that `aria-labelledby` points at.
-// table.e2e.ts runs the keys of the Keyboard story, the sticky head, RTL, forced colours and 320px.
 
 // The Docs page opens with the package docs: how to use it, and how to build your own.
 const description = usageGuide(guide)
@@ -312,7 +311,7 @@ export const Virtualized: Story = {
 /**
  * A 320px screen in Finnish, with a long header that wraps. The table is wider than its region, so
  * only the region scrolls and it is a Tab stop, named by the table's title. Open this story in a
- * 320px viewport: the e2e test does.
+ * 320px viewport to see it.
  */
 export const NarrowScreen: Story = {
   globals: { locale: 'fi' },

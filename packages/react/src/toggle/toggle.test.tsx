@@ -14,8 +14,7 @@ import type { ToggleProps, ToggleState } from './toggle.tsx'
 import { useToggle } from './use-toggle.ts'
 import type { TogglePartProps, UseToggleOptions, UseToggleResult } from './use-toggle.ts'
 
-// Contract: toggle.a11y.md. Keyboard rows are also covered end to end in
-// apps/storybook/src/components/toggle/toggle.e2e.ts.
+// Contract: toggle.a11y.md.
 
 type PressedChange = NonNullable<UseToggleOptions['onPressedChange']>
 
@@ -200,6 +199,29 @@ describe('disabled', () => {
     await expect.element(toggle).toHaveAttribute('aria-pressed', 'false')
     await expect.element(toggle).toHaveFocus()
     await expectNoA11yViolations(container)
+  })
+})
+
+describe('Tab order', () => {
+  test('Tab moves to the toggle and Shift+Tab moves off it', async () => {
+    await render(
+      <>
+        <button type="button">Före</button>
+        <Toggle>Visa bara olästa</Toggle>
+        <button type="button">Efter</button>
+      </>,
+    )
+    const toggle = page.getByRole('button', { name: 'Visa bara olästa' })
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(toggle).toHaveFocus()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(toggle).toHaveFocus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
   })
 })
 

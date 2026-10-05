@@ -28,8 +28,7 @@ import {
 // value is three strings that nothing parses. KvirnUI holds no form state: `value` and `onValueChange` are the
 // date, and without `value` the native inputs are uncontrolled. Nothing here validates: an
 // invalid story sets `invalid` itself, on the wrong boxes only. The help text is the consumer's,
-// with an example in the order of the boxes. date-input.e2e.ts runs the keyboard rows, forced
-// colours and reflow checks.
+// with an example in the order of the boxes.
 
 const meta = {
   title: 'Components/Form/DateInput',

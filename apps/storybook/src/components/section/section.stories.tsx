@@ -23,9 +23,7 @@ import {
 } from './section.fixture.tsx'
 import type { SectionFixtureLocale } from './section.fixture.tsx'
 
-// Components/Section: the headless Section, styled by @kvirn-ui/theme/theme.css (design spec docs/design/section.md). Section has no focusable part, so there's no Keyboard story:
-// section.e2e.ts runs its Tab rows against CardsOnASection, and its focus-ring, forced-colours and
-// reflow checks against Padding, ForcedColors, ImageInSection and LongFinnishText.
+// Components/Section: the headless Section, styled by @kvirn-ui/theme/theme.css (design spec docs/design/section.md). Section has no focusable part, so there's no Keyboard story.
 
 const localeOf = (globals: Record<string, unknown>): SectionFixtureLocale => {
   const locale = globals['locale']
@@ -445,7 +443,7 @@ export const LongFinnishText: Story = {
   },
 }
 
-/** Examples A and B, and Section, Card or neither, on one page: layout only, for axe and e2e. */
+/** Examples A and B, and Section, Card or neither, on one page: layout only, for axe. */
 function AllExamplesPage({ locale }: { locale: SectionFixtureLocale }) {
   return (
     <>
@@ -499,7 +497,7 @@ export const RTL: Story = {
   ),
 }
 
-/** The Section edge survives forced colours. The e2e suite checks it with real emulation. */
+/** The Section edge survives forced colours. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   parameters: allExamplesSource,

@@ -13,7 +13,7 @@ import { useCallback, useState } from 'react'
 import type { HTMLAttributes, ReactNode, Ref, SVGProps } from 'react'
 import { createPortal } from 'react-dom'
 
-// Story and e2e fixture: the design spec's strings (docs/design/icon.md §4.3). sv, en, nb
+// Story fixture: the design spec's strings (docs/design/icon.md §4.3). sv, en, nb
 // and nn are written. The fi strings are the designer's drafts, for length checks only. se:
 // English, marked lang="en" (3.1.2). Icon names are code, so they aren't translated. Dates are
 // values, formatted with Intl.

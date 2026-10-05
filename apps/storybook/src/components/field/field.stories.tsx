@@ -17,8 +17,7 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 // Components/Form/Field: the headless Field, styled by @kvirn-ui/theme/theme.css (design
 // spec docs/design/form-fields.md). KvirnUI holds no form state: every story
 // passes `invalid`, `required` and `disabled` itself, and writes its own error text, as an
-// implementor's form logic would. field.e2e.ts runs the keyboard rows, focus, forced-colours and
-// reflow checks against Default, Invalid, InvalidWithHelpTextUnder, LongFinnish and ForcedColors.
+// implementor's form logic would.
 
 const meta = {
   title: 'Components/Form/Field',
@@ -538,7 +537,7 @@ export const RTL: Story = {
   render: () => <FieldStates locale="en" />,
 }
 
-/** Edges, the invalid state and disabled survive forced colours. The e2e suite emulates it. */
+/** Edges, the invalid state and disabled survive forced colours. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   parameters: showSource('form/form.fixture.tsx', 'FieldStates'),

@@ -41,8 +41,7 @@ import type {
   UseFieldResult,
 } from './use-field.ts'
 
-// Contract: field.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/field/field.e2e.ts.
+// Contract: field.a11y.md.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -452,7 +451,9 @@ describe('states', () => {
     const input = page.getByRole('textbox')
     await expect.element(input).not.toHaveAttribute('aria-invalid')
     await expect.element(input).not.toHaveAttribute('data-invalid')
-    await expect.element(page.getByText('Telefonnummer')).not.toHaveAttribute('data-invalid')
+    await expect
+      .element(page.getByText('Telefonnummer', { exact: false }))
+      .not.toHaveAttribute('data-invalid')
   })
 
   test('required: aria-required and data-required, never native required', async () => {
@@ -507,6 +508,86 @@ describe('states', () => {
     const label = container.querySelector('label')
     expect(label?.textContent).toBe('Telefonnummer (optional)')
     expect(label?.querySelector('span.kv-field-optional')?.textContent).toBe('(optional)')
+  })
+})
+
+describe('keyboard', () => {
+  const Form = ({ dir }: { dir?: 'rtl' }) => (
+    <form dir={dir}>
+      <Field.Root required>
+        <Field.Label>Fullständigt namn</Field.Label>
+        <TextInput />
+      </Field.Root>
+      <Field.Root disabled>
+        <Field.Label>Fordon</Field.Label>
+        <TextInput />
+      </Field.Root>
+      <Field.Root invalid required>
+        <Field.Label>E-postadress</Field.Label>
+        <Field.Prose>Vi skickar beslutet hit.</Field.Prose>
+        <TextInput />
+        <Field.HelpText>Till exempel namn@exempel.se</Field.HelpText>
+        <Field.ErrorMessage>Ange en e-postadress</Field.ErrorMessage>
+      </Field.Root>
+      <Field.Root required>
+        <Field.Label>Personnummer</Field.Label>
+        <TextInput readOnly />
+      </Field.Root>
+    </form>
+  )
+  const names = ['Fullständigt namn', 'E-postadress', 'Personnummer']
+
+  test('Tab moves through the controls in DOM order', async () => {
+    await render(<Form />)
+    for (const name of names) {
+      await userEvent.tab()
+      await expect.element(page.getByRole('textbox', { name })).toHaveFocus()
+    }
+    await userEvent.tab({ shift: true })
+    await expect.element(page.getByRole('textbox', { name: 'E-postadress' })).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(page.getByRole('textbox', { name: 'Fullständigt namn' })).toHaveFocus()
+  })
+
+  test('Tab moves through the controls in DOM order in right to left', async () => {
+    await render(<Form dir="rtl" />)
+    for (const name of names) {
+      await userEvent.tab()
+      await expect.element(page.getByRole('textbox', { name })).toHaveFocus()
+    }
+  })
+
+  test('Tab goes to the control and never stops on the label, the help text or the error', async () => {
+    await render(
+      <Field.Root invalid required>
+        <Field.Label>E-postadress</Field.Label>
+        <Field.Prose>Vi skickar beslutet hit.</Field.Prose>
+        <TextInput />
+        <Field.HelpText>Till exempel namn@exempel.se</Field.HelpText>
+        <Field.ErrorMessage>Ange en e-postadress</Field.ErrorMessage>
+      </Field.Root>,
+    )
+    const input = page.getByRole('textbox', { name: 'E-postadress' })
+    await userEvent.tab()
+    await expect.element(input).toHaveFocus()
+    await userEvent.tab()
+    expect(document.activeElement?.tagName).toMatch(/^(?:INPUT|BODY)$/)
+    await userEvent.tab({ shift: true })
+    expect(document.activeElement?.tagName).toMatch(/^(?:INPUT|BODY)$/)
+  })
+
+  test('clicking the label focuses the input, also on the optional text', async () => {
+    await render(
+      <KvirnProvider locale="sv-SE" messages={sv}>
+        <PhoneField />
+      </KvirnProvider>,
+    )
+    const input = page.getByRole('textbox', { name: 'Telefonnummer (valfritt)' })
+    await userEvent.click(page.getByText('Telefonnummer', { exact: false }))
+    await expect.element(input).toHaveFocus()
+    input.element().blur()
+    await userEvent.click(page.getByText('(valfritt)'))
+    await expect.element(input).toHaveFocus()
   })
 })
 

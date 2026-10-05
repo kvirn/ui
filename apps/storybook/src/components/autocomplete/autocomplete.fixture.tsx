@@ -4,7 +4,7 @@ import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 import { virtualizedStreets } from '../form/virtualized.fixture.ts'
 
-// Story and e2e fixture for Components/Form/Autocomplete (contract: autocomplete.a11y.md). The
+// Story fixture for Components/Form/Autocomplete (contract: autocomplete.a11y.md). The
 // functions here are the examples the stories show with "Show code": each is one Autocomplete as
 // an adopter writes it. sv, en, fi, nb and nn are written, and se shows the English text,
 // marked lang="en" (3.1.2).
@@ -740,7 +740,7 @@ export function PlainFormExample({ locale }: { locale: FormLocale }) {
 }
 
 /**
- * The fixture the keyboard tests drive: a button, an Autocomplete with a disabled suggestion and
+ * The Keyboard story: a button, an Autocomplete with a disabled suggestion and
  * its two buttons, a disabled Autocomplete, and a submit button in a form that shows what it sent.
  */
 export function KeyboardExample({ locale }: { locale: FormLocale }) {

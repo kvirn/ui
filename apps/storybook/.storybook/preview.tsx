@@ -159,8 +159,7 @@ const preview: Preview = {
       toolbar: { title: 'Direction', items: ['ltr', 'rtl'] },
     },
     forcedColors: {
-      description:
-        'Marks forced-colors stories. Real emulation runs in the chromium-forced-colors e2e project',
+      description: 'Marks forced-colors stories. Real emulation belongs to the display-mode sweep',
       toolbar: { title: 'Forced colors', items: ['none', 'active'] },
     },
   },

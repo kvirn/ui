@@ -20,8 +20,7 @@ import type {
   UseListboxSingleOptions,
 } from './use-listbox.ts'
 
-// Contract: listbox.a11y.md (custom rendering). The keyboard rows are also covered end to end in
-// apps/storybook/src/components/listbox/listbox.e2e.ts. Component tests load no theme: the popup
+// Contract: listbox.a11y.md (custom rendering). Component tests load no theme: the popup
 // is the browser's own `popover` element with the inline placement the hook sets.
 
 let consoleWarn: MockInstance<Console['warn']>
@@ -863,6 +862,30 @@ describe('keyboard', () => {
     await expect.element(trigger()).toHaveFocus()
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+  })
+
+  test('Shift+Tab on the closed trigger moves focus to the previous element', async () => {
+    await render(<Example />)
+    triggerElement().focus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    expect(isShown()).toBe(false)
+  })
+
+  test('right to left: ArrowDown and ArrowUp still mean the next and the previous option', async () => {
+    await render(
+      <div dir="rtl">
+        <Example />
+      </div>,
+    )
+    triggerElement().focus()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.poll(isShown).toBe(true)
+    expect(activeName()).toBe('Ängelholm')
+    await userEvent.keyboard('{ArrowDown}')
+    expect(activeName()).toBe('Arvika')
+    await userEvent.keyboard('{ArrowUp}')
+    expect(activeName()).toBe('Ängelholm')
   })
 
   test('the keys it handles are cancelled, and the others are left to the browser', async () => {

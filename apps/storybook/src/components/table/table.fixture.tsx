@@ -26,7 +26,7 @@ import type { ReactNode } from 'react'
 import { localeOf, messagesFor } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
-// Story and e2e fixture for Components/Table (Plan 0026, design spec docs/design/table.md §4.2,
+// Story fixture for Components/Table (Plan 0026, design spec docs/design/table.md §4.2,
 // §6.17). sv, en, fi, nb and nn are written, and the fi strings are the designer's drafts for length
 // checks only. se: English, marked lang="en" (3.1.2). The library's own strings (the checkbox names, the
 // announcements, "Detaljer") follow the locale through the provider decorator of the stories.

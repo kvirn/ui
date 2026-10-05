@@ -4,7 +4,7 @@
 - **Deviations:** none
 - **Native elements used:** `<div>` by default. The consumer picks `<aside>`, `<section>`, `<nav>` or `<li>` with `render`, and the element's own semantics apply.
 - **Status:** alpha candidate (Plan 0018). Gates pending. Manual AT is `pending`.
-- **Tests:** `section.test.tsx` next to this file. `section.stories.tsx` and `section.e2e.ts` in `apps/storybook/src/components/section/`.
+- **Tests:** `section.test.tsx` next to this file. `section.stories.tsx` in `apps/storybook/src/components/section/`.
 
 Section is a plain container for a region of the page, such as a sidebar or a band of content. It adds no role, no ARIA, no text, no `tabindex` and no behaviour. Everything a user perceives inside a section comes from the consumer's children, which keep their own semantics and focus order. A section is not the `Section` part of Disclosure or Tabs: those are parts of another component.
 
@@ -25,11 +25,11 @@ This component has no focusable parts and handles no keys.
 
 Section is never a Tab stop and never changes the Tab order. Its children handle their own keys. These rows prove Tab passes over the section.
 
-| Key       | Context                         | Action                                                          | Test                                                            |
-| --------- | ------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
-| Tab       | Section with focusable children | Moves through the children in DOM order. The section is skipped | `section.e2e.ts › Tab moves through the children in DOM order`  |
-| Shift+Tab | Section with focusable children | Moves back through the children in reverse DOM order            | `section.e2e.ts › Shift+Tab moves back through the children`    |
-| –         | Root                            | No `tabindex` is rendered, so the section never receives focus  | `section.test.tsx › rendering › adds no role, ARIA or tabindex` |
+| Key       | Context                         | Action                                                          | Test                                                                                             |
+| --------- | ------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Tab       | Section with focusable children | Moves through the children in DOM order. The section is skipped | `section.test.tsx › the section is skipped by Tab: focus goes through its children in DOM order` |
+| Shift+Tab | Section with focusable children | Moves back through the children in reverse DOM order            | `section.test.tsx › the section is skipped by Tab: focus goes through its children in DOM order` |
+| –         | Root                            | No `tabindex` is rendered, so the section never receives focus  | `section.test.tsx › rendering › adds no role, ARIA or tabindex`                                  |
 
 Enter, Space, Escape, arrow keys and Home / End are not handled. Children handle their own keys.
 
@@ -38,7 +38,7 @@ Enter, Space, Escape, arrow keys and Home / End are not handled. Children handle
 - Initial focus: not moved. Section never moves focus.
 - Trap: no.
 - Restore to: not applicable.
-- Never obscured by: Section renders no overlay. The default theme never sets `overflow` on a section, so a child's focus ring (2px, 2px offset) is never clipped (2.4.11, 2.4.13). Test: `section.e2e.ts › a key-focused link in a small section shows a focus indicator (2.4.7)`.
+- Never obscured by: Section renders no overlay. The default theme never sets `overflow` on a section, so a child's focus ring (2px, 2px offset) is never clipped (2.4.11, 2.4.13).
 
 ## Announcements
 
@@ -66,20 +66,20 @@ Headless: Section ships no CSS. With `@kvirn-ui/theme/theme.css` (design spec `d
 - Focus indicator: none of its own (a section is never focused). Children keep their own rings, never clipped.
 - Target size: not applicable. Section has no controls of its own (2.5.8).
 - Contrast: text, links, muted text, control edges and focus rings are held to their minimums on `surface` and `canvas` by `theme:check` (1.4.3, 1.4.11). The section's own boundary is decorative (1.06–1.10:1 from the page): the region is identified by its position, its heading and, where it is worth it, its landmark.
-- forced-colors behaviour: `surface` and `canvas` both become `Canvas`, and the section's 1px border is `CanvasText` on all four sides. Test: `section.e2e.ts › the section border is visible in forced colours` (`chromium-forced-colors`).
+- forced-colors behaviour: `surface` and `canvas` both become `Canvas`, and the section's 1px border is `CanvasText` on all four sides.
 - reduced-motion behaviour: no motion. No hover, transition or pointer style.
-- Reflow and text spacing: no fixed sizes, no `overflow`, `overflow-wrap: break-word`, and the section can shrink in a grid (reviewed in the Section stories and covered by the e2e specs below, not by a CSS test). Media directly in the section never get wider than it. No horizontal scrolling at 320 CSS px with the Finnish fixture (`reflow-320`, `section.e2e.ts › an image in a section fits at 320px (1.4.10)`). With the 1.4.12 text-spacing overrides at 320px, the section grows and nothing is clipped (`section.e2e.ts › text spacing overrides clip nothing at 320px (1.4.12): <story>`).
+- Reflow and text spacing: no fixed sizes, no `overflow`, `overflow-wrap: break-word`, and the section can shrink in a grid (reviewed in the Section stories, not by a CSS test). Media directly in the section never get wider than it. No horizontal scrolling at 320 CSS px with the Finnish fixture (1.4.10), and with the 1.4.12 text-spacing overrides the section grows and nothing is clipped: both are checked in the reflow sweep.
 - `kv-section--padding-none` with a focusable child flush to a viewport edge would push the ring's outer 4px off-screen: `none` is for frames whose children pad themselves, and for media.
 
 ## WCAG SCs covered
 
 - 1.3.1 Info and Relationships: no role of its own, so the consumer's element and children decide the semantics (`section.test.tsx`).
-- 1.3.2 Meaningful Sequence, 2.4.3 Focus Order: DOM order equals reading and focus order (e2e rows above).
+- 1.3.2 Meaningful Sequence, 2.4.3 Focus Order: DOM order equals reading and focus order (the Tab rows above).
 - 1.4.3 Contrast (Minimum), 1.4.6, 1.4.11 Non-text Contrast: `theme:check` pairs on `surface` and `canvas`.
-- 1.4.10 Reflow: `reflow-320` e2e, the Finnish fixture story, and a wide image at 320px.
-- 1.4.12 Text Spacing: e2e with the text-spacing overrides at 320px.
+- 1.4.10 Reflow: the reflow sweep, the Finnish fixture story, and a wide image at 320px.
+- 1.4.12 Text Spacing: the sweep with the text-spacing overrides at 320px.
 - 2.4.1 Bypass Blocks: a named landmark helps screen-reader users skip to it, where the consumer opts in.
-- 2.4.11 Focus Not Obscured (Minimum), 2.4.13 Focus Appearance: no clipping (e2e).
+- 2.4.11 Focus Not Obscured (Minimum), 2.4.13 Focus Appearance: no clipping (reviewed in the stories).
 - 4.1.2 Name, Role, Value: no role or name of its own to get wrong. A landmark's name is the consumer's.
 
 ## AT test record

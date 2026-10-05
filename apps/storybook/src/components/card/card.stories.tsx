@@ -17,8 +17,7 @@ import {
 import type { CardFixtureLocale } from './card.fixture.tsx'
 
 // Components/Card: the headless Card, styled by @kvirn-ui/theme/theme.css (design
-// spec docs/design/card.md). card.e2e.ts runs its keyboard rows, focus-ring, forced-colours and
-// reflow checks against ServiceCard, NewsList, AllExamples, LongFinnishText and ForcedColors.
+// spec docs/design/card.md).
 
 const localeOf = (globals: Record<string, unknown>): CardFixtureLocale => {
   const locale = globals['locale']
@@ -409,7 +408,7 @@ export const LongFinnishText: Story = {
   },
 }
 
-/** Examples B–D on one page: layout only, for axe and e2e. */
+/** Examples B–D on one page: layout only, for axe. */
 function AllExamplesPage({ locale }: { locale: CardFixtureLocale }) {
   return (
     <>
@@ -449,7 +448,7 @@ export const RTL: Story = {
   render: () => <ServiceCardExample locale="en" />,
 }
 
-/** The card edge survives forced colours. The e2e suite checks it with real emulation. */
+/** The card edge survives forced colours. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   parameters: allExamplesSource,

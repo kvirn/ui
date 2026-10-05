@@ -13,9 +13,8 @@ import type { FileUploadRootProps } from '../index.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { useFileUpload } from './use-file-upload.ts'
 
-// Contract: file-upload.a11y.md. Dragging, the theme's states, reflow and forced colours are
-// covered in apps/storybook/src/components/file-upload/file-upload.e2e.ts. Component tests load
-// no theme, so what is asserted is the markup, the names, the focus and the state.
+// Contract: file-upload.a11y.md. Component tests load no theme, so what is asserted is the
+// markup, the names, the focus and the state.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -351,6 +350,146 @@ describe('rejected files', () => {
     await addFiles(container, new File(['x'], 'photo.png', { type: 'image/png' }))
     const trigger = page.getByRole('button', { name: /^Choose files/ }).element()
     expect(trigger.hasAttribute('aria-invalid')).toBe(false)
+  })
+})
+
+describe('keyboard', () => {
+  const triggerButton = () => page.getByRole('button', { name: /^Choose files/ })
+  const neverFinishing = () => vi.fn<(file: File) => Promise<string>>(() => new Promise(() => {}))
+  const statusOf = (container: Element) =>
+    container.querySelector('li[data-status]')?.getAttribute('data-status')
+
+  test('Tab focuses the Trigger once', async () => {
+    await render(
+      <>
+        <Example multiple />
+        <button type="button">Send</button>
+      </>,
+    )
+    await userEvent.keyboard('{Tab}')
+    await expect.element(triggerButton()).toHaveFocus()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Send' })).toHaveFocus()
+  })
+
+  test('Tab goes on to the item buttons', async () => {
+    const { container } = await render(<Example multiple />)
+    await addFiles(container, pdf('a.pdf', 'aaa'), pdf('b.pdf', 'bbb'))
+    triggerButton().element().focus()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: /Remove\s+a\.pdf/ })).toHaveFocus()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: /Remove\s+b\.pdf/ })).toHaveFocus()
+  })
+
+  test('Shift+Tab goes back to the Trigger', async () => {
+    const { container } = await render(<Example multiple />)
+    await addFiles(container, pdf('a.pdf', 'aaa'))
+    page
+      .getByRole('button', { name: /Remove\s+a\.pdf/ })
+      .element()
+      .focus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(triggerButton()).toHaveFocus()
+  })
+
+  test('Enter opens the file dialog', async () => {
+    const { container } = await render(<Example multiple />)
+    const showPicker = vi.spyOn(fileInput(container), 'showPicker').mockImplementation(() => {})
+    triggerButton().element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(showPicker).toHaveBeenCalledTimes(1)
+    await addFiles(container, pdf('intyg.pdf'))
+    await expect.poll(() => container.querySelectorAll('li[data-status]').length).toBe(1)
+    await expect.element(triggerButton()).toHaveFocus()
+  })
+
+  test('Space opens the file dialog', async () => {
+    const { container } = await render(<Example multiple />)
+    const showPicker = vi.spyOn(fileInput(container), 'showPicker').mockImplementation(() => {})
+    triggerButton().element().focus()
+    await userEvent.keyboard(' ')
+    expect(showPicker).toHaveBeenCalledTimes(1)
+    await addFiles(container, pdf('intyg.pdf'))
+    await expect.poll(() => container.querySelectorAll('li[data-status]').length).toBe(1)
+    await expect.element(triggerButton()).toHaveFocus()
+  })
+
+  test('the Trigger does nothing at the limit', async () => {
+    const { container } = await render(<Example multiple maxFiles={1} />)
+    await addFiles(container, pdf('a.pdf', 'aaa'))
+    const showPicker = vi.spyOn(fileInput(container), 'showPicker').mockImplementation(() => {})
+    triggerButton().element().focus()
+    await expect.element(triggerButton()).toHaveAttribute('aria-disabled', 'true')
+    await userEvent.keyboard('{Enter}')
+    await userEvent.keyboard(' ')
+    expect(showPicker).not.toHaveBeenCalled()
+    await expect.element(triggerButton()).toHaveFocus()
+  })
+
+  test('Remove moves focus to the next item', async () => {
+    const { container } = await render(<Example multiple />)
+    await addFiles(container, pdf('a.pdf', 'aaa'), pdf('b.pdf', 'bbb'))
+    page
+      .getByRole('button', { name: /Remove\s+a\.pdf/ })
+      .element()
+      .focus()
+    await userEvent.keyboard('{Enter}')
+    const items = container.querySelectorAll('li[data-status]')
+    expect(items).toHaveLength(1)
+    expect(document.activeElement).toBe(items[0])
+    expect(items[0]?.textContent).toContain('b.pdf')
+    page
+      .getByRole('button', { name: /Remove\s+b\.pdf/ })
+      .element()
+      .focus()
+    await userEvent.keyboard(' ')
+    expect(container.querySelectorAll('li[data-status]')).toHaveLength(0)
+    await expect.element(triggerButton()).toHaveFocus()
+  })
+
+  test('Cancel keeps the file and focuses the item', async () => {
+    const { container } = await render(<Example multiple upload={neverFinishing()} />)
+    await addFiles(container, pdf('report.pdf'))
+    const cancel = page.getByRole('button', { name: /Cancel upload of report\.pdf/ })
+    await expect.element(cancel).toBeVisible()
+    cancel.element().focus()
+    await userEvent.keyboard('{Enter}')
+    await expect.poll(() => statusOf(container)).toBe('cancelled')
+    expect(document.activeElement).toBe(container.querySelector('li[data-status]'))
+    await expect
+      .element(page.getByRole('button', { name: /Try again with report\.pdf/ }))
+      .toBeVisible()
+    await expect.element(page.getByRole('button', { name: /Remove\s+report\.pdf/ })).toBeVisible()
+  })
+
+  test('Retry restarts the upload', async () => {
+    const upload = neverFinishing()
+    const { container } = await render(<Example multiple upload={upload} />)
+    await addFiles(container, pdf('report.pdf'))
+    const cancel = page.getByRole('button', { name: /Cancel upload of report\.pdf/ })
+    await expect.element(cancel).toBeVisible()
+    cancel.element().focus()
+    await userEvent.keyboard('{Enter}')
+    await expect.poll(() => statusOf(container)).toBe('cancelled')
+    const retry = page.getByRole('button', { name: /Try again with report\.pdf/ })
+    retry.element().focus()
+    await userEvent.keyboard('{Enter}')
+    await expect.poll(() => statusOf(container)).toBe('uploading')
+    expect(upload).toHaveBeenCalledTimes(2)
+    expect(document.activeElement).toBe(container.querySelector('li[data-status]'))
+  })
+
+  test('Escape and characters do nothing', async () => {
+    const { container } = await render(<Example multiple upload={neverFinishing()} />)
+    await addFiles(container, pdf('report.pdf'))
+    await expect.poll(() => statusOf(container)).toBe('uploading')
+    triggerButton().element().focus()
+    await userEvent.keyboard('{Escape}')
+    await userEvent.keyboard('abc')
+    expect(statusOf(container)).toBe('uploading')
+    expect(container.querySelectorAll('li[data-status]')).toHaveLength(1)
+    await expect.element(triggerButton()).toHaveFocus()
   })
 })
 
@@ -779,6 +918,14 @@ describe('dragging', () => {
     const drop = dragWithFile('drop')
     zone.dispatchEvent(drop.event)
     // The browser must not open the file and leave the page.
+    expect(drop.event.defaultPrevented).toBe(true)
+    expect(container.querySelectorAll('li[data-status]')).toHaveLength(0)
+  })
+
+  test('a file dropped outside the zone is prevented and not added', async () => {
+    const { container } = await render(<Example multiple />)
+    const drop = dragWithFile('drop')
+    document.body.dispatchEvent(drop.event)
     expect(drop.event.defaultPrevented).toBe(true)
     expect(container.querySelectorAll('li[data-status]')).toHaveLength(0)
   })

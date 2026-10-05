@@ -150,7 +150,7 @@ export const Sizes: Story = {
 
 /**
  * Forced colours: the table rules, the quote bar and the rule stay borders, and a `mark` loses its
- * background and gets an outline. The e2e suite checks them with real emulation.
+ * background and gets an outline.
  */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },

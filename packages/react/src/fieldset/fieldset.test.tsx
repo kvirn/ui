@@ -29,8 +29,7 @@ import type {
   UseFieldsetResult,
 } from './use-fieldset.ts'
 
-// Contract: fieldset.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/fieldset/fieldset.e2e.ts.
+// Contract: fieldset.a11y.md.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -270,6 +269,51 @@ describe('wiring: name and description per state', () => {
       .toHaveAccessibleDescription('Siffror')
     expectNoDanglingReferences(container)
     await expectNoA11yViolations(container)
+  })
+})
+
+describe('keyboard', () => {
+  test('Tab moves through the controls in DOM order and never stops on the group, its legend, its help text or its error', async () => {
+    await render(<ContactGroup invalid />)
+    const group = page.getByRole('group')
+    await userEvent.tab()
+    await expect.element(page.getByRole('textbox', { name: 'E-post' })).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(page.getByRole('textbox', { name: 'Telefon' })).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(page.getByRole('textbox', { name: 'E-post' })).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    expect(document.activeElement?.tagName).toBe('BODY')
+    await expect.element(group).not.toHaveAttribute('tabindex')
+    expect(group.element().querySelector('legend')?.hasAttribute('tabindex')).toBe(false)
+  })
+
+  test('Tab skips the controls of a disabled fieldset (native)', async () => {
+    await render(
+      <>
+        <ContactGroup disabled />
+        <button type="button">Fortsätt</button>
+      </>,
+    )
+    await expect.element(page.getByRole('textbox', { name: 'E-post' })).toBeDisabled()
+    await userEvent.tab()
+    await expect.element(page.getByRole('button', { name: 'Fortsätt' })).toHaveFocus()
+  })
+
+  test('a legend that is the page heading is an h1 inside the legend', async () => {
+    await render(
+      <Fieldset.Root group required>
+        <Fieldset.Legend>
+          <h1>Var bor du?</h1>
+        </Fieldset.Legend>
+        <Field.Root>
+          <Field.Label>Gatuadress</Field.Label>
+          <TextInput />
+        </Field.Root>
+      </Fieldset.Root>,
+    )
+    await expect.element(page.getByRole('heading', { level: 1, name: 'Var bor du?' })).toBeVisible()
+    await expect.element(page.getByRole('group', { name: 'Var bor du?' })).toBeVisible()
   })
 })
 

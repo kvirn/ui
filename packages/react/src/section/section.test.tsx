@@ -11,8 +11,7 @@ import type { SectionElementProps, SectionRootProps, SectionState } from './sect
 import { useSection } from './use-section.ts'
 import type { SectionPartProps, UseSectionResult } from './use-section.ts'
 
-// Contract: section.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/section/section.e2e.ts.
+// Contract: section.a11y.md.
 
 /** Example A from the design spec, in Swedish: a sidebar text block as a named aside. */
 function ContactSection() {

@@ -21,8 +21,7 @@ import type {
   UseCheckboxGroupResult,
 } from './use-checkbox-group.ts'
 
-// Contract: checkbox-group.a11y.md. The keyboard rows are tested once, end to end, in
-// apps/storybook/src/components/checkbox-group/checkbox-group.e2e.ts (testing skill, rule 13).
+// Contract: checkbox-group.a11y.md. The keyboard rows are in the `keyboard` block.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -408,6 +407,119 @@ describe('useCheckboxGroup', () => {
       .toHaveAttribute('name', 'kontakt')
     await userEvent.click(page.getByRole('checkbox', { name: 'B' }))
     expect(onValueChange.mock.calls.at(-1)?.[0]).toEqual(['a', 'b'])
+  })
+})
+
+describe('keyboard', () => {
+  const box = (name: string) => page.getByRole('checkbox', { name, exact: true })
+
+  function recordPreventedKeys() {
+    const keys: string[] = []
+    const listener = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) keys.push(event.key)
+    }
+    document.addEventListener('keydown', listener)
+    return { keys, stop: () => document.removeEventListener('keydown', listener) }
+  }
+
+  test('Tab moves through every checkbox in DOM order', async () => {
+    await render(
+      sweden(
+        <>
+          <button type="button">Tillbaka</button>
+          <Contact name="contact" />
+          <button type="button">Skicka</button>
+        </>,
+      ),
+    )
+    page.getByRole('button', { name: 'Tillbaka' }).element().focus()
+    for (const name of ['E-post', 'Sms', 'Brev']) {
+      await userEvent.tab()
+      await expect.element(box(name)).toHaveFocus()
+    }
+    await userEvent.tab()
+    await expect.element(page.getByRole('button', { name: 'Skicka' })).toHaveFocus()
+    const root = page.getByRole('group').element()
+    expect(root.hasAttribute('tabindex')).toBe(false)
+    expect(root.querySelector('legend')?.hasAttribute('tabindex')).toBe(false)
+  })
+
+  test('Shift+Tab moves back through the checkboxes', async () => {
+    await render(
+      sweden(
+        <>
+          <button type="button">Tillbaka</button>
+          <Contact name="contact" />
+        </>,
+      ),
+    )
+    box('Brev').element().focus()
+    await userEvent.tab({ shift: true })
+    await expect.element(box('Sms')).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(box('E-post')).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(page.getByRole('button', { name: 'Tillbaka' })).toHaveFocus()
+  })
+
+  test('Space toggles the focused checkbox and reports the next value', async () => {
+    const onValueChange = vi.fn<(value: string[], details: CheckboxGroupChangeDetails) => void>()
+    function Controlled() {
+      const [value, setValue] = useState<string[]>(['letter'])
+      return (
+        <Contact
+          name="contact"
+          value={value}
+          onValueChange={(next, details) => {
+            onValueChange(next, details)
+            setValue(next)
+          }}
+        />
+      )
+    }
+    await render(sweden(<Controlled />))
+    box('Sms').element().focus()
+    const prevented = recordPreventedKeys()
+    await userEvent.keyboard(' ')
+    await expect.element(box('Sms')).toBeChecked()
+    expect(onValueChange.mock.calls.at(-1)?.[0]).toEqual(['letter', 'text'])
+    await expect.element(box('Brev')).toBeChecked()
+    await expect.element(box('E-post')).not.toBeChecked()
+    await userEvent.keyboard(' ')
+    await expect.element(box('Sms')).not.toBeChecked()
+    expect(onValueChange.mock.calls.at(-1)?.[0]).toEqual(['letter'])
+    await expect.element(box('Sms')).toHaveFocus()
+    prevented.stop()
+    expect(prevented.keys).toEqual([])
+  })
+
+  test('Arrow keys do not move focus between checkboxes', async () => {
+    await render(sweden(<Contact name="contact" />))
+    box('Sms').element().focus()
+    const prevented = recordPreventedKeys()
+    for (const key of ['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft']) {
+      await userEvent.keyboard(`{${key}}`)
+      await expect.element(box('Sms')).toHaveFocus()
+    }
+    prevented.stop()
+    for (const name of ['E-post', 'Sms', 'Brev']) await expect.element(box(name)).not.toBeChecked()
+    expect(prevented.keys).toEqual([])
+  })
+
+  test('Tab skips the checkboxes of a disabled group (native)', async () => {
+    await render(
+      sweden(
+        <>
+          <button type="button">Tillbaka</button>
+          <Contact name="contact" disabled />
+          <button type="button">Skicka</button>
+        </>,
+      ),
+    )
+    for (const name of ['E-post', 'Sms', 'Brev']) await expect.element(box(name)).toBeDisabled()
+    page.getByRole('button', { name: 'Tillbaka' }).element().focus()
+    await userEvent.tab()
+    await expect.element(page.getByRole('button', { name: 'Skicka' })).toHaveFocus()
   })
 })
 

@@ -18,7 +18,7 @@ import type { Decorator } from '@storybook/react-vite'
 import { useState } from 'react'
 import { codeTextsFor } from '../one-time-code/one-time-code.fixture.tsx'
 
-// Story and e2e fixture for Components/Form/Mask (Plan 0014). sv, nb, nn and en
+// Story fixture for Components/Form/Mask (Plan 0014). sv, nb, nn and en
 // are written here. fi and se: English, marked lang="en" (3.1.2). The numbers are the published test numbers from packages/core/src/mask/checks
 // tests (Skatteverket, DVV, Skatteetaten, the SWIFT registry), never real people's.
 //

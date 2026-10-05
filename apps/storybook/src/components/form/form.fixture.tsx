@@ -8,7 +8,7 @@ import { sv } from '@kvirn-ui/i18n/sv'
 import { Field, KvirnProvider, TextInput } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 
-// Story and e2e fixture for the Components/Form pages (docs/design/form-fields.md §4.2, §4.3).
+// Story fixture for the Components/Form pages (docs/design/form-fields.md §4.2, §4.3).
 // sv, en, fi, nb and nn are written. The fi strings are the designer's drafts, for length checks.
 // se: English, marked lang="en" (3.1.2). The spec's option help text `durationHint` is
 // `duration12Hint` in choice.fixture.tsx, which has the same text.

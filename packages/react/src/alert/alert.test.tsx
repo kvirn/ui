@@ -5,7 +5,7 @@ import { nn } from '@kvirn-ui/i18n/nn'
 import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { createRef, StrictMode } from 'react'
+import { createRef, StrictMode, useRef, useState } from 'react'
 import type { Ref } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -39,8 +39,7 @@ import type {
 import { useAlert } from './use-alert.ts'
 import type { AlertVariant, UseAlertOptions, UseAlertResult } from './use-alert.ts'
 
-// Contract: alert.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/alert/alert.e2e.ts.
+// Contract: alert.a11y.md.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -1393,6 +1392,165 @@ describe('Alert.Close', () => {
     )
     expect(html).toContain('aria-label="Close message"')
     expect(html).toContain('type="button"')
+  })
+})
+
+describe('keyboard', () => {
+  test('Tab skips the alert and reaches its link', async () => {
+    await render(
+      <>
+        <button type="button">Before</button>
+        <Alert.Info data-testid="alert">
+          <Alert.Title>Title</Alert.Title>
+          <Alert.Actions>
+            <a href="#forny">Förnya parkeringstillstånd</a>
+            <button type="button">Försök igen</button>
+          </Alert.Actions>
+        </Alert.Info>
+      </>,
+    )
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
+    await userEvent.keyboard('{Tab}')
+    await expect
+      .element(page.getByRole('link', { name: 'Förnya parkeringstillstånd' }))
+      .toHaveFocus()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Försök igen' })).toHaveFocus()
+    expect(page.getByTestId('alert').element().contains(document.activeElement)).toBe(true)
+    expect(document.activeElement).not.toBe(page.getByTestId('alert').element())
+  })
+
+  test('Tab reaches the close button after the actions', async () => {
+    await render(
+      <Alert.Info>
+        <Alert.Title>Title</Alert.Title>
+        <Alert.Actions>
+          <a href="#drift">Se driftinformation</a>
+        </Alert.Actions>
+        <Alert.Close />
+      </Alert.Info>,
+    )
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('link', { name: 'Se driftinformation' })).toHaveFocus()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Close message' })).toHaveFocus()
+  })
+
+  test('Shift+Tab from the close button goes back to the link', async () => {
+    await render(
+      <Alert.Info>
+        <Alert.Title>Title</Alert.Title>
+        <Alert.Actions>
+          <a href="#drift">Se driftinformation</a>
+        </Alert.Actions>
+        <Alert.Close />
+      </Alert.Info>,
+    )
+    page.getByRole('button', { name: 'Close message' }).element().focus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(page.getByRole('link', { name: 'Se driftinformation' })).toHaveFocus()
+  })
+
+  test('Shift+Tab reaches the alert’s action', async () => {
+    await render(
+      <>
+        <Alert.Danger>
+          <Alert.Title>Title</Alert.Title>
+          <Alert.Actions>
+            <button type="button">Försök igen</button>
+          </Alert.Actions>
+        </Alert.Danger>
+        <button type="button">Skicka ansökan</button>
+      </>,
+    )
+    page.getByRole('button', { name: 'Skicka ansökan' }).element().focus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(page.getByRole('button', { name: 'Försök igen' })).toHaveFocus()
+  })
+
+  function DismissibleAlert() {
+    const [isOpen, setIsOpen] = useState(true)
+    const headingRef = useRef<HTMLHeadingElement>(null)
+    return (
+      <>
+        <h2 ref={headingRef} tabIndex={-1} data-testid="heading">
+          Ansökan
+        </h2>
+        {isOpen ? (
+          <Alert.Info data-testid="alert">
+            <Alert.Title>Title</Alert.Title>
+            <Alert.Close
+              onClick={() => {
+                headingRef.current?.focus()
+                setIsOpen(false)
+              }}
+            />
+          </Alert.Info>
+        ) : null}
+        <button type="button">Visa meddelandet igen</button>
+      </>
+    )
+  }
+
+  async function pressOnCloseButton(keys: string) {
+    await render(<DismissibleAlert />)
+    page.getByRole('button', { name: 'Close message' }).element().focus()
+    await userEvent.keyboard(keys)
+  }
+
+  test('Enter on the close button dismisses the alert and moves focus to the heading', async () => {
+    await pressOnCloseButton('{Enter}')
+    expect(page.getByTestId('alert').elements()).toHaveLength(0)
+    await expect.element(page.getByTestId('heading')).toHaveFocus()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Visa meddelandet igen' })).toHaveFocus()
+  })
+
+  test('Space on the close button dismisses the alert and moves focus to the heading', async () => {
+    await pressOnCloseButton(' ')
+    expect(page.getByTestId('alert').elements()).toHaveLength(0)
+    await expect.element(page.getByTestId('heading')).toHaveFocus()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Visa meddelandet igen' })).toHaveFocus()
+  })
+
+  test('Enter on a button inside the alert keeps focus on it', async () => {
+    const onClick = vi.fn<() => void>()
+    await render(
+      <Alert.Danger>
+        <Alert.Title>Title</Alert.Title>
+        <Alert.Actions>
+          <button type="button" onClick={onClick}>
+            Försök igen
+          </button>
+        </Alert.Actions>
+      </Alert.Danger>,
+    )
+    page.getByRole('button', { name: 'Försök igen' }).element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(onClick).toHaveBeenCalledOnce()
+    await expect.element(page.getByRole('button', { name: 'Försök igen' })).toHaveFocus()
+  })
+
+  test('Tab from a focused alert goes to its first action', async () => {
+    await render(
+      <Alert.Info data-testid="alert" tabIndex={-1}>
+        <Alert.Title>Title</Alert.Title>
+        <Alert.Actions>
+          <button type="button">Försök igen</button>
+          <a href="#forny">Förnya parkeringstillstånd</a>
+        </Alert.Actions>
+      </Alert.Info>,
+    )
+    page.getByTestId('alert').element().focus()
+    await expect.element(page.getByTestId('alert')).toHaveFocus()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Försök igen' })).toHaveFocus()
+    await userEvent.keyboard('{Tab}')
+    await expect
+      .element(page.getByRole('link', { name: 'Förnya parkeringstillstånd' }))
+      .toHaveFocus()
   })
 })
 

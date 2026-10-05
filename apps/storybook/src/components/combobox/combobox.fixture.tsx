@@ -5,7 +5,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 import { virtualizedPlaces } from '../form/virtualized.fixture.ts'
 import type { VirtualizedPlace } from '../form/virtualized.fixture.ts'
 
-// Story and e2e fixture for Components/Form/Combobox (docs/design/form-fields.md; contract:
+// Story fixture for Components/Form/Combobox (docs/design/form-fields.md; contract:
 // combobox.a11y.md). The functions here are the examples the stories show with "Show code": each
 // is one Combobox as an adopter writes it. sv, en, fi, nb and nn are written, and se shows the
 // English text, marked lang="en" (3.1.2).

@@ -34,8 +34,6 @@ dist-ssr
 
 # Build and test output
 storybook-static
-test-results
-playwright-report
 .next
 next-env.d.ts
 *.tsbuildinfo

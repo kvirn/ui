@@ -1,4 +1,4 @@
-// Story and e2e data for the Virtualized stories of Listbox, Combobox and Autocomplete
+// Story and test data for the Virtualized stories of Listbox, Combobox and Autocomplete
 // (contracts: the "Virtualization" sections of listbox.a11y.md, combobox.a11y.md and
 // autocomplete.a11y.md). 10 000 deterministic labels, in the Swedish alphabet, so typeahead and
 // filtering mean something: 40 stems that start with a-z and then å, ä and ö, each numbered 1 to
@@ -58,7 +58,7 @@ const variantsPerStem = 250
 /** How many options the Virtualized stories have. */
 export const virtualizedCount = stems.length * variantsPerStem
 
-/** The index of the first label that starts with each letter that the e2e types. */
+/** The index of the first label that starts with each letter that the tests type. */
 export const firstIndexOf = {
   /** "Orsa 1": typing `o` finds it, and not the ones that start with ö. */
   o: stems.indexOf('Orsa') * variantsPerStem,

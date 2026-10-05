@@ -4,7 +4,7 @@
 - **Deviations:** none
 - **Native elements used:** `<button type="button">`. Activation, the Tab stop and the Enter and Space keys are the browser's own.
 - **Status:** alpha candidate (Plan 0035). Gates pass, accessibility-reviewer APPROVE (2026-10-04). Manual AT is `pending`.
-- **Tests:** `toggle.test.tsx` next to this file. `toggle.stories.tsx` and `toggle.e2e.ts` in `apps/storybook/src/components/toggle/`.
+- **Tests:** `toggle.test.tsx` next to this file. `toggle.stories.tsx` in `apps/storybook/src/components/toggle/`.
 
 A Toggle is a Button that is on or off. Use it for a choice with a direct, visible effect on the page: bold text, "show only unread". It is not for an answer in a form (use a Checkbox or a radio group) or a setting that is saved (use a Switch, when there is one). It builds on [Button](../button/button.a11y.md): everything Button's contract says about `disabled`, `focusableWhenDisabled`, `render` and the missing-name warning holds here.
 
@@ -33,10 +33,10 @@ A native `<button>`: one Tab stop, in DOM order, with no `tabindex`. Enter and S
 
 | Key           | Context                        | Action                                                                                     | Test                                                                                                                           |
 | ------------- | ------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| Tab           | before the toggle              | Moves focus to the toggle                                                                  | `toggle.e2e.ts › Tab moves to and from the toggle`                                                                             |
-| Shift+Tab     | on the toggle                  | Moves focus to the previous focusable element, and off the toggle                          | `toggle.e2e.ts › Tab moves to and from the toggle`                                                                             |
-| Enter / Space | Toggle                         | Switches it on or off: `aria-pressed` changes. The name is the same, and focus stays on it | `toggle.e2e.ts › Enter and Space switch pressed, name is kept`                                                                 |
-| Enter / Space | Toggle, disabled and focusable | Nothing happens. Focus stays on the toggle                                                 | `toggle.e2e.ts › a focusable disabled toggle ignores Enter and Space`                                                          |
+| Tab           | before the toggle              | Moves focus to the toggle                                                                  | `toggle.test.tsx › Tab moves to the toggle and Shift+Tab moves off it`                                                         |
+| Shift+Tab     | on the toggle                  | Moves focus to the previous focusable element, and off the toggle                          | `toggle.test.tsx › Tab moves to the toggle and Shift+Tab moves off it`                                                         |
+| Enter / Space | Toggle                         | Switches it on or off: `aria-pressed` changes. The name is the same, and focus stays on it | `toggle.test.tsx › Enter and Space switch it, the name stays and focus stays`                                                  |
+| Enter / Space | Toggle, disabled and focusable | Nothing happens. Focus stays on the toggle                                                 | `toggle.test.tsx › a focusable disabled toggle uses aria-disabled, stays in the Tab order, and ignores press, Enter and Space` |
 | –             | Pointer                        | A click on a disabled toggle, focusable or not, calls no handler                           | `toggle.test.tsx › a focusable disabled toggle uses aria-disabled, stays in the Tab order, and ignores press, Enter and Space` |
 
 Escape, the arrow keys and Home and End are not handled.
@@ -69,14 +69,14 @@ Toggle has no strings of its own and announces nothing: the screen reader reads 
 - Focus indicator: as Button. The default theme draws the 2px ring (2.4.7, 2.4.13).
 - Target size: as Button, at least 24 × 24 CSS px, 44px by default (2.5.8).
 - Pressed (default theme): a solid `primary` fill with the `on-primary` icon or label, no depth, flat in a toolbar. The fill reaches 3:1 against its surroundings and the icon 4.5:1 or 3:1 on the fill (1.4.1, 1.4.11). `theme:check` measures the pairs.
-- forced-colors behaviour: pressed is a `Highlight` fill with `HighlightText`, a `Highlight` edge, so it differs from an unpressed button without colour alone (`toggle.stories.tsx › ForcedColors`, `toggle.e2e.ts › forced colours: a pressed toggle is drawn differently from an unpressed one`).
+- forced-colors behaviour: pressed is a `Highlight` fill with `HighlightText`, a `Highlight` edge, so it differs from an unpressed button without colour alone (`toggle.stories.tsx › ForcedColors`).
 - reduced-motion behaviour: the fill changes instantly.
 - Reflow: a long label wraps inside the button, no horizontal scrolling at 320 CSS px (1.4.10).
 
 ## WCAG SCs covered
 
 - 1.4.1 Use of Color, 1.4.11 Non-text Contrast: the pressed state is a filled tile and a changed icon or label colour, measured by `theme:check`.
-- 2.1.1 Keyboard: native `<button>`, Enter and Space (e2e rows above).
+- 2.1.1 Keyboard: native `<button>`, Enter and Space (keyboard rows above).
 - 2.4.3 Focus Order, 2.4.7 Focus Visible: native Tab order, `data-focus-visible`.
 - 2.5.3 Label in Name: the visible label is the name.
 - 2.5.8 Target Size (Minimum): consumer and default theme.

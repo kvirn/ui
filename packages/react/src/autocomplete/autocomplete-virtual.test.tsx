@@ -10,9 +10,7 @@ import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Autocomplete } from './autocomplete.tsx'
 import type { UseAutocompleteOptions } from './use-autocomplete.ts'
 
-// Contract: autocomplete.a11y.md › Virtualization. The keys
-// are also covered end to end in apps/storybook/src/components/autocomplete/autocomplete.e2e.ts.
-// Component tests load no theme, so the fixture gives the list the height limit and the scroll that
+// Contract: autocomplete.a11y.md › Virtualization. Component tests load no theme, so the fixture gives the list the height limit and the scroll that
 // the theme gives it, and every option the 2rem height that `estimateSize` guesses.
 
 let consoleWarn: MockInstance<Console['warn']>
@@ -84,6 +82,25 @@ const isShown = () => popupElement()?.matches(':popover-open') === true
 const renderedCount = () => page.getByRole('option').elements().length
 const renderedOptions = () => [...document.querySelectorAll<HTMLElement>('[role="option"]')]
 
+const activeOption = () => document.querySelector<HTMLElement>('[role="option"][data-active]')
+
+const activeDescendantResolves = () => {
+  const id = inputElement().getAttribute('aria-activedescendant')
+  const element = id === null ? null : document.getElementById(id)
+  return element?.getAttribute('role') === 'option'
+}
+
+const activeIsInView = () => {
+  const active = activeOption()?.getBoundingClientRect()
+  const list = listElement()?.getBoundingClientRect()
+  return (
+    active !== undefined &&
+    list !== undefined &&
+    active.top >= list.top - 1 &&
+    active.bottom <= list.bottom + 1
+  )
+}
+
 async function typeText(text: string) {
   inputElement().focus()
   await userEvent.keyboard(text)
@@ -135,6 +152,75 @@ describe('virtualize: keys reach suggestions that are not rendered', () => {
     await expect.poll(isShown).toBe(false)
     expect(inputElement().value).toBe('Gatan 10000')
     await expect.element(input()).toHaveFocus()
+  })
+})
+
+describe('virtualize: keyboard rows', () => {
+  test('virtualized: ArrowUp activates the last suggestion, rendered and in view', async () => {
+    await render(<Example />)
+    await typeText('Gatan')
+    await expect.poll(isShown).toBe(true)
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.poll(() => activeOption()?.textContent).toBe('Gatan 10000')
+    expect(activeOption()?.getAttribute('aria-posinset')).toBe(String(count - 1))
+    expect(activeOption()?.getAttribute('aria-setsize')).toBe(String(count - 1))
+    await expect.poll(activeIsInView).toBe(true)
+    expect(inputElement().getAttribute('aria-activedescendant')).toBe(activeOption()?.id)
+    expect(renderedCount()).toBeLessThan(60)
+  })
+
+  test('virtualized: ArrowDown and ArrowUp always leave aria-activedescendant on a suggestion in the page', async () => {
+    await render(<Example />)
+    await typeText('Gatan')
+    await expect.poll(isShown).toBe(true)
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.poll(() => activeOption()?.textContent).toBe('Gatan 1')
+    for (let step = 0; step < 40; step += 1) {
+      await userEvent.keyboard('{ArrowDown}')
+      expect(activeDescendantResolves()).toBe(true)
+    }
+    await expect.poll(() => activeOption()?.textContent).toBe('Gatan 41')
+    await expect.poll(activeIsInView).toBe(true)
+    for (let step = 0; step < 40; step += 1) {
+      await userEvent.keyboard('{ArrowUp}')
+      expect(activeDescendantResolves()).toBe(true)
+    }
+    await expect.poll(() => activeOption()?.textContent).toBe('Gatan 1')
+    await expect.poll(activeIsInView).toBe(true)
+  })
+
+  test('virtualized: PageDown and PageUp move ten suggestions that may not be rendered', async () => {
+    await render(<Example />)
+    await typeText('Gatan')
+    await expect.poll(isShown).toBe(true)
+    await userEvent.keyboard('{ArrowDown}')
+    for (let step = 0; step < 25; step += 1) {
+      await userEvent.keyboard('{PageDown}')
+      expect(activeDescendantResolves()).toBe(true)
+    }
+    await expect.poll(() => activeOption()?.textContent).toBe('Gatan 251')
+    expect(activeOption()?.getAttribute('aria-posinset')).toBe('251')
+    await expect.poll(activeIsInView).toBe(true)
+    await userEvent.keyboard('{PageUp}')
+    await expect.poll(() => activeOption()?.textContent).toBe('Gatan 241')
+    expect(activeOption()?.getAttribute('aria-posinset')).toBe('241')
+    await expect.poll(activeIsInView).toBe(true)
+  })
+
+  test('virtualized: typing narrows the suggestions, and the size of the set follows', async () => {
+    await render(<Example />)
+    await typeText('Gatan 99')
+    await expect.poll(isShown).toBe(true)
+    await expect.poll(renderedCount).toBeGreaterThan(5)
+    const first = renderedOptions()[0]
+    expect(first?.textContent).toBe('Gatan 99')
+    expect(first?.getAttribute('aria-setsize')).toBe('111')
+    expect(first?.getAttribute('aria-posinset')).toBe('1')
+    expect(listElement()?.hasAttribute('data-virtualized')).toBe(true)
+    expect(inputElement().hasAttribute('aria-activedescendant')).toBe(false)
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.poll(() => activeOption()?.textContent).toBe('Gatan 9999')
+    expect(activeOption()?.getAttribute('aria-posinset')).toBe('111')
   })
 })
 

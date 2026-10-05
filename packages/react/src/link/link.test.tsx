@@ -26,8 +26,7 @@ import {
 import { useLink } from './use-link.ts'
 import type { LinkPartProps, UseLinkOptions, UseLinkResult } from './use-link.ts'
 
-// Contract: link.a11y.md. Keyboard rows are also covered end to end in
-// apps/storybook/src/components/link/link.e2e.ts.
+// Contract: link.a11y.md.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -325,6 +324,51 @@ describe('new-tab notice resolution', () => {
   })
 })
 
+describe('keyboard', () => {
+  test('Tab moves focus to the link', async () => {
+    await render(<Link.Root href="#ansok">Ansök</Link.Root>)
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('link', { name: 'Ansök' })).toHaveFocus()
+  })
+
+  test('Shift+Tab moves focus off the link', async () => {
+    await render(
+      <>
+        <Link.Root href="#ansok">Ansök</Link.Root>
+        <Link.Root href="#kontakt">Kontakta oss</Link.Root>
+      </>,
+    )
+    await userEvent.keyboard('{Tab}{Tab}')
+    await expect.element(page.getByRole('link', { name: 'Kontakta oss' })).toHaveFocus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(page.getByRole('link', { name: 'Ansök' })).toHaveFocus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(page.getByRole('link', { name: 'Ansök' })).not.toHaveFocus()
+  })
+
+  test('Enter on a new-tab link does not intercept the browser’s own handling', async () => {
+    let defaultWasPrevented: boolean | undefined
+    const onClick = vi.fn<
+      (event: { defaultPrevented: boolean; preventDefault: () => void }) => void
+    >((event) => {
+      defaultWasPrevented = event.defaultPrevented
+      event.preventDefault()
+    })
+    await render(
+      <Link.Root href="https://www.digg.se/" target="_blank" onClick={onClick}>
+        Digg <Link.NewTabNotice />
+      </Link.Root>,
+    )
+    const link = page.getByRole('link', { name: 'Digg (opens in a new tab)' })
+    await userEvent.keyboard('{Tab}')
+    await expect.element(link).toHaveFocus()
+    await userEvent.keyboard('{Enter}')
+    expect(onClick).toHaveBeenCalledTimes(1)
+    expect(defaultWasPrevented).toBe(false)
+    await expect.element(link).toHaveAttribute('target', '_blank')
+  })
+})
+
 describe('router link', () => {
   function CurrentPathname() {
     return <p>Nuvarande sida: {useMockPathname()}</p>
@@ -346,6 +390,27 @@ describe('router link', () => {
     await expect.element(page.getByText('Nuvarande sida: /ansok')).toBeVisible()
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('Enter follows a router link without a page load', async () => {
+    const pageMarker = Symbol('page marker')
+    Reflect.set(window, 'kvirnPageMarker', pageMarker)
+    await render(
+      <KvirnProvider linkComponent={mockRouterLinkComponent}>
+        <MockRouterProvider initialPathname="/start">
+          <Link.Root href="/ansok">Ansök</Link.Root>
+          <CurrentPathname />
+        </MockRouterProvider>
+      </KvirnProvider>,
+    )
+    const link = page.getByRole('link', { name: 'Ansök' })
+    await userEvent.keyboard('{Tab}')
+    await expect.element(link).toHaveFocus()
+    await userEvent.keyboard('{Enter}')
+    await expect.element(page.getByText('Nuvarande sida: /ansok')).toBeVisible()
+    await expect.element(link).toHaveFocus()
+    expect(Reflect.get(window, 'kvirnPageMarker')).toBe(pageMarker)
+    Reflect.deleteProperty(window, 'kvirnPageMarker')
   })
 
   // `plainAnchor` is `<a />`, the documented form. Written with createElement because JSX

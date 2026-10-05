@@ -16,7 +16,7 @@ import { choiceTextsFor } from './choice.fixture.tsx'
 import { textsFor } from './form.fixture.tsx'
 import type { FormLocale } from './form.fixture.tsx'
 
-// Story and e2e fixture for Components/Form/Overview: "Apply for a resident parking permit", a
+// Story fixture for Components/Form/Overview: "Apply for a resident parking permit", a
 // short form with every control (docs/design/form-fields.md §4.2, §5). sv, en, fi, nb and nn are
 // written. The fi strings are the designer's drafts, for length checks only. se: English, marked
 // lang="en" (3.1.2). The other strings come from the fixtures of the pages the controls live on.

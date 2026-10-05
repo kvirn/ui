@@ -13,8 +13,7 @@ import type { TextInputChangeDetails } from '../text-input/use-text-input.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 
-// Contract: text-input.a11y.md (masked rows). The keys are also covered end to end in
-// apps/storybook/src/components/mask/mask.e2e.ts.
+// Contract: text-input.a11y.md (masked rows).
 
 type Report = { value: string; details: TextInputChangeDetails }
 
@@ -703,5 +702,181 @@ describe('announcing rejections', () => {
     await userEvent.type(field(), 'a')
     await expect.element(status()).toHaveTextContent('Only digits can be entered here.')
     await expectNoA11yViolations(container)
+  })
+})
+
+describe('keyboard', () => {
+  const caret = () => {
+    const element = field().element() as HTMLInputElement
+    return [element.selectionStart, element.selectionEnd]
+  }
+
+  /** Listens on the document, after every handler: a key the mask intercepted shows up here. */
+  const recordPreventedKeys = () => {
+    const keys: string[] = []
+    const listener = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) {
+        keys.push(event.key)
+      }
+    }
+    document.addEventListener('keydown', listener)
+    return { keys, stop: () => document.removeEventListener('keydown', listener) }
+  }
+
+  test('Tab and Shift+Tab move through the masked inputs in DOM order', async () => {
+    await render(
+      <form>
+        <MaskedInput label="Personnummer" options={{ mask: masks.digits({ length: 2 }) }} />
+        <MaskedInput label="Postnummer" options={{ mask: masks.postalCode({ country: 'SE' }) }} />
+        <button type="submit">Skicka</button>
+      </form>,
+    )
+    const first = page.getByRole('textbox', { name: 'Personnummer' })
+    const second = page.getByRole('textbox', { name: 'Postnummer' })
+    await userEvent.tab()
+    await expect.element(first).toHaveFocus()
+    await userEvent.keyboard('12')
+    await userEvent.tab()
+    await expect.element(second).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(page.getByRole('button', { name: 'Skicka' })).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(second).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(first).toHaveFocus()
+  })
+
+  test('typing a refused character inserts nothing, and the caret stays', async () => {
+    await render(<MaskedInput options={{ mask: masks.digits({ length: 6 }) }} />)
+    await userEvent.type(field(), '12a3')
+
+    await expect.element(field()).toHaveValue('123')
+    expect(caret()).toEqual([3, 3])
+  })
+
+  test('a paste with refused characters drops them, and nothing is cut early', async () => {
+    await render(
+      <MaskedInput options={{ mask: masks.personalIdentityNumber({ country: 'SE' }) }} />,
+    )
+    await userEvent.fill(field(), 'nr: 1990 0101-2385!')
+
+    await expect.element(field()).toHaveValue('19900101-2385')
+    expect(caret()).toEqual([13, 13])
+  })
+
+  test('Control/Command+Z undoes typing that the mask did not rewrite', async () => {
+    await render(<MaskedInput options={{ mask: masks.digits({ length: 6 }) }} />)
+    await userEvent.type(field(), '123')
+    await expect.element(field()).toHaveValue('123')
+    await userEvent.keyboard('{Control>}z{/Control}')
+
+    await expect.element(field()).toHaveValue('')
+  })
+
+  test('Control/Command+Z after a step the mask rewrote leaves a valid value', async () => {
+    await render(<MaskedInput options={{ mask: masks.postalCode({ country: 'SE' }) }} />)
+    await userEvent.type(field(), '1234')
+    await expect.element(field()).toHaveValue('123 4')
+    await userEvent.keyboard('{Control>}z{/Control}')
+
+    await expect.element(field()).toHaveValue('123 4')
+  })
+
+  test('ArrowLeft, ArrowRight, Home and End move the caret and are not intercepted', async () => {
+    await render(
+      <MaskedInput options={{ mask: masks.personalIdentityNumber({ country: 'SE' }) }} />,
+    )
+    await userEvent.type(field(), '199001012385')
+    const prevented = recordPreventedKeys()
+    await userEvent.keyboard('{Home}')
+    expect(caret()).toEqual([0, 0])
+    await userEvent.keyboard('{End}')
+    expect(caret()).toEqual([13, 13])
+    await userEvent.keyboard('{ArrowLeft}')
+    expect(caret()).toEqual([12, 12])
+    await userEvent.keyboard('{ArrowRight}')
+    expect(caret()).toEqual([13, 13])
+    prevented.stop()
+
+    await expect.element(field()).toHaveValue('19900101-2385')
+    expect(prevented.keys).toEqual([])
+  })
+
+  test('ArrowUp and ArrowDown never change a masked number', async () => {
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <MaskedInput options={{ mask: masks.number({ decimals: 2 }) }} />
+      </KvirnProvider>,
+    )
+    await userEvent.type(field(), '1250,5')
+    const prevented = recordPreventedKeys()
+    await userEvent.keyboard('{ArrowUp}{ArrowDown}{ArrowDown}')
+    prevented.stop()
+
+    await expect.element(field()).toHaveValue('1250,5')
+    expect(prevented.keys).toEqual([])
+  })
+
+  test('Control/Command+A selects all the text', async () => {
+    await render(
+      <MaskedInput options={{ mask: masks.personalIdentityNumber({ country: 'SE' }) }} />,
+    )
+    await userEvent.type(field(), '199001012385')
+    await userEvent.keyboard('{Control>}a{/Control}')
+    expect(caret()).toEqual([0, 13])
+    await userEvent.keyboard('1')
+
+    await expect.element(field()).toHaveValue('1')
+  })
+
+  test('Enter in the form submits it with the masked values (native)', async () => {
+    const submitted: string[] = []
+    await render(
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          submitted.push(
+            String(field().element().getAttribute('name')) +
+              '=' +
+              (event.currentTarget.elements.namedItem('postalCode') as HTMLInputElement).value,
+          )
+        }}
+      >
+        <MaskedInput
+          ownProps={{ name: 'postalCode' }}
+          options={{ mask: masks.postalCode({ country: 'SE' }) }}
+        />
+        <button type="submit">Skicka</button>
+      </form>,
+    )
+    await userEvent.type(field(), '12345')
+    const prevented = recordPreventedKeys()
+    await userEvent.keyboard('{Enter}')
+    prevented.stop()
+
+    expect(submitted).toEqual(['postalCode=123 45'])
+    expect(prevented.keys).not.toContain('Enter')
+  })
+
+  test('Escape does nothing: the value and the focus stay', async () => {
+    await render(<MaskedInput options={{ mask: masks.postalCode({ country: 'SE' }) }} />)
+    await userEvent.type(field(), '12345')
+    const prevented = recordPreventedKeys()
+    await userEvent.keyboard('{Escape}')
+    prevented.stop()
+
+    await expect.element(field()).toHaveValue('123 45')
+    await expect.element(field()).toHaveFocus()
+    expect(prevented.keys).toEqual([])
+  })
+
+  test('Backspace and Delete are not intercepted by the page', async () => {
+    await render(<MaskedInput options={{ mask: masks.postalCode({ country: 'SE' }) }} />)
+    await userEvent.type(field(), '12345')
+    const prevented = recordPreventedKeys()
+    await userEvent.keyboard('{Backspace}{Home}{Delete}')
+    prevented.stop()
+
+    expect(prevented.keys).toEqual([])
   })
 })

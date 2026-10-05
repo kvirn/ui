@@ -14,7 +14,7 @@ import type { Decorator } from '@storybook/react-vite'
 import { useId, useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
-// Story and e2e fixture for Components/Form/DateInput (docs/design/form-fields.md §4.3, §6.6).
+// Story fixture for Components/Form/DateInput (docs/design/form-fields.md §4.3, §6.6).
 // sv, en, fi, nb and nn are written. The fi strings are the designer's drafts, for length checks
 // only. se: English, marked lang="en" (3.1.2). The library's own strings ("Dag", "Månad", "År",
 // "(valfritt)", "Fel:") follow the locale through the provider decorator in form.fixture.tsx.

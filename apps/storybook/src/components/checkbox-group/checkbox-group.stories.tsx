@@ -15,7 +15,6 @@ import { ContactForm, ControlledContactGroup } from './checkbox-group.fixture.ts
 // `onValueChange` are the selected values: the group derives each box from `value` and reports
 // the next array. KvirnUI holds no form state: without `value` the native
 // checkboxes are uncontrolled. Nothing here validates: an invalid story sets `invalid` itself.
-// checkbox-group.e2e.ts runs the keyboard rows, forced colours and reflow checks.
 
 const meta = {
   title: 'Components/Form/CheckboxGroup',

@@ -11,8 +11,7 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 import { ApplicationForm, ChangeAddressForm } from './button.fixture.tsx'
 
 // Components/Button: the headless Button, styled by @kvirn-ui/theme/theme.css.
-// button.e2e.ts runs its keyboard contract against Default, Activation, Disabled,
-// FocusableWhenDisabled, SubmitInForm, RTL and ForcedColors, so their play functions only read.
+// The keyboard contract is proved in button.test.tsx, so the play functions only read.
 
 /** Fixture text. Stories set `locale` to match it, so `lang` matches the content (3.1.2). */
 const sv = {
@@ -45,8 +44,7 @@ const variantClass = (variant: (typeof variants)[number]) =>
   variant === 'secondary' ? undefined : `kv-button--${variant}`
 
 /**
- * Counts the clicks the Button lets through, under the story. The keyboard contract's e2e tests
- * read the count: it stays at 0 while a focusable disabled button is activated. The Button never
+ * Counts the clicks the Button lets through, under the story. The count stays at 0 while a focusable disabled button is activated. The Button never
  * calls `onClick` while it is disabled, so the count is the proof. It sits in a decorator, so
  * "Show code" shows only the Button.
  */
@@ -487,7 +485,7 @@ export const RTL: Story = {
   render: () => variantsGroup(['Send application', 'Save', 'Delete draft']),
 }
 
-/** Every state with the forced-colors marker. The e2e suite checks it with real emulation. */
+/** Every state with the forced-colors marker. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   render: (args) => (

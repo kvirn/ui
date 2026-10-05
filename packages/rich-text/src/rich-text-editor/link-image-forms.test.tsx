@@ -184,6 +184,16 @@ describe('the Link popover', () => {
     await expect.element(page.getByRole('textbox', { name: 'Webbadress' })).toHaveFocus()
   })
 
+  test('Enter on Länk opens the form with focus in its first field', async () => {
+    await render(<Editor defaultValue="<p>Ansök här</p>" />)
+    await selectAllText()
+    await userEvent.keyboard('{Alt>}{F10}{/Alt}')
+    button('Länk').element().focus()
+    await userEvent.keyboard('{Enter}')
+    await expect.element(dialog('Lägg till länk')).toBeVisible()
+    await expect.element(page.getByRole('textbox', { name: 'Webbadress' })).toHaveFocus()
+  })
+
   test('getLinkAddressProblem: full allowed addresses and local paths pass', () => {
     const passing = [
       'https://a.se',

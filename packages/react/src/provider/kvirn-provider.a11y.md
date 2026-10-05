@@ -4,7 +4,7 @@
 - **Deviations:** none
 - **Native elements used:** none rendered by the provider. The story fixture uses `<fieldset>`, `<legend>`, `<label>` and `<input type="radio">`. `KvirnThemeScript` renders one `<script>`.
 - **Status:** alpha. Gates 1–6 pass (accessibility-reviewer APPROVE, 2026-09-30). Manual AT is `pending`.
-- **Tests:** `kvirn-provider.test.tsx` next to this file. `kvirn-provider.stories.tsx` and `kvirn-provider.e2e.ts` in `apps/storybook/src/components/provider/`.
+- **Tests:** `kvirn-provider.test.tsx` and `use-theme.test.tsx` next to this file. `kvirn-provider.stories.tsx` in `apps/storybook/src/components/provider/`.
 
 The provider's contract is about what it guarantees for other components (Plan 0002):
 
@@ -30,13 +30,13 @@ This component has no focusable parts and handles no keys.
 
 The provider renders no focusable element and adds no key handling. The rows below prove it leaves native radio-group behaviour intact in the `ThemeSwitcher` fixture, which is the consumer's markup on `useTheme()`. Enter and Space (a native radio is checked with Space) and Escape, Home and End are the browser's own and are not handled or asserted here.
 
-| Key                    | Context                    | Action                                                                                          | Test                                                                                          |
-| ---------------------- | -------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Tab                    | Theme-switcher fixture     | Focus moves to the checked radio of the colour-scheme group                                     | `kvirn-provider.e2e.ts › Tab moves focus to the checked radio of the colour-scheme group`     |
-| Tab / Shift+Tab        | Theme-switcher radio group | Moves to the next / previous group. One Tab stop per group                                      | `kvirn-provider.e2e.ts › Tab moves to the next group: one Tab stop per radio group`           |
-| ArrowUp / ArrowLeft    | Theme-switcher radio group | Checks and focuses the previous option (native; RTL handling is the browser's, not tested here) | `kvirn-provider.e2e.ts › ArrowUp / ArrowLeft select the previous option and keep focus on it` |
-| ArrowDown / ArrowRight | Theme-switcher radio group | Checks and focuses the next option, wrapping from last to first                                 | `kvirn-provider.e2e.ts › ArrowDown / ArrowRight select the next option and wrap around`       |
-| Arrow keys             | Contrast group             | Changes contrast only; the colour-scheme group is untouched                                     | `kvirn-provider.e2e.ts › Arrow keys change the contrast group independently`                  |
+| Key                    | Context                    | Action                                                                                          | Test                                                                                       |
+| ---------------------- | -------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Tab                    | Theme-switcher fixture     | Focus moves to the checked radio of the colour-scheme group                                     | `use-theme.test.tsx › Tab moves focus to the checked radio of the colour-scheme group`     |
+| Tab / Shift+Tab        | Theme-switcher radio group | Moves to the next / previous group. One Tab stop per group                                      | `use-theme.test.tsx › Tab moves to the next group: one Tab stop per radio group`           |
+| ArrowUp / ArrowLeft    | Theme-switcher radio group | Checks and focuses the previous option (native; RTL handling is the browser's, not tested here) | `use-theme.test.tsx › ArrowUp / ArrowLeft select the previous option and keep focus on it` |
+| ArrowDown / ArrowRight | Theme-switcher radio group | Checks and focuses the next option, wrapping from last to first                                 | `use-theme.test.tsx › ArrowDown / ArrowRight select the next option and wrap around`       |
+| Arrow keys             | Contrast group             | Changes contrast only; the colour-scheme group is untouched                                     | `use-theme.test.tsx › Arrow keys change the contrast group independently`                  |
 
 Also covered in Vitest browser mode: `use-theme.test.tsx › arrow keys change the radio group; focus stays and nothing is announced`.
 
@@ -45,7 +45,7 @@ Also covered in Vitest browser mode: `use-theme.test.tsx › arrow keys change t
 - Initial focus: not moved. The provider never touches focus.
 - Trap: no.
 - Restore to: not applicable.
-- A theme change keeps focus on the radio that caused it (`kvirn-provider.e2e.ts › a theme change moves no focus and announces nothing`).
+- A theme change keeps focus on the radio that caused it (`use-theme.test.tsx › arrow keys change the radio group; focus stays and nothing is announced`).
 - Never obscured by: the provider renders nothing visible and nothing focusable.
 
 ## Announcements
@@ -80,16 +80,16 @@ The provider has no strings of its own. It resolves every component's keys. Plan
 
 - Focus indicator: the provider renders nothing visible. The fixture relies on the browser's native radio focus ring. The default theme restyles rings in `@kvirn-ui/theme`.
 - Target size: fixture radios are 24 × 24 CSS px, in labels at least 28px tall (2.5.8).
-- forced-colors behaviour: the provider keeps writing the resolved attributes. `@kvirn-ui/theme` must let the OS palette win and never override `forced-colors: active`. The e2e suite passes in the `chromium-forced-colors` project.
-- reduced-motion behaviour: no motion. A theme change is instant. Passes in `chromium-reduced-motion`.
-- Reflow: no horizontal scrolling at 320 CSS px for the Swedish, theme-switcher, nested-locale and RTL stories (`reflow-320` project, 1.4.10).
+- forced-colors behaviour: the provider keeps writing the resolved attributes. `@kvirn-ui/theme` must let the OS palette win and never override `forced-colors: active`.
+- reduced-motion behaviour: no motion. A theme change is instant.
+- Reflow: no horizontal scrolling at 320 CSS px for the Swedish, theme-switcher, nested-locale and RTL stories (the reflow sweep, 1.4.10).
 
 ## WCAG SCs covered
 
 - 1.4.3 Contrast (Minimum), 1.4.6 Contrast (Enhanced), 1.4.11 Non-text Contrast: OS preferences are honoured by default, and high contrast is user-selectable. Contrast values themselves are `@kvirn-ui/theme`'s (`theme:check`).
-- 1.4.10 Reflow: e2e `reflow-320`.
+- 1.4.10 Reflow: the reflow sweep.
 - 3.1.1 Language of Page: consumer responsibility (`<html lang dir>`), documented in the usage doc's setup.
-- 3.1.2 Language of Parts: `localeProps`, and the dev warning for a nested language change without a catalog (`kvirn-provider.test.tsx › nesting`, e2e `the nested locale section has its own lang`).
+- 3.1.2 Language of Parts: `localeProps`, and the dev warning for a nested language change without a catalog (`kvirn-provider.test.tsx › nesting`, `a nested provider inherits unset props and changes only its section`).
 - 3.2.2 On Input: selecting a theme changes presentation only. No context change, no focus move.
 - 4.1.2 Name, Role, Value: empty overrides fall through, so names are never empty (`kvirn-provider.test.tsx › an empty override falls through to the next level and warns once`).
 - 4.1.3 Status Messages: not applicable. A theme change is deliberately not announced.

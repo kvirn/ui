@@ -10,10 +10,10 @@ catalog:
   vite: npm:@voidzero-dev/vite-plus-core@1.0.0
   '@vitest/browser-playwright': 5.0.1
   typescript: ^7.0.2
-  '@types/node': ^24
+  '@types/node': ^24.19.1
   # The sanctioned runtime dependencies of core, pinned exactly
   '@tanstack/store': 0.11.2
-  '@tanstack/table-core': 9.2.4
+  '@tanstack/table-core': 9.2.6
   '@tanstack/virtual-core': 3.17.11
   # React 19+ only (docs/vision.md)
   react: ^19.3.0
@@ -21,10 +21,10 @@ catalog:
   '@types/react': ^19.3.0
   '@types/react-dom': ^19.3.0
   vitest-browser-react: ^2.3.0
-  # Accessibility engine and e2e
+  # Accessibility engine
   axe-core: 4.13.0
-  '@axe-core/playwright': 4.13.0
-  '@playwright/test': 1.63.0
+  # The Vitest browser provider's peer. Vitest runs the browser tests; there is no e2e runner.
+  playwright: 1.63.0
   # Tiptap, the rich text editor's engine: peers of @kvirn-ui/rich-text, devDependencies here.
   # One version for every package, pinned exactly, so ProseMirror is never duplicated.
   '@tiptap/core': 3.31.4
@@ -36,7 +36,7 @@ catalog:
   '@tiptap/extensions': 3.31.4
   # Icon libraries: devDependencies only, for Icon's compatibility tests and stories.
   # Pinned exactly, so a release that changes how a library builds its <svg> is a reviewed bump.
-  lucide-react: 1.49.0
+  lucide-react: 1.52.0
   '@heroicons/react': 2.2.0
   '@phosphor-icons/react': 2.1.10
   # Workbench, docs, release

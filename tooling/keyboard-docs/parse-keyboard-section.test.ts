@@ -39,8 +39,8 @@ describe('parseKeyboardSection', () => {
       contract(`${focusLines}
 
 ${tableHeader}
-| Tab | Before the box | Moves focus into the input | \`text-input.e2e.ts › Tab focuses the input\` |
-| Shift+Tab | In the input | Moves focus to the previous focusable | \`text-input.e2e.ts › Shift+Tab leaves the input\` |
+| Tab | Before the box | Moves focus into the input | \`text-input.test.tsx › Tab focuses the input\` |
+| Shift+Tab | In the input | Moves focus to the previous focusable | \`text-input.test.tsx › Shift+Tab leaves the input\` |
 `),
     )
     expect(problems).toEqual([])
@@ -55,13 +55,13 @@ ${tableHeader}
           key: 'Tab',
           context: 'Before the box',
           action: 'Moves focus into the input',
-          test: '`text-input.e2e.ts › Tab focuses the input`',
+          test: '`text-input.test.tsx › Tab focuses the input`',
         },
         {
           key: 'Shift+Tab',
           context: 'In the input',
           action: 'Moves focus to the previous focusable',
-          test: '`text-input.e2e.ts › Shift+Tab leaves the input`',
+          test: '`text-input.test.tsx › Shift+Tab leaves the input`',
         },
       ],
     })
@@ -72,7 +72,7 @@ ${tableHeader}
       contract(`${focusLines}
 
 ${tableHeader}
-| Tab | A | B | \`x.e2e.ts › y\` |
+| Tab | A | B | \`x.test.tsx › y\` |
 `),
     )
     // The Roles table above and the list below it aren't rows.
@@ -90,7 +90,7 @@ ${tableHeader}
       contract(`${noKeysSentence}
 
 ${tableHeader}
-| Tab | Card with links | Skips the card | \`card.e2e.ts › Tab skips the card\` |
+| Tab | Card with links | Skips the card | \`card.test.tsx › Tab skips the card\` |
 `),
     )
     expect(problems).toEqual([])
@@ -125,7 +125,7 @@ ${tableHeader}
 - **Shortcuts:** none
 
 ${tableHeader}
-| Tab | A | B | \`x.e2e.ts › y\` |
+| Tab | A | B | \`x.test.tsx › y\` |
 `),
     )
     expect(problems).toEqual([
@@ -142,7 +142,7 @@ ${tableHeader}
 - **Shortcuts:** none
 
 ${tableHeader}
-| Tab | A | B | \`x.e2e.ts › y\` |
+| Tab | A | B | \`x.test.tsx › y\` |
 `),
     )
     expect(problems).toEqual([
@@ -200,7 +200,7 @@ ${tableHeader}
       contract(`${focusLines}
 
 ${tableHeader}
-| Tab | A \\| B | Moves | \`x.e2e.ts › y\` |
+| Tab | A \\| B | Moves | \`x.test.tsx › y\` |
 `),
     )
     expect(section?.rows[0]?.context).toBe('A | B')
@@ -221,8 +221,8 @@ describe('keyboardRowProblems', () => {
         }),
     rows,
   })
-  const tab = row('Tab', '`x.e2e.ts › Tab focuses it`')
-  const shiftTab = row('Shift+Tab', '`x.e2e.ts › Shift+Tab leaves it`')
+  const tab = row('Tab', '`x.test.tsx › Tab focuses it`')
+  const shiftTab = row('Shift+Tab', '`x.test.tsx › Shift+Tab leaves it`')
 
   it('passes a section with Tab and Shift+Tab rows that name tests', () => {
     expect(keyboardRowProblems(section([tab, shiftTab]))).toEqual([])
@@ -230,7 +230,7 @@ describe('keyboardRowProblems', () => {
 
   it('accepts one combined "Tab / Shift+Tab" row', () => {
     expect(
-      keyboardRowProblems(section([row('Tab / Shift+Tab', '`x.e2e.ts › Tab moves through`')])),
+      keyboardRowProblems(section([row('Tab / Shift+Tab', '`x.test.tsx › Tab moves through`')])),
     ).toEqual([])
   })
 
@@ -243,7 +243,7 @@ describe('keyboardRowProblems', () => {
     expect(keyboardRowProblems(section([], true))).toEqual([])
   })
 
-  it('requires every row to name an e2e or a component test', () => {
+  it('requires every row to name a component test', () => {
     expect(
       keyboardRowProblems(
         section([
@@ -267,7 +267,7 @@ describe('keyboardRowProblems', () => {
   it('accepts several tests in one cell', () => {
     expect(
       keyboardRowProblems(
-        section([tab, shiftTab, row('Space', '`a.test.tsx › one`, `a.e2e.ts › two`')]),
+        section([tab, shiftTab, row('Space', '`a.test.tsx › one`, `b.test.tsx › two`')]),
       ),
     ).toEqual([])
   })

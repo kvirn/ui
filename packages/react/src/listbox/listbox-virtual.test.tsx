@@ -1,3 +1,4 @@
+import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -5,11 +6,11 @@ import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
+import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Listbox } from './listbox.tsx'
 import type { UseListboxMultipleOptions, UseListboxSingleOptions } from './use-listbox.ts'
 
-// Contract: listbox.a11y.md › Virtualization. The keys are
-// also covered end to end in apps/storybook/src/components/listbox/listbox.e2e.ts. Component tests
+// Contract: listbox.a11y.md › Virtualization. Component tests
 // load no theme, so the fixture gives the list the height limit and the scroll that the theme gives
 // it, and every option the 2rem height that `estimateSize` guesses.
 
@@ -226,6 +227,85 @@ describe('virtualize: keys reach options that are not rendered', () => {
     await userEvent.keyboard('{ArrowUp}')
     expect(activeName()).toBe('Ort 9999')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe('9999')
+  })
+
+  test('Home and End reach the first and the last option, rendered and in view', async () => {
+    await render(<Example />)
+    await openWithKey('{End}')
+    expect(activeName()).toBe('Ort 10000')
+    expect(activeOption()?.getAttribute('aria-posinset')).toBe('10000')
+    expect(option('Ort 1').elements()).toHaveLength(0)
+    expect(renderedCount()).toBeLessThan(60)
+    await userEvent.keyboard('{Home}')
+    expect(activeName()).toBe('Ort 1')
+    expect(option('Ort 10000').elements()).toHaveLength(0)
+  })
+
+  test('ArrowDown and ArrowUp always leave aria-activedescendant on an option in the page', async () => {
+    await render(<Example />)
+    await openWithKey('{ArrowDown}')
+    for (let step = 0; step < 40; step += 1) {
+      await userEvent.keyboard('{ArrowDown}')
+      expect(activeOption()).toBeDefined()
+    }
+    expect(activeName()).toBe('Ort 41')
+    for (let step = 0; step < 40; step += 1) {
+      await userEvent.keyboard('{ArrowUp}')
+      expect(activeOption()).toBeDefined()
+    }
+    expect(activeName()).toBe('Ort 1')
+  })
+
+  test('PageDown and PageUp move ten options that may not be rendered', async () => {
+    await render(<Example />)
+    await openWithKey('{ArrowDown}')
+    for (let step = 0; step < 25; step += 1) {
+      await userEvent.keyboard('{PageDown}')
+      expect(activeOption()).toBeDefined()
+    }
+    expect(activeName()).toBe('Ort 251')
+    expect(activeOption()?.getAttribute('aria-posinset')).toBe('251')
+    await userEvent.keyboard('{PageUp}')
+    expect(activeName()).toBe('Ort 241')
+  })
+
+  test('typing a letter reaches an option that was not rendered, and å, ä and ö stay apart', async () => {
+    const lettered = [
+      ...Array.from({ length: 4000 }, (_, index) => ({
+        code: `ort-${index + 1}`,
+        name: `Ort ${index + 1}`,
+      })),
+      ...Array.from({ length: 3000 }, (_, index) => ({
+        code: `odeby-${index + 1}`,
+        name: `Ödeby ${index + 1}`,
+      })),
+      ...Array.from({ length: 3000 }, (_, index) => ({
+        code: `akerby-${index + 1}`,
+        name: `Åkerby ${index + 1}`,
+      })),
+    ]
+    await render(
+      <KvirnProvider locale="sv-SE" messages={sv}>
+        <Example items={lettered} />
+      </KvirnProvider>,
+    )
+    triggerElement().focus()
+    const pressCharacter = (key: string) =>
+      triggerElement().dispatchEvent(
+        new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }),
+      )
+    expect(option('Ödeby 1').elements()).toHaveLength(0)
+    pressCharacter('ö')
+    await expect.poll(isShown).toBe(true)
+    await expect.poll(activeName).toBe('Ödeby 1')
+    expect(activeOption()?.getAttribute('aria-posinset')).toBe('4001')
+    await new Promise((resolve) => setTimeout(resolve, 650))
+    pressCharacter('å')
+    await expect.poll(activeName).toBe('Åkerby 1')
+    expect(activeOption()?.getAttribute('aria-posinset')).toBe('7001')
+    await new Promise((resolve) => setTimeout(resolve, 650))
+    await userEvent.keyboard('o')
+    await expect.poll(activeName).toBe('Ort 1')
   })
 
   test('Enter chooses the active option that was far away, and the value is its key', async () => {

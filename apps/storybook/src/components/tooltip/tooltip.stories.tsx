@@ -18,8 +18,6 @@ import {
 
 // Components/Tooltip: a name and a shortcut for a control, shown on hover and keyboard focus
 // (APG Tooltip, contract: tooltip.a11y.md), styled by @kvirn-ui/theme/theme.css.
-// tooltip.e2e.ts runs its keyboard and pointer contract against Keyboard, UnderAPopover and
-// TextToolbar, and the display modes against the others.
 
 /** An open tooltip fades in: wait for it, so the checks that follow see it fully drawn. */
 const waitForFade = () =>

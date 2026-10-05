@@ -23,10 +23,8 @@ import {
 } from './table-of-contents.fixture.tsx'
 
 // Components/TableOfContents: the headless TableOfContents, styled by @kvirn-ui/theme/theme.css
-// (design spec docs/design/table-of-contents.md). table-of-contents.e2e.ts runs its keyboard rows
-// against Keyboard, its scroll behaviour against Default, and its axe, reflow and focus checks
-// against the other stories, so their play functions only read, or scroll to a heading to show
-// the current state. Every story is a page that scrolls (its sections are 70vh, and shorter on a
+// (design spec docs/design/table-of-contents.md). Their play functions only read, or scroll to a
+// heading to show the current state. Every story is a page that scrolls (its sections are 70vh, and shorter on a
 // Docs page, preview.css). The heading ids start with the story's own name: an id is unique on a
 // page, and a Docs page shows every story in one document. The library's own string, the
 // landmark's name, follows the locale toolbar.
@@ -328,9 +326,8 @@ export const RTL: Story = {
 }
 
 /**
- * The marker for forced colours, with “Avgifter” as the current heading. The e2e suite checks the
- * real emulation: the fills drop, the current link gets a straight `LinkText` bar, and the trail
- * keeps its weight.
+ * The marker for forced colours, with “Avgifter” as the current heading. In real emulation the
+ * fills drop, the current link gets a straight `LinkText` bar, and the trail keeps its weight.
  */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },

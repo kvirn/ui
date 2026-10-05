@@ -16,8 +16,7 @@ import type { TextareaChangeDetails, TextareaProps, TextareaState } from './text
 import { useTextarea } from './use-textarea.ts'
 import type { TextareaPartProps, UseTextareaOptions, UseTextareaResult } from './use-textarea.ts'
 
-// Contract: textarea.a11y.md. The keyboard rows are covered end to end in
-// apps/storybook/src/components/textarea/textarea.e2e.ts. The count's own text, plural forms and
+// Contract: textarea.a11y.md. The count's own text, plural forms and
 // announcements are proved in ../character-count/character-count.test.tsx: here only what
 // Textarea adds (no native maxlength, the wiring and the details).
 
@@ -30,6 +29,120 @@ beforeEach(() => {
 
 afterEach(() => {
   consoleWarn.mockRestore()
+})
+
+describe('keyboard', () => {
+  function recordPreventedKeys() {
+    const keys: string[] = []
+    const listener = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) keys.push(event.key)
+    }
+    document.addEventListener('keydown', listener)
+    return { keys, stop: () => document.removeEventListener('keydown', listener) }
+  }
+
+  test('Tab moves in and out and never inserts a tab', async () => {
+    await render(
+      <>
+        <Textarea aria-label="Situation" />
+        <button type="button">Skicka</button>
+      </>,
+    )
+    const box = page.getByRole('textbox', { name: 'Situation' })
+    const send = page.getByRole('button', { name: 'Skicka' })
+    await userEvent.keyboard('{Tab}')
+    await expect.element(box).toHaveFocus()
+    await userEvent.keyboard('Hej{Tab}')
+    await expect.element(send).toHaveFocus()
+    await expect.element(box).toHaveValue('Hej')
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(box).toHaveFocus()
+    await expect.element(box).toHaveValue('Hej')
+  })
+
+  test('Enter inserts a line break and does not submit', async () => {
+    const onSubmit = vi.fn<() => void>()
+    await render(
+      <form
+        aria-label="Ansökan"
+        onSubmit={(event) => {
+          event.preventDefault()
+          onSubmit()
+        }}
+      >
+        <Textarea aria-label="Situation" />
+        <button type="submit">Skicka</button>
+      </form>,
+    )
+    const box = page.getByRole('textbox', { name: 'Situation' })
+    await userEvent.click(box)
+    await userEvent.keyboard('Rad ett{Enter}Rad två')
+    await expect.element(box).toHaveValue('Rad ett\nRad två')
+    await expect.element(box).toHaveFocus()
+    expect(onSubmit).not.toHaveBeenCalled()
+    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+  })
+
+  test('caret keys are not intercepted', async () => {
+    await render(<Textarea aria-label="Situation" defaultValue={'Anna\nBritta'} />)
+    const box = page.getByRole('textbox', { name: 'Situation' })
+    await userEvent.click(box)
+    const element = box.element() as HTMLTextAreaElement
+    const recorder = recordPreventedKeys()
+    await userEvent.keyboard('{End}')
+    expect(element.selectionStart).toBe(11)
+    await userEvent.keyboard('{Home}')
+    expect(element.selectionStart).toBe(5)
+    await userEvent.keyboard('{ArrowRight}')
+    expect(element.selectionStart).toBe(6)
+    await userEvent.keyboard('{ArrowLeft}')
+    expect(element.selectionStart).toBe(5)
+    await userEvent.keyboard('{ArrowUp}')
+    expect(element.selectionStart).toBeLessThanOrEqual(4)
+    await userEvent.keyboard('{ArrowDown}{PageUp}{PageDown}')
+    recorder.stop()
+    expect(element.value).toBe('Anna\nBritta')
+    await expect.element(box).toHaveFocus()
+    expect(recorder.keys).toEqual([])
+  })
+
+  test('caret keys are not intercepted in right to left', async () => {
+    await render(
+      <div dir="rtl">
+        <Textarea aria-label="Situation" defaultValue="abc" />
+      </div>,
+    )
+    const box = page.getByRole('textbox', { name: 'Situation' })
+    await userEvent.click(box)
+    const recorder = recordPreventedKeys()
+    await userEvent.keyboard('{ArrowLeft}{ArrowRight}{Home}{End}{ArrowUp}{ArrowDown}')
+    recorder.stop()
+    await expect.element(box).toHaveValue('abc')
+    await expect.element(box).toHaveFocus()
+    expect(recorder.keys).toEqual([])
+  })
+
+  test('Control/Command+A selects all the text', async () => {
+    await render(<Textarea aria-label="Situation" defaultValue={'Anna\nAndersson'} />)
+    const box = page.getByRole('textbox', { name: 'Situation' })
+    await userEvent.click(box)
+    await userEvent.keyboard('{Control>}a{/Control}')
+    const element = box.element() as HTMLTextAreaElement
+    expect([element.selectionStart, element.selectionEnd]).toEqual([0, 'Anna\nAndersson'.length])
+  })
+
+  test('Escape does nothing: the value and the focus stay', async () => {
+    await render(<Textarea aria-label="Situation" defaultValue="Anna" />)
+    const box = page.getByRole('textbox', { name: 'Situation' })
+    await userEvent.click(box)
+    const recorder = recordPreventedKeys()
+    await userEvent.keyboard('{Escape}')
+    recorder.stop()
+    await expect.element(box).toHaveValue('Anna')
+    await expect.element(box).toHaveFocus()
+    expect(recorder.keys).toEqual([])
+  })
 })
 
 describe('rendering', () => {

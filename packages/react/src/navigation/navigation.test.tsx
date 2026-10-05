@@ -3,7 +3,7 @@ import { createRef } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
-import { page } from 'vite-plus/test/browser'
+import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Link } from '../link/link.tsx'
@@ -23,8 +23,7 @@ import type {
   UseNavigationResult,
 } from './use-navigation.ts'
 
-// Contract: navigation.a11y.md. The keyboard rows are covered end to end in
-// apps/storybook/src/components/navigation/navigation.e2e.ts.
+// Contract: navigation.a11y.md.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -201,6 +200,112 @@ describe('rendering', () => {
       expect(element.getAttributeNames().filter((name) => name.startsWith('aria-'))).toEqual(
         element.matches('nav') ? ['aria-label'] : [],
       )
+    }
+  })
+})
+
+describe('keyboard', () => {
+  const link = (name: string) => page.getByRole('link', { name, exact: true })
+
+  function MenuWithLinksAround() {
+    return (
+      <>
+        <a href="#before">Before the menu</a>
+        <MainMenu />
+        <a href="#after">After the menu</a>
+        <h2 id="om-oss">Om oss</h2>
+      </>
+    )
+  }
+
+  test('Tab moves through the links in DOM order, nested ones included', async () => {
+    await render(<MenuWithLinksAround />)
+    link('Before the menu').element().focus()
+    for (const name of ['Start', 'Bygga och bo', 'Bygglov', 'Om oss']) {
+      await userEvent.tab()
+      await expect.element(link(name)).toHaveFocus()
+    }
+    await userEvent.tab()
+    await expect.element(link('After the menu')).toHaveFocus()
+  })
+
+  test('Tab skips a collapsed group', async () => {
+    await render(
+      <Navigation.Root label="Huvudmeny">
+        <Navigation.List>
+          <Navigation.Item>
+            <Link.Root href="#start">Start</Link.Root>
+          </Navigation.Item>
+          <Navigation.Item>
+            <Link.Root href="#bygga">Bygga och bo</Link.Root>
+            <Navigation.List hidden>
+              <Navigation.Item>
+                <Link.Root href="#bygglov">Bygglov</Link.Root>
+              </Navigation.Item>
+            </Navigation.List>
+          </Navigation.Item>
+          <Navigation.Item>
+            <Link.Root href="#om-oss">Om oss</Link.Root>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>,
+    )
+    link('Start').element().focus()
+    await userEvent.tab()
+    await expect.element(link('Bygga och bo')).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(link('Om oss')).toHaveFocus()
+    const collapsed = page.getByRole('link', { name: 'Bygglov', includeHidden: true })
+    expect(collapsed.all()).toHaveLength(1)
+    await expect.element(collapsed).not.toBeVisible()
+  })
+
+  test('Shift+Tab moves back through the links, then out of the navigation', async () => {
+    await render(<MenuWithLinksAround />)
+    link('After the menu').element().focus()
+    for (const name of ['Om oss', 'Bygglov', 'Bygga och bo', 'Start', 'Before the menu']) {
+      await userEvent.tab({ shift: true })
+      await expect.element(link(name)).toHaveFocus()
+    }
+  })
+
+  test('Enter follows the link', async () => {
+    await render(<MenuWithLinksAround />)
+    link('Om oss').element().focus()
+    await userEvent.keyboard('{Enter}')
+    try {
+      await expect.poll(() => window.location.hash).toBe('#om-oss')
+      expect(document.querySelector(':target')?.id).toBe('om-oss')
+    } finally {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search)
+    }
+  })
+
+  test('Arrow keys, Home and End are not handled', async () => {
+    await render(
+      <>
+        <MainMenu />
+        <div dir="rtl">
+          <Navigation.Root label="Main menu">
+            <Navigation.List>
+              <Navigation.Item>
+                <Link.Root href="#first">First</Link.Root>
+              </Navigation.Item>
+              <Navigation.Item>
+                <Link.Root href="#second">Second</Link.Root>
+              </Navigation.Item>
+            </Navigation.List>
+          </Navigation.Root>
+        </div>
+      </>,
+    )
+    for (const name of ['Start', 'First']) {
+      const start = link(name)
+      start.element().focus()
+      for (const key of ['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', 'End', 'Home']) {
+        await userEvent.keyboard(`{${key}}`)
+        await expect.element(start).toHaveFocus()
+      }
     }
   })
 })

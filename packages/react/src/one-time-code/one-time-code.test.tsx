@@ -22,10 +22,8 @@ import type { TextInputChangeDetails } from '../text-input/use-text-input.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { useOneTimeCode } from './use-one-time-code.ts'
 
-// Contract: one-time-code.a11y.md. The keyboard rows, the pointer, the theme's fallback and the
-// display modes are covered end to end in
-// apps/storybook/src/components/one-time-code/one-time-code.e2e.ts. Component tests load no
-// theme, so the slots are plain spans here: what is asserted is the markup and the state.
+// Contract: one-time-code.a11y.md. Component tests load no theme, so the slots are plain spans
+// here: what is asserted is the markup and the state.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -550,6 +548,109 @@ describe('onComplete', () => {
     await render(<CodeField onComplete={onComplete} />)
     await userEvent.type(code(), '48192')
     expect(onComplete).not.toHaveBeenCalled()
+  })
+})
+
+describe('keyboard', () => {
+  const caretOf = () => [inputElement().selectionStart, inputElement().selectionEnd]
+  const activeIndexes = () =>
+    slots().flatMap((slot, index) => (slot.hasAttribute('data-active') ? [index] : []))
+
+  test('Shift+Tab leaves the field to the previous focusable element, never to a box', async () => {
+    await render(
+      <>
+        <button type="button">Tillbaka</button>
+        <CodeField />
+      </>,
+    )
+    await userEvent.tab()
+    await expect.element(page.getByRole('button', { name: 'Tillbaka' })).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(code()).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(page.getByRole('button', { name: 'Tillbaka' })).toHaveFocus()
+  })
+
+  test('arrows follow the code on an RTL page: ArrowRight is the next character', async () => {
+    await render(
+      <div dir="rtl">
+        <CodeField defaultValue="481920" />
+      </div>,
+    )
+    await userEvent.click(code())
+    await userEvent.keyboard('{Home}')
+    await expect.poll(activeIndexes).toEqual([0])
+    await userEvent.keyboard('{ArrowRight}')
+    expect(caretOf()).toEqual([1, 1])
+    await expect.poll(activeIndexes).toEqual([1])
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.poll(activeIndexes).toEqual([0])
+  })
+
+  test('Backspace and Delete cross the separator', async () => {
+    await render(<CodeField pattern="****-****" defaultValue="ABCD-1234" />)
+    await userEvent.click(code())
+    inputElement().setSelectionRange(5, 5)
+    await userEvent.keyboard('{Backspace}')
+    await expect.element(code()).toHaveValue('ABC1-234')
+    expect(caretOf()).toEqual([3, 3])
+    await userEvent.keyboard('{ArrowRight}')
+    expect(caretOf()).toEqual([4, 4])
+    await userEvent.keyboard('{Delete}')
+    await expect.element(code()).toHaveValue('ABC1-34')
+    await expect.element(code()).toHaveFocus()
+  })
+
+  test('Home and End move the caret to the ends', async () => {
+    await render(<CodeField defaultValue="481" />)
+    await userEvent.click(code())
+    await userEvent.keyboard('{Home}')
+    expect(caretOf()).toEqual([0, 0])
+    await expect.poll(activeIndexes).toEqual([0])
+    await userEvent.keyboard('{End}')
+    expect(caretOf()).toEqual([3, 3])
+    await expect.poll(activeIndexes).toEqual([3])
+  })
+
+  test('Shift+Home and Shift+End extend the selection', async () => {
+    await render(<CodeField pattern="****-****" defaultValue="ABCD-1234" />)
+    await userEvent.click(code())
+    await userEvent.keyboard('{Home}{Shift>}{End}{/Shift}')
+    expect(caretOf()).toEqual([0, 9])
+    await expect.poll(() => selectedSlots().length).toBe(8)
+    expect(separators()[0]?.hasAttribute('data-selected')).toBe(false)
+    await userEvent.keyboard('{End}{Shift>}{Home}{/Shift}')
+    expect(caretOf()).toEqual([0, 9])
+  })
+
+  test('Control+Z undoes the last edit', async () => {
+    await render(<CodeField />)
+    await userEvent.type(code(), '481920')
+    await userEvent.keyboard('{Backspace}')
+    await expect.element(code()).toHaveValue('48192')
+    await userEvent.keyboard('{Control>}z{/Control}')
+    await expect.element(code()).toHaveValue('481920')
+    expect(characters()).toEqual(['4', '8', '1', '9', '2', '0'])
+  })
+
+  test('ArrowUp and ArrowDown never change the value', async () => {
+    await render(<CodeField defaultValue="4819" />)
+    await userEvent.click(code())
+    for (const key of ['{ArrowUp}', '{ArrowDown}', '{ArrowUp}']) {
+      await userEvent.keyboard(key)
+      await expect.element(code()).toHaveValue('4819')
+    }
+    await expect.element(code()).toHaveFocus()
+  })
+
+  test('a click marks focus but not focus-visible, and a key brings it back', async () => {
+    await render(<CodeField after={<button type="button">Fortsätt</button>} />)
+    await userEvent.click(code())
+    await expect.element(code()).toHaveAttribute('data-focused', '')
+    await expect.element(code()).not.toHaveAttribute('data-focus-visible')
+    await userEvent.tab()
+    await userEvent.tab({ shift: true })
+    await expect.element(code()).toHaveAttribute('data-focus-visible', '')
   })
 })
 

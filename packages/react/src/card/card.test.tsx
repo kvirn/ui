@@ -17,8 +17,7 @@ import type {
 import { useCard } from './use-card.ts'
 import type { CardPartProps, UseCardResult } from './use-card.ts'
 
-// Contract: card.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/card/card.e2e.ts.
+// Contract: card.a11y.md.
 
 const parts = [
   ['Root', Card.Root, 'kv-card'],
@@ -123,6 +122,29 @@ describe('rendering', () => {
     await expect.element(page.getByRole('button', { name: 'Beställ extra tömning' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('button', { name: 'Pausa hämtningen' })).toHaveFocus()
+  })
+
+  test('Shift+Tab moves back through the children', async () => {
+    await render(
+      <Card.Root>
+        <Card.Body>
+          <h3>
+            <Link.Root href="#atervinning">Nya öppettider på återvinningscentralen</Link.Root>
+          </h3>
+        </Card.Body>
+        <Card.Footer className="kv-button-group">
+          <Button>Beställ extra tömning</Button>
+          <Button>Pausa hämtningen</Button>
+        </Card.Footer>
+      </Card.Root>,
+    )
+    page.getByRole('button', { name: 'Pausa hämtningen' }).element().focus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(page.getByRole('button', { name: 'Beställ extra tömning' })).toHaveFocus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect
+      .element(page.getByRole('link', { name: 'Nya öppettider på återvinningscentralen' }))
+      .toHaveFocus()
   })
 
   test('passes attributes through: id, lang and title on the consumer’s element', async () => {

@@ -18,8 +18,7 @@ import { SearchBoxWithClear, SearchBoxWithIconOnlyClear } from './input-group.fi
 //
 // KvirnUI holds no form state. The clear Button of SearchWithClear keeps the
 // value in the fixture's `useState`, where your form library's state would live. Nothing here
-// validates: an invalid story sets `invalid` itself. input-group.e2e.ts runs the focus ring,
-// Tab order, RTL, forced-colours and reflow checks.
+// validates: an invalid story sets `invalid` itself.
 
 const meta = {
   title: 'Components/Form/InputGroup',

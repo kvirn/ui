@@ -27,8 +27,7 @@ const catalogs: Record<string, KvirnMessages> = {
 
 /**
  * The library's strings (the landmark's name) follow the locale toolbar through a provider, like
- * an app's would. The provider also renders the two live regions, which the e2e checks stay empty
- * while the current heading changes.
+ * an app's would. The provider also renders the two live regions.
  */
 export const withContentsLocale: Decorator = (Story, { globals }) => {
   const locale = String(globals['locale'] ?? 'sv')

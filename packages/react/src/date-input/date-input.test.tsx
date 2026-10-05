@@ -27,8 +27,7 @@ import type {
   UseDateInputResult,
 } from './use-date-input.ts'
 
-// Contract: date-input.a11y.md. The keyboard rows are covered end to end in
-// apps/storybook/src/components/date-input/date-input.e2e.ts.
+// Contract: date-input.a11y.md.
 
 /** `dateInput.autoAdvanceHint` in the two locales the tests use. */
 const svHint = sv.dateInput.autoAdvanceHint
@@ -558,6 +557,145 @@ describe('auto-advance', () => {
     await expect.element(page.getByTestId('hint')).toHaveTextContent('none')
     await userEvent.type(page.getByRole('textbox', { name: 'month' }), '12')
     await expect.element(page.getByRole('textbox', { name: 'month' })).toHaveFocus()
+  })
+})
+
+describe('keyboard', () => {
+  const Around = ({ children }: { children: ReactNode }) => (
+    <>
+      <button type="button">Tillbaka</button>
+      {children}
+      <button type="button">Skicka</button>
+    </>
+  )
+  const before = () => page.getByRole('button', { name: 'Tillbaka' })
+  const after = () => page.getByRole('button', { name: 'Skicka' })
+
+  test('Tab enters the date at the first box of the field order', async () => {
+    const swedish = await render(
+      inLocale(
+        'sv-SE',
+        sv,
+        <Around>
+          <Birth />
+        </Around>,
+      ),
+    )
+    await userEvent.tab()
+    await expect.element(before()).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(year()).toHaveFocus()
+    await swedish.unmount()
+
+    await render(
+      inLocale(
+        'sv-FI',
+        sv,
+        <Around>
+          <Birth />
+        </Around>,
+      ),
+    )
+    await userEvent.tab()
+    await userEvent.tab()
+    await expect.element(day()).toHaveFocus()
+  })
+
+  test('Tab moves from box to box in the field order and leaves after the last', async () => {
+    await render(
+      inLocale(
+        'sv-SE',
+        sv,
+        <Around>
+          <Birth />
+        </Around>,
+      ),
+    )
+    before().element().focus()
+    for (const box of [year, month, day]) {
+      await userEvent.tab()
+      await expect.element(box()).toHaveFocus()
+    }
+    await userEvent.tab()
+    await expect.element(after()).toHaveFocus()
+  })
+
+  test('Shift+Tab moves back through the boxes and leaves before the first', async () => {
+    await render(
+      inLocale(
+        'sv-SE',
+        sv,
+        <Around>
+          <Birth />
+        </Around>,
+      ),
+    )
+    after().element().focus()
+    for (const box of [day, month, year]) {
+      await userEvent.tab({ shift: true })
+      await expect.element(box()).toHaveFocus()
+    }
+    await userEvent.tab({ shift: true })
+    await expect.element(before()).toHaveFocus()
+  })
+
+  test('ArrowUp and ArrowDown never step the value', async () => {
+    await render(inLocale('sv-SE', sv, <Birth defaultValue={{ day: '27' }} />))
+    await userEvent.click(day())
+    await userEvent.keyboard('{ArrowUp}{ArrowUp}{ArrowDown}')
+    await expect.element(day()).toHaveValue('27')
+    await expect.element(day()).toHaveFocus()
+  })
+
+  test('ArrowLeft, ArrowRight, Home and End move the caret and never leave the box', async () => {
+    await render(inLocale('sv-SE', sv, <Birth defaultValue={{ day: '27' }} />))
+    const dayBox = day().element() as HTMLInputElement
+    await userEvent.click(day())
+    await userEvent.keyboard('{Home}')
+    expect(dayBox.selectionStart).toBe(0)
+    await userEvent.keyboard('{ArrowRight}')
+    expect(dayBox.selectionStart).toBe(1)
+    await userEvent.keyboard('{End}')
+    expect(dayBox.selectionStart).toBe(2)
+    await userEvent.keyboard('{ArrowLeft}')
+    expect(dayBox.selectionStart).toBe(1)
+    await userEvent.keyboard('{End}{ArrowRight}')
+    await expect.element(day()).toHaveFocus()
+    await expect.element(month()).not.toHaveFocus()
+  })
+
+  test('Enter in a box submits the form', async () => {
+    const onSubmit = vi.fn<(event: { preventDefault: () => void }) => void>((event) =>
+      event.preventDefault(),
+    )
+    await render(
+      inLocale(
+        'sv-SE',
+        sv,
+        <form onSubmit={onSubmit}>
+          <Birth />
+          <button type="submit">Skicka</button>
+        </form>,
+      ),
+    )
+    await userEvent.type(day(), '27')
+    await userEvent.keyboard('{Enter}')
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+  })
+
+  test('right to left: Tab follows the DOM order and the arrow keys stay in the box', async () => {
+    await render(
+      <div dir="rtl">{inLocale('en-GB', en, <Birth order={['day', 'month', 'year']} />)}</div>,
+    )
+    const box = (name: string) => page.getByRole('textbox', { name, exact: true })
+    await userEvent.tab()
+    await expect.element(box('Day')).toHaveFocus()
+    await userEvent.keyboard('{ArrowLeft}{ArrowRight}{ArrowRight}{ArrowLeft}')
+    await expect.element(box('Day')).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(box('Month')).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(box('Year')).toHaveFocus()
   })
 })
 

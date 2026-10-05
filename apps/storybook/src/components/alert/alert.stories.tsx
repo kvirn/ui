@@ -30,10 +30,8 @@ import {
 import type { AlertFixtureLocale } from './alert.fixture.tsx'
 
 // Components/Alert: the headless Alert, styled by @kvirn-ui/theme/theme.css
-// (design spec docs/design/alert.md). alert.e2e.ts runs its
-// keyboard rows, focus-ring, forced-colours and reflow checks against Keyboard, WithActions,
-// SendFailed, FocusTarget, Announced, LongFinnishText, AllExamples and ForcedColors. The Keyboard
-// story is the dismissible example: the optional close button is the alert's only focusable part.
+// (design spec docs/design/alert.md). The Keyboard story is the dismissible example: the optional
+// close button is the alert's only focusable part.
 
 // The Docs page opens with the package docs: how to use it, and how to build your own.
 const description = usageGuide(guide)
@@ -529,7 +527,7 @@ export const LongFinnishText: Story = {
   },
 }
 
-/** Every example on one page: layout only, for axe and e2e. */
+/** Every example on one page: layout only, for axe. */
 function AllExamplesPage({ locale }: { locale: AlertFixtureLocale }) {
   return (
     <>
@@ -568,7 +566,7 @@ export const RTL: Story = {
 
 /**
  * The box and its bar survive forced colours, and all four statuses share one colour, so the
- * icon's shape and the status word carry the status. The e2e suite checks it with real emulation.
+ * icon's shape and the status word carry the status.
  */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },

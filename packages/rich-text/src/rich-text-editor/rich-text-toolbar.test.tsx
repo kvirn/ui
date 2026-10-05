@@ -601,3 +601,71 @@ describe('the Table group', () => {
     expect(textbox().element().querySelectorAll('th')).toHaveLength(0)
   })
 })
+
+describe('the toolbar keys', () => {
+  test('right to left: the toolbar arrows flip', async () => {
+    await render(
+      <div dir="rtl">
+        <Editor />
+      </div>,
+    )
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Alt>}{F10}{/Alt}')
+    await expect.element(button('Ångra')).toHaveFocus()
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.element(button('Gör om')).toHaveFocus()
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(button('Ångra')).toHaveFocus()
+  })
+
+  test('the picker opens with ArrowDown, Enter chooses, and focus goes back to the text', async () => {
+    await render(<Editor defaultValue="<p>Text</p>" />)
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Alt>}{F10}{/Alt}{ArrowRight}{ArrowRight}')
+    const picker = page.getByRole('combobox', { name: 'Texttyp' })
+    await expect.element(picker).toHaveFocus()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(page.getByRole('option', { name: 'Rubrik 2' })).toBeVisible()
+    await userEvent.keyboard('{ArrowDown}{Enter}')
+    expect(textbox().element().querySelectorAll('h2')).toHaveLength(1)
+    await vi.waitFor(() => expect(document.activeElement).toBe(textbox().element()))
+  })
+
+  test('Enter on Öka indrag nests the item and focus stays on the button', async () => {
+    await render(<Editor defaultValue="<ul><li><p>Ett</p></li><li><p>Två</p></li></ul>" />)
+    await userEvent.click(textbox().getByText('Två', { exact: true }))
+    await userEvent.keyboard('{End}{Alt>}{F10}{/Alt}')
+    button('Öka indrag').element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(textbox().element().querySelectorAll('ul ul li')).toHaveLength(1)
+    await expect.element(button('Öka indrag')).toHaveFocus()
+    await expect.element(status()).toHaveTextContent('Nivå 2')
+  })
+
+  test('Enter on Tabell inserts a table and moves focus into it', async () => {
+    await render(<Editor defaultValue="<p>Text</p>" />)
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Alt>}{F10}{/Alt}')
+    button('Tabell').element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(textbox().element().querySelectorAll('table')).toHaveLength(1)
+    await expect.element(textbox()).toHaveFocus()
+    await expect.element(status()).toHaveTextContent('Tabell med 3 kolumner och 3 rader tillagd.')
+  })
+
+  test('Table group buttons work with Enter, and Ta bort tabellen moves focus to the text', async () => {
+    await render(<Editor defaultValue="<table><tbody><tr><td><p>A</p></td></tr></tbody></table>" />)
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Control>}{Home}{/Control}{Alt>}{F10}{/Alt}')
+    button('Lägg till rad nedanför').element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(textbox().element().querySelectorAll('tr')).toHaveLength(2)
+    await expect.element(button('Lägg till rad nedanför')).toHaveFocus()
+    await expect.element(status()).toHaveTextContent('Raden är tillagd.')
+    button('Ta bort tabellen').element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(textbox().element().querySelectorAll('table')).toHaveLength(0)
+    await expect.element(textbox()).toHaveFocus()
+    await expect.element(status()).toHaveTextContent('Tabellen är borttagen. Ångra med Ctrl+Z.')
+  })
+})

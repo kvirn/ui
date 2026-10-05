@@ -19,8 +19,7 @@ import type {
   UseCheckboxResult,
 } from './use-checkbox.ts'
 
-// Contract: checkbox.a11y.md. The keyboard rows and the label click are tested once, end to end,
-// in apps/storybook/src/components/checkbox/checkbox.e2e.ts (testing skill, rule 13).
+// Contract: checkbox.a11y.md. The keyboard rows are in the `keyboard` block.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -287,7 +286,7 @@ describe('checked', () => {
       >
         <Field.Root required>
           <Checkbox name="declaration" value="intygat" />
-          <Field.Label>Jag intygar</Field.Label>
+          <Field.Label marker="none">Jag intygar</Field.Label>
         </Field.Root>
         <button type="submit">Skicka</button>
       </form>,
@@ -316,7 +315,7 @@ describe('checked', () => {
     await render(
       <Field.Root required>
         <Checkbox {...register('declaration')} />
-        <Field.Label>Jag intygar</Field.Label>
+        <Field.Label marker="none">Jag intygar</Field.Label>
       </Field.Root>,
     )
     const checkbox = page.getByRole('checkbox', { name: 'Jag intygar' })
@@ -479,6 +478,121 @@ describe('useCheckbox', () => {
     await render(<Own />)
     const input = page.getByRole('checkbox', { name: 'Egen' })
     expect((input.element() as HTMLInputElement).indeterminate).toBe(true)
+  })
+})
+
+describe('keyboard', () => {
+  function Form() {
+    const [all, setAll] = useState<'some' | 'all' | 'none'>('some')
+    return (
+      <form>
+        <button type="button">Före</button>
+        <Checkbox aria-label="Nyhetsbrev" />
+        <Checkbox
+          aria-label="Alla"
+          checked={all === 'all'}
+          indeterminate={all === 'some'}
+          onCheckedChange={(checked) => setAll(checked ? 'all' : 'none')}
+        />
+        <Checkbox aria-label="Ärende" disabled />
+        <Checkbox aria-label="Intyg" />
+        <button type="button">Skicka</button>
+      </form>
+    )
+  }
+
+  function recordPreventedKeys() {
+    const keys: string[] = []
+    const listener = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) keys.push(event.key)
+    }
+    document.addEventListener('keydown', listener)
+    return { keys, stop: () => document.removeEventListener('keydown', listener) }
+  }
+
+  test('Tab moves to each checkbox, one stop each', async () => {
+    await render(<Form />)
+    page.getByRole('button', { name: 'Före' }).element().focus()
+    await userEvent.tab()
+    await expect.element(page.getByRole('checkbox', { name: 'Nyhetsbrev' })).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(page.getByRole('checkbox', { name: 'Alla' })).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(page.getByRole('checkbox', { name: 'Intyg' })).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(page.getByRole('button', { name: 'Skicka' })).toHaveFocus()
+  })
+
+  test('Shift+Tab moves to the previous checkbox', async () => {
+    await render(<Form />)
+    page.getByRole('checkbox', { name: 'Intyg' }).element().focus()
+    await userEvent.tab({ shift: true })
+    await expect.element(page.getByRole('checkbox', { name: 'Alla' })).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(page.getByRole('checkbox', { name: 'Nyhetsbrev' })).toHaveFocus()
+  })
+
+  test('Tab skips a disabled checkbox', async () => {
+    await render(<Form />)
+    const disabled = page.getByRole('checkbox', { name: 'Ärende' })
+    await expect.element(disabled).toBeDisabled()
+    page.getByRole('checkbox', { name: 'Alla' }).element().focus()
+    await userEvent.tab()
+    await expect.element(disabled).not.toHaveFocus()
+    await expect.element(page.getByRole('checkbox', { name: 'Intyg' })).toHaveFocus()
+  })
+
+  test('Space toggles the checkbox', async () => {
+    await render(<Form />)
+    const checkbox = page.getByRole('checkbox', { name: 'Nyhetsbrev' })
+    checkbox.element().focus()
+    const prevented = recordPreventedKeys()
+    await userEvent.keyboard(' ')
+    await expect.element(checkbox).toBeChecked()
+    await expect.element(checkbox).toHaveAttribute('data-state', 'checked')
+    await userEvent.keyboard(' ')
+    await expect.element(checkbox).not.toBeChecked()
+    await expect.element(checkbox).toHaveAttribute('data-state', 'unchecked')
+    await expect.element(checkbox).toHaveFocus()
+    prevented.stop()
+    expect(prevented.keys).toEqual([])
+  })
+
+  test('Space on an indeterminate checkbox checks it', async () => {
+    await render(<Form />)
+    const checkbox = page.getByRole('checkbox', { name: 'Alla' })
+    await expect.element(checkbox).toHaveAttribute('data-state', 'indeterminate')
+    expect((checkbox.element() as HTMLInputElement).indeterminate).toBe(true)
+    checkbox.element().focus()
+    await userEvent.keyboard(' ')
+    await expect.element(checkbox).toBeChecked()
+    await expect.element(checkbox).toHaveAttribute('data-state', 'checked')
+    expect((checkbox.element() as HTMLInputElement).indeterminate).toBe(false)
+  })
+
+  test('Enter does not toggle the checkbox and is not intercepted', async () => {
+    await render(<Form />)
+    const checkbox = page.getByRole('checkbox', { name: 'Nyhetsbrev' })
+    checkbox.element().focus()
+    const prevented = recordPreventedKeys()
+    await userEvent.keyboard('{Enter}')
+    await expect.element(checkbox).not.toBeChecked()
+    await expect.element(checkbox).toHaveFocus()
+    prevented.stop()
+    expect(prevented.keys).toEqual([])
+  })
+
+  test('clicking the label text toggles the checkbox and focuses it', async () => {
+    await render(
+      <Field.Root>
+        <Checkbox />
+        <Field.Label marker="none">Jag intygar</Field.Label>
+      </Field.Root>,
+    )
+    const checkbox = page.getByRole('checkbox', { name: /Jag intygar/ })
+    await userEvent.click(page.getByText('Jag intygar'))
+    await expect.element(checkbox).toBeChecked()
+    await expect.element(checkbox).toHaveFocus()
   })
 })
 

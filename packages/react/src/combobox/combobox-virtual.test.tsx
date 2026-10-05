@@ -10,9 +10,7 @@ import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Combobox } from './combobox.tsx'
 import type { UseComboboxMultipleOptions, UseComboboxSingleOptions } from './use-combobox.ts'
 
-// Contract: combobox.a11y.md › Virtualization. The keys are
-// also covered end to end in apps/storybook/src/components/combobox/combobox.e2e.ts. Component
-// tests load no theme, so the fixture gives the list the height limit and the scroll that the theme
+// Contract: combobox.a11y.md › Virtualization. Component tests load no theme, so the fixture gives the list the height limit and the scroll that the theme
 // gives it, and every option the 2rem height that `estimateSize` guesses.
 
 let consoleWarn: MockInstance<Console['warn']>
@@ -194,6 +192,47 @@ describe('virtualize: keys reach options that are not rendered', () => {
     expect(activeName()).toBe('Ort 10000')
     await userEvent.keyboard('{ArrowUp}')
     expect(activeName()).toBe('Ort 9999')
+  })
+
+  test('virtualized: ArrowUp opens the popup and activates the last option, rendered and in view', async () => {
+    await render(<Example />)
+    await openWithKey('{ArrowUp}')
+    expect(activeName()).toBe('Ort 10000')
+    expect(activeOption()?.getAttribute('aria-posinset')).toBe(String(count))
+    expect(activeOption()?.getAttribute('aria-setsize')).toBe(String(count))
+    await expect.poll(() => (listElement()?.scrollTop ?? 0) > 1000).toBe(true)
+    await expect.element(option('Ort 1')).not.toBeInTheDocument()
+    expect(renderedCount()).toBeLessThan(60)
+  })
+
+  test('virtualized: ArrowDown and ArrowUp always leave aria-activedescendant on an option in the page', async () => {
+    await render(<Example />)
+    await openWithKey('{ArrowDown}')
+    expect(activeName()).toBe('Ort 1')
+    for (let step = 0; step < 40; step += 1) {
+      await userEvent.keyboard('{ArrowDown}')
+      expect(activeOption()).toBeDefined()
+    }
+    expect(activeName()).toBe('Ort 41')
+    for (let step = 0; step < 40; step += 1) {
+      await userEvent.keyboard('{ArrowUp}')
+      expect(activeOption()).toBeDefined()
+    }
+    expect(activeName()).toBe('Ort 1')
+  })
+
+  test('virtualized: PageDown and PageUp move ten options that may not be rendered', async () => {
+    await render(<Example />)
+    await openWithKey('{ArrowDown}')
+    for (let step = 0; step < 25; step += 1) {
+      await userEvent.keyboard('{PageDown}')
+      expect(activeOption()).toBeDefined()
+    }
+    expect(activeName()).toBe('Ort 251')
+    expect(activeOption()?.getAttribute('aria-posinset')).toBe('251')
+    await userEvent.keyboard('{PageUp}')
+    expect(activeName()).toBe('Ort 241')
+    expect(activeOption()?.getAttribute('aria-posinset')).toBe('241')
   })
 
   test('Enter chooses an option that was far away: its text goes in the input', async () => {

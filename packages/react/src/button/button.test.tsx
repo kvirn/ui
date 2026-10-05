@@ -14,8 +14,7 @@ import type { ButtonProps, ButtonState } from './button.tsx'
 import { useButton } from './use-button.ts'
 import type { ButtonPartProps, UseButtonOptions, UseButtonResult } from './use-button.ts'
 
-// Contract: button.a11y.md. Keyboard rows are also covered end to end in
-// apps/storybook/src/components/button/button.e2e.ts.
+// Contract: button.a11y.md.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -141,6 +140,75 @@ describe('forms', () => {
     await userEvent.click(button)
     expect(onSubmit).toHaveBeenCalledTimes(1)
     await expectNoA11yViolations(container)
+  })
+})
+
+describe('keyboard', () => {
+  test('Tab moves focus to the button', async () => {
+    await render(<Button>Spara</Button>)
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Spara' })).toHaveFocus()
+  })
+
+  test('Shift+Tab moves focus off the button', async () => {
+    await render(
+      <>
+        <Button>Spara</Button>
+        <Button>Avbryt</Button>
+      </>,
+    )
+    await userEvent.keyboard('{Tab}{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Avbryt' })).toHaveFocus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(page.getByRole('button', { name: 'Spara' })).toHaveFocus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(page.getByRole('button', { name: 'Spara' })).not.toHaveFocus()
+  })
+
+  test('Space activates the button on key up', async () => {
+    const onClick = vi.fn<() => void>()
+    await render(<Button onClick={onClick}>Spara</Button>)
+    const button = page.getByRole('button', { name: 'Spara' })
+    await userEvent.keyboard('{Tab}')
+    await userEvent.keyboard('{Space>}')
+    expect(onClick).not.toHaveBeenCalled()
+    await userEvent.keyboard('{/Space}')
+    expect(onClick).toHaveBeenCalledTimes(1)
+    await expect.element(button).toHaveFocus()
+  })
+
+  test('Enter on a submit button submits the form', async () => {
+    const onSubmit = vi.fn<() => void>()
+    await render(
+      <SubmitForm onSubmit={onSubmit}>
+        <Button type="submit">Skicka ansökan</Button>
+      </SubmitForm>,
+    )
+    const button = page.getByRole('button', { name: 'Skicka ansökan' })
+    await userEvent.click(page.getByRole('textbox', { name: 'Namn' }))
+    await userEvent.keyboard('{Tab}')
+    await expect.element(button).toHaveFocus()
+    await userEvent.keyboard('{Enter}')
+    expect(onSubmit).toHaveBeenCalledTimes(1)
+    await expect.element(button).toHaveFocus()
+  })
+
+  test('Enter on a default button does not submit the form', async () => {
+    const onSubmit = vi.fn<() => void>()
+    const onClick = vi.fn<() => void>()
+    await render(
+      <SubmitForm onSubmit={onSubmit}>
+        <Button onClick={onClick}>Börja om</Button>
+      </SubmitForm>,
+    )
+    const button = page.getByRole('button', { name: 'Börja om' })
+    await userEvent.click(page.getByRole('textbox', { name: 'Namn' }))
+    await userEvent.keyboard('{Tab}')
+    await expect.element(button).toHaveFocus()
+    await userEvent.keyboard('{Enter}')
+    expect(onClick).toHaveBeenCalledTimes(1)
+    expect(onSubmit).not.toHaveBeenCalled()
+    await expect.element(button).toHaveFocus()
   })
 })
 

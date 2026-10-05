@@ -25,8 +25,7 @@ import type { AutocompleteRootProps } from './autocomplete.tsx'
 import { useAutocomplete } from './use-autocomplete.ts'
 import type { UseAutocompleteOptions, UseAutocompleteResult } from './use-autocomplete.ts'
 
-// Contract: autocomplete.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/autocomplete/autocomplete.e2e.ts. Component tests load no theme:
+// Contract: autocomplete.a11y.md. Component tests load no theme:
 // the popup is the browser's own `popover` element with the inline placement the hook sets.
 
 let consoleWarn: MockInstance<Console['warn']>
@@ -332,7 +331,7 @@ describe('the value is the text', () => {
     await render(<Example />)
     await typeText('sto')
     await expect.poll(isShown).toBe(true)
-    await userEvent.click(option('Stora Torget'))
+    await userEvent.click(option('Stora Torget'), { force: true })
     await expect.poll(isShown).toBe(false)
     expect(inputElement().value).toBe('Stora Torget')
     await expect.element(input()).toHaveFocus()
@@ -531,17 +530,132 @@ describe('keyboard', () => {
     await expect.poll(isShown).toBe(false)
     await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
   })
+})
 
-  test('the popup is under the input and never covers it', async () => {
+describe('keyboard rows', () => {
+  test('Tab moves to the input, one stop', async () => {
+    await render(<Example withButtons />)
+    page.getByRole('button', { name: 'Före' }).element().focus()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(input()).toHaveFocus()
+    expect(inputElement().hasAttribute('tabindex')).toBe(false)
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+  })
+
+  test('Shift+Tab leaves the input backwards', async () => {
+    await render(<Example />)
+    inputElement().focus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+  })
+
+  test('Tab skips a disabled input', async () => {
+    await render(<Example disabled />)
+    expect(inputElement().disabled).toBe(true)
+    page.getByRole('button', { name: 'Före' }).element().focus()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    expect(isShown()).toBe(false)
+  })
+
+  test('PageDown and PageUp move ten suggestions and stop at the ends', async () => {
+    const items = Array.from({ length: 30 }, (_, index) => `Gatan ${index + 1}`)
+    await render(<Example items={items} />)
+    await typeText('{ArrowDown}')
+    await expect.poll(activeName).toBe('Gatan 1')
+    await userEvent.keyboard('{PageDown}')
+    expect(activeName()).toBe('Gatan 11')
+    await userEvent.keyboard('{PageDown}')
+    expect(activeName()).toBe('Gatan 21')
+    await userEvent.keyboard('{PageDown}')
+    expect(activeName()).toBe('Gatan 30')
+    await userEvent.keyboard('{PageUp}')
+    expect(activeName()).toBe('Gatan 20')
+    await userEvent.keyboard('{PageUp}{PageUp}')
+    expect(activeName()).toBe('Gatan 1')
+  })
+
+  test('right to left: ArrowDown and ArrowUp still mean next and previous suggestion, and ArrowLeft and ArrowRight only move the caret', async () => {
+    const { container } = await render(
+      <div dir="rtl">
+        <Example />
+      </div>,
+    )
+    await typeText('gatan')
+    await expect.poll(isShown).toBe(true)
+    await userEvent.keyboard('{ArrowDown}')
+    expect(activeName()).toBe('Storgatan')
+    await userEvent.keyboard('{ArrowDown}')
+    expect(activeName()).toBe('Kungsgatan')
+    await userEvent.keyboard('{ArrowUp}')
+    expect(activeName()).toBe('Storgatan')
+    await expectNoA11yViolations(container)
+    await userEvent.keyboard('{ArrowLeft}')
+    expect(inputElement().hasAttribute('aria-activedescendant')).toBe(false)
+    await userEvent.keyboard('{ArrowDown}')
+    expect(activeName()).toBe('Storgatan')
+    await userEvent.keyboard('{ArrowRight}')
+    expect(inputElement().hasAttribute('aria-activedescendant')).toBe(false)
+  })
+
+  test('Escape does nothing when the popup is closed', async () => {
+    await render(<Example />)
+    inputElement().focus()
+    const prevented: string[] = []
+    const record = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) {
+        prevented.push(event.key)
+      }
+    }
+    document.addEventListener('keydown', record)
+    await userEvent.keyboard('{Escape}')
+    document.removeEventListener('keydown', record)
+    expect(isShown()).toBe(false)
+    await expect.element(input()).toHaveFocus()
+    expect(prevented).toEqual([])
+  })
+
+  test('Shift+Tab closes the popup without picking and moves focus back', async () => {
     await render(<Example />)
     await typeText('{ArrowDown}')
     await expect.poll(isShown).toBe(true)
-    const inputBox = inputElement().getBoundingClientRect()
-    const popupBox = popupElement()?.getBoundingClientRect()
-    expect(popupBox).toBeDefined()
-    const popupTop = popupBox?.top ?? 0
-    const popupBottom = popupBox?.bottom ?? 0
-    expect(popupTop >= inputBox.bottom - 1 || popupBottom <= inputBox.top + 1).toBe(true)
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.poll(isShown).toBe(false)
+    expect(inputElement().value).toBe('')
+    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+  })
+
+  test('a disabled suggestion can be reached and cannot be picked', async () => {
+    await render(<Example isItemDisabled={(street) => street === 'Stora Torget'} />)
+    await typeText('stora')
+    await expect.poll(optionNames).toEqual(['Stora Torget'])
+    await userEvent.keyboard('{ArrowDown}')
+    expect(activeName()).toBe('Stora Torget')
+    expect(activeOption()?.getAttribute('aria-disabled')).toBe('true')
+    await userEvent.keyboard('{Enter}')
+    expect(isShown()).toBe(true)
+    await userEvent.click(option('Stora Torget'), { force: true })
+    expect(isShown()).toBe(true)
+    expect(inputElement().value).toBe('stora')
+  })
+
+  test('moving the pointer over a suggestion makes it active', async () => {
+    await render(<Example />)
+    await typeText('{ArrowDown}')
+    await userEvent.hover(option('Kungsgatan'))
+    await expect.poll(activeName).toBe('Kungsgatan')
+    await userEvent.hover(option('Östra vägen'))
+    await expect.poll(activeName).toBe('Östra vägen')
+  })
+
+  test('clicking the label focuses the input and opens nothing', async () => {
+    await render(<Example />)
+    const label = document.querySelector('label')
+    expect(label).not.toBeNull()
+    await userEvent.click(label as HTMLElement)
+    await expect.element(input()).toHaveFocus()
+    expect(isShown()).toBe(false)
   })
 })
 

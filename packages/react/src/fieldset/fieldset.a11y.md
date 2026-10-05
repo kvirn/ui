@@ -4,7 +4,7 @@
 - **Deviations:** none from APG. Decisions (forms skill): parts, wiring, nesting, the legend marker, the default order, several descriptions and help texts, a Prose in a Fieldset is the group's description (there is no Fieldset.Description), and the group's help text is `Fieldset.HelpText` (Plan 0029, design spec `docs/design/field-help-text.md`).
 - **Native elements used:** `<fieldset>` (Fieldset.Root), `<legend>` (Fieldset.Legend), `<p>` (Fieldset.ErrorMessage, which behaves like Field.ErrorMessage), a `<div class="kv-prose">` for the description (Fieldset.Prose), a `<p class="kv-field-help-text">` for the help text (Fieldset.HelpText), and a `<span>` for the optional marker.
 - **Status:** alpha candidate (Plan 0013, Phases 1 and 1b). Accessibility-reviewer pending for Phase 1b. Manual AT is `pending`.
-- **Tests:** `fieldset.test.tsx` next to this file. `fieldset.stories.tsx` and `fieldset.e2e.ts` in `apps/storybook/src/components/fieldset/`.
+- **Tests:** `fieldset.test.tsx` next to this file. `fieldset.stories.tsx` in `apps/storybook/src/components/fieldset/`.
 
 A Fieldset groups related questions or the options of one question. Its legend is the group's name, and its description (`Fieldset.Prose`), help text (`Fieldset.HelpText`) and error are the group's. Checkbox groups, radio groups and the date input (later phases) are built on it.
 
@@ -39,10 +39,10 @@ Rules, tested in `fieldset.test.tsx`:
 
 Fieldset handles no keys and moves no focus. A group's keys come from its controls (`text-input.a11y.md`, and later the checkbox and radio contracts). Enter, Space, Escape, the arrow keys, Home and End are not handled by Fieldset.
 
-| Key             | Context                | Action                                                                                                           | Test                                                                                                                                                         |
-| --------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Tab / Shift+Tab | Fieldset with controls | Moves through the controls in DOM order. The fieldset, legend, description, help text and error aren't Tab stops | `fieldset.e2e.ts › Tab moves through the controls in DOM order`, `fieldset.e2e.ts › Tab never stops on the fieldset, its legend, its help text or its error` |
-| –               | `fieldset[disabled]`   | Disabled controls inside are skipped (native)                                                                    | `fieldset.test.tsx › disabled disables every control inside, natively`, `fieldset.e2e.ts › Tab skips the controls of a disabled fieldset (native)`           |
+| Key             | Context                | Action                                                                                                           | Test                                                                                                                                                 |
+| --------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tab / Shift+Tab | Fieldset with controls | Moves through the controls in DOM order. The fieldset, legend, description, help text and error aren't Tab stops | `fieldset.test.tsx › Tab moves through the controls in DOM order and never stops on the group, its legend, its help text or its error`               |
+| –               | `fieldset[disabled]`   | Disabled controls inside are skipped (native)                                                                    | `fieldset.test.tsx › disabled disables every control inside, natively`, `fieldset.test.tsx › Tab skips the controls of a disabled fieldset (native)` |
 
 ## Focus management
 
@@ -77,9 +77,8 @@ Message keys are the Field's (`field.optional`, `field.errorPrefix`), resolved t
 - Focus indicator: on the controls inside. The fieldset has none.
 - Target size: no interactive area of its own.
 - Colour: the legend, description, help text and marker are `text`, and a help text keeps `text` when the group is invalid or disabled, the error `danger` with a prefix and an icon (1.4.1).
-- forced-colors behaviour: nothing depends on colour. The error is `CanvasText` (`fieldset.e2e.ts › forced colours: the error message and its prefix are still there`).
+- forced-colors behaviour: nothing depends on colour. The error is `CanvasText`.
 - reduced-motion behaviour: none.
-- Reflow: `min-inline-size: 0` on the fieldset, and the legend wraps, so a long Finnish legend never causes horizontal scrolling at 320px (`fieldset.e2e.ts › no horizontal scrolling at 320px with the Finnish legend and labels (1.4.10)`).
 - RTL: logical properties only.
 
 ## WCAG SCs covered

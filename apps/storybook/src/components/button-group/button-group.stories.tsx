@@ -8,7 +8,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/ButtonGroup: a row of related buttons, styled by @kvirn-ui/theme/theme.css
 // (contract: button-group.a11y.md). It has no keys of its own, so there is no Keyboard story and
-// no e2e spec: its Tab row is a component test. In a toolbar it is Toolbar.Group: see
+// its Tab row is a component test. In a toolbar it is Toolbar.Group: see
 // Components/Toolbar.
 
 const meta = {

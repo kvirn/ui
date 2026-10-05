@@ -22,9 +22,6 @@ import type {
   UseInputGroupResult,
 } from './use-input-group.ts'
 
-// Contract: input-group.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/input-group/input-group.e2e.ts.
-
 let consoleWarn: MockInstance<Console['warn']>
 
 beforeEach(() => {

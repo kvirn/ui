@@ -25,8 +25,7 @@ import {
 // submits on its own (3.2.2).
 //
 // KvirnUI holds no form state. Nothing here checks the code: an invalid story
-// sets `invalid` and writes the message itself. one-time-code.e2e.ts runs the keys, the pointer,
-// the fallback, RTL, forced colours, reflow, the pattern limits and text spacing.
+// sets `invalid` and writes the message itself.
 
 const meta = {
   title: 'Components/Form/OneTimeCode',
@@ -512,7 +511,7 @@ export const RTL: Story = {
  * In forced colours the theme shows the plain input: system colours, a 2px edge when invalid, a
  * dashed edge when disabled, and the boxes and dashes hidden. The dash is part of the value, so
  * the invalid `K7QX-2M9P` field shows it as text. This story only marks it
- * (`data-forced-colors`): the `chromium-forced-colors` e2e project asserts the fallback.
+ * (`data-forced-colors`).
  */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },

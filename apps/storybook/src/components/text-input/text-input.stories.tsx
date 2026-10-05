@@ -27,8 +27,7 @@ import {
 // Components/Form/NumberInput. KvirnUI holds no form state: an uncontrolled TextInput keeps its
 // value in the browser and a form submit sends it (PlainForm), and a controlled one shows the
 // `value` you give it and reports changes through `onValueChange` (Controlled). Nothing here
-// validates: an invalid story sets `invalid` itself. text-input.e2e.ts runs the keyboard rows,
-// focus ring, forced-colours and reflow checks.
+// validates: an invalid story sets `invalid` itself.
 
 const meta = {
   title: 'Components/Form/TextInput',

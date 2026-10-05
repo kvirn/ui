@@ -4,7 +4,7 @@ import { Button, Card, Field, Fieldset, Link, Section, TextInput } from '@kvirn-
 import { NewsList, textsFor } from '../card/card.fixture.tsx'
 import type { CardFixtureLocale } from '../card/card.fixture.tsx'
 
-// Story and e2e fixture: the design spec's examples A and B (docs/design/section.md §4, §5) and the
+// Story fixture: the design spec's examples A and B (docs/design/section.md §4, §5) and the
 // Section-or-Card example (§6.9). The `contact.*` strings moved here from the Card fixture: the
 // sidebar text block is a Section now. Example B reuses the Card fixture's NewsList.
 // sv, en, nb and nn are written. The fi strings are the designer's drafts, for length checks only.

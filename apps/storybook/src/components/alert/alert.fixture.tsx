@@ -11,7 +11,7 @@ import type { Decorator } from '@storybook/react-vite'
 import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 
-// Story and e2e fixture for Components/Alert (docs/design/alert.md §4.4, §5.2). sv,
+// Story fixture for Components/Alert (docs/design/alert.md §4.4, §5.2). sv,
 // en, nb and nn are written. The fi strings are the designer's drafts, for length checks only. se:
 // English, marked lang="en" (3.1.2), and the library's own status words follow in English too. The
 // status words ("Klart:", "Varning:") come from the provider, like an app's would. Dates and

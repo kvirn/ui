@@ -8,9 +8,7 @@ import { ControlledPopover } from './popover.fixture.tsx'
 
 // Components/Popover: a button that opens a small floating panel in the browser's top layer
 // (contract: popover.a11y.md). The default theme doesn't style it yet, so a decorator draws the
-// panel with existing tokens (the code shown for a story has no styling in it). popover.e2e.ts runs
-// the keyboard rows, the placement and the display modes against Keyboard, Nested, FlipsAtTheEdge,
-// LongContent, RTL and ForcedColors.
+// panel with existing tokens (the code shown for a story has no styling in it).
 
 const description = usageGuide(guide)
 

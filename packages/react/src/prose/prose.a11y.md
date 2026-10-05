@@ -64,7 +64,7 @@ Prose renders no text, so it has no message keys.
 
 ## Visual / modes
 
-Headless: Prose ships no CSS. With `@kvirn-ui/theme/theme.css` the `kv-prose` rules apply (design spec `docs/design/foundations-and-prose.md`): a 70ch measure, the body and heading type roles (`h1` to `h6` have their own roles, and `h4` to `h6` stay at 16px in every prose size), link underline on hover and focus ring, and reflow without fixed sizes. Contrast of text, links and code on `canvas` and `surface` is measured by `theme:check` (1.4.3, 1.4.11). 320px reflow and forced colours are checked in `prose.e2e.ts` (`Prose reflow (1.4.10) › the article has no horizontal scrolling at 320px`, `… › kv-prose--xl and --2xl do not scroll sideways at 320px`, `Prose forced colours (1.4.11) › the table rules, quote bar and rule stay borders, and a mark gets an outline`), and text spacing in the `Text spacing` story (1.4.12). Reduced motion: Prose animates only a link's colour, and only when motion is allowed.
+Headless: Prose ships no CSS. With `@kvirn-ui/theme/theme.css` the `kv-prose` rules apply (design spec `docs/design/foundations-and-prose.md`): a 70ch measure, the body and heading type roles (`h1` to `h6` have their own roles, and `h4` to `h6` stay at 16px in every prose size), link underline on hover and focus ring, and reflow without fixed sizes. Contrast of text, links and code on `canvas` and `surface` is measured by `theme:check` (1.4.3, 1.4.11). Text spacing is reviewed in the `Text spacing` story (1.4.12). Reduced motion: Prose animates only a link's colour, and only when motion is allowed.
 
 ## Sizes, width and colour roles
 

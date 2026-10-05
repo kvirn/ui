@@ -22,8 +22,7 @@ import {
 // `maxlength`, so a pasted text is kept whole. KvirnUI holds no form state: an uncontrolled
 // Textarea keeps its value in the browser and a form submit sends it (Keyboard), and a controlled
 // one shows the `value` you give it and reports changes through `onValueChange` (Controlled).
-// Nothing here validates: an invalid story sets `invalid` itself. textarea.e2e.ts runs the
-// keyboard rows, the count's announcements, forced-colours and reflow checks.
+// Nothing here validates: an invalid story sets `invalid` itself.
 
 const meta = {
   title: 'Components/Form/Textarea',

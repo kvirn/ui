@@ -4,7 +4,7 @@
 - **Deviations:** none from APG. Decisions (forms skill): one native button and a hidden input, rejected files kept out of the list, announcements batched into one sentence, focus on the item after a removal, and a scoped exception (the component checks the files it is given). Design spec `docs/design/file-upload.md`.
 - **Native elements used:** `<button>` (Trigger, Cancel, Retry, Remove), `<input type="file">` (Input), `<progress>` (Progress), `<ul>` and `<li>` (List, Item, and the lines of Rejections), `<div>` (Root, DropZone, Actions), `<p>` (DropHint, Summary, Status, ItemError).
 - **Status:** alpha candidate (Plan 0021). Gates pass once accessibility-reviewer returns APPROVE. Manual AT is `pending`.
-- **Tests:** `file-upload.test.tsx` and `file-upload-announcements.test.ts` next to this file. `file-upload.stories.tsx` and `file-upload.e2e.ts` in `apps/storybook/src/components/file-upload/`.
+- **Tests:** `file-upload.test.tsx` and `file-upload-announcements.test.ts` next to this file. `file-upload.stories.tsx` in `apps/storybook/src/components/file-upload/`.
 
 A FileUpload lets someone attach files to a form. One button opens the system dialog. Files can also be dropped on a zone around it. Each file is checked against the limits, and a refused file never enters the list: it is named under the button, with how to fix it. Accepted files show in a list with their name, type, size and status, and can be uploaded through the consumer's own `upload` function, with a native progress bar. The library sends nothing anywhere.
 
@@ -54,19 +54,19 @@ Rules, tested in `file-upload.test.tsx`:
 - **Arrows wrap:** n/a
 - **Shortcuts:** none
 
-| Key         | Context                   | Action                                                                                                                             | Test                                                              |
-| ----------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Tab         | before the field          | Moves focus to the Trigger. It is one stop. The hidden input and the drop zone are never stops                                     | `file-upload.e2e.ts › Tab focuses the Trigger once`               |
-| Tab         | on the Trigger            | Moves to the first button of the first item, or to the next element when the list is empty. Items are not stops, their buttons are | `file-upload.e2e.ts › Tab goes on to the item buttons`            |
-| Shift+Tab   | on a button of an item    | Moves back, to the Trigger after the first item                                                                                    | `file-upload.e2e.ts › Shift+Tab goes back to the Trigger`         |
-| Enter       | on the Trigger            | Opens the system file dialog. Chosen files are added, and focus stays on the Trigger                                               | `file-upload.e2e.ts › Enter opens the file dialog`                |
-| Space       | on the Trigger            | Opens the system file dialog, as Enter                                                                                             | `file-upload.e2e.ts › Space opens the file dialog`                |
-| Enter/Space | on the Trigger, list full | Does nothing: the Trigger is `aria-disabled`. It stays focusable and its description says why                                      | `file-upload.e2e.ts › the Trigger does nothing at the limit`      |
-| Enter/Space | on Remove                 | Removes the file. Focus moves to the next item, else the previous one, else the Trigger. The removal is announced                  | `file-upload.e2e.ts › Remove moves focus to the next item`        |
-| Enter/Space | on Cancel                 | Cancels the upload. The file stays, with Retry and Remove. Focus moves to the item                                                 | `file-upload.e2e.ts › Cancel keeps the file and focuses the item` |
-| Enter/Space | on Retry                  | Starts the upload again with the same file. Focus moves to the item, since Retry goes away                                         | `file-upload.e2e.ts › Retry restarts the upload`                  |
-| Escape      | anywhere in the field     | Nothing. The system dialog owns Escape, and a running upload is never ended by a key                                               | `file-upload.e2e.ts › Escape does nothing`                        |
-| Characters  | anywhere in the field     | Nothing. There is no type-ahead and no shortcut                                                                                    | `file-upload.e2e.ts › Escape does nothing`                        |
+| Key         | Context                   | Action                                                                                                                             | Test                                                                           |
+| ----------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Tab         | before the field          | Moves focus to the Trigger. It is one stop. The hidden input and the drop zone are never stops                                     | `file-upload.test.tsx › keyboard › Tab focuses the Trigger once`               |
+| Tab         | on the Trigger            | Moves to the first button of the first item, or to the next element when the list is empty. Items are not stops, their buttons are | `file-upload.test.tsx › keyboard › Tab goes on to the item buttons`            |
+| Shift+Tab   | on a button of an item    | Moves back, to the Trigger after the first item                                                                                    | `file-upload.test.tsx › keyboard › Shift+Tab goes back to the Trigger`         |
+| Enter       | on the Trigger            | Opens the system file dialog. Chosen files are added, and focus stays on the Trigger                                               | `file-upload.test.tsx › keyboard › Enter opens the file dialog`                |
+| Space       | on the Trigger            | Opens the system file dialog, as Enter                                                                                             | `file-upload.test.tsx › keyboard › Space opens the file dialog`                |
+| Enter/Space | on the Trigger, list full | Does nothing: the Trigger is `aria-disabled`. It stays focusable and its description says why                                      | `file-upload.test.tsx › keyboard › the Trigger does nothing at the limit`      |
+| Enter/Space | on Remove                 | Removes the file. Focus moves to the next item, else the previous one, else the Trigger. The removal is announced                  | `file-upload.test.tsx › keyboard › Remove moves focus to the next item`        |
+| Enter/Space | on Cancel                 | Cancels the upload. The file stays, with Retry and Remove. Focus moves to the item                                                 | `file-upload.test.tsx › keyboard › Cancel keeps the file and focuses the item` |
+| Enter/Space | on Retry                  | Starts the upload again with the same file. Focus moves to the item, since Retry goes away                                         | `file-upload.test.tsx › keyboard › Retry restarts the upload`                  |
+| Escape      | anywhere in the field     | Nothing. The system dialog owns Escape, and a running upload is never ended by a key                                               | `file-upload.test.tsx › keyboard › Escape and characters do nothing`           |
+| Characters  | anywhere in the field     | Nothing. There is no type-ahead and no shortcut                                                                                    | `file-upload.test.tsx › keyboard › Escape and characters do nothing`           |
 
 ## Focus management
 
@@ -139,4 +139,4 @@ Rules, tested in `file-upload.test.tsx`:
 - HEIC photos: whether Safari converts to JPEG for `accept=".jpg"` in every path needs a device check before `beta`.
 - Client-side limits can be bypassed. The server must check again.
 - Under React's `<Activity mode="hidden">` the effect cleanup resets the list and aborts running uploads. Keep a FileUpload mounted while a form is hidden.
-- The Trigger's name is read from the text span and the Field label. Chrome's accessibility tree is checked in e2e. Firefox and WebKit have not been run yet.
+- The Trigger's name is read from the text span and the Field label. The name is asserted in `file-upload.test.tsx › wiring: the Trigger is the one control › a native button named by its own text then the Field label, with the Field control id`. Firefox and WebKit have not been run yet.

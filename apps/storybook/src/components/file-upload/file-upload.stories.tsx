@@ -35,8 +35,7 @@ import {
 // content again.
 //
 // KvirnUI holds no form state. The Field's `invalid` and message stay with the
-// consumer, who decides whether a refused file blocks the form. file-upload.e2e.ts runs the keys,
-// the drop, focus after a removal, RTL, forced colours, reduced motion and reflow.
+// consumer, who decides whether a refused file blocks the form.
 
 /** The trigger's own text per locale (se shows the English catalog). */
 const chooseFiles: Record<FormLocale, string> = {

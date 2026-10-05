@@ -2,7 +2,7 @@ import { useId } from 'react'
 import type { ReactNode } from 'react'
 import { Button, Card, Link } from '@kvirn-ui/react'
 
-// Story and e2e fixture: the design spec's examples B–D (docs/design/card.md §4, §5). Example A,
+// Story fixture: the design spec's examples B–D (docs/design/card.md §4, §5). Example A,
 // the sidebar text block, is a Section now: see ../section/section.fixture.tsx. sv, en, nb and
 // nn are written. The fi strings are the designer's drafts, for length checks only. se: English,
 // marked lang="en" (3.1.2). Dates and times are values, formatted with Intl.

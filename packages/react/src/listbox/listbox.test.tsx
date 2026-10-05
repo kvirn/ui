@@ -19,8 +19,7 @@ import type {
 import { useListboxNative } from './use-listbox-native.ts'
 import type { ListboxNativePartProps, UseListboxNativeResult } from './use-listbox-native.ts'
 
-// Contract: listbox.a11y.md (native rendering). The keyboard rows are also covered end to end in
-// apps/storybook/src/components/listbox/listbox.e2e.ts.
+// Contract: listbox.a11y.md (native rendering).
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -32,6 +31,13 @@ beforeEach(() => {
 afterEach(() => {
   consoleWarn.mockRestore()
 })
+
+function asSelect(element: HTMLElement | SVGElement): HTMLSelectElement {
+  if (!(element instanceof HTMLSelectElement)) {
+    throw new Error('expected a <select>')
+  }
+  return element
+}
 
 const municipalities = (
   <>
@@ -364,6 +370,89 @@ describe('focus visible', () => {
     await userEvent.keyboard('{Tab}')
     await expect.element(first).not.toHaveAttribute('data-focus-visible')
     await expect.element(page.getByRole('combobox', { name: 'Två' })).toHaveFocus()
+  })
+})
+
+describe('keyboard: the browser’s own keys', () => {
+  test('Shift+Tab leaves the select backwards', async () => {
+    await render(
+      <>
+        <button type="button">Före</button>
+        <ListboxNative aria-label="Kommun">{municipalities}</ListboxNative>
+      </>,
+    )
+    page.getByRole('combobox', { name: 'Kommun' }).element().focus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+  })
+
+  test('Tab skips a disabled select', async () => {
+    await render(
+      <>
+        <ListboxNative aria-label="Ett">{municipalities}</ListboxNative>
+        <ListboxNative aria-label="Två" disabled>
+          {municipalities}
+        </ListboxNative>
+        <button type="button">Efter</button>
+      </>,
+    )
+    page.getByRole('combobox', { name: 'Ett' }).element().focus()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+  })
+
+  test('ArrowDown chooses the next option and ArrowUp the previous one, without wrapping', async () => {
+    const onValueChange = vi.fn<(value: string, details: ListboxNativeChangeDetails) => void>()
+    await render(
+      <ListboxNative aria-label="Kommun" onValueChange={onValueChange}>
+        {municipalities}
+      </ListboxNative>,
+    )
+    const select = page.getByRole('combobox', { name: 'Kommun' })
+    select.element().focus()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(select).toHaveValue('gbg')
+    expect(onValueChange).toHaveBeenCalledWith('gbg', expect.anything())
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(select).toHaveValue('sthlm')
+    await userEvent.keyboard('{ArrowUp}{ArrowUp}{ArrowUp}')
+    await expect.element(select).toHaveValue('')
+    await expect.element(select).toHaveFocus()
+  })
+
+  test('Home and End choose the first and the last option', async () => {
+    await render(<ListboxNative aria-label="Kommun">{municipalities}</ListboxNative>)
+    const select = page.getByRole('combobox', { name: 'Kommun' })
+    select.element().focus()
+    await userEvent.keyboard('{End}')
+    await expect.element(select).toHaveValue('malmo')
+    await userEvent.keyboard('{Home}')
+    await expect.element(select).toHaveValue('')
+  })
+
+  test('typing a letter chooses the option that starts with it', async () => {
+    await render(<ListboxNative aria-label="Kommun">{municipalities}</ListboxNative>)
+    const select = page.getByRole('combobox', { name: 'Kommun' })
+    select.element().focus()
+    await userEvent.keyboard('s')
+    await expect.element(select).toHaveValue('sthlm')
+  })
+
+  test('Alt+ArrowDown opens the list without changing the value, and Escape closes it', async () => {
+    await render(
+      <ListboxNative aria-label="Kommun" defaultValue="sthlm">
+        {municipalities}
+      </ListboxNative>,
+    )
+    const select = page.getByRole('combobox', { name: 'Kommun' })
+    const element = asSelect(select.element())
+    element.focus()
+    await userEvent.keyboard('{Alt>}{ArrowDown}{/Alt}')
+    await expect.poll(() => element.matches(':open')).toBe(true)
+    await userEvent.keyboard('{Escape}')
+    await expect.poll(() => element.matches(':open')).toBe(false)
+    await expect.element(select).toHaveValue('sthlm')
+    await expect.element(select).toHaveFocus()
   })
 })
 

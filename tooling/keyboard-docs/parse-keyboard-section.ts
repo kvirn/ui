@@ -189,15 +189,15 @@ function reorder(section: KeyboardSection): KeyboardSection {
   }
 }
 
-/** A reference in a Test cell: `button.e2e.ts › Tab moves focus to the button`. */
+/** A reference in a Test cell: `button.test.tsx › Tab moves focus to the button`. */
 export interface TestReference {
-  /** The test file's name, like `button.e2e.ts` or `button.test.tsx`. */
+  /** The test file's name, like `button.test.tsx`. */
   file: string
   /** The names after the file: describe blocks, then the test. */
   path: string[]
 }
 
-const testReference = /^([\w.-]+\.(?:e2e\.ts|test\.tsx)) › (\S.*)$/
+const testReference = /^([\w.-]+\.test\.tsx) › (\S.*)$/
 
 /** The backticked spans of a Test cell that look like test references, and the ones that don't. */
 export function parseTestCell(cell: string): { references: TestReference[]; invalid: string[] } {

@@ -25,9 +25,8 @@ import { Table } from './table.tsx'
 import { useTable } from './use-table.ts'
 import type { TableRegion, TableVirtualizeOptions } from './use-table.ts'
 
-// Contract: table.a11y.md. Keys, focus order, the sticky header, forced colours and reflow are
-// covered in apps/storybook/src/components/table/table.e2e.ts. Component tests load no theme, so
-// what is asserted is the markup, the names, the state and the announcements.
+// Contract: table.a11y.md. Component tests load no theme, so what is asserted is the markup, the
+// names, the state, the keys and the announcements.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -1176,6 +1175,306 @@ describe('the scroll region', () => {
     )
     await expect.element(page.getByRole('table', { name: 'Fees' })).toBeVisible()
     expect(consoleWarn).not.toHaveBeenCalled()
+  })
+})
+
+describe('keyboard', () => {
+  const keyboardFeatures = tableFeatures({
+    rowSortingFeature,
+    sortedRowModel: createSortedRowModel(),
+    sortFns: { locale: createLocaleSortFn('sv') },
+    rowSelectionFeature,
+    rowExpandingFeature,
+    expandedRowModel: createExpandedRowModel(),
+  })
+  const keyboardColumn = createColumnHelper<typeof keyboardFeatures, CaseRecord>()
+  const keyboardColumns = keyboardColumn.columns([
+    keyboardColumn.accessor('name', {
+      header: 'Name',
+      sortFn: 'locale',
+      cell: (info) => <a href={`#${info.row.id}`}>{info.getValue()}</a>,
+    }),
+    keyboardColumn.accessor('caseNumber', { header: 'Case number' }),
+    keyboardColumn.accessor('received', { header: 'Received' }),
+  ])
+
+  function KeyboardTable({
+    inlineSize = 260,
+    blockSize = 120,
+  }: {
+    inlineSize?: number
+    blockSize?: number | 'auto'
+  }) {
+    const cases = useTable({
+      features: keyboardFeatures,
+      columns: keyboardColumns,
+      data: records,
+      getRowId: (record) => record.id,
+      getRowCanExpand: () => true,
+      rowHeader: 'name',
+    })
+    return (
+      <>
+        <button type="button">Before</button>
+        <Table.ScrollRegion table={cases} style={{ inlineSize, blockSize, overflow: 'auto' }}>
+          <Table.Root table={cases} style={{ inlineSize: 700 }}>
+            <Table.Caption>Open cases</Table.Caption>
+            <Table.Head>
+              {cases.table.getHeaderGroups().map((headerGroup) => (
+                <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
+                  <Table.ColumnHeader>
+                    <Table.SelectAllCheckbox />
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader />
+                  {headerGroup.headers.map((header) => (
+                    <Table.ColumnHeader key={header.id} header={header}>
+                      <Table.SortButton header={header} />
+                    </Table.ColumnHeader>
+                  ))}
+                </Table.Row>
+              ))}
+            </Table.Head>
+            <Table.Body>
+              {(row) => (
+                <>
+                  <Table.Row key={row.id} row={row}>
+                    <Table.Cell>
+                      <Table.SelectCheckbox row={row} />
+                    </Table.Cell>
+                    <Table.Cell>
+                      <Table.ExpandButton row={row} />
+                    </Table.Cell>
+                    {row.getAllCells().map((cell) => (
+                      <Table.Cell key={cell.id} cell={cell} />
+                    ))}
+                  </Table.Row>
+                  <Table.DetailRow row={row}>Handled by the housing office.</Table.DetailRow>
+                </>
+              )}
+            </Table.Body>
+          </Table.Root>
+        </Table.ScrollRegion>
+      </>
+    )
+  }
+
+  const region = () => page.getByRole('region', { name: 'Open cases' })
+  const selectAll = () => page.getByRole('checkbox', { name: 'Select all rows' })
+  const rowCheckbox = (name: string) => page.getByRole('checkbox', { name: `Select ${name}` })
+  const expandButton = (name: string) => page.getByRole('button', { name: `Details ${name}` })
+  const scrollOf = (element: Element) => ({ top: element.scrollTop, left: element.scrollLeft })
+
+  test('Tab focuses the scroll region when the table overflows', async () => {
+    await renderInProvider(<KeyboardTable />)
+    await expect.element(region()).toHaveAttribute('tabindex', '0')
+    await page.getByRole('button', { name: 'Before' }).click()
+    await userEvent.tab()
+    await expect.element(region()).toHaveFocus()
+  })
+
+  test('Tab skips the scroll region when nothing scrolls', async () => {
+    const { container } = await renderInProvider(
+      <KeyboardTable inlineSize={900} blockSize="auto" />,
+    )
+    const scrollRegion = container.querySelector('.kv-table-scroll-region')
+    expect(scrollRegion?.hasAttribute('tabindex')).toBe(false)
+    await page.getByRole('button', { name: 'Before' }).click()
+    await userEvent.tab()
+    await expect.element(selectAll()).toHaveFocus()
+  })
+
+  test('Tab moves through the controls in reading order', async () => {
+    await renderInProvider(<KeyboardTable />)
+    await expect.element(region()).toHaveAttribute('tabindex', '0')
+    await page.getByRole('button', { name: 'Before' }).click()
+    const inOrder = [
+      region(),
+      selectAll(),
+      sortButton('Name'),
+      sortButton('Case number'),
+      sortButton('Received'),
+      rowCheckbox('Anna Svensson'),
+      expandButton('Anna Svensson'),
+      page.getByRole('link', { name: 'Anna Svensson' }),
+      rowCheckbox('Åsa Berg'),
+    ]
+    for (const control of inOrder) {
+      await userEvent.tab()
+      await expect.element(control).toHaveFocus()
+    }
+  })
+
+  test('Shift+Tab moves back through the controls', async () => {
+    await renderInProvider(<KeyboardTable />)
+    await expect.element(region()).toHaveAttribute('tabindex', '0')
+    sortButton('Name').element().focus()
+    await userEvent.tab({ shift: true })
+    await expect.element(selectAll()).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(region()).toHaveFocus()
+  })
+
+  test('Enter on a sort button sorts the column and announces it', async () => {
+    const { container } = await renderInProvider(<KeyboardTable />)
+    const button = sortButton('Name')
+    button.element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(sortedColumns(container)).toEqual(['Name:ascending'])
+    await expect.element(status()).toHaveTextContent('Sorted by Name, ascending.')
+    await expect.element(button).toHaveFocus()
+    await userEvent.keyboard('{Enter}')
+    expect(sortedColumns(container)).toEqual(['Name:descending'])
+    await userEvent.keyboard('{Enter}')
+    expect(sortedColumns(container)).toEqual([])
+    await expect.element(status()).toHaveTextContent('No longer sorted by Name.')
+  })
+
+  test('Space on a sort button sorts the column', async () => {
+    const { container } = await renderInProvider(<KeyboardTable />)
+    sortButton('Case number').element().focus()
+    await userEvent.keyboard(' ')
+    expect(sortedColumns(container)).toEqual(['Case number:ascending'])
+    sortButton('Received').element().focus()
+    await userEvent.keyboard(' ')
+    expect(sortedColumns(container)).toEqual(['Received:ascending'])
+  })
+
+  test('Space on a row checkbox selects the row', async () => {
+    const { container } = await renderInProvider(<KeyboardTable />)
+    const checkbox = rowCheckbox('Anna Svensson')
+    checkbox.element().focus()
+    await userEvent.keyboard(' ')
+    expect(inputOf(checkbox).checked).toBe(true)
+    expect(container.querySelectorAll('tr[data-selected]')).toHaveLength(1)
+    expect(container.querySelector('[aria-selected]')).toBeNull()
+    await expect.element(checkbox).toHaveFocus()
+    await userEvent.keyboard(' ')
+    expect(inputOf(checkbox).checked).toBe(false)
+    expect(container.querySelectorAll('tr[data-selected]')).toHaveLength(0)
+  })
+
+  test('Space on select-all selects every row and announces the count', async () => {
+    const { container } = await renderInProvider(<KeyboardTable />)
+    selectAll().element().focus()
+    await userEvent.keyboard(' ')
+    expect(container.querySelectorAll('tr[data-selected]')).toHaveLength(4)
+    expect(inputOf(selectAll()).checked).toBe(true)
+    await expect.element(status()).toHaveTextContent('4 rows selected.')
+    await userEvent.keyboard(' ')
+    expect(container.querySelectorAll('tr[data-selected]')).toHaveLength(0)
+    await expect.element(status()).toHaveTextContent('0 rows selected.')
+  })
+
+  test('Enter on an expand button shows the details', async () => {
+    const { container } = await renderInProvider(<KeyboardTable />)
+    const button = expandButton('Anna Svensson')
+    await expect.element(button).toHaveAttribute('aria-expanded', 'false')
+    button.element().focus()
+    await userEvent.keyboard('{Enter}')
+    await expect.element(button).toHaveAttribute('aria-expanded', 'true')
+    const controlled = button.element().getAttribute('aria-controls') ?? ''
+    expect(container.querySelector(`[id="${controlled}"]`)).not.toBeNull()
+    await expect.element(button).toHaveFocus()
+  })
+
+  test('Space on an expand button hides the details', async () => {
+    const { container } = await renderInProvider(<KeyboardTable />)
+    const button = expandButton('Åsa Berg')
+    button.element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(container.querySelectorAll('tr.kv-table-detail-row')).toHaveLength(1)
+    await userEvent.keyboard(' ')
+    await expect.element(button).toHaveAttribute('aria-expanded', 'false')
+    expect(container.querySelectorAll('tr.kv-table-detail-row')).toHaveLength(0)
+    await expect.element(button).toHaveFocus()
+  })
+
+  test('A focused row stays rendered while the virtualized table scrolls', async () => {
+    const { container } = await renderInProvider(<VirtualTable />)
+    const button = page.getByRole('button', { name: 'Open Person 3' })
+    await expect.element(button).toBeVisible()
+    const buttonElement = button.element()
+    buttonElement.focus()
+    await expect.element(button).toHaveFocus()
+    const scrollRegion = container.querySelector<HTMLElement>('.kv-table-scroll-region')
+    if (scrollRegion === null) throw new Error('no scroll region')
+    scrollRegion.scrollTop = scrollRegion.scrollHeight
+    await expect
+      .poll(
+        () =>
+          container.querySelector('tbody tr[aria-rowindex="10001"]') === null ? null : 'rendered',
+        { timeout: 3000 },
+      )
+      .toBe('rendered')
+    expect(container.querySelectorAll('tbody tr:not([aria-hidden])').length).toBeLessThan(100)
+    expect(buttonElement.isConnected).toBe(true)
+    await expect.element(button).toHaveFocus()
+
+    await userEvent.tab()
+    const focusedRowIndex = () =>
+      Number(container.querySelector('tbody tr:has(:focus)')?.getAttribute('aria-rowindex'))
+    await expect.poll(focusedRowIndex).toBeGreaterThan(1000)
+    const nextIndex = focusedRowIndex()
+    await expect.poll(() => buttonElement.isConnected).toBe(false)
+    await userEvent.tab({ shift: true })
+    await expect.poll(focusedRowIndex).toBeGreaterThan(1000)
+    expect(focusedRowIndex()).toBeLessThan(nextIndex)
+  })
+
+  test('ArrowDown scrolls the focused scroll region', async () => {
+    const { container } = await renderInProvider(<VirtualTable />)
+    const scrollRegion = container.querySelector<HTMLElement>('.kv-table-scroll-region')
+    if (scrollRegion === null) throw new Error('no scroll region')
+    await expect.poll(() => scrollRegion.getAttribute('tabindex')).toBe('0')
+    scrollRegion.focus()
+    const before = scrollOf(scrollRegion)
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.poll(() => scrollOf(scrollRegion).top).toBeGreaterThan(before.top)
+  })
+
+  test('ArrowRight scrolls the focused scroll region sideways', async () => {
+    const { container } = await renderInProvider(<KeyboardTable />)
+    const scrollRegion = container.querySelector<HTMLElement>('.kv-table-scroll-region')
+    if (scrollRegion === null) throw new Error('no scroll region')
+    await expect.element(region()).toHaveAttribute('tabindex', '0')
+    scrollRegion.focus()
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.poll(() => scrollOf(scrollRegion).left).toBeGreaterThan(0)
+  })
+
+  test('ArrowLeft scrolls the scroll region sideways in right-to-left', async () => {
+    const { container } = await renderInProvider(
+      <div dir="rtl">
+        <KeyboardTable />
+      </div>,
+    )
+    const scrollRegion = container.querySelector<HTMLElement>('.kv-table-scroll-region')
+    if (scrollRegion === null) throw new Error('no scroll region')
+    await expect.element(region()).toHaveAttribute('tabindex', '0')
+    scrollRegion.focus()
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.poll(() => scrollOf(scrollRegion).left).toBeLessThan(0)
+  })
+
+  test('PageDown scrolls the focused scroll region a page', async () => {
+    const { container } = await renderInProvider(<VirtualTable />)
+    const scrollRegion = container.querySelector<HTMLElement>('.kv-table-scroll-region')
+    if (scrollRegion === null) throw new Error('no scroll region')
+    await expect.poll(() => scrollRegion.getAttribute('tabindex')).toBe('0')
+    scrollRegion.focus()
+    await userEvent.keyboard('{PageDown}')
+    await expect.poll(() => scrollOf(scrollRegion).top).toBeGreaterThan(100)
+  })
+
+  test('Escape and letters do nothing', async () => {
+    const { container } = await renderInProvider(<KeyboardTable />)
+    const button = sortButton('Name')
+    button.element().focus()
+    await userEvent.keyboard('{Escape}ax{Home}{End}')
+    await expect.element(button).toHaveFocus()
+    expect(sortedColumns(container)).toEqual([])
+    expect(container.querySelectorAll('tr[data-selected]')).toHaveLength(0)
+    expect(status().element().textContent).toBe('')
   })
 })
 

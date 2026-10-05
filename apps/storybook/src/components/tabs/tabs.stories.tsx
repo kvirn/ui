@@ -18,9 +18,8 @@ import {
 } from './tabs.fixture.tsx'
 
 // Components/Tabs: a list of tabs and a panel for each (APG Tabs, contract: tabs.a11y.md), styled
-// by @kvirn-ui/theme/theme.css (design spec docs/design/tabs.md). tabs.e2e.ts runs the keyboard
-// contract against Keyboard, Manual, Vertical and RTL, and the display modes and axe against all
-// the stories, so their play functions only read. Tabs have no library strings: the names and the
+// by @kvirn-ui/theme/theme.css (design spec docs/design/tabs.md).
+// Tabs have no library strings: the names and the
 // panel texts are the story's own, in sv by default.
 
 // The Docs page opens with the package docs: how to use it, and how to build your own.

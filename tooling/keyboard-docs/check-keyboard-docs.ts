@@ -83,14 +83,9 @@ export function importedContract(
 
 /** Every test file a Test cell can name, by file name. */
 function listTestFiles(repositoryRoot: string): Map<string, string> {
-  const files = [
-    ...walk(join(repositoryRoot, 'apps/storybook/src/components'), (name) =>
-      name.endsWith('.e2e.ts'),
-    ),
-    ...listPackageSourceDirectories(repositoryRoot).flatMap((directory) =>
-      walk(directory, (name) => name.endsWith('.test.tsx')),
-    ),
-  ].toSorted()
+  const files = listPackageSourceDirectories(repositoryRoot)
+    .flatMap((directory) => walk(directory, (name) => name.endsWith('.test.tsx')))
+    .toSorted()
   const byName = new Map<string, string>()
   for (const file of files) {
     const name = file.slice(file.lastIndexOf('/') + 1)

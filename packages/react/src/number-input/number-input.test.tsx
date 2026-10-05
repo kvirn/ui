@@ -23,8 +23,7 @@ import type {
   UseNumberInputResult,
 } from './use-number-input.ts'
 
-// Contract: number-input.a11y.md. The keyboard rows are also covered end to end in
-// apps/storybook/src/components/number-input/number-input.e2e.ts.
+// Contract: number-input.a11y.md.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -365,6 +364,125 @@ describe('keys and paste (contract: number-input.a11y.md › Keyboard)', () => {
     await expect.element(page.getByRole('textbox', { name: 'Två' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     await expect.element(page.getByRole('textbox', { name: 'Ett' })).toHaveFocus()
+  })
+})
+
+describe('keyboard', () => {
+  function recordPreventedKeys() {
+    const keys: string[] = []
+    const listener = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) keys.push(event.key)
+    }
+    document.addEventListener('keydown', listener)
+    return { keys, stop: () => document.removeEventListener('keydown', listener) }
+  }
+
+  test('ArrowLeft, ArrowRight, Home and End move the caret and are not intercepted', async () => {
+    await render(<NumberInput aria-label="Belopp" />)
+    const input = page.getByRole('textbox', { name: 'Belopp' })
+    await userEvent.type(input, '1250')
+    const element = input.element() as HTMLInputElement
+    const recorder = recordPreventedKeys()
+    await userEvent.keyboard('{Home}')
+    expect(element.selectionStart).toBe(0)
+    await userEvent.keyboard('{End}')
+    expect(element.selectionStart).toBe(4)
+    await userEvent.keyboard('{ArrowLeft}{ArrowLeft}')
+    expect(element.selectionStart).toBe(2)
+    await userEvent.keyboard('{ArrowRight}')
+    expect(element.selectionStart).toBe(3)
+    recorder.stop()
+    expect(element.value).toBe('1250')
+    await expect.element(input).toHaveFocus()
+    expect(recorder.keys).toEqual([])
+  })
+
+  test('ArrowLeft and ArrowRight move the caret in a right-to-left page and are not intercepted', async () => {
+    await render(
+      <div dir="rtl">
+        <NumberInput aria-label="Belopp" />
+      </div>,
+    )
+    const input = page.getByRole('textbox', { name: 'Belopp' })
+    await userEvent.type(input, '1250')
+    const element = input.element() as HTMLInputElement
+    await userEvent.keyboard('{Home}')
+    const recorder = recordPreventedKeys()
+    await userEvent.keyboard('{ArrowLeft}')
+    const afterLeft = element.selectionStart ?? 0
+    await userEvent.keyboard('{Home}{ArrowRight}')
+    const afterRight = element.selectionStart ?? 0
+    recorder.stop()
+    expect(Math.max(afterLeft, afterRight)).toBeGreaterThan(0)
+    expect(element.value).toBe('1250')
+    await expect.element(input).toHaveFocus()
+    expect(recorder.keys).toEqual([])
+  })
+
+  test('ArrowUp and ArrowDown never change the value', async () => {
+    await render(<NumberInput aria-label="Belopp" decimals={2} />)
+    const input = page.getByRole('textbox', { name: 'Belopp' })
+    await userEvent.type(input, '1250.50')
+    const before = (input.element() as HTMLInputElement).value
+    const recorder = recordPreventedKeys()
+    await userEvent.keyboard('{ArrowUp}{ArrowUp}{ArrowDown}{ArrowDown}{ArrowDown}')
+    recorder.stop()
+    await expect.element(input).toHaveValue(before)
+    await expect.element(input).toHaveFocus()
+    expect(recorder.keys).toEqual([])
+  })
+
+  test('Backspace and Delete remove a character, also next to a group separator', async () => {
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <NumberInput aria-label="Belopp" grouping />
+      </KvirnProvider>,
+    )
+    const input = page.getByRole('textbox', { name: 'Belopp' })
+    const element = input.element() as HTMLInputElement
+    const digitCount = () => element.value.replace(/\D/g, '').length
+    await userEvent.type(input, '12500')
+    expect(digitCount()).toBe(5)
+    const recorder = recordPreventedKeys()
+    await userEvent.keyboard('{ArrowLeft}{ArrowLeft}{ArrowLeft}{Backspace}')
+    await expect.poll(digitCount).toBe(4)
+    await userEvent.keyboard('{Home}{Delete}')
+    await expect.poll(digitCount).toBe(3)
+    recorder.stop()
+    expect(recorder.keys).toEqual([])
+  })
+
+  test('Control/Command+A selects all the text', async () => {
+    await render(<NumberInput aria-label="Belopp" decimals={2} />)
+    const input = page.getByRole('textbox', { name: 'Belopp' })
+    await userEvent.type(input, '1250.50')
+    const element = input.element() as HTMLInputElement
+    await userEvent.keyboard('{Control>}a{/Control}')
+    expect([element.selectionStart, element.selectionEnd]).toEqual([0, element.value.length])
+  })
+
+  test('Escape does nothing: the value and the focus stay', async () => {
+    await render(<NumberInput aria-label="Belopp" decimals={2} />)
+    const input = page.getByRole('textbox', { name: 'Belopp' })
+    await userEvent.type(input, '1250.50')
+    const before = (input.element() as HTMLInputElement).value
+    const recorder = recordPreventedKeys()
+    await userEvent.keyboard('{Escape}')
+    recorder.stop()
+    await expect.element(input).toHaveValue(before)
+    await expect.element(input).toHaveFocus()
+    expect(recorder.keys).toEqual([])
+  })
+
+  test('clicking the label focuses the input', async () => {
+    await render(
+      <Field.Root>
+        <Field.Label marker="none">Belopp</Field.Label>
+        <NumberInput />
+      </Field.Root>,
+    )
+    await userEvent.click(page.getByText('Belopp', { exact: true }))
+    await expect.element(page.getByRole('textbox', { name: 'Belopp' })).toHaveFocus()
   })
 })
 

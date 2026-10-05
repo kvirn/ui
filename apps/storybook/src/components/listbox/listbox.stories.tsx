@@ -51,8 +51,7 @@ import {
 //
 // KvirnUI holds no form state. The value is the chosen option's key: pass
 // `value` and `onValueChange` (Controlled), or `defaultValue` and `name` for a plain form
-// (PlainForm). Nothing here validates: an invalid story sets `invalid` itself. listbox.e2e.ts runs
-// the keyboard rows, forced colours, reduced motion and reflow checks against these stories.
+// (PlainForm). Nothing here validates: an invalid story sets `invalid` itself.
 
 const description = usageGuide(guide)
 

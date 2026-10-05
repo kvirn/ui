@@ -4,7 +4,7 @@
 - **Deviations:** none
 - **Native elements used:** `<div>` for every part by default. The consumer picks `<article>`, `<section>`, `<aside>` or `<li>` with `render`, and the element's own semantics apply.
 - **Status:** alpha candidate (Plan 0007). Gates 1–5 pass, accessibility-reviewer pending. Manual AT is `pending`.
-- **Tests:** `card.test.tsx` next to this file. `card.stories.tsx` and `card.e2e.ts` in `apps/storybook/src/components/card/`.
+- **Tests:** `card.test.tsx` next to this file. `card.stories.tsx` in `apps/storybook/src/components/card/`.
 
 Card is a plain container for content on a surface. It adds no role, no ARIA, no text, no `tabindex` and no behaviour. Everything a user perceives inside a card comes from the consumer's children, which keep their own semantics and focus order.
 
@@ -28,11 +28,11 @@ This component has no focusable parts and handles no keys.
 
 Card is never a Tab stop and never changes the Tab order. Its children handle their own keys. These rows prove Tab passes over the card.
 
-| Key       | Context                      | Action                                                                                                 | Test                                                         |
-| --------- | ---------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
-| Tab       | Card with focusable children | Moves through the children in DOM order (a heading link, then the footer buttons). The card is skipped | `card.e2e.ts › Tab moves through the children in DOM order`  |
-| Shift+Tab | Card with focusable children | Moves back through the children in reverse DOM order. The card is skipped                              | `card.e2e.ts › Shift+Tab moves back through the children`    |
-| –         | Every part                   | No `tabindex` is rendered, so a part never receives focus                                              | `card.test.tsx › rendering › adds no role, ARIA or tabindex` |
+| Key       | Context                      | Action                                                                                                 | Test                                                                                       |
+| --------- | ---------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| Tab       | Card with focusable children | Moves through the children in DOM order (a heading link, then the footer buttons). The card is skipped | `card.test.tsx › the card is skipped by Tab: focus goes through its children in DOM order` |
+| Shift+Tab | Card with focusable children | Moves back through the children in reverse DOM order. The card is skipped                              | `card.test.tsx › Shift+Tab moves back through the children`                                |
+| –         | Every part                   | No `tabindex` is rendered, so a part never receives focus                                              | `card.test.tsx › rendering › adds no role, ARIA or tabindex`                               |
 
 Enter, Space, Escape, arrow keys and Home / End are not handled. Children handle their own keys.
 
@@ -41,7 +41,7 @@ Enter, Space, Escape, arrow keys and Home / End are not handled. Children handle
 - Initial focus: not moved. Card never moves focus.
 - Trap: no.
 - Restore to: not applicable.
-- Never obscured by: Card renders no overlay. The default theme never sets `overflow` on a card, so a child's focus ring (2px, 2px offset) is never clipped (2.4.11, 2.4.13). Media that touch a rounded corner get the corner's radius themselves instead. Test: `card.e2e.ts › a key-focused footer button shows a focus indicator (2.4.7)`.
+- Never obscured by: Card renders no overlay. The default theme never sets `overflow` on a card, so a child's focus ring (2px, 2px offset) is never clipped (2.4.11, 2.4.13). Media that touch a rounded corner get the corner's radius themselves instead.
 
 ## Announcements
 
@@ -70,18 +70,18 @@ Headless: Card ships no CSS. With `@kvirn-ui/theme/theme.css` (design spec `docs
 - Focus indicator: none of its own (a card is never focused). Children keep their own rings, never clipped.
 - Target size: not applicable. Footer buttons keep their own sizes (2.5.8).
 - Contrast: text, links, muted text and button edges are held to their minimums on `surface-raised`, the card's own surface, and on the surfaces a card sits on (`surface`, `canvas`) by `theme:check` (1.4.3, 1.4.11). The card's own edge is decorative (1.15–1.36:1 in the standard themes): grouping comes from structure and spacing.
-- forced-colors behaviour: every card keeps a 1px solid border in `CanvasText`, so its boundary and dividers survive. Test: `card.e2e.ts › the card border is visible in forced colours`, `› dividers are visible in forced colours` (`chromium-forced-colors`).
+- forced-colors behaviour: every card keeps a 1px solid border in `CanvasText`, so its boundary and dividers survive.
 - reduced-motion behaviour: no motion. No hover, transition or pointer style.
-- Reflow and text spacing: no fixed sizes, no `overflow`, `overflow-wrap: break-word`, and the card can shrink in a grid (reviewed in the Card stories and covered by the e2e specs below, not by a CSS test). Media directly in a part or the Root never get wider than it. No horizontal scrolling at 320 CSS px with the Finnish fixture (`reflow-320`, `card.e2e.ts › an image in a padded body fits at 320px`, 1.4.10). With the 1.4.12 text-spacing overrides at 320px, the card grows and nothing is clipped (`card.e2e.ts › text spacing overrides clip nothing at 320px`).
+- Reflow and text spacing: no fixed sizes, no `overflow`, `overflow-wrap: break-word`, and the card can shrink in a grid (reviewed in the Card stories, not by a CSS test). Media directly in a part or the Root never get wider than it. No horizontal scrolling at 320 CSS px with the Finnish fixture (1.4.10), and with the 1.4.12 text-spacing overrides the card grows and nothing is clipped: both are checked in the reflow sweep.
 
 ## WCAG SCs covered
 
 - 1.3.1 Info and Relationships: no role of its own, so the consumer's element and children decide the semantics. Header and Footer are never landmarks (`card.test.tsx`).
-- 1.3.2 Meaningful Sequence, 2.4.3 Focus Order: DOM order equals reading and focus order (e2e rows above).
+- 1.3.2 Meaningful Sequence, 2.4.3 Focus Order: DOM order equals reading and focus order (the Tab rows above).
 - 1.4.3 Contrast (Minimum), 1.4.11 Non-text Contrast: `theme:check` pairs on every card surface.
-- 1.4.10 Reflow: `reflow-320` e2e, the Finnish fixture story, and a wide image in a padded body at 320px.
-- 1.4.12 Text Spacing: e2e with the text-spacing overrides at 320px on the service card, the list of cards and the Finnish fixture.
-- 2.4.11 Focus Not Obscured (Minimum), 2.4.13 Focus Appearance: no clipping (e2e).
+- 1.4.10 Reflow: the reflow sweep, the Finnish fixture story, and a wide image in a padded body at 320px.
+- 1.4.12 Text Spacing: the sweep with the text-spacing overrides at 320px on the service card, the list of cards and the Finnish fixture.
+- 2.4.11 Focus Not Obscured (Minimum), 2.4.13 Focus Appearance: no clipping (reviewed in the stories).
 - 4.1.2 Name, Role, Value: no role or name of its own to get wrong.
 
 ## AT test record
