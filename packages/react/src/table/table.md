@@ -157,7 +157,7 @@ Add `rowExpandingFeature` and `getRowCanExpand: () => true`. Put a `Table.Expand
 </Table.Body>
 ```
 
-The button shows the text "Detaljer" and a chevron that points down while the details are hidden and up while they are shown. It has `aria-expanded` and, while the details are shown, `aria-controls`. Its name is its text and the row header ("Detaljer Anna Svensson"), so every button in the list has its own name, and it stays the same open and closed: only `aria-expanded` changes. Give the expand column a header with the same text visually hidden (`<span className="kv-table-visually-hidden">{cases.expandButtonText}</span>`), so it isn't an empty header. Put the column first, after the checkbox column: on a small screen the first columns are the ones in view. The detail row has one cell that spans every column, and is rendered only while the row is expanded. Expanding can't be combined with `virtualize`.
+The button shows the text "Detaljer" and a chevron that points down while the details are hidden and up while they are shown. It has `aria-expanded` and, while the details are shown, `aria-controls`. Its name is its text and the row header ("Detaljer Anna Svensson"), so every button in the list has its own name, and it stays the same open and closed: only `aria-expanded` changes. With no `rowHeader` the name is the text and the row's number ("Detaljer rad 3"), which still starts with the visible text. Give the button your own children and they are the name instead (with the row header after them), so with no `rowHeader` make them different on each row, or give it an `aria-label`. Give the expand column a header with the same text visually hidden (`<span className="kv-table-visually-hidden">{cases.expandButtonText}</span>`), so it isn't an empty header. Put the column first, after the checkbox column: on a small screen the first columns are the ones in view. The detail row has one cell that spans every column, and is rendered only while the row is expanded. Expanding can't be combined with `virtualize`.
 
 ## Filtering and pagination
 
@@ -176,9 +176,9 @@ const cases = useTable({ features, columns, data, virtualize: { estimateSize: 44
 
 Give the scroll region a height (`max-block-size`). Virtualizing keeps what matters accessible, and has costs you should know before turning it on:
 
-- **The table says how big it is.** `aria-rowcount` is the number of header rows plus every row of the data, and each rendered row has `aria-rowindex`, so a screen reader can say "row 4,512 of 10,001". Support for them varies between screen readers.
+- **The table says how big it is.** `aria-rowcount` is the number of header rows, every row of the data and the rows of `Table.Foot`, and each rendered row has `aria-rowindex`, so a screen reader can say "row 4,512 of 10,001". A header row you draw without a `headerGroup`, and the rows of the foot, are numbered by their place in their section. Support for them varies between screen readers.
 - **The row that holds focus stays rendered,** wherever the table is scrolled to, so focus is never lost.
-- **The sticky header never covers the focused row.** The scroll padding is the header's height, measured and kept up to date.
+- **The sticky header never covers the focused row.** The scroll padding is the header's height, measured and kept up to date, and the window of rows allows for the caption and the head above the first row.
 - **Unrendered rows are out of reach.** Find-in-page can't find them, the browser doesn't print them, a screen reader's browse mode doesn't list them, and Tab can't reach a control in a row that isn't rendered. Give people a search or a filter.
 - **Columns must not jump.** The theme uses `table-layout: fixed` for a virtualized table, so column widths come from the header row.
 - Rows are measured, so `estimateSize` only has to be close, and a row that wraps is the right height.
@@ -196,18 +196,20 @@ Align a column of quantities to the end, so the figures line up: add `kv-table-c
 
 ## Narrow screens
 
-Put the table in `Table.ScrollRegion`. A data table that needs two dimensions is exempt from reflow (WCAG 1.4.10), but it must still be reachable and scrollable. By default the region is a named `region` and a Tab stop only while the table overflows, so a keyboard user can scroll it with the arrow keys and Page Down, and meets no empty stop when nothing scrolls. When everything fits it is a plain `<div>`: no role, no name and no `tabindex`, so a page of short tables doesn't list an empty landmark for each.
+Put the table in `Table.ScrollRegion`. A data table that needs two dimensions is exempt from reflow (WCAG 1.4.10), but it must still be reachable and scrollable. By default the region is a named `region` and a Tab stop only while the table overflows, so a keyboard user can scroll it with the arrow keys and Page Down, and meets no empty stop when nothing scrolls. If the table stops overflowing while the region has focus (a wider window, zooming out), it stays a region and a Tab stop until focus leaves, so focus isn't dropped to the page. When everything fits it is a plain `<div>`: no role, no name and no `tabindex`, so a page of short tables doesn't list an empty landmark for each.
 
 **`region`** chooses when the scroll region is a landmark. `'overflow'` (the default) is what the paragraph above describes. `'always'` makes it a named region whether it scrolls or not, for a page where a table should be something screen reader users can list and jump to. It is a Tab stop only while it scrolls, in both. Set it on `Table.ScrollRegion` (`<Table.ScrollRegion table={cases} region="always">`), or on `useTable({ region: 'always' })`, where `scrollRegionProps` follow it. The prop on the part wins. The server render and the first client render are the same markup (a plain `<div>`, unless `region="always"`), and the role follows once the region has been measured.
 
-**Name the region.** While it is a region it needs a name (WCAG 4.1.2). With `table={cases}` and a `Table.Caption` the caption names it. A table with no caption has no name to give it, so name the region yourself, with `aria-labelledby` pointing at a visible heading or with `aria-label`; without a name a development warning says so once the region is one. Name the table the same way, with `aria-labelledby` on `Table.Root`.
+**Name the region.** While it is a region it needs a name (WCAG 4.1.2). With `table={cases}` and a `Table.Caption` the caption names it. A table with no caption has no name to give it, so name the region yourself, with `aria-labelledby` pointing at a visible heading or with `aria-label`; without a name a development warning says so once the region is one. Name the table the same way, with `aria-labelledby` on `Table.Root`. A caption, or a heading elsewhere in the same document or shadow root, both work.
 
 ```tsx
-<h2 id="fees-heading">Avgifter</h2>
+<Heading level={2} id="fees-heading">Avgifter</Heading>
 <Table.ScrollRegion aria-labelledby="fees-heading">
   <Table.Root aria-labelledby="fees-heading">…</Table.Root>
 </Table.ScrollRegion>
 ```
+
+A table that is the main thing of a staff page usually has such a visible `Heading` above it, and the stories show both: a `Table.Caption` for the small resident tables and a `Heading` for the lists. `Heading` sets only the type, so the space around it is yours: line its start up with the cells' padding and give it a gap above the table.
 
 The head sticks inside the region only while the region scrolls vertically, which needs a height limit: a virtualized table gets `80svh`, and for any other table set `--kv-table-scroll-region-max-block-size` on the region or a parent. Without a limit the region grows with the table, and its head scrolls with the page, because a container that scrolls sideways is the head's scroll container. In a flex or grid parent, give the region's parent `min-inline-size: 0`, or the table can widen the page. Keep captions short: a caption as wide as the table can run past the region's edge at 320px.
 
@@ -228,7 +230,7 @@ The component's names and announcements are in the `table` namespace of all six 
 
 ## Hook
 
-`useTable(options)` returns `table` (the TanStack Table instance), the prop objects `tableProps`, `captionProps`, `scrollRegionProps` (follows the `region` option, and has no `role` while the region isn't one), `headProps`, `bodyProps` and `emptyProps`, the getters `getScrollRegionProps(region)` (`scrollRegionProps` for another `region`, which `Table.ScrollRegion`'s own `region` prop uses), `getColumnHeaderProps(header?)`, `getSortButtonProps(header)`, `getRowProps(row)`, `getCellProps(cell)`, `getSelectCheckboxProps(row)`, `getSelectAllCheckboxProps()`, `getExpandButtonProps(row)` and `getDetailRowProps(row)`, and `rows`, `isVirtualized`, `isLoading`, `isEmpty`, `columnCount`, `emptyText`, `loadingText` and `expandButtonText`. Spread each on your own element. See `table.a11y.md` for what each must carry.
+`useTable(options)` returns `table` (the TanStack Table instance), the prop objects `tableProps`, `captionProps`, `scrollRegionProps` (follows the `region` option, and has no `role` while the region isn't one), `headProps`, `bodyProps`, `footProps` and `emptyProps`, the getters `getScrollRegionProps(region)` (`scrollRegionProps` for another `region`, which `Table.ScrollRegion`'s own `region` prop uses), `getColumnHeaderProps(header?)`, `getSortButtonProps(header)`, `getRowProps(row)`, `getCellProps(cell)`, `getSelectCheckboxProps(row)`, `getSelectAllCheckboxProps()`, `getExpandButtonProps(row)` and `getDetailRowProps(row)`, and `rows`, `isVirtualized`, `isLoading`, `isEmpty`, `columnCount`, `footRowOffset` (virtualized: the rows before the footer, so a footer row's `aria-rowindex` is this plus its place in the footer), `emptyText`, `loadingText` and `expandButtonText`. Spread each on your own element. See `table.a11y.md` for what each must carry.
 
 ## `render`
 

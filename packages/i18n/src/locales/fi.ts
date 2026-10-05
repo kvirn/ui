@@ -183,6 +183,7 @@ export const fi = {
     loading: 'Ladataan rivejä.',
     empty: 'Ei näytettäviä rivejä.',
     rowDetails: 'Lisätiedot',
+    rowDetailsNumber: ({ index }, format) => `Lisätiedot rivi ${format.number(index)}`,
   },
   richText: {
     toolbar: 'Muotoilu',

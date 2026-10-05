@@ -11,7 +11,7 @@ import type {
   RowData,
   TableFeatures,
 } from '@kvirn-ui/core'
-import { Fragment, useCallback, useContext, useEffect, useState } from 'react'
+import { Fragment, useCallback, useContext, useEffect, useState, useSyncExternalStore } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { Icon } from '../icon/icon.tsx'
@@ -22,11 +22,13 @@ import { renderPart } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
 import { TableContext, TableSectionContext, useTableContext } from './table-context.ts'
 import type { TableSection } from './table-context.ts'
+import { hasElementWithId } from './has-element-with-id.ts'
 import { hasRowExpanding, hasRowSelection } from './table-features.ts'
 import { useScrollOverflow } from './use-scroll-overflow.ts'
 import { getHeaderRowIndex } from './use-table.ts'
 import type {
   TableCellPartProps,
+  TableExpandButtonPartProps,
   TableRegion,
   TableRowPartProps,
   TableSortDirection,
@@ -220,6 +222,8 @@ function toRowState<TFeatures extends TableFeatures, TData extends RowData>(
   }
 }
 
+const subscribeNever = () => () => {}
+
 /** Nothing to put inside: `undefined`, `null`, `false` or an empty string, as a ternary leaves it. */
 const isEmptyContent = (children: ReactNode): boolean =>
   children === undefined || children === null || children === false || children === ''
@@ -299,31 +303,54 @@ function hasAccessibleName(element: HTMLElement): boolean {
     return true
   }
   const ids = (element.getAttribute('aria-labelledby') ?? '').split(/\s+/)
-  return ids.some((id) => id !== '' && element.ownerDocument.getElementById(id) !== null)
+  return ids.some((id) => id !== '' && hasElementWithId(element, id))
 }
 
 /**
  * Internal. A region without `useTable` measures its own `<thead>`, which the theme makes sticky, and
  * sets `--kv-table-head-block-size` on the region. The theme reads it for `scroll-padding-block-start`,
  * so scrolling to a focused control leaves it clear of the head (2.4.11). `useTable` does the same
- * for a region that has `table`.
+ * for a region that has `table`. A head that mounts after the region (a table that appears when its
+ * data arrives) is found as it is added, and measured from then on.
  */
 function useStickyHeadSize(element: HTMLElement | null, env: Env | undefined): void {
   useEffect(() => {
-    const head = element?.querySelector('thead')
-    if (element === null || env === undefined || head === null || head === undefined) {
+    if (element === null || env === undefined) {
       return undefined
     }
-    const measure = () =>
-      element.style.setProperty(
-        '--kv-table-head-block-size',
-        `${Math.ceil(head.getBoundingClientRect().height)}px`,
-      )
-    measure()
-    const observer = new env.window.ResizeObserver(measure)
-    observer.observe(head)
+    let head: HTMLTableSectionElement | null = null
+    const measure = () => {
+      if (head !== null) {
+        element.style.setProperty(
+          '--kv-table-head-block-size',
+          `${Math.ceil(head.getBoundingClientRect().height)}px`,
+        )
+      }
+    }
+    const resizeObserver = new env.window.ResizeObserver(measure)
+    // Looks for the head again, and watches the one it finds instead of the one it had.
+    const findHead = () => {
+      const found = element.querySelector('thead')
+      if (found === head) {
+        return
+      }
+      if (head !== null) {
+        resizeObserver.unobserve(head)
+      }
+      head = found
+      if (head === null) {
+        element.style.removeProperty('--kv-table-head-block-size')
+      } else {
+        resizeObserver.observe(head)
+        measure()
+      }
+    }
+    findHead()
+    const mutationObserver = new env.window.MutationObserver(findHead)
+    mutationObserver.observe(element, { childList: true, subtree: true })
     return () => {
-      observer.disconnect()
+      mutationObserver.disconnect()
+      resizeObserver.disconnect()
       element.style.removeProperty('--kv-table-head-block-size')
     }
   }, [element, env])
@@ -494,7 +521,9 @@ export function TableFoot({ render, children, ...otherProps }: TableFootProps): 
       {renderPart({
         render,
         defaultElement: 'tfoot',
-        partProps: mergeProps(otherProps, { className: 'kv-table-foot' }, { children }),
+        partProps: mergeProps(otherProps, table?.footProps ?? { className: 'kv-table-foot' }, {
+          children,
+        }),
         state: toState(table),
       })}
     </TableSectionProvider>
@@ -504,27 +533,57 @@ TableFoot.displayName = 'Table.Foot'
 
 /**
  * A `<tr>`. Give it `row` in the body for `data-selected`, `data-expanded` and, virtualized,
- * `aria-rowindex`. In the head, give it `headerGroup` for `aria-rowindex` of a header row.
+ * `aria-rowindex`. In the head, give it `headerGroup` for `aria-rowindex` of a header row. A head
+ * row without it and a row in the foot find their number from where they are in the table.
  */
 export function TableRow<TFeatures extends TableFeatures, TData extends RowData>({
   row,
   headerGroup,
   render,
+  ref,
   ...otherProps
 }: TableRowProps<TFeatures, TData>): ReactElement {
   const table = useTableContext<TFeatures, TData>()
   const section = useContext(TableSectionContext)
+  // A header row without its group, and a footer row, are numbered by their place in their section,
+  // which only the DOM knows. Body rows never need it: they are numbered by their row.
+  const isNumberedByPlace =
+    table?.isVirtualized === true &&
+    row === undefined &&
+    (section === 'foot' || (section === 'head' && headerGroup === undefined))
+  const [rowElement, setRowElement] = useState<HTMLTableRowElement | null>(null)
+  const mergedRef = useMergedRef(ref, isNumberedByPlace ? setRowElement : null)
+  // Read like the columns of the table: checked again after every commit.
+  const placeInSection = useSyncExternalStore(
+    subscribeNever,
+    () => (isNumberedByPlace ? rowElement?.sectionRowIndex : undefined),
+    () => undefined,
+  )
 
   let hookProps: TableRowPartProps = { className: 'kv-table-row' }
   if (table !== null && row !== undefined) {
     hookProps = table.getRowProps(row)
   } else if (table?.isVirtualized === true && section === 'head') {
-    hookProps = { className: 'kv-table-row', 'aria-rowindex': getHeaderRowIndex(headerGroup) }
+    const rowIndex =
+      headerGroup === undefined
+        ? placeInSection === undefined
+          ? undefined
+          : placeInSection + 1
+        : getHeaderRowIndex(headerGroup)
+    hookProps = {
+      className: 'kv-table-row',
+      ...(rowIndex === undefined ? {} : { 'aria-rowindex': rowIndex }),
+    }
+  } else if (table?.isVirtualized === true && section === 'foot' && placeInSection !== undefined) {
+    hookProps = {
+      className: 'kv-table-row',
+      'aria-rowindex': table.footRowOffset + placeInSection + 1,
+    }
   }
   return renderPart({
     render,
     defaultElement: 'tr',
-    partProps: mergeProps(otherProps, hookProps),
+    partProps: mergeProps(otherProps, hookProps, { ref: mergedRef }),
     state: toRowState(table, row),
   })
 }
@@ -734,9 +793,11 @@ TableSelectAllCheckbox.displayName = 'Table.SelectAllCheckbox'
 /**
  * A row's disclosure button: the text "Details" and a chevron, `aria-expanded` for the state.
  * Its name is its text and the row header ("Details Anna Svensson"), the same open and closed:
- * only `aria-expanded` changes. The chevron points down while the details are hidden and up while
+ * only `aria-expanded` changes. With no `rowHeader` the name is "Details row 3", so the buttons
+ * of a table can be told apart. The chevron points down while the details are hidden and up while
  * they are shown, and never rotates. Give it children and they replace the text and the chevron:
- * your text names it instead, with the row header after it.
+ * your text names it instead, with the row header after it, and with no `rowHeader` it is yours
+ * to make different on each row (or give it an `aria-label`).
  */
 export function TableExpandButton<TFeatures extends TableFeatures, TData extends RowData>({
   row,
@@ -745,28 +806,41 @@ export function TableExpandButton<TFeatures extends TableFeatures, TData extends
   ...otherProps
 }: TableExpandButtonProps<TFeatures, TData>): ReactElement {
   const table = useTableContext<TFeatures, TData>()
-  const hookProps =
+  const hookProps: Pick<TableExpandButtonPartProps, 'type' | 'className'> &
+    Partial<TableExpandButtonPartProps> =
     table !== null && row !== undefined
       ? table.getExpandButtonProps(row)
       : ({ type: 'button', className: 'kv-table-expand-button' } as const)
+  // "Details row 3" names the button that shows the default text. Your children are the visible
+  // text instead (2.5.3), and a name of your own replaces it.
+  const { 'aria-label': defaultName, ...restHookProps } = hookProps
+  const keepsDefaultName =
+    isEmptyContent(children) &&
+    otherProps['aria-label'] === undefined &&
+    otherProps['aria-labelledby'] === undefined
   const state = toRowState(table, row)
   return renderPart({
     render,
     defaultElement: 'button',
-    partProps: mergeProps(otherProps, hookProps, {
-      children: isEmptyContent(children) ? (
-        <>
-          {table?.expandButtonText}
-          <Icon
-            name={state.isExpanded ? 'chevron-up' : 'chevron-down'}
-            size={5}
-            className="kv-table-expand-icon"
-          />
-        </>
-      ) : (
-        children
-      ),
-    }),
+    partProps: mergeProps(
+      otherProps,
+      restHookProps,
+      keepsDefaultName && defaultName !== undefined ? { 'aria-label': defaultName } : {},
+      {
+        children: isEmptyContent(children) ? (
+          <>
+            {table?.expandButtonText}
+            <Icon
+              name={state.isExpanded ? 'chevron-up' : 'chevron-down'}
+              size={5}
+              className="kv-table-expand-icon"
+            />
+          </>
+        ) : (
+          children
+        ),
+      },
+    ),
     state,
   })
 }

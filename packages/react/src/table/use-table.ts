@@ -43,6 +43,7 @@ import {
   hasTableRowSelection,
   toIdPart,
 } from './table-features.ts'
+import { hasElementWithId } from './has-element-with-id.ts'
 import { useScrollOverflow } from './use-scroll-overflow.ts'
 
 /** How tall a row is taken to be until it has been measured, in pixels. */
@@ -144,6 +145,12 @@ export interface TableHeadPartProps {
   ref: RefCallback<HTMLTableSectionElement>
 }
 
+/** Spread on `<tfoot>`. */
+export interface TableFootPartProps {
+  className: 'kv-table-foot'
+  ref: RefCallback<HTMLTableSectionElement>
+}
+
 /** Spread on `<tbody>`. */
 export interface TableBodyPartProps {
   className: 'kv-table-body'
@@ -233,7 +240,8 @@ export interface TableSelectAllCheckboxPartProps {
 /**
  * Spread on a row's `<button>`. Its visible text (`expandButtonText`, "Details") and the row
  * header name it ("Details Anna Svensson"): `aria-labelledby` points at the button itself, whose
- * text is its name, and at the row header cell.
+ * text is its name, and at the row header cell. With no `rowHeader` the name is the `aria-label`
+ * "Details row 3", which starts with the visible text.
  */
 export interface TableExpandButtonPartProps {
   type: 'button'
@@ -242,6 +250,7 @@ export interface TableExpandButtonPartProps {
   'aria-expanded': boolean
   /** The detail row, while it is shown. */
   'aria-controls'?: string
+  'aria-label'?: string
   'aria-labelledby'?: string
   disabled?: true
   'data-expanded'?: ''
@@ -282,6 +291,8 @@ export interface UseTableResult<TFeatures extends TableFeatures, TData extends R
   getScrollRegionProps: (region: TableRegion) => TableScrollRegionPartProps
   headProps: TableHeadPartProps
   bodyProps: TableBodyPartProps
+  /** Spread on `<tfoot>`: virtualized, it counts the footer's rows in `aria-rowcount`. */
+  footProps: TableFootPartProps
   /** Without a header: the cell of a column you add yourself, such as the select-all checkbox. */
   getColumnHeaderProps: (header?: Header<TFeatures, TData, unknown>) => TableColumnHeaderPartProps
   getSortButtonProps: (header: Header<TFeatures, TData, unknown>) => TableSortButtonPartProps
@@ -307,6 +318,11 @@ export interface UseTableResult<TFeatures extends TableFeatures, TData extends R
    * detail or empty row spans.
    */
   columnCount: number
+  /**
+   * Virtualized: how many rows come before the footer, the header rows and every row of the data.
+   * A footer row's `aria-rowindex` is this plus its place in the footer, counting from 1.
+   */
+  footRowOffset: number
   /** The text of the empty row. */
   emptyText: string
   /** The text of the empty row while the table loads and has no rows yet. */
@@ -363,7 +379,6 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
   const state = useStoreSelector(store, selectWholeState)
 
   const rowModelRows = table.getRowModel().rows
-  const headerRowCount = table.getHeaderGroups().length
   const isEmpty = rowModelRows.length === 0
   const rowPositionById = useMemo(() => {
     const positions = new Map<string, number>()
@@ -382,7 +397,24 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
 
   const [scrollElement, setScrollElement] = useState<HTMLElement | null>(null)
   const [headElement, setHeadElement] = useState<HTMLTableSectionElement | null>(null)
+  const [footElement, setFootElement] = useState<HTMLTableSectionElement | null>(null)
   const [headerHeight, setHeaderHeight] = useState(0)
+  // How far the first row is from the start of the scroll region: the caption and the head above it.
+  const [firstRowOffset, setFirstRowOffset] = useState(0)
+  // The header and footer rows as drawn, read from the DOM like the columns below: a header row
+  // you add yourself counts, and so do the rows of `Table.Foot`. The snapshot is checked again
+  // after every commit.
+  const drawnHeaderRowCount = useSyncExternalStore(
+    subscribeNever,
+    () => headElement?.rows.length,
+    () => undefined,
+  )
+  const headerRowCount = drawnHeaderRowCount ?? table.getHeaderGroups().length
+  const footRowCount = useSyncExternalStore(
+    subscribeNever,
+    () => footElement?.rows.length ?? 0,
+    () => 0,
+  )
   const [, requestRender] = useReducer((count: number) => count + 1, 0)
   // The row that holds focus, tracked only while virtualized: it is a required index.
   const [focusedRowId, setFocusedRowId] = useState<string | null>(null)
@@ -423,6 +455,7 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
     getRequiredIndexes: getRequiredRowIndexes,
     overscan: virtualizeOptions?.overscan,
     scrollPaddingStart: headerHeight,
+    scrollMargin: firstRowOffset,
   })
 
   useEffect(
@@ -432,17 +465,40 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
 
   // The sticky header covers the top of the scroll region: scrolling to a row, with a key or
   // with focus, leaves that much clear (2.4.11). The theme reads `--kv-table-head-block-size` for
-  // `scroll-padding-block-start`.
+  // `scroll-padding-block-start`. A virtualized table also measures how far its first row is from
+  // the start of the region (the caption and the head scroll with the rows), which is what its
+  // window needs to be right at every scroll position. The body's own place is read, not the
+  // head's, because a sticky head moves as the region scrolls.
   useEffect(() => {
     if (env === undefined || headElement === null) {
       return undefined
     }
-    const measure = () => setHeaderHeight(Math.ceil(headElement.getBoundingClientRect().height))
+    const tableElement = headElement.closest('table')
+    const measure = () => {
+      setHeaderHeight(Math.ceil(headElement.getBoundingClientRect().height))
+      const body = tableElement?.tBodies[0]
+      if (isVirtualized && scrollElement !== null && body !== undefined) {
+        setFirstRowOffset(
+          Math.round(
+            body.getBoundingClientRect().top -
+              scrollElement.getBoundingClientRect().top -
+              scrollElement.clientTop +
+              scrollElement.scrollTop,
+          ),
+        )
+      }
+    }
     measure()
     const observer = new env.window.ResizeObserver(measure)
     observer.observe(headElement)
+    if (isVirtualized && tableElement !== null) {
+      observer.observe(tableElement)
+      if (tableElement.caption !== null) {
+        observer.observe(tableElement.caption)
+      }
+    }
     return () => observer.disconnect()
-  }, [env, headElement])
+  }, [env, headElement, isVirtualized, scrollElement])
 
   useEffect(() => {
     if (scrollElement === null) {
@@ -534,10 +590,7 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
   // only while it exists, so a table without one doesn't reference a missing id.
   const hasCaption = useSyncExternalStore(
     subscribeNever,
-    () =>
-      scrollElement === null
-        ? undefined
-        : scrollElement.ownerDocument.getElementById(captionId) !== null,
+    () => (scrollElement === null ? undefined : hasElementWithId(scrollElement, captionId)),
     () => undefined,
   )
   const rowPart = (row: Row<TFeatures, TData>) => toIdPart(row.id)
@@ -577,7 +630,9 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
   // Prop getters -------------------------------------------------------------------------------
   const tableProps: TableRootPartProps = {
     className: 'kv-table',
-    ...(isVirtualized ? { 'aria-rowcount': headerRowCount + rowModelRows.length } : {}),
+    ...(isVirtualized
+      ? { 'aria-rowcount': headerRowCount + rowModelRows.length + footRowCount }
+      : {}),
     ...(isLoading ? { 'aria-busy': true as const, 'data-busy': '' } : {}),
     ...(isVirtualized ? { 'data-virtualized': '' } : {}),
   }
@@ -756,7 +811,14 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
       id,
       'aria-expanded': isExpanded,
       ...(isExpanded ? { 'aria-controls': detailRowId(row), 'data-expanded': '' } : {}),
-      ...labelledByRowHeader(row, id),
+      // With a row header: the button's own text, then the header. Without: "Details row 3".
+      ...(rowHeader === undefined
+        ? {
+            'aria-label': messages.rowDetailsNumber({
+              index: (rowPositionById.get(row.id) ?? row.index) + 1,
+            }),
+          }
+        : labelledByRowHeader(row, id)),
       ...(!isExpandable || !row.getCanExpand() ? { disabled: true as const } : {}),
       onClick: () => {
         if (isExpandable) {
@@ -780,6 +842,7 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
     getScrollRegionProps,
     headProps: { className: 'kv-table-head', ref: setHeadElement },
     bodyProps,
+    footProps: { className: 'kv-table-foot', ref: setFootElement },
     getColumnHeaderProps,
     getSortButtonProps,
     getRowProps,
@@ -794,6 +857,7 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
     isLoading,
     isEmpty,
     columnCount,
+    footRowOffset: headerRowCount + rowModelRows.length,
     emptyText: messages.empty,
     loadingText: messages.loading,
     expandButtonText: messages.rowDetails,

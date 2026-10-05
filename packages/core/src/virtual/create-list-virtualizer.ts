@@ -39,6 +39,13 @@ export interface ListVirtualizerOptions {
   /** Space at the start of the scroll element that covers items, such as a sticky table header. Scrolling to an item keeps it clear of that. */
   scrollPaddingStart?: number | undefined
   /**
+   * How far the first item is from the start of the scroll element: content above the list that
+   * scrolls with it, such as a table's caption and head. The window and scrolling account for it,
+   * so the right items are rendered at every scroll position. The offsets of the items and the
+   * segments stay relative to the list, and `getTotalSize()` is the list's alone. Default 0.
+   */
+  scrollMargin?: number | undefined
+  /**
    * The block size of the scroll element, used until the real one has been measured (before
    * `mount`, during server rendering). Default: ten items of `estimateSize(0)`.
    */
@@ -103,12 +110,13 @@ function createRangeExtractor(required: readonly number[]): (range: Range) => nu
   }
 }
 
-function toListItem(item: VirtualItem): VirtualListItem {
+/** The library's item in our terms: offsets from the start of the list, without the scroll margin. */
+function toListItem(item: VirtualItem, scrollMargin: number): VirtualListItem {
   return {
     index: item.index,
     key: typeof item.key === 'bigint' ? String(item.key) : item.key,
-    start: item.start,
-    end: item.end,
+    start: item.start - scrollMargin,
+    end: item.end - scrollMargin,
     size: item.size,
   }
 }
@@ -150,6 +158,7 @@ export function createListVirtualizer(initialOptions: ListVirtualizerOptions): L
     ...(options.scrollPaddingStart === undefined
       ? {}
       : { scrollPaddingStart: options.scrollPaddingStart }),
+    scrollMargin: options.scrollMargin ?? 0,
     initialRect: {
       width: 0,
       height: options.initialSize ?? options.estimateSize(0) * initialItemCount,
@@ -195,6 +204,7 @@ export function createListVirtualizer(initialOptions: ListVirtualizerOptions): L
   const virtualizer = new Virtualizer<HTMLElement, Element>(toLibraryOptions())
 
   let source: readonly VirtualItem[] | undefined
+  let sourceMargin = 0
   let items: readonly VirtualListItem[] = []
   let renderedIndexes = new Set<number>()
   let segmentsOf: readonly VirtualListItem[] | undefined
@@ -206,9 +216,11 @@ export function createListVirtualizer(initialOptions: ListVirtualizerOptions): L
       virtualizer.setOptions(toLibraryOptions())
     }
     const current = virtualizer.getVirtualItems()
-    if (current !== source) {
+    const margin = options.scrollMargin ?? 0
+    if (current !== source || margin !== sourceMargin) {
       source = current
-      items = current.map(toListItem)
+      sourceMargin = margin
+      items = current.map((item) => toListItem(item, margin))
       renderedIndexes = new Set(items.map((item) => item.index))
     }
     return items
@@ -260,6 +272,7 @@ export function createListVirtualizer(initialOptions: ListVirtualizerOptions): L
         getItemKey: changes.getItemKey ?? options.getItemKey,
         overscan: changes.overscan ?? options.overscan,
         scrollPaddingStart: changes.scrollPaddingStart ?? options.scrollPaddingStart,
+        scrollMargin: changes.scrollMargin ?? options.scrollMargin,
         initialSize: changes.initialSize ?? options.initialSize,
         onChange: changes.onChange ?? options.onChange,
       }

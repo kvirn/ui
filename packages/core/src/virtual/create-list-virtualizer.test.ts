@@ -176,6 +176,48 @@ describe('createListVirtualizer: setOptions', () => {
   })
 })
 
+describe('createListVirtualizer: scrollMargin', () => {
+  const margin = 200
+  const lastIndexOf = (virtualizer: ReturnType<typeof create>) =>
+    Math.max(...indexesOf(virtualizer))
+  const segmentsSum = (virtualizer: ReturnType<typeof create>) =>
+    virtualizer
+      .getSegments()
+      .reduce(
+        (total, segment) => total + (segment.type === 'item' ? segment.item.size : segment.size),
+        0,
+      )
+
+  it('renders fewer items from the top when content above the list takes room in the view', () => {
+    expect(lastIndexOf(create({ scrollMargin: margin }))).toBeLessThan(lastIndexOf(create()))
+  })
+
+  it('keeps the offsets of the items from the start of the list', () => {
+    const [first, second] = create({ scrollMargin: margin }).getVirtualItems()
+    expect(first).toMatchObject({ index: 0, start: 0, end: itemSize })
+    expect(second).toMatchObject({ index: 1, start: itemSize, end: itemSize * 2 })
+  })
+
+  it('has the size of the list alone, and segments that add up to it', () => {
+    const virtualizer = create({ scrollMargin: margin, getRequiredIndexes: () => [500] })
+    expect(virtualizer.getTotalSize()).toBe(1000 * itemSize)
+    expect(segmentsSum(virtualizer)).toBe(1000 * itemSize)
+  })
+
+  it('starts the segments with the first item, not with a gap of the margin', () => {
+    expect(create({ scrollMargin: margin }).getSegments()[0]?.type).toBe('item')
+  })
+
+  it('follows a margin that is set later, as the head is measured', () => {
+    const virtualizer = create()
+    const before = lastIndexOf(virtualizer)
+    virtualizer.setOptions({ scrollMargin: margin })
+    expect(lastIndexOf(virtualizer)).toBeLessThan(before)
+    expect(virtualizer.getVirtualItems()[0]).toMatchObject({ start: 0, end: itemSize })
+    expect(segmentsSum(virtualizer)).toBe(1000 * itemSize)
+  })
+})
+
 describe('createListVirtualizer: mount', () => {
   it('mounts and unmounts without a scroll element', () => {
     const virtualizer = create()

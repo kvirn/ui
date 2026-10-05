@@ -197,6 +197,7 @@ export const se = {
     loading: 'Loading rows.',
     empty: 'No rows to show.',
     rowDetails: 'Details',
+    rowDetailsNumber: ({ index }, format) => `Details row ${format.number(index)}`,
   },
   richText: {
     toolbar: 'Formatting',

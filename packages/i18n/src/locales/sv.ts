@@ -180,6 +180,7 @@ export const sv = {
     loading: 'Laddar rader.',
     empty: 'Det finns inga rader att visa.',
     rowDetails: 'Detaljer',
+    rowDetailsNumber: ({ index }, format) => `Detaljer rad ${format.number(index)}`,
   },
   richText: {
     toolbar: 'Formatering',

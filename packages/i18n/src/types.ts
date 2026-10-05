@@ -287,6 +287,12 @@ export interface KvirnMessages {
     empty: TextMessage
     /** The expand button's name. `aria-expanded` carries whether the details are shown. */
     rowDetails: TextMessage
+    /**
+     * An expand button's name when the table has no row header column: `rowDetails` and the row's
+     * number, for example `Detaljer rad 3`. It must start with `rowDetails`, the visible text (2.5.3).
+     * `index` counts from 1.
+     */
+    rowDetailsNumber: MessageFunction<{ index: number }>
   }
   /**
    * Every visible, named and announced string of the rich text editor (`@kvirn-ui/rich-text`,

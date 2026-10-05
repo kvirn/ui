@@ -178,6 +178,7 @@ export const nn = {
     loading: 'Lastar rader.',
     empty: 'Det er ingen rader å vise.',
     rowDetails: 'Detaljar',
+    rowDetailsNumber: ({ index }, format) => `Detaljar rad ${format.number(index)}`,
   },
   richText: {
     toolbar: 'Formatering',

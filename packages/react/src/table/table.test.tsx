@@ -148,14 +148,21 @@ const expandableColumns = expandableColumn.columns([
   expandableColumn.accessor('caseNumber', { header: 'Case number' }),
 ])
 
-function ExpandableTable({ virtualize }: { virtualize?: boolean }) {
+function ExpandableTable({
+  virtualize,
+  withoutRowHeader = false,
+}: {
+  virtualize?: boolean
+  /** Leave the row header out, so the expand buttons are named by row number. */
+  withoutRowHeader?: boolean
+}) {
   const cases = useTable({
     features: expandableFeatures,
     columns: expandableColumns,
     data: records,
     getRowId: (record) => record.id,
     getRowCanExpand: () => true,
-    rowHeader: 'name',
+    ...(withoutRowHeader ? {} : { rowHeader: 'name' }),
     virtualize,
   })
   return (
@@ -706,6 +713,60 @@ describe('expanding', () => {
       .toBeVisible()
   })
 
+  test('without a row header the expand buttons are told apart by row number', async () => {
+    const { container } = await renderInProvider(<ExpandableTable withoutRowHeader />)
+    for (const number of [1, 2, 3, 4]) {
+      await expect
+        .element(page.getByRole('button', { name: `Details row ${number}` }))
+        .toBeVisible()
+    }
+    // The visible text is still "Details": the name starts with it (2.5.3).
+    expect(container.querySelector('button.kv-table-expand-button')?.textContent).toBe('Details')
+    const { container: swedish } = await renderInProvider(
+      <ExpandableTable withoutRowHeader />,
+      'sv',
+    )
+    expect(swedish.querySelector('button.kv-table-expand-button')?.getAttribute('aria-label')).toBe(
+      'Detaljer rad 1',
+    )
+  })
+
+  test('with no row header, your own children and your own name replace the row number', async () => {
+    function Custom() {
+      const cases = useTable({
+        features: expandableFeatures,
+        columns: expandableColumns,
+        data: records.slice(0, 2),
+        getRowId: (record) => record.id,
+        getRowCanExpand: () => true,
+      })
+      return (
+        <Table.Root table={cases}>
+          <Table.Caption>Open cases</Table.Caption>
+          <Table.Body>
+            {(row) => (
+              <Table.Row key={row.id} row={row}>
+                <Table.Cell>
+                  {row.index === 0 ? (
+                    <Table.ExpandButton row={row}>Show more</Table.ExpandButton>
+                  ) : (
+                    <Table.ExpandButton row={row} aria-label="Open the second case" />
+                  )}
+                </Table.Cell>
+                {row.getAllCells().map((cell) => (
+                  <Table.Cell key={cell.id} cell={cell} />
+                ))}
+              </Table.Row>
+            )}
+          </Table.Body>
+        </Table.Root>
+      )
+    }
+    await renderInProvider(<Custom />)
+    await expect.element(page.getByRole('button', { name: 'Show more' })).toBeVisible()
+    await expect.element(page.getByRole('button', { name: 'Open the second case' })).toBeVisible()
+  })
+
   test('the name is the same open and closed: only aria-expanded changes', async () => {
     await renderInProvider(<ExpandableTable />)
     const button = page.getByRole('button', { name: 'Details Anna Svensson' })
@@ -908,6 +969,111 @@ describe('virtualized', () => {
     expect(container.querySelector('table')?.getAttribute('aria-rowcount')).toBe('10001')
   })
 
+  test('header rows you draw without a header group, and the footer, are numbered by their place', async () => {
+    function WithFoot() {
+      const cases = useTable({
+        features: plainFeatures,
+        columns: plainColumns,
+        data: manyRecords.slice(0, 5),
+        getRowId: (record) => record.id,
+        virtualize: true,
+      })
+      return (
+        <Table.Root table={cases}>
+          <Table.Caption>All cases</Table.Caption>
+          <Table.Head>
+            <Table.Row>
+              <Table.ColumnHeader colSpan={2}>Cases</Table.ColumnHeader>
+            </Table.Row>
+            <Table.Row>
+              <Table.ColumnHeader>Name</Table.ColumnHeader>
+              <Table.ColumnHeader>Case number</Table.ColumnHeader>
+            </Table.Row>
+          </Table.Head>
+          <Table.Body>
+            {(row) => (
+              <Table.Row key={row.id} row={row}>
+                {row.getAllCells().map((cell) => (
+                  <Table.Cell key={cell.id} cell={cell} />
+                ))}
+              </Table.Row>
+            )}
+          </Table.Body>
+          <Table.Foot>
+            <Table.Row>
+              <Table.RowHeader>Total</Table.RowHeader>
+              <Table.Cell>5</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.RowHeader>Open</Table.RowHeader>
+              <Table.Cell>2</Table.Cell>
+            </Table.Row>
+          </Table.Foot>
+        </Table.Root>
+      )
+    }
+    const { container } = await renderInProvider(<WithFoot />)
+    const indexes = (selector: string) =>
+      [...container.querySelectorAll(selector)].map((row) => row.getAttribute('aria-rowindex'))
+    // 2 header rows, 5 data rows and 2 footer rows: 9 in all, each with its own number.
+    await expect.poll(() => indexes('thead tr')).toEqual(['1', '2'])
+    await expect
+      .poll(() => indexes('tbody tr:not([aria-hidden])'))
+      .toEqual(['3', '4', '5', '6', '7'])
+    await expect.poll(() => indexes('tfoot tr')).toEqual(['8', '9'])
+    expect(container.querySelector('table')?.getAttribute('aria-rowcount')).toBe('9')
+  })
+
+  test('content above the rows takes room from the window: rows far below the view are not rendered', async () => {
+    function TallCaption() {
+      const cases = useTable({
+        features: plainFeatures,
+        columns: plainColumns,
+        data: manyRecords,
+        getRowId: (record) => record.id,
+        virtualize: { estimateSize: 20, overscan: 0 },
+      })
+      return (
+        <Table.ScrollRegion table={cases} style={{ blockSize: 300, overflow: 'auto' }}>
+          <Table.Root table={cases}>
+            <Table.Caption style={{ blockSize: 200 }}>All cases</Table.Caption>
+            <Table.Head>
+              {cases.table.getHeaderGroups().map((headerGroup) => (
+                <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
+                  {headerGroup.headers.map((header) => (
+                    <Table.ColumnHeader key={header.id} header={header} />
+                  ))}
+                </Table.Row>
+              ))}
+            </Table.Head>
+            <Table.Body>
+              {(row) => (
+                <Table.Row key={row.id} row={row}>
+                  {row.getAllCells().map((cell) => (
+                    <Table.Cell key={cell.id} cell={cell} />
+                  ))}
+                </Table.Row>
+              )}
+            </Table.Body>
+          </Table.Root>
+        </Table.ScrollRegion>
+      )
+    }
+    const { container } = await renderInProvider(<TallCaption />)
+    await expect.poll(() => bodyRows(container).length).toBeGreaterThan(0)
+    const region = container.querySelector<HTMLElement>('.kv-table-scroll-region')
+    const head = container.querySelector('thead')
+    const firstRow = bodyRows(container)[0]
+    if (region === null || head === null || firstRow === undefined) throw new Error('no table')
+    // What the region shows below the caption and the head, in rows. The window is that and a row,
+    // not what a region of 300px would hold if the rows started at its top.
+    const room = region.clientHeight - 200 - head.getBoundingClientRect().height
+    const fitting = Math.ceil(room / firstRow.getBoundingClientRect().height) + 1
+    await expect
+      .poll(() => bodyRows(container).length, { timeout: 3000 })
+      .toBeLessThanOrEqual(fitting)
+  })
+
   test('a short list renders every row, and still says how many there are', async () => {
     const { container } = await renderInProvider(<VirtualTable data={manyRecords.slice(0, 5)} />)
     await expect.poll(() => bodyRows(container).length).toBe(5)
@@ -940,6 +1106,60 @@ describe('the scroll region', () => {
     expect(consoleWarn.mock.calls.map((call) => String(call[0])).join('\n')).toContain(
       'Table.ScrollRegion is a region',
     )
+  })
+
+  test('the region stays a region and a Tab stop while it holds focus, even if nothing scrolls any more', async () => {
+    const { container } = await render(
+      <Table.ScrollRegion aria-label="Fees" style={{ inlineSize: 150, overflow: 'auto' }}>
+        <Table.Root aria-label="Fees" style={{ inlineSize: 500 }}>
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell>350 kr</Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table.Root>
+      </Table.ScrollRegion>,
+    )
+    const region = container.querySelector<HTMLElement>('.kv-table-scroll-region')
+    const tableElement = container.querySelector('table')
+    if (region === null || tableElement === null) throw new Error('no region')
+    await expect.poll(() => region.getAttribute('tabindex')).toBe('0')
+    expect(region.getAttribute('role')).toBe('region')
+    region.focus()
+    expect(document.activeElement).toBe(region)
+
+    // The window is wider now: nothing scrolls. The focused region keeps its role and Tab stop.
+    tableElement.style.inlineSize = '100px'
+    await expect.poll(() => region.scrollWidth <= region.clientWidth).toBe(true)
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    expect(region.getAttribute('role')).toBe('region')
+    expect(region.getAttribute('tabindex')).toBe('0')
+    expect(document.activeElement).toBe(region)
+
+    // Once focus leaves, it is a plain `<div>` again.
+    region.blur()
+    await expect.poll(() => region.hasAttribute('tabindex')).toBe(false)
+    expect(region.hasAttribute('role')).toBe(false)
+  })
+
+  test('a caption inside a shadow root still names the region', async () => {
+    const host = document.createElement('div')
+    document.body.append(host)
+    const mount = document.createElement('div')
+    host.attachShadow({ mode: 'open' }).append(mount)
+    try {
+      await render(<CasesTable region="always" />, { container: mount })
+      const region = mount.querySelector('.kv-table-scroll-region')
+      await expect.poll(() => region?.getAttribute('aria-labelledby')).toBeTruthy()
+      const captionId = region?.getAttribute('aria-labelledby') ?? ''
+      expect(mount.ownerDocument.getElementById(captionId)).toBeNull()
+      expect(mount.querySelector(`[id="${captionId}"]`)?.textContent).toBe('Open cases')
+      expect(consoleWarn.mock.calls.map((call) => String(call[0])).join('\n')).not.toContain(
+        'Table.ScrollRegion is a region',
+      )
+    } finally {
+      host.remove()
+    }
   })
 
   test('a scroll region that is not a region does not warn about a missing name', async () => {
