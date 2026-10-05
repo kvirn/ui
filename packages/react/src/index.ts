@@ -679,6 +679,7 @@ export type {
   FileUploadTypeProps,
 } from './file-upload/file-upload.tsx'
 export { useFileUpload } from './file-upload/use-file-upload.ts'
+export type { FileUploadContext, FileUploadFailure, FileUploadRejection } from '@kvirn-ui/core'
 export type {
   FileUploadAddSource,
   FileUploadDropZonePartProps,
