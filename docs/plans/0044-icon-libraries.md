@@ -66,5 +66,5 @@ Unchanged: decorative by default (`aria-hidden`), `img` with `label`. WCAG SCs: 
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass
+- [x] All quality gates in AGENTS.md pass (2026-10-05: `vp check`, `vp test run`, every `vp run e2e` spec on chromium, `i18n:check`, `theme:check` green)
 - [ ] Plan tasks ticked, `docs/roadmap.md` status updated

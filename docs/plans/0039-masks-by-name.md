@@ -1,6 +1,6 @@
 # Plan 0039: Masks by name, optional masks, and a pattern
 
-- **Status:** In progress
+- **Status:** Done (manual AT `pending`)
 - **Owner:** orchestrator → component-engineer
 - **Created:** 2026-10-04 · **Target:** M2
 - **Related:** [0014](0014-input-masks-and-one-time-code.md), [0032](0032-date-mask-and-masked-stories.md), [0033](0033-text-input-and-number-input.md), `forms`, `api-conventions` skills
@@ -86,5 +86,5 @@ Additive. No migration.
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass (manual AT may be `pending`)
-- [ ] Plan tasks ticked, `docs/roadmap.md` status updated
+- [x] All quality gates in AGENTS.md pass (manual AT may be `pending`) (2026-10-05: `vp check`, `vp test run`, every `vp run e2e` spec on chromium, `i18n:check`, `theme:check` green)
+- [x] Plan tasks ticked, `docs/roadmap.md` status updated

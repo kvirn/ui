@@ -1,6 +1,6 @@
 # Plan 0042: Rename Notification to Alert?
 
-- **Status:** Accepted by the maintainer 2026-10-04 (rename, the recommended option). Implemented; gates pending (orchestrator), manual AT `pending`
+- **Status:** Done (maintainer approved 2026-10-04; gates green 2026-10-05), manual AT `pending`
 - **Owner:** orchestrator → component-engineer
 - **Created:** 2026-10-04 · **Target:** M2
 - **Related:** [0020](0020-notification.md), `docs/design/notification.md`, `DESIGN.md`, `accessibility`, `api-conventions` skills
@@ -63,5 +63,5 @@ Breaking in 0.x, no alias, rename map in the changeset.
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass, including `i18n:check` and `theme:check`
-- [ ] Plan tasks ticked, `docs/roadmap.md` status updated
+- [x] All quality gates in AGENTS.md pass, including `i18n:check` and `theme:check` (2026-10-05: `vp check`, `vp test run`, every `vp run e2e` spec on chromium, `i18n:check`, `theme:check` green)
+- [x] Plan tasks ticked, `docs/roadmap.md` status updated

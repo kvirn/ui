@@ -83,5 +83,6 @@ None new. The new-tab notice is Link's.
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass (manual AT may be `pending`), accessibility-reviewer APPROVE
+- [x] All quality gates in AGENTS.md pass (manual AT may be `pending`) (2026-10-05: `vp check`, `vp test run`, every `vp run e2e` spec on chromium, `i18n:check`, `theme:check` green)
+- [ ] accessibility-reviewer APPROVE
 - [ ] Plan tasks ticked, `docs/roadmap.md` status updated

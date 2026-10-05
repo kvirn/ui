@@ -20,7 +20,7 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0008](0008-storybook-story-conventions.md)       | Storybook story conventions (args-first, autodocs, themes as test projects) | Implemented                           |
 | [0009](0009-icon.md)                              | Icon                                                                        | In progress                           |
 | [0010](0010-button-depth.md)                      | Button depth ("Grounded")                                                   | Done                                  |
-| [0011](0011-ibm-plex-typography.md)               | IBM Plex Sans and IBM Plex Serif replace Inter                              | In progress                           |
+| [0011](0011-ibm-plex-typography.md)               | IBM Plex Sans and IBM Plex Serif replace Inter                              | Done                                  |
 | [0012](0012-hyphenation-and-small-screen-type.md) | Hyphenate long words, and smaller large type below 40rem                    | Done                                  |
 | [0013](0013-form-fields.md)                       | Form fields: Field, Fieldset, Input, Checkbox, RadioGroup and DateInput     | Implemented (AT pending)              |
 | [0014](0014-input-masks-and-one-time-code.md)     | Input masks and OneTimeCode                                                 | Done                                  |
@@ -38,7 +38,7 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0026](0026-table-and-virtualization.md)          | Table, and virtualized Listbox, Combobox and Autocomplete                   | In progress                           |
 | [0027](0027-fold-adrs-into-skills.md)             | Fold the ADRs into skills and docs, then delete them                        | Done                                  |
 | [0028](0028-compound-naming-and-part-aliases.md)  | Compound naming and part aliases                                            | Done                                  |
-| [0029](0029-field-hint.md)                        | Field.Hint                                                                  | In progress                           |
+| [0029](0029-field-hint.md)                        | Field.Hint                                                                  | Done                                  |
 | [0030](0030-rich-listbox-options.md)              | Rich Listbox options                                                        | Draft                                 |
 | [0031](0031-pointer-focus-on-text-inputs.md)      | Pointer focus on text inputs                                                | In progress                           |
 | [0032](0032-date-mask-and-masked-stories.md)      | A one-field date mask, and masks by default in the stories                  | Done                                  |
@@ -48,9 +48,9 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0036](0036-rich-text-editor.md)                  | Rich text editor (`@kvirn-ui/rich-text`, Tiptap)                            | Approved                              |
 | [0037](0037-tooltip.md)                           | Tooltip                                                                     | In progress                           |
 | [0038](0038-stories-show-the-real-api.md)         | Stories show the real API                                                   | Draft                                 |
-| [0039](0039-masks-by-name.md)                     | Masks by name, optional masks, and a pattern                                | In progress                           |
+| [0039](0039-masks-by-name.md)                     | Masks by name, optional masks, and a pattern                                | Done                                  |
 | [0040](0040-date-input-auto-advance.md)           | DateInput moves to the next box when one is full                            | Accepted                              |
-| [0041](0041-help-text.md)                         | `Hint` becomes `HelpText`                                                   | Accepted, implemented (gates pending) |
-| [0042](0042-notification-to-alert.md)             | Rename Notification to Alert                                                | Accepted, implemented (gates pending) |
+| [0041](0041-help-text.md)                         | `Hint` becomes `HelpText`                                                   | Done                                  |
+| [0042](0042-notification-to-alert.md)             | Rename Notification to Alert                                                | Done                                  |
 | [0043](0043-navigation-and-service-link.md)       | Navigation as its own component, and a service link                         | Accepted, implemented (gates pending) |
 | [0044](0044-icon-libraries.md)                    | Using Lucide and Heroicons with Icon                                        | In progress                           |

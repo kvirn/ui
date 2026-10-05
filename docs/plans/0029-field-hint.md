@@ -1,6 +1,6 @@
 # Plan 0029: Field.Hint
 
-- **Status:** In progress
+- **Status:** Done (manual AT `pending`)
 - **Owner:** Maintainer / Claude
 - **Created:** 2026-10-04 · **Target:** M1
 - **Related:** Plan 0028 (names), changes the hint rule in the forms skill, design spec [docs/design/field-hint.md](../design/field-help-text.md)
@@ -167,5 +167,5 @@ Minor. No deprecation: Prose keeps working, only its size under the control chan
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass (manual AT may be `pending`)
-- [ ] Plan tasks ticked, `docs/roadmap.md` status updated
+- [x] All quality gates in AGENTS.md pass (manual AT may be `pending`) (2026-10-05: `vp check`, `vp test run`, every `vp run e2e` spec on chromium, `i18n:check`, `theme:check` green)
+- [x] Plan tasks ticked, `docs/roadmap.md` status updated

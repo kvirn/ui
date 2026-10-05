@@ -1,6 +1,6 @@
 # Plan 0011: IBM Plex Sans and IBM Plex Serif replace Inter
 
-- **Status:** In progress
+- **Status:** Done
 - **Owner:** Main session (plan, decision), ux-designer (spec), component-engineer (implementation)
 - **Created:** 2026-10-01 · **Target:** default theme 0.x
 - **Related:** design spec [`docs/design/typography-ibm-plex.md`](../design/typography-ibm-plex.md)
@@ -76,5 +76,5 @@ The standard gates. Plus a check in the browser that the computed font of body t
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass (manual AT may be `pending`)
-- [ ] Plan tasks ticked, `docs/roadmap.md` status updated
+- [x] All quality gates in AGENTS.md pass (manual AT may be `pending`) (2026-10-05: `vp check`, `vp test run`, every `vp run e2e` spec on chromium, `i18n:check`, `theme:check` green)
+- [x] Plan tasks ticked, `docs/roadmap.md` status updated

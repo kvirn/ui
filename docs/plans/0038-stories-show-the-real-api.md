@@ -142,6 +142,6 @@ Part of M2 docs work. One PR per priority group (one concern per PR). No version
 
 - [ ] Every story's "Show code" shows `X.Root` / `X.*` parts or hooks. No local wrapper, no `locale` prop on a wrapper, no hand-written source string
 - [ ] `meta.component` is a real export for every component
-- [ ] Orchestrator gates, run once at the end, scoped to the changed files: `vp check <files>`, `vp test run <files>` (stories with axe), `vp run e2e <spec> --project chromium` for each component whose stories changed, `vp run i18n:check` if text moved into the catalogs
+- [x] Orchestrator gates, run once at the end, scoped to the changed files: `vp check <files>`, `vp test run <files>` (stories with axe), `vp run e2e <spec> --project chromium` for each component whose stories changed, `vp run i18n:check` if text moved into the catalogs
 - [ ] `storybook-docs` skill updated, and `docs/roadmap.md` row set to `done`
 - [x] Plan tasks ticked

@@ -40,5 +40,5 @@ Docs pages only, with no interactive parts. Tables use Markdown, so they get hea
 
 ## Done when
 
-- [ ] `vp check` and `vp test run` pass
+- [x] `vp check` and `vp test run` pass (2026-10-05: `vp check`, `vp test run`, every `vp run e2e` spec on chromium, `i18n:check`, `theme:check` green)
 - [ ] Plan tasks ticked

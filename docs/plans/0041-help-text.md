@@ -1,6 +1,6 @@
 # Plan 0041: `Hint` becomes `HelpText`
 
-- **Status:** Accepted (maintainer, 2026-10-04); implemented, gates pending
+- **Status:** Done (maintainer approved, 2026-10-04; gates green 2026-10-05)
 - **Owner:** orchestrator → component-engineer
 - **Created:** 2026-10-04 · **Target:** M2
 - **Related:** [0029](0029-field-hint.md), [0028](0028-compound-naming-and-part-aliases.md), `forms`, `api-conventions` skills
@@ -72,5 +72,5 @@ Breaking in 0.x. Changeset lists the rename map.
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass
+- [x] All quality gates in AGENTS.md pass (2026-10-05: `vp check`, `vp test run`, every `vp run e2e` spec on chromium, `i18n:check`, `theme:check` green)
 - [x] Plan tasks ticked, `docs/roadmap.md` status updated

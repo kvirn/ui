@@ -282,5 +282,5 @@ The work is split in two, because the toolbar parts wait for [Plan 0037](0037-to
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass (manual AT `pending`)
+- [x] All quality gates in AGENTS.md pass (manual AT `pending`) (2026-10-05: `vp check`, `vp test run`, every `vp run e2e` spec on chromium, `i18n:check`, `theme:check` green)
 - [ ] Plan tasks ticked, `docs/roadmap.md` status updated
