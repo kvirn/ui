@@ -4414,6 +4414,92 @@
     transform: translateY(-0.0625rem) rotate(45deg);
   }
 
+  /* Rich options (optional parts, any markup stays allowed). The row stays a flex row, so free-form
+   * children lay out as before. A description turns the row into a grid: the icon and the indicator
+   * span both lines, the text and the description stack. */
+  .kv-listbox-option-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .kv-listbox-option-icon > :is(img, svg) {
+    max-inline-size: 2rem;
+    max-block-size: 2rem;
+    object-fit: cover;
+  }
+
+  .kv-listbox-option-text {
+    min-inline-size: 0;
+  }
+
+  .kv-listbox-option-description {
+    min-inline-size: 0;
+    color: var(--kv-listbox-option-hint);
+    font-size: var(--kv-font-body-small-size);
+    font-weight: var(--kv-font-body-small-weight);
+    line-height: var(--kv-font-body-small-line-height);
+    letter-spacing: var(--kv-font-body-small-letter-spacing);
+    font-feature-settings: var(--kv-font-body-small-feature-settings);
+  }
+
+  /* The indicator always keeps its place, so the rows line up. Empty and chosen: the same tick. */
+  .kv-listbox-option-indicator {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 0.75rem;
+    margin-inline-start: auto;
+  }
+
+  .kv-listbox-option-indicator[data-selected]:empty::after {
+    content: '';
+    inline-size: 0.375rem;
+    block-size: 0.75rem;
+    border-color: currentColor;
+    border-style: solid;
+    border-width: 0 2px 2px 0;
+    transform: translateY(-0.0625rem) rotate(45deg);
+  }
+
+  .kv-listbox-option[data-has-indicator][data-selected]::after {
+    content: none;
+  }
+
+  .kv-listbox-option:has(> .kv-listbox-option-description) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    /* Pack the two rows together and centre them: the row's minimum height is not shared out between them. */
+    align-content: center;
+    align-items: center;
+    /* The row's own gap is for the flex row: the grid sets the space between its columns itself. */
+    gap: 0;
+  }
+
+  .kv-listbox-option:has(> .kv-listbox-option-description) > .kv-listbox-option-icon {
+    grid-row: 1 / span 2;
+    grid-column: 1;
+    margin-inline-end: var(--kv-space-3);
+  }
+
+  .kv-listbox-option:has(> .kv-listbox-option-description) > .kv-listbox-option-text {
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  .kv-listbox-option:has(> .kv-listbox-option-description) > .kv-listbox-option-description {
+    grid-row: 2;
+    grid-column: 2;
+  }
+
+  .kv-listbox-option:has(> .kv-listbox-option-description) > .kv-listbox-option-indicator {
+    grid-row: 1 / span 2;
+    grid-column: 3;
+    margin-inline-start: var(--kv-space-3);
+  }
+
   .kv-listbox-option[aria-disabled='true'] {
     color: var(--kv-color-text-muted);
     cursor: not-allowed;

@@ -71,6 +71,10 @@ With `virtualize`, the popup renders only the suggestions that are scrolled into
 
 The caveat: suggestions that aren't rendered can't be found with the browser's find in page, aren't printed, and are out of reach of a screen reader's browse mode. It needs a flat list: with `groups` the list renders in full and a warning is logged in development. The list is the scroll element, so give `Autocomplete.List` a height limit and `overflow-y: auto` (the default theme does).
 
+## Rich options
+
+An option holds any markup: an `<Icon>`, an image, spans, divs. Four optional parts, `Autocomplete.OptionIcon`, `Autocomplete.OptionText`, `Autocomplete.OptionDescription` and `Autocomplete.OptionIndicator`, are the Listbox's: they keep the option's name to its text, add a description, and hide the decoration from screen readers. See the Listbox page, Rich options. Typeahead and filtering use `itemToString`, so keep it equal to the `OptionText`.
+
 ## Keys
 
 Typing filters and opens the popup. ArrowDown and ArrowUp open it and move the highlight, and don't wrap. Page Up and Page Down move ten. Enter picks the highlighted suggestion (with none highlighted it is the browser's own). Escape closes and keeps the text. Tab closes without picking and moves on. Alt+ArrowDown opens without highlighting, and Alt+ArrowUp picks and closes. Home, End, ArrowLeft, ArrowRight and Space are the text field's own: the caret moves, and the four caret keys leave no suggestion highlighted. The full table is the Keyboard section of [autocomplete.a11y.md](autocomplete.a11y.md), shown on the Docs page.

@@ -100,6 +100,19 @@ The trigger and the native select are one Tab stop. Home and End, and a letter, 
 
 Space and Enter open the native list on most platforms, and Enter in the open list chooses the highlighted option and closes it (native). Clicking the label focuses the select (`listbox.e2e.ts › clicking the label focuses the select`) or, for the popup, the trigger (`listbox.e2e.ts › popup: clicking the label focuses the trigger`).
 
+## Rich options
+
+An option holds any markup. The four parts are optional, and Combobox and Autocomplete share them.
+
+- **Name.** With a `Listbox.OptionText` the option has `aria-labelledby` pointing at it, so the name is that text alone. Without one the name is the option's whole text content. An `aria-label` or `aria-labelledby` of the consumer's wins (4.1.2, 2.5.3).
+- **Description.** With a `Listbox.OptionDescription` the option has `aria-describedby` pointing at it, after any `aria-describedby` of the consumer's.
+- **Decorative parts.** `Listbox.OptionIcon` and `Listbox.OptionIndicator` are `aria-hidden="true"`. An image inside carries `alt=""` (1.1.1). `aria-selected` is unchanged: the indicator is decoration, and its children show only on the chosen option.
+- **`itemToString` equals the OptionText.** Typeahead, filtering and the trigger's value use `itemToString`. A dev warning (`listbox-option-text-mismatch`) fires when the OptionText's text differs, and a part outside an option warns once.
+- **Native rendering** takes plain text: the parts don't render, each `<option>` is `itemToString`.
+- **Risk.** Support for a description on the active option, read through `aria-activedescendant`, varies across NVDA, JAWS, VoiceOver and TalkBack. The name is always right; the fallback is that the description is not announced. Never put essential information only in the description.
+- **Reflow.** Two-line options wrap at 320px (1.4.10).
+- Tested in `listbox-rich-options.test.tsx`.
+
 ## Focus management
 
 - Initial focus: not moved. Opening never moves DOM focus (a keyboard user stays on the trigger), and no option is active until an arrow key, Home, End, Page Up, Page Down or a typed letter, except that opening with a key activates the chosen option so the user can see where they are.
@@ -172,7 +185,7 @@ None from us. A single choice reads as the trigger's value (name, role, "collaps
 | Narrator + Edge + Windows                | pending |        |        |       |
 | Dragon / Voice Control                   | pending |        |        |       |
 
-Research questions for the AT run: is the description read before or after the chosen option in each screen reader? Does the screen reader read the value in the trigger when it changes after a choice? Does `aria-activedescendant` on a `div` combobox read each option on VoiceOver (macOS and iOS) and TalkBack, with and without `native="auto"`? Does a Voice Control user open the popup and choose an option by name, and does Dragon reach options in the top layer?
+Research questions for the AT run: is the description of a rich option read for the active option in each screen reader, and is the name the text alone? is the description read before or after the chosen option in each screen reader? Does the screen reader read the value in the trigger when it changes after a choice? Does `aria-activedescendant` on a `div` combobox read each option on VoiceOver (macOS and iOS) and TalkBack, with and without `native="auto"`? Does a Voice Control user open the popup and choose an option by name, and does Dragon reach options in the top layer?
 
 ## Known issues
 

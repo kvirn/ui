@@ -1,4 +1,4 @@
-import { Button, Card, Field, Listbox } from '@kvirn-ui/react'
+import { Button, Card, Field, Icon, Listbox } from '@kvirn-ui/react'
 import { useMemo, useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { ChoiceTexts } from '../form/choice.fixture.tsx'
@@ -608,7 +608,11 @@ export function VirtualizedPlaces({ locale }: { locale: FormLocale }) {
   )
 }
 
-/** A rich option: your own children in `Listbox.Option`. The name a screen reader reads is its text content. */
+/**
+ * A rich option with the optional parts: an icon, the text that names the option, a second line
+ * that describes it and a mark for the chosen one. The icon and the mark are decorative, so a
+ * screen reader reads "Göteborg", then the county as its description.
+ */
 export function RichMunicipalities({ locale }: { locale: FormLocale }) {
   const { text, lang } = choiceTextsFor(locale)
   return (
@@ -628,12 +632,62 @@ export function RichMunicipalities({ locale }: { locale: FormLocale }) {
           <Listbox.List>
             {(municipality: Municipality) => (
               <Listbox.Option item={municipality}>
-                <span style={{ display: 'grid' }}>
-                  <span>{municipality.name}</span>
-                  <small style={{ color: 'var(--kv-listbox-option-hint)' }}>
-                    {municipality.county}
-                  </small>
+                <Listbox.OptionIcon>
+                  <Icon name="document" />
+                </Listbox.OptionIcon>
+                <Listbox.OptionText>{municipality.name}</Listbox.OptionText>
+                <Listbox.OptionDescription>{municipality.county}</Listbox.OptionDescription>
+                <Listbox.OptionIndicator />
+              </Listbox.Option>
+            )}
+          </Listbox.List>
+        </Listbox.Popup>
+      </Listbox.Root>
+    </Field.Root>
+  )
+}
+
+/**
+ * Your own markup, with none of the parts: any element goes inside `Listbox.Option`, and the name
+ * a screen reader reads is its text content. The trigger shows the chosen option's own markup
+ * through a function child of `Listbox.Value`.
+ */
+export function OwnMarkupMunicipalities({ locale }: { locale: FormLocale }) {
+  const { text, lang } = choiceTextsFor(locale)
+  return (
+    <Field.Root required lang={lang}>
+      <Field.Label>{text.municipality}</Field.Label>
+      <Listbox.Root
+        native="never"
+        items={richMunicipalities}
+        itemToString={(municipality) => municipality.name}
+        itemToKey={(municipality) => municipality.code}
+        defaultValue="stockholm"
+        defaultOpen
+      >
+        <Listbox.Trigger>
+          <Listbox.Value placeholder={text.municipalityPlaceholder}>
+            {(chosen: readonly Municipality[]) =>
+              chosen.map((municipality) => (
+                <span key={municipality.code} style={{ display: 'inline-flex', gap: '0.5rem' }}>
+                  <Icon name="document" />
+                  {municipality.name}
                 </span>
+              ))
+            }
+          </Listbox.Value>
+        </Listbox.Trigger>
+        <Listbox.Popup>
+          <Listbox.List>
+            {(municipality: Municipality) => (
+              <Listbox.Option item={municipality}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <Icon name="document" />
+                  <div>
+                    <strong>{municipality.name}</strong>
+                    <div>{municipality.county}</div>
+                  </div>
+                </div>
               </Listbox.Option>
             )}
           </Listbox.List>

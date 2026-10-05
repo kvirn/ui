@@ -86,6 +86,10 @@ The input is one Tab stop. Toggle and Clear are not tab stops (`tabindex="-1"`):
 | Pointer press          | outside the popup, the input and its buttons | Closes the popup. A control that is pressed keeps the focus                                                                                                                       | `autocomplete.e2e.ts › a press outside closes the popup`                                                                                               |
 | Pointer press          | on the Field's label                         | Focuses the input and opens nothing                                                                                                                                               | `autocomplete.e2e.ts › clicking the label focuses the input`                                                                                           |
 
+## Rich options
+
+An option holds any markup. `Autocomplete.OptionIcon`, `OptionText`, `OptionDescription` and `OptionIndicator` are the Listbox's parts, and their contract is the Listbox's (Rich options): the name is the `OptionText` alone when there is one, the description is `aria-describedby`, the icon and indicator are `aria-hidden`. The active option is read through `aria-activedescendant`, and support for its description varies across screen readers, so the name must carry everything essential. Filtering uses `itemToString`, which should equal the `OptionText`. Tested in `listbox-rich-options.test.tsx`.
+
 ## Focus management
 
 - Initial focus: not moved. Opening never moves DOM focus, and no suggestion is active until ArrowDown or ArrowUp (opening with a key activates the first or last, so the user can see where they are).

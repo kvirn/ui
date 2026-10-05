@@ -1,4 +1,4 @@
-import { Autocomplete, Button, Card, Field } from '@kvirn-ui/react'
+import { Autocomplete, Button, Card, Field, Icon } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -147,6 +147,49 @@ export function DefaultExample({ locale }: { locale: FormLocale }) {
         <Autocomplete.Popup>
           <Autocomplete.List>
             {(street: string) => <Autocomplete.Option item={street} />}
+          </Autocomplete.List>
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
+  )
+}
+
+const richStreets: readonly { name: string; district: string }[] = [
+  { name: 'Storgatan', district: 'Centrum' },
+  { name: 'Kungsgatan', district: 'Norrmalm' },
+  { name: 'Järnvägsgatan', district: 'Station' },
+]
+
+/**
+ * Suggestions with an icon and a second line: `Autocomplete.OptionIcon`, `OptionText` and
+ * `OptionDescription`. Any markup also works in `Autocomplete.Option`, with or without the parts.
+ */
+export function RichSuggestionsExample({ locale }: { locale: FormLocale }) {
+  const { text, lang } = autocompleteTextsFor(locale)
+  return (
+    <Field.Root lang={lang}>
+      <Field.Label>{text.street}</Field.Label>
+      <Autocomplete.Root
+        items={richStreets}
+        itemToString={(street) => street.name}
+        itemToKey={(street) => street.name}
+      >
+        <Autocomplete.Control>
+          <Autocomplete.Input />
+          <Autocomplete.Clear />
+          <Autocomplete.Toggle />
+        </Autocomplete.Control>
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: (typeof richStreets)[number]) => (
+              <Autocomplete.Option item={street}>
+                <Autocomplete.OptionIcon>
+                  <Icon name="document" />
+                </Autocomplete.OptionIcon>
+                <Autocomplete.OptionText>{street.name}</Autocomplete.OptionText>
+                <Autocomplete.OptionDescription>{street.district}</Autocomplete.OptionDescription>
+              </Autocomplete.Option>
+            )}
           </Autocomplete.List>
         </Autocomplete.Popup>
       </Autocomplete.Root>

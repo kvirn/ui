@@ -87,6 +87,30 @@ Arrows move the highlight and don't wrap, Home and End go to the first and last 
 
 With `native="auto"`, the server and the first client render are the popup, and a device whose primary pointer is coarse switches to the native select right after mount. Only a **single choice** switches, and the native `<select>` shows **plain text**: `Listbox.Empty`, rich option content and the popup's look don't apply there. The value, `name` and Field wiring are the same, a choice survives the switch, and the popup is closed when it happens. The pointer is read once, right after mount: the rendering never changes while the user is on the page, because a swap would drop their focus. A touch device sees one frame of the custom trigger first: use `native="always"` when that matters, or `native="never"` to keep the popup everywhere. The native select gets an empty option for "nothing chosen" (carrying `placeholder`), which reports `null` when chosen.
 
+## Rich options
+
+An option holds **any markup**: an `<Icon>`, an `<img>`, an svg, spans, divs. Put it in `Listbox.Option`'s children, or take over the element with `render`. Without the parts below, the option's name is its whole text content, as it always was.
+
+Four optional parts give the markup a place and keep the name right. Use as many as you need, in any order:
+
+```tsx
+<Listbox.Option item={country}>
+  <Listbox.OptionIcon>
+    <img src={country.flag} alt="" />
+  </Listbox.OptionIcon>
+  <Listbox.OptionText>{country.name}</Listbox.OptionText>
+  <Listbox.OptionDescription>{country.capital}</Listbox.OptionDescription>
+  <Listbox.OptionIndicator />
+</Listbox.Option>
+```
+
+- **`Listbox.OptionIcon`**: a `<span aria-hidden="true">` for an icon, flag or avatar. It is decorative and never part of the name, so anything it means must also be in the text.
+- **`Listbox.OptionText`**: a `<span>` the option's `aria-labelledby` points at, so the name is this text alone and a second line is not part of it. Typeahead, filtering and the trigger's value still use `itemToString`: keep the two equal (a dev warning, `listbox-option-text-mismatch`, fires when they differ). An `aria-label` or `aria-labelledby` on the option wins.
+- **`Listbox.OptionDescription`**: a `<span>` the option's `aria-describedby` points at. Screen readers differ in whether they read a description for the active option, so never put the only copy of something essential here.
+- **`Listbox.OptionIndicator`**: a `<span aria-hidden="true">` at the end that always keeps its place. With no children the default theme draws the check in it. Children replace the check and show only on the chosen option. Its presence sets `data-has-indicator` on the option, so the theme's own tick steps aside. The state is still `aria-selected`.
+
+Every part takes any children, `render`, `className`, `ref` and handlers, and has a stable class: `kv-listbox-option-icon`, `kv-listbox-option-text`, `kv-listbox-option-description` and `kv-listbox-option-indicator`. `Combobox` and `Autocomplete` have the same parts under their own names. The native `<select>` takes plain text: the parts don't render there and each `<option>` shows `itemToString`, so use `native="never"` if an icon carries meaning.
+
 ## Long lists
 
 Filter first. A list that a user would search belongs in a Combobox, and a list that can be split (a county, then a municipality) is two shorter lists. `virtualize` is for a list that stays long after that: a register of thousands of entries, where the user knows the first letters and finds the rest with the keys.

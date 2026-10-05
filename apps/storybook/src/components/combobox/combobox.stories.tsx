@@ -519,14 +519,16 @@ export const OwnAnnouncement: Story = {
   },
 }
 
-/** A rich option: your own children replace the text. The name a screen reader reads is its text content. */
+/** A rich option: an icon, the text that names it and a second line that describes it. */
 export const RichOptions: Story = {
   parameters: source('RichOptionsExample'),
   render: (_args, { globals }) => <RichOptionsExample locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = comboboxTextsFor(localeOf(globals))
     await openWithKey(canvas, inputOf(canvas, text.municipality))
-    await expect(canvas.getByRole('option', { name: /Göteborg/ })).toBeVisible()
+    const option = canvas.getByRole('option', { name: 'Göteborg' })
+    await expect(option).toBeVisible()
+    await expect(option).toHaveAccessibleDescription('Västra Götaland')
   },
 }
 

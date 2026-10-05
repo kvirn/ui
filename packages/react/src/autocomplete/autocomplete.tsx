@@ -9,6 +9,10 @@ import {
   ComboboxInput,
   ComboboxList,
   ComboboxOption,
+  ComboboxOptionDescription,
+  ComboboxOptionIcon,
+  ComboboxOptionIndicator,
+  ComboboxOptionText,
   ComboboxPopup,
   ComboboxProviders,
   ComboboxToggle,
@@ -22,8 +26,13 @@ import type {
   ComboboxInputProps,
   ComboboxItemRenderer,
   ComboboxListProps,
+  ComboboxOptionDescriptionProps,
+  ComboboxOptionIconProps,
+  ComboboxOptionIndicatorProps,
+  ComboboxOptionPartState,
   ComboboxOptionProps,
   ComboboxOptionState,
+  ComboboxOptionTextProps,
   ComboboxPartState,
   ComboboxPopupProps,
   ComboboxToggleProps,
@@ -77,6 +86,11 @@ export type AutocompleteItemRenderer<TItem> = ComboboxItemRenderer<TItem>
 export type AutocompleteListProps<TItem = unknown> = ComboboxListProps<TItem>
 export type AutocompleteOptionProps<TItem = unknown> = ComboboxOptionProps<TItem>
 export type AutocompleteOptionState<TItem = unknown> = ComboboxOptionState<TItem>
+export type AutocompleteOptionDescriptionProps = ComboboxOptionDescriptionProps
+export type AutocompleteOptionIconProps = ComboboxOptionIconProps
+export type AutocompleteOptionIndicatorProps = ComboboxOptionIndicatorProps
+export type AutocompleteOptionPartState = ComboboxOptionPartState
+export type AutocompleteOptionTextProps = ComboboxOptionTextProps
 export type AutocompletePartState = ComboboxPartState
 export type AutocompletePopupProps = ComboboxPopupProps
 export type AutocompleteToggleProps = ComboboxToggleProps
@@ -127,6 +141,32 @@ export function AutocompleteOption<TItem = unknown>(
 }
 AutocompleteOption.displayName = 'Autocomplete.Option'
 
+/** A decorative icon, flag or avatar at the start of a suggestion: the `Combobox.OptionIcon` under the Autocomplete's name. */
+export function AutocompleteOptionIcon(props: AutocompleteOptionIconProps): ReactElement {
+  return <ComboboxOptionIcon {...props} />
+}
+AutocompleteOptionIcon.displayName = 'Autocomplete.OptionIcon'
+
+/** The text that names a rich suggestion: the `Combobox.OptionText` under the Autocomplete's name. */
+export function AutocompleteOptionText(props: AutocompleteOptionTextProps): ReactElement {
+  return <ComboboxOptionText {...props} />
+}
+AutocompleteOptionText.displayName = 'Autocomplete.OptionText'
+
+/** The second line that describes a rich suggestion: the `Combobox.OptionDescription` under the Autocomplete's name. */
+export function AutocompleteOptionDescription(
+  props: AutocompleteOptionDescriptionProps,
+): ReactElement {
+  return <ComboboxOptionDescription {...props} />
+}
+AutocompleteOptionDescription.displayName = 'Autocomplete.OptionDescription'
+
+/** The selection mark at the end of a suggestion: the `Combobox.OptionIndicator` under the Autocomplete's name. */
+export function AutocompleteOptionIndicator(props: AutocompleteOptionIndicatorProps): ReactElement {
+  return <ComboboxOptionIndicator {...props} />
+}
+AutocompleteOptionIndicator.displayName = 'Autocomplete.OptionIndicator'
+
 /** A group of suggestions: the `Combobox.Group` under the Autocomplete's name. */
 export function AutocompleteGroup<TItem = unknown>(
   props: AutocompleteGroupProps<TItem>,
@@ -162,6 +202,10 @@ export const Autocomplete = {
   Popup: AutocompletePopup,
   List: AutocompleteList,
   Option: AutocompleteOption,
+  OptionIcon: AutocompleteOptionIcon,
+  OptionText: AutocompleteOptionText,
+  OptionDescription: AutocompleteOptionDescription,
+  OptionIndicator: AutocompleteOptionIndicator,
   Group: AutocompleteGroup,
   GroupLabel: AutocompleteGroupLabel,
   Empty: AutocompleteEmpty,

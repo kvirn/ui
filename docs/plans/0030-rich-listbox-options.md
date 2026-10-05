@@ -1,6 +1,6 @@
 # Plan 0030: Rich Listbox options
 
-- **Status:** Draft
+- **Status:** Implemented (2026-10-05); accessibility-reviewer and manual AT pending
 - **Owner:** Maintainer / Claude
 - **Created:** 2026-10-04 · **Target:** M1
 - **Related:** Plan 0022, Plan 0028 (aliases on Combobox and Autocomplete), Plan 0026 (virtualization)
@@ -89,7 +89,7 @@ None.
 
 ## Tasks
 
-- [ ] Failing tests (Listbox, Combobox, Autocomplete):
+- [x] Failing tests (Listbox, Combobox, Autocomplete):
   - name and description wiring
   - aria-hidden parts
   - the indicator replaces the tick
@@ -97,16 +97,16 @@ None.
   - the mismatch warning
   - axe
   - a virtualized two-line option
-- [ ] Parts in react (shared, aliased per Plan 0028)
-- [ ] Theme rules and `theme:check`
-- [ ] Stories:
+- [x] Parts in react (shared, aliased per Plan 0028)
+- [x] Theme rules and `theme:check`
+- [x] Stories:
   - Listbox: country with flag and capital, people with avatar and email, a custom indicator, `render` function form, the trigger showing the icon
   - Combobox and Autocomplete: one rich story each
   - Replace the inline-styled `RichOptions` stories
-- [ ] `listbox.md`, `combobox.md`, `autocomplete.md`, and the three `.a11y.md` files (name and description rows, AT matrix rows)
-- [ ] e2e: the active rich option reads its name. Run in Chromium per change, and the AT rows stay `pending`
+- [x] `listbox.md`, `combobox.md`, `autocomplete.md`, and the three `.a11y.md` files (name and description rows, AT matrix rows)
+- [x] e2e: the active rich option reads its name. Run in Chromium per change, and the AT rows stay `pending`
 - [ ] accessibility-reviewer
-- [ ] Changeset (minor)
+- [x] Changeset (minor)
 
 ## Risks & open questions
 
@@ -123,5 +123,10 @@ Minor, and additive.
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass (manual AT may be `pending`)
+- [x] All quality gates in AGENTS.md pass (manual AT may be `pending`): scoped runs 2026-10-05, `vp check`, `vp test run` (listbox, combobox, autocomplete, theme), the three e2e specs on chromium, `theme:check`
 - [ ] Plan tasks ticked, `docs/roadmap.md` status updated
+
+## Decisions during implementation
+
+- **Any markup stays allowed (maintainer, 2026-10-05).** The four parts are optional helpers on top of free-form `children`. Nothing narrows or sanitises content. A test renders an `<Icon>`, an svg, divs and spans in every part and in a bare option.
+- **The two-line layout** is a grid only when an option has an `OptionDescription` (`:has()`), so free-form children keep the flex row. `gap: 0` in the grid, because the row's own gap would become a row gap.

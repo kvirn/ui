@@ -43,6 +43,7 @@ import {
   OpenMunicipality,
   OptionalMunicipality,
   PlainFormMunicipality,
+  OwnMarkupMunicipalities,
   RichMunicipalities,
   SelectedMunicipality,
   SeveralMunicipalities,
@@ -340,10 +341,22 @@ export const Virtualized: Story = {
   },
 }
 
-/** A rich option: your own children replace the text. The name a screen reader reads is its text content. */
+/** A rich option: an icon, the text that names it, a second line that describes it and a mark for the chosen one. */
 export const RichOptions: Story = {
   parameters: showSource('listbox/listbox.fixture.tsx', 'RichMunicipalities'),
   render: (_args, { globals }) => <RichMunicipalities locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
+    const option = canvas.getByRole('option', { name: 'Göteborg' })
+    await expect(option).toBeVisible()
+    await expect(option).toHaveAccessibleDescription('Västra Götaland')
+  },
+}
+
+/** Your own markup, no parts: icons, divs and spans go inside the option, and the trigger shows the chosen one's markup. */
+export const OwnMarkup: Story = {
+  parameters: showSource('listbox/listbox.fixture.tsx', 'OwnMarkupMunicipalities'),
+  render: (_args, { globals }) => <OwnMarkupMunicipalities locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
     await expect(canvas.getByRole('option', { name: /Göteborg/ })).toBeVisible()

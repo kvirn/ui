@@ -9,6 +9,10 @@ import {
   ListboxGroupLabel,
   ListboxList,
   ListboxOption,
+  ListboxOptionDescription,
+  ListboxOptionIcon,
+  ListboxOptionIndicator,
+  ListboxOptionText,
   ListboxPopup,
 } from '../listbox/listbox.tsx'
 import type {
@@ -17,8 +21,13 @@ import type {
   ListboxGroupProps,
   ListboxItemRenderer,
   ListboxListProps,
+  ListboxOptionDescriptionProps,
+  ListboxOptionIconProps,
+  ListboxOptionIndicatorProps,
+  ListboxOptionPartState,
   ListboxOptionProps,
   ListboxOptionState,
+  ListboxOptionTextProps,
   ListboxPartState,
   ListboxPopupProps,
 } from '../listbox/listbox.tsx'
@@ -465,6 +474,11 @@ export type ComboboxItemRenderer<TItem> = ListboxItemRenderer<TItem>
 export type ComboboxListProps<TItem = unknown> = ListboxListProps<TItem>
 export type ComboboxOptionProps<TItem = unknown> = ListboxOptionProps<TItem>
 export type ComboboxOptionState<TItem = unknown> = ListboxOptionState<TItem>
+export type ComboboxOptionDescriptionProps = ListboxOptionDescriptionProps
+export type ComboboxOptionIconProps = ListboxOptionIconProps
+export type ComboboxOptionIndicatorProps = ListboxOptionIndicatorProps
+export type ComboboxOptionPartState = ListboxOptionPartState
+export type ComboboxOptionTextProps = ListboxOptionTextProps
 export type ComboboxPopupProps = ListboxPopupProps
 export type ComboboxPopupState = ListboxPartState
 
@@ -490,6 +504,30 @@ export function ComboboxOption<TItem = unknown>(props: ComboboxOptionProps<TItem
 }
 ComboboxOption.displayName = 'Combobox.Option'
 
+/** A decorative icon, flag or avatar at the start of an option: the `Listbox.OptionIcon` under the Combobox's name. */
+export function ComboboxOptionIcon(props: ComboboxOptionIconProps): ReactElement {
+  return <ListboxOptionIcon {...props} />
+}
+ComboboxOptionIcon.displayName = 'Combobox.OptionIcon'
+
+/** The text that names a rich option: the `Listbox.OptionText` under the Combobox's name. */
+export function ComboboxOptionText(props: ComboboxOptionTextProps): ReactElement {
+  return <ListboxOptionText {...props} />
+}
+ComboboxOptionText.displayName = 'Combobox.OptionText'
+
+/** The second line that describes a rich option: the `Listbox.OptionDescription` under the Combobox's name. */
+export function ComboboxOptionDescription(props: ComboboxOptionDescriptionProps): ReactElement {
+  return <ListboxOptionDescription {...props} />
+}
+ComboboxOptionDescription.displayName = 'Combobox.OptionDescription'
+
+/** The selection mark at the end of an option: the `Listbox.OptionIndicator` under the Combobox's name. */
+export function ComboboxOptionIndicator(props: ComboboxOptionIndicatorProps): ReactElement {
+  return <ListboxOptionIndicator {...props} />
+}
+ComboboxOptionIndicator.displayName = 'Combobox.OptionIndicator'
+
 /** A group of options: the `Listbox.Group` under the Combobox's name. */
 export function ComboboxGroup<TItem = unknown>(props: ComboboxGroupProps<TItem>): ReactElement {
   return <ListboxGroup<TItem> {...props} />
@@ -512,7 +550,7 @@ ComboboxEmpty.displayName = 'Combobox.Empty'
  * The Combobox's parts. `Root` with `Input` and `Popup` is the editable combobox (the
  * APG combobox with list autocomplete): the user types to filter, then chooses. `Control`,
  * `Toggle` and `Clear` are optional, `ValueList` and `Value` are for `multiple`. The popup parts
- * (`Popup`, `List`, `Option`, `Group`, `GroupLabel`, `Empty`) are the Listbox's.
+ * (`Popup`, `List`, `Option`, `OptionIcon`, `OptionText`, `OptionDescription`, `OptionIndicator`, `Group`, `GroupLabel`, `Empty`) are the Listbox's.
  */
 export const Combobox = {
   Root: ComboboxRoot,
@@ -525,6 +563,10 @@ export const Combobox = {
   Popup: ComboboxPopup,
   List: ComboboxList,
   Option: ComboboxOption,
+  OptionIcon: ComboboxOptionIcon,
+  OptionText: ComboboxOptionText,
+  OptionDescription: ComboboxOptionDescription,
+  OptionIndicator: ComboboxOptionIndicator,
   Group: ComboboxGroup,
   GroupLabel: ComboboxGroupLabel,
   Empty: ComboboxEmpty,

@@ -885,6 +885,29 @@ test.describe('Combobox virtualization keyboard contract', () => {
   })
 })
 
+test.describe('Combobox rich options', () => {
+  test('the active rich option reads its text as the name and the second line as the description', async ({
+    page,
+  }) => {
+    await openStory(page, 'rich-options')
+    const richInput = page.locator('.kv-combobox-input').first()
+    // The story's play function opens the popup with a key: move once so the active option is a known one.
+    await expectOpen(richInput)
+    await richInput.focus()
+    await page.keyboard.press('ArrowDown')
+    const activeId = await richInput.getAttribute('aria-activedescendant')
+    expect(activeId).not.toBeNull()
+    const active = page.locator(`[id="${activeId}"]`)
+    const text = (await active.locator('.kv-listbox-option-text').textContent()) ?? ''
+    const description = (await active.locator('.kv-listbox-option-description').textContent()) ?? ''
+    expect(text).not.toBe('')
+    expect(description).not.toBe('')
+    // The name is the text alone and the description is the second line: neither contains the other.
+    await expect(active).toHaveAccessibleName(text)
+    await expect(active).toHaveAccessibleDescription(description)
+  })
+})
+
 test.describe('Combobox accessibility', () => {
   const themes = [
     'mode:light;contrast:standard',

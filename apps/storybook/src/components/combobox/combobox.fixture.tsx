@@ -1,4 +1,4 @@
-import { Button, Card, Combobox, Field } from '@kvirn-ui/react'
+import { Button, Card, Combobox, Field, Icon } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -777,7 +777,10 @@ export function OwnAnnouncementExample({ locale }: { locale: FormLocale }) {
   )
 }
 
-/** A rich option: your own children replace the text. The name a screen reader reads is its text content. */
+/**
+ * A rich option: an icon, the text that names the option and a second line that describes it.
+ * Any markup also works in `Combobox.Option`, with or without the parts.
+ */
 export function RichOptionsExample({ locale }: { locale: FormLocale }) {
   const { text, lang } = comboboxTextsFor(locale)
   return (
@@ -793,12 +796,12 @@ export function RichOptionsExample({ locale }: { locale: FormLocale }) {
           <Combobox.List>
             {(municipality: Municipality) => (
               <Combobox.Option item={municipality}>
-                <span style={{ display: 'grid' }}>
-                  <span>{municipality.name}</span>
-                  <small style={{ color: 'var(--kv-listbox-option-hint)' }}>
-                    {municipality.county}
-                  </small>
-                </span>
+                <Combobox.OptionIcon>
+                  <Icon name="document" />
+                </Combobox.OptionIcon>
+                <Combobox.OptionText>{municipality.name}</Combobox.OptionText>
+                <Combobox.OptionDescription>{municipality.county}</Combobox.OptionDescription>
+                <Combobox.OptionIndicator />
               </Combobox.Option>
             )}
           </Combobox.List>

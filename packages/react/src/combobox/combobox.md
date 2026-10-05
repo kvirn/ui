@@ -83,6 +83,10 @@ interface Municipality {
 
 Every part renders exactly one element, takes `render` and your own `className`, `ref` and handlers (merged with its own), and has a stable class: `kv-combobox-control`, `kv-combobox-input`, `kv-combobox-toggle`, `kv-combobox-clear`, `kv-combobox-value-list`, `kv-combobox-value` (with `kv-combobox-value-label` and `kv-combobox-value-remove` inside), and the Listbox's `kv-listbox-popup`, `kv-listbox-list`, `kv-listbox-option`, `kv-listbox-group`, `kv-listbox-group-label` and `kv-listbox-empty`. State is in `data-open`, `data-active`, `data-selected`, `data-disabled`, `data-loading` and `data-placement`. With `@kvirn-ui/theme/theme.css` imported, the input looks like an Input and the popup like the Listbox's; headless, it is unstyled.
 
+## Rich options
+
+An option holds any markup: an `<Icon>`, an image, spans, divs. Four optional parts, `Combobox.OptionIcon`, `Combobox.OptionText`, `Combobox.OptionDescription` and `Combobox.OptionIndicator`, are the Listbox's: they keep the option's name to its text, add a description, and hide the decoration from screen readers. See the Listbox page, Rich options. Typeahead and filtering use `itemToString`, so keep it equal to the `OptionText`.
+
 ## Keys
 
 Typing filters. ArrowDown and ArrowUp open the popup and move the highlight, and don't wrap. Page Up and Page Down move ten. Enter chooses the highlighted option (with none highlighted it is the browser's own). Escape closes and keeps the text and the value. Tab closes without choosing and moves on. Alt+ArrowDown opens without highlighting, and Alt+ArrowUp chooses and closes. Home, End, ArrowLeft, ArrowRight and Space are the text field's own: the caret moves, and the four caret keys leave no option highlighted. The full table is the Keyboard section of [combobox.a11y.md](combobox.a11y.md), shown on the Docs page.

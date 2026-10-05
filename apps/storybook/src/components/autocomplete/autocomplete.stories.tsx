@@ -26,6 +26,7 @@ import {
   OwnAnnouncementExample,
   PlacedAboveExample,
   PlainFormExample,
+  RichSuggestionsExample,
   StartsWithFilterExample,
   SuggestionsExample,
   VirtualizedExample,
@@ -247,6 +248,19 @@ export const Suggestions: Story = {
     await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
     await expect(canvas.getByRole('option', { name: 'Järnvägsgatan' })).toBeVisible()
     await expect(canvas.queryByRole('option', { name: 'Storgatan' })).toBeNull()
+  },
+}
+
+/** Suggestions with an icon and a second line. The name is the street, and the district is its description. */
+export const RichSuggestions: Story = {
+  parameters: source('RichSuggestionsExample'),
+  render: (_args, { globals }) => <RichSuggestionsExample locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = autocompleteTextsFor(localeOf(globals))
+    await userEvent.type(inputOf(canvas, text.street), 'Stor')
+    await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
+    const option = canvas.getByRole('option', { name: 'Storgatan' })
+    await expect(option).toHaveAccessibleDescription('Centrum')
   },
 }
 

@@ -1,6 +1,15 @@
 'use client'
 import type { ListboxEntry, ListboxSection } from '@kvirn-ui/core'
-import { Fragment, useCallback, useContext, useEffect, useLayoutEffect, useRef } from 'react'
+import {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldContext } from '../field/field-context.ts'
@@ -16,6 +25,8 @@ import {
   ListboxTriggerContext,
   ListboxVirtualContext,
 } from './listbox-context.ts'
+import { getListboxOptionPartIds, ListboxOptionContext } from './listbox-option-context.ts'
+import type { ListboxOptionPartKind, ListboxOptionPartState } from './listbox-option-context.ts'
 import { useListbox } from './use-listbox.ts'
 import type { ListboxVirtualOptionPartProps } from './use-list-virtualization.ts'
 import type { UseListboxOptions, UseListboxResult } from './use-listbox.ts'
@@ -487,6 +498,31 @@ export function ListboxOption<TItem = unknown>({
   const isActive = optionProps !== undefined && 'data-active' in optionProps
   const isSelected = optionProps?.['aria-selected'] === true
 
+  // Which of OptionText, OptionDescription and OptionIndicator rendered inside this option.
+  const [registered, setRegistered] = useState<Record<ListboxOptionPartKind, number>>({
+    text: 0,
+    description: 0,
+    indicator: 0,
+  })
+  const registerPart = useCallback((kind: ListboxOptionPartKind) => {
+    setRegistered((counts) => ({ ...counts, [kind]: counts[kind] + 1 }))
+    return () => setRegistered((counts) => ({ ...counts, [kind]: counts[kind] - 1 }))
+  }, [])
+  const optionId = optionProps?.id
+  const isDisabled = entry?.disabled ?? false
+  const label = entry?.label ?? ''
+  const optionContext = useMemo(
+    () => ({
+      ...getListboxOptionPartIds(optionId ?? ''),
+      label,
+      isActive,
+      isSelected,
+      isDisabled,
+      registerPart,
+    }),
+    [optionId, label, isActive, isSelected, isDisabled, registerPart],
+  )
+
   const scrollState = useRef({ list, isSelected, isVirtual: virtualProps !== undefined })
   useLayoutEffect(() => {
     scrollState.current = { list, isSelected, isVirtual: virtualProps !== undefined }
@@ -520,24 +556,251 @@ export function ListboxOption<TItem = unknown>({
   if (entry === undefined || optionProps === undefined) {
     return null
   }
+  // The name is the OptionText alone, so a second line never becomes part of it. Without one it is
+  // the content, as it always was. An `aria-label` or `aria-labelledby` of the consumer's wins.
+  const hasOwnName =
+    otherProps['aria-label'] !== undefined || otherProps['aria-labelledby'] !== undefined
+  const richProps = {
+    ...(registered.text > 0 && !hasOwnName ? { 'aria-labelledby': optionContext.textId } : {}),
+    ...(registered.description > 0
+      ? {
+          'aria-describedby': [otherProps['aria-describedby'], optionContext.descriptionId]
+            .filter((id) => id !== undefined && id !== '')
+            .join(' '),
+        }
+      : {}),
+    ...(registered.indicator > 0 ? { 'data-has-indicator': '' } : {}),
+  }
+  return (
+    <ListboxOptionContext.Provider value={optionContext}>
+      {renderPart({
+        render,
+        defaultElement: 'div',
+        partProps: {
+          ...mergeProps(otherProps, optionProps, virtualProps ?? noVirtualProps, richProps),
+          ref: mergedRef,
+          children: children ?? entry.label,
+        },
+        state: {
+          isActive,
+          isSelected,
+          isDisabled: entry.disabled,
+          item,
+          label: entry.label,
+        },
+      })}
+    </ListboxOptionContext.Provider>
+  )
+}
+ListboxOption.displayName = 'Listbox.Option'
+
+function warnOutsideOption(part: string): void {
+  warnOnce(
+    `listbox-option-${part.toLowerCase()}-outside-option`,
+    `A Listbox.${part} is outside a Listbox.Option, so it does nothing for the option's name or description. Put it inside <Listbox.Option>.`,
+  )
+}
+
+export type { ListboxOptionPartState }
+
+export interface ListboxOptionIconProps extends Omit<ComponentPropsWithRef<'span'>, 'aria-hidden'> {
+  render?: RenderProp<ComponentPropsWithRef<'span'>, ListboxOptionPartState> | undefined
+}
+
+/**
+ * A decorative slot at the start of an option, for an `<Icon>`, a flag (`<img alt="">`) or an
+ * avatar: a `<span aria-hidden="true">`. It is never part of the option's name, so anything it
+ * means (a country, a status) must also be in the text. Listbox, Combobox and Autocomplete share
+ * this part. It isn't rendered in the native `<select>` rendering.
+ */
+export function ListboxOptionIcon({
+  render,
+  ref,
+  ...otherProps
+}: ListboxOptionIconProps): ReactElement {
+  const option = useContext(ListboxOptionContext)
+  const mergedRef = useMergedRef(ref, null)
   return renderPart({
     render,
-    defaultElement: 'div',
+    defaultElement: 'span',
     partProps: {
-      ...mergeProps(otherProps, optionProps, virtualProps ?? noVirtualProps),
+      ...mergeProps(otherProps, {
+        className: 'kv-listbox-option-icon' as const,
+        'aria-hidden': true as const,
+      }),
       ref: mergedRef,
-      children: children ?? entry.label,
     },
     state: {
-      isActive,
-      isSelected,
-      isDisabled: entry.disabled,
-      item,
-      label: entry.label,
+      isActive: option?.isActive ?? false,
+      isSelected: option?.isSelected ?? false,
+      isDisabled: option?.isDisabled ?? false,
     },
   })
 }
-ListboxOption.displayName = 'Listbox.Option'
+ListboxOptionIcon.displayName = 'Listbox.OptionIcon'
+
+export interface ListboxOptionTextProps extends Omit<ComponentPropsWithRef<'span'>, 'id'> {
+  render?: RenderProp<ComponentPropsWithRef<'span'>, ListboxOptionPartState> | undefined
+}
+
+/** Whitespace as a reader would collapse it, for comparing the text with `itemToString`. */
+function normalizeText(text: string | null): string {
+  return (text ?? '').replace(/\s+/g, ' ').trim()
+}
+
+/**
+ * The option's text, for a rich option: a `<span>` that the option's `aria-labelledby` points at,
+ * so the accessible name is this text alone and a second line (`Listbox.OptionDescription`) is not
+ * part of it. Without one the name is the option's whole content. Typeahead, filtering and the
+ * trigger's value still use `itemToString`, so this text should equal it (a development warning
+ * fires when it doesn't). Default text: the item's text. Listbox, Combobox and Autocomplete
+ * share this part.
+ */
+export function ListboxOptionText({
+  children,
+  render,
+  ref,
+  ...otherProps
+}: ListboxOptionTextProps): ReactElement {
+  const option = useContext(ListboxOptionContext)
+  const elementRef = useRef<HTMLSpanElement | null>(null)
+  const mergedRef = useMergedRef(ref, elementRef)
+  const registerPart = option?.registerPart
+  useLayoutEffect(() => registerPart?.('text'), [registerPart])
+  useEffect(() => {
+    if (option === null) {
+      warnOutsideOption('OptionText')
+    }
+  }, [option])
+  const label = option?.label
+  useEffect(() => {
+    const element = elementRef.current
+    if (element === null || label === undefined) {
+      return
+    }
+    const text = normalizeText(element.textContent)
+    if (text !== normalizeText(label)) {
+      warnOnce(
+        `listbox-option-text-mismatch:${label}`,
+        `A Listbox.OptionText says "${text}" but the option's text (itemToString) is "${label}". Typeahead, filtering and the trigger's value use itemToString, so a user hears one thing and the keyboard finds another (WCAG 2.5.3, 3.2.4). Make itemToString return the same text, or leave the children out.`,
+      )
+    }
+  })
+  return renderPart({
+    render,
+    defaultElement: 'span',
+    partProps: {
+      ...mergeProps(otherProps, {
+        className: 'kv-listbox-option-text' as const,
+        ...(option === null ? {} : { id: option.textId }),
+      }),
+      ref: mergedRef,
+      children: children ?? option?.label,
+    },
+    state: {
+      isActive: option?.isActive ?? false,
+      isSelected: option?.isSelected ?? false,
+      isDisabled: option?.isDisabled ?? false,
+    },
+  })
+}
+ListboxOptionText.displayName = 'Listbox.OptionText'
+
+export interface ListboxOptionDescriptionProps extends Omit<ComponentPropsWithRef<'span'>, 'id'> {
+  render?: RenderProp<ComponentPropsWithRef<'span'>, ListboxOptionPartState> | undefined
+}
+
+/**
+ * A second line under the option's text (a capital, an e-mail address): a `<span>` that the
+ * option's `aria-describedby` points at. It is not part of the name when the option has a
+ * `Listbox.OptionText`. Screen readers differ in whether they read a description for the active
+ * option of a combobox, so never put the only copy of something essential here. Listbox, Combobox
+ * and Autocomplete share this part.
+ */
+export function ListboxOptionDescription({
+  render,
+  ref,
+  ...otherProps
+}: ListboxOptionDescriptionProps): ReactElement {
+  const option = useContext(ListboxOptionContext)
+  const mergedRef = useMergedRef(ref, null)
+  const registerPart = option?.registerPart
+  useLayoutEffect(() => registerPart?.('description'), [registerPart])
+  useEffect(() => {
+    if (option === null) {
+      warnOutsideOption('OptionDescription')
+    }
+  }, [option])
+  return renderPart({
+    render,
+    defaultElement: 'span',
+    partProps: {
+      ...mergeProps(otherProps, {
+        className: 'kv-listbox-option-description' as const,
+        ...(option === null ? {} : { id: option.descriptionId }),
+      }),
+      ref: mergedRef,
+    },
+    state: {
+      isActive: option?.isActive ?? false,
+      isSelected: option?.isSelected ?? false,
+      isDisabled: option?.isDisabled ?? false,
+    },
+  })
+}
+ListboxOptionDescription.displayName = 'Listbox.OptionDescription'
+
+export interface ListboxOptionIndicatorProps extends Omit<
+  ComponentPropsWithRef<'span'>,
+  'aria-hidden'
+> {
+  render?: RenderProp<ComponentPropsWithRef<'span'>, ListboxOptionPartState> | undefined
+}
+
+/**
+ * The selection mark at the end of an option: a `<span aria-hidden="true">` that always takes its
+ * place, with `data-selected` while the option is chosen. With no children the default theme
+ * draws its check in it. Children replace the check and show only while the option is chosen.
+ * Its presence marks the option with `data-has-indicator`, so the theme's own tick steps aside.
+ * The state stays `aria-selected` on the option: this is decoration. Listbox, Combobox and
+ * Autocomplete share this part.
+ */
+export function ListboxOptionIndicator({
+  children,
+  render,
+  ref,
+  ...otherProps
+}: ListboxOptionIndicatorProps): ReactElement {
+  const option = useContext(ListboxOptionContext)
+  const mergedRef = useMergedRef(ref, null)
+  const registerPart = option?.registerPart
+  useLayoutEffect(() => registerPart?.('indicator'), [registerPart])
+  useEffect(() => {
+    if (option === null) {
+      warnOutsideOption('OptionIndicator')
+    }
+  }, [option])
+  const isSelected = option?.isSelected ?? false
+  return renderPart({
+    render,
+    defaultElement: 'span',
+    partProps: {
+      ...mergeProps(otherProps, {
+        className: 'kv-listbox-option-indicator' as const,
+        'aria-hidden': true as const,
+        ...(isSelected ? { 'data-selected': '' } : {}),
+      }),
+      ref: mergedRef,
+      children: isSelected ? children : null,
+    },
+    state: {
+      isActive: option?.isActive ?? false,
+      isSelected,
+      isDisabled: option?.isDisabled ?? false,
+    },
+  })
+}
+ListboxOptionIndicator.displayName = 'Listbox.OptionIndicator'
 
 export interface ListboxGroupProps<TItem = unknown> extends Omit<
   ComponentPropsWithRef<'div'>,
@@ -698,6 +961,10 @@ export const Listbox = {
   Popup: ListboxPopup,
   List: ListboxList,
   Option: ListboxOption,
+  OptionIcon: ListboxOptionIcon,
+  OptionText: ListboxOptionText,
+  OptionDescription: ListboxOptionDescription,
+  OptionIndicator: ListboxOptionIndicator,
   Group: ListboxGroup,
   GroupLabel: ListboxGroupLabel,
   Empty: ListboxEmpty,
