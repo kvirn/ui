@@ -1,6 +1,7 @@
 import {
   Button,
   Heading,
+  KvirnProvider,
   Link,
   Table,
   columnSizingFeature,
@@ -14,17 +15,23 @@ import {
   rowSelectionFeature,
   rowSortingFeature,
   tableFeatures,
+  useFormat,
+  useLocale,
   useTable,
 } from '@kvirn-ui/react'
+import type { UseFormatResult } from '@kvirn-ui/react'
+import type { Decorator } from '@storybook/react-vite'
 import { useEffect, useId, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
+import { localeOf, messagesFor } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Story and e2e fixture for Components/Table (Plan 0026, design spec docs/design/table.md §4.2,
 // §6.17). sv, en, fi, nb and nn are written, and the fi strings are the designer's drafts for length
 // checks only. se: English, marked lang="en" (3.1.2). The library's own strings (the checkbox names, the
 // announcements, "Detaljer") follow the locale through the provider decorator of the stories.
-// Numbers and dates are values, formatted with Intl.
+// Numbers and dates are values, formatted with `useFormat()` (Plan 0046): the same decorator gives it
+// the locale of the texts, and the dates are calendar dates (`YYYY-MM-DD`), so no time zone is set.
 //
 // Each exported function is one example, written to be read: it is what "Show code" shows.
 
@@ -197,18 +204,20 @@ const nn: TableTexts = {
 /** se has no texts: it shows the English ones, marked lang="en". */
 const tableTexts: Partial<Record<FormLocale, TableTexts>> = { sv, fi, nb, nn, en }
 
+/** `en-GB`, not `en`: bare `en` is US English to `Intl` (`3/2/26`), and this is an EU audience. */
 const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
   sv: 'sv',
   fi: 'fi',
   nb: 'nb',
   nn: 'nn',
-  en: 'en',
+  en: 'en-GB',
 }
 
 interface ResolvedTexts {
   texts: TableTexts
   /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
   lang: 'en' | undefined
+  /** The provider's `locale` for these texts: what `useFormat()` then formats in. */
   formatLocale: string
 }
 
@@ -220,6 +229,19 @@ export function tableTextsFor(locale: FormLocale): ResolvedTexts {
     lang: texts === undefined ? 'en' : undefined,
     formatLocale: formatLocales[locale === 'se' ? 'en' : locale],
   }
+}
+
+/**
+ * The provider an app has above its tables, with the locale of the texts (English for se, which has
+ * none). The library's own strings follow it, and so does `useFormat()`.
+ */
+export const withTableLocale: Decorator = (Story, { globals }) => {
+  const locale = localeOf(globals)
+  return (
+    <KvirnProvider locale={tableTextsFor(locale).formatLocale} messages={messagesFor(locale)}>
+      <Story />
+    </KvirnProvider>
+  )
 }
 
 export const cases: CaseRecord[] = [
@@ -322,20 +344,13 @@ interface ColumnOptions {
   longHeader?: boolean
 }
 
-const numberFormat = (formatLocale: string) => new Intl.NumberFormat(formatLocale)
-const dateFormat = (formatLocale: string) =>
-  new Intl.DateTimeFormat(formatLocale, { dateStyle: 'short', timeZone: 'UTC' })
-const asDate = (isoDate: string) => new Date(`${isoDate}T00:00:00Z`)
-
 /** The columns of the case list: localised headers, a locale sort on the name, a link on request. */
 function createCaseColumns(
   texts: TableTexts,
-  formatLocale: string,
+  format: UseFormatResult,
   { withLinks = false, longHeader = false }: ColumnOptions,
 ) {
   const column = createColumnHelper<CaseFeatures, CaseRecord>()
-  const numbers = numberFormat(formatLocale)
-  const dates = dateFormat(formatLocale)
   return column.columns([
     column.accessor('name', {
       header: texts.name,
@@ -347,11 +362,11 @@ function createCaseColumns(
     column.accessor('caseNumber', { header: texts.caseNumber }),
     column.accessor('received', {
       header: longHeader ? texts.receivedLong : texts.received,
-      cell: (info) => dates.format(asDate(info.getValue())),
+      cell: (info) => format.date(info.getValue(), { dateStyle: 'short' }),
     }),
     column.accessor('amount', {
       header: texts.amount,
-      cell: (info) => numbers.format(info.getValue()),
+      cell: (info) => format.number(info.getValue()),
     }),
     column.accessor('handler', { header: texts.handler, enableSorting: false }),
   ])
@@ -362,7 +377,8 @@ function createCaseColumns(
  * amount is a quantity, so its header and cells are aligned to the end with the numeric classes.
  */
 export function SortableCases({ locale }: { locale: FormLocale }) {
-  const { texts, formatLocale } = tableTextsFor(locale)
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
   const columns = useMemo(() => {
     const column = createColumnHelper<CaseFeatures, CaseRecord>()
     return column.columns([
@@ -370,15 +386,15 @@ export function SortableCases({ locale }: { locale: FormLocale }) {
       column.accessor('caseNumber', { header: texts.caseNumber }),
       column.accessor('received', {
         header: texts.received,
-        cell: (info) => dateFormat(formatLocale).format(asDate(info.getValue())),
+        cell: (info) => format.date(info.getValue(), { dateStyle: 'short' }),
       }),
       column.accessor('amount', {
         header: texts.amount,
-        cell: (info) => numberFormat(formatLocale).format(info.getValue()),
+        cell: (info) => format.number(info.getValue()),
       }),
       column.accessor('handler', { header: texts.handler, enableSorting: false }),
     ])
-  }, [texts, formatLocale])
+  }, [texts, format])
   const list = useTable({
     features: caseFeatures,
     columns,
@@ -434,10 +450,11 @@ export function SortableCases({ locale }: { locale: FormLocale }) {
 
 /** A staff tool: compact rows, two selected, a link in the row header. Select all is mixed. */
 export function SelectableCases({ locale }: { locale: FormLocale }) {
-  const { texts, formatLocale } = tableTextsFor(locale)
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
   const columns = useMemo(
-    () => createCaseColumns(texts, formatLocale, { withLinks: true }),
-    [texts, formatLocale],
+    () => createCaseColumns(texts, format, { withLinks: true }),
+    [texts, format],
   )
   const list = useTable({
     features: caseFeatures,
@@ -503,8 +520,9 @@ export function SelectableCases({ locale }: { locale: FormLocale }) {
 
 /** The expand button comes first in each row, so it is in view on a small screen. */
 export function ExpandableCases({ locale }: { locale: FormLocale }) {
-  const { texts, formatLocale } = tableTextsFor(locale)
-  const columns = useMemo(() => createCaseColumns(texts, formatLocale, {}), [texts, formatLocale])
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
+  const columns = useMemo(() => createCaseColumns(texts, format, {}), [texts, format])
   const list = useTable({
     features: caseFeatures,
     columns,
@@ -577,8 +595,9 @@ export function ExpandableCases({ locale }: { locale: FormLocale }) {
 
 /** No rows: the head stays, and the empty row says what happened and what to do. */
 export function EmptyCases({ locale }: { locale: FormLocale }) {
-  const { texts, formatLocale } = tableTextsFor(locale)
-  const columns = useMemo(() => createCaseColumns(texts, formatLocale, {}), [texts, formatLocale])
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
+  const columns = useMemo(() => createCaseColumns(texts, format, {}), [texts, format])
   const list = useTable({
     features: caseFeatures,
     columns,
@@ -619,8 +638,9 @@ export function EmptyCases({ locale }: { locale: FormLocale }) {
  * `isLoading` sets `aria-busy` on the table.
  */
 export function LoadingCases({ locale }: { locale: FormLocale }) {
-  const { texts, formatLocale } = tableTextsFor(locale)
-  const columns = useMemo(() => createCaseColumns(texts, formatLocale, {}), [texts, formatLocale])
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
+  const columns = useMemo(() => createCaseColumns(texts, format, {}), [texts, format])
   const reload = useTable({
     features: caseFeatures,
     columns,
@@ -715,10 +735,11 @@ export function LoadingCases({ locale }: { locale: FormLocale }) {
  * review.
  */
 export function EverythingCases({ locale }: { locale: FormLocale }) {
-  const { texts, formatLocale } = tableTextsFor(locale)
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
   const columns = useMemo(
-    () => createCaseColumns(texts, formatLocale, { withLinks: true }),
-    [texts, formatLocale],
+    () => createCaseColumns(texts, format, { withLinks: true }),
+    [texts, format],
   )
   const list = useTable({
     features: caseFeatures,
@@ -803,10 +824,11 @@ export function EverythingCases({ locale }: { locale: FormLocale }) {
 
 /** The long header of a narrow screen wraps, and the table scrolls inside its region. */
 export function NarrowCases({ locale }: { locale: FormLocale }) {
-  const { texts, formatLocale } = tableTextsFor(locale)
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
   const columns = useMemo(
-    () => createCaseColumns(texts, formatLocale, { longHeader: true }),
-    [texts, formatLocale],
+    () => createCaseColumns(texts, format, { longHeader: true }),
+    [texts, format],
   )
   const list = useTable({
     features: caseFeatures,
@@ -867,10 +889,11 @@ export function NarrowCases({ locale }: { locale: FormLocale }) {
  * the region is a Tab stop.
  */
 export function KeyboardCases({ locale }: { locale: FormLocale }) {
-  const { texts, formatLocale } = tableTextsFor(locale)
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
   const columns = useMemo(
-    () => createCaseColumns(texts, formatLocale, { withLinks: true }),
-    [texts, formatLocale],
+    () => createCaseColumns(texts, format, { withLinks: true }),
+    [texts, format],
   )
   const list = useTable({
     features: caseFeatures,
@@ -951,16 +974,15 @@ export function KeyboardCases({ locale }: { locale: FormLocale }) {
  * around it is a plain `<div>` while the table fits.
  */
 export function StaticPayments({ locale }: { locale: FormLocale }) {
-  const { texts, formatLocale } = tableTextsFor(locale)
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
   const captionId = useId()
   const payments = [
     { id: 'p1', date: '2026-01-23', amount: 1050 },
     { id: 'p2', date: '2026-02-25', amount: 1050 },
     { id: 'p3', date: '2026-03-25', amount: 1050 },
   ]
-  const numbers = numberFormat(formatLocale)
-  const dates = dateFormat(formatLocale)
-  const months = new Intl.DateTimeFormat(formatLocale, { month: 'long', timeZone: 'UTC' })
+  const { locale: formatLocale } = useLocale()
   const total = payments.reduce((sum, payment) => sum + payment.amount, 0)
   return (
     <Table.ScrollRegion aria-labelledby={captionId}>
@@ -977,15 +999,15 @@ export function StaticPayments({ locale }: { locale: FormLocale }) {
         </Table.Head>
         <Table.Body>
           {payments.map((payment) => {
-            const month = months.format(asDate(payment.date))
+            const month = format.date(payment.date, { month: 'long' })
             return (
               <Table.Row key={payment.id}>
                 <Table.RowHeader>
                   {month.charAt(0).toLocaleUpperCase(formatLocale) + month.slice(1)}
                 </Table.RowHeader>
-                <Table.Cell>{dates.format(asDate(payment.date))}</Table.Cell>
+                <Table.Cell>{format.date(payment.date, { dateStyle: 'short' })}</Table.Cell>
                 <Table.Cell className="kv-table-cell--numeric">
-                  {numbers.format(payment.amount)}
+                  {format.number(payment.amount)}
                 </Table.Cell>
               </Table.Row>
             )
@@ -995,7 +1017,7 @@ export function StaticPayments({ locale }: { locale: FormLocale }) {
           <Table.Row>
             <Table.RowHeader>{texts.total}</Table.RowHeader>
             <Table.Cell />
-            <Table.Cell className="kv-table-cell--numeric">{numbers.format(total)}</Table.Cell>
+            <Table.Cell className="kv-table-cell--numeric">{format.number(total)}</Table.Cell>
           </Table.Row>
         </Table.Foot>
       </Table.Root>
@@ -1008,16 +1030,15 @@ export function StaticPayments({ locale }: { locale: FormLocale }) {
  * though nothing scrolls, for a page where a table should be something to jump to.
  */
 export function AlwaysRegionPayments({ locale }: { locale: FormLocale }) {
-  const { texts, formatLocale } = tableTextsFor(locale)
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
   const captionId = useId()
   const payments = [
     { id: 'p1', date: '2026-01-23', amount: 1050 },
     { id: 'p2', date: '2026-02-25', amount: 1050 },
     { id: 'p3', date: '2026-03-25', amount: 1050 },
   ]
-  const numbers = numberFormat(formatLocale)
-  const dates = dateFormat(formatLocale)
-  const months = new Intl.DateTimeFormat(formatLocale, { month: 'long', timeZone: 'UTC' })
+  const { locale: formatLocale } = useLocale()
   const total = payments.reduce((sum, payment) => sum + payment.amount, 0)
   return (
     <Table.ScrollRegion aria-labelledby={captionId} region="always">
@@ -1034,15 +1055,15 @@ export function AlwaysRegionPayments({ locale }: { locale: FormLocale }) {
         </Table.Head>
         <Table.Body>
           {payments.map((payment) => {
-            const month = months.format(asDate(payment.date))
+            const month = format.date(payment.date, { month: 'long' })
             return (
               <Table.Row key={payment.id}>
                 <Table.RowHeader>
                   {month.charAt(0).toLocaleUpperCase(formatLocale) + month.slice(1)}
                 </Table.RowHeader>
-                <Table.Cell>{dates.format(asDate(payment.date))}</Table.Cell>
+                <Table.Cell>{format.date(payment.date, { dateStyle: 'short' })}</Table.Cell>
                 <Table.Cell className="kv-table-cell--numeric">
-                  {numbers.format(payment.amount)}
+                  {format.number(payment.amount)}
                 </Table.Cell>
               </Table.Row>
             )
@@ -1052,7 +1073,7 @@ export function AlwaysRegionPayments({ locale }: { locale: FormLocale }) {
           <Table.Row>
             <Table.RowHeader>{texts.total}</Table.RowHeader>
             <Table.Cell />
-            <Table.Cell className="kv-table-cell--numeric">{numbers.format(total)}</Table.Cell>
+            <Table.Cell className="kv-table-cell--numeric">{format.number(total)}</Table.Cell>
           </Table.Row>
         </Table.Foot>
       </Table.Root>
@@ -1066,10 +1087,9 @@ export function AlwaysRegionPayments({ locale }: { locale: FormLocale }) {
  * region or a parent (the story's decorator sets it).
  */
 export function StaticScrollingCases({ locale }: { locale: FormLocale }) {
-  const { texts, formatLocale } = tableTextsFor(locale)
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
   const captionId = useId()
-  const numbers = numberFormat(formatLocale)
-  const dates = dateFormat(formatLocale)
   const rows = manyCases(30)
   return (
     <Table.ScrollRegion aria-labelledby={captionId}>
@@ -1090,9 +1110,9 @@ export function StaticScrollingCases({ locale }: { locale: FormLocale }) {
               <Table.RowHeader>
                 <Link.Root href={`#${entry.id}`}>{entry.name}</Link.Root>
               </Table.RowHeader>
-              <Table.Cell>{dates.format(asDate(entry.received))}</Table.Cell>
+              <Table.Cell>{format.date(entry.received, { dateStyle: 'short' })}</Table.Cell>
               <Table.Cell className="kv-table-cell--numeric">
-                {numbers.format(entry.amount)}
+                {format.number(entry.amount)}
               </Table.Cell>
             </Table.Row>
           ))}
@@ -1108,10 +1128,9 @@ export function StaticScrollingCases({ locale }: { locale: FormLocale }) {
  * head still never covers a focused link.
  */
 export function StaticLateHeadCases({ locale }: { locale: FormLocale }) {
-  const { texts, formatLocale } = tableTextsFor(locale)
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
   const captionId = useId()
-  const numbers = numberFormat(formatLocale)
-  const dates = dateFormat(formatLocale)
   const rows = manyCases(30)
   const [hasHead, setHasHead] = useState(false)
   useEffect(() => {
@@ -1139,9 +1158,9 @@ export function StaticLateHeadCases({ locale }: { locale: FormLocale }) {
               <Table.RowHeader>
                 <Link.Root href={`#${entry.id}`}>{entry.name}</Link.Root>
               </Table.RowHeader>
-              <Table.Cell>{dates.format(asDate(entry.received))}</Table.Cell>
+              <Table.Cell>{format.date(entry.received, { dateStyle: 'short' })}</Table.Cell>
               <Table.Cell className="kv-table-cell--numeric">
-                {numbers.format(entry.amount)}
+                {format.number(entry.amount)}
               </Table.Cell>
             </Table.Row>
           ))}
@@ -1156,7 +1175,8 @@ const pageSize = 20
 
 /** 312 rows, 20 a page. The caption says which rows are shown; focus stays on the page button. */
 export function PaginatedCases({ locale }: { locale: FormLocale }) {
-  const { texts, formatLocale } = tableTextsFor(locale)
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
   const columns = useMemo(() => {
     const column = createColumnHelper<typeof pagedFeatures, CaseRecord>()
     return column.columns([
@@ -1164,10 +1184,10 @@ export function PaginatedCases({ locale }: { locale: FormLocale }) {
       column.accessor('caseNumber', { header: texts.caseNumber }),
       column.accessor('amount', {
         header: texts.amount,
-        cell: (info) => numberFormat(formatLocale).format(info.getValue()),
+        cell: (info) => format.number(info.getValue()),
       }),
     ])
-  }, [texts, formatLocale])
+  }, [texts, format])
   const list = useTable({
     features: pagedFeatures,
     columns,
@@ -1238,7 +1258,8 @@ const virtualCases = manyCases(10_000)
 
 /** 10 000 rows, `virtualize`, and a width for each column: a fixed layout reads them from the head. */
 export function VirtualizedCases({ locale }: { locale: FormLocale }): ReactNode {
-  const { texts, formatLocale } = tableTextsFor(locale)
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
   const columns = useMemo(() => {
     const column = createColumnHelper<typeof virtualFeatures, CaseRecord>()
     return column.columns([
@@ -1253,15 +1274,15 @@ export function VirtualizedCases({ locale }: { locale: FormLocale }): ReactNode 
       column.accessor('received', {
         header: texts.received,
         size: 140,
-        cell: (info) => dateFormat(formatLocale).format(asDate(info.getValue())),
+        cell: (info) => format.date(info.getValue(), { dateStyle: 'short' }),
       }),
       column.accessor('amount', {
         header: texts.amount,
         size: 140,
-        cell: (info) => numberFormat(formatLocale).format(info.getValue()),
+        cell: (info) => format.number(info.getValue()),
       }),
     ])
-  }, [texts, formatLocale])
+  }, [texts, format])
   const list = useTable({
     features: virtualFeatures,
     columns,

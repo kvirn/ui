@@ -5,7 +5,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { CSSProperties } from 'react'
 import { expect, userEvent, waitFor } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
-import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
+import { localeOf } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize } from '../theme-story-assertions.ts'
 import {
   AlwaysRegionPayments,
@@ -22,6 +22,7 @@ import {
   StaticPayments,
   StaticScrollingCases,
   VirtualizedCases,
+  withTableLocale,
 } from './table.fixture.tsx'
 
 // Components/Table: a native table with TanStack Table bundled (Plan 0026,
@@ -50,7 +51,7 @@ const meta = {
     },
     render: { control: false, description: 'Another element. It must still be a `<table>`.' },
   },
-  decorators: [withFormLocale],
+  decorators: [withTableLocale],
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof Table.Root>
 

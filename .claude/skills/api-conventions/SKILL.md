@@ -102,6 +102,7 @@ Rules for the catalog and locales are in `docs/architecture.md`, Internationalis
 - **An empty or whitespace override** (string, or a function's result) warns in development and falls through. An accessible name is never empty. Empty, whitespace-only or boolean children fall through to the message too.
 - **A key resolved from `en` while the locale is not `en`** warns once in development.
 - **Text keys are `TextMessage`** (`string | () => string`). A key with parameters is a function `(values, format)`. `useMessages` returns text as `string` and parameterised keys as `(values) => string`, with the locale's formatter bound.
+- **A number, date or list outside a message comes from `useFormat()`** (public, Plan 0046): the same formatter, so a value reads the same everywhere. Never `new Intl.NumberFormat(locale)` with the locale read by hand in a component, a fixture or an example. `format.date` takes an instant (`Date` or milliseconds, in the provider's `timeZone`) or a calendar date (`'YYYY-MM-DD'`, shown in UTC and never moved). A server component can't call a hook: use `createMessageFormat({ locale, timeZone })` from `@kvirn-ui/core`.
 - **Messages are plain strings, never JSX.** Changing a visible label is the adopter's job for WCAG 2.5.3.
 - **No hard-coded visible or announced text,** including `aria-label`. Developer warnings are not user text (below).
 - **List the component's message keys** in its `<name>.a11y.md`.

@@ -3,6 +3,7 @@ import type { ColorSchemePreference, ContrastPreference } from '@kvirn-ui/core'
 import { useId } from 'react'
 import type { CSSProperties } from 'react'
 import { useDateSettings } from './use-date-settings.ts'
+import { useFormat } from './use-format.ts'
 import { useLocale } from './use-locale.ts'
 import { useMessages } from './use-messages.ts'
 import { useTheme } from './use-theme.ts'
@@ -84,14 +85,11 @@ export const fixtureDate = new Date(Date.UTC(2026, 9, 1, 6, 30))
 export function ProviderFixture() {
   const locale = useLocale()
   const dateSettings = useDateSettings()
+  const format = useFormat()
   const linkMessages = useMessages('link')
   const text = useFixtureText()
   const headingId = useId()
-  const formattedDate = new Intl.DateTimeFormat(locale.locale, {
-    dateStyle: 'long',
-    timeStyle: 'short',
-    ...(dateSettings.timeZone === undefined ? {} : { timeZone: dateSettings.timeZone }),
-  }).format(fixtureDate)
+  const formattedDate = format.date(fixtureDate, { dateStyle: 'long', timeStyle: 'short' })
 
   return (
     <section aria-labelledby={headingId} {...locale.localeProps}>
