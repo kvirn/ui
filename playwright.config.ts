@@ -51,7 +51,7 @@ const projects = [...baselineProjects, ...sweepProjects, ...optionalProjects]
 // pages hammering one Storybook dev server, and makes the timing-based tests flaky. Locally the
 // tests run one at a time, next to the dev server, the editor and other sessions; CI runs three.
 // Raise it for a one-off with `E2E_WORKERS=3 vp run e2e <spec>`.
-const workers = Number(process.env['E2E_WORKERS'] ?? (process.env['CI'] === undefined ? 1 : 3))
+const workers = Number(process.env['E2E_WORKERS'] ?? (process.env['CI'] === undefined ? 1 : 4))
 export default defineConfig({
   testDir: 'apps/storybook/src',
   testMatch: ['**/*.e2e.ts'],
@@ -63,6 +63,7 @@ export default defineConfig({
   use: {
     baseURL: storybookUrl,
     trace: 'retain-on-failure',
+    headless: true,
   },
   projects: projects.filter(({ name }) => isEnabled(name)),
   webServer: {
