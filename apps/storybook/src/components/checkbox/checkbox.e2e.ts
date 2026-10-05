@@ -2,6 +2,7 @@ import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 import type { Locator, Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
+import { textSpacingProblems } from '../e2e-text-spacing.ts'
 
 // Contract: packages/react/src/checkbox/checkbox.a11y.md › Keyboard, Focus management and
 // Visual / modes. One test per row, named after it. KvirnUI holds no form state: the Keyboard
@@ -181,6 +182,17 @@ test.describe('Checkbox focus and modes', () => {
     for (const story of ['long-label', 'invalid', 'keyboard']) {
       await openStory(page, story)
       expect(await hasHorizontalScroll(page), story).toBe(false)
+    }
+  })
+
+  // The WCAG 1.4.12 overrides (.storybook/preview.css: .kv-story-text-spacing), at 320px.
+  test('text spacing overrides clip nothing at 320px, with the long Finnish label and the error (1.4.12)', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 640 })
+    for (const story of ['long-label', 'invalid']) {
+      await openStory(page, story)
+      expect(await textSpacingProblems(page), story).toEqual([])
     }
   })
 })

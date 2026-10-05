@@ -1,6 +1,6 @@
 # Plan 0013: Form fields: Field, Fieldset, Input, Checkbox, RadioGroup and DateInput
 
-- **Status:** In progress
+- **Status:** Implemented (2026-10-05); manual AT matrix `pending`
 - **Owner:** Maintainer / component-engineer
 - **Created:** 2026-10-02 · **Target:** M1
 - **Related:** design spec [form-fields.md](../design/form-fields.md)
@@ -147,7 +147,7 @@ Each phase is one PR and passes every gate on its own.
 
 - [x] Decisions recorded (Proposed)
 - [x] Design spec `docs/design/form-fields.md` (ux-designer, Draft)
-- [ ] Maintainer approves the plan and the defaults
+- [x] Maintainer approves the plan and the defaults (2026-10-05, Plan 0045: each date field limits its digits, addon text in `text` colour is fine)
 
 ### Phase 1: Field, Fieldset, Label, Description, ErrorMessage, Input (text and number)
 
@@ -197,8 +197,8 @@ The spec's open questions, resolved on 2026-10-02 as defaults the maintainer can
 - [x] Gates once at the end (e2e on Chromium only, by the maintainer's choice during heavy development)
 - [x] accessibility-reviewer APPROVE (no blocking findings). The hover fill no longer covers the group's edge, and the Tab row names both of its tests
 - [ ] Follow-ups before beta:
-  - `InputGroup.Root invalid` and `disabled` change only the box's look: document this, and warn when they disagree with the control.
-  - Move the `click` row out of the Keyboard table.
+  - [x] `InputGroup.Root invalid` and `disabled` change only the box's look: documented in `input-group.md` and the contract, and a dev warning when the Root's own prop disagrees with the control (`input-group-invalid-mismatch`, `input-group-disabled-mismatch`; decision: only an own prop is compared, since without one the Root follows the Field as the Input does). Row in `dev-warnings.mdx`.
+  - [x] The `click` row moved from the Keyboard table to a `## Pointer` section of the contract. Its e2e test stays.
   - Check clicking an Addon on `mobile-safari` in CI.
 
 ### Phase 2: Checkbox, CheckboxGroup, RadioGroup, Radio
@@ -210,7 +210,7 @@ The spec's open questions, resolved on 2026-10-02 as defaults the maintainer can
 - [x] Exports (`packages/react/src/index.ts`) and changeset (`.changeset/checkbox-radio-native-select.md`)
 - [x] Docs pages (`checkbox.md`, `checkbox-group.md`, `radio-group.md` now exist next to the contracts; they are still untracked until committed)
 - [x] Decided 2026-10-04: no automated check (the maintainer approved 383f811 as is). The marks stay reviewed by eye and in the manual AT matrix. Was: restore an automated threshold check that checked/indeterminate differ visibly from unchecked (webkit, firefox, forced colours), tied to the 383f811 gate-change decision
-- [ ] accessibility-reviewer APPROVE
+- [x] accessibility-reviewer APPROVE (re-review 2026-10-04, see below)
 
 ### Phase 2b: NativeSelect (item 2)
 
@@ -226,16 +226,16 @@ Scope: only the native `<select>` wired by Field. The custom `Select`, `Combobox
 
 ### Phase 3: DateInput
 
-- [ ] i18n: `dateInput.day`, `.month`, `.year`
-- [ ] Contract, failing tests, `useDateInput`, `DateInput.*`. Keyboard per the `keyboard` skill: three Tab stops in the locale's order, no auto-advance, arrows never step a value
-- [ ] Stories: `Components/Form/DateInput` (sv, fi, en orders, invalid, date of birth with `autocomplete`, a `Keyboard` story, `parameters.a11yContract`)
-- [ ] `Components/Form/Overview`: a short form with every control
+- [x] i18n: `dateInput.day`, `.month`, `.year`
+- [x] Contract, failing tests, `useDateInput`, `DateInput.*`. Keyboard per the `keyboard` skill: three Tab stops in the locale's order, no auto-advance, arrows never step a value
+- [x] Stories: `Components/Form/DateInput` (sv, fi, en orders, invalid, date of birth with `autocomplete`, a `Keyboard` story, `parameters.a11yContract`)
+- [x] `Components/Form/Overview`: a short form with every control
 - [x] e2e, docs, exports, changeset. Gates 2026-10-04: `vp check` clean; `vp test` date-input, DateInput and Form stories in four themes, keyboard-docs and component-naming green; e2e chromium date-input 36/36, form 13/13; `i18n:check` and `theme:check` pass
 - [x] accessibility-reviewer APPROVE (re-review 2026-10-04)
 
 ### Wrap-up
 
-- [ ] Roadmap rows to `alpha`. Plans index. The manual AT run stays `pending`
+- [x] Roadmap rows to `alpha` (InputGroup; Field stays in progress for its later plans). Plans index. The manual AT run stays `pending`
 
 ## Risks & open questions
 
@@ -269,8 +269,8 @@ Alpha in the next 0.x, one minor per phase. New public API only.
 
 ## Done when
 
-- [ ] All quality gates in AGENTS.md pass (manual AT `pending`)
-- [ ] Plan tasks ticked, `docs/roadmap.md` status updated
+- [x] All quality gates in AGENTS.md pass (manual AT `pending`)
+- [x] Plan tasks ticked, `docs/roadmap.md` status updated
 
 ## Decisions during Phase 3 (DateInput), 2026-10-04
 
@@ -304,7 +304,7 @@ Fixed:
 
 Open follow-ups:
 
-- [ ] 1.4.12 Text Spacing for the choice rows (Checkbox, CheckboxGroup, RadioGroup): add to the WCAG sweep.
+- [x] 1.4.12 Text Spacing for the choice rows (Checkbox, CheckboxGroup, RadioGroup): no generic sweep covers it, so one test per spec (`text spacing overrides clip nothing at 320px`) uses the shared `e2e-text-spacing.ts` helper over the long Finnish and invalid stories. Asserts no clipped text and no sideways scroll, not theme values.
 - [x] Ruled 2026-10-04: keep them (testing skill, standing exception). Was: story `play` functions that repeat component tests, repo-wide (rule 13).
 
 ## Review 2026-10-04 (DateInput)
@@ -334,9 +334,9 @@ Recorded:
 
 Open follow-ups:
 
-- [ ] 1.4.12 Text Spacing for the year box (four characters plus the invalid edge): add to the WCAG sweep.
+- [x] 1.4.12 Text Spacing for the year box (four characters plus the invalid edge): `date-input.e2e.ts › the widest answer stays visible in every box…` fills `88`, `88`, `8888` and checks the valid and both invalid stories.
 - [x] Ruled 2026-10-04: keep them (testing skill, standing exception). Was: story `play` functions that repeat component tests, repo-wide (rule 13). The DateInput stories follow the existing pattern.
-- [ ] DESIGN.md: a DateInput line next to the InputGroup text and `kv-date-input`, `kv-date-input-day`, `-month` and `-year` in the class list (spec §6.14 has the wording).
+- [x] DESIGN.md: a DateInput line next to the InputGroup text and `kv-date-input`, `kv-date-input-day`, `-month` and `-year` in the class list (spec §6.14 has the wording).
 - [ ] Research question for the AT run: an invalid box is not linked to the group's error. Does a screen reader read the error on entering the group when only one box is invalid?
 
 ### Re-review (choice controls), 2026-10-04

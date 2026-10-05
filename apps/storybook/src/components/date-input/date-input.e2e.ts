@@ -2,6 +2,7 @@ import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 import type { Locator, Page } from '@playwright/test'
 import { wcagTags } from '@kvirn-ui/testing'
+import { textSpacingProblems } from '../e2e-text-spacing.ts'
 
 // Contract: packages/react/src/date-input/date-input.a11y.md › Keyboard and Visual / modes. One
 // test per row, named after it. The keys are the browser's: the boxes are three native text
@@ -292,6 +293,27 @@ test.describe('DateInput focus and modes', () => {
     for (const story of ['default', 'finnish', 'invalid-year', 'invalid-date', 'narrow']) {
       await openStory(page, story)
       expect(await hasHorizontalScroll(page), story).toBe(false)
+    }
+  })
+
+  // The WCAG 1.4.12 overrides (.storybook/preview.css: .kv-story-text-spacing). The widest answer
+  // goes in every box first, so a clipped value shows, and the invalid stories have the thicker edge.
+  test('the widest answer stays visible in every box, valid or invalid, with the text spacing overrides (1.4.12)', async ({
+    page,
+  }) => {
+    for (const story of ['default', 'invalid-year', 'invalid-date', 'narrow']) {
+      await openStory(page, story)
+      // The widest digits a part takes: two for the day and month, four for the year.
+      for (const [part, answer] of [
+        ['day', '88'],
+        ['month', '88'],
+        ['year', '8888'],
+      ] as const) {
+        const box = page.locator(`input[name="birth-${part}"]`)
+        await box.fill(answer)
+        await expect(box, `${story} ${part}`).toHaveValue(answer)
+      }
+      expect(await textSpacingProblems(page), story).toEqual([])
     }
   })
 })
