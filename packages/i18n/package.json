@@ -2,58 +2,97 @@
   "name": "@kvirn-ui/i18n",
   "version": "0.0.0",
   "description": "KvirnUI message catalogs for sv, fi, nb, nn, se and en.",
-  "license": "MIT",
+  "homepage": "https://ui.kvirn.com",
+  "license": "AGPL-3.0-only",
+  "author": "KvirnUI <magnus@vike.se> (https://ui.kvirn.com)",
   "files": [
-    "dist"
+    "dist",
+    "LICENSING.md"
   ],
   "type": "module",
   "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
   "exports": {
-    ".": "./src/index.ts",
-    "./en": "./src/locales/en.ts",
-    "./sv": "./src/locales/sv.ts",
-    "./fi": "./src/locales/fi.ts",
-    "./nb": "./src/locales/nb.ts",
-    "./nn": "./src/locales/nn.ts",
-    "./se": "./src/locales/se.ts",
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./en": {
+      "import": {
+        "types": "./dist/locales/en.d.mts",
+        "default": "./dist/locales/en.mjs"
+      },
+      "require": {
+        "types": "./dist/locales/en.d.cts",
+        "default": "./dist/locales/en.cjs"
+      }
+    },
+    "./sv": {
+      "import": {
+        "types": "./dist/locales/sv.d.mts",
+        "default": "./dist/locales/sv.mjs"
+      },
+      "require": {
+        "types": "./dist/locales/sv.d.cts",
+        "default": "./dist/locales/sv.cjs"
+      }
+    },
+    "./fi": {
+      "import": {
+        "types": "./dist/locales/fi.d.mts",
+        "default": "./dist/locales/fi.mjs"
+      },
+      "require": {
+        "types": "./dist/locales/fi.d.cts",
+        "default": "./dist/locales/fi.cjs"
+      }
+    },
+    "./nb": {
+      "import": {
+        "types": "./dist/locales/nb.d.mts",
+        "default": "./dist/locales/nb.mjs"
+      },
+      "require": {
+        "types": "./dist/locales/nb.d.cts",
+        "default": "./dist/locales/nb.cjs"
+      }
+    },
+    "./nn": {
+      "import": {
+        "types": "./dist/locales/nn.d.mts",
+        "default": "./dist/locales/nn.mjs"
+      },
+      "require": {
+        "types": "./dist/locales/nn.d.cts",
+        "default": "./dist/locales/nn.cjs"
+      }
+    },
+    "./se": {
+      "import": {
+        "types": "./dist/locales/se.d.mts",
+        "default": "./dist/locales/se.mjs"
+      },
+      "require": {
+        "types": "./dist/locales/se.d.cts",
+        "default": "./dist/locales/se.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
   "publishConfig": {
-    "exports": {
-      ".": {
-        "types": "./dist/index.d.mts",
-        "import": "./dist/index.mjs"
-      },
-      "./en": {
-        "types": "./dist/locales/en.d.mts",
-        "import": "./dist/locales/en.mjs"
-      },
-      "./sv": {
-        "types": "./dist/locales/sv.d.mts",
-        "import": "./dist/locales/sv.mjs"
-      },
-      "./fi": {
-        "types": "./dist/locales/fi.d.mts",
-        "import": "./dist/locales/fi.mjs"
-      },
-      "./nb": {
-        "types": "./dist/locales/nb.d.mts",
-        "import": "./dist/locales/nb.mjs"
-      },
-      "./nn": {
-        "types": "./dist/locales/nn.d.mts",
-        "import": "./dist/locales/nn.mjs"
-      },
-      "./se": {
-        "types": "./dist/locales/se.d.mts",
-        "import": "./dist/locales/se.mjs"
-      },
-      "./package.json": "./package.json"
-    },
     "access": "public"
   },
   "scripts": {
-    "build": "vp pack"
+    "build": "vp pack",
+    "dev": "vp pack --watch"
   },
   "devDependencies": {
     "vite-plus": "catalog:"

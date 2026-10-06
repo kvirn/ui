@@ -2,33 +2,47 @@
   "name": "@kvirn-ui/react",
   "version": "0.0.0",
   "description": "Headless, accessible React hooks and components for KvirnUI.",
-  "license": "MIT",
+  "homepage": "https://ui.kvirn.com",
+  "license": "AGPL-3.0-only",
+  "author": "KvirnUI <magnus@vike.se> (https://ui.kvirn.com)",
   "files": [
-    "dist"
+    "dist",
+    "LICENSING.md"
   ],
   "type": "module",
   "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
   "exports": {
-    ".": "./src/index.ts",
-    "./internal": "./src/internal.ts",
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./internal": {
+      "import": {
+        "types": "./dist/internal.d.mts",
+        "default": "./dist/internal.mjs"
+      },
+      "require": {
+        "types": "./dist/internal.d.cts",
+        "default": "./dist/internal.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
   "publishConfig": {
-    "exports": {
-      ".": {
-        "types": "./dist/index.d.mts",
-        "import": "./dist/index.mjs"
-      },
-      "./internal": {
-        "types": "./dist/internal.d.mts",
-        "import": "./dist/internal.mjs"
-      },
-      "./package.json": "./package.json"
-    },
     "access": "public"
   },
   "scripts": {
-    "build": "vp pack"
+    "build": "vp pack",
+    "dev": "vp pack --watch"
   },
   "dependencies": {
     "@kvirn-ui/core": "workspace:*",
@@ -48,7 +62,6 @@
     "vitest-browser-react": "catalog:"
   },
   "peerDependencies": {
-    "react": ">=19.0.0",
-    "react-dom": ">=19.0.0"
+    "react": ">=19.0.0"
   }
 }

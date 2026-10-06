@@ -9,5 +9,22 @@
     "tooling/raw-colours",
     "apps/storybook/.storybook",
     "apps/storybook/src"
-  ]
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@kvirn-ui/core": ["./packages/core/src/index.ts"],
+      "@kvirn-ui/react": ["./packages/react/src/index.ts"],
+      "@kvirn-ui/rich-text": ["./packages/rich-text/src/index.ts"],
+      "@kvirn-ui/testing": ["./packages/testing/src/index.ts"],
+      "@kvirn-ui/theme": ["./packages/theme/src/index.ts"],
+      "@kvirn-ui/react/internal": ["./packages/react/src/internal.ts"],
+      "@kvirn-ui/i18n": ["./packages/i18n/src/index.ts"],
+      "@kvirn-ui/i18n/en": ["./packages/i18n/src/locales/en.ts"],
+      "@kvirn-ui/i18n/sv": ["./packages/i18n/src/locales/sv.ts"],
+      "@kvirn-ui/i18n/fi": ["./packages/i18n/src/locales/fi.ts"],
+      "@kvirn-ui/i18n/nb": ["./packages/i18n/src/locales/nb.ts"],
+      "@kvirn-ui/i18n/nn": ["./packages/i18n/src/locales/nn.ts"],
+      "@kvirn-ui/i18n/se": ["./packages/i18n/src/locales/se.ts"]
+    }
+  }
 }

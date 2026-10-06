@@ -1,6 +1,7 @@
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
 import { defineConfig } from 'vite-plus'
 import { playwright } from 'vite-plus/test/browser-playwright'
+import { workspaceSourceAlias } from './tooling/vite-preset/workspace-source.ts'
 
 // Only core/src/store/ may import @tanstack/store, and core never imports React.
 const coreRestrictedImports = [
@@ -78,7 +79,6 @@ const jsxA11yRules = Object.fromEntries(
     'no-noninteractive-element-interactions',
     'no-noninteractive-element-to-interactive-role',
     'no-noninteractive-tabindex',
-    'no-redundant-roles',
     'no-static-element-interactions',
     'prefer-tag-over-role',
     'role-has-required-aria-props',
@@ -88,6 +88,10 @@ const jsxA11yRules = Object.fromEntries(
   ].map((rule) => [`jsx-a11y/${rule}`, 'error' as const]),
 )
 
+// The one approved exception (2026-10-06): WebKit and VoiceOver drop the list role from a `ul` with
+// `list-style: none`, so `role="list"` isn't redundant there (WCAG 1.3.1). No other element/role pair.
+const noRedundantRoles: ['error', { ul: string[] }] = ['error', { ul: ['list'] }]
+
 // Workers per Vitest project. There are six projects and four of them start Chrome, each with its
 // own pool. The default is a worker per core, which on a 28-thread machine is dozens of Chrome
 // pages at once and makes the timing-based tests flaky (announcement throttles, 15s timeouts). A
@@ -95,12 +99,16 @@ const jsxA11yRules = Object.fromEntries(
 // `VITEST_MAX_WORKERS=4 vp test run <files>`.
 const maxWorkers = Number(process.env['VITEST_MAX_WORKERS'] ?? 2)
 
+// Packages export their built `dist`; tests and stories run on the source.
+const resolve = { alias: workspaceSourceAlias() }
+
 /**
  * One Vitest project of Storybook stories. Run them one per `vp test run` (`vp run test`): several
  * `storybookTest()` servers in one process make story files fail to load at random. `env` sets the preview's initial Mode and Contrast
  * globals (apps/storybook/.storybook/preview.tsx), so every story starts in that theme.
  */
 const storybookProject = (name: string, mode: 'light' | 'dark', contrast: 'standard' | 'more') => ({
+  resolve,
   plugins: [storybookTest({ configDir: 'apps/storybook/.storybook' })],
   test: {
     name,
@@ -129,6 +137,7 @@ export default defineConfig({
     options: { typeAware: true, typeCheck: true },
     rules: {
       ...jsxA11yRules,
+      'jsx-a11y/no-redundant-roles': noRedundantRoles,
       'vite-plus/prefer-vite-plus-imports': 'error',
       'react/iframe-missing-sandbox': 'error',
       'no-restricted-imports': [
@@ -211,21 +220,26 @@ export default defineConfig({
     maxWorkers,
     projects: [
       {
+        resolve,
         test: {
           name: 'node',
           maxWorkers,
           environment: 'node',
-          include: ['packages/{core,i18n,theme}/src/**/*.test.ts', 'tooling/**/*.test.ts'],
+          include: [
+            'packages/{core,i18n,theme}/src/**/*.test.ts',
+            'tooling/**/*.test.ts',
+            'apps/docs/**/*.test.ts',
+          ],
         },
       },
       {
+        resolve,
         test: {
           name: 'browser',
           maxWorkers,
           include: [
             'packages/{react,testing,rich-text}/src/**/*.test.{ts,tsx}',
-            // The docs site shell is built on KvirnUI and tested like a component.
-            'apps/docs/components/**/*.test.tsx',
+            'apps/docs/**/*.test.tsx',
           ],
           browser: {
             enabled: true,

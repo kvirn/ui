@@ -2,36 +2,43 @@
   "name": "@kvirn-ui/theme",
   "version": "0.0.0",
   "description": "Optional default theme for KvirnUI: one readable theme.css with --kv-* tokens and component styles.",
-  "license": "MIT",
+  "homepage": "https://ui.kvirn.com",
+  "license": "AGPL-3.0-only",
+  "author": "KvirnUI <magnus@vike.se> (https://ui.kvirn.com)",
   "files": [
     "dist",
     "reset.css",
-    "theme.css"
+    "theme.css",
+    "LICENSING.md"
   ],
   "type": "module",
   "sideEffects": [
     "*.css"
   ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
   "exports": {
-    ".": "./src/index.ts",
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
     "./reset.css": "./reset.css",
     "./theme.css": "./theme.css",
     "./package.json": "./package.json"
   },
   "publishConfig": {
-    "exports": {
-      ".": {
-        "types": "./dist/index.d.mts",
-        "import": "./dist/index.mjs"
-      },
-      "./reset.css": "./reset.css",
-      "./theme.css": "./theme.css",
-      "./package.json": "./package.json"
-    },
     "access": "public"
   },
   "scripts": {
-    "build": "vp pack"
+    "build": "vp pack",
+    "dev": "vp pack --watch"
   },
   "devDependencies": {
     "vite-plus": "catalog:"

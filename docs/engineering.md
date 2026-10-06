@@ -12,15 +12,15 @@
 | Versioning          | Changesets                                                                                                                     |
 | CI                  | GitHub Actions (EU-hosted runners preferred)                                                                                   |
 
-Config lives in the root `vite.config.ts` (fmt, lint, test projects). Each package's `vite.config.ts` only adds `pack`, from `tooling/vite-preset/pack.ts`. The Next.js docs site keeps its own build (`next build`, run by `vp run build`; `vp run docs` starts its dev server), and Storybook uses the Vite builder. Don't use ESLint or Prettier.
+Config lives in the root `vite.config.ts` (fmt, lint, test projects). Each package's `vite.config.ts` only adds `pack`, from `tooling/vite-preset/pack.ts`. The Next.js docs site keeps its own build (`next build`, run by `vp run build` after the packages it depends on; `vp run docs` starts its dev server). It reads the packages' built `dist` through `exports`, as an adopter's app does, so build the packages first (`vp run build`), and Storybook uses the Vite builder. Don't use ESLint or Prettier.
 
 - **pnpm:** `pnpm-workspace.yaml` catalogs pin every version, in strict mode, and exact pins are the default. pnpm itself comes from `devEngines` in the root `package.json`. `dedupePeers: true` keeps one Vitest copy for Vite+ and Storybook. `allowBuilds` lists only `esbuild`: a dependency that runs install scripts needs supply-chain review. Storybook's optional `vite-plus` peer is allowed at 1.0.
 - **Type checking** runs inside `vp check` (tsgolint, TypeScript 7), not as a separate `tsc` step.
 - **Tests import from `vite-plus/test`**, and browser APIs from `vite-plus/test/browser`, never from `vitest` directly.
-- **Source-first exports.** A package's `exports` point to `src/*.ts`, so the workspace needs no build to run tests and Storybook. `publishConfig.exports` point to `dist`, and `vp pack` doesn't rewrite `exports`.
-- **TypeScript:** the library keeps `exactOptionalPropertyTypes` on (`tooling/tsconfig/base.json`). `apps/docs/tsconfig.json` sets it to `false` for now, and uses `jsx: react-jsx`.
+- **Dist exports.** A package's `exports` point to its built `dist` (`import` and `require`, each with its own types), the same as the published package, with no `publishConfig` swap. Storybook and Vitest alias `@kvirn-ui/*` to `src` (`tooling/vite-preset/workspace-source.ts`, derived from `exports`) and the root `tsconfig.json` has matching `paths`, so they need no build. The docs site gets neither: it is the consumer.
+- **TypeScript:** the library keeps `exactOptionalPropertyTypes` on (`tooling/tsconfig/base.json`). `apps/docs` keeps it on too.
 - **Lint boundaries** (root `vite.config.ts`):
-  - All 36 jsx-a11y rules in Oxlint, plus `react/iframe-missing-sandbox`, are errors. Turning one off needs the maintainer's approval.
+  - All 36 jsx-a11y rules in Oxlint, plus `react/iframe-missing-sandbox`, are errors. Turning one off needs the maintainer's approval. The one exception, approved 2026-10-06: `no-redundant-roles` allows `role="list"` on `ul` (and no other element/role pair), because Safari and VoiceOver drop the list role when `list-style: none` removes the markers (1.3.1).
   - `@tanstack/store` is importable only in `core/src/store/`, `@tanstack/virtual-core` only in `core/src/virtual/` and `@tanstack/table-core` only in `core/src/table/`.
   - `prosemirror-*` is importable nowhere: ProseMirror comes only through `@tiptap/pm/*`, so the editor has one copy of it. `@tiptap/*` is importable only in `packages/rich-text` and `apps/storybook`. Tiptap is a peer and a pinned dev dependency of `@kvirn-ui/rich-text`, so `@kvirn-ui/react` and `core` contain no Tiptap code.
   - `core` imports no React and uses no `window`, `document`, `navigator`, `localStorage`, `sessionStorage` or `matchMedia` outside `core/src/env/`.
@@ -56,7 +56,7 @@ Stories live in the Storybook app, so the packages ship no Storybook files and n
 Vitest projects in the root `vite.config.ts`:
 
 - `node`: core, i18n, theme and tooling tests.
-- `browser`: react and testing tests, plus the docs-site components (`apps/docs/components/**/*.test.tsx`), in Chromium. The docs shell is built on KvirnUI and tested like a component, and takes `pathname` as a prop.
+- `browser`: react, testing and rich-text tests, in Chromium. `apps/docs` has no tests: it is read-only documentation built from the components, and every component is tested in its own package and in Storybook.
 - `storybook`, `storybook-dark`, `storybook-light-contrast` and `storybook-dark-contrast`: every story, once per theme, through `addon-vitest`. The a11y addon runs with `test: 'error'` and the WCAG 2.2 AA tags, so axe runs in `vp test run`.
 
 The whole tree runs through `vp run test`, which runs the four Storybook projects one at a time. Each `storybookTest()` project starts its own Vite server, and two or more in one Vitest process make random story files fail with `Failed to fetch dynamically imported module` (a single project is stable). Scoped runs of a stories file name one project: `vp test run --project storybook <file>`.

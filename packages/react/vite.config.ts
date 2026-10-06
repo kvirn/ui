@@ -10,5 +10,11 @@ export default defineConfig({
     // Bundling drops module-level directives. Every export is client code (hooks, context),
     // so the whole entry is marked for React Server Components.
     banner: { js: "'use client'" },
+    // The banner restores the directive on every output file, so rolldown's per-source-file warning is noise.
+    inputOptions: {
+      onLog(level, log, handler) {
+        if (log.code !== 'MODULE_LEVEL_DIRECTIVE') handler(level, log)
+      },
+    },
   },
 })

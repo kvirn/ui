@@ -2,24 +2,32 @@
   "name": "@kvirn-ui/rich-text",
   "version": "0.0.0",
   "description": "An accessible rich text editor for KvirnUI, built on Tiptap.",
-  "license": "MIT",
+  "homepage": "https://ui.kvirn.com",
+  "license": "AGPL-3.0-only",
+  "author": "KvirnUI <magnus@vike.se> (https://ui.kvirn.com)",
   "files": [
-    "dist"
+    "dist",
+    "LICENSING.md"
   ],
   "type": "module",
   "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
   "exports": {
-    ".": "./src/index.ts",
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
   "publishConfig": {
-    "exports": {
-      ".": {
-        "types": "./dist/index.d.mts",
-        "import": "./dist/index.mjs"
-      },
-      "./package.json": "./package.json"
-    },
     "access": "public"
   },
   "scripts": {
