@@ -25,6 +25,7 @@
       "Bash(git branch*)",
       "Bash(git merge*)",
       "Bash(git add*)",
+      "Bash(git branch --show-current*)",
       "Bash(git commit*)",
       "Bash(pnpm add*)",
       "Bash(git worktree remove*)",

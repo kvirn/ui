@@ -17,12 +17,12 @@
 
 ## 2. Prior art
 
-| Source | Reuse | Change and why |
-| --- | --- | --- |
-| APG [Dialog (Modal)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/), [Alert Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog/) | Focus trap, inert background, Escape, return focus; the least destructive action first for irreversible steps; a static start (the title) when content is long | – |
-| HTML `<dialog>.showModal()` | Top layer, `::backdrop`, inert page, `cancel` on Escape | No z-index tokens needed |
-| HMRC [service timeout](https://design.tax.service.gov.uk/hmrc-design-patterns/service-timeout), DWP [manage a session timeout](https://design-system.dwp.gov.uk/patterns/manage-a-session-timeout) | Warn 2 minutes ahead; minutes, then 20-second steps in the last minute, shown and announced politely; Escape closes; a timeout page after expiry | We add the clock time and say the answers are kept |
-| KvirnUI Alert (`alert.md` §6.3, §7.5), Card footer (`card.md` §6.4) | Actions: start-aligned, primary first, a column below 40rem; the quiet close button | The Close sits after the Title in the DOM (§7) |
+| Source                                                                                                                                                                                             | Reuse                                                                                                                                                          | Change and why                                     |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| APG [Dialog (Modal)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/), [Alert Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog/)                                                | Focus trap, inert background, Escape, return focus; the least destructive action first for irreversible steps; a static start (the title) when content is long | –                                                  |
+| HTML `<dialog>.showModal()`                                                                                                                                                                        | Top layer, `::backdrop`, inert page, `cancel` on Escape                                                                                                        | No z-index tokens needed                           |
+| HMRC [service timeout](https://design.tax.service.gov.uk/hmrc-design-patterns/service-timeout), DWP [manage a session timeout](https://design-system.dwp.gov.uk/patterns/manage-a-session-timeout) | Warn 2 minutes ahead; minutes, then 20-second steps in the last minute, shown and announced politely; Escape closes; a timeout page after expiry               | We add the clock time and say the answers are kept |
+| KvirnUI Alert (`alert.md` §6.3, §7.5), Card footer (`card.md` §6.4)                                                                                                                                | Actions: start-aligned, primary first, a column below 40rem; the quiet close button                                                                            | The Close sits after the Title in the DOM (§7)     |
 
 ## 3. Flow
 
@@ -45,22 +45,22 @@ flowchart TD
 
 Component strings (`@kvirn-ui/i18n`, all six locales, overridable per provider and instance):
 
-| Key | en | sv | fi |
-| --- | --- | --- | --- |
+| Key            | en    | sv    | fi    |
+| -------------- | ----- | ----- | ----- |
 | `dialog.close` | Close | Stäng | Sulje |
 
 Example strings (the block's or the app's keys, not the component's). Length check: `fi` is the longest.
 
-| Key | en | sv | fi |
-| --- | --- | --- | --- |
-| `sessionTimeout.title` | Do you want to stay signed in? | Vill du fortsätta vara inloggad? | Haluatko pysyä kirjautuneena? |
-| `sessionTimeout.description` | For your security, we will sign you out in {minutes} at {time}. Your answers are saved. | Av säkerhetsskäl loggar vi ut dig om {minutes}, kl. {time}. Dina svar är sparade. | Tietoturvasi vuoksi kirjaamme sinut ulos {minutes} kuluttua, klo {time}. Vastauksesi on tallennettu. |
-| `sessionTimeout.stay` | Stay signed in | Fortsätt vara inloggad | Jatka kirjautuneena |
-| `sessionTimeout.signOut` | Sign out | Logga ut | Kirjaudu ulos |
-| `sessionTimeout.remaining` (live) | {minutes} left. | {minutes} kvar. | {minutes} jäljellä. |
-| `deleteDraft.title` | Delete the draft application? | Vill du ta bort utkastet till ansökan? | Haluatko poistaa hakemusluonnoksen? |
-| `deleteDraft.description` | You can't undo this. Your answers will be deleted. | Det går inte att ångra. Dina svar tas bort. | Tätä ei voi perua. Vastauksesi poistetaan. |
-| `deleteDraft.confirm` / `.keep` | Delete draft / Keep draft | Ta bort utkastet / Behåll utkastet | Poista luonnos / Säilytä luonnos |
+| Key                               | en                                                                                      | sv                                                                                | fi                                                                                                   |
+| --------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `sessionTimeout.title`            | Do you want to stay signed in?                                                          | Vill du fortsätta vara inloggad?                                                  | Haluatko pysyä kirjautuneena?                                                                        |
+| `sessionTimeout.description`      | For your security, we will sign you out in {minutes} at {time}. Your answers are saved. | Av säkerhetsskäl loggar vi ut dig om {minutes}, kl. {time}. Dina svar är sparade. | Tietoturvasi vuoksi kirjaamme sinut ulos {minutes} kuluttua, klo {time}. Vastauksesi on tallennettu. |
+| `sessionTimeout.stay`             | Stay signed in                                                                          | Fortsätt vara inloggad                                                            | Jatka kirjautuneena                                                                                  |
+| `sessionTimeout.signOut`          | Sign out                                                                                | Logga ut                                                                          | Kirjaudu ulos                                                                                        |
+| `sessionTimeout.remaining` (live) | {minutes} left.                                                                         | {minutes} kvar.                                                                   | {minutes} jäljellä.                                                                                  |
+| `deleteDraft.title`               | Delete the draft application?                                                           | Vill du ta bort utkastet till ansökan?                                            | Haluatko poistaa hakemusluonnoksen?                                                                  |
+| `deleteDraft.description`         | You can't undo this. Your answers will be deleted.                                      | Det går inte att ångra. Dina svar tas bort.                                       | Tätä ei voi perua. Vastauksesi poistetaan.                                                           |
+| `deleteDraft.confirm` / `.keep`   | Delete draft / Keep draft                                                               | Ta bort utkastet / Behåll utkastet                                                | Poista luonnos / Säilytä luonnos                                                                     |
 
 `{minutes}` is formatted with `Intl` and plural rules ("2 minuter", "1 minut", "40 sekunder"); `{time}` with `Intl.DateTimeFormat` (`14:32`).
 
@@ -83,11 +83,11 @@ Example strings (the block's or the app's keys, not the component's). Length che
 </dialog>
 ```
 
-| Viewport | Layout |
-| --- | --- |
+| Viewport                    | Layout                                                                                                                                                                                                             |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | < 40rem (phones, 400% zoom) | **Sheet:** full inline size at the block-end edge, `xl` radius on the top corners only, padding `space-4`. Height from content, `max-block-size: 100dvh` (no fixed height). Actions a column of full-width buttons |
-| ≥ 40rem | Centred, `inline-size: min(100% - 2 × space-6, <size>)`, `max-block-size: calc(100dvh - 2 × space-6)`, `xl` radius, padding `space-6`. Actions a wrapping row |
-| ≥ 64rem in `kv-compact` | Padding `space-4`; buttons and Close 32px |
+| ≥ 40rem                     | Centred, `inline-size: min(100% - 2 × space-6, <size>)`, `max-block-size: calc(100dvh - 2 × space-6)`, `xl` radius, padding `space-6`. Actions a wrapping row                                                      |
+| ≥ 64rem in `kv-compact`     | Padding `space-4`; buttons and Close 32px                                                                                                                                                                          |
 
 **Sizes:** default `40rem` (the form measure, reused); `kv-dialog--small` for AlertDialog, proposed `30rem` (D2).
 
@@ -95,34 +95,34 @@ Example strings (the block's or the app's keys, not the component's). Length che
 
 ## 6. Visual specification
 
-| Part | Tokens and style |
-| --- | --- |
-| Popup `kv-dialog` | Level 4: `surface-raised`, 1px `border-subtle`, `--kv-shadow-dialog` (none in dark and contrast themes), `--kv-radius-xl`, `color: text`. Grid: Title and Close share row 1 (`minmax(0, 1fr) auto`), every other part spans both columns. `overflow-wrap: break-word` |
-| `::backdrop` | `--kv-color-backdrop` (**new, D1**). Never blurs the page (no `backdrop-filter`: a glass effect) |
-| Title `kv-dialog-title` | `h2` (overridable with `render`). `heading-2` role (1.375rem, 1.25rem below 40rem), `--kv-font-family-heading`, `heading` colour, margin 0, hyphenation as `kv-heading` |
-| Description | `body`, `text`, `margin-block-start: space-2`, `max-inline-size: var(--kv-prose-measure)` |
-| Body | `body`, `text`, `margin-block-start: space-4`; first and last child margins 0; `kv-prose` inside turns prose on. May hold an Alert |
-| Actions | The button-group layout built in (as `kv-alert-actions`): `gap: space-3`, start-aligned, primary first in the DOM, a full-width column below 40rem. `margin-block-start: space-6` |
+| Part                    | Tokens and style                                                                                                                                                                                                                                                                               |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Popup `kv-dialog`       | Level 4: `surface-raised`, 1px `border-subtle`, `--kv-shadow-dialog` (none in dark and contrast themes), `--kv-radius-xl`, `color: text`. Grid: Title and Close share row 1 (`minmax(0, 1fr) auto`), every other part spans both columns. `overflow-wrap: break-word`                          |
+| `::backdrop`            | `--kv-color-backdrop` (**new, D1**). Never blurs the page (no `backdrop-filter`: a glass effect)                                                                                                                                                                                               |
+| Title `kv-dialog-title` | `h2` (overridable with `render`). `heading-2` role (1.375rem, 1.25rem below 40rem), `--kv-font-family-heading`, `heading` colour, margin 0, hyphenation as `kv-heading`                                                                                                                        |
+| Description             | `body`, `text`, `margin-block-start: space-2`, `max-inline-size: var(--kv-prose-measure)`                                                                                                                                                                                                      |
+| Body                    | `body`, `text`, `margin-block-start: space-4`; first and last child margins 0; `kv-prose` inside turns prose on. May hold an Alert                                                                                                                                                             |
+| Actions                 | The button-group layout built in (as `kv-alert-actions`): `gap: space-3`, start-aligned, primary first in the DOM, a full-width column below 40rem. `margin-block-start: space-6`                                                                                                              |
 | Close `kv-dialog-close` | As `kv-alert-close`: quiet icon button, `close` icon (decorative), `--kv-control-min-block-size` square (44px; 32px compact from 64rem), `md` radius, transparent, `text`. Hover `surface` (the dialog is already `surface-raised`). Pulled into the padding so row 1 keeps the title's height |
-| Destructive | No class and no red surface (DESIGN.md: status `-subtle` only in alerts). The confirming button is `kv-button--danger`; the safe one is a plain `kv-button`. The title's words carry the risk, never colour alone |
+| Destructive             | No class and no red surface (DESIGN.md: status `-subtle` only in alerts). The confirming button is `kv-button--danger`; the safe one is a plain `kv-button`. The title's words carry the risk, never colour alone                                                                              |
 
 **Button order and focus.** DOM order = visual order = Tab order, primary first (as Card and Alert, so the main action is always in one place).
 
-| Dialog type | Order | Initial focus |
-| --- | --- | --- |
-| Dialog with a field | Body fields, then [Save] [secondary] | The first field |
-| Dialog that is mostly reading | [primary] [secondary] | The Title (`tabindex="-1"`), so the start is read and arrows scroll |
-| AlertDialog, non-destructive (B25) | [Stay signed in] [Sign out] | **The primary action** |
-| AlertDialog, destructive | [Delete draft] (danger) [Keep draft] | **The safe action** ("Keep draft"): an accidental Enter changes nothing |
+| Dialog type                        | Order                                | Initial focus                                                           |
+| ---------------------------------- | ------------------------------------ | ----------------------------------------------------------------------- |
+| Dialog with a field                | Body fields, then [Save] [secondary] | The first field                                                         |
+| Dialog that is mostly reading      | [primary] [secondary]                | The Title (`tabindex="-1"`), so the start is read and arrows scroll     |
+| AlertDialog, non-destructive (B25) | [Stay signed in] [Sign out]          | **The primary action**                                                  |
+| AlertDialog, destructive           | [Delete draft] (danger) [Keep draft] | **The safe action** ("Keep draft"): an accidental Enter changes nothing |
 
 ### States
 
-| Part | Closed | Open | Hover | Focus-visible | Active | Disabled | Busy / failed |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Popup | not rendered (`display: none`) | `[open]`, `data-open` | – | – (never focused itself) | – | – | Failed: an `Alert.Danger` at the top of Body |
-| Title | – | as §6 | – | 2px `focus-ring`, 2px offset, only after a keyboard open | – | – | – |
-| Close | – | as §6 | `surface` fill | ring as Title | no fill | `text-muted`, not-allowed | – |
-| Actions | – | Button states (`button-depth.md`) | Button | Button ring | Button | Button | Busy: open question Q2 |
+| Part    | Closed                         | Open                              | Hover          | Focus-visible                                            | Active  | Disabled                  | Busy / failed                                |
+| ------- | ------------------------------ | --------------------------------- | -------------- | -------------------------------------------------------- | ------- | ------------------------- | -------------------------------------------- |
+| Popup   | not rendered (`display: none`) | `[open]`, `data-open`             | –              | – (never focused itself)                                 | –       | –                         | Failed: an `Alert.Danger` at the top of Body |
+| Title   | –                              | as §6                             | –              | 2px `focus-ring`, 2px offset, only after a keyboard open | –       | –                         | –                                            |
+| Close   | –                              | as §6                             | `surface` fill | ring as Title                                            | no fill | `text-muted`, not-allowed | –                                            |
+| Actions | –                              | Button states (`button-depth.md`) | Button         | Button ring                                              | Button  | Button                    | Busy: open question Q2                       |
 
 ### Modes
 
@@ -135,8 +135,8 @@ Example strings (the block's or the app's keys, not the component's). Length che
 
 ### New or changed tokens (decisions for the maintainer)
 
-| Token | Proposed value per theme | Measured (scratch, `contrast.ts` formula, 2026-10-06) |
-| --- | --- | --- |
+| Token                      | Proposed value per theme                                                                                                             | Measured (scratch, `contrast.ts` formula, 2026-10-06)                                                                                                                                                                                               |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--kv-color-backdrop` (D1) | light `color-mix(in srgb, var(--kv-neutral-950) 50%, transparent)`; light-contrast 60%; dark and dark-contrast `var(--kv-black)` 70% | `surface-raised` against the backdrop over `canvas`: light 3.55, light-contrast 4.97, dark 1.19 (over `surface-raised` pages 1.14). Decorative: the dialog's text pairs are unchanged because the Popup is opaque. Proposed: no `theme:check` floor |
 
 The orchestrator should run `vp run theme:check` when D1 is implemented. Without D1 there is no way to dim the page in tokens, and the light theme would rely on the shadow alone.
