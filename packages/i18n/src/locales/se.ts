@@ -318,6 +318,26 @@ export const se = {
     copied: 'Copied',
     failed: 'Could not copy. Select the text and copy it yourself.',
   },
+  readAloud: {
+    label: 'Guldal teavstta',
+    play: 'Guldal',
+    playSelection: 'Guldal merkejuvvon teavstta',
+    pause: 'Bisut',
+    previous: 'Ovddit cealkka',
+    next: 'Boahtte cealkka',
+    stop: 'Heaitte',
+    rate: 'Johtolat',
+    voice: 'Jietna',
+    rateOption: ({ rate }, format) => `${format.number(rate)}×`,
+    position: ({ current, total }, format) =>
+      `Cealkka ${format.number(current)}/${format.number(total)}`,
+    positionPaused: ({ current, total }, format) =>
+      `Bisuhuvvon cealkagis ${format.number(current)}/${format.number(total)}`,
+    noVoice: ({ language }) =>
+      `Dán reaidduin ii leat jietna gillii ${language}. Don sáhtát lasihit jietnasii reaiddu hupmanbeaivvádagain.`,
+    speechError: 'Teavstta ii sáhttán lohkat jienain. Geahččal fas.',
+    unsupported: 'Dát bláđđi ii sáhte lohkat teavstta jienain.',
+  },
   errorSummary: { title: 'There is a problem', titlePrefix: 'Error:' },
   summaryList: { change: 'Change' },
   toast: { regionLabel: 'Dieđáhusat' },
@@ -387,12 +407,6 @@ export const se = {
           ? `Dates from ${min}`
           : `Dates up to ${max}`,
     selected: ({ date }) => `${date} selected`,
-  },
-  datePicker: {
-    trigger: 'Choose date',
-    title: 'Choose a date',
-  },
-} satisfies KvirnMessages
     rangeStart: 'start date',
     rangeEnd: 'end date',
     rangeStartAndEnd: 'start and end date',
@@ -416,7 +430,13 @@ export const se = {
     rangeEndSelected: ({ date }) => `End date ${date} selected.`,
     rangeEndCleared: 'End date cleared.',
     visibleMonths: ({ first, last }) => `${first} and ${last}`,
+  },
+  datePicker: {
+    trigger: 'Choose date',
+    title: 'Choose a date',
+  },
   dateRangePicker: {
     trigger: 'Choose dates',
     title: 'Choose the dates',
   },
+} satisfies KvirnMessages

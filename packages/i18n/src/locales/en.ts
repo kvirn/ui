@@ -280,6 +280,26 @@ export const en = {
     copied: 'Copied',
     failed: 'Could not copy. Select the text and copy it yourself.',
   },
+  readAloud: {
+    label: 'Listen to this text',
+    play: 'Listen',
+    playSelection: 'Listen to selected text',
+    pause: 'Pause',
+    previous: 'Previous sentence',
+    next: 'Next sentence',
+    stop: 'Stop',
+    rate: 'Speed',
+    voice: 'Voice',
+    rateOption: ({ rate }, format) => `${format.number(rate)}×`,
+    position: ({ current, total }, format) =>
+      `Sentence ${format.number(current)} of ${format.number(total)}`,
+    positionPaused: ({ current, total }, format) =>
+      `Paused at sentence ${format.number(current)} of ${format.number(total)}`,
+    noVoice: ({ language }) =>
+      `This device has no voice for ${language}. You can add one in the device’s speech settings.`,
+    speechError: 'The text could not be read aloud. Try again.',
+    unsupported: 'This browser can’t read text aloud.',
+  },
   errorSummary: { title: 'There is a problem', titlePrefix: 'Error:' },
   summaryList: { change: 'Change' },
   toast: { regionLabel: 'Messages' },
@@ -349,12 +369,6 @@ export const en = {
           ? `Dates from ${min}`
           : `Dates up to ${max}`,
     selected: ({ date }) => `${date} selected`,
-  },
-  datePicker: {
-    trigger: 'Choose date',
-    title: 'Choose a date',
-  },
-} satisfies KvirnMessages
     rangeStart: 'start date',
     rangeEnd: 'end date',
     rangeStartAndEnd: 'start and end date',
@@ -378,7 +392,13 @@ export const en = {
     rangeEndSelected: ({ date }) => `End date ${date} selected.`,
     rangeEndCleared: 'End date cleared.',
     visibleMonths: ({ first, last }) => `${first} and ${last}`,
+  },
+  datePicker: {
+    trigger: 'Choose date',
+    title: 'Choose a date',
+  },
   dateRangePicker: {
     trigger: 'Choose dates',
     title: 'Choose the dates',
   },
+} satisfies KvirnMessages

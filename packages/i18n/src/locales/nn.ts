@@ -288,6 +288,26 @@ export const nn = {
     copied: 'Kopiert',
     failed: 'Kunne ikkje kopiere. Marker teksten og kopier han sjølv.',
   },
+  readAloud: {
+    label: 'Lytt til teksten',
+    play: 'Lytt',
+    playSelection: 'Lytt til markert tekst',
+    pause: 'Pause',
+    previous: 'Førre setning',
+    next: 'Neste setning',
+    stop: 'Stopp',
+    rate: 'Hastigheit',
+    voice: 'Stemme',
+    rateOption: ({ rate }, format) => `${format.number(rate)}×`,
+    position: ({ current, total }, format) =>
+      `Setning ${format.number(current)} av ${format.number(total)}`,
+    positionPaused: ({ current, total }, format) =>
+      `Pause ved setning ${format.number(current)} av ${format.number(total)}`,
+    noVoice: ({ language }) =>
+      `Denne eininga har inga stemme for ${language}. Du kan leggja til ei i taleinnstillingane på eininga.`,
+    speechError: 'Teksten kunne ikkje lesast opp. Prøv igjen.',
+    unsupported: 'Denne nettlesaren kan ikkje lesa opp tekst.',
+  },
   errorSummary: { title: 'Det er eit problem', titlePrefix: 'Feil:' },
   summaryList: { change: 'Endre' },
   toast: { regionLabel: 'Meldingar' },
@@ -357,12 +377,6 @@ export const nn = {
           ? `Datoar frå ${min}`
           : `Datoar til og med ${max}`,
     selected: ({ date }) => `${date} vald`,
-  },
-  datePicker: {
-    trigger: 'Vel dato',
-    title: 'Vel ein dato',
-  },
-} satisfies KvirnMessages
     rangeStart: 'startdato',
     rangeEnd: 'sluttdato',
     rangeStartAndEnd: 'start- og sluttdato',
@@ -386,7 +400,13 @@ export const nn = {
     rangeEndSelected: ({ date }) => `Sluttdato ${date} vald.`,
     rangeEndCleared: 'Sluttdato fjerna.',
     visibleMonths: ({ first, last }) => `${first} og ${last}`,
+  },
+  datePicker: {
+    trigger: 'Vel dato',
+    title: 'Vel ein dato',
+  },
   dateRangePicker: {
     trigger: 'Vel datoar',
     title: 'Vel datoane',
   },
+} satisfies KvirnMessages

@@ -288,6 +288,26 @@ export const sv = {
     copied: 'Kopierat',
     failed: 'Det gick inte att kopiera. Markera texten och kopiera den själv.',
   },
+  readAloud: {
+    label: 'Lyssna på texten',
+    play: 'Lyssna',
+    playSelection: 'Lyssna på markerad text',
+    pause: 'Pausa',
+    previous: 'Föregående mening',
+    next: 'Nästa mening',
+    stop: 'Stoppa',
+    rate: 'Hastighet',
+    voice: 'Röst',
+    rateOption: ({ rate }, format) => `${format.number(rate)}×`,
+    position: ({ current, total }, format) =>
+      `Mening ${format.number(current)} av ${format.number(total)}`,
+    positionPaused: ({ current, total }, format) =>
+      `Pausad vid mening ${format.number(current)} av ${format.number(total)}`,
+    noVoice: ({ language }) =>
+      `Den här enheten har ingen röst för ${language}. Du kan lägga till en i enhetens talinställningar.`,
+    speechError: 'Texten kunde inte läsas upp. Försök igen.',
+    unsupported: 'Den här webbläsaren kan inte läsa upp text.',
+  },
   errorSummary: { title: 'Det finns ett problem', titlePrefix: 'Fel:' },
   summaryList: { change: 'Ändra' },
   toast: { regionLabel: 'Meddelanden' },
@@ -357,12 +377,6 @@ export const sv = {
           ? `Datum från ${min}`
           : `Datum till och med ${max}`,
     selected: ({ date }) => `${date} vald`,
-  },
-  datePicker: {
-    trigger: 'Välj datum',
-    title: 'Välj ett datum',
-  },
-} satisfies KvirnMessages
     rangeStart: 'startdatum',
     rangeEnd: 'slutdatum',
     rangeStartAndEnd: 'start- och slutdatum',
@@ -386,7 +400,13 @@ export const sv = {
     rangeEndSelected: ({ date }) => `Slutdatum ${date} valt.`,
     rangeEndCleared: 'Slutdatum rensat.',
     visibleMonths: ({ first, last }) => `${first} och ${last}`,
+  },
+  datePicker: {
+    trigger: 'Välj datum',
+    title: 'Välj ett datum',
+  },
   dateRangePicker: {
     trigger: 'Välj datumen',
     title: 'Välj perioden',
   },
+} satisfies KvirnMessages

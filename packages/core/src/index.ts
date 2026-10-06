@@ -408,3 +408,32 @@ export type {
   CalendarState,
   CalendarStore,
 } from './calendar/calendar.ts'
+
+export { collectText } from './read-aloud/collect-text.ts'
+export type { CollectedText } from './read-aloud/collect-text.ts'
+export { createReadAloud, readAloudRates } from './read-aloud/create-read-aloud.ts'
+export type {
+  ReadAloud,
+  ReadAloudActions,
+  ReadAloudError,
+  ReadAloudInput,
+  ReadAloudOptions,
+  ReadAloudRate,
+  ReadAloudSource,
+  ReadAloudState,
+  ReadAloudStatus,
+} from './read-aloud/create-read-aloud.ts'
+export { createSpeechEngine } from './read-aloud/create-speech-engine.ts'
+export type { SpeechEngineOptions } from './read-aloud/create-speech-engine.ts'
+export type {
+  ReadAloudEngine,
+  ReadAloudHandlers,
+  ReadAloudUtterance,
+  ReadAloudVoice,
+} from './read-aloud/read-aloud-engine.ts'
+export { splitSentences } from './read-aloud/split-sentences.ts'
+export type {
+  LanguageRun,
+  SentenceChunk,
+  SplitSentencesOptions,
+} from './read-aloud/split-sentences.ts'

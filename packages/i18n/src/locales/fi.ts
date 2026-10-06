@@ -294,6 +294,26 @@ export const fi = {
     copied: 'Kopioitu',
     failed: 'Kopiointi epäonnistui. Valitse teksti ja kopioi se itse.',
   },
+  readAloud: {
+    label: 'Kuuntele teksti',
+    play: 'Kuuntele',
+    playSelection: 'Kuuntele valittu teksti',
+    pause: 'Tauko',
+    previous: 'Edellinen lause',
+    next: 'Seuraava lause',
+    stop: 'Pysäytä',
+    rate: 'Nopeus',
+    voice: 'Ääni',
+    rateOption: ({ rate }, format) => `${format.number(rate)}×`,
+    position: ({ current, total }, format) =>
+      `Lause ${format.number(current)}/${format.number(total)}`,
+    positionPaused: ({ current, total }, format) =>
+      `Tauolla lauseessa ${format.number(current)}/${format.number(total)}`,
+    noVoice: ({ language }) =>
+      `Tällä laitteella ei ole ääntä kielelle ${language}. Voit lisätä sellaisen laitteen puheasetuksissa.`,
+    speechError: 'Tekstiä ei voitu lukea ääneen. Yritä uudelleen.',
+    unsupported: 'Tämä selain ei voi lukea tekstiä ääneen.',
+  },
   errorSummary: { title: 'Lomakkeessa on virheitä', titlePrefix: 'Virhe:' },
   summaryList: { change: 'Muuta' },
   toast: { regionLabel: 'Ilmoitukset' },
@@ -363,12 +383,6 @@ export const fi = {
           ? `Päivämäärät alkaen ${min}`
           : `Päivämäärät ${max} asti`,
     selected: ({ date }) => `${date} valittu`,
-  },
-  datePicker: {
-    trigger: 'Valitse päivämäärä',
-    title: 'Valitse päivämäärä',
-  },
-} satisfies KvirnMessages
     rangeStart: 'alkupäivä',
     rangeEnd: 'loppupäivä',
     rangeStartAndEnd: 'alku- ja loppupäivä',
@@ -392,7 +406,13 @@ export const fi = {
     rangeEndSelected: ({ date }) => `Loppupäivä ${date} valittu.`,
     rangeEndCleared: 'Loppupäivä tyhjennetty.',
     visibleMonths: ({ first, last }) => `${first} ja ${last}`,
+  },
+  datePicker: {
+    trigger: 'Valitse päivämäärä',
+    title: 'Valitse päivämäärä',
+  },
   dateRangePicker: {
     trigger: 'Valitse päivät',
     title: 'Valitse päivämäärät',
   },
+} satisfies KvirnMessages

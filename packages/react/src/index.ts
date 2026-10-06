@@ -1480,3 +1480,36 @@ export type {
   UseProgressOptions,
   UseProgressResult,
 } from './progress/use-progress.ts'
+export {
+  ReadAloud,
+  ReadAloudNext,
+  ReadAloudPlay,
+  ReadAloudPrevious,
+  ReadAloudRate,
+  ReadAloudRoot,
+  ReadAloudSelectionTrigger,
+  ReadAloudStatus,
+  ReadAloudStop,
+  ReadAloudVoice,
+} from './read-aloud/read-aloud.tsx'
+export type {
+  ReadAloudButtonProps,
+  ReadAloudElementProps,
+  ReadAloudPartState,
+  ReadAloudRootProps,
+  ReadAloudSelectProps,
+  ReadAloudStatusProps,
+} from './read-aloud/read-aloud.tsx'
+export { useReadAloud } from './read-aloud/use-read-aloud.ts'
+export type {
+  ReadAloudButtonPartProps,
+  ReadAloudLabelPartProps,
+  ReadAloudOption,
+  ReadAloudPlayPartProps,
+  ReadAloudRootPartProps,
+  ReadAloudSelectionTriggerPartProps,
+  ReadAloudSelectPartProps,
+  ReadAloudStatusPartProps,
+  UseReadAloudOptions,
+  UseReadAloudResult,
+} from './read-aloud/use-read-aloud.ts'

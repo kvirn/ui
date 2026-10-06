@@ -471,6 +471,35 @@ export interface KvirnMessages {
     /** Announced (assertive) when the browser refused. The component also selects the text. */
     failed: TextMessage
   }
+  readAloud: {
+    /** The accessible name of the player group. Owned by ReadAloud (Plan 0088). */
+    label: TextMessage
+    /** The visible text and name of the button that reads the content. */
+    play: TextMessage
+    /** The same button's name while a selection is captured. */
+    playSelection: TextMessage
+    /** The same button's name while reading. */
+    pause: TextMessage
+    previous: TextMessage
+    next: TextMessage
+    stop: TextMessage
+    /** The label of the speed select. */
+    rate: TextMessage
+    /** The label of the voice select. */
+    voice: TextMessage
+    /** One option of the speed select, for example `1,5×`. */
+    rateOption: MessageFunction<{ rate: number }>
+    /** Visible status text, for example `Mening 3 av 12`. */
+    position: MessageFunction<{ current: number; total: number }>
+    /** Visible status text while paused: where Listen continues. */
+    positionPaused: MessageFunction<{ current: number; total: number }>
+    /** Shown and announced (polite) when no voice matches the content language: names it and the next step. */
+    noVoice: MessageFunction<{ language: string }>
+    /** Announced (polite) when the speech engine failed. */
+    speechError: TextMessage
+    /** Shown (not announced) when the browser has no speech synthesis: no control exists to attempt. */
+    unsupported: TextMessage
+  }
   toast: {
     /** The accessible name of the toast region, a landmark that exists while a toast is shown. Owned by Toast (Plan 0071). */
     regionLabel: TextMessage
@@ -563,20 +592,6 @@ export interface KvirnMessages {
     rangeHint: MessageFunction<{ min: string | undefined; max: string | undefined }>
     /** Announced, polite, after a day was chosen. */
     selected: MessageFunction<{ date: string }>
-  }
-  /** DatePicker (Plan 0084). The month grid's own strings are in `calendar`. */
-  datePicker: {
-    /** The button's visible name, next to the typed date: `Choose date`. */
-    trigger: TextMessage
-    /** The dialog's title. The consumer can replace it with the question: `Choose the date of your visit`. */
-    title: TextMessage
-  }
-}
-
-/** Any subset of namespaces and keys, for provider and `defineMessages` overrides. */
-export type PartialMessages = {
-  [Namespace in keyof KvirnMessages]?: Partial<KvirnMessages[Namespace]>
-}
     /** Range mode name parts of the chosen days. */
     rangeStart: TextMessage
     rangeEnd: TextMessage
@@ -603,6 +618,14 @@ export type PartialMessages = {
     rangeEndCleared: TextMessage
     /** The month buttons' announcement with two months visible: `October 2026 and November 2026`. */
     visibleMonths: MessageFunction<{ first: string; last: string }>
+  }
+  /** DatePicker (Plan 0084). The month grid's own strings are in `calendar`. */
+  datePicker: {
+    /** The button's visible name, next to the typed date: `Choose date`. */
+    trigger: TextMessage
+    /** The dialog's title. The consumer can replace it with the question: `Choose the date of your visit`. */
+    title: TextMessage
+  }
   /** DateRangePicker (Plan 0089). The month grid's own strings, and "{start} to {end} selected", are in `calendar`. */
   dateRangePicker: {
     /** The button's visible name, after both typed dates: `Choose dates`. */
@@ -610,3 +633,9 @@ export type PartialMessages = {
     /** The dialog's title. The consumer can replace it with the question: `Choose the dates of your stay`. */
     title: TextMessage
   }
+}
+
+/** Any subset of namespaces and keys, for provider and `defineMessages` overrides. */
+export type PartialMessages = {
+  [Namespace in keyof KvirnMessages]?: Partial<KvirnMessages[Namespace]>
+}

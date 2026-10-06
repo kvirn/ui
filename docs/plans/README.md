@@ -24,4 +24,4 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0064](0064-docs-code-and-example-frame.md)   | Docs-only CodeBlock and ExampleFrame with a highlighter                      | Approved                                         |
 | [0066](0066-react-compiler-lint-warnings.md)  | React Compiler lint warnings                                                 | Draft                                            |
 | [0080](0080-loading-indicators.md)            | Loading indicators: spinner and animated gradient bar                        | Implemented (engineering check Q7, spec §8 open) |
-| [0089](0089-date-range-picker.md)             | DateRangePicker: two typed dates, one trigger, a range Calendar in a dialog  | In progress                                      |
+| [0088](0088-read-aloud.md)                    | ReadAloud: text to speech player and selection reader (browser engine)       | Approved                                         |

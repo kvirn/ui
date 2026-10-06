@@ -81,6 +81,7 @@
  *  9e. Badge         kv-badge: a status or category in words, by role class
  *  9g. Tag           kv-tag, kv-tag-group: a static or removable chip and the applied-filters row
  *  9h. Stepper       kv-stepper: where the user is in a multi-page form, as one line of text
+ *  9k. Read aloud    kv-read-aloud: a worded player in the flow, its selection trigger and the sentence highlight
  *  9i. Calendar      kv-calendar: a month as a grid of days, with month buttons and a range hint
  *  10. Card
  *  10a. Section          kv-section: a region of the page, elevation level 1
@@ -2195,7 +2196,8 @@
           .kv-radio,
           .kv-switch,
           .kv-slider,
-          .kv-listbox-native
+          .kv-listbox-native,
+          .kv-read-aloud
         ),
         :is(
             .kv-not-prose,
@@ -3363,8 +3365,6 @@
     }
   }
 
-  /* 9j. Date picker ---------------------------------------------------------------------------
-   * <DatePicker.Trigger> is a kv-button with kv-date-picker-trigger, the last item in the
   /* Calendar range mode (design spec docs/design/date-range.md §6). Start and end are the
    * selected look (primary fill) with the corners that face the band squared. Days between are a
    * band: primary-subtle with 1px primary edges at block-start and block-end, drawn by a
@@ -3499,6 +3499,8 @@
     }
   }
 
+  /* 9j. Date picker ---------------------------------------------------------------------------
+   * <DatePicker.Trigger> is a kv-button with kv-date-picker-trigger, the last item in the
    * kv-date-input row (or in kv-date-picker-row, a row that wraps for one masks.date() field and
    * its trigger). It sits at the block end of the row, so it wraps below the boxes at 320px or
    * with large text. <DatePicker.Popup> is a Dialog plus kv-date-picker-popup: as wide as its
@@ -3529,8 +3531,6 @@
     }
   }
 
-  /* 9h. Stepper -------------------------------------------------------------------------------
-   * <Stepper> renders <p class="kv-stepper">: "Step 2 of 5: Your vehicle", directly under the page
   /* 9k. Date range picker ---------------------------------------------------------------------
    * kv-date-range-row holds the From and To fields and the one <DateRangePicker.Trigger> after
    * both: a wrapping row like kv-date-picker-row, at the block end, side by side from 40rem and
@@ -3578,6 +3578,8 @@
     }
   }
 
+  /* 9h. Stepper -------------------------------------------------------------------------------
+   * <Stepper> renders <p class="kv-stepper">: "Step 2 of 5: Your vehicle", directly under the page
    * heading. Plain body text in text, never a bar, dots, a border or a fill, so there is nothing for
    * forced colours to redraw and the words carry it all (1.4.1). No margin: the layout owns the
    * rhythm (a Stack gap between the heading and this, the form's gap after). It wraps and
@@ -3594,6 +3596,110 @@
     font-feature-settings: var(--kv-font-numeric-feature-settings);
     overflow-wrap: break-word;
     hyphens: auto;
+  }
+
+  /* 9k. Read aloud ----------------------------------------------------------------------------
+   * <ReadAloud.Root> renders <div class="kv-read-aloud" role="group">: controls in the flow, no fill,
+   * edge or shadow, never sticky. A wrapping row of worded buttons (kv-button kv-read-aloud-button:
+   * the secondary Button, never primary), then each select under its kv-read-aloud-label
+   * (kv-read-aloud-select takes the native listbox look), then kv-read-aloud-status as the last row.
+   * Below 40rem a select is a full row; from 40rem it is as wide as its content. Play keeps one
+   * width for its labels, so a second press never lands on Previous. Status reserves one line, in
+   * text colour, with figures that don't shift. An error's icon is the decorative warning, in text
+   * colour. Logical properties only, so right to left needs nothing. The selection trigger is a
+   * secondary Button in the top layer with the popup shadow. The sentence being read is
+   * ::highlight(kv-read-aloud): a solid primary fill with on-primary text, the same pairs as the
+   * current navigation item (1.4.11, 1.4.1: the status says the position in words); in forced
+   * colours Highlight and HighlightText. Zero specificity, so your own CSS wins. Design spec:
+   * docs/design/read-aloud.md. */
+  :where(.kv-read-aloud) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--kv-space-3) var(--kv-space-2);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  :where(.kv-read-aloud[hidden]) {
+    display: none;
+  }
+
+  /* Every button has the same minimum width, so Play's label change (Listen, Pause) doesn't move
+   * its neighbours. */
+  :where(.kv-read-aloud-button) {
+    min-inline-size: 8rem;
+  }
+
+  :where(.kv-read-aloud-label) {
+    display: block;
+    margin-block-end: var(--kv-space-1);
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-label-size);
+    font-weight: var(--kv-font-label-weight);
+    line-height: var(--kv-font-label-line-height);
+  }
+
+  :where(.kv-read-aloud-select) {
+    inline-size: 100%;
+  }
+
+  :where(.kv-read-aloud-status) {
+    flex-basis: 100%;
+    min-block-size: 1lh;
+    margin: 0;
+    color: var(--kv-color-text);
+    font-feature-settings: var(--kv-font-numeric-feature-settings);
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  :where(.kv-read-aloud-status[data-error]) {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--kv-space-2);
+  }
+
+  :where(.kv-read-aloud-status > svg) {
+    flex: none;
+    color: currentColor;
+  }
+
+  :where(.kv-read-aloud-selection-trigger) {
+    box-sizing: border-box;
+    max-inline-size: min(20rem, calc(100vw - 2 * var(--kv-space-2)));
+    box-shadow: var(--kv-shadow-popup);
+    overflow-wrap: break-word;
+  }
+
+  @media (width >= 40rem) {
+    :where(.kv-read-aloud-select) {
+      inline-size: auto;
+      max-inline-size: 100%;
+    }
+  }
+
+  ::highlight(kv-read-aloud) {
+    background-color: var(--kv-color-primary);
+    color: var(--kv-color-on-primary);
+  }
+
+  @media (forced-colors: active) {
+    ::highlight(kv-read-aloud) {
+      background-color: Highlight;
+      color: HighlightText;
+    }
+
+    :where(.kv-read-aloud-status) {
+      color: CanvasText;
+    }
+
+    :where(.kv-read-aloud-selection-trigger) {
+      border-color: ButtonText;
+      background-color: Canvas;
+      box-shadow: none;
+    }
   }
 
   /* 9g. Tag and tag group ---------------------------------------------------------------------
@@ -6660,7 +6766,7 @@
 
   /* The select. The look of an input; the chevron is two diagonal strokes, one gradient each,
    * at the end of the box (the left in right-to-left). */
-  .kv-listbox-native {
+  :is(.kv-listbox-native, .kv-read-aloud-select) {
     --kv-input-edge: var(--kv-color-border-control);
     --kv-input-edge-width: var(--kv-border-width);
     --kv-listbox-native-chevron: var(--kv-color-text);
@@ -6715,27 +6821,32 @@
     text-overflow: ellipsis;
   }
 
-  .kv-listbox-native:dir(rtl) {
+  :is(.kv-listbox-native, .kv-read-aloud-select):dir(rtl) {
     background-position:
       left var(--kv-input-padding-inline) center,
       left calc(var(--kv-input-padding-inline) + 0.375rem) center;
   }
 
-  .kv-listbox-native:not(:disabled, [data-disabled], [data-invalid], [aria-invalid='true']):hover {
+  :is(.kv-listbox-native, .kv-read-aloud-select):not(
+      :disabled,
+      [data-disabled],
+      [data-invalid],
+      [aria-invalid='true']
+    ):hover {
     --kv-input-edge: var(--kv-color-text);
   }
 
-  .kv-listbox-native:is(:focus-visible, [data-focus-visible]) {
+  :is(.kv-listbox-native, .kv-read-aloud-select):is(:focus-visible, [data-focus-visible]) {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: var(--kv-focus-ring-offset);
   }
 
-  .kv-listbox-native:is([data-invalid], [aria-invalid='true']) {
+  :is(.kv-listbox-native, .kv-read-aloud-select):is([data-invalid], [aria-invalid='true']) {
     --kv-input-edge: var(--kv-color-danger);
     --kv-input-edge-width: var(--kv-control-border-width-invalid);
   }
 
-  .kv-listbox-native:is(:disabled, [data-disabled]) {
+  :is(.kv-listbox-native, .kv-read-aloud-select):is(:disabled, [data-disabled]) {
     --kv-input-edge: var(--kv-color-border-control);
     --kv-input-edge-width: var(--kv-border-width);
     --kv-listbox-native-chevron: var(--kv-color-text-muted);
@@ -6751,7 +6862,7 @@
   @media (prefers-reduced-motion: no-preference) {
     .kv-checkbox,
     .kv-radio,
-    .kv-listbox-native {
+    :is(.kv-listbox-native, .kv-read-aloud-select) {
       transition-property: background-color, border-color;
       transition-duration: var(--kv-duration-fast);
       transition-timing-function: var(--kv-easing-standard);
@@ -6893,7 +7004,7 @@
     .kv-radio:is(:focus-visible, [data-focus-visible]),
     .kv-switch:is(:focus-visible, [data-focus-visible]),
     .kv-slider:is(:focus-visible, [data-focus-visible]),
-    .kv-listbox-native:is(:focus-visible, [data-focus-visible]) {
+    :is(.kv-listbox-native, .kv-read-aloud-select):is(:focus-visible, [data-focus-visible]) {
       outline-color: Highlight;
     }
 
@@ -6925,7 +7036,7 @@
     }
 
     /* The native appearance draws the select's arrow in a system colour. */
-    .kv-listbox-native {
+    :is(.kv-listbox-native, .kv-read-aloud-select) {
       --kv-input-edge: ButtonBorder;
 
       appearance: auto;
@@ -6934,7 +7045,7 @@
       color: FieldText;
     }
 
-    .kv-listbox-native:not(
+    :is(.kv-listbox-native, .kv-read-aloud-select):not(
         :disabled,
         [data-disabled],
         [data-invalid],
@@ -6943,11 +7054,11 @@
       --kv-input-edge: ButtonBorder;
     }
 
-    .kv-listbox-native:is([data-invalid], [aria-invalid='true']) {
+    :is(.kv-listbox-native, .kv-read-aloud-select):is([data-invalid], [aria-invalid='true']) {
       --kv-input-edge: CanvasText;
     }
 
-    .kv-listbox-native:is(:disabled, [data-disabled]) {
+    :is(.kv-listbox-native, .kv-read-aloud-select):is(:disabled, [data-disabled]) {
       --kv-input-edge: GrayText;
 
       color: GrayText;
@@ -11027,7 +11138,7 @@
     padding: var(--kv-space-3);
     outline: none;
     hyphens: manual;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
     cursor: text;
   }
 
@@ -11092,7 +11203,6 @@
     font-size: var(--kv-alert-title-size);
     font-weight: 600;
     line-height: var(--kv-alert-title-line-height);
-    overflow-wrap: anywhere;
   }
 
   .kv-rich-text-popover-form {
