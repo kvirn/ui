@@ -8,6 +8,7 @@ import {
   daysInMonth,
   endOfWeek,
   getIsoWeek,
+  getDaysBetween,
   getIsoWeekday,
   getMonthWeeks,
   getWeekdayOrder,
@@ -282,5 +283,20 @@ describe('the ends of the supported years', () => {
     expect(startOfWeek('9999-12-31', 1)).toBe('9999-12-27')
     expect(endOfWeek('9999-12-31', 1)).toBe(maximumIsoDate)
     expect(endOfWeek('9999-12-31', 7)).toBe(maximumIsoDate)
+  })
+})
+
+describe('getDaysBetween', () => {
+  test.each([
+    ['2026-10-16', '2026-10-16', 0],
+    ['2026-10-16', '2026-10-23', 7],
+    ['2026-10-23', '2026-10-16', -7],
+    ['2026-02-28', '2026-03-01', 1],
+    ['2024-02-28', '2024-03-01', 2],
+    ['2026-12-31', '2027-01-01', 1],
+    ['2026-01-01', '2027-01-01', 365],
+    ['2024-01-01', '2025-01-01', 366],
+  ])('%s to %s is %i days', (first, second, expected) => {
+    expect(getDaysBetween(first, second)).toBe(expected)
   })
 })

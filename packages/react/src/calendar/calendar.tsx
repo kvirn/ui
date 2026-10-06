@@ -1,5 +1,5 @@
 'use client'
-import { useContext, useEffect } from 'react'
+import { Fragment, useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { Icon } from '../icon/icon.tsx'
@@ -9,9 +9,14 @@ import type { RenderProp } from '../render/render-part.ts'
 import { Tooltip } from '../tooltip/tooltip.tsx'
 import { CalendarContext } from './calendar-context.ts'
 import { useCalendar } from './use-calendar.ts'
-import type { UseCalendarOptions, UseCalendarResult } from './use-calendar.ts'
+import type {
+  UseCalendarOptions,
+  UseCalendarRangeOptions,
+  UseCalendarResult,
+  UseCalendarSingleOptions,
+} from './use-calendar.ts'
 
-export type { CalendarDay, CalendarWeek, CalendarWeekday } from './use-calendar.ts'
+export type { CalendarDay, CalendarMonth, CalendarWeek, CalendarWeekday } from './use-calendar.ts'
 
 /** What `render` receives as its second argument, for every part. */
 export interface CalendarState {
@@ -19,14 +24,18 @@ export interface CalendarState {
   visibleMonth: UseCalendarResult['visibleMonth']
 }
 
-export interface CalendarRootProps
-  extends Omit<ComponentPropsWithRef<'div'>, 'defaultValue'>, Omit<UseCalendarOptions, 'messages'> {
-  /** Per-instance message overrides: `{ previousMonth: 'Förra månaden' }`. */
-  messages?: UseCalendarOptions['messages']
+interface CalendarRootElementProps extends Omit<ComponentPropsWithRef<'div'>, 'defaultValue'> {
   render?: RenderProp<ComponentPropsWithRef<'div'>, CalendarState> | undefined
 }
 
+/** One day: `value`, `defaultValue` and `onValueChange` are a date. With `mode="range"` they are a `{ start, end }`. */
+export type CalendarRootProps =
+  | (CalendarRootElementProps & UseCalendarSingleOptions)
+  | (CalendarRootElementProps & UseCalendarRangeOptions)
+
 export interface CalendarHeadingProps extends ComponentPropsWithRef<'h3'> {
+  /** `1` for the second month when `visibleMonths` is 2. Renders nothing while one month shows. */
+  offset?: 0 | 1 | undefined
   render?: RenderProp<ComponentPropsWithRef<'h3'>, CalendarState> | undefined
 }
 
@@ -39,6 +48,8 @@ export interface CalendarRangeHintProps extends ComponentPropsWithRef<'p'> {
 }
 
 export interface CalendarGridProps extends ComponentPropsWithRef<'table'> {
+  /** `1` for the second month when `visibleMonths` is 2. Renders nothing while one month shows. */
+  offset?: 0 | 1 | undefined
   /** Your own rows. Without it the grid renders the weekday headers and the weeks. */
   children?: ReactNode
   render?: RenderProp<ComponentPropsWithRef<'table'>, CalendarState> | undefined
@@ -76,25 +87,13 @@ const stateOf = (calendar: UseCalendarResult): CalendarState => ({
  * </Calendar.Root>
  */
 export function CalendarRoot({
-  value,
-  defaultValue,
-  defaultFocusedDate,
-  onValueChange,
-  minimum,
-  maximum,
-  isDateUnavailable,
-  getDateDescription,
-  weekStart,
-  weekNumbers,
-  today,
-  announce,
-  messages,
   render,
   children,
   ref,
   ...otherProps
 }: CalendarRootProps): ReactElement {
-  const calendar = useCalendar({
+  const {
+    mode,
     value,
     defaultValue,
     defaultFocusedDate,
@@ -107,14 +106,42 @@ export function CalendarRoot({
     weekNumbers,
     today,
     announce,
+    visibleMonths,
     messages,
-  })
+    selects,
+    minimumDays,
+    maximumDays,
+    allowUnavailableInRange,
+    ...elementProps
+  } = otherProps as typeof otherProps & Partial<UseCalendarRangeOptions>
+  // `mode` picks which of the two value shapes `value`, `defaultValue` and `onValueChange` have.
+  const calendar = useCalendar({
+    mode,
+    value,
+    defaultValue,
+    defaultFocusedDate,
+    onValueChange,
+    minimum,
+    maximum,
+    isDateUnavailable,
+    getDateDescription,
+    weekStart,
+    weekNumbers,
+    today,
+    announce,
+    visibleMonths,
+    messages,
+    selects,
+    minimumDays,
+    maximumDays,
+    allowUnavailableInRange,
+  } as UseCalendarOptions)
   return (
     <CalendarContext.Provider value={calendar}>
       {renderPart({
         render,
         defaultElement: 'div',
-        partProps: { ...mergeProps(otherProps, calendar.rootProps), ref, children },
+        partProps: { ...mergeProps(elementProps, calendar.rootProps), ref, children },
         state: stateOf(calendar),
       })}
     </CalendarContext.Provider>
@@ -124,22 +151,24 @@ CalendarRoot.displayName = 'Calendar.Root'
 
 /** The month and year, `oktober 2026`. It names the grid. An `<h3>`: change the level with `render`. */
 export function CalendarHeading({
+  offset = 0,
   render,
   children,
   ref,
   ...otherProps
 }: CalendarHeadingProps): ReactElement | null {
   const calendar = useCalendarContext('Heading')
-  if (calendar === null) {
+  const month = calendar?.months[offset]
+  if (calendar === null || month === undefined) {
     return null
   }
   return renderPart({
     render,
     defaultElement: 'h3',
     partProps: {
-      ...mergeProps(otherProps, calendar.headingProps),
+      ...mergeProps(otherProps, month.headingProps),
       ref,
-      children: children ?? calendar.headingText,
+      children: children ?? month.headingText,
     },
     state: stateOf(calendar),
   })
@@ -219,7 +248,10 @@ export function CalendarNextYear(props: CalendarStepButtonProps): ReactElement |
 }
 CalendarNextYear.displayName = 'Calendar.NextYear'
 
-/** The range in words above the grid, and the grid's description (3.3.2). Renders nothing without a minimum or maximum. */
+/**
+ * The range in words above the grid, and the grid's description (3.3.2): the minimum and maximum,
+ * and in range mode the span limits and the next step, a line each. Renders nothing without a line.
+ */
 export function CalendarRangeHint({
   render,
   children,
@@ -236,7 +268,14 @@ export function CalendarRangeHint({
     partProps: {
       ...mergeProps(otherProps, calendar.rangeHintProps),
       ref,
-      children: children ?? calendar.rangeHint,
+      children:
+        children ??
+        calendar.rangeHintLines.map((line, index) => (
+          <Fragment key={line}>
+            {index === 0 ? null : ' '}
+            <span className="kv-calendar-range-line">{line}</span>
+          </Fragment>
+        )),
     },
     state: stateOf(calendar),
   })
@@ -249,14 +288,16 @@ CalendarRangeHint.displayName = 'Calendar.RangeHint'
  * `getDayProps` from `useCalendar`.
  */
 export function CalendarGrid({
+  offset = 0,
   render,
   children,
   ref,
   ...otherProps
 }: CalendarGridProps): ReactElement | null {
   const calendar = useCalendarContext('Grid')
-  const headingId = calendar?.headingProps.id
-  const describedBy = calendar?.gridProps['aria-describedby']
+  const month = calendar?.months[offset]
+  const headingId = month?.headingProps.id
+  const describedBy = month?.gridProps['aria-describedby']
   useEffect(() => {
     if (headingId !== undefined && document.getElementById(headingId) === null) {
       warnOnce(
@@ -267,18 +308,23 @@ export function CalendarGrid({
     if (describedBy !== undefined && document.getElementById(describedBy) === null) {
       warnOnce(
         'calendar-range-hint-missing',
-        'A Calendar has a minimum or maximum but no Calendar.RangeHint, so nobody is told which dates can be chosen. Render <Calendar.RangeHint /> in the Calendar.Root (WCAG 3.3.2).',
+        'A Calendar has a minimum or maximum, or chooses a range, but has no Calendar.RangeHint, so nobody is told which dates can be chosen or what to do next. Render <Calendar.RangeHint /> in the Calendar.Root (WCAG 3.3.2).',
       )
     }
   }, [headingId, describedBy])
-  if (calendar === null) {
+  if (calendar === null || month === undefined) {
     return null
   }
+  const { 'aria-labelledby': extraLabelledBy, ...gridElementProps } = otherProps
+  const labelledBy = [extraLabelledBy, month.gridProps['aria-labelledby']]
+    .filter((labelId) => labelId !== undefined && labelId !== '')
+    .join(' ')
   return renderPart({
     render,
     defaultElement: 'table',
     partProps: {
-      ...mergeProps(otherProps, calendar.gridProps),
+      ...mergeProps(gridElementProps, month.gridProps),
+      'aria-labelledby': labelledBy,
       ref,
       children: children ?? (
         <>
@@ -304,7 +350,7 @@ export function CalendarGrid({
             </tr>
           </thead>
           <tbody>
-            {calendar.weeks.map((week) => (
+            {month.weeks.map((week) => (
               <tr key={week.key}>
                 {week.weekNumber === undefined ? null : (
                   <th scope="row" className="kv-calendar-week-number" aria-label={week.weekName}>

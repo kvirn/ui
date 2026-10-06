@@ -497,7 +497,7 @@ describe('development warnings and locale', () => {
 })
 
 describe('read aloud', () => {
-  const phrasesOf = async (props: Omit<Partial<CalendarRootProps>, 'dir'> = {}) => {
+  const phrasesOf = async (props: Parameters<typeof Example>[0] = {}) => {
     const { container } = await render(<Example {...props} />)
     return readAloud(container, { maxSteps: 400 })
   }

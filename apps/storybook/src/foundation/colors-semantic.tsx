@@ -34,7 +34,10 @@ const tokenGroups: readonly TokenGroup[] = [
     tokens: ['border-subtle', 'border-control', 'border-focus', 'secondary', 'focus-ring'],
   },
   { heading: 'Text', tokens: ['text', 'heading', 'text-muted', 'link', 'link-hover'] },
-  { heading: 'Primary', tokens: ['primary', 'primary-hover', 'on-primary', 'primary-subtle'] },
+  {
+    heading: 'Primary',
+    tokens: ['primary', 'primary-hover', 'on-primary', 'primary-subtle', 'accent'],
+  },
   {
     heading: 'Status',
     tokens: [
@@ -72,6 +75,8 @@ const tokenUses: Record<ColorTokenName, string> = {
   'on-primary': 'Text and icons on primary',
   'primary-subtle':
     'Current navigation item, secondary button hover, selected rows, info backgrounds',
+  accent:
+    'The end of the loading indicators’ gradient (primary to accent). Never text, never a status',
   danger: 'Errors, destructive actions',
   'danger-hover': 'Hover and pressed state of danger',
   'on-danger': 'Text and icons on danger',

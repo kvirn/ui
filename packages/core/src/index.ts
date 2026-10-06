@@ -349,6 +349,7 @@ export {
   daysInMonth,
   endOfWeek,
   getIsoWeek,
+  getDaysBetween,
   getIsoWeekday,
   getMonthWeeks,
   getWeekdayOrder,
@@ -373,13 +374,36 @@ export { getLocaleWeekStart, isWeekStart, resolveWeekStart } from './calendar-da
 export type { ResolveWeekStartOptions, WeekStart } from './calendar-date/week-start.ts'
 export { getCalendarKeyTarget } from './calendar/calendar-keys.ts'
 export type { CalendarKeyTargetInput } from './calendar/calendar-keys.ts'
+export {
+  chooseRangeDate,
+  countDays,
+  findBlockingDay,
+  getRangeEndAvailability,
+  getRangePosition,
+  getRangeSpanStatus,
+  getRangeStep,
+  getVisibleRange,
+} from './calendar/calendar-range.ts'
+export type {
+  DateRange,
+  DateRangeRules,
+  RangeChoice,
+  RangeChoiceReason,
+  RangeEndAvailability,
+  RangePosition,
+  RangeSelects,
+  RangeSpanStatus,
+  RangeStep,
+} from './calendar/calendar-range.ts'
 export { createCalendar, getDayAvailability, getTodayIsoDate } from './calendar/calendar.ts'
 export type {
   CalendarActions,
   CalendarDayAvailability,
+  CalendarMode,
   CalendarMonthChange,
   CalendarMonthChangeReason,
   CalendarOptions,
+  CalendarRangeChange,
   CalendarSettings,
   CalendarState,
   CalendarStore,

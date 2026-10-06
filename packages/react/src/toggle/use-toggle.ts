@@ -8,7 +8,7 @@ export interface TogglePressedChangeDetails {
   event: MouseEvent<HTMLButtonElement>
 }
 
-export interface UseToggleOptions extends Omit<UseButtonOptions, 'type'> {
+export interface UseToggleOptions extends Omit<UseButtonOptions, 'type' | 'busy'> {
   /** Controlled: whether the toggle is on. Pair it with `onPressedChange`. */
   pressed?: boolean | undefined
   /** Uncontrolled: whether the toggle starts on. Default `false`. */

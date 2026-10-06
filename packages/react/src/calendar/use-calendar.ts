@@ -1,18 +1,35 @@
 import {
+  chooseRangeDate,
+  countDays,
   createCalendar,
   isWeekStart,
   getDayAvailability,
   getIsoWeek,
   getMonthWeeks,
+  getRangeEndAvailability,
+  getRangePosition,
+  getRangeStep,
   getTodayIsoDate,
+  getVisibleRange,
   getWeekdayOrder,
   isValidIsoDate,
   parseIsoDate,
 } from '@kvirn-ui/core'
-import type { CalendarStore, IsoDate, IsoWeekday, WeekStart, YearMonth } from '@kvirn-ui/core'
+import type {
+  CalendarRangeChange,
+  CalendarStore,
+  DateRange,
+  DateRangeRules,
+  IsoDate,
+  IsoWeekday,
+  RangeSelects,
+  RangeStep,
+  WeekStart,
+  YearMonth,
+} from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import type { KeyboardEvent, RefCallback } from 'react'
+import type { FocusEvent, KeyboardEvent, RefCallback } from 'react'
 import { useQuietAnnouncer, warnAnnouncerMissing } from '../announcer/use-announcer.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { useDateSettings } from '../provider/use-date-settings.ts'
@@ -20,21 +37,22 @@ import { useLocale } from '../provider/use-locale.ts'
 import { useMessages } from '../provider/use-messages.ts'
 import { useStoreSelector } from '../store/use-store-selector.ts'
 import { createCalendarFormatters, resolveIntlLocale } from './calendar-intl.ts'
+import { useWideViewport } from './use-wide-viewport.ts'
 
-export type { IsoDate, WeekStart } from '@kvirn-ui/core'
+export type {
+  CalendarRangeChange,
+  DateRange,
+  IsoDate,
+  RangeSelects,
+  WeekStart,
+} from '@kvirn-ui/core'
 
-export interface UseCalendarOptions {
-  /** Controlled: the chosen day, `YYYY-MM-DD`, or `''` for none. Pair it with `onValueChange`. */
-  value?: IsoDate | undefined
-  /** Uncontrolled: the day chosen at first, `YYYY-MM-DD`. */
-  defaultValue?: IsoDate | undefined
+export interface UseCalendarBaseOptions {
   /**
    * The day the grid opens on when none is chosen, such as a date the user typed. Else today.
    * Read once, when the Calendar mounts.
    */
   defaultFocusedDate?: IsoDate | undefined
-  /** Called with the day when an available day is chosen (click, Enter or Space). */
-  onValueChange?: ((date: IsoDate) => void) | undefined
   /** The first day that can be chosen, `YYYY-MM-DD`. Keys and the month buttons stop here. */
   minimum?: IsoDate | undefined
   /** The last day that can be chosen, `YYYY-MM-DD`. */
@@ -59,14 +77,60 @@ export interface UseCalendarOptions {
   /** Today, `YYYY-MM-DD`. Else read from the clock in the provider's time zone, once, on mount. */
   today?: IsoDate | undefined
   /**
-   * Announces the new month after a month or year button, and "{date} selected" after a day is
-   * chosen, through the shared Announcer (4.1.3). Set `false` when your own markup says it.
-   * Default `true`.
+   * Announces the new month after a month or year button, and what a press did after a day is
+   * chosen ("{date} selected"; in a range, the start and the finished range), through the shared
+   * Announcer (4.1.3). Set `false` when your own markup says it. Default `true`.
    */
   announce?: boolean | undefined
+  /**
+   * The most months shown side by side, `1` or `2`. Two months show only from 64rem wide (the
+   * Calendar reads the viewport), one below it and on the server, so it never breaks a 320px
+   * screen or 400% zoom. Default `1`.
+   */
+  visibleMonths?: 1 | 2 | undefined
   /** Per-instance message overrides: `{ previousMonth: 'Förra månaden' }`. */
   messages?: Partial<KvirnMessages['calendar']> | undefined
 }
+
+export interface UseCalendarSingleOptions extends UseCalendarBaseOptions {
+  mode?: 'single' | undefined
+  /** Controlled: the chosen day, `YYYY-MM-DD`, or `''` for none. Pair it with `onValueChange`. */
+  value?: IsoDate | undefined
+  /** Uncontrolled: the day chosen at first, `YYYY-MM-DD`. */
+  defaultValue?: IsoDate | undefined
+  /** Called with the day when an available day is chosen (click, Enter or Space). */
+  onValueChange?: ((date: IsoDate) => void) | undefined
+}
+
+export interface UseCalendarRangeOptions extends UseCalendarBaseOptions {
+  /** Choose a start and an end: two ordinary presses, no extra keys. */
+  mode: 'range'
+  /**
+   * Controlled: `{ start, end }`, `''` for a day not chosen. A start only and an end only are
+   * valid; an end before the start shows as the start alone. Pair it with `onValueChange`.
+   */
+  value?: DateRange | undefined
+  /** Uncontrolled: the range chosen at first. */
+  defaultValue?: DateRange | undefined
+  /**
+   * Called after every press that changed the range, so a start alone is reported at once. The
+   * second argument says what the press did: `step` is `complete` when the range is finished.
+   */
+  onValueChange?: ((range: DateRange, change: CalendarRangeChange) => void) | undefined
+  /**
+   * Which end a press sets. `both` (default): the start, then the end. `start` or `end`: one end
+   * of a from/to pair of Calendars sharing one range.
+   */
+  selects?: RangeSelects | undefined
+  /** The fewest days, counting both ends (a one-day range is 1). Else no minimum. */
+  minimumDays?: number | undefined
+  /** The most days, counting both ends. A booking of 14 nights is `15`. Else no maximum. */
+  maximumDays?: number | undefined
+  /** A range may pass over an unavailable day (leave across a holiday). Default `false`: it blocks. */
+  allowUnavailableInRange?: boolean | undefined
+}
+
+export type UseCalendarOptions = UseCalendarSingleOptions | UseCalendarRangeOptions
 
 /** Spread on the Root's element. */
 export interface CalendarRootPartProps {
@@ -98,7 +162,10 @@ export interface CalendarStepPartProps {
   onClick: () => void
 }
 
-/** Spread on the line above the grid that says the range. Present only with a minimum or maximum. */
+/**
+ * Spread on the lines above the grid: the range in words, and in range mode the span limits and
+ * the next step. Present only when there is a line to say.
+ */
 export interface CalendarRangeHintPartProps {
   className: 'kv-calendar-range'
   /** The grid's description. */
@@ -109,8 +176,13 @@ export interface CalendarRangeHintPartProps {
 export interface CalendarGridPartProps {
   className: 'kv-calendar-grid'
   role: 'grid'
+  /** The month's Heading. A grid in a from/to pair gets your own heading's id in front of it. */
   'aria-labelledby': string
   'aria-describedby'?: string
+  /** Range mode: more than one day is selected. */
+  'aria-multiselectable'?: 'true'
+  /** `1` on the second month's grid. */
+  'data-offset': 0 | 1
 }
 
 /** Spread on a `<td>`: one day. `children` is the day number. */
@@ -119,8 +191,9 @@ export interface CalendarDayPartProps {
   role: 'gridcell'
   /** `0` on the focused day, `-1` on the others: the grid is one Tab stop. */
   tabIndex: 0 | -1
-  /** `Wednesday 14 October 2026, today, <description>`. */
+  /** `Wednesday 14 October 2026, today, start date, 7 days, <description>`. */
   'aria-label': string
+  /** The chosen day, or in range mode every day from the start to the end. */
   'aria-selected'?: 'true'
   'aria-current'?: 'date'
   /** An unavailable day, or one outside the range. */
@@ -129,10 +202,21 @@ export interface CalendarDayPartProps {
   'data-selected'?: ''
   'data-unavailable'?: ''
   'data-outside-range'?: ''
+  /** Range mode: the start, the end (both on a one-day range), a day between, a previewed day. */
+  'data-range-start'?: ''
+  'data-range-end'?: ''
+  'data-in-range'?: ''
+  /** Drawn only: the days up to the day the pointer or focus is on while the end is pending. */
+  'data-preview'?: ''
+  'data-preview-end'?: ''
   ref: RefCallback<HTMLTableCellElement>
   onClick: () => void
   onFocus: () => void
   onKeyDown: (event: KeyboardEvent<HTMLTableCellElement>) => void
+  /** Range mode: the preview follows the pointer and the focus. */
+  onPointerEnter?: () => void
+  onPointerLeave?: () => void
+  onBlur?: (event: FocusEvent<HTMLTableCellElement>) => void
 }
 
 export interface CalendarWeekday {
@@ -159,8 +243,19 @@ export interface CalendarWeek {
   days: (CalendarDay | undefined)[]
 }
 
+/** One month of the view: with two months visible, the second has `offset` 1. */
+export interface CalendarMonth {
+  visibleMonth: YearMonth
+  headingProps: CalendarHeadingPartProps
+  /** `October 2026`. */
+  headingText: string
+  gridProps: CalendarGridPartProps
+  weeks: CalendarWeek[]
+}
+
 export interface UseCalendarResult {
   rootProps: CalendarRootPartProps
+  /** The first month's heading, as `months[0]`. */
   headingProps: CalendarHeadingPartProps
   /** `October 2026`. */
   headingText: string
@@ -170,8 +265,14 @@ export interface UseCalendarResult {
   previousYearProps: CalendarStepPartProps
   nextYearProps: CalendarStepPartProps
   rangeHintProps: CalendarRangeHintPartProps
-  /** `Dates from 1 October 2026 to 31 December 2026`. `undefined` without a minimum or maximum. */
+  /** The lines in one text: `Dates from 1 October 2026 to 31 December 2026`. `undefined` when there is none. */
   rangeHint: string | undefined
+  /**
+   * The lines to show: the minimum and maximum, then in range mode the span limits and the next
+   * step ("Start date …. Choose the end date.").
+   */
+  rangeHintLines: string[]
+  /** The first month's grid, as `months[0]`. */
   gridProps: CalendarGridPartProps
   /** Column headers, in the order of the week start. */
   weekdays: CalendarWeekday[]
@@ -179,14 +280,23 @@ export interface UseCalendarResult {
   hasWeekNumbers: boolean
   /** The column header over the week numbers: `Wk` (visible) and `Week` (read). */
   weekHeader: { short: string; long: string }
-  /** The weeks of the visible month, for your own markup. */
+  /** The weeks of the first visible month, for your own markup. */
   weeks: CalendarWeek[]
+  /** The months in view: one, or two side by side (`visibleMonths` 2 from 64rem). */
+  months: CalendarMonth[]
   /** The props for the `<td>` of a day in `weeks`. */
   getDayProps: (date: IsoDate) => CalendarDayPartProps
+  /** The first month in view. */
   visibleMonth: YearMonth
+  /** How many months are in view now. */
+  visibleMonths: 1 | 2
   /** The day with the Tab stop. */
   focusedDate: IsoDate
   selectedDate: IsoDate | undefined
+  /** Range mode: the range as shown (an end before the start is dropped). `undefined` in single mode. */
+  range: DateRange | undefined
+  /** Range mode: what the next press does. */
+  rangeStep: RangeStep | undefined
   /** The language of the written months and weekdays when it isn't the provider's (3.1.2). */
   dateLanguage: string | undefined
 }
@@ -194,38 +304,62 @@ export interface UseCalendarResult {
 /**
  * A calendar's behaviour for your own markup (contract: calendar.a11y.md): the visible month, one
  * Tab stop on a roving day, the date keys, and the names of days, weeks and buttons from the
- * locale. A month is `weeks`; spread `getDayProps(date)` on each day's `<td>`.
+ * locale. A month is `weeks`; spread `getDayProps(date)` on each day's `<td>`. With `mode: 'range'`
+ * it chooses a start and an end, with two months side by side from 64rem (`months`).
  *
  * @example
  * const calendar = useCalendar({ value, onValueChange: setValue })
  * <table {...calendar.gridProps}>…{calendar.weeks.map((week) => …)}</table>
  */
-export function useCalendar({
-  value,
-  defaultValue,
-  defaultFocusedDate,
-  onValueChange,
-  minimum,
-  maximum,
-  isDateUnavailable,
-  getDateDescription,
-  weekStart: weekStartOption,
-  weekNumbers = false,
-  today: todayOption,
-  announce = true,
-  messages,
-}: UseCalendarOptions = {}): UseCalendarResult {
+export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult {
+  const {
+    defaultFocusedDate,
+    minimum,
+    maximum,
+    isDateUnavailable,
+    getDateDescription,
+    weekStart: weekStartOption,
+    weekNumbers = false,
+    today: todayOption,
+    announce = true,
+    visibleMonths: visibleMonthsOption = 1,
+    messages,
+  } = options
+  const rangeOptions = options.mode === 'range' ? options : undefined
+  const singleOptions = options.mode === 'range' ? undefined : options
+  const isRange = rangeOptions !== undefined
+  const value = singleOptions?.value
+  const defaultValue = singleOptions?.defaultValue
+  const onValueChange = singleOptions?.onValueChange
+  const rangeValue = rangeOptions?.value
+  const selects = rangeOptions?.selects ?? 'both'
+  const requestedMinimumDays = rangeOptions?.minimumDays
+  const requestedMaximumDays = rangeOptions?.maximumDays
+  // The core throws on a limit below 1 or a minimum above the maximum: drop it and warn instead.
+  const areDaysValid =
+    (requestedMinimumDays === undefined || requestedMinimumDays >= 1) &&
+    (requestedMaximumDays === undefined || requestedMaximumDays >= 1) &&
+    (requestedMinimumDays === undefined ||
+      requestedMaximumDays === undefined ||
+      requestedMinimumDays <= requestedMaximumDays)
+  const minimumDays = areDaysValid ? requestedMinimumDays : undefined
+  const maximumDays = areDaysValid ? requestedMaximumDays : undefined
+  const allowUnavailableInRange = rangeOptions?.allowUnavailableInRange ?? false
+
   const calendarMessages = useMessages('calendar', messages)
   const { locale, dir } = useLocale()
   const { timeZone, weekStart: settingsWeekStart } = useDateSettings()
   const weekStart = isWeekStart(weekStartOption) ? weekStartOption : settingsWeekStart
   const { announce: say, isAvailable } = useQuietAnnouncer()
   const id = useId()
-  const headingId = `${id}-heading`
   const rangeHintId = `${id}-range`
+  const isWide = useWideViewport(visibleMonthsOption === 2)
+  const visibleMonths = visibleMonthsOption === 2 && isWide ? 2 : 1
 
-  const isControlled = value !== undefined
+  const isControlled = isRange ? rangeValue !== undefined : value !== undefined
   const [today] = useState(() => todayOption ?? getTodayIsoDate(timeZone, new Date()))
+
+  const reportedRangeRef = useRef<DateRange | undefined>(undefined)
 
   const [store] = useState<CalendarStore>(() =>
     createCalendar({
@@ -236,6 +370,13 @@ export function useCalendar({
       maximum,
       weekStart,
       direction: dir,
+      mode: isRange ? 'range' : 'single',
+      range: rangeValue ?? rangeOptions?.defaultValue,
+      visibleMonths,
+      selects,
+      minimumDays,
+      maximumDays,
+      allowUnavailableInRange,
     }),
   )
   const state = useStoreSelector(store, (current) => current)
@@ -249,32 +390,129 @@ export function useCalendar({
       current.minimum !== minimum ||
       current.maximum !== maximum ||
       current.weekStart !== weekStart ||
-      current.direction !== dir
+      current.direction !== dir ||
+      current.mode !== (isRange ? 'range' : 'single') ||
+      current.visibleMonths !== visibleMonths ||
+      current.selects !== selects ||
+      current.minimumDays !== minimumDays ||
+      current.maximumDays !== maximumDays ||
+      current.allowUnavailableInRange !== allowUnavailableInRange
     ) {
       const hadFocus = cellElements.current.get(current.focusedDate) === document.activeElement
-      store.actions.configure({ minimum, maximum, weekStart, direction: dir })
-      // A new range can move the focused day to another month, and its old cell unmounts.
-      shouldFocusCell.current = hadFocus && store.getState().focusedDate !== current.focusedDate
+      store.actions.configure({
+        minimum,
+        maximum,
+        weekStart,
+        direction: dir,
+        mode: isRange ? 'range' : 'single',
+        visibleMonths,
+        selects,
+        minimumDays,
+        maximumDays,
+        allowUnavailableInRange,
+      })
+      // A new range or view can move the focused day to another month or grid, and its old cell unmounts.
+      shouldFocusCell.current = hadFocus
     }
-  }, [store, minimum, maximum, weekStart, dir])
+  }, [
+    store,
+    minimum,
+    maximum,
+    weekStart,
+    dir,
+    isRange,
+    visibleMonths,
+    selects,
+    minimumDays,
+    maximumDays,
+    allowUnavailableInRange,
+  ])
+
+  // The old cell unmounts when the month changes, so focus that was in the grid follows the day.
+  const moveTabStop = (date: IsoDate) => {
+    const hadFocus =
+      cellElements.current.get(store.getState().focusedDate) === document.activeElement
+    store.actions.focusDate(date)
+    shouldFocusCell.current = hadFocus
+  }
 
   // A controlled value that changes while mounted moves the Tab stop and the month to it.
   useEffect(() => {
     if (value !== undefined && isValidIsoDate(value) && value !== store.getState().focusedDate) {
-      store.actions.focusDate(value)
+      moveTabStop(value)
     }
   }, [store, value])
+
+  const rangeValueStart = rangeValue?.start
+  const rangeValueEnd = rangeValue?.end
+
+  // A range that changed from outside (a typed field, the other Calendar of a pair) moves the
+  // Tab stop and the month to the end this Calendar chooses. A press's own result does not.
+  useEffect(() => {
+    if (rangeValueStart === undefined || rangeValueEnd === undefined) {
+      return
+    }
+    const reported = reportedRangeRef.current
+    reportedRangeRef.current = undefined
+    if (reported?.start === rangeValueStart && reported.end === rangeValueEnd) {
+      return
+    }
+    const target =
+      selects === 'end' ? rangeValueEnd || rangeValueStart : rangeValueStart || rangeValueEnd
+    if (isValidIsoDate(target) && target !== store.getState().focusedDate) {
+      moveTabStop(target)
+    }
+  }, [store, selects, rangeValueStart, rangeValueEnd])
 
   const intlLocale = useMemo(() => resolveIntlLocale(locale), [locale])
   const formatters = useMemo(() => createCalendarFormatters(intlLocale), [intlLocale])
   const dateLanguage = intlLocale === locale ? undefined : intlLocale
 
   const selectedDate = isControlled
-    ? isValidIsoDate(value)
+    ? value !== undefined && isValidIsoDate(value)
       ? value
       : undefined
     : state.selectedDate
   const hasWeekNumbers = weekNumbers && weekStart === 1
+
+  const range = isRange
+    ? getVisibleRange(
+        isControlled && rangeValue !== undefined
+          ? rangeValue
+          : { start: state.rangeStart, end: state.rangeEnd },
+      )
+    : undefined
+  const rangeStep = range === undefined ? undefined : getRangeStep(range)
+  // Each cell scans from the start to its own day, so the predicate is asked once per day per render.
+  const unavailableAnswers = new Map<IsoDate, boolean>()
+  const isUnavailableOnce =
+    isDateUnavailable === undefined
+      ? undefined
+      : (date: IsoDate) => {
+          let answer = unavailableAnswers.get(date)
+          if (answer === undefined) {
+            answer = isDateUnavailable(date)
+            unavailableAnswers.set(date, answer)
+          }
+          return answer
+        }
+  const rangeRules: DateRangeRules = {
+    minimumDays,
+    maximumDays,
+    allowUnavailableInRange,
+    minimum: state.minimum,
+    maximum: state.maximum,
+    isDateUnavailable: isUnavailableOnce,
+  }
+
+  useEffect(() => {
+    if (!areDaysValid) {
+      warnOnce(
+        'calendar-range-days-invalid',
+        'A Calendar has a minimumDays or maximumDays below 1, or a minimumDays above the maximumDays, so both limits are ignored. A one-day range is 1 day; a booking of 14 nights is maximumDays={15}.',
+      )
+    }
+  }, [areDaysValid])
 
   useEffect(() => {
     if (weekNumbers && weekStart !== 1) {
@@ -311,7 +549,62 @@ export function useCalendar({
       isDateUnavailable,
     })
 
+  const getLength = (start: IsoDate, end: IsoDate) => {
+    const days = countDays(start, end)
+    return calendarMessages.rangeLength({ days, nights: days - 1 })
+  }
+
+  const sayRangeChange = (next: DateRange, change: CalendarRangeChange) => {
+    switch (change.reason) {
+      case 'started':
+      case 'restarted-before-start':
+      case 'restarted-too-short':
+      case 'restarted-too-long':
+      case 'restarted-blocked':
+        sayText(calendarMessages.rangeChooseEnd({ start: formatters.fullDate(next.start) }))
+        return
+      case 'completed':
+        sayText(
+          calendarMessages.rangeSelected({
+            start: formatters.fullDate(next.start),
+            end: formatters.fullDate(next.end),
+            length: getLength(next.start, next.end),
+          }),
+        )
+        return
+      case 'end-set':
+        sayText(calendarMessages.rangeEndSelected({ date: formatters.fullDate(next.end) }))
+        return
+      case 'start-set':
+        sayText(
+          [
+            calendarMessages.selected({ date: formatters.fullDate(next.start) }),
+            change.endCleared ? calendarMessages.rangeEndCleared : undefined,
+          ]
+            .filter((part) => part !== undefined)
+            .join(' '),
+        )
+        return
+      case 'ignored':
+        return
+    }
+  }
+
   const select = (date: IsoDate) => {
+    if (range !== undefined) {
+      const choice = chooseRangeDate(range, date, selects, rangeRules)
+      if (choice.reason === 'ignored') {
+        return
+      }
+      const change = { reason: choice.reason, step: choice.step, endCleared: choice.endCleared }
+      if (!isControlled) {
+        store.actions.setRange(choice.range)
+      }
+      reportedRangeRef.current = choice.range
+      rangeOptions?.onValueChange?.(choice.range, change)
+      sayRangeChange(choice.range, change)
+      return
+    }
     if (getAvailability(date) !== 'available') {
       return
     }
@@ -336,18 +629,45 @@ export function useCalendar({
           return
         }
         store.actions.showMonth(months)
-        sayText(formatters.month(store.getState().visibleMonth))
+        const [first, last] = store.getShownMonths()
+        sayText(
+          first !== undefined && last !== undefined && store.getState().visibleMonths === 2
+            ? calendarMessages.visibleMonths({
+                first: formatters.month(first),
+                last: formatters.month(last),
+              })
+            : formatters.month(store.getState().visibleMonth),
+        )
       },
     }
   }
 
-  const rangeHint =
+  const rangeLine =
     state.minimum === undefined && state.maximum === undefined
       ? undefined
       : calendarMessages.rangeHint({
           min: state.minimum === undefined ? undefined : formatters.longDate(state.minimum),
           max: state.maximum === undefined ? undefined : formatters.longDate(state.maximum),
         })
+  const spanLine =
+    isRange && (minimumDays !== undefined || maximumDays !== undefined)
+      ? calendarMessages.rangeSpanHint({ minimum: minimumDays, maximum: maximumDays })
+      : undefined
+  // A from/to pair has no step line: each Calendar's own heading says which end it chooses.
+  const stepLine =
+    range === undefined || selects !== 'both'
+      ? undefined
+      : rangeStep === 'start'
+        ? calendarMessages.rangeChooseStart
+        : rangeStep === 'end'
+          ? calendarMessages.rangeChooseEnd({ start: formatters.fullDate(range.start) })
+          : calendarMessages.rangeSelected({
+              start: formatters.fullDate(range.start),
+              end: formatters.fullDate(range.end),
+              length: getLength(range.start, range.end),
+            })
+  const rangeHintLines = [rangeLine, spanLine, stepLine].filter((line) => line !== undefined)
+  const rangeHint = rangeHintLines.length === 0 ? undefined : rangeHintLines.join(' ')
 
   const weekdays = getWeekdayOrder(weekStart).map((weekday) => ({
     weekday,
@@ -355,25 +675,118 @@ export function useCalendar({
     long: formatters.weekday(weekday, 'long'),
   }))
 
-  const weeks = getMonthWeeks(state.visibleMonth, weekStart).map((row): CalendarWeek => {
-    const firstDate = row.find((date) => date !== undefined)
-    const weekNumber =
-      hasWeekNumbers && firstDate !== undefined ? getIsoWeek(firstDate).week : undefined
+  const getWeeks = (month: YearMonth) =>
+    getMonthWeeks(month, weekStart).map((row): CalendarWeek => {
+      const firstDate = row.find((date) => date !== undefined)
+      const weekNumber =
+        hasWeekNumbers && firstDate !== undefined ? getIsoWeek(firstDate).week : undefined
+      return {
+        key: firstDate ?? `${month.year}-${month.month}`,
+        weekNumber,
+        weekName:
+          weekNumber === undefined ? undefined : calendarMessages.weekName({ week: weekNumber }),
+        days: row.map((date) =>
+          date === undefined ? undefined : { date, dayOfMonth: parseIsoDate(date)?.day ?? 0 },
+        ),
+      }
+    })
+
+  const months = store.getShownMonths().map((month, index): CalendarMonth => {
+    const offset = index === 1 ? 1 : 0
+    const headingId = offset === 0 ? `${id}-heading` : `${id}-heading-${offset}`
     return {
-      key: firstDate ?? `${state.visibleMonth.year}-${state.visibleMonth.month}`,
-      weekNumber,
-      weekName:
-        weekNumber === undefined ? undefined : calendarMessages.weekName({ week: weekNumber }),
-      days: row.map((date) =>
-        date === undefined ? undefined : { date, dayOfMonth: parseIsoDate(date)?.day ?? 0 },
-      ),
+      visibleMonth: month,
+      headingProps: {
+        className: 'kv-calendar-heading',
+        id: headingId,
+        ...(dateLanguage === undefined ? {} : { lang: dateLanguage }),
+      },
+      headingText: formatters.month(month),
+      gridProps: {
+        className: 'kv-calendar-grid',
+        role: 'grid',
+        'aria-labelledby': headingId,
+        ...(rangeHint === undefined ? {} : { 'aria-describedby': rangeHintId }),
+        ...(isRange ? { 'aria-multiselectable': 'true' as const } : {}),
+        'data-offset': offset,
+      },
+      weeks: getWeeks(month),
     }
   })
+  const firstMonth = months[0] as CalendarMonth
+
+  const getRangeNames = (date: IsoDate) => {
+    if (range === undefined) {
+      return {
+        position: undefined,
+        rangePosition: undefined,
+        rangeNote: undefined,
+        isImpossibleEnd: false,
+      }
+    }
+    const canPreview =
+      state.previewDate !== undefined &&
+      selects !== 'start' &&
+      rangeStep === 'end' &&
+      getRangeEndAvailability(state.previewDate, range.start, rangeRules) === 'available'
+    const position = getRangePosition(date, range, canPreview ? state.previewDate : undefined)
+    const rangePosition =
+      position === 'start'
+        ? calendarMessages.rangeStart
+        : position === 'end'
+          ? calendarMessages.rangeEnd
+          : position === 'start-end'
+            ? calendarMessages.rangeStartAndEnd
+            : undefined
+    // Only a day that could end the range gets the length, or the reason it can't.
+    const isEndCandidate =
+      range.start !== '' && (selects === 'end' || (selects === 'both' && rangeStep === 'end'))
+    const isChosen =
+      position === 'start' ||
+      position === 'end' ||
+      position === 'start-end' ||
+      position === 'in-range'
+    const endAvailability =
+      isEndCandidate && !isChosen
+        ? getRangeEndAvailability(date, range.start, rangeRules)
+        : undefined
+    const days = endAvailability === 'available' ? countDays(range.start, date) : 0
+    const rangeNote =
+      endAvailability === 'available'
+        ? calendarMessages.rangeLength({ days, nights: days - 1 })
+        : endAvailability === 'too-short'
+          ? calendarMessages.rangeTooShort({ minimum: minimumDays ?? 0 })
+          : endAvailability === 'too-long'
+            ? calendarMessages.rangeTooLong({ maximum: maximumDays ?? 0 })
+            : endAvailability === 'blocked'
+              ? calendarMessages.rangeBlocked
+              : endAvailability === 'before-start' && selects === 'end'
+                ? calendarMessages.rangeBeforeStart
+                : undefined
+    const isImpossibleEnd =
+      selects === 'end' &&
+      (endAvailability === 'before-start' ||
+        endAvailability === 'too-short' ||
+        endAvailability === 'too-long' ||
+        endAvailability === 'blocked')
+    return { position, rangePosition, rangeNote, isImpossibleEnd }
+  }
 
   const getDayProps = (date: IsoDate): CalendarDayPartProps => {
     const availability = getAvailability(date)
     const isToday = date === today
-    const isSelected = date === selectedDate
+    const { position, rangePosition, rangeNote, isImpossibleEnd } = getRangeNames(date)
+    const isInRange =
+      position === 'start' ||
+      position === 'end' ||
+      position === 'start-end' ||
+      position === 'in-range'
+    const isSelected = isRange ? isInRange : date === selectedDate
+    const setPreviewDate = (previewDate: IsoDate | undefined) => {
+      if (store.getState().previewDate !== previewDate) {
+        store.actions.setPreviewDate(previewDate)
+      }
+    }
     return {
       className: 'kv-calendar-day',
       role: 'gridcell',
@@ -381,12 +794,28 @@ export function useCalendar({
       'aria-label': calendarMessages.dayName({
         date: formatters.fullDate(date),
         isToday,
+        rangePosition,
+        rangeNote,
         description: getDateDescription?.(date),
       }),
-      ...(isSelected ? { 'aria-selected': 'true' as const, 'data-selected': '' as const } : {}),
+      ...(isSelected ? { 'aria-selected': 'true' as const } : {}),
+      ...(isSelected && (!isRange || position !== 'in-range')
+        ? { 'data-selected': '' as const }
+        : {}),
+      ...(position === 'start' || position === 'start-end'
+        ? { 'data-range-start': '' as const }
+        : {}),
+      ...(position === 'end' || position === 'start-end' ? { 'data-range-end': '' as const } : {}),
+      ...(position === 'in-range' ? { 'data-in-range': '' as const } : {}),
+      ...(position === 'preview' ? { 'data-preview': '' as const } : {}),
+      ...(position === 'preview-end' ? { 'data-preview-end': '' as const } : {}),
       ...(isToday ? { 'aria-current': 'date' as const, 'data-today': '' as const } : {}),
-      ...(availability === 'available' ? {} : { 'aria-disabled': 'true' as const }),
-      ...(availability === 'unavailable' ? { 'data-unavailable': '' as const } : {}),
+      ...(availability === 'available' && !isImpossibleEnd
+        ? {}
+        : { 'aria-disabled': 'true' as const }),
+      ...(availability === 'unavailable' || isImpossibleEnd
+        ? { 'data-unavailable': '' as const }
+        : {}),
       ...(availability === 'outside-range' ? { 'data-outside-range': '' as const } : {}),
       ref: (element) => {
         if (element === null) {
@@ -399,6 +828,9 @@ export function useCalendar({
       onFocus: () => {
         if (store.getState().focusedDate !== date) {
           store.actions.focusDate(date)
+        }
+        if (isRange) {
+          setPreviewDate(date)
         }
       },
       onKeyDown: (event) => {
@@ -416,17 +848,33 @@ export function useCalendar({
           shouldFocusCell.current = store.getState().focusedDate !== before
         }
       },
+      ...(isRange
+        ? {
+            onPointerEnter: () => setPreviewDate(date),
+            onPointerLeave: () => {
+              const focused = store.getState().focusedDate
+              setPreviewDate(
+                cellElements.current.get(focused) === document.activeElement ? focused : undefined,
+              )
+            },
+            onBlur: (event: FocusEvent<HTMLTableCellElement>) => {
+              const next = event.relatedTarget
+              const staysInGrid = [...cellElements.current.values()].some(
+                (element) => element === next,
+              )
+              if (!staysInGrid) {
+                setPreviewDate(undefined)
+              }
+            },
+          }
+        : {}),
     }
   }
 
   return {
     rootProps: { className: 'kv-calendar' },
-    headingProps: {
-      className: 'kv-calendar-heading',
-      id: headingId,
-      ...(dateLanguage === undefined ? {} : { lang: dateLanguage }),
-    },
-    headingText: formatters.month(state.visibleMonth),
+    headingProps: firstMonth.headingProps,
+    headingText: firstMonth.headingText,
     previousMonthProps: getStepProps(
       'kv-calendar-previous-month',
       calendarMessages.previousMonth,
@@ -441,23 +889,23 @@ export function useCalendar({
     nextYearProps: getStepProps('kv-calendar-next-year', calendarMessages.nextYear, 12),
     rangeHintProps: { className: 'kv-calendar-range', id: rangeHintId },
     rangeHint,
-    gridProps: {
-      className: 'kv-calendar-grid',
-      role: 'grid',
-      'aria-labelledby': headingId,
-      ...(rangeHint === undefined ? {} : { 'aria-describedby': rangeHintId }),
-    },
+    rangeHintLines,
+    gridProps: firstMonth.gridProps,
     weekdays,
     hasWeekNumbers,
     weekHeader: {
       short: calendarMessages.weekHeader,
       long: calendarMessages.weekHeaderLong,
     },
-    weeks,
+    weeks: firstMonth.weeks,
+    months,
     getDayProps,
     visibleMonth: state.visibleMonth,
+    visibleMonths: state.visibleMonths,
     focusedDate: state.focusedDate,
     selectedDate,
+    range,
+    rangeStep,
     dateLanguage,
   }
 }

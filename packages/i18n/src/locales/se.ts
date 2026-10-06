@@ -9,9 +9,10 @@ import type { KvirnMessages } from '../types.ts'
 // dialog.close is a native-speaker review item like alert.close (Plan 0067).
 // toast.regionLabel is one too (Plan 0071).
 // progress.loading and progress.slow are English placeholders too (Plan 0074).
-// calendar.* are English placeholders too (Plan 0082): a native speaker still has to write them.
+// calendar.* (including the range keys, Plan 0086) are English placeholders too (Plans 0082, 0086): a native speaker still has to write them.
 // stepper.* are English placeholders too (Plan 0083): a native speaker still has to write them.
 // datePicker.* are English placeholders too (Plan 0084): a native speaker still has to write them.
+// dateRangePicker.* are English placeholders too (Plan 0089): a native speaker still has to write them.
 // tag.* and filters.* are English placeholders too (Plan 0075): a native speaker still has to write them.
 // breadcrumb.* and pagination.* are English placeholders too (Plan 0062): a native speaker
 // still has to write them.
@@ -372,8 +373,8 @@ export const se = {
     nextMonth: 'Next month',
     previousYear: 'Previous year',
     nextYear: 'Next year',
-    dayName: ({ date, isToday, description }) =>
-      [date, isToday ? 'today' : undefined, description]
+    dayName: ({ date, isToday, rangePosition, rangeNote, description }) =>
+      [date, isToday ? 'today' : undefined, rangePosition, rangeNote, description]
         .filter((part) => part !== undefined)
         .join(', '),
     weekHeader: 'Wk',
@@ -392,3 +393,30 @@ export const se = {
     title: 'Choose a date',
   },
 } satisfies KvirnMessages
+    rangeStart: 'start date',
+    rangeEnd: 'end date',
+    rangeStartAndEnd: 'start and end date',
+    rangeLength: ({ days }, format) =>
+      format.plural(days, { one: '1 day', other: `${format.number(days)} days` }),
+    rangeTooShort: ({ minimum }, format) =>
+      `fewer than ${format.plural(minimum, { one: '1 day', other: `${format.number(minimum)} days` })}`,
+    rangeTooLong: ({ maximum }, format) =>
+      `more than ${format.plural(maximum, { one: '1 day', other: `${format.number(maximum)} days` })}`,
+    rangeBlocked: 'an unavailable day is in between',
+    rangeBeforeStart: 'before the start date',
+    rangeSpanHint: ({ minimum, maximum }, format) =>
+      minimum !== undefined && maximum !== undefined
+        ? `${format.number(minimum)} to ${format.plural(maximum, { one: '1 day', other: `${format.number(maximum)} days` })}`
+        : minimum !== undefined
+          ? `at least ${format.plural(minimum, { one: '1 day', other: `${format.number(minimum)} days` })}`
+          : `up to ${format.plural(maximum ?? 0, { one: '1 day', other: `${format.number(maximum ?? 0)} days` })}`,
+    rangeChooseStart: 'Choose the start date.',
+    rangeChooseEnd: ({ start }) => `Start date ${start}. Choose the end date.`,
+    rangeSelected: ({ start, end, length }) => `${start} to ${end} selected, ${length}`,
+    rangeEndSelected: ({ date }) => `End date ${date} selected.`,
+    rangeEndCleared: 'End date cleared.',
+    visibleMonths: ({ first, last }) => `${first} and ${last}`,
+  dateRangePicker: {
+    trigger: 'Choose dates',
+    title: 'Choose the dates',
+  },

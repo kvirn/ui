@@ -543,8 +543,16 @@ export interface KvirnMessages {
     /** Only when the consumer renders the year buttons. */
     previousYear: TextMessage
     nextYear: TextMessage
-    /** A day's accessible name: `Wednesday 14 October 2026, today, Recycling centre closed`. Parts that are absent drop out. `description` is the consumer's text for the day. */
-    dayName: MessageFunction<{ date: string; isToday: boolean; description: string | undefined }>
+    /** A day's accessible name: `Wednesday 14 October 2026, today, start date, Recycling centre closed`. Parts that are absent drop out. `description` is the consumer's text for the day. */
+    dayName: MessageFunction<{
+      date: string
+      isToday: boolean
+      description: string | undefined
+      /** Range mode, already translated: `start date`, `end date`, `start and end date`. */
+      rangePosition?: string | undefined
+      /** Range mode, already translated: the length of a possible end, or why a day can't be the end. */
+      rangeNote?: string | undefined
+    }>
     /** The visible week-number column header, short. It is hidden from assistive technology. */
     weekHeader: TextMessage
     /** The same header, spelled out and visually hidden. */
@@ -569,3 +577,36 @@ export interface KvirnMessages {
 export type PartialMessages = {
   [Namespace in keyof KvirnMessages]?: Partial<KvirnMessages[Namespace]>
 }
+    /** Range mode name parts of the chosen days. */
+    rangeStart: TextMessage
+    rangeEnd: TextMessage
+    rangeStartAndEnd: TextMessage
+    /** Name part of each possible end while the end is pending: `7 days`. `nights` is `days - 1`, for a booking's wording. */
+    rangeLength: MessageFunction<{ days: number; nights: number }>
+    /** Name part of a day that can't be the end: `fewer than 3 days`. */
+    rangeTooShort: MessageFunction<{ minimum: number }>
+    rangeTooLong: MessageFunction<{ maximum: number }>
+    /** Name part: an unavailable day lies between the start and this day. */
+    rangeBlocked: TextMessage
+    /** Name part of an impossible end, with `selects="end"` only. */
+    rangeBeforeStart: TextMessage
+    /** The span limits in the range hint (3.3.2). At least one of the two is set. */
+    rangeSpanHint: MessageFunction<{ minimum: number | undefined; maximum: number | undefined }>
+    /** The step line when no start is chosen. */
+    rangeChooseStart: TextMessage
+    /** The step line and the announcement after the start was pressed. */
+    rangeChooseEnd: MessageFunction<{ start: string }>
+    /** The step line when complete and the completion announcement. `length` is `rangeLength`'s text. */
+    rangeSelected: MessageFunction<{ start: string; end: string; length: string }>
+    /** Announced when only the end is chosen (`selects="end"`) and when it is dropped. */
+    rangeEndSelected: MessageFunction<{ date: string }>
+    rangeEndCleared: TextMessage
+    /** The month buttons' announcement with two months visible: `October 2026 and November 2026`. */
+    visibleMonths: MessageFunction<{ first: string; last: string }>
+  /** DateRangePicker (Plan 0089). The month grid's own strings, and "{start} to {end} selected", are in `calendar`. */
+  dateRangePicker: {
+    /** The button's visible name, after both typed dates: `Choose dates`. */
+    trigger: TextMessage
+    /** The dialog's title. The consumer can replace it with the question: `Choose the dates of your stay`. */
+    title: TextMessage
+  }

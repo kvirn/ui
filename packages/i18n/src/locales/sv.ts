@@ -343,8 +343,8 @@ export const sv = {
     nextMonth: 'Nästa månad',
     previousYear: 'Föregående år',
     nextYear: 'Nästa år',
-    dayName: ({ date, isToday, description }) =>
-      [date, isToday ? 'idag' : undefined, description]
+    dayName: ({ date, isToday, rangePosition, rangeNote, description }) =>
+      [date, isToday ? 'idag' : undefined, rangePosition, rangeNote, description]
         .filter((part) => part !== undefined)
         .join(', '),
     weekHeader: 'v.',
@@ -363,3 +363,30 @@ export const sv = {
     title: 'Välj ett datum',
   },
 } satisfies KvirnMessages
+    rangeStart: 'startdatum',
+    rangeEnd: 'slutdatum',
+    rangeStartAndEnd: 'start- och slutdatum',
+    rangeLength: ({ days }, format) =>
+      format.plural(days, { one: '1 dag', other: `${format.number(days)} dagar` }),
+    rangeTooShort: ({ minimum }, format) =>
+      `färre än ${format.plural(minimum, { one: '1 dag', other: `${format.number(minimum)} dagar` })}`,
+    rangeTooLong: ({ maximum }, format) =>
+      `fler än ${format.plural(maximum, { one: '1 dag', other: `${format.number(maximum)} dagar` })}`,
+    rangeBlocked: 'en otillgänglig dag ligger emellan',
+    rangeBeforeStart: 'före startdatumet',
+    rangeSpanHint: ({ minimum, maximum }, format) =>
+      minimum !== undefined && maximum !== undefined
+        ? `${format.number(minimum)} till ${format.plural(maximum, { one: '1 dag', other: `${format.number(maximum)} dagar` })}`
+        : minimum !== undefined
+          ? `minst ${format.plural(minimum, { one: '1 dag', other: `${format.number(minimum)} dagar` })}`
+          : `högst ${format.plural(maximum ?? 0, { one: '1 dag', other: `${format.number(maximum ?? 0)} dagar` })}`,
+    rangeChooseStart: 'Välj startdatum.',
+    rangeChooseEnd: ({ start }) => `Startdatum ${start}. Välj slutdatum.`,
+    rangeSelected: ({ start, end, length }) => `${start} till ${end} valda, ${length}`,
+    rangeEndSelected: ({ date }) => `Slutdatum ${date} valt.`,
+    rangeEndCleared: 'Slutdatum rensat.',
+    visibleMonths: ({ first, last }) => `${first} och ${last}`,
+  dateRangePicker: {
+    trigger: 'Välj datumen',
+    title: 'Välj perioden',
+  },

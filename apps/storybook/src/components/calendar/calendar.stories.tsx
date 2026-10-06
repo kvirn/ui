@@ -12,6 +12,8 @@ import {
   InlineCalendarWithField,
   LocaleCalendars,
   MonthCalendar,
+  RangeCalendar,
+  RangeFromToPair,
   YearButtonsCalendar,
   closedDays,
   describeClosedDay,
@@ -55,7 +57,26 @@ const meta = {
     today: { control: 'text', description: 'Today, for tests and stories. Else the clock.' },
     announce: {
       control: 'boolean',
-      description: 'Announce the new month and the chosen day. Default true.',
+      description: 'Announce the new month and what a press did. Default true.',
+    },
+    mode: {
+      control: false,
+      description:
+        '`single` (default) or `range`: value, defaultValue and onValueChange are a { start, end }.',
+    },
+    selects: {
+      control: false,
+      description: 'Range: which end a press sets, both (default), start or end.',
+    },
+    minimumDays: { control: false, description: 'Range: the span in inclusive days, at least.' },
+    maximumDays: { control: false, description: 'Range: the span in inclusive days, at most.' },
+    allowUnavailableInRange: {
+      control: false,
+      description: 'Range: a range may pass over an unavailable day. Default false.',
+    },
+    visibleMonths: {
+      control: false,
+      description: 'The most months side by side: two from 64rem only. Default 1.',
     },
     messages: { control: false, description: 'Per-instance strings, `calendar.*`.' },
     render: { control: false, description: 'Another element for the Root.' },
@@ -248,6 +269,21 @@ export const ForcedColors: Story = {
   ),
 }
 
+const wideViewport = {
+  globals: { viewport: { value: 'wide', isRotated: false } },
+  parameters: {
+    viewport: {
+      options: {
+        wide: {
+          name: '64rem and wider',
+          styles: { width: '1280px', height: '800px' },
+          type: 'desktop',
+        },
+      },
+    },
+  },
+} as const
+
 const reflowViewport = {
   globals: { viewport: { value: 'reflow', isRotated: false } },
   parameters: {
@@ -299,5 +335,170 @@ export const Keyboard: Story = {
     const monthBefore = canvas.getByRole('heading', { level: 3 }).textContent
     await userEvent.keyboard('{PageDown}')
     await expect(canvas.getByRole('heading', { level: 3 }).textContent).not.toBe(monthBefore)
+  },
+}
+
+const rangeDays = (canvas: { getByTestId: (id: string) => HTMLElement }) =>
+  canvas.getByTestId('stored')
+
+/** Range mode, one month: the first press sets the start, the second the end. The step line says which is next. */
+export const Range: Story = {
+  parameters: showSource('calendar/calendar.fixture.tsx', 'RangeCalendar'),
+  render: () => <RangeCalendar />,
+  play: async ({ canvas }) => {
+    const grid = canvas.getByRole('grid')
+    await expect(grid).toHaveAttribute('aria-multiselectable', 'true')
+    const days = grid.querySelectorAll<HTMLElement>('[role="gridcell"]')
+    await userEvent.click(days[15] as HTMLElement)
+    await expect(rangeDays(canvas)).toHaveTextContent('2026-10-16 –')
+    await userEvent.click(days[22] as HTMLElement)
+    await expect(rangeDays(canvas)).toHaveTextContent('2026-10-16 – 2026-10-23')
+    await expect(grid.querySelectorAll('[aria-selected="true"]')).toHaveLength(8)
+    await expect(grid.querySelectorAll('[data-in-range]')).toHaveLength(6)
+  },
+}
+
+/** Two months side by side from 64rem (one below it), one Tab stop across both grids. */
+export const RangeTwoMonths: Story = {
+  ...wideViewport,
+  parameters: {
+    ...wideViewport.parameters,
+    ...showSource('calendar/calendar.fixture.tsx', 'RangeCalendar'),
+  },
+  render: () => (
+    <RangeCalendar visibleMonths={2} initial={{ start: '2026-10-28', end: '2026-11-04' }} />
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getAllByRole('grid')).toHaveLength(2)
+    await expect(document.querySelectorAll('[role="gridcell"][tabindex="0"]')).toHaveLength(1)
+    await expect(canvas.getAllByRole('heading', { level: 3 })).toHaveLength(2)
+  },
+}
+
+/** A span of 2 to 15 days (up to 14 nights): the hint says it, and a day too far is named so and starts a new range. */
+export const RangeSpan: Story = {
+  parameters: showSource('calendar/calendar.fixture.tsx', 'RangeCalendar'),
+  render: () => (
+    <RangeCalendar minimumDays={2} maximumDays={15} initial={{ start: '2026-10-16', end: '' }} />
+  ),
+  play: async ({ canvas }) => {
+    const grid = canvas.getByRole('grid')
+    await expect(grid).toHaveAccessibleDescription()
+    const days = grid.querySelectorAll<HTMLElement>('[role="gridcell"]')
+    await userEvent.click(days[30] as HTMLElement)
+    await expect(rangeDays(canvas)).toHaveTextContent('2026-10-31 –')
+    await expect(rangeDays(canvas)).not.toHaveTextContent('2026-10-16 –')
+  },
+}
+
+/** An unavailable day blocks the range: a day beyond it starts a new range instead. */
+export const RangeUnavailableBlocked: Story = {
+  parameters: showSource('calendar/calendar.fixture.tsx', 'RangeCalendar'),
+  render: (_args, { globals }) => (
+    <RangeCalendar
+      initial={{ start: '2026-10-14', end: '' }}
+      isDateUnavailable={(date) => closedDays.has(date)}
+      getDateDescription={describeClosedDay(localeOf(globals))}
+    />
+  ),
+  play: async ({ canvas }) => {
+    const grid = canvas.getByRole('grid')
+    const days = grid.querySelectorAll<HTMLElement>('[role="gridcell"]')
+    await userEvent.click(days[19] as HTMLElement)
+    await expect(rangeDays(canvas)).toHaveTextContent('2026-10-20 –')
+  },
+}
+
+/** `allowUnavailableInRange`: leave across a closed day. The closed days stay struck through inside the band. */
+export const RangeUnavailableAllowed: Story = {
+  parameters: showSource('calendar/calendar.fixture.tsx', 'RangeCalendar'),
+  render: (_args, { globals }) => (
+    <RangeCalendar
+      allowUnavailableInRange
+      initial={{ start: '2026-10-14', end: '' }}
+      isDateUnavailable={(date) => closedDays.has(date)}
+      getDateDescription={describeClosedDay(localeOf(globals))}
+    />
+  ),
+  play: async ({ canvas }) => {
+    const grid = canvas.getByRole('grid')
+    const days = grid.querySelectorAll<HTMLElement>('[role="gridcell"]')
+    await userEvent.click(days[19] as HTMLElement)
+    await expect(rangeDays(canvas)).toHaveTextContent('2026-10-14 – 2026-10-20')
+    await expect(grid.querySelectorAll('[data-in-range][data-unavailable]')).toHaveLength(2)
+  },
+}
+
+/** A start alone, the end still to choose: hovering or focusing a day previews the range up to it (drawn only). */
+export const RangePartial: Story = {
+  parameters: showSource('calendar/calendar.fixture.tsx', 'RangeCalendar'),
+  render: () => <RangeCalendar initial={{ start: '2026-10-16', end: '' }} />,
+  play: async ({ canvas }) => {
+    const grid = canvas.getByRole('grid')
+    const days = grid.querySelectorAll<HTMLElement>('[role="gridcell"]')
+    await userEvent.hover(days[19] as HTMLElement)
+    await expect(grid.querySelectorAll('[data-preview]')).toHaveLength(3)
+    await expect(grid.querySelectorAll('[data-preview-end]')).toHaveLength(1)
+    await expect(grid.querySelectorAll('[aria-selected="true"]')).toHaveLength(1)
+  },
+}
+
+/** A from/to pair on one range: the first Calendar sets the start, the second the end, and the end follows the start's month. */
+export const RangeFromAndToPair: Story = {
+  parameters: showSource('calendar/calendar.fixture.tsx', 'RangeFromToPair'),
+  render: (_args, { globals }) => <RangeFromToPair locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    const grids = canvas.getAllByRole('grid')
+    await expect(grids).toHaveLength(2)
+    const startDays = grids[0]?.querySelectorAll<HTMLElement>('[role="gridcell"]')
+    await userEvent.click(startDays?.[15] as HTMLElement)
+    await expect(rangeDays(canvas)).toHaveTextContent('2026-10-16 –')
+    const endDays = grids[1]?.querySelectorAll<HTMLElement>('[role="gridcell"]')
+    await expect(endDays?.[14]).toHaveAttribute('aria-disabled', 'true')
+    await userEvent.click(endDays?.[21] as HTMLElement)
+    await expect(rangeDays(canvas)).toHaveTextContent('2026-10-16 – 2026-10-22')
+  },
+}
+
+/** Right to left: the band, the squared corners and the chevrons mirror, and the arrows follow the direction. */
+export const RangeRTL: Story = {
+  globals: { dir: 'rtl', locale: 'en' },
+  render: () => <RangeCalendar initial={{ start: '2026-10-16', end: '2026-10-23' }} />,
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('grid').querySelectorAll('[data-in-range]')).toHaveLength(6)
+  },
+}
+
+/** Start, end, the band, a previewed end and an unavailable day stay distinguishable in forced colours. */
+export const RangeForcedColors: Story = {
+  globals: { forcedColors: 'active' },
+  render: (_args, { globals }) => (
+    <RangeCalendar
+      allowUnavailableInRange
+      initial={{ start: '2026-10-14', end: '2026-10-21' }}
+      isDateUnavailable={(date) => closedDays.has(date)}
+      getDateDescription={describeClosedDay(localeOf(globals))}
+    />
+  ),
+}
+
+/** A 320px screen: one month in a range Calendar, nothing scrolls sideways. */
+export const RangeNarrow: Story = {
+  ...reflowViewport,
+  render: () => (
+    <div data-testid="narrow">
+      <RangeCalendar
+        visibleMonths={2}
+        initial={{ start: '2026-10-16', end: '2026-10-23' }}
+        minimumDays={2}
+        maximumDays={15}
+      />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    await expect(window.innerWidth).toBeLessThanOrEqual(320)
+    await expect(canvas.getAllByRole('grid')).toHaveLength(1)
+    await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
+    await expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(window.innerWidth)
   },
 }

@@ -167,6 +167,7 @@ Listbox: one Tab stop. Multi-select adds Space to toggle and Shift+Arrow to exte
 | Date grid   | (a move at min or max)        | The target is clamped to the range: at the edge focus stays and the key is still taken. Control, Alt and Meta chords are never taken (Alt+ArrowLeft is Back)                                                                                                                      |
 | Date grid   | Enter / Space                 | On an available day: selects it. On an unavailable day (focusable, `aria-disabled`): nothing. On a month or year button: shows that month, focus stays, the focused day moves to the same day cut to the month's length; at the edge nothing                                      |
 | Date grid   | Escape                        | A standalone Calendar does not handle it                                                                                                                                                                                                                                          |
+| Date grid   | (range mode)                  | No APG range pattern, so no key is added: a range is two ordinary selections (Enter, Space or a click on the start, then the end). No Shift+Arrow extension (Shift+Page is a year); two months are one Tab stop and the arrows cross between the grids                            |
 
 ## Rich text editor (a toolbar plus a multi-line text; Plan 0036)
 

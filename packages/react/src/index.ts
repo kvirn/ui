@@ -1381,6 +1381,7 @@ export type {
   CalendarDay,
   CalendarGridProps,
   CalendarHeadingProps,
+  CalendarMonth,
   CalendarRangeHintProps,
   CalendarRootProps,
   CalendarState,
@@ -1396,8 +1397,14 @@ export type {
   CalendarRangeHintPartProps,
   CalendarRootPartProps,
   CalendarStepPartProps,
+  CalendarRangeChange,
+  DateRange,
+  RangeSelects,
+  UseCalendarBaseOptions,
   UseCalendarOptions,
+  UseCalendarRangeOptions,
   UseCalendarResult,
+  UseCalendarSingleOptions,
 } from './calendar/use-calendar.ts'
 export {
   DatePicker,
@@ -1431,6 +1438,32 @@ export {
   isoDateToMaskedDate,
   maskedDateToIsoDate,
 } from './date-picker/date-bridge.ts'
+export {
+  DateRangePicker,
+  DateRangePickerCalendar,
+  DateRangePickerPopup,
+  DateRangePickerRoot,
+  DateRangePickerTitle,
+  DateRangePickerTrigger,
+} from './date-range-picker/date-range-picker.tsx'
+export type {
+  DateRangePickerCalendarProps,
+  DateRangePickerChangeDetails,
+  DateRangePickerChangeReason,
+  DateRangePickerPopupProps,
+  DateRangePickerRootProps,
+  DateRangePickerState,
+  DateRangePickerTitleProps,
+  DateRangePickerTriggerProps,
+} from './date-range-picker/date-range-picker.tsx'
+export { useDateRangePicker } from './date-range-picker/use-date-range-picker.ts'
+export type {
+  DateRangePickerCalendarOptions,
+  DateRangePickerPopupPartProps,
+  DateRangePickerTriggerPartProps,
+  UseDateRangePickerOptions,
+  UseDateRangePickerResult,
+} from './date-range-picker/use-date-range-picker.ts'
 export { Stepper } from './stepper/stepper.tsx'
 export type { StepperElementProps, StepperProps, StepperState } from './stepper/stepper.tsx'
 export { useStepper } from './stepper/use-stepper.ts'

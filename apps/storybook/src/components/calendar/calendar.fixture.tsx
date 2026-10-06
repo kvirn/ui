@@ -9,9 +9,9 @@ import {
   maskedDateToIsoDate,
   useLocale,
 } from '@kvirn-ui/react'
-import type { CalendarRootProps } from '@kvirn-ui/react'
+import type { CalendarRootProps, DateRange } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { dateTextsFor } from '../date-input/date-input.fixture.tsx'
 import { localeOf, messagesFor, providerLocaleOf } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -183,6 +183,76 @@ export function FromToCalendars({ locale }: { locale: FormLocale }) {
       </div>
       <p className="kv-story-form-output" data-testid="stored">
         {text.stored}: {from === '' ? '' : from} – {to}
+      </p>
+    </div>
+  )
+}
+
+type RangeCalendarProps = Partial<Extract<CalendarRootProps, { mode: 'range' }>> & {
+  /** The range chosen at first. */
+  initial?: DateRange | undefined
+}
+
+/** A range Calendar that keeps its own value, with the two-month parts (they render nothing below 64rem). */
+export function RangeCalendar({ initial = { start: '', end: '' }, ...props }: RangeCalendarProps) {
+  const [range, setRange] = useState(initial)
+  return (
+    <div className="kv-story-form">
+      <Calendar.Root
+        today="2026-10-14"
+        {...props}
+        mode="range"
+        value={range}
+        onValueChange={setRange}
+      >
+        <Calendar.PreviousMonth />
+        <Calendar.Heading />
+        <Calendar.Heading offset={1} />
+        <Calendar.NextMonth />
+        <Calendar.RangeHint />
+        <Calendar.Grid />
+        <Calendar.Grid offset={1} />
+      </Calendar.Root>
+      <p className="kv-story-form-output" data-testid="stored">
+        {range.start} – {range.end}
+      </p>
+    </div>
+  )
+}
+
+/** Two Calendars on one range: the first chooses the start, the second the end, each under its own heading. */
+export function RangeFromToPair({ locale }: { locale: FormLocale }) {
+  const labels = fromToTexts[locale]
+  const startHeadingId = useId()
+  const endHeadingId = useId()
+  const [range, setRange] = useState<DateRange>({ start: '', end: '' })
+  return (
+    <div className="kv-story-form">
+      <div className="kv-story-calendars">
+        {(['start', 'end'] as const).map((end) => (
+          <div key={end}>
+            <h3 id={end === 'start' ? startHeadingId : endHeadingId}>
+              {end === 'start' ? labels.from : labels.to}
+            </h3>
+            <Calendar.Root
+              today="2026-10-14"
+              mode="range"
+              selects={end}
+              value={range}
+              onValueChange={setRange}
+              maximumDays={15}
+            >
+              <Calendar.PreviousMonth />
+              <Calendar.Heading />
+              <Calendar.NextMonth />
+              <Calendar.RangeHint />
+              <Calendar.Grid aria-labelledby={end === 'start' ? startHeadingId : endHeadingId} />
+            </Calendar.Root>
+          </div>
+        ))}
+      </div>
+      <p className="kv-story-form-output" data-testid="stored">
+        {range.start} – {range.end}
       </p>
     </div>
   )

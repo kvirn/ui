@@ -135,6 +135,11 @@ export function addDays(date: IsoDate, days: number): IsoDate {
   return fromClampedDayNumber(toDayNumber(parseValid(date)) + days)
 }
 
+/** Whole days from `first` to `second`: negative when `second` is earlier. */
+export function getDaysBetween(first: IsoDate, second: IsoDate): number {
+  return toDayNumber(parseValid(second)) - toDayNumber(parseValid(first))
+}
+
 /** Months later (or earlier, when negative). The day is kept, or cut to the month's length (31 Jan + 1 is 28 Feb). */
 export function addMonths(date: IsoDate, months: number): IsoDate {
   assertWholeNumber(months)

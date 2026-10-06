@@ -349,8 +349,8 @@ export const fi = {
     nextMonth: 'Seuraava kuukausi',
     previousYear: 'Edellinen vuosi',
     nextYear: 'Seuraava vuosi',
-    dayName: ({ date, isToday, description }) =>
-      [date, isToday ? 'tänään' : undefined, description]
+    dayName: ({ date, isToday, rangePosition, rangeNote, description }) =>
+      [date, isToday ? 'tänään' : undefined, rangePosition, rangeNote, description]
         .filter((part) => part !== undefined)
         .join(', '),
     weekHeader: 'Vko',
@@ -369,3 +369,30 @@ export const fi = {
     title: 'Valitse päivämäärä',
   },
 } satisfies KvirnMessages
+    rangeStart: 'alkupäivä',
+    rangeEnd: 'loppupäivä',
+    rangeStartAndEnd: 'alku- ja loppupäivä',
+    rangeLength: ({ days }, format) =>
+      format.plural(days, { one: '1 päivä', other: `${format.number(days)} päivää` }),
+    rangeTooShort: ({ minimum }, format) =>
+      `alle ${format.plural(minimum, { one: '1 päivä', other: `${format.number(minimum)} päivää` })}`,
+    rangeTooLong: ({ maximum }, format) =>
+      `yli ${format.plural(maximum, { one: '1 päivä', other: `${format.number(maximum)} päivää` })}`,
+    rangeBlocked: 'välissä on päivä, joka ei ole valittavissa',
+    rangeBeforeStart: 'ennen alkupäivää',
+    rangeSpanHint: ({ minimum, maximum }, format) =>
+      minimum !== undefined && maximum !== undefined
+        ? `${format.number(minimum)}–${format.plural(maximum, { one: '1 päivä', other: `${format.number(maximum)} päivää` })}`
+        : minimum !== undefined
+          ? `vähintään ${format.plural(minimum, { one: '1 päivä', other: `${format.number(minimum)} päivää` })}`
+          : `enintään ${format.plural(maximum ?? 0, { one: '1 päivä', other: `${format.number(maximum ?? 0)} päivää` })}`,
+    rangeChooseStart: 'Valitse alkupäivä.',
+    rangeChooseEnd: ({ start }) => `Alkupäivä ${start}. Valitse loppupäivä.`,
+    rangeSelected: ({ start, end, length }) => `Valittu ${start} – ${end}, ${length}`,
+    rangeEndSelected: ({ date }) => `Loppupäivä ${date} valittu.`,
+    rangeEndCleared: 'Loppupäivä tyhjennetty.',
+    visibleMonths: ({ first, last }) => `${first} ja ${last}`,
+  dateRangePicker: {
+    trigger: 'Valitse päivät',
+    title: 'Valitse päivämäärät',
+  },
