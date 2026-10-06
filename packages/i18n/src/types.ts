@@ -96,6 +96,13 @@ export interface KvirnMessages {
      */
     close: TextMessage
   }
+  dialog: {
+    /**
+     * The accessible name of `Dialog.Close`, the optional dismiss button (an icon with no visible
+     * text), for example `Stäng dialogrutan`. Owned by Dialog (Plan 0067).
+     */
+    close: TextMessage
+  }
   combobox: {
     /**
      * Announced (politely, debounced) when the filtered list changes, for example `5 resultat`.

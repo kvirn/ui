@@ -102,10 +102,12 @@ const componentGroups: readonly NavigationGroup[] = [
   {
     label: groupText.choiceAndOverlays,
     pages: [
+      page('AlertDialog', 'alert-dialog'),
       page('Autocomplete', 'autocomplete'),
       page('Checkbox', 'checkbox'),
       page('CheckboxGroup', 'checkbox-group'),
       page('Combobox', 'combobox'),
+      page('Dialog', 'dialog'),
       page('Listbox', 'listbox'),
       page('Popover', 'popover'),
       page('RadioGroup', 'radio-group'),

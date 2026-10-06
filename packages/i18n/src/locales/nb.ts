@@ -20,6 +20,7 @@ export const nb = {
     dangerPrefix: 'Feil:',
     close: 'Lukk meldingen',
   },
+  dialog: { close: 'Lukk dialogvinduet' },
   combobox: {
     resultCount: ({ count }, format) =>
       format.plural(count, { one: '1 treff', other: `${format.number(count)} treff` }),

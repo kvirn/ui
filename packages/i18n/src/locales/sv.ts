@@ -17,6 +17,7 @@ export const sv = {
     dangerPrefix: 'Fel:',
     close: 'Stäng meddelandet',
   },
+  dialog: { close: 'Stäng dialogrutan' },
   combobox: {
     resultCount: ({ count }, format) =>
       format.plural(count, { one: '1 resultat', other: `${format.number(count)} resultat` }),

@@ -7,6 +7,11 @@ The parts render these classes. The theme selects on them, and they are public A
 - Classes: `kv-popover-trigger`, `kv-popover-popup`, `kv-popover-close`.
 - State: `data-open` (trigger and popup), `data-placement`, `data-detached` (popup).
 
+## Dialog and AlertDialog
+
+- Classes: `kv-dialog` (the `<dialog>`), `kv-dialog-title`, `kv-dialog-description`, `kv-dialog-body`, `kv-dialog-actions`, `kv-dialog-close`. AlertDialog parts add `kv-alert-dialog*` (for example `kv-alert-dialog`), which are not styled separately. `AlertDialog.Close` renders only `kv-alert-dialog-close`, a plain button: it does not take the quiet icon look of `kv-dialog-close`.
+- State: `data-open` (popup). `data-kv-scroll-locked` on `<html>` while a modal is open; `theme.css` applies the lock.
+
 ## Listbox
 
 - Classes: `kv-listbox-trigger`, `kv-listbox-value`, `kv-listbox-popup`, `kv-listbox-list`, `kv-listbox-option`, `kv-listbox-group`, `kv-listbox-group-label`, `kv-listbox-empty`, `kv-listbox-native` (the native `<select>`), `kv-listbox-virtual-sizer`.

@@ -1,5 +1,5 @@
-import { createDismissableLayerStack } from '@kvirn-ui/core'
-import type { DismissableLayerStack, LayerTargetCheck } from '@kvirn-ui/core'
+import { createDismissableLayerStack, isPointInsideRect } from '@kvirn-ui/core'
+import type { DismissableLayerStack, LayerTargetCheck, PointerPoint } from '@kvirn-ui/core'
 import { useEffect, useId, useLayoutEffect, useRef } from 'react'
 import type { RefObject } from 'react'
 import { useEnv } from '../provider/use-env.ts'
@@ -28,19 +28,25 @@ export interface UseDismissableLayerOptions {
   dismissOnOutsidePress?: boolean | undefined
   /** Outside presses look through this layer to the one below it (a tooltip). Default `false`. */
   passOutsidePressThrough?: boolean | undefined
+  /**
+   * For a native `<dialog>` shown modally: its `::backdrop` is not an element, so a press on it
+   * has the dialog itself as target. With this on, a press on the element itself that lands
+   * outside its box counts as outside. Default `false`.
+   */
+  backdrop?: boolean | undefined
 }
 
 interface LayerRegistry {
   stack: DismissableLayerStack
-  /** The element of each layer on the stack, read when a press has to be placed inside or outside. */
-  elements: Map<string, () => Element | null>
+  /** Per layer on the stack, whether a press is inside it: how a press is placed inside or outside. */
+  contains: Map<string, (target: unknown, point: PointerPoint) => boolean>
 }
 
 let layerRegistry: LayerRegistry | undefined
 
 /** One stack for the whole page, created on first use so that importing the module touches nothing. */
 function getLayerRegistry(): LayerRegistry {
-  layerRegistry ??= { stack: createDismissableLayerStack(), elements: new Map() }
+  layerRegistry ??= { stack: createDismissableLayerStack(), contains: new Map() }
   return layerRegistry
 }
 
@@ -67,7 +73,8 @@ export function isInsideElement(element: Element | null | undefined, target: unk
  * - **A press outside** is read on `pointerdown`, before the page can stop it. A touch press is
  *   reported when the finger lifts (and not at all if the gesture becomes a scroll), so scrolling
  *   the page doesn't close the layer.
- * - A press inside `ref` or on an `ignore` target never dismisses the layer.
+ * - A press inside `ref` or on an `ignore` target never dismisses the layer. With `backdrop`, a
+ *   press on `ref` itself outside its box (a native dialog's `::backdrop`) does.
  * - It adds nothing to the DOM and reads no `window` at import time, so it is safe on the server.
  *
  * @example
@@ -82,6 +89,7 @@ export function useDismissableLayer({
   dismissOnEscape = true,
   dismissOnOutsidePress = true,
   passOutsidePressThrough = false,
+  backdrop = false,
 }: UseDismissableLayerOptions): void {
   const id = useId()
   const env = useEnv()
@@ -91,6 +99,7 @@ export function useDismissableLayer({
     dismissOnEscape,
     dismissOnOutsidePress,
     passOutsidePressThrough,
+    backdrop,
   })
 
   // The newest options, read by the listeners. Written before they can run, never during render.
@@ -101,6 +110,7 @@ export function useDismissableLayer({
       dismissOnEscape,
       dismissOnOutsidePress,
       passOutsidePressThrough,
+      backdrop,
     }
   })
 
@@ -108,8 +118,18 @@ export function useDismissableLayer({
     if (!open || env === undefined) {
       return
     }
-    const { stack, elements } = getLayerRegistry()
-    elements.set(id, () => ref.current)
+    const { stack, contains: layerContains } = getLayerRegistry()
+    layerContains.set(id, (target, point) => {
+      const element = ref.current
+      if (!element || !isInsideElement(element, target)) {
+        return false
+      }
+      return !(
+        latest.current.backdrop &&
+        target === element &&
+        !isPointInsideRect(point, element.getBoundingClientRect())
+      )
+    })
     // Pushed once per opening, so the layer keeps its place in the stack while the options change:
     // the getters hand the stack the newest values.
     const removeLayer = stack.push(id, {
@@ -125,8 +145,14 @@ export function useDismissableLayer({
       },
     })
 
+    /** Where the press being placed landed. Set by the press handlers just before they ask the stack. */
+    let pressPoint: PointerPoint = { x: 0, y: 0 }
     const contains = (layerId: string, target: unknown) =>
-      isInsideElement(elements.get(layerId)?.(), target)
+      layerContains.get(layerId)?.(target, pressPoint) === true
+    const placePress = (event: PointerEvent) => {
+      pressPoint = { x: event.clientX, y: event.clientY }
+      return stack.handleOutsidePress(event.target, contains)
+    }
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape' || event.defaultPrevented || event.isComposing) {
@@ -145,7 +171,7 @@ export function useDismissableLayer({
     let pendingTouch: number | undefined
     const handlePointerDown = (event: PointerEvent) => {
       pendingTouch = undefined
-      if (stack.handleOutsidePress(event.target, contains) !== id) {
+      if (placePress(event) !== id) {
         return
       }
       if (event.pointerType === 'touch') {
@@ -159,7 +185,7 @@ export function useDismissableLayer({
         return
       }
       pendingTouch = undefined
-      if (stack.handleOutsidePress(event.target, contains) === id) {
+      if (placePress(event) === id) {
         latest.current.onDismiss('outside-press', event)
       }
     }
@@ -180,7 +206,7 @@ export function useDismissableLayer({
       document.removeEventListener('pointerup', handlePointerUp, true)
       document.removeEventListener('pointercancel', handlePointerCancel, true)
       removeLayer()
-      elements.delete(id)
+      layerContains.delete(id)
     }
   }, [open, env, id, ref])
 }

@@ -78,6 +78,17 @@ Each is a `warnOnce` call (see SKILL.md, Developer warnings). Format of the key 
 | `Announcer` use                                   | no `KvirnProvider`: `useAnnouncer` warns once and does nothing; a mask without one warns on the first refused character                                                                                                                           |
 | `FileUpload`                                      | the browser cannot set the native input's `files` through `DataTransfer`; `Trigger` activated with no `FileUpload.Input`                                                                                                                          |
 
+## Dialog and AlertDialog
+
+| Where                       | Fires when                                                                                                                                                                                    |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Dialog.Popup`, `useDialog` | no accessible name: no Title registered and no `aria-label` (`dialog-without-name`, 4.1.2, effect on open)                                                                                    |
+| `Dialog.*`                  | a part outside a `Dialog.Root` (`dialog-<part>-outside-root`, effect)                                                                                                                         |
+| `Dialog.Root`, `useDialog`  | the dialog closed and nothing could take focus back: no Trigger in the document, no `finalFocusRef`, nothing focused before it opened (`dialog-return-focus-lost`, 2.4.3)                     |
+| `AlertDialog.Popup`         | no `AlertDialog.Description` registered (`alert-dialog-without-description`, APG Alert Dialog, effect on open)                                                                                |
+| `AlertDialog.Close`         | no children, `aria-label` or `aria-labelledby`: the plain button has no default name (`alert-dialog-close-without-name`, 4.1.2, 2.5.3, effect)                                                |
+| `AlertDialog.Root`          | no `initialFocusRef`: focus would start on the first control by chance, not the safe or primary action (`alert-dialog-without-initial-focus`, effect on open). Focus then starts on the Title |
+
 ## Tooltip
 
 | Where             | Fires when                                                                                                                                                          |

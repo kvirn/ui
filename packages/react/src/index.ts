@@ -941,6 +941,69 @@ export type {
   UsePopoverOptions,
   UsePopoverResult,
 } from './popover/use-popover.ts'
+export {
+  Dialog,
+  DialogActions,
+  DialogBody,
+  DialogClose,
+  DialogDescription,
+  DialogPopup,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from './dialog/dialog.tsx'
+export type {
+  DialogActionsProps,
+  DialogBodyProps,
+  DialogCloseProps,
+  DialogDescriptionProps,
+  DialogPopupProps,
+  DialogRootProps,
+  DialogState,
+  DialogTitleProps,
+  DialogTriggerProps,
+} from './dialog/dialog.tsx'
+export { useDialog } from './dialog/use-dialog.ts'
+export type {
+  DialogChangeDetails,
+  DialogChangeReason,
+  DialogClosePartProps,
+  DialogDescriptionPartProps,
+  DialogPopupPartProps,
+  DialogTitlePartProps,
+  DialogTriggerPartProps,
+  UseDialogOptions,
+  UseDialogResult,
+} from './dialog/use-dialog.ts'
+export {
+  AlertDialog,
+  AlertDialogActions,
+  AlertDialogBody,
+  AlertDialogClose,
+  AlertDialogDescription,
+  AlertDialogPopup,
+  AlertDialogRoot,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from './alert-dialog/alert-dialog.tsx'
+export type {
+  AlertDialogActionsProps,
+  AlertDialogBodyProps,
+  AlertDialogChangeDetails,
+  AlertDialogChangeReason,
+  AlertDialogCloseProps,
+  AlertDialogDescriptionProps,
+  AlertDialogPopupProps,
+  AlertDialogRootProps,
+  AlertDialogState,
+  AlertDialogTitleProps,
+  AlertDialogTriggerProps,
+} from './alert-dialog/alert-dialog.tsx'
+export { useAlertDialog } from './alert-dialog/use-alert-dialog.ts'
+export type {
+  UseAlertDialogOptions,
+  UseAlertDialogResult,
+} from './alert-dialog/use-alert-dialog.ts'
 export { usePopup } from './popup/use-popup.ts'
 export type {
   Placement,

@@ -244,6 +244,23 @@ describe('flat part exports', () => {
     expect(typeof api.Accordion).toBe('object')
   })
 
+  test('Dialog and AlertDialog are namespaces of their own parts, not callable roots', () => {
+    expect(api.Dialog.Root.displayName).toBe('Dialog.Root')
+    expect(api.Dialog.Trigger.displayName).toBe('Dialog.Trigger')
+    expect(api.Dialog.Popup.displayName).toBe('Dialog.Popup')
+    expect(api.Dialog.Title.displayName).toBe('Dialog.Title')
+    expect(api.Dialog.Description.displayName).toBe('Dialog.Description')
+    expect(api.Dialog.Body.displayName).toBe('Dialog.Body')
+    expect(api.Dialog.Actions.displayName).toBe('Dialog.Actions')
+    expect(api.Dialog.Close.displayName).toBe('Dialog.Close')
+    expect(api.AlertDialog.Root.displayName).toBe('AlertDialog.Root')
+    expect(api.AlertDialog.Popup.displayName).toBe('AlertDialog.Popup')
+    expect(api.AlertDialog.Close.displayName).toBe('AlertDialog.Close')
+    expect(api.AlertDialog.Popup).not.toBe(api.Dialog.Popup)
+    expect(typeof api.Dialog).toBe('object')
+    expect(typeof api.AlertDialog).toBe('object')
+  })
+
   test('Breadcrumb and Pagination are namespaces of their own parts, not callable roots', () => {
     expect(api.Breadcrumb.Root.displayName).toBe('Breadcrumb.Root')
     expect(api.Breadcrumb.Link.displayName).toBe('Breadcrumb.Link')
@@ -319,6 +336,30 @@ describe('alias sets', () => {
     )
     expect(keys(api.Toolbar)).toEqual(
       expect.arrayContaining(['Root', 'Button', 'Toggle', 'Item', 'Group']),
+    )
+    expect(keys(api.Dialog)).toEqual(
+      expect.arrayContaining([
+        'Root',
+        'Trigger',
+        'Popup',
+        'Title',
+        'Description',
+        'Body',
+        'Actions',
+        'Close',
+      ]),
+    )
+    expect(keys(api.AlertDialog)).toEqual(
+      expect.arrayContaining([
+        'Root',
+        'Trigger',
+        'Popup',
+        'Title',
+        'Description',
+        'Body',
+        'Actions',
+        'Close',
+      ]),
     )
     expect(keys(api.Tooltip)).toEqual(
       expect.arrayContaining(['Root', 'Trigger', 'Popup', 'Name', 'Shortcut']),

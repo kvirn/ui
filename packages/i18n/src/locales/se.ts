@@ -6,6 +6,7 @@ import type { KvirnMessages } from '../types.ts'
 // English placeholder too ("On this page"): a native speaker still has to write it (Plan 0049).
 // skipLink.label is one too ("Skip to main content", Plan 0054), and so is routeFocus.navigated. errorSummary and summaryList (Plan 0063) are placeholders too.
 // copyButton.* are English placeholders too (Plan 0060).
+// dialog.close is a native-speaker review item like alert.close (Plan 0067).
 // breadcrumb.* and pagination.* are English placeholders too (Plan 0062): a native speaker
 // still has to write them.
 export const se = {
@@ -24,6 +25,7 @@ export const se = {
     dangerPrefix: 'Boasttuvuohta:',
     close: 'Gidde dieđáhusa',
   },
+  dialog: { close: 'Gidde dialoga' },
   combobox: {
     resultCount: ({ count }, format) =>
       format.plural(count, { one: '1 boađus', other: `${format.number(count)} boađusa` }),

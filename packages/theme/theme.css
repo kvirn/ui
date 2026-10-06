@@ -82,6 +82,7 @@
  *  10a. Section          kv-section: a region of the page, elevation level 1
  *  10b. Alert            kv-alert: a status message, by status class
  *  10d. Summary list and error summary  kv-summary-list: rows of key, value and action. kv-error-summary: the problems of a failed submit
+ *  10e. Dialog           kv-dialog: a modal sheet or centred box, level 4, and the scroll lock
  *  10c. Layout           kv-container, kv-stack, kv-columns, kv-sidebar-layout: where children sit
  *  11. Icon
  *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-textarea,
@@ -2196,17 +2197,19 @@
             .kv-summary-list
           )
           *,
-        :is(:is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose) *):not(
-          :is(:is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose) .kv-prose *):not(
+        :is(:is(.kv-card, .kv-alert, .kv-dialog, .kv-field, .kv-fieldset):not(.kv-prose) *):not(
+          :is(
+            :is(.kv-card, .kv-alert, .kv-dialog, .kv-field, .kv-fieldset):not(.kv-prose) .kv-prose *
+          ):not(
             :is(
-              :is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose)
+              :is(.kv-card, .kv-alert, .kv-dialog, .kv-field, .kv-fieldset):not(.kv-prose)
                 .kv-prose
-                :is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose)
+                :is(.kv-card, .kv-alert, .kv-dialog, .kv-field, .kv-fieldset):not(.kv-prose)
                 *
             ):not(
-              :is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose)
+              :is(.kv-card, .kv-alert, .kv-dialog, .kv-field, .kv-fieldset):not(.kv-prose)
                 .kv-prose
-                :is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose)
+                :is(.kv-card, .kv-alert, .kv-dialog, .kv-field, .kv-fieldset):not(.kv-prose)
                 .kv-prose
                 *
             )
@@ -2228,6 +2231,7 @@
         .kv-card,
         .kv-alert,
         .kv-section,
+        .kv-dialog,
         .kv-field,
         .kv-fieldset,
         .kv-table,
@@ -2638,6 +2642,7 @@
       .kv-card,
       .kv-alert,
       .kv-section,
+      .kv-dialog,
       .kv-field,
       .kv-fieldset,
       .kv-table,
@@ -3725,6 +3730,254 @@
   }
 
   /* 10d. Summary list and error summary ------------------------------------------------------
+  /* 10e. Dialog -------------------------------------------------------------------------------
+   * <Dialog.Popup> and <AlertDialog.Popup> render <dialog class="kv-dialog"> opened with showModal(),
+   * so it sits in the top layer and the page is inert. Parts: kv-dialog-title (an h2, and sometimes the
+   * initial focus), kv-dialog-description, kv-dialog-body, kv-dialog-actions and the optional
+   * kv-dialog-close. AlertDialog adds kv-alert-dialog and needs no rules of its own. Design spec:
+   * docs/design/dialog.md.
+   *
+   * Below 40rem it is a sheet: full inline size at the block-end edge, rounded on the top corners
+   * only. From 40rem it is a centred box, 40rem wide at most. Level 4: surface-raised, a 1px edge and
+   * the dialog shadow (none in dark and contrast themes). The whole dialog is the scroll container
+   * and nothing is pinned, so at 400% zoom the body keeps its room and a sticky part never covers
+   * focus (2.4.11). No fixed height or width: text spacing only makes it taller (1.4.10, 1.4.12).
+   *
+   * The backdrop dims with neutral-950 at 50% in every theme (provisional, no token yet). It never
+   * blurs. It fades in and the dialog slides in from the block-end only when the user allows motion;
+   * closing is instant in every setting, so focus returns at once. Forced colours: Canvas, CanvasText
+   * and a CanvasText edge, no shadow.
+   *
+   * html[data-kv-scroll-locked] is set while a modal is open. The scroll lock is CSS so headless code
+   * ships no inline style; the gutter stays so the page doesn't shift. */
+  :root {
+    --kv-dialog-padding: var(--kv-space-4);
+  }
+
+  @media (width >= 40rem) {
+    :root {
+      --kv-dialog-padding: var(--kv-space-6);
+    }
+  }
+
+  @media (width >= 64rem) {
+    .kv-compact {
+      --kv-dialog-padding: var(--kv-space-4);
+    }
+  }
+
+  html[data-kv-scroll-locked] {
+    overflow: hidden;
+    scrollbar-gutter: stable;
+  }
+
+  .kv-dialog {
+    box-sizing: border-box;
+    inset: 0;
+    margin-block: auto 0;
+    margin-inline: 0;
+    inline-size: 100%;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    max-block-size: 100dvh;
+    padding: var(--kv-dialog-padding);
+    overflow-x: auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-padding-block: var(--kv-space-6);
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-start-start-radius: var(--kv-radius-xl);
+    border-start-end-radius: var(--kv-radius-xl);
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-shadow-dialog);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    letter-spacing: normal;
+    hyphens: auto;
+    hyphenate-limit-chars: 10 4 4;
+    overflow-wrap: break-word;
+  }
+
+  /* display is set only when open, so the browser's display: none for a closed dialog stays. */
+  .kv-dialog[open] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  @media (width >= 40rem) {
+    .kv-dialog {
+      margin: auto;
+      inline-size: min(100% - 2 * var(--kv-space-6), 40rem);
+      max-block-size: calc(100dvh - 2 * var(--kv-space-6));
+      border-radius: var(--kv-radius-xl);
+    }
+  }
+
+  .kv-dialog::backdrop {
+    background-color: color-mix(in srgb, var(--kv-neutral-950) 50%, transparent);
+  }
+
+  .kv-dialog > :not(.kv-dialog-title, .kv-dialog-close) {
+    grid-column: 1 / -1;
+  }
+
+  .kv-dialog > .kv-dialog-title {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    color: var(--kv-color-heading);
+    font-family: var(--kv-font-family-heading, var(--kv-font-family-serif));
+    font-size: var(--kv-font-heading-2-size);
+    font-weight: var(--kv-font-heading-2-weight);
+    line-height: var(--kv-font-heading-2-line-height);
+    letter-spacing: var(--kv-font-heading-2-letter-spacing);
+    font-feature-settings: var(--kv-font-heading-2-feature-settings);
+  }
+
+  .kv-dialog-title:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-dialog-description {
+    margin-block: var(--kv-space-2) 0;
+    max-inline-size: var(--kv-prose-measure);
+  }
+
+  .kv-dialog-body {
+    margin-block-start: var(--kv-space-4);
+  }
+
+  .kv-dialog-body > :first-child {
+    margin-block-start: 0;
+  }
+
+  .kv-dialog-body > :last-child {
+    margin-block-end: 0;
+  }
+
+  /* The built-in button group: a wrapping row, start-aligned, primary first in the DOM. Below
+   * 40rem a column of full-width buttons. */
+  .kv-dialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--kv-space-3);
+    margin-block-start: var(--kv-space-6);
+  }
+
+  @media (width < 40rem) {
+    .kv-dialog-actions {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .kv-dialog-actions > .kv-button {
+      align-self: stretch;
+    }
+  }
+
+  /* The optional close button: the same quiet icon button as kv-alert-close, centred on the title's
+   * first line with a negative block margin so row 1 keeps the title's height. */
+  .kv-dialog > .kv-dialog-close {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    display: inline-grid;
+    place-items: center;
+    box-sizing: border-box;
+    min-inline-size: var(--kv-control-min-block-size);
+    min-block-size: var(--kv-control-min-block-size);
+    margin-block: calc(
+      (var(--kv-font-heading-2-size) * var(--kv-font-heading-2-line-height) -
+          var(--kv-control-min-block-size)) /
+        2
+    );
+    margin-inline-end: calc(-0.5 * var(--kv-dialog-padding));
+    padding: 0;
+    border: 0;
+    border-radius: var(--kv-radius-md);
+    background-color: transparent;
+    color: var(--kv-color-text);
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .kv-dialog-close:hover {
+    background-color: var(--kv-color-surface);
+  }
+
+  .kv-dialog-close:is(:disabled, [data-disabled]) {
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+  }
+
+  .kv-dialog-close:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .kv-dialog[open] {
+      transition:
+        opacity var(--kv-duration-slow) var(--kv-easing-standard),
+        translate var(--kv-duration-slow) var(--kv-easing-standard);
+    }
+
+    .kv-dialog[open]::backdrop {
+      transition: opacity var(--kv-duration-slow) var(--kv-easing-standard);
+    }
+
+    @starting-style {
+      .kv-dialog[open] {
+        opacity: 0;
+        translate: 0 var(--kv-space-4);
+      }
+
+      .kv-dialog[open]::backdrop {
+        opacity: 0;
+      }
+    }
+
+    @media (width >= 40rem) {
+      @starting-style {
+        .kv-dialog[open] {
+          translate: 0 var(--kv-space-2);
+        }
+      }
+    }
+  }
+
+  @media (forced-colors: active) {
+    .kv-dialog {
+      border-color: CanvasText;
+      background-color: Canvas;
+      box-shadow: none;
+      color: CanvasText;
+    }
+
+    .kv-dialog-title:is(:focus-visible, [data-focus-visible]) {
+      outline-color: Highlight;
+    }
+
+    .kv-dialog-close {
+      color: ButtonText;
+    }
+
+    .kv-dialog-close:is(:disabled, [data-disabled]) {
+      color: GrayText;
+    }
+
+    .kv-dialog-close:is(:focus-visible, [data-focus-visible]) {
+      outline-color: Highlight;
+    }
+  }
+
    * <SummaryList.Root> renders <dl class="kv-summary-list"> of kv-summary-list-row (a <div>),
    * each holding a kv-summary-list-key (<dt>), a kv-summary-list-value (<dd>) and optionally
    * kv-summary-list-actions (<dd>), whose Change link is kv-link kv-summary-list-change. A row has

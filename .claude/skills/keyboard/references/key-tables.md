@@ -113,12 +113,19 @@ Listbox: one Tab stop. Multi-select adds Space to toggle and Shift+Arrow to exte
 | Disclosure   | Enter / Space   | Toggles the panel. The panel content follows in the Tab order                                                                                   |
 | Accordion    | Enter / Space   | Toggles the section. Optional: ArrowDown / ArrowUp between headers, Home / End (state it)                                                       |
 | Accordion    | (arrows)        | KvirnUI does not adopt the optional ArrowDown / ArrowUp / Home / End: every header button is a Tab stop and the keys are the page's (Plan 0058) |
-| Dialog       | Tab / Shift+Tab | Cycles inside the dialog, background `inert`                                                                                                    |
-| Dialog       | Escape          | Closes, focus returns to the trigger                                                                                                            |
-| Alert dialog | (as Dialog)     | Initial focus on the least destructive action                                                                                                   |
+| Dialog       | Enter / Space   | On the Trigger: opens. Focus goes to `initialFocusRef`, else the first tabbable, else the dialog                                                |
+| Dialog       | Tab / Shift+Tab | Next / previous tabbable inside only. At either end focus leaves to browser UI and wraps (native). **Approved deviation, see below**            |
+| Dialog       | Tab / Shift+Tab | The page behind is never reached: it is `inert`                                                                                                 |
+| Dialog       | Escape          | Closes (`escape`), focus returns. A controlled owner can refuse. Innermost layer only: a Popover, Listbox or Combobox inside closes first       |
+| Dialog       | Enter / Space   | On Close: closes (`close-press`), focus returns                                                                                                 |
+| Dialog       | Enter           | In a text field in a form: native (submits). Not taken                                                                                          |
+| Dialog       | Pointer press   | On `::backdrop`: closes (`outside-press`) only with `dismissOnOutsidePress`. Touch counts when the finger lifts                                 |
+| Alert dialog | (as Dialog)     | Initial focus on the least destructive action. A backdrop press does nothing                                                                    |
 | Popover      | Escape          | Closes, focus returns to the trigger. Tab may leave it (non-modal)                                                                              |
 | Tooltip      | Escape          | Hides the tooltip without moving focus (1.4.13)                                                                                                 |
 | Tooltip      | Tab             | Keyboard focus on the trigger opens it at once. Focus never moves into it                                                                       |
+
+**Approved APG deviation (maintainer, 2026-10-06): Dialog and AlertDialog do not cycle Tab.** A native modal `<dialog>` lets Tab leave to browser UI (address bar) before wrapping, instead of the APG's cycle inside the dialog. WCAG 2.1.2-safe: focus is never trapped, and the page behind is `inert`. Reason: no trap code, platform behaviour.
 
 ## Composite widgets (one Tab stop, roving tabindex unless stated)
 

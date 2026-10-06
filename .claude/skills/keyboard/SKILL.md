@@ -66,6 +66,7 @@ In `<name>.a11y.md`, under `## Keyboard`:
 
 - The APG keyboard practice is binding, not advice: every component with a focusable part follows it, and every key it handles is documented.
 - The `<name>.a11y.md` Keyboard section is the single source of truth. It is never copied by hand into a story, MDX or JSDoc.
+- Approved deviations: Dialog and AlertDialog use the native modal `<dialog>`, so Tab leaves to browser UI before wrapping instead of cycling (2026-10-06; `references/key-tables.md`).
 
 ## Common mistakes (reject in review)
 

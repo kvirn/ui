@@ -20,6 +20,7 @@ export const fi = {
     dangerPrefix: 'Virhe:',
     close: 'Sulje ilmoitus',
   },
+  dialog: { close: 'Sulje dialogi' },
   combobox: {
     resultCount: ({ count }, format) =>
       format.plural(count, { one: '1 tulos', other: `${format.number(count)} tulosta` }),

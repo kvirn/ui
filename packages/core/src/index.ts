@@ -138,6 +138,10 @@ export type {
   PlacementSide,
 } from './overlay/compute-placement.ts'
 export { createDismissableLayerStack } from './overlay/dismissable-layer-stack.ts'
+export { isPointInsideRect } from './overlay/point-in-rect.ts'
+export type { PointerPoint, PointerRect } from './overlay/point-in-rect.ts'
+export { createScrollLock } from './overlay/scroll-lock.ts'
+export type { ScrollLock } from './overlay/scroll-lock.ts'
 export type {
   DismissableLayerOptions,
   DismissableLayerStack,

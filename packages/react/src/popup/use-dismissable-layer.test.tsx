@@ -17,6 +17,7 @@ interface LayerProps {
   ignore?: UseDismissableLayerOptions['ignore']
   dismissOnEscape?: boolean
   dismissOnOutsidePress?: boolean
+  backdrop?: boolean
   children?: ReactNode
 }
 
@@ -244,6 +245,56 @@ describe('outside press', () => {
     )
     await unmount()
     await userEvent.keyboard('{Escape}')
+    expect(onDismiss).not.toHaveBeenCalled()
+  })
+})
+
+describe('backdrop', () => {
+  function BackdropLayer({ backdrop, onDismiss }: { backdrop: boolean; onDismiss: () => void }) {
+    const ref = useRef<HTMLElement>(null)
+    useDismissableLayer({ open: true, ref, onDismiss, backdrop })
+    return (
+      <section
+        ref={ref}
+        aria-label="Layer"
+        style={{ position: 'fixed', left: 100, top: 100, width: 200, height: 200 }}
+      >
+        <button type="button">Child</button>
+      </section>
+    )
+  }
+
+  const press = (element: Element, clientX: number, clientY: number) =>
+    element.dispatchEvent(
+      new PointerEvent('pointerdown', { bubbles: true, clientX, clientY, pointerType: 'mouse' }),
+    )
+  const layerElement = () => page.getByRole('region', { name: 'Layer' }).element()
+
+  test('backdrop true: a press on the layer element outside its box dismisses', async () => {
+    const onDismiss = vi.fn<() => void>()
+    await render(<BackdropLayer backdrop onDismiss={onDismiss} />)
+    press(layerElement(), 10, 10)
+    expect(onDismiss).toHaveBeenCalledTimes(1)
+  })
+
+  test('backdrop true: a press on the layer element inside its box does not dismiss', async () => {
+    const onDismiss = vi.fn<() => void>()
+    await render(<BackdropLayer backdrop onDismiss={onDismiss} />)
+    press(layerElement(), 150, 150)
+    expect(onDismiss).not.toHaveBeenCalled()
+  })
+
+  test('backdrop true: a press on a child inside does not dismiss', async () => {
+    const onDismiss = vi.fn<() => void>()
+    await render(<BackdropLayer backdrop onDismiss={onDismiss} />)
+    await userEvent.click(page.getByRole('button', { name: 'Child' }))
+    expect(onDismiss).not.toHaveBeenCalled()
+  })
+
+  test('backdrop false: a press on the layer element counts as inside, as before', async () => {
+    const onDismiss = vi.fn<() => void>()
+    await render(<BackdropLayer backdrop={false} onDismiss={onDismiss} />)
+    press(layerElement(), 10, 10)
     expect(onDismiss).not.toHaveBeenCalled()
   })
 })
