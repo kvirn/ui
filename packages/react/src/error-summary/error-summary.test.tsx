@@ -230,6 +230,27 @@ describe('links', () => {
     expect(warnings()).toHaveLength(1)
   })
 
+  test('a link whose control cannot take focus is left to the browser and warns once', async () => {
+    await render(
+      <>
+        <div id="dold" />
+        <ErrorSummary.Root>
+          <ErrorSummary.Title />
+          <ErrorSummary.List>
+            <ErrorSummary.Item>
+              <ErrorSummary.Link controlId="dold">Fel</ErrorSummary.Link>
+            </ErrorSummary.Item>
+          </ErrorSummary.List>
+        </ErrorSummary.Root>
+      </>,
+    )
+    await userEvent.click(page.getByRole('link', { name: 'Fel' }))
+    expect(window.location.hash).toBe('#dold')
+    expect(warnings()).toEqual([expect.stringContaining("can't take focus")])
+    await userEvent.click(page.getByRole('link', { name: 'Fel' }))
+    expect(warnings()).toHaveLength(1)
+  })
+
   test("the consumer's onClick runs first and can cancel the move", async () => {
     await render(
       <ErrorSummary.Root>

@@ -27,7 +27,7 @@ import { useSummaryList } from './use-summary-list.ts'
 import type { UseSummaryListResult } from './use-summary-list.ts'
 
 // Contract: summary-list.a11y.md. The stacked layout below 40rem is the theme's, proved by the
-// axe run of the Narrow story, where theme.css is loaded.
+// axe run of the Reflow320 story, where theme.css is loaded.
 
 let consoleWarn: MockInstance<Console['warn']>
 
@@ -156,6 +156,21 @@ describe('summary list', () => {
     expect(html).toContain('class="kv-summary-list"')
     expect(html).toContain('aria-labelledby=')
   })
+
+  test('a Key with its own id is not yet followed by the Change link in server HTML', () => {
+    const html = renderToString(
+      <SummaryList.Root>
+        <SummaryList.Row>
+          <SummaryList.Key id="namn-nyckel">Namn</SummaryList.Key>
+          <SummaryList.Actions>
+            <SummaryList.Change href="/steg/1" />
+          </SummaryList.Actions>
+        </SummaryList.Row>
+      </SummaryList.Root>,
+    )
+    expect(html).toContain('id="namn-nyckel"')
+    expect(html).not.toMatch(/aria-labelledby="[^"]* namn-nyckel"/)
+  })
 })
 
 describe('Change link', () => {
@@ -223,6 +238,41 @@ describe('Change link', () => {
     await render(<SummaryList.Change href="/a" />)
     await expect.element(page.getByRole('link', { name: 'Change' })).toBeInTheDocument()
     expect(warnings()).toEqual([expect.stringContaining('SummaryList.Change is outside a Row')])
+  })
+
+  test('a Key with its own id keeps it and still names the Change link', async () => {
+    await render(
+      <SummaryList.Root>
+        <SummaryList.Row>
+          <SummaryList.Key id="namn-nyckel">Namn</SummaryList.Key>
+          <SummaryList.Value>Anna</SummaryList.Value>
+          <SummaryList.Actions>
+            <SummaryList.Change href="/steg/1" />
+          </SummaryList.Actions>
+        </SummaryList.Row>
+      </SummaryList.Root>,
+    )
+    expect(document.querySelector('dt')?.id).toBe('namn-nyckel')
+    await expect.element(page.getByRole('link', { name: 'Change Namn' })).toBeInTheDocument()
+    expect(warnings()).toEqual([])
+  })
+
+  test('a Change link whose Key is not in the row warns once in development', async () => {
+    const row = (
+      <SummaryList.Root>
+        <SummaryList.Row>
+          <SummaryList.Value>Anna</SummaryList.Value>
+          <SummaryList.Actions>
+            <SummaryList.Change href="/steg/1" />
+          </SummaryList.Actions>
+        </SummaryList.Row>
+      </SummaryList.Root>
+    )
+    const { rerender } = await render(row)
+    await rerender(row)
+    expect(warnings()).toEqual([
+      expect.stringContaining('the document has no element with that id'),
+    ])
   })
 
   test('a link in a row does not warn', async () => {

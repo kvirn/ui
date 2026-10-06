@@ -194,6 +194,28 @@ describe('Pagination', () => {
     await expect.element(link).toHaveAttribute('aria-label', 'Page 9')
   })
 
+  test('a page link with its own children is named by that text, with no aria-label', async () => {
+    await render(
+      <Pagination.Root>
+        <Pagination.List>
+          <Pagination.Item>
+            <Pagination.Link page={2} href="?sida=2">
+              två
+            </Pagination.Link>
+          </Pagination.Item>
+        </Pagination.List>
+      </Pagination.Root>,
+    )
+    const link = page.getByRole('link', { name: 'två' })
+    await expect.element(link).toBeInTheDocument()
+    expect(link.element().hasAttribute('aria-label')).toBe(false)
+  })
+
+  test('the list keeps role list, which list-style none would remove', async () => {
+    await render(<Pages />)
+    expect(document.querySelector('.kv-pagination-list')?.getAttribute('role')).toBe('list')
+  })
+
   test('Previous and Next carry words and rel', async () => {
     await render(<Pages />)
     const previous = page.getByRole('link', { name: 'Previous page' })

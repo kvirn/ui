@@ -10,14 +10,14 @@ Rows of a label, a value and optional actions: the answers on a check-your-answe
 
 ## Roles, states, properties
 
-| Part    | Element / role        | ARIA                                              | Notes                                                                                                                                                                               |
-| ------- | --------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Root    | `<dl>` (no role)      | none                                              | `<div>` rows are allowed inside a `<dl>`, and keep each key with its values                                                                                                         |
-| Row     | `<div>`, generic      | none                                              | One key and one or more values. Gives its Key an id for the Change link                                                                                                             |
-| Key     | `<dt>` → `term`       | none                                              | The label.                                                                                                                                                                          |
-| Value   | `<dd>` → `definition` | none                                              | The answer. Wraps, never truncates                                                                                                                                                  |
-| Actions | `<dd>` → `definition` | none                                              | Holds links. A second definition of the same term                                                                                                                                   |
-| Change  | `<a>` → `link`        | `aria-labelledby` = its own id, then the Key's id | Visible text is `summaryList.change` ("Change"). The accessible name is "Change" plus the key, so the purpose is clear out of context (2.4.4) and contains the visible text (2.5.3) |
+| Part    | Element / role        | ARIA                                              | Notes                                                                                                                                                                                                                                                                                                                                                                                           |
+| ------- | --------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Root    | `<dl>` (no role)      | none                                              | `<div>` rows are allowed inside a `<dl>`, and keep each key with its values                                                                                                                                                                                                                                                                                                                     |
+| Row     | `<div>`, generic      | none                                              | One key and one or more values. Gives its Key an id for the Change link, or follows the Key's own `id`                                                                                                                                                                                                                                                                                          |
+| Key     | `<dt>` → `term`       | none                                              | The label. A consumer `id` is kept and registered with the Row, so the Change link's `aria-labelledby` follows it (`Change link › a Key with its own id keeps it and still names the Change link`). If no element has that id the Change link warns once in development, `summary-list-key-missing:<id>` (`Change link › a Change link whose Key is not in the row warns once in development`). |
+| Value   | `<dd>` → `definition` | none                                              | The answer. Wraps, never truncates                                                                                                                                                                                                                                                                                                                                                              |
+| Actions | `<dd>` → `definition` | none                                              | Holds links. A second definition of the same term                                                                                                                                                                                                                                                                                                                                               |
+| Change  | `<a>` → `link`        | `aria-labelledby` = its own id, then the Key's id | Visible text is `summaryList.change` ("Change"). The accessible name is "Change" plus the key, so the purpose is clear out of context (2.4.4) and contains the visible text (2.5.3)                                                                                                                                                                                                             |
 
 ## Keyboard
 
@@ -65,7 +65,7 @@ None. It is static content.
 - 1.3.1 Info and Relationships: native `dl`, `dt`, `dd` (`summary list › the list is a description list: a term per key and definitions per value`).
 - 2.4.4 Link Purpose, 2.5.3 Label in Name: `Change link › the name is "Change" plus the key and starts with the visible text`.
 - 2.4.7 Focus Visible: the link ring, from the theme.
-- 1.4.10 Reflow: the stacked layout (`SummaryList` stories, `Narrow`).
+- 1.4.10 Reflow: the stacked layout (`SummaryList` stories, `Reflow320`).
 - Axe: no violations (`accessibility › no axe violations`).
 
 ## AT test record
@@ -87,4 +87,4 @@ None. It is static content.
 
 ## Known issues
 
-- none
+- A consumer `Key` id is registered with the Row in a layout effect, so server-rendered HTML has the Change link's `aria-labelledby` pointing at the generated id, which is absent. The link is named just "Change" until hydration (`summary-list.test.tsx › a Key with its own id is not yet followed by the Change link in server HTML`). The API is unchanged.

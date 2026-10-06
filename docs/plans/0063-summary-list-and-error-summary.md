@@ -138,3 +138,8 @@ Minor changeset for `@kvirn-ui/react`, `@kvirn-ui/i18n` and `@kvirn-ui/theme`. A
 
 - [ ] All quality gates in AGENTS.md pass (manual AT `pending`; the orchestrator runs the whole-tree gates)
 - [x] Plan tasks ticked, `docs/roadmap.md` status updated
+
+## Review fixes (a11y review)
+
+- ErrorSummary link: if `focus()` leaves `document.activeElement` elsewhere, warn once and let the native hash jump proceed (no `preventDefault`, no scroll).
+- SummaryList.Key keeps a consumer `id`; it reports it to the Row (layout effect) so the Change link's `aria-labelledby` follows it. Change warns once (checked in a microtask, after that re-render) when its key id is not in the document.

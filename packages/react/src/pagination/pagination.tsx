@@ -67,7 +67,10 @@ export interface PaginationStatusProps extends PaginationPartComponentProps {
 }
 
 export type PaginationLinkProps = Omit<LinkProps, 'current' | 'messages'> & {
-  /** The page this link goes to, from 1. It becomes the link's text and, with the message, its name. */
+  /**
+   * The page this link goes to, from 1. It becomes the link's text and, with the message, its
+   * name (`Sida 2`). Your own `children` replace both: the visible text is then the name (2.5.3).
+   */
   page: number
   /** This link is the current page. It stays a link, and gets `aria-current="page"`. */
   current?: boolean | undefined
@@ -225,7 +228,8 @@ PaginationStatus.displayName = 'Pagination.Status'
 /**
  * A page link: a thin wrapper over `Link.Root`, so a native `<a href>` rendered by the app's
  * registered router link. Its text is the page number, its name `Sida 2` (`current` adds `aria-current`, not
- * words), so the visible number is in the name (2.5.3).
+ * words), so the visible number is in the name (2.5.3). With your own `children` there is no
+ * `aria-label`: the visible text is the name.
  */
 export function PaginationLink({
   page,
@@ -236,18 +240,19 @@ export function PaginationLink({
 }: PaginationLinkProps): ReactElement {
   const pagination = usePagination({ messages })
   const format = useFormat()
+  const ownText = hasOwnText(children)
   return (
     <LinkRoot
       {...mergeProps(
         {
           className: 'kv-pagination-link',
-          'aria-label': pagination.getPageLabel(page),
+          ...(ownText ? {} : { 'aria-label': pagination.getPageLabel(page) }),
         },
         otherProps,
       )}
       current={current === true ? 'page' : undefined}
     >
-      {hasOwnText(children) ? children : format.number(page)}
+      {ownText ? children : format.number(page)}
     </LinkRoot>
   )
 }

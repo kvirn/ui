@@ -218,12 +218,12 @@ describe('Breadcrumb', () => {
     expect(page.getByTestId('current').element().className).toBe('kv-breadcrumb-current')
   })
 
-  test('adds no role, tabindex or key handling to its own parts', async () => {
+  test('adds no tabindex or key handling, and only the list role, to its own parts', async () => {
     await render(<Trail />)
     for (const element of document.querySelectorAll(
       '.kv-breadcrumb, .kv-breadcrumb-list, .kv-breadcrumb-item, .kv-breadcrumb-current',
     )) {
-      expect(element.getAttributeNames()).not.toContain('role')
+      expect(element.getAttribute('role')).toBe(element.tagName === 'OL' ? 'list' : null)
       expect(element.getAttributeNames()).not.toContain('tabindex')
     }
   })
@@ -280,7 +280,7 @@ describe('Breadcrumb', () => {
   test('renders on the server with the landmark, the list and the current page', () => {
     const html = renderToString(<Trail />)
     expect(html).toContain('aria-label="You are here"')
-    expect(html).toContain('<ol class="kv-breadcrumb-list">')
+    expect(html).toContain('<ol class="kv-breadcrumb-list" role="list">')
     expect(html).toContain('aria-current="page"')
   })
 })

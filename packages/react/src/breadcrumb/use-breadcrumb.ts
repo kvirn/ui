@@ -23,9 +23,10 @@ export interface BreadcrumbRootPartProps {
   'aria-label': string
 }
 
-/** Spread on the `<ol>`. Only the part's class. */
+/** Spread on the `<ol>`. The role keeps the list announced where `list-style: none` removes it. */
 export interface BreadcrumbListPartProps {
   className: 'kv-breadcrumb-list'
+  role: 'list'
 }
 
 /** Spread on each `<li>`. Only the part's class. */
@@ -49,7 +50,10 @@ export interface UseBreadcrumbResult {
 }
 
 // The same objects every time, frozen, so nothing a consumer does can change another trail.
-const listProps: BreadcrumbListPartProps = Object.freeze({ className: 'kv-breadcrumb-list' })
+const listProps: BreadcrumbListPartProps = Object.freeze({
+  className: 'kv-breadcrumb-list',
+  role: 'list',
+})
 const itemProps: BreadcrumbItemPartProps = Object.freeze({ className: 'kv-breadcrumb-item' })
 const currentProps: BreadcrumbCurrentPartProps = Object.freeze({
   className: 'kv-breadcrumb-current',

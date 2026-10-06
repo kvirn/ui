@@ -1,6 +1,6 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { useContext, useEffect, useId } from 'react'
+import { useContext, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import type { ComponentPropsWithRef, HTMLAttributes, ReactElement, Ref, RefCallback } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
@@ -75,20 +75,35 @@ SummaryListRoot.displayName = 'SummaryList.Root'
 
 /** One key with its values: a `<div>`, which keeps them together inside the `<dl>`. */
 export function SummaryListRow(props: SummaryListRowProps): ReactElement {
-  const keyId = useId()
+  const generatedKeyId = useId()
+  const [ownKeyId, registerKeyId] = useState<string | undefined>(undefined)
+  const keyId = ownKeyId ?? generatedKeyId
   const row = useSummaryListPart(props, useSummaryList().rowProps, 'div')
-  return <SummaryListRowContext.Provider value={{ keyId }}>{row}</SummaryListRowContext.Provider>
+  return (
+    <SummaryListRowContext.Provider value={{ keyId, registerKeyId }}>
+      {row}
+    </SummaryListRowContext.Provider>
+  )
 }
 SummaryListRow.displayName = 'SummaryList.Row'
 
-/** The label: a `<dt>`. Its id (from the Row) names the Change link, so it needs text. */
+/**
+ * The label: a `<dt>`. Its id (from the Row, or your own `id`) names the Change link, so it needs
+ * text.
+ */
 export function SummaryListKey(props: SummaryListKeyProps): ReactElement {
   const row = useContext(SummaryListRowContext)
+  const ownId = props.id
+  const registerKeyId = row?.registerKeyId
+  useLayoutEffect(() => {
+    registerKeyId?.(ownId)
+    return () => registerKeyId?.(undefined)
+  }, [registerKeyId, ownId])
   return useSummaryListPart(
     props,
     useSummaryList().keyProps,
     'dt',
-    row === null ? {} : { id: row.keyId },
+    row === null || ownId !== undefined ? {} : { id: row.keyId },
   )
 }
 SummaryListKey.displayName = 'SummaryList.Key'
@@ -129,6 +144,24 @@ export function SummaryListChange({
       )
     }
   }, [row])
+  const keyId = row?.keyId
+  const latestKeyId = useRef(keyId)
+  useLayoutEffect(() => {
+    latestKeyId.current = keyId
+  }, [keyId])
+  useEffect(() => {
+    // A Key with its own id reports it in a layout effect, which re-renders the Row. Reading
+    // the latest id after that, not this render's, keeps it from being reported as missing.
+    queueMicrotask(() => {
+      const id = latestKeyId.current
+      if (id !== undefined && document.getElementById(id) === null) {
+        warnOnce(
+          `summary-list-key-missing:${id}`,
+          `A SummaryList.Change names itself from the key with id "${id}", but the document has no element with that id, so its name is just "Change". Put a SummaryList.Key in the same Row (WCAG 2.4.4, 4.1.2).`,
+        )
+      }
+    })
+  }, [keyId])
   const changeProps =
     row === null
       ? { className: 'kv-link kv-summary-list-change' as const }

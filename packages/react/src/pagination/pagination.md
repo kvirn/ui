@@ -7,7 +7,7 @@ Links to the pages of a long list: Previous, page numbers with gaps, Next. Each 
 ## API
 
 - `Pagination.Root` is a `<nav>` named by the message `pagination.label` (`Sidor`), or by `label`. `Pagination.List` is a `<ul>` and `Pagination.Item` an `<li>` around each of the parts below.
-- `Pagination.Link` is a page: `page` is its number (shown formatted by the locale) and its name is `Sida 2`. `current` sets `aria-current="page"`, which a screen reader announces itself, so the name does not repeat it. The current page stays a link.
+- `Pagination.Link` is a page: `page` is its number (shown formatted by the locale) and its name is `Sida 2`; with your own `children` there is no `aria-label` and the visible text is the name (2.5.3), so your `children` must contain it: an icon-only or `aria-hidden`-only child leaves the link unnamed. `current` sets `aria-current="page"`, which a screen reader announces itself, so the name does not repeat it. The current page stays a link.
 - `Pagination.Previous` and `Pagination.Next` are links with words (`pagination.previous`, `pagination.next`), `rel="prev"` and `rel="next"`, and arrows drawn by the theme. Leave them out on the first and last page.
 - `Pagination.Ellipsis` is the text `…` for a gap, and is not focusable. `Pagination.Status` is the text `Sida 2 av 9`.
 - All the link parts are thin wrappers over `Link.Root`: a native `<a href>` rendered by your registered router link, with the same props and `ref`. `children` replaces the words or the number, and `messages` overrides the strings for one instance.

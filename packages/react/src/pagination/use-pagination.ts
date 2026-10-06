@@ -23,9 +23,10 @@ export interface PaginationRootPartProps {
   'aria-label': string
 }
 
-/** Spread on the `<ul>`. Only the part's class. */
+/** Spread on the `<ul>`. The role keeps the list announced where `list-style: none` removes it. */
 export interface PaginationListPartProps {
   className: 'kv-pagination-list'
+  role: 'list'
 }
 
 /** Spread on each `<li>`. Only the part's class. */
@@ -61,7 +62,10 @@ export interface UsePaginationResult {
   getStatus: (page: number, total: number) => string
 }
 
-const listProps: PaginationListPartProps = Object.freeze({ className: 'kv-pagination-list' })
+const listProps: PaginationListPartProps = Object.freeze({
+  className: 'kv-pagination-list',
+  role: 'list',
+})
 const itemProps: PaginationItemPartProps = Object.freeze({ className: 'kv-pagination-item' })
 const ellipsisProps: PaginationEllipsisPartProps = Object.freeze({
   className: 'kv-pagination-ellipsis',

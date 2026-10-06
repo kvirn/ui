@@ -162,10 +162,17 @@ export function useErrorSummary({
           )
           return
         }
+        control.focus({ preventScroll: true })
+        if (env.document.activeElement !== control) {
+          warnOnce(
+            `error-summary-control-unfocusable:${controlId}`,
+            `An ErrorSummary link points at #${controlId}, but that element can't take focus (it is hidden, disabled or not focusable), so the link falls back to the browser's own jump (2.4.3). Point it at the focusable control.`,
+          )
+          return
+        }
         event.preventDefault()
         // The label or legend scrolls into view, so the question shows with the field, and
         // the control itself is focused without a second scroll.
-        control.focus({ preventScroll: true })
         const label =
           env.document.querySelector(`label[for="${env.window.CSS.escape(controlId)}"]`) ??
           control.closest('fieldset')?.querySelector('legend') ??

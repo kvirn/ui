@@ -38,6 +38,7 @@ The summary is not a widget. Focus is moved to it by script, once per submit; th
 
 - Initial focus: on mount, and each time `focusKey` changes, the summary root takes focus (`focus()` on `tabindex="-1"`). With no `focusKey`, once on mount. It is rendered only while there are errors and never updates while the user types.
 - A link: `preventDefault`, `focus({ preventScroll: true })` on the control with that id, then the control's label (`label[for]`) or its fieldset's legend is scrolled into view. Never smooth scrolling. A click with Ctrl, Meta, Shift, Alt or a non-primary button, and a link whose target is missing, are left to the browser (the hash navigation).
+- A link whose control can't take focus (hidden, disabled, not focusable): `focus()` leaves `document.activeElement` elsewhere, so the link does not `preventDefault` and the browser's own hash jump runs. A development warning `error-summary-control-unfocusable:<id>` is shown once per id (`error-summary.test.tsx › links › a link whose control cannot take focus is left to the browser and warns once`). After a native jump to a non-focusable target focus can fall to `body`; point the link at the focusable control.
 - A group of options: link to the first option's id.
 - Trap: no. Restore to: not applicable. After a fix the consumer removes the summary on the next submit; focus then moves to the new one or, with no errors, to where the submit goes.
 - Never obscured by: the summary is scrolled into view by `focus()`. Pair it with `scroll-padding-top` for a sticky header and `scroll-padding-bottom` for the on-screen keyboard (2.4.11).
@@ -69,11 +70,11 @@ None through a live region. The focus move makes the screen reader read the grou
 
 ## WCAG SCs covered
 
-- 3.3.1 Error Identification, 3.3.3 Error Suggestion: each problem is named in text, linked to its field (`links › each link goes to its control's id`).
+- 3.3.1 Error Identification, 3.3.3 Error Suggestion: each problem is named in text, linked to its field (`links › each link goes to its control id and reads the field error text`).
 - 2.4.3 Focus Order: focus moves to the summary on a failed submit and then to the field (`focus › moves focus to the summary on mount`, `› again when focusKey changes`, `› a link moves focus to the field`).
 - 4.1.3 Status Messages: met by the focus move, with no live region (`announcements › nothing is said in the Announcer`).
 - 1.3.1, 4.1.2: native list and links, a named group. 2.4.2: the prefix on the page title (`document title › prefixes`).
-- Axe: no violations with the summary focused (`accessibility › no axe violations`).
+- Axe: no violations with the summary focused (`accessibility › no axe violations with the summary focused`).
 
 ## AT test record
 

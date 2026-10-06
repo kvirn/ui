@@ -80,7 +80,7 @@ nb: `Du er her`, `Sider`, `Forrige side`, `Neste side`, `Side {page} av {total}`
 
 ### Theming surface
 
-Classes: `kv-breadcrumb`, `-list`, `-item`, `-link`, `-current`; `kv-pagination`, `-list`, `-item`, `-link` (page), `-previous`, `-next`, `-ellipsis`, `-status`. State is `aria-current`. No new tokens or colour pairs (see DESIGN.md "Breadcrumb and pagination", marked for maintainer review). Breadcrumb: a wrapping row, separator drawn with `::before` and mirrored in RTL, 24px minimum targets via the link's own padding. Pagination: a wrapping row of 44px targets, the current page a solid `primary` fill (the Navigation current look); below 40rem only Previous, Status and Next show (the page links and ellipsis leave the accessibility tree with `display: none`). Forced colours: a `LinkText` bar replaces the fill.
+Classes: `kv-breadcrumb`, `-list`, `-item`, `-link`, `-current`; `kv-pagination`, `-list`, `-item`, `-link` (page), `-previous`, `-next`, `-ellipsis`, `-status`. State is `aria-current`. No new tokens or colour pairs (see DESIGN.md "Breadcrumb and pagination", marked for maintainer review). Breadcrumb: a wrapping row, separator drawn with `::before` and mirrored in RTL, 24px minimum targets via the link's own padding. Pagination: a wrapping row of 44px targets, the current page a solid `primary` fill (the Navigation current look); below 40rem only Previous, the current page, Status and Next show (the other page links and ellipsis leave the accessibility tree with `display: none`). Forced colours: a `LinkText` bar replaces the fill.
 
 ## Tasks
 
@@ -100,7 +100,7 @@ Classes: `kv-breadcrumb`, `-list`, `-item`, `-link`, `-current`; `kv-pagination`
 - **Labels follow the approved spec** (`You are here`, `Pages`), not the bare `Breadcrumb` and `Pagination`: a landmark name says what it is for, and the spec has the wording in sv and fi.
 - **The current breadcrumb is a `<span aria-current="page">`** (`Breadcrumb.Current`), not a link to itself (spec §4). APG puts `aria-current` on a link; a page you are on offers no useful link, and the span still exposes the current item.
 - **`Pagination.Link` keeps `aria-current="page"` on a link** (it is a URL, so reload and copy still work), named by `pagination.currentPage`.
-- **Page links get `aria-label`** from messages (`Page 2`): a bare "2" is no name for a link in a links list (2.4.4). The visible digit stays inside the name (2.5.3). A `children` override replaces the digit and the adopter then owns the name.
+- **Page links get `aria-label`** from messages (`Page 2`): a bare "2" is no name for a link in a links list (2.4.4). The visible digit stays inside the name (2.5.3). A `children` override replaces the digit and the `aria-label` too: the visible text is the name (review fix, 2.5.3).
 - **Ellipsis is visible text with no `aria-hidden`:** hiding it would leave an empty list item to a screen reader. It is a `<span>` inside an `Item`.
 - **Narrow layout is CSS, not a prop:** the status item and the page items are told apart with `:has()` on their part class, as the Navigation trail is. The page links hide with `display: none`, so they also leave the Tab order below 40rem.
 - **No page-range helper in `core`** (scope): the adopter lists the pages. Recorded as a possible follow-up.
@@ -128,3 +128,7 @@ Minor changeset: `@kvirn-ui/react`, `@kvirn-ui/i18n`, `@kvirn-ui/theme`.
 
 - [ ] All quality gates in AGENTS.md pass (manual AT `pending`)
 - [ ] Plan tasks ticked, `docs/roadmap.md` status updated
+
+## Review fixes (a11y review)
+
+- `Pagination.Link` with own `children` sets no default `aria-label` (2.5.3). `Pagination.List` and `Breadcrumb.List` carry `role="list"`. Narrow layout text corrected to include the current page.
