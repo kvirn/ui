@@ -8,7 +8,7 @@
 
 - **Users and hardest case:** as in docs-site.md §1: a Finnish accessibility specialist with NVDA at 200% zoom, judging the library by its page, and an integrator copying one use case on a 320px phone between meetings.
 - **Job:** "When I open a component page, I want to see what it is, see it work, find the case like mine with code I can copy, and know what I must do for accessibility, so I can decide and build without reading the source."
-- **Fixed by the maintainer:** the section order (§2), notes built on Card (§3), a contents list on every page (§5).
+- **Fixed by the maintainer:** the section order (§2), notes built on Alert (§3, maintainer 2026-10-06), a contents list on every page (§5).
 - **Success:** every component page has the same h2s in the same order; Keyboard and Announcements equal the contract (a test, §6); the contents list fits one 320 × 640 screen; no empty heading.
 - **Assumption:** evaluators jump straight to Keyboard and Accessibility. Research question: do they use the contents list or the H key? (`pending`)
 
@@ -42,7 +42,7 @@ When to use it · Example · Use cases …             When to use it · Example
 
 ## 3. Notes (the brief's "callouts")
 
-DESIGN.md "Words we use" retires "callout" and keeps status for Alert, so these are **notes**: advice to the reader about their code, on a neutral Card. A message about the state of the library or the page ("Not verified yet", "Pre-alpha", a deprecation) is a status: it's an `Alert.Warning` or `Alert.Info`, never a note.
+DESIGN.md "Words we use" retires "callout" and keeps status for Alert, so these are **notes**: advice to the reader about their code, shown with the library's own `Alert` (maintainer decision, 2026-10-06, replacing the neutral Card): a reminder ("Don't forget") is `Alert.Warning`, a tip ("Did you know?") and a recipe ("Implement like this") are `Alert.Info`. The Alert's title is the kind word, set as a paragraph (`render={<p />}`) so it stays out of the heading list, and the Alert shows its own status word and icon. It never announces. A message about the state of the library or the page ("Not verified yet", "Pre-alpha", a deprecation) is also an Alert, but it is a status, not a note.
 
 | Kind       | Visible word (key)                       | Icon (built-in, decorative) | Use when                                                                                                                                                                                         | Not for                             |
 | ---------- | ---------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------- |
