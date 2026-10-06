@@ -324,7 +324,7 @@ export function NewsList({ locale }: CardFixtureProps) {
   return (
     <div lang={lang}>
       <h2>{text.news.heading}</h2>
-      <ul className="kv-story-card-list">
+      <ul role="list" className="kv-story-card-list">
         {items.map(([id, item, published], index) => (
           <Card.Root key={id} render={<li />}>
             {index === 0 ? (

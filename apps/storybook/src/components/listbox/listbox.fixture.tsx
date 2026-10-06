@@ -1217,3 +1217,53 @@ export function NativeMunicipalities({ locale }: { locale: FormLocale }) {
     </form>
   )
 }
+
+const languageNames: Record<string, string> = {
+  sv: 'Svenska',
+  fi: 'Suomi',
+  se: 'Davvisámegiella',
+  en: 'English',
+}
+const languageCodes = Object.keys(languageNames)
+
+/**
+ * A language switcher: each name is written in its own language, so `itemToLang` puts `lang` on
+ * every option and on the trigger's value, and a screen reader reads "Suomi" in Finnish (3.1.2).
+ * The page is Swedish, so `sv` returns `undefined` and gets no `lang`. First the popup, then the
+ * browser's own `<select>`, which takes the same props.
+ */
+export function LanguageSwitcher() {
+  return (
+    <form className="kv-story-form" lang="sv" noValidate onSubmit={(e) => e.preventDefault()}>
+      <Field.Root>
+        <Field.Label>Språk</Field.Label>
+        <Listbox.Root
+          native="never"
+          items={languageCodes}
+          itemToString={(code) => languageNames[code] ?? code}
+          itemToKey={(code) => code}
+          itemToLang={(code) => (code === 'sv' ? undefined : code)}
+          defaultValue="fi"
+        >
+          <Listbox.Trigger>
+            <Listbox.Value />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>{(code: string) => <Listbox.Option item={code} />}</Listbox.List>
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+      <Field.Root>
+        <Field.Label>Språk (webbläsarens egen lista)</Field.Label>
+        <Listbox.Root
+          native="always"
+          items={languageCodes}
+          itemToString={(code) => languageNames[code] ?? code}
+          itemToKey={(code) => code}
+          itemToLang={(code) => (code === 'sv' ? undefined : code)}
+          defaultValue="se"
+        />
+      </Field.Root>
+    </form>
+  )
+}

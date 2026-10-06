@@ -109,4 +109,4 @@ Button has no strings of its own. Its name is its content, which the consumer pr
 
 ## Known issues
 
-- **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them. Safari doesn't focus buttons on click, which doesn't affect this contract.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`. Safari doesn't focus buttons on click, which doesn't affect this contract.

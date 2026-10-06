@@ -137,4 +137,4 @@ Research questions for the AT run: is the count read once with the value when th
 - **An uncontrolled box with `characterCount` doesn't see a value set from code.** It counts typing, follows a native form reset, and reads the element's value on mount and on `pageshow` (the browser restores a form without an input event). A value you write to the element later is not seen: pass `value`.
 - **Manual AT is `pending`.** The debounce (500 ms) and the 80% threshold need NVDA, VoiceOver, TalkBack and Dragon.
 - **`se` strings are English** until a native speaker writes them.
-- **WebKit not run locally.** CI runs the `webkit` and `mobile-safari` projects.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.

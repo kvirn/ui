@@ -57,7 +57,7 @@ Your part:
 
 - **Put the Checkbox directly in `Field.Root`, before the `Field.Label`,** so the box is at the inline start and the theme's choice layout applies.
 - **Write the label as a sentence that can be answered "yes".** For a declaration or a consent, the label is the whole sentence ("Jag intygar att uppgifterna är korrekta"). Always show a visible label.
-- **Set `required` on the Field for a single consent or declaration,** so the label has no "(optional)" and the box is `aria-required`; or use `marker="none"`. Inside a group, an option never carries an optional marker.
+- **Set `required` on the Field for a single consent or declaration,** so the label has no "(optional)" and the box is `aria-required`; or put `marker="none"` on `Field.Label`. Inside a group, an option never carries an optional marker.
 - **Set `invalid` and render a `Field.ErrorMessage` together,** with text that says what to do ("Bekräfta att uppgifterna är korrekta"). Validate on submit, and move focus to the first invalid control.
 - **A help text for one option** is a `Field.HelpText` in that option's Field, outside the label. It is part of the box's description, so keep it to a short plain sentence with no links.
 - **A checkbox without a visible label** (a row selector in a table, where the row's text is the label) is a standalone `<Checkbox aria-label="Markera ärende 2026-0412" />`, outside a Field. It then has no Field wiring: no id, no `aria-describedby`, no `aria-invalid`. Prefer a Field with a visible `Field.Label` everywhere a person has to read the question. Without a label or an `aria-label`, a dev warning fires (`Checkbox-without-name`).
@@ -71,13 +71,13 @@ A "select all" with a mixed state:
 const someChecked = rows.some((row) => row.selected)
 const allChecked = rows.every((row) => row.selected)
 
-;<Field.Root marker="none">
+;<Field.Root>
   <Checkbox
     checked={allChecked}
     indeterminate={someChecked && !allChecked}
     onCheckedChange={(checked) => selectAll(checked)}
   />
-  <Field.Label>Markera alla rader</Field.Label>
+  <Field.Label marker="none">Markera alla rader</Field.Label>
 </Field.Root>
 ```
 

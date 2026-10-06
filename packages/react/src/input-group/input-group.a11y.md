@@ -116,4 +116,4 @@ Research questions for the AT run: do screen-reader users know the unit from the
 
 - **Autofill covers only the Input.** The browser's autofill fill doesn't paint behind an Addon. Known browser behaviour, accepted.
 - **A Button's transparent edges show in forced colours,** so it looks like a bordered button attached to the inside of the box. Accepted: it's the shape Contrast Themes users expect of a button.
-- **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.

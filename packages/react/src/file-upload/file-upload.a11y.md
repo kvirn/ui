@@ -81,10 +81,20 @@ Rules, tested in `file-upload.test.tsx`:
 
 ## Announcements
 
-- Through the shared Announcer, politely. One sentence per batch, built by FileUpload's buffer, so a second call never replaces the first. The buffer is shared by every FileUpload on the same Announcer, merges calls less than about 150 ms apart, drops held sentences for a file that was removed, retried or cancelled, and names the Field label when several FileUploads are mounted.
-- **Now:** files added and refused (counts and the file's name for one), a removal, the list becoming full, and a start of uploads when not automatic. After a dialog add it announces counts only for the refused files, because the Trigger's description already carries the detail and screen readers re-read it when focus returns. After a drop it announces the full text.
-- **After about one second of quiet (at most three):** uploads finished, failed or all done. Results are reported from the store, so auto upload, Retry and `uploadAll()` go the same way, and a result for a file that was removed, retried or cancelled is dropped.
-- **Never:** percentages. Progress is only a native `<progress>` that a screen reader can query.
+Everything goes through the shared Announcer, politely. One sentence per batch, built by FileUpload's buffer, so a second call never replaces the first. The buffer is shared by every FileUpload on the same Announcer, merges calls less than about 150 ms apart, drops held sentences for a file that was removed, retried or cancelled, and names the Field label when several FileUploads are mounted (`fileUpload.announcementForField`, "Bilagor: ...").
+
+| Event                                                                                                                        | Message key (i18n)                                                                                                  | Politeness                              |
+| ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| Files are added (now; after a dialog add, only the refused ones are counted, because the Trigger's description has the rest) | `fileUpload.fileAdded` ("report.pdf added."), `fileUpload.filesAdded` ("3 files added.")                            | Polite, at once                         |
+| Files are refused                                                                                                            | `fileUpload.filesRejected` ("2 files couldn't be added.")                                                           | Polite, at once                         |
+| A file is removed                                                                                                            | `fileUpload.fileRemoved` ("report.pdf removed.")                                                                    | Polite, at once                         |
+| Uploads start while not automatic (`uploadAll()`)                                                                            | `fileUpload.uploadsStarted` ("Uploading 3 files.")                                                                  | Polite, at once                         |
+| Uploads finish, after about one second of quiet (at most three)                                                              | `fileUpload.uploadComplete` ("report.pdf uploaded."), `fileUpload.uploadsComplete`, `fileUpload.allUploadsComplete` | Polite, batched                         |
+| Uploads fail, after about one second of quiet (at most three)                                                                | `fileUpload.uploadFailed` ("report.pdf couldn't be uploaded."), `fileUpload.uploadsFailed`                          | Polite, batched                         |
+| Upload progress                                                                                                              | none: progress is only a native `<progress>` that a screen reader can query                                         | Nothing is announced, never percentages |
+
+Results are reported from the store, so auto upload, Retry and `uploadAll()` go the same way, and a result for a file that was removed, retried or cancelled is dropped. After a drop it announces the full text.
+
 - Tested in `announcements in en (4.1.3)` and `announcements in sv (4.1.3)`, one test per row above, with fake timers reading the polite region.
 - No Announcer `key` is used: its throttle drops messages instead of delaying them.
 
@@ -139,4 +149,4 @@ Rules, tested in `file-upload.test.tsx`:
 - HEIC photos: whether Safari converts to JPEG for `accept=".jpg"` in every path needs a device check before `beta`.
 - Client-side limits can be bypassed. The server must check again.
 - Under React's `<Activity mode="hidden">` the effect cleanup resets the list and aborts running uploads. Keep a FileUpload mounted while a form is hidden.
-- The Trigger's name is read from the text span and the Field label. The name is asserted in `file-upload.test.tsx › wiring: the Trigger is the one control › a native button named by its own text then the Field label, with the Field control id`. Firefox and WebKit have not been run yet.
+- The Trigger's name is read from the text span and the Field label. The name is asserted in `file-upload.test.tsx › wiring: the Trigger is the one control › a native button named by its own text then the Field label, with the Field control id`. Firefox and WebKit are not run automatically.

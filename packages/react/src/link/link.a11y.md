@@ -116,5 +116,5 @@ Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root mes
 ## Known issues
 
 - **`se` (Northern Sámi) shows English** for `link.newTabNotice`. Sámi users get English for this string under `lang="se"`, which fails 3.1.2 Language of Parts for that string.
-- **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
 - **A `target="_blank"` link with no notice is not flagged.** Neither a type error nor a dev warning catches it (maintainer decision 2026-10-05, Plan 0045), so review it by hand.

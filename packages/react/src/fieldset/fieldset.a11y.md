@@ -111,4 +111,4 @@ Research question for the AT run: is the group's description and error announced
 ## Known issues
 
 - **`aria-describedby` on a `<fieldset>` isn't announced consistently by TalkBack.** NVDA, JAWS and VoiceOver announce it when the user enters the group (as on GOV.UK). The manual AT run checks all four.
-- **WebKit not run locally.** CI runs the `webkit` and `mobile-safari` projects.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.

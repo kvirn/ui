@@ -120,7 +120,7 @@ The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@laye
 
 - Every prose rule is a zero-specificity `:where()` rule in `@layer kv`, so component rules and consumer CSS win.
 - Prose never styles a component part. The explicit list of part classes (first line of the `:not(...)` list in section 9: button, link, card parts, input group, checkbox, radio, native listbox) is written in one place. **When you add a part or a consumer class that appears inside prose, add it to that list.**
-- Prose also skips anything inside `kv-not-prose`, `kv-navigation`, `kv-table-of-contents`, `kv-button-group`, `kv-toolbar` and `kv-table`.
+- Prose also skips anything inside `kv-not-prose`, `kv-navigation`, `kv-table-of-contents`, `kv-button-group`, `kv-toolbar`, `kv-table` and the four layout classes (`kv-container`, `kv-stack`, `kv-columns`, `kv-sidebar-layout`: their gap is the only spacing, so prose margins never fight it). A component part is added to the not-prose list (the first line of the list in `theme.css`) so prose never styles it: `kv-skip-link` and `kv-visually-hidden` are in it.
 - A card, alert, field or fieldset Root in prose gets prose's block margins only. They are boundaries: nothing inside them is prose-styled unless a `kv-prose` sits between the element and the boundary. The nearest boundary or `kv-prose` wins, for two levels of nesting. Three levels are not supported. A Section is not a boundary.
 - The description of a field or fieldset is a `kv-prose` that is a direct child, so it is prose again, in `body` (16px) wherever it sits. The help text (`kv-field-help-text`, `Field.HelpText`) is a plain paragraph in `body-small` (14px): its size belongs to the part, so no rule sizes a Prose by position, and the theme never styles a help text by `data-invalid` or `data-disabled`. An option's help text is the one spacing exception (column 2, 0 gap under its label).
 - Unlayered page CSS beats prose, so scope it away from prose.
@@ -129,6 +129,7 @@ The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@laye
 - Prose matches `@tailwindcss/typography` element for element in our tokens (logical properties, no Tailwind, nothing imported). Differences: no generated quote marks or backticks, no italic or shadowed blockquote or `kbd`, `dd` has no indent, `pre` wraps, heading sizes are type roles.
 - Tokens: `--kv-prose-measure` (70ch), `-space`, `-space-item`, `-space-block`, `-space-section`, `-list-indent`, `-list-item-indent`, `-code-size`, the size and `--kv-prose-lead-*` aliases, and the type role `lead`. `--kv-shadow-popup` and `--kv-shadow-dialog` are `color-mix` over `neutral-950`, and `none` in the dark themes.
 - `kv-kbd` and prose `kbd` share one zero-specificity rule (section 9b), so a key looks the same in and out of prose.
+- `kv-visually-hidden` and `kv-skip-link` (section 9d): the clip rule is never `display: none`. The skip link is clipped under `:not(:focus)` and in flow on `:focus`, with the token ring on `:focus-visible`.
 - The nested-boundary selector could collapse into `@scope` once Safari 17.0 to 17.3 leave the support range.
 
 ## Long words and small screens

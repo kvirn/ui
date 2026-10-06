@@ -80,6 +80,12 @@ interface UseListboxBaseOptions<TItem> {
   groups?: readonly ListboxGroup<TItem>[] | undefined
   /** The text of an item: shown in the trigger, read by typeahead, and the native option's label. Default `String(item)`. */
   itemToString?: ((item: TItem) => string) | undefined
+  /**
+   * The language of an item's text, a BCP 47 code such as `fi`, or `undefined` for the page's
+   * language. It puts `lang` on the native `<option>`, the popup option and the trigger's value, so
+   * a screen reader reads "Suomi" in Finnish (WCAG 3.1.2). Not a place for the text's translation.
+   */
+  itemToLang?: ((item: TItem) => string | undefined) | undefined
   /** A stable, unique key of an item: what the value holds. Default: the text. */
   itemToKey?: ((item: TItem) => string) | undefined
   /** Disabled options stay reachable with the arrow keys and can't be chosen. */

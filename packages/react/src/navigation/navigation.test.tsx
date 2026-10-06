@@ -7,9 +7,16 @@ import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Link } from '../link/link.tsx'
-import { Navigation, NavigationItem, NavigationList, NavigationRoot } from './navigation.tsx'
+import {
+  Navigation,
+  NavigationItem,
+  NavigationLabel,
+  NavigationList,
+  NavigationRoot,
+} from './navigation.tsx'
 import type {
   NavigationItemProps,
+  NavigationLabelProps,
   NavigationListProps,
   NavigationRootProps,
   NavigationState,
@@ -17,6 +24,7 @@ import type {
 import { useNavigation } from './use-navigation.ts'
 import type {
   NavigationItemPartProps,
+  NavigationLabelPartProps,
   NavigationListPartProps,
   NavigationRootPartProps,
   UseNavigationOptions,
@@ -546,6 +554,186 @@ describe('development warnings', () => {
   })
 })
 
+describe('Navigation.Label', () => {
+  function GroupedMenu({ listProps = {} }: { listProps?: Record<string, string> }) {
+    return (
+      <Navigation.Root label="Dokumentation">
+        <style>{'a { display: inline-block; min-block-size: 24px; }'}</style>
+        <Navigation.List>
+          <Navigation.Item>
+            <Navigation.Label>Komponenter</Navigation.Label>
+            <Navigation.List {...listProps}>
+              <Navigation.Item>
+                <Link.Root href="#knapp">Knapp</Link.Root>
+              </Navigation.Item>
+              <Navigation.Item>
+                <Link.Root href="#lank">Länk</Link.Root>
+              </Navigation.Item>
+            </Navigation.List>
+          </Navigation.Item>
+          <Navigation.Item>
+            <Navigation.Label>Grunder</Navigation.Label>
+            <Navigation.List>
+              <Navigation.Item>
+                <Link.Root href="#farger">Färger</Link.Root>
+              </Navigation.Item>
+            </Navigation.List>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
+    )
+  }
+
+  test('names the nested list in its item, so each group is announced by its label', async () => {
+    await render(<GroupedMenu />)
+    const links = (name: string) =>
+      page.getByRole('list', { name }).element().querySelectorAll('a').length
+    expect(links('Komponenter')).toBe(2)
+    expect(links('Grunder')).toBe(1)
+  })
+
+  test('the outer list stays unnamed and the label is plain text, not a heading or a link', async () => {
+    await render(<GroupedMenu />)
+    const label = page.getByText('Komponenter', { exact: true })
+    expect(label.element().tagName).toBe('SPAN')
+    expect(label.element().className).toBe('kv-navigation-label')
+    expect(label.element().hasAttribute('role')).toBe(false)
+    expect(label.element().hasAttribute('tabindex')).toBe(false)
+    await expect.element(page.getByRole('heading')).not.toBeInTheDocument()
+    await expect.element(page.getByRole('link', { name: 'Komponenter' })).not.toBeInTheDocument()
+    const outer = page.getByRole('navigation').element().querySelector('ul')
+    expect(outer?.hasAttribute('aria-labelledby')).toBe(false)
+  })
+
+  test('the list points at the label by id, and the ids are unique per item', async () => {
+    await render(<GroupedMenu />)
+    const lists = [...document.querySelectorAll('li > ul')]
+    const ids = lists.map((list) => list.getAttribute('aria-labelledby'))
+    expect(new Set(ids).size).toBe(2)
+    expect(ids.map((id) => document.getElementById(id ?? '')?.textContent)).toEqual([
+      'Komponenter',
+      'Grunder',
+    ])
+  })
+
+  test('a list with its own aria-labelledby keeps it', async () => {
+    await render(
+      <>
+        <GroupedMenu listProps={{ 'aria-labelledby': 'own-name' }} />
+        <span id="own-name">Eget namn</span>
+      </>,
+    )
+    await expect.element(page.getByRole('list', { name: 'Eget namn' })).toBeInTheDocument()
+  })
+
+  test('a list with its own aria-label keeps it', async () => {
+    await render(<GroupedMenu listProps={{ 'aria-label': 'Egen etikett' }} />)
+    await expect.element(page.getByRole('list', { name: 'Egen etikett' })).toBeInTheDocument()
+  })
+
+  test('a nested list in an item with no label gets no name', async () => {
+    await render(<MainMenu />)
+    expect(document.querySelector('li > ul')?.hasAttribute('aria-labelledby')).toBe(false)
+  })
+
+  test('the label is no Tab stop: Tab goes from link to link past it', async () => {
+    await render(<GroupedMenu />)
+    page.getByRole('link', { name: 'Knapp' }).element().focus()
+    await userEvent.tab()
+    await expect.element(page.getByRole('link', { name: 'Länk' })).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(page.getByRole('link', { name: 'Färger' })).toHaveFocus()
+  })
+
+  test('keeps the id, a class and the ref of your own, and renders another element', async () => {
+    const ref = createRef<HTMLElement>()
+    await render(
+      <Navigation.Root label="Dokumentation">
+        <Navigation.List>
+          <Navigation.Item>
+            <Navigation.Label ref={ref} id="own-label" className="own" lang="en" render={<small />}>
+              Components
+            </Navigation.Label>
+            <Navigation.List>
+              <Navigation.Item>
+                <Link.Root href="#button">Button</Link.Root>
+              </Navigation.Item>
+            </Navigation.List>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>,
+    )
+    expect(ref.current?.tagName).toBe('SMALL')
+    expect(ref.current?.className).toBe('own kv-navigation-label')
+    expect(ref.current?.getAttribute('lang')).toBe('en')
+    expect(ref.current?.id).toBe('own-label')
+    await expect.element(page.getByRole('list', { name: 'Components' })).toBeInTheDocument()
+  })
+
+  test('an explicit id={undefined} on the label still names the nested list', async () => {
+    await render(
+      <Navigation.Root label="Dokumentation">
+        <Navigation.List>
+          <Navigation.Item>
+            <Navigation.Label id={undefined}>Komponenter</Navigation.Label>
+            <Navigation.List>
+              <Navigation.Item>
+                <Link.Root href="#button">Button</Link.Root>
+              </Navigation.Item>
+            </Navigation.List>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>,
+    )
+    await expect.element(page.getByRole('list', { name: 'Komponenter' })).toBeInTheDocument()
+  })
+
+  test('warns once when a label is in an item with no nested list', async () => {
+    await render(
+      <Navigation.Root label="Dokumentation">
+        <Navigation.List>
+          <Navigation.Item>
+            <Navigation.Label>Ensam</Navigation.Label>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>,
+    )
+    await expect
+      .poll(() => warnings().filter((message) => message.includes('Navigation.Label')))
+      .toHaveLength(1)
+  })
+
+  test('warns when a label is outside a Navigation.Item', async () => {
+    await render(
+      <Navigation.Root label="Dokumentation">
+        <Navigation.Label>Vilsen</Navigation.Label>
+      </Navigation.Root>,
+    )
+    await expect
+      .poll(() => warnings().some((message) => message.includes('outside a Navigation.Item')))
+      .toBe(true)
+  })
+
+  test('has no axe violations', async () => {
+    const { container } = await render(<GroupedMenu />)
+    await expectNoA11yViolations(container)
+  })
+
+  test('server rendering gives the label its id; the list is named once it hydrates', () => {
+    const html = renderToString(
+      <Navigation.Root label="Dokumentation">
+        <Navigation.List>
+          <Navigation.Item>
+            <Navigation.Label>Komponenter</Navigation.Label>
+            <Navigation.List />
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>,
+    )
+    expect(html).toMatch(/<span id="[^"]+" class="kv-navigation-label">Komponenter<\/span>/)
+  })
+})
+
 describe('useNavigation', () => {
   function OwnNavigation({ label }: { label?: string }) {
     const navigation = useNavigation({ label })
@@ -567,6 +755,15 @@ describe('useNavigation', () => {
     expect(page.getByTestId('root').element().className).toBe('kv-navigation')
     expect(page.getByTestId('list').element().className).toBe('kv-navigation-list')
     expect(page.getByTestId('item').element().className).toBe('kv-navigation-item')
+  })
+
+  test('labelProps gives the label part its class', async () => {
+    function OwnLabel() {
+      const navigation = useNavigation()
+      return <span {...navigation.labelProps}>Grupp</span>
+    }
+    await render(<OwnLabel />)
+    expect(page.getByText('Grupp').element().className).toBe('kv-navigation-label')
   })
 
   test('without a label it sets no aria-label', async () => {
@@ -599,6 +796,8 @@ describe('names', () => {
     expect(Navigation.Root).toBe(NavigationRoot)
     expect(Navigation.List).toBe(NavigationList)
     expect(Navigation.Item).toBe(NavigationItem)
+    expect(Navigation.Label).toBe(NavigationLabel)
+    expect(NavigationLabel.displayName).toBe('Navigation.Label')
     expect(NavigationRoot.displayName).toBe('Navigation.Root')
     expect(NavigationList.displayName).toBe('Navigation.List')
     expect(NavigationItem.displayName).toBe('Navigation.Item')
@@ -610,10 +809,12 @@ describe('types', () => {
     expectTypeOf<NavigationRootProps['label']>().toEqualTypeOf<string | undefined>()
     expectTypeOf<NavigationListProps>().toHaveProperty('render')
     expectTypeOf<NavigationItemProps>().toHaveProperty('render')
+    expectTypeOf<NavigationLabelProps>().toHaveProperty('render')
     expectTypeOf<NavigationState>().toEqualTypeOf<Record<string, never>>()
     expectTypeOf<UseNavigationOptions['label']>().toEqualTypeOf<string | undefined>()
     expectTypeOf<NavigationRootPartProps['className']>().toEqualTypeOf<'kv-navigation'>()
     expectTypeOf<NavigationListPartProps['className']>().toEqualTypeOf<'kv-navigation-list'>()
+    expectTypeOf<NavigationLabelPartProps['className']>().toEqualTypeOf<'kv-navigation-label'>()
     expectTypeOf<NavigationItemPartProps['className']>().toEqualTypeOf<'kv-navigation-item'>()
     expectTypeOf<UseNavigationResult['rootProps']>().toEqualTypeOf<NavigationRootPartProps>()
     expectTypeOf<NavigationRootPartProps>().not.toHaveProperty('data-kv')

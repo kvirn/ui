@@ -101,5 +101,5 @@ Toggle has no strings of its own and announces nothing: the screen reader reads 
 
 ## Known issues
 
-- **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
 - The pressed look in the contrast themes is the same as a primary button at rest (they have no depth there). The context and `aria-pressed` tell them apart (design spec §9, Q16).

@@ -32,7 +32,7 @@ Rules, tested in `one-time-code.test.tsx`:
 - **No auto-advance, no auto-submit.** Typing the last character moves no focus and submits nothing. `onComplete(value)` is a callback for consumers who check early.
 - **Field state.** `data-invalid` and `data-disabled` come from the nearest Field (or the Root's `disabled`), on the Root and on every slot.
 - **`render` on all three parts,** with class and handlers merged, and refs merged.
-- **Dev warnings:** an Input or Slot outside a Root, a Slot whose index is not a position of the pattern (separators count), an Input with no accessible name, and an Input in a Field with no help text (a `Prose`: the length and the groups must be said, 3.3.2).
+- **Dev warnings:** an Input or Slot outside a Root, a Slot whose index is not a position of the pattern (separators count), an Input with no accessible name, and an Input in a Field with no description (a `Field.Prose` above or a `Field.HelpText` under: the length and the groups must be said, 3.3.2).
 
 ## Keyboard
 
@@ -154,4 +154,4 @@ Also pending, by hand: SMS autofill on iOS Safari and Android Chrome, the browse
 - **The browser's autofill tint** shows in the 8px gaps between the boxes, under the opaque boxes. Accepted: it tells sighted users the code was filled in.
 - **Undo** after the mask inserted a literal can't be kept without `execCommand`. A grouped pattern (`****-****`) has a literal, the dash, so undo after the mask put it in can step back over it in two presses. A pattern without a separator has no literals, and undo is native.
 - **`se` story texts show English,** marked `lang="en"` (3.1.2). The component itself has no strings.
-- **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.

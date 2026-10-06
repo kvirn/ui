@@ -16,6 +16,7 @@ import {
   GroupedMunicipalities,
   InvalidMunicipality,
   KeyboardForm,
+  LanguageSwitcher,
   LongFinnishMunicipality,
   LongMunicipalityList,
   MunicipalitiesWithOwnEmptyText,
@@ -442,6 +443,31 @@ export const ControlledOpen: Story = {
     await waitFor(() => expect(state).toHaveTextContent('open: true, reason: trigger-press'))
     await userEvent.click(canvas.getByRole('button', { name: 'Före' }))
     await waitFor(() => expect(state).toHaveTextContent('open: false, reason: outside-press'))
+  },
+}
+
+/**
+ * A language switcher: `itemToLang` puts `lang` on every option, native and popup, and on the
+ * trigger's value, so each language name is read in its own language (3.1.2).
+ */
+export const Languages: Story = {
+  parameters: showSource('listbox/listbox.fixture.tsx', 'LanguageSwitcher'),
+  render: () => <LanguageSwitcher />,
+  play: async ({ canvas }) => {
+    const trigger = canvas.getByRole('combobox', { name: /Suomi/ })
+    await expect(trigger.querySelector('[lang="fi"]')).toHaveTextContent('Suomi')
+    await userEvent.click(trigger)
+    await waitFor(() => expect(trigger).toHaveAttribute('aria-expanded', 'true'))
+    const popup = within(canvas.getByRole('listbox'))
+    await expect(popup.getByRole('option', { name: 'Davvisámegiella' })).toHaveAttribute(
+      'lang',
+      'se',
+    )
+    await expect(popup.getByRole('option', { name: 'Svenska' })).not.toHaveAttribute('lang')
+    await userEvent.keyboard('{Escape}')
+    const select = canvas.getByRole('combobox', { name: /webbläsarens/ })
+    await expect(select.querySelector('option[value="fi"]')).toHaveAttribute('lang', 'fi')
+    await expect(select.querySelector('option[value="sv"]')).not.toHaveAttribute('lang')
   },
 }
 

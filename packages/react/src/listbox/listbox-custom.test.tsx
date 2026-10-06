@@ -1376,6 +1376,151 @@ describe('server rendering', () => {
   })
 })
 
+const languageNames: Record<string, string> = { sv: 'Svenska', fi: 'Suomi', se: 'Davvisámegiella' }
+const languageCodes = Object.keys(languageNames)
+
+function LanguageExample(rootProps: Partial<UseListboxSingleOptions<string>>) {
+  return (
+    <Field.Root>
+      <Field.Label>Språk</Field.Label>
+      <Listbox.Root
+        items={languageCodes}
+        itemToString={(code) => languageNames[code] ?? code}
+        itemToKey={(code) => code}
+        itemToLang={(code) => (code === 'sv' ? undefined : code)}
+        native="never"
+        {...rootProps}
+      >
+        <Listbox.Trigger>
+          <Listbox.Value placeholder="Välj språk" />
+        </Listbox.Trigger>
+        <Listbox.Popup>
+          <Listbox.List>{(code: string) => <Listbox.Option item={code} />}</Listbox.List>
+        </Listbox.Popup>
+      </Listbox.Root>
+    </Field.Root>
+  )
+}
+
+function MultipleLanguageExample(rootProps: Partial<UseListboxMultipleOptions<string>>) {
+  return (
+    <Field.Root>
+      <Field.Label>Språk</Field.Label>
+      <Listbox.Root
+        items={languageCodes}
+        itemToString={(code) => languageNames[code] ?? code}
+        itemToKey={(code) => code}
+        itemToLang={(code) => (code === 'sv' ? undefined : code)}
+        multiple
+        {...rootProps}
+      >
+        <Listbox.Trigger>
+          <Listbox.Value placeholder="Välj språk" />
+        </Listbox.Trigger>
+        <Listbox.Popup>
+          <Listbox.List>{(code: string) => <Listbox.Option item={code} />}</Listbox.List>
+        </Listbox.Popup>
+      </Listbox.Root>
+    </Field.Root>
+  )
+}
+
+const languageTrigger = () => page.getByRole('combobox', { name: /Språk/ }).element()
+
+async function openLanguages() {
+  await userEvent.click(languageTrigger())
+  await expect.poll(isShown).toBe(true)
+}
+
+describe('itemToLang (3.1.2)', () => {
+  test('a popup option carries lang from itemToLang, and none when it returns undefined', async () => {
+    await render(<LanguageExample />)
+    await openLanguages()
+    expect(asHtmlElement(option('Suomi').element()).lang).toBe('fi')
+    expect(asHtmlElement(option('Davvisámegiella').element()).getAttribute('lang')).toBe('se')
+    expect(asHtmlElement(option('Svenska').element()).hasAttribute('lang')).toBe(false)
+  })
+
+  test('the trigger value carries the chosen item’s lang', async () => {
+    await render(<LanguageExample defaultValue="fi" />)
+    const value = languageTrigger().querySelector('.kv-listbox-value')
+    expect(value?.textContent).toBe('Suomi')
+    expect(value?.querySelector('[lang]')?.getAttribute('lang')).toBe('fi')
+  })
+
+  test('with several chosen, each label has its own lang and the text stays joined with a comma', async () => {
+    await render(<MultipleLanguageExample defaultValue={['sv', 'fi', 'se']} />)
+    const value = languageTrigger().querySelector('.kv-listbox-value')
+    expect(value?.textContent).toBe('Svenska, Suomi, Davvisámegiella')
+    expect(
+      [...(value?.querySelectorAll('span') ?? [])].map((span) => span.getAttribute('lang')),
+    ).toEqual([null, 'fi', 'se'])
+  })
+
+  test('the placeholder has no lang', async () => {
+    await render(<LanguageExample />)
+    const value = languageTrigger().querySelector('.kv-listbox-value')
+    expect(value?.textContent).toBe('Välj språk')
+    expect(value?.querySelector('[lang]')).toBeNull()
+  })
+
+  test('a lang of your own on an option wins', async () => {
+    await render(
+      <Field.Root>
+        <Field.Label>Språk</Field.Label>
+        <Listbox.Root
+          items={languageCodes}
+          itemToLang={() => 'fi'}
+          placeholder="Välj"
+          native="never"
+        >
+          <Listbox.Trigger />
+          <Listbox.Popup>
+            <Listbox.List>
+              {(code: string) => <Listbox.Option item={code} lang="sv" />}
+            </Listbox.List>
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>,
+    )
+    await openLanguages()
+    expect(asHtmlElement(option('fi').element()).lang).toBe('sv')
+  })
+
+  test('without itemToLang nothing has a lang and the value is plain text', async () => {
+    await render(<LanguageExample itemToLang={undefined} defaultValue="fi" />)
+    const value = languageTrigger().querySelector('.kv-listbox-value')
+    expect(value?.querySelector('span')).toBeNull()
+    await openLanguages()
+    expect(popupElement()?.querySelector('[lang]')).toBeNull()
+  })
+
+  test('the native select puts lang on each option, not on the empty one or the select', async () => {
+    const { container } = await render(
+      <Field.Root>
+        <Field.Label>Språk</Field.Label>
+        <Listbox.Root
+          items={languageCodes}
+          itemToString={(code) => languageNames[code] ?? code}
+          itemToLang={(code) => (code === 'sv' ? undefined : code)}
+          native="always"
+        />
+      </Field.Root>,
+    )
+    const select = asSelectElement(page.getByRole('combobox', { name: /Språk/ }).element())
+    const langs = [...select.options].map((optionElement) => optionElement.getAttribute('lang'))
+    expect(langs).toEqual([null, null, 'fi', 'se'])
+    expect(select.hasAttribute('lang')).toBe(false)
+    await expectNoA11yViolations(container)
+  })
+
+  test('no axe violations with lang on the options and the value', async () => {
+    const { container } = await render(<LanguageExample defaultValue="fi" />)
+    await openLanguages()
+    await expectNoA11yViolations(container)
+  })
+})
+
 describe('types', () => {
   test('the value is a key or null, and an array with multiple', () => {
     expectTypeOf<UseListboxSingleOptions<string>['value']>().toEqualTypeOf<
@@ -1387,6 +1532,9 @@ describe('types', () => {
     expectTypeOf<UseListboxMultipleOptions<string>['multiple']>().toEqualTypeOf<true>()
     expectTypeOf<ListboxRootProps<Municipality>['items']>().toEqualTypeOf<
       readonly Municipality[] | undefined
+    >()
+    expectTypeOf<UseListboxSingleOptions<Municipality>['itemToLang']>().toEqualTypeOf<
+      ((item: Municipality) => string | undefined) | undefined
     >()
     expectTypeOf<UseListboxResult<Municipality>['selectedItems']>().toEqualTypeOf<
       readonly Municipality[]

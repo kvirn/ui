@@ -44,7 +44,7 @@ const focusableSelector =
  * <Field.Root>
  *   <Field.Label>Månadshyra i kronor</Field.Label>
  *   <InputGroup.Root>
- *     <InputGroup.Input name="rent" inputMode="decimal" className="kv-input--width-10" />
+ *     <NumberInput name="rent" grouping className="kv-input--width-10" />
  *     <InputGroup.Addon>kr</InputGroup.Addon>
  *   </InputGroup.Root>
  * </Field.Root>

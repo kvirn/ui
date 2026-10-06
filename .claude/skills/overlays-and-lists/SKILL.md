@@ -186,4 +186,4 @@ Native `<table>` with TanStack Table behind `createTable` and the `useTable` hoo
 
 ## Pending
 
-- Plan 0030 adds rich Listbox options (icon, text, description and indicator parts). Today an option takes `children` and `render` with `ListboxOptionState`, and its accessible name is its whole text content. The native `<select>` stays text-only.
+- Rich options are built (Plan 0030): `Listbox.OptionIcon`, `OptionText`, `OptionDescription` and `OptionIndicator`, shared by `Combobox` and `Autocomplete`. An option's name is its `OptionText` alone, and its description is `aria-describedby`. The native `<select>` stays text-only.

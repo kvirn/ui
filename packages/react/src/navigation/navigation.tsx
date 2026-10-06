@@ -1,5 +1,15 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import type { HTMLAttributes, ReactElement, Ref, RefCallback } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
@@ -9,6 +19,7 @@ import type { RenderProp } from '../render/render-part.ts'
 import { useNavigation } from './use-navigation.ts'
 import type {
   NavigationItemPartProps,
+  NavigationLabelPartProps,
   NavigationListPartProps,
   NavigationRootPartProps,
 } from './use-navigation.ts'
@@ -47,6 +58,7 @@ export interface NavigationRootProps extends NavigationPartComponentProps {
 }
 export type NavigationListProps = NavigationPartComponentProps
 export type NavigationItemProps = NavigationPartComponentProps
+export type NavigationLabelProps = NavigationPartComponentProps
 
 const navigationState: NavigationState = Object.freeze({})
 
@@ -63,11 +75,26 @@ function landmarkName(element: Element): string {
     .trim()
 }
 
+// Internal. A `Navigation.Item` and the parts in it: the label registers, and the nested list is
+// named by it. The label and the list are siblings, so neither can find the other without it.
+interface NavigationItemContextValue {
+  labelId: string
+  hasLabel: boolean
+  registerLabel: (id: string) => () => void
+  registerList: () => () => void
+}
+
+const NavigationItemContext = createContext<NavigationItemContextValue | null>(null)
+
 /** Internal. One part: one element. The part's props join the consumer's (mergeProps). */
 function renderNavigationPart(
   { render, ...otherProps }: NavigationPartComponentProps,
-  defaultElement: 'nav' | 'ul' | 'li',
-  partProps: NavigationRootPartProps | NavigationListPartProps | NavigationItemPartProps,
+  defaultElement: 'nav' | 'ul' | 'li' | 'span',
+  partProps:
+    | NavigationRootPartProps
+    | NavigationListPartProps
+    | NavigationItemPartProps
+    | NavigationLabelPartProps,
   elementRef: RefCallback<HTMLElement>,
 ): ReactElement {
   return renderPart({
@@ -138,18 +165,100 @@ NavigationRoot.displayName = 'Navigation.Root'
  */
 export function NavigationList({ ref, ...otherProps }: NavigationListProps): ReactElement {
   const navigation = useNavigation()
+  const item = useContext(NavigationItemContext)
   const mergedRef = useMergedRef(ref, null)
-  return renderNavigationPart(otherProps, 'ul', navigation.listProps, mergedRef)
+  const registerList = item?.registerList
+  useLayoutEffect(() => registerList?.(), [registerList])
+  // A name of the consumer's own wins over the label's.
+  const isNamedByLabel =
+    item?.hasLabel === true &&
+    otherProps['aria-label'] === undefined &&
+    otherProps['aria-labelledby'] === undefined
+  return renderNavigationPart(
+    isNamedByLabel ? { ...otherProps, 'aria-labelledby': item.labelId } : otherProps,
+    'ul',
+    navigation.listProps,
+    mergedRef,
+  )
 }
 NavigationList.displayName = 'Navigation.List'
 
-/** An `<li class="kv-navigation-item">`: a `Link`, and optionally a nested `Navigation.List`. */
+/**
+ * An `<li class="kv-navigation-item">`: a `Link`, and optionally a nested `Navigation.List`, or a
+ * `Navigation.Label` that names it.
+ */
 export function NavigationItem({ ref, ...otherProps }: NavigationItemProps): ReactElement {
   const navigation = useNavigation()
   const mergedRef = useMergedRef(ref, null)
-  return renderNavigationPart(otherProps, 'li', navigation.itemProps, mergedRef)
+  const defaultLabelId = useId()
+  const [labelIds, setLabelIds] = useState<readonly string[]>([])
+  const [listCount, setListCount] = useState(0)
+  const registerLabel = useCallback((id: string) => {
+    setLabelIds((ids) => [...ids, id])
+    return () => setLabelIds((ids) => ids.filter((registeredId) => registeredId !== id))
+  }, [])
+  const context = useMemo<NavigationItemContextValue>(
+    () => ({
+      // The list points at the id the label has, which is the consumer's when they pass one.
+      labelId: labelIds[0] ?? defaultLabelId,
+      hasLabel: labelIds.length > 0,
+      registerLabel,
+      registerList: () => {
+        setListCount((count) => count + 1)
+        return () => setListCount((count) => count - 1)
+      },
+    }),
+    [defaultLabelId, labelIds, registerLabel],
+  )
+  useEffect(() => {
+    if (labelIds.length > 0 && listCount === 0) {
+      warnOnce(
+        'navigation-label-without-list',
+        'A Navigation.Label is in a Navigation.Item that has no nested Navigation.List, so it names nothing. Put the Navigation.List it labels in the same Navigation.Item, or use plain text.',
+      )
+    }
+  }, [labelIds, listCount])
+  return (
+    <NavigationItemContext.Provider value={context}>
+      {renderNavigationPart(otherProps, 'li', navigation.itemProps, mergedRef)}
+    </NavigationItemContext.Provider>
+  )
 }
 NavigationItem.displayName = 'Navigation.Item'
+
+/**
+ * The name of a group, in a `Navigation.Item` next to its nested `Navigation.List`: a
+ * `<span class="kv-navigation-label">` that the list points at with `aria-labelledby`, so a
+ * screen reader announces "Komponenter, list, 3 items". It is not a heading and not a link, so
+ * nobody mistakes it for one: it has no role, is not focusable and is never a Tab stop. Its text
+ * is yours, in your own translations.
+ */
+export function NavigationLabel({ ref, ...otherProps }: NavigationLabelProps): ReactElement {
+  const navigation = useNavigation()
+  const item = useContext(NavigationItemContext)
+  const mergedRef = useMergedRef(ref, null)
+  const registerLabel = item?.registerLabel
+  const labelId = otherProps.id ?? item?.labelId
+  useLayoutEffect(
+    () => (labelId === undefined ? undefined : registerLabel?.(labelId)),
+    [registerLabel, labelId],
+  )
+  useEffect(() => {
+    if (item === null) {
+      warnOnce(
+        'navigation-label-outside-item',
+        'A Navigation.Label is outside a Navigation.Item, so it names no list. Put it in the Navigation.Item that holds the Navigation.List it labels.',
+      )
+    }
+  }, [item])
+  return renderNavigationPart(
+    item === null ? otherProps : { ...otherProps, id: labelId },
+    'span',
+    navigation.labelProps,
+    mergedRef,
+  )
+}
+NavigationLabel.displayName = 'Navigation.Label'
 
 /**
  * A labelled `<nav>` landmark around a list of page links, with an optional second level
@@ -180,4 +289,5 @@ export const Navigation = {
   Root: NavigationRoot,
   List: NavigationList,
   Item: NavigationItem,
+  Label: NavigationLabel,
 } as const

@@ -102,4 +102,4 @@ Headless: Section ships no CSS. With `@kvirn-ui/theme/theme.css` (design spec `d
 ## Known issues
 
 - **No visible region edge in the contrast themes.** `surface` on `canvas` is 1.06:1 in light-contrast and 1.10:1 in dark-contrast, the same as the standard themes, so a sidebar there has no visible edge unless the consumer colours one (`border-inline-end-color: var(--kv-color-border-subtle)`). Decorative for WCAG, but a usability question (design spec §10.1). Usability test result: `pending`.
-- **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.

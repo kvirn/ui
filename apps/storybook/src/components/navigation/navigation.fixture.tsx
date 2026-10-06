@@ -340,3 +340,45 @@ export function NavigationOrientations({ locale }: { locale: 'sv' | 'en' }) {
     </>
   )
 }
+
+/**
+ * A sidebar that groups links under labels, as in a staff or documentation menu. Each
+ * `Navigation.Label` is plain text that names the list next to it, so a screen reader announces
+ * "Komponenter, list, 3 items". It is not a heading and not a link, and the group needs no
+ * indentation of its own.
+ */
+export function GroupedNavigation() {
+  return (
+    <Navigation.Root label="Dokumentation">
+      <Navigation.List>
+        <Navigation.Item>
+          <Navigation.Label>Grunder</Navigation.Label>
+          <Navigation.List>
+            <Navigation.Item>
+              <Link.Root href="#kom-igang">Kom igång</Link.Root>
+            </Navigation.Item>
+            <Navigation.Item>
+              <Link.Root href="#teman" current="page">
+                Teman
+              </Link.Root>
+            </Navigation.Item>
+          </Navigation.List>
+        </Navigation.Item>
+        <Navigation.Item>
+          <Navigation.Label>Komponenter</Navigation.Label>
+          <Navigation.List>
+            <Navigation.Item>
+              <Link.Root href="#knapp">Knapp</Link.Root>
+            </Navigation.Item>
+            <Navigation.Item>
+              <Link.Root href="#lank">Länk</Link.Root>
+            </Navigation.Item>
+            <Navigation.Item>
+              <Link.Root href="#valjare">Väljare</Link.Root>
+            </Navigation.Item>
+          </Navigation.List>
+        </Navigation.Item>
+      </Navigation.List>
+    </Navigation.Root>
+  )
+}

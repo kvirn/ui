@@ -56,7 +56,7 @@ Hooks `useField` and `useFieldset` return the props. The components (`Field`, `L
 
 - **Default order:** label, description (`Prose`, optional), control, help text (`Field.HelpText`, optional), then `ErrorMessage`. In a Fieldset: legend, description, controls, help text, `ErrorMessage`. The error goes last so the visual order is the `aria-describedby` order (1.3.2) and nothing moves when it appears. Every part is one `--kv-field-gap` from the next (an option help text is the one 0-gap exception). The order stays the consumer's, and `aria-describedby` follows the DOM.
 - **Several Prose and HelpText per Field are allowed,** each with its own id. One `ErrorMessage`; a second warns.
-- **On submit,** move focus to the first invalid field or to an error summary. Keep `scroll-padding` so the message under the field is not hidden.
+- **On submit,** move focus to the first invalid field or to an `ErrorSummary` (Plan 0063: each link is `#controlId`, a group's is its first option; focus is the announcement, so no live region). Keep `scroll-padding` so the message under the field is not hidden.
 
 ## Text inputs, numbers and dates
 

@@ -1,6 +1,9 @@
 import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
 
+// fi: copyButton.* is a draft (Plan 0060): a native speaker should review it.
+// breadcrumb.* and pagination.* are drafts for a native speaker to review (Plan 0062).
+// Draft: errorSummary and summaryList (Plan 0063) need a native speaker's review.
 export const fi = {
   link: { newTabNotice: '(avautuu uuteen välilehteen)' },
   field: { optional: '(vapaaehtoinen)', errorPrefix: 'Virhe:' },
@@ -274,4 +277,21 @@ export const fi = {
     imageSourceNotAllowed: 'Liitettyä kuvaa ei lisätty, koska se on osoitteesta, jota ei sallita.',
   },
   tableOfContents: { label: 'Tällä sivulla' },
+  skipLink: { label: 'Siirry pääsisältöön' },
+  breadcrumb: { label: 'Olet tässä' },
+  pagination: {
+    label: 'Sivut',
+    previous: 'Edellinen sivu',
+    next: 'Seuraava sivu',
+    status: ({ page, total }, format) => `Sivu ${format.number(page)}/${format.number(total)}`,
+    page: ({ page }, format) => `Sivu ${format.number(page)}`,
+  },
+  routeFocus: { navigated: ({ title }) => `Siirryit sivulle ${title}` },
+  copyButton: {
+    label: 'Kopioi',
+    copied: 'Kopioitu',
+    failed: 'Kopiointi epäonnistui. Valitse teksti ja kopioi se itse.',
+  },
+  errorSummary: { title: 'Lomakkeessa on virheitä', titlePrefix: 'Virhe:' },
+  summaryList: { change: 'Muuta' },
 } satisfies KvirnMessages

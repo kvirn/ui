@@ -123,6 +123,6 @@ Research questions for the AT run: is a left-out character's message read once, 
 - **No provider, no announcement.** `KvirnProvider` is required for announcements.
 - **Undo.** When the mask rewrites the value (writes a group separator, leaves out a character), undo can't go back past that step. Accepted, as for TextInput masks.
 - **`min` and `max` are not announced.** They are reported to your code only. Say the range in the help text.
-- **WebKit not run locally.** CI runs the `webkit` and `mobile-safari` projects.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
 - **RTL: a negative number.** Number masks don't set `dir="ltr"`, so in a right-to-left page the minus sign of a negative number may show on the right of the digits. Use `dir="ltr"` on the NumberInput if your page needs it. To be checked with real readers.
 - **A typed space is announced as not allowed when `grouping` is on.** The mask writes the group separator itself, so a space the user types is left out and announced (a core decision; an AT question is whether that is noise).

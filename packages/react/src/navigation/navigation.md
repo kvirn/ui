@@ -4,7 +4,7 @@
 
 A labelled `<nav>` landmark around a list of page links, with the current page marked and an optional second level. Use it for a site's main menu, a section's sub-pages, a footer's links or a staff sidebar, as a vertical list or as a horizontal bar. For a single link, use [Link](../link/link.md). A menu that opens and closes (disclosure navigation, flyouts) is NavigationMenu, a separate component.
 
-- Three parts: `Navigation.Root` (`<nav>`), `Navigation.List` (`<ul>`) and `Navigation.Item` (`<li>`), also exported as `NavigationRoot`, `NavigationList` and `NavigationItem`. A sub-navigation is another `Navigation.List` inside a `Navigation.Item`.
+- Four parts: `Navigation.Root` (`<nav>`), `Navigation.List` (`<ul>`), `Navigation.Item` (`<li>`) and `Navigation.Label` (`<span>`), also exported as `NavigationRoot`, `NavigationList`, `NavigationItem` and `NavigationLabel`. A sub-navigation is another `Navigation.List` inside a `Navigation.Item`, and a `Navigation.Label` in the same item names it.
 - Every navigation needs a name, and two navigations on a page need two different names, because a screen reader user picks a landmark by it (WCAG 2.4.1, 2.4.6). Set `label`, or `aria-labelledby` pointing at a visible heading.
 - The current page is `current="page"` on its [Link](../link/link.md), which sets `aria-current="page"`. Exactly one link per navigation has `aria-current`: when the page isn't listed, `current` on the deepest item shown gives `aria-current="true"`. Never on an ancestor of a listed page, and never on a link inside a `hidden` group. Navigation doesn't detect the page, and it warns in development when two links have it.
 - Every link is a Tab stop, and there are no arrow keys: it is a list of links, not a menu. A horizontal bar has the same keys.
@@ -12,11 +12,12 @@ A labelled `<nav>` landmark around a list of page links, with the current page m
 
 ## API
 
-| Part              | Renders                           | Props                                                                                                                           |
-| ----------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `Navigation.Root` | `<nav class="kv-navigation">`     | `label` (becomes `aria-label`), any `<nav>` attribute such as `aria-labelledby`, `ref`, `render`                                |
-| `Navigation.List` | `<ul class="kv-navigation-list">` | any `<ul>` attribute, such as `hidden` for a collapsed group, `ref`, `render`. Inside a `Navigation.Item`, it is the next level |
-| `Navigation.Item` | `<li class="kv-navigation-item">` | any `<li>` attribute, `ref`, `render`                                                                                           |
+| Part               | Renders                              | Props                                                                                                                           |
+| ------------------ | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| `Navigation.Root`  | `<nav class="kv-navigation">`        | `label` (becomes `aria-label`), any `<nav>` attribute such as `aria-labelledby`, `ref`, `render`                                |
+| `Navigation.List`  | `<ul class="kv-navigation-list">`    | any `<ul>` attribute, such as `hidden` for a collapsed group, `ref`, `render`. Inside a `Navigation.Item`, it is the next level |
+| `Navigation.Item`  | `<li class="kv-navigation-item">`    | any `<li>` attribute, `ref`, `render`                                                                                           |
+| `Navigation.Label` | `<span class="kv-navigation-label">` | any `<span>` attribute, `ref`, `render`. Names the `Navigation.List` in the same item (`aria-labelledby`)                       |
 
 Navigation has no state, so it sets no `data-*` attribute, and it has no message keys. The state of a link (`aria-current`, `data-current`, `data-focus-visible`) is [Link](../link/link.md)'s.
 
@@ -63,7 +64,15 @@ Your part:
 - **Collapsing a group.** Render a group you collapse with `hidden`, and never unmount it: its links stay in the DOM but leave the Tab sequence and the accessibility tree, and the default theme keeps it collapsed. The toggle that opens it is yours: a `Button` with `aria-expanded` and `aria-controls`. A disclosure that Navigation manages is NavigationMenu.
 - **A horizontal bar.** `className="kv-navigation--horizontal"` on `Navigation.Root` lays the top level out as a row that wraps, with each item as wide as its label. It is one level: a nested list stays a column under its item. For the pages of a section, use a second `Navigation` with its own name ("I det här avsnittet"). Flyouts and collapsing are NavigationMenu.
 - **Two levels at most** on resident pages. Indentation shows the level without colour. A staff or CMS sidebar may go deeper, with the trail showing the way. A menu that collapses and opens is NavigationMenu.
-- **A heading above a nested list** (a group label that isn't a link) is your own element for now: there is no `Navigation.Group`.
+- **A group label.** `Navigation.Label` in a `Navigation.Item`, next to its nested `Navigation.List`, names that list: a screen reader announces "Komponenter, list, 3 items". It is plain text, not a heading and not a link, so it is no Tab stop and never looks like one (quiet `text-muted`, compact type). A list's own `aria-label` or `aria-labelledby` wins. The name is set when the page hydrates, not in server HTML. There is no `Navigation.Group`: the label is only the name. A label with no nested list names nothing and warns in development.
+
+  ```tsx
+  <Navigation.Item>
+    <Navigation.Label>Komponenter</Navigation.Label>
+    <Navigation.List>…</Navigation.List>
+  </Navigation.Item>
+  ```
+
 - **The element.** `render` changes a part's element, but Root must stay a `<nav>` (or have `role="navigation"`), otherwise the landmark is gone.
 - **Router links.** Links inside are [Link](../link/link.md), so the registered router link renders them, and the new-tab notice and `current` work as everywhere.
 

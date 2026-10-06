@@ -414,6 +414,56 @@ export interface KvirnMessages {
      */
     label: TextMessage
   }
+  skipLink: {
+    /**
+     * The visible text of the skip link, for example `Hoppa till huvudinnehållet`. It names the
+     * link, so it says where the link goes (2.4.1). Owned by SkipLink (Plan 0054).
+     */
+    label: TextMessage
+  }
+  breadcrumb: {
+    /**
+     * The accessible name of the breadcrumb landmark, for example `Du är här`. It says what the
+     * trail is for, so a screen reader user finds it in the landmarks list (2.4.1, 2.4.8). Owned by
+     * Breadcrumb (Plan 0062).
+     */
+    label: TextMessage
+  }
+  pagination: {
+    /** The accessible name of the pagination landmark, for example `Sidor`. Owned by Pagination (Plan 0062). */
+    label: TextMessage
+    /** The visible text of the Previous link, for example `Föregående sida`. */
+    previous: TextMessage
+    /** The visible text of the Next link, for example `Nästa sida`. */
+    next: TextMessage
+    /** The status shown on a narrow screen instead of the page links: `Sida 2 av 9`. */
+    status: MessageFunction<{ page: number; total: number }>
+    /** The name of a page link: `Sida 2`. The visible number stays in the name (2.5.3). */
+    page: MessageFunction<{ page: number }>
+    /** The name of the current page's link: `Sida 2, aktuell sida`. */
+  }
+  routeFocus: {
+    /** Announced after a navigation when `useRouteFocus` has `announce` on. `title` is the new page's title. */
+    navigated: MessageFunction<{ title: string }>
+  }
+  errorSummary: {
+    /** The summary's heading, for example `Det finns ett problem`. It names the focused group. Owned by ErrorSummary (Plan 0063). */
+    title: TextMessage
+    /** Put before the page title while the summary is shown, for example `Fel:`, so the tab or window title says it too (2.4.2). */
+    titlePrefix: TextMessage
+  }
+  summaryList: {
+    /** The visible text of a row's action link, for example `Ändra`. The row's key is added to the link's name. Owned by SummaryList (Plan 0063). */
+    change: TextMessage
+  }
+  copyButton: {
+    /** The visible text and the accessible name of the button. It never changes to the result (Plan 0060). */
+    label: TextMessage
+    /** Announced (polite) after the text was written to the clipboard. */
+    copied: TextMessage
+    /** Announced (assertive) when the browser refused. The component also selects the text. */
+    failed: TextMessage
+  }
 }
 
 /** Any subset of namespaces and keys, for provider and `defineMessages` overrides. */

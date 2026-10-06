@@ -101,6 +101,8 @@ Both are CSS custom properties in `theme.css`.
 | `warning`        | `warning-700`   | `warning-300`   | `warning-800`   | `warning-200`   | Warnings, deadlines, warning alert bar and icon                                                                                                                            |
 | `warning-subtle` | `warning-50`    | `warning-950`   | `warning-50`    | `warning-950`   | Warning alerts                                                                                                                                                             |
 
+The theme paints `body` with `canvas`, `text` and the `body` role at zero specificity (`:where(body)`), so any CSS of yours overrides it and the page never shows the browser's own canvas behind KvirnUI text.
+
 ### Contrast floors
 
 `vp run theme:check` measures every pair below, in every theme, and is the source for the numbers. These are the floors it enforces.
@@ -187,6 +189,25 @@ Six levels, `h1` to `h6`, each a role (`heading-1` to `heading-6`), with `displa
 - **Reflow (1.4.10).** Everything works at 320 CSS px wide and at 400% zoom with no horizontal scrolling, except data tables, which scroll inside their own named region (`kv-scroll-region`), a Tab stop only while it overflows.
 - **Direction.** Logical properties (`margin-inline-start`, `padding-block`), so RTL works.
 - **Sticky elements** (headers, action bars) never cover the focused element (2.4.11). Use `scroll-padding` to match their height.
+
+### Layout components
+
+> **Maintainer review (Plan 0056):** this section (the `80rem`, `45rem` and `40rem` measures, the `space-4`/`6`/`10` page padding, the column minimums, the sidebar widths and the `64rem` break) is new text. Remove this note when approved.
+
+Four components in `@kvirn-ui/react` place content with typed choices and no CSS of the adopter's own: `Container`, `Stack`, `Columns` and `SidebarLayout`. They draw nothing (no colour, edge or shadow) and add no role, landmark or name. The widths below are layout constants, not tokens; the gaps are `space` steps.
+
+| Component       | Choice                  | Values                                                                                                                                                                                                            |
+| --------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Container`     | `size`                  | `page` (default): centred, at most `80rem`, inline padding `space-4`, `space-6` from `40rem`, `space-10` from `64rem`. `reading`: `45rem`. `form`: `40rem`. The two measures are start-aligned and add no padding |
+| `Stack`         | `gap`                   | `space-2`, `space-4`, `space-6` (default), `space-8`                                                                                                                                                              |
+| `Columns`       | `minColumnWidth`, `gap` | `sm` `14rem`, `md` `18rem` (default), `lg` `24rem`; gap `space-4`, `space-6` (default), `space-8`. Tracks are `minmax(min(<width>, 100%), 1fr)`, so there is one column at 320px                                  |
+| `SidebarLayout` | `sidebarWidth`          | `sm` `16rem`, `md` `20rem` (default). One column below `64rem`; from `64rem` the sidebar track and the content, with a `space-10` gap                                                                             |
+
+- **DOM order is visual order.** Whichever part comes first is at inline start. There is no `reverse`, `order` or dense packing (1.3.2, 2.4.3), and RTL mirrors by logical properties.
+- **A form never gets a sidebar** and a list of results is one column at `45rem` (`Container size="reading"`); a card grid is for entry points, not results.
+- **Nothing sticky.** A layout component never sets `position: sticky`, a fixed height or `overflow`, so a focused element is never covered or clipped (2.4.11) and text spacing never cuts text off (1.4.12).
+- **No landmark of its own.** `render` picks the element (`ul` for a list of links, `nav` and `main` with a name); a page has one `main`.
+- A site changes these values in its own CSS (`.kv-container { max-inline-size: 72rem }`), not in props.
 
 ### Text expansion and hyphenation
 
@@ -345,6 +366,11 @@ Each word means one thing, in this file, the docs, Storybook, specs and code com
 - Links look like links (`link`, underlined on hover) and buttons look like buttons. Never swap the two. Hover adds a thicker underline and uses `link-hover`.
 - **The service link** (`kv-link--service`) is the one link per view that starts an e-service: a `link` label with a `primary` edge and, with a `Link.Icon` first, a `primary` block holding an `on-primary` icon (`link-service`, `link-service-icon`). It is flat, because depth means "press me" and this navigates. It is a link, never a button, and has no disabled state: an unavailable e-service is text, not a dimmed link.
 
+#### Skip link and visually hidden text
+
+- **The skip link** (`kv-skip-link`) is the first Tab stop in the body. Hidden (clipped, never `display: none`) until it has focus, then in the flow of the page, never an overlay, so it can't cover the header's own focused element. `link` on `canvas`, underlined, with the token focus ring and a target of at least 24px. Forced colours: `LinkText` on `Canvas` and a `Highlight` ring.
+- **Visually hidden text** (`kv-visually-hidden`) is the clip rule for text only a screen reader gets. Never put anything focusable in it.
+
 ### Navigation
 
 #### Navigation and table of contents
@@ -361,6 +387,10 @@ Navigation (`Navigation.Root`) and `TableOfContents` share one item look.
 - **`aria-current`.** Exactly one link per navigation has it: `page` when the page is listed, otherwise `true` on the deepest item shown. Never on an ancestor of a listed page or on a link inside a `hidden` group. The theme finds the trail with `:has()`, so it needs no prop.
 - **Nesting.** A nested list is indented one step (`--kv-space-4`), two levels at most on resident pages. A collapsed group is rendered with `hidden`, never unmounted.
 - **Horizontal** (`kv-navigation--horizontal`): the top level is a row that wraps, items sized to their labels, `--kv-space-3` on each side, `--kv-space-2` apart, with the same heights, fills and weights, and one level per bar. A second level is a second, separately named navigation, never a second row.
+- **Group label** (`kv-navigation-label`, a `Navigation.Label` in an item, naming its nested list). It is text, not a link or a heading, so it is the opposite of an item: no fill, no underline, no hover and no focus. `label-compact` type in `text-muted` at every density, `--kv-space-2` above and below, its text lined up with the links' text, and `--kv-space-4` above it from the second item on. `text-muted` on `surface` is measured already, so there is no new token or pair. Forced colours: `CanvasText`.
+
+  > **Maintainer review (Plan 0061).** The group label's look (compact type at every density, the text-aligned inset, the `space-4` gap between groups) follows docs-site.md section 6 and is new text here. Remove this note when approved.
+
 - **`TableOfContents`** lists the headings of a long page as plain `#id` links in a named `<nav>`, with `aria-current="location"` on the heading being read. Nothing is current until the reader passes the first heading. It is never sticky, never smooth-scrolls and never moves focus: where it sits is the page's layout. Its title is a real heading the consumer renders, in `text` and never muted (the `heading-4` look beside an article), and names the `<nav>` with `aria-labelledby`. Levels indent `--kv-space-4`. Resident pages list `h2` and `h3`, and `h4` at most.
 
 #### Tabs
@@ -374,6 +404,30 @@ Navigation (`Navigation.Root`) and `TableOfContents` share one item look.
 - **Focus:** a tab and the panel (`tabindex="0"`) each have the focus ring.
 - **Vertical** (`data-orientation="vertical"`): a row of the list and the panel, stacking below `40rem`.
 - **Forced colours:** the bar and the hairline are `CanvasText`, the text `ButtonText`, the ring `Highlight`.
+
+#### Disclosure and Accordion
+
+> **Maintainer review (Plan 0058):** this subsection and the class contract lines below are a proposal, from docs/design/docs-site-components.md section 5 (G3) and municipality-reference-site.md (B12). It reuses existing tokens only (no new token, no new colour pair). Remove this note when approved.
+
+`kv-disclosure-trigger` is a button that shows and hides one panel. `kv-accordion` is a stack of them with headings, for a FAQ. A disclosure changes content on the same page: links to other pages are a navigation.
+
+- **Trigger:** a quiet text button like a tab: `text` at weight 400, no fill, the 2px link underline on hover and press, at the control height (`--kv-control-min-block-size`), `--kv-space-2` on each side, `--kv-space-2` before the chevron.
+- **The open look:** a decorative chevron at the inline end that points down while closed and up while open. The state is a shape, never colour alone, and `aria-expanded` carries it for assistive technology. The trigger's text never changes with the state. No fill and no rotation animation: nothing animates.
+- **Panel:** in flow, `--kv-space-2` above and on each side. It has no `display` rule, so `hidden` wins.
+- **Accordion:** a `border-subtle` hairline above the stack and one under each item. The trigger is the whole row at weight 600, text at the start and chevron at the end, and wraps (1.4.10). The heading around it has no look of its own. The hairlines are not the only cue: the heading and the chevron mark each row.
+- **Focus:** the ring on the trigger.
+- **Forced colours:** hairlines are `CanvasText`, the text `CanvasText` (`GrayText` when disabled), the chevron `currentColor`, the ring `Highlight`.
+
+#### Breadcrumb and pagination
+
+> **Maintainer review (Plan 0062):** this subsection and the class contract lines below are a proposal. It reuses existing tokens only (no new token, no new colour pair). Remove this note when approved.
+
+`kv-breadcrumb` is where you are and the way up. `kv-pagination` moves through a long list. Both are a named `<nav>` around a list of real links (Link, so a registered router link is used).
+
+- **Breadcrumb.** A row that wraps and never collapses into "…": a hidden level is a hidden way out. Items are `text` in the control type with `--kv-space-2` between; the separator is a chevron in `text-muted`, drawn as generated content with empty alternative text, so it is never read, and it mirrors in RTL. The links keep the `link` look and are at least 24px tall. The current page is the last item, plain text at weight 600 with `aria-current="page"`, never a link to itself.
+- **Pagination.** Targets at the control height (`--kv-control-min-block-size`, 44px), `--kv-space-3` on each side and `--kv-space-2` apart, in a row that wraps. A page number is a navigation item (`text`, weight 400, underline on hover). The current page is the Navigation current look: a solid `primary` fill, `on-primary` number, weight 600, a shape and `aria-current="page"` and never colour alone. Previous and Next keep the link colour and underline, with a decorative arrow (mirrored in RTL). The gap is the text `…`.
+- **Narrow.** Below `40rem` the page numbers and gaps are hidden and the row is Previous, the status text (`Sida 2 av 9`) and Next. From `40rem` the status is hidden.
+- **Forced colours.** The fill drops: the current page keeps a straight `LinkText` bar under its number. Separators and text are `CanvasText`.
 
 ### Forms
 
@@ -444,6 +498,10 @@ At least 24px, with the whole label clickable, grouped in a `fieldset` with a `l
 
 An `Alert.Danger` at the top of `main` with the heading "Det finns ett problem" and a list of links to each invalid field, worded like the field errors. It receives focus on submit and isn't announced.
 
+> **Maintainer review (Plan 0063).** The looks below are a proposal and reuse existing tokens only (no new token, no new colour pair). Remove this note when approved.
+>
+> `ErrorSummary.Root` is the Alert's danger look plus `kv-error-summary`: the `danger-subtle` fill, the `danger` bar, the icon and the status word. Its list (`kv-error-summary-list`) has no markers and `space-1` between items. Each link (`kv-error-summary-link`) is in the `text` colour, weight 600, always underlined: the link colour is not a measured pair on `danger-subtle`, and the underline carries the link without colour. It wraps anywhere and is 24px tall at least. The focused summary shows the token ring under `:focus-visible` (the `tabindex="-1"` rule). In forced colours the links are `LinkText`. Not announced: focus is the announcement.
+
 #### File upload
 
 - **Drop zone:** a 1px dashed `border-control` edge at rest, a heavy solid `primary` edge with a `primary-subtle` fill while a file is dragged over it, a heavy solid `danger` edge when invalid. It is the one dashed edge that doesn't mean disabled: it's a target, not a control, and the button inside carries the disabled look. The box is drawn only where a file can be dropped (a precise pointer, or while a file is dragged over the page).
@@ -475,6 +533,18 @@ Elevation level 2: `surface-raised`, a `border-subtle` edge, the `lg` radius, no
 - **Never** use `primary-subtle` or a status `-subtle` background as a card surface: status belongs in an Alert, with an icon and a status word.
 - **Border:** every card keeps it, so its edge survives forced colours. On resident pages nest one level at most, with `md` for the inner card. A card on a section keeps its default look.
 
+#### Summary list
+
+> **Maintainer review (Plan 0063).** This subsection is new text and a proposal. It reuses existing tokens only (no new token, no new colour pair). Remove this note when approved.
+
+A native `<dl>` of rows for the answers on a check-your-answers page, a contact card, a case card. Read-only: the value is text, the action a link.
+
+- **Rows:** a 1px `border-subtle` line under every row and above the first, `space-3` block padding, no fill and no zebra. The text is `body` in `text`; the key is weight 600.
+- **From `40rem`** a row has three columns: the key, the value (twice as wide) and the actions at the inline end. A row with no actions gives the value the last column too. The column gap is `space-6`.
+- **Below `40rem` and at 320px** a row stacks: key, value, then the actions at the start. A long word wraps anywhere and a value is never truncated.
+- **Change link:** a plain `kv-link` with the word "Ändra" visible; its name adds the key ("Ändra Namn"). 24px tall at least. Several actions are `space-4` apart.
+- **Prose** leaves the list alone. In forced colours the row lines are `CanvasText`.
+
 #### Sections
 
 Elevation level 1: a region of the page, such as a sidebar or a band of content. A section is a plain container, never interactive, and renders a `<div>`: a landmark is the consumer's choice (`<aside>`, `<section>`, `<nav>`) and must be named.
@@ -499,7 +569,13 @@ Section and Card sit on elevation levels 1 and 2 (Storybook: Foundation / Border
 
 #### Badges and tags
 
-For status or metadata, never for interactive elements. Its look is whatever `theme.css` defines, and `theme.css` has no badge yet.
+For status or metadata, never for interactive elements.
+
+> **Maintainer review (Plan 0059).** `kv-badge` is a static `<span>` pill: `body-small` text, `radius-full`, padding `space-1` by `space-2`, a 1px edge, no depth, no hover and no focus style. Choices by role: neutral (the bare class; `text` on `surface`, a `border-control` edge), `primary` (`link` on `primary-subtle`), `info` (`text` on `primary-subtle`), `success`, `warning` and `danger` (`text` on their `-subtle`). The words always carry the status and the colour only adds to them. It never wraps. Forced colours: a `CanvasText` edge. No new token or pair.
+
+#### Code block and copy button
+
+> **Maintainer review (Plan 0060).** This subsection is new text. `kv-code-block` is a wrapping row: a `kv-code-block-label` (`body-small`, label weight, `text`) and the code take a full row each, then the copy button and its status share the last row. The code (`kv-code-block-code`) is the prose `pre`: `text` on `surface`, a 1px `border-subtle` edge, the `md` radius, `space-4` padding, the mono family at the code size. It wraps and never scrolls, is never hyphenated, and is never highlighted: no colour carries meaning. The copy button is a plain `kv-button`; its name stays "Copy" (2.5.3) and the result is announced and drawn. The status is a new class, `kv-copy-status` (`docs/design/copy-button.md`): a `span` after the button (also after a standalone CopyButton), 16px `body` in `text`, with a decorative `check` or `warning` icon in `text` colour (never tinted: colour is not the cue) and the words `copyButton.copied` or `copyButton.failed`. `copied` clears after 5 seconds or on the next press; `failed` stays until the next press. It wraps below the button at 320px, has no motion, and uses logical properties; the icons don't mirror. Forced colours: a `CanvasText` edge on the code, `CanvasText` on the status. No new token or pair.
 
 ### Overlays
 
@@ -568,9 +644,15 @@ Parts render these classes, choices are classes the consumer adds, and state is 
 
 - **Button:** `kv-button`. Choices `kv-button--primary`, `--danger`, `--icon-only`, and `kv-button-group`. State `[data-disabled]`.
 - **Link:** `kv-link`, `kv-link-new-tab-notice`, `kv-link-icon`. Choice `kv-link--service`.
-- **Navigation:** `kv-navigation`, `-list`, `-item`, with `kv-link` on its links. Choice `kv-navigation--horizontal`. State `aria-current`.
+- **Navigation:** `kv-navigation`, `-list`, `-item`, `-label`, with `kv-link` on its links. Choice `kv-navigation--horizontal`. State `aria-current`.
 - **Table of contents:** `kv-table-of-contents`, `-list`, `-item`, with `kv-link` on its links. State `aria-current`.
 - **Tabs:** `kv-tabs`, `-list`, `-tab`, `-panel`. State `aria-selected`, `aria-disabled`, `data-orientation`.
+- **Disclosure:** `kv-disclosure-trigger`, `-panel`, `-icon`. State `aria-expanded`, `data-open`, `data-disabled`.
+- **Accordion:** `kv-accordion`, `-item`, `-heading`, `-trigger`, `-panel`, with the disclosure classes on the trigger and the panel. State `aria-expanded`, `data-open`, `data-disabled`.
+- **Breadcrumb:** `kv-breadcrumb`, `-list`, `-item`, `-link`, `-current`, with `kv-link` on its links. State `aria-current` on the current page.
+- **Pagination:** `kv-pagination`, `-list`, `-item`, `-link`, `-previous`, `-next`, `-ellipsis`, `-status`, with `kv-link` on its links. State `aria-current`.
+- **Summary list:** `kv-summary-list`, `-row`, `-key`, `-value`, `-actions`, and `kv-link kv-summary-list-change`. No state.
+- **Error summary:** `kv-error-summary` (with `kv-alert kv-alert--danger`), `-list`, `-item`, and `kv-link kv-error-summary-link`. No state.
 - **Prose:** choices `kv-prose`, `kv-prose--large`, `kv-lead`, `kv-not-prose`, `kv-scroll-region`.
 - **Card:** `kv-card`, `kv-card-header`, `-body`, `-footer`. Choices `kv-card--radius-lg|md|none`, `kv-card--padding-none|sm|md|lg`, `kv-card-header--padding-*` (and body, footer) and `kv-card--dividers`.
 - **Section:** `kv-section`. Choices `kv-section--surface|canvas` and `kv-section--padding-none|sm|md|lg`.

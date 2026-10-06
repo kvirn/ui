@@ -2,7 +2,7 @@
 
 > **Draft** (Plan 0022). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [listbox.a11y.md](listbox.a11y.md), and the decisions are in the overlays-and-lists skill.
 
-Choosing one option from a list, or several. Listbox replaces `NativeSelect`. It has two renderings of one API:
+Choosing one option from a list, or several. It has two renderings of one API:
 
 - **The popup** (`Listbox.Root`, `Listbox.Trigger`, `Listbox.Popup` and the parts inside it): a stylable popup in the browser's top layer, the APG select-only combobox. It holds groups and rich options, and it is the only rendering for `multiple`.
 - **The native select** (what `Listbox.Root` renders for `native="always"`, and on touch devices with `native="auto"`): the browser's own `<select>`, wired to its Field. On a phone it is better than anything custom. In a `Toolbar`, set `native="never"`: the native select would drop the trigger and its `Toolbar.Item`.
@@ -46,23 +46,24 @@ interface Municipality {
 
 `Listbox.Root` renders no element of its own (it renders hidden inputs after its children, and the native `<select>` when that is chosen). Props:
 
-| Prop                                     | What it does                                                                                                                                                                                                                                      |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `items`                                  | A flat list of any item type. Pass a new array when the items, or what `isItemDisabled` says about them, change, and memoize it when you build it in render.                                                                                      |
-| `groups`                                 | Items in named groups: `{ key, label, items }`. Flat: groups don't nest. Instead of `items`.                                                                                                                                                      |
-| `itemToString`, `itemToKey`              | The text of an item (shown, matched by typeahead, the native option's label), and its unique key (what the value holds). Defaults: `String(item)`, and the text.                                                                                  |
-| `isItemDisabled`                         | Disabled options stay reachable with the arrow keys, are read as unavailable, and can't be chosen.                                                                                                                                                |
-| `value`, `defaultValue`, `onValueChange` | Single choice: a key or `null`. With `multiple`: an array of keys. `onValueChange(value, { reason })` has the reason `'option-press'`, `'key'` or `'native'`. It only reports: a parent that doesn't update `value` leaves the listbox as it was. |
-| `multiple`                               | Several choices. The popup stays open after a choice, and every option toggles. Always the popup, never the native select.                                                                                                                        |
-| `native`                                 | `'auto'` (default): a native `<select>` on touch devices (`(pointer: coarse)`), for a single choice. `'always'`, or `'never'`.                                                                                                                    |
-| `name`                                   | One `<input type="hidden">` per chosen key, so a plain `<form>` and `FormData` work. A single choice sends `''` when nothing is chosen. None when disabled.                                                                                       |
-| `placeholder`                            | Shown while nothing is chosen (and the label of the native select's empty option). `Listbox.Value` can override it. Never the only label.                                                                                                         |
-| `autoComplete`                           | `autocomplete` of the native select (1.3.5).                                                                                                                                                                                                      |
-| `disabled`, `id`                         | `disabled` (a disabled Field disables it too), and the trigger's id outside a Field.                                                                                                                                                              |
-| `open`, `defaultOpen`, `onOpenChange`    | The popup's state. `onOpenChange(open, { reason })`: `'trigger-press'`, `'option-press'`, `'key'`, `'escape'`, `'outside-press'`, `'blur'` or `'light-dismiss'`.                                                                                  |
-| `placement`, `offset`, `padding`         | Where the popup goes (default `'bottom-start'`, 4px gap, 8px from the viewport's edge). It is as wide as the trigger, flips when there is no room and scrolls inside.                                                                             |
-| `messages`                               | Per-instance overrides of the `combobox` strings. `noResults` is the default text of `Listbox.Empty`.                                                                                                                                             |
-| `virtualize`                             | `true`, or `{ estimateSize, overscan }`: renders only the options in view, for a flat list of thousands. Off by default. See Long lists. The native select ignores it.                                                                            |
+| Prop                                     | What it does                                                                                                                                                                                                                                         |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `items`                                  | A flat list of any item type. Pass a new array when the items, or what `isItemDisabled` says about them, change, and memoize it when you build it in render.                                                                                         |
+| `groups`                                 | Items in named groups: `{ key, label, items }`. Flat: groups don't nest. Instead of `items`.                                                                                                                                                         |
+| `itemToString`, `itemToKey`              | The text of an item (shown, matched by typeahead, the native option's label), and its unique key (what the value holds). Defaults: `String(item)`, and the text.                                                                                     |
+| `itemToLang`                             | The language of an item's text: a code such as `fi`, or `undefined` for the page's. Puts `lang` on each native `<option>`, each popup option and the trigger's value, so a screen reader reads it in that language (3.1.2). For a language switcher. |
+| `isItemDisabled`                         | Disabled options stay reachable with the arrow keys, are read as unavailable, and can't be chosen.                                                                                                                                                   |
+| `value`, `defaultValue`, `onValueChange` | Single choice: a key or `null`. With `multiple`: an array of keys. `onValueChange(value, { reason })` has the reason `'option-press'`, `'key'` or `'native'`. It only reports: a parent that doesn't update `value` leaves the listbox as it was.    |
+| `multiple`                               | Several choices. The popup stays open after a choice, and every option toggles. Always the popup, never the native select.                                                                                                                           |
+| `native`                                 | `'auto'` (default): a native `<select>` on touch devices (`(pointer: coarse)`), for a single choice. `'always'`, or `'never'`.                                                                                                                       |
+| `name`                                   | One `<input type="hidden">` per chosen key, so a plain `<form>` and `FormData` work. A single choice sends `''` when nothing is chosen. None when disabled.                                                                                          |
+| `placeholder`                            | Shown while nothing is chosen (and the label of the native select's empty option). `Listbox.Value` can override it. Never the only label.                                                                                                            |
+| `autoComplete`                           | `autocomplete` of the native select (1.3.5).                                                                                                                                                                                                         |
+| `disabled`, `id`                         | `disabled` (a disabled Field disables it too), and the trigger's id outside a Field.                                                                                                                                                                 |
+| `open`, `defaultOpen`, `onOpenChange`    | The popup's state. `onOpenChange(open, { reason })`: `'trigger-press'`, `'option-press'`, `'key'`, `'escape'`, `'outside-press'`, `'blur'` or `'light-dismiss'`.                                                                                     |
+| `placement`, `offset`, `padding`         | Where the popup goes (default `'bottom-start'`, 4px gap, 8px from the viewport's edge). It is as wide as the trigger, flips when there is no room and scrolls inside.                                                                                |
+| `messages`                               | Per-instance overrides of the `combobox` strings. `noResults` is the default text of `Listbox.Empty`.                                                                                                                                                |
+| `virtualize`                             | `true`, or `{ estimateSize, overscan }`: renders only the options in view, for a flat list of thousands. Off by default. See Long lists. The native select ignores it.                                                                               |
 
 `invalid`, `required` and the description (a `Field.Prose` in the Field) come from the Field, as for every control. The value is never copied into KvirnUI state: `value` and `onValueChange` are yours, or `defaultValue` and `name` for a plain form.
 
@@ -139,7 +140,7 @@ The list is the scroll element, so give `Listbox.List` a height limit and `overf
 
 ## The native select
 
-`NativeSelect` became `Listbox`: there is no separate native part. `<Listbox.Root native="always">` (and `native="auto"` on touch devices) renders one `<select class="kv-listbox-native">` from the same `items`, `groups`, `itemToString`, `itemToKey` and `isItemDisabled`, with `<option>` and `<optgroup>`. `Listbox.Trigger`, `Listbox.Popup` and the other children are not rendered then, so leave them in: they serve the popup.
+There is no separate native part. `<Listbox.Root native="always">` (and `native="auto"` on touch devices) renders one `<select class="kv-listbox-native">` from the same `items`, `groups`, `itemToString`, `itemToKey` and `isItemDisabled`, with `<option>` and `<optgroup>`. `Listbox.Trigger`, `Listbox.Popup` and the other children are not rendered then, so leave them in: they serve the popup.
 
 - Named by its `Field.Label`, described by the Field's help text and error. `aria-invalid`, `aria-required` and `disabled` come from the Field.
 - The same API as the popup: `value` (a key or `null`), `defaultValue`, `onValueChange(value, { reason: 'native' })`, `name` and `autoComplete`, which go on the `<select>`. No form state.
@@ -165,14 +166,4 @@ The list is the scroll element, so give `Listbox.List` a height limit and `overf
 
 In development, a Listbox warns once when it has no accessible name (a trigger outside a Field with no `aria-label`, or in a Field with no `Field.Label`), when a part is outside `Listbox.Root`, when an option is given an item that is not in the Root's items, when `virtualize` has no function child or is used with `groups`, and when a native select is asked for `multiple` or sits in a Toolbar. Each has a code, an explanation and a fix on the Foundation page Dev warnings.
 
-## Migrating from `NativeSelect`
-
-| Before                                      | After                                                                    |
-| ------------------------------------------- | ------------------------------------------------------------------------ |
-| `<NativeSelect>` with `<option>` children   | `<Listbox.Root native="always" items={…} />`, a key as the value         |
-| `value="gbg"` and `onValueChange(value)`    | `value="gbg"` (the item's key) and `onValueChange(key \| null, details)` |
-| `useNativeSelect()` and `selectProps`       | removed: spread your own `<select>` with the Field's `useField` props    |
-| `.kv-native-select`, `--kv-native-select-*` | `.kv-listbox-native`, `--kv-listbox-native-*`                            |
-| story title `Components/Form/NativeSelect`  | `Components/Form/Listbox` (the Native story)                             |
-
-Markup and keys of the native select are unchanged. `useListbox` and `UseListboxOptions` are the popup's hook and types.
+`useListbox` and `UseListboxOptions` are the popup's hook and types.

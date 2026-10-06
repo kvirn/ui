@@ -105,7 +105,11 @@ describe('display names', () => {
   test('single elements are named flat', () => {
     expect(api.Button.displayName).toBe('Button')
     expect(api.Heading.displayName).toBe('Heading')
+    expect(api.Badge.displayName).toBe('Badge')
     expect(api.Kbd.displayName).toBe('Kbd')
+    expect(api.CopyButton.displayName).toBe('CopyButton')
+    expect(api.SkipLink.displayName).toBe('SkipLink')
+    expect(api.VisuallyHidden.displayName).toBe('VisuallyHidden')
     expect(api.Icon.displayName).toBe('Icon')
     expect(api.TextInput.displayName).toBe('TextInput')
     expect(api.NumberInput.displayName).toBe('NumberInput')
@@ -116,6 +120,9 @@ describe('display names', () => {
     expect(api.ButtonGroup.displayName).toBe('ButtonGroup')
     expect(api.Prose.displayName).toBe('Prose')
     expect(api.Section.displayName).toBe('Section')
+    expect(api.Container.displayName).toBe('Container')
+    expect(api.Stack.displayName).toBe('Stack')
+    expect(api.Columns.displayName).toBe('Columns')
   })
 
   test('a part aliased onto its parent has its own name, not the source component’s', () => {
@@ -203,6 +210,7 @@ describe('flat part exports', () => {
     expect(api.Navigation.Root.displayName).toBe('Navigation.Root')
     expect(api.Navigation.List.displayName).toBe('Navigation.List')
     expect(api.Navigation.Item.displayName).toBe('Navigation.Item')
+    expect(api.Navigation.Label.displayName).toBe('Navigation.Label')
     expect(typeof api.Navigation).toBe('object')
   })
 
@@ -220,6 +228,32 @@ describe('flat part exports', () => {
     expect(api.Tabs.Tab.displayName).toBe('Tabs.Tab')
     expect(api.Tabs.Panel.displayName).toBe('Tabs.Panel')
     expect(typeof api.Tabs).toBe('object')
+  })
+
+  test('Disclosure and Accordion are namespaces of their own parts, not callable roots', () => {
+    expect(api.Disclosure.Root.displayName).toBe('Disclosure.Root')
+    expect(api.Disclosure.Trigger.displayName).toBe('Disclosure.Trigger')
+    expect(api.Disclosure.Panel.displayName).toBe('Disclosure.Panel')
+    expect(api.Accordion.Root.displayName).toBe('Accordion.Root')
+    expect(api.Accordion.Item.displayName).toBe('Accordion.Item')
+    expect(api.Accordion.Heading.displayName).toBe('Accordion.Heading')
+    expect(api.Accordion.Trigger.displayName).toBe('Accordion.Trigger')
+    expect(api.Accordion.Panel.displayName).toBe('Accordion.Panel')
+    expect(api.Accordion.Trigger).not.toBe(api.Disclosure.Trigger)
+    expect(typeof api.Disclosure).toBe('object')
+    expect(typeof api.Accordion).toBe('object')
+  })
+
+  test('Breadcrumb and Pagination are namespaces of their own parts, not callable roots', () => {
+    expect(api.Breadcrumb.Root.displayName).toBe('Breadcrumb.Root')
+    expect(api.Breadcrumb.Link.displayName).toBe('Breadcrumb.Link')
+    expect(api.Breadcrumb.Current.displayName).toBe('Breadcrumb.Current')
+    expect(api.Pagination.Root.displayName).toBe('Pagination.Root')
+    expect(api.Pagination.Link.displayName).toBe('Pagination.Link')
+    expect(api.Pagination.Previous.displayName).toBe('Pagination.Previous')
+    expect(api.Pagination.Next.displayName).toBe('Pagination.Next')
+    expect(typeof api.Breadcrumb).toBe('object')
+    expect(typeof api.Pagination).toBe('object')
   })
 
   test('callable roots stay callable and are the same function as their Root', () => {
@@ -246,11 +280,30 @@ describe('alias sets', () => {
     )
     expect(keys(api.InputGroup)).toEqual(expect.arrayContaining(['Root', 'Addon', 'Input']))
     expect(keys(api.Link)).toEqual(expect.arrayContaining(['Root', 'NewTabNotice', 'Icon']))
-    expect(keys(api.Navigation)).toEqual(expect.arrayContaining(['Root', 'List', 'Item']))
+    expect(keys(api.Navigation)).toEqual(expect.arrayContaining(['Root', 'List', 'Item', 'Label']))
     expect(keys(api.TableOfContents)).toEqual(
       expect.arrayContaining(['Root', 'List', 'Item', 'Link']),
     )
     expect(keys(api.Tabs)).toEqual(expect.arrayContaining(['Root', 'List', 'Tab', 'Panel']))
+    expect(keys(api.Breadcrumb)).toEqual(
+      expect.arrayContaining(['Root', 'List', 'Item', 'Link', 'Current']),
+    )
+    expect(keys(api.Pagination)).toEqual(
+      expect.arrayContaining([
+        'Root',
+        'List',
+        'Item',
+        'Link',
+        'Previous',
+        'Next',
+        'Ellipsis',
+        'Status',
+      ]),
+    )
+    expect(keys(api.Disclosure)).toEqual(expect.arrayContaining(['Root', 'Trigger', 'Panel']))
+    expect(keys(api.Accordion)).toEqual(
+      expect.arrayContaining(['Root', 'Item', 'Heading', 'Trigger', 'Panel']),
+    )
     expect(keys(api.Alert)).toEqual(
       expect.arrayContaining([
         'Root',

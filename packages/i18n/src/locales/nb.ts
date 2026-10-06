@@ -1,6 +1,9 @@
 import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
 
+// nb: copyButton.* is a draft (Plan 0060): a native speaker should review it.
+// breadcrumb.* and pagination.* are drafts for a native speaker to review (Plan 0062).
+// Draft: errorSummary and summaryList (Plan 0063) need a native speaker's review.
 export const nb = {
   link: { newTabNotice: '(åpnes i en ny fane)' },
   field: { optional: '(valgfritt)', errorPrefix: 'Feil:' },
@@ -269,4 +272,21 @@ export const nb = {
       'Det innlimte bildet ble ikke lagt til, fordi det kommer fra en adresse som ikke er tillatt.',
   },
   tableOfContents: { label: 'På denne siden' },
+  skipLink: { label: 'Gå til hovedinnhold' },
+  breadcrumb: { label: 'Du er her' },
+  pagination: {
+    label: 'Sider',
+    previous: 'Forrige side',
+    next: 'Neste side',
+    status: ({ page, total }, format) => `Side ${format.number(page)} av ${format.number(total)}`,
+    page: ({ page }, format) => `Side ${format.number(page)}`,
+  },
+  routeFocus: { navigated: ({ title }) => `Du har kommet til ${title}` },
+  copyButton: {
+    label: 'Kopier',
+    copied: 'Kopiert',
+    failed: 'Kunne ikke kopiere. Marker teksten og kopier den selv.',
+  },
+  errorSummary: { title: 'Det er et problem', titlePrefix: 'Feil:' },
+  summaryList: { change: 'Endre' },
 } satisfies KvirnMessages

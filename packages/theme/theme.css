@@ -69,13 +69,20 @@
  *   8. Link, service link and Navigation
  *  8a. Tabs             kv-tabs: a list of tabs, and the panel each one shows
  *  8b. Table of contents  kv-table-of-contents: a page's headings, styled as navigation items
+ *  8c. Breadcrumb and pagination  kv-breadcrumb, kv-pagination: where you are, and page links
+ *  8c. Disclosure and Accordion  kv-disclosure-*, kv-accordion-*: a button that shows a panel, and a stack of them
  *   9. Prose            kv-prose: articles from a CMS or Markdown
  *  9a. Heading       kv-heading: the type role of a heading, apart from its level
  *  9b. Kbd           kv-kbd: a key in running text
  *  9c. Tooltip       kv-tooltip: a name and a shortcut for a control, level 3
+ *  9d. Visually hidden and skip link  kv-visually-hidden, kv-skip-link: hidden until focused
+ *  9f. Code block      kv-code-block: a labelled code sample that wraps, and its copy button
+ *  9e. Badge         kv-badge: a status or category in words, by role class
  *  10. Card
  *  10a. Section          kv-section: a region of the page, elevation level 1
  *  10b. Alert            kv-alert: a status message, by status class
+ *  10d. Summary list and error summary  kv-summary-list: rows of key, value and action. kv-error-summary: the problems of a failed submit
+ *  10c. Layout           kv-container, kv-stack, kv-columns, kv-sidebar-layout: where children sit
  *  11. Icon
  *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-textarea,
  *                      kv-character-count, kv-input-group, kv-date-input, kv-checkbox,
@@ -725,6 +732,22 @@
     }
   }
 
+  /* 5a. Page base ----------------------------------------------------------------------------
+   * Nothing else paints the page, so without this the dark themes sit on the browser's own canvas
+   * behind KvirnUI text, a pair nobody measured. :where() makes it zero specificity: any CSS of
+   * yours, in a layer or not, beats it. text on canvas is held to the floors in every theme. */
+  :where(body) {
+    background-color: var(--kv-color-canvas);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    letter-spacing: var(--kv-font-body-letter-spacing);
+    font-feature-settings: var(--kv-font-body-feature-settings);
+    overflow-wrap: break-word;
+  }
+
   /* 6. Density -------------------------------------------------------------------------------
    * Put class="kv-compact" on any container for 32px controls with 14px labels, for
    * staff tools and toolbars. Below 64rem touch is likely, so controls stay 44px. Cards inside
@@ -1069,6 +1092,7 @@
    *     <Navigation.List>
    *       <Navigation.Item><Link.Root current="page" …>…</Link.Root></Navigation.Item>
    *       <Navigation.Item>…<Navigation.List>…</Navigation.List></Navigation.Item>
+   *       <Navigation.Item><Navigation.Label>…</Navigation.Label><Navigation.List>…</Navigation.List></Navigation.Item>
    *     </Navigation.List>
    *   </Navigation.Root>
    *
@@ -1182,6 +1206,26 @@
     > .kv-navigation-item
     > .kv-link:not(.kv-link--service) {
     padding-inline: var(--kv-space-3);
+  }
+
+  /* The name of a group (<Navigation.Label>): quiet text, not a link and not a heading. The inline
+   * padding lines its text up with the links' text. Compact type at every density: it labels, it
+   * is not a control. text-muted on surface is measured (docs-site.md section 6). */
+  .kv-navigation-label {
+    display: block;
+    padding-block: var(--kv-space-2);
+    padding-inline: var(--kv-space-4) var(--kv-space-3);
+    color: var(--kv-color-text-muted);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-label-compact-size);
+    font-weight: var(--kv-font-label-compact-weight);
+    line-height: var(--kv-font-label-compact-line-height);
+    letter-spacing: var(--kv-font-label-compact-letter-spacing);
+    overflow-wrap: anywhere;
+  }
+
+  .kv-navigation-item:not(:first-child) > .kv-navigation-label {
+    margin-block-start: var(--kv-space-4);
   }
 
   /* Hover and press: the link's own underline, in the text colour. No fill: none shows on both
@@ -1300,6 +1344,10 @@
 
     .kv-link:is(:focus-visible, [data-focus-visible]) {
       outline-color: Highlight;
+    }
+
+    .kv-navigation-label {
+      color: CanvasText;
     }
 
     /* Fills drop to Canvas and labels are LinkText. The current item keeps a straight LinkText
@@ -1563,6 +1611,309 @@
    * prose boundary (section 9).
    */
 
+  /* 8c. Disclosure and Accordion ---------------------------------------------------------------
+   * <Disclosure.Trigger> renders class="kv-disclosure-trigger", <Disclosure.Panel>
+   * kv-disclosure-panel, and the decorative chevron kv-disclosure-icon. <Accordion.Root> adds
+   * kv-accordion, .Item kv-accordion-item, .Heading kv-accordion-heading, and .Trigger and .Panel
+   * kv-accordion-trigger and kv-accordion-panel next to the disclosure classes (Plan 0058).
+   *
+   * A trigger is a quiet text button like a tab: the text colour at weight 400, no fill, and the
+   * 2px link underline on hover and press. The chevron sits at the inline end, after a gap, and
+   * points down while closed and up while open: the state is a shape the component swaps, never
+   * colour (1.4.1). It is currentColor, so it follows the text in every theme and in forced
+   * colours. Nothing animates.
+   *
+   * An accordion is a stack of full-width rows between hairlines (border-subtle, which marks the
+   * rows but is not the only cue: the heading and the chevron do too). The trigger is the whole
+   * row, weight 600, text at the start and chevron at the end, and wraps and never clips (1.4.10,
+   * 1.4.12). The heading around it has no look of its own: the trigger carries it. Neither panel
+   * has a display rule, which would beat hidden. Density follows the surroundings: 44px rows, and
+   * 32px inside kv-compact from 64rem.
+   */
+  .kv-disclosure-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--kv-space-2);
+    box-sizing: border-box;
+    min-block-size: var(--kv-control-min-block-size);
+    margin: 0;
+    padding-block: var(--kv-space-1);
+    padding-inline: var(--kv-space-2);
+    border: 0;
+    border-radius: var(--kv-radius-sm);
+    background-color: transparent;
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-control-font-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-control-line-height);
+    letter-spacing: normal;
+    text-align: start;
+    text-decoration: none;
+    text-underline-offset: var(--kv-link-underline-offset);
+    /* anywhere, not break-word: the trigger is a flex container, so a long word has to shrink
+     * its min-content width for a Finnish compound to wrap at 320px. */
+    overflow-wrap: anywhere;
+    cursor: pointer;
+  }
+
+  .kv-disclosure-trigger:not(:disabled, [aria-disabled='true']):is(:hover, :active) {
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+  }
+
+  .kv-disclosure-trigger:is(:disabled, [aria-disabled='true']) {
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+  }
+
+  .kv-disclosure-trigger:focus-visible {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-disclosure-icon {
+    flex: none;
+  }
+
+  .kv-disclosure-panel {
+    padding-block-start: var(--kv-space-2);
+    padding-inline: var(--kv-space-2);
+  }
+
+  .kv-accordion {
+    border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  .kv-accordion-item {
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  .kv-accordion-heading {
+    margin: 0;
+    font: inherit;
+  }
+
+  .kv-accordion-trigger {
+    display: flex;
+    justify-content: space-between;
+    inline-size: 100%;
+    padding-inline: var(--kv-space-2);
+    font-weight: 600;
+  }
+
+  .kv-accordion-panel {
+    padding-block-end: var(--kv-space-4);
+  }
+
+  @media (forced-colors: active) {
+    .kv-accordion,
+    .kv-accordion-item {
+      border-color: CanvasText;
+    }
+
+    .kv-disclosure-trigger {
+      color: CanvasText;
+    }
+
+    .kv-disclosure-trigger:is(:disabled, [aria-disabled='true']) {
+      color: GrayText;
+    }
+
+    .kv-disclosure-trigger:focus-visible {
+      outline-color: Highlight;
+    }
+  }
+
+  /* 8c. Breadcrumb and pagination ----------------------------------------------------------
+   * kv-breadcrumb: where you are and the way up. Parts: Breadcrumb.Root (a nav), .List (an ol),
+   * .Item, .Link (kv-link) and .Current (the last item, text with aria-current). A row that wraps
+   * and never collapses into "…": a hidden level is a hidden way out, and wrapping keeps 320px
+   * free of horizontal scroll. The separator is generated content with an empty alternative, so
+   * it is never read, and it mirrors in RTL. The links are plain kv-link, 24px tall at least.
+   *
+   * kv-pagination: Pagination.Root (a nav), .List (a ul), .Item and its content: .Link (a page),
+   * .Previous, .Next, .Ellipsis and .Status. A page link is a navigation item (44px, text colour,
+   * underline on hover) and the current page one solid primary fill at weight 600, a shape
+   * and not colour alone, like a current navigation item. Below 40rem the other numbers and the
+   * gaps are hidden and Previous, the current page, the Status text and Next stay; from 40rem the
+   * status is hidden. display: none takes them out of the accessibility tree and the Tab order too.
+   */
+  .kv-breadcrumb-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--kv-space-1) var(--kv-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .kv-breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: var(--kv-space-2);
+    min-inline-size: 0;
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-control-font-size);
+    line-height: var(--kv-control-line-height);
+    overflow-wrap: anywhere;
+  }
+
+  /* The separator: a chevron before every item but the first, never read ('/ ""' is its alternative text). */
+  .kv-breadcrumb-item + .kv-breadcrumb-item::before {
+    content: '\203A' / '';
+    color: var(--kv-color-text-muted);
+  }
+
+  .kv-breadcrumb-item + .kv-breadcrumb-item:dir(rtl)::before {
+    content: '\2039' / '';
+  }
+
+  /* 24px tall at least (2.5.8): the line height of a label is less. */
+  .kv-breadcrumb-link {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 1.5rem;
+  }
+
+  .kv-breadcrumb-current {
+    font-weight: 600;
+  }
+
+  .kv-pagination-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--kv-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .kv-pagination-item {
+    display: flex;
+    min-inline-size: 0;
+  }
+
+  /* A target: 44px, or 32px in compact density. */
+  :is(
+    .kv-pagination-link,
+    .kv-pagination-previous,
+    .kv-pagination-next,
+    .kv-pagination-ellipsis,
+    .kv-pagination-status
+  ) {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--kv-space-2);
+    box-sizing: border-box;
+    min-block-size: var(--kv-control-min-block-size);
+    min-inline-size: var(--kv-control-min-block-size);
+    padding-block: var(--kv-space-1);
+    padding-inline: var(--kv-space-3);
+    border-radius: var(--kv-radius-md);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-control-font-size);
+    line-height: var(--kv-control-line-height);
+    overflow-wrap: anywhere;
+  }
+
+  /* A page number is a navigation item: text colour, no underline at rest. */
+  .kv-pagination-link {
+    font-weight: var(--kv-font-body-weight);
+    text-decoration: none;
+  }
+
+  .kv-pagination-link:is(:hover, :active) {
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+  }
+
+  /* The current page: a solid fill and weight 600, plus aria-current. */
+  .kv-pagination-link:is([data-current], [aria-current]:not([aria-current='false'])) {
+    background-color: var(--kv-color-primary);
+    color: var(--kv-color-on-primary);
+    font-weight: 600;
+  }
+
+  /* Previous and Next keep the link colour and underline: their words are the cue. The arrow is
+   * decorative content with an empty alternative, mirrored in RTL. */
+  .kv-pagination-previous::before {
+    content: '\2190' / '';
+  }
+
+  .kv-pagination-previous:dir(rtl)::before {
+    content: '\2192' / '';
+  }
+
+  .kv-pagination-next::after {
+    content: '\2192' / '';
+  }
+
+  .kv-pagination-next:dir(rtl)::after {
+    content: '\2190' / '';
+  }
+
+  .kv-pagination-status {
+    font-weight: 600;
+  }
+
+  /* Below 40rem: Previous, the current page, the status and Next. */
+  @media (width < 40rem) {
+    .kv-pagination-item:has(
+      > :is(
+        .kv-pagination-ellipsis,
+        .kv-pagination-link:not(:is([data-current], [aria-current]:not([aria-current='false'])))
+      )
+    ) {
+      display: none;
+    }
+
+    .kv-pagination-list {
+      justify-content: space-between;
+    }
+  }
+
+  @media (width >= 40rem) {
+    .kv-pagination-item:has(> .kv-pagination-status) {
+      display: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .kv-breadcrumb-item + .kv-breadcrumb-item::before {
+      color: CanvasText;
+    }
+
+    .kv-breadcrumb-item,
+    .kv-breadcrumb-current,
+    :is(.kv-pagination-ellipsis, .kv-pagination-status) {
+      color: CanvasText;
+    }
+
+    .kv-pagination-link {
+      background-color: Canvas;
+      color: LinkText;
+    }
+
+    /* The fill drops: the current page keeps a straight LinkText bar under its number. */
+    .kv-pagination-link:is([data-current], [aria-current]:not([aria-current='false']))::before {
+      content: '';
+      position: absolute;
+      inset-block: auto var(--kv-space-1);
+      inset-inline: var(--kv-space-2);
+      block-size: var(--kv-indicator-width);
+      border-radius: var(--kv-radius-full);
+      background-color: LinkText;
+      forced-color-adjust: none;
+    }
+  }
+
   /* 9. Prose ---------------------------------------------------------------------------------
    * Put class="kv-prose" on the element around content you don't control, such as an article
    * from a CMS or Markdown, and its headings, paragraphs, lists, tables, code and figures get
@@ -1580,7 +1931,7 @@
    *
    * Every rule has zero specificity, so component rules and your own CSS always win. Prose
    * never styles a component part (components style themselves), or anything inside
-   * kv-not-prose, kv-navigation, kv-table-of-contents, kv-button-group or kv-toolbar. Prose inside kv-not-prose isn't turned on again.
+   * kv-not-prose, kv-navigation, kv-breadcrumb, kv-pagination, kv-table-of-contents, kv-button-group or kv-toolbar. Prose inside kv-not-prose isn't turned on again.
    * A card is a boundary: a card in prose gets prose's block margins, and nothing inside
    * it is prose-styled, unless you put kv-prose on the card or inside it. Then the nearest of
    * the two wins, for two levels of nested cards. A field (kv-field) and a fieldset
@@ -1733,6 +2084,10 @@
           .kv-link,
           .kv-link-new-tab-notice,
           .kv-link-icon,
+          .kv-skip-link,
+          .kv-visually-hidden,
+          .kv-disclosure-trigger,
+          .kv-accordion-heading,
           .kv-card-header,
           .kv-card-body,
           .kv-card-footer,
@@ -1745,10 +2100,18 @@
         :is(
             .kv-not-prose,
             .kv-navigation,
+            .kv-breadcrumb,
+            .kv-pagination,
             .kv-table-of-contents,
             .kv-button-group,
             .kv-toolbar,
-            .kv-table
+            .kv-table,
+            .kv-container,
+            .kv-stack,
+            .kv-columns,
+            .kv-sidebar-layout,
+            .kv-code-block,
+            .kv-summary-list
           )
           *,
         :is(:is(.kv-card, .kv-alert, .kv-field, .kv-fieldset):not(.kv-prose) *):not(
@@ -1769,12 +2132,14 @@
         )
       )
     ) {
-    /* Elements. kv-not-prose, kv-navigation, kv-table-of-contents, kv-button-group, kv-toolbar, a card's, a section's, a field's or a
+    /* Elements. kv-not-prose, kv-navigation, kv-breadcrumb, kv-pagination, kv-table-of-contents, kv-button-group, kv-toolbar, the layout classes, a card's, a section's, a field's or a
      * fieldset's Root only get margins. A section isn't a prose boundary: its content stays prose. */
     &:not(
       :where(
         .kv-not-prose,
         .kv-navigation,
+        .kv-breadcrumb,
+        .kv-pagination,
         .kv-table-of-contents,
         .kv-button-group,
         .kv-toolbar,
@@ -1783,7 +2148,13 @@
         .kv-section,
         .kv-field,
         .kv-fieldset,
-        .kv-table
+        .kv-table,
+        .kv-container,
+        .kv-stack,
+        .kv-columns,
+        .kv-sidebar-layout,
+        .kv-code-block,
+        .kv-summary-list
       )
     ) {
       &:where(h1, h2, h3, h4, h5, h6) {
@@ -2187,7 +2558,8 @@
       .kv-section,
       .kv-field,
       .kv-fieldset,
-      .kv-table
+      .kv-table,
+      .kv-summary-list
     ) {
       margin-block: var(--kv-prose-space-block);
       margin-inline: 0;
@@ -2422,6 +2794,214 @@
       border-color: CanvasText;
       background-color: Canvas;
       box-shadow: none;
+      color: CanvasText;
+    }
+  }
+
+  /* 9d. Visually hidden and skip link ---------------------------------------------------------
+   * <VisuallyHidden> renders kv-visually-hidden: the standard clip rule (a 1px box, clipped,
+   * on one line), so the text stays in the accessibility tree. Never display: none or
+   * visibility: hidden, which remove it. Zero specificity, so your own CSS wins.
+   *
+   * <SkipLink> renders <a class="kv-skip-link">: the same rule until it has focus. Focused, it
+   * is in the flow of the page and not an overlay, so it never covers the header's own focused
+   * element (2.4.11). The link colour on the page background (measured as the link pair), an
+   * underline, space-2 by space-4 padding and a target of at least 24px (2.5.8). The ring
+   * is the token ring, under :focus-visible only. Forced colours: the system link colour on
+   * Canvas and a Highlight ring. */
+  :where(.kv-visually-hidden, .kv-skip-link:not(:focus)) {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  :where(.kv-skip-link:focus) {
+    display: inline-block;
+    box-sizing: border-box;
+    min-block-size: 1.5rem;
+    margin: var(--kv-space-2);
+    padding: var(--kv-space-2) var(--kv-space-4);
+    border-radius: var(--kv-radius-sm);
+    background-color: var(--kv-color-canvas);
+    color: var(--kv-color-link);
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--kv-link-underline-thickness);
+    text-underline-offset: var(--kv-link-underline-offset);
+  }
+
+  :where(.kv-skip-link:focus-visible) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  /* A target that script focuses (the skip link's target, the route-focused h1) has tabindex="-1"
+   * and no component class: it gets the token ring under :focus-visible only. Zero specificity,
+   * so a component's own ring and your CSS win. */
+  :where([tabindex='-1']:focus-visible) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  @media (forced-colors: active) {
+    :where(.kv-skip-link:focus) {
+      background-color: Canvas;
+      color: LinkText;
+    }
+
+    :where(.kv-skip-link:focus-visible, [tabindex='-1']:focus-visible) {
+      outline-color: Highlight;
+    }
+  }
+
+  /* 9e. Badge ---------------------------------------------------------------------------------
+   * <Badge> renders <span class="kv-badge">, plus kv-badge--primary|info|success|warning|danger. Bare
+   * kv-badge is neutral. A static pill, never interactive: no depth, no hover, no focus style.
+   * body-small text, the full radius, space-1 by space-2 padding and a 1px edge. The words carry
+   * the status, so the colour only adds to them (1.4.1), and the edge is not required by 1.4.11.
+   * Neutral is text on surface with a border-control edge. Every colour is a measured pair:
+   * primary link on primary-subtle, info text on primary-subtle, success, warning and danger text
+   * on their -subtle. A coloured badge has a transparent edge, which forced colours draw in
+   * CanvasText. It never wraps. Zero specificity, so your own CSS wins. */
+  :where(.kv-badge) {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: var(--kv-space-1) var(--kv-space-2);
+    border: var(--kv-border-width) solid var(--kv-color-border-control);
+    border-radius: var(--kv-radius-full);
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-small-size);
+    font-weight: var(--kv-font-body-small-weight);
+    line-height: var(--kv-font-body-small-line-height);
+    white-space: nowrap;
+  }
+
+  :where(.kv-badge--primary) {
+    border-color: transparent;
+    background-color: var(--kv-color-primary-subtle);
+    color: var(--kv-color-link);
+  }
+
+  :where(.kv-badge--info) {
+    border-color: transparent;
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  :where(.kv-badge--success) {
+    border-color: transparent;
+    background-color: var(--kv-color-success-subtle);
+  }
+
+  :where(.kv-badge--warning) {
+    border-color: transparent;
+    background-color: var(--kv-color-warning-subtle);
+  }
+
+  :where(.kv-badge--danger) {
+    border-color: transparent;
+    background-color: var(--kv-color-danger-subtle);
+  }
+
+  @media (forced-colors: active) {
+    :where(.kv-badge) {
+      border-color: CanvasText;
+    }
+  }
+
+  /* 9f. Code block ----------------------------------------------------------------------------
+   * <CodeBlock.Root> renders <div class="kv-code-block">, with kv-code-block-label (a <p>),
+   * kv-code-block-code (a <pre>) and kv-code-block-copy (a Button, so kv-button draws it), then
+   * kv-copy-status (a <span>, after the button; also after a standalone CopyButton). A wrapping
+   * row: the label and the code take a full row each, then the button and the status share the
+   * last row, and a long failure text wraps to the next row at the inline start. The status is
+   * words plus a decorative icon in text colour: colour is never the cue, no new pair, no
+   * motion, and forced colours give CanvasText. The code is the prose pre: text on surface
+   * (a measured pair), a 1px border-subtle edge, the md radius, space-4 padding, the mono family at
+   * the code size. It wraps (pre-wrap, overflow-wrap: anywhere) and never scrolls, so there is no
+   * scroller to reach and no 2D scrolling at 320px (1.4.10). Never hyphenated, and nothing is
+   * highlighted: no colour carries meaning (1.4.1). Prose leaves the Root and everything in it alone (it is in the not-prose
+   * list), so a code block in an article looks as it does outside one. Zero specificity, so your own CSS wins. In forced colours the edge is CanvasText. */
+  :where(.kv-code-block) {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: var(--kv-space-2);
+    margin-block: var(--kv-prose-space-block, var(--kv-space-6));
+    margin-inline: 0;
+  }
+
+  :where(.kv-code-block > .kv-code-block-label, .kv-code-block > .kv-code-block-code) {
+    flex-basis: 100%;
+  }
+
+  :where(.kv-copy-status) {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--kv-space-2);
+    max-inline-size: 100%;
+    margin-inline-start: var(--kv-space-2);
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-size);
+    line-height: var(--kv-font-body-line-height);
+    overflow-wrap: anywhere;
+    vertical-align: middle;
+  }
+
+  :where(.kv-code-block > .kv-copy-status) {
+    margin-inline-start: 0;
+  }
+
+  :where(.kv-copy-status > svg) {
+    flex: none;
+    color: currentColor;
+  }
+
+  :where(.kv-code-block-label) {
+    margin: 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-small-size);
+    font-weight: var(--kv-font-label-weight);
+    line-height: var(--kv-font-body-small-line-height);
+  }
+
+  :where(.kv-code-block-code) {
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-inline-size: 0;
+    margin: 0;
+    padding: var(--kv-space-4);
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-md);
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-mono);
+    font-size: var(--kv-prose-code-size);
+    line-height: var(--kv-font-code-line-height);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    hyphens: manual;
+  }
+
+  :where(.kv-code-block-code code) {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+  }
+
+  @media (forced-colors: active) {
+    :where(.kv-code-block-code) {
+      border-color: CanvasText;
+    }
+
+    :where(.kv-copy-status) {
       color: CanvasText;
     }
   }
@@ -2770,6 +3350,12 @@
     }
   }
 
+  /* The card, the section and the layout components set display, which beats the browser's
+   * [hidden], so restate it: a hidden one stays hidden without reset.css. */
+  :is(.kv-card, .kv-section, .kv-container, .kv-stack, .kv-columns, .kv-sidebar-layout)[hidden] {
+    display: none;
+  }
+
   /* 10b. Alert --------------------------------------------------------------------
    * <Alert.Info|Success|Warning|Danger> render class="kv-alert" plus a status class,
    * kv-alert--info|success|warning|danger, an icon and a visually hidden status word.
@@ -3056,6 +3642,257 @@
     }
   }
 
+  /* 10d. Summary list and error summary ------------------------------------------------------
+   * <SummaryList.Root> renders <dl class="kv-summary-list"> of kv-summary-list-row (a <div>),
+   * each holding a kv-summary-list-key (<dt>), a kv-summary-list-value (<dd>) and optionally
+   * kv-summary-list-actions (<dd>), whose Change link is kv-link kv-summary-list-change. A row has
+   * a 1px border-subtle line under it, and the list one above the first, so the rows read as a
+   * table of answers without being one. From 40rem a row is three columns: the key (a third), the
+   * value and the actions, at the end. Below 40rem, and at 320px, it stacks: key, value, actions at
+   * the start. The key is weight 600, the value wraps anywhere and never truncates. Nothing is
+   * interactive but the links. Prose leaves it alone (it is in the not-prose list).
+   *
+   * <ErrorSummary.Root> is an Alert.Danger (section 10b) with the class kv-error-summary, so it has
+   * the danger bar, icon and word. Its list, kv-error-summary-list, has no markers, and each link,
+   * kv-error-summary-link, is in the text colour with a permanent underline (the link colour is
+   * not a measured pair on danger-subtle, and the underline carries the link without colour,
+   * 1.4.1). The ring on the focused summary is the one from section 9d. Zero specificity where
+   * it can be, so your own CSS wins. */
+  :where(.kv-summary-list) {
+    margin: 0;
+    padding: 0;
+    border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  :where(.kv-summary-list-row) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--kv-space-1) var(--kv-space-6);
+    padding-block: var(--kv-space-3);
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  :where(.kv-summary-list-key) {
+    margin: 0;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  :where(.kv-summary-list-value) {
+    margin: 0;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  :where(.kv-summary-list-actions) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--kv-space-1) var(--kv-space-4);
+    margin: 0;
+  }
+
+  /* 24px tall at least (2.5.8): the line height of body text is more, but a 1.4.12 override is not. */
+  :where(.kv-summary-list-change) {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 1.5rem;
+  }
+
+  @media (width >= 40rem) {
+    :where(.kv-summary-list-row) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) auto;
+    }
+
+    /* A row with no actions gives the value the last column too. */
+    :where(.kv-summary-list-value:last-child) {
+      grid-column: 2 / -1;
+    }
+
+    :where(.kv-summary-list-actions) {
+      justify-content: flex-end;
+    }
+  }
+
+  :where(.kv-error-summary) {
+    row-gap: var(--kv-space-2);
+  }
+
+  :where(.kv-error-summary-list) {
+    display: grid;
+    gap: var(--kv-space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :where(.kv-error-summary-item) {
+    margin: 0;
+    min-inline-size: 0;
+  }
+
+  /* After the link rules (section 8), so the text colour wins over the link colour. */
+  .kv-link.kv-error-summary-link {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 1.5rem;
+    max-inline-size: 100%;
+    overflow-wrap: anywhere;
+    color: var(--kv-color-text);
+    font-weight: 600;
+    text-decoration-line: underline;
+  }
+
+  @media (forced-colors: active) {
+    :where(.kv-summary-list, .kv-summary-list-row) {
+      border-color: CanvasText;
+    }
+
+    .kv-link.kv-error-summary-link {
+      color: LinkText;
+    }
+  }
+
+  /* 10c. Layout ----------------------------------------------------------------------------
+   * <Container>, <Stack>, <Columns> and <SidebarLayout> render these classes. They draw nothing:
+   * no colour, edge or shadow, only where children sit. DOM order is the visual order, so none
+   * has an order or reverse choice. The widths are layout constants, not tokens, and the gaps
+   * are the `space` steps. DESIGN.md, Layout.
+   *
+   *   kv-container                        centred, at most 80rem, inline padding space-4, 6 from 40rem, 10 from 64rem
+   *   kv-container--reading, --form       45rem and 40rem, start-aligned, no padding
+   *   kv-stack, kv-stack--gap-2|4|8       a column of children, gap space-6 by default
+   *   kv-columns                          as many columns as fit, gap space-6, min 18rem
+   *   kv-columns--min-sm|lg               min 14rem or 24rem
+   *   kv-columns--gap-4|8
+   *   kv-sidebar-layout                   one column, and from 64rem a 20rem sidebar and the content
+   *   kv-sidebar-layout--sidebar-sm|md    16rem or 20rem
+   *   kv-sidebar-layout-sidebar, -content the two parts, in DOM order
+   *
+   * Columns tracks are minmax(min(<width>, 100%), 1fr): at 320px there is one column that never
+   * exceeds the viewport (1.4.10). A list is <Columns render={<ul />}>: kv-columns resets the
+   * marker and padding, which makes WebKit and VoiceOver drop the list role, so write role="list" on it. No fixed heights (1.4.12).
+   */
+  :where(.kv-container) {
+    box-sizing: border-box;
+    inline-size: 100%;
+    max-inline-size: 80rem;
+    margin-inline: auto;
+    padding-inline: var(--kv-space-4);
+  }
+
+  :where(.kv-container--reading, .kv-container--form) {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+
+  :where(.kv-container--reading) {
+    max-inline-size: 45rem;
+  }
+
+  :where(.kv-container--form) {
+    max-inline-size: 40rem;
+  }
+
+  @media (width >= 40rem) {
+    :where(.kv-container:not(.kv-container--reading, .kv-container--form)) {
+      padding-inline: var(--kv-space-6);
+    }
+  }
+
+  @media (width >= 64rem) {
+    :where(.kv-container:not(.kv-container--reading, .kv-container--form)) {
+      padding-inline: var(--kv-space-10);
+    }
+  }
+
+  :where(.kv-stack) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--kv-space-6);
+  }
+
+  :where(.kv-stack--gap-2) {
+    gap: var(--kv-space-2);
+  }
+
+  :where(.kv-stack--gap-4) {
+    gap: var(--kv-space-4);
+  }
+
+  :where(.kv-stack--gap-8) {
+    gap: var(--kv-space-8);
+  }
+
+  :where(.kv-columns) {
+    --kv-columns-min-width: 18rem;
+    --kv-columns-gap: var(--kv-space-6);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(var(--kv-columns-min-width), 100%), 1fr));
+    gap: var(--kv-columns-gap);
+  }
+
+  /* A <ul> or <ol> as Columns: no marker, no indent. list-style: none drops the role in WebKit, so the list carries role="list". */
+  :where(ul.kv-columns, ol.kv-columns) {
+    margin-block: 0;
+    padding-inline-start: 0;
+    list-style: none;
+  }
+
+  :where(.kv-columns--min-sm) {
+    --kv-columns-min-width: 14rem;
+  }
+
+  :where(.kv-columns--min-md) {
+    --kv-columns-min-width: 18rem;
+  }
+
+  :where(.kv-columns--min-lg) {
+    --kv-columns-min-width: 24rem;
+  }
+
+  :where(.kv-columns--gap-4) {
+    --kv-columns-gap: var(--kv-space-4);
+  }
+
+  :where(.kv-columns--gap-6) {
+    --kv-columns-gap: var(--kv-space-6);
+  }
+
+  :where(.kv-columns--gap-8) {
+    --kv-columns-gap: var(--kv-space-8);
+  }
+
+  :where(.kv-sidebar-layout) {
+    --kv-sidebar-layout-width: 20rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--kv-space-6);
+  }
+
+  :where(.kv-sidebar-layout--sidebar-sm) {
+    --kv-sidebar-layout-width: 16rem;
+  }
+
+  :where(.kv-sidebar-layout--sidebar-md) {
+    --kv-sidebar-layout-width: 20rem;
+  }
+
+  /* Grid items default to min-inline-size: auto, so a long word would widen the track. */
+  :where(.kv-sidebar-layout-sidebar, .kv-sidebar-layout-content) {
+    min-inline-size: 0;
+  }
+
+  @media (width >= 64rem) {
+    :where(.kv-sidebar-layout) {
+      grid-template-columns: var(--kv-sidebar-layout-width) minmax(0, 1fr);
+      gap: var(--kv-space-10);
+    }
+  }
+
   /* 11. Icon ---------------------------------------------------------------------------------
    * <Icon name="close" /> renders <svg class="kv-icon">, sized and coloured by attributes
    *. This section never sets an icon's size, stroke, fill or colour: CSS beats
@@ -3169,7 +4006,7 @@
    *   <Field.Root>
    *     <Field.Label>Månadshyra i kronor</Field.Label>
    *     <InputGroup.Root>
-   *       <InputGroup.Input name="rent" inputMode="decimal" className="kv-input--width-10" />
+   *       <NumberInput name="rent" grouping className="kv-input--width-10" />
    *       <InputGroup.Addon>kr</InputGroup.Addon>
    *     </InputGroup.Root>
    *   </Field.Root>

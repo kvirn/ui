@@ -99,24 +99,26 @@ Listbox: one Tab stop. Multi-select adds Space to toggle and Shift+Arrow to exte
 
 ## Actions and links
 
-| Component | Key           | Action                                                                |
-| --------- | ------------- | --------------------------------------------------------------------- |
-| Button    | Enter / Space | Activates. Native. Space activates on key up                          |
-| Toggle    | Enter / Space | Toggles `aria-pressed`                                                |
-| Link      | Enter         | Follows the link. Native. Space scrolls the page and doesn't activate |
+| Component | Key           | Action                                                                                      |
+| --------- | ------------- | ------------------------------------------------------------------------------------------- |
+| Button    | Enter / Space | Activates. Native. Space activates on key up                                                |
+| Toggle    | Enter / Space | Toggles `aria-pressed`                                                                      |
+| Link      | Enter         | Follows the link. Native. Space scrolls the page and doesn't activate                       |
+| SkipLink  | Enter         | Native link, first Tab stop. Focuses the target (`tabindex="-1"` until blur). Space scrolls |
 
 ## Disclosure and overlays
 
-| Pattern      | Key             | Action                                                                                    |
-| ------------ | --------------- | ----------------------------------------------------------------------------------------- |
-| Disclosure   | Enter / Space   | Toggles the panel. The panel content follows in the Tab order                             |
-| Accordion    | Enter / Space   | Toggles the section. Optional: ArrowDown / ArrowUp between headers, Home / End (state it) |
-| Dialog       | Tab / Shift+Tab | Cycles inside the dialog, background `inert`                                              |
-| Dialog       | Escape          | Closes, focus returns to the trigger                                                      |
-| Alert dialog | (as Dialog)     | Initial focus on the least destructive action                                             |
-| Popover      | Escape          | Closes, focus returns to the trigger. Tab may leave it (non-modal)                        |
-| Tooltip      | Escape          | Hides the tooltip without moving focus (1.4.13)                                           |
-| Tooltip      | Tab             | Keyboard focus on the trigger opens it at once. Focus never moves into it                 |
+| Pattern      | Key             | Action                                                                                                                                          |
+| ------------ | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Disclosure   | Enter / Space   | Toggles the panel. The panel content follows in the Tab order                                                                                   |
+| Accordion    | Enter / Space   | Toggles the section. Optional: ArrowDown / ArrowUp between headers, Home / End (state it)                                                       |
+| Accordion    | (arrows)        | KvirnUI does not adopt the optional ArrowDown / ArrowUp / Home / End: every header button is a Tab stop and the keys are the page's (Plan 0058) |
+| Dialog       | Tab / Shift+Tab | Cycles inside the dialog, background `inert`                                                                                                    |
+| Dialog       | Escape          | Closes, focus returns to the trigger                                                                                                            |
+| Alert dialog | (as Dialog)     | Initial focus on the least destructive action                                                                                                   |
+| Popover      | Escape          | Closes, focus returns to the trigger. Tab may leave it (non-modal)                                                                              |
+| Tooltip      | Escape          | Hides the tooltip without moving focus (1.4.13)                                                                                                 |
+| Tooltip      | Tab             | Keyboard focus on the trigger opens it at once. Focus never moves into it                                                                       |
 
 ## Composite widgets (one Tab stop, roving tabindex unless stated)
 
@@ -176,6 +178,13 @@ Alternatives for every shortcut are toolbar buttons. Tab leaves the editor where
 | Breadcrumb, Pagination | Tab, Enter    | Plain links                                                                                       |
 | Table of contents      | Tab, Enter    | Native `#id` links, each its own Tab stop. Enter scrolls to the heading, and the next Tab goes on |
 | Table of contents      | Arrows        | Not handled: they scroll the page. Home and End too. Never a tree or a menu                       |
+
+## Programmatic focus (no keys of its own)
+
+| Hook          | Key             | Action                                                                                                                                                             |
+| ------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| useRouteFocus | Tab / Shift+Tab | After a client-side navigation focus is on the page's `h1` (`tabindex="-1"` only while focused): Tab goes on into the page, Shift+Tab to the stop before the title |
+| useRouteFocus | Enter           | Not handled: the title is not a control                                                                                                                            |
 
 ## Non-focusable components
 

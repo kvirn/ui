@@ -43,7 +43,7 @@ These are the [Fieldset's](../fieldset/fieldset.md) parts under the group's name
 | State attribute | Where and when                                                                                  |
 | --------------- | ----------------------------------------------------------------------------------------------- |
 | `data-invalid`  | On the fieldset, the legend, the help text and the error, and on every checkbox, when `invalid` |
-| `data-required` | On the fieldset and its parts, when `required`                                                  |
+| `data-required` | On the fieldset and its legend, when `required`                                                 |
 | `data-disabled` | On the fieldset and on every checkbox, when `disabled`                                          |
 
 - **ARIA it sets:** `aria-describedby` on the fieldset lists every description and help text in DOM order and then the error, only for parts that are rendered. There is **no `aria-invalid` and no `aria-required`** on the fieldset, and no `aria-invalid` on a checkbox in the group, because ARIA doesn't support them on `group`: the error reaches users through the description.

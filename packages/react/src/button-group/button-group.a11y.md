@@ -85,4 +85,4 @@ ButtonGroup has no strings of its own: its name is the consumer's `aria-label` o
 
 ## Known issues
 
-- **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.

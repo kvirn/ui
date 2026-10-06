@@ -58,7 +58,7 @@ Six parts. Each is also exported on its own (`RadioGroupRoot`, `RadioGroupRadio`
 | State attribute | Where and when                                                                                                                              |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `data-invalid`  | On the fieldset, the legend, the help text and the error, and on every radio, when the group (or the radio's Field) is `invalid`            |
-| `data-required` | On the fieldset and its parts, when `required`                                                                                              |
+| `data-required` | On the fieldset and its legend, when `required`                                                                                             |
 | `data-disabled` | On the fieldset and on every radio, when `disabled`                                                                                         |
 | `data-state`    | On a radio whose state is known from props: `checked` or `unchecked`. An uncontrolled radio has none: style `:checked` for the native state |
 

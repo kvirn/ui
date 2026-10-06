@@ -264,4 +264,21 @@ export const en = {
       'The pasted image wasn’t added, because it comes from an address that isn’t allowed.',
   },
   tableOfContents: { label: 'On this page' },
+  skipLink: { label: 'Skip to main content' },
+  breadcrumb: { label: 'You are here' },
+  pagination: {
+    label: 'Pages',
+    previous: 'Previous page',
+    next: 'Next page',
+    status: ({ page, total }, format) => `Page ${format.number(page)} of ${format.number(total)}`,
+    page: ({ page }, format) => `Page ${format.number(page)}`,
+  },
+  routeFocus: { navigated: ({ title }) => `Navigated to ${title}` },
+  copyButton: {
+    label: 'Copy',
+    copied: 'Copied',
+    failed: 'Could not copy. Select the text and copy it yourself.',
+  },
+  errorSummary: { title: 'There is a problem', titlePrefix: 'Error:' },
+  summaryList: { change: 'Change' },
 } satisfies KvirnMessages

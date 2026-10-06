@@ -272,4 +272,21 @@ export const sv = {
       'Den inklistrade bilden lades inte till, eftersom den kommer från en adress som inte är tillåten.',
   },
   tableOfContents: { label: 'På den här sidan' },
+  skipLink: { label: 'Hoppa till huvudinnehållet' },
+  breadcrumb: { label: 'Du är här' },
+  pagination: {
+    label: 'Sidor',
+    previous: 'Föregående sida',
+    next: 'Nästa sida',
+    status: ({ page, total }, format) => `Sida ${format.number(page)} av ${format.number(total)}`,
+    page: ({ page }, format) => `Sida ${format.number(page)}`,
+  },
+  routeFocus: { navigated: ({ title }) => `Du har kommit till ${title}` },
+  copyButton: {
+    label: 'Kopiera',
+    copied: 'Kopierat',
+    failed: 'Det gick inte att kopiera. Markera texten och kopiera den själv.',
+  },
+  errorSummary: { title: 'Det finns ett problem', titlePrefix: 'Fel:' },
+  summaryList: { change: 'Ändra' },
 } satisfies KvirnMessages

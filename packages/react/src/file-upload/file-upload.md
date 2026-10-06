@@ -40,7 +40,7 @@ A FileUpload attaches files to a form. **One native button opens the system file
 
 - **`FileUpload.ItemError`** is the place for the reason an upload failed. Without `children` it shows the consumer's own `message` from the rejection of `upload`, else a neutral sentence ("Det gick inte att ladda upp läkarintyg.pdf. Om det fortsätter att misslyckas, kontakta oss.") that never says why. Put it in the item next to `Status`: while the item is failed, the item's buttons are described by it, so a screen-reader user hears the reason on Retry and Remove. Without it, the failure shows only in the `Status` text.
 - **Refusal reasons** (`onFilesReject` gets them as data, and `Rejections` writes each as a sentence): `type`, `tooLarge`, `tooSmall`, `tooMany`, `empty`, `duplicate`, `folder` and `custom` (your `validate` returned a string). The file itself is checked first (folder, type, empty, size, duplicate, then `validate`) and the list's room last, so a wrong file is never told "too many". A dropped folder is refused as `folder`.
-- **`FileUploadFailure`:** reject `upload` with `{ retryable?: boolean, message?: string }` (an `Error` that sets `retryable` works too). `retryable: false` removes Retry. `message` is shown by `ItemError`, and must name the file and say what to do.
+- **`FileUploadFailure`:** reject `upload` with `{ retryable?: boolean, message?: string }` (an `Error` that sets `retryable` works too). `retryable: false` removes Retry. `message` is shown by `ItemError` for a plain object, or for an `Error` that sets a boolean `retryable` (a bare `Error` is never shown), and must name the file and say what to do.
 - **`FileUploadContext`:** the second argument of `upload`, `{ signal, onProgress }`.
 
 | State attribute                 | Where and when                                                                          |
@@ -117,6 +117,7 @@ Options (also the options of the hook):
 | `validate`                                   | –           | `(file) => string \| void`. A string refuses the file and is shown as its message                          |
 | `upload`                                     | –           | `(file, { signal, onProgress }) => Promise<result>`. Without it, files stay `pending` and go with the form |
 | `concurrency`, `autoUpload`                  | `3`, `true` | How many upload at once, and whether they start when added. `uploadAll()` starts them otherwise            |
+| `previews`                                   | `false`     | Gives image files a `previewUrl` (an object URL, revoked when the item goes away)                          |
 | `disabled`                                   | `false`     | Native `disabled` on the Trigger and the input                                                             |
 | `onFilesChange`, `onFilesReject`, `messages` | –           | The list changed, files were refused (data, not text), and per-instance string overrides                   |
 
@@ -143,7 +144,7 @@ const upload = (file: File, { signal, onProgress }: FileUploadContext) =>
   })
 ```
 
-A failed upload shows neutral words and a Retry button, which restarts the same file. To say more, reject with an error that opts in: `{ retryable: false, message: 'Filen kunde inte skickas…' }`. A bare `Error('Failed to fetch')` is never shown to people. Render `FileUpload.ItemError` in the item to show the reason; `retryable: false` leaves only Remove. What `upload` resolves with is stored on the item as `result`, so you can put server ids in your form state from `onFilesChange`.
+A failed upload shows neutral words and a Retry button, which restarts the same file. To say more, reject with an error that opts in, a plain object or an `Error` that sets a boolean `retryable` (`true` or `false`): `{ retryable: false, message: 'Filen kunde inte skickas…' }`. A bare `Error('Failed to fetch')` is never shown to people. Render `FileUpload.ItemError` in the item to show the reason; `retryable: false` leaves only Remove. What `upload` resolves with is stored on the item as `result`, so you can put server ids in your form state from `onFilesChange`.
 
 Without `upload`, files stay `pending` and the component keeps the native input's `files` equal to the list (through `DataTransfer`), so a plain `<form>` posts them, dropped files included. Give the input a name: `<FileUpload.Input name="attachments" />`.
 

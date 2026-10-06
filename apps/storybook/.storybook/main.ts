@@ -1,5 +1,7 @@
 import type { StorybookConfig } from '@storybook/react-vite'
 import remarkGfm from 'remark-gfm'
+import { mergeConfig } from 'vite'
+import { workspaceSourceAlias } from '../../../tooling/vite-preset/workspace-source.ts'
 
 const config: StorybookConfig = {
   framework: '@storybook/react-vite',
@@ -17,6 +19,8 @@ const config: StorybookConfig = {
     },
   ],
   core: { disableTelemetry: true, disableWhatsNewNotifications: true },
+  // Packages export their built `dist`; the stories run on the source.
+  viteFinal: (config) => mergeConfig(config, { resolve: { alias: workspaceSourceAlias() } }),
 }
 
 export default config

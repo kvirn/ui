@@ -10,6 +10,7 @@ import {
   AppRoot,
   CollapsedNavigation,
   FinnishHorizontalNavigation,
+  GroupedNavigation,
   HorizontalNavigation,
   NavigationOrientations,
   RoutedNavigation,
@@ -249,6 +250,72 @@ export const CollapsedGroups: Story = {
       'true',
     )
   },
+}
+
+/**
+ * Group links under a `Navigation.Label` in the item that holds the list: the label names that
+ * list for a screen reader ("Komponenter, list, 3 items"). It is plain text in `text-muted`, not a
+ * heading and not a link, so it is no Tab stop and can't be mistaken for a link.
+ */
+export const GroupLabels: Story = {
+  parameters: showSource('navigation/navigation.fixture.tsx', 'GroupedNavigation'),
+  render: () => <GroupedNavigation />,
+  play: async ({ canvas }) => {
+    const navigation = canvas.getByRole('navigation', { name: 'Dokumentation' })
+    const components = within(navigation).getByRole('list', { name: 'Komponenter' })
+    await expect(within(components).getAllByRole('link')).toHaveLength(3)
+    await expect(within(navigation).getByRole('list', { name: 'Grunder' })).toBeVisible()
+    await expect(within(navigation).queryByRole('heading')).not.toBeInTheDocument()
+    await expect(
+      within(navigation).queryByRole('link', { name: 'Komponenter' }),
+    ).not.toBeInTheDocument()
+    await expect(navigation.querySelectorAll('.kv-navigation-label[tabindex]')).toHaveLength(0)
+  },
+}
+
+/** A group label is long and Finnish at 320px: it wraps and the sidebar never scrolls sideways (1.4.10). */
+export const LongFinnishGroupLabel: Story = {
+  decorators: [
+    (Story) => (
+      <div className="kv-story-narrow" data-testid="narrow">
+        <Story />
+      </div>
+    ),
+  ],
+  render: () => (
+    <Navigation.Root label="Päävalikko" lang="fi">
+      <Navigation.List>
+        <Navigation.Item>
+          <Navigation.Label>Rakentaminen, ympäristö ja kiinteistöasiat</Navigation.Label>
+          <Navigation.List>
+            <Navigation.Item>
+              <Link.Root href="#rakennuslupa">Rakennus- ja toimenpidelupahakemukset</Link.Root>
+            </Navigation.Item>
+          </Navigation.List>
+        </Navigation.Item>
+      </Navigation.List>
+    </Navigation.Root>
+  ),
+  play: async ({ canvas }) => {
+    await expect(
+      canvas.getByRole('list', { name: 'Rakentaminen, ympäristö ja kiinteistöasiat' }),
+    ).toBeVisible()
+    await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
+  },
+}
+
+/** Group labels in right-to-left: the label's text starts at the right, lined up with the links. */
+export const GroupLabelsRTL: Story = {
+  globals: { dir: 'rtl' },
+  parameters: showSource('navigation/navigation.fixture.tsx', 'GroupedNavigation'),
+  render: () => <GroupedNavigation />,
+}
+
+/** Forced colours: the label is `CanvasText`, a plain label beside the links. */
+export const GroupLabelsForcedColors: Story = {
+  globals: { forcedColors: 'active' },
+  parameters: showSource('navigation/navigation.fixture.tsx', 'GroupedNavigation'),
+  render: () => <GroupedNavigation />,
 }
 
 /**

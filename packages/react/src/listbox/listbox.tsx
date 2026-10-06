@@ -64,9 +64,17 @@ function warnOutsideRoot(part: string): void {
 }
 
 /** The native rendering's options: an empty one for "nothing chosen", then the items, in `<optgroup>`s for groups. */
-function renderNativeOptions<TItem>(listbox: UseListboxResult<TItem>): ReactElement {
+function renderNativeOptions<TItem>(
+  listbox: UseListboxResult<TItem>,
+  itemToLang: ((item: TItem) => string | undefined) | undefined,
+): ReactElement {
   const renderOption = (entry: ListboxEntry<TItem>) => (
-    <option key={entry.key} value={entry.key} disabled={entry.disabled}>
+    <option
+      key={entry.key}
+      value={entry.key}
+      disabled={entry.disabled}
+      lang={itemToLang?.(entry.item)}
+    >
       {entry.label}
     </option>
   )
@@ -118,6 +126,8 @@ export function ListboxRoot<TItem>(props: ListboxRootProps<TItem>): ReactElement
   const listbox = useListbox(props)
   const isInToolbar = useContext(ToolbarContext) !== null
   const isNative = listbox.isNative
+  // The contexts can't carry the item type, so the caller's `TItem` is taken on trust.
+  const itemToLang = props.itemToLang as ((item: unknown) => string | undefined) | undefined
 
   useEffect(() => {
     if (isInToolbar && isNative) {
@@ -137,7 +147,7 @@ export function ListboxRoot<TItem>(props: ListboxRootProps<TItem>): ReactElement
         value={listbox.nativeValue}
         onValueChange={listbox.selectFromNative}
       >
-        {renderNativeOptions(listbox)}
+        {renderNativeOptions(listbox, props.itemToLang)}
       </ListboxNative>
     )
   }
@@ -151,6 +161,7 @@ export function ListboxRoot<TItem>(props: ListboxRootProps<TItem>): ReactElement
         selectedItems: listbox.selectedItems,
         selectedLabels: listbox.selectedLabels,
         placeholder: listbox.placeholder,
+        itemToLang,
       }}
     >
       <ListboxListContext.Provider
@@ -170,6 +181,7 @@ export function ListboxRoot<TItem>(props: ListboxRootProps<TItem>): ReactElement
           getEntry: listbox.getEntry,
           shouldScrollToActive: listbox.shouldScrollToActive,
           virtualization: listbox.virtualization,
+          itemToLang,
         }}
       >
         {props.children}
@@ -292,7 +304,18 @@ export function ListboxValue<TItem = unknown>({
     // The context can't carry the item type, so the caller's `TItem` is taken on trust.
     content = children((trigger?.selectedItems ?? []) as readonly TItem[])
   } else {
-    content = children ?? trigger?.selectedLabels.join(', ')
+    const itemToLang = trigger?.itemToLang
+    content =
+      children ??
+      (itemToLang === undefined
+        ? trigger?.selectedLabels.join(', ')
+        : // Each label in its own language (3.1.2); the separator stays the page's.
+          trigger?.selectedItems.map((item, index) => (
+            <Fragment key={index}>
+              {index === 0 ? null : ', '}
+              <span lang={itemToLang(item)}>{trigger.selectedLabels[index]}</span>
+            </Fragment>
+          )))
   }
   return renderPart({
     render,
@@ -578,6 +601,7 @@ export function ListboxOption<TItem = unknown>({
         defaultElement: 'div',
         partProps: {
           ...mergeProps(otherProps, optionProps, virtualProps ?? noVirtualProps, richProps),
+          lang: otherProps.lang ?? list?.itemToLang?.(item),
           ref: mergedRef,
           children: children ?? entry.label,
         },

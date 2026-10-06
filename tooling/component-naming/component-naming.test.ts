@@ -30,6 +30,7 @@ const namespaces = [
   'Prose',
   'RadioGroup',
   'Section',
+  'SidebarLayout',
   // Before Table: the first prefix that matches a flat export names the fix.
   'TableOfContents',
   'Table',

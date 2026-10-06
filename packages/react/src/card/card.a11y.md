@@ -103,6 +103,6 @@ Headless: Card ships no CSS. With `@kvirn-ui/theme/theme.css` (design spec `docs
 
 ## Known issues
 
-- **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.
-- **`role="list"` and lint.** The design spec's list of cards uses `<ul role="list">` for Safari, but the repository's jsx-a11y `no-redundant-roles` rule rejects it, so the stories use a plain `<ul>`. The docs (`card.md`, the JSDoc example) show `<ul role="list">`, which isn't linted. Open question in Plan 0007. Check the list in VoiceOver + Safari in the manual AT run.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
+- **`role="list"` and lint.** `<ul role="list">` is the recipe everywhere (stories, docs, examples). The repository's jsx-a11y `no-redundant-roles` is relaxed for `ul` + `list` only (maintainer-approved 2026-10-06, `vite.config.ts`), because Safari and VoiceOver drop the list role when `list-style: none` removes the markers. This resolves the open question in Plan 0007. Check the list in VoiceOver + Safari in the manual AT run.
 - **Prose and nested cards.** Prose turned on inside a card (`kv-prose`) stops at a nested card, for two levels of nesting. Deeper nesting isn't supported by the default theme's selectors.

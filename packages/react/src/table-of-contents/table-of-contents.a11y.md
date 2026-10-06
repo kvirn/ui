@@ -3,7 +3,7 @@
 - **APG pattern:** none needed. A labelled `<nav>` landmark around a nested list of in-page links is plain HTML. It is not a composite widget, not a tree and not the [Disclosure Navigation](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/) pattern: nothing here opens or closes. Never `role="menu"` or `role="tree"`.
 - **Deviations:** none
 - **Native elements used:** `<nav>` (the `navigation` landmark), `<ul>` and `<li>`, and native `<a href="#id">` links. The page's own headings are the targets.
-- **Status:** in progress (Plan 0049). Gates 1–5 pending, accessibility-reviewer pending. Manual AT is `pending`.
+- **Status:** implemented (Plan 0049). Gates green 2026-10-06, accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `table-of-contents.test.tsx` next to this file, and the pure maths in `packages/core/src/table-of-contents/`. `table-of-contents.stories.tsx` in `apps/storybook/src/components/table-of-contents/`. Design spec: `docs/design/table-of-contents.md`.
 
 TableOfContents lists the headings of a long page as plain links, and marks the one the reader is in. It adds no `tabindex`, no key handling, no live region and no focus movement: the links are native, they are the focusable parts, and the browser owns what following one does. It is not a composite widget, so every link is a Tab stop and the arrow keys do nothing.
@@ -133,5 +133,5 @@ Headless: TableOfContents ships no CSS. With `@kvirn-ui/theme/theme.css` (design
 - **Focus after a followed link is the browser's.** A heading isn't focusable, so focus falls back to the viewport (`document.activeElement` is `body`) and the sequential focus starting point moves to the heading. Check in the AT matrix that NVDA, JAWS and VoiceOver put the reading position at the heading, and that the next Tab continues after it, in each browser.
 - **List semantics in Safari.** The default theme draws no list marker, and Safari (VoiceOver) can drop the list semantics of a list without visible markers. Check "list, 3 items" and the nested level in VoiceOver + Safari in the manual AT run.
 - **"Mistaken for keyboard focus"** (design spec Q-C1). The solid fill of the current heading moves while the reader scrolls. The usability test, with the quiet fill and no trail as the fallback, is `pending`.
-- **`IntersectionObserver` does not report the last pixels of a scroll,** so one passive `scroll` listener wakes the same measuring. WebKit and mobile Safari behaviour is checked in CI only and is `pending` here.
+- **`IntersectionObserver` does not report the last pixels of a scroll,** so one passive `scroll` listener wakes the same measuring. WebKit and mobile Safari behaviour is not automated and is `pending` here.
 - **`se` is an English placeholder** for `tableOfContents.label` until a native review.

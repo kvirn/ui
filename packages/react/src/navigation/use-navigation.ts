@@ -30,15 +30,25 @@ export interface NavigationItemPartProps {
   className: 'kv-navigation-item'
 }
 
+/**
+ * Spread on the label of a group (`Navigation.Label`). Only the part's class: to name the nested
+ * list, give the label an `id` and the list `aria-labelledby` with it.
+ */
+export interface NavigationLabelPartProps {
+  className: 'kv-navigation-label'
+}
+
 export interface UseNavigationResult {
   rootProps: NavigationRootPartProps
   listProps: NavigationListPartProps
   itemProps: NavigationItemPartProps
+  labelProps: NavigationLabelPartProps
 }
 
 // The same objects every time, frozen, so nothing a consumer does can change another navigation.
 const listProps: NavigationListPartProps = Object.freeze({ className: 'kv-navigation-list' })
 const itemProps: NavigationItemPartProps = Object.freeze({ className: 'kv-navigation-item' })
+const labelProps: NavigationLabelPartProps = Object.freeze({ className: 'kv-navigation-label' })
 
 /** An empty or whitespace-only label is no name. */
 export function hasLabel(label: string | undefined): label is string {
@@ -56,6 +66,10 @@ export function hasLabel(label: string | undefined): label is string {
  * <nav {...navigation.rootProps}>
  *   <ul {...navigation.listProps}>
  *     <li {...navigation.itemProps}><a href="/start">Start</a></li>
+ *     <li {...navigation.itemProps}>
+ *       <span {...navigation.labelProps} id="docs">Dokumentation</span>
+ *       <ul {...navigation.listProps} aria-labelledby="docs">…</ul>
+ *     </li>
  *   </ul>
  * </nav>
  */
@@ -65,5 +79,5 @@ export function useNavigation({ label }: UseNavigationOptions = {}): UseNavigati
     () => ({ className: 'kv-navigation', ...(name === undefined ? {} : { 'aria-label': name }) }),
     [name],
   )
-  return useMemo(() => ({ rootProps, listProps, itemProps }), [rootProps])
+  return useMemo(() => ({ rootProps, listProps, itemProps, labelProps }), [rootProps])
 }

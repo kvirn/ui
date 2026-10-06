@@ -4,6 +4,10 @@ import type { KvirnMessages } from '../types.ts'
 // se: English placeholders, except the combobox messages and the alert's strings (the status
 // words and alert.close: a native speaker should review them). tableOfContents.label is an
 // English placeholder too ("On this page"): a native speaker still has to write it (Plan 0049).
+// skipLink.label is one too ("Skip to main content", Plan 0054), and so is routeFocus.navigated. errorSummary and summaryList (Plan 0063) are placeholders too.
+// copyButton.* are English placeholders too (Plan 0060).
+// breadcrumb.* and pagination.* are English placeholders too (Plan 0062): a native speaker
+// still has to write them.
 export const se = {
   link: { newTabNotice: '(opens in a new tab)' },
   field: { optional: '(optional)', errorPrefix: 'Error:' },
@@ -290,4 +294,21 @@ export const se = {
       'The pasted image wasn’t added, because it comes from an address that isn’t allowed.',
   },
   tableOfContents: { label: 'On this page' },
+  skipLink: { label: 'Skip to main content' },
+  breadcrumb: { label: 'You are here' },
+  pagination: {
+    label: 'Pages',
+    previous: 'Previous page',
+    next: 'Next page',
+    status: ({ page, total }, format) => `Page ${format.number(page)} of ${format.number(total)}`,
+    page: ({ page }, format) => `Page ${format.number(page)}`,
+  },
+  routeFocus: { navigated: ({ title }) => `Navigated to ${title}` },
+  copyButton: {
+    label: 'Copy',
+    copied: 'Copied',
+    failed: 'Could not copy. Select the text and copy it yourself.',
+  },
+  errorSummary: { title: 'There is a problem', titlePrefix: 'Error:' },
+  summaryList: { change: 'Change' },
 } satisfies KvirnMessages

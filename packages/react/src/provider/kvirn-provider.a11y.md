@@ -114,5 +114,5 @@ The provider has no strings of its own. It resolves every component's keys. Plan
 ## Known issues
 
 - **`se` (Northern Sámi) shows English** for `link.newTabNotice`. Sámi users get English for this string under `lang="se"`.
-- **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
 - **`TODO(legal-verify)`:** storing an explicitly chosen theme preference in `localStorage` is assumed to fall under the ePrivacy Art. 5(3) "strictly necessary" exemption. Not yet verified.

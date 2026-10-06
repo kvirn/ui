@@ -46,6 +46,8 @@ export interface ListboxListContextValue {
   shouldScrollToActive(): boolean
   /** Set while the list is virtualized: the options to render, the sizer and each option's place. */
   virtualization: ListboxVirtualization | undefined
+  /** `itemToLang` of a Listbox. Absent under Combobox and Autocomplete. */
+  itemToLang?: ((item: unknown) => string | undefined) | undefined
 }
 
 export const ListboxListContext = createContext<ListboxListContextValue | null>(null)
@@ -66,6 +68,8 @@ export interface ListboxTriggerContextValue {
   selectedLabels: readonly string[]
   /** `Listbox.Root`'s `placeholder`: what `Listbox.Value` shows while nothing is chosen. */
   placeholder: string | undefined
+  /** `itemToLang` of the Root: the language of each chosen item's text. */
+  itemToLang?: ((item: unknown) => string | undefined) | undefined
 }
 
 export const ListboxTriggerContext = createContext<ListboxTriggerContextValue | null>(null)

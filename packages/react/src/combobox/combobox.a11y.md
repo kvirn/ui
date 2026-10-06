@@ -190,4 +190,4 @@ Research questions for the AT run: is the result count read once, after typing s
 - **The popup has no tab stop.** It scrolls natively, and keyboard users scroll it by moving the active option, which is scrolled into view.
 - **A Combobox inside a form with an Enter shortcut.** Enter with an active option chooses it and never submits the form, as the pattern says. With no active option it submits (the browser's own). The text is not sent, only the hidden inputs are.
 - **Text that has no match is not an error by itself.** The Combobox reports `null` and leaves the message to the consumer, because the right words depend on the form.
-- **WebKit not run locally.** CI runs the `webkit` and `mobile-safari` projects. `popover="manual"`, the outside press and Escape must be checked on Safari 17.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`. `popover="manual"`, the outside press and Escape must be checked on Safari 17.

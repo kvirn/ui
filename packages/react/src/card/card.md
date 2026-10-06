@@ -53,7 +53,7 @@ Your part:
 - **The heading** goes at the top of `Card.Body` (or the Root), at the level your page outline needs. A Header is for media, or for a title row that needs a divider.
 - **Images** that only decorate get `alt=""`. That's most card images, when the heading names the topic.
 - **One link per card**, in the heading, with text that makes sense on its own. No "Read more", and no second link on the image. Navigation is a Link, actions are Buttons, and there's one primary action per view.
-- **Lists.** A list of cards is a `<ul role="list">` with each card rendered as `<li>` (`render={<li />}`), so screen readers announce "list, 3 items". The default theme draws no marker on a card, and Safari (VoiceOver) drops the list semantics of a list without visible markers unless it has `role="list"` (1.3.1). jsx-a11y's `no-redundant-roles` rule flags it as redundant: in Safari it isn't.
+- **Lists.** A list of cards is a `<ul role="list">` with each card rendered as `<li>` (`render={<li />}`), so screen readers announce "list, 3 items". The default theme draws no marker on a card, and Safari (VoiceOver) drops the list semantics of a list without visible markers unless it has `role="list"` (1.3.1). The repository's lint allows `role="list"` on a `ul` (`no-redundant-roles` is relaxed for that pair only): in Safari it isn't redundant.
 - **Landmarks** only for a region a user would want to jump to: `<section aria-labelledby>` or `<aside aria-labelledby>`. Never make every card in a list a landmark.
 - **Parts are direct children** of the Root. A wrapper between them breaks the default theme's padding, and an empty part still has padding: don't render it.
 

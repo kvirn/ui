@@ -118,4 +118,4 @@ Escape and the typed characters are not handled. A key an item handled already (
 
 - **Before hydration every item is a Tab stop.** Items register after the first render, so until then every item has `tabindex="0"` and a server-rendered toolbar works as a row of ordinary buttons (no arrow keys yet). After registration one item keeps `0` and the others get `-1`. Test: `toolbar.test.tsx › before the items register, every item is an ordinary Tab stop`.
 - **Items are registered, not queried.** An element that is a control but not an item (a plain `<Button>` placed in the toolbar) is a Tab stop of its own and is skipped by the arrows.
-- **WebKit not run locally.** The `webkit` and `mobile-safari` Playwright projects need system libraries that aren't installed on the development machine. CI runs them.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.

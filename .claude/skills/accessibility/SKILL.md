@@ -36,6 +36,7 @@ The bar is WCAG 2.2 AA with real assistive technology, not just a clean axe run.
 
 ## Common mistakes (reject in review)
 
+- A `ul` with `list-style: none` and no `role="list"`. Safari and VoiceOver drop the list role then (1.3.1). The lint rule `jsx-a11y/no-redundant-roles` is relaxed for `ul` + `list` only (maintainer-approved 2026-10-06); every other redundant role still errors.
 - `role="menu"` used for site navigation. Use the disclosure navigation pattern instead.
 - `aria-hidden="true"` on, or wrapping, focusable content.
 - A placeholder used as the only label. Tooltips holding essential info, or placed on disabled buttons.
