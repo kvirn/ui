@@ -12,12 +12,15 @@ const repositoryRoot = fileURLToPath(new URL('../..', import.meta.url))
 // Components that are namespaces or have a Root. A tag that is one of their flat part exports
 // (`<FieldRoot`, `<CardHeader`, `<LinkNewTabNotice`) is banned too. Built from the public entry.
 const namespaces = [
+  // Before Alert: the first prefix that matches a flat export names the fix.
+  'AlertDialog',
   'Alert',
   'Autocomplete',
   'Card',
   'CheckboxGroup',
   'Combobox',
   'DateInput',
+  'Dialog',
   'Field',
   'Fieldset',
   'FileUpload',
