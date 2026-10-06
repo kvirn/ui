@@ -268,7 +268,7 @@ export function useOneTimeCode({
   // Throws a RangeError for an invalid pattern, in development, naming the character.
   const mask = useMemo(() => masks.oneTimeCode({ pattern }), [pattern])
   const characterPositions = useMemo(
-    () => [...pattern].flatMap((symbol, position) => (symbol === '-' ? [] : [position])),
+    () => Array.from(pattern).flatMap((symbol, position) => (symbol === '-' ? [] : [position])),
     [pattern],
   )
   const characterCount = characterPositions.length

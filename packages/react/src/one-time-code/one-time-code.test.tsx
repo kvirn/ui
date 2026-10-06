@@ -57,7 +57,7 @@ interface CodeFieldProps {
 function CodeField({
   pattern = '999999',
   hint = 'Koden har 6 siffror.',
-  slotCount = [...pattern].length,
+  slotCount = Array.from(pattern).length,
   invalid = false,
   disabled = false,
   readOnly = false,
@@ -772,8 +772,8 @@ describe('patterns with separators', () => {
         .join(''),
     ).toBe(kinds)
     expect(cellTexts()).toEqual(texts)
-    expect(slots()).toHaveLength([...pattern].filter((symbol) => symbol !== '-').length)
-    expect(separators()).toHaveLength([...pattern].filter((symbol) => symbol === '-').length)
+    expect(slots()).toHaveLength(Array.from(pattern).filter((symbol) => symbol !== '-').length)
+    expect(separators()).toHaveLength(Array.from(pattern).filter((symbol) => symbol === '-').length)
   })
 
   test('a separator is aria-hidden with its own class, and has no state', async () => {

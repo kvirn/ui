@@ -175,7 +175,7 @@ describe('component naming in docs and stories', () => {
       '<TabsRoot defaultValue="uppgifter">',
       '<TabsTab value="uppgifter">',
     ]) {
-      expect(hits(banned), banned).toBeGreaterThan(0)
+      expect([banned, hits(banned) > 0]).toEqual([banned, true])
     }
     for (const allowed of [
       '<Field.Root>',
@@ -200,7 +200,7 @@ describe('component naming in docs and stories', () => {
       'the Field wires the Label',
       '`Label` is deprecated',
     ]) {
-      expect(hits(allowed), allowed).toBe(0)
+      expect([allowed, hits(allowed)]).toEqual([allowed, 0])
     }
   })
 

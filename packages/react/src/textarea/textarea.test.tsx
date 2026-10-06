@@ -800,11 +800,11 @@ describe('characterCount', () => {
       </Field.Root>,
     )
     const box = page.getByRole('textbox', { name: 'Beskriv din situation' })
-    await expectNoA11yViolations(container)
+    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
     await userEvent.fill(box, 'a'.repeat(17))
-    await expectNoA11yViolations(container)
+    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
     await userEvent.fill(box, 'a'.repeat(25))
-    await expectNoA11yViolations(container)
+    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
   })
 })
 

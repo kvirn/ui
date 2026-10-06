@@ -1280,12 +1280,12 @@ describe('Field.HelpText (Plan 0029)', () => {
 
   test('a Field with a description, a help text and an error has no axe violations', async () => {
     const { container } = await render(<PersonalNumberField invalid />)
-    await expectNoA11yViolations(container)
+    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
   })
 
   test('a disabled Field with a help text has no axe violations', async () => {
     const { container } = await render(<PersonalNumberField disabled />)
-    await expectNoA11yViolations(container)
+    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
   })
 
   test('renders to a string with its id, for server rendering', () => {

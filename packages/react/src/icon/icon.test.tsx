@@ -701,7 +701,7 @@ describe('exclusive name, icon, render and children (Plan 0044)', () => {
     const exclusive = messages.filter(
       (message) => message.includes(`Icon`) && message.includes(names),
     )
-    expect(exclusive, key).toHaveLength(1)
+    expect([key, exclusive.length]).toEqual([key, 1])
     expect(exclusive[0]).toContain('[KvirnUI]')
 
     // Rendering again with the same props does not warn again.

@@ -1517,7 +1517,7 @@ describe('itemToLang (3.1.2)', () => {
   test('no axe violations with lang on the options and the value', async () => {
     const { container } = await render(<LanguageExample defaultValue="fi" />)
     await openLanguages()
-    await expectNoA11yViolations(container)
+    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
   })
 })
 

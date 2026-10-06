@@ -314,11 +314,11 @@ function assertOneTimeCodePattern(source: string): void {
  */
 function oneTimeCode({ pattern: source }: OneTimeCodeMaskOptions): Mask {
   assertOneTimeCodePattern(source)
-  const tokens: Token[] = [...source].map((symbol): Token => {
+  const tokens: Token[] = Array.from(source).map((symbol): Token => {
     const token = oneTimeCodeTokens[symbol]
     return token ?? { kind: 'literal', character: symbol }
   })
-  const symbols = [...source].filter((symbol) => symbol !== '-')
+  const symbols = Array.from(source).filter((symbol) => symbol !== '-')
   const isAllDigits = symbols.every((symbol) => symbol === '9')
   const isCaseless = symbols.every((symbol) => symbol !== 'a' && symbol !== '*')
   return createMaskFromEngine(

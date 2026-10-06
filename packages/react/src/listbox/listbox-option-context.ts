@@ -24,7 +24,7 @@ export interface ListboxOptionContextValue extends ListboxOptionPartState {
   /** The option's text (`itemToString`), which `OptionText` should match. */
   label: string
   /** Registers a part while it is mounted. Returns the function that unregisters it. */
-  registerPart(kind: ListboxOptionPartKind): () => void
+  registerPart: (kind: ListboxOptionPartKind) => () => void
 }
 
 export const ListboxOptionContext = createContext<ListboxOptionContextValue | null>(null)

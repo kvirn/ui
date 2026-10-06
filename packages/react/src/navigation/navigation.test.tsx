@@ -716,7 +716,7 @@ describe('Navigation.Label', () => {
 
   test('has no axe violations', async () => {
     const { container } = await render(<GroupedMenu />)
-    await expectNoA11yViolations(container)
+    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
   })
 
   test('server rendering gives the label its id; the list is named once it hydrates', () => {

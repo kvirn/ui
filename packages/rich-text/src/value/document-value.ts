@@ -60,7 +60,7 @@ export function serializeValue(
   if (value === undefined || value === null) {
     return ''
   }
-  return format === 'json' ? JSON.stringify(value) : String(value)
+  return format === 'json' || typeof value !== 'string' ? JSON.stringify(value) : value
 }
 
 /** The value as the editor's `content`: HTML text, a JSON document, or nothing. */

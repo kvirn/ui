@@ -53,6 +53,11 @@ function describedByTexts(element: Element): string[] {
     .map((id) => document.getElementById(id)?.textContent ?? `(no element ${id})`)
 }
 
+function formText(container: Element, name: string): string {
+  const value = formValue(container, name)
+  return typeof value === 'string' ? value : ''
+}
+
 function formValue(container: Element, name: string): FormDataEntryValue | null {
   const form = container.querySelector('form')
   if (form === null) {
@@ -198,7 +203,7 @@ describe('the value', () => {
     await userEvent.click(textbox('Text'))
     await userEvent.keyboard('Hej')
     await vi.waitFor(() => {
-      expect(String(formValue(container, 'description'))).toContain('Hej')
+      expect(formText(container, 'description')).toContain('Hej')
     })
     await userEvent.keyboard('{Backspace}{Backspace}{Backspace}')
     await vi.waitFor(() => {
@@ -236,13 +241,13 @@ describe('the value', () => {
     await userEvent.click(textbox('Text'))
     await userEvent.keyboard('{Control>}{End}{/Control}tillagg')
     await vi.waitFor(() => {
-      expect(String(formValue(container, 'description'))).toContain('Starttillagg')
+      expect(formText(container, 'description')).toContain('Starttillagg')
     })
     await userEvent.click(page.getByRole('button', { name: 'Återställ' }))
     await vi.waitFor(() => {
-      expect(String(formValue(container, 'description'))).not.toContain('tillagg')
+      expect(formText(container, 'description')).not.toContain('tillagg')
     })
-    expect(String(formValue(container, 'description'))).toContain('Start')
+    expect(formText(container, 'description')).toContain('Start')
     await expect.element(textbox('Text')).toHaveTextContent('Start')
     await expect.element(textbox('Text')).not.toHaveTextContent('tillagg')
   })
@@ -306,7 +311,7 @@ describe('the value', () => {
       expect(value).toMatchObject({ type: 'doc' })
       expect(JSON.stringify(value)).toContain('Heja')
     })
-    expect(JSON.parse(String(formValue(container, 'description')))).toMatchObject({ type: 'doc' })
+    expect(JSON.parse(formText(container, 'description'))).toMatchObject({ type: 'doc' })
     await userEvent.keyboard('{Control>}a{/Control}{Backspace}')
     await vi.waitFor(() => {
       expect(onValueChange.mock.lastCall?.[0]).toBeNull()
@@ -505,7 +510,7 @@ describe('the hook and the parts', () => {
     await userEvent.click(box)
     await userEvent.keyboard('Hej')
     await vi.waitFor(() => {
-      expect(String(formValue(container, 'fritt'))).toContain('Hej')
+      expect(formText(container, 'fritt')).toContain('Hej')
     })
   })
 

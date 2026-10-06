@@ -271,7 +271,7 @@ describe('Listbox rich options: decorative parts', () => {
 
   test('a chosen rich option has no axe violations', async () => {
     const { container } = await render(<RichListbox defaultValue="fi" />)
-    await expectNoA11yViolations(container)
+    await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
   })
 })
 
