@@ -168,6 +168,9 @@ catalogs:
     '@changesets/cli':
       specifier: 3.0.3
       version: 3.0.3
+    '@guidepup/virtual-screen-reader':
+      specifier: 0.33.0
+      version: 0.33.0
     '@heroicons/react':
       specifier: 2.2.0
       version: 2.2.0
@@ -544,6 +547,9 @@ importers:
         specifier: 'catalog:'
         version: 4.13.0
     devDependencies:
+      '@guidepup/virtual-screen-reader':
+        specifier: 'catalog:'
+        version: 0.33.0
       '@vitest/browser-playwright':
         specifier: 'catalog:'
         version: 5.0.1(@types/node@24.19.1)(esbuild@0.28.2)(playwright@1.63.0)(typescript@7.0.2)(vitest@5.0.1)(yaml@2.9.1)
@@ -890,6 +896,10 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
+
+  '@guidepup/virtual-screen-reader@0.33.0':
+    resolution: {integrity: sha512-CXMkIx19oFZ7BS7TcvDibXn6A2RsEs8nVX9IijHW7HQ0qTGHgc2WErkaMi12YPQi1Zypxr36NfRYWgBxUNvMtQ==}
+    engines: {node: '>=20'}
 
   '@heroicons/react@2.2.0':
     resolution: {integrity: sha512-LMcepvRaS9LYHJGsF0zzmgKCUim/X3N/DQKc4jepAXJ7l8QxJ1PmxJzqplF2Z3FE4PqBAIGyJAQ/w4B5dsqbtQ==}
@@ -2606,6 +2616,9 @@ packages:
   dom-accessibility-api@0.6.3:
     resolution: {integrity: sha512-7ZgogeTnjuHbo+ct10G9Ffp0mif17idi0IyWNVA/wcwcm7NPOD/WEHVP3n7n3MhXqxoIYm8d6MuZohYWIZ4T3w==}
 
+  dom-accessibility-api@0.7.1:
+    resolution: {integrity: sha512-vdnCeZD+3wZ+8h8xXL/ZtBlvvoobOFyPzSiIfO6sGOZDqjFx4aLMAjZhl4rawj5xYz3UwP6Tgvyh0iH4IOCVnQ==}
+
   electron-to-chromium@1.5.444:
     resolution: {integrity: sha512-5ss/uJfoDYDHT0lfJzT6FbcskIzROIOPf0BbbFkGcvDzoJU7i//9GDrwwIHQVmIsrAGiF3ihpADBRIsrEFt1rQ==}
 
@@ -2702,6 +2715,9 @@ packages:
   hasown@2.0.4:
     resolution: {integrity: sha512-T2UbfbBEF32wiepXIsMlTW9+dDYC6wMh/t/vYA4tuOMKqWz/n3vr1NFSxQiyP+zk2mXsoMA/i/7qV6LKut1t1A==}
     engines: {node: '>= 0.4'}
+
+  html-aria@0.5.3:
+    resolution: {integrity: sha512-2SkCacsjXJu0e6D5vLSHlLs7KEdPZ7pIJqLh9EFedPqrAaywthe7jJWQ+PjEyB7bpmWMMOsBJuV4WlYd9WRiug==}
 
   human-id@4.2.2:
     resolution: {integrity: sha512-Z+8unD6em/MJwyrkWQ2M3wygRGI1+MztbutiNwk1DCuEPXOZRWGjtcMPZYP1exY9iNZMhd7ZOSMQSo9WYtiQRw==}
@@ -3883,6 +3899,13 @@ snapshots:
 
   '@floating-ui/utils@0.2.12':
     optional: true
+
+  '@guidepup/virtual-screen-reader@0.33.0':
+    dependencies:
+      '@testing-library/dom': 10.4.2
+      '@testing-library/user-event': 14.6.7(@testing-library/dom@10.4.2)
+      dom-accessibility-api: 0.7.1
+      html-aria: 0.5.3
 
   '@heroicons/react@2.2.0(react@19.3.0)':
     dependencies:
@@ -5199,6 +5222,8 @@ snapshots:
 
   dom-accessibility-api@0.6.3: {}
 
+  dom-accessibility-api@0.7.1: {}
+
   electron-to-chromium@1.5.444: {}
 
   empathic@2.1.0: {}
@@ -5290,6 +5315,8 @@ snapshots:
   hasown@2.0.4:
     dependencies:
       function-bind: 1.1.2
+
+  html-aria@0.5.3: {}
 
   human-id@4.2.2: {}
 

@@ -25,6 +25,16 @@
         "default": "./dist/index.cjs"
       }
     },
+    "./read-aloud": {
+      "import": {
+        "types": "./dist/read-aloud.d.mts",
+        "default": "./dist/read-aloud.mjs"
+      },
+      "require": {
+        "types": "./dist/read-aloud.d.cts",
+        "default": "./dist/read-aloud.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
   "publishConfig": {
@@ -37,7 +47,16 @@
     "axe-core": "catalog:"
   },
   "devDependencies": {
+    "@guidepup/virtual-screen-reader": "catalog:",
     "@vitest/browser-playwright": "catalog:",
     "vite-plus": "catalog:"
+  },
+  "peerDependencies": {
+    "@guidepup/virtual-screen-reader": "~0.33.0"
+  },
+  "peerDependenciesMeta": {
+    "@guidepup/virtual-screen-reader": {
+      "optional": true
+    }
   }
 }

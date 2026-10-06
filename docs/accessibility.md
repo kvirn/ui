@@ -36,6 +36,12 @@ A component is `alpha` when quality gates 1 to 6 pass, and `beta` when it is alp
 | Narrator                               | Edge            | Windows         | Release |
 | Dragon / Voice Control                 | Chrome / Safari | Windows / macOS | Release |
 
+### Screen reader approximation
+
+`readAloud` and `readAnnouncements` (`@kvirn-ui/testing/read-aloud`, optional peer `@guidepup/virtual-screen-reader`) walk a rendered subtree with a virtual screen reader (`@guidepup/virtual-screen-reader`) and return the phrases it speaks, such as "button, Menu, not expanded" or "polite: Saved". Component tests and the `accessibility-reviewer` use them to check names, states, reading order and live-region text against the contract's Read aloud table.
+
+This is an approximation, not a screen reader. Its accessibility tree is its own, its wording is not NVDA's, JAWS's, VoiceOver's or TalkBack's, it doesn't prove modality or focus containment (that stays a component test), and its phrases can change between versions. It supports "designed and tested to meet WCAG 2.2 AA" and makes no compliance claim. The matrix above stays `pending`, and neither agents nor this helper ever mark a row passed. Orca can be used for local Linux checks, outside the matrix.
+
 ## User testing
 
 - At least twice a year, test with disabled users recruited through Nordic disability organisations, and pay them.

@@ -23,6 +23,8 @@ catalog:
   vitest-browser-react: ^2.3.0
   # Accessibility engine
   axe-core: 4.13.0
+  # Approximate screen-reader transcript for tests (plan 0077 Part B): a pinned dev dependency, and an optional peer (~) of @kvirn-ui/testing/read-aloud.
+  '@guidepup/virtual-screen-reader': 0.33.0
   # The Vitest browser provider's peer. Vitest runs the browser tests; there is no e2e runner.
   playwright: 1.63.0
   # Tiptap, the rich text editor's engine: peers of @kvirn-ui/rich-text, devDependencies here.
