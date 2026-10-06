@@ -9,6 +9,7 @@ import { localeOf } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize } from '../theme-story-assertions.ts'
 import {
   AlwaysRegionPayments,
+  ColumnVisibilityCases,
   EmptyCases,
   EverythingCases,
   ExpandableCases,
@@ -16,11 +17,13 @@ import {
   LoadingCases,
   NarrowCases,
   PaginatedCases,
+  SearchCases,
   SelectableCases,
   SortableCases,
   StaticLateHeadCases,
   StaticPayments,
   StaticScrollingCases,
+  StyledCases,
   VirtualizedCases,
   withTableLocale,
 } from './table.fixture.tsx'
@@ -157,6 +160,47 @@ export const StaticLateHead: Story = {
 }
 
 /**
+ * `kv-table--card` on `Table.Root`: a border and rounded corners, opt in. The default table has
+ * no frame.
+ */
+export const Card: Story = {
+  parameters: showSource('table/table.fixture.tsx', 'StyledCases'),
+  render: (_args, { globals }) => (
+    <StyledCases locale={localeOf(globals)} className="kv-table--card" />
+  ),
+}
+
+/**
+ * `kv-table--striped`: every second body row has the surface fill. A selected row keeps its own
+ * fill, and the stripes carry no meaning: the markup is the same.
+ */
+export const Striped: Story = {
+  parameters: showSource('table/table.fixture.tsx', 'StyledCases'),
+  render: (_args, { globals }) => (
+    <StyledCases locale={localeOf(globals)} className="kv-table--striped" />
+  ),
+}
+
+/** Both modifiers together. */
+export const CardStriped: Story = {
+  parameters: showSource('table/table.fixture.tsx', 'StyledCases'),
+  render: (_args, { globals }) => (
+    <StyledCases locale={localeOf(globals)} className="kv-table--card kv-table--striped" />
+  ),
+}
+
+/** Both modifiers with two rows selected: a selected row keeps its own fill and its checked box. */
+export const CardStripedSelectable: Story = {
+  parameters: showSource('table/table.fixture.tsx', 'SelectableCases'),
+  render: (_args, { globals }) => (
+    <SelectableCases locale={localeOf(globals)} className="kv-table--card kv-table--striped" />
+  ),
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelectorAll('tr[data-selected]')).toHaveLength(2)
+  },
+}
+
+/**
  * Four sortable columns and one that isn't, sorted by name at first: one header has `aria-sort`,
  * one icon is an up chevron and the others show the two-chevron sort icon. The amount is a
  * quantity, so it is aligned to the end with the numeric classes.
@@ -256,6 +300,49 @@ export const Loading: Story = {
     await expect(canvasElement.querySelector('.kv-table-empty td')).toHaveTextContent(
       'Laddar rader.',
     )
+  },
+}
+
+/**
+ * Choosing the columns with `columnVisibilityFeature`: a labelled group of checkboxes, one for each
+ * column that can be hidden (the name can't). The handler starts hidden; checking its box adds the
+ * column.
+ */
+export const ColumnVisibility: Story = {
+  parameters: showSource('table/table.fixture.tsx', 'ColumnVisibilityCases'),
+  render: (_args, { globals }) => <ColumnVisibilityCases locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('group', { name: 'Visa kolumner' })).toBeVisible()
+    await expect(canvas.queryByRole('checkbox', { name: 'Namn' })).toBeNull()
+    await expect(canvas.queryByRole('columnheader', { name: 'Handläggare' })).toBeNull()
+    await userEvent.click(canvas.getByRole('checkbox', { name: 'Handläggare' }))
+    await expect(canvas.getByRole('columnheader', { name: 'Handläggare' })).toBeVisible()
+    await userEvent.click(canvas.getByRole('checkbox', { name: 'Ärendenummer' }))
+    await expect(canvas.queryByRole('columnheader', { name: 'Ärendenummer' })).toBeNull()
+    await expect(canvas.getByRole('checkbox', { name: 'Ärendenummer' })).not.toBeChecked()
+  },
+}
+
+/**
+ * A search box with `globalFilteringFeature`: a `search` landmark and a labelled field. The row
+ * count is announced after the typing pauses, and a search with no match shows the empty row.
+ */
+export const Search: Story = {
+  parameters: showSource('table/table.fixture.tsx', 'SearchCases'),
+  render: (_args, { globals }) => <SearchCases locale={localeOf(globals)} />,
+  play: async ({ canvas, canvasElement }) => {
+    // Testing Library has no role mapping for <search> yet, so the element itself is checked.
+    await expect(canvasElement.querySelector('search')).not.toBeNull()
+    const field = canvas.getByRole('searchbox', { name: 'Sök bland ärenden' })
+    await userEvent.type(field, 'Anna')
+    await waitFor(() => expect(canvas.getAllByRole('row')).toHaveLength(2))
+    await userEvent.clear(field)
+    await userEvent.type(field, 'zzz')
+    await expect(
+      await canvas.findByRole('cell', {
+        name: 'Inga ärenden matchar sökningen. Ändra sökningen eller rensa filtret.',
+      }),
+    ).toBeVisible()
   },
 }
 

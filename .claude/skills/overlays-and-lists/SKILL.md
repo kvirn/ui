@@ -19,7 +19,7 @@ Load `keyboard` and `accessibility` with this skill. Keys for these patterns are
 ### Native top layer
 
 - A popup is an element with the native `popover` attribute: `auto` for Popover and Menu, `manual` for Listbox, Combobox, Autocomplete and Tooltip (their focus stays on the trigger or input, so platform light dismiss must not take part, and a tooltip never closes an open Popover).
-- There is no `Portal` for popups, no `z-index`, and no clipping by an ancestor's `overflow`. CSS anchor positioning is not used. No positioning dependency (no Floating UI).
+- There is no `Portal` for popups (it stays planned, but no popup needs it), no `z-index`, and no clipping by an ancestor's `overflow`. CSS anchor positioning is not used. No positioning dependency (no Floating UI).
 - `usePopup({ open, anchorRef, popupRef, placement, offset, padding, matchAnchorWidth, popover, onNativeDismiss })` is the shared mechanic. The popup element must stay rendered so it can be shown and hidden. Without the Popover API it falls back to `hidden`.
 - It moves no focus and handles no dismissal. Pair it with `useDismissableLayer`.
 - When the platform hides the popup on its own (light dismiss, another auto popup opening), `onNativeDismiss` fires. Set `open` to `false` there.

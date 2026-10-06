@@ -15,6 +15,9 @@
   --docs-code-literal: var(--kv-color-warning);
   --docs-code-comment: var(--kv-color-text-muted);
 
+  /* Reference tables (API, keys, strings) are scanned by developers and wrap too much at 16px. */
+  --kv-table-cell-font-size-default: 0.875rem;
+
   scroll-padding-block-start: var(--kv-space-4);
 }
 

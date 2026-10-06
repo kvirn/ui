@@ -1,15 +1,23 @@
 import {
   Button,
+  Checkbox,
+  Field,
+  Fieldset,
   Heading,
   KvirnProvider,
   Link,
   Table,
+  TextInput,
+  columnFilteringFeature,
   columnSizingFeature,
+  columnVisibilityFeature,
   createColumnHelper,
   createExpandedRowModel,
+  createFilteredRowModel,
   createLocaleSortFn,
   createPaginatedRowModel,
   createSortedRowModel,
+  globalFilteringFeature,
   rowExpandingFeature,
   rowPaginationFeature,
   rowSelectionFeature,
@@ -69,6 +77,8 @@ interface TableTexts {
   next: string
   virtualCaption: string
   keyboardCaption: string
+  columnsLegend: string
+  searchLabel: string
 }
 
 const en: TableTexts = {
@@ -95,6 +105,8 @@ const en: TableTexts = {
   next: 'Next',
   virtualCaption: 'All cases',
   keyboardCaption: 'Open cases',
+  columnsLegend: 'Show columns',
+  searchLabel: 'Search cases',
 }
 
 const sv: TableTexts = {
@@ -121,6 +133,8 @@ const sv: TableTexts = {
   next: 'Nästa',
   virtualCaption: 'Alla ärenden',
   keyboardCaption: 'Öppna ärenden',
+  columnsLegend: 'Visa kolumner',
+  searchLabel: 'Sök bland ärenden',
 }
 
 const fi: TableTexts = {
@@ -147,6 +161,8 @@ const fi: TableTexts = {
   next: 'Seuraava',
   virtualCaption: 'Kaikki asiat',
   keyboardCaption: 'Avoimet asiat',
+  columnsLegend: 'Näytä sarakkeet',
+  searchLabel: 'Hae asioista',
 }
 
 const nb: TableTexts = {
@@ -173,6 +189,8 @@ const nb: TableTexts = {
   next: 'Neste',
   virtualCaption: 'Alle saker',
   keyboardCaption: 'Åpne saker',
+  columnsLegend: 'Vis kolonner',
+  searchLabel: 'Søk i saker',
 }
 
 const nn: TableTexts = {
@@ -199,6 +217,8 @@ const nn: TableTexts = {
   next: 'Neste',
   virtualCaption: 'Alle saker',
   keyboardCaption: 'Opne saker',
+  columnsLegend: 'Vis kolonnar',
+  searchLabel: 'Søk i saker',
 }
 
 /** se has no texts: it shows the English ones, marked lang="en". */
@@ -449,7 +469,7 @@ export function SortableCases({ locale }: { locale: FormLocale }) {
 }
 
 /** A staff tool: compact rows, two selected, a link in the row header. Select all is mixed. */
-export function SelectableCases({ locale }: { locale: FormLocale }) {
+export function SelectableCases({ locale, className }: { locale: FormLocale; className?: string }) {
   const { texts } = tableTextsFor(locale)
   const format = useFormat()
   const columns = useMemo(
@@ -474,7 +494,7 @@ export function SelectableCases({ locale }: { locale: FormLocale }) {
         {texts.casesCaption}
       </Heading>
       <Table.ScrollRegion table={list} aria-labelledby={titleId}>
-        <Table.Root table={list} aria-labelledby={titleId}>
+        <Table.Root table={list} aria-labelledby={titleId} className={className}>
           <Table.Head>
             {list.table.getHeaderGroups().map((headerGroup) => (
               <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
@@ -1332,5 +1352,214 @@ export function VirtualizedCases({ locale }: { locale: FormLocale }): ReactNode 
         </Table.Root>
       </Table.ScrollRegion>
     </div>
+  )
+}
+
+/**
+ * A static table of cases with the opt-in classes `kv-table--card` and `kv-table--striped` on
+ * `Table.Root`. Neither changes the markup: the frame and the stripes are only the theme's.
+ */
+export function StyledCases({ locale, className }: { locale: FormLocale; className: string }) {
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
+  const captionId = useId()
+  return (
+    <Table.ScrollRegion aria-labelledby={captionId}>
+      <Table.Root className={className}>
+        <Table.Caption id={captionId}>{texts.casesCaption}</Table.Caption>
+        <Table.Head>
+          <Table.Row>
+            <Table.ColumnHeader>{texts.name}</Table.ColumnHeader>
+            <Table.ColumnHeader>{texts.caseNumber}</Table.ColumnHeader>
+            <Table.ColumnHeader className="kv-table-column-header--numeric">
+              {texts.amount}
+            </Table.ColumnHeader>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
+          {cases.map((record) => (
+            <Table.Row key={record.id}>
+              <Table.RowHeader>{record.name}</Table.RowHeader>
+              <Table.Cell>{record.caseNumber}</Table.Cell>
+              <Table.Cell className="kv-table-cell--numeric">
+                {format.number(record.amount)}
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table.Root>
+    </Table.ScrollRegion>
+  )
+}
+
+const visibilityFeatures = tableFeatures({ columnVisibilityFeature })
+
+/**
+ * Choose the columns: a labelled group of native checkboxes, one for each column that can be
+ * hidden. The name isn't in the list (`enableHiding: false`), so the rows always have a row header.
+ * Hiding a column removes it from the table, head and cells. Nothing is announced: the change is
+ * the user's own.
+ */
+export function ColumnVisibilityCases({ locale }: { locale: FormLocale }) {
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
+  const columns = useMemo(() => {
+    const column = createColumnHelper<typeof visibilityFeatures, CaseRecord>()
+    return column.columns([
+      column.accessor('name', { header: texts.name, enableHiding: false }),
+      column.accessor('caseNumber', { header: texts.caseNumber }),
+      column.accessor('received', {
+        header: texts.received,
+        cell: (info) => format.date(info.getValue(), { dateStyle: 'short' }),
+      }),
+      column.accessor('amount', {
+        header: texts.amount,
+        cell: (info) => format.number(info.getValue()),
+      }),
+      column.accessor('handler', { header: texts.handler }),
+    ])
+  }, [texts, format])
+  const list = useTable({
+    features: visibilityFeatures,
+    columns,
+    data: cases,
+    getRowId: (record) => record.id,
+    rowHeader: 'name',
+    initialState: { columnVisibility: { handler: false } },
+  })
+  const titleId = useId()
+  return (
+    <>
+      <Fieldset.Root group>
+        <Fieldset.Legend marker="none">{texts.columnsLegend}</Fieldset.Legend>
+        {list.table
+          .getAllLeafColumns()
+          .filter((column) => column.getCanHide())
+          .map((column) => (
+            <Field.Root key={column.id}>
+              <Checkbox
+                checked={column.getIsVisible()}
+                onCheckedChange={(checked) => column.toggleVisibility(checked)}
+              />
+              <Field.Label>{String(column.columnDef.header)}</Field.Label>
+            </Field.Root>
+          ))}
+      </Fieldset.Root>
+      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+        {texts.casesCaption}
+      </Heading>
+      <Table.ScrollRegion table={list} aria-labelledby={titleId}>
+        <Table.Root
+          table={list}
+          aria-labelledby={titleId}
+          className="kv-table--card kv-table--striped"
+        >
+          <Table.Head>
+            {list.table.getHeaderGroups().map((headerGroup) => (
+              <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
+                {headerGroup.headers.map((header) => (
+                  <Table.ColumnHeader
+                    key={header.id}
+                    header={header}
+                    className={
+                      header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
+                    }
+                  />
+                ))}
+              </Table.Row>
+            ))}
+          </Table.Head>
+          <Table.Body>
+            {(row) => (
+              <Table.Row key={row.id} row={row}>
+                {row.getVisibleCells().map((cell) => (
+                  <Table.Cell
+                    key={cell.id}
+                    cell={cell}
+                    className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
+                  />
+                ))}
+              </Table.Row>
+            )}
+          </Table.Body>
+        </Table.Root>
+      </Table.ScrollRegion>
+    </>
+  )
+}
+
+const searchFeatures = tableFeatures({
+  columnFilteringFeature,
+  globalFilteringFeature,
+  filteredRowModel: createFilteredRowModel(),
+})
+
+/**
+ * A search box above the table: a `search` landmark with a labelled field that sets the global
+ * filter. The table announces how many rows are left after 500 ms without another keystroke, and
+ * a search that matches nothing shows `Table.Empty` with what to do next.
+ */
+export function SearchCases({ locale }: { locale: FormLocale }) {
+  const { texts } = tableTextsFor(locale)
+  const format = useFormat()
+  const columns = useMemo(() => {
+    const column = createColumnHelper<typeof searchFeatures, CaseRecord>()
+    return column.columns([
+      column.accessor('name', { header: texts.name }),
+      column.accessor('caseNumber', { header: texts.caseNumber }),
+      column.accessor('received', {
+        header: texts.received,
+        cell: (info) => format.date(info.getValue(), { dateStyle: 'short' }),
+      }),
+      column.accessor('handler', { header: texts.handler }),
+    ])
+  }, [texts, format])
+  const list = useTable({
+    features: searchFeatures,
+    columns,
+    data: cases,
+    getRowId: (record) => record.id,
+    rowHeader: 'name',
+  })
+  const titleId = useId()
+  return (
+    <>
+      <search>
+        <Field.Root>
+          <Field.Label marker="none">{texts.searchLabel}</Field.Label>
+          <TextInput type="search" onValueChange={(value) => list.table.setGlobalFilter(value)} />
+        </Field.Root>
+      </search>
+      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+        {texts.casesCaption}
+      </Heading>
+      <Table.ScrollRegion table={list} aria-labelledby={titleId}>
+        <Table.Root
+          table={list}
+          aria-labelledby={titleId}
+          className="kv-table--card kv-table--striped"
+        >
+          <Table.Head>
+            {list.table.getHeaderGroups().map((headerGroup) => (
+              <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
+                {headerGroup.headers.map((header) => (
+                  <Table.ColumnHeader key={header.id} header={header} />
+                ))}
+              </Table.Row>
+            ))}
+          </Table.Head>
+          <Table.Body>
+            {(row) => (
+              <Table.Row key={row.id} row={row}>
+                {row.getAllCells().map((cell) => (
+                  <Table.Cell key={cell.id} cell={cell} />
+                ))}
+              </Table.Row>
+            )}
+          </Table.Body>
+          <Table.Empty>{texts.emptyFiltered}</Table.Empty>
+        </Table.Root>
+      </Table.ScrollRegion>
+    </>
   )
 }

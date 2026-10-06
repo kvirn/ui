@@ -164,6 +164,8 @@ The button shows the text "Detaljer" and a chevron that points down while the de
 Add `columnFilteringFeature` with `filteredRowModel: createFilteredRowModel()`, and `rowPaginationFeature` with `paginatedRowModel: createPaginatedRowModel()`. The filter and the page controls are your own: `cases.table.setColumnFilters(…)`, `cases.table.nextPage()`.
 
 - **A filter change is announced** after 500 ms without another one, with the number of rows left: "3 rader." A filter that leaves nothing shows `Table.Empty`. Replace its text with something useful.
+- **Search box.** Add `columnFilteringFeature` (a requirement of the global filter), `globalFilteringFeature` and `filteredRowModel: createFilteredRowModel()`. Put a labelled `TextInput type="search"` in a `<search>` landmark and call `table.setGlobalFilter(value)` from `onValueChange`. A page that also has a site search should name this one (for example `aria-labelledby` on the field's label). The row count is announced as for any filter, and `Table.Empty` says what to do when nothing matches. See the Search story: `SearchCases`.
+- **Choosing columns.** Add `columnVisibilityFeature`. Render a `Fieldset.Root group` with a `Fieldset.Legend` ("Visa kolumner") and one `Checkbox` with a `Field.Label` for each `table.getAllLeafColumns()` column that `getCanHide()`, with `checked={column.getIsVisible()}` and `onCheckedChange={(checked) => column.toggleVisibility(checked)}`. Give the identifier column `enableHiding: false`, so the rows keep a row header. Draw `row.getVisibleCells()` in the body. Nothing is announced: the change is the user's own. See the Column visibility story: `ColumnVisibilityCases`.
 - **Pagination is the recommended answer to a large table.** Each page is its own small table. Say where the user is, in the caption or in a status near the controls ("Rader 21–40 av 312"), and keep the page controls after the table so they come in the Tab order where people look for them. A Pagination component is planned for M3.
 
 ## Large data
@@ -240,10 +242,18 @@ Every part takes `render` (an element or a function) to change the element it re
 
 In development, a Table warns once when it has no name (no `Table.Caption` or `aria-labelledby`), when a `Table.ScrollRegion` that is a region has no name, when `virtualize` is combined with `rowExpandingFeature`, when `Table.SelectCheckbox` is used without `rowSelectionFeature`, and when `Table.Body` has a function child but the Root has no `table`. Each has a code, an explanation and a fix on the Foundation page Dev warnings.
 
+## Styling
+
+The default table has no frame and no stripes. Opt in with a class on `Table.Root` (they combine): `kv-table--card` for a border and rounded corners, `kv-table--striped` for a `surface` fill on every second body row. A selected row keeps its own fill. Neither changes the markup or the semantics.
+
+```tsx
+<Table.Root className="kv-table--card kv-table--striped">…</Table.Root>
+```
+
 ## Your own look
 
 The Table is headless: it sets no CSS of its own except the inline geometry a virtualized table can't work without (the block size of a spacer row and the width of a column). Style the classes below, or copy the theme's Table section into your project and change it. Never set `display` on a table element, a row or a cell: some browsers then drop the table semantics.
 
 ## Classes for the default theme
 
-`kv-table`, `kv-table-caption`, `kv-table-head`, `kv-table-body`, `kv-table-foot`, `kv-table-row`, `kv-table-column-header`, `kv-table-row-header`, `kv-table-cell`, `kv-table-sort-button`, `kv-table-sort-icon`, `kv-table-select-checkbox` (with `kv-checkbox`), `kv-table-expand-button`, `kv-table-expand-icon`, `kv-table-detail-row`, `kv-table-empty`, `kv-table-spacer` and `kv-table-scroll-region` (with `kv-scroll-region`). You add `kv-table-column-header--numeric`, `kv-table-cell--numeric`, `kv-table-row-header--numeric` and `kv-table-visually-hidden`, and `kv-compact` on a container for 32px rows from 64rem. State: `data-sort` (on the header and its button), `data-selected`, `data-expanded`, `data-busy`, `data-virtualized` and `data-overflowing`. Properties: `--kv-table-scroll-region-max-block-size` (yours, to limit the height), and `--kv-table-head-block-size`, `--kv-table-cell-padding-block` and `--kv-table-cell-padding-inline` (set by the table and the theme).
+`kv-table`, `kv-table-caption`, `kv-table-head`, `kv-table-body`, `kv-table-foot`, `kv-table-row`, `kv-table-column-header`, `kv-table-row-header`, `kv-table-cell`, `kv-table-sort-button`, `kv-table-sort-icon`, `kv-table-select-checkbox` (with `kv-checkbox`), `kv-table-expand-button`, `kv-table-expand-icon`, `kv-table-detail-row`, `kv-table-empty`, `kv-table-spacer` and `kv-table-scroll-region` (with `kv-scroll-region`). You add `kv-table--card`, `kv-table--striped`, `kv-table-column-header--numeric`, `kv-table-cell--numeric`, `kv-table-row-header--numeric` and `kv-table-visually-hidden`, and `kv-compact` on a container for 32px rows from 64rem. State: `data-sort` (on the header and its button), `data-selected`, `data-expanded`, `data-busy`, `data-virtualized` and `data-overflowing`. Properties: `--kv-table-scroll-region-max-block-size` (yours, to limit the height), `--kv-table-cell-font-size-default` (yours, the text size, `1rem` when unset; use `rem`, and keep resident-facing tables at 16px), and `--kv-table-head-block-size`, `--kv-table-cell-padding-block` and `--kv-table-cell-padding-inline` (set by the table and the theme).

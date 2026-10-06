@@ -9,8 +9,8 @@ The parts, the behaviour and the accessibility contract are decided in the Table
 
 What this spec decides, in short:
 
-1. Native table display everywhere, `border-collapse: separate` with `border-spacing: 0`, and one `border-subtle` divider under each row. No zebra stripes, no row hover, no outer frame.
-2. Comfortable rows are 48px (12px padding around a 24px line), compact rows are 32px (4px around 24px). Text stays 16px in both densities.
+1. Native table display everywhere, `border-collapse: separate` with `border-spacing: 0`, and one `border-subtle` divider under each row. No zebra stripes and no outer frame by default (opt in with `kv-table--striped` and `kv-table--card`, §Opt-in looks); no row hover.
+2. Comfortable rows are 48px (12px padding around a 24px line), compact rows are 32px (4px around 24px). Text stays 16px in both densities, unless the adopter sets `--kv-table-cell-font-size-default` (the docs site sets `0.875rem` for its developer reference tables).
 3. Tabular figures across the whole table. A consumer marks a quantity column with the part modifiers `kv-table-column-header--numeric` and `kv-table-cell--numeric`, which align it to the inline end.
 4. The sort button fills the header cell. Its icon sits right after the text (before it in a numeric column): `chevron-up` for ascending, `chevron-down` for descending, and a new `sort` icon (both chevrons) for sortable but unsorted.
 5. Selected rows are `primary-subtle` behind a checked box: the tick carries the state, the fill helps.
@@ -249,7 +249,7 @@ Resulting sizes (16px text, line height 1.5, so one line is 24px):
 
 Below 64rem a `kv-compact` table is comfortable, like every other compact control (DESIGN.md Density): touch is likely there.
 
-**Text size never drops in compact.** Cell data, headers and the caption stay `body` (16px). `label-compact` is for control labels in staff chrome, and table data is essential content (DESIGN.md: 16px and never smaller for essential content). The expand button's label is a control label but stays 16px too, so it lines up with the row's text.
+**Text size never drops in compact.** (The only way to a smaller size is the adopter's `--kv-table-cell-font-size-default`, in `rem`; the docs site uses it for reference tables, not for content a resident must read.) Cell data, headers and the caption stay `body` (16px). `label-compact` is for control labels in staff chrome, and table data is essential content (DESIGN.md: 16px and never smaller for essential content). The expand button's label is a control label but stays 16px too, so it lines up with the row's text.
 
 ### 6.3 Typography and numeric columns
 
@@ -273,7 +273,8 @@ Below 64rem a `kv-compact` table is comfortable, like every other compact contro
 - **The head row** is `surface` on every header cell, and on `thead` itself, so no gap shows. Its block-end border is 1px `border-subtle`.
 - **Row dividers:** 1px `border-subtle` on the block-end side of every body cell and row header, **including the last body row**, so the table has an end. The spacer rows have none (§6.12). The foot has no border of its own: the last body row's divider sits above it.
 - **Foot:** no fill. The row header ("Totalt") is weight 600, and cells are weight 400 by default. A consumer who wants bold totals uses `<strong>` in the cell.
-- **No zebra stripes** (DESIGN.md Tables). **No vertical lines** between columns. **No outer frame.** Columns are separated by their padding and alignment. A table in a card or on the page gets its edge from that container.
+- **No zebra stripes and no outer frame by default** (DESIGN.md Tables); both are opt-in (Plan 0068). **No vertical lines** between columns. Columns are separated by their padding and alignment. A table in a card or on the page gets its edge from that container.
+- **Opt-in looks, on `Table.Root`.** `kv-table--striped`: every second body row (counted among the body rows, so an expanded row's details don't shift them) has the `surface` fill, the head's own fill, so every text pair already meets AA on it. A selected row keeps `primary-subtle`, and its checked box carries the state. `kv-table--card`: a `border-subtle` frame (the divider colour: light by default, strong in the high-contrast themes; decorative, so 1.4.11 does not apply) and `radius-md` corners, rounded on the corner cells and not clipped with `overflow`, which a table element ignores and which would cut the inset focus rings and the sticky head. The last row's divider is transparent so it doesn't double the frame. In forced colours the stripes drop to `Canvas` and the frame is `CanvasText`.
 - **Why `separate` and not `collapse`:** with `border-collapse: collapse`, the head's border belongs to the grid, not to the sticky cell, and in some engines it scrolls away from the stuck head. With `separate` and `border-spacing: 0`, each cell owns its block-end border, so the head's line moves with the head, and every divider is exactly 1px because only one side is drawn.
 - **On a `surface` background** (inside a `Section`), the head's fill disappears. The head still reads through weight 600 and its divider. Recommend a card around a table on a section, so the head fill shows against `surface-raised`.
 
@@ -510,7 +511,7 @@ These aren't theme rules, but the theme can't work without them. Each is small. 
 
 **Proposed DESIGN.md wording** (Components → Tables), for when the theme lands. Not applied by this spec:
 
-> **Tables** use `numeric` for figures, `surface` for the header row, `border-subtle` row dividers and no zebra stripes, vertical lines or row hover. Rows are 48px (32px in compact, from 64rem), text stays 16px. Quantities align to the end with `kv-table-column-header--numeric` and `kv-table-cell--numeric`, identifiers and dates stay at the start. Sortable headers are a button filling the cell with a visible indicator in every state: two chevrons (sortable), an up chevron (ascending) and a down chevron (descending), after the text, before it in a numeric column. A selected row is `primary-subtle` behind a checked box. Controls that fill a cell get the inset focus ring. The header sticks inside the table's scroll region with an opaque fill and a 1px line, `CanvasText` in forced colours, never a shadow. `display` is never changed on table elements. The design spec is `docs/design/table.md`.
+> **Tables** use `numeric` for figures, `surface` for the header row, `border-subtle` row dividers and no vertical lines or row hover, and no zebra stripes or frame unless you opt in (`kv-table--striped`, `kv-table--card`). Rows are 48px (32px in compact, from 64rem), text stays 16px. Quantities align to the end with `kv-table-column-header--numeric` and `kv-table-cell--numeric`, identifiers and dates stay at the start. Sortable headers are a button filling the cell with a visible indicator in every state: two chevrons (sortable), an up chevron (ascending) and a down chevron (descending), after the text, before it in a numeric column. A selected row is `primary-subtle` behind a checked box. Controls that fill a cell get the inset focus ring. The header sticks inside the table's scroll region with an opaque fill and a 1px line, `CanvasText` in forced colours, never a shadow. `display` is never changed on table elements. The design spec is `docs/design/table.md`.
 
 ## 7. Accessibility annotations
 
@@ -580,6 +581,6 @@ Draft input for `packages/react/src/table/table.a11y.md`. The plan's contract ta
 2. Is `80svh` right at 400% zoom (about 160px tall on a laptop)? An alternative is `max(80svh, 16rem)`, which is taller than the viewport at 400% and so needs page scroll. Test with the magnifier participant.
 3. A long caption on a table wider than its region can run past the region's edge at 320px. Accept and document "keep captions short", or have the engineer prototype a caption that stays in view (a sticky inner span, if Table.Caption gains one)?
 4. API shorthand for numeric columns: should `Table.Cell` and `Table.ColumnHeader` read `columnDef.meta` (for example `meta: { numeric: true }`) and add the modifier themselves? That's a plan decision. The theme works either way.
-5. No zebra stripes and no row hover (DESIGN.md). If task 5 in the test shows staff losing rows in wide tables, revisit with a measured, non-colour reading aid, not stripes.
+5. No zebra stripes by default, and no row hover (DESIGN.md). Stripes are opt-in (`kv-table--striped`, Plan 0068). If task 5 in the test shows staff losing rows in wide tables, revisit with a measured, non-colour reading aid.
 6. Should `--kv-table-cell-padding-block` and `--kv-table-cell-padding-inline` be documented site-wide properties, like the alert's?
 7. Busy with rows: is a visible status the consumer's job (docs), or should the table get a status part later?

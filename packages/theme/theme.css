@@ -37,6 +37,7 @@
  *     --kv-button-font-weight: 600;
  *     --kv-button-line-height: 1.25;
  *     --kv-table-scroll-region-max-block-size: 30rem;      limits a table's height, so its head sticks
+ *     --kv-table-cell-font-size-default: 0.875rem;         table text size; 1rem (body) when unset
  *   }
  *   .kv-card {
  *     --kv-card-padding-default: var(--kv-card-padding-lg);                  md by default
@@ -81,8 +82,8 @@
  *  10. Card
  *  10a. Section          kv-section: a region of the page, elevation level 1
  *  10b. Alert            kv-alert: a status message, by status class
- *  10d. Summary list and error summary  kv-summary-list: rows of key, value and action. kv-error-summary: the problems of a failed submit
  *  10e. Dialog           kv-dialog: a modal sheet or centred box, level 4, and the scroll lock
+ *  10d. Summary list and error summary  kv-summary-list: rows of key, value and action. kv-error-summary: the problems of a failed submit
  *  10c. Layout           kv-container, kv-stack, kv-columns, kv-sidebar-layout: where children sit
  *  11. Icon
  *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-textarea,
@@ -2230,8 +2231,8 @@
         .kv-toolbar,
         .kv-card,
         .kv-alert,
-        .kv-section,
         .kv-dialog,
+        .kv-section,
         .kv-field,
         .kv-fieldset,
         .kv-table,
@@ -2641,8 +2642,8 @@
       .kv-scroll-region,
       .kv-card,
       .kv-alert,
-      .kv-section,
       .kv-dialog,
+      .kv-section,
       .kv-field,
       .kv-fieldset,
       .kv-table,
@@ -3729,7 +3730,6 @@
     }
   }
 
-  /* 10d. Summary list and error summary ------------------------------------------------------
   /* 10e. Dialog -------------------------------------------------------------------------------
    * <Dialog.Popup> and <AlertDialog.Popup> render <dialog class="kv-dialog"> opened with showModal(),
    * so it sits in the top layer and the page is inert. Parts: kv-dialog-title (an h2, and sometimes the
@@ -3978,6 +3978,7 @@
     }
   }
 
+  /* 10d. Summary list and error summary ------------------------------------------------------
    * <SummaryList.Root> renders <dl class="kv-summary-list"> of kv-summary-list-row (a <div>),
    * each holding a kv-summary-list-key (<dt>), a kv-summary-list-value (<dd>) and optionally
    * kv-summary-list-actions (<dd>), whose Change link is kv-link kv-summary-list-change. A row has
@@ -8459,15 +8460,20 @@
    * Never changes the display of a table element: display: block on a table, row or cell drops
    * its semantics in some browsers. Rows are 48px, and 32px in compact density from
    * 64rem. The text stays 16px in both, since table data is essential content. A divider of 1px
-   * under every row, a filled head, no stripes, no vertical lines, no frame and no row hover: a
-   * row isn't something you press. The state of a selected row is the checked box, and the fill
-   * only helps. Controls that fill a cell get an inset focus ring, so the region and the sticky
-   * head can't clip or cover it. Quantities are aligned to the end with the classes
+   * under every row, a filled head, no vertical lines and no row hover: a row isn't something
+   * you press. No stripes and no frame by default; opt in with kv-table--striped (even body
+   * rows on the surface fill) and kv-table--card (a border and rounded corners) on Table.Root.
+   * The state of a selected row is the checked box, and the fill only helps.
+   * Controls that fill a cell get an inset focus ring, so the region and the sticky head can't
+   * clip or cover it. Quantities are aligned to the end with the classes
    * kv-table-column-header--numeric, kv-table-cell--numeric and kv-table-row-header--numeric:
    * identifiers and dates stay at the start.
    *
    * Site-wide, set where you like:
    *   .kv-table-scroll-region { --kv-table-scroll-region-max-block-size: 30rem }
+   * The text size is the body size (16px). Set --kv-table-cell-font-size-default on :root or any
+   * container to change it for the tables inside, in rem so it follows the reader's setting. The docs
+   * site sets 0.875rem for its reference tables; table data a resident must read stays 16px.
    * It limits the height of the region, so its head sticks. A virtualized table needs a limit
    * and gets 80svh when you set none. */
   .kv-table {
@@ -8481,7 +8487,7 @@
     border-spacing: 0;
     color: var(--kv-color-text);
     font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
-    font-size: var(--kv-font-body-size);
+    font-size: var(--kv-table-cell-font-size-default, var(--kv-font-body-size));
     font-feature-settings: var(--kv-font-numeric-feature-settings);
     line-height: var(--kv-font-body-line-height);
     table-layout: auto;
@@ -8491,6 +8497,56 @@
    * jump while rows come and go. */
   .kv-table[data-virtualized] {
     table-layout: fixed;
+  }
+
+  /* Opt-in frame. The corners are rounded on the cells, not clipped with overflow: overflow
+   * on a table element is unreliable, and a clip would cut the inset focus rings and the sticky
+   * head. The last row's divider is transparent so it doesn't double the frame. */
+  .kv-table--card {
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-md);
+  }
+
+  .kv-table--card > .kv-table-head {
+    background-color: transparent;
+  }
+
+  .kv-table--card > .kv-table-head > tr:first-child > :first-child {
+    border-start-start-radius: calc(var(--kv-radius-md) - var(--kv-border-width));
+  }
+
+  .kv-table--card > .kv-table-head > tr:first-child > :last-child {
+    border-start-end-radius: calc(var(--kv-radius-md) - var(--kv-border-width));
+  }
+
+  .kv-table--card > :last-child > tr:last-child > :first-child {
+    border-end-start-radius: calc(var(--kv-radius-md) - var(--kv-border-width));
+  }
+
+  .kv-table--card > :last-child > tr:last-child > :last-child {
+    border-end-end-radius: calc(var(--kv-radius-md) - var(--kv-border-width));
+  }
+
+  .kv-table--card > .kv-table-head > tr:first-child > :first-child > .kv-table-sort-button {
+    border-start-start-radius: calc(var(--kv-radius-md) - var(--kv-border-width));
+  }
+
+  .kv-table--card > .kv-table-head > tr:first-child > :last-child > .kv-table-sort-button {
+    border-start-end-radius: calc(var(--kv-radius-md) - var(--kv-border-width));
+  }
+
+  .kv-table--card > :last-child > tr:last-child > :is(th, td) {
+    border-block-end-color: transparent;
+  }
+
+  /* Opt-in stripes: the surface fill, which the head already uses and which meets AA for every
+   * text pair. Counted among the body rows, so an expanded row's details don't shift the
+   * stripes. A selected row keeps its primary-subtle fill. */
+  .kv-table--striped
+    > .kv-table-body
+    > .kv-table-row:nth-child(even of .kv-table-row):not([data-selected])
+    > :is(.kv-table-row-header, .kv-table-cell) {
+    background-color: var(--kv-color-surface);
   }
 
   /* Staff tools: 32px rows from 64rem. Below it touch is likely, so rows stay 48px. */
@@ -8816,6 +8872,14 @@
       border-block-end-color: Highlight;
       border-block-end-style: dashed;
       background-image: none;
+    }
+
+    .kv-table--card {
+      border-color: CanvasText;
+    }
+
+    .kv-table--card > :last-child > tr:last-child > :is(th, td) {
+      border-block-end-color: Canvas;
     }
 
     .kv-table-scroll-region {

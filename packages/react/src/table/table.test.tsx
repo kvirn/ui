@@ -1,5 +1,6 @@
 import {
   columnFilteringFeature,
+  globalFilteringFeature,
   columnSizingFeature,
   createColumnHelper,
   createExpandedRowModel,
@@ -909,6 +910,49 @@ describe('filtering', () => {
     await expect.poll(() => status().element().textContent, { timeout: 3000 }).toBe('4 rows.')
     expect(container.querySelectorAll('tbody tr')).toHaveLength(4)
     expect(container.querySelector('.kv-table-empty')).toBeNull()
+  })
+
+  test('a global filter announces the row count after a pause', async () => {
+    const globalFeatures = tableFeatures({
+      columnFilteringFeature,
+      globalFilteringFeature,
+      filteredRowModel: createFilteredRowModel(),
+    })
+    const globalColumns = createColumnHelper<typeof globalFeatures, CaseRecord>().columns([
+      createColumnHelper<typeof globalFeatures, CaseRecord>().accessor('name', { header: 'Name' }),
+    ])
+    function SearchableTable() {
+      const cases = useTable({
+        features: globalFeatures,
+        columns: globalColumns,
+        data: records,
+        getRowId: (record) => record.id,
+        rowHeader: 'name',
+      })
+      return (
+        <>
+          <button type="button" onClick={() => cases.table.setGlobalFilter('anna')}>
+            Search
+          </button>
+          <Table.Root table={cases}>
+            <Table.Caption>Open cases</Table.Caption>
+            <Table.Body>
+              {(row) => (
+                <Table.Row key={row.id} row={row}>
+                  {row.getAllCells().map((cell) => (
+                    <Table.Cell key={cell.id} cell={cell} />
+                  ))}
+                </Table.Row>
+              )}
+            </Table.Body>
+          </Table.Root>
+        </>
+      )
+    }
+    await renderInProvider(<SearchableTable />)
+    await userEvent.click(page.getByRole('button', { name: 'Search' }))
+    expect(status().element().textContent).toBe('')
+    await expect.poll(() => status().element().textContent, { timeout: 3000 }).toBe('1 row.')
   })
 })
 

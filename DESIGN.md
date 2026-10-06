@@ -565,7 +565,7 @@ Section and Card sit on elevation levels 1 and 2 (Storybook: Foundation / Border
 
 #### Tables
 
-`numeric` for figures, `surface` for the header row, `border-subtle` row dividers, no zebra stripes. Sortable headers are buttons with a visible sort indicator.
+`numeric` for figures, `surface` for the header row, `border-subtle` row dividers, no zebra stripes or frame unless you opt in (`kv-table--striped`, `kv-table--card`). Sortable headers are buttons with a visible sort indicator.
 
 #### Badges and tags
 
