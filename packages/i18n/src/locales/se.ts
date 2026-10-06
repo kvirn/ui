@@ -9,6 +9,9 @@ import type { KvirnMessages } from '../types.ts'
 // dialog.close is a native-speaker review item like alert.close (Plan 0067).
 // toast.regionLabel is one too (Plan 0071).
 // progress.loading and progress.slow are English placeholders too (Plan 0074).
+// calendar.* are English placeholders too (Plan 0082): a native speaker still has to write them.
+// stepper.* are English placeholders too (Plan 0083): a native speaker still has to write them.
+// datePicker.* are English placeholders too (Plan 0084): a native speaker still has to write them.
 // tag.* and filters.* are English placeholders too (Plan 0075): a native speaker still has to write them.
 // breadcrumb.* and pagination.* are English placeholders too (Plan 0062): a native speaker
 // still has to write them.
@@ -317,6 +320,12 @@ export const se = {
   errorSummary: { title: 'There is a problem', titlePrefix: 'Error:' },
   summaryList: { change: 'Change' },
   toast: { regionLabel: 'Dieđáhusat' },
+  stepper: {
+    status: ({ current, total }, format) =>
+      `Step ${format.number(current)} of ${format.number(total)}`,
+    statusWithName: ({ current, total, name }, format) =>
+      `Step ${format.number(current)} of ${format.number(total)}: ${name}`,
+  },
   progress: {
     loading: 'Loading.',
     slow: 'This is taking longer than usual. Keep this page open.',
@@ -357,5 +366,29 @@ export const se = {
     loading: 'Updating results',
     loadFailed: 'The results couldn’t be updated.',
     retry: 'Try again',
+  },
+  calendar: {
+    previousMonth: 'Previous month',
+    nextMonth: 'Next month',
+    previousYear: 'Previous year',
+    nextYear: 'Next year',
+    dayName: ({ date, isToday, description }) =>
+      [date, isToday ? 'today' : undefined, description]
+        .filter((part) => part !== undefined)
+        .join(', '),
+    weekHeader: 'Wk',
+    weekHeaderLong: 'Week',
+    weekName: ({ week }, format) => `Week ${format.number(week)}`,
+    rangeHint: ({ min, max }) =>
+      min !== undefined && max !== undefined
+        ? `Dates from ${min} to ${max}`
+        : min !== undefined
+          ? `Dates from ${min}`
+          : `Dates up to ${max}`,
+    selected: ({ date }) => `${date} selected`,
+  },
+  datePicker: {
+    trigger: 'Choose date',
+    title: 'Choose a date',
   },
 } satisfies KvirnMessages

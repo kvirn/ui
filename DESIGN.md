@@ -508,6 +508,15 @@ An `Alert.Danger` at the top of `main` with the heading "Det finns ett problem" 
 >
 > `ErrorSummary.Root` is the Alert's danger look plus `kv-error-summary`: the `danger-subtle` fill, the `danger` bar, the icon and the status word. Its list (`kv-error-summary-list`) has no markers and `space-1` between items. Each link (`kv-error-summary-link`) is in the `text` colour, weight 600, always underlined: the link colour is not a measured pair on `danger-subtle`, and the underline carries the link without colour. It wraps anywhere and is 24px tall at least. The focused summary shows the token ring under `:focus-visible` (the `tabindex="-1"` rule). In forced colours the links are `LinkText`. Not announced: focus is the announcement.
 
+#### Calendar and date picker
+
+Spec: [date-picker-and-calendar](docs/design/date-picker-and-calendar.md), approved 2026-10-06. A month as a `table role="grid"`, an add-on to typed entry and never the only way to give a date. The heading is `heading-4` between two quiet icon buttons (control size, `md` radius, chevrons mirrored in RTL); below 40rem it takes its own row. Days of other months are empty.
+
+- **Day cell:** the control size square (44px, 32px compact), `md` radius, a 4px grid spacing equal to the focus ring's width plus offset so a ring never covers a neighbour. **Below 40rem it is 40px (36px with week numbers):** a recorded exception to the 44px comfortable target (D10), because seven 44px cells and their gaps are 332px, more than a 320px screen holds. 2.5.8 is met; 2.5.5 (AAA) is not at 320px.
+- **States, never colour alone:** selected is a `primary` fill, `on-primary` text and weight 600; today is a 1px inset `border-control` edge and weight 600; unavailable and outside the range are `text-muted` with a strike-through; hover is `primary-subtle`; focus is the 2px ring. Forced colours (edges are borders, since a shadow is dropped): selected `Highlight` plus a 2px `CanvasText` edge, today a 1px `CanvasText` edge, hover a 1px `Highlight` edge, unavailable `GrayText`.
+- **Week numbers** are `body-small` in `text-muted`, only with a Monday start. No new token and no new colour pair.
+- **Date picker (Plan 0084):** a modal Dialog (`kv-date-picker-popup`) around the Calendar, opened by a `kv-button` with the `calendar` icon and "Choose date" (`kv-date-picker-trigger`) that is the last item in the `kv-date-input` row, at the block end, wrapping below the boxes at 320px. The popup is `fit-content` wide from 40rem and the Dialog's sheet below it, with `space-2` inline padding so the 40px cells fit. Selecting closes the dialog at once. No new token and no new colour pair.
+
 #### File upload
 
 - **Drop zone:** a 1px dashed `border-control` edge at rest, a heavy solid `primary` edge with a `primary-subtle` fill while a file is dragged over it, a heavy solid `danger` edge when invalid. It is the one dashed edge that doesn't mean disabled: it's a target, not a control, and the button inside carries the disabled look. The box is drawn only where a file can be dropped (a precise pointer, or while a file is dragged over the page).
@@ -595,9 +604,12 @@ For status or metadata, never for interactive elements.
 - **Popups** (menus, listboxes, popovers): level 3 elevation, `xl` radius, `--kv-space-2` padding, items at least the control height.
 - **Tooltips:** level 3 with the `md` radius, `body` text and `--kv-space-1` by `--kv-space-2` padding (a one-line box with the `xl` radius reads as a pill; decided 2026-10-04). They hold text and keys only, never essential information.
 
+#### Stepper
+
+Where the user is in a multi-page form, as one line of text: "Step 2 of 5: Your vehicle" (`docs/design/stepper.md`, Plan 0083). `kv-stepper` is `body` text in `text` with no margin, so the layout owns the rhythm; it sits directly under the page heading as its own element, never inside the heading, a label or a legend. It wraps and hyphenates and is never truncated. No dots, bar, segments, border or fill: the words carry it (1.4.1). It is a position, not navigation: no list, no links, no live region. Forced colours: plain `CanvasText`. No new token or colour pair.
+
 ### Patterns
 
-- **Step indicator** shows "Step 2 of 5" in text, never only as dots. Specified here, not yet in `theme.css`.
 - **Command menus and shortcuts** are welcome in staff tools, but every shortcut has a visible menu or button equivalent and single-character shortcuts can be turned off (2.1.4).
 
 ### Design spec index
@@ -665,6 +677,7 @@ Parts render these classes, choices are classes the consumer adds, and state is 
 - **Accordion:** `kv-accordion`, `-item`, `-heading`, `-trigger`, `-panel`, with the disclosure classes on the trigger and the panel. State `aria-expanded`, `data-open`, `data-disabled`.
 - **Breadcrumb:** `kv-breadcrumb`, `-list`, `-item`, `-link`, `-current`, with `kv-link` on its links. State `aria-current` on the current page.
 - **Pagination:** `kv-pagination`, `-list`, `-item`, `-link`, `-previous`, `-next`, `-ellipsis`, `-status`, with `kv-link` on its links. State `aria-current`.
+- **Stepper:** `kv-stepper`. No state.
 - **Summary list:** `kv-summary-list`, `-row`, `-key`, `-value`, `-actions`, and `kv-link kv-summary-list-change`. No state.
 - **Error summary:** `kv-error-summary` (with `kv-alert kv-alert--danger`), `-list`, `-item`, and `kv-link kv-error-summary-link`. No state.
 - **Prose:** choices `kv-prose`, `kv-prose--large`, `kv-lead`, `kv-not-prose`, `kv-scroll-region`, `kv-inset`, `kv-steps`.

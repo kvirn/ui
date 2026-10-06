@@ -13,6 +13,7 @@ import {
   NewsList as NewsListExample,
   ServiceCard as ServiceCardExample,
   textsFor,
+  withCardLocale,
 } from './card.fixture.tsx'
 import type { CardFixtureLocale } from './card.fixture.tsx'
 
@@ -56,6 +57,7 @@ const meta = {
     render: { control: false },
   },
   globals: { locale: 'sv' },
+  decorators: [withCardLocale],
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof Card.Root>
 

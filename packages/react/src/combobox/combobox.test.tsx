@@ -1350,6 +1350,71 @@ describe('multiple', () => {
     expect(page.getByRole('listitem').elements()).toHaveLength(0)
   })
 
+  test('a chip is one button that holds its text, so pressing the text removes the value', async () => {
+    const onValueChange = vi.fn<(value: string[], details: ComboboxValueChangeDetails) => void>()
+    await render(<MultipleExample defaultValue={['malmo', 'gbg']} onValueChange={onValueChange} />)
+    const button = page.getByRole('button', { name: 'Remove Malmö' }).element()
+    expect(button.textContent).toBe('Malmö')
+    expect(button.closest('li')?.querySelectorAll('button')).toHaveLength(1)
+    await userEvent.click(page.getByText('Malmö', { exact: true }))
+    expect(onValueChange).toHaveBeenCalledWith(['gbg'], { reason: 'remove' })
+    await expect.element(page.getByRole('button', { name: 'Remove Göteborg' })).toHaveFocus()
+  })
+
+  test('a custom removeIcon replaces the cross inside the button and stays hidden from the name', async () => {
+    await render(
+      <KvirnProvider locale="en">
+        <Combobox.Root
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          multiple
+          defaultValue={['malmo']}
+        >
+          <Combobox.ValueList>
+            {(item) => <Combobox.Value item={item} removeIcon={<svg data-testid="icon" />} />}
+          </Combobox.ValueList>
+          <Combobox.Input aria-label="Kommun" />
+        </Combobox.Root>
+      </KvirnProvider>,
+    )
+    const button = page.getByRole('button', { name: 'Remove Malmö' }).element()
+    expect(
+      button.querySelector('.kv-tag-remove-icon[aria-hidden="true"] [data-testid="icon"]'),
+    ).not.toBeNull()
+  })
+
+  test('warns in development when the children are a string that does not contain the item text', async () => {
+    await render(
+      <KvirnProvider locale="en">
+        <Combobox.Root
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          multiple
+          defaultValue={['malmo']}
+        >
+          <Combobox.ValueList>
+            {(item) => <Combobox.Value item={item}>Sthlm</Combobox.Value>}
+          </Combobox.ValueList>
+          <Combobox.Input aria-label="Kommun" />
+        </Combobox.Root>
+      </KvirnProvider>,
+    )
+    expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('Combobox.Value'))
+  })
+
+  test('the old kv-combobox-value classes stay as aliases next to the Tag classes', async () => {
+    const { container } = await render(<MultipleExample defaultValue={['malmo']} />)
+    const chip = container.querySelector('li')
+    expect(chip?.classList.contains('kv-tag')).toBe(true)
+    expect(chip?.classList.contains('kv-combobox-value')).toBe(true)
+    const button = chip?.querySelector('button')
+    expect(button?.classList.contains('kv-tag-remove')).toBe(true)
+    expect(button?.classList.contains('kv-combobox-value-remove')).toBe(true)
+    expect(container.querySelector('ul')?.classList.contains('kv-tag-group-list')).toBe(true)
+  })
+
   test('Backspace in the empty input does not remove a value', async () => {
     const onValueChange = vi.fn<(value: string[], details: ComboboxValueChangeDetails) => void>()
     await render(<MultipleExample defaultValue={['malmo', 'gbg']} onValueChange={onValueChange} />)

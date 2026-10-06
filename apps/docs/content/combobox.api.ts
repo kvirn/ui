@@ -325,12 +325,13 @@ export const valueRows = propRows<
   children: {
     type: 'ReactNode',
     default: 'The item’s text',
-    description: 'The visible text. It is also the name of the remove button.',
+    description:
+      'The visible text. The remove button’s name uses the item’s text (itemToString), so these children must show it (2.5.3).',
   },
   removeIcon: {
     type: 'ReactNode',
     default: 'A cross drawn by the theme',
-    description: 'Drawn inside the remove button, which has no text of its own.',
+    description: 'Replaces the cross at the end of the chip, inside the remove button.',
   },
   render: renderRow('li', 'ComboboxValueState<TItem>'),
 })
@@ -374,12 +375,24 @@ export function fieldAttributes(prefix: 'combobox' | 'autocomplete') {
 }
 
 export const valueListAttributes: readonly AttributeRow[] = [
-  classRow('kv-combobox-value-list', 'The part class.'),
+  classRow(
+    'kv-tag-group-list',
+    'The part class. kv-combobox-value-list stays as an alias for one minor version.',
+  ),
 ]
 export const valueAttributes: readonly AttributeRow[] = [
-  classRow('kv-combobox-value', 'The part class on the <li>.'),
-  classRow('kv-combobox-value-label', 'The class of the text inside it.'),
-  classRow('kv-combobox-value-remove', 'The class of the remove button inside it.'),
+  classRow(
+    'kv-tag',
+    'The part class on the <li>. kv-combobox-value stays as an alias for one minor version.',
+  ),
+  classRow(
+    'kv-combobox-value-label',
+    'The class of the text inside the button (an alias, no styles).',
+  ),
+  classRow(
+    'kv-tag-remove',
+    'The class of the button inside it, the whole chip. kv-combobox-value-remove stays as an alias for one minor version.',
+  ),
   dataRow('data-disabled', 'The Combobox is disabled.'),
 ]
 

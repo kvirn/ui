@@ -43,8 +43,9 @@ import {
   hasTableRowSelection,
   toIdPart,
 } from './table-features.ts'
-import { hasElementWithId } from './has-element-with-id.ts'
-import { useScrollOverflow } from './use-scroll-overflow.ts'
+import { hasElementWithId } from '../scroll-area/has-element-with-id.ts'
+import { getScrollAreaProps } from '../scroll-area/scroll-area-props.ts'
+import { useScrollOverflow } from '../scroll-area/use-scroll-overflow.ts'
 
 /** How tall a row is taken to be until it has been measured, in pixels. */
 export const defaultTableRowEstimate = 40
@@ -640,14 +641,14 @@ export function useTable<TFeatures extends TableFeatures, TData extends RowData>
   // A region while it scrolls, or always. Before the scroll region is measured (the server render
   // and the first client render) nothing overflows, so the default markup is a plain `<div>`.
   const getScrollRegionProps = (mode: TableRegion): TableScrollRegionPartProps => ({
-    className: 'kv-scroll-region kv-table-scroll-region',
-    ...(mode === 'always' || isOverflowing
-      ? {
-          role: 'region' as const,
-          ...(hasCaption === false ? {} : { 'aria-labelledby': captionId }),
-        }
+    ...getScrollAreaProps({
+      className: 'kv-scroll-region kv-table-scroll-region',
+      isOverflowing,
+      region: mode,
+    }),
+    ...((mode === 'always' || isOverflowing) && hasCaption !== false
+      ? { 'aria-labelledby': captionId }
       : {}),
-    ...(isOverflowing ? { tabIndex: 0 as const, 'data-overflowing': '' } : {}),
     ref: setScrollElement,
   })
   const scrollRegionProps = getScrollRegionProps(options.region ?? 'overflow')

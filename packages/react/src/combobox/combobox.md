@@ -78,10 +78,10 @@ interface Municipality {
 - **`Combobox.Control`**: the box around the input and its buttons, recommended (see above). The popup is placed against it, and the default theme draws the field's edge and focus ring on it.
 - **`Combobox.Toggle`**: a button, recommended, that opens and closes the popup, named "Visa alternativ". It is not a tab stop: ArrowDown and Alt+ArrowDown do the same from the keyboard.
 - **`Combobox.Clear`**: an optional button that empties the text and, with one choice, the value, named "Rensa". With several choices it empties the typed text only: each chosen value is removed with its own remove button. It shows only while there is something to clear, and it is not a tab stop. It is the only thing that empties the text.
-- **`Combobox.ValueList`, `Combobox.Value`**: for `multiple`. A `<ul>` before the input with one `<li>` per chosen value, each with a remove button named "Ta bort Stockholm". After a removal focus goes to the next remove button, else the previous one, else the input. Backspace in the empty input removes nothing.
+- **`Combobox.ValueList`, `Combobox.Value`**: for `multiple`. A `<ul>` before the input with one `<li>` per chosen value. Each is a Tag chip: one button that holds the text and a cross, named "Ta bort Stockholm", so pressing the text removes the value too. After a removal focus goes to the next remove button, else the previous one, else the input. Backspace in the empty input removes nothing.
 - **`useCombobox(options)`** returns `controlProps`, `inputProps`, `toggleProps`, `clearProps`, `valueListProps`, `getValueProps(value)`, `getRemoveButtonProps(value)`, `popupProps`, `listProps`, `emptyProps`, `getOptionProps(entry)`, `getGroupProps(section)`, `getGroupLabelProps(section)`, `hiddenInputs`, `entries`, `sections`, `selectedValues`, `isOpen`, `inputValue` and the Field's `isInvalid`, `isRequired`, `isDisabled`, for your own markup.
 
-Every part renders exactly one element, takes `render` and your own `className`, `ref` and handlers (merged with its own), and has a stable class: `kv-combobox-control`, `kv-combobox-input`, `kv-combobox-toggle`, `kv-combobox-clear`, `kv-combobox-value-list`, `kv-combobox-value` (with `kv-combobox-value-label` and `kv-combobox-value-remove` inside), and the Listbox's `kv-listbox-popup`, `kv-listbox-list`, `kv-listbox-option`, `kv-listbox-group`, `kv-listbox-group-label` and `kv-listbox-empty`. State is in `data-open`, `data-active`, `data-selected`, `data-disabled`, `data-loading` and `data-placement`. With `@kvirn-ui/theme/theme.css` imported, the input looks like an Input and the popup like the Listbox's; headless, it is unstyled.
+Every part renders exactly one element, takes `render` and your own `className`, `ref` and handlers (merged with its own), and has a stable class: `kv-combobox-control`, `kv-combobox-input`, `kv-combobox-toggle`, `kv-combobox-clear`, `kv-tag-group-list` and `kv-tag` and `kv-tag-remove` (the chips, as in Tag; the old `kv-combobox-value-list`, `kv-combobox-value`, `kv-combobox-value-label` and `kv-combobox-value-remove` stay as aliases for one minor version, then go), and the Listbox's `kv-listbox-popup`, `kv-listbox-list`, `kv-listbox-option`, `kv-listbox-group`, `kv-listbox-group-label` and `kv-listbox-empty`. State is in `data-open`, `data-active`, `data-selected`, `data-disabled`, `data-loading` and `data-placement`. With `@kvirn-ui/theme/theme.css` imported, the input looks like an Input and the popup like the Listbox's; headless, it is unstyled.
 
 ## Rich options
 
@@ -127,7 +127,7 @@ Spread the hook's props on your own elements, or put your own `className` on a p
 
 ## Classes for the default theme
 
-`kv-combobox-control`, `kv-combobox-input`, `kv-combobox-toggle`, `kv-combobox-clear`, `kv-combobox-value-list`, `kv-combobox-value`, `kv-combobox-value-label` and `kv-combobox-value-remove`, plus the Listbox's popup classes.
+`kv-combobox-control`, `kv-combobox-input`, `kv-combobox-toggle`, `kv-combobox-clear`, `kv-tag-group-list`, `kv-tag` and `kv-tag-remove` (with the old `kv-combobox-value*` aliases), plus the Listbox's popup classes.
 
 ## Hook
 

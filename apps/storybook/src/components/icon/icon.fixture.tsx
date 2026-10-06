@@ -4,7 +4,16 @@ import {
   MapPinIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
-import { Alert, Button, ButtonGroup, defineIcons, Icon, KvirnProvider } from '@kvirn-ui/react'
+import {
+  Alert,
+  Button,
+  ButtonGroup,
+  defineIcons,
+  Icon,
+  KvirnProvider,
+  useFormat,
+} from '@kvirn-ui/react'
+import type { UseFormatResult } from '@kvirn-ui/react'
 import type { BuiltInIconName, IconName } from '@kvirn-ui/react'
 import { builtInIcons } from '../../../../../packages/react/src/icon/built-in-icons.tsx'
 import { Warning as PhosphorWarning } from '@phosphor-icons/react'
@@ -16,7 +25,7 @@ import { createPortal } from 'react-dom'
 // Story fixture: the design spec's strings (docs/design/icon.md §4.3). sv, en, nb
 // and nn are written. The fi strings are the designer's drafts, for length checks only. se:
 // English, marked lang="en" (3.1.2). Icon names are code, so they aren't translated. Dates are
-// values, formatted with Intl.
+// values, formatted with `useFormat()`.
 
 export type IconFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
 
@@ -233,14 +242,6 @@ const iconTexts: Record<IconFixtureLocale, IconTexts | undefined> = {
   en,
 }
 
-const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
-  sv: 'sv-SE',
-  fi: 'fi-FI',
-  nb: 'nb-NO',
-  nn: 'nn-NO',
-  en: 'en-GB',
-}
-
 export const isIconFixtureLocale = (value: unknown): value is IconFixtureLocale =>
   typeof value === 'string' && value in iconTexts
 
@@ -248,19 +249,17 @@ interface ResolvedTexts {
   text: IconTexts
   /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
   lang: 'en' | undefined
-  formatLocale: string
 }
 
 /** The fixture text in a locale, or the English text with `lang="en"` for se. */
 export function textsFor(locale: IconFixtureLocale): ResolvedTexts {
   const text = iconTexts[locale]
   if (text === undefined) {
-    return { text: en, lang: 'en', formatLocale: formatLocales.en }
+    return { text: en, lang: 'en' }
   }
   return {
     text,
     lang: undefined,
-    formatLocale: formatLocales[locale === 'se' ? 'en' : locale],
   }
 }
 
@@ -269,21 +268,19 @@ const nextCollection = new Date(Date.UTC(2026, 9, 14))
 const exampleDeadline = new Date(Date.UTC(2026, 11, 31))
 
 /** The next collection: a `<time>`, in the locale's long date format. */
-export function collectionDate(formatLocale: string) {
-  const text = new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long', timeZone: 'UTC' }).format(
-    nextCollection,
-  )
+export function collectionDate(format: UseFormatResult) {
+  const text = format.date(nextCollection, { dateStyle: 'long', timeZone: 'UTC' })
   return <time dateTime={nextCollection.toISOString().slice(0, 10)}>{text}</time>
 }
 
 /** `31.12.2026` in fi and nb, `2026-12-31` in sv: the date format the error line asks for. */
-const exampleDate = (formatLocale: string): string =>
-  new Intl.DateTimeFormat(formatLocale, {
+const exampleDate = (format: UseFormatResult): string =>
+  format.date(exampleDeadline, {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
     timeZone: 'UTC',
-  }).format(exampleDeadline)
+  })
 
 export const exampleFileName = 'beslut.pdf'
 
@@ -296,32 +293,33 @@ export interface IconFixtureProps {
  * title, so the shapes never carry the meaning alone (1.4.1).
  */
 export function StatusAlerts({ locale }: IconFixtureProps) {
-  const { text, lang, formatLocale } = textsFor(locale)
+  const { text, lang } = textsFor(locale)
+  const format = useFormat()
   const { info, success, warning, error } = text.status
   return (
     <div className="kv-story-status-lines" lang={lang}>
       <Alert.Info>
         <Alert.Title>{info.word}</Alert.Title>
         <Alert.Body>
-          <p>{info.line(exampleDate(formatLocale))}</p>
+          <p>{info.line(exampleDate(format))}</p>
         </Alert.Body>
       </Alert.Info>
       <Alert.Success>
         <Alert.Title>{success.word}</Alert.Title>
         <Alert.Body>
-          <p>{success.line(exampleDate(formatLocale))}</p>
+          <p>{success.line(exampleDate(format))}</p>
         </Alert.Body>
       </Alert.Success>
       <Alert.Warning>
         <Alert.Title>{warning.word}</Alert.Title>
         <Alert.Body>
-          <p>{warning.line(exampleDate(formatLocale))}</p>
+          <p>{warning.line(exampleDate(format))}</p>
         </Alert.Body>
       </Alert.Warning>
       <Alert.Danger>
         <Alert.Title>{error.word}</Alert.Title>
         <Alert.Body>
-          <p>{error.line(exampleDate(formatLocale))}</p>
+          <p>{error.line(exampleDate(format))}</p>
         </Alert.Body>
       </Alert.Danger>
     </div>

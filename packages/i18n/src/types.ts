@@ -528,6 +528,41 @@ export interface KvirnMessages {
     /** The bar's `aria-valuetext`, for example `Exporting cases, 45%`. `percent` is 0 to 100; a message formats it with `format.number`. */
     valueText: MessageFunction<{ label: string; percent: number }>
   }
+  /** Stepper (Plan 0083): the position in a multi-page form as one line of text. */
+  stepper: {
+    /** `Step 2 of 5`. Each locale owns its wording and punctuation. */
+    status: MessageFunction<{ current: number; total: number }>
+    /** `Step 2 of 5: Your vehicle`. `name` is the section's name, in the consumer's words. */
+    statusWithName: MessageFunction<{ current: number; total: number; name: string }>
+  }
+  /** Calendar (Plan 0082): the buttons, the names of the days and the hint. Dates arrive already written by `Intl` in the locale (`date`, `min`, `max`). */
+  calendar: {
+    /** The Previous month button's accessible name and tooltip. */
+    previousMonth: TextMessage
+    nextMonth: TextMessage
+    /** Only when the consumer renders the year buttons. */
+    previousYear: TextMessage
+    nextYear: TextMessage
+    /** A day's accessible name: `Wednesday 14 October 2026, today, Recycling centre closed`. Parts that are absent drop out. `description` is the consumer's text for the day. */
+    dayName: MessageFunction<{ date: string; isToday: boolean; description: string | undefined }>
+    /** The visible week-number column header, short. It is hidden from assistive technology. */
+    weekHeader: TextMessage
+    /** The same header, spelled out and visually hidden. */
+    weekHeaderLong: TextMessage
+    /** A week number's accessible name, for example `Week 42`. */
+    weekName: MessageFunction<{ week: number }>
+    /** The line above the grid and the grid's description. Both ends, only `min` or only `max`. */
+    rangeHint: MessageFunction<{ min: string | undefined; max: string | undefined }>
+    /** Announced, polite, after a day was chosen. */
+    selected: MessageFunction<{ date: string }>
+  }
+  /** DatePicker (Plan 0084). The month grid's own strings are in `calendar`. */
+  datePicker: {
+    /** The button's visible name, next to the typed date: `Choose date`. */
+    trigger: TextMessage
+    /** The dialog's title. The consumer can replace it with the question: `Choose the date of your visit`. */
+    title: TextMessage
+  }
 }
 
 /** Any subset of namespaces and keys, for provider and `defineMessages` overrides. */

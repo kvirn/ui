@@ -20,7 +20,7 @@ import {
 // is one button: the whole chip. KvirnUI holds no tag state: `useState` in the fixtures stands in
 // for yours. "Filter a list" at the end is the pattern this component was built for.
 
-const meta = {
+const meta: Meta<typeof TagGroup.Root> = {
   title: 'Components/Tag',
   component: TagGroup.Root,
   argTypes: {
@@ -39,7 +39,7 @@ const meta = {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
   },
-} satisfies Meta<typeof TagGroup.Root>
+}
 
 export default meta
 type Story = StoryObj<typeof meta>

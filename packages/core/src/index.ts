@@ -340,3 +340,47 @@ export type {
   ProgressTimerOptions,
   ProgressTimerState,
 } from './progress/progress-timer.ts'
+export {
+  addDays,
+  addMonths,
+  addYears,
+  clampIsoDate,
+  compareIsoDates,
+  daysInMonth,
+  endOfWeek,
+  getIsoWeek,
+  getIsoWeekday,
+  getMonthWeeks,
+  getWeekdayOrder,
+  getYearMonth,
+  isLeapYear,
+  isValidDateParts,
+  isValidIsoDate,
+  maximumIsoDate,
+  minimumIsoDate,
+  parseIsoDate,
+  startOfWeek,
+  toIsoDate,
+} from './calendar-date/calendar-date.ts'
+export type {
+  DateParts,
+  IsoDate,
+  IsoWeek,
+  IsoWeekday,
+  YearMonth,
+} from './calendar-date/calendar-date.ts'
+export { getLocaleWeekStart, isWeekStart, resolveWeekStart } from './calendar-date/week-start.ts'
+export type { ResolveWeekStartOptions, WeekStart } from './calendar-date/week-start.ts'
+export { getCalendarKeyTarget } from './calendar/calendar-keys.ts'
+export type { CalendarKeyTargetInput } from './calendar/calendar-keys.ts'
+export { createCalendar, getDayAvailability, getTodayIsoDate } from './calendar/calendar.ts'
+export type {
+  CalendarActions,
+  CalendarDayAvailability,
+  CalendarMonthChange,
+  CalendarMonthChangeReason,
+  CalendarOptions,
+  CalendarSettings,
+  CalendarState,
+  CalendarStore,
+} from './calendar/calendar.ts'

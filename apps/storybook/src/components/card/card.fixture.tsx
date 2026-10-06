@@ -1,11 +1,14 @@
 import { useId } from 'react'
 import type { ReactNode } from 'react'
-import { Button, Card, Link } from '@kvirn-ui/react'
+import { Button, Card, KvirnProvider, Link, useFormat } from '@kvirn-ui/react'
+import type { UseFormatResult } from '@kvirn-ui/react'
+import type { Decorator } from '@storybook/react-vite'
+import { messagesFor, providerLocaleOf } from '../form/form.fixture.tsx'
 
 // Story fixture: the design spec's examples B–D (docs/design/card.md §4, §5). Example A,
 // the sidebar text block, is a Section now: see ../section/section.fixture.tsx. sv, en, nb and
 // nn are written. The fi strings are the designer's drafts, for length checks only. se: English,
-// marked lang="en" (3.1.2). Dates and times are values, formatted with Intl.
+// marked lang="en" (3.1.2). Dates and times are values, formatted with `useFormat()`.
 
 export type CardFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
 
@@ -208,14 +211,6 @@ const cardTexts: Record<CardFixtureLocale, CardTexts | undefined> = {
   en,
 }
 
-const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
-  sv: 'sv-SE',
-  fi: 'fi-FI',
-  nb: 'nb-NO',
-  nn: 'nn-NO',
-  en: 'en-GB',
-}
-
 export const isCardFixtureLocale = (value: unknown): value is CardFixtureLocale =>
   typeof value === 'string' && value in cardTexts
 
@@ -223,19 +218,30 @@ interface ResolvedTexts {
   text: CardTexts
   /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
   lang: 'en' | undefined
-  formatLocale: string
+}
+
+/**
+ * The provider an app has above its cards, with the locale of the texts (English for se, which has
+ * none). `useFormat()` and the library's own strings follow it.
+ */
+export const withCardLocale: Decorator = (Story, { globals }) => {
+  const locale = isCardFixtureLocale(globals['locale']) ? globals['locale'] : 'sv'
+  return (
+    <KvirnProvider locale={providerLocaleOf(locale)} messages={messagesFor(locale)}>
+      <Story />
+    </KvirnProvider>
+  )
 }
 
 /** The fixture text in a locale, or the English text with `lang="en"` for se. */
 export function textsFor(locale: CardFixtureLocale): ResolvedTexts {
   const text = cardTexts[locale]
   if (text === undefined) {
-    return { text: en, lang: 'en', formatLocale: formatLocales.en }
+    return { text: en, lang: 'en' }
   }
   return {
     text,
     lang: undefined,
-    formatLocale: formatLocales[locale === 'se' ? 'en' : locale],
   }
 }
 
@@ -248,8 +254,8 @@ const publishedDates = {
   grants: new Date(Date.UTC(2026, 8, 14)),
 }
 
-const longDate = (date: Date, formatLocale: string): string =>
-  new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long', timeZone: 'UTC' }).format(date)
+const longDate = (date: Date, format: UseFormatResult): string =>
+  format.date(date, { dateStyle: 'long', timeZone: 'UTC' })
 
 /** A local file, never a network request (hard rule 7): an SVG as a data URI. */
 const svgDataUri = (svg: string) => `data:image/svg+xml,${encodeURIComponent(svg)}`
@@ -287,7 +293,8 @@ const caseNumber = 'BAB-2026-004512'
 
 /** Example B: a service card on My pages, with a full-bleed image and two actions. */
 export function ServiceCard({ locale }: CardFixtureProps) {
-  const { text, lang, formatLocale } = textsFor(locale)
+  const { text, lang } = textsFor(locale)
+  const format = useFormat()
   return (
     <Card.Root lang={lang} data-testid="service-card">
       <Card.Header className="kv-card-header--padding-none">
@@ -296,9 +303,7 @@ export function ServiceCard({ locale }: CardFixtureProps) {
       <Card.Body className="kv-prose">
         <h2>{text.waste.heading}</h2>
         <p>
-          {text.waste.next(
-            <time dateTime="2026-10-14">{longDate(nextCollection, formatLocale)}</time>,
-          )}
+          {text.waste.next(<time dateTime="2026-10-14">{longDate(nextCollection, format)}</time>)}
         </p>
         <p>{text.waste.plan}</p>
       </Card.Body>
@@ -315,7 +320,8 @@ export function ServiceCard({ locale }: CardFixtureProps) {
  * grid is story CSS: the theme has no card-list attribute yet (Plan 0007, decision 3).
  */
 export function NewsList({ locale }: CardFixtureProps) {
-  const { text, lang, formatLocale } = textsFor(locale)
+  const { text, lang } = textsFor(locale)
+  const format = useFormat()
   const items = [
     ['atervinning', text.news.recycling, publishedDates.recycling],
     ['vintervaghallning', text.news.snow, publishedDates.snow],
@@ -341,7 +347,7 @@ export function NewsList({ locale }: CardFixtureProps) {
                 <small>
                   {text.news.published(
                     <time dateTime={published.toISOString().slice(0, 10)}>
-                      {longDate(published, formatLocale)}
+                      {longDate(published, format)}
                     </time>,
                   )}
                 </small>
@@ -356,7 +362,8 @@ export function NewsList({ locale }: CardFixtureProps) {
 
 /** Example D: a staff case card in compact density, with a nested card. */
 export function CaseCard({ locale }: CardFixtureProps) {
-  const { text, lang, formatLocale } = textsFor(locale)
+  const { text, lang } = textsFor(locale)
+  const format = useFormat()
   return (
     <div className="kv-compact" lang={lang}>
       <Card.Root data-testid="case-card">
@@ -367,7 +374,7 @@ export function CaseCard({ locale }: CardFixtureProps) {
             <h3>{text.case.latestHeading}</h3>
             <p>
               {text.case.latestText(
-                <time dateTime="2026-09-30">{longDate(certificateArrived, formatLocale)}</time>,
+                <time dateTime="2026-09-30">{longDate(certificateArrived, format)}</time>,
               )}
             </p>
           </Card.Root>

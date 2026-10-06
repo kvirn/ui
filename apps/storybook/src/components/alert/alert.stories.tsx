@@ -1,4 +1,4 @@
-import { Alert, Card, Icon, KvirnProvider } from '@kvirn-ui/react'
+import { Alert, Card, Icon, KvirnProvider, useFormat } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/alert/alert.a11y.md?raw'
 import guide from '../../../../../packages/react/src/alert/alert.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -438,11 +438,12 @@ export const MessagesOverride: Story = {
  */
 export const InProseAndCard: Story = {
   render: (_args, { globals }) => {
-    const { text, formatLocale } = textsFor(localeOf(globals))
-    const closes = new Intl.DateTimeFormat(formatLocale, {
+    const { text } = textsFor(localeOf(globals))
+    const format = useFormat()
+    const closes = format.date(new Date(Date.UTC(2026, 7, 31)), {
       dateStyle: 'long',
       timeZone: 'UTC',
-    }).format(new Date(Date.UTC(2026, 7, 31)))
+    })
     return (
       <>
         <article className="kv-prose">

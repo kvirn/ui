@@ -6,9 +6,10 @@ import {
   getLanguage,
   getThemeStore,
   isSameThemeConfiguration,
+  isWeekStart,
   resolveDirection,
 } from '@kvirn-ui/core'
-import type { Direction, Env, MaskCountry, ThemeOptions } from '@kvirn-ui/core'
+import type { Direction, Env, MaskCountry, ThemeOptions, WeekStart } from '@kvirn-ui/core'
 import type { PartialMessages } from '@kvirn-ui/i18n'
 import {
   useContext,
@@ -69,6 +70,12 @@ export interface KvirnProviderProps {
   messages?: PartialMessages | undefined
   /** IANA time zone. Set it explicitly to avoid a server/client date mismatch. */
   timeZone?: string | undefined
+  /**
+   * The first day of the week in Calendar and DatePicker: `1` (Monday) to `7` (Sunday), the ISO
+   * weekday. Default: the parent's, else the locale's when it names a region (`en-US` is Sunday),
+   * else Monday: bare `en` is Monday. A `weekStart` on the Calendar wins.
+   */
+  weekStart?: WeekStart | undefined
   /** The router's link component. Register it for typed link props. */
   linkComponent?: RegisteredLinkComponent | undefined
   /**
@@ -109,6 +116,7 @@ export function KvirnProvider({
   country: countryProp,
   messages,
   timeZone: timeZoneProp,
+  weekStart: weekStartProp,
   linkComponent: linkComponentProp,
   icons: iconsProp,
   iconDefaults: iconDefaultsProp,
@@ -127,6 +135,7 @@ export function KvirnProvider({
     dirProp ?? (localeProp === undefined ? parentConfig.dir : resolveDirection(localeProp))
   const country = countryProp ?? parentConfig.country
   const timeZone = timeZoneProp ?? parentConfig.timeZone
+  const weekStart = isWeekStart(weekStartProp) ? weekStartProp : parentConfig.weekStart
   const linkComponent = linkComponentProp ?? parentConfig.linkComponent
   const explicitEnv = envProp ?? parentConfig.env
   const parentLayers = parentConfig.messageLayers
@@ -160,6 +169,7 @@ export function KvirnProvider({
       dir,
       country,
       timeZone,
+      weekStart,
       messageLayers,
       format,
       linkComponent,
@@ -172,6 +182,7 @@ export function KvirnProvider({
       dir,
       country,
       timeZone,
+      weekStart,
       messageLayers,
       format,
       linkComponent,
@@ -191,6 +202,12 @@ export function KvirnProvider({
     warnOnce(
       `nested-locale-without-messages:${parentConfig.locale}:${localeProp}`,
       `A nested <KvirnProvider locale="${localeProp}"> has no \`messages\`, so its strings stay in the parent's language (${parentConfig.locale}) while its \`lang\` says ${localeProp}. Pass the catalog for ${localeProp} as \`messages\`.`,
+    )
+  }
+  if (weekStartProp !== undefined && !isWeekStart(weekStartProp)) {
+    warnOnce(
+      `invalid-week-start:${String(weekStartProp)}`,
+      `<KvirnProvider weekStart="${String(weekStartProp)}"> is not a whole number from 1 (Monday) to 7 (Sunday), so it is ignored.`,
     )
   }
   if (!isOutermost && theme !== undefined) {

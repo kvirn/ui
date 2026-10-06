@@ -133,10 +133,10 @@ When to use: `kv-steps` for a process of about 3–8 steps where steps take time
 |         | `kv-steps` (this spec)                   | Stepper / step indicator                                             |
 | ------- | ---------------------------------------- | -------------------------------------------------------------------- |
 | Is      | content describing a whole process       | the user's position in a multi-page form                             |
-| Element | `ol` of all steps                        | a text caption above the question `h1`: "Steg 2 av 5" + section name |
+| Element | `ol` of all steps                        | a line of text under the question `h1`: "Steg 2 av 5" + section name |
 | State   | none; no current step, no `aria-current` | the current step only                                                |
 | Where   | inside prose, on guidance pages          | e-service question pages, never in prose                             |
-| Strings | editor's                                 | `stepIndicator.status` (i18n, ICU)                                   |
+| Strings | editor's                                 | `stepper.status`, `stepper.statusWithName` (i18n)                    |
 | Links   | optional, in the text                    | never a link list                                                    |
 
 Don't use `kv-steps` as a progress indicator, and don't put Stepper on a guidance page.

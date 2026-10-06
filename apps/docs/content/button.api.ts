@@ -93,6 +93,12 @@ export const useButtonHook: ApiHook = {
       default: 'false',
       description: 'Keeps a disabled button in the Tab order with aria-disabled="true".',
     },
+    busy: {
+      type: 'boolean',
+      default: 'false',
+      description:
+        'The action is running. Renders aria-disabled="true", keeps focus on the button, blocks a second press, and never uses native disabled. Disabled wins.',
+    },
     type: {
       type: "'button' | 'submit' | 'reset'",
       default: "'button'",
@@ -101,7 +107,8 @@ export const useButtonHook: ApiHook = {
     onClick: {
       type: 'MouseEventHandler<HTMLButtonElement>',
       default: '–',
-      description: 'Called on activation, and never while disabled. Pass it here, not on top.',
+      description:
+        'Called on activation, and never while disabled or busy. Pass it here, not on top.',
     },
   }),
   result: propRows<UseButtonResult>({
@@ -109,6 +116,11 @@ export const useButtonHook: ApiHook = {
       type: 'ButtonPartProps',
       default: '–',
       description: 'Spread on a <button>: class, type, disabled state, handlers.',
+    },
+    isBusy: {
+      type: 'boolean',
+      default: '–',
+      description: 'Whether the button is busy (busy is set and the button is not disabled).',
     },
     isDisabled: { type: 'boolean', default: '–', description: 'Whether the button is disabled.' },
     isFocusVisible: {

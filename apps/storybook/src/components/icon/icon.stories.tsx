@@ -5,13 +5,14 @@ import { nn } from '@kvirn-ui/i18n/nn'
 import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { Button, ButtonGroup, Icon, KvirnProvider, Link } from '@kvirn-ui/react'
+import { Button, ButtonGroup, Icon, KvirnProvider, Link, useFormat } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/icon/icon.a11y.md?raw'
 import guide from '../../../../../packages/react/src/icon/icon.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import { providerLocaleOf } from '../form/form.fixture.tsx'
 import {
   builtInIconNames,
   buttonMatrix,
@@ -110,7 +111,10 @@ const meta = {
       const locale = localeOf(globals)
       const catalogLocale = textsFor(locale).lang === 'en' ? 'en' : locale
       return (
-        <KvirnProvider locale={catalogLocale} messages={catalogs[catalogLocale] ?? en}>
+        <KvirnProvider
+          locale={providerLocaleOf(catalogLocale)}
+          messages={catalogs[catalogLocale] ?? en}
+        >
           <Story />
         </KvirnProvider>
       )
@@ -199,7 +203,8 @@ const textStyles = [
 const iconSizes = [4, 5, 6, 8] as const
 
 function sizesBlock(locale: IconFixtureLocale, testId: string) {
-  const { text, lang, formatLocale } = textsFor(locale)
+  const { text, lang } = textsFor(locale)
+  const format = useFormat()
   return (
     <div className="kv-story-icon-sizes" data-testid={testId} lang={lang}>
       {textStyles.map((style) => (
@@ -209,7 +214,7 @@ function sizesBlock(locale: IconFixtureLocale, testId: string) {
           </p>
           {iconSizes.map((size) => (
             <p key={size} className={`kv-story-text-guide ${style.className}`}>
-              <code>{size}</code> {text.text.collection(collectionDate(formatLocale))}{' '}
+              <code>{size}</code> {text.text.collection(collectionDate(format))}{' '}
               <Icon name="calendar" size={size} />
             </p>
           ))}
@@ -429,12 +434,13 @@ export const TokenChannels: Story = {
  */
 export const DecorativeAndMeaningful: Story = {
   render: (_args, { globals }) => {
-    const { text, lang, formatLocale } = textsFor(localeOf(globals))
+    const { text, lang } = textsFor(localeOf(globals))
+    const format = useFormat()
     return (
       <div className="kv-story-columns" lang={lang}>
         <div className="kv-story-panel">
           <p>
-            <Icon name="calendar" /> {text.text.collection(collectionDate(formatLocale))}
+            <Icon name="calendar" /> {text.text.collection(collectionDate(format))}
           </p>
         </div>
         <div className="kv-story-panel">
@@ -791,11 +797,12 @@ export const InRunningTextAndLinks: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, lang, formatLocale } = textsFor(localeOf(globals))
+    const { text, lang } = textsFor(localeOf(globals))
+    const format = useFormat()
     return (
       <>
         <p lang={lang}>
-          <Icon name="calendar" size={4} /> {text.text.collection(collectionDate(formatLocale))}
+          <Icon name="calendar" size={4} /> {text.text.collection(collectionDate(format))}
         </p>
         <p lang={lang}>
           <Link.Root href="https://www.digg.se/" target="_blank">

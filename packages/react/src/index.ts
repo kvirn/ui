@@ -225,7 +225,18 @@ export type {
   UseBadgeOptions,
   UseBadgeResult,
 } from './badge/use-badge.ts'
-export { Tag, TagGroup } from './tag/tag.tsx'
+export {
+  Tag,
+  TagGroup,
+  TagGroupClearAll,
+  TagGroupEmpty,
+  TagGroupLabel,
+  TagGroupList,
+  TagGroupRoot,
+  TagLabel,
+  TagRemove,
+  TagRoot,
+} from './tag/tag.tsx'
 export type {
   TagGroupClearAllProps,
   TagGroupLabelElementProps,
@@ -743,6 +754,15 @@ export type {
 } from './switch/switch.tsx'
 export { useSwitch } from './switch/use-switch.ts'
 export type { SwitchPartProps, UseSwitchOptions, UseSwitchResult } from './switch/use-switch.ts'
+export { ScrollArea } from './scroll-area/scroll-area.tsx'
+export type { ScrollAreaProps, ScrollAreaState } from './scroll-area/scroll-area.tsx'
+export { useScrollArea } from './scroll-area/use-scroll-area.ts'
+export type {
+  ScrollAreaPartProps,
+  ScrollAreaRegion,
+  UseScrollAreaOptions,
+  UseScrollAreaResult,
+} from './scroll-area/use-scroll-area.ts'
 export { Slider } from './slider/slider.tsx'
 export type { SliderChangeDetails, SliderProps, SliderState } from './slider/slider.tsx'
 export { useSlider } from './slider/use-slider.ts'
@@ -1328,16 +1348,89 @@ export {
 } from './progress/progress.tsx'
 export type {
   ProgressBarProps,
+  ProgressIndicatorProps,
   ProgressLabelProps,
   ProgressRootProps,
   ProgressState,
 } from './progress/progress.tsx'
+export {
+  Calendar,
+  CalendarGrid,
+  CalendarHeading,
+  CalendarNextMonth,
+  CalendarNextYear,
+  CalendarPreviousMonth,
+  CalendarPreviousYear,
+  CalendarRangeHint,
+  CalendarRoot,
+} from './calendar/calendar.tsx'
+export type {
+  CalendarDay,
+  CalendarGridProps,
+  CalendarHeadingProps,
+  CalendarRangeHintProps,
+  CalendarRootProps,
+  CalendarState,
+  CalendarStepButtonProps,
+  CalendarWeek,
+  CalendarWeekday,
+} from './calendar/calendar.tsx'
+export { useCalendar } from './calendar/use-calendar.ts'
+export type {
+  CalendarDayPartProps,
+  CalendarGridPartProps,
+  CalendarHeadingPartProps,
+  CalendarRangeHintPartProps,
+  CalendarRootPartProps,
+  CalendarStepPartProps,
+  UseCalendarOptions,
+  UseCalendarResult,
+} from './calendar/use-calendar.ts'
+export {
+  DatePicker,
+  DatePickerCalendar,
+  DatePickerPopup,
+  DatePickerRoot,
+  DatePickerTitle,
+  DatePickerTrigger,
+} from './date-picker/date-picker.tsx'
+export type {
+  DatePickerCalendarProps,
+  DatePickerChangeDetails,
+  DatePickerChangeReason,
+  DatePickerPopupProps,
+  DatePickerRootProps,
+  DatePickerState,
+  DatePickerTitleProps,
+  DatePickerTriggerProps,
+} from './date-picker/date-picker.tsx'
+export { useDatePicker } from './date-picker/use-date-picker.ts'
+export type {
+  DatePickerCalendarOptions,
+  DatePickerPopupPartProps,
+  DatePickerTriggerPartProps,
+  UseDatePickerOptions,
+  UseDatePickerResult,
+} from './date-picker/use-date-picker.ts'
+export {
+  dateInputValueToIsoDate,
+  isoDateToDateInputValue,
+  isoDateToMaskedDate,
+  maskedDateToIsoDate,
+} from './date-picker/date-bridge.ts'
+export { Stepper } from './stepper/stepper.tsx'
+export type { StepperElementProps, StepperProps, StepperState } from './stepper/stepper.tsx'
+export { useStepper } from './stepper/use-stepper.ts'
+export type {
+  StepperPartProps,
+  UseStepperOptions,
+  UseStepperResult,
+} from './stepper/use-stepper.ts'
 export { useProgress } from './progress/use-progress.ts'
 export type {
   ProgressBarPartProps,
   ProgressLabelPartProps,
   ProgressRootPartProps,
-  ProgressIndicatorProps,
   UseProgressOptions,
   UseProgressResult,
 } from './progress/use-progress.ts'

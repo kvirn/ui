@@ -28,16 +28,16 @@ The parts render these classes. The theme selects on them, and they are public A
 ## Combobox and Autocomplete
 
 - The popup parts keep the `kv-listbox-*` classes above.
-- Combobox: `kv-combobox-control`, `kv-combobox-input`, `kv-combobox-toggle`, `kv-combobox-clear`, `kv-combobox-value-list`, `kv-combobox-value`, `kv-combobox-value-remove`.
+- Combobox: `kv-combobox-control`, `kv-combobox-input`, `kv-combobox-toggle`, `kv-combobox-clear`, `kv-tag-group-list`, `kv-tag`, `kv-tag-remove` (the chips are Tag's; `kv-combobox-value-list`, `kv-combobox-value` and `kv-combobox-value-remove` stay as aliases for one minor version).
 - Autocomplete: `kv-autocomplete-control`, `kv-autocomplete-input`, `kv-autocomplete-toggle`, `kv-autocomplete-clear`.
 - State: `data-open` and `data-focus-visible` on the control and the input. `data-loading` on the popup while loading.
-- Look: the input looks like `kv-input`. Toggle and Clear fill the Control's height. Remove buttons are 44px square. The chevron and crosses are drawn with borders. No new tokens.
+- Look: the input looks like `kv-input`. Toggle and Clear fill the Control's height. Each chip is one button at least 44px high (32px compact). The chevron and crosses are drawn with borders. No new tokens.
 
 ## Table
 
 - Classes: `kv-table`, `kv-table-caption`, `kv-table-head`, `kv-table-body`, `kv-table-foot`, `kv-table-row`, `kv-table-column-header`, `kv-table-row-header`, `kv-table-cell`, `kv-table-sort-button`, `kv-table-sort-icon`, `kv-table-select-checkbox` (with `kv-checkbox`), `kv-table-expand-button`, `kv-table-expand-icon`, `kv-table-detail-row`, `kv-table-empty`, `kv-table-spacer`, `kv-table-scroll-region` (with `kv-scroll-region`), `kv-table-visually-hidden`.
 - State: `data-sort` (header, sort button), `data-selected` and `data-expanded` (row), `data-busy`, `data-virtualized` (table), `data-overflowing` (scroll region), `data-index` (virtualized row).
-- Theme tokens an adopter sets: `--kv-table-scroll-region-max-block-size` (limits the height so the head sticks) and `--kv-table-cell-font-size-default` (table text size, the body size when unset; the docs site sets `0.875rem` for its reference tables). The Table sets `--kv-table-head-block-size` inline.
+- Theme tokens an adopter sets: `--kv-table-scroll-region-max-block-size` (limits the height so the head sticks) and `--kv-table-cell-font-size-default` (table text size, the body size when unset; the docs site sets `0.875rem` for its reference tables). The Table sets `--kv-table-head-block-size` inline. `ScrollArea`: `kv-scroll-region kv-scroll-area`.
 - Opt-in modifiers on `Table.Root`: `kv-table--card` (a `border-control` frame, `radius-md` corners rounded on the cells) and `kv-table--striped` (even body rows on `surface`; a selected row keeps `primary-subtle`). They combine.
 - The look: no shadow, no row hover, and by default no zebra stripes and no frame. It never changes the `display` of a table element. Sticky head and pinned columns keep a visible border in forced colours.
 

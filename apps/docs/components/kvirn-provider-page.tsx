@@ -36,6 +36,12 @@ const providerRows = propRows<KvirnProviderProps>({
     default: "The parent's, or the runtime's zone",
     description: 'The zone dates are shown in. Set it for server rendering.',
   },
+  weekStart: {
+    type: '1 to 7 (ISO weekday, 1 is Monday)',
+    default: "The parent's, else the locale's when it names a region (en-US is 7), else 1",
+    description:
+      'The first day of the week in Calendar and DatePicker. Set it explicitly for server rendering.',
+  },
   linkComponent: {
     type: 'RegisteredLinkComponent',
     default: "'a', or the parent's",
@@ -108,7 +114,7 @@ const hookRows = {
     description: 'The nearest provider’s language, direction and mask country.',
   },
   useDateSettings: {
-    type: '{ timeZone }',
+    type: '{ timeZone, weekStart }',
     default: '–',
     description: 'The time zone, or undefined for the runtime’s.',
   },
@@ -323,8 +329,11 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
                 <code>se</code> in Finland.
               </p>
               <p>
-                Weeks always start on Monday, with ISO 8601 week numbers, so there is no setting.
-                Texts and how to change them are on{' '}
+                <code>weekStart</code> sets the first day of the week in Calendar and DatePicker,
+                from 1 (Monday) to 7 (Sunday). It is the Calendar's own value, else the provider's,
+                else the locale's when it names a region (<code>en-US</code> is Sunday), else
+                Monday: a bare <code>en</code> stays Monday. Week numbers are ISO 8601 and only show
+                with a Monday start. Texts and how to change them are on{' '}
                 <Link href="/foundation/locales">Locales and strings</Link>.
               </p>
               <Heading level={3} id="section-in-another-language">
@@ -433,7 +442,7 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
         },
         {
           id: 'announcements',
-          label: 'Announcements',
+          label: 'Announcements and toasts',
           content: (
             <>
               <p>
@@ -452,14 +461,9 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
                 <Link href="/components/announcer">Announcer</Link> for politeness and throttling.
               </p>
               <Note kind="reminder">{messages.docs.note.announcerProvider}</Note>
-            </>
-          ),
-        },
-        {
-          id: 'toasts',
-          label: 'Toasts',
-          content: (
-            <>
+              <Heading level={3} id="toasts">
+                Toasts
+              </Heading>
               <p>
                 Every provider on a page shares one toast list and one region, which{' '}
                 <code>useToast()</code> shows toasts in. The first provider that mounts renders it

@@ -1,5 +1,12 @@
 import { createMessageFormat } from '@kvirn-ui/core'
-import type { Direction, Env, MaskCountry, MessageFormatter, ThemeStore } from '@kvirn-ui/core'
+import type {
+  Direction,
+  Env,
+  MaskCountry,
+  MessageFormatter,
+  ThemeStore,
+  WeekStart,
+} from '@kvirn-ui/core'
 import type { PartialMessages } from '@kvirn-ui/i18n'
 import { createContext } from 'react'
 import type { IconRegistry } from '../icon/icon-registry.ts'
@@ -19,6 +26,8 @@ export interface KvirnConfig {
   /** Set by `<KvirnProvider country>`. Without one, the country comes from the locale. */
   country: MaskCountry | undefined
   timeZone: string | undefined
+  /** Only an explicit `<KvirnProvider weekStart>`. `useDateSettings` resolves the locale and Monday. */
+  weekStart: WeekStart | undefined
   /** Nearest provider first, root last. Built-in `en` is added by `useMessages`. */
   messageLayers: readonly PartialMessages[]
   format: MessageFormatter
@@ -37,6 +46,7 @@ export const defaultKvirnConfig: KvirnConfig = {
   dir: 'ltr',
   country: undefined,
   timeZone: undefined,
+  weekStart: undefined,
   messageLayers: [],
   format: createMessageFormat({ locale: 'en', timeZone: undefined }),
   linkComponent: 'a',

@@ -255,7 +255,7 @@ export interface ComboboxClearPartProps {
 
 /** Spread on the `<ul>` of the chosen values (`multiple`). */
 export interface ComboboxValueListPartProps {
-  className: 'kv-combobox-value-list'
+  className: 'kv-tag-group-list kv-combobox-value-list'
   /** Redundant on a `<ul>` on purpose: Safari drops the list semantics when the theme removes the markers. */
   role: 'list'
   /** The Field's label: "Kommuner, list, 2 items". */
@@ -264,13 +264,13 @@ export interface ComboboxValueListPartProps {
 
 /** Spread on one chosen value's `<li>`. */
 export interface ComboboxValuePartProps {
-  className: 'kv-combobox-value'
+  className: 'kv-tag kv-combobox-value'
   'data-disabled'?: ''
 }
 
 /** Spread on a chosen value's remove button. */
 export interface ComboboxRemoveButtonPartProps {
-  className: 'kv-combobox-value-remove'
+  className: 'kv-tag-remove kv-combobox-value-remove'
   type: 'button'
   /** `combobox.removeValue`, with the value's text. */
   'aria-label': string
@@ -1059,16 +1059,16 @@ export function useComboboxMachine<TItem>(
     toggleProps,
     clearProps,
     valueListProps: {
-      className: 'kv-combobox-value-list',
+      className: 'kv-tag-group-list kv-combobox-value-list',
       role: 'list',
       'aria-labelledby': field?.labelId,
     },
     getValueProps: () => ({
-      className: 'kv-combobox-value',
+      className: 'kv-tag kv-combobox-value',
       ...(isDisabled ? { 'data-disabled': '' as const } : {}),
     }),
     getRemoveButtonProps: (value) => ({
-      className: 'kv-combobox-value-remove',
+      className: 'kv-tag-remove kv-combobox-value-remove',
       type: 'button',
       'aria-label': comboboxMessages.removeValue({ label: value.label }),
       ...(isDisabled ? { disabled: true as const } : {}),

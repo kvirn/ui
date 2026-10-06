@@ -5,9 +5,11 @@ import { nb as nbMessages } from '@kvirn-ui/i18n/nb'
 import { nn as nnMessages } from '@kvirn-ui/i18n/nn'
 import { se as seMessages } from '@kvirn-ui/i18n/se'
 import { sv as svMessages } from '@kvirn-ui/i18n/sv'
-import { Alert, Button, KvirnProvider, Link, useAnnouncer } from '@kvirn-ui/react'
+import { Alert, Button, KvirnProvider, Link, useAnnouncer, useFormat } from '@kvirn-ui/react'
+import type { UseFormatResult } from '@kvirn-ui/react'
 import type { AlertVariant } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
+import { providerLocaleOf } from '../form/form.fixture.tsx'
 import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 
@@ -15,7 +17,7 @@ import type { ReactNode } from 'react'
 // en, nb and nn are written. The fi strings are the designer's drafts, for length checks only. se:
 // English, marked lang="en" (3.1.2), and the library's own status words follow in English too. The
 // status words ("Klart:", "Varning:") come from the provider, like an app's would. Dates and
-// times are values, formatted with Intl.
+// times are values, formatted with `useFormat()`.
 
 export type AlertFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
 
@@ -419,14 +421,6 @@ const alertTexts: Record<AlertFixtureLocale, AlertTexts | undefined> = {
   en,
 }
 
-const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
-  sv: 'sv-SE',
-  fi: 'fi-FI',
-  nb: 'nb-NO',
-  nn: 'nn-NO',
-  en: 'en-GB',
-}
-
 export const isAlertFixtureLocale = (value: unknown): value is AlertFixtureLocale =>
   typeof value === 'string' && value in alertTexts
 
@@ -440,19 +434,17 @@ interface ResolvedTexts {
   text: AlertTexts
   /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
   lang: 'en' | undefined
-  formatLocale: string
 }
 
 /** The fixture text in a locale, or the English text with `lang="en"` for se. */
 export function textsFor(locale: AlertFixtureLocale): ResolvedTexts {
   const text = alertTexts[locale]
   if (text === undefined) {
-    return { text: en, lang: 'en', formatLocale: formatLocales.en }
+    return { text: en, lang: 'en' }
   }
   return {
     text,
     lang: undefined,
-    formatLocale: formatLocales[locale === 'se' ? 'en' : locale],
   }
 }
 
@@ -478,7 +470,7 @@ const messagesFor = (locale: AlertFixtureLocale): KvirnMessages =>
 export const withAlertLocale: Decorator = (Story, { globals }) => {
   const locale = localeOf(globals)
   return (
-    <KvirnProvider locale={locale} messages={messagesFor(locale)}>
+    <KvirnProvider locale={providerLocaleOf(locale)} messages={messagesFor(locale)}>
       <Story />
     </KvirnProvider>
   )
@@ -503,16 +495,12 @@ const opensAt = new Date(Date.UTC(2026, 9, 1, 9, 0))
 const closesAt = new Date(Date.UTC(2026, 9, 1, 16, 0))
 
 /** A date as the locale writes it, for the text inside a `<time>`. */
-const longDate = (date: Date, formatLocale: string): string =>
-  new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long', timeZone: 'UTC' }).format(date)
+const longDate = (date: Date, format: UseFormatResult): string =>
+  format.date(date, { dateStyle: 'long', timeZone: 'UTC' })
 
 /** A time of day as the locale writes it, for the text inside a `<time>`. */
-const shortTime = (date: Date, formatLocale: string): string =>
-  new Intl.DateTimeFormat(formatLocale, {
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'UTC',
-  }).format(date)
+const shortTime = (date: Date, format: UseFormatResult): string =>
+  format.date(date, { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })
 
 /** An invented number, as the other fixtures use, written the way the locale writes one. */
 const phoneFor = (locale: AlertFixtureLocale): string =>
@@ -565,18 +553,17 @@ export function FourStatuses({ locale }: AlertFixtureProps) {
 
 /** Example A, info, present at load: a deadline on a start page. No `announce`. */
 export function DeadlineAlert({ locale }: AlertFixtureProps) {
-  const { text, formatLocale } = textsFor(locale)
+  const { text } = textsFor(locale)
+  const format = useFormat()
   return (
     <Alert.Info data-testid="deadline">
       <Alert.Title>
         {text.deadline.title(
-          <time dateTime="2026-08-31">{longDate(applicationsClose, formatLocale)}</time>,
+          <time dateTime="2026-08-31">{longDate(applicationsClose, format)}</time>,
         )}
       </Alert.Title>
       <Alert.Body>
-        <p>
-          {text.deadline.body(<time dateTime="2026-09-30">{longDate(replyBy, formatLocale)}</time>)}
-        </p>
+        <p>{text.deadline.body(<time dateTime="2026-09-30">{longDate(replyBy, format)}</time>)}</p>
       </Alert.Body>
     </Alert.Info>
   )
@@ -584,13 +571,12 @@ export function DeadlineAlert({ locale }: AlertFixtureProps) {
 
 /** Example C, warning with an action, present at load: a permit about to expire. */
 export function PermitAlert({ locale }: AlertFixtureProps) {
-  const { text, formatLocale } = textsFor(locale)
+  const { text } = textsFor(locale)
+  const format = useFormat()
   return (
     <Alert.Warning data-testid="permit">
       <Alert.Title>
-        {text.permit.title(
-          <time dateTime="2026-11-12">{longDate(permitExpires, formatLocale)}</time>,
-        )}
+        {text.permit.title(<time dateTime="2026-11-12">{longDate(permitExpires, format)}</time>)}
       </Alert.Title>
       <Alert.Body>
         <p>{text.permit.body}</p>
@@ -624,7 +610,8 @@ export function SavedAlert({ locale }: AlertFixtureProps) {
 
 /** Example D as it looks once shown, without the announcement: a danger with a Button. */
 export function SendFailedAlert({ locale }: AlertFixtureProps) {
-  const { text, formatLocale } = textsFor(locale)
+  const { text } = textsFor(locale)
+  const format = useFormat()
   return (
     <Alert.Danger data-testid="send-failed-alert">
       <Alert.Title>{text.sendFailed.title}</Alert.Title>
@@ -632,8 +619,8 @@ export function SendFailedAlert({ locale }: AlertFixtureProps) {
         <p>
           {text.sendFailed.body(
             phoneFor(locale),
-            <time dateTime="09:00">{shortTime(opensAt, formatLocale)}</time>,
-            <time dateTime="16:00">{shortTime(closesAt, formatLocale)}</time>,
+            <time dateTime="09:00">{shortTime(opensAt, format)}</time>,
+            <time dateTime="16:00">{shortTime(closesAt, format)}</time>,
           )}
         </p>
       </Alert.Body>
@@ -649,7 +636,8 @@ export function SendFailedAlert({ locale }: AlertFixtureProps) {
  * Put `kv-compact` on any container.
  */
 export function CompactAlerts({ locale }: AlertFixtureProps) {
-  const { text, formatLocale } = textsFor(locale)
+  const { text } = textsFor(locale)
+  const format = useFormat()
   return (
     <div className="kv-compact">
       <Alert.Success>
@@ -661,8 +649,8 @@ export function CompactAlerts({ locale }: AlertFixtureProps) {
           <p>
             {text.sendFailed.body(
               phoneFor(locale),
-              <time dateTime="09:00">{shortTime(opensAt, formatLocale)}</time>,
-              <time dateTime="16:00">{shortTime(closesAt, formatLocale)}</time>,
+              <time dateTime="09:00">{shortTime(opensAt, format)}</time>,
+              <time dateTime="16:00">{shortTime(closesAt, format)}</time>,
             )}
           </p>
         </Alert.Body>
@@ -704,7 +692,8 @@ export function SavedExample({ locale }: AlertFixtureProps) {
  * to the page, and announces through `useAnnouncer()` instead.
  */
 export function SendFailedExample({ locale }: AlertFixtureProps) {
-  const { text, formatLocale } = textsFor(locale)
+  const { text } = textsFor(locale)
+  const format = useFormat()
   const { announce } = useAnnouncer()
   const [failed, setFailed] = useState(false)
   const fail = () => {
@@ -723,8 +712,8 @@ export function SendFailedExample({ locale }: AlertFixtureProps) {
             <p>
               {text.sendFailed.body(
                 phoneFor(locale),
-                <time dateTime="09:00">{shortTime(opensAt, formatLocale)}</time>,
-                <time dateTime="16:00">{shortTime(closesAt, formatLocale)}</time>,
+                <time dateTime="09:00">{shortTime(opensAt, format)}</time>,
+                <time dateTime="16:00">{shortTime(closesAt, format)}</time>,
               )}
             </p>
           </Alert.Body>
@@ -748,7 +737,8 @@ export function SendFailedExample({ locale }: AlertFixtureProps) {
  * reads it. Tab from it goes to its first action.
  */
 export function FocusTargetExample({ locale }: AlertFixtureProps) {
-  const { text, formatLocale } = textsFor(locale)
+  const { text } = textsFor(locale)
+  const format = useFormat()
   const ref = useRef<HTMLElement>(null)
   const [shown, setShown] = useState(false)
   useEffect(() => {
@@ -768,8 +758,8 @@ export function FocusTargetExample({ locale }: AlertFixtureProps) {
             <p>
               {text.sendFailed.body(
                 phoneFor(locale),
-                <time dateTime="09:00">{shortTime(opensAt, formatLocale)}</time>,
-                <time dateTime="16:00">{shortTime(closesAt, formatLocale)}</time>,
+                <time dateTime="09:00">{shortTime(opensAt, format)}</time>,
+                <time dateTime="16:00">{shortTime(closesAt, format)}</time>,
               )}
             </p>
           </Alert.Body>

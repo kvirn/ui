@@ -291,6 +291,12 @@ export const sv = {
   errorSummary: { title: 'Det finns ett problem', titlePrefix: 'Fel:' },
   summaryList: { change: 'Ändra' },
   toast: { regionLabel: 'Meddelanden' },
+  stepper: {
+    status: ({ current, total }, format) =>
+      `Steg ${format.number(current)} av ${format.number(total)}`,
+    statusWithName: ({ current, total, name }, format) =>
+      `Steg ${format.number(current)} av ${format.number(total)}: ${name}`,
+  },
   progress: {
     loading: 'Laddar.',
     slow: 'Det tar längre tid än vanligt. Låt den här sidan vara öppen.',
@@ -331,5 +337,29 @@ export const sv = {
     loading: 'Uppdaterar resultat',
     loadFailed: 'Resultaten kunde inte uppdateras.',
     retry: 'Försök igen',
+  },
+  calendar: {
+    previousMonth: 'Föregående månad',
+    nextMonth: 'Nästa månad',
+    previousYear: 'Föregående år',
+    nextYear: 'Nästa år',
+    dayName: ({ date, isToday, description }) =>
+      [date, isToday ? 'idag' : undefined, description]
+        .filter((part) => part !== undefined)
+        .join(', '),
+    weekHeader: 'v.',
+    weekHeaderLong: 'Vecka',
+    weekName: ({ week }, format) => `Vecka ${format.number(week)}`,
+    rangeHint: ({ min, max }) =>
+      min !== undefined && max !== undefined
+        ? `Datum från ${min} till ${max}`
+        : min !== undefined
+          ? `Datum från ${min}`
+          : `Datum till och med ${max}`,
+    selected: ({ date }) => `${date} vald`,
+  },
+  datePicker: {
+    trigger: 'Välj datum',
+    title: 'Välj ett datum',
   },
 } satisfies KvirnMessages

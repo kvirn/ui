@@ -107,7 +107,14 @@ export const ForcedColors: Story = {
 
 /** At 320px a row of badges wraps between badges, never inside one. */
 export const Narrow: Story = {
-  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  globals: { viewport: { value: 'reflow', isRotated: false } },
+  parameters: {
+    viewport: {
+      options: {
+        reflow: { name: '320px wide', styles: { width: '320px', height: '568px' }, type: 'mobile' },
+      },
+    },
+  },
   render: () => (
     <div style={{ inlineSize: '20rem', maxInlineSize: '100%' }}>
       <Badge>Utkast</Badge> <Badge variant="primary">Nytt</Badge>{' '}
@@ -116,6 +123,7 @@ export const Narrow: Story = {
     </div>
   ),
   play: async ({ canvas }) => {
+    await expect(window.innerWidth).toBeLessThanOrEqual(320)
     await expect(canvas.getByText('Väntar på komplettering')).toBeVisible()
   },
 }

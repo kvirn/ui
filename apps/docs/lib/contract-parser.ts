@@ -90,6 +90,7 @@ const componentHeadings = [
   'Pointer',
   'Masked input',
   'A Prose in a Field or Fieldset is its description',
+  'Content classes: inset, steps, figure, video and audio',
 ] as const
 
 /** The `##` headings whose content belongs to the API's Strings, not to these sections. */

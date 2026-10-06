@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
  * Internal. Whether `element` is a scroll stop: it has content that doesn't fit, so a scroll
  * region is a Tab stop only while it scrolls. A keyboard user can then scroll it (2.1.1), and there
  * is no empty stop when it doesn't. Watches the element and its children, so rows added or a
- * window resized update it.
+ * window resized update it, and so do added children and changed text.
  *
  * It stays a stop while it holds focus, even if the content stops overflowing (a wider window,
  * zooming out): taking the tab stop and the role away from the focused element would drop focus
@@ -24,13 +24,27 @@ export function useScrollOverflow(element: HTMLElement | null, env: Env | undefi
         element.scrollWidth > element.clientWidth || element.scrollHeight > element.clientHeight,
       )
     }
-    measure()
-    const observer = new env.window.ResizeObserver(measure)
-    observer.observe(element)
-    for (const child of element.children) {
-      observer.observe(child)
+    const resizeObserver = new env.window.ResizeObserver(measure)
+    const observeChildren = () => {
+      resizeObserver.disconnect()
+      resizeObserver.observe(element)
+      for (const child of element.children) {
+        resizeObserver.observe(child)
+      }
     }
-    return () => observer.disconnect()
+    observeChildren()
+    measure()
+    // A child swapped for one of the same size, or text that grows inside a block child, changes
+    // the scroll width without resizing anything the ResizeObserver watches.
+    const mutationObserver = new env.window.MutationObserver(() => {
+      observeChildren()
+      measure()
+    })
+    mutationObserver.observe(element, { childList: true, subtree: true, characterData: true })
+    return () => {
+      resizeObserver.disconnect()
+      mutationObserver.disconnect()
+    }
   }, [element, env])
 
   // The element's own focus, not a descendant's: `focus` and `blur` don't bubble.

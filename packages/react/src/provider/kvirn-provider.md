@@ -115,13 +115,13 @@ Register your icons once, so `<Icon name>` works everywhere and names are checke
 
 ```tsx
 const locale = useLocale() // { locale, dir, country, localeProps: { lang, dir } }
-const dateSettings = useDateSettings() // { timeZone }
+const dateSettings = useDateSettings() // { timeZone, weekStart }
 ```
 
 - `locale` is a BCP 47 tag, such as `sv-SE`, `fi-FI` or `nn-NO`. It drives `Intl.*` formatting and `lang`. `sv`, `fi`, `nb` and `nn` need no region, but `Intl` reads a bare `en` as US English (`10/14/26`, `October 14, 2026`). Pass `en-GB` for English written the way the rest of Europe writes it (`14/10/2026`, `14 October 2026`).
 - `dir` comes from the locale. Use the `dir` prop to override it.
 - `country` is `SE`, `FI` or `NO`, for the masks that differ by country (`mask="postal-code"`, `"personal-identity-number"`, `"organisation-number"` on a TextInput). It is the `country` prop, else the region of the locale (`sv-FI` is `FI`), else its language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn`, `no` and `se` are `NO`), else `undefined` (`en`): then a country mask only takes digits and warns once. Set the prop where the locale doesn't say, such as `se` (Northern Sami) in Finland. A nested provider inherits the parent's `country` prop, so set it again when a section changes country.
-- Weeks always start on Monday, with ISO 8601 week numbers. That's the convention in every Nordic country and the EU, so there's no setting.
+- `weekStart` is the first day of the week in Calendar and DatePicker: `1` (Monday) to `7` (Sunday), the ISO weekday. It is the Calendar's own `weekStart`, else the provider's, else the locale's when the locale names a region (`en-US` is Sunday, `en-GB` Monday), else Monday. A bare `en` stays Monday, as in every Nordic country and the EU, though `Intl` alone would say Sunday. Week numbers are ISO 8601 and only show with a Monday start. `useDateSettings().weekStart` is the resolved provider-level value; outside React use `resolveWeekStart({ instance, provider, locale })` from `@kvirn-ui/core`. Set `weekStart` explicitly for server rendering, like `timeZone`: a runtime without `Intl` week data answers Monday where another answers Sunday, so the server and the browser could differ. A value that isn't a whole number from 1 to 7 is ignored with a development warning.
 
 ### A section in another language
 
@@ -374,6 +374,7 @@ On the server, read the same cookie and render the attributes on `<html>`. Rende
 | `country`       | `'SE' \| 'FI' \| 'NO'`                              | The parent's, else from `locale`: its region, then its language                                                 |
 | `messages`      | `PartialMessages` (a catalog or a partial override) | Inherited, then built-in `en`                                                                                   |
 | `timeZone`      | `string` (IANA)                                     | The parent's, or the runtime's zone                                                                             |
+| `weekStart`     | `1` to `7` (ISO weekday, 1 is Monday)               | The parent's, else the locale's when it names a region (`en-US` is `7`), else `1`                               |
 | `linkComponent` | `RegisteredLinkComponent`                           | `'a'`, or the parent's                                                                                          |
 | `icons`         | `IconRegistry`, from `defineIcons`                  | The built-in icons, then the parent's, merged by name ([Icon](../icon/icon.md))                                 |
 | `iconDefaults`  | `IconDefaults` (`size`, `strokeWidth`)              | The parent's, merged by field                                                                                   |
@@ -386,7 +387,7 @@ On the server, read the same cookie and render the attributes on `<html>`. Rende
 | Hook                | Returns                                                                                                               |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | `useLocale()`       | `{ locale, dir, country, localeProps: { lang, dir } }`                                                                |
-| `useDateSettings()` | `{ timeZone }`                                                                                                        |
+| `useDateSettings()` | `{ timeZone, weekStart }`                                                                                             |
 | `useFormat()`       | `{ number, date, list, plural }`: the `format` that messages receive ([Formatting](#formatting-useformat))            |
 | `useTheme()`        | `{ colorScheme, contrast, resolvedColorScheme, resolvedContrast, isForcedColors, selectColorScheme, selectContrast }` |
 

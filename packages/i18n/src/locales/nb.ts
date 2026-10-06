@@ -291,6 +291,12 @@ export const nb = {
   errorSummary: { title: 'Det er et problem', titlePrefix: 'Feil:' },
   summaryList: { change: 'Endre' },
   toast: { regionLabel: 'Meldinger' },
+  stepper: {
+    status: ({ current, total }, format) =>
+      `Steg ${format.number(current)} av ${format.number(total)}`,
+    statusWithName: ({ current, total, name }, format) =>
+      `Steg ${format.number(current)} av ${format.number(total)}: ${name}`,
+  },
   progress: {
     loading: 'Laster.',
     slow: 'Dette tar lengre tid enn vanlig. La denne siden stå åpen.',
@@ -331,5 +337,29 @@ export const nb = {
     loading: 'Oppdaterer resultater',
     loadFailed: 'Resultatene kunne ikke oppdateres.',
     retry: 'Prøv igjen',
+  },
+  calendar: {
+    previousMonth: 'Forrige måned',
+    nextMonth: 'Neste måned',
+    previousYear: 'Forrige år',
+    nextYear: 'Neste år',
+    dayName: ({ date, isToday, description }) =>
+      [date, isToday ? 'i dag' : undefined, description]
+        .filter((part) => part !== undefined)
+        .join(', '),
+    weekHeader: 'Uke',
+    weekHeaderLong: 'Uke',
+    weekName: ({ week }, format) => `Uke ${format.number(week)}`,
+    rangeHint: ({ min, max }) =>
+      min !== undefined && max !== undefined
+        ? `Datoer fra ${min} til ${max}`
+        : min !== undefined
+          ? `Datoer fra ${min}`
+          : `Datoer til og med ${max}`,
+    selected: ({ date }) => `${date} valgt`,
+  },
+  datePicker: {
+    trigger: 'Velg dato',
+    title: 'Velg en dato',
   },
 } satisfies KvirnMessages

@@ -2,6 +2,7 @@ import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
 
 // fi: copyButton.* is a draft (Plan 0060): a native speaker should review it.
+// stepper.* are drafts for native review (Plan 0083).
 // breadcrumb.* and pagination.* are drafts for a native speaker to review (Plan 0062).
 // Draft: errorSummary and summaryList (Plan 0063) need a native speaker's review.
 export const fi = {
@@ -296,6 +297,12 @@ export const fi = {
   errorSummary: { title: 'Lomakkeessa on virheitä', titlePrefix: 'Virhe:' },
   summaryList: { change: 'Muuta' },
   toast: { regionLabel: 'Ilmoitukset' },
+  stepper: {
+    status: ({ current, total }, format) =>
+      `Vaihe ${format.number(current)}/${format.number(total)}`,
+    statusWithName: ({ current, total, name }, format) =>
+      `Vaihe ${format.number(current)}/${format.number(total)}: ${name}`,
+  },
   progress: {
     loading: 'Ladataan.',
     slow: 'Tämä kestää tavallista kauemmin. Pidä tämä sivu auki.',
@@ -336,5 +343,29 @@ export const fi = {
     loading: 'Päivitetään tuloksia',
     loadFailed: 'Tuloksia ei voitu päivittää.',
     retry: 'Yritä uudelleen',
+  },
+  calendar: {
+    previousMonth: 'Edellinen kuukausi',
+    nextMonth: 'Seuraava kuukausi',
+    previousYear: 'Edellinen vuosi',
+    nextYear: 'Seuraava vuosi',
+    dayName: ({ date, isToday, description }) =>
+      [date, isToday ? 'tänään' : undefined, description]
+        .filter((part) => part !== undefined)
+        .join(', '),
+    weekHeader: 'Vko',
+    weekHeaderLong: 'Viikko',
+    weekName: ({ week }, format) => `Viikko ${format.number(week)}`,
+    rangeHint: ({ min, max }) =>
+      min !== undefined && max !== undefined
+        ? `Päivämäärät ${min}–${max}`
+        : min !== undefined
+          ? `Päivämäärät alkaen ${min}`
+          : `Päivämäärät ${max} asti`,
+    selected: ({ date }) => `${date} valittu`,
+  },
+  datePicker: {
+    trigger: 'Valitse päivämäärä',
+    title: 'Valitse päivämäärä',
   },
 } satisfies KvirnMessages

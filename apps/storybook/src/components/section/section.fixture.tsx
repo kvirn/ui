@@ -1,14 +1,18 @@
 import { useId } from 'react'
 import type { ReactNode } from 'react'
-import { Button, Card, Field, Fieldset, Link, Section, TextInput } from '@kvirn-ui/react'
-import { NewsList, textsFor } from '../card/card.fixture.tsx'
+import { Button, Card, Field, Fieldset, Link, Section, TextInput, useFormat } from '@kvirn-ui/react'
+import type { UseFormatResult } from '@kvirn-ui/react'
+import { NewsList, textsFor, withCardLocale } from '../card/card.fixture.tsx'
 import type { CardFixtureLocale } from '../card/card.fixture.tsx'
 
 // Story fixture: the design spec's examples A and B (docs/design/section.md §4, §5) and the
 // Section-or-Card example (§6.9). The `contact.*` strings moved here from the Card fixture: the
 // sidebar text block is a Section now. Example B reuses the Card fixture's NewsList.
 // sv, en, nb and nn are written. The fi strings are the designer's drafts, for length checks only.
-// se: English, marked lang="en" (3.1.2). Times are values, formatted with Intl.
+// se: English, marked lang="en" (3.1.2). Times are values, formatted with `useFormat()`.
+
+/** The same provider as the Card stories: Section reuses the Card fixture's texts and NewsList. */
+export const withSectionLocale = withCardLocale
 
 export type SectionFixtureLocale = CardFixtureLocale
 
@@ -116,31 +120,21 @@ const sectionTexts: Record<SectionFixtureLocale, SectionTexts | undefined> = {
   en,
 }
 
-const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
-  sv: 'sv-SE',
-  fi: 'fi-FI',
-  nb: 'nb-NO',
-  nn: 'nn-NO',
-  en: 'en-GB',
-}
-
 interface ResolvedSectionTexts {
   text: SectionTexts
   /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
   lang: 'en' | undefined
-  formatLocale: string
 }
 
 /** The fixture text in a locale, or the English text with `lang="en"` for se. */
 function sectionTextsFor(locale: SectionFixtureLocale): ResolvedSectionTexts {
   const text = sectionTexts[locale]
   if (text === undefined) {
-    return { text: en, lang: 'en', formatLocale: formatLocales.en }
+    return { text: en, lang: 'en' }
   }
   return {
     text,
     lang: undefined,
-    formatLocale: formatLocales[locale === 'se' ? 'en' : locale],
   }
 }
 
@@ -148,8 +142,8 @@ function sectionTextsFor(locale: SectionFixtureLocale): ResolvedSectionTexts {
 const opens = new Date(Date.UTC(2026, 9, 1, 8, 0))
 const closes = new Date(Date.UTC(2026, 9, 1, 16, 0))
 
-const shortTime = (date: Date, formatLocale: string): string =>
-  new Intl.DateTimeFormat(formatLocale, { timeStyle: 'short', timeZone: 'UTC' }).format(date)
+const shortTime = (date: Date, format: UseFormatResult): string =>
+  format.date(date, { timeStyle: 'short', timeZone: 'UTC' })
 
 export interface SectionFixtureProps {
   locale: SectionFixtureLocale
@@ -157,7 +151,8 @@ export interface SectionFixtureProps {
 
 /** Example A: a text block in a sidebar, a Section rendered as a named `aside`, with prose. */
 export function ContactSection({ locale }: SectionFixtureProps) {
-  const { text, lang, formatLocale } = sectionTextsFor(locale)
+  const { text, lang } = sectionTextsFor(locale)
+  const format = useFormat()
   const headingId = useId()
   return (
     <Section render={<aside aria-labelledby={headingId} />} className="kv-prose" lang={lang}>
@@ -167,8 +162,8 @@ export function ContactSection({ locale }: SectionFixtureProps) {
       </p>
       <p>
         {text.contact.hours(
-          <time dateTime="08:00">{shortTime(opens, formatLocale)}</time>,
-          <time dateTime="16:00">{shortTime(closes, formatLocale)}</time>,
+          <time dateTime="08:00">{shortTime(opens, format)}</time>,
+          <time dateTime="16:00">{shortTime(closes, format)}</time>,
         )}
       </p>
       <p>
@@ -183,7 +178,8 @@ export function ContactSection({ locale }: SectionFixtureProps) {
  * there and transparent, so colouring one side moves nothing. It follows `dir`, and every theme.
  */
 export function ContactSectionWithEdge({ locale }: SectionFixtureProps) {
-  const { text, lang, formatLocale } = sectionTextsFor(locale)
+  const { text, lang } = sectionTextsFor(locale)
+  const format = useFormat()
   const headingId = useId()
   return (
     <Section
@@ -198,8 +194,8 @@ export function ContactSectionWithEdge({ locale }: SectionFixtureProps) {
       </p>
       <p>
         {text.contact.hours(
-          <time dateTime="08:00">{shortTime(opens, formatLocale)}</time>,
-          <time dateTime="16:00">{shortTime(closes, formatLocale)}</time>,
+          <time dateTime="08:00">{shortTime(opens, format)}</time>,
+          <time dateTime="16:00">{shortTime(closes, format)}</time>,
         )}
       </p>
       <p>

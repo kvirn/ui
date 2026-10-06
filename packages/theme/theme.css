@@ -80,6 +80,8 @@
  *  9f. Code block      kv-code-block: a labelled code sample that wraps, and its copy button
  *  9e. Badge         kv-badge: a status or category in words, by role class
  *  9g. Tag           kv-tag, kv-tag-group: a static or removable chip and the applied-filters row
+ *  9h. Stepper       kv-stepper: where the user is in a multi-page form, as one line of text
+ *  9i. Calendar      kv-calendar: a month as a grid of days, with month buttons and a range hint
  *  10. Card
  *  10a. Section          kv-section: a region of the page, elevation level 1
  *  10b. Alert            kv-alert: a status message, by status class
@@ -237,9 +239,9 @@
     --kv-color-primary-hover: var(--kv-primary-600);
     --kv-color-on-primary: var(--kv-white);
     --kv-color-primary-subtle: var(--kv-primary-50);
+    --kv-color-accent: var(--kv-accent-600);
     --kv-color-link: var(--kv-primary-600);
     --kv-color-link-hover: var(--kv-primary-700);
-    --kv-color-accent: var(--kv-accent-600);
     --kv-color-focus-ring: var(--kv-primary-500);
     --kv-color-danger: var(--kv-danger-600);
     --kv-color-danger-hover: var(--kv-danger-700);
@@ -404,10 +406,10 @@
     --kv-duration-fast: 120ms;
     --kv-duration-medium: 180ms;
     --kv-duration-slow: 240ms;
-    --kv-easing-standard: cubic-bezier(0.2, 0, 0, 1);
-
     /* One loop of a loading indicator: the arc's crawl, a band's sweep, the sheen. */
     --kv-duration-loop: 1600ms;
+    --kv-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+
     /* Links are underlined on hover only, a cue that doesn't rely on colour. The link colour is 3:1
      * against body text (1.4.1). The contrast themes can't reach that and 7:1 on the canvas too,
      * so they keep the underline at rest. */
@@ -474,9 +476,9 @@
     --kv-color-primary-hover: var(--kv-primary-600);
     --kv-color-on-primary: var(--kv-white);
     --kv-color-primary-subtle: var(--kv-primary-950);
+    --kv-color-accent: var(--kv-accent-400);
     /* Lighter than primary: primary-500 as text on the dark canvas is only 4.44:1. */
     --kv-color-link: var(--kv-primary-400);
-    --kv-color-accent: var(--kv-accent-400);
     --kv-color-link-hover: var(--kv-primary-300);
     --kv-color-focus-ring: var(--kv-primary-400);
     --kv-color-danger: var(--kv-danger-300);
@@ -515,9 +517,9 @@
     --kv-color-primary-hover: var(--kv-primary-900);
     --kv-color-on-primary: var(--kv-white);
     --kv-color-primary-subtle: var(--kv-primary-50);
+    --kv-color-accent: var(--kv-accent-800);
     --kv-color-link: var(--kv-primary-800);
     --kv-color-link-hover: var(--kv-primary-900);
-    --kv-color-accent: var(--kv-accent-800);
     --kv-link-decoration-line: underline;
     --kv-color-focus-ring: var(--kv-primary-800);
     --kv-color-danger: var(--kv-danger-700);
@@ -553,9 +555,9 @@
     --kv-color-primary-hover: var(--kv-primary-100);
     --kv-color-on-primary: var(--kv-black);
     --kv-color-primary-subtle: var(--kv-primary-950);
+    --kv-color-accent: var(--kv-accent-200);
     --kv-color-link: var(--kv-primary-200);
     --kv-color-link-hover: var(--kv-primary-100);
-    --kv-color-accent: var(--kv-accent-200);
     --kv-link-decoration-line: underline;
     --kv-color-focus-ring: var(--kv-primary-200);
     --kv-color-danger: var(--kv-danger-200);
@@ -598,9 +600,9 @@
       --kv-color-primary-hover: var(--kv-primary-600);
       --kv-color-on-primary: var(--kv-white);
       --kv-color-primary-subtle: var(--kv-primary-950);
+      --kv-color-accent: var(--kv-accent-400);
       --kv-color-link: var(--kv-primary-400);
       --kv-color-link-hover: var(--kv-primary-300);
-      --kv-color-accent: var(--kv-accent-400);
       --kv-color-focus-ring: var(--kv-primary-400);
       --kv-color-danger: var(--kv-danger-300);
       --kv-color-danger-hover: var(--kv-danger-200);
@@ -639,9 +641,9 @@
       --kv-color-primary-hover: var(--kv-primary-900);
       --kv-color-on-primary: var(--kv-white);
       --kv-color-primary-subtle: var(--kv-primary-50);
+      --kv-color-accent: var(--kv-accent-800);
       --kv-color-link: var(--kv-primary-800);
       --kv-color-link-hover: var(--kv-primary-900);
-      --kv-color-accent: var(--kv-accent-800);
       --kv-link-decoration-line: underline;
       --kv-color-focus-ring: var(--kv-primary-800);
       --kv-color-danger: var(--kv-danger-700);
@@ -678,9 +680,9 @@
       --kv-color-primary-hover: var(--kv-primary-100);
       --kv-color-on-primary: var(--kv-black);
       --kv-color-primary-subtle: var(--kv-primary-950);
+      --kv-color-accent: var(--kv-accent-200);
       --kv-color-link: var(--kv-primary-200);
       --kv-color-link-hover: var(--kv-primary-100);
-      --kv-color-accent: var(--kv-accent-200);
       --kv-link-decoration-line: underline;
       --kv-color-focus-ring: var(--kv-primary-200);
       --kv-color-danger: var(--kv-danger-200);
@@ -725,9 +727,9 @@
       --kv-color-primary-hover: Highlight;
       --kv-color-on-primary: HighlightText;
       --kv-color-primary-subtle: Canvas;
+      --kv-color-accent: Highlight;
       --kv-color-link: LinkText;
       --kv-color-link-hover: LinkText;
-      --kv-color-accent: Highlight;
       --kv-color-focus-ring: Highlight;
       --kv-color-danger: CanvasText;
       --kv-color-danger-hover: CanvasText;
@@ -2686,9 +2688,11 @@
     }
   }
 
-  /* A labelled, focusable region around a wide table, in prose or anywhere else (1.4.10).
-   * Your part: aria-labelledby with the caption's id, and tabindex="0" so keyboard users can
-   * scroll it (2.1.1). A <section> with a name is a region, so it needs no role. */
+  /* The class of every scroll container: <ScrollArea> (kv-scroll-region kv-scroll-area) and
+   * <Table.ScrollRegion> (kv-scroll-region kv-table-scroll-region). By hand, around a wide table
+   * in prose or anywhere else (1.4.10): aria-labelledby with the caption's id, and tabindex="0"
+   * so keyboard users can scroll it (2.1.1). A <section> with a name is a region, so it needs
+   * no role. Native scrollbars only: never hidden or thinned (accessibility skill). */
   .kv-scroll-region {
     max-inline-size: 100%;
     overflow-x: auto;
@@ -3106,6 +3110,309 @@
     :where(.kv-badge) {
       border-color: CanvasText;
     }
+  }
+
+  /* 9i. Calendar ------------------------------------------------------------------------------
+   * <Calendar.Root> renders kv-calendar, a wrapping row: the optional year buttons and the month
+   * buttons around kv-calendar-heading (the month and year), then kv-calendar-range (the range in
+   * words) and kv-calendar-grid, a <table role="grid">. Below 40rem the heading takes its own row
+   * above the buttons, so a long month name (Sámi) fits. The buttons are the quiet icon button of
+   * kv-dialog-close, control size. Design spec: docs/design/date-picker-and-calendar.md §6.
+   *
+   * Days are kv-calendar-day cells of the control size (44px, 32px in kv-compact), `md` radius. A
+   * grid spacing of 4px equals the focus ring's width plus its offset, so a ring never covers a
+   * neighbour. Below 40rem the cell is 40px (36px with week numbers): seven 44px cells and the
+   * gaps would be 332px, more than a 320px screen holds (design D10, a recorded exception to the
+   * 44px target; 2.5.8 is met).
+   *
+   * Status is never colour alone: selected is a primary fill, bold text and aria-selected; today is
+   * an inset edge, bold text and aria-current; unavailable and outside the range are muted with a
+   * strike-through and aria-disabled. Days of other months are empty cells and draw nothing. No
+   * motion. Zero specificity, so your own CSS wins. */
+  :where(.kv-calendar) {
+    --kv-calendar-cell-size: var(--kv-control-min-block-size);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--kv-space-2) var(--kv-space-1);
+    box-sizing: border-box;
+    max-inline-size: 100%;
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  :where(.kv-calendar:has(.kv-calendar-week-number)) {
+    --kv-calendar-week-size: 2.5ch;
+  }
+
+  :where(.kv-calendar-heading) {
+    flex: 1 1 0;
+    min-inline-size: 0;
+    margin: 0;
+    color: var(--kv-color-heading);
+    font-family: var(--kv-font-family-heading, var(--kv-font-family-sans));
+    font-size: var(--kv-font-heading-4-size);
+    font-weight: var(--kv-font-heading-4-weight);
+    line-height: var(--kv-font-heading-4-line-height);
+    letter-spacing: var(--kv-font-heading-4-letter-spacing);
+    font-feature-settings: var(--kv-font-heading-4-feature-settings);
+    text-align: center;
+    overflow-wrap: break-word;
+  }
+
+  :where(
+    .kv-calendar-previous-month,
+    .kv-calendar-next-month,
+    .kv-calendar-previous-year,
+    .kv-calendar-next-year
+  ) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-inline-size: var(--kv-control-min-block-size);
+    min-block-size: var(--kv-control-min-block-size);
+    padding: 0;
+    border: 0;
+    border-radius: var(--kv-radius-md);
+    background-color: transparent;
+    color: var(--kv-color-text);
+    cursor: pointer;
+    font: inherit;
+  }
+
+  :where(
+    .kv-calendar-previous-month,
+    .kv-calendar-next-month,
+    .kv-calendar-previous-year,
+    .kv-calendar-next-year
+  ):hover {
+    background-color: var(--kv-color-surface);
+  }
+
+  :where(
+    .kv-calendar-previous-month,
+    .kv-calendar-next-month,
+    .kv-calendar-previous-year,
+    .kv-calendar-next-year
+  ):is([aria-disabled='true'], [data-disabled]) {
+    background-color: transparent;
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+  }
+
+  :where(
+    .kv-calendar-previous-month,
+    .kv-calendar-next-month,
+    .kv-calendar-previous-year,
+    .kv-calendar-next-year
+  ):focus-visible {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  /* An instruction, so body text in text, not small or muted. */
+  :where(.kv-calendar-range) {
+    flex: 1 1 100%;
+    margin: 0;
+    color: var(--kv-color-text);
+  }
+
+  :where(.kv-calendar-grid) {
+    flex: 1 1 100%;
+    inline-size: max-content;
+    max-inline-size: none;
+    border-collapse: separate;
+    border-spacing: var(--kv-space-1);
+    font-feature-settings: var(--kv-font-numeric-feature-settings);
+  }
+
+  :where(.kv-calendar-weekday, .kv-calendar-week-header) {
+    padding: 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-label-compact-size);
+    font-weight: var(--kv-font-label-compact-weight);
+    line-height: var(--kv-font-label-compact-line-height);
+    text-align: center;
+  }
+
+  :where(.kv-calendar-week-number) {
+    inline-size: var(--kv-calendar-week-size, 2.5ch);
+    padding: 0;
+    color: var(--kv-color-text-muted);
+    font-size: var(--kv-font-body-small-size);
+    font-weight: var(--kv-font-body-small-weight);
+    line-height: var(--kv-font-body-small-line-height);
+    text-align: center;
+  }
+
+  :where(.kv-calendar-day) {
+    box-sizing: border-box;
+    inline-size: var(--kv-calendar-cell-size);
+    block-size: var(--kv-calendar-cell-size);
+    padding: 0;
+    border-radius: var(--kv-radius-md);
+    color: var(--kv-color-text);
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  :where(.kv-calendar-day:hover:not([aria-disabled='true'])) {
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  :where(.kv-calendar-day[data-today]) {
+    box-shadow: inset 0 0 0 1px var(--kv-color-border-control);
+    font-weight: 600;
+  }
+
+  :where(.kv-calendar-day[data-selected]) {
+    background-color: var(--kv-color-primary);
+    color: var(--kv-color-on-primary);
+    font-weight: 600;
+  }
+
+  :where(.kv-calendar-day[data-selected]:hover:not([aria-disabled='true'])) {
+    background-color: var(--kv-color-primary-hover);
+  }
+
+  :where(.kv-calendar-day:is([data-unavailable], [data-outside-range])) {
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+
+  :where(.kv-calendar-day:focus-visible) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  @media (width < 40rem) {
+    :where(.kv-calendar) {
+      --kv-calendar-cell-size: 2.5rem;
+    }
+
+    :where(.kv-calendar:has(.kv-calendar-week-number)) {
+      --kv-calendar-cell-size: 2.25rem;
+    }
+
+    :where(.kv-calendar-heading) {
+      flex-basis: 100%;
+      order: -1;
+    }
+  }
+
+  @media (forced-colors: active) {
+    :where(.kv-calendar) {
+      color: CanvasText;
+    }
+
+    :where(
+      .kv-calendar-previous-month,
+      .kv-calendar-next-month,
+      .kv-calendar-previous-year,
+      .kv-calendar-next-year
+    ) {
+      color: ButtonText;
+    }
+
+    :where(
+      .kv-calendar-previous-month,
+      .kv-calendar-next-month,
+      .kv-calendar-previous-year,
+      .kv-calendar-next-year
+    ):is([aria-disabled='true'], [data-disabled]) {
+      color: GrayText;
+    }
+
+    :where(
+      .kv-calendar-previous-month,
+      .kv-calendar-next-month,
+      .kv-calendar-previous-year,
+      .kv-calendar-next-year,
+      .kv-calendar-day
+    ):focus-visible {
+      outline-color: Highlight;
+    }
+
+    /* Borders, not box-shadows: forced colours drops a shadow. The cell is border-box, so the
+     * edge takes no room. */
+    :where(.kv-calendar-day:hover:not([aria-disabled='true'])) {
+      border: 1px solid Highlight;
+      background-color: transparent;
+    }
+
+    :where(.kv-calendar-day[data-today]) {
+      border: 1px solid CanvasText;
+      box-shadow: none;
+    }
+
+    :where(.kv-calendar-day[data-selected]),
+    :where(.kv-calendar-day[data-selected]:hover:not([aria-disabled='true'])) {
+      border: 2px solid CanvasText;
+      background-color: Highlight;
+      color: HighlightText;
+    }
+
+    :where(.kv-calendar-day:is([data-unavailable], [data-outside-range])),
+    :where(.kv-calendar-week-number) {
+      color: GrayText;
+    }
+  }
+
+  /* 9j. Date picker ---------------------------------------------------------------------------
+   * <DatePicker.Trigger> is a kv-button with kv-date-picker-trigger, the last item in the
+   * kv-date-input row (or in kv-date-picker-row, a row that wraps for one masks.date() field and
+   * its trigger). It sits at the block end of the row, so it wraps below the boxes at 320px or
+   * with large text. <DatePicker.Popup> is a Dialog plus kv-date-picker-popup: as wide as its
+   * calendar from 40rem (the dialog's 40rem form measure is too wide for a grid), and below 40rem
+   * the dialog's sheet with the inline padding at space-2, so the 40px cells fit 320px (design
+   * D10). Tokens only. Design spec: docs/design/date-picker-and-calendar.md section 6. */
+  .kv-date-input > .kv-date-picker-trigger {
+    align-self: flex-end;
+  }
+
+  .kv-date-picker-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--kv-space-4);
+    min-inline-size: 0;
+  }
+
+  @media (width >= 40rem) {
+    .kv-dialog.kv-date-picker-popup {
+      inline-size: fit-content;
+    }
+  }
+
+  @media (width < 40rem) {
+    .kv-dialog.kv-date-picker-popup {
+      padding-inline: var(--kv-space-2);
+    }
+  }
+
+  /* 9h. Stepper -------------------------------------------------------------------------------
+   * <Stepper> renders <p class="kv-stepper">: "Step 2 of 5: Your vehicle", directly under the page
+   * heading. Plain body text in text, never a bar, dots, a border or a fill, so there is nothing for
+   * forced colours to redraw and the words carry it all (1.4.1). No margin: the layout owns the
+   * rhythm (a Stack gap between the heading and this, the form's gap after). It wraps and
+   * hyphenates, never truncates (1.4.10, 1.4.12), and is the same in compact density. Zero
+   * specificity, so your own CSS wins. */
+  :where(.kv-stepper) {
+    margin: 0;
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    letter-spacing: var(--kv-font-body-letter-spacing);
+    font-feature-settings: var(--kv-font-numeric-feature-settings);
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   /* 9g. Tag and tag group ---------------------------------------------------------------------
@@ -7098,10 +7405,9 @@
    * ring, as kv-input-group does, so the input inside has none. <*.Toggle> (kv-*-toggle, a
    * chevron) and <*.Clear> (kv-*-clear, a cross) fill the box's height, so the hit area is 44px
    * (32px compact, never under 24px), and the mark is drawn with borders, which stay visible in
-   * forced colours. <Combobox.ValueList> renders kv-combobox-value-list, a wrapping row of
-   * chips: <Combobox.Value> renders kv-combobox-value, with kv-combobox-value-label and the
-   * remove button kv-combobox-value-remove, 44px square (32px compact), its cross drawn the same
-   * way. A chip has a 1px edge, so it is a chip in forced colours too. The popup and its options
+   * forced colours. <Combobox.ValueList> renders kv-tag-group-list, a wrapping row of Tag chips
+   * (section 9g): <Combobox.Value> renders kv-tag and its one button kv-tag-remove. The old
+   * kv-combobox-value* classes stay on them as aliases for one minor version. The popup and its options
    * are the Listbox's (kv-listbox-popup, kv-listbox-option). The one thing added for them: an
    * open popup with no option, no group and no Empty text to show (an Autocomplete with no
    * suggestion and no Empty) draws nothing, instead of an empty box. */
@@ -7346,8 +7652,8 @@
   }
 
   /* The cross: two lines, drawn with borders so forced colours keep them. */
-  :is(.kv-combobox-clear, .kv-autocomplete-clear, .kv-combobox-value-remove)::before,
-  :is(.kv-combobox-clear, .kv-autocomplete-clear, .kv-combobox-value-remove)::after {
+  :is(.kv-combobox-clear, .kv-autocomplete-clear)::before,
+  :is(.kv-combobox-clear, .kv-autocomplete-clear)::after {
     content: '';
     grid-area: 1 / 1;
     inline-size: 0.875rem;
@@ -7355,94 +7661,34 @@
     border-block-start: 2px solid currentColor;
   }
 
-  :is(.kv-combobox-clear, .kv-autocomplete-clear, .kv-combobox-value-remove)::before {
+  :is(.kv-combobox-clear, .kv-autocomplete-clear)::before {
     transform: rotate(45deg);
   }
 
-  :is(.kv-combobox-clear, .kv-autocomplete-clear, .kv-combobox-value-remove)::after {
+  :is(.kv-combobox-clear, .kv-autocomplete-clear)::after {
     transform: rotate(-45deg);
   }
 
+  /* The chosen values are Tag chips (kv-tag, kv-tag-remove): the old kv-combobox-value* classes stay
+   * on them as aliases for one minor version, and only what a chip needs here is added. */
+  .kv-combobox-value-list {
+    margin-block-end: var(--kv-space-2);
+  }
+
   /* Your own icon replaces the cross. */
-  .kv-combobox-value-remove:has(> *)::before,
-  .kv-combobox-value-remove:has(> *)::after {
+  .kv-combobox-value-remove .kv-tag-remove-icon:has(> *)::before,
+  .kv-combobox-value-remove .kv-tag-remove-icon:has(> *)::after {
     display: none;
   }
 
-  /* The chosen values of a Combobox with several choices: a wrapping row, before the input. */
-  .kv-combobox-value-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--kv-space-2);
-    margin: 0;
-    margin-block-end: var(--kv-space-2);
-    padding: 0;
-    list-style: none;
-  }
-
-  .kv-combobox-value {
-    display: flex;
-    align-items: stretch;
-    box-sizing: border-box;
-    max-inline-size: 100%;
-    /* The edge is outside the 44px (32px compact) of the remove button inside. */
-    min-block-size: calc(var(--kv-control-min-block-size) + 2 * var(--kv-border-width));
-    margin: 0;
-    padding: 0;
-    border: var(--kv-border-width) solid var(--kv-color-border-control);
-    border-radius: var(--kv-radius-md);
-    background-color: var(--kv-color-surface);
-    color: var(--kv-color-text);
-    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
-    font-size: var(--kv-font-body-size);
-    font-weight: var(--kv-font-body-weight);
-    line-height: var(--kv-font-body-line-height);
-    letter-spacing: normal;
-  }
-
-  .kv-combobox-value-label {
-    display: flex;
-    align-items: center;
-    min-inline-size: 0;
-    padding-block: var(--kv-space-1);
-    padding-inline: var(--kv-space-3) var(--kv-space-1);
-    overflow-wrap: anywhere;
-  }
-
-  .kv-combobox-value-remove {
-    position: relative;
-    display: grid;
-    flex: none;
-    align-self: stretch;
-    place-items: center;
-    box-sizing: border-box;
-    min-inline-size: var(--kv-control-min-block-size);
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-start-end-radius: var(--kv-radius-md);
-    border-end-end-radius: var(--kv-radius-md);
-    background-color: transparent;
-    color: inherit;
-    cursor: pointer;
-    font: inherit;
-  }
-
-  .kv-combobox-value-remove:not(:disabled):hover {
-    background-color: var(--kv-color-primary-subtle);
-  }
-
-  .kv-combobox-value-remove:focus-visible {
-    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
-    outline-offset: var(--kv-focus-ring-offset);
-  }
-
-  .kv-combobox-value[data-disabled] {
+  .kv-combobox-value[data-disabled] .kv-combobox-value-remove {
     border-style: dashed;
     color: var(--kv-color-text-muted);
   }
 
   .kv-combobox-value-remove:disabled {
+    border-color: var(--kv-color-border-control);
+    background-color: var(--kv-color-surface);
     cursor: not-allowed;
   }
 
@@ -7584,26 +7830,14 @@
       .kv-autocomplete-toggle,
       .kv-combobox-clear,
       .kv-autocomplete-clear
-    ):focus-visible,
-    .kv-combobox-value-remove:focus-visible {
+    ):focus-visible {
       outline-color: Highlight;
     }
 
-    .kv-combobox-value {
-      border-color: ButtonBorder;
-      background-color: Canvas;
-      color: CanvasText;
-    }
-
-    .kv-combobox-value[data-disabled] {
+    .kv-combobox-value-remove:disabled {
       border-color: GrayText;
+      background-color: ButtonFace;
       color: GrayText;
-    }
-
-    .kv-combobox-value-remove:not(:disabled):hover {
-      background-color: Canvas;
-      outline: 1px solid Highlight;
-      outline-offset: -1px;
     }
   }
 
@@ -9500,7 +9734,22 @@
     hyphens: auto;
   }
 
+  .kv-progress:has(> .kv-spinner) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  /* Centred on the label's first line: its font and line height, so 1.25em is the label's em. */
+  .kv-progress > .kv-spinner {
+    margin-block-start: calc((1lh - var(--kv-spinner-size)) / 2);
+    font-size: var(--kv-font-body-size);
+    line-height: var(--kv-font-body-line-height);
+  }
+
   .kv-progress-bar {
+    --kv-progress-bar-direction: to right;
+    --kv-progress-sheen-color: color-mix(in srgb, var(--kv-color-on-primary) 20%, transparent);
+
     appearance: none;
     display: block;
     box-sizing: border-box;
@@ -9519,7 +9768,29 @@
     background-color: transparent;
   }
 
+  .kv-progress-bar:dir(rtl) {
+    --kv-progress-bar-direction: to left;
+  }
+
+  /* The fill is primary to accent. The sheen is a 20 % on-primary band (the most that keeps the
+   * primary end 3:1 on the track) at --kv-progress-sheen, which sits off the end at rest. One rule
+   * per engine: an unknown pseudo-element drops a whole selector list. */
   .kv-progress-bar::-webkit-progress-value {
+    background-image:
+      linear-gradient(
+        var(--kv-progress-bar-direction),
+        transparent calc(var(--kv-progress-sheen) - 12%),
+        var(--kv-progress-sheen-color) var(--kv-progress-sheen),
+        transparent calc(var(--kv-progress-sheen) + 12%)
+      ),
+      linear-gradient(
+        var(--kv-progress-bar-direction) in oklab,
+        var(--kv-color-primary),
+        var(--kv-color-accent)
+      );
+  }
+
+  .kv-progress-bar::-moz-progress-bar {
     background-image:
       linear-gradient(
         var(--kv-progress-bar-direction),
@@ -9823,21 +10094,6 @@
     }
   }
 
-  .kv-progress-bar::-moz-progress-bar {
-    background-image:
-      linear-gradient(
-        var(--kv-progress-bar-direction),
-        transparent calc(var(--kv-progress-sheen) - 12%),
-        var(--kv-progress-sheen-color) var(--kv-progress-sheen),
-        transparent calc(var(--kv-progress-sheen) + 12%)
-      ),
-      linear-gradient(
-        var(--kv-progress-bar-direction) in oklab,
-        var(--kv-color-primary),
-        var(--kv-color-accent)
-      );
-  }
-
   /* Busy is not unavailable-until-you-fix-something: the look and depth stay, and the label
    * beside the button says what is happening. */
   .kv-button[data-busy] {
@@ -9905,14 +10161,37 @@
       background-color: Canvas;
     }
 
+    /* No gradient is relied on: the fill and the band are a solid Highlight, the arc is a border
+     * in a system colour, and a track at rest is its edge alone, with the words. */
     .kv-progress-bar::-webkit-progress-value {
       forced-color-adjust: none;
+      background-image: none;
       background-color: Highlight;
     }
 
     .kv-progress-bar::-moz-progress-bar {
       forced-color-adjust: none;
+      background-image: none;
       background-color: Highlight;
+    }
+
+    .kv-progress-track {
+      background-image: none;
+    }
+
+    .kv-progress-track::before {
+      forced-color-adjust: none;
+      background-image: none;
+      background-color: Highlight;
+    }
+
+    .kv-spinner,
+    .kv-alert .kv-spinner {
+      --kv-spinner-color: CanvasText;
+    }
+
+    .kv-button .kv-spinner {
+      --kv-spinner-color: ButtonText;
     }
   }
 
@@ -10014,22 +10293,7 @@
   /* Opt-in stripes: the surface fill, which the head already uses and which meets AA for every
    * text pair. Counted among the body rows, so an expanded row's details don't shift the
    * stripes. A selected row keeps its primary-subtle fill. */
-  .kv-progress:has(> .kv-spinner) {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-
-  /* Centred on the label's first line: its font and line height, so 1.25em is the label's em. */
-  .kv-progress > .kv-spinner {
-    margin-block-start: calc((1lh - var(--kv-spinner-size)) / 2);
-    font-size: var(--kv-font-body-size);
-    line-height: var(--kv-font-body-line-height);
-  }
-
   .kv-table--striped
-    --kv-progress-bar-direction: to right;
-    --kv-progress-sheen-color: color-mix(in srgb, var(--kv-color-on-primary) 20%, transparent);
-
     > .kv-table-body
     > .kv-table-row:nth-child(even of .kv-table-row):not([data-selected])
     > :is(.kv-table-row-header, .kv-table-cell) {
@@ -10048,13 +10312,6 @@
 
   .kv-table-caption {
     padding-block: 0 var(--kv-space-2);
-  .kv-progress-bar:dir(rtl) {
-    --kv-progress-bar-direction: to left;
-  }
-
-  /* The fill is primary to accent. The sheen is a 20 % on-primary band (the most that keeps the
-   * primary end 3:1 on the track) at --kv-progress-sheen, which sits off the end at rest. One rule
-   * per engine: an unknown pseudo-element drops a whole selector list. */
     padding-inline: 0;
     caption-side: top;
     color: var(--kv-color-text);
@@ -10129,38 +10386,15 @@
     box-sizing: border-box;
     inline-size: 100%;
     min-inline-size: var(--kv-control-min-block-size);
-    /* No gradient is relied on: the fill and the band are a solid Highlight, the arc is a border
-     * in a system colour, and a track at rest is its edge alone, with the words. */
     margin: 0;
     padding-block: var(--kv-table-cell-padding-block);
-      background-image: none;
     padding-inline: var(--kv-table-cell-padding-inline);
     border: 0;
     border-radius: 0;
     background-color: transparent;
     color: inherit;
-      background-image: none;
     cursor: pointer;
     font: inherit;
-
-    .kv-progress-track {
-      background-image: none;
-    }
-
-    .kv-progress-track::before {
-      forced-color-adjust: none;
-      background-image: none;
-      background-color: Highlight;
-    }
-
-    .kv-spinner,
-    .kv-alert .kv-spinner {
-      --kv-spinner-color: CanvasText;
-    }
-
-    .kv-button .kv-spinner {
-      --kv-spinner-color: ButtonText;
-    }
     text-align: start;
   }
 
@@ -10392,6 +10626,10 @@
       background-image: none;
     }
 
+    .kv-table[data-busy] .kv-table-head > tr:last-child::after {
+      display: none;
+    }
+
     .kv-table--card {
       border-color: CanvasText;
     }
@@ -10594,10 +10832,6 @@
   }
 
   .kv-toolbar--attached .kv-listbox-trigger:is([aria-disabled='true'], [data-disabled]) {
-    .kv-table[data-busy] .kv-table-head > tr:last-child::after {
-      display: none;
-    }
-
     border-style: solid;
     background-color: transparent;
   }

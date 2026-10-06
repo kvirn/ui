@@ -20,6 +20,7 @@ import {
   NewsCard,
   RenderedSections,
   UserSection,
+  withSectionLocale,
 } from './section.fixture.tsx'
 import type { SectionFixtureLocale } from './section.fixture.tsx'
 
@@ -60,6 +61,7 @@ const meta = {
     render: { control: false, description: 'Another element, such as `<aside>` or `<section>`.' },
   },
   globals: { locale: 'sv' },
+  decorators: [withSectionLocale],
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof Section>
 

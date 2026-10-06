@@ -1,3 +1,4 @@
+import { createMessageFormat } from '@kvirn-ui/core'
 import type { KvirnMessages, TextMessage } from '@kvirn-ui/i18n'
 import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
@@ -498,13 +499,12 @@ const formTexts: Record<FormLocale, FormTexts | undefined> = {
   en: textsEn,
 }
 
-const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
-  sv: 'sv-SE',
-  fi: 'fi-FI',
-  nb: 'nb-NO',
-  nn: 'nn-NO',
-  en: 'en-GB',
-}
+/**
+ * The provider's `locale` for a story: `en-GB`, not `en`, because bare `en` is US English to `Intl`
+ * (`3/2/26`) and this is an EU audience. se has no texts, so it formats as English too.
+ */
+export const providerLocaleOf = (locale: FormLocale): string =>
+  locale === 'en' || locale === 'se' ? 'en-GB' : locale
 
 export const isFormLocale = (value: unknown): value is FormLocale =>
   typeof value === 'string' && value in formTexts
@@ -529,12 +529,12 @@ interface ResolvedFormTexts {
 export function textsFor(locale: FormLocale): ResolvedFormTexts {
   const text = formTexts[locale]
   const known = text !== undefined
-  const formatLocale = formatLocales[locale === 'se' ? 'en' : locale]
+  const format = createMessageFormat({ locale: providerLocaleOf(locale), timeZone: undefined })
   return {
     text: text ?? textsEn,
     lang: known ? undefined : 'en',
-    rentExample: new Intl.NumberFormat(formatLocale, { minimumFractionDigits: 2 }).format(1250.5),
-    amountExample: new Intl.NumberFormat(formatLocale).format(8450),
+    rentExample: format.number(1250.5, { minimumFractionDigits: 2 }),
+    amountExample: format.number(8450),
   }
 }
 

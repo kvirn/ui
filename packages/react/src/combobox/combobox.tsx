@@ -409,16 +409,19 @@ export interface ComboboxValueProps<TItem = unknown> extends Omit<
 > {
   /** One of the chosen items, as `Combobox.ValueList` hands it to you. */
   item: TItem
-  /** The visible text. Default: the item's text. It is also the name of the remove button. */
+  /**
+   * The visible text. Default: the item's text. The button's name uses the item's text
+   * (`itemToString`), so these children must show it (2.5.3).
+   */
   children?: ReactNode
-  /** Drawn inside the remove button, which has no text of its own. Default: a cross, drawn by the theme. */
+  /** Replaces the cross at the end of the chip. Default: a cross, drawn by the theme. */
   removeIcon?: ReactNode
   render?: RenderProp<ComponentPropsWithRef<'li'>, ComboboxValueState<TItem>> | undefined
 }
 
 /**
- * One chosen value: an `<li>` with its text and a remove `<button>` named by
- * `combobox.removeValue` ("Ta bort Stockholm"). Removing a value moves focus to the next remove
+ * One chosen value: an `<li>` holding one `<button>` that is the whole chip, its text and a cross,
+ * named by `combobox.removeValue` ("Ta bort Stockholm"), as `Tag.Remove` is. Removing a value moves focus to the next remove
  * button, else the previous, else the input. The remove button is a normal tab stop and is
  * operated with Enter or Space. Backspace in the empty input does not remove a value.
  */
@@ -433,7 +436,15 @@ export function ComboboxValue<TItem = unknown>({
   const combobox = useContext(ComboboxContext)
   const mergedRef = useMergedRef(ref, null)
   const value = combobox?.selectedValues.find((candidate) => Object.is(candidate.item, item))
+  const mismatchedText =
+    value !== undefined && typeof children === 'string' && !children.includes(value.label)
   useEffect(() => {
+    if (mismatchedText) {
+      warnOnce(
+        'combobox-value-label-mismatch',
+        'A Combobox.Value has text children that do not contain the item text, so the remove button name "Remove {item text}" does not contain its visible text (2.5.3). Show the item text, or leave the children out.',
+      )
+    }
     if (combobox === null) {
       warnOutsideRoot('Combobox.Value')
     } else if (value === undefined) {
@@ -442,7 +453,7 @@ export function ComboboxValue<TItem = unknown>({
         'A Combobox.Value got an item that is not chosen. Pass the item that Combobox.ValueList hands to your function, unchanged.',
       )
     }
-  }, [combobox, value])
+  }, [combobox, value, mismatchedText])
   if (combobox === null || value === undefined) {
     return null
   }
@@ -454,12 +465,12 @@ export function ComboboxValue<TItem = unknown>({
       ...mergeProps(otherProps, combobox.getValueProps(value)),
       ref: mergedRef,
       children: (
-        <>
+        <button {...removeProps}>
           <span className="kv-combobox-value-label">{children ?? value.label}</span>
-          <button {...removeProps}>
-            {removeIcon === undefined ? null : <span aria-hidden="true">{removeIcon}</span>}
-          </button>
-        </>
+          <span className="kv-tag-remove-icon" aria-hidden="true">
+            {removeIcon}
+          </span>
+        </button>
       ),
     },
     state: { item, label: value.label, isDisabled: combobox.isDisabled },

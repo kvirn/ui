@@ -20,11 +20,15 @@ import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { useEnv } from '../provider/use-env.ts'
 import { renderPart } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
+import {
+  getScrollAreaProps,
+  hasAccessibleName,
+  withoutNameUnlessRegion,
+} from '../scroll-area/scroll-area-props.ts'
+import { useScrollOverflow } from '../scroll-area/use-scroll-overflow.ts'
 import { TableContext, TableSectionContext, useTableContext } from './table-context.ts'
 import type { TableSection } from './table-context.ts'
-import { hasElementWithId } from './has-element-with-id.ts'
 import { hasRowExpanding, hasRowSelection } from './table-features.ts'
-import { useScrollOverflow } from './use-scroll-overflow.ts'
 import { getHeaderRowIndex } from './use-table.ts'
 import type {
   TableCellPartProps,
@@ -297,15 +301,6 @@ export function TableRoot<TFeatures extends TableFeatures, TData extends RowData
 }
 TableRoot.displayName = 'Table.Root'
 
-/** Internal. `aria-label`, or an `aria-labelledby` with at least one id that is in the document. */
-function hasAccessibleName(element: HTMLElement): boolean {
-  if (element.hasAttribute('aria-label')) {
-    return true
-  }
-  const ids = (element.getAttribute('aria-labelledby') ?? '').split(/\s+/)
-  return ids.some((id) => id !== '' && hasElementWithId(element, id))
-}
-
 /**
  * Internal. A region without `useTable` measures its own `<thead>`, which the theme makes sticky, and
  * sets `--kv-table-head-block-size` on the region. The theme reads it for `scroll-padding-block-start`,
@@ -378,9 +373,11 @@ export function TableScrollRegion<TFeatures extends TableFeatures, TData extends
   const { ref: hookRef, ...hookProps } = (region === undefined
     ? table?.scrollRegionProps
     : table?.getScrollRegionProps(region)) ?? {
-    className: 'kv-scroll-region kv-table-scroll-region',
-    ...(region === 'always' || ownOverflow ? { role: 'region' as const } : {}),
-    ...(ownOverflow ? { tabIndex: 0, 'data-overflowing': '' } : {}),
+    ...getScrollAreaProps({
+      className: 'kv-scroll-region kv-table-scroll-region',
+      isOverflowing: ownOverflow,
+      region,
+    }),
     ref: undefined,
   }
   // One ref for the hook's, this component's and the consumer's, stable so it isn't re-attached each render.
@@ -389,12 +386,7 @@ export function TableScrollRegion<TFeatures extends TableFeatures, TData extends
   // The consumer's own props come last, so a name of their own replaces the caption's.
   const mergedProps = mergeProps(hookProps, otherProps, { ref: regionRef })
   const isRegion = mergedProps.role === 'region'
-  // A name on a `<div>` with no role is not allowed (ARIA), so a plain `<div>` carries none: the
-  // consumer's `aria-label` or `aria-labelledby` is applied once it is a region.
-  const partProps =
-    mergedProps.role === undefined
-      ? { ...mergedProps, 'aria-label': undefined, 'aria-labelledby': undefined }
-      : mergedProps
+  const partProps = withoutNameUnlessRegion(mergedProps)
 
   // A region is named by `aria-label`, or by an element its `aria-labelledby` points at: the
   // caption, through `table`, or the consumer's own. Checked after commit, when the caption is in,

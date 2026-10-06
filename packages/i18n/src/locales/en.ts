@@ -283,6 +283,12 @@ export const en = {
   errorSummary: { title: 'There is a problem', titlePrefix: 'Error:' },
   summaryList: { change: 'Change' },
   toast: { regionLabel: 'Messages' },
+  stepper: {
+    status: ({ current, total }, format) =>
+      `Step ${format.number(current)} of ${format.number(total)}`,
+    statusWithName: ({ current, total, name }, format) =>
+      `Step ${format.number(current)} of ${format.number(total)}: ${name}`,
+  },
   progress: {
     loading: 'Loading.',
     slow: 'This is taking longer than usual. Keep this page open.',
@@ -323,5 +329,29 @@ export const en = {
     loading: 'Updating results',
     loadFailed: 'The results couldn’t be updated.',
     retry: 'Try again',
+  },
+  calendar: {
+    previousMonth: 'Previous month',
+    nextMonth: 'Next month',
+    previousYear: 'Previous year',
+    nextYear: 'Next year',
+    dayName: ({ date, isToday, description }) =>
+      [date, isToday ? 'today' : undefined, description]
+        .filter((part) => part !== undefined)
+        .join(', '),
+    weekHeader: 'Wk',
+    weekHeaderLong: 'Week',
+    weekName: ({ week }, format) => `Week ${format.number(week)}`,
+    rangeHint: ({ min, max }) =>
+      min !== undefined && max !== undefined
+        ? `Dates from ${min} to ${max}`
+        : min !== undefined
+          ? `Dates from ${min}`
+          : `Dates up to ${max}`,
+    selected: ({ date }) => `${date} selected`,
+  },
+  datePicker: {
+    trigger: 'Choose date',
+    title: 'Choose a date',
   },
 } satisfies KvirnMessages
