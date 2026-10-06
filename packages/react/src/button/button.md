@@ -7,7 +7,8 @@ A native `<button>` for actions. For navigation, use [Link](../link/link.md).
 - `type="button"` by default, so a Button never submits a form by accident. Use `type="submit"` for the button that does. `type="reset"` puts the form's fields back to their starting values.
 - `disabled` makes it natively disabled: skipped by Tab.
 - `disabled` plus `focusableWhenDisabled` keeps it in the Tab order with `aria-disabled="true"`, so keyboard and screen-reader users can find it and read why. Click, Enter, Space and form submission stay blocked, and your `onClick` is not called.
-- Headless: no CSS. It renders `class="kv-button"`, the part's stable class, and your `className` joins it. Style `.kv-button` and the state attributes `[data-disabled]` and `[data-focus-visible]` (or `:focus-visible`). With `@kvirn-ui/theme/theme.css` imported, it is styled: add `className="kv-button--primary"` or `className="kv-button--danger"` for a variant.
+- `busy` marks a running action: `aria-disabled="true"` and `data-busy`, never native `disabled`, so focus stays and every press is blocked. Put a [Progress](../progress/progress.md) beside it. `disabled` wins when both are set.
+- Headless: no CSS. It renders `class="kv-button"`, the part's stable class, and your `className` joins it. Style `.kv-button` and the state attributes `[data-disabled]`, `[data-busy]` (set only while `busy` and not `disabled`) and `[data-focus-visible]` (or `:focus-visible`). With `@kvirn-ui/theme/theme.css` imported, it is styled: add `className="kv-button--primary"` or `className="kv-button--danger"` for a variant.
 
 ## Component
 
@@ -69,6 +70,7 @@ Pass your click handler as `useButton({ onClick })`. A handler merged on top of 
 | ----------------------- | -------------------------------------- | ---------- |
 | `disabled`              | `boolean`                              | `false`    |
 | `focusableWhenDisabled` | `boolean`                              | `false`    |
+| `busy`                  | `boolean`                              | `false`    |
 | `type`                  | `'button' \| 'submit' \| 'reset'`      | `'button'` |
 | `onClick`               | `MouseEventHandler<HTMLButtonElement>` | –          |
 

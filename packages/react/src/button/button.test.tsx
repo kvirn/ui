@@ -326,6 +326,116 @@ describe('focusable when disabled', () => {
   })
 })
 
+describe('busy', () => {
+  test('is aria-disabled with data-busy, never native disabled, and keeps its name', async () => {
+    const { container } = await render(<Button busy>Skicka ansökan</Button>)
+    const button = page.getByRole('button', { name: 'Skicka ansökan' })
+    await expect.element(button).toHaveAttribute('aria-disabled', 'true')
+    await expect.element(button).toHaveAttribute('data-busy', '')
+    await expect.element(button).not.toHaveAttribute('disabled')
+    await expect.element(button).not.toHaveAttribute('aria-busy')
+    await expectNoA11yViolations(container)
+  })
+
+  test('Tab lands on a busy button', async () => {
+    await render(<Button busy>Skicka ansökan</Button>)
+    await userEvent.keyboard('{Tab}')
+    await expect.element(page.getByRole('button', { name: 'Skicka ansökan' })).toHaveFocus()
+  })
+
+  test('click, Enter and Space call no handler, and focus stays', async () => {
+    const onClick = vi.fn<() => void>()
+    await render(
+      <Button busy onClick={onClick}>
+        Skicka ansökan
+      </Button>,
+    )
+    const button = page.getByRole('button', { name: 'Skicka ansökan' })
+    await userEvent.click(button, { force: true })
+    await userEvent.keyboard('{Enter}')
+    await userEvent.keyboard(' ')
+    expect(onClick).not.toHaveBeenCalled()
+    await expect.element(button).toHaveFocus()
+  })
+
+  test('a busy submit button submits nothing, not even by implicit submission', async () => {
+    const onSubmit = vi.fn<() => void>()
+    await render(
+      <SubmitForm onSubmit={onSubmit}>
+        <Button type="submit" busy>
+          Skicka ansökan
+        </Button>
+      </SubmitForm>,
+    )
+    await userEvent.click(page.getByRole('button', { name: 'Skicka ansökan' }), { force: true })
+    await userEvent.click(page.getByRole('textbox', { name: 'Namn' }))
+    await userEvent.keyboard('Anna{Enter}')
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
+  test('focus stays on the button when busy turns on and off', async () => {
+    const onClick = vi.fn<() => void>()
+    function Sending() {
+      const [isBusy, setIsBusy] = useState(false)
+      return (
+        <Button
+          busy={isBusy}
+          onClick={() => {
+            onClick()
+            setIsBusy(true)
+            setTimeout(() => setIsBusy(false), 300)
+          }}
+        >
+          Skicka ansökan
+        </Button>
+      )
+    }
+    await render(<Sending />)
+    const button = page.getByRole('button', { name: 'Skicka ansökan' })
+    await userEvent.keyboard('{Tab}')
+    await userEvent.keyboard('{Enter}')
+    await expect.element(button).toHaveAttribute('data-busy', '')
+    await expect.element(button).toHaveFocus()
+    await userEvent.keyboard('{Enter}')
+    expect(onClick).toHaveBeenCalledTimes(1)
+    await expect.element(button).not.toHaveAttribute('data-busy')
+    await expect.element(button).toHaveFocus()
+  })
+
+  test('disabled wins: a busy disabled button is natively disabled and has no data-busy', async () => {
+    await render(
+      <Button busy disabled>
+        Skicka ansökan
+      </Button>,
+    )
+    const button = page.getByRole('button', { name: 'Skicka ansökan' })
+    await expect.element(button).toHaveAttribute('disabled')
+    await expect.element(button).not.toHaveAttribute('data-busy')
+  })
+
+  test('activates again when busy turns off', async () => {
+    const onClick = vi.fn<() => void>()
+    function Finishing() {
+      const [isBusy, setIsBusy] = useState(true)
+      return (
+        <>
+          <Button busy={isBusy} onClick={onClick}>
+            Skicka
+          </Button>
+          <Button onClick={() => setIsBusy(false)}>Klart</Button>
+        </>
+      )
+    }
+    await render(<Finishing />)
+    await userEvent.click(page.getByRole('button', { name: 'Klart' }))
+    const button = page.getByRole('button', { name: 'Skicka' })
+    await expect.element(button).not.toHaveAttribute('aria-disabled')
+    await expect.element(button).not.toHaveAttribute('data-busy')
+    await userEvent.click(button)
+    expect(onClick).toHaveBeenCalledTimes(1)
+  })
+})
+
 describe('focus visible', () => {
   test('sets data-focus-visible on keyboard focus and removes it on blur', async () => {
     await render(
@@ -386,7 +496,7 @@ describe('render prop', () => {
     const button = page.getByRole('button', { name: 'Skicka' })
     await expect.element(button).toHaveAttribute('aria-disabled', 'true')
     await expect.element(button).toHaveAttribute('data-egen', '')
-    expect(seenStates.at(-1)).toEqual({ isDisabled: true, isFocusVisible: false })
+    expect(seenStates.at(-1)).toEqual({ isDisabled: true, isBusy: false, isFocusVisible: false })
   })
 
   test('warns in development when render resolves to something other than a <button>', async () => {
@@ -576,8 +686,12 @@ describe('types', () => {
     // The part's class that @kvirn-ui/theme and your own CSS select on.
     expectTypeOf<ButtonPartProps['className']>().toEqualTypeOf<'kv-button'>()
     expectTypeOf<ButtonPartProps>().not.toHaveProperty('data-kv')
-    // disabled + focusableWhenDisabled is the only way to aria-disabled, which also blocks activation.
+    // aria-disabled comes only from disabled + focusableWhenDisabled, or from busy: both block activation.
     expectTypeOf<ButtonProps>().not.toHaveProperty('aria-disabled')
-    expectTypeOf<ButtonState>().toEqualTypeOf<{ isDisabled: boolean; isFocusVisible: boolean }>()
+    expectTypeOf<ButtonState>().toEqualTypeOf<{
+      isDisabled: boolean
+      isBusy: boolean
+      isFocusVisible: boolean
+    }>()
   })
 })

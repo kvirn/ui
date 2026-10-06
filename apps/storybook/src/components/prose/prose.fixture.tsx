@@ -51,6 +51,11 @@ export function GuidanceArticle({
     <Prose render={<article />} className={className} lang={lang}>
       <h1>{text.title}</h1>
       <p className="kv-lead">{text.lead}</p>
+      <div className="kv-inset">
+        <p>
+          <strong>{text.inset.lead}</strong> {text.inset.text}
+        </p>
+      </div>
 
       <h2>{text.who.heading}</h2>
       <p>{text.who.intro}</p>
@@ -79,6 +84,7 @@ export function GuidanceArticle({
         <img src={bathroomPlanSource} width={480} height={300} alt={text.what.figureLabel} />
         <figcaption>{text.what.figureCaption}</figcaption>
       </figure>
+      <p>{text.steps.longDescription}</p>
 
       <h2>{text.how.heading}</h2>
       <ol>
@@ -166,6 +172,16 @@ export function GuidanceArticle({
         <figcaption>{text.quoteSource}</figcaption>
       </figure>
 
+      <h2>{text.steps.heading}</h2>
+      <ol className="kv-steps">
+        {text.steps.items.map(([heading, body]) => (
+          <li key={heading}>
+            <h3>{heading}</h3>
+            <p>{body}</p>
+          </li>
+        ))}
+      </ol>
+
       <hr />
       <h2>{text.contact.heading}</h2>
       <p>
@@ -250,6 +266,11 @@ export function ProseOnSurfaces({ locale }: { locale: FixtureLocale }) {
             <blockquote>
               <p>{text.quote}</p>
             </blockquote>
+            <div className="kv-inset">
+              <p>
+                <strong>{text.inset.lead}</strong> {text.inset.text}
+              </p>
+            </div>
             <p>
               {text.contact.body((linkText) => (
                 <a href="https://kvirnby.example/e-tjanst">{linkText}</a>

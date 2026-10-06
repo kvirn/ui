@@ -100,12 +100,13 @@ Listbox: one Tab stop. Multi-select adds Space to toggle and Shift+Arrow to exte
 
 ## Actions and links
 
-| Component | Key           | Action                                                                                      |
-| --------- | ------------- | ------------------------------------------------------------------------------------------- |
-| Button    | Enter / Space | Activates. Native. Space activates on key up                                                |
-| Toggle    | Enter / Space | Toggles `aria-pressed`                                                                      |
-| Link      | Enter         | Follows the link. Native. Space scrolls the page and doesn't activate                       |
-| SkipLink  | Enter         | Native link, first Tab stop. Focuses the target (`tabindex="-1"` until blur). Space scrolls |
+| Component  | Key           | Action                                                                                                                                                                      |
+| ---------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Button     | Enter / Space | Activates. Native. Space activates on key up                                                                                                                                |
+| Toggle     | Enter / Space | Toggles `aria-pressed`                                                                                                                                                      |
+| Link       | Enter         | Follows the link. Native. Space scrolls the page and doesn't activate                                                                                                       |
+| SkipLink   | Enter         | Native link, first Tab stop. Focuses the target (`tabindex="-1"` until blur). Space scrolls                                                                                 |
+| Tag.Remove | Enter / Space | Removes the tag (native button, each its own Tab stop). Focus goes to the next remove button, else the previous, else the group's fallback. Delete and Backspace do nothing |
 
 ## Disclosure and overlays
 

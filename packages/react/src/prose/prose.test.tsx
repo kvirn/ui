@@ -269,3 +269,100 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await expectNoA11yViolations(container)
   })
 })
+
+describe('Prose content classes: kv-inset and kv-steps', () => {
+  test('ol.kv-steps keeps the list role with one listitem per step, and no ARIA of its own', async () => {
+    await render(
+      <Prose>
+        <ol className="kv-steps" data-testid="steps">
+          <li>
+            <h3>Ansök i e-tjänsten</h3>
+            <p>Fyll i formuläret.</p>
+          </li>
+          <li>
+            <h3>Du får ett beslut</h3>
+            <p>Beslutet kommer med post.</p>
+          </li>
+          <li>
+            <h3>Betala avgiften</h3>
+            <p>Avgiften faktureras.</p>
+          </li>
+        </ol>
+        <ol className="kv-steps" type="a" data-testid="lettered">
+          <li>Första</li>
+        </ol>
+      </Prose>,
+    )
+    const steps = page.getByTestId('steps')
+    await expect.element(steps).toHaveAttribute('class', 'kv-steps')
+    await expect.element(page.getByTestId('lettered')).toHaveAttribute('type', 'a')
+    expect(
+      steps
+        .element()
+        .getAttributeNames()
+        .filter((name) => name === 'role'),
+    ).toEqual([])
+    expect(page.getByRole('list').elements()).toHaveLength(2)
+    expect(steps.element().querySelectorAll(':scope > li')).toHaveLength(3)
+    expect(steps.element().querySelector('[aria-current], [tabindex]')).toBeNull()
+  })
+
+  test('kv-inset adds no role, no live region and no tab stop, and its text stays in the reading order', async () => {
+    await render(
+      <Prose>
+        <h2>Ansökan</h2>
+        <div className="kv-inset" data-testid="inset">
+          <p>
+            <strong>Tänk på:</strong> Ta med legitimation till mötet.
+          </p>
+        </div>
+        <p>Efter mötet får du ett beslut.</p>
+      </Prose>,
+    )
+    const inset = page.getByTestId('inset').element()
+    expect(
+      inset.getAttributeNames().filter((name) => name === 'role' || name.startsWith('aria-')),
+    ).toEqual([])
+    expect(inset.closest('[aria-live], [role=status], [role=alert]')).toBeNull()
+    expect(inset.querySelector('[tabindex], a, button')).toBeNull()
+    expect(page.getByRole('complementary').elements()).toHaveLength(0)
+    await expect.element(page.getByText('Tänk på:')).toBeVisible()
+  })
+
+  test('an article with an inset, steps and a figure with alt text has no axe violations', async () => {
+    const { container } = await render(
+      <main>
+        <Prose render={<article />}>
+          <h1>Ansök om bostadsanpassning</h1>
+          <div className="kv-inset">
+            <p>
+              <strong>Tänk på:</strong> Ta med legitimation till mötet.
+            </p>
+          </div>
+          <h2>Så här går det till</h2>
+          <ol className="kv-steps">
+            <li>
+              <h3>Ansök i e-tjänsten</h3>
+              <p>Fyll i formuläret.</p>
+            </li>
+            <li>
+              <h3>Du får ett beslut</h3>
+              <p>Beslutet kommer med post.</p>
+            </li>
+          </ol>
+          <figure>
+            <img
+              alt="Ritning över badrummet"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'/%3E"
+              width={4}
+              height={4}
+            />
+            <figcaption>Kvirnby kommun, 2025</figcaption>
+          </figure>
+        </Prose>
+      </main>,
+    )
+    await expect.element(page.getByRole('figure', { name: 'Kvirnby kommun, 2025' })).toBeVisible()
+    await expectNoA11yViolations(container)
+  })
+})

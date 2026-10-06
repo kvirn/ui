@@ -49,6 +49,12 @@ interface ArticleText {
     heading: string
     body: (link: (text: string) => ReactNode) => ReactNode
   }
+  inset: { lead: string; text: string }
+  steps: {
+    heading: string
+    items: readonly (readonly [heading: string, text: string])[]
+    longDescription: string
+  }
   easyRead: string
   otherLanguage: string
   apply: string
@@ -88,8 +94,7 @@ const en: ArticleText = {
       'A ramp at the entrance',
       'A stairlift',
     ],
-    figureLabel:
-      'Plan of a bathroom. The bathtub along one wall is replaced by a shower area with a fold-down seat and grab rails, and the door is made wider.',
+    figureLabel: 'Plan of a bathroom with a shower area.',
     figureCaption: 'Example drawing: Kvirnby municipality, 2025.',
   },
   how: {
@@ -151,6 +156,21 @@ const en: ArticleText = {
       </>
     ),
   },
+  inset: {
+    lead: 'Important:',
+    text: 'Bring photo ID to the meeting. We can’t open the case without it.',
+  },
+  steps: {
+    heading: 'How it works',
+    items: [
+      ['Apply in the e-service', 'Fill in the form and attach the quote from your contractor.'],
+      ['We check your application', 'A case officer reads it and may call you with questions.'],
+      ['You get a decision', 'The decision arrives by post or in your e-service inbox.'],
+      ['Pay the fee', 'The fee is invoiced once the work is done.'],
+    ],
+    longDescription:
+      'The bathtub along one wall is replaced by a shower area with a fold-down seat and grab rails, and the door is made wider.',
+  },
   easyRead: 'Read about the grant in easy language',
   otherLanguage: 'Sámegillii',
   apply: 'Apply online',
@@ -187,8 +207,7 @@ const sv: ArticleText = {
       'En ramp vid entrén',
       'En trapphiss',
     ],
-    figureLabel:
-      'Ritning av ett badrum. Badkaret längs ena väggen är utbytt mot en duschplats med uppfällbar sits och stödhandtag, och dörren är breddad.',
+    figureLabel: 'Ritning av ett badrum med duschplats.',
     figureCaption: 'Exempelritning: Kvirnby kommun, 2025.',
   },
   how: {
@@ -252,6 +271,21 @@ const sv: ArticleText = {
       </>
     ),
   },
+  inset: {
+    lead: 'Tänk på:',
+    text: 'Ta med legitimation till mötet. Utan den kan vi inte öppna ärendet.',
+  },
+  steps: {
+    heading: 'Så här går det till',
+    items: [
+      ['Ansök i e-tjänsten', 'Fyll i formuläret och bifoga offerten från din hantverkare.'],
+      ['Vi går igenom ansökan', 'En handläggare läser den och kan ringa dig med frågor.'],
+      ['Du får ett beslut', 'Beslutet kommer med post eller till din brevlåda i e-tjänsten.'],
+      ['Betala avgiften', 'Avgiften faktureras när arbetet är klart.'],
+    ],
+    longDescription:
+      'Badkaret längs ena väggen är utbytt mot en duschplats med uppfällbar sits och stödhandtag, och dörren är breddad.',
+  },
   easyRead: 'Läs om bidraget på lätt svenska',
   otherLanguage: 'Sámegillii',
   apply: 'Ansök via e-tjänsten',
@@ -288,8 +322,7 @@ const nb: ArticleText = {
       'Rampe ved inngangen',
       'Trappeheis',
     ],
-    figureLabel:
-      'Tegning av et bad. Badekaret langs den ene veggen er byttet ut med en dusjplass med nedfellbart sete og støttehåndtak, og døren er gjort bredere.',
+    figureLabel: 'Tegning av et bad med dusjplass.',
     figureCaption: 'Eksempeltegning: Kvirnby kommune, 2025.',
   },
   how: {
@@ -347,6 +380,21 @@ const nb: ArticleText = {
       </>
     ),
   },
+  inset: {
+    lead: 'Husk:',
+    text: 'Ta med legitimasjon til møtet. Uten den kan vi ikke åpne saken.',
+  },
+  steps: {
+    heading: 'Slik går det til',
+    items: [
+      ['Søk i e-tjenesten', 'Fyll ut skjemaet og legg ved tilbudet fra håndverkeren din.'],
+      ['Vi går gjennom søknaden', 'En saksbehandler leser den og kan ringe deg med spørsmål.'],
+      ['Du får et vedtak', 'Vedtaket kommer med post eller i innboksen din i e-tjenesten.'],
+      ['Betal gebyret', 'Gebyret faktureres når arbeidet er ferdig.'],
+    ],
+    longDescription:
+      'Badekaret langs den ene veggen er byttet ut med en dusjplass med nedfellbart sete og støttehåndtak, og døren er gjort bredere.',
+  },
   easyRead: 'Les om tilskuddet på lettlest norsk',
   otherLanguage: 'Sámegillii',
   apply: 'Søk på nett',
@@ -383,8 +431,7 @@ const nn: ArticleText = {
       'Rampe ved inngangen',
       'Trappeheis',
     ],
-    figureLabel:
-      'Teikning av eit bad. Badekaret langs den eine veggen er bytt ut med ein dusjplass med nedfellbart sete og støttehandtak, og døra er gjord breiare.',
+    figureLabel: 'Teikning av eit bad med dusjplass.',
     figureCaption: 'Døme på teikning: Kvirnby kommune, 2025.',
   },
   how: {
@@ -441,6 +488,21 @@ const nn: ArticleText = {
         <em>Ha saksnummeret klart.</em> Du kan òg {link('skrive til oss i e-tenesta')}.
       </>
     ),
+  },
+  inset: {
+    lead: 'Hugs:',
+    text: 'Ta med legitimasjon til møtet. Utan den kan vi ikkje opne saka.',
+  },
+  steps: {
+    heading: 'Slik går det føre seg',
+    items: [
+      ['Søk i e-tenesta', 'Fyll ut skjemaet og legg ved tilbodet frå handverkaren din.'],
+      ['Vi går gjennom søknaden', 'Ein saksbehandlar les han og kan ringje deg med spørsmål.'],
+      ['Du får eit vedtak', 'Vedtaket kjem med post eller i innboksen din i e-tenesta.'],
+      ['Betal gebyret', 'Gebyret blir fakturert når arbeidet er ferdig.'],
+    ],
+    longDescription:
+      'Badekaret langs den eine veggen er bytt ut med ein dusjplass med nedfellbart sete og støttehandtak, og døra er gjord breiare.',
   },
   easyRead: 'Les om tilskotet på lettlesen nynorsk',
   otherLanguage: 'Sámegillii',

@@ -5,7 +5,7 @@ import guide from '../../../../../packages/react/src/button/button.md?raw'
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
-import { expect, fn, waitFor, within } from 'storybook/test'
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { ApplicationForm, ChangeAddressForm } from './button.fixture.tsx'
@@ -476,6 +476,23 @@ export const ThemeOverride: Story = {
     const root = canvasElement.ownerDocument.documentElement
     await waitFor(() => expect(root).toHaveAttribute('data-kv-color-scheme', 'light'))
     await expect(root).toHaveAttribute('data-kv-contrast', 'standard')
+  },
+}
+
+/**
+ * The action is running: `aria-disabled="true"` and `data-busy`, never native `disabled`, so the
+ * look and depth stay, the cursor is `progress`, focus stays and every press is blocked. Pair it
+ * with a Progress beside it (Components/Progress).
+ */
+export const Busy: Story = {
+  args: { busy: true, children: sv.send, onClick: fn() },
+  play: async ({ canvas, args }) => {
+    const button = canvas.getByRole('button', { name: sv.send })
+    await expect(button).toHaveAttribute('aria-disabled', 'true')
+    await expect(button).toHaveAttribute('data-busy')
+    await expect(button).not.toHaveAttribute('disabled')
+    await userEvent.click(button)
+    await expect(args.onClick).not.toHaveBeenCalled()
   },
 }
 

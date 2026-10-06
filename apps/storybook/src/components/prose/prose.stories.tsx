@@ -87,6 +87,11 @@ export const Article: Story = {
     await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent(text.title)
     await expect(article.getAttribute('lang') ?? undefined).toBe(lang)
     await expectScrollRegion(canvasElement, text.times.caption)
+    const steps = within(canvasElement).getByRole('heading', { level: 2, name: text.steps.heading })
+    await expect(steps.nextElementSibling).toHaveClass('kv-steps')
+    await expect(
+      within(steps.nextElementSibling as HTMLElement).getAllByRole('listitem'),
+    ).toHaveLength(text.steps.items.length)
   },
 }
 
@@ -149,7 +154,8 @@ export const Sizes: Story = {
 }
 
 /**
- * Forced colours: the table rules, the quote bar and the rule stay borders, and a `mark` loses its
+ * Forced colours: the table rules, the quote bar and the rule stay borders, the inset keeps its
+ * three transparent edges (drawn in `CanvasText`) and its bar is `CanvasText`, and a `mark` loses its
  * background and gets an outline.
  */
 export const ForcedColors: Story = {

@@ -225,6 +225,17 @@ export type {
   UseBadgeOptions,
   UseBadgeResult,
 } from './badge/use-badge.ts'
+export { Tag, TagGroup } from './tag/tag.tsx'
+export type {
+  TagGroupClearAllProps,
+  TagGroupLabelElementProps,
+  TagGroupLabelProps,
+  TagGroupListProps,
+  TagGroupRootProps,
+  TagRemoveProps,
+} from './tag/tag.tsx'
+export { useTagGroup } from './tag/use-tag-group.ts'
+export type { UseTagGroupOptions, UseTagGroupResult } from './tag/use-tag-group.ts'
 export { Kbd } from './kbd/kbd.tsx'
 export type { KbdElementProps, KbdProps, KbdState } from './kbd/kbd.tsx'
 export { useKbd } from './kbd/use-kbd.ts'
@@ -1308,3 +1319,18 @@ export type {
   TanStackTableOptions,
   Updater,
 } from '@kvirn-ui/core'
+export { Progress, ProgressBar, ProgressLabel, ProgressRoot } from './progress/progress.tsx'
+export type {
+  ProgressBarProps,
+  ProgressLabelProps,
+  ProgressRootProps,
+  ProgressState,
+} from './progress/progress.tsx'
+export { useProgress } from './progress/use-progress.ts'
+export type {
+  ProgressBarPartProps,
+  ProgressLabelPartProps,
+  ProgressRootPartProps,
+  UseProgressOptions,
+  UseProgressResult,
+} from './progress/use-progress.ts'

@@ -337,6 +337,9 @@ Each word means one thing, in this file, the docs, Storybook, specs and code com
 | **Card**           | One thing people read, compare or act on as a unit: elevation level 2.                                                                                                                                      |
 | **Alert**          | A status message in the content: `Alert.Info`, `.Success`, `.Warning`, `.Danger`. The name is the component, not the ARIA role (Plan 0042).                                                                 |
 | **Toast**          | A transient message that floats over the page and goes away (a later component). It reuses the Alert look and status words.                                                                                 |
+| **Progress**       | A wait shown as text, and a native bar only when the value is known. Never a spinner (Plan 0074).                                                                                                           |
+| **Busy**           | A button whose action is running: `aria-disabled` and `data-busy`, still focused, every press blocked. Not disabled.                                                                                        |
+| **Empty state**    | The words that stand in for content that isn't there yet, or a search with no result: classes on your own markup (`kv-empty-state`), not a component.                                                       |
 | **`role="alert"`** | The ARIA role of an assertive live region: an Announcer detail, never put on an Alert box. `AlertDialog` (a later component) is a separate, modal dialog. An Alert announces only when you pass `announce`. |
 
 "Panel" is retired (say Section). "Banner" and "callout" aren't KvirnUI words (`banner` is the ARIA landmark of the site header). Say Alert for a status and Section for a region.
@@ -353,6 +356,7 @@ Each word means one thing, in this file, the docs, Storybook, specs and code com
 - A hovered or pressed primary button keeps a `primary` edge around its `primary-hover` fill, so its boundary stays at 3:1 on `surface-raised` in dark. `theme:check` tests that a hovered filled button's edge (its border, or its fill when transparent) reaches 3:1 on `canvas`, `surface` and `surface-raised`.
 - Size follows the density. A site sizes every button without touching other controls with `--kv-button-min-block-size`, `--kv-button-padding-inline`, `--kv-button-font-size`, `--kv-button-font-weight` and `--kv-button-line-height`, which fall back to the `--kv-control-*` tokens. Set, they win over density, but the height never goes below 24px (2.5.8) and resident-facing buttons stay at 44px.
 - `kv-button-group` lays buttons out start-aligned, primary first.
+- A busy button (`data-busy`, `aria-disabled`) keeps its look and depth, with the `progress` cursor. It is not the dashed disabled look: the label beside it says what is happening.
 
 **Toggle** (`kv-toggle`, `aria-pressed`) is a button that is on or off.
 
@@ -561,6 +565,7 @@ Section and Card sit on elevation levels 1 and 2 (Storybook: Foundation / Border
 
 - **Boundary.** Prose never styles a component part (an explicit list in `theme.css`: `kv-button`, `kv-link`, `kv-link-new-tab-notice`, `kv-link-icon`, the card parts) or anything inside `kv-not-prose`, `kv-navigation`, `kv-table-of-contents`, `kv-button-group`, a card, an alert, a field or a fieldset. Its rules have zero specificity, so any other CSS wins. A card, alert, field or fieldset in prose gets prose's block margins only. `kv-prose` on a card or an alert, or inside one, turns prose on again.
 - **Semantics survive.** It keeps list markers and table display. Code blocks wrap instead of scrolling, and wide tables go in a `kv-scroll-region` with a name, focusable only while it overflows.
+- **Inset and steps** (Plan 0076, `docs/design/prose-content-types.md`; classes only, no new token or colour pair). `kv-inset` sets content apart: a `surface` fill, a 4px `border-control` bar at the inline start (a 1px edge on the other sides, drawn in forced colours, where the bar is `CanvasText`), `radius-sm`, `space-4` padding. It has no role, icon or announcement; start it with a word such as "Viktigt:" or a stating heading, because the bar alone reads as a quote. **Inset or Alert:** content that is part of the article and must not be missed is an inset; a legal or money consequence or a lost-rights deadline is `Alert.Warning`; the state of something is an Alert; a quotation is a `blockquote`. `kv-steps` goes on an `ol` only: the native `::marker` is large (`heading-3` size), bold, tabular, in `heading`, and steps are `space-6` apart. It never uses `list-style: none`, so the list keeps its role in WebKit. **Steps or Stepper:** `kv-steps` describes a whole process in the content; the step indicator shows the current step on a form page. Neither is a prose boundary, and a figure gets no class (`alt` and `figcaption` guidance in the Prose contract). Video and audio are native elements with captions, never an embed. Print is not styled yet (Plan 0076, open decision).
 - **Headings.** Stop at `h3` in resident-facing text. `h4` to `h6` keep their own roles in every prose size, so in the large sizes they are smaller than the body text.
 
 #### Tables
@@ -573,9 +578,15 @@ For status or metadata, never for interactive elements.
 
 > **Maintainer review (Plan 0059).** `kv-badge` is a static `<span>` pill: `body-small` text, `radius-full`, padding `space-1` by `space-2`, a 1px edge, no depth, no hover and no focus style. Choices by role: neutral (the bare class; `text` on `surface`, a `border-control` edge), `primary` (`link` on `primary-subtle`), `info` (`text` on `primary-subtle`), `success`, `warning` and `danger` (`text` on their `-subtle`). The words always carry the status and the colour only adds to them. It never wraps. Forced colours: a `CanvasText` edge. No new token or pair.
 
+> **Maintainer review (Plan 0075).** `kv-tag` is the chip for a short fact, such as an applied filter (`docs/design/tag-and-filters.md`). A static tag is `body` text in `text` on `surface`, a 1px `border-subtle` hairline (decorative, so allowed), the `sm` radius, padding `space-1` by `space-3`, with no cross, no hover and no focus. A removable tag is one button, `kv-tag-remove`, the whole chip: flat (no depth, so Clear all stays the one button that looks like an action), a `border-control` edge, the same radius and type, `--kv-control-min-block-size` high (44px, 32px compact) and wide, and a 0.875rem cross at the inline end drawn with 2px `currentColor` borders so forced colours keep it. Hover is a `primary-subtle` fill with a `primary` edge, focus the 2px `focus-ring`. Text wraps and hyphenates and is never truncated. Forced colours: `ButtonText` edge and text, `Highlight` on hover; a static tag has a `CanvasText` edge. `kv-tag-group` is a wrapping row of label, list, empty text and a Clear all `kv-button`. Badge stays static and is never put in a tag group. No new token or pair.
+
 #### Code block and copy button
 
 > **Maintainer review (Plan 0060).** This subsection is new text. `kv-code-block` is a wrapping row: a `kv-code-block-label` (`body-small`, label weight, `text`) and the code take a full row each, then the copy button and its status share the last row. The code (`kv-code-block-code`) is the prose `pre`: `text` on `surface`, a 1px `border-subtle` edge, the `md` radius, `space-4` padding, the mono family at the code size. It wraps and never scrolls, is never hyphenated, and is never highlighted: no colour carries meaning. The copy button is a plain `kv-button`; its name stays "Copy" (2.5.3) and the result is announced and drawn. The status is a new class, `kv-copy-status` (`docs/design/copy-button.md`): a `span` after the button (also after a standalone CopyButton), 16px `body` in `text`, with a decorative `check` or `warning` icon in `text` colour (never tinted: colour is not the cue) and the words `copyButton.copied` or `copyButton.failed`. `copied` clears after 5 seconds or on the next press; `failed` stays until the next press. It wraps below the button at 320px, has no motion, and uses logical properties; the icons don't mirror. Forced colours: a `CanvasText` edge on the code, `CanvasText` on the status. No new token or pair.
+
+#### Progress and empty state
+
+> **Maintainer review (Plan 0074).** `kv-progress` is plain text first: a `body` label in `text` (never `text-muted`) that wraps and is never truncated, with the percent after it when the value is known, and a slow sentence added after ten seconds. There is no spinner and no indeterminate bar: nothing moves on its own, in any preference. `kv-progress-bar` is the file-upload bar made general: a native `<progress>`, 8px high, a `border-control` edge on a `surface` track, a `primary` value, the `sm` radius, rendered only with a known value; it eases only under `no-preference`. It sits on `canvas`, `surface` or `surface-raised`, never inside an alert's `-subtle` fill. Forced colours: `CanvasText` text and edge, `Canvas` track, `Highlight` value. `kv-empty-state` is a start-aligned block with `space-6` block padding, no border, no fill and no illustration, never centred; its title is the consumer's heading in the `heading` colour, its body is `body` text in `text` at the prose measure, and its actions are an ordinary `kv-button-group` with at most one primary. A busy button's only change is the `progress` cursor. No new token or pair (`docs/design/status-patterns.md`).
 
 ### Overlays
 
@@ -602,6 +613,7 @@ Each component's design spec, in `docs/design/`. The accessibility contract is i
 | Prose, Card, Section, Alert        | `foundations-and-prose.md`, `card.md`, `section.md`, `alert.md`       |
 | Tooltip, Kbd, Icon                 | `tooltip.md`, `kbd.md`, `icon.md`                                     |
 | Rich text editor                   | `rich-text-editor.md`                                                 |
+| Progress, busy, empty state        | `status-patterns.md`                                                  |
 | Typography                         | `typography-ibm-plex.md`                                              |
 | Docs site, Storybook               | `docs-site.md`, `storybook-presentation.md`                           |
 
@@ -653,7 +665,7 @@ Parts render these classes, choices are classes the consumer adds, and state is 
 - **Pagination:** `kv-pagination`, `-list`, `-item`, `-link`, `-previous`, `-next`, `-ellipsis`, `-status`, with `kv-link` on its links. State `aria-current`.
 - **Summary list:** `kv-summary-list`, `-row`, `-key`, `-value`, `-actions`, and `kv-link kv-summary-list-change`. No state.
 - **Error summary:** `kv-error-summary` (with `kv-alert kv-alert--danger`), `-list`, `-item`, and `kv-link kv-error-summary-link`. No state.
-- **Prose:** choices `kv-prose`, `kv-prose--large`, `kv-lead`, `kv-not-prose`, `kv-scroll-region`.
+- **Prose:** choices `kv-prose`, `kv-prose--large`, `kv-lead`, `kv-not-prose`, `kv-scroll-region`, `kv-inset`, `kv-steps`.
 - **Card:** `kv-card`, `kv-card-header`, `-body`, `-footer`. Choices `kv-card--radius-lg|md|none`, `kv-card--padding-none|sm|md|lg`, `kv-card-header--padding-*` (and body, footer) and `kv-card--dividers`.
 - **Section:** `kv-section`. Choices `kv-section--surface|canvas` and `kv-section--padding-none|sm|md|lg`.
 - **Alert:** `kv-alert`, `-icon`, `-title`, `-status`, `-body`, `-actions`, `-close`. Choices are the status classes `kv-alert--info|success|warning|danger`, which `Alert.Info`, `.Success`, `.Warning` and `.Danger` render themselves (`Alert.Root` renders `kv-alert` only).

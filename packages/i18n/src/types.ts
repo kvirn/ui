@@ -475,6 +475,59 @@ export interface KvirnMessages {
     /** The accessible name of the toast region, a landmark that exists while a toast is shown. Owned by Toast (Plan 0071). */
     regionLabel: TextMessage
   }
+  tag: {
+    /** The accessible name of a removable tag's button, for example `Ta bort Stockholm`. `label` is the tag's visible text, so the name contains it (2.5.3). Owned by Tag (Plan 0075). */
+    remove: MessageFunction<{ label: string }>
+    /** Announced (polite) by a TagGroup after a tag is removed, for example `Stockholm borttagen.`. Off when the caller announces a combined message. */
+    removed: MessageFunction<{ label: string }>
+  }
+  filters: {
+    /** The heading of a filter form, for example `Filter`. Owned by the "Filter a list" pattern (Plan 0075). */
+    heading: TextMessage
+    /** The Disclosure trigger of the filter form. Plural: `Filter`, `Filter, 1 valt` and `Filter, {count} valda`. */
+    disclosure: MessageFunction<{ count: number }>
+    /** The label of the applied-filters row. It is also the focus fallback when the last tag is removed. */
+    applied: TextMessage
+    /** The row's text while no filter is applied. */
+    none: TextMessage
+    /** The text of a filter's tag, for example `År: 2025`, so the value is not ambiguous out of context. */
+    appliedValue: MessageFunction<{ group: string; value: string }>
+    /** The button that removes every applied filter. */
+    clearAll: TextMessage
+    /** The submit button used without JavaScript. */
+    apply: TextMessage
+    /** The label of the sort select. */
+    sortLabel: TextMessage
+    sortRelevance: TextMessage
+    sortNewest: TextMessage
+    sortOldest: TextMessage
+    sortNameAscending: TextMessage
+    /** The result count, visible and announced. Plural: `Inga resultat`, `1 resultat` and `{count} resultat`. */
+    resultCount: MessageFunction<{ count: number }>
+    /** Announced (polite) after a filter is removed and the results settle: the removal and the count in one message. */
+    removedResultCount: MessageFunction<{ label: string; count: number }>
+    /** Announced (polite) after Clear all and the results settle. */
+    clearedResultCount: MessageFunction<{ count: number }>
+    /** Shown when the filters leave no result. */
+    noResults: TextMessage
+    /** Shown under `noResults`, saying what to try. Never blames the user. */
+    noResultsHint: TextMessage
+    /** Shown (not announced) while the results update. */
+    loading: TextMessage
+    /** Shown in an inline alert when the results could not be updated. */
+    loadFailed: TextMessage
+    /** The button that tries the update again. */
+    retry: TextMessage
+  }
+  /** Progress (Plan 0074). Sentences end with a full stop, so the announcer can join them. */
+  progress: {
+    /** The label when the consumer gives none: the name of the bar and the text announced once the wait is shown. A development warning asks for a specific one. */
+    loading: TextMessage
+    /** Added to the label, and announced once, when the wait passes the slow limit (10 s by default). */
+    slow: TextMessage
+    /** The bar's `aria-valuetext`, for example `Exporting cases, 45%`. `percent` is 0 to 100; a message formats it with `format.number`. */
+    valueText: MessageFunction<{ label: string; percent: number }>
+  }
 }
 
 /** Any subset of namespaces and keys, for provider and `defineMessages` overrides. */

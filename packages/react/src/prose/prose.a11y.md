@@ -31,6 +31,25 @@ A `Prose` inside a `Field.Root` or a `Fieldset.Root` registers itself with the n
 - **Outside a host** a Prose has no id, no `data-*` and no warning (`prose.test.tsx › a Prose outside a Field or Fieldset has no id and does not warn`).
 - **Element.** A `<div>` by default, so a description can hold several paragraphs. `render={<p />}` makes a one-line description a paragraph.
 
+## Content classes: inset, steps, figure, video and audio (Plan 0076)
+
+Two theme classes for CMS content. Neither is a component, adds a role, or needs a string. Neither is a focusable part, so the Keyboard section below is unchanged.
+
+| Class / element | Element and semantics                                           | Notes                                                                                                                                                                                                                                                                                  | Test                                                                                                              |
+| --------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `kv-inset`      | any block, usually `<div>`; no role, no ARIA, not a live region | Not `aside` (a landmark), not `role="note"`, not `role="status"`: it is static article content, never announced (4.1.3 does not apply)                                                                                                                                                 | `prose.test.tsx › kv-inset adds no role, no live region and no tab stop, and its text stays in the reading order` |
+| `kv-steps`      | native `<ol>`                                                   | Keeps the `list` role with n `listitem`s (Chromium); the WebKit list role and the marker being read are not proven by a test: AT verification `pending`. The number is the native `::marker`, never `list-style: none`, so WebKit keeps the list too. No `aria-current`, no `tabindex` | `prose.test.tsx › ol.kv-steps keeps the list role with one listitem per step, and no ARIA of its own`             |
+| `figure`        | native `figure`, named by `figcaption`                          | No class: prose already styles it                                                                                                                                                                                                                                                      | `prose.test.tsx › an article with an inset, steps and a figure with alt text has no axe violations`               |
+
+Consumer responsibilities for these (nothing enforces them):
+
+- **Inset.** Start it with a word that says why it is set apart ("Viktigt:", "Tänk på:") or a heading that states the point, never a bare "Viktigt" heading. The bar and the fill are not read aloud, and colour is never the only cue (1.3.1, 1.4.1). A heading inside keeps the page's heading order (2.4.6). The fill matches a `surface` Section there: the bar and the leading word carry it.
+- **Inset, Alert or blockquote.** Content that is part of the article and must not be missed (a condition, an exception, a tip) is `kv-inset`. A legal or money consequence, or a deadline you lose rights by missing ("Ansök senast 30 april, annars behandlas ansökan inte"), is a static `Alert.Warning`. The state of something (saved, failed) is an Alert, announced only when it appears after an action. A quotation is a `blockquote`.
+- **Steps or Stepper.** `kv-steps` is content: all the steps of a process, about 3 to 8, each a heading plus text (every step has a heading or none; headings start with a verb and do not repeat the number). The Stepper (Plan 0053) is a caption above a form question with the user's current step. They share no markup, class or string. Do not use `kv-steps` as a progress indicator. A short list of one-line instructions stays a plain prose `ol`.
+- **Alt text** (1.1.1, 1.4.5). Informative photo: what it shows that matters here, about 150 characters at most; credit and source in the `figcaption`. Map, chart or plan: a short `alt` (what and where), and the facts in the body text or a table right after it, never only in `title`. Image of text: avoid, else all the text in `alt` and in HTML. Decorative: `alt=""`, no `figure`, no caption. Linked image: the link's destination. `alt` and `figcaption` are both read, so they never repeat each other. Text in another language gets `lang` (3.1.2).
+- **Video and audio: guidance only, no component** (design §8.1). Native `<video controls preload="metadata" playsinline>`, self-hosted, with a `<track kind="captions" srclang default>` per language and a `poster` (1.2.2). Never `autoplay` (1.4.2, 2.2.2). No YouTube, Vimeo or other iframe (no third-party network calls). Information that is only visual is spoken in the narration, or an audio-described version or a transcript with the descriptions sits next to the video (1.2.3, 1.2.5). `<audio controls>` gets a transcript (1.2.1). Keyboard support of native media controls differs per browser: AT verification `pending`.
+- **Not styled.** Native `details` and `summary` are not styled in prose. Closed `details` content does not print: do not put the only copy of a fact there.
+
 ## Keyboard
 
 This component has no focusable parts and handles no keys.
@@ -81,6 +100,7 @@ With the theme, `kv-prose--small` (14px), the default (16px), `kv-prose--large` 
 - 3.3.2 Labels or Instructions: a description in a Field is linked to its control.
 - 1.4.3, 1.4.10, 1.4.12: the `kv-prose` theme rules, as tested in the Prose stories. The sizes and the width option are checked in the `Sizes` and `Full width and colour roles` stories; the colour roles are held by `theme:check`.
 - 1.4.4 Resize Text: the sizes are in rem.
+- 1.1.1, 1.2.1 to 1.2.5, 1.4.1, 1.4.5: the figure, video and audio guidance and the inset's leading word, which are consumer responsibilities above. 1.3.1: `kv-steps` is a native list.
 
 ## AT test record
 

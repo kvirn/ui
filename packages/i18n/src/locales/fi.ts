@@ -296,4 +296,45 @@ export const fi = {
   errorSummary: { title: 'Lomakkeessa on virheitä', titlePrefix: 'Virhe:' },
   summaryList: { change: 'Muuta' },
   toast: { regionLabel: 'Ilmoitukset' },
+  progress: {
+    loading: 'Ladataan.',
+    slow: 'Tämä kestää tavallista kauemmin. Pidä tämä sivu auki.',
+    valueText: ({ label, percent }, format) =>
+      `${label}, ${format.number(percent / 100, { style: 'percent' })}`,
+  },
+  tag: { remove: ({ label }) => `Poista ${label}`, removed: ({ label }) => `${label} poistettu.` },
+  filters: {
+    heading: 'Suodata',
+    disclosure: ({ count }, format) =>
+      format.plural(count, {
+        zero: 'Suodattimet',
+        one: 'Suodattimet, 1 käytössä',
+        other: `Suodattimet, ${format.number(count)} käytössä`,
+      }),
+    applied: 'Käytössä olevat suodattimet',
+    none: 'Ei käytössä olevia suodattimia',
+    appliedValue: ({ group, value }) => `${group}: ${value}`,
+    clearAll: 'Poista kaikki suodattimet',
+    apply: 'Näytä tulokset',
+    sortLabel: 'Lajittelu',
+    sortRelevance: 'Olennaisimmat',
+    sortNewest: 'Uusimmat ensin',
+    sortOldest: 'Vanhimmat ensin',
+    sortNameAscending: 'Nimi, A–Ö',
+    resultCount: ({ count }, format) =>
+      format.plural(count, {
+        zero: 'Ei tuloksia',
+        one: '1 tulos',
+        other: `${format.number(count)} tulosta`,
+      }),
+    removedResultCount: ({ label, count }, format) =>
+      `${label} poistettu. ${format.plural(count, { zero: 'Ei tuloksia', one: '1 tulos', other: `${format.number(count)} tulosta` })}.`,
+    clearedResultCount: ({ count }, format) =>
+      `Kaikki suodattimet on poistettu. ${format.plural(count, { zero: 'Ei tuloksia', one: '1 tulos', other: `${format.number(count)} tulosta` })}.`,
+    noResults: 'Mikään tulos ei vastaa suodattimia.',
+    noResultsHint: 'Kokeile poistaa suodatin tai poista kaikki suodattimet.',
+    loading: 'Päivitetään tuloksia',
+    loadFailed: 'Tuloksia ei voitu päivittää.',
+    retry: 'Yritä uudelleen',
+  },
 } satisfies KvirnMessages

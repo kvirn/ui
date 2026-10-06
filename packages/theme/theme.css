@@ -79,6 +79,7 @@
  *  9d. Visually hidden and skip link  kv-visually-hidden, kv-skip-link: hidden until focused
  *  9f. Code block      kv-code-block: a labelled code sample that wraps, and its copy button
  *  9e. Badge         kv-badge: a status or category in words, by role class
+ *  9g. Tag           kv-tag, kv-tag-group: a static or removable chip and the applied-filters row
  *  10. Card
  *  10a. Section          kv-section: a region of the page, elevation level 1
  *  10b. Alert            kv-alert: a status message, by status class
@@ -2236,6 +2237,8 @@
         .kv-alert,
         .kv-dialog,
         .kv-section,
+        .kv-inset,
+        .kv-steps,
         .kv-field,
         .kv-fieldset,
         .kv-table,
@@ -2647,6 +2650,8 @@
       .kv-alert,
       .kv-dialog,
       .kv-section,
+      .kv-inset,
+      .kv-steps,
       .kv-field,
       .kv-fieldset,
       .kv-table,
@@ -2692,6 +2697,94 @@
   @media (forced-colors: active) {
     .kv-scroll-region:is(:focus-visible, [data-focus-visible]) {
       outline-color: Highlight;
+    }
+  }
+
+  /* Inset text and steps (Plan 0076, docs/design/prose-content-types.md). Two classes for CMS
+   * content: no component, no role, no state, no string. Neither is a prose boundary, so
+   * their paragraphs, links and nested lists stay prose-styled. In prose they take
+   * --kv-prose-space-block (the margin list above); outside prose the layout gap spaces them.
+   * Your part: start an inset with a word that says why it is set apart ("Important:") or a
+   * heading that states the point, because the bar and the fill are not read aloud (1.3.1,
+   * 1.4.1). A deadline that loses rights is an Alert.Warning, not an inset. */
+  .kv-inset {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    padding: var(--kv-space-4);
+    /* The bar is the inline-start edge, as in the bare alert: the other three sides are a 1px
+     * transparent border that forced colours draw in CanvasText. */
+    border: var(--kv-border-width) solid transparent;
+    border-inline-start: var(--kv-indicator-width) solid var(--kv-color-border-control);
+    border-radius: var(--kv-radius-sm);
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text);
+    hyphens: auto;
+    hyphenate-limit-chars: 10 4 4;
+    overflow-wrap: break-word;
+  }
+
+  @media (width >= 40rem) {
+    .kv-inset {
+      padding-inline: var(--kv-space-6);
+    }
+  }
+
+  .kv-inset > :first-child {
+    margin-block-start: 0;
+  }
+
+  .kv-inset > :last-child {
+    margin-block-end: 0;
+  }
+
+  /* The native marker stays, never list-style: none, so the list keeps its role in WebKit and
+   * start, reversed and li[value] still work. */
+  .kv-steps {
+    padding-inline-start: var(--kv-space-8);
+    list-style-position: outside;
+    hyphens: auto;
+    hyphenate-limit-chars: 10 4 4;
+    overflow-wrap: break-word;
+  }
+
+  .kv-steps:not([type]) {
+    list-style-type: decimal;
+  }
+
+  .kv-steps:not(.kv-prose *) {
+    margin-block: 0;
+  }
+
+  .kv-steps > li {
+    padding-inline-start: var(--kv-space-2);
+    margin-block: 0;
+  }
+
+  .kv-steps > li + li {
+    margin-block-start: var(--kv-space-6);
+  }
+
+  .kv-steps > li > :first-child {
+    margin-block-start: 0;
+  }
+
+  .kv-steps > li > :last-child {
+    margin-block-end: 0;
+  }
+
+  .kv-steps > li::marker {
+    color: var(--kv-color-heading);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-heading-3-size);
+    font-weight: 600;
+    font-feature-settings: var(--kv-font-numeric-feature-settings);
+  }
+
+  /* The bar is border-control, which forced colours map to a control's ButtonBorder. */
+  @media (forced-colors: active) {
+    .kv-inset {
+      border-inline-start-color: CanvasText;
     }
   }
 
@@ -3002,6 +3095,151 @@
   @media (forced-colors: active) {
     :where(.kv-badge) {
       border-color: CanvasText;
+    }
+  }
+
+  /* 9g. Tag and tag group ---------------------------------------------------------------------
+   * <TagGroup.Root> renders kv-tag-group, a wrapping row: kv-tag-group-label, then the list
+   * kv-tag-group-list (a <ul>, no markers) of <Tag.Root> items kv-tag, then kv-tag-group-empty
+   * (shown while there is no tag) and a Clear all kv-button. A static tag is text on surface
+   * with a decorative border-subtle hairline: no cross, no hover, no focus. A removable tag is
+   * one button, kv-tag-remove: the whole chip, flat, a border-control edge (1.4.11), the text and
+   * a cross at the inline end drawn with 2px borders, so forced colours keep it. 44px high (32px
+   * compact; 2.5.8), a primary-subtle fill and a primary edge on hover, the focus ring on
+   * focus-visible. Long text wraps and hyphenates, never truncates. Logical properties; no
+   * motion. Zero specificity, so your own CSS wins. */
+  :where(.kv-tag-group) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--kv-space-2);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  :where(.kv-tag-group-label) {
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-label-size);
+    font-weight: var(--kv-font-label-weight);
+    line-height: var(--kv-font-label-line-height);
+  }
+
+  :where(.kv-tag-group-list) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--kv-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :where(.kv-tag-group-empty) {
+    margin: 0;
+    color: var(--kv-color-text);
+  }
+
+  :where(.kv-tag-group-label[tabindex='-1']:focus-visible) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  :where(.kv-tag) {
+    box-sizing: border-box;
+    max-inline-size: 100%;
+    margin: 0;
+    padding: var(--kv-space-1) var(--kv-space-3);
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-sm);
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text);
+    hyphens: auto;
+    overflow-wrap: anywhere;
+  }
+
+  /* The button is the chip, so a removable tag has no frame of its own. */
+  :where(.kv-tag:has(> .kv-tag-remove)) {
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+  }
+
+  :where(.kv-tag-remove) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--kv-space-2);
+    box-sizing: border-box;
+    max-inline-size: 100%;
+    min-block-size: var(--kv-control-min-block-size);
+    min-inline-size: var(--kv-control-min-block-size);
+    margin: 0;
+    padding-block: var(--kv-space-1);
+    padding-inline: var(--kv-space-3);
+    border: var(--kv-border-width) solid var(--kv-color-border-control);
+    border-radius: var(--kv-radius-sm);
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text);
+    cursor: pointer;
+    font: inherit;
+    hyphens: auto;
+    overflow-wrap: anywhere;
+    text-align: start;
+  }
+
+  :where(.kv-tag-remove:hover) {
+    border-color: var(--kv-color-primary);
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  :where(.kv-tag-remove:focus-visible) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  /* The cross: two lines drawn with borders, so forced colours keep them. */
+  :where(.kv-tag-remove-icon) {
+    position: relative;
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: 0.875rem;
+    block-size: 0.875rem;
+  }
+
+  :where(.kv-tag-remove-icon)::before,
+  :where(.kv-tag-remove-icon)::after {
+    content: '';
+    grid-area: 1 / 1;
+    inline-size: 0.875rem;
+    block-size: 0;
+    border-block-start: 2px solid currentColor;
+  }
+
+  :where(.kv-tag-remove-icon)::before {
+    transform: rotate(45deg);
+  }
+
+  :where(.kv-tag-remove-icon)::after {
+    transform: rotate(-45deg);
+  }
+
+  @media (forced-colors: active) {
+    :where(.kv-tag) {
+      border-color: CanvasText;
+    }
+
+    :where(.kv-tag-remove) {
+      border-color: ButtonText;
+      background-color: ButtonFace;
+      color: ButtonText;
+    }
+
+    :where(.kv-tag-remove:hover) {
+      border-color: Highlight;
+    }
+
+    :where(.kv-tag-remove:focus-visible, .kv-tag-group-label[tabindex='-1']:focus-visible) {
+      outline-color: Highlight;
     }
   }
 
@@ -9212,6 +9450,143 @@
       background-color: transparent;
     }
   }
+  /* 14a. Progress, Button busy and Empty state -------------------------------------------------
+   * <Progress.Root> renders class="kv-progress", with kv-progress-label (a <p>), kv-progress-percent
+   * and kv-progress-slow (spans in it) and kv-progress-bar (a native <progress>, only with a known
+   * value). State is data-state="busy" | "slow" and data-determinate. A Button's busy state is
+   * data-busy (with aria-disabled). An empty state is classes only, on your own markup:
+   * kv-empty-state, with kv-empty-state-title and kv-empty-state-body inside.
+   * Design spec: docs/design/status-patterns.md.
+   *
+   * Nothing here moves on its own, so there is no spinner and no indeterminate bar: the label is
+   * the cue. The bar's value eases only when motion is allowed, and the label wraps, never
+   * truncates. Every pair is one theme:check already measures: text, border-control and primary
+   * on canvas, surface and surface-raised. */
+  .kv-progress {
+    display: flex;
+    flex-direction: column;
+    gap: var(--kv-space-2);
+    box-sizing: border-box;
+    min-inline-size: 0;
+    max-inline-size: var(--kv-prose-measure);
+    color: var(--kv-color-text);
+  }
+
+  .kv-progress-label {
+    margin: 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    font-feature-settings: var(--kv-font-numeric-feature-settings);
+    line-height: var(--kv-font-body-line-height);
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+
+  .kv-progress-bar {
+    appearance: none;
+    display: block;
+    box-sizing: border-box;
+    inline-size: 100%;
+    block-size: var(--kv-space-2);
+    margin: 0;
+    padding: 0;
+    border: var(--kv-border-width) solid var(--kv-color-border-control);
+    border-radius: var(--kv-radius-sm);
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-primary);
+    overflow: hidden;
+  }
+
+  .kv-progress-bar::-webkit-progress-bar {
+    background-color: transparent;
+  }
+
+  .kv-progress-bar::-webkit-progress-value {
+    background-color: var(--kv-color-primary);
+  }
+
+  .kv-progress-bar::-moz-progress-bar {
+    background-color: var(--kv-color-primary);
+  }
+
+  /* Busy is not unavailable-until-you-fix-something: the look and depth stay, and the label
+   * beside the button says what is happening. */
+  .kv-button[data-busy] {
+    cursor: progress;
+  }
+
+  .kv-empty-state {
+    --kv-empty-state-padding-block: var(--kv-space-6);
+
+    display: block;
+    box-sizing: border-box;
+    min-inline-size: 0;
+    padding-block: var(--kv-empty-state-padding-block);
+    color: var(--kv-color-text);
+    text-align: start;
+  }
+
+  :where(.kv-empty-state > :first-child) {
+    margin-block-start: 0;
+  }
+
+  :where(.kv-empty-state > :last-child) {
+    margin-block-end: 0;
+  }
+
+  .kv-empty-state-title {
+    margin: 0;
+    color: var(--kv-color-heading);
+  }
+
+  /* Instructions, so text and never text-muted. The line length is the prose measure. */
+  .kv-empty-state-body {
+    max-inline-size: var(--kv-prose-measure);
+    margin-block: var(--kv-space-2) 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  :where(.kv-empty-state .kv-button-group) {
+    margin-block-start: var(--kv-space-4);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .kv-progress-bar::-webkit-progress-value {
+      transition-property: inline-size;
+      transition-duration: var(--kv-duration-fast);
+      transition-timing-function: var(--kv-easing-standard);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .kv-progress,
+    .kv-progress-label,
+    .kv-empty-state,
+    .kv-empty-state-title,
+    .kv-empty-state-body {
+      color: CanvasText;
+    }
+
+    .kv-progress-bar {
+      border-color: CanvasText;
+      background-color: Canvas;
+    }
+
+    .kv-progress-bar::-webkit-progress-value {
+      forced-color-adjust: none;
+      background-color: Highlight;
+    }
+
+    .kv-progress-bar::-moz-progress-bar {
+      forced-color-adjust: none;
+      background-color: Highlight;
+    }
+  }
+
   /* 15. Table --------------------------------------------------------------------------------
    * <Table.Root> renders class="kv-table", and its parts one class each: kv-table-caption,
    * -head, -body, -foot, -row, -column-header, -row-header, -cell, -sort-button, -sort-icon,

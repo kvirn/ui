@@ -291,4 +291,45 @@ export const nb = {
   errorSummary: { title: 'Det er et problem', titlePrefix: 'Feil:' },
   summaryList: { change: 'Endre' },
   toast: { regionLabel: 'Meldinger' },
+  progress: {
+    loading: 'Laster.',
+    slow: 'Dette tar lengre tid enn vanlig. La denne siden stå åpen.',
+    valueText: ({ label, percent }, format) =>
+      `${label}, ${format.number(percent / 100, { style: 'percent' })}`,
+  },
+  tag: { remove: ({ label }) => `Fjern ${label}`, removed: ({ label }) => `${label} fjernet.` },
+  filters: {
+    heading: 'Filter',
+    disclosure: ({ count }, format) =>
+      format.plural(count, {
+        zero: 'Filtre',
+        one: 'Filtre, 1 valgt',
+        other: `Filtre, ${format.number(count)} valgt`,
+      }),
+    applied: 'Valgte filtre',
+    none: 'Ingen filtre valgt',
+    appliedValue: ({ group, value }) => `${group}: ${value}`,
+    clearAll: 'Fjern alle filtre',
+    apply: 'Vis resultater',
+    sortLabel: 'Sorter etter',
+    sortRelevance: 'Mest relevante',
+    sortNewest: 'Nyeste først',
+    sortOldest: 'Eldste først',
+    sortNameAscending: 'Navn, A–Å',
+    resultCount: ({ count }, format) =>
+      format.plural(count, {
+        zero: 'Ingen treff',
+        one: '1 treff',
+        other: `${format.number(count)} treff`,
+      }),
+    removedResultCount: ({ label, count }, format) =>
+      `${label} fjernet. ${format.plural(count, { zero: 'Ingen treff', one: '1 treff', other: `${format.number(count)} treff` })}.`,
+    clearedResultCount: ({ count }, format) =>
+      `Alle filtre er fjernet. ${format.plural(count, { zero: 'Ingen treff', one: '1 treff', other: `${format.number(count)} treff` })}.`,
+    noResults: 'Ingen treff for disse filtrene.',
+    noResultsHint: 'Prøv å fjerne et filter, eller fjern alle filtre.',
+    loading: 'Oppdaterer resultater',
+    loadFailed: 'Resultatene kunne ikke oppdateres.',
+    retry: 'Prøv igjen',
+  },
 } satisfies KvirnMessages

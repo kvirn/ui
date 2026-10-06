@@ -291,4 +291,45 @@ export const sv = {
   errorSummary: { title: 'Det finns ett problem', titlePrefix: 'Fel:' },
   summaryList: { change: 'Ändra' },
   toast: { regionLabel: 'Meddelanden' },
+  progress: {
+    loading: 'Laddar.',
+    slow: 'Det tar längre tid än vanligt. Låt den här sidan vara öppen.',
+    valueText: ({ label, percent }, format) =>
+      `${label}, ${format.number(percent / 100, { style: 'percent' })}`,
+  },
+  tag: { remove: ({ label }) => `Ta bort ${label}`, removed: ({ label }) => `${label} borttagen.` },
+  filters: {
+    heading: 'Filter',
+    disclosure: ({ count }, format) =>
+      format.plural(count, {
+        zero: 'Filter',
+        one: 'Filter, 1 valt',
+        other: `Filter, ${format.number(count)} valda`,
+      }),
+    applied: 'Valda filter',
+    none: 'Inga filter valda',
+    appliedValue: ({ group, value }) => `${group}: ${value}`,
+    clearAll: 'Rensa alla filter',
+    apply: 'Visa resultat',
+    sortLabel: 'Sortera efter',
+    sortRelevance: 'Mest relevanta',
+    sortNewest: 'Nyast först',
+    sortOldest: 'Äldst först',
+    sortNameAscending: 'Namn, A–Ö',
+    resultCount: ({ count }, format) =>
+      format.plural(count, {
+        zero: 'Inga resultat',
+        one: '1 resultat',
+        other: `${format.number(count)} resultat`,
+      }),
+    removedResultCount: ({ label, count }, format) =>
+      `${label} borttagen. ${format.plural(count, { zero: 'Inga resultat', one: '1 resultat', other: `${format.number(count)} resultat` })}.`,
+    clearedResultCount: ({ count }, format) =>
+      `Alla filter är rensade. ${format.plural(count, { zero: 'Inga resultat', one: '1 resultat', other: `${format.number(count)} resultat` })}.`,
+    noResults: 'Inga resultat matchar filtren.',
+    noResultsHint: 'Testa att ta bort ett filter eller rensa alla filter.',
+    loading: 'Uppdaterar resultat',
+    loadFailed: 'Resultaten kunde inte uppdateras.',
+    retry: 'Försök igen',
+  },
 } satisfies KvirnMessages

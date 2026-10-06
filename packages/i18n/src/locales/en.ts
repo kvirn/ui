@@ -283,4 +283,45 @@ export const en = {
   errorSummary: { title: 'There is a problem', titlePrefix: 'Error:' },
   summaryList: { change: 'Change' },
   toast: { regionLabel: 'Messages' },
+  progress: {
+    loading: 'Loading.',
+    slow: 'This is taking longer than usual. Keep this page open.',
+    valueText: ({ label, percent }, format) =>
+      `${label}, ${format.number(percent / 100, { style: 'percent' })}`,
+  },
+  tag: { remove: ({ label }) => `Remove ${label}`, removed: ({ label }) => `${label} removed.` },
+  filters: {
+    heading: 'Filter',
+    disclosure: ({ count }, format) =>
+      format.plural(count, {
+        zero: 'Filters',
+        one: 'Filters, 1 applied',
+        other: `Filters, ${format.number(count)} applied`,
+      }),
+    applied: 'Applied filters',
+    none: 'No filters applied',
+    appliedValue: ({ group, value }) => `${group}: ${value}`,
+    clearAll: 'Clear all filters',
+    apply: 'Show results',
+    sortLabel: 'Sort by',
+    sortRelevance: 'Most relevant',
+    sortNewest: 'Newest first',
+    sortOldest: 'Oldest first',
+    sortNameAscending: 'Name, A to Z',
+    resultCount: ({ count }, format) =>
+      format.plural(count, {
+        zero: 'No results',
+        one: '1 result',
+        other: `${format.number(count)} results`,
+      }),
+    removedResultCount: ({ label, count }, format) =>
+      `${label} removed. ${format.plural(count, { zero: 'No results', one: '1 result', other: `${format.number(count)} results` })}.`,
+    clearedResultCount: ({ count }, format) =>
+      `All filters cleared. ${format.plural(count, { zero: 'No results', one: '1 result', other: `${format.number(count)} results` })}.`,
+    noResults: 'No results match these filters.',
+    noResultsHint: 'Try removing a filter, or clear all filters.',
+    loading: 'Updating results',
+    loadFailed: 'The results couldn’t be updated.',
+    retry: 'Try again',
+  },
 } satisfies KvirnMessages

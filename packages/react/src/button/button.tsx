@@ -43,6 +43,7 @@ const isClickHandler = (value: unknown): value is MouseEventHandler<HTMLButtonEl
 /** What `render` receives as its second argument. */
 export interface ButtonState {
   isDisabled: boolean
+  isBusy: boolean
   isFocusVisible: boolean
 }
 
@@ -56,6 +57,11 @@ export interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'aria
    * it and read why it's disabled. Activation stays blocked.
    */
   focusableWhenDisabled?: boolean | undefined
+  /**
+   * The action is running: `aria-disabled="true"` and `data-busy`, never native `disabled`, so
+   * focus stays and every press is blocked. Pair it with a `Progress` beside the button.
+   */
+  busy?: boolean | undefined
   /**
    * Change the element. It must still be a `<button>`: use Link for navigation. An element's
    * own `onClick` is gated like the Button's. In the function form, keep `buttonProps.onClick`.
@@ -71,10 +77,12 @@ export interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'aria
  * <Button onClick={save}>Spara</Button>
  * <Button type="submit">Skicka ansökan</Button>
  * <Button disabled focusableWhenDisabled>Skicka</Button>
+ * <Button busy={isSending}>Skicka ansökan</Button>
  */
 export function Button({
   disabled,
   focusableWhenDisabled,
+  busy,
   type,
   onClick,
   render,
@@ -87,7 +95,13 @@ export function Button({
   const activationHandler = isClickHandler(elementOnClick)
     ? mergeProps({ onClick }, { onClick: elementOnClick }).onClick
     : onClick
-  const button = useButton({ disabled, focusableWhenDisabled, type, onClick: activationHandler })
+  const button = useButton({
+    disabled,
+    focusableWhenDisabled,
+    busy,
+    type,
+    onClick: activationHandler,
+  })
   const elementRef = useRef<HTMLButtonElement | null>(null)
   const mergedRef = useMergedRef(ref, elementRef)
 
@@ -112,7 +126,11 @@ export function Button({
     render: renderWithoutClick,
     defaultElement: 'button',
     partProps: { ...mergeProps(otherProps, button.buttonProps), ref: mergedRef },
-    state: { isDisabled: button.isDisabled, isFocusVisible: button.isFocusVisible },
+    state: {
+      isDisabled: button.isDisabled,
+      isBusy: button.isBusy,
+      isFocusVisible: button.isFocusVisible,
+    },
   })
 }
 Button.displayName = 'Button'

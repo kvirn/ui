@@ -331,3 +331,12 @@ export type {
   ToastTimer,
   ToastVariant,
 } from './toast/toast-queue.ts'
+export { createProgressTimer } from './progress/progress-timer.ts'
+export type {
+  ProgressPhase,
+  ProgressTimer,
+  ProgressTimerActions,
+  ProgressTimerEnv,
+  ProgressTimerOptions,
+  ProgressTimerState,
+} from './progress/progress-timer.ts'
