@@ -14,7 +14,7 @@ A typed headless core with thin React bindings, built the TanStack way: behaviou
 - **Headless, with you in control.** Hooks for full control, thin components for convenience.
 - **Easy to theme.** State is exposed through `data-*` attributes and design tokens are CSS custom properties, so Tailwind, CSS Modules or plain CSS all work. An optional default theme passes contrast checks in light, dark and forced-colors modes.
 - **Built for Nordic public services.** Swedish, Finnish, Norwegian (Bokmål and Nynorsk), Northern Sámi and English strings ship as standard.
-- **Compliance you can hand to procurement.** Each release comes with a per-component conformance report, an SBOM and no telemetry. Licensed AGPL-3.0, with a free permission for personal, hobby, research and open-source use and a commercial licence for organisations ([LICENSING.md](LICENSING.md)).
+- **Compliance you can hand to procurement.** Each release comes with a per-component conformance report, an SBOM and no telemetry. Free for personal use; any other use needs a commercial licence ([LICENSING.md](LICENSING.md)).
 
 ## Packages
 
@@ -69,4 +69,4 @@ Project docs: [docs/](docs/README.md). Rules for humans and agents: [AGENTS.md](
 
 ## License
 
-[AGPL-3.0](LICENSE) © KvirnUI, with an additional permission for personal, hobby, research and open-source use, and a commercial licence for everyone else. Read [LICENSING.md](LICENSING.md). Contact: magnus@vike.se.
+Free for personal use. Any other use needs a commercial licence. The code is published under the [AGPL-3.0](LICENSE) © KvirnUI. Read [LICENSING.md](LICENSING.md). Contact: magnus@vike.se.
