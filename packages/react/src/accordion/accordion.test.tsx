@@ -279,4 +279,21 @@ describe('keyboard', () => {
     expect(prevented).toEqual([false, false, false, false])
     expect(expanded('Vad kostar det?')).toBe('false')
   })
+
+  test('a Heading, Trigger or Panel outside an Item each warn once and name Accordion', async () => {
+    await render(
+      <Accordion.Root>
+        <Accordion.Heading level={3}>
+          <Accordion.Trigger>Lös fråga</Accordion.Trigger>
+        </Accordion.Heading>
+        <Accordion.Panel>Löst svar</Accordion.Panel>
+      </Accordion.Root>,
+    )
+    const messages = consoleWarn.mock.calls.map(([message]) => String(message))
+    expect(messages).toHaveLength(3)
+    expect(messages.some((message) => message.includes('Accordion.Heading'))).toBe(true)
+    expect(messages.some((message) => message.includes('Accordion.Trigger'))).toBe(true)
+    expect(messages.some((message) => message.includes('Accordion.Panel'))).toBe(true)
+    expect(messages.some((message) => message.includes('Disclosure.Root'))).toBe(false)
+  })
 })

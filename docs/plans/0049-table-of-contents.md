@@ -107,6 +107,7 @@ Parts `kv-table-of-contents`, `-list`, `-item`. `aria-current="location"` is non
 
 ## Decisions
 
+- **The lists carry `role="list"`** (accessibility review): `list-style: none` drops the list role in Safari/VoiceOver (1.3.1), as in Breadcrumb.
 - **Named `TableOfContents`,** not `Toc`: `architecture.md` bans abbreviated names. "TOC" is the maintainer's shorthand.
 - **Scroll-spy with an `items` prop** (the maintainer's choice over a static list and over a DOM-scanning hook). The docs-site spec wants everything server-rendered, so the links render from `items` and the observer is progressive enhancement.
 - **Plain `<a href="#id">`,** not a router link and not a click handler (see the observer section).

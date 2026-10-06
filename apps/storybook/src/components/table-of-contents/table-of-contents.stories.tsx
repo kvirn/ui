@@ -135,7 +135,7 @@ export const Default: Story = {
 }
 
 /**
- * The fixture the keyboard tests drive: a link before the contents list, the list with a nested
+ * A page to try the keys on: a link before the contents list, the list with a nested
  * level, a link after it, and a link inside a section. Try the keys in the Keyboard section above:
  * Tab and Shift+Tab move through the links in DOM order, nested ones included. Enter follows the
  * hash, and the next Tab continues after the heading, in the section. The arrow keys, Home and End

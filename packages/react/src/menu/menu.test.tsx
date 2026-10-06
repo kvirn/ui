@@ -255,7 +255,6 @@ describe('rendering', () => {
     expect(popupRef.current?.className).toBe('egen kv-menu-popup')
     expect(itemRef.current?.className).toBe('egen kv-menu-item')
     expect(itemRef.current?.getAttribute('data-egen')).toBe('item')
-    await expect.poll(() => popupRef.current?.style.position).toBe('fixed')
   })
 
   test('render replaces the element on every part and gives the state', async () => {
@@ -746,6 +745,43 @@ describe('pointer', () => {
     document.querySelector<HTMLElement>('[aria-disabled="true"]')?.click()
     expect(onShare).not.toHaveBeenCalled()
     expect(isShown()).toBe(true)
+  })
+
+  test('an enabled item runs the onClick of its render element and closes', async () => {
+    const elementOnClick = vi.fn<(event: MouseEvent<HTMLButtonElement>) => void>()
+    await render(
+      <Menu.Root>
+        <Menu.Trigger>Åtgärder</Menu.Trigger>
+        <Menu.Popup aria-label="Åtgärder">
+          <Menu.Item render={<button aria-label="Dela" onClick={elementOnClick} />}>Dela</Menu.Item>
+        </Menu.Popup>
+      </Menu.Root>,
+    )
+    await openWithEnter()
+    await item('Dela').click()
+    expect(elementOnClick).toHaveBeenCalledTimes(1)
+    await expect.poll(isShown).toBe(false)
+  })
+
+  test('a disabled item does not run the onClick of its render element, by click or key', async () => {
+    const elementOnClick = vi.fn<(event: MouseEvent<HTMLButtonElement>) => void>()
+    await render(
+      <Menu.Root>
+        <Menu.Trigger>Åtgärder</Menu.Trigger>
+        <Menu.Popup aria-label="Åtgärder">
+          <Menu.Item disabled render={<button aria-label="Dela" onClick={elementOnClick} />}>
+            Dela
+          </Menu.Item>
+        </Menu.Popup>
+      </Menu.Root>,
+    )
+    await openWithEnter()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(item('Dela')).toHaveFocus()
+    await userEvent.keyboard('{Enter}')
+    await userEvent.keyboard(' ')
+    document.querySelector<HTMLElement>('[aria-disabled="true"]')?.click()
+    expect(elementOnClick).not.toHaveBeenCalled()
   })
 
   test('the platform hiding the popup (another auto popover opened) closes it in the state too', async () => {

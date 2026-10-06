@@ -45,9 +45,10 @@ export interface TableOfContentsRootPartProps {
   'aria-labelledby'?: string
 }
 
-/** Spread on the `<ul>`, at the top level and for every nested list. Only the part's class. */
+/** Spread on the `<ul>`, at the top level and for every nested list. The role keeps the list announced where `list-style: none` removes it. */
 export interface TableOfContentsListPartProps {
   className: 'kv-table-of-contents-list'
+  role: 'list'
 }
 
 /** Spread on the `<li>`. Only the part's class. */
@@ -87,6 +88,7 @@ export interface UseTableOfContentsResult {
 // list. The parts use them too, also outside a root.
 export const tableOfContentsListProps: TableOfContentsListPartProps = Object.freeze({
   className: 'kv-table-of-contents-list',
+  role: 'list',
 })
 export const tableOfContentsItemProps: TableOfContentsItemPartProps = Object.freeze({
   className: 'kv-table-of-contents-item',

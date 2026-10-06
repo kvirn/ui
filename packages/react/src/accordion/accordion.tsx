@@ -1,7 +1,8 @@
 'use client'
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
-import { DisclosureContext } from '../disclosure/disclosure-context.ts'
+import { warnOnce } from '../dev/dev-warning.ts'
+import { DisclosureContext, DisclosureOwnerContext } from '../disclosure/disclosure-context.ts'
 import { DisclosurePanel, DisclosureRoot, DisclosureTrigger } from '../disclosure/disclosure.tsx'
 import type {
   DisclosurePanelProps,
@@ -169,6 +170,14 @@ export function AccordionHeading({
   const disclosure = useContext(DisclosureContext)
   const accordion = useAccordion()
   const elementRef = useMergedRef(ref, null)
+  useEffect(() => {
+    if (disclosure === null) {
+      warnOnce(
+        'accordion-heading-outside-root',
+        'An Accordion.Heading is outside an Accordion.Item, so its trigger opens and closes nothing. Put it inside <Accordion.Item>.',
+      )
+    }
+  }, [disclosure])
   return renderPart({
     render,
     defaultElement: `h${level}`,
@@ -187,12 +196,14 @@ export function AccordionTrigger({
   ...otherProps
 }: AccordionTriggerProps): ReactElement {
   return (
-    <DisclosureTrigger
-      {...otherProps}
-      className={
-        className === undefined ? 'kv-accordion-trigger' : `kv-accordion-trigger ${className}`
-      }
-    />
+    <DisclosureOwnerContext.Provider value="Accordion">
+      <DisclosureTrigger
+        {...otherProps}
+        className={
+          className === undefined ? 'kv-accordion-trigger' : `kv-accordion-trigger ${className}`
+        }
+      />
+    </DisclosureOwnerContext.Provider>
   )
 }
 AccordionTrigger.displayName = 'Accordion.Trigger'
@@ -208,13 +219,17 @@ export function AccordionPanel({
 }: AccordionPanelProps): ReactElement {
   const disclosure = useContext(DisclosureContext)
   return (
-    <DisclosurePanel
-      {...otherProps}
-      {...(region && disclosure !== null
-        ? { role: 'region', 'aria-labelledby': disclosure.triggerId }
-        : {})}
-      className={className === undefined ? 'kv-accordion-panel' : `kv-accordion-panel ${className}`}
-    />
+    <DisclosureOwnerContext.Provider value="Accordion">
+      <DisclosurePanel
+        {...otherProps}
+        {...(region && disclosure !== null
+          ? { role: 'region', 'aria-labelledby': disclosure.triggerId }
+          : {})}
+        className={
+          className === undefined ? 'kv-accordion-panel' : `kv-accordion-panel ${className}`
+        }
+      />
+    </DisclosureOwnerContext.Provider>
   )
 }
 AccordionPanel.displayName = 'Accordion.Panel'

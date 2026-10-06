@@ -1,9 +1,9 @@
 # Accessibility contract: Menu (Root, Trigger, Popup, Item, CheckboxItem, RadioGroup, RadioItem, Separator, Group, GroupLabel)
 
 - **APG pattern:** [Menu Button](https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/) (the [Actions Menu Button](https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/examples/menu-button-actions/) example) and the menu roles of [Menubar](https://www.w3.org/WAI/ARIA/apg/patterns/menubar/) (`menuitemcheckbox`, `menuitemradio`, groups, separators).
-- **Deviations:** none from the APG keyboard practice. Decisions (Plan 0070): no submenus and no `menubar` in v1, so ArrowLeft and ArrowRight are not handled; a disabled item stays focusable with `aria-disabled` (the APG's own rule for composites); items are `<button>`s; pointer movement over an item focuses it (one highlight).
+- **Deviations:** none from the APG keyboard practice. Decisions, defaults pending the maintainer (`docs/design/menu.md`; `docs/roadmap.md` "Open maintainer decisions"): no submenus and no `menubar` in v1, so ArrowLeft and ArrowRight are not handled; a disabled item stays focusable with `aria-disabled` (the APG's own rule for composites); items are `<button>`s; pointer movement over an item focuses it (one highlight).
 - **Native elements used:** `<button>` (Trigger and every item), `<div popover="auto" role="menu">` (Popup), `<div role="group">` (Group, RadioGroup), `<div role="separator">`. Nothing for Root: it renders no element.
-- **Status:** alpha candidate (Plan 0070). Manual AT is `pending`.
+- **Status:** alpha candidate (see `docs/design/menu.md`). Manual AT is `pending`.
 - **Tests:** `menu.test.tsx` next to this file, `../popup/use-popup.test.tsx` and `../popup/use-dismissable-layer.test.tsx`, and `typeahead/*.test.ts` in `@kvirn-ui/core`. `menu.stories.tsx` in `apps/storybook/src/components/menu/`.
 
 A Menu is a short list of **actions** that a button opens: print, share, delete. It is not navigation: links to pages belong in a `Navigation` or a `Disclosure`, never in `role="menu"`, because a screen reader then switches to a mode that does not read links as links. The browser puts the menu in the top layer, KvirnUI places it next to the button, and focus moves onto its items as the user arrows through them. Enter or Space runs an item, closes the menu and returns focus to the button. Escape and a press outside close it.

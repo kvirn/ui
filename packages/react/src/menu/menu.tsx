@@ -4,7 +4,7 @@ import type { ComponentPropsWithRef, FocusEvent, MouseEvent, ReactElement, React
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
+import { renderPart, takeRenderElementProps } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
 import { ToolbarContext } from '../toolbar/toolbar-context.ts'
 import { MenuContext, MenuGroupContext, MenuRadioGroupContext } from './menu-context.ts'
@@ -223,6 +223,8 @@ function useMenuItemElement(
   const menu = useContext(MenuContext)
   const elementRef = useRef<HTMLButtonElement | null>(null)
   const mergedRef = useMergedRef(ref, elementRef)
+  const { render: renderWithoutClick, takenProps } = takeRenderElementProps(render, ['onClick'])
+  const elementOnClick = takenProps.onClick
   const [isHighlighted, setIsHighlighted] = useState(false)
   useWarnOutsideRoot(part, menu === null)
   useEffect(() => {
@@ -248,13 +250,20 @@ function useMenuItemElement(
     },
   })
   return renderPart({
-    render,
+    render: renderWithoutClick,
     defaultElement: 'button',
     partProps: {
       ...mergeProps(
         {
           ...otherProps,
-          onClick: disabled ? undefined : onClick,
+          onClick: disabled
+            ? undefined
+            : (event: MouseEvent<HTMLButtonElement>) => {
+                onClick?.(event)
+                if (typeof elementOnClick === 'function') {
+                  elementOnClick(event)
+                }
+              },
           onFocus: (event: FocusEvent<HTMLButtonElement>) => {
             setIsHighlighted(true)
             onFocus?.(event)

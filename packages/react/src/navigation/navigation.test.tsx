@@ -198,12 +198,12 @@ describe('rendering', () => {
     await expect.element(navigation).toHaveClass('kv-navigation')
   })
 
-  test('adds no role, tabindex or other ARIA of its own, and is never a Tab stop', async () => {
+  test('adds no tabindex or other ARIA of its own, only the list role, and is never a Tab stop', async () => {
     await render(<MainMenu />)
     for (const element of document.querySelectorAll(
       '.kv-navigation, .kv-navigation-list, .kv-navigation-item',
     )) {
-      expect(element.getAttributeNames()).not.toContain('role')
+      expect(element.getAttribute('role')).toBe(element.tagName === 'UL' ? 'list' : null)
       expect(element.getAttributeNames()).not.toContain('tabindex')
       expect(element.getAttributeNames().filter((name) => name.startsWith('aria-'))).toEqual(
         element.matches('nav') ? ['aria-label'] : [],
@@ -786,7 +786,7 @@ describe('server rendering', () => {
       </Navigation.Root>,
     )
     expect(html).toBe(
-      '<nav class="kv-navigation" aria-label="Huvudmeny"><ul class="kv-navigation-list"><li class="kv-navigation-item"><a href="#start" class="kv-link" aria-current="page" data-current="">Start</a></li></ul></nav>',
+      '<nav class="kv-navigation" aria-label="Huvudmeny"><ul class="kv-navigation-list" role="list"><li class="kv-navigation-item"><a href="#start" class="kv-link" aria-current="page" data-current="">Start</a></li></ul></nav>',
     )
   })
 })

@@ -65,6 +65,7 @@ None new. The new-tab notice is Link's.
 
 ## Decisions
 
+- **The lists carry `role="list"`** (accessibility review): `list-style: none` drops the list role in Safari/VoiceOver (1.3.1), as in Breadcrumb. This supersedes the earlier "no `role=list`" call.
 - **Navigation is a component (`Navigation.Root/List/Item`),** not a class on a list, so the landmark and its label are not the consumer's job.
 - **The service link is a Link look,** not a Button, because it navigates. It is the class `kv-link--service`, not a `variant` prop (design spec §8): headless Link ships no CSS, as Button exposes `primary`.
 - Both needed the maintainer's approval of the design spec before code (a visual change): given with the plan, 2026-10-04.

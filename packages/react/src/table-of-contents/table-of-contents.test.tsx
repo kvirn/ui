@@ -277,14 +277,14 @@ describe('rendering', () => {
     await expect.element(page.getByTestId('root')).not.toHaveAttribute('data-kv')
   })
 
-  test('adds no role, tabindex or ARIA of its own, and no part is a Tab stop', async () => {
+  test('adds no tabindex or ARIA of its own, only the list role, and no part is a Tab stop', async () => {
     await render(<Page />)
     const parts = document.querySelectorAll(
       '.kv-table-of-contents, .kv-table-of-contents-list, .kv-table-of-contents-item, .kv-table-of-contents a',
     )
     expect(parts.length).toBeGreaterThan(0)
     for (const element of parts) {
-      expect(element.getAttributeNames()).not.toContain('role')
+      expect(element.getAttribute('role')).toBe(element.tagName === 'UL' ? 'list' : null)
       expect(element.getAttributeNames()).not.toContain('tabindex')
       expect(element.getAttributeNames().filter((name) => name.startsWith('aria-'))).toEqual(
         element.matches('nav') ? ['aria-labelledby'] : [],
@@ -777,7 +777,7 @@ describe('server rendering', () => {
     expect(html).toContain('href="#ansok"')
     expect(html).toContain('>Så ansöker du</a>')
     expect(html).not.toContain('aria-current')
-    expect(html.match(/<ul/g)).toHaveLength(2)
+    expect(html.match(/<ul class="kv-table-of-contents-list" role="list"/g)).toHaveLength(2)
     expect(html.match(/<li/g)).toHaveLength(3)
   })
 

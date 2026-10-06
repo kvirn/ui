@@ -20,9 +20,10 @@ export interface NavigationRootPartProps {
   'aria-label'?: string
 }
 
-/** Spread on the `<ul>`, at the top level and for every nested list. Only the part's class. */
+/** Spread on the `<ul>`, at the top level and for every nested list. The role keeps the list announced where `list-style: none` removes it. */
 export interface NavigationListPartProps {
   className: 'kv-navigation-list'
+  role: 'list'
 }
 
 /** Spread on the `<li>`. Only the part's class. */
@@ -46,7 +47,10 @@ export interface UseNavigationResult {
 }
 
 // The same objects every time, frozen, so nothing a consumer does can change another navigation.
-const listProps: NavigationListPartProps = Object.freeze({ className: 'kv-navigation-list' })
+const listProps: NavigationListPartProps = Object.freeze({
+  className: 'kv-navigation-list',
+  role: 'list',
+})
 const itemProps: NavigationItemPartProps = Object.freeze({ className: 'kv-navigation-item' })
 const labelProps: NavigationLabelPartProps = Object.freeze({ className: 'kv-navigation-label' })
 
@@ -58,7 +62,7 @@ export function hasLabel(label: string | undefined): label is string {
 /**
  * A navigation's part classes and its name for your own elements (contract:
  * navigation.a11y.md). A navigation is a labelled `<nav>` landmark around a list of links, so
- * it adds no role, no state and no behaviour: the links own the keys, and `current` stays on
+ * it adds no state and no behaviour: the links own the keys, and `current` stays on
  * each `Link`. Nest another `<ul class="kv-navigation-list">` inside an `<li>` for a sub-list.
  *
  * @example

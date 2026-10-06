@@ -7,7 +7,7 @@ import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { renderPart, takeRenderElementProps } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
-import { DisclosureContext } from './disclosure-context.ts'
+import { DisclosureContext, DisclosureOwnerContext } from './disclosure-context.ts'
 import { useDisclosure } from './use-disclosure.ts'
 import type { UseDisclosureOptions } from './use-disclosure.ts'
 
@@ -44,7 +44,14 @@ export interface DisclosurePanelProps extends Omit<ComponentPropsWithRef<'div'>,
   render?: RenderProp<ComponentPropsWithRef<'div'>, DisclosureState> | undefined
 }
 
-function warnOutsideRoot(part: string): void {
+function warnOutsideRoot(owner: 'Disclosure' | 'Accordion', part: string): void {
+  if (owner === 'Accordion') {
+    warnOnce(
+      `accordion-${part.toLowerCase()}-outside-root`,
+      `An Accordion.${part} is outside an Accordion.Item, so it opens and closes nothing. Put it inside <Accordion.Item>.`,
+    )
+    return
+  }
   warnOnce(
     `disclosure-${part.toLowerCase()}-outside-root`,
     `A Disclosure.${part} is outside a Disclosure.Root, so it opens and closes nothing. Put it inside <Disclosure.Root>.`,
@@ -82,6 +89,7 @@ export function DisclosureTrigger({
   ...otherProps
 }: DisclosureTriggerProps): ReactElement {
   const disclosure = useContext(DisclosureContext)
+  const owner = useContext(DisclosureOwnerContext)
   const elementRef = useRef<HTMLButtonElement | null>(null)
   const mergedRef = useMergedRef(ref, elementRef)
   const { render: renderWithoutClick, takenProps } = takeRenderElementProps(render, ['onClick'])
@@ -89,7 +97,7 @@ export function DisclosureTrigger({
 
   useEffect(() => {
     if (disclosure === null) {
-      warnOutsideRoot('Trigger')
+      warnOutsideRoot(owner, 'Trigger')
       return
     }
     const element = elementRef.current
@@ -151,12 +159,13 @@ export function DisclosurePanel({
   ...otherProps
 }: DisclosurePanelProps): ReactElement {
   const disclosure = useContext(DisclosureContext)
+  const owner = useContext(DisclosureOwnerContext)
   const mergedRef = useMergedRef(ref, disclosure?.panelProps.ref ?? null)
   useEffect(() => {
     if (disclosure === null) {
-      warnOutsideRoot('Panel')
+      warnOutsideRoot(owner, 'Panel')
     }
-  }, [disclosure])
+  }, [disclosure, owner])
   return renderPart({
     render,
     defaultElement: 'div',

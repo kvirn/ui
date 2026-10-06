@@ -592,7 +592,7 @@ export const FocusVisible: Story = {
     await userEvent.tab()
     await expect(current).toHaveFocus()
     await waitFor(() => expect(current).toHaveAttribute('data-focus-visible'))
-    // 2.4.7: a focused link shows an indicator.
+    // Focus Visible (2.4.7): a focused link shows an indicator.
     await expect(getComputedStyle(current).outlineStyle).not.toBe('none')
     const next = canvas.getByRole('link', { name: 'Ansök' })
     await userEvent.tab()
