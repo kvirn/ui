@@ -2,7 +2,7 @@
 
 - **Status:** In review (maintainer decisions of 2026-10-06 applied: no fill, a 44px thumb on coarse pointers, no `Slider.Value`; §9)
 - **Designer:** ux-designer agent · **Date:** 2026-10-06
-- **Plan:** [0072](../plans/0072-slider.md) (§Design, §Risks: the track fill)
+- **Plan:** Plan 0072 (§Design, §Risks: the track fill)
 - **Type:** component default styling
 
 `Slider` is a native `<input type="range">` in a `Field.Root`, styled by the theme as `kv-slider`. The track and thumb are the input's own pseudo-elements (no extra DOM, no custom thumb), and the track has no fill. It reuses the field layout (label, description, control, help text, error) of [form-fields.md](form-fields.md) §6.2, and Switch's tokens, focus ring and forced-colours rules ([switch.md](switch.md)).

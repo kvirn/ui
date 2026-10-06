@@ -2,7 +2,7 @@
 
 - **Status:** Draft
 - **Designer:** the maintainer's look decisions (2026-10-05), written down by component-engineer · **Date:** 2026-10-05
-- **Plan:** [0048](../plans/0048-tabs.md)
+- **Plan:** Plan 0048
 - **Type:** component default styling
 
 ## 1. Brief

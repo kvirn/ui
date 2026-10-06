@@ -2,7 +2,7 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-03
-- **Plan:** [Plan 0026](../plans/0026-table-and-virtualization.md)
+- **Plan:** Plan 0026
 - **Type:** component default styling
 
 The parts, the behaviour and the accessibility contract are decided in the Table decisions and Plan 0026. This spec decides **what the Table looks like** in `packages/theme/theme.css`, so an engineer can write the `kv-table-*` section without guessing. It also lists the few places where the look needs something from the React layer (§6.18) and the decisions the maintainer must take (§9).

@@ -2,7 +2,7 @@
 
 - **Status:** Accepted (the maintainer, 2026-10-04)
 - **Designer:** ux-designer agent · **Date:** 2026-10-04
-- **Plan:** 0034 Textarea, 0035 Toggle, Toolbar and ButtonGroup, [0036 RichTextEditor](../plans/0036-rich-text-editor.md) (the new `@kvirn-ui/rich-text` package), and [0037 Tooltip](../plans/0037-tooltip.md) (a prerequisite, spec: [tooltip.md](tooltip.md))
+- **Plan:** 0034 Textarea, 0035 Toggle, Toolbar and ButtonGroup, Plan 0036 (the new `@kvirn-ui/rich-text` package), and Plan 0037 (a prerequisite, spec: [tooltip.md](tooltip.md))
 - **Type:** component default styling (+ two new components on the roadmap, + one new package, + DESIGN.md wording, see §6.10 and §9)
 - **Superseded 2026-10-05 (Plan 0045):** the Textarea and the editor take the page's direction from the provider, with no `dir` prop and no `dir="auto"` (§6.2, §6.7, §9 Q8), and there is no "Escape, then Tab" way out and no keyboard instruction under the box (§4.3, §6.6.6, §7.4): Tab leaves wherever it does not act. The sections below are the history.
 

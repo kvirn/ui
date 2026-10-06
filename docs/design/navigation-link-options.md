@@ -11,7 +11,7 @@
   - **Not chosen, kept for the record with their numbers:** A, B and D (§5), and T1 and T2 (§12.5).
   - **Still open:** Q-N1 and Q-N2 (§13.8).
 - **Designer:** ux-designer agent · **Date:** 2026-10-05
-- **Plan:** [0047](../plans/0047-navigation-t3c-and-horizontal.md). It replaces the navigation-item rows of [navigation.md](navigation.md) §6.2, §6.3 and §6.5 (Plan 0043). The service link (`kv-link--service`) doesn't change.
+- **Plan:** Plan 0047. It replaces the navigation-item rows of [navigation.md](navigation.md) §6.2, §6.3 and §6.5 (Plan 0043). The service link (`kv-link--service`) doesn't change.
 - **Type:** component default styling
 - **Prototypes:**
   - [prototypes/navigation-link-options.html](prototypes/navigation-link-options.html): the options, §2 to §12.

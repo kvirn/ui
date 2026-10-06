@@ -2,7 +2,7 @@
 
 - **Status:** Accepted (the maintainer, 2026-10-04)
 - **Designer:** ux-designer agent · **Date:** 2026-10-04
-- **Plan:** [0037 Tooltip](../plans/0037-tooltip.md). First user: the RichTextEditor's toolbar ([rich-text-editor.md](rich-text-editor.md) §6.5.5, Plan 0036)
+- **Plan:** Plan 0037. First user: the RichTextEditor's toolbar ([rich-text-editor.md](rich-text-editor.md) §6.5.5, Plan 0036)
 - **Type:** component default styling (`kv-tooltip`) and behaviour rules
 
 ## 1. Brief

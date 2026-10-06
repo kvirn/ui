@@ -1,7 +1,7 @@
 # Design spec: the visible result of CopyButton and CodeBlock.Copy
 
 - **Status:** Accepted (maintainer, 2026-10-06) · **Designer:** ux-designer agent · **Date:** 2026-10-06
-- **Plan:** [0060](../plans/0060-copy-button-and-code-block.md) · **Type:** component default styling (amends the DESIGN.md "Code block and copy button" subsection, under maintainer review)
+- **Plan:** Plan 0060 · **Type:** component default styling (amends the DESIGN.md "Code block and copy button" subsection, under maintainer review)
 
 ## 1. Brief
 

@@ -2,7 +2,7 @@
 
 - **Status:** In review (a design review of the built parts, with the target spec)
 - **Designer:** ux-designer agent · **Date:** 2026-10-02
-- **Plan:** [Plan 0022](../plans/0022-listbox-combobox-autocomplete.md)
+- **Plan:** Plan 0022
 - **Type:** component default styling (+ a design review, + proposed DESIGN.md wording)
 
 The parts and behaviour are decided in the Listbox, overlay and Combobox decisions, and specified in `listbox.a11y.md`, `combobox.a11y.md`, `autocomplete.a11y.md` and `popover.a11y.md`. This spec covers **what they look like** in the default theme (`packages/theme/theme.css`, the `kv-listbox-*`, `kv-combobox-*` and `kv-autocomplete-*` rules), and records the review of the built parts. The parts were built before this spec (Plan 0022, "Design spec: none yet"), so §6 describes the target and marks every difference from the build with **→ change** and a finding id from §8.

@@ -2,7 +2,7 @@
 
 - **Status:** Approved (the maintainer accepted Plan 0043, 2026-10-04)
 - **Designer:** ux-designer agent · **Date:** 2026-10-04
-- **Plan:** [0043](../plans/0043-navigation-and-service-link.md)
+- **Plan:** Plan 0043
 - **Type:** component default styling
 
 ## 1. Brief

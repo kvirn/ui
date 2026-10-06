@@ -2,7 +2,7 @@
 
 - **Status:** Draft, revised after the independent WCAG review (changelog at the end of §10). §9 Q4 is still open
 - **Designer:** ux-designer agent · **Date:** 2026-10-02
-- **Plan:** [Plan 0021](../plans/0021-file-upload.md)
+- **Plan:** Plan 0021
 - **Type:** new component (headless) + default-theme styling + one DESIGN.md rule addition (§6.4)
 
 ## 0. Decisions on FileUpload

@@ -2,7 +2,7 @@
 
 - **Status:** Draft. Updated 2026-10-02 for the field-order decision (default order, several help texts, InputGroup), and 2026-10-03 for the Prose-as-description decision (the help text is a `Prose`, not `Field.Description`)
 - **Designer:** ux-designer agent · **Date:** 2026-10-02
-- **Plan:** [Plan 0013](../plans/0013-form-fields.md) (Phase 1b)
+- **Plan:** Plan 0013 (Phase 1b)
 - **Terminology (Plan 0029, 2026-10-04):** this spec was written when a `Prose` in a Field was called "the help text". Since Plan 0029 a `Prose` is the **description** (above the control, 16px) and a **help text** is a `Field.HelpText` (14px), always under the control, never above it. Read every "hint above" below as the description, and every "hint under" as the help text. [field-help-text.md](field-help-text.md) is the current rule and supersedes this spec where they differ. Plan 0041 renamed the part `Hint` to `HelpText`, in this spec too.
 - **Type:** component default styling (+ component tokens, + `theme:check` pairs, + Storybook pages, + DESIGN.md wording)
 

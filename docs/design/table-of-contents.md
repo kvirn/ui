@@ -2,7 +2,7 @@
 
 - **Status:** Draft, for the maintainer's approval round with Plan 0049.
 - **Designer:** ux-designer agent · **Date:** 2026-10-05
-- **Plan:** [0049](../plans/0049-table-of-contents.md)
+- **Plan:** Plan 0049
 - **Type:** component default styling. The API and behaviour are the plan's. This spec decides the look and the content rules.
 - **Prototype:** [prototypes/table-of-contents.html](prototypes/table-of-contents.html). Open it from disk. It links the real `packages/theme/theme.css` and IBM Plex files, makes no network request and runs no script. Each layout has an article beside its contents list, with an active state forced (no scroll-spy). The designer couldn't render it (the subagent guard blocks Playwright).
 
