@@ -14,7 +14,7 @@ A typed headless core with thin React bindings, built the TanStack way: behaviou
 - **Headless, with you in control.** Hooks for full control, thin components for convenience.
 - **Easy to theme.** State is exposed through `data-*` attributes and design tokens are CSS custom properties, so Tailwind, CSS Modules or plain CSS all work. An optional default theme passes contrast checks in light, dark and forced-colors modes.
 - **Built for Nordic public services.** Swedish, Finnish, Norwegian (Bokmål and Nynorsk), Northern Sámi and English strings ship as standard.
-- **Compliance you can hand to procurement.** Each release comes with a per-component conformance report, an SBOM and no telemetry. Licensed MIT.
+- **Compliance you can hand to procurement.** Each release comes with a per-component conformance report, an SBOM and no telemetry. Licensed AGPL-3.0, with a free permission for personal, hobby, research and open-source use and a commercial licence for organisations ([LICENSING.md](LICENSING.md)).
 
 ## Packages
 
@@ -60,7 +60,7 @@ Requires Node 22+, pnpm 10+ and [Vite+](https://viteplus.dev) (`vp`).
 ```sh
 pnpm install
 vp run storybook     # component workbench (apps/storybook)
-vp run docs          # docs site (apps/docs, Next.js)
+vp run docs          # docs site (apps/docs, Next.js) on the built packages, with the packages rebuilding on save
 vp check             # format + lint + typecheck
 vp run test          # Vitest: core, components in a real browser (keyboard, axe) and every story
 ```
@@ -69,4 +69,4 @@ Project docs: [docs/](docs/README.md). Rules for humans and agents: [AGENTS.md](
 
 ## License
 
-MIT © KvirnUI contributors
+[AGPL-3.0](LICENSE) © KvirnUI, with an additional permission for personal, hobby, research and open-source use, and a commercial licence for everyone else. Read [LICENSING.md](LICENSING.md). Contact: magnus@vike.se.

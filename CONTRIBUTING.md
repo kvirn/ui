@@ -12,4 +12,6 @@ Humans and AI agents follow the same workflow, quality gates and hard rules. The
 3. Create a branch named `feat/<component>` or `fix/<component>-<issue>`, and use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/), for example `feat(react): add Button` or `fix(i18n): add missing Sámi string`. The `commit-msg` hook and CI reject anything else, and the PR title must follow the same format.
 4. Meet every quality gate and add a changeset (`pnpm changeset`).
 
+5. Contributions are licensed under the AGPL, and you grant the maintainer the right to relicense them, including commercially ([LICENSING.md](LICENSING.md#contributions)).
+
 Be kind. Accessibility work is about people.
