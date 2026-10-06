@@ -56,6 +56,12 @@ const providerRows = propRows<KvirnProviderProps>({
     default: '–',
     description: 'Defaults and storage for the theme. Read by the outermost provider only.',
   },
+  toast: {
+    type: '{ limit?: number; autoDismiss?: boolean | number }',
+    default: '{ limit: 10, autoDismiss: false }',
+    description:
+      'Options for the toast region the provider renders. Read by the first provider that mounts; a later one’s is ignored. See Toasts.',
+  },
   env: {
     type: 'Env',
     default: 'The page, after hydration',
@@ -208,6 +214,8 @@ const themeSwitcher = `const theme = useTheme()
 />`
 
 const themeScript = `<KvirnThemeScript nonce={nonce} defaultColorScheme="system" defaultContrast="system" />`
+
+const toastOptions = `<KvirnProvider toast={{ limit: 10, autoDismiss: false }}>`
 
 const announce = `const { announce } = useAnnouncer()
 
@@ -444,6 +452,28 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
                 <Link href="/components/announcer">Announcer</Link> for politeness and throttling.
               </p>
               <Note kind="reminder">{messages.docs.note.announcerProvider}</Note>
+            </>
+          ),
+        },
+        {
+          id: 'toasts',
+          label: 'Toasts',
+          content: (
+            <>
+              <p>
+                Every provider on a page shares one toast list and one region, which{' '}
+                <code>useToast()</code> shows toasts in. The first provider that mounts renders it
+                after its children, in the top layer, and its <code>toast</code> options are the
+                ones used. The region exists only while a toast is shown. The <code>toast</code>{' '}
+                prop sets how many toasts show at once (<code>limit</code>, default 10) and whether
+                they time out (<code>autoDismiss</code>, default <code>false</code>: nothing times
+                out). Tie <code>autoDismiss</code> to a setting the user can change (WCAG 2.2.1).
+              </p>
+              <CodeBlock code={toastOptions} />
+              <p>
+                A toast is a second channel for a result that is also shown in place. See{' '}
+                <Link href="/components/toast">Toast</Link> for when not to use one.
+              </p>
             </>
           ),
         },

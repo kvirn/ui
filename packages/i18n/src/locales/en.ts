@@ -282,4 +282,5 @@ export const en = {
   },
   errorSummary: { title: 'There is a problem', titlePrefix: 'Error:' },
   summaryList: { change: 'Change' },
+  toast: { regionLabel: 'Messages' },
 } satisfies KvirnMessages

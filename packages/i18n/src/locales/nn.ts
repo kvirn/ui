@@ -290,4 +290,5 @@ export const nn = {
   },
   errorSummary: { title: 'Det er eit problem', titlePrefix: 'Feil:' },
   summaryList: { change: 'Endre' },
+  toast: { regionLabel: 'Meldingar' },
 } satisfies KvirnMessages

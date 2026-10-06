@@ -7,6 +7,7 @@ import type { KvirnMessages } from '../types.ts'
 // skipLink.label is one too ("Skip to main content", Plan 0054), and so is routeFocus.navigated. errorSummary and summaryList (Plan 0063) are placeholders too.
 // copyButton.* are English placeholders too (Plan 0060).
 // dialog.close is a native-speaker review item like alert.close (Plan 0067).
+// toast.regionLabel is one too (Plan 0071).
 // breadcrumb.* and pagination.* are English placeholders too (Plan 0062): a native speaker
 // still has to write them.
 export const se = {
@@ -313,4 +314,5 @@ export const se = {
   },
   errorSummary: { title: 'There is a problem', titlePrefix: 'Error:' },
   summaryList: { change: 'Change' },
+  toast: { regionLabel: 'Dieđáhusat' },
 } satisfies KvirnMessages

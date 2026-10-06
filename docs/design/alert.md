@@ -145,7 +145,7 @@ DESIGN.md Content & Voice applies. Specific to alerts:
 6. **Info** is for something the user needs to know before they act. If it isn't needed for the task, leave it out: alerts compete with the task.
 7. **Actions:** at most two, verbs ("Försök igen", "Förnya parkeringstillstånd"). Links for navigation, Buttons for actions. No "OK", "Stäng" or "Läs mer".
 8. **One alert per region at a time.** Combine messages into one (GOV.UK, Designsystemet). Two danger alerts on one page means the page is broken.
-9. **Never on a timer.** It stays until the situation changes or the user leaves (2.2.1, 2.2.3).
+9. **Never on a timer.** It stays until the situation changes or the user leaves (2.2.1, 2.2.3). The transient kind is [Toast](toast.md) (Plan 0071), which is info and success only: a warning or danger message never toasts, it is an Alert.
 10. **Plain language, short sentences, no idioms**: second-language readers and easy-to-read (_lättläst_, _selkokieli_) versions must work.
 11. **Pick the status by what happened, not by the colour you want.** If no status fits, it isn't an alert (§3.2).
 
@@ -590,7 +590,7 @@ and add two rows after it:
 - **D6. The error summary uses the danger Alert bar,** not a full danger border. DESIGN.md changes (§9.2).
 - **D7. Radius `sm`** (4px). The design review of the stories still checks the corner join between the 4px bar and the 1px edges at 200% zoom, as polish.
 - **D8. The title is sans,** 18px weight 600 (1rem in compact).
-- **D9. Toast (M3) reuses the Alert look,** the status words and the icons.
+- **D9. Toast (M3) reuses the Alert look,** the status words and the icons. Built in Plan 0071 as `useToast()` with a host in `KvirnProvider`: info and success only, persistent by default. Warning and danger never toast.
 - **D10. The landmark option is documented:** `render={<section aria-labelledby>}` for one site-wide alert only.
 - **D11. Inset text** isn't an Alert, and gets no class now: a paragraph or prose's `blockquote`. Revisit if adopters ask.
 - **D12. Dismissing is optional** (§7.5). Superseded: v1 had no close button; the maintainer added an optional one on 2026-10-05 (Plan 0045).

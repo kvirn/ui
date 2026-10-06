@@ -113,6 +113,7 @@ const componentGroups: readonly NavigationGroup[] = [
       page('Popover', 'popover'),
       page('RadioGroup', 'radio-group'),
       page('Switch', 'switch'),
+      page('Toast', 'toast'),
       page('Toggle', 'toggle'),
       page('Tooltip', 'tooltip'),
     ],

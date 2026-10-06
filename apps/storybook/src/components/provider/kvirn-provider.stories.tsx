@@ -47,6 +47,11 @@ const meta = {
     messages: { control: 'object' },
     dir: { control: 'inline-radio', options: [undefined, 'ltr', 'rtl'] },
     theme: { control: 'object', description: 'Theme defaults and storage. Read once.' },
+    toast: {
+      control: 'object',
+      description:
+        'The toast region: `{ limit?: number, autoDismiss?: boolean | number }`. Defaults: `limit` 10 (the most shown; the next is ignored), `autoDismiss` false (no timers).',
+    },
     linkComponent: { control: false },
     env: { control: false },
     children: { control: false },

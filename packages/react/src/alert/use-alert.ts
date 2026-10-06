@@ -136,8 +136,8 @@ export interface UseAlertResult {
   statusProps: AlertStatusPartProps | undefined
 }
 
-/** What a screen reader would read: the text, with block boundaries as spaces. */
-function readText(element: HTMLElement | null): string {
+/** Internal. What a screen reader would read: the text, with block boundaries as spaces. */
+export function readText(element: HTMLElement | null): string {
   if (element === null) {
     return ''
   }

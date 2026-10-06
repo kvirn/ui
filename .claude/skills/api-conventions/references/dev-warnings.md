@@ -77,6 +77,14 @@ Each is a `warnOnce` call (see SKILL.md, Developer warnings). Format of the key 
 | `Listbox.OptionText` (and Combobox, Autocomplete) | its text differs from the option's `itemToString`, which typeahead, filtering and the trigger's value use (`listbox-option-text-mismatch:<label>`, 2.5.3)                                                                                         | normalised text content vs. `itemToString`, effect |
 | messages                                          | an empty override (falls through); a missing translation for a non-`en` locale                                                                                                                                                                    |
 | `Announcer` use                                   | no `KvirnProvider`: `useAnnouncer` warns once and does nothing; a mask without one warns on the first refused character                                                                                                                           |
+| `useToast`                                        | no `KvirnProvider`: every call does nothing (`toast-without-provider`)                                                                                                                                                                            |
+| `useToast().show`                                 | called before the provider has mounted, such as while server rendering (`toast-show-before-mount`); the toast is dropped                                                                                                                          |
+| `useToast().show`                                 | `autoDismiss` asked for a timer but the toast has an action, so it never times out (`toast-timer-dropped`, 2.2.1)                                                                                                                                 |
+| `useToast`                                        | a toast that held focus was removed and nothing could take focus back (`toast-return-focus-lost`, 2.4.3)                                                                                                                                          |
+| `useToast().show`                                 | `variant` is not `info` or `success`: there is no warning or danger toast, it is shown as info (`toast-unsupported-variant:<variant>`)                                                                                                            |
+| `KvirnProvider`                                   | a nested provider got `toast`, which is ignored (`nested-toast`)                                                                                                                                                                                  |
+| `KvirnProvider`                                   | a second provider on the page got `toast`, which is ignored (`toast-multiple-providers`)                                                                                                                                                          |
+| `useToast().show`                                 | the limit is reached and nothing could make room: the toast is ignored, not queued (`toast-limit-reached`)                                                                                                                                        |
 | `FileUpload`                                      | the browser cannot set the native input's `files` through `DataTransfer`; `Trigger` activated with no `FileUpload.Input`                                                                                                                          |
 
 ## Dialog and AlertDialog
@@ -100,13 +108,13 @@ Each is a `warnOnce` call (see SKILL.md, Developer warnings). Format of the key 
 
 ## Menu
 
-| Where             | Fires when                                                                                                                       |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `Menu.Trigger`    | `render` produced something that is not a `<button>` (`menu-trigger-not-a-button:<element>`, 2.1.1, 4.1.2, effect)               |
-| `Menu.Item`       | rendered as `<a href>`: a menu holds actions, never navigation (`menu-item-navigation`, effect)                                  |
-| `Menu.RadioGroup` | no `aria-label` or `aria-labelledby` (`menu-radio-group-without-name`, 1.3.1, 4.1.2, effect)                                     |
-| `Menu.Group`      | no `Menu.GroupLabel` and no `aria-label` or `aria-labelledby` (`menu-group-without-name`, 1.3.1, 4.1.2, effect)                  |
-| `Menu.*`          | a part outside a `Menu.Root` (`menu-<part>-outside-root`, effect)                                                                |
+| Where             | Fires when                                                                                                         |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `Menu.Trigger`    | `render` produced something that is not a `<button>` (`menu-trigger-not-a-button:<element>`, 2.1.1, 4.1.2, effect) |
+| `Menu.Item`       | rendered as `<a href>`: a menu holds actions, never navigation (`menu-item-navigation`, effect)                    |
+| `Menu.RadioGroup` | no `aria-label` or `aria-labelledby` (`menu-radio-group-without-name`, 1.3.1, 4.1.2, effect)                       |
+| `Menu.Group`      | no `Menu.GroupLabel` and no `aria-label` or `aria-labelledby` (`menu-group-without-name`, 1.3.1, 4.1.2, effect)    |
+| `Menu.*`          | a part outside a `Menu.Root` (`menu-<part>-outside-root`, effect)                                                  |
 
 ## RichTextEditor (`@kvirn-ui/rich-text`)
 

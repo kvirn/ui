@@ -290,4 +290,5 @@ export const sv = {
   },
   errorSummary: { title: 'Det finns ett problem', titlePrefix: 'Fel:' },
   summaryList: { change: 'Ändra' },
+  toast: { regionLabel: 'Meddelanden' },
 } satisfies KvirnMessages

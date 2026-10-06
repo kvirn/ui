@@ -10,7 +10,15 @@ import {
 } from '@kvirn-ui/core'
 import type { Direction, Env, MaskCountry, ThemeOptions } from '@kvirn-ui/core'
 import type { PartialMessages } from '@kvirn-ui/i18n'
-import { useContext, useEffect, useMemo } from 'react'
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react'
 import type { ReactNode } from 'react'
 import { Announcer } from '../announcer/announcer.tsx'
 import { AnnouncerContext } from '../announcer/announcer-context.ts'
@@ -21,6 +29,24 @@ import { KvirnConfigContext, ThemeStoreContext } from './provider-context.ts'
 import type { KvirnConfig } from './provider-context.ts'
 import type { RegisteredLinkComponent } from './register.ts'
 import { useEnv } from './use-env.ts'
+import { ToastContext } from '../toast/toast-context.ts'
+import { createToastController, getToastController } from '../toast/toast-controller.ts'
+import { ToastRegion } from '../toast/toast-region.tsx'
+
+export interface KvirnToastOptions {
+  /**
+   * The most toasts that show at once. Default 10. Past it the oldest toast that may time out is
+   * removed for the new one, and if there is none (or the user is on a toast) the new toast is
+   * ignored with a development warning: it is not queued. Read by the first provider on the page.
+   */
+  limit?: number | undefined
+  /**
+   * `false` (default): no toast times out. `true`: an info or success toast without an action times
+   * out after `max(10 s, 100 ms × characters)`. A number from 1 to 10 multiplies that time: tie it
+   * to a user setting such as "keep messages longer" (WCAG 2.2.1).
+   */
+  autoDismiss?: boolean | number | undefined
+}
 
 export interface KvirnProviderProps {
   children?: ReactNode
@@ -57,16 +83,23 @@ export interface KvirnProviderProps {
    * when the document's theme store is created.
    */
   theme?: ThemeOptions | undefined
+  /**
+   * Limit and timing of `useToast()`. Read by the outermost provider only, which renders the
+   * toast region after its children while a toast shows.
+   */
+  toast?: KvirnToastOptions | undefined
   /** The window and document to use, for iframes, shadow roots and tests. */
   env?: Env | undefined
 }
+
+const getNoHost = () => undefined
 
 /**
  * Optional. Gives every KvirnUI component its locale, strings, direction, date settings,
  * router link and icons, and owns the document's theme preference. The outermost provider also
  * renders the two visually hidden live regions behind `useAnnouncer()`, after its
- * children. It renders no other element: spread `useLocale().localeProps` where the language
- * changes.
+ * children, and the toast region behind `useToast()` while a toast shows. It renders no other
+ * element: spread `useLocale().localeProps` where the language changes.
  */
 export function KvirnProvider({
   children,
@@ -79,11 +112,13 @@ export function KvirnProvider({
   icons: iconsProp,
   iconDefaults: iconDefaultsProp,
   theme,
+  toast,
   env: envProp,
 }: KvirnProviderProps) {
   const parentConfig = useContext(KvirnConfigContext)
   const parentThemeStore = useContext(ThemeStoreContext)
   const parentAnnouncer = useContext(AnnouncerContext)
+  const parentToast = useContext(ToastContext)
   const inheritedEnv = useEnv()
 
   const locale = localeProp ?? parentConfig.locale
@@ -198,11 +233,67 @@ export function KvirnProvider({
     [parentAnnouncer, announcer],
   )
 
+  if (parentToast !== null && toast !== undefined) {
+    warnOnce(
+      'nested-toast',
+      'A nested <KvirnProvider> received `toast`, which is ignored: only the outermost provider of a tree takes part: configure `toast` there (and see `toast-multiple-providers` for several trees).',
+    )
+  }
+  const toastLimit = toast?.limit
+  const toastAutoDismiss = toast?.autoDismiss
+  // One controller per document, shared by every provider on the page (`getToastController`). The
+  // first outermost provider to mount is the host: it owns the options and renders the region, and
+  // the next one takes over if it unmounts. Registered in a layout effect, which runs before the
+  // passive effects where an app normally shows its first toast.
+  const toastController = useMemo(
+    () =>
+      parentToast ??
+      (env === undefined ? createToastController(undefined) : getToastController(env)),
+    [parentToast, env],
+  )
+  // Not `useId`: two React roots that hydrate without an `identifierPrefix` get the same ids.
+  const [toastProviderId] = useState(() => Symbol('kvirn-toast-provider'))
+  const isToastOutermost = parentToast === null
+  const hostId = useSyncExternalStore(
+    toastController.subscribeHost,
+    toastController.getHostId,
+    getNoHost,
+  )
+  const initialToast = useRef({
+    options: { limit: toastLimit, autoDismiss: toastAutoDismiss },
+    isConfigured: toast !== undefined,
+  })
+  useLayoutEffect(
+    () =>
+      isToastOutermost
+        ? toastController.register(
+            toastProviderId,
+            initialToast.current.options,
+            initialToast.current.isConfigured,
+          )
+        : undefined,
+    // The options are applied by the effect below, so a change never unregisters the provider.
+    [isToastOutermost, toastController, toastProviderId],
+  )
+  useLayoutEffect(() => {
+    if (isToastOutermost) {
+      toastController.updateOptions(toastProviderId, {
+        limit: toastLimit,
+        autoDismiss: toastAutoDismiss,
+      })
+    }
+  }, [isToastOutermost, toastController, toastProviderId, toastLimit, toastAutoDismiss])
+
   return (
     <KvirnConfigContext.Provider value={config}>
       <ThemeStoreContext.Provider value={themeStore}>
         <AnnouncerContext.Provider value={announcer}>
-          {children}
+          <ToastContext.Provider value={toastController}>
+            {children}
+            {isToastOutermost && hostId === toastProviderId ? (
+              <ToastRegion controller={toastController} />
+            ) : null}
+          </ToastContext.Provider>
           {parentAnnouncer === null ? <Announcer announcer={announcer} /> : null}
         </AnnouncerContext.Provider>
       </ThemeStoreContext.Provider>

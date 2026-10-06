@@ -471,6 +471,10 @@ export interface KvirnMessages {
     /** Announced (assertive) when the browser refused. The component also selects the text. */
     failed: TextMessage
   }
+  toast: {
+    /** The accessible name of the toast region, a landmark that exists while a toast is shown. Owned by Toast (Plan 0071). */
+    regionLabel: TextMessage
+  }
 }
 
 /** Any subset of namespaces and keys, for provider and `defineMessages` overrides. */

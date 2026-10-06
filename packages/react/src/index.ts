@@ -3,7 +3,7 @@
 // Public API. The whole entry is client code. `useStoreSelector`, `useMessages`,
 // `useEnv` and `useLinkComponent` are internal by design (Plan 0002).
 export { KvirnProvider } from './provider/kvirn-provider.tsx'
-export type { KvirnProviderProps } from './provider/kvirn-provider.tsx'
+export type { KvirnProviderProps, KvirnToastOptions } from './provider/kvirn-provider.tsx'
 export { KvirnThemeScript } from './provider/kvirn-theme-script.tsx'
 export type { KvirnThemeScriptProps } from './provider/kvirn-theme-script.tsx'
 export { useLocale } from './provider/use-locale.ts'
@@ -15,6 +15,8 @@ export type { UseFormatResult } from './provider/use-format.ts'
 export { useTheme } from './provider/use-theme.ts'
 export type { UseThemeResult } from './provider/use-theme.ts'
 export type { Register, RegisteredLinkComponent } from './provider/register.ts'
+export { useToast } from './toast/use-toast.ts'
+export type { ToastShowOptions, ToastVariant, UseToastResult } from './toast/use-toast.ts'
 export { useAnnouncer } from './announcer/use-announcer.ts'
 export type { UseAnnouncerResult } from './announcer/use-announcer.ts'
 export { useRouteFocus } from './route-focus/use-route-focus.ts'

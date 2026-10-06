@@ -79,6 +79,12 @@ Load `keyboard` and `accessibility` with this skill. Keys for these patterns are
 - Reasons for `onOpenChange`: `trigger-press`, `key`, `item-press`, `escape`, `outside-press`, `light-dismiss`, `tab`, `focus-out`. Tab closes without `preventDefault`, and a Tab or focus-out close skips the focus return (focus stays where it went). A checkbox or radio change is not announced after the menu closes (known issue).
 - Menu is for actions. Navigation is `Navigation` or `Disclosure`, never `role="menu"`.
 
+### Toast
+
+- `useToast()` and a host that `KvirnProvider` renders (`toast={{ limit, autoDismiss }}`), no `Toast.Provider` (Plan 0071, contract: `toast.a11y.md`). Info and success only: a warning or an error is an `Alert`, never a toast. Items are built from Alert parts.
+- The region is a `<section popover="manual">` named by `toast.regionLabel`, rendered only while a toast exists, with no `role` and no `aria-live`. The provider announces the toasts of one commit as one polite message. Showing never moves focus (`focus: true` is opt-in, user-initiated only).
+- Persistent by default. A timer (`autoDismiss`) only for a toast without an action, never below `max(10 s, 100 ms × characters)`, paused on hover, focus, a hidden tab and a blurred window. Escape closes a toast only while focus is inside it (a layer on the stack only then). New toasts are held while a modal `<dialog>` is open.
+
 ### FocusScope (planned)
 
 - Not built. Purpose: return focus to the action that triggered a modal when it closes, also when the trigger is gone, and scope focus for non-native surfaces.

@@ -290,4 +290,5 @@ export const nb = {
   },
   errorSummary: { title: 'Det er et problem', titlePrefix: 'Feil:' },
   summaryList: { change: 'Endre' },
+  toast: { regionLabel: 'Meldinger' },
 } satisfies KvirnMessages

@@ -295,4 +295,5 @@ export const fi = {
   },
   errorSummary: { title: 'Lomakkeessa on virheitä', titlePrefix: 'Virhe:' },
   summaryList: { change: 'Muuta' },
+  toast: { regionLabel: 'Ilmoitukset' },
 } satisfies KvirnMessages

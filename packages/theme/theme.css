@@ -82,6 +82,7 @@
  *  10. Card
  *  10a. Section          kv-section: a region of the page, elevation level 1
  *  10b. Alert            kv-alert: a status message, by status class
+ *  10f. Toast            kv-toast-region, kv-toast: a floating status message, level 3, after Alert
  *  10e. Dialog           kv-dialog: a modal sheet or centred box, level 4, and the scroll lock
  *  10d. Summary list and error summary  kv-summary-list: rows of key, value and action. kv-error-summary: the problems of a failed submit
  *  10c. Layout           kv-container, kv-stack, kv-columns, kv-sidebar-layout: where children sit
@@ -3728,6 +3729,131 @@
 
     .kv-alert-close:is(:focus-visible, [data-focus-visible]) {
       outline-color: Highlight;
+    }
+  }
+
+  /* 10f. Toast --------------------------------------------------------------------------------
+   * <KvirnProvider> renders <section class="kv-toast-region" popover="manual"> once, while a toast
+   * exists, in the top layer. Inside it <ol class="kv-toast-list"> holds <li class="kv-toast-item">,
+   * and each item wraps an Alert root with kv-toast (its status look is kv-alert--*). React sets
+   * data-placement="block-start" on the region when it would cover the focused element (2.4.11);
+   * otherwise it sits at the block end. React limits the stack (up to 10): this section only lays the list out, and the region scrolls
+   * beyond 50dvh. No new tokens: the sizes are rule-local, and
+   * the two inputs an adopter can set on :root are read with a fallback:
+   *
+   *   --kv-toast-offset-block-start  the block-start variant's inset, for a sticky header (space-4)
+   *   --kv-toast-scroll-padding      room kept clear at the block end of the page (12rem, at most half the viewport)
+   *
+   * Level 3 depth: --kv-shadow-popup (none in the dark and contrast themes) and a border-subtle
+   * hairline on the three sides that are not the bar. It fades in when the user allows motion and
+   * leaves instantly. Design spec: docs/design/toast.md.
+   */
+  .kv-toast-region {
+    --kv-toast-edge: var(--kv-space-3);
+    --kv-toast-inset-inline: max(
+      var(--kv-toast-edge),
+      env(safe-area-inset-left),
+      env(safe-area-inset-right)
+    );
+    --kv-toast-inset-block: max(var(--kv-toast-edge), env(safe-area-inset-bottom));
+    position: fixed;
+    box-sizing: border-box;
+    inset: auto;
+    inset-block-end: var(--kv-toast-inset-block);
+    inset-inline: var(--kv-toast-inset-inline);
+    inline-size: calc(100% - 2 * var(--kv-toast-inset-inline));
+    max-inline-size: 100%;
+    /* Never taller than the viewport, so at 400% zoom with text spacing every toast can be scrolled
+     * to (1.4.10, 1.4.12), and on a short viewport never more than half of it, so the other half
+     * stays clear for the focused control (2.4.11). The native scrollbar stays visible. The padding keeps the focus rings
+     * and the shadow of the items inside from being clipped. */
+    max-block-size: min(calc(100dvh - var(--kv-toast-inset-block) - var(--kv-toast-edge)), 50dvh);
+    margin: 0;
+    padding: calc(var(--kv-focus-ring-width) + var(--kv-focus-ring-offset));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 0;
+    background-color: transparent;
+    color: inherit;
+  }
+
+  .kv-toast-region[data-placement='block-start'] {
+    --kv-toast-inset-block: max(
+      var(--kv-toast-offset-block-start, var(--kv-space-4)),
+      env(safe-area-inset-top)
+    );
+    inset-block: var(--kv-toast-inset-block) auto;
+  }
+
+  @media (width >= 40rem) {
+    .kv-toast-region {
+      --kv-toast-edge: var(--kv-space-4);
+      inset-inline: auto var(--kv-toast-inset-inline);
+      inline-size: min(100% - 2 * var(--kv-toast-inset-inline), 24rem);
+    }
+  }
+
+  .kv-toast-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--kv-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .kv-toast-item {
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .kv-toast {
+    border-block-color: var(--kv-color-border-subtle);
+    border-inline-end-color: var(--kv-color-border-subtle);
+    box-shadow: var(--kv-shadow-popup);
+  }
+
+  /* The region covers the page's last (or, moved, first) lines, so a focused element scrolls clear of it. */
+  :root:has(.kv-toast-region) {
+    scroll-padding-block-end: var(--kv-toast-scroll-padding, min(12rem, 50dvh));
+  }
+
+  :root:has(.kv-toast-region[data-placement='block-start']) {
+    scroll-padding-block: var(--kv-toast-scroll-padding, min(12rem, 50dvh)) 0;
+  }
+
+  .kv-toast-region:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .kv-toast-item {
+      animation: kv-toast-fade-in var(--kv-duration-medium) var(--kv-easing-standard);
+    }
+
+    @keyframes kv-toast-fade-in {
+      from {
+        opacity: 0;
+      }
+    }
+  }
+
+  @media (forced-colors: active) {
+    .kv-toast-region:is(:focus-visible, [data-focus-visible]) {
+      outline-color: Highlight;
+    }
+
+    .kv-toast {
+      border-color: CanvasText;
+      box-shadow: none;
+    }
+  }
+
+  @media print {
+    .kv-toast-region {
+      display: none;
     }
   }
 
