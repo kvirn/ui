@@ -4,9 +4,12 @@ import guide from '../../../../../packages/react/src/calendar/calendar.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
+import { dateTextsFor } from '../date-input/date-input.fixture.tsx'
 import { localeOf } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
+  FromToCalendars,
+  InlineCalendarWithField,
   LocaleCalendars,
   MonthCalendar,
   YearButtonsCalendar,
@@ -78,6 +81,39 @@ export const Default: Story = {
     await expect(canvas.getAllByRole('gridcell', { hidden: false }).length).toBeGreaterThan(27)
     await expect(canvas.getAllByRole('columnheader')).toHaveLength(7)
     await expect(grid.querySelectorAll('[aria-current="date"]')).toHaveLength(1)
+  },
+}
+
+/** No dialog: the Calendar sits in the page next to a masked field, and each follows the other. */
+export const Inline: Story = {
+  parameters: showSource('calendar/calendar.fixture.tsx', 'InlineCalendarWithField'),
+  render: (_args, { globals }) => <InlineCalendarWithField locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = dateTextsFor(localeOf(globals))
+    const field = canvas.getByRole('textbox', { name: new RegExp(`^${text.oneFieldLabel}`) })
+    await userEvent.type(field, '20261020')
+    await expect(canvas.getByRole('gridcell', { selected: true })).toHaveTextContent('20')
+    await userEvent.click(canvas.getByRole('gridcell', { name: /\b21\b/ }))
+    await expect(canvas.getByTestId('stored')).toHaveTextContent(`${text.stored}: 2026-10-21`)
+  },
+}
+
+/**
+ * Two inline Calendars, "from" and "to", each a single date: the "to" Calendar's minimum is the
+ * "from" day. A preview of the range picker, which is not built yet. They stack below 40rem.
+ */
+export const FromAndTo: Story = {
+  parameters: showSource('calendar/calendar.fixture.tsx', 'FromToCalendars'),
+  render: (_args, { globals }) => <FromToCalendars locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = dateTextsFor(localeOf(globals))
+    const grids = canvas.getAllByRole('grid')
+    await expect(grids).toHaveLength(2)
+    await expect(canvas.getAllByRole('group')).toHaveLength(2)
+    const today = grids[0]?.querySelector<HTMLElement>('[aria-current="date"]') as HTMLElement
+    await userEvent.click(today)
+    await expect(canvas.getByTestId('stored')).toHaveTextContent(`${text.stored}: 2026-10-14 –`)
+    await expect(grids[1]?.querySelectorAll('[data-outside-range]').length).toBeGreaterThan(0)
   },
 }
 

@@ -39,10 +39,8 @@ export interface UseDatePickerOptions {
   value?: IsoDate | undefined
   /** Called with the day when an available day is chosen. Write it into your field, then. */
   onValueChange?: ((date: IsoDate) => void) | undefined
-  /** Controlled: whether the dialog is open. Pair it with `onOpenChange`. */
+  /** Controlled: whether the dialog is open. Pair it with `onOpenChange`. Uncontrolled, it is mounted closed. */
   open?: boolean | undefined
-  /** Uncontrolled: whether the dialog starts open. Default `false`. */
-  defaultOpen?: boolean | undefined
   /** Called when the dialog opens or closes. A controlled owner changes `open` itself. */
   onOpenChange?: ((open: boolean, details: DatePickerChangeDetails) => void) | undefined
   /** The first day that can be chosen, `YYYY-MM-DD`. */
@@ -145,7 +143,6 @@ export function useDatePicker({
   value = '',
   onValueChange,
   open: openProp,
-  defaultOpen = false,
   onOpenChange,
   minimum,
   maximum,
@@ -161,7 +158,7 @@ export function useDatePicker({
   const calendarMessages = useMessages('calendar', calendarMessageOverrides)
   const { locale } = useLocale()
   const { announce: say, isAvailable } = useQuietAnnouncer()
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen)
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false)
   const isControlled = openProp !== undefined
   const isOpen = isControlled ? openProp : uncontrolledOpen
   const chosenDateRef = useRef<IsoDate | undefined>(undefined)

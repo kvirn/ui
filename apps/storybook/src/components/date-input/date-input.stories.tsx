@@ -137,7 +137,48 @@ const box = (canvasElement: HTMLElement, part: 'day' | 'month' | 'year') => {
 }
 
 /**
- * The main example: a date of birth, with every option of `DateInput.Root` as a control. The
+ * The main example, and the one to prefer: one field with `masks.date()`. One Tab stop, paste and
+ * autofill work, and mobile keyboards show digits. `masks.date()` follows the page's locale: type
+ * `4.10.2026` in Finnish, `20261004` in Swedish. The form keeps the ISO date. Use the three boxes
+ * below when you want separate labelled day, month and year, for a date of birth (`bday`), or auto-advance.
+ */
+export const OneField: Story = {
+  parameters: showSource('date-input/date-input.fixture.tsx', 'OneFieldDate'),
+  render: (_args, { globals }) => <OneFieldDate locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = dateTextsFor(localeOf(globals))
+    const field = canvas.getByRole('textbox', { name: new RegExp(`^${text.oneFieldLabel}`) })
+    await expectMinimumTargetSize(field)
+    await expect(field).toHaveAttribute('inputmode', 'numeric')
+    // The help text, with an example in the locale's form, describes the field.
+    await expect(field).toHaveAccessibleDescription(text.oneFieldHint('2026-10-27'))
+    // Eight digits are enough: the mask puts the separators in.
+    await userEvent.type(field, '20261004')
+    await expect(field).toHaveValue('2026-10-04')
+    await expect(canvas.getByTestId('stored')).toHaveTextContent(`${text.stored}: 2026-10-04`)
+  },
+}
+
+/**
+ * Finnish writes the day first, with points. A separator after a day or month closes it, so
+ * `4.10.2026` stays as typed, and the form keeps the padded ISO date.
+ */
+export const OneFieldFinnish: Story = {
+  globals: { locale: 'fi' },
+  parameters: showSource('date-input/date-input.fixture.tsx', 'OneFieldDate'),
+  render: (_args, { globals }) => <OneFieldDate locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    const { text } = dateTextsFor('fi')
+    const field = canvas.getByRole('textbox', { name: new RegExp(`^${text.oneFieldLabel}`) })
+    await expect(field).toHaveAccessibleDescription(text.oneFieldHint('27.10.2026'))
+    await userEvent.type(field, '4.10.2026')
+    await expect(field).toHaveValue('4.10.2026')
+    await expect(canvas.getByTestId('stored')).toHaveTextContent(`${text.stored}: 2026-10-04`)
+  },
+}
+
+/**
+ * The three boxes: a date of birth, with every option of `DateInput.Root` as a control. The
  * boxes follow the Locale toolbar: Swedish writes the year first, Finnish, Norwegian and English the day.
  */
 export const Default: Story = {
@@ -249,46 +290,6 @@ export const OwnOrder: Story = {
   render: (_args, { globals }) => <PaperFormDate locale={localeOf(globals)} />,
   play: async ({ canvasElement }) => {
     await expect(boxLabels(canvasElement)).toEqual(['Dag', 'Månad', 'År'])
-  },
-}
-
-/**
- * A date in one field, when people read it off a document or are used to typing `19850412`.
- * `masks.date()` follows the page's locale: type `4.10.2026` in Finnish, `20261004` in Swedish.
- * The form keeps the ISO date. For a date of birth, use the three boxes above.
- */
-export const OneField: Story = {
-  parameters: showSource('date-input/date-input.fixture.tsx', 'OneFieldDate'),
-  render: (_args, { globals }) => <OneFieldDate locale={localeOf(globals)} />,
-  play: async ({ canvas, globals }) => {
-    const { text } = dateTextsFor(localeOf(globals))
-    const field = canvas.getByRole('textbox', { name: new RegExp(`^${text.oneFieldLabel}`) })
-    await expectMinimumTargetSize(field)
-    await expect(field).toHaveAttribute('inputmode', 'numeric')
-    // The help text, with an example in the locale's form, describes the field.
-    await expect(field).toHaveAccessibleDescription(text.oneFieldHint('2026-10-27'))
-    // Eight digits are enough: the mask puts the separators in.
-    await userEvent.type(field, '20261004')
-    await expect(field).toHaveValue('2026-10-04')
-    await expect(canvas.getByTestId('stored')).toHaveTextContent(`${text.stored}: 2026-10-04`)
-  },
-}
-
-/**
- * Finnish writes the day first, with points. A separator after a day or month closes it, so
- * `4.10.2026` stays as typed, and the form keeps the padded ISO date.
- */
-export const OneFieldFinnish: Story = {
-  globals: { locale: 'fi' },
-  parameters: showSource('date-input/date-input.fixture.tsx', 'OneFieldDate'),
-  render: (_args, { globals }) => <OneFieldDate locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    const { text } = dateTextsFor('fi')
-    const field = canvas.getByRole('textbox', { name: new RegExp(`^${text.oneFieldLabel}`) })
-    await expect(field).toHaveAccessibleDescription(text.oneFieldHint('27.10.2026'))
-    await userEvent.type(field, '4.10.2026')
-    await expect(field).toHaveValue('4.10.2026')
-    await expect(canvas.getByTestId('stored')).toHaveTextContent(`${text.stored}: 2026-10-04`)
   },
 }
 

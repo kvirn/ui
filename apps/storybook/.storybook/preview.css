@@ -647,6 +647,19 @@ body {
   gap: var(--kv-space-4);
 }
 
+/* Two inline Calendars side by side from 40rem, stacked below it (1.4.10). */
+.kv-story-calendars {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kv-space-8);
+}
+
+@media (min-width: 40rem) {
+  .kv-story-calendars {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* A line of output under a controlled or submitted example. */
 .kv-story-form-output {
   margin: 0;

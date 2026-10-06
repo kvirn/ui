@@ -1,6 +1,6 @@
 # Accessibility contract: DateInput (DateInput.Root, DateInput.Day, DateInput.Month, DateInput.Year)
 
-- **APG pattern:** none. There is no APG pattern for a date field made of text boxes. A date is a group of three labelled text inputs inside a `<fieldset>` with a `<legend>`, which is the pattern the GOV.UK and Nordic public-sector design systems use, and the one that works with autofill, dictation and any screen reader. A calendar DatePicker is a later component and also accepts typed input.
+- **APG pattern:** none. There is no APG pattern for a date field made of text boxes. A date is a group of three labelled text inputs inside a `<fieldset>` with a `<legend>`, which is the pattern the GOV.UK and Nordic public-sector design systems use, and the one that works with autofill, dictation and any screen reader. The one-field alternative, a `TextInput` with `masks.date()`, is preferred for most dates; the boxes stay supported.
 - **Deviations:** none from APG. One deviation from the keyboard practice, approved by the maintainer (2026-10-04, Plan 0040): **focus moves to the next box when the user's typing fills a box** (auto-advance), on by default, `autoAdvance={false}` turns it off. The practice says typing never moves focus (3.2.2 On Input), so six guards and a visible hint make it predictable, and DateInput is the only exception (OneTimeCode, TextInput and every other control keep "typing never moves focus"). Decisions (forms skill and Plan 0013, Phase 3): three native text inputs, never `type="date"`; the order follows the region through `Intl` and a month-first result becomes day first; three Tab stops, no arrow-key stepping; the consumer writes the date example; `Fieldset.Root`'s `invalid` does not cascade, each box has its own `invalid`.
 - **Native elements used:** `<fieldset>` and `<legend>` (the consumer's `Fieldset.Root` and `Fieldset.Legend`), `<div>` (`DateInput.Root`, and one per box), `<label for>` (the box label), `<input type="text">` with `inputmode="numeric"` (the boxes).
 - **Status:** alpha candidate (Plan 0013, Phase 3; auto-advance Plan 0040). Accessibility-reviewer pending. Manual AT is `pending`, including how screen readers announce the focus move.
@@ -87,7 +87,7 @@ None. Nothing is live. On entering the first box a screen reader reads the legen
 - Pass `value` and `onValueChange` from your form state, or `defaultValue` and `name` for a plain `<form>`. Validate the date yourself: DateInput never parses it.
 - A date of birth gets `autoComplete="bday"`. Don't set it on other dates (1.3.5).
 - Pick the order from the page's locale, or deliberately override it when the service must match a paper form. Then the help text follows the order.
-- Don't use a DateInput for a date far from memory (a date to pick near today): a calendar DatePicker, when it exists, also accepts typed input.
+- Don't use a DateInput for a date far from memory (a date to pick near today): a DatePicker button after the field, which also accepts typed input.
 
 ## Visual / modes
 

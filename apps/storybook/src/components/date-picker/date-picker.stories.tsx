@@ -36,11 +36,8 @@ const meta = {
     },
     open: {
       control: 'boolean',
-      description: 'Controlled: whether the dialog is open. Pair it with `onOpenChange`.',
-    },
-    defaultOpen: {
-      control: 'boolean',
-      description: 'Uncontrolled: whether the dialog starts open.',
+      description:
+        'Controlled: whether the dialog is open. Pair it with `onOpenChange`. Else it is mounted closed and never starts open.',
     },
     onOpenChange: {
       control: false,
@@ -96,7 +93,35 @@ const openFrom = async (trigger: HTMLElement) => {
   await waitFor(() => expect(modalDialog()).not.toBeNull())
 }
 
-/** The main example: the three boxes with "Välj datum" last in the row. Typing always works. */
+// A picker never starts open, so a story that shows the open dialog opens it from its play,
+// which also keeps the Docs page closed: every modal dialog is in the top layer and would stack.
+const openPicker = (canvas: {
+  getByRole: (role: 'button', options: { name: RegExp }) => HTMLElement
+}) => openFrom(canvas.getByRole('button', { name: /^(Välj datum|Choose date)$/ }))
+
+/** The main example: one `masks.date()` field with "Välj datum" beside it. One Tab stop, paste works, and the chosen day is written in the field's own format. */
+export const MaskedTextInput: Story = {
+  parameters: source('MaskedDatePicker'),
+  render: (args, { globals }) => (
+    <MaskedDatePicker {...args} locale={localeOf(globals)} initial="2026-10-20" />
+  ),
+  play: async ({ canvas, globals }) => {
+    const { text } = dateTextsFor(localeOf(globals))
+    const trigger = canvas.getByRole('button', { name: 'Välj datum' })
+    await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog')
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    await expect(modalDialog()).toBeNull()
+    await openFrom(trigger)
+    await userEvent.keyboard('{ArrowRight}{Enter}')
+    await waitFor(() => expect(modalDialog()).toBeNull())
+    await expect(
+      canvas.getByRole('textbox', { name: new RegExp(`^${text.oneFieldLabel}`) }),
+    ).toHaveValue('2026-10-21')
+    await expect(trigger).toHaveFocus()
+  },
+}
+
+/** The second example: the three boxes with "Välj datum" last in the row, for when separate labelled day, month and year are wanted. Typing always works. */
 export const WithDateInput: Story = {
   play: async ({ canvas }) => {
     const trigger = canvas.getByRole('button', { name: 'Välj datum' })
@@ -108,9 +133,10 @@ export const WithDateInput: Story = {
 
 /** Open: the page behind is inert, focus is on today, and Close comes after the title. */
 export const Open: Story = {
-  args: { defaultOpen: true },
+  parameters: source('MaskedDatePicker'),
+  render: (args, { globals }) => <MaskedDatePicker {...args} locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await waitFor(() => expect(modalDialog()).not.toBeNull())
+    await openPicker(canvas)
     const dialog = canvas.getByRole('dialog', { name: 'Välj ett datum' })
     await expect(dialog).toHaveAttribute('aria-modal', 'true')
     await expect(
@@ -144,7 +170,7 @@ export const WithValue: Story = {
 
 /** A booking window with closed days: they stay focusable, struck through, and say why in their name. */
 export const Booking: Story = {
-  args: { minimum: '2026-10-08', maximum: '2026-12-20', defaultOpen: true },
+  args: { minimum: '2026-10-08', maximum: '2026-12-20' },
   render: (args, { globals }) => (
     <VisitDatePicker
       {...args}
@@ -155,32 +181,13 @@ export const Booking: Story = {
   ),
   parameters: source('VisitDatePicker'),
   play: async ({ canvas }) => {
-    await waitFor(() => expect(modalDialog()).not.toBeNull())
+    await openPicker(canvas)
     const grid = canvas.getByRole('grid')
     await expect(grid).toHaveAccessibleDescription()
     await expect(grid.querySelectorAll('[data-unavailable]')).toHaveLength(closedDays.size)
     await expect(grid.querySelectorAll('[data-outside-range]').length).toBeGreaterThan(0)
     await userEvent.click(grid.querySelector<HTMLElement>('[data-unavailable]') as HTMLElement)
     await expect(modalDialog()).not.toBeNull()
-  },
-}
-
-/** One `masks.date()` field instead of three boxes: the chosen day is written in the field's own format. */
-export const MaskedTextInput: Story = {
-  parameters: source('MaskedDatePicker'),
-  render: (args, { globals }) => (
-    <MaskedDatePicker {...args} locale={localeOf(globals)} initial="2026-10-20" />
-  ),
-  play: async ({ canvas, globals }) => {
-    const { text } = dateTextsFor(localeOf(globals))
-    const trigger = canvas.getByRole('button', { name: 'Välj datum' })
-    await openFrom(trigger)
-    await userEvent.keyboard('{ArrowRight}{Enter}')
-    await waitFor(() => expect(modalDialog()).toBeNull())
-    await expect(
-      canvas.getByRole('textbox', { name: new RegExp(`^${text.oneFieldLabel}`) }),
-    ).toHaveValue('2026-10-21')
-    await expect(trigger).toHaveFocus()
   },
 }
 
@@ -213,10 +220,10 @@ export const Narrow: Story = {
       },
     },
   },
-  args: { defaultOpen: true, weekNumbers: true },
+  args: { weekNumbers: true },
   play: async ({ canvas }) => {
     await expect(window.innerWidth).toBeLessThanOrEqual(320)
-    await waitFor(() => expect(modalDialog()).not.toBeNull())
+    await openPicker(canvas)
     await expectNoHorizontalOverflow(canvas.getByRole('dialog'))
     await expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(window.innerWidth)
   },
@@ -232,10 +239,9 @@ export const NarrowDefault: Story = {
       },
     },
   },
-  args: { defaultOpen: true },
   play: async ({ canvas }) => {
     await expect(window.innerWidth).toBeLessThanOrEqual(320)
-    await waitFor(() => expect(modalDialog()).not.toBeNull())
+    await openPicker(canvas)
     const dialog = canvas.getByRole('dialog')
     await expectNoHorizontalOverflow(dialog)
     await expect(dialog.scrollWidth).toBeLessThanOrEqual(dialog.clientWidth)
@@ -256,7 +262,9 @@ export const Locales: Story = {
 
 /** Staff density from 64rem: the trigger and the day cells are 32px. */
 export const Compact: Story = {
-  args: { defaultOpen: true },
+  play: async ({ canvas }) => {
+    await openPicker(canvas)
+  },
   decorators: [
     (Story) => (
       <div className="kv-compact">
@@ -269,9 +277,11 @@ export const Compact: Story = {
 /** Right to left: the row, the chevrons and the columns mirror, and ArrowRight moves to the previous day. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
-  args: { defaultOpen: true },
   play: async ({ canvas }) => {
-    await waitFor(() => expect(modalDialog()).not.toBeNull())
+    await openPicker(canvas)
+    await waitFor(() =>
+      expect(canvas.getByRole('gridcell', { name: /14 October 2026/ })).toHaveFocus(),
+    )
     await userEvent.keyboard('{ArrowRight}')
     await expect(canvas.getByRole('gridcell', { name: /13 October 2026/ })).toHaveFocus()
   },
@@ -280,7 +290,7 @@ export const RTL: Story = {
 /** Selected, today, unavailable, the trigger and Close stay distinguishable in forced colours. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  args: { defaultOpen: true, minimum: '2026-10-08' },
+  args: { minimum: '2026-10-08' },
   render: (args, { globals }) => (
     <VisitDatePicker
       {...args}
@@ -291,6 +301,9 @@ export const ForcedColors: Story = {
     />
   ),
   parameters: source('VisitDatePicker'),
+  play: async ({ canvas }) => {
+    await openPicker(canvas)
+  },
 }
 
 /**

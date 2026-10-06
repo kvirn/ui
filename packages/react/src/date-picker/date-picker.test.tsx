@@ -133,7 +133,7 @@ describe('roles, names and states', () => {
   test('the title can be replaced with the question', async () => {
     await render(
       <KvirnProvider locale="sv" messages={sv}>
-        <DatePicker.Root today="2026-10-14" defaultOpen>
+        <DatePicker.Root today="2026-10-14">
           <DatePicker.Trigger />
           <DatePicker.Popup>
             <DatePicker.Title>Välj dag för ditt besök</DatePicker.Title>
@@ -142,6 +142,7 @@ describe('roles, names and states', () => {
         </DatePicker.Root>
       </KvirnProvider>,
     )
+    await page.getByRole('button', { name: 'Välj datum' }).click()
     await expect
       .element(page.getByRole('dialog', { name: 'Välj dag för ditt besök' }))
       .toBeVisible()
@@ -157,13 +158,13 @@ describe('roles, names and states', () => {
   test('per-instance messages rename the trigger and the title', async () => {
     await render(
       <KvirnProvider locale="sv" messages={sv}>
-        <DatePicker.Root messages={{ trigger: 'Boka dag', title: 'Boka en dag' }} defaultOpen>
+        <DatePicker.Root messages={{ trigger: 'Boka dag', title: 'Boka en dag' }}>
           <DatePicker.Trigger />
           <DatePicker.Popup />
         </DatePicker.Root>
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('button', { name: 'Boka dag', exact: true })).toBeVisible()
+    await page.getByRole('button', { name: 'Boka dag', exact: true }).click()
     await expect.element(page.getByRole('dialog', { name: 'Boka en dag' })).toBeVisible()
   })
 
@@ -179,15 +180,13 @@ describe('roles, names and states', () => {
     async (locale, messages, triggerName, title) => {
       await render(
         <KvirnProvider locale={locale} messages={messages}>
-          <DatePicker.Root defaultOpen>
+          <DatePicker.Root>
             <DatePicker.Trigger />
             <DatePicker.Popup />
           </DatePicker.Root>
         </KvirnProvider>,
       )
-      await expect
-        .element(page.getByRole('button', { name: triggerName, exact: true }))
-        .toBeVisible()
+      await page.getByRole('button', { name: triggerName, exact: true }).click()
       await expect.element(page.getByRole('dialog', { name: title })).toBeVisible()
     },
   )
@@ -451,11 +450,12 @@ describe('announcements', () => {
 
   test('without a provider the choice is not announced and focus still returns', async () => {
     await render(
-      <DatePicker.Root today="2026-10-14" defaultOpen>
+      <DatePicker.Root today="2026-10-14">
         <DatePicker.Trigger />
         <DatePicker.Popup />
       </DatePicker.Root>,
     )
+    await page.getByRole('button', { name: 'Choose date' }).click()
     await userEvent.keyboard('{ArrowRight}{Enter}')
     await expect.element(page.getByRole('button', { name: 'Choose date' })).toHaveFocus()
   })

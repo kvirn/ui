@@ -18,6 +18,38 @@ A "Choose date" button next to a typed date. It opens a modal dialog holding a [
 - Put the range in the field's help text as well: the dialog's range hint shows only once it is open.
 - Replace the title with the question: `<DatePicker.Title>Choose the date of your visit</DatePicker.Title>`.
 
+**Prefer one input.** The main example is one `masks.date()` field with the trigger beside it: one Tab stop, paste works, and a mobile keyboard shows digits. The three boxes below it stay fully supported.
+
+```tsx
+import {
+  DatePicker,
+  Field,
+  TextInput,
+  isoDateToMaskedDate,
+  masks,
+  maskedDateToIsoDate,
+  useLocale,
+} from '@kvirn-ui/react'
+
+const { locale } = useLocale()
+;<DatePicker.Root
+  value={maskedDateToIsoDate(text, locale)}
+  onValueChange={(isoDate) => setText(isoDateToMaskedDate(isoDate, locale))}
+>
+  <div className="kv-date-picker-row">
+    <Field.Root>
+      <Field.Label>Start date</Field.Label>
+      <TextInput mask={masks.date()} value={text} onValueChange={setText} />
+      <Field.HelpText>For example, 2026-10-27</Field.HelpText>
+    </Field.Root>
+    <DatePicker.Trigger />
+  </div>
+  <DatePicker.Popup />
+</DatePicker.Root>
+```
+
+With the three boxes of a [DateInput](../date-input/date-input.md):
+
 ```tsx
 import {
   DateInput,
@@ -49,19 +81,21 @@ import {
 </DatePicker.Root>
 ```
 
+A DatePicker is mounted closed and never starts open: there is no `defaultOpen`. To show a Calendar without a dialog, render a [Calendar](../calendar/calendar.md) inline in the page.
+
 Put the trigger last in the DateInput row (it wraps below the boxes on a narrow screen). Put the `DatePicker.Popup` outside any page `<form>`: a dialog keeps its content mounted while it is closed. For a masked field put the field and the trigger in `<div className="kv-date-picker-row">`.
 
 ## API
 
-| Prop                                                            | Meaning                                                                                                                                                                                                                        |
-| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `value`                                                         | The field's date, `YYYY-MM-DD`, or `''`. A value that is not an ISO date warns and opens on today                                                                                                                              |
-| `onValueChange`                                                 | `(date) => void`: an available day was chosen. Write it into the field                                                                                                                                                         |
-| `open`, `defaultOpen`, `onOpenChange`                           | Controlled or uncontrolled open state. `onOpenChange(open, { reason, event })`; `reason` is `'trigger-press'`, `'select'`, `'close-press'`, `'escape'` or `'native-close'` (a press on the backdrop does not close the picker) |
-| `minimum`, `maximum`, `isDateUnavailable`, `getDateDescription` | As [Calendar](../calendar/calendar.md)                                                                                                                                                                                         |
-| `weekStart`, `weekNumbers`, `today`                             | As Calendar. `today` is for tests; else the clock, read each time the dialog opens                                                                                                                                             |
-| `messages`                                                      | `datePicker.trigger` and `datePicker.title`                                                                                                                                                                                    |
-| `calendarMessages`                                              | Calendar strings, and "{date} selected" after the dialog has closed                                                                                                                                                            |
+| Prop                                                            | Meaning                                                                                                                                                                                                                                                                                |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `value`                                                         | The field's date, `YYYY-MM-DD`, or `''`. A value that is not an ISO date warns and opens on today                                                                                                                                                                                      |
+| `onValueChange`                                                 | `(date) => void`: an available day was chosen. Write it into the field                                                                                                                                                                                                                 |
+| `open`, `onOpenChange`                                          | A DatePicker is mounted closed and never starts open; pass `open` only when you must drive it. `onOpenChange(open, { reason, event })`; `reason` is `'trigger-press'`, `'select'`, `'close-press'`, `'escape'` or `'native-close'` (a press on the backdrop does not close the picker) |
+| `minimum`, `maximum`, `isDateUnavailable`, `getDateDescription` | As [Calendar](../calendar/calendar.md)                                                                                                                                                                                                                                                 |
+| `weekStart`, `weekNumbers`, `today`                             | As Calendar. `today` is for tests; else the clock, read each time the dialog opens                                                                                                                                                                                                     |
+| `messages`                                                      | `datePicker.trigger` and `datePicker.title`                                                                                                                                                                                                                                            |
+| `calendarMessages`                                              | Calendar strings, and "{date} selected" after the dialog has closed                                                                                                                                                                                                                    |
 
 Parts: `DatePicker.Root` (no element), `DatePicker.Trigger` (`<button class="kv-button kv-date-picker-trigger">` with the calendar icon and "Choose date"; `aria-haspopup="dialog"`, `aria-expanded`), `DatePicker.Popup` (the Dialog's popup, `kv-date-picker-popup`; without children it holds the Title, Close and the Calendar), `DatePicker.Title` (`<h2>`), `DatePicker.Calendar` (a `Calendar.Root` with the picker's range and value, mounted only while the dialog is open). Messages: `datePicker.trigger`, `datePicker.title`.
 

@@ -29,6 +29,10 @@ import { Calendar } from '@kvirn-ui/react'
 </Calendar.Root>
 ```
 
+## Inline, no dialog
+
+A Calendar is a page section you can render anywhere, next to a typed field or two side by side (a "from" and a "to" Calendar, the second with `minimum` set to the first's value). Give each its own `Fieldset.Root group` and legend so the two are told apart. The Inline and FromAndTo stories show both; a range mode is not built yet.
+
 ## API
 
 Dates are `YYYY-MM-DD` strings. A `minimum` after the `maximum` throws a `RangeError`.
