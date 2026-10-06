@@ -34,6 +34,7 @@ export { ButtonGroup } from './button-group/button-group.tsx'
 export type { ButtonGroupProps, ButtonGroupState } from './button-group/button-group.tsx'
 export { useButtonGroup } from './button-group/use-button-group.ts'
 export type {
+  ButtonGroupLayout,
   ButtonGroupPartProps,
   UseButtonGroupOptions,
   UseButtonGroupResult,

@@ -9,6 +9,7 @@ import {
   FinnishToolbar,
   FormattingToolbar,
   RowActionsToolbar,
+  SpacedGroupsToolbar,
   TextToolbar,
 } from './toolbar.fixture.tsx'
 
@@ -69,7 +70,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /**
- * The main example: a formatting toolbar with three named groups. Tab enters it once, at the
+ * The main example: a formatting toolbar with three named groups, each one a joined strip of buttons. Tab enters it once, at the
  * first control, and the arrow keys move between the controls, across groups. Fet is on to
  * start with. Every option is a control below.
  */
@@ -79,7 +80,9 @@ export const Default: Story = {
   play: async ({ canvas }) => {
     const toolbar = canvas.getByRole('toolbar', { name: 'Formatering' })
     await expect(toolbar).not.toHaveAttribute('aria-orientation')
-    await expect(canvas.getByRole('group', { name: 'Textstil' })).toBeVisible()
+    await expect(canvas.getByRole('group', { name: 'Textstil' })).toHaveClass(
+      'kv-button-group--attached',
+    )
     // One Tab stop: the first control has tabindex 0 and the other six -1. The controls
     // register after the first render.
     await waitFor(() => expect(toolbar.querySelectorAll('[tabindex="0"]')).toHaveLength(1))
@@ -91,6 +94,17 @@ export const Default: Story = {
     for (const control of canvas.getAllByRole('button')) {
       await expectMinimumTargetSize(control)
     }
+  },
+}
+
+/** `Toolbar.Group` is attached by default; `layout="spaced"` gives a group a gap between its buttons instead. */
+export const SpacedGroups: Story = {
+  parameters: showSource('toolbar/toolbar.fixture.tsx', 'SpacedGroupsToolbar'),
+  render: () => <SpacedGroupsToolbar />,
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('group', { name: 'Textstil' })).not.toHaveClass(
+      'kv-button-group--attached',
+    )
   },
 }
 
@@ -149,6 +163,9 @@ export const Wrapping: Story = {
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('toolbar', { name: 'Muotoilu' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
+    for (const control of canvas.getAllByRole('button')) {
+      await expectMinimumTargetSize(control)
+    }
   },
 }
 

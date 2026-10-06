@@ -10,14 +10,15 @@ A ButtonGroup is a row of related Buttons: the footer of a Card, the actions of 
 
 ## Roles, states, properties
 
-| Part        | Element / role    | ARIA                              | Notes                                                                                                                                              |
-| ----------- | ----------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ButtonGroup | `<div>` → `group` | `aria-label` or `aria-labelledby` | `role="group"` only when it has a name, so a screen reader says "Ärendet, group" as focus enters it. Test: `button-group.test.tsx › role and name` |
-|             | without a name    | no role                           | A plain `<div>`: an unnamed Card footer adds no empty group to the accessibility tree                                                              |
-|             | in a Toolbar      | name required                     | A dev warning when a group in a `Toolbar.Root` has no name (1.3.1, 4.1.2). Test: `button-group.test.tsx › inside a Toolbar`                        |
-|             | `render`          | any element                       | It gets the class and, with a name, the role                                                                                                       |
+| Part        | Element / role    | ARIA                              | Notes                                                                                                                                                            |
+| ----------- | ----------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ButtonGroup | `<div>` → `group` | `aria-label` or `aria-labelledby` | `role="group"` only when it has a name, so a screen reader says "Ärendet, group" as focus enters it. Test: `button-group.test.tsx › role and name`               |
+|             | without a name    | no role                           | A plain `<div>`: an unnamed Card footer adds no empty group to the accessibility tree                                                                            |
+|             | in a Toolbar      | name required                     | A dev warning when a group in a `Toolbar.Root` has no name (1.3.1, 4.1.2). Test: `button-group.test.tsx › inside a Toolbar`                                      |
+|             | `layout`          | `spaced` or `attached`            | `attached` joins the buttons into one strip (class `kv-button-group--attached`). Look only: no role, ARIA or key changes. Test: `button-group.test.tsx › layout` |
+|             | `render`          | any element                       | It gets the class and, with a name, the role                                                                                                                     |
 
-`useButtonGroup({ isNamed })` gives the same `groupProps` for your own element.
+`useButtonGroup({ isNamed, layout })` gives the same `groupProps` for your own element.
 
 ## Keyboard
 
@@ -54,11 +55,11 @@ ButtonGroup has no strings of its own: its name is the consumer's `aria-label` o
 
 ## Visual / modes
 
-- Focus indicator: each button's own (2.4.7, 2.4.13).
-- Target size: each button's own. The default theme keeps 4px between buttons in a toolbar and 12px outside it (2.5.8).
-- forced-colors behaviour: the buttons draw their own edges. The group draws none, and the hairline between groups in a toolbar is `GrayText`, decoration only. **There is no `ForcedColors` story: ButtonGroup draws nothing of its own that a mode could change** (the same exemption as Kbd and Announcer). The Toolbar's `ForcedColors` story shows the hairline.
+- Focus indicator: each button's own (2.4.7, 2.4.13). In an attached group the focused button is raised above its neighbours, and a page-colour halo fills the ring's 2px offset, so the ring never sits on a neighbouring pressed fill (forced colours: the ring is `CanvasText`). Two pressed buttons in a row keep a divider between them. Test: `button-group.stories.tsx › AttachedFocusNextToPressed`, `AttachedTwoPressed`.
+- Target size: each button's own. The default theme keeps 4px between buttons in a spaced toolbar group and 12px outside it. An attached group has no gap: each button keeps its own size, and the borders only overlap (2.5.8).
+- forced-colors behaviour: the buttons draw their own edges. The group draws none, and the hairline between groups in a toolbar is `GrayText`, decoration only. The shared edges of an attached group are the buttons' own `ButtonText` (a pressed toggle is `Highlight`). Test: `button-group.stories.tsx › AttachedForcedColors`. The Toolbar's `ForcedColors` story shows the hairline.
 - reduced-motion behaviour: no motion.
-- Reflow: outside a toolbar the group stacks at full width below 40rem. In a toolbar it wraps group by group, so there is no horizontal scrolling at 320 CSS px (1.4.10).
+- Reflow: an attached group never stacks or wraps, and a button wraps its own label (1.4.10). A spaced group outside a toolbar the group stacks at full width below 40rem. In a toolbar it wraps group by group, so there is no horizontal scrolling at 320 CSS px (1.4.10).
 
 ## WCAG SCs covered
 

@@ -341,9 +341,10 @@ ToolbarItem.displayName = 'Toolbar.Item'
 /**
  * A `ButtonGroup` in the toolbar: a `role="group"` that needs a name, so a screen reader says
  * "Textstil, group" as focus enters it. The theme draws a hairline between groups.
+ * Its buttons are joined into one strip (`layout="attached"`), and `layout="spaced"` opts out.
  */
 export function ToolbarGroup(props: ToolbarGroupProps): ReactElement {
-  return <ButtonGroup {...props} />
+  return <ButtonGroup {...props} layout={props.layout ?? 'attached'} />
 }
 ToolbarGroup.displayName = 'Toolbar.Group'
 

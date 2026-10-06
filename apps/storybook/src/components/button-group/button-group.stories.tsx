@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Card } from '@kvirn-ui/react'
+import { Button, ButtonGroup, Card, Toggle } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/button-group/button-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/button-group/button-group.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -15,7 +15,7 @@ const meta = {
   title: 'Components/ButtonGroup',
   component: ButtonGroup,
   // Every option at its default, so the main example starts where an adopter starts.
-  args: { 'aria-label': 'Ärendet' },
+  args: { 'aria-label': 'Ärendet', layout: 'spaced' },
   // Every prop in button-group.tsx. Any other `<div>` prop passes through.
   argTypes: {
     'aria-label': {
@@ -28,6 +28,12 @@ const meta = {
       description:
         'The id of visible text that names the group, such as a heading. Use it instead of `aria-label`.',
     },
+    layout: {
+      control: 'inline-radio',
+      options: ['spaced', 'attached'],
+      description:
+        '`spaced` (default): a row with a gap. `attached`: one joined strip, where the buttons touch, share borders and only the outer corners are round. It changes the look only: no role, key or ARIA.',
+    },
     className: {
       control: false,
       description:
@@ -38,7 +44,7 @@ const meta = {
     render: {
       control: false,
       description:
-        'Another element. Spread the props it gets: they hold the class and, with a name, the role. `state` is `{ isNamed }`.',
+        'Another element. Spread the props it gets: they hold the class and, with a name, the role. `state` is `{ isNamed, layout }`.',
     },
   },
   globals: { locale: 'sv' },
@@ -122,4 +128,91 @@ export const RTL: Story = {
       <Button>Save draft</Button>
     </ButtonGroup>
   ),
+}
+
+/**
+ * `layout="attached"`: the buttons are one strip, like a segmented control. A pressed toggle is
+ * the filled segment. Only the layout changes: the role, the name and the Tab stops are the same.
+ */
+export const Attached: Story = {
+  args: { 'aria-label': 'Textstil', layout: 'attached' },
+  render: (args) => (
+    <ButtonGroup {...args}>
+      <Toggle defaultPressed>Fet</Toggle>
+      <Toggle>Kursiv</Toggle>
+      <Toggle>Understruken</Toggle>
+    </ButtonGroup>
+  ),
+  play: async ({ canvas }) => {
+    const group = canvas.getByRole('group', { name: 'Textstil' })
+    await expect(group).toHaveClass('kv-button-group--attached')
+    await expect(canvas.getByRole('button', { name: 'Fet' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
+  },
+}
+
+/** Attached, right to left, in English: the rounded outer corners and the overlap flip with the direction. */
+export const AttachedRTL: Story = {
+  globals: { dir: 'rtl', locale: 'en' },
+  args: { 'aria-label': 'Text style', layout: 'attached' },
+  render: (args) => (
+    <ButtonGroup {...args}>
+      <Toggle defaultPressed>Bold</Toggle>
+      <Toggle>Italic</Toggle>
+      <Toggle>Underline</Toggle>
+    </ButtonGroup>
+  ),
+}
+
+/** Attached in forced colours: every button keeps its `ButtonText` edge, and the pressed one is a `Highlight` fill. */
+export const AttachedForcedColors: Story = {
+  globals: { forcedColors: 'active' },
+  args: { 'aria-label': 'Textstil', layout: 'attached' },
+  render: (args) => (
+    <ButtonGroup {...args}>
+      <Toggle defaultPressed>Fet</Toggle>
+      <Toggle>Kursiv</Toggle>
+      <Toggle>Understruken</Toggle>
+    </ButtonGroup>
+  ),
+}
+
+/** Two pressed toggles in a row keep a divider between them, so they read as two segments. */
+export const AttachedTwoPressed: Story = {
+  args: { 'aria-label': 'Textstil', layout: 'attached' },
+  render: (args) => (
+    <ButtonGroup {...args}>
+      <Toggle defaultPressed>Fet</Toggle>
+      <Toggle defaultPressed>Kursiv</Toggle>
+      <Toggle>Understruken</Toggle>
+    </ButtonGroup>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('button', { name: 'Fet' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
+    await expect(canvas.getByRole('button', { name: 'Kursiv' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
+  },
+}
+
+/** A keyboard-focused button next to a pressed one: its ring sits on a page-colour halo, not on the pressed fill. */
+export const AttachedFocusNextToPressed: Story = {
+  args: { 'aria-label': 'Textstil', layout: 'attached' },
+  render: (args) => (
+    <ButtonGroup {...args}>
+      <Toggle defaultPressed>Fet</Toggle>
+      <Toggle>Kursiv</Toggle>
+    </ButtonGroup>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.tab()
+    await userEvent.tab()
+    await expect(canvas.getByRole('button', { name: 'Kursiv' })).toHaveFocus()
+  },
 }

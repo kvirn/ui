@@ -8,15 +8,18 @@ import { renderPart } from '../render/render-part.ts'
 import type { RenderProp } from '../render/render-part.ts'
 import { ToolbarContext } from '../toolbar/toolbar-context.ts'
 import { useButtonGroup } from './use-button-group.ts'
+import type { ButtonGroupLayout, UseButtonGroupOptions } from './use-button-group.ts'
 
 /** What `render` receives as its second argument. */
 export interface ButtonGroupState {
   /** The group has a name, so it is a `role="group"`. */
   isNamed: boolean
+  layout: ButtonGroupLayout
 }
 
 /** `role` is left out: it comes from the name. */
-export interface ButtonGroupProps extends Omit<ComponentPropsWithRef<'div'>, 'role'> {
+export interface ButtonGroupProps
+  extends Omit<ComponentPropsWithRef<'div'>, 'role'>, Pick<UseButtonGroupOptions, 'layout'> {
   /** Change the element. Its own semantics apply, and the group role only goes with a name. */
   render?: RenderProp<ComponentPropsWithRef<'div'>, ButtonGroupState> | undefined
 }
@@ -27,6 +30,9 @@ export interface ButtonGroupProps extends Omit<ComponentPropsWithRef<'div'>, 'ro
  * `role="group"`, so a screen reader says where the buttons belong. Without a name it is a plain
  * `<div>`, so an unnamed Card footer adds nothing to the accessibility tree.
  *
+ * `layout="attached"` joins the buttons into one strip, like a segmented control. It changes the
+ * look only.
+ *
  * It holds no state and handles no keys: every button is its own Tab stop. For one Tab stop and
  * the arrow keys, put the buttons in a `Toolbar`. **A group in a Toolbar needs a name.**
  *
@@ -36,10 +42,15 @@ export interface ButtonGroupProps extends Omit<ComponentPropsWithRef<'div'>, 'ro
  *   <Button className="kv-button--primary">Skicka</Button>
  * </ButtonGroup>
  */
-export function ButtonGroup({ render, ref, ...otherProps }: ButtonGroupProps): ReactElement {
+export function ButtonGroup({
+  render,
+  ref,
+  layout = 'spaced',
+  ...otherProps
+}: ButtonGroupProps): ReactElement {
   const isNamed =
     otherProps['aria-label'] !== undefined || otherProps['aria-labelledby'] !== undefined
-  const group = useButtonGroup({ isNamed })
+  const group = useButtonGroup({ isNamed, layout })
   const toolbar = useContext(ToolbarContext)
   const isInToolbar = toolbar !== null
   const mergedRef = useMergedRef(ref, null)
@@ -57,7 +68,7 @@ export function ButtonGroup({ render, ref, ...otherProps }: ButtonGroupProps): R
     render,
     defaultElement: 'div',
     partProps: { ...mergeProps(otherProps, group.groupProps), ref: mergedRef },
-    state: { isNamed },
+    state: { isNamed, layout },
   })
 }
 ButtonGroup.displayName = 'ButtonGroup'

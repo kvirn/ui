@@ -784,7 +784,8 @@
    * the pressed, disabled and forced-colours rules set border-color themselves: a later
    * border-color would override the tinted sides. Hover lifts the shadow, and pressed and
    * keyboard focus remove it, so the focus ring sits on the plain page and keeps exactly the
-   * measured focus-ring contrast (2.4.7, 2.4.13). Disabled buttons, the contrast themes and
+   * measured focus-ring contrast (2.4.7, 2.4.13). In an attached group a page-colour halo fills
+   * the ring's offset instead, since a neighbour touches the button. Disabled buttons, the contrast themes and
    * forced colours are flat. Depth is never the only boundary: the fill and edge carry it.
    */
   .kv-button {
@@ -975,8 +976,8 @@
    *
    * <Toolbar.Root> renders class="kv-toolbar": a row of groups and controls that wraps, group by
    * group. Buttons keep their own look, and never shrink, scroll sideways or truncate (1.4.10).
-   * Its <ButtonGroup>s (Toolbar.Group) are rows that never stack: they keep their buttons together
-   * and wrap inside themselves only when one group alone is wider than the row. From 40rem a
+   * Its <ButtonGroup>s (Toolbar.Group) are attached strips that never stack or wrap: a button
+   * wraps its own label when one group alone is wider than the row. From 40rem a
    * hairline separates a group from what comes before it. It is drawn by CSS, so no
    * role="separator" is announced: the named groups carry the structure. Below 40rem, where the
    * toolbar wraps and a line could land at the start of a row, the gap alone separates them.
@@ -1045,6 +1046,87 @@
       block-size: 1.25em;
       margin-inline-end: calc(var(--kv-space-2) - var(--kv-space-1));
       background-color: var(--kv-color-border-subtle);
+    }
+  }
+
+  /*
+   * <ButtonGroup layout="attached"> (and Toolbar.Group by default): one joined strip, like a
+   * segmented control. The buttons touch and share a border (one border width of overlap), and
+   * only the outer corners are round, by logical property so right-to-left flips them. It never
+   * stacks or wraps, so a button may wrap its own label instead of widening the row (1.4.10). A
+   * hovered, pressed or focused button is raised so its edge and focus ring are never covered by
+   * a neighbour, and a page-colour halo fills the 2px between its ring and a neighbouring pressed
+   * button, so the ring never sits on the pressed fill, whose colour it shares (2.4.13, 1.4.11).
+   * Two pressed buttons in a row get a divider in the on-primary colour, so they stay two
+   * segments. In a toolbar the hairline between groups stays, with 8px after it.
+   */
+  .kv-button-group.kv-button-group--attached {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .kv-button-group.kv-button-group--attached > .kv-button {
+    position: relative;
+    inline-size: auto;
+    min-inline-size: 0;
+    border-radius: 0;
+  }
+
+  /* The icon-only floor (2.5.8) that min-inline-size: 0 above would remove. */
+  .kv-button-group.kv-button-group--attached > .kv-button.kv-button--icon-only {
+    min-inline-size: var(--kv-button-min-block-size, var(--kv-control-min-block-size));
+  }
+
+  .kv-button-group.kv-button-group--attached > .kv-button:not(:first-child) {
+    margin-inline-start: calc(var(--kv-border-width) * -1);
+  }
+
+  .kv-button-group.kv-button-group--attached > .kv-button:first-child {
+    border-start-start-radius: var(--kv-radius-md);
+    border-end-start-radius: var(--kv-radius-md);
+  }
+
+  .kv-button-group.kv-button-group--attached > .kv-button:last-child {
+    border-start-end-radius: var(--kv-radius-md);
+    border-end-end-radius: var(--kv-radius-md);
+  }
+
+  .kv-button-group.kv-button-group--attached
+    > .kv-button:is(:hover, [data-pressed], [aria-pressed='true']) {
+    z-index: 1;
+  }
+
+  .kv-button-group.kv-button-group--attached > .kv-button:is(:focus-visible, [data-focus-visible]) {
+    z-index: 2;
+    box-shadow: 0 0 0 var(--kv-focus-ring-offset) var(--kv-color-surface);
+  }
+
+  .kv-button-group.kv-button-group--attached
+    > .kv-button:is([data-pressed], [aria-pressed='true'])
+    + .kv-button:is([data-pressed], [aria-pressed='true']) {
+    border-inline-start-color: var(--kv-color-on-primary);
+  }
+
+  @media (width >= 40rem) {
+    .kv-toolbar .kv-button-group.kv-button-group--attached:not(:first-child)::before {
+      margin-inline-end: var(--kv-space-2);
+    }
+  }
+
+  /* Shadows are not drawn in forced colours, so the ring itself leaves Highlight: it would
+   * share the pressed fill's colour. */
+  @media (forced-colors: active) {
+    .kv-button-group.kv-button-group--attached
+      > .kv-button:is(:focus-visible, [data-focus-visible]) {
+      outline-color: CanvasText;
+    }
+
+    .kv-button-group.kv-button-group--attached
+      > .kv-button:is([data-pressed], [aria-pressed='true'])
+      + .kv-button:is([data-pressed], [aria-pressed='true']) {
+      border-inline-start-color: HighlightText;
     }
   }
 
