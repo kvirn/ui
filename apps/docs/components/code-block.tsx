@@ -175,13 +175,30 @@ export function CodeScroll({
 }
 
 /**
+ * A first line like `// app/providers.tsx` names the file the sample belongs in. It is shown in the
+ * header beside Copy code, not in the code, so a copy holds only the code. An explicit `fileName`
+ * wins.
+ */
+const fileNameComment = /^\/\/ ([\w@./[\]-]+\.\w+)\r?\n/
+
+function splitFileName(source: string, given: string | undefined) {
+  if (given !== undefined) {
+    return { fileName: given, code: source }
+  }
+  const match = fileNameComment.exec(source)
+  return match === null
+    ? { fileName: undefined, code: source }
+    : { fileName: match[1], code: source.slice(match[0].length) }
+}
+
+/**
  * Highlighted code with a copy button. The header holds the optional file name and language, and
  * Copy code. Long lines scroll from 40rem and wrap below (docs/design/docs-code.md §5, §6).
  */
 export function CodeBlock({
-  code,
+  code: source,
   language,
-  fileName,
+  fileName: givenFileName,
   lineNumbers,
 }: {
   code: string
@@ -191,6 +208,7 @@ export function CodeBlock({
 }) {
   const fileNameId = useId()
   const codeRef = useRef<HTMLElement>(null)
+  const { fileName, code } = splitFileName(source, givenFileName)
   const lines = useCodeLines(code, language)
   const { status, copy } = useCodeCopy({ code, codeRef })
   if (code === '') {
