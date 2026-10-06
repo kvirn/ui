@@ -94,6 +94,7 @@ const componentGroups: readonly NavigationGroup[] = [
       page('InputGroup', 'input-group'),
       page('NumberInput', 'number-input'),
       page('OneTimeCode', 'one-time-code'),
+      page('Slider', 'slider'),
       page('SummaryList', 'summary-list'),
       page('TextInput', 'text-input'),
       page('Textarea', 'textarea'),

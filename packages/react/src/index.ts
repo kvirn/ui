@@ -732,6 +732,10 @@ export type {
 } from './switch/switch.tsx'
 export { useSwitch } from './switch/use-switch.ts'
 export type { SwitchPartProps, UseSwitchOptions, UseSwitchResult } from './switch/use-switch.ts'
+export { Slider } from './slider/slider.tsx'
+export type { SliderChangeDetails, SliderProps, SliderState } from './slider/slider.tsx'
+export { useSlider } from './slider/use-slider.ts'
+export type { SliderPartProps, UseSliderOptions, UseSliderResult } from './slider/use-slider.ts'
 export {
   RadioGroup,
   RadioGroupErrorMessage,

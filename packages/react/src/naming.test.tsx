@@ -117,6 +117,7 @@ describe('display names', () => {
     expect(api.CharacterCount.displayName).toBe('CharacterCount')
     expect(api.Checkbox.displayName).toBe('Checkbox')
     expect(api.Switch.displayName).toBe('Switch')
+    expect(api.Slider.displayName).toBe('Slider')
     expect(api.Toggle.displayName).toBe('Toggle')
     expect(api.ButtonGroup.displayName).toBe('ButtonGroup')
     expect(api.Prose.displayName).toBe('Prose')

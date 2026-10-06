@@ -45,5 +45,5 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0062](0062-breadcrumb-and-pagination.md)         | Breadcrumb and Pagination                                                    | Approved                              |
 | [0063](0063-summary-list-and-error-summary.md)    | SummaryList and ErrorSummary                                                 | Approved                              |
 | [0064](0064-docs-code-and-example-frame.md)       | Docs-only CodeBlock and ExampleFrame with a highlighter                      | Approved                              |
-| [0072](0072-slider.md)                            | Slider (native range input)                                                  | Approved                              |
+| [0072](0072-slider.md)                            | Slider (native range input)                                                  | Implemented (AT pending)              |
 | [0073](0073-toast-timer-ms-and-ring.md)           | Toast `autoDismiss` in ms and a timer ring                                   | Done                                  |
