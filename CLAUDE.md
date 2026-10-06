@@ -5,6 +5,7 @@
 ## Claude Code specifics
 
 - Skills live in `.claude/skills/<name>/` and load per the table in AGENTS.md. Subagents load them on demand, so a brief names the ones it needs.
+- `lead` (Opus, high effort) is this orchestrator as an agent definition: start it with `claude --agent lead`. It keeps the todo list, the plan and the user in sync. It's a main-thread agent only, since a subagent can't spawn agents.
 - Agents (`.claude/agents/`), cheapest first:
   - `scout` (Haiku, read-only, 15 turns, no CLAUDE.md): every "where is / how does / which files" question, 1–3 per spawn, answered as `path:line` facts. Use it before every brief and plan. Fall back to Explore (`model: "sonnet"`) only after it reports NOT FOUND.
   - `component-engineer` (Sonnet, medium effort): the default for any code change, planned or not, including docs, stories and tooling. It runs scoped `vp check` and `vp test run` on its own files; the final gates are yours.
