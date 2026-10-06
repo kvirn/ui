@@ -6,7 +6,7 @@ import type { RefCallback } from 'react'
 import { useQuietAnnouncer, warnAnnouncerMissing } from '../announcer/use-announcer.ts'
 import { createCalendarFormatters, resolveIntlLocale } from '../calendar/calendar-intl.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
-import { isFocusTarget } from '../dialog/focus-return.ts'
+import { isFocusTarget } from '../focus/focus-return.ts'
 import { useModalDialog } from '../dialog/use-dialog.ts'
 import type {
   DialogChangeDetails,

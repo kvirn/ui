@@ -1,10 +1,24 @@
-import { Meta } from '@storybook/addon-docs/blocks'
+import { Canvas, Markdown, Meta } from '@storybook/addon-docs/blocks'
+import focusContract from '../../../../packages/react/src/focus/focus.a11y.md?raw'
+import focusGuide from '../../../../packages/react/src/focus/focus.md?raw'
+import routeContract from '../../../../packages/react/src/route-focus/route-focus.a11y.md?raw'
+import routeGuide from '../../../../packages/react/src/route-focus/route-focus.md?raw'
+import { ContractKeyboard } from '../../.storybook/keyboard-section.tsx'
+import * as FocusStories from '../components/focus/focus.stories.tsx'
+import * as RouteStories from '../components/focus/route-focus.stories.tsx'
+import { usageGuide } from '../docs-source.ts'
 
-<Meta title="Foundation/Focus ring" />
+{/* Contract text, and the guides' prose with their code blocks left out (the stories' "Show code" is the code): written once, in the package. */}
 
-# Focus ring
+export const sectionsOf = (guide) => usageGuide(guide).replaceAll(/^## /gm, '### ')
 
-Every focusable component gets the same ring: 2px solid `focus-ring`, 2px outside the element, following its radius. It shows for keyboard focus only, and it is restyled, never removed.
+<Meta of={FocusStories} />
+
+# Focus
+
+Where focus is, where it goes and where it comes back to. This page has three parts: the ring that shows it, how to move, hold and return it in your own widget, and how to move it when the page or a step changes.
+
+**The ring.** Every focusable component gets the same ring: 2px solid `focus-ring`, 2px outside the element, following its radius. It shows for keyboard focus only, and it is restyled, never removed.
 
 ## Tokens
 
@@ -16,14 +30,14 @@ Every focusable component gets the same ring: 2px solid `focus-ring`, 2px outsid
 
 The ring colour is `primary-500` in light, `primary-400` in dark, `primary-800` in light high contrast and `primary-200` in dark high contrast. In forced colours it is the system colour `Highlight`.
 
-## Usage
+## Using the ring
 
 - **It shows for keyboard focus only.** The ring uses `:focus-visible`, or the `data-focus-visible` attribute a component sets. A mouse click doesn't show it.
 - **It sits outside the element.** The 2px offset puts the ring against the page, not on the element. On a filled button, the ring colour and the fill are close, so a ring drawn on the fill could vanish. Outside, it has 3:1 against the background next to it.
 - **A custom component gets the same ring.** Add `data-focus-visible` to force it on, for example in a story or a test.
 - **Don't write `outline: none`.** If a design needs another look, restyle the ring with the tokens. Never remove it.
 
-## Accessibility
+## Ring accessibility
 
 - **Focus visible (2.4.7).** Every focusable element shows where focus is.
 - **Focus appearance (2.4.13).** The ring is at least 2px thick and has 3:1 contrast against the colours next to it. `theme:check` measures `focus-ring` against every background it is used on, including the panel and status backgrounds, in all four themes.
@@ -31,9 +45,63 @@ The ring colour is `primary-500` in light, `primary-400` in dark, `primary-800` 
 - **Forced colours.** The ring is `Highlight`, so the user's own palette decides the colour.
 - **Scroll regions.** A scrollable region is focusable so keyboard users can scroll it, so it shows the ring too (2.1.1).
 
-## Customising
+## Customising the ring
 
 Override the width and offset on `:root`. To change the colour, set a semantic token per theme, and run `vp run theme:check` or `checkThemeCss()`, which measures the ring against every background it's used on. A thinner ring or a glow isn't used, because it fails 2.4.13.
+
+## Managing focus
+
+<Markdown>
+  {sectionsOf(focusGuide)
+    .split('\n### Focus ring')[0]
+    .replace(/^### API/m, '### Options')}
+</Markdown>
+
+### Native dialog
+
+<Canvas of={FocusStories.NativeFirst} />
+
+### Restore
+
+<Canvas of={FocusStories.Restore} />
+
+### Loop
+
+<Canvas of={FocusStories.Loop} />
+
+### Inert
+
+<Canvas of={FocusStories.Inert} />
+
+### Initial focus
+
+<Canvas of={FocusStories.InitialFocus} />
+
+### The FocusScope part
+
+<Canvas of={FocusStories.Part} />
+
+<ContractKeyboard contract={focusContract} title="Keyboard: a focus scope" />
+
+## Moving focus on a route or a step
+
+When the page or a step changes, a keyboard or screen reader user should start at its title, not at a stale position (2.4.3). `moveOn` does it for a wizard step, and `useRouteFocus` does it for a router.
+
+### A wizard step
+
+<Canvas of={FocusStories.Step} />
+
+### A route with `moveOn`
+
+<Canvas of={FocusStories.Route} />
+
+### `useRouteFocus`
+
+<Markdown>{sectionsOf(routeGuide).split('\n### ')[0]}</Markdown>
+
+<Canvas of={RouteStories.Default} />
+
+<ContractKeyboard contract={routeContract} title="Keyboard: after a route change" />
 
 ## Related
 

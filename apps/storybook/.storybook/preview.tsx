@@ -224,7 +224,7 @@ const preview: Preview = {
             'Spacing',
             'Radius',
             'Borders and elevation',
-            'Focus ring',
+            'Focus',
             'Motion',
             'Density',
             'Layout',

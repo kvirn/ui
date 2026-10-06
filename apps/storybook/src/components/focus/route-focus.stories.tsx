@@ -1,13 +1,12 @@
 import contract from '../../../../../packages/react/src/route-focus/route-focus.a11y.md?raw'
-import guide from '../../../../../packages/react/src/route-focus/route-focus.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor } from 'storybook/test'
-import { showSource, usageGuide } from '../../docs-source.ts'
+import { showSource } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import { RouteFocusPage } from './route-focus.fixture.tsx'
 import type { RouteFocusFixtureLocale } from './route-focus.fixture.tsx'
 
-// Components/Route focus (useRouteFocus): the hook renders nothing, so the fixture is a page with two fake routes
+// Foundation/Focus, the route part (useRouteFocus, Plan 0085): the hook renders nothing, so the fixture is a page with two fake routes
 // (links) and a link to a section. The key is the route, the hash is kept apart. The hook's
 // behaviour with a real history (pushState, Back, Forward) is proved in use-route-focus.test.tsx.
 
@@ -15,14 +14,16 @@ const localeFor = (globals: Record<string, unknown>): RouteFocusFixtureLocale =>
   localeOf(globals) === 'sv' ? 'sv' : 'en'
 
 const meta = {
-  title: 'Components/Route focus',
+  title: 'Foundation/Focus',
+  // Another file of the same Foundation/Focus entry: its own id keeps the story ids apart.
+  id: 'foundation-focus-route',
+  tags: ['!autodocs'],
   globals: { locale: 'sv' },
   decorators: [withFormLocale],
   parameters: {
     a11yContract: contract,
     docs: {
-      description: { component: usageGuide(guide) },
-      ...showSource('route-focus/route-focus.fixture.tsx', 'RouteFocusPage').docs,
+      ...showSource('focus/route-focus.fixture.tsx', 'RouteFocusPage').docs,
     },
   },
   render: (_args, { globals }) => <RouteFocusPage locale={localeFor(globals)} />,
@@ -36,6 +37,7 @@ type Story = StoryObj<typeof meta>
  * first render moves nothing. The ring shows for the keyboard only, as it does on any focus.
  */
 export const Default: Story = {
+  name: 'Route change',
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('heading', { level: 1 })).not.toHaveFocus()
     await userEvent.click(canvas.getByRole('link', { name: 'Till tjänster' }))
@@ -50,6 +52,7 @@ export const Default: Story = {
  * back to the header. The title has no Tab stop of its own once focus has left it.
  */
 export const Keyboard: Story = {
+  name: 'Route keyboard',
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('link', { name: 'Till tjänster' }))
     await waitFor(() => expect(canvas.getByRole('heading', { level: 1 })).toHaveFocus())
@@ -65,6 +68,7 @@ export const Keyboard: Story = {
 
 /** A hash change is not a new page: focus stays on the link that was used. */
 export const HashChange: Story = {
+  name: 'Route hash change',
   play: async ({ canvas }) => {
     const link = canvas.getByRole('link', { name: 'Hoppa till avsnittet längre ner' })
     await userEvent.click(link)
@@ -75,6 +79,7 @@ export const HashChange: Story = {
 
 /** `announce` also says the title in the live region, for a router that has no announcer. */
 export const Announce: Story = {
+  name: 'Route announce',
   render: (_args, { globals }) => <RouteFocusPage locale={localeFor(globals)} announce />,
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('link', { name: 'Till tjänster' }))
@@ -84,6 +89,7 @@ export const Announce: Story = {
 
 /** Right to left, in English: the same behaviour, the ring follows the writing direction. */
 export const RTL: Story = {
+  name: 'Route RTL',
   globals: { dir: 'rtl', locale: 'en' },
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('link', { name: 'To services' }))

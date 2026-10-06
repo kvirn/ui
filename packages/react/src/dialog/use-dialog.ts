@@ -7,7 +7,7 @@ import { useDismissableLayer } from '../popup/use-dismissable-layer.ts'
 import { useEnv } from '../provider/use-env.ts'
 import { useMessages } from '../provider/use-messages.ts'
 import { ParentDialogContext } from './dialog-context.ts'
-import { focusFirstAvailable, useFocusReturn } from './focus-return.ts'
+import { focusFirstAvailable, useFocusReturn } from '../focus/focus-return.ts'
 
 /** Why the dialog opened or closed, in the second argument of `onOpenChange`. */
 export type DialogChangeReason =

@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import type { RefObject } from 'react'
 import { useQuietAnnouncer, warnAnnouncerMissing } from '../announcer/use-announcer.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
-import { textEntrySelector } from '../focus-visible/use-focus-visible.ts'
+import { moveFocusOn } from '../focus/move-on.ts'
 import { useEnv } from '../provider/use-env.ts'
 import { useMessages } from '../provider/use-messages.ts'
 
@@ -74,33 +74,23 @@ export function useRouteFocus(options: UseRouteFocusOptions): void {
       return
     }
 
-    const activeElement = env.document.activeElement
-    if (activeElement !== null && activeElement.matches(textEntrySelector)) {
+    const result = moveFocusOn(env, selector, containerRef?.current)
+    if (result.status === 'typing') {
       return
     }
-
-    const target = (containerRef?.current ?? env.document).querySelector<HTMLElement>(selector)
-    if (target === null) {
+    if (result.status === 'missing') {
       warnOnce(
         'route-focus-target-missing',
         `useRouteFocus found nothing matching "${selector}" after the route changed, so focus stayed where it was. Render the page title as an <h1> inside the container, or pass a \`selector\`.`,
       )
       return
     }
-
-    const addedTabIndex = !target.hasAttribute('tabindex')
-    if (addedTabIndex) {
-      target.setAttribute('tabindex', '-1')
-      target.addEventListener('blur', () => target.removeAttribute('tabindex'), { once: true })
-    }
-    target.focus({ preventScroll: false })
-
     if (announce) {
       if (!isAvailable) {
         warnAnnouncerMissing()
         return
       }
-      const title = env.document.title.trim() || (target.textContent ?? '').trim()
+      const title = env.document.title.trim() || (result.target.textContent ?? '').trim()
       say(routeFocusMessages.navigated({ title }))
     }
   }, [env, key, containerRef, selector, announce, isAvailable, say, routeFocusMessages])

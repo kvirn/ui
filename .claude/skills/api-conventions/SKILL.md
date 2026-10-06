@@ -28,6 +28,8 @@ Load it with `accessibility` (what the component must expose) and `testing` (how
   - Function form, `render={(partProps, state) => <El {...partProps} />}`: the consumer spreads the props. Keep `className` when you do.
 - **A part that needs a specific element** (`<button>`, `<a>`, `<fieldset>`) checks `ref.current.tagName` in an effect after commit and warns when `render` produced something else. See the warnings reference.
 
+`useFocus` is a hook with no markup of its own: it returns `scopeProps` (ref and `onKeyDown`) for the consumer's element, and `FocusScope` (flat, one element) is the same hook plus one element with `render` (Plan 0085).
+
 ## Naming: namespaces, single elements and aliases
 
 An adopter can tell from a name alone how a component is built. Five rules:

@@ -50,7 +50,7 @@ describe('Foundation MDX pages', () => {
       expect.arrayContaining([
         'borders-elevation.mdx',
         'density.mdx',
-        'focus-ring.mdx',
+        'focus.mdx',
         'layout.mdx',
         'motion.mdx',
         'overview.mdx',

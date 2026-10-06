@@ -21,6 +21,19 @@ export { useAnnouncer } from './announcer/use-announcer.ts'
 export type { UseAnnouncerResult } from './announcer/use-announcer.ts'
 export { useRouteFocus } from './route-focus/use-route-focus.ts'
 export type { UseRouteFocusOptions } from './route-focus/use-route-focus.ts'
+export { useFocus } from './focus/use-focus.ts'
+export type {
+  FocusMoveOn,
+  FocusScopePartProps,
+  UseFocusOptions,
+  UseFocusResult,
+} from './focus/use-focus.ts'
+export { FocusScope } from './focus/focus-scope.tsx'
+export type {
+  FocusScopeElementProps,
+  FocusScopeProps,
+  FocusScopeState,
+} from './focus/focus-scope.tsx'
 export { mergeProps } from './merge-props/merge-props.ts'
 export type { MergedProps } from './merge-props/merge-props.ts'
 export type { RenderProp } from './render/render-part.ts'

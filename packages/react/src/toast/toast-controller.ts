@@ -9,7 +9,7 @@ import type {
 } from '@kvirn-ui/core'
 import { isValidElement } from 'react'
 import type { ReactNode } from 'react'
-import { isFocusTarget } from '../dialog/focus-return.ts'
+import { isFocusTarget } from '../focus/focus-return.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
 
 export type { ToastVariant } from '@kvirn-ui/core'

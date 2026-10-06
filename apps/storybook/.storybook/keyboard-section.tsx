@@ -46,10 +46,16 @@ const focusLines = [
 ] as const
 
 /** The Keyboard section for an already parsed contract. Exported for the stories-free check of the Docs page. */
-export function KeyboardSectionView({ section }: { section: ParsedSection }) {
+export function KeyboardSectionView({
+  section,
+  title = 'Keyboard',
+}: {
+  section: ParsedSection
+  title?: string
+}) {
   return (
     <div className="kv-docs-keyboard">
-      <Heading>Keyboard</Heading>
+      <Heading>{title}</Heading>
       {section.noKeys ? (
         <p>This component has no focusable parts and handles no keys.</p>
       ) : (
@@ -97,4 +103,10 @@ export function KeyboardSection() {
   }
   const { section } = parseKeyboardSection(contract)
   return section === undefined ? null : <KeyboardSectionView section={section} />
+}
+
+/** The Keyboard section of a contract given as text, for a Docs page that shows more than one (Foundation/Focus). */
+export function ContractKeyboard({ contract, title }: { contract: string; title?: string }) {
+  const { section } = parseKeyboardSection(contract)
+  return section === undefined ? null : <KeyboardSectionView section={section} title={title} />
 }

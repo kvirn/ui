@@ -67,7 +67,7 @@ Load `keyboard` and `accessibility` with this skill. Keys for these patterns are
 - Children render only while open. The popup joins the layer stack: Escape and the `backdrop` press go through `useDismissableLayer` (`backdrop` option), so one Escape closes the innermost layer and a Popover or Combobox inside closes first. A native `cancel` is prevented so state and element never desync. AlertDialog ignores the backdrop press; Dialog closes on it only with `dismissOnOutsidePress`.
 - Scroll lock is `data-kv-scroll-locked` on `<html>` (core `scroll-lock`, counted for nested dialogs). `theme.css` applies it (`overflow: hidden`), so headless code sets no style.
 - It hosts its own `AnnouncerContext` and Announcer inside the Popup, because the inert page silences the provider's regions.
-- Return focus, in order: `finalFocusRef`, the trigger, the previously focused element if it takes focus, then the invoker (`[aria-controls]`) of the popup that element was in (a Menu item that opened the dialog). Never `body`. A close the user's own move caused (a Menu's Tab or focus-out) skips it (`skipReturnRef`). Implemented in `packages/react/src/dialog/focus-return.ts`.
+- Return focus, in order: `finalFocusRef`, the trigger, the previously focused element if it takes focus, then the invoker (`[aria-controls]`) of the popup that element was in (a Menu item that opened the dialog). Never `body`. A close the user's own move caused (a Menu's Tab or focus-out) skips it (`skipReturnRef`). Implemented in `packages/react/src/focus/focus-return.ts`.
 - Initial focus: `initialFocusRef`, else the first tabbable that is not Close, else the Title. AlertDialog warns without `initialFocusRef` (least destructive action).
 
 ### Menu
@@ -87,8 +87,7 @@ Load `keyboard` and `accessibility` with this skill. Keys for these patterns are
 
 ### FocusScope (planned)
 
-- Not built. Purpose: return focus to the action that triggered a modal when it closes, also when the trigger is gone, and scope focus for non-native surfaces.
-- The first implementation is internal, in `packages/react/src/dialog/focus-return.ts`. Menu is the second user, and it is still internal. Extract it to a public FocusScope when a third user (DatePicker) arrives or a plan asks for it.
+- Built (Plan 0085) as the public `useFocus` and `FocusScope` in `packages/react/src/focus/`. Dialog, Menu, DatePicker and the Toast controller use its internal return code (`focus-return.ts`); only a consumer's own scope uses `contain`. Purpose: return focus to the action that triggered a modal when it closes, also when the trigger is gone, and scope focus for non-native surfaces.
 
 ## Listbox, Combobox and Autocomplete
 
