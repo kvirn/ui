@@ -15,16 +15,26 @@ export function isFocusTarget(element: HTMLElement | null | undefined): element 
 }
 
 /** Internal. Focuses the first candidate that takes focus, in order. `false` when none does: focus is never sent to `body`. */
-export function focusFirstAvailable(candidates: ReadonlyArray<HTMLElement | null | undefined>) {
+export function focusFirstAvailable(
+  candidates: ReadonlyArray<HTMLElement | null | undefined>,
+  options?: FocusOptions,
+) {
   for (const candidate of candidates) {
     if (isFocusTarget(candidate)) {
-      candidate.focus()
+      candidate.focus(options)
       if (candidate.ownerDocument.activeElement === candidate) {
         return true
       }
     }
   }
   return false
+}
+
+export interface UseFocusReturnResult {
+  /** Call it just before the scope is shown. */
+  captureOpener: () => void
+  /** Read at close time: `true` once focus was in the scope or a real opener existed. A caller restoring focus itself (a Menu's outside press) needs it before it takes `body`'s. */
+  wasFocusSeen: () => boolean
 }
 
 export interface UseFocusReturnOptions {
@@ -38,6 +48,8 @@ export interface UseFocusReturnOptions {
   finalFocusRef?: RefObject<HTMLElement | null> | undefined
   /** While `current` is `true` when the scope ends, focus is not returned: the user's own move (a Tab) already placed it. */
   skipReturnRef?: RefObject<boolean> | undefined
+  /** While `current` is `true` when the scope ends, focus returns without scrolling: a pointer press elsewhere on the page must not jump it back to the trigger. */
+  preventScrollRef?: RefObject<boolean> | undefined
   /** Called when nothing could take focus. */
   onLost: () => void
 }
@@ -59,18 +71,39 @@ export function useFocusReturn({
   triggerRef,
   finalFocusRef,
   skipReturnRef,
+  preventScrollRef,
   onLost,
-}: UseFocusReturnOptions): () => void {
+}: UseFocusReturnOptions): UseFocusReturnResult {
   const env = useEnv()
   /** `undefined` while inactive, `null` when focus was on nothing useful before the scope began. */
   const openerRef = useRef<HTMLElement | null | undefined>(undefined)
   const openerInvokerRef = useRef<HTMLElement | null>(null)
   const shouldReturnRef = useRef(false)
+  const focusEnteredRef = useRef(false)
   const latest = useRef({ finalFocusRef, onLost })
 
   useLayoutEffect(() => {
     latest.current = { finalFocusRef, onLost }
   })
+
+  // Attached before the scope is shown, so a native `showModal` focusing into it is seen. A re-run
+  // (StrictMode) re-seeds from where focus is and never clears what was seen: only the return does.
+  useLayoutEffect(() => {
+    if (env === undefined || !active) {
+      return
+    }
+    const { document } = env
+    if (isInsideElement(scopeRef.current, document.activeElement)) {
+      focusEnteredRef.current = true
+    }
+    const onFocusIn = (event: FocusEvent) => {
+      if (isInsideElement(scopeRef.current, event.target)) {
+        focusEnteredRef.current = true
+      }
+    }
+    document.addEventListener('focusin', onFocusIn, true)
+    return () => document.removeEventListener('focusin', onFocusIn, true)
+  }, [active, env, scopeRef])
 
   /** Call it just before the scope is shown: only then is the element that had focus the real opener. */
   const captureOpener = useCallback(() => {
@@ -85,6 +118,7 @@ export function useFocusReturn({
       return
     }
     openerRef.current = current
+    focusEnteredRef.current = true
     // An item in a popup that is about to hide (a Menu's) is no place to return to once it has:
     // the popup's invoker is the fallback after it.
     const popup = current.closest('[popover][id]')
@@ -95,6 +129,8 @@ export function useFocusReturn({
     openerInvokerRef.current = invoker instanceof env.window.HTMLElement ? invoker : null
   }, [env])
 
+  const wasFocusSeen = useCallback(() => focusEnteredRef.current, [])
+
   useLayoutEffect(() => {
     if (env === undefined || active || openerRef.current === undefined) {
       return
@@ -104,14 +140,18 @@ export function useFocusReturn({
     // A native close (`<form method="dialog">`) has already moved focus back to the opener: ours still.
     shouldReturnRef.current =
       skipReturnRef?.current !== true &&
-      (current === null ||
-        current === document.body ||
+      (((current === null || current === document.body) &&
+        (focusEnteredRef.current || openerRef.current !== null)) ||
         current === openerRef.current ||
         isInsideElement(scopeRef.current, current))
   }, [active, env, scopeRef, skipReturnRef])
 
   useEffect(() => {
-    if (active || openerRef.current === undefined) {
+    if (active) {
+      return
+    }
+    focusEnteredRef.current = false
+    if (openerRef.current === undefined) {
       return
     }
     const opener = openerRef.current
@@ -119,16 +159,14 @@ export function useFocusReturn({
     if (!shouldReturnRef.current) {
       return
     }
-    const returned = focusFirstAvailable([
-      latest.current.finalFocusRef?.current,
-      triggerRef.current,
-      opener,
-      openerInvokerRef.current,
-    ])
+    const returned = focusFirstAvailable(
+      [latest.current.finalFocusRef?.current, triggerRef.current, opener, openerInvokerRef.current],
+      { preventScroll: preventScrollRef?.current === true },
+    )
     if (!returned) {
       latest.current.onLost()
     }
-  }, [active, triggerRef])
+  }, [active, preventScrollRef, triggerRef])
 
-  return captureOpener
+  return { captureOpener, wasFocusSeen }
 }

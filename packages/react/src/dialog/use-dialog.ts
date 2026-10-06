@@ -243,7 +243,7 @@ export function useModalDialog(
     initialFocusRefLatest.current = initialFocusRef
   })
 
-  const captureOpener = useFocusReturn({
+  const { captureOpener } = useFocusReturn({
     active: isOpen,
     scopeRef: popupRef,
     triggerRef,

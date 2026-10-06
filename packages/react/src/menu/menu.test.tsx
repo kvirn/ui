@@ -992,6 +992,77 @@ describe('focus return', () => {
     })
   }
 
+  test('a menu that starts open and is closed by the platform while focus was never in it does not move focus to the trigger', async () => {
+    await render(<Example defaultOpen />)
+    await expect.poll(isShown).toBe(true)
+    const other = document.createElement('div')
+    other.popover = 'auto'
+    document.body.append(other)
+    try {
+      other.showPopover()
+      await expect.poll(isShown).toBe(false)
+      await wait(100)
+      expect(document.activeElement).not.toBe(triggerElement())
+      expect(document.activeElement).toBe(document.body)
+    } finally {
+      other.remove()
+    }
+  })
+
+  test('an outside press on a menu that starts open, which nobody touched, does not move focus to the trigger', async () => {
+    await render(<Example defaultOpen />)
+    await expect.poll(isShown).toBe(true)
+    const focus = vi.spyOn(triggerElement(), 'focus')
+    await userEvent.click(page.getByText('Text utanför'))
+    await expect.poll(isShown).toBe(false)
+    await wait(100)
+    expect(focus).not.toHaveBeenCalled()
+    expect(document.activeElement).not.toBe(triggerElement())
+  })
+
+  test('a menu that starts open, with focus on an item, returns focus to the trigger when the platform closes it', async () => {
+    await render(<Example defaultOpen />)
+    await expect.poll(isShown).toBe(true)
+    item('Skriv ut').element().focus()
+    const other = document.createElement('div')
+    other.popover = 'auto'
+    document.body.append(other)
+    try {
+      other.showPopover()
+      await expect.poll(isShown).toBe(false)
+      await expect.element(trigger()).toHaveFocus()
+    } finally {
+      other.remove()
+    }
+  })
+
+  test('an outside press with the trigger scrolled out of view returns focus to it without scrolling the page, and Escape scrolls', async () => {
+    await render(
+      <>
+        <Example />
+        <div style={{ blockSize: '3000px' }}>
+          <p style={{ marginBlockStart: '2000px' }}>Långt ner</p>
+        </div>
+      </>,
+    )
+    await openWithClick()
+    const focus = vi.spyOn(triggerElement(), 'focus')
+    window.scrollTo(0, 1500)
+    await expect.poll(() => window.scrollY).toBe(1500)
+    await userEvent.click(page.getByText('Långt ner'))
+    await expect.poll(isShown).toBe(false)
+    await expect.element(trigger()).toHaveFocus()
+    expect(window.scrollY).toBe(1500)
+    expect(focus).toHaveBeenLastCalledWith({ preventScroll: true })
+    window.scrollTo(0, 0)
+    await openWithClick()
+    focus.mockClear()
+    await userEvent.keyboard('{Escape}')
+    await expect.poll(isShown).toBe(false)
+    await expect.element(trigger()).toHaveFocus()
+    expect(focus).toHaveBeenLastCalledWith({ preventScroll: false })
+  })
+
   test('Tab that lands on the element that opened the menu leaves focus there', async () => {
     function OpenedFromAnotherControl() {
       const [open, setOpen] = useState(false)

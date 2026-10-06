@@ -1,4 +1,4 @@
-import { useId, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { MouseEvent, PointerEvent, RefObject } from 'react'
 import { isInsideElement, useDismissableLayer } from '../popup/use-dismissable-layer.ts'
 import { usePopup } from '../popup/use-popup.ts'
@@ -111,20 +111,44 @@ export function usePopover({
   const popupRef = useRef<HTMLDivElement | null>(null)
   /** Whether a mouse or touch press found the popup open: the platform may close it before the click. */
   const openAtPressRef = useRef<boolean | undefined>(undefined)
+  /** Whether focus has been in the popup or on the trigger since it opened: only then is `body` focus a loss. */
+  const focusEnteredRef = useRef(false)
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen)
   const isControlled = openProp !== undefined
   const isOpen = isControlled ? openProp : uncontrolledOpen
 
+  useEffect(() => {
+    if (!isOpen || env === undefined) {
+      return
+    }
+    const { document } = env
+    const isOurs = (target: unknown) =>
+      isInsideElement(popupRef.current, target) || isInsideElement(triggerRef.current, target)
+    focusEnteredRef.current = isOurs(document.activeElement)
+    const onFocusIn = (event: FocusEvent) => {
+      if (isOurs(event.target)) {
+        focusEnteredRef.current = true
+      }
+    }
+    document.addEventListener('focusin', onFocusIn, true)
+    return () => document.removeEventListener('focusin', onFocusIn, true)
+  }, [isOpen, env])
+
   /** Back to the trigger when focus was inside the popup, or lost to the page. Never steals it from another control. */
-  const restoreFocus = () => {
+  const restoreFocus = (reason: PopoverChangeReason) => {
     const trigger = triggerRef.current
     if (trigger === null || env === undefined) {
       return
     }
     const active = env.document.activeElement
-    const isLost = active === null || active === env.document.body
+    // The user's own close (Escape, Close) restores from `body` too: Safari doesn't focus a pressed
+    // button, so focus was never seen entering. A platform or outside dismissal needs it seen.
+    const isOwnAction = reason === 'close-press' || reason === 'escape'
+    const isLost =
+      (active === null || active === env.document.body) && (isOwnAction || focusEnteredRef.current)
     if (isLost || isInsideElement(popupRef.current, active)) {
-      trigger.focus()
+      // A press elsewhere on the page must not scroll it back to the trigger.
+      trigger.focus({ preventScroll: reason === 'outside-press' || reason === 'light-dismiss' })
     }
   }
 
@@ -137,7 +161,7 @@ export function usePopover({
     }
     onOpenChange?.(next, details)
     if (!next && details.reason !== 'trigger-press') {
-      restoreFocus()
+      restoreFocus(details.reason)
     }
   }
 

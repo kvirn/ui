@@ -273,6 +273,81 @@ describe('opening and closing', () => {
     )
   })
 
+  test('a popup that starts open and is closed by the platform while focus was never in it does not move focus to the trigger', async () => {
+    await render(<Example defaultOpen />)
+    await expect.poll(isShown).toBe(true)
+    const other = document.createElement('div')
+    other.popover = 'auto'
+    document.body.append(other)
+    try {
+      other.showPopover()
+      await expect.poll(isShown).toBe(false)
+      await new Promise((resolve) => setTimeout(resolve, 100))
+      expect(document.activeElement).toBe(document.body)
+    } finally {
+      other.remove()
+    }
+  })
+
+  test('Close returns focus to the trigger when a pointer opened the popup without focusing the trigger', async () => {
+    await render(<Example />)
+    // Script clicks focus nothing, as a press does in Safari.
+    ;(triggerElement() as HTMLElement).click()
+    await expect.poll(isShown).toBe(true)
+    expect(document.activeElement).toBe(document.body)
+    ;(closeButton().element() as HTMLElement).click()
+    await expect.poll(isShown).toBe(false)
+    await expect.element(trigger()).toHaveFocus()
+  })
+
+  test('a light dismiss that finds focus lost to the page after it was inside the popup returns focus to the trigger', async () => {
+    await render(<Example />)
+    await userEvent.click(trigger())
+    await expect.poll(isShown).toBe(true)
+    closeButton().element().focus()
+    closeButton().element().blur()
+    expect(document.activeElement).toBe(document.body)
+    const other = document.createElement('div')
+    other.popover = 'auto'
+    document.body.append(other)
+    try {
+      other.showPopover()
+      await expect.poll(isShown).toBe(false)
+      await expect.element(trigger()).toHaveFocus()
+    } finally {
+      other.remove()
+    }
+  })
+
+  test('an outside press with the trigger scrolled out of view returns focus to it without scrolling the page, and Escape scrolls', async () => {
+    await render(
+      <>
+        <Example />
+        <div style={{ blockSize: '3000px' }}>
+          <p style={{ marginBlockStart: '2000px' }}>Långt ner</p>
+        </div>
+      </>,
+    )
+    await userEvent.click(trigger())
+    await expect.poll(isShown).toBe(true)
+    closeButton().element().focus()
+    const focus = vi.spyOn(triggerElement(), 'focus')
+    window.scrollTo(0, 1500)
+    await expect.poll(() => window.scrollY).toBe(1500)
+    await userEvent.click(page.getByText('Långt ner'))
+    await expect.poll(isShown).toBe(false)
+    expect(window.scrollY).toBe(1500)
+    expect(focus).toHaveBeenLastCalledWith({ preventScroll: true })
+    window.scrollTo(0, 0)
+    await userEvent.click(trigger())
+    await expect.poll(isShown).toBe(true)
+    closeButton().element().focus()
+    focus.mockClear()
+    await userEvent.keyboard('{Escape}')
+    await expect.poll(isShown).toBe(false)
+    expect(focus).toHaveBeenLastCalledWith({ preventScroll: false })
+  })
+
   test('Escape closes the popup with focus on the trigger, which keeps focus', async () => {
     await render(<Example />)
     triggerElement().focus()

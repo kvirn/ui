@@ -180,6 +180,7 @@ export function useMenu({
   const tabPressedRef = useRef(false)
   /** The menu closed by Tab: focus is where the browser put it, and the focus return leaves it alone. */
   const skipFocusReturnRef = useRef(false)
+  const preventScrollRef = useRef(false)
   /** A Space went into a typeahead word: its key-up must not activate the item. */
   const swallowSpaceUpRef = useRef(false)
   const tabCloseTimerRef = useRef<number | undefined>(undefined)
@@ -202,28 +203,32 @@ export function useMenu({
     if (!next) {
       // Set on every close request: one that the owner refuses must not leave it set for the next.
       skipFocusReturnRef.current = details.reason === 'tab' || details.reason === 'focus-out'
+      preventScrollRef.current =
+        details.reason === 'outside-press' || details.reason === 'light-dismiss'
     }
     if (!isControlled) {
       setUncontrolledOpen(next)
     }
     onOpenChange?.(next, details)
-    if (!next && details.reason === 'outside-press' && env !== undefined) {
+    // Read now: the focus return resets it. A defaultOpen menu nobody touched has nothing to restore.
+    if (!next && details.reason === 'outside-press' && env !== undefined && wasFocusSeen()) {
       // The press is still on its way to focus whatever it landed on, or to blur to `body`: the
       // focus return runs before that. Look again after it, and take focus back only if it is lost.
       env.window.setTimeout(() => {
         const active = env.document.activeElement
         if (active === null || active === env.document.body) {
-          triggerRef.current?.focus()
+          triggerRef.current?.focus({ preventScroll: true })
         }
       }, 0)
     }
   }
 
-  const captureOpener = useFocusReturn({
+  const { captureOpener, wasFocusSeen } = useFocusReturn({
     active: isOpen,
     scopeRef: popupRef,
     triggerRef,
     skipReturnRef: skipFocusReturnRef,
+    preventScrollRef,
     onLost: () => {},
   })
 
@@ -232,6 +237,7 @@ export function useMenu({
   useLayoutEffect(() => {
     if (isOpen) {
       skipFocusReturnRef.current = false
+      preventScrollRef.current = false
       captureOpener()
     }
   }, [isOpen, captureOpener])
@@ -411,6 +417,7 @@ export function useMenu({
       onFocus: () => {
         // Back in the menu after a refused Tab or focus-out close: the flag belonged to that one.
         skipFocusReturnRef.current = false
+        preventScrollRef.current = false
       },
       onKeyUp: (event) => {
         // Space ran no item, it went into a typeahead word: the button must not click on release.

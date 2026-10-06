@@ -1,5 +1,5 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { createRef, useEffect, useRef, useState } from 'react'
+import { StrictMode, createRef, useEffect, useRef, useState } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -482,6 +482,18 @@ describe('keyboard', () => {
     await userEvent.tab({ shift: true })
     await userEvent.keyboard(' ')
     await expect.poll(isModal).toBe(false)
+  })
+
+  test('under StrictMode a Dialog that starts open returns focus to the trigger on Escape', async () => {
+    await render(
+      <StrictMode>
+        <Example defaultOpen />
+      </StrictMode>,
+    )
+    await expect.poll(isModal).toBe(true)
+    await userEvent.keyboard('{Escape}')
+    await expect.poll(isModal).toBe(false)
+    await expect.element(trigger()).toHaveFocus()
   })
 
   test('Enter in a text field submits the form and is not taken', async () => {
