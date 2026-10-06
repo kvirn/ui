@@ -721,6 +721,15 @@ export type {
   UseCheckboxGroupOptions,
   UseCheckboxGroupResult,
 } from './checkbox-group/use-checkbox-group.ts'
+export { Switch } from './switch/switch.tsx'
+export type {
+  SwitchChangeDetails,
+  SwitchDataState,
+  SwitchProps,
+  SwitchState,
+} from './switch/switch.tsx'
+export { useSwitch } from './switch/use-switch.ts'
+export type { SwitchPartProps, UseSwitchOptions, UseSwitchResult } from './switch/use-switch.ts'
 export {
   RadioGroup,
   RadioGroupErrorMessage,

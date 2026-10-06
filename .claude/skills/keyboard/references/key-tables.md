@@ -67,10 +67,11 @@ Prefer one input with `autocomplete="one-time-code"`. If there are several boxes
 
 ### Switch
 
-| Key             | Action                                            |
-| --------------- | ------------------------------------------------- |
-| Tab / Shift+Tab | One Tab stop                                      |
-| Space           | Toggles. Enter toggles too when it's a `<button>` |
+| Key             | Action                                                                                                    |
+| --------------- | --------------------------------------------------------------------------------------------------------- |
+| Tab / Shift+Tab | One Tab stop                                                                                              |
+| Space           | Toggles                                                                                                   |
+| Enter           | Doesn't toggle on `<input role="switch">` (APG makes it optional, Plan 0069); never prevented. A `<button role="switch">` toggles on Enter too |
 
 ### Select-only combobox and Listbox
 

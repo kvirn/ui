@@ -87,7 +87,7 @@
  *  10c. Layout           kv-container, kv-stack, kv-columns, kv-sidebar-layout: where children sit
  *  11. Icon
  *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-textarea,
- *                      kv-character-count, kv-input-group, kv-date-input, kv-checkbox,
+ *                      kv-character-count, kv-input-group, kv-date-input, kv-checkbox, kv-switch,
  *                      kv-radio, kv-listbox-native, kv-listbox-trigger and popup, kv-combobox
  *                      and kv-autocomplete (input, control, buttons, value chips)
  *  13. One-time code    kv-one-time-code: one input, drawn as boxes and dashes of its pattern
@@ -2179,6 +2179,7 @@
           .kv-input-group-addon,
           .kv-checkbox,
           .kv-radio,
+          .kv-switch,
           .kv-listbox-native
         ),
         :is(
@@ -5037,6 +5038,18 @@
       transition-duration: var(--kv-duration-fast);
       transition-timing-function: var(--kv-easing-standard);
     }
+
+    .kv-switch {
+      transition-property: background-color, border-color;
+      transition-duration: var(--kv-duration-fast);
+      transition-timing-function: var(--kv-easing-standard);
+    }
+
+    .kv-switch::before {
+      transition-property: background-color, inset-inline-start;
+      transition-duration: var(--kv-duration-fast);
+      transition-timing-function: var(--kv-easing-standard);
+    }
   }
 
   /* System colours, set explicitly so nothing depends on a background the browser drops. The
@@ -5260,9 +5273,9 @@
     --kv-choice-size: 1.5rem;
   }
 
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) {
+  .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) {
     display: grid;
-    grid-template-columns: var(--kv-choice-size) minmax(0, 1fr);
+    grid-template-columns: var(--kv-choice-column-size, var(--kv-choice-size)) minmax(0, 1fr);
     column-gap: var(--kv-space-3);
     row-gap: var(--kv-field-gap);
     align-items: start;
@@ -5270,20 +5283,20 @@
 
   /* The label spans the row; the control sits on top of its padding. At least the control's
    * minimum height, whatever the line height, and wraps beside the box. */
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-field-label {
+  .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) > .kv-field-label {
     grid-row: 1;
     grid-column: 1 / -1;
     justify-self: start;
     min-block-size: var(--kv-control-min-block-size);
     padding-block: max(0px, calc((var(--kv-control-min-block-size) - 1lh) / 2));
-    padding-inline: calc(var(--kv-choice-size) + var(--kv-space-3)) 0;
+    padding-inline: calc(var(--kv-choice-column-size, var(--kv-choice-size)) + var(--kv-space-3)) 0;
     /* The option is the answer; the question is the legend, at 500. */
     font-weight: 400;
     cursor: pointer;
   }
 
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-prose,
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-field-help-text {
+  .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) > .kv-prose,
+  .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) > .kv-field-help-text {
     grid-column: 2;
   }
 
@@ -5291,23 +5304,26 @@
    * control's minimum height, so the row gap would put the help text as far from its own label as
    * from the next option's. The negative margin cancels the gap for the help text that follows the
    * label. A description (a Prose) keeps the gap. */
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-field-label + .kv-field-help-text {
+  .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch))
+    > .kv-field-label
+    + .kv-field-help-text {
     margin-block-start: calc(-1 * var(--kv-field-gap));
   }
 
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio)) > .kv-field-error-message {
+  .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) > .kv-field-error-message {
     grid-column: 1 / -1;
   }
 
   /* Options are one gap apart. The 24px between text fields in a fieldset (section 12) is for
    * questions, not for the options of one. */
-  .kv-fieldset > .kv-field:has(> :is(.kv-checkbox, .kv-radio)) + .kv-field,
-  .kv-fieldset > .kv-field + .kv-field:has(> :is(.kv-checkbox, .kv-radio)) {
+  .kv-fieldset > .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) + .kv-field,
+  .kv-fieldset > .kv-field + .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) {
     margin-block-start: 0;
   }
 
   /* A disabled choice: its label is muted like a disabled button's. */
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio):is(:disabled, [data-disabled])) > .kv-field-label {
+  .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch):is(:disabled, [data-disabled]))
+    > .kv-field-label {
     color: var(--kv-color-text-muted);
     cursor: not-allowed;
   }
@@ -5474,6 +5490,128 @@
     border-style: solid;
   }
 
+  /* Switch: the same row, a pill track in place of the box. The track is the input, the thumb its
+   * ::before and the tick its ::after, both placed from the track's start edge so they follow
+   * right-to-left and don't move when the edge goes 2px. Design spec: docs/design/switch.md. */
+  .kv-field:has(> .kv-switch) {
+    --kv-choice-column-size: calc(var(--kv-choice-size) * 11 / 6);
+  }
+
+  .kv-switch {
+    --kv-switch-edge: var(--kv-color-border-control);
+    --kv-switch-edge-width: var(--kv-border-width);
+    --kv-switch-fill: var(--kv-color-canvas);
+    --kv-switch-thumb: var(--kv-color-border-control);
+    --kv-switch-tick: var(--kv-color-primary);
+    --kv-switch-thumb-start: calc(var(--kv-choice-size) / 8 - var(--kv-switch-edge-width));
+
+    grid-row: 1;
+    grid-column: 1;
+    position: relative;
+    box-sizing: border-box;
+    inline-size: var(--kv-choice-column-size, calc(var(--kv-choice-size) * 11 / 6));
+    block-size: var(--kv-choice-size);
+    margin: max(0px, calc((var(--kv-control-min-block-size) - var(--kv-choice-size)) / 2)) 0 0;
+    padding: 0;
+    border: var(--kv-switch-edge-width) solid var(--kv-switch-edge);
+    border-radius: var(--kv-radius-full);
+    appearance: none;
+    background-color: var(--kv-switch-fill);
+    box-shadow: none;
+    color: var(--kv-color-text);
+    cursor: pointer;
+  }
+
+  .kv-switch::before,
+  .kv-switch::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .kv-switch::before {
+    inset-block-start: calc(var(--kv-choice-size) / 8 - var(--kv-switch-edge-width));
+    inset-inline-start: var(--kv-switch-thumb-start);
+    inline-size: calc(var(--kv-choice-size) * 3 / 4);
+    block-size: calc(var(--kv-choice-size) * 3 / 4);
+    border-radius: var(--kv-radius-full);
+    background-color: var(--kv-switch-thumb);
+  }
+
+  /* The tick (the checkbox's) is two thirds of the thumb and centred in it, on only. */
+  .kv-switch::after {
+    content: none;
+    inset-block-start: calc(var(--kv-choice-size) / 4 - var(--kv-switch-edge-width));
+    inset-inline-start: calc(var(--kv-switch-thumb-start) + var(--kv-choice-size) / 8);
+    inline-size: calc(var(--kv-choice-size) / 2);
+    block-size: calc(var(--kv-choice-size) / 2);
+    background-color: var(--kv-switch-tick);
+    clip-path: polygon(
+      21.15% 47.6%,
+      40.06% 66.51%,
+      78.34% 20.03%,
+      90.41% 29.97%,
+      41.19% 89.74%,
+      10.1% 58.65%
+    );
+  }
+
+  .kv-switch:checked {
+    --kv-switch-edge: var(--kv-color-primary);
+    --kv-switch-fill: var(--kv-color-primary);
+    --kv-switch-thumb: var(--kv-color-on-primary);
+    --kv-switch-thumb-start: calc(var(--kv-choice-size) * 23 / 24 - var(--kv-switch-edge-width));
+  }
+
+  .kv-switch:checked::after {
+    content: '';
+  }
+
+  .kv-switch:not(:checked, :disabled, [data-disabled], [data-invalid], [aria-invalid='true']):hover,
+  .kv-field:has(> .kv-field-label:hover)
+    > .kv-switch:not(:checked, :disabled, [data-disabled], [data-invalid], [aria-invalid='true']) {
+    --kv-switch-edge: var(--kv-color-text);
+    --kv-switch-thumb: var(--kv-color-text);
+  }
+
+  /* Hovered on, the fill goes to primary-hover and the edge stays primary: primary-hover isn't 3:1
+   * as an edge. */
+  .kv-switch:checked:not(:disabled, [data-disabled]):hover,
+  .kv-field:has(> .kv-field-label:hover) > .kv-switch:checked:not(:disabled, [data-disabled]) {
+    --kv-switch-fill: var(--kv-color-primary-hover);
+    --kv-switch-tick: var(--kv-color-primary-hover);
+  }
+
+  .kv-switch:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-switch:is([data-invalid], [aria-invalid='true']) {
+    --kv-switch-edge: var(--kv-color-danger);
+    --kv-switch-edge-width: var(--kv-control-border-width-invalid);
+  }
+
+  .kv-switch:is(:disabled, [data-disabled]) {
+    --kv-switch-edge: var(--kv-color-border-control);
+    --kv-switch-edge-width: var(--kv-border-width);
+    --kv-switch-fill: var(--kv-color-surface);
+    --kv-switch-thumb: var(--kv-color-text-muted);
+
+    border-style: dashed;
+    cursor: not-allowed;
+    opacity: 1;
+  }
+
+  .kv-switch:checked:is(:disabled, [data-disabled]) {
+    --kv-switch-edge: var(--kv-color-text-muted);
+    --kv-switch-fill: var(--kv-color-text-muted);
+    --kv-switch-thumb: var(--kv-color-canvas);
+    --kv-switch-tick: var(--kv-color-text-muted);
+
+    border-style: solid;
+  }
+
   /* The select. The look of an input; the chevron is two diagonal strokes, one gradient each,
    * at the end of the box (the left in right-to-left). */
   .kv-listbox-native {
@@ -5634,8 +5772,64 @@
       --kv-choice-mark: Highlight;
     }
 
+    .kv-switch {
+      --kv-switch-edge: ButtonBorder;
+      --kv-switch-fill: Field;
+      --kv-switch-thumb: ButtonText;
+      --kv-switch-tick: Highlight;
+    }
+
+    .kv-switch:not(
+        :checked,
+        :disabled,
+        [data-disabled],
+        [data-invalid],
+        [aria-invalid='true']
+      ):hover,
+    .kv-field:has(> .kv-field-label:hover)
+      > .kv-switch:not(
+        :checked,
+        :disabled,
+        [data-disabled],
+        [data-invalid],
+        [aria-invalid='true']
+      ) {
+      --kv-switch-edge: ButtonBorder;
+      --kv-switch-thumb: ButtonText;
+    }
+
+    .kv-switch:checked {
+      --kv-switch-edge: Highlight;
+      --kv-switch-fill: Highlight;
+      --kv-switch-thumb: HighlightText;
+    }
+
+    .kv-switch:checked:not(:disabled, [data-disabled]):hover,
+    .kv-field:has(> .kv-field-label:hover) > .kv-switch:checked:not(:disabled, [data-disabled]) {
+      --kv-switch-fill: Highlight;
+      --kv-switch-tick: Highlight;
+    }
+
+    .kv-switch:is([data-invalid], [aria-invalid='true']) {
+      --kv-switch-edge: CanvasText;
+    }
+
+    .kv-switch:is(:disabled, [data-disabled]) {
+      --kv-switch-edge: GrayText;
+      --kv-switch-fill: Field;
+      --kv-switch-thumb: GrayText;
+    }
+
+    .kv-switch:checked:is(:disabled, [data-disabled]) {
+      --kv-switch-edge: GrayText;
+      --kv-switch-fill: Field;
+      --kv-switch-thumb: GrayText;
+      --kv-switch-tick: Field;
+    }
+
     .kv-checkbox:is(:focus-visible, [data-focus-visible]),
     .kv-radio:is(:focus-visible, [data-focus-visible]),
+    .kv-switch:is(:focus-visible, [data-focus-visible]),
     .kv-listbox-native:is(:focus-visible, [data-focus-visible]) {
       outline-color: Highlight;
     }
@@ -5662,7 +5856,8 @@
       --kv-choice-mark: GrayText;
     }
 
-    .kv-field:has(> :is(.kv-checkbox, .kv-radio):is(:disabled, [data-disabled])) > .kv-field-label {
+    .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch):is(:disabled, [data-disabled]))
+      > .kv-field-label {
       color: GrayText;
     }
 

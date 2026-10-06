@@ -6,7 +6,7 @@
 - **Status:** alpha candidate (Plan 0035). Gates pass, accessibility-reviewer APPROVE (2026-10-04). Manual AT is `pending`.
 - **Tests:** `toggle.test.tsx` next to this file. `toggle.stories.tsx` in `apps/storybook/src/components/toggle/`.
 
-A Toggle is a Button that is on or off. Use it for a choice with a direct, visible effect on the page: bold text, "show only unread". It is not for an answer in a form (use a Checkbox or a radio group) or a setting that is saved (use a Switch, when there is one). It builds on [Button](../button/button.a11y.md): everything Button's contract says about `disabled`, `focusableWhenDisabled`, `render` and the missing-name warning holds here.
+A Toggle is a Button that is on or off. Use it for a choice with a direct, visible effect on the page: bold text, "show only unread". It is not for an answer in a form (use a Checkbox or a radio group) or a setting that is saved (use a [Switch](../switch/switch.a11y.md)). It builds on [Button](../button/button.a11y.md): everything Button's contract says about `disabled`, `focusableWhenDisabled`, `render` and the missing-name warning holds here.
 
 ## Roles, states, properties
 
@@ -59,7 +59,7 @@ Toggle has no strings of its own and announces nothing: the screen reader reads 
 ## Consumer responsibilities
 
 - Give the toggle a visible text label, or an `aria-label` from your own translations for an icon-only toggle (4.1.2, 2.5.3). **The name must not change with the state:** "Visa karta", never "Visa karta" and "Dölj karta" (APG).
-- Use a Toggle for a choice with a direct, visible effect. A setting that turns something on or off for good is a Switch or a Checkbox, and an answer in a form is a Checkbox or a radio group.
+- Use a Toggle for a choice with a direct, visible effect. A setting that turns something on or off for good is a [Switch](../switch/switch.a11y.md) (saved at once) or a Checkbox, and an answer in a form is a Checkbox or a radio group.
 - With `pressed`, update it in `onPressedChange`, or the toggle never changes.
 - Keep `render` on a `<button>`. In the function form, spread `toggleProps` and never override `toggleProps.onClick`: it is what blocks activation while disabled and what switches the state.
 - Style `[data-pressed]` and `[aria-pressed='true']`. The pressed state must never be shown by colour alone (1.4.1): the default theme fills the button and changes the icon or label colour.

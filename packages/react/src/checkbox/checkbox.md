@@ -62,7 +62,7 @@ Your part:
 - **A help text for one option** is a `Field.HelpText` in that option's Field, outside the label. It is part of the box's description, so keep it to a short plain sentence with no links.
 - **A checkbox without a visible label** (a row selector in a table, where the row's text is the label) is a standalone `<Checkbox aria-label="Markera ärende 2026-0412" />`, outside a Field. It then has no Field wiring: no id, no `aria-describedby`, no `aria-invalid`. Prefer a Field with a visible `Field.Label` everywhere a person has to read the question. Without a label or an `aria-label`, a dev warning fires (`Checkbox-without-name`).
 - **Own `indeterminate`.** Set it from your data (some, but not all, children are checked), and pass `false` once the user has chosen. Don't use it for a box that was never answered. The first server-rendered paint is unchecked, because the DOM property can only be set after render.
-- **Don't use a checkbox where a switch or a button is meant,** and don't use one for a yes-or-no question that needs both answers: use a RadioGroup.
+- **Don't use a checkbox where a [Switch](../switch/switch.md) or a button is meant,** and don't use one for a yes-or-no question that needs both answers: use a RadioGroup.
 - **After `form.reset()`** an uncontrolled box keeps a stale `data-state` until its next change. The theme styles `:checked` and `:indeterminate`, so the look is right. Read the native state, not the attribute, in your own code.
 
 A "select all" with a mixed state:

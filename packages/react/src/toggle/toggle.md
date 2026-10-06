@@ -2,7 +2,7 @@
 
 > **Draft** (Plan 0035). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [toggle.a11y.md](toggle.a11y.md), the design spec is [docs/design/rich-text-editor.md](../../../../docs/design/rich-text-editor.md) (§6.4), and the decisions are in the api-conventions and accessibility skills.
 
-A button that is on or off, and says which: "Visa bara olästa", bold text in an editor, a filter on a list. Use it for a choice with a **direct, visible effect** on the page. **For an answer in a form, use a [Checkbox](../checkbox/checkbox.md) or a radio group. For a setting that is saved, use a Checkbox.** For an action that happens once, use a [Button](../button/button.md). For a row of toggles that belong together, put them in a [Toolbar](../toolbar/toolbar.md).
+A button that is on or off, and says which: "Visa bara olästa", bold text in an editor, a filter on a list. Use it for a choice with a **direct, visible effect** on the page. **For an answer in a form, use a [Checkbox](../checkbox/checkbox.md) or a radio group. For a setting that is saved at once, use a [Switch](../switch/switch.md).** For an action that happens once, use a [Button](../button/button.md). For a row of toggles that belong together, put them in a [Toolbar](../toolbar/toolbar.md).
 
 - Renders a native `<button type="button">` with `aria-pressed="true"` or `"false"`, the classes `kv-button kv-toggle` and `data-pressed` while on. Your `className` joins them.
 - **The name never changes with the state.** "Visa karta" stays "Visa karta" whether the map is shown or not: a screen reader says it is on from `aria-pressed`. A label that flips between "Visa" and "Dölj" says it twice and confuses people who can't see which is current (APG).

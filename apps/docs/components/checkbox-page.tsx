@@ -65,7 +65,8 @@ export function CheckboxPage({
           </li>
           <li>
             Not for an action or a setting that takes effect at once: use a{' '}
-            <Link href="/components/button">Button</Link> or a switch.
+            <Link href="/components/button">Button</Link>, or a{' '}
+            <Link href="/components/switch">Switch</Link> for a saved setting.
           </li>
         </ul>
       }

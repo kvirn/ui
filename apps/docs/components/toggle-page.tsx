@@ -59,7 +59,8 @@ export function TogglePage({
           </li>
           <li>
             Not for an answer in a form: use a <Link href="/components/checkbox">Checkbox</Link> or
-            a radio group.
+            a radio group. Not for a setting that is saved at once: use a{' '}
+            <Link href="/components/switch">Switch</Link>.
           </li>
           <li>
             Not for an action that happens once: use a <Link href="/components/button">Button</Link>

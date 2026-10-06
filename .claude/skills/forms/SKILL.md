@@ -35,7 +35,7 @@ Hooks `useField` and `useFieldset` return the props. The components (`Field`, `L
 - **Help text and description colour is `text`,** never `text-muted`, in every density.
 - **The size belongs to the part, not its position.** A Prose is `body` (16px) and a HelpText is `body-small` (14px), in a choice row or not, in both densities. The theme has no rule that sizes a Prose by what comes before it. **A help text goes under the control, never above it** (maintainer, 2026-10-04): text read before answering is a description, so it is a `Prose` above the control. A HelpText rendered before its control warns in development (`help-text-before-control`).
 - **A help text is plain text, short and never alone.** One or two sentences or a format example, no link, list or heading (a screen reader reads it as one flat string, and a link in it can't be followed from the control). It is never the only place a format lives: the error repeats it. No dev warning for rich content. In a disabled or read-only field its copy says why.
-- **An option's help text** is a `Field.HelpText` in the option's Field (a checkbox or radio is a direct child): column 2 of the choice row, 14px, directly under the label's box (0 gap) and outside the label, so it is not in the target or the name. It describes that option's input, not the group.
+- **An option's help text** is a `Field.HelpText` in the option's Field (a checkbox, radio or switch is a direct child): column 2 of the choice row, 14px, directly under the label's box (0 gap) and outside the label, so it is not in the target or the name. It describes that option's input, not the group.
 
 ### Groups
 
@@ -44,6 +44,7 @@ Hooks `useField` and `useFieldset` return the props. The components (`Field`, `L
 - **A Field inside a group fieldset defaults to `marker="none"`.** The `Legend` marker defaults to optional in a group that is not required, and to none in a plain Fieldset.
 - **A checkbox in an invalid group gets `data-invalid` only.** A radio never gets `aria-invalid` or `aria-required` (ARIA does not support them on `radio`). The group's error is its description.
 - **A Radio sits directly in a `Field`,** inside a `RadioGroup.Root`.
+- **A Switch sits directly in a `Field`, before the Label** (Plan 0069): a native `<input type="checkbox" role="switch">` for a setting that takes effect at once. **It has no `required`:** a required Field gives no `aria-required` or `data-required` and warns once (`switch-required`), because off is a valid answer and a consent is a Checkbox. A standalone Field would show "(optional)", so write `<Field.Label marker="none">` (a dev warning, `switch-optional-marker`, fires once when the marker is `optional`). A switch that saves on change says so in the page and confirms the save through an always-mounted live region (3.2.2, 4.1.3); it never changes its label with its state. Never in a submitted e-service form: that is a Checkbox or a RadioGroup.
 
 ### A new control
 

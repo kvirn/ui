@@ -67,7 +67,7 @@ None. Nothing is live. On focus a screen reader reads the label, "checkbox", the
 - For a single consent or declaration, set `required` on the Field, so the label has no "(optional)" and the field is `aria-required`; or `marker="none"`.
 - Own `indeterminate`: set it from your data (some, not all, children are checked) and pass `false` once the user has chosen. Don't use it for a checkbox that was never answered.
 - Validate and set `invalid` yourself; render a Field.ErrorMessage that says what to do ("Bekräfta att uppgifterna är korrekta").
-- Don't use a checkbox where a switch or a button is meant, and don't use one for "yes or no" questions that need both answers: use a RadioGroup.
+- Don't use a checkbox where a [Switch](../switch/switch.a11y.md) or a button is meant (a setting that is saved at once is a Switch), and don't use one for "yes or no" questions that need both answers: use a RadioGroup.
 
 ## Visual / modes
 
