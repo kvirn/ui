@@ -88,8 +88,8 @@
  *  11. Icon
  *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-textarea,
  *                      kv-character-count, kv-input-group, kv-date-input, kv-checkbox, kv-switch,
- *                      kv-radio, kv-listbox-native, kv-listbox-trigger and popup, kv-combobox
- *                      and kv-autocomplete (input, control, buttons, value chips)
+ *                      kv-radio, kv-listbox-native, kv-listbox-trigger and popup, kv-menu
+ *                      (trigger, popup, items), kv-combobox and kv-autocomplete (input, control, buttons, value chips)
  *  13. One-time code    kv-one-time-code: one input, drawn as boxes and dashes of its pattern
  *  14. File upload      kv-file-upload: drop zone, trigger, rejections, and the list of files
  *  15. Table            kv-table: a native table, with sort buttons, selection, expanding and a
@@ -6266,6 +6266,252 @@
     .kv-listbox-group-label,
     .kv-listbox-empty {
       color: CanvasText;
+    }
+  }
+
+  /* The Menu (contract: menu.a11y.md; design: docs/design/menu.md). <Menu.Trigger> renders
+   * kv-menu-trigger: it adds a chevron and the open look to a button of your own (kv-button, or
+   * <Button> through render). <Menu.Popup> renders kv-menu-popup, a popover in the top layer that
+   * the script places: level 3 elevation, xl radius, space-2 padding, as wide as the trigger at
+   * least, scrolling inside the room that is left. <Menu.Item>, <Menu.CheckboxItem> and
+   * <Menu.RadioItem> render kv-menu-item, kv-menu-checkbox-item and kv-menu-radio-item, buttons
+   * at least 44px high (32px compact) that take focus. The highlighted item
+   * ([data-highlighted], pointer or keys) is the focus indicator: a solid primary fill, as the
+   * active Listbox option, so it is never only a shade. A checked item has a tick or a dot drawn
+   * from borders, which stay visible in forced colours. <Menu.Group>, <Menu.RadioGroup>,
+   * <Menu.GroupLabel> and <Menu.Separator> render kv-menu-group, kv-menu-radio-group,
+   * kv-menu-group-label and kv-menu-separator. The popup has no animation. */
+  .kv-menu-trigger::after {
+    content: '';
+    flex: none;
+    inline-size: 0.4375rem;
+    block-size: 0.4375rem;
+    border-block-end: 2px solid currentColor;
+    border-inline-end: 2px solid currentColor;
+    pointer-events: none;
+    transform: translateY(-25%) rotate(45deg);
+  }
+
+  /* A button already has a gap between its label and the mark. */
+  .kv-menu-trigger:dir(rtl)::after {
+    transform: translateY(-25%) rotate(-45deg);
+  }
+
+  .kv-menu-trigger:not(.kv-button)::after {
+    display: inline-block;
+    margin-inline-start: var(--kv-space-2);
+  }
+
+  /* An open menu is not a toggle, so not a solid fill: a primary edge and a light fill say which
+   * button it belongs to, as the Toolbar's open popover does. After the button's hover rule and
+   * with its specificity, so the open look stays while the pointer is on the button. */
+  .kv-button.kv-menu-trigger[aria-expanded='true'] {
+    --kv-button-edge: var(--kv-color-primary);
+
+    border-color: var(--kv-button-edge);
+    background-color: var(--kv-color-primary-subtle);
+    box-shadow: none;
+  }
+
+  .kv-menu-popup {
+    /* The widest a menu grows: its labels wrap, never truncate. */
+    --kv-menu-popup-inline-size-limit: 20rem;
+
+    box-sizing: border-box;
+    min-inline-size: var(--kv-anchor-width, 0);
+    max-inline-size: min(
+      var(--kv-menu-popup-inline-size-limit),
+      calc(100vw - 2 * var(--kv-space-2))
+    );
+    margin: 0;
+    padding: var(--kv-space-2);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-padding-block: var(--kv-space-2);
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-xl);
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-shadow-popup);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    letter-spacing: normal;
+  }
+
+  :is(.kv-menu-item, .kv-menu-checkbox-item, .kv-menu-radio-item) {
+    /* The border of a checkbox square or a radio ring: the control edge at rest, the row's text
+     * colour where the row is highlighted or unavailable. */
+    --kv-menu-item-indicator: var(--kv-color-border-control);
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--kv-space-3);
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-block-size: var(--kv-control-min-block-size);
+    margin: 0;
+    padding-block: var(--kv-space-1);
+    padding-inline: var(--kv-space-3);
+    border: 0;
+    border-radius: var(--kv-radius-md);
+    background-color: transparent;
+    color: var(--kv-color-text);
+    cursor: pointer;
+    font: inherit;
+    letter-spacing: inherit;
+    overflow-wrap: anywhere;
+    text-align: start;
+  }
+
+  :is(.kv-menu-item, .kv-menu-checkbox-item, .kv-menu-radio-item):is([data-highlighted], :focus) {
+    --kv-menu-item-indicator: var(--kv-color-on-primary);
+
+    background-color: var(--kv-color-primary);
+    color: var(--kv-color-on-primary);
+    /* The highlight is the focus indicator. The ring is transparent: forced colours paint it. */
+    outline: var(--kv-focus-ring-width) solid transparent;
+    outline-offset: -2px;
+  }
+
+  :is(.kv-menu-item, .kv-menu-checkbox-item, .kv-menu-radio-item)[aria-disabled='true'] {
+    --kv-menu-item-indicator: var(--kv-color-text-muted);
+
+    color: var(--kv-color-text-muted);
+    cursor: not-allowed;
+  }
+
+  /* A highlighted unavailable item keeps its muted text, so it is outlined rather than filled. */
+  :is(.kv-menu-item, .kv-menu-checkbox-item, .kv-menu-radio-item)[aria-disabled='true']:is(
+      [data-highlighted],
+      :focus
+    ) {
+    background-color: var(--kv-color-primary-subtle);
+    color: var(--kv-color-text-muted);
+    outline: 2px solid var(--kv-color-primary);
+    outline-offset: -2px;
+  }
+
+  /* The checkbox square and the radio ring keep their place, checked or not, so the labels line up. */
+  :is(.kv-menu-checkbox-item, .kv-menu-radio-item)::before {
+    content: '';
+    flex: none;
+    box-sizing: border-box;
+    inline-size: 1rem;
+    block-size: 1rem;
+    border: var(--kv-border-width) solid var(--kv-menu-item-indicator);
+  }
+
+  .kv-menu-checkbox-item::before {
+    border-radius: var(--kv-radius-sm);
+  }
+
+  .kv-menu-radio-item::before {
+    border-radius: 50%;
+  }
+
+  /* The tick and the dot are borders, centred in the mark with insets and margins (never a
+   * transform that mirrors in right-to-left text), and in the text colour. */
+  .kv-menu-checkbox-item[aria-checked='true']::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: calc(var(--kv-space-3) + 0.5rem - 3px);
+    inline-size: 0.25rem;
+    block-size: 0.5rem;
+    margin-block-start: -0.375rem;
+    border-color: currentColor;
+    border-style: solid;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .kv-menu-radio-item[aria-checked='true']::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: calc(var(--kv-space-3) + 0.25rem);
+    inline-size: 0;
+    block-size: 0;
+    margin-block-start: -0.25rem;
+    border: 0.25rem solid currentColor;
+    border-radius: 50%;
+  }
+
+  /* The label type style in the text colour: a group name is content, not a help text. */
+  .kv-menu-group-label {
+    padding-block: var(--kv-space-2) var(--kv-space-1);
+    padding-inline: var(--kv-space-3);
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-label-size);
+    font-weight: var(--kv-font-label-weight);
+    line-height: var(--kv-font-label-line-height);
+    overflow-wrap: anywhere;
+  }
+
+  .kv-menu-separator {
+    block-size: 0;
+    margin-block: var(--kv-space-2);
+    margin-inline: 0;
+    padding: 0;
+    border: 0;
+    border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  /* System colours, set explicitly: the popup keeps a visible edge, the highlighted item swaps to
+   * Highlight, and an unavailable one is GrayText, outlined when highlighted. */
+  @media (forced-colors: active) {
+    .kv-button.kv-menu-trigger[aria-expanded='true'] {
+      --kv-button-edge: Highlight;
+
+      background-color: ButtonFace;
+    }
+
+    .kv-menu-popup {
+      border-color: CanvasText;
+      background-color: Canvas;
+      color: CanvasText;
+    }
+
+    :is(.kv-menu-item, .kv-menu-checkbox-item, .kv-menu-radio-item) {
+      --kv-menu-item-indicator: CanvasText;
+
+      color: CanvasText;
+    }
+
+    :is(.kv-menu-item, .kv-menu-checkbox-item, .kv-menu-radio-item):is([data-highlighted], :focus) {
+      --kv-menu-item-indicator: HighlightText;
+
+      background-color: Highlight;
+      color: HighlightText;
+      forced-color-adjust: none;
+      outline-color: HighlightText;
+    }
+
+    :is(.kv-menu-item, .kv-menu-checkbox-item, .kv-menu-radio-item)[aria-disabled='true'] {
+      --kv-menu-item-indicator: GrayText;
+
+      color: GrayText;
+    }
+
+    :is(.kv-menu-item, .kv-menu-checkbox-item, .kv-menu-radio-item)[aria-disabled='true']:is(
+        [data-highlighted],
+        :focus
+      ) {
+      background-color: Canvas;
+      color: GrayText;
+      outline-color: Highlight;
+    }
+
+    .kv-menu-group-label {
+      color: CanvasText;
+    }
+
+    .kv-menu-separator {
+      border-block-start-color: CanvasText;
     }
   }
 

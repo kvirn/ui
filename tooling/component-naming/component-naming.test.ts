@@ -27,6 +27,7 @@ const namespaces = [
   'InputGroup',
   'Link',
   'Listbox',
+  'Menu',
   'Navigation',
   'OneTimeCode',
   'Popover',

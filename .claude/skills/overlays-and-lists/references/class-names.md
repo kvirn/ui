@@ -7,6 +7,11 @@ The parts render these classes. The theme selects on them, and they are public A
 - Classes: `kv-popover-trigger`, `kv-popover-popup`, `kv-popover-close`.
 - State: `data-open` (trigger and popup), `data-placement`, `data-detached` (popup).
 
+## Menu
+
+- Classes: `kv-menu-trigger`, `kv-menu-popup`, `kv-menu-item`, `kv-menu-checkbox-item`, `kv-menu-radio-item`, `kv-menu-radio-group`, `kv-menu-group`, `kv-menu-group-label`, `kv-menu-separator`.
+- State: `data-open` (trigger and popup), `data-placement`, `data-detached` (popup). On an item: `data-highlighted`, `data-disabled`, and `data-checked` on a checkbox or radio item.
+
 ## Dialog and AlertDialog
 
 - Classes: `kv-dialog` (the `<dialog>`), `kv-dialog-title`, `kv-dialog-description`, `kv-dialog-body`, `kv-dialog-actions`, `kv-dialog-close`. AlertDialog parts add `kv-alert-dialog*` (for example `kv-alert-dialog`), which are not styled separately. `AlertDialog.Close` renders only `kv-alert-dialog-close`, a plain button: it does not take the quiet icon look of `kv-dialog-close`.

@@ -951,6 +951,45 @@ export type {
   UsePopoverResult,
 } from './popover/use-popover.ts'
 export {
+  Menu,
+  MenuCheckboxItem,
+  MenuGroup,
+  MenuGroupLabel,
+  MenuItem,
+  MenuPopup,
+  MenuRadioGroup,
+  MenuRadioItem,
+  MenuRoot,
+  MenuSeparator,
+  MenuTrigger,
+} from './menu/menu.tsx'
+export type {
+  MenuCheckboxItemProps,
+  MenuGroupLabelProps,
+  MenuGroupProps,
+  MenuItemProps,
+  MenuItemState,
+  MenuPopupProps,
+  MenuRadioGroupProps,
+  MenuRadioItemProps,
+  MenuRootProps,
+  MenuSeparatorProps,
+  MenuState,
+  MenuTriggerProps,
+} from './menu/menu.tsx'
+export { useMenu } from './menu/use-menu.ts'
+export type {
+  MenuChangeDetails,
+  MenuChangeReason,
+  MenuItemKind,
+  MenuItemOptions,
+  MenuItemPartProps,
+  MenuPopupPartProps,
+  MenuTriggerPartProps,
+  UseMenuOptions,
+  UseMenuResult,
+} from './menu/use-menu.ts'
+export {
   Dialog,
   DialogActions,
   DialogBody,

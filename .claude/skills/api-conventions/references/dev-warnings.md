@@ -98,6 +98,16 @@ Each is a `warnOnce` call (see SKILL.md, Developer warnings). Format of the key 
 | `Tooltip.Popup`   | it holds interactive content: a link, a button, a field or anything with a `tabindex` (`tooltip-interactive-content`, 1.4.13, 2.1.1, effect). A Popover is for that |
 | `Tooltip.*`       | a part outside a `Tooltip.Root` (`tooltip-<part>-outside-root`, effect)                                                                                             |
 
+## Menu
+
+| Where             | Fires when                                                                                                                       |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `Menu.Trigger`    | `render` produced something that is not a `<button>` (`menu-trigger-not-a-button:<element>`, 2.1.1, 4.1.2, effect)               |
+| `Menu.Item`       | rendered as `<a href>`: a menu holds actions, never navigation (`menu-item-navigation`, effect)                                  |
+| `Menu.RadioGroup` | no `aria-label` or `aria-labelledby` (`menu-radio-group-without-name`, 1.3.1, 4.1.2, effect)                                     |
+| `Menu.Group`      | no `Menu.GroupLabel` and no `aria-label` or `aria-labelledby` (`menu-group-without-name`, 1.3.1, 4.1.2, effect)                  |
+| `Menu.*`          | a part outside a `Menu.Root` (`menu-<part>-outside-root`, effect)                                                                |
+
 ## RichTextEditor (`@kvirn-ui/rich-text`)
 
 | Where                                      | Fires when                                                                                                                                                          |

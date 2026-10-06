@@ -1,0 +1,38 @@
+import { defineExampleTexts } from '../../components/local-example-texts.ts'
+
+export const useMenuTexts = defineExampleTexts({
+  en: {
+    actions: 'Actions',
+    print: 'Print',
+    download: 'Download as PDF',
+    share: 'Share',
+    view: 'View',
+    grid: 'Show as grid',
+    sortBy: 'Sort by',
+    byName: 'Name',
+    byDate: 'Date',
+    byStatus: 'Status',
+    gridOn: 'Grid view is on.',
+    gridOff: 'Grid view is off.',
+    sortedBy: 'Sorted by',
+    last: 'Last change:',
+    none: 'No change yet.',
+  },
+  sv: {
+    actions: 'Åtgärder',
+    print: 'Skriv ut',
+    download: 'Ladda ner som PDF',
+    share: 'Dela',
+    view: 'Visa',
+    grid: 'Visa som rutnät',
+    sortBy: 'Sortera efter',
+    byName: 'Namn',
+    byDate: 'Datum',
+    byStatus: 'Status',
+    gridOn: 'Rutnätsvyn är på.',
+    gridOff: 'Rutnätsvyn är av.',
+    sortedBy: 'Sorterat efter',
+    last: 'Senaste ändring:',
+    none: 'Ingen ändring ännu.',
+  },
+})

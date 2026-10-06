@@ -67,13 +67,22 @@ Load `keyboard` and `accessibility` with this skill. Keys for these patterns are
 - Children render only while open. The popup joins the layer stack: Escape and the `backdrop` press go through `useDismissableLayer` (`backdrop` option), so one Escape closes the innermost layer and a Popover or Combobox inside closes first. A native `cancel` is prevented so state and element never desync. AlertDialog ignores the backdrop press; Dialog closes on it only with `dismissOnOutsidePress`.
 - Scroll lock is `data-kv-scroll-locked` on `<html>` (core `scroll-lock`, counted for nested dialogs). `theme.css` applies it (`overflow: hidden`), so headless code sets no style.
 - It hosts its own `AnnouncerContext` and Announcer inside the Popup, because the inert page silences the provider's regions.
-- Return focus, in order: `finalFocusRef`, the trigger, the previously focused element if still connected. Never `body`. Implemented in `packages/react/src/dialog/focus-return.ts`.
+- Return focus, in order: `finalFocusRef`, the trigger, the previously focused element if it takes focus, then the invoker (`[aria-controls]`) of the popup that element was in (a Menu item that opened the dialog). Never `body`. A close the user's own move caused (a Menu's Tab or focus-out) skips it (`skipReturnRef`). Implemented in `packages/react/src/dialog/focus-return.ts`.
 - Initial focus: `initialFocusRef`, else the first tabbable that is not Close, else the Title. AlertDialog warns without `initialFocusRef` (least destructive action).
+
+### Menu
+
+- Parts `Menu.Root`, `.Trigger`, `.Popup`, `.Item`, `.CheckboxItem`, `.RadioGroup`, `.RadioItem`, `.Group`, `.GroupLabel`, `.Separator`. Hook `useMenu` (contract: `menu.a11y.md`, Plan 0070). No submenus, no `menubar`, no hover to open.
+- Trigger: `<button>` with `aria-haspopup="menu"`, `aria-expanded`, `aria-controls`. Popup: `popover="auto"`, `role="menu"`, named by the trigger unless the consumer names it; items stay mounted while closed (D12), so uncontrolled checkbox and radio state survives. It joins the layer stack, so one Escape closes the innermost layer.
+- Items are `<button type="button" role="menuitem|menuitemcheckbox|menuitemradio">` with real DOM focus and a roving tabindex (D18): the focused item has `tabindex="0"`, the others `-1`, and the popup has none, found with `querySelectorAll` at key time. A disabled item keeps focus and `aria-disabled`, and activation does nothing. Arrows wrap and never flip in RTL.
+- Typeahead is core (`createTypeahead`, `getTypeaheadMatch`): locale-aware, 500 ms buffer, Space adds a space while a word is in progress.
+- Reasons for `onOpenChange`: `trigger-press`, `key`, `item-press`, `escape`, `outside-press`, `light-dismiss`, `tab`, `focus-out`. Tab closes without `preventDefault`, and a Tab or focus-out close skips the focus return (focus stays where it went). A checkbox or radio change is not announced after the menu closes (known issue).
+- Menu is for actions. Navigation is `Navigation` or `Disclosure`, never `role="menu"`.
 
 ### FocusScope (planned)
 
 - Not built. Purpose: return focus to the action that triggered a modal when it closes, also when the trigger is gone, and scope focus for non-native surfaces.
-- The first implementation is internal, in `packages/react/src/dialog/focus-return.ts`. Extract it to a public FocusScope when a second user (Menu, DatePicker) arrives.
+- The first implementation is internal, in `packages/react/src/dialog/focus-return.ts`. Menu is the second user, and it is still internal. Extract it to a public FocusScope when a third user (DatePicker) arrives or a plan asks for it.
 
 ## Listbox, Combobox and Autocomplete
 

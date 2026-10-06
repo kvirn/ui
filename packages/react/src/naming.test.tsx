@@ -245,6 +245,20 @@ describe('flat part exports', () => {
     expect(typeof api.Accordion).toBe('object')
   })
 
+  test('Menu is a namespace of its own parts, and Menu.RadioGroup is not RadioGroup', () => {
+    expect(api.Menu.Root.displayName).toBe('Menu.Root')
+    expect(api.Menu.Trigger.displayName).toBe('Menu.Trigger')
+    expect(api.Menu.Popup.displayName).toBe('Menu.Popup')
+    expect(api.Menu.Item.displayName).toBe('Menu.Item')
+    expect(api.Menu.CheckboxItem.displayName).toBe('Menu.CheckboxItem')
+    expect(api.Menu.RadioGroup.displayName).toBe('Menu.RadioGroup')
+    expect(api.Menu.RadioItem.displayName).toBe('Menu.RadioItem')
+    expect(api.Menu.Group.displayName).toBe('Menu.Group')
+    expect(api.Menu.GroupLabel.displayName).toBe('Menu.GroupLabel')
+    expect(api.Menu.Separator.displayName).toBe('Menu.Separator')
+    expect(api.Menu.RadioGroup).not.toBe(api.RadioGroup)
+  })
+
   test('Dialog and AlertDialog are namespaces of their own parts, not callable roots', () => {
     expect(api.Dialog.Root.displayName).toBe('Dialog.Root')
     expect(api.Dialog.Trigger.displayName).toBe('Dialog.Trigger')
@@ -364,6 +378,20 @@ describe('alias sets', () => {
     )
     expect(keys(api.Tooltip)).toEqual(
       expect.arrayContaining(['Root', 'Trigger', 'Popup', 'Name', 'Shortcut']),
+    )
+    expect(keys(api.Menu)).toEqual(
+      expect.arrayContaining([
+        'Root',
+        'Trigger',
+        'Popup',
+        'Item',
+        'CheckboxItem',
+        'RadioGroup',
+        'RadioItem',
+        'Group',
+        'GroupLabel',
+        'Separator',
+      ]),
     )
   })
 })

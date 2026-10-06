@@ -289,6 +289,10 @@ export type {
   Updater,
 } from './table/table-exports.ts'
 export { getRovingTarget } from './roving-focus/get-roving-target.ts'
+export { createTypeahead } from './typeahead/create-typeahead.ts'
+export type { Typeahead, TypeaheadEnv, TypeaheadOptions } from './typeahead/create-typeahead.ts'
+export { getTypeaheadMatch } from './typeahead/get-typeahead-match.ts'
+export type { TypeaheadMatchInput } from './typeahead/get-typeahead-match.ts'
 export type { RovingOrientation, RovingTargetInput } from './roving-focus/get-roving-target.ts'
 export { getTableOfContentsTree } from './table-of-contents/get-table-of-contents-tree.ts'
 export type {

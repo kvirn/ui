@@ -950,6 +950,36 @@ describe('layers', () => {
     await expect.poll(popoverShown).toBe(false)
   })
 
+  test('a Dialog with no Trigger, inline in a Popover, returns focus to the button that opened it, not to the Popover trigger', async () => {
+    function InPopover() {
+      const [dialogOpen, setDialogOpen] = useState(false)
+      return (
+        <Popover.Root defaultOpen>
+          <Popover.Trigger>Mer</Popover.Trigger>
+          <Popover.Popup aria-label="Mer">
+            <button type="button" onClick={() => setDialogOpen(true)}>
+              Öppna dialog
+            </button>
+            <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
+              <Dialog.Popup>
+                <Dialog.Title>Säker?</Dialog.Title>
+                <button type="button" onClick={() => setDialogOpen(false)}>
+                  Avbryt
+                </button>
+              </Dialog.Popup>
+            </Dialog.Root>
+          </Popover.Popup>
+        </Popover.Root>
+      )
+    }
+    await render(<InPopover />)
+    await userEvent.click(page.getByRole('button', { name: 'Öppna dialog' }))
+    await expect.element(page.getByRole('dialog', { name: 'Säker?' })).toBeVisible()
+    await userEvent.click(page.getByRole('button', { name: 'Avbryt' }))
+    await expect.poll(() => document.querySelector('dialog')?.open).toBe(false)
+    await expect.element(page.getByRole('button', { name: 'Öppna dialog' })).toHaveFocus()
+  })
+
   test('nested dialogs have no axe violations', async () => {
     const { container } = await render(
       <Dialog.Root defaultOpen>
