@@ -1,7 +1,7 @@
 # Accessibility contract: Progress
 
 - **APG pattern:** none. A progress bar is not a widget and has no keys. The native form, `<progress>` (implicit `progressbar` role), is used only when the value is known.
-- **Deviations:** none. Decisions (Plan 0074, design spec `docs/design/status-patterns.md`): no spinner and no indeterminate bar; the text carries an unknown wait; announced once when shown and once when slow, never per percent.
+- **Deviations:** none. Decisions (Plan 0074 and Plan 0080, specs `docs/design/status-patterns.md` and `docs/design/loading-indicators.md`): the text carries the wait and a decorative spinner (`Progress.Indicator`) may sit beside it; a known value uses the native `<progress>` and no spinner; announced once when shown and once when slow, never per percent or per tick.
 - **Native elements used:** `<div>`, `<p>` and `<span>` for the text, `<progress>` for a known value.
 - **Status:** alpha candidate (Plan 0074). Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `progress.test.tsx` next to this file, and `packages/core/src/progress/progress-timer.test.ts` for the timing. `progress.stories.tsx` in `apps/storybook/src/components/progress/`.
@@ -10,12 +10,13 @@ Progress says that something is working and, when known, how far along. It is fo
 
 ## Roles, states, properties
 
-| Part           | Element / role                | ARIA / state                                                                                                                      | Notes                                                                                                                                                                               |
-| -------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Progress.Root  | `<div>`, no role              | `data-state="busy"` or `"slow"`, `data-determinate` with a value. Never `aria-live`, never `aria-busy`                            | Class `kv-progress`. Not rendered before `delayMilliseconds` (1000). Props: `label`, `value`, `max`, `delayMilliseconds`, `slowAfterMilliseconds`, `announce`, `messages`, `render` |
-| Progress.Label | `<p>` holding `<span id>`     | none. Never a live region                                                                                                         | Class `kv-progress-label`. The `<span id>` is the label text only; the percent (`kv-progress-percent`) and the slow sentence (`kv-progress-slow`) are separate spans after it       |
-| Progress.Bar   | `<progress>` → `progressbar`  | `value`, `max` (100), `aria-labelledby` the label span, `aria-valuetext` (`progress.valueText`: `Exporting cases, 45%`)           | Class `kv-progress-bar`. Renders only with a numeric `value`: an unknown wait has no bar and no `progressbar` role                                                                  |
-| `useProgress`  | the same, for your own markup | `isShown`, `isSlow`, `labelId`, `label`, `slowText`, `percent`, `rootProps`, `labelProps`, `barProps` (`undefined` without value) | Render nothing while `isShown` is `false`                                                                                                                                           |
+| Part               | Element / role                | ARIA / state                                                                                                                      | Notes                                                                                                                                                                                                                                                         |
+| ------------------ | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Progress.Root      | `<div>`, no role              | `data-state="busy"` or `"slow"`, `data-determinate` with a value. Never `aria-live`, never `aria-busy`                            | Class `kv-progress`. Not rendered before `delayMilliseconds` (1000). Props: `label`, `value`, `max`, `delayMilliseconds`, `slowAfterMilliseconds`, `announce`, `messages`, `render`                                                                           |
+| Progress.Label     | `<p>` holding `<span id>`     | none. Never a live region                                                                                                         | Class `kv-progress-label`. The `<span id>` is the label text only; the percent (`kv-progress-percent`) and the slow sentence (`kv-progress-slow`) are separate spans after it                                                                                 |
+| Progress.Indicator | `<span>`, no role             | `aria-hidden="true"`, not focusable                                                                                               | Class `kv-spinner` (`kv-spinner--sm`, `--lg`), a direct child of the Root before the label. Renders only without a `value`: one indicator per wait. Loops while the wait lasts and shows its still rest shape under reduced motion; the text carries the wait |
+| Progress.Bar       | `<progress>` → `progressbar`  | `value`, `max` (100), `aria-labelledby` the label span, `aria-valuetext` (`progress.valueText`: `Exporting cases, 45%`)           | Class `kv-progress-bar`. Renders only with a numeric `value`: an unknown wait has no bar and no `progressbar` role                                                                                                                                            |
+| `useProgress`      | the same, for your own markup | `isShown`, `isSlow`, `labelId`, `label`, `slowText`, `percent`, `rootProps`, `labelProps`, `barProps` (`undefined` without value) | Render nothing while `isShown` is `false`                                                                                                                                                                                                                     |
 
 Rules, tested in `progress.test.tsx`:
 
@@ -23,7 +24,8 @@ Rules, tested in `progress.test.tsx`:
 - **Name.** The bar is named by the label text only (`aria-labelledby` the span). The slow sentence and the percent are not in the name. Without a `label` the message `progress.loading` is used and a development warning asks for a specific one.
 - **No state of its own for the page.** No `aria-busy` from Progress: `aria-busy` belongs on the element whose content is replaced, while it is replaced (Table does this).
 - **The percent is text.** The visible percent follows the label, and the bar's value says it. It is never announced.
-- **Dev warnings (once):** `progress-without-label`; a Label or Bar outside a Root; no `KvirnProvider` while announcing.
+- **One indicator per wait.** `Progress.Indicator` renders only for an unknown value; a known value has the `<progress>` and no spinner. A `<progress>` is never rendered without a value.
+- **Dev warnings (once):** `progress-without-label`; a Label, Bar or Indicator outside a Root; no `KvirnProvider` while announcing.
 
 ## Keyboard
 
@@ -62,13 +64,14 @@ Both go through the shared Announcer with the Progress id as the throttle `key`.
 - On failure, remove the Progress and show an `Alert.Danger` near the button with `announce="polite"`, and turn `busy` off. Success speaks through the result's own announcement or a focus move.
 - Offer Cancel as a separate button, never inside Progress.
 - Never put a Progress inside an alert's `-subtle` fill, or on a page-wide overlay that hides the user's answers.
+- **WCAG 2.2.2 (Pause, Stop, Hide).** The indicators (spinner, bar sheen, busy Button, job Toast, FileUpload track, Table busy sweep) move for as long as the wait lasts, which can be more than 5 s. `prefers-reduced-motion: reduce` is honoured and shows a still rest shape, but to meet WCAG 2.2.2 the app must also offer its own visible control that stops moving content (the library ships none) and applies the stop CSS. [Moving indicators and WCAG 2.2.2](/foundation/theming#moving-indicators). The text, the percent and the 10 s slow sentence carry the wait.
 
 ## Visual / modes
 
 - Focus indicator: none (nothing is focusable).
 - Colour: text in `text`, never `text-muted`. The bar's edge is `border-control` (3:1) and its value `primary`; the percent is text too (1.4.1).
 - forced-colors behaviour: `CanvasText` text and edge, `Canvas` track, `Highlight` value.
-- reduced-motion behaviour: nothing moves on its own. The determinate fill eases only under `no-preference`.
+- reduced-motion behaviour: the spinner shows its still rest shape. The known-value bar shows its plain gradient fill, with no sheen; its fill eases only under `no-preference`.
 - RTL: the native bar fills from the inline start of the page direction; the label wraps, logical properties throughout.
 
 ## WCAG SCs covered
@@ -77,7 +80,7 @@ Both go through the shared Announcer with the Progress id as the throttle `key`.
 - 4.1.3 Status Messages: announced through the Announcer once when shown and once when slow.
 - 1.4.1 Use of Color, 1.4.11 Non-text Contrast: the label and the percent carry the state; the bar's edge meets 3:1.
 - 1.4.10 Reflow, 1.4.12 Text Spacing: the label wraps, nothing has a fixed height.
-- 2.2.2 Pause, Stop, Hide: nothing moves on its own.
+- 2.2.2 Pause, Stop, Hide: every indicator animation (the spinner, the known-value bar's sheen, the busy Button and Toast spinners, the FileUpload track, the Table busy sweep) loops while the wait lasts and shows the still rest shape under `prefers-reduced-motion: reduce`. The library has no stop control, so to meet 2.2.2 the app offers one (see Consumer responsibilities).
 - 2.4.3 Focus Order: focus is never moved.
 
 ## AT test record

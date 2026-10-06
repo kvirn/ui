@@ -79,6 +79,11 @@ function ToastItem({ controller, entry, isPaused }: ToastItemProps) {
   return (
     <li ref={setItem} className="kv-toast-item">
       <Root
+        icon={
+          content.isBusy ? (
+            <span className="kv-alert-icon kv-spinner" aria-hidden="true" />
+          ) : undefined
+        }
         className="kv-toast"
         data-timed={timer === undefined ? undefined : ''}
         data-paused={timer !== undefined && isPaused ? '' : undefined}

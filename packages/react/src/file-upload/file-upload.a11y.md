@@ -26,7 +26,7 @@ A FileUpload lets someone attach files to a form. One button opens the system di
 | FileUpload.Type, Size | `<span>`                                               | none                                                                                                                                                                                                                                                                                                                              | A short label from the extension (`PDF`), never the MIME type. The size in decimal units with the locale's separator (`2,4 MB`)                                                                                                  |
 | FileUpload.Status     | `<p>`                                                  | none                                                                                                                                                                                                                                                                                                                              | The state in text (ready, uploading 40 %, uploaded, failed, cancelled), so colour and icons never carry it alone (1.4.1)                                                                                                         |
 | FileUpload.ItemError  | `<p>`                                                  | none                                                                                                                                                                                                                                                                                                                              | Why a failed file failed and what to do, in text. Referenced by the item buttons’ `aria-describedby` while the item is failed (1.3.1, 3.3.1)                                                                                     |
-| FileUpload.Progress   | `<progress>`                                           | named "Uploading report.pdf", `value` and `max` as whole percent. Indeterminate when the size is unknown                                                                                                                                                                                                                          | Rendered only while the file is uploading, never focusable, never live. A static hatch when indeterminate (2.2.2)                                                                                                                |
+| FileUpload.Progress   | `<progress>`                                           | named "Uploading report.pdf", `value` and `max` as whole percent. When the size is unknown it is not a `<progress>` but `<span class="kv-progress-track" aria-hidden="true">`                                                                                                                                                     | Rendered only while the file is uploading, never focusable, never live. The decorative track loops while the upload runs and shows a still rest shape under reduced motion (2.2.2)                                               |
 | Item buttons          | `<button>`                                             | Cancel: "Cancel upload of report.pdf". Retry: "Try again with report.pdf". Remove: "Remove report.pdf". Each name starts with its visible text (2.5.3). `aria-describedby`: the item's Status, and its ItemError while it is failed                                                                                               | One action per state. Uploading: Cancel. Failed (retryable) or cancelled: Retry and Remove. Otherwise: Remove                                                                                                                    |
 | `useFileUpload`       | the same attributes, for your own elements             | `rootProps`, `triggerProps`, `inputProps`, `dropZoneProps`, `getItemProps`, `getProgressProps`, `getRemoveButtonProps`, `getCancelButtonProps`, `getRetryButtonProps`, state                                                                                                                                                      | Options as the Root. Spread each on its element                                                                                                                                                                                  |
 
@@ -106,38 +106,39 @@ Results are reported from the store, so auto upload, Retry and `uploadAll()` go 
 - **Write `upload`.** The library sends nothing. Report progress as a fraction from 0 to 1, honour the `signal`, and reject with an error object that has `retryable` and `message` to say more than the neutral text.
 - **Translate your own text** (the label and the description) and set `lang` where a locale isn't translated yet (3.1.2).
 - **Provide the Announcer** (`KvirnProvider`). Without one, nothing is announced and a warning says so.
+- **WCAG 2.2.2 (Pause, Stop, Hide).** The indicators (spinner, bar sheen, busy Button, job Toast, FileUpload track, Table busy sweep) move for as long as the wait lasts, which can be more than 5 s. `prefers-reduced-motion: reduce` is honoured and shows a still rest shape, but to meet WCAG 2.2.2 the app must also offer its own visible control that stops moving content (the library ships none) and applies the stop CSS. [Moving indicators and WCAG 2.2.2](/foundation/theming#moving-indicators). The text, the percent and the 10 s slow sentence carry the wait.
 
 ## Visual / modes
 
 - The default theme draws the zone with a dashed edge where a precise pointer exists or a file is dragged over the page, and a solid heavier edge with a tint while a file is over it. That also holds in forced colours (an edge, not only a colour).
 - Each item has a status bar at its start edge, plus the status in text. In forced colours the bar is shown only on failed items.
 - Targets are at least 24 px, and 44 px on coarse pointers (2.5.8). Long names wrap anywhere, so a 120-character name doesn't scroll sideways at 320 px (1.4.10). RTL mirrors through logical properties.
-- Reduced motion removes every transition. An indeterminate bar is a static hatch (2.2.2).
+- Reduced motion removes every transition. The indeterminate track shows its still rest shape (2.2.2).
 - On devices without a precise pointer there is no zone and no hint: only the button.
 
 ## WCAG SCs covered
 
-| SC     | Name                   | How                                                                                |
-| ------ | ---------------------- | ---------------------------------------------------------------------------------- |
-| 1.3.1  | Info and Relationships | A real `<button>`, `<ul>`, `<progress>`, labels and descriptions through ids       |
-| 1.4.1  | Use of Color           | Status, errors and limits in text, with an icon, never colour alone                |
-| 1.4.10 | Reflow                 | Names wrap anywhere, the list is one column at 320 px                              |
-| 1.4.11 | Non-text Contrast      | Zone edge, status bar and focus ring pass `theme:check`                            |
-| 2.1.1  | Keyboard               | The Trigger opens the native dialog                                                |
-| 2.2.1  | Timing Adjustable      | No timers end an upload                                                            |
-| 2.2.2  | Pause, Stop, Hide      | No moving indicator: the indeterminate bar is static                               |
-| 2.4.3  | Focus Order            | Focus never falls to `body` after a removal, and stays on a non-destructive target |
-| 2.4.7  | Focus Visible          | The Trigger carries the Field's id, so an error link lands on a visible control    |
-| 2.5.3  | Label in Name          | Every button's name starts with its visible text                                   |
-| 2.5.7  | Dragging Movements     | Dragging is never the only way: the Trigger                                        |
-| 2.5.8  | Target Size (Minimum)  | 24 px, 44 px on coarse pointers                                                    |
-| 3.2.2  | On Input               | Adding a file submits nothing and moves no focus                                   |
-| 3.3.1  | Error Identification   | Each refused file is named in text                                                 |
-| 3.3.2  | Labels or Instructions | The limits are said before the choice                                              |
-| 3.3.3  | Error Suggestion       | Each message says how to fix it                                                    |
-| 3.3.7  | Redundant Entry        | Retry reuses the stored file                                                       |
-| 4.1.2  | Name, Role, Value      | Native elements, the Trigger without `aria-required`                               |
-| 4.1.3  | Status Messages        | Batched, polite announcements that never replace one another                       |
+| SC     | Name                   | How                                                                                                                                                   |
+| ------ | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.3.1  | Info and Relationships | A real `<button>`, `<ul>`, `<progress>`, labels and descriptions through ids                                                                          |
+| 1.4.1  | Use of Color           | Status, errors and limits in text, with an icon, never colour alone                                                                                   |
+| 1.4.10 | Reflow                 | Names wrap anywhere, the list is one column at 320 px                                                                                                 |
+| 1.4.11 | Non-text Contrast      | Zone edge, status bar and focus ring pass `theme:check`                                                                                               |
+| 2.1.1  | Keyboard               | The Trigger opens the native dialog                                                                                                                   |
+| 2.2.1  | Timing Adjustable      | No timers end an upload                                                                                                                               |
+| 2.2.2  | Pause, Stop, Hide      | The indeterminate track loops while the upload runs; reduced motion shows the rest shape. The app offers the stop control (Consumer responsibilities) |
+| 2.4.3  | Focus Order            | Focus never falls to `body` after a removal, and stays on a non-destructive target                                                                    |
+| 2.4.7  | Focus Visible          | The Trigger carries the Field's id, so an error link lands on a visible control                                                                       |
+| 2.5.3  | Label in Name          | Every button's name starts with its visible text                                                                                                      |
+| 2.5.7  | Dragging Movements     | Dragging is never the only way: the Trigger                                                                                                           |
+| 2.5.8  | Target Size (Minimum)  | 24 px, 44 px on coarse pointers                                                                                                                       |
+| 3.2.2  | On Input               | Adding a file submits nothing and moves no focus                                                                                                      |
+| 3.3.1  | Error Identification   | Each refused file is named in text                                                                                                                    |
+| 3.3.2  | Labels or Instructions | The limits are said before the choice                                                                                                                 |
+| 3.3.3  | Error Suggestion       | Each message says how to fix it                                                                                                                       |
+| 3.3.7  | Redundant Entry        | Retry reuses the stored file                                                                                                                          |
+| 4.1.2  | Name, Role, Value      | Native elements, the Trigger without `aria-required`                                                                                                  |
+| 4.1.3  | Status Messages        | Batched, polite announcements that never replace one another                                                                                          |
 
 ## AT test record
 

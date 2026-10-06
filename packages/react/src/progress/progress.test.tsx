@@ -135,6 +135,74 @@ describe('unknown value', () => {
   })
 })
 
+describe('indicator', () => {
+  test('an unknown wait renders an aria-hidden spinner as a direct child before the label', async () => {
+    const { container } = await render(
+      <KvirnProvider>
+        <Progress.Root label="Sending your application.">
+          <Progress.Indicator />
+          <Progress.Label />
+        </Progress.Root>
+      </KvirnProvider>,
+    )
+    await passShowDelay()
+    const root = container.querySelector('.kv-progress')
+    const spinner = root?.firstElementChild
+    expect(spinner?.classList.contains('kv-spinner')).toBe(true)
+    expect(spinner?.getAttribute('aria-hidden')).toBe('true')
+    expect(spinner?.nextElementSibling?.classList.contains('kv-progress-label')).toBe(true)
+    vi.useRealTimers()
+    await expectNoA11yViolations(container)
+  })
+
+  test('a known value renders the progress and no spinner: one indicator per wait', async () => {
+    const { container } = await render(
+      <KvirnProvider>
+        <Progress.Root label="Exporting cases" value={45}>
+          <Progress.Indicator />
+          <Progress.Label />
+          <Progress.Bar />
+        </Progress.Root>
+      </KvirnProvider>,
+    )
+    await passShowDelay()
+    expect(container.querySelectorAll('progress')).toHaveLength(1)
+    expect(container.querySelector('.kv-spinner')).toBeNull()
+    expect(container.querySelector('.kv-progress-track')).toBeNull()
+  })
+
+  test('the text, slow sentence and announcements are unchanged by the indicator', async () => {
+    await render(
+      <KvirnProvider>
+        <Progress.Root label="Sending your application.">
+          <Progress.Indicator />
+          <Progress.Label />
+        </Progress.Root>
+      </KvirnProvider>,
+    )
+    await passShowDelay()
+    await expect.element(politeRegion()).toHaveTextContent('Sending your application.')
+    await advance(10_000)
+    await expect.element(politeRegion()).toHaveTextContent(slowText)
+  })
+
+  test('takes render, className and a ref, and keeps the spinner class', async () => {
+    const ref = createRef<HTMLElement>()
+    const { container } = await render(
+      <KvirnProvider>
+        <Progress.Root label="Hämtar.">
+          <Progress.Indicator className="kv-spinner--lg" ref={ref} />
+          <Progress.Label />
+        </Progress.Root>
+      </KvirnProvider>,
+    )
+    await passShowDelay()
+    const spinner = container.querySelector('.kv-spinner')
+    expect(spinner?.className).toContain('kv-spinner--lg')
+    expect(ref.current).toBe(spinner)
+  })
+})
+
 describe('announcements', () => {
   test('announces the label once, politely, after the delay', async () => {
     await render(<Sending />)
@@ -471,6 +539,16 @@ describe('parts', () => {
     expect(root?.className).toContain('egen')
     expect(ref.current).toBe(root)
     expect(container.querySelector('div.kv-progress-label')).not.toBeNull()
+  })
+
+  test('Indicator outside a Root renders nothing and warns once', async () => {
+    const { container } = await render(
+      <KvirnProvider>
+        <Progress.Indicator />
+      </KvirnProvider>,
+    )
+    expect(container.querySelector('.kv-spinner')).toBeNull()
+    expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('Progress.Indicator'))
   })
 
   test('Label and Bar outside a Root render nothing and warn once', async () => {

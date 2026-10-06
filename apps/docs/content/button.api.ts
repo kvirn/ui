@@ -5,7 +5,7 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 /** The props Button documents: its own, and the three native ones whose behaviour it changes. */
 export type ButtonDocumentedProps = Pick<
   ButtonProps,
-  'disabled' | 'type' | 'onClick' | 'focusableWhenDisabled' | 'render'
+  'disabled' | 'busy' | 'type' | 'onClick' | 'focusableWhenDisabled' | 'render'
 >
 
 export const buttonRows = propRows<ButtonDocumentedProps>({
@@ -20,6 +20,12 @@ export const buttonRows = propRows<ButtonDocumentedProps>({
     default: 'false',
     description:
       'With disabled, keeps the button in the Tab order with aria-disabled="true" so users can find it and read why. Activation stays blocked.',
+  },
+  busy: {
+    type: 'boolean',
+    default: 'false',
+    description:
+      'A running action: aria-disabled="true" and data-busy, never native disabled, so focus stays and every press is blocked. It shows a decorative spinner as its first child, and the name does not change. Put a Progress with the words beside it, without a Progress.Indicator: one indicator per wait. disabled wins when both are set.',
   },
   type: {
     type: "'button' | 'submit' | 'reset'",
@@ -60,6 +66,11 @@ export const buttonAttributes: readonly AttributeRow[] = [
     name: 'data-disabled',
     values: 'present or absent',
     meaning: 'The button is disabled, natively or focusable.',
+  },
+  {
+    name: 'data-busy',
+    values: 'present or absent',
+    meaning: 'Set while busy and not disabled. The theme shows the spinner after 1000 ms.',
   },
   {
     name: 'data-focus-visible',

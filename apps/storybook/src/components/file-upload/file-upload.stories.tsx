@@ -260,13 +260,17 @@ export const Uploading: Story = {
   },
 }
 
-/** Uploading with no known size: a static hatched bar, nothing moves (2.2.2). */
+/** Uploading with no known size: a decorative moving track, no `<progress>` (loops while the upload runs, still under reduced motion). */
 export const UploadingUnknownSize: Story = {
   args: { multiple: true, upload: controlledUpload('unknown') },
   play: async ({ canvas, canvasElement }) => {
     await choose(canvasElement, makeFile('läkarintyg.pdf'))
-    const bar = await canvas.findByRole('progressbar')
-    await expect(bar).not.toHaveAttribute('value')
+    await waitFor(() => expect(canvasElement.querySelector('.kv-progress-track')).not.toBeNull())
+    await expect(canvasElement.querySelector('.kv-progress-track')).toHaveAttribute(
+      'aria-hidden',
+      'true',
+    )
+    await expect(canvas.queryByRole('progressbar')).toBeNull()
   },
 }
 

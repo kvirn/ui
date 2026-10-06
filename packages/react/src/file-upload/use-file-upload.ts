@@ -150,7 +150,7 @@ export interface FileUploadItemPartProps {
   ref: RefCallback<HTMLLIElement>
 }
 
-/** Spread on an item's `<progress>`. No `value` means the size is unknown (indeterminate). */
+/** Spread on an item's `<progress>`. No `value` means the size is unknown: the Progress part then renders a `kv-progress-track`, not a `<progress>`. */
 export interface FileUploadProgressPartProps {
   className: 'kv-file-upload-progress'
   max: 100

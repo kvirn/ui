@@ -47,3 +47,4 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0064](0064-docs-code-and-example-frame.md)              | Docs-only CodeBlock and ExampleFrame with a highlighter                      | Approved                              |
 | [0072](0072-slider.md)                                   | Slider (native range input)                                                  | Implemented (AT pending)              |
 | [0077](0077-reviewer-full-wcag-and-speech-transcript.md) | Reviewer: all 55 WCAG 2.2 A/AA criteria and a screen-reader transcript       | In progress (Part A)                  |
+| [0080](0080-loading-indicators.md)                       | Loading indicators: spinner and animated gradient bar                        | Implemented (reviewer round 2 open, AT pending) |

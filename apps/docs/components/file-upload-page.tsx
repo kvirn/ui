@@ -279,7 +279,9 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;progress&gt;</code> named “Uploading report.pdf”, with the class{' '}
         <code>kv-file-upload-progress</code>. It renders only while the file uploads, in whole
-        percent, and without a value when the size is unknown. It is never announced.
+        percent. When the size is unknown it renders a decorative moving track (
+        <code>kv-progress-track</code>, <code>aria-hidden</code>) instead of a{' '}
+        <code>&lt;progress&gt;</code>. It is never announced.
       </>
     ),
     props: fileUploadProgressRows,

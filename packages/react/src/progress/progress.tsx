@@ -36,6 +36,10 @@ export interface ProgressBarProps extends Omit<
   render?: RenderProp<ComponentPropsWithRef<'progress'>, ProgressState> | undefined
 }
 
+export interface ProgressIndicatorProps extends ComponentPropsWithRef<'span'> {
+  render?: RenderProp<ComponentPropsWithRef<'span'>, ProgressState> | undefined
+}
+
 function useProgressContext(partName: string): ReturnType<typeof useProgress> | null {
   const progress = useContext(ProgressContext)
   useEffect(() => {
@@ -51,12 +55,13 @@ function useProgressContext(partName: string): ReturnType<typeof useProgress> | 
 
 /**
  * A wait that is shown only after a second, announced once, with a slow sentence after ten
- * seconds, and no spinner (contract: progress.a11y.md). Renders nothing until it is shown.
+ * seconds (contract: progress.a11y.md). Renders nothing until it is shown.
  * Put it where the result will appear, or beside the busy button. Needs a `KvirnProvider`
  * to announce.
  *
  * @example
  * <Progress.Root label="Sending your application.">
+ *   <Progress.Indicator />
  *   <Progress.Label />
  * </Progress.Root>
  *
@@ -143,7 +148,9 @@ export function ProgressLabel({
 }
 ProgressLabel.displayName = 'Progress.Label'
 
-/** A native `<progress>`, named by the label. Renders only when the Root has a numeric `value`. */
+/**
+ * A native `<progress>`, named by the label. Renders only when the Root has a numeric `value`.
+ */
 export function ProgressBar({ render, ref, ...otherProps }: ProgressBarProps): ReactElement | null {
   const progress = useProgressContext('Bar')
   if (progress === null || progress.barProps === undefined) {
@@ -158,8 +165,37 @@ export function ProgressBar({ render, ref, ...otherProps }: ProgressBarProps): R
 }
 ProgressBar.displayName = 'Progress.Bar'
 
+function AnimatingIndicator({
+  render,
+  ref,
+  state,
+  ...otherProps
+}: ProgressIndicatorProps & { state: ProgressState }): ReactElement {
+  return renderPart({
+    render,
+    defaultElement: 'span',
+    partProps: mergeProps(otherProps, { className: 'kv-spinner', 'aria-hidden': true, ref }),
+    state,
+  })
+}
+
+/**
+ * The spinner of an unknown wait: a decorative `aria-hidden` span, a direct child of the Root
+ * before the label. Renders nothing when the Root has a `value` (the `<progress>` is the one
+ * indicator) and never takes focus.
+ */
+export function ProgressIndicator(props: ProgressIndicatorProps): ReactElement | null {
+  const progress = useProgressContext('Indicator')
+  if (progress === null || progress.percent !== undefined) {
+    return null
+  }
+  return <AnimatingIndicator {...props} state={{ isSlow: progress.isSlow, isDeterminate: false }} />
+}
+ProgressIndicator.displayName = 'Progress.Indicator'
+
 export const Progress = {
   Root: ProgressRoot,
+  Indicator: ProgressIndicator,
   Label: ProgressLabel,
   Bar: ProgressBar,
 } as const

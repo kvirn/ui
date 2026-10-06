@@ -52,6 +52,12 @@ export const toastShowOptionRows = propRows<ToastShowOptions>({
     description:
       'There is no warning or error toast: use an inline Alert, or the form’s error summary.',
   },
+  busy: {
+    type: 'boolean',
+    default: 'false',
+    description:
+      'A job in progress: a decorative spinner replaces the status icon and the status word stays. Show the result with the same id to replace it. The timer ring is unchanged.',
+  },
   body: {
     type: 'ReactNode',
     default: '–',

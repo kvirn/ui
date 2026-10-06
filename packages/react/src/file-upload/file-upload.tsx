@@ -880,11 +880,25 @@ export function FileUploadStatus({
 }
 FileUploadStatus.displayName = 'FileUpload.Status'
 
+function IndeterminateTrack({
+  className,
+  ref,
+}: Pick<ComponentPropsWithRef<'span'>, 'className' | 'ref'>): ReactElement {
+  return (
+    <span
+      className={className === undefined ? 'kv-progress-track' : `kv-progress-track ${className}`}
+      aria-hidden="true"
+      ref={ref}
+    />
+  )
+}
+
 /**
  * A native `<progress>`, named "Uploading report.pdf", rendered only while the file uploads. Its
  * value is whole percent, so a screen reader that reports changes sees at most 100. Without a known
- * size it has no value and is a static bar (2.2.2). It's never announced: the percentage is
- * visible in the Status.
+ * size it renders no `<progress>` but a decorative `<span class="kv-progress-track" aria-hidden>`
+ * (loops while the upload runs) and ignores `render` and every prop but `className`. It's never
+ * announced: the percentage is visible in the Status.
  */
 export function FileUploadProgress({
   render,
@@ -896,6 +910,9 @@ export function FileUploadProgress({
   const mergedRef = useMergedRef(ref, null)
   if (fileUpload === null || itemContext === null || itemContext.item.status !== 'uploading') {
     return null
+  }
+  if (itemContext.item.progress === undefined) {
+    return <IndeterminateTrack className={otherProps.className} ref={mergedRef} />
   }
   return renderPart({
     render,

@@ -9,6 +9,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   DeleteDraft,
   EveryToast,
+  JobToast,
   KeyboardToasts,
   LongToast,
   StackedToasts,
@@ -123,6 +124,27 @@ export const Statuses: Story = {
     await userEvent.click(canvas.getByRole('button', { name: 'Spara aviseringsinställningar' }))
     await expectShown(/Exporten pågår\./)
     await expectShown(/Aviseringsinställningarna är sparade\./)
+  },
+}
+
+/**
+ * A job in progress: a spinner in the icon slot (decorative, the status word and title carry the
+ * meaning). The result toast with the same id replaces it. It loops until the result replaces it.
+ */
+export const JobInProgress: Story = {
+  parameters: source('JobToast', 'JobButtons'),
+  render: (_args, { globals }) => <JobToast locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'Starta exporten' }))
+    await expectShown(/Exporten pågår\./)
+    await expect(region()?.querySelector('.kv-alert-icon.kv-spinner')).toHaveAttribute(
+      'aria-hidden',
+      'true',
+    )
+    await waitFor(() => expect(inRegion(/Din rapport är klar\./)).not.toBeNull(), {
+      timeout: 4000,
+    })
+    await expect(region()?.querySelector('.kv-spinner')).toBeNull()
   },
 }
 

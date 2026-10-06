@@ -130,11 +130,10 @@ export function ButtonPage({
           <UseCase
             id="save-that-takes-a-moment"
             title="A save that takes a moment"
-            why="The button disables itself while it works. If it were natively disabled, focus would drop to the page body, so keep it focusable."
+            why="Set busy while it works: the button shows a spinner, blocks every press and keeps focus, and its name stays the same. It is never natively disabled, which would drop focus to the page body."
             code={sources['saving']}
             propsUsed={[
-              { part: 'Button', prop: 'disabled' },
-              { part: 'Button', prop: 'focusableWhenDisabled' },
+              { part: 'Button', prop: 'busy' },
               { part: 'Button', prop: 'onClick' },
             ]}
           >

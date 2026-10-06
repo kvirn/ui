@@ -481,7 +481,7 @@ export const ThemeOverride: Story = {
 
 /**
  * The action is running: `aria-disabled="true"` and `data-busy`, never native `disabled`, so the
- * look and depth stay, the cursor is `progress`, focus stays and every press is blocked. Pair it
+ * look and depth stay, a decorative spinner shows first (after 1000 ms), focus stays and every press is blocked. Pair it
  * with a Progress beside it (Components/Progress).
  */
 export const Busy: Story = {
@@ -491,6 +491,10 @@ export const Busy: Story = {
     await expect(button).toHaveAttribute('aria-disabled', 'true')
     await expect(button).toHaveAttribute('data-busy')
     await expect(button).not.toHaveAttribute('disabled')
+    await expect(button.querySelector(':scope > .kv-spinner:first-child')).toHaveAttribute(
+      'aria-hidden',
+      'true',
+    )
     await userEvent.click(button)
     await expect(args.onClick).not.toHaveBeenCalled()
   },

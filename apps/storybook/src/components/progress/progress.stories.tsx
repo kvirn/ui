@@ -8,8 +8,8 @@ import { localeOf } from '../form/form.fixture.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { progressTextsFor, SendApplication } from './progress.fixture.tsx'
 
-// Components/Progress: a wait shown as text, and a native bar only when the value is known,
-// styled by @kvirn-ui/theme/theme.css (design spec docs/design/status-patterns.md). It renders
+// Components/Progress: a wait shown as text with a decorative spinner, and a native bar when the
+// value is known, styled by @kvirn-ui/theme/theme.css (design specs docs/design/status-patterns.md and loading-indicators.md). It renders
 // nothing for the first second. The state stories set delayMilliseconds to 0 and announce to
 // false, so they show the state at once and do not speak in the story page; the real timing is
 // proved in progress.test.tsx. Progress has no focusable part, so there is no Keyboard story.
@@ -46,6 +46,7 @@ const meta = {
     return (
       <div lang={lang}>
         <Progress.Root {...args} label={args.label ?? text.sending}>
+          <Progress.Indicator />
           <Progress.Label />
           <Progress.Bar />
         </Progress.Root>
@@ -61,23 +62,58 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** An unknown wait: the label is the whole cue. No spinner, no bar, nothing moves. */
+/**
+ * The main example: an unknown wait is a spinner and the words, a known value is the native bar
+ * and the percent. One indicator per wait; the spinner loops while the wait lasts.
+ */
 export const Default: Story = {
-  play: async ({ canvas, globals }) => {
+  render: (_args, { globals }) => {
+    const { text, lang } = progressTextsFor(localeOf(globals))
+    return (
+      <div className="kv-story-form" lang={lang}>
+        <Progress.Root label={text.sending} delayMilliseconds={0} announce={false}>
+          <Progress.Indicator />
+          <Progress.Label />
+        </Progress.Root>
+        <Progress.Root label={text.exporting} value={45} delayMilliseconds={0} announce={false}>
+          <Progress.Indicator />
+          <Progress.Label />
+          <Progress.Bar />
+        </Progress.Root>
+      </div>
+    )
+  },
+  play: async ({ canvas, canvasElement, globals }) => {
     const { text } = progressTextsFor(localeOf(globals))
     await expect(await canvas.findByText(text.sending)).toBeVisible()
-    await expect(canvas.queryByRole('progressbar')).toBeNull()
+    await expect(canvas.getAllByRole('progressbar')).toHaveLength(1)
+    const spinners = canvasElement.querySelectorAll('.kv-spinner')
+    await expect(spinners).toHaveLength(1)
+    await expect(spinners[0]).toHaveAttribute('aria-hidden', 'true')
   },
 }
 
-/** A known value: the label shows the percent, and a native `<progress>` draws it. */
+/** An unknown wait on its own: the spinner, then the label. No `progressbar` role, no `<progress>`. */
+export const Unknown: Story = {
+  args: { value: undefined },
+  play: async ({ canvas, canvasElement, globals }) => {
+    const { text } = progressTextsFor(localeOf(globals))
+    await expect(await canvas.findByText(text.sending)).toBeVisible()
+    await expect(canvas.queryByRole('progressbar')).toBeNull()
+    await expect(canvasElement.querySelector('progress')).toBeNull()
+    await expect(canvasElement.querySelector('.kv-spinner')).toHaveAttribute('aria-hidden', 'true')
+  },
+}
+
+/** A known value: the label shows the percent, and a native `<progress>` draws it. No spinner. */
 export const Determinate: Story = {
   args: { value: 45 },
-  play: async ({ canvas, globals }) => {
+  play: async ({ canvas, canvasElement, globals }) => {
     const { text } = progressTextsFor(localeOf(globals))
     const bar = await canvas.findByRole('progressbar', { name: text.sending })
     await expect(bar).toHaveAttribute('value', '45')
     await expect(bar).toHaveAttribute('max', '100')
+    await expect(canvasElement.querySelector('.kv-spinner')).toBeNull()
   },
 }
 
@@ -162,6 +198,7 @@ const renderProgressStates: NonNullable<Story['render']> = (_args, { globals }) 
   return (
     <div className="kv-story-form" lang={lang}>
       <Progress.Root label={text.sending} delayMilliseconds={0} announce={false}>
+        <Progress.Indicator />
         <Progress.Label />
       </Progress.Root>
       <Progress.Root label={text.exporting} value={45} delayMilliseconds={0} announce={false}>
@@ -174,6 +211,7 @@ const renderProgressStates: NonNullable<Story['render']> = (_args, { globals }) 
         slowAfterMilliseconds={1}
         announce={false}
       >
+        <Progress.Indicator className="kv-spinner--lg" />
         <Progress.Label />
       </Progress.Root>
     </div>

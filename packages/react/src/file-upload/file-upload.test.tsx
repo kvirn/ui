@@ -570,14 +570,21 @@ describe('focus after a removal', () => {
 describe('uploading', () => {
   test('a native progress bar named for the file shows only while uploading, and the item completes', async () => {
     let finish: (result: string) => void = () => {}
-    const upload = vi.fn<(file: File) => Promise<string>>(
-      () =>
-        new Promise<string>((resolve) => {
-          finish = resolve
-        }),
-    )
+    let report: (fraction: number) => void = () => {}
+    const upload = (_file: File, { onProgress }: { onProgress: (fraction: number) => void }) => {
+      report = onProgress
+      return new Promise<string>((resolve) => {
+        finish = resolve
+      })
+    }
     const { container } = await render(<Example multiple upload={upload} />)
     await addFiles(container, pdf('report.pdf'))
+    await expect
+      .element(page.getByRole('button', { name: /Cancel upload of report\.pdf/ }))
+      .toBeVisible()
+    flushSync(() => {
+      report(0.4)
+    })
     await expect.element(page.getByRole('progressbar', { name: /report\.pdf/ })).toBeVisible()
     expect(container.querySelector('li[data-status]')?.getAttribute('data-status')).toBe(
       'uploading',
@@ -593,6 +600,28 @@ describe('uploading', () => {
       .poll(() => container.querySelector('li[data-status]')?.getAttribute('data-status'))
       .toBe('complete')
     expect(container.querySelector('progress')).toBeNull()
+  })
+
+  test('an unknown size renders an aria-hidden track and no progress without a value', async () => {
+    let report: (fraction: number) => void = () => {}
+    const upload = (_file: File, { onProgress }: { onProgress: (fraction: number) => void }) => {
+      report = onProgress
+      return new Promise<string>(() => {})
+    }
+    const { container } = await render(<Example multiple upload={upload} />)
+    await addFiles(container, pdf('report.pdf'))
+    await expect
+      .element(page.getByRole('button', { name: /Cancel upload of report\.pdf/ }))
+      .toBeVisible()
+    const track = container.querySelector('li .kv-progress-track')
+    expect(track?.getAttribute('aria-hidden')).toBe('true')
+    expect(container.querySelector('progress')).toBeNull()
+    expect(container.querySelector('[role="progressbar"]')).toBeNull()
+    flushSync(() => {
+      report(0.4)
+    })
+    expect(container.querySelector('.kv-progress-track')).toBeNull()
+    expect(container.querySelectorAll('progress')).toHaveLength(1)
   })
 
   test('when Cancel disappears because the upload finished, focus moves to the item, not to Remove', async () => {

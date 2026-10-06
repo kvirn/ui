@@ -59,7 +59,8 @@ export interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'aria
   focusableWhenDisabled?: boolean | undefined
   /**
    * The action is running: `aria-disabled="true"` and `data-busy`, never native `disabled`, so
-   * focus stays and every press is blocked. Pair it with a `Progress` beside the button.
+   * focus stays and every press is blocked. It renders a decorative `kv-spinner` first. Pair it with
+   * a `Progress` beside the button, without a `Progress.Indicator`.
    */
   busy?: boolean | undefined
   /**
@@ -86,6 +87,7 @@ export function Button({
   type,
   onClick,
   render,
+  children,
   ref,
   ...otherProps
 }: ButtonProps): ReactElement {
@@ -125,7 +127,19 @@ export function Button({
   return renderPart({
     render: renderWithoutClick,
     defaultElement: 'button',
-    partProps: { ...mergeProps(otherProps, button.buttonProps), ref: mergedRef },
+    partProps: {
+      ...mergeProps(otherProps, button.buttonProps),
+      ref: mergedRef,
+      // Decorative and first, so the name stays the visible text (2.5.3). The 1000 ms delay is CSS.
+      children: button.isBusy ? (
+        <>
+          <span className="kv-spinner" aria-hidden="true" />
+          {children}
+        </>
+      ) : (
+        children
+      ),
+    },
     state: {
       isDisabled: button.isDisabled,
       isBusy: button.isBusy,

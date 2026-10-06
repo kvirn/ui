@@ -7,7 +7,7 @@ A native `<button>` for actions. For navigation, use [Link](../link/link.md).
 - `type="button"` by default, so a Button never submits a form by accident. Use `type="submit"` for the button that does. `type="reset"` puts the form's fields back to their starting values.
 - `disabled` makes it natively disabled: skipped by Tab.
 - `disabled` plus `focusableWhenDisabled` keeps it in the Tab order with `aria-disabled="true"`, so keyboard and screen-reader users can find it and read why. Click, Enter, Space and form submission stay blocked, and your `onClick` is not called.
-- `busy` marks a running action: `aria-disabled="true"` and `data-busy`, never native `disabled`, so focus stays and every press is blocked. Put a [Progress](../progress/progress.md) beside it. `disabled` wins when both are set.
+- `busy` marks a running action: `aria-disabled="true"` and `data-busy`, never native `disabled`, so focus stays and every press is blocked. While busy it renders a decorative `<span class="kv-spinner" aria-hidden="true">` as its first child (theme: shown after 1000 ms, `currentColor`, no new prop); the name and `aria-disabled` are unchanged. Put a [Progress](../progress/progress.md) with the words beside it, without a `Progress.Indicator`: one indicator per wait. `disabled` wins when both are set.
 - Headless: no CSS. It renders `class="kv-button"`, the part's stable class, and your `className` joins it. Style `.kv-button` and the state attributes `[data-disabled]`, `[data-busy]` (set only while `busy` and not `disabled`) and `[data-focus-visible]` (or `:focus-visible`). With `@kvirn-ui/theme/theme.css` imported, it is styled: add `className="kv-button--primary"` or `className="kv-button--danger"` for a variant.
 
 ## Component

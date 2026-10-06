@@ -118,6 +118,10 @@ const showSaved: Run = (toast) => {
   toast.show({ variant: 'success', title: 'Utkastet sparades' })
 }
 
+const showSavedAsJob: Run = (toast) => {
+  toast.show({ id: 'job', variant: 'success', title: 'Utkastet sparades' })
+}
+
 describe('rendering and ARIA', () => {
   test('the region is absent while no toast exists', async () => {
     await render(<Page actions={{ Visa: showSaved }} />)
@@ -162,6 +166,28 @@ describe('rendering and ARIA', () => {
       [...(region?.querySelectorAll('[role]') ?? [])].map((element) => element.tagName),
     ).toEqual(['UL'])
     expect(region?.closest('[aria-live]')).toBeNull()
+  })
+
+  test('busy shows an aria-hidden spinner in the icon slot, keeps the status word, and the result replaces it', async () => {
+    await render(
+      <Page
+        actions={{
+          Visa: (toast) => {
+            toast.show({ id: 'job', busy: true, title: 'Sparar utkastet' })
+          },
+          Klart: showSavedAsJob,
+        }}
+      />,
+    )
+    await press('Visa')
+    const spinner = toastElements()[0]?.querySelector(':scope > .kv-alert-icon.kv-spinner')
+    expect(spinner?.getAttribute('aria-hidden')).toBe('true')
+    expect(toastElements()[0]?.querySelector('svg.kv-alert-icon')).toBeNull()
+    expect(toastElements()[0]?.querySelector('.kv-alert-status')?.textContent).not.toBe('')
+    await press('Klart')
+    expect(toastElements()).toHaveLength(1)
+    expect(toastElements()[0]?.querySelector('.kv-spinner')).toBeNull()
+    expect(toastElements()[0]?.querySelector('svg.kv-alert-icon')).not.toBeNull()
   })
 
   test('the list exposes the list role under list-style: none', async () => {

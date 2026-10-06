@@ -337,6 +337,17 @@ describe('busy', () => {
     await expectNoA11yViolations(container)
   })
 
+  test('renders a decorative spinner as the first child only while busy, and the name stays the text', async () => {
+    const { container, rerender } = await render(<Button busy>Skicka ansökan</Button>)
+    const spinner = container.querySelector('.kv-button[data-busy] > .kv-spinner:first-child')
+    expect(spinner?.getAttribute('aria-hidden')).toBe('true')
+    await expect
+      .element(page.getByRole('button', { name: 'Skicka ansökan', exact: true }))
+      .toBeVisible()
+    await rerender(<Button>Skicka ansökan</Button>)
+    expect(container.querySelector('.kv-spinner')).toBeNull()
+  })
+
   test('Tab lands on a busy button', async () => {
     await render(<Button busy>Skicka ansökan</Button>)
     await userEvent.keyboard('{Tab}')

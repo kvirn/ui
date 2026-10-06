@@ -26,6 +26,11 @@ export interface ToastShowOptions {
    * persistent alternative on the page. Pressing it runs `onPress`, then dismisses the toast.
    */
   action?: { label: string; onPress: () => void } | undefined
+  /**
+   * A job in progress: the icon slot shows a spinner instead of the status icon. Show the result
+   * with the same `id` to replace it, so it is announced once as the result.
+   */
+  busy?: boolean | undefined
   /** Showing an id that is already shown updates that toast in place, and announces it once. */
   id?: string | undefined
   /**
@@ -37,6 +42,7 @@ export interface ToastShowOptions {
 
 export interface ToastContent {
   variant: ToastVariant
+  isBusy: boolean
   title: string
   body: ReactNode
   action: { label: string; onPress: () => void } | undefined
@@ -338,6 +344,7 @@ export function createToastController(
     }
     const content: ToastContent = {
       variant,
+      isBusy: options.busy === true,
       title: options.title,
       body: options.body,
       action: options.action,

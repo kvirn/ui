@@ -352,6 +352,36 @@ export function StatusToasts({ locale = 'sv' }: { locale?: FormLocale }) {
   )
 }
 
+function JobButtons({ locale }: { locale: FormLocale }) {
+  const { text, lang } = toastTextsFor(locale)
+  const toast = useToast()
+  return (
+    <ButtonGroup lang={lang} aria-label={text.startExport}>
+      <Button
+        onClick={() => {
+          toast.show({ id: 'export', busy: true, title: text.exportRunning })
+          // The result replaces the job toast: the same id, announced once as the result.
+          setTimeout(() => {
+            toast.show({ id: 'export', variant: 'success', title: text.reportReady })
+          }, 2500)
+        }}
+      >
+        {text.startExport}
+      </Button>
+    </ButtonGroup>
+  )
+}
+
+/** A job in progress shows a spinner in the icon slot, and the result toast replaces it. */
+export function JobToast({ locale = 'sv' }: { locale?: FormLocale }) {
+  const { providerLocale, messages } = toastTextsFor(locale)
+  return (
+    <KvirnProvider locale={providerLocale} messages={messages}>
+      <JobButtons locale={locale} />
+    </KvirnProvider>
+  )
+}
+
 function DeleteDraftButtons({ locale }: { locale: FormLocale }) {
   const { text, lang } = toastTextsFor(locale)
   const toast = useToast()

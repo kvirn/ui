@@ -91,6 +91,47 @@ export default function ThemingPage() {
             </>
           ),
         },
+        {
+          id: 'moving-indicators',
+          label: 'Moving indicators and WCAG 2.2.2',
+          content: (
+            <>
+              <p>
+                These move for as long as a wait lasts: the spinner and the bar sheen in Progress,
+                the busy Button, the job Toast, the FileUpload track for an unknown size and the
+                busy Table. The library honours <code>prefers-reduced-motion: reduce</code> and
+                shows a still rest shape instead. The text, the percent and the slow sentence at 10
+                seconds carry the wait.
+              </p>
+              <p>
+                WCAG 2.2.2 (Pause, Stop, Hide) asks for a way on the page to stop content that moves
+                for more than 5 seconds. The library ships no such control. To meet it, your app
+                must offer a visible &quot;Reduce motion&quot; control before the content, keep the
+                choice itself (a cookie or your user settings) and apply the stop CSS below.
+              </p>
+              <CodeBlock
+                code={`/* After theme.css. The attribute name is yours: set it on <html> from your control. */
+:root[data-reduce-motion='true'] .kv-spinner,
+:root[data-reduce-motion='true'] .kv-spinner::before,
+:root[data-reduce-motion='true'] .kv-progress-track,
+:root[data-reduce-motion='true'] .kv-progress-track::before,
+:root[data-reduce-motion='true'] .kv-progress-bar,
+:root[data-reduce-motion='true'] .kv-table[data-busy] .kv-table-column-header,
+:root[data-reduce-motion='true'] .kv-table[data-busy] .kv-table-head > tr:last-child::after {
+  animation: none;
+}
+
+:root[data-reduce-motion='true'] .kv-button[data-busy] > .kv-spinner {
+  animation: kv-spinner-reveal 1ms steps(1, end) 1000ms both;
+}`}
+              />
+              <p>
+                With the animation removed, each indicator shows its rest shape: a three-quarter
+                arc, a hatched track and a plain gradient fill.
+              </p>
+            </>
+          ),
+        },
       ]}
     />
   )

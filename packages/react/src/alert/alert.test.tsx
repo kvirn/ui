@@ -337,6 +337,19 @@ describe('rendering', () => {
     },
   )
 
+  test('icon replaces the status icon and keeps the status word', async () => {
+    await render(
+      <Alert.Info icon={<span className="kv-alert-icon kv-spinner" aria-hidden="true" />}>
+        <Alert.Title>Saving</Alert.Title>
+      </Alert.Info>,
+    )
+    expect(document.querySelector('svg.kv-alert-icon')).toBeNull()
+    expect(document.querySelector('.kv-alert > .kv-spinner')?.getAttribute('aria-hidden')).toBe(
+      'true',
+    )
+    expect(page.getByRole('heading').element().textContent).toBe('Information: Saving')
+  })
+
   test('the render function form can replace the class: the icon and the word stay', async () => {
     await render(
       <Alert.Warning

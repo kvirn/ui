@@ -1319,7 +1319,13 @@ export type {
   TanStackTableOptions,
   Updater,
 } from '@kvirn-ui/core'
-export { Progress, ProgressBar, ProgressLabel, ProgressRoot } from './progress/progress.tsx'
+export {
+  Progress,
+  ProgressBar,
+  ProgressIndicator,
+  ProgressLabel,
+  ProgressRoot,
+} from './progress/progress.tsx'
 export type {
   ProgressBarProps,
   ProgressLabelProps,
@@ -1331,6 +1337,7 @@ export type {
   ProgressBarPartProps,
   ProgressLabelPartProps,
   ProgressRootPartProps,
+  ProgressIndicatorProps,
   UseProgressOptions,
   UseProgressResult,
 } from './progress/use-progress.ts'

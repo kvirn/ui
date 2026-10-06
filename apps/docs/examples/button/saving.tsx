@@ -16,13 +16,8 @@ export function Saving() {
   }, [isSaving])
 
   return (
-    <Button
-      lang={textLang}
-      disabled={isSaving}
-      focusableWhenDisabled
-      onClick={() => setIsSaving(true)}
-    >
-      {isSaving ? texts.button.saving : texts.button.saveDraft}
+    <Button lang={textLang} busy={isSaving} onClick={() => setIsSaving(true)}>
+      {texts.button.saveDraft}
     </Button>
   )
 }

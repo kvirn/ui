@@ -7,6 +7,7 @@ import type {
   HTMLAttributes,
   MouseEventHandler,
   ReactElement,
+  ReactNode,
   Ref,
   RefCallback,
 } from 'react'
@@ -62,6 +63,11 @@ export interface AlertRootProps extends AlertPartComponentProps {
 export interface AlertStatusRootProps extends AlertRootProps {
   /** Per-instance override for this root's status word, such as `{ dangerPrefix: 'Viktigt:' }`. */
   messages?: Partial<KvirnMessages['alert']> | undefined
+  /**
+   * Replaces the status icon, such as a `kv-spinner` for a job in progress. Give it
+   * `className="kv-alert-icon"` and `aria-hidden="true"`: the status stays in the word.
+   */
+  icon?: ReactNode | undefined
 }
 
 export type AlertTitleProps = AlertPartComponentProps
@@ -111,6 +117,7 @@ function AlertRootBase({
   variant,
   announce,
   messages,
+  icon,
   render,
   ref,
   children,
@@ -136,7 +143,7 @@ function AlertRootBase({
               children
             ) : (
               <>
-                <Icon {...iconProps} />
+                {icon === undefined ? <Icon {...iconProps} /> : icon}
                 {children}
               </>
             ),

@@ -30,6 +30,7 @@ export const colorTokenNames = [
   'primary-hover',
   'on-primary',
   'primary-subtle',
+  'accent',
   'link',
   'link-hover',
   'focus-ring',
@@ -97,15 +98,17 @@ const textPairs: readonly ColorPair[] = [
  * Control boundaries, focus rings and the selected or current indicator (1.4.11, 2.4.13),
  * including `primary` on `surface` and `canvas` for the current navigation item's fill. `secondary`
  * is the secondary button's edge, and `border-focus` a focused field's, so both need everything
- * `border-control` does.
+ * `border-control` does. `accent` is the end of the loading indicators' gradient, so it needs what
+ * `primary` needs on the same backgrounds (docs/design/loading-indicators.md §6.5).
  */
 const nonTextPairs: readonly ColorPair[] = [
-  ...(['border-control', 'border-focus', 'secondary', 'focus-ring', 'primary'] as const).flatMap(
-    (foreground) =>
-      [...plainBackgrounds, 'primary-subtle' as const].map((background): ColorPair => [
-        foreground,
-        background,
-      ]),
+  ...(
+    ['border-control', 'border-focus', 'secondary', 'focus-ring', 'primary', 'accent'] as const
+  ).flatMap((foreground) =>
+    [...plainBackgrounds, 'primary-subtle' as const].map((background): ColorPair => [
+      foreground,
+      background,
+    ]),
   ),
   // Hovered and pressed filled buttons on every surface they sit on: pages, sections, cards,
   // dialogs and popups (1.4.11). A pressed Toggle is a `primary` fill with a `primary` edge on the

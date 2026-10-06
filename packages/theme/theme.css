@@ -239,6 +239,7 @@
     --kv-color-primary-subtle: var(--kv-primary-50);
     --kv-color-link: var(--kv-primary-600);
     --kv-color-link-hover: var(--kv-primary-700);
+    --kv-color-accent: var(--kv-accent-600);
     --kv-color-focus-ring: var(--kv-primary-500);
     --kv-color-danger: var(--kv-danger-600);
     --kv-color-danger-hover: var(--kv-danger-700);
@@ -405,6 +406,8 @@
     --kv-duration-slow: 240ms;
     --kv-easing-standard: cubic-bezier(0.2, 0, 0, 1);
 
+    /* One loop of a loading indicator: the arc's crawl, a band's sweep, the sheen. */
+    --kv-duration-loop: 1600ms;
     /* Links are underlined on hover only, a cue that doesn't rely on colour. The link colour is 3:1
      * against body text (1.4.1). The contrast themes can't reach that and 7:1 on the canvas too,
      * so they keep the underline at rest. */
@@ -473,6 +476,7 @@
     --kv-color-primary-subtle: var(--kv-primary-950);
     /* Lighter than primary: primary-500 as text on the dark canvas is only 4.44:1. */
     --kv-color-link: var(--kv-primary-400);
+    --kv-color-accent: var(--kv-accent-400);
     --kv-color-link-hover: var(--kv-primary-300);
     --kv-color-focus-ring: var(--kv-primary-400);
     --kv-color-danger: var(--kv-danger-300);
@@ -513,6 +517,7 @@
     --kv-color-primary-subtle: var(--kv-primary-50);
     --kv-color-link: var(--kv-primary-800);
     --kv-color-link-hover: var(--kv-primary-900);
+    --kv-color-accent: var(--kv-accent-800);
     --kv-link-decoration-line: underline;
     --kv-color-focus-ring: var(--kv-primary-800);
     --kv-color-danger: var(--kv-danger-700);
@@ -550,6 +555,7 @@
     --kv-color-primary-subtle: var(--kv-primary-950);
     --kv-color-link: var(--kv-primary-200);
     --kv-color-link-hover: var(--kv-primary-100);
+    --kv-color-accent: var(--kv-accent-200);
     --kv-link-decoration-line: underline;
     --kv-color-focus-ring: var(--kv-primary-200);
     --kv-color-danger: var(--kv-danger-200);
@@ -594,6 +600,7 @@
       --kv-color-primary-subtle: var(--kv-primary-950);
       --kv-color-link: var(--kv-primary-400);
       --kv-color-link-hover: var(--kv-primary-300);
+      --kv-color-accent: var(--kv-accent-400);
       --kv-color-focus-ring: var(--kv-primary-400);
       --kv-color-danger: var(--kv-danger-300);
       --kv-color-danger-hover: var(--kv-danger-200);
@@ -634,6 +641,7 @@
       --kv-color-primary-subtle: var(--kv-primary-50);
       --kv-color-link: var(--kv-primary-800);
       --kv-color-link-hover: var(--kv-primary-900);
+      --kv-color-accent: var(--kv-accent-800);
       --kv-link-decoration-line: underline;
       --kv-color-focus-ring: var(--kv-primary-800);
       --kv-color-danger: var(--kv-danger-700);
@@ -672,6 +680,7 @@
       --kv-color-primary-subtle: var(--kv-primary-950);
       --kv-color-link: var(--kv-primary-200);
       --kv-color-link-hover: var(--kv-primary-100);
+      --kv-color-accent: var(--kv-accent-200);
       --kv-link-decoration-line: underline;
       --kv-color-focus-ring: var(--kv-primary-200);
       --kv-color-danger: var(--kv-danger-200);
@@ -718,6 +727,7 @@
       --kv-color-primary-subtle: Canvas;
       --kv-color-link: LinkText;
       --kv-color-link-hover: LinkText;
+      --kv-color-accent: Highlight;
       --kv-color-focus-ring: Highlight;
       --kv-color-danger: CanvasText;
       --kv-color-danger-hover: CanvasText;
@@ -8970,8 +8980,8 @@
    * --kv-file-upload-zone-edge, -edge-width, -padding-block and -padding-inline.
    *
    * No state moves anything by animation, and nothing here animates unless the user allows
-   * motion: only the determinate progress fill eases. An indeterminate bar is a static hatch,
-   * because a bar that slides for minutes would be moving content with no pause (2.2.2). */
+   * motion: the determinate progress fill eases. An unknown size is a kv-progress-track (14a),
+   * which moves only under the loop gate, so the page's Stop animations control ends it (2.2.2). */
   :root {
     --kv-file-upload-item-padding-block: var(--kv-space-3);
     --kv-file-upload-preview-size: var(--kv-space-12);
@@ -9318,7 +9328,8 @@
     background-color: var(--kv-color-primary);
   }
 
-  /* No value: a static hatch over the whole track. It never moves, in any preference (2.2.2). */
+  /* A native <progress> with no value keeps the rest shape of kv-progress-track: the static hatch.
+   * The moving bar for an unknown size is a kv-progress-track, not this element. */
   .kv-file-upload-progress:indeterminate {
     background-image: repeating-linear-gradient(
       -45deg,
@@ -9405,7 +9416,8 @@
    *   Canvas bar (it marks nothing), and a failed one keeps its CanvasText bar next to the icon
    *   and the error text.
    * - Progress: the track is a CanvasText edge on Canvas, the value is Highlight, and
-   *   indeterminate is the edge alone (the hatch is a background image), with the status text. */
+   *   indeterminate is the edge alone (the hatch is a background image), with the status text.
+   *   A kv-progress-track has its own forced-colours rules in 14a. */
   @media (forced-colors: active) {
     .kv-file-upload-drop-zone:is([data-droppable], [data-dragging]):not([data-disabled]) {
       border-color: CanvasText;
@@ -9456,12 +9468,17 @@
    * value). State is data-state="busy" | "slow" and data-determinate. A Button's busy state is
    * data-busy (with aria-disabled). An empty state is classes only, on your own markup:
    * kv-empty-state, with kv-empty-state-title and kv-empty-state-body inside.
-   * Design spec: docs/design/status-patterns.md.
+   * Design specs: docs/design/status-patterns.md and docs/design/loading-indicators.md.
    *
-   * Nothing here moves on its own, so there is no spinner and no indeterminate bar: the label is
-   * the cue. The bar's value eases only when motion is allowed, and the label wraps, never
-   * truncates. Every pair is one theme:check already measures: text, border-control and primary
-   * on canvas, surface and surface-raised. */
+   * The words are the cue; the spinner (kv-spinner) and the bars (kv-progress-bar with a value,
+   * kv-progress-track without) only show the wait is alive. They are decorative (aria-hidden).
+   * The label wraps, never truncates. Every pair is one theme:check already measures: text,
+   * border-control, primary and accent on canvas, surface and surface-raised. The gradient and
+   * sheen between them are measured by loading-indicators.test.ts.
+   *
+   * A Progress with a spinner lays it out at the inline start of the label:
+   *   <div class="kv-progress"><span class="kv-spinner" aria-hidden="true"></span>
+   *     <p class="kv-progress-label">Loading cases</p></div> */
   .kv-progress {
     display: flex;
     flex-direction: column;
@@ -9503,11 +9520,322 @@
   }
 
   .kv-progress-bar::-webkit-progress-value {
-    background-color: var(--kv-color-primary);
+    background-image:
+      linear-gradient(
+        var(--kv-progress-bar-direction),
+        transparent calc(var(--kv-progress-sheen) - 12%),
+        var(--kv-progress-sheen-color) var(--kv-progress-sheen),
+        transparent calc(var(--kv-progress-sheen) + 12%)
+      ),
+      linear-gradient(
+        var(--kv-progress-bar-direction) in oklab,
+        var(--kv-color-primary),
+        var(--kv-color-accent)
+      );
+  }
+
+  /* Loading indicators (docs/design/loading-indicators.md). The ring and the band are decorative
+   * spans (aria-hidden). They are the toast timer ring's construction: a masked border.
+   * Everything below is the rest shape (a three-quarter arc, the static hatch, a plain
+   * gradient), and the loops are added by the gate further down. */
+  @property --kv-spinner-head {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0.75turn;
+  }
+
+  @property --kv-spinner-tail {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0turn;
+  }
+
+  @property --kv-progress-sheen {
+    syntax: '<percentage>';
+    inherits: true;
+    initial-value: -30%;
+  }
+
+  @property --kv-progress-sweep {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: -30%;
+  }
+
+  /* The arc starts at 12 o'clock and turns clockwise: a clock, so RTL does not mirror it. At rest
+   * it is three quarters, never a full circle (that is the success icon's shape). */
+  .kv-spinner {
+    --kv-spinner-size: 1.25em;
+    --kv-spinner-stroke: 2px;
+    --kv-spinner-color: var(--kv-color-primary);
+
+    position: relative;
+    display: inline-block;
+    flex: none;
+    box-sizing: border-box;
+    inline-size: var(--kv-spinner-size);
+    block-size: var(--kv-spinner-size);
+    vertical-align: -0.25em;
+    pointer-events: none;
+  }
+
+  .kv-spinner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    border: var(--kv-spinner-stroke) solid var(--kv-spinner-color);
+    border-radius: var(--kv-radius-full);
+    mask-image: conic-gradient(
+      from var(--kv-spinner-tail, 0turn),
+      var(--kv-black) 0 calc(var(--kv-spinner-head, 0.75turn) - var(--kv-spinner-tail, 0turn)),
+      transparent 0
+    );
+  }
+
+  .kv-spinner--sm {
+    --kv-spinner-size: 1em;
+  }
+
+  .kv-spinner--lg {
+    --kv-spinner-size: var(--kv-space-12);
+    --kv-spinner-stroke: var(--kv-indicator-width);
+  }
+
+  /* In a button the arc is the label's colour, so it has the label's contrast on every fill. */
+  .kv-button .kv-spinner {
+    --kv-spinner-color: currentColor;
+  }
+
+  /* In an alert or toast it is the status colour, like the timer ring. */
+  .kv-alert .kv-spinner {
+    --kv-spinner-color: var(--kv-alert-accent);
+  }
+
+  /* Unknown wait: a decorative track, never a <progress> without a value. 8px with a
+   * border-control edge, like the bar; --thin is 4px with no edge. Rest shape: the static hatch. */
+  .kv-progress-track {
+    --kv-progress-track-size: var(--kv-space-2);
+
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    inline-size: 100%;
+    block-size: var(--kv-progress-track-size);
+    border: var(--kv-border-width) solid var(--kv-color-border-control);
+    border-radius: var(--kv-radius-sm);
+    background-color: var(--kv-color-surface);
+    background-image: repeating-linear-gradient(
+      -45deg,
+      var(--kv-color-primary) 0 4px,
+      transparent 4px 8px
+    );
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .kv-progress-track--thin {
+    --kv-progress-track-size: var(--kv-indicator-width);
+
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+  }
+
+  /* Mirrored, so the band enters from the right. Its layout stays left to right, which is why the
+   * band is placed with a physical offset. */
+  .kv-progress-track:dir(rtl) {
+    scale: -1 1;
+  }
+
+  .kv-progress-track::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    inline-size: 40%;
+    opacity: 0;
+    background-image: linear-gradient(
+      to right in oklab,
+      transparent,
+      var(--kv-color-primary) 25%,
+      var(--kv-color-accent) 75%,
+      transparent
+    );
+    translate: -100% 0;
+  }
+
+  /* The head's line: one line under the last head row, drawn by moving gradient stops, so it needs
+   * no clip. A <tr> is positioned to hold it. The rest shape is the hatch on each column header. */
+  .kv-table[data-busy] .kv-table-head > tr:last-child {
+    position: relative;
+  }
+
+  .kv-table[data-busy] .kv-table-head > tr:last-child::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: var(--kv-indicator-width);
+    opacity: 0;
+    background-image: linear-gradient(
+      var(--kv-progress-bar-direction, to right) in oklab,
+      transparent calc(var(--kv-progress-sweep) - 20%),
+      var(--kv-color-primary) calc(var(--kv-progress-sweep) - 8%),
+      var(--kv-color-accent) calc(var(--kv-progress-sweep) + 8%),
+      transparent calc(var(--kv-progress-sweep) + 20%)
+    );
+    pointer-events: none;
+  }
+
+  .kv-table[data-busy]:dir(rtl) {
+    --kv-progress-bar-direction: to left;
+  }
+
+  /* The loops run for as long as a wait lasts, and only under no-preference. Under reduce they
+   * don't run at all: the rest shape shows (a three-quarter arc, the hatch, a plain gradient).
+   * Moving content over 5 s has a WCAG 2.2.2 duty (Pause, Stop, Hide) that the library can't
+   * meet for an app: the app offers its own control and switches the loops off with the rule in
+   * docs/design/loading-indicators.md ("Consumer duty for 2.2.2"). */
+  .kv-button[data-busy] > .kv-spinner {
+    animation: kv-spinner-reveal 1ms steps(1, end) 1000ms both;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .kv-spinner {
+      animation: kv-spinner-turn calc(var(--kv-duration-loop) * 1.5) linear infinite;
+    }
+
+    /* In a busy button the spinner shows after the same 1000 ms the announcement waits. A step,
+     * not motion, so the reveal holds in every preference, and the spinner is hidden, not
+     * removed: the label never moves. */
+    .kv-button[data-busy] > .kv-spinner {
+      animation:
+        kv-spinner-turn calc(var(--kv-duration-loop) * 1.5) linear infinite,
+        kv-spinner-reveal 1ms steps(1, end) 1000ms both;
+    }
+
+    /* The arc crawls: head and tail each go round once a loop, the tail on a rule-local
+     * ease-in-out, so the arc grows and shrinks and the seam is never seen. */
+    .kv-spinner::before {
+      animation:
+        kv-spinner-head var(--kv-duration-loop) var(--kv-easing-standard) infinite,
+        kv-spinner-tail var(--kv-duration-loop) cubic-bezier(0.6, 0, 0.4, 1) infinite;
+    }
+
+    /* The band sweeps across and the hatch is hidden while it does. */
+    .kv-progress-track {
+      animation: kv-progress-hide-hatch calc(var(--kv-duration-loop) * 3) linear infinite;
+    }
+
+    .kv-progress-track::before {
+      animation: kv-progress-band var(--kv-duration-loop) var(--kv-easing-standard) infinite;
+    }
+
+    .kv-progress-bar {
+      animation: kv-progress-sheen var(--kv-duration-loop) var(--kv-easing-standard) infinite;
+    }
+
+    .kv-table[data-busy] .kv-table-column-header {
+      animation: kv-progress-hide-hatch calc(var(--kv-duration-loop) * 3) linear infinite;
+    }
+
+    .kv-table[data-busy] .kv-table-head > tr:last-child::after {
+      animation: kv-progress-line var(--kv-duration-loop) var(--kv-easing-standard) infinite;
+    }
+  }
+
+  @keyframes kv-spinner-turn {
+    to {
+      rotate: 1turn;
+    }
+  }
+
+  @keyframes kv-spinner-head {
+    from {
+      --kv-spinner-head: 0.1turn;
+    }
+
+    to {
+      --kv-spinner-head: 1.1turn;
+    }
+  }
+
+  @keyframes kv-spinner-tail {
+    from {
+      --kv-spinner-tail: 0turn;
+    }
+
+    to {
+      --kv-spinner-tail: 1turn;
+    }
+  }
+
+  @keyframes kv-spinner-reveal {
+    from {
+      visibility: hidden;
+    }
+
+    to {
+      visibility: visible;
+    }
+  }
+
+  @keyframes kv-progress-band {
+    from {
+      opacity: 1;
+      translate: -100% 0;
+    }
+
+    to {
+      opacity: 1;
+      translate: 250% 0;
+    }
+  }
+
+  @keyframes kv-progress-sheen {
+    from {
+      --kv-progress-sheen: -30%;
+    }
+
+    to {
+      --kv-progress-sheen: 130%;
+    }
+  }
+
+  @keyframes kv-progress-line {
+    from {
+      opacity: 1;
+      --kv-progress-sweep: -30%;
+    }
+
+    to {
+      opacity: 1;
+      --kv-progress-sweep: 130%;
+    }
+  }
+
+  /* While a band or line runs, the hatch under it is switched off. */
+  @keyframes kv-progress-hide-hatch {
+    from,
+    to {
+      background-image: none;
+    }
   }
 
   .kv-progress-bar::-moz-progress-bar {
-    background-color: var(--kv-color-primary);
+    background-image:
+      linear-gradient(
+        var(--kv-progress-bar-direction),
+        transparent calc(var(--kv-progress-sheen) - 12%),
+        var(--kv-progress-sheen-color) var(--kv-progress-sheen),
+        transparent calc(var(--kv-progress-sheen) + 12%)
+      ),
+      linear-gradient(
+        var(--kv-progress-bar-direction) in oklab,
+        var(--kv-color-primary),
+        var(--kv-color-accent)
+      );
   }
 
   /* Busy is not unavailable-until-you-fix-something: the look and depth stay, and the label
@@ -9571,7 +9899,8 @@
       color: CanvasText;
     }
 
-    .kv-progress-bar {
+    .kv-progress-bar,
+    .kv-progress-track {
       border-color: CanvasText;
       background-color: Canvas;
     }
@@ -9685,7 +10014,22 @@
   /* Opt-in stripes: the surface fill, which the head already uses and which meets AA for every
    * text pair. Counted among the body rows, so an expanded row's details don't shift the
    * stripes. A selected row keeps its primary-subtle fill. */
+  .kv-progress:has(> .kv-spinner) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  /* Centred on the label's first line: its font and line height, so 1.25em is the label's em. */
+  .kv-progress > .kv-spinner {
+    margin-block-start: calc((1lh - var(--kv-spinner-size)) / 2);
+    font-size: var(--kv-font-body-size);
+    line-height: var(--kv-font-body-line-height);
+  }
+
   .kv-table--striped
+    --kv-progress-bar-direction: to right;
+    --kv-progress-sheen-color: color-mix(in srgb, var(--kv-color-on-primary) 20%, transparent);
+
     > .kv-table-body
     > .kv-table-row:nth-child(even of .kv-table-row):not([data-selected])
     > :is(.kv-table-row-header, .kv-table-cell) {
@@ -9704,6 +10048,13 @@
 
   .kv-table-caption {
     padding-block: 0 var(--kv-space-2);
+  .kv-progress-bar:dir(rtl) {
+    --kv-progress-bar-direction: to left;
+  }
+
+  /* The fill is primary to accent. The sheen is a 20 % on-primary band (the most that keeps the
+   * primary end 3:1 on the track) at --kv-progress-sheen, which sits off the end at rest. One rule
+   * per engine: an unknown pseudo-element drops a whole selector list. */
     padding-inline: 0;
     caption-side: top;
     color: var(--kv-color-text);
@@ -9778,15 +10129,38 @@
     box-sizing: border-box;
     inline-size: 100%;
     min-inline-size: var(--kv-control-min-block-size);
+    /* No gradient is relied on: the fill and the band are a solid Highlight, the arc is a border
+     * in a system colour, and a track at rest is its edge alone, with the words. */
     margin: 0;
     padding-block: var(--kv-table-cell-padding-block);
+      background-image: none;
     padding-inline: var(--kv-table-cell-padding-inline);
     border: 0;
     border-radius: 0;
     background-color: transparent;
     color: inherit;
+      background-image: none;
     cursor: pointer;
     font: inherit;
+
+    .kv-progress-track {
+      background-image: none;
+    }
+
+    .kv-progress-track::before {
+      forced-color-adjust: none;
+      background-image: none;
+      background-color: Highlight;
+    }
+
+    .kv-spinner,
+    .kv-alert .kv-spinner {
+      --kv-spinner-color: CanvasText;
+    }
+
+    .kv-button .kv-spinner {
+      --kv-spinner-color: ButtonText;
+    }
     text-align: start;
   }
 
@@ -9895,9 +10269,10 @@
     text-align: start;
   }
 
-  /* Busy: rows stay at full contrast. A static hatched bar runs along the lower edge of the
-   * head, the same as an indeterminate file upload. It never moves (2.2.2). Words carry the
-   * state: the announcement, and the empty row while there are no rows yet. */
+  /* Busy: rows stay at full contrast. The rest shape is a hatched bar along the lower edge of the
+   * head. While the loop gate allows motion (14a) a thin sweep runs there instead, so the page's
+   * Stop animations control ends it (2.2.2). Words carry the state: the announcement, and the
+   * empty row while there are no rows yet. */
   .kv-table[data-busy] .kv-table-column-header {
     background-image: repeating-linear-gradient(
       -45deg,
@@ -9976,7 +10351,7 @@
   /* System colours, set explicitly so nothing depends on a background the browser drops. The head
    * is opaque, so rows still disappear under it, and its line is the visible border. A selected
    * row loses its fill: the checked box is a Highlight fill with a tick. The busy bar becomes a
-   * dashed Highlight line of the same width. */
+   * dashed Highlight line of the same width, and the sweep is dropped: no gradient is relied on. */
   @media (forced-colors: active) {
     .kv-table-head,
     .kv-table-column-header {
@@ -10219,6 +10594,10 @@
   }
 
   .kv-toolbar--attached .kv-listbox-trigger:is([aria-disabled='true'], [data-disabled]) {
+    .kv-table[data-busy] .kv-table-head > tr:last-child::after {
+      display: none;
+    }
+
     border-style: solid;
     background-color: transparent;
   }
