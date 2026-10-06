@@ -317,13 +317,7 @@ export type {
   TooltipMachineOptions,
   TooltipTimers,
 } from './tooltip/tooltip-machine.ts'
-export {
-  createToastQueue,
-  toastMillisecondsPerCharacter,
-  toastMinimumDuration,
-  toastMinimumMilliseconds,
-  toastResumeMinimumMilliseconds,
-} from './toast/toast-queue.ts'
+export { createToastQueue, toastResumeMinimumMilliseconds } from './toast/toast-queue.ts'
 export type {
   ToastEntry,
   ToastInput,
@@ -334,5 +328,6 @@ export type {
   ToastQueueOptions,
   ToastQueueState,
   ToastShowResult,
+  ToastTimer,
   ToastVariant,
 } from './toast/toast-queue.ts'

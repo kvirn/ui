@@ -81,8 +81,10 @@ export function ToastPage({
           <ul>
             <li>
               <strong>No timers by default.</strong> A toast stays until it is closed. Turn{' '}
-              <code>autoDismiss</code> on only as a setting the user can change, such as “Keep
-              messages until I close them” (2.2.1).
+              <code>autoDismiss</code> (a number of milliseconds) on only as a setting the user can
+              change, such as “Keep messages until I close them” (2.2.1). There is no minimum time,
+              so a short value can remove a toast before it is read: that trade-off is the app’s to
+              manage, and nothing the user must act on should time out.
             </li>
             <li>
               <strong>An Undo or Open action needs a persistent alternative</strong> on the page. A

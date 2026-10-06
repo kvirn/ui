@@ -9,10 +9,10 @@ export const toastProviderRows = propRows<NonNullable<KvirnProviderProps['toast'
       'The most toasts shown at once. The region scrolls when they don’t fit. Past the limit the next toast is ignored: show returns an empty string and a development warning says so.',
   },
   autoDismiss: {
-    type: 'boolean | number',
+    type: 'false | number',
     default: 'false',
     description:
-      'false: nothing times out. true: an info or success toast without an action times out after max(10 s, 100 ms × characters). A number from 1 to 10 multiplies that time: tie it to a user setting.',
+      'false: nothing times out. A number is how long, in milliseconds, an info or success toast without an action stays. There is no minimum: a short value can remove a toast before it is read (2.2.1 trade-off), so tie it to a user setting. 0, a negative number or NaN acts as false and warns in development.',
   },
 })
 

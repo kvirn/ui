@@ -122,7 +122,20 @@ export function createToastController(
   const readLimit = (requested: number | undefined) =>
     requested !== undefined && Number.isFinite(requested) ? requested : defaultLimit
   let configuredLimit = readLimit(options.limit)
-  let configuredAutoDismiss = options.autoDismiss ?? false
+  const readAutoDismiss = (requested: false | number | undefined) => {
+    if (requested === undefined || requested === false) {
+      return false
+    }
+    if (Number.isFinite(requested) && requested > 0) {
+      return requested
+    }
+    warnOnce(
+      'toast-auto-dismiss-invalid',
+      `autoDismiss must be false or a number of milliseconds above 0, got ${requested}. It is treated as false: no toast times out.`,
+    )
+    return false
+  }
+  let configuredAutoDismiss = readAutoDismiss(options.autoDismiss)
   const queue = createToastQueue(env, {
     limit: configuredLimit,
     autoDismiss: configuredAutoDismiss,
@@ -299,7 +312,7 @@ export function createToastController(
       configuredLimit = nextLimit
       queue.actions.setLimit(nextLimit)
     }
-    const nextAutoDismiss = next.autoDismiss ?? false
+    const nextAutoDismiss = readAutoDismiss(next.autoDismiss)
     if (nextAutoDismiss !== configuredAutoDismiss) {
       configuredAutoDismiss = nextAutoDismiss
       queue.actions.setAutoDismiss(nextAutoDismiss)

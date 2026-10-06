@@ -52,9 +52,9 @@ const meta = {
     },
     autoDismiss: {
       control: 'select',
-      options: [false, true, 3],
+      options: [false, 4000, 8000],
       description:
-        'On `KvirnProvider toast`. `false` (default): no timers. `true`: info and success toasts without an action time out after at least 10 s. A number from 1 to 10 scales that time: tie it to a user setting.',
+        'On `KvirnProvider toast`. `false` (default): no timers. A number is the time in milliseconds an info or success toast without an action stays, with no minimum (2.2.1 trade-off): tie it to a user setting.',
     },
     variant: {
       control: 'inline-radio',
@@ -143,10 +143,10 @@ export const WithAction: Story = {
 }
 
 /**
- * Timers on, for an app that lets users choose. Only a toast without an action can time out, never
- * sooner than 10 s or 100 ms per character, and the timer pauses while the pointer is over the
- * toast, while focus is inside it and while the tab or window is hidden (2.2.1). Tie `autoDismiss`
- * to a setting such as "Keep messages longer".
+ * Timers on, for an app that lets users choose. Only a toast without an action can time out, for
+ * an exact number of milliseconds (8000 here, no minimum), and the timer pauses while the pointer
+ * is over the toast, while focus is inside it and while the tab or window is hidden (2.2.1). Tie
+ * `autoDismiss` to a setting such as "Keep messages longer".
  */
 export const AutoDismiss: Story = {
   parameters: source('TimedToasts', 'TimedButtons'),
@@ -159,6 +159,54 @@ export const AutoDismiss: Story = {
     await expect(copied).toBeInTheDocument()
     await userEvent.click(canvas.getByRole('button', { name: 'Din rapport är klar.' }))
     await expect(await page().findByRole('button', { name: 'Öppna rapporten' })).toBeInTheDocument()
+  },
+}
+
+/**
+ * A toast that will time out shows how long is left: a ring in the toast's own status colour
+ * around Close, draining clockwise (never mirrored). Hover or focus freezes it, and it starts over
+ * with at least five seconds when the pointer or focus leaves. A toast with an action never times
+ * out, so it has no ring. The ring is decorative (`aria-hidden`) and nothing about it is announced.
+ * With reduced motion it steps in quarters instead of moving smoothly.
+ */
+export const TimerRing: Story = {
+  parameters: source('TimedToasts', 'TimedButtons'),
+  render: (_args, { globals }) => <TimedToasts locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'Kopiera länken' }))
+    await expectShown(/Länken har kopierats\./)
+    const ring = document.querySelector('.kv-toast-timer')
+    await expect(ring).toHaveAttribute('aria-hidden', 'true')
+    const copied = page().getByText(/Länken har kopierats\./)
+    await userEvent.hover(copied)
+    await waitFor(() => expect(copied.closest('.kv-toast')).toHaveAttribute('data-paused'))
+    await userEvent.click(canvas.getByRole('button', { name: 'Din rapport är klar.' }))
+    await expect(await page().findByRole('button', { name: 'Öppna rapporten' })).toBeInTheDocument()
+    await expect(document.querySelectorAll('.kv-toast-timer')).toHaveLength(1)
+  },
+}
+
+/** The ring in RTL: Close sits at the left, and the ring still drains clockwise (a clock is not mirrored). */
+export const TimerRingRTL: Story = {
+  globals: { dir: 'rtl', locale: 'en' },
+  parameters: source('TimedToasts', 'TimedButtons'),
+  render: () => <TimedToasts locale="en" />,
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'Copy the link' }))
+    await expectShown(/Link copied\./)
+    await expect(document.querySelector('.kv-toast-timer')).not.toBeNull()
+  },
+}
+
+/** The ring is drawn in `ButtonText` in forced colours. */
+export const TimerRingForcedColors: Story = {
+  globals: { forcedColors: 'active' },
+  parameters: source('TimedToasts', 'TimedButtons'),
+  render: (_args, { globals }) => <TimedToasts locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'Kopiera länken' }))
+    await expectShown(/Länken har kopierats\./)
+    await expect(document.querySelector('.kv-toast-timer')).not.toBeNull()
   },
 }
 

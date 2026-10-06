@@ -57,7 +57,7 @@ const providerRows = propRows<KvirnProviderProps>({
     description: 'Defaults and storage for the theme. Read by the outermost provider only.',
   },
   toast: {
-    type: '{ limit?: number; autoDismiss?: boolean | number }',
+    type: '{ limit?: number; autoDismiss?: false | number }',
     default: '{ limit: 10, autoDismiss: false }',
     description:
       'Options for the toast region the provider renders. Read by the first provider that mounts; a later one’s is ignored. See Toasts.',
@@ -467,7 +467,8 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
                 ones used. The region exists only while a toast is shown. The <code>toast</code>{' '}
                 prop sets how many toasts show at once (<code>limit</code>, default 10) and whether
                 they time out (<code>autoDismiss</code>, default <code>false</code>: nothing times
-                out). Tie <code>autoDismiss</code> to a setting the user can change (WCAG 2.2.1).
+                out; a number is milliseconds, with no minimum). Tie <code>autoDismiss</code> to a
+                setting the user can change (WCAG 2.2.1).
               </p>
               <CodeBlock code={toastOptions} />
               <p>

@@ -19,10 +19,10 @@ export interface ToastQueueOptions {
   /** How many toasts show at once; past it a timed toast is evicted, else the new one is ignored. Default 10. */
   limit?: number | undefined
   /**
-   * `false` (default): no toast times out. `true`: toasts allowed to time out do, after their
-   * reading time. A number from 1 to 10 multiplies that time, for an app to tie to a user setting.
+   * `false` (default): no toast times out. A number is the time in milliseconds every toast that
+   * is allowed to time out stays, with no minimum. A number that is not finite or is `<= 0` acts as `false`.
    */
-  autoDismiss?: boolean | number | undefined
+  autoDismiss?: false | number | undefined
 }
 
 export interface ToastInput {
@@ -36,6 +36,16 @@ export interface ToastInput {
   hasAction?: boolean | undefined
 }
 
+/** What a ring needs to draw the time left: all in milliseconds, nothing per frame. */
+export interface ToastTimer {
+  /** The time the toast was given. */
+  duration: number
+  /** What was left when this run started: the whole `duration`, or what a resume restarted with. */
+  remaining: number
+  /** Changes whenever the timer starts over (shown again, `setAutoDismiss`, resume), so a ring can restart. */
+  run: number
+}
+
 export interface ToastEntry {
   id: string
   variant: ToastVariant
@@ -45,11 +55,15 @@ export interface ToastEntry {
   revision: number
   /** Whether a timer removes it. */
   timed: boolean
+  /** Set while a timer exists: `timed` and a page that can run timers. */
+  timer?: ToastTimer | undefined
 }
 
 export interface ToastQueueState {
   /** Oldest first: DOM order, visual order and Tab order. */
   visible: ToastEntry[]
+  /** Whether the timers are stopped (a hover, focus, hidden tab or modal). */
+  paused: boolean
 }
 
 export interface ToastShowResult {
@@ -77,15 +91,13 @@ export interface ToastQueueActions {
   setLimit: (limit: number) => void
   /**
    * Changes the `autoDismiss` option, such as when the user turns "keep messages longer" on. The
-   * toasts that show get their timers (or lack of them) and reading time anew.
+   * toasts that show get their timers (or lack of them) and duration anew.
    */
-  setAutoDismiss: (autoDismiss: boolean | number) => void
+  setAutoDismiss: (autoDismiss: false | number) => void
 }
 
 export type ToastQueue = ComponentStore<ToastQueueState, ToastQueueActions>
 
-export const toastMinimumMilliseconds = 10_000
-export const toastMillisecondsPerCharacter = 100
 export const toastResumeMinimumMilliseconds = 5000
 
 const defaultLimit = 10
@@ -93,20 +105,16 @@ const defaultLimit = 10
 const normalizeLimit = (requested: number) =>
   Number.isFinite(requested) ? Math.max(1, Math.floor(requested)) : defaultLimit
 
-/**
- * The reading time of a toast: `max(10 000, 100 × characters)` ms, times `scale` (1 to 10).
- */
-export function toastMinimumDuration(text: string, scale = 1): number {
-  const clampedScale = Number.isFinite(scale) ? Math.min(10, Math.max(1, scale)) : 1
-  return (
-    Math.max(toastMinimumMilliseconds, toastMillisecondsPerCharacter * text.length) * clampedScale
-  )
-}
+const normalizeAutoDismiss = (requested: false | number): false | number =>
+  typeof requested === 'number' && Number.isFinite(requested) && requested > 0 ? requested : false
 
 interface Timer {
   handle: number | undefined
   remaining: number
   startedAt: number
+  duration: number
+  runRemaining: number
+  run: number
 }
 
 /**
@@ -119,20 +127,34 @@ export function createToastQueue(
   env: ToastQueueEnv | undefined,
   { limit: requestedLimit = defaultLimit, autoDismiss = false }: ToastQueueOptions = {},
 ): ToastQueue {
-  let timersAllowed = autoDismiss !== false
-  let scale = typeof autoDismiss === 'number' ? autoDismiss : 1
+  let duration = normalizeAutoDismiss(autoDismiss)
 
   return createComponentStore<ToastQueueState, ToastQueueActions>(
-    { visible: [] },
+    { visible: [], paused: false },
     ({ getState, update }) => {
       let limit = normalizeLimit(requestedLimit)
       let nextId = 1
       let nextRevision = 1
+      let nextRun = 1
       const pausedReasons = new Set<ToastPauseReason>()
       const timers = new Map<string, Timer>()
 
+      const withTimer = (entry: ToastEntry): ToastEntry => {
+        const timer = timers.get(entry.id)
+        if (timer === undefined) {
+          return entry.timer === undefined ? entry : { ...entry, timer: undefined }
+        }
+        if (entry.timer?.run === timer.run && entry.timer.remaining === timer.runRemaining) {
+          return entry
+        }
+        return {
+          ...entry,
+          timer: { duration: timer.duration, remaining: timer.runRemaining, run: timer.run },
+        }
+      }
+
       const publish = (visible: ToastEntry[]) => {
-        update(() => ({ visible }))
+        update((state) => ({ ...state, visible: visible.map(withTimer) }))
       }
 
       const stopTimer = (id: string) => {
@@ -159,10 +181,14 @@ export function createToastQueue(
         if (!entry.timed || env === undefined) {
           return
         }
+        const total = duration === false ? 0 : duration
         const timer: Timer = {
           handle: undefined,
-          remaining: toastMinimumDuration(entry.text, scale),
+          remaining: total,
           startedAt: 0,
+          duration: total,
+          runRemaining: total,
+          run: nextRun++,
         }
         timers.set(entry.id, timer)
         if (pausedReasons.size === 0) {
@@ -188,10 +214,10 @@ export function createToastQueue(
           variant: input.variant ?? 'info',
           text: input.text,
           hasAction,
-          timed: timersAllowed && !hasAction,
+          timed: duration !== false && !hasAction,
           revision: nextRevision++,
         }
-        const timerDropped = timersAllowed && hasAction
+        const timerDropped = duration !== false && hasAction
         const { visible } = getState()
 
         const shownIndex = visible.findIndex((candidate) => candidate.id === id)
@@ -231,7 +257,11 @@ export function createToastQueue(
       const pause = (reason: ToastPauseReason) => {
         const wasRunning = pausedReasons.size === 0
         pausedReasons.add(reason)
-        if (!wasRunning || env === undefined) {
+        if (!wasRunning) {
+          return
+        }
+        update((state) => ({ ...state, paused: true }))
+        if (env === undefined) {
           return
         }
         const now = env.window.performance.now()
@@ -250,20 +280,22 @@ export function createToastQueue(
         }
         for (const [id, timer] of timers) {
           timer.remaining = Math.max(timer.remaining, toastResumeMinimumMilliseconds)
+          timer.runRemaining = timer.remaining
+          timer.run = nextRun++
           startTimer(id, timer)
         }
+        update((state) => ({ ...state, paused: false, visible: state.visible.map(withTimer) }))
       }
 
       const setLimit = (nextLimit: number) => {
         limit = normalizeLimit(nextLimit)
       }
 
-      const setAutoDismiss = (next: boolean | number) => {
-        timersAllowed = next !== false
-        scale = typeof next === 'number' ? next : 1
+      const setAutoDismiss = (next: false | number) => {
+        duration = normalizeAutoDismiss(next)
         const retime = (entry: ToastEntry): ToastEntry => ({
           ...entry,
-          timed: timersAllowed && !entry.hasAction,
+          timed: duration !== false && !entry.hasAction,
         })
         const visible = getState().visible.map(retime)
         for (const entry of visible) {

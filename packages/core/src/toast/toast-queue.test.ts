@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vite-plus/test'
-import { createToastQueue, toastMinimumDuration } from './toast-queue.ts'
+import { createToastQueue } from './toast-queue.ts'
 import type { ToastQueueEnv, ToastQueueOptions } from './toast-queue.ts'
 
 interface Timer {
@@ -51,19 +51,6 @@ function setup(options?: ToastQueueOptions) {
   return { clock, queue, ids }
 }
 
-describe('toastMinimumDuration', () => {
-  test('is 10 seconds for short text and 100 ms per character for long text', () => {
-    expect(toastMinimumDuration('Saved')).toBe(10_000)
-    expect(toastMinimumDuration('x'.repeat(250))).toBe(25_000)
-  })
-
-  test('the number setting scales it from 1 to 10 and is clamped', () => {
-    expect(toastMinimumDuration('Saved', 3)).toBe(30_000)
-    expect(toastMinimumDuration('Saved', 50)).toBe(100_000)
-    expect(toastMinimumDuration('Saved', 0)).toBe(10_000)
-  })
-})
-
 describe('rule 1: persistent by default', () => {
   test('autoDismiss false sets no timer and the toast stays', () => {
     const { clock, queue, ids } = setup()
@@ -77,7 +64,7 @@ describe('rule 1: persistent by default', () => {
 
 describe('rule 2: timers only for toasts without an action', () => {
   test('a toast without an action times out after autoDismiss is on', () => {
-    const { clock, queue, ids } = setup({ autoDismiss: true })
+    const { clock, queue, ids } = setup({ autoDismiss: 10_000 })
     const result = queue.actions.show({ id: 'a', variant: 'success', text: 'Saved' })
 
     expect(result.timerDropped).toBe(false)
@@ -86,7 +73,7 @@ describe('rule 2: timers only for toasts without an action', () => {
   })
 
   test('a toast with an action stays and reports the dropped timer', () => {
-    const { clock, queue, ids } = setup({ autoDismiss: true })
+    const { clock, queue, ids } = setup({ autoDismiss: 10_000 })
     const result = queue.actions.show({ id: 'a', text: 'Deleted', hasAction: true })
 
     expect(result.timerDropped).toBe(true)
@@ -101,31 +88,35 @@ describe('rule 2: timers only for toasts without an action', () => {
   })
 })
 
-describe('rule 3: reading time', () => {
-  test('a timer is never shorter than the minimum and grows with the text', () => {
-    const { clock, queue, ids } = setup({ autoDismiss: true })
+describe('rule 3: the number is the timer length', () => {
+  test('a number sets the exact timer length, with no minimum and no growth with the text', () => {
+    const { clock, queue, ids } = setup({ autoDismiss: 2500 })
+    queue.actions.show({ id: 'short', text: 'Saved' })
     queue.actions.show({ id: 'long', text: 'x'.repeat(300) })
 
-    clock.advance(29_999)
-    expect(ids()).toEqual(['long'])
+    clock.advance(2499)
+    expect(ids()).toEqual(['short', 'long'])
     clock.advance(1)
     expect(ids()).toEqual([])
   })
 
-  test('the number setting multiplies the time', () => {
-    const { clock, queue, ids } = setup({ autoDismiss: 3 })
-    queue.actions.show({ id: 'a', text: 'Saved' })
+  test.each([0, -1, Number.NaN, Number.POSITIVE_INFINITY])(
+    'autoDismiss %s acts as false: no timer is set',
+    (autoDismiss) => {
+      const { clock, queue, ids } = setup({ autoDismiss })
+      const result = queue.actions.show({ id: 'a', text: 'Saved' })
 
-    clock.advance(29_999)
-    expect(ids()).toEqual(['a'])
-    clock.advance(1)
-    expect(ids()).toEqual([])
-  })
+      expect(clock.pendingTimers()).toBe(0)
+      expect(result.timerDropped).toBe(false)
+      clock.advance(10 * 60_000)
+      expect(ids()).toEqual(['a'])
+    },
+  )
 })
 
 describe('rule 4: pause and resume', () => {
   test('pausing stops the timer and resuming gives back the time that was left', () => {
-    const { clock, queue, ids } = setup({ autoDismiss: true })
+    const { clock, queue, ids } = setup({ autoDismiss: 10_000 })
     queue.actions.show({ id: 'a', text: 'Saved' })
 
     clock.advance(2000)
@@ -141,7 +132,7 @@ describe('rule 4: pause and resume', () => {
   })
 
   test('at least 5 seconds remain after a resume', () => {
-    const { clock, queue, ids } = setup({ autoDismiss: true })
+    const { clock, queue, ids } = setup({ autoDismiss: 10_000 })
     queue.actions.show({ id: 'a', text: 'Saved' })
 
     clock.advance(9000)
@@ -155,7 +146,7 @@ describe('rule 4: pause and resume', () => {
   })
 
   test('the timers run again only after every reason has resumed', () => {
-    const { clock, queue, ids } = setup({ autoDismiss: true })
+    const { clock, queue, ids } = setup({ autoDismiss: 10_000 })
     queue.actions.show({ id: 'a', text: 'Saved' })
 
     queue.actions.pause('hover')
@@ -170,7 +161,7 @@ describe('rule 4: pause and resume', () => {
   })
 
   test('a toast shown while paused starts its timer on resume', () => {
-    const { clock, queue, ids } = setup({ autoDismiss: true })
+    const { clock, queue, ids } = setup({ autoDismiss: 10_000 })
     queue.actions.pause('focus')
     queue.actions.show({ id: 'a', text: 'Saved' })
     clock.advance(60_000)
@@ -182,7 +173,7 @@ describe('rule 4: pause and resume', () => {
   })
 
   test('resume without a matching pause does nothing', () => {
-    const { clock, queue } = setup({ autoDismiss: true })
+    const { clock, queue } = setup({ autoDismiss: 10_000 })
     queue.actions.show({ id: 'a', text: 'Saved' })
     queue.actions.resume('hover')
     expect(clock.pendingTimers()).toBe(1)
@@ -216,7 +207,7 @@ describe('rule 6: limit and eviction', () => {
   })
 
   test('when full the oldest timed toast is evicted for the new one', () => {
-    const { clock, queue, ids } = setup({ limit: 2, autoDismiss: true })
+    const { clock, queue, ids } = setup({ limit: 2, autoDismiss: 10_000 })
     queue.actions.show({ id: 'action', text: 'a', hasAction: true })
     queue.actions.show({ id: 'timed-old', text: 'b' })
 
@@ -228,7 +219,7 @@ describe('rule 6: limit and eviction', () => {
   })
 
   test('the oldest timed toast goes first, not the oldest toast', () => {
-    const { queue, ids } = setup({ limit: 3, autoDismiss: true })
+    const { queue, ids } = setup({ limit: 3, autoDismiss: 10_000 })
     queue.actions.show({ id: 'first-action', text: 'a', hasAction: true })
     queue.actions.show({ id: 'timed-1', text: 'b' })
     queue.actions.show({ id: 'timed-2', text: 'c' })
@@ -249,7 +240,7 @@ describe('rule 4 and eviction: a toast the user is on is never evicted', () => {
   test.each(['focus', 'hover'] as const)(
     'while %s is paused the new toast is ignored',
     (reason) => {
-      const { queue, ids } = setup({ limit: 1, autoDismiss: true })
+      const { queue, ids } = setup({ limit: 1, autoDismiss: 10_000 })
       queue.actions.show({ id: 'old', text: 'a' })
       queue.actions.pause(reason)
 
@@ -265,7 +256,7 @@ describe('rule 4 and eviction: a toast the user is on is never evicted', () => {
 
 describe('setAutoDismiss', () => {
   test('turning timers off stops those of the toasts that show, and on arms them again', () => {
-    const { clock, queue, ids } = setup({ autoDismiss: true })
+    const { clock, queue, ids } = setup({ autoDismiss: 10_000 })
     queue.actions.show({ id: 'a', text: 'a' })
     queue.actions.setAutoDismiss(false)
 
@@ -273,27 +264,37 @@ describe('setAutoDismiss', () => {
     clock.advance(600_000)
     expect(ids()).toEqual(['a'])
 
-    queue.actions.setAutoDismiss(true)
+    queue.actions.setAutoDismiss(10_000)
     expect(clock.pendingTimers()).toBe(1)
     clock.advance(10_000)
     expect(ids()).toEqual([])
   })
 
-  test('a number scales the reading time of the toasts that show', () => {
-    const { clock, queue, ids } = setup({ autoDismiss: true })
+  test('a number sets the exact timer length of the toasts that show', () => {
+    const { clock, queue, ids } = setup({ autoDismiss: 10_000 })
     queue.actions.show({ id: 'a', text: 'a' })
-    queue.actions.setAutoDismiss(2)
+    queue.actions.setAutoDismiss(2000)
 
-    clock.advance(19_999)
+    clock.advance(1999)
     expect(ids()).toEqual(['a'])
     clock.advance(1)
     expect(ids()).toEqual([])
   })
 
+  test('an invalid number turns the timers off', () => {
+    const { clock, queue, ids } = setup({ autoDismiss: 10_000 })
+    queue.actions.show({ id: 'a', text: 'a' })
+    queue.actions.setAutoDismiss(0)
+
+    expect(clock.pendingTimers()).toBe(0)
+    clock.advance(600_000)
+    expect(ids()).toEqual(['a'])
+  })
+
   test('a toast with an action stays without a timer', () => {
     const { clock, queue } = setup()
     queue.actions.show({ id: 'a', text: 'a', hasAction: true })
-    queue.actions.setAutoDismiss(true)
+    queue.actions.setAutoDismiss(10_000)
 
     expect(clock.pendingTimers()).toBe(0)
   })
@@ -304,12 +305,12 @@ describe('revision', () => {
     queue.getState().visible.map((entry) => entry.revision)
 
   test('changes when a toast is shown again, and not when the timing options change', () => {
-    const { queue } = setup({ autoDismiss: true })
+    const { queue } = setup({ autoDismiss: 10_000 })
     queue.actions.show({ id: 'a', text: 'a' })
     queue.actions.show({ id: 'b', text: 'b' })
     const [first, second] = revisionOf(queue)
 
-    queue.actions.setAutoDismiss(2)
+    queue.actions.setAutoDismiss(2000)
     queue.actions.setAutoDismiss(false)
     queue.actions.setLimit(5)
     expect(revisionOf(queue)).toEqual([first, second])
@@ -322,7 +323,7 @@ describe('revision', () => {
 
 describe('the modal pause reason', () => {
   test('stops every timer while a modal is open, and resumes with at least five seconds left', () => {
-    const { clock, queue, ids } = setup({ autoDismiss: true })
+    const { clock, queue, ids } = setup({ autoDismiss: 10_000 })
     queue.actions.show({ id: 'a', text: 'a' })
     clock.advance(8000)
     queue.actions.pause('modal')
@@ -370,7 +371,7 @@ describe('setLimit', () => {
 
 describe('rule 7: the same id updates in place', () => {
   test('the text changes, the position stays and the timer restarts', () => {
-    const { clock, queue, ids } = setup({ autoDismiss: true })
+    const { clock, queue, ids } = setup({ autoDismiss: 10_000 })
     queue.actions.show({ id: 'a', text: 'one' })
     queue.actions.show({ id: 'b', text: 'two' })
     clock.advance(8000)
@@ -400,23 +401,105 @@ describe('rule 8: dismissal', () => {
   })
 
   test('dismissAll empties the region and cancels every timer', () => {
-    const { clock, queue } = setup({ limit: 2, autoDismiss: true })
+    const { clock, queue } = setup({ limit: 2, autoDismiss: 10_000 })
     queue.actions.show({ text: 'a' })
     queue.actions.show({ text: 'b' })
 
     queue.actions.dismissAll()
 
-    expect(queue.getState()).toEqual({ visible: [] })
+    expect(queue.getState().visible).toEqual([])
     expect(clock.pendingTimers()).toBe(0)
   })
 })
 
 describe('server rendering', () => {
   test('without an env toasts show and never time out', () => {
-    const queue = createToastQueue(undefined, { autoDismiss: true })
+    const queue = createToastQueue(undefined, { autoDismiss: 10_000 })
     queue.actions.show({ id: 'a', text: 'Saved' })
     queue.actions.pause('hover')
     queue.actions.resume('hover')
     expect(queue.getState().visible.map((entry) => entry.id)).toEqual(['a'])
+  })
+})
+
+describe('the timer the ring is drawn from', () => {
+  const timerOf = (queue: ReturnType<typeof setup>['queue'], id: string) =>
+    queue.getState().visible.find((entry) => entry.id === id)?.timer
+
+  test('a timed toast exposes its duration and the time left at the start of the run', () => {
+    const { queue } = setup({ autoDismiss: 6000 })
+    queue.actions.show({ id: 'a', text: 'Saved' })
+
+    expect(timerOf(queue, 'a')).toMatchObject({ duration: 6000, remaining: 6000 })
+    expect(queue.getState().paused).toBe(false)
+  })
+
+  test('paused follows the pause reasons', () => {
+    const { queue } = setup({ autoDismiss: 6000 })
+    queue.actions.show({ id: 'a', text: 'Saved' })
+    queue.actions.pause('hover')
+    queue.actions.pause('focus')
+    queue.actions.resume('hover')
+    expect(queue.getState().paused).toBe(true)
+
+    queue.actions.resume('focus')
+    expect(queue.getState().paused).toBe(false)
+  })
+
+  test('a resume starts a new run with the time that was left', () => {
+    const { clock, queue } = setup({ autoDismiss: 20_000 })
+    queue.actions.show({ id: 'a', text: 'Saved' })
+    const firstRun = timerOf(queue, 'a')?.run
+
+    clock.advance(5000)
+    queue.actions.pause('hover')
+    queue.actions.resume('hover')
+
+    expect(timerOf(queue, 'a')).toMatchObject({ duration: 20_000, remaining: 15_000 })
+    expect(timerOf(queue, 'a')?.run).not.toBe(firstRun)
+  })
+
+  test('a resume keeps the 5 second floor in the exposed remaining time', () => {
+    const { clock, queue } = setup({ autoDismiss: 3000 })
+    queue.actions.show({ id: 'a', text: 'Saved' })
+
+    clock.advance(2000)
+    queue.actions.pause('focus')
+    queue.actions.resume('focus')
+
+    expect(timerOf(queue, 'a')?.remaining).toBe(5000)
+  })
+
+  test('showing the same id again starts a new run', () => {
+    const { queue } = setup({ autoDismiss: 6000 })
+    queue.actions.show({ id: 'a', text: 'Saved' })
+    const firstRun = timerOf(queue, 'a')?.run
+    queue.actions.show({ id: 'a', text: 'Saved again' })
+
+    expect(timerOf(queue, 'a')?.run).not.toBe(firstRun)
+  })
+
+  test('a toast with an action has no timer data', () => {
+    const { queue } = setup({ autoDismiss: 6000 })
+    queue.actions.show({ id: 'a', text: 'Saved', hasAction: true })
+
+    expect(timerOf(queue, 'a')).toBeUndefined()
+  })
+
+  test('autoDismiss false has no timer data', () => {
+    const { queue } = setup()
+    queue.actions.show({ id: 'a', text: 'Saved' })
+
+    expect(timerOf(queue, 'a')).toBeUndefined()
+  })
+
+  test('setAutoDismiss adds and removes the timer data', () => {
+    const { queue } = setup()
+    queue.actions.show({ id: 'a', text: 'Saved' })
+    queue.actions.setAutoDismiss(4000)
+    expect(timerOf(queue, 'a')).toMatchObject({ duration: 4000 })
+
+    queue.actions.setAutoDismiss(false)
+    expect(timerOf(queue, 'a')).toBeUndefined()
   })
 })

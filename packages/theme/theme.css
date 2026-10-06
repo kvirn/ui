@@ -89,7 +89,7 @@
  *  11. Icon
  *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-textarea,
  *                      kv-character-count, kv-input-group, kv-date-input, kv-checkbox, kv-switch,
- *                      kv-radio, kv-listbox-native, kv-listbox-trigger and popup, kv-menu
+ *                      kv-slider, kv-radio, kv-listbox-native, kv-listbox-trigger and popup, kv-menu
  *                      (trigger, popup, items), kv-combobox and kv-autocomplete (input, control, buttons, value chips)
  *  13. One-time code    kv-one-time-code: one input, drawn as boxes and dashes of its pattern
  *  14. File upload      kv-file-upload: drop zone, trigger, rejections, and the list of files
@@ -2181,6 +2181,7 @@
           .kv-checkbox,
           .kv-radio,
           .kv-switch,
+          .kv-slider,
           .kv-listbox-native
         ),
         :is(
@@ -3734,7 +3735,7 @@
 
   /* 10f. Toast --------------------------------------------------------------------------------
    * <KvirnProvider> renders <section class="kv-toast-region" popover="manual"> once, while a toast
-   * exists, in the top layer. Inside it <ol class="kv-toast-list"> holds <li class="kv-toast-item">,
+   * exists, in the top layer. Inside it <ul role="list" class="kv-toast-list"> holds <li class="kv-toast-item">,
    * and each item wraps an Alert root with kv-toast (its status look is kv-alert--*). React sets
    * data-placement="block-start" on the region when it would cover the focused element (2.4.11);
    * otherwise it sits at the block end. React limits the stack (up to 10): this section only lays the list out, and the region scrolls
@@ -3814,6 +3815,69 @@
     box-shadow: var(--kv-shadow-popup);
   }
 
+  /* The timer ring (docs/design/toast-timer-ring.md): decorative, inside Close, only on a toast that
+   * will time out. React sets --kv-toast-timer-from (0 to 1, the share of the time left) and
+   * --kv-toast-timer-remaining (the milliseconds the run drains over), and data-paused on the toast.
+   * The arc is the toast's status colour. It drains clockwise from 12 o'clock and is a clock, so
+   * RTL does not mirror it (conic-gradient ignores direction). */
+  @property --kv-toast-timer-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0turn;
+  }
+
+  .kv-toast {
+    --kv-toast-timer-width: 2px;
+  }
+
+  .kv-toast[data-timed] .kv-alert-close {
+    position: relative;
+  }
+
+  .kv-toast-timer {
+    position: absolute;
+    inset: 2px;
+    box-sizing: border-box;
+    border: var(--kv-toast-timer-width) solid var(--kv-alert-accent);
+    border-radius: var(--kv-radius-full);
+    pointer-events: none;
+    mask-image: conic-gradient(
+      transparent calc(1turn - var(--kv-toast-timer-angle)),
+      var(--kv-black) 0
+    );
+    animation: kv-toast-timer var(--kv-toast-timer-remaining) linear both;
+  }
+
+  .kv-toast[data-paused] .kv-toast-timer {
+    animation-play-state: paused;
+  }
+
+  @keyframes kv-toast-timer {
+    from {
+      --kv-toast-timer-angle: calc(var(--kv-toast-timer-from) * 1turn);
+    }
+
+    to {
+      --kv-toast-timer-angle: 0turn;
+    }
+  }
+
+  /* Still a timer, but stepped: the arc changes at 75, 50 and 25 % of the time. */
+  @media (prefers-reduced-motion: reduce) {
+    .kv-toast-timer {
+      mask-image: conic-gradient(
+        transparent calc(1turn - round(up, var(--kv-toast-timer-angle), 0.25turn)),
+        var(--kv-black) 0
+      );
+    }
+
+    @supports not (width: round(1px, 1px)) {
+      .kv-toast-timer {
+        animation-timing-function: steps(4, jump-start);
+      }
+    }
+  }
+
   /* The region covers the page's last (or, moved, first) lines, so a focused element scrolls clear of it. */
   :root:has(.kv-toast-region) {
     scroll-padding-block-end: var(--kv-toast-scroll-padding, min(12rem, 50dvh));
@@ -3848,6 +3912,10 @@
     .kv-toast {
       border-color: CanvasText;
       box-shadow: none;
+    }
+
+    .kv-toast-timer {
+      border-color: ButtonText;
     }
   }
 
@@ -5176,6 +5244,18 @@
       transition-duration: var(--kv-duration-fast);
       transition-timing-function: var(--kv-easing-standard);
     }
+
+    .kv-slider::-webkit-slider-runnable-track {
+      transition-property: border-color;
+      transition-duration: var(--kv-duration-fast);
+      transition-timing-function: var(--kv-easing-standard);
+    }
+
+    .kv-slider::-moz-range-track {
+      transition-property: border-color;
+      transition-duration: var(--kv-duration-fast);
+      transition-timing-function: var(--kv-easing-standard);
+    }
   }
 
   /* System colours, set explicitly so nothing depends on a background the browser drops. The
@@ -5738,6 +5818,110 @@
     border-style: solid;
   }
 
+  /* Slider: the native range, with no fill. The track and the thumb are the input's own
+   * pseudo-elements, one rule per engine (an unknown pseudo in a selector list drops the whole
+   * rule). State is set as rule-local values on the input, which the pseudo-elements inherit.
+   * The thumb's hit box is larger than the disc on a coarse pointer. Design spec: docs/design/slider.md. */
+  .kv-slider {
+    --kv-slider-thumb-box: var(--kv-choice-size);
+    --kv-slider-thumb-size: var(--kv-choice-size);
+    --kv-slider-track-size: calc(var(--kv-choice-size) / 3);
+    --kv-slider-edge: var(--kv-color-border-control);
+    --kv-slider-edge-style: solid;
+    --kv-slider-edge-width: var(--kv-border-width);
+    --kv-slider-fill: var(--kv-color-canvas);
+    --kv-slider-thumb: var(--kv-color-primary);
+
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-inline-size: 0;
+    block-size: max(var(--kv-control-min-block-size), var(--kv-slider-thumb-box));
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--kv-radius-md);
+    appearance: none;
+    background-color: transparent;
+    box-shadow: none;
+    color: var(--kv-color-text);
+    cursor: pointer;
+  }
+
+  @media (pointer: coarse) {
+    .kv-slider {
+      --kv-slider-thumb-box: calc(var(--kv-choice-size) * 11 / 6);
+      --kv-slider-thumb-size: calc(var(--kv-choice-size) * 4 / 3);
+      --kv-slider-track-size: calc(var(--kv-choice-size) / 2);
+    }
+  }
+
+  .kv-slider::-webkit-slider-runnable-track {
+    box-sizing: border-box;
+    block-size: var(--kv-slider-track-size);
+    border: var(--kv-slider-edge-width) var(--kv-slider-edge-style) var(--kv-slider-edge);
+    border-radius: var(--kv-radius-full);
+    background-color: var(--kv-slider-fill);
+  }
+
+  .kv-slider::-moz-range-track {
+    box-sizing: border-box;
+    block-size: var(--kv-slider-track-size);
+    border: var(--kv-slider-edge-width) var(--kv-slider-edge-style) var(--kv-slider-edge);
+    border-radius: var(--kv-radius-full);
+    background-color: var(--kv-slider-fill);
+  }
+
+  .kv-slider::-webkit-slider-thumb {
+    box-sizing: border-box;
+    inline-size: var(--kv-slider-thumb-box);
+    block-size: var(--kv-slider-thumb-box);
+    margin-block-start: calc(
+      (var(--kv-slider-track-size) - var(--kv-slider-thumb-box)) / 2 - var(--kv-slider-edge-width)
+    );
+    padding: calc((var(--kv-slider-thumb-box) - var(--kv-slider-thumb-size)) / 2);
+    border: 0;
+    border-radius: var(--kv-radius-full);
+    appearance: none;
+    background-color: var(--kv-slider-thumb);
+    background-clip: content-box;
+  }
+
+  .kv-slider::-moz-range-thumb {
+    box-sizing: border-box;
+    inline-size: var(--kv-slider-thumb-box);
+    block-size: var(--kv-slider-thumb-box);
+    padding: calc((var(--kv-slider-thumb-box) - var(--kv-slider-thumb-size)) / 2);
+    border: 0;
+    border-radius: var(--kv-radius-full);
+    background-color: var(--kv-slider-thumb);
+    background-clip: content-box;
+  }
+
+  .kv-slider:not(:disabled, [data-disabled], [data-invalid], [aria-invalid='true']):hover {
+    --kv-slider-edge: var(--kv-color-text);
+  }
+
+  .kv-slider:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-slider:is([data-invalid], [aria-invalid='true']) {
+    --kv-slider-edge: var(--kv-color-danger);
+    --kv-slider-edge-width: var(--kv-control-border-width-invalid);
+  }
+
+  .kv-slider:is(:disabled, [data-disabled]) {
+    --kv-slider-edge: var(--kv-color-border-control);
+    --kv-slider-edge-style: dashed;
+    --kv-slider-edge-width: var(--kv-border-width);
+    --kv-slider-fill: var(--kv-color-surface);
+    --kv-slider-thumb: var(--kv-color-text-muted);
+
+    cursor: not-allowed;
+    opacity: 1;
+  }
+
   /* The select. The look of an input; the chevron is two diagonal strokes, one gradient each,
    * at the end of the box (the left in right-to-left). */
   .kv-listbox-native {
@@ -5953,9 +6137,26 @@
       --kv-switch-tick: Field;
     }
 
+    .kv-slider {
+      --kv-slider-edge: ButtonBorder;
+      --kv-slider-fill: Field;
+      --kv-slider-thumb: Highlight;
+    }
+
+    .kv-slider:is([data-invalid], [aria-invalid='true']) {
+      --kv-slider-edge: CanvasText;
+    }
+
+    .kv-slider:is(:disabled, [data-disabled]) {
+      --kv-slider-edge: GrayText;
+      --kv-slider-fill: Field;
+      --kv-slider-thumb: GrayText;
+    }
+
     .kv-checkbox:is(:focus-visible, [data-focus-visible]),
     .kv-radio:is(:focus-visible, [data-focus-visible]),
     .kv-switch:is(:focus-visible, [data-focus-visible]),
+    .kv-slider:is(:focus-visible, [data-focus-visible]),
     .kv-listbox-native:is(:focus-visible, [data-focus-visible]) {
       outline-color: Highlight;
     }

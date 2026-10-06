@@ -83,7 +83,7 @@ Load `keyboard` and `accessibility` with this skill. Keys for these patterns are
 
 - `useToast()` and a host that `KvirnProvider` renders (`toast={{ limit, autoDismiss }}`), no `Toast.Provider` (Plan 0071, contract: `toast.a11y.md`). Info and success only: a warning or an error is an `Alert`, never a toast. Items are built from Alert parts.
 - The region is a `<section popover="manual">` named by `toast.regionLabel`, rendered only while a toast exists, with no `role` and no `aria-live`. The provider announces the toasts of one commit as one polite message. Showing never moves focus (`focus: true` is opt-in, user-initiated only).
-- Persistent by default. A timer (`autoDismiss`) only for a toast without an action, never below `max(10 s, 100 ms × characters)`, paused on hover, focus, a hidden tab and a blurred window. Escape closes a toast only while focus is inside it (a layer on the stack only then). New toasts are held while a modal `<dialog>` is open.
+- Persistent by default. A timer (`autoDismiss`: `false` or milliseconds, no minimum, a maintainer-approved 2.2.1 trade-off; an invalid number acts as `false` and warns) only for a toast without an action, paused on hover, focus, a hidden tab and a blurred window. Escape closes a toast only while focus is inside it (a layer on the stack only then). New toasts are held while a modal `<dialog>` is open.
 
 ### FocusScope (planned)
 

@@ -1,5 +1,6 @@
 'use client'
 import type { ToastEntry } from '@kvirn-ui/core'
+import type { CSSProperties } from 'react'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { readText } from '../alert/use-alert.ts'
 import { Alert } from '../alert/alert.tsx'
@@ -13,14 +14,17 @@ import { useStoreSelector } from '../store/use-store-selector.ts'
 import type { ToastController } from './toast-controller.ts'
 
 const selectVisible = (state: { visible: ToastEntry[] }) => state.visible
+const selectPaused = (state: { paused: boolean }) => state.paused
 
 interface ToastItemProps {
   controller: ToastController
-  id: string
+  entry: ToastEntry
+  isPaused: boolean
 }
 
 /** Internal. One toast: an Alert's parts in a list item, with a Close that is never optional. */
-function ToastItem({ controller, id }: ToastItemProps) {
+function ToastItem({ controller, entry, isPaused }: ToastItemProps) {
+  const { id, timer } = entry
   const content = controller.contentOf(id)
   const { locale } = useLocale()
   const itemRef = useRef<HTMLLIElement | null>(null)
@@ -74,7 +78,11 @@ function ToastItem({ controller, id }: ToastItemProps) {
   const { action } = content
   return (
     <li ref={setItem} className="kv-toast-item">
-      <Root className="kv-toast">
+      <Root
+        className="kv-toast"
+        data-timed={timer === undefined ? undefined : ''}
+        data-paused={timer !== undefined && isPaused ? '' : undefined}
+      >
         <Alert.Title render={<p tabIndex={-1} />}>
           {lang === undefined ? content.title : <span lang={lang}>{content.title}</span>}
         </Alert.Title>
@@ -95,6 +103,26 @@ function ToastItem({ controller, id }: ToastItemProps) {
           onClick={(event) => {
             controller.dismiss(id, event.detail > 0)
           }}
+          render={(closeProps) => (
+            <button {...closeProps}>
+              {closeProps.children}
+              {timer === undefined ? null : (
+                // Decorative: the time left is never announced. A new run restarts the animation, and
+                // Close keeps its element and focus.
+                <span
+                  key={timer.run}
+                  className="kv-toast-timer"
+                  aria-hidden="true"
+                  style={
+                    {
+                      '--kv-toast-timer-from': Math.min(1, timer.remaining / timer.duration),
+                      '--kv-toast-timer-remaining': `${timer.remaining}ms`,
+                    } as CSSProperties
+                  }
+                />
+              )}
+            </button>
+          )}
         />
       </Root>
     </li>
@@ -118,6 +146,7 @@ function ToastRegionContent({ controller, visible }: ToastRegionContentProps) {
   const shownCount = useRef(isHandover ? visible.length : 0)
   const isScrolledToEnd = useRef(true)
   const { queue } = controller
+  const isPaused = useStoreSelector(queue, selectPaused)
 
   const setSection = useCallback(
     (element: HTMLElement | null) => {
@@ -352,11 +381,11 @@ function ToastRegionContent({ controller, visible }: ToastRegionContentProps) {
       lang={localeProps.lang}
       dir={localeProps.dir}
     >
-      <ol className="kv-toast-list">
+      <ul role="list" className="kv-toast-list">
         {visible.map((entry) => (
-          <ToastItem key={entry.id} controller={controller} id={entry.id} />
+          <ToastItem key={entry.id} controller={controller} entry={entry} isPaused={isPaused} />
         ))}
-      </ol>
+      </ul>
     </section>
   )
 }

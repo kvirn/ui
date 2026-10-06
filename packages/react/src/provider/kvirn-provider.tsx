@@ -41,11 +41,12 @@ export interface KvirnToastOptions {
    */
   limit?: number | undefined
   /**
-   * `false` (default): no toast times out. `true`: an info or success toast without an action times
-   * out after `max(10 s, 100 ms × characters)`. A number from 1 to 10 multiplies that time: tie it
-   * to a user setting such as "keep messages longer" (WCAG 2.2.1).
+   * `false` (default): no toast times out. A number is how long, in milliseconds, an info or
+   * success toast without an action stays. There is no minimum, so a short value can remove a toast
+   * before it is read (WCAG 2.2.1): tie it to a user setting such as "keep messages longer", and never
+   * time out what the user must act on. `0`, a negative number or `NaN` acts as `false` and warns in development.
    */
-  autoDismiss?: boolean | number | undefined
+  autoDismiss?: false | number | undefined
 }
 
 export interface KvirnProviderProps {

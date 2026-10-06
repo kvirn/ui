@@ -35,7 +35,7 @@ const withoutProvider: UseToastResult = Object.freeze({
  * Shows short status messages after something worked, without moving focus (contract:
  * toast.a11y.md). The outermost `KvirnProvider` owns the queue and renders the region once, so call
  * it from anywhere below. Toasts are info or success only and persistent unless the provider's
- * `toast={{ autoDismiss }}` allows them to time out: the result must also show in place, and an
+ * `toast={{ autoDismiss }}` (milliseconds) allows them to time out: the result must also show in place, and an
  * error is not a toast. Call `show` from an event handler or an effect, never during render.
  * Without a provider every function does nothing and warns once in development.
  *

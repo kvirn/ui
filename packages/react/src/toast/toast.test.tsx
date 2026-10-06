@@ -1,7 +1,7 @@
 import { fi } from '@kvirn-ui/i18n/fi'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -146,7 +146,7 @@ describe('rendering and ARIA', () => {
     expect(region?.tagName).toBe('SECTION')
     expect(region?.getAttribute('popover')).toBe('manual')
     expect(region?.matches(':popover-open')).toBe(true)
-    expect(region?.querySelector(':scope > ol.kv-toast-list > li.kv-toast-item')).not.toBeNull()
+    expect(region?.querySelector(':scope > ul.kv-toast-list > li.kv-toast-item')).not.toBeNull()
     const toastElement = toastElements()[0]
     expect([...(toastElement?.classList ?? [])].toSorted()).toEqual([
       'kv-alert',
@@ -156,8 +156,18 @@ describe('rendering and ARIA', () => {
     expect(toastElement?.tagName).toBe('DIV')
 
     expect(region?.hasAttribute('role')).toBe(false)
-    expect(region?.querySelector('[role], [aria-live], [aria-atomic]')).toBeNull()
+    expect(toastElement?.hasAttribute('role')).toBe(false)
+    expect(region?.querySelector('[aria-live], [aria-atomic]')).toBeNull()
+    expect(
+      [...(region?.querySelectorAll('[role]') ?? [])].map((element) => element.tagName),
+    ).toEqual(['UL'])
     expect(region?.closest('[aria-live]')).toBeNull()
+  })
+
+  test('the list exposes the list role under list-style: none', async () => {
+    await render(<Page actions={{ Visa: showSaved }} />)
+    await press('Visa')
+    expect(regionElement()?.querySelector('ul')?.getAttribute('role')).toBe('list')
   })
 
   test('the title is a paragraph that starts with the status word, and it is the only tabindex, at -1', async () => {
@@ -367,7 +377,7 @@ describe('announcements', () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'performance'] })
     await render(
       <Page
-        toast={{ limit: 1, autoDismiss: true }}
+        toast={{ limit: 1, autoDismiss: 10_000 }}
         actions={{
           Visa: showSaved,
           Ersätt: (toast) => {
@@ -499,11 +509,11 @@ describe('timers', () => {
     expect(toastElements()).toHaveLength(1)
   })
 
-  test('with autoDismiss a toast times out after its reading time, and not before', async () => {
+  test('a number sets the exact timer length: a toast times out after it, and not before', async () => {
     useFakeClock()
-    await render(<Page toast={{ autoDismiss: true }} actions={{ Visa: showTimed }} />)
+    await render(<Page toast={{ autoDismiss: 2500 }} actions={{ Visa: showTimed }} />)
     await press('Visa')
-    await vi.advanceTimersByTimeAsync(9999)
+    await vi.advanceTimersByTimeAsync(2499)
     expect(toastElements()).toHaveLength(1)
     await vi.advanceTimersByTimeAsync(1)
 
@@ -512,11 +522,62 @@ describe('timers', () => {
     })
   })
 
+  test.each([0, -5, Number.NaN])(
+    'autoDismiss %s acts as false: the toast stays, with one warning',
+    async (autoDismiss) => {
+      useFakeClock()
+      await render(<Page toast={{ autoDismiss }} actions={{ Visa: showTimed }} />)
+      await press('Visa')
+      await press('Visa')
+      await vi.advanceTimersByTimeAsync(600_000)
+
+      expect(toastElements()).toHaveLength(2)
+      expect(
+        warnings().match(/autoDismiss must be false or a number of milliseconds/g),
+      ).toHaveLength(1)
+    },
+  )
+
+  test('changing autoDismiss from false to a number and back sets and removes the timers', async () => {
+    useFakeClock()
+    function Switchable() {
+      const [autoDismiss, setAutoDismiss] = useState<false | number>(false)
+      return (
+        <KvirnProvider toast={{ autoDismiss }}>
+          <Trigger label="Visa" run={showTimed} />
+          <button type="button" style={spaced} onClick={() => setAutoDismiss(3000)}>
+            På
+          </button>
+          <button type="button" style={spaced} onClick={() => setAutoDismiss(false)}>
+            Av
+          </button>
+        </KvirnProvider>
+      )
+    }
+    await render(<Switchable />)
+    await press('Visa')
+    await vi.advanceTimersByTimeAsync(600_000)
+    expect(toastElements()).toHaveLength(1)
+
+    await press('På')
+    await vi.advanceTimersByTimeAsync(2999)
+    expect(toastElements()).toHaveLength(1)
+    await vi.advanceTimersByTimeAsync(1)
+    await vi.waitFor(() => {
+      expect(regionElement()).toBeNull()
+    })
+
+    await press('Visa')
+    await press('Av')
+    await vi.advanceTimersByTimeAsync(600_000)
+    expect(toastElements()).toHaveLength(1)
+  })
+
   test('an action makes a toast persistent, even with autoDismiss', async () => {
     useFakeClock()
     await render(
       <Page
-        toast={{ autoDismiss: true }}
+        toast={{ autoDismiss: 10_000 }}
         actions={{
           Visa: (toast) => {
             toast.show({
@@ -535,7 +596,7 @@ describe('timers', () => {
 
   test('the timer pauses while the pointer is over the region, and resumes with at least five seconds', async () => {
     useFakeClock()
-    await render(<Page toast={{ autoDismiss: true }} actions={{ Visa: showTimed }} />)
+    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Visa: showTimed }} />)
     await press('Visa')
     await vi.advanceTimersByTimeAsync(8000)
     await userEvent.hover(closeButton(0))
@@ -554,7 +615,7 @@ describe('timers', () => {
 
   test('the timer pauses while focus is inside a toast, and the toast is not removed under the user', async () => {
     useFakeClock()
-    await render(<Page toast={{ autoDismiss: true }} actions={{ Visa: showTimed }} />)
+    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Visa: showTimed }} />)
     await press('Visa')
     await userEvent.tab()
     await expect.element(closeButton(0)).toHaveFocus()
@@ -572,7 +633,7 @@ describe('timers', () => {
 
   test('the timer pauses while the tab is hidden', async () => {
     useFakeClock()
-    await render(<Page toast={{ autoDismiss: true }} actions={{ Visa: showTimed }} />)
+    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Visa: showTimed }} />)
     await press('Visa')
     Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' })
     document.dispatchEvent(new Event('visibilitychange'))
@@ -590,7 +651,7 @@ describe('timers', () => {
 
   test('the timer pauses while the window is blurred', async () => {
     useFakeClock()
-    await render(<Page toast={{ autoDismiss: true }} actions={{ Visa: showTimed }} />)
+    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Visa: showTimed }} />)
     await press('Visa')
     window.dispatchEvent(new Event('blur'))
     await vi.advanceTimersByTimeAsync(600_000)
@@ -603,18 +664,121 @@ describe('timers', () => {
       expect(regionElement()).toBeNull()
     })
   })
+})
 
-  test('a numeric autoDismiss scales the reading time', async () => {
+describe('the timer ring', () => {
+  const showTimed: Run = (toast) => {
+    toast.show({ title: 'Utkastet sparades' })
+  }
+  const ringOf = (index: number) =>
+    toastElements()[index]?.querySelector<HTMLElement>('.kv-toast-timer') ?? null
+
+  function useFakeClock() {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'performance'] })
+  }
+
+  test('a timed toast has a decorative ring in Close, and Close keeps its name and no extra tab stop', async () => {
     useFakeClock()
-    await render(<Page toast={{ autoDismiss: 3 }} actions={{ Visa: showTimed }} />)
+    await render(<Page toast={{ autoDismiss: 6000 }} actions={{ Visa: showTimed }} />)
     await press('Visa')
-    await vi.advanceTimersByTimeAsync(29_999)
-    expect(toastElements()).toHaveLength(1)
-    await vi.advanceTimersByTimeAsync(1)
+
+    const ring = ringOf(0)
+    expect(ring?.getAttribute('aria-hidden')).toBe('true')
+    expect(ring?.textContent).toBe('')
+    expect(ring?.closest('button')?.getAttribute('aria-label')).toBe('Close message')
+    expect(toastElements()[0]?.querySelectorAll('button')).toHaveLength(1)
+    expect(toastElements()[0]?.hasAttribute('data-timed')).toBe(true)
+  })
+
+  test('the ring carries the duration and the time left, in milliseconds', async () => {
+    useFakeClock()
+    await render(<Page toast={{ autoDismiss: 6000 }} actions={{ Visa: showTimed }} />)
+    await press('Visa')
+
+    expect(ringOf(0)?.style.getPropertyValue('--kv-toast-timer-remaining')).toBe('6000ms')
+    expect(ringOf(0)?.style.getPropertyValue('--kv-toast-timer-from')).toBe('1')
+  })
+
+  test('data-paused follows hover and focus', async () => {
+    useFakeClock()
+    await render(<Page toast={{ autoDismiss: 20_000 }} actions={{ Visa: showTimed }} />)
+    await press('Visa')
+    await vi.advanceTimersByTimeAsync(5000)
+    expect(toastElements()[0]?.hasAttribute('data-paused')).toBe(false)
+
+    await userEvent.hover(closeButton(0))
+    await vi.waitFor(() => {
+      expect(toastElements()[0]?.hasAttribute('data-paused')).toBe(true)
+    })
+    await userEvent.hover(button('Före'))
+    await vi.waitFor(() => {
+      expect(toastElements()[0]?.hasAttribute('data-paused')).toBe(false)
+    })
+
+    await userEvent.tab()
+    await expect.element(closeButton(0)).toHaveFocus()
+    await vi.waitFor(() => {
+      expect(toastElements()[0]?.hasAttribute('data-paused')).toBe(true)
+    })
+  })
+
+  test('a toast with an action has no ring and no timer data', async () => {
+    useFakeClock()
+    await render(
+      <Page
+        toast={{ autoDismiss: 6000 }}
+        actions={{
+          Visa: (toast) => {
+            toast.show({
+              title: 'Utkastet togs bort',
+              action: { label: 'Ångra', onPress: () => {} },
+            })
+          },
+        }}
+      />,
+    )
+    await press('Visa')
+
+    expect(ringOf(0)).toBeNull()
+    expect(toastElements()[0]?.hasAttribute('data-timed')).toBe(false)
+    expect(toastElements()[0]?.hasAttribute('data-paused')).toBe(false)
+  })
+
+  test('a toast shown again with the same id restarts the ring, and Close keeps focus', async () => {
+    useFakeClock()
+    let toastApi: UseToastResult | undefined
+    function Capture() {
+      const toast = useToast()
+      useEffect(() => {
+        toastApi = toast
+      }, [toast])
+      return null
+    }
+    await render(
+      <Page
+        toast={{ autoDismiss: 6000 }}
+        actions={{
+          Visa: (toast) => {
+            toast.show({ id: 'samma', title: 'Utkastet sparades' })
+          },
+        }}
+      >
+        <Capture />
+      </Page>,
+    )
+    await press('Visa')
+    const firstRing = ringOf(0)
+    await userEvent.tab()
+    await expect.element(closeButton(0)).toHaveFocus()
+    const close = document.activeElement
+
+    toastApi?.show({ id: 'samma', title: 'Utkastet sparades igen' })
 
     await vi.waitFor(() => {
-      expect(regionElement()).toBeNull()
+      expect(ringOf(0)).not.toBe(firstRing)
     })
+    expect(toastElements()).toHaveLength(1)
+    expect(document.activeElement).toBe(close)
   })
 })
 
@@ -690,7 +854,7 @@ describe('limit', () => {
   test('when full the oldest timed toast goes first', async () => {
     await render(
       <Page
-        toast={{ limit: 1, autoDismiss: true }}
+        toast={{ limit: 1, autoDismiss: 10_000 }}
         actions={{
           Visa: showSaved,
           Ny: (toast) => {
@@ -1075,7 +1239,7 @@ describe('focus on dismissal', () => {
   test('a focused toast is never evicted: the new toast is ignored and focus stays', async () => {
     await render(
       <Page
-        toast={{ limit: 1, autoDismiss: true }}
+        toast={{ limit: 1, autoDismiss: 10_000 }}
         actions={{
           Visa: showSaved,
           Ny: (toast) => {
@@ -1385,7 +1549,7 @@ describe('while a modal is open', () => {
 
   test('a timed toast does not expire while a modal is open, and expires after it closes', async () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'performance'] })
-    await render(<Page toast={{ autoDismiss: true }} actions={{ Visa: showSaved }} />)
+    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Visa: showSaved }} />)
     await press('Visa')
     await vi.advanceTimersByTimeAsync(300)
     // A bare modal: pressing a trigger would let the test's own waiting move the fake clock.
@@ -1772,7 +1936,7 @@ describe('provider and development warnings', () => {
   test('a timer that autoDismiss asked for is dropped for a toast with an action, with one warning', async () => {
     await render(
       <Page
-        toast={{ autoDismiss: true }}
+        toast={{ autoDismiss: 10_000 }}
         actions={{
           Visa: (toast) => {
             toast.show({ title: 'Ett', action: { label: 'Ångra', onPress: () => {} } })
@@ -1822,7 +1986,7 @@ describe('provider and development warnings', () => {
 
   test('changing the toast options keeps the toasts that are shown', async () => {
     function Switchable() {
-      const [autoDismiss, setAutoDismiss] = useState(false)
+      const [autoDismiss, setAutoDismiss] = useState<false | number>(false)
       return (
         <KvirnProvider toast={{ limit: 2, autoDismiss }}>
           <Trigger label="Visa" run={showSaved} />
@@ -1830,7 +1994,7 @@ describe('provider and development warnings', () => {
             type="button"
             style={spaced}
             onClick={() => {
-              setAutoDismiss(true)
+              setAutoDismiss(10_000)
             }}
           >
             Ändra

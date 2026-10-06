@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-kv-color-scheme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Toast timer ring: three variants · KvirnUI design exploration</title>
+    <!-- Throwaway prototype for docs/design/toast-timer-ring.md. Self-contained: no network requests,
+     no dependencies. Not library code. The .kv-toast-timer rules are a working draft of the theme rules. -->
+    <style>
+      /* IBM Plex from the docs site's local copy, if file:// allows it; otherwise the system stack. */
+      @import url('../../../apps/docs/fonts/ibm-plex/ibm-plex.css');
+
+      /* Palette and semantic tokens: copied from packages/theme/theme.css on 2026-10-06, only the
+       * ones this page uses. A throwaway copy; if theme.css changes, these go stale. */
+      :root {
+        --kv-black: #010102;
+        --kv-font-family-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        --kv-space-2: 0.5rem; --kv-space-3: 0.75rem; --kv-space-4: 1rem; --kv-space-6: 1.5rem;
+        --kv-radius-sm: 4px; --kv-radius-md: 8px; --kv-radius-full: 9999px;
+        --kv-border-width: 1px; --kv-indicator-width: 4px;
+        --kv-focus-ring-width: 2px; --kv-focus-ring-offset: 2px;
+        --kv-control-min-block-size: 2.75rem;
+        --kv-alert-title-size: 1.125rem; --kv-alert-title-line-height: 1.4;
+        --kv-alert-padding-block: var(--kv-space-4); --kv-alert-padding-inline: var(--kv-space-4);
+        --kv-alert-gap: var(--kv-space-3);
+        color-scheme: light;
+        --kv-color-canvas: #ffffff; --kv-color-surface: #f7f8f8; --kv-color-surface-raised: #ffffff;
+        --kv-color-border-subtle: #e4e5e7; --kv-color-border-control: #6b7079;
+        --kv-color-text: #0f1011; --kv-color-text-muted: #5d6169;
+        --kv-color-primary: #5e6ad2; --kv-color-primary-subtle: #eff0fb; --kv-color-focus-ring: #5e6ad2;
+        --kv-color-success: #1d7048; --kv-color-success-subtle: #e9f6ef;
+        --kv-shadow-popup: 0 8px 24px -4px color-mix(in srgb, #0f1011 12%, transparent);
+      }
+      :root[data-kv-color-scheme='dark'] {
+        color-scheme: dark;
+        --kv-color-canvas: #010102; --kv-color-surface: #0f1011; --kv-color-surface-raised: #18191a;
+        --kv-color-border-subtle: #23252a; --kv-color-border-control: #6b7079;
+        --kv-color-text: #f7f8f8; --kv-color-text-muted: #8a8f98;
+        --kv-color-primary: #5e6ad2; --kv-color-primary-subtle: #1e2140; --kv-color-focus-ring: #828fff;
+        --kv-color-success: #5fd49a; --kv-color-success-subtle: #12261c;
+        --kv-shadow-popup: none;
+      }
+      :root[data-kv-color-scheme='light'][data-kv-contrast='more'] {
+        --kv-color-border-subtle: #6b7079; --kv-color-border-control: #3a3d45;
+        --kv-color-text: #010102; --kv-color-text-muted: #3a3d45;
+        --kv-color-primary: #2c35a0; --kv-color-focus-ring: #2c35a0; --kv-color-success: #0f5132;
+        --kv-shadow-popup: none;
+      }
+      :root[data-kv-color-scheme='dark'][data-kv-contrast='more'] {
+        --kv-color-border-subtle: #8a8f98; --kv-color-border-control: #d0d6e0;
+        --kv-color-text: #ffffff; --kv-color-text-muted: #d0d6e0;
+        --kv-color-primary: #b3b8ff; --kv-color-focus-ring: #b3b8ff; --kv-color-success: #8ae6b6;
+      }
+      /* Simulated forced colours: system colours in a dark scheme, like a Windows contrast theme.
+       * The real thing is the @media (forced-colors: active) block further down. */
+      :root[data-sim-fc] {
+        color-scheme: dark;
+        --kv-color-canvas: Canvas; --kv-color-surface: Canvas; --kv-color-surface-raised: Canvas;
+        --kv-color-border-subtle: CanvasText; --kv-color-border-control: ButtonText;
+        --kv-color-text: CanvasText; --kv-color-text-muted: CanvasText;
+        --kv-color-primary: CanvasText; --kv-color-primary-subtle: Canvas; --kv-color-focus-ring: Highlight;
+        --kv-color-success: CanvasText; --kv-color-success-subtle: Canvas; --kv-shadow-popup: none;
+      }
+      :root[data-density='compact'] { --kv-control-min-block-size: 2rem; }
+
+      /* Page chrome (not part of the design) */
+      * { box-sizing: border-box; }
+      [hidden] { display: none !important; }
+      body { margin: 0; padding: var(--kv-space-6) var(--kv-space-4); background: var(--kv-color-canvas);
+        color: var(--kv-color-text); font: 1rem/1.5 var(--kv-font-family-sans); }
+      h1 { margin: 0 0 var(--kv-space-2); font-size: 1.5rem; line-height: 1.3; }
+      h2 { margin: 0; font-size: 1.125rem; line-height: 1.4; }
+      .lead, .note, .readout, .gone { color: var(--kv-color-text-muted); max-inline-size: 65ch; }
+      .readout, .gone { margin: var(--kv-space-2) 0 0; font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+      .controls { display: flex; flex-wrap: wrap; align-items: end; gap: var(--kv-space-3) var(--kv-space-6);
+        margin: var(--kv-space-4) 0 var(--kv-space-6); padding: var(--kv-space-4);
+        border: var(--kv-border-width) solid var(--kv-color-border-subtle); border-radius: var(--kv-radius-md); }
+      .field { display: grid; gap: var(--kv-space-2); font-weight: 600; }
+      .opt { display: flex; align-items: center; gap: var(--kv-space-2); min-block-size: 2.75rem; }
+      .opt input { inline-size: 1.25rem; block-size: 1.25rem; margin: 0; accent-color: var(--kv-color-primary); }
+      input[type='number'], select { min-block-size: 2.75rem; padding: 0 var(--kv-space-3); font: inherit;
+        color: var(--kv-color-text); background: var(--kv-color-canvas);
+        border: var(--kv-border-width) solid var(--kv-color-border-control); border-radius: var(--kv-radius-md); }
+      input[type='number'] { inline-size: 9rem; }
+      .btn { min-block-size: 2.75rem; padding: 0 var(--kv-space-4); font: inherit; font-weight: 600; cursor: pointer;
+        color: var(--kv-color-text); background: var(--kv-color-surface-raised);
+        border: var(--kv-border-width) solid var(--kv-color-border-control); border-radius: var(--kv-radius-md);
+        box-shadow: 0 1px 2px color-mix(in srgb, #0f1011 12%, transparent); }
+      :is(.btn, input, select):focus-visible { outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+        outline-offset: var(--kv-focus-ring-offset); }
+      .status { margin: 0; font-weight: 600; }
+      .variants { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+        gap: var(--kv-space-6); align-items: start; }
+      .variants > section { display: grid; gap: var(--kv-space-3); }
+      .badge { display: inline-block; margin-inline-start: var(--kv-space-2); padding: 0 var(--kv-space-2);
+        border: var(--kv-border-width) solid var(--kv-color-text); border-radius: var(--kv-radius-full);
+        font-size: 0.875rem; font-weight: 600; vertical-align: 0.1em; }
+      .vh { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      .kv-toast-list { display: grid; gap: var(--kv-space-3); max-inline-size: 24rem; margin: 0; padding: 0; list-style: none; }
+      .kv-toast-item { min-inline-size: 0; }
+      .no-timer { margin-block-start: var(--kv-space-6); display: grid; gap: var(--kv-space-3); }
+
+      /* Alert + toast, condensed from theme.css 10b and 10f */
+      .kv-alert { --kv-alert-background: var(--kv-color-surface); --kv-alert-accent: var(--kv-color-border-control);
+        display: grid; grid-template-columns: auto minmax(0, 1fr) auto; column-gap: var(--kv-alert-gap);
+        padding: var(--kv-alert-padding-block) var(--kv-alert-padding-inline);
+        border: var(--kv-border-width) solid transparent;
+        border-inline-start: var(--kv-indicator-width) solid var(--kv-alert-accent);
+        border-radius: var(--kv-radius-sm); background-color: var(--kv-alert-background); color: var(--kv-color-text);
+        hyphens: auto; overflow-wrap: break-word; }
+      .kv-alert--info { --kv-alert-background: var(--kv-color-primary-subtle); --kv-alert-accent: var(--kv-color-primary); }
+      .kv-alert--success { --kv-alert-background: var(--kv-color-success-subtle); --kv-alert-accent: var(--kv-color-success); }
+      .kv-alert > :not(.kv-alert-icon, .kv-alert-close) { grid-column: 2; }
+      .kv-alert > .kv-alert-icon { grid-column: 1; grid-row: 1; color: var(--kv-alert-accent);
+        margin-block-start: calc((var(--kv-alert-title-size) * var(--kv-alert-title-line-height) - 1.25rem) / 2); }
+      .kv-alert-title { margin: 0; font-size: var(--kv-alert-title-size); line-height: var(--kv-alert-title-line-height); font-weight: 600; }
+      .kv-alert-status { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      .kv-alert-body { margin: var(--kv-space-2) 0 0; }
+      .kv-alert-actions { display: flex; flex-wrap: wrap; gap: var(--kv-space-3); margin-block-start: var(--kv-alert-padding-block); }
+      .kv-alert > .kv-alert-close { grid-column: 3; grid-row: 1; align-self: start; display: inline-grid; place-items: center;
+        min-inline-size: var(--kv-control-min-block-size); min-block-size: var(--kv-control-min-block-size);
+        margin-block: calc((var(--kv-alert-title-size) * var(--kv-alert-title-line-height) - var(--kv-control-min-block-size)) / 2);
+        margin-inline-end: calc(-0.5 * var(--kv-alert-padding-inline));
+        padding: 0; border: 0; border-radius: var(--kv-radius-md); background: transparent;
+        color: var(--kv-color-text); cursor: pointer; font: inherit; }
+      .kv-alert-close:hover { background-color: var(--kv-color-surface-raised); }
+      .kv-alert-close:focus-visible { outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+        outline-offset: var(--kv-focus-ring-offset); }
+      .kv-toast { border-block-color: var(--kv-color-border-subtle); border-inline-end-color: var(--kv-color-border-subtle);
+        box-shadow: var(--kv-shadow-popup); }
+
+      /* ---- Draft theme rules for the ring (spec §8) ------------------------------------------- */
+      @property --kv-toast-timer-angle { syntax: '<angle>'; inherits: false; initial-value: 0turn; }
+      .kv-toast { --kv-toast-timer-width: 2px; /* rule-local, like the toast's other sizes */ }
+      .kv-toast[data-timed] .kv-alert-close { position: relative; }
+      .kv-toast-timer {
+        position: absolute; inset: 2px; box-sizing: border-box; pointer-events: none;
+        border: var(--kv-toast-timer-width) solid var(--kv-alert-accent); border-radius: var(--kv-radius-full);
+        /* Clock-like: the remaining arc ends at 12 o'clock, the emptied part grows clockwise from 12.
+         * conic-gradient ignores dir, so RTL doesn't mirror it (DESIGN.md §Icons). */
+        mask-image: conic-gradient(transparent calc(1turn - var(--kv-toast-timer-angle)), var(--kv-black) 0);
+        animation: kv-toast-timer var(--kv-toast-timer-remaining) linear both;
+      }
+      .kv-toast[data-paused] .kv-toast-timer { animation-play-state: paused; }
+      @keyframes kv-toast-timer { from { --kv-toast-timer-angle: calc(var(--kv-toast-timer-from) * 1turn); } to { --kv-toast-timer-angle: 0turn; } }
+      /* Reduced motion: still a timer, stepped in quarters of the whole duration. */
+      @media (prefers-reduced-motion: reduce) {
+        .kv-toast-timer { mask-image: conic-gradient(transparent calc(1turn - round(up, var(--kv-toast-timer-angle), 0.25turn)), var(--kv-black) 0); }
+      }
+      :root[data-sim-rm] .kv-toast-timer {
+        mask-image: conic-gradient(transparent calc(1turn - round(up, var(--kv-toast-timer-angle), 0.25turn)), var(--kv-black) 0);
+      }
+      /* Variant B: muted arc on a 1px track */
+      .v-b .kv-toast-timer { border-color: var(--kv-color-text-muted); }
+      .v-b .kv-toast[data-timed] .kv-alert-close::before { content: ''; position: absolute; inset: 2.5px; pointer-events: none;
+        border: var(--kv-border-width) solid var(--kv-color-border-subtle); border-radius: var(--kv-radius-full); }
+      /* Variant C: four quarter segments, always stepped */
+      .v-c .kv-toast-timer {
+        mask-image: conic-gradient(transparent calc(1turn - round(up, var(--kv-toast-timer-angle), 0.25turn)), var(--kv-black) 0),
+          repeating-conic-gradient(transparent 0 5deg, var(--kv-black) 5deg 85deg, transparent 85deg 90deg);
+        mask-composite: intersect;
+      }
+      @media (forced-colors: active) {
+        .kv-alert, .kv-toast { border-color: CanvasText; box-shadow: none; }
+        .kv-alert > .kv-alert-icon { color: CanvasText; }
+        .kv-toast-timer { border-color: ButtonText; }
+        .v-b .kv-toast[data-timed] .kv-alert-close::before { border-color: GrayText; }
+      }
+      :root[data-sim-fc] .kv-alert { border-color: CanvasText; }
+      :root[data-sim-fc] :is(.kv-toast-timer, .kv-alert-close, .btn) { color: ButtonText; border-color: ButtonText; }
+      :root[data-sim-fc] .kv-alert-close:hover { outline: 1px solid ButtonText; }
+      :root[data-sim-fc] .v-b .kv-toast[data-timed] .kv-alert-close::before { border-color: GrayText; }
+    </style>
+  </head>
+  <body>
+    <h1>Toast timer ring</h1>
+    <p class="lead">
+      Prototype for <code>docs/design/toast-timer-ring.md</code>. A ring inside Close drains over the toast's time. Hover or
+      Tab into any toast and every ring freezes (the pause is page-wide). On resume, a ring with less than 5 s left jumps up
+      to 5 s. The ring is <code>aria-hidden</code>; Close keeps its name and a 44 × 44 target (32 × 32 compact).
+    </p>
+
+    <div class="controls" role="group" aria-label="Prototype controls">
+      <label class="field">Duration (ms)
+        <input id="duration" type="number" min="0" step="500" value="6000" aria-describedby="effective" />
+      </label>
+      <label class="opt"><input id="floor" type="checkbox" /> Apply the old max(10 s, 100 ms × characters) floor (removed in Plan 0073)</label>
+      <button id="restart" class="btn" type="button">Restart</button>
+      <label class="field">Theme
+        <select id="theme">
+          <option value="light">Light</option><option value="dark">Dark</option>
+          <option value="light-more">Light, more contrast</option><option value="dark-more">Dark, more contrast</option>
+        </select>
+      </label>
+      <label class="opt"><input id="rm" type="checkbox" /> Reduced motion</label>
+      <label class="opt"><input id="rtl" type="checkbox" /> Right to left</label>
+      <label class="opt"><input id="fc" type="checkbox" /> Simulate forced colours</label>
+      <label class="opt"><input id="compact" type="checkbox" /> Compact</label>
+      <p class="status" id="status">Timers running</p>
+      <p class="note" id="effective"></p>
+    </div>
+
+    <main>
+      <div class="variants" id="variants"></div>
+      <section class="no-timer" aria-labelledby="no-timer-heading">
+        <h2 id="no-timer-heading">No timer: a toast with an action</h2>
+        <p class="note">An action toast never times out, so it has no ring and Close looks as today. The same holds for
+          <code>autoDismiss: false</code>. The ring's presence is the "closes by itself" cue.</p>
+        <ul class="kv-toast-list" role="list" id="no-timer-list"></ul>
+      </section>
+    </main>
+
+    <script>
+      const ICON = {
+        info: '<circle cx="10" cy="10" r="8.25"/><path d="M10 9v5M10 6.2v.1"/>',
+        success: '<circle cx="10" cy="10" r="8.25"/><path d="m6.5 10.2 2.3 2.3 4.7-4.9"/>',
+        close: '<path d="m5 5 10 10M15 5 5 15"/>',
+      };
+      const svg = (paths, cls = '') =>
+        `<svg class="${cls}" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+      const VARIANTS = [
+        { key: 'a', name: 'A · Status-colour ring', recommended: true,
+          text: 'The toast\'s own bar colour (<code>--kv-alert-accent</code>), 2px, no track, drains smoothly. Stepped in quarters under reduced motion. No new token, every pair ≥ 3:1.' },
+        { key: 'b', name: 'B · Muted ring on a track',
+          text: '<code>text-muted</code> arc on a 1px <code>border-subtle</code> track. Quieter, but the track is 1.02–1.13:1 in the standard themes (invisible), and arc to track is 1.74–2.22:1 in the contrast themes.' },
+        { key: 'c', name: 'C · Four quarters',
+          text: 'Status colour; four segments drop out at 75 %, 50 % and 25 % left. Always stepped: calmest, but coarsest (a 10 s toast steps every 2.5 s).' },
+      ];
+      const MESSAGES = [
+        { status: 'info', word: 'Information', title: 'Draft saved',
+          body: 'Your answers are kept for 30 days. You can close this page and continue later.' },
+        { status: 'success', word: 'Success', title: 'Decision sent',
+          body: 'The applicant gets the decision on case 2026-0412 by e-mail today.' },
+      ];
+
+      // Strings would be i18n keys in the library: alert.close for Close, the status word from the alert's keys.
+      const toastHTML = (id, m, { timed = true, actions = '' } = {}) => `
+        <li class="kv-toast-item">
+          <div class="kv-alert kv-alert--${m.status} kv-toast" id="${id}" ${timed ? 'data-timer' : ''}>
+            ${svg(ICON[m.status], 'kv-alert-icon')}
+            <h3 class="kv-alert-title"><span class="kv-alert-status">${m.word}: </span>${m.title}</h3>
+            <p class="kv-alert-body" id="${id}-body">${m.body}</p>
+            ${actions}
+            <button type="button" class="kv-alert-close" aria-describedby="${id}-body">${svg(ICON.close)}<span class="vh">Close</span></button>
+          </div>
+          <p class="gone" hidden></p>
+          ${timed ? '<p class="readout"></p>' : ''}
+        </li>`;
+
+      document.getElementById('variants').innerHTML = VARIANTS.map((v) => `
+        <section class="v-${v.key}" aria-labelledby="h-${v.key}">
+          <h2 id="h-${v.key}">${v.name}${v.recommended ? '<span class="badge">Recommended</span>' : ''}</h2>
+          <p class="note">${v.text}</p>
+          <ul class="kv-toast-list" role="list">${MESSAGES.map((m) => toastHTML(`t-${v.key}-${m.status}`, m)).join('')}</ul>
+        </section>`).join('');
+      document.getElementById('no-timer-list').innerHTML = toastHTML(
+        't-action',
+        { status: 'info', word: 'Information', title: 'Case archived', body: 'Case 2026-0412 was moved to the archive.' },
+        { timed: false, actions: '<div class="kv-alert-actions"><button type="button" class="btn">Undo</button></div>' },
+      );
+
+      const $ = (id) => document.getElementById(id);
+      const root = document.documentElement;
+      const timers = new Map();
+      let paused = false;
+
+      function effectiveDuration(el) {
+        const ms = Math.max(0, Number($('duration').value) || 0);
+        if (!$('floor').checked) return Math.max(ms, 1000);
+        const chars = (el.querySelector('.kv-alert-title').textContent + el.querySelector('.kv-alert-body').textContent).trim().length;
+        return Math.max(ms, 10000, 100 * chars);
+      }
+      // Like the React layer's key={run}: a fresh span restarts the animation; Close is never remounted.
+      function drawRing(el, t) {
+        const close = el.querySelector('.kv-alert-close');
+        close.querySelector('.kv-toast-timer')?.remove();
+        const ring = document.createElement('span');
+        ring.className = 'kv-toast-timer';
+        ring.setAttribute('aria-hidden', 'true');
+        ring.style.setProperty('--kv-toast-timer-from', String(Math.min(1, t.remaining / t.duration)));
+        ring.style.setProperty('--kv-toast-timer-remaining', `${Math.round(t.remaining)}ms`);
+        close.prepend(ring);
+      }
+      function startRun(el, t) {
+        t.run += 1;
+        drawRing(el, t);
+        if (paused) return;
+        t.start = performance.now();
+        t.timeout = setTimeout(() => removeToast(el, 'Closed by its timer.'), t.remaining);
+      }
+      function arm(el) {
+        clearTimeout(timers.get(el)?.timeout);
+        const duration = effectiveDuration(el);
+        const t = { duration, remaining: duration, run: 0, start: 0, timeout: 0 };
+        timers.set(el, t);
+        el.dataset.timed = '';
+        el.toggleAttribute('data-paused', paused);
+        startRun(el, t);
+      }
+      function removeToast(el, message) {
+        const t = timers.get(el);
+        if (t) { clearTimeout(t.timeout); timers.delete(el); }
+        el.querySelector('.kv-toast-timer')?.remove();
+        el.hidden = true;
+        const readout = el.parentElement.querySelector('.readout');
+        if (readout) readout.textContent = '';
+        const gone = el.parentElement.querySelector('.gone');
+        gone.textContent = `${message} Restart to show it again.`;
+        gone.hidden = false;
+      }
+      function setPaused(next) {
+        if (next === paused) return;
+        paused = next;
+        const now = performance.now();
+        for (const [el, t] of timers) {
+          if (paused) {
+            clearTimeout(t.timeout);
+            t.remaining = Math.max(0, t.remaining - (now - t.start));
+            el.setAttribute('data-paused', '');
+            drawRing(el, t);
+          } else {
+            el.removeAttribute('data-paused');
+            t.remaining = Math.max(t.remaining, 5000);
+            startRun(el, t);
+          }
+        }
+      }
+      function update() {
+        const reasons = [];
+        if (document.querySelector('.kv-toast:hover')) reasons.push('pointer over a toast');
+        if (document.activeElement?.closest('.kv-toast')) reasons.push('focus inside a toast');
+        if (document.hidden) reasons.push('tab hidden');
+        else if (!document.hasFocus()) reasons.push('window blurred');
+        setPaused(reasons.length > 0);
+        $('status').textContent = paused ? `All timers paused: ${reasons.join(', ')}` : 'Timers running';
+      }
+      function restartAll() {
+        document.querySelectorAll('.kv-toast').forEach((el) => {
+          el.hidden = false;
+          el.parentElement.querySelector('.gone').hidden = true;
+          if (el.hasAttribute('data-timer')) arm(el);
+        });
+        const sample = document.querySelector('[data-timer]');
+        $('effective').textContent = `Effective time for "${sample.querySelector('.kv-alert-title').lastChild.textContent}": ${effectiveDuration(sample).toLocaleString('en')} ms.`;
+      }
+
+      document.addEventListener('click', (event) => {
+        const close = event.target.closest('.kv-alert-close');
+        if (!close) return;
+        removeToast(close.closest('.kv-toast'), 'Closed with Close.');
+        $('restart').focus(); // prototype fallback; the library's focus rule is in toast.a11y.md
+        update();
+      });
+      document.addEventListener('keydown', (event) => {
+        const el = event.key === 'Escape' && document.activeElement?.closest('.kv-toast');
+        if (!el) return;
+        removeToast(el, 'Closed with Escape.');
+        $('restart').focus();
+        update();
+      });
+      document.addEventListener('pointerover', update);
+      document.addEventListener('pointerout', () => setTimeout(update));
+      document.addEventListener('focusin', update);
+      document.addEventListener('focusout', () => setTimeout(update));
+      document.addEventListener('visibilitychange', update);
+      window.addEventListener('blur', update);
+      window.addEventListener('focus', update);
+
+      $('restart').addEventListener('click', restartAll);
+      $('duration').addEventListener('change', restartAll);
+      $('floor').addEventListener('change', restartAll);
+      $('theme').addEventListener('change', (event) => {
+        const [scheme, contrast] = event.target.value.split('-');
+        root.dataset.kvColorScheme = scheme;
+        if (contrast) root.dataset.kvContrast = contrast; else delete root.dataset.kvContrast;
+      });
+      $('rm').addEventListener('change', (event) => root.toggleAttribute('data-sim-rm', event.target.checked));
+      $('fc').addEventListener('change', (event) => root.toggleAttribute('data-sim-fc', event.target.checked));
+      $('rtl').addEventListener('change', (event) => (root.dir = event.target.checked ? 'rtl' : 'ltr'));
+      $('compact').addEventListener('change', (event) => (root.dataset.density = event.target.checked ? 'compact' : ''));
+
+      // Prototype readout, not part of the design: shows the 5 s floor on resume.
+      setInterval(() => {
+        const now = performance.now();
+        for (const [el, t] of timers) {
+          const left = paused ? t.remaining : Math.max(0, t.remaining - (now - t.start));
+          el.parentElement.querySelector('.readout').textContent =
+            `Readout: ${(left / 1000).toFixed(1)} s left of ${(t.duration / 1000).toFixed(1)} s · run ${t.run}`;
+        }
+      }, 200);
+
+      restartAll();
+      update();
+    </script>
+  </body>
+</html>

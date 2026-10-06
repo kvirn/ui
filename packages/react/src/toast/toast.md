@@ -4,9 +4,10 @@
 
 > **When not to toast: use an inline Alert first.** A toast is a second channel for a result that is also shown in place. Never for an error, never for something needed to finish a task. `Alert` with `announce` stays the default.
 
-A short status message after something worked, that does not move focus, is heard by screen readers and never disappears before it could be read. One shared list serves the whole page: the first `KvirnProvider` that mounted is the host (its `toast` options, locale and messages apply, and it renders the region); `useToast()` shows toasts from anywhere below it.
+A short status message after something worked, that does not move focus, is heard by screen readers and stays until dismissed by default. With `autoDismiss` a toast goes after the app's chosen time and pauses on hover, focus, a hidden tab and a blurred window. One shared list serves the whole page: the first `KvirnProvider` that mounted is the host (its `toast` options, locale and messages apply, and it renders the region); `useToast()` shows toasts from anywhere below it.
 
-- Persistent by default. Timers are an app switch (`autoDismiss`), only for info and success toasts without an action.
+- A toast that will time out shows a decorative ring around Close that drains over the time left (`aria-hidden`, nothing announced, stepped under reduced motion); the toast carries `data-timed` and `data-paused`. The ring's span carries `--kv-toast-timer-from` (0 to 1, the share of the time left when the run starts) and `--kv-toast-timer-remaining` (the milliseconds it drains over); a resume starts a new run with at least 5 s.
+- Persistent by default. Timers are an app switch (`autoDismiss`, a number of milliseconds), only for info and success toasts without an action. There is no minimum time: a short value can remove a toast before it is read (a stated WCAG 2.2.1 trade-off, see the contract), so tie it to a user setting.
 - Info and success only. No warning or danger toast.
 - Items are built from the Alert's parts (`kv-alert kv-toast`): the status word, an icon, the Title as a `<p>`, an optional Body, an optional action and an always-present Close.
 - No role and no `aria-live` in the region. The provider announces once, politely, through the Announcer.
@@ -41,10 +42,10 @@ function SaveDraft() {
 }
 ```
 
-| `KvirnProvider` prop `toast` | Default | Meaning                                                                                                                                                                                    |
-| ---------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `limit`                      | `10`    | The most toasts that show at once. Past it the oldest toast that may time out is evicted; otherwise the new toast is ignored (not queued), with a development warning                      |
-| `autoDismiss`                | `false` | `false`: nothing times out. `true`: toasts allowed to time out do, after `max(10 s, 100 ms × characters)`. A number from 1 to 10 multiplies that time, for an app to tie to a user setting |
+| `KvirnProvider` prop `toast` | Default | Meaning                                                                                                                                                                                            |
+| ---------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `limit`                      | `10`    | The most toasts that show at once. Past it the oldest toast that may time out is evicted; otherwise the new toast is ignored (not queued), with a development warning                              |
+| `autoDismiss`                | `false` | `false`: nothing times out. A number is the time in milliseconds a toast allowed to time out stays, with no minimum. `0`, a negative number or `NaN` acts as `false` and warns once in development |
 
 | `useToast()` returns | Does                                                                                                                              |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------------- |

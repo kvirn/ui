@@ -258,7 +258,7 @@ export function toastTextsFor(locale: FormLocale) {
 export interface ToastDemoProps {
   locale?: FormLocale
   limit?: number
-  autoDismiss?: boolean | number
+  autoDismiss?: false | number
   variant?: ToastVariant
   withBody?: boolean
   withAction?: boolean
@@ -422,15 +422,15 @@ function TimedButtons({ locale }: { locale: FormLocale }) {
 }
 
 /**
- * Timers on. Only a toast without an action can time out, and never before `max(10 s, 100 ms ×
- * characters)`: the timer pauses while the pointer is over the toast, while focus is inside it
+ * Timers on, here 8 s. Only a toast without an action can time out, and there is no minimum, so a
+ * short value can remove a toast unread: the timer pauses while the pointer is over the toast, while focus is inside it
  * and while the tab or window is hidden. "Link copied" can time out, and "Your report is ready"
  * has an action, so it stays. Tie `autoDismiss` to a user setting (WCAG 2.2.1).
  */
 export function TimedToasts({ locale = 'sv' }: { locale?: FormLocale }) {
   const { providerLocale, messages } = toastTextsFor(locale)
   return (
-    <KvirnProvider locale={providerLocale} messages={messages} toast={{ autoDismiss: true }}>
+    <KvirnProvider locale={providerLocale} messages={messages} toast={{ autoDismiss: 8000 }}>
       <TimedButtons locale={locale} />
     </KvirnProvider>
   )

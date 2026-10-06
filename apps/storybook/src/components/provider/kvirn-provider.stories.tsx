@@ -50,7 +50,7 @@ const meta = {
     toast: {
       control: 'object',
       description:
-        'The toast region: `{ limit?: number, autoDismiss?: boolean | number }`. Defaults: `limit` 10 (the most shown; the next is ignored), `autoDismiss` false (no timers).',
+        'The toast region: `{ limit?: number, autoDismiss?: false | number }`. Defaults: `limit` 10 (the most shown; the next is ignored), `autoDismiss` false (no timers; a number is milliseconds).',
     },
     linkComponent: { control: false },
     env: { control: false },

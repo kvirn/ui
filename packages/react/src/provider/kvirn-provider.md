@@ -367,19 +367,19 @@ On the server, read the same cookie and render the attributes on `<html>`. Rende
 
 ### `KvirnProvider` props
 
-| Prop            | Type                                                | Default                                                                                         |
-| --------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `locale`        | `string` (BCP 47)                                   | `'en'`, or the parent's                                                                         |
-| `dir`           | `'ltr' \| 'rtl'`                                    | From `locale`, or the parent's                                                                  |
-| `country`       | `'SE' \| 'FI' \| 'NO'`                              | The parent's, else from `locale`: its region, then its language                                 |
-| `messages`      | `PartialMessages` (a catalog or a partial override) | Inherited, then built-in `en`                                                                   |
-| `timeZone`      | `string` (IANA)                                     | The parent's, or the runtime's zone                                                             |
-| `linkComponent` | `RegisteredLinkComponent`                           | `'a'`, or the parent's                                                                          |
-| `icons`         | `IconRegistry`, from `defineIcons`                  | The built-in icons, then the parent's, merged by name ([Icon](../icon/icon.md))                 |
-| `iconDefaults`  | `IconDefaults` (`size`, `strokeWidth`)              | The parent's, merged by field                                                                   |
-| `theme`         | `ThemeOptions`                                      | Outermost provider only                                                                         |
-| `toast`         | `{ limit?, autoDismiss? }`                          | First provider on the page only: `limit` 10, `autoDismiss` `false` ([Toast](../toast/toast.md)) |
-| `env`           | `Env`                                               | The page, after hydration                                                                       |
+| Prop            | Type                                                | Default                                                                                                         |
+| --------------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `locale`        | `string` (BCP 47)                                   | `'en'`, or the parent's                                                                                         |
+| `dir`           | `'ltr' \| 'rtl'`                                    | From `locale`, or the parent's                                                                                  |
+| `country`       | `'SE' \| 'FI' \| 'NO'`                              | The parent's, else from `locale`: its region, then its language                                                 |
+| `messages`      | `PartialMessages` (a catalog or a partial override) | Inherited, then built-in `en`                                                                                   |
+| `timeZone`      | `string` (IANA)                                     | The parent's, or the runtime's zone                                                                             |
+| `linkComponent` | `RegisteredLinkComponent`                           | `'a'`, or the parent's                                                                                          |
+| `icons`         | `IconRegistry`, from `defineIcons`                  | The built-in icons, then the parent's, merged by name ([Icon](../icon/icon.md))                                 |
+| `iconDefaults`  | `IconDefaults` (`size`, `strokeWidth`)              | The parent's, merged by field                                                                                   |
+| `theme`         | `ThemeOptions`                                      | Outermost provider only                                                                                         |
+| `toast`         | `{ limit?, autoDismiss? }`                          | First provider on the page only: `limit` 10, `autoDismiss` `false` or milliseconds ([Toast](../toast/toast.md)) |
+| `env`           | `Env`                                               | The page, after hydration                                                                                       |
 
 ### Hooks
 

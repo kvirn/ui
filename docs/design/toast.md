@@ -1,7 +1,7 @@
 # Design spec: Toast
 
 - **Status:** Draft · **Designer:** ux-designer agent · **Date:** 2026-10-06
-- **Plan:** to be written (roadmap M3: "Needs a decision on duration and persistence (2.2.1) before it is built"). Not needed by the reference site ([municipality-reference-site.md](municipality-reference-site.md))
+- **Plan:** none (built directly, see commit 1fc89dc). Not needed by the reference site ([municipality-reference-site.md](municipality-reference-site.md))
 - **Type:** component default styling (`kv-toast`, `kv-toast-region`) and behaviour rules. Reuses the Alert look ([alert.md](alert.md) §6.3, D9)
 
 ## 1. Brief
@@ -119,7 +119,7 @@ Example strings (app keys, not the component's):
 | Any with an action (Undo, Open)          | **None**          | 1       | yes   | polite   |
 | `Toast.Warning`, `Toast.Danger`          | **None**          | 0–1     | yes   | polite   |
 
-**Timer:** `max(10 s, 100 ms × characters)` (about 100 words a minute). Counts only while shown, the page visible, the window focused, the pointer not over the region and focus not inside it. Resumes with the remaining time, at least 5 s. No visible countdown or progress bar. **2.2.1:** a provider setting `toastDuration` scales it ×1–×10 or `'never'`; services expose it as a user setting ("Låt meddelanden stå kvar tills jag stänger dem"). Swipe-to-dismiss: none.
+**Timer:** `autoDismiss` milliseconds, exact, with no minimum floor (maintainer-approved 2.2.1 trade-off). Counts only while shown, the page visible, the window focused, the pointer not over the region and focus not inside it. Resumes with the remaining time, at least 5 s. A timed toast shows a ring in its status colour around Close, draining clockwise over the time left, frozen while paused, stepped in quarters under reduced motion, never mirrored in RTL ([toast-timer-ring.md](toast-timer-ring.md), variant A; decorative, `aria-hidden`, nothing announced). A toast with an action or no timer has no ring. **2.2.1:** `autoDismiss` is `false` or a number; services expose it as a user setting ("Låt meddelanden stå kvar tills jag stänger dem"). Swipe-to-dismiss: none.
 
 | Part   | Default              | Hover                   | Focus-visible                | Active  | Disabled | Paused           |
 | ------ | -------------------- | ----------------------- | ---------------------------- | ------- | -------- | ---------------- |
