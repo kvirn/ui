@@ -36,16 +36,10 @@ export const messages = {
       button: 'Display settings',
       colorScheme: { legend: 'Colour scheme', ...colorSchemeNames },
       contrast: { legend: 'Contrast', ...contrastNames },
-      /** The resolved theme in words, with lower-cased option names. Not a live region. */
-      inUse: ({
-        colorScheme,
-        contrast,
-      }: {
-        colorScheme: 'light' | 'dark'
-        contrast: 'standard' | 'high'
-      }) => `In use now: ${colorScheme}, ${contrast} contrast`,
+      exampleLanguage: 'Example language',
       forcedColors:
         'Your device is using its own colours, for example a Windows contrast theme. They replace the settings here. Your choice is kept for when you turn them off.',
+      storageTitle: 'Privacy',
       storageNote:
         "We save your choice in this browser only. We don't use cookies or send it anywhere.",
     },
@@ -106,7 +100,6 @@ export const messages = {
       stringPendingSami: 'Not in Northern Sámi yet',
     },
     example: {
-      languageLabel: 'Example language',
       languages: {
         sv: 'Svenska',
         fi: 'Suomi',
@@ -184,8 +177,7 @@ export const messages = {
       },
     },
     footer: {
-      licence:
-        'KvirnUI is licensed under the AGPL-3.0. Personal, hobby, research and open-source use also has a free permission.',
+      licence: 'KvirnUI is free for personal use. Any other use needs a commercial licence.',
       claim:
         'KvirnUI is designed and tested to meet WCAG 2.2 AA. Whether your service meets it depends on how you build and test the whole service.',
       noTracking: 'This site uses no cookies, analytics or third-party services.',

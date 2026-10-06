@@ -1,21 +1,16 @@
 'use client'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { en } from '@kvirn-ui/i18n/en'
-import { sv } from '@kvirn-ui/i18n/sv'
-import { Card, Field, Heading, KvirnProvider, Listbox, useLocale } from '@kvirn-ui/react'
+import { Card, Heading, KvirnProvider, useLocale } from '@kvirn-ui/react'
 import { Component, useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { SamiPendingNote } from './example-texts.tsx'
 import { messages } from '../messages/en.ts'
 import { CodeCopyButton, CodeScroll, CodeStatus, useCodeCopy, useCodeLines } from './code-block.tsx'
 import { DocsDisclosure } from './docs-disclosure.tsx'
+import { exampleCatalogs, useExampleLocale } from './example-locale.tsx'
 import type { CodeLanguage } from '../lib/highlight.ts'
 
 const text = messages.docs.example
 const codeText = messages.docs.code
-const exampleLocales = ['sv', 'en'] as const
-type ExampleLocale = (typeof exampleLocales)[number]
-const catalogs: Record<ExampleLocale, KvirnMessages> = { sv, en }
 
 /** An example that throws shows a message in its frame. The rest of the page keeps working. */
 class ExampleErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
@@ -41,9 +36,9 @@ function ExampleStage({ children }: { children: ReactNode }) {
 }
 
 /**
- * A live example in a `<figure>`: its own language select, a comfortable stage in a nested
- * provider, and a code bar with the code behind a disclosure (docs/design/docs-code.md). Changing the language changes only this
- * example, in place, so nothing is announced and focus stays on the select.
+ * A live example in a `<figure>`: a comfortable stage in a nested provider in the example
+ * language chosen in Display settings, and a code bar with the code behind a disclosure
+ * (docs/design/docs-code.md).
  */
 export function ExampleFrame({
   caption,
@@ -60,7 +55,7 @@ export function ExampleFrame({
   language?: CodeLanguage
   children: ReactNode
 }) {
-  const [locale, setLocale] = useState<ExampleLocale>('sv')
+  const { locale } = useExampleLocale()
   const [isCodeOpen, setIsCodeOpen] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
   const codeRef = useRef<HTMLElement>(null)
@@ -99,24 +94,8 @@ export function ExampleFrame({
             {caption}
           </Heading>
         )}
-        <Field.Root>
-          <Field.Label marker="none">{text.languageLabel}</Field.Label>
-          <Listbox.Root
-            native="always"
-            items={exampleLocales}
-            itemToString={(code) => text.languages[code]}
-            itemToLang={(code) => code}
-            value={locale}
-            onValueChange={(value) => {
-              const option = exampleLocales.find((candidate) => candidate === value)
-              if (option !== undefined) {
-                setLocale(option)
-              }
-            }}
-          />
-        </Field.Root>
       </Card.Header>
-      <KvirnProvider locale={locale} messages={catalogs[locale]}>
+      <KvirnProvider locale={locale} messages={exampleCatalogs[locale]}>
         <Card.Body className="kv-card-body--padding-lg">
           <SamiPendingNote />
           <ExampleStage>{children}</ExampleStage>

@@ -14,7 +14,6 @@ const code = "import { Button } from '@kvirn-ui/react'\nconst size = 4"
 const toggle = () => page.getByRole('button', { name: text.toggle({ count: 2 }) })
 const copyButton = () => page.getByRole('button', { name: text.copy })
 const politeRegion = () => page.getByRole('status')
-const exampleLanguage = () => page.getByLabelText(messages.docs.example.languageLabel)
 
 function stubClipboard(writeText: (value: string) => Promise<void>) {
   Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true })
@@ -69,11 +68,9 @@ describe('ExampleFrame code bar', () => {
     expect(document.activeElement).toBe(toggle().element())
   })
 
-  test('Tab moves from the language select to the toggle, then to Copy code', async () => {
+  test('Tab moves from the toggle to Copy code', async () => {
     await renderFrame()
-    ;(exampleLanguage().element() as HTMLElement).focus()
-    await userEvent.tab()
-    expect(document.activeElement).toBe(toggle().element())
+    ;(toggle().element() as HTMLElement).focus()
     await userEvent.tab()
     expect(document.activeElement).toBe(copyButton().element())
   })
@@ -118,12 +115,6 @@ describe('ExampleFrame code bar', () => {
     await userEvent.click(page.getByRole('button', { name: text.toggle({ count: 1 }) }))
     await expect.element(page.getByRole('region', { name: 'A button Code' })).toBeInTheDocument()
     await expectNoA11yViolations(container)
-  })
-
-  test('the example language offers Swedish and English only', async () => {
-    await renderFrame()
-    const options = [...exampleLanguage().element().querySelectorAll('option')]
-    expect(options.map((option) => option.textContent)).toEqual(['Svenska', 'English'])
   })
 
   test('copying while the code is collapsed announces copied and keeps it collapsed', async () => {

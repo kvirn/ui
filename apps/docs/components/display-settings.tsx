@@ -1,22 +1,32 @@
 'use client'
 import type { ColorSchemePreference, ContrastPreference } from '@kvirn-ui/core'
-import { Card, Disclosure, Field, RadioGroup, useTheme } from '@kvirn-ui/react'
+import {
+  AlertBody,
+  AlertInfo,
+  AlertTitle,
+  Card,
+  Disclosure,
+  Field,
+  Listbox,
+  RadioGroup,
+  useTheme,
+} from '@kvirn-ui/react'
 import { messages } from '../messages/en.ts'
+import { exampleLocales, useExampleLocale } from './example-locale.tsx'
 
 const text = messages.docs.display
+const languageNames = messages.docs.example.languages
 const colorSchemeOptions: readonly ColorSchemePreference[] = ['light', 'dark', 'system']
 const contrastOptions: readonly ContrastPreference[] = ['standard', 'more', 'system']
 
 /**
- * The theme switcher: two radio groups on `useTheme()`, as in the KvirnProvider recipe. The
- * checked radio is the only feedback: nothing is announced and focus stays.
+ * The theme switcher: two radio groups on `useTheme()`, as in the KvirnProvider recipe, and the
+ * language every example is shown in. The checked radio or selected option is the only feedback:
+ * nothing is announced and focus stays.
  */
 export function DisplaySettingsPanel() {
   const theme = useTheme()
-  const inUse = text.inUse({
-    colorScheme: theme.resolvedColorScheme,
-    contrast: theme.resolvedContrast === 'more' ? 'high' : 'standard',
-  })
+  const { locale, selectLocale } = useExampleLocale()
 
   return (
     <Disclosure.Panel className="docs-display">
@@ -59,12 +69,34 @@ export function DisplaySettingsPanel() {
                 </Field.Root>
               ))}
             </RadioGroup.Root>
+            <Field.Root>
+              <Field.Label marker="none">{text.exampleLanguage}</Field.Label>
+              <Listbox.Root
+                native="always"
+                items={exampleLocales}
+                itemToString={(code) => languageNames[code]}
+                itemToKey={(code) => code}
+                itemToLang={(code) => code}
+                value={locale}
+                onValueChange={(value) => {
+                  const option = exampleLocales.find((candidate) => candidate === value)
+                  if (option !== undefined) {
+                    selectLocale(option)
+                  }
+                }}
+              />
+            </Field.Root>
           </div>
         </Card.Body>
         <Card.Footer>
           <div>
-            <p>{theme.isForcedColors ? text.forcedColors : inUse}</p>
-            <p>{text.storageNote}</p>
+            {theme.isForcedColors && <p>{text.forcedColors}</p>}
+            <AlertInfo>
+              <AlertTitle render={<p />}>{text.storageTitle}</AlertTitle>
+              <AlertBody>
+                <p>{text.storageNote}</p>
+              </AlertBody>
+            </AlertInfo>
           </div>
         </Card.Footer>
       </Card.Root>

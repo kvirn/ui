@@ -30,7 +30,7 @@
 2. **Copy without reading:** activates Copy code → text copied → visible "Code copied" with a check icon in the bar, polite announcement "Code copied". Focus stays on the button.
 3. **Read first:** activates the Code button → the code opens below the bar, focus stays on the button; Tab moves to the scroll region (only if it overflows), then on.
 4. **Find in page** (Ctrl+F) for a word in collapsed code → the browser opens it (`until-found`), the button's state follows.
-5. **Change the example language** → only the preview changes; the code doesn't (it shows `t('…')`, docs-component-page.md §6).
+5. **Change the example language** (Display settings, applies to every example) → only the previews change; the code doesn't (it shows `t('…')`, docs-component-page.md §6).
 
 **Unhappy paths**
 
@@ -76,7 +76,7 @@ div.docs-code [data-language]                      surface, 1px border-subtle, r
 
 ```
 figure (Card.Root, kv-card--dividers, aria-labelledby = section h2 or own h3)
-  Card.Header   [h3 caption?]  ……  Example language (label + select, as today)
+  Card.Header   [h3 caption?]  ……  (no language select: the example language is global, in Display settings)
   Card.Body     nested KvirnProvider: Sámi note, stage
   div.docs-code-bar   Button "Code, 24 lines ▾" [aria-expanded aria-controls]  ·  TSX  ……  Button "Copy code"
                       p.docs-code-status
@@ -169,17 +169,17 @@ None in `theme.css` or `DESIGN.md`. Four docs-only custom properties in `apps/do
 
 **Keyboard** (native elements only; no custom key handlers)
 
-| Key                | Where               | What happens                                                                            |
-| ------------------ | ------------------- | --------------------------------------------------------------------------------------- |
-| Tab / Shift+Tab    | example             | Language select → Code toggle → Copy code → scroll region (only if it overflows) → next |
-| Enter, Space       | Code toggle         | Opens or closes the code. Focus stays on the toggle                                     |
-| Enter, Space       | Copy code           | Copies; focus stays; status shown and announced                                         |
-| Arrow Left / Right | scroll region       | Scrolls horizontally (native)                                                           |
-| Home / End         | scroll region       | Native scroll to start or end                                                           |
-| Ctrl+C / Cmd+C     | after a failed copy | Copies the selected code (native)                                                       |
+| Key                | Where               | What happens                                                          |
+| ------------------ | ------------------- | --------------------------------------------------------------------- |
+| Tab / Shift+Tab    | example             | Code toggle → Copy code → scroll region (only if it overflows) → next |
+| Enter, Space       | Code toggle         | Opens or closes the code. Focus stays on the toggle                   |
+| Enter, Space       | Copy code           | Copies; focus stays; status shown and announced                       |
+| Arrow Left / Right | scroll region       | Scrolls horizontally (native)                                         |
+| Home / End         | scroll region       | Native scroll to start or end                                         |
+| Ctrl+C / Cmd+C     | after a failed copy | Copies the selected code (native)                                     |
 
 - **Focus moves:** none. Opening, closing, copying and failing all keep focus on the control. Closing while focus is in the region can't happen (focus is on the toggle to close). Nothing is obscured (2.4.11): no sticky parts except the line-number gutter inside the region.
-- **Announcements (4.1.3):** through `useAnnouncer()` of the site's provider, **polite**: `docs.code.copied` or `docs.code.copyFailed`. Opening or closing announces nothing (`aria-expanded` does). Changing the example language announces nothing (as today).
+- **Announcements (4.1.3):** through `useAnnouncer()` of the site's provider, **polite**: `docs.code.copied` or `docs.code.copyFailed`. Opening or closing announces nothing (`aria-expanded` does). Changing the example language (global, in Display settings) announces nothing.
 - **Find in page:** the collapsed panel is `hidden="until-found"`; on `beforematch` the toggle sets open so `aria-expanded` matches. Browsers without it: plain `hidden`.
 - **Targets:** 44px below 64rem, 32px from 64rem (docs chrome rule, 2.5.8).
 - **SCs of note:** 1.3.1, 1.3.2, 1.4.1, 1.4.3, 1.4.10, 1.4.11, 1.4.12, 2.1.1, 2.4.3, 2.4.7, 2.4.11, 2.5.3, 2.5.8, 3.2.2, 4.1.2, 4.1.3.
@@ -203,7 +203,7 @@ None in `theme.css` or `DESIGN.md`. Four docs-only custom properties in `apps/do
 
 **Open questions:**
 
-1. The example language select: the brief says "Swedish/English". Today it offers all six locales. Recommendation: keep six (Finnish and Sámi break layouts first); confirm.
+1. The example language select (now one global select in Display settings) offers Swedish and English only. Finnish and Sámi break layouts first, so adding them later is a decision for the maintainer.
 2. A `copy` icon in the built-in Icon set (a `packages/react` change, icon.md) or text-only Copy (recommended now).
 3. Package-manager tabs (reference image 3) for install commands: out of scope; KvirnUI `Tabs` when wanted.
 4. When G7's library `CopyButton` ships, the docs swap to it and its `@kvirn-ui/i18n` keys; `docs.code.copy*` then retire.
