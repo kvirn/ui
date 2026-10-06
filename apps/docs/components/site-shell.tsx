@@ -1,10 +1,10 @@
 'use client'
-import { Button, Link } from '@kvirn-ui/react'
-import { useEffect, useRef, useState } from 'react'
+import { Badge, Disclosure, Link, Prose, Section, SkipLink, useRouteFocus } from '@kvirn-ui/react'
+import { useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
-import { ChevronIcon } from './chevron-icon.tsx'
 import { DisplaySettingsPanel } from './display-settings.tsx'
+import { DocsDisclosure } from './docs-disclosure.tsx'
 import { SiteNavigation } from './site-navigation.tsx'
 
 const text = messages.docs
@@ -18,70 +18,54 @@ export function SiteShell({ pathname, children }: { pathname: string; children: 
   // The menu belongs to the page it was opened on, so navigating closes it.
   const [menuOpenOn, setMenuOpenOn] = useState<string | null>(null)
   const isMenuOpen = menuOpenOn === pathname
-  const [isDisplayOpen, setIsDisplayOpen] = useState(false)
   const mainRef = useRef<HTMLElement>(null)
-  const renderedPathname = useRef(pathname)
-
-  // After client-side navigation, focus moves to the new page's h1 (docs-site.md §7). The
-  // first render keeps the browser's own focus. Next.js's route announcer reads the title.
-  useEffect(() => {
-    if (renderedPathname.current === pathname) {
-      return
-    }
-    renderedPathname.current = pathname
-    mainRef.current?.querySelector<HTMLElement>('h1')?.focus()
-  }, [pathname])
+  useRouteFocus({ key: pathname, containerRef: mainRef })
 
   return (
     <>
-      {/* A plain <a>, not the router's link: the browser moves focus to #main. */}
-      <Link render={<a href="#main">{text.skipLink}</a>} href="#main" className="docs-skip-link" />
-      <header className="docs-header kv-compact">
+      <SkipLink href="#main" />
+      <Section
+        render={<header />}
+        className="docs-header kv-section--canvas kv-section--padding-sm kv-compact"
+      >
         <div className="docs-header-inner">
           <div className="docs-brand">
-            <Link href="/" className="docs-wordmark">
-              {text.header.home}
-            </Link>
-            <span className="docs-badge">{text.header.status}</span>
+            <Link href="/">{text.header.home}</Link>
+            <Badge>{text.header.status}</Badge>
           </div>
-          <div className="docs-header-actions">
-            <Button
-              className="docs-toggle docs-menu-toggle"
-              aria-expanded={isMenuOpen}
-              aria-controls="docs-nav-list"
-              onClick={() => setMenuOpenOn(isMenuOpen ? null : pathname)}
-            >
-              {text.nav.menuButton}
-              <ChevronIcon />
-            </Button>
-            <Button
-              className="docs-toggle"
-              aria-expanded={isDisplayOpen}
-              aria-controls="display-panel"
-              onClick={() => setIsDisplayOpen((isOpen) => !isOpen)}
-            >
-              {text.display.button}
-              <ChevronIcon />
-            </Button>
-          </div>
-          <DisplaySettingsPanel id="display-panel" isOpen={isDisplayOpen} />
+          <Disclosure.Root>
+            <div className="docs-header-actions">
+              <DocsDisclosure
+                className="docs-disclosure docs-menu-toggle"
+                controls="docs-sidebar"
+                isOpen={isMenuOpen}
+                onToggle={() => setMenuOpenOn(isMenuOpen ? null : pathname)}
+              >
+                {text.nav.menuButton}
+              </DocsDisclosure>
+              <Disclosure.Trigger className="docs-disclosure">
+                {text.display.button}
+              </Disclosure.Trigger>
+            </div>
+            <DisplaySettingsPanel />
+          </Disclosure.Root>
         </div>
-      </header>
+      </Section>
       <div className="docs-layout">
-        <SiteNavigation pathname={pathname} isOpen={isMenuOpen} />
-        <main id="main" tabIndex={-1} ref={mainRef} className="docs-main">
-          {/* The article is prose: the default theme styles its headings, lists and code
-. Examples opt out with kv-not-prose. */}
-          <div className="docs-article kv-prose">{children}</div>
+        <SiteNavigation id="docs-sidebar" pathname={pathname} isOpen={isMenuOpen} />
+        <main id="main" ref={mainRef} className="docs-main">
+          <Prose render={<article />} className="docs-article">
+            {children}
+          </Prose>
         </main>
       </div>
-      <footer className="docs-footer">
+      <Section render={<footer />} className="docs-footer kv-section--canvas">
         <div className="docs-footer-inner">
           <p>{text.footer.licence}</p>
           <p>{text.footer.claim}</p>
           <p>{text.footer.noTracking}</p>
         </div>
-      </footer>
+      </Section>
     </>
   )
 }

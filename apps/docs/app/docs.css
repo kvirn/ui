@@ -1,16 +1,24 @@
 /*
- * Docs site shell and page template (docs/design/docs-site.md §6), in the default theme's
- * visual direction. Plain, unlayered CSS, so it wins over @layer kv. Tokens only: no raw colours
- *. The three --docs-* constants are layout, not theme tokens.
+ * Docs site layout glue (docs/design/docs-site-components.md §6). Plain, unlayered CSS, so it
+ * wins over @layer kv. Tokens only: no raw colours. The three --docs-* constants are layout, not
+ * theme tokens. Components are styled by theme.css: nothing here restyles a kv-* part.
  */
 :root {
   --docs-sidebar-width: 15rem;
   --docs-content-max: 48rem;
   --docs-page-max: 80rem;
+  --docs-contents-width: 14rem;
+
+  /* Syntax roles: aliases of semantic text tokens that theme:check already holds to AA. */
+  --docs-code-keyword: var(--kv-color-link);
+  --docs-code-string: var(--kv-color-success);
+  --docs-code-literal: var(--kv-color-warning);
+  --docs-code-comment: var(--kv-color-text-muted);
 
   scroll-padding-block-start: var(--kv-space-4);
 }
 
+/* Interim until the page base ships in theme.css (G2). */
 body {
   margin: 0;
   background-color: var(--kv-color-canvas);
@@ -23,27 +31,13 @@ body {
   overflow-wrap: break-word;
 }
 
-/* Skip link: visually hidden until focused, then in flow at the top, covering nothing. */
-.docs-skip-link:not(:focus) {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-.docs-skip-link:focus {
-  display: inline-block;
-  margin: var(--kv-space-2);
-  padding: var(--kv-space-2) var(--kv-space-4);
-  background-color: var(--kv-color-canvas);
-}
-
-/* Header: 56px, a hairline below, not sticky. */
+/* The one edge a level-1 Section may have (DESIGN.md Elevation). */
 .docs-header {
   border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
-  background-color: var(--kv-color-canvas);
+}
+
+.docs-footer {
+  border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
 }
 
 .docs-header-inner {
@@ -54,171 +48,37 @@ body {
   gap: var(--kv-space-3);
   box-sizing: border-box;
   max-inline-size: var(--docs-page-max);
-  min-block-size: 3.5rem;
   margin-inline: auto;
-  padding-block: var(--kv-space-2);
-  padding-inline: var(--kv-space-4);
 }
 
-.docs-brand {
+.docs-brand,
+.docs-header-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--kv-space-3);
 }
 
-/* Site identity: the text colour, underlined on hover. Its position is the cue. */
-.docs-wordmark {
-  border-radius: var(--kv-radius-sm);
-  color: var(--kv-color-text);
-  font-size: var(--kv-font-label-size);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  text-decoration: none;
-}
-
-.docs-wordmark:hover {
-  text-decoration-line: underline;
-  text-decoration-thickness: var(--kv-link-underline-thickness-hover);
-  text-underline-offset: var(--kv-link-underline-offset);
-}
-
-.docs-wordmark:focus-visible {
-  outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
-  outline-offset: var(--kv-focus-ring-offset);
-}
-
-/* DESIGN.md badge: primary-subtle with link-coloured text. */
-.docs-badge {
-  display: inline-block;
-  padding: 0.125rem 0.625rem;
-  border: var(--kv-border-width) solid transparent;
-  border-radius: var(--kv-radius-full);
-  background-color: var(--kv-color-primary-subtle);
-  color: var(--kv-color-link);
-  font-size: var(--kv-font-body-small-size);
-  font-weight: 500;
-  line-height: var(--kv-font-body-small-line-height);
-}
-
-.docs-header-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--kv-space-2);
-}
-
-.docs-toggle[aria-expanded='true'] {
-  border-color: var(--kv-color-primary);
-  background-color: var(--kv-color-primary-subtle);
-}
-
-.docs-chevron {
-  flex: none;
-}
-
-.docs-toggle[aria-expanded='true'] .docs-chevron {
-  transform: rotate(180deg);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .docs-chevron {
-    transition: transform var(--kv-duration-medium) var(--kv-easing-standard);
-  }
-}
-
 /* Display settings: in flow under the header row, not an overlay. */
-.docs-display-panel {
-  box-sizing: border-box;
+.docs-display {
   flex-basis: 100%;
-  margin-block-end: var(--kv-space-2);
-  padding: var(--kv-space-4);
-  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
-  border-radius: var(--kv-radius-lg);
-  background-color: var(--kv-color-surface);
 }
 
-.docs-display-panel[hidden] {
-  display: none;
-}
-
-.docs-display-fieldsets {
+.docs-display-groups {
   display: flex;
   flex-wrap: wrap;
   gap: var(--kv-space-4) var(--kv-space-8);
-}
-
-.docs-fieldset {
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.docs-fieldset legend {
-  margin-block-end: var(--kv-space-2);
-  padding: 0;
-  font-size: var(--kv-control-font-size);
-  font-weight: var(--kv-control-font-weight);
-  line-height: var(--kv-control-line-height);
-}
-
-.docs-radio {
-  display: flex;
-  align-items: center;
-  gap: var(--kv-space-2);
-  min-block-size: var(--kv-control-min-block-size);
-  font-size: var(--kv-control-font-size);
-  line-height: var(--kv-control-line-height);
-}
-
-/* 24px native radios meet 2.5.8 at either density. */
-.docs-radio input {
-  flex: none;
-  inline-size: 1.5rem;
-  block-size: 1.5rem;
-  margin: 0;
-  accent-color: var(--kv-color-primary);
-}
-
-.docs-radio input:focus-visible {
-  outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
-  outline-offset: var(--kv-focus-ring-offset);
-}
-
-.docs-display-status,
-.docs-display-note {
-  max-inline-size: 70ch;
-  margin-block: var(--kv-space-3) 0;
-}
-
-.docs-display-note {
-  color: var(--kv-color-text-muted);
-}
-
-@media (width >= 64rem) {
-  .docs-display-status,
-  .docs-display-note {
-    font-size: var(--kv-font-body-small-size);
-    line-height: var(--kv-font-body-small-line-height);
-  }
-}
-
-/* Footer: a hairline above, the claim at full contrast (it's essential). */
-.docs-footer {
-  border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
-  background-color: var(--kv-color-canvas);
 }
 
 .docs-footer-inner {
   box-sizing: border-box;
   max-inline-size: var(--docs-page-max);
   margin-inline: auto;
-  padding-block: var(--kv-space-10);
   padding-inline: var(--kv-space-4);
 }
 
 .docs-footer-inner p {
   max-inline-size: 70ch;
-  margin-block: 0 var(--kv-space-2);
 }
 
 /* Layout: one column, then sidebar and content from 64rem. Nothing is sticky (2.4.11). */
@@ -228,24 +88,11 @@ body {
 }
 
 .docs-sidebar {
-  box-sizing: border-box;
-  padding: var(--kv-space-4) var(--kv-space-3);
   border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
-  background-color: var(--kv-color-surface);
 }
 
-.docs-nav-list[data-open='false'] {
+.docs-sidebar[data-open='false'] {
   display: none;
-}
-
-.docs-nav-group-label {
-  display: block;
-  margin-block-start: var(--kv-space-4);
-  padding: var(--kv-space-2) var(--kv-space-3);
-  color: var(--kv-color-text-muted);
-  font-size: var(--kv-font-label-compact-size);
-  font-weight: var(--kv-font-label-compact-weight);
-  line-height: var(--kv-font-label-compact-line-height);
 }
 
 .docs-main {
@@ -254,33 +101,174 @@ body {
   padding: var(--kv-space-10) var(--kv-space-4);
 }
 
-.docs-main:focus {
-  outline: none;
-}
-
 .docs-main > * {
   max-inline-size: var(--docs-content-max);
 }
 
-/* The article is kv-prose: the theme sets its type, spacing, lists and code.
- * The column is wider than the prose measure so examples get room, and running text keeps
- * the measure. */
+/* The column is wider than the prose measure so examples get room; running text keeps it. */
 .docs-article > :is(p, ul, ol, dl) {
   max-inline-size: var(--kv-prose-measure);
 }
 
+.docs-status {
+  max-inline-size: 70ch;
+  margin-block: var(--kv-space-6);
+}
+
+.docs-example-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--kv-space-2) var(--kv-space-4);
+}
+
+/* Code blocks and the example's code bar (docs/design/docs-code.md §6). */
+.docs-code {
+  margin-block: var(--kv-space-4);
+  background-color: var(--kv-color-surface);
+  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-md);
+}
+
+.docs-code-panel {
+  margin-block: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.docs-code-panel:not([hidden]) {
+  border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+}
+
+.docs-code-header,
+.docs-code-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kv-space-2) var(--kv-space-3);
+  padding: var(--kv-space-2) var(--kv-space-3);
+}
+
+.docs-code-header {
+  border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+}
+
+.docs-code-file {
+  font-family: var(--kv-font-family-mono);
+  font-size: var(--kv-font-code-size);
+  color: var(--kv-color-text);
+  overflow-wrap: anywhere;
+}
+
+.docs-code-language {
+  font-size: var(--kv-font-body-small-size);
+  color: var(--kv-color-text-muted);
+}
+
+.docs-code-copy {
+  margin-inline-start: auto;
+}
+
+.docs-code-status {
+  display: flex;
+  align-items: center;
+  flex-basis: 100%;
+  gap: var(--kv-space-2);
+  margin: 0;
+  font-size: var(--kv-font-body-small-size);
+  color: var(--kv-color-text);
+}
+
+.docs-code-status .kv-icon {
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+.docs-code-scroll {
+  overflow-x: auto;
+}
+
+.docs-code-scroll:focus-visible {
+  outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+  outline-offset: calc(-1 * var(--kv-focus-ring-offset));
+}
+
+.docs-code pre {
+  margin: 0;
+  padding: var(--kv-space-4);
+  font-family: var(--kv-font-family-mono);
+  font-size: var(--kv-font-code-size);
+  line-height: 1.6;
+  tab-size: 2;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  unicode-bidi: isolate;
+}
+
+.docs-code code {
+  font: inherit;
+}
+
+.docs-code-line {
+  display: block;
+}
+
+.docs-code--line-numbers code {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+.docs-code--line-numbers .docs-code-line {
+  display: contents;
+}
+
+.docs-code-number {
+  position: sticky;
+  inset-inline-start: 0;
+  padding-inline-end: var(--kv-space-4);
+  background-color: var(--kv-color-surface);
+  color: var(--kv-color-text-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  user-select: none;
+}
+
+.docs-code-keyword {
+  color: var(--docs-code-keyword);
+}
+
+.docs-code-string {
+  color: var(--docs-code-string);
+}
+
+.docs-code-literal {
+  color: var(--docs-code-literal);
+}
+
+.docs-code-comment {
+  color: var(--docs-code-comment);
+}
+
+.docs-code-empty {
+  padding: var(--kv-space-4);
+  color: var(--kv-color-text);
+}
+
 @media (width >= 40rem) {
-  .docs-header-inner,
-  .docs-footer-inner {
+  .docs-code pre {
+    white-space: pre;
+    overflow-wrap: normal;
+  }
+
+  .docs-footer-inner,
+  .docs-header-inner {
     padding-inline: var(--kv-space-6);
   }
 
   .docs-main {
     padding-inline: var(--kv-space-6);
-  }
-
-  .docs-display-panel {
-    padding: var(--kv-space-6);
   }
 }
 
@@ -289,8 +277,8 @@ body {
     display: none;
   }
 
-  .docs-header-inner,
-  .docs-footer-inner {
+  .docs-footer-inner,
+  .docs-header-inner {
     padding-inline: var(--kv-space-10);
   }
 
@@ -304,8 +292,8 @@ body {
     border-inline-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
   }
 
-  .docs-nav-list[data-open='false'] {
-    display: flex;
+  .docs-sidebar[data-open='false'] {
+    display: block;
   }
 
   .docs-main {
@@ -313,154 +301,49 @@ body {
   }
 }
 
-/* Without JavaScript, the disclosures can't work: hide the toggles, show the navigation. */
-:root:not([data-kv-color-scheme]) .docs-toggle {
+/* The contents move to a third column; the DOM order stays, so they still come before Example. */
+@media (width >= 80rem) {
+  .docs-article:has(.docs-contents) {
+    display: grid;
+    grid-template-columns: minmax(0, var(--docs-content-max)) var(--docs-contents-width);
+    column-gap: var(--kv-space-10);
+    max-inline-size: none;
+  }
+
+  .docs-article:has(.docs-contents) > * {
+    grid-column: 1;
+  }
+
+  .docs-article:has(.docs-contents) > .docs-contents {
+    grid-column: 2;
+    grid-row: 1 / span 99;
+    align-self: start;
+  }
+}
+
+.docs-nav-group-name {
   display: none;
 }
 
-:root:not([data-kv-color-scheme]) .docs-nav-list[data-open='false'] {
-  display: flex;
+/* Without JavaScript, the disclosures can't work: hide them, show the navigation. */
+:root:not([data-kv-color-scheme]) .docs-disclosure,
+:root:not([data-kv-color-scheme]) .docs-code-copy {
+  display: none;
 }
 
-/* The home page's h1 uses the display role. Prose styles every other heading. */
-.docs-display {
-  font-size: var(--kv-font-display-size);
-  font-weight: var(--kv-font-display-weight);
-  line-height: var(--kv-font-display-line-height);
-  letter-spacing: var(--kv-font-display-letter-spacing);
+:root:not([data-kv-color-scheme]) .docs-code-panel[hidden] {
+  display: block;
+  content-visibility: visible;
 }
 
-.docs-h1:focus,
-.docs-display:focus {
-  outline: none;
+:root:not([data-kv-color-scheme]) .docs-sidebar[data-open='false'] {
+  display: block;
 }
 
-/* A hairline above each h2 gives a calm, row-by-row rhythm. */
-.docs-article > h2 {
-  padding-block-start: var(--kv-space-6);
-  border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+:root:not([data-kv-color-scheme]) .docs-nav-group[hidden] {
+  display: block;
 }
 
-.docs-article > :is(h2, h3) {
-  scroll-margin-block-start: var(--kv-space-4);
-}
-
-/* Status line: a badge plus the status in words. */
-.docs-status {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--kv-space-2) var(--kv-space-3);
-  max-inline-size: 70ch;
-  margin-block: var(--kv-space-6);
-}
-
-.docs-status p {
-  margin: 0;
-}
-
-/* Example frame: a figure with a caption, a language toolbar and a comfortable stage. */
-.docs-example {
-  margin: var(--kv-space-6) 0 var(--kv-space-4);
-}
-
-.docs-example figcaption {
-  margin-block-end: var(--kv-space-2);
-  font-size: var(--kv-font-label-size);
-  font-weight: var(--kv-font-label-weight);
-  line-height: var(--kv-font-label-line-height);
-}
-
-.docs-example-frame {
-  overflow: hidden;
-  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
-  border-radius: var(--kv-radius-lg);
-}
-
-.docs-example-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--kv-space-2) var(--kv-space-3);
-  padding: var(--kv-space-2) var(--kv-space-4);
-  border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
-  background-color: var(--kv-color-surface);
-  font-size: var(--kv-control-font-size);
-  font-weight: var(--kv-control-font-weight);
-}
-
-.docs-example-note {
-  margin: 0;
-  padding: var(--kv-space-2) var(--kv-space-4);
-  border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
-  background-color: var(--kv-color-surface);
-}
-
-.docs-select {
-  box-sizing: border-box;
-  min-block-size: var(--kv-control-min-block-size);
-  padding-inline: var(--kv-space-3);
-  border: var(--kv-border-width) solid var(--kv-color-border-control);
-  border-radius: var(--kv-radius-md);
-  background-color: var(--kv-color-canvas);
-  color: var(--kv-color-text);
-  font: inherit;
-  font-weight: 400;
-}
-
-.docs-select:focus-visible {
-  outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
-  outline-offset: var(--kv-focus-ring-offset);
-}
-
-.docs-example-stage {
-  padding: var(--kv-space-8);
-  background-color: var(--kv-color-canvas);
-}
-
-.docs-main .docs-example-stage p {
-  margin-block: var(--kv-space-4) 0;
-}
-
-.docs-main .docs-example-stage p:first-child {
-  margin-block-start: 0;
-}
-
-@media (width < 40rem) {
-  .docs-example-stage {
-    padding: var(--kv-space-4);
-  }
-}
-
-/* Code: a label, then the block. Prose styles the block: it wraps, with no 2D scrolling. */
-.docs-code-label {
-  margin-block: var(--kv-space-4) var(--kv-space-2);
-  font-size: var(--kv-font-label-compact-size);
-  font-weight: var(--kv-font-label-compact-weight);
-  line-height: var(--kv-font-label-compact-line-height);
-}
-
-.docs-code-label + .docs-code {
-  margin-block-start: 0;
-}
-
-@media (forced-colors: active) {
-  .docs-badge,
-  .docs-example-frame,
-  .docs-display-panel {
-    border-color: CanvasText;
-  }
-
-  .docs-toggle[aria-expanded='true'] {
-    border-color: Highlight;
-  }
-}
-
-.docs-visually-hidden {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+:root:not([data-kv-color-scheme]) .docs-nav-group-name {
+  display: block;
 }

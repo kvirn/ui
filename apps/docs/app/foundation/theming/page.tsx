@@ -1,0 +1,97 @@
+import type { Metadata } from 'next'
+import { CodeBlock } from '../../../components/code-block.tsx'
+import { PageWithContents } from '../../../components/page-contents.tsx'
+import { messages } from '../../../messages/en.ts'
+
+export const metadata: Metadata = { title: messages.docs.meta.title({ page: 'Theming' }) }
+
+export default function ThemingPage() {
+  return (
+    <PageWithContents
+      title="Theming"
+      lead="Every component renders a stable class and its state as data attributes. The default theme styles them, and you choose how much of it you keep."
+      sections={[
+        {
+          id: 'default-theme',
+          label: 'Use the default theme',
+          content: (
+            <>
+              <p>
+                Import <code>@kvirn-ui/theme/theme.css</code> once. Every component is then styled.
+                A Button is secondary by default. Add{' '}
+                <code>className=&quot;kv-button--primary&quot;</code> for the one main action on the
+                page, or <code>className=&quot;kv-button--danger&quot;</code> for an action that
+                deletes something. Put <code>class=&quot;kv-compact&quot;</code> on a container for
+                smaller controls in staff tools.
+              </p>
+              <CodeBlock
+                code={'<Button className="kv-button--primary">Send application</Button>'}
+              />
+            </>
+          ),
+        },
+        {
+          id: 'override-variables',
+          label: 'Override variables',
+          content: (
+            <>
+              <p>
+                The theme is role scales (<code>--kv-primary-500</code>,{' '}
+                <code>--kv-neutral-50</code>), named for what they do and not for their hue, and
+                semantic tokens that point at them (<code>--kv-color-primary</code>). Set either in
+                your own CSS. Everything in <code>theme.css</code> is in <code>@layer kv</code>, so
+                your CSS always wins.
+              </p>
+              <CodeBlock
+                code={`/* Rebrand: give the primary scale your brand's colours. All four themes follow. */
+:root {
+  --kv-primary-50: #edfafa;
+  --kv-primary-100: #cdf0f0;
+  --kv-primary-200: #9be0e2;
+  --kv-primary-300: #5fc6cb;
+  --kv-primary-400: #1e9ca4;
+  --kv-primary-500: #007d86;
+  --kv-primary-600: #00707a;
+  --kv-primary-700: #005a62;
+  --kv-primary-800: #00474e;
+  --kv-primary-900: #003a40;
+  --kv-primary-950: #00262a;
+}`}
+              />
+              <p>
+                A secondary Button&apos;s edge uses the secondary scale, which is the neutral steps
+                by default. Give <code>--kv-secondary-*</code> your own 11 steps to colour it.
+              </p>
+              <p>
+                Each theme uses different steps, so a swapped scale can break contrast. Check your
+                colours with <code>checkThemeCss()</code> from <code>@kvirn-ui/theme</code> on your
+                customised copy. It measures every text, control and focus pair in all four themes.
+              </p>
+            </>
+          ),
+        },
+        {
+          id: 'replace-or-skip',
+          label: 'Replace it or skip it',
+          content: (
+            <>
+              <p>
+                <code>theme.css</code> is one readable file. Copy it from{' '}
+                <code>node_modules/@kvirn-ui/theme/theme.css</code> into your project, edit it, and
+                import your copy instead. Or skip it, and style the part classes (such as{' '}
+                <code>kv-button</code>) and the state attributes with Tailwind or your own CSS.
+                Remove the import and every component is unstyled again: KvirnUI never loads CSS for
+                you.
+              </p>
+              <CodeBlock
+                code={`<Button className="rounded-md border px-4 py-2 data-disabled:border-dashed data-focus-visible:outline-2">
+  Save draft
+</Button>`}
+              />
+            </>
+          ),
+        },
+      ]}
+    />
+  )
+}

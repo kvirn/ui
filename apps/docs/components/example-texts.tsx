@@ -18,6 +18,9 @@ export interface ExampleTexts {
     saveLong: string
     disabledReason: string
     dangerNote: string
+    closeLabel: string
+    saving: string
+    applicantName: string
   }
   variant: { primary: string; secondary: string; danger: string }
   state: { default: string; disabled: string; focusableDisabled: string }
@@ -44,6 +47,9 @@ const en: ExampleTexts = {
     disabledReason: 'Fill in all required fields before you send.',
     dangerNote:
       'Delete buttons always need a confirmation step. They are shown together here only so you can compare them.',
+    closeLabel: 'Close',
+    saving: 'Saving draft…',
+    applicantName: 'Your name',
   },
   variant: { primary: 'Primary', secondary: 'Secondary', danger: 'Danger' },
   state: { default: 'Default', disabled: 'Disabled', focusableDisabled: 'Disabled but focusable' },
@@ -69,6 +75,9 @@ const sv: ExampleTexts = {
     disabledReason: 'Fyll i alla obligatoriska fält innan du skickar.',
     dangerNote:
       'Knappar som tar bort något behöver alltid ett bekräftelsesteg. De visas tillsammans här bara för att kunna jämföras.',
+    closeLabel: 'Stäng',
+    saving: 'Sparar utkast…',
+    applicantName: 'Ditt namn',
   },
   variant: { primary: 'Primär', secondary: 'Sekundär', danger: 'Farlig' },
   state: {
@@ -98,6 +107,9 @@ const fi: ExampleTexts = {
     disabledReason: 'Täytä kaikki pakolliset kentät ennen lähettämistä.',
     dangerNote:
       'Poistopainikkeet tarvitsevat aina vahvistusvaiheen. Ne näytetään tässä yhdessä vain vertailun vuoksi.',
+    closeLabel: 'Sulje',
+    saving: 'Tallennetaan luonnosta…',
+    applicantName: 'Nimesi',
   },
   variant: { primary: 'Ensisijainen', secondary: 'Toissijainen', danger: 'Vaarallinen' },
   state: {
@@ -127,6 +139,9 @@ const nb: ExampleTexts = {
     disabledReason: 'Fyll ut alle obligatoriske felt før du sender.',
     dangerNote:
       'Knapper som sletter noe, trenger alltid et bekreftelsestrinn. De vises sammen her bare for å kunne sammenlignes.',
+    closeLabel: 'Lukk',
+    saving: 'Lagrer utkast…',
+    applicantName: 'Navnet ditt',
   },
   variant: { primary: 'Primær', secondary: 'Sekundær', danger: 'Farlig' },
   state: {
@@ -156,6 +171,9 @@ const nn: ExampleTexts = {
     disabledReason: 'Fyll ut alle obligatoriske felt før du sender.',
     dangerNote:
       'Knappar som slettar noko, treng alltid eit stadfestingssteg. Dei blir viste saman her berre for å kunne samanliknast.',
+    closeLabel: 'Lukk',
+    saving: 'Lagrar utkast…',
+    applicantName: 'Namnet ditt',
   },
   variant: { primary: 'Primær', secondary: 'Sekundær', danger: 'Farleg' },
   state: {

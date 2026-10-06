@@ -1,19 +1,16 @@
+import { Heading } from '@kvirn-ui/react'
 import type { ReactNode } from 'react'
 
-/**
- * The page's `h1`. `tabIndex={-1}` lets the shell move focus here after client-side
- * navigation (docs-site.md §7). It isn't operable, so it gets no focus ring.
- */
 export function PageHeading({
   children,
-  className = 'docs-h1',
+  size,
 }: {
   children: ReactNode
-  className?: string | undefined
+  size?: 'display' | undefined
 }) {
   return (
-    <h1 tabIndex={-1} className={className}>
+    <Heading level={1} size={size}>
       {children}
-    </h1>
+    </Heading>
   )
 }
