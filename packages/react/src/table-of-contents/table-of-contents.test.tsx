@@ -6,7 +6,7 @@ import { nn } from '@kvirn-ui/i18n/nn'
 import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { createElement, createRef } from 'react'
+import { Fragment, createRef } from 'react'
 import type { ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -31,7 +31,6 @@ import type {
   TableOfContentsListProps,
   TableOfContentsNode,
   TableOfContentsRootProps,
-  TableOfContentsState,
 } from './table-of-contents.tsx'
 import { useTableOfContents } from './use-table-of-contents.ts'
 import type {
@@ -286,13 +285,15 @@ describe('rendering', () => {
     for (const element of parts) {
       expect(element.getAttribute('role')).toBe(element.tagName === 'UL' ? 'list' : null)
       expect(element.getAttributeNames()).not.toContain('tabindex')
-      expect(element.getAttributeNames().filter((name) => name.startsWith('aria-'))).toEqual(
-        element.matches('nav') ? ['aria-labelledby'] : [],
-      )
+      expect(
+        element
+          .getAttributeNames()
+          .filter((name) => name.startsWith('aria-') && name !== 'aria-current'),
+      ).toEqual(element.matches('nav') ? ['aria-labelledby'] : [])
     }
   })
 
-  test('passes other attributes through and joins className, refs and render elements', async () => {
+  test('passes other attributes through and joins className and refs', async () => {
     const rootRef = createRef<HTMLElement>()
     const listRef = createRef<HTMLElement>()
     const itemRef = createRef<HTMLElement>()
@@ -312,7 +313,8 @@ describe('rendering', () => {
               <TableOfContents.Item
                 key={node.item.id}
                 ref={itemRef}
-                render={<li data-own="ja" className="eget" />}
+                data-own="ja"
+                className="eget"
                 data-testid="item"
               >
                 <TableOfContents.Link
@@ -346,33 +348,48 @@ describe('rendering', () => {
     expect(linkRef.current).toBe(link.element())
   })
 
-  test('render as a function receives the part props and the state, and keeps the landmark', async () => {
+  test('a List takes ol and keeps the landmark and the class', async () => {
     await render(
-      <TableOfContents.Root
-        items={entries}
-        render={(rootProps, state) => (
-          <nav {...rootProps} data-rendered="ja" data-active={state.activeId ?? 'ingen'} />
+      <TableOfContents.Root items={entries.slice(0, 1)}>
+        {({ tree }) => (
+          <TableOfContents.List as="ol" data-testid="list">
+            {tree.map((node) => (
+              <TableOfContents.Item key={node.item.id}>
+                <TableOfContents.Link item={node.item} />
+              </TableOfContents.Item>
+            ))}
+          </TableOfContents.List>
         )}
-      />,
+      </TableOfContents.Root>,
     )
-    const navigation = page.getByRole('navigation', { name: 'On this page' })
-    await expect.element(navigation).toHaveAttribute('data-rendered', 'ja')
-    await expect.element(navigation).toHaveAttribute('data-active', 'ingen')
-    await expect.element(navigation).toHaveClass('kv-table-of-contents')
-    expect(page.getByRole('link').all()).toHaveLength(3)
+    expect(page.getByTestId('list').element().tagName).toBe('OL')
+    await expect.element(page.getByTestId('list')).toHaveClass('kv-table-of-contents-list')
+    await expect.element(page.getByRole('navigation', { name: 'On this page' })).toBeVisible()
   })
 
-  test('a link can take a render element and its own children', async () => {
-    // Written with createElement, because JSX `<a />` trips jsx-a11y anchor-has-content, although
-    // the Link supplies the content.
-    const ownAnchor = createElement('a', { title: 'Eget element' })
+  test('an element outside the List’s allowed list warns once and renders a ul', async () => {
+    const notAllowed = 'div' as 'ul'
+    await render(
+      <TableOfContents.Root items={entries.slice(0, 1)}>
+        <TableOfContents.List as={notAllowed} data-testid="list" />
+      </TableOfContents.Root>,
+    )
+    expect(page.getByTestId('list').element().tagName).toBe('UL')
+    expect(
+      consoleWarn.mock.calls.filter((call) =>
+        String(call[0]).includes('TableOfContents.List as="div"'),
+      ),
+    ).toHaveLength(1)
+  })
+
+  test('a link takes its own children and attributes', async () => {
     await render(
       <TableOfContents.Root items={entries.slice(0, 1)}>
         {({ tree }) => (
           <TableOfContents.List>
             {tree.map((node) => (
               <TableOfContents.Item key={node.item.id}>
-                <TableOfContents.Link item={node.item} render={ownAnchor}>
+                <TableOfContents.Link item={node.item} title="Eget element">
                   Första avsnittet
                 </TableOfContents.Link>
               </TableOfContents.Item>
@@ -427,7 +444,7 @@ describe('the function child', () => {
     expect(received.at(-1)?.tree[0]?.children.map((node) => node.item.id)).toEqual([
       'avgift-bostad',
     ])
-    await expect.element(page.getByTestId('active')).toHaveTextContent('ingen')
+    await expect.element(page.getByTestId('active')).toHaveTextContent('avgift')
     scrollHeading('ansok')
     await expect.element(page.getByTestId('active')).toHaveTextContent('ansok')
     await expect.poll(currentLabels).toEqual(['Så ansöker du'])
@@ -435,12 +452,12 @@ describe('the function child', () => {
 })
 
 describe('the current heading', () => {
-  test('nothing is current before the first scroll', async () => {
+  test('on load, a first heading that is visible below the line is current', async () => {
     await render(<Page />)
-    await nextFrame()
-    await nextFrame()
-    expect(currentLabels()).toEqual([])
-    expect(document.querySelectorAll('[data-current]')).toHaveLength(0)
+    await expect.poll(currentLabels).toEqual(['Avgift'])
+    const current = page.getByRole('link', { name: 'Avgift', exact: true })
+    await expect.element(current).toHaveAttribute('aria-current', 'location')
+    expect(document.querySelectorAll('[data-current]')).toHaveLength(1)
   })
 
   test('scrolling to a heading makes its link the one aria-current="location"', async () => {
@@ -462,18 +479,18 @@ describe('the current heading', () => {
     await expect.poll(currentLabels).toEqual(['Bostäder'])
   })
 
-  test('scrolling back above the first heading leaves nothing current', async () => {
+  test('scrolling back above the first heading keeps it current while it is visible', async () => {
     await render(<Page />)
-    scrollHeading('avgift')
-    await expect.poll(currentLabels).toEqual(['Avgift'])
+    scrollHeading('ansok')
+    await expect.poll(currentLabels).toEqual(['Så ansöker du'])
     window.scrollTo(0, 0)
-    await expect.poll(currentLabels).toEqual([])
+    await expect.poll(currentLabels).toEqual(['Avgift'])
   })
 
   test('offset moves the line: a heading is current once it reaches offset', async () => {
     await render(<Page offset={64} scrollMargin={64} />)
-    // 100px below the top is below a line at 64px.
-    scrollHeading('ansok', 100)
+    // Halfway down the viewport is below the line, which is 64px plus 20% of the rest.
+    scrollHeading('ansok', window.innerHeight / 2)
     await expect.poll(currentLabels).toEqual(['Bostäder'])
     // Where a link to it lands, with scroll-margin-top: 64px.
     scrollHeading('ansok', 64)
@@ -482,10 +499,8 @@ describe('the current heading', () => {
 
   test('a heading that is not rendered (display: none) is skipped', async () => {
     await render(<Page hidden={['avgift-bostad']} />)
-    await nextFrame()
-    await nextFrame()
     // A hidden heading reads 0 for its top, which would look like it is above the line.
-    expect(currentLabels()).toEqual([])
+    await expect.poll(currentLabels).toEqual(['Avgift'])
     // Past the first heading and before the last: the hidden one in between is not the current.
     scrollHeading('ansok', 300)
     await expect.poll(currentLabels).toEqual(['Avgift'])
@@ -501,7 +516,7 @@ describe('the current heading', () => {
     await expect.poll(currentLabels).toEqual(['Så ansöker du'])
   })
 
-  test('a page that does not scroll marks nothing, though it is at its end', async () => {
+  test('a page that does not scroll has no end: the last heading is not current for being there', async () => {
     // The default 8px body margin, and the list's 16px margin collapsing through the body, would
     // each push this short page 16px past the viewport.
     const bodyStyle = document.body.getAttribute('style')
@@ -510,15 +525,20 @@ describe('the current heading', () => {
     try {
       await render(
         <>
-          <TableOfContents.Root items={entries.slice(0, 1)} />
-          <div style={{ height: 100 }} />
-          <h2 id="avgift">Avgift</h2>
+          <TableOfContents.Root items={entries} />
+          {entries.map((entry) => (
+            <Fragment key={entry.id}>
+              <div style={{ height: '20vh' }} />
+              <h2 id={entry.id}>{entry.label}</h2>
+            </Fragment>
+          ))}
         </>,
       )
       await nextFrame()
       await nextFrame()
       expect(document.documentElement.scrollHeight).toBeLessThanOrEqual(window.innerHeight)
-      expect(currentLabels()).toEqual([])
+      // The first visible heading, below the line: not the last one, as at the end of a long page.
+      expect(currentLabels()).toEqual(['Avgift'])
     } finally {
       if (bodyStyle === null) {
         document.body.removeAttribute('style')
@@ -754,7 +774,7 @@ describe('useTableOfContents', () => {
 
   test('activeId follows the scroll, and getLinkProps marks only that item', async () => {
     await render(<OwnContents />)
-    await expect.element(page.getByTestId('active')).toHaveTextContent('ingen')
+    await expect.element(page.getByTestId('active')).toHaveTextContent('avgift')
     scrollHeading('avgift-bostad')
     await expect.element(page.getByTestId('active')).toHaveTextContent('avgift-bostad')
     await expect
@@ -805,11 +825,12 @@ describe('types', () => {
       readonly TableOfContentsEntry[]
     >()
     expectTypeOf<TableOfContentsRootProps['offset']>().toEqualTypeOf<number | undefined>()
-    expectTypeOf<TableOfContentsRootProps>().toHaveProperty('render')
-    expectTypeOf<TableOfContentsListProps>().toHaveProperty('render')
-    expectTypeOf<TableOfContentsItemProps>().toHaveProperty('render')
+    expectTypeOf<TableOfContentsListProps>().toHaveProperty('as')
+    expectTypeOf<TableOfContentsRootProps>().not.toHaveProperty('as')
+    expectTypeOf<TableOfContentsItemProps>().not.toHaveProperty('as')
+    expectTypeOf<TableOfContentsLinkProps>().not.toHaveProperty('as')
     expectTypeOf<TableOfContentsLinkProps['item']>().toEqualTypeOf<TableOfContentsEntry>()
-    expectTypeOf<TableOfContentsState['activeId']>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<TableOfContentsChildrenState['activeId']>().toEqualTypeOf<string | undefined>()
     expectTypeOf<TableOfContentsChildrenState['tree']>().toEqualTypeOf<TableOfContentsNode[]>()
     expectTypeOf<TableOfContentsNode['item']>().toEqualTypeOf<TableOfContentsEntry>()
     expectTypeOf<TableOfContentsEntry['level']>().toEqualTypeOf<number>()

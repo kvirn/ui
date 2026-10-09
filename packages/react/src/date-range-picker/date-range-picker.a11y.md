@@ -65,6 +65,7 @@ A click on a day presses it the same way (`a click on the start and on the end c
 
 ## Focus management
 
+- Without a provider `timeZone`, "today" is the UTC date on first paint only. The Calendars mount in the popup on every open, so a popup that opens after mount starts on the browser's date (no switch) and initial focus lands on the cell marked `aria-current="date"`.
 - Initial focus: the day with the Tab stop (the typed start, else the typed end, else today, kept inside the range), through the Dialog's `initialFocusRef`. Not the first month button.
 - Trap: yes, native modal (the page behind is `inert`). Tab leaves to the browser's UI before wrapping (the Dialog's approved deviation), so there is no keyboard trap (2.1.2).
 - Restore to: the trigger, for the end, Escape and Close alike. If the trigger is gone, the first input in the trigger's nearest `fieldset`, group or field: with two masked fields in one row that is the From field; with a Fieldset per end it is the end's first box (the closer landing spot). Never `body`.

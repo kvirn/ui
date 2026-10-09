@@ -1,30 +1,26 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { useContext, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
-import type { ComponentPropsWithRef, HTMLAttributes, ReactElement, Ref, RefCallback } from 'react'
+import {
+  createElement,
+  useContext,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
+import type { ComponentPropsWithRef, HTMLAttributes, ReactElement, Ref } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { SummaryListRowContext } from './summary-list-context.ts'
 import { useSummaryList } from './use-summary-list.ts'
 import type { SummaryListPartProps } from './use-summary-list.ts'
 
 export type { SummaryListPartProps } from './use-summary-list.ts'
 
-/** What `render` receives as its second argument. A summary list has no state, so it's empty. */
-export type SummaryListState = Record<string, never>
-
-/** What a `render` function gets to spread: your attributes, the part's class and a callback ref. */
-export interface SummaryListElementProps extends HTMLAttributes<HTMLElement> {
-  ref: RefCallback<HTMLElement>
-}
-
 interface SummaryListPartComponentProps extends HTMLAttributes<HTMLElement> {
   ref?: Ref<HTMLElement> | undefined
-  /** Change the element, for example `render={<ul />}` on the Root. Its own semantics apply. */
-  render?: RenderProp<SummaryListElementProps, SummaryListState> | undefined
 }
 
 export type SummaryListRootProps = SummaryListPartComponentProps
@@ -33,37 +29,27 @@ export type SummaryListKeyProps = SummaryListPartComponentProps
 export type SummaryListValueProps = SummaryListPartComponentProps
 export type SummaryListActionsProps = SummaryListPartComponentProps
 
-/** What a `render` function of the Change link gets to spread. */
-export interface SummaryListChangeElementProps extends Omit<ComponentPropsWithRef<'a'>, 'ref'> {
-  ref: RefCallback<HTMLAnchorElement>
-}
-
 /** `children` replace the text `summaryList.change`; the key's text is still added to the name. */
 export interface SummaryListChangeProps extends ComponentPropsWithRef<'a'> {
   /** Per-instance message overrides: `{ change: 'Redigera' }`. */
   messages?: Partial<KvirnMessages['summaryList']> | undefined
-  /** Change the element: `render={<a />}`, or your router's link. */
-  render?: RenderProp<SummaryListChangeElementProps, SummaryListState> | undefined
 }
 
-const summaryListState: SummaryListState = Object.freeze({})
-
 /**
- * Internal. One part: one element. The part's class joins a prop's and a render element's own
- * class names (mergeProps), so neither can remove it and the theme keeps styling the list.
+ * Internal. One part: one element. The part's class joins a prop's own class names (mergeProps),
+ * so a prop can't remove it and the theme keeps styling the list.
  */
 function useSummaryListPart(
-  { render, ref, ...otherProps }: SummaryListPartComponentProps,
+  { ref, ...otherProps }: SummaryListPartComponentProps,
   partProps: SummaryListPartProps,
   defaultElement: 'dl' | 'div' | 'dt' | 'dd',
   extraProps: { id?: string } = {},
 ): ReactElement {
   const elementRef = useMergedRef(ref, null)
-  return renderPart({
-    render,
-    defaultElement,
-    partProps: { ...mergeProps(otherProps, partProps), ...extraProps, ref: elementRef },
-    state: summaryListState,
+  return createElement(defaultElement, {
+    ...mergeProps(otherProps, partProps),
+    ...extraProps,
+    ref: elementRef,
   })
 }
 
@@ -128,7 +114,6 @@ SummaryListActions.displayName = 'SummaryList.Actions'
 export function SummaryListChange({
   messages,
   children,
-  render,
   ref,
   ...otherProps
 }: SummaryListChangeProps): ReactElement {
@@ -166,16 +151,11 @@ export function SummaryListChange({
     row === null
       ? { className: 'kv-link kv-summary-list-change' as const }
       : list.getChangeProps({ id: ownId, keyId: row.keyId })
-  return renderPart({
-    render,
-    defaultElement: 'a',
-    partProps: {
-      ...mergeProps(otherProps, changeProps),
-      ref: elementRef,
-      children: children ?? list.changeLabel,
-    },
-    state: summaryListState,
-  })
+  return createElement(
+    'a',
+    { ...mergeProps(otherProps, changeProps), ref: elementRef },
+    children ?? list.changeLabel,
+  )
 }
 SummaryListChange.displayName = 'SummaryList.Change'
 

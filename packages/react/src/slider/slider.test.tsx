@@ -11,7 +11,7 @@ import { Field } from '../field/field.tsx'
 import { NumberInput } from '../number-input/number-input.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Slider } from './slider.tsx'
-import type { SliderProps, SliderState } from './slider.tsx'
+import type { SliderProps } from './slider.tsx'
 import { useSlider } from './use-slider.ts'
 import type {
   SliderChangeDetails,
@@ -69,31 +69,6 @@ describe('rendering', () => {
     await expect.element(control).toHaveAttribute('name', 'volym')
     await expect.element(control).toHaveAttribute('form', 'inställningar')
     await expect.element(control).toHaveAttribute('data-egen', '')
-  })
-
-  test('render as a function gets the part’s props and the state', async () => {
-    const seenStates: SliderState[] = []
-    await render(
-      <Field.Root invalid>
-        <Field.Label>Volym</Field.Label>
-        <Slider
-          disabled
-          defaultValue={20}
-          render={(partProps, state) => {
-            seenStates.push(state)
-            return <input {...partProps} data-egen="" />
-          }}
-        />
-        <Field.ErrorMessage>Fel</Field.ErrorMessage>
-      </Field.Root>,
-    )
-    await expect.element(page.getByRole('slider')).toHaveAttribute('data-egen', '')
-    expect(seenStates.at(-1)).toEqual({
-      isInvalid: true,
-      isDisabled: true,
-      isFocusVisible: false,
-      value: 20,
-    })
   })
 
   test('min, max and step reach the native input, and the start value is halfway', async () => {

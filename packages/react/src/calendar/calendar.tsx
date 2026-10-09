@@ -4,8 +4,6 @@ import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { Tooltip } from '../tooltip/tooltip.tsx'
 import { CalendarContext } from './calendar-context.ts'
 import { useCalendar } from './use-calendar.ts'
@@ -18,15 +16,7 @@ import type {
 
 export type { CalendarDay, CalendarMonth, CalendarWeek, CalendarWeekday } from './use-calendar.ts'
 
-/** What `render` receives as its second argument, for every part. */
-export interface CalendarState {
-  /** The month the grid shows, `{ year, month }` with the month from 1. */
-  visibleMonth: UseCalendarResult['visibleMonth']
-}
-
-interface CalendarRootElementProps extends Omit<ComponentPropsWithRef<'div'>, 'defaultValue'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, CalendarState> | undefined
-}
+type CalendarRootElementProps = Omit<ComponentPropsWithRef<'div'>, 'defaultValue'>
 
 /** One day: `value`, `defaultValue` and `onValueChange` are a date. With `mode="range"` they are a `{ start, end }`. */
 export type CalendarRootProps =
@@ -36,23 +26,17 @@ export type CalendarRootProps =
 export interface CalendarHeadingProps extends ComponentPropsWithRef<'h3'> {
   /** `1` for the second month when `visibleMonths` is 2. Renders nothing while one month shows. */
   offset?: 0 | 1 | undefined
-  render?: RenderProp<ComponentPropsWithRef<'h3'>, CalendarState> | undefined
 }
 
-export interface CalendarStepButtonProps extends ComponentPropsWithRef<'button'> {
-  render?: RenderProp<ComponentPropsWithRef<'button'>, CalendarState> | undefined
-}
+export type CalendarStepButtonProps = ComponentPropsWithRef<'button'>
 
-export interface CalendarRangeHintProps extends ComponentPropsWithRef<'p'> {
-  render?: RenderProp<ComponentPropsWithRef<'p'>, CalendarState> | undefined
-}
+export type CalendarRangeHintProps = ComponentPropsWithRef<'p'>
 
 export interface CalendarGridProps extends ComponentPropsWithRef<'table'> {
   /** `1` for the second month when `visibleMonths` is 2. Renders nothing while one month shows. */
   offset?: 0 | 1 | undefined
   /** Your own rows. Without it the grid renders the weekday headers and the weeks. */
   children?: ReactNode
-  render?: RenderProp<ComponentPropsWithRef<'table'>, CalendarState> | undefined
 }
 
 function useCalendarContext(partName: string): UseCalendarResult | null {
@@ -68,10 +52,6 @@ function useCalendarContext(partName: string): UseCalendarResult | null {
   return calendar
 }
 
-const stateOf = (calendar: UseCalendarResult): CalendarState => ({
-  visibleMonth: calendar.visibleMonth,
-})
-
 /**
  * A month as a grid of days, one Tab stop, with the date keys (contract: calendar.a11y.md). Choose
  * a day with a click, Enter or Space. Compose it from its parts; nothing is rendered for you.
@@ -86,12 +66,7 @@ const stateOf = (calendar: UseCalendarResult): CalendarState => ({
  *   <Calendar.Grid />
  * </Calendar.Root>
  */
-export function CalendarRoot({
-  render,
-  children,
-  ref,
-  ...otherProps
-}: CalendarRootProps): ReactElement {
+export function CalendarRoot({ children, ref, ...otherProps }: CalendarRootProps): ReactElement {
   const {
     mode,
     value,
@@ -138,21 +113,17 @@ export function CalendarRoot({
   } as UseCalendarOptions)
   return (
     <CalendarContext.Provider value={calendar}>
-      {renderPart({
-        render,
-        defaultElement: 'div',
-        partProps: { ...mergeProps(elementProps, calendar.rootProps), ref, children },
-        state: stateOf(calendar),
-      })}
+      <div {...mergeProps(elementProps, calendar.rootProps)} ref={ref}>
+        {children}
+      </div>
     </CalendarContext.Provider>
   )
 }
 CalendarRoot.displayName = 'Calendar.Root'
 
-/** The month and year, `oktober 2026`. It names the grid. An `<h3>`: change the level with `render`. */
+/** The month and year, `oktober 2026`. It names the grid. An `<h3>`. */
 export function CalendarHeading({
   offset = 0,
-  render,
   children,
   ref,
   ...otherProps
@@ -162,16 +133,11 @@ export function CalendarHeading({
   if (calendar === null || month === undefined) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'h3',
-    partProps: {
-      ...mergeProps(otherProps, month.headingProps),
-      ref,
-      children: children ?? month.headingText,
-    },
-    state: stateOf(calendar),
-  })
+  return (
+    <h3 {...mergeProps(otherProps, month.headingProps)} ref={ref}>
+      {children ?? month.headingText}
+    </h3>
+  )
 }
 CalendarHeading.displayName = 'Calendar.Heading'
 
@@ -180,7 +146,7 @@ type StepKey = 'previousMonthProps' | 'nextMonthProps' | 'previousYearProps' | '
 function useStepButton(
   partName: string,
   propsKey: StepKey,
-  { render, children, ref, ...otherProps }: CalendarStepButtonProps,
+  { children, ref, ...otherProps }: CalendarStepButtonProps,
   defaultChildren: ReactNode,
 ): ReactElement | null {
   const calendar = useCalendarContext(partName)
@@ -188,19 +154,11 @@ function useStepButton(
     return null
   }
   const stepProps = calendar[propsKey]
-  const control = renderPart({
-    render,
-    defaultElement: 'button',
-    partProps: {
-      ...mergeProps(otherProps, stepProps),
-      ref,
-      children: children ?? defaultChildren,
-    },
-    state: stateOf(calendar),
-  })
   return (
     <Tooltip.Root>
-      <Tooltip.Trigger render={control} />
+      <Tooltip.Trigger {...mergeProps(otherProps, stepProps)} ref={ref}>
+        {children ?? defaultChildren}
+      </Tooltip.Trigger>
       <Tooltip.Popup>
         <Tooltip.Name>{stepProps['aria-label']}</Tooltip.Name>
       </Tooltip.Popup>
@@ -253,7 +211,6 @@ CalendarNextYear.displayName = 'Calendar.NextYear'
  * and in range mode the span limits and the next step, a line each. Renders nothing without a line.
  */
 export function CalendarRangeHint({
-  render,
   children,
   ref,
   ...otherProps
@@ -262,23 +219,17 @@ export function CalendarRangeHint({
   if (calendar === null || calendar.rangeHint === undefined) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'p',
-    partProps: {
-      ...mergeProps(otherProps, calendar.rangeHintProps),
-      ref,
-      children:
-        children ??
+  return (
+    <p {...mergeProps(otherProps, calendar.rangeHintProps)} ref={ref}>
+      {children ??
         calendar.rangeHintLines.map((line, index) => (
           <Fragment key={line}>
             {index === 0 ? null : ' '}
             <span className="kv-calendar-range-line">{line}</span>
           </Fragment>
-        )),
-    },
-    state: stateOf(calendar),
-  })
+        ))}
+    </p>
+  )
 }
 CalendarRangeHint.displayName = 'Calendar.RangeHint'
 
@@ -289,7 +240,6 @@ CalendarRangeHint.displayName = 'Calendar.RangeHint'
  */
 export function CalendarGrid({
   offset = 0,
-  render,
   children,
   ref,
   ...otherProps
@@ -319,14 +269,13 @@ export function CalendarGrid({
   const labelledBy = [extraLabelledBy, month.gridProps['aria-labelledby']]
     .filter((labelId) => labelId !== undefined && labelId !== '')
     .join(' ')
-  return renderPart({
-    render,
-    defaultElement: 'table',
-    partProps: {
-      ...mergeProps(gridElementProps, month.gridProps),
-      'aria-labelledby': labelledBy,
-      ref,
-      children: children ?? (
+  return (
+    <table
+      {...mergeProps(gridElementProps, month.gridProps)}
+      aria-labelledby={labelledBy}
+      ref={ref}
+    >
+      {children ?? (
         <>
           <thead>
             <tr>
@@ -370,10 +319,9 @@ export function CalendarGrid({
             ))}
           </tbody>
         </>
-      ),
-    },
-    state: stateOf(calendar),
-  })
+      )}
+    </table>
+  )
 }
 CalendarGrid.displayName = 'Calendar.Grid'
 

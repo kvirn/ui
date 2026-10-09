@@ -65,7 +65,7 @@ Parts: `Progress.Root` (`kv-progress`, `data-state`, `data-determinate`), `Progr
 
 ```tsx
 <div className="kv-empty-state">
-  <Heading level={2} className="kv-empty-state-title">
+  <Heading as="h2" className="kv-empty-state-title">
     Du har inga ärenden än
   </Heading>
   <p className="kv-empty-state-body">När du ansöker om något visas det här.</p>

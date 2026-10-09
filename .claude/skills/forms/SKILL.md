@@ -8,7 +8,7 @@ when_to_use: new form control, Field, Fieldset, Label, Legend, ErrorMessage, hel
 
 A form control reports changes up and renders what it is given. A Field wires the control to its label, description, help text and error. A Fieldset does the same for a group.
 
-Load this with `accessibility` (names, errors, announcements), `keyboard` (keys) and `api-conventions` (hooks, parts, `render`, messages). The prop rules are in `docs/architecture.md`, API conventions.
+Load this with `accessibility` (names, errors, announcements), `keyboard` (keys) and `api-conventions` (hooks, parts, `as`, messages). The prop rules are in `docs/architecture.md`, API conventions.
 
 ## No form state
 

@@ -2,7 +2,7 @@
 
 - **APG pattern:** none. Badge is inline text, not a widget.
 - **Deviations:** none
-- **Native elements used:** `<span>`. The consumer can pick another element with `render`, and its own semantics apply.
+- **Native elements used:** `<span>`. The consumer can pick `<strong>` or `<em>` with `as` (allowed elements below), and its own semantics apply.
 - **Status:** alpha candidate (Plan 0059). Gates pending. Manual AT is `pending`.
 - **Tests:** `badge.test.tsx` next to this file. `badge.stories.tsx` in `apps/storybook/src/components/badge/`.
 
@@ -10,11 +10,19 @@ Badge is a `<span>` with a class, so the theme can draw a short status or catego
 
 ## Roles, states, properties
 
-| Part  | Element / role               | ARIA                       | Notes                                                                                                                                                                                |
-| ----- | ---------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Badge | `<span>` → no role           | none                       | `class="kv-badge"`, plus `kv-badge--<variant>` for `primary`, `info`, `success`, `warning` and `danger`. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged |
-| Badge | `render` (element, function) | the rendered element's own | One element. The function form gets the props to spread and `{ variant }` as its state                                                                                               |
-| Badge | never                        | no `role`, `tabindex`      | No `role="status"`, no live region, no click handler, no icon and no generated text: the words are the consumer's children, so nothing is skipped or read twice                      |
+| Part  | Element / role     | ARIA                     | Notes                                                                                                                                                                                                          |
+| ----- | ------------------ | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Badge | `<span>` → no role | none                     | `class="kv-badge"`, plus `kv-badge--<variant>` for `primary`, `info`, `success`, `warning` and `danger`. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged                           |
+| Badge | `as`               | the chosen element's own | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Badge:<tag>`) and renders the default element. `className` joins, the ref gets the element |
+| Badge | never              | no `role`, `tabindex`    | No `role="status"`, no live region, no click handler, no icon and no generated text: the words are the consumer's children, so nothing is skipped or read twice                                                |
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part  | `as`                             | Why                                                                                                               |
+| ----- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Badge | `span` (default), `strong`, `em` | Inline phrasing text, with or without emphasis. No block or interactive element: a Badge is a word, not a control |
 
 ## Keyboard
 

@@ -2,7 +2,7 @@
 
 - **APG pattern:** none. Kbd is inline text, not a widget.
 - **Deviations:** none
-- **Native elements used:** `<kbd>`. The consumer can pick another element with `render`, and its own semantics apply.
+- **Native elements used:** `<kbd>`. The consumer can pick `<samp>` with `as` (allowed elements below), and its own semantics apply.
 - **Status:** alpha candidate (Plan 0024). Gates pending. Manual AT is `pending`.
 - **Tests:** `kbd.test.tsx` next to this file. `kbd.stories.tsx` in `apps/storybook/src/components/kbd/`.
 
@@ -10,12 +10,20 @@ Kbd is the native `<kbd>` element with a class, so the theme can draw it as a ke
 
 ## Roles, states, properties
 
-| Part | Element / role               | ARIA                       | Notes                                                                                                                                                                                                     |
-| ---- | ---------------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Kbd  | `<kbd>` → no role            | none                       | `class="kv-kbd"`. One key per Kbd. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged. The key name is the content: `Tab`, `Esc`, `Ctrl`                                         |
-| Kbd  | nested `<kbd>`               | none                       | A combination is an outer Kbd around one Kbd per key, with the separator as text: `<Kbd><Kbd>Ctrl</Kbd>+<Kbd>C</Kbd></Kbd>`. The theme draws the innermost keys and leaves the outer one plain            |
-| Kbd  | `render` (element, function) | the rendered element's own | One element. The function form gets the props to spread and an empty state                                                                                                                                |
-| Kbd  | never                        | no `role`, `tabindex`      | No click handler, no live region. A key name is text, so screen readers read it as part of the sentence, and the theme draws no content (no generated text, no icons) that would be skipped or read twice |
+| Part | Element / role    | ARIA                     | Notes                                                                                                                                                                                                        |
+| ---- | ----------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Kbd  | `<kbd>` → no role | none                     | `class="kv-kbd"`. One key per Kbd. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged. The key name is the content: `Tab`, `Esc`, `Ctrl`                                            |
+| Kbd  | nested `<kbd>`    | none                     | A combination is an outer Kbd around one Kbd per key, with the separator as text: `<Kbd><Kbd>Ctrl</Kbd>+<Kbd>C</Kbd></Kbd>`. The theme draws the innermost keys and leaves the outer one plain               |
+| Kbd  | `as`              | the chosen element's own | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Kbd:<tag>`) and renders the default element. `className` joins, the ref gets the element |
+| Kbd  | never             | no `role`, `tabindex`    | No click handler, no live region. A key name is text, so screen readers read it as part of the sentence, and the theme draws no content (no generated text, no icons) that would be skipped or read twice    |
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part | `as`                    | Why                                                                |
+| ---- | ----------------------- | ------------------------------------------------------------------ |
+| Kbd  | `kbd` (default), `samp` | `samp` is text a program prints. Nothing else names keyboard input |
 
 ## Keyboard
 

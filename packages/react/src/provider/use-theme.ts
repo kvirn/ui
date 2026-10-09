@@ -2,8 +2,10 @@ import { getThemeStore } from '@kvirn-ui/core'
 import type {
   ColorSchemePreference,
   ContrastPreference,
+  MotionPreference,
   ResolvedColorScheme,
   ResolvedContrast,
+  ResolvedMotion,
   ThemeState,
   ThemeStore,
 } from '@kvirn-ui/core'
@@ -16,9 +18,12 @@ export interface UseThemeResult {
   /** The user's preference, or the app default until they choose. */
   colorScheme: ColorSchemePreference
   contrast: ContrastPreference
+  /** `reduce` is less motion. */
+  motion: MotionPreference
   /** After `system` is replaced by the OS setting. The values on `<html>`. */
   resolvedColorScheme: ResolvedColorScheme
   resolvedContrast: ResolvedContrast
+  resolvedMotion: ResolvedMotion
   /**
    * The OS forces its own colours (`forced-colors: active`, e.g. Windows Contrast Themes).
    * They win over any choice, so a switcher should say so instead of claiming a theme is in use.
@@ -27,29 +32,36 @@ export interface UseThemeResult {
   /** Persists the choice. `system` removes it from storage. */
   selectColorScheme: (colorScheme: ColorSchemePreference) => void
   selectContrast: (contrast: ContrastPreference) => void
+  selectMotion: (motion: MotionPreference) => void
 }
 
 interface ThemeSelection {
   colorScheme: ColorSchemePreference
   contrast: ContrastPreference
+  motion: MotionPreference
   resolvedColorScheme: ResolvedColorScheme
   resolvedContrast: ResolvedContrast
+  resolvedMotion: ResolvedMotion
   isForcedColors: boolean
 }
 
 const selectTheme = (state: ThemeState): ThemeSelection => ({
   colorScheme: state.preference.colorScheme,
   contrast: state.preference.contrast,
+  motion: state.preference.motion,
   resolvedColorScheme: state.resolved.colorScheme,
   resolvedContrast: state.resolved.contrast,
+  resolvedMotion: state.resolved.motion,
   isForcedColors: state.system.isForcedColors,
 })
 
 const isSameSelection = (previous: ThemeSelection, next: ThemeSelection) =>
   previous.colorScheme === next.colorScheme &&
   previous.contrast === next.contrast &&
+  previous.motion === next.motion &&
   previous.resolvedColorScheme === next.resolvedColorScheme &&
   previous.resolvedContrast === next.resolvedContrast &&
+  previous.resolvedMotion === next.resolvedMotion &&
   previous.isForcedColors === next.isForcedColors
 
 /** Internal. The provider's theme store, or the document's own store without a provider. */
@@ -71,9 +83,9 @@ export function useTheme(): UseThemeResult {
   // first consumer follow the OS and write `<html>`.
   useEffect(() => themeStore.connect(), [themeStore])
 
-  const { selectColorScheme, selectContrast } = themeStore.actions
+  const { selectColorScheme, selectContrast, selectMotion } = themeStore.actions
   return useMemo(
-    () => ({ ...selection, selectColorScheme, selectContrast }),
-    [selection, selectColorScheme, selectContrast],
+    () => ({ ...selection, selectColorScheme, selectContrast, selectMotion }),
+    [selection, selectColorScheme, selectContrast, selectMotion],
   )
 }

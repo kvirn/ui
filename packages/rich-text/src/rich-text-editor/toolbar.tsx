@@ -72,8 +72,8 @@ export function RichTextEditorToolbar({
   const field = useContext(FieldContext)
   const nameId = useId()
   const [popupSlot, setPopupSlot] = useState<HTMLElement | null>(null)
-  const toolbarElement = useRef<HTMLDivElement | null>(null)
-  const mergedRef = useMergedRef<HTMLDivElement>(ref, toolbarElement)
+  const toolbarElement = useRef<HTMLElement | null>(null)
+  const mergedRef = useMergedRef<HTMLElement>(ref, toolbarElement)
   const effectiveLabels = labels ?? context.labels
   const effectiveTooltips = tooltips ?? context.tooltips
   const { registerToolbar, focusText } = context

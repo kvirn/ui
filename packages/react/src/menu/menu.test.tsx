@@ -20,6 +20,7 @@ import {
 import type {
   MenuChangeDetails,
   MenuChangeReason,
+  MenuPopupProps,
   MenuRootProps,
   UseMenuOptions,
   UseMenuResult,
@@ -257,57 +258,35 @@ describe('rendering', () => {
     expect(itemRef.current?.getAttribute('data-egen')).toBe('item')
   })
 
-  test('render replaces the element on every part and gives the state', async () => {
-    const states: boolean[] = []
+  test('as changes the Trigger, the Popup, the groups and the label, and keeps the roles', async () => {
     await render(
       <Menu.Root defaultOpen>
-        <Menu.Trigger
-          render={(partProps) => (
-            <button {...partProps} data-egen="render">
-              Åtgärder
-            </button>
-          )}
-        />
-        <Menu.Popup
-          render={(partProps, state) => {
-            states.push(state.isOpen)
-            return <section {...partProps} />
-          }}
-        >
-          <Menu.Group render={(partProps) => <section {...partProps} />} aria-label="Grupp">
-            <Menu.GroupLabel render={(partProps) => <span {...partProps} data-egen="label" />}>
+        <Menu.Trigger as={Button} data-egen="trigger">
+          Åtgärder
+        </Menu.Trigger>
+        <Menu.Popup as="section">
+          <Menu.Group as="section" aria-label="Grupp">
+            <Menu.GroupLabel as="span" data-egen="label">
               Etikett
             </Menu.GroupLabel>
-            <Menu.Item
-              render={(partProps, state) => (
-                <button {...partProps} data-highlighted-state={String(state.isHighlighted)} />
-              )}
-            >
-              Ett
-            </Menu.Item>
-            <Menu.CheckboxItem
-              render={(partProps) => <button {...partProps} data-egen="checkbox" />}
-            >
-              Två
-            </Menu.CheckboxItem>
+            <Menu.Item>Ett</Menu.Item>
+            <Menu.CheckboxItem data-egen="checkbox">Två</Menu.CheckboxItem>
           </Menu.Group>
-          <Menu.RadioGroup aria-label="Val" render={(partProps) => <section {...partProps} />}>
-            <Menu.RadioItem
-              value="a"
-              render={(partProps) => <button {...partProps} data-egen="radio" />}
-            >
+          <Menu.RadioGroup aria-label="Val" as="section">
+            <Menu.RadioItem value="a" data-egen="radio">
               Tre
             </Menu.RadioItem>
           </Menu.RadioGroup>
-          <Menu.Separator render={(partProps) => <div {...partProps} data-egen="separator" />} />
+          <Menu.Separator data-egen="separator" />
         </Menu.Popup>
       </Menu.Root>,
     )
     await expect.poll(isShown).toBe(true)
-    expect(triggerElement().getAttribute('data-egen')).toBe('render')
+    expect(triggerElement().getAttribute('data-egen')).toBe('trigger')
     expect(triggerElement().getAttribute('aria-expanded')).toBe('true')
     expect(popupElement()?.tagName).toBe('SECTION')
-    expect(states.at(-1)).toBe(true)
+    expect(popupElement()?.getAttribute('role')).toBe('menu')
+    expect(document.querySelector('[data-egen="label"]')?.tagName).toBe('SPAN')
     expect(document.querySelector('[data-egen="label"]')?.className).toBe('kv-menu-group-label')
     expect(document.querySelector('[data-egen="separator"]')?.getAttribute('role')).toBe(
       'separator',
@@ -318,10 +297,22 @@ describe('rendering', () => {
     expect(document.querySelector('[data-egen="radio"]')?.getAttribute('role')).toBe(
       'menuitemradio',
     )
-    item('Ett').element().focus()
-    await expect
-      .poll(() => item('Ett').element().getAttribute('data-highlighted-state'))
-      .toBe('true')
+    expect(document.querySelector('section.kv-menu-group')?.getAttribute('role')).toBe('group')
+  })
+
+  test('a tag outside the Popup’s list warns once and falls back to a div', async () => {
+    const notAllowed = 'ul' as MenuPopupProps['as']
+    await render(
+      <Menu.Root defaultOpen>
+        <Menu.Trigger>Åtgärder</Menu.Trigger>
+        <Menu.Popup as={notAllowed}>
+          <Menu.Item>Ett</Menu.Item>
+        </Menu.Popup>
+      </Menu.Root>,
+    )
+    expect(popupElement()?.tagName).toBe('DIV')
+    expect(consoleWarn).toHaveBeenCalledTimes(1)
+    expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('Menu.Popup as="ul"')
   })
 
   test('the focused item is the highlight: data-highlighted follows focus', async () => {
@@ -747,13 +738,13 @@ describe('pointer', () => {
     expect(isShown()).toBe(true)
   })
 
-  test('an enabled item runs the onClick of its render element and closes', async () => {
+  test('an enabled item runs its onClick and closes', async () => {
     const elementOnClick = vi.fn<(event: MouseEvent<HTMLButtonElement>) => void>()
     await render(
       <Menu.Root>
         <Menu.Trigger>Åtgärder</Menu.Trigger>
         <Menu.Popup aria-label="Åtgärder">
-          <Menu.Item render={<button aria-label="Dela" onClick={elementOnClick} />}>Dela</Menu.Item>
+          <Menu.Item onClick={elementOnClick}>Dela</Menu.Item>
         </Menu.Popup>
       </Menu.Root>,
     )
@@ -763,13 +754,13 @@ describe('pointer', () => {
     await expect.poll(isShown).toBe(false)
   })
 
-  test('a disabled item does not run the onClick of its render element, by click or key', async () => {
+  test('a disabled item does not run its onClick, by click or key', async () => {
     const elementOnClick = vi.fn<(event: MouseEvent<HTMLButtonElement>) => void>()
     await render(
       <Menu.Root>
         <Menu.Trigger>Åtgärder</Menu.Trigger>
         <Menu.Popup aria-label="Åtgärder">
-          <Menu.Item disabled render={<button aria-label="Dela" onClick={elementOnClick} />}>
+          <Menu.Item disabled onClick={elementOnClick}>
             Dela
           </Menu.Item>
         </Menu.Popup>
@@ -1223,7 +1214,9 @@ describe('composition', () => {
       <Toolbar.Root aria-label="Verktyg" orientation="vertical">
         <Toolbar.Button style={controlStyle}>Ett</Toolbar.Button>
         <Menu.Root>
-          <Toolbar.Item render={<Menu.Trigger style={controlStyle} />}>Åtgärder</Toolbar.Item>
+          <Toolbar.Item as={Menu.Trigger} style={controlStyle}>
+            Åtgärder
+          </Toolbar.Item>
           <Menu.Popup>
             <Menu.Item style={controlStyle}>Skriv ut</Menu.Item>
             <Menu.Item style={controlStyle}>Dela</Menu.Item>
@@ -1247,7 +1240,9 @@ describe('composition', () => {
     await render(
       <Tooltip.Root delay={20} group={group}>
         <Menu.Root>
-          <Tooltip.Trigger render={<Menu.Trigger style={controlStyle} />}>Åtgärder</Tooltip.Trigger>
+          <Tooltip.Trigger as={Menu.Trigger} style={controlStyle}>
+            Åtgärder
+          </Tooltip.Trigger>
           <Tooltip.Popup>Fler åtgärder</Tooltip.Popup>
           <Menu.Popup>
             <Menu.Item style={controlStyle}>Skriv ut</Menu.Item>
@@ -1327,23 +1322,11 @@ describe('development warnings', () => {
   test('a Trigger that is not a button', async () => {
     await render(
       <Menu.Root>
-        <Menu.Trigger render={<div />}>Åtgärder</Menu.Trigger>
+        <Menu.Trigger as="div">Åtgärder</Menu.Trigger>
         <Menu.Popup />
       </Menu.Root>,
     )
     expect(messages().join('\n')).toContain('A Menu.Trigger rendered a <div>')
-  })
-
-  test('an Item rendered as a link: a menu is for actions', async () => {
-    await render(
-      <Menu.Root defaultOpen>
-        <Menu.Trigger>Åtgärder</Menu.Trigger>
-        <Menu.Popup>
-          <Menu.Item render={<a href="/start">Startsidan</a>} />
-        </Menu.Popup>
-      </Menu.Root>,
-    )
-    await expect.poll(() => messages().join('\n')).toContain('A Menu.Item is rendered as a link')
   })
 
   test('a RadioGroup and a Group with no name', async () => {

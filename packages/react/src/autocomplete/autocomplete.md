@@ -55,7 +55,7 @@ import { Autocomplete, Field } from '@kvirn-ui/react'
 - **`Autocomplete.Control`, `Toggle`, `Clear`**: recommended, as in the Combobox: a box around the input and its buttons, a button that opens the popup, and a button that empties the text. Toggle and Clear are not tab stops.
 - **`useAutocomplete(options)`** returns the same props as `useCombobox`, for your own markup.
 
-Every part renders exactly one element, takes `render` and your own `className`, `ref` and handlers (merged with its own), and has a stable class: `kv-autocomplete-control`, `kv-autocomplete-input`, `kv-autocomplete-toggle`, `kv-autocomplete-clear`, and the Listbox's popup classes. With `@kvirn-ui/theme/theme.css` imported, the input looks like an Input and the popup like the Listbox's.
+Every part renders exactly one element and takes your own `className`, `ref` and handlers (merged with its own), and has a stable class: `kv-autocomplete-control`, `kv-autocomplete-input`, `kv-autocomplete-toggle`, `kv-autocomplete-clear`, and the Listbox's popup classes. With `@kvirn-ui/theme/theme.css` imported, the input looks like an Input and the popup like the Listbox's.
 
 ## Long lists
 

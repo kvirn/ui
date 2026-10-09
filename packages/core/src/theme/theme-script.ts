@@ -5,12 +5,18 @@ import {
   contrastAttribute,
   contrastPreferences,
   contrastQuery,
+  motionAttribute,
+  motionPreferences,
+  motionQuery,
   themeStorageKey,
 } from './theme-constants.ts'
 import { resolveThemeOptions } from './theme-store.ts'
 import type { ThemeOptions } from './theme-store.ts'
 
-export type ThemeScriptOptions = Pick<ThemeOptions, 'defaultColorScheme' | 'defaultContrast'>
+export type ThemeScriptOptions = Pick<
+  ThemeOptions,
+  'defaultColorScheme' | 'defaultContrast' | 'defaultMotion'
+>
 
 /**
  * Source for the blocking inline script that sets the theme attributes on `<html>`
@@ -25,6 +31,7 @@ export function createThemeScriptSource(options: ThemeScriptOptions = {}): strin
   const defaults = {
     colorScheme: resolvedOptions.defaultColorScheme,
     contrast: resolvedOptions.defaultContrast,
+    motion: resolvedOptions.defaultMotion,
   }
   const embed = (value: unknown) => JSON.stringify(value).replaceAll('<', '\\u003c')
 
@@ -49,14 +56,19 @@ export function createThemeScriptSource(options: ThemeScriptOptions = {}): strin
   }
   var colorScheme = pick(stored.colorScheme, ${embed(colorSchemePreferences)}, defaults.colorScheme);
   var contrast = pick(stored.contrast, ${embed(contrastPreferences)}, defaults.contrast);
+  var motion = pick(stored.motion, ${embed(motionPreferences)}, defaults.motion);
   if (colorScheme === "system") {
     colorScheme = isMatching(${embed(colorSchemeQuery)}) ? "dark" : "light";
   }
   if (contrast === "system") {
     contrast = isMatching(${embed(contrastQuery)}) ? "more" : "standard";
   }
+  if (motion === "system") {
+    motion = isMatching(${embed(motionQuery)}) ? "reduce" : "full";
+  }
   var root = document.documentElement;
   root.setAttribute(${embed(colorSchemeAttribute)}, colorScheme);
   root.setAttribute(${embed(contrastAttribute)}, contrast);
+  root.setAttribute(${embed(motionAttribute)}, motion);
 })();`
 }

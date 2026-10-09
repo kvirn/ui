@@ -1,11 +1,19 @@
 'use client'
 import { useCallback, useContext, useEffect, useId, useRef, useState } from 'react'
-import type { ComponentPropsWithRef, FocusEvent, MouseEvent, ReactElement, ReactNode } from 'react'
+import type {
+  ComponentPropsWithRef,
+  ElementType,
+  FocusEvent,
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+} from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart, takeRenderElementProps } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsComponent, AsTag } from '../render/as-prop.ts'
+import { renderPart } from '../render/render-part.ts'
 import { ToolbarContext } from '../toolbar/toolbar-context.ts'
 import { MenuContext, MenuGroupContext, MenuRadioGroupContext } from './menu-context.ts'
 import { useMenu } from './use-menu.ts'
@@ -13,31 +21,23 @@ import type { MenuItemKind, UseMenuOptions } from './use-menu.ts'
 
 export type { MenuChangeDetails, MenuChangeReason } from './use-menu.ts'
 
-/** What `render` receives as its second argument, for the Trigger, the Popup and the other parts. */
-export interface MenuState {
-  isOpen: boolean
-}
-
-/** What `render` receives for an item. */
-export interface MenuItemState extends MenuState {
-  isChecked: boolean
-  isDisabled: boolean
-  /** Whether the item has focus: the menu's one highlight. */
-  isHighlighted: boolean
-}
+const sectionTags = ['div', 'section'] as const
+const groupLabelTags = ['div', 'span', 'p'] as const
 
 export interface MenuRootProps extends UseMenuOptions {
   children?: ReactNode
 }
 
-export interface MenuTriggerProps extends ComponentPropsWithRef<'button'> {
-  render?: RenderProp<ComponentPropsWithRef<'button'>, MenuState> | undefined
-}
+/**
+ * `as` is a component that renders a button, such as `as={Button}`: its props are plain props of
+ * the trigger. Without `as` it is a `<button type="button">`.
+ */
+export type MenuTriggerProps<Component extends ElementType = 'button'> = AsComponent<Component>
 
-export interface MenuPopupProps extends ComponentPropsWithRef<'div'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, MenuState> | undefined
-}
+/** `as` is `div` (default) or `section`. The role is `menu` either way. */
+export type MenuPopupProps = AsTag<(typeof sectionTags)[number], 'div'>
 
+/** An item is a `<button>` with a role: it has no `as`, because an action is a button. */
 export interface MenuItemProps extends Omit<
   ComponentPropsWithRef<'button'>,
   'onSelect' | 'disabled' | 'type' | 'role'
@@ -50,7 +50,6 @@ export interface MenuItemProps extends Omit<
   disabled?: boolean | undefined
   /** The label typeahead matches. Default: the item's trimmed text. */
   textValue?: string | undefined
-  render?: RenderProp<ComponentPropsWithRef<'button'>, MenuItemState> | undefined
 }
 
 export interface MenuCheckboxItemProps extends MenuItemProps {
@@ -61,31 +60,31 @@ export interface MenuCheckboxItemProps extends MenuItemProps {
   onCheckedChange?: ((checked: boolean) => void) | undefined
 }
 
-export interface MenuRadioGroupProps extends ComponentPropsWithRef<'div'> {
-  /** Controlled: the chosen value. Pair it with `onValueChange`. */
-  value?: string | undefined
-  /** Uncontrolled: the value that starts chosen. */
-  defaultValue?: string | undefined
-  onValueChange?: ((value: string) => void) | undefined
-  render?: RenderProp<ComponentPropsWithRef<'div'>, MenuState> | undefined
-}
+/** `as` is `div` (default) or `section`. The role is `group` either way. */
+export type MenuRadioGroupProps = AsTag<
+  (typeof sectionTags)[number],
+  'div',
+  {
+    /** Controlled: the chosen value. Pair it with `onValueChange`. */
+    value?: string | undefined
+    /** Uncontrolled: the value that starts chosen. */
+    defaultValue?: string | undefined
+    onValueChange?: ((value: string) => void) | undefined
+  }
+>
 
 export interface MenuRadioItemProps extends MenuItemProps {
   /** What the group's value becomes when this item is chosen. */
   value: string
 }
 
-export interface MenuGroupProps extends ComponentPropsWithRef<'div'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, MenuState> | undefined
-}
+/** `as` is `div` (default) or `section`. The role is `group` either way. */
+export type MenuGroupProps = AsTag<(typeof sectionTags)[number], 'div'>
 
-export interface MenuGroupLabelProps extends ComponentPropsWithRef<'div'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, MenuState> | undefined
-}
+/** `as` is `div` (default), `span` or `p`. */
+export type MenuGroupLabelProps = AsTag<(typeof groupLabelTags)[number], 'div'>
 
-export interface MenuSeparatorProps extends ComponentPropsWithRef<'div'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, MenuState> | undefined
-}
+export type MenuSeparatorProps = ComponentPropsWithRef<'div'>
 
 function warnOutsideRoot(part: string): void {
   warnOnce(
@@ -132,7 +131,10 @@ MenuRoot.displayName = 'Menu.Root'
  * `aria-controls`, and the anchor the popup is placed against. A press, Enter, Space or ArrowDown
  * opens the menu on its first item, ArrowUp on its last. The popup is named by this button.
  */
-export function MenuTrigger({ render, ref, ...otherProps }: MenuTriggerProps): ReactElement {
+export function MenuTrigger<Component extends ElementType = 'button'>(
+  props: MenuTriggerProps<Component>,
+): ReactElement
+export function MenuTrigger({ as, ref, ...otherProps }: MenuTriggerProps<'button'>): ReactElement {
   const menu = useContext(MenuContext)
   const elementRef = useRef<HTMLButtonElement | null>(null)
   const mergedRef = useMergedRef(useMergedRef(ref, menu?.triggerProps.ref ?? null), elementRef)
@@ -143,18 +145,17 @@ export function MenuTrigger({ render, ref, ...otherProps }: MenuTriggerProps): R
       const rendered = element.tagName.toLowerCase()
       warnOnce(
         `menu-trigger-not-a-button:${rendered}`,
-        `A Menu.Trigger rendered a <${rendered}>, not a <button>. Enter and Space then do not open the menu unless you add them, and it is not announced as a button (WCAG 2.1.1, 4.1.2). Render a <button>.`,
+        `A Menu.Trigger rendered a <${rendered}>, not a <button>. Enter and Space then do not open the menu unless you add them, and it is not announced as a button (WCAG 2.1.1, 4.1.2). Use a <button>.`,
       )
     }
   })
   return renderPart({
-    render,
+    as,
     defaultElement: 'button',
     partProps: {
       ...mergeProps(otherProps, menu?.triggerProps ?? { type: 'button' as const }),
       ref: mergedRef,
     },
-    state: { isOpen: menu?.isOpen ?? false },
   })
 }
 MenuTrigger.displayName = 'Menu.Trigger'
@@ -166,7 +167,7 @@ MenuTrigger.displayName = 'Menu.Trigger'
  * scrolls inside when it is too tall (`--kv-popup-max-height`). Escape and a press outside close it.
  */
 export function MenuPopup({
-  render,
+  as,
   ref,
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
@@ -182,7 +183,7 @@ export function MenuPopup({
   return (
     <ToolbarContext.Provider value={null}>
       {renderPart({
-        render,
+        as: resolveAsTag({ part: 'Menu.Popup', as, allowedTags: sectionTags }),
         defaultElement: 'div',
         partProps: {
           ...mergeProps(otherProps, popupProps),
@@ -190,7 +191,6 @@ export function MenuPopup({
           'aria-labelledby': isNamedByConsumer ? ariaLabelledBy : triggerLabel,
           ref: mergedRef,
         },
-        state: { isOpen: menu?.isOpen ?? false },
       })}
     </ToolbarContext.Provider>
   )
@@ -207,7 +207,6 @@ interface ItemPartOptions {
 
 function useMenuItemElement(
   {
-    render,
     ref,
     disabled = false,
     closeOnSelect,
@@ -223,19 +222,8 @@ function useMenuItemElement(
   const menu = useContext(MenuContext)
   const elementRef = useRef<HTMLButtonElement | null>(null)
   const mergedRef = useMergedRef(ref, elementRef)
-  const { render: renderWithoutClick, takenProps } = takeRenderElementProps(render, ['onClick'])
-  const elementOnClick = takenProps.onClick
   const [isHighlighted, setIsHighlighted] = useState(false)
   useWarnOutsideRoot(part, menu === null)
-  useEffect(() => {
-    const element = elementRef.current
-    if (element !== null && element.tagName === 'A' && element.hasAttribute('href')) {
-      warnOnce(
-        'menu-item-navigation',
-        'A Menu.Item is rendered as a link. A menu holds actions: a screen reader announces role="menu" and reads a link as a menu item, not as a link. Put links in a Navigation or a Disclosure.',
-      )
-    }
-  })
   const itemProps = menu?.getItemProps(kind, {
     disabled,
     closeOnSelect,
@@ -250,20 +238,13 @@ function useMenuItemElement(
     },
   })
   return renderPart({
-    render: renderWithoutClick,
+    as: undefined,
     defaultElement: 'button',
     partProps: {
       ...mergeProps(
         {
           ...otherProps,
-          onClick: disabled
-            ? undefined
-            : (event: MouseEvent<HTMLButtonElement>) => {
-                onClick?.(event)
-                if (typeof elementOnClick === 'function') {
-                  elementOnClick(event)
-                }
-              },
+          onClick: disabled ? undefined : onClick,
           onFocus: (event: FocusEvent<HTMLButtonElement>) => {
             setIsHighlighted(true)
             onFocus?.(event)
@@ -276,12 +257,6 @@ function useMenuItemElement(
         itemProps ?? { type: 'button' as const },
       ),
       ref: mergedRef,
-    },
-    state: {
-      isOpen: menu?.isOpen ?? false,
-      isChecked: checked,
-      isDisabled: disabled,
-      isHighlighted,
     },
   })
 }
@@ -328,7 +303,7 @@ MenuCheckboxItem.displayName = 'Menu.CheckboxItem'
  * form control `RadioGroup`.
  */
 export function MenuRadioGroup({
-  render,
+  as,
   ref,
   value: valueProp,
   defaultValue,
@@ -362,13 +337,12 @@ export function MenuRadioGroup({
       }}
     >
       {renderPart({
-        render,
+        as: resolveAsTag({ part: 'Menu.RadioGroup', as, allowedTags: sectionTags }),
         defaultElement: 'div',
         partProps: {
           ...mergeProps(otherProps, { className: 'kv-menu-radio-group', role: 'group' }),
           ref: mergedRef,
         },
-        state: { isOpen: menu?.isOpen ?? false },
       })}
     </MenuRadioGroupContext.Provider>
   )
@@ -394,7 +368,7 @@ MenuRadioItem.displayName = 'Menu.RadioItem'
  * A group of items: `role="group"`, named by its `Menu.GroupLabel`, or by `aria-label` or
  * `aria-labelledby` when you pass one.
  */
-export function MenuGroup({ render, ref, ...otherProps }: MenuGroupProps): ReactElement {
+export function MenuGroup({ as, ref, ...otherProps }: MenuGroupProps): ReactElement {
   const menu = useContext(MenuContext)
   const labelId = useId()
   const elementRef = useRef<HTMLDivElement | null>(null)
@@ -421,7 +395,7 @@ export function MenuGroup({ render, ref, ...otherProps }: MenuGroupProps): React
   return (
     <MenuGroupContext.Provider value={{ labelId, registerLabel }}>
       {renderPart({
-        render,
+        as: resolveAsTag({ part: 'Menu.Group', as, allowedTags: sectionTags }),
         defaultElement: 'div',
         partProps: {
           ...mergeProps(otherProps, {
@@ -431,7 +405,6 @@ export function MenuGroup({ render, ref, ...otherProps }: MenuGroupProps): React
           }),
           ref: mergedRef,
         },
-        state: { isOpen: menu?.isOpen ?? false },
       })}
     </MenuGroupContext.Provider>
   )
@@ -439,36 +412,32 @@ export function MenuGroup({ render, ref, ...otherProps }: MenuGroupProps): React
 MenuGroup.displayName = 'Menu.Group'
 
 /** The visible name of a `Menu.Group`. It is not an item: arrows and typeahead skip it. */
-export function MenuGroupLabel({ render, ref, ...otherProps }: MenuGroupLabelProps): ReactElement {
-  const menu = useContext(MenuContext)
+export function MenuGroupLabel({ as, ref, ...otherProps }: MenuGroupLabelProps): ReactElement {
   const mergedRef = useMergedRef(ref, null)
   const group = useContext(MenuGroupContext)
   const registerLabel = group?.registerLabel
   useEffect(() => registerLabel?.(), [registerLabel])
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'Menu.GroupLabel', as, allowedTags: groupLabelTags }),
     defaultElement: 'div',
     partProps: {
       ...mergeProps(otherProps, { className: 'kv-menu-group-label', id: group?.labelId }),
       ref: mergedRef,
     },
-    state: { isOpen: menu?.isOpen ?? false },
   })
 }
 MenuGroupLabel.displayName = 'Menu.GroupLabel'
 
 /** A dividing line between items: `role="separator"`. Not an item. */
-export function MenuSeparator({ render, ref, ...otherProps }: MenuSeparatorProps): ReactElement {
-  const menu = useContext(MenuContext)
+export function MenuSeparator({ ref, ...otherProps }: MenuSeparatorProps): ReactElement {
   const mergedRef = useMergedRef(ref, null)
   return renderPart({
-    render,
+    as: undefined,
     defaultElement: 'div',
     partProps: {
       ...mergeProps(otherProps, { className: 'kv-menu-separator', role: 'separator' }),
       ref: mergedRef,
     },
-    state: { isOpen: menu?.isOpen ?? false },
   })
 }
 MenuSeparator.displayName = 'Menu.Separator'

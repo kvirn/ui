@@ -35,6 +35,16 @@
         "default": "./dist/internal.cjs"
       }
     },
+    "./server": {
+      "import": {
+        "types": "./dist/server.d.mts",
+        "default": "./dist/server.mjs"
+      },
+      "require": {
+        "types": "./dist/server.d.cts",
+        "default": "./dist/server.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
   "publishConfig": {
@@ -42,7 +52,7 @@
   },
   "scripts": {
     "build": "vp pack",
-    "dev": "vp pack --watch"
+    "dev": "vp pack --watch --no-clean"
   },
   "dependencies": {
     "@kvirn-ui/core": "workspace:*",

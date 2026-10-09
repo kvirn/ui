@@ -2,22 +2,30 @@
 
 - **APG pattern:** none. Columns is not a widget, so there is no APG pattern.
 - **Deviations:** none
-- **Native elements used:** `<div>` by default. The consumer picks `<main>`, `<section>`, `<nav>`, `<aside>`, `<ul>` or another element with `render`, and the element's own semantics apply.
+- **Native elements used:** `<div>` by default. The consumer picks another with `as` (allowed elements below), and the element's own semantics apply.
 - **Status:** alpha candidate (Plan 0056). Gates 1–5 pass, accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `columns.test.tsx` next to this file. `columns.stories.tsx` in `apps/storybook/src/components/columns/`.
 
-Columns is as many columns as fit, none narrower than `minColumnWidth`. It adds no role, no ARIA, no text, no `tabindex` and no behaviour, and it has no `data-*` state. Everything a user perceives comes from the consumer's children, which keep their own semantics and focus order.
+Columns is as many columns as fit, none narrower than `minColumnWidth`. It adds no ARIA, no text, no `tabindex` and no behaviour, and it has no `data-*` state. As a `ul` or `ol` it adds `role="list"` when it renders a `ul` or `ol`, because WebKit and VoiceOver drop the list role under `list-style: none`. Everything a user perceives comes from the consumer's children, which keep their own semantics and focus order.
 
 ## Roles, states, properties
 
-| Part    | Element / role               | ARIA                                          | Notes                                                                                                                                                                                                                |
-| ------- | ---------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Columns | `<div>` → `generic`          | none. The consumer adds it with the element   | `class="kv-columns"`, with `kv-columns--min-sm` or `-lg` and `kv-columns--gap-4` or `-8` for the choices that differ from the defaults. `render={<ul />}` with `<li>` children is a list, and its count is announced |
-| Columns | `render` (element, function) | the rendered element's own                    | One element. An element keeps its own props, and the part's are merged in: `className` joins, `style` merges, refs merge                                                                                             |
-| Columns | attributes                   | passed through                                | `aria-*`, `id`, `lang` and every other attribute reach the element unchanged                                                                                                                                         |
-| Columns | never                        | no `role`, `tabindex`, `inert`, `aria-hidden` | No handler, no heading, no live region, no text                                                                                                                                                                      |
+| Part    | Element / role      | ARIA                                                                   | Notes                                                                                                                                                                                                         |
+| ------- | ------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Columns | `<div>` → `generic` | none. The consumer adds it with the element                            | `class="kv-columns"`, with `kv-columns--min-sm` or `-lg` and `kv-columns--gap-4` or `-8` for the choices that differ from the defaults. `as="ul"` with `<li>` children is a list, and its count is announced  |
+| Columns | `as`                | the chosen element's own                                               | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Columns:<tag>`) and renders the default element. `className` joins, `style` and refs pass |
+| Columns | attributes          | passed through                                                         | `aria-*`, `id`, `lang` and every other attribute reach the element unchanged                                                                                                                                  |
+| Columns | never               | `role="list"` on `ul`/`ol` only; no `tabindex`, `inert`, `aria-hidden` | No handler, no heading, no live region, no text                                                                                                                                                               |
 
 `useColumns()` gives the same frozen props object (only `className`) for your own element.
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part    | `as`                        | Why                                                                                                                  |
+| ------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Columns | `div` (default), `ul`, `ol` | `ul` and `ol` with `<li>` children are lists whose count is announced. No landmark element: use Container or Section |
 
 ## Keyboard
 
@@ -48,9 +56,9 @@ Columns renders no text, so it has no message keys.
 
 ## Consumer responsibilities
 
-- **A list of links or cards is a list.** `render={<ul role="list" />}` with `<li>` children, so the count is announced (1.3.1). Write `role="list"` on the `<ul>` by default: the theme draws no markers, and WebKit and VoiceOver then drop the list role (see the Card contract, Lists; the repo's lint allows `role="list"` on a `ul`, and the stories use it).
+- **A list of links or cards is a list.** `as="ul"` or `"ol"` with `<li>` children, so the count is announced (1.3.1). Columns sets `role="list"` itself: the theme draws no markers, and WebKit and VoiceOver then drop the list role. Don't write it.
 - **No reordering.** The columns fill in DOM order, left to right (right to left in RTL). There is no `order`, `reverse` or dense packing (1.3.2, 2.4.3).
-- **Landmarks.** `render={<main />}`, `<nav aria-label>`, `<aside aria-labelledby>` or `<section aria-labelledby>` only for a region a user would want to jump to, always named. A page has one `main`.
+- **Landmarks.** Columns has none to give: a landmark is a `Container` (`main`, `section`) or a `Section` (`nav`, `aside`), always named. A page has one `main`.
 - **DOM order is the visual order.** Write children in the order they are read and focused (1.3.2, 2.4.3). There is no way to reorder them visually.
 - **Language.** `lang` on any text in another language (3.1.2).
 
@@ -65,7 +73,7 @@ Headless: Columns ships no CSS. With `@kvirn-ui/theme/theme.css` (DESIGN.md, Lay
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships, 4.1.2 Name, Role, Value: no role of its own, so the consumer's element decides (`columns.test.tsx › rendering › adds no role, ARIA, tabindex, inert or data attribute`).
+- 1.3.1 Info and Relationships, 4.1.2 Name, Role, Value: a div has no role, and a `ul` or `ol` has `role="list"` (`columns.test.tsx › rendering › adds role="list" to a ul and an ol, and no role to a div`).
 - 1.3.2 Meaningful Sequence, 2.4.3 Focus Order: DOM order equals reading and focus order (the keyboard rows).
 - 1.4.10 Reflow, 1.4.12 Text Spacing: no fixed sizes or heights (the 320px story).
 

@@ -2,7 +2,7 @@
 
 - **APG pattern:** none. Prose is a styling container, not a widget.
 - **Deviations:** none. A Prose in a Field or Fieldset is its description (forms skill).
-- **Native elements used:** `<div>` by default. The consumer picks `<article>` or `<section>` with `render`, and the element's own semantics apply.
+- **Native elements used:** `<div>` by default. The consumer picks `<article>` or `<section>` with `as` (allowed elements below), and the element's own semantics apply.
 - **Status:** alpha candidate (Plan 0023). Gates pending. Manual AT is `pending`.
 - **Tests:** `prose.test.tsx` next to this file. `prose.stories.tsx` in `apps/storybook/src/components/prose/`.
 
@@ -10,12 +10,12 @@ Prose is the `kv-prose` class as a component: a container whose headings, paragr
 
 ## Roles, states, properties
 
-| Part  | Element / role             | ARIA                                     | Notes                                                                                                                                                                             |
-| ----- | -------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Prose | `<div>` → `generic`        | none                                     | `class="kv-prose"`. `Prose` and `ProseRoot` are the same component (`Prose.Root` is a deprecated alias). `render={<article />}` or `<section aria-labelledby>` change the element |
-| Prose | attributes                 | passed through                           | The class is its own: a `className` prop and a `render` element's own `className` join it, never replace it. Add `kv-prose--large` for the larger size                            |
-| Prose | never                      | no `role`, `aria-*`, `tabindex`, `inert` | No handler, no heading, no live region, no text                                                                                                                                   |
-| Prose | inside a Field or Fieldset | `id`, `data-invalid`, `data-disabled`    | It is the description: see below. The host lists its id in `aria-describedby`. `data-invalid` and `data-disabled` follow the host. Outside a host: none of this, no warning       |
+| Part  | Element / role             | ARIA                                     | Notes                                                                                                                                                                                                                                                     |
+| ----- | -------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Prose | `<div>` → `generic`        | none                                     | `class="kv-prose"`. `Prose` and `ProseRoot` are the same component (`Prose.Root` is a deprecated alias). `as="article"` or `as="section"` with `aria-labelledby` change the element                                                                       |
+| Prose | attributes                 | passed through                           | The class is its own: a `className` prop joins it, never replaces it. `as` is a string; a value outside the list is a type error and, in JS, warns once (`as-not-allowed:Prose:<tag>`) and renders the `<div>`. Add `kv-prose--large` for the larger size |
+| Prose | never                      | no `role`, `aria-*`, `tabindex`, `inert` | No handler, no heading, no live region, no text                                                                                                                                                                                                           |
+| Prose | inside a Field or Fieldset | `id`, `data-invalid`, `data-disabled`    | It is the description: see below. The host lists its id in `aria-describedby`. `data-invalid` and `data-disabled` follow the host. Outside a host: none of this, no warning                                                                               |
 
 `useProse()` gives the same `rootProps` (only `className`) for your own element.
 
@@ -27,9 +27,9 @@ A `Prose` inside a `Field.Root` or a `Fieldset.Root` registers itself with the n
 - **The nearest host wins.** A Prose in a Field that is inside a Fieldset describes that Field's control, not the group (`prose.test.tsx › a Prose in a Field inside a Fieldset describes the Field’s control, not the group`).
 - **The description is the Prose's text content.** A heading, list, table or link inside it is read as plain text, without its role or structure, and a link in it can't be followed from the description (`prose.test.tsx › the description is its text content: a heading, list and link inside lose their structure`). So keep a description to plain text and a few short paragraphs.
 - **A Prose that isn't a description goes outside the Field or Fieldset.** Every Prose inside a host registers.
-- **State and props.** The host's `data-invalid` and `data-disabled` are on the Prose, and `render` gets the host's state as its second argument (`isInvalid`, `isRequired`, `isDisabled`). The consumer's `ref`, `className` and other props are kept. The `id` is the host's: an `id` of your own gives a dev warning from `mergeProps` and the host's wins (`prose.test.tsx › invalid and disabled: …`, `prose.test.tsx › keeps the consumer’s ref next to the registration`).
+- **State and props.** The host's `data-invalid` and `data-disabled` are on the Prose. The consumer's `ref`, `className` and other props are kept. The `id` is the host's: an `id` of your own gives a dev warning from `mergeProps` and the host's wins (`prose.test.tsx › invalid and disabled: …`, `prose.test.tsx › keeps the consumer’s ref next to the registration`).
 - **Outside a host** a Prose has no id, no `data-*` and no warning (`prose.test.tsx › a Prose outside a Field or Fieldset has no id and does not warn`).
-- **Element.** A `<div>` by default, so a description can hold several paragraphs. `render={<p />}` makes a one-line description a paragraph.
+- **Element.** A `<div>` by default, so a description can hold several paragraphs. A `<p>` is not allowed, because Prose holds block content: for a one-line description, write the `<p>` inside the Prose.
 
 ## Content classes: inset, steps, figure, video and audio
 
@@ -47,6 +47,14 @@ Consumer responsibilities for these (nothing enforces them):
 - **Alt text** (1.1.1, 1.4.5). Informative photo: what it shows that matters here, about 150 characters at most; credit and source in the `figcaption`. Map, chart or plan: a short `alt` (what and where), and the facts in the body text or a table right after it, never only in `title`. Image of text: avoid, else all the text in `alt` and in HTML. Decorative: `alt=""`, no `figure`, no caption. Linked image: the link's destination. `alt` and `figcaption` are both read, so they never repeat each other. Text in another language gets `lang` (3.1.2).
 - **Video and audio: guidance only, no component** (design §8.1). Native `<video controls preload="metadata" playsinline>`, self-hosted, with a `<track kind="captions" srclang default>` per language and a `poster` (1.2.2). Never `autoplay` (1.4.2, 2.2.2). No YouTube, Vimeo or other iframe (no third-party network calls). Information that is only visual is spoken in the narration, or an audio-described version or a transcript with the descriptions sits next to the video (1.2.3, 1.2.5). `<audio controls>` gets a transcript (1.2.1). Keyboard support of native media controls differs per browser: AT verification `pending`.
 - **Not styled.** Native `details` and `summary` are not styled in prose. Closed `details` content does not print: do not put the only copy of a fact there.
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part  | `as`                                  | Why                                                                                                                                                                              |
+| ----- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Prose | `div` (default), `article`, `section` | A self-contained piece or a named region around text. No `p` (Prose holds headings, lists and tables, which a paragraph can't contain), no landmark other than a named `section` |
 
 ## Keyboard
 

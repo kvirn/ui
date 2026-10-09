@@ -29,11 +29,8 @@ import type {
   ComboboxOptionDescriptionProps,
   ComboboxOptionIconProps,
   ComboboxOptionIndicatorProps,
-  ComboboxOptionPartState,
   ComboboxOptionProps,
-  ComboboxOptionState,
   ComboboxOptionTextProps,
-  ComboboxPartState,
   ComboboxPopupProps,
   ComboboxToggleProps,
 } from '../combobox/combobox.tsx'
@@ -85,13 +82,10 @@ export type AutocompleteInputProps = ComboboxInputProps
 export type AutocompleteItemRenderer<TItem> = ComboboxItemRenderer<TItem>
 export type AutocompleteListProps<TItem = unknown> = ComboboxListProps<TItem>
 export type AutocompleteOptionProps<TItem = unknown> = ComboboxOptionProps<TItem>
-export type AutocompleteOptionState<TItem = unknown> = ComboboxOptionState<TItem>
 export type AutocompleteOptionDescriptionProps = ComboboxOptionDescriptionProps
 export type AutocompleteOptionIconProps = ComboboxOptionIconProps
 export type AutocompleteOptionIndicatorProps = ComboboxOptionIndicatorProps
-export type AutocompleteOptionPartState = ComboboxOptionPartState
 export type AutocompleteOptionTextProps = ComboboxOptionTextProps
-export type AutocompletePartState = ComboboxPartState
 export type AutocompletePopupProps = ComboboxPopupProps
 export type AutocompleteToggleProps = ComboboxToggleProps
 

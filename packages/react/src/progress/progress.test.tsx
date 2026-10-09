@@ -186,7 +186,7 @@ describe('indicator', () => {
     await expect.element(politeRegion()).toHaveTextContent(slowText)
   })
 
-  test('takes render, className and a ref, and keeps the spinner class', async () => {
+  test('takes className and a ref, and keeps the spinner class', async () => {
     const ref = createRef<HTMLElement>()
     const { container } = await render(
       <KvirnProvider>
@@ -519,26 +519,48 @@ describe('keyboard', () => {
 })
 
 describe('parts', () => {
-  test('Root and Label take render, className and a ref, and keep the part class', async () => {
+  test('Root takes className and a ref, and the Label takes as and keeps the part class', async () => {
     const ref = createRef<HTMLElement>()
     const { container } = await render(
       <KvirnProvider>
-        <Progress.Root
-          label="Hämtar."
-          className="egen"
-          render={<section />}
-          ref={ref as React.Ref<HTMLDivElement>}
-        >
-          <Progress.Label render={<div />} />
+        <Progress.Root label="Hämtar." className="egen" ref={ref as React.Ref<HTMLDivElement>}>
+          <Progress.Label as="div" />
         </Progress.Root>
       </KvirnProvider>,
     )
     await passShowDelay()
-    const root = container.querySelector('section')
-    expect(root?.className).toContain('kv-progress')
+    const root = container.querySelector('div.kv-progress')
     expect(root?.className).toContain('egen')
     expect(ref.current).toBe(root)
     expect(container.querySelector('div.kv-progress-label')).not.toBeNull()
+  })
+
+  test('the Label takes span beside a busy button', async () => {
+    const { container } = await render(
+      <KvirnProvider>
+        <Progress.Root label="Hämtar.">
+          <Progress.Label as="span" />
+        </Progress.Root>
+      </KvirnProvider>,
+    )
+    await passShowDelay()
+    expect(container.querySelector('span.kv-progress-label')).not.toBeNull()
+  })
+
+  test('an element outside the Label’s allowed list warns once and renders a p', async () => {
+    const notAllowed = 'h2' as 'p'
+    const { container } = await render(
+      <KvirnProvider>
+        <Progress.Root label="Hämtar.">
+          <Progress.Label as={notAllowed} />
+        </Progress.Root>
+      </KvirnProvider>,
+    )
+    await passShowDelay()
+    expect(container.querySelector('p.kv-progress-label')).not.toBeNull()
+    expect(
+      consoleWarn.mock.calls.filter((call) => String(call[0]).includes('Progress.Label as="h2"')),
+    ).toHaveLength(1)
   })
 
   test('Indicator outside a Root renders nothing and warns once', async () => {

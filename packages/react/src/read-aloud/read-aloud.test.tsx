@@ -1,7 +1,7 @@
 import type { ReadAloudEngine, ReadAloudHandlers, ReadAloudUtterance } from '@kvirn-ui/core'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { readAloud, readAnnouncements } from '@kvirn-ui/testing/read-aloud'
-import { useRef } from 'react'
+import { createRef, useRef } from 'react'
 import { afterEach, beforeEach, describe, expect, onTestFinished, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -784,6 +784,35 @@ describe('status', () => {
     const status = document.querySelector('.kv-read-aloud-status')
     expect(status?.getAttribute('role')).toBe('status')
     expect(status?.getAttribute('aria-live')).toBe('off')
+  })
+
+  test('as changes the Status to a paragraph or a div, and keeps role, class and ref', async () => {
+    const ref = createRef<HTMLElement>()
+    await render(
+      <ReadAloud.Root contentRef={createRef<HTMLElement>()} engine={createFakeEngine().engine}>
+        <ReadAloud.Status as="p" ref={ref} className="egen" data-testid="paragraph" />
+        <ReadAloud.Status as="div" data-testid="division" />
+      </ReadAloud.Root>,
+    )
+    const paragraph = page.getByTestId('paragraph').element()
+    expect(paragraph.tagName).toBe('P')
+    expect(paragraph.getAttribute('role')).toBe('status')
+    expect(paragraph.className).toBe('egen kv-read-aloud-status')
+    expect(ref.current).toBe(paragraph)
+    expect(page.getByTestId('division').element().tagName).toBe('DIV')
+  })
+
+  test('an element outside the Status list warns once and renders a span', async () => {
+    const notAllowed = 'h2' as 'span'
+    await render(
+      <ReadAloud.Root contentRef={createRef<HTMLElement>()} engine={createFakeEngine().engine}>
+        <ReadAloud.Status as={notAllowed} data-testid="status" />
+      </ReadAloud.Root>,
+    )
+    expect(page.getByTestId('status').element().tagName).toBe('SPAN')
+    expect(
+      consoleWarn.mock.calls.filter((call) => String(call[0]).includes('ReadAloud.Status as="h2"')),
+    ).toHaveLength(1)
   })
 })
 

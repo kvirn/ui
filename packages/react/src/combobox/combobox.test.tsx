@@ -382,36 +382,6 @@ describe('rendering', () => {
     // The part's own ref still reaches the hook: the popup was placed against the control.
     expect(popupRef.current?.style.position).toBe('fixed')
   })
-
-  test('render replaces the element and gives the state', async () => {
-    await render(
-      <KvirnProvider>
-        <Field.Root required>
-          <Field.Label>Kommun</Field.Label>
-          <Combobox.Root items={['Göteborg', 'Malmö']} defaultOpen>
-            <Combobox.Input
-              render={(partProps, state) => (
-                <input {...partProps} data-open-state={String(state.isOpen)} />
-              )}
-            />
-            <Combobox.Popup>
-              <Combobox.List>
-                {(item: string) => (
-                  <Combobox.Option
-                    item={item}
-                    render={(partProps, state) => <p {...partProps}>{state.label}</p>}
-                  />
-                )}
-              </Combobox.List>
-            </Combobox.Popup>
-          </Combobox.Root>
-        </Field.Root>
-      </KvirnProvider>,
-    )
-    await expect.poll(isShown).toBe(true)
-    expect(inputElement().getAttribute('data-open-state')).toBe('true')
-    expect(option('Malmö').element().tagName).toBe('P')
-  })
 })
 
 describe('in a Field', () => {

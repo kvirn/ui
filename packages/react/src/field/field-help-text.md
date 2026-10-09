@@ -12,9 +12,7 @@ A short instruction under a control that helps while typing: a format, an exampl
 
 ## API
 
-| Prop     | Type                             | Meaning                                                                                 |
-| -------- | -------------------------------- | --------------------------------------------------------------------------------------- |
-| `render` | `(props, state) => ReactElement` | Another element: `render={<div />}`. Never something interactive. `state` is the host's |
+It takes every `<p>` prop except `id`, and `ref`. To build your own element, use `useField()` (or `useFieldset()`) and spread `getDescriptionProps(name)`.
 
 - **Renders** `<p class="kv-field-help-text">` with an `id` and the host's state attributes (`data-invalid`, `data-disabled`).
 - **Outside a Field or Fieldset** it warns once in development (`help-text-outside-field`) and renders a plain paragraph with no id.

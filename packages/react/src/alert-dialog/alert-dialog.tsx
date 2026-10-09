@@ -1,11 +1,11 @@
 'use client'
 import { useContext, useEffect, useRef } from 'react'
-import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
+import type { ElementType, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import type { AsComponent } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { DialogContext, useDialogAnnouncer } from '../dialog/dialog-context.ts'
 import {
   DialogActions,
@@ -20,7 +20,6 @@ import type {
   DialogBodyProps,
   DialogDescriptionProps,
   DialogPopupProps,
-  DialogState,
   DialogTitleProps,
   DialogTriggerProps,
 } from '../dialog/dialog.tsx'
@@ -29,9 +28,6 @@ import type { UseAlertDialogOptions } from './use-alert-dialog.ts'
 
 export type { DialogChangeDetails as AlertDialogChangeDetails } from '../dialog/dialog.tsx'
 export type { DialogChangeReason as AlertDialogChangeReason } from '../dialog/dialog.tsx'
-
-/** What `render` receives as its second argument, for every part. */
-export type AlertDialogState = DialogState
 
 export interface AlertDialogRootProps extends UseAlertDialogOptions {
   children?: ReactNode
@@ -44,9 +40,8 @@ export type AlertDialogDescriptionProps = DialogDescriptionProps
 export type AlertDialogBodyProps = DialogBodyProps
 export type AlertDialogActionsProps = DialogActionsProps
 
-export interface AlertDialogCloseProps extends ComponentPropsWithRef<'button'> {
-  render?: RenderProp<ComponentPropsWithRef<'button'>, AlertDialogState> | undefined
-}
+/** `as` is a component that renders a button, such as `as={Button}`; its props are plain props of the close. */
+export type AlertDialogCloseProps<Component extends ElementType = 'button'> = AsComponent<Component>
 
 const withClass = (own: string, className: string | undefined) =>
   className === undefined ? own : `${own} ${className}`
@@ -132,11 +127,14 @@ AlertDialogActions.displayName = 'AlertDialog.Actions'
  * and no default text, and the consumer styles it. It is an ordinary action, so it can also be
  * the `initialFocusRef`.
  */
+export function AlertDialogClose<Component extends ElementType = 'button'>(
+  props: AlertDialogCloseProps<Component>,
+): ReactElement
 export function AlertDialogClose({
-  render,
+  as,
   ref,
   ...otherProps
-}: AlertDialogCloseProps): ReactElement {
+}: AlertDialogCloseProps<'button'>): ReactElement {
   const context = useContext(DialogContext)
   const elementRef = useRef<HTMLElement | null>(null)
   const mergedRef = useMergedRef(ref, elementRef)
@@ -163,7 +161,7 @@ export function AlertDialogClose({
     }
   }, [context])
   return renderPart({
-    render,
+    as,
     defaultElement: 'button',
     partProps: {
       ...mergeProps(otherProps, {
@@ -173,7 +171,6 @@ export function AlertDialogClose({
       }),
       ref: mergedRef,
     },
-    state: { isOpen: context?.dialog.isOpen ?? false },
   })
 }
 AlertDialogClose.displayName = 'AlertDialog.Close'

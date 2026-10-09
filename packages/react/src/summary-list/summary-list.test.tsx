@@ -22,7 +22,15 @@ import {
   SummaryListRow,
   SummaryListValue,
 } from './summary-list.tsx'
-import type { SummaryListChangeProps, SummaryListPartProps } from './summary-list.tsx'
+import type {
+  SummaryListActionsProps,
+  SummaryListChangeProps,
+  SummaryListKeyProps,
+  SummaryListPartProps,
+  SummaryListRootProps,
+  SummaryListRowProps,
+  SummaryListValueProps,
+} from './summary-list.tsx'
 import { useSummaryList } from './use-summary-list.ts'
 import type { UseSummaryListResult } from './use-summary-list.ts'
 
@@ -128,17 +136,13 @@ describe('summary list', () => {
     await expect.element(page.getByTestId('root')).toBeInTheDocument()
   })
 
-  test('render changes the element', async () => {
-    const { container } = await render(
-      <SummaryList.Root render={<ul />}>
-        <SummaryList.Row render={<li />}>
-          <SummaryList.Key render={<span />}>Namn</SummaryList.Key>
-        </SummaryList.Row>
-      </SummaryList.Root>,
-    )
-    expect(container.querySelector('ul.kv-summary-list > li.kv-summary-list-row > span')).not.toBe(
-      null,
-    )
+  test('no part takes as: the dl, div, dt and dd structure is fixed', () => {
+    expectTypeOf<SummaryListRootProps>().not.toHaveProperty('as')
+    expectTypeOf<SummaryListRowProps>().not.toHaveProperty('as')
+    expectTypeOf<SummaryListKeyProps>().not.toHaveProperty('as')
+    expectTypeOf<SummaryListValueProps>().not.toHaveProperty('as')
+    expectTypeOf<SummaryListActionsProps>().not.toHaveProperty('as')
+    expectTypeOf<SummaryListChangeProps>().not.toHaveProperty('as')
   })
 
   test('the flat aliases are the compound parts', () => {
@@ -280,19 +284,12 @@ describe('Change link', () => {
     expect(warnings()).toEqual([])
   })
 
-  test('the link class joins the consumer class and render changes the element', async () => {
+  test('the link class joins the consumer class', async () => {
     await render(
       <SummaryList.Root>
         <SummaryList.Row>
           <SummaryList.Key>Namn</SummaryList.Key>
-          <SummaryList.Change
-            className="egen"
-            render={
-              <a href="/c" data-testid="change">
-                Ändra
-              </a>
-            }
-          />
+          <SummaryList.Change className="egen" href="/c" data-testid="change" />
         </SummaryList.Row>
       </SummaryList.Root>,
     )

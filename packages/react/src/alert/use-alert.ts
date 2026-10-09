@@ -222,8 +222,8 @@ export function useAlert({ variant, announce, messages }: UseAlertOptions = {}):
     }
   }, [announce, variant])
 
-  // What the real element ended up with, whether it came from a prop, a `render` element or the
-  // `render` function form. Cheap, development-only in effect (warnOnce is silent in production).
+  // What the real element ended up with, whatever put the attribute there. Cheap, development-only
+  // in effect (warnOnce is silent in production).
   useEffect(() => {
     const root = rootElement.current
     if (root === null) {

@@ -19,6 +19,14 @@ Rows of a label, a value and optional actions: the answers on a check-your-answe
 | Actions | `<dd>` → `definition` | none                                              | Holds links. A second definition of the same term                                                                                                                                                                                                                                                                                                                                               |
 | Change  | `<a>` → `link`        | `aria-labelledby` = its own id, then the Key's id | Visible text is `summaryList.change` ("Change"). The accessible name is "Change" plus the key, so the purpose is clear out of context (2.4.4) and contains the visible text (2.5.3)                                                                                                                                                                                                             |
 
+## Allowed elements
+
+No part takes `as`: a `ul` or `span` instead would drop the term and definition relationship (1.3.1, 4.1.2).
+
+| Part       | `as` | Why                                                                                                                                                                                                          |
+| ---------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| every part | none | The `<dl>`, `<div>`, `<dt>` and `<dd>` are the structure of the term and its definitions (1.3.1), and Change is an `<a href>`. A list or a router link is built from `useSummaryList` with your own elements |
+
 ## Keyboard
 
 - **Focus strategy:** native

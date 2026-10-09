@@ -1,26 +1,14 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import type { ComponentPropsWithRef, MouseEventHandler, ReactElement } from 'react'
+import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { hasNameSource } from '../button/button.tsx'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart, takeRenderElementProps } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useToggle } from './use-toggle.ts'
 import type { TogglePressedChangeDetails } from './use-toggle.ts'
 
 export type { TogglePressedChangeDetails } from './use-toggle.ts'
-
-const isClickHandler = (value: unknown): value is MouseEventHandler<HTMLButtonElement> =>
-  typeof value === 'function'
-
-/** What `render` receives as its second argument. */
-export interface ToggleState {
-  isPressed: boolean
-  isDisabled: boolean
-  isFocusVisible: boolean
-}
 
 /**
  * `aria-pressed` and `aria-disabled` are left out: `pressed` and `defaultPressed` set the first,
@@ -44,11 +32,6 @@ export interface ToggleProps extends Omit<
    * and read why it's off limits. Switching stays blocked.
    */
   focusableWhenDisabled?: boolean | undefined
-  /**
-   * Change the element. It must still be a `<button>`. An element's own `onClick` is gated like
-   * the Toggle's. In the function form, keep `toggleProps.onClick`.
-   */
-  render?: RenderProp<ComponentPropsWithRef<'button'>, ToggleState> | undefined
 }
 
 /**
@@ -69,37 +52,23 @@ export function Toggle({
   disabled,
   focusableWhenDisabled,
   onClick,
-  render,
   ref,
   ...otherProps
 }: ToggleProps): ReactElement {
-  // The element's onClick goes through useToggle too, so a disabled Toggle blocks it.
-  const { render: renderWithoutClick, takenProps } = takeRenderElementProps(render, ['onClick'])
-  const elementOnClick = takenProps.onClick
-  const activationHandler = isClickHandler(elementOnClick)
-    ? mergeProps({ onClick }, { onClick: elementOnClick }).onClick
-    : onClick
   const toggle = useToggle({
     pressed,
     defaultPressed,
     onPressedChange,
     disabled,
     focusableWhenDisabled,
-    onClick: activationHandler,
+    onClick,
   })
   const elementRef = useRef<HTMLButtonElement | null>(null)
   const mergedRef = useMergedRef(ref, elementRef)
 
   useEffect(() => {
     const element = elementRef.current
-    if (element === null || element.tagName !== 'BUTTON') {
-      const rendered =
-        element === null ? 'nothing it could reference' : `<${element.tagName.toLowerCase()}>`
-      warnOnce(
-        `toggle-not-a-button:${rendered}`,
-        `<Toggle render> must render a <button> and forward its ref, but it rendered ${rendered}. A toggle's role, keyboard activation and disabled state come from the native element.`,
-      )
-    } else if (!hasNameSource(element)) {
+    if (element !== null && !hasNameSource(element)) {
       warnOnce(
         'toggle-without-name',
         'A <Toggle> has no accessible name: its only content is hidden from assistive technology, such as a decorative <Icon>. Give an icon-only toggle an aria-label from your translations, or add visible text. The name must not change with the state (WCAG 4.1.2).',
@@ -107,15 +76,6 @@ export function Toggle({
     }
   })
 
-  return renderPart({
-    render: renderWithoutClick,
-    defaultElement: 'button',
-    partProps: { ...mergeProps(otherProps, toggle.toggleProps), ref: mergedRef },
-    state: {
-      isPressed: toggle.isPressed,
-      isDisabled: toggle.isDisabled,
-      isFocusVisible: toggle.isFocusVisible,
-    },
-  })
+  return <button {...mergeProps(otherProps, toggle.toggleProps)} ref={mergedRef} />
 }
 Toggle.displayName = 'Toggle'

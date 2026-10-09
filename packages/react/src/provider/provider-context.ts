@@ -1,4 +1,3 @@
-import { createMessageFormat } from '@kvirn-ui/core'
 import type {
   Direction,
   Env,
@@ -11,6 +10,7 @@ import type { PartialMessages } from '@kvirn-ui/i18n'
 import { createContext } from 'react'
 import type { IconRegistry } from '../icon/icon-registry.ts'
 import type { IconDefaults } from '../icon/use-icon.ts'
+import { createProviderFormat } from './provider-format.ts'
 import type { RegisteredLinkComponent } from './register.ts'
 
 /**
@@ -40,7 +40,7 @@ export interface KvirnConfig {
   env: Env | undefined
 }
 
-/** What components get without a provider: `en`, `ltr`, runtime zone, `<a>`, built-in icons. */
+/** What components get without a provider: `en`, `ltr`, UTC, `<a>`, built-in icons. */
 export const defaultKvirnConfig: KvirnConfig = {
   locale: 'en',
   dir: 'ltr',
@@ -48,7 +48,7 @@ export const defaultKvirnConfig: KvirnConfig = {
   timeZone: undefined,
   weekStart: undefined,
   messageLayers: [],
-  format: createMessageFormat({ locale: 'en', timeZone: undefined }),
+  format: createProviderFormat('en', undefined),
   linkComponent: 'a',
   icons: Object.freeze({}),
   iconDefaults: Object.freeze({}),

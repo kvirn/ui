@@ -24,10 +24,10 @@ The hook gives no development warning for a missing name: `ScrollArea` does. Put
 
 ## API
 
-| Prop     | Type                       | Meaning                                                                  |
-| -------- | -------------------------- | ------------------------------------------------------------------------ |
-| `region` | `'overflow'` \| `'always'` | When it is a named region. `'overflow'` by default                       |
-| `render` | `RenderProp`               | Another element or a function. It receives `{ isOverflowing, isRegion }` |
+| Prop     | Type                       | Meaning                                            |
+| -------- | -------------------------- | -------------------------------------------------- |
+| `region` | `'overflow'` \| `'always'` | When it is a named region. `'overflow'` by default |
+| `as`     | `'div'` \| `'section'`     | The element. `'div'` by default                    |
 
 It takes every attribute of a `<div>`, and passes `ref` to it. Your own `tabIndex` wins.
 

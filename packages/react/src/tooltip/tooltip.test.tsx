@@ -1,15 +1,17 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, useState } from 'react'
+import type { ComponentPropsWithRef } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
-import { Popover, Toolbar, Tooltip, createTooltipGroup, useTooltip } from '../index.ts'
+import { Button, Popover, Toolbar, Tooltip, createTooltipGroup, useTooltip } from '../index.ts'
 import type {
   PopoverChangeDetails,
   TooltipChangeDetails,
+  TooltipNameProps,
   TooltipRootProps,
   UseTooltipResult,
 } from '../index.ts'
@@ -221,14 +223,11 @@ describe('composition', () => {
           ).map(([name, shortcut, keys]) => (
             <Tooltip.Root key={name} delay={delay} group={group}>
               <Tooltip.Trigger
-                render={
-                  <Toolbar.Toggle
-                    aria-label={name}
-                    aria-keyshortcuts={keys}
-                    aria-describedby="hint"
-                    style={buttonStyle}
-                  />
-                }
+                as={Toolbar.Toggle}
+                aria-label={name}
+                aria-keyshortcuts={keys}
+                aria-describedby="hint"
+                style={buttonStyle}
               >
                 {name.slice(0, 1)}
               </Tooltip.Trigger>
@@ -434,6 +433,11 @@ describe('keyboard and pointer contract', () => {
   const shownTooltipTexts = () => shownTooltips().map((popup) => popup.textContent)
   const control = (name: string) => page.getByRole('button', { name, exact: true })
 
+  // Tooltip.Trigger and Toolbar.Item each take an `as`, so one of them goes in a component.
+  function PopoverToolbarItem(props: ComponentPropsWithRef<'button'>) {
+    return <Toolbar.Item {...props} as={Popover.Trigger} />
+  }
+
   function ContractToolbar({ delay = 5000 }: { delay?: number }) {
     const [group] = useState(() => createTooltipGroup())
     return (
@@ -444,7 +448,7 @@ describe('keyboard and pointer contract', () => {
         <Toolbar.Root aria-label="Formatering">
           {['Ångra', 'Fetstil', 'Kursiv'].map((name) => (
             <Tooltip.Root key={name} delay={delay} group={group}>
-              <Tooltip.Trigger render={<Toolbar.Toggle aria-label={name} style={buttonStyle} />}>
+              <Tooltip.Trigger as={Toolbar.Toggle} aria-label={name} style={buttonStyle}>
                 {name.slice(0, 1)}
               </Tooltip.Trigger>
               <Tooltip.Popup>
@@ -454,9 +458,7 @@ describe('keyboard and pointer contract', () => {
           ))}
           <Popover.Root>
             <Tooltip.Root delay={delay} group={group}>
-              <Tooltip.Trigger
-                render={<Toolbar.Item render={<Popover.Trigger style={buttonStyle} />} />}
-              >
+              <Tooltip.Trigger as={PopoverToolbarItem} style={buttonStyle}>
                 Länk
               </Tooltip.Trigger>
               <Tooltip.Popup>
@@ -693,29 +695,71 @@ describe('the public API', () => {
     await expect.poll(() => popupRef.current?.style.position).toBe('fixed')
   })
 
-  test('render replaces the element and gives the state', async () => {
-    const states: boolean[] = []
+  test('as={Button} keeps the tooltip wiring and merges aria-describedby and handlers', async () => {
+    const onFocus = vi.fn<() => void>()
     await render(
       <Tooltip.Root>
         <Tooltip.Trigger
-          render={(partProps, state) => {
-            states.push(state.isOpen)
-            return (
-              <button {...partProps} data-egen="render">
-                B
-              </button>
-            )
-          }}
+          as={Button}
           aria-label="Fetstil"
-        />
-        <Tooltip.Popup render={(partProps) => <section {...partProps} />}>Fetstil</Tooltip.Popup>
+          aria-describedby="hint"
+          onFocus={onFocus}
+          data-egen="trigger"
+        >
+          B
+        </Tooltip.Trigger>
+        <Tooltip.Popup>Fetstil</Tooltip.Popup>
+        <p id="hint">Markera texten först.</p>
       </Tooltip.Root>,
     )
-    expect(triggerElement().getAttribute('data-egen')).toBe('render')
-    expect(popupElement()?.tagName).toBe('SECTION')
-    expect(popupElement()?.getAttribute('role')).toBe('tooltip')
     await userEvent.tab()
-    await expect.poll(() => states.at(-1)).toBe(true)
+    await expect.poll(isShown).toBe(true)
+    expect(onFocus).toHaveBeenCalledTimes(1)
+    expect(triggerElement().getAttribute('data-egen')).toBe('trigger')
+    expect(triggerElement().getAttribute('aria-describedby')?.split(' ')).toContain('hint')
+    await expect.element(trigger()).toHaveAccessibleDescription(/Markera texten först\./)
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('as={Button} with disabled keeps Button’s gating: it stays focusable and presses do nothing', async () => {
+    const onClick = vi.fn<() => void>()
+    await render(
+      <Tooltip.Root>
+        <Tooltip.Trigger
+          as={Button}
+          disabled
+          focusableWhenDisabled
+          aria-label="Fetstil"
+          onClick={onClick}
+        >
+          B
+        </Tooltip.Trigger>
+        <Tooltip.Popup>Fetstil</Tooltip.Popup>
+      </Tooltip.Root>,
+    )
+    await userEvent.tab()
+    await expect.element(trigger()).toHaveFocus()
+    expect(triggerElement().getAttribute('aria-disabled')).toBe('true')
+    // Playwright will not press an aria-disabled element, as a user can: the click is dispatched.
+    document.querySelector<HTMLElement>('[aria-disabled="true"]')?.click()
+    expect(onClick).not.toHaveBeenCalled()
+  })
+
+  test('as changes the Name and the Shortcut, and an element outside the list warns once', async () => {
+    const notAllowed = 'div' as TooltipNameProps['as']
+    await render(
+      <Tooltip.Root>
+        <Tooltip.Trigger aria-label="Fetstil">B</Tooltip.Trigger>
+        <Tooltip.Popup>
+          <Tooltip.Name as={notAllowed}>Fetstil</Tooltip.Name>{' '}
+          <Tooltip.Shortcut as="small">Ctrl+B</Tooltip.Shortcut>
+        </Tooltip.Popup>
+      </Tooltip.Root>,
+    )
+    expect(page.getByText('Fetstil').element().tagName).toBe('SPAN')
+    expect(page.getByText('Ctrl+B').element().tagName).toBe('SMALL')
+    expect(consoleWarn).toHaveBeenCalledTimes(1)
+    expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('Tooltip.Name as="div"')
   })
 
   test('useTooltip spreads the same props on your own elements', async () => {

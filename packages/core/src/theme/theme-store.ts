@@ -8,24 +8,32 @@ import {
   contrastPreferences,
   contrastQuery,
   forcedColorsQuery,
+  motionAttribute,
+  motionPreferences,
+  motionQuery,
   themeStorageKey,
 } from './theme-constants.ts'
 
 export type ColorSchemePreference = (typeof colorSchemePreferences)[number]
 export type ContrastPreference = (typeof contrastPreferences)[number]
 export type ResolvedColorScheme = Exclude<ColorSchemePreference, 'system'>
+export type MotionPreference = (typeof motionPreferences)[number]
 export type ResolvedContrast = Exclude<ContrastPreference, 'system'>
+export type ResolvedMotion = Exclude<MotionPreference, 'system'>
 
 /** What the user (or the app's defaults) chose. `system` follows the OS. */
 export interface ThemePreference {
   colorScheme: ColorSchemePreference
   contrast: ContrastPreference
+  /** `reduce` is less motion: the theme shows rest states instead of transitions. */
+  motion: MotionPreference
 }
 
 /** What the OS reports through media queries. */
 export interface SystemTheme {
   colorScheme: ResolvedColorScheme
   contrast: ResolvedContrast
+  motion: ResolvedMotion
   /** `forced-colors: active`. The OS palette wins; `@kvirn-ui/theme` never overrides it. */
   isForcedColors: boolean
 }
@@ -34,6 +42,7 @@ export interface SystemTheme {
 export interface ResolvedTheme {
   colorScheme: ResolvedColorScheme
   contrast: ResolvedContrast
+  motion: ResolvedMotion
 }
 
 export interface ThemeState {
@@ -45,6 +54,7 @@ export interface ThemeState {
 export interface ThemeActions {
   selectColorScheme: (colorScheme: ColorSchemePreference) => void
   selectContrast: (contrast: ContrastPreference) => void
+  selectMotion: (motion: MotionPreference) => void
 }
 
 /** Not exported: syncing with the OS and other tabs is not a user action. */
@@ -67,6 +77,7 @@ export interface ThemeStore extends ComponentStore<ThemeState, ThemeActions> {
 export interface StoredThemePreference {
   colorScheme?: ColorSchemePreference
   contrast?: ContrastPreference
+  motion?: MotionPreference
 }
 
 export interface ThemeStorageAdapter {
@@ -83,6 +94,8 @@ export interface ThemeOptions {
   defaultColorScheme?: ColorSchemePreference | undefined
   /** Preference used until the user chooses. Default `'system'`. */
   defaultContrast?: ContrastPreference | undefined
+  /** Preference used until the user chooses. Default `'system'`. */
+  defaultMotion?: MotionPreference | undefined
   /** Default `'local'`. Written only when the user selects a value. */
   storage?: ThemeStorage | undefined
 }
@@ -91,6 +104,7 @@ export interface ThemeOptions {
 export interface ResolvedThemeOptions {
   defaultColorScheme: ColorSchemePreference
   defaultContrast: ContrastPreference
+  defaultMotion: MotionPreference
   storage: ThemeStorage
 }
 
@@ -130,6 +144,7 @@ export interface ThemeEnv {
 const serverSystemTheme: SystemTheme = {
   colorScheme: 'light',
   contrast: 'standard',
+  motion: 'full',
   isForcedColors: false,
 }
 
@@ -137,6 +152,7 @@ export function resolveTheme(preference: ThemePreference, system: SystemTheme): 
   return {
     colorScheme: preference.colorScheme === 'system' ? system.colorScheme : preference.colorScheme,
     contrast: preference.contrast === 'system' ? system.contrast : preference.contrast,
+    motion: preference.motion === 'system' ? system.motion : preference.motion,
   }
 }
 
@@ -174,6 +190,9 @@ export function findInvalidThemeOptions(options: ThemeOptions): (keyof ThemeOpti
   ) {
     invalidOptions.push('defaultContrast')
   }
+  if (options.defaultMotion !== undefined && !isOneOf(motionPreferences, options.defaultMotion)) {
+    invalidOptions.push('defaultMotion')
+  }
   if (options.storage !== undefined && !isThemeStorage(options.storage)) {
     invalidOptions.push('storage')
   }
@@ -188,6 +207,9 @@ export function resolveThemeOptions(options: ThemeOptions): ResolvedThemeOptions
       : 'system',
     defaultContrast: isOneOf(contrastPreferences, options.defaultContrast)
       ? options.defaultContrast
+      : 'system',
+    defaultMotion: isOneOf(motionPreferences, options.defaultMotion)
+      ? options.defaultMotion
       : 'system',
     storage: isThemeStorage(options.storage) ? options.storage : 'local',
   }
@@ -207,19 +229,22 @@ export function isSameThemeConfiguration(
   return (
     configured.defaultColorScheme === resolvedRequest.defaultColorScheme &&
     configured.defaultContrast === resolvedRequest.defaultContrast &&
+    configured.defaultMotion === resolvedRequest.defaultMotion &&
     storageKind(configured.storage) === storageKind(resolvedRequest.storage)
   )
 }
 
-export function parseStoredThemePreference(value: unknown): StoredThemePreference | undefined {
+function parseStoredThemePreference(value: unknown): StoredThemePreference | undefined {
   if (typeof value !== 'object' || value === null) {
     return undefined
   }
   const colorScheme: unknown = Reflect.get(value, 'colorScheme')
   const contrast: unknown = Reflect.get(value, 'contrast')
+  const motion: unknown = Reflect.get(value, 'motion')
   return {
     ...(isOneOf(colorSchemePreferences, colorScheme) ? { colorScheme } : {}),
     ...(isOneOf(contrastPreferences, contrast) ? { contrast } : {}),
+    ...(isOneOf(motionPreferences, motion) ? { motion } : {}),
   }
 }
 
@@ -284,6 +309,7 @@ function readSystemTheme(env: ThemeEnv | undefined): SystemTheme {
   return {
     colorScheme: isMatching(colorSchemeQuery) ? 'dark' : 'light',
     contrast: isMatching(contrastQuery) ? 'more' : 'standard',
+    motion: isMatching(motionQuery) ? 'reduce' : 'full',
     isForcedColors: isMatching(forcedColorsQuery),
   }
 }
@@ -292,6 +318,7 @@ function isSameSystemTheme(first: SystemTheme, second: SystemTheme): boolean {
   return (
     first.colorScheme === second.colorScheme &&
     first.contrast === second.contrast &&
+    first.motion === second.motion &&
     first.isForcedColors === second.isForcedColors
   )
 }
@@ -309,6 +336,7 @@ export function createThemeStore(
   const defaults: ThemePreference = {
     colorScheme: resolvedOptions.defaultColorScheme,
     contrast: resolvedOptions.defaultContrast,
+    motion: resolvedOptions.defaultMotion,
   }
   const storage = createGuardedStorage(resolveStorageAdapter(env, resolvedOptions.storage))
 
@@ -322,6 +350,7 @@ export function createThemeStore(
         ? {}
         : { colorScheme: preference.colorScheme }),
       ...(preference.contrast === defaults.contrast ? {} : { contrast: preference.contrast }),
+      ...(preference.motion === defaults.motion ? {} : { motion: preference.motion }),
     }
     return Object.keys(stored).length === 0 ? undefined : stored
   }
@@ -346,6 +375,9 @@ export function createThemeStore(
         selectContrast: (contrast) => {
           selectPreference({ ...getState().preference, contrast })
         },
+        selectMotion: (motion) => {
+          selectPreference({ ...getState().preference, motion })
+        },
         syncSystem: (system) => {
           if (!isSameSystemTheme(system, getState().system)) {
             update((state) => createState(state.preference, system))
@@ -369,6 +401,7 @@ export function createThemeStore(
     const { resolved } = store.getState()
     env.document.documentElement.setAttribute(colorSchemeAttribute, resolved.colorScheme)
     env.document.documentElement.setAttribute(contrastAttribute, resolved.contrast)
+    env.document.documentElement.setAttribute(motionAttribute, resolved.motion)
   }
 
   const startListening = (activeEnv: ThemeEnv): (() => void) => {
@@ -376,15 +409,18 @@ export function createThemeStore(
     applyAttributes()
     const unsubscribeFromStore = store.subscribe(applyAttributes)
 
-    const mediaQueryLists = [colorSchemeQuery, contrastQuery, forcedColorsQuery].flatMap(
-      (query) => {
-        try {
-          return [activeEnv.window.matchMedia(query)]
-        } catch {
-          return []
-        }
-      },
-    )
+    const mediaQueryLists = [
+      colorSchemeQuery,
+      contrastQuery,
+      motionQuery,
+      forcedColorsQuery,
+    ].flatMap((query) => {
+      try {
+        return [activeEnv.window.matchMedia(query)]
+      } catch {
+        return []
+      }
+    })
     for (const mediaQueryList of mediaQueryLists) {
       mediaQueryList.addEventListener('change', refreshSystem)
     }
@@ -435,11 +471,11 @@ export function createThemeStore(
     }
   }
 
-  const { selectColorScheme, selectContrast } = store.actions
+  const { selectColorScheme, selectContrast, selectMotion } = store.actions
   return {
     getState: store.getState,
     subscribe: store.subscribe,
-    actions: { selectColorScheme, selectContrast },
+    actions: { selectColorScheme, selectContrast, selectMotion },
     connect,
     options: resolvedOptions,
   }

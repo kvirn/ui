@@ -10,14 +10,14 @@ An Accordion is a list of questions or sections, each a heading with a button, t
 
 ## Roles, states, properties
 
-| Part              | Element / role                                  | ARIA / state                                                                       | Notes                                                                                                                           |
-| ----------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Accordion.Root    | `<div class="kv-accordion">`, no role           | none                                                                               | `hiddenUntilFound` is the default for every item. A `<ul>` is the consumer's through `render` when they want a list             |
-| Accordion.Item    | `<div class="kv-accordion-item">`, no role      | `data-open` while open                                                             | Owns its own state: `open`, `defaultOpen`, `onOpenChange`, `disabled`, `focusableWhenDisabled`, `hiddenUntilFound`              |
-| Accordion.Heading | `<h1>` to `<h6>` by the required `level`        | none                                                                               | Class `kv-accordion-heading`. The trigger is its only child. Screen reader users find the questions by heading                  |
-| Accordion.Trigger | `<button type="button">`                        | `aria-expanded`, `aria-controls`. `data-open`, `data-disabled`                     | `Disclosure.Trigger` with the class `kv-accordion-trigger` added: chevron down closed, up open, at the inline end               |
-| Accordion.Panel   | `<div>`, always rendered, `hidden` while closed | `data-open`. With `region`: `role="region"` and `aria-labelledby` the trigger's id | `Disclosure.Panel` with the class `kv-accordion-panel` added. `region` is off by default: APG advises it for about six or fewer |
-| `useAccordion`    | the classes, for your own elements              | `rootProps`, `itemProps`, `headingProps`                                           | Pair it with one `useDisclosure()` per item                                                                                     |
+| Part              | Element / role                                                     | ARIA / state                                                                       | Notes                                                                                                                                                                                                                  |
+| ----------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Accordion.Root    | `<div class="kv-accordion">`, no role (`role="list"` on `ul`/`ol`) | none                                                                               | `hiddenUntilFound` is the default for every item. `as="ul"` or `"ol"` makes it a list that adds `role="list"` when it renders a `ul` or `ol`, because WebKit and VoiceOver drop the list role under `list-style: none` |
+| Accordion.Item    | `<div class="kv-accordion-item">`, no role                         | `data-open` while open                                                             | Owns its own state: `open`, `defaultOpen`, `onOpenChange`, `disabled`, `focusableWhenDisabled`, `hiddenUntilFound`                                                                                                     |
+| Accordion.Heading | `<h1>` to `<h6>` by the required `level`                           | none                                                                               | Class `kv-accordion-heading`. The trigger is its only child. Screen reader users find the questions by heading                                                                                                         |
+| Accordion.Trigger | `<button type="button">`                                           | `aria-expanded`, `aria-controls`. `data-open`, `data-disabled`                     | `Disclosure.Trigger` with the class `kv-accordion-trigger` added: chevron down closed, up open, at the inline end                                                                                                      |
+| Accordion.Panel   | `<div>`, always rendered, `hidden` while closed                    | `data-open`. With `region`: `role="region"` and `aria-labelledby` the trigger's id | `Disclosure.Panel` with the class `kv-accordion-panel` added. `region` is off by default: APG advises it for about six or fewer                                                                                        |
+| `useAccordion`    | the classes, for your own elements                                 | `rootProps`, `itemProps`, `headingProps`                                           | Pair it with one `useDisclosure()` per item                                                                                                                                                                            |
 
 Rules, tested in `accordion.test.tsx`:
 
@@ -27,6 +27,16 @@ Rules, tested in `accordion.test.tsx`:
 - **Find-in-page.** `hiddenUntilFound` on the Root applies to every item, and an item can set its own.
 - **Region is opt-in.** Without `region` a panel has no role. With it, it is a `region` named by its trigger.
 - **Dev warnings:** as Disclosure (a part outside an Item, a Trigger that is not a `<button>`).
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part                    | `as`                        | Why                                                                                                           |
+| ----------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Root                    | `div` (default), `ul`, `ol` | A list of questions whose count is announced; the root adds `role="list"`. No landmark element                |
+| Item                    | `div` (default), `li`       | A list item inside a `ul` or `ol` Root. No other element, so the heading and the panel stay its only children |
+| Heading, Trigger, Panel | none                        | Heading is `h1` to `h6` by `level`, Trigger a `<button>`, Panel a `<div>` (4.1.2, 1.3.1)                      |
 
 ## Keyboard
 
@@ -69,7 +79,7 @@ Accordion has no strings of its own. A screen reader reports the change of `aria
 - **Render each panel right after its heading,** in the same item (2.4.3).
 - **Use `region` only for a few sections.** More than about six open regions crowd a screen reader user's landmark list (APG).
 - **Keep content that must be seen at once out of an accordion.** Hiding the answer behind a press costs every user a step.
-- A list of items as a `<ul>` is the consumer's markup: `Accordion.Root render={<ul role="list" />}` with `Accordion.Item render={<li />}`.
+- A list of items as a `<ul>` is `Accordion.Root as="ul"` (it adds `role="list"`) with `Accordion.Item as="li"`.
 - Everything in `disclosure.a11y.md` and `button.a11y.md` applies.
 
 ## Visual / modes

@@ -43,7 +43,7 @@ export interface UseCharacterCountOptions {
    */
   id?: string | undefined
   /** The element's ref. Pass it here: the hook also needs the element. */
-  ref?: Ref<HTMLParagraphElement> | undefined
+  ref?: Ref<HTMLElement> | undefined
 }
 
 /** Spread on the `<p>`. */
@@ -56,7 +56,7 @@ export interface CharacterCountPartProps extends FieldStateAttributes {
   'data-over'?: ''
   /** From the announce threshold, and over the limit. */
   'data-near'?: ''
-  ref: RefCallback<HTMLParagraphElement>
+  ref: RefCallback<HTMLElement>
 }
 
 export interface UseCharacterCountResult {
@@ -95,7 +95,7 @@ export function useCharacterCount({
   // Only a Field's control is described by a count. A Fieldset around the box is no host for it
   // (its description is the group's), so outside a Field the count keeps its own `id`.
   const field = useContext(FieldContext)
-  const description = useDescriptionPart<HTMLParagraphElement>(ref, field !== null)
+  const description = useDescriptionPart<HTMLElement>(ref, field !== null)
   const ownId = useId()
 
   const count = useMemo(

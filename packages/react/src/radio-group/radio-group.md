@@ -19,7 +19,7 @@ Six parts. Each is also exported on its own (`RadioGroupRoot`, `RadioGroupRadio`
 
 | Part                      | Renders                      | What it is                                                                                                                           |
 | ------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `RadioGroup.Root`         | `<fieldset>`                 | The group. Takes the props below and every fieldset prop. `render` must still return a `<fieldset>`: a dev warning says so           |
+| `RadioGroup.Root`         | `<fieldset>`                 | The group. Takes the props below and every fieldset prop.                                                                            |
 | `RadioGroup.Legend`       | `<legend>`                   | The question and the group's name. Put it first. `marker` is `'optional'` (the default in a group that isn't `required`) or `'none'` |
 | `RadioGroup.Radio`        | `<input type="radio">`       | One option. Directly in a `Field.Root`, before the label, inside a `RadioGroup.Root`                                                 |
 | `RadioGroup.Prose`        | a [Prose](../prose/prose.md) | The description: what the user must read before answering, above the options, in 16px                                                |
@@ -40,18 +40,16 @@ Six parts. Each is also exported on its own (`RadioGroupRoot`, `RadioGroupRadio`
 | `required`      | `boolean`                                             | `data-required`, and no optional text in the legend                                                                                                   |
 | `disabled`      | `boolean`                                             | Native `fieldset[disabled]`: every radio is disabled and skipped by Tab and the arrow keys. `data-disabled` on every radio                            |
 | `messages`      | `Partial<KvirnMessages['field']>`                     | Per-instance overrides of the legend's optional text and the error prefix: `field.optional` and `field.errorPrefix`                                   |
-| `render`        | `(props, state) => ReactElement`                      | Another element. It must still be a `<fieldset>`                                                                                                      |
 
 `RadioGroup.Radio` props:
 
-| Prop             | Type                             | Meaning                                                                                                           |
-| ---------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `value`          | `string`                         | This option's value, and what a form submit sends when it is checked. Required inside a group                     |
-| `disabled`       | `boolean`                        | Native `disabled`: skipped by Tab and the arrow keys. A disabled Field disables it too. Sets `data-disabled`      |
-| `name`           | `string`                         | Outside a group only. Inside one, the group's name is the default and yours wins                                  |
-| `checked`        | `boolean`                        | Outside a group only. Inside one, the group's `value` sets it and this is ignored                                 |
-| `defaultChecked` | `boolean`                        | Outside a group only. Inside one, the group's `defaultValue` sets it                                              |
-| `render`         | `(props, state) => ReactElement` | Another element. It must still be an `<input type="radio">`. `state` is `isInvalid`, `isDisabled` and `isChecked` |
+| Prop             | Type      | Meaning                                                                                                      |
+| ---------------- | --------- | ------------------------------------------------------------------------------------------------------------ |
+| `value`          | `string`  | This option's value, and what a form submit sends when it is checked. Required inside a group                |
+| `disabled`       | `boolean` | Native `disabled`: skipped by Tab and the arrow keys. A disabled Field disables it too. Sets `data-disabled` |
+| `name`           | `string`  | Outside a group only. Inside one, the group's name is the default and yours wins                             |
+| `checked`        | `boolean` | Outside a group only. Inside one, the group's `value` sets it and this is ignored                            |
+| `defaultChecked` | `boolean` | Outside a group only. Inside one, the group's `defaultValue` sets it                                         |
 
 `type` is fixed, and every other native input prop (`onChange`, `form`, `ref`) passes through. There is no `onCheckedChange`: use the group's `onValueChange`.
 
@@ -64,7 +62,7 @@ Six parts. Each is also exported on its own (`RadioGroupRoot`, `RadioGroupRadio`
 
 - **ARIA it sets:** `aria-describedby` on the fieldset lists every description and help text in DOM order and then the error, only for parts that are rendered. A radio's `aria-describedby` lists its own option help text, followed by your own ids. There is **no `aria-invalid` and no `aria-required`** on the fieldset or the radios.
 - **Classes:** `kv-radio-group kv-fieldset` on the root, `kv-fieldset-legend` on the legend, `kv-radio` on each radio.
-- **Dev warnings (once):** a Radio in the group with no `value`; `checked` or `defaultChecked` on a Radio next to the group's (the group wins); a `render` that isn't a `<fieldset>`; two error messages in one group; a Radio in a Field with no `Field.Label`.
+- **Dev warnings (once):** a Radio in the group with no `value`; `checked` or `defaultChecked` on a Radio next to the group's (the group wins); two error messages in one group; a Radio in a Field with no `Field.Label`.
 - **Messages.** The optional text and the error prefix are `field.optional` and `field.errorPrefix`, resolved like Field's. Override them per provider, or per instance with `messages`.
 
 ## Component

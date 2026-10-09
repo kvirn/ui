@@ -1,6 +1,7 @@
 'use client'
 import type { ListboxEntry, ListboxSection } from '@kvirn-ui/core'
 import {
+  createElement,
   Fragment,
   useCallback,
   useContext,
@@ -15,8 +16,6 @@ import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldContext } from '../field/field-context.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useEnv } from '../provider/use-env.ts'
 import { ToolbarContext } from '../toolbar/toolbar-context.ts'
 import {
@@ -26,16 +25,11 @@ import {
   ListboxVirtualContext,
 } from './listbox-context.ts'
 import { getListboxOptionPartIds, ListboxOptionContext } from './listbox-option-context.ts'
-import type { ListboxOptionPartKind, ListboxOptionPartState } from './listbox-option-context.ts'
+import type { ListboxOptionPartKind } from './listbox-option-context.ts'
 import { useListbox } from './use-listbox.ts'
 import type { ListboxVirtualOptionPartProps } from './use-list-virtualization.ts'
 import type { UseListboxOptions, UseListboxResult } from './use-listbox.ts'
 import { ListboxNative } from './listbox-native.tsx'
-
-/** What `render` receives as its second argument, for the parts that show the open state. */
-export interface ListboxPartState {
-  isOpen: boolean
-}
 
 export type ListboxRootProps<TItem> = UseListboxOptions<TItem> & {
   children?: ReactNode
@@ -194,9 +188,7 @@ export function ListboxRoot<TItem>(props: ListboxRootProps<TItem>): ReactElement
 }
 ListboxRoot.displayName = 'Listbox.Root'
 
-export interface ListboxTriggerProps extends Omit<ComponentPropsWithRef<'div'>, 'id' | 'role'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, ListboxPartState> | undefined
-}
+export type ListboxTriggerProps = Omit<ComponentPropsWithRef<'div'>, 'id' | 'role'>
 
 /**
  * The element that shows the chosen option and opens the popup: a `<div role="combobox"
@@ -207,7 +199,6 @@ export interface ListboxTriggerProps extends Omit<ComponentPropsWithRef<'div'>, 
  * With no children it renders a `Listbox.Value`.
  */
 export function ListboxTrigger({
-  render,
   ref,
   children,
   ...otherProps
@@ -242,27 +233,19 @@ export function ListboxTrigger({
     }
   })
 
-  return renderPart({
-    render,
-    defaultElement: 'div',
-    partProps: {
+  return createElement(
+    'div',
+    {
       ...mergeProps(otherProps, trigger?.triggerProps ?? {}),
       ...ownNameProps(otherProps),
       // The consumer's `tabIndex` wins: a Toolbar.Item sets the roving one.
       ...(otherProps.tabIndex === undefined ? {} : { tabIndex: otherProps.tabIndex }),
       ref: mergedRef,
-      children: children ?? <ListboxValue />,
     },
-    state: { isOpen: trigger?.isOpen ?? false },
-  })
+    children ?? <ListboxValue />,
+  )
 }
 ListboxTrigger.displayName = 'Listbox.Trigger'
-
-/** What `render` receives as its second argument, for `Listbox.Value`. */
-export interface ListboxValueState {
-  /** Nothing is chosen, so the placeholder shows. */
-  isPlaceholder: boolean
-}
 
 export interface ListboxValueProps<TItem = unknown> extends Omit<
   ComponentPropsWithRef<'span'>,
@@ -275,7 +258,6 @@ export interface ListboxValueProps<TItem = unknown> extends Omit<
    * comma. A function gets the chosen items, for example to render a count: `(items) => items.length`.
    */
   children?: ReactNode | ((selectedItems: readonly TItem[]) => ReactNode)
-  render?: RenderProp<ComponentPropsWithRef<'span'>, ListboxValueState> | undefined
 }
 
 /**
@@ -285,7 +267,6 @@ export interface ListboxValueProps<TItem = unknown> extends Omit<
 export function ListboxValue<TItem = unknown>({
   placeholder,
   children,
-  render,
   ref,
   ...otherProps
 }: ListboxValueProps<TItem>): ReactElement {
@@ -317,25 +298,21 @@ export function ListboxValue<TItem = unknown>({
             </Fragment>
           )))
   }
-  return renderPart({
-    render,
-    defaultElement: 'span',
-    partProps: {
+  return createElement(
+    'span',
+    {
       ...mergeProps(otherProps, trigger?.valueProps ?? { className: 'kv-listbox-value' }),
       ref: mergedRef,
-      children: content,
     },
-    state: { isPlaceholder },
-  })
+    content,
+  )
 }
 ListboxValue.displayName = 'Listbox.Value'
 
-export interface ListboxPopupProps extends Omit<
+export type ListboxPopupProps = Omit<
   ComponentPropsWithRef<'div'>,
   'id' | 'role' | 'aria-label' | 'aria-labelledby'
-> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, ListboxPartState> | undefined
-}
+>
 
 /**
  * The popup: a role-less `<div popover="manual">` in the top layer, so no z-index and no clipping
@@ -346,7 +323,7 @@ export interface ListboxPopupProps extends Omit<
  * in it keeps focus on the trigger. Escape and a press outside close it. Put `Listbox.List` and
  * `Listbox.Empty` inside. Listbox, Combobox and Autocomplete share this part.
  */
-export function ListboxPopup({ render, ref, ...otherProps }: ListboxPopupProps): ReactElement {
+export function ListboxPopup({ ref, ...otherProps }: ListboxPopupProps): ReactElement {
   const list = useContext(ListboxListContext)
   const mergedRef = useMergedRef(ref, list?.popupProps.ref ?? null)
   useEffect(() => {
@@ -354,14 +331,9 @@ export function ListboxPopup({ render, ref, ...otherProps }: ListboxPopupProps):
       warnOutsideRoot('Popup')
     }
   }, [list])
-  return renderPart({
-    render,
-    defaultElement: 'div',
-    partProps: {
-      ...mergeProps(otherProps, list?.popupProps ?? {}),
-      ref: mergedRef,
-    },
-    state: { isOpen: list?.isOpen ?? false },
+  return createElement('div', {
+    ...mergeProps(otherProps, list?.popupProps ?? {}),
+    ref: mergedRef,
   })
 }
 ListboxPopup.displayName = 'Listbox.Popup'
@@ -379,7 +351,6 @@ export interface ListboxListProps<TItem = unknown> extends Omit<
    * (`(item: Municipality) => …`) to type it. Options render only while the popup is open.
    */
   children?: ReactNode | ListboxItemRenderer<TItem>
-  render?: RenderProp<ComponentPropsWithRef<'div'>, ListboxPartState> | undefined
 }
 
 /**
@@ -392,7 +363,6 @@ export interface ListboxListProps<TItem = unknown> extends Omit<
  */
 export function ListboxList<TItem = unknown>({
   children,
-  render,
   ref,
   ...otherProps
 }: ListboxListProps<TItem>): ReactElement {
@@ -451,29 +421,17 @@ export function ListboxList<TItem = unknown>({
     }
   }
 
-  return renderPart({
-    render,
-    defaultElement: 'div',
-    partProps: {
+  return createElement(
+    'div',
+    {
       ...mergeProps(otherProps, list?.listProps ?? { className: 'kv-listbox-list' }),
       ...ownNameProps(otherProps),
       ref: mergedRef,
-      children: content,
     },
-    state: { isOpen: list?.isOpen ?? false },
-  })
+    content,
+  )
 }
 ListboxList.displayName = 'Listbox.List'
-
-/** What `render` receives as its second argument, for `Listbox.Option`. */
-export interface ListboxOptionState<TItem = unknown> {
-  isActive: boolean
-  isSelected: boolean
-  isDisabled: boolean
-  item: TItem
-  /** The option's text (`itemToString`). */
-  label: string
-}
 
 export interface ListboxOptionProps<TItem = unknown> extends Omit<
   ComponentPropsWithRef<'div'>,
@@ -483,7 +441,6 @@ export interface ListboxOptionProps<TItem = unknown> extends Omit<
   item: TItem
   /** Default: the item's text. Put your own content here for a rich option. */
   children?: ReactNode
-  render?: RenderProp<ComponentPropsWithRef<'div'>, ListboxOptionState<TItem>> | undefined
 }
 
 /**
@@ -497,7 +454,6 @@ export interface ListboxOptionProps<TItem = unknown> extends Omit<
 export function ListboxOption<TItem = unknown>({
   item,
   children,
-  render,
   ref,
   ...otherProps
 }: ListboxOptionProps<TItem>): ReactElement | null {
@@ -596,23 +552,15 @@ export function ListboxOption<TItem = unknown>({
   }
   return (
     <ListboxOptionContext.Provider value={optionContext}>
-      {renderPart({
-        render,
-        defaultElement: 'div',
-        partProps: {
+      {createElement(
+        'div',
+        {
           ...mergeProps(otherProps, optionProps, virtualProps ?? noVirtualProps, richProps),
           lang: otherProps.lang ?? list?.itemToLang?.(item),
           ref: mergedRef,
-          children: children ?? entry.label,
         },
-        state: {
-          isActive,
-          isSelected,
-          isDisabled: entry.disabled,
-          item,
-          label: entry.label,
-        },
-      })}
+        children ?? entry.label,
+      )}
     </ListboxOptionContext.Provider>
   )
 }
@@ -625,11 +573,7 @@ function warnOutsideOption(part: string): void {
   )
 }
 
-export type { ListboxOptionPartState }
-
-export interface ListboxOptionIconProps extends Omit<ComponentPropsWithRef<'span'>, 'aria-hidden'> {
-  render?: RenderProp<ComponentPropsWithRef<'span'>, ListboxOptionPartState> | undefined
-}
+export type ListboxOptionIconProps = Omit<ComponentPropsWithRef<'span'>, 'aria-hidden'>
 
 /**
  * A decorative slot at the start of an option, for an `<Icon>`, a flag (`<img alt="">`) or an
@@ -637,35 +581,19 @@ export interface ListboxOptionIconProps extends Omit<ComponentPropsWithRef<'span
  * means (a country, a status) must also be in the text. Listbox, Combobox and Autocomplete share
  * this part. It isn't rendered in the native `<select>` rendering.
  */
-export function ListboxOptionIcon({
-  render,
-  ref,
-  ...otherProps
-}: ListboxOptionIconProps): ReactElement {
-  const option = useContext(ListboxOptionContext)
+export function ListboxOptionIcon({ ref, ...otherProps }: ListboxOptionIconProps): ReactElement {
   const mergedRef = useMergedRef(ref, null)
-  return renderPart({
-    render,
-    defaultElement: 'span',
-    partProps: {
-      ...mergeProps(otherProps, {
-        className: 'kv-listbox-option-icon' as const,
-        'aria-hidden': true as const,
-      }),
-      ref: mergedRef,
-    },
-    state: {
-      isActive: option?.isActive ?? false,
-      isSelected: option?.isSelected ?? false,
-      isDisabled: option?.isDisabled ?? false,
-    },
+  return createElement('span', {
+    ...mergeProps(otherProps, {
+      className: 'kv-listbox-option-icon' as const,
+      'aria-hidden': true as const,
+    }),
+    ref: mergedRef,
   })
 }
 ListboxOptionIcon.displayName = 'Listbox.OptionIcon'
 
-export interface ListboxOptionTextProps extends Omit<ComponentPropsWithRef<'span'>, 'id'> {
-  render?: RenderProp<ComponentPropsWithRef<'span'>, ListboxOptionPartState> | undefined
-}
+export type ListboxOptionTextProps = Omit<ComponentPropsWithRef<'span'>, 'id'>
 
 /** Whitespace as a reader would collapse it, for comparing the text with `itemToString`. */
 function normalizeText(text: string | null): string {
@@ -682,7 +610,6 @@ function normalizeText(text: string | null): string {
  */
 export function ListboxOptionText({
   children,
-  render,
   ref,
   ...otherProps
 }: ListboxOptionTextProps): ReactElement {
@@ -710,29 +637,21 @@ export function ListboxOptionText({
       )
     }
   })
-  return renderPart({
-    render,
-    defaultElement: 'span',
-    partProps: {
+  return createElement(
+    'span',
+    {
       ...mergeProps(otherProps, {
         className: 'kv-listbox-option-text' as const,
         ...(option === null ? {} : { id: option.textId }),
       }),
       ref: mergedRef,
-      children: children ?? option?.label,
     },
-    state: {
-      isActive: option?.isActive ?? false,
-      isSelected: option?.isSelected ?? false,
-      isDisabled: option?.isDisabled ?? false,
-    },
-  })
+    children ?? option?.label,
+  )
 }
 ListboxOptionText.displayName = 'Listbox.OptionText'
 
-export interface ListboxOptionDescriptionProps extends Omit<ComponentPropsWithRef<'span'>, 'id'> {
-  render?: RenderProp<ComponentPropsWithRef<'span'>, ListboxOptionPartState> | undefined
-}
+export type ListboxOptionDescriptionProps = Omit<ComponentPropsWithRef<'span'>, 'id'>
 
 /**
  * A second line under the option's text (a capital, an e-mail address): a `<span>` that the
@@ -742,7 +661,6 @@ export interface ListboxOptionDescriptionProps extends Omit<ComponentPropsWithRe
  * and Autocomplete share this part.
  */
 export function ListboxOptionDescription({
-  render,
   ref,
   ...otherProps
 }: ListboxOptionDescriptionProps): ReactElement {
@@ -755,31 +673,17 @@ export function ListboxOptionDescription({
       warnOutsideOption('OptionDescription')
     }
   }, [option])
-  return renderPart({
-    render,
-    defaultElement: 'span',
-    partProps: {
-      ...mergeProps(otherProps, {
-        className: 'kv-listbox-option-description' as const,
-        ...(option === null ? {} : { id: option.descriptionId }),
-      }),
-      ref: mergedRef,
-    },
-    state: {
-      isActive: option?.isActive ?? false,
-      isSelected: option?.isSelected ?? false,
-      isDisabled: option?.isDisabled ?? false,
-    },
+  return createElement('span', {
+    ...mergeProps(otherProps, {
+      className: 'kv-listbox-option-description' as const,
+      ...(option === null ? {} : { id: option.descriptionId }),
+    }),
+    ref: mergedRef,
   })
 }
 ListboxOptionDescription.displayName = 'Listbox.OptionDescription'
 
-export interface ListboxOptionIndicatorProps extends Omit<
-  ComponentPropsWithRef<'span'>,
-  'aria-hidden'
-> {
-  render?: RenderProp<ComponentPropsWithRef<'span'>, ListboxOptionPartState> | undefined
-}
+export type ListboxOptionIndicatorProps = Omit<ComponentPropsWithRef<'span'>, 'aria-hidden'>
 
 /**
  * The selection mark at the end of an option: a `<span aria-hidden="true">` that always takes its
@@ -791,7 +695,6 @@ export interface ListboxOptionIndicatorProps extends Omit<
  */
 export function ListboxOptionIndicator({
   children,
-  render,
   ref,
   ...otherProps
 }: ListboxOptionIndicatorProps): ReactElement {
@@ -805,24 +708,18 @@ export function ListboxOptionIndicator({
     }
   }, [option])
   const isSelected = option?.isSelected ?? false
-  return renderPart({
-    render,
-    defaultElement: 'span',
-    partProps: {
+  return createElement(
+    'span',
+    {
       ...mergeProps(otherProps, {
         className: 'kv-listbox-option-indicator' as const,
         'aria-hidden': true as const,
         ...(isSelected ? { 'data-selected': '' } : {}),
       }),
       ref: mergedRef,
-      children: isSelected ? children : null,
     },
-    state: {
-      isActive: option?.isActive ?? false,
-      isSelected,
-      isDisabled: option?.isDisabled ?? false,
-    },
-  })
+    isSelected ? children : null,
+  )
 }
 ListboxOptionIndicator.displayName = 'Listbox.OptionIndicator'
 
@@ -837,7 +734,6 @@ export interface ListboxGroupProps<TItem = unknown> extends Omit<
    * as they are: put a `Listbox.GroupLabel` and your own options in them.
    */
   children?: ReactNode | ListboxItemRenderer<TItem>
-  render?: RenderProp<ComponentPropsWithRef<'div'>, ListboxPartState> | undefined
 }
 
 /**
@@ -847,7 +743,6 @@ export interface ListboxGroupProps<TItem = unknown> extends Omit<
 export function ListboxGroup<TItem = unknown>({
   section,
   children,
-  render,
   ref,
   ...otherProps
 }: ListboxGroupProps<TItem>): ReactElement {
@@ -871,29 +766,23 @@ export function ListboxGroup<TItem = unknown>({
       children
     )
 
-  return renderPart({
-    render,
-    defaultElement: 'div',
-    partProps: {
+  return createElement(
+    'div',
+    {
       ...mergeProps(
         otherProps,
         list?.getGroupProps(section) ?? { className: 'kv-listbox-group' as const },
       ),
       ...ownNameProps(otherProps),
       ref: mergedRef,
-      children: (
-        // The group's label finds its group here.
-        <ListboxGroupContext.Provider value={{ section }}>{content}</ListboxGroupContext.Provider>
-      ),
     },
-    state: { isOpen: list?.isOpen ?? false },
-  })
+    // The group's label finds its group here.
+    <ListboxGroupContext.Provider value={{ section }}>{content}</ListboxGroupContext.Provider>,
+  )
 }
 ListboxGroup.displayName = 'Listbox.Group'
 
-export interface ListboxGroupLabelProps extends Omit<ComponentPropsWithRef<'div'>, 'id'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, ListboxPartState> | undefined
-}
+export type ListboxGroupLabelProps = Omit<ComponentPropsWithRef<'div'>, 'id'>
 
 /**
  * The visible name of a group. It is the group's `aria-labelledby` target, so a screen reader
@@ -901,7 +790,6 @@ export interface ListboxGroupLabelProps extends Omit<ComponentPropsWithRef<'div'
  */
 export function ListboxGroupLabel({
   children,
-  render,
   ref,
   ...otherProps
 }: ListboxGroupLabelProps): ReactElement {
@@ -920,22 +808,18 @@ export function ListboxGroupLabel({
     list === null || group === null
       ? { className: 'kv-listbox-group-label' as const }
       : list.getGroupLabelProps(group.section)
-  return renderPart({
-    render,
-    defaultElement: 'div',
-    partProps: {
+  return createElement(
+    'div',
+    {
       ...mergeProps(otherProps, labelProps),
       ref: mergedRef,
-      children: children ?? group?.section.label,
     },
-    state: { isOpen: list?.isOpen ?? false },
-  })
+    children ?? group?.section.label,
+  )
 }
 ListboxGroupLabel.displayName = 'Listbox.GroupLabel'
 
-export interface ListboxEmptyProps extends ComponentPropsWithRef<'div'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, ListboxPartState> | undefined
-}
+export type ListboxEmptyProps = ComponentPropsWithRef<'div'>
 
 /**
  * What the open popup shows when there are no options. It renders nothing otherwise. Default
@@ -946,7 +830,6 @@ export interface ListboxEmptyProps extends ComponentPropsWithRef<'div'> {
  */
 export function ListboxEmpty({
   children,
-  render,
   ref,
   ...otherProps
 }: ListboxEmptyProps): ReactElement | null {
@@ -960,16 +843,14 @@ export function ListboxEmpty({
   if (list === null || !list.isOpen || list.size > 0) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'div',
-    partProps: {
+  return createElement(
+    'div',
+    {
       ...mergeProps(otherProps, list.emptyProps),
       ref: mergedRef,
-      children: children ?? list.emptyText,
     },
-    state: { isOpen: true },
-  })
+    children ?? list.emptyText,
+  )
 }
 ListboxEmpty.displayName = 'Listbox.Empty'
 

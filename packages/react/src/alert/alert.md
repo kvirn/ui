@@ -15,14 +15,14 @@ A status message in the content: something people need to know now, or the resul
 
 ## API
 
-| Part                                            | Renders                                                                          | Props                                                                                                                                                                                                                               |
-| ----------------------------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Alert.Root`                                    | `<div class="kv-alert">`                                                         | `announce`, `render`, `ref`, any `<div>` attribute                                                                                                                                                                                  |
-| `Alert.Info`, `.Success`, `.Warning`, `.Danger` | `<div>` with the status class, icon and word                                     | The same, and `messages` (`infoPrefix`, … or `close`)                                                                                                                                                                               |
-| `Alert.Title`                                   | `<h2 class="kv-alert-title">`                                                    | `render` (another heading, or `<p />`), `ref`                                                                                                                                                                                       |
-| `Alert.Body`                                    | `<div class="kv-alert-body">`                                                    | `render`, `ref`                                                                                                                                                                                                                     |
-| `Alert.Actions`                                 | `<div class="kv-alert-actions">`                                                 | `render`, `ref`                                                                                                                                                                                                                     |
-| `Alert.Close`                                   | `<button type="button" class="kv-alert-close">` with the decorative `close` icon | `onClick` (never called while `disabled`), `disabled`, `messages` (`{ close }`), `children` (visible text replaces the icon and the `aria-label`), `render` (must stay a `<button>`), `ref`, any `<button>` attribute except `type` |
+| Part                                            | Renders                                                                          | Props                                                                                                                                                                                            |
+| ----------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Alert.Root`                                    | `<div class="kv-alert">`                                                         | `announce`, `as` (`div`, `section`), `ref`, any attribute of the element                                                                                                                         |
+| `Alert.Info`, `.Success`, `.Warning`, `.Danger` | `<div>` with the status class, icon and word                                     | The same, and `messages` (`infoPrefix`, … or `close`)                                                                                                                                            |
+| `Alert.Title`                                   | `<h2 class="kv-alert-title">`                                                    | `as` (`h2` to `h6`, or `p`), `ref`                                                                                                                                                               |
+| `Alert.Body`                                    | `<div class="kv-alert-body">`                                                    | `as` (`div`, `p`, `section`), `ref`                                                                                                                                                              |
+| `Alert.Actions`                                 | `<div class="kv-alert-actions">`                                                 | `as` (`div`, `section`), `ref`                                                                                                                                                                   |
+| `Alert.Close`                                   | `<button type="button" class="kv-alert-close">` with the decorative `close` icon | `onClick` (never called while `disabled`), `disabled`, `messages` (`{ close }`), `children` (visible text replaces the icon and the `aria-label`), `ref`, any `<button>` attribute except `type` |
 
 | Message key (`messages.alert`)                                 | Default (sv)            | Used by                                                       |
 | -------------------------------------------------------------- | ----------------------- | ------------------------------------------------------------- |
@@ -103,8 +103,8 @@ const ResultAlert = alertFor[result.variant]
 
 ### The Title
 
-- A required heading. **You choose the level** (1.3.1, 2.4.6): one level below the heading of the part of the page it's in, so usually `h2` directly under the page's `h1`, `h3` inside a section with an `h2`. Never skip levels. `render={<h3 />}` changes it.
-- For one sentence that needs no heading (a consequence next to the Send button), render a paragraph: `<Alert.Title render={<p />}>`. The status word is still first.
+- A required heading. **You choose the level** (1.3.1, 2.4.6): one level below the heading of the part of the page it's in, so usually `h2` directly under the page's `h1`, `h3` inside a section with an `h2`. Never skip levels. `as="h3"` changes it.
+- For one sentence that needs no heading (a consequence next to the Send button), render a paragraph: `<Alert.Title as="p">`. The status word is still first.
 - Write the outcome in the user's words ("Vi kunde inte skicka din ansökan"), never only "Fel". The Body says what to do and by when. At most two actions, with verbs ("Försök igen"). One alert per region at a time.
 - A root with no Title warns in development: the Title holds the status word and names the message.
 
@@ -130,11 +130,11 @@ From least to most work:
 | You want                                         | Do                                                                                                                                                                                                              | You keep                                                                                            |
 | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | Our structure, your colours or spacing           | Set the two component tokens in your own (unlayered) CSS: `.kv-alert--warning { --kv-alert-background: …; --kv-alert-accent: … }`. Or set the semantic tokens and scales. Run `checkThemeCss()` on your colours | Everything: icon, word, announce, our classes                                                       |
-| Our component, your own look entirely            | Skip or copy `theme.css` and style the classes yourself. Or keep the theme and drop our class with the `render` function form: `render={(props) => <div {...props} className="my-warning" />}`                  | The icon, the word and `announce`, from `Alert.Warning`                                             |
+| Our component, your own look entirely            | Skip or copy `theme.css` and style the classes yourself. Or keep the theme and the structure, and put your own class on the root: `className="my-warning"` joins ours                                           | The icon, the word and `announce`, from `Alert.Warning`                                             |
 | Your own icon or word, or a status we don't have | `Alert.Root` with your class, your `<Icon name="…" className="kv-alert-icon" />` first, and your own `<span className="kv-alert-status">` with your translated word first in the Title                          | The layout, the Title, Body, Actions and `announce`. **You own the colour, icon and word agreeing** |
 | A different icon drawing everywhere              | Register `info`, `success`, `warning` or `error` in `KvirnProvider`. Keep its shape distinct from the other three                                                                                               | Everything else                                                                                     |
 
-Development warnings help you keep the agreement: a ready-made root whose `className` (or `render` element) carries another status class, such as `<Alert.Warning className="kv-alert--danger">`, and a plain `Alert.Root` with one of our status classes.
+Development warnings help you keep the agreement: a ready-made root whose `className` carries another status class, such as `<Alert.Warning className="kv-alert--danger">`, and a plain `Alert.Root` with one of our status classes.
 
 ### Classes for the default theme
 
@@ -158,7 +158,7 @@ const [isShown, setIsShown] = useState(true)
 <h2 ref={heading} tabIndex={-1}>Dina ärenden</h2>
 {isShown ? (
   <Alert.Info>
-    <Alert.Title render={<h3 />}>Tjänsten är långsammare än vanligt i dag</Alert.Title>
+    <Alert.Title as="h3">Tjänsten är långsammare än vanligt i dag</Alert.Title>
     <Alert.Close
       onClick={() => {
         setIsShown(false)
@@ -177,19 +177,19 @@ const [isShown, setIsShown] = useState(true)
 
 ### One site-wide alert as a landmark
 
-The default `<div>` isn't a landmark. For one site-wide alert only (a service outage), render a named region:
+The default `<div>` isn't a landmark. For one site-wide alert only (a service outage), use a named region:
 
 ```tsx
-<Alert.Danger render={<section aria-labelledby={titleId} />}>
+<Alert.Danger as="section" aria-labelledby={titleId}>
   <Alert.Title id={titleId}>Tjänsten är nere</Alert.Title>
 </Alert.Danger>
 ```
 
 Never for messages about a part of the page.
 
-### `render`
+### `as`
 
-An element keeps its own props, and the part's are merged in: class names join, styles merge and refs merge. The function form gets the props, a callback ref that fits any element, and an empty state object. On a root, the props include the icon as `children`, so spreading them keeps the icon.
+`as` is a string, so it works from a Server Component. Each part takes only the elements in the contract's "Allowed elements" ([alert.a11y.md](alert.a11y.md)); anything else is a type error and, in JS, warns once and renders the default. `Alert.Close` has no `as`. For any other element, use `useAlert` and spread its props.
 
 ## Hook
 

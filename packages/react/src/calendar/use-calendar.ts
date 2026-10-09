@@ -28,10 +28,21 @@ import type {
   YearMonth,
 } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import {
+  useContext,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react'
 import type { FocusEvent, KeyboardEvent, RefCallback } from 'react'
 import { useQuietAnnouncer, warnAnnouncerMissing } from '../announcer/use-announcer.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
+import { KvirnConfigContext } from '../provider/provider-context.ts'
+import { warnDateWithoutTimeZone } from '../provider/provider-format.ts'
 import { useDateSettings } from '../provider/use-date-settings.ts'
 import { useLocale } from '../provider/use-locale.ts'
 import { useMessages } from '../provider/use-messages.ts'
@@ -301,6 +312,8 @@ export interface UseCalendarResult {
   dateLanguage: string | undefined
 }
 
+const subscribeNever = () => () => {}
+
 /**
  * A calendar's behaviour for your own markup (contract: calendar.a11y.md): the visible month, one
  * Tab stop on a roving day, the date keys, and the names of days, weeks and buttons from the
@@ -357,12 +370,29 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult
   const visibleMonths = visibleMonthsOption === 2 && isWide ? 2 : 1
 
   const isControlled = isRange ? rangeValue !== undefined : value !== undefined
-  const [today] = useState(() => todayOption ?? getTodayIsoDate(timeZone, new Date()))
+  const hasProviderTimeZone = useContext(KvirnConfigContext).timeZone !== undefined
+  const isBrowserZone = todayOption === undefined && !hasProviderTimeZone
+  // Hydration renders the server snapshot (the UTC date, like the server's HTML), then the client
+  // one; a Calendar mounted after hydration reads the browser's date at once and never switches.
+  const browserToday = useSyncExternalStore(
+    subscribeNever,
+    () => getTodayIsoDate(Intl.DateTimeFormat().resolvedOptions().timeZone, new Date()),
+    () => getTodayIsoDate('UTC', new Date()),
+  )
+  const today =
+    todayOption ?? (isBrowserZone ? browserToday : getTodayIsoDate(timeZone, new Date()))
+  const storeTodayRef = useRef(today)
 
   const reportedRangeRef = useRef<DateRange | undefined>(undefined)
 
-  const [store] = useState<CalendarStore>(() =>
-    createCalendar({
+  const [store] = useState<CalendarStore>(() => {
+    if (isBrowserZone) {
+      warnDateWithoutTimeZone(
+        '"Today" was worked out',
+        "the server and first paint use the UTC date, then the grid follows the browser's zone",
+      )
+    }
+    return createCalendar({
       today,
       selected: value ?? defaultValue,
       focused: defaultFocusedDate,
@@ -377,12 +407,35 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult
       minimumDays,
       maximumDays,
       allowUnavailableInRange,
-    }),
-  )
+    })
+  })
   const state = useStoreSelector(store, (current) => current)
 
   const cellElements = useRef(new Map<IsoDate, HTMLElement>())
   const shouldFocusCell = useRef(false)
+
+  // Only hydration gets here: "today" moved from the UTC date to the browser's. The Tab stop follows
+  // while the grid is untouched, but never away from a cell that holds DOM focus.
+  useEffect(() => {
+    const previousToday = storeTodayRef.current
+    if (today === previousToday) {
+      return
+    }
+    storeTodayRef.current = today
+    const current = store.getState()
+    const isUntouched =
+      current.focusedDate === previousToday &&
+      current.selectedDate === undefined &&
+      current.rangeStart === '' &&
+      current.rangeEnd === '' &&
+      defaultFocusedDate === undefined
+    const hasFocusInGrid = [...cellElements.current.values()].some((cell) =>
+      cell.contains(document.activeElement),
+    )
+    if (isUntouched && !hasFocusInGrid) {
+      store.actions.focusDate(today)
+    }
+  }, [today, store, defaultFocusedDate])
 
   useEffect(() => {
     const current = store.getState()

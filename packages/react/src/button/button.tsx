@@ -1,11 +1,9 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import type { ComponentPropsWithRef, MouseEventHandler, ReactElement } from 'react'
+import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart, takeRenderElementProps } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useButton } from './use-button.ts'
 
 /**
@@ -37,16 +35,6 @@ export function hasNameSource(button: HTMLButtonElement): boolean {
   return [...button.childNodes].some(hasName)
 }
 
-const isClickHandler = (value: unknown): value is MouseEventHandler<HTMLButtonElement> =>
-  typeof value === 'function'
-
-/** What `render` receives as its second argument. */
-export interface ButtonState {
-  isDisabled: boolean
-  isBusy: boolean
-  isFocusVisible: boolean
-}
-
 /**
  * `aria-disabled` is left out: `disabled` with `focusableWhenDisabled` sets it, and also blocks
  * activation.
@@ -63,11 +51,6 @@ export interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'aria
    * a `Progress` beside the button, without a `Progress.Indicator`.
    */
   busy?: boolean | undefined
-  /**
-   * Change the element. It must still be a `<button>`: use Link for navigation. An element's
-   * own `onClick` is gated like the Button's. In the function form, keep `buttonProps.onClick`.
-   */
-  render?: RenderProp<ComponentPropsWithRef<'button'>, ButtonState> | undefined
 }
 
 /**
@@ -86,37 +69,23 @@ export function Button({
   busy,
   type,
   onClick,
-  render,
   children,
   ref,
   ...otherProps
 }: ButtonProps): ReactElement {
-  // The element's onClick goes through useButton too, so a disabled Button blocks it.
-  const { render: renderWithoutClick, takenProps } = takeRenderElementProps(render, ['onClick'])
-  const elementOnClick = takenProps.onClick
-  const activationHandler = isClickHandler(elementOnClick)
-    ? mergeProps({ onClick }, { onClick: elementOnClick }).onClick
-    : onClick
   const button = useButton({
     disabled,
     focusableWhenDisabled,
     busy,
     type,
-    onClick: activationHandler,
+    onClick,
   })
   const elementRef = useRef<HTMLButtonElement | null>(null)
   const mergedRef = useMergedRef(ref, elementRef)
 
   useEffect(() => {
     const element = elementRef.current
-    if (element === null || element.tagName !== 'BUTTON') {
-      const rendered =
-        element === null ? 'nothing it could reference' : `<${element.tagName.toLowerCase()}>`
-      warnOnce(
-        `button-not-a-button:${rendered}`,
-        `<Button render> must render a <button> and forward its ref, but it rendered ${rendered}. A button's role, keyboard activation and disabled state come from the native element. For navigation, use Link.`,
-      )
-    } else if (!hasNameSource(element)) {
+    if (element !== null && !hasNameSource(element)) {
       warnOnce(
         'button-without-name',
         'A <Button> has no accessible name: its only content is hidden from assistive technology, such as a decorative <Icon>. Give an icon-only button an aria-label from your translations, or add visible text (WCAG 4.1.2).',
@@ -124,27 +93,12 @@ export function Button({
     }
   })
 
-  return renderPart({
-    render: renderWithoutClick,
-    defaultElement: 'button',
-    partProps: {
-      ...mergeProps(otherProps, button.buttonProps),
-      ref: mergedRef,
-      // Decorative and first, so the name stays the visible text (2.5.3). The 1000 ms delay is CSS.
-      children: button.isBusy ? (
-        <>
-          <span className="kv-spinner" aria-hidden="true" />
-          {children}
-        </>
-      ) : (
-        children
-      ),
-    },
-    state: {
-      isDisabled: button.isDisabled,
-      isBusy: button.isBusy,
-      isFocusVisible: button.isFocusVisible,
-    },
-  })
+  return (
+    <button {...mergeProps(otherProps, button.buttonProps)} ref={mergedRef}>
+      {/* Decorative and first, so the name stays the visible text (2.5.3). The 1000 ms delay is CSS. */}
+      {button.isBusy ? <span className="kv-spinner" aria-hidden="true" /> : null}
+      {children}
+    </button>
+  )
 }
 Button.displayName = 'Button'

@@ -1,10 +1,15 @@
 'use client'
-import { Popover, Toolbar } from '@kvirn-ui/react'
+import { Popover } from '@kvirn-ui/react'
 import type { PopoverChangeDetails } from '@kvirn-ui/react'
 import { useId } from 'react'
 import { createPortal } from 'react-dom'
 import type { ReactElement, ReactNode } from 'react'
-import { ControlTooltip, keepFocusInText, useToolbarSettings } from './command-controls.tsx'
+import {
+  ControlTooltip,
+  keepFocusInText,
+  PopoverToolbarItem,
+  useToolbarSettings,
+} from './command-controls.tsx'
 import { useRichTextEditorContext } from './rich-text-editor-context.ts'
 import { describeShortcut } from './shortcuts.ts'
 
@@ -46,41 +51,34 @@ export function FormPopover({
   const isDisabled = context.state.isDisabled
 
   const trigger = (
-    <Toolbar.Item
-      render={
-        <Popover.Trigger
-          className={isNameShown ? 'kv-button' : 'kv-button kv-button--icon-only'}
-          aria-label={isNameShown ? undefined : label}
-          aria-keyshortcuts={described?.ariaKeyShortcuts || undefined}
-          onMouseDown={keepFocusInText}
-        />
-      }
-      disabled={isDisabled}
-      focusableWhenDisabled={!isDisabled}
-    >
-      {isNameShown ? (
-        <>
-          {icon}
-          <span className="kv-rich-text-control-label">{label}</span>
-        </>
-      ) : (
-        icon
-      )}
-    </Toolbar.Item>
+    <ControlTooltip
+      label={label}
+      shortcutKeys={described?.keys}
+      isNameShown={isNameShown}
+      hasTooltip={tooltips && !isDisabled && (!isNameShown || described !== undefined)}
+      control={PopoverToolbarItem}
+      controlProps={{
+        className: isNameShown ? 'kv-button' : 'kv-button kv-button--icon-only',
+        'aria-label': isNameShown ? undefined : label,
+        'aria-keyshortcuts': described?.ariaKeyShortcuts || undefined,
+        onMouseDown: keepFocusInText,
+        disabled: isDisabled,
+        focusableWhenDisabled: !isDisabled,
+        children: isNameShown ? (
+          <>
+            {icon}
+            <span className="kv-rich-text-control-label">{label}</span>
+          </>
+        ) : (
+          icon
+        ),
+      }}
+    />
   )
 
   return (
     <Popover.Root open={isOpen} onOpenChange={onOpenChange} placement="bottom-start">
-      {tooltips && !isDisabled && (!isNameShown || described !== undefined) ? (
-        <ControlTooltip
-          label={label}
-          shortcutKeys={described?.keys}
-          isNameShown={isNameShown}
-          control={trigger}
-        />
-      ) : (
-        trigger
-      )}
+      {trigger}
       {popupSlot === null
         ? null
         : createPortal(

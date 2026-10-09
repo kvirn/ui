@@ -1,9 +1,9 @@
 'use client'
-import { Kbd, Toolbar, Tooltip } from '@kvirn-ui/react'
-import type { ToolbarButtonProps, ToolbarToggleProps } from '@kvirn-ui/react'
-import { useContext } from 'react'
+import { Kbd, Listbox, Popover, Toolbar, Tooltip } from '@kvirn-ui/react'
+import type { ToolbarButtonProps, ToolbarItemProps, ToolbarToggleProps } from '@kvirn-ui/react'
+import { createElement, useContext } from 'react'
 import type { Editor } from '@tiptap/core'
-import type { MouseEvent, ReactElement, ReactNode } from 'react'
+import type { ComponentPropsWithRef, ElementType, MouseEvent, ReactElement, ReactNode } from 'react'
 import { RichTextToolbarContext, useRichTextEditorContext } from './rich-text-editor-context.ts'
 import { useEditorSelector } from './use-editor-selector.ts'
 import type { RichTextLabels } from './rich-text-editor-context.ts'
@@ -83,12 +83,29 @@ export function keepFocusInText(event: MouseEvent<HTMLElement>): void {
   event.preventDefault()
 }
 
-interface ControlTooltipProps {
+/** Internal. A Popover trigger that is a toolbar item, so a Tooltip.Trigger can take it as `as`. */
+export function PopoverToolbarItem(
+  props: Omit<ToolbarItemProps<typeof Popover.Trigger>, 'as'>,
+): ReactElement {
+  return <Toolbar.Item as={Popover.Trigger} {...props} />
+}
+
+/** Internal. A Listbox trigger that is a toolbar item, so a Tooltip.Trigger can take it as `as`. */
+export function ListboxToolbarItem(
+  props: Omit<ToolbarItemProps<typeof Listbox.Trigger>, 'as'>,
+): ReactElement {
+  return <Toolbar.Item as={Listbox.Trigger} {...props} />
+}
+
+interface ControlTooltipProps<Component extends ElementType> {
   label: string
   shortcutKeys: readonly string[] | undefined
   isNameShown: boolean
-  /** The control, rendered as the tooltip's trigger. */
-  control: ReactElement
+  /** Whether the control gets a tooltip at all. */
+  hasTooltip: boolean
+  /** The control's component, which becomes the tooltip's trigger. */
+  control: Component
+  controlProps: ComponentPropsWithRef<Component>
 }
 
 /**
@@ -96,15 +113,20 @@ interface ControlTooltipProps {
  * shortcut when it is. The name line is hidden from assistive technology (the control has that
  * name), and the shortcut line is the control's description.
  */
-export function ControlTooltip({
+export function ControlTooltip<Component extends ElementType>({
   label,
   shortcutKeys,
   isNameShown,
+  hasTooltip,
   control,
-}: ControlTooltipProps): ReactElement {
+  controlProps,
+}: ControlTooltipProps<Component>): ReactElement {
+  if (!hasTooltip) {
+    return createElement(control, controlProps)
+  }
   return (
     <Tooltip.Root>
-      <Tooltip.Trigger render={control} />
+      {createElement(Tooltip.Trigger, { as: control, ...controlProps })}
       <Tooltip.Popup>
         {isNameShown ? null : <Tooltip.Name>{label}</Tooltip.Name>}
         {shortcutKeys === undefined ? null : (
@@ -192,35 +214,31 @@ export function CommandButton({
   const state = useControlState(isAvailable, undefined)
   const presentation = usePresentation({ label, icon, shortcut })
   const isUnavailable = disabled || !state.isAvailable
-  const control = (
-    <Toolbar.Button
-      {...otherProps}
-      className={[presentation.isNameShown ? undefined : 'kv-button--icon-only', className]
-        .filter((name) => name !== undefined && name !== '')
-        .join(' ')}
-      {...(presentation.isNameShown ? {} : { 'aria-label': presentation.ariaLabel })}
-      aria-keyshortcuts={presentation.ariaKeyShortcuts}
-      disabled={isUnavailable || presentation.isDisabled}
-      focusableWhenDisabled={!presentation.isDisabled}
-      onMouseDown={keepFocusInText}
-      onClick={() => {
-        if (editor !== null && !isUnavailable) {
-          onPress(editor)
-        }
-      }}
-    >
-      {presentation.children}
-    </Toolbar.Button>
-  )
-  return presentation.hasTooltip ? (
+  return (
     <ControlTooltip
       label={label}
       shortcutKeys={presentation.shortcutKeys}
       isNameShown={presentation.isNameShown}
-      control={control}
+      hasTooltip={presentation.hasTooltip}
+      control={Toolbar.Button}
+      controlProps={{
+        ...otherProps,
+        className: [presentation.isNameShown ? undefined : 'kv-button--icon-only', className]
+          .filter((name) => name !== undefined && name !== '')
+          .join(' '),
+        ...(presentation.isNameShown ? {} : { 'aria-label': presentation.ariaLabel }),
+        'aria-keyshortcuts': presentation.ariaKeyShortcuts,
+        disabled: isUnavailable || presentation.isDisabled,
+        focusableWhenDisabled: !presentation.isDisabled,
+        onMouseDown: keepFocusInText,
+        onClick: () => {
+          if (editor !== null && !isUnavailable) {
+            onPress(editor)
+          }
+        },
+        children: presentation.children,
+      }}
     />
-  ) : (
-    control
   )
 }
 CommandButton.displayName = 'RichTextEditor.CommandButton'
@@ -254,36 +272,32 @@ export function CommandToggle({
   const state = useControlState(isAvailable, isPressed)
   const presentation = usePresentation({ label, icon, shortcut })
   const isUnavailable = disabled || !state.isAvailable
-  const control = (
-    <Toolbar.Toggle
-      {...otherProps}
-      className={[presentation.isNameShown ? undefined : 'kv-button--icon-only', className]
-        .filter((name) => name !== undefined && name !== '')
-        .join(' ')}
-      {...(presentation.isNameShown ? {} : { 'aria-label': presentation.ariaLabel })}
-      aria-keyshortcuts={presentation.ariaKeyShortcuts}
-      pressed={state.isPressed}
-      disabled={isUnavailable || presentation.isDisabled}
-      focusableWhenDisabled={!presentation.isDisabled}
-      onMouseDown={keepFocusInText}
-      onPressedChange={() => {
-        if (editor !== null && !isUnavailable) {
-          onPress(editor)
-        }
-      }}
-    >
-      {presentation.children}
-    </Toolbar.Toggle>
-  )
-  return presentation.hasTooltip ? (
+  return (
     <ControlTooltip
       label={label}
       shortcutKeys={presentation.shortcutKeys}
       isNameShown={presentation.isNameShown}
-      control={control}
+      hasTooltip={presentation.hasTooltip}
+      control={Toolbar.Toggle}
+      controlProps={{
+        ...otherProps,
+        className: [presentation.isNameShown ? undefined : 'kv-button--icon-only', className]
+          .filter((name) => name !== undefined && name !== '')
+          .join(' '),
+        ...(presentation.isNameShown ? {} : { 'aria-label': presentation.ariaLabel }),
+        'aria-keyshortcuts': presentation.ariaKeyShortcuts,
+        pressed: state.isPressed,
+        disabled: isUnavailable || presentation.isDisabled,
+        focusableWhenDisabled: !presentation.isDisabled,
+        onMouseDown: keepFocusInText,
+        onPressedChange: () => {
+          if (editor !== null && !isUnavailable) {
+            onPress(editor)
+          }
+        },
+        children: presentation.children,
+      }}
     />
-  ) : (
-    control
   )
 }
 CommandToggle.displayName = 'RichTextEditor.CommandToggle'

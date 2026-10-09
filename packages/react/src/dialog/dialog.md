@@ -43,7 +43,7 @@ import { Dialog } from '@kvirn-ui/react'
 | `dismissOnOutsidePress`       | `false` | A press on the backdrop closes it (`'outside-press'`)                                                                                                                                                                                                  |
 | `messages`                    |         | Overrides for `close`                                                                                                                                                                                                                                  |
 
-Every part takes `render` to change its element, and `className`, `style`, handlers and refs merge with its own. `render` also receives the state: `{ isOpen }`. The children of `Dialog.Popup` stay mounted while it is closed (the browser hides it), so typed values are kept when it reopens.
+`Dialog.Close` takes `as`, a component such as `Button` that gets the other props as plain props. `Title` (`h2` to `h6`), `Description` (`p` or `div`), `Body` and `Actions` (`div` or `section`) take a tag `as`; `Popup` (the native `<dialog>`) and `Trigger` have none. Every part merges `className`, `style`, handlers and refs with its own. The children of `Dialog.Popup` stay mounted while it is closed (the browser hides it), so typed values are kept when it reopens.
 
 ## Hook
 

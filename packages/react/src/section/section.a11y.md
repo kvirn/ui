@@ -2,7 +2,7 @@
 
 - **APG pattern:** none. A section is not a widget, so there is no APG pattern.
 - **Deviations:** none
-- **Native elements used:** `<div>` by default. The consumer picks `<aside>`, `<section>`, `<nav>` or `<li>` with `render`, and the element's own semantics apply.
+- **Native elements used:** `<div>` by default. The consumer picks another with `as` (allowed elements below), and the element's own semantics apply.
 - **Status:** alpha candidate (Plan 0018). Gates pending. Manual AT is `pending`.
 - **Tests:** `section.test.tsx` next to this file. `section.stories.tsx` in `apps/storybook/src/components/section/`.
 
@@ -10,12 +10,12 @@ Section is a plain container for a region of the page, such as a sidebar or a ba
 
 ## Roles, states, properties
 
-| Part    | Element / role               | ARIA                                                    | Notes                                                                                                                                                                                                                                                        |
-| ------- | ---------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Section | `<div>` → `generic`          | none. The consumer adds it with the element             | `class="kv-section"`. `render={<aside aria-labelledby>}`, `<section aria-labelledby>` or `<nav aria-labelledby>` give it a landmark role, and `<li>` a list item. `Section.Root` is a deprecated alias of the same component. Also exported as `SectionRoot` |
-| Section | `render` (element, function) | the rendered element's own                              | One element. An element keeps its own props, and the part's are merged in: `className` joins, `style` merges, refs merge                                                                                                                                     |
-| Section | attributes                   | passed through                                          | `aria-*`, `id`, `lang`, `data-*` and every other attribute reach the element unchanged. The part's class is its own: a `className` prop and a `render` element's own `className` join it, never replace it. In the `render` function form, keep `className`  |
-| Section | never                        | no `role`, `aria-*`, `tabindex`, `inert`, `aria-hidden` | No click handler, no heading, no live region, no text                                                                                                                                                                                                        |
+| Part    | Element / role      | ARIA                                                    | Notes                                                                                                                                                                                                                         |
+| ------- | ------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Section | `<div>` → `generic` | none. The consumer adds it with the element             | `class="kv-section"`. `as="aside"`, `"section"` or `"nav"` with `aria-labelledby` give it a landmark role, and `"li"` a list item. `Section.Root` is a deprecated alias of the same component. Also exported as `SectionRoot` |
+| Section | `as`                | the chosen element's own                                | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Section:<tag>`) and renders the `<div>`. `className` joins, `style` and refs pass                         |
+| Section | attributes          | passed through                                          | `aria-*`, `id`, `lang`, `data-*` and every other attribute reach the element unchanged. The part's class is its own: a `className` prop joins it, never replaces it                                                           |
+| Section | never               | no `role`, `aria-*`, `tabindex`, `inert`, `aria-hidden` | No click handler, no heading, no live region, no text                                                                                                                                                                         |
 
 `useSection()` gives the same `rootProps` (only `className`) for your own element.
 
@@ -48,12 +48,20 @@ Enter, Space, Escape, arrow keys and Home / End are not handled. Children handle
 
 Section renders no text, so it has no message keys.
 
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part    | `as`                                                                            | Why                                                                                                                                |
+| ------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Section | `div` (default), `section`, `aside`, `nav`, `footer`, `header`, `article`, `li` | The landmark or sectioning elements a region can be, and `li` for a list of sections. No `main` (Container), no `form`, no heading |
+
 ## Consumer responsibilities
 
 - **Headings.** Put a heading at the top of the section, at the level the page outline needs: `h2` for a sidebar or a band under the page's `h1`. Section can't know it (2.4.6, 1.3.1).
-- **Landmarks are opt-in, and named.** The default `<div>` is not a landmark. `render={<aside aria-labelledby={headingId} />}` is complementary content, `render={<section aria-labelledby={headingId} />}` is a region worth jumping to, and `render={<nav aria-labelledby={headingId} />}` is a sidebar of navigation. A `<section>` without a name is `generic` (HTML-AAM), so it is useless as a landmark. Keep landmarks few: never make every band a landmark. A top-level `<header>` or `<footer>` becomes `banner` or `contentinfo`, so only one of each.
+- **Landmarks are opt-in, and named.** The default `<div>` is not a landmark. `as="aside"` with `aria-labelledby={headingId}` is complementary content, `as="section"` with it is a region worth jumping to, and `as="nav"` with it is a sidebar of navigation. A `<section>` without a name is `generic` (HTML-AAM), so it is useless as a landmark. Keep landmarks few: never make every band a landmark. A top-level `<header>` or `<footer>` becomes `banner` or `contentinfo`, so only one of each.
 - **Reading and focus order.** The children's DOM order. A sidebar that sits on the inline end at `64rem` comes after the main content in the DOM. Never reorder with `order` or grid placement against the DOM (1.3.2, 2.4.3).
-- **Lists.** A list of sections is a `<ul>` with each section rendered as `<li>` (`render={<li />}`). The default theme draws no marker, and Safari can then expose the `<ul>` as a plain group: `role="list"` on the `<ul>` keeps it a list there (same open question as Card, see the Card contract). Check it in VoiceOver + Safari in the manual AT run.
+- **Lists.** A list of sections is a `<ul>` with each section rendered as `<li>` (`as="li"`). The default theme draws no marker, and Safari can then expose the `<ul>` as a plain group: `role="list"` on the `<ul>` keeps it a list there (same open question as Card, see the Card contract). Check it in VoiceOver + Safari in the manual AT run.
 - **Nesting.** A Card on a Section, yes. A Section inside a Card, no (a region inside a thing). A Section inside a Section only to switch between `surface` and `canvas`.
 - **Scrolling.** Never `overflow` on the Section. A sidebar that scrolls on its own goes in a `kv-scroll-region` with a name and `tabindex="0"`. A sticky sidebar needs `scroll-padding` (2.4.11).
 - **Not empty.** Don't render a Section with no content: it still has padding and a surface.

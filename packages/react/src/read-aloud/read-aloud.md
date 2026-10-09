@@ -1,10 +1,10 @@
 # ReadAloud
 
-> **Draft** (Plan 0088). The accessibility contract is [read-aloud.a11y.md](read-aloud.a11y.md).
+> **In planning. Blocked: waiting for an npm package update and a re-test.** No highlight style is shipped while the component is blocked: the sentence is still registered as `::highlight(kv-read-aloud)`, but nothing paints it until you style it. (Plan 0088.) The accessibility contract is [read-aloud.a11y.md](read-aloud.a11y.md).
 
 A text-to-speech player on the browser's own `speechSynthesis`: no dependency, no server. Play reads the selection the user made in the content, else the whole content, one sentence at a time. It never starts by itself.
 
-- Parts: `ReadAloud.Root` (a `role="group"`), `Play`, `Previous`, `Next`, `Stop`, `Rate`, `Voice`, `Status`. Each is also reachable as a prop object of `useReadAloud`.
+- Parts: `ReadAloud.Root` (a `role="group"`), `Play`, `Previous`, `Next`, `Stop`, `Rate`, `Voice`, `Status` (`as`: `span`, `p` or `div`). Each is also reachable as a prop object of `useReadAloud`.
 - Play is named `Listen`, `Listen to selected text` while a selection is captured, and `Pause` while reading. Pressing it while paused restarts the sentence (native pause is unreliable, so pause cancels and remembers it).
 - Reading a selection collapses it, so the browser's selection paint doesn't hide the sentence highlight.
 - The sentence is highlighted with the CSS Custom Highlight API (`::highlight(kv-read-aloud)`) where supported, and the Status shows `Sentence 3 of 12` everywhere. No markup is changed.

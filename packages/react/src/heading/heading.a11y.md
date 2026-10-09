@@ -6,15 +6,15 @@
 - **Status:** alpha candidate (Plan 0023). Gates pending. Manual AT is `pending`.
 - **Tests:** `heading.test.tsx` next to this file. `heading.stories.tsx` in `apps/storybook/src/components/heading/`.
 
-Heading renders the native heading element for a required `level`, and an optional `size` sets its look apart from the level. It adds only classes, no role, ARIA, text or behaviour, so what a user perceives is the native heading.
+Heading renders the native heading element named by a required `as`, and an optional `size` sets its look apart from the level. It adds only classes, no role, ARIA, text or behaviour, so what a user perceives is the native heading.
 
 ## Roles, states, properties
 
-| Part    | Element / role               | ARIA                        | Notes                                                                                                                                                                                                                                                                                                             |
-| ------- | ---------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Heading | `<h1>` to `<h6>` → `heading` | none (`aria-level` implied) | `level` is required and is the element. `class="kv-heading kv-heading--<size>"`: `size` (`display`, `heading-1` to `heading-6`) is the look only, and defaults to the level's own: `h1` to `h6` look like `heading-1` to `heading-6`. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged |
-| Heading | `render` (element, function) | the rendered element's own  | One element. The function form reads `state.level` and `state.size`. A `render` element that isn't a heading loses the heading role: give it `role="heading"` and `aria-level` yourself                                                                                                                           |
-| Heading | never                        | no `role`, `tabindex`       | No click handler, no live region. The size never changes the element or the level                                                                                                                                                                                                                                 |
+| Part    | Element / role                 | ARIA                        | Notes                                                                                                                                                                                                                                                                                                                                           |
+| ------- | ------------------------------ | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Heading | `<h1>` to `<h6>` → `heading`   | none (`aria-level` implied) | `as` (`'h1'` to `'h6'`) is required and is the element and the level. `class="kv-heading kv-heading--<size>"`: `size` (`display`, `heading-1` to `heading-6`) is the look only, and defaults to the level's own: `h1` to `h6` look like `heading-1` to `heading-6`. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged |
+| Heading | Allowed elements: `h1` to `h6` | none                        | A string, so it works from a Server Component. Anything else is a type error and, in JS, warns once (`as-not-allowed:Heading:<tag>`) and renders `<h2>`. For a `<legend>` or another element use `useHeading` with your own element and keep its semantics (give a non-heading `role="heading"` and `aria-level` yourself)                      |
+| Heading | never                          | no `role`, `tabindex`       | No click handler, no live region. The size never changes the element or the level                                                                                                                                                                                                                                                               |
 
 ## Keyboard
 
@@ -41,7 +41,7 @@ Heading renders no text, so it has no message keys.
 
 ## Consumer responsibilities
 
-- **Choose the level for the outline, and the size for the look.** One `h1` per page, then no skipped levels (1.3.1, 2.4.6). Heading can't know where it sits, so `level` is required. Never pick a level because of its size: set `size` instead.
+- **Choose the level for the outline, and the size for the look.** One `h1` per page, then no skipped levels (1.3.1, 2.4.6). Heading can't know where it sits, so `as` is required. Never pick a level because of its size: set `size` instead.
 - **Describe the topic or purpose.** Headings and labels are clear and unique among their siblings (2.4.6).
 - **Language.** `lang` on a heading in another language (3.1.2).
 
@@ -53,9 +53,9 @@ Right to left and forced colours are the `Right to left` and `Forced colors` sto
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships: a native heading with the consumer's level (`heading.test.tsx › level %i renders that element`).
+- 1.3.1 Info and Relationships: a native heading with the consumer's level (`heading.test.tsx › as %s renders that element`; on the server, `› a heading renders the same element on the server`).
 - 1.4.4 Resize Text: the type roles are in rem.
-- 2.4.6 Headings and Labels: the consumer's text. `level` can't be forgotten.
+- 2.4.6 Headings and Labels: the consumer's text. `as` can't be forgotten.
 
 ## AT test record
 

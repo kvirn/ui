@@ -34,7 +34,6 @@ A Field joins one control to its label, an optional description (a `Prose`), an 
 
 - **ARIA it sets on the control:** `id` (the `controlId`, else generated), `aria-describedby` (every description and help text in DOM order, then the error, then the ids you pass yourself), `aria-invalid="true"` and `aria-required="true"`, and native `disabled`. On the label: `for` and an `id` (`<controlId>-label`).
 - **Ids:** the label is `<controlId>-label`, the error `<controlId>-error` and each description `<controlId>-description-<generated>`. Don't give a control inside a Field its own `id`.
-- **`render`** on every part receives the Field's state (`isInvalid`, `isRequired`, `isDisabled`).
 - **Classes:** `kv-field`, `kv-field-label`, `kv-field-optional` (the optional text in the label), `kv-field-help-text`, `kv-field-error-message` and `kv-field-error-prefix`. Your `className` joins them.
 - **Messages (`messages`):** `optional` (the text after a label that isn't required: "(valfritt)") and `errorPrefix` (the hidden word before an error: "Fel:"). Both are in `@kvirn-ui/i18n` in six languages.
 - **Dev warnings (once):** a `Field.Label` outside a `Field.Root` (`field-label-outside-field`) renders a plain `<label>` that names nothing; a `Field.ErrorMessage` outside a Field or Fieldset (`field-error-message-outside-field`) always shows and describes nothing; a `Field.HelpText` outside one (`help-text-outside-field`) or before its control (`help-text-before-control`); two error messages in one Field; a control with an `id` of its own; a control with no label.
@@ -162,14 +161,6 @@ function RegistrationField({ invalid }: { invalid: boolean }) {
 - Only list a name you render. A name with no element leaves `aria-describedby` pointing at a missing id.
 - `useFieldset` has the same `descriptions` option and `getDescriptionProps(name)`.
 
-### `render`
+### Your own element
 
-Every part takes `render` to change its element. The part's props are merged into yours: class names join, handlers chain and refs merge. The Field.Label must stay a `<label>`, so the control keeps its name.
-
-```tsx
-<Field.Prose render={<p />}>Som det står i ditt pass.</Field.Prose>
-<Field.Prose render={(props) => <p {...props} />}>Som det står i ditt pass.</Field.Prose>
-<Field.HelpText render={<div />}>Till exempel ABC 123</Field.HelpText>
-```
-
-A Prose is a `<div>` by default, so a description can hold several paragraphs. `render={<p />}` makes a one-line description a paragraph. A `Field.HelpText` is a `<p>` by default, and `render={<div />}` changes it. Keep it a non-interactive element.
+The Field parts render fixed elements: a `<div>`, a `<label>` and two `<p>`. To build your own, use `useField()` and spread `rootProps`, `labelProps`, `controlProps`, `getDescriptionProps(name)` and `errorMessageProps`. A `Field.Prose` takes `as` (`div`, `article` or `section`); the Field.Label must stay a `<label>`, so the control keeps its name.

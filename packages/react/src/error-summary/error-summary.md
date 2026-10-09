@@ -4,7 +4,7 @@
 
 The problems of a failed submit, at the top of the form, each a link to its field. Focus moves to the summary once, so the screen reader reads it and a keyboard user starts at the list. It is an [Alert.Danger](../alert/alert.md): the colour, icon and status word agree with every other danger message.
 
-- Five parts: `ErrorSummary.Root`, `.Title` (an `h2`), `.List` (`<ul>`), `.Item` (`<li>`) and `.Link` (`<a href="#controlId">`). Also exported as `ErrorSummaryRoot`, `ErrorSummaryTitle`, `ErrorSummaryList`, `ErrorSummaryItem` and `ErrorSummaryLink`.
+- Five parts: `ErrorSummary.Root`, `.Title` (an `h2`, or `as="h3"` to `"h6"`), `.List` (`<ul>`, or `as="ol"`), `.Item` (`<li>`) and `.Link` (`<a href="#controlId">`). Also exported as `ErrorSummaryRoot`, `ErrorSummaryTitle`, `ErrorSummaryList`, `ErrorSummaryItem` and `ErrorSummaryLink`.
 - **Focus is the announcement.** The root is `tabindex="-1"` and takes focus on mount and whenever `focusKey` changes. It is a named `group`, not `role="alert"` and not a live region, so nothing is read twice.
 - **A link moves focus to the control** and scrolls its label (or its group's legend) into view. `href="#id"` stays the real address: a modified click, and a link whose control is missing, go to the browser.
 - The Title defaults to `errorSummary.title` ("Det finns ett problem"), after the status word ("Fel:").
@@ -54,7 +54,6 @@ Your part:
 | `focusKey`                  | Focus moves to the summary on mount and each time it changes. Without it, once, on mount |
 | `prefixDocumentTitle`       | `errorSummary.titlePrefix` before `document.title` while shown. Off by default           |
 | `messages`                  | `{ title, titlePrefix }` for this instance                                               |
-| `render`                    | Replaces the `Alert.Danger`: `render={(props) => <Alert.Danger {...props} />}`           |
 
 ## Hook
 

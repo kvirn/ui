@@ -9,7 +9,7 @@ import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { ScrollArea } from './scroll-area.tsx'
-import type { ScrollAreaProps, ScrollAreaState } from './scroll-area.tsx'
+import type { ScrollAreaProps } from './scroll-area.tsx'
 import { useScrollArea } from './use-scroll-area.ts'
 import type { ScrollAreaPartProps, UseScrollAreaResult } from './use-scroll-area.ts'
 
@@ -203,23 +203,34 @@ describe('rendering', () => {
     expect(areaOf(container).getAttribute('tabindex')).toBe('-1')
   })
 
-  test('render swaps the element and receives the state', async () => {
-    const states: ScrollAreaState[] = []
+  test('as swaps the element to a section, which is a region while it scrolls', async () => {
     await renderInProvider(
       <ScrollArea
+        as="section"
         aria-label="Fees"
         style={{ inlineSize: 150, overflow: 'auto' }}
-        render={(props, state) => {
-          states.push(state)
-          return <section {...props} data-testid="area" />
-        }}
+        data-testid="area"
       >
         <WideContent />
       </ScrollArea>,
     )
     const element = page.getByTestId('area').element()
     expect(element.tagName).toBe('SECTION')
-    await expect.poll(() => states.at(-1)).toEqual({ isOverflowing: true, isRegion: true })
+    await expect.poll(() => element.getAttribute('role')).toBe('region')
+    expect(element.getAttribute('tabindex')).toBe('0')
+  })
+
+  test('an element outside the allowed list warns once and renders a div', async () => {
+    const notAllowed = 'main' as 'div'
+    await renderInProvider(
+      <ScrollArea as={notAllowed} data-testid="area">
+        <div>Short</div>
+      </ScrollArea>,
+    )
+    expect(page.getByTestId('area').element().tagName).toBe('DIV')
+    expect(
+      consoleWarn.mock.calls.filter((call) => String(call[0]).includes('ScrollArea as="main"')),
+    ).toHaveLength(1)
   })
 })
 

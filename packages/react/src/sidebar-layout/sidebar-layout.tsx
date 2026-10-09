@@ -3,53 +3,50 @@ import { createContext, useContext, useEffect } from 'react'
 import type { HTMLAttributes, ReactElement, Ref } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useSidebarLayout } from './use-sidebar-layout.ts'
 import type { SidebarLayoutPartProps, UseSidebarLayoutOptions } from './use-sidebar-layout.ts'
 
-/** What `render` receives as its second argument. A sidebar layout has no state, so it's empty. */
-export type SidebarLayoutState = Record<string, never>
+const sidebarTags = ['div', 'nav', 'aside'] as const
+const contentTags = ['div', 'main', 'section', 'article'] as const
 
-/** What a `render` function gets to spread: your attributes, the part's class and the ref. */
-export interface SidebarLayoutElementProps extends HTMLAttributes<HTMLElement> {
+interface SidebarLayoutDivProps extends HTMLAttributes<HTMLElement> {
   ref?: Ref<HTMLElement> | undefined
 }
 
-interface SidebarLayoutPartComponentProps extends HTMLAttributes<HTMLElement> {
-  /** The rendered element, whichever it is: `<div>`, `<nav>`, `<aside>` or `<main>`. */
-  ref?: Ref<HTMLElement> | undefined
-  /**
-   * Change the element: `render={<nav aria-label="I det här avsnittet" />}` or
-   * `render={<main />}`. Its own semantics apply. SidebarLayout adds no role, and a landmark
-   * needs a name.
-   */
-  render?: RenderProp<SidebarLayoutElementProps, SidebarLayoutState> | undefined
-}
+/** Always a `<div>`: the layout adds no role, and its parts carry the landmarks. */
+export interface SidebarLayoutRootProps extends SidebarLayoutDivProps, UseSidebarLayoutOptions {}
 
-export interface SidebarLayoutRootProps
-  extends SidebarLayoutPartComponentProps, UseSidebarLayoutOptions {}
-export type SidebarLayoutSidebarProps = SidebarLayoutPartComponentProps
-export type SidebarLayoutContentProps = SidebarLayoutPartComponentProps
+/**
+ * `as` is `div` (default), `nav` with a name for navigation, or `aside` with a name for related
+ * content. Its own semantics apply: a landmark needs a name.
+ */
+export type SidebarLayoutSidebarProps = AsTag<(typeof sidebarTags)[number], 'div'>
 
-const sidebarLayoutState: SidebarLayoutState = Object.freeze({})
+/**
+ * `as` is `div` (default), `main` (one per page), `section` with a name, or `article`. Its own
+ * semantics apply.
+ */
+export type SidebarLayoutContentProps = AsTag<(typeof contentTags)[number], 'div'>
 
 // Only a marker: the parts read their classes from the hook, not from the Root.
 const SidebarLayoutRootContext = createContext(false)
 
 /**
- * Internal. One part: one element. The part's class joins a prop's and a render element's own
- * class names (mergeProps), so neither can remove it and the theme keeps styling the layout.
+ * Internal. One part: one element. The part's class joins a prop's own class names (mergeProps),
+ * so a prop can't remove it and the theme keeps styling the layout.
  */
 function renderSidebarLayoutPart(
-  { render, ...otherProps }: SidebarLayoutPartComponentProps,
+  props: SidebarLayoutDivProps,
   partProps: SidebarLayoutPartProps,
+  as?: (typeof sidebarTags)[number] | (typeof contentTags)[number],
 ): ReactElement {
   return renderPart({
-    render,
+    as,
     defaultElement: 'div',
-    partProps: mergeProps(otherProps, partProps),
-    state: sidebarLayoutState,
+    partProps: mergeProps(props, partProps),
   })
 }
 
@@ -82,17 +79,25 @@ export function SidebarLayoutRoot({
 }
 SidebarLayoutRoot.displayName = 'SidebarLayout.Root'
 
-/** The side column from `64rem`, stacked in DOM order below. A `<div>`: `render={<nav aria-label />}` for navigation. */
-export function SidebarLayoutSidebar(props: SidebarLayoutSidebarProps): ReactElement {
+/** The side column from `64rem`, stacked in DOM order below. A `<div>`: `as="nav"` with `aria-label` for navigation. */
+export function SidebarLayoutSidebar({ as, ...props }: SidebarLayoutSidebarProps): ReactElement {
   useWarnOutsideRoot('Sidebar')
-  return renderSidebarLayoutPart(props, useSidebarLayout().sidebarProps)
+  return renderSidebarLayoutPart(
+    props,
+    useSidebarLayout().sidebarProps,
+    resolveAsTag({ part: 'SidebarLayout.Sidebar', as, allowedTags: sidebarTags }),
+  )
 }
 SidebarLayoutSidebar.displayName = 'SidebarLayout.Sidebar'
 
 /** The content column. A `<div>`, never `<main>` by default: a page has one `main`. */
-export function SidebarLayoutContent(props: SidebarLayoutContentProps): ReactElement {
+export function SidebarLayoutContent({ as, ...props }: SidebarLayoutContentProps): ReactElement {
   useWarnOutsideRoot('Content')
-  return renderSidebarLayoutPart(props, useSidebarLayout().contentProps)
+  return renderSidebarLayoutPart(
+    props,
+    useSidebarLayout().contentProps,
+    resolveAsTag({ part: 'SidebarLayout.Content', as, allowedTags: contentTags }),
+  )
 }
 SidebarLayoutContent.displayName = 'SidebarLayout.Content'
 
@@ -100,12 +105,12 @@ SidebarLayoutContent.displayName = 'SidebarLayout.Content'
  * A side column and a content column (contract: sidebar-layout.a11y.md): stacked below `64rem`,
  * side by side from it. DOM order is the visual, reading and focus order, so write the part that
  * comes first at inline start first. Every part is one `<div>` with no role, ARIA, text or
- * behaviour, and `render` changes the element.
+ * behaviour, and the Sidebar and Content take `as`.
  *
  * @example
  * <SidebarLayout.Root sidebarWidth="sm">
- *   <SidebarLayout.Sidebar render={<nav aria-label="I det här avsnittet" />}>…</SidebarLayout.Sidebar>
- *   <SidebarLayout.Content render={<main id="main" />}>…</SidebarLayout.Content>
+ *   <SidebarLayout.Sidebar as="nav" aria-label="I det här avsnittet">…</SidebarLayout.Sidebar>
+ *   <SidebarLayout.Content as="main" id="main">…</SidebarLayout.Content>
  * </SidebarLayout.Root>
  */
 export const SidebarLayout = {

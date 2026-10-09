@@ -1,10 +1,8 @@
 # KvirnProvider
 
-> **Draft** (Plan 0002). This page moves to the docs site once `apps/docs` has a content system. The Next.js and TanStack Router recipes have not yet been verified in a sample app. `TODO(verify-recipe)`.
-
 `KvirnProvider` gives every KvirnUI component its locale, strings, text direction, date settings and router link. It also owns the document's theme preference, which a theme switcher reads and changes through `useTheme()`.
 
-It's optional. Without a provider, components use English (`en`), left-to-right text, the runtime's time zone and a native `<a>`, and the theme follows the operating system.
+It's optional. Without a provider, components use English (`en`), left-to-right text, UTC and a native `<a>`, and the theme follows the operating system.
 
 The provider renders no element of its own for layout or styling. The outermost one adds two empty, visually hidden live regions after its children, for `useAnnouncer()` (see [Announcer](../announcer/announcer.md)).
 
@@ -12,58 +10,112 @@ The provider renders no element of its own for layout or styling. The outermost 
 
 ### Next.js (App Router)
 
-`KvirnProvider` is a client component. Passing a component such as `NextLink` as a prop needs a client wrapper:
+What runs on the server and what in the browser, the `as` rules and the other frameworks are on the docs site, under Foundation: Rendering: server and client (`/foundation/rendering`).
+
+`layout.tsx` is a Server Component, and `KvirnProvider` is a client component. Props cross from one to the other as serialised data, so some can be passed straight from the layout and some need a small client file:
+
+| What                                                                                                       | From a Server Component | Why                                                                                                          |
+| ---------------------------------------------------------------------------------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `locale`, `dir`, `country`, `timeZone`, `weekStart`, `theme` defaults, `toast`, `iconDefaults`, `children` | Passes                  | Strings, numbers and plain objects                                                                           |
+| `messages`                                                                                                 | Client file             | Catalogs hold functions (`resultCount: ({ count }) => …`), which can't be serialised                         |
+| `linkComponent`                                                                                            | Client file             | `next/link` is a plain server wrapper on the server, not a client reference, so import it in a client module |
+| `icons`                                                                                                    | Client file             | Components made by `defineIcons`, which comes from the client entry                                          |
+| `theme.storage` adapter                                                                                    | Client file             | An object of functions                                                                                       |
+| `env`                                                                                                      | Client file             | A window and a document                                                                                      |
+
+Put the ones in the second group in one `'use client'` wrapper, and let the layout pass the rest:
 
 ```tsx
-// app/providers.tsx
+// app/kvirn-provider.tsx
 'use client'
 import { KvirnProvider } from '@kvirn-ui/react'
+import type { KvirnProviderProps } from '@kvirn-ui/react'
 import { sv } from '@kvirn-ui/i18n/sv'
 import NextLink from 'next/link'
-import type { ReactNode } from 'react'
+import { icons } from './icons' // a 'use client' module that calls defineIcons
 
-export function Providers({ children }: { children: ReactNode }) {
-  return (
-    <KvirnProvider
-      locale="sv-SE"
-      messages={sv}
-      timeZone="Europe/Stockholm"
-      linkComponent={NextLink}
-      theme={{ defaultColorScheme: 'system', defaultContrast: 'system' }}
-    >
-      {children}
-    </KvirnProvider>
-  )
+export function AppKvirnProvider(
+  props: Omit<KvirnProviderProps, 'messages' | 'linkComponent' | 'icons' | 'env'>,
+) {
+  return <KvirnProvider {...props} messages={sv} linkComponent={NextLink} icons={icons} />
 }
 ```
 
 ```tsx
-// app/layout.tsx
-import { KvirnThemeScript } from '@kvirn-ui/react'
+// app/theme.ts: one object for the script and the provider, so the first paint and the hydrated theme agree
+export const theme = {
+  defaultColorScheme: 'system',
+  defaultContrast: 'system',
+  defaultMotion: 'system',
+} as const
+```
+
+```tsx
+// app/layout.tsx (a Server Component)
+import { KvirnThemeScript, getLocaleProps } from '@kvirn-ui/react/server'
 import { headers } from 'next/headers'
 import type { ReactNode } from 'react'
-import { Providers } from './providers'
+import { AppKvirnProvider } from './kvirn-provider'
+import { theme } from './theme'
+
+const locale = 'sv-SE'
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const nonce = (await headers()).get('x-nonce') ?? undefined
+  const { lang, dir } = getLocaleProps(locale)
 
   return (
-    <html lang="sv-SE" dir="ltr" suppressHydrationWarning>
+    <html lang={lang} dir={dir} suppressHydrationWarning>
       <head>
-        <KvirnThemeScript nonce={nonce} />
+        <KvirnThemeScript nonce={nonce} theme={theme} />
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <AppKvirnProvider locale={locale} timeZone="Europe/Stockholm" weekStart={1} theme={theme}>
+          {children}
+        </AppKvirnProvider>
       </body>
     </html>
   )
 }
 ```
 
-- **`<html lang dir>`:** set them to the root provider's locale and direction (WCAG 3.1.1). The provider renders no element that could hold it, so it can't set the page language. `resolveDirection(locale)` from `@kvirn-ui/core` gives `dir` for a locale that isn't known ahead of time.
+For several languages, let the wrapper take a `catalog` string (`'sv'`, `'fi'`) and pick the catalog itself.
+
+- **`<html lang dir>`:** `getLocaleProps(locale, dir?)` from `@kvirn-ui/react/server` gives both, the pair `KvirnProvider` derives for the same locale (WCAG 3.1.1). The provider renders no element that could hold them, so it can't set the page language.
 - **Nested languages:** a nested provider that changes the language needs that language's catalog, for example `<KvirnProvider locale="fi-FI" messages={fi}>`. Also spread `useLocale().localeProps` on its section (3.1.2).
-- **`timeZone`:** set it explicitly. Otherwise the server formats dates in its own zone and the browser in the visitor's, and the two renders differ.
-- **`suppressHydrationWarning` on `<html>`:** `KvirnThemeScript` adds `data-kv-color-scheme` and `data-kv-contrast` before React hydrates, so the server markup and the page differ on purpose. The flag only affects `<html>`'s own attributes.
+- **`timeZone`:** set it explicitly, the same on the server and in the browser. Without one, instants are shown in UTC (never the runtime's zone, so the two renders agree), and the first instant formatted without a zone warns in development (`date-without-time-zone`). A date-only instant (no time fields) then shows no zone label and can show the neighbouring day late in the evening or early in the morning; for a calendar date use the `YYYY-MM-DD` string form. A Calendar's "today" is the UTC date on first paint and the browser's date after mount.
+- **`suppressHydrationWarning` on `<html>`:** `KvirnThemeScript` adds `data-kv-color-scheme`, `data-kv-contrast` and `data-kv-motion` before React hydrates, so the server markup and the page differ on purpose. The flag only affects `<html>`'s own attributes.
+
+### Strict CSP
+
+`KvirnThemeScript` takes the request's nonce. Generate it in `proxy.ts` (`middleware.ts` before Next 16) and forward it as `x-nonce`, which the layout above reads.
+
+```ts
+// proxy.ts
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+export function proxy(request: NextRequest) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
+  const policy = [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
+    "style-src 'self' 'unsafe-inline'",
+    "object-src 'none'",
+    "base-uri 'self'",
+  ].join('; ')
+
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-nonce', nonce)
+  requestHeaders.set('Content-Security-Policy', policy)
+
+  const response = NextResponse.next({ request: { headers: requestHeaders } })
+  response.headers.set('Content-Security-Policy', policy)
+  return response
+}
+```
+
+Reading `headers()` makes every page dynamic: a nonce is per request, so a statically rendered page can't carry one. The docs site does this only under `DOCS_CSP_NONCE=1` and is tested in Chromium (also by an automated test with a real CSP header): the script runs, and hydration reports no mismatch although the browser empties the script's `nonce` attribute under a header CSP.
 
 ### TanStack Router
 
@@ -82,7 +134,7 @@ export function App() {
 }
 ```
 
-If you render on the server, add `<KvirnThemeScript />` to the server-rendered document's `<head>` (see [The theme script](#the-theme-script)). In a client-only app, the provider applies the theme when it mounts, so a brief flash of the default theme is possible.
+If you render on the server, render `KvirnThemeScript` in the server-rendered document's `<head>` (see [The theme script](#the-theme-script)). In a client-only app, the provider applies the theme when it mounts, so a brief flash of the default theme is possible.
 
 ## Typed router links: `Register`
 
@@ -166,11 +218,11 @@ function Payment({ date, amount }: { date: string; amount: number }) {
 | `format.list(items, options?)`   | `Intl.ListFormat`: `sv, fi och en`, or `{ type: 'disjunction' }` for "or"                                                    |
 | `format.plural(count, forms)`    | The form for the locale's plural rules: `{ one, other }`, and `zero` for exactly 0                                           |
 
-- **An instant** (a `Date` or milliseconds) is shown in the provider's `timeZone`, or the runtime's when there is none. `options.timeZone` wins. Set `timeZone` on the provider, so the server and the browser agree.
+- **An instant** (a `Date` or milliseconds) is shown in the provider's `timeZone`, or in UTC when there is none, with a development warning the first time (`date-without-time-zone`). `options.timeZone` wins. In the UTC fallback a time is written with its zone name, but a date-only instant (`dateStyle` alone, or no options) has no label and can show the neighbouring day to a reader in another zone: for a calendar date use the `YYYY-MM-DD` string form. Set `timeZone` on the provider, the same on the server and in the browser.
 - **A calendar date** is a string written `YYYY-MM-DD`: a day with no time of day and no time zone, such as a date of birth or a decision date from an API. It is shown on that day in every zone, because it is read as UTC and shown in UTC, so it never moves to the day before or after. Any other string (a time, `2026-02-30`, an empty one) throws a `RangeError`, as an invalid `Date` does. Check a missing value yourself.
 - **`Intl` objects are reused**, so a table can call `format.number(amount)` in every cell. The `format` object stays the same until the locale or the time zone changes, so it is safe in a dependency list.
-- **Without a provider** it is `en` and the runtime's time zone.
-- **Outside React**, such as in a server component, build the same thing with `createMessageFormat({ locale, timeZone })` from `@kvirn-ui/core`. A hook can't run in a server component.
+- **Without a provider** it is `en` and UTC.
+- **Outside React**, such as in a server component, build the same thing with `createMessageFormat({ locale, timeZone })` from `@kvirn-ui/react/server`, or `getMessages` for strings. A hook can't run in a server component.
 
 ## Strings: `messages`
 
@@ -236,11 +288,13 @@ resultCount: ({ count }, format) =>
 
 ## Theme preference
 
-The default theme has two independent axes: colour scheme (`light`, `dark`) and contrast (`standard`, `more`). Each axis follows the operating system (`system`) until the user chooses. The resolved values are written to `<html>`:
+The default theme has three independent axes: colour scheme (`light`, `dark`), contrast (`standard`, `more`) and motion (`full`, `reduce`). Each axis follows the operating system (`system`) until the user chooses. The resolved values are written to `<html>`:
 
 ```html
-<html data-kv-color-scheme="dark" data-kv-contrast="more"></html>
+<html data-kv-color-scheme="dark" data-kv-contrast="more" data-kv-motion="reduce"></html>
 ```
+
+`data-kv-motion="reduce"` stops every transition and animation in `@kvirn-ui/theme`, exactly as `prefers-reduced-motion: reduce` does, so a site can offer "less motion" to people whose device setting is out of their reach (a managed computer, a shared one, a setting they never found). `full` is the other explicit choice.
 
 `@kvirn-ui/theme` maps these attributes to `--kv-*` tokens, with media-query fallbacks when JavaScript is off. Under `forced-colors: active`, the operating system's palette always wins.
 
@@ -250,6 +304,7 @@ There is one theme store per document. The outermost provider's `theme` options 
 | -------------------- | --------------------------------------------------- | ---------- |
 | `defaultColorScheme` | `'light'`, `'dark'`, `'system'`                     | `'system'` |
 | `defaultContrast`    | `'standard'`, `'more'`, `'system'`                  | `'system'` |
+| `defaultMotion`      | `'full'`, `'reduce'`, `'system'`                    | `'system'` |
 | `storage`            | `'local'`, `'none'`, or a `{ read, write }` adapter | `'local'`  |
 
 ### Theme switcher recipe
@@ -348,12 +403,23 @@ On the server, read the same cookie and render the attributes on `<html>`. Rende
 `KvirnThemeScript` is a small blocking inline script. It reads the stored preference and the operating system settings and sets the attributes before first paint, so there is no flash of the wrong theme.
 
 - It takes a CSP `nonce`, so it works with a strict `script-src` without `'unsafe-inline'`.
-- If you configure `defaultColorScheme` or `defaultContrast`, pass the same values to the script.
+- It takes `theme`, the same object as `KvirnProvider`'s, so the defaults are written once. Only the three `default*` values are read; `storage` (a function) is ignored.
 - Render it only in the server-rendered document. React never runs scripts it creates in the browser, and it warns in development if it does.
 
 ```tsx
-<KvirnThemeScript nonce={nonce} defaultColorScheme="system" defaultContrast="system" />
+<KvirnThemeScript nonce={nonce} theme={theme} />
 ```
+
+## Server entry: `@kvirn-ui/react/server`
+
+`@kvirn-ui/react` is a client entry. `@kvirn-ui/react/server` has no `'use client'`, depends only on `@kvirn-ui/core` and `@kvirn-ui/i18n`, and is safe to import in a Server Component such as `app/layout.tsx`:
+
+- `KvirnThemeScript({ nonce, theme })`: the same script as the client one, with no hook.
+- `getLocaleProps(locale, dir?)`: `{ lang, dir }` for `<html>`, the pair `KvirnProvider` derives for the same locale (WCAG 3.1.1).
+- `getMessages(namespace, { locale, messages, timeZone })`: the server `useMessages`, for strings rendered in a Server Component.
+- `createMessageFormat`: the formatter behind both.
+
+The layout under [Next.js](#nextjs-app-router) uses it.
 
 ## Advanced: `env`
 
@@ -373,7 +439,7 @@ On the server, read the same cookie and render the attributes on `<html>`. Rende
 | `dir`           | `'ltr' \| 'rtl'`                                    | From `locale`, or the parent's                                                                                  |
 | `country`       | `'SE' \| 'FI' \| 'NO'`                              | The parent's, else from `locale`: its region, then its language                                                 |
 | `messages`      | `PartialMessages` (a catalog or a partial override) | Inherited, then built-in `en`                                                                                   |
-| `timeZone`      | `string` (IANA)                                     | The parent's, or the runtime's zone                                                                             |
+| `timeZone`      | `string` (IANA)                                     | The parent's, or UTC                                                                                            |
 | `weekStart`     | `1` to `7` (ISO weekday, 1 is Monday)               | The parent's, else the locale's when it names a region (`en-US` is `7`), else `1`                               |
 | `linkComponent` | `RegisteredLinkComponent`                           | `'a'`, or the parent's                                                                                          |
 | `icons`         | `IconRegistry`, from `defineIcons`                  | The built-in icons, then the parent's, merged by name ([Icon](../icon/icon.md))                                 |
@@ -393,11 +459,10 @@ On the server, read the same cookie and render the attributes on `<html>`. Rende
 
 ### `KvirnThemeScript` props
 
-| Prop                 | Type                               | Default    |
-| -------------------- | ---------------------------------- | ---------- |
-| `nonce`              | `string`                           | none       |
-| `defaultColorScheme` | `'light' \| 'dark' \| 'system'`    | `'system'` |
-| `defaultContrast`    | `'standard' \| 'more' \| 'system'` | `'system'` |
+| Prop    | Type                                                        | Default             |
+| ------- | ----------------------------------------------------------- | ------------------- |
+| `nonce` | `string`                                                    | none                |
+| `theme` | `{ defaultColorScheme?, defaultContrast?, defaultMotion? }` | `'system'` for each |
 
 ## Accessibility
 

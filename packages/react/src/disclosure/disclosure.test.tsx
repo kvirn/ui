@@ -107,33 +107,6 @@ describe('rendering', () => {
     expect(panelRef.current?.getAttribute('data-egen')).toBe('panel')
   })
 
-  test('render replaces the element and gives the state', async () => {
-    const states: boolean[] = []
-    await render(
-      <Disclosure.Root>
-        <Disclosure.Trigger
-          render={(partProps) => (
-            <button {...partProps} data-egen="render">
-              Öppettider
-            </button>
-          )}
-        />
-        <Disclosure.Panel
-          render={(partProps, state) => {
-            states.push(state.isOpen)
-            return <section {...partProps}>Text</section>
-          }}
-        />
-      </Disclosure.Root>,
-    )
-    expect(triggerElement().getAttribute('data-egen')).toBe('render')
-    expect(triggerElement().getAttribute('aria-expanded')).toBe('false')
-    expect(panelElement()?.tagName).toBe('SECTION')
-    await userEvent.click(trigger())
-    expect(states).toContain(false)
-    expect(states.at(-1)).toBe(true)
-  })
-
   test('useDisclosure spreads the same props on your own elements', async () => {
     function Own() {
       const disclosure = useDisclosure()
@@ -349,19 +322,5 @@ describe('developer warnings', () => {
     const messages = consoleWarn.mock.calls.map(([message]) => String(message))
     expect(messages.some((message) => message.includes('Disclosure.Trigger is outside'))).toBe(true)
     expect(messages.some((message) => message.includes('Disclosure.Panel is outside'))).toBe(true)
-  })
-
-  test('a Trigger rendered as something other than a button warns', async () => {
-    await render(
-      <Disclosure.Root>
-        <Disclosure.Trigger render={<div />}>Öppettider</Disclosure.Trigger>
-        <Disclosure.Panel>Text</Disclosure.Panel>
-      </Disclosure.Root>,
-    )
-    expect(
-      consoleWarn.mock.calls.some(([message]) =>
-        String(message).includes('must render a <button>'),
-      ),
-    ).toBe(true)
   })
 })

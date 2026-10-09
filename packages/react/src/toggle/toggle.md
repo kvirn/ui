@@ -15,9 +15,9 @@ A button that is on or off, and says which: "Visa bara olästa", bold text in an
 
 ### Parts
 
-| Part   | Renders                                      | Props                                                                                                                                                                                    |
-| ------ | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Toggle | `<button type="button">` (flat, one element) | `pressed`, `defaultPressed`, `onPressedChange`, `disabled`, `focusableWhenDisabled`, `onClick`, `render`, and every native button prop except `type`, `aria-pressed` and `aria-disabled` |
+| Part   | Renders                                      | Props                                                                                                                                                                          |
+| ------ | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Toggle | `<button type="button">` (flat, one element) | `pressed`, `defaultPressed`, `onPressedChange`, `disabled`, `focusableWhenDisabled`, `onClick`, and every native button prop except `type`, `aria-pressed` and `aria-disabled` |
 
 `onPressedChange(pressed, { event })` is called with the new value and the click that caused it (a press, or Enter or Space on the focused toggle). It only reports: with `pressed` set, you change `pressed`. It is never called while disabled. `onClick` is called after it, on every activation.
 
@@ -48,13 +48,13 @@ A button that is on or off, and says which: "Visa bara olästa", bold text in an
 
 Toggle has no strings of its own: its name is its content or your `aria-label`.
 
-### `render`
+### Your own element
 
-`render` takes an element or a function `(toggleProps, state)`, where `state` is `{ isPressed, isDisabled, isFocusVisible }`. It must still render a `<button>`, and a development warning names the element when it doesn't. An element's own `onClick` is gated like the Toggle's: it is not called while disabled. In the function form, spread `toggleProps` and keep `toggleProps.onClick`, which is what switches the state and blocks it while disabled.
+The Toggle renders a native `<button>`. To build your own element, use `useToggle()` and spread `toggleProps`. Put your handler in `useToggle({ onClick })`, not on top of `toggleProps.onClick`: it is what switches the state and blocks it while disabled.
 
 ### Development warnings
 
-Keyed `toggle-*`, English, for the developer only: `render` produced something other than a `<button>` (`toggle-not-a-button:<element>`), and no accessible name (`toggle-without-name`).
+Keyed `toggle-*`, English, for the developer only: no accessible name (`toggle-without-name`).
 
 ## Component
 

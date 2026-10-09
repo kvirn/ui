@@ -11,11 +11,7 @@ import { Field } from '../field/field.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Listbox } from './listbox.tsx'
 import { ListboxNative } from './listbox-native.tsx'
-import type {
-  ListboxNativeChangeDetails,
-  ListboxNativeProps,
-  ListboxNativeState,
-} from './listbox-native.tsx'
+import type { ListboxNativeChangeDetails, ListboxNativeProps } from './listbox-native.tsx'
 import { useListboxNative } from './use-listbox-native.ts'
 import type { ListboxNativePartProps, UseListboxNativeResult } from './use-listbox-native.ts'
 
@@ -98,31 +94,6 @@ describe('rendering', () => {
     await expect.element(select).toHaveAttribute('autocomplete', 'address-level2')
     await expect.element(select).toHaveAttribute('data-egen', '')
     expect(ref.current?.querySelectorAll('optgroup')).toHaveLength(2)
-  })
-
-  test('render as a function gets the part’s props and the state', async () => {
-    const seenStates: ListboxNativeState[] = []
-    await render(
-      <Field.Root invalid required>
-        <Field.Label>Kommun</Field.Label>
-        <Field.ErrorMessage>Välj en kommun</Field.ErrorMessage>
-        <ListboxNative
-          render={(partProps, state) => {
-            seenStates.push(state)
-            return <select {...partProps} data-egen="" />
-          }}
-        >
-          {municipalities}
-        </ListboxNative>
-      </Field.Root>,
-    )
-    await expect.element(page.getByRole('combobox')).toHaveAttribute('data-egen', '')
-    expect(seenStates.at(-1)).toEqual({
-      isInvalid: true,
-      isRequired: true,
-      isDisabled: false,
-      isFocusVisible: false,
-    })
   })
 
   test('multiple and size warn once: use a CheckboxGroup', async () => {

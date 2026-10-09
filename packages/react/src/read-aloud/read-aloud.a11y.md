@@ -3,7 +3,7 @@
 - **APG pattern:** none for the group. Buttons follow [Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/), the media-button naming practice for Play and Pause.
 - **Deviations:** none from the APG. Previous, Next and Stop stay focusable and `aria-disabled` while idle (`focusableWhenDisabled`, as CopyButton) so the keyboard path doesn't jump.
 - **Native elements used:** `<button type="button">`, `<select>` with a `<label>`, a plain `<span>` for the status.
-- **Status:** draft (Plan 0088, T5a). Accessibility-reviewer pending. Manual AT is `pending`.
+- **Status:** in-planning. **Blocked: waiting for an npm package update and a re-test.** (Plan 0088, T5a.) Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `read-aloud.test.tsx` next to this file (a fake engine, nothing speaks).
 
 ReadAloud reads a region of the page aloud for people who benefit from hearing it. It is not a screen reader substitute and never starts by itself.
@@ -22,7 +22,7 @@ ReadAloud reads a region of the page aloud for people who benefit from hearing i
 | SelectionTrigger | `<button>` → `button`   | `popover="manual"`, `tabindex="-1"`, not `aria-hidden`   | Pointer-only convenience (plan Q1 stays open: the reviewer decides). Name and text `readAloud.playSelection`. Shown below the end of a selection finished with a pointer; never after a keyboard selection. Never takes focus: `pointerdown` is prevented, so the selection survives. Dismissed on collapse, any key (Escape included), scroll, resize, Stop and use |
 | Status           | `<span>`                | `role="status"` with `aria-live="off"`: findable, silent | `Sentence {current} of {total}` while reading, or `noVoice`, `speechError` or `unsupported`. `data-error` carries the cause                                                                                                                                                                                                                                          |
 
-## Read aloud
+### Read aloud
 
 | State or action              | Expected phrase(s) as read aloud                                                                                                                                     | Live region politeness | Test                                                                                                                     |
 | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -37,6 +37,15 @@ ReadAloud reads a region of the page aloud for people who benefit from hearing i
 Other texts: Speed and Voice labels (`readAloud.rate`, `readAloud.voice`), the speed options (`readAloud.rateOption`, `1.5×`).
 
 The phrases are the virtual screen reader's approximation, not NVDA or JAWS wording.
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part                                                            | `as`                         | Why                                                                                                                                                                                                                                                     |
+| --------------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Status                                                          | `span` (default), `p`, `div` | Visible text of the position or the reason nothing is read, with `role="status"` and `aria-live="off"` kept. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:ReadAloud.Status:<tag>`) and renders the default element. |
+| Root, Play, Previous, Next, Stop, Rate, Voice, SelectionTrigger | none                         | A `role="group"` `<div>`, native `<button>`s and `<select>`s: no other element keeps the keyboard and name contract (4.1.2)                                                                                                                             |
 
 ## Keyboard
 
@@ -70,7 +79,7 @@ Native controls in DOM order, no `tabindex`. Disabled controls stay in the Tab o
 
 ## Announcements
 
-| Event                     | Message key             | Politeness |
+| Event                     | Message key (i18n)      | Politeness |
 | ------------------------- | ----------------------- | ---------- |
 | No voice for the language | `readAloud.noVoice`     | polite     |
 | The speech engine failed  | `readAloud.speechError` | polite     |

@@ -1,5 +1,5 @@
 'use client'
-import { Fragment, useContext, useEffect, useRef } from 'react'
+import { createElement, Fragment, useContext, useEffect, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldContext } from '../field/field-context.ts'
@@ -24,18 +24,13 @@ import type {
   ListboxOptionDescriptionProps,
   ListboxOptionIconProps,
   ListboxOptionIndicatorProps,
-  ListboxOptionPartState,
   ListboxOptionProps,
-  ListboxOptionState,
   ListboxOptionTextProps,
-  ListboxPartState,
   ListboxPopupProps,
 } from '../listbox/listbox.tsx'
 import { ListboxListContext } from '../listbox/listbox-context.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { ComboboxContext } from './combobox-context.ts'
 import { useCombobox } from './use-combobox.ts'
 import type {
@@ -43,11 +38,6 @@ import type {
   UseComboboxOptions,
   UseComboboxResult,
 } from './use-combobox.ts'
-
-/** What `render` receives as its second argument, for the parts that show the open state. */
-export interface ComboboxPartState {
-  isOpen: boolean
-}
 
 export type ComboboxRootProps<TItem> = UseComboboxOptions<TItem> & {
   children?: ReactNode
@@ -153,9 +143,7 @@ export function ComboboxRoot<TItem>(props: ComboboxRootProps<TItem>): ReactEleme
 }
 ComboboxRoot.displayName = 'Combobox.Root'
 
-export interface ComboboxControlProps extends ComponentPropsWithRef<'div'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, ComboboxPartState> | undefined
-}
+export type ComboboxControlProps = ComponentPropsWithRef<'div'>
 
 /**
  * An optional box around the input and its Toggle and Clear buttons. The popup is placed
@@ -163,11 +151,7 @@ export interface ComboboxControlProps extends ComponentPropsWithRef<'div'> {
  * the field's edge, fill and focus ring on it. Without it the input and the buttons are yours to
  * lay out. It has no role.
  */
-export function ComboboxControl({
-  render,
-  ref,
-  ...otherProps
-}: ComboboxControlProps): ReactElement {
+export function ComboboxControl({ ref, ...otherProps }: ComboboxControlProps): ReactElement {
   const combobox = useContext(ComboboxContext)
   const mergedRef = useMergedRef(ref, combobox?.controlProps.ref ?? null)
   useEffect(() => {
@@ -175,24 +159,17 @@ export function ComboboxControl({
       warnOutsideRoot('Combobox.Control')
     }
   }, [combobox])
-  return renderPart({
-    render,
-    defaultElement: 'div',
-    partProps: {
-      ...mergeProps(otherProps, combobox?.controlProps ?? { className: 'kv-combobox-control' }),
-      ref: mergedRef,
-    },
-    state: { isOpen: combobox?.isOpen ?? false },
+  return createElement('div', {
+    ...mergeProps(otherProps, combobox?.controlProps ?? { className: 'kv-combobox-control' }),
+    ref: mergedRef,
   })
 }
 ComboboxControl.displayName = 'Combobox.Control'
 
-export interface ComboboxInputProps extends Omit<
+export type ComboboxInputProps = Omit<
   ComponentPropsWithRef<'input'>,
   'id' | 'type' | 'role' | 'value' | 'defaultValue'
-> {
-  render?: RenderProp<ComponentPropsWithRef<'input'>, ComboboxPartState> | undefined
-}
+>
 
 function hasNameSource(input: HTMLInputElement): boolean {
   return (
@@ -212,7 +189,7 @@ function hasNameSource(input: HTMLInputElement): boolean {
  * Escape closes and keeps the text, Tab closes without choosing, and Home and End move the caret.
  * Your own `autoComplete` replaces the default `off`.
  */
-export function ComboboxInput({ render, ref, ...otherProps }: ComboboxInputProps): ReactElement {
+export function ComboboxInput({ ref, ...otherProps }: ComboboxInputProps): ReactElement {
   const combobox = useContext(ComboboxContext)
   const field = useContext(FieldContext)
   const elementRef = useRef<HTMLInputElement | null>(null)
@@ -240,25 +217,18 @@ export function ComboboxInput({ render, ref, ...otherProps }: ComboboxInputProps
     }
   })
 
-  return renderPart({
-    render,
-    defaultElement: 'input',
-    partProps: {
-      ...mergeProps(
-        { autoComplete: 'off', spellCheck: combobox?.variant === 'combobox' ? false : undefined },
-        otherProps,
-        combobox?.inputProps ?? { className: 'kv-combobox-input' },
-      ),
-      ref: mergedRef,
-    },
-    state: { isOpen: combobox?.isOpen ?? false },
+  return createElement('input', {
+    ...mergeProps(
+      { autoComplete: 'off', spellCheck: combobox?.variant === 'combobox' ? false : undefined },
+      otherProps,
+      combobox?.inputProps ?? { className: 'kv-combobox-input' },
+    ),
+    ref: mergedRef,
   })
 }
 ComboboxInput.displayName = 'Combobox.Input'
 
-export interface ComboboxToggleProps extends ComponentPropsWithRef<'button'> {
-  render?: RenderProp<ComponentPropsWithRef<'button'>, ComboboxPartState> | undefined
-}
+export type ComboboxToggleProps = ComponentPropsWithRef<'button'>
 
 /**
  * An optional button that opens and closes the popup, named by `combobox.showOptions` ("Visa
@@ -267,7 +237,6 @@ export interface ComboboxToggleProps extends ComponentPropsWithRef<'button'> {
  * input, in a `Combobox.Control`. No children: the default theme draws a chevron.
  */
 export function ComboboxToggle({
-  render,
   ref,
   children,
   ...otherProps
@@ -279,22 +248,18 @@ export function ComboboxToggle({
       warnOutsideRoot('Combobox.Toggle')
     }
   }, [combobox])
-  return renderPart({
-    render,
-    defaultElement: 'button',
-    partProps: {
+  return createElement(
+    'button',
+    {
       ...mergeProps(otherProps, combobox?.toggleProps ?? { className: 'kv-combobox-toggle' }),
       ref: mergedRef,
-      children,
     },
-    state: { isOpen: combobox?.isOpen ?? false },
-  })
+    children,
+  )
 }
 ComboboxToggle.displayName = 'Combobox.Toggle'
 
-export interface ComboboxClearProps extends ComponentPropsWithRef<'button'> {
-  render?: RenderProp<ComponentPropsWithRef<'button'>, ComboboxPartState> | undefined
-}
+export type ComboboxClearProps = ComponentPropsWithRef<'button'>
 
 /**
  * An optional button that empties the text and the value, named by `combobox.clear` ("Rensa"). It
@@ -303,7 +268,6 @@ export interface ComboboxClearProps extends ComponentPropsWithRef<'button'> {
  * remove the values one by one), and focus stays on, or returns to, the input.
  */
 export function ComboboxClear({
-  render,
   ref,
   children,
   ...otherProps
@@ -318,16 +282,14 @@ export function ComboboxClear({
   if (combobox === null || !combobox.hasClearableValue) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'button',
-    partProps: {
+  return createElement(
+    'button',
+    {
       ...mergeProps(otherProps, combobox.clearProps),
       ref: mergedRef,
-      children,
     },
-    state: { isOpen: combobox.isOpen },
-  })
+    children,
+  )
 }
 ComboboxClear.displayName = 'Combobox.Clear'
 
@@ -346,7 +308,6 @@ export interface ComboboxValueListProps<TItem = unknown> extends Omit<
    * item={item} />`. Default: one `Combobox.Value` with the item's text.
    */
   children?: ReactNode | ComboboxValueRenderer<TItem>
-  render?: RenderProp<ComponentPropsWithRef<'ul'>, ComboboxPartState> | undefined
 }
 
 /**
@@ -356,7 +317,6 @@ export interface ComboboxValueListProps<TItem = unknown> extends Omit<
  */
 export function ComboboxValueList<TItem = unknown>({
   children,
-  render,
   ref,
   ...otherProps
 }: ComboboxValueListProps<TItem>): ReactElement | null {
@@ -374,34 +334,24 @@ export function ComboboxValueList<TItem = unknown>({
     otherProps['aria-label'] !== undefined || otherProps['aria-labelledby'] !== undefined
   // The context can't carry the item type, so the caller's `TItem` is taken on trust.
   const values = combobox.selectedValues as readonly ComboboxSelectedValue<TItem>[]
-  return renderPart({
-    render,
-    defaultElement: 'ul',
-    partProps: {
+  return createElement(
+    'ul',
+    {
       ...mergeProps(otherProps, combobox.valueListProps),
       // A list's own name wins over the Field's label.
       ...(hasOwnName ? { 'aria-labelledby': otherProps['aria-labelledby'] } : {}),
       ref: mergedRef,
-      children: values.map((value) => (
-        <Fragment key={value.key}>
-          {typeof children === 'function'
-            ? children(value.item, value)
-            : (children ?? <ComboboxValue item={value.item} />)}
-        </Fragment>
-      )),
     },
-    state: { isOpen: combobox.isOpen },
-  })
+    values.map((value) => (
+      <Fragment key={value.key}>
+        {typeof children === 'function'
+          ? children(value.item, value)
+          : (children ?? <ComboboxValue item={value.item} />)}
+      </Fragment>
+    )),
+  )
 }
 ComboboxValueList.displayName = 'Combobox.ValueList'
-
-/** What `render` receives as its second argument, for `Combobox.Value`. */
-export interface ComboboxValueState<TItem = unknown> {
-  item: TItem
-  /** The value's text (`itemToString`). */
-  label: string
-  isDisabled: boolean
-}
 
 export interface ComboboxValueProps<TItem = unknown> extends Omit<
   ComponentPropsWithRef<'li'>,
@@ -416,7 +366,6 @@ export interface ComboboxValueProps<TItem = unknown> extends Omit<
   children?: ReactNode
   /** Replaces the cross at the end of the chip. Default: a cross, drawn by the theme. */
   removeIcon?: ReactNode
-  render?: RenderProp<ComponentPropsWithRef<'li'>, ComboboxValueState<TItem>> | undefined
 }
 
 /**
@@ -429,7 +378,6 @@ export function ComboboxValue<TItem = unknown>({
   item,
   children,
   removeIcon,
-  render,
   ref,
   ...otherProps
 }: ComboboxValueProps<TItem>): ReactElement | null {
@@ -458,23 +406,19 @@ export function ComboboxValue<TItem = unknown>({
     return null
   }
   const removeProps = combobox.getRemoveButtonProps(value)
-  return renderPart({
-    render,
-    defaultElement: 'li',
-    partProps: {
+  return createElement(
+    'li',
+    {
       ...mergeProps(otherProps, combobox.getValueProps(value)),
       ref: mergedRef,
-      children: (
-        <button {...removeProps}>
-          <span className="kv-combobox-value-label">{children ?? value.label}</span>
-          <span className="kv-tag-remove-icon" aria-hidden="true">
-            {removeIcon}
-          </span>
-        </button>
-      ),
     },
-    state: { item, label: value.label, isDisabled: combobox.isDisabled },
-  })
+    <button {...removeProps}>
+      <span className="kv-combobox-value-label">{children ?? value.label}</span>
+      <span className="kv-tag-remove-icon" aria-hidden="true">
+        {removeIcon}
+      </span>
+    </button>,
+  )
 }
 ComboboxValue.displayName = 'Combobox.Value'
 
@@ -484,14 +428,11 @@ export type ComboboxGroupProps<TItem = unknown> = ListboxGroupProps<TItem>
 export type ComboboxItemRenderer<TItem> = ListboxItemRenderer<TItem>
 export type ComboboxListProps<TItem = unknown> = ListboxListProps<TItem>
 export type ComboboxOptionProps<TItem = unknown> = ListboxOptionProps<TItem>
-export type ComboboxOptionState<TItem = unknown> = ListboxOptionState<TItem>
 export type ComboboxOptionDescriptionProps = ListboxOptionDescriptionProps
 export type ComboboxOptionIconProps = ListboxOptionIconProps
 export type ComboboxOptionIndicatorProps = ListboxOptionIndicatorProps
-export type ComboboxOptionPartState = ListboxOptionPartState
 export type ComboboxOptionTextProps = ListboxOptionTextProps
 export type ComboboxPopupProps = ListboxPopupProps
-export type ComboboxPopupState = ListboxPartState
 
 // The popup parts are the Listbox's behaviour: each Root provides the same context. Each is a thin
 // wrapper that renders the Listbox part with all its props (ref included), so it has the display

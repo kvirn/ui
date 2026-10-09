@@ -24,7 +24,6 @@ Rules, tested in `slider.test.tsx`:
 - **Pattern A (Slider beside a NumberInput).** An explicit `aria-labelledby` opts the Slider out of the Field: it gets no `id`, no `aria-describedby`, no `aria-invalid` and no `data-invalid` from it. The NumberInput owns the Field's id, the label's `for` and the error. The Field's label and help text take no `id`, so wrap their text in a `<span id>` and point `aria-labelledby` and `aria-describedby` at it. Pass `aria-describedby` yourself for the help text. A disabled Field still disables the Slider.
 - **Controlled and uncontrolled.** `value` is a `number`; `onValueChange` gets `Number(event.currentTarget.value)`. A form submit sends `name=value` as a string; `form.reset()` restores `defaultValue`.
 - **Disabled.** A Field's `disabled` or the prop gives native `disabled` and `data-disabled`.
-- **`render`** changes the element and must stay an `<input type="range">`. Refs merge, `className` joins the part class.
 - **Dev warnings (once):** a Slider in a Field with no Field.Label; a Slider outside a Field with no accessible name (`aria-label` or `aria-labelledby` count); an `id` inside a Field; `min >= max` (`slider-min-max`); a `value` or `defaultValue` outside the range (`slider-value-out-of-range`).
 
 ## Keyboard

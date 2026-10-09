@@ -7,7 +7,7 @@ Text for screen readers that is not drawn, such as `, 3 resultat` after a visibl
 - One part: `VisuallyHidden`, also `useVisuallyHidden()`. It renders `<span class="kv-visually-hidden">`, and no role, ARIA, text or strings.
 - The text stays in the accessibility tree: it is read and found. It is clipped, never `display: none`.
 - Never put a focusable element inside it. For a bypass link, use [SkipLink](../skip-link/skip-link.md).
-- Attributes and the `ref` reach the element. A `className` joins `kv-visually-hidden`. `render` changes the element: `render={<h2 />}`.
+- Attributes and the `ref` reach the element. A `className` joins `kv-visually-hidden`. `as` changes the element: `as="h2"`.
 - Headless: no CSS. With `@kvirn-ui/theme/theme.css` imported, `kv-visually-hidden` is the standard clip rule.
 
 ## Component
@@ -20,7 +20,7 @@ import { VisuallyHidden } from '@kvirn-ui/react'
 </p>
 
 // A heading nobody sees
-<VisuallyHidden render={<h2 />}>Meny</VisuallyHidden>
+<VisuallyHidden as="h2">Meny</VisuallyHidden>
 ```
 
 ## Hook

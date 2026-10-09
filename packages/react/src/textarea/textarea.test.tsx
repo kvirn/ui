@@ -12,7 +12,7 @@ import { Field } from '../field/field.tsx'
 import { Fieldset } from '../fieldset/fieldset.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Textarea } from './textarea.tsx'
-import type { TextareaChangeDetails, TextareaProps, TextareaState } from './textarea.tsx'
+import type { TextareaChangeDetails, TextareaProps } from './textarea.tsx'
 import { useTextarea } from './use-textarea.ts'
 import type { TextareaPartProps, UseTextareaOptions, UseTextareaResult } from './use-textarea.ts'
 
@@ -202,42 +202,6 @@ describe('rendering', () => {
     await expect
       .element(page.getByRole('textbox', { name: 'Tre' }))
       .toHaveAttribute('data-disabled', '')
-  })
-
-  test('render as a function gets the part’s props and the state', async () => {
-    const seenStates: TextareaState[] = []
-    await render(
-      <Field.Root invalid disabled={false}>
-        <Field.Label>Beskrivning</Field.Label>
-        <Field.ErrorMessage>Beskriv ärendet</Field.ErrorMessage>
-        <Textarea
-          render={(partProps, state) => {
-            seenStates.push(state)
-            return <textarea {...partProps} data-egen="" />
-          }}
-        />
-      </Field.Root>,
-    )
-    await expect.element(page.getByRole('textbox')).toHaveAttribute('data-egen', '')
-    expect(seenStates.at(-1)).toEqual({
-      isInvalid: true,
-      isRequired: false,
-      isDisabled: false,
-      isFocusVisible: false,
-      isOverLimit: false,
-    })
-  })
-
-  test('render as an element keeps the Field wiring and the part class', async () => {
-    await render(
-      <Field.Root>
-        <Field.Label>Beskrivning</Field.Label>
-        <Textarea render={<textarea data-egen="" />} />
-      </Field.Root>,
-    )
-    const box = page.getByRole('textbox', { name: 'Beskrivning (optional)' })
-    await expect.element(box).toHaveAttribute('data-egen', '')
-    await expect.element(box).toHaveClass('kv-textarea')
   })
 })
 
@@ -565,19 +529,11 @@ describe('characterCount', () => {
       .toHaveAccessibleDescription('Extra. You can enter up to 50 characters.')
   })
 
-  test('data-over is on the Textarea and the count while over the limit, and the state says so', async () => {
-    const seen: boolean[] = []
+  test('data-over is on the Textarea and the count while over the limit', async () => {
     const { container } = await render(
       <Field.Root>
         <Field.Label>Beskrivning</Field.Label>
-        <Textarea
-          characterCount
-          maxLength={10}
-          render={(partProps, state) => {
-            seen.push(state.isOverLimit)
-            return <textarea {...partProps} />
-          }}
-        />
+        <Textarea characterCount maxLength={10} />
       </Field.Root>,
     )
     const box = page.getByRole('textbox', { name: 'Beskrivning (optional)' })
@@ -587,7 +543,6 @@ describe('characterCount', () => {
     expect(container.querySelector('p')?.hasAttribute('data-over')).toBe(true)
     // Over the limit is a warning, not an error: nothing is marked invalid.
     await expect.element(box).not.toHaveAttribute('aria-invalid')
-    expect(seen.at(-1)).toBe(true)
     await userEvent.fill(box, 'a'.repeat(10))
     await expect.element(box).not.toHaveAttribute('data-over')
   })

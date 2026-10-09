@@ -14,8 +14,9 @@ import type { HTMLAttributes, ReactElement, Ref, RefCallback } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useNavigation } from './use-navigation.ts'
 import type {
   NavigationItemPartProps,
@@ -24,22 +25,12 @@ import type {
   NavigationRootPartProps,
 } from './use-navigation.ts'
 
-/** What `render` receives as its second argument. A navigation has no state, so it's empty. */
-export type NavigationState = Record<string, never>
-
-/**
- * What a `render` function gets to spread: your attributes, the part's props and a callback
- * ref, which fits any element.
- */
-export interface NavigationElementProps extends HTMLAttributes<HTMLElement> {
-  ref: RefCallback<HTMLElement>
-}
+const listTags = ['ul', 'ol'] as const
+const labelTags = ['span', 'p'] as const
 
 interface NavigationPartComponentProps extends HTMLAttributes<HTMLElement> {
   /** The rendered element. */
   ref?: Ref<HTMLElement> | undefined
-  /** Change the element. Its own semantics apply. */
-  render?: RenderProp<NavigationElementProps, NavigationState> | undefined
 }
 
 export interface NavigationRootProps extends NavigationPartComponentProps {
@@ -50,17 +41,12 @@ export interface NavigationRootProps extends NavigationPartComponentProps {
    * Two navigations on a page need two names. A dev warning fires without one.
    */
   label?: string | undefined
-  /**
-   * Change the element. It must stay a `<nav>` (or have `role="navigation"`), otherwise the
-   * landmark is gone.
-   */
-  render?: RenderProp<NavigationElementProps, NavigationState> | undefined
 }
-export type NavigationListProps = NavigationPartComponentProps
+/** `as` is `ul` (default) or `ol`, for a list whose order is the meaning. */
+export type NavigationListProps = AsTag<(typeof listTags)[number], 'ul'>
 export type NavigationItemProps = NavigationPartComponentProps
-export type NavigationLabelProps = NavigationPartComponentProps
-
-const navigationState: NavigationState = Object.freeze({})
+/** `as` is `span` (default) or `p`. It is a name, not a heading. */
+export type NavigationLabelProps = AsTag<(typeof labelTags)[number], 'span'>
 
 /** The text a landmark is named by: `aria-label`, or the text of the `aria-labelledby` elements. */
 function landmarkName(element: Element): string {
@@ -88,7 +74,7 @@ const NavigationItemContext = createContext<NavigationItemContextValue | null>(n
 
 /** Internal. One part: one element. The part's props join the consumer's (mergeProps). */
 function renderNavigationPart(
-  { render, ...otherProps }: NavigationPartComponentProps,
+  otherProps: NavigationPartComponentProps,
   defaultElement: 'nav' | 'ul' | 'li' | 'span',
   partProps:
     | NavigationRootPartProps
@@ -96,14 +82,14 @@ function renderNavigationPart(
     | NavigationItemPartProps
     | NavigationLabelPartProps,
   elementRef: RefCallback<HTMLElement>,
+  as?: 'ul' | 'ol' | 'span' | 'p',
 ): ReactElement {
   return renderPart({
-    render,
+    as,
     defaultElement,
-    // The part's class joins a prop's and a render element's own class names, so neither can
-    // remove it and the theme keeps styling the navigation.
+    // The part's class joins a prop's class names, so a prop can't remove it and the theme keeps
+    // styling the navigation.
     partProps: { ...mergeProps(otherProps, partProps), ref: elementRef },
-    state: navigationState,
   })
 }
 
@@ -163,7 +149,7 @@ NavigationRoot.displayName = 'Navigation.Root'
  * collapse is rendered with `hidden` and never unmounted: its links leave the Tab sequence and
  * the accessibility tree, and the default theme keeps it collapsed.
  */
-export function NavigationList({ ref, ...otherProps }: NavigationListProps): ReactElement {
+export function NavigationList({ as, ref, ...otherProps }: NavigationListProps): ReactElement {
   const navigation = useNavigation()
   const item = useContext(NavigationItemContext)
   const mergedRef = useMergedRef(ref, null)
@@ -179,6 +165,7 @@ export function NavigationList({ ref, ...otherProps }: NavigationListProps): Rea
     'ul',
     navigation.listProps,
     mergedRef,
+    resolveAsTag({ part: 'Navigation.List', as, allowedTags: listTags }),
   )
 }
 NavigationList.displayName = 'Navigation.List'
@@ -233,7 +220,7 @@ NavigationItem.displayName = 'Navigation.Item'
  * nobody mistakes it for one: it has no role, is not focusable and is never a Tab stop. Its text
  * is yours, in your own translations.
  */
-export function NavigationLabel({ ref, ...otherProps }: NavigationLabelProps): ReactElement {
+export function NavigationLabel({ as, ref, ...otherProps }: NavigationLabelProps): ReactElement {
   const navigation = useNavigation()
   const item = useContext(NavigationItemContext)
   const mergedRef = useMergedRef(ref, null)
@@ -256,6 +243,7 @@ export function NavigationLabel({ ref, ...otherProps }: NavigationLabelProps): R
     'span',
     navigation.labelProps,
     mergedRef,
+    resolveAsTag({ part: 'Navigation.Label', as, allowedTags: labelTags }),
   )
 }
 NavigationLabel.displayName = 'Navigation.Label'

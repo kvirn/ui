@@ -55,7 +55,7 @@ These are the maintainer's choices for the default theme. `DESIGN.md` holds the 
 - **Colours are named by role** (primary, secondary, accent, neutral), so a brand can swap a scale. A lighter hover behind white text, low-contrast greys and faint control borders are not used.
 - **Type:** IBM Plex Sans for text, IBM Plex Serif for headings. Long words hyphenate, and large type steps down below 40rem.
 - **Prose** is styled like Tailwind's typography plugin, in our tokens.
-- **Card and Section:** a plain container with `render`, no clickable card. Alerts are classes and ready-made status components, not a `variant` prop on a Card or Section.
+- **Card and Section:** a plain container with `as`, no clickable card. Alerts are classes and ready-made status components, not a `variant` prop on a Card or Section.
 
 ## Common mistakes (reject)
 

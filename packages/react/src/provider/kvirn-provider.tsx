@@ -1,7 +1,6 @@
 'use client'
 import {
   createAnnouncer,
-  createMessageFormat,
   findInvalidThemeOptions,
   getLanguage,
   getThemeStore,
@@ -27,6 +26,7 @@ import { warnOnce } from '../dev/dev-warning.ts'
 import type { IconRegistry } from '../icon/icon-registry.ts'
 import type { IconDefaults } from '../icon/use-icon.ts'
 import { KvirnConfigContext, ThemeStoreContext } from './provider-context.ts'
+import { createProviderFormat } from './provider-format.ts'
 import type { KvirnConfig } from './provider-context.ts'
 import type { RegisteredLinkComponent } from './register.ts'
 import { useEnv } from './use-env.ts'
@@ -68,7 +68,10 @@ export interface KvirnProviderProps {
    * parent provider's messages, and finally over built-in `en`.
    */
   messages?: PartialMessages | undefined
-  /** IANA time zone. Set it explicitly to avoid a server/client date mismatch. */
+  /**
+   * IANA time zone for instants. Default: the parent's, else UTC, with a development warning when
+   * an instant is formatted without one. Pass the same value on the server and in the browser.
+   */
   timeZone?: string | undefined
   /**
    * The first day of the week in Calendar and DatePicker: `1` (Monday) to `7` (Sunday), the ISO
@@ -142,7 +145,7 @@ export function KvirnProvider({
   const parentIcons = parentConfig.icons
   const parentIconDefaults = parentConfig.iconDefaults
 
-  const format = useMemo(() => createMessageFormat({ locale, timeZone }), [locale, timeZone])
+  const format = useMemo(() => createProviderFormat(locale, timeZone), [locale, timeZone])
   const messageLayers = useMemo(
     () => (messages === undefined ? parentLayers : [messages, ...parentLayers]),
     [messages, parentLayers],
@@ -220,10 +223,13 @@ export function KvirnProvider({
   const env = envProp ?? inheritedEnv
   const defaultColorScheme = theme?.defaultColorScheme
   const defaultContrast = theme?.defaultContrast
+  const defaultMotion = theme?.defaultMotion
   const storage = theme?.storage
   const themeStore = useMemo(
-    () => parentThemeStore ?? getThemeStore(env, { defaultColorScheme, defaultContrast, storage }),
-    [parentThemeStore, env, defaultColorScheme, defaultContrast, storage],
+    () =>
+      parentThemeStore ??
+      getThemeStore(env, { defaultColorScheme, defaultContrast, defaultMotion, storage }),
+    [parentThemeStore, env, defaultColorScheme, defaultContrast, defaultMotion, storage],
   )
 
   if (isOutermost && theme !== undefined) {

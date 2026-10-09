@@ -1,5 +1,5 @@
 'use client'
-import { useContext, useEffect, useRef } from 'react'
+import { createElement, useContext, useEffect, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldContext } from '../field/field-context.ts'
@@ -7,8 +7,6 @@ import { joinIds } from '../field/field-state.ts'
 import { useControlWarnings } from '../field/use-control-warnings.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useListboxNative } from './use-listbox-native.ts'
 import type { ListboxNativeChangeDetails } from './use-listbox-native.ts'
 
@@ -16,14 +14,6 @@ import type { ListboxNativeChangeDetails } from './use-listbox-native.ts'
 // devices): a native `<select>` wired to its Field. It is not part of the public API (NativeSelect became Listbox).
 
 export type { ListboxNativeChangeDetails } from './use-listbox-native.ts'
-
-/** What `render` receives as its second argument. */
-export interface ListboxNativeState {
-  isInvalid: boolean
-  isRequired: boolean
-  isDisabled: boolean
-  isFocusVisible: boolean
-}
 
 export interface ListboxNativeProps extends Omit<
   ComponentPropsWithRef<'select'>,
@@ -35,7 +25,6 @@ export interface ListboxNativeProps extends Omit<
   defaultValue?: string | undefined
   /** Reports each change, with `{ reason: 'input', event }`. `onChange` still works too. */
   onValueChange?: ((value: string, details: ListboxNativeChangeDetails) => void) | undefined
-  render?: RenderProp<ComponentPropsWithRef<'select'>, ListboxNativeState> | undefined
 }
 
 /**
@@ -51,7 +40,6 @@ export function ListboxNative({
   onValueChange,
   id,
   'aria-describedby': ownDescribedBy,
-  render,
   ref,
   ...otherProps
 }: ListboxNativeProps): ReactElement {
@@ -82,20 +70,10 @@ export function ListboxNative({
   const ownId = field === null ? { id } : {}
   const describedBy = joinIds(listbox.nativeProps['aria-describedby'], ownDescribedBy)
 
-  return renderPart({
-    render,
-    defaultElement: 'select',
-    partProps: {
-      ...mergeProps(otherProps, ownId, listbox.nativeProps),
-      'aria-describedby': describedBy,
-      ref: mergedRef,
-    },
-    state: {
-      isInvalid: listbox.isInvalid,
-      isRequired: listbox.isRequired,
-      isDisabled: listbox.isDisabled,
-      isFocusVisible: listbox.isFocusVisible,
-    },
+  return createElement('select', {
+    ...mergeProps(otherProps, ownId, listbox.nativeProps),
+    'aria-describedby': describedBy,
+    ref: mergedRef,
   })
 }
 ListboxNative.displayName = 'ListboxNative'

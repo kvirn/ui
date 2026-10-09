@@ -1,22 +1,19 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { useContext, useEffect } from 'react'
-import type { ComponentPropsWithRef, HTMLAttributes, ReactElement, Ref, RefCallback } from 'react'
+import { createElement, useContext, useEffect } from 'react'
+import type { ComponentPropsWithRef, HTMLAttributes, ReactElement, Ref } from 'react'
 import { Alert } from '../alert/alert.tsx'
-import type { AlertElementProps, AlertState } from '../alert/alert.tsx'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { ErrorSummaryContext } from './error-summary-context.ts'
 import { useErrorSummary } from './use-error-summary.ts'
 
-/** What `render` receives as its second argument. An error summary has no state, so it's empty. */
-export type ErrorSummaryState = Record<string, never>
-
-/** What a `render` function gets to spread: your attributes, the part's props and a callback ref. */
-export type ErrorSummaryElementProps = AlertElementProps
+const titleTags = ['h2', 'h3', 'h4', 'h5', 'h6'] as const
+const listTags = ['ul', 'ol'] as const
 
 export interface ErrorSummaryRootProps extends HTMLAttributes<HTMLElement> {
   ref?: Ref<HTMLElement> | undefined
@@ -26,32 +23,22 @@ export interface ErrorSummaryRootProps extends HTMLAttributes<HTMLElement> {
   prefixDocumentTitle?: boolean | undefined
   /** Per-instance overrides: the title and the page title prefix. */
   messages?: Partial<KvirnMessages['errorSummary']> | undefined
-  /** Change the element: `render={(props) => <Alert.Danger {...props} />}` is the default. */
-  render?: RenderProp<ErrorSummaryElementProps, AlertState> | undefined
 }
 
 interface ErrorSummaryPartComponentProps extends HTMLAttributes<HTMLElement> {
   ref?: Ref<HTMLElement> | undefined
-  render?: RenderProp<ErrorSummaryElementProps, ErrorSummaryState> | undefined
 }
 
-export type ErrorSummaryTitleProps = ErrorSummaryPartComponentProps
-export type ErrorSummaryListProps = ErrorSummaryPartComponentProps
+/** `as` is `h2` (default) to `h6`: the level the page's outline needs (2.4.6, 1.3.1). */
+export type ErrorSummaryTitleProps = AsTag<(typeof titleTags)[number], 'h2'>
+/** `as` is `ul` (default) or `ol`. */
+export type ErrorSummaryListProps = AsTag<(typeof listTags)[number], 'ul'>
 export type ErrorSummaryItemProps = ErrorSummaryPartComponentProps
-
-/** What a `render` function of the link gets to spread. */
-export interface ErrorSummaryLinkElementProps extends Omit<ComponentPropsWithRef<'a'>, 'ref'> {
-  ref: RefCallback<HTMLAnchorElement>
-}
 
 export interface ErrorSummaryLinkProps extends Omit<ComponentPropsWithRef<'a'>, 'href'> {
   /** The id of the control the error is about, or of a group's first option. Sets `href="#id"`. */
   controlId: string
-  /** Change the element: `render={<a />}`. */
-  render?: RenderProp<ErrorSummaryLinkElementProps, ErrorSummaryState> | undefined
 }
-
-const errorSummaryState: ErrorSummaryState = Object.freeze({})
 
 function useWarnOutsideRoot(isOutside: boolean, partName: string): void {
   useEffect(() => {
@@ -67,13 +54,12 @@ function useWarnOutsideRoot(isOutside: boolean, partName: string): void {
 /**
  * The summary: an `Alert.Danger` (icon, status word, danger colour) that is a named group,
  * takes focus when it appears and again when `focusKey` changes, and is never announced through a
- * live region. `render` replaces the Alert.
+ * live region. It takes no `as`: the Alert is its element.
  */
 export function ErrorSummaryRoot({
   focusKey,
   prefixDocumentTitle,
   messages,
-  render,
   ref,
   children,
   ...otherProps
@@ -84,23 +70,18 @@ export function ErrorSummaryRoot({
   const partProps = { ...mergeProps(otherProps, rootProps), ref: elementRef, children }
   return (
     <ErrorSummaryContext.Provider value={errorSummary}>
-      {renderPart({
-        render,
-        defaultElement: Alert.Danger,
-        partProps,
-        state: errorSummaryState,
-      })}
+      <Alert.Danger {...partProps} />
     </ErrorSummaryContext.Provider>
   )
 }
 ErrorSummaryRoot.displayName = 'ErrorSummary.Root'
 
 /**
- * The heading, an `h2` by default (`render` for another level), with the status word first.
+ * The heading, an `h2` by default (`as` for another level), with the status word first.
  * Without children it reads `errorSummary.title`.
  */
 export function ErrorSummaryTitle({
-  render,
+  as,
   ref,
   children,
   ...otherProps
@@ -111,7 +92,7 @@ export function ErrorSummaryTitle({
     <Alert.Title
       {...mergeProps(otherProps, errorSummary?.titleProps ?? {})}
       ref={ref}
-      render={render}
+      as={resolveAsTag({ part: 'ErrorSummary.Title', as, allowedTags: titleTags })}
     >
       {children ?? errorSummary?.title}
     </Alert.Title>
@@ -120,27 +101,28 @@ export function ErrorSummaryTitle({
 ErrorSummaryTitle.displayName = 'ErrorSummary.Title'
 
 function useErrorSummaryPart(
-  { render, ref, ...otherProps }: ErrorSummaryPartComponentProps,
+  { ref, ...otherProps }: ErrorSummaryPartComponentProps,
   partProps: { className: string; role?: string },
   defaultElement: 'ul' | 'li',
+  as?: 'ul' | 'ol',
 ): ReactElement {
   const elementRef = useMergedRef(ref, null)
   return renderPart({
-    render,
+    as,
     defaultElement,
     partProps: { ...mergeProps(otherProps, partProps), ref: elementRef },
-    state: errorSummaryState,
   })
 }
 
-/** The list of problems: a `<ul>`. */
-export function ErrorSummaryList(props: ErrorSummaryListProps): ReactElement {
+/** The list of problems: a `<ul>`, or an `<ol>` with `as`. */
+export function ErrorSummaryList({ as, ...props }: ErrorSummaryListProps): ReactElement {
   const errorSummary = useContext(ErrorSummaryContext)
   useWarnOutsideRoot(errorSummary === null, 'List')
   return useErrorSummaryPart(
     props,
     errorSummary?.listProps ?? { className: 'kv-error-summary-list', role: 'list' },
     'ul',
+    resolveAsTag({ part: 'ErrorSummary.List', as, allowedTags: listTags }),
   )
 }
 ErrorSummaryList.displayName = 'ErrorSummary.List'
@@ -157,7 +139,6 @@ ErrorSummaryItem.displayName = 'ErrorSummary.Item'
  */
 export function ErrorSummaryLink({
   controlId,
-  render,
   ref,
   ...otherProps
 }: ErrorSummaryLinkProps): ReactElement {
@@ -168,12 +149,7 @@ export function ErrorSummaryLink({
     className: 'kv-link kv-error-summary-link' as const,
     href: `#${controlId}`,
   }
-  return renderPart({
-    render,
-    defaultElement: 'a',
-    partProps: { ...mergeProps(otherProps, linkProps), ref: elementRef },
-    state: errorSummaryState,
-  })
+  return createElement('a', { ...mergeProps(otherProps, linkProps), ref: elementRef })
 }
 ErrorSummaryLink.displayName = 'ErrorSummary.Link'
 

@@ -112,7 +112,7 @@ describe('rendering', () => {
     }
   })
 
-  test('forwards refs, native props and render, and the part classes join a consumer’s', async () => {
+  test('forwards refs and native props, and the part classes join a consumer’s', async () => {
     const rootRef = createRef<HTMLDivElement>()
     const dayRef = createRef<HTMLInputElement>()
     await render(
@@ -123,11 +123,7 @@ describe('rendering', () => {
           <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
           <DateInput.Root ref={rootRef} className="egen" data-testid="row" lang="sv">
             <DateInput.Day ref={dayRef} className="egen-dag" data-egen="" />
-            <DateInput.Month
-              render={(partProps, state) => (
-                <input {...partProps} data-egen={String(state.isInvalid)} />
-              )}
-            />
+            <DateInput.Month data-egen="false" />
             <DateInput.Year />
           </DateInput.Root>
         </Fieldset.Root>,

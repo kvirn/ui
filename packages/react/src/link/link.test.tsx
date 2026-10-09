@@ -1,7 +1,8 @@
 import { fi } from '@kvirn-ui/i18n/fi'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { createElement, createRef } from 'react'
+import { createRef } from 'react'
+import type { ComponentPropsWithRef } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -10,13 +11,7 @@ import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Link, LinkIcon, LinkNewTabNotice, LinkRoot } from './link.tsx'
-import type {
-  LinkCurrent,
-  LinkIconProps,
-  LinkNewTabNoticeProps,
-  LinkProps,
-  LinkState,
-} from './link.tsx'
+import type { LinkCurrent, LinkIconProps, LinkNewTabNoticeProps, LinkProps } from './link.tsx'
 import {
   brokenLinkComponent,
   MockRouterProvider,
@@ -302,11 +297,11 @@ describe('new-tab notice resolution', () => {
     await expect.element(page.getByText('(opens in a new tab)')).toBeVisible()
   })
 
-  test('takes span props and render', async () => {
+  test('takes span props and as', async () => {
     await render(
       <>
         <Link.NewTabNotice />
-        <Link.NewTabNotice render={<em />}>(extern länk)</Link.NewTabNotice>
+        <Link.NewTabNotice as="em">(extern länk)</Link.NewTabNotice>
       </>,
     )
     const notice = page.getByText('(opens in a new tab)')
@@ -314,9 +309,11 @@ describe('new-tab notice resolution', () => {
     expect(page.getByText('(extern länk)').element().tagName).toBe('EM')
   })
 
-  test('a render element’s own class joins the notice’s class', async () => {
+  test('as keeps the notice’s class and joins your own', async () => {
     await render(
-      <Link.NewTabNotice render={<em className="egen" />}>(extern länk)</Link.NewTabNotice>,
+      <Link.NewTabNotice as="em" className="egen">
+        (extern länk)
+      </Link.NewTabNotice>,
     )
     await expect
       .element(page.getByText('(extern länk)'))
@@ -413,13 +410,10 @@ describe('router link', () => {
     Reflect.deleteProperty(window, 'kvirnPageMarker')
   })
 
-  // `plainAnchor` is `<a />`, the documented form. Written with createElement because JSX
-  // `<a />` trips jsx-a11y anchor-has-content, although the Link supplies the content.
-  test('render={<a />} as an element opts out of the router', async () => {
-    const plainAnchor = createElement('a')
+  test('as="a" opts out of the router', async () => {
     await render(
       <KvirnProvider linkComponent={mockRouterLinkComponent}>
-        <Link.Root render={plainAnchor} href="#fil" download>
+        <Link.Root as="a" href="#fil" download>
           Blankett
         </Link.Root>
       </KvirnProvider>,
@@ -430,22 +424,31 @@ describe('router link', () => {
     await expect.element(link).toHaveAttribute('download', '')
   })
 
-  test('a render element’s own class joins the part’s class', async () => {
-    const styledAnchor = createElement('a', { className: 'egen' })
+  test('as={Component} receives the other props, a ref and the part’s class joined to yours', async () => {
+    const ref = createRef<HTMLAnchorElement>()
+    function DesignSystemLink({ children, ...anchorProps }: ComponentPropsWithRef<'a'>) {
+      return (
+        <a {...anchorProps} data-design-system="">
+          {children}
+        </a>
+      )
+    }
     await render(
-      <Link.Root render={styledAnchor} href="#fil" className="fran-link">
+      <Link.Root as={DesignSystemLink} ref={ref} href="#fil" className="fran-link" current="page">
         Blankett
       </Link.Root>,
     )
-    await expect
-      .element(page.getByRole('link', { name: 'Blankett' }))
-      .toHaveClass('kv-link', 'fran-link', 'egen')
+    const link = page.getByRole('link', { name: 'Blankett' })
+    await expect.element(link).toHaveAttribute('data-design-system', '')
+    await expect.element(link).toHaveClass('kv-link', 'fran-link')
+    await expect.element(link).toHaveAttribute('aria-current', 'page')
+    expect(ref.current).toBe(link.element())
+    expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('target and rel on a render element go through useLink', async () => {
-    const newTabAnchor = createElement('a', { target: '_blank', rel: 'external' })
+  test('target="_blank" with as="a" adds rel and the new-tab notice names the link', async () => {
     await render(
-      <Link.Root render={newTabAnchor} href="https://www.digg.se/">
+      <Link.Root as="a" href="https://www.digg.se/" target="_blank" rel="external">
         Digg <Link.NewTabNotice />
       </Link.Root>,
     )
@@ -455,65 +458,15 @@ describe('router link', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('a render element with target="_blank" and no notice gets rel and no dev warning', async () => {
-    const newTabAnchor = createElement('a', { target: '_blank' })
+  test('target="_blank" with no notice gets rel and no dev warning', async () => {
     await render(
-      <Link.Root render={newTabAnchor} href="https://www.digg.se/">
+      <Link.Root as="a" href="https://www.digg.se/" target="_blank">
         Digg
       </Link.Root>,
     )
     const link = page.getByRole('link', { name: 'Digg' })
     await expect.element(link).toHaveAttribute('rel', 'noopener noreferrer')
     expect(consoleWarn).not.toHaveBeenCalled()
-  })
-
-  test('render with a plain <a> opts out of the router', async () => {
-    await render(
-      <KvirnProvider linkComponent={mockRouterLinkComponent}>
-        <Link.Root
-          render={(linkProps) => (
-            <a {...linkProps} href={linkProps.href}>
-              {linkProps.children}
-            </a>
-          )}
-          href="#fil"
-          download
-        >
-          Blankett
-        </Link.Root>
-      </KvirnProvider>,
-    )
-    const link = page.getByRole('link', { name: 'Blankett' })
-    await expect.element(link).not.toHaveAttribute('data-router-link')
-    await expect.element(link).toHaveAttribute('download', '')
-  })
-
-  test('render as a function receives the link props and the state', async () => {
-    const seenStates: LinkState[] = []
-    await render(
-      <Link.Root
-        href="#ansok"
-        current="page"
-        render={(linkProps, state) => {
-          seenStates.push(state)
-          return (
-            <a {...linkProps} href={linkProps.href} data-egen="">
-              {linkProps.children}
-            </a>
-          )
-        }}
-      >
-        Ansök
-      </Link.Root>,
-    )
-    const link = page.getByRole('link', { name: 'Ansök' })
-    await expect.element(link).toHaveAttribute('data-egen', '')
-    await expect.element(link).toHaveAttribute('aria-current', 'page')
-    expect(seenStates.at(-1)).toEqual({
-      isCurrent: true,
-      isFocusVisible: false,
-      opensInNewTab: false,
-    })
   })
 
   test('warns in development when the link component does not render an <a> with its ref', async () => {
@@ -527,9 +480,9 @@ describe('router link', () => {
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('forward its ref')
   })
 
-  test('warns in development when render resolves to something other than an <a>', async () => {
+  test('warns in development when as resolves to something other than an <a>', async () => {
     await render(
-      <Link.Root href="/ansok" render={<span />}>
+      <Link.Root href="/ansok" as="span">
         Ansök
       </Link.Root>,
     )
@@ -617,7 +570,7 @@ describe('Link.Icon', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('works in a plain link, and takes span props, a ref and render', async () => {
+  test('works in a plain link, and takes span props, a ref and as', async () => {
     const ref = createRef<HTMLSpanElement>()
     await render(
       <Link.Root href="#ansok">
@@ -633,23 +586,36 @@ describe('Link.Icon', () => {
     await expect.element(page.getByRole('link', { name: 'Ansök' })).toBeVisible()
   })
 
-  test('render keeps the decoration: a function receives aria-hidden and the class', async () => {
+  test('as="i" keeps the decoration: aria-hidden and the class', async () => {
     await render(
       <Link.Root href="#ansok">
-        <Link.Icon render={(iconProps) => <i {...iconProps} data-rendered="ja" />}>→</Link.Icon>
+        <Link.Icon as="i">→</Link.Icon>
         Ansök
       </Link.Root>,
     )
     const icon = page.getByText('→')
-    await expect.element(icon).toHaveAttribute('data-rendered', 'ja')
+    expect(icon.element().tagName).toBe('I')
     await expect.element(icon).toHaveAttribute('aria-hidden', 'true')
     await expect.element(icon).toHaveClass('kv-link-icon')
+  })
+
+  test('a tag outside the list warns once and falls back to the default element', async () => {
+    const notAllowed = 'div' as LinkIconProps['as']
+    await render(
+      <Link.Root href="#ansok">
+        <Link.Icon as={notAllowed}>→</Link.Icon>
+        Ansök
+      </Link.Root>,
+    )
+    expect(page.getByText('→').element().tagName).toBe('SPAN')
+    expect(consoleWarn).toHaveBeenCalledTimes(1)
+    expect(consoleWarn.mock.calls[0]?.[0]).toContain('Link.Icon as="div"')
   })
 
   test('Link.Icon, LinkIcon and the display name agree', () => {
     expect(Link.Icon).toBe(LinkIcon)
     expect(LinkIcon.displayName).toBe('Link.Icon')
-    expectTypeOf<LinkIconProps>().toHaveProperty('render')
+    expectTypeOf<LinkIconProps>().toHaveProperty('as')
   })
 })
 
@@ -705,10 +671,5 @@ describe('types', () => {
     expectTypeOf<UseLinkResult['isCurrent']>().toEqualTypeOf<boolean>()
     expectTypeOf<UseLinkResult['opensInNewTab']>().toEqualTypeOf<boolean>()
     expectTypeOf<LinkNewTabNoticeProps>().toHaveProperty('children')
-    expectTypeOf<LinkState>().toEqualTypeOf<{
-      isCurrent: boolean
-      isFocusVisible: boolean
-      opensInNewTab: boolean
-    }>()
   })
 })

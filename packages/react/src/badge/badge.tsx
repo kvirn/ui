@@ -1,29 +1,22 @@
 'use client'
-import type { HTMLAttributes, ReactElement, Ref, RefCallback } from 'react'
+import type { ReactElement } from 'react'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useBadge } from './use-badge.ts'
 import type { BadgeVariant } from './use-badge.ts'
 
-/** What `render` receives as its second argument. */
-export interface BadgeState {
-  variant: BadgeVariant
-}
+const badgeTags = ['span', 'strong', 'em'] as const
 
-/** What a `render` function gets to spread: your attributes, the class and a callback ref. */
-export interface BadgeElementProps extends HTMLAttributes<HTMLElement> {
-  ref: RefCallback<HTMLElement>
-}
-
-export interface BadgeProps extends HTMLAttributes<HTMLElement> {
-  ref?: Ref<HTMLElement> | undefined
+interface BadgeOwnProps {
   /** The role of the badge. Default `neutral`. The words are yours: the colour is never the only cue. */
   variant?: BadgeVariant | undefined
-  /** Change the element: `render={<strong />}`. Its own semantics apply. */
-  render?: RenderProp<BadgeElementProps, BadgeState> | undefined
 }
+
+/** `as` is `span` (default), `strong` or `em`. Its own semantics apply. */
+export type BadgeProps = AsTag<(typeof badgeTags)[number], 'span', BadgeOwnProps>
 
 /**
  * A short status or category in words (contract: badge.a11y.md): one
@@ -33,19 +26,13 @@ export interface BadgeProps extends HTMLAttributes<HTMLElement> {
  * @example
  * <Badge variant="success">Beviljad</Badge>
  */
-export function Badge({
-  variant = 'neutral',
-  render,
-  ref,
-  ...otherProps
-}: BadgeProps): ReactElement {
+export function Badge({ variant = 'neutral', as, ref, ...otherProps }: BadgeProps): ReactElement {
   const badge = useBadge({ variant })
   const elementRef = useMergedRef(ref, null)
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'Badge', as, allowedTags: badgeTags }),
     defaultElement: badge.element,
     partProps: { ...mergeProps(otherProps, badge.rootProps), ref: elementRef },
-    state: { variant },
   })
 }
 Badge.displayName = 'Badge'

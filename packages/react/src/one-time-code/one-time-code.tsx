@@ -1,41 +1,23 @@
 'use client'
-import { createContext, useContext, useEffect, useRef } from 'react'
+import { createContext, createElement, useContext, useEffect, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldContext } from '../field/field-context.ts'
 import { joinIds } from '../field/field-state.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useOneTimeCode } from './use-one-time-code.ts'
-import type {
-  OneTimeCodeSlotState,
-  UseOneTimeCodeOptions,
-  UseOneTimeCodeResult,
-} from './use-one-time-code.ts'
+import type { UseOneTimeCodeOptions, UseOneTimeCodeResult } from './use-one-time-code.ts'
 
 export type { OneTimeCodeSlotState } from './use-one-time-code.ts'
 
-/** What `render` receives as its second argument, for the Root and the Input. */
-export interface OneTimeCodeState {
-  isComplete: boolean
-  isInvalid: boolean
-  isDisabled: boolean
-  isReady: boolean
-}
+export type OneTimeCodeRootProps = UseOneTimeCodeOptions &
+  Omit<ComponentPropsWithRef<'div'>, 'defaultValue'>
 
-export interface OneTimeCodeRootProps
-  extends UseOneTimeCodeOptions, Omit<ComponentPropsWithRef<'div'>, 'defaultValue'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, OneTimeCodeState> | undefined
-}
-
-export interface OneTimeCodeInputProps extends Omit<
+export type OneTimeCodeInputProps = Omit<
   ComponentPropsWithRef<'input'>,
   'type' | 'value' | 'defaultValue'
-> {
-  render?: RenderProp<ComponentPropsWithRef<'input'>, OneTimeCodeState> | undefined
-}
+>
 
 export interface OneTimeCodeSlotProps extends ComponentPropsWithRef<'span'> {
   /**
@@ -43,7 +25,6 @@ export interface OneTimeCodeSlotProps extends ComponentPropsWithRef<'span'> {
    * pattern is a separator slot: it shows `-`, and it is never filled or active.
    */
   index: number
-  render?: RenderProp<ComponentPropsWithRef<'span'>, OneTimeCodeSlotState> | undefined
 }
 
 const OneTimeCodeContext = createContext<UseOneTimeCodeResult | null>(null)
@@ -85,7 +66,6 @@ export function OneTimeCodeRoot({
   disabled,
   announceRejections,
   messages,
-  render,
   ref,
   children,
   ...otherProps
@@ -101,21 +81,12 @@ export function OneTimeCodeRoot({
     messages,
   })
   const mergedRef = useMergedRef(ref, null)
-  const state: OneTimeCodeState = {
-    isComplete: oneTimeCode.isComplete,
-    isInvalid: oneTimeCode.isInvalid,
-    isDisabled: oneTimeCode.isDisabled,
-    isReady: oneTimeCode.isReady,
-  }
 
   return (
     <OneTimeCodeContext.Provider value={oneTimeCode}>
-      {renderPart({
-        render,
-        defaultElement: 'div',
-        partProps: { ...mergeProps(otherProps, oneTimeCode.rootProps), children, ref: mergedRef },
-        state,
-      })}
+      <div {...mergeProps(otherProps, oneTimeCode.rootProps)} ref={mergedRef}>
+        {children}
+      </div>
     </OneTimeCodeContext.Provider>
   )
 }
@@ -130,7 +101,6 @@ OneTimeCodeRoot.displayName = 'OneTimeCode.Root'
 export function OneTimeCodeInput({
   id,
   'aria-describedby': ownDescribedBy,
-  render,
   ref,
   ...otherProps
 }: OneTimeCodeInputProps): ReactElement {
@@ -195,22 +165,11 @@ export function OneTimeCodeInput({
   // Outside a Root there's no hook: the Field's wiring alone keeps the label and help text linked.
   const inputProps = oneTimeCode === null ? field?.controlProps : oneTimeCode.inputProps
   const describedBy = joinIds(inputProps?.['aria-describedby'], ownDescribedBy)
-  const state: OneTimeCodeState = {
-    isComplete: oneTimeCode?.isComplete ?? false,
-    isInvalid: oneTimeCode?.isInvalid ?? field?.state.isInvalid ?? false,
-    isDisabled: oneTimeCode?.isDisabled ?? field?.state.isDisabled ?? false,
-    isReady: oneTimeCode?.isReady ?? false,
-  }
 
-  return renderPart({
-    render,
-    defaultElement: 'input',
-    partProps: {
-      ...mergeProps(otherProps, ownId, inputProps ?? {}),
-      'aria-describedby': describedBy,
-      ref: mergedRef,
-    },
-    state,
+  return createElement('input', {
+    ...mergeProps(otherProps, ownId, inputProps ?? {}),
+    'aria-describedby': describedBy,
+    ref: mergedRef,
   })
 }
 OneTimeCodeInput.displayName = 'OneTimeCode.Input'
@@ -223,12 +182,7 @@ OneTimeCodeInput.displayName = 'OneTimeCode.Input'
  * and is never filled or active. The help text, not the slots, tells screen-reader users the length and
  * the groups.
  */
-export function OneTimeCodeSlot({
-  index,
-  render,
-  ref,
-  ...otherProps
-}: OneTimeCodeSlotProps): ReactElement {
+export function OneTimeCodeSlot({ index, ref, ...otherProps }: OneTimeCodeSlotProps): ReactElement {
   const oneTimeCode = useContext(OneTimeCodeContext)
   const mergedRef = useMergedRef(ref, null)
 
@@ -246,26 +200,12 @@ export function OneTimeCodeSlot({
     }
   }, [oneTimeCode, index])
 
-  const slotState: OneTimeCodeSlotState = oneTimeCode?.slots[index] ?? {
-    kind: 'character',
-    character: '',
-    isFilled: false,
-    isActive: false,
-    caret: undefined,
-    isSelected: false,
-  }
   const slotProps = oneTimeCode?.getSlotProps(index)
-  return renderPart({
-    render,
-    defaultElement: 'span',
-    partProps: {
-      ...mergeProps(otherProps, slotProps ?? {}),
-      children: otherProps.children ?? slotState.character,
-      'aria-hidden': 'true',
-      ref: mergedRef,
-    },
-    state: slotState,
-  })
+  return (
+    <span {...mergeProps(otherProps, slotProps ?? {})} aria-hidden="true" ref={mergedRef}>
+      {otherProps.children ?? oneTimeCode?.slots[index]?.character ?? ''}
+    </span>
+  )
 }
 OneTimeCodeSlot.displayName = 'OneTimeCode.Slot'
 

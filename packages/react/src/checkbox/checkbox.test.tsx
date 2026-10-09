@@ -10,7 +10,7 @@ import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Checkbox } from './checkbox.tsx'
-import type { CheckboxProps, CheckboxState } from './checkbox.tsx'
+import type { CheckboxProps } from './checkbox.tsx'
 import { useCheckbox } from './use-checkbox.ts'
 import type {
   CheckboxChangeDetails,
@@ -68,46 +68,6 @@ describe('rendering', () => {
     await expect.element(checkbox).toHaveAttribute('value', 'yes')
     await expect.element(checkbox).toHaveAttribute('form', 'ansokan')
     await expect.element(checkbox).toHaveAttribute('data-egen', '')
-  })
-
-  test('render as a function gets the part’s props and the state', async () => {
-    const seenStates: CheckboxState[] = []
-    await render(
-      <Field.Root invalid required>
-        <Checkbox
-          indeterminate
-          render={(partProps, state) => {
-            seenStates.push(state)
-            return <input {...partProps} data-egen="" />
-          }}
-        />
-        <Field.Label>Intyg</Field.Label>
-        <Field.ErrorMessage>Bekräfta intyget</Field.ErrorMessage>
-      </Field.Root>,
-    )
-    await expect.element(page.getByRole('checkbox')).toHaveAttribute('data-egen', '')
-    expect(seenStates.at(-1)).toEqual({
-      isInvalid: true,
-      isRequired: true,
-      isDisabled: false,
-      isFocusVisible: false,
-      isIndeterminate: true,
-    })
-  })
-
-  test('render as an element chains its own onChange', async () => {
-    const onChange = vi.fn<(event: React.ChangeEvent<HTMLInputElement>) => void>()
-    const onCheckedChange = vi.fn<(checked: boolean, details: CheckboxChangeDetails) => void>()
-    await render(
-      <Checkbox
-        aria-label="Godkänn"
-        onCheckedChange={onCheckedChange}
-        render={<input data-egen="" onChange={onChange} />}
-      />,
-    )
-    await userEvent.click(page.getByRole('checkbox', { name: 'Godkänn' }))
-    expect(onChange).toHaveBeenCalledTimes(1)
-    expect(onCheckedChange).toHaveBeenCalledTimes(1)
   })
 })
 

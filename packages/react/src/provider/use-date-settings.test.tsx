@@ -1,6 +1,7 @@
 import type { WeekStart } from '@kvirn-ui/core'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
+import { page } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { useDateSettings } from './use-date-settings.ts'
@@ -78,5 +79,25 @@ describe('useDateSettings().weekStart', () => {
     expect(await readWeekStart({ locale: 'en-US', weekStart: 9 })).toBe(7)
     expect(consoleWarn).toHaveBeenCalledOnce()
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('weekStart')
+  })
+})
+
+describe('useDateSettings().timeZone', () => {
+  function ZoneProbe() {
+    return <p>{useDateSettings().timeZone}</p>
+  }
+
+  test('is UTC without a provider or a provider time zone, never the runtime zone', async () => {
+    await render(<ZoneProbe />)
+    await expect.element(page.getByText('UTC')).toBeVisible()
+  })
+
+  test('is the provider time zone when it is set', async () => {
+    await render(
+      <KvirnProvider timeZone="Europe/Stockholm">
+        <ZoneProbe />
+      </KvirnProvider>,
+    )
+    await expect.element(page.getByText('Europe/Stockholm')).toBeVisible()
   })
 })

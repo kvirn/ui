@@ -103,4 +103,4 @@ Research questions for the AT run: is the group's help text and error read when 
 
 - **A required group isn't announced as required.** `aria-required` isn't supported on `group` (ARIA 1.2), and KvirnUI chooses `aria-required` over native `required`, so a required group has no "(valfritt)" in its legend and `data-required`, and nothing else. If the AT run shows a gap, the options are `role="radiogroup"` on the fieldset for RadioGroup (allowed on `<fieldset>`), or native `required` on one checkbox. Open question in Plan 0013.
 - **`aria-describedby` on a `<fieldset>` isn't announced consistently by TalkBack.** See `fieldset.a11y.md`.
-- **Uncontrolled `onValueChange` reads the DOM.** It reads the checked boxes of the group's `<fieldset>` when a box changes. A custom `render` that isn't a `<fieldset>` breaks that (and warns).
+- **Uncontrolled `onValueChange` reads the DOM.** It reads the checked boxes of the group's `<fieldset>` when a box changes.

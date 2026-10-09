@@ -1,17 +1,32 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef } from 'react'
 import { renderToString } from 'react-dom/server'
-import { describe, expect, expectTypeOf, test } from 'vite-plus/test'
+import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
+import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
+import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Button } from '../button/button.tsx'
 import { Link } from '../link/link.tsx'
 import { Stack } from './stack.tsx'
-import type { StackElementProps, StackProps, StackState } from './stack.tsx'
+import type { StackProps } from './stack.tsx'
 import { useStack } from './use-stack.ts'
 import type { UseStackOptions, StackPartProps, UseStackResult } from './use-stack.ts'
 
 // Contract: stack.a11y.md.
+
+let consoleWarn: MockInstance<Console['warn']>
+
+beforeEach(() => {
+  resetDevWarnings()
+  consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+})
+
+afterEach(() => {
+  consoleWarn.mockRestore()
+})
+
+const warnings = () => consoleWarn.mock.calls.map(([message]) => String(message))
 
 const choices = [
   [{}, 'kv-stack'],
@@ -42,7 +57,25 @@ describe('rendering', () => {
     expect(page.getByTestId('layout').element().className).toBe(className)
   })
 
-  test('adds no role, ARIA, tabindex, inert or data attribute', async () => {
+  test('adds role="list" to a ul and an ol, and no role to a div', async () => {
+    await render(
+      <>
+        <Stack as="ul" data-testid="unordered" />
+        <Stack as="ol" data-testid="ordered" />
+        <Stack as="div" data-testid="plain" />
+      </>,
+    )
+    expect(page.getByTestId('unordered').element().getAttribute('role')).toBe('list')
+    expect(page.getByTestId('ordered').element().getAttribute('role')).toBe('list')
+    expect(page.getByTestId('plain').element().hasAttribute('role')).toBe(false)
+  })
+
+  test('a consumer role wins over the list role on a ul', async () => {
+    await render(<Stack as="ul" role="presentation" data-testid="root" />)
+    expect(page.getByTestId('root').element().getAttribute('role')).toBe('presentation')
+  })
+
+  test('a div adds no ARIA, tabindex, inert or data attribute', async () => {
     await render(<Stack data-testid="layout" {...propChoices[0][0]} />)
     const attributeNames = page.getByTestId('layout').element().getAttributeNames()
     expect(
@@ -70,18 +103,6 @@ describe('rendering', () => {
     await expect.element(page.getByTestId('layout')).toHaveClass('kv-stack', 'annat')
   })
 
-  test('keeps its own class when a render element sets another one', async () => {
-    await render(
-      <Stack className="fran-prop" render={<section className="annat" data-testid="layout" />} />,
-    )
-    await expect.element(page.getByTestId('layout')).toHaveClass('kv-stack', 'fran-prop', 'annat')
-  })
-
-  test('keeps its own class when a render element’s className is empty', async () => {
-    await render(<Stack render={<section className="" data-testid="layout" />} />)
-    expect(page.getByTestId('layout').element().className).toBe('kv-stack')
-  })
-
   test('is server safe: renderToString gives the element with its class and children', () => {
     const html = renderToString(
       <Stack id="server">
@@ -92,11 +113,11 @@ describe('rendering', () => {
   })
 })
 
-describe('render and ref', () => {
+describe('as and ref', () => {
   test('an element changes the element and keeps the children', async () => {
     const { container } = await render(
       <main>
-        <Stack render={<section aria-label="Tjänster" />}>
+        <Stack as="section" aria-label="Tjänster">
           <h1>Kvirnby kommun</h1>
         </Stack>
       </main>,
@@ -107,9 +128,9 @@ describe('render and ref', () => {
       .toBeVisible()
     await expectNoA11yViolations(container)
   })
-  test('render={<ul />} with <li> children makes a list with an announced count', async () => {
+  test('as="ul" with <li> children makes a list with an announced count', async () => {
     const { container } = await render(
-      <Stack render={<ul />}>
+      <Stack as="ul">
         <li>Sophämtning</li>
         <li>Vinterväghållning</li>
         <li>Föreningsbidrag</li>
@@ -120,23 +141,25 @@ describe('render and ref', () => {
     await expectNoA11yViolations(container)
   })
 
-  test('a function receives the part props with the class and the ref, and an empty state', async () => {
-    const seenStates: StackState[] = []
-    const ref = createRef<HTMLElement>()
+  test('ul, ol and a div render their element and keep the class', async () => {
     await render(
-      <Stack
-        ref={ref}
-        render={(layoutProps, state) => {
-          seenStates.push(state)
-          return <aside {...layoutProps} data-testid="layout" />
-        }}
-      />,
+      <>
+        <Stack as="ul" data-testid="first" />
+        <Stack as="ol" data-testid="second" />
+        <Stack as="div" data-testid="third" />
+      </>,
     )
-    const layout = page.getByTestId('layout')
-    await expect.element(layout).toHaveClass('kv-stack')
-    expect(ref.current).toBe(layout.element())
-    expect(ref.current?.tagName).toBe('ASIDE')
-    expect(seenStates.at(-1)).toEqual({})
+    expect(page.getByTestId('first').element().tagName).toBe('UL')
+    expect(page.getByTestId('second').element().tagName).toBe('OL')
+    expect(page.getByTestId('third').element().tagName).toBe('DIV')
+    await expect.element(page.getByTestId('first')).toHaveClass('kv-stack')
+  })
+
+  test('an element outside the allowed list warns once and renders a div', async () => {
+    const notAllowed = 'nav' as 'div'
+    await render(<Stack as={notAllowed} data-testid="layout" />)
+    expect(page.getByTestId('layout').element().tagName).toBe('DIV')
+    expect(warnings().filter((message) => message.includes('Stack as="nav"'))).toHaveLength(1)
   })
 
   test('forwards its ref to the element', async () => {
@@ -145,13 +168,12 @@ describe('render and ref', () => {
     expect(ref.current).toBe(page.getByTestId('layout').element())
   })
 
-  test('both refs get the element when a render element has its own', async () => {
-    const partRef = createRef<HTMLElement>()
-    const elementRef = createRef<HTMLElement>()
-    await render(<Stack ref={partRef} render={<section ref={elementRef} data-testid="layout" />} />)
-    const layout = page.getByTestId('layout').element()
-    expect(partRef.current).toBe(layout)
-    expect(elementRef.current).toBe(layout)
+  test('the ref and className still apply to the chosen element', async () => {
+    const ref = createRef<HTMLElement>()
+    await render(<Stack as="form" ref={ref} className="annat" data-testid="layout" />)
+    const layout = page.getByTestId('layout')
+    expect(ref.current).toBe(layout.element())
+    await expect.element(layout).toHaveClass('kv-stack', 'annat')
   })
 })
 
@@ -213,7 +235,7 @@ describe('useStack', () => {
 describe('types', () => {
   test('the exported option, props and result types fit together', () => {
     expectTypeOf<StackProps>().toExtend<UseStackOptions>()
-    expectTypeOf<StackElementProps['className']>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<StackProps>().toHaveProperty('as')
     expectTypeOf<ReturnType<typeof useStack>>().toEqualTypeOf<UseStackResult>()
     expectTypeOf<UseStackResult['stackProps']>().toEqualTypeOf<StackPartProps>()
   })

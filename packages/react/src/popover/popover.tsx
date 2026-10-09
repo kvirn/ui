@@ -1,37 +1,35 @@
 'use client'
 import { createContext, useContext, useEffect, useRef } from 'react'
-import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
+import type { ElementType, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsComponent, AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
 import { ToolbarContext } from '../toolbar/toolbar-context.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { usePopover } from './use-popover.ts'
 import type { UsePopoverOptions, UsePopoverResult } from './use-popover.ts'
 
 export type { PopoverChangeDetails, PopoverChangeReason } from './use-popover.ts'
 
-/** What `render` receives as its second argument, for every part. */
-export interface PopoverState {
-  isOpen: boolean
-}
+const popupTags = ['div', 'section'] as const
 
 export interface PopoverRootProps extends UsePopoverOptions {
   children?: ReactNode
 }
 
-export interface PopoverTriggerProps extends ComponentPropsWithRef<'button'> {
-  render?: RenderProp<ComponentPropsWithRef<'button'>, PopoverState> | undefined
-}
+/**
+ * `as` is a component that renders a focusable control, such as `as={Button}`: its props are plain
+ * props of the trigger. Without `as` it is a `<button type="button">`.
+ */
+export type PopoverTriggerProps<Component extends ElementType = 'button'> = AsComponent<Component>
 
-export interface PopoverPopupProps extends ComponentPropsWithRef<'div'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, PopoverState> | undefined
-}
+/** `as` is `div` (default) or `section`. The role is `dialog` either way. */
+export type PopoverPopupProps = AsTag<(typeof popupTags)[number], 'div'>
 
-export interface PopoverCloseProps extends ComponentPropsWithRef<'button'> {
-  render?: RenderProp<ComponentPropsWithRef<'button'>, PopoverState> | undefined
-}
+/** `as` is a component that renders a button, such as `as={Button}`. */
+export type PopoverCloseProps<Component extends ElementType = 'button'> = AsComponent<Component>
 
 const PopoverContext = createContext<UsePopoverResult | null>(null)
 
@@ -67,7 +65,14 @@ PopoverRoot.displayName = 'Popover.Root'
  * `aria-haspopup="dialog"`, and it is the anchor the popup is placed against. Enter and Space
  * work natively, as on any button.
  */
-export function PopoverTrigger({ render, ref, ...otherProps }: PopoverTriggerProps): ReactElement {
+export function PopoverTrigger<Component extends ElementType = 'button'>(
+  props: PopoverTriggerProps<Component>,
+): ReactElement
+export function PopoverTrigger({
+  as,
+  ref,
+  ...otherProps
+}: PopoverTriggerProps<'button'>): ReactElement {
   const popover = useContext(PopoverContext)
   const mergedRef = useMergedRef(ref, popover?.triggerProps.ref ?? null)
   useEffect(() => {
@@ -76,13 +81,12 @@ export function PopoverTrigger({ render, ref, ...otherProps }: PopoverTriggerPro
     }
   }, [popover])
   return renderPart({
-    render,
+    as,
     defaultElement: 'button',
     partProps: {
       ...mergeProps(otherProps, popover?.triggerProps ?? { type: 'button' as const }),
       ref: mergedRef,
     },
-    state: { isOpen: popover?.isOpen ?? false },
   })
 }
 PopoverTrigger.displayName = 'Popover.Trigger'
@@ -95,7 +99,7 @@ PopoverTrigger.displayName = 'Popover.Trigger'
  * and scrolls inside when it is too tall (`--kv-popup-max-height`). Escape and a press outside
  * close it, and opening never moves focus: move it yourself, in an effect after the popup is open, if the pattern calls for it.
  */
-export function PopoverPopup({ render, ref, ...otherProps }: PopoverPopupProps): ReactElement {
+export function PopoverPopup({ as, ref, ...otherProps }: PopoverPopupProps): ReactElement {
   const popover = useContext(PopoverContext)
   const elementRef = useRef<HTMLDivElement | null>(null)
   const mergedRef = useMergedRef(useMergedRef(ref, popover?.popupProps.ref ?? null), elementRef)
@@ -126,13 +130,12 @@ export function PopoverPopup({ render, ref, ...otherProps }: PopoverPopupProps):
   return (
     <ToolbarContext.Provider value={null}>
       {renderPart({
-        render,
+        as: resolveAsTag({ part: 'Popover.Popup', as, allowedTags: popupTags }),
         defaultElement: 'div',
         partProps: {
           ...mergeProps(otherProps, popover?.popupProps ?? {}),
           ref: mergedRef,
         },
-        state: { isOpen: popover?.isOpen ?? false },
       })}
     </ToolbarContext.Provider>
   )
@@ -143,7 +146,14 @@ PopoverPopup.displayName = 'Popover.Popup'
  * A `<button>` that closes the popover. Focus goes back to the trigger. Give it a visible label,
  * or an `aria-label` from your translations when it only holds an icon.
  */
-export function PopoverClose({ render, ref, ...otherProps }: PopoverCloseProps): ReactElement {
+export function PopoverClose<Component extends ElementType = 'button'>(
+  props: PopoverCloseProps<Component>,
+): ReactElement
+export function PopoverClose({
+  as,
+  ref,
+  ...otherProps
+}: PopoverCloseProps<'button'>): ReactElement {
   const popover = useContext(PopoverContext)
   const mergedRef = useMergedRef(ref, null)
   useEffect(() => {
@@ -152,13 +162,12 @@ export function PopoverClose({ render, ref, ...otherProps }: PopoverCloseProps):
     }
   }, [popover])
   return renderPart({
-    render,
+    as,
     defaultElement: 'button',
     partProps: {
       ...mergeProps(otherProps, popover?.closeProps ?? { type: 'button' as const }),
       ref: mergedRef,
     },
-    state: { isOpen: popover?.isOpen ?? false },
   })
 }
 PopoverClose.displayName = 'Popover.Close'

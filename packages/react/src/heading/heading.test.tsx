@@ -1,28 +1,34 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef } from 'react'
-import { describe, expect, test } from 'vite-plus/test'
+import { renderToString } from 'react-dom/server'
+import { describe, expect, test, vi } from 'vite-plus/test'
 import { page } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
+import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Heading } from './heading.tsx'
-import type { HeadingLevel } from './heading.tsx'
+import type { HeadingTag } from './heading.tsx'
 import { useHeading } from './use-heading.ts'
 
 // Contract: heading.a11y.md.
 
 describe('Heading', () => {
-  test.each([1, 2, 3, 4, 5, 6] satisfies HeadingLevel[])(
-    'level %i renders that element',
-    async (level) => {
-      await render(<Heading level={level}>Kontakta oss</Heading>)
-      const heading = page.getByRole('heading', { level, name: 'Kontakta oss' })
-      expect(heading.element().tagName).toBe(`H${level}`)
-    },
-  )
+  test.each([
+    ['h1', 1],
+    ['h2', 2],
+    ['h3', 3],
+    ['h4', 4],
+    ['h5', 5],
+    ['h6', 6],
+  ] satisfies [HeadingTag, number][])('as %s renders that element', async (tag, level) => {
+    await render(<Heading as={tag}>Kontakta oss</Heading>)
+    const heading = page.getByRole('heading', { level, name: 'Kontakta oss' })
+    expect(heading.element().tagName).toBe(tag.toUpperCase())
+  })
 
   test('adds only its classes, no role or ARIA, and passes attributes and the ref through', async () => {
     const ref = createRef<HTMLHeadingElement>()
     await render(
-      <Heading level={2} id="kontakt" lang="en" ref={ref}>
+      <Heading as="h2" id="kontakt" lang="en" ref={ref}>
         Contact us
       </Heading>,
     )
@@ -34,12 +40,12 @@ describe('Heading', () => {
   test('the part and size classes, apart from the level: every level defaults to its own size, h1 to h6, and a consumer class joins', async () => {
     await render(
       <>
-        <Heading level={1}>Ett</Heading>
-        <Heading level={3} size="display">
+        <Heading as="h1">Ett</Heading>
+        <Heading as="h3" size="display">
           Tre
         </Heading>
-        <Heading level={4}>Fyra</Heading>
-        <Heading level={2} size="heading-3" className="annat">
+        <Heading as="h4">Fyra</Heading>
+        <Heading as="h2" size="heading-3" className="annat">
           Två
         </Heading>
       </>,
@@ -61,32 +67,26 @@ describe('Heading', () => {
     })
   })
 
-  test('render changes the element and the function form reads the level', async () => {
-    await render(
-      <>
-        <Heading level={3} render={<p data-testid="element" />}>
-          Text
-        </Heading>
-        <Heading
-          level={4}
-          render={(props, state) => (
-            <p {...props} data-testid="function" data-level={state.level} />
-          )}
-        >
-          Text
-        </Heading>
-      </>,
-    )
-    expect(page.getByTestId('element').element().tagName).toBe('P')
-    expect(page.getByTestId('function').element().getAttribute('data-level')).toBe('4')
-    expect(page.getByTestId('function').element().hasAttribute('data-size')).toBe(false)
+  test('a heading renders the same element on the server', () => {
+    expect(renderToString(<Heading as="h2">Kontakta oss</Heading>)).toContain('<h2')
+  })
+
+  test('an element outside h1 to h6 warns once and falls back to h2', async () => {
+    resetDevWarnings()
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const notAllowed = 'legend' as HeadingTag
+    await render(<Heading as={notAllowed}>Kontakta oss</Heading>)
+    expect(page.getByRole('heading', { level: 2 }).element().tagName).toBe('H2')
+    expect(warn).toHaveBeenCalledTimes(1)
+    expect(String(warn.mock.calls[0]?.[0])).toContain('Heading as="legend"')
+    warn.mockRestore()
   })
 
   test('has no axe violations', async () => {
     const { container } = await render(
       <main>
-        <Heading level={1}>Tjänster</Heading>
-        <Heading level={2}>Kontakta oss</Heading>
+        <Heading as="h1">Tjänster</Heading>
+        <Heading as="h2">Kontakta oss</Heading>
       </main>,
     )
     await expect.element(page.getByRole('heading', { level: 2 })).toBeVisible()

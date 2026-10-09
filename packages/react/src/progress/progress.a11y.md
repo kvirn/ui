@@ -12,7 +12,7 @@ Progress says that something is working and, when known, how far along. It is fo
 
 | Part               | Element / role                | ARIA / state                                                                                                                      | Notes                                                                                                                                                                                                                                                         |
 | ------------------ | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Progress.Root      | `<div>`, no role              | `data-state="busy"` or `"slow"`, `data-determinate` with a value. Never `aria-live`, never `aria-busy`                            | Class `kv-progress`. Not rendered before `delayMilliseconds` (1000). Props: `label`, `value`, `max`, `delayMilliseconds`, `slowAfterMilliseconds`, `announce`, `messages`, `render`                                                                           |
+| Progress.Root      | `<div>`, no role              | `data-state="busy"` or `"slow"`, `data-determinate` with a value. Never `aria-live`, never `aria-busy`                            | Class `kv-progress`. Not rendered before `delayMilliseconds` (1000). Props: `label`, `value`, `max`, `delayMilliseconds`, `slowAfterMilliseconds`, `announce`, `messages`                                                                                     |
 | Progress.Label     | `<p>` holding `<span id>`     | none. Never a live region                                                                                                         | Class `kv-progress-label`. The `<span id>` is the label text only; the percent (`kv-progress-percent`) and the slow sentence (`kv-progress-slow`) are separate spans after it                                                                                 |
 | Progress.Indicator | `<span>`, no role             | `aria-hidden="true"`, not focusable                                                                                               | Class `kv-spinner` (`kv-spinner--sm`, `--lg`), a direct child of the Root before the label. Renders only without a `value`: one indicator per wait. Loops while the wait lasts and shows its still rest shape under reduced motion; the text carries the wait |
 | Progress.Bar       | `<progress>` → `progressbar`  | `value`, `max` (100), `aria-labelledby` the label span, `aria-valuetext` (`progress.valueText`: `Exporting cases, 45%`)           | Class `kv-progress-bar`. Renders only with a numeric `value`: an unknown wait has no bar and no `progressbar` role                                                                                                                                            |
@@ -26,6 +26,15 @@ Rules, tested in `progress.test.tsx`:
 - **The percent is text.** The visible percent follows the label, and the bar's value says it. It is never announced.
 - **One indicator per wait.** `Progress.Indicator` renders only for an unknown value; a known value has the `<progress>` and no spinner. A `<progress>` is never rendered without a value.
 - **Dev warnings (once):** `progress-without-label`; a Label, Bar or Indicator outside a Root; no `KvirnProvider` while announcing.
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part                 | `as`                         | Why                                                                                                                                                                                                                                                                            |
+| -------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Label                | `p` (default), `div`, `span` | Plain text with the label span inside. `span` fits beside a busy button. No heading: it names the bar, it is not part of the outline. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Progress.Label:<tag>`) and renders the default element. |
+| Root, Indicator, Bar | none                         | A `<div>`, a decorative `<span>` and a native `<progress>` (4.1.2)                                                                                                                                                                                                             |
 
 ## Keyboard
 
@@ -48,7 +57,7 @@ Progress has no focusable part and intercepts no key. It is never a Tab stop.
 
 ## Announcements
 
-| Event                                             | Message                            | Politeness | Test                                                                        |
+| Event                                             | Message key (i18n)                 | Politeness | Test                                                                        |
 | ------------------------------------------------- | ---------------------------------- | ---------- | --------------------------------------------------------------------------- |
 | Shown after the delay (unless `announce={false}`) | the `label`, or `progress.loading` | polite     | `announcements › announces the label once, politely, after the delay`       |
 | Becomes slow (10 s)                               | `progress.slow`                    | polite     | `slow › adds the slow sentence after ten seconds and announces it once`     |

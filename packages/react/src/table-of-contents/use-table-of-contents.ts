@@ -17,8 +17,9 @@ export interface UseTableOfContentsOptions {
    */
   items: readonly TableOfContentsEntry[]
   /**
-   * The line a heading has to reach to become the current one, in px from the top of the
-   * viewport. Default `0`. With a sticky header, give its height here **and** as the headings'
+   * The top of the area a heading is read in, in px from the top of the viewport: the current
+   * heading is the last one in the top 20% of the space below it, or the first one visible before
+   * that. Default `0`. With a sticky header, give its height here **and** as the headings'
    * `scroll-padding-top` on `html` (technique C43): a link then lands the heading on the line. If they differ, a heading you
    * jump to lands below the line, and the one above it stays current.
    */
@@ -75,8 +76,8 @@ export interface UseTableOfContentsResult {
   /** The entries nested by their levels. Draw one `<ul>` per list of nodes and one `<li>` per node. */
   tree: TableOfContentsNode[]
   /**
-   * The id of the heading being read: the last one that has reached the line. `undefined` before
-   * the first heading, on the server and during hydration, and where there is no
+   * The id of the heading being read: the last one above the line, or the first one visible
+   * before that. `undefined` while none is visible, on the server and during hydration, and where there is no
    * `IntersectionObserver`.
    */
   activeId: string | undefined
@@ -119,7 +120,7 @@ export function getTableOfContentsLinkProps(
  * - **A plain hash link:** `getLinkProps(item)` gives `href="#id"`, so the browser scrolls (with the
  *   page's own `scroll-padding-top` and its reduced-motion setting) and sets its focus starting point.
  *   Nothing moves focus, nothing is announced, and nothing scrolls by itself.
- * - **The current heading** is the last one that has reached `offset` px from the top. It is only
+ * - **The current heading** is the last one above the line (the top 20% of the viewport below `offset`), or the first one visible before that. It is only
  *   found in the browser: on the server, during hydration and where there is no
  *   `IntersectionObserver`, the list renders and nothing is current.
  * - **A heading that is missing** from the page warns in development and is skipped. One that is
@@ -181,7 +182,14 @@ export function useTableOfContents({
         canScroll &&
         scrollingElement.scrollTop + scrollingElement.clientHeight >=
           scrollingElement.scrollHeight - 1
-      setActiveId(getActiveHeading({ headings: positions, offset: line, isAtEnd }))
+      setActiveId(
+        getActiveHeading({
+          headings: positions,
+          offset: line,
+          isAtEnd,
+          viewportHeight: hostDocument.documentElement.clientHeight,
+        }),
+      )
     }
 
     // One frame at most between a wake-up and the measuring, however often they come.
@@ -214,12 +222,14 @@ export function useTableOfContents({
       }
     }
     hostWindow.addEventListener('scroll', wake, { passive: true })
+    hostWindow.addEventListener('resize', wake, { passive: true })
     // The page may already be scrolled: an initial #hash has been followed by the browser.
     recompute()
 
     return () => {
       observer.disconnect()
       hostWindow.removeEventListener('scroll', wake)
+      hostWindow.removeEventListener('resize', wake)
       if (frame !== undefined) {
         hostWindow.cancelAnimationFrame(frame)
       }

@@ -1,4 +1,9 @@
-import { colorSchemeAttribute, contrastAttribute, themeStorageKey } from '@kvirn-ui/core'
+import {
+  colorSchemeAttribute,
+  contrastAttribute,
+  motionAttribute,
+  themeStorageKey,
+} from '@kvirn-ui/core'
 import type { Env } from '@kvirn-ui/core'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { sv } from '@kvirn-ui/i18n/sv'
@@ -13,7 +18,7 @@ import type { KvirnProviderProps } from './kvirn-provider.tsx'
 import { ThemeSwitcherFixture } from './kvirn-provider.fixture.tsx'
 
 interface MediaFeature {
-  name: 'prefers-color-scheme' | 'prefers-contrast' | 'forced-colors'
+  name: 'prefers-color-scheme' | 'prefers-contrast' | 'prefers-reduced-motion' | 'forced-colors'
   value: string
 }
 
@@ -40,6 +45,7 @@ const readStorage = () => localStorage.getItem(themeStorageKey)
 const readAttributes = (env: Env) => ({
   colorScheme: env.document.documentElement.getAttribute(colorSchemeAttribute),
   contrast: env.document.documentElement.getAttribute(contrastAttribute),
+  motion: env.document.documentElement.getAttribute(motionAttribute),
 })
 
 let consoleWarn: MockInstance<Console['warn']>
@@ -51,6 +57,7 @@ beforeEach(async () => {
   await emulateSystem([
     { name: 'prefers-color-scheme', value: 'light' },
     { name: 'prefers-contrast', value: 'no-preference' },
+    { name: 'prefers-reduced-motion', value: 'no-preference' },
   ])
 })
 
@@ -70,8 +77,10 @@ describe('theme preference', () => {
     const { container } = await renderSwitcher(env)
 
     await expect.element(radio('Följ systemet').first()).toBeChecked()
-    await expect.element(page.getByText('Används nu: Mörkt, Hög kontrast')).toBeVisible()
-    expect(readAttributes(env)).toEqual({ colorScheme: 'dark', contrast: 'more' })
+    await expect
+      .element(page.getByText('Används nu: Mörkt, Hög kontrast, Full rörelse'))
+      .toBeVisible()
+    expect(readAttributes(env)).toEqual({ colorScheme: 'dark', contrast: 'more', motion: 'full' })
     expect(readStorage()).toBeNull()
     await expectNoA11yViolations(container)
   })
@@ -79,14 +88,18 @@ describe('theme preference', () => {
   test('OS changes update the resolved values while the preference is system', async () => {
     const env = createEnv()
     await renderSwitcher(env)
-    await expect.element(page.getByText('Används nu: Ljust, Normal kontrast')).toBeVisible()
+    await expect
+      .element(page.getByText('Används nu: Ljust, Normal kontrast, Full rörelse'))
+      .toBeVisible()
 
     await emulateSystem([
       { name: 'prefers-color-scheme', value: 'dark' },
       { name: 'prefers-contrast', value: 'more' },
     ])
-    await expect.element(page.getByText('Används nu: Mörkt, Hög kontrast')).toBeVisible()
-    expect(readAttributes(env)).toEqual({ colorScheme: 'dark', contrast: 'more' })
+    await expect
+      .element(page.getByText('Används nu: Mörkt, Hög kontrast, Full rörelse'))
+      .toBeVisible()
+    expect(readAttributes(env)).toEqual({ colorScheme: 'dark', contrast: 'more', motion: 'full' })
     expect(readStorage()).toBeNull()
   })
 
@@ -96,7 +109,9 @@ describe('theme preference', () => {
     await radio('Ljust').click()
     await emulateSystem([{ name: 'prefers-color-scheme', value: 'dark' }])
     await expect.element(radio('Ljust')).toBeChecked()
-    await expect.element(page.getByText('Används nu: Ljust, Normal kontrast')).toBeVisible()
+    await expect
+      .element(page.getByText('Används nu: Ljust, Normal kontrast, Full rörelse'))
+      .toBeVisible()
     expect(readAttributes(env).colorScheme).toBe('light')
   })
 
@@ -105,9 +120,11 @@ describe('theme preference', () => {
     const screen = await renderSwitcher(env)
     await radio('Mörkt').click()
     await radio('Hög kontrast').click()
-    await expect.element(page.getByText('Används nu: Mörkt, Hög kontrast')).toBeVisible()
+    await expect
+      .element(page.getByText('Används nu: Mörkt, Hög kontrast, Full rörelse'))
+      .toBeVisible()
     expect(JSON.parse(readStorage() ?? 'null')).toEqual({ colorScheme: 'dark', contrast: 'more' })
-    expect(readAttributes(env)).toEqual({ colorScheme: 'dark', contrast: 'more' })
+    expect(readAttributes(env)).toEqual({ colorScheme: 'dark', contrast: 'more', motion: 'full' })
     await screen.unmount()
 
     await renderSwitcher(createEnv())
@@ -115,15 +132,31 @@ describe('theme preference', () => {
     await expect.element(radio('Hög kontrast')).toBeChecked()
   })
 
-  test('selecting system on both axes clears storage', async () => {
+  test('less motion: follows the OS, then the user, and writes data-kv-motion', async () => {
+    const env = createEnv()
+    await renderSwitcher(env)
+    expect(readAttributes(env).motion).toBe('full')
+    await emulateSystem([{ name: 'prefers-reduced-motion', value: 'reduce' }])
+    await expect.element(radio('Följ systemet').last()).toBeChecked()
+    await expect.poll(() => readAttributes(env).motion).toBe('reduce')
+
+    await radio('Full rörelse').click()
+    expect(readAttributes(env).motion).toBe('full')
+    expect(JSON.parse(readStorage() ?? 'null')).toEqual({ motion: 'full' })
+    await radio('Mindre rörelse').click()
+    expect(readAttributes(env).motion).toBe('reduce')
+    expect(JSON.parse(readStorage() ?? 'null')).toEqual({ motion: 'reduce' })
+  })
+
+  test('selecting system on every axis clears storage', async () => {
     localStorage.setItem(themeStorageKey, JSON.stringify({ colorScheme: 'dark', contrast: 'more' }))
     await renderSwitcher(createEnv())
     await expect.element(radio('Mörkt')).toBeChecked()
 
     await radio('Följ systemet').first().click()
     expect(JSON.parse(readStorage() ?? 'null')).toEqual({ contrast: 'more' })
-    await radio('Följ systemet').last().click()
-    await expect.element(radio('Följ systemet').last()).toBeChecked()
+    await radio('Följ systemet').nth(1).click()
+    await expect.element(radio('Följ systemet').nth(1)).toBeChecked()
     expect(readStorage()).toBeNull()
   })
 
@@ -137,7 +170,9 @@ describe('theme preference', () => {
     await userEvent.keyboard('{ArrowUp}')
     await expect.element(radio('Mörkt')).toBeChecked()
     await expect.element(radio('Mörkt')).toHaveFocus()
-    await expect.element(page.getByText('Används nu: Mörkt, Normal kontrast')).toBeVisible()
+    await expect
+      .element(page.getByText('Används nu: Mörkt, Normal kontrast, Full rörelse'))
+      .toBeVisible()
 
     await userEvent.keyboard('{ArrowDown}')
     await expect.element(radio('Följ systemet').first()).toBeChecked()
@@ -188,7 +223,9 @@ describe('theme preference', () => {
 
   test('reports forced colors, so a switcher can say the system colours are in use', async () => {
     await renderSwitcher(createEnv())
-    await expect.element(page.getByText('Används nu: Ljust, Normal kontrast')).toBeVisible()
+    await expect
+      .element(page.getByText('Används nu: Ljust, Normal kontrast, Full rörelse'))
+      .toBeVisible()
     await emulateSystem([{ name: 'forced-colors', value: 'active' }])
     await expect
       .element(page.getByText('Systemets tvingade färger används och går före ditt val.'))
@@ -223,7 +260,11 @@ describe('theme preference', () => {
     ) as KvirnProviderProps['theme']
     await renderSwitcher(env, { theme: hostileTheme })
     await expect.element(radio('Följ systemet').first()).toBeChecked()
-    expect(readAttributes(env)).toEqual({ colorScheme: 'light', contrast: 'standard' })
+    expect(readAttributes(env)).toEqual({
+      colorScheme: 'light',
+      contrast: 'standard',
+      motion: 'full',
+    })
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('defaultColorScheme, storage')
   })
@@ -242,8 +283,11 @@ describe('theme switcher keyboard', () => {
     await renderSwitcher(createEnv())
     await userEvent.tab()
     await userEvent.tab()
+    await expect.element(radio('Följ systemet').nth(1)).toHaveFocus()
+    await userEvent.tab()
     await expect.element(radio('Följ systemet').last()).toHaveFocus()
 
+    await userEvent.tab({ shift: true })
     await userEvent.tab({ shift: true })
     await expect.element(radio('Följ systemet').first()).toHaveFocus()
   })

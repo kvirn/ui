@@ -369,36 +369,6 @@ describe('rendering', () => {
     expect(triggerElement().getAttribute('tabindex')).toBe('-1')
   })
 
-  test('render replaces the element and gives the state', async () => {
-    const optionStates: boolean[] = []
-    await render(
-      <Field.Root required>
-        <Field.Label>Kommun</Field.Label>
-        <Listbox.Root native="never" items={['Göteborg', 'Malmö']} defaultOpen>
-          <Listbox.Trigger render={(partProps) => <section {...partProps} data-egen="render" />} />
-          <Listbox.Popup>
-            <Listbox.List>
-              {(item: string) => (
-                <Listbox.Option
-                  item={item}
-                  render={(partProps, state) => {
-                    optionStates.push(state.isSelected)
-                    return <p {...partProps}>{state.label}</p>
-                  }}
-                />
-              )}
-            </Listbox.List>
-          </Listbox.Popup>
-        </Listbox.Root>
-      </Field.Root>,
-    )
-    await expect.poll(isShown).toBe(true)
-    expect(triggerElement().tagName).toBe('SECTION')
-    expect(triggerElement().getAttribute('data-egen')).toBe('render')
-    expect(option('Malmö').element().tagName).toBe('P')
-    expect(optionStates).toContain(false)
-  })
-
   test('a rich option: your own children replace the text, which stays the option’s label', async () => {
     await render(
       <Field.Root required>

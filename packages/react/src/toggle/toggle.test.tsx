@@ -1,6 +1,6 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, useState } from 'react'
-import type { ComponentPropsWithRef, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -10,7 +10,7 @@ import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { Toggle } from './toggle.tsx'
-import type { ToggleProps, ToggleState } from './toggle.tsx'
+import type { ToggleProps } from './toggle.tsx'
 import { useToggle } from './use-toggle.ts'
 import type { TogglePartProps, UseToggleOptions, UseToggleResult } from './use-toggle.ts'
 
@@ -28,15 +28,6 @@ beforeEach(() => {
 afterEach(() => {
   consoleWarn.mockRestore()
 })
-
-/** A consumer's own styled button, as in `render={<StyledButton />}`. */
-function StyledButton({ children, ...buttonProps }: ComponentPropsWithRef<'button'>) {
-  return (
-    <button type="button" {...buttonProps} name="egen">
-      {children}
-    </button>
-  )
-}
 
 describe('rendering', () => {
   test('is a native button with aria-pressed, off by default, and the part classes', async () => {
@@ -243,26 +234,11 @@ describe('focus visible', () => {
   })
 })
 
-describe('render prop', () => {
-  test('an element keeps its own props and gets the toggle behaviour', async () => {
-    const onPressedChange = vi.fn<PressedChange>()
+describe('handlers on a focusable disabled toggle', () => {
+  test('onClick is blocked while a focusable toggle is disabled', async () => {
+    const onClick = vi.fn<() => void>()
     await render(
-      <Toggle onPressedChange={onPressedChange} render={<StyledButton />}>
-        Visa bara olästa
-      </Toggle>,
-    )
-    const toggle = page.getByRole('button', { name: 'Visa bara olästa' })
-    await expect.element(toggle).toHaveAttribute('name', 'egen')
-    await userEvent.click(toggle)
-    expect(onPressedChange).toHaveBeenCalledTimes(1)
-    await expect.element(toggle).toHaveAttribute('aria-pressed', 'true')
-    expect(consoleWarn).not.toHaveBeenCalled()
-  })
-
-  test('the element’s own onClick is blocked while a focusable toggle is disabled', async () => {
-    const onElementClick = vi.fn<() => void>()
-    await render(
-      <Toggle disabled focusableWhenDisabled render={<StyledButton onClick={onElementClick} />}>
+      <Toggle disabled focusableWhenDisabled onClick={onClick}>
         Visa bara olästa
       </Toggle>,
     )
@@ -270,41 +246,7 @@ describe('render prop', () => {
     await userEvent.click(toggle, { force: true })
     await userEvent.keyboard('{Tab}')
     await userEvent.keyboard('{Enter}')
-    expect(onElementClick).not.toHaveBeenCalled()
-  })
-
-  test('a function receives the part props and the state', async () => {
-    const seenStates: ToggleState[] = []
-    await render(
-      <Toggle
-        defaultPressed
-        render={(toggleProps, state) => {
-          seenStates.push(state)
-          return (
-            <button {...toggleProps} data-egen="">
-              {toggleProps.children}
-            </button>
-          )
-        }}
-      >
-        Visa bara olästa
-      </Toggle>,
-    )
-    const toggle = page.getByRole('button', { name: 'Visa bara olästa' })
-    await expect.element(toggle).toHaveAttribute('aria-pressed', 'true')
-    await expect.element(toggle).toHaveAttribute('data-egen', '')
-    expect(seenStates.at(-1)).toEqual({
-      isPressed: true,
-      isDisabled: false,
-      isFocusVisible: false,
-    })
-  })
-
-  test('warns in development when render resolves to something other than a <button>', async () => {
-    await render(<Toggle render={<span />}>Visa bara olästa</Toggle>)
-    await expect.element(page.getByText('Visa bara olästa')).toBeVisible()
-    expect(consoleWarn).toHaveBeenCalledTimes(1)
-    expect(consoleWarn.mock.calls[0]?.[0]).toContain('<span>')
+    expect(onClick).not.toHaveBeenCalled()
   })
 })
 
@@ -402,10 +344,5 @@ describe('types', () => {
     expectTypeOf<ToggleProps>().not.toHaveProperty('aria-pressed')
     expectTypeOf<ToggleProps>().not.toHaveProperty('aria-disabled')
     expectTypeOf<ToggleProps>().not.toHaveProperty('type')
-    expectTypeOf<ToggleState>().toEqualTypeOf<{
-      isPressed: boolean
-      isDisabled: boolean
-      isFocusVisible: boolean
-    }>()
   })
 })

@@ -66,20 +66,26 @@ afterEach(() => {
 })
 
 describe('without a provider', () => {
-  test('uses en, ltr, the runtime time zone and the en messages', async () => {
+  test('uses en, ltr, UTC and the en messages', async () => {
     const { container } = await render(<ProviderFixture />)
     expect(await readSettings('Settings')).toEqual({
       locale: 'en',
       direction: 'ltr',
-      timeZone: 'Device time zone',
-      date: new Intl.DateTimeFormat('en', { dateStyle: 'long', timeStyle: 'short' }).format(
-        fixtureDate,
-      ),
+      timeZone: 'UTC',
+      date:
+        new Intl.DateTimeFormat('en', {
+          dateStyle: 'long',
+          timeStyle: 'short',
+          timeZone: 'UTC',
+        }).format(fixtureDate) + ' UTC',
       newTabNotice: '(opens in a new tab)',
       lang: 'en',
       dir: 'ltr',
     })
-    expect(consoleWarn).not.toHaveBeenCalled()
+    // The fixture formats an instant, and there is no provider to give it a zone.
+    expect(consoleWarn).toHaveBeenCalledTimes(1)
+    expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('no `timeZone` is set')
+
     await expectNoA11yViolations(container)
   })
 

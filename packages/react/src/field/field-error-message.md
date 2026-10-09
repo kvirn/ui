@@ -11,9 +11,7 @@ The error under a control: what is wrong and how to fix it, in text. It renders 
 
 ## API
 
-| Prop     | Type                             | Meaning                                                                          |
-| -------- | -------------------------------- | -------------------------------------------------------------------------------- |
-| `render` | `(props, state) => ReactElement` | Another element. `state` is the host's (`isInvalid`, `isRequired`, `isDisabled`) |
+It takes every `<p>` prop except `id`, and `ref`. To build your own element, use `useField()` and spread `errorMessageProps`.
 
 - **Renders** `<p class="kv-field-error-message" data-invalid>` with an `id` (`<controlId>-error`), the `error` icon, `<span class="kv-field-error-prefix">` and your text.
 - **Message:** the prefix is `field.errorPrefix`, overridden per provider or per host with `messages`.

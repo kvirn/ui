@@ -1,13 +1,15 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef } from 'react'
 import { renderToString } from 'react-dom/server'
-import { describe, expect, expectTypeOf, test } from 'vite-plus/test'
+import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
+import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
+import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Button } from '../button/button.tsx'
 import { Link } from '../link/link.tsx'
 import { Container } from './container.tsx'
-import type { ContainerElementProps, ContainerProps, ContainerState } from './container.tsx'
+import type { ContainerProps } from './container.tsx'
 import { useContainer } from './use-container.ts'
 import type {
   UseContainerOptions,
@@ -16,6 +18,19 @@ import type {
 } from './use-container.ts'
 
 // Contract: container.a11y.md.
+
+let consoleWarn: MockInstance<Console['warn']>
+
+beforeEach(() => {
+  resetDevWarnings()
+  consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+})
+
+afterEach(() => {
+  consoleWarn.mockRestore()
+})
+
+const warnings = () => consoleWarn.mock.calls.map(([message]) => String(message))
 
 const choices = [
   [{}, 'kv-container'],
@@ -78,23 +93,6 @@ describe('rendering', () => {
     await expect.element(page.getByTestId('layout')).toHaveClass('kv-container', 'annat')
   })
 
-  test('keeps its own class when a render element sets another one', async () => {
-    await render(
-      <Container
-        className="fran-prop"
-        render={<section className="annat" data-testid="layout" />}
-      />,
-    )
-    await expect
-      .element(page.getByTestId('layout'))
-      .toHaveClass('kv-container', 'fran-prop', 'annat')
-  })
-
-  test('keeps its own class when a render element’s className is empty', async () => {
-    await render(<Container render={<section className="" data-testid="layout" />} />)
-    expect(page.getByTestId('layout').element().className).toBe('kv-container')
-  })
-
   test('is server safe: renderToString gives the element with its class and children', () => {
     const html = renderToString(
       <Container id="server">
@@ -105,11 +103,11 @@ describe('rendering', () => {
   })
 })
 
-describe('render and ref', () => {
+describe('as and ref', () => {
   test('an element changes the element and keeps the children', async () => {
     const { container } = await render(
       <main>
-        <Container render={<section aria-label="Tjänster" />}>
+        <Container as="section" aria-label="Tjänster">
           <h1>Kvirnby kommun</h1>
         </Container>
       </main>,
@@ -120,23 +118,25 @@ describe('render and ref', () => {
       .toBeVisible()
     await expectNoA11yViolations(container)
   })
-  test('a function receives the part props with the class and the ref, and an empty state', async () => {
-    const seenStates: ContainerState[] = []
-    const ref = createRef<HTMLElement>()
+  test('main, article and a div render their element and keep the class', async () => {
     await render(
-      <Container
-        ref={ref}
-        render={(layoutProps, state) => {
-          seenStates.push(state)
-          return <aside {...layoutProps} data-testid="layout" />
-        }}
-      />,
+      <>
+        <Container as="main" data-testid="first" />
+        <Container as="article" data-testid="second" />
+        <Container as="div" data-testid="third" />
+      </>,
     )
-    const layout = page.getByTestId('layout')
-    await expect.element(layout).toHaveClass('kv-container')
-    expect(ref.current).toBe(layout.element())
-    expect(ref.current?.tagName).toBe('ASIDE')
-    expect(seenStates.at(-1)).toEqual({})
+    expect(page.getByTestId('first').element().tagName).toBe('MAIN')
+    expect(page.getByTestId('second').element().tagName).toBe('ARTICLE')
+    expect(page.getByTestId('third').element().tagName).toBe('DIV')
+    await expect.element(page.getByTestId('first')).toHaveClass('kv-container')
+  })
+
+  test('an element outside the allowed list warns once and renders a div', async () => {
+    const notAllowed = 'nav' as 'div'
+    await render(<Container as={notAllowed} data-testid="layout" />)
+    expect(page.getByTestId('layout').element().tagName).toBe('DIV')
+    expect(warnings().filter((message) => message.includes('Container as="nav"'))).toHaveLength(1)
   })
 
   test('forwards its ref to the element', async () => {
@@ -145,15 +145,12 @@ describe('render and ref', () => {
     expect(ref.current).toBe(page.getByTestId('layout').element())
   })
 
-  test('both refs get the element when a render element has its own', async () => {
-    const partRef = createRef<HTMLElement>()
-    const elementRef = createRef<HTMLElement>()
-    await render(
-      <Container ref={partRef} render={<section ref={elementRef} data-testid="layout" />} />,
-    )
-    const layout = page.getByTestId('layout').element()
-    expect(partRef.current).toBe(layout)
-    expect(elementRef.current).toBe(layout)
+  test('the ref and className still apply to the chosen element', async () => {
+    const ref = createRef<HTMLElement>()
+    await render(<Container as="section" ref={ref} className="annat" data-testid="layout" />)
+    const layout = page.getByTestId('layout')
+    expect(ref.current).toBe(layout.element())
+    await expect.element(layout).toHaveClass('kv-container', 'annat')
   })
 })
 
@@ -215,7 +212,7 @@ describe('useContainer', () => {
 describe('types', () => {
   test('the exported option, props and result types fit together', () => {
     expectTypeOf<ContainerProps>().toExtend<UseContainerOptions>()
-    expectTypeOf<ContainerElementProps['className']>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<ContainerProps>().toHaveProperty('as')
     expectTypeOf<ReturnType<typeof useContainer>>().toEqualTypeOf<UseContainerResult>()
     expectTypeOf<UseContainerResult['containerProps']>().toEqualTypeOf<ContainerPartProps>()
   })

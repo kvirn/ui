@@ -10,7 +10,7 @@ Put it directly after the page heading, as its own element. Never inside the `h1
 import { Heading, Stack, Stepper } from '@kvirn-ui/react'
 
 ;<Stack gap="2">
-  <Heading level={1}>Vilket fordon gäller ansökan?</Heading>
+  <Heading as="h1">Vilket fordon gäller ansökan?</Heading>
   <Stepper current={2} total={5} name="Fordonet" />
 </Stack>
 ```
@@ -26,13 +26,13 @@ import { Heading, Stack, Stepper } from '@kvirn-ui/react'
 
 ## API
 
-| Prop       | Type                | Meaning                                                                        |
-| ---------- | ------------------- | ------------------------------------------------------------------------------ |
-| `current`  | `number`            | The step: a positive whole number, at most `total`                             |
-| `total`    | `number`            | How many steps: a positive whole number                                        |
-| `name`     | `string`            | The section's name, added after the position                                   |
-| `messages` | `Partial<stepper>`  | Per-instance `status` and `statusWithName`                                     |
-| `render`   | element or function | Change the element. The function gets the props and `{ current, total, text }` |
+| Prop       | Type               | Meaning                                            |
+| ---------- | ------------------ | -------------------------------------------------- |
+| `current`  | `number`           | The step: a positive whole number, at most `total` |
+| `total`    | `number`           | How many steps: a positive whole number            |
+| `name`     | `string`           | The section's name, added after the position       |
+| `messages` | `Partial<stepper>` | Per-instance `status` and `statusWithName`         |
+| `as`       | `'p'` \| `'div'`   | Change the element. `'p'` by default               |
 
 No `children`: the text is the message (`stepper.status`, `stepper.statusWithName`, per provider and per instance). `useStepper({ current, total, name, messages })` returns `text`, `element` (`'p'`) and `rootProps` (`kv-stepper` and a ref) for your own markup. Use `text` in `<title>` if you like.
 

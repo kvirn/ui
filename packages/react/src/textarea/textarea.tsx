@@ -1,7 +1,16 @@
 'use client'
 import { getCharacterCount } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from 'react'
+import {
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { CharacterCount } from '../character-count/character-count.tsx'
 import { warnOnce } from '../dev/dev-warning.ts'
@@ -10,22 +19,10 @@ import { joinIds } from '../field/field-state.ts'
 import { useControlWarnings } from '../field/use-control-warnings.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useTextarea } from './use-textarea.ts'
 import type { TextareaChangeDetails } from './use-textarea.ts'
 
 export type { TextareaChangeDetails } from './use-textarea.ts'
-
-/** What `render` receives as its second argument. */
-export interface TextareaState {
-  isInvalid: boolean
-  isRequired: boolean
-  isDisabled: boolean
-  isFocusVisible: boolean
-  /** With `characterCount`: the text is longer than the limit. */
-  isOverLimit: boolean
-}
 
 export interface TextareaProps extends Omit<
   ComponentPropsWithRef<'textarea'>,
@@ -52,7 +49,6 @@ export interface TextareaProps extends Omit<
   countCharacters?: ((value: string) => number) | undefined
   /** With `characterCount`: per-instance overrides for the count's texts. */
   messages?: Partial<KvirnMessages['characterCount']> | undefined
-  render?: RenderProp<ComponentPropsWithRef<'textarea'>, TextareaState> | undefined
 }
 
 /**
@@ -81,7 +77,6 @@ export function Textarea({
   defaultValue,
   id,
   'aria-describedby': ownDescribedBy,
-  render,
   ref,
   ...otherProps
 }: TextareaProps): ReactElement {
@@ -175,26 +170,15 @@ export function Textarea({
     hasCount && isOutsideField ? countId : undefined,
   )
 
-  const element = renderPart({
-    render,
-    defaultElement: 'textarea',
-    partProps: {
-      ...mergeProps(otherProps, ownId, textarea.textareaProps),
-      // With a count, maxLength is the count's limit: the native attribute would cut a paste.
-      ...(maxLength !== undefined && !characterCount ? { maxLength } : {}),
-      ...(isControlled ? { value } : {}),
-      ...(defaultValue !== undefined && !isControlled ? { defaultValue } : {}),
-      ...(isOverLimit ? { 'data-over': '' } : {}),
-      'aria-describedby': describedBy,
-      ref: mergedRef,
-    },
-    state: {
-      isInvalid: textarea.isInvalid,
-      isRequired: textarea.isRequired,
-      isDisabled: textarea.isDisabled,
-      isFocusVisible: textarea.isFocusVisible,
-      isOverLimit,
-    },
+  const element = createElement('textarea', {
+    ...mergeProps(otherProps, ownId, textarea.textareaProps),
+    // With a count, maxLength is the count's limit: the native attribute would cut a paste.
+    ...(maxLength !== undefined && !characterCount ? { maxLength } : {}),
+    ...(isControlled ? { value } : {}),
+    ...(defaultValue !== undefined && !isControlled ? { defaultValue } : {}),
+    ...(isOverLimit ? { 'data-over': '' } : {}),
+    'aria-describedby': describedBy,
+    ref: mergedRef,
   })
   if (limit === undefined) {
     return element

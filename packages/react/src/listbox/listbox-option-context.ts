@@ -9,7 +9,7 @@ import { createContext } from 'react'
 /** The parts of an option that register themselves with it. `OptionIcon` needs nothing from it. */
 export type ListboxOptionPartKind = 'text' | 'description' | 'indicator'
 
-/** What `render` receives as its second argument, for the option's parts. */
+/** What the option's parts read from their option. */
 export interface ListboxOptionPartState {
   isActive: boolean
   isSelected: boolean

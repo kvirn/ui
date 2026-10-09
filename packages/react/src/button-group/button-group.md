@@ -16,9 +16,9 @@ A row of related [Button](../button/button.md)s: the footer of a [Card](../card/
 
 ### Parts
 
-| Part        | Renders                     | Props                                                                                          |
-| ----------- | --------------------------- | ---------------------------------------------------------------------------------------------- |
-| ButtonGroup | `<div>` (flat, one element) | `layout` (`'spaced'` default, or `'attached'`), `render`, and every `<div>` prop except `role` |
+| Part        | Renders                     | Props                                                                                |
+| ----------- | --------------------------- | ------------------------------------------------------------------------------------ |
+| ButtonGroup | `<div>` (flat, one element) | `layout` (`'spaced'` default, or `'attached'`), and every `<div>` prop except `role` |
 
 ### What it sets on the `<div>`
 
@@ -31,9 +31,9 @@ A row of related [Button](../button/button.md)s: the footer of a [Card](../card/
 
 ButtonGroup has no strings of its own: the name is yours.
 
-### `render`
+### Your own element
 
-`render` takes an element or a function `(groupProps, state)`, where `state` is `{ isNamed, layout }`. Spread the props in the function form: they hold the class and, with a name, the role.
+The ButtonGroup renders one `<div>`. To build your own, use `useButtonGroup()` and spread `groupProps`: they hold the class and, with a name, the role.
 
 ### Development warnings
 

@@ -11,7 +11,6 @@ import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
-import { Alert } from '../alert/alert.tsx'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
 import { Fieldset } from '../fieldset/fieldset.tsx'
@@ -131,9 +130,7 @@ describe('rendering', () => {
   test('the title takes a heading level and your own text', async () => {
     await render(
       <ErrorSummary.Root>
-        <ErrorSummary.Title render={(titleProps) => <h3 {...titleProps}>{titleProps.children}</h3>}>
-          Rätta det här
-        </ErrorSummary.Title>
+        <ErrorSummary.Title as="h3">Rätta det här</ErrorSummary.Title>
         <ErrorSummary.List />
       </ErrorSummary.Root>,
     )
@@ -399,19 +396,34 @@ describe('announcements', () => {
     ).toBe(true)
   })
 
-  test('announce on the Alert root as well is warned about, as with any focusable Alert', async () => {
+  test('an element outside the Title’s allowed list warns once and renders an h2', async () => {
+    const notAllowed = 'p' as 'h2'
     await render(
-      <KvirnProvider>
-        <ErrorSummary.Root
-          render={(rootProps) => (
-            <Alert.Danger {...rootProps} announce="polite">
-              <ErrorSummary.Title />
-            </Alert.Danger>
-          )}
-        />
-      </KvirnProvider>,
+      <ErrorSummary.Root>
+        <ErrorSummary.Title as={notAllowed}>Rätta det här</ErrorSummary.Title>
+        <ErrorSummary.List />
+      </ErrorSummary.Root>,
     )
-    expect(warnings().some((message) => message.includes('tabindex and announce'))).toBe(true)
+    await expect.element(page.getByRole('heading', { level: 2 })).toBeVisible()
+    expect(
+      warnings().filter((message) => message.includes('ErrorSummary.Title as="p"')),
+    ).toHaveLength(1)
+  })
+
+  test('the List takes ol, and an element outside its list warns once and renders a ul', async () => {
+    const notAllowed = 'div' as 'ul'
+    await render(
+      <ErrorSummary.Root>
+        <ErrorSummary.Title />
+        <ErrorSummary.List as="ol" data-testid="ordered" />
+        <ErrorSummary.List as={notAllowed} data-testid="fallback" />
+      </ErrorSummary.Root>,
+    )
+    expect(page.getByTestId('ordered').element().tagName).toBe('OL')
+    expect(page.getByTestId('fallback').element().tagName).toBe('UL')
+    expect(
+      warnings().filter((message) => message.includes('ErrorSummary.List as="div"')),
+    ).toHaveLength(1)
   })
 })
 

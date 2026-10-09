@@ -1,9 +1,7 @@
 'use client'
-import type {
-  FileUploadEntry as FileUploadItemData,
-  FileUploadStatus as FileUploadItemStatus,
-} from '@kvirn-ui/core'
+import type { FileUploadEntry as FileUploadItemData } from '@kvirn-ui/core'
 import {
+  createElement,
   Fragment,
   useCallback,
   useContext,
@@ -16,7 +14,6 @@ import {
 import type { ComponentPropsWithRef, MouseEventHandler, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldContext } from '../field/field-context.ts'
-import type { FieldState } from '../field/field-state.ts'
 import { useDescriptionPart } from '../field/use-description-part.ts'
 import { joinIds } from '../field/field-state.ts'
 import { useFocusVisible } from '../focus-visible/use-focus-visible.ts'
@@ -25,8 +22,6 @@ import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { useEnv } from '../provider/use-env.ts'
 import { useMessages } from '../provider/use-messages.ts'
-import { renderPart, takeRenderElementProps } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { FileUploadContext, FileUploadItemContext } from './file-upload-context.ts'
 import type { FileUploadItemContextValue, FileUploadItemPartName } from './file-upload-context.ts'
 import { isImageFile } from './file-upload-format.ts'
@@ -36,51 +31,23 @@ import type { UseFileUploadOptions, UseFileUploadResult } from './use-file-uploa
 /** A file in the list, as `List` and `Item` hand it to you. */
 export type { FileUploadItemData }
 
-/** What `render` receives as its second argument, for every part outside an item. */
-export interface FileUploadState {
-  isMultiple: boolean
-  isDisabled: boolean
-  isInvalid: boolean
-  /** `maxFiles` files are in the list. */
-  isFull: boolean
-  /** A file is dragged over the drop zone. */
-  isDragging: boolean
-  /** A file is dragged over the page. */
-  isDragActive: boolean
-  /** The zone is drawn: a precise pointer is attached, or a file is dragged over the page. */
-  isDroppable: boolean
-}
-
-/** What `render` receives as its second argument, for the parts inside an item. */
-export interface FileUploadItemState {
-  item: FileUploadItemData
-  /** The name the list shows: with "(2)" when two items share a file name. */
-  name: string
-  status: FileUploadItemStatus
-}
-
 export interface FileUploadRootProps
   extends UseFileUploadOptions, Omit<ComponentPropsWithRef<'div'>, 'children'> {
   children?: ReactNode
-  render?: RenderProp<ComponentPropsWithRef<'div'>, FileUploadState> | undefined
 }
 
-export interface FileUploadDropZoneProps extends ComponentPropsWithRef<'div'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, FileUploadState> | undefined
-}
+export type FileUploadDropZoneProps = ComponentPropsWithRef<'div'>
 
-export interface FileUploadTriggerProps extends Omit<
+export type FileUploadTriggerProps = Omit<
   ComponentPropsWithRef<'button'>,
   'id' | 'type' | 'disabled' | 'aria-disabled' | 'aria-required' | 'aria-labelledby'
-> {
-  render?: RenderProp<ComponentPropsWithRef<'button'>, FileUploadState> | undefined
-}
+>
 
 /**
  * `name`, `capture` and `form` pass through. `accept`, `multiple`, `type` and `id` come from the
  * Root and the Field, and `required` is never set: the Field's error carries "required".
  */
-export interface FileUploadInputProps extends Omit<
+export type FileUploadInputProps = Omit<
   ComponentPropsWithRef<'input'>,
   | 'type'
   | 'accept'
@@ -92,28 +59,16 @@ export interface FileUploadInputProps extends Omit<
   | 'disabled'
   | 'tabIndex'
   | 'aria-hidden'
-> {
-  render?: RenderProp<ComponentPropsWithRef<'input'>, FileUploadState> | undefined
-}
+>
 
-export interface FileUploadDropHintProps extends ComponentPropsWithRef<'p'> {
-  render?: RenderProp<ComponentPropsWithRef<'p'>, FileUploadState> | undefined
-}
-
-const noFieldState: FieldState = { isInvalid: false, isRequired: false, isDisabled: false }
+export type FileUploadDropHintProps = ComponentPropsWithRef<'p'>
 
 /** The Limits is a description of the Field: it takes a `<p>`'s props, but not the `id`. */
-export interface FileUploadLimitsProps extends Omit<ComponentPropsWithRef<'p'>, 'id'> {
-  render?: RenderProp<ComponentPropsWithRef<'p'>, FieldState> | undefined
-}
+export type FileUploadLimitsProps = Omit<ComponentPropsWithRef<'p'>, 'id'>
 
-export interface FileUploadRejectionsProps extends ComponentPropsWithRef<'div'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, FileUploadState> | undefined
-}
+export type FileUploadRejectionsProps = ComponentPropsWithRef<'div'>
 
-export interface FileUploadSummaryProps extends ComponentPropsWithRef<'p'> {
-  render?: RenderProp<ComponentPropsWithRef<'p'>, FileUploadState> | undefined
-}
+export type FileUploadSummaryProps = ComponentPropsWithRef<'p'>
 
 export interface FileUploadListProps extends Omit<ComponentPropsWithRef<'ul'>, 'children'> {
   /**
@@ -121,71 +76,36 @@ export interface FileUploadListProps extends Omit<ComponentPropsWithRef<'ul'>, '
    * nodes. The ready-made Item needs the file: `<FileUpload.Item item={item}>`.
    */
   children?: ReactNode | ((item: FileUploadItemData, index: number) => ReactNode)
-  render?: RenderProp<ComponentPropsWithRef<'ul'>, FileUploadState> | undefined
 }
 
 export interface FileUploadItemProps extends ComponentPropsWithRef<'li'> {
   /** The file this item shows, from `FileUpload.List`'s children function. */
   item: FileUploadItemData
-  render?: RenderProp<ComponentPropsWithRef<'li'>, FileUploadItemState> | undefined
 }
 
-export interface FileUploadPreviewProps extends ComponentPropsWithRef<'span'> {
-  render?: RenderProp<ComponentPropsWithRef<'span'>, FileUploadItemState> | undefined
-}
+export type FileUploadPreviewProps = ComponentPropsWithRef<'span'>
 
-export interface FileUploadNameProps extends ComponentPropsWithRef<'bdi'> {
-  render?: RenderProp<ComponentPropsWithRef<'bdi'>, FileUploadItemState> | undefined
-}
+export type FileUploadNameProps = ComponentPropsWithRef<'bdi'>
 
-export interface FileUploadTypeProps extends ComponentPropsWithRef<'span'> {
-  render?: RenderProp<ComponentPropsWithRef<'span'>, FileUploadItemState> | undefined
-}
+export type FileUploadTypeProps = ComponentPropsWithRef<'span'>
 
-export interface FileUploadSizeProps extends ComponentPropsWithRef<'span'> {
-  render?: RenderProp<ComponentPropsWithRef<'span'>, FileUploadItemState> | undefined
-}
+export type FileUploadSizeProps = ComponentPropsWithRef<'span'>
 
-export interface FileUploadStatusProps extends Omit<ComponentPropsWithRef<'p'>, 'id'> {
-  render?: RenderProp<ComponentPropsWithRef<'p'>, FileUploadItemState> | undefined
-}
+export type FileUploadStatusProps = Omit<ComponentPropsWithRef<'p'>, 'id'>
 
-export interface FileUploadItemErrorProps extends Omit<ComponentPropsWithRef<'p'>, 'id'> {
-  render?: RenderProp<ComponentPropsWithRef<'p'>, FileUploadItemState> | undefined
-}
+export type FileUploadItemErrorProps = Omit<ComponentPropsWithRef<'p'>, 'id'>
 
-export interface FileUploadProgressProps extends Omit<
+export type FileUploadProgressProps = Omit<
   ComponentPropsWithRef<'progress'>,
   'value' | 'max' | 'aria-label'
-> {
-  render?: RenderProp<ComponentPropsWithRef<'progress'>, FileUploadItemState> | undefined
-}
+>
 
-export interface FileUploadActionsProps extends ComponentPropsWithRef<'div'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, FileUploadItemState> | undefined
-}
+export type FileUploadActionsProps = ComponentPropsWithRef<'div'>
 
-export interface FileUploadItemButtonProps extends Omit<
-  ComponentPropsWithRef<'button'>,
-  'type' | 'aria-label'
-> {
-  render?: RenderProp<ComponentPropsWithRef<'button'>, FileUploadItemState> | undefined
-}
+export type FileUploadItemButtonProps = Omit<ComponentPropsWithRef<'button'>, 'type' | 'aria-label'>
 export type FileUploadCancelButtonProps = FileUploadItemButtonProps
 export type FileUploadRetryButtonProps = FileUploadItemButtonProps
 export type FileUploadRemoveButtonProps = FileUploadItemButtonProps
-
-function toState(fileUpload: UseFileUploadResult | null): FileUploadState {
-  return {
-    isMultiple: fileUpload?.isMultiple ?? true,
-    isDisabled: fileUpload?.isDisabled ?? false,
-    isInvalid: fileUpload?.isInvalid ?? false,
-    isFull: fileUpload?.isFull ?? false,
-    isDragging: fileUpload?.isDragging ?? false,
-    isDragActive: fileUpload?.isDragActive ?? false,
-    isDroppable: fileUpload?.isDroppable ?? false,
-  }
-}
 
 /** The Root's hook, with the one development warning for a part outside a Root. */
 function useRoot(part: string): UseFileUploadResult | null {
@@ -213,10 +133,6 @@ function useItem(part: string) {
     }
   }, [itemContext, part])
   return itemContext
-}
-
-function toItemState(itemContext: FileUploadItemContextValue): FileUploadItemState {
-  return { item: itemContext.item, name: itemContext.name, status: itemContext.item.status }
 }
 
 /**
@@ -266,7 +182,6 @@ export function FileUploadRoot({
   onFilesChange,
   onFilesReject,
   messages,
-  render,
   ref,
   children,
   ...otherProps
@@ -300,21 +215,17 @@ export function FileUploadRoot({
 
   return (
     <FileUploadContext.Provider value={fileUpload}>
-      {renderPart({
-        render,
-        defaultElement: 'div',
-        partProps: {
+      {createElement(
+        'div',
+        {
           ...mergeProps(otherProps, fileUpload.rootProps),
-          children: (
-            <>
-              {children}
-              {showFallbackInput ? <HiddenInput /> : null}
-            </>
-          ),
           ref: mergedRef,
         },
-        state: toState(fileUpload),
-      })}
+        <>
+          {children}
+          {showFallbackInput ? <HiddenInput /> : null}
+        </>,
+      )}
     </FileUploadContext.Provider>
   )
 }
@@ -322,9 +233,6 @@ FileUploadRoot.displayName = 'FileUpload.Root'
 
 /** For `useSyncExternalStore`: nothing ever changes, only server and client differ. */
 const subscribeNever = () => () => {}
-
-const isClickHandler = (value: unknown): value is MouseEventHandler<HTMLButtonElement> =>
-  typeof value === 'function'
 
 /**
  * The one control that adds files: a native `<button>` that opens the system dialog. It carries the
@@ -337,41 +245,24 @@ const isClickHandler = (value: unknown): value is MouseEventHandler<HTMLButtonEl
 export function FileUploadTrigger({
   onClick,
   'aria-describedby': ownDescribedBy,
-  render,
   ref,
   children,
   ...otherProps
 }: FileUploadTriggerProps): ReactElement {
   const fileUpload = useRoot('Trigger')
-  const { render: renderWithoutClick, takenProps } = takeRenderElementProps(render, ['onClick'])
   const mergedRef = useMergedRef(ref, fileUpload?.triggerProps.ref ?? null)
   const isBlocked = fileUpload?.isFull === true || fileUpload?.isDisabled === true
-  const elementOnClick = takenProps.onClick
 
   const triggerProps = fileUpload?.triggerProps
   const handleClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     // A blocked Trigger runs none of the consumer's handlers: aria-disabled alone blocks nothing.
     if (!isBlocked) {
       onClick?.(event)
-      if (isClickHandler(elementOnClick)) {
-        elementOnClick(event)
-      }
     }
     // The hook's handler blocks a full or disabled Trigger, and opens the dialog otherwise.
     triggerProps?.onClick(event)
   }
   const describedBy = joinIds(triggerProps?.['aria-describedby'], ownDescribedBy)
-
-  // A `render` that writes its own children drops the text span the name points at (2.5.3).
-  const triggerTextId = fileUpload?.triggerTextId
-  useEffect(() => {
-    if (triggerTextId !== undefined && document.getElementById(triggerTextId) === null) {
-      warnOnce(
-        'file-upload-trigger-text-missing',
-        'The FileUpload.Trigger has no element with the id from `triggerTextId`, so its name is only the Field label and doesn’t start with its visible text (WCAG 2.5.3). Keep the children of the Trigger when you use `render`, or wrap your text in <span id={triggerTextId}>.',
-      )
-    }
-  })
 
   const partProps: ComponentPropsWithRef<'button'> = {
     ...mergeProps(otherProps, triggerProps ?? {}),
@@ -391,28 +282,18 @@ export function FileUploadTrigger({
     ref: mergedRef,
   }
 
-  return renderPart({
-    render: renderWithoutClick,
-    defaultElement: 'button',
-    partProps,
-    state: toState(fileUpload),
-  })
+  return createElement('button', partProps)
 }
 FileUploadTrigger.displayName = 'FileUpload.Trigger'
 
 /** Internal. The hidden native `<input type="file">`: out of the accessibility tree, never required. */
-function HiddenInput({ render, ref, ...otherProps }: FileUploadInputProps): ReactElement {
+function HiddenInput({ ref, ...otherProps }: FileUploadInputProps): ReactElement {
   const fileUpload = useContext(FileUploadContext)
   const mergedRef = useMergedRef(ref, fileUpload?.inputProps.ref ?? null)
 
-  return renderPart({
-    render,
-    defaultElement: 'input',
-    partProps: {
-      ...mergeProps(otherProps, fileUpload?.inputProps ?? { type: 'file' }),
-      ref: mergedRef,
-    },
-    state: toState(fileUpload),
+  return createElement('input', {
+    ...mergeProps(otherProps, fileUpload?.inputProps ?? { type: 'file' }),
+    ref: mergedRef,
   })
 }
 
@@ -435,24 +316,15 @@ FileUploadInput.displayName = 'FileUpload.Input'
  * is the Trigger inside it. The handlers are always attached, and the theme draws the box when
  * `data-droppable` is set (a precise pointer, or a file dragged over the page).
  */
-export function FileUploadDropZone({
-  render,
-  ref,
-  ...otherProps
-}: FileUploadDropZoneProps): ReactElement {
+export function FileUploadDropZone({ ref, ...otherProps }: FileUploadDropZoneProps): ReactElement {
   const fileUpload = useRoot('DropZone')
   const mergedRef = useMergedRef(ref, null)
-  return renderPart({
-    render,
-    defaultElement: 'div',
-    partProps: {
-      ...mergeProps(
-        otherProps,
-        fileUpload?.dropZoneProps ?? { className: 'kv-file-upload-drop-zone' },
-      ),
-      ref: mergedRef,
-    },
-    state: toState(fileUpload),
+  return createElement('div', {
+    ...mergeProps(
+      otherProps,
+      fileUpload?.dropZoneProps ?? { className: 'kv-file-upload-drop-zone' },
+    ),
+    ref: mergedRef,
   })
 }
 FileUploadDropZone.displayName = 'FileUpload.DropZone'
@@ -464,7 +336,6 @@ FileUploadDropZone.displayName = 'FileUpload.DropZone'
  */
 export function FileUploadDropHint({
   children,
-  render,
   ref,
   ...otherProps
 }: FileUploadDropHintProps): ReactElement | null {
@@ -473,16 +344,14 @@ export function FileUploadDropHint({
   if (fileUpload !== null && (!fileUpload.isDroppable || fileUpload.isFull)) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'p',
-    partProps: {
+  return createElement(
+    'p',
+    {
       ...mergeProps(otherProps, { className: 'kv-file-upload-drop-hint' }),
-      children: children ?? fileUpload?.dropHintText,
       ref: mergedRef,
     },
-    state: toState(fileUpload),
-  })
+    children ?? fileUpload?.dropHintText,
+  )
 }
 FileUploadDropHint.displayName = 'FileUpload.DropHint'
 
@@ -508,21 +377,18 @@ export function FileUploadLimits({
 /** Internal. Only mounted when there is text, so no id is listed for an element that isn't there. */
 function LimitsDescription({
   text,
-  render,
   ref,
   ...otherProps
 }: FileUploadLimitsProps & { text: ReactNode }): ReactElement {
   const description = useDescriptionPart<HTMLParagraphElement>(ref)
-  return renderPart({
-    render,
-    defaultElement: 'p',
-    partProps: {
+  return createElement(
+    'p',
+    {
       ...mergeProps(otherProps, description.partProps, { className: 'kv-file-upload-limits' }),
       ref: description.ref,
-      children: text,
     },
-    state: description.state ?? noFieldState,
-  })
+    text,
+  )
 }
 FileUploadLimits.displayName = 'FileUpload.Limits'
 
@@ -534,7 +400,6 @@ FileUploadLimits.displayName = 'FileUpload.Limits'
  */
 export function FileUploadRejections({
   children,
-  render,
   ref,
   ...otherProps
 }: FileUploadRejectionsProps): ReactElement | null {
@@ -551,29 +416,27 @@ export function FileUploadRejections({
   if (fileUpload === null || !hasRejections) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'div',
-    partProps: {
+  return createElement(
+    'div',
+    {
       ...mergeProps(otherProps, fileUpload.rejectionsProps),
-      children: children ?? (
-        <>
-          <p>
-            <Icon name="error" size={5} />
-            <span className="kv-field-error-prefix">{fieldMessages.errorPrefix}</span>{' '}
-            {fileUpload.messages.rejectedHeading({ count: fileUpload.rejections.length })}
-          </p>
-          <ul>
-            {fileUpload.rejectionLines.map((line, index) => (
-              <li key={`${index}-${line.file.name}`}>{line.text}</li>
-            ))}
-          </ul>
-        </>
-      ),
       ref: mergedRef,
     },
-    state: toState(fileUpload),
-  })
+    children ?? (
+      <>
+        <p>
+          <Icon name="error" size={5} />
+          <span className="kv-field-error-prefix">{fieldMessages.errorPrefix}</span>{' '}
+          {fileUpload.messages.rejectedHeading({ count: fileUpload.rejections.length })}
+        </p>
+        <ul>
+          {fileUpload.rejectionLines.map((line, index) => (
+            <li key={`${index}-${line.file.name}`}>{line.text}</li>
+          ))}
+        </ul>
+      </>
+    ),
+  )
 }
 FileUploadRejections.displayName = 'FileUpload.Rejections'
 
@@ -583,7 +446,6 @@ FileUploadRejections.displayName = 'FileUpload.Rejections'
  */
 export function FileUploadSummary({
   children,
-  render,
   ref,
   ...otherProps
 }: FileUploadSummaryProps): ReactElement | null {
@@ -596,16 +458,14 @@ export function FileUploadSummary({
   if (fileUpload === null || !isShown) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'p',
-    partProps: {
+  return createElement(
+    'p',
+    {
       ...mergeProps(otherProps, fileUpload.summaryProps),
-      children: children ?? fileUpload.summaryText,
       ref: mergedRef,
     },
-    state: toState(fileUpload),
-  })
+    children ?? fileUpload.summaryText,
+  )
 }
 FileUploadSummary.displayName = 'FileUpload.Summary'
 
@@ -616,7 +476,6 @@ FileUploadSummary.displayName = 'FileUpload.Summary'
  */
 export function FileUploadList({
   children,
-  render,
   ref,
   ...otherProps
 }: FileUploadListProps): ReactElement | null {
@@ -626,21 +485,18 @@ export function FileUploadList({
     return null
   }
   const labelled = fileUpload.labelId === undefined ? {} : { 'aria-labelledby': fileUpload.labelId }
-  return renderPart({
-    render,
-    defaultElement: 'ul',
-    partProps: {
+  return createElement(
+    'ul',
+    {
       ...mergeProps(otherProps, { className: 'kv-file-upload-list', role: 'list' }, labelled),
-      children:
-        typeof children === 'function'
-          ? fileUpload.items.map((item, index) => (
-              <Fragment key={item.id}>{children(item, index)}</Fragment>
-            ))
-          : children,
       ref: mergedRef,
     },
-    state: toState(fileUpload),
-  })
+    typeof children === 'function'
+      ? fileUpload.items.map((item, index) => (
+          <Fragment key={item.id}>{children(item, index)}</Fragment>
+        ))
+      : children,
+  )
 }
 FileUploadList.displayName = 'FileUpload.List'
 
@@ -651,7 +507,6 @@ FileUploadList.displayName = 'FileUpload.List'
  */
 export function FileUploadItem({
   item,
-  render,
   ref,
   children,
   ...otherProps
@@ -685,16 +540,14 @@ export function FileUploadItem({
 
   return (
     <FileUploadItemContext.Provider value={context}>
-      {renderPart({
-        render,
-        defaultElement: 'li',
-        partProps: {
+      {createElement(
+        'li',
+        {
           ...mergeProps(otherProps, itemProps ?? { className: 'kv-file-upload-item' }),
-          children,
           ref: mergedRef,
         },
-        state: { item, name, status: item.status },
-      })}
+        children,
+      )}
     </FileUploadItemContext.Provider>
   )
 }
@@ -727,7 +580,6 @@ function usePreviewUrl(item: FileUploadItemData | undefined): string | undefined
  */
 export function FileUploadPreview({
   children,
-  render,
   ref,
   ...otherProps
 }: FileUploadPreviewProps): ReactElement | null {
@@ -740,33 +592,30 @@ export function FileUploadPreview({
   }
   const showImage = url !== undefined && failedUrl !== url
 
-  return renderPart({
-    render,
-    defaultElement: showImage ? 'img' : 'span',
-    partProps: showImage
-      ? {
+  return showImage
+    ? createElement('img', {
+        ...mergeProps(otherProps, { className: 'kv-file-upload-preview' }),
+        src: url,
+        alt: '',
+        onError: () => {
+          setFailedUrl(url)
+        },
+        ref: mergedRef,
+      })
+    : createElement(
+        'span',
+        {
           ...mergeProps(otherProps, { className: 'kv-file-upload-preview' }),
-          src: url,
-          alt: '',
-          onError: () => {
-            setFailedUrl(url)
-          },
-          ref: mergedRef,
-        }
-      : {
-          ...mergeProps(otherProps, { className: 'kv-file-upload-preview' }),
-          children: children ?? <Icon name="document" size={6} />,
           ref: mergedRef,
         },
-    state: toItemState(itemContext),
-  })
+        children ?? <Icon name="document" size={6} />,
+      )
 }
 FileUploadPreview.displayName = 'FileUpload.Preview'
 
 /** The file's name, in `<bdi>`, so a Latin name stays intact on an Arabic page. Wraps anywhere. */
 export function FileUploadName({
   children,
-  render,
   ref,
   ...otherProps
 }: FileUploadNameProps): ReactElement | null {
@@ -775,23 +624,20 @@ export function FileUploadName({
   if (itemContext === null) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'bdi',
-    partProps: {
+  return createElement(
+    'bdi',
+    {
       ...mergeProps(otherProps, { className: 'kv-file-upload-name' }),
-      children: children ?? itemContext.name,
       ref: mergedRef,
     },
-    state: toItemState(itemContext),
-  })
+    children ?? itemContext.name,
+  )
 }
 FileUploadName.displayName = 'FileUpload.Name'
 
 /** The type as a short label from the extension ("PDF"), never the MIME type. */
 export function FileUploadType({
   children,
-  render,
   ref,
   ...otherProps
 }: FileUploadTypeProps): ReactElement | null {
@@ -801,23 +647,20 @@ export function FileUploadType({
   if (fileUpload === null || itemContext === null) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'span',
-    partProps: {
+  return createElement(
+    'span',
+    {
       ...mergeProps(otherProps, { className: 'kv-file-upload-type' }),
-      children: children ?? fileUpload.getItemType(itemContext.item),
       ref: mergedRef,
     },
-    state: toItemState(itemContext),
-  })
+    children ?? fileUpload.getItemType(itemContext.item),
+  )
 }
 FileUploadType.displayName = 'FileUpload.Type'
 
 /** The size in the provider's locale and decimal units ("2,4 MB"), like the limits are. */
 export function FileUploadSize({
   children,
-  render,
   ref,
   ...otherProps
 }: FileUploadSizeProps): ReactElement | null {
@@ -827,16 +670,14 @@ export function FileUploadSize({
   if (fileUpload === null || itemContext === null) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'span',
-    partProps: {
+  return createElement(
+    'span',
+    {
       ...mergeProps(otherProps, { className: 'kv-file-upload-size' }),
-      children: children ?? fileUpload.getItemSize(itemContext.item),
       ref: mergedRef,
     },
-    state: toItemState(itemContext),
-  })
+    children ?? fileUpload.getItemSize(itemContext.item),
+  )
 }
 FileUploadSize.displayName = 'FileUpload.Size'
 
@@ -846,7 +687,6 @@ FileUploadSize.displayName = 'FileUpload.Size'
  */
 export function FileUploadStatus({
   children,
-  render,
   ref,
   ...otherProps
 }: FileUploadStatusProps): ReactElement | null {
@@ -862,21 +702,17 @@ export function FileUploadStatus({
   const icon =
     item.status === 'complete' ? 'success' : item.status === 'cancelled' ? 'warning' : undefined
 
-  return renderPart({
-    render,
-    defaultElement: 'p',
-    partProps: {
+  return createElement(
+    'p',
+    {
       ...mergeProps(otherProps, fileUpload.getStatusProps(item)),
-      children: (
-        <>
-          {icon === undefined ? null : <Icon name={icon} size={4} />}
-          {children ?? fileUpload.getItemStatusText(item)}
-        </>
-      ),
       ref: mergedRef,
     },
-    state: toItemState(itemContext),
-  })
+    <>
+      {icon === undefined ? null : <Icon name={icon} size={4} />}
+      {children ?? fileUpload.getItemStatusText(item)}
+    </>,
+  )
 }
 FileUploadStatus.displayName = 'FileUpload.Status'
 
@@ -897,11 +733,10 @@ function IndeterminateTrack({
  * A native `<progress>`, named "Uploading report.pdf", rendered only while the file uploads. Its
  * value is whole percent, so a screen reader that reports changes sees at most 100. Without a known
  * size it renders no `<progress>` but a decorative `<span class="kv-progress-track" aria-hidden>`
- * (loops while the upload runs) and ignores `render` and every prop but `className`. It's never
+ * (loops while the upload runs) and ignores every prop but `className`. It's never
  * announced: the percentage is visible in the Status.
  */
 export function FileUploadProgress({
-  render,
   ref,
   ...otherProps
 }: FileUploadProgressProps): ReactElement | null {
@@ -914,14 +749,9 @@ export function FileUploadProgress({
   if (itemContext.item.progress === undefined) {
     return <IndeterminateTrack className={otherProps.className} ref={mergedRef} />
   }
-  return renderPart({
-    render,
-    defaultElement: 'progress',
-    partProps: {
-      ...mergeProps(otherProps, fileUpload.getProgressProps(itemContext.item)),
-      ref: mergedRef,
-    },
-    state: toItemState(itemContext),
+  return createElement('progress', {
+    ...mergeProps(otherProps, fileUpload.getProgressProps(itemContext.item)),
+    ref: mergedRef,
   })
 }
 FileUploadProgress.displayName = 'FileUpload.Progress'
@@ -933,7 +763,6 @@ FileUploadProgress.displayName = 'FileUpload.Progress'
  */
 export function FileUploadItemError({
   children,
-  render,
   ref,
   ...otherProps
 }: FileUploadItemErrorProps): ReactElement | null {
@@ -948,28 +777,23 @@ export function FileUploadItemError({
   if (fileUpload === null || itemContext === null || !isShown) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'p',
-    partProps: {
+  return createElement(
+    'p',
+    {
       ...mergeProps(otherProps, fileUpload.getItemErrorProps(itemContext.item)),
-      children: (
-        <>
-          <Icon name="error" size={5} />
-          <span className="kv-field-error-prefix">{fieldMessages.errorPrefix}</span>{' '}
-          {children ?? fileUpload.getItemErrorText(itemContext.item)}
-        </>
-      ),
       ref: mergedRef,
     },
-    state: toItemState(itemContext),
-  })
+    <>
+      <Icon name="error" size={5} />
+      <span className="kv-field-error-prefix">{fieldMessages.errorPrefix}</span>{' '}
+      {children ?? fileUpload.getItemErrorText(itemContext.item)}
+    </>,
+  )
 }
 FileUploadItemError.displayName = 'FileUpload.ItemError'
 
 /** A layout wrapper for an item's buttons. */
 export function FileUploadActions({
-  render,
   ref,
   ...otherProps
 }: FileUploadActionsProps): ReactElement | null {
@@ -978,14 +802,9 @@ export function FileUploadActions({
   if (itemContext === null) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'div',
-    partProps: {
-      ...mergeProps(otherProps, { className: 'kv-file-upload-actions' }),
-      ref: mergedRef,
-    },
-    state: toItemState(itemContext),
+  return createElement('div', {
+    ...mergeProps(otherProps, { className: 'kv-file-upload-actions' }),
+    ref: mergedRef,
   })
 }
 FileUploadActions.displayName = 'FileUpload.Actions'
@@ -996,7 +815,6 @@ type ItemButtonKind = 'cancel' | 'retry' | 'remove'
 function ItemButton({
   kind,
   children,
-  render,
   ref,
   ...otherProps
 }: FileUploadItemButtonProps & { kind: ItemButtonKind }): ReactElement | null {
@@ -1032,23 +850,21 @@ function ItemButton({
         ? fileUpload.messages.retry
         : fileUpload.messages.remove
 
-  return renderPart({
-    render,
-    defaultElement: 'button',
-    partProps: {
+  return createElement(
+    'button',
+    {
       ...mergeProps(otherProps, buttonProps, focusVisibleProps),
       ...(describedBy === undefined ? {} : { 'aria-describedby': describedBy }),
       ...(isFocusVisible ? { 'data-focus-visible': '' } : {}),
-      children: children ?? (
-        <>
-          {kind === 'remove' ? <Icon name="delete" size={5} /> : null}
-          {visibleText}
-        </>
-      ),
       ref: mergedRef,
     },
-    state: toItemState(itemContext),
-  })
+    children ?? (
+      <>
+        {kind === 'remove' ? <Icon name="delete" size={5} /> : null}
+        {visibleText}
+      </>
+    ),
+  )
 }
 
 /**

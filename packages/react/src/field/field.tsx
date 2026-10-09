@@ -1,6 +1,6 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { useContext, useEffect, useLayoutEffect, useMemo } from 'react'
+import { createElement, useContext, useEffect, useLayoutEffect, useMemo } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { Icon } from '../icon/icon.tsx'
@@ -9,8 +9,6 @@ import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { ProseRoot } from '../prose/prose.tsx'
 import type { ProseRootProps } from '../prose/prose.tsx'
 import { useMessages } from '../provider/use-messages.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { FieldContext, FieldTextHostContext, useTextPartRegistry } from './field-context.ts'
 import type { FieldContextValue, FieldTextHostContextValue } from './field-context.ts'
 import type { FieldMarker, FieldState } from './field-state.ts'
@@ -33,28 +31,16 @@ export interface FieldRootProps extends ComponentPropsWithRef<'div'> {
   controlId?: string | undefined
   /** Per-instance message overrides for the label's optional text and the error prefix. */
   messages?: Partial<KvirnMessages['field']> | undefined
-  render?: RenderProp<ComponentPropsWithRef<'div'>, FieldState> | undefined
 }
 
 export interface FieldLabelProps extends Omit<ComponentPropsWithRef<'label'>, 'htmlFor' | 'id'> {
   /** `'none'` leaves out the optional text. Default: `'optional'`, or `'none'` in a group. */
   marker?: FieldMarker | undefined
-  render?: RenderProp<ComponentPropsWithRef<'label'>, FieldState> | undefined
 }
 
-export interface FieldErrorMessageProps extends Omit<ComponentPropsWithRef<'p'>, 'id'> {
-  render?: RenderProp<ComponentPropsWithRef<'p'>, FieldState> | undefined
-}
+export type FieldErrorMessageProps = Omit<ComponentPropsWithRef<'p'>, 'id'>
 
-/** What a HelpText's `render` receives as its second argument: the Field's or Fieldset's state. */
-export type FieldHelpTextState = FieldState
-
-export interface FieldHelpTextProps extends Omit<ComponentPropsWithRef<'p'>, 'id'> {
-  /** Change the element: `render={<div />}`. Never to something interactive. */
-  render?: RenderProp<ComponentPropsWithRef<'p'>, FieldHelpTextState> | undefined
-}
-
-const noState: FieldState = { isInvalid: false, isRequired: false, isDisabled: false }
+export type FieldHelpTextProps = Omit<ComponentPropsWithRef<'p'>, 'id'>
 
 /** Internal. The optional text after a label or legend: a normal space, then a span. */
 export function OptionalMarker({ text }: { text: string | undefined }): ReactNode {
@@ -92,7 +78,6 @@ export function FieldRoot({
   disabled = false,
   controlId,
   messages,
-  render,
   ref,
   ...otherProps
 }: FieldRootProps): ReactElement {
@@ -145,12 +130,7 @@ export function FieldRoot({
   return (
     <FieldTextHostContext.Provider value={textHost}>
       <FieldContext.Provider value={fieldContext}>
-        {renderPart({
-          render,
-          defaultElement: 'div',
-          partProps: { ...mergeProps(otherProps, field.rootProps), ref: mergedRef },
-          state,
-        })}
+        {createElement('div', { ...mergeProps(otherProps, field.rootProps), ref: mergedRef })}
       </FieldContext.Provider>
     </FieldTextHostContext.Provider>
   )
@@ -164,7 +144,6 @@ FieldRoot.displayName = 'Field.Root'
 export function FieldLabel({
   marker,
   children,
-  render,
   ref,
   ...otherProps
 }: FieldLabelProps): ReactElement {
@@ -189,21 +168,12 @@ export function FieldLabel({
       : undefined
   const partProps = field === null ? { className: 'kv-field-label' } : field.labelProps
 
-  return renderPart({
-    render,
-    defaultElement: 'label',
-    partProps: {
-      ...mergeProps(otherProps, partProps),
-      ref: mergedRef,
-      children: (
-        <>
-          {children}
-          <OptionalMarker text={optionalText} />
-        </>
-      ),
-    },
-    state: field?.state ?? noState,
-  })
+  return (
+    <label {...mergeProps(otherProps, partProps)} ref={mergedRef}>
+      {children}
+      <OptionalMarker text={optionalText} />
+    </label>
+  )
 }
 FieldLabel.displayName = 'Field.Label'
 
@@ -214,7 +184,6 @@ FieldLabel.displayName = 'Field.Label'
  */
 export function FieldErrorMessage({
   children,
-  render,
   ref,
   ...otherProps
 }: FieldErrorMessageProps): ReactElement | null {
@@ -246,21 +215,12 @@ export function FieldErrorMessage({
       ? { className: 'kv-field-error-message', 'data-invalid': '' }
       : host.errorMessageProps
 
-  return renderPart({
-    render,
-    defaultElement: 'p',
-    partProps: {
-      ...mergeProps(otherProps, partProps),
-      ref: mergedRef,
-      children: (
-        <>
-          <Icon name="error" size={5} />
-          <span className="kv-field-error-prefix">{fieldMessages.errorPrefix}</span> {children}
-        </>
-      ),
-    },
-    state: host?.state ?? { ...noState, isInvalid: true },
-  })
+  return (
+    <p {...mergeProps(otherProps, partProps)} ref={mergedRef}>
+      <Icon name="error" size={5} />
+      <span className="kv-field-error-prefix">{fieldMessages.errorPrefix}</span> {children}
+    </p>
+  )
 }
 FieldErrorMessage.displayName = 'Field.ErrorMessage'
 
@@ -284,7 +244,7 @@ FieldProse.displayName = 'Field.Prose'
  * not a live region. Outside a Field or Fieldset it warns and renders a plain paragraph with no
  * id.
  */
-export function FieldHelpText({ render, ref, ...otherProps }: FieldHelpTextProps): ReactElement {
+export function FieldHelpText({ ref, ...otherProps }: FieldHelpTextProps): ReactElement {
   const description = useDescriptionPart<HTMLParagraphElement>(ref)
   const isOutsideHost = description.state === null
   useEffect(() => {
@@ -322,15 +282,10 @@ export function FieldHelpText({ render, ref, ...otherProps }: FieldHelpTextProps
       )
     }
   }, [helpTextId, controlId, isInField])
-  return renderPart({
-    render,
-    defaultElement: 'p',
-    // The host's id and state attributes, with the help text's own class in place of the Prose class.
-    partProps: {
-      ...mergeProps(otherProps, { ...description.partProps, className: 'kv-field-help-text' }),
-      ref: description.ref,
-    },
-    state: description.state ?? noState,
+  // The host's id and state attributes, with the help text's own class in place of the Prose class.
+  return createElement('p', {
+    ...mergeProps(otherProps, { ...description.partProps, className: 'kv-field-help-text' }),
+    ref: description.ref,
   })
 }
 FieldHelpText.displayName = 'Field.HelpText'

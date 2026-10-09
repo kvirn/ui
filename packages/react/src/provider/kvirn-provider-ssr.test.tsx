@@ -46,8 +46,25 @@ test('server render and hydration match, then the stored theme applies', async (
   })
 
   await expect.element(page.getByRole('radio', { name: 'Mörkt' })).toBeChecked()
-  await expect.element(page.getByText('Används nu: Mörkt, Normal kontrast')).toBeVisible()
+  await expect
+    .element(page.getByText('Används nu: Mörkt, Normal kontrast, Full rörelse'))
+    .toBeVisible()
   expect(recoverableErrors).toEqual([])
   expect(consoleError).not.toHaveBeenCalled()
   consoleError.mockRestore()
+})
+
+test('renderToString without an env gives the defaults and both live regions, no toast region', () => {
+  const html = renderToString(
+    <KvirnProvider locale="sv-SE" messages={sv} timeZone="Europe/Stockholm">
+      <ThemeSwitcherFixture />
+    </KvirnProvider>,
+  )
+  const template = document.createElement('template')
+  template.innerHTML = html
+  expect(template.content.textContent).toContain('Används nu: Ljust, Normal kontrast, Full rörelse')
+  expect(template.content.querySelector('output[aria-live="polite"]')).not.toBeNull()
+  expect(template.content.querySelector('[role="alert"][aria-live="assertive"]')).not.toBeNull()
+  expect(template.content.querySelectorAll('[aria-live]')).toHaveLength(2)
+  expect(template.content.querySelector('ol, ul, [role="region"]')).toBeNull()
 })

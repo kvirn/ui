@@ -28,7 +28,6 @@ export {
 export type {
   RichTextEditorContentProps,
   RichTextEditorRootProps,
-  RichTextEditorState,
 } from './rich-text-editor/rich-text-editor.tsx'
 export { BlockFormat } from './rich-text-editor/block-format.tsx'
 export type { BlockKey } from './rich-text-editor/block-format.tsx'

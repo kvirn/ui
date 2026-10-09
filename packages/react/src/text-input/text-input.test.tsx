@@ -15,12 +15,7 @@ import { Field } from '../field/field.tsx'
 import { masks } from '../index.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { TextInput } from './text-input.tsx'
-import type {
-  TextInputChangeDetails,
-  TextInputProps,
-  TextInputState,
-  TextInputType,
-} from './text-input.tsx'
+import type { TextInputChangeDetails, TextInputProps, TextInputType } from './text-input.tsx'
 import { useTextInput } from './use-text-input.ts'
 import type {
   TextInputPartProps,
@@ -113,29 +108,6 @@ describe('rendering', () => {
     await expect.element(input).toHaveAttribute('spellcheck', 'false')
     await expect.element(input).toHaveAttribute('type', 'text')
     await expectNoA11yViolations(container)
-  })
-
-  test('render as a function gets the part’s props and the state', async () => {
-    const seenStates: TextInputState[] = []
-    await render(
-      <Field.Root invalid disabled={false}>
-        <Field.Label>Namn</Field.Label>
-        <Field.ErrorMessage>Ange ditt namn</Field.ErrorMessage>
-        <TextInput
-          render={(partProps, state) => {
-            seenStates.push(state)
-            return <input {...partProps} data-egen="" />
-          }}
-        />
-      </Field.Root>,
-    )
-    await expect.element(page.getByRole('textbox')).toHaveAttribute('data-egen', '')
-    expect(seenStates.at(-1)).toEqual({
-      isInvalid: true,
-      isRequired: false,
-      isDisabled: false,
-      isFocusVisible: false,
-    })
   })
 })
 

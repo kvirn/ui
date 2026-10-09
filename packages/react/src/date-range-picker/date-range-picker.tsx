@@ -18,8 +18,6 @@ import { DialogContext, useDialogAnnouncer } from '../dialog/dialog-context.ts'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { DateRangePickerContext } from './date-range-picker-context.ts'
 import { useDateRangePicker } from './use-date-range-picker.ts'
 import type {
@@ -32,18 +30,11 @@ export type {
   DateRangePickerChangeReason,
 } from './use-date-range-picker.ts'
 
-/** What `render` receives as its second argument, for the Trigger. */
-export interface DateRangePickerState {
-  isOpen: boolean
-}
-
 export interface DateRangePickerRootProps extends UseDateRangePickerOptions {
   children?: ReactNode
 }
 
-export interface DateRangePickerTriggerProps extends ComponentPropsWithRef<'button'> {
-  render?: RenderProp<ComponentPropsWithRef<'button'>, DateRangePickerState> | undefined
-}
+export type DateRangePickerTriggerProps = ComponentPropsWithRef<'button'>
 
 export type DateRangePickerPopupProps = DialogPopupProps
 
@@ -112,7 +103,6 @@ DateRangePickerRoot.displayName = 'DateRangePicker.Root'
  * your own content: the visible text must stay its name.
  */
 export function DateRangePickerTrigger({
-  render,
   children,
   ref,
   ...otherProps
@@ -122,21 +112,16 @@ export function DateRangePickerTrigger({
   if (dateRangePicker === null) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'button',
-    partProps: {
-      ...mergeProps(otherProps, dateRangePicker.triggerProps),
-      ref: mergedRef,
-      children: children ?? (
+  return (
+    <button {...mergeProps(otherProps, dateRangePicker.triggerProps)} ref={mergedRef}>
+      {children ?? (
         <>
           <Icon name="calendar" />
           {dateRangePicker.triggerText}
         </>
-      ),
-    },
-    state: { isOpen: dateRangePicker.isOpen },
-  })
+      )}
+    </button>
+  )
 }
 DateRangePickerTrigger.displayName = 'DateRangePicker.Trigger'
 

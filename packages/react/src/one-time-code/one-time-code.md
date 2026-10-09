@@ -127,10 +127,6 @@ function Code() {
 
 It returns `rootProps`, `inputProps`, `getSlotProps(index)`, `slots` (one per position of the pattern, each `{ kind, character, isFilled, isActive, caret, isSelected }`, where `kind` is `'character'` or `'separator'`), `value`, `pattern`, `characterCount` (the pattern without its dashes), `isComplete`, `isReady`, `isInvalid` and `isDisabled`. It reads the nearest Field, and builds on [`useMask`](../text-input/text-input.md) with `masks.oneTimeCode({ pattern })`. Use `mergeProps` when you have your own ref or handlers on the input: handlers chain and refs merge.
 
-### `render`
+### Your own element
 
-All three parts take `render` to change their element. The part's props are merged into yours: class names join, handlers chain and refs merge. The Slot's second argument is the slot's state.
-
-```tsx
-<OneTimeCode.Slot index={0} render={(props, slot) => <b {...props}>{slot.character}</b>} />
-```
+The parts render fixed elements. To build your own, use `useOneTimeCode()` and spread `rootProps`, `inputProps` and `getSlotProps(index)`.

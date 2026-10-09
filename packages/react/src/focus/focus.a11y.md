@@ -8,6 +8,8 @@
 
 `useFocus` moves focus into a scope when it becomes active, can hold it there (`contain`), and returns it when the scope ends. It renders nothing and adds no role or ARIA: the consumer picks `role="dialog"`, `aria-modal`, a label.
 
+**Allowed elements** for `FocusScope`'s `as`: `div` (default), `section`, `aside`, `nav` or `form`. Another tag warns once (`as-not-allowed`) and falls back to `div`. The scope adds no role or ARIA, so the element's own semantics apply: `nav` and `form` are landmarks and need a name, which is the consumer's.
+
 ## Roles, states, properties
 
 | Part  | Element / role         | ARIA | Notes                                                                                                                                                        |
@@ -45,6 +47,6 @@ Focus moves programmatically when `active` changes. With `contain: 'loop'` only 
 - Trap: only by choice (`contain`). Both modes need an exit: `onEscape`, and the development warning `focus-scope-no-exit` (`development warning › contain without onEscape warns once with focus-scope-no-exit text`) says when it is missing (2.1.2).
 - Limit: `inert` is applied when the scope becomes active. A sibling added to the page while it is open is not made `inert`.
 
-## WCAG
+## WCAG SCs covered
 
 2.1.1 Keyboard, 2.1.2 No Keyboard Trap, 2.4.3 Focus Order, 2.4.7 Focus Visible, 2.4.11 Focus Not Obscured (Minimum), 3.2.1 On Focus. No axe violations with an open scope (`accessibility › an open scope has no axe violations`).

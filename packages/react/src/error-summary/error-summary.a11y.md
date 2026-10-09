@@ -2,7 +2,7 @@
 
 - **APG pattern:** none. It applies the GOV.UK [Error summary](https://design-system.service.gov.uk/components/error-summary/) pattern and WCAG technique [G139](https://www.w3.org/WAI/WCAG22/Techniques/general/G139) (create a mechanism that allows users to jump to errors), with [ARIA22](https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA22)'s alternative (a focus move) in place of a live region.
 - **Deviations:** none. It is not `role="alert"`: the focus move is the announcement (Plan 0063, decision 1).
-- **Native elements used:** `<ul>`, `<li>`, `<a href="#id">`, `<h2>` (from `Alert.Title`).
+- **Native elements used:** `<ul>`, `<li>`, `<a href="#id">`, `<h2>` (from `Alert.Title`; `as` picks `h3` to `h6`), and `<ol>` with `as` on the List.
 - **Status:** alpha candidate (Plan 0063). Gates pending, accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `error-summary.test.tsx` next to this file. `error-summary.stories.tsx` in `apps/storybook/src/components/error-summary/`.
 
@@ -17,6 +17,17 @@ An [Alert.Danger](../alert/alert.a11y.md) at the top of a form, shown after a fa
 | List  | `<ul>` → `list`                  | `role="list"`                      | One item per problem. `role="list"` is explicit: the theme draws no markers, and Safari would drop the list semantics without it             |
 | Item  | `<li>` → `listitem`              | none                               |                                                                                                                                              |
 | Link  | `<a href="#controlId">` → `link` | none                               | Its text is the field's error text, so it reads the same as the message under the field                                                      |
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part       | `as`                                   | Why                                                                                                                          |
+| ---------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Root       | none                                   | The Root is an `Alert.Danger`, a named group that takes focus                                                                |
+| Title      | `h2` (default), `h3`, `h4`, `h5`, `h6` | The level the page's outline needs. No `h1` (the page's title) and no `p` (the summary needs a heading for the group's name) |
+| List       | `ul` (default), `ol`                   | A list of problems, optionally numbered                                                                                      |
+| Item, Link | none                                   | `<li>` and `<a href="#id">`: the link must stay a link (4.1.2)                                                               |
 
 ## Keyboard
 

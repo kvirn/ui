@@ -228,13 +228,13 @@ describe('Breadcrumb', () => {
     }
   })
 
-  test('passes attributes through and joins className, refs and render elements', async () => {
+  test('passes attributes through and and joins className and refs', async () => {
     const rootRef = createRef<HTMLElement>()
     const currentRef = createRef<HTMLElement>()
     await render(
       <Breadcrumb.Root ref={rootRef} id="smulor" className="min" data-testid="root">
         <Breadcrumb.List>
-          <Breadcrumb.Item render={<li data-own="ja" className="eget" />} data-testid="item">
+          <Breadcrumb.Item data-own="ja" className="eget" data-testid="item">
             <Breadcrumb.Current ref={currentRef}>Förskola</Breadcrumb.Current>
           </Breadcrumb.Item>
         </Breadcrumb.List>
@@ -262,19 +262,17 @@ describe('Breadcrumb', () => {
     await expect.element(link).toHaveClass('kv-breadcrumb-link', 'kv-link', 'min')
   })
 
-  test('render as a function keeps the landmark', async () => {
+  test('a Breadcrumb.Link with as="a" bypasses the registered router link', async () => {
     await render(
-      <Breadcrumb.Root render={(rootProps) => <nav {...rootProps} data-rendered="ja" />}>
-        <Breadcrumb.List>
-          <Breadcrumb.Item>
-            <Breadcrumb.Current>Förskola</Breadcrumb.Current>
-          </Breadcrumb.Item>
-        </Breadcrumb.List>
-      </Breadcrumb.Root>,
+      <KvirnProvider linkComponent={mockRouterLinkComponent}>
+        <Breadcrumb.Link href="/" as="a">
+          Start
+        </Breadcrumb.Link>
+      </KvirnProvider>,
     )
-    const navigation = page.getByRole('navigation', { name: 'You are here' })
-    await expect.element(navigation).toHaveAttribute('data-rendered', 'ja')
-    await expect.element(navigation).toHaveClass('kv-breadcrumb')
+    const link = page.getByRole('link', { name: 'Start' })
+    await expect.element(link).not.toHaveAttribute('data-router-link')
+    await expect.element(link).toHaveClass('kv-breadcrumb-link', 'kv-link')
   })
 
   test('renders on the server with the landmark, the list and the current page', () => {

@@ -87,7 +87,7 @@ Forced colours, reduced motion and 320px reflow are not gated per change; a Vite
 
 ## Conventions
 
-- API: `docs/architecture.md#api-conventions`. Full names (`disclosure`, not `d`), prop objects named after their part (`triggerProps`), shared part names (Root, Trigger, Panel, Popup), `render` instead of `asChild`. TypeScript strict and inference-first; export `UseXOptions`, `UseXResult` and `XPartProps`.
+- API: `docs/architecture.md#api-conventions`. Full names (`disclosure`, not `d`), prop objects named after their part (`triggerProps`), shared part names (Root, Trigger, Panel, Popup), `as` (a tag or a component, only on the parts that need it) instead of `asChild` or a `render` prop; every other part is one native element and the hook covers a different one. TypeScript strict and inference-first; export `UseXOptions`, `UseXResult` and `XPartProps`.
 - Code reads like the file next to it. A comment says why, only where the code can't: no narration, no step markers, no JSDoc on internals. Agents report in the format their definition sets.
 - Visual decisions follow `DESIGN.md`. A token or rule change needs the maintainer's approval, `theme.css` in the same change and a green `theme:check`.
 - Kebab-case files. `x.test.tsx`, `x.a11y.md` and `x.md` sit with the component in its package; `x.stories.tsx` lives in `apps/storybook/src/components/<name>/`, so packages ship no Storybook files.

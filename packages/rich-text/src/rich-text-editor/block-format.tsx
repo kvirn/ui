@@ -1,10 +1,15 @@
 'use client'
-import { Listbox, Toolbar } from '@kvirn-ui/react'
+import { Listbox } from '@kvirn-ui/react'
 import { FieldContext, useMessages, warnOnce } from '@kvirn-ui/react/internal'
 import type { Editor } from '@tiptap/core'
 import { useEffect, useMemo } from 'react'
 import type { ReactElement } from 'react'
-import { ControlTooltip, keepFocusInText, useToolbarSettings } from './command-controls.tsx'
+import {
+  ControlTooltip,
+  keepFocusInText,
+  ListboxToolbarItem,
+  useToolbarSettings,
+} from './command-controls.tsx'
 import { useRichTextEditorContext } from './rich-text-editor-context.ts'
 import { useEditorSelector } from './use-editor-selector.ts'
 
@@ -144,12 +149,17 @@ export function BlockFormat(): ReactElement {
       <Listbox.Value placeholder={messages.blockMixed} />
     </Listbox.Trigger>
   ) : (
-    <Toolbar.Item
-      render={
-        <Listbox.Trigger aria-label={messages.blockType} onMouseDown={keepFocusInText}>
-          <Listbox.Value placeholder={messages.blockMixed} />
-        </Listbox.Trigger>
-      }
+    <ControlTooltip
+      label={messages.blockType}
+      shortcutKeys={undefined}
+      isNameShown={false}
+      hasTooltip={tooltips}
+      control={ListboxToolbarItem}
+      controlProps={{
+        'aria-label': messages.blockType,
+        onMouseDown: keepFocusInText,
+        children: <Listbox.Value placeholder={messages.blockMixed} />,
+      }}
     />
   )
   // The picker is a toolbar control, not the Field's control: without this it would take the
@@ -171,16 +181,7 @@ export function BlockFormat(): ReactElement {
           }
         }}
       >
-        {tooltips && !isDisabled ? (
-          <ControlTooltip
-            label={messages.blockType}
-            shortcutKeys={undefined}
-            isNameShown={false}
-            control={trigger}
-          />
-        ) : (
-          trigger
-        )}
+        {trigger}
         <Listbox.Popup>
           <Listbox.List>{(option: BlockOption) => <Listbox.Option item={option} />}</Listbox.List>
         </Listbox.Popup>

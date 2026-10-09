@@ -624,3 +624,31 @@ describe('dev warnings', () => {
     expect(document.querySelector('button')).toBeNull()
   })
 })
+
+describe('the popup and the browser zone', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.restoreAllMocks()
+  })
+
+  test('a popup opened after mount puts focus on the browser date, marked today, with the Tab stop', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-10-14T21:30:00Z'))
+    vi.spyOn(Intl.DateTimeFormat.prototype, 'resolvedOptions').mockReturnValue({
+      timeZone: 'Europe/Helsinki',
+    } as Intl.ResolvedDateTimeFormatOptions)
+    await render(
+      <KvirnProvider locale="sv" messages={sv}>
+        <DatePicker.Root>
+          <DatePicker.Trigger />
+          <DatePicker.Popup />
+        </DatePicker.Root>
+      </KvirnProvider>,
+    )
+    await userEvent.click(trigger())
+    const browserDay = day('torsdag 15 oktober 2026, idag')
+    await expect.element(browserDay).toHaveAttribute('aria-current', 'date')
+    await expect.element(browserDay).toHaveAttribute('tabindex', '0')
+    expect(document.activeElement).toBe(browserDay.element())
+  })
+})

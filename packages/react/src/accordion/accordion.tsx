@@ -1,49 +1,42 @@
 'use client'
-import { createContext, useContext, useEffect } from 'react'
+import { createContext, createElement, useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { DisclosureContext, DisclosureOwnerContext } from '../disclosure/disclosure-context.ts'
 import { DisclosurePanel, DisclosureRoot, DisclosureTrigger } from '../disclosure/disclosure.tsx'
-import type {
-  DisclosurePanelProps,
-  DisclosureState,
-  DisclosureTriggerProps,
-} from '../disclosure/disclosure.tsx'
+import type { DisclosurePanelProps, DisclosureTriggerProps } from '../disclosure/disclosure.tsx'
 import type { UseDisclosureOptions } from '../disclosure/use-disclosure.ts'
 import type { HeadingLevel } from '../heading/use-heading.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { listRole, resolveAsTag } from '../render/as-prop.ts'
+import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useAccordion } from './use-accordion.ts'
 
 export type { DisclosureChangeDetails as AccordionChangeDetails } from '../disclosure/disclosure.tsx'
 
-/** What `render` receives as its second argument, for the item and the heading. */
-export type AccordionItemState = DisclosureState
-export type AccordionState = Record<string, never>
+const rootTags = ['div', 'ul', 'ol'] as const
+const itemTags = ['div', 'li'] as const
 
-/** What `render` receives as its second argument, for `Accordion.Heading`. */
-export interface AccordionHeadingState {
-  level: HeadingLevel
-  isOpen: boolean
-}
-
-export interface AccordionRootProps extends ComponentPropsWithRef<'div'> {
+interface AccordionRootOwnProps {
   /**
    * Keeps every closed panel's text findable with the browser's find-in-page and `#fragment`
    * links, unless an item says otherwise (`hidden="until-found"`). Default `false`.
    */
   hiddenUntilFound?: boolean | undefined
-  render?: RenderProp<ComponentPropsWithRef<'div'>, AccordionState> | undefined
 }
 
-export interface AccordionItemProps
-  extends
-    Omit<ComponentPropsWithRef<'div'>, 'defaultValue'>,
-    Omit<UseDisclosureOptions, 'onClick'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, AccordionItemState> | undefined
-}
+/**
+ * `as` is `div` (default), or `ul` or `ol` with `Accordion.Item as="li"` children, so the number of
+ * questions is announced. Its own semantics apply, and the root adds `role="list"` to a `ul` or `ol`.
+ */
+export type AccordionRootProps = AsTag<(typeof rootTags)[number], 'div', AccordionRootOwnProps>
+
+type AccordionItemOwnProps = Omit<UseDisclosureOptions, 'onClick'>
+
+/** `as` is `div` (default), or `li` inside an `Accordion.Root as="ul"` or `"ol"`. */
+export type AccordionItemProps = AsTag<(typeof itemTags)[number], 'div', AccordionItemOwnProps>
 
 export interface AccordionHeadingProps extends ComponentPropsWithRef<'h2'> {
   /**
@@ -51,7 +44,6 @@ export interface AccordionHeadingProps extends ComponentPropsWithRef<'h2'> {
    * where it sits (2.4.6, 1.3.1). It renders `<h1>` to `<h6>`. The trigger goes inside it.
    */
   level: HeadingLevel
-  render?: RenderProp<ComponentPropsWithRef<'h2'>, AccordionHeadingState> | undefined
 }
 
 export type AccordionTriggerProps = DisclosureTriggerProps
@@ -69,7 +61,7 @@ const AccordionContext = createContext<{ hiddenUntilFound: boolean }>({ hiddenUn
 /**
  * A list of disclosures that each reveal one section, such as a page of questions and answers
  * (APG Accordion, contract: accordion.a11y.md). The root is a `<div class="kv-accordion">` with
- * no role. Items are independent: more than one can be open. Every trigger is a Tab stop, and the
+ * no role, or a list with `as`. Items are independent: more than one can be open. Every trigger is a Tab stop, and the
  * arrow keys are not handled.
  *
  * @example
@@ -84,19 +76,23 @@ const AccordionContext = createContext<{ hiddenUntilFound: boolean }>({ hiddenUn
  */
 export function AccordionRoot({
   hiddenUntilFound = false,
-  render,
+  as,
   ref,
   ...otherProps
 }: AccordionRootProps): ReactElement {
   const elementRef = useMergedRef(ref, null)
   const accordion = useAccordion()
+  const tag = resolveAsTag({ part: 'Accordion.Root', as, allowedTags: rootTags })
   return (
     <AccordionContext.Provider value={{ hiddenUntilFound }}>
       {renderPart({
-        render,
+        as: tag,
         defaultElement: 'div',
-        partProps: { ...mergeProps(otherProps, accordion.rootProps), ref: elementRef },
-        state: {},
+        partProps: {
+          ...listRole(tag),
+          ...mergeProps(otherProps, accordion.rootProps),
+          ref: elementRef,
+        },
       })}
     </AccordionContext.Provider>
   )
@@ -104,15 +100,15 @@ export function AccordionRoot({
 AccordionRoot.displayName = 'Accordion.Root'
 
 function AccordionItemElement({
-  render,
+  as,
   ref,
   ...otherProps
-}: Omit<AccordionItemProps, keyof UseDisclosureOptions>): ReactElement {
+}: AsTag<(typeof itemTags)[number], 'div'>): ReactElement {
   const disclosure = useContext(DisclosureContext)
   const accordion = useAccordion()
   const elementRef = useMergedRef(ref, null)
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'Accordion.Item', as, allowedTags: itemTags }),
     defaultElement: 'div',
     partProps: {
       ...mergeProps(
@@ -122,7 +118,6 @@ function AccordionItemElement({
       ),
       ref: elementRef,
     },
-    state: { isOpen: disclosure?.isOpen ?? false, isDisabled: disclosure?.isDisabled ?? false },
   })
 }
 
@@ -163,7 +158,6 @@ AccordionItem.displayName = 'Accordion.Item'
  */
 export function AccordionHeading({
   level,
-  render,
   ref,
   ...otherProps
 }: AccordionHeadingProps): ReactElement {
@@ -178,11 +172,9 @@ export function AccordionHeading({
       )
     }
   }, [disclosure])
-  return renderPart({
-    render,
-    defaultElement: `h${level}`,
-    partProps: { ...mergeProps(otherProps, accordion.headingProps), ref: elementRef },
-    state: { level, isOpen: disclosure?.isOpen ?? false },
+  return createElement(`h${level}`, {
+    ...mergeProps(otherProps, accordion.headingProps),
+    ref: elementRef,
   })
 }
 AccordionHeading.displayName = 'Accordion.Heading'

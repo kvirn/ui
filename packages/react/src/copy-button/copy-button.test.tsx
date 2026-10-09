@@ -250,17 +250,6 @@ describe('name', () => {
     )
     expect(html).toContain('>Copy</button>')
   })
-
-  test('render must keep a button', async () => {
-    await render(
-      <KvirnProvider>
-        <CopyButton text="123" render={<button data-testid="element" aria-label="Kopiera" />} />
-      </KvirnProvider>,
-    )
-    await expect
-      .element(page.getByRole('button', { name: 'Kopiera' }))
-      .toHaveAttribute('data-status', 'idle')
-  })
 })
 
 describe('failure', () => {

@@ -2,7 +2,7 @@
 
 - **APG pattern:** none needed. A link is a native `<a href>` ([APG Link](https://www.w3.org/WAI/ARIA/apg/patterns/link/) only covers non-native links, which Link never renders).
 - **Deviations:** none
-- **Native elements used:** `<a href>`, rendered by the app's registered router link component, or by a native `<a>` when none is registered or `render={<a />}` is given. `<span>` for the new-tab notice.
+- **Native elements used:** `<a href>`, rendered by the app's registered router link component, or by a native `<a>` when none is registered or `as="a"` is given. `<span>` for the new-tab notice. **Allowed elements:** `Link.Root` takes `as` as a component or a tag that renders an `<a href>` and forwards its ref; `Link.NewTabNotice` `span` (default), `em` or `small`; `Link.Icon` `span` (default) or `i`. Another tag on the last two warns once (`as-not-allowed`) and falls back to `span`.
 - **Status:** alpha candidate (Plan 0003). Gates 1–5 pass, accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `link.test.tsx` next to this file. `link.stories.tsx` in `apps/storybook/src/components/link/`.
 
@@ -13,7 +13,7 @@ Link navigates. An action is a Button. Link has no `disabled` prop, by type: a d
 | Part              | Element / role                         | ARIA                              | Notes                                                                                                                                                                     |
 | ----------------- | -------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Link.Root         | `<a href>` → `link`                    | `aria-current` from `current`     | `current`: `'page'`, `'step'`, `'location'`, `'date'`, `'time'` or `true`. `false` or absent sets nothing. `data-current` when set                                        |
-|                   | `target="_blank"`                      | none                              | `rel="noopener noreferrer"` is added to the consumer's own `rel` tokens, also when `target` and `rel` are on a `render` element                                           |
+|                   | `target="_blank"`                      | none                              | `rel="noopener noreferrer"` is added to the consumer's own `rel` tokens, also with `as="a"` or an `as` component                                                          |
 |                   | keyboard focus                         | none                              | `data-focus-visible` while the link matches `:focus-visible`                                                                                                              |
 |                   | another language                       | `lang`, `hrefLang` passed through | `<Link.Root href="/fi" hrefLang="fi" lang="fi">Suomeksi</Link.Root>` (3.1.2)                                                                                              |
 | Link.Icon         | `<span>`, decorative                   | `aria-hidden="true"`              | `class="kv-link-icon"`. Always hidden: `aria-hidden` can't be turned off, so the icon is never part of the link's name (2.5.3). Put it first. Also exported as `LinkIcon` |
@@ -75,7 +75,7 @@ Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root mes
 - If you hide the notice visually, hide it with a visually-hidden technique, not `display: none` or `aria-hidden`, so it stays in the name. Consider showing it: sighted users benefit too.
 - Set `current="page"` on the link to the current page, for example in navigation. Link doesn't detect it from the router.
 - For a link in another language, set `lang` (the text's language) and `hrefLang` (the target's language) (3.1.2).
-- Register a router link component that forwards its ref and renders an `<a>`. Use `render={<a />}` for downloads and other links the router mustn't handle.
+- Register a router link component that forwards its ref and renders an `<a>`. Use `as="a"` for downloads and other links the router mustn't handle.
 - When overriding `newTabNotice`, keep it true to what happens (3.2.5) and consistent with any visible text (2.5.3).
 - Style `[data-current]` and `[data-focus-visible]` (or `:focus-visible`). Don't show the current page by colour alone (1.4.1).
 

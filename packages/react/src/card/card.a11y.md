@@ -2,7 +2,7 @@
 
 - **APG pattern:** none. A card is not a widget, so there is no APG pattern.
 - **Deviations:** none
-- **Native elements used:** `<div>` for every part by default. The consumer picks `<article>`, `<section>`, `<aside>` or `<li>` with `render`, and the element's own semantics apply.
+- **Native elements used:** `<div>` for every part by default. `Card.Root` takes `as` (allowed elements below), and the element's own semantics apply.
 - **Status:** alpha candidate (Plan 0007). Gates 1–5 pass, accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `card.test.tsx` next to this file. `card.stories.tsx` in `apps/storybook/src/components/card/`.
 
@@ -10,17 +10,26 @@ Card is a plain container for content on a surface. It adds no role, no ARIA, no
 
 ## Roles, states, properties
 
-| Part        | Element / role               | ARIA                                                    | Notes                                                                                                                                                                                                                                                       |
-| ----------- | ---------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Card.Root   | `<div>` → `generic`          | none. The consumer adds it with the element             | `class="kv-card"`. `render={<article />}`, `<section aria-labelledby>`, `<aside aria-labelledby>` or `<li>` give it a role. Also exported as `CardRoot`                                                                                                     |
-| Card.Header | `<div>` → `generic`          | none                                                    | `class="kv-card-header"`. **Never `<header>`**: at the top level it would be a `banner` landmark. Also exported as `CardHeader`                                                                                                                             |
-| Card.Body   | `<div>` → `generic`          | none                                                    | `class="kv-card-body"`. Also exported as `CardBody`                                                                                                                                                                                                         |
-| Card.Footer | `<div>` → `generic`          | none                                                    | `class="kv-card-footer"`. **Never `<footer>`**: at the top level it would be a `contentinfo` landmark. Also exported as `CardFooter`                                                                                                                        |
-| every part  | `render` (element, function) | the rendered element's own                              | One element per part. An element keeps its own props, and the part's are merged in: `className` joins, `style` merges, refs merge                                                                                                                           |
-| every part  | attributes                   | passed through                                          | `aria-*`, `id`, `lang`, `data-*` and every other attribute reach the element unchanged. The part's class is its own: a `className` prop and a `render` element's own `className` join it, never replace it. In the `render` function form, keep `className` |
-| every part  | never                        | no `role`, `aria-*`, `tabindex`, `inert`, `aria-hidden` | No click handler, no heading, no live region, no text                                                                                                                                                                                                       |
+| Part        | Element / role      | ARIA                                                    | Notes                                                                                                                                                                                                                                                                    |
+| ----------- | ------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Card.Root   | `<div>` → `generic` | none. The consumer adds it with the element             | `class="kv-card"`. `as="article"`, `"section"` with `aria-labelledby`, `"figure"` or `"li"` give it a role. Also exported as `CardRoot`                                                                                                                                  |
+| Card.Header | `<div>` → `generic` | none                                                    | `class="kv-card-header"`. **Never `<header>`**: at the top level it would be a `banner` landmark. Also exported as `CardHeader`                                                                                                                                          |
+| Card.Body   | `<div>` → `generic` | none                                                    | `class="kv-card-body"`. Also exported as `CardBody`                                                                                                                                                                                                                      |
+| Card.Footer | `<div>` → `generic` | none                                                    | `class="kv-card-footer"`. **Never `<footer>`**: at the top level it would be a `contentinfo` landmark. Also exported as `CardFooter`                                                                                                                                     |
+| Card.Root   | `as`                | the chosen element's own                                | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Card.Root:<tag>`) and renders the `<div>`. Header, Body and Footer have no `as`: they are always a `<div>`. `className` joins, `style` and refs pass |
+| every part  | attributes          | passed through                                          | `aria-*`, `id`, `lang`, `data-*` and every other attribute reach the element unchanged. The part's class is its own: a `className` prop joins it, never replaces it                                                                                                      |
+| every part  | never               | no `role`, `aria-*`, `tabindex`, `inert`, `aria-hidden` | No click handler, no heading, no live region, no text                                                                                                                                                                                                                    |
 
 `useCard()` gives the same `rootProps`, `headerProps`, `bodyProps` and `footerProps` (only `className`) for your own elements.
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part                 | `as`                                                  | Why                                                                                                                                   |
+| -------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Card.Root            | `div` (default), `li`, `article`, `figure`, `section` | A list item, a self-contained item, media with a caption, or a named region. No `aside` (a card is an object, not tangential content) |
+| Header, Body, Footer | none                                                  | Always a `<div>`: a `<header>` or `<footer>` would become a landmark                                                                  |
 
 ## Keyboard
 
@@ -57,8 +66,8 @@ Card renders no text, so it has no message keys.
 - **Alt text.** `alt=""` for a decorative image, which most card images are when the heading names the topic. Real alt text for an informative one. No text in images. The image comes first in the DOM, as it does visually (1.3.2, 1.1.1).
 - **Links.** One link per card, in the heading, with text that makes sense on its own (2.4.4). No "Read more", and no second link on the image.
 - **Buttons.** Verbs, one primary per view. Navigation is a Link, not a Button.
-- **Landmarks.** `render={<section aria-labelledby={headingId} />}` or `<aside aria-labelledby>` only for a region a user would want to jump to. A `section` without a name isn't a landmark. Never make every card in a list a landmark. `<article>` is for a self-contained item such as a news story.
-- **Lists.** A list of cards is a `<ul>` with each card rendered as `<li>` (`render={<li />}`), so screen readers announce the number of items. The default theme draws no marker on a card, and Safari can then expose a `<ul>` without visible markers as a plain group. `role="list"` on the `<ul>` keeps it a list there (see Known issues).
+- **Landmarks.** `as="section"` with `aria-labelledby={headingId}` only for a region a user would want to jump to. A `section` without a name isn't a landmark. Never make every card in a list a landmark. `<article>` is for a self-contained item such as a news story.
+- **Lists.** A list of cards is a `<ul>` with each card rendered as `<li>` (`as="li"`), so screen readers announce the number of items. The default theme draws no marker on a card, and Safari can then expose a `<ul>` without visible markers as a plain group. `role="list"` on a hand-written `<ul>` keeps it a list there (see Known issues); Columns and Stack add it themselves.
 - **Card or Section.** A card is one identifiable thing. A region of the page (a sidebar, a band, a group of controls) is a [Section](../section/section.a11y.md), and a form section is a heading or a `<fieldset>`. A Card on a Section is fine. Don't put a Section inside a Card.
 - **Language.** `lang` on any card text in another language (3.1.2).
 - **Parts are direct children of the Root.** The default theme's padding model relies on it. Don't render an empty part.
@@ -104,5 +113,5 @@ Headless: Card ships no CSS. With `@kvirn-ui/theme/theme.css` (design spec `docs
 ## Known issues
 
 - **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
-- **`role="list"` and lint.** `<ul role="list">` is the recipe everywhere (stories, docs, examples). The repository's jsx-a11y `no-redundant-roles` is relaxed for `ul` + `list` only (maintainer-approved 2026-10-06, `vite.config.ts`), because Safari and VoiceOver drop the list role when `list-style: none` removes the markers. This resolves the open question in Plan 0007. Check the list in VoiceOver + Safari in the manual AT run.
+- **`role="list"` and lint.** Write `role="list"` on a hand-written `<ul>` (stories, docs, examples); Columns and Stack add it themselves on a `ul` or `ol`. The repository's jsx-a11y `no-redundant-roles` is relaxed for `ul` + `list` only (maintainer-approved 2026-10-06, `vite.config.ts`), because Safari and VoiceOver drop the list role when `list-style: none` removes the markers. This resolves the open question in Plan 0007. Check the list in VoiceOver + Safari in the manual AT run.
 - **Prose and nested cards.** Prose turned on inside a card (`kv-prose`) stops at a nested card, for two levels of nesting. Deeper nesting isn't supported by the default theme's selectors.

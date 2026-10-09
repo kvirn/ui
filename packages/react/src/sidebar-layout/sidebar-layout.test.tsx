@@ -14,7 +14,7 @@ import {
   SidebarLayoutRoot,
   SidebarLayoutSidebar,
 } from './sidebar-layout.tsx'
-import type { SidebarLayoutRootProps, SidebarLayoutState } from './sidebar-layout.tsx'
+import type { SidebarLayoutRootProps } from './sidebar-layout.tsx'
 import { useSidebarLayout } from './use-sidebar-layout.ts'
 import type {
   SidebarLayoutPartProps,
@@ -44,11 +44,11 @@ afterEach(() => {
 function ArticlePage() {
   return (
     <SidebarLayout.Root>
-      <SidebarLayout.Sidebar render={<nav aria-label="I det här avsnittet" />}>
+      <SidebarLayout.Sidebar as="nav" aria-label="I det här avsnittet">
         <Link.Root href="#avfall">Avfall</Link.Root>
         <Link.Root href="#vatten">Vatten</Link.Root>
       </SidebarLayout.Sidebar>
-      <SidebarLayout.Content render={<main />}>
+      <SidebarLayout.Content as="main">
         <h1>Sophämtning</h1>
         <Button>Beställ extra tömning</Button>
       </SidebarLayout.Content>
@@ -137,26 +137,14 @@ describe('rendering', () => {
   })
 
   test.each(parts)(
-    'SidebarLayout.%s keeps its own class when a className or a render element adds others',
+    'SidebarLayout.%s keeps its own class when a className is added',
     async (_name, Part, className) => {
       await render(
         <SidebarLayout.Root>
-          <Part className="fran-prop" render={<section className="annat" data-testid="part" />} />
+          <Part className="fran-prop" data-testid="part" />
         </SidebarLayout.Root>,
       )
-      await expect.element(page.getByTestId('part')).toHaveClass(className, 'fran-prop', 'annat')
-    },
-  )
-
-  test.each(parts)(
-    'SidebarLayout.%s keeps its own class when a render element’s className is empty',
-    async (_name, Part, className) => {
-      await render(
-        <SidebarLayout.Root>
-          <Part render={<section className="" data-testid="part" />} />
-        </SidebarLayout.Root>,
-      )
-      expect(page.getByTestId('part').element().className).toBe(className)
+      await expect.element(page.getByTestId('part')).toHaveClass(className, 'fran-prop')
     },
   )
 
@@ -179,7 +167,7 @@ describe('rendering', () => {
   })
 })
 
-describe('render and ref', () => {
+describe('as and ref', () => {
   test('Sidebar as <nav aria-label> is a named navigation landmark', async () => {
     const { container } = await render(<ArticlePage />)
     await expect
@@ -199,22 +187,32 @@ describe('render and ref', () => {
     expect(ref.current).toBe(page.getByTestId('part').element())
   })
 
-  test('a function receives the part props with the class and the ref, and an empty state', async () => {
-    const seenStates: SidebarLayoutState[] = []
-    const ref = createRef<HTMLElement>()
+  test('Sidebar takes nav and aside, Content takes main, section and article', async () => {
     await render(
-      <SidebarLayout.Root
-        ref={ref}
-        render={(rootProps, state) => {
-          seenStates.push(state)
-          return <aside {...rootProps} data-testid="root" />
-        }}
-      />,
+      <>
+        <SidebarLayout.Sidebar as="aside" aria-label="Relaterat" data-testid="aside" />
+        <SidebarLayout.Content as="section" aria-label="Text" data-testid="section" />
+        <SidebarLayout.Content as="article" data-testid="article" />
+      </>,
     )
-    const root = page.getByTestId('root')
-    await expect.element(root).toHaveClass('kv-sidebar-layout')
-    expect(ref.current).toBe(root.element())
-    expect(seenStates.at(-1)).toEqual({})
+    expect(page.getByTestId('aside').element().tagName).toBe('ASIDE')
+    expect(page.getByTestId('section').element().tagName).toBe('SECTION')
+    expect(page.getByTestId('article').element().tagName).toBe('ARTICLE')
+  })
+
+  test('an element outside a part’s allowed list warns once and renders a div', async () => {
+    const notAllowed = 'main' as 'div'
+    await render(<SidebarLayout.Sidebar as={notAllowed} data-testid="sidebar" />)
+    expect(page.getByTestId('sidebar').element().tagName).toBe('DIV')
+    expect(
+      consoleWarn.mock.calls.filter(([message]) =>
+        String(message).includes('SidebarLayout.Sidebar as="main"'),
+      ),
+    ).toHaveLength(1)
+  })
+
+  test('the Root takes no as', () => {
+    expectTypeOf<SidebarLayoutRootProps>().not.toHaveProperty('as')
   })
 })
 

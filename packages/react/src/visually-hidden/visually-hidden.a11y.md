@@ -2,7 +2,7 @@
 
 - **APG pattern:** none. WCAG technique C7 (hide text visually and keep it for assistive technology).
 - **Deviations:** none
-- **Native elements used:** `<span>`. The consumer can pick another element with `render`, and its own semantics apply.
+- **Native elements used:** `<span>`. The consumer can pick another with `as` (allowed elements below), and its own semantics apply.
 - **Status:** alpha candidate (Plan 0054). Gates pending. Manual AT is `pending`.
 - **Tests:** `visually-hidden.test.tsx` next to this file. `visually-hidden.stories.tsx` in `apps/storybook/src/components/visually-hidden/`.
 
@@ -10,10 +10,18 @@ VisuallyHidden is a span with a class, so the theme can clip it. It adds no role
 
 ## Roles, states, properties
 
-| Part           | Element / role               | ARIA                       | Notes                                                                                                                        |
-| -------------- | ---------------------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| VisuallyHidden | `<span>` → no role           | none                       | `class="kv-visually-hidden"`. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged. The text is yours |
-| VisuallyHidden | `render` (element, function) | the rendered element's own | One element. `render={<h2 />}` gives a heading nobody sees. The function form gets the props to spread                       |
+| Part           | Element / role     | ARIA                     | Notes                                                                                                                                                                                                              |
+| -------------- | ------------------ | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| VisuallyHidden | `<span>` → no role | none                     | `class="kv-visually-hidden"`. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged. The text is yours                                                                                       |
+| VisuallyHidden | `as`               | the chosen element's own | One element, chosen with a string. `as="h2"` gives a heading nobody sees. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:VisuallyHidden:<tag>`) and renders the default element. |
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part           | `as`                                       | Why                                                                                                                                                      |
+| -------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| VisuallyHidden | `span` (default), `div`, `p`, `h2` to `h6` | A hidden heading names a region in the outline; `div` and `p` hold block text. No `h1` (the page's title is visible), no landmark or interactive element |
 
 ## Keyboard
 

@@ -7,11 +7,12 @@ import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { useAnnouncer } from '../announcer/use-announcer.ts'
-import { AlertDialog, Dialog, DialogRoot, Popover } from '../index.ts'
+import { AlertDialog, Button, Dialog, DialogRoot, Popover } from '../index.ts'
 import type {
   DialogChangeDetails,
   DialogChangeReason,
   DialogRootProps,
+  DialogActionsProps,
   UseDialogOptions,
   UseDialogResult,
 } from '../index.ts'
@@ -253,36 +254,39 @@ describe('rendering and ARIA', () => {
     await expect.poll(isModal).toBe(true)
   })
 
-  test('render replaces the element and gives the state', async () => {
-    const states: boolean[] = []
+  test('as sets the Title level and the Body, and an element outside the list warns once', async () => {
+    const notAllowed = 'span' as DialogActionsProps['as']
     await render(
-      <Dialog.Root>
-        <Dialog.Trigger
-          render={(partProps) => (
-            <button {...partProps} data-egen="render">
-              Ändra
-            </button>
-          )}
-        />
-        <Dialog.Popup
-          aria-label="Ändra"
-          render={(partProps, state) => {
-            states.push(state.isOpen)
-            return <dialog {...partProps} data-egen="popup" />
-          }}
-        >
-          <Dialog.Title render={(partProps) => <h3 {...partProps}>{partProps.children}</h3>}>
-            Titel
-          </Dialog.Title>
+      <Dialog.Root defaultOpen>
+        <Dialog.Popup>
+          <Dialog.Title as="h3">Titel</Dialog.Title>
+          <Dialog.Description as="div">Beskrivning</Dialog.Description>
+          <Dialog.Body as="section" aria-label="Innehåll">
+            Text
+          </Dialog.Body>
+          <Dialog.Actions as={notAllowed}>Knappar</Dialog.Actions>
         </Dialog.Popup>
       </Dialog.Root>,
     )
-    expect(popupElement()?.getAttribute('data-egen')).toBe('popup')
-    expect(states).toContain(false)
-    await userEvent.click(page.getByRole('button', { name: 'Ändra' }))
-    await expect.poll(isModal).toBe(true)
-    expect(states.at(-1)).toBe(true)
     expect(document.querySelector('h3.kv-dialog-title')).not.toBeNull()
+    expect(page.getByText('Beskrivning').element().tagName).toBe('DIV')
+    expect(document.querySelector('section.kv-dialog-body')).not.toBeNull()
+    expect(consoleWarn).toHaveBeenCalledTimes(1)
+    expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('Dialog.Actions as="span"')
+  })
+
+  test('Dialog.Close as={Button} closes the dialog and keeps its name and merged props', async () => {
+    await render(
+      <Dialog.Root defaultOpen>
+        <Dialog.Popup aria-label="Ändra">
+          <Dialog.Close as={Button} data-egen="close" />
+        </Dialog.Popup>
+      </Dialog.Root>,
+    )
+    const close = page.getByRole('button', { name: 'Close dialog' })
+    await expect.element(close).toHaveAttribute('data-egen', 'close')
+    await userEvent.click(close)
+    await expect.poll(isModal).toBe(false)
   })
 
   test('useDialog spreads the same props on your own elements', async () => {

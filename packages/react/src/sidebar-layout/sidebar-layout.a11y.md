@@ -2,7 +2,7 @@
 
 - **APG pattern:** none. SidebarLayout is not a widget, so there is no APG pattern.
 - **Deviations:** none
-- **Native elements used:** `<div>` for every part by default. The consumer picks `<nav aria-label>`, `<aside aria-labelledby>`, `<main>` or `<section aria-labelledby>` with `render`, and the element's own semantics apply.
+- **Native elements used:** `<div>` for every part by default. The consumer picks another with `as` on the Sidebar and the Content (allowed elements below), and the element's own semantics apply.
 - **Status:** alpha candidate (Plan 0056). Gates 1–5 pass, accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `sidebar-layout.test.tsx` next to this file. `sidebar-layout.stories.tsx` in `apps/storybook/src/components/sidebar-layout/`.
 
@@ -10,16 +10,26 @@ SidebarLayout is a side column and a content column: stacked below `64rem`, side
 
 ## Roles, states, properties
 
-| Part                  | Element / role               | ARIA                                          | Notes                                                                                                                                                                             |
-| --------------------- | ---------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| SidebarLayout.Root    | `<div>` → `generic`          | none                                          | `class="kv-sidebar-layout"`, with `kv-sidebar-layout--sidebar-sm` for `sidebarWidth="sm"`. Also exported as `SidebarLayoutRoot`                                                   |
-| SidebarLayout.Sidebar | `<div>` → `generic`          | none. The consumer adds it with the element   | `class="kv-sidebar-layout-sidebar"`. `render={<nav aria-label="…" />}` is a navigation landmark and must be named. Also exported as `SidebarLayoutSidebar`                        |
-| SidebarLayout.Content | `<div>` → `generic`          | none                                          | `class="kv-sidebar-layout-content"`. **Not `<main>` by default:** a page has one `main`, so `render={<main />}` is the consumer's choice. Also exported as `SidebarLayoutContent` |
-| every part            | `render` (element, function) | the rendered element's own                    | One element per part. `className` joins, `style` merges, refs merge                                                                                                               |
-| every part            | attributes                   | passed through                                | `aria-*`, `id`, `lang` and every other attribute reach the element unchanged                                                                                                      |
-| every part            | never                        | no `role`, `tabindex`, `inert`, `aria-hidden` | No handler, no heading, no live region, no text                                                                                                                                   |
+| Part                  | Element / role      | ARIA                                          | Notes                                                                                                                                                                                                                                             |
+| --------------------- | ------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SidebarLayout.Root    | `<div>` → `generic` | none                                          | `class="kv-sidebar-layout"`, with `kv-sidebar-layout--sidebar-sm` for `sidebarWidth="sm"`. Also exported as `SidebarLayoutRoot`                                                                                                                   |
+| SidebarLayout.Sidebar | `<div>` → `generic` | none. The consumer adds it with the element   | `class="kv-sidebar-layout-sidebar"`. `as="nav"` with `aria-label="…"` is a navigation landmark and must be named. Also exported as `SidebarLayoutSidebar`                                                                                         |
+| SidebarLayout.Content | `<div>` → `generic` | none                                          | `class="kv-sidebar-layout-content"`. **Not `<main>` by default:** a page has one `main`, so `as="main"` is the consumer's choice. Also exported as `SidebarLayoutContent`                                                                         |
+| Sidebar, Content      | `as`                | the chosen element's own                      | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:SidebarLayout.Sidebar:<tag>`) and renders the default element. The Root has no `as`. `className` joins, `style` and refs pass |
+| every part            | attributes          | passed through                                | `aria-*`, `id`, `lang` and every other attribute reach the element unchanged                                                                                                                                                                      |
+| every part            | never               | no `role`, `tabindex`, `inert`, `aria-hidden` | No handler, no heading, no live region, no text                                                                                                                                                                                                   |
 
 `useSidebarLayout()` gives the same frozen `rootProps`, `sidebarProps` and `contentProps` (only `className`). A Sidebar or Content outside a Root warns once (`sidebar-layout-<part>-outside-root`).
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part    | `as`                                          | Why                                                                                      |
+| ------- | --------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Root    | none                                          | Always a `<div>`: the landmarks belong to its parts                                      |
+| Sidebar | `div` (default), `nav`, `aside`               | A named navigation or complementary landmark. A `nav` or `aside` without a name is noise |
+| Content | `div` (default), `main`, `section`, `article` | `main` (one per page), a named `section`, or a self-contained `article`                  |
 
 ## Keyboard
 

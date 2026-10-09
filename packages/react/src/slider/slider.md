@@ -23,18 +23,17 @@ A Slider is for an approximate value, where "about this much" is the answer: a s
 
 Slider is a single part, `<Slider>`. `type` is fixed. There are no sub-parts: the label, help text and error are the [Field's](../field/field.md).
 
-| Prop              | Type                                          | Meaning                                                                                                                      |
-| ----------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `value`           | `number`                                      | Controlled: the number from your logic. Pair it with `onValueChange`                                                         |
-| `defaultValue`    | `number`                                      | Uncontrolled: the browser keeps the number, and a form submit sends it                                                       |
-| `min`, `max`      | `number`                                      | The ends. `0` and `100` by default                                                                                           |
-| `step`            | `number`                                      | The distance between values. `1` by default                                                                                  |
-| `name`            | `string`                                      | The name a form submit uses                                                                                                  |
-| `disabled`        | `boolean`                                     | Native `disabled`: skipped by Tab. A disabled Field disables it too. Sets `data-disabled`                                    |
-| `valueText`       | `(value: number) => string`                   | What `aria-valuetext` says. Default: the number formatted with the provider's locale                                         |
-| `onValueChange`   | `(value, { reason: 'input', event }) => void` | Called on every change with the new number. It only reports. `onChange` still works too                                      |
-| `aria-labelledby` | `string`                                      | Names the slider by another element and opts it out of the Field (Pattern A, below)                                          |
-| `render`          | `(props, state) => ReactElement`              | Another element. It must still be an `<input type="range">`. `state` is `isInvalid`, `isDisabled`, `isFocusVisible`, `value` |
+| Prop              | Type                                          | Meaning                                                                                   |
+| ----------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `value`           | `number`                                      | Controlled: the number from your logic. Pair it with `onValueChange`                      |
+| `defaultValue`    | `number`                                      | Uncontrolled: the browser keeps the number, and a form submit sends it                    |
+| `min`, `max`      | `number`                                      | The ends. `0` and `100` by default                                                        |
+| `step`            | `number`                                      | The distance between values. `1` by default                                               |
+| `name`            | `string`                                      | The name a form submit uses                                                               |
+| `disabled`        | `boolean`                                     | Native `disabled`: skipped by Tab. A disabled Field disables it too. Sets `data-disabled` |
+| `valueText`       | `(value: number) => string`                   | What `aria-valuetext` says. Default: the number formatted with the provider's locale      |
+| `onValueChange`   | `(value, { reason: 'input', event }) => void` | Called on every change with the new number. It only reports. `onChange` still works too   |
+| `aria-labelledby` | `string`                                      | Names the slider by another element and opts it out of the Field (Pattern A, below)       |
 
 | State attribute      | When                              |
 | -------------------- | --------------------------------- |

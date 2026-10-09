@@ -17,7 +17,7 @@ The provider's contract is about what it guarantees for other components (Plan 0
 
 | Part                            | Element / role                                                  | ARIA                                                 | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | ------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| KvirnProvider                   | none (context only)                                             | none                                                 | Writes `data-kv-color-scheme` and `data-kv-contrast` (resolved values) on `<html>`. Not exposed to AT                                                                                                                                                                                                                                                                                                                                 |
+| KvirnProvider                   | none (context only)                                             | none                                                 | Writes `data-kv-color-scheme`, `data-kv-contrast` and `data-kv-motion` (resolved values) on `<html>`. Not exposed to AT                                                                                                                                                                                                                                                                                                               |
 | `localeProps`                   | consumer's element                                              | `lang`, `dir` attributes                             | `lang` is the BCP 47 locale. `dir` comes from the locale, or the `dir` prop                                                                                                                                                                                                                                                                                                                                                           |
 | KvirnThemeScript                | `<script nonce>`                                                | none                                                 | Blocking, before first paint. Not exposed to AT                                                                                                                                                                                                                                                                                                                                                                                       |
 | Theme switcher (fixture)        | `<fieldset>` → `group`, `<legend>` → name                       | none added                                           | One group per axis: colour scheme, contrast                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -68,28 +68,28 @@ The provider has no strings of its own. It resolves every component's keys. Plan
 
 ## Consumer responsibilities
 
-- Set `<html lang dir>` to the root provider's locale and direction (3.1.1). The provider can't: it renders no element of its own to carry them, and a server layout can't spread `localeProps` on `<html>`.
+- Set `<html lang dir>` to the root provider's locale and direction (3.1.1), with `getLocaleProps(locale, dir?)` from `@kvirn-ui/react/server`. The provider can't: it renders no element of its own to carry them, and a server layout can't spread `localeProps` on `<html>`.
 - Spread `useLocale().localeProps` on the element that starts a section in another language, so `lang` matches the strings (3.1.2). Nested providers inherit everything they don't set.
 - Pass a catalog (`messages={sv}`) for a non-English locale. Otherwise English strings render under a non-English `lang`, with a dev warning per key.
 - A nested provider that changes the language must pass that language's catalog too (`<KvirnProvider locale="fi-FI" messages={fi}>`). Otherwise its strings stay in the parent's language while `lang` says otherwise. A dev warning names both locales.
 - When overriding a message that forms an accessible name, keep it consistent with the visible label (2.5.3 Label in Name).
 - Build the theme switcher from native controls with visible labels (for example radio groups in a `<fieldset>` with a `<legend>`), and don't make the resolved-theme text a live region.
-- Render `KvirnThemeScript` with the response's CSP `nonce` in the server-rendered `<head>`, and put `suppressHydrationWarning` on `<html>`. With a custom storage adapter, render the `data-kv-color-scheme` and `data-kv-contrast` attributes on the server instead.
-- Set `timeZone` explicitly for server rendering, so dates don't differ between server and client.
+- Render `KvirnThemeScript` with the response's CSP `nonce` in the server-rendered `<head>`, and put `suppressHydrationWarning` on `<html>`. Pass it the provider's `theme` object, from the server entry (`@kvirn-ui/react/server`) in a Server Component. It runs before first paint, and until it does the theme's own `prefers-*` rules answer for a visitor's OS setting (1.4.3, 1.4.11, 2.3.3).
+- Set `timeZone` explicitly, the same on the server and in the browser. Without one, instants are shown in UTC and the first one formatted warns in development.
 
 ## Visual / modes
 
 - Focus indicator: the provider renders nothing visible. The fixture relies on the browser's native radio focus ring. The default theme restyles rings in `@kvirn-ui/theme`.
 - Target size: fixture radios are 24 × 24 CSS px, in labels at least 28px tall (2.5.8).
 - forced-colors behaviour: the provider keeps writing the resolved attributes. `@kvirn-ui/theme` must let the OS palette win and never override `forced-colors: active`.
-- reduced-motion behaviour: no motion. A theme change is instant.
+- reduced-motion behaviour: no motion. A theme change is instant, and `data-kv-motion="reduce"` stops theme transitions and animations like `prefers-reduced-motion` (2.3.3).
 - Reflow: no horizontal scrolling at 320 CSS px for the Swedish, theme-switcher, nested-locale and RTL stories (the reflow sweep, 1.4.10).
 
 ## WCAG SCs covered
 
 - 1.4.3 Contrast (Minimum), 1.4.6 Contrast (Enhanced), 1.4.11 Non-text Contrast: OS preferences are honoured by default, and high contrast is user-selectable. Contrast values themselves are `@kvirn-ui/theme`'s (`theme:check`).
 - 1.4.10 Reflow: the reflow sweep.
-- 3.1.1 Language of Page: consumer responsibility (`<html lang dir>`), documented in the usage doc's setup.
+- 3.1.1 Language of Page: consumer responsibility (`<html lang dir>`, with `getLocaleProps`), documented in the usage doc's setup.
 - 3.1.2 Language of Parts: `localeProps`, and the dev warning for a nested language change without a catalog (`kvirn-provider.test.tsx › nesting`, `a nested provider inherits unset props and changes only its section`).
 - 3.2.2 On Input: selecting a theme changes presentation only. No context change, no focus move.
 - 4.1.2 Name, Role, Value: empty overrides fall through, so names are never empty (`kvirn-provider.test.tsx › an empty override falls through to the next level and warns once`).

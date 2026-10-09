@@ -1,22 +1,12 @@
 'use client'
-import { useContext, useRef } from 'react'
+import { createElement, useContext, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { FieldContext } from '../field/field-context.ts'
 import { joinIds } from '../field/field-state.ts'
 import { useControlWarnings } from '../field/use-control-warnings.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useRadio } from './use-radio.ts'
-
-/** What `render` receives as its second argument. */
-export interface RadioState {
-  isInvalid: boolean
-  isDisabled: boolean
-  /** Known from props only: `undefined` for an uncontrolled radio. */
-  isChecked: boolean | undefined
-}
 
 export interface RadioProps extends Omit<
   ComponentPropsWithRef<'input'>,
@@ -28,7 +18,6 @@ export interface RadioProps extends Omit<
   checked?: boolean | undefined
   /** Outside a RadioGroup only. The group's `defaultValue` sets it otherwise. */
   defaultChecked?: boolean | undefined
-  render?: RenderProp<ComponentPropsWithRef<'input'>, RadioState> | undefined
 }
 
 /**
@@ -53,7 +42,6 @@ export function Radio({
   disabled,
   id,
   'aria-describedby': ownDescribedBy,
-  render,
   ref,
   ...otherProps
 }: RadioProps): ReactElement {
@@ -67,19 +55,10 @@ export function Radio({
   const ownId = field === null ? { id } : {}
   const describedBy = joinIds(radio.inputProps['aria-describedby'], ownDescribedBy)
 
-  return renderPart({
-    render,
-    defaultElement: 'input',
-    partProps: {
-      ...mergeProps(otherProps, ownId, radio.inputProps),
-      'aria-describedby': describedBy,
-      ref: mergedRef,
-    },
-    state: {
-      isInvalid: radio.isInvalid,
-      isDisabled: radio.isDisabled,
-      isChecked: radio.isChecked,
-    },
+  return createElement('input', {
+    ...mergeProps(otherProps, ownId, radio.inputProps),
+    'aria-describedby': describedBy,
+    ref: mergedRef,
   })
 }
 Radio.displayName = 'Radio'

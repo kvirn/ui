@@ -119,23 +119,23 @@ describe('Stepper', () => {
     expect(document.querySelector('[aria-live]')).toBeNull()
   })
 
-  test('render changes the element and its function gets the state and the text', async () => {
-    await render(
-      <>
-        <Stepper current={1} total={3} render={<div data-testid="element" />} />
-        <Stepper
-          current={2}
-          total={3}
-          render={(props, state) => (
-            <div {...props} data-testid="function" title={`${state.current}/${state.total}`} />
-          )}
-        />
-      </>,
-    )
-    expect(page.getByTestId('element').element().tagName).toBe('DIV')
-    expect(page.getByTestId('element').element().textContent).toBe('Step 1 of 3')
-    expect(page.getByTestId('function').element().textContent).toBe('Step 2 of 3')
-    expect(page.getByTestId('function').element().getAttribute('title')).toBe('2/3')
+  test('as changes the element to a div and keeps the text, class and ref', async () => {
+    const ref = createRef<HTMLElement>()
+    await render(<Stepper current={1} total={3} as="div" ref={ref} data-testid="element" />)
+    const element = page.getByTestId('element').element()
+    expect(element.tagName).toBe('DIV')
+    expect(element.textContent).toBe('Step 1 of 3')
+    expect(element.className).toBe('kv-stepper')
+    expect(ref.current).toBe(element)
+  })
+
+  test('an element outside the allowed list warns once and renders a p', async () => {
+    const notAllowed = 'h2' as 'p'
+    await render(<Stepper current={1} total={3} as={notAllowed} data-testid="element" />)
+    expect(page.getByTestId('element').element().tagName).toBe('P')
+    expect(
+      consoleWarn.mock.calls.filter((call) => String(call[0]).includes('Stepper as="h2"')),
+    ).toHaveLength(1)
   })
 
   test('useStepper gives the text, the element and the class', async () => {

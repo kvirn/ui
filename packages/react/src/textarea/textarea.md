@@ -19,10 +19,10 @@ Textarea is one element, so it has no `.Root`. The props are the controls above,
 
 | Part           | Renders      | Takes                                                                                                                                                                                                                       |
 | -------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Textarea       | `<textarea>` | `value`, `defaultValue`, `onValueChange`, `rows`, `maxLength`, `characterCount`, `countCharacters`, `messages`, `render`, `ref`, and the native props. With `characterCount` it also renders a `CharacterCount` after it    |
+| Textarea       | `<textarea>` | `value`, `defaultValue`, `onValueChange`, `rows`, `maxLength`, `characterCount`, `countCharacters`, `messages`, `ref`, and the native props. With `characterCount` it also renders a `CharacterCount` after it              |
 | CharacterCount | `<p>`        | `value`, `limit`, `countCharacters`, `announceFrom`, `announcementDebounceMilliseconds`, `announceChanges`, `messages`, `render`, `ref`, and the native `<p>` props. For your own markup, with `useTextarea` or a TextInput |
 
-`render` receives `(textareaProps, state)`, where `state` is `{ isInvalid, isRequired, isDisabled, isFocusVisible, isOverLimit }`. It must still render a `<textarea>`: spread the props, because they hold the Field's wiring and the class. `CharacterCount`'s `render` gets `{ length, limit, remaining, excess, isEmpty, isOver, isNear }` and must still render an element with the props it is given.
+`CharacterCount`'s `render` gets `{ length, limit, remaining, excess, isEmpty, isOver, isNear }` and must still render an element with the props it is given.
 
 | State attribute      | On                       | When                                                                                               |
 | -------------------- | ------------------------ | -------------------------------------------------------------------------------------------------- |
@@ -185,10 +185,6 @@ function StoryBox() {
 
 `useTextarea` reads the nearest Field, and returns `textareaProps` with the Field's wiring, `kv-textarea`, `rows` (5 unless you set it) and the change and focus handlers, plus `isInvalid`, `isRequired`, `isDisabled`, `isFocused` and `isFocusVisible`. Spread your form library's props next to it. `useCharacterCount({ value, limit })` is the hook behind `CharacterCount`: it returns `countProps`, `count` and `text` for your own element.
 
-### `render`
+### Your own element
 
-```tsx
-<Textarea render={(textareaProps) => <MyTextarea {...textareaProps} />} />
-```
-
-The element must still be a `<textarea>`. Spread the props: they hold the Field's wiring and the class.
+The Textarea renders a native `<textarea>`. To build your own, use `useTextarea()` and spread `textareaProps`: they hold the Field's wiring and the class.

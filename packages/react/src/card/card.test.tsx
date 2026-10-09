@@ -1,23 +1,30 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, useId } from 'react'
-import { describe, expect, expectTypeOf, test } from 'vite-plus/test'
+import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
+import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
 import { Button } from '../button/button.tsx'
+import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Link } from '../link/link.tsx'
 import { Card, CardBody, CardFooter, CardHeader, CardRoot } from './card.tsx'
-import type {
-  CardBodyProps,
-  CardFooterProps,
-  CardHeaderProps,
-  CardRootProps,
-  CardState,
-} from './card.tsx'
+import type { CardBodyProps, CardFooterProps, CardHeaderProps, CardRootProps } from './card.tsx'
 import { useCard } from './use-card.ts'
 import type { CardPartProps, UseCardResult } from './use-card.ts'
 
 // Contract: card.a11y.md.
+
+let consoleWarn: MockInstance<Console['warn']>
+
+beforeEach(() => {
+  resetDevWarnings()
+  consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+})
+
+afterEach(() => {
+  consoleWarn.mockRestore()
+})
 
 const parts = [
   ['Root', Card.Root, 'kv-card'],
@@ -168,26 +175,6 @@ describe('rendering', () => {
     await expect.element(page.getByTestId('card')).toHaveClass('kv-card', 'annat')
   })
 
-  test.each(parts)(
-    'Card.%s keeps its own class when a render element sets another one',
-    async (_name, Part, className) => {
-      await render(
-        <Part className="fran-prop" render={<section className="annat" data-testid="part" />}>
-          Text
-        </Part>,
-      )
-      await expect.element(page.getByTestId('part')).toHaveClass(className, 'fran-prop', 'annat')
-    },
-  )
-
-  test.each(parts)(
-    'Card.%s keeps its own class when a render element’s className is empty',
-    async (_name, Part, className) => {
-      await render(<Part render={<section className="" data-testid="part" />}>Text</Part>)
-      expect(page.getByTestId('part').element().className).toBe(className)
-    },
-  )
-
   test('the named exports are the compound parts', () => {
     expect(CardRoot).toBe(Card.Root)
     expect(CardHeader).toBe(Card.Header)
@@ -219,31 +206,32 @@ describe('refs and style', () => {
     expect(ref.current).toBe(page.getByTestId('part').element())
   })
 
-  test('merges style with a render element, and both refs get the element', async () => {
-    const partRef = createRef<HTMLElement>()
-    const elementRef = createRef<HTMLElement>()
+  test('applies style and className on the chosen element, and the ref gets it', async () => {
+    const ref = createRef<HTMLElement>()
     await render(
       <Card.Root
-        ref={partRef}
-        style={{ maxInlineSize: '20rem', color: 'rgb(0, 0, 0)' }}
-        render={<article ref={elementRef} style={{ color: 'rgb(1, 2, 3)' }} data-testid="card" />}
+        ref={ref}
+        as="article"
+        className="annat"
+        style={{ maxInlineSize: '20rem' }}
+        data-testid="card"
       >
         Text
       </Card.Root>,
     )
     const card = page.getByTestId('card')
-    await expect.element(card).toHaveStyle({ maxInlineSize: '20rem', color: 'rgb(1, 2, 3)' })
-    expect(partRef.current).toBe(card.element())
-    expect(elementRef.current).toBe(card.element())
+    await expect.element(card).toHaveStyle({ maxInlineSize: '20rem' })
+    await expect.element(card).toHaveClass('kv-card', 'annat')
+    expect(ref.current).toBe(card.element())
   })
 })
 
-describe('render', () => {
-  test('an element changes the element and keeps the children', async () => {
+describe('as', () => {
+  test('article changes the element and keeps the children', async () => {
     const { container } = await render(
       <main>
-        <Card.Root render={<article />}>
-          <Card.Body render={<div data-own="" />}>
+        <Card.Root as="article">
+          <Card.Body data-own="">
             <h2>Nyheter</h2>
           </Card.Body>
         </Card.Root>
@@ -256,11 +244,11 @@ describe('render', () => {
     await expectNoA11yViolations(container)
   })
 
-  test('<section aria-labelledby> makes the card a named region', async () => {
+  test('section with aria-labelledby makes the card a named region', async () => {
     function ContactSection() {
       const headingId = useId()
       return (
-        <Card.Root render={<section aria-labelledby={headingId} />}>
+        <Card.Root as="section" aria-labelledby={headingId}>
           <h2 id={headingId}>Kontakta oss</h2>
           <p>Ring kundcenter på 0123-45 67 89.</p>
         </Card.Root>
@@ -278,42 +266,35 @@ describe('render', () => {
   test('<li> cards make a list with one item per card', async () => {
     const { container } = await render(
       <ul>
-        <Card.Root render={<li />}>Nya öppettider</Card.Root>
-        <Card.Root render={<li />}>Vinterväghållning</Card.Root>
-        <Card.Root render={<li />}>Föreningsbidrag</Card.Root>
+        <Card.Root as="li">Nya öppettider</Card.Root>
+        <Card.Root as="li">Vinterväghållning</Card.Root>
+        <Card.Root as="li">Föreningsbidrag</Card.Root>
       </ul>,
     )
     expect(page.getByRole('listitem').elements()).toHaveLength(3)
     await expectNoA11yViolations(container)
   })
 
-  test('a function receives the part props and an empty state', async () => {
-    const seenStates: CardState[] = []
+  test('div, figure and article render their element', async () => {
     await render(
-      <Card.Footer
-        render={(footerProps, state) => {
-          seenStates.push(state)
-          return <div {...footerProps} data-testid="footer" data-own="" />
-        }}
-      >
-        Text
-      </Card.Footer>,
+      <>
+        <Card.Root as="div" data-testid="div" />
+        <Card.Root as="figure" data-testid="figure" />
+        <Card.Root as="article" data-testid="article" />
+      </>,
     )
-    const footer = page.getByTestId('footer')
-    await expect.element(footer).toHaveAttribute('data-own', '')
-    await expect.element(footer).toHaveTextContent('Text')
-    expect(seenStates.at(-1)).toEqual({})
+    expect(page.getByTestId('div').element().tagName).toBe('DIV')
+    expect(page.getByTestId('figure').element().tagName).toBe('FIGURE')
+    expect(page.getByTestId('article').element().tagName).toBe('ARTICLE')
   })
 
-  test('a function’s props include the ref', async () => {
-    const ref = createRef<HTMLElement>()
-    await render(
-      <Card.Root ref={ref} render={(rootProps) => <aside {...rootProps} data-testid="card" />}>
-        Text
-      </Card.Root>,
-    )
-    expect(ref.current).toBe(page.getByTestId('card').element())
-    expect(ref.current?.tagName).toBe('ASIDE')
+  test('an element outside the allowed list warns once and renders a div', async () => {
+    const notAllowed = 'main' as 'div'
+    await render(<Card.Root as={notAllowed} data-testid="card" />)
+    expect(page.getByTestId('card').element().tagName).toBe('DIV')
+    expect(
+      consoleWarn.mock.calls.filter(([message]) => String(message).includes('Card.Root as="main"')),
+    ).toHaveLength(1)
   })
 })
 
@@ -383,23 +364,23 @@ describe('server rendering', () => {
 })
 
 describe('types', () => {
-  test('exports the part, hook and state types', () => {
+  test('exports the part and hook types', () => {
     expectTypeOf<CardPartProps<'card'>>().toEqualTypeOf<{ className: 'kv-card' }>()
     expectTypeOf<UseCardResult['rootProps']['className']>().toEqualTypeOf<'kv-card'>()
     expectTypeOf<UseCardResult['headerProps']['className']>().toEqualTypeOf<'kv-card-header'>()
     expectTypeOf<UseCardResult['bodyProps']['className']>().toEqualTypeOf<'kv-card-body'>()
     expectTypeOf<UseCardResult['footerProps']['className']>().toEqualTypeOf<'kv-card-footer'>()
-    expectTypeOf<CardState>().toEqualTypeOf<Record<string, never>>()
   })
 
-  test('every part takes HTML attributes, a ref to any element, and render', () => {
+  test('every part takes HTML attributes and a ref to any element, and only the root takes as', () => {
+    expectTypeOf({} as CardRootProps).toHaveProperty('as')
+    expectTypeOf<CardHeaderProps>().not.toHaveProperty('as')
     for (const props of [
       {} as CardRootProps,
       {} as CardHeaderProps,
       {} as CardBodyProps,
       {} as CardFooterProps,
     ]) {
-      expectTypeOf(props).toHaveProperty('render')
       expectTypeOf(props).toHaveProperty('className')
       expectTypeOf(props).toHaveProperty('aria-labelledby')
       expectTypeOf(createRef<HTMLLIElement>()).toExtend<NonNullable<typeof props.ref>>()

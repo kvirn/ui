@@ -34,7 +34,7 @@ import { Disclosure } from '@kvirn-ui/react'
 | `focusableWhenDisabled`       | `false` | With `disabled`: `aria-disabled="true"` instead, so the trigger stays a Tab stop. Neither opens                                                                        |
 | `hiddenUntilFound`            | `false` | A closed panel is `hidden="until-found"`, so the browser's find-in-page and `#fragment` links can reveal it, and `onOpenChange(true, { reason: 'find-in-page' })` runs |
 
-Every part takes `render`, and `className`, `style`, handlers and refs merge with its own. `render` also receives `{ isOpen, isDisabled }`.
+Every part merges `className`, `style`, handlers and refs with its own. To build your own element, use `useDisclosure()`.
 
 ## Hook
 

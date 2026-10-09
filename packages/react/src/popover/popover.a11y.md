@@ -29,7 +29,7 @@ Rules, tested in `popover.test.tsx`, `use-popup.test.tsx` and `use-dismissable-l
 - **Same state as the page.** When the platform hides an open popup (a light dismiss, or another auto popover opening), `onOpenChange(false, { reason: 'light-dismiss' })` runs, so the state matches. A click on the trigger never opens a popup the platform just closed.
 - **Focus.** See Focus management.
 - **Server rendering.** Nothing reads `window` while rendering: the server writes `popover`, `data-placement`, `aria-*` and no inline position. Everything else happens in effects.
-- **`render` on every part,** with class and handlers merged and refs merged.
+- **`as`.** `Popover.Trigger` and `Popover.Close` take a component (`as={Button}`) that must be focusable and spread its props on a DOM node; its props are plain props, merged with the part's (handlers chain, `className` joins, refs merge). **Allowed elements:** `Popover.Popup` `div` (default) or `section`; another tag warns once (`as-not-allowed`) and falls back to `div`. Without `as` the trigger and close are `<button type="button">`.
 - **Dev warnings:** a Popup with no accessible name, and a Trigger, Popup or Close outside a Root.
 
 ## Keyboard

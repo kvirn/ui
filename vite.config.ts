@@ -1,6 +1,7 @@
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
 import { defineConfig } from 'vite-plus'
 import { playwright } from 'vite-plus/test/browser-playwright'
+import { cspFixturePlugin } from './tooling/vite-preset/csp-fixture.ts'
 import { workspaceSourceAlias } from './tooling/vite-preset/workspace-source.ts'
 
 // Only core/src/store/ may import @tanstack/store, and core never imports React.
@@ -234,6 +235,7 @@ export default defineConfig({
       },
       {
         resolve,
+        plugins: [cspFixturePlugin()],
         test: {
           name: 'browser',
           maxWorkers,

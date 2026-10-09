@@ -21,12 +21,12 @@ afterEach(async () => {
 test('useTheme works without a provider: follows the OS, writes <html>, persists to localStorage', async () => {
   await render(<ThemeSwitcherFixture />)
   await expect.element(page.getByRole('radio', { name: 'Follow system' }).first()).toBeChecked()
-  await expect.element(page.getByText('In use: Dark, Standard contrast')).toBeVisible()
+  await expect.element(page.getByText('In use: Dark, Standard contrast, Full motion')).toBeVisible()
   expect(document.documentElement.getAttribute(colorSchemeAttribute)).toBe('dark')
   expect(document.documentElement.getAttribute(contrastAttribute)).toBe('standard')
 
   await page.getByRole('radio', { name: 'High contrast' }).click()
-  await expect.element(page.getByText('In use: Dark, High contrast')).toBeVisible()
+  await expect.element(page.getByText('In use: Dark, High contrast, Full motion')).toBeVisible()
   expect(document.documentElement.getAttribute(contrastAttribute)).toBe('more')
   expect(localStorage.getItem(themeStorageKey)).toBe(JSON.stringify({ contrast: 'more' }))
 })

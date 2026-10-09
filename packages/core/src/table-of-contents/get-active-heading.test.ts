@@ -65,9 +65,91 @@ describe('getActiveHeading', () => {
     expect(getActiveHeading({ headings, offset: 0, isAtEnd: true })).toBe('d')
   })
 
+  test('at the end of the page a heading sitting on the line is active: the reader jumped to it', () => {
+    expect(
+      getActiveHeading({
+        headings: [
+          { id: 'a', top: -400 },
+          { id: 'b', top: 24 },
+          { id: 'c', top: 300 },
+        ],
+        offset: 24,
+        isAtEnd: true,
+      }),
+    ).toBe('b')
+    expect(
+      getActiveHeading({
+        headings: [
+          { id: 'a', top: -400 },
+          { id: 'b', top: 60 },
+          { id: 'c', top: 300 },
+        ],
+        offset: 24,
+        isAtEnd: true,
+      }),
+    ).toBe('c')
+  })
+
   test('isAtEnd off, or left out, changes nothing', () => {
     expect(getActiveHeading({ headings, offset: 0, isAtEnd: false })).toBe('b')
     expect(getActiveHeading({ headings, offset: 0, isAtEnd: undefined })).toBe('b')
+  })
+
+  test('with a viewport height, the first heading that is visible below the line is active', () => {
+    expect(
+      getActiveHeading({
+        headings: [
+          { id: 'a', top: 350 },
+          { id: 'b', top: 700 },
+        ],
+        offset: 40,
+        viewportHeight: 1000,
+      }),
+    ).toBe('a')
+  })
+
+  test('with a viewport height, nothing is active while no heading is visible', () => {
+    expect(
+      getActiveHeading({
+        headings: [
+          { id: 'a', top: 1000 },
+          { id: 'b', top: 1400 },
+        ],
+        offset: 40,
+        viewportHeight: 1000,
+      }),
+    ).toBeUndefined()
+  })
+
+  test('with a viewport height, the line is the top 20% band, so a heading switches before it reaches the offset', () => {
+    const bandHeadings = [
+      { id: 'a', top: -500 },
+      { id: 'b', top: 200 },
+    ]
+    expect(getActiveHeading({ headings: bandHeadings, offset: 0, viewportHeight: 1000 })).toBe('b')
+    expect(getActiveHeading({ headings: bandHeadings, offset: 0 })).toBe('a')
+    expect(
+      getActiveHeading({
+        headings: [
+          { id: 'a', top: -500 },
+          { id: 'b', top: 201.5 },
+        ],
+        offset: 0,
+        viewportHeight: 1000,
+      }),
+    ).toBe('a')
+  })
+
+  test('without a viewport height the line is the offset and there is no fallback', () => {
+    expect(
+      getActiveHeading({
+        headings: [
+          { id: 'a', top: 350 },
+          { id: 'b', top: 700 },
+        ],
+        offset: 40,
+      }),
+    ).toBeUndefined()
   })
 
   test('at the end of a page with no headings nothing is active', () => {

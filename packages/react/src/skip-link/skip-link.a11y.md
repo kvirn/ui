@@ -10,11 +10,11 @@ SkipLink is a native link with a class. It is the first Tab stop in the body, hi
 
 ## Roles, states, properties
 
-| Part     | Element / role         | ARIA                       | Notes                                                                                                                                                                                                       |
-| -------- | ---------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| SkipLink | `<a href>` → `link`    | none                       | `class="kv-skip-link"`. The name is the rendered text, the message `skipLink.label` or your children: text and not `aria-label`, so it is translated and found. `href` is required and is a same-page `#id` |
-| Target   | the consumer's element | none                       | Not focusable by itself: the link adds `tabindex="-1"` on activation and removes it on blur. A target that is already focusable (`tabindex` 0 or -1, a control) is left alone                               |
-| SkipLink | `render`               | the rendered element's own | One element. The function form gets the props to spread and an empty state                                                                                                                                  |
+| Part     | Element / role         | ARIA                | Notes                                                                                                                                                                                                       |
+| -------- | ---------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SkipLink | `<a href>` → `link`    | none                | `class="kv-skip-link"`. The name is the rendered text, the message `skipLink.label` or your children: text and not `aria-label`, so it is translated and found. `href` is required and is a same-page `#id` |
+| Target   | the consumer's element | none                | Not focusable by itself: the link adds `tabindex="-1"` on activation and removes it on blur. A target that is already focusable (`tabindex` 0 or -1, a control) is left alone                               |
+| SkipLink | `as`                   | the component's own | A component that renders an `<a href>` and forwards its ref. It gets the other props, the ref and the part's class (`className` joins, handlers chain, refs merge)                                          |
 
 ## Keyboard
 

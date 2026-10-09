@@ -25,12 +25,12 @@ import { Accordion } from '@kvirn-ui/react'
 </Accordion.Root>
 ```
 
-| Part                | Props                                                                                                                                   |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `Accordion.Root`    | `hiddenUntilFound` (the default for every item). `render={<ul role="list" />}` makes it a list                                          |
-| `Accordion.Item`    | `open`, `defaultOpen`, `onOpenChange`, `disabled`, `focusableWhenDisabled`, `hiddenUntilFound`, as `Disclosure.Root`. `render={<li />}` |
-| `Accordion.Heading` | `level` (1 to 6, required)                                                                                                              |
-| `Accordion.Trigger` | As `Disclosure.Trigger`                                                                                                                 |
-| `Accordion.Panel`   | As `Disclosure.Panel`, and `region` (default `false`): `role="region"` named by the trigger                                             |
+| Part                | Props                                                                                                                                     |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `Accordion.Root`    | `hiddenUntilFound` (the default for every item). `as="ul"` or `"ol"` makes it a list                                                      |
+| `Accordion.Item`    | `open`, `defaultOpen`, `onOpenChange`, `disabled`, `focusableWhenDisabled`, `hiddenUntilFound`, as `Disclosure.Root`. `as="li"` in a list |
+| `Accordion.Heading` | `level` (1 to 6, required)                                                                                                                |
+| `Accordion.Trigger` | As `Disclosure.Trigger`                                                                                                                   |
+| `Accordion.Panel`   | As `Disclosure.Panel`, and `region` (default `false`): `role="region"` named by the trigger                                               |
 
-Every part takes `render`, and `className`, `style`, handlers and refs merge with its own.
+`Accordion.Root` takes `as` (`div`, `ul`, `ol`) and `Accordion.Item` takes `as` (`div`, `li`). A tag outside the list is a type error and, from JS, warns once in development and renders a `<div>`. Every part's `className`, `style`, handlers and refs merge with its own.

@@ -1,51 +1,35 @@
 'use client'
-import type { HTMLAttributes, ReactElement, Ref, RefCallback } from 'react'
-import type { FieldState } from '../field/field-state.ts'
+import type { ReactElement } from 'react'
 import { useDescriptionPart } from '../field/use-description-part.ts'
 import type { FieldDescriptionPartProps } from '../field/use-field.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useProse } from './use-prose.ts'
 
-/**
- * What `render` receives as its second argument. Empty, except in a Field or Fieldset, where it is
- * that Field's or Fieldset's state (`isInvalid`, `isRequired`, `isDisabled`).
- */
-export type ProseState = Partial<FieldState>
+const proseTags = ['div', 'article', 'section'] as const
 
-/** What a `render` function gets to spread: your attributes, the class and a callback ref. */
-export interface ProseElementProps extends HTMLAttributes<HTMLElement> {
-  ref: RefCallback<HTMLElement>
-}
-
-export interface ProseRootProps extends HTMLAttributes<HTMLElement> {
-  /** The rendered element, whichever it is: `<div>`, `<article>` or `<section>`. */
-  ref?: Ref<HTMLElement> | undefined
-  /** Change the element: `render={<article />}`. Its own semantics apply. */
-  render?: RenderProp<ProseElementProps, ProseState> | undefined
-}
-
-const proseState: ProseState = Object.freeze({})
+/** `as` is `div` (default), `article` or `section`. Its own semantics apply. */
+export type ProseRootProps = AsTag<(typeof proseTags)[number], 'div'>
 
 /**
  * The prose container: one `<div class="kv-prose">`. Inside a Field.Root or Fieldset.Root it is
  * also the description of the control or the group: it registers, gets an id, and is
  * listed in `aria-describedby` in DOM order, before the error.
  */
-export function ProseRoot({ render, ref, ...otherProps }: ProseRootProps): ReactElement {
+export function ProseRoot({ as, ref, ...otherProps }: ProseRootProps): ReactElement {
   const prose = useProse()
   const description = useDescriptionPart<HTMLElement>(ref)
-  // The class joins a prop's and a render element's own class names (mergeProps), so neither
-  // can remove it and the theme keeps styling the text. In a host the description's props carry
+  // The class joins a prop's own class names (mergeProps), so a prop can't remove it and the
+  // theme keeps styling the text. In a host the description's props carry
   // the same class, so only one of the two is merged.
   const partProps: Partial<FieldDescriptionPartProps> =
     description.state === null ? prose.rootProps : description.partProps
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'Prose', as, allowedTags: proseTags }),
     defaultElement: 'div',
     partProps: { ...mergeProps(otherProps, partProps), ref: description.ref },
-    state: description.state ?? proseState,
   })
 }
 
@@ -54,7 +38,7 @@ ProseRoot.displayName = 'Prose'
 /**
  * Text set for reading (contract: prose.a11y.md): a `<div class="kv-prose">` that the theme styles
  * for headings, paragraphs, lists, links and tables inside it. It has no role, ARIA or behaviour,
- * and `render` changes the element. Add `kv-prose--large` for the larger size.
+ * and `as` changes the element. Add `kv-prose--large` for the larger size.
  * A Prose is one element, so it is written `<Prose>`. Inside a `Field.Root` or
  * `Fieldset.Root` write `Field.Prose` or `Fieldset.Prose`: it is the description of the control
  * or the group, read before answering and shown above the control. A help text that helps while typing

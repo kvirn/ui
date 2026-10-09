@@ -29,6 +29,7 @@ Rules, tested in `alert-dialog.test.tsx` (the rest in `dialog.test.tsx`):
 - **Escape** is reported as `escape` to `onOpenChange`. The owner answers with the safe outcome, or keeps it open by not changing `open`.
 - **Initial focus** is `initialFocusRef`: the least destructive action ("Keep draft"), or the primary one when nothing is destroyed ("Stay signed in"). **Without it focus starts on the Title, not the first control** (which may be the destructive one), and a development warning fires (`alert-dialog-without-initial-focus`), because the first control would be chosen by chance.
 - **Nesting.** An AlertDialog can open over a Dialog: Escape closes the AlertDialog first.
+- **`as`.** `AlertDialog.Close` takes a component (`as={Button}`) that must render a button and spread its props on a DOM node; its props are plain props, merged with the part's. **Allowed elements:** Title, Description, Body and Actions take the same tags as the [Dialog](../dialog/dialog.a11y.md) parts (Title `h2` to `h6`, Description `p` or `div`, Body and Actions `div` or `section`); another tag warns once (`as-not-allowed`). `AlertDialog.Popup` (a native `<dialog>`) and `AlertDialog.Trigger` have no `as`.
 - **Dev warnings:** no Description, no `initialFocusRef`, no name, an `AlertDialog.Close` with no name, and the shared ones (a part outside a Root, no place for focus to return).
 
 ## Keyboard

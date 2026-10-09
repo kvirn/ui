@@ -1,6 +1,6 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, useState } from 'react'
-import type { ComponentPropsWithRef, FormEvent, ReactElement, ReactNode } from 'react'
+import type { FormEvent, ReactElement, ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -10,7 +10,7 @@ import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { Button } from './button.tsx'
-import type { ButtonProps, ButtonState } from './button.tsx'
+import type { ButtonProps } from './button.tsx'
 import { useButton } from './use-button.ts'
 import type { ButtonPartProps, UseButtonOptions, UseButtonResult } from './use-button.ts'
 
@@ -48,15 +48,6 @@ function SubmitForm({
       </label>
       {children}
     </form>
-  )
-}
-
-/** A consumer's own styled button, as in `render={<MyStyledButton />}`. */
-function StyledButton({ children, ...buttonProps }: ComponentPropsWithRef<'button'>) {
-  return (
-    <button type="button" {...buttonProps} name="primar">
-      {children}
-    </button>
   )
 }
 
@@ -471,54 +462,6 @@ describe('focus visible', () => {
   })
 })
 
-describe('render prop', () => {
-  test('an element keeps its own props and gets the button behaviour', async () => {
-    const onClick = vi.fn<() => void>()
-    await render(
-      <Button onClick={onClick} render={<StyledButton />}>
-        Spara
-      </Button>,
-    )
-    const button = page.getByRole('button', { name: 'Spara' })
-    await expect.element(button).toHaveAttribute('name', 'primar')
-    await userEvent.click(button)
-    expect(onClick).toHaveBeenCalledTimes(1)
-    expect(consoleWarn).not.toHaveBeenCalled()
-  })
-
-  test('a function receives the part props and the state', async () => {
-    const seenStates: ButtonState[] = []
-    await render(
-      <Button
-        disabled
-        focusableWhenDisabled
-        render={(buttonProps, state) => {
-          seenStates.push(state)
-          return (
-            <button {...buttonProps} data-egen="">
-              {buttonProps.children}
-            </button>
-          )
-        }}
-      >
-        Skicka
-      </Button>,
-    )
-    const button = page.getByRole('button', { name: 'Skicka' })
-    await expect.element(button).toHaveAttribute('aria-disabled', 'true')
-    await expect.element(button).toHaveAttribute('data-egen', '')
-    expect(seenStates.at(-1)).toEqual({ isDisabled: true, isBusy: false, isFocusVisible: false })
-  })
-
-  test('warns in development when render resolves to something other than a <button>', async () => {
-    await render(<Button render={<span />}>Spara</Button>)
-    await expect.element(page.getByText('Spara')).toBeVisible()
-    expect(consoleWarn).toHaveBeenCalledTimes(1)
-    expect(consoleWarn.mock.calls[0]?.[0]).toContain('<span>')
-    expect(consoleWarn.mock.calls[0]?.[0]).toContain('Link')
-  })
-})
-
 describe('icon-only button name (Plan 0009)', () => {
   function CloseIcon() {
     return <Icon name="close" />
@@ -586,11 +529,11 @@ describe('icon-only button name (Plan 0009)', () => {
   )
 })
 
-describe('handlers on a render element', () => {
-  test('a focusable disabled button blocks the element’s onClick on click, Enter and Space', async () => {
-    const onElementClick = vi.fn<() => void>()
+describe('handlers on a focusable disabled button', () => {
+  test('a focusable disabled button blocks onClick on click, Enter and Space', async () => {
+    const onClick = vi.fn<() => void>()
     await render(
-      <Button disabled focusableWhenDisabled render={<StyledButton onClick={onElementClick} />}>
+      <Button disabled focusableWhenDisabled onClick={onClick}>
         Skicka
       </Button>,
     )
@@ -598,21 +541,16 @@ describe('handlers on a render element', () => {
     await userEvent.click(button, { force: true })
     await userEvent.keyboard('{Enter}')
     await userEvent.keyboard(' ')
-    expect(onElementClick).not.toHaveBeenCalled()
+    expect(onClick).not.toHaveBeenCalled()
     await expect.element(button).toHaveFocus()
   })
 
-  test('a focusable disabled submit element blocks submission, including implicit submission', async () => {
+  test('a focusable disabled submit button blocks submission, including implicit submission', async () => {
     const onSubmit = vi.fn<() => void>()
-    const onElementClick = vi.fn<() => void>()
+    const onClick = vi.fn<() => void>()
     await render(
       <SubmitForm onSubmit={onSubmit}>
-        <Button
-          type="submit"
-          disabled
-          focusableWhenDisabled
-          render={<StyledButton onClick={onElementClick} />}
-        >
+        <Button type="submit" disabled focusableWhenDisabled onClick={onClick}>
           Skicka ansökan
         </Button>
       </SubmitForm>,
@@ -624,22 +562,8 @@ describe('handlers on a render element', () => {
     await userEvent.keyboard(' ')
     await userEvent.click(page.getByRole('textbox', { name: 'Namn' }))
     await userEvent.keyboard('Anna{Enter}')
-    expect(onElementClick).not.toHaveBeenCalled()
+    expect(onClick).not.toHaveBeenCalled()
     expect(onSubmit).not.toHaveBeenCalled()
-  })
-
-  test('an enabled button calls the Button’s onClick, then the element’s, once each', async () => {
-    const calls: string[] = []
-    await render(
-      <Button
-        onClick={() => calls.push('button')}
-        render={<StyledButton onClick={() => calls.push('element')} />}
-      >
-        Spara
-      </Button>,
-    )
-    await userEvent.click(page.getByRole('button', { name: 'Spara' }))
-    expect(calls).toEqual(['button', 'element'])
   })
 })
 
@@ -699,10 +623,5 @@ describe('types', () => {
     expectTypeOf<ButtonPartProps>().not.toHaveProperty('data-kv')
     // aria-disabled comes only from disabled + focusableWhenDisabled, or from busy: both block activation.
     expectTypeOf<ButtonProps>().not.toHaveProperty('aria-disabled')
-    expectTypeOf<ButtonState>().toEqualTypeOf<{
-      isDisabled: boolean
-      isBusy: boolean
-      isFocusVisible: boolean
-    }>()
   })
 })

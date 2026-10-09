@@ -402,25 +402,15 @@ describe('types', () => {
 
   test('a generic TItem flows through the Combobox and Autocomplete wrappers', () => {
     const municipality: Municipality = { id: 'sk', name: 'Skellefteå' }
-    // `item` fixes TItem, so the state that `render` receives carries the same type.
-    const comboboxOption = (
-      <api.Combobox.Option
-        item={municipality}
-        render={(partProps, state) => {
-          expectTypeOf(state.item).toEqualTypeOf<Municipality>()
-          return <div {...partProps} />
-        }}
-      />
-    )
-    const autocompleteOption = (
-      <api.Autocomplete.Option
-        item={municipality}
-        render={(partProps, state) => {
-          expectTypeOf(state.item).toEqualTypeOf<Municipality>()
-          return <div {...partProps} />
-        }}
-      />
-    )
+    // `item` fixes TItem, so the item prop of the shared Listbox part carries the same type.
+    const comboboxOption = <api.Combobox.Option item={municipality} />
+    const autocompleteOption = <api.Autocomplete.Option item={municipality} />
+    expectTypeOf<
+      ComponentProps<typeof api.Combobox.Option<Municipality>>['item']
+    >().toEqualTypeOf<Municipality>()
+    expectTypeOf<
+      ComponentProps<typeof api.Autocomplete.Option<Municipality>>['item']
+    >().toEqualTypeOf<Municipality>()
     expect(comboboxOption).toBeDefined()
     expect(autocompleteOption).toBeDefined()
   })

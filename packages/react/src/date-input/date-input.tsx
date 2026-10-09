@@ -1,6 +1,6 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { createContext, useContext, useEffect, useRef } from 'react'
+import { createContext, createElement, useContext, useEffect, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldGroupContext, FieldTextHostContext } from '../field/field-context.ts'
@@ -11,8 +11,6 @@ import type { TextInputProps } from '../text-input/text-input.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { useMessages } from '../provider/use-messages.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useDateInput } from './use-date-input.ts'
 import type {
   DateInputBoxPartProps,
@@ -28,14 +26,6 @@ export type {
   DateInputValue,
   UseDateInputOptions,
 } from './use-date-input.ts'
-
-/** What `render` receives as its second argument. */
-export interface DateInputState {
-  /** The order of the boxes, as rendered by default. */
-  order: readonly DateInputPart[]
-  isRequired: boolean
-  isDisabled: boolean
-}
 
 export interface DateInputRootProps extends Omit<
   ComponentPropsWithRef<'div'>,
@@ -75,8 +65,6 @@ export interface DateInputRootProps extends Omit<
   invalidParts?: readonly DateInputPart[] | undefined
   /** Per-instance message overrides for the three labels and the auto-advance hint. */
   messages?: Partial<KvirnMessages['dateInput']> | undefined
-  /** Change the element: `render={<section />}`. */
-  render?: RenderProp<ComponentPropsWithRef<'div'>, DateInputState> | undefined
 }
 
 export interface DateInputBoxProps extends Omit<
@@ -165,7 +153,6 @@ export function DateInputRoot({
   invalidParts,
   messages,
   children,
-  render,
   ref,
   ...otherProps
 }: DateInputRootProps): ReactElement {
@@ -218,25 +205,16 @@ export function DateInputRoot({
     invalidParts,
     messages,
   }
-  const state: DateInputState = { order: dateInput.order, isRequired, isDisabled }
 
   return (
     // The boxes are one question's parts: a Field in a group has no "(optional)" on its label.
     <FieldGroupContext.Provider value>
       <DateInputContext.Provider value={contextValue}>
-        {renderPart({
-          render,
-          defaultElement: 'div',
-          partProps: {
-            ...mergeProps(otherProps, dateInput.rootProps),
-            children:
-              children === undefined
-                ? dateInput.order.map((part) => <DateInputBox key={part} part={part} />)
-                : children,
-            ref: mergedRef,
-          },
-          state,
-        })}
+        <div {...mergeProps(otherProps, dateInput.rootProps)} ref={mergedRef}>
+          {children === undefined
+            ? dateInput.order.map((part) => <DateInputBox key={part} part={part} />)
+            : children}
+        </div>
         {dateInput.autoAdvanceHint === undefined ? null : (
           <DateInputAutoAdvanceHint>{dateInput.autoAdvanceHint}</DateInputAutoAdvanceHint>
         )}
@@ -283,20 +261,15 @@ function DateInputBox({
       {...invalidAttributes}
     >
       <Field.Label {...invalidAttributes}>{dateMessages[part]}</Field.Label>
-      {renderPart({
-        render: undefined,
-        defaultElement: TextInput,
-        // The hook's props first, then the consumer's: class names join and handlers chain.
-        partProps: {
-          ...mergeProps(
-            ownProps,
-            inputProps,
-            invalidAttributes,
-            isInvalid ? { 'aria-invalid': 'true' } : {},
-          ),
-          ref: mergedRef,
-        },
-        state: { isInvalid },
+      {/* The hook's props first, then the consumer's: class names join and handlers chain. */}
+      {createElement(TextInput, {
+        ...mergeProps(
+          ownProps,
+          inputProps,
+          invalidAttributes,
+          isInvalid ? { 'aria-invalid': 'true' } : {},
+        ),
+        ref: mergedRef,
       })}
     </Field.Root>
   )

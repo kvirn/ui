@@ -6,7 +6,7 @@ A plain container for one thing on the page: an image, a heading, some text and 
 
 - Four parts, each one `<div>`: `Card.Root`, `Card.Header`, `Card.Body` and `Card.Footer` (also exported as `CardRoot`, `CardHeader`, `CardBody` and `CardFooter`). Header and Footer are never `<header>` or `<footer>`, which would become page landmarks.
 - No role, no ARIA, no text and no behaviour. Children are whatever you pass, with their own semantics and focus order.
-- `render` changes the element: `<article>`, `<section aria-labelledby>`, `<aside aria-labelledby>` or `<li>`.
+- `Card.Root` takes `as`: `div` (default), `li`, `article`, `figure` or `section`. Header, Body and Footer are always a `<div>`.
 - Headless: no CSS. Each part renders its stable class: `kv-card`, `kv-card-header`, `kv-card-body` and `kv-card-footer`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, it's styled, and you choose with modifier classes: `kv-card--radius-md`, `kv-card--padding-sm`, `kv-card--dividers` and so on.
 
 ## Component
@@ -15,7 +15,7 @@ A plain container for one thing on the page: an image, a heading, some text and 
 import { Button, Card, Link } from '@kvirn-ui/react'
 
 // A card without parts: the Root pads itself. A sidebar text block is a Section, not a Card.
-<Card.Root render={<article />} className="kv-prose">
+<Card.Root as="article" className="kv-prose">
   <h2>Sophämtning</h2>
   <p>Matavfall och restavfall töms varannan vecka.</p>
 </Card.Root>
@@ -37,7 +37,7 @@ import { Button, Card, Link } from '@kvirn-ui/react'
 
 // A list of cards: each card is a list item, with one link, in its heading.
 <ul role="list">
-  <Card.Root render={<li />}>
+  <Card.Root as="li">
     <Card.Body className="kv-prose">
       <h3>
         <Link.Root href="/nyheter/atervinning">Nya öppettider på återvinningscentralen</Link.Root>
@@ -53,7 +53,7 @@ Your part:
 - **The heading** goes at the top of `Card.Body` (or the Root), at the level your page outline needs. A Header is for media, or for a title row that needs a divider.
 - **Images** that only decorate get `alt=""`. That's most card images, when the heading names the topic.
 - **One link per card**, in the heading, with text that makes sense on its own. No "Read more", and no second link on the image. Navigation is a Link, actions are Buttons, and there's one primary action per view.
-- **Lists.** A list of cards is a `<ul role="list">` with each card rendered as `<li>` (`render={<li />}`), so screen readers announce "list, 3 items". The default theme draws no marker on a card, and Safari (VoiceOver) drops the list semantics of a list without visible markers unless it has `role="list"` (1.3.1). The repository's lint allows `role="list"` on a `ul` (`no-redundant-roles` is relaxed for that pair only): in Safari it isn't redundant.
+- **Lists.** A list of cards is a `<ul role="list">` with each card rendered as `<li>` (`as="li"`), so screen readers announce "list, 3 items". The default theme draws no marker on a card, and Safari (VoiceOver) drops the list semantics of a list without visible markers unless it has `role="list"` (1.3.1). The repository's lint allows `role="list"` on a `ul` (`no-redundant-roles` is relaxed for that pair only): in Safari it isn't redundant.
 - **Landmarks** only for a region a user would want to jump to: `<section aria-labelledby>` or `<aside aria-labelledby>`. Never make every card in a list a landmark.
 - **Parts are direct children** of the Root. A wrapper between them breaks the default theme's padding, and an empty part still has padding: don't render it.
 
@@ -72,14 +72,14 @@ Without a modifier class, a card gets the default: `surface-raised`, the `lg` ra
 
 `md` padding is 24px, and 16px below `40rem` and in compact density (`kv-compact`). All four steps are allowed on a part, but mixed steps misalign the parts' edges, so per-part values are normally `none`, for full-bleed media. A site can change the default for every card with `--kv-card-padding-default` and `--kv-card-radius-default` (`@kvirn-ui/theme` README, Site-wide defaults), and then `kv-card--padding-md` and `kv-card--radius-lg` take one card back to the theme's step. Prose stops at a card: put `kv-prose` on `Card.Body` (or the Root of a card without parts) to style the text inside.
 
-### `render`
+### `as`
 
 ```tsx
-<Card.Root render={<article />}>…</Card.Root>
-<Card.Root render={(rootProps) => <li {...rootProps} className="nyhet" />}>…</Card.Root>
+<Card.Root as="article">…</Card.Root>
+<Card.Root as="li" className="nyhet">…</Card.Root>
 ```
 
-An element keeps its own props, and the part's are merged in: class names join, styles merge and refs merge. A `className` prop and a `render` element's own `className` join the part's class instead of replacing it, so the theme keeps styling the card. The function form gets the props, with a callback ref that fits any element, and an empty state object. Spread them, and keep `className`: it holds the part's class and your own.
+`as` is a string, so it works from a Server Component. A tag outside the list is a type error and, from JS, warns once in development and renders a `<div>`. A `className` prop joins the part's class instead of replacing it, so the theme keeps styling the card. For any other element, use `useCard`.
 
 ## Hook
 

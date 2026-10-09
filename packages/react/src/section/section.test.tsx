@@ -1,23 +1,36 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, useId } from 'react'
-import { describe, expect, expectTypeOf, test } from 'vite-plus/test'
+import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
+import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
 import { Card } from '../card/card.tsx'
+import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Link } from '../link/link.tsx'
 import { Section, SectionRoot } from './section.tsx'
-import type { SectionElementProps, SectionRootProps, SectionState } from './section.tsx'
+import type { SectionRootProps } from './section.tsx'
 import { useSection } from './use-section.ts'
 import type { SectionPartProps, UseSectionResult } from './use-section.ts'
 
 // Contract: section.a11y.md.
 
+let consoleWarn: MockInstance<Console['warn']>
+
+beforeEach(() => {
+  resetDevWarnings()
+  consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+})
+
+afterEach(() => {
+  consoleWarn.mockRestore()
+})
+
 /** Example A from the design spec, in Swedish: a sidebar text block as a named aside. */
 function ContactSection() {
   const headingId = useId()
   return (
-    <Section render={<aside aria-labelledby={headingId} />} className="kv-section--padding-lg">
+    <Section as="aside" aria-labelledby={headingId} className="kv-section--padding-lg">
       <h2 id={headingId}>Kontakta oss</h2>
       <p>Ring kundcenter på 0123-45 67 89.</p>
       <p>
@@ -120,20 +133,13 @@ describe('rendering', () => {
       .toHaveClass('kv-section', 'kv-section--canvas', 'annat')
   })
 
-  test('keeps its own class when a render element sets another one', async () => {
+  test('keeps its own class when a className prop is set on another element', async () => {
     await render(
-      <Section className="fran-prop" render={<section className="annat" data-testid="section" />}>
+      <Section as="section" className="fran-prop" data-testid="section">
         Text
       </Section>,
     )
-    await expect
-      .element(page.getByTestId('section'))
-      .toHaveClass('kv-section', 'fran-prop', 'annat')
-  })
-
-  test('keeps its own class when a render element’s className is empty', async () => {
-    await render(<Section render={<section className="" data-testid="section" />}>Text</Section>)
-    expect(page.getByTestId('section').element().className).toBe('kv-section')
+    await expect.element(page.getByTestId('section')).toHaveClass('kv-section', 'fran-prop')
   })
 
   test('Section and SectionRoot are one component named Section, and the deprecated Section.Root is the same', () => {
@@ -150,8 +156,8 @@ describe('rendering', () => {
         <Section>
           <h2>Nyheter</h2>
           <ul>
-            <Card.Root render={<li />}>Nya öppettider</Card.Root>
-            <Card.Root render={<li />}>Vinterväghållning</Card.Root>
+            <Card.Root as="li">Nya öppettider</Card.Root>
+            <Card.Root as="li">Vinterväghållning</Card.Root>
           </ul>
         </Section>
       </main>,
@@ -172,16 +178,16 @@ describe('refs and style', () => {
     expect(ref.current).toBe(page.getByTestId('section').element())
   })
 
-  test('forwards a ref to any element: <aside>, <section> and <li>', async () => {
+  test('forwards a ref to any allowed element: <aside> and <li>', async () => {
     const asideRef = createRef<HTMLElement>()
     const itemRef = createRef<HTMLLIElement>()
     await render(
       <>
-        <Section ref={asideRef} render={<aside aria-label="Sidosection" />}>
+        <Section ref={asideRef} as="aside" aria-label="Sidosection">
           Text
         </Section>
         <ul>
-          <Section ref={itemRef} render={<li />}>
+          <Section ref={itemRef} as="li">
             Punkt
           </Section>
         </ul>
@@ -191,33 +197,25 @@ describe('refs and style', () => {
     expect(itemRef.current?.tagName).toBe('LI')
   })
 
-  test('merges style with a render element, and both refs get the element', async () => {
-    const partRef = createRef<HTMLElement>()
-    const elementRef = createRef<HTMLElement>()
+  test('applies style and className on the chosen element', async () => {
     await render(
       <Section
-        ref={partRef}
-        style={{ maxInlineSize: '20rem', color: 'rgb(0, 0, 0)' }}
-        render={
-          <aside
-            ref={elementRef}
-            style={{ color: 'rgb(1, 2, 3)' }}
-            aria-label="Kontakt"
-            data-testid="section"
-          />
-        }
+        as="aside"
+        style={{ maxInlineSize: '20rem' }}
+        className="annat"
+        aria-label="Kontakt"
+        data-testid="section"
       >
         Text
       </Section>,
     )
     const section = page.getByTestId('section')
-    await expect.element(section).toHaveStyle({ maxInlineSize: '20rem', color: 'rgb(1, 2, 3)' })
-    expect(partRef.current).toBe(section.element())
-    expect(elementRef.current).toBe(section.element())
+    await expect.element(section).toHaveStyle({ maxInlineSize: '20rem' })
+    await expect.element(section).toHaveClass('kv-section', 'annat')
   })
 })
 
-describe('render', () => {
+describe('as', () => {
   test('<aside aria-labelledby> makes the section a named complementary landmark', async () => {
     const { container } = await render(
       <main>
@@ -234,7 +232,7 @@ describe('render', () => {
     function NewsBand() {
       const headingId = useId()
       return (
-        <Section render={<section aria-labelledby={headingId} />}>
+        <Section as="section" aria-labelledby={headingId}>
           <h2 id={headingId}>Nyheter</h2>
         </Section>
       )
@@ -252,7 +250,7 @@ describe('render', () => {
     function CaseNavigation() {
       const headingId = useId()
       return (
-        <Section render={<nav aria-labelledby={headingId} />}>
+        <Section as="nav" aria-labelledby={headingId}>
           <h2 id={headingId}>Ärenden</h2>
           <Link.Root href="#aktuella">Aktuella ärenden</Link.Root>
         </Section>
@@ -270,44 +268,34 @@ describe('render', () => {
   test('<li> sections make a list with one item per section', async () => {
     const { container } = await render(
       <ul>
-        <Section render={<li />}>Nya öppettider</Section>
-        <Section render={<li />}>Vinterväghållning</Section>
+        <Section as="li">Nya öppettider</Section>
+        <Section as="li">Vinterväghållning</Section>
       </ul>,
     )
     expect(page.getByRole('listitem').elements()).toHaveLength(2)
     await expectNoA11yViolations(container)
   })
 
-  test('a function receives the part props and an empty state', async () => {
-    const seenStates: SectionState[] = []
+  test('renders footer, header and article for their own landmarks and roles', async () => {
     await render(
-      <Section
-        render={(sectionProps, state) => {
-          seenStates.push(state)
-          return <div {...sectionProps} data-testid="section" data-own="" />
-        }}
-      >
-        Text
-      </Section>,
+      <>
+        <Section as="article" data-testid="article" />
+        <Section as="header" data-testid="header" />
+        <Section as="footer" data-testid="footer" />
+      </>,
     )
-    const section = page.getByTestId('section')
-    await expect.element(section).toHaveAttribute('data-own', '')
-    await expect.element(section).toHaveTextContent('Text')
-    expect(seenStates.at(-1)).toEqual({})
+    expect(page.getByTestId('article').element().tagName).toBe('ARTICLE')
+    expect(page.getByTestId('header').element().tagName).toBe('HEADER')
+    expect(page.getByTestId('footer').element().tagName).toBe('FOOTER')
   })
 
-  test('a function’s props include the ref', async () => {
-    const ref = createRef<HTMLElement>()
-    await render(
-      <Section
-        ref={ref}
-        render={(sectionProps) => <aside {...sectionProps} data-testid="section" />}
-      >
-        Text
-      </Section>,
-    )
-    expect(ref.current).toBe(page.getByTestId('section').element())
-    expect(ref.current?.tagName).toBe('ASIDE')
+  test('an element outside the allowed list warns once and renders a div', async () => {
+    const notAllowed = 'main' as 'div'
+    await render(<Section as={notAllowed} data-testid="section" />)
+    expect(page.getByTestId('section').element().tagName).toBe('DIV')
+    expect(
+      consoleWarn.mock.calls.filter(([message]) => String(message).includes('Section as="main"')),
+    ).toHaveLength(1)
   })
 })
 
@@ -361,18 +349,16 @@ describe('server rendering', () => {
 })
 
 describe('types', () => {
-  test('exports the part, hook and state types', () => {
+  test('exports the part and hook types', () => {
     expectTypeOf<SectionPartProps>().toEqualTypeOf<{ className: 'kv-section' }>()
     expectTypeOf<UseSectionResult['rootProps']['className']>().toEqualTypeOf<'kv-section'>()
-    expectTypeOf<SectionState>().toEqualTypeOf<Record<string, never>>()
   })
 
-  test('the root takes HTML attributes, a ref to any element, and render', () => {
+  test('the root takes HTML attributes, a ref to any element, and as', () => {
     const props = {} as SectionRootProps
-    expectTypeOf(props).toHaveProperty('render')
+    expectTypeOf(props).toHaveProperty('as')
     expectTypeOf(props).toHaveProperty('className')
     expectTypeOf(props).toHaveProperty('aria-labelledby')
     expectTypeOf(createRef<HTMLLIElement>()).toExtend<NonNullable<typeof props.ref>>()
-    expectTypeOf<SectionElementProps>().toHaveProperty('ref')
   })
 })

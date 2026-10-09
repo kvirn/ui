@@ -6,15 +6,15 @@ A grid of link cards or teasers: as many columns as fit, none narrower than `min
 
 - `minColumnWidth`: `'sm'` (`14rem`), `'md'` (default, `18rem`) or `'lg'` (`24rem`).
 - `gap`: `'4'`, `'6'` (default) or `'8'`.
-- Headless: no CSS. Each renders a stable class, your `className` joins it, and `@kvirn-ui/theme/theme.css` styles it. No state, so no `data-*`, no client code (usable in a server component) and no role, ARIA or `tabindex`: `render` picks the element, and a landmark is always your choice and must be named.
+- Headless: no CSS. Each renders a stable class, your `className` joins it, and `@kvirn-ui/theme/theme.css` styles it. No state, so no `data-*`, no client code (usable in a server component) and no ARIA or `tabindex`. `as` picks the element (a `ul` or `ol` gets `role="list"`, because WebKit drops the list role without markers), and a landmark is always your choice and must be named.
 - The columns fill in DOM order. There is no `order`, `reverse` or dense packing (1.3.2, 2.4.3).
 
 ```tsx
 import { Card, Columns } from '@kvirn-ui/react'
 
 // A list of links: the count is announced.
-// role="list": without markers WebKit drops the list role.
-;<Columns render={<ul role="list" />} minColumnWidth="md" gap="6">
+
+;<Columns as="ul" minColumnWidth="md" gap="6">
   <li>
     <Card.Root>…</Card.Root>
   </li>

@@ -14,7 +14,7 @@ import { Fieldset } from '../fieldset/fieldset.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { TextInput } from '../text-input/text-input.tsx'
 import { CharacterCount } from './character-count.tsx'
-import type { CharacterCountProps, CharacterCountState } from './character-count.tsx'
+import type { CharacterCountProps } from './character-count.tsx'
 import { useCharacterCount } from './use-character-count.ts'
 import type {
   CharacterCountPartProps,
@@ -137,27 +137,26 @@ describe('rendering', () => {
     expect(count?.getAttribute('data-testid')).toBe('count')
   })
 
-  test('render as a function gets the part’s props and the state', async () => {
-    const seen: CharacterCountState[] = []
-    await render(
-      <CharacterCount
-        value="abcdefgh"
-        limit={10}
-        render={(partProps, state) => {
-          seen.push(state)
-          return <small {...partProps} data-egen="" />
-        }}
-      />,
+  test('as changes the element to a div or a span and keeps the class and the text', async () => {
+    const { container } = await render(
+      <>
+        <CharacterCount as="div" value="abcdefgh" limit={10} data-testid="division" />
+        <CharacterCount as="span" value="abc" limit={10} data-testid="inline" />
+      </>,
     )
-    expect(seen.at(-1)).toMatchObject({
-      length: 8,
-      limit: 10,
-      remaining: 2,
-      excess: 0,
-      isOver: false,
-      isNear: true,
-      isEmpty: false,
-    })
+    const division = container.querySelector('div.kv-character-count')
+    expect(division?.getAttribute('data-testid')).toBe('division')
+    expect(division?.className).toBe('kv-field-help-text kv-character-count')
+    expect(container.querySelector('span.kv-character-count')).not.toBeNull()
+  })
+
+  test('an element outside the allowed list warns once and renders a p', async () => {
+    const notAllowed = 'h2' as 'p'
+    const { container } = await render(<CharacterCount as={notAllowed} value="" limit={5} />)
+    expect(container.querySelector('p.kv-character-count')).not.toBeNull()
+    expect(
+      consoleWarn.mock.calls.filter((call) => String(call[0]).includes('CharacterCount as="h2"')),
+    ).toHaveLength(1)
   })
 })
 

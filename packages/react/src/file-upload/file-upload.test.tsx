@@ -1054,20 +1054,6 @@ describe('development warnings', () => {
     })
   })
 
-  test('a Trigger whose render drops the text span warns that its name no longer starts with its text (2.5.3)', async () => {
-    await render(
-      <Field.Root>
-        <Field.Label>Attachments</Field.Label>
-        <FileUpload.Root>
-          <FileUpload.Trigger render={(props) => <button {...props}>Own text</button>} />
-        </FileUpload.Root>
-      </Field.Root>,
-    )
-    await vi.waitFor(() => {
-      expect(warnings().some((text) => text.includes('WCAG 2.5.3'))).toBe(true)
-    })
-  })
-
   test('a browser that cannot set the files of the input warns that dropped files will not be posted', async () => {
     vi.stubGlobal(
       'DataTransfer',
@@ -1086,7 +1072,7 @@ describe('development warnings', () => {
 })
 
 describe('the public API', () => {
-  test('every part takes render, merges class, handlers and refs, and carries its part class', async () => {
+  test('every part merges class, handlers and refs, and carries its part class', async () => {
     const seen = new Map<string, Set<Element>>()
     const track = (name: string) => (element: Element | null) => {
       if (element !== null) {
@@ -1115,109 +1101,69 @@ describe('the public API', () => {
           className="own"
           ref={track('Root')}
           onClick={handlers.root}
-          render={<div data-rendered="Root" />}
+          data-rendered="Root"
         >
-          <FileUpload.DropZone
-            className="own"
-            ref={track('DropZone')}
-            render={<div data-rendered="DropZone" />}
-          >
+          <FileUpload.DropZone className="own" ref={track('DropZone')} data-rendered="DropZone">
             <FileUpload.Trigger
               className="own"
               ref={track('Trigger')}
               onClick={handlers.trigger}
-              render={(props) => <button {...props} data-rendered="Trigger" />}
+              data-rendered="Trigger"
             />
-            <FileUpload.DropHint
-              className="own"
-              ref={track('DropHint')}
-              render={<p data-rendered="DropHint" />}
-            />
+            <FileUpload.DropHint className="own" ref={track('DropHint')} data-rendered="DropHint" />
           </FileUpload.DropZone>
-          <FileUpload.Limits
-            className="own"
-            ref={track('Limits')}
-            render={<p data-rendered="Limits" />}
-          />
+          <FileUpload.Limits className="own" ref={track('Limits')} data-rendered="Limits" />
           <FileUpload.Rejections
             className="own"
             ref={track('Rejections')}
-            render={<div data-rendered="Rejections" />}
+            data-rendered="Rejections"
           />
-          <FileUpload.Summary
-            className="own"
-            ref={track('Summary')}
-            render={<p data-rendered="Summary" />}
-          />
-          <FileUpload.Input
-            className="own"
-            ref={track('Input')}
-            render={<input data-rendered="Input" />}
-          />
-          <FileUpload.List className="own" ref={track('List')} render={<ul data-rendered="List" />}>
+          <FileUpload.Summary className="own" ref={track('Summary')} data-rendered="Summary" />
+          <FileUpload.Input className="own" ref={track('Input')} data-rendered="Input" />
+          <FileUpload.List className="own" ref={track('List')} data-rendered="List">
             {(item) => (
               <FileUpload.Item
                 key={item.id}
                 item={item}
                 className="own"
                 ref={track('Item')}
-                render={(props) => <li {...props} data-rendered="Item" />}
+                data-rendered="Item"
               >
                 <FileUpload.Preview
                   className="own"
                   ref={track('Preview')}
-                  render={<span data-rendered="Preview" />}
+                  data-rendered="Preview"
                 />
-                <FileUpload.Name
-                  className="own"
-                  ref={track('Name')}
-                  render={<bdi data-rendered="Name" />}
-                />
-                <FileUpload.Type
-                  className="own"
-                  ref={track('Type')}
-                  render={<span data-rendered="Type" />}
-                />
-                <FileUpload.Size
-                  className="own"
-                  ref={track('Size')}
-                  render={<span data-rendered="Size" />}
-                />
-                <FileUpload.Status
-                  className="own"
-                  ref={track('Status')}
-                  render={<p data-rendered="Status" />}
-                />
+                <FileUpload.Name className="own" ref={track('Name')} data-rendered="Name" />
+                <FileUpload.Type className="own" ref={track('Type')} data-rendered="Type" />
+                <FileUpload.Size className="own" ref={track('Size')} data-rendered="Size" />
+                <FileUpload.Status className="own" ref={track('Status')} data-rendered="Status" />
                 <FileUpload.Progress
                   className="own"
                   ref={track('Progress')}
-                  render={<progress data-rendered="Progress" />}
+                  data-rendered="Progress"
                 />
                 <FileUpload.ItemError
                   className="own"
                   ref={track('ItemError')}
-                  render={<p data-rendered="ItemError" />}
+                  data-rendered="ItemError"
                 />
-                <FileUpload.Actions
-                  className="own"
-                  ref={track('Actions')}
-                  render={<div data-rendered="Actions" />}
-                >
+                <FileUpload.Actions className="own" ref={track('Actions')} data-rendered="Actions">
                   <FileUpload.CancelButton
                     className="own"
                     ref={track('CancelButton')}
-                    render={<button data-rendered="CancelButton">Cancel</button>}
+                    data-rendered="CancelButton"
                   />
                   <FileUpload.RetryButton
                     className="own"
                     ref={track('RetryButton')}
-                    render={<button data-rendered="RetryButton">Retry</button>}
+                    data-rendered="RetryButton"
                   />
                   <FileUpload.RemoveButton
                     className="own"
                     ref={track('RemoveButton')}
                     onClick={handlers.remove}
-                    render={<button data-rendered="RemoveButton">Remove</button>}
+                    data-rendered="RemoveButton"
                   />
                 </FileUpload.Actions>
               </FileUpload.Item>

@@ -26,7 +26,6 @@ Rules, tested in `checkbox.test.tsx`:
 - **`aria-invalid` on a standalone Checkbox** when its Field is `invalid`. A Checkbox in a group gets only `data-invalid` from the group (`checkbox-group.a11y.md`).
 - **The error of a standalone checkbox** (a declaration) is the Field.ErrorMessage, under the row, in `aria-describedby` after the option's help text.
 - **Disabled.** A Field's `disabled` or the prop gives native `disabled` and `data-disabled`. The label of a disabled choice is muted by the theme, never hidden.
-- **`render`** changes the element and must stay an `<input type="checkbox">`. Refs merge, `className` joins the part class.
 - **Dev warnings (once):** a Checkbox in a Field with no Field.Label (no accessible name, 1.3.1/4.1.2); an `id` inside a Field (ignored: set `controlId` on the Field).
 
 ## Keyboard

@@ -25,7 +25,6 @@ Rules, tested in `switch.test.tsx`:
 - **`data-state`** is `checked` or `unchecked`. It follows the props when controlled, and the native state after each change when not.
 - **No form state.** `defaultChecked` and `name` work in a plain form: checked sends `name=value` (`on` by default), off sends nothing, `form.reset()` restores `defaultChecked`. The switch never copies `checked` into state.
 - **Disabled.** A Field's `disabled` or the prop gives native `disabled` and `data-disabled`. Never disable the focused switch while saving (a disabled element loses focus, 2.4.3).
-- **`render`** changes the element and must stay an `<input type="checkbox">`. Refs merge, `className` joins the part class.
 - **Dev warnings (once):** a Switch in a Field with no Field.Label; a Switch outside a Field with no accessible name; an `id` inside a Field (ignored: set `controlId` on the Field); `switch-required`; `switch-optional-marker`.
 
 ## Keyboard

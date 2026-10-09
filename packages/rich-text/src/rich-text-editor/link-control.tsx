@@ -155,7 +155,7 @@ function LinkForm({ editor, onClose }: LinkFormProps): ReactElement {
             {messages.linkRemove}
           </Button>
         ) : null}
-        <Popover.Close render={<Button />}>{messages.cancel}</Popover.Close>
+        <Popover.Close as={Button}>{messages.cancel}</Popover.Close>
       </ButtonGroup>
     </form>
   )

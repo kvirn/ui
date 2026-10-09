@@ -477,15 +477,28 @@ describe('use-focus.test.tsx › focus management', () => {
 })
 
 describe('use-focus.test.tsx › FocusScope', () => {
-  test('FocusScope renders the element given to render and merges the ref', async () => {
+  test('FocusScope renders the element given to as and merges the ref', async () => {
     const ref = { current: null as HTMLElement | null }
     await render(
-      <FocusScope active ref={ref} render={<aside aria-label="Filter" />}>
+      <FocusScope active ref={ref} as="aside" aria-label="Filter">
         <button type="button">Inne</button>
       </FocusScope>,
     )
     expect(ref.current?.tagName).toBe('ASIDE')
     await expect.element(byName('Inne')).toHaveFocus()
+  })
+
+  test('FocusScope with a tag outside its list warns once and renders a div', async () => {
+    const notAllowed = 'ul' as FocusScopeProps['as']
+    const ref = { current: null as HTMLElement | null }
+    await render(
+      <FocusScope active ref={ref} as={notAllowed}>
+        <button type="button">Inne</button>
+      </FocusScope>,
+    )
+    expect(ref.current?.tagName).toBe('DIV')
+    expect(consoleWarn).toHaveBeenCalledTimes(1)
+    expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('FocusScope as="ul"')
   })
 
   test('FocusScope loops Tab and calls onEscape', async () => {

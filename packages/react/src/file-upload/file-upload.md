@@ -53,7 +53,7 @@ A FileUpload attaches files to a form. **One native button opens the system file
 | `data-status`                   | Item and Status: `pending`, `uploading`, `complete`, `failed` or `cancelled`            |
 
 - **Message keys** (`messages`, namespace `fileUpload`, all six languages): the Trigger's text (`chooseFiles`, `chooseFile`, `replaceFile`), the hints (`dropHint`, `dropHintActive`), the limits (`limitsMaxFiles`, `limitsTypes`, `limitsMaxSize`), the summary (`summary`, `summaryOfMax`, `summaryFull`), the rejections (`rejectedHeading`, `errorType`, `errorTooLarge`, `errorTooSmall`, `errorEmpty`, `errorTooMany`, `errorDuplicate`, `errorFolder`, `rejectedFilePosition`), the statuses (`statusReady`, `statusQueued`, `statusUploading`, `statusUploadingPercent`, `statusComplete`, `statusFailed`, `statusCancelled`, `uploadFailedMessage`), the file (`typeUnknown`, `duplicateName`), the buttons and their names (`remove`, `cancel`, `retry`, `removeFile`, `cancelFile`, `retryFile`, `uploadingFile`) and the announcements (`fileAdded`, `filesAdded`, `filesRejected`, `uploadsStarted`, `uploadComplete`, `uploadsComplete`, `allUploadsComplete`, `uploadFailed`, `uploadsFailed`, `fileRemoved`, `announcementForField`). A visible text and its button name change together: override `remove` and `removeFile` as a pair, or the name no longer starts with its visible text (2.5.3).
-- **Dev warnings (once):** a part outside a Root or an Item; limits set but not said; a Trigger `render` that drops the text span; no Announcer; a browser that can't set the files of the input.
+- **Dev warnings (once):** a part outside a Root or an Item; limits set but not said; no Announcer; a browser that can't set the files of the input.
 
 ## Component
 
@@ -160,6 +160,6 @@ The component's strings (buttons, status, errors, announcements) are in the `fil
 
 `useFileUpload(options)` returns `rootProps`, `triggerProps`, `inputProps`, `dropZoneProps`, `getItemProps(item)`, `getProgressProps(item)`, `getRemoveButtonProps(item)`, `getCancelButtonProps(item)`, `getRetryButtonProps(item)`, and the state: `items`, `rejections`, `isFull`, `isDragging`, `isDroppable` and more. Spread each on your own element. See `file-upload.a11y.md` for what each must carry.
 
-## `render`
+## Your own element
 
-Every part takes `render` (an element or a function) to change the element it renders. Class names and handlers merge, and refs are merged. A `render` for the Trigger must render a `<button>` and keep its children: the text sits in a `<span id={triggerTextId}>` that the button's name points at. If your `render` writes its own children, wrap your text in that span (a development warning tells you when it is missing).
+Every part renders one fixed element, and takes your `className`, `ref` and handlers, merged with its own. To change an element, build it with `useFileUpload` and spread the prop objects on it. For the Trigger, put the visible text in `<span id={triggerTextId}>`: the button's name points at that span, so it starts with its visible text (2.5.3). The state is on `data-*` attributes (`data-status`, `data-dragging`, `data-full`), which are also what your styles read.

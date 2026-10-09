@@ -5,6 +5,8 @@ import {
   contrastAttribute,
   contrastQuery,
   forcedColorsQuery,
+  motionAttribute,
+  motionQuery,
   themeStorageKey,
 } from './theme-constants.ts'
 import {
@@ -17,6 +19,7 @@ import {
 import type {
   ColorSchemePreference,
   ContrastPreference,
+  MotionPreference,
   StoredThemePreference,
   ThemeEnv,
   ThemeOptions,
@@ -26,6 +29,7 @@ import type {
 interface FakeEnvOptions {
   isDark?: boolean
   isMoreContrast?: boolean
+  isReducedMotion?: boolean
   isForcedColors?: boolean
   storedValue?: string
   storageThrows?: boolean
@@ -36,6 +40,7 @@ function createFakeEnv(options: FakeEnvOptions = {}) {
   const matches = new Map<string, boolean>([
     [colorSchemeQuery, options.isDark ?? false],
     [contrastQuery, options.isMoreContrast ?? false],
+    [motionQuery, options.isReducedMotion ?? false],
     [forcedColorsQuery, options.isForcedColors ?? false],
   ])
   const mediaListeners = new Map<string, Set<() => void>>()
@@ -136,6 +141,7 @@ function createFakeEnv(options: FakeEnvOptions = {}) {
 
 const colorSchemes: ColorSchemePreference[] = ['light', 'dark', 'system']
 const contrasts: ContrastPreference[] = ['standard', 'more', 'system']
+const motions: MotionPreference[] = ['full', 'reduce', 'system']
 
 describe('resolveTheme', () => {
   it('uses the preference when set, and the system value for `system`', () => {
@@ -143,15 +149,21 @@ describe('resolveTheme', () => {
       for (const contrast of contrasts) {
         for (const isDark of [false, true]) {
           for (const isMoreContrast of [false, true]) {
-            const system = {
-              colorScheme: isDark ? ('dark' as const) : ('light' as const),
-              contrast: isMoreContrast ? ('more' as const) : ('standard' as const),
-              isForcedColors: false,
+            for (const motion of motions) {
+              for (const isReducedMotion of [false, true]) {
+                const system = {
+                  colorScheme: isDark ? ('dark' as const) : ('light' as const),
+                  contrast: isMoreContrast ? ('more' as const) : ('standard' as const),
+                  motion: isReducedMotion ? ('reduce' as const) : ('full' as const),
+                  isForcedColors: false,
+                }
+                expect(resolveTheme({ colorScheme, contrast, motion }, system)).toEqual({
+                  colorScheme: colorScheme === 'system' ? system.colorScheme : colorScheme,
+                  contrast: contrast === 'system' ? system.contrast : contrast,
+                  motion: motion === 'system' ? system.motion : motion,
+                })
+              }
             }
-            expect(resolveTheme({ colorScheme, contrast }, system)).toEqual({
-              colorScheme: colorScheme === 'system' ? system.colorScheme : colorScheme,
-              contrast: contrast === 'system' ? system.contrast : contrast,
-            })
           }
         }
       }
@@ -161,12 +173,12 @@ describe('resolveTheme', () => {
 
 describe('createThemeStore: initial state', () => {
   it('follows the OS by default', () => {
-    const fake = createFakeEnv({ isDark: true, isMoreContrast: true })
+    const fake = createFakeEnv({ isDark: true, isMoreContrast: true, isReducedMotion: true })
     const themeStore = createThemeStore(fake.env)
     expect(themeStore.getState()).toEqual({
-      preference: { colorScheme: 'system', contrast: 'system' },
-      system: { colorScheme: 'dark', contrast: 'more', isForcedColors: false },
-      resolved: { colorScheme: 'dark', contrast: 'more' },
+      preference: { colorScheme: 'system', contrast: 'system', motion: 'system' },
+      system: { colorScheme: 'dark', contrast: 'more', motion: 'reduce', isForcedColors: false },
+      resolved: { colorScheme: 'dark', contrast: 'more', motion: 'reduce' },
     })
   })
 
@@ -175,15 +187,28 @@ describe('createThemeStore: initial state', () => {
     const themeStore = createThemeStore(fake.env, {
       defaultColorScheme: 'dark',
       defaultContrast: 'more',
+      defaultMotion: 'reduce',
     })
-    expect(themeStore.getState().preference).toEqual({ colorScheme: 'dark', contrast: 'more' })
-    expect(themeStore.getState().resolved).toEqual({ colorScheme: 'dark', contrast: 'more' })
+    expect(themeStore.getState().preference).toEqual({
+      colorScheme: 'dark',
+      contrast: 'more',
+      motion: 'reduce',
+    })
+    expect(themeStore.getState().resolved).toEqual({
+      colorScheme: 'dark',
+      contrast: 'more',
+      motion: 'reduce',
+    })
   })
 
   it('reads a stored preference over the defaults', () => {
     const fake = createFakeEnv({ storedValue: JSON.stringify({ colorScheme: 'dark' }) })
     const themeStore = createThemeStore(fake.env, { defaultContrast: 'more' })
-    expect(themeStore.getState().preference).toEqual({ colorScheme: 'dark', contrast: 'more' })
+    expect(themeStore.getState().preference).toEqual({
+      colorScheme: 'dark',
+      contrast: 'more',
+      motion: 'system',
+    })
   })
 
   it.each(['not json', '"dark"', 'null', JSON.stringify({ colorScheme: 'blue', contrast: 5 })])(
@@ -193,6 +218,7 @@ describe('createThemeStore: initial state', () => {
       expect(themeStore.getState().preference).toEqual({
         colorScheme: 'system',
         contrast: 'system',
+        motion: 'system',
       })
     },
   )
@@ -209,15 +235,19 @@ describe('createThemeStore: initial state', () => {
     const fake = createFakeEnv({ isForcedColors: true, isDark: true })
     const themeStore = createThemeStore(fake.env, { defaultContrast: 'standard' })
     expect(themeStore.getState().system.isForcedColors).toBe(true)
-    expect(themeStore.getState().resolved).toEqual({ colorScheme: 'dark', contrast: 'standard' })
+    expect(themeStore.getState().resolved).toEqual({
+      colorScheme: 'dark',
+      contrast: 'standard',
+      motion: 'full',
+    })
   })
 
   it('without an env (server rendering) uses the defaults and never persists', () => {
     const themeStore = createThemeStore(undefined, { defaultColorScheme: 'dark' })
     expect(themeStore.getState()).toEqual({
-      preference: { colorScheme: 'dark', contrast: 'system' },
-      system: { colorScheme: 'light', contrast: 'standard', isForcedColors: false },
-      resolved: { colorScheme: 'dark', contrast: 'standard' },
+      preference: { colorScheme: 'dark', contrast: 'system', motion: 'system' },
+      system: { colorScheme: 'light', contrast: 'standard', motion: 'full', isForcedColors: false },
+      resolved: { colorScheme: 'dark', contrast: 'standard', motion: 'full' },
     })
     themeStore.actions.selectContrast('more')
     expect(themeStore.getState().resolved.contrast).toBe('more')
@@ -230,8 +260,33 @@ describe('createThemeStore: selecting', () => {
     const themeStore = createThemeStore(createFakeEnv().env)
     themeStore.actions.selectColorScheme('dark')
     themeStore.actions.selectContrast('more')
-    expect(themeStore.getState().preference).toEqual({ colorScheme: 'dark', contrast: 'more' })
-    expect(themeStore.getState().resolved).toEqual({ colorScheme: 'dark', contrast: 'more' })
+    themeStore.actions.selectMotion('reduce')
+    expect(themeStore.getState().preference).toEqual({
+      colorScheme: 'dark',
+      contrast: 'more',
+      motion: 'reduce',
+    })
+    expect(themeStore.getState().resolved).toEqual({
+      colorScheme: 'dark',
+      contrast: 'more',
+      motion: 'reduce',
+    })
+  })
+
+  it('follows the OS motion setting until the user chooses, then writes the attribute', () => {
+    const fake = createFakeEnv({ isReducedMotion: true })
+    const themeStore = createThemeStore(fake.env)
+    const disconnect = themeStore.connect()
+    expect(fake.attributes.get(motionAttribute)).toBe('reduce')
+    themeStore.actions.selectMotion('full')
+    expect(fake.attributes.get(motionAttribute)).toBe('full')
+    expect(fake.storageItems.get(themeStorageKey)).toBe(JSON.stringify({ motion: 'full' }))
+    themeStore.actions.selectMotion('system')
+    expect(fake.attributes.get(motionAttribute)).toBe('reduce')
+    expect(fake.storageItems.has(themeStorageKey)).toBe(false)
+    fake.changeSystem(motionQuery, false)
+    expect(fake.attributes.get(motionAttribute)).toBe('full')
+    disconnect()
   })
 
   it('writes only non-system values to storage', () => {
@@ -271,7 +326,7 @@ describe('createThemeStore: selecting', () => {
     expect(fake.storageItems.get(themeStorageKey)).toBe(JSON.stringify({ colorScheme: 'system' }))
     expect(
       createThemeStore(fake.env, { defaultColorScheme: 'dark' }).getState().preference,
-    ).toEqual({ colorScheme: 'system', contrast: 'system' })
+    ).toEqual({ colorScheme: 'system', contrast: 'system', motion: 'system' })
     themeStore.actions.selectColorScheme('dark')
     expect(fake.storageItems.has(themeStorageKey)).toBe(false)
   })
@@ -280,7 +335,11 @@ describe('createThemeStore: selecting', () => {
     const fake = createFakeEnv({ storedValue: JSON.stringify({ colorScheme: 'dark' }) })
     const themeStore = createThemeStore(fake.env, { storage: 'none' })
     themeStore.actions.selectContrast('more')
-    expect(themeStore.getState().preference).toEqual({ colorScheme: 'system', contrast: 'more' })
+    expect(themeStore.getState().preference).toEqual({
+      colorScheme: 'system',
+      contrast: 'more',
+      motion: 'system',
+    })
     expect(fake.storageAccess).toEqual({ reads: 0, writes: 0 })
   })
 
@@ -294,7 +353,11 @@ describe('createThemeStore: selecting', () => {
     }
     const fake = createFakeEnv()
     const themeStore = createThemeStore(fake.env, { storage: cookieStorage })
-    expect(themeStore.getState().preference).toEqual({ colorScheme: 'system', contrast: 'more' })
+    expect(themeStore.getState().preference).toEqual({
+      colorScheme: 'system',
+      contrast: 'more',
+      motion: 'system',
+    })
 
     themeStore.actions.selectColorScheme('light')
     expect(cookieStorage.write).toHaveBeenLastCalledWith({ colorScheme: 'light', contrast: 'more' })
@@ -310,7 +373,11 @@ describe('createThemeStore: selecting', () => {
       write: () => {},
     }
     const themeStore = createThemeStore(createFakeEnv().env, { storage: tamperedStorage })
-    expect(themeStore.getState().preference).toEqual({ colorScheme: 'system', contrast: 'more' })
+    expect(themeStore.getState().preference).toEqual({
+      colorScheme: 'system',
+      contrast: 'more',
+      motion: 'system',
+    })
   })
 
   it('survives a custom adapter that throws', () => {
@@ -349,10 +416,12 @@ describe('createThemeStore: connect', () => {
 
     fake.changeSystem(colorSchemeQuery, true)
     fake.changeSystem(contrastQuery, true)
+    fake.changeSystem(motionQuery, true)
     fake.changeSystem(forcedColorsQuery, true)
     expect(themeStore.getState().system).toEqual({
       colorScheme: 'dark',
       contrast: 'more',
+      motion: 'reduce',
       isForcedColors: true,
     })
     expect(fake.attributes.get(colorSchemeAttribute)).toBe('dark')
@@ -384,12 +453,20 @@ describe('createThemeStore: connect', () => {
       JSON.stringify({ colorScheme: 'dark', contrast: 'more' }),
     )
     fake.dispatchStorageEvent(themeStorageKey)
-    expect(themeStore.getState().preference).toEqual({ colorScheme: 'dark', contrast: 'more' })
+    expect(themeStore.getState().preference).toEqual({
+      colorScheme: 'dark',
+      contrast: 'more',
+      motion: 'system',
+    })
 
     fake.dispatchStorageEvent('some-other-key')
     fake.storageItems.clear()
     fake.dispatchStorageEvent(null)
-    expect(themeStore.getState().preference).toEqual({ colorScheme: 'system', contrast: 'system' })
+    expect(themeStore.getState().preference).toEqual({
+      colorScheme: 'system',
+      contrast: 'system',
+      motion: 'system',
+    })
     disconnect()
   })
 
@@ -442,6 +519,7 @@ const hostileOptions = JSON.parse(
   JSON.stringify({
     defaultColorScheme: '</script><script>alert(1)</script>',
     defaultContrast: 'more" onload="alert(1)',
+    defaultMotion: 'none',
     storage: 'session',
   }),
 ) as ThemeOptions
@@ -451,6 +529,7 @@ describe('invalid theme options', () => {
     expect(findInvalidThemeOptions(hostileOptions)).toEqual([
       'defaultColorScheme',
       'defaultContrast',
+      'defaultMotion',
       'storage',
     ])
     expect(findInvalidThemeOptions({})).toEqual([])
@@ -458,6 +537,7 @@ describe('invalid theme options', () => {
       findInvalidThemeOptions({
         defaultColorScheme: 'dark',
         defaultContrast: 'more',
+        defaultMotion: 'reduce',
         storage: { read: () => undefined, write: () => {} },
       }),
     ).toEqual([])
@@ -469,11 +549,16 @@ describe('invalid theme options', () => {
     expect(themeStore.options).toEqual({
       defaultColorScheme: 'system',
       defaultContrast: 'system',
+      defaultMotion: 'system',
       storage: 'local',
     })
-    expect(themeStore.getState().preference).toEqual({ colorScheme: 'system', contrast: 'system' })
+    expect(themeStore.getState().preference).toEqual({
+      colorScheme: 'system',
+      contrast: 'system',
+      motion: 'system',
+    })
     const disconnect = themeStore.connect()
-    expect([...fake.attributes.values()]).toEqual(['light', 'standard'])
+    expect([...fake.attributes.values()]).toEqual(['light', 'standard', 'full'])
     disconnect()
   })
 })

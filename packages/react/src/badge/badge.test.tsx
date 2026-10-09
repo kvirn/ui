@@ -1,13 +1,28 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef } from 'react'
-import { describe, expect, test } from 'vite-plus/test'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
+import type { MockInstance } from 'vite-plus/test'
 import { page } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
+import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Badge } from './badge.tsx'
 import { useBadge } from './use-badge.ts'
 import type { BadgeVariant } from './use-badge.ts'
 
 // Contract: badge.a11y.md.
+
+let consoleWarn: MockInstance<Console['warn']>
+
+beforeEach(() => {
+  resetDevWarnings()
+  consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+})
+
+afterEach(() => {
+  consoleWarn.mockRestore()
+})
+
+const warnings = () => consoleWarn.mock.calls.map(([message]) => String(message))
 
 const variants: BadgeVariant[] = ['neutral', 'primary', 'info', 'success', 'warning', 'danger']
 
@@ -57,22 +72,41 @@ describe('Badge', () => {
     expect(useBadge({ variant: 'danger' }).rootProps.className).toBe('kv-badge kv-badge--danger')
   })
 
-  test('render changes the element and its function gets the variant', async () => {
+  test('as changes the element to strong or em', async () => {
     await render(
       <>
-        <Badge render={<strong data-testid="element" />}>Ny</Badge>
-        <Badge
-          variant="warning"
-          render={(props, state) => (
-            <strong {...props} data-testid="function" title={state.variant} />
-          )}
-        >
+        <Badge as="strong" data-testid="strong">
+          Ny
+        </Badge>
+        <Badge as="em" data-testid="em">
           Ny
         </Badge>
       </>,
     )
-    expect(page.getByTestId('element').element().tagName).toBe('STRONG')
-    expect(page.getByTestId('function').element().getAttribute('title')).toBe('warning')
+    expect(page.getByTestId('strong').element().tagName).toBe('STRONG')
+    expect(page.getByTestId('em').element().tagName).toBe('EM')
+  })
+
+  test('an element outside the allowed list warns once and renders a span', async () => {
+    const notAllowed = 'h2' as 'span'
+    await render(
+      <Badge as={notAllowed} data-testid="badge">
+        Ny
+      </Badge>,
+    )
+    expect(page.getByTestId('badge').element().tagName).toBe('SPAN')
+    expect(warnings().filter((message) => message.includes('Badge as="h2"'))).toHaveLength(1)
+  })
+
+  test('the ref, className and variant still apply to the chosen element', async () => {
+    const ref = createRef<HTMLElement>()
+    await render(
+      <Badge as="strong" variant="warning" ref={ref} className="annan" data-testid="badge">
+        Ny
+      </Badge>,
+    )
+    expect(ref.current).toBe(page.getByTestId('badge').element())
+    expect(ref.current?.className).toBe('annan kv-badge kv-badge--warning')
   })
 
   test('is not a Tab stop', async () => {

@@ -1,28 +1,16 @@
 'use client'
-import { useContext, useEffect } from 'react'
+import { createElement, useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { ToolbarContext } from '../toolbar/toolbar-context.ts'
 import { useButtonGroup } from './use-button-group.ts'
-import type { ButtonGroupLayout, UseButtonGroupOptions } from './use-button-group.ts'
-
-/** What `render` receives as its second argument. */
-export interface ButtonGroupState {
-  /** The group has a name, so it is a `role="group"`. */
-  isNamed: boolean
-  layout: ButtonGroupLayout
-}
+import type { UseButtonGroupOptions } from './use-button-group.ts'
 
 /** `role` is left out: it comes from the name. */
-export interface ButtonGroupProps
-  extends Omit<ComponentPropsWithRef<'div'>, 'role'>, Pick<UseButtonGroupOptions, 'layout'> {
-  /** Change the element. Its own semantics apply, and the group role only goes with a name. */
-  render?: RenderProp<ComponentPropsWithRef<'div'>, ButtonGroupState> | undefined
-}
+export type ButtonGroupProps = Omit<ComponentPropsWithRef<'div'>, 'role'> &
+  Pick<UseButtonGroupOptions, 'layout'>
 
 /**
  * A row of related Buttons: one `<div class="kv-button-group">` (contract:
@@ -43,7 +31,6 @@ export interface ButtonGroupProps
  * </ButtonGroup>
  */
 export function ButtonGroup({
-  render,
   ref,
   layout = 'spaced',
   ...otherProps
@@ -64,11 +51,6 @@ export function ButtonGroup({
     }
   }, [isInToolbar, isNamed])
 
-  return renderPart({
-    render,
-    defaultElement: 'div',
-    partProps: { ...mergeProps(otherProps, group.groupProps), ref: mergedRef },
-    state: { isNamed, layout },
-  })
+  return createElement('div', { ...mergeProps(otherProps, group.groupProps), ref: mergedRef })
 }
 ButtonGroup.displayName = 'ButtonGroup'

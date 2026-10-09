@@ -2,7 +2,7 @@
 
 - **APG pattern:** none. A scrollable region with native scrolling: the [`region` role](https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/region.html) and a Tab stop only while it scrolls, so a keyboard user can scroll it (2.1.1).
 - **Deviations:** none. Decisions (Plan 0079): native scrollbars only, never hidden or thinned; no `orientation` prop, because the native `overflow` already scrolls whichever axis overflows; `Table.ScrollRegion` is the first use and shares this logic.
-- **Native elements used:** `<div>` that is a `role="region"` while it scrolls, or always with `region="always"`.
+- **Native elements used:** `<div>` (or `<section>` with `as`) that is a `role="region"` while it scrolls, or always with `region="always"`.
 - **Status:** alpha candidate (Plan 0079). Gates pass once accessibility-reviewer returns APPROVE. Manual AT is `pending`.
 - **Tests:** `scroll-area.test.tsx` next to this file. `scroll-area.stories.tsx` in `apps/storybook/src/components/scroll-area/`. `Table.ScrollRegion` is tested in `table.test.tsx`.
 
@@ -14,6 +14,14 @@ A ScrollArea holds content that may be wider or taller than its box, such as a w
 | --------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ScrollArea      | `<div>`, `<div role="region">` while it scrolls or `region="always"` | `role="region"` only while the area is one: it overflows, or `region="always"`. `tabindex="0"` and `data-overflowing` only while it overflows. Not a region (nothing overflows): no role, no name, no `tabindex`. | Classes `kv-scroll-region kv-scroll-area`. Name it with your own `aria-labelledby` or `aria-label`, applied only once it is a region. A region with no name: a development warning |
 | `useScrollArea` | the same attributes, for your own element                            | `scrollAreaProps`, `isOverflowing`, `isRegion`, `element`                                                                                                                                                         | Option `region`: `'overflow'` (default) or `'always'`. Spread `scrollAreaProps` on the element that scrolls                                                                        |
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part       | `as`                       | Why                                                                                                                                                                                                                                                                                                                                     |
+| ---------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ScrollArea | `div` (default), `section` | A scroll container is a `region` while it scrolls, so `section` adds nothing but is harmless. No landmark element (`nav`, `aside`, `main`) and no list: the area holds content, it is not content. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:ScrollArea:<tag>`) and renders the default element. |
 
 ## Keyboard
 

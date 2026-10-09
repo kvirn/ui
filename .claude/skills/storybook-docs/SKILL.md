@@ -31,7 +31,7 @@ Every component's Docs page has these seven parts, in this order. The page layou
 ### 3. Main example: every option exposed
 
 - The first exported story is `Default`, and Storybook shows it as the main example. It renders the component the way most adopters will, with real Swedish text.
-- **Read `<name>.tsx` and its hook before you write it.** Every prop the component and its parts accept gets an entry in `meta.argTypes` with a `control` and a one-line `description` (what it does, the default, which class or attribute it sets). That includes the theme's modifier classes (as a `select` on `className`), boolean props, enums (`inline-radio`), and strings. Props a control can't drive (`render`, refs, handlers) get `control: false` and a description, and handlers get `fn()` in `args`.
+- **Read `<name>.tsx` and its hook before you write it.** Every prop the component and its parts accept gets an entry in `meta.argTypes` with a `control` and a one-line `description` (what it does, the default, which class or attribute it sets). That includes the theme's modifier classes (as a `select` on `className`), boolean props, enums (`inline-radio`), and strings. Props a control can't drive (a component `as`, refs, handlers) get `control: false` and a description, and handlers get `fn()` in `args`.
 - `meta.args` holds the default value of every option, so the controls start at what an adopter gets with no props.
 - A compound component (`X.Root` with parts): `meta.component` is `X.Root`, and `Default` has a `render` that composes every part, and maps args to the parts' props (`args.disabled` to the Trigger, for instance). Name these args after the prop they set, and list in `## API` which part takes each one.
 
@@ -43,7 +43,7 @@ Before you finish, go through `<name>.tsx`, the hook and the core machine, and c
 - every prop and option, with its type and default, and which part takes it,
 - every `data-*` state attribute, the stable `kv-*` class and the theme's modifier classes,
 - every message key (`messages` prop) and what it says by default,
-- `render`, and what it must still render (the dev warning),
+- `as`, and which tags or components it takes (the part's `*.a11y.md` list),
 - anything the component does on its own: an id it generates, `aria-*` it wires up, focus it moves, an announcement it makes.
 
 Write `## API` in the `.md` as tables and short bullets (see `announcer.md`). Don't repeat what an `argTypes` description already says: the table covers parts and the props the controls can't show. Keys belong in the Keyboard section, not in `## API`.
@@ -89,7 +89,11 @@ const meta = {
       description: 'Joins `kv-example`. The theme styles `kv-example--primary`.',
     },
     disabled: { description: 'Natively disabled: skipped by Tab. Sets `data-disabled`.' },
-    render: { control: false, description: 'Another element. It must still be a `<button>`.' },
+    as: {
+      control: 'select',
+      options: ['h2', 'h3', 'p'],
+      description: 'The element. Only the allowed tags.',
+    },
   },
   globals: { locale: 'sv' },
   parameters: {

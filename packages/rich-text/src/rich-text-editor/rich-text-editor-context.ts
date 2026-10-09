@@ -4,7 +4,7 @@ import { createContext, useContext } from 'react'
 import type { RichTextFormat } from '../value/document-value.ts'
 import type { RichTextContentPartProps, RichTextFeatures } from './use-rich-text-editor.ts'
 
-/** What `render` receives as its second argument, and what the parts read. */
+/** What the parts read. */
 export interface RichTextEditorState {
   /** There is nothing to read. */
   isEmpty: boolean

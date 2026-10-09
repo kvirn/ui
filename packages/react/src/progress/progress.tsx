@@ -1,44 +1,39 @@
 'use client'
-import { useContext, useEffect } from 'react'
+import { createElement, useContext, useEffect } from 'react'
+import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useFormat } from '../provider/use-format.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { ProgressContext } from './progress-context.ts'
 import { useProgress } from './use-progress.ts'
 import type { UseProgressOptions } from './use-progress.ts'
 
-/** What `render` receives as its second argument for the Root. */
-export interface ProgressState {
-  isSlow: boolean
-  isDeterminate: boolean
-}
+const labelTags = ['p', 'div', 'span'] as const
 
 export interface ProgressRootProps
   extends ComponentPropsWithRef<'div'>, Omit<UseProgressOptions, 'messages'> {
   /** Per-instance message overrides: `{ slow: 'Det här tar tid. Stäng inte sidan.' }`. */
   messages?: UseProgressOptions['messages']
-  render?: RenderProp<ComponentPropsWithRef<'div'>, ProgressState> | undefined
 }
 
-export interface ProgressLabelProps extends ComponentPropsWithRef<'p'> {
+interface ProgressLabelOwnProps {
   /** Another text than the Root's `label`. It names the bar, so keep it the same words. */
   children?: ComponentPropsWithRef<'p'>['children']
-  render?: RenderProp<ComponentPropsWithRef<'p'>, ProgressState> | undefined
 }
 
-export interface ProgressBarProps extends Omit<
+/** `as` is `p` (default), `div`, or `span` beside a busy button. It is plain text, never a heading. */
+export type ProgressLabelProps = AsTag<(typeof labelTags)[number], 'p', ProgressLabelOwnProps>
+
+export type ProgressBarProps = Omit<
   ComponentPropsWithRef<'progress'>,
   'value' | 'max' | 'aria-labelledby'
-> {
-  render?: RenderProp<ComponentPropsWithRef<'progress'>, ProgressState> | undefined
-}
+>
 
-export interface ProgressIndicatorProps extends ComponentPropsWithRef<'span'> {
-  render?: RenderProp<ComponentPropsWithRef<'span'>, ProgressState> | undefined
-}
+export type ProgressIndicatorProps = ComponentPropsWithRef<'span'>
 
 function useProgressContext(partName: string): ReturnType<typeof useProgress> | null {
   const progress = useContext(ProgressContext)
@@ -79,7 +74,6 @@ export function ProgressRoot({
   slowAfterMilliseconds,
   announce,
   messages,
-  render,
   children,
   ref,
   ...otherProps
@@ -98,12 +92,7 @@ export function ProgressRoot({
   }
   return (
     <ProgressContext.Provider value={progress}>
-      {renderPart({
-        render,
-        defaultElement: 'div',
-        partProps: { ...mergeProps(otherProps, progress.rootProps), ref, children },
-        state: { isSlow: progress.isSlow, isDeterminate: progress.percent !== undefined },
-      })}
+      {createElement('div', { ...mergeProps(otherProps, progress.rootProps), ref }, children)}
     </ProgressContext.Provider>
   )
 }
@@ -114,22 +103,23 @@ ProgressRoot.displayName = 'Progress.Root'
  * sentence. Only the label names the bar. It is plain text, never a live region.
  */
 export function ProgressLabel({
-  render,
+  as,
   children,
   ref,
   ...otherProps
 }: ProgressLabelProps): ReactElement | null {
   const progress = useProgressContext('Label')
   const format = useFormat()
+  const elementRef = useMergedRef(ref, null)
   if (progress === null) {
     return null
   }
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'Progress.Label', as, allowedTags: labelTags }),
     defaultElement: 'p',
     partProps: {
       ...mergeProps(otherProps, progress.labelProps),
-      ref,
+      ref: elementRef,
       children: (
         <>
           <span id={progress.labelId}>{children ?? progress.label}</span>
@@ -143,7 +133,6 @@ export function ProgressLabel({
         </>
       ),
     },
-    state: { isSlow: progress.isSlow, isDeterminate: progress.percent !== undefined },
   })
 }
 ProgressLabel.displayName = 'Progress.Label'
@@ -151,45 +140,37 @@ ProgressLabel.displayName = 'Progress.Label'
 /**
  * A native `<progress>`, named by the label. Renders only when the Root has a numeric `value`.
  */
-export function ProgressBar({ render, ref, ...otherProps }: ProgressBarProps): ReactElement | null {
+export function ProgressBar({ ref, ...otherProps }: ProgressBarProps): ReactElement | null {
   const progress = useProgressContext('Bar')
+  const elementRef = useMergedRef(ref, null)
   if (progress === null || progress.barProps === undefined) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'progress',
-    partProps: { ...mergeProps(otherProps, progress.barProps), ref },
-    state: { isSlow: progress.isSlow, isDeterminate: true },
+  return createElement('progress', {
+    ...mergeProps(otherProps, progress.barProps),
+    ref: elementRef,
   })
 }
 ProgressBar.displayName = 'Progress.Bar'
-
-function AnimatingIndicator({
-  render,
-  ref,
-  state,
-  ...otherProps
-}: ProgressIndicatorProps & { state: ProgressState }): ReactElement {
-  return renderPart({
-    render,
-    defaultElement: 'span',
-    partProps: mergeProps(otherProps, { className: 'kv-spinner', 'aria-hidden': true, ref }),
-    state,
-  })
-}
 
 /**
  * The spinner of an unknown wait: a decorative `aria-hidden` span, a direct child of the Root
  * before the label. Renders nothing when the Root has a `value` (the `<progress>` is the one
  * indicator) and never takes focus.
  */
-export function ProgressIndicator(props: ProgressIndicatorProps): ReactElement | null {
+export function ProgressIndicator({
+  ref,
+  ...otherProps
+}: ProgressIndicatorProps): ReactElement | null {
   const progress = useProgressContext('Indicator')
+  const elementRef = useMergedRef(ref, null)
   if (progress === null || progress.percent !== undefined) {
     return null
   }
-  return <AnimatingIndicator {...props} state={{ isSlow: progress.isSlow, isDeterminate: false }} />
+  return createElement('span', {
+    ...mergeProps(otherProps, { className: 'kv-spinner', 'aria-hidden': true }),
+    ref: elementRef,
+  })
 }
 ProgressIndicator.displayName = 'Progress.Indicator'
 

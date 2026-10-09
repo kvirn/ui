@@ -11,10 +11,9 @@ The visible label of one control: a native `<label for>` that names the control,
 
 ## API
 
-| Prop     | Type                             | Meaning                                                                                                                                |
-| -------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `marker` | `'optional' \| 'none'`           | `'none'` leaves out the optional text, for a lone search field or a single consent checkbox. Default `'optional'`, `'none'` in a group |
-| `render` | `(props, state) => ReactElement` | Another element. It must still be a `<label>`, or the control loses its name. `state` is the Field's (`isInvalid`, …)                  |
+| Prop     | Type                   | Meaning                                                                                                                                |
+| -------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `marker` | `'optional' \| 'none'` | `'none'` leaves out the optional text, for a lone search field or a single consent checkbox. Default `'optional'`, `'none'` in a group |
 
 - **Renders** `<label for class="kv-field-label">` with an `id` (`<controlId>-label`), and the state attributes `data-invalid`, `data-required` and `data-disabled` of the Field.
 - **Message:** the optional text is `field.optional`, overridden per provider or per Field with `messages` (see [Field](field.md)).

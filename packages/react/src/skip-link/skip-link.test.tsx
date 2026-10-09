@@ -7,6 +7,7 @@ import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef } from 'react'
+import type { ComponentPropsWithRef } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -225,30 +226,25 @@ describe('SkipLink name and attributes', () => {
     expect(document.activeElement).toBe(page.getByRole('main').element())
   })
 
-  test('render changes the element', async () => {
+  test('as={Component} receives the props, the ref and the part’s class', async () => {
+    const ref = createRef<HTMLAnchorElement>()
+    function RouterLink({ children, ...anchorProps }: ComponentPropsWithRef<'a'>) {
+      return (
+        <a {...anchorProps} data-router-link="">
+          {children}
+        </a>
+      )
+    }
     await render(
       <>
-        <SkipLink
-          href="#main"
-          render={
-            <a href="#main" data-testid="element">
-              Hoppa
-            </a>
-          }
-        />
-        <SkipLink
-          href="#main"
-          render={(props) => (
-            <a {...props} href="#main" data-testid="function">
-              {props.children}
-            </a>
-          )}
-        />
+        <SkipLink as={RouterLink} ref={ref} href="#main" className="egen" />
         <main id="main" />
       </>,
     )
-    expect(page.getByTestId('element').element().getAttribute('href')).toBe('#main')
-    expect(page.getByTestId('function').element().className).toBe('kv-skip-link')
+    const link = page.getByRole('link', { name: 'Skip to main content' })
+    await expect.element(link).toHaveAttribute('data-router-link', '')
+    await expect.element(link).toHaveClass('kv-skip-link', 'egen')
+    expect(ref.current).toBe(link.element())
   })
 })
 

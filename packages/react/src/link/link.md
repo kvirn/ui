@@ -62,17 +62,19 @@ First match wins:
                                                             // 4. built-in en
 ```
 
-Keep the notice in the name. If you hide it visually, use a visually-hidden technique, not `display: none` or `aria-hidden`. `Link.NewTabNotice` takes `render` like every part, for example `render={<small />}`: it keeps its class and its text.
+Keep the notice in the name. If you hide it visually, use a visually-hidden technique, not `display: none` or `aria-hidden`. `Link.NewTabNotice` takes `as` (`span`, `em` or `small`) and `Link.Icon` takes `as` (`span` or `i`): they keep their class and their text.
 
-### Router links and `render`
+### Router links and `as`
 
-Register your router's link once, on the provider (see [KvirnProvider](../provider/kvirn-provider.md)). Every Link then renders it. To bypass the router for one link, for example a download, render a plain `<a>`:
+Register your router's link once, on the provider (see [KvirnProvider](../provider/kvirn-provider.md)). Every Link then renders it. To bypass the router for one link, for example a download, use `as="a"`:
 
 ```tsx
-<Link.Root href="/blankett.pdf" download render={<a />}>
+<Link.Root href="/blankett.pdf" download as="a">
   Blankett (PDF)
 </Link.Root>
 ```
+
+`as` also takes a component, such as your design system's link: it gets the other props as plain props, a `ref` and the part's class, and must render an `<a href>`. `target`, `rel` and `current` stay Link's own: `target="_blank"` still adds `rel="noopener noreferrer"`.
 
 ## Your own look
 

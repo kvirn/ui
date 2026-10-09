@@ -1,5 +1,5 @@
 import { getLanguage } from '@kvirn-ui/core'
-import type { ColorSchemePreference, ContrastPreference } from '@kvirn-ui/core'
+import type { ColorSchemePreference, ContrastPreference, MotionPreference } from '@kvirn-ui/core'
 import { useId } from 'react'
 import type { CSSProperties } from 'react'
 import { useDateSettings } from './use-date-settings.ts'
@@ -16,7 +16,6 @@ const fixtureTexts = {
     locale: 'Språk',
     direction: 'Riktning',
     timeZone: 'Tidszon',
-    runtimeTimeZone: 'Enhetens tidszon',
     date: 'Datum',
     newTabNotice: 'Text för ny flik',
     theme: 'Tema',
@@ -27,6 +26,9 @@ const fixtureTexts = {
     system: 'Följ systemet',
     standard: 'Normal kontrast',
     more: 'Hög kontrast',
+    motion: 'Rörelse',
+    full: 'Full rörelse',
+    reduce: 'Mindre rörelse',
     resolved: 'Används nu',
     forcedColors: 'Systemets tvingade färger används och går före ditt val.',
   },
@@ -35,7 +37,6 @@ const fixtureTexts = {
     locale: 'Kieli',
     direction: 'Kirjoitussuunta',
     timeZone: 'Aikavyöhyke',
-    runtimeTimeZone: 'Laitteen aikavyöhyke',
     date: 'Päivämäärä',
     newTabNotice: 'Uuden välilehden ilmoitus',
     theme: 'Teema',
@@ -46,6 +47,9 @@ const fixtureTexts = {
     system: 'Järjestelmän mukaan',
     standard: 'Tavallinen kontrasti',
     more: 'Korkea kontrasti',
+    motion: 'Liike',
+    full: 'Täysi liike',
+    reduce: 'Vähemmän liikettä',
     resolved: 'Käytössä nyt',
     forcedColors: 'Järjestelmän pakotetut värit ovat käytössä ja ohittavat valintasi.',
   },
@@ -54,7 +58,6 @@ const fixtureTexts = {
     locale: 'Language',
     direction: 'Direction',
     timeZone: 'Time zone',
-    runtimeTimeZone: 'Device time zone',
     date: 'Date',
     newTabNotice: 'New tab notice',
     theme: 'Theme',
@@ -65,6 +68,9 @@ const fixtureTexts = {
     system: 'Follow system',
     standard: 'Standard contrast',
     more: 'High contrast',
+    motion: 'Motion',
+    full: 'Full motion',
+    reduce: 'Less motion',
     resolved: 'In use',
     forcedColors: 'Your system’s forced colours are in use and override your choice.',
   },
@@ -100,7 +106,7 @@ export function ProviderFixture() {
         <dt>{text.direction}</dt>
         <dd>{locale.dir}</dd>
         <dt>{text.timeZone}</dt>
-        <dd>{dateSettings.timeZone ?? text.runtimeTimeZone}</dd>
+        <dd>{dateSettings.timeZone}</dd>
         <dt>{text.date}</dt>
         <dd>
           <time dateTime={fixtureDate.toISOString()}>{formattedDate}</time>
@@ -114,6 +120,7 @@ export function ProviderFixture() {
 
 const colorSchemeOptions: readonly ColorSchemePreference[] = ['light', 'dark', 'system']
 const contrastOptions: readonly ContrastPreference[] = ['standard', 'more', 'system']
+const motionOptions: readonly MotionPreference[] = ['full', 'reduce', 'system']
 
 // 2.5.8: each radio is at least 24 × 24 CSS px.
 const optionStyle: CSSProperties = {
@@ -170,10 +177,26 @@ export function ThemeSwitcherFixture() {
           </label>
         ))}
       </fieldset>
+      <fieldset>
+        <legend>{text.motion}</legend>
+        {motionOptions.map((option) => (
+          <label key={option} style={optionStyle}>
+            <input
+              type="radio"
+              name={`${id}-motion`}
+              value={option}
+              checked={theme.motion === option}
+              onChange={() => theme.selectMotion(option)}
+              style={radioStyle}
+            />
+            {text[option]}
+          </label>
+        ))}
+      </fieldset>
       <p>
         {theme.isForcedColors
           ? text.forcedColors
-          : `${text.resolved}: ${text[theme.resolvedColorScheme]}, ${text[theme.resolvedContrast]}`}
+          : `${text.resolved}: ${text[theme.resolvedColorScheme]}, ${text[theme.resolvedContrast]}, ${text[theme.resolvedMotion]}`}
       </p>
     </section>
   )

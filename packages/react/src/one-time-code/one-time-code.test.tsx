@@ -1139,46 +1139,6 @@ describe('render, refs and merged props', () => {
     await userEvent.click(page.getByRole('textbox', { name: 'Kod' }))
     expect(onFocus).toHaveBeenCalledTimes(1)
   })
-
-  test('render as a function gets the part props and the state', async () => {
-    const states: OneTimeCodeSlotState[] = []
-    await render(
-      <Field.Root>
-        <Field.Label marker="none">Kod</Field.Label>
-        <OneTimeCode.Root pattern="9999" defaultValue="48">
-          <OneTimeCode.Input />
-          <OneTimeCode.Slot
-            index={0}
-            render={(partProps, state) => {
-              states.push(state)
-              return <b {...partProps} data-testid="bold" />
-            }}
-          />
-        </OneTimeCode.Root>
-      </Field.Root>,
-    )
-    expect(document.querySelector('b[data-testid="bold"]')?.getAttribute('aria-hidden')).toBe(
-      'true',
-    )
-    expect(states.at(-1)).toMatchObject({
-      kind: 'character',
-      character: '4',
-      isFilled: true,
-      isActive: false,
-    })
-  })
-
-  test('render as an element on the Root', async () => {
-    await render(
-      <Field.Root>
-        <Field.Label marker="none">Kod</Field.Label>
-        <OneTimeCode.Root render={<section data-testid="root" />}>
-          <OneTimeCode.Input />
-        </OneTimeCode.Root>
-      </Field.Root>,
-    )
-    expect(root()?.tagName).toBe('SECTION')
-  })
 })
 
 describe('the hook, on your own elements', () => {

@@ -19,7 +19,6 @@ import type {
   NavigationLabelProps,
   NavigationListProps,
   NavigationRootProps,
-  NavigationState,
 } from './navigation.tsx'
 import { useNavigation } from './use-navigation.ts'
 import type {
@@ -144,7 +143,7 @@ describe('rendering', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('passes other attributes through and joins className, refs and render elements', async () => {
+  test('passes other attributes through and and joins className and refs', async () => {
     const rootRef = createRef<HTMLElement>()
     const listRef = createRef<HTMLElement>()
     const itemRef = createRef<HTMLElement>()
@@ -158,11 +157,7 @@ describe('rendering', () => {
         data-testid="root"
       >
         <Navigation.List ref={listRef} className="min-lista" data-testid="list">
-          <Navigation.Item
-            ref={itemRef}
-            render={<li data-own="ja" className="eget" />}
-            data-testid="item"
-          >
+          <Navigation.Item ref={itemRef} data-own="ja" className="eget" data-testid="item">
             <Link.Root href="#start">Start</Link.Root>
           </Navigation.Item>
         </Navigation.List>
@@ -180,22 +175,35 @@ describe('rendering', () => {
     await expect.element(item).toHaveClass('kv-navigation-item', 'eget')
   })
 
-  test('render as a function receives the part props and keeps the landmark', async () => {
+  test('Navigation.List as="ol" renders an ordered list and keeps the class', async () => {
     await render(
-      <Navigation.Root
-        label="Huvudmeny"
-        render={(rootProps) => <nav {...rootProps} data-rendered="ja" />}
-      >
-        <Navigation.List>
+      <Navigation.Root label="Steg">
+        <Navigation.List as="ol" data-testid="list">
           <Navigation.Item>
             <Link.Root href="#start">Start</Link.Root>
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>,
     )
-    const navigation = page.getByRole('navigation', { name: 'Huvudmeny' })
-    await expect.element(navigation).toHaveAttribute('data-rendered', 'ja')
-    await expect.element(navigation).toHaveClass('kv-navigation')
+    const list = page.getByTestId('list')
+    expect(list.element().tagName).toBe('OL')
+    await expect.element(list).toHaveClass('kv-navigation-list')
+  })
+
+  test('an element outside the list warns once and falls back to the default', async () => {
+    const notAllowed = 'div' as NavigationListProps['as']
+    await render(
+      <Navigation.Root label="Steg">
+        <Navigation.List as={notAllowed} data-testid="list">
+          <Navigation.Item>
+            <Link.Root href="#start">Start</Link.Root>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>,
+    )
+    expect(page.getByTestId('list').element().tagName).toBe('UL')
+    expect(consoleWarn).toHaveBeenCalledTimes(1)
+    expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('Navigation.List as="div"')
   })
 
   test('adds no tabindex or other ARIA of its own, only the list role, and is never a Tab stop', async () => {
@@ -645,13 +653,13 @@ describe('Navigation.Label', () => {
     await expect.element(page.getByRole('link', { name: 'Färger' })).toHaveFocus()
   })
 
-  test('keeps the id, a class and the ref of your own, and renders another element', async () => {
+  test('keeps the id, a class and the ref of your own, and renders another element with as', async () => {
     const ref = createRef<HTMLElement>()
     await render(
       <Navigation.Root label="Dokumentation">
         <Navigation.List>
           <Navigation.Item>
-            <Navigation.Label ref={ref} id="own-label" className="own" lang="en" render={<small />}>
+            <Navigation.Label ref={ref} id="own-label" className="own" lang="en" as="p">
               Components
             </Navigation.Label>
             <Navigation.List>
@@ -663,7 +671,7 @@ describe('Navigation.Label', () => {
         </Navigation.List>
       </Navigation.Root>,
     )
-    expect(ref.current?.tagName).toBe('SMALL')
+    expect(ref.current?.tagName).toBe('P')
     expect(ref.current?.className).toBe('own kv-navigation-label')
     expect(ref.current?.getAttribute('lang')).toBe('en')
     expect(ref.current?.id).toBe('own-label')
@@ -807,10 +815,9 @@ describe('names', () => {
 describe('types', () => {
   test('exports the part props and the hook types', () => {
     expectTypeOf<NavigationRootProps['label']>().toEqualTypeOf<string | undefined>()
-    expectTypeOf<NavigationListProps>().toHaveProperty('render')
-    expectTypeOf<NavigationItemProps>().toHaveProperty('render')
-    expectTypeOf<NavigationLabelProps>().toHaveProperty('render')
-    expectTypeOf<NavigationState>().toEqualTypeOf<Record<string, never>>()
+    expectTypeOf<NavigationListProps>().toHaveProperty('as')
+    expectTypeOf<NavigationItemProps>().not.toHaveProperty('as')
+    expectTypeOf<NavigationLabelProps>().toHaveProperty('as')
     expectTypeOf<UseNavigationOptions['label']>().toEqualTypeOf<string | undefined>()
     expectTypeOf<NavigationRootPartProps['className']>().toEqualTypeOf<'kv-navigation'>()
     expectTypeOf<NavigationListPartProps['className']>().toEqualTypeOf<'kv-navigation-list'>()

@@ -78,7 +78,7 @@ interface Municipality {
 - **`Listbox.Empty`**: shown only while the popup is open and there are no options, as plain text beside the (then hidden) list, not an option. Default text: "No results" in the locale.
 - **`useListbox(options)`** returns `triggerProps`, `valueProps`, `popupProps`, `listProps`, `emptyProps`, `getOptionProps(entry)`, `getGroupProps(section)`, `getGroupLabelProps(section)`, `hiddenInputs`, `entries`, `sections`, `selectedItems`, `isOpen`, `isNative` and the Field's `isInvalid`, `isRequired`, `isDisabled`, for your own markup.
 
-Every part renders exactly one element, takes `render` and your own `className`, `ref` and handlers (merged with its own), and has a stable class: `kv-listbox-trigger`, `kv-listbox-value`, `kv-listbox-popup`, `kv-listbox-list`, `kv-listbox-option`, `kv-listbox-group`, `kv-listbox-group-label` and `kv-listbox-empty`. State is in `data-open`, `data-active`, `data-selected`, `data-disabled`, `data-placeholder` and `data-placement`. With `@kvirn-ui/theme/theme.css` imported, the trigger looks like an Input with a chevron and the popup has level 3 elevation; headless, it is unstyled.
+Every part renders exactly one element and takes your own `className`, `ref` and handlers (merged with its own), and has a stable class: `kv-listbox-trigger`, `kv-listbox-value`, `kv-listbox-popup`, `kv-listbox-list`, `kv-listbox-option`, `kv-listbox-group`, `kv-listbox-group-label` and `kv-listbox-empty`. State is in `data-open`, `data-active`, `data-selected`, `data-disabled`, `data-placeholder` and `data-placement`. With `@kvirn-ui/theme/theme.css` imported, the trigger looks like an Input with a chevron and the popup has level 3 elevation; headless, it is unstyled.
 
 ### Keys
 
@@ -90,7 +90,7 @@ With `native="auto"`, the server and the first client render are the popup, and 
 
 ## Rich options
 
-An option holds **any markup**: an `<Icon>`, an `<img>`, an svg, spans, divs. Put it in `Listbox.Option`'s children, or take over the element with `render`. Without the parts below, the option's name is its whole text content, as it always was.
+An option holds **any markup**: an `<Icon>`, an `<img>`, an svg, spans, divs. Put it in `Listbox.Option`'s children, or build the option yourself with `useListbox` and `getOptionProps`. Without the parts below, the option's name is its whole text content, as it always was.
 
 Four optional parts give the markup a place and keep the name right. Use as many as you need, in any order:
 
@@ -110,7 +110,7 @@ Four optional parts give the markup a place and keep the name right. Use as many
 - **`Listbox.OptionDescription`**: a `<span>` the option's `aria-describedby` points at. Screen readers differ in whether they read a description for the active option, so never put the only copy of something essential here.
 - **`Listbox.OptionIndicator`**: a `<span aria-hidden="true">` at the end that always keeps its place. With no children the default theme draws the check in it. Children replace the check and show only on the chosen option. Its presence sets `data-has-indicator` on the option, so the theme's own tick steps aside. The state is still `aria-selected`.
 
-Every part takes any children, `render`, `className`, `ref` and handlers, and has a stable class: `kv-listbox-option-icon`, `kv-listbox-option-text`, `kv-listbox-option-description` and `kv-listbox-option-indicator`. `Combobox` and `Autocomplete` have the same parts under their own names. The native `<select>` takes plain text: the parts don't render there and each `<option>` shows `itemToString`, so use `native="never"` if an icon carries meaning.
+Every part takes any children, `className`, `ref` and handlers, and has a stable class: `kv-listbox-option-icon`, `kv-listbox-option-text`, `kv-listbox-option-description` and `kv-listbox-option-indicator`. `Combobox` and `Autocomplete` have the same parts under their own names. The native `<select>` takes plain text: the parts don't render there and each `<option>` shows `itemToString`, so use `native="never"` if an icon carries meaning.
 
 ## Long lists
 

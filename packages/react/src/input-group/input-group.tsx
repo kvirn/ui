@@ -1,35 +1,23 @@
 'use client'
-import { createContext, useContext, useEffect, useRef } from 'react'
+import { createContext, createElement, useContext, useEffect, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { TextInput } from '../text-input/text-input.tsx'
 import type { TextInputProps } from '../text-input/text-input.tsx'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { inputGroupAddonProps, useInputGroup } from './use-input-group.ts'
-
-/** What `render` receives as its second argument, for both parts. */
-export interface InputGroupState {
-  isInvalid: boolean
-  isDisabled: boolean
-  isFocusVisible: boolean
-}
 
 export interface InputGroupRootProps extends ComponentPropsWithRef<'div'> {
   /** `data-invalid` on the box. Default: the nearest Field's `invalid`. */
   invalid?: boolean | undefined
   /** `data-disabled` on the box. Default: the nearest Field's `disabled`. */
   disabled?: boolean | undefined
-  render?: RenderProp<ComponentPropsWithRef<'div'>, InputGroupState> | undefined
 }
 
-export interface InputGroupAddonProps extends ComponentPropsWithRef<'span'> {
-  render?: RenderProp<ComponentPropsWithRef<'span'>, InputGroupState> | undefined
-}
+export type InputGroupAddonProps = ComponentPropsWithRef<'span'>
 
-const InputGroupStateContext = createContext<InputGroupState | null>(null)
+const InsideInputGroupContext = createContext(false)
 
 const focusableSelector =
   'a[href], button, input, select, textarea, summary, iframe, [tabindex], [contenteditable]:not([contenteditable="false"])'
@@ -52,7 +40,6 @@ const focusableSelector =
 export function InputGroupRoot({
   invalid,
   disabled,
-  render,
   ref,
   children,
   ...otherProps
@@ -60,11 +47,6 @@ export function InputGroupRoot({
   const group = useInputGroup({ invalid, disabled })
   const elementRef = useRef<HTMLDivElement | null>(null)
   const mergedRef = useMergedRef(ref, elementRef)
-  const state: InputGroupState = {
-    isInvalid: group.isInvalid,
-    isDisabled: group.isDisabled,
-    isFocusVisible: group.isFocusVisible,
-  }
 
   // The Root only draws the box. When its own props disagree with the input inside, the box and
   // the control say different things. Without own props the Root follows the Field, as the input does.
@@ -93,14 +75,11 @@ export function InputGroupRoot({
   })
 
   return (
-    <InputGroupStateContext.Provider value={state}>
-      {renderPart({
-        render,
-        defaultElement: 'div',
-        partProps: { ...mergeProps(otherProps, group.rootProps), children, ref: mergedRef },
-        state,
-      })}
-    </InputGroupStateContext.Provider>
+    <InsideInputGroupContext.Provider value>
+      <div {...mergeProps(otherProps, group.rootProps)} ref={mergedRef}>
+        {children}
+      </div>
+    </InsideInputGroupContext.Provider>
   )
 }
 InputGroupRoot.displayName = 'InputGroup.Root'
@@ -110,23 +89,19 @@ InputGroupRoot.displayName = 'InputGroup.Root'
  * at the start when it comes first, whatever the reading direction. A `<span aria-hidden="true">`
  * that is never focusable, so the label must say what it shows. Clicking it focuses the Input.
  */
-export function InputGroupAddon({
-  render,
-  ref,
-  ...otherProps
-}: InputGroupAddonProps): ReactElement {
-  const parent = useContext(InputGroupStateContext)
+export function InputGroupAddon({ ref, ...otherProps }: InputGroupAddonProps): ReactElement {
+  const isInGroup = useContext(InsideInputGroupContext)
   const elementRef = useRef<HTMLElement | null>(null)
   const mergedRef = useMergedRef(ref, elementRef)
 
   useEffect(() => {
-    if (parent === null) {
+    if (!isInGroup) {
       warnOnce(
         'input-group-addon-outside-root',
         'An InputGroup.Addon is outside an InputGroup.Root, so clicking it focuses nothing and the box has no edge. Put it inside <InputGroup.Root>.',
       )
     }
-  }, [parent])
+  }, [isInGroup])
   useEffect(() => {
     const element = elementRef.current
     if (element !== null && element.querySelector(focusableSelector) !== null) {
@@ -137,12 +112,7 @@ export function InputGroupAddon({
     }
   })
 
-  return renderPart({
-    render,
-    defaultElement: 'span',
-    partProps: { ...mergeProps(otherProps, inputGroupAddonProps), ref: mergedRef },
-    state: parent ?? { isInvalid: false, isDisabled: false, isFocusVisible: false },
-  })
+  return createElement('span', { ...mergeProps(otherProps, inputGroupAddonProps), ref: mergedRef })
 }
 InputGroupAddon.displayName = 'InputGroup.Addon'
 

@@ -1,11 +1,13 @@
 'use client'
 import type { ToastEntry } from '@kvirn-ui/core'
-import type { CSSProperties } from 'react'
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import type { CSSProperties, MouseEventHandler } from 'react'
+import { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { AlertContext } from '../alert/alert-context.ts'
 import { readText } from '../alert/use-alert.ts'
 import { Alert } from '../alert/alert.tsx'
 import { useQuietAnnouncer } from '../announcer/use-announcer.ts'
 import { Button } from '../button/button.tsx'
+import { Icon } from '../icon/icon.tsx'
 import { useDismissableLayer } from '../popup/use-dismissable-layer.ts'
 import { useEnv } from '../provider/use-env.ts'
 import { useLocale } from '../provider/use-locale.ts'
@@ -20,6 +22,42 @@ interface ToastItemProps {
   controller: ToastController
   entry: ToastEntry
   isPaused: boolean
+}
+
+interface ToastCloseProps {
+  timer: ToastEntry['timer']
+  onClick: MouseEventHandler<HTMLButtonElement>
+}
+
+/**
+ * Internal. The Alert's close button with the timer ring inside it, which `Alert.Close` can't hold
+ * (its children replace the icon and the name). Built from the alert's `closeProps`.
+ */
+function ToastClose({ timer, onClick }: ToastCloseProps) {
+  const alert = useContext(AlertContext)
+  if (alert === null) {
+    return null
+  }
+  return (
+    <button {...alert.closeProps} onClick={onClick}>
+      <Icon name="close" />
+      {timer === undefined ? null : (
+        // Decorative: the time left is never announced. A new run restarts the animation, and
+        // Close keeps its element and focus.
+        <span
+          key={timer.run}
+          className="kv-toast-timer"
+          aria-hidden="true"
+          style={
+            {
+              '--kv-toast-timer-from': Math.min(1, timer.remaining / timer.duration),
+              '--kv-toast-timer-remaining': `${timer.remaining}ms`,
+            } as CSSProperties
+          }
+        />
+      )}
+    </button>
+  )
 }
 
 /** Internal. One toast: an Alert's parts in a list item, with a Close that is never optional. */
@@ -88,7 +126,7 @@ function ToastItem({ controller, entry, isPaused }: ToastItemProps) {
         data-timed={timer === undefined ? undefined : ''}
         data-paused={timer !== undefined && isPaused ? '' : undefined}
       >
-        <Alert.Title render={<p tabIndex={-1} />}>
+        <Alert.Title as="p" tabIndex={-1}>
           {lang === undefined ? content.title : <span lang={lang}>{content.title}</span>}
         </Alert.Title>
         {content.body === undefined ? null : <Alert.Body lang={lang}>{content.body}</Alert.Body>}
@@ -104,30 +142,11 @@ function ToastItem({ controller, entry, isPaused }: ToastItemProps) {
             </Button>
           </Alert.Actions>
         )}
-        <Alert.Close
+        <ToastClose
+          timer={timer}
           onClick={(event) => {
             controller.dismiss(id, event.detail > 0)
           }}
-          render={(closeProps) => (
-            <button {...closeProps}>
-              {closeProps.children}
-              {timer === undefined ? null : (
-                // Decorative: the time left is never announced. A new run restarts the animation, and
-                // Close keeps its element and focus.
-                <span
-                  key={timer.run}
-                  className="kv-toast-timer"
-                  aria-hidden="true"
-                  style={
-                    {
-                      '--kv-toast-timer-from': Math.min(1, timer.remaining / timer.duration),
-                      '--kv-toast-timer-remaining': `${timer.remaining}ms`,
-                    } as CSSProperties
-                  }
-                />
-              )}
-            </button>
-          )}
         />
       </Root>
     </li>

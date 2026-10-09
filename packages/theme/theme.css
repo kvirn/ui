@@ -457,8 +457,13 @@
   }
 
   /* 3. The other themes --------------------------------------------------------------------
-   * KvirnProvider and KvirnThemeScript set data-kv-color-scheme ("light" or "dark") and
-   * data-kv-contrast ("standard" or "more") on <html>. Only colours change.
+   * KvirnProvider and KvirnThemeScript set data-kv-color-scheme ("light" or "dark"),
+   * data-kv-contrast ("standard" or "more") and data-kv-motion ("full" or "reduce") on <html>.
+   * Only colours change here. Motion: every transition and animation sits inside
+   * `@media (prefers-reduced-motion: no-preference)` AND a zero-specificity
+   * `:where(:root:not([data-kv-motion='reduce']))` gate, so the OS setting and the user's
+   * choice in the app both stop it; the two `reduce` blocks are repeated under
+   * `:where(:root[data-kv-motion='reduce'])`.
    */
   :root[data-kv-color-scheme='dark'] {
     color-scheme: dark;
@@ -945,10 +950,12 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .kv-button {
-      transition-property: background-color, border-color, color, box-shadow;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-button {
+        transition-property: background-color, border-color, color, box-shadow;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
     }
   }
 
@@ -1427,11 +1434,13 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .kv-link,
-    .kv-link-icon {
-      transition-property: color, text-decoration-thickness, background-color, border-color;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-link,
+      .kv-link-icon {
+        transition-property: color, text-decoration-thickness, background-color, border-color;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
     }
   }
 
@@ -2640,7 +2649,7 @@
       }
 
       @media (prefers-reduced-motion: no-preference) {
-        &:where(a) {
+        &:where(a):where(:root:not([data-kv-motion='reduce']) *) {
           transition-property: color, text-decoration-thickness;
           transition-duration: var(--kv-duration-fast);
           transition-timing-function: var(--kv-easing-standard);
@@ -2978,8 +2987,10 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .kv-tooltip:popover-open {
-      animation: kv-tooltip-fade-in var(--kv-duration-fast) var(--kv-easing-standard);
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-tooltip:popover-open {
+        animation: kv-tooltip-fade-in var(--kv-duration-fast) var(--kv-easing-standard);
+      }
     }
 
     @keyframes kv-tooltip-fade-in {
@@ -3607,11 +3618,9 @@
    * width for its labels, so a second press never lands on Previous. Status reserves one line, in
    * text colour, with figures that don't shift. An error's icon is the decorative warning, in text
    * colour. Logical properties only, so right to left needs nothing. The selection trigger is a
-   * secondary Button in the top layer with the popup shadow. The sentence being read is
-   * ::highlight(kv-read-aloud): a solid primary fill with on-primary text, the same pairs as the
-   * current navigation item (1.4.11, 1.4.1: the status says the position in words); in forced
-   * colours Highlight and HighlightText. Zero specificity, so your own CSS wins. Design spec:
-   * docs/design/read-aloud.md. */
+   * secondary Button in the top layer with the popup shadow. No ::highlight(kv-read-aloud) style
+   * ships while ReadAloud is blocked (waiting for an npm package update and a re-test). Zero
+   * specificity, so your own CSS wins. Design spec: docs/design/read-aloud.md. */
   :where(.kv-read-aloud) {
     display: flex;
     flex-wrap: wrap;
@@ -3680,17 +3689,7 @@
     }
   }
 
-  ::highlight(kv-read-aloud) {
-    background-color: var(--kv-color-primary);
-    color: var(--kv-color-on-primary);
-  }
-
   @media (forced-colors: active) {
-    ::highlight(kv-read-aloud) {
-      background-color: Highlight;
-      color: HighlightText;
-    }
-
     :where(.kv-read-aloud-status) {
       color: CanvasText;
     }
@@ -4720,6 +4719,21 @@
     }
   }
 
+  :where(:root[data-kv-motion='reduce']) {
+    .kv-toast-timer {
+      mask-image: conic-gradient(
+        transparent calc(1turn - round(up, var(--kv-toast-timer-angle), 0.25turn)),
+        var(--kv-black) 0
+      );
+    }
+
+    @supports not (width: round(1px, 1px)) {
+      .kv-toast-timer {
+        animation-timing-function: steps(4, jump-start);
+      }
+    }
+  }
+
   /* The region covers the page's last (or, moved, first) lines, so a focused element scrolls clear of it. */
   :root:has(.kv-toast-region) {
     scroll-padding-block-end: var(--kv-toast-scroll-padding, min(12rem, 50dvh));
@@ -4735,8 +4749,10 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .kv-toast-item {
-      animation: kv-toast-fade-in var(--kv-duration-medium) var(--kv-easing-standard);
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-toast-item {
+        animation: kv-toast-fade-in var(--kv-duration-medium) var(--kv-easing-standard);
+      }
     }
 
     @keyframes kv-toast-fade-in {
@@ -4960,31 +4976,33 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .kv-dialog[open] {
-      transition:
-        opacity var(--kv-duration-slow) var(--kv-easing-standard),
-        translate var(--kv-duration-slow) var(--kv-easing-standard);
-    }
-
-    .kv-dialog[open]::backdrop {
-      transition: opacity var(--kv-duration-slow) var(--kv-easing-standard);
-    }
-
-    @starting-style {
+    :where(:root:not([data-kv-motion='reduce'])) {
       .kv-dialog[open] {
-        opacity: 0;
-        translate: 0 var(--kv-space-4);
+        transition:
+          opacity var(--kv-duration-slow) var(--kv-easing-standard),
+          translate var(--kv-duration-slow) var(--kv-easing-standard);
       }
 
       .kv-dialog[open]::backdrop {
-        opacity: 0;
+        transition: opacity var(--kv-duration-slow) var(--kv-easing-standard);
       }
-    }
 
-    @media (width >= 40rem) {
       @starting-style {
         .kv-dialog[open] {
-          translate: 0 var(--kv-space-2);
+          opacity: 0;
+          translate: 0 var(--kv-space-4);
+        }
+
+        .kv-dialog[open]::backdrop {
+          opacity: 0;
+        }
+      }
+
+      @media (width >= 40rem) {
+        @starting-style {
+          .kv-dialog[open] {
+            translate: 0 var(--kv-space-2);
+          }
         }
       }
     }
@@ -5146,8 +5164,9 @@
    *   kv-sidebar-layout-sidebar, -content the two parts, in DOM order
    *
    * Columns tracks are minmax(min(<width>, 100%), 1fr): at 320px there is one column that never
-   * exceeds the viewport (1.4.10). A list is <Columns render={<ul />}>: kv-columns resets the
-   * marker and padding, which makes WebKit and VoiceOver drop the list role, so write role="list" on it. No fixed heights (1.4.12).
+   * exceeds the viewport (1.4.10). A list is <Columns as="ul">: kv-columns resets the
+   * marker and padding, which makes WebKit and VoiceOver drop the list role, so Columns and Stack
+   * set role="list" themselves on a ul or ol. No fixed heights (1.4.12).
    */
   :where(.kv-container) {
     box-sizing: border-box;
@@ -6067,36 +6086,38 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .kv-input,
-    .kv-textarea,
-    .kv-input-group {
-      transition-property: background-color, border-color;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
-    }
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-input,
+      .kv-textarea,
+      .kv-input-group {
+        transition-property: background-color, border-color;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
 
-    .kv-switch {
-      transition-property: background-color, border-color;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
-    }
+      .kv-switch {
+        transition-property: background-color, border-color;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
 
-    .kv-switch::before {
-      transition-property: background-color, inset-inline-start;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
-    }
+      .kv-switch::before {
+        transition-property: background-color, inset-inline-start;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
 
-    .kv-slider::-webkit-slider-runnable-track {
-      transition-property: border-color;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
-    }
+      .kv-slider::-webkit-slider-runnable-track {
+        transition-property: border-color;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
 
-    .kv-slider::-moz-range-track {
-      transition-property: border-color;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
+      .kv-slider::-moz-range-track {
+        transition-property: border-color;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
     }
   }
 
@@ -6860,12 +6881,14 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .kv-checkbox,
-    .kv-radio,
-    :is(.kv-listbox-native, .kv-read-aloud-select) {
-      transition-property: background-color, border-color;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-checkbox,
+      .kv-radio,
+      :is(.kv-listbox-native, .kv-read-aloud-select) {
+        transition-property: background-color, border-color;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
     }
   }
 
@@ -7367,10 +7390,12 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .kv-listbox-trigger {
-      transition-property: background-color, border-color;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-listbox-trigger {
+        transition-property: background-color, border-color;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
     }
   }
 
@@ -7985,13 +8010,15 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .kv-combobox-input,
-    .kv-autocomplete-input,
-    .kv-combobox-control,
-    .kv-autocomplete-control {
-      transition-property: background-color, border-color;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-combobox-input,
+      .kv-autocomplete-input,
+      .kv-combobox-control,
+      .kv-autocomplete-control {
+        transition-property: background-color, border-color;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
     }
   }
 
@@ -9396,16 +9423,18 @@
    * transitions while a box is active or selected, and none of them fades in or out as the caret
    * moves from one box to the next. */
   @media (prefers-reduced-motion: no-preference) {
-    .kv-one-time-code-input {
-      transition-property: background-color, border-color;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
-    }
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-one-time-code-input {
+        transition-property: background-color, border-color;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
 
-    .kv-one-time-code:not(:has([data-active], [data-selected])) > .kv-one-time-code-slot {
-      transition-property: background-color, border-color;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
+      .kv-one-time-code:not(:has([data-active], [data-selected])) > .kv-one-time-code-slot {
+        transition-property: background-color, border-color;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
     }
   }
 
@@ -9928,10 +9957,12 @@
   /* The fill eases only when the user allows motion. Otherwise it jumps. The zone, the items and
    * the hatch never animate. */
   @media (prefers-reduced-motion: no-preference) {
-    .kv-file-upload-progress::-webkit-progress-value {
-      transition-property: inline-size;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-file-upload-progress::-webkit-progress-value {
+        transition-property: inline-size;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
     }
   }
 
@@ -10265,46 +10296,48 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .kv-spinner {
-      animation: kv-spinner-turn calc(var(--kv-duration-loop) * 1.5) linear infinite;
-    }
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-spinner {
+        animation: kv-spinner-turn calc(var(--kv-duration-loop) * 1.5) linear infinite;
+      }
 
-    /* In a busy button the spinner shows after the same 1000 ms the announcement waits. A step,
-     * not motion, so the reveal holds in every preference, and the spinner is hidden, not
-     * removed: the label never moves. */
-    .kv-button[data-busy] > .kv-spinner {
-      animation:
-        kv-spinner-turn calc(var(--kv-duration-loop) * 1.5) linear infinite,
-        kv-spinner-reveal 1ms steps(1, end) 1000ms both;
-    }
+      /* In a busy button the spinner shows after the same 1000 ms the announcement waits. A step,
+       * not motion, so the reveal holds in every preference, and the spinner is hidden, not
+       * removed: the label never moves. */
+      .kv-button[data-busy] > .kv-spinner {
+        animation:
+          kv-spinner-turn calc(var(--kv-duration-loop) * 1.5) linear infinite,
+          kv-spinner-reveal 1ms steps(1, end) 1000ms both;
+      }
 
-    /* The arc crawls: head and tail each go round once a loop, the tail on a rule-local
-     * ease-in-out, so the arc grows and shrinks and the seam is never seen. */
-    .kv-spinner::before {
-      animation:
-        kv-spinner-head var(--kv-duration-loop) var(--kv-easing-standard) infinite,
-        kv-spinner-tail var(--kv-duration-loop) cubic-bezier(0.6, 0, 0.4, 1) infinite;
-    }
+      /* The arc crawls: head and tail each go round once a loop, the tail on a rule-local
+       * ease-in-out, so the arc grows and shrinks and the seam is never seen. */
+      .kv-spinner::before {
+        animation:
+          kv-spinner-head var(--kv-duration-loop) var(--kv-easing-standard) infinite,
+          kv-spinner-tail var(--kv-duration-loop) cubic-bezier(0.6, 0, 0.4, 1) infinite;
+      }
 
-    /* The band sweeps across and the hatch is hidden while it does. */
-    .kv-progress-track {
-      animation: kv-progress-hide-hatch calc(var(--kv-duration-loop) * 3) linear infinite;
-    }
+      /* The band sweeps across and the hatch is hidden while it does. */
+      .kv-progress-track {
+        animation: kv-progress-hide-hatch calc(var(--kv-duration-loop) * 3) linear infinite;
+      }
 
-    .kv-progress-track::before {
-      animation: kv-progress-band var(--kv-duration-loop) var(--kv-easing-standard) infinite;
-    }
+      .kv-progress-track::before {
+        animation: kv-progress-band var(--kv-duration-loop) var(--kv-easing-standard) infinite;
+      }
 
-    .kv-progress-bar {
-      animation: kv-progress-sheen var(--kv-duration-loop) var(--kv-easing-standard) infinite;
-    }
+      .kv-progress-bar {
+        animation: kv-progress-sheen var(--kv-duration-loop) var(--kv-easing-standard) infinite;
+      }
 
-    .kv-table[data-busy] .kv-table-column-header {
-      animation: kv-progress-hide-hatch calc(var(--kv-duration-loop) * 3) linear infinite;
-    }
+      .kv-table[data-busy] .kv-table-column-header {
+        animation: kv-progress-hide-hatch calc(var(--kv-duration-loop) * 3) linear infinite;
+      }
 
-    .kv-table[data-busy] .kv-table-head > tr:last-child::after {
-      animation: kv-progress-line var(--kv-duration-loop) var(--kv-easing-standard) infinite;
+      .kv-table[data-busy] .kv-table-head > tr:last-child::after {
+        animation: kv-progress-line var(--kv-duration-loop) var(--kv-easing-standard) infinite;
+      }
     }
   }
 
@@ -10431,10 +10464,12 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .kv-progress-bar::-webkit-progress-value {
-      transition-property: inline-size;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-progress-bar::-webkit-progress-value {
+        transition-property: inline-size;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
     }
   }
 
@@ -10866,11 +10901,13 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .kv-table-sort-button,
-    .kv-table-expand-button {
-      transition-property: background-color;
-      transition-duration: var(--kv-duration-fast);
-      transition-timing-function: var(--kv-easing-standard);
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-table-sort-button,
+      .kv-table-expand-button {
+        transition-property: background-color;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
     }
   }
 
@@ -11178,6 +11215,12 @@
     }
   }
 
+  :where(:root[data-kv-motion='reduce']) {
+    .kv-rich-text-content .ProseMirror-gapcursor::after {
+      animation: none !important;
+    }
+  }
+
   /* The Link and Image forms: a level 3 popup, with the form padded inside the popup's 8px. */
   .kv-rich-text-popover {
     --kv-popup-width-limit: 24rem;
@@ -11213,14 +11256,16 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .kv-toolbar--attached .kv-button {
-      transition:
-        background-color var(--kv-duration-fast) var(--kv-easing-standard),
-        border-color var(--kv-duration-fast) var(--kv-easing-standard);
-    }
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-toolbar--attached .kv-button {
+        transition:
+          background-color var(--kv-duration-fast) var(--kv-easing-standard),
+          border-color var(--kv-duration-fast) var(--kv-easing-standard);
+      }
 
-    .kv-rich-text-popover:popover-open {
-      animation: kv-rich-text-popover-in var(--kv-duration-medium) var(--kv-easing-standard);
+      .kv-rich-text-popover:popover-open {
+        animation: kv-rich-text-popover-in var(--kv-duration-medium) var(--kv-easing-standard);
+      }
     }
 
     @keyframes kv-rich-text-popover-in {

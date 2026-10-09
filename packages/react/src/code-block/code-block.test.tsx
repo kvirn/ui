@@ -1,10 +1,15 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef } from 'react'
-import { afterEach, describe, expect, test, vi } from 'vite-plus/test'
+import { afterEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { CodeBlock } from './code-block.tsx'
+import type {
+  CodeBlockCodeComponentProps,
+  CodeBlockLabelComponentProps,
+  CodeBlockRootComponentProps,
+} from './code-block.tsx'
 import { useCodeBlock } from './use-code-block.ts'
 
 // Contract: code-block.a11y.md.
@@ -67,15 +72,10 @@ describe('rendering', () => {
     expect(ref.current).toBe(element)
   })
 
-  test('render changes the element', async () => {
-    await render(
-      <KvirnProvider>
-        <CodeBlock.Root render={<section data-testid="root" />}>
-          <CodeBlock.Code>{command}</CodeBlock.Code>
-        </CodeBlock.Root>
-      </KvirnProvider>,
-    )
-    expect(page.getByTestId('root').element().tagName).toBe('SECTION')
+  test('no part takes as: the group, the label paragraph and the pre are fixed', () => {
+    expectTypeOf<CodeBlockRootComponentProps>().not.toHaveProperty('as')
+    expectTypeOf<CodeBlockLabelComponentProps>().not.toHaveProperty('as')
+    expectTypeOf<CodeBlockCodeComponentProps>().not.toHaveProperty('as')
   })
 
   test('Copy keeps its own class next to the Button class', async () => {

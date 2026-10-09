@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useLayoutEffect, useMemo } from 'react'
-import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
+import type { ComponentPropsWithRef, ElementType, ReactElement, ReactNode } from 'react'
 import { Announcer } from '../announcer/announcer.tsx'
 import { AnnouncerContext } from '../announcer/announcer-context.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
@@ -8,9 +8,10 @@ import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { useMessages } from '../provider/use-messages.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsComponent, AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
 import { ToolbarContext } from '../toolbar/toolbar-context.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { DialogContext, ParentDialogContext, useDialogAnnouncer } from './dialog-context.ts'
 import { useModalDialog } from './use-dialog.ts'
 import type { UseDialogOptions } from './use-dialog.ts'
@@ -18,44 +19,42 @@ import type { KvirnMessages } from '@kvirn-ui/i18n'
 
 export type { DialogChangeDetails, DialogChangeReason } from './use-dialog.ts'
 
-/** What `render` receives as its second argument, for every part. */
-export interface DialogState {
-  isOpen: boolean
-}
+const titleTags = ['h2', 'h3', 'h4', 'h5', 'h6'] as const
+const descriptionTags = ['p', 'div'] as const
+const bodyTags = ['div', 'section'] as const
+const actionsTags = ['div', 'section'] as const
 
 export interface DialogRootProps extends UseDialogOptions {
   children?: ReactNode
 }
 
-export interface DialogTriggerProps extends ComponentPropsWithRef<'button'> {
-  render?: RenderProp<ComponentPropsWithRef<'button'>, DialogState> | undefined
-}
+export type DialogTriggerProps = ComponentPropsWithRef<'button'>
 
-export interface DialogPopupProps extends ComponentPropsWithRef<'dialog'> {
-  render?: RenderProp<ComponentPropsWithRef<'dialog'>, DialogState> | undefined
-}
+/** The popup is a native `<dialog>`: it has no `as`. */
+export type DialogPopupProps = ComponentPropsWithRef<'dialog'>
 
-export interface DialogTitleProps extends ComponentPropsWithRef<'h2'> {
-  render?: RenderProp<ComponentPropsWithRef<'h2'>, DialogState> | undefined
-}
+/** `as` is `h2` (default) to `h6`: the level the dialog's title has in the page's outline. */
+export type DialogTitleProps = AsTag<(typeof titleTags)[number], 'h2'>
 
-export interface DialogDescriptionProps extends ComponentPropsWithRef<'p'> {
-  render?: RenderProp<ComponentPropsWithRef<'p'>, DialogState> | undefined
-}
+/** `as` is `p` (default) or `div`, for a description with more than one paragraph. */
+export type DialogDescriptionProps = AsTag<(typeof descriptionTags)[number], 'p'>
 
-export interface DialogBodyProps extends ComponentPropsWithRef<'div'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, DialogState> | undefined
-}
+/** `as` is `div` (default) or `section`. */
+export type DialogBodyProps = AsTag<(typeof bodyTags)[number], 'div'>
 
-export interface DialogActionsProps extends ComponentPropsWithRef<'div'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, DialogState> | undefined
-}
+/** `as` is `div` (default) or `section`. */
+export type DialogActionsProps = AsTag<(typeof actionsTags)[number], 'div'>
 
-export interface DialogCloseProps extends ComponentPropsWithRef<'button'> {
+interface DialogCloseOwnProps {
   /** Overrides for this button's name: `close`. Used when it has no visible text. */
   messages?: Partial<KvirnMessages['dialog']> | undefined
-  render?: RenderProp<ComponentPropsWithRef<'button'>, DialogState> | undefined
 }
+
+/** `as` is a component that renders a button, such as `as={Button}`; its props are plain props of the close. */
+export type DialogCloseProps<Component extends ElementType = 'button'> = AsComponent<
+  Component,
+  DialogCloseOwnProps
+>
 
 function useOutsideRootWarning(isOutside: boolean, part: string): void {
   useEffect(() => {
@@ -99,18 +98,17 @@ DialogRoot.displayName = 'Dialog.Root'
  * The `<button>` that opens the dialog, with `aria-haspopup="dialog"` and `data-open` while it is
  * open. Optional: a dialog opened by state has none, and then focus returns to what had it before.
  */
-export function DialogTrigger({ render, ref, ...otherProps }: DialogTriggerProps): ReactElement {
+export function DialogTrigger({ ref, ...otherProps }: DialogTriggerProps): ReactElement {
   const context = useContext(DialogContext)
   useOutsideRootWarning(context === null, 'Trigger')
   const mergedRef = useMergedRef(ref, context?.dialog.triggerProps.ref ?? null)
   return renderPart({
-    render,
+    as: undefined,
     defaultElement: 'button',
     partProps: {
       ...mergeProps(otherProps, context?.dialog.triggerProps ?? { type: 'button' as const }),
       ref: mergedRef,
     },
-    state: { isOpen: context?.dialog.isOpen ?? false },
   })
 }
 DialogTrigger.displayName = 'Dialog.Trigger'
@@ -121,12 +119,7 @@ DialogTrigger.displayName = 'Dialog.Trigger'
  * while closed, with its children mounted: typed values are kept until the dialog reopens. **Name it** with a `Dialog.Title`, or `aria-label`. Escape closes it,
  * a press on the backdrop only with `dismissOnOutsidePress`, and focus returns to the trigger.
  */
-export function DialogPopup({
-  render,
-  ref,
-  children,
-  ...otherProps
-}: DialogPopupProps): ReactElement {
+export function DialogPopup({ ref, children, ...otherProps }: DialogPopupProps): ReactElement {
   const context = useContext(DialogContext)
   useOutsideRootWarning(context === null, 'Popup')
   const mergedRef = useMergedRef(ref, context?.dialog.popupProps.ref ?? null)
@@ -134,7 +127,7 @@ export function DialogPopup({
   const isShown = context?.isShown ?? false
   const parentValue = useMemo(() => ({ isOpen, isShown }), [isOpen, isShown])
   const popup = renderPart({
-    render,
+    as: undefined,
     defaultElement: 'dialog',
     partProps: {
       ...mergeProps(otherProps, context?.dialog.popupProps ?? {}),
@@ -146,7 +139,6 @@ export function DialogPopup({
         </>
       ),
     },
-    state: { isOpen },
   })
   // The popup holds a form or other content, never toolbar items: a Dialog trigger can be a
   // Toolbar.Item, which would put the popup in the toolbar's React tree.
@@ -165,31 +157,30 @@ export function DialogPopup({
 DialogPopup.displayName = 'Dialog.Popup'
 
 /**
- * The dialog's title, an `<h2>` (change it with `render`) that names the dialog. It has
+ * The dialog's title, an `<h2>` (`as` sets the level) that names the dialog. It has
  * `tabindex="-1"` and takes focus on open when nothing in the dialog is a better start, so a
  * dialog that is mostly reading starts at its beginning. It is never a Tab stop.
  */
-export function DialogTitle({ render, ref, ...otherProps }: DialogTitleProps): ReactElement {
+export function DialogTitle({ as, ref, ...otherProps }: DialogTitleProps): ReactElement {
   const context = useContext(DialogContext)
   useOutsideRootWarning(context === null, 'Title')
   const mergedRef = useMergedRef(ref, context?.dialog.titleProps.ref ?? null)
   const registerTitle = context?.dialog.registerTitle
   useLayoutEffect(() => registerTitle?.(), [registerTitle])
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'Dialog.Title', as, allowedTags: titleTags }),
     defaultElement: 'h2',
     partProps: {
       ...mergeProps(otherProps, context?.dialog.titleProps ?? {}),
       ref: mergedRef,
     },
-    state: { isOpen: context?.dialog.isOpen ?? false },
   })
 }
 DialogTitle.displayName = 'Dialog.Title'
 
 /** The dialog's description, a `<p>`: one or two sentences with the consequence. It is the popup's `aria-describedby`. */
 export function DialogDescription({
-  render,
+  as,
   ref,
   ...otherProps
 }: DialogDescriptionProps): ReactElement {
@@ -199,41 +190,38 @@ export function DialogDescription({
   const registerDescription = context?.dialog.registerDescription
   useLayoutEffect(() => registerDescription?.(), [registerDescription])
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'Dialog.Description', as, allowedTags: descriptionTags }),
     defaultElement: 'p',
     partProps: {
       ...mergeProps(otherProps, context?.dialog.descriptionProps ?? {}),
       ref: mergedRef,
     },
-    state: { isOpen: context?.dialog.isOpen ?? false },
   })
 }
 DialogDescription.displayName = 'Dialog.Description'
 
 /** The dialog's content: fields, prose or an Alert. A `<div>` with the class `kv-dialog-body`. */
-export function DialogBody({ render, ref, ...otherProps }: DialogBodyProps): ReactElement {
+export function DialogBody({ as, ref, ...otherProps }: DialogBodyProps): ReactElement {
   const context = useContext(DialogContext)
   useOutsideRootWarning(context === null, 'Body')
   const mergedRef = useMergedRef(ref, null)
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'Dialog.Body', as, allowedTags: bodyTags }),
     defaultElement: 'div',
     partProps: { ...mergeProps(otherProps, { className: 'kv-dialog-body' }), ref: mergedRef },
-    state: { isOpen: context?.dialog.isOpen ?? false },
   })
 }
 DialogBody.displayName = 'Dialog.Body'
 
 /** The dialog's actions: your buttons, the primary one first. A `<div>` with the class `kv-dialog-actions`. */
-export function DialogActions({ render, ref, ...otherProps }: DialogActionsProps): ReactElement {
+export function DialogActions({ as, ref, ...otherProps }: DialogActionsProps): ReactElement {
   const context = useContext(DialogContext)
   useOutsideRootWarning(context === null, 'Actions')
   const mergedRef = useMergedRef(ref, null)
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'Dialog.Actions', as, allowedTags: actionsTags }),
     defaultElement: 'div',
     partProps: { ...mergeProps(otherProps, { className: 'kv-dialog-actions' }), ref: mergedRef },
-    state: { isOpen: context?.dialog.isOpen ?? false },
   })
 }
 DialogActions.displayName = 'Dialog.Actions'
@@ -243,13 +231,16 @@ DialogActions.displayName = 'Dialog.Actions'
  * button named by `dialog.close` ("Stäng dialogrutan"); with children, they are its visible name.
  * Put it after the Title in the DOM. Focus goes back to where it was before.
  */
+export function DialogClose<Component extends ElementType = 'button'>(
+  props: DialogCloseProps<Component>,
+): ReactElement
 export function DialogClose({
+  as,
   messages,
-  render,
   ref,
   children,
   ...otherProps
-}: DialogCloseProps): ReactElement {
+}: DialogCloseProps<'button'>): ReactElement {
   const context = useContext(DialogContext)
   useOutsideRootWarning(context === null, 'Close')
   const ownMessages = useMessages('dialog', messages)
@@ -267,14 +258,13 @@ export function DialogClose({
       ? { type: 'button' as const }
       : { className: closeProps.className, type: closeProps.type, onClick: closeProps.onClick }
   return renderPart({
-    render,
+    as,
     defaultElement: 'button',
     partProps: {
       ...mergeProps(hasVisibleText ? ownProps : { ...ownProps, 'aria-label': name }, otherProps),
       ref: mergedRef,
       children: hasVisibleText ? children : <Icon name="close" />,
     },
-    state: { isOpen: context?.dialog.isOpen ?? false },
   })
 }
 DialogClose.displayName = 'Dialog.Close'

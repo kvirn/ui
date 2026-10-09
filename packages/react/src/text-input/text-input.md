@@ -16,11 +16,9 @@ For a quantity or an amount, use [NumberInput](../number-input/number-input.md).
 
 TextInput is one element, so it has no `.Root`. The props are the controls above, and every other native `<input>` prop passes through. `useTextInput` returns the same props for your own `<input>`.
 
-| Part      | Renders   | Takes                                                                                                                                                                                               |
-| --------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TextInput | `<input>` | `type`, `value`, `defaultValue`, `onValueChange`, `mask`, `announceRejections`, `messages`, `render`, `ref`, and the native props. `type` is never `number` (use NumberInput) or `date` (DateInput) |
-
-`render` receives `(inputProps, state)`, where `state` is `{ isInvalid, isRequired, isDisabled, isFocusVisible }`. It must still render an `<input>`: spread the props, because they hold the Field's wiring and the class.
+| Part      | Renders   | Takes                                                                                                                                                                                     |
+| --------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TextInput | `<input>` | `type`, `value`, `defaultValue`, `onValueChange`, `mask`, `announceRejections`, `messages`, `ref`, and the native props. `type` is never `number` (use NumberInput) or `date` (DateInput) |
 
 | State attribute      | When                                                                                               |
 | -------------------- | -------------------------------------------------------------------------------------------------- |
@@ -203,10 +201,6 @@ function PhoneInput() {
 
 `useTextInput` reads the nearest Field, and returns `inputProps` with the Field's wiring, `kv-input` and the change and focus handlers. Spread your form library's props next to it.
 
-### `render`
+### Your own element
 
-```tsx
-<TextInput render={(inputProps) => <MyInput {...inputProps} />} />
-```
-
-The element must still be an `<input>`. Spread the props: they hold the Field's wiring and the class.
+The TextInput renders a native `<input>`. To build your own, use `useTextInput()` and spread `inputProps`: they hold the Field's wiring and the class.

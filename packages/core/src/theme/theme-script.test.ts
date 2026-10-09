@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vite-plus/test'
 import { createThemeScriptSource } from './theme-script.ts'
 import type { ThemeScriptOptions } from './theme-script.ts'
-import { colorSchemeAttribute, contrastAttribute, themeStorageKey } from './theme-constants.ts'
+import {
+  colorSchemeAttribute,
+  contrastAttribute,
+  motionAttribute,
+  themeStorageKey,
+} from './theme-constants.ts'
 
 // The script is executed against the store for every combination in the browser test
 // (packages/react/src/provider/kvirn-theme-script.test.tsx). This file covers its text.
@@ -11,15 +16,20 @@ describe('createThemeScriptSource', () => {
     expect(source).toContain(JSON.stringify(themeStorageKey))
     expect(source).toContain(JSON.stringify(colorSchemeAttribute))
     expect(source).toContain(JSON.stringify(contrastAttribute))
+    expect(source).toContain(JSON.stringify(motionAttribute))
     expect(source.trim().startsWith('(function')).toBe(true)
   })
 
   it('embeds the configured defaults', () => {
     expect(
-      createThemeScriptSource({ defaultColorScheme: 'dark', defaultContrast: 'more' }),
-    ).toContain(JSON.stringify({ colorScheme: 'dark', contrast: 'more' }))
+      createThemeScriptSource({
+        defaultColorScheme: 'dark',
+        defaultContrast: 'more',
+        defaultMotion: 'reduce',
+      }),
+    ).toContain(JSON.stringify({ colorScheme: 'dark', contrast: 'more', motion: 'reduce' }))
     expect(createThemeScriptSource()).toContain(
-      JSON.stringify({ colorScheme: 'system', contrast: 'system' }),
+      JSON.stringify({ colorScheme: 'system', contrast: 'system', motion: 'system' }),
     )
   })
 
@@ -38,6 +48,8 @@ describe('createThemeScriptSource', () => {
     const source = createThemeScriptSource(hostileOptions)
     expect(source).not.toContain('<')
     expect(source).not.toContain('alert')
-    expect(source).toContain(JSON.stringify({ colorScheme: 'system', contrast: 'system' }))
+    expect(source).toContain(
+      JSON.stringify({ colorScheme: 'system', contrast: 'system', motion: 'system' }),
+    )
   })
 })

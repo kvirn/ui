@@ -8,7 +8,7 @@
 const { scopeProps } = useFocus({ active: open, contain: 'loop', onEscape: close })
 <aside {...scopeProps} aria-label="Filter">…</aside>
 
-<FocusScope active={open} contain="loop" onEscape={close} render={<aside aria-label="Filter" />}>…</FocusScope>
+<FocusScope active={open} contain="loop" onEscape={close} as="aside" aria-label="Filter">…</FocusScope>
 ```
 
 ## Native first

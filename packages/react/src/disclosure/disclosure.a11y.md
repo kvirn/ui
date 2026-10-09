@@ -25,8 +25,8 @@ Rules, tested in `disclosure.test.tsx`:
 - **Disabled.** `disabled` is the native attribute and takes the trigger out of the Tab order. With `focusableWhenDisabled` it is `aria-disabled="true"` and stays a Tab stop. Neither opens, and no handler runs.
 - **Find-in-page.** With `hiddenUntilFound` the closed panel is `hidden="until-found"`. When the browser reveals it (a find-in-page match or a `#fragment` link), the hook opens the state and calls `onOpenChange(true, { reason: 'find-in-page', event })`. Browsers without support treat the value as `hidden`. A controlled consumer that ignores `onOpenChange(true)` keeps the panel closed: the hook puts `hidden="until-found"` back after the browser removed it, so the panel never shows under `aria-expanded="false"`.
 - **The state is never colour alone.** The chevron flips (down to up) and `aria-expanded` changes. The chevron is `aria-hidden`: the name is the consumer's text.
-- **`render` on every part,** with class and handlers merged and refs merged. An element's own `onClick` on the trigger is gated like the trigger's.
-- **Dev warnings:** a Trigger or Panel outside a Root, and a Trigger whose `render` is not a `<button>`.
+- **Class, handlers and refs merge** on every part. The trigger's `onClick` is gated: it isn't called while disabled.
+- **Dev warnings:** a Trigger or Panel outside a Root.
 
 ## Keyboard
 
@@ -114,4 +114,4 @@ Also pending, by hand: whether `hidden="until-found"` content is found and revea
 
 - **`hidden="until-found"` support differs.** Chromium reveals the panel on a match. A browser without support treats the panel as `hidden`, so find-in-page misses it, and nothing else breaks. It is opt-in for that reason.
 - **No Escape.** APG does not require it for a disclosure. Closing from inside a long panel is the trigger or the consumer's own button.
-- **The chevron is part of `Disclosure.Trigger`.** A different icon or no icon means `useDisclosure` on your own button, or the `render` function form.
+- **The chevron is part of `Disclosure.Trigger`.** A different icon or no icon means `useDisclosure` on your own button.

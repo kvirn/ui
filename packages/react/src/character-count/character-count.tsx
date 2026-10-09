@@ -1,28 +1,18 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import type { ComponentPropsWithRef, ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useCharacterCount } from './use-character-count.ts'
 
-/** What `render` receives as its second argument. */
-export interface CharacterCountState {
-  /** The characters in the text, counted as asked. */
-  length: number
-  limit: number
-  /** How many more fit. `0` at or over the limit. */
-  remaining: number
-  /** How many are over the limit. `0` at or under it. */
-  excess: number
-  isEmpty: boolean
-  isOver: boolean
-  /** From the announce threshold, and over the limit. */
-  isNear: boolean
-}
+const characterCountTags = ['p', 'div', 'span'] as const
 
-export interface CharacterCountProps extends Omit<ComponentPropsWithRef<'p'>, 'children'> {
+interface CharacterCountOwnProps {
+  /** The count writes its own text. */
+  children?: never
   /** The text the count is about: the value of your box. */
   value: string
   /** The most characters the text may have. At least 1. */
@@ -47,8 +37,14 @@ export interface CharacterCountProps extends Omit<ComponentPropsWithRef<'p'>, 'c
   announceChanges?: boolean | undefined
   /** Per-instance message overrides: `limit`, `remaining` and `over`. */
   messages?: Partial<KvirnMessages['characterCount']> | undefined
-  render?: RenderProp<ComponentPropsWithRef<'p'>, CharacterCountState> | undefined
 }
+
+/** `as` is `p` (default), `div` or `span`. It is plain help text, never a heading. */
+export type CharacterCountProps = AsTag<
+  (typeof characterCountTags)[number],
+  'p',
+  CharacterCountOwnProps
+>
 
 /**
  * How much room is left in a box with a limit: "Du har 120 tecken kvar." It is a help text
@@ -77,7 +73,7 @@ export function CharacterCount({
   announceChanges,
   messages,
   id,
-  render,
+  as,
   ref,
   ...otherProps
 }: CharacterCountProps): ReactElement {
@@ -92,9 +88,8 @@ export function CharacterCount({
     id,
     ref,
   })
-  const { count } = characterCount
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'CharacterCount', as, allowedTags: characterCountTags }),
     defaultElement: 'p',
     partProps: {
       ...mergeProps(otherProps, characterCount.countProps),
@@ -104,15 +99,6 @@ export function CharacterCount({
           {characterCount.text}
         </>
       ),
-    },
-    state: {
-      length: count.length,
-      limit: count.limit,
-      remaining: count.remaining,
-      excess: count.excess,
-      isEmpty: count.isEmpty,
-      isOver: count.isOver,
-      isNear: count.isNear,
     },
   })
 }

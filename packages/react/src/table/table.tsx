@@ -11,15 +11,21 @@ import type {
   RowData,
   TableFeatures,
 } from '@kvirn-ui/core'
-import { Fragment, useCallback, useContext, useEffect, useState, useSyncExternalStore } from 'react'
+import {
+  createElement,
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  useSyncExternalStore,
+} from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { useEnv } from '../provider/use-env.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import {
   getScrollAreaProps,
   hasAccessibleName,
@@ -28,7 +34,7 @@ import {
 import { useScrollOverflow } from '../scroll-area/use-scroll-overflow.ts'
 import { TableContext, TableSectionContext, useTableContext } from './table-context.ts'
 import type { TableSection } from './table-context.ts'
-import { hasRowExpanding, hasRowSelection } from './table-features.ts'
+import { hasRowExpanding } from './table-features.ts'
 import { getHeaderRowIndex } from './use-table.ts'
 import type {
   TableCellPartProps,
@@ -39,28 +45,6 @@ import type {
   UseTableResult,
 } from './use-table.ts'
 
-/** What `render` receives as its second argument, for every part except a row and a cell. */
-export interface TablePartState {
-  /** `virtualize` is on, and in effect. */
-  isVirtualized: boolean
-  /** `isLoading` is on: the table has `aria-busy`. */
-  isBusy: boolean
-  /** The row model has no rows. */
-  isEmpty: boolean
-}
-
-/** What `render` receives as its second argument, for a row and a cell. */
-export interface TableRowState extends TablePartState {
-  isSelected: boolean
-  isExpanded: boolean
-}
-
-/** What `render` receives as its second argument, for a column header and its sort button. */
-export interface TableHeaderState extends TablePartState {
-  /** The column is sorted: the value of `aria-sort`. */
-  sort: 'ascending' | 'descending' | undefined
-}
-
 export interface TableRootProps<
   TFeatures extends TableFeatures,
   TData extends RowData,
@@ -70,7 +54,6 @@ export interface TableRootProps<
    * so a small static table needs no TanStack Table at all.
    */
   table?: UseTableResult<TFeatures, TData> | undefined
-  render?: RenderProp<ComponentPropsWithRef<'table'>, TablePartState> | undefined
 }
 
 export interface TableScrollRegionProps<
@@ -85,16 +68,11 @@ export interface TableScrollRegionProps<
    * It is a Tab stop only while it scrolls, in both. With `table`, this wins over `useTable`'s `region`.
    */
   region?: TableRegion | undefined
-  render?: RenderProp<ComponentPropsWithRef<'div'>, TablePartState> | undefined
 }
 
-export interface TableCaptionProps extends ComponentPropsWithRef<'caption'> {
-  render?: RenderProp<ComponentPropsWithRef<'caption'>, TablePartState> | undefined
-}
+export type TableCaptionProps = ComponentPropsWithRef<'caption'>
 
-export interface TableHeadProps extends ComponentPropsWithRef<'thead'> {
-  render?: RenderProp<ComponentPropsWithRef<'thead'>, TablePartState> | undefined
-}
+export type TableHeadProps = ComponentPropsWithRef<'thead'>
 
 export interface TableBodyProps<
   TFeatures extends TableFeatures,
@@ -106,12 +84,9 @@ export interface TableBodyProps<
    * your own rows. The function needs `table` on the Root.
    */
   children?: ReactNode | ((row: Row<TFeatures, TData>, index: number) => ReactNode)
-  render?: RenderProp<ComponentPropsWithRef<'tbody'>, TablePartState> | undefined
 }
 
-export interface TableFootProps extends ComponentPropsWithRef<'tfoot'> {
-  render?: RenderProp<ComponentPropsWithRef<'tfoot'>, TablePartState> | undefined
-}
+export type TableFootProps = ComponentPropsWithRef<'tfoot'>
 
 export interface TableRowProps<
   TFeatures extends TableFeatures,
@@ -121,7 +96,6 @@ export interface TableRowProps<
   row?: Row<TFeatures, TData> | undefined
   /** In the head: the header group the row shows, for `aria-rowindex` when the table is virtualized. */
   headerGroup?: HeaderGroup<TFeatures, TData> | undefined
-  render?: RenderProp<ComponentPropsWithRef<'tr'>, TableRowState> | undefined
 }
 
 export interface TableColumnHeaderProps<
@@ -133,12 +107,9 @@ export interface TableColumnHeaderProps<
    * children renders the column's `header` template. Leave it out for a column you add yourself.
    */
   header?: Header<TFeatures, TData, unknown> | undefined
-  render?: RenderProp<ComponentPropsWithRef<'th'>, TableHeaderState> | undefined
 }
 
-export interface TableRowHeaderProps extends ComponentPropsWithRef<'th'> {
-  render?: RenderProp<ComponentPropsWithRef<'th'>, TablePartState> | undefined
-}
+export type TableRowHeaderProps = ComponentPropsWithRef<'th'>
 
 export interface TableCellProps<
   TFeatures extends TableFeatures,
@@ -149,7 +120,6 @@ export interface TableCellProps<
    * a `<td>` otherwise, and without children renders the column's `cell` template.
    */
   cell?: Cell<TFeatures, TData, unknown> | undefined
-  render?: RenderProp<ComponentPropsWithRef<'td'>, TableRowState> | undefined
 }
 
 export interface TableSortButtonProps<
@@ -158,7 +128,6 @@ export interface TableSortButtonProps<
 > extends Omit<ComponentPropsWithRef<'button'>, 'type'> {
   /** The header whose column it sorts: from `table.getHeaderGroups()`. */
   header?: Header<TFeatures, TData, unknown> | undefined
-  render?: RenderProp<ComponentPropsWithRef<'button'>, TableHeaderState> | undefined
 }
 
 export interface TableSelectCheckboxProps<
@@ -167,15 +136,9 @@ export interface TableSelectCheckboxProps<
 > extends Omit<ComponentPropsWithRef<'input'>, 'type' | 'children'> {
   /** The row it selects. Its name is "Select" and the row's header cell, or "Select row 3". */
   row?: Row<TFeatures, TData> | undefined
-  render?: RenderProp<ComponentPropsWithRef<'input'>, TableRowState> | undefined
 }
 
-export interface TableSelectAllCheckboxProps extends Omit<
-  ComponentPropsWithRef<'input'>,
-  'type' | 'children'
-> {
-  render?: RenderProp<ComponentPropsWithRef<'input'>, TablePartState> | undefined
-}
+export type TableSelectAllCheckboxProps = Omit<ComponentPropsWithRef<'input'>, 'type' | 'children'>
 
 export interface TableExpandButtonProps<
   TFeatures extends TableFeatures,
@@ -183,7 +146,6 @@ export interface TableExpandButtonProps<
 > extends Omit<ComponentPropsWithRef<'button'>, 'type'> {
   /** The row it shows and hides the details of. */
   row?: Row<TFeatures, TData> | undefined
-  render?: RenderProp<ComponentPropsWithRef<'button'>, TableRowState> | undefined
 }
 
 export interface TableDetailRowProps<
@@ -194,7 +156,6 @@ export interface TableDetailRowProps<
   row?: Row<TFeatures, TData> | undefined
   /** Without a `table`: how many columns the detail cell spans. */
   colSpan?: number | undefined
-  render?: RenderProp<ComponentPropsWithRef<'tr'>, TableRowState> | undefined
 }
 
 export interface TableEmptyProps extends ComponentPropsWithRef<'tbody'> {
@@ -202,28 +163,6 @@ export interface TableEmptyProps extends ComponentPropsWithRef<'tbody'> {
   children?: ReactNode
   /** Without a `table`: how many columns the cell spans. */
   colSpan?: number | undefined
-  render?: RenderProp<ComponentPropsWithRef<'tbody'>, TablePartState> | undefined
-}
-
-function toState<TFeatures extends TableFeatures, TData extends RowData>(
-  table: UseTableResult<TFeatures, TData> | null | undefined,
-): TablePartState {
-  return {
-    isVirtualized: table?.isVirtualized ?? false,
-    isBusy: table?.isLoading ?? false,
-    isEmpty: table?.isEmpty ?? false,
-  }
-}
-
-function toRowState<TFeatures extends TableFeatures, TData extends RowData>(
-  table: UseTableResult<TFeatures, TData> | null,
-  row: Row<TFeatures, TData> | undefined,
-): TableRowState {
-  return {
-    ...toState(table),
-    isSelected: row !== undefined && hasRowSelection(row) && row.getIsSelected(),
-    isExpanded: row !== undefined && hasRowExpanding(row) && row.getIsExpanded(),
-  }
 }
 
 const subscribeNever = () => () => {}
@@ -267,7 +206,6 @@ const isEmptyContent = (children: ReactNode): boolean =>
  */
 export function TableRoot<TFeatures extends TableFeatures, TData extends RowData>({
   table,
-  render,
   ...otherProps
 }: TableRootProps<TFeatures, TData>): ReactElement {
   // A table without a name isn't announced as anything in a list of tables (1.3.1, 4.1.2). Checked
@@ -288,14 +226,12 @@ export function TableRoot<TFeatures extends TableFeatures, TData extends RowData
 
   return (
     <TableContext.Provider value={table ?? null}>
-      {renderPart({
-        render,
-        defaultElement: 'table',
-        partProps: mergeProps(otherProps, table?.tableProps ?? { className: 'kv-table' }, {
+      {createElement(
+        'table',
+        mergeProps(otherProps, table?.tableProps ?? { className: 'kv-table' }, {
           ref: checkName,
         }),
-        state: toState(table),
-      })}
+      )}
     </TableContext.Provider>
   )
 }
@@ -362,7 +298,6 @@ function useStickyHeadSize(element: HTMLElement | null, env: Env | undefined): v
 export function TableScrollRegion<TFeatures extends TableFeatures, TData extends RowData>({
   table,
   region,
-  render,
   ref: consumerRef,
   ...otherProps
 }: TableScrollRegionProps<TFeatures, TData>): ReactElement {
@@ -400,24 +335,17 @@ export function TableScrollRegion<TFeatures extends TableFeatures, TData extends
     }
   }, [element, isRegion])
 
-  return renderPart({
-    render,
-    defaultElement: 'div',
-    partProps,
-    state: toState(table),
-  })
+  return createElement('div', partProps)
 }
 TableScrollRegion.displayName = 'Table.ScrollRegion'
 
 /** The table's name, and the name of the scroll region. A `<caption>` is the first child of the table. */
-export function TableCaption({ render, ...otherProps }: TableCaptionProps): ReactElement {
+export function TableCaption({ ...otherProps }: TableCaptionProps): ReactElement {
   const table = useTableContext()
-  return renderPart({
-    render,
-    defaultElement: 'caption',
-    partProps: mergeProps(otherProps, table?.captionProps ?? { className: 'kv-table-caption' }),
-    state: toState(table),
-  })
+  return createElement(
+    'caption',
+    mergeProps(otherProps, table?.captionProps ?? { className: 'kv-table-caption' }),
+  )
 }
 TableCaption.displayName = 'Table.Caption'
 
@@ -432,18 +360,16 @@ function TableSectionProvider({
 }
 
 /** The header rows, a `<thead>`. A virtualized table keeps it in the DOM and measures it, so the theme can make it sticky. */
-export function TableHead({ render, children, ...otherProps }: TableHeadProps): ReactElement {
+export function TableHead({ children, ...otherProps }: TableHeadProps): ReactElement {
   const table = useTableContext()
   return (
     <TableSectionProvider section="head">
-      {renderPart({
-        render,
-        defaultElement: 'thead',
-        partProps: mergeProps(otherProps, table?.headProps ?? { className: 'kv-table-head' }, {
+      {createElement(
+        'thead',
+        mergeProps(otherProps, table?.headProps ?? { className: 'kv-table-head' }, {
           children,
         }),
-        state: toState(table),
-      })}
+      )}
     </TableSectionProvider>
   )
 }
@@ -455,7 +381,6 @@ TableHead.displayName = 'Table.Head'
  * your own rows. Rows are `aria-hidden` spacers only where rows aren't rendered.
  */
 export function TableBody<TFeatures extends TableFeatures, TData extends RowData>({
-  render,
   children,
   ...otherProps
 }: TableBodyProps<TFeatures, TData>): ReactElement {
@@ -482,14 +407,12 @@ export function TableBody<TFeatures extends TableFeatures, TData extends RowData
   }
   return (
     <TableSectionProvider section="body">
-      {renderPart({
-        render,
-        defaultElement: 'tbody',
-        partProps: mergeProps(otherProps, table?.bodyProps ?? { className: 'kv-table-body' }, {
+      {createElement(
+        'tbody',
+        mergeProps(otherProps, table?.bodyProps ?? { className: 'kv-table-body' }, {
           children: content,
         }),
-        state: toState(table),
-      })}
+      )}
     </TableSectionProvider>
   )
 }
@@ -506,18 +429,16 @@ function TableSpacer({ size, columnCount }: { size: number; columnCount: number 
 }
 
 /** The footer rows, a `<tfoot>`. */
-export function TableFoot({ render, children, ...otherProps }: TableFootProps): ReactElement {
+export function TableFoot({ children, ...otherProps }: TableFootProps): ReactElement {
   const table = useTableContext()
   return (
     <TableSectionProvider section="foot">
-      {renderPart({
-        render,
-        defaultElement: 'tfoot',
-        partProps: mergeProps(otherProps, table?.footProps ?? { className: 'kv-table-foot' }, {
+      {createElement(
+        'tfoot',
+        mergeProps(otherProps, table?.footProps ?? { className: 'kv-table-foot' }, {
           children,
         }),
-        state: toState(table),
-      })}
+      )}
     </TableSectionProvider>
   )
 }
@@ -531,7 +452,6 @@ TableFoot.displayName = 'Table.Foot'
 export function TableRow<TFeatures extends TableFeatures, TData extends RowData>({
   row,
   headerGroup,
-  render,
   ref,
   ...otherProps
 }: TableRowProps<TFeatures, TData>): ReactElement {
@@ -572,12 +492,7 @@ export function TableRow<TFeatures extends TableFeatures, TData extends RowData>
       'aria-rowindex': table.footRowOffset + placeInSection + 1,
     }
   }
-  return renderPart({
-    render,
-    defaultElement: 'tr',
-    partProps: mergeProps(otherProps, hookProps, { ref: mergedRef }),
-    state: toRowState(table, row),
-  })
+  return createElement('tr', mergeProps(otherProps, hookProps, { ref: mergedRef }))
 }
 TableRow.displayName = 'Table.Row'
 
@@ -624,7 +539,6 @@ function SortIcon({ sort }: { sort: TableSortDirection | undefined }): ReactElem
  */
 export function TableColumnHeader<TFeatures extends TableFeatures, TData extends RowData>({
   header,
-  render,
   children,
   ...otherProps
 }: TableColumnHeaderProps<TFeatures, TData>): ReactElement {
@@ -641,27 +555,16 @@ export function TableColumnHeader<TFeatures extends TableFeatures, TData extends
           header.getContext(),
         )
       : children
-  return renderPart({
-    render,
-    defaultElement: 'th',
-    partProps: mergeProps(otherProps, hookProps, { children: content }),
-    state: {
-      ...toState(table),
-      sort: 'data-sort' in hookProps ? hookProps['data-sort'] : undefined,
-    },
-  })
+  return createElement('th', mergeProps(otherProps, hookProps, { children: content }))
 }
 TableColumnHeader.displayName = 'Table.ColumnHeader'
 
 /** A row header for a static table: `<th scope="row">`. With `useTable`, `Table.Cell` renders it for the `rowHeader` column. */
-export function TableRowHeader({ render, ...otherProps }: TableRowHeaderProps): ReactElement {
-  const table = useTableContext()
-  return renderPart({
-    render,
-    defaultElement: 'th',
-    partProps: mergeProps(otherProps, { className: 'kv-table-row-header', scope: 'row' }),
-    state: toState(table),
-  })
+export function TableRowHeader({ ...otherProps }: TableRowHeaderProps): ReactElement {
+  return createElement(
+    'th',
+    mergeProps(otherProps, { className: 'kv-table-row-header', scope: 'row' }),
+  )
 }
 TableRowHeader.displayName = 'Table.RowHeader'
 
@@ -672,7 +575,6 @@ TableRowHeader.displayName = 'Table.RowHeader'
  */
 export function TableCell<TFeatures extends TableFeatures, TData extends RowData>({
   cell,
-  render,
   children,
   ...otherProps
 }: TableCellProps<TFeatures, TData>): ReactElement {
@@ -686,12 +588,10 @@ export function TableCell<TFeatures extends TableFeatures, TData extends RowData
           cell.getContext(),
         )
       : children
-  return renderPart({
-    render,
-    defaultElement: hookProps.scope === 'row' ? 'th' : 'td',
-    partProps: mergeProps(otherProps, hookProps, { children: content }),
-    state: toRowState(table, cell?.row),
-  })
+  return createElement(
+    hookProps.scope === 'row' ? 'th' : 'td',
+    mergeProps(otherProps, hookProps, { children: content }),
+  )
 }
 TableCell.displayName = 'Table.Cell'
 
@@ -703,7 +603,6 @@ TableCell.displayName = 'Table.Cell'
  */
 export function TableSortButton<TFeatures extends TableFeatures, TData extends RowData>({
   header,
-  render,
   children,
   ...otherProps
 }: TableSortButtonProps<TFeatures, TData>): ReactElement {
@@ -720,10 +619,9 @@ export function TableSortButton<TFeatures extends TableFeatures, TData extends R
           header.getContext(),
         )
       : children
-  return renderPart({
-    render,
-    defaultElement: 'button',
-    partProps: mergeProps(otherProps, hookProps, {
+  return createElement(
+    'button',
+    mergeProps(otherProps, hookProps, {
       children: (
         <>
           {content}
@@ -731,8 +629,7 @@ export function TableSortButton<TFeatures extends TableFeatures, TData extends R
         </>
       ),
     }),
-    state: { ...toState(table), sort },
-  })
+  )
 }
 TableSortButton.displayName = 'Table.SortButton'
 
@@ -743,7 +640,6 @@ TableSortButton.displayName = 'Table.SortButton'
  */
 export function TableSelectCheckbox<TFeatures extends TableFeatures, TData extends RowData>({
   row,
-  render,
   ...otherProps
 }: TableSelectCheckboxProps<TFeatures, TData>): ReactElement {
   const table = useTableContext<TFeatures, TData>()
@@ -751,12 +647,7 @@ export function TableSelectCheckbox<TFeatures extends TableFeatures, TData exten
     table !== null && row !== undefined
       ? table.getSelectCheckboxProps(row)
       : ({ type: 'checkbox', className: 'kv-checkbox kv-table-select-checkbox' } as const)
-  return renderPart({
-    render,
-    defaultElement: 'input',
-    partProps: mergeProps(otherProps, hookProps),
-    state: toRowState(table, row),
-  })
+  return createElement('input', mergeProps(otherProps, hookProps))
 }
 TableSelectCheckbox.displayName = 'Table.SelectCheckbox'
 
@@ -765,7 +656,6 @@ TableSelectCheckbox.displayName = 'Table.SelectCheckbox'
  * rows are selected. Toggling it announces how many rows are selected.
  */
 export function TableSelectAllCheckbox({
-  render,
   ...otherProps
 }: TableSelectAllCheckboxProps): ReactElement {
   const table = useTableContext()
@@ -773,12 +663,7 @@ export function TableSelectAllCheckbox({
     type: 'checkbox',
     className: 'kv-checkbox kv-table-select-checkbox',
   }
-  return renderPart({
-    render,
-    defaultElement: 'input',
-    partProps: mergeProps(otherProps, hookProps),
-    state: toState(table),
-  })
+  return createElement('input', mergeProps(otherProps, hookProps))
 }
 TableSelectAllCheckbox.displayName = 'Table.SelectAllCheckbox'
 
@@ -793,7 +678,6 @@ TableSelectAllCheckbox.displayName = 'Table.SelectAllCheckbox'
  */
 export function TableExpandButton<TFeatures extends TableFeatures, TData extends RowData>({
   row,
-  render,
   children,
   ...otherProps
 }: TableExpandButtonProps<TFeatures, TData>): ReactElement {
@@ -810,11 +694,10 @@ export function TableExpandButton<TFeatures extends TableFeatures, TData extends
     isEmptyContent(children) &&
     otherProps['aria-label'] === undefined &&
     otherProps['aria-labelledby'] === undefined
-  const state = toRowState(table, row)
-  return renderPart({
-    render,
-    defaultElement: 'button',
-    partProps: mergeProps(
+  const isExpanded = row !== undefined && hasRowExpanding(row) && row.getIsExpanded()
+  return createElement(
+    'button',
+    mergeProps(
       otherProps,
       restHookProps,
       keepsDefaultName && defaultName !== undefined ? { 'aria-label': defaultName } : {},
@@ -823,7 +706,7 @@ export function TableExpandButton<TFeatures extends TableFeatures, TData extends
           <>
             {table?.expandButtonText}
             <Icon
-              name={state.isExpanded ? 'chevron-up' : 'chevron-down'}
+              name={isExpanded ? 'chevron-up' : 'chevron-down'}
               size={5}
               className="kv-table-expand-icon"
             />
@@ -833,8 +716,7 @@ export function TableExpandButton<TFeatures extends TableFeatures, TData extends
         ),
       },
     ),
-    state,
-  })
+  )
 }
 TableExpandButton.displayName = 'Table.ExpandButton'
 
@@ -846,7 +728,6 @@ TableExpandButton.displayName = 'Table.ExpandButton'
 export function TableDetailRow<TFeatures extends TableFeatures, TData extends RowData>({
   row,
   colSpan,
-  render,
   children,
   ...otherProps
 }: TableDetailRowProps<TFeatures, TData>): ReactElement | null {
@@ -858,14 +739,12 @@ export function TableDetailRow<TFeatures extends TableFeatures, TData extends Ro
     table !== null && row !== undefined
       ? table.getDetailRowProps(row)
       : { className: 'kv-table-detail-row' }
-  return renderPart({
-    render,
-    defaultElement: 'tr',
-    partProps: mergeProps(otherProps, hookProps, {
+  return createElement(
+    'tr',
+    mergeProps(otherProps, hookProps, {
       children: <td colSpan={table?.columnCount ?? colSpan ?? 1}>{children}</td>,
     }),
-    state: toRowState(table, row),
-  })
+  )
 }
 TableDetailRow.displayName = 'Table.DetailRow'
 
@@ -877,7 +756,6 @@ TableDetailRow.displayName = 'Table.DetailRow'
  */
 export function TableEmpty({
   colSpan,
-  render,
   children,
   ...otherProps
 }: TableEmptyProps): ReactElement | null {
@@ -885,10 +763,9 @@ export function TableEmpty({
   if (table !== null && !table.isEmpty) {
     return null
   }
-  return renderPart({
-    render,
-    defaultElement: 'tbody',
-    partProps: mergeProps(otherProps, table?.emptyProps ?? { className: 'kv-table-empty' }, {
+  return createElement(
+    'tbody',
+    mergeProps(otherProps, table?.emptyProps ?? { className: 'kv-table-empty' }, {
       children: (
         <tr>
           <td colSpan={table?.columnCount ?? colSpan ?? 1}>
@@ -897,8 +774,7 @@ export function TableEmpty({
         </tr>
       ),
     }),
-    state: toState(table),
-  })
+  )
 }
 TableEmpty.displayName = 'Table.Empty'
 

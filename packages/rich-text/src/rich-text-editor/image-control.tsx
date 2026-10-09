@@ -165,7 +165,7 @@ function ImageForm({ editor, onClose }: ImageFormProps): ReactElement {
             {messages.imageRemove}
           </Button>
         ) : null}
-        <Popover.Close render={<Button />}>{messages.cancel}</Popover.Close>
+        <Popover.Close as={Button}>{messages.cancel}</Popover.Close>
       </ButtonGroup>
     </form>
   )

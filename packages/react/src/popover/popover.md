@@ -45,7 +45,7 @@ import { Popover } from '@kvirn-ui/react'
 | `padding`                     | `8`              | The space kept to the edge of the viewport, in pixels                                                                                                                                                                                  |
 | `matchAnchorWidth`            | `false`          | Make the popup exactly as wide as the trigger                                                                                                                                                                                          |
 
-Every part takes `render` to change its element, and `className`, `style`, handlers and refs merge with its own. `render` also receives the state: `{ isOpen }`.
+`Popover.Trigger` and `Popover.Close` take `as`, a component such as `Button` that gets the other props as plain props (`<Popover.Trigger as={Button} aria-label="Hjälp">`). `Popover.Popup` takes `as="section"`. Every part merges `className`, `style`, handlers and refs with its own.
 
 ## Hook
 

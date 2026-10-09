@@ -1,7 +1,7 @@
 ---
 name: api-conventions
-description: How a KvirnUI hook, part and compound component is built in code - the hook and part pair, the render prop, mergeProps, hooks that gate handlers, messages and useMessages, the Register registries (router links, icons), developer warnings and the 'use client' entry. Use when you add or change a component's API or implementation, or review one. The naming and prop rules themselves live in docs/architecture.md, API conventions.
-when_to_use: new component, new part, render prop, mergeProps, disabled button onClick, useMessages, messages prop, new string, dev warning, warnOnce, Register, linkComponent, defineIcons, displayName, compound alias, use client, ref merging, review of a component's API
+description: How a KvirnUI hook, part and compound component is built in code - the hook and part pair, the `as` prop, mergeProps, hooks that gate handlers, messages and useMessages, the Register registries (router links, icons), developer warnings and the 'use client' entry. Use when you add or change a component's API or implementation, or review one. The naming and prop rules themselves live in docs/architecture.md, API conventions.
+when_to_use: new component, new part, as prop, mergeProps, disabled button onClick, useMessages, messages prop, new string, dev warning, warnOnce, Register, linkComponent, defineIcons, displayName, compound alias, use client, ref merging, review of a component's API
 ---
 
 # API conventions (author side)
@@ -15,20 +15,24 @@ Load it with `accessibility` (what the component must expose) and `testing` (how
 - **The hook holds the behaviour.** `useX(options)` returns one prop object per part (`triggerProps`), `getXProps(argument)` where props depend on an argument, state (`isOpen`, `isDisabled`) and ids. It spreads onto the consumer's elements.
 - **Each part component is the hook plus `renderPart`.** It calls the hook, then renders exactly one element.
 - **Part props carry the part's class** (`className: 'kv-button'`) and `data-*` state. The class is typed as a literal, so a wrong spread fails the type check.
-- **Types:** export `UseXOptions`, `UseXResult`, `XPartProps` (the hook's prop object) and `XProps` (the component's). A part's `render` receives `(partProps, state)`, where `state` is a small typed object (`ButtonState`).
+- **Types:** export `UseXOptions`, `UseXResult`, `XPartProps` (the hook's prop object) and `XProps` (the component's). A part's element is chosen with `as` or not at all (see "Parts and `as`").
 - **Components take `ref` as a normal prop** (`ComponentPropsWithRef<'button'>`, React 19). A part that needs its own ref merges it with the consumer's through `useMergedRef(consumerRef, ownRef)` (internal, in `merge-props/`). It is stable while the refs are, so React does not detach and re-attach it each render.
 - **Subscribe to a core store with `useStoreSelector(store, selector)`** (internal, `useSyncExternalStore`). Consumers never call `setState`. Don't use `@tanstack/react-store`.
 - **Internal hooks are not exported** from the public entry: `useStoreSelector`, `useMessages`, `useEnv`, `useLinkComponent`. The one exception is for Kvirn's own packages: `@kvirn-ui/react/internal` (`src/internal.ts`) exports `useMessages`, the Field's context and `useDescriptionPart`, `useFocusVisible` and a few helpers to `@kvirn-ui/rich-text` (Plan 0036). It is unstable, documented as for Kvirn packages only, and `internal.test.tsx` proves the public entry never re-exports any of it. Add to it only when a Kvirn package needs the piece.
 
-## Parts and `render`
+## Parts and `as`
 
-- **`renderPart({ render, defaultElement, partProps, state })`** (internal, `render/render-part.ts`) renders every part.
-  - No `render`: `createElement(defaultElement, partProps)`.
-  - Element form, `render={<a href="/help" />}`: the element is cloned with `mergeProps(partProps, element.props)`. Its own plain props win and handlers chain.
-  - Function form, `render={(partProps, state) => <El {...partProps} />}`: the consumer spreads the props. Keep `className` when you do.
-- **A part that needs a specific element** (`<button>`, `<a>`, `<fieldset>`) checks `ref.current.tagName` in an effect after commit and warns when `render` produced something else. See the warnings reference.
+There is no `render` prop (Plan 0093). A part's element is a plain `as` prop, a string or a component, because an element prop made in a Server Component arrives as a `React.lazy` wrapper and the part silently renders its default element: a hydration mismatch.
 
-`useFocus` is a hook with no markup of its own: it returns `scopeProps` (ref and `onKeyDown`) for the consumer's element, and `FocusScope` (flat, one element) is the same hook plus one element with `render` (Plan 0085).
+- **`renderPart({ as, defaultElement, partProps })`** (internal, `render/render-part.ts`) is `createElement(as ?? defaultElement, partProps)` and nothing more.
+- **Tag parts** (`Alert.Title`, `Section`, `Heading`): `as?: <union of allowed tags>`, typed with `AsTag<Tags, DefaultTag, OwnProps>` (`render/as-prop.ts`). It is a union per tag, so the element's own attributes type-check, and `ref` is `Ref<HTMLElement>`. The part keeps `const tags = [...] as const` and renders `renderPart({ as: resolveAsTag({ part: 'Alert.Title', as, allowedTags: tags }), defaultElement: 'h2', partProps })`. A tag outside the list warns once (`as-not-allowed:<part>:<tag>`) and renders the default. List the tags and why in the part's `*.a11y.md` under "Allowed elements": a list change is an accessibility trade-off.
+- **Component parts** (`Link.Root`, `Tooltip.Trigger`, `Toolbar.Item`): `as?: ElementType`, typed `AsComponent<Component, OwnProps>` (`as?: Component` plus `OwnProps & Omit<ComponentPropsWithRef<Component>, keyof OwnProps>`), generic over the part: `function X<Component extends ElementType = 'button'>(props: AsComponent<Component, XOwnProps>)`. Props are plain JSX props forwarded to the target: `<Tooltip.Trigger as={Button} aria-label="Close">`. The part merges `mergeProps(consumerProps, hookProps)`: handlers chain, `className` joins, `ref` merges. The target must accept `ref` and spread the rest on its DOM node. Keep the tag and focusability dev warnings.
+- **No `as`** is the default (Button, Toggle, Tabs, Menu items, form controls, `Alert.Close`): the part is one native element. For another element, call the hook and spread its prop object (`useButton()`, `useHeading()`).
+- **Heading** takes `as: 'h1' | … | 'h6'` (required) instead of a level. `useHeading` keeps `level`.
+- **Server Components:** `as="p"` works, and so does `as={ClientComponent}` (a client reference). `as={ServerComponent}` or an inline function throws at render. `next/link` is a plain server wrapper on the server, not a client reference, so `as={NextLink}` and `linkComponent={NextLink}` both need a client module. Never accept a function or an element prop for a part's markup.
+- **A part that needs a specific element** (`<button>`, `<a>`, `<fieldset>`) checks `ref.current.tagName` in an effect after commit and warns when `as` produced something else. See the warnings reference.
+
+`useFocus` is a hook with no markup of its own: it returns `scopeProps` (ref and `onKeyDown`) for the consumer's element, and `FocusScope` (flat, one element) is the same hook plus one element with `as` (Plans 0085, 0093).
 
 ## Naming: namespaces, single elements and aliases
 
@@ -55,7 +59,7 @@ An adopter can tell from a name alone how a component is built. Five rules:
 | `Link`          | `Root`, `NewTabNotice`, `Icon`                                 |
 | `Toolbar`       | `Root`, `Button`, `Toggle`, `Item`, `Group`                    |
 
-`Toolbar` is a namespace object (it has no callable root). Its `Button` and `Toggle` are Button and Toggle wrapped to join the toolbar, `Item` makes any focusable control one through `render`, and `Group` is a thin typed wrapper over `ButtonGroup` (Plan 0035). `Toggle` and `ButtonGroup` are single elements, so they are flat.
+`Toolbar` is a namespace object (it has no callable root). Its `Button` and `Toggle` are Button and Toggle wrapped to join the toolbar, `Item` makes any focusable control one through `as`, and `Group` is a thin typed wrapper over `ButtonGroup` (Plan 0035). `Toggle` and `ButtonGroup` are single elements, so they are flat.
 
 `Navigation` is a namespace of its own parts, not aliases and not callable: `Root` (`<nav>`, named by `label`), `List` and `Item` (Plan 0043). A nested `Navigation.List` inside an `Item` is the second level. `Link.Icon` is the decorative `aria-hidden` slot for the service link's icon; the service look itself is a class (`kv-link--service`), not a prop. Orientation is a class too, `kv-navigation--horizontal` on the root (Plan 0047), never a prop: links are plain Tab stops, so it changes no keys (Tabs and Toolbar take `orientation` because it changes theirs). A group you collapse is rendered with `hidden`, never unmounted. Exactly one link per navigation has `aria-current` (`page` when the page is listed, otherwise `true` on the deepest item shown), and `Root` warns once per name when two do (`navigation-multiple-current:<name>`).
 
@@ -69,7 +73,7 @@ An adopter can tell from a name alone how a component is built. Five rules:
 
 `Disclosure` and `Accordion` are namespaces of their own parts, not callable (Plan 0058). `Disclosure`: `Root` (no element), `Trigger` (`<button>` plus a decorative chevron `Icon`) and `Panel`. `Accordion`: `Root`, `Item` (a `div` around a `Disclosure.Root`, one state per item), `Heading` (`level` required, never defaulted) and `Trigger` and `Panel`, which are `Disclosure.Trigger` and `Disclosure.Panel` with the accordion's class added and their own display names. `hidden="until-found"` is opt-in (`hiddenUntilFound`): React renders `hidden` as a boolean attribute, so the hook writes the value in an effect and the server markup says plain `hidden`.
 
-`Tooltip` is a namespace of its own parts, not aliases: `Root`, `Trigger`, `Popup`, `Name` and `Shortcut` (Plan 0037). Its `Trigger` makes any focusable control the anchor through `render` (`Toolbar.Toggle`, `Button`, `Toolbar.Item`), and joins its `aria-describedby` with yours.
+`Tooltip` is a namespace of its own parts, not aliases: `Root`, `Trigger`, `Popup`, `Name` and `Shortcut` (Plan 0037). Its `Trigger` makes any focusable control the anchor through `as` (`Toolbar.Toggle`, `Button`, `Toolbar.Item`), and joins its `aria-describedby` with yours.
 
 `Prose` is the description and `HelpText` the help text (Plans 0029 and 0041, renamed from `Hint`): `Fieldset.HelpText`, `CheckboxGroup.HelpText` and `RadioGroup.HelpText` are thin typed wrappers over `Field.HelpText` with their own display names. `Combobox` and `Autocomplete` offer the Listbox popup parts (`Popup`, `List`, `Option`, `Group`, `GroupLabel`, `Empty`) under their own names, and Autocomplete also wraps Combobox's `Control`, `Input`, `Toggle` and `Clear`.
 
@@ -94,13 +98,12 @@ Put the consumer's props first and the hook's last when the hook must win (`merg
 
 ## Hooks that gate a handler
 
-Merging can't stop an activation. A part that must control a prop takes it out of the `render` element and routes it through its hook.
+Merging can't stop an activation. A part that must control a prop takes it as its own prop and routes it through its hook.
 
-- **Helper:** `takeRenderElementProps(render, ['onClick'])` returns `{ render, takenProps }`. The element comes back with those props set to `undefined`, so `mergeProps` can't pass them through.
-- **Button:** `useButton({ onClick })` never calls `onClick` while `disabled`, and its click handler calls `preventDefault()` then, which also blocks form submission and reset. Blocking is on `click`, which Enter and Space produce, so there is no key handling. `Button` merges its own `onClick` with the `render` element's and passes the result to the hook.
+- **Button:** `useButton({ onClick })` never calls `onClick` while `disabled`, and its click handler calls `preventDefault()` then, which also blocks form submission and reset. Blocking is on `click`, which Enter and Space produce, so there is no key handling. `onClick` is the part's own prop, so a disabled part blocks it.
 - **Unsupported:** merging your own `onClick` over `buttonProps`, and overriding `buttonProps.onClick`. In the function form, keep `buttonProps.onClick`.
 - **`ButtonProps` omits `aria-disabled`.** It is set only by `disabled` with `focusableWhenDisabled`. `LinkProps` omits `aria-current`: use `current`.
-- **Link:** `target` and `rel` on a `render` element go through `useLink` (it adds `noopener noreferrer` for `_blank` and keeps the consumer's own `rel` tokens, once each). The element's own values win.
+- **Link:** `target` and `rel` go through `useLink` (it adds `noopener noreferrer` for `_blank` and keeps the consumer's own `rel` tokens, once each).
   - `current` is `'page' | 'step' | 'location' | 'date' | 'time' | boolean`. `true` gives `aria-current="true"`. `false` or absent gives none.
   - `useLink` returns `linkProps`, `isCurrent`, `isFocusVisible`, `opensInNewTab` and `newTabNotice` (from `useMessages('link', messages)`).
   - `Link.NewTabNotice` reads the Link's `messages` through context. A `_blank` link with no notice gets no type error and no dev warning (maintainer, 2026-10-05): the docs say a link that opens a new tab must say so. `LinkNewTabNotice` is also a named export.
@@ -132,7 +135,7 @@ declare module '@kvirn-ui/react' {
 }
 ```
 
-- **Router links:** `<KvirnProvider linkComponent={NextLink}>` registers the router's link. `Link` always renders a native `<a href>` through it. `LinkProps` derives from the registered component, and falls back to `<a>` props without augmentation. The per-instance `render` prop overrides. The registered component must forward its ref and render an `<a>`, otherwise a development warning fires. KvirnUI adds `aria-current`, `rel` for new tabs and the new-tab notice. It has no router dependency.
+- **Router links:** `<KvirnProvider linkComponent={NextLink}>` registers the router's link. `Link` always renders a native `<a href>` through it. `LinkProps` derives from the registered component, and falls back to `<a>` props without augmentation. A part's `as` overrides it per instance. The registered component must forward its ref and render an `<a>`, otherwise a development warning fires. KvirnUI adds `aria-current`, `rel` for new tabs and the new-tab notice. It has no router dependency.
 - **Icons:** `defineIcons(entries)` returns its argument typed and frozen. `<KvirnProvider icons iconDefaults>` registers them. Nested providers merge `icons` by name and `iconDefaults` by field. `Register['icons']` adds names to `IconName`. The icon rules are in the `Icon` docs.
 - **The next registry follows the same shape:** an interface in `provider/register.ts`, a conditional type that falls back to the plain default, a provider prop.
 
@@ -143,13 +146,13 @@ declare module '@kvirn-ui/react' {
 - **Warnings are for the developer.** English, not in the catalogs, never shown to or announced for users.
 - **A message says** what is wrong, why it matters (with the WCAG criterion), and what to do instead.
 - **Key by what is wrong, plus the identifying text** when one page can hit it several times (`navigation-duplicate-name:<name>`).
-- **Check in an effect after commit,** from the DOM or a registration count. Never during render.
+- **Check in an effect after commit,** from the DOM or a registration count. Never during render. The exceptions read only props, so they also warn in server rendering: `as-not-allowed` (`resolveAsTag`) and the provider's prop checks (`date-without-time-zone`, a bad `weekStart`).
 - **A development warning never replaces a rule.** If the rule must hold, make it a type error or a throw (the OneTimeCode `pattern` throws a `RangeError`, also in production).
 - Warnings that exist today are listed in [references/dev-warnings.md](references/dev-warnings.md).
 
 ## `'use client'`
 
-Every export of `@kvirn-ui/react` is client code. The directive is a JS banner in the `pack` config of `packages/react/vite.config.ts`, and it sits at the top of `src/index.ts`, because bundling drops module-level directives. Component files start with `'use client'` too. `KvirnThemeScript` has no directive of its own: it is a plain function that renders a script tag, so a server layout can render it. A server-only export would need its own entry. Passing a component such as `NextLink` to `KvirnProvider` needs a client wrapper.
+Every export of `@kvirn-ui/react` is client code. The directive is a JS banner in the `pack` config of `packages/react/vite.config.ts`, and it sits at the top of `src/index.ts`, because bundling drops module-level directives. Component files start with `'use client'` too. The server-safe exports live in `@kvirn-ui/react/server` (`src/server.ts`, `src/server/`): a server `KvirnThemeScript`, `getLocaleProps`, `getMessages` and `createMessageFormat`. It is a second `pack` config without the banner, and its graph is `@kvirn-ui/core`, `@kvirn-ui/i18n` and React types only: never import a file that carries `'use client'`. `tooling/react-server-entry` builds the package and proves neither it nor its chunks carry the directive. `KvirnThemeScript` is rendered by the server entry in a Server Component and by the client entry in a client component. Passing `messages`, `linkComponent` (`NextLink`), `icons`, `theme.storage` or `env` to `KvirnProvider` needs a client wrapper (`AppKvirnProvider`, see `kvirn-provider.md`).
 
 ## Maintainer preferences
 

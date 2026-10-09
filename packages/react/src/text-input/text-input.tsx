@@ -1,7 +1,7 @@
 'use client'
 import type { MaskInput } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { useContext, useEffect, useRef } from 'react'
+import { createElement, useContext, useEffect, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldContext } from '../field/field-context.ts'
@@ -9,20 +9,10 @@ import { joinIds } from '../field/field-state.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { useMaskedInput } from '../mask/use-mask.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useTextInput } from './use-text-input.ts'
 import type { TextInputChangeDetails, TextInputType } from './use-text-input.ts'
 
 export type { TextInputChangeDetails, TextInputType } from './use-text-input.ts'
-
-/** What `render` receives as its second argument. */
-export interface TextInputState {
-  isInvalid: boolean
-  isRequired: boolean
-  isDisabled: boolean
-  isFocusVisible: boolean
-}
 
 export interface TextInputProps extends Omit<
   ComponentPropsWithRef<'input'>,
@@ -51,7 +41,6 @@ export interface TextInputProps extends Omit<
   announceRejections?: boolean | undefined
   /** With a `mask`: per-instance overrides for the rejection announcements. */
   messages?: Partial<KvirnMessages['mask']> | undefined
-  render?: RenderProp<ComponentPropsWithRef<'input'>, TextInputState> | undefined
 }
 
 function hasNameSource(input: HTMLInputElement): boolean {
@@ -84,7 +73,6 @@ export function TextInput({
   messages,
   id,
   'aria-describedby': ownDescribedBy,
-  render,
   ref,
   ...otherProps
 }: TextInputProps): ReactElement {
@@ -157,27 +145,17 @@ export function TextInput({
   const ownId = field === null ? { id } : {}
   const describedBy = joinIds(input.inputProps['aria-describedby'], ownDescribedBy)
 
-  return renderPart({
-    render,
-    defaultElement: 'input',
-    partProps: {
-      // The mask's suggested attributes come first, so your own props win.
-      ...mergeProps(
-        mask === undefined ? {} : { inputMode, autoCapitalize, spellCheck, dir },
-        otherProps,
-        ownId,
-        input.inputProps,
-        mask === undefined ? {} : maskHandlers,
-      ),
-      'aria-describedby': describedBy,
-      ref: mergedRef,
-    },
-    state: {
-      isInvalid: input.isInvalid,
-      isRequired: input.isRequired,
-      isDisabled: input.isDisabled,
-      isFocusVisible: input.isFocusVisible,
-    },
+  return createElement('input', {
+    // The mask's suggested attributes come first, so your own props win.
+    ...mergeProps(
+      mask === undefined ? {} : { inputMode, autoCapitalize, spellCheck, dir },
+      otherProps,
+      ownId,
+      input.inputProps,
+      mask === undefined ? {} : maskHandlers,
+    ),
+    'aria-describedby': describedBy,
+    ref: mergedRef,
   })
 }
 TextInput.displayName = 'TextInput'

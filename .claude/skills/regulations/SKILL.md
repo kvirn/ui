@@ -12,8 +12,8 @@ when_to_use: compliance claim, marketing copy, accessibility statement, tillgän
 
 1. **Identify the instruments involved.** Public sector means WAD plus the national law. Private products and services means the EAA. Personal data means GDPR. Shipping software means the CRA (SBOM, vulnerability handling).
 2. **Verify against primary sources** before writing anything new or date-sensitive. Laws, versions and deadlines change, so search the web and cite:
-   - EU: eur-lex.europa.eu, ETSI (EN 301 549), W3C WAI
-   - SE: digg.se, riksdagen.se (EAA supervision is split across sector authorities, so verify per sector)
+   - EU: eur-lex.europa.eu, ETSI (EN 301 549: v4.1.1 = WCAG 2.2 AA, published 2026-09-02; v3.2.1 stays the OJ-cited version until the new citation, check EUR-Lex), W3C WAI
+   - SE: digg.se until 2026-12-31, then pts.se (Digg merges into PTS 2027-01-01; verify who supervises DOS-lagen after that), riksdagen.se (EAA supervision is split across sector authorities, so verify per sector)
    - FI: finlex.fi, traficom.fi (accessibility supervisor since 2025-01-01)
    - NO: lovdata.no, uutilsynet.no, digdir.no
 3. **Update `docs/compliance.md`** if you learn something new. Add a "verified YYYY-MM-DD" note and the source link. If the change affects a rule, update the skill or doc that owns it in the same PR, with the maintainer's approval.
@@ -28,12 +28,12 @@ when_to_use: compliance claim, marketing copy, accessibility statement, tillgän
 
 ## Accessibility statement block, per country
 
-| Country  | Name                                     | Must include (verify)                                                                             | Notes                                             |
-| -------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| SE       | Tillgänglighetsredogörelse               | Conformance status, non-accessible content and reasons, feedback mechanism, how to report to Digg | Follow Digg's template                            |
-| FI       | Saavutettavuusseloste                    | Status, deficiencies, feedback channel, enforcement contact (Traficom), in both fi **and** sv     | Public bodies publish in both national languages  |
-| NO       | Tilgjengelighetserklæring                | Created and published via Digdir's **uustatus.no** tool for covered entities                      | Our block should link to uustatus, not replace it |
-| EU (EAA) | Service information / accessibility info | Description of how the service meets the requirements                                             | Private-sector adopters                           |
+| Country  | Name                                     | Must include (verify)                                                                                                                           | Notes                                             |
+| -------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| SE       | Tillgänglighetsredogörelse               | Conformance status, non-accessible content and reasons, feedback mechanism, how to report to the supervisor (Digg; PTS from 2027-01-01, verify) | Follow the supervisor's template                  |
+| FI       | Saavutettavuusseloste                    | Status, deficiencies, feedback channel, enforcement contact (Traficom), in both fi **and** sv                                                   | Public bodies publish in both national languages  |
+| NO       | Tilgjengelighetserklæring                | Created and published via Digdir's **uustatus.no** tool for covered entities                                                                    | Our block should link to uustatus, not replace it |
+| EU (EAA) | Service information / accessibility info | Description of how the service meets the requirements                                                                                           | Private-sector adopters                           |
 
 The block must never pre-fill the adopter's conformance status. It provides structure and wording, and the adopter supplies the facts.
 

@@ -1,26 +1,25 @@
 'use client'
 import { useEffect } from 'react'
-import type { ComponentPropsWithRef, ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { hasAccessibleName, withoutNameUnlessRegion } from './scroll-area-props.ts'
 import { useScrollArea } from './use-scroll-area.ts'
 import type { ScrollAreaRegion } from './use-scroll-area.ts'
 
-/** What `render` receives as its second argument. */
-export interface ScrollAreaState {
-  isOverflowing: boolean
-  isRegion: boolean
-}
+const scrollAreaTags = ['div', 'section'] as const
 
-export interface ScrollAreaProps extends ComponentPropsWithRef<'div'> {
+interface ScrollAreaOwnProps {
   /** `'overflow'` (default): a named region only while it scrolls. `'always'`: a named region either way. */
   region?: ScrollAreaRegion | undefined
-  render?: RenderProp<ComponentPropsWithRef<'div'>, ScrollAreaState> | undefined
 }
+
+/** `as` is `div` (default) or `section`. It is a `region` while it scrolls either way. */
+export type ScrollAreaProps = AsTag<(typeof scrollAreaTags)[number], 'div', ScrollAreaOwnProps>
 
 /**
  * A `<div>` that scrolls with the browser's own scrollbars. While its content doesn't fit it is a
@@ -36,11 +35,11 @@ export interface ScrollAreaProps extends ComponentPropsWithRef<'div'> {
  */
 export function ScrollArea({
   region,
-  render,
+  as,
   ref: consumerRef,
   ...otherProps
 }: ScrollAreaProps): ReactElement {
-  const { scrollAreaProps, isOverflowing, isRegion, element } = useScrollArea({ region })
+  const { scrollAreaProps, isRegion, element } = useScrollArea({ region })
   const { ref: hookRef, ...hookProps } = scrollAreaProps
   const mergedRef = useMergedRef(consumerRef, hookRef)
   const partProps = withoutNameUnlessRegion(mergeProps(hookProps, otherProps, { ref: mergedRef }))
@@ -57,10 +56,9 @@ export function ScrollArea({
   }, [element, isRegion])
 
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'ScrollArea', as, allowedTags: scrollAreaTags }),
     defaultElement: 'div',
     partProps,
-    state: { isOverflowing, isRegion },
   })
 }
 ScrollArea.displayName = 'ScrollArea'

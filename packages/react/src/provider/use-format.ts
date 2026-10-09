@@ -8,7 +8,7 @@ export type UseFormatResult = MessageFormatter
 /**
  * Formats numbers, dates, lists and plurals the way the nearest provider's `locale` writes them,
  * and instants in its `timeZone`. A `YYYY-MM-DD` string is a calendar date: it is shown on its
- * own day, in any zone. `en` and the runtime's zone without a provider. The object stays the same
+ * own day, in any zone. `en` and UTC without a provider, and a development warning the first time an instant is formatted without a `timeZone`. The object stays the same
  * until the locale or the zone changes, so it is safe in a dependency list.
  *
  * @example

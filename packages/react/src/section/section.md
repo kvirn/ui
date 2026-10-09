@@ -2,11 +2,11 @@
 
 > **Draft** (Plan 0018). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [section.a11y.md](section.a11y.md), and the design spec is [docs/design/section.md](../../../../docs/design/section.md).
 
-A plain container for a region of the page, such as a sidebar or a band of content. It renders a `<div>`. To make it a landmark, render it as a `<section>`, `<aside>` or `<nav>` with a name.
+A plain container for a region of the page, such as a sidebar or a band of content. It renders a `<div>`. To make it a landmark, use `as="section"`, `"aside"` or `"nav"` with a name.
 
 - One part: `Section` (also exported as `SectionRoot`; `Section.Root` still works but is deprecated), one `<div class="kv-section">`. No Header, Body or Footer, no title and no behaviour.
 - No role, no ARIA, no text and no strings. Children are whatever you pass, with their own semantics and focus order.
-- `render` changes the element: `<aside aria-labelledby>`, `<section aria-labelledby>`, `<nav aria-labelledby>` or `<li>`.
+- `as` changes the element: `div` (default), `section`, `aside`, `nav`, `footer`, `header`, `article` or `li`.
 - Headless: no CSS. The part renders its stable class `kv-section`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, it's styled, and you choose with modifier classes: `kv-section--canvas` and `kv-section--padding-sm`.
 - Section is elevation level 1 (a region of the page). A [Card](../card/card.md) is level 2 (an object on the page). This `Section` is not the `Section` part of `Disclosure` or `Tabs`, which belongs to those components.
 
@@ -16,7 +16,7 @@ A plain container for a region of the page, such as a sidebar or a band of conte
 import { Link, Section } from '@kvirn-ui/react'
 
 // A sidebar: a named complementary landmark.
-<Section render={<aside aria-labelledby="kontakt" />} className="kv-section--padding-lg kv-prose">
+<Section as="aside" aria-labelledby="kontakt" className="kv-section--padding-lg kv-prose">
   <h2 id="kontakt">Kontakta oss</h2>
   <p>Vi svarar vardagar 9–16.</p>
   <p><Link.Root href="/kontakt">Mejla kundcenter</Link.Root></p>
@@ -55,14 +55,14 @@ Without a modifier class, a section is `surface`, square, with `md` padding and 
 - **Prose.** A section is not a prose boundary. `kv-prose` on a section makes its content prose, which is fine for a sidebar, and the section keeps its full width (its `max-inline-size: 100%` wins over prose's `70ch`). For a 70ch reading column in a full-width band, put `kv-prose` on an element inside. A section inside prose gets prose's block margins and its content stays prose.
 - **A Card on a Section** keeps its default look.
 
-### `render`
+### `as`
 
 ```tsx
-<Section render={<aside aria-labelledby="kontakt" />}>…</Section>
-<Section render={(sectionProps) => <li {...sectionProps} className={[sectionProps.className, 'nyhet'].join(' ')} />}>…</Section>
+<Section as="aside" aria-labelledby="kontakt">…</Section>
+<Section as="li" className="nyhet">…</Section>
 ```
 
-An element keeps its own props, and the part's are merged in: class names join, styles merge and refs merge. A `className` prop and a `render` element's own `className` join `kv-section` instead of replacing it, so the theme keeps styling the section. The function form gets the props, with a callback ref that fits any element, and an empty state object. Spread them, and keep `className`: it holds the part's class and your own.
+`as` is a string, so it works from a Server Component. A tag outside the list is a type error and, from JS, warns once in development and renders a `<div>`. A `className` prop joins `kv-section` instead of replacing it, so the theme keeps styling the section. For any other element, use `useSection` (below).
 
 ## Hook
 

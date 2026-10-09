@@ -361,11 +361,11 @@ describe('native semantics', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('every part takes `render` and merges its props', async () => {
+  test('every part merges its own class with the consumer’s', async () => {
     const { container } = await render(
       <Table.Root>
         <Table.Caption>Fees</Table.Caption>
-        <Table.Body render={<tbody data-custom="yes" />}>
+        <Table.Body data-custom="yes">
           <Table.Row className="mine">
             <Table.Cell>350 kr</Table.Cell>
           </Table.Row>

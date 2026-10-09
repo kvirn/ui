@@ -205,7 +205,7 @@ Put the table in `Table.ScrollRegion`. A data table that needs two dimensions is
 **Name the region.** While it is a region it needs a name (WCAG 4.1.2). With `table={cases}` and a `Table.Caption` the caption names it. A table with no caption has no name to give it, so name the region yourself, with `aria-labelledby` pointing at a visible heading or with `aria-label`; without a name a development warning says so once the region is one. Name the table the same way, with `aria-labelledby` on `Table.Root`. A caption, or a heading elsewhere in the same document or shadow root, both work.
 
 ```tsx
-<Heading level={2} id="fees-heading">Avgifter</Heading>
+<Heading as="h2" id="fees-heading">Avgifter</Heading>
 <Table.ScrollRegion aria-labelledby="fees-heading">
   <Table.Root aria-labelledby="fees-heading">…</Table.Root>
 </Table.ScrollRegion>
@@ -234,9 +234,9 @@ The component's names and announcements are in the `table` namespace of all six 
 
 `useTable(options)` returns `table` (the TanStack Table instance), the prop objects `tableProps`, `captionProps`, `scrollRegionProps` (follows the `region` option, and has no `role` while the region isn't one), `headProps`, `bodyProps`, `footProps` and `emptyProps`, the getters `getScrollRegionProps(region)` (`scrollRegionProps` for another `region`, which `Table.ScrollRegion`'s own `region` prop uses), `getColumnHeaderProps(header?)`, `getSortButtonProps(header)`, `getRowProps(row)`, `getCellProps(cell)`, `getSelectCheckboxProps(row)`, `getSelectAllCheckboxProps()`, `getExpandButtonProps(row)` and `getDetailRowProps(row)`, and `rows`, `isVirtualized`, `isLoading`, `isEmpty`, `columnCount`, `footRowOffset` (virtualized: the rows before the footer, so a footer row's `aria-rowindex` is this plus its place in the footer), `emptyText`, `loadingText` and `expandButtonText`. Spread each on your own element. See `table.a11y.md` for what each must carry.
 
-## `render`
+## Your own element
 
-Every part takes `render` (an element or a function) to change the element it renders. Class names and handlers merge, and refs are merged. Keep the native element for the table, the rows and the cells: a `render` that swaps them for a `div` removes the table semantics.
+Every part renders its native element and takes your `className`, `ref` and handlers, merged with its own. To use another element, build the table with `useTable` and spread its prop objects on your own elements. Keep the native elements for the table, the rows and the cells: a `div` in their place removes the table semantics. The state a cell or a row has (`aria-sort`, `data-sort`, `data-selected`, `data-expanded`, `data-busy`) is on the element for your styles.
 
 ## Developer warnings
 

@@ -20,7 +20,7 @@ import {
   FieldsetRoot,
   Legend,
 } from './fieldset.tsx'
-import type { FieldsetLegendProps, FieldsetRootProps, FieldsetState } from './fieldset.tsx'
+import type { FieldsetLegendProps, FieldsetRootProps } from './fieldset.tsx'
 import { useFieldset } from './use-fieldset.ts'
 import type {
   FieldsetLegendPartProps,
@@ -126,27 +126,6 @@ describe('rendering', () => {
     await expect.element(page.getByTestId('root')).toHaveClass('egen', 'kv-fieldset')
     await expect.element(page.getByTestId('root')).toHaveAttribute('lang', 'sv')
     expect(legendRef.current?.className).toBe('egen-forklaring kv-fieldset-legend')
-  })
-
-  test('render as a function gets the part’s props and the state', async () => {
-    const seenStates: FieldsetState[] = []
-    await render(
-      <Fieldset.Root
-        invalid
-        required
-        render={(partProps, state) => {
-          seenStates.push(state)
-          return <fieldset {...partProps} data-egen="" />
-        }}
-      >
-        <Fieldset.Legend>Adress</Fieldset.Legend>
-        <Fieldset.ErrorMessage>Ange din adress</Fieldset.ErrorMessage>
-      </Fieldset.Root>,
-    )
-    await expect
-      .element(page.getByRole('group', { name: 'Adress' }))
-      .toHaveAttribute('data-egen', '')
-    expect(seenStates.at(-1)).toEqual({ isInvalid: true, isRequired: true, isDisabled: false })
   })
 
   test('the compound and the named exports are the same parts, each with its own display name', () => {
@@ -557,17 +536,6 @@ describe('dev warnings', () => {
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('3.3.1')
   })
 
-  test('warns when render doesn’t produce a <fieldset>', async () => {
-    await render(
-      <Fieldset.Root render={<div />}>
-        <Fieldset.Legend>Adress</Fieldset.Legend>
-      </Fieldset.Root>,
-    )
-    await expect.element(page.getByText('Adress')).toBeVisible()
-    expect(consoleWarn).toHaveBeenCalledTimes(1)
-    expect(consoleWarn.mock.calls[0]?.[0]).toContain('<fieldset>')
-  })
-
   test('a complete group doesn’t warn', async () => {
     await render(sweden(<ContactGroup invalid />))
     expect(consoleWarn).not.toHaveBeenCalled()
@@ -885,13 +853,12 @@ describe('server rendering', () => {
 })
 
 describe('types', () => {
-  test('Root takes invalid, required, disabled, group, messages and render', () => {
+  test('Root takes invalid, required, disabled, group and messages', () => {
     expectTypeOf<FieldsetRootProps['invalid']>().toEqualTypeOf<boolean | undefined>()
     expectTypeOf<FieldsetRootProps['required']>().toEqualTypeOf<boolean | undefined>()
     expectTypeOf<FieldsetRootProps['disabled']>().toEqualTypeOf<boolean | undefined>()
     expectTypeOf<FieldsetRootProps['group']>().toEqualTypeOf<boolean | undefined>()
     expectTypeOf<FieldsetRootProps>().toHaveProperty('messages')
-    expectTypeOf<FieldsetRootProps>().toHaveProperty('render')
     expectTypeOf<FieldsetLegendProps['marker']>().toEqualTypeOf<'optional' | 'none' | undefined>()
   })
 

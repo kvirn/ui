@@ -1,6 +1,6 @@
 # Plan 0088: ReadAloud (text to speech player and selection reader)
 
-- **Status:** Approved (scope and voice policy answered by the maintainer 2026-10-07)
+- **Status:** Blocked (2026-10-09, maintainer): in-planning, waiting for an npm package update and a re-test; the `::highlight(kv-read-aloud)` CSS was removed from `theme.css`. Was: Approved (scope and voice policy answered by the maintainer 2026-10-07)
 - **Owner:** lead (orchestrator) → component-engineer, ux-designer, accessibility-reviewer
 - **Created:** 2026-10-07 · **Target:** M3 component set
 - **Related:** inspiration [ReadSpeaker webReader](https://www.readspeaker.com/products/webreader/); skills `api-conventions`, `accessibility`, `keyboard`, `testing`, `theme-css`, `overlays-and-lists` (selection popup); `core/announcer`; `@kvirn-ui/testing/read-aloud` is an unrelated test helper (a virtual screen reader), don't confuse the two

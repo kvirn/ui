@@ -1,6 +1,6 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, useState } from 'react'
-import type { ReactNode } from 'react'
+import type { ComponentPropsWithRef, ReactNode } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -10,7 +10,7 @@ import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Listbox } from '../listbox/listbox.tsx'
 import { Popover } from '../popover/popover.tsx'
 import { Toolbar } from './toolbar.tsx'
-import type { ToolbarRootProps, ToolbarState } from './toolbar.tsx'
+import type { ToolbarRootProps } from './toolbar.tsx'
 import { useToolbar } from './use-toolbar.ts'
 import type {
   ToolbarItemPartProps,
@@ -89,9 +89,8 @@ describe('rendering', () => {
       .toHaveAttribute('aria-orientation', 'vertical')
   })
 
-  test('forwards its ref, joins a class, passes props on, and render changes the element', async () => {
+  test('forwards its ref, joins a class, passes props on, and as changes the element', async () => {
     const ref = createRef<HTMLDivElement>()
-    const seenStates: ToolbarState[] = []
     await render(
       <>
         <Toolbar.Root
@@ -105,14 +104,7 @@ describe('rendering', () => {
           <Toolbar.Button>B</Toolbar.Button>
           <Toolbar.Button>C</Toolbar.Button>
         </Toolbar.Root>
-        <Toolbar.Root
-          aria-label="Funktion"
-          orientation="vertical"
-          render={(toolbarProps, state) => {
-            seenStates.push(state)
-            return <section {...toolbarProps} />
-          }}
-        >
+        <Toolbar.Root aria-label="Funktion" orientation="vertical" as="section">
           <Toolbar.Button>D</Toolbar.Button>
           <Toolbar.Button>E</Toolbar.Button>
           <Toolbar.Button>F</Toolbar.Button>
@@ -126,7 +118,8 @@ describe('rendering', () => {
     await expect.element(toolbar).toHaveAttribute('data-egen', '')
     const functionToolbar = page.getByRole('toolbar', { name: 'Funktion' })
     expect(functionToolbar.element().tagName).toBe('SECTION')
-    expect(seenStates.at(-1)).toEqual({ orientation: 'vertical' })
+    await expect.element(functionToolbar).toHaveAttribute('aria-orientation', 'vertical')
+    await expect.element(functionToolbar).toHaveAttribute('role', 'toolbar')
   })
 
   test('Toolbar.Button and Toolbar.Toggle are a Button and a Toggle', async () => {
@@ -407,7 +400,7 @@ describe('keys the item owns', () => {
     await render(
       <TextToolbar>
         <Toolbar.Button>Ångra</Toolbar.Button>
-        <Toolbar.Item render={<input type="text" aria-label="Sök i texten" defaultValue="abc" />} />
+        <Toolbar.Item as="input" type="text" aria-label="Sök i texten" defaultValue="abc" />
         <Toolbar.Button>Fet</Toolbar.Button>
       </TextToolbar>,
     )
@@ -422,7 +415,7 @@ describe('keys the item owns', () => {
     await render(
       <TextToolbar>
         <Toolbar.Button>Ångra</Toolbar.Button>
-        <Toolbar.Item render={<div contentEditable suppressContentEditableWarning />}>
+        <Toolbar.Item as="div" contentEditable suppressContentEditableWarning>
           abc
         </Toolbar.Item>
         <Toolbar.Button>Fet</Toolbar.Button>
@@ -446,7 +439,7 @@ describe('keys the item owns', () => {
           itemToKey={(type) => type}
           native="never"
         >
-          <Toolbar.Item render={<Listbox.Trigger aria-label="Texttyp" />} />
+          <Toolbar.Item as={Listbox.Trigger} aria-label="Texttyp" />
           <Listbox.Popup>
             <Listbox.List>{(type: string) => <Listbox.Option item={type} />}</Listbox.List>
           </Listbox.Popup>
@@ -479,7 +472,7 @@ describe('keys the item owns', () => {
           itemToKey={(type) => type}
           native="never"
         >
-          <Toolbar.Item render={<Listbox.Trigger aria-label="Texttyp" />} />
+          <Toolbar.Item as={Listbox.Trigger} aria-label="Texttyp" />
           <Listbox.Popup>
             <Listbox.List>{(type: string) => <Listbox.Option item={type} />}</Listbox.List>
           </Listbox.Popup>
@@ -511,7 +504,7 @@ describe('keys the item owns', () => {
       <TextToolbar>
         <Toolbar.Button>Ångra</Toolbar.Button>
         <Popover.Root>
-          <Toolbar.Item render={<Popover.Trigger />}>Länk</Toolbar.Item>
+          <Toolbar.Item as={Popover.Trigger}>Länk</Toolbar.Item>
           <Popover.Popup aria-label="Lägg till länk">
             <label>
               Webbadress
@@ -667,7 +660,7 @@ describe('disabled controls', () => {
       <TextToolbar>
         <Toolbar.Button>Ångra</Toolbar.Button>
         <Popover.Root>
-          <Toolbar.Item disabled render={<Popover.Trigger />}>
+          <Toolbar.Item disabled as={Popover.Trigger}>
             Länk
           </Toolbar.Item>
           <Popover.Popup aria-label="Lägg till länk">
@@ -711,7 +704,7 @@ describe('disabled controls', () => {
           native="never"
           disabled
         >
-          <Toolbar.Item render={<Listbox.Trigger aria-label="Texttyp" />} />
+          <Toolbar.Item as={Listbox.Trigger} aria-label="Texttyp" />
           <Listbox.Popup>
             <Listbox.List>{(type: string) => <Listbox.Option item={type} />}</Listbox.List>
           </Listbox.Popup>
@@ -799,7 +792,7 @@ describe('development warnings', () => {
     await render(
       <TextToolbar>
         <Toolbar.Button>Ångra</Toolbar.Button>
-        <Toolbar.Item render={<span />}>Text</Toolbar.Item>
+        <Toolbar.Item as="span">Text</Toolbar.Item>
         <Toolbar.Button>Fet</Toolbar.Button>
       </TextToolbar>,
     )
@@ -810,10 +803,13 @@ describe('development warnings', () => {
   })
 
   test('Toolbar.Item rendering an element that is natively disabled anyway', async () => {
+    function AlwaysDisabledButton(props: ComponentPropsWithRef<'button'>) {
+      return <button {...props} type="button" disabled />
+    }
     await render(
       <TextToolbar>
         <Toolbar.Button>Ångra</Toolbar.Button>
-        <Toolbar.Item render={<button type="button" disabled aria-label="Länk" />}>
+        <Toolbar.Item as={AlwaysDisabledButton} aria-label="Länk">
           Länk
         </Toolbar.Item>
         <Toolbar.Button>Fet</Toolbar.Button>
@@ -835,7 +831,7 @@ describe('development warnings', () => {
           itemToKey={(type) => type}
           native="always"
         >
-          <Toolbar.Item render={<Listbox.Trigger aria-label="Texttyp" />} />
+          <Toolbar.Item as={Listbox.Trigger} aria-label="Texttyp" />
         </Listbox.Root>
         <Toolbar.Button>Fet</Toolbar.Button>
       </TextToolbar>,
@@ -863,7 +859,7 @@ describe('development warnings', () => {
 })
 
 describe('the toolbar element', () => {
-  test('a disabled change is still seen after render swaps the toolbar element', async () => {
+  test('a disabled change is still seen after as swaps the toolbar element', async () => {
     function Swappable() {
       const [isSection, setIsSection] = useState(false)
       const [isDisabled, setIsDisabled] = useState(true)
@@ -875,12 +871,7 @@ describe('the toolbar element', () => {
           <button type="button" onClick={() => setIsDisabled(false)}>
             Aktivera
           </button>
-          <Toolbar.Root
-            aria-label="Redigerare"
-            render={(toolbarProps) =>
-              isSection ? <section {...toolbarProps} /> : <div {...toolbarProps} />
-            }
-          >
+          <Toolbar.Root aria-label="Redigerare" as={isSection ? 'section' : 'div'}>
             <Toolbar.Button disabled={isDisabled} focusableWhenDisabled={false}>
               Ångra
             </Toolbar.Button>
@@ -974,7 +965,6 @@ describe('types', () => {
     >()
     expectTypeOf<UseToolbarOptions['loop']>().toEqualTypeOf<boolean | undefined>()
     expectTypeOf<UseToolbarResult['toolbarProps']>().toEqualTypeOf<ToolbarRootPartProps>()
-    expectTypeOf<ToolbarState>().toEqualTypeOf<{ orientation: 'horizontal' | 'vertical' }>()
     // The role and the orientation attribute come from the hook, never from a prop.
     expectTypeOf<ToolbarRootProps>().not.toHaveProperty('role')
     expectTypeOf<ToolbarRootProps>().not.toHaveProperty('aria-orientation')

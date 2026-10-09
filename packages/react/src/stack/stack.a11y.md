@@ -2,22 +2,30 @@
 
 - **APG pattern:** none. Stack is not a widget, so there is no APG pattern.
 - **Deviations:** none
-- **Native elements used:** `<div>` by default. The consumer picks `<main>`, `<section>`, `<nav>`, `<aside>`, `<ul>` or another element with `render`, and the element's own semantics apply.
+- **Native elements used:** `<div>` by default. The consumer picks another with `as` (allowed elements below), and the element's own semantics apply.
 - **Status:** alpha candidate (Plan 0056). Gates 1–5 pass, accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `stack.test.tsx` next to this file. `stack.stories.tsx` in `apps/storybook/src/components/stack/`.
 
-Stack is its children one below the other with a `space` step between them. It adds no role, no ARIA, no text, no `tabindex` and no behaviour, and it has no `data-*` state. Everything a user perceives comes from the consumer's children, which keep their own semantics and focus order.
+Stack is its children one below the other with a `space` step between them. It adds no ARIA, no text, no `tabindex` and no behaviour, and it has no `data-*` state. As a `ul` or `ol` it adds `role="list"` when it renders a `ul` or `ol`, because WebKit and VoiceOver drop the list role under `list-style: none`. Everything a user perceives comes from the consumer's children, which keep their own semantics and focus order.
 
 ## Roles, states, properties
 
-| Part  | Element / role               | ARIA                                          | Notes                                                                                                                                                        |
-| ----- | ---------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Stack | `<div>` → `generic`          | none. The consumer adds it with the element   | `class="kv-stack"`, with `kv-stack--gap-2`, `-4` or `-8` for `gap` (the default `6` adds none). `render={<ul role="list" />}` with `<li>` children is a list |
-| Stack | `render` (element, function) | the rendered element's own                    | One element. An element keeps its own props, and the part's are merged in: `className` joins, `style` merges, refs merge                                     |
-| Stack | attributes                   | passed through                                | `aria-*`, `id`, `lang` and every other attribute reach the element unchanged                                                                                 |
-| Stack | never                        | no `role`, `tabindex`, `inert`, `aria-hidden` | No handler, no heading, no live region, no text                                                                                                              |
+| Part  | Element / role      | ARIA                                                                   | Notes                                                                                                                                                                                                       |
+| ----- | ------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stack | `<div>` → `generic` | `role="list"` on `ul`/`ol` only                                        | `class="kv-stack"`, with `kv-stack--gap-2`, `-4` or `-8` for `gap` (the default `6` adds none). `as="ul"` or `"ol"` with `<li>` children is a list                                                          |
+| Stack | `as`                | the chosen element's own                                               | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Stack:<tag>`) and renders the default element. `className` joins, `style` and refs pass |
+| Stack | attributes          | passed through                                                         | `aria-*`, `id`, `lang` and every other attribute reach the element unchanged                                                                                                                                |
+| Stack | never               | `role="list"` on `ul`/`ol` only; no `tabindex`, `inert`, `aria-hidden` | No handler, no heading, no live region, no text                                                                                                                                                             |
 
 `useStack()` gives the same frozen props object (only `className`) for your own element.
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part  | `as`                                                 | Why                                                                                                                                                                                                                         |
+| ----- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stack | `div` (default), `ul`, `ol`, `li`, `section`, `form` | `ul` and `ol` with `<li>` children are lists, `li` a list item inside one, `section` with a name a region, `form` a form (name it for a landmark). No `main`, `nav`, `aside`: use Container or Section, which own landmarks |
 
 ## Keyboard
 
@@ -49,8 +57,8 @@ Stack renders no text, so it has no message keys.
 ## Consumer responsibilities
 
 - **Gap.** `'2'`, `'4'`, `'6'` (default) and `'8'` are `space` steps. Group related blocks with a smaller gap and separate sections with a larger one.
-- **Landmarks.** `render={<main />}`, `<nav aria-label>`, `<aside aria-labelledby>` or `<section aria-labelledby>` only for a region a user would want to jump to, always named. A page has one `main`.
-- **A list is `<ul role="list">`.** Without markers WebKit and VoiceOver drop the list role. The repo's lint allows it on a `ul` only (`jsx-a11y/no-redundant-roles`, see the Card contract, Lists), and the stories use it.
+- **Landmarks.** Stack has none to give: a landmark is a `Container` (`main`, `section`) or a `Section` (`nav`, `aside`), always named. A page has one `main`.
+- **A list is `as="ul"` or `"ol"`.** Stack sets `role="list"` itself, because WebKit and VoiceOver drop the list role without markers. Don't write it.
 - **DOM order is the visual order.** Write children in the order they are read and focused (1.3.2, 2.4.3). There is no way to reorder them visually.
 - **Language.** `lang` on any text in another language (3.1.2).
 
@@ -65,7 +73,7 @@ Headless: Stack ships no CSS. With `@kvirn-ui/theme/theme.css` (DESIGN.md, Layou
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships, 4.1.2 Name, Role, Value: no role of its own, so the consumer's element decides (`stack.test.tsx › rendering › adds no role, ARIA, tabindex, inert or data attribute`).
+- 1.3.1 Info and Relationships, 4.1.2 Name, Role, Value: a div has no role, and a `ul` or `ol` has `role="list"` (`stack.test.tsx › rendering › adds role="list" to a ul and an ol, and no role to a div`).
 - 1.3.2 Meaningful Sequence, 2.4.3 Focus Order: DOM order equals reading and focus order (the keyboard rows).
 - 1.4.10 Reflow, 1.4.12 Text Spacing: no fixed sizes or heights (the 320px story).
 

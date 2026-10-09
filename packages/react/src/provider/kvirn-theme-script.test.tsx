@@ -2,12 +2,14 @@ import {
   colorSchemeAttribute,
   contrastAttribute,
   createThemeScriptSource,
+  motionAttribute,
   createThemeStore,
   themeStorageKey,
 } from '@kvirn-ui/core'
 import type {
   ColorSchemePreference,
   ContrastPreference,
+  MotionPreference,
   StoredThemePreference,
   ThemeScriptOptions,
 } from '@kvirn-ui/core'
@@ -18,6 +20,7 @@ import { KvirnThemeScript } from './kvirn-theme-script.tsx'
 
 const colorSchemes: ColorSchemePreference[] = ['light', 'dark', 'system']
 const contrasts: ContrastPreference[] = ['standard', 'more', 'system']
+const motions: MotionPreference[] = ['full', 'reduce', 'system']
 
 const storedPreferences: (StoredThemePreference | undefined)[] = [
   undefined,
@@ -27,26 +30,30 @@ const storedPreferences: (StoredThemePreference | undefined)[] = [
   ),
   ...colorSchemes.map((colorScheme): StoredThemePreference => ({ colorScheme })),
   ...contrasts.map((contrast): StoredThemePreference => ({ contrast })),
+  ...motions.map((motion): StoredThemePreference => ({ motion })),
+  { colorScheme: 'dark', contrast: 'more', motion: 'reduce' },
 ]
 
 const systems = [
-  { colorScheme: 'light', contrast: 'no-preference' },
-  { colorScheme: 'light', contrast: 'more' },
-  { colorScheme: 'dark', contrast: 'no-preference' },
-  { colorScheme: 'dark', contrast: 'more' },
-  { colorScheme: 'dark', contrast: 'less' },
+  { colorScheme: 'light', contrast: 'no-preference', motion: 'no-preference' },
+  { colorScheme: 'light', contrast: 'more', motion: 'reduce' },
+  { colorScheme: 'dark', contrast: 'no-preference', motion: 'reduce' },
+  { colorScheme: 'dark', contrast: 'more', motion: 'no-preference' },
+  { colorScheme: 'dark', contrast: 'less', motion: 'no-preference' },
 ] as const
 
 const optionSets: ThemeScriptOptions[] = [
   {},
   { defaultColorScheme: 'dark', defaultContrast: 'more' },
   { defaultColorScheme: 'light', defaultContrast: 'standard' },
+  { defaultMotion: 'reduce' },
 ]
 
 function runThemeScript(source: string) {
   const root = document.documentElement
   root.removeAttribute(colorSchemeAttribute)
   root.removeAttribute(contrastAttribute)
+  root.removeAttribute(motionAttribute)
   const script = document.createElement('script')
   script.textContent = source
   document.head.append(script)
@@ -54,6 +61,7 @@ function runThemeScript(source: string) {
   return {
     colorScheme: root.getAttribute(colorSchemeAttribute),
     contrast: root.getAttribute(contrastAttribute),
+    motion: root.getAttribute(motionAttribute),
   }
 }
 
@@ -70,6 +78,7 @@ describe('KvirnThemeScript stays in sync with the theme store', () => {
         features: [
           { name: 'prefers-color-scheme', value: system.colorScheme },
           { name: 'prefers-contrast', value: system.contrast },
+          { name: 'prefers-reduced-motion', value: system.motion },
         ],
       })
       for (const options of optionSets) {
@@ -116,7 +125,10 @@ describe('KvirnThemeScript stays in sync with the theme store', () => {
 describe('KvirnThemeScript', () => {
   test('renders an inline script with the CSP nonce and the generated source', () => {
     const html = renderToString(
-      <KvirnThemeScript nonce="r4nd0m" defaultColorScheme="dark" defaultContrast="more" />,
+      <KvirnThemeScript
+        nonce="r4nd0m"
+        theme={{ defaultColorScheme: 'dark', defaultContrast: 'more' }}
+      />,
     )
     const template = document.createElement('template')
     template.innerHTML = html

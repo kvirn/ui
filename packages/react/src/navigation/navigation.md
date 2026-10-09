@@ -12,12 +12,12 @@ A labelled `<nav>` landmark around a list of page links, with the current page m
 
 ## API
 
-| Part               | Renders                              | Props                                                                                                                           |
-| ------------------ | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| `Navigation.Root`  | `<nav class="kv-navigation">`        | `label` (becomes `aria-label`), any `<nav>` attribute such as `aria-labelledby`, `ref`, `render`                                |
-| `Navigation.List`  | `<ul class="kv-navigation-list">`    | any `<ul>` attribute, such as `hidden` for a collapsed group, `ref`, `render`. Inside a `Navigation.Item`, it is the next level |
-| `Navigation.Item`  | `<li class="kv-navigation-item">`    | any `<li>` attribute, `ref`, `render`                                                                                           |
-| `Navigation.Label` | `<span class="kv-navigation-label">` | any `<span>` attribute, `ref`, `render`. Names the `Navigation.List` in the same item (`aria-labelledby`)                       |
+| Part               | Renders                              | Props                                                                                                                                      |
+| ------------------ | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Navigation.Root`  | `<nav class="kv-navigation">`        | `label` (becomes `aria-label`), any `<nav>` attribute such as `aria-labelledby`, `ref`                                                     |
+| `Navigation.List`  | `<ul class="kv-navigation-list">`    | any `<ul>` attribute, such as `hidden` for a collapsed group, `ref`, `as` (`ul` or `ol`). Inside a `Navigation.Item`, it is the next level |
+| `Navigation.Item`  | `<li class="kv-navigation-item">`    | any `<li>` attribute, `ref`                                                                                                                |
+| `Navigation.Label` | `<span class="kv-navigation-label">` | any `<span>` attribute, `ref`, `as` (`span` or `p`). Names the `Navigation.List` in the same item (`aria-labelledby`)                      |
 
 Navigation has no state, so it sets no `data-*` attribute, and it has no message keys. The state of a link (`aria-current`, `data-current`, `data-focus-visible`) is [Link](../link/link.md)'s.
 
@@ -73,14 +73,14 @@ Your part:
   </Navigation.Item>
   ```
 
-- **The element.** `render` changes a part's element, but Root must stay a `<nav>` (or have `role="navigation"`), otherwise the landmark is gone.
+- **The element.** `Navigation.List` takes `as="ol"` and `Navigation.Label` takes `as="p"`; Root and Item have no `as`, because the landmark and the list item are fixed.
 - **Router links.** Links inside are [Link](../link/link.md), so the registered router link renders them, and the new-tab notice and `current` work as everywhere.
 
-### `render`
+### `as`
 
 ```tsx
-<Navigation.Item render={<li className="meny-post" />}>…</Navigation.Item>
-<Navigation.Root label="Huvudmeny" render={(rootProps) => <nav {...rootProps} id="huvudmeny" />}>…</Navigation.Root>
+<Navigation.List as="ol">…</Navigation.List>
+<Navigation.Label as="p">Komponenter</Navigation.Label>
 ```
 
 In a React Server Component, use the named exports `NavigationRoot`, `NavigationList` and `NavigationItem` instead of `Navigation.Root` and so on, because a server component can't dot into a client module.

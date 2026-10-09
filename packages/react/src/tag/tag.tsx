@@ -1,20 +1,11 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { Children, useContext, useEffect, useLayoutEffect } from 'react'
-import type {
-  ButtonHTMLAttributes,
-  HTMLAttributes,
-  ReactElement,
-  ReactNode,
-  Ref,
-  RefCallback,
-} from 'react'
+import { Children, createElement, useContext, useEffect, useLayoutEffect } from 'react'
+import type { ButtonHTMLAttributes, HTMLAttributes, ReactElement, ReactNode, Ref } from 'react'
 import { Button } from '../button/button.tsx'
 import type { ButtonProps } from '../button/button.tsx'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useMessages } from '../provider/use-messages.ts'
 import { TagGroupContext } from './tag-group-context.ts'
 import { removeButtonAttribute, useTagGroup } from './use-tag-group.ts'
@@ -64,36 +55,19 @@ export function TagGroupRoot({
 }
 TagGroupRoot.displayName = 'TagGroup.Root'
 
-/** What a `render` function gets to spread on the label. */
-export interface TagGroupLabelElementProps extends HTMLAttributes<HTMLElement> {
-  ref: RefCallback<HTMLElement>
-}
-
 export interface TagGroupLabelProps extends HTMLAttributes<HTMLElement> {
   ref?: Ref<HTMLElement> | undefined
-  /** Change the element, for example `render={<h3 />}` for a heading. */
-  render?: RenderProp<TagGroupLabelElementProps, Record<string, never>> | undefined
 }
 
 /** The group's name and the default focus fallback after the last tag goes. */
-export function TagGroupLabel({
-  render,
-  className,
-  ref,
-  ...otherProps
-}: TagGroupLabelProps): ReactElement {
+export function TagGroupLabel({ className, ref, ...otherProps }: TagGroupLabelProps): ReactElement {
   const group = useTagGroupContext('TagGroup.Label')
   const mergedRef = useMergedRef(ref, group.labelRef)
-  return renderPart({
-    render,
-    defaultElement: 'span',
-    partProps: {
-      ...otherProps,
-      id: group.labelId,
-      className: joinClass(className, 'kv-tag-group-label'),
-      ref: mergedRef,
-    },
-    state: {},
+  return createElement('span', {
+    ...otherProps,
+    id: group.labelId,
+    className: joinClass(className, 'kv-tag-group-label'),
+    ref: mergedRef,
   })
 }
 TagGroupLabel.displayName = 'TagGroup.Label'

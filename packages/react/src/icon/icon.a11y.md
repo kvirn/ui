@@ -6,7 +6,7 @@
 - **Status:** alpha candidate (Plan 0009). Manual AT is `pending`.
 - **Tests:** `icon.test.tsx` next to this file, and the icon-only rows in `button.test.tsx`. `icon.stories.tsx` in `apps/storybook/src/components/icon/`.
 
-An icon is decorative by default: text next to it already says what it means, so it's hidden from assistive technology. With a `label`, it's an image with that name. Icons come from the built-in set, from the app's registry (`KvirnProvider icons`), from a component reference (`icon`, Plan 0044), or from `render` and children for one-offs. Every route renders the same attributes: hidden unless there is a `label`, and Icon's `aria-hidden` replaces a library's own. The exception is `render` with an element: that element's own explicit `aria-*` and `role` win over Icon's.
+An icon is decorative by default: text next to it already says what it means, so it's hidden from assistive technology. With a `label`, it's an image with that name. Icons come from the built-in set, from the app's registry (`KvirnProvider icons`), from a component reference (`icon`, Plan 0044), or from `as` (your own component) and children for one-offs. Every route renders the same attributes: hidden unless there is a `label`, and Icon's `aria-hidden` replaces a library's own. With `as`, the component gets the props as plain props, and Icon's `aria-hidden`, `role` and `aria-label` win over any of the same name: it must spread them on its `<svg>` and take a `ref`. Icon's own options (`size`, `label`, `color`) do not reach it under their own names. **Allowed elements:** none to list: `as` is a component that draws an `<svg>`.
 
 ## Roles, states, properties
 

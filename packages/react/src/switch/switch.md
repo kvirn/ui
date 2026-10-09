@@ -23,15 +23,14 @@ A Switch is a setting that takes effect at once, with no Save button ("Få medde
 
 Switch is a single part, `<Switch>`. `type` and `role` are fixed. There are no sub-parts: the label, help text and error are the [Field's](../field/field.md).
 
-| Prop              | Type                                            | Meaning                                                                                                                |
-| ----------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `checked`         | `boolean`                                       | Controlled: the state from your logic. Pair it with `onCheckedChange`                                                  |
-| `defaultChecked`  | `boolean`                                       | Uncontrolled: the browser keeps the state, and a form submit sends it                                                  |
-| `value`           | `string`                                        | What a form submit sends when on (`on` by default)                                                                     |
-| `name`            | `string`                                        | The name a form submit uses                                                                                            |
-| `disabled`        | `boolean`                                       | Native `disabled`: skipped by Tab. A disabled Field disables it too. Sets `data-disabled`                              |
-| `onCheckedChange` | `(checked, { reason: 'input', event }) => void` | Called on every change with the new state. It only reports. `onChange` still works too                                 |
-| `render`          | `(props, state) => ReactElement`                | Another element. It must still be an `<input type="checkbox">`. `state` is `isInvalid`, `isDisabled`, `isFocusVisible` |
+| Prop              | Type                                            | Meaning                                                                                   |
+| ----------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `checked`         | `boolean`                                       | Controlled: the state from your logic. Pair it with `onCheckedChange`                     |
+| `defaultChecked`  | `boolean`                                       | Uncontrolled: the browser keeps the state, and a form submit sends it                     |
+| `value`           | `string`                                        | What a form submit sends when on (`on` by default)                                        |
+| `name`            | `string`                                        | The name a form submit uses                                                               |
+| `disabled`        | `boolean`                                       | Native `disabled`: skipped by Tab. A disabled Field disables it too. Sets `data-disabled` |
+| `onCheckedChange` | `(checked, { reason: 'input', event }) => void` | Called on every change with the new state. It only reports. `onChange` still works too    |
 
 | State attribute      | When                                                                                              |
 | -------------------- | ------------------------------------------------------------------------------------------------- |

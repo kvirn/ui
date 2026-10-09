@@ -1,24 +1,15 @@
 'use client'
-import { useContext, useRef } from 'react'
+import { createElement, useContext, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { FieldContext } from '../field/field-context.ts'
 import { joinIds } from '../field/field-state.ts'
 import { useControlWarnings } from '../field/use-control-warnings.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useSwitch } from './use-switch.ts'
 import type { SwitchChangeDetails } from './use-switch.ts'
 
 export type { SwitchChangeDetails, SwitchDataState } from './use-switch.ts'
-
-/** What `render` receives as its second argument. */
-export interface SwitchState {
-  isInvalid: boolean
-  isDisabled: boolean
-  isFocusVisible: boolean
-}
 
 export interface SwitchProps extends Omit<
   ComponentPropsWithRef<'input'>,
@@ -32,7 +23,6 @@ export interface SwitchProps extends Omit<
   value?: string | undefined
   /** Reports each change, with `{ reason: 'input', event }`. `onChange` still works too. */
   onCheckedChange?: ((checked: boolean, details: SwitchChangeDetails) => void) | undefined
-  render?: RenderProp<ComponentPropsWithRef<'input'>, SwitchState> | undefined
 }
 
 /**
@@ -57,7 +47,6 @@ export function Switch({
   onCheckedChange,
   id,
   'aria-describedby': ownDescribedBy,
-  render,
   ref,
   ...otherProps
 }: SwitchProps): ReactElement {
@@ -72,19 +61,10 @@ export function Switch({
   const ownId = field === null ? { id } : {}
   const describedBy = joinIds(inputProps['aria-describedby'], ownDescribedBy)
 
-  return renderPart({
-    render,
-    defaultElement: 'input',
-    partProps: {
-      ...mergeProps(otherProps, ownId, inputProps),
-      'aria-describedby': describedBy,
-      ref: mergedRef,
-    },
-    state: {
-      isInvalid: control.isInvalid,
-      isDisabled: control.isDisabled,
-      isFocusVisible: control.isFocusVisible,
-    },
+  return createElement('input', {
+    ...mergeProps(otherProps, ownId, inputProps),
+    'aria-describedby': describedBy,
+    ref: mergedRef,
   })
 }
 Switch.displayName = 'Switch'

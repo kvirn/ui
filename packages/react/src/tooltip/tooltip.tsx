@@ -1,11 +1,12 @@
 'use client'
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
+import type { ComponentPropsWithRef, ElementType, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart, takeRenderElementProps } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsComponent, AsTag } from '../render/as-prop.ts'
+import { renderPart } from '../render/render-part.ts'
 import { useTooltip } from './use-tooltip.ts'
 import type { UseTooltipOptions, UseTooltipResult } from './use-tooltip.ts'
 
@@ -16,36 +17,29 @@ export type {
   TooltipDescription,
 } from './use-tooltip.ts'
 
-/** What `render` receives as its second argument, for every part. */
-export interface TooltipState {
-  isOpen: boolean
-}
+const nameTags = ['span', 'strong'] as const
+const shortcutTags = ['span', 'small'] as const
 
 /** `description` is left out: the Root works it out from the `Tooltip.Name` and `Tooltip.Shortcut` parts it holds. */
 export interface TooltipRootProps extends Omit<UseTooltipOptions, 'description'> {
   children?: ReactNode
 }
 
-export interface TooltipTriggerProps extends ComponentPropsWithRef<'button'> {
-  /**
-   * The control that the tooltip belongs to: `render={<Toolbar.Toggle aria-label="Fetstil" />}`,
-   * `render={<Button aria-label="Hjälp" />}`. It must be focusable, and have a name of its own. Without `render`
-   * it is a `<button type="button">`. A `aria-describedby` of yours is joined with the tooltip's.
-   */
-  render?: RenderProp<ComponentPropsWithRef<'button'>, TooltipState> | undefined
-}
+/**
+ * `as` is the control that the tooltip belongs to: `as={Button}`, `as={Toolbar.Toggle}`. Its
+ * props are plain props of the trigger (`<Tooltip.Trigger as={Button} aria-label="Hjälp">`). It must
+ * be focusable, spread its props on a DOM node and have a name of its own. Without `as` it is a
+ * `<button type="button">`. A `aria-describedby` of yours is joined with the tooltip's.
+ */
+export type TooltipTriggerProps<Component extends ElementType = 'button'> = AsComponent<Component>
 
-export interface TooltipPopupProps extends ComponentPropsWithRef<'div'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, TooltipState> | undefined
-}
+export type TooltipPopupProps = ComponentPropsWithRef<'div'>
 
-export interface TooltipNameProps extends ComponentPropsWithRef<'span'> {
-  render?: RenderProp<ComponentPropsWithRef<'span'>, TooltipState> | undefined
-}
+/** `as` is `span` (default) or `strong`. */
+export type TooltipNameProps = AsTag<(typeof nameTags)[number], 'span'>
 
-export interface TooltipShortcutProps extends ComponentPropsWithRef<'span'> {
-  render?: RenderProp<ComponentPropsWithRef<'span'>, TooltipState> | undefined
-}
+/** `as` is `span` (default) or `small`. */
+export type TooltipShortcutProps = AsTag<(typeof shortcutTags)[number], 'span'>
 
 type TooltipPart = 'name' | 'shortcut'
 
@@ -81,7 +75,7 @@ function useRegisteredPart(part: TooltipPart, context: TooltipContextValue | nul
  *
  * @example
  * <Tooltip.Root>
- *   <Tooltip.Trigger render={<Toolbar.Toggle aria-label="Fetstil" aria-keyshortcuts="Control+B" />}>
+ *   <Tooltip.Trigger as={Toolbar.Toggle} aria-label="Fetstil" aria-keyshortcuts="Control+B">
  *     <Icon name="bold" />
  *   </Tooltip.Trigger>
  *   <Tooltip.Popup>
@@ -149,26 +143,26 @@ function hasOwnName(element: HTMLElement): boolean {
 /**
  * The control that the tooltip belongs to. It is the anchor the tooltip is placed against. It gets
  * `aria-describedby` (the tooltip, or its shortcut part) and the pointer and focus handlers, and
- * keeps its own name, role and look. Use `render` to make it a `Toolbar.Toggle`, a `Button` or a
+ * keeps its own name, role and look. Use `as` to make it a `Toolbar.Toggle`, a `Button` or a
  * `Toolbar.Item`. **Give it a name of its own** (`aria-label` from your translations for an
  * icon-only control): a tooltip is never the only name, and a development warning says so.
  */
-export function TooltipTrigger({ render, ref, ...otherProps }: TooltipTriggerProps): ReactElement {
+export function TooltipTrigger<Component extends ElementType = 'button'>(
+  props: TooltipTriggerProps<Component>,
+): ReactElement
+export function TooltipTrigger({
+  as,
+  ref,
+  ...otherProps
+}: TooltipTriggerProps<'button'>): ReactElement {
   const context = useContext(TooltipContext)
   const elementRef = useRef<HTMLButtonElement | null>(null)
   const mergedRef = useMergedRef(
     useMergedRef<HTMLButtonElement>(ref, context?.tooltip.triggerProps.ref ?? null),
     elementRef,
   )
-  const { render: renderWithoutDescribedBy, takenProps } = takeRenderElementProps(render, [
-    'aria-describedby',
-  ])
   const triggerProps = context?.tooltip.triggerProps
-  const describedBy = joinTokens(
-    otherProps['aria-describedby'],
-    takenProps['aria-describedby'],
-    triggerProps?.['aria-describedby'],
-  )
+  const describedBy = joinTokens(otherProps['aria-describedby'], triggerProps?.['aria-describedby'])
 
   useEffect(() => {
     if (context === null) {
@@ -186,18 +180,17 @@ export function TooltipTrigger({ render, ref, ...otherProps }: TooltipTriggerPro
   })
 
   return renderPart({
-    render: renderWithoutDescribedBy,
+    as,
     defaultElement: 'button',
     partProps: {
       ...mergeProps(
-        render === undefined ? { type: 'button' as const } : {},
+        as === undefined ? { type: 'button' as const } : {},
         otherProps,
         triggerProps ?? {},
       ),
       'aria-describedby': describedBy,
       ref: mergedRef,
     },
-    state: { isOpen: context?.tooltip.isOpen ?? false },
   })
 }
 TooltipTrigger.displayName = 'Tooltip.Trigger'
@@ -230,7 +223,7 @@ const interactiveSelector = [
  * (hidden from assistive technology, so the name is heard once), and the shortcut in
  * `Tooltip.Shortcut` (the description). Escape hides it, and the pointer can move onto it.
  */
-export function TooltipPopup({ render, ref, ...otherProps }: TooltipPopupProps): ReactElement {
+export function TooltipPopup({ ref, ...otherProps }: TooltipPopupProps): ReactElement {
   const context = useContext(TooltipContext)
   const elementRef = useRef<HTMLDivElement | null>(null)
   const mergedRef = useMergedRef(
@@ -252,13 +245,12 @@ export function TooltipPopup({ render, ref, ...otherProps }: TooltipPopupProps):
     }
   })
   return renderPart({
-    render,
+    as: undefined,
     defaultElement: 'div',
     partProps: {
       ...mergeProps(otherProps, context?.tooltip.popupProps ?? {}),
       ref: mergedRef,
     },
-    state: { isOpen: context?.tooltip.isOpen ?? false },
   })
 }
 TooltipPopup.displayName = 'Tooltip.Popup'
@@ -268,7 +260,7 @@ TooltipPopup.displayName = 'Tooltip.Popup'
  * reader doesn't hear the name twice. Start the tooltip with it, with the same text as the trigger's
  * name (2.5.3). A tooltip with only a name adds no description to the trigger.
  */
-export function TooltipName({ render, ref, ...otherProps }: TooltipNameProps): ReactElement {
+export function TooltipName({ as, ref, ...otherProps }: TooltipNameProps): ReactElement {
   const context = useContext(TooltipContext)
   const mergedRef = useMergedRef<HTMLSpanElement>(ref, null)
   useRegisteredPart('name', context)
@@ -278,13 +270,12 @@ export function TooltipName({ render, ref, ...otherProps }: TooltipNameProps): R
     }
   }, [context])
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'Tooltip.Name', as, allowedTags: nameTags }),
     defaultElement: 'span',
     partProps: {
       ...mergeProps(otherProps, context?.tooltip.nameProps ?? {}),
       ref: mergedRef,
     },
-    state: { isOpen: context?.tooltip.isOpen ?? false },
   })
 }
 TooltipName.displayName = 'Tooltip.Name'
@@ -294,11 +285,7 @@ TooltipName.displayName = 'Tooltip.Name'
  * `aria-describedby`, so a screen reader reads it after the trigger's name ("Fetstil, knapp, Ctrl+B").
  * Put `Kbd` in it for keys.
  */
-export function TooltipShortcut({
-  render,
-  ref,
-  ...otherProps
-}: TooltipShortcutProps): ReactElement {
+export function TooltipShortcut({ as, ref, ...otherProps }: TooltipShortcutProps): ReactElement {
   const context = useContext(TooltipContext)
   const mergedRef = useMergedRef<HTMLSpanElement>(ref, null)
   useRegisteredPart('shortcut', context)
@@ -308,13 +295,12 @@ export function TooltipShortcut({
     }
   }, [context])
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'Tooltip.Shortcut', as, allowedTags: shortcutTags }),
     defaultElement: 'span',
     partProps: {
       ...mergeProps(otherProps, context?.tooltip.shortcutProps ?? {}),
       ref: mergedRef,
     },
-    state: { isOpen: context?.tooltip.isOpen ?? false },
   })
 }
 TooltipShortcut.displayName = 'Tooltip.Shortcut'

@@ -29,21 +29,21 @@ import { SummaryList } from '@kvirn-ui/react'
 </SummaryList.Root>
 ```
 
-| Part                  | Renders                                      | Props                                                                                                  |
-| --------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `SummaryList.Root`    | `<dl class="kv-summary-list">`               | `render`, `ref`, any `<dl>` attribute                                                                  |
-| `SummaryList.Row`     | `<div class="kv-summary-list-row">`          | `render`, `ref`                                                                                        |
-| `SummaryList.Key`     | `<dt class="kv-summary-list-key">`           | `render`, `ref`. Its `id` comes from the Row                                                           |
-| `SummaryList.Value`   | `<dd class="kv-summary-list-value">`         | `render`, `ref`                                                                                        |
-| `SummaryList.Actions` | `<dd class="kv-summary-list-actions">`       | `render`, `ref`. Holds one or more links                                                               |
-| `SummaryList.Change`  | `<a class="kv-link kv-summary-list-change">` | `href`, `messages` (`{ change }`), `children` (replace the text), `render`, `ref`, any `<a>` attribute |
+| Part                  | Renders                                      | Props                                                                                        |
+| --------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `SummaryList.Root`    | `<dl class="kv-summary-list">`               | `ref`, any `<dl>` attribute                                                                  |
+| `SummaryList.Row`     | `<div class="kv-summary-list-row">`          | `ref`                                                                                        |
+| `SummaryList.Key`     | `<dt class="kv-summary-list-key">`           | `ref`. Its `id` comes from the Row                                                           |
+| `SummaryList.Value`   | `<dd class="kv-summary-list-value">`         | `ref`                                                                                        |
+| `SummaryList.Actions` | `<dd class="kv-summary-list-actions">`       | `ref`. Holds one or more links                                                               |
+| `SummaryList.Change`  | `<a class="kv-link kv-summary-list-change">` | `href`, `messages` (`{ change }`), `children` (replace the text), `ref`, any `<a>` attribute |
 
 Your part:
 
 - **Give every row a Key.** The Change link's name is built from it. Outside a Row, Change warns once in development (`summary-list-change-outside-row`).
 - **Say what is missing** ("Ej angivet") rather than leaving an empty value.
 - **A Change link goes to the step where the answer is edited,** by URL, so Back and sharing work. Don't use `history.back()`.
-- **Use `render` for a router link:** `<SummaryList.Change render={<RouterLink to="/steg/1" />} />`.
+- **No `as`.** The `<dl>`, `<div>`, `<dt>` and `<dd>` are the structure (1.3.1), and Change is an `<a href>`. For a router link, use `useSummaryList().getChangeProps` with your own link.
 - **Don't put form controls in a row.** To show a value and let it be edited in place, use a Field.
 
 ## Hook

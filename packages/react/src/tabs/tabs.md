@@ -17,12 +17,12 @@ Tabs show one panel of content at a time, with a list of tabs to switch between 
 
 ### Parts
 
-| Part       | Renders                             | Props                                                                                                                                                   |
-| ---------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Tabs.Root  | `<div class="kv-tabs">`             | `value` or `defaultValue` (one is required), `onValueChange`, `activationMode`, `orientation`, `render`, and every `<div>` prop                         |
-| Tabs.List  | `<div role="tablist">`              | `render`, and every `<div>` prop except `role` and `aria-orientation`. Name it with `aria-label` or `aria-labelledby`                                   |
-| Tabs.Tab   | `<button type="button" role="tab">` | `value` (required), `disabled`, `onClick`, `render`, and every `<button>` prop except `id`, `type`, `role` and the ARIA state                           |
-| Tabs.Panel | `<div role="tabpanel">`             | `value` (required), `render`, and every `<div>` prop except `id`, `role`, `aria-labelledby` and `hidden`. A `tabIndex` you pass wins over the default 0 |
+| Part       | Renders                             | Props                                                                                                                                         |
+| ---------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tabs.Root  | `<div class="kv-tabs">`             | `value` or `defaultValue` (one is required), `onValueChange`, `activationMode`, `orientation`, and every `<div>` prop                         |
+| Tabs.List  | `<div role="tablist">`              | every `<div>` prop except `role` and `aria-orientation`. Name it with `aria-label` or `aria-labelledby`                                       |
+| Tabs.Tab   | `<button type="button" role="tab">` | `value` (required), `disabled`, `onClick`, and every `<button>` prop except `id`, `type`, `role` and the ARIA state                           |
+| Tabs.Panel | `<div role="tabpanel">`             | `value` (required), and every `<div>` prop except `id`, `role`, `aria-labelledby` and `hidden`. A `tabIndex` you pass wins over the default 0 |
 
 Each part is also exported on its own (`TabsRoot`, `TabsList`, `TabsTab`, `TabsPanel`), and the hook is `useTabs`. Every part takes `ref`, `className` and any handler: they merge with its own, and a class joins `kv-tabs-*`.
 
@@ -56,13 +56,13 @@ The theme styles `[aria-selected='true']`, `[aria-disabled='true']` and `[data-o
 
 Tabs have no strings of their own and announce nothing. Every name is yours, from your translations: the list's, each tab's and, through it, each panel's.
 
-### `render`
+### Your own element
 
-Every part takes an element or a function `(partProps, state)`. Spread the props: they hold the role, the class, the ids and the keys. An `id`, `role` or `tabIndex` on your own element wins over them and breaks the tab-to-panel link or the single Tab stop: leave those to the part. `state` is `{ value, orientation, activationMode }` for `Tabs.Root` and `Tabs.List`, `{ isSelected, isDisabled }` for `Tabs.Tab` and `{ isSelected }` for `Tabs.Panel`. A `Tabs.Tab` must still render a `<button>` and forward its ref: a tab's keys and its disabled state come from it, and a dev warning fires otherwise. A render element's own `onClick` is gated like the tab's, and its own plain props win, except the ones the tabs must control (`tabindex`, the roles and the ids).
+The parts render fixed elements. To build your own, use `useTabs()` and spread `rootProps`, `listProps`, `getTabProps(value)` and `getPanelProps(value)` (see Hook below). Leave the `id`, `role` and `tabIndex` to the hook: they hold the tab-to-panel link and the single Tab stop.
 
 ### Development warnings
 
-Keyed `tabs-*`, English, for the developer only: a `Tabs.List`, `Tab` or `Panel` outside a `Tabs.Root` (`tabs-<part>-outside-root`), a `Tabs.Tab` that renders something other than a `<button>` (`tabs-tab-not-a-button:<element>`), a `value` or `defaultValue` that no tab has (`tabs-value-without-tab:<value>`) and a tab with no panel, or a panel with no tab (`tabs-unpaired:<value>`).
+Keyed `tabs-*`, English, for the developer only: a `Tabs.List`, `Tab` or `Panel` outside a `Tabs.Root` (`tabs-<part>-outside-root`), a `value` or `defaultValue` that no tab has (`tabs-value-without-tab:<value>`) and a tab with no panel, or a panel with no tab (`tabs-unpaired:<value>`).
 
 ## Component
 

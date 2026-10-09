@@ -1,25 +1,15 @@
 'use client'
-import { useContext, useRef } from 'react'
+import { createElement, useContext, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { FieldContext } from '../field/field-context.ts'
 import { joinIds } from '../field/field-state.ts'
 import { useControlWarnings } from '../field/use-control-warnings.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useSlider } from './use-slider.ts'
 import type { SliderChangeDetails } from './use-slider.ts'
 
 export type { SliderChangeDetails } from './use-slider.ts'
-
-/** What `render` receives as its second argument. */
-export interface SliderState {
-  isInvalid: boolean
-  isDisabled: boolean
-  isFocusVisible: boolean
-  value: number
-}
 
 export interface SliderProps extends Omit<
   ComponentPropsWithRef<'input'>,
@@ -39,7 +29,6 @@ export interface SliderProps extends Omit<
   onValueChange?: ((value: number, details: SliderChangeDetails) => void) | undefined
   /** The value as a screen reader speaks it, with its unit: `(km) => \`${km} km\``. */
   valueText?: ((value: number) => string) | undefined
-  render?: RenderProp<ComponentPropsWithRef<'input'>, SliderState> | undefined
 }
 
 /**
@@ -67,7 +56,6 @@ export function Slider({
   id,
   'aria-describedby': ownDescribedBy,
   'aria-labelledby': ariaLabelledBy,
-  render,
   ref,
   ...otherProps
 }: SliderProps): ReactElement {
@@ -98,20 +86,10 @@ export function Slider({
   const ownId = field === null || ariaLabelledBy !== undefined ? { id } : {}
   const describedBy = joinIds(inputProps['aria-describedby'], ownDescribedBy)
 
-  return renderPart({
-    render,
-    defaultElement: 'input',
-    partProps: {
-      ...mergeProps(otherProps, ownId, inputProps),
-      'aria-describedby': describedBy,
-      ref: mergedRef,
-    },
-    state: {
-      isInvalid: control.isInvalid,
-      isDisabled: control.isDisabled,
-      isFocusVisible: control.isFocusVisible,
-      value: control.value,
-    },
+  return createElement('input', {
+    ...mergeProps(otherProps, ownId, inputProps),
+    'aria-describedby': describedBy,
+    ref: mergedRef,
   })
 }
 Slider.displayName = 'Slider'

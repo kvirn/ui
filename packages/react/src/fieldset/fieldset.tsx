@@ -1,6 +1,6 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { createContext, useContext, useEffect, useMemo, useRef } from 'react'
+import { createContext, createElement, useContext, useEffect, useMemo } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import {
@@ -18,14 +18,9 @@ import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { ProseRoot } from '../prose/prose.tsx'
 import type { ProseRootProps } from '../prose/prose.tsx'
 import { useMessages } from '../provider/use-messages.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { joinIds } from '../field/field-state.ts'
 import { useFieldset } from './use-fieldset.ts'
 import type { FieldsetLegendPartProps } from './use-fieldset.ts'
-
-/** What `render` receives as its second argument, for every Fieldset part. */
-export type FieldsetState = FieldState
 
 export interface FieldsetRootProps extends ComponentPropsWithRef<'fieldset'> {
   /** `data-invalid` on the fieldset's parts, and its ErrorMessage renders. Not cascaded. */
@@ -41,25 +36,21 @@ export interface FieldsetRootProps extends ComponentPropsWithRef<'fieldset'> {
   group?: boolean | undefined
   /** Per-instance message overrides for the legend's optional text and the error prefix. */
   messages?: Partial<KvirnMessages['field']> | undefined
-  render?: RenderProp<ComponentPropsWithRef<'fieldset'>, FieldsetState> | undefined
 }
 
 export interface FieldsetLegendProps extends ComponentPropsWithRef<'legend'> {
   /** `'optional'` or `'none'`. Default: `'optional'` in a group that isn't required. */
   marker?: FieldMarker | undefined
-  render?: RenderProp<ComponentPropsWithRef<'legend'>, FieldsetState> | undefined
 }
 
 interface FieldsetContextValue {
   legendProps: FieldsetLegendPartProps
-  state: FieldsetState
+  state: FieldState
   marker: FieldMarker
   messages: Partial<KvirnMessages['field']> | undefined
 }
 
 const FieldsetContext = createContext<FieldsetContextValue | null>(null)
-
-const noState: FieldsetState = { isInvalid: false, isRequired: false, isDisabled: false }
 
 /**
  * A native `<fieldset>` that groups questions, or the controls of one question, under its
@@ -85,7 +76,6 @@ export function FieldsetRoot({
   messages,
   id,
   'aria-describedby': ownDescribedBy,
-  render,
   ref,
   ...otherProps
 }: FieldsetRootProps): ReactElement {
@@ -100,24 +90,11 @@ export function FieldsetRoot({
     hasErrorMessage: registry.hasErrorMessage,
     messages,
   })
-  const elementRef = useRef<HTMLFieldSetElement | null>(null)
-  const mergedRef = useMergedRef(ref, elementRef)
-  const state = useMemo<FieldsetState>(
+  const mergedRef = useMergedRef(ref, null)
+  const state = useMemo<FieldState>(
     () => ({ isInvalid: invalid, isRequired: required, isDisabled: disabled }),
     [invalid, required, disabled],
   )
-
-  useEffect(() => {
-    const element = elementRef.current
-    if (element === null || element.tagName !== 'FIELDSET') {
-      const rendered =
-        element === null ? 'nothing it could reference' : `<${element.tagName.toLowerCase()}>`
-      warnOnce(
-        `fieldset-not-a-fieldset:${rendered}`,
-        `<Fieldset.Root render> must render a <fieldset> and forward its ref, but it rendered ${rendered}. The group's name comes from the native <legend>, and disabled from the native fieldset.`,
-      )
-    }
-  })
 
   const textHost = useMemo<FieldTextHostContextValue>(
     () => ({
@@ -150,15 +127,10 @@ export function FieldsetRoot({
       <FieldsetContext.Provider value={fieldsetContext}>
         <FieldGroupContext.Provider value={group}>
           <FieldContext.Provider value={null}>
-            {renderPart({
-              render,
-              defaultElement: 'fieldset',
-              partProps: {
-                ...mergeProps(otherProps, fieldset.fieldsetProps),
-                'aria-describedby': describedBy,
-                ref: mergedRef,
-              },
-              state,
+            {createElement('fieldset', {
+              ...mergeProps(otherProps, fieldset.fieldsetProps),
+              'aria-describedby': describedBy,
+              ref: mergedRef,
             })}
           </FieldContext.Provider>
         </FieldGroupContext.Provider>
@@ -175,7 +147,6 @@ FieldsetRoot.displayName = 'Fieldset.Root'
 export function FieldsetLegend({
   marker,
   children,
-  render,
   ref,
   ...otherProps
 }: FieldsetLegendProps): ReactElement {
@@ -198,21 +169,12 @@ export function FieldsetLegend({
     !isRequired && resolvedMarker === 'optional' ? fieldMessages.optional : undefined
   const partProps = fieldset === null ? { className: 'kv-fieldset-legend' } : fieldset.legendProps
 
-  return renderPart({
-    render,
-    defaultElement: 'legend',
-    partProps: {
-      ...mergeProps(otherProps, partProps),
-      ref: mergedRef,
-      children: (
-        <>
-          {children}
-          <OptionalMarker text={optionalText} />
-        </>
-      ),
-    },
-    state: fieldset?.state ?? noState,
-  })
+  return (
+    <legend {...mergeProps(otherProps, partProps)} ref={mergedRef}>
+      {children}
+      <OptionalMarker text={optionalText} />
+    </legend>
+  )
 }
 FieldsetLegend.displayName = 'Fieldset.Legend'
 

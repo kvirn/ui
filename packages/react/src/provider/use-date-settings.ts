@@ -4,8 +4,8 @@ import { useContext, useMemo } from 'react'
 import { KvirnConfigContext } from './provider-context.ts'
 
 export interface UseDateSettingsResult {
-  /** IANA time zone. `undefined` means the runtime's zone; set it explicitly for SSR. */
-  timeZone: string | undefined
+  /** IANA time zone: the provider's, else `UTC` (never the runtime's, so the server and the browser agree). */
+  timeZone: string
   /**
    * The first day of the week, `1` (Monday) to `7` (Sunday): the provider's `weekStart`, else the
    * locale's when it names a region (`en-US` is `7`), else `1`. A Calendar's own `weekStart` wins.
@@ -16,7 +16,10 @@ export interface UseDateSettingsResult {
 export function useDateSettings(): UseDateSettingsResult {
   const { timeZone, weekStart: providerWeekStart, locale } = useContext(KvirnConfigContext)
   return useMemo(
-    () => ({ timeZone, weekStart: resolveWeekStart({ provider: providerWeekStart, locale }) }),
+    () => ({
+      timeZone: timeZone ?? 'UTC',
+      weekStart: resolveWeekStart({ provider: providerWeekStart, locale }),
+    }),
     [timeZone, providerWeekStart, locale],
   )
 }

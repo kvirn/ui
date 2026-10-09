@@ -2,11 +2,9 @@
 import { getCharacterCount } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { CharacterCount, mergeProps } from '@kvirn-ui/react'
-import type { RenderProp } from '@kvirn-ui/react'
 import {
   FieldContext,
   joinIds,
-  renderPart,
   useQuietAnnouncer,
   warnAnnouncerMissing,
   warnOnce,
@@ -44,8 +42,6 @@ import type {
 import { useRichTextEditor } from './use-rich-text-editor.ts'
 import type { UseRichTextEditorOptions } from './use-rich-text-editor.ts'
 
-export type { RichTextEditorState } from './rich-text-editor-context.ts'
-
 export interface RichTextEditorRootProps<Format extends RichTextFormat = 'html'>
   extends
     Omit<ComponentPropsWithRef<'div'>, 'defaultValue' | 'onChange' | 'children'>,
@@ -69,7 +65,6 @@ export interface RichTextEditorRootProps<Format extends RichTextFormat = 'html'>
   countMessages?: Partial<KvirnMessages['characterCount']> | undefined
   /** The parts inside the box: `Content`, and the toolbar. */
   children?: ReactNode
-  render?: RenderProp<ComponentPropsWithRef<'div'>, RichTextEditorState> | undefined
 }
 
 const noNaming: RichTextContentNaming = {}
@@ -111,7 +106,6 @@ export function RichTextEditorRoot<Format extends RichTextFormat = 'html'>({
   labels = 'icon',
   tooltips = true,
   children,
-  render,
   ref,
   ...otherProps
 }: RichTextEditorRootProps<Format>): ReactElement {
@@ -286,12 +280,7 @@ export function RichTextEditorRoot<Format extends RichTextFormat = 'html'>({
     ],
   )
 
-  const box = renderPart({
-    render,
-    defaultElement: 'div',
-    partProps: { ...mergeProps(otherProps, { ref }, richText.rootProps), children },
-    state,
-  })
+  const box = <div {...mergeProps(otherProps, { ref }, richText.rootProps)}>{children}</div>
   return (
     <RichTextEditorContext value={context}>
       {box}

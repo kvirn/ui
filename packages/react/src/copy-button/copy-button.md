@@ -9,7 +9,7 @@ A [Button](../button/button.md) that writes a text to the clipboard: a case or p
 - `children` replace the label. With more than one CopyButton on a page, name what each copies ("Copy reference number") and keep the visible words in the name (2.5.3).
 - The result is also drawn after the button in `span.kv-copy-status`: a decorative `check` or `warning` icon and the words `copyButton.copied` or `copyButton.failed`. It is not a live region (the announcement already speaks it). `copied` clears after five seconds or on the next press; `failed` stays until the next press. `status={false}` renders none, so you can draw your own.
 - `data-status` is `idle`, `copied` or `failed`, for your own cue.
-- `disabled`, `focusableWhenDisabled`, `render` and `ref` work as on Button. `onCopied(text)` and `onCopyError(text)` report the result.
+- `disabled`, `focusableWhenDisabled` and `ref` work as on Button. `onCopied(text)` and `onCopyError(text)` report the result.
 - Headless: no CSS. With `@kvirn-ui/theme/theme.css` it is a `kv-button`.
 - Copying needs a secure context and a user activation. A server render shows the label and does nothing else.
 

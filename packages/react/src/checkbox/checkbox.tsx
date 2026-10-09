@@ -1,26 +1,15 @@
 'use client'
-import { useContext, useRef } from 'react'
+import { createElement, useContext, useRef } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { FieldContext } from '../field/field-context.ts'
 import { joinIds } from '../field/field-state.ts'
 import { useControlWarnings } from '../field/use-control-warnings.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useCheckbox } from './use-checkbox.ts'
 import type { CheckboxChangeDetails } from './use-checkbox.ts'
 
 export type { CheckboxChangeDetails, CheckboxDataState } from './use-checkbox.ts'
-
-/** What `render` receives as its second argument. */
-export interface CheckboxState {
-  isInvalid: boolean
-  isRequired: boolean
-  isDisabled: boolean
-  isFocusVisible: boolean
-  isIndeterminate: boolean
-}
 
 export interface CheckboxProps extends Omit<
   ComponentPropsWithRef<'input'>,
@@ -39,7 +28,6 @@ export interface CheckboxProps extends Omit<
   value?: string | undefined
   /** Reports each change, with `{ reason: 'input', event }`. `onChange` still works too. */
   onCheckedChange?: ((checked: boolean, details: CheckboxChangeDetails) => void) | undefined
-  render?: RenderProp<ComponentPropsWithRef<'input'>, CheckboxState> | undefined
 }
 
 /**
@@ -65,7 +53,6 @@ export function Checkbox({
   onCheckedChange,
   id,
   'aria-describedby': ownDescribedBy,
-  render,
   ref,
   ...otherProps
 }: CheckboxProps): ReactElement {
@@ -88,21 +75,10 @@ export function Checkbox({
   const ownId = field === null ? { id } : {}
   const describedBy = joinIds(inputProps['aria-describedby'], ownDescribedBy)
 
-  return renderPart({
-    render,
-    defaultElement: 'input',
-    partProps: {
-      ...mergeProps(otherProps, ownId, inputProps),
-      'aria-describedby': describedBy,
-      ref: mergedRef,
-    },
-    state: {
-      isInvalid: checkbox.isInvalid,
-      isRequired: checkbox.isRequired,
-      isDisabled: checkbox.isDisabled,
-      isFocusVisible: checkbox.isFocusVisible,
-      isIndeterminate: checkbox.isIndeterminate,
-    },
+  return createElement('input', {
+    ...mergeProps(otherProps, ownId, inputProps),
+    'aria-describedby': describedBy,
+    ref: mergedRef,
   })
 }
 Checkbox.displayName = 'Checkbox'

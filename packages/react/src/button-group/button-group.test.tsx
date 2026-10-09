@@ -10,7 +10,7 @@ import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { Toolbar } from '../toolbar/toolbar.tsx'
 import { ButtonGroup } from './button-group.tsx'
-import type { ButtonGroupProps, ButtonGroupState } from './button-group.tsx'
+import type { ButtonGroupProps } from './button-group.tsx'
 import { useButtonGroup } from './use-button-group.ts'
 import type {
   ButtonGroupLayout,
@@ -88,33 +88,6 @@ describe('part class and props', () => {
     await expect.element(group).toHaveAttribute('id', 'atgarder')
     expect(ref.current).toBe(group.element())
   })
-
-  test('render takes an element, or a function that gets the part props and the state', async () => {
-    const seenStates: ButtonGroupState[] = []
-    await render(
-      <>
-        <ButtonGroup aria-label="Element" render={<section />}>
-          <Button>A</Button>
-        </ButtonGroup>
-        <ButtonGroup
-          aria-label="Funktion"
-          render={(groupProps, state) => {
-            seenStates.push(state)
-            return <div {...groupProps} data-egen="" />
-          }}
-        >
-          <Button>B</Button>
-        </ButtonGroup>
-      </>,
-    )
-    const elementGroup = page.getByRole('group', { name: 'Element' })
-    expect(elementGroup.element().tagName).toBe('SECTION')
-    await expect.element(elementGroup).toHaveClass('kv-button-group')
-    await expect
-      .element(page.getByRole('group', { name: 'Funktion' }))
-      .toHaveAttribute('data-egen', '')
-    expect(seenStates.at(-1)).toEqual({ isNamed: true, layout: 'spaced' })
-  })
 })
 
 describe('layout', () => {
@@ -152,23 +125,6 @@ describe('layout', () => {
     )
     await expect.element(page.getByTestId('strip')).not.toHaveAttribute('role')
     expect(page.getByRole('group').elements()).toHaveLength(0)
-  })
-
-  test('render gets the layout in its state', async () => {
-    const seenStates: ButtonGroupState[] = []
-    await render(
-      <ButtonGroup
-        aria-label="Textstil"
-        layout="attached"
-        render={(groupProps, state) => {
-          seenStates.push(state)
-          return <div {...groupProps} />
-        }}
-      >
-        <Button>Fet</Button>
-      </ButtonGroup>,
-    )
-    expect(seenStates.at(-1)).toEqual({ isNamed: true, layout: 'attached' })
   })
 })
 
@@ -319,10 +275,6 @@ describe('types', () => {
     expectTypeOf<ButtonGroupLayout>().toEqualTypeOf<'spaced' | 'attached'>()
     expectTypeOf<ButtonGroupPartProps['role']>().toEqualTypeOf<'group' | undefined>()
     expectTypeOf<UseButtonGroupResult['groupProps']>().toEqualTypeOf<ButtonGroupPartProps>()
-    expectTypeOf<ButtonGroupState>().toEqualTypeOf<{
-      isNamed: boolean
-      layout: ButtonGroupLayout
-    }>()
     // The role comes from the name, never from a prop.
     expectTypeOf<ButtonGroupProps>().not.toHaveProperty('role')
   })

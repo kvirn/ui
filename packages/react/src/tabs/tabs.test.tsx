@@ -7,15 +7,7 @@ import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Tabs } from './tabs.tsx'
-import type {
-  TabsListProps,
-  TabsPanelProps,
-  TabsPanelState,
-  TabsRootProps,
-  TabsState,
-  TabsTabProps,
-  TabsTabState,
-} from './tabs.tsx'
+import type { TabsListProps, TabsPanelProps, TabsRootProps, TabsTabProps } from './tabs.tsx'
 import { useTabs } from './use-tabs.ts'
 import type {
   TabsActivationMode,
@@ -242,76 +234,35 @@ describe('rendering', () => {
     await expect.element(page.getByRole('tabpanel')).toHaveClass('kv-tabs-panel', 'egen-panel')
   })
 
-  test('forwards refs, passes props on, and render changes the element', async () => {
+  test('forwards refs and passes props on', async () => {
     const rootRef = createRef<HTMLDivElement>()
     const listRef = createRef<HTMLDivElement>()
     const tabRef = createRef<HTMLButtonElement>()
     const panelRef = createRef<HTMLDivElement>()
-    const rootStates: TabsState[] = []
-    const tabStates: TabsTabState[] = []
-    const panelStates: TabsPanelState[] = []
     await render(
-      <Tabs.Root
-        ref={rootRef}
-        defaultValue="a"
-        orientation="vertical"
-        activationMode="manual"
-        render={(rootProps, state) => {
-          rootStates.push(state)
-          return <section {...rootProps} />
-        }}
-      >
+      <Tabs.Root ref={rootRef} defaultValue="a" orientation="vertical" activationMode="manual">
         <Tabs.List ref={listRef} aria-label="Test" data-egen="lista">
-          <Tabs.Tab
-            ref={tabRef}
-            value="a"
-            render={(tabProps, state) => {
-              tabStates.push(state)
-              return <button {...tabProps} />
-            }}
-          >
+          <Tabs.Tab ref={tabRef} value="a">
             A
           </Tabs.Tab>
-          <Tabs.Tab
-            value="b"
-            render={
-              <button type="button" data-egen="flik">
-                B
-              </button>
-            }
-          >
+          <Tabs.Tab value="b" data-egen="flik">
             B
           </Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel
-          ref={panelRef}
-          value="a"
-          render={(panelProps, state) => {
-            panelStates.push(state)
-            return <section {...panelProps} />
-          }}
-        >
+        <Tabs.Panel ref={panelRef} value="a">
           Panel A
         </Tabs.Panel>
         <Tabs.Panel value="b">Panel B</Tabs.Panel>
       </Tabs.Root>,
     )
-    expect(rootRef.current?.tagName).toBe('SECTION')
     expect(rootRef.current?.classList.contains('kv-tabs')).toBe(true)
-    expect(rootStates.at(-1)).toEqual({
-      value: 'a',
-      orientation: 'vertical',
-      activationMode: 'manual',
-    })
+    expect(rootRef.current?.getAttribute('data-orientation')).toBe('vertical')
     expect(listRef.current).toBe(page.getByRole('tablist').element())
     await expect.element(page.getByRole('tablist')).toHaveAttribute('data-egen', 'lista')
     expect(tabRef.current).toBe(tab('A').element())
-    expect(tabStates.at(-1)).toEqual({ isSelected: true, isDisabled: false })
     await expect.element(tab('B')).toHaveAttribute('data-egen', 'flik')
     await expect.element(tab('B')).toHaveAttribute('role', 'tab')
     expect(panelRef.current).toBe(page.getByRole('tabpanel').element())
-    expect(panelRef.current?.tagName).toBe('SECTION')
-    expect(panelStates.at(-1)).toEqual({ isSelected: true })
   })
 
   test('a panel has tabindex 0 by default, and a tabIndex the consumer passes wins', async () => {
@@ -326,7 +277,7 @@ describe('rendering', () => {
           <a href="#kontakt">Kontakt</a>
         </Tabs.Panel>
         <Tabs.Panel value="b">Panel B</Tabs.Panel>
-        <Tabs.Panel value="c" render={<section tabIndex={-1} />}>
+        <Tabs.Panel value="c" tabIndex={-1}>
           Panel C
         </Tabs.Panel>
       </Tabs.Root>,
@@ -719,7 +670,6 @@ describe('keys the tabs leave alone', () => {
 describe('disabled tabs', () => {
   test('a disabled tab is aria-disabled and not natively disabled, and a click selects nothing and calls nothing', async () => {
     const onClick = vi.fn<() => void>()
-    const onElementClick = vi.fn<() => void>()
     const onValueChange = vi.fn<(value: string, details: TabsChangeDetails) => void>()
     await render(
       <Tabs.Root defaultValue="a" onValueChange={onValueChange}>
@@ -730,15 +680,7 @@ describe('disabled tabs', () => {
           <Tabs.Tab value="b" disabled onClick={onClick} style={fixtureTabStyle}>
             B
           </Tabs.Tab>
-          <Tabs.Tab
-            value="c"
-            disabled
-            render={
-              <button type="button" onClick={onElementClick} style={fixtureTabStyle}>
-                C
-              </button>
-            }
-          >
+          <Tabs.Tab value="c" disabled onClick={onClick} style={fixtureTabStyle}>
             C
           </Tabs.Tab>
         </Tabs.List>
@@ -756,28 +698,17 @@ describe('disabled tabs', () => {
       await expect.element(tab(name)).toHaveFocus()
     }
     expect(onClick).not.toHaveBeenCalled()
-    expect(onElementClick).not.toHaveBeenCalled()
     expect(onValueChange).not.toHaveBeenCalled()
     await expect.element(tab('A')).toHaveAttribute('aria-selected', 'true')
   })
 
-  test('an enabled tab calls its onClick, and so does the element render gives it', async () => {
+  test('an enabled tab calls its onClick and selects', async () => {
     const onClick = vi.fn<() => void>()
-    const onElementClick = vi.fn<() => void>()
     await render(
       <Tabs.Root defaultValue="a">
         <Tabs.List aria-label="Test">
-          <Tabs.Tab value="a" onClick={onClick}>
-            A
-          </Tabs.Tab>
-          <Tabs.Tab
-            value="b"
-            render={
-              <button type="button" onClick={onElementClick}>
-                B
-              </button>
-            }
-          >
+          <Tabs.Tab value="a">A</Tabs.Tab>
+          <Tabs.Tab value="b" onClick={onClick}>
             B
           </Tabs.Tab>
         </Tabs.List>
@@ -785,10 +716,8 @@ describe('disabled tabs', () => {
         <Tabs.Panel value="b">Panel B</Tabs.Panel>
       </Tabs.Root>,
     )
-    await userEvent.click(tab('A'))
     await userEvent.click(tab('B'))
     expect(onClick).toHaveBeenCalledTimes(1)
-    expect(onElementClick).toHaveBeenCalledTimes(1)
     await expect.element(tab('B')).toHaveAttribute('aria-selected', 'true')
   })
 })
@@ -894,23 +823,6 @@ describe('development warnings', () => {
     }
   })
 
-  test('a Tabs.Tab that renders something other than a button', async () => {
-    await render(
-      <Tabs.Root defaultValue="a">
-        <Tabs.List aria-label="Test">
-          <Tabs.Tab value="a" render={<div />}>
-            A
-          </Tabs.Tab>
-        </Tabs.List>
-        <Tabs.Panel value="a">Panel A</Tabs.Panel>
-      </Tabs.Root>,
-    )
-    await expect.element(page.getByText('Panel A')).toBeVisible()
-    expect(consoleWarn).toHaveBeenCalledTimes(1)
-    expect(warnings()[0]).toContain('<div>')
-    expect(warnings()[0]).toContain('<button>')
-  })
-
   test('a value that no tab has: no Tab stop, and nothing shown', async () => {
     await render(<CaseTabs defaultValue="saknas" />)
     await expect.element(page.getByRole('tablist')).toBeVisible()
@@ -993,13 +905,6 @@ describe('types', () => {
     expectTypeOf<TabsChangeReason>().toEqualTypeOf<'press' | 'arrow-key' | 'home-end-key'>()
     expectTypeOf<TabsChangeDetails['reason']>().toEqualTypeOf<TabsChangeReason>()
     expectTypeOf<UseTabsResult['value']>().toEqualTypeOf<string>()
-    expectTypeOf<TabsState>().toEqualTypeOf<{
-      value: string
-      orientation: 'horizontal' | 'vertical'
-      activationMode: TabsActivationMode
-    }>()
-    expectTypeOf<TabsTabState>().toEqualTypeOf<{ isSelected: boolean; isDisabled: boolean }>()
-    expectTypeOf<TabsPanelState>().toEqualTypeOf<{ isSelected: boolean }>()
   })
 
   test('one of value and defaultValue is required, and the roles and ids come from the parts', () => {

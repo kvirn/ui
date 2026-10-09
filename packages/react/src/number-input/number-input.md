@@ -16,9 +16,9 @@ A quantity or an amount in a form: how many children live with you, the monthly 
 
 ### Parts
 
-| Part        | Renders                                   | Props                                                                                                                                                                                                                                    |
-| ----------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| NumberInput | `<input type="text">` (flat, one element) | `decimals`, `allowNegative`, `grouping`, `min`, `max`, `mask`, `value`, `defaultValue`, `onValueChange`, `announceRejections`, `messages`, `render`, and every native input prop except `type`, `min`, `max`, `value` and `defaultValue` |
+| Part        | Renders                                   | Props                                                                                                                                                                                                                          |
+| ----------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| NumberInput | `<input type="text">` (flat, one element) | `decimals`, `allowNegative`, `grouping`, `min`, `max`, `mask`, `value`, `defaultValue`, `onValueChange`, `announceRejections`, `messages`, and every native input prop except `type`, `min`, `max`, `value` and `defaultValue` |
 
 `decimals` is the digits after the decimal mark (default 0, which accepts no mark), `allowNegative` accepts a leading minus sign (default `false`), `grouping` writes the whole digits in threes (default `false`), and `min` and `max` are numbers. They are the options of `masks.number()`, in the provider's locale: the mark is a comma in sv, fi, nb, nn and se, and a point in en. A typed `,` or `.` is read as the page's mark. `mask` replaces the number mask or turns it off: see Masks are optional below.
 
@@ -66,9 +66,9 @@ A width class is a help text, never a limit: no `maxlength` comes from it.
 
 NumberInput has no strings of its own. The number mask, and a custom `mask`, use the mask's three messages, in all six locales (`mask={false}` uses none): `characterNotAllowed` ("Här kan du bara skriva siffror."), `maximumDecimals` ("Du kan inte skriva fler decimaler.", when a digit is past `decimals`) and `maximumLength` ("Du har skrivit alla 3 tecken.", for other masks). Override them per provider, or per instance with `messages={{ characterNotAllowed: () => '…' }}`. `announceRejections={false}` turns the announcements off, for example when you show your own message. **The `KvirnProvider` is required for announcements and for the page's decimal mark:** without one the mask still works in English, nothing is announced, and a development warning says so once.
 
-### `render`
+### Your own element
 
-`render` takes an element or a function `(inputProps, state)`, where `state` is `{ isInvalid, isRequired, isDisabled, isFocusVisible }`. It must still render an `<input>`. Spread the props: they hold the Field's wiring, the number mask's handlers and the classes.
+The NumberInput renders a native `<input>`. To build your own, use `useNumberInput()` and spread `inputProps`: they hold the Field's wiring, the number mask's handlers and the classes.
 
 ### Development warnings
 

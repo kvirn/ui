@@ -185,20 +185,6 @@ describe('rendering', () => {
         'Välj alla som passar. Du kan ändra det senare. Fel: Välj hur vi ska kontakta dig',
       )
   })
-
-  test('render must stay a fieldset: another element warns once', async () => {
-    await render(
-      <CheckboxGroup.Root render={<div aria-label="Kontakt" />}>
-        <Field.Root>
-          <Checkbox value="a" />
-          <Field.Label>A</Field.Label>
-        </Field.Root>
-      </CheckboxGroup.Root>,
-    )
-    expect(consoleWarn.mock.calls.some(([message]) => String(message).includes('fieldset'))).toBe(
-      true,
-    )
-  })
 })
 
 describe('value', () => {

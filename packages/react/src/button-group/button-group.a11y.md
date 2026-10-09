@@ -16,7 +16,6 @@ A ButtonGroup is a row of related Buttons: the footer of a Card, the actions of 
 |             | without a name    | no role                           | A plain `<div>`: an unnamed Card footer adds no empty group to the accessibility tree                                                                            |
 |             | in a Toolbar      | name required                     | A dev warning when a group in a `Toolbar.Root` has no name (1.3.1, 4.1.2). Test: `button-group.test.tsx › inside a Toolbar`                                      |
 |             | `layout`          | `spaced` or `attached`            | `attached` joins the buttons into one strip (class `kv-button-group--attached`). Look only: no role, ARIA or key changes. Test: `button-group.test.tsx › layout` |
-|             | `render`          | any element                       | It gets the class and, with a name, the role                                                                                                                     |
 
 `useButtonGroup({ isNamed, layout })` gives the same `groupProps` for your own element.
 

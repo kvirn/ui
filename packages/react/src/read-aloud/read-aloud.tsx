@@ -1,49 +1,37 @@
 'use client'
-import type { ReactElement, ReactNode, Ref, RefCallback } from 'react'
+import { createElement } from 'react'
+import type { ReactElement, ReactNode, Ref } from 'react'
 import type { ComponentPropsWithRef, HTMLAttributes } from 'react'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { ReadAloudContext } from './read-aloud-context.ts'
 import { useReadAloud } from './use-read-aloud.ts'
 import type { UseReadAloudOptions, UseReadAloudResult } from './use-read-aloud.ts'
 import { useContext } from 'react'
 
-/** What `render` receives as its second argument. */
-export interface ReadAloudPartState {
-  status: UseReadAloudResult['status']
-}
-
-export interface ReadAloudElementProps extends HTMLAttributes<HTMLElement> {
-  ref: RefCallback<HTMLElement>
-}
-
-type PartRender = RenderProp<ReadAloudElementProps, ReadAloudPartState> | undefined
+const statusTags = ['span', 'p', 'div'] as const
 
 export interface ReadAloudRootProps
   extends UseReadAloudOptions, Omit<HTMLAttributes<HTMLElement>, 'onKeyDown'> {
   ref?: Ref<HTMLElement> | undefined
-  render?: PartRender
   children?: ReactNode
 }
 
 export interface ReadAloudButtonProps extends ComponentPropsWithRef<'button'> {
   /** Your own text. Replaces the message, so its language is yours to set. */
   children?: ReactNode
-  render?: RenderProp<ReadAloudElementProps, ReadAloudPartState> | undefined
 }
 
 export interface ReadAloudSelectProps extends Omit<ComponentPropsWithRef<'select'>, 'children'> {
   /** The visible label. Replaces the message `readAloud.rate` or `readAloud.voice`. */
   label?: ReactNode
-  render?: RenderProp<ReadAloudElementProps, ReadAloudPartState> | undefined
 }
 
-export interface ReadAloudStatusProps extends HTMLAttributes<HTMLElement> {
-  ref?: Ref<HTMLElement> | undefined
-  render?: PartRender
-}
+/** `as` is `span` (default), `p` or `div`. Visible text, never a heading or a live region. */
+export type ReadAloudStatusProps = AsTag<(typeof statusTags)[number], 'span'>
 
 function useReader(part: string): UseReadAloudResult {
   const reader = useContext(ReadAloudContext)
@@ -63,7 +51,6 @@ export function ReadAloudRoot({
   scroll,
   messages,
   onStatusChange,
-  render,
   ref,
   children,
   ...otherProps
@@ -81,12 +68,11 @@ export function ReadAloudRoot({
   const mergedRef = useMergedRef(ref, null)
   return (
     <ReadAloudContext.Provider value={reader}>
-      {renderPart({
-        render,
-        defaultElement: 'div',
-        partProps: { ...mergeProps(otherProps, reader.rootProps), ref: mergedRef, children },
-        state: { status: reader.status },
-      })}
+      {createElement(
+        'div',
+        { ...mergeProps(otherProps, reader.rootProps), ref: mergedRef },
+        children,
+      )}
     </ReadAloudContext.Provider>
   )
 }
@@ -97,7 +83,6 @@ function ReadAloudButton({
   pick,
   label,
   children,
-  render,
   ...otherProps
 }: ReadAloudButtonProps & {
   part: string
@@ -108,12 +93,7 @@ function ReadAloudButton({
   if (!reader.isSupported) {
     return null
   }
-  return renderPart({
-    render: render as RenderProp<object, ReadAloudPartState> | undefined,
-    defaultElement: 'button',
-    partProps: { ...mergeProps(otherProps, pick(reader)), children: children ?? label(reader) },
-    state: { status: reader.status },
-  })
+  return createElement('button', mergeProps(otherProps, pick(reader)), children ?? label(reader))
 }
 
 /** Listen, Listen to selected text or Pause. Space and Enter are the button's own. */
@@ -219,28 +199,23 @@ ReadAloudVoice.displayName = 'ReadAloud.Voice'
  */
 export function ReadAloudSelectionTrigger({
   children,
-  render,
   ...otherProps
 }: ReadAloudButtonProps): ReactElement | null {
   const reader = useReader('SelectionTrigger')
   if (!reader.isSupported || !reader.isSelectionTriggerShown) {
     return null
   }
-  return renderPart({
-    render: render as RenderProp<object, ReadAloudPartState> | undefined,
-    defaultElement: 'button',
-    partProps: {
-      ...mergeProps(otherProps, reader.selectionTriggerProps),
-      children: children ?? reader.selectionLabel,
-    },
-    state: { status: reader.status },
-  })
+  return createElement(
+    'button',
+    mergeProps(otherProps, reader.selectionTriggerProps),
+    children ?? reader.selectionLabel,
+  )
 }
 ReadAloudSelectionTrigger.displayName = 'ReadAloud.SelectionTrigger'
 
 /** Visible text, not a live region: the position, or why nothing is read. */
 export function ReadAloudStatus({
-  render,
+  as,
   ref,
   children,
   ...otherProps
@@ -248,14 +223,13 @@ export function ReadAloudStatus({
   const reader = useReader('Status')
   const mergedRef = useMergedRef(ref, null)
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'ReadAloud.Status', as, allowedTags: statusTags }),
     defaultElement: 'span',
     partProps: {
       ...mergeProps(otherProps, reader.statusProps),
       ref: mergedRef,
       children: children ?? reader.statusText,
     },
-    state: { status: reader.status },
   })
 }
 ReadAloudStatus.displayName = 'ReadAloud.Status'

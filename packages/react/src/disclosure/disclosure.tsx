@@ -1,19 +1,17 @@
 'use client'
-import { useContext, useEffect, useRef } from 'react'
+import { useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, MouseEvent, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart, takeRenderElementProps } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { DisclosureContext, DisclosureOwnerContext } from './disclosure-context.ts'
 import { useDisclosure } from './use-disclosure.ts'
 import type { UseDisclosureOptions } from './use-disclosure.ts'
 
 export type { DisclosureChangeDetails, DisclosureChangeReason } from './use-disclosure.ts'
 
-/** What `render` receives as its second argument, for every part. */
+/** The open and disabled state of a disclosure. */
 export interface DisclosureState {
   isOpen: boolean
   isDisabled: boolean
@@ -27,22 +25,13 @@ export interface DisclosureRootProps extends UseDisclosureOptions {
  * `id`, `type` and the `aria-expanded` and `aria-controls` pair are left out: the Disclosure sets
  * them, so the trigger and the panel always point at each other.
  */
-export interface DisclosureTriggerProps extends Omit<
+export type DisclosureTriggerProps = Omit<
   ComponentPropsWithRef<'button'>,
   'id' | 'type' | 'aria-expanded' | 'aria-controls' | 'aria-disabled' | 'disabled'
-> {
-  /**
-   * Change the element. It must still be a `<button>` and forward its ref. An element's own
-   * `onClick` is gated like the trigger's. The function form spreads the props it gets, and you
-   * add the chevron yourself.
-   */
-  render?: RenderProp<ComponentPropsWithRef<'button'>, DisclosureState> | undefined
-}
+>
 
 /** `id` is left out: the Disclosure sets it, because the trigger's `aria-controls` points at it. */
-export interface DisclosurePanelProps extends Omit<ComponentPropsWithRef<'div'>, 'id' | 'hidden'> {
-  render?: RenderProp<ComponentPropsWithRef<'div'>, DisclosureState> | undefined
-}
+export type DisclosurePanelProps = Omit<ComponentPropsWithRef<'div'>, 'id' | 'hidden'>
 
 function warnOutsideRoot(owner: 'Disclosure' | 'Accordion', part: string): void {
   if (owner === 'Accordion') {
@@ -82,7 +71,6 @@ DisclosureRoot.displayName = 'Disclosure.Root'
  * the state: `aria-expanded` says whether it is open.
  */
 export function DisclosureTrigger({
-  render,
   ref,
   children,
   onClick,
@@ -90,61 +78,34 @@ export function DisclosureTrigger({
 }: DisclosureTriggerProps): ReactElement {
   const disclosure = useContext(DisclosureContext)
   const owner = useContext(DisclosureOwnerContext)
-  const elementRef = useRef<HTMLButtonElement | null>(null)
-  const mergedRef = useMergedRef(ref, elementRef)
-  const { render: renderWithoutClick, takenProps } = takeRenderElementProps(render, ['onClick'])
-  const elementOnClick = takenProps.onClick
 
   useEffect(() => {
     if (disclosure === null) {
       warnOutsideRoot(owner, 'Trigger')
-      return
     }
-    const element = elementRef.current
-    if (element === null || element.tagName !== 'BUTTON') {
-      const rendered =
-        element === null ? 'nothing it could reference' : `<${element.tagName.toLowerCase()}>`
-      warnOnce(
-        `disclosure-not-a-button:${rendered}`,
-        `<Disclosure.Trigger render> must render a <button> and forward its ref, but it rendered ${rendered}. The trigger's role, keyboard activation and disabled state come from the native element.`,
-      )
-    }
-  })
+  }, [disclosure, owner])
 
   const isDisabled = disclosure?.isDisabled ?? false
-  // The consumer's and the element's handlers run only while enabled: merging can't block them.
+  // The consumer's handler runs only while enabled: merging can't block it.
   const gatedOnClick = (event: MouseEvent<HTMLButtonElement>) => {
     if (isDisabled) {
       return
     }
     onClick?.(event)
-    if (typeof elementOnClick === 'function') {
-      elementOnClick(event)
-    }
   }
   const isOpen = disclosure?.isOpen ?? false
 
-  return renderPart({
-    render: renderWithoutClick,
-    defaultElement: 'button',
-    partProps: {
-      ...mergeProps(
-        otherProps,
-        disclosure?.triggerProps ?? { type: 'button' as const },
-        { onClick: gatedOnClick },
-        {
-          children: (
-            <>
-              {children}
-              <Icon name={isOpen ? 'chevron-up' : 'chevron-down'} className="kv-disclosure-icon" />
-            </>
-          ),
-        },
-      ),
-      ref: mergedRef,
-    },
-    state: { isOpen, isDisabled },
-  })
+  return (
+    <button
+      {...mergeProps(otherProps, disclosure?.triggerProps ?? { type: 'button' as const }, {
+        onClick: gatedOnClick,
+      })}
+      ref={ref}
+    >
+      {children}
+      <Icon name={isOpen ? 'chevron-up' : 'chevron-down'} className="kv-disclosure-icon" />
+    </button>
+  )
 }
 DisclosureTrigger.displayName = 'Disclosure.Trigger'
 
@@ -153,11 +114,7 @@ DisclosureTrigger.displayName = 'Disclosure.Trigger'
  * `hiddenUntilFound` on the Root). It is always rendered, so `aria-controls` resolves, and its
  * content is in the Tab order only while it is open. Render it right after the trigger.
  */
-export function DisclosurePanel({
-  render,
-  ref,
-  ...otherProps
-}: DisclosurePanelProps): ReactElement {
+export function DisclosurePanel({ ref, ...otherProps }: DisclosurePanelProps): ReactElement {
   const disclosure = useContext(DisclosureContext)
   const owner = useContext(DisclosureOwnerContext)
   const mergedRef = useMergedRef(ref, disclosure?.panelProps.ref ?? null)
@@ -166,12 +123,7 @@ export function DisclosurePanel({
       warnOutsideRoot(owner, 'Panel')
     }
   }, [disclosure, owner])
-  return renderPart({
-    render,
-    defaultElement: 'div',
-    partProps: { ...mergeProps(otherProps, disclosure?.panelProps ?? {}), ref: mergedRef },
-    state: { isOpen: disclosure?.isOpen ?? false, isDisabled: disclosure?.isDisabled ?? false },
-  })
+  return <div {...mergeProps(otherProps, disclosure?.panelProps ?? {})} ref={mergedRef} />
 }
 DisclosurePanel.displayName = 'Disclosure.Panel'
 

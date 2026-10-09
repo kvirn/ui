@@ -35,8 +35,10 @@ export {
 export type {
   ColorSchemePreference,
   ContrastPreference,
+  MotionPreference,
   ResolvedColorScheme,
   ResolvedContrast,
+  ResolvedMotion,
   ResolvedTheme,
   ResolvedThemeOptions,
   StoredThemePreference,
@@ -55,6 +57,7 @@ export type { ThemeScriptOptions } from './theme/theme-script.ts'
 export {
   colorSchemeAttribute,
   contrastAttribute,
+  motionAttribute,
   themeStorageKey,
 } from './theme/theme-constants.ts'
 export { createAnnouncer, defaultThrottleMilliseconds } from './announcer/announcer.ts'

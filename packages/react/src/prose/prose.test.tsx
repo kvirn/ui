@@ -36,15 +36,37 @@ describe('Prose', () => {
     expect(container.children).toHaveLength(1)
   })
 
-  test('a consumer className and a render element’s className join the class', async () => {
+  test('a consumer className joins the class on the chosen element', async () => {
     await render(
-      <Prose className="kv-prose--large" render={<article className="annat" data-testid="prose" />}>
+      <Prose as="article" className="kv-prose--large annat" data-testid="prose">
         Text
       </Prose>,
     )
     const prose = page.getByTestId('prose')
     expect(prose.element().tagName).toBe('ARTICLE')
     await expect.element(prose).toHaveClass('kv-prose', 'kv-prose--large', 'annat')
+  })
+
+  test('article and section render their element, and the ref gets it', async () => {
+    const ref = createRef<HTMLElement>()
+    await render(
+      <>
+        <Prose as="article" ref={ref} data-testid="article" />
+        <Prose as="section" aria-label="Text" data-testid="section" />
+      </>,
+    )
+    expect(page.getByTestId('article').element().tagName).toBe('ARTICLE')
+    expect(page.getByTestId('section').element().tagName).toBe('SECTION')
+    expect(ref.current).toBe(page.getByTestId('article').element())
+  })
+
+  test('an element outside the allowed list warns once and renders a div', async () => {
+    const notAllowed = 'p' as 'div'
+    await render(<Prose as={notAllowed} data-testid="prose" />)
+    expect(page.getByTestId('prose').element().tagName).toBe('DIV')
+    expect(
+      consoleWarn.mock.calls.filter(([message]) => String(message).includes('Prose as="p"')),
+    ).toHaveLength(1)
   })
 
   test('Prose and ProseRoot are one component named Prose, the deprecated Prose.Root is the same, and useProse gives the class', () => {
@@ -58,7 +80,7 @@ describe('Prose', () => {
     const { container } = await render(
       <main>
         <Prose>
-          <Heading level={1}>Kontakta oss</Heading>
+          <Heading as="h1">Kontakta oss</Heading>
           <p>Vi svarar vardagar 9–16.</p>
         </Prose>
       </main>,
@@ -188,20 +210,11 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await expect.element(input).toHaveAccessibleDescription(/Rubrik\s+Ett\s+Två\s+Hjälp/)
   })
 
-  test('invalid and disabled: the Prose gets data-invalid and data-disabled, and render gets the state', async () => {
-    const seenStates: unknown[] = []
+  test('invalid and disabled: the Prose gets data-invalid and data-disabled', async () => {
     await render(
       <Field.Root invalid disabled>
         <Field.Label>Namn</Field.Label>
-        <Field.Prose
-          data-testid="description"
-          render={(partProps, state) => {
-            seenStates.push(state)
-            return <p {...partProps} />
-          }}
-        >
-          Som i passet.
-        </Field.Prose>
+        <Field.Prose data-testid="description">Som i passet.</Field.Prose>
         <TextInput />
         <Field.ErrorMessage>Ange namn</Field.ErrorMessage>
       </Field.Root>,
@@ -209,8 +222,6 @@ describe('Prose as the description of a Field or Fieldset', () => {
     const descriptionPart = page.getByTestId('description')
     await expect.element(descriptionPart).toHaveAttribute('data-invalid', '')
     await expect.element(descriptionPart).toHaveAttribute('data-disabled', '')
-    expect(descriptionPart.element().tagName).toBe('P')
-    expect(seenStates.at(-1)).toEqual({ isInvalid: true, isRequired: false, isDisabled: true })
   })
 
   test('keeps the consumer’s ref next to the registration', async () => {
@@ -332,7 +343,7 @@ describe('Prose content classes: kv-inset and kv-steps', () => {
   test('an article with an inset, steps and a figure with alt text has no axe violations', async () => {
     const { container } = await render(
       <main>
-        <Prose render={<article />}>
+        <Prose as="article">
           <h1>Ansök om bostadsanpassning</h1>
           <div className="kv-inset">
             <p>

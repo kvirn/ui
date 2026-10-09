@@ -24,7 +24,7 @@ An InputGroup puts a unit, a symbol, a decorative icon or a Button **inside the 
 
 - **`invalid` and `disabled` on the Root change only the box's look** (`data-invalid`, `data-disabled`) and, when `disabled`, stop a click on the box or an Addon from focusing the Input. They never reach the control: a screen reader hears the error only from `aria-invalid` on the Input, and the Input stays editable and in the Tab sequence until it is natively `disabled`. They default to the nearest Field's, which sets both the box and the Input. Without a Field, set them on the Root **and** on the Input (`aria-invalid`, native `disabled`). When the Root's own prop disagrees with the Input, a dev warning says so.
 - **Without a Field** name the Input with a native `<label for>` (or `aria-labelledby`) and describe it with `aria-describedby`: nothing else wires them.
-- **State the Root exposes:** `data-invalid`, `data-disabled` and `data-focus-visible` (see the table below). `render` on the Root and the Addon receives `isInvalid`, `isDisabled` and `isFocusVisible`.
+- **State the Root exposes:** `data-invalid`, `data-disabled` and `data-focus-visible` (see the table below).
 - **Messages:** none. An Addon's text and a Button's name are yours, in the page's language.
 - **Dev warnings (once):** an Addon outside a Root (`input-group-addon-outside-root`); focusable content inside an Addon (`input-group-addon-focusable`); the Root's own `invalid` or `disabled` disagreeing with the input inside it (`input-group-invalid-mismatch`, `input-group-disabled-mismatch`). Inside a Field the Root takes the Field's state, so nothing is compared.
 
@@ -130,11 +130,6 @@ function Rent() {
 
 `useInputGroup({ invalid, disabled })` reads the nearest Field, and returns `rootProps` (class, state attributes and the pointer and focus handlers), `addonProps` (class and `aria-hidden`), `isInvalid`, `isDisabled` and `isFocusVisible`.
 
-### `render`
+### Your own element
 
-Both parts take `render` to change their element. The part's props are merged into yours: class names join, handlers chain and refs merge.
-
-```tsx
-<InputGroup.Root render={(props) => <div {...props} data-testid="rent-box" />}>…</InputGroup.Root>
-<InputGroup.Addon render={(props) => <b {...props} />}>kr</InputGroup.Addon>
-```
+The parts render a `<div>` and a `<span>`. To build your own, use `useInputGroup()` and spread `rootProps` and `addonProps`.

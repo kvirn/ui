@@ -26,26 +26,9 @@ import { Button } from '@kvirn-ui/react'
 
 Prefer an enabled button that explains what's missing on submit. When you do disable one, say why in text next to it.
 
-### `render`
+### Your own element
 
-Change the element, which must still be a `<button>` (a dev warning says so otherwise):
-
-```tsx
-<Button render={<MyStyledButton />}>Spara</Button>
-<Button render={(buttonProps, state) => <MyStyledButton {...buttonProps} isMuted={state.isDisabled} />}>
-  Spara
-</Button>
-```
-
-An element keeps its own props, and the Button's props are merged in: handlers chain, class names join. An element's own `onClick` goes through the Button too, so it's blocked while disabled.
-
-In the function form, spread `buttonProps` and never override `buttonProps.onClick`: it is what blocks activation while disabled. Put your handler on the Button instead. `buttonProps.className` already holds `kv-button` and the Button's own `className`: keep it if you add a class of your own.
-
-```tsx
-<Button className="kv-button--primary" render={(buttonProps) => <button {...buttonProps} />}>
-  Skicka
-</Button>
-```
+The Button renders a native `<button>`. To build your own element, use `useButton()` and spread `buttonProps` (see Hook below). Put your handler in `useButton({ onClick })`, not on top of `buttonProps.onClick`: it is what blocks activation while disabled.
 
 If a button can be disabled while it has focus, for example one that disables itself when pressed, use `focusableWhenDisabled`. Otherwise focus drops to the page body.
 

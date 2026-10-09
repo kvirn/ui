@@ -6,7 +6,6 @@ import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, StrictMode, useRef, useState } from 'react'
-import type { Ref } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -32,7 +31,6 @@ import type {
   AlertBodyProps,
   AlertCloseProps,
   AlertRootProps,
-  AlertState,
   AlertStatusRootProps,
   AlertTitleProps,
 } from './alert.tsx'
@@ -258,23 +256,19 @@ describe('rendering', () => {
     ).toEqual(['kv-alert-icon', 'kv-alert-title', 'kv-alert-body', 'kv-alert-actions'])
   })
 
-  test('the Title can be any heading level, or a paragraph, with render', async () => {
+  test('the Title can be any heading level, or a paragraph, with as', async () => {
     await render(
       <main>
         <h2>Mina sidor</h2>
         <Alert.Success>
-          <Alert.Title
-            render={(props) => (
-              <h3 {...props} data-testid="level-3">
-                {props.children}
-              </h3>
-            )}
-          >
+          <Alert.Title as="h3" data-testid="level-3">
             Saved
           </Alert.Title>
         </Alert.Success>
         <Alert.Success>
-          <Alert.Title render={<p data-testid="paragraph" />}>Saved again</Alert.Title>
+          <Alert.Title as="p" data-testid="paragraph">
+            Saved again
+          </Alert.Title>
         </Alert.Success>
       </main>,
     )
@@ -285,6 +279,34 @@ describe('rendering', () => {
     expect(paragraph.tagName).toBe('P')
     expect(paragraph.textContent).toBe('Success: Saved again')
     expect(page.getByRole('heading', { level: 2 }).elements()).toHaveLength(1)
+  })
+
+  test('Root, Body and Actions render their allowed elements', async () => {
+    await render(
+      <>
+        <Alert.Info as="div" data-testid="info" />
+        <Alert.Root as="section" data-testid="root" />
+        <Alert.Body as="p" data-testid="body" />
+        <Alert.Actions as="section" data-testid="actions" />
+      </>,
+    )
+    expect(page.getByTestId('info').element().tagName).toBe('DIV')
+    expect(page.getByTestId('root').element().tagName).toBe('SECTION')
+    expect(page.getByTestId('body').element().tagName).toBe('P')
+    expect(page.getByTestId('actions').element().tagName).toBe('SECTION')
+  })
+
+  test('an element outside a part’s allowed list warns once and renders the default', async () => {
+    const notAllowed = 'button' as 'h3'
+    await render(
+      <Alert.Info>
+        <Alert.Title as={notAllowed}>Title</Alert.Title>
+      </Alert.Info>,
+    )
+    expect(page.getByRole('heading', { level: 2 }).element().tagName).toBe('H2')
+    expect(
+      warnings().filter((message) => message.includes('Alert.Title as="button"')),
+    ).toHaveLength(1)
   })
 
   test('passes attributes through: id, lang and title on the consumer’s element', async () => {
@@ -322,10 +344,10 @@ describe('rendering', () => {
   })
 
   test.each(statuses)(
-    'Alert.$variant keeps its class and icon when a render element sets another class',
+    'Alert.$variant keeps its class and icon when as is a landmark element and className is added',
     async ({ Root, className }) => {
       await render(
-        <Root render={<section className="annat" aria-labelledby="t" data-testid="alert" />}>
+        <Root as="section" className="annat" aria-labelledby="t" data-testid="alert">
           <Alert.Title id="t">Title</Alert.Title>
         </Root>,
       )
@@ -348,38 +370,6 @@ describe('rendering', () => {
       'true',
     )
     expect(page.getByRole('heading').element().textContent).toBe('Information: Saving')
-  })
-
-  test('the render function form can replace the class: the icon and the word stay', async () => {
-    await render(
-      <Alert.Warning
-        render={(rootProps) => <div {...rootProps} className="my-warning" data-testid="own" />}
-      >
-        <Alert.Title>Check your answers</Alert.Title>
-      </Alert.Warning>,
-    )
-    const root = page.getByTestId('own').element()
-    expect(root.className).toBe('my-warning')
-    expect(root.querySelector('svg.kv-alert-icon')).not.toBeNull()
-    expect(page.getByRole('heading').element().textContent).toBe('Warning: Check your answers')
-    // Our own class was dropped on purpose: that is not a conflict.
-    expect(warnings()).toEqual([])
-  })
-
-  test('the render function gets the part props and an empty state', async () => {
-    const seen: AlertState[] = []
-    await render(
-      <Alert.Actions
-        render={(actionsProps, state) => {
-          seen.push(state)
-          return <div {...actionsProps} data-testid="actions" />
-        }}
-      >
-        <a href="#next">Next</a>
-      </Alert.Actions>,
-    )
-    await expect.element(page.getByTestId('actions')).toBeVisible()
-    expect(seen.at(-1)).toEqual({})
   })
 
   test('the named exports are the compound parts', () => {
@@ -459,17 +449,14 @@ describe('refs', () => {
     expect(actionsRef.current).toBe(document.querySelector('.kv-alert-actions'))
   })
 
-  test('both the consumer’s ref and a render element’s ref get the element', async () => {
+  test('the consumer’s ref gets the element chosen with as', async () => {
     const partRef = createRef<HTMLElement>()
-    const elementRef = createRef<HTMLElement>()
     await render(
-      <Alert.Info ref={partRef} render={<aside ref={elementRef} data-testid="alert" />}>
+      <Alert.Info ref={partRef} as="section" data-testid="alert">
         <Alert.Title>Title</Alert.Title>
       </Alert.Info>,
     )
-    const element = page.getByTestId('alert').element()
-    expect(partRef.current).toBe(element)
-    expect(elementRef.current).toBe(element)
+    expect(partRef.current).toBe(page.getByTestId('alert').element())
   })
 })
 
@@ -612,7 +599,7 @@ describe('announce', () => {
       <KvirnProvider locale="sv-SE" messages={sv}>
         <main>
           <Alert.Success announce="polite">
-            <Alert.Title render={<p />}>Dina ändringar är sparade</Alert.Title>
+            <Alert.Title as="p">Dina ändringar är sparade</Alert.Title>
             <Alert.Body>
               <p>Du får ett beslut inom 4 veckor.</p>
               <p>Du behöver inte göra något mer.</p>
@@ -877,9 +864,9 @@ describe('development warnings', () => {
     expect(warnings()).toEqual([])
   })
 
-  test('a render element with aria-live warns the same way', async () => {
+  test('aria-live on an element chosen with as warns the same way', async () => {
     await render(
-      <Alert.Info render={<section aria-live="polite" />}>
+      <Alert.Info as="section" aria-live="polite">
         <Alert.Title>Title</Alert.Title>
       </Alert.Info>,
     )
@@ -925,16 +912,6 @@ describe('development warnings', () => {
     expect(warnings()).toHaveLength(1)
     expect(warnings()[0]).toContain('kv-alert--danger')
     expect(warnings()[0]).toContain('Alert.Danger')
-  })
-
-  test('a ready-made root with another status class on a render element warns too', async () => {
-    await render(
-      <Alert.Success render={<div className="kv-alert--warning" />}>
-        <Alert.Title>Title</Alert.Title>
-      </Alert.Success>,
-    )
-    expect(warnings()).toHaveLength(1)
-    expect(warnings()[0]).toContain('kv-alert--warning')
   })
 
   test('a ready-made root with its own status class again does not warn', async () => {
@@ -1294,83 +1271,29 @@ describe('Alert.Close', () => {
     await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
-  test('a render element keeps its attributes, and its own onClick is gated by disabled', async () => {
-    const elementClick = vi.fn<() => void>()
-    const propClick = vi.fn<() => void>()
+  test('forwards its ref to the button and keeps the quiet close class with a consumer class', async () => {
+    const ref = createRef<HTMLButtonElement>()
     await render(
       <Alert.Info>
         <Alert.Title>Title</Alert.Title>
-        <Alert.Close
-          onClick={propClick}
-          render={
-            <button data-testid="own" className="mitt" onClick={elementClick} aria-label="Own" />
-          }
-        />
-        <Alert.Close
-          disabled
-          onClick={propClick}
-          render={<button data-testid="own-disabled" onClick={elementClick} aria-label="Own" />}
-        />
+        <Alert.Close ref={ref} className="mitt" data-testid="own" />
       </Alert.Info>,
     )
     const own = page.getByTestId('own')
     expect(own.element().className).toBe('kv-alert-close mitt')
-    await userEvent.click(own)
-    expect(elementClick).toHaveBeenCalledTimes(1)
-    expect(propClick).toHaveBeenCalledTimes(1)
-    await userEvent.click(page.getByTestId('own-disabled'), { force: true })
-    expect(elementClick).toHaveBeenCalledTimes(1)
-    expect(propClick).toHaveBeenCalledTimes(1)
+    expect(ref.current).toBe(own.element())
   })
 
-  test('the function form of render gets the button props and the state', async () => {
-    await render(
-      <Alert.Info>
-        <Alert.Title>Title</Alert.Title>
-        <Alert.Close
-          render={(props, state) => (
-            <button {...props} data-testid="own" data-state={String(state.isDisabled)} />
-          )}
-        />
-      </Alert.Info>,
-    )
-    const own = page.getByTestId('own')
-    await expect.element(own).toHaveAttribute('aria-label', 'Close message')
-    await expect.element(own).toHaveAttribute('data-state', 'false')
-    expect(own.element().className).toBe('kv-alert-close')
-  })
-
-  test('forwards its ref to the button, merged with a render element’s ref', async () => {
-    const partRef = createRef<HTMLButtonElement>()
-    const elementRef = createRef<HTMLButtonElement>()
-    await render(
-      <Alert.Info>
-        <Alert.Title>Title</Alert.Title>
-        <Alert.Close
-          ref={partRef}
-          render={<button ref={elementRef} data-testid="own" aria-label="Own" />}
-        />
-      </Alert.Info>,
-    )
-    const element = page.getByTestId('own').element()
-    expect(partRef.current).toBe(element)
-    expect(elementRef.current).toBe(element)
-  })
-
-  test('warns once outside an Alert root, and when render is not a button', async () => {
+  test('warns once outside an Alert root', async () => {
     await render(
       <>
         <Alert.Close />
-        <Alert.Info>
-          <Alert.Title>Title</Alert.Title>
-          <Alert.Close render={<div />} />
-        </Alert.Info>
+        <Alert.Close />
       </>,
     )
     expect(warnings().filter((message) => message.includes('Alert.Close is outside'))).toHaveLength(
       1,
     )
-    expect(warnings().some((message) => message.includes('must render a <button>'))).toBe(true)
   })
 
   test.each(statuses)(
@@ -1602,10 +1525,9 @@ describe('types', () => {
     expectTypeOf<AlertRootProps['announce']>().toEqualTypeOf<'polite' | 'assertive' | undefined>()
     expectTypeOf<AlertStatusRootProps>().toExtend<AlertRootProps>()
     expectTypeOf<AlertStatusRootProps['messages']>().not.toBeNever()
-    expectTypeOf<AlertState>().toEqualTypeOf<Record<string, never>>()
   })
 
-  test('every part takes HTML attributes, a ref to any element and render', () => {
+  test('every part takes HTML attributes and a ref, and `as` only its allowed elements', () => {
     for (const props of [
       {} as AlertRootProps,
       {} as AlertStatusRootProps,
@@ -1614,18 +1536,23 @@ describe('types', () => {
       {} as AlertActionsProps,
     ]) {
       expectTypeOf(props.className).toEqualTypeOf<string | undefined>()
-      expectTypeOf(props.ref).toEqualTypeOf<Ref<HTMLElement> | undefined>()
-      expectTypeOf(props.render).not.toBeNever()
+      expectTypeOf(props.ref).not.toBeNever()
     }
+    expectTypeOf<NonNullable<AlertTitleProps['as']>>().toEqualTypeOf<
+      'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p'
+    >()
+    expectTypeOf<NonNullable<AlertRootProps['as']>>().toEqualTypeOf<'div' | 'section'>()
+    expectTypeOf<NonNullable<AlertBodyProps['as']>>().toEqualTypeOf<'div' | 'p' | 'section'>()
+    expectTypeOf<NonNullable<AlertActionsProps['as']>>().toEqualTypeOf<'div' | 'section'>()
   })
 
-  test('the close button takes button attributes, a button ref, messages and render', () => {
+  test('the close button takes button attributes, a button ref and messages, and has no as', () => {
     const props = {} as AlertCloseProps
     expectTypeOf(props.onClick).not.toBeNever()
     expectTypeOf(props.disabled).toEqualTypeOf<boolean | undefined>()
     expectTypeOf(props.ref).not.toBeNever()
     expectTypeOf(props.messages).not.toBeNever()
-    expectTypeOf(props.render).not.toBeNever()
+    expectTypeOf<AlertCloseProps>().not.toHaveProperty('as')
     expectTypeOf<AlertCloseProps>().not.toHaveProperty('type')
   })
 

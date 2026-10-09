@@ -13,7 +13,7 @@ import { Field } from '../field/field.tsx'
 import { TextInput } from '../text-input/text-input.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { InputGroup, InputGroupAddon, InputGroupRoot } from './input-group.tsx'
-import type { InputGroupAddonProps, InputGroupRootProps, InputGroupState } from './input-group.tsx'
+import type { InputGroupRootProps } from './input-group.tsx'
 import { useInputGroup } from './use-input-group.ts'
 import type {
   InputGroupAddonPartProps,
@@ -222,40 +222,6 @@ describe('field state on the Root', () => {
     const root = page.getByTestId('root')
     await expect.element(root).not.toHaveAttribute('data-invalid')
     await expect.element(root).toHaveAttribute('data-disabled', '')
-  })
-
-  test('render receives the state, and the Addon gets the Root’s state too', async () => {
-    const seen: InputGroupState[] = []
-    const seenByAddon: InputGroupState[] = []
-    await render(
-      <Field.Root invalid>
-        <Field.Label marker="none">Belopp</Field.Label>
-        <Field.ErrorMessage>Ange ett belopp</Field.ErrorMessage>
-        <InputGroup.Root
-          render={(partProps, state) => {
-            seen.push(state)
-            return <div {...partProps} data-egen="" />
-          }}
-        >
-          <TextInput />
-          <InputGroup.Addon
-            render={(partProps, state) => {
-              seenByAddon.push(state)
-              return <span {...partProps} data-egen-addon="" />
-            }}
-          >
-            kr
-          </InputGroup.Addon>
-        </InputGroup.Root>
-      </Field.Root>,
-    )
-    expect(seen.at(-1)).toEqual({ isInvalid: true, isDisabled: false, isFocusVisible: false })
-    expect(seenByAddon.at(-1)).toEqual({
-      isInvalid: true,
-      isDisabled: false,
-      isFocusVisible: false,
-    })
-    expect(document.querySelector('[data-egen-addon]')?.getAttribute('aria-hidden')).toBe('true')
   })
 })
 
@@ -535,7 +501,7 @@ describe('dev warnings: the Root’s invalid and disabled against the input insi
   })
 })
 
-describe('render and refs', () => {
+describe('refs and props', () => {
   test('both parts forward refs, class names and native props, and join handlers', async () => {
     const rootRef = createRef<HTMLDivElement>()
     const addonRef = createRef<HTMLSpanElement>()
@@ -584,21 +550,6 @@ describe('render and refs', () => {
     )
     await userEvent.click(page.getByTestId('addon'))
     await expect.element(page.getByRole('textbox')).not.toHaveFocus()
-  })
-
-  test('render as an element keeps the group’s props on it', async () => {
-    await render(
-      <Field.Root>
-        <Field.Label marker="none">Belopp</Field.Label>
-        <InputGroup.Root render={<section data-testid="root" />}>
-          <TextInput />
-          <InputGroup.Addon render={<abbr data-testid="addon" />}>kr</InputGroup.Addon>
-        </InputGroup.Root>
-      </Field.Root>,
-    )
-    expect(page.getByTestId('root').element().tagName).toBe('SECTION')
-    expect(page.getByTestId('addon').element().tagName).toBe('ABBR')
-    await expect.element(page.getByTestId('addon')).toHaveAttribute('aria-hidden', 'true')
   })
 })
 
@@ -682,11 +633,9 @@ describe('server rendering', () => {
 })
 
 describe('types', () => {
-  test('Root takes invalid, disabled and render', () => {
+  test('Root takes invalid and disabled', () => {
     expectTypeOf<InputGroupRootProps['invalid']>().toEqualTypeOf<boolean | undefined>()
     expectTypeOf<InputGroupRootProps['disabled']>().toEqualTypeOf<boolean | undefined>()
-    expectTypeOf<InputGroupRootProps>().toHaveProperty('render')
-    expectTypeOf<InputGroupAddonProps>().toHaveProperty('render')
   })
 
   test('exports the hook and part types', () => {

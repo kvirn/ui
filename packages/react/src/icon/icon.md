@@ -6,7 +6,7 @@ One component for every icon: the built-in set, your own SVGs, and icons from li
 
 - **`icon`** for one icon from a library: `<Icon icon={Search} />`. No setup.
 - **`name`** for icons you use everywhere: register them once in `KvirnProvider`, then write `<Icon name="close" />`.
-- **`render`** (or children) for a one-off SVG of your own.
+- **`as`** (or children) for a one-off icon of your own, such as a municipality's mark.
 
 Icon's `size`, `color`, `strokeWidth`, `label` replace the library component's own in every route that draws a component, so you never size an icon on the component itself. `className` is joined with the component's own classes.
 
@@ -76,7 +76,7 @@ import { Search } from 'lucide-react'
 - Icon passes `width`, `height`, `color`, `strokeWidth`, `className` (joined with the component's own), `aria-*` and `role` to it, and they win over the library's own defaults (Lucide's 24px size, Heroicons' `aria-hidden`).
 - `icon` doesn't mirror in right-to-left text by default. Set `mirrorInRtl` on the Icon, or register the icon under a name with `{ component, mirrorInRtl: true }`, which is the better place for a direction.
 - Library defaults that you want everywhere, such as Lucide's 2 stroke, go in `iconDefaults` on `KvirnProvider`, not on every Icon.
-- `IconProps` is a union of four forms (`name`, `icon`, `render` or children). A wrapper that types its props as `Omit<IconProps, K>` flattens the union, so it must omit `name | icon | render | children` together (or use a distributive `Omit`), then pass the one form it wants.
+- `IconProps` is a union of four forms (`name`, `icon`, `as` or children). A wrapper that types its props as `Omit<IconProps, K>` flattens the union, so it must omit `name | icon | as | children` together (or use a distributive `Omit`), then pass the one form it wants.
 
 ## Registering icons: `name`
 
@@ -130,7 +130,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 - A nested `KvirnProvider` adds icons and replaces names, over its parent's. `iconDefaults` (`size`, `strokeWidth`) merge field by field.
 - Which value wins, lowest first: the icon's own defaults, the built-in's mirroring for that name, `iconDefaults`, your entry, then the props on `<Icon>`.
 - An unknown name renders an empty `<svg>` at the right size and warns once in development.
-- Every registered icon is in the bundle that holds the provider. Register the icons the app uses, and use `render` for a rare one.
+- Every registered icon is in the bundle that holds the provider. Register the icons the app uses, and use `as` for a rare one.
 
 ## Props
 
@@ -145,10 +145,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
 | `stroke`      | `string`                                                             | the icon's own                                  |
 | `label`       | `string`                                                             | none: decorative                                |
 | `mirrorInRtl` | `boolean`                                                            | the entry's, else `false`                       |
-| `render`      | element or function, for a one-off icon                              | –                                               |
+| `as`          | a component that draws the icon, for a one-off icon                  | –                                               |
 | `children`    | your own shapes, with Icon as the `<svg>`                            | –                                               |
 
-`name`, `icon`, `render` and `children` are exclusive: the types forbid two, and in development, two together warn once. Other SVG attributes, such as `className` or `viewBox`, pass through. `aria-label`, `aria-hidden` and `role` can't be passed: `label` sets them.
+`name`, `icon`, `as` and `children` are exclusive: the types forbid two, and in development, two together warn once. Other SVG attributes, such as `className` or `viewBox`, pass through. `aria-label`, `aria-hidden` and `role` can't be passed: `label` sets them.
 
 ## With Button
 
@@ -166,16 +166,13 @@ An icon in a Button takes the Button's colour and lines up with its text. Put it
 
 Use icon-only buttons only for actions everyone knows: close, search, menu. In development, a Button with no accessible name warns.
 
-## Your own SVG: `render` and children
+## Your own SVG: `as` and children
 
 Use these for an icon that isn't a library component: an imported `.svg`, or shapes you draw.
 
 ```tsx
-// An element.
-<Icon render={<MunicipalityLogo />} size={6} label={messages.logo} />
-
-// A function that spreads the props on its own <svg>.
-<Icon render={(props) => <svg viewBox="0 0 24 24" {...props}><circle cx="12" cy="12" r="9" /></svg>} />
+// A component that spreads the props on its own <svg> and takes a ref.
+<Icon as={MunicipalityLogo} size={6} label={messages.logo} />
 
 // Shapes, with Icon as the <svg>.
 <Icon viewBox="0 0 24 24" fill="none" stroke="currentColor">

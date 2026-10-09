@@ -1,25 +1,18 @@
-import type { HTMLAttributes, ReactElement, Ref, RefCallback } from 'react'
+import type { ReactElement } from 'react'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { useVisuallyHidden } from './use-visually-hidden.ts'
 
-/** What `render` receives as its second argument. VisuallyHidden has no state, so it's empty. */
-export type VisuallyHiddenState = Record<string, never>
+const visuallyHiddenTags = ['span', 'div', 'p', 'h2', 'h3', 'h4', 'h5', 'h6'] as const
 
-/** What a `render` function gets to spread: your attributes, the class and a callback ref. */
-export interface VisuallyHiddenElementProps extends HTMLAttributes<HTMLElement> {
-  ref: RefCallback<HTMLElement>
-}
-
-export interface VisuallyHiddenProps extends HTMLAttributes<HTMLElement> {
-  ref?: Ref<HTMLElement> | undefined
-  /** Change the element: `render={<h2 />}`. Its own semantics apply. */
-  render?: RenderProp<VisuallyHiddenElementProps, VisuallyHiddenState> | undefined
-}
-
-const visuallyHiddenState: VisuallyHiddenState = Object.freeze({})
+/**
+ * `as` is `span` (default), `div`, `p`, or `h2` to `h6` for a heading nobody sees but the outline
+ * has. No `h1`: the page's title is visible. Its own semantics apply.
+ */
+export type VisuallyHiddenProps = AsTag<(typeof visuallyHiddenTags)[number], 'span'>
 
 /**
  * Text for screen readers that is not drawn (contract: visually-hidden.a11y.md): one
@@ -31,16 +24,15 @@ const visuallyHiddenState: VisuallyHiddenState = Object.freeze({})
  * <p>Sökträffar<VisuallyHidden>, 3 resultat</VisuallyHidden></p>
  *
  * @example
- * <VisuallyHidden render={<h2 />}>Meny</VisuallyHidden>
+ * <VisuallyHidden as="h2">Meny</VisuallyHidden>
  */
-export function VisuallyHidden({ render, ref, ...otherProps }: VisuallyHiddenProps): ReactElement {
+export function VisuallyHidden({ as, ref, ...otherProps }: VisuallyHiddenProps): ReactElement {
   const { visuallyHiddenProps } = useVisuallyHidden()
   const elementRef = useMergedRef(ref, null)
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'VisuallyHidden', as, allowedTags: visuallyHiddenTags }),
     defaultElement: 'span',
     partProps: { ...mergeProps(otherProps, visuallyHiddenProps), ref: elementRef },
-    state: visuallyHiddenState,
   })
 }
 VisuallyHidden.displayName = 'VisuallyHidden'

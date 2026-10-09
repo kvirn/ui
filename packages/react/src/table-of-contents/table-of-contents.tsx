@@ -1,19 +1,13 @@
 'use client'
-import { useContext, useEffect } from 'react'
-import type {
-  ComponentPropsWithRef,
-  HTMLAttributes,
-  ReactElement,
-  ReactNode,
-  Ref,
-  RefCallback,
-} from 'react'
+import { createElement, useContext, useEffect } from 'react'
+import type { ComponentPropsWithRef, HTMLAttributes, ReactElement, ReactNode, Ref } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { useFocusVisible } from '../focus-visible/use-focus-visible.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { TableOfContentsContext } from './table-of-contents-context.ts'
 import {
   getTableOfContentsLinkProps,
@@ -29,36 +23,25 @@ import type {
 
 export type { TableOfContentsEntry, TableOfContentsNode } from './use-table-of-contents.ts'
 
-/** What `render` receives as its second argument, for every part. */
-export interface TableOfContentsState {
-  /** The id of the heading being read, or `undefined` before the first heading. */
-  activeId: string | undefined
-}
+const listTags = ['ul', 'ol'] as const
 
 /** What the function child of `TableOfContents.Root` receives. */
-export interface TableOfContentsChildrenState extends TableOfContentsState {
+export interface TableOfContentsChildrenState {
+  /** The id of the heading being read, or `undefined` while no heading is on screen. */
+  activeId: string | undefined
   /** The entries nested by their levels: draw a list of the nodes, an item for each. */
   tree: TableOfContentsNode[]
-}
-
-/**
- * What a `render` function of Root, List or Item gets to spread: your attributes, the part's
- * props and a callback ref, which fits any element.
- */
-export interface TableOfContentsElementProps extends HTMLAttributes<HTMLElement> {
-  ref: RefCallback<HTMLElement>
 }
 
 interface TableOfContentsPartComponentProps extends HTMLAttributes<HTMLElement> {
   /** The rendered element. */
   ref?: Ref<HTMLElement> | undefined
-  /** Change the element. Its own semantics apply. */
-  render?: RenderProp<TableOfContentsElementProps, TableOfContentsState> | undefined
 }
 
+/** Always a `<nav>`: the landmark is the part's purpose. */
 export interface TableOfContentsRootProps
   extends
-    Omit<TableOfContentsPartComponentProps, 'children' | 'render'>,
+    Omit<TableOfContentsPartComponentProps, 'children'>,
     Omit<UseTableOfContentsOptions, 'labelledBy'> {
   /**
    * Without children, the Root draws the whole nested list from `items`. A function draws your own
@@ -66,14 +49,10 @@ export interface TableOfContentsRootProps
    * renders nothing, so a title you draw in it goes too.
    */
   children?: ReactNode | ((state: TableOfContentsChildrenState) => ReactNode) | undefined
-  /**
-   * Change the element. It must stay a `<nav>` (or have `role="navigation"`), otherwise the
-   * landmark is gone.
-   */
-  render?: RenderProp<TableOfContentsElementProps, TableOfContentsState> | undefined
 }
 
-export type TableOfContentsListProps = TableOfContentsPartComponentProps
+/** `as` is `ul` (default) or `ol` for a numbered contents list. */
+export type TableOfContentsListProps = AsTag<(typeof listTags)[number], 'ul'>
 export type TableOfContentsItemProps = TableOfContentsPartComponentProps
 
 export interface TableOfContentsLinkProps extends Omit<
@@ -85,8 +64,6 @@ export interface TableOfContentsLinkProps extends Omit<
    * `#id` and its `label` is the text, unless you give children.
    */
   item: TableOfContentsEntry
-  /** Change the element. It must stay an `<a>` with an `href`. */
-  render?: RenderProp<ComponentPropsWithRef<'a'>, TableOfContentsState> | undefined
 }
 
 type TableOfContentsPart = 'List' | 'Item' | 'Link'
@@ -121,7 +98,7 @@ function hasOwnText(children: ReactNode): boolean {
  * announced.
  */
 export function TableOfContentsList({
-  render,
+  as,
   ref,
   ...otherProps
 }: TableOfContentsListProps): ReactElement {
@@ -129,30 +106,26 @@ export function TableOfContentsList({
   useWarnOutsideRoot('List', contents === null)
   const mergedRef = useMergedRef(ref, null)
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'TableOfContents.List', as, allowedTags: listTags }),
     defaultElement: 'ul',
-    // The part's class joins a prop's and a render element's own class names, so neither can
-    // remove it and the theme keeps styling the list.
+    // The part's class joins a prop's own class names, so a prop can't remove it and the theme
+    // keeps styling the list.
     partProps: { ...mergeProps(otherProps, tableOfContentsListProps), ref: mergedRef },
-    state: { activeId: contents?.activeId },
   })
 }
 TableOfContentsList.displayName = 'TableOfContents.List'
 
 /** An `<li class="kv-table-of-contents-item">`: a `TableOfContents.Link`, and optionally a nested list. */
 export function TableOfContentsItem({
-  render,
   ref,
   ...otherProps
 }: TableOfContentsItemProps): ReactElement {
   const contents = useContext(TableOfContentsContext)
   useWarnOutsideRoot('Item', contents === null)
   const mergedRef = useMergedRef(ref, null)
-  return renderPart({
-    render,
-    defaultElement: 'li',
-    partProps: { ...mergeProps(otherProps, tableOfContentsItemProps), ref: mergedRef },
-    state: { activeId: contents?.activeId },
+  return createElement('li', {
+    ...mergeProps(otherProps, tableOfContentsItemProps),
+    ref: mergedRef,
   })
 }
 TableOfContentsItem.displayName = 'TableOfContents.Item'
@@ -166,7 +139,6 @@ TableOfContentsItem.displayName = 'TableOfContents.Item'
 export function TableOfContentsLink({
   item,
   children,
-  render,
   ref,
   ...otherProps
 }: TableOfContentsLinkProps): ReactElement {
@@ -176,19 +148,17 @@ export function TableOfContentsLink({
   const mergedRef = useMergedRef(ref, null)
   const linkProps =
     contents === null ? getTableOfContentsLinkProps(item, undefined) : contents.getLinkProps(item)
-  return renderPart({
-    render,
-    defaultElement: 'a',
-    partProps: {
+  return createElement(
+    'a',
+    {
       ...mergeProps(otherProps, linkProps, {
         ...(isFocusVisible ? { 'data-focus-visible': '' } : {}),
         ...focusVisibleProps,
       }),
-      children: hasOwnText(children) ? children : item.label,
       ref: mergedRef,
     },
-    state: { activeId: contents?.activeId },
-  })
+    hasOwnText(children) ? children : item.label,
+  )
 }
 TableOfContentsLink.displayName = 'TableOfContents.Link'
 
@@ -218,7 +188,6 @@ export function TableOfContentsRoot({
   offset,
   messages,
   children,
-  render,
   ref,
   'aria-labelledby': labelledBy,
   ...otherProps
@@ -233,18 +202,16 @@ export function TableOfContentsRoot({
     typeof children === 'function' ? children({ tree, activeId }) : (children ?? renderTree(tree))
   return (
     <TableOfContentsContext.Provider value={contents}>
-      {renderPart({
-        render,
-        defaultElement: 'nav',
-        // Your own props come last, so an `aria-label` of yours names the landmark in place of
-        // the message. The part's class still joins yours.
-        partProps: {
+      {createElement(
+        'nav',
+        {
+          // Your own props come last, so an `aria-label` of yours names the landmark in place of
+          // the message. The part's class still joins yours.
           ...mergeProps(contents.rootProps, otherProps),
-          children: content,
           ref: mergedRef,
         },
-        state: { activeId },
-      })}
+        content,
+      )}
     </TableOfContentsContext.Provider>
   )
 }

@@ -31,7 +31,6 @@ Rules, tested in `one-time-code.test.tsx`:
 - **A press on a slot** (a box, or a gap) focuses the input natively. A single click on an empty slot puts the caret at the end of the code, and on a filled slot before its character. A separator is not a target: a press on it or in the gap goes to the nearest character slot. A double click, a drag and a long press keep the browser's selection.
 - **No auto-advance, no auto-submit.** Typing the last character moves no focus and submits nothing. `onComplete(value)` is a callback for consumers who check early.
 - **Field state.** `data-invalid` and `data-disabled` come from the nearest Field (or the Root's `disabled`), on the Root and on every slot.
-- **`render` on all three parts,** with class and handlers merged, and refs merged.
 - **Dev warnings:** an Input or Slot outside a Root, a Slot whose index is not a position of the pattern (separators count), an Input with no accessible name, and an Input in a Field with no description (a `Field.Prose` above or a `Field.HelpText` under: the length and the groups must be said, 3.3.2).
 
 ## Keyboard

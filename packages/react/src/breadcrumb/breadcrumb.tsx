@@ -1,12 +1,12 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import type { HTMLAttributes, ReactElement, Ref, RefCallback } from 'react'
+import { createElement } from 'react'
+import type { ElementType, HTMLAttributes, ReactElement, Ref, RefCallback } from 'react'
 import { LinkRoot } from '../link/link.tsx'
 import type { LinkProps } from '../link/link.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
+import type { RegisteredLinkComponent } from '../provider/register.ts'
 import { useBreadcrumb } from './use-breadcrumb.ts'
 import type {
   BreadcrumbCurrentPartProps,
@@ -15,22 +15,9 @@ import type {
   BreadcrumbRootPartProps,
 } from './use-breadcrumb.ts'
 
-/** What `render` receives as its second argument. A breadcrumb has no state, so it's empty. */
-export type BreadcrumbState = Record<string, never>
-
-/**
- * What a `render` function gets to spread: your attributes, the part's props and a callback
- * ref, which fits any element.
- */
-export interface BreadcrumbElementProps extends HTMLAttributes<HTMLElement> {
-  ref: RefCallback<HTMLElement>
-}
-
 interface BreadcrumbPartComponentProps extends HTMLAttributes<HTMLElement> {
   /** The rendered element. */
   ref?: Ref<HTMLElement> | undefined
-  /** Change the element. Its own semantics apply. */
-  render?: RenderProp<BreadcrumbElementProps, BreadcrumbState> | undefined
 }
 
 export interface BreadcrumbRootProps extends BreadcrumbPartComponentProps {
@@ -41,22 +28,17 @@ export interface BreadcrumbRootProps extends BreadcrumbPartComponentProps {
   label?: string | undefined
   /** Per-instance message overrides: `{ label: 'Du är här' }`. */
   messages?: Partial<KvirnMessages['breadcrumb']> | undefined
-  /**
-   * Change the element. It must stay a `<nav>` (or have `role="navigation"`), otherwise the
-   * landmark is gone.
-   */
-  render?: RenderProp<BreadcrumbElementProps, BreadcrumbState> | undefined
 }
 export type BreadcrumbListProps = BreadcrumbPartComponentProps
 export type BreadcrumbItemProps = BreadcrumbPartComponentProps
 export type BreadcrumbCurrentProps = BreadcrumbPartComponentProps
-export type BreadcrumbLinkProps = LinkProps
-
-const breadcrumbState: BreadcrumbState = Object.freeze({})
+/** The props of `Link.Root`, `as` included. */
+export type BreadcrumbLinkProps<Component extends ElementType = RegisteredLinkComponent> =
+  LinkProps<Component>
 
 /** Internal. One part: one element. The part's props join the consumer's (mergeProps). */
 function renderBreadcrumbPart(
-  { render, ...otherProps }: BreadcrumbPartComponentProps,
+  otherProps: BreadcrumbPartComponentProps,
   defaultElement: 'nav' | 'ol' | 'li' | 'span',
   partProps:
     | BreadcrumbRootPartProps
@@ -65,13 +47,11 @@ function renderBreadcrumbPart(
     | BreadcrumbCurrentPartProps,
   elementRef: RefCallback<HTMLElement>,
 ): ReactElement {
-  return renderPart({
-    render,
-    defaultElement,
-    // The part's class joins a prop's and a render element's own class names, so neither can
-    // remove it and the theme keeps styling the trail.
-    partProps: { ...mergeProps(otherProps, partProps), ref: elementRef },
-    state: breadcrumbState,
+  return createElement(defaultElement, {
+    // The part's class joins a prop's class names, so a prop can't remove it and the theme keeps
+    // styling the trail.
+    ...mergeProps(otherProps, partProps),
+    ref: elementRef,
   })
 }
 
@@ -125,7 +105,10 @@ BreadcrumbCurrent.displayName = 'Breadcrumb.Current'
  * A link to a level above the current page. A thin wrapper over `Link.Root`, so it is a native
  * `<a href>` rendered by the app's registered router link.
  */
-export function BreadcrumbLink(props: BreadcrumbLinkProps): ReactElement {
+export function BreadcrumbLink<Component extends ElementType = RegisteredLinkComponent>(
+  props: BreadcrumbLinkProps<Component>,
+): ReactElement
+export function BreadcrumbLink(props: BreadcrumbLinkProps<'a'>): ReactElement {
   return <LinkRoot {...mergeProps({ className: 'kv-breadcrumb-link' }, props)} />
 }
 BreadcrumbLink.displayName = 'Breadcrumb.Link'

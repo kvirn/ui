@@ -140,7 +140,7 @@ export function useTooltip({
   const popupId = useId()
   const shortcutId = `${popupId}-shortcut`
   const triggerRef = useRef<HTMLElement | null>(null)
-  // The element is state as well as a ref, so what watches it follows a trigger that `render` swaps.
+  // The element is state as well as a ref, so what watches it follows a trigger that `as` swaps.
   const [triggerElement, setTriggerElement] = useState<HTMLElement | null>(null)
   const setTriggerRef = useCallback((element: HTMLElement | null) => {
     triggerRef.current = element

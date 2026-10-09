@@ -16,9 +16,17 @@ A CodeBlock shows a code sample or a reference with a copy button. The code wrap
 | CodeBlock.Label | `<p>` → `paragraph`             | `id`, set by the Root                                         | `class="kv-code-block-label"`. It names the group. Also exported as `CodeBlockLabel`                                                                                                                                                                                  |
 | CodeBlock.Code  | `<pre>` → `generic`             | none                                                          | `class="kv-code-block-code"`. Never a Tab stop, no `tabindex`, no `overflow`. Put `<code>` inside it if you want. Also exported as `CodeBlockCode`                                                                                                                    |
 | CodeBlock.Copy  | `<button>` → `button`           | as CopyButton                                                 | `class="kv-button kv-code-block-copy"`. Copies the Code's text. On failure it selects the Code. Also exported as `CodeBlockCopy`. It inherits the CopyButton's `span.kv-copy-status` after the button (`status={false}` removes it); there is no separate Status part |
-| every part      | `render`, attributes            | the rendered element's own                                    | One element per part. `className` joins the part's class                                                                                                                                                                                                              |
+| every part      | attributes                      | passed through                                                | One element per part, always the same: no `as`. `className` joins the part's class, the ref gets the element                                                                                                                                                          |
 
 `useCodeBlock()` gives `rootProps`, `labelProps`, `codeProps` and the values the parts share.
+
+## Allowed elements
+
+No part takes `as`.
+
+| Part       | `as` | Why                                                                                                                                     |
+| ---------- | ---- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| every part | none | Root is a `group` named by the Label (an element would not change that), Label a `<p>` (never a heading), Code a `<pre>` (1.3.1, 4.1.2) |
 
 ## Keyboard
 

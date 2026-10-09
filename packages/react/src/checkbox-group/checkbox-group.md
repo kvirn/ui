@@ -18,7 +18,7 @@ Five parts. Each is also exported on its own (`CheckboxGroupRoot`, `CheckboxGrou
 
 | Part                         | Renders                      | What it is                                                                                                                           |
 | ---------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `CheckboxGroup.Root`         | `<fieldset>`                 | The group. Takes the props below and every fieldset prop. `render` must still return a `<fieldset>`: a dev warning says so           |
+| `CheckboxGroup.Root`         | `<fieldset>`                 | The group. Takes the props below and every fieldset prop.                                                                            |
 | `CheckboxGroup.Legend`       | `<legend>`                   | The question and the group's name. Put it first. `marker` is `'optional'` (the default in a group that isn't `required`) or `'none'` |
 | `CheckboxGroup.Prose`        | a [Prose](../prose/prose.md) | The description: what the user must read before answering, above the options, in 16px                                                |
 | `CheckboxGroup.HelpText`     | `<p>`                        | A short instruction that helps while answering, under the options, in 14px                                                           |
@@ -38,7 +38,6 @@ These are the [Fieldset's](../fieldset/fieldset.md) parts under the group's name
 | `required`      | `boolean`                                                | `data-required`, and no optional text in the legend                                                                                                                        |
 | `disabled`      | `boolean`                                                | Native `fieldset[disabled]`: every checkbox is disabled and skipped by Tab. `data-disabled` on every checkbox                                                              |
 | `messages`      | `Partial<KvirnMessages['field']>`                        | Per-instance overrides of the legend's optional text and the error prefix: `field.optional` and `field.errorPrefix`                                                        |
-| `render`        | `(props, state) => ReactElement`                         | Another element. It must still be a `<fieldset>`                                                                                                                           |
 
 | State attribute | Where and when                                                                                  |
 | --------------- | ----------------------------------------------------------------------------------------------- |
@@ -48,7 +47,7 @@ These are the [Fieldset's](../fieldset/fieldset.md) parts under the group's name
 
 - **ARIA it sets:** `aria-describedby` on the fieldset lists every description and help text in DOM order and then the error, only for parts that are rendered. There is **no `aria-invalid` and no `aria-required`** on the fieldset, and no `aria-invalid` on a checkbox in the group, because ARIA doesn't support them on `group`: the error reaches users through the description.
 - **Classes:** `kv-checkbox-group kv-fieldset` on the root, `kv-fieldset-legend` on the legend.
-- **Dev warnings (once):** a Checkbox in the group with no `value`; `checked` or `defaultChecked` on a Checkbox next to the group's (the group wins); a `render` that isn't a `<fieldset>`; two error messages in one group.
+- **Dev warnings (once):** a Checkbox in the group with no `value`; `checked` or `defaultChecked` on a Checkbox next to the group's (the group wins); two error messages in one group.
 - **Messages.** The optional text and the error prefix are `field.optional` and `field.errorPrefix`, resolved like Field's. Override them per provider, or per instance with `messages`.
 
 ## Component

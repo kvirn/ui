@@ -25,10 +25,8 @@ import {
 import type {
   FieldErrorMessageProps,
   FieldHelpTextProps,
-  FieldHelpTextState,
   FieldLabelProps,
   FieldRootProps,
-  FieldState,
 } from './field.tsx'
 import { useField } from './use-field.ts'
 import type {
@@ -95,11 +93,6 @@ function PhoneField({
   )
 }
 
-/** A consumer's own label component, for `render`. */
-function EgenEtikett(props: React.ComponentPropsWithRef<'label'>) {
-  return <label {...props} htmlFor={props.htmlFor} data-egen="" />
-}
-
 describe('rendering', () => {
   test('Root renders one element with the kv-field class and the parts render their part classes', async () => {
     const { container } = await render(
@@ -145,42 +138,6 @@ describe('rendering', () => {
     await expect.element(page.getByTestId('root')).toHaveClass('egen', 'kv-field')
     await expect.element(page.getByTestId('root')).toHaveAttribute('lang', 'sv')
     expect(labelRef.current?.className).toBe('egen-etikett kv-field-label')
-  })
-
-  test('render changes the element of a part', async () => {
-    await render(
-      <Field.Root>
-        <Field.Label render={<EgenEtikett />} marker="none">
-          Namn
-        </Field.Label>
-        <Field.Prose render={<p data-beskrivning="" />}>Som i passet.</Field.Prose>
-        <TextInput />
-      </Field.Root>,
-    )
-    await expect.element(page.getByText('Namn')).toHaveAttribute('data-egen', '')
-    const description = page.getByText('Som i passet.').element()
-    expect(description.tagName).toBe('P')
-  })
-
-  test('render as a function gets the part’s props and the field’s state', async () => {
-    const seenStates: FieldState[] = []
-    await render(
-      <Field.Root invalid required>
-        <Field.Label
-          render={(partProps, state) => {
-            seenStates.push(state)
-            return <label {...partProps} htmlFor={partProps.htmlFor} data-egen="" />
-          }}
-        >
-          Namn
-        </Field.Label>
-        <Field.ErrorMessage>Ange ditt namn</Field.ErrorMessage>
-        <TextInput />
-      </Field.Root>,
-    )
-    await expect.element(page.getByText('Namn')).toHaveAttribute('data-egen', '')
-    await expect.element(page.getByText('Namn')).toHaveAttribute('for')
-    expect(seenStates.at(-1)).toEqual({ isInvalid: true, isRequired: true, isDisabled: false })
   })
 })
 
@@ -1048,7 +1005,7 @@ describe('several descriptions', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('a Prose help text keeps its own props: state and ref, and render', async () => {
+  test('a Prose help text keeps its own props: state and ref', async () => {
     const ref = createRef<HTMLElement>()
     await render(
       <Field.Root invalid disabled>
@@ -1056,7 +1013,7 @@ describe('several descriptions', () => {
         <Field.Prose ref={ref} data-testid="first">
           Ovanför.
         </Field.Prose>
-        <Field.Prose render={<p />} data-testid="second">
+        <Field.Prose as="section" data-testid="second">
           Under.
         </Field.Prose>
         <TextInput />
@@ -1066,8 +1023,8 @@ describe('several descriptions', () => {
     expect(ref.current).toBe(page.getByTestId('first').element())
     await expect.element(page.getByTestId('first')).toHaveAttribute('data-invalid', '')
     await expect.element(page.getByTestId('first')).toHaveAttribute('data-disabled', '')
-    expect(page.getByTestId('second').element().tagName).toBe('P')
-    // A render element's own id is never needed: both are listed, so both have ids.
+    expect(page.getByTestId('second').element().tagName).toBe('SECTION')
+    // Both are listed, so both have ids.
     expect(describedByIds('Namn')).toHaveLength(3)
   })
 })
@@ -1194,9 +1151,8 @@ describe('Field.HelpText (Plan 0029)', () => {
     await expect.element(page.getByTestId('format')).toHaveAttribute('data-disabled', '')
   })
 
-  test('keeps its own props: ref and other props are forwarded, render swaps the element', async () => {
+  test('keeps its own props: ref and other props are forwarded', async () => {
     const ref = createRef<HTMLParagraphElement>()
-    const seenStates: FieldHelpTextState[] = []
     await render(
       <Field.Root invalid disabled>
         <Field.Label marker="none">Namn</Field.Label>
@@ -1204,28 +1160,15 @@ describe('Field.HelpText (Plan 0029)', () => {
         <Field.HelpText ref={ref} lang="sv" data-testid="first">
           Som i passet.
         </Field.HelpText>
-        <Field.HelpText render={<div />} data-testid="second">
-          Ett till.
-        </Field.HelpText>
-        <Field.HelpText
-          render={(partProps, state) => {
-            seenStates.push(state)
-            return <p {...partProps} data-egen="" />
-          }}
-          data-testid="third"
-        >
-          Och ett.
-        </Field.HelpText>
+        <Field.HelpText data-testid="second">Ett till.</Field.HelpText>
         <Field.ErrorMessage>Ange</Field.ErrorMessage>
       </Field.Root>,
     )
     expect(ref.current).toBe(page.getByTestId('first').element())
     await expect.element(page.getByTestId('first')).toHaveAttribute('lang', 'sv')
-    expect(page.getByTestId('second').element().tagName).toBe('DIV')
-    await expect.element(page.getByTestId('third')).toHaveAttribute('data-egen', '')
-    expect(seenStates.at(-1)).toEqual({ isInvalid: true, isRequired: false, isDisabled: true })
-    // All three are listed, so each has an id: 3 help texts and the error.
-    expect(describedByIds('Namn')).toHaveLength(4)
+    await expect.element(page.getByTestId('second')).toHaveAttribute('data-disabled', '')
+    // Both help texts are listed, so each has an id: 2 help texts and the error.
+    expect(describedByIds('Namn')).toHaveLength(3)
   })
 
   test('is never focusable and adds no role, live region or tabindex', async () => {
@@ -1313,13 +1256,12 @@ describe('server rendering', () => {
 })
 
 describe('types', () => {
-  test('Root takes invalid, required, disabled, controlId, messages and render', () => {
+  test('Root takes invalid, required, disabled, controlId and messages', () => {
     expectTypeOf<FieldRootProps['invalid']>().toEqualTypeOf<boolean | undefined>()
     expectTypeOf<FieldRootProps['required']>().toEqualTypeOf<boolean | undefined>()
     expectTypeOf<FieldRootProps['disabled']>().toEqualTypeOf<boolean | undefined>()
     expectTypeOf<FieldRootProps['controlId']>().toEqualTypeOf<string | undefined>()
     expectTypeOf<FieldRootProps>().toHaveProperty('messages')
-    expectTypeOf<FieldRootProps>().toHaveProperty('render')
   })
 
   test('the parts can’t take an id or htmlFor that would break the wiring', () => {
@@ -1327,7 +1269,6 @@ describe('types', () => {
     expectTypeOf<FieldLabelProps>().not.toHaveProperty('id')
     expectTypeOf<FieldErrorMessageProps>().not.toHaveProperty('id')
     expectTypeOf<FieldHelpTextProps>().not.toHaveProperty('id')
-    expectTypeOf<FieldHelpTextProps>().toHaveProperty('render')
     expectTypeOf<FieldLabelProps['marker']>().toEqualTypeOf<'optional' | 'none' | undefined>()
   })
 

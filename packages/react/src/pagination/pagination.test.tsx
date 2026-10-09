@@ -341,13 +341,13 @@ describe('Pagination', () => {
     expect(page.getByText('Page 2 of 9').element().className).toBe('kv-pagination-status')
   })
 
-  test('passes attributes through and joins className, refs and render elements', async () => {
+  test('passes attributes through and and joins className and refs', async () => {
     const rootRef = createRef<HTMLElement>()
     const linkRef = createRef<HTMLAnchorElement>()
     await render(
       <Pagination.Root ref={rootRef} id="sidor" className="min" data-testid="root">
         <Pagination.List>
-          <Pagination.Item render={<li data-own="ja" className="eget" />} data-testid="item">
+          <Pagination.Item data-own="ja" className="eget" data-testid="item">
             <Pagination.Link page={1} href="?sida=1" ref={linkRef} className="egen" />
           </Pagination.Item>
         </Pagination.List>
@@ -364,19 +364,15 @@ describe('Pagination', () => {
     await expect.element(item).toHaveClass('kv-pagination-item', 'eget')
   })
 
-  test('render as a function keeps the landmark', async () => {
+  test('a Pagination.Link with as="a" bypasses the registered router link', async () => {
     await render(
-      <Pagination.Root render={(rootProps) => <nav {...rootProps} data-rendered="ja" />}>
-        <Pagination.List>
-          <Pagination.Item>
-            <Pagination.Link page={1} href="?sida=1" />
-          </Pagination.Item>
-        </Pagination.List>
-      </Pagination.Root>,
+      <KvirnProvider linkComponent={mockRouterLinkComponent}>
+        <Pagination.Link page={1} href="?sida=1" as="a" />
+      </KvirnProvider>,
     )
-    const navigation = page.getByRole('navigation', { name: 'Pages' })
-    await expect.element(navigation).toHaveAttribute('data-rendered', 'ja')
-    await expect.element(navigation).toHaveClass('kv-pagination')
+    const link = page.getByRole('link', { name: 'Page 1' })
+    await expect.element(link).not.toHaveAttribute('data-router-link')
+    await expect.element(link).toHaveClass('kv-pagination-link', 'kv-link')
   })
 
   test('renders on the server with the landmark and the current page', () => {

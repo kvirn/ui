@@ -2,7 +2,7 @@
 
 - **APG pattern:** none. Stepper is static text: native semantics only.
 - **Deviations:** none. Decisions (Plan 0083, design spec `docs/design/stepper.md`): one line of text, not a list; its own element directly after the page heading; no live region, no `aria-describedby`, no hidden text in the heading.
-- **Native elements used:** `<p>`. The consumer can pick another element with `render`, and its own semantics apply.
+- **Native elements used:** `<p>`. The consumer can pick `<div>` with `as` (allowed elements below), and its own semantics apply.
 - **Status:** alpha candidate (Plan 0083). Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `stepper.test.tsx` next to this file. `stepper.stories.tsx` in `apps/storybook/src/components/stepper/`.
 
@@ -10,18 +10,26 @@ Stepper says where the user is in a multi-page form: "Step 2 of 5: Your vehicle"
 
 ## Roles, states, properties
 
-| Part         | Element / role                               | ARIA                           | Notes                                                                                                                                                                    |
-| ------------ | -------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Stepper      | `<p>` → implicit paragraph, no explicit role | none                           | `class="kv-stepper"`. No `data-*`: it has no state. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged. The text is the message, never children |
-| Stepper      | `render` (element, function)                 | the rendered element's own     | One element. The function form gets the props to spread (with the text as `children`) and `{ current, total, text }` as its state                                        |
-| Stepper      | never                                        | no `role`, `tabindex`          | No `role="status"`, no `aria-live`, no `aria-current`, no list, no link, no `aria-describedby` from the heading: the text is one reading stop in the page's order        |
-| `useStepper` | the same, for your own markup                | `text`, `element`, `rootProps` | `text` can be reused, for example in `<title>`                                                                                                                           |
+| Part         | Element / role                               | ARIA                           | Notes                                                                                                                                                                                                          |
+| ------------ | -------------------------------------------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stepper      | `<p>` → implicit paragraph, no explicit role | none                           | `class="kv-stepper"`. No `data-*`: it has no state. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged. The text is the message, never children                                       |
+| Stepper      | `as`                                         | the chosen element's own       | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Stepper:<tag>`) and renders the default element. The text is the message, never `children` |
+| Stepper      | never                                        | no `role`, `tabindex`          | No `role="status"`, no `aria-live`, no `aria-current`, no list, no link, no `aria-describedby` from the heading: the text is one reading stop in the page's order                                              |
+| `useStepper` | the same, for your own markup                | `text`, `element`, `rootProps` | `text` can be reused, for example in `<title>`                                                                                                                                                                 |
 
 Rules, tested in `stepper.test.tsx`:
 
 - **Placement.** The Stepper is the next element after the page heading, outside the heading, `label` and `legend`, so it never joins a control's or group's name (1.3.1, 1.3.2). In a label or legend that is the heading, it comes after the `h1` or the `legend`, before the description and the control.
 - **Text.** `stepper.status` without a `name`, `stepper.statusWithName` with one. Each locale owns its word order and punctuation; numbers go through `format.number`. A blank `name` counts as none.
 - **Dev warnings (once):** `stepper-invalid-position` (`current` or `total` not a positive whole number, or `current > total`); `stepper-in-name` (rendered inside an `h1`–`h6` or `role="heading"`, `label`, `legend`, `summary`, `button`, `a` or `caption`).
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+
+| Part    | `as`                 | Why                                                                                                                                                                                                                                                        |
+| ------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stepper | `p` (default), `div` | A line of text. No `span` (it would sit inline in a heading, which the placement check forbids), no heading and no list. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Stepper:<tag>`) and renders the default element. |
 
 ## Keyboard
 

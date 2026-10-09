@@ -1,54 +1,31 @@
 'use client'
 import type { AnnouncerPoliteness } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { useContext, useEffect, useRef } from 'react'
-import type {
-  ComponentPropsWithRef,
-  HTMLAttributes,
-  MouseEventHandler,
-  ReactElement,
-  ReactNode,
-  Ref,
-  RefCallback,
-} from 'react'
+import { useContext, useEffect } from 'react'
+import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { useButton } from '../button/use-button.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { useMessages } from '../provider/use-messages.ts'
-import { renderPart, takeRenderElementProps } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsTag } from '../render/as-prop.ts'
+import { renderPart } from '../render/render-part.ts'
 import { AlertContext } from './alert-context.ts'
 import { useAlert } from './use-alert.ts'
 import type { AlertVariant } from './use-alert.ts'
 
 export type { AlertVariant } from './use-alert.ts'
 
-/** What `render` receives as its second argument. An alert has no state, so it's empty. */
-export type AlertState = Record<string, never>
+const rootTags = ['div', 'section'] as const
+const titleTags = ['h2', 'h3', 'h4', 'h5', 'h6', 'p'] as const
+const bodyTags = ['div', 'p', 'section'] as const
+const actionsTags = ['div', 'section'] as const
 
-/**
- * What a `render` function gets to spread: your attributes, the part's class and a callback ref,
- * which fits any element. Keep `className` to keep the theme's look, or set your own to drop it.
- */
-export interface AlertElementProps extends HTMLAttributes<HTMLElement> {
-  ref: RefCallback<HTMLElement>
-}
+type AlertRootTag = (typeof rootTags)[number]
 
-interface AlertPartComponentProps extends HTMLAttributes<HTMLElement> {
-  /** The rendered element, whichever it is: `<div>`, `<section>`, a heading or `<p>`. */
-  ref?: Ref<HTMLElement> | undefined
-  /**
-   * Change the element: `render={<h3 />}` or `render={<p />}` for the Title, or
-   * `render={<section aria-labelledby={titleId} />}` for a site-wide alert. Its own
-   * semantics apply. An alert adds no role.
-   */
-  render?: RenderProp<AlertElementProps, AlertState> | undefined
-}
-
-/** The plain Root: `kv-alert` only. No status class, no icon and no status word. */
-export interface AlertRootProps extends AlertPartComponentProps {
+interface AlertRootOwnProps {
   /**
    * Announces the Title and Body text once, when the alert mounts, through the shared
    * Announcer (4.1.3): `polite` for the result of what the user just did, `assertive`
@@ -59,8 +36,13 @@ export interface AlertRootProps extends AlertPartComponentProps {
   announce?: AnnouncerPoliteness | undefined
 }
 
-/** The four ready-made roots: the plain Root's props, and the status word's messages. */
-export interface AlertStatusRootProps extends AlertRootProps {
+/**
+ * The plain Root: `kv-alert` only, no status class, icon or status word. `as` is `div` (default) or `section`. A site-wide alert is
+ * `<Alert.Danger as="section" aria-labelledby={titleId}>`. An alert adds no role.
+ */
+export type AlertRootProps = AsTag<AlertRootTag, 'div', AlertRootOwnProps>
+
+interface AlertStatusRootOwnProps extends AlertRootOwnProps {
   /** Per-instance override for this root's status word, such as `{ dangerPrefix: 'Viktigt:' }`. */
   messages?: Partial<KvirnMessages['alert']> | undefined
   /**
@@ -70,15 +52,15 @@ export interface AlertStatusRootProps extends AlertRootProps {
   icon?: ReactNode | undefined
 }
 
-export type AlertTitleProps = AlertPartComponentProps
-export type AlertBodyProps = AlertPartComponentProps
-export type AlertActionsProps = AlertPartComponentProps
+/** The four ready-made roots: the plain Root's props, and the status word's messages. */
+export type AlertStatusRootProps = AsTag<AlertRootTag, 'div', AlertStatusRootOwnProps>
 
-/** What `render` receives as its second argument for `Alert.Close`. */
-export interface AlertCloseState {
-  isDisabled: boolean
-  isFocusVisible: boolean
-}
+/** `as` is `h2` (default) to `h6`, or `p` for a one-sentence alert. */
+export type AlertTitleProps = AsTag<(typeof titleTags)[number], 'h2'>
+/** `as` is `div` (default), `p` or `section`. */
+export type AlertBodyProps = AsTag<(typeof bodyTags)[number], 'div'>
+/** `as` is `div` (default) or `section`. */
+export type AlertActionsProps = AsTag<(typeof actionsTags)[number], 'div'>
 
 /**
  * `aria-disabled` and `type` are left out: the close button is always `type="button"`, and
@@ -93,21 +75,9 @@ export interface AlertCloseProps extends Omit<
    * `messages`, then the provider's, then the built-in English text.
    */
   messages?: Partial<KvirnMessages['alert']> | undefined
-  /**
-   * Change the element. It must still be a `<button>`. An element's own `onClick` is gated like
-   * the button's. In the function form, keep `className` and the handlers you spread.
-   */
-  render?: RenderProp<ComponentPropsWithRef<'button'>, AlertCloseState> | undefined
 }
 
-const isClickHandler = (value: unknown): value is MouseEventHandler<HTMLButtonElement> =>
-  typeof value === 'function'
-
-const alertState: AlertState = Object.freeze({})
-
-interface AlertRootBaseProps extends AlertStatusRootProps {
-  variant: AlertVariant | undefined
-}
+type AlertRootBaseProps = AlertStatusRootProps & { variant: AlertVariant | undefined }
 
 /**
  * Internal. One root: `useAlert` for the classes, the icon and the status word, a
@@ -118,7 +88,7 @@ function AlertRootBase({
   announce,
   messages,
   icon,
-  render,
+  as,
   ref,
   children,
   ...otherProps
@@ -127,13 +97,11 @@ function AlertRootBase({
   const { ref: ownRef, ...rootProps } = alert.rootProps
   const elementRef = useMergedRef(ref, ownRef)
   const iconProps = alert.iconProps
-  // The class joins a prop's and a render element's own class names (mergeProps), so neither
-  // can remove it. The icon is a child, so it stays when the `render` function form spreads
-  // the props.
+  // The class joins a prop's own class names (mergeProps), so a prop can't remove it.
   return (
     <AlertContext.Provider value={alert}>
       {renderPart({
-        render,
+        as: resolveAsTag({ part: 'Alert.Root', as, allowedTags: rootTags }),
         defaultElement: 'div',
         partProps: {
           ...mergeProps(otherProps, rootProps),
@@ -148,7 +116,6 @@ function AlertRootBase({
               </>
             ),
         },
-        state: alertState,
       })}
     </AlertContext.Provider>
   )
@@ -214,24 +181,19 @@ function useWarnOutsideRoot(isOutside: boolean, partName: string): void {
 }
 
 /**
- * The message's title: a heading, `<h2>` by default. Set the level with `render={<h3 />}` to
- * fit the page's outline (1.3.1, 2.4.6), or `render={<p />}` for a one-sentence alert.
+ * The message's title: a heading, `<h2>` by default. Set the level with `as="h3"` to
+ * fit the page's outline (1.3.1, 2.4.6), or `as="p"` for a one-sentence alert.
  * Inside a ready-made root it starts with the status word in a `kv-alert-status` span
  * (visually hidden by the theme), then a space, then your text. Write the outcome in the user's
  * words, never only the status.
  */
-export function AlertTitle({
-  render,
-  ref,
-  children,
-  ...otherProps
-}: AlertTitleProps): ReactElement {
+export function AlertTitle({ as, ref, children, ...otherProps }: AlertTitleProps): ReactElement {
   const alert = useContext(AlertContext)
   useWarnOutsideRoot(alert === null, 'Title')
   const elementRef = useMergedRef(ref, alert?.titleProps.ref ?? null)
   const statusProps = alert?.statusProps
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'Alert.Title', as, allowedTags: titleTags }),
     defaultElement: 'h2',
     partProps: {
       ...mergeProps(otherProps, { className: 'kv-alert-title' }),
@@ -247,24 +209,22 @@ export function AlertTitle({
         </>
       ),
     },
-    state: alertState,
   })
 }
 AlertTitle.displayName = 'Alert.Title'
 
 /** What to do, and by when: one to three short sentences. Optional. */
-export function AlertBody({ render, ref, ...otherProps }: AlertBodyProps): ReactElement {
+export function AlertBody({ as, ref, ...otherProps }: AlertBodyProps): ReactElement {
   const alert = useContext(AlertContext)
   useWarnOutsideRoot(alert === null, 'Body')
   const elementRef = useMergedRef(ref, alert?.bodyProps.ref ?? null)
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'Alert.Body', as, allowedTags: bodyTags }),
     defaultElement: 'div',
     partProps: {
       ...mergeProps(otherProps, { className: 'kv-alert-body' }),
       ref: elementRef,
     },
-    state: alertState,
   })
 }
 AlertBody.displayName = 'Alert.Body'
@@ -273,18 +233,17 @@ AlertBody.displayName = 'Alert.Body'
  * Up to two actions: Links for navigation, Buttons for actions. The theme lays them out as a
  * wrapping row. They aren't announced: users reach them with Tab. Optional.
  */
-export function AlertActions({ render, ref, ...otherProps }: AlertActionsProps): ReactElement {
+export function AlertActions({ as, ref, ...otherProps }: AlertActionsProps): ReactElement {
   const alert = useContext(AlertContext)
   useWarnOutsideRoot(alert === null, 'Actions')
   const elementRef = useMergedRef(ref, null)
   return renderPart({
-    render,
+    as: resolveAsTag({ part: 'Alert.Actions', as, allowedTags: actionsTags }),
     defaultElement: 'div',
     partProps: {
       ...mergeProps(otherProps, { className: 'kv-alert-actions' }),
       ref: elementRef,
     },
-    state: alertState,
   })
 }
 AlertActions.displayName = 'Alert.Actions'
@@ -301,7 +260,6 @@ export function AlertClose({
   disabled,
   onClick,
   messages,
-  render,
   ref,
   children,
   ...otherProps
@@ -317,46 +275,25 @@ export function AlertClose({
   // `null`, `false` and `''` render nothing, so they leave the icon and the name in place.
   const hasVisibleText =
     children !== undefined && children !== null && children !== false && children !== ''
-  // The element's onClick goes through useButton too, so a disabled button blocks it.
-  const { render: renderWithoutClick, takenProps } = takeRenderElementProps(render, ['onClick'])
-  const elementOnClick = takenProps.onClick
-  const activationHandler = isClickHandler(elementOnClick)
-    ? mergeProps({ onClick }, { onClick: elementOnClick }).onClick
-    : onClick
-  const button = useButton({ disabled, onClick: activationHandler })
-  const elementRef = useRef<HTMLButtonElement | null>(null)
-  const mergedRef = useMergedRef(ref, elementRef)
+  const button = useButton({ disabled, onClick })
 
-  useEffect(() => {
-    const element = elementRef.current
-    if (element !== null && element.tagName !== 'BUTTON') {
-      const rendered = `<${element.tagName.toLowerCase()}>`
-      warnOnce(
-        `alert-close-not-a-button:${rendered}`,
-        `<Alert.Close render> must render a <button> and forward its ref, but it rendered ${rendered}. Keyboard activation and the disabled state come from the native element (WCAG 4.1.2).`,
-      )
-    }
-  })
-
-  return renderPart({
-    render: renderWithoutClick,
-    defaultElement: 'button',
-    partProps: {
-      // The consumer's props come last, so their own `aria-label` replaces ours.
-      ...mergeProps(
+  return (
+    <button
+      {...mergeProps(
         {
           ...button.buttonProps,
           // Not the Button's look: a quiet icon button of the alert's own.
           className: 'kv-alert-close',
           ...(hasVisibleText ? {} : { 'aria-label': name }),
         },
+        // The consumer's props come last, so their own `aria-label` replaces ours.
         otherProps,
-      ),
-      ref: mergedRef,
-      children: hasVisibleText ? children : <Icon name="close" />,
-    },
-    state: { isDisabled: button.isDisabled, isFocusVisible: button.isFocusVisible },
-  })
+      )}
+      ref={ref}
+    >
+      {hasVisibleText ? children : <Icon name="close" />}
+    </button>
+  )
 }
 AlertClose.displayName = 'Alert.Close'
 

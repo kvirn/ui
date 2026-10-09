@@ -20,6 +20,7 @@ import {
 import type {
   PopoverChangeDetails,
   PopoverChangeReason,
+  PopoverPopupProps,
   PopoverRootProps,
   UsePopoverOptions,
   UsePopoverResult,
@@ -130,35 +131,59 @@ describe('rendering', () => {
     await expect.poll(() => popupRef.current?.style.position).toBe('fixed')
   })
 
-  test('render replaces the element and gives the state', async () => {
-    const states: boolean[] = []
+  test('as={Button} on the trigger and the close keeps their wiring and merges the Button’s props', async () => {
     await render(
-      <Popover.Root>
-        <Popover.Trigger
-          render={(partProps) => (
-            <button {...partProps} data-egen="render">
-              Hjälp
-            </button>
-          )}
-        />
-        <Popover.Popup
-          aria-label="Hjälp"
-          render={(partProps, state) => {
-            states.push(state.isOpen)
-            return <section {...partProps} />
-          }}
-        >
-          Text
+      <Popover.Root defaultOpen>
+        <Popover.Trigger as={Button} data-egen="trigger">
+          Hjälp
+        </Popover.Trigger>
+        <Popover.Popup aria-label="Hjälp">
+          <Popover.Close as={Button} data-egen="close">
+            Stäng
+          </Popover.Close>
         </Popover.Popup>
       </Popover.Root>,
     )
     const customTrigger = trigger().element()
-    expect(customTrigger.getAttribute('data-egen')).toBe('render')
-    expect(customTrigger.getAttribute('aria-expanded')).toBe('false')
+    expect(customTrigger.getAttribute('data-egen')).toBe('trigger')
+    expect(customTrigger.getAttribute('aria-expanded')).toBe('true')
+    expect(customTrigger.getAttribute('aria-haspopup')).toBe('dialog')
+    expect(customTrigger.className).toContain('kv-popover-trigger')
+    await userEvent.click(closeButton())
+    await expect.poll(isShown).toBe(false)
+    await expect.element(trigger()).toHaveFocus()
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('as="section" on the popup keeps the dialog role and the class', async () => {
+    await render(
+      <Popover.Root>
+        <Popover.Trigger>Hjälp</Popover.Trigger>
+        <Popover.Popup as="section" aria-label="Hjälp">
+          Text
+        </Popover.Popup>
+      </Popover.Root>,
+    )
     expect(popupElement()?.tagName).toBe('SECTION')
-    expect(states).toContain(false)
+    expect(popupElement()?.getAttribute('role')).toBe('dialog')
+    expect(popupElement()?.className).toBe('kv-popover-popup')
     await userEvent.click(trigger())
-    expect(states.at(-1)).toBe(true)
+    await expect.poll(isShown).toBe(true)
+  })
+
+  test('a tag outside the popup’s list warns once and falls back to a div', async () => {
+    const notAllowed = 'form' as PopoverPopupProps['as']
+    await render(
+      <Popover.Root>
+        <Popover.Trigger>Hjälp</Popover.Trigger>
+        <Popover.Popup as={notAllowed} aria-label="Hjälp">
+          Text
+        </Popover.Popup>
+      </Popover.Root>,
+    )
+    expect(popupElement()?.tagName).toBe('DIV')
+    expect(consoleWarn).toHaveBeenCalledTimes(1)
+    expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('Popover.Popup as="form"')
   })
 
   test('usePopover spreads the same props on your own elements', async () => {
@@ -691,7 +716,7 @@ describe('in a Toolbar (Plan 0036)', () => {
         <Toolbar.Button>Ett</Toolbar.Button>
         <Toolbar.Button>Två</Toolbar.Button>
         <Popover.Root defaultOpen>
-          <Toolbar.Item render={<Popover.Trigger />}>Länk</Toolbar.Item>
+          <Toolbar.Item as={Popover.Trigger}>Länk</Toolbar.Item>
           <Popover.Popup aria-label="Lägg till länk">
             <ButtonGroup>
               <Button>Spara</Button>

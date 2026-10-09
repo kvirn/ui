@@ -1,15 +1,22 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef } from 'react'
-import type { HTMLAttributes, ReactElement, ReactNode, Ref, RefCallback } from 'react'
+import {
+  createContext,
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from 'react'
+import type { ElementType, HTMLAttributes, ReactElement, ReactNode, Ref, RefCallback } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { LinkRoot } from '../link/link.tsx'
 import type { LinkProps } from '../link/link.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import type { RegisteredLinkComponent } from '../provider/register.ts'
 import { useFormat } from '../provider/use-format.ts'
-import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { usePagination } from './use-pagination.ts'
 import type {
   PaginationEllipsisPartProps,
@@ -19,22 +26,9 @@ import type {
   PaginationStatusPartProps,
 } from './use-pagination.ts'
 
-/** What `render` receives as its second argument. Pagination has no state, so it's empty. */
-export type PaginationPartState = Record<string, never>
-
-/**
- * What a `render` function gets to spread: your attributes, the part's props and a callback
- * ref, which fits any element.
- */
-export interface PaginationElementProps extends HTMLAttributes<HTMLElement> {
-  ref: RefCallback<HTMLElement>
-}
-
 interface PaginationPartComponentProps extends HTMLAttributes<HTMLElement> {
   /** The rendered element. */
   ref?: Ref<HTMLElement> | undefined
-  /** Change the element. Its own semantics apply. */
-  render?: RenderProp<PaginationElementProps, PaginationPartState> | undefined
 }
 
 export interface PaginationRootProps extends PaginationPartComponentProps {
@@ -45,11 +39,6 @@ export interface PaginationRootProps extends PaginationPartComponentProps {
   label?: string | undefined
   /** Per-instance message overrides: `{ next: 'Nästa' }`. */
   messages?: Partial<KvirnMessages['pagination']> | undefined
-  /**
-   * Change the element. It must stay a `<nav>` (or have `role="navigation"`), otherwise the
-   * landmark is gone.
-   */
-  render?: RenderProp<PaginationElementProps, PaginationPartState> | undefined
 }
 export type PaginationListProps = PaginationPartComponentProps
 export type PaginationItemProps = PaginationPartComponentProps
@@ -66,7 +55,10 @@ export interface PaginationStatusProps extends PaginationPartComponentProps {
   messages?: Partial<KvirnMessages['pagination']> | undefined
 }
 
-export type PaginationLinkProps = Omit<LinkProps, 'current' | 'messages'> & {
+export type PaginationLinkProps<Component extends ElementType = RegisteredLinkComponent> = Omit<
+  LinkProps<Component>,
+  'current' | 'messages'
+> & {
   /**
    * The page this link goes to, from 1. It becomes the link's text and, with the message, its
    * name (`Sida 2`). Your own `children` replace both: the visible text is then the name (2.5.3).
@@ -78,15 +70,17 @@ export type PaginationLinkProps = Omit<LinkProps, 'current' | 'messages'> & {
   messages?: Partial<KvirnMessages['pagination']> | undefined
 }
 
-export type PaginationPreviousProps = Omit<LinkProps, 'current' | 'messages'> & {
+export type PaginationPreviousProps<Component extends ElementType = RegisteredLinkComponent> = Omit<
+  LinkProps<Component>,
+  'current' | 'messages'
+> & {
   /** Your own text. Replaces the message `pagination.previous`, so its language is yours to set. */
   children?: ReactNode
   /** Per-instance message overrides: `{ previous: 'Tillbaka' }`. */
   messages?: Partial<KvirnMessages['pagination']> | undefined
 }
-export type PaginationNextProps = PaginationPreviousProps
-
-const paginationState: PaginationPartState = Object.freeze({})
+export type PaginationNextProps<Component extends ElementType = RegisteredLinkComponent> =
+  PaginationPreviousProps<Component>
 
 /** Empty, whitespace-only or boolean children fall through to the message. */
 function hasOwnText(children: ReactNode): boolean {
@@ -98,7 +92,7 @@ function hasOwnText(children: ReactNode): boolean {
 
 /** Internal. One part: one element. The part's props join the consumer's (mergeProps). */
 function renderPaginationPart(
-  { render, ...otherProps }: PaginationPartComponentProps,
+  otherProps: PaginationPartComponentProps,
   defaultElement: 'nav' | 'ul' | 'li' | 'span',
   partProps:
     | PaginationRootPartProps
@@ -109,17 +103,12 @@ function renderPaginationPart(
   elementRef: RefCallback<HTMLElement>,
   children?: ReactNode,
 ): ReactElement {
-  return renderPart({
-    render,
-    defaultElement,
-    // The part's class joins a prop's and a render element's own class names, so neither can
-    // remove it and the theme keeps styling the pagination.
-    partProps: {
-      ...mergeProps(otherProps, partProps),
-      ref: elementRef,
-      ...(children === undefined ? {} : { children }),
-    },
-    state: paginationState,
+  return createElement(defaultElement, {
+    // The part's class joins a prop's class names, so a prop can't remove it and the theme keeps
+    // styling the pagination.
+    ...mergeProps(otherProps, partProps),
+    ref: elementRef,
+    ...(children === undefined ? {} : { children }),
   })
 }
 
@@ -231,13 +220,16 @@ PaginationStatus.displayName = 'Pagination.Status'
  * words), so the visible number is in the name (2.5.3). With your own `children` there is no
  * `aria-label`: the visible text is the name.
  */
+export function PaginationLink<Component extends ElementType = RegisteredLinkComponent>(
+  props: PaginationLinkProps<Component>,
+): ReactElement
 export function PaginationLink({
   page,
   current,
   messages,
   children,
   ...otherProps
-}: PaginationLinkProps): ReactElement {
+}: PaginationLinkProps<'a'>): ReactElement {
   const pagination = usePagination({ messages })
   const format = useFormat()
   const ownText = hasOwnText(children)
@@ -259,11 +251,14 @@ export function PaginationLink({
 PaginationLink.displayName = 'Pagination.Link'
 
 /** The link to the previous page, with the words `Föregående sida` and an arrow the theme draws. */
+export function PaginationPrevious<Component extends ElementType = RegisteredLinkComponent>(
+  props: PaginationPreviousProps<Component>,
+): ReactElement
 export function PaginationPrevious({
   messages,
   children,
   ...otherProps
-}: PaginationPreviousProps): ReactElement {
+}: PaginationPreviousProps<'a'>): ReactElement {
   const pagination = usePagination({ messages })
   return (
     <LinkRoot {...mergeProps({ className: 'kv-pagination-previous', rel: 'prev' }, otherProps)}>
@@ -274,11 +269,14 @@ export function PaginationPrevious({
 PaginationPrevious.displayName = 'Pagination.Previous'
 
 /** The link to the next page, with the words `Nästa sida` and an arrow the theme draws. */
+export function PaginationNext<Component extends ElementType = RegisteredLinkComponent>(
+  props: PaginationNextProps<Component>,
+): ReactElement
 export function PaginationNext({
   messages,
   children,
   ...otherProps
-}: PaginationNextProps): ReactElement {
+}: PaginationNextProps<'a'>): ReactElement {
   const pagination = usePagination({ messages })
   return (
     <LinkRoot {...mergeProps({ className: 'kv-pagination-next', rel: 'next' }, otherProps)}>

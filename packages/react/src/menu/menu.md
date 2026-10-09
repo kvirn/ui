@@ -57,7 +57,7 @@ import { Menu } from '@kvirn-ui/react'
 
 `Menu.Root` takes `open` / `defaultOpen`, `onOpenChange(open, { reason, event })` (reasons: `'trigger-press'`, `'key'`, `'item-press'`, `'escape'`, `'outside-press'`, `'light-dismiss'`, `'tab'`, `'focus-out'`), `placement` (default `'bottom-start'`), `offset` (4) and `padding` (8). With `open` set, `onOpenChange` only reports: you change `open`.
 
-Every part takes `render` to change its element, and `className`, `style`, handlers and refs merge with its own. `render` also receives the state: `{ isOpen }` for the Trigger and Popup, `{ isOpen, isChecked, isDisabled, isHighlighted }` for items. Call `event.preventDefault()` in `onSelect` to keep the menu open and skip the toggle.
+`Menu.Trigger` takes `as`, a component such as `Button` that gets the other props as plain props. `Popup`, `Group` and `RadioGroup` take `as="section"`, and `GroupLabel` `span` or `p`; the items and the separator have no `as`, because an action is a button with a menu role. Every part merges `className`, `style`, handlers and refs with its own. Call `event.preventDefault()` in `onSelect` to keep the menu open and skip the toggle.
 
 ## Hook
 
@@ -88,7 +88,7 @@ It returns `isOpen`, `placement`, `triggerProps`, `popupProps` and `getItemProps
 
 ## Developer warnings
 
-In development a Menu warns once when a part is outside `Menu.Root`, when `Menu.Trigger` is not a `<button>`, when a `Menu.Item` is rendered as a link, and when a `Menu.RadioGroup` or `Menu.Group` has no name. Each has a code on the Foundation page Dev warnings.
+In development a Menu warns once when a part is outside `Menu.Root`, when `Menu.Trigger` is not a `<button>`, and when a `Menu.RadioGroup` or `Menu.Group` has no name. Each has a code on the Foundation page Dev warnings.
 
 ## Accessibility
 

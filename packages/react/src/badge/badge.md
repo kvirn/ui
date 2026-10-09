@@ -7,7 +7,7 @@ A short status or category in words: `Beviljad`, `Pre-alpha`, `Nyheter`. It rend
 - One part: `Badge`, also `useBadge()`. It renders `<span class="kv-badge">`, and no role, ARIA, text or strings.
 - `variant`: `neutral` (default), `primary`, `info`, `success`, `warning` or `danger`. The class is `kv-badge--<variant>`. Always say the status in words: the colour is only a second cue.
 - Attributes and the `ref` reach the element. A `className` joins `kv-badge`.
-- `render` changes the element. Its own semantics apply.
+- `as` changes the element to `strong` or `em`. Its own semantics apply.
 - Headless: no CSS. With `@kvirn-ui/theme/theme.css` imported, `kv-badge` draws a pill in measured colour pairs, with a `CanvasText` edge in forced colours.
 - A badge is text and not a control: it isn't a Tab stop and announces nothing. If it should do something, use a Button.
 

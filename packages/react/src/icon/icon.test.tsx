@@ -3,7 +3,7 @@ import { Trash as PhosphorTrash } from '@phosphor-icons/react'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { ArrowRight, Trash2 } from 'lucide-react'
 import { createRef } from 'react'
-import type { ComponentType, ReactElement, ReactNode } from 'react'
+import type { ComponentType, ElementType, ReactElement, ReactNode, SVGProps } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -16,7 +16,7 @@ import type { KvirnProviderProps } from '../provider/kvirn-provider.tsx'
 import { builtInIconNames } from './built-in-icons.tsx'
 import type { BuiltInIconName } from './built-in-icons.tsx'
 import { Icon } from './icon.tsx'
-import type { IconProps, IconState } from './icon.tsx'
+import type { IconProps } from './icon.tsx'
 import { defineIcons } from './icon-registry.ts'
 import type { IconComponent, IconName, IconNameOf, IconsOf } from './icon-registry.ts'
 import { useIcon } from './use-icon.ts'
@@ -57,7 +57,7 @@ type LibraryIconName = keyof typeof libraryIcons
 function RegisteredIcon({
   name,
   ...otherProps
-}: Omit<IconProps, 'name' | 'icon' | 'render' | 'children'> & {
+}: Omit<IconProps, 'name' | 'icon' | 'as' | 'children'> & {
   name: LibraryIconName
 }) {
   return <Icon {...otherProps} name={name as IconName} />
@@ -545,28 +545,19 @@ describe('one-off icons without the registry', () => {
     expect(svg.querySelector('path')?.getAttribute('d')).toBe('M5 12h14')
   })
 
-  test('render element: a library component gets the part props', async () => {
-    const { container } = await render(<Icon render={<TrashIcon />} label="Radera" size={4} />)
+  test('as: a component gets the part props, and Icon’s own options do not reach it by name', async () => {
+    const received: SVGProps<SVGSVGElement>[] = []
+    function MunicipalityMark(props: SVGProps<SVGSVGElement>) {
+      received.push(props)
+      return <TrashIcon {...props} />
+    }
+    const { container } = await render(<Icon as={MunicipalityMark} label="Radera" size={4} />)
     const svg = svgIn(container)
     expect(svg.getAttribute('data-slot')).toBe('icon')
     expect(svg.getAttribute('width')).toBe('1em')
+    expect(received.at(-1)).not.toHaveProperty('size')
+    expect(received.at(-1)).not.toHaveProperty('label')
     await expect.element(page.getByRole('img', { name: 'Radera' })).toBeVisible()
-  })
-
-  test('render function: spreads the props and reads the state', async () => {
-    const { container } = await render(
-      <Icon
-        label="Varning"
-        render={(iconProps, state) => (
-          <svg {...iconProps} data-decorative={String(state.isDecorative)} viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="9" />
-          </svg>
-        )}
-      />,
-    )
-    const svg = svgIn(container)
-    expect(svg.getAttribute('data-decorative')).toBe('false')
-    expect(svg.getAttribute('role')).toBe('img')
   })
 })
 
@@ -679,19 +670,15 @@ describe('icon prop: a component reference (Plan 0044)', () => {
   })
 })
 
-describe('exclusive name, icon, render and children (Plan 0044)', () => {
+describe('exclusive name, icon, as and children (Plan 0044)', () => {
   // The types forbid these pairs, so the props are built untyped, as JavaScript or a cast would.
   const pairs: ReadonlyArray<readonly [string, string, Record<string, unknown>]> = [
     ['name, icon', 'name+icon', { name: 'close', icon: Trash2 }],
-    ['name, render', 'name+render', { name: 'close', render: <TrashIcon /> }],
+    ['name, as', 'name+as', { name: 'close', as: TrashIcon }],
     ['name, children', 'name+children', { name: 'close', children: <path d="M5 12h14" /> }],
-    ['icon, render', 'icon+render', { icon: Trash2, render: <TrashIcon /> }],
+    ['icon, as', 'icon+as', { icon: Trash2, as: TrashIcon }],
     ['icon, children', 'icon+children', { icon: Trash2, children: <path d="M5 12h14" /> }],
-    [
-      'render, children',
-      'render+children',
-      { render: <TrashIcon />, children: <path d="M5 12h14" /> },
-    ],
+    ['as, children', 'as+children', { as: TrashIcon, children: <path d="M5 12h14" /> }],
   ]
 
   test.each(pairs)('%s together warn once, naming both', async (names, key, props) => {
@@ -716,7 +703,7 @@ describe('exclusive name, icon, render and children (Plan 0044)', () => {
       <>
         <Icon name="close" />
         <Icon icon={Trash2} />
-        <Icon render={<TrashIcon />} />
+        <Icon as={TrashIcon} />
         <Icon viewBox="0 0 24 24">
           <path d="M5 12h14" />
         </Icon>
@@ -789,13 +776,13 @@ describe('types', () => {
     expectTypeOf<ComponentType<{ href: string }>>().not.toExtend<IconComponent>()
   })
 
-  test('name, icon, render and children are exclusive', () => {
-    expectTypeOf<{ name: BuiltInIconName; render: ReactElement }>().not.toExtend<IconProps>()
+  test('name, icon, as and children are exclusive', () => {
+    expectTypeOf<{ name: BuiltInIconName; as: ElementType }>().not.toExtend<IconProps>()
     expectTypeOf<{ name: BuiltInIconName; children: ReactNode }>().not.toExtend<IconProps>()
     expectTypeOf<{ name: BuiltInIconName; icon: IconComponent }>().not.toExtend<IconProps>()
-    expectTypeOf<{ icon: IconComponent; render: ReactElement }>().not.toExtend<IconProps>()
+    expectTypeOf<{ icon: IconComponent; as: ElementType }>().not.toExtend<IconProps>()
     expectTypeOf<{ icon: IconComponent; children: ReactNode }>().not.toExtend<IconProps>()
-    expectTypeOf<{ render: ReactElement; children: ReactNode }>().not.toExtend<IconProps>()
+    expectTypeOf<{ as: ElementType; children: ReactNode }>().not.toExtend<IconProps>()
   })
 
   test('icon takes an icon component, and nothing else', () => {
@@ -816,8 +803,7 @@ describe('types', () => {
     expectTypeOf<{ size: '1rem' }>().toExtend<UseIconOptions>()
   })
 
-  test('the part props and state', () => {
+  test('the part props', () => {
     expectTypeOf<IconPartProps['className']>().toEqualTypeOf<'kv-icon'>()
-    expectTypeOf<IconState>().toEqualTypeOf<{ isDecorative: boolean }>()
   })
 })

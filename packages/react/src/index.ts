@@ -29,24 +29,19 @@ export type {
   UseFocusResult,
 } from './focus/use-focus.ts'
 export { FocusScope } from './focus/focus-scope.tsx'
-export type {
-  FocusScopeElementProps,
-  FocusScopeProps,
-  FocusScopeState,
-} from './focus/focus-scope.tsx'
+export type { FocusScopeProps } from './focus/focus-scope.tsx'
 export { mergeProps } from './merge-props/merge-props.ts'
 export type { MergedProps } from './merge-props/merge-props.ts'
-export type { RenderProp } from './render/render-part.ts'
 export { Button } from './button/button.tsx'
-export type { ButtonProps, ButtonState } from './button/button.tsx'
+export type { ButtonProps } from './button/button.tsx'
 export { useButton } from './button/use-button.ts'
 export type { ButtonPartProps, UseButtonOptions, UseButtonResult } from './button/use-button.ts'
 export { Toggle } from './toggle/toggle.tsx'
-export type { TogglePressedChangeDetails, ToggleProps, ToggleState } from './toggle/toggle.tsx'
+export type { TogglePressedChangeDetails, ToggleProps } from './toggle/toggle.tsx'
 export { useToggle } from './toggle/use-toggle.ts'
 export type { TogglePartProps, UseToggleOptions, UseToggleResult } from './toggle/use-toggle.ts'
 export { ButtonGroup } from './button-group/button-group.tsx'
-export type { ButtonGroupProps, ButtonGroupState } from './button-group/button-group.tsx'
+export type { ButtonGroupProps } from './button-group/button-group.tsx'
 export { useButtonGroup } from './button-group/use-button-group.ts'
 export type {
   ButtonGroupLayout,
@@ -66,9 +61,7 @@ export type {
   ToolbarButtonProps,
   ToolbarGroupProps,
   ToolbarItemProps,
-  ToolbarItemState,
   ToolbarRootProps,
-  ToolbarState,
   ToolbarToggleProps,
 } from './toolbar/toolbar.tsx'
 export { useToolbar } from './toolbar/use-toolbar.ts'
@@ -80,15 +73,7 @@ export type {
 } from './toolbar/use-toolbar.ts'
 export type { RovingOrientation } from '@kvirn-ui/core'
 export { Tabs, TabsList, TabsPanel, TabsRoot, TabsTab } from './tabs/tabs.tsx'
-export type {
-  TabsListProps,
-  TabsPanelProps,
-  TabsPanelState,
-  TabsRootProps,
-  TabsState,
-  TabsTabProps,
-  TabsTabState,
-} from './tabs/tabs.tsx'
+export type { TabsListProps, TabsPanelProps, TabsRootProps, TabsTabProps } from './tabs/tabs.tsx'
 export { useTabs } from './tabs/use-tabs.ts'
 export type {
   TabsActivationMode,
@@ -133,24 +118,15 @@ export {
 } from './accordion/accordion.tsx'
 export type {
   AccordionHeadingProps,
-  AccordionHeadingState,
   AccordionItemProps,
-  AccordionItemState,
   AccordionPanelProps,
   AccordionRootProps,
-  AccordionState,
   AccordionTriggerProps,
 } from './accordion/accordion.tsx'
 export { useAccordion } from './accordion/use-accordion.ts'
 export type { AccordionPartProps, UseAccordionResult } from './accordion/use-accordion.ts'
 export { Link, LinkIcon, LinkNewTabNotice, LinkRoot } from './link/link.tsx'
-export type {
-  LinkElementProps,
-  LinkIconProps,
-  LinkNewTabNoticeProps,
-  LinkProps,
-  LinkState,
-} from './link/link.tsx'
+export type { LinkIconProps, LinkNewTabNoticeProps, LinkProps } from './link/link.tsx'
 export { useLink } from './link/use-link.ts'
 export type { LinkCurrent, LinkPartProps, UseLinkOptions, UseLinkResult } from './link/use-link.ts'
 export {
@@ -161,12 +137,10 @@ export {
   NavigationRoot,
 } from './navigation/navigation.tsx'
 export type {
-  NavigationElementProps,
   NavigationItemProps,
   NavigationLabelProps,
   NavigationListProps,
   NavigationRootProps,
-  NavigationState,
 } from './navigation/navigation.tsx'
 export { useNavigation } from './navigation/use-navigation.ts'
 export type {
@@ -186,14 +160,12 @@ export {
 } from './table-of-contents/table-of-contents.tsx'
 export type {
   TableOfContentsChildrenState,
-  TableOfContentsElementProps,
   TableOfContentsEntry,
   TableOfContentsItemProps,
   TableOfContentsLinkProps,
   TableOfContentsListProps,
   TableOfContentsNode,
   TableOfContentsRootProps,
-  TableOfContentsState,
 } from './table-of-contents/table-of-contents.tsx'
 export { useTableOfContents } from './table-of-contents/use-table-of-contents.ts'
 export type {
@@ -207,22 +179,14 @@ export type {
 export { Card, CardBody, CardFooter, CardHeader, CardRoot } from './card/card.tsx'
 export type {
   CardBodyProps,
-  CardElementProps,
   CardFooterProps,
   CardHeaderProps,
   CardRootProps,
-  CardState,
 } from './card/card.tsx'
 export { useCard } from './card/use-card.ts'
 export type { CardPartProps, UseCardResult } from './card/use-card.ts'
 export { Heading } from './heading/heading.tsx'
-export type {
-  HeadingElementProps,
-  HeadingLevel,
-  HeadingProps,
-  HeadingSize,
-  HeadingState,
-} from './heading/heading.tsx'
+export type { HeadingLevel, HeadingProps, HeadingSize, HeadingTag } from './heading/heading.tsx'
 export { useHeading } from './heading/use-heading.ts'
 export type {
   HeadingPartProps,
@@ -230,7 +194,7 @@ export type {
   UseHeadingResult,
 } from './heading/use-heading.ts'
 export { Badge } from './badge/badge.tsx'
-export type { BadgeElementProps, BadgeProps, BadgeState } from './badge/badge.tsx'
+export type { BadgeProps } from './badge/badge.tsx'
 export { useBadge } from './badge/use-badge.ts'
 export type {
   BadgePartProps,
@@ -252,7 +216,6 @@ export {
 } from './tag/tag.tsx'
 export type {
   TagGroupClearAllProps,
-  TagGroupLabelElementProps,
   TagGroupLabelProps,
   TagGroupListProps,
   TagGroupRootProps,
@@ -261,7 +224,7 @@ export type {
 export { useTagGroup } from './tag/use-tag-group.ts'
 export type { UseTagGroupOptions, UseTagGroupResult } from './tag/use-tag-group.ts'
 export { Kbd } from './kbd/kbd.tsx'
-export type { KbdElementProps, KbdProps, KbdState } from './kbd/kbd.tsx'
+export type { KbdProps } from './kbd/kbd.tsx'
 export { useKbd } from './kbd/use-kbd.ts'
 export type { KbdPartProps, UseKbdResult } from './kbd/use-kbd.ts'
 export {
@@ -275,13 +238,10 @@ export {
 } from './summary-list/summary-list.tsx'
 export type {
   SummaryListActionsProps,
-  SummaryListChangeElementProps,
   SummaryListChangeProps,
-  SummaryListElementProps,
   SummaryListKeyProps,
   SummaryListRootProps,
   SummaryListRowProps,
-  SummaryListState,
   SummaryListValueProps,
 } from './summary-list/summary-list.tsx'
 export { useSummaryList } from './summary-list/use-summary-list.ts'
@@ -300,13 +260,10 @@ export {
   ErrorSummaryTitle,
 } from './error-summary/error-summary.tsx'
 export type {
-  ErrorSummaryElementProps,
   ErrorSummaryItemProps,
-  ErrorSummaryLinkElementProps,
   ErrorSummaryLinkProps,
   ErrorSummaryListProps,
   ErrorSummaryRootProps,
-  ErrorSummaryState,
   ErrorSummaryTitleProps,
 } from './error-summary/error-summary.tsx'
 export { useErrorSummary } from './error-summary/use-error-summary.ts'
@@ -329,12 +286,10 @@ export {
 } from './breadcrumb/breadcrumb.tsx'
 export type {
   BreadcrumbCurrentProps,
-  BreadcrumbElementProps,
   BreadcrumbItemProps,
   BreadcrumbLinkProps,
   BreadcrumbListProps,
   BreadcrumbRootProps,
-  BreadcrumbState,
 } from './breadcrumb/breadcrumb.tsx'
 export { useBreadcrumb } from './breadcrumb/use-breadcrumb.ts'
 export type {
@@ -357,14 +312,12 @@ export {
   PaginationStatus,
 } from './pagination/pagination.tsx'
 export type {
-  PaginationElementProps,
   PaginationEllipsisProps,
   PaginationItemProps,
   PaginationLinkProps,
   PaginationListProps,
   PaginationNextProps,
   PaginationPreviousProps,
-  PaginationPartState,
   PaginationRootProps,
   PaginationStatusProps,
 } from './pagination/pagination.tsx'
@@ -397,10 +350,8 @@ export {
 export type {
   CodeBlockCodeComponentProps,
   CodeBlockCopyProps,
-  CodeBlockElementProps,
   CodeBlockLabelComponentProps,
   CodeBlockRootComponentProps,
-  CodeBlockState,
 } from './code-block/code-block.tsx'
 export { useCodeBlock } from './code-block/use-code-block.ts'
 export type {
@@ -410,7 +361,7 @@ export type {
   UseCodeBlockResult,
 } from './code-block/use-code-block.ts'
 export { SkipLink } from './skip-link/skip-link.tsx'
-export type { SkipLinkElementProps, SkipLinkProps, SkipLinkState } from './skip-link/skip-link.tsx'
+export type { SkipLinkProps } from './skip-link/skip-link.tsx'
 export { useSkipLink } from './skip-link/use-skip-link.ts'
 export type {
   SkipLinkPartProps,
@@ -418,30 +369,22 @@ export type {
   UseSkipLinkResult,
 } from './skip-link/use-skip-link.ts'
 export { VisuallyHidden } from './visually-hidden/visually-hidden.tsx'
-export type {
-  VisuallyHiddenElementProps,
-  VisuallyHiddenProps,
-  VisuallyHiddenState,
-} from './visually-hidden/visually-hidden.tsx'
+export type { VisuallyHiddenProps } from './visually-hidden/visually-hidden.tsx'
 export { useVisuallyHidden } from './visually-hidden/use-visually-hidden.ts'
 export type {
   UseVisuallyHiddenResult,
   VisuallyHiddenPartProps,
 } from './visually-hidden/use-visually-hidden.ts'
 export { Prose, ProseRoot } from './prose/prose.tsx'
-export type { ProseElementProps, ProseRootProps, ProseState } from './prose/prose.tsx'
+export type { ProseRootProps } from './prose/prose.tsx'
 export { useProse } from './prose/use-prose.ts'
 export type { ProsePartProps, UseProseResult } from './prose/use-prose.ts'
 export { Section, SectionRoot } from './section/section.tsx'
-export type { SectionElementProps, SectionRootProps, SectionState } from './section/section.tsx'
+export type { SectionRootProps } from './section/section.tsx'
 export { useSection } from './section/use-section.ts'
 export type { SectionPartProps, UseSectionResult } from './section/use-section.ts'
 export { Container } from './container/container.tsx'
-export type {
-  ContainerElementProps,
-  ContainerProps,
-  ContainerState,
-} from './container/container.tsx'
+export type { ContainerProps } from './container/container.tsx'
 export { useContainer } from './container/use-container.ts'
 export type {
   ContainerPartProps,
@@ -450,7 +393,7 @@ export type {
   UseContainerResult,
 } from './container/use-container.ts'
 export { Stack } from './stack/stack.tsx'
-export type { StackElementProps, StackProps, StackState } from './stack/stack.tsx'
+export type { StackProps } from './stack/stack.tsx'
 export { useStack } from './stack/use-stack.ts'
 export type {
   StackGap,
@@ -459,7 +402,7 @@ export type {
   UseStackResult,
 } from './stack/use-stack.ts'
 export { Columns } from './columns/columns.tsx'
-export type { ColumnsElementProps, ColumnsProps, ColumnsState } from './columns/columns.tsx'
+export type { ColumnsProps } from './columns/columns.tsx'
 export { useColumns } from './columns/use-columns.ts'
 export type {
   ColumnsGap,
@@ -476,10 +419,8 @@ export {
 } from './sidebar-layout/sidebar-layout.tsx'
 export type {
   SidebarLayoutContentProps,
-  SidebarLayoutElementProps,
   SidebarLayoutRootProps,
   SidebarLayoutSidebarProps,
-  SidebarLayoutState,
 } from './sidebar-layout/sidebar-layout.tsx'
 export { useSidebarLayout } from './sidebar-layout/use-sidebar-layout.ts'
 export type {
@@ -504,10 +445,7 @@ export type {
   AlertActionsProps,
   AlertBodyProps,
   AlertCloseProps,
-  AlertCloseState,
-  AlertElementProps,
   AlertRootProps,
-  AlertState,
   AlertStatusRootProps,
   AlertTitleProps,
   AlertVariant,
@@ -537,7 +475,6 @@ export {
 export type {
   FieldErrorMessageProps,
   FieldHelpTextProps,
-  FieldHelpTextState,
   FieldLabelProps,
   FieldMarker,
   FieldRootProps,
@@ -563,7 +500,7 @@ export {
   FieldsetRoot,
   Legend,
 } from './fieldset/fieldset.tsx'
-export type { FieldsetLegendProps, FieldsetRootProps, FieldsetState } from './fieldset/fieldset.tsx'
+export type { FieldsetLegendProps, FieldsetRootProps } from './fieldset/fieldset.tsx'
 export { useFieldset } from './fieldset/use-fieldset.ts'
 export type {
   FieldsetLegendPartProps,
@@ -575,7 +512,6 @@ export { TextInput } from './text-input/text-input.tsx'
 export type {
   TextInputChangeDetails,
   TextInputProps,
-  TextInputState,
   TextInputType,
 } from './text-input/text-input.tsx'
 export { useTextInput } from './text-input/use-text-input.ts'
@@ -585,7 +521,7 @@ export type {
   UseTextInputResult,
 } from './text-input/use-text-input.ts'
 export { NumberInput } from './number-input/number-input.tsx'
-export type { NumberInputProps, NumberInputState } from './number-input/number-input.tsx'
+export type { NumberInputProps } from './number-input/number-input.tsx'
 export { useNumberInput } from './number-input/use-number-input.ts'
 export type {
   NumberInputPartProps,
@@ -593,7 +529,7 @@ export type {
   UseNumberInputResult,
 } from './number-input/use-number-input.ts'
 export { Textarea } from './textarea/textarea.tsx'
-export type { TextareaChangeDetails, TextareaProps, TextareaState } from './textarea/textarea.tsx'
+export type { TextareaChangeDetails, TextareaProps } from './textarea/textarea.tsx'
 export { useTextarea } from './textarea/use-textarea.ts'
 export type {
   TextareaPartProps,
@@ -601,10 +537,7 @@ export type {
   UseTextareaResult,
 } from './textarea/use-textarea.ts'
 export { CharacterCount } from './character-count/character-count.tsx'
-export type {
-  CharacterCountProps,
-  CharacterCountState,
-} from './character-count/character-count.tsx'
+export type { CharacterCountProps } from './character-count/character-count.tsx'
 export { useCharacterCount } from './character-count/use-character-count.ts'
 export type {
   CharacterCountPartProps,
@@ -614,7 +547,7 @@ export type {
 export { useMask } from './mask/use-mask.ts'
 export type { MaskInputPartProps, UseMaskOptions, UseMaskResult } from './mask/use-mask.ts'
 export { Icon } from './icon/icon.tsx'
-export type { IconElementProps, IconProps, IconState } from './icon/icon.tsx'
+export type { IconProps } from './icon/icon.tsx'
 export { useIcon } from './icon/use-icon.ts'
 export type {
   IconDefaults,
@@ -668,11 +601,7 @@ export {
   InputGroupInput,
   InputGroupRoot,
 } from './input-group/input-group.tsx'
-export type {
-  InputGroupAddonProps,
-  InputGroupRootProps,
-  InputGroupState,
-} from './input-group/input-group.tsx'
+export type { InputGroupAddonProps, InputGroupRootProps } from './input-group/input-group.tsx'
 export {
   DateInput,
   DateInputDay,
@@ -687,7 +616,6 @@ export type {
   DateInputMonthProps,
   DateInputPart,
   DateInputRootProps,
-  DateInputState,
   DateInputValue,
   DateInputYearProps,
 } from './date-input/date-input.tsx'
@@ -716,7 +644,6 @@ export type {
   OneTimeCodeInputProps,
   OneTimeCodeRootProps,
   OneTimeCodeSlotProps,
-  OneTimeCodeState,
 } from './one-time-code/one-time-code.tsx'
 export { useOneTimeCode } from './one-time-code/use-one-time-code.ts'
 export type {
@@ -732,7 +659,6 @@ export type {
   CheckboxChangeDetails,
   CheckboxDataState,
   CheckboxProps,
-  CheckboxState,
 } from './checkbox/checkbox.tsx'
 export { useCheckbox } from './checkbox/use-checkbox.ts'
 export type {
@@ -759,16 +685,11 @@ export type {
   UseCheckboxGroupResult,
 } from './checkbox-group/use-checkbox-group.ts'
 export { Switch } from './switch/switch.tsx'
-export type {
-  SwitchChangeDetails,
-  SwitchDataState,
-  SwitchProps,
-  SwitchState,
-} from './switch/switch.tsx'
+export type { SwitchChangeDetails, SwitchDataState, SwitchProps } from './switch/switch.tsx'
 export { useSwitch } from './switch/use-switch.ts'
 export type { SwitchPartProps, UseSwitchOptions, UseSwitchResult } from './switch/use-switch.ts'
 export { ScrollArea } from './scroll-area/scroll-area.tsx'
-export type { ScrollAreaProps, ScrollAreaState } from './scroll-area/scroll-area.tsx'
+export type { ScrollAreaProps } from './scroll-area/scroll-area.tsx'
 export { useScrollArea } from './scroll-area/use-scroll-area.ts'
 export type {
   ScrollAreaPartProps,
@@ -777,7 +698,7 @@ export type {
   UseScrollAreaResult,
 } from './scroll-area/use-scroll-area.ts'
 export { Slider } from './slider/slider.tsx'
-export type { SliderChangeDetails, SliderProps, SliderState } from './slider/slider.tsx'
+export type { SliderChangeDetails, SliderProps } from './slider/slider.tsx'
 export { useSlider } from './slider/use-slider.ts'
 export type { SliderPartProps, UseSliderOptions, UseSliderResult } from './slider/use-slider.ts'
 export {
@@ -793,7 +714,7 @@ export type { RadioGroupChangeDetails, RadioGroupRootProps } from './radio-group
 import { Radio as RadioPart } from './radio-group/radio.tsx'
 /** @deprecated Write `RadioGroup.Radio`, or `RadioGroupRadio` in a Server Component. The flat `Radio` is removed in 1.0. */
 export const Radio = RadioPart
-export type { RadioProps, RadioState } from './radio-group/radio.tsx'
+export type { RadioProps } from './radio-group/radio.tsx'
 export { useRadioGroup } from './radio-group/use-radio-group.ts'
 export type {
   RadioGroupItemProps,
@@ -827,16 +748,12 @@ export type {
   ListboxOptionDescriptionProps,
   ListboxOptionIconProps,
   ListboxOptionIndicatorProps,
-  ListboxOptionPartState,
   ListboxOptionProps,
-  ListboxOptionState,
   ListboxOptionTextProps,
-  ListboxPartState,
   ListboxPopupProps,
   ListboxRootProps,
   ListboxTriggerProps,
   ListboxValueProps,
-  ListboxValueState,
 } from './listbox/listbox.tsx'
 export { useListbox } from './listbox/use-listbox.ts'
 export type {
@@ -896,19 +813,14 @@ export type {
   ComboboxOptionDescriptionProps,
   ComboboxOptionIconProps,
   ComboboxOptionIndicatorProps,
-  ComboboxOptionPartState,
   ComboboxOptionProps,
-  ComboboxOptionState,
   ComboboxOptionTextProps,
-  ComboboxPartState,
   ComboboxPopupProps,
-  ComboboxPopupState,
   ComboboxRootProps,
   ComboboxToggleProps,
   ComboboxValueListProps,
   ComboboxValueProps,
   ComboboxValueRenderer,
-  ComboboxValueState,
 } from './combobox/combobox.tsx'
 export { useCombobox } from './combobox/use-combobox.ts'
 export type {
@@ -962,11 +874,8 @@ export type {
   AutocompleteOptionDescriptionProps,
   AutocompleteOptionIconProps,
   AutocompleteOptionIndicatorProps,
-  AutocompleteOptionPartState,
   AutocompleteOptionProps,
-  AutocompleteOptionState,
   AutocompleteOptionTextProps,
-  AutocompletePartState,
   AutocompletePopupProps,
   AutocompleteRootProps,
   AutocompleteToggleProps,
@@ -987,7 +896,6 @@ export type {
   PopoverCloseProps,
   PopoverPopupProps,
   PopoverRootProps,
-  PopoverState,
   PopoverTriggerProps,
 } from './popover/popover.tsx'
 export { usePopover } from './popover/use-popover.ts'
@@ -1018,13 +926,11 @@ export type {
   MenuGroupLabelProps,
   MenuGroupProps,
   MenuItemProps,
-  MenuItemState,
   MenuPopupProps,
   MenuRadioGroupProps,
   MenuRadioItemProps,
   MenuRootProps,
   MenuSeparatorProps,
-  MenuState,
   MenuTriggerProps,
 } from './menu/menu.tsx'
 export { useMenu } from './menu/use-menu.ts'
@@ -1057,7 +963,6 @@ export type {
   DialogDescriptionProps,
   DialogPopupProps,
   DialogRootProps,
-  DialogState,
   DialogTitleProps,
   DialogTriggerProps,
 } from './dialog/dialog.tsx'
@@ -1093,7 +998,6 @@ export type {
   AlertDialogDescriptionProps,
   AlertDialogPopupProps,
   AlertDialogRootProps,
-  AlertDialogState,
   AlertDialogTitleProps,
   AlertDialogTriggerProps,
 } from './alert-dialog/alert-dialog.tsx'
@@ -1124,7 +1028,6 @@ export type {
   TooltipPopupProps,
   TooltipRootProps,
   TooltipShortcutProps,
-  TooltipState,
   TooltipTriggerProps,
 } from './tooltip/tooltip.tsx'
 export { useTooltip } from './tooltip/use-tooltip.ts'
@@ -1173,7 +1076,6 @@ export type {
   FileUploadItemData,
   FileUploadItemErrorProps,
   FileUploadItemProps,
-  FileUploadItemState,
   FileUploadLimitsProps,
   FileUploadListProps,
   FileUploadNameProps,
@@ -1184,7 +1086,6 @@ export type {
   FileUploadRetryButtonProps,
   FileUploadRootProps,
   FileUploadSizeProps,
-  FileUploadState,
   FileUploadStatusProps,
   FileUploadSummaryProps,
   FileUploadTriggerProps,
@@ -1238,12 +1139,9 @@ export type {
   TableExpandButtonProps,
   TableFootProps,
   TableHeadProps,
-  TableHeaderState,
-  TablePartState,
   TableRootProps,
   TableRowHeaderProps,
   TableRowProps,
-  TableRowState,
   TableScrollRegionProps,
   TableSelectAllCheckboxProps,
   TableSelectCheckboxProps,
@@ -1364,7 +1262,6 @@ export type {
   ProgressIndicatorProps,
   ProgressLabelProps,
   ProgressRootProps,
-  ProgressState,
 } from './progress/progress.tsx'
 export {
   Calendar,
@@ -1384,7 +1281,6 @@ export type {
   CalendarMonth,
   CalendarRangeHintProps,
   CalendarRootProps,
-  CalendarState,
   CalendarStepButtonProps,
   CalendarWeek,
   CalendarWeekday,
@@ -1420,7 +1316,6 @@ export type {
   DatePickerChangeReason,
   DatePickerPopupProps,
   DatePickerRootProps,
-  DatePickerState,
   DatePickerTitleProps,
   DatePickerTriggerProps,
 } from './date-picker/date-picker.tsx'
@@ -1452,7 +1347,6 @@ export type {
   DateRangePickerChangeReason,
   DateRangePickerPopupProps,
   DateRangePickerRootProps,
-  DateRangePickerState,
   DateRangePickerTitleProps,
   DateRangePickerTriggerProps,
 } from './date-range-picker/date-range-picker.tsx'
@@ -1465,7 +1359,7 @@ export type {
   UseDateRangePickerResult,
 } from './date-range-picker/use-date-range-picker.ts'
 export { Stepper } from './stepper/stepper.tsx'
-export type { StepperElementProps, StepperProps, StepperState } from './stepper/stepper.tsx'
+export type { StepperProps } from './stepper/stepper.tsx'
 export { useStepper } from './stepper/use-stepper.ts'
 export type {
   StepperPartProps,
@@ -1494,8 +1388,6 @@ export {
 } from './read-aloud/read-aloud.tsx'
 export type {
   ReadAloudButtonProps,
-  ReadAloudElementProps,
-  ReadAloudPartState,
   ReadAloudRootProps,
   ReadAloudSelectProps,
   ReadAloudStatusProps,

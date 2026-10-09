@@ -4,7 +4,7 @@
 
 A short label for a control, shown when the pointer rests on it or it has keyboard focus: the name of an icon-only button, and its shortcut ("Fetstil Ctrl+B"). **A tooltip never holds anything a user needs.** The control has a name of its own, and the tooltip only shows it or adds a shortcut. For content a user can act on, such as a link or a short form, use a [Popover](../popover/popover.md). For help a user must read, use visible text, a [Field](../field/field.md) hint or a Details disclosure.
 
-- **Parts:** `Tooltip.Root` (no element, it owns the state), `Tooltip.Trigger` (the control: a `<button>`, or your own through `render`), `Tooltip.Popup` (`<div popover="manual" role="tooltip">`), `Tooltip.Name` and `Tooltip.Shortcut` (`<span>`). Render the popup **right after the trigger**.
+- **Parts:** `Tooltip.Root` (no element, it owns the state), `Tooltip.Trigger` (the control: a `<button>`, or your own through `as`), `Tooltip.Popup` (`<div popover="manual" role="tooltip">`), `Tooltip.Name` and `Tooltip.Shortcut` (`<span>`). Render the popup **right after the trigger**.
 - **Opens** when the pointer has rested on the trigger for half a second, and **at once on keyboard focus** (focus that shows a focus ring: a click doesn't open it). Once one tooltip has opened, the next opens at once, so moving along a toolbar isn't slow. **Not on touch**: a long press isn't discoverable, and the control's name carries it.
 - **Stays** while the pointer is on the trigger or on the tooltip, or the trigger has keyboard focus, and has no timeout. After the pointer leaves, a 100 ms grace lets it cross the gap onto the tooltip (WCAG 1.4.13: hoverable and persistent).
 - **Closes** on Escape, when the pointer or focus leaves, on a press on the trigger, and while the trigger's own popup is open. **Escape hides only the tooltip**: focus stays, and an open Popover underneath stays open (1.4.13: dismissable). An open Listbox or Combobox that has focus handles Escape first and closes itself, so the tooltip needs a second Escape (see the contract's Known issues). After Escape it stays hidden until the pointer or focus leaves and comes back.
@@ -17,15 +17,15 @@ A short label for a control, shown when the pointer rests on it or it has keyboa
 
 ### Parts
 
-| Part             | Renders                                                    | Props                                                                                                                                                                            |
-| ---------------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Tooltip.Root     | no element                                                 | `open`, `defaultOpen`, `onOpenChange`, `placement`, `offset`, `padding`, `delay`, `closeDelay`, `group` (the controls above)                                                     |
-| Tooltip.Trigger  | `<button type="button">`, or your `render`                 | `render` (for example `<Toolbar.Toggle aria-label="Fetstil" />`), and every `<button>` prop. Your `aria-describedby` is joined with the tooltip's. It gets no class and no state |
-| Tooltip.Popup    | `<div popover="manual" role="tooltip">`, always in the DOM | `render`, and every `<div>` prop. State: `data-open`, `data-placement`                                                                                                           |
-| Tooltip.Name     | `<span aria-hidden="true">`                                | `render`, and every `<span>` prop                                                                                                                                                |
-| Tooltip.Shortcut | `<span>`                                                   | `render`, and every `<span>` prop. Put `Kbd` in it for keys                                                                                                                      |
+| Part             | Renders                                                    | Props                                                                                                                                                                                                  |
+| ---------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Tooltip.Root     | no element                                                 | `open`, `defaultOpen`, `onOpenChange`, `placement`, `offset`, `padding`, `delay`, `closeDelay`, `group` (the controls above)                                                                           |
+| Tooltip.Trigger  | `<button type="button">`, or your `as`                     | `as` (for example `as={Toolbar.Toggle}` with `aria-label="Fetstil"`), and every `<button>` prop (or the target's). Your `aria-describedby` is joined with the tooltip's. It gets no class and no state |
+| Tooltip.Popup    | `<div popover="manual" role="tooltip">`, always in the DOM | every `<div>` prop; no `as`. State: `data-open`, `data-placement`                                                                                                                                      |
+| Tooltip.Name     | `<span aria-hidden="true">`                                | `as` (`span` or `strong`), and every `<span>` prop                                                                                                                                                     |
+| Tooltip.Shortcut | `<span>`                                                   | `as` (`span` or `small`), and every `<span>` prop. Put `Kbd` in it for keys                                                                                                                            |
 
-Each part is also exported on its own (`TooltipRoot`, `TooltipTrigger`, `TooltipPopup`, `TooltipName`, `TooltipShortcut`), and the hook is `useTooltip`. Every part takes `render`, `ref`, `className` and handlers, which merge with its own. `render` also receives the state: `{ isOpen }`.
+Each part is also exported on its own (`TooltipRoot`, `TooltipTrigger`, `TooltipPopup`, `TooltipName`, `TooltipShortcut`), and the hook is `useTooltip`. Every part takes `ref`, `className` and handlers, which merge with its own. `Tooltip.Trigger`'s `as` is a component whose props are plain props of the trigger; `Name` and `Shortcut` take a tag `as`; the popup has none, because it is a `popover` element with a fixed role.
 
 ### State attributes and classes
 
@@ -62,7 +62,7 @@ Keyed `tooltip-*`, English, for the developer only: a trigger with no accessible
 import { Icon, Kbd, Toolbar, Tooltip } from '@kvirn-ui/react'
 
 ;<Tooltip.Root>
-  <Tooltip.Trigger render={<Toolbar.Toggle aria-label="Fetstil" aria-keyshortcuts="Control+B" />}>
+  <Tooltip.Trigger as={Toolbar.Toggle} aria-label="Fetstil" aria-keyshortcuts="Control+B">
     <Icon name="bold" />
   </Tooltip.Trigger>
   <Tooltip.Popup>
@@ -105,11 +105,11 @@ The popup stays in the DOM while it is closed, so the reference always resolves,
 
 ## In a toolbar
 
-Wrap a `Toolbar.Button`, `Toolbar.Toggle` or `Toolbar.Item` with `render`: the tooltip adds only a ref, an `aria-describedby` and handlers, so the toolbar's roving `tabindex` and keys work as before. Arrowing along the toolbar gives each control keyboard focus, so each tooltip opens at once and replaces the last. The popup has no focusable content and no role a toolbar treats as an item, so the arrows never land on it. A disabled `Toolbar.Button` stays focusable, so its tooltip works.
+Wrap a `Toolbar.Button`, `Toolbar.Toggle` or `Toolbar.Item` with `as`: the tooltip adds only a ref, an `aria-describedby` and handlers, so the toolbar's roving `tabindex` and keys work as before. Arrowing along the toolbar gives each control keyboard focus, so each tooltip opens at once and replaces the last. The popup has no focusable content and no role a toolbar treats as an item, so the arrows never land on it. A disabled `Toolbar.Button` stays focusable, so its tooltip works.
 
 ## When the trigger opens its own popup
 
-A trigger that opens a Popover or a Listbox (`aria-expanded="true"`) closes its tooltip, and the tooltip stays closed while that popup is open. Wrap it the same way: `<Tooltip.Trigger render={<Popover.Trigger aria-label="Länk" />}>`.
+A trigger that opens a Popover or a Listbox (`aria-expanded="true"`) closes its tooltip, and the tooltip stays closed while that popup is open. Wrap it the same way: `<Tooltip.Trigger as={Popover.Trigger} aria-label="Länk">`.
 
 ## Hook
 

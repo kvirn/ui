@@ -15,7 +15,7 @@ import { masks } from '../index.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import type { TextInputChangeDetails } from '../text-input/use-text-input.ts'
 import { NumberInput } from './number-input.tsx'
-import type { NumberInputProps, NumberInputState } from './number-input.tsx'
+import type { NumberInputProps } from './number-input.tsx'
 import { useNumberInput } from './use-number-input.ts'
 import type {
   NumberInputPartProps,
@@ -99,29 +99,6 @@ describe('rendering', () => {
     await expect
       .element(page.getByRole('textbox', { name: 'Belopp' }))
       .toHaveAttribute('inputmode', 'numeric')
-  })
-
-  test('render as a function gets the part’s props and the state', async () => {
-    const seenStates: NumberInputState[] = []
-    await render(
-      <Field.Root invalid required>
-        <Field.Label>Antal</Field.Label>
-        <Field.ErrorMessage>Ange ett tal</Field.ErrorMessage>
-        <NumberInput
-          render={(partProps, state) => {
-            seenStates.push(state)
-            return <input {...partProps} data-egen="" />
-          }}
-        />
-      </Field.Root>,
-    )
-    await expect.element(page.getByRole('textbox')).toHaveAttribute('data-egen', '')
-    expect(seenStates.at(-1)).toEqual({
-      isInvalid: true,
-      isRequired: true,
-      isDisabled: false,
-      isFocusVisible: false,
-    })
   })
 })
 

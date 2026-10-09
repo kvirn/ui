@@ -25,3 +25,6 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0066](0066-react-compiler-lint-warnings.md)  | React Compiler lint warnings                                                 | Draft                                            |
 | [0080](0080-loading-indicators.md)            | Loading indicators: spinner and animated gradient bar                        | Implemented (engineering check Q7, spec §8 open) |
 | [0088](0088-read-aloud.md)                    | ReadAloud: text to speech player and selection reader (browser engine)       | Approved                                         |
+| [0090](0090-docs-header-and-landing.md)       | Docs site header, sections and landing page                                  | Implemented                                      |
+| [0091](0091-landing-v2-evidence.md)           | Landing v2: the people it is for, then the proof, then the doors             | Implemented (docs site; stories and AT pending)  |
+| [0092](0092-motion-preference.md)             | Motion as a theme preference (`data-kv-motion`, `useTheme().selectMotion`)   | Implemented                                      |

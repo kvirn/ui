@@ -17,13 +17,13 @@ A native `<fieldset>` with a `<legend>`: it groups related questions (an address
 
 ## API
 
-| Part                    | Renders                                                 | What it is                                                                                                                                                     |
-| ----------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Fieldset.Root`         | `<fieldset class="kv-fieldset">`                        | The group. Takes `invalid`, `required`, `disabled`, `group`, `messages`, `id`, `aria-describedby` and every fieldset prop. `render` must return a `<fieldset>` |
-| `Fieldset.Legend`       | `<legend class="kv-fieldset-legend">`                   | The question and the group's name. Put it first. `marker` is `'optional'` (the default in a `group` that isn't `required`) or `'none'`                         |
-| `Fieldset.Prose`        | a [Prose](../prose/prose.md) (`<div class="kv-prose">`) | The description, above the controls                                                                                                                            |
-| `Fieldset.HelpText`     | `<p class="kv-field-help-text">`                        | The help text, under the controls: [Field's](../field/field-help-text.md) `HelpText` under the group's name                                                    |
-| `Fieldset.ErrorMessage` | `<p class="kv-field-error-message">`                    | The error. It renders only while the Fieldset is `invalid`. One per Fieldset                                                                                   |
+| Part                    | Renders                                                 | What it is                                                                                                                             |
+| ----------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `Fieldset.Root`         | `<fieldset class="kv-fieldset">`                        | The group. Takes `invalid`, `required`, `disabled`, `group`, `messages`, `id`, `aria-describedby` and every fieldset prop.             |
+| `Fieldset.Legend`       | `<legend class="kv-fieldset-legend">`                   | The question and the group's name. Put it first. `marker` is `'optional'` (the default in a `group` that isn't `required`) or `'none'` |
+| `Fieldset.Prose`        | a [Prose](../prose/prose.md) (`<div class="kv-prose">`) | The description, above the controls                                                                                                    |
+| `Fieldset.HelpText`     | `<p class="kv-field-help-text">`                        | The help text, under the controls: [Field's](../field/field-help-text.md) `HelpText` under the group's name                            |
+| `Fieldset.ErrorMessage` | `<p class="kv-field-error-message">`                    | The error. It renders only while the Fieldset is `invalid`. One per Fieldset                                                           |
 
 | State attribute | Where and when                                                                              |
 | --------------- | ------------------------------------------------------------------------------------------- |
@@ -35,7 +35,7 @@ A native `<fieldset>` with a `<legend>`: it groups related questions (an address
 - **`aria-describedby`** that you pass is kept: the fieldset's own ids (every description and help text in DOM order, then the error) come first, and yours follow.
 - **`group`** is for one question answered with several controls. The Legend then ends with the optional text unless `required`, and the Fields inside drop theirs.
 - **Messages (`messages`):** `optional` (after a legend) and `errorPrefix`, resolved like [Field's](../field/field.md). There is no `aria-invalid` and no `aria-required` on a fieldset: ARIA doesn't support them on `group`.
-- **Dev warnings (once):** a `Fieldset.Legend` outside a `Fieldset.Root` (`fieldset-legend-outside-fieldset`); a `render` that isn't a `<fieldset>`; two error messages in one Fieldset; an `invalid` Fieldset with no error message.
+- **Dev warnings (once):** a `Fieldset.Legend` outside a `Fieldset.Root` (`fieldset-legend-outside-fieldset`); two error messages in one Fieldset; an `invalid` Fieldset with no error message.
 
 ## Component
 

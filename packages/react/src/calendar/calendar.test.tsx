@@ -48,6 +48,89 @@ function Example({
   )
 }
 
+describe('Calendar without a time zone', () => {
+  const todayWarnings = () =>
+    consoleWarn.mock.calls.filter(([message]) => String(message).includes('timeZone'))
+
+  test('working out "today" without a provider time zone warns once, naming the fix', async () => {
+    await render(
+      <>
+        <Calendar.Root>
+          <Calendar.Grid />
+        </Calendar.Root>
+        <Calendar.Root>
+          <Calendar.Grid />
+        </Calendar.Root>
+      </>,
+    )
+    expect(todayWarnings()).toHaveLength(1)
+    expect(String(todayWarnings()[0]?.[0])).toContain('Pass `timeZone` on <KvirnProvider>')
+  })
+
+  test('a provider time zone, or an explicit today, does not warn', async () => {
+    await render(
+      <>
+        <KvirnProvider timeZone="Europe/Stockholm">
+          <Calendar.Root>
+            <Calendar.Grid />
+          </Calendar.Root>
+        </KvirnProvider>
+        <Calendar.Root today="2026-10-14">
+          <Calendar.Grid />
+        </Calendar.Root>
+      </>,
+    )
+    expect(todayWarnings()).toHaveLength(0)
+  })
+
+  describe('"today" and the browser zone', () => {
+    const stubBrowserZone = (zone: string) => {
+      vi.useFakeTimers({ toFake: ['Date'] })
+      vi.setSystemTime(new Date('2026-10-14T12:00:00Z'))
+      vi.spyOn(Intl.DateTimeFormat.prototype, 'resolvedOptions').mockReturnValue({
+        timeZone: zone,
+      } as Intl.ResolvedDateTimeFormatOptions)
+    }
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    test('a Calendar mounted after hydration starts on the browser date with the Tab stop on it', async () => {
+      stubBrowserZone('Pacific/Auckland')
+      await render(
+        <KvirnProvider locale="sv" messages={sv}>
+          <Calendar.Root>
+            <Calendar.Grid />
+          </Calendar.Root>
+        </KvirnProvider>,
+      )
+      const browserDay = day('torsdag 15 oktober 2026, idag')
+      await expect.element(browserDay).toHaveAttribute('aria-current', 'date')
+      await expect.element(browserDay).toHaveAttribute('tabindex', '0')
+      await expect.element(day('onsdag 14 oktober 2026')).not.toHaveAttribute('aria-current')
+      await expect.element(day('onsdag 14 oktober 2026')).toHaveAttribute('tabindex', '-1')
+    })
+
+    test('a provider timeZone is honoured and the browser zone is ignored', async () => {
+      stubBrowserZone('Pacific/Auckland')
+      await render(
+        <KvirnProvider locale="sv" messages={sv} timeZone="America/New_York">
+          <Calendar.Root>
+            <Calendar.Grid />
+          </Calendar.Root>
+        </KvirnProvider>,
+      )
+      await expect.element(today()).toHaveAttribute('aria-current', 'date')
+    })
+
+    test('an explicit today is never moved by the browser zone', async () => {
+      stubBrowserZone('Pacific/Auckland')
+      await render(<Example />)
+      await expect.element(today()).toHaveAttribute('aria-current', 'date')
+    })
+  })
+})
+
 const day = (name: string) => page.getByRole('gridcell', { name, exact: true })
 const today = () => day('onsdag 14 oktober 2026, idag')
 const button = (name: string) => page.getByRole('button', { name, exact: true })

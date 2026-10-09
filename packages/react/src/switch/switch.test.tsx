@@ -10,7 +10,7 @@ import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Switch } from './switch.tsx'
-import type { SwitchProps, SwitchState } from './switch.tsx'
+import type { SwitchProps } from './switch.tsx'
 import { useSwitch } from './use-switch.ts'
 import type {
   SwitchChangeDetails,
@@ -69,44 +69,6 @@ describe('rendering', () => {
     await expect.element(control).toHaveAttribute('value', 'ja')
     await expect.element(control).toHaveAttribute('form', 'inställningar')
     await expect.element(control).toHaveAttribute('data-egen', '')
-  })
-
-  test('render as a function gets the part’s props and the state', async () => {
-    const seenStates: SwitchState[] = []
-    await render(
-      <Field.Root invalid>
-        <Switch
-          disabled
-          render={(partProps, state) => {
-            seenStates.push(state)
-            return <input {...partProps} data-egen="" />
-          }}
-        />
-        <Field.Label marker="none">Sms</Field.Label>
-        <Field.ErrorMessage>Kunde inte spara</Field.ErrorMessage>
-      </Field.Root>,
-    )
-    await expect.element(page.getByRole('switch')).toHaveAttribute('data-egen', '')
-    expect(seenStates.at(-1)).toEqual({
-      isInvalid: true,
-      isDisabled: true,
-      isFocusVisible: false,
-    })
-  })
-
-  test('render as an element chains its own onChange', async () => {
-    const onChange = vi.fn<(event: React.ChangeEvent<HTMLInputElement>) => void>()
-    const onCheckedChange = vi.fn<(checked: boolean, details: SwitchChangeDetails) => void>()
-    await render(
-      <Switch
-        aria-label="Sms"
-        onCheckedChange={onCheckedChange}
-        render={<input data-egen="" onChange={onChange} />}
-      />,
-    )
-    await userEvent.click(page.getByRole('switch', { name: 'Sms' }))
-    expect(onChange).toHaveBeenCalledTimes(1)
-    expect(onCheckedChange).toHaveBeenCalledTimes(1)
   })
 })
 

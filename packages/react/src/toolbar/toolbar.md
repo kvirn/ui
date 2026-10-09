@@ -17,13 +17,13 @@ A row of related controls that a keyboard user passes with **one Tab**, and move
 
 ### Parts
 
-| Part           | Renders                                    | Props                                                                                                                  |
-| -------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| Toolbar.Root   | `<div role="toolbar">`                     | `orientation`, `loop`, `render`, and every `<div>` prop except `role` and `aria-orientation`                           |
-| Toolbar.Group  | `<div>`, `role="group"` with a name        | The props of [ButtonGroup](../button-group/button-group.md): `aria-label` or `aria-labelledby`, `render`               |
-| Toolbar.Button | `<button type="button">`                   | The props of [Button](../button/button.md). `focusableWhenDisabled` defaults to `true`                                 |
-| Toolbar.Toggle | `<button type="button" aria-pressed>`      | The props of [Toggle](../toggle/toggle.md). `focusableWhenDisabled` defaults to `true`                                 |
-| Toolbar.Item   | `<button type="button">`, or your `render` | `render`, `focusableWhenDisabled` (default `true`), and every `<button>` prop. The element must be focusable by itself |
+| Part           | Renders                                | Props                                                                                                                                |
+| -------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Toolbar.Root   | `<div role="toolbar">`                 | `orientation`, `loop`, `as` (`div` or `section`), and every `<div>` prop except `role` and `aria-orientation`                        |
+| Toolbar.Group  | `<div>`, `role="group"` with a name    | The props of [ButtonGroup](../button-group/button-group.md): `aria-label` or `aria-labelledby`                                       |
+| Toolbar.Button | `<button type="button">`               | The props of [Button](../button/button.md). `focusableWhenDisabled` defaults to `true`                                               |
+| Toolbar.Toggle | `<button type="button" aria-pressed>`  | The props of [Toggle](../toggle/toggle.md). `focusableWhenDisabled` defaults to `true`                                               |
+| Toolbar.Item   | `<button type="button">`, or your `as` | `as`, `focusableWhenDisabled` (default `true`), and every `<button>` prop (or the target's). The element must be focusable by itself |
 
 Each part is also exported on its own (`ToolbarRoot`, `ToolbarGroup`, `ToolbarButton`, `ToolbarToggle`, `ToolbarItem`), and the hook is `useToolbar`. `Toolbar.Root` takes `ref`, `className` and any handler: they merge with its own.
 
@@ -47,9 +47,9 @@ Items are registered while they are mounted and ordered by their place in the pa
 
 Toolbar has no strings of its own and announces nothing. Every name is yours, from your translations: the toolbar's, each group's and each icon-only control's.
 
-### `render`
+### `as`
 
-`Toolbar.Root` takes an element or a function `(toolbarProps, state)`, where `state` is `{ orientation }`. Spread the props: they hold the role, the class and the keys. `Toolbar.Item` takes the same, with `state` `{ isTabStop }`: `render={<Popover.Trigger />}` makes a Popover trigger an item, and the element's own props win, except `tabindex`. `disabled` on a `Toolbar.Item` sets `aria-disabled="true"` and `data-disabled`, and blocks a click, Enter and Space, also for the rendered element's own handlers.
+`Toolbar.Root` takes `as="section"` (default `div`); it keeps the role, the class and the keys. `Toolbar.Item` takes `as`, a component or tag that is focusable by itself: `<Toolbar.Item as={Popover.Trigger}>` makes a Popover trigger an item, and its props are plain props of the item (`<Toolbar.Item as={Listbox.Trigger} aria-label="Texttyp" />`). The toolbar's `tabindex` wins over the target's own. `disabled` on a `Toolbar.Item` sets `aria-disabled="true"` and `data-disabled`, and blocks a click, Enter and Space, also for the target's own handlers. To give a `Toolbar.Item` and another part (a `Tooltip.Trigger`) each their own `as`, put one of them in a small component of yours.
 
 ### Development warnings
 
@@ -90,11 +90,11 @@ An icon-only control takes `kv-button--icon-only` and an `aria-label`, and a too
 </Toolbar.Toggle>
 ```
 
-A control that opens something goes in with `Toolbar.Item` and `render`. Render its popup right after it:
+A control that opens something goes in with `Toolbar.Item` and `as`. Render its popup right after it:
 
 ```tsx
 <Popover.Root>
-  <Toolbar.Item render={<Popover.Trigger />}>Länk</Toolbar.Item>
+  <Toolbar.Item as={Popover.Trigger}>Länk</Toolbar.Item>
   <Popover.Popup aria-label="Lägg till länk">…</Popover.Popup>
 </Popover.Root>
 ```

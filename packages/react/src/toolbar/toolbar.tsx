@@ -1,13 +1,6 @@
 'use client'
-import type { RovingOrientation } from '@kvirn-ui/core'
 import { useContext, useEffect, useId, useRef } from 'react'
-import type {
-  ComponentPropsWithRef,
-  KeyboardEvent,
-  MouseEvent,
-  ReactElement,
-  RefCallback,
-} from 'react'
+import type { ElementType, KeyboardEvent, MouseEvent, ReactElement, Ref, RefCallback } from 'react'
 import { Button } from '../button/button.tsx'
 import type { ButtonProps } from '../button/button.tsx'
 import { ButtonGroup } from '../button-group/button-group.tsx'
@@ -15,31 +8,25 @@ import type { ButtonGroupProps } from '../button-group/button-group.tsx'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
+import type { AsComponent, AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { RenderProp } from '../render/render-part.ts'
 import { Toggle } from '../toggle/toggle.tsx'
 import type { ToggleProps } from '../toggle/toggle.tsx'
 import { ToolbarContext } from './toolbar-context.ts'
 import { useToolbar } from './use-toolbar.ts'
 import type { ToolbarItemPartProps, UseToolbarOptions } from './use-toolbar.ts'
 
-/** What `render` receives as its second argument, for `Toolbar.Root`. */
-export interface ToolbarState {
-  orientation: RovingOrientation
-}
+const rootTags = ['div', 'section'] as const
 
-/** What `render` receives as its second argument, for `Toolbar.Item`. */
-export interface ToolbarItemState {
-  /** This item is the one the Tab key reaches (`tabindex="0"`). */
-  isTabStop: boolean
-}
-
-/** `role` and `aria-orientation` are left out: the hook sets them. */
-export interface ToolbarRootProps
-  extends Omit<ComponentPropsWithRef<'div'>, 'role' | 'aria-orientation'>, UseToolbarOptions {
-  /** Change the element. It gets the role, the class and the keys. */
-  render?: RenderProp<ComponentPropsWithRef<'div'>, ToolbarState> | undefined
-}
+/**
+ * `as` is `div` (default) or `section`; it gets the role, the class and the keys either way.
+ * `role` and `aria-orientation` are left out: the hook sets them.
+ */
+export type ToolbarRootProps = Omit<
+  AsTag<(typeof rootTags)[number], 'div', UseToolbarOptions>,
+  'role' | 'aria-orientation'
+>
 
 /** A `Button` that is a toolbar item. `focusableWhenDisabled` defaults to `true` here. */
 export type ToolbarButtonProps = ButtonProps
@@ -48,16 +35,9 @@ export type ToolbarToggleProps = ToggleProps
 /** A `ButtonGroup` inside a toolbar. Give it a name. */
 export type ToolbarGroupProps = ButtonGroupProps
 
-export interface ToolbarItemProps extends ComponentPropsWithRef<'button'> {
-  /**
-   * The control that becomes an item: `render={<Listbox.Trigger aria-label="Texttyp" />}`,
-   * `render={<Popover.Trigger />}`, or `render={<Link.Root href="…" />}`. It must be focusable by
-   * itself. Without `render` it is a `<button type="button">`. The toolbar's `tabindex` wins over the
-   * element's own. A Listbox in a toolbar needs `native="never"` on its `Listbox.Root`: the native
-   * `<select>` that `native="auto"` renders on a touch device replaces this item.
-   * With `disabled`, a text `<input>` stays editable: make it `readOnly` instead.
-   */
-  render?: RenderProp<ComponentPropsWithRef<'button'>, ToolbarItemState> | undefined
+interface ToolbarItemOwnProps {
+  /** Blocks activation. The item stays focusable with `aria-disabled` unless `focusableWhenDisabled` is `false`. */
+  disabled?: boolean | undefined
   /**
    * With `disabled`: keep the item focusable, with `aria-disabled="true"`, so the arrows reach it
    * and a screen reader says it is unavailable. Activation (click, Enter and Space) is blocked.
@@ -66,6 +46,19 @@ export interface ToolbarItemProps extends ComponentPropsWithRef<'button'> {
    */
   focusableWhenDisabled?: boolean | undefined
 }
+
+/**
+ * `as` is the control that becomes an item: `as={Listbox.Trigger}`, `as={Popover.Trigger}`, or
+ * `as={Link.Root}` with `href`. Its props are plain props of the item. It must be focusable by
+ * itself and spread its props on a DOM node. Without `as` it is a `<button type="button">`. The
+ * toolbar's `tabindex` wins over the element's own. A Listbox in a toolbar needs `native="never"`
+ * on its `Listbox.Root`: the native `<select>` that `native="auto"` renders on a touch device
+ * replaces this item. With `disabled`, a text `<input>` stays editable: make it `readOnly` instead.
+ */
+export type ToolbarItemProps<Component extends ElementType = 'button'> = AsComponent<
+  Component,
+  ToolbarItemOwnProps
+>
 
 function warnOutsideRoot(part: string): void {
   warnOnce(
@@ -121,16 +114,17 @@ function useToolbarItem(part: string): ToolbarItemRegistration {
  * </Toolbar.Root>
  */
 export function ToolbarRoot({
+  as,
   orientation,
   loop,
-  render,
   ref,
   ...otherProps
 }: ToolbarRootProps): ReactElement {
   const toolbar = useToolbar({ orientation, loop })
   const elementRef = useRef<HTMLDivElement | null>(null)
   const mergedRef = useMergedRef(
-    useMergedRef<HTMLDivElement>(ref, toolbar.toolbarProps.ref),
+    // A tag part's ref is a Ref<HTMLElement>, so it fits `section` too; the hook's ref is for a div.
+    useMergedRef<HTMLDivElement>(ref as Ref<HTMLDivElement> | undefined, toolbar.toolbarProps.ref),
     elementRef,
   )
   const { itemCount } = toolbar
@@ -161,10 +155,9 @@ export function ToolbarRoot({
   return (
     <ToolbarContext.Provider value={toolbar}>
       {renderPart({
-        render,
+        as: resolveAsTag({ part: 'Toolbar.Root', as, allowedTags: rootTags }),
         defaultElement: 'div',
         partProps: { ...mergeProps(otherProps, toolbar.toolbarProps), ref: mergedRef },
-        state: { orientation: toolbar.orientation },
       })}
     </ToolbarContext.Provider>
   )
@@ -249,35 +242,37 @@ const activationKeys = new Set(['Enter', ' '])
 
 /**
  * Makes any focusable control a toolbar item: a Listbox trigger, a Popover trigger, a Link or an
- * `<input>`. Without `render` it is a `<button type="button">`. The toolbar's roving `tabindex`
+ * `<input>`. Without `as` it is a `<button type="button">`. The toolbar's roving `tabindex`
  * wins over the element's own (`Listbox.Trigger` honours a `tabIndex` it is given).
  * Its keys stay its own: a key it handles is not taken, and a text field keeps the arrows, Home and
  * End.
  *
  * **`disabled`** works as for `Toolbar.Button`: the item stays focusable with `aria-disabled="true"`
- * and `data-disabled`, and a click, Enter or Space does nothing, also for the rendered element's own
+ * and `data-disabled`, and a click, Enter or Space does nothing, also for the target's own
  * handlers. `focusableWhenDisabled={false}` makes it natively disabled instead, so the arrows skip
  * it. A Listbox is disabled on its own Root, not here. It only blocks activation: a text `<input>`
  * stays editable, so make a field `readOnly`.
  *
  * @example
- * <Toolbar.Item render={<Popover.Trigger />}>Länk</Toolbar.Item>
- * // A Listbox in a toolbar: <Listbox.Root native="never" …><Toolbar.Item render={<Listbox.Trigger aria-label="Texttyp" />} /> …
+ * <Toolbar.Item as={Popover.Trigger}>Länk</Toolbar.Item>
+ * // A Listbox in a toolbar: <Listbox.Root native="never" …><Toolbar.Item as={Listbox.Trigger} aria-label="Texttyp" /> …
  */
+export function ToolbarItem<Component extends ElementType = 'button'>(
+  props: ToolbarItemProps<Component>,
+): ReactElement
 export function ToolbarItem({
-  render,
+  as,
   ref,
   disabled = false,
   focusableWhenDisabled = true,
   ...otherProps
-}: ToolbarItemProps): ReactElement {
+}: ToolbarItemProps<'button'>): ReactElement {
   const { itemRef, itemProps } = useToolbarItem('Item')
   const elementRef = useRef<HTMLButtonElement | null>(null)
   const mergedRef = useMergedRef<HTMLButtonElement>(
     useMergedRef<HTMLButtonElement>(ref, itemRef),
     elementRef,
   )
-  const wantedTabIndex = itemProps.tabIndex
 
   useEffect(() => {
     const element = elementRef.current
@@ -305,7 +300,7 @@ export function ToolbarItem({
     ? {
         'aria-disabled': 'true' as const,
         'data-disabled': '' as const,
-        // Capture, so the rendered element's own handlers (a Popover trigger's) never run.
+        // Capture, so the target's own handlers (a Popover trigger's) never run.
         onClickCapture: (event: MouseEvent<HTMLElement>) => {
           event.preventDefault()
           event.stopPropagation()
@@ -322,18 +317,17 @@ export function ToolbarItem({
       : {}
 
   return renderPart({
-    render,
+    as,
     defaultElement: 'button',
     partProps: {
       ...mergeProps(
-        render === undefined ? { type: 'button' as const } : {},
+        as === undefined ? { type: 'button' as const } : {},
         otherProps,
         disabledProps,
         itemProps,
       ),
       ref: mergedRef,
     },
-    state: { isTabStop: wantedTabIndex === 0 },
   })
 }
 ToolbarItem.displayName = 'Toolbar.Item'

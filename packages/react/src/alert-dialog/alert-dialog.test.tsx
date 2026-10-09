@@ -8,7 +8,7 @@ import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { useAnnouncer } from '../announcer/use-announcer.ts'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
-import { AlertDialog, Dialog } from '../index.ts'
+import { AlertDialog, Button, Dialog } from '../index.ts'
 import type {
   AlertDialogChangeDetails,
   UseAlertDialogOptions,
@@ -169,16 +169,16 @@ describe('rendering and ARIA', () => {
     expect(close?.textContent).toBe('Behåll')
   })
 
-  test('forwards refs, className and native props, and render replaces the element', async () => {
+  test('forwards refs, className and native props, and as replaces the element', async () => {
     const popupRef = createRef<HTMLDialogElement>()
     await render(
       <AlertDialog.Root defaultOpen>
         <AlertDialog.Popup ref={popupRef} className="egen" data-egen="popup">
-          <AlertDialog.Title render={(partProps) => <h3 {...partProps}>{partProps.children}</h3>}>
-            Titel
-          </AlertDialog.Title>
+          <AlertDialog.Title as="h3">Titel</AlertDialog.Title>
           <AlertDialog.Description>Text</AlertDialog.Description>
-          <AlertDialog.Body render={<section />}>Innehåll</AlertDialog.Body>
+          <AlertDialog.Body as="section" aria-label="Innehåll">
+            Innehåll
+          </AlertDialog.Body>
         </AlertDialog.Popup>
       </AlertDialog.Root>,
     )
@@ -189,6 +189,25 @@ describe('rendering and ARIA', () => {
     expect(popupRef.current?.getAttribute('data-egen')).toBe('popup')
     expect(document.querySelector('h3.kv-dialog-title')).not.toBeNull()
     expect(document.querySelector('section.kv-dialog-body')).not.toBeNull()
+  })
+
+  test('AlertDialog.Close as={Button} closes the dialog and warns about nothing', async () => {
+    await render(
+      <AlertDialog.Root defaultOpen>
+        <AlertDialog.Popup>
+          <AlertDialog.Title>Titel</AlertDialog.Title>
+          <AlertDialog.Description>Text</AlertDialog.Description>
+          <AlertDialog.Close as={Button} data-egen="close">
+            Behåll
+          </AlertDialog.Close>
+        </AlertDialog.Popup>
+      </AlertDialog.Root>,
+    )
+    const close = page.getByRole('button', { name: 'Behåll' })
+    await expect.element(close).toHaveAttribute('data-egen', 'close')
+    await expect.element(close).toHaveClass('kv-alert-dialog-close')
+    await userEvent.click(close)
+    await expect.poll(() => popupElement()?.matches(':modal')).toBe(false)
   })
 
   test('useAlertDialog spreads the same props, with the alertdialog role, on your own elements', async () => {

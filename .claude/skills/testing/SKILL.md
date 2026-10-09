@@ -16,7 +16,7 @@ We test **behaviour, accessibility and requirements**. We never test CSS. Before
 
 - Behaviour: state, values, events and callbacks, keys, focus moves, open and close, what's rendered and what isn't (`toBeVisible`, `toBeHidden`).
 - Accessibility: roles, accessible names and descriptions, ARIA states, `aria-describedby` and reading order, focus management, announcements, axe, and strings in at least 2 locales.
-- Requirements: the public API from the plan (props, `render`, refs, `mergeProps`, dev warnings) and the part-class contract, in **one** test per component.
+- Requirements: the public API from the plan (props, `as`, refs, `mergeProps`, dev warnings) and the part-class contract, in **one** test per component.
 
 **Never test:**
 

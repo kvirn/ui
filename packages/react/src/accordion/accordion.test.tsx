@@ -8,7 +8,7 @@ import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Accordion } from '../index.ts'
-import type { AccordionItemProps, AccordionPanelProps, AccordionRootProps } from '../index.ts'
+import type { AccordionItemProps, AccordionPanelProps } from '../index.ts'
 import { useAccordion } from './use-accordion.ts'
 import { useDisclosure } from '../disclosure/use-disclosure.ts'
 
@@ -25,7 +25,8 @@ afterEach(() => {
   consoleWarn.mockRestore()
 })
 
-interface ExampleProps extends AccordionRootProps {
+interface ExampleProps {
+  hiddenUntilFound?: boolean
   firstItem?: Partial<AccordionItemProps>
   firstPanel?: Partial<AccordionPanelProps>
   children?: ReactNode
@@ -69,7 +70,7 @@ const third = () => trigger('Hur länge tar det?')
 const expanded = (name: string) => trigger(name).element().getAttribute('aria-expanded')
 
 describe('rendering', () => {
-  test('every item is a heading around a button, and no part has a role', async () => {
+  test('every item is a heading around a button, and no item or panel has a role', async () => {
     const { container } = await render(<Example />)
     const headings = page.getByRole('heading', { level: 3 })
     expect(headings.elements()).toHaveLength(3)
@@ -77,11 +78,28 @@ describe('rendering', () => {
       expect(heading.children).toHaveLength(1)
       expect(heading.firstElementChild?.tagName).toBe('BUTTON')
     }
-    expect(container.querySelector('.kv-accordion')?.hasAttribute('role')).toBe(false)
     expect(container.querySelector('.kv-accordion-item')?.hasAttribute('role')).toBe(false)
     expect(container.querySelector('.kv-accordion-panel')?.hasAttribute('role')).toBe(false)
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('the root adds role="list" to a ul and an ol, and no role to a div', async () => {
+    await render(
+      <>
+        <Accordion.Root as="ul" data-testid="unordered" />
+        <Accordion.Root as="ol" data-testid="ordered" />
+        <Accordion.Root data-testid="plain" />
+      </>,
+    )
+    expect(page.getByTestId('unordered').element().getAttribute('role')).toBe('list')
+    expect(page.getByTestId('ordered').element().getAttribute('role')).toBe('list')
+    expect(page.getByTestId('plain').element().hasAttribute('role')).toBe(false)
+  })
+
+  test('a consumer role wins over the list role on a ul', async () => {
+    await render(<Accordion.Root as="ul" role="presentation" data-testid="root" />)
+    expect(page.getByTestId('root').element().getAttribute('role')).toBe('presentation')
   })
 
   test('the heading follows the level: h2 for 2, h4 for 4', async () => {
@@ -182,10 +200,10 @@ describe('rendering', () => {
     expect(triggerRef.current?.getAttribute('data-egen')).toBe('trigger')
   })
 
-  test('render replaces the element: a list with list items', async () => {
+  test('as makes a list with list items', async () => {
     const { container } = await render(
-      <Accordion.Root render={<ul role="list" />}>
-        <Accordion.Item render={<li />}>
+      <Accordion.Root as="ul">
+        <Accordion.Item as="li">
           <Accordion.Heading level={3}>
             <Accordion.Trigger>Fråga</Accordion.Trigger>
           </Accordion.Heading>
@@ -195,6 +213,45 @@ describe('rendering', () => {
     )
     expect(container.querySelector('ul.kv-accordion > li.kv-accordion-item')).not.toBeNull()
     await expectNoA11yViolations(container)
+  })
+
+  test('Root takes ol and Item keeps the open state on a li', async () => {
+    const { container } = await render(
+      <Accordion.Root as="ol">
+        <Accordion.Item as="li" defaultOpen>
+          <Accordion.Heading level={3}>
+            <Accordion.Trigger>Fråga</Accordion.Trigger>
+          </Accordion.Heading>
+          <Accordion.Panel>Svar</Accordion.Panel>
+        </Accordion.Item>
+      </Accordion.Root>,
+    )
+    expect(container.querySelector('ol.kv-accordion > li.kv-accordion-item')).not.toBeNull()
+    await expect.element(trigger('Fråga')).toHaveAttribute('aria-expanded', 'true')
+    expect(container.querySelector('li.kv-accordion-item')?.hasAttribute('data-open')).toBe(true)
+  })
+
+  test('an element outside the allowed list warns once and renders a div', async () => {
+    const notAllowedRoot = 'nav' as 'div'
+    const notAllowedItem = 'span' as 'div'
+    const { container } = await render(
+      <Accordion.Root as={notAllowedRoot}>
+        <Accordion.Item as={notAllowedItem}>
+          <Accordion.Heading level={3}>
+            <Accordion.Trigger>Fråga</Accordion.Trigger>
+          </Accordion.Heading>
+          <Accordion.Panel>Svar</Accordion.Panel>
+        </Accordion.Item>
+      </Accordion.Root>,
+    )
+    expect(container.querySelector('div.kv-accordion > div.kv-accordion-item')).not.toBeNull()
+    const messages = consoleWarn.mock.calls.map(([message]) => String(message))
+    expect(messages.filter((message) => message.includes('Accordion.Root as="nav"'))).toHaveLength(
+      1,
+    )
+    expect(messages.filter((message) => message.includes('Accordion.Item as="span"'))).toHaveLength(
+      1,
+    )
   })
 
   test('useAccordion and useDisclosure spread on your own elements', async () => {

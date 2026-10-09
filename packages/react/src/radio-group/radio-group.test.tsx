@@ -12,7 +12,7 @@ import { Field } from '../field/field.tsx'
 import { Fieldset } from '../fieldset/fieldset.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Radio } from './radio.tsx'
-import type { RadioProps, RadioState } from './radio.tsx'
+import type { RadioProps } from './radio.tsx'
 import { RadioGroup } from './radio-group.tsx'
 import type { RadioGroupRootProps } from './radio-group.tsx'
 import { useRadio } from './use-radio.ts'
@@ -166,30 +166,6 @@ describe('rendering', () => {
     expectNoDanglingReferences(container)
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
-  })
-
-  test('render as a function gets the part’s props and the state', async () => {
-    const seenStates: RadioState[] = []
-    await render(
-      <RadioGroup.Root aria-label="Språk" name="language" invalid>
-        <Field.Root>
-          <RadioGroup.Radio
-            value="sv"
-            render={(partProps, state) => {
-              seenStates.push(state)
-              return <input {...partProps} data-egen="" />
-            }}
-          />
-          <Field.Label>Svenska</Field.Label>
-        </Field.Root>
-      </RadioGroup.Root>,
-    )
-    await expect.element(page.getByRole('radio')).toHaveAttribute('data-egen', '')
-    expect(seenStates.at(-1)).toEqual({
-      isInvalid: true,
-      isDisabled: false,
-      isChecked: undefined,
-    })
   })
 })
 
