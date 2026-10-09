@@ -637,7 +637,7 @@ Each component's design spec, in `docs/design/`. The accessibility contract is i
 
 ### How it works
 
-- **One file, opt-in by import.** `import '@kvirn-ui/theme/theme.css'` styles every component on the page, and removing it unstyles them. Nothing loads CSS for you, and `KvirnProvider` never does.
+- **Two files, opt-in by import.** `import '@kvirn-ui/theme/reset.css'` then `import '@kvirn-ui/theme/theme.css'`. The reset is Tailwind's Preflight in plain CSS (lists keep their markers, an Icon stays inline): it is the baseline the theme is designed on, and Storybook and the docs run on both files. Skip the reset only if you already run Tailwind v4. The theme styles every component on the page, and removing it unstyles them. Nothing loads CSS for you, and `KvirnProvider` never does. See [reset-baseline](docs/design/reset-baseline.md).
 - **Part classes select components, `data-*` is state.** Each part renders its own class and the consumer's `className` joins it. Choices are classes the consumer adds.
 - **Override variables, not selectors.** Rebrand by overriding a role scale on `:root` (`--kv-primary-50` … `--kv-primary-950`), or set a single semantic token (`:root { --kv-color-link: var(--kv-primary-700) }`). Scales go on `:root`, where the semantic tokens are declared. To change one theme only, target the same selectors `theme.css` uses (`:root[data-kv-color-scheme='dark']`).
 - **Your CSS always wins.** Everything in `theme.css` is in `@layer kv`, so any unlayered CSS, or any layer declared after `kv`, overrides it regardless of specificity.
