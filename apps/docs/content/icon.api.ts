@@ -6,7 +6,7 @@ export type IconDocumentedProps = Pick<
   IconProps,
   | 'name'
   | 'icon'
-  | 'render'
+  | 'as'
   | 'children'
   | 'size'
   | 'strokeWidth'
@@ -22,7 +22,7 @@ export const iconRows = propRows<IconDocumentedProps>({
     type: 'IconName',
     default: '–',
     description:
-      'A built-in icon, or one registered with defineIcons in a KvirnProvider. Give one of name, icon, render or children.',
+      'A built-in icon, or one registered with defineIcons in a KvirnProvider. Give one of name, icon, as or children.',
   },
   icon: {
     type: 'IconComponent',
@@ -30,11 +30,11 @@ export const iconRows = propRows<IconDocumentedProps>({
     description:
       'A component from an icon library, or your own: icon={Search}. It needs no registration. Icon’s size, color and label replace the component’s own, and className is joined with it.',
   },
-  render: {
-    type: 'RenderProp<IconElementProps, IconState>',
+  as: {
+    type: 'ElementType',
     default: '–',
     description:
-      'A one-off icon that isn’t registered: an element (render={<svg viewBox="0 0 24 24" />}, whose own props win) or a function that spreads the props on its own <svg>.',
+      'A one-off icon of your own that isn’t registered: as={MunicipalityMark}. It gets Icon’s props (width, height, aria-hidden, role, className) as plain props and must spread them on its own <svg>.',
   },
   children: {
     type: 'ReactNode',

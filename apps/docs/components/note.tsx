@@ -24,7 +24,7 @@ export function Note({
   const Root = kind === 'reminder' ? AlertWarning : AlertInfo
   return (
     <Root>
-      <AlertTitle render={<p />}>{text[kind]}</AlertTitle>
+      <AlertTitle as="p">{text[kind]}</AlertTitle>
       <AlertBody>
         <p>{children}</p>
         {more}

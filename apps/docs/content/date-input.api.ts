@@ -22,7 +22,6 @@ export type DateInputRootDocumentedProps = Pick<
   | 'autoAdvance'
   | 'invalidParts'
   | 'messages'
-  | 'render'
 >
 
 export const dateInputRootRows = propRows<DateInputRootDocumentedProps>({
@@ -89,12 +88,6 @@ export const dateInputRootRows = propRows<DateInputRootDocumentedProps>({
     type: "Partial<KvirnMessages['dateInput']>",
     default: '–',
     description: 'Replaces the three labels and the auto-advance hint for this date.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"div">, DateInputState>',
-    default: '–',
-    description:
-      'Changes the element. A function receives the props and { order, isRequired, isDisabled }.',
   },
 })
 

@@ -1,7 +1,9 @@
 import { Heading, TableOfContentsRoot } from '@kvirn-ui/react'
+import type { TableOfContentsEntry } from '@kvirn-ui/react'
 import { Fragment } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
+import { AnchoredHeading } from './anchored-heading.tsx'
 import { PageHeading } from './page-heading.tsx'
 
 const text = messages.docs.contents
@@ -12,6 +14,8 @@ export const maxContentsEntries = 8
 export interface PageSection {
   id: string
   label: string
+  /** The `h3`s under this `h2`, listed one level deeper. */
+  children?: readonly PageSection[] | undefined
 }
 
 export interface PageSectionContent extends PageSection {
@@ -22,7 +26,13 @@ export interface PageSectionContent extends PageSection {
 export const hasContent = (content: ReactNode) =>
   content !== null && content !== undefined && content !== false
 
-/** The page's `h2` sections as links. The same list gives the headings their ids. */
+const toEntries = (sections: readonly PageSection[], level: 2 | 3): TableOfContentsEntry[] =>
+  sections.flatMap(({ id, label, children = [] }) => [
+    { id, label, level },
+    ...(level === 2 ? toEntries(children, 3) : []),
+  ])
+
+/** The page's `h2` sections (and their `h3`s) as links. The same list gives the headings their ids. */
 export function PageContents({ sections }: { sections: readonly PageSection[] }) {
   if (sections.length === 0) {
     return null
@@ -34,12 +44,14 @@ export function PageContents({ sections }: { sections: readonly PageSection[] })
   }
   return (
     <div className="docs-contents">
-      <Heading level={2} size="heading-4" id="contents-title">
+      <Heading as="h2" size="heading-4" id="contents-title">
         {text.heading}
       </Heading>
+      {/* The offset equals where a jump lands a heading: html's scroll-padding plus the heading's scroll margin (docs.css). */}
       <TableOfContentsRoot
         aria-labelledby="contents-title"
-        items={sections.map(({ id, label }) => ({ id, label, level: 2 }))}
+        offset={40}
+        items={toEntries(sections, 2)}
       />
     </div>
   )
@@ -47,9 +59,9 @@ export function PageContents({ sections }: { sections: readonly PageSection[] })
 
 export function SectionHeading({ section }: { section: PageSection }) {
   return (
-    <Heading level={2} id={section.id}>
+    <AnchoredHeading as="h2" id={section.id}>
       {section.label}
-    </Heading>
+    </AnchoredHeading>
   )
 }
 

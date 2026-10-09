@@ -5,14 +5,7 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 /** The props Checkbox documents: its own, and the native ones whose behaviour it changes. */
 export type CheckboxDocumentedProps = Pick<
   CheckboxProps,
-  | 'checked'
-  | 'defaultChecked'
-  | 'indeterminate'
-  | 'value'
-  | 'name'
-  | 'disabled'
-  | 'onCheckedChange'
-  | 'render'
+  'checked' | 'defaultChecked' | 'indeterminate' | 'value' | 'name' | 'disabled' | 'onCheckedChange'
 >
 
 export const checkboxRows = propRows<CheckboxDocumentedProps>({
@@ -56,12 +49,6 @@ export const checkboxRows = propRows<CheckboxDocumentedProps>({
     default: '–',
     description:
       'Called on every change with the new state and { reason: "input", event }. It only reports. onChange still works too.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"input">, CheckboxState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be an <input type="checkbox">. A function receives the props and { isInvalid, isRequired, isDisabled, isFocusVisible, isIndeterminate }.',
   },
 })
 

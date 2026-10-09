@@ -8,7 +8,9 @@ export function OtherControls() {
     <Toolbar.Root aria-label={texts.formatting} lang={textLang}>
       <Toolbar.Button>{texts.undo}</Toolbar.Button>
       <Toolbar.Toggle>{texts.bold}</Toolbar.Toggle>
-      <Toolbar.Item render={<Link.Root href="#accessibility" />}>{texts.guide}</Toolbar.Item>
+      <Toolbar.Item as={Link.Root} href="#accessibility">
+        {texts.guide}
+      </Toolbar.Item>
     </Toolbar.Root>
   )
 }

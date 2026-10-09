@@ -11,9 +11,9 @@ import { usageGuide } from '../../docs-source.ts'
 const meta = {
   title: 'Components/Heading',
   component: Heading,
-  args: { level: 2, children: 'Kontakta oss' },
+  args: { as: 'h2', children: 'Kontakta oss' },
   argTypes: {
-    level: { control: 'inline-radio', options: [1, 2, 3, 4, 5, 6] },
+    as: { control: 'inline-radio', options: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] },
     size: {
       control: 'select',
       options: [
@@ -27,9 +27,8 @@ const meta = {
         'heading-6',
       ],
       description:
-        'The look, apart from the level: a type role. Without it each level looks like the role of its number (`level={4}` is `heading-4`). Sets the modifier class `kv-heading--<size>`.',
+        'The look, apart from the level: a type role. Without it each level looks like the role of its number (`as="h4"` is `heading-4`). Sets the modifier class `kv-heading--<size>`.',
     },
-    render: { control: false },
   },
   parameters: {
     a11yContract: contract,
@@ -40,7 +39,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** `level` is the element: `<Heading level={2}>` is an `<h2>`. */
+/** `as` is the element: `<Heading as="h2">` is an `<h2>`. */
 export const Default: Story = {
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('heading', { level: 2, name: 'Kontakta oss' })).toBeVisible()
@@ -51,24 +50,24 @@ export const Default: Story = {
 // of any of them sees the real Headings.
 const renderSizes: NonNullable<Story['render']> = () => (
   <>
-    <Heading level={1} size="display">
+    <Heading as="h1" size="display">
       display (h1)
     </Heading>
-    <Heading level={1} size="heading-1">
+    <Heading as="h1" size="heading-1">
       heading-1 (h1)
     </Heading>
-    <Heading level={2} size="heading-2">
+    <Heading as="h2" size="heading-2">
       heading-2 (h2)
     </Heading>
-    <Heading level={3} size="heading-3">
+    <Heading as="h3" size="heading-3">
       heading-3 (h3)
     </Heading>
-    <Heading level={3} size="heading-2">
+    <Heading as="h3" size="heading-2">
       heading-2 on an h3
     </Heading>
-    <Heading level={4}>heading-4 (h4)</Heading>
-    <Heading level={5}>heading-5 (h5)</Heading>
-    <Heading level={6}>heading-6 (h6)</Heading>
+    <Heading as="h4">heading-4 (h4)</Heading>
+    <Heading as="h5">heading-5 (h5)</Heading>
+    <Heading as="h6">heading-6 (h6)</Heading>
   </>
 )
 
@@ -97,13 +96,13 @@ export const Sizes: Story = {
 export const Outline: Story = {
   render: () => (
     <div className="kv-prose">
-      <Heading level={1}>Tjänster</Heading>
-      <Heading level={2}>Avfall och återvinning</Heading>
-      <Heading level={3}>Sophämtning</Heading>
-      <Heading level={4}>Öppettider</Heading>
-      <Heading level={5}>Helger</Heading>
-      <Heading level={6}>Midsommarafton</Heading>
-      <Heading level={3}>Återvinningscentral</Heading>
+      <Heading as="h1">Tjänster</Heading>
+      <Heading as="h2">Avfall och återvinning</Heading>
+      <Heading as="h3">Sophämtning</Heading>
+      <Heading as="h4">Öppettider</Heading>
+      <Heading as="h5">Helger</Heading>
+      <Heading as="h6">Midsommarafton</Heading>
+      <Heading as="h3">Återvinningscentral</Heading>
     </div>
   ),
   play: async ({ canvas }) => {
@@ -122,13 +121,13 @@ export const SizeOnDeepLevelsAndLabelledRegion: Story = {
   decorators: inColumn,
   render: () => (
     <section aria-labelledby="oppettider">
-      <Heading level={4} size="heading-3" id="oppettider">
+      <Heading as="h4" size="heading-3" id="oppettider">
         Öppettider
       </Heading>
-      <Heading level={5} size="heading-4">
+      <Heading as="h5" size="heading-4">
         Helger
       </Heading>
-      <Heading level={6} size="heading-5">
+      <Heading as="h6" size="heading-5">
         Midsommarafton
       </Heading>
     </section>

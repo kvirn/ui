@@ -9,7 +9,6 @@ import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   oneTimeCodeInputAttributes,
-  oneTimeCodeInputRows,
   oneTimeCodeRootAttributes,
   oneTimeCodeRootRows,
   oneTimeCodeSlotAttributes,
@@ -53,7 +52,6 @@ const parts: ApiPart[] = [
         the label and described by the Field’s text, and its own <code>id</code> is ignored.
       </>
     ),
-    props: oneTimeCodeInputRows,
     attributes: oneTimeCodeInputAttributes,
   },
   {

@@ -132,7 +132,6 @@ const meta = {
         'Your own classes, added to `kv-button`. The theme styles `kv-button--primary` and `kv-button--danger`; secondary is the base look. `kv-button--icon-only` makes a button with only an icon square.',
     },
     type: { control: 'inline-radio', options: ['button', 'submit', 'reset'] },
-    render: { control: false },
   },
   globals: { locale: 'sv' },
   parameters: {

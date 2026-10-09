@@ -1,16 +1,11 @@
 import type {
-  AutocompleteClearProps,
-  AutocompleteControlProps,
-  AutocompleteInputProps,
   AutocompleteRootProps,
-  AutocompleteToggleProps,
   UseAutocompleteOptions,
   UseAutocompleteResult,
 } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook } from '../components/api-block.tsx'
 import { comboboxResultRows, comboboxRootRows } from './combobox.api.ts'
-import { renderRow } from './listbox.api.ts'
 
 export const autocompleteRootRows = propRows<Omit<AutocompleteRootProps<unknown>, 'children'>>({
   items: comboboxRootRows.items,
@@ -118,16 +113,3 @@ export const useAutocompleteHook: ApiHook = {
   options: propRows<UseAutocompleteOptions<unknown>>(autocompleteRootRows),
   result: autocompleteResultRows,
 }
-
-export const autocompleteControlRows = propRows<Pick<AutocompleteControlProps, 'render'>>({
-  render: renderRow('div', 'AutocompletePartState'),
-})
-export const autocompleteInputRows = propRows<Pick<AutocompleteInputProps, 'render'>>({
-  render: renderRow('input', 'AutocompletePartState'),
-})
-export const autocompleteToggleRows = propRows<Pick<AutocompleteToggleProps, 'render'>>({
-  render: renderRow('button', 'AutocompletePartState'),
-})
-export const autocompleteClearRows = propRows<Pick<AutocompleteClearProps, 'render'>>({
-  render: renderRow('button', 'AutocompletePartState'),
-})

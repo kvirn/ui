@@ -16,7 +16,6 @@ const meta = {
   title: 'Components/SkipLink',
   component: SkipLink,
   args: { href: '#default-main' },
-  argTypes: { render: { control: false } },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },

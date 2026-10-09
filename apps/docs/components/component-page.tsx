@@ -13,6 +13,7 @@ const template = messages.docs.template
 /** The roadmap's words (docs/roadmap.md): `alpha` means the gates and the independent review passed. */
 export type ComponentStatus =
   | 'planned'
+  | 'in-planning'
   | 'in-progress'
   | 'alpha-candidate'
   | 'alpha'
@@ -21,6 +22,7 @@ export type ComponentStatus =
 
 const statusLabels: Record<ComponentStatus, string> = {
   planned: text.planned,
+  'in-planning': text.inPlanning,
   'in-progress': text.inProgress,
   'alpha-candidate': text.alphaCandidate,
   alpha: text.alpha,
@@ -30,6 +32,7 @@ const statusLabels: Record<ComponentStatus, string> = {
 
 const statusTexts: Record<ComponentStatus, string> = {
   planned: text.plannedText,
+  'in-planning': text.inPlanningText,
   'in-progress': text.inProgressText,
   'alpha-candidate': text.alphaCandidateText,
   alpha: text.alphaText,
@@ -39,6 +42,7 @@ const statusTexts: Record<ComponentStatus, string> = {
 
 const statusVariants: Record<ComponentStatus, BadgeVariant> = {
   planned: 'neutral',
+  'in-planning': 'warning',
   'in-progress': 'info',
   'alpha-candidate': 'warning',
   alpha: 'primary',

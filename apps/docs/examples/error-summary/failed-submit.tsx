@@ -34,19 +34,16 @@ export function FailedSubmit() {
       ) : null}
       <Stack
         gap="8"
-        render={
-          <form
-            noValidate
-            onSubmit={(event) => {
-              event.preventDefault()
-              const data = new FormData(event.currentTarget)
-              const next = { email: data.get('email') === '', phone: data.get('phone') === '' }
-              setErrors(next)
-              setSubmitCount((count) => count + 1)
-              setIsSent(!next.email && !next.phone)
-            }}
-          />
-        }
+        as="form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          const data = new FormData(event.currentTarget)
+          const next = { email: data.get('email') === '', phone: data.get('phone') === '' }
+          setErrors(next)
+          setSubmitCount((count) => count + 1)
+          setIsSent(!next.email && !next.phone)
+        }}
       >
         <Field.Root controlId={emailId} invalid={errors.email}>
           <Field.Label>{texts.email}</Field.Label>

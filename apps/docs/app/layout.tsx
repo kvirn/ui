@@ -4,26 +4,37 @@ import '@kvirn-ui/theme/theme.css'
 // time or at runtime.
 import '../fonts/ibm-plex/ibm-plex.css'
 import './docs.css'
-import { KvirnThemeScript } from '@kvirn-ui/react'
+import { KvirnThemeScript, getLocaleProps } from '@kvirn-ui/react/server'
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
-import { Providers } from './providers.tsx'
+import { AppKvirnProvider } from './providers.tsx'
+import { theme } from './theme.ts'
+
+const locale = 'en'
+const localeProps = getLocaleProps(locale)
 
 export const metadata: Metadata = {
   title: messages.docs.meta.homeTitle,
   description: messages.docs.meta.description,
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  // Reading headers() makes every page dynamic, so only the opt-in CSP build (proxy.ts) does it.
+  const nonce =
+    process.env.DOCS_CSP_NONCE === '1' ? ((await headers()).get('x-nonce') ?? undefined) : undefined
+
   return (
-    // KvirnThemeScript sets data-kv-color-scheme and data-kv-contrast before first paint.
-    <html lang="en" dir="ltr" suppressHydrationWarning>
+    // KvirnThemeScript sets data-kv-color-scheme, data-kv-contrast and data-kv-motion before first paint.
+    <html lang={localeProps.lang} dir={localeProps.dir} suppressHydrationWarning>
       <head>
-        <KvirnThemeScript defaultColorScheme="system" defaultContrast="system" />
+        <KvirnThemeScript nonce={nonce} theme={theme} />
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <AppKvirnProvider locale={locale} timeZone="UTC" theme={theme}>
+          {children}
+        </AppKvirnProvider>
       </body>
     </html>
   )

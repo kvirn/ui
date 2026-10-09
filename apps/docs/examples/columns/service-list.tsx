@@ -6,11 +6,11 @@ export function ServiceList() {
   const { texts, textLang } = useColumnsTexts()
   const services = [texts.services.waste, texts.services.school, texts.services.housing]
   return (
-    <Columns render={<ul role="list" />} lang={textLang}>
+    <Columns as="ul" lang={textLang}>
       {services.map((service) => (
-        <Card.Root key={service.title} render={<li />}>
+        <Card.Root key={service.title} as="li">
           <Card.Body className="kv-prose">
-            <Heading level={3}>
+            <Heading as="h3">
               <Link href="#">{service.title}</Link>
             </Heading>
             <p>{service.text}</p>

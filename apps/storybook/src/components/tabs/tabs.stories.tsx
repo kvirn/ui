@@ -68,11 +68,6 @@ const meta = {
       description:
         'Your own classes, added to `kv-tabs`. `kv-compact` on a container makes the tabs 32px from 64rem. The theme has no other modifier: the look comes from the parts and from `data-orientation`.',
     },
-    render: {
-      control: false,
-      description:
-        'Another element for the root. It gets the class and `data-orientation`: spread the props it gets. `state` is `{ value, orientation, activationMode }`.',
-    },
     ref: { control: false, description: 'The root’s `<div>`.' },
   },
   globals: { locale: 'sv' },

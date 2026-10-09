@@ -10,7 +10,6 @@ import {
   tooltipNameAttributes,
   tooltipNameRows,
   tooltipPopupAttributes,
-  tooltipPopupRows,
   tooltipRootRows,
   tooltipShortcutAttributes,
   tooltipShortcutRows,
@@ -45,9 +44,9 @@ const parts: ApiPart[] = [
     name: 'Tooltip.Trigger',
     renders: (
       <>
-        <code>&lt;button type=&quot;button&quot;&gt;</code>, or the control you give{' '}
-        <code>render</code>. It takes every attribute of that element and passes <code>ref</code> to
-        it. The tooltip is placed against it.
+        <code>&lt;button type=&quot;button&quot;&gt;</code>, or the component you give{' '}
+        <code>as</code>, with its props set on the Trigger. It takes every attribute of that element
+        and passes <code>ref</code> to it. The tooltip is placed against it.
       </>
     ),
     props: tooltipTriggerRows,
@@ -62,7 +61,6 @@ const parts: ApiPart[] = [
         always in the page and hidden while closed, so render it right after the trigger.
       </>
     ),
-    props: tooltipPopupRows,
     attributes: tooltipPopupAttributes,
   },
   {
@@ -138,7 +136,7 @@ export function TooltipPage({
               </>
             }
             code={sources['with-a-shortcut']}
-            propsUsed={[{ part: 'Tooltip.Trigger', prop: 'render' }]}
+            propsUsed={[{ part: 'Tooltip.Trigger', prop: 'as' }]}
             note={
               <Note kind="reminder">
                 Give the control a name of its own, with <code>aria-label</code> from your
@@ -162,7 +160,7 @@ export function TooltipPage({
             title="A row of icon buttons"
             why="Every button has its own tooltip. Once one has opened, the next one opens at once, so a user moving along the row does not wait for each."
             code={sources['button-row']}
-            propsUsed={[{ part: 'Tooltip.Trigger', prop: 'render' }]}
+            propsUsed={[{ part: 'Tooltip.Trigger', prop: 'as' }]}
             note={
               <Note kind="tip">
                 Tooltips share one delay for the whole page. Make a separate group with{' '}

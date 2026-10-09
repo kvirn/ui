@@ -149,7 +149,7 @@ export function ApiBlock({
         const headingId = apiPartId(part.name)
         return (
           <Fragment key={part.name}>
-            <Heading level={3} id={headingId}>
+            <Heading as="h3" id={headingId}>
               {part.name}
             </Heading>
             <p>
@@ -162,7 +162,7 @@ export function ApiBlock({
       })}
       {hooks.map((hookApi) => (
         <Fragment key={hookApi.name}>
-          <Heading level={3} id={apiPartId(hookApi.name)}>
+          <Heading as="h3" id={apiPartId(hookApi.name)}>
             {hookApi.name}
           </Heading>
           {hookApi.intro && <p>{hookApi.intro}</p>}
@@ -190,7 +190,7 @@ export function ApiBlock({
       ))}
       {strings && (
         <>
-          <Heading level={3} id={apiStringsId}>
+          <Heading as="h3" id={apiStringsId}>
             {text.strings}
           </Heading>
           {strings}

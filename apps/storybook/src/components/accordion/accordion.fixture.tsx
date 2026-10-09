@@ -162,11 +162,11 @@ export function FindableAccordion() {
   )
 }
 
-/** A disabled item, kept in the Tab order with `aria-disabled`, and a list built through `render`. */
+/** A disabled item, kept in the Tab order with `aria-disabled`, and a list built through `as`. */
 export function ListAccordion() {
   return (
-    <Accordion.Root render={<ul role="list" />}>
-      <Accordion.Item render={<li />}>
+    <Accordion.Root as="ul">
+      <Accordion.Item as="li">
         <Accordion.Heading level={3}>
           <Accordion.Trigger>Ansökan</Accordion.Trigger>
         </Accordion.Heading>
@@ -174,7 +174,7 @@ export function ListAccordion() {
           <p>Du ansöker på Mina sidor.</p>
         </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item render={<li />} disabled focusableWhenDisabled>
+      <Accordion.Item as="li" disabled focusableWhenDisabled>
         <Accordion.Heading level={3}>
           <Accordion.Trigger>Beslut</Accordion.Trigger>
         </Accordion.Heading>

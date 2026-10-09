@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en" data-kv-color-scheme="light" data-kv-contrast="standard">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Landing v2, direction A: the ledger first · KvirnUI design exploration</title>
+    <!-- Throwaway prototype for Plan 0091 (docs/plans/0091-landing-v2-evidence.md). Direction A:
+     the evidence ledger is the centrepiece, the page reads like a calm status report. No network
+     requests. It links the real theme and the docs site's IBM Plex files by relative path, so open
+     it from the repository on disk. The small inline script only sorts the ledger table; the page
+     is complete without it. Ledger rows are sample data; the real page generates them from the
+     repo. Not library code. -->
+    <link rel="stylesheet" href="../../../apps/docs/fonts/ibm-plex/ibm-plex.css" />
+    <link rel="stylesheet" href="../../../packages/theme/theme.css" />
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; }
+      .p-hero { position: relative; }
+      .p-hero::before {
+        content: '';
+        display: block;
+        block-size: var(--kv-space-1);
+        background: linear-gradient(to right, var(--kv-color-primary), var(--kv-color-accent));
+      }
+      @media (forced-colors: active) { .p-hero::before { display: none; } }
+      .p-title {
+        margin: 0;
+        font-family: var(--kv-font-family-heading);
+        font-weight: 500;
+        line-height: 1.1;
+        letter-spacing: -0.01em;
+        font-size: 2.75rem;
+        max-inline-size: 22ch;
+        color: var(--kv-color-heading);
+      }
+      .p-title strong { font-weight: 600; }
+      @media (width >= 64rem) { .p-title { font-size: 3.5rem; } }
+      .p-tagline {
+        margin: var(--kv-space-6) 0 0;
+        font-family: var(--kv-font-family-heading);
+        font-size: var(--kv-font-heading-2-size);
+        font-weight: 500;
+        line-height: 1.25;
+      }
+      .p-subline { margin: var(--kv-space-2) 0 0; font-size: var(--kv-font-body-large-size); max-inline-size: 60ch; }
+      .p-status {
+        display: inline-flex; gap: var(--kv-space-2); align-items: baseline; flex-wrap: wrap;
+        margin-block-start: var(--kv-space-4);
+        padding: var(--kv-space-2) var(--kv-space-3);
+        border: 1px solid var(--kv-color-border-control);
+        border-radius: var(--kv-radius-sm);
+        background: var(--kv-color-surface);
+        font-size: var(--kv-font-body-small-size);
+      }
+      .p-actions { display: flex; flex-wrap: wrap; gap: var(--kv-space-4); align-items: center; margin-block-start: var(--kv-space-6); }
+      .p-jump { display: flex; flex-wrap: wrap; gap: var(--kv-space-4); margin: var(--kv-space-8) 0 0; padding: 0; list-style: none; }
+      .p-jump li::before { content: '→ '; color: var(--kv-color-text-muted); }
+      .p-licence { margin: var(--kv-space-8) 0 0; font-size: var(--kv-font-body-small-size); max-inline-size: 70ch; }
+
+      .p-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: var(--kv-space-6); margin: 0; padding: 0; list-style: none; }
+      .p-fact-number { display: block; font-family: var(--kv-font-family-heading); font-size: var(--kv-font-display-size); font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; color: var(--kv-color-heading); }
+      .p-fact-text { display: block; margin-block-start: var(--kv-space-2); }
+
+      .p-ledger-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--kv-space-4); align-items: end; }
+      .p-ledger-count { font-size: var(--kv-font-body-large-size); margin: 0; }
+      .p-ledger-count strong { font-variant-numeric: tabular-nums; }
+      table.p-ledger { inline-size: 100%; border-collapse: collapse; font-size: var(--kv-font-body-size); }
+      .p-ledger caption { text-align: start; padding-block: var(--kv-space-3); font-weight: 500; }
+      .p-ledger th, .p-ledger td { text-align: start; padding: var(--kv-space-3) var(--kv-space-3); border-block-end: 1px solid var(--kv-color-border-subtle); vertical-align: top; }
+      .p-ledger thead th { background: var(--kv-color-surface); font-weight: 600; position: sticky; inset-block-start: 0; }
+      .p-ledger th button { all: unset; cursor: pointer; display: inline-flex; gap: var(--kv-space-1); align-items: center; min-block-size: 2.75rem; }
+      .p-ledger th button:focus-visible { outline: 2px solid var(--kv-color-focus-ring); outline-offset: 2px; }
+      .p-ledger th[aria-sort='ascending'] button::after { content: ' ↑'; }
+      .p-ledger th[aria-sort='descending'] button::after { content: ' ↓'; }
+      .p-yes::before { content: '✓ '; }
+      .p-pending { font-style: italic; }
+      .p-partial::before { content: '◐ '; }
+      .p-ledger-note { font-size: var(--kv-font-body-small-size); max-inline-size: 70ch; }
+      .p-scroll { overflow-x: auto; }
+
+      .p-compare { display: grid; gap: var(--kv-space-6); grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); }
+      .p-transcript { margin: var(--kv-space-3) 0 0; padding: 0 0 0 1.5rem; font-family: var(--kv-font-family-mono); font-size: var(--kv-font-code-size); line-height: 1.6; }
+      .p-transcript li + li { margin-block-start: var(--kv-space-1); }
+      .p-role { font-weight: 600; }
+      .p-fake { display: inline-block; padding: 0.625rem 1rem; border-radius: var(--kv-radius-sm); background: var(--kv-color-primary); color: var(--kv-color-on-primary); font-weight: 500; }
+      .p-lang { display: flex; flex-wrap: wrap; gap: var(--kv-space-3) var(--kv-space-6); }
+      .p-lang label { display: inline-flex; gap: var(--kv-space-2); align-items: center; min-block-size: 2.75rem; }
+
+      .p-method { display: grid; gap: var(--kv-space-6); grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin: 0; padding: 0; list-style: none; }
+      .p-method h3 { margin: 0 0 var(--kv-space-2); }
+      .p-method p { margin: 0; }
+      pre.p-code { margin: 0; padding: var(--kv-space-4); background: var(--kv-color-surface); border: 1px solid var(--kv-color-border-subtle); border-radius: var(--kv-radius-sm); font-family: var(--kv-font-family-mono); font-size: var(--kv-font-code-size); overflow-x: auto; }
+      .p-footer-note { font-size: var(--kv-font-body-small-size); }
+    </style>
+  </head>
+  <body>
+    <a class="kv-skip-link" href="#main">Skip to main content</a>
+    <header class="kv-section kv-section--canvas kv-section--padding-sm" style="border-block-end: 1px solid var(--kv-color-border-subtle)">
+      <div class="kv-container" style="display: flex; flex-wrap: wrap; gap: var(--kv-space-4); align-items: center; justify-content: space-between">
+        <span style="display: inline-flex; gap: var(--kv-space-2); align-items: center"><a class="kv-link" href="#" style="font-weight: 600">KvirnUI</a> <span class="kv-badge">Pre-alpha</span></span>
+        <nav class="kv-navigation kv-navigation--horizontal" aria-label="Site">
+          <ul class="kv-navigation-list" role="list">
+            <li class="kv-navigation-item"><a class="kv-link" href="#" aria-current="page">Home</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Docs</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Components</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Patterns</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Content types</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Theming</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="kv-section kv-section--canvas kv-section--padding-lg p-hero">
+        <div class="kv-container">
+          <h1 class="p-title">Accessibility is hard. <strong>Navigating the web without it is harder.</strong></h1>
+          <p class="p-tagline">Accessibility you can verify.</p>
+          <p class="p-subline">Public-service components, with the evidence beside them. KvirnUI is a headless React library for public services in the Nordics and the EU, designed and tested to meet WCAG 2.2 AA.</p>
+          <p class="p-status"><strong>Pre-alpha.</strong> The API will change. Testing with assistive technology is pending.</p>
+          <div class="p-actions">
+            <a class="kv-link kv-link--service" href="#">Get started</a>
+            <a class="kv-link" href="#ledger">Read the evidence ledger</a>
+          </div>
+          <ul class="p-jump" aria-label="Jump to">
+            <li><a class="kv-link" href="#developers">For developers</a></li>
+            <li><a class="kv-link" href="#ledger">For accessibility owners and procurement</a></li>
+          </ul>
+          <p class="p-licence">Free for personal use. Any other use needs a commercial licence. The code is published under the AGPL-3.0. <a class="kv-link" href="#">How the licence works</a>.</p>
+        </div>
+      </section>
+
+      <section class="kv-section kv-section--surface kv-section--padding-lg">
+        <div class="kv-container">
+          <h2 class="kv-heading kv-heading--heading-2">KvirnUI in numbers</h2>
+          <ul class="p-facts" role="list">
+            <li><span class="p-fact-number">56</span><span class="p-fact-text">documented components and hooks, from a skip link to a data table.</span></li>
+            <li><span class="p-fact-number">6</span><span class="p-fact-text">languages: Swedish, Finnish, Norwegian Bokmål and Nynorsk, Northern Sámi and English. Much of the Sámi text is still English.</span></li>
+            <li><span class="p-fact-number">4</span><span class="p-fact-text">themes: light and dark, each with a high-contrast version.</span></li>
+            <li><span class="p-fact-number">3</span><span class="p-fact-text">runtime dependencies, all from TanStack.</span></li>
+            <li><span class="p-fact-number">0</span><span class="p-fact-text">lines of CSS in the headless packages. One import adds the theme.</span></li>
+            <li><span class="p-fact-number">0</span><span class="p-fact-text">cookies, trackers or calls home, here and in the library.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="kv-section kv-section--canvas kv-section--padding-lg" id="ledger">
+        <div class="kv-container">
+          <div class="p-ledger-head">
+            <div>
+              <h2 class="kv-heading kv-heading--heading-2">The evidence ledger</h2>
+              <p class="p-ledger-count">Today: <strong>56</strong> contracts written, <strong>56</strong> keyboard contracts tested, <strong>56</strong> checked with axe in four themes, <strong>41</strong> reviewed, <strong>0</strong> tested with real assistive technology.</p>
+            </div>
+            <button class="kv-button" type="button">Copy as Markdown for a tender</button>
+          </div>
+          <p class="p-ledger-note">Every row is generated from the repository when the site is built: the contract file, the names of the tests, the stories, the reviewer's verdict and the assistive-technology matrix. A component without a test shows <em>pending</em>. Nothing here is typed by hand.</p>
+          <div class="p-scroll">
+            <table class="p-ledger" id="ledger-table">
+              <caption>Status per component. Sort by any column.</caption>
+              <thead>
+                <tr>
+                  <th scope="col" aria-sort="ascending"><button type="button" data-sort="0">Component</button></th>
+                  <th scope="col"><button type="button" data-sort="1">Written contract</button></th>
+                  <th scope="col"><button type="button" data-sort="2">Every key tested</button></th>
+                  <th scope="col"><button type="button" data-sort="3">axe, 4 themes</button></th>
+                  <th scope="col"><button type="button" data-sort="4">Reviewer</button></th>
+                  <th scope="col"><button type="button" data-sort="5">Real assistive technology</button></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row"><a class="kv-link" href="#">Button</a></th><td class="p-yes">Yes</td><td class="p-yes">Yes, 4 keys</td><td class="p-yes">Yes</td><td class="p-yes">Approved</td><td class="p-pending">pending</td></tr>
+                <tr><th scope="row"><a class="kv-link" href="#">Combobox</a></th><td class="p-yes">Yes</td><td class="p-yes">Yes, 11 keys</td><td class="p-yes">Yes</td><td class="p-yes">Approved</td><td class="p-pending">pending</td></tr>
+                <tr><th scope="row"><a class="kv-link" href="#">DatePicker</a></th><td class="p-yes">Yes</td><td class="p-yes">Yes, 9 keys</td><td class="p-yes">Yes</td><td class="p-partial">Findings fixed, re-review due</td><td class="p-pending">pending</td></tr>
+                <tr><th scope="row"><a class="kv-link" href="#">Dialog</a></th><td class="p-yes">Yes</td><td class="p-yes">Yes, 3 keys</td><td class="p-yes">Yes</td><td class="p-yes">Approved</td><td class="p-pending">pending</td></tr>
+                <tr><th scope="row"><a class="kv-link" href="#">ErrorSummary</a></th><td class="p-yes">Yes</td><td class="p-yes">Yes, 2 keys</td><td class="p-yes">Yes</td><td class="p-yes">Approved</td><td class="p-pending">pending</td></tr>
+                <tr><th scope="row"><a class="kv-link" href="#">ReadAloud</a></th><td class="p-yes">Yes</td><td class="p-yes">Yes, 6 keys</td><td class="p-yes">Yes</td><td class="p-partial">In review</td><td class="p-pending">pending</td></tr>
+                <tr><th scope="row"><a class="kv-link" href="#">Table</a></th><td class="p-yes">Yes</td><td class="p-yes">Yes, 8 keys</td><td class="p-yes">Yes</td><td class="p-yes">Approved</td><td class="p-pending">pending</td></tr>
+                <tr><th scope="row"><a class="kv-link" href="#">Tabs</a></th><td class="p-yes">Yes</td><td class="p-yes">Yes, 6 keys</td><td class="p-yes">Yes</td><td class="p-yes">Approved</td><td class="p-pending">pending</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="p-ledger-note">Sample of 8 rows. The real ledger lists all 56 and links each name to its page, where the keyboard contract is shown in full.</p>
+        </div>
+      </section>
+
+      <section class="kv-section kv-section--surface kv-section--padding-lg">
+        <div class="kv-container">
+          <h2 class="kv-heading kv-heading--heading-2">Hear what you can't see</h2>
+          <p class="kv-lead">Two things that look the same. A screen reader tells them apart; so does a keyboard.</p>
+          <fieldset class="kv-fieldset" style="margin-block-end: var(--kv-space-6)">
+            <legend class="kv-fieldset-legend">Language of the example</legend>
+            <div class="p-lang">
+              <label><input type="radio" name="lang" checked /> Svenska</label>
+              <label><input type="radio" name="lang" /> Suomi</label>
+              <label><input type="radio" name="lang" /> Norsk bokmål</label>
+              <label><input type="radio" name="lang" /> Nynorsk</label>
+              <label><input type="radio" name="lang" /> Davvisámegiella</label>
+              <label><input type="radio" name="lang" /> English</label>
+            </div>
+          </fieldset>
+          <div class="p-compare">
+            <div class="kv-card"><div class="kv-card-body">
+              <h3 class="kv-heading kv-heading--heading-3">A styled <code>div</code></h3>
+              <p><span class="p-fake" aria-hidden="true">Visa svar</span></p>
+              <p style="margin:0"><strong>Keyboard:</strong> Tab skips it.</p>
+              <p style="margin:0"><strong>A screen reader may say:</strong></p>
+              <ol class="p-transcript" lang="sv"><li>Visa svar</li></ol>
+            </div></div>
+            <div class="kv-card"><div class="kv-card-body">
+              <h3 class="kv-heading kv-heading--heading-3">KvirnUI <code>Disclosure</code></h3>
+              <p><button class="kv-button kv-button--primary" type="button" aria-expanded="false">Visa svar</button></p>
+              <p style="margin:0"><strong>Keyboard:</strong> Tab reaches it. Enter and Space open it.</p>
+              <p style="margin:0"><strong>A screen reader may say:</strong></p>
+              <ol class="p-transcript" lang="sv"><li>Visa svar, <span class="p-role">knapp</span>, <span class="p-role">komprimerad</span></li></ol>
+            </div></div>
+          </div>
+          <p class="p-ledger-note">The transcripts are examples written by hand. Real screen readers use their own words. The role words come from KvirnUI's strings in the chosen language.</p>
+        </div>
+      </section>
+
+      <section class="kv-section kv-section--canvas kv-section--padding-lg" id="developers">
+        <div class="kv-container">
+          <h2 class="kv-heading kv-heading--heading-2">For developers</h2>
+          <p class="kv-lead">A hook when you want control, a component when you want speed. The same contract either way.</p>
+          <div class="p-compare">
+            <div>
+              <h3 class="kv-heading kv-heading--heading-3">Hook</h3>
+<pre class="p-code"><code>const disclosure = useDisclosure()
+
+&lt;button {...disclosure.triggerProps}&gt;
+  Show the answer
+&lt;/button&gt;
+&lt;div {...disclosure.panelProps}&gt;…&lt;/div&gt;</code></pre>
+            </div>
+            <div>
+              <h3 class="kv-heading kv-heading--heading-3">Component</h3>
+<pre class="p-code"><code>&lt;Disclosure.Root&gt;
+  &lt;Disclosure.Trigger&gt;
+    Show the answer
+  &lt;/Disclosure.Trigger&gt;
+  &lt;Disclosure.Panel&gt;…&lt;/Disclosure.Panel&gt;
+&lt;/Disclosure.Root&gt;</code></pre>
+            </div>
+          </div>
+          <p style="margin-block-start: var(--kv-space-6)"><code>pnpm add @kvirn-ui/react @kvirn-ui/i18n</code> <button class="kv-button" type="button" style="margin-inline-start: var(--kv-space-3)">Copy</button></p>
+          <p>Remove the theme import and everything unstyles. Keep it and change the tokens. Either way, state is <code>data-*</code> and the markup is yours.</p>
+        </div>
+      </section>
+
+      <section class="kv-section kv-section--surface kv-section--padding-lg">
+        <div class="kv-container">
+          <h2 class="kv-heading kv-heading--heading-2">How we know it works</h2>
+          <ul class="p-method" role="list">
+            <li><h3 class="kv-heading kv-heading--heading-3">Native HTML first</h3><p>A button is a <code>&lt;button&gt;</code>. We add ARIA only where HTML falls short.</p></li>
+            <li><h3 class="kv-heading kv-heading--heading-3">A contract for every component</h3><p>Roles, focus, announcements and every key, written down and shown on its page.</p></li>
+            <li><h3 class="kv-heading kv-heading--heading-3">Every key, tested</h3><p>Each key in a contract has a test that presses it in a real browser.</p></li>
+            <li><h3 class="kv-heading kv-heading--heading-3">Checked in every theme</h3><p>Every story is checked with axe in all four themes.</p></li>
+            <li><h3 class="kv-heading kv-heading--heading-3">What a screen reader says</h3><p>For more and more components, tests check what a virtual screen reader reads, and in which order.</p></li>
+            <li><h3 class="kv-heading kv-heading--heading-3">Pending means pending</h3><p>Testing with real assistive technology comes next. Until people have done it, we say pending.</p></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="kv-section kv-section--canvas kv-section--padding-lg">
+        <div class="kv-container">
+          <h2 class="kv-heading kv-heading--heading-2">Start building</h2>
+          <p>Install the components and the strings. Add the default theme if you want it.</p>
+          <pre class="p-code"><code>pnpm add @kvirn-ui/react @kvirn-ui/i18n</code></pre>
+          <p class="p-actions"><a class="kv-link kv-link--service" href="#">Get started</a> <a class="kv-link" href="#">Theming</a> <a class="kv-link" href="#">Roadmap</a></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="kv-section kv-section--surface kv-section--padding-sm">
+      <div class="kv-container p-footer-note">AGPL-3.0 · Designed and tested to meet WCAG 2.2 AA · No cookies, analytics or third-party services on this site.</div>
+    </footer>
+
+    <script>
+      // Prototype only: sorts the sample ledger. The real page uses KvirnUI's Table.
+      const table = document.getElementById('ledger-table')
+      table.querySelectorAll('th[scope="col"] button').forEach((button) => {
+        button.addEventListener('click', () => {
+          const index = Number(button.dataset.sort)
+          const th = button.parentElement
+          const ascending = th.getAttribute('aria-sort') !== 'ascending'
+          table.querySelectorAll('th[scope="col"]').forEach((h) => h.removeAttribute('aria-sort'))
+          th.setAttribute('aria-sort', ascending ? 'ascending' : 'descending')
+          const body = table.tBodies[0]
+          const rows = Array.from(body.rows)
+          rows.sort((a, b) => a.cells[index].textContent.localeCompare(b.cells[index].textContent, 'en') * (ascending ? 1 : -1))
+          rows.forEach((row) => body.appendChild(row))
+        })
+      })
+    </script>
+  </body>
+</html>

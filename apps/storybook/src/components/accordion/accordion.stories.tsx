@@ -39,10 +39,9 @@ const meta = {
       description:
         'Your own classes, added to `kv-accordion`. `kv-compact` on a container makes the rows 32px from 64rem.',
     },
-    render: {
+    as: {
       control: false,
-      description:
-        'Another element for the root: `render={<ul role="list" />}` with `render={<li />}` on each Item. It gets the class: spread the props it gets.',
+      description: 'Another element for the Root (`ul`, `ol`) or an Item (`li`), as a string.',
     },
     ref: { control: false, description: 'The root’s `<div>`.' },
   },
@@ -156,7 +155,7 @@ export const FindInPage: Story = {
   },
 }
 
-/** A list through `render` (`ul` and `li`), with a disabled item that stays a Tab stop. */
+/** A list through `as` (`ul` and `li`), with a disabled item that stays a Tab stop. */
 export const AsAList: Story = {
   parameters: showSource('accordion/accordion.fixture.tsx', 'ListAccordion'),
   render: () => <ListAccordion />,

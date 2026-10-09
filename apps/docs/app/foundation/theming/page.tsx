@@ -1,3 +1,4 @@
+import { Link } from '@kvirn-ui/react'
 import type { Metadata } from 'next'
 import { CodeBlock } from '../../../components/code-block.tsx'
 import { PageWithContents } from '../../../components/page-contents.tsx'
@@ -27,6 +28,11 @@ export default function ThemingPage() {
               <CodeBlock
                 code={'<Button className="kv-button--primary">Send application</Button>'}
               />
+              <p>
+                The colour scheme, contrast and motion follow the device until the user chooses. To
+                avoid a flash of the wrong theme on a server-rendered page, see{' '}
+                <Link href="/foundation/rendering#first-paint">Rendering: server and client</Link>.
+              </p>
             </>
           ),
         },

@@ -2,14 +2,14 @@ import type { ProseRootProps, UseProseResult } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
 import type { AttributeRow } from '../components/api-block.tsx'
 
-export type ProseDocumentedProps = Pick<ProseRootProps, 'render' | 'ref'>
+export type ProseDocumentedProps = Pick<ProseRootProps, 'as' | 'ref'>
 
 export const proseRows = propRows<ProseDocumentedProps>({
-  render: {
-    type: 'RenderProp<ProseElementProps, ProseState>',
-    default: '–',
+  as: {
+    type: "'div' | 'article' | 'section'",
+    default: "'div'",
     description:
-      'Changes the element, for example <article /> or <section aria-labelledby />. Its own semantics apply. A function receives the props and the state, which is empty outside a Field or Fieldset.',
+      'Changes the element: article for a self-contained piece, or section with aria-labelledby for a named region. Prose adds no role.',
   },
   ref: {
     type: 'Ref<HTMLElement>',
@@ -22,7 +22,7 @@ export const proseAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-prose',
     values: 'always',
-    meaning: 'The part class. Your className and a render element’s own class join it.',
+    meaning: 'The part class. Your className joins it.',
   },
   {
     name: 'kv-prose--small',

@@ -132,11 +132,6 @@ const meta = {
         'The rest of Tiptap’s `useEditor` options, passed through: `editorProps`, `autofocus`, `injectNonce`. The editor owns `extensions`, `content` and `editable`.',
     },
     ref: { control: false, description: 'A ref to the box (`<div class="kv-rich-text">`).' },
-    render: {
-      control: false,
-      description:
-        'Another element for the box. Spread the props it gets. `state` is `isEmpty`, `isFocused`, `isFocusVisible`, `isInvalid`, `isRequired`, `isDisabled`, `isReadOnly`, `isEditable` and `isOverLimit`.',
-    },
   },
   globals: { locale: 'sv' },
   decorators: [

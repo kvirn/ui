@@ -56,7 +56,7 @@ const format = useFormat()
 format.date(date, { dateStyle: 'long' })
 format.number(amount, { style: 'currency', currency: 'SEK' })`
 
-const serverFormat = `import { createMessageFormat } from '@kvirn-ui/core'
+const serverFormat = `import { createMessageFormat } from '@kvirn-ui/react/server'
 
 const format = createMessageFormat({ locale: 'sv-SE', timeZone: 'Europe/Stockholm' })`
 
@@ -173,7 +173,7 @@ export function LocalesPage({
                 </li>
                 <li>Built-in English.</li>
               </ol>
-              <Heading level={3} id="per-provider">
+              <Heading as="h3" id="per-provider">
                 For the whole app or a section
               </Heading>
               <p>
@@ -183,7 +183,7 @@ export function LocalesPage({
               </p>
               <CodeBlock code={adjustCatalog} />
               <CodeBlock code={nestedOverride} />
-              <Heading level={3} id="per-instance">
+              <Heading as="h3" id="per-instance">
                 For one component
               </Heading>
               <p>
@@ -278,8 +278,8 @@ export function LocalesPage({
               <ul>
                 <li>
                   A <code>Date</code> or milliseconds is an instant, shown in the provider&apos;s{' '}
-                  <code>timeZone</code> (or the runtime&apos;s). <code>options.timeZone</code> wins.
-                  Set the zone on the provider so the server and the browser agree.
+                  <code>timeZone</code>, or in UTC when there is none. <code>options.timeZone</code>{' '}
+                  wins. Set the zone on the provider so the server and the browser agree.
                 </li>
                 <li>
                   A string written <code>YYYY-MM-DD</code> is a calendar date, such as a date of
@@ -294,7 +294,8 @@ export function LocalesPage({
               </ul>
               <p>
                 In a server component a hook can&apos;t run. Build the same object with{' '}
-                <code>createMessageFormat</code>.
+                <code>createMessageFormat</code> from <code>@kvirn-ui/react/server</code>. See{' '}
+                <Link href="/foundation/rendering">Rendering: server and client</Link>.
               </p>
               <CodeBlock code={serverFormat} />
             </>

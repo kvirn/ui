@@ -11,11 +11,9 @@ import {
   paginationEllipsisAttributes,
   paginationEllipsisRows,
   paginationItemAttributes,
-  paginationItemRows,
   paginationLinkAttributes,
   paginationLinkRows,
   paginationListAttributes,
-  paginationListRows,
   paginationNextAttributes,
   paginationNextRows,
   paginationPreviousAttributes,
@@ -59,7 +57,6 @@ const parts: ApiPart[] = [
         Next each go in a <code>Pagination.Item</code>.
       </>
     ),
-    props: paginationListRows,
     attributes: paginationListAttributes,
   },
   {
@@ -70,7 +67,6 @@ const parts: ApiPart[] = [
         the status.
       </>
     ),
-    props: paginationItemRows,
     attributes: paginationItemAttributes,
   },
   {

@@ -241,7 +241,7 @@ None. No colour, size, space or radius is added. `theme:check` should still run,
 
 Draft input for `field.a11y.md` and `fieldset.a11y.md` (the Field contract also covers the HelpText page).
 
-- **Roles and native elements:** `Field.HelpText` and `Fieldset.HelpText` render a plain `<p class="kv-field-help-text" id>` with no role. `render` can swap the element (a `<div>`), never to something interactive.
+- **Roles and native elements:** `Field.HelpText` and `Fieldset.HelpText` render a plain `<p class="kv-field-help-text" id>` with no role. there is no `as`: another element uses the hook, and never an interactive one.
 - **Accessible names:** the help text is never part of the name. It's outside the `<label>`, so the name stays the visible label (2.5.3).
 - **Description:** the control's (or the `<fieldset>`'s) `aria-describedby` lists every rendered description, Prose and HelpText alike, in DOM order, then the error id while invalid. With the default order: description, help text, error. A help text that isn't rendered isn't listed, and the attribute is never empty. An option's help text describes that option's input, not the group.
 - **Focus:** the help text is never focusable (no `tabindex`), and moves no focus. Tab goes from the control to the next control. `field.a11y.md`'s Keyboard section already has the row "Tab skips the help text and the error message", which the HelpText page shows.

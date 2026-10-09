@@ -4,81 +4,77 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 # Your own element
 
-Every part renders exactly one element, and you can change which one. `render` swaps the element, `className` and `style` add to the part's own, and `mergeProps` joins your props with a hook's props when you build the element yourself. This page says once how they behave. The Docs page of each component only says which element it needs.
+Every part renders exactly one element. Some parts let you choose which one with `as`. For every other part you build the element yourself with the part's hook. `className` and `style` add to the part's own, and `mergeProps` joins your props with a hook's props. This page says once how they behave. The Docs page of each component says which of the two it offers.
 
-## `render`
+There is no `render` prop and no `asChild`.
 
-`render` takes an element or a function. There is no `asChild`.
+## `as`
 
-| Form         | You write                                              | What happens                                                                                                     |
-| ------------ | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| **Element**  | `render={<aside aria-labelledby="kontakt" />}`         | The element is cloned with the part's props merged into its own. Its own plain props win, and its handlers chain |
-| **Function** | `render={(partProps, state) => <li {...partProps} />}` | You get the part's props and its state and spread the props yourself. The part does no merging for you           |
+`as` comes in two forms, and a part has one of them or neither.
 
-Use the element form when you only want another tag or a component with its own props. Use the function form when you need the state, or when your component takes the props under other names.
+| Form          | You write                                        | What happens                                                                                                  |
+| ------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| **Tag**       | `as="aside"`                                     | A string from the part's short list of allowed tags. The element's own attributes are plain props on the part |
+| **Component** | `as={AcmeButton}` and `tone="quiet"` on the part | Your component gets the part's props and every other prop you wrote on the part, as plain props               |
 
 ```tsx
-import { Button, Section } from '@kvirn-ui/react'
+import { Link, Section, Tooltip } from '@kvirn-ui/react'
 
-// Element form: a landmark instead of a div, named by its heading.
-<Section render={<aside aria-labelledby="kontakt" />}>
+// Tag: a landmark instead of a div, named by its heading.
+<Section as="aside" aria-labelledby="kontakt">
   <h2 id="kontakt">Kontakta oss</h2>
 </Section>
 
-// Element form: your design system's button. It must still render a <button>.
-<Button render={<AcmeButton tone="quiet" />}>Spara</Button>
+// Component: your design system's button on the trigger. Its props are props of the Trigger.
+<Tooltip.Trigger as={AcmeButton} tone="quiet" aria-label="Skriv ut">…</Tooltip.Trigger>
 
-// Function form: spread the props, and keep className.
-<Section render={(sectionProps) => <li {...sectionProps} />}>…</Section>
+// `as="a"` on a Link bypasses the router you registered, for one link.
+<Link.Root href="/blankett.pdf" download as="a">Blankett (PDF)</Link.Root>
 ```
 
-### The element must still do the job
+A tag outside the part's list is a type error. From JavaScript it logs `as-not-allowed:<part>:<tag>` once in development and the part renders its default element. The allowed tags are on each component's Docs page, because a tag changes the outline or the semantics (1.3.1, 4.1.2).
 
-A part that needs a specific element checks after it has mounted what `render` produced, and logs a development warning when it is wrong. Render the element the warning names and forward its `ref`. The checks:
+Only one `as` per part. To put two parts on one element, such as a Tooltip over a Toolbar item that opens a Popover, write a small component that applies one of them and pass it as the other's `as`.
 
-| Part                              | Needs                                                             |
-| --------------------------------- | ----------------------------------------------------------------- |
-| `Button`, `Toggle`, `Alert.Close` | A `<button>`. For navigation use `Link.Root`                      |
-| `Tabs.Tab`                        | A `<button>`. For other pages use `Navigation`                    |
-| `Link.Root`                       | An `<a href>`, also when you register a router link               |
-| `Fieldset.Root`                   | A `<fieldset>`: the group name comes from its `<legend>`          |
-| `Toolbar.Item`                    | An element that is focusable by itself, and not natively disabled |
+### What a target component must do
 
-The codes are in [Dev warnings](?path=/docs/foundation-dev-warnings--docs). Landmarks, headings and list items have no such check: a `Section` as `<nav>` needs a name, and the page is responsible for the outline.
+A component you pass to `as` must:
 
-### The state argument
+- **Accept `ref`** and put it on its DOM node. Focus management, the position of a popup and the development checks read the element through it.
+- **Spread the rest of its props on that DOM node.** The part's handlers, `aria-*`, `id`, `className` and `data-*` arrive as props, and dropping one drops a behaviour.
+- **Render what the part needs.** `Menu.Trigger`, `Popover.Close`, `Dialog.Close` and `AlertDialog.Close` need a button. A `Link.Root` target needs an `<a href>`. A `Toolbar.Item` target must be focusable by itself and not natively disabled. The checks log a development warning, see [Dev warnings](?path=/docs/foundation-dev-warnings--docs).
 
-The function form gets the part's state as its second argument. It is a small typed object named after the part, such as `ButtonState`, and it holds the same facts that the part puts in its `data-*` attributes.
+### Server Components
+
+`as` works from a Server Component when its value can cross to the client:
+
+| `as`                                       | From a Server Component |
+| ------------------------------------------ | ----------------------- |
+| A tag string (`as="p"`)                    | Works                   |
+| A Client Component (it has `'use client'`) | Works                   |
+| A Server Component                         | Throws when it renders  |
+| An inline function or arrow component      | Throws when it renders  |
+
+## Hooks, for everything else
+
+A part with no `as` (a Button, a Toggle, a Tab, a form control, a Listbox, a Table) is not a place to swap the element, because its role, its keys and its disabled state come from the native element it renders. If you need your own element, or your design system's component, use the hook and spread what it returns.
 
 ```tsx
-<Button
-  render={(buttonProps, { isDisabled, isFocusVisible }) => (
-    <AcmeButton {...buttonProps} tone={isDisabled ? 'muted' : 'quiet'} />
-  )}
->
-  Spara
-</Button>
+import { mergeProps, useButton } from '@kvirn-ui/react'
+
+function SaveButton() {
+  const button = useButton()
+  return <AcmeButton {...mergeProps({ tone: 'quiet' }, button.buttonProps)}>Spara</AcmeButton>
+}
 ```
 
-| State type                                         | Fields                                         |
-| -------------------------------------------------- | ---------------------------------------------- |
-| `ButtonState`, `AlertCloseState`                   | `isDisabled`, `isFocusVisible`                 |
-| `ToggleState`                                      | `isPressed`, `isDisabled`, `isFocusVisible`    |
-| `TabsState`                                        | `value`, `orientation`, `activationMode`       |
-| `TabsTabState`                                     | `isSelected`, `isDisabled`                     |
-| `TabsPanelState`                                   | `isSelected`                                   |
-| `LinkState`                                        | `isCurrent`, `isFocusVisible`, `opensInNewTab` |
-| `HeadingState`                                     | `level`, `size`                                |
-| `IconState`                                        | `isDecorative`                                 |
-| `PopoverState`, `TooltipState`, `ListboxPartState` | `isOpen`                                       |
-| `ListboxValueState`                                | `isPlaceholder`                                |
-| `SectionState`                                     | none: the object is empty                      |
+The hook's result also holds the state (`isDisabled`, `isFocusVisible`). The part puts the same facts in its `data-*` attributes (`data-disabled`, `data-open`, `data-selected`), so styling by state needs no function, only a selector.
 
-Every part exports its own state type from `@kvirn-ui/react`, named after the part. The Docs page of the component says which ones it has.
+A hook that disables something must stay in charge of its activation: a disabled Button must not call your `onClick`. Keep `buttonProps.onClick` on your element: it is the gated one.
 
 ## `mergeProps`
 
-When you spread a hook's props on your own element, `mergeProps` joins them with yours. It is public, and `render` uses the same function.
+When you spread a hook's props on your own element, `mergeProps` joins them with yours. It is public, and the parts use the same function when they merge your props on a part with `as`.
 
 ```tsx
 import { mergeProps, useButton } from '@kvirn-ui/react'
@@ -118,27 +114,25 @@ An `id` on the part is what a label's `htmlFor` or an `aria-describedby` points 
 
 ### What merging cannot do
 
-- **It cannot block an activation.** A disabled Button must not call your `onClick`, so `Button` takes `onClick` off a `render` element and passes it through its hook. Merging your own `onClick` over `buttonProps`, or replacing `buttonProps.onClick`, is not supported: in the function form, keep `buttonProps.onClick`.
+- **It cannot block an activation.** Merging your own `onClick` over `buttonProps`, or replacing `buttonProps.onClick`, is not supported: the hook gates it when it is disabled.
 - **It does not repair markup.** Merging props onto the wrong element still gives the wrong element.
 
 ## `className`
 
-A part renders its own stable class, such as `kv-button`, and the default theme styles it. Your `className` joins it and never replaces it, on the component and on a `render` element alike. So `className="kv-button--primary"` adds the theme's variant, and `className="acme-save"` adds yours, and the theme keeps styling the part.
-
-In the function form, spread `partProps` and keep its `className`. If you write `className="acme-save"` after the spread, you have replaced the part's class: join them yourself, for example `className={[partProps.className, 'acme-save'].join(' ')}`.
+A part renders its own stable class, such as `kv-button`, and the default theme styles it. Your `className` joins it and never replaces it, with `as` or without. So `className="kv-button--primary"` adds the theme's variant, and `className="acme-save"` adds yours, and the theme keeps styling the part.
 
 State is in `data-*` attributes (`data-disabled`, `data-open`), never in classes, so your CSS can select on it.
 
 ## Accessibility
 
-- **Semantics come from the element.** A part chooses the element that gives the role, the keys and the disabled state. Swapping it for the wrong one removes them, which is why the parts that need a specific element warn.
-- **Names move with you.** A landmark you create with `render` (a `<nav>`, `<aside>` or `<section>`) needs its own name (2.4.1, 2.4.6). A dialog you create needs one too (4.1.2).
+- **Semantics come from the element.** A part chooses the element that gives the role, the keys and the disabled state. That is why a part either offers a short list of safe tags or none at all.
+- **Names move with you.** A landmark you create with `as` (a `<nav>`, `<aside>` or `<section>`) needs its own name (2.4.1, 2.4.6). A dialog you create needs one too (4.1.2).
 - **Keep the focus ring.** Do not set `outline: none` on your element. The part's class and `data-focus-visible` draw the ring (2.4.7).
-- **Keep the ref.** Focus management, the position of a popup and the checks above read the element through the ref, so a component you render must forward it.
+- **Keep the ref.** Focus management, the position of a popup and the checks above read the element through the ref, so a component you pass to `as` must forward it.
 
 ## Related
 
 - [Dev warnings](?path=/docs/foundation-dev-warnings--docs): every code, including the wrong-element ones
-- [Icon](?path=/docs/components-icon--docs): `render` for your own SVG, in both forms
+- [Icon](?path=/docs/components-icon--docs): `as` for your own SVG component
 - [Section](?path=/docs/components-section--docs): the landmark examples
 - [Focus ring](?path=/docs/foundation-focus--docs): what the part's class draws

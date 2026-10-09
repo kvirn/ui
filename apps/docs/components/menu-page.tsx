@@ -11,18 +11,14 @@ import {
   menuCheckboxItemRows,
   menuGroupAttributes,
   menuGroupLabelAttributes,
-  menuGroupLabelRows,
-  menuGroupRows,
   menuItemAttributes,
   menuItemRows,
   menuPopupAttributes,
-  menuPopupRows,
   menuRadioGroupAttributes,
   menuRadioGroupRows,
   menuRadioItemRows,
   menuRootRows,
   menuSeparatorAttributes,
-  menuSeparatorRows,
   menuTriggerAttributes,
   menuTriggerRows,
 } from '../content/menu.api.ts'
@@ -65,7 +61,6 @@ const parts: ApiPart[] = [
         render only while it is open. Render it right after the trigger.
       </>
     ),
-    props: menuPopupRows,
     attributes: menuPopupAttributes,
   },
   {
@@ -116,19 +111,16 @@ const parts: ApiPart[] = [
   {
     name: 'Menu.Group',
     renders: <>{elementNote('div')} Name it with a GroupLabel.</>,
-    props: menuGroupRows,
     attributes: menuGroupAttributes,
   },
   {
     name: 'Menu.GroupLabel',
     renders: <>{elementNote('div')} It names the Group around it.</>,
-    props: menuGroupLabelRows,
     attributes: menuGroupLabelAttributes,
   },
   {
     name: 'Menu.Separator',
     renders: <>{elementNote('div')} A divider between items.</>,
-    props: menuSeparatorRows,
     attributes: menuSeparatorAttributes,
   },
 ]

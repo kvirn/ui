@@ -119,13 +119,13 @@ export function SidebarLayoutPage({
             code={sources['service-page']}
             propsUsed={[
               { part: 'SidebarLayout.Root', prop: 'sidebarWidth' },
-              { part: 'SidebarLayout.Sidebar', prop: 'render' },
+              { part: 'SidebarLayout.Sidebar', prop: 'as' },
             ]}
             note={
               <Note kind="reminder">
                 A nav is a landmark and needs a name, in the page’s language. The Content isn’t{' '}
-                <code>&lt;main&gt;</code>: a page has one, so choose it with <code>render</code>{' '}
-                where it fits.
+                <code>&lt;main&gt;</code>: a page has one, so choose it with <code>as</code> where
+                it fits.
               </Note>
             }
           >
@@ -136,7 +136,7 @@ export function SidebarLayoutPage({
             title="Contact details beside the text"
             why="Information that belongs to the page but isn’t part of the text goes in a side column. Write the content first and the sidebar after it, so the content is at inline start and is read and focused first. Render the sidebar as an aside and name it."
             code={sources['side-information']}
-            propsUsed={[{ part: 'SidebarLayout.Sidebar', prop: 'render' }]}
+            propsUsed={[{ part: 'SidebarLayout.Sidebar', prop: 'as' }]}
             note={
               <Note kind="tip">
                 The side follows the DOM order, and it mirrors in right-to-left languages: the first

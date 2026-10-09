@@ -8,7 +8,7 @@
 The component is decided by the maintainer, and this spec doesn't reopen it:
 
 - `Section` (also `Section.Root`) and `useSection()`, which returns `rootProps`. One part.
-- It renders `<div class="kv-section">` by default. `render` changes the element (`<section aria-labelledby>`, `<aside aria-labelledby>`, `<nav aria-labelledby>`, `<li>` …). Children pass through.
+- It renders `<div class="kv-section">` by default. `as` changes the element (`<section aria-labelledby>`, `<aside aria-labelledby>`, `<nav aria-labelledby>`, `<li>` …). Children pass through.
 - No Header, Body or Footer, no title, no behaviour, no role, no ARIA and no strings.
 - Choices are modifier classes on the Root, not props.
 - A Section is a **region** of the page, elevation level 1. A Card is an **object** on the page, elevation level 2. Card loses `kv-card--surface` and `kv-card--canvas`.
@@ -44,7 +44,7 @@ This spec decides the **default theme's look and classes**, the change to Card, 
 | Source                                                                                                                                                        | What we reuse                                                                                                                 | What we change and why                                                                                                                            |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | DESIGN.md Elevation, level 1 (`surface`, `border-subtle`, no shadow, "Sections, sidebars")                                                                    | `surface` as the default, no shadow, square                                                                                   | The edge is a 1px **transparent** border, `CanvasText` in forced colours (§6.4). The Elevation table changes to say so                            |
-| KvirnUI Card (`docs/design/card.md`)                                                                                                                          | One part with `render`, class-based choices, the padding steps and their responsive and compact behaviour, never clipping     | No radius, no parts, no padding model for parts, no full-bleed corners. Not a prose boundary (§6.6)                                               |
+| KvirnUI Card (`docs/design/card.md`)                                                                                                                          | One part with `as`, class-based choices, the padding steps and their responsive and compact behaviour, never clipping         | No radius, no parts, no padding model for parts, no full-bleed corners. Not a prose boundary (§6.6)                                               |
 | [Aksel (NAV, NO) `Box` primitive](https://aksel.nav.no/komponenter/primitives/box)                                                                            | A plain layout container whose background and padding come from tokens                                                        | Named steps instead of raw spacing steps, and only two surfaces, both in `theme:check`. No border, radius or shadow choices, which belong to Card |
 | [HTML-AAM: `section`](https://www.w3.org/TR/html-aam-1.0/#el-section) and [APG Landmark Regions](https://www.w3.org/WAI/ARIA/apg/practices/landmark-regions/) | A `<section>` without an accessible name maps to `generic`, not `region`. Landmarks should be few, named and worth jumping to | The default element is a `<div>`, so `Section` never pretends to be a landmark. The consumer opts in with a named `section`, `aside` or `nav`     |
 | Docs site sidebar (`docs/design/docs-site.md`)                                                                                                                | A `surface` sidebar with one hairline on the edge that meets the content                                                      | The theme draws no hairline. The consumer colours one edge of the transparent border if they want it (§6.4)                                       |
@@ -287,9 +287,9 @@ Draft input for `packages/react/src/section/section.a11y.md`.
 - **APG pattern:** none. A section isn't a widget. **Deviations:** none.
 - **Element and role:** `<div>` → `generic` by default. No `role`, `aria-*`, `tabindex`, `inert`, `aria-hidden`, click handler, heading, live region or text, ever. Attributes (`id`, `lang`, `aria-*`, `data-*`) pass through. `className` joins `kv-section`.
 - **Landmarks are opt-in, and named.**
-  - `render={<aside aria-labelledby={headingId} />}`: complementary content (Example A, contact; Example C, case details).
-  - `render={<section aria-labelledby={headingId} />}`: a region worth jumping to. A `<section>` without a name is `generic` (HTML-AAM), so it's useless as a landmark.
-  - `render={<nav aria-labelledby={headingId} />}`: a sidebar of navigation.
+  - `as="aside"` with `aria-labelledby={headingId}`: complementary content (Example A, contact; Example C, case details).
+  - `as="section"` with `aria-labelledby={headingId}`: a region worth jumping to. A `<section>` without a name is `generic` (HTML-AAM), so it's useless as a landmark.
+  - `as="nav"` with `aria-labelledby={headingId}`: a sidebar of navigation.
   - The default `<div>`: a purely visual band (Example B).
   - Keep landmarks few. Never make every band a landmark. `header` and `footer` at the top level become `banner` and `contentinfo`, so only one of each.
 - **Headings are the consumer's.** `h2` for a sidebar or a band under the page's `h1`. Section can't know the level (1.3.1, 2.4.6).
@@ -329,7 +329,7 @@ Section is never a Tab stop and never changes the Tab order. Its children handle
 
 **Tests the plan should list:**
 
-- `section.test.tsx`: one `<div class="kv-section">`; `className` and a `render` element's class join it; `render` changes the element (`aside`, `section`, `li`); refs reach any element; `useSection()` returns `{ rootProps: { className: 'kv-section' } }`; no role, ARIA or `tabindex`; server rendering.
+- `section.test.tsx`: one `<div class="kv-section">`; `className` joins it; `as` changes the element (`aside`, `section`, `li`); refs reach any element; `useSection()` returns `{ rootProps: { className: 'kv-section' } }`; no role, ARIA or `tabindex`; server rendering.
 - `theme-css.test.ts` has no Section tests: the rules (no clipping, no fixed height, the 1px border, `border-color: CanvasText` in forced colours) are reviewed in Storybook and covered by the e2e specs (AGENTS.md rule 13).
 - `section.e2e.ts`: the two keyboard rows; the border is drawn on all four sides in a colour other than the background in forced colours; a11y snapshots (Example A is a named `complementary`; `Default` exposes no landmark); no horizontal scroll at 320px with `fi`; text spacing clips nothing at 320px; a link's focus ring at the edge of a `padding-sm` Section isn't clipped; axe and overflow in every story and the four themes.
 

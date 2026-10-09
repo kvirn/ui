@@ -21,7 +21,6 @@ const meta = {
       description:
         'The trail’s accessible name, set as `aria-label`. Replaces the message `breadcrumb.label` (`Du är här`).',
     },
-    render: { control: false },
   },
   args: {
     children: (

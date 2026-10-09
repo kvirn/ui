@@ -10,7 +10,6 @@ import {
   popoverCloseAttributes,
   popoverCloseRows,
   popoverPopupAttributes,
-  popoverPopupRows,
   popoverRootRows,
   popoverTriggerAttributes,
   popoverTriggerRows,
@@ -59,7 +58,6 @@ const parts: ApiPart[] = [
         Render it right after the trigger.
       </>
     ),
-    props: popoverPopupRows,
     attributes: popoverPopupAttributes,
   },
   {

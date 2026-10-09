@@ -54,9 +54,9 @@ export function RoutedLinkList() {
 }
 
 /**
- * With a router registered, a plain `render={<a />}` bypasses it for one link, such as a download
+ * With a router registered, a plain `as="a"` bypasses it for one link, such as a download
  * that the router must not handle. Your own `rel` tokens join `noopener noreferrer` on a link that
- * opens a new tab, and `Link.NewTabNotice` takes `render` like every part.
+ * opens a new tab, and `Link.NewTabNotice` takes `as` like a tag part.
  */
 export function RouterAndPlainLinks() {
   return (
@@ -67,17 +67,13 @@ export function RouterAndPlainLinks() {
             <Link.Root href="/ansok">Ansök</Link.Root>
           </li>
           <li>
-            <Link.Root
-              href="/blankett.pdf"
-              download
-              render={(linkProps) => <a {...linkProps}>{linkProps.children}</a>}
-            >
+            <Link.Root href="/blankett.pdf" download as="a">
               Blankett (PDF)
             </Link.Root>
           </li>
           <li>
             <Link.Root href="https://www.digg.se/" target="_blank" rel="author">
-              Digg <Link.NewTabNotice render={<small />} />
+              Digg <Link.NewTabNotice as="small" />
             </Link.Root>
           </li>
         </ul>

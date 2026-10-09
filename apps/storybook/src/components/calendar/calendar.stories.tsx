@@ -79,7 +79,6 @@ const meta = {
       description: 'The most months side by side: two from 64rem only. Default 1.',
     },
     messages: { control: false, description: 'Per-instance strings, `calendar.*`.' },
-    render: { control: false, description: 'Another element for the Root.' },
   },
   args: { today: '2026-10-14', weekNumbers: false, announce: true, onValueChange: fn() },
   globals: { locale: 'sv' },

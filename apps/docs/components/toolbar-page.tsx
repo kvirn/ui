@@ -10,7 +10,6 @@ import {
   toolbarButtonAttributes,
   toolbarButtonRows,
   toolbarGroupAttributes,
-  toolbarGroupRows,
   toolbarItemAttributes,
   toolbarItemRows,
   toolbarRootAttributes,
@@ -57,7 +56,6 @@ const parts: ApiPart[] = [
         toolbar it needs <code>aria-label</code> or <code>aria-labelledby</code>.
       </>
     ),
-    props: toolbarGroupRows,
     attributes: toolbarGroupAttributes,
   },
   {
@@ -88,10 +86,10 @@ const parts: ApiPart[] = [
     name: 'Toolbar.Item',
     renders: (
       <>
-        <code>&lt;button type=&quot;button&quot;&gt;</code>, or the element you give{' '}
-        <code>render</code>. It makes any control that can take focus by itself a toolbar item. It
-        takes every attribute of a <code>&lt;button&gt;</code> and passes <code>ref</code> to the
-        element. The toolbar’s <code>tabindex</code> wins over the element’s own.
+        <code>&lt;button type=&quot;button&quot;&gt;</code>, or the component you give{' '}
+        <code>as</code>. It makes any control that can take focus by itself a toolbar item. It takes
+        every attribute of a <code>&lt;button&gt;</code> and passes <code>ref</code> to the element.
+        The toolbar’s <code>tabindex</code> wins over the element’s own.
       </>
     ),
     props: toolbarItemRows,
@@ -174,13 +172,13 @@ export function ToolbarPage({
             why={
               <>
                 A control that isn’t a button joins the toolbar through <code>Toolbar.Item</code>{' '}
-                and <code>render</code>: a link, a <code>Popover.Trigger</code> or a{' '}
+                and <code>as</code>: a link, a <code>Popover.Trigger</code> or a{' '}
                 <code>Listbox.Trigger</code>. A plain element placed in the toolbar is a Tab stop of
                 its own and the arrows skip it.
               </>
             }
             code={sources['other-controls']}
-            propsUsed={[{ part: 'Toolbar.Item', prop: 'render' }]}
+            propsUsed={[{ part: 'Toolbar.Item', prop: 'as' }]}
             note={
               <Note kind="reminder">
                 A Listbox in a toolbar needs <code>native=&quot;never&quot;</code> on its{' '}

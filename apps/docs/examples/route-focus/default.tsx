@@ -16,7 +16,7 @@ export function ChangePage() {
         <Button onClick={() => setPage('services')}>{texts.toServices}</Button>
       </p>
       <div ref={pageRef}>
-        <Heading level={4}>{texts[page].title}</Heading>
+        <Heading as="h4">{texts[page].title}</Heading>
         <p>{texts[page].body}</p>
       </div>
     </div>

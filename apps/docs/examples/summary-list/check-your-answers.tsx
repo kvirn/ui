@@ -6,7 +6,7 @@ export function CheckYourAnswers() {
   const { texts, textLang } = useSummaryListTexts()
   return (
     <section aria-labelledby="check-your-answers-heading" lang={textLang}>
-      <Heading level={4} id="check-your-answers-heading">
+      <Heading as="h4" id="check-your-answers-heading">
         {texts.heading}
       </Heading>
       <SummaryList.Root>

@@ -38,7 +38,7 @@ export function UseCase({
 }) {
   return (
     <>
-      <Heading level={3} id={id}>
+      <Heading as="h3" id={id}>
         {title}
       </Heading>
       <p>{why}</p>

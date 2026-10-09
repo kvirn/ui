@@ -41,11 +41,6 @@ const meta = {
     },
     children: { control: false, description: 'The buttons, in the order they are used.' },
     ref: { control: false, description: 'A ref to the `<div>`.' },
-    render: {
-      control: false,
-      description:
-        'Another element. Spread the props it gets: they hold the class and, with a name, the role. `state` is `{ isNamed, layout }`.',
-    },
   },
   globals: { locale: 'sv' },
   parameters: {

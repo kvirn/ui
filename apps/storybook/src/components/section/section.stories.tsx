@@ -58,7 +58,11 @@ const meta = {
       description:
         'Your own classes, added to `kv-section`. The theme styles `kv-section--surface`, `kv-section--canvas` and `kv-section--padding-none|sm|md|lg`.',
     },
-    render: { control: false, description: 'Another element, such as `<aside>` or `<section>`.' },
+    as: {
+      control: false,
+      description:
+        'Another element: `section`, `aside`, `nav`, `footer`, `header`, `article` or `li`.',
+    },
   },
   globals: { locale: 'sv' },
   decorators: [withSectionLocale],
@@ -371,7 +375,7 @@ export const ProseAndSections: Story = {
 }
 
 /**
- * `render` as a named `<section>`, as a `<nav>` through the function form, and as `<li>` items in
+ * `as` a named `<section>`, a named `<nav>`, and as `<li>` items in
  * a list. Only the first two are landmarks, and both are named by their heading.
  */
 export const RenderedAsLandmarks: Story = {

@@ -1,9 +1,6 @@
 import type {
-  FieldErrorMessageProps,
-  FieldHelpTextProps,
   FieldsetLegendProps,
   FieldsetRootProps,
-  ProseRootProps,
   UseFieldsetOptions,
   UseFieldsetResult,
 } from '@kvirn-ui/react'
@@ -11,7 +8,7 @@ import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
 export const fieldsetRootRows = propRows<
-  Pick<FieldsetRootProps, 'invalid' | 'required' | 'disabled' | 'group' | 'messages' | 'render'>
+  Pick<FieldsetRootProps, 'invalid' | 'required' | 'disabled' | 'group' | 'messages'>
 >({
   invalid: {
     type: 'boolean',
@@ -40,12 +37,6 @@ export const fieldsetRootRows = propRows<
     default: '–',
     description: 'Overrides field.optional and field.errorPrefix for this fieldset.',
   },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"fieldset">, FieldsetState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be a <fieldset> that forwards its ref. A function receives the props and { isInvalid, isRequired, isDisabled }.',
-  },
 })
 
 export const fieldsetRootAttributes: readonly AttributeRow[] = [
@@ -65,17 +56,12 @@ export const fieldsetRootAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const fieldsetLegendRows = propRows<Pick<FieldsetLegendProps, 'marker' | 'render'>>({
+export const fieldsetLegendRows = propRows<Pick<FieldsetLegendProps, 'marker'>>({
   marker: {
     type: "'optional' | 'none'",
     default: "'optional' in a group, 'none' otherwise",
     description:
       'Whether the legend ends with the optional text. It shows only when the fieldset is not required.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"legend">, FieldsetState>',
-    default: '–',
-    description: 'Changes the element, which must still be a <legend>.',
   },
 })
 
@@ -98,41 +84,17 @@ export const fieldsetLegendAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const fieldsetProseRows = propRows<Pick<ProseRootProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ProseElementProps, ProseState>',
-    default: '–',
-    description: 'Changes the element: its own semantics apply.',
-  },
-})
-
 export const fieldsetProseAttributes: readonly AttributeRow[] = [
   { name: 'kv-prose', values: 'always', meaning: 'The class that styles the text for reading.' },
   { name: 'data-invalid', values: 'present or absent', meaning: 'The fieldset is invalid.' },
   { name: 'data-disabled', values: 'present or absent', meaning: 'The fieldset is disabled.' },
 ]
 
-export const fieldsetHelpTextRows = propRows<Pick<FieldHelpTextProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"p">, FieldHelpTextState>',
-    default: '–',
-    description: 'Changes the element.',
-  },
-})
-
 export const fieldsetHelpTextAttributes: readonly AttributeRow[] = [
   { name: 'kv-field-help-text', values: 'always', meaning: 'The part class: 14px in the theme.' },
   { name: 'data-invalid', values: 'present or absent', meaning: 'The fieldset is invalid.' },
   { name: 'data-disabled', values: 'present or absent', meaning: 'The fieldset is disabled.' },
 ]
-
-export const fieldsetErrorMessageRows = propRows<Pick<FieldErrorMessageProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"p">, FieldState>',
-    default: '–',
-    description: 'Changes the element.',
-  },
-})
 
 export const fieldsetErrorMessageAttributes: readonly AttributeRow[] = [
   { name: 'kv-field-error-message', values: 'always', meaning: 'The part class.' },

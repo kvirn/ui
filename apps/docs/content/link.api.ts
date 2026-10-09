@@ -9,10 +9,7 @@ import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
 /** The props Link documents: its own, and the two native ones whose behaviour it changes. */
-export type LinkDocumentedProps = Pick<
-  LinkProps,
-  'current' | 'target' | 'rel' | 'messages' | 'render'
->
+export type LinkDocumentedProps = Pick<LinkProps, 'current' | 'target' | 'rel' | 'messages' | 'as'>
 
 export const linkRows = propRows<LinkDocumentedProps>({
   current: {
@@ -37,11 +34,11 @@ export const linkRows = propRows<LinkDocumentedProps>({
     default: '–',
     description: 'Overrides link.newTabNotice for this link and its Link.NewTabNotice.',
   },
-  render: {
-    type: 'RenderProp<LinkElementProps, LinkState>',
-    default: '–',
+  as: {
+    type: 'ElementType',
+    default: 'the registered router link, or <a>',
     description:
-      'Changes the element, for example render={<a />} to bypass the registered router link. It must still render an <a href>. A function receives the props and { isCurrent, isFocusVisible, opensInNewTab }.',
+      'Changes the element to a component of your own, with its props set on the Link. Link.Root as="a" bypasses the registered router link. It must render an <a href> and forward its ref.',
   },
 })
 
@@ -66,17 +63,17 @@ export const linkAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const linkNewTabNoticeRows = propRows<Pick<LinkNewTabNoticeProps, 'children' | 'render'>>({
+export const linkNewTabNoticeRows = propRows<Pick<LinkNewTabNoticeProps, 'children' | 'as'>>({
   children: {
     type: 'ReactNode',
     default: '–',
     description:
       'Your own text. It wins over every message. Empty text falls through to the message.',
   },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"span">, Record<string, never>>',
-    default: '–',
-    description: 'Changes the element.',
+  as: {
+    type: "'span' | 'em' | 'small'",
+    default: "'span'",
+    description: 'Changes the element. Another tag warns once in development.',
   },
 })
 
@@ -88,17 +85,17 @@ export const linkNewTabNoticeAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const linkIconRows = propRows<Pick<LinkIconProps, 'children' | 'render'>>({
+export const linkIconRows = propRows<Pick<LinkIconProps, 'children' | 'as'>>({
   children: {
     type: 'ReactNode',
     default: '–',
     description:
       'The icon, for example <Icon name="arrow-forward" size={6} />, or any decorative SVG.',
   },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"span">, Record<string, never>>',
-    default: '–',
-    description: 'Changes the element. It must stay decorative: keep aria-hidden and the class.',
+  as: {
+    type: "'span' | 'i'",
+    default: "'span'",
+    description: 'Changes the element. It stays decorative: aria-hidden and the class are kept.',
   },
 })
 

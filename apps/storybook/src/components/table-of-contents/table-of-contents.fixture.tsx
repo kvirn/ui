@@ -6,7 +6,7 @@ import { nn as nnMessages } from '@kvirn-ui/i18n/nn'
 import { se as seMessages } from '@kvirn-ui/i18n/se'
 import { sv as svMessages } from '@kvirn-ui/i18n/sv'
 import { Heading, KvirnProvider, TableOfContents } from '@kvirn-ui/react'
-import type { HeadingLevel, TableOfContentsEntry } from '@kvirn-ui/react'
+import type { HeadingTag, TableOfContentsEntry } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 import { useEffect } from 'react'
 import type { ReactNode } from 'react'
@@ -170,11 +170,11 @@ export function paragraphOf(label: string): string {
   return paragraphs[label] ?? 'Här beskrivs avsnittet.'
 }
 
-const headingLevels: readonly HeadingLevel[] = [1, 2, 3, 4, 5, 6]
+const headingTags: readonly HeadingTag[] = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 
-/** The `Heading` level of an entry: its own, or 2 when it isn't a level a heading can have. */
-export function headingLevelOf(level: number): HeadingLevel {
-  return headingLevels.find((candidate) => candidate === level) ?? 2
+/** The `Heading` element of an entry: its own level, or `h2` when it isn't a level a heading can have. */
+export function headingTagOf(level: number): HeadingTag {
+  return headingTags.find((candidate) => candidate === `h${level}`) ?? 'h2'
 }
 
 /**
@@ -207,7 +207,7 @@ export function ContentsWithOwnList() {
       </TableOfContents.Root>
       <div>
         <section>
-          <Heading level={2} id="own-list-vem-behover-bygglov">
+          <Heading as="h2" id="own-list-vem-behover-bygglov">
             Vem behöver bygglov?
           </Heading>
           <p>
@@ -215,21 +215,21 @@ export function ContentsWithOwnList() {
           </p>
         </section>
         <section>
-          <Heading level={2} id="own-list-sa-ansoker-du">
+          <Heading as="h2" id="own-list-sa-ansoker-du">
             Så ansöker du
           </Heading>
           <p>Ansökan görs digitalt eller på blankett.</p>
-          <Heading level={3} id="own-list-ritningar">
+          <Heading as="h3" id="own-list-ritningar">
             Ritningar
           </Heading>
           <p>Ritningarna ska visa fasader, planer och sektioner.</p>
-          <Heading level={3} id="own-list-avgifter">
+          <Heading as="h3" id="own-list-avgifter">
             Avgifter
           </Heading>
           <p>Avgiften beror på byggnadens area.</p>
         </section>
         <section>
-          <Heading level={2} id="own-list-efter-beslutet">
+          <Heading as="h2" id="own-list-efter-beslutet">
             Efter beslutet
           </Heading>
           <p>När du har fått bygglov behöver du ett startbesked innan du börjar bygga.</p>

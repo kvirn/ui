@@ -426,7 +426,7 @@ export function SortableCases({ locale }: { locale: FormLocale }) {
   const titleId = useId()
   return (
     <>
-      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+      <Heading as="h2" size="heading-3" id={titleId} className="kv-story-table-title">
         {texts.casesCaption}
       </Heading>
       <Table.ScrollRegion table={list} aria-labelledby={titleId}>
@@ -490,7 +490,7 @@ export function SelectableCases({ locale, className }: { locale: FormLocale; cla
   const titleId = useId()
   return (
     <div className="kv-compact">
-      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+      <Heading as="h2" size="heading-3" id={titleId} className="kv-story-table-title">
         {texts.casesCaption}
       </Heading>
       <Table.ScrollRegion table={list} aria-labelledby={titleId}>
@@ -555,7 +555,7 @@ export function ExpandableCases({ locale }: { locale: FormLocale }) {
   const titleId = useId()
   return (
     <>
-      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+      <Heading as="h2" size="heading-3" id={titleId} className="kv-story-table-title">
         {texts.casesCaption}
       </Heading>
       <Table.ScrollRegion table={list} aria-labelledby={titleId}>
@@ -628,7 +628,7 @@ export function EmptyCases({ locale }: { locale: FormLocale }) {
   const titleId = useId()
   return (
     <>
-      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+      <Heading as="h2" size="heading-3" id={titleId} className="kv-story-table-title">
         {texts.casesCaption}
       </Heading>
       <Table.ScrollRegion table={list} aria-labelledby={titleId}>
@@ -681,7 +681,7 @@ export function LoadingCases({ locale }: { locale: FormLocale }) {
   const firstLoadTitleId = useId()
   return (
     <>
-      <Heading level={2} size="heading-3" id={reloadTitleId} className="kv-story-table-title">
+      <Heading as="h2" size="heading-3" id={reloadTitleId} className="kv-story-table-title">
         {texts.reloadCaption}
       </Heading>
       <Table.ScrollRegion table={reload} aria-labelledby={reloadTitleId}>
@@ -719,7 +719,7 @@ export function LoadingCases({ locale }: { locale: FormLocale }) {
           <Table.Empty />
         </Table.Root>
       </Table.ScrollRegion>
-      <Heading level={2} size="heading-3" id={firstLoadTitleId} className="kv-story-table-title">
+      <Heading as="h2" size="heading-3" id={firstLoadTitleId} className="kv-story-table-title">
         {texts.firstLoadCaption}
       </Heading>
       <Table.ScrollRegion table={firstLoad} aria-labelledby={firstLoadTitleId}>
@@ -778,7 +778,7 @@ export function EverythingCases({ locale }: { locale: FormLocale }) {
   const titleId = useId()
   return (
     <>
-      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+      <Heading as="h2" size="heading-3" id={titleId} className="kv-story-table-title">
         {texts.casesCaption}
       </Heading>
       <Table.ScrollRegion table={list} aria-labelledby={titleId}>
@@ -861,7 +861,7 @@ export function NarrowCases({ locale }: { locale: FormLocale }) {
   const titleId = useId()
   return (
     <div className="kv-compact">
-      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+      <Heading as="h2" size="heading-3" id={titleId} className="kv-story-table-title">
         {texts.casesCaption}
       </Heading>
       <Table.ScrollRegion table={list} aria-labelledby={titleId}>
@@ -926,7 +926,7 @@ export function KeyboardCases({ locale }: { locale: FormLocale }) {
   const titleId = useId()
   return (
     <>
-      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+      <Heading as="h2" size="heading-3" id={titleId} className="kv-story-table-title">
         {texts.keyboardCaption}
       </Heading>
       <Table.ScrollRegion table={list} aria-labelledby={titleId}>
@@ -1222,7 +1222,7 @@ export function PaginatedCases({ locale }: { locale: FormLocale }) {
   const titleId = useId()
   return (
     <>
-      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+      <Heading as="h2" size="heading-3" id={titleId} className="kv-story-table-title">
         {texts.pagedCaption(from, to, pagedCases.length)}
       </Heading>
       <Table.ScrollRegion table={list} aria-labelledby={titleId}>
@@ -1314,7 +1314,7 @@ export function VirtualizedCases({ locale }: { locale: FormLocale }): ReactNode 
   const titleId = useId()
   return (
     <div className="kv-compact">
-      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+      <Heading as="h2" size="heading-3" id={titleId} className="kv-story-table-title">
         {texts.virtualCaption}
       </Heading>
       <Table.ScrollRegion table={list} aria-labelledby={titleId}>
@@ -1445,7 +1445,7 @@ export function ColumnVisibilityCases({ locale }: { locale: FormLocale }) {
             </Field.Root>
           ))}
       </Fieldset.Root>
-      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+      <Heading as="h2" size="heading-3" id={titleId} className="kv-story-table-title">
         {texts.casesCaption}
       </Heading>
       <Table.ScrollRegion table={list} aria-labelledby={titleId}>
@@ -1530,7 +1530,7 @@ export function SearchCases({ locale }: { locale: FormLocale }) {
           <TextInput type="search" onValueChange={(value) => list.table.setGlobalFilter(value)} />
         </Field.Root>
       </search>
-      <Heading level={2} size="heading-3" id={titleId} className="kv-story-table-title">
+      <Heading as="h2" size="heading-3" id={titleId} className="kv-story-table-title">
         {texts.casesCaption}
       </Heading>
       <Table.ScrollRegion table={list} aria-labelledby={titleId}>

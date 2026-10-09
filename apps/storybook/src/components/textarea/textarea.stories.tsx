@@ -123,10 +123,6 @@ const meta = {
         'Your own description ids. They are kept, after the Field’s description, count, help text and error.',
     },
     ref: { control: false, description: 'A ref to the `<textarea>`.' },
-    render: {
-      control: false,
-      description: 'Another element. It must still be a `<textarea>`. Spread the props it gets.',
-    },
   },
   globals: { locale: 'sv' },
   decorators: [

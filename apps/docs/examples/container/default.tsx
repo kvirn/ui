@@ -8,7 +8,7 @@ export function DefaultContainer() {
     <Container lang={textLang}>
       <Card.Root>
         <Card.Body>
-          <Heading level={2}>{texts.page.title}</Heading>
+          <Heading as="h2">{texts.page.title}</Heading>
           <p>{texts.page.text}</p>
         </Card.Body>
       </Card.Root>

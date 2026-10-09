@@ -1,12 +1,6 @@
 import type {
-  AlertDialogActionsProps,
-  AlertDialogBodyProps,
   AlertDialogCloseProps,
-  AlertDialogDescriptionProps,
-  AlertDialogPopupProps,
   AlertDialogRootProps,
-  AlertDialogTitleProps,
-  AlertDialogTriggerProps,
   UseAlertDialogOptions,
   UseAlertDialogResult,
 } from '@kvirn-ui/react'
@@ -17,7 +11,7 @@ import {
   dialogBodyAttributes,
   dialogDescriptionAttributes,
   dialogHookResultRows,
-  dialogRenderRow,
+  dialogCloseAsRow,
   dialogSharedOptionRows,
   dialogTitleAttributes,
 } from './dialog.api.ts'
@@ -40,27 +34,9 @@ export const alertDialogRootRows = propRows<AlertDialogRootProps>({
   },
 })
 
-export const alertDialogTriggerRows = propRows<Pick<AlertDialogTriggerProps, 'render'>>(
-  dialogRenderRow('button'),
-)
-export const alertDialogPopupRows = propRows<Pick<AlertDialogPopupProps, 'render'>>(
-  dialogRenderRow('dialog'),
-)
-export const alertDialogTitleRows = propRows<Pick<AlertDialogTitleProps, 'render'>>(
-  dialogRenderRow('h2'),
-)
-export const alertDialogDescriptionRows = propRows<Pick<AlertDialogDescriptionProps, 'render'>>(
-  dialogRenderRow('p'),
-)
-export const alertDialogBodyRows = propRows<Pick<AlertDialogBodyProps, 'render'>>(
-  dialogRenderRow('div'),
-)
-export const alertDialogActionsRows = propRows<Pick<AlertDialogActionsProps, 'render'>>(
-  dialogRenderRow('div'),
-)
-export const alertDialogCloseRows = propRows<Pick<AlertDialogCloseProps, 'render'>>(
-  dialogRenderRow('button'),
-)
+export const alertDialogCloseRows = propRows<Pick<AlertDialogCloseProps, 'as'>>({
+  as: dialogCloseAsRow,
+})
 
 export const alertDialogTriggerAttributes: readonly AttributeRow[] = [
   {

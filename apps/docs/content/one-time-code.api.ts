@@ -1,5 +1,4 @@
 import type {
-  OneTimeCodeInputProps,
   OneTimeCodeRootProps,
   OneTimeCodeSlotProps,
   UseOneTimeCodeOptions,
@@ -8,7 +7,7 @@ import type {
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow, PropRow } from '../components/api-block.tsx'
 
-/** The props OneTimeCode.Root documents: the hook’s options and `render`. The rest are a `<div>`’s. */
+/** The props OneTimeCode.Root documents: the hook’s options. The rest are a `<div>`’s. */
 export type OneTimeCodeRootDocumentedProps = Pick<
   OneTimeCodeRootProps,
   | 'pattern'
@@ -19,7 +18,6 @@ export type OneTimeCodeRootDocumentedProps = Pick<
   | 'disabled'
   | 'announceRejections'
   | 'messages'
-  | 'render'
 >
 
 const optionRows = {
@@ -70,24 +68,11 @@ const optionRows = {
   },
 } satisfies Record<keyof UseOneTimeCodeOptions, PropRow>
 
-const renderRow = (state: string, element: string): PropRow => ({
-  type: `RenderProp<ComponentPropsWithRef<"${element}">, ${state}>`,
-  default: '–',
-  description: `Changes the element, which must still be ${element === 'input' ? 'an <input>' : element === 'span' ? 'a <span>' : 'a <div>'}. A function receives the props and the part’s state.`,
-})
-
 export const oneTimeCodeRootRows = propRows<OneTimeCodeRootDocumentedProps>({
   ...optionRows,
-  render: renderRow('OneTimeCodeState', 'div'),
 })
 
-export type OneTimeCodeInputDocumentedProps = Pick<OneTimeCodeInputProps, 'render'>
-
-export const oneTimeCodeInputRows = propRows<OneTimeCodeInputDocumentedProps>({
-  render: renderRow('OneTimeCodeState', 'input'),
-})
-
-export type OneTimeCodeSlotDocumentedProps = Pick<OneTimeCodeSlotProps, 'index' | 'render'>
+export type OneTimeCodeSlotDocumentedProps = Pick<OneTimeCodeSlotProps, 'index'>
 
 export const oneTimeCodeSlotRows = propRows<OneTimeCodeSlotDocumentedProps>({
   index: {
@@ -95,7 +80,6 @@ export const oneTimeCodeSlotRows = propRows<OneTimeCodeSlotDocumentedProps>({
     description:
       'The position in the pattern this slot draws, from 0 to pattern.length - 1. A - in the pattern is a separator slot, so render one slot per position, separators included.',
   },
-  render: renderRow('OneTimeCodeSlotState', 'span'),
 })
 
 export const oneTimeCodeRootAttributes: readonly AttributeRow[] = [

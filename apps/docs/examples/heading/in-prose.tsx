@@ -6,9 +6,9 @@ export function InProse() {
   const { texts, textLang } = useHeadingTexts()
   return (
     <Prose lang={textLang}>
-      <Heading level={4}>{texts.waste.heading}</Heading>
+      <Heading as="h4">{texts.waste.heading}</Heading>
       <p>{texts.waste.text}</p>
-      <Heading level={5}>{texts.opening.heading}</Heading>
+      <Heading as="h5">{texts.opening.heading}</Heading>
       <p>{texts.opening.text}</p>
     </Prose>
   )

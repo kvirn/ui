@@ -87,7 +87,7 @@ export function SectionPage({
             }
             code={sources['sidebar']}
             propsUsed={[
-              { part: 'Section', prop: 'render' },
+              { part: 'Section', prop: 'as' },
               { part: 'Section', prop: 'className' },
             ]}
             note={
@@ -111,7 +111,7 @@ export function SectionPage({
               </>
             }
             code={sources['navigation']}
-            propsUsed={[{ part: 'Section', prop: 'render' }]}
+            propsUsed={[{ part: 'Section', prop: 'as' }]}
           >
             <SectionNavigation />
           </UseCase>

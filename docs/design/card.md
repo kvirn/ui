@@ -116,7 +116,7 @@ div.kv-card
 ```
 h2  News
 ul[role=list]   (grid: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)), gap space-6; story CSS)
-  li.kv-card   (Card.Root render={<li />})
+  li.kv-card   (Card.Root as="li")
     div.kv-card-header.kv-card-header--padding-none > img alt=""     (first card only)
     div.kv-card-body.kv-prose
       h3 > Link  New opening hours at the recycling centre
@@ -298,7 +298,7 @@ Draft input for `packages/react/src/card/card.a11y.md`. The plan's contract tabl
   - **Alt text:** `alt=""` for a decorative image, which is most card images when the heading names the topic. An informative image gets real alt text. DOM order stays equal to visual order (1.3.2), so the image comes first. No text in images.
   - **Links:** one link per card, in the heading, with text that makes sense on its own (2.4.4). No "Read more", and no second link on the image.
   - **Buttons:** verbs, one primary per view, and Links for navigation.
-  - **Landmarks:** `render={<section aria-labelledby={headingId} />}` or `<aside aria-labelledby>` only for a region a user would want to jump to (Example A). A `section` without a name isn't a landmark, so it's no use. Never make every card in a list a landmark. `<article>` is for a self-contained item such as a news story, and is optional.
+  - **Landmarks:** `as="section"` with `aria-labelledby={headingId}` or `<aside aria-labelledby>` only for a region a user would want to jump to (Example A). A `section` without a name isn't a landmark, so it's no use. Never make every card in a list a landmark. `<article>` is for a self-contained item such as a news story, and is optional.
   - **Lists:** a list of cards is a `<ul role="list">` with each card rendered as `<li>` (or a `<li>` around each card), so screen readers announce "list, 3 items".
   - **Language:** `lang` on any card text in another language (3.1.2).
 - **Focus order:** the children's DOM order. Card never moves focus.

@@ -10,13 +10,6 @@ import type {
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-const renderRow = {
-  type: 'RenderProp<ErrorSummaryElementProps, ErrorSummaryState>',
-  default: '–',
-  description:
-    'Changes the element. Its own semantics apply. In the function form, keep className to keep the theme’s look.',
-}
-
 const refRow = {
   type: 'Ref<HTMLElement>',
   default: '–',
@@ -31,7 +24,7 @@ const messagesRow = {
 }
 
 export const rootRows = propRows<
-  Pick<ErrorSummaryRootProps, 'focusKey' | 'prefixDocumentTitle' | 'messages' | 'render' | 'ref'>
+  Pick<ErrorSummaryRootProps, 'focusKey' | 'prefixDocumentTitle' | 'messages' | 'ref'>
 >({
   focusKey: {
     type: 'string | number',
@@ -46,44 +39,37 @@ export const rootRows = propRows<
       'Puts the text errorSummary.titlePrefix (“Error:”) before document.title while the summary is shown, and restores the title when it is removed. Leave it off if your router owns the title.',
   },
   messages: messagesRow,
-  render: {
-    ...renderRow,
-    type: 'RenderProp<AlertElementProps, AlertState>',
+  ref: refRow,
+})
+
+export const titleRows = propRows<Pick<ErrorSummaryTitleProps, 'as' | 'ref'>>({
+  as: {
+    type: "'h2' | 'h3' | 'h4' | 'h5' | 'h6'",
+    default: "'h2'",
     description:
-      'Replaces the Alert.Danger the root renders. Spread the props it receives, which hold the role, tabindex, aria-labelledby and the callback ref that moves focus.',
+      'Sets the heading level, for example as="h3". The status word stays. There is no h1 and no p: the summary needs a heading for the group’s name. Children replace the default text.',
   },
   ref: refRow,
 })
 
-export const titleRows = propRows<Pick<ErrorSummaryTitleProps, 'render' | 'ref'>>({
-  render: {
-    ...renderRow,
-    description:
-      'Sets the heading level, for example render={<h3 />}. The status word stays. Children replace the default text.',
+export const listRows = propRows<Pick<ErrorSummaryListProps, 'as' | 'ref'>>({
+  as: {
+    type: "'ul' | 'ol'",
+    default: "'ul'",
+    description: 'A list of problems, optionally numbered.',
   },
   ref: refRow,
 })
 
-export const listRows = propRows<Pick<ErrorSummaryListProps, 'render' | 'ref'>>({
-  render: renderRow,
+export const itemRows = propRows<Pick<ErrorSummaryItemProps, 'ref'>>({
   ref: refRow,
 })
 
-export const itemRows = propRows<Pick<ErrorSummaryItemProps, 'render' | 'ref'>>({
-  render: renderRow,
-  ref: refRow,
-})
-
-export const linkRows = propRows<Pick<ErrorSummaryLinkProps, 'controlId' | 'render' | 'ref'>>({
+export const linkRows = propRows<Pick<ErrorSummaryLinkProps, 'controlId' | 'ref'>>({
   controlId: {
     type: 'string',
     description:
       'The id of the control the error is about, or of a group’s first option. Sets href to “#” plus the id. Set the id with controlId on Field.Root.',
-  },
-  render: {
-    type: 'RenderProp<ErrorSummaryLinkElementProps, ErrorSummaryState>',
-    default: '–',
-    description: 'Changes the element, for example render={<a />}. Keep the props it receives.',
   },
   ref: {
     type: 'Ref<HTMLAnchorElement>',

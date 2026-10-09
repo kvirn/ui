@@ -1,7 +1,5 @@
 import type {
-  DisclosurePanelProps,
   DisclosureRootProps,
-  DisclosureTriggerProps,
   UseDisclosureOptions,
   UseDisclosureResult,
 } from '@kvirn-ui/react'
@@ -54,23 +52,6 @@ const optionRows = {
 } as const
 
 export const disclosureRootRows = propRows<DisclosureRootDocumentedProps>(optionRows)
-
-export const disclosureTriggerRows = propRows<Pick<DisclosureTriggerProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"button">, DisclosureState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be a <button> that forwards its ref. A function receives the props and { isOpen, isDisabled }, and you add the chevron yourself.',
-  },
-})
-
-export const disclosurePanelRows = propRows<Pick<DisclosurePanelProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"div">, DisclosureState>',
-    default: '–',
-    description: 'Changes the element. A function receives the props and { isOpen, isDisabled }.',
-  },
-})
 
 export const disclosureTriggerAttributes: readonly AttributeRow[] = [
   {

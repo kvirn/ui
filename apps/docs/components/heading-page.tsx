@@ -26,7 +26,7 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code> with the role <code>heading</code>,
-        depending on <code>level</code>. It takes every attribute of a heading and passes{' '}
+        depending on <code>as</code>. It takes every attribute of a heading and passes{' '}
         <code>ref</code> to it. The default theme is described on{' '}
         <Link href="/foundation/theming">Theming</Link>.
       </>
@@ -46,7 +46,7 @@ export function HeadingPage({
   return (
     <ComponentPage
       title="Heading"
-      lead="A heading with its level as a required prop and its look as an optional one. The level is the page’s outline, and the size is how it looks, so you never pick a level because of its size."
+      lead="A heading with its element as a required prop and its look as an optional one. The level is the page’s outline, and the size is how it looks, so you never pick a level because of its size."
       status="alpha"
       whenToUse={
         <ul>
@@ -81,7 +81,7 @@ export function HeadingPage({
             why="A heading under an h3 is an h4, even when the design wants it larger. Keep the level for the outline and set the size for the look."
             code={sources['size']}
             propsUsed={[
-              { part: 'Heading', prop: 'level' },
+              { part: 'Heading', prop: 'as' },
               { part: 'Heading', prop: 'size' },
             ]}
             note={
@@ -104,7 +104,7 @@ export function HeadingPage({
               </>
             }
             code={sources['names-region']}
-            propsUsed={[{ part: 'Heading', prop: 'level' }]}
+            propsUsed={[{ part: 'Heading', prop: 'as' }]}
           >
             <NamesRegion />
           </UseCase>
@@ -113,7 +113,7 @@ export function HeadingPage({
             title="Headings in running text"
             why="Inside prose the headings get their margins from the prose, and each level keeps its own look, so an h4 and an h5 differ by weight and tracking rather than size."
             code={sources['in-prose']}
-            propsUsed={[{ part: 'Heading', prop: 'level' }]}
+            propsUsed={[{ part: 'Heading', prop: 'as' }]}
           >
             <InProse />
           </UseCase>

@@ -10,7 +10,7 @@ export function Announced() {
     <div lang={textLang}>
       {saveCount === 0 ? null : (
         <Alert.Success key={saveCount} announce="polite">
-          <Alert.Title render={<p />}>{texts.saved.title}</Alert.Title>
+          <Alert.Title as="p">{texts.saved.title}</Alert.Title>
         </Alert.Success>
       )}
       <Button className="kv-button--primary" onClick={() => setSaveCount(saveCount + 1)}>

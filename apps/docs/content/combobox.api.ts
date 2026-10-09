@@ -1,35 +1,13 @@
 import type {
-  ComboboxClearProps,
-  ComboboxControlProps,
-  ComboboxInputProps,
   ComboboxRootProps,
-  ComboboxToggleProps,
   ComboboxValueListProps,
   ComboboxValueProps,
   UseComboboxOptions,
   UseComboboxResult,
 } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
-import type { ApiHook, AttributeRow, PropRow } from '../components/api-block.tsx'
-import { classRow, dataRow, renderRow, rootRows as listboxRootRows } from './listbox.api.ts'
-
-/**
- * The popup parts are the Listbox's, so their rows are too: only the state types carry the
- * component's own name (`ComboboxPartState`, `AutocompleteOptionState`).
- */
-export function renamed<Rows extends Readonly<Record<string, PropRow>>>(
-  rows: Rows,
-  component: string,
-): Rows {
-  const rename = (text: string) =>
-    text.replace(/Listbox(?=PartState|OptionState|OptionPartState)/g, component)
-  return Object.fromEntries(
-    Object.entries(rows).map(([prop, row]) => [
-      prop,
-      { ...row, type: rename(row.type), description: rename(row.description) },
-    ]),
-  ) as Rows
-}
+import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
+import { classRow, dataRow, rootRows as listboxRootRows } from './listbox.api.ts'
 
 export const comboboxRootRows = propRows<Omit<ComboboxRootProps<unknown>, 'children'>>({
   items: listboxRootRows.items,
@@ -295,29 +273,14 @@ export const useComboboxHook: ApiHook = {
   result: comboboxResultRows,
 }
 
-export const comboboxControlRows = propRows<Pick<ComboboxControlProps, 'render'>>({
-  render: renderRow('div', 'ComboboxPartState'),
-})
-export const comboboxInputRows = propRows<Pick<ComboboxInputProps, 'render'>>({
-  render: renderRow('input', 'ComboboxPartState'),
-})
-export const comboboxToggleRows = propRows<Pick<ComboboxToggleProps, 'render'>>({
-  render: renderRow('button', 'ComboboxPartState'),
-})
-export const comboboxClearRows = propRows<Pick<ComboboxClearProps, 'render'>>({
-  render: renderRow('button', 'ComboboxPartState'),
-})
-export const valueListRows = propRows<Pick<ComboboxValueListProps, 'children' | 'render'>>({
+export const valueListRows = propRows<Pick<ComboboxValueListProps, 'children'>>({
   children: {
     type: 'ReactNode | (item: TItem, value: ComboboxSelectedValue<TItem>) => ReactNode',
     default: 'One Combobox.Value per chosen value',
     description: 'A function that renders one Combobox.Value per chosen value.',
   },
-  render: renderRow('ul', 'ComboboxPartState'),
 })
-export const valueRows = propRows<
-  Pick<ComboboxValueProps, 'item' | 'children' | 'removeIcon' | 'render'>
->({
+export const valueRows = propRows<Pick<ComboboxValueProps, 'item' | 'children' | 'removeIcon'>>({
   item: {
     type: 'TItem',
     description: 'One of the chosen items, as ValueList hands it to you, unchanged.',
@@ -333,7 +296,6 @@ export const valueRows = propRows<
     default: 'A cross drawn by the theme',
     description: 'Replaces the cross at the end of the chip, inside the remove button.',
   },
-  render: renderRow('li', 'ComboboxValueState<TItem>'),
 })
 
 /** The state attributes the Control and the Input share, with the Field's. */

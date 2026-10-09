@@ -8,7 +8,6 @@ import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   inputGroupAddonAttributes,
-  inputGroupAddonRows,
   inputGroupRootAttributes,
   inputGroupRootRows,
   useInputGroupHook,
@@ -49,7 +48,6 @@ const parts: ApiPart[] = [
         focusable. A press on it focuses the input.
       </>
     ),
-    props: inputGroupAddonRows,
     attributes: inputGroupAddonAttributes,
   },
   {

@@ -34,7 +34,7 @@ const meta = {
       options: ['4', '6', '8'],
       description: 'The `space` step between columns and rows: 4, 6 (default) or 8.',
     },
-    render: { control: false },
+    as: { control: false, description: 'Another element: `ul` or `ol`.' },
   },
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof Columns>
@@ -57,10 +57,10 @@ export const Gap4: Story = { args: { gap: '4' } }
 /** `gap="8"`. */
 export const Gap8: Story = { args: { gap: '8' } }
 
-/** `render={<ul role="list" />}`: a list of links to entry points, announced as a list with a count. */
+/** `as="ul"`: a list of links to entry points, announced as a list with a count. */
 export const AsList: Story = {
   render: (args) => (
-    <Columns {...args} render={<ul role="list" />}>
+    <Columns as="ul" gap={args.gap} minColumnWidth={args.minColumnWidth}>
       {services.map((service) => (
         <li key={service}>
           <Card.Root>

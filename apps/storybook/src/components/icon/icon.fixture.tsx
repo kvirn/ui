@@ -352,6 +352,18 @@ export function MunicipalityMark({
   )
 }
 
+/** A second icon component, to show `as` with a component that draws one shape. */
+export function SquareMark({
+  ref,
+  ...svgProps
+}: SVGProps<SVGSVGElement> & { ref?: Ref<SVGSVGElement> | undefined }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...svgProps} ref={ref}>
+      <rect x="5" y="5" width="14" height="14" rx="2" />
+    </svg>
+  )
+}
+
 /**
  * Renders its children in a shadow root, where `theme.css` doesn't reach: the Unstyled story.
  * Custom properties and inherited text styles still do, like on a site without the theme.

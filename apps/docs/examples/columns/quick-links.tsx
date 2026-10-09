@@ -6,7 +6,7 @@ export function QuickLinks() {
   const { texts, textLang } = useColumnsTexts()
   const links = Object.values(texts.quickLinks)
   return (
-    <Columns render={<ul role="list" />} minColumnWidth="sm" gap="4" lang={textLang}>
+    <Columns as="ul" minColumnWidth="sm" gap="4" lang={textLang}>
       {links.map((label) => (
         <li key={label}>
           <Link href="#">{label}</Link>

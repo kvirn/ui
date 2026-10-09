@@ -19,20 +19,17 @@ export function GroupError() {
     <Stack
       gap="8"
       lang={textLang}
-      render={
-        <form
-          noValidate
-          onSubmit={(event) => {
-            event.preventDefault()
-            const data = new FormData(event.currentTarget)
-            const isIncomplete = data.get('firstName') === '' || data.get('lastName') === ''
-            setInvalid(isIncomplete)
-            if (isIncomplete) {
-              setFocusRequest((request) => request + 1)
-            }
-          }}
-        />
-      }
+      as="form"
+      noValidate
+      onSubmit={(event) => {
+        event.preventDefault()
+        const data = new FormData(event.currentTarget)
+        const isIncomplete = data.get('firstName') === '' || data.get('lastName') === ''
+        setInvalid(isIncomplete)
+        if (isIncomplete) {
+          setFocusRequest((request) => request + 1)
+        }
+      }}
     >
       <Fieldset.Root group required invalid={invalid}>
         <Fieldset.Legend>{texts.nameQuestion}</Fieldset.Legend>

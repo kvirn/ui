@@ -91,6 +91,7 @@ const componentHeadings = [
   'Masked input',
   'A Prose in a Field or Fieldset is its description',
   'Content classes: inset, steps, figure, video and audio',
+  'Allowed elements',
 ] as const
 
 /** The `##` headings whose content belongs to the API's Strings, not to these sections. */
@@ -121,12 +122,14 @@ const knownColumnSets = [
   ['key', 'context', 'action', 'test'],
   ['event', 'message key (i18n)', 'politeness'],
   ['event', 'message key (i18n)', 'politeness', 'test'],
+  ['state or action', 'expected phrase(s) as read aloud', 'live region politeness', 'test'],
   ['key', 'used by (owner)', 'en'],
   ['key', 'part', 'en', 'sv'],
   ['key', 'part', 'en', 'sv', 'fi'],
   ['at + browser + os', 'date', 'tester', 'result', 'notes'],
   ['sc', 'name', 'how'],
   ['action', 'result', 'test'],
+  ['part', '`as`', 'why'],
 ]
 
 const normalisedColumn = (cell: string) =>

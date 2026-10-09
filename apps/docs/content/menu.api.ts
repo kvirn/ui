@@ -1,13 +1,9 @@
 import type {
   MenuCheckboxItemProps,
-  MenuGroupLabelProps,
-  MenuGroupProps,
   MenuItemProps,
-  MenuPopupProps,
   MenuRadioGroupProps,
   MenuRadioItemProps,
   MenuRootProps,
-  MenuSeparatorProps,
   MenuTriggerProps,
 } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
@@ -53,20 +49,14 @@ export const menuRootRows = propRows<MenuRootProps>({
   },
 })
 
-const renderRow = (element: string, state: string) =>
-  ({
-    render: {
-      type: `RenderProp<ComponentPropsWithRef<"${element}">, ${state}>`,
-      default: '–',
-      description: `Changes the element, which must still be a <${element}>. A function receives the props and the state: { isOpen }, and on an item also isChecked, isDisabled and isHighlighted.`,
-    },
-  }) as const
-
-export const menuTriggerRows = propRows<Pick<MenuTriggerProps, 'render'>>(
-  renderRow('button', 'MenuState'),
-)
-
-export const menuPopupRows = propRows<Pick<MenuPopupProps, 'render'>>(renderRow('div', 'MenuState'))
+export const menuTriggerRows = propRows<Pick<MenuTriggerProps, 'as'>>({
+  as: {
+    type: 'ElementType',
+    default: "'button'",
+    description:
+      'A component to render instead of the button, with its props set on the Trigger: as={Button} className="kv-button--primary". It must forward its ref and spread its props on a DOM node.',
+  },
+})
 
 const itemOptionRows = {
   onSelect: {
@@ -94,9 +84,10 @@ const itemOptionRows = {
   },
 } as const
 
-export const menuItemRows = propRows<
-  Pick<MenuItemProps, 'onSelect' | 'closeOnSelect' | 'disabled' | 'textValue' | 'render'>
->({ ...itemOptionRows, ...renderRow('button', 'MenuState') })
+export const menuItemRows =
+  propRows<Pick<MenuItemProps, 'onSelect' | 'closeOnSelect' | 'disabled' | 'textValue'>>(
+    itemOptionRows,
+  )
 
 export const menuCheckboxItemRows = propRows<
   Pick<
@@ -108,7 +99,6 @@ export const menuCheckboxItemRows = propRows<
     | 'closeOnSelect'
     | 'disabled'
     | 'textValue'
-    | 'render'
   >
 >({
   checked: {
@@ -127,11 +117,10 @@ export const menuCheckboxItemRows = propRows<
     description: 'Called with the new value when the item is chosen.',
   },
   ...itemOptionRows,
-  ...renderRow('button', 'MenuState'),
 })
 
 export const menuRadioGroupRows = propRows<
-  Pick<MenuRadioGroupProps, 'value' | 'defaultValue' | 'onValueChange' | 'render'>
+  Pick<MenuRadioGroupProps, 'value' | 'defaultValue' | 'onValueChange'>
 >({
   value: {
     type: 'string',
@@ -148,32 +137,17 @@ export const menuRadioGroupRows = propRows<
     default: '–',
     description: 'Called with the value of the item that was chosen.',
   },
-  ...renderRow('div', 'MenuState'),
 })
 
 export const menuRadioItemRows = propRows<
-  Pick<
-    MenuRadioItemProps,
-    'value' | 'onSelect' | 'closeOnSelect' | 'disabled' | 'textValue' | 'render'
-  >
+  Pick<MenuRadioItemProps, 'value' | 'onSelect' | 'closeOnSelect' | 'disabled' | 'textValue'>
 >({
   value: {
     type: 'string',
     description: 'The value this item stands for inside its RadioGroup.',
   },
   ...itemOptionRows,
-  ...renderRow('button', 'MenuState'),
 })
-
-export const menuGroupRows = propRows<Pick<MenuGroupProps, 'render'>>(renderRow('div', 'MenuState'))
-
-export const menuGroupLabelRows = propRows<Pick<MenuGroupLabelProps, 'render'>>(
-  renderRow('div', 'MenuState'),
-)
-
-export const menuSeparatorRows = propRows<Pick<MenuSeparatorProps, 'render'>>(
-  renderRow('div', 'MenuState'),
-)
 
 export const menuTriggerAttributes: readonly AttributeRow[] = [
   { name: 'kv-menu-trigger', values: 'always', meaning: 'The part class.' },

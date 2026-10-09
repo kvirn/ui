@@ -9,7 +9,7 @@ export function DefaultColumns() {
     <Columns lang={textLang}>
       {services.map((service) => (
         <Card.Root key={service.title} className="kv-prose">
-          <Heading level={3}>{service.title}</Heading>
+          <Heading as="h3">{service.title}</Heading>
           <p>{service.text}</p>
         </Card.Root>
       ))}

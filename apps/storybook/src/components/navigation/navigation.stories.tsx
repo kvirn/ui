@@ -62,10 +62,6 @@ const meta = {
       description:
         'The id of a visible heading that names the navigation. Preferred over `label` where a heading exists.',
     },
-    render: {
-      control: false,
-      description: 'Another element. Root must stay a `<nav>`, or the landmark is gone.',
-    },
     ref: { control: false, description: 'The rendered `<nav>`.' },
   },
   globals: { locale: 'sv' },

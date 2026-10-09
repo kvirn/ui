@@ -6,7 +6,7 @@ export function HiddenHeading() {
   const { texts, textLang } = useVisuallyHiddenTexts()
   return (
     <div lang={textLang}>
-      <VisuallyHidden render={(props) => <h4 {...props}>{texts.openingHours}</h4>} />
+      <VisuallyHidden as="h4">{texts.openingHours}</VisuallyHidden>
       <p>{texts.openingHoursText}</p>
     </div>
   )

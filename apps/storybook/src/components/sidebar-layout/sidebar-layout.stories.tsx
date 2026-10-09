@@ -35,7 +35,6 @@ const meta = {
       options: ['sm', 'md'],
       description: 'The sidebar track from `64rem`: `sm` 16rem or `md` 20rem (default).',
     },
-    render: { control: false },
   },
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof SidebarLayout.Root>
@@ -49,11 +48,11 @@ export const Default: Story = {}
 /** `sidebarWidth="sm"`: a `16rem` sidebar. */
 export const SidebarSmall: Story = { args: { sidebarWidth: 'sm' } }
 
-/** The sidebar as a named `nav`: the layout adds no landmark, `render` does. */
+/** The sidebar as a named `nav`: the layout adds no landmark, `as` does. */
 export const AsNavigation: Story = {
   render: (args) => (
     <SidebarLayout.Root {...args}>
-      <SidebarLayout.Sidebar render={<nav aria-label="I det här avsnittet" />}>
+      <SidebarLayout.Sidebar as="nav" aria-label="I det här avsnittet">
         <ul>
           <li>
             <a href="#intro">Inledning</a>

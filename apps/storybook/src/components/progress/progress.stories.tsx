@@ -37,7 +37,6 @@ const meta = {
       description: 'Announce the label once and the slow sentence once. Default true.',
     },
     messages: { control: false, description: 'Per-instance `loading`, `slow` and `valueText`.' },
-    render: { control: false, description: 'Another element for the Root.' },
   },
   args: { delayMilliseconds: 0, announce: false },
   globals: { locale: 'sv' },

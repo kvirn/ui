@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en" data-kv-color-scheme="light" data-kv-contrast="standard">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Landing v2, direction C: brand it, and the guard says no · KvirnUI design exploration</title>
+    <!-- Throwaway prototype for Plan 0091 (docs/plans/0091-landing-v2-evidence.md). Direction C:
+     the hero itself is the demo. The visitor rebrands the page with a primary colour; every text
+     pair shows its contrast ratio; a pair under AA is refused with words, and the page stays as it
+     was. The inline script is the prototype's contrast maths (WCAG 2.x relative luminance), the same
+     maths theme:check runs. No network requests. Not library code. -->
+    <link rel="stylesheet" href="../../../apps/docs/fonts/ibm-plex/ibm-plex.css" />
+    <link rel="stylesheet" href="../../../packages/theme/theme.css" />
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; }
+      .p-hero { position: relative; }
+      .p-hero::before { content: ''; display: block; block-size: var(--kv-space-2); background: linear-gradient(to right, var(--kv-color-primary), var(--kv-color-accent)); }
+      @media (forced-colors: active) { .p-hero::before { display: none; } }
+      .p-grid { display: grid; gap: var(--kv-space-8); grid-template-columns: 1fr; align-items: start; }
+      @media (width >= 64rem) { .p-grid { grid-template-columns: 1fr 1fr; gap: var(--kv-space-12); } }
+      .p-title { margin: 0; font-family: var(--kv-font-family-heading); font-weight: 500; line-height: 1.1; letter-spacing: -0.01em; font-size: 2.75rem; color: var(--kv-color-heading); }
+      .p-title strong { font-weight: 600; }
+      @media (width >= 64rem) { .p-title { font-size: 3.5rem; } }
+      .p-tagline { margin: var(--kv-space-6) 0 0; font-family: var(--kv-font-family-heading); font-size: var(--kv-font-heading-2-size); font-weight: 500; }
+      .p-subline { margin: var(--kv-space-2) 0 0; font-size: var(--kv-font-body-large-size); max-inline-size: 55ch; }
+      .p-status { margin: var(--kv-space-4) 0 0; font-size: var(--kv-font-body-small-size); }
+      .p-actions { display: flex; flex-wrap: wrap; gap: var(--kv-space-4); align-items: center; margin-block-start: var(--kv-space-6); }
+
+      .p-guard { border: 1px solid var(--kv-color-border-control); border-radius: var(--kv-radius-md); background: var(--kv-color-surface-raised); }
+      .p-guard-head { padding: var(--kv-space-4); border-block-end: 1px solid var(--kv-color-border-subtle); }
+      .p-guard-head h2 { margin: 0; }
+      .p-guard-body { padding: var(--kv-space-4); display: grid; gap: var(--kv-space-4); }
+      .p-presets { display: flex; flex-wrap: wrap; gap: var(--kv-space-3); }
+      .p-presets label { display: inline-flex; align-items: center; gap: var(--kv-space-2); min-block-size: 2.75rem; padding-inline: var(--kv-space-3); border: 1px solid var(--kv-color-border-control); border-radius: var(--kv-radius-sm); }
+      .p-presets label:has(:checked) { outline: 2px solid var(--kv-color-focus-ring); outline-offset: 2px; }
+      .p-swatch { inline-size: 1rem; block-size: 1rem; border-radius: var(--kv-radius-full); border: 1px solid var(--kv-color-border-control); }
+      .p-hex { display: flex; flex-wrap: wrap; gap: var(--kv-space-3); align-items: end; }
+      .p-hex label { display: grid; gap: var(--kv-space-1); }
+      .p-hex input { min-block-size: 2.75rem; padding-inline: var(--kv-space-3); border: 1px solid var(--kv-color-border-control); border-radius: var(--kv-radius-sm); font-family: var(--kv-font-family-mono); background: var(--kv-color-canvas); color: var(--kv-color-text); }
+      .p-pairs { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--kv-space-2); }
+      .p-pairs li { display: grid; grid-template-columns: 1fr auto; gap: var(--kv-space-3); align-items: baseline; padding: var(--kv-space-2) 0; border-block-end: 1px solid var(--kv-color-border-subtle); font-variant-numeric: tabular-nums; }
+      .p-pairs .p-ratio { font-family: var(--kv-font-family-mono); }
+      .p-pairs .p-fail .p-ratio::after { content: ' · below the floor'; font-family: var(--kv-font-family-body); font-style: italic; }
+      .p-pairs .p-pass .p-ratio::after { content: ' · passes'; font-family: var(--kv-font-family-body); }
+      .p-verdict { margin: 0; padding: var(--kv-space-3) var(--kv-space-4); border-radius: var(--kv-radius-sm); border: 1px solid var(--kv-color-border-control); background: var(--kv-color-surface); }
+      .p-verdict[data-state='refused'] { border-color: var(--kv-color-danger); background: var(--kv-color-danger-subtle); }
+      .p-verdict[data-state='applied'] { border-color: var(--kv-color-success); background: var(--kv-color-success-subtle); }
+      .p-specimen { display: flex; flex-wrap: wrap; gap: var(--kv-space-3); align-items: center; }
+
+      .p-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: var(--kv-space-6); margin: 0; padding: 0; list-style: none; }
+      .p-fact-number { display: block; font-family: var(--kv-font-family-heading); font-size: var(--kv-font-display-size); font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; color: var(--kv-color-heading); }
+      .p-fact-text { display: block; margin-block-start: var(--kv-space-2); }
+
+      .p-ribbon { display: grid; gap: var(--kv-space-4); grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); margin: 0; padding: 0; list-style: none; }
+      .p-ribbon li { padding: var(--kv-space-4); border: 1px solid var(--kv-color-border-subtle); border-radius: var(--kv-radius-sm); background: var(--kv-color-surface-raised); }
+      .p-ribbon strong { display: block; font-size: var(--kv-font-heading-2-size); font-family: var(--kv-font-family-heading); font-variant-numeric: tabular-nums; }
+      .p-pending { font-style: italic; }
+      .p-small { font-size: var(--kv-font-body-small-size); max-inline-size: 70ch; }
+      .p-pair { display: grid; gap: var(--kv-space-6); grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); }
+      .p-fake { display: inline-block; padding: 0.625rem 1rem; border-radius: var(--kv-radius-sm); background: var(--kv-color-primary); color: var(--kv-color-on-primary); font-weight: 500; }
+      .p-mini { margin: var(--kv-space-3) 0 0; padding: var(--kv-space-3); border-radius: var(--kv-radius-sm); background: var(--kv-color-surface); font-family: var(--kv-font-family-mono); font-size: var(--kv-font-code-size); }
+      .p-invisible { font-weight: 600; text-decoration: underline dotted; text-underline-offset: 0.2em; }
+      pre.p-code { margin: 0; padding: var(--kv-space-4); background: var(--kv-color-surface); border: 1px solid var(--kv-color-border-subtle); border-radius: var(--kv-radius-sm); font-family: var(--kv-font-family-mono); font-size: var(--kv-font-code-size); overflow-x: auto; }
+    </style>
+  </head>
+  <body>
+    <a class="kv-skip-link" href="#main">Skip to main content</a>
+    <header class="kv-section kv-section--canvas kv-section--padding-sm" style="border-block-end: 1px solid var(--kv-color-border-subtle)">
+      <div class="kv-container" style="display: flex; flex-wrap: wrap; gap: var(--kv-space-4); align-items: center; justify-content: space-between">
+        <span style="display: inline-flex; gap: var(--kv-space-2); align-items: center"><a class="kv-link" href="#" style="font-weight: 600">KvirnUI</a> <span class="kv-badge">Pre-alpha</span></span>
+        <nav class="kv-navigation kv-navigation--horizontal" aria-label="Site">
+          <ul class="kv-navigation-list" role="list">
+            <li class="kv-navigation-item"><a class="kv-link" href="#" aria-current="page">Home</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Docs</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Components</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Patterns</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Content types</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Theming</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="kv-section kv-section--canvas kv-section--padding-lg p-hero">
+        <div class="kv-container p-grid">
+          <div>
+            <h1 class="p-title">Accessibility is hard. <strong>Navigating the web without it is harder.</strong></h1>
+            <p class="p-tagline">Accessibility you can verify.</p>
+            <p class="p-subline">Public-service components, with the evidence beside them. Headless React for the Nordics and the EU, designed and tested to meet WCAG 2.2 AA.</p>
+            <p class="p-status"><strong>Pre-alpha.</strong> The API will change. Testing with assistive technology is pending.</p>
+            <div class="p-actions">
+              <a class="kv-link kv-link--service" href="#">Get started</a>
+              <button class="kv-button kv-button--primary" type="button">A primary button</button>
+              <button class="kv-button" type="button">A secondary one</button>
+            </div>
+            <p class="p-small" style="margin-block-start: var(--kv-space-8)">Free for personal use. Any other use needs a commercial licence. The code is published under the AGPL-3.0. <a class="kv-link" href="#">How the licence works</a>.</p>
+          </div>
+
+          <form class="p-guard" id="guard" aria-labelledby="guard-title">
+            <div class="p-guard-head">
+              <h2 class="kv-heading kv-heading--heading-3" id="guard-title">Brand this page. The guard checks the contrast.</h2>
+            </div>
+            <div class="p-guard-body">
+              <fieldset class="kv-fieldset" style="margin: 0">
+                <legend class="kv-fieldset-legend">Primary colour</legend>
+                <div class="p-presets">
+                  <label><input type="radio" name="preset" value="#5b5bd6" checked /> <span class="p-swatch" style="background:#5b5bd6"></span> Lavender (default)</label>
+                  <label><input type="radio" name="preset" value="#0b6e4f" /> <span class="p-swatch" style="background:#0b6e4f"></span> Forest</label>
+                  <label><input type="radio" name="preset" value="#9a3412" /> <span class="p-swatch" style="background:#9a3412"></span> Brick</label>
+                  <label><input type="radio" name="preset" value="#f7c948" /> <span class="p-swatch" style="background:#f7c948"></span> Sun</label>
+                </div>
+              </fieldset>
+              <div class="p-hex">
+                <label><span>Or a hex value</span><input id="hex" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="#5b5bd6" pattern="#[0-9a-fA-F]{6}" aria-describedby="hex-help" /></label>
+                <button class="kv-button" type="submit">Apply</button>
+                <p id="hex-help" class="p-small" style="margin:0; flex-basis: 100%">White text sits on the colour. The guard measures every pair below before it applies anything.</p>
+              </div>
+              <ul class="p-pairs" id="pairs" aria-live="polite" aria-atomic="true">
+                <li><span>White on the colour (buttons)</span><span class="p-ratio" data-pair="on-primary">—</span></li>
+                <li><span>The colour on white (links, focus ring)</span><span class="p-ratio" data-pair="primary-on-canvas">—</span></li>
+                <li><span>The colour as a 3:1 marker on grey surface</span><span class="p-ratio" data-pair="primary-on-surface">—</span></li>
+              </ul>
+              <p class="p-verdict" id="verdict" role="status">Choose a colour. The page keeps the default until a colour passes.</p>
+              <div class="p-specimen" aria-label="Specimen">
+                <button class="kv-button kv-button--primary" type="button">Send application</button>
+                <a class="kv-link" href="#">About the Link component</a>
+                <span class="kv-badge kv-badge--primary">Selected</span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="kv-section kv-section--surface kv-section--padding-lg">
+        <div class="kv-container">
+          <h2 class="kv-heading kv-heading--heading-2">Why the guard matters</h2>
+          <p class="kv-lead">Tokens are named by role, never by hue, so a rebrand is a few lines. The guard runs the same contrast maths as our release check, so those lines cannot quietly break AA.</p>
+          <ul class="p-facts" role="list">
+            <li><span class="p-fact-number">56</span><span class="p-fact-text">documented components and hooks.</span></li>
+            <li><span class="p-fact-number">6</span><span class="p-fact-text">languages. Much of the Sámi text is still English.</span></li>
+            <li><span class="p-fact-number">4</span><span class="p-fact-text">themes: light, dark, each with high contrast.</span></li>
+            <li><span class="p-fact-number">3</span><span class="p-fact-text">runtime dependencies, all from TanStack.</span></li>
+            <li><span class="p-fact-number">0</span><span class="p-fact-text">lines of CSS in the headless packages.</span></li>
+            <li><span class="p-fact-number">0</span><span class="p-fact-text">cookies, trackers or calls home.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="kv-section kv-section--canvas kv-section--padding-lg">
+        <div class="kv-container">
+          <h2 class="kv-heading kv-heading--heading-2">Hear what you can't see</h2>
+          <p class="kv-lead">Two things that look the same. One of them exists for a screen reader.</p>
+          <div class="p-pair">
+            <div class="kv-card"><div class="kv-card-body">
+              <h3 class="kv-heading kv-heading--heading-3">A styled <code>div</code></h3>
+              <p><span class="p-fake" aria-hidden="true">Vis svar</span></p>
+              <p class="p-mini" lang="nb">Vis svar</p>
+            </div></div>
+            <div class="kv-card"><div class="kv-card-body">
+              <h3 class="kv-heading kv-heading--heading-3">KvirnUI <code>Disclosure</code></h3>
+              <p><button class="kv-button kv-button--primary" type="button" aria-expanded="false">Vis svar</button></p>
+              <p class="p-mini" lang="nb">Vis svar, <span class="p-invisible">knapp</span>, <span class="p-invisible">skjult</span></p>
+            </div></div>
+          </div>
+          <p class="p-small" style="margin-block-start: var(--kv-space-4)">Examples written by hand. Real screen readers use their own words. A language switch sits here on the real page.</p>
+        </div>
+      </section>
+
+      <section class="kv-section kv-section--surface kv-section--padding-lg">
+        <div class="kv-container">
+          <h2 class="kv-heading kv-heading--heading-2">The evidence, in one line each</h2>
+          <ul class="p-ribbon" role="list">
+            <li><strong>56 of 56</strong> have a written contract</li>
+            <li><strong>56 of 56</strong> have every key tested in a browser</li>
+            <li><strong>56 of 56</strong> are axe-clean in four themes</li>
+            <li><strong>41 of 56</strong> reviewed and approved</li>
+            <li><strong class="p-pending">0 of 56</strong> tested with real assistive technology, <span class="p-pending">pending</span></li>
+          </ul>
+          <p class="p-actions"><a class="kv-link" href="#">Open the full ledger</a> <button class="kv-button" type="button">Copy as Markdown for a tender</button></p>
+          <p class="p-small">Counted from the repository when the site is built. Sample numbers in this prototype.</p>
+        </div>
+      </section>
+
+      <section class="kv-section kv-section--canvas kv-section--padding-lg">
+        <div class="kv-container">
+          <h2 class="kv-heading kv-heading--heading-2">For developers</h2>
+          <div class="p-pair">
+            <div><h3 class="kv-heading kv-heading--heading-3">Hook</h3><pre class="p-code"><code>const disclosure = useDisclosure()
+&lt;button {...disclosure.triggerProps}&gt;Show the answer&lt;/button&gt;
+&lt;div {...disclosure.panelProps}&gt;…&lt;/div&gt;</code></pre></div>
+            <div><h3 class="kv-heading kv-heading--heading-3">Component</h3><pre class="p-code"><code>&lt;Disclosure.Root&gt;
+  &lt;Disclosure.Trigger&gt;Show the answer&lt;/Disclosure.Trigger&gt;
+  &lt;Disclosure.Panel&gt;…&lt;/Disclosure.Panel&gt;
+&lt;/Disclosure.Root&gt;</code></pre></div>
+          </div>
+          <p style="margin-block-start: var(--kv-space-6)"><code>pnpm add @kvirn-ui/react @kvirn-ui/i18n</code>. Remove the theme import and it unstyles. Keep it and change the tokens, as you just did.</p>
+          <p class="p-actions"><a class="kv-link kv-link--service" href="#">Get started</a> <a class="kv-link" href="#">Theming</a></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="kv-section kv-section--surface kv-section--padding-sm">
+      <div class="kv-container p-small">AGPL-3.0 · Designed and tested to meet WCAG 2.2 AA · No cookies, analytics or third-party services on this site.</div>
+    </footer>
+
+    <script>
+      // Prototype only. WCAG 2.x relative luminance and contrast ratio, the maths behind theme:check.
+      const lum = (hex) => {
+        const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
+      }
+      const ratio = (a, b) => { const [h, l] = [lum(a), lum(b)].sort((x, y) => y - x); return (h + 0.05) / (l + 0.05) }
+      const fmt = (n) => `${(Math.round(n * 100) / 100).toFixed(2)}:1`
+      const canvas = '#ffffff', surface = '#f7f7f9', white = '#ffffff'
+      const form = document.getElementById('guard'), hex = document.getElementById('hex'), verdict = document.getElementById('verdict')
+      const cell = (name) => document.querySelector(`[data-pair="${name}"]`)
+      function check(colour) {
+        const pairs = [
+          ['on-primary', ratio(white, colour), 4.5],
+          ['primary-on-canvas', ratio(colour, canvas), 4.5],
+          ['primary-on-surface', ratio(colour, surface), 3],
+        ]
+        let ok = true
+        for (const [name, value, floor] of pairs) {
+          const el = cell(name); el.textContent = `${fmt(value)} (floor ${floor}:1)`
+          el.parentElement.classList.toggle('p-fail', value < floor); el.parentElement.classList.toggle('p-pass', value >= floor)
+          if (value < floor) ok = false
+        }
+        return ok
+      }
+      function apply(colour) {
+        if (!/^#[0-9a-f]{6}$/i.test(colour)) { verdict.dataset.state = 'refused'; verdict.textContent = 'That is not a six-digit hex colour. Nothing changed.'; return }
+        if (check(colour)) {
+          document.documentElement.style.setProperty('--kv-color-primary', colour)
+          document.documentElement.style.setProperty('--kv-color-link', colour)
+          document.documentElement.style.setProperty('--kv-color-focus-ring', colour)
+          document.documentElement.style.setProperty('--kv-color-border-focus', colour)
+          verdict.dataset.state = 'applied'; verdict.textContent = `Applied ${colour}. Every pair meets its floor, so the page is now your brand.`
+        } else {
+          verdict.dataset.state = 'refused'; verdict.textContent = `Refused ${colour}: a pair is below its floor. The page keeps the last colour that passed. Pick a darker shade, or keep white text off it.`
+        }
+      }
+      form.addEventListener('submit', (e) => { e.preventDefault(); apply(hex.value.trim()) })
+      form.querySelectorAll('input[name="preset"]').forEach((r) => r.addEventListener('change', () => { hex.value = r.value; apply(r.value) }))
+      check(hex.value)
+    </script>
+  </body>
+</html>

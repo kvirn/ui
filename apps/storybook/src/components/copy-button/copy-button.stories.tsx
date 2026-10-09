@@ -27,7 +27,7 @@ const meta = {
   component: CopyButton,
   args: { text: referenceNumber },
   decorators: [withCopyMessages],
-  argTypes: { render: { control: false }, textRef: { control: false } },
+  argTypes: { textRef: { control: false } },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },

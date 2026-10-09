@@ -110,12 +110,15 @@ export function TranslatedApp() {
  * What `KvirnThemeScript` puts in a server-rendered `<head>`: a blocking inline script with your
  * CSP `nonce`, and the same defaults as the provider's `theme`. React never runs it in the
  * browser, so this shows the markup a server would send, rendered to a string. An app renders
- * `<KvirnThemeScript nonce={nonce} />` in its document and puts `suppressHydrationWarning` on
+ * `<KvirnThemeScript nonce={nonce} theme={theme} />` in its document and puts `suppressHydrationWarning` on
  * `<html>`.
  */
 export function ServerHead() {
   const markup = renderToStaticMarkup(
-    <KvirnThemeScript nonce="abc123" defaultColorScheme="dark" defaultContrast="more" />,
+    <KvirnThemeScript
+      nonce="abc123"
+      theme={{ defaultColorScheme: 'dark', defaultContrast: 'more' }}
+    />,
   )
   const openingTag = markup.slice(0, markup.indexOf('>') + 1)
   const defaultsLine = markup.split('\n').find((line) => line.includes('var defaults')) ?? ''

@@ -7,9 +7,10 @@ export function ExtraInformation() {
   return (
     <Tooltip.Root>
       <Tooltip.Trigger
-        render={
-          <Button className="kv-button--icon-only" aria-label={texts.print} lang={textLang} />
-        }
+        as={Button}
+        className="kv-button--icon-only"
+        aria-label={texts.print}
+        lang={textLang}
       >
         <Icon name="document" />
       </Tooltip.Trigger>

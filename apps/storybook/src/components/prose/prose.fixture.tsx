@@ -32,7 +32,7 @@ const bathroomPlanSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48
 const bathroomPlanSource = `data:image/svg+xml,${encodeURIComponent(bathroomPlanSvg)}`
 
 /**
- * An article: `<Prose>` as an `<article>` (`render`), with the elements prose styles inside it. Add
+ * An article: `<Prose>` as an `<article>` (`as`), with the elements prose styles inside it. Add
  * `kv-prose--large` through `className` for long resident-facing text.
  */
 export function GuidanceArticle({
@@ -48,7 +48,7 @@ export function GuidanceArticle({
   const date = new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long' })
   const ids = useId()
   return (
-    <Prose render={<article />} className={className} lang={lang}>
+    <Prose as="article" className={className} lang={lang}>
       <h1>{text.title}</h1>
       <p className="kv-lead">{text.lead}</p>
       <div className="kv-inset">
@@ -254,7 +254,7 @@ export function ProseOnSurfaces({ locale }: { locale: FixtureLocale }) {
         <div key={surface.name}>
           <h2 id={`${ids}-${index}`}>{surface.name}</h2>
           <Prose
-            render={<section />}
+            as="section"
             lang={contentLang}
             className={surface.className}
             style={surface.style}
@@ -295,7 +295,7 @@ export function ProseOnSurfaces({ locale }: { locale: FixtureLocale }) {
  */
 export function ComponentsInProse() {
   return (
-    <Prose render={<article />}>
+    <Prose as="article">
       <h1>Components inside prose</h1>
       <p>
         Prose never styles a component part, such as kv-button or kv-link, so KvirnUI components

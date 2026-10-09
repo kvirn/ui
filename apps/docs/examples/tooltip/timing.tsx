@@ -7,9 +7,10 @@ export function Timing() {
   return (
     <Tooltip.Root delay={1000} closeDelay={300} placement="bottom">
       <Tooltip.Trigger
-        render={
-          <Button className="kv-button--icon-only" aria-label={texts.search} lang={textLang} />
-        }
+        as={Button}
+        className="kv-button--icon-only"
+        aria-label={texts.search}
+        lang={textLang}
       >
         <Icon name="search" />
       </Tooltip.Trigger>

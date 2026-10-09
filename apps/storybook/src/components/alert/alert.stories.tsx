@@ -16,7 +16,6 @@ import {
   FocusTargetExample,
   FourStatuses,
   localeOf,
-  MissingAnswersAlert,
   OutageAlert,
   PermitAlert,
   SavedExample,
@@ -55,7 +54,11 @@ const meta = {
       description:
         'Your own classes, added to `kv-alert` and the status class. A status class of another status warns in development.',
     },
-    render: { control: false },
+    as: {
+      control: false,
+      description:
+        "Another element: a string from the part's short list (Title `h2` to `h6` or `p`).",
+    },
   },
   globals: { locale: 'sv' },
   decorators: [withAlertColumn, withAlertLocale],
@@ -112,7 +115,7 @@ export const Statuses: Story = {
 
 /**
  * Examples B and C2: one sentence needs no heading, so the Title is a paragraph
- * (`render={<p />}`). The status word is still first.
+ * (`as="p"`). The status word is still first.
  */
 export const TitleOnly: Story = {
   parameters: showSource('alert/alert.fixture.tsx', 'SavedAlert', 'ConsequenceAlert'),
@@ -261,7 +264,7 @@ export const WithCloseButton: Story = {
 }
 
 /**
- * A site-wide outage: the one case for a landmark and for `announce="assertive"`. `render` makes
+ * A site-wide outage: the one case for a landmark and for `announce="assertive"`. `as` makes
  * the root a `<section>` named by its Title, and the assertive announcement interrupts, so use
  * both rarely and never for Info or Success. The button stands in for the outage starting.
  */
@@ -276,20 +279,6 @@ export const SiteWideOutage: Story = {
       expect(canvas.getByRole('alert').textContent).toMatch(/^Fel: Tjänsten är nere /),
     )
     await expect(canvas.getByRole('status')).toBeEmptyDOMElement()
-  },
-}
-
-/**
- * `render` on the Body and the Actions: here the Body is a list of what's missing, and the Actions
- * a paragraph with the one link. They keep their classes, so the theme styles them as before.
- */
-export const BodyAndActionsAsElements: Story = {
-  parameters: showSource('alert/alert.fixture.tsx', 'MissingAnswersAlert'),
-  render: (_args, { globals }) => <MissingAnswersAlert locale={localeOf(globals)} />,
-  play: async ({ canvas }) => {
-    const alert = within(canvas.getByTestId('missing'))
-    await expect(alert.getAllByRole('listitem')).toHaveLength(2)
-    await expect(alert.getByRole('link', { name: 'Gå till dina svar' })).toBeVisible()
   },
 }
 
@@ -324,9 +313,9 @@ export const DynamicStatus: Story = {
 }
 
 /**
- * Restyle with two tokens, or drop our class. The first alert has
+ * Restyle with two tokens, or add a class of your own. The first alert has
  * `--kv-alert-background` and `--kv-alert-accent` set in unlayered CSS. The second
- * drops `kv-alert` through the `render` function form, and a class of your own styles it.
+ * adds a class of your own, which joins `kv-alert` and never replaces it.
  * Both keep the icon and the status word.
  */
 export const RestyleWithTokens: Story = {
@@ -339,11 +328,7 @@ export const RestyleWithTokens: Story = {
             <Alert.Title>{text.sample.title}</Alert.Title>
           </Alert.Warning>
         </div>
-        <Alert.Warning
-          render={(rootProps) => (
-            <div {...rootProps} className="kv-story-my-warning" data-testid="own-class" />
-          )}
-        >
+        <Alert.Warning className="kv-story-my-warning" data-testid="own-class">
           <Alert.Title>{text.sample.title}</Alert.Title>
         </Alert.Warning>
       </>
@@ -355,7 +340,7 @@ export const RestyleWithTokens: Story = {
       await expect(alert.querySelector('svg.kv-alert-icon')).not.toBeNull()
       await expect(alert.querySelector('.kv-alert-status')?.textContent).toBe('Varning:')
     }
-    await expect(canvas.getByTestId('own-class').className).toBe('kv-story-my-warning')
+    await expect(canvas.getByTestId('own-class')).toHaveClass('kv-alert', 'kv-story-my-warning')
   },
 }
 
@@ -450,7 +435,7 @@ export const InProseAndCard: Story = {
           <h2>{text.prose.heading}</h2>
           <p>{text.permit.body}</p>
           <Alert.Info data-testid="in-prose">
-            <Alert.Title render={(props) => <h3 {...props}>{props.children}</h3>}>
+            <Alert.Title as="h3">
               {text.deadline.title(<time dateTime="2026-08-31">{closes}</time>)}
             </Alert.Title>
             <Alert.Body className="kv-prose">
@@ -467,9 +452,7 @@ export const InProseAndCard: Story = {
           <Card.Body>
             <h2>{text.prose.heading}</h2>
             <Alert.Warning data-testid="in-card">
-              <Alert.Title render={(props) => <h3 {...props}>{props.children}</h3>}>
-                {text.sample.title}
-              </Alert.Title>
+              <Alert.Title as="h3">{text.sample.title}</Alert.Title>
             </Alert.Warning>
           </Card.Body>
         </Card.Root>

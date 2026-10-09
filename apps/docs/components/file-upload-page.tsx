@@ -8,10 +8,8 @@ import { Note } from './note.tsx'
 import { StringsBlock, stringText } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import {
-  fileUploadActionsRows,
   fileUploadDropHintRows,
   fileUploadDropZoneAttributes,
-  fileUploadDropZoneRows,
   fileUploadFileDetailRows,
   fileUploadInputRows,
   fileUploadItemAttributes,
@@ -22,7 +20,6 @@ import {
   fileUploadLimitsRows,
   fileUploadListRows,
   fileUploadPreviewRows,
-  fileUploadProgressRows,
   fileUploadRejectionsRows,
   fileUploadRootAttributes,
   fileUploadRootRows,
@@ -157,7 +154,6 @@ const parts: ApiPart[] = [
         drag. The keyboard path is the Trigger inside it.
       </>
     ),
-    props: fileUploadDropZoneRows,
     attributes: fileUploadDropZoneAttributes,
   },
   {
@@ -245,8 +241,7 @@ const parts: ApiPart[] = [
         <code>&lt;bdi&gt;</code>, <code>&lt;span&gt;</code> and <code>&lt;span&gt;</code> with the
         classes <code>kv-file-upload-name</code>, <code>kv-file-upload-type</code> and{' '}
         <code>kv-file-upload-size</code>: the file name (with “(2)” when two files share one), the
-        extension in capitals, and the size in the locale’s decimal units. Each takes{' '}
-        <code>render</code>.
+        extension in capitals, and the size in the locale’s decimal units.
       </>
     ),
     props: fileUploadFileDetailRows,
@@ -284,7 +279,6 @@ const parts: ApiPart[] = [
         <code>&lt;progress&gt;</code>. It is never announced.
       </>
     ),
-    props: fileUploadProgressRows,
   },
   {
     name: 'FileUpload.Actions',
@@ -294,7 +288,6 @@ const parts: ApiPart[] = [
         wrapper for an item’s buttons.
       </>
     ),
-    props: fileUploadActionsRows,
   },
   {
     name: 'FileUpload.CancelButton, .RetryButton and .RemoveButton',

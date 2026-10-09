@@ -7,36 +7,22 @@ import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
 import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
-import {
-  autocompleteClearRows,
-  autocompleteControlRows,
-  autocompleteInputRows,
-  autocompleteRootRows,
-  autocompleteToggleRows,
-  useAutocompleteHook,
-} from '../content/autocomplete.api.ts'
-import { fieldAttributes, popupWithLoadingAttributes, renamed } from '../content/combobox.api.ts'
+import { autocompleteRootRows, useAutocompleteHook } from '../content/autocomplete.api.ts'
+import { fieldAttributes, popupWithLoadingAttributes } from '../content/combobox.api.ts'
 import {
   emptyAttributes,
-  emptyRows,
   groupAttributes,
   groupLabelAttributes,
-  groupLabelRows,
   groupRows,
   listAttributes,
   listRows,
   optionAttributes,
   optionDescriptionAttributes,
-  optionDescriptionRows,
   optionIconAttributes,
-  optionIconRows,
   optionIndicatorAttributes,
-  optionIndicatorRows,
   optionRows,
   optionTextAttributes,
-  optionTextRows,
   popupAttributes,
-  popupRows,
 } from '../content/listbox.api.ts'
 import { ControlledAutocomplete } from '../examples/autocomplete/controlled.tsx'
 import { DefaultAutocomplete } from '../examples/autocomplete/default.tsx'
@@ -86,7 +72,6 @@ const parts: ApiPart[] = [
         <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
-    props: autocompleteControlRows,
     attributes: field.control,
   },
   {
@@ -98,7 +83,6 @@ const parts: ApiPart[] = [
         you set your own, and it carries the Root’s <code>name</code>.
       </>
     ),
-    props: autocompleteInputRows,
     attributes: field.input,
   },
   {
@@ -109,7 +93,6 @@ const parts: ApiPart[] = [
         options” (<code>combobox.showOptions</code>). It is optional and not a tab stop.
       </>
     ),
-    props: autocompleteToggleRows,
     attributes: field.toggle,
   },
   {
@@ -121,7 +104,6 @@ const parts: ApiPart[] = [
         tab stop.
       </>
     ),
-    props: autocompleteClearRows,
     attributes: field.clear,
   },
   {
@@ -132,7 +114,6 @@ const parts: ApiPart[] = [
         <Link href="/components/listbox">Listbox.Popup</Link>.
       </>
     ),
-    props: renamed(popupRows, 'Autocomplete'),
     attributes: popupWithLoadingAttributes(popupAttributes),
   },
   {
@@ -143,7 +124,7 @@ const parts: ApiPart[] = [
         .
       </>
     ),
-    props: renamed(listRows, 'Autocomplete'),
+    props: listRows,
     attributes: listAttributes,
   },
   {
@@ -154,7 +135,7 @@ const parts: ApiPart[] = [
         is ever chosen (<code>aria-selected</code> stays false): picking one fills the input.
       </>
     ),
-    props: renamed(optionRows, 'Autocomplete'),
+    props: optionRows,
     attributes: optionAttributes,
   },
   {
@@ -164,7 +145,6 @@ const parts: ApiPart[] = [
         {element('span aria-hidden="true"')}: the same part as <code>Listbox.OptionIcon</code>.
       </>
     ),
-    props: renamed(optionIconRows, 'Autocomplete'),
     attributes: optionIconAttributes,
   },
   {
@@ -175,7 +155,6 @@ const parts: ApiPart[] = [
         <code>Listbox.OptionText</code>.
       </>
     ),
-    props: renamed(optionTextRows, 'Autocomplete'),
     attributes: optionTextAttributes,
   },
   {
@@ -186,7 +165,6 @@ const parts: ApiPart[] = [
         <code>Listbox.OptionDescription</code>.
       </>
     ),
-    props: renamed(optionDescriptionRows, 'Autocomplete'),
     attributes: optionDescriptionAttributes,
   },
   {
@@ -196,7 +174,6 @@ const parts: ApiPart[] = [
         {element('span aria-hidden="true"')}: the same part as <code>Listbox.OptionIndicator</code>.
       </>
     ),
-    props: renamed(optionIndicatorRows, 'Autocomplete'),
     attributes: optionIndicatorAttributes,
   },
   {
@@ -206,7 +183,7 @@ const parts: ApiPart[] = [
         {element('div role="group"')}: the same part as <code>Listbox.Group</code>.
       </>
     ),
-    props: renamed(groupRows, 'Autocomplete'),
+    props: groupRows,
     attributes: groupAttributes,
   },
   {
@@ -216,7 +193,6 @@ const parts: ApiPart[] = [
         {element('div')} with the group’s name: the same part as <code>Listbox.GroupLabel</code>.
       </>
     ),
-    props: renamed(groupLabelRows, 'Autocomplete'),
     attributes: groupLabelAttributes,
   },
   {
@@ -228,7 +204,6 @@ const parts: ApiPart[] = [
         results” while <code>isLoading</code> is on.
       </>
     ),
-    props: renamed(emptyRows, 'Autocomplete'),
     attributes: emptyAttributes,
   },
 ]

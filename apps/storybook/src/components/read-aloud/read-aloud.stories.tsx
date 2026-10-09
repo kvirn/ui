@@ -54,7 +54,6 @@ const meta = {
     },
     messages: { control: false, description: 'Per-instance text overrides.' },
     onStatusChange: { control: false },
-    render: { control: false },
   },
   parameters: {
     a11yContract: contract,

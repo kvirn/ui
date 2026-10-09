@@ -10,13 +10,10 @@ import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   fieldsetErrorMessageAttributes,
-  fieldsetErrorMessageRows,
   fieldsetHelpTextAttributes,
-  fieldsetHelpTextRows,
   fieldsetLegendAttributes,
   fieldsetLegendRows,
   fieldsetProseAttributes,
-  fieldsetProseRows,
   fieldsetRootAttributes,
   fieldsetRootRows,
   useFieldsetHook,
@@ -66,7 +63,6 @@ const parts: ApiPart[] = [
         <code>aria-describedby</code>.
       </>
     ),
-    props: fieldsetProseRows,
     attributes: fieldsetProseAttributes,
   },
   {
@@ -78,7 +74,6 @@ const parts: ApiPart[] = [
         name, and goes under the controls.
       </>
     ),
-    props: fieldsetHelpTextRows,
     attributes: fieldsetHelpTextAttributes,
   },
   {
@@ -89,7 +84,6 @@ const parts: ApiPart[] = [
         prefix as the Field’s. It is not a live region.
       </>
     ),
-    props: fieldsetErrorMessageRows,
     attributes: fieldsetErrorMessageAttributes,
   },
 ]

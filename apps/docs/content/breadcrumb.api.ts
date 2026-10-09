@@ -1,7 +1,4 @@
 import type {
-  BreadcrumbCurrentProps,
-  BreadcrumbItemProps,
-  BreadcrumbListProps,
   BreadcrumbRootProps,
   UseBreadcrumbOptions,
   UseBreadcrumbResult,
@@ -9,9 +6,7 @@ import type {
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-export const breadcrumbRootRows = propRows<
-  Pick<BreadcrumbRootProps, 'label' | 'messages' | 'render'>
->({
+export const breadcrumbRootRows = propRows<Pick<BreadcrumbRootProps, 'label' | 'messages'>>({
   label: {
     type: 'string',
     default: 'the message breadcrumb.label',
@@ -22,11 +17,6 @@ export const breadcrumbRootRows = propRows<
     type: "Partial<KvirnMessages['breadcrumb']>",
     default: '–',
     description: 'Overrides breadcrumb.label for this trail.',
-  },
-  render: {
-    type: 'RenderProp<BreadcrumbElementProps, BreadcrumbState>',
-    default: '–',
-    description: 'Changes the element, which must stay a <nav> or have role="navigation".',
   },
 })
 
@@ -43,25 +33,9 @@ export const breadcrumbRootAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const breadcrumbListRows = propRows<Pick<BreadcrumbListProps, 'render'>>({
-  render: {
-    type: 'RenderProp<BreadcrumbElementProps, BreadcrumbState>',
-    default: '–',
-    description: 'Changes the element. Its own semantics apply.',
-  },
-})
-
 export const breadcrumbListAttributes: readonly AttributeRow[] = [
   { name: 'kv-breadcrumb-list', values: 'always', meaning: 'The part class.' },
 ]
-
-export const breadcrumbItemRows = propRows<Pick<BreadcrumbItemProps, 'render'>>({
-  render: {
-    type: 'RenderProp<BreadcrumbElementProps, BreadcrumbState>',
-    default: '–',
-    description: 'Changes the element. Its own semantics apply.',
-  },
-})
 
 export const breadcrumbItemAttributes: readonly AttributeRow[] = [
   {
@@ -79,14 +53,6 @@ export const breadcrumbLinkAttributes: readonly AttributeRow[] = [
     meaning: 'The part class, next to kv-link.',
   },
 ]
-
-export const breadcrumbCurrentRows = propRows<Pick<BreadcrumbCurrentProps, 'render'>>({
-  render: {
-    type: 'RenderProp<BreadcrumbElementProps, BreadcrumbState>',
-    default: '–',
-    description: 'Changes the element. Keep aria-current="page" on it.',
-  },
-})
 
 export const breadcrumbCurrentAttributes: readonly AttributeRow[] = [
   { name: 'kv-breadcrumb-current', values: 'always', meaning: 'The part class.' },

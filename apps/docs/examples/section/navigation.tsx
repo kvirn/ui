@@ -7,8 +7,8 @@ export function SectionNavigation() {
   const { texts, textLang } = useSectionTexts()
   const headingId = useId()
   return (
-    <Section render={<nav aria-labelledby={headingId} />} lang={textLang}>
-      <Heading level={4} id={headingId}>
+    <Section as="nav" aria-labelledby={headingId} lang={textLang}>
+      <Heading as="h4" id={headingId}>
         {texts.navigation.heading}
       </Heading>
       <ul>

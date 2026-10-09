@@ -1,5 +1,4 @@
 import {
-  Heading,
   Kbd,
   Prose,
   TableBody,
@@ -11,7 +10,8 @@ import {
   TableRowHeader,
   TableScrollRegion,
 } from '@kvirn-ui/react'
-import type { HeadingLevel } from '@kvirn-ui/react'
+import type { HeadingTag } from '@kvirn-ui/react'
+import { AnchoredHeading } from './anchored-heading.tsx'
 import { Fragment } from 'react'
 import type { ReactNode } from 'react'
 import { keyCellParts } from '../lib/contract-parser.ts'
@@ -46,14 +46,37 @@ export function contractSectionList(
   extraAnnouncementRows?: readonly ContractAnnouncementRow[],
 ): PageSection[] {
   const announcements = announcementsOf(contract, extraAnnouncementRows)
+  const keyboardHeadings =
+    contract.keyboard.kind === 'keys'
+      ? [...contract.keyboard.before, ...contract.keyboard.after].flatMap((block) =>
+          block.type === 'heading' ? [{ id: `keyboard-${block.id}`, label: block.text }] : [],
+        )
+      : []
   return [
     ...(contract.accessibility.length === 0
       ? []
-      : [{ id: 'accessibility', label: text.sections.accessibility }]),
-    { id: 'keyboard', label: text.sections.keyboard },
+      : [
+          {
+            id: 'accessibility',
+            label: text.sections.accessibility,
+            children: contract.accessibility.map((section) => ({
+              id: section.id,
+              label: section.title,
+            })),
+          },
+        ]),
+    { id: 'keyboard', label: text.sections.keyboard, children: keyboardHeadings },
     ...(announcements.kind === 'none'
       ? []
-      : [{ id: 'announcements', label: text.sections.announcements }]),
+      : [
+          {
+            id: 'announcements',
+            label: text.sections.announcements,
+            children: announcements.rows.some((row) => row.messageKeys.length > 0)
+              ? [{ id: 'announcements-change-the-text', label: text.announcements.overrideHeading }]
+              : [],
+          },
+        ]),
   ]
 }
 
@@ -151,12 +174,12 @@ function DataTable({
 function Blocks({
   blocks,
   labelledBy,
-  headingLevel,
+  headingTag,
   idPrefix,
 }: {
   blocks: readonly ContractBlock[]
   labelledBy: string
-  headingLevel: HeadingLevel
+  headingTag: HeadingTag
   idPrefix: string
 }) {
   return blocks.map((block, index) => {
@@ -190,9 +213,9 @@ function Blocks({
         )
       case 'heading':
         return (
-          <Heading key={index} level={headingLevel} id={`${idPrefix}-${block.id}`}>
+          <AnchoredHeading key={index} as={headingTag} id={`${idPrefix}-${block.id}`}>
             {block.text}
-          </Heading>
+          </AnchoredHeading>
         )
     }
   })
@@ -267,19 +290,19 @@ export function ContractSectionsView({
     <>
       {accessibility.length === 0 ? null : (
         <section aria-labelledby="accessibility">
-          <Heading level={2} id="accessibility">
+          <AnchoredHeading as="h2" id="accessibility">
             {text.sections.accessibility}
-          </Heading>
+          </AnchoredHeading>
           <Prose>
             {accessibility.map((section) => (
               <Fragment key={section.id}>
-                <Heading level={3} id={section.id}>
+                <AnchoredHeading as="h3" id={section.id}>
                   {section.title}
-                </Heading>
+                </AnchoredHeading>
                 <Blocks
                   blocks={section.body}
                   labelledBy={section.id}
-                  headingLevel={4}
+                  headingTag="h4"
                   idPrefix={section.id}
                 />
                 {section.id === 'what-it-does-for-you' && announcements.kind === 'none' ? (
@@ -291,9 +314,9 @@ export function ContractSectionsView({
         </section>
       )}
       <section aria-labelledby="keyboard">
-        <Heading level={2} id="keyboard">
+        <AnchoredHeading as="h2" id="keyboard">
           {text.sections.keyboard}
-        </Heading>
+        </AnchoredHeading>
         <Prose>
           {keyboard.kind === 'none' ? (
             <p>{text.keyboard.noKeys({ component: contract.name })}</p>
@@ -314,14 +337,14 @@ export function ContractSectionsView({
               <Blocks
                 blocks={keyboard.before}
                 labelledBy="keyboard"
-                headingLevel={3}
+                headingTag="h3"
                 idPrefix="keyboard"
               />
               <KeyboardTable rows={keyboard.rows} />
               <Blocks
                 blocks={keyboard.after}
                 labelledBy="keyboard"
-                headingLevel={3}
+                headingTag="h3"
                 idPrefix="keyboard"
               />
             </>
@@ -330,9 +353,9 @@ export function ContractSectionsView({
       </section>
       {announcements.kind === 'none' ? null : (
         <section aria-labelledby="announcements">
-          <Heading level={2} id="announcements">
+          <AnchoredHeading as="h2" id="announcements">
             {text.sections.announcements}
-          </Heading>
+          </AnchoredHeading>
           <Prose>
             <p>{text.announcements.intro({ component: contract.name })}</p>
             <DataTable
@@ -364,9 +387,9 @@ export function ContractSectionsView({
             ) : null}
             {announcements.rows.some((row) => row.messageKeys.length > 0) ? (
               <>
-                <Heading level={3} id="announcements-change-the-text">
+                <AnchoredHeading as="h3" id="announcements-change-the-text">
                   {text.announcements.overrideHeading}
-                </Heading>
+                </AnchoredHeading>
                 <OverrideText component={contract.name} />
                 <CodeBlock
                   code={overrideExample(

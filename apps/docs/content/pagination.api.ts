@@ -1,8 +1,6 @@
 import type {
   PaginationEllipsisProps,
-  PaginationItemProps,
   PaginationLinkProps,
-  PaginationListProps,
   PaginationNextProps,
   PaginationPreviousProps,
   PaginationRootProps,
@@ -13,21 +11,13 @@ import type {
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-const renderRow = {
-  type: 'RenderProp<PaginationElementProps, PaginationPartState>',
-  default: '–',
-  description: 'Changes the element. Its own semantics apply.',
-}
-
 const messagesRow = {
   type: "Partial<KvirnMessages['pagination']>",
   default: '–',
   description: 'Per-instance message overrides.',
 }
 
-export const paginationRootRows = propRows<
-  Pick<PaginationRootProps, 'label' | 'messages' | 'render'>
->({
+export const paginationRootRows = propRows<Pick<PaginationRootProps, 'label' | 'messages'>>({
   label: {
     type: 'string',
     default: 'the message pagination.label',
@@ -35,10 +25,6 @@ export const paginationRootRows = propRows<
       'The accessible name, from your translations. Set as aria-label. An empty or whitespace-only label counts as none. Name two paginations on one page differently.',
   },
   messages: messagesRow,
-  render: {
-    ...renderRow,
-    description: 'Changes the element, which must stay a <nav> or have role="navigation".',
-  },
 })
 
 export const paginationRootAttributes: readonly AttributeRow[] = [
@@ -54,17 +40,9 @@ export const paginationRootAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const paginationListRows = propRows<Pick<PaginationListProps, 'render'>>({
-  render: renderRow,
-})
-
 export const paginationListAttributes: readonly AttributeRow[] = [
   { name: 'kv-pagination-list', values: 'always', meaning: 'The part class.' },
 ]
-
-export const paginationItemRows = propRows<Pick<PaginationItemProps, 'render'>>({
-  render: renderRow,
-})
 
 export const paginationItemAttributes: readonly AttributeRow[] = [
   { name: 'kv-pagination-item', values: 'always', meaning: 'The part class.' },
@@ -158,15 +136,12 @@ export const paginationNextAttributes: readonly AttributeRow[] = [
   { name: 'rel', values: '"next"', meaning: 'Always set.' },
 ]
 
-export const paginationEllipsisRows = propRows<
-  Pick<PaginationEllipsisProps, 'children' | 'render'>
->({
+export const paginationEllipsisRows = propRows<Pick<PaginationEllipsisProps, 'children'>>({
   children: {
     type: 'ReactNode',
     default: '…',
     description: 'Your own text for the gap.',
   },
-  render: renderRow,
 })
 
 export const paginationEllipsisAttributes: readonly AttributeRow[] = [
@@ -174,7 +149,7 @@ export const paginationEllipsisAttributes: readonly AttributeRow[] = [
 ]
 
 export const paginationStatusRows = propRows<
-  Pick<PaginationStatusProps, 'page' | 'total' | 'messages' | 'children' | 'render'>
+  Pick<PaginationStatusProps, 'page' | 'total' | 'messages' | 'children'>
 >({
   page: {
     type: 'number',
@@ -193,7 +168,6 @@ export const paginationStatusRows = propRows<
     default: 'the message pagination.status',
     description: 'Your own text. Its language is yours to set.',
   },
-  render: renderRow,
 })
 
 export const paginationStatusAttributes: readonly AttributeRow[] = [

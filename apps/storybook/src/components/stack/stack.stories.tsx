@@ -16,7 +16,7 @@ const meta = {
   args: {
     children: (
       <>
-        <Heading level={2}>Sophämtning</Heading>
+        <Heading as="h2">Sophämtning</Heading>
         <Card.Root>
           <Card.Body>Nästa hämtning är på tisdag.</Card.Body>
         </Card.Root>
@@ -32,7 +32,7 @@ const meta = {
       options: ['2', '4', '6', '8'],
       description: 'The `space` step between the children: 2, 4, 6 (default) or 8.',
     },
-    render: { control: false },
+    as: { control: false, description: 'Another element: `ul`, `ol`, `li`, `section` or `form`.' },
   },
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof Stack>
@@ -52,10 +52,10 @@ export const Gap4: Story = { args: { gap: '4' } }
 /** `gap="8"`: the sections of a page. */
 export const Gap8: Story = { args: { gap: '8' } }
 
-/** `render={<ul role="list" />}`: a list with one announced count, and the bullets left to the theme. */
+/** `as="ul"`: a list with one announced count, and the bullets left to the theme. */
 export const AsList: Story = {
   render: (args) => (
-    <Stack {...args} render={<ul role="list" />}>
+    <Stack as="ul" gap={args.gap}>
       <li>Sophämtning</li>
       <li>Bygglov</li>
       <li>Skolskjuts</li>

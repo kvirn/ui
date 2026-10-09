@@ -57,12 +57,12 @@ function ProseHook() {
   const headingId = apiPartId('useProse')
   return (
     <>
-      <Heading level={3} id={headingId}>
+      <Heading as="h3" id={headingId}>
         useProse
       </Heading>
       <p>
-        Takes no options. Use it when you can’t use <code>render</code>, for example on a component
-        of your own. It returns the same props for every call.
+        Takes no options. Use it when you can’t use <code>as</code>, for example on a component of
+        your own. It returns the same props for every call.
       </p>
       <p>{text.result}</p>
       <TableScrollRegion aria-labelledby={headingId}>
@@ -141,7 +141,7 @@ export function ProsePage({
             title="A page of text"
             why="Render the Prose as an article when the text is a piece of content in its own right. The element keeps its own meaning, so a screen reader user can find it with landmark or article navigation."
             code={sources['article']}
-            propsUsed={[{ part: 'Prose', prop: 'render' }]}
+            propsUsed={[{ part: 'Prose', prop: 'as' }]}
           >
             <ArticleProse />
           </UseCase>
@@ -171,14 +171,14 @@ export function ProsePage({
           <UseCase
             id="own-element"
             title="Your own element"
-            why="When render doesn’t fit, for example on a component of your own, spread the hook’s props on your element."
+            why="When as doesn’t fit, for example on a component of your own, spread the hook’s props on your element."
             code={sources['own-element']}
             note={
               <Note
                 kind="tip"
-                more={<CodeBlock code={'<Prose render={<section aria-labelledby={titleId} />}>'} />}
+                more={<CodeBlock code={'<Prose as="section" aria-labelledby={titleId}>'} />}
               >
-                Most of the time render does the same with less code.
+                Most of the time as does the same with less code.
               </Note>
             }
           >

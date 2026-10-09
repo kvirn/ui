@@ -110,7 +110,7 @@ export function PermitForm({ locale, errors = false, showSubmits = false }: Perm
         setSubmits((count) => count + 1)
       }}
     >
-      <Heading level={1}>{permit.heading}</Heading>
+      <Heading as="h1">{permit.heading}</Heading>
 
       <Field.Root required invalid={errors}>
         <Field.Label>{text.name}</Field.Label>

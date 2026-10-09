@@ -9,11 +9,8 @@ import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   navigationItemAttributes,
-  navigationItemRows,
   navigationLabelAttributes,
-  navigationLabelRows,
   navigationListAttributes,
-  navigationListRows,
   navigationRootAttributes,
   navigationRootRows,
   useNavigationHook,
@@ -62,7 +59,6 @@ const parts: ApiPart[] = [
         <code>Navigation.Item</code> for a second level.
       </>
     ),
-    props: navigationListRows,
     attributes: navigationListAttributes,
   },
   {
@@ -74,7 +70,6 @@ const parts: ApiPart[] = [
         <code>Navigation.List</code>.
       </>
     ),
-    props: navigationItemRows,
     attributes: navigationItemAttributes,
   },
   {
@@ -89,7 +84,6 @@ const parts: ApiPart[] = [
         <code>navigation-label-outside-item</code>).
       </>
     ),
-    props: navigationLabelRows,
     attributes: navigationLabelAttributes,
   },
 ]

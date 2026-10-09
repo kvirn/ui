@@ -8,20 +8,14 @@ import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   dialogActionsAttributes,
-  dialogActionsRows,
   dialogBodyAttributes,
-  dialogBodyRows,
   dialogCloseAttributes,
   dialogCloseRows,
   dialogDescriptionAttributes,
-  dialogDescriptionRows,
   dialogPopupAttributes,
-  dialogPopupRows,
   dialogRootRows,
   dialogTitleAttributes,
-  dialogTitleRows,
   dialogTriggerAttributes,
-  dialogTriggerRows,
   useDialogHook,
 } from '../content/dialog.api.ts'
 import { ControlledDialog } from '../examples/dialog/controlled.tsx'
@@ -52,7 +46,6 @@ const parts: ApiPart[] = [
         dialog closes.
       </>
     ),
-    props: dialogTriggerRows,
     attributes: dialogTriggerAttributes,
   },
   {
@@ -63,7 +56,6 @@ const parts: ApiPart[] = [
         and needs no portal or <code>z-index</code>. Its children render only while it is open.
       </>
     ),
-    props: dialogPopupRows,
     attributes: dialogPopupAttributes,
   },
   {
@@ -73,7 +65,6 @@ const parts: ApiPart[] = [
         <code>&lt;h2&gt;</code> that names the dialog.
       </>
     ),
-    props: dialogTitleRows,
     attributes: dialogTitleAttributes,
   },
   {
@@ -83,7 +74,6 @@ const parts: ApiPart[] = [
         <code>&lt;p&gt;</code> with a short explanation, read out after the title.
       </>
     ),
-    props: dialogDescriptionRows,
     attributes: dialogDescriptionAttributes,
   },
   {
@@ -93,7 +83,6 @@ const parts: ApiPart[] = [
         <code>&lt;div&gt;</code> for the content between the description and the actions.
       </>
     ),
-    props: dialogBodyRows,
     attributes: dialogBodyAttributes,
   },
   {
@@ -103,7 +92,6 @@ const parts: ApiPart[] = [
         <code>&lt;div&gt;</code> for the buttons, the primary one first.
       </>
     ),
-    props: dialogActionsRows,
     attributes: dialogActionsAttributes,
   },
   {
@@ -192,7 +180,7 @@ export function DialogPage({
             <ControlledDialog />
           </UseCase>
           <section aria-labelledby="copy-rules">
-            <Heading level={3} id="copy-rules">
+            <Heading as="h3" id="copy-rules">
               Write the copy
             </Heading>
             <ul>
@@ -213,7 +201,7 @@ export function DialogPage({
             </ul>
           </section>
           <section aria-labelledby="scroll-lock">
-            <Heading level={3} id="scroll-lock">
+            <Heading as="h3" id="scroll-lock">
               Scroll lock needs CSS
             </Heading>
             <p>

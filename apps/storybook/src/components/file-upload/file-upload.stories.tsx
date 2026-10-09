@@ -120,7 +120,6 @@ const meta = {
       control: false,
       description: 'Per-instance overrides for the `fileUpload` message keys.',
     },
-    render: { control: false, description: 'Another element. It must still be a `<div>`.' },
     ref: { control: false, description: 'A ref to the Root `<div>`.' },
   },
   globals: { locale: 'sv' },

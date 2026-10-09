@@ -1,5 +1,4 @@
 import type {
-  TabsListProps,
   TabsPanelProps,
   TabsRootProps,
   TabsTabProps,
@@ -43,18 +42,9 @@ const valueRows = {
 } as const
 
 export const tabsRootRows = propRows<
-  Pick<
-    TabsRootProps,
-    'value' | 'defaultValue' | 'onValueChange' | 'activationMode' | 'orientation' | 'render'
-  >
+  Pick<TabsRootProps, 'value' | 'defaultValue' | 'onValueChange' | 'activationMode' | 'orientation'>
 >({
   ...valueRows,
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"div">, TabsState>',
-    default: '–',
-    description:
-      'Changes the element. A function receives the props and { value, orientation, activationMode }.',
-  },
 })
 
 export const tabsRootAttributes: readonly AttributeRow[] = [
@@ -66,15 +56,6 @@ export const tabsRootAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const tabsListRows = propRows<Pick<TabsListProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"div">, TabsState>',
-    default: '–',
-    description:
-      'Changes the element. It gets the role, the class and the keys, so spread the props it receives.',
-  },
-})
-
 export const tabsListAttributes: readonly AttributeRow[] = [
   { name: 'kv-tabs-list', values: 'always', meaning: 'The part class.' },
   {
@@ -84,9 +65,7 @@ export const tabsListAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const tabsTabRows = propRows<
-  Pick<TabsTabProps, 'value' | 'disabled' | 'onClick' | 'render'>
->({
+export const tabsTabRows = propRows<Pick<TabsTabProps, 'value' | 'disabled' | 'onClick'>>({
   value: {
     type: 'string',
     description: 'The tab’s value: ties it to the Tabs.Panel with the same value.',
@@ -101,12 +80,6 @@ export const tabsTabRows = propRows<
     type: 'MouseEventHandler<HTMLButtonElement>',
     default: '–',
     description: 'Called after the tab is selected, and never while the tab is disabled.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"button">, TabsTabState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be a <button> that forwards its ref. A function receives the props and { isSelected, isDisabled }.',
   },
 })
 
@@ -126,18 +99,13 @@ export const tabsTabAttributes: readonly AttributeRow[] = [
   { name: 'data-disabled', values: 'present or absent', meaning: 'The tab is disabled.' },
 ]
 
-export const tabsPanelRows = propRows<Pick<TabsPanelProps, 'value' | 'tabIndex' | 'render'>>({
+export const tabsPanelRows = propRows<Pick<TabsPanelProps, 'value' | 'tabIndex'>>({
   value: { type: 'string', description: 'The value of the tab that shows this panel.' },
   tabIndex: {
     type: 'number',
     default: '0',
     description:
       'Pass -1 when the panel starts with a focusable element, so Tab goes straight to it.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"div">, TabsPanelState>',
-    default: '–',
-    description: 'Changes the element. A function receives the props and { isSelected }.',
   },
 })
 

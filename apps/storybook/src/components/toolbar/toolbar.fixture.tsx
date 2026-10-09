@@ -114,7 +114,7 @@ export function SpacedGroupsToolbar() {
 }
 
 /**
- * Controls that open something go in with `Toolbar.Item` and `render`: a Listbox trigger and a
+ * Controls that open something go in with `Toolbar.Item` and `as`: a Listbox trigger and a
  * Popover trigger, here next to groups, a disabled button and a button of your own before and after.
  * A disabled button stays reachable. The Listbox keeps its own keys, and Left and Right still move on.
  */
@@ -145,14 +145,16 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
           native="never"
         >
           <Toolbar.Item
-            render={<Listbox.Trigger aria-label={text.blockType} style={{ inlineSize: '10rem' }} />}
+            as={Listbox.Trigger}
+            aria-label={text.blockType}
+            style={{ inlineSize: '10rem' }}
           />
           <Listbox.Popup>
             <Listbox.List>{(type: BlockType) => <Listbox.Option item={type} />}</Listbox.List>
           </Listbox.Popup>
         </Listbox.Root>
         <Popover.Root>
-          <Toolbar.Item render={<Popover.Trigger />}>{text.link}</Toolbar.Item>
+          <Toolbar.Item as={Popover.Trigger}>{text.link}</Toolbar.Item>
           <Popover.Popup aria-label={text.addLink} style={popupStyle}>
             <form onSubmit={(event) => event.preventDefault()}>
               <p style={{ marginBlock: 0 }}>

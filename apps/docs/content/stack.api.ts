@@ -2,7 +2,7 @@ import type { StackProps, UseStackOptions, UseStackResult } from '@kvirn-ui/reac
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-export type StackDocumentedProps = Pick<StackProps, 'gap' | 'render' | 'ref'>
+export type StackDocumentedProps = Pick<StackProps, 'gap' | 'as' | 'ref'>
 
 export const stackRows = propRows<StackDocumentedProps>({
   gap: {
@@ -11,11 +11,11 @@ export const stackRows = propRows<StackDocumentedProps>({
     description:
       'The space between children, a space step in the theme. Use a smaller gap inside a group and a larger one between sections.',
   },
-  render: {
-    type: 'RenderProp<StackElementProps, StackState>',
-    default: '–',
+  as: {
+    type: "'div' | 'ul' | 'ol' | 'li' | 'section' | 'form'",
+    default: "'div'",
     description:
-      'Changes the element, for example <ul /> with <li> children or <form />. Its own semantics apply: Stack adds no role. A function receives the props and the state, which is empty.',
+      'Changes the element: ul or ol with li children for a list, li inside one, section with aria-labelledby for a region, or form. Stack adds no role. There is no main, nav or aside: use Container or Section.',
   },
   ref: {
     type: 'Ref<HTMLElement>',
@@ -28,7 +28,7 @@ export const stackAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-stack',
     values: 'always',
-    meaning: 'The part class. Your className and a render element’s own class join it.',
+    meaning: 'The part class. Your className joins it.',
   },
   {
     name: 'kv-stack--gap-2',
@@ -42,7 +42,7 @@ export const stackAttributes: readonly AttributeRow[] = [
 export const useStackHook: ApiHook = {
   name: 'useStack',
   intro:
-    'Use it when you can’t use render, for example on a component of your own. It adds no role, ARIA or tabindex, and it returns the same frozen object for each gap.',
+    'Use it when you can’t use as, for example on a component of your own. It adds no role, ARIA or tabindex, and it returns the same frozen object for each gap.',
   options: propRows<UseStackOptions>({
     gap: {
       type: "'2' | '4' | '6' | '8'",

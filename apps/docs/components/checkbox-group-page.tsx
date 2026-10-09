@@ -9,13 +9,10 @@ import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   checkboxGroupErrorMessageAttributes,
-  checkboxGroupErrorMessageRows,
   checkboxGroupHelpTextAttributes,
-  checkboxGroupHelpTextRows,
   checkboxGroupLegendAttributes,
   checkboxGroupLegendRows,
   checkboxGroupProseAttributes,
-  checkboxGroupProseRows,
   checkboxGroupRootAttributes,
   checkboxGroupRootRows,
   useCheckboxGroupHook,
@@ -66,7 +63,6 @@ const parts: ApiPart[] = [
         answering, above the options. It is listed in the group’s <code>aria-describedby</code>.
       </>
     ),
-    props: checkboxGroupProseRows,
     attributes: checkboxGroupProseAttributes,
   },
   {
@@ -78,7 +74,6 @@ const parts: ApiPart[] = [
         in that option’s Field.
       </>
     ),
-    props: checkboxGroupHelpTextRows,
     attributes: checkboxGroupHelpTextAttributes,
   },
   {
@@ -90,7 +85,6 @@ const parts: ApiPart[] = [
         <code>aria-describedby</code>, and is not a live region. Render one per group.
       </>
     ),
-    props: checkboxGroupErrorMessageRows,
     attributes: checkboxGroupErrorMessageAttributes,
   },
 ]

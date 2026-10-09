@@ -6,8 +6,8 @@ export function SizeApartFromLevel() {
   const { texts, textLang } = useHeadingTexts()
   return (
     <div lang={textLang}>
-      <Heading level={4}>{texts.look.levelOnly}</Heading>
-      <Heading level={4} size="heading-2">
+      <Heading as="h4">{texts.look.levelOnly}</Heading>
+      <Heading as="h4" size="heading-2">
         {texts.look.asLarger}
       </Heading>
     </div>

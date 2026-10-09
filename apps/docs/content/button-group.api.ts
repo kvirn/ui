@@ -3,7 +3,7 @@ import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
 /** ButtonGroup's own props. The name comes from the native aria-label and aria-labelledby. */
-export type ButtonGroupDocumentedProps = Pick<ButtonGroupProps, 'layout' | 'render'>
+export type ButtonGroupDocumentedProps = Pick<ButtonGroupProps, 'layout'>
 
 export const buttonGroupRows = propRows<ButtonGroupDocumentedProps>({
   layout: {
@@ -11,12 +11,6 @@ export const buttonGroupRows = propRows<ButtonGroupDocumentedProps>({
     default: '"spaced"',
     description:
       '"attached" joins the buttons into one strip, like a segmented control. It changes the look only.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"div">, ButtonGroupState>',
-    default: '–',
-    description:
-      'Changes the element. It gets the class and, with a name, the role. A function receives the props and { isNamed, layout }.',
   },
 })
 

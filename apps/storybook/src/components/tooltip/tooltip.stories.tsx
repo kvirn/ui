@@ -193,7 +193,7 @@ export const Open: Story = {
 }
 
 /**
- * A tooltip on every control of a toolbar, through `render`. A disabled button stays focusable, so
+ * A tooltip on every control of a toolbar, through `as`. A disabled button stays focusable, so
  * its tooltip works too. Arrow along the toolbar: each tooltip opens at once and replaces the last.
  */
 export const InAToolbar: Story = {

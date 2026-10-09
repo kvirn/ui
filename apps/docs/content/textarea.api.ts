@@ -20,7 +20,6 @@ export type TextareaDocumentedProps = Pick<
   | 'maxLength'
   | 'rows'
   | 'disabled'
-  | 'render'
 >
 
 export const textareaRows = propRows<TextareaDocumentedProps>({
@@ -73,12 +72,6 @@ export const textareaRows = propRows<TextareaDocumentedProps>({
     type: 'boolean',
     default: 'false',
     description: 'Native disabled. A disabled Field disables the box too.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"textarea">, TextareaState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be a <textarea>. A function receives the props and { isInvalid, isRequired, isDisabled, isFocusVisible, isOverLimit }.',
   },
 })
 
@@ -170,7 +163,6 @@ export type CharacterCountDocumentedProps = Pick<
   | 'announceChanges'
   | 'messages'
   | 'id'
-  | 'render'
 >
 
 export const characterCountRows = propRows<CharacterCountDocumentedProps>({
@@ -215,12 +207,6 @@ export const characterCountRows = propRows<CharacterCountDocumentedProps>({
     default: 'generated',
     description:
       'Outside a Field (also directly in a Fieldset): the id to list in your control’s aria-describedby. In a Field the Field gives it.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"p">, CharacterCountState>',
-    default: '–',
-    description:
-      'Changes the element, which should still be a <p>. A function receives the props and { length, limit, remaining, excess, isEmpty, isOver, isNear }.',
   },
 })
 

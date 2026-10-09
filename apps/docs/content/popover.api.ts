@@ -1,6 +1,5 @@
 import type {
   PopoverCloseProps,
-  PopoverPopupProps,
   PopoverRootProps,
   PopoverTriggerProps,
   UsePopoverOptions,
@@ -58,18 +57,17 @@ export const popoverRootRows = propRows<PopoverRootProps>({
   },
 })
 
-const renderRow = (element: string) =>
-  ({
-    render: {
-      type: `RenderProp<ComponentPropsWithRef<"${element}">, PopoverState>`,
-      default: '–',
-      description: `Changes the element, which must still be a <${element}>. A function receives the props and { isOpen }.`,
-    },
-  }) as const
+const asRow = {
+  as: {
+    type: 'ElementType',
+    default: "'button'",
+    description:
+      'A component to render instead of the button, with its props set on the part: as={Button} className="kv-button--icon-only". It must be focusable, forward its ref and spread its props on a DOM node.',
+  },
+} as const
 
-export const popoverTriggerRows = propRows<Pick<PopoverTriggerProps, 'render'>>(renderRow('button'))
-export const popoverPopupRows = propRows<Pick<PopoverPopupProps, 'render'>>(renderRow('div'))
-export const popoverCloseRows = propRows<Pick<PopoverCloseProps, 'render'>>(renderRow('button'))
+export const popoverTriggerRows = propRows<Pick<PopoverTriggerProps, 'as'>>(asRow)
+export const popoverCloseRows = propRows<Pick<PopoverCloseProps, 'as'>>(asRow)
 
 export const popoverTriggerAttributes: readonly AttributeRow[] = [
   { name: 'kv-popover-trigger', values: 'always', meaning: 'The part class.' },

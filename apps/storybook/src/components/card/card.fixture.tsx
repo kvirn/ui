@@ -332,7 +332,7 @@ export function NewsList({ locale }: CardFixtureProps) {
       <h2>{text.news.heading}</h2>
       <ul role="list" className="kv-story-card-list">
         {items.map(([id, item, published], index) => (
-          <Card.Root key={id} render={<li />}>
+          <Card.Root key={id} as="li">
             {index === 0 ? (
               <Card.Header className="kv-card-header--padding-none">
                 <img src={recyclingImage} alt="" width={640} height={240} />
@@ -385,32 +385,23 @@ export function CaseCard({ locale }: CardFixtureProps) {
 }
 
 /**
- * `render` on every part. The Root's function form gets the part's props (its class, a ref) to
- * spread on its own element, so it keeps `kv-card`; the Header is a `<figure>` and the Footer
- * keeps its class next to one of your own. The Root is an `<article>` named by its heading: a
- * landmark-like region is only worth it for something users would jump to.
+ * `as="article"` on the Root, named by its heading, and a class of your own on the Footer next to
+ * `kv-card-footer`. The Root keeps `kv-card`: a landmark-like region is only worth it for
+ * something users would jump to.
  */
 export function ArticleCard({ locale }: CardFixtureProps) {
   const { text, lang } = textsFor(locale)
   const headingId = useId()
   return (
-    <Card.Root
-      lang={lang}
-      data-testid="article-card"
-      render={(rootProps) => <article {...rootProps} aria-labelledby={headingId} />}
-    >
-      <Card.Header className="kv-card-header--padding-none" render={<figure />}>
+    <Card.Root lang={lang} data-testid="article-card" as="article" aria-labelledby={headingId}>
+      <Card.Header className="kv-card-header--padding-none">
         <img src={recyclingImage} alt="" width={640} height={240} />
       </Card.Header>
       <Card.Body className="kv-prose">
         <h2 id={headingId}>{text.news.recycling.title}</h2>
         <p>{text.news.recycling.excerpt}</p>
       </Card.Body>
-      <Card.Footer
-        render={(footerProps) => (
-          <div {...footerProps} className={`${footerProps.className ?? ''} kv-button-group`} />
-        )}
-      >
+      <Card.Footer className="kv-button-group">
         <Button>{text.waste.pause}</Button>
       </Card.Footer>
     </Card.Root>

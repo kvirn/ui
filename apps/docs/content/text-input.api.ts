@@ -5,14 +5,7 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 export const textInputRows = propRows<
   Pick<
     TextInputProps,
-    | 'type'
-    | 'value'
-    | 'defaultValue'
-    | 'onValueChange'
-    | 'mask'
-    | 'announceRejections'
-    | 'messages'
-    | 'render'
+    'type' | 'value' | 'defaultValue' | 'onValueChange' | 'mask' | 'announceRejections' | 'messages'
   >
 >({
   type: {
@@ -53,12 +46,6 @@ export const textInputRows = propRows<
     type: "Partial<KvirnMessages['mask']>",
     default: '–',
     description: 'With a mask: per-instance overrides for the rejection announcements.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"input">, TextInputState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be an <input>. A function receives the props and { isInvalid, isRequired, isDisabled, isFocusVisible }.',
   },
 })
 

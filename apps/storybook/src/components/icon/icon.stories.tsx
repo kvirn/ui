@@ -27,6 +27,7 @@ import {
   mirroredIconNames,
   moreButtons,
   MunicipalityMark,
+  SquareMark,
   narrowButtons,
   RegistryEntries,
   StatusAlerts,
@@ -53,14 +54,14 @@ const localeOf = (globals: Record<string, unknown>): IconFixtureLocale => {
 const sizeOptions = [4, 5, 6, 8, 12, 32, '2em', '1.5rem', '20px'] as const
 
 /** The `name` form of `IconProps`, which the controls drive: `IconProps` is a union, so its args are `never`. */
-type IconArgs = Omit<IconProps, 'name' | 'icon' | 'render' | 'children'> & {
+type IconArgs = Omit<IconProps, 'name' | 'icon' | 'as' | 'children'> & {
   name: BuiltInIconName
 }
 
 const meta = {
   title: 'Components/Icon',
   component: Icon,
-  // `IconProps` is a union (`name`, `icon`, `render` or children): the controls drive the `name`
+  // `IconProps` is a union (`name`, `icon`, `as` or children): the controls drive the `name`
   // form, the common one once icons are registered.
   args: { name: 'search' },
   argTypes: {
@@ -97,12 +98,13 @@ const meta = {
       control: 'boolean',
       description: 'Flips the icon in right-to-left text. Directional names set it themselves.',
     },
-    render: {
+    as: {
       control: false,
-      description: 'Your own `<svg>`, as an element or a function that spreads the props.',
+      description:
+        "Your own component for the `<svg>`. It gets Icon's props as plain props and must spread them.",
     },
     children: { control: false, description: 'Your own shapes, with Icon as the `<svg>`.' },
-  } as NonNullable<Meta<IconArgs>['argTypes']>, // `icon`, `render` and `children` are documented but not controllable
+  } as NonNullable<Meta<IconArgs>['argTypes']>, // `icon`, `as` and `children` are documented but not controllable
   globals: { locale: 'sv' },
   // Library strings follow the locale toolbar, like an app's provider would. A locale without
   // a translated fixture shows English, so its catalog is English too.
@@ -445,7 +447,7 @@ export const DecorativeAndMeaningful: Story = {
         </div>
         <div className="kv-story-panel">
           <p>
-            <Icon render={<MunicipalityMark />} size={48} label={text.label.logo} />
+            <Icon as={MunicipalityMark} size={48} label={text.label.logo} />
           </p>
           <p>
             <output data-testid="accessible-name" />
@@ -661,8 +663,8 @@ export const ForcedColors: Story = {
 }
 
 /**
- * Your own SVG: `children` with a `viewBox`, `render` with an element, and `render` with a
- * function. An SVGR-style component stands in for an imported `.svg` file.
+ * Your own SVG: `children` with a `viewBox`, and `as` with a component, with a label or
+ * without. An SVGR-style component stands in for an imported `.svg` file.
  */
 export const YourOwnSvg: Story = {
   render: (_args, { globals }) => {
@@ -675,17 +677,10 @@ export const YourOwnSvg: Story = {
           </Icon>
         </li>
         <li>
-          <Icon render={<MunicipalityMark />} size={6} label={text.label.logo} />
+          <Icon as={MunicipalityMark} size={6} label={text.label.logo} />
         </li>
         <li>
-          <Icon
-            size={6}
-            render={(props) => (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
-                <rect x="5" y="5" width="14" height="14" rx="2" />
-              </svg>
-            )}
-          />
+          <Icon as={SquareMark} size={6} />
         </li>
       </ul>
     )

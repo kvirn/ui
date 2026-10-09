@@ -58,7 +58,7 @@ pre.kv-code-block-code     pnpm add @kvirn-ui/react
 | 320px        | "Copied" fits beside the button. The failure text doesn't, so its whole box moves to the next row at the inline start and wraps there (never a narrow column beside the button) |
 | 40rem, 64rem | One row: button, `--kv-space-2` gap, status. The failure text wraps within the measure                                                                                          |
 
-**API shape (for the plan; see Q1):** `CopyButton` renders the button followed by the status `span` as a sibling (a fragment). `render`, `ref` and `className` stay on the button. `CodeBlock.Copy` inherits it, so CodeBlock gets no new part.
+**API shape (for the plan; see Q1):** `CopyButton` renders the button followed by the status `span` as a sibling (a fragment). `ref` and `className` stay on the button (no `as`: another element uses the hook). `CodeBlock.Copy` inherits it, so CodeBlock gets no new part.
 
 ## 5. Visual specification
 

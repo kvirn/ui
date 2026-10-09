@@ -54,7 +54,10 @@ const meta = {
       description:
         'Your own classes, added to `kv-card`. The theme styles `kv-card--radius-md|none`, `kv-card--padding-none|sm|lg` and `kv-card--dividers`. A card is always `surface-raised`: a region of the page is a Section.',
     },
-    render: { control: false },
+    as: {
+      control: false,
+      description: 'Another element for the Root: `li`, `article`, `figure` or `section`.',
+    },
   },
   globals: { locale: 'sv' },
   decorators: [withCardLocale],
@@ -119,11 +122,10 @@ export const NestedCard: Story = {
 }
 
 /**
- * `render` on all three parts: the Root's function form turns it into an `<article>` named by its
- * heading, the Header into a `<figure>`, and the Footer adds a class of its own. Each part keeps
- * its `kv-card-*` class, so the theme still styles it.
+ * `as="article"` turns the Root into an `<article>` named by its heading, and the Footer adds a
+ * class of its own. Each part keeps its `kv-card-*` class, so the theme still styles it.
  */
-export const RenderForms: Story = {
+export const AsArticle: Story = {
   parameters: showSource('card/card.fixture.tsx', 'ArticleCard'),
   decorators: [
     (Story) => (
@@ -135,7 +137,6 @@ export const RenderForms: Story = {
   render: (_args, { globals }) => <ArticleCardExample locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     const article = canvas.getByRole('article', { name: 'Nya öppettider på återvinningscentralen' })
-    await expect(article.querySelector('figure')).not.toBeNull()
     await expect(within(article).getByRole('button', { name: 'Pausa hämtningen' })).toBeVisible()
   },
 }

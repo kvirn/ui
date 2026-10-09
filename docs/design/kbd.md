@@ -142,7 +142,7 @@ There is now one rule, so a change goes in one place. Things to check during the
 1. **Specificity stays zero.** Everything is inside `:where()`, including the complex `:not(.kv-not-prose kbd)`, which is Selectors 4 and is supported wherever `:has` is.
 2. **Scope changes slightly, on purpose.** The prose arm doesn't repeat the full not-prose list (fields, nav, button groups) or the card boundary, so a bare `kbd` in a field help text or a non-prose card inside `kv-prose` now looks like a key. A key looks the same wherever it appears, and it adds no margins or block typography, so nothing leaks. That's the reason for the not-prose list. Only the explicit `kv-not-prose` opt-out is kept. A bare `kbd` in a `kv-card` without prose stays unstyled, as today: use `Kbd` there.
 3. **The no-hyphen rule** at about line 1045 (`:where(.kv-prose, .kv-card) :where(code, kbd, samp, pre)`) can stay. `hyphens: manual` on the key is now in the shared rule too.
-4. **Group rule:** the outer element is matched with `:has(.kv-kbd, kbd)`, so a key rendered as another element through `render` is still recognised.
+4. **Group rule:** the outer element is matched with `:has(.kv-kbd, kbd)`, so a key rendered as another element through `as` is still recognised.
 
 ### Engineering follow-ups (component-engineer, not this spec)
 

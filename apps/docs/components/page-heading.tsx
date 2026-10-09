@@ -9,7 +9,7 @@ export function PageHeading({
   size?: 'display' | undefined
 }) {
   return (
-    <Heading level={1} size={size}>
+    <Heading as="h1" size={size}>
       {children}
     </Heading>
   )

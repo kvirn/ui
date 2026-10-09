@@ -6,7 +6,7 @@ export function DefaultSection() {
   const { texts, textLang } = useSectionTexts()
   return (
     <Section className="kv-prose" lang={textLang}>
-      <Heading level={3}>{texts.news.heading}</Heading>
+      <Heading as="h3">{texts.news.heading}</Heading>
       <p>{texts.news.text}</p>
     </Section>
   )

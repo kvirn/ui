@@ -58,8 +58,8 @@ export function ContainerPage({
             <code>reading</code> for text and <code>form</code> for one form.
           </li>
           <li>
-            Use <code>render</code> when the container should be a landmark such as{' '}
-            <code>main</code>, or a named <code>section</code>.
+            Use <code>as</code> when the container should be a landmark such as <code>main</code>,
+            or a named <code>section</code>.
           </li>
           <li>
             Not for text flow: use <Link href="/components/prose">Prose</Link> for the headings,
@@ -106,14 +106,14 @@ export function ContainerPage({
             title="A named region"
             why={
               <>
-                Give the container the element a landmark needs with <code>render</code>, and name
-                it. A page has one <code>main</code>, which a page-width container often is.
+                Give the container the element a landmark needs with <code>as</code>, and name it. A
+                page has one <code>main</code>, which a page-width container often is.
               </>
             }
             code={sources['region']}
             propsUsed={[
               { part: 'Container', prop: 'size' },
-              { part: 'Container', prop: 'render' },
+              { part: 'Container', prop: 'as' },
             ]}
             note={
               <Note kind="reminder">

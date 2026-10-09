@@ -51,7 +51,6 @@ const meta = {
       control: 'text',
       description: 'Your own classes, added to `kv-table`.',
     },
-    render: { control: false, description: 'Another element. It must still be a `<table>`.' },
   },
   decorators: [withTableLocale],
   parameters: { a11yContract: contract, docs: { description: { component: description } } },

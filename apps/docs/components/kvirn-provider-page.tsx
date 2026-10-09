@@ -33,7 +33,7 @@ const providerRows = propRows<KvirnProviderProps>({
   },
   timeZone: {
     type: 'string (IANA)',
-    default: "The parent's, or the runtime's zone",
+    default: "The parent's, or UTC",
     description: 'The zone dates are shown in. Set it for server rendering.',
   },
   weekStart: {
@@ -86,6 +86,12 @@ const themeRows = propRows<ThemeOptions>({
     default: "'system'",
     description: 'The contrast until the user chooses.',
   },
+  defaultMotion: {
+    type: "'full' | 'reduce' | 'system'",
+    default: "'system'",
+    description:
+      'The motion until the user chooses. reduce stops every transition and animation in the theme.',
+  },
   storage: {
     type: "'local' | 'none' | { read, write }",
     default: "'local'",
@@ -95,15 +101,10 @@ const themeRows = propRows<ThemeOptions>({
 
 const scriptRows = propRows<KvirnThemeScriptProps>({
   nonce: { type: 'string', default: '–', description: "The response's CSP nonce." },
-  defaultColorScheme: {
-    type: "'light' | 'dark' | 'system'",
-    default: "'system'",
-    description: 'Must match the provider’s theme.defaultColorScheme.',
-  },
-  defaultContrast: {
-    type: "'standard' | 'more' | 'system'",
-    default: "'system'",
-    description: 'Must match the provider’s theme.defaultContrast.',
+  theme: {
+    type: '{ defaultColorScheme, defaultContrast, defaultMotion }',
+    default: "'system' for each",
+    description: 'The same object as the provider’s theme, so the defaults are written once.',
   },
 })
 
@@ -116,7 +117,7 @@ const hookRows = {
   useDateSettings: {
     type: '{ timeZone, weekStart }',
     default: '–',
-    description: 'The time zone, or undefined for the runtime’s.',
+    description: 'The time zone, or undefined for UTC.',
   },
   useFormat: {
     type: '{ number, date, list, plural }',
@@ -124,48 +125,55 @@ const hookRows = {
     description: 'Formats the way the locale writes. See Locales and strings.',
   },
   useTheme: {
-    type: '{ colorScheme, contrast, resolvedColorScheme, resolvedContrast, isForcedColors, selectColorScheme, selectContrast }',
+    type: '{ colorScheme, contrast, motion, resolvedColorScheme, resolvedContrast, resolvedMotion, isForcedColors, selectColorScheme, selectContrast, selectMotion }',
     default: '–',
     description: 'Reads and changes the page’s theme preference. Works without a provider.',
   },
 }
 
-const nextProviders = `// app/providers.tsx
+const nextProviders = `// app/kvirn-provider.tsx
 'use client'
 import { KvirnProvider } from '@kvirn-ui/react'
+import type { KvirnProviderProps } from '@kvirn-ui/react'
 import { sv } from '@kvirn-ui/i18n/sv'
 import NextLink from 'next/link'
-import type { ReactNode } from 'react'
+import { icons } from './icons' // a 'use client' module that calls defineIcons
 
-export function Providers({ children }: { children: ReactNode }) {
-  return (
-    <KvirnProvider
-      locale="sv-SE"
-      messages={sv}
-      timeZone="Europe/Stockholm"
-      linkComponent={NextLink}
-    >
-      {children}
-    </KvirnProvider>
-  )
+export function AppKvirnProvider(
+  props: Omit<KvirnProviderProps, 'messages' | 'linkComponent' | 'icons' | 'env'>,
+) {
+  return <KvirnProvider {...props} messages={sv} linkComponent={NextLink} icons={icons} />
 }`
 
-const nextLayout = `// app/layout.tsx
-import { KvirnThemeScript } from '@kvirn-ui/react'
+const nextTheme = `// app/theme.ts: one object for the script and the provider
+export const theme = {
+  defaultColorScheme: 'system',
+  defaultContrast: 'system',
+  defaultMotion: 'system',
+} as const`
+
+const nextLayout = `// app/layout.tsx (a Server Component)
+import { KvirnThemeScript, getLocaleProps } from '@kvirn-ui/react/server'
 import { headers } from 'next/headers'
 import type { ReactNode } from 'react'
-import { Providers } from './providers'
+import { AppKvirnProvider } from './kvirn-provider'
+import { theme } from './theme'
+
+const locale = 'sv-SE'
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const nonce = (await headers()).get('x-nonce') ?? undefined
+  const { lang, dir } = getLocaleProps(locale)
 
   return (
-    <html lang="sv-SE" dir="ltr" suppressHydrationWarning>
+    <html lang={lang} dir={dir} suppressHydrationWarning>
       <head>
-        <KvirnThemeScript nonce={nonce} />
+        <KvirnThemeScript nonce={nonce} theme={theme} />
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <AppKvirnProvider locale={locale} timeZone="Europe/Stockholm" weekStart={1} theme={theme}>
+          {children}
+        </AppKvirnProvider>
       </body>
     </html>
   )
@@ -208,7 +216,7 @@ declare module '@kvirn-ui/react' {
   }
 }`
 
-const themeOptions = `<KvirnProvider theme={{ defaultColorScheme: 'system', defaultContrast: 'system', storage: 'local' }}>`
+const themeOptions = `<KvirnProvider theme={{ defaultColorScheme: 'system', defaultContrast: 'system', defaultMotion: 'system', storage: 'local' }}>`
 
 const themeSwitcher = `const theme = useTheme()
 
@@ -219,7 +227,7 @@ const themeSwitcher = `const theme = useTheme()
   onChange={() => theme.selectColorScheme('dark')}
 />`
 
-const themeScript = `<KvirnThemeScript nonce={nonce} defaultColorScheme="system" defaultContrast="system" />`
+const themeScript = `<KvirnThemeScript nonce={nonce} theme={theme} />`
 
 const toastOptions = `<KvirnProvider toast={{ limit: 10, autoDismiss: false }}>`
 
@@ -243,9 +251,9 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
                 announcements come from, so every real service needs it.
               </li>
               <li>
-                Without it, components use English, left-to-right text, the runtime&apos;s time
-                zone, weeks that start on Monday and a plain <code>&lt;a&gt;</code>. The theme
-                follows the device.
+                Without it, components use English, left-to-right text, UTC as the time zone, weeks
+                that start on Monday and a plain <code>&lt;a&gt;</code>. The theme follows the
+                device.
               </li>
               <li>
                 Add a nested provider for a part of the page in another language. A nested provider
@@ -272,34 +280,79 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
           label: 'Set up',
           content: (
             <>
-              <Heading level={3} id="next-js">
+              <Heading as="h3" id="next-js">
                 Next.js (App Router)
               </Heading>
               <p>
-                <code>KvirnProvider</code> is a client component, so a component you pass as a prop,
-                such as <code>NextLink</code>, needs a client wrapper.
+                <code>layout.tsx</code> is a Server Component and <code>KvirnProvider</code> is a
+                client component, so props cross as serialised data. Some can be passed straight
+                from the layout, and some need a small client file.
+              </p>
+              <p>These pass from a Server Component:</p>
+              <ul>
+                <li>
+                  <code>locale</code>, <code>dir</code>, <code>country</code>, <code>timeZone</code>
+                  , <code>weekStart</code>, the <code>theme</code> defaults, <code>toast</code>,{' '}
+                  <code>iconDefaults</code>, <code>children</code> and the script&apos;s{' '}
+                  <code>nonce</code>: strings, numbers and plain objects.
+                </li>
+              </ul>
+              <p>These need a client file:</p>
+              <ul>
+                <li>
+                  <code>messages</code>: catalogs hold functions, which can&apos;t be serialised.
+                </li>
+                <li>
+                  <code>linkComponent</code>: <code>next/link</code> is a plain server wrapper on
+                  the server, not a client reference, so import it in a client module.
+                </li>
+                <li>
+                  <code>icons</code>: components made by <code>defineIcons</code>, which comes from
+                  the client entry.
+                </li>
+                <li>
+                  <code>theme.storage</code>: an adapter is an object of functions.
+                </li>
+                <li>
+                  <code>env</code>: a window and a document.
+                </li>
+              </ul>
+              <p>
+                Put those in one <code>&apos;use client&apos;</code> wrapper, and let the layout
+                pass the rest. The layout imports <code>KvirnThemeScript</code> and{' '}
+                <code>getLocaleProps</code> from <code>@kvirn-ui/react/server</code>, the entry that
+                is safe in a Server Component. See{' '}
+                <Link href="/foundation/rendering">Rendering: server and client</Link> for what runs
+                where, the <code>as</code> rules and strict CSP.
               </p>
               <CodeBlock code={nextProviders} />
+              <CodeBlock code={nextTheme} />
               <CodeBlock code={nextLayout} />
               <Note kind="reminder">
-                Set <code>&lt;html lang dir&gt;</code> to the root provider&apos;s language and
-                direction. The provider renders no element of its own, so it can&apos;t set the
-                language of the page (WCAG 3.1.1). Set <code>timeZone</code> too, so the server and
-                the browser show the same date.
+                <code>getLocaleProps(locale)</code> gives <code>lang</code> and <code>dir</code> for{' '}
+                <code>&lt;html&gt;</code>, the pair the provider derives for the same locale. The
+                provider renders no element of its own, so it can&apos;t set the language of the
+                page (WCAG 3.1.1). Set <code>timeZone</code> too, so the server and the browser show
+                the same date. Without one, instants are shown in UTC and the first one warns in
+                development. A date-only instant then has no zone label and can show the
+                neighbouring day; for a calendar date use the <code>YYYY-MM-DD</code> string.
               </Note>
               <p>
                 <code>suppressHydrationWarning</code> on <code>&lt;html&gt;</code> is on purpose:{' '}
-                <code>KvirnThemeScript</code> adds the theme attributes before React hydrates. It
-                only affects <code>&lt;html&gt;</code>&apos;s own attributes.
+                <code>KvirnThemeScript</code> adds <code>data-kv-color-scheme</code>,{' '}
+                <code>data-kv-contrast</code> and <code>data-kv-motion</code> before React hydrates.
+                It only affects <code>&lt;html&gt;</code>&apos;s own attributes.
               </p>
-              <Heading level={3} id="tanstack-router">
+              <Heading as="h3" id="tanstack-router">
                 TanStack Router
               </Heading>
               <CodeBlock code={tanstack} />
               <p>
                 In a client-only app the provider applies the theme when it mounts, so the default
-                theme can flash for a moment. If you render on the server, add{' '}
-                <code>KvirnThemeScript</code> to the document&apos;s <code>&lt;head&gt;</code>.
+                theme can flash for a moment. If you render on the server, render{' '}
+                <code>KvirnThemeScript</code> in the document&apos;s <code>&lt;head&gt;</code>.
+                Other frameworks are covered in{' '}
+                <Link href="/foundation/rendering#other-frameworks">Rendering</Link>.
               </p>
             </>
           ),
@@ -336,7 +389,7 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
                 with a Monday start. Texts and how to change them are on{' '}
                 <Link href="/foundation/locales">Locales and strings</Link>.
               </p>
-              <Heading level={3} id="section-in-another-language">
+              <Heading as="h3" id="section-in-another-language">
                 A section in another language
               </Heading>
               <p>
@@ -385,7 +438,7 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
                 wins. See <Link href="/foundation/theming">Theming</Link> for the CSS.
               </p>
               <CodeBlock code={themeOptions} />
-              <Heading level={3} id="api-theme-options">
+              <Heading as="h3" id="api-theme-options">
                 Theme options
               </Heading>
               <PropTable headingId="api-theme-options" rows={themeRows} part="theme-options" />
@@ -394,7 +447,7 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
                 configures it, and a <code>theme</code> on a nested provider is ignored with a
                 development warning.
               </Note>
-              <Heading level={3} id="theme-switcher">
+              <Heading as="h3" id="theme-switcher">
                 A theme switcher
               </Heading>
               <p>
@@ -408,7 +461,7 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
                 built this way.
               </p>
               <CodeBlock code={themeSwitcher} />
-              <Heading level={3} id="theme-storage">
+              <Heading as="h3" id="theme-storage">
                 Where the choice is kept
               </Heading>
               <p>
@@ -417,14 +470,14 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
                 JSON under the <code>localStorage</code> key <code>kvirn-ui:theme</code> (if storage
                 is off or full, the choice still applies for the visit), and other tabs follow it.{' '}
                 <code>&apos;none&apos;</code> keeps it in memory. Pass a{' '}
-                <code>{'{ read, write }'}</code> adapter for a first-party cookie, so the server can
-                render the attributes itself. The store validates what the adapter returns, and a{' '}
-                <code>read</code> or <code>write</code> that throws is caught. Check with your data
-                protection officer that a stored preference is strictly necessary for your service,
-                and describe it in your privacy notice. The ePrivacy question is still open in
-                KvirnUI (<code>TODO(legal-verify)</code>).
+                <code>{'{ read, write }'}</code> adapter to keep it somewhere else. The store
+                validates what the adapter returns, and a <code>read</code> or <code>write</code>{' '}
+                that throws is caught. Check with your data protection officer that a stored
+                preference is strictly necessary for your service, and describe it in your privacy
+                notice. The ePrivacy question is still open in KvirnUI (
+                <code>TODO(legal-verify)</code>).
               </p>
-              <Heading level={3} id="theme-script">
+              <Heading as="h3" id="theme-script">
                 The theme script
               </Heading>
               <p>
@@ -433,8 +486,10 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
                 paint, so there is no flash of the wrong theme. It takes the response&apos;s CSP{' '}
                 <code>nonce</code>, so a strict <code>script-src</code> works without{' '}
                 <code>&apos;unsafe-inline&apos;</code>. Render it only in the server-rendered
-                document, and pass it the same defaults as the provider. It reads{' '}
-                <code>localStorage</code> only, so don&apos;t render it with a custom adapter.
+                document (from <code>@kvirn-ui/react/server</code> in a Server Component), and pass
+                it the same <code>theme</code> object as the provider. It reads{' '}
+                <code>localStorage</code> only, so don&apos;t render it with a custom adapter. See{' '}
+                <Link href="/foundation/rendering#first-paint">No flash of the wrong theme</Link>.
               </p>
               <CodeBlock code={themeScript} />
             </>
@@ -461,7 +516,7 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
                 <Link href="/components/announcer">Announcer</Link> for politeness and throttling.
               </p>
               <Note kind="reminder">{messages.docs.note.announcerProvider}</Note>
-              <Heading level={3} id="toasts">
+              <Heading as="h3" id="toasts">
                 Toasts
               </Heading>
               <p>
@@ -492,14 +547,23 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
                   "import { KvirnProvider, KvirnThemeScript, useLocale, useDateSettings, useFormat, useTheme } from '@kvirn-ui/react'"
                 }
               />
-              <Heading level={3} id="api-kvirn-provider">
+              <p>
+                <code>@kvirn-ui/react/server</code> has no <code>&apos;use client&apos;</code> and
+                is safe in a Server Component:
+              </p>
+              <CodeBlock
+                code={
+                  "import { KvirnThemeScript, getLocaleProps, getMessages, createMessageFormat } from '@kvirn-ui/react/server'"
+                }
+              />
+              <Heading as="h3" id="api-kvirn-provider">
                 KvirnProvider
               </Heading>
               <p>
                 Renders no element of its own, apart from the live regions of the outermost one.
               </p>
               <PropTable headingId="api-kvirn-provider" rows={providerRows} part="kvirn-provider" />
-              <Heading level={3} id="api-hooks">
+              <Heading as="h3" id="api-hooks">
                 Hooks
               </Heading>
               <p>
@@ -507,7 +571,7 @@ export function KvirnProviderPage({ exampleSource }: { exampleSource: string }) 
                 store of the page.
               </p>
               <PropTable headingId="api-hooks" rows={hookRows} part="hooks" />
-              <Heading level={3} id="api-kvirn-theme-script">
+              <Heading as="h3" id="api-kvirn-theme-script">
                 KvirnThemeScript
               </Heading>
               <PropTable

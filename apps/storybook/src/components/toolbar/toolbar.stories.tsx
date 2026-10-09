@@ -53,11 +53,7 @@ const meta = {
       description: 'Your own classes, added to `kv-toolbar`.',
     },
     ref: { control: false, description: 'A ref to the toolbar’s element.' },
-    render: {
-      control: false,
-      description:
-        'Another element. It gets the role, the class and the keys: spread the props it gets. `state` is `{ orientation }`.',
-    },
+    as: { control: false, description: 'Another element for the Root: `section`.' },
   },
   globals: { locale: 'sv' },
   parameters: {
@@ -111,7 +107,7 @@ export const SpacedGroups: Story = {
 /**
  * The fixture the keyboard tests drive: a button before, the toolbar, a button after and a counter.
  * It holds a disabled button, a Listbox trigger and a Popover trigger, put in with `Toolbar.Item`
- * and `render`. Try the keys in the Keyboard section above: Tab enters at the first control and
+ * and `as`. Try the keys in the Keyboard section above: Tab enters at the first control and
  * leaves with the next Tab, the arrows move and wrap, and Home and End go to the ends.
  */
 export const Keyboard: Story = {

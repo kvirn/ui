@@ -8,10 +8,8 @@ import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   disclosurePanelAttributes,
-  disclosurePanelRows,
   disclosureRootRows,
   disclosureTriggerAttributes,
-  disclosureTriggerRows,
   useDisclosureHook,
 } from '../content/disclosure.api.ts'
 import { ControlledDisclosure } from '../examples/disclosure/controlled.tsx'
@@ -46,7 +44,6 @@ const parts: ApiPart[] = [
         attributes and the disabled ones, and passes <code>ref</code> to it.
       </>
     ),
-    props: disclosureTriggerRows,
     attributes: disclosureTriggerAttributes,
   },
   {
@@ -58,7 +55,6 @@ const parts: ApiPart[] = [
         <code>hidden</code>, and passes <code>ref</code> to it. Render it right after the trigger.
       </>
     ),
-    props: disclosurePanelRows,
     attributes: disclosurePanelAttributes,
   },
 ]

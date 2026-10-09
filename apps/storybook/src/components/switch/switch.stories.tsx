@@ -47,10 +47,6 @@ const meta = {
       description:
         'Natively disabled: skipped by Tab. A disabled Field disables it too. Sets `data-disabled`.',
     },
-    render: {
-      control: false,
-      description: 'Another element. It must still be an `<input type="checkbox">`.',
-    },
   },
   args: { name: 'sms', disabled: false },
   globals: { locale: 'sv' },

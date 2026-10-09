@@ -14,7 +14,6 @@ export type CopyButtonDocumentedProps = Pick<
   | 'messages'
   | 'disabled'
   | 'focusableWhenDisabled'
-  | 'render'
 >
 
 export const copyButtonRows = propRows<CopyButtonDocumentedProps>({
@@ -65,11 +64,6 @@ export const copyButtonRows = propRows<CopyButtonDocumentedProps>({
     type: 'boolean',
     default: 'false',
     description: 'With disabled, keeps the button in the Tab order. Copying stays blocked.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"button">, ButtonState>',
-    default: '–',
-    description: 'Changes the element, which must still be a <button>.',
   },
 })
 

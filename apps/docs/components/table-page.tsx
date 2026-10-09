@@ -30,7 +30,6 @@ import {
   tableSelectAttributes,
   tableSelectRows,
   tableSimpleAttributes,
-  tableSimpleRows,
   tableSortButtonAttributes,
   tableSortButtonRows,
   useTableHook,
@@ -117,10 +116,9 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;caption&gt;</code>, <code>&lt;thead&gt;</code>, <code>&lt;tfoot&gt;</code> and{' '}
         <code>&lt;th scope=&quot;row&quot;&gt;</code>. Each takes every attribute of its element and
-        passes <code>ref</code> to it, and only <code>render</code> is its own prop.
+        passes <code>ref</code> to it.
       </>
     ),
-    props: tableSimpleRows,
     attributes: tableSimpleAttributes,
   },
   {

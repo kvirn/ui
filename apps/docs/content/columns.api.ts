@@ -3,7 +3,7 @@ import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
 export const columnsRows = propRows<
-  Pick<ColumnsProps, 'minColumnWidth' | 'gap' | 'render' | 'className'>
+  Pick<ColumnsProps, 'minColumnWidth' | 'gap' | 'as' | 'className'>
 >({
   minColumnWidth: {
     type: "'sm' | 'md' | 'lg'",
@@ -22,11 +22,11 @@ export const columnsRows = propRows<
     description:
       'Your own classes. They join the part’s class and never replace it, so the theme keeps styling the layout.',
   },
-  render: {
-    type: 'RenderProp<ColumnsElementProps, ColumnsState>',
-    default: '–',
+  as: {
+    type: "'div' | 'ul' | 'ol'",
+    default: "'div'",
     description:
-      'Changes the element: <ul> with <li> children for a list, or <section aria-labelledby>. Its own semantics apply, and Columns adds no role. A function receives the props, with a callback ref, and an empty state.',
+      'Changes the element: ul or ol with li children for a list whose count is announced. Columns adds no role.',
   },
 })
 

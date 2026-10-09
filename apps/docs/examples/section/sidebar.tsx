@@ -8,11 +8,12 @@ export function Sidebar() {
   const headingId = useId()
   return (
     <Section
-      render={<aside aria-labelledby={headingId} />}
+      as="aside"
+      aria-labelledby={headingId}
       className="kv-section--padding-lg kv-prose"
       lang={textLang}
     >
-      <Heading level={4} id={headingId}>
+      <Heading as="h4" id={headingId}>
         {texts.contact.heading}
       </Heading>
       <p>{texts.contact.text}</p>

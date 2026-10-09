@@ -12,7 +12,7 @@ const meta = {
   title: 'Components/Badge',
   component: Badge,
   args: { children: 'Utkast' },
-  argTypes: { render: { control: false } },
+  argTypes: { as: { control: false } },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },

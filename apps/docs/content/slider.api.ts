@@ -15,7 +15,6 @@ export type SliderDocumentedProps = Pick<
   | 'valueText'
   | 'onValueChange'
   | 'aria-labelledby'
-  | 'render'
 >
 
 export const sliderRows = propRows<SliderDocumentedProps>({
@@ -56,12 +55,6 @@ export const sliderRows = propRows<SliderDocumentedProps>({
     default: '–',
     description:
       'Names the slider by another element, and opts it out of its Field: no id, description or invalid state from it. For a slider beside a NumberInput that owns the Field.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"input">, SliderState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be an <input type="range">. A function receives the props and { isInvalid, isDisabled, isFocusVisible, value }.',
   },
 })
 

@@ -2,18 +2,18 @@ import type { SectionRootProps, UseSectionResult } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
 import type { AttributeRow } from '../components/api-block.tsx'
 
-export const sectionRows = propRows<Pick<SectionRootProps, 'className' | 'render'>>({
+export const sectionRows = propRows<Pick<SectionRootProps, 'className' | 'as'>>({
   className: {
     type: 'string',
     default: '–',
     description:
       'Your own classes. They join kv-section and never replace it, so the theme keeps styling the section.',
   },
-  render: {
-    type: 'RenderProp<SectionElementProps, SectionState>',
-    default: '–',
+  as: {
+    type: "'div' | 'section' | 'aside' | 'nav' | 'footer' | 'header' | 'article' | 'li'",
+    default: "'div'",
     description:
-      'Changes the element: <aside aria-labelledby>, <section aria-labelledby>, <nav aria-labelledby> or <li>. Its own semantics apply, and Section adds no role. A function receives the props, with a callback ref, and an empty state.',
+      'Changes the element: aside, section or nav with aria-labelledby, header or footer, article, or li in a list of sections. Section adds no role. Another tag warns once in development.',
   },
 })
 

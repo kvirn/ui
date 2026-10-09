@@ -51,7 +51,6 @@ const meta = {
         'Per-instance overrides of the label’s optional text (`optional`) and the hidden prefix of the error (`errorPrefix`). See `OwnMessages`.',
     },
     className: { control: 'text', description: 'Your own classes, added to `kv-field`.' },
-    render: { control: false, description: 'Another element for the root. It receives the state.' },
     ref: { control: false, description: 'A ref to the root `<div>`.' },
   },
   globals: { locale: 'sv' },

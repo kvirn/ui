@@ -11,7 +11,6 @@ export type ToggleDocumentedProps = Pick<
   | 'disabled'
   | 'focusableWhenDisabled'
   | 'onClick'
-  | 'render'
 >
 
 export const toggleRows = propRows<ToggleDocumentedProps>({
@@ -48,12 +47,6 @@ export const toggleRows = propRows<ToggleDocumentedProps>({
     default: '–',
     description:
       'Called on every activation, after onPressedChange, and never while the toggle is disabled.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"button">, ToggleState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be a <button>. A function receives the props and { isPressed, isDisabled, isFocusVisible }: keep toggleProps.onClick.',
   },
 })
 

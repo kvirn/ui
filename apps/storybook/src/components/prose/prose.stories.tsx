@@ -47,7 +47,7 @@ const meta = {
       control: 'text',
       description: 'Your own classes, added to `kv-prose`. The theme styles `kv-prose--large`.',
     },
-    render: { control: false },
+    as: { control: false, description: 'Another element: `article` or `section`.' },
   },
   parameters: {
     a11yContract: contract,

@@ -12,6 +12,7 @@ export function DocsDisclosure({
   onToggle,
   className,
   children,
+  ...otherProps
 }: {
   controls: string
   isOpen: boolean
@@ -25,6 +26,7 @@ export function DocsDisclosure({
       aria-expanded={isOpen}
       aria-controls={controls}
       onClick={onToggle}
+      {...otherProps}
     >
       {children}
       <Icon name={isOpen ? 'chevron-up' : 'chevron-down'} />

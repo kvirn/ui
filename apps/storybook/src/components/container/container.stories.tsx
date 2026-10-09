@@ -15,7 +15,7 @@ function Page({ title }: { title: string }) {
   return (
     <Card.Root>
       <Card.Body>
-        <Heading level={2}>{title}</Heading>
+        <Heading as="h2">{title}</Heading>
         <p>Innehållet i behållaren följer ordningen i DOM, och inget blir bredare än skärmen.</p>
       </Card.Body>
     </Card.Root>
@@ -33,7 +33,7 @@ const meta = {
       description:
         '`page` (default): centred, `80rem`, inline padding. `reading` `45rem` and `form` `40rem` are start-aligned with no padding.',
     },
-    render: { control: false },
+    as: { control: false, description: 'Another element: `main`, `section` or `article`.' },
   },
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof Container>
@@ -54,11 +54,11 @@ export const Form: Story = {
   args: { size: 'form', children: <Page title="Anmäl flytt" /> },
 }
 
-/** `render` picks the element and names it: a `section` labelled by its heading. */
+/** `as` picks the element and names it: a `section` labelled by its heading. */
 export const AsRegion: Story = {
   render: (args) => (
-    <Container {...args} render={<section aria-labelledby="container-region-title" />}>
-      <Heading level={2} id="container-region-title">
+    <Container {...args} as="section" aria-labelledby="container-region-title">
+      <Heading as="h2" id="container-region-title">
         Aktuellt
       </Heading>
     </Container>

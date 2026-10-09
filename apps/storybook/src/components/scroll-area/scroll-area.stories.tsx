@@ -29,7 +29,7 @@ const meta = {
       description:
         "`'overflow'` (default): a named region only while it scrolls. `'always'`: a named region either way. A Tab stop only while it scrolls.",
     },
-    render: { control: false, description: 'Another element, or a function.' },
+    as: { control: false, description: 'Another element: `section`.' },
   },
   globals: { locale: 'sv' },
   parameters: {

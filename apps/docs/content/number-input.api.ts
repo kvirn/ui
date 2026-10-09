@@ -17,7 +17,6 @@ export type NumberInputDocumentedProps = Pick<
   | 'announceRejections'
   | 'messages'
   | 'disabled'
-  | 'render'
 >
 
 export const numberInputRows = propRows<NumberInputDocumentedProps>({
@@ -86,12 +85,6 @@ export const numberInputRows = propRows<NumberInputDocumentedProps>({
     type: 'boolean',
     default: 'false',
     description: 'Native disabled. A disabled Field disables the input too.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"input">, NumberInputState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be an <input>. A function receives the props and { isInvalid, isRequired, isDisabled, isFocusVisible }.',
   },
 })
 

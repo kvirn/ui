@@ -71,7 +71,6 @@ const meta = {
       description: 'Called with the new value on every change. It only reports.',
     },
     onComplete: { action: 'onComplete', description: 'Never submits and never moves focus.' },
-    render: { control: false, description: 'Another element. It must still be a `<div>`.' },
   },
   parameters: {
     a11yContract: contract,

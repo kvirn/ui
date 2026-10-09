@@ -140,7 +140,7 @@ export function CardPage({
             title="A list of news items"
             why="Several cards of the same kind are a list. Render each card as a list item with render, so a screen reader announces how many items there are. Give each card one link, in its heading, with text that makes sense on its own."
             code={sources['list']}
-            propsUsed={[{ part: 'Card.Root', prop: 'render' }]}
+            propsUsed={[{ part: 'Card.Root', prop: 'as' }]}
             note={
               <Note kind="tip">
                 The default theme draws no marker on a card, and Safari with VoiceOver can then read
@@ -164,7 +164,7 @@ export function CardPage({
               </>
             }
             code={sources['article']}
-            propsUsed={[{ part: 'Card.Root', prop: 'render' }]}
+            propsUsed={[{ part: 'Card.Root', prop: 'as' }]}
           >
             <ArticleCard />
           </UseCase>

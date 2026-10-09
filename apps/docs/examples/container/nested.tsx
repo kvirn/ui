@@ -7,7 +7,7 @@ export function NestedContainers() {
   return (
     <Container lang={textLang}>
       <Container size="reading">
-        <Heading level={2}>{texts.main.title}</Heading>
+        <Heading as="h2">{texts.main.title}</Heading>
         <p>{texts.main.text}</p>
       </Container>
     </Container>

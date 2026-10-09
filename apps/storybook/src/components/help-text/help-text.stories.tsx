@@ -23,10 +23,6 @@ const meta = {
   component: Field.HelpText,
   argTypes: {
     className: { control: 'text', description: 'Your own classes, added to `kv-field-help-text`.' },
-    render: {
-      control: false,
-      description: 'Another element: `render={<div />}`. Never something interactive.',
-    },
     ref: { control: false, description: 'A ref to the `<p>`.' },
   },
   globals: { locale: 'sv' },

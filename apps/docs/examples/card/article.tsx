@@ -7,9 +7,9 @@ export function ArticleCard() {
   const { texts, textLang } = useCardTexts()
   const headingId = useId()
   return (
-    <Card.Root render={<article aria-labelledby={headingId} />} lang={textLang}>
+    <Card.Root as="article" aria-labelledby={headingId} lang={textLang}>
       <Card.Body className="kv-prose">
-        <Heading level={4} id={headingId}>
+        <Heading as="h4" id={headingId}>
           {texts.article.title}
         </Heading>
         <p>{texts.article.text}</p>

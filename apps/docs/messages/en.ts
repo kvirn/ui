@@ -3,6 +3,11 @@
 
 const colorSchemeNames = { light: 'Light', dark: 'Dark', system: 'Same as my device' } as const
 const contrastNames = { standard: 'Standard', more: 'High', system: 'Same as my device' } as const
+const motionNames = {
+  full: 'Full motion',
+  reduce: 'Less motion',
+  system: 'Same as my device',
+} as const
 
 export const messages = {
   docs: {
@@ -12,16 +17,56 @@ export const messages = {
       description:
         'Headless, accessible React components for public services in the Nordics and the EU.',
     },
-    contents: { heading: 'On this page' },
-    header: { home: 'KvirnUI', status: 'Pre-alpha' },
+    contents: {
+      heading: 'On this page',
+      anchor: ({ label }: { label: string }) => `Link to ${label}`,
+    },
+    getStartedPage: {
+      lead: 'Accessible React components for public services in the Nordics and the EU. You write the markup and styles. KvirnUI gives you the behaviour, keyboard support and screen reader support, designed and tested to meet WCAG 2.2 AA.',
+      status:
+        'This is a pre-alpha version. The API will change. Don’t use KvirnUI in a live service yet.',
+      whatYouGet: {
+        label: 'What you get',
+        body: 'Behaviour, keyboard support and screen reader support in six languages. You keep the markup and the styles.',
+      },
+      components: { label: 'Components', readAboutButton: 'Read about Button' },
+      startHere: {
+        label: 'Start here',
+        installation: 'Installation',
+        themeBefore: 'For the default look, also add',
+        themeMiddle: 'and import',
+        themeAfter:
+          'once, for example in your root layout. Every component is then styled. Remove the import, and it’s unstyled again: KvirnUI never loads CSS for you.',
+        themingLink: 'Theming',
+        themingAfter: 'shows how to change it.',
+        importHint: 'Each component page shows the import it needs.',
+      },
+      whatWcagMeans: {
+        label: 'What “designed and tested to meet WCAG 2.2 AA” means',
+        body: 'Every component is tested automatically and reviewed for accessibility. Whether your service meets WCAG 2.2 AA depends on how you build and test the whole service.',
+      },
+    },
+    componentsIndex: {
+      title: 'Components',
+      lead: 'Every component and hook, grouped by what it does. Each page shows an example, the keyboard contract and the API.',
+    },
+    header: { home: 'KvirnUI', status: 'Pre-alpha', navLabel: 'Site' },
     nav: {
-      label: 'Documentation',
       menuButton: 'Menu',
-      introduction: 'Introduction',
-      foundation: 'Foundation',
+      sections: {
+        home: 'Home',
+        docs: 'Docs',
+        components: 'Components',
+        patterns: 'Patterns',
+        contentTypes: 'Content types',
+        theming: 'Theming',
+      },
+      getStarted: 'Get started',
+      allComponents: 'All components',
+      overview: 'Overview',
       kvirnProvider: 'KvirnProvider',
       locales: 'Locales and strings',
-      components: 'Components',
+      rendering: 'Rendering: server and client',
       componentGroups: {
         actions: 'Actions',
         content: 'Content',
@@ -36,6 +81,11 @@ export const messages = {
       button: 'Display settings',
       colorScheme: { legend: 'Colour scheme', ...colorSchemeNames },
       contrast: { legend: 'Contrast', ...contrastNames },
+      motion: {
+        legend: 'Motion',
+        ...motionNames,
+        note: 'Less motion turns off the fades and transitions on this site. Nothing moves unless you start it.',
+      },
       exampleLanguage: 'Example language',
       forcedColors:
         'Your device is using its own colours, for example a Windows contrast theme. They replace the settings here. Your choice is kept for when you turn them off.',
@@ -46,12 +96,15 @@ export const messages = {
     status: {
       label: 'Status',
       planned: 'Planned',
+      inPlanning: 'In planning',
       inProgress: 'In progress',
       alphaCandidate: 'Alpha candidate',
       alpha: 'Alpha',
       beta: 'Beta',
       stable: 'Stable',
       plannedText: 'Not built yet.',
+      inPlanningText:
+        "Being planned, or paused. Its API and behaviour can still change, and it is not ready for review. Don't use it in a live service.",
       inProgressText:
         "Being built. Its API and behaviour can still change, and it is not ready for review. Don't use it in a live service.",
       alphaCandidateText:
@@ -186,7 +239,7 @@ export const messages = {
       title: 'Page not found',
       heading: 'Page not found',
       body: 'Check the web address. If you followed a link on this site, the page may have moved.',
-      homeLink: 'Go to the introduction',
+      homeLink: 'Go to the home page',
     },
   },
 } as const

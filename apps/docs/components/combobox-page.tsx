@@ -8,14 +8,9 @@ import { Note } from './note.tsx'
 import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import {
-  comboboxClearRows,
-  comboboxControlRows,
-  comboboxInputRows,
   comboboxRootRows,
-  comboboxToggleRows,
   fieldAttributes,
   popupWithLoadingAttributes,
-  renamed,
   useComboboxHook,
   valueAttributes,
   valueListAttributes,
@@ -24,25 +19,18 @@ import {
 } from '../content/combobox.api.ts'
 import {
   emptyAttributes,
-  emptyRows,
   groupAttributes,
   groupLabelAttributes,
-  groupLabelRows,
   groupRows,
   listAttributes,
   listRows,
   optionAttributes,
   optionDescriptionAttributes,
-  optionDescriptionRows,
   optionIconAttributes,
-  optionIconRows,
   optionIndicatorAttributes,
-  optionIndicatorRows,
   optionRows,
   optionTextAttributes,
-  optionTextRows,
   popupAttributes,
-  popupRows,
 } from '../content/listbox.api.ts'
 import { DefaultCombobox } from '../examples/combobox/default.tsx'
 import { LongListCombobox } from '../examples/combobox/long-list.tsx'
@@ -94,7 +82,6 @@ const parts: ApiPart[] = [
         <code>ref</code> to it. Theming is on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
-    props: comboboxControlRows,
     attributes: field.control,
   },
   {
@@ -107,7 +94,6 @@ const parts: ApiPart[] = [
         you set your own.
       </>
     ),
-    props: comboboxInputRows,
     attributes: field.input,
   },
   {
@@ -119,7 +105,6 @@ const parts: ApiPart[] = [
         keeps focus in the input. Put it after the input, in a <code>Combobox.Control</code>.
       </>
     ),
-    props: comboboxToggleRows,
     attributes: field.toggle,
   },
   {
@@ -132,7 +117,6 @@ const parts: ApiPart[] = [
         <code>multiple</code> it empties the typed text only.
       </>
     ),
-    props: comboboxClearRows,
     attributes: field.clear,
   },
   {
@@ -166,7 +150,6 @@ const parts: ApiPart[] = [
         <Link href="/components/listbox">Listbox.Popup</Link>. Focus never enters it.
       </>
     ),
-    props: renamed(popupRows, 'Combobox'),
     attributes: popupWithLoadingAttributes(popupAttributes),
   },
   {
@@ -177,7 +160,7 @@ const parts: ApiPart[] = [
         . It has <code>aria-multiselectable</code> with <code>multiple</code>.
       </>
     ),
-    props: renamed(listRows, 'Combobox'),
+    props: listRows,
     attributes: listAttributes,
   },
   {
@@ -188,7 +171,7 @@ const parts: ApiPart[] = [
         <code>aria-selected</code> means chosen, not highlighted.
       </>
     ),
-    props: renamed(optionRows, 'Combobox'),
+    props: optionRows,
     attributes: optionAttributes,
   },
   {
@@ -198,7 +181,6 @@ const parts: ApiPart[] = [
         {element('span aria-hidden="true"')}: the same part as <code>Listbox.OptionIcon</code>.
       </>
     ),
-    props: renamed(optionIconRows, 'Combobox'),
     attributes: optionIconAttributes,
   },
   {
@@ -208,7 +190,6 @@ const parts: ApiPart[] = [
         {element('span')} that names the option: the same part as <code>Listbox.OptionText</code>.
       </>
     ),
-    props: renamed(optionTextRows, 'Combobox'),
     attributes: optionTextAttributes,
   },
   {
@@ -219,7 +200,6 @@ const parts: ApiPart[] = [
         <code>Listbox.OptionDescription</code>.
       </>
     ),
-    props: renamed(optionDescriptionRows, 'Combobox'),
     attributes: optionDescriptionAttributes,
   },
   {
@@ -229,7 +209,6 @@ const parts: ApiPart[] = [
         {element('span aria-hidden="true"')}: the same part as <code>Listbox.OptionIndicator</code>.
       </>
     ),
-    props: renamed(optionIndicatorRows, 'Combobox'),
     attributes: optionIndicatorAttributes,
   },
   {
@@ -240,7 +219,7 @@ const parts: ApiPart[] = [
         with no match is not rendered.
       </>
     ),
-    props: renamed(groupRows, 'Combobox'),
+    props: groupRows,
     attributes: groupAttributes,
   },
   {
@@ -250,7 +229,6 @@ const parts: ApiPart[] = [
         {element('div')} with the group’s name: the same part as <code>Listbox.GroupLabel</code>.
       </>
     ),
-    props: renamed(groupLabelRows, 'Combobox'),
     attributes: groupLabelAttributes,
   },
   {
@@ -262,7 +240,6 @@ const parts: ApiPart[] = [
         results” while <code>isLoading</code> is on.
       </>
     ),
-    props: renamed(emptyRows, 'Combobox'),
     attributes: emptyAttributes,
   },
 ]

@@ -79,7 +79,7 @@ const meta = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div className="kv-empty-state" lang={lang}>
-        <Heading level={2} className="kv-empty-state-title">
+        <Heading as="h2" className="kv-empty-state-title">
           {text.title}
         </Heading>
         <p className="kv-empty-state-body">{text.body}</p>
@@ -109,7 +109,7 @@ export const NoResults: Story = {
     const { text, lang } = textsFor(localeOf(globals))
     return (
       <div className="kv-empty-state" lang={lang}>
-        <Heading level={2} className="kv-empty-state-title">
+        <Heading as="h2" className="kv-empty-state-title">
           {text.searchTitle}
         </Heading>
         <p className="kv-empty-state-body">{text.searchBody}</p>

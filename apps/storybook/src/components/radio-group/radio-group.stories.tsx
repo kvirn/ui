@@ -63,7 +63,6 @@ const meta = {
       description:
         'Per-instance overrides of the legend’s optional text (`field.optional`) and the error prefix (`field.errorPrefix`).',
     },
-    render: { control: false, description: 'Another element. It must still be a `<fieldset>`.' },
   },
   globals: { locale: 'sv' },
   decorators: [

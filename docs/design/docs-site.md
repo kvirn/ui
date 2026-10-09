@@ -280,7 +280,7 @@ The headings below are the real headings. The sentences are first drafts in plai
   - `h3` A button that does something: `type="button"` is the default, so it never submits a form by accident.
   - `h3` Sending a form: `type="submit"`, with a form example.
   - `h3` Disabled buttons, with the guidance: "Try not to disable buttons. Let people press them and then explain what's missing. If you must disable one, use `focusableWhenDisabled` so keyboard and screen reader users can still find it, and show the reason next to it." Example: "Disabled with a reason".
-  - `h3` Using your own button component (`render`): "It must still render a `<button>`. To go somewhere, use Link."
+  - `h3` Using your own button component (`useButton`): "Spread the hook’s props on your own `<button>`. To go somewhere, use Link."
   - `h3` The hook: `useButton`
 - `h2` **Accessibility**, from `button.a11y.md` (same `h3`s as KvirnProvider).
 - `h2` **Strings**: `docs.template.noStrings`.
@@ -311,7 +311,7 @@ The headings below are the real headings. The sentences are first drafts in plai
   - `h3` Opening a new tab
   - `h3` Changing the new-tab text: three ways, in resolution order.
   - `h3` Links to pages in another language: `hrefLang` and `lang`, with the example "Suomeksi · På svenska · Sámegillii".
-  - `h3` Downloads and links outside your router: `render={<a />}`.
+  - `h3` Downloads and links outside your router: `as="a"`.
   - `h3` The hook: `useLink`
 - `h2` **Accessibility**, from `link.a11y.md`.
 - `h2` **Strings**: `h3` `link.newTabNotice`, with a Language · Default text table:
@@ -487,7 +487,7 @@ Only DESIGN.md tokens, the theme-delivery decision recipes and the three `--docs
 - `KvirnThemeScript` in `<head>`, with a nonce if a CSP is added (Open question 8).
 - A client `Providers` wrapper with `<KvirnProvider locale="en" linkComponent={NextLink} theme={{ defaultColorScheme: 'system', defaultContrast: 'system' }}>`, and `Register` augmented with `NextLink`.
 - Display settings are built on `useTheme()`. The navigation and in-page links use KvirnUI `Link`, and the toggles use KvirnUI `Button`.
-- The skip link is `<Link render={<a />} href="#main">`, which opts out of the router.
+- The skip link is `<Link.Root as="a" href="#main">`, which opts out of the router.
 
 **No-JS detection without a new script.** `KvirnThemeScript` sets `data-kv-color-scheme` on `<html>` before paint. CSS can therefore hide the two toggles and expand the navigation with `html:not([data-kv-color-scheme])`. Verify that the script always writes the resolved attribute. If it doesn't, use a one-line inline class script with the same nonce.
 

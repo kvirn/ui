@@ -593,7 +593,7 @@ export function ConsequenceAlert({ locale }: AlertFixtureProps) {
   const { text } = textsFor(locale)
   return (
     <Alert.Warning data-testid="consequence">
-      <Alert.Title render={<p />}>{text.consequence.title}</Alert.Title>
+      <Alert.Title as="p">{text.consequence.title}</Alert.Title>
     </Alert.Warning>
   )
 }
@@ -603,7 +603,7 @@ export function SavedAlert({ locale }: AlertFixtureProps) {
   const { text } = textsFor(locale)
   return (
     <Alert.Success data-testid="saved">
-      <Alert.Title render={<p />}>{text.saved.title}</Alert.Title>
+      <Alert.Title as="p">{text.saved.title}</Alert.Title>
     </Alert.Success>
   )
 }
@@ -641,7 +641,7 @@ export function CompactAlerts({ locale }: AlertFixtureProps) {
   return (
     <div className="kv-compact">
       <Alert.Success>
-        <Alert.Title render={<p />}>{text.saved.title}</Alert.Title>
+        <Alert.Title as="p">{text.saved.title}</Alert.Title>
       </Alert.Success>
       <Alert.Danger>
         <Alert.Title>{text.sendFailed.title}</Alert.Title>
@@ -673,7 +673,7 @@ export function SavedExample({ locale }: AlertFixtureProps) {
     <>
       {saveCount === 0 ? null : (
         <Alert.Success key={saveCount} announce="polite" data-testid="saved">
-          <Alert.Title render={<p />}>{text.saved.title}</Alert.Title>
+          <Alert.Title as="p">{text.saved.title}</Alert.Title>
         </Alert.Success>
       )}
       <div className="kv-button-group">
@@ -839,9 +839,7 @@ export function DismissibleExample({ locale }: AlertFixtureProps) {
       </h2>
       {isShown ? (
         <Alert.Info data-testid="dismissible">
-          <Alert.Title render={(props) => <h3 {...props}>{props.children}</h3>}>
-            {text.dismissible.title}
-          </Alert.Title>
+          <Alert.Title as="h3">{text.dismissible.title}</Alert.Title>
           <Alert.Body>
             <p>{text.dismissible.body}</p>
           </Alert.Body>
@@ -879,7 +877,7 @@ export function ClosableAlerts({ locale }: AlertFixtureProps) {
         <Alert.Close />
       </Alert.Info>
       <Alert.Success>
-        <Alert.Title render={<p />}>{text.saved.title}</Alert.Title>
+        <Alert.Title as="p">{text.saved.title}</Alert.Title>
         <Alert.Close />
       </Alert.Success>
       <Alert.Warning>
@@ -900,7 +898,7 @@ export function ClosableAlerts({ locale }: AlertFixtureProps) {
 }
 
 /**
- * One site-wide alert as a landmark, announced assertively: `render` gives the root a named
+ * One site-wide alert as a landmark, announced assertively: `as` gives the root a named
  * `<section>` (the Title's `id` names it), and `announce="assertive"` interrupts, which is only for
  * something urgent that the user must act on now. The button stands in for the outage starting.
  */
@@ -914,7 +912,8 @@ export function OutageAlert({ locale }: AlertFixtureProps) {
       {hasOutage ? (
         <Alert.Danger
           announce="assertive"
-          render={<section aria-labelledby={titleId} />}
+          as="section"
+          aria-labelledby={titleId}
           data-testid="outage"
         >
           <Alert.Title id={titleId}>{text.more.outage.title}</Alert.Title>
@@ -928,27 +927,6 @@ export function OutageAlert({ locale }: AlertFixtureProps) {
 }
 
 /**
- * `render` on the Body and the Actions: the Body is a list of what's missing, the Actions a
- * paragraph with the one link. Each part keeps its class, so the theme still styles it.
- */
-export function MissingAnswersAlert({ locale }: AlertFixtureProps) {
-  const { text } = textsFor(locale)
-  return (
-    <Alert.Warning data-testid="missing">
-      <Alert.Title>{text.more.missing.title}</Alert.Title>
-      <Alert.Body render={<ul />}>
-        {text.more.missing.items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </Alert.Body>
-      <Alert.Actions render={<p />}>
-        <Link.Root href="#answers">{text.more.missing.fix}</Link.Root>
-      </Alert.Actions>
-    </Alert.Warning>
-  )
-}
-
-/**
  * Three ways to name the close button: `messages` on the root changes its name, `messages` on the
  * button changes only that button's, and visible text in its children replaces the icon and
  * becomes the name. The buttons do nothing here: see `DismissibleExample` for the working version.
@@ -958,15 +936,15 @@ export function CloseButtonNames({ locale }: AlertFixtureProps) {
   return (
     <>
       <Alert.Info messages={{ close: text.more.close.customName }}>
-        <Alert.Title render={<p />}>{text.more.close.tip}</Alert.Title>
+        <Alert.Title as="p">{text.more.close.tip}</Alert.Title>
         <Alert.Close />
       </Alert.Info>
       <Alert.Info>
-        <Alert.Title render={<p />}>{text.more.close.tip}</Alert.Title>
+        <Alert.Title as="p">{text.more.close.tip}</Alert.Title>
         <Alert.Close messages={{ close: text.more.close.customName }} />
       </Alert.Info>
       <Alert.Info>
-        <Alert.Title render={<p />}>{text.more.close.tip}</Alert.Title>
+        <Alert.Title as="p">{text.more.close.tip}</Alert.Title>
         <Alert.Close>{text.more.close.visibleText}</Alert.Close>
       </Alert.Info>
     </>

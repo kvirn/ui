@@ -8,9 +8,9 @@ export function NewsList() {
   return (
     <ul role="list" className="kv-stack" lang={textLang}>
       {items.map((item) => (
-        <Card.Root key={item.title} render={<li />}>
+        <Card.Root key={item.title} as="li">
           <Card.Body className="kv-prose">
-            <Heading level={4}>
+            <Heading as="h4">
               <Link href="#">{item.title}</Link>
             </Heading>
             <p>{item.excerpt}</p>

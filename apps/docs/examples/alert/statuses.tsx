@@ -7,16 +7,16 @@ export function Statuses() {
   return (
     <div lang={textLang}>
       <Alert.Info>
-        <Alert.Title render={<p />}>{texts.sample.title}</Alert.Title>
+        <Alert.Title as="p">{texts.sample.title}</Alert.Title>
       </Alert.Info>
       <Alert.Success>
-        <Alert.Title render={<p />}>{texts.sample.title}</Alert.Title>
+        <Alert.Title as="p">{texts.sample.title}</Alert.Title>
       </Alert.Success>
       <Alert.Warning>
-        <Alert.Title render={<p />}>{texts.sample.title}</Alert.Title>
+        <Alert.Title as="p">{texts.sample.title}</Alert.Title>
       </Alert.Warning>
       <Alert.Danger>
-        <Alert.Title render={<p />}>{texts.sample.title}</Alert.Title>
+        <Alert.Title as="p">{texts.sample.title}</Alert.Title>
       </Alert.Danger>
     </div>
   )

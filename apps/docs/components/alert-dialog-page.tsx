@@ -8,20 +8,14 @@ import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   alertDialogActionsAttributes,
-  alertDialogActionsRows,
   alertDialogBodyAttributes,
-  alertDialogBodyRows,
   alertDialogCloseAttributes,
   alertDialogCloseRows,
   alertDialogDescriptionAttributes,
-  alertDialogDescriptionRows,
   alertDialogPopupAttributes,
-  alertDialogPopupRows,
   alertDialogRootRows,
   alertDialogTitleAttributes,
-  alertDialogTitleRows,
   alertDialogTriggerAttributes,
-  alertDialogTriggerRows,
   useAlertDialogHook,
 } from '../content/alert-dialog.api.ts'
 import { ConfirmDelete } from '../examples/alert-dialog/confirm-delete.tsx'
@@ -51,7 +45,6 @@ const parts: ApiPart[] = [
         <code>ref</code> to it.
       </>
     ),
-    props: alertDialogTriggerRows,
     attributes: alertDialogTriggerAttributes,
   },
   {
@@ -62,7 +55,6 @@ const parts: ApiPart[] = [
         children render only while it is open.
       </>
     ),
-    props: alertDialogPopupRows,
     attributes: alertDialogPopupAttributes,
   },
   {
@@ -72,7 +64,6 @@ const parts: ApiPart[] = [
         <code>&lt;h2&gt;</code> that names the alert dialog: the question the buttons answer.
       </>
     ),
-    props: alertDialogTitleRows,
     attributes: alertDialogTitleAttributes,
   },
   {
@@ -82,7 +73,6 @@ const parts: ApiPart[] = [
         <code>&lt;p&gt;</code> with the consequence. Always give one: it is read out with the title.
       </>
     ),
-    props: alertDialogDescriptionRows,
     attributes: alertDialogDescriptionAttributes,
   },
   {
@@ -92,7 +82,6 @@ const parts: ApiPart[] = [
         <code>&lt;div&gt;</code> for content between the description and the actions.
       </>
     ),
-    props: alertDialogBodyRows,
     attributes: alertDialogBodyAttributes,
   },
   {
@@ -102,7 +91,6 @@ const parts: ApiPart[] = [
         <code>&lt;div&gt;</code> for your buttons, the primary one first.
       </>
     ),
-    props: alertDialogActionsRows,
     attributes: alertDialogActionsAttributes,
   },
   {
@@ -180,7 +168,7 @@ export function AlertDialogPage({
             <TimeoutWarning />
           </UseCase>
           <section aria-labelledby="copy-rules">
-            <Heading level={3} id="copy-rules">
+            <Heading as="h3" id="copy-rules">
               Write the copy
             </Heading>
             <ul>
@@ -201,7 +189,7 @@ export function AlertDialogPage({
             </ul>
           </section>
           <section aria-labelledby="scroll-lock">
-            <Heading level={3} id="scroll-lock">
+            <Heading as="h3" id="scroll-lock">
               Scroll lock needs CSS
             </Heading>
             <p>

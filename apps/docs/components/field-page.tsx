@@ -10,13 +10,10 @@ import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   fieldErrorMessageAttributes,
-  fieldErrorMessageRows,
   fieldHelpTextAttributes,
-  fieldHelpTextRows,
   fieldLabelAttributes,
   fieldLabelRows,
   fieldProseAttributes,
-  fieldProseRows,
   fieldRootAttributes,
   fieldRootRows,
   useFieldHook,
@@ -74,7 +71,6 @@ const parts: ApiPart[] = [
         outside a Field.
       </>
     ),
-    props: fieldProseRows,
     attributes: fieldProseAttributes,
   },
   {
@@ -86,7 +82,6 @@ const parts: ApiPart[] = [
         and warns in development.
       </>
     ),
-    props: fieldHelpTextRows,
     attributes: fieldHelpTextAttributes,
   },
   {
@@ -97,7 +92,6 @@ const parts: ApiPart[] = [
         icon and the <code>field.errorPrefix</code> text. It is not a live region.
       </>
     ),
-    props: fieldErrorMessageRows,
     attributes: fieldErrorMessageAttributes,
   },
 ]

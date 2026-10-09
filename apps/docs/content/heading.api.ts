@@ -5,23 +5,17 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 const sizeType =
   "'display' | 'heading-1' | 'heading-2' | 'heading-3' | 'heading-4' | 'heading-5' | 'heading-6'"
 
-export const headingRows = propRows<Pick<HeadingProps, 'level' | 'size' | 'render'>>({
-  level: {
-    type: '1 | 2 | 3 | 4 | 5 | 6',
+export const headingRows = propRows<Pick<HeadingProps, 'as' | 'size'>>({
+  as: {
+    type: "'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'",
     description:
-      'The level the page’s outline needs. It decides the element: 2 renders <h2>. Heading can’t know where it sits, so it is required.',
+      'The element, and so the level the page’s outline needs: as="h2" renders an <h2>. Heading can’t know where it sits, so it is required. A string, so it works from a Server Component. For a legend or another element, use useHeading with your own element.',
   },
   size: {
     type: sizeType,
-    default: 'the level’s own',
+    default: 'the element’s own level',
     description:
-      'The look, apart from the level. level 4 looks like heading-4 unless you say otherwise. It never changes the element.',
-  },
-  render: {
-    type: 'RenderProp<HeadingElementProps, HeadingState>',
-    default: '–',
-    description:
-      'Changes the element. An element that isn’t a heading loses the heading role: give it role="heading" and aria-level. A function receives the props and { level, size }.',
+      'The look, apart from the level. as="h4" looks like heading-4 unless you say otherwise. It never changes the element.',
   },
 })
 
@@ -47,7 +41,7 @@ export const useHeadingHook: ApiHook = {
     },
     size: {
       type: sizeType,
-      default: 'the level’s own',
+      default: 'the element’s own level',
       description: 'The look, when it isn’t the level’s.',
     },
   }),

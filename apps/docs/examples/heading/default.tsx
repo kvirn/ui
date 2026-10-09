@@ -5,7 +5,7 @@ import { useHeadingTexts } from './texts.ts'
 export function DefaultHeading() {
   const { texts, textLang } = useHeadingTexts()
   return (
-    <Heading level={3} lang={textLang}>
+    <Heading as="h3" lang={textLang}>
       {texts.contact.heading}
     </Heading>
   )

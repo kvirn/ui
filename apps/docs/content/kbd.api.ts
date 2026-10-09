@@ -2,14 +2,14 @@ import type { KbdProps, UseKbdResult } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-export type KbdDocumentedProps = Pick<KbdProps, 'render'>
+export type KbdDocumentedProps = Pick<KbdProps, 'as'>
 
 export const kbdRows = propRows<KbdDocumentedProps>({
-  render: {
-    type: 'RenderProp<KbdElementProps, KbdState>',
-    default: '–',
+  as: {
+    type: "'kbd' | 'samp'",
+    default: "'kbd'",
     description:
-      'Changes the element, such as render={<samp />}. Its own semantics apply. A function receives the props to spread and an empty state.',
+      'Changes the element to samp for text a program prints. Nothing else names keyboard input.',
   },
 })
 

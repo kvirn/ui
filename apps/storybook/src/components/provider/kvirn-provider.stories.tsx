@@ -204,7 +204,9 @@ function themeCombination(
     play: async ({ canvas, canvasElement, userEvent }) => {
       await userEvent.click(canvas.getByRole('radio', { name: colorScheme }))
       await userEvent.click(canvas.getByRole('radio', { name: contrast }))
-      await expect(canvas.getByText(`Används nu: ${colorScheme}, ${contrast}`)).toBeVisible()
+      await expect(
+        canvas.getByText(`Används nu: ${colorScheme}, ${contrast}, Full rörelse`),
+      ).toBeVisible()
       const root = canvasElement.ownerDocument.documentElement
       await expect(root).toHaveAttribute(
         colorSchemeAttribute,

@@ -5,7 +5,7 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 /** The props Button documents: its own, and the three native ones whose behaviour it changes. */
 export type ButtonDocumentedProps = Pick<
   ButtonProps,
-  'disabled' | 'busy' | 'type' | 'onClick' | 'focusableWhenDisabled' | 'render'
+  'disabled' | 'busy' | 'type' | 'onClick' | 'focusableWhenDisabled'
 >
 
 export const buttonRows = propRows<ButtonDocumentedProps>({
@@ -36,12 +36,6 @@ export const buttonRows = propRows<ButtonDocumentedProps>({
     type: 'MouseEventHandler<HTMLButtonElement>',
     default: '–',
     description: 'Called on click, Enter and Space, and never while the button is disabled.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"button">, ButtonState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be a <button>. A function receives the props and { isDisabled, isFocusVisible }.',
   },
 })
 

@@ -1,8 +1,6 @@
 import type {
-  FileUploadActionsProps,
   FileUploadCancelButtonProps,
   FileUploadDropHintProps,
-  FileUploadDropZoneProps,
   FileUploadInputProps,
   FileUploadItemErrorProps,
   FileUploadItemProps,
@@ -10,7 +8,6 @@ import type {
   FileUploadListProps,
   FileUploadNameProps,
   FileUploadPreviewProps,
-  FileUploadProgressProps,
   FileUploadRejectionsProps,
   FileUploadRootProps,
   FileUploadSizeProps,
@@ -24,12 +21,6 @@ import type {
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow, PropRow } from '../components/api-block.tsx'
 import type { StringKeySpec } from '../components/strings-block.tsx'
-
-const renderRow = (element: string, state: string): PropRow => ({
-  type: `RenderProp<ComponentPropsWithRef<"${element}">, ${state}>`,
-  default: '–',
-  description: 'Changes the element.',
-})
 
 const childrenRow = (replaces: string): PropRow => ({
   type: 'ReactNode',
@@ -131,14 +122,10 @@ const optionRows = propRows<UseFileUploadOptions>({
   },
 })
 
-export type FileUploadRootDocumentedProps = Pick<
-  FileUploadRootProps,
-  keyof UseFileUploadOptions | 'render'
->
+export type FileUploadRootDocumentedProps = Pick<FileUploadRootProps, keyof UseFileUploadOptions>
 
 export const fileUploadRootRows = propRows<FileUploadRootDocumentedProps>({
   ...optionRows,
-  render: renderRow('div', 'FileUploadState'),
 })
 
 export const fileUploadRootAttributes: readonly AttributeRow[] = [
@@ -153,14 +140,8 @@ export const fileUploadRootAttributes: readonly AttributeRow[] = [
   stateAttribute('data-disabled', 'The Field or the disabled option disables it.'),
 ]
 
-export const fileUploadTriggerRows = propRows<Pick<FileUploadTriggerProps, 'children' | 'render'>>({
+export const fileUploadTriggerRows = propRows<Pick<FileUploadTriggerProps, 'children'>>({
   children: childrenRow('the text, which is “Choose files”, “Choose file” or “Replace file”'),
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"button">, FileUploadState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be a <button>. Keep its children, or wrap your text in a span with the triggerTextId.',
-  },
 })
 
 export const fileUploadTriggerAttributes: readonly AttributeRow[] = [
@@ -181,18 +162,13 @@ export const fileUploadTriggerAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const fileUploadInputRows = propRows<Pick<FileUploadInputProps, 'name' | 'render'>>({
+export const fileUploadInputRows = propRows<Pick<FileUploadInputProps, 'name'>>({
   name: {
     type: 'string',
     default: '–',
     description:
       'Posts the files with a plain form, under this name. capture and form also pass through.',
   },
-  render: renderRow('input', 'FileUploadState'),
-})
-
-export const fileUploadDropZoneRows = propRows<Pick<FileUploadDropZoneProps, 'render'>>({
-  render: renderRow('div', 'FileUploadState'),
 })
 
 export const fileUploadDropZoneAttributes: readonly AttributeRow[] = [
@@ -206,47 +182,37 @@ export const fileUploadDropZoneAttributes: readonly AttributeRow[] = [
   stateAttribute('data-disabled', 'Disabled.'),
 ]
 
-export const fileUploadDropHintRows = propRows<
-  Pick<FileUploadDropHintProps, 'children' | 'render'>
->({
+export const fileUploadDropHintRows = propRows<Pick<FileUploadDropHintProps, 'children'>>({
   children: childrenRow('the hint, “or drop files here”'),
-  render: renderRow('p', 'FileUploadState'),
 })
 
-export const fileUploadLimitsRows = propRows<Pick<FileUploadLimitsProps, 'children' | 'render'>>({
+export const fileUploadLimitsRows = propRows<Pick<FileUploadLimitsProps, 'children'>>({
   children: childrenRow('the text built from accept, maxFiles and maxFileSize'),
-  render: renderRow('p', 'FieldState'),
 })
 
-export const fileUploadRejectionsRows = propRows<
-  Pick<FileUploadRejectionsProps, 'children' | 'render'>
->({
+export const fileUploadRejectionsRows = propRows<Pick<FileUploadRejectionsProps, 'children'>>({
   children: childrenRow('the heading and one line per refused file'),
-  render: renderRow('div', 'FileUploadState'),
 })
 
-export const fileUploadSummaryRows = propRows<Pick<FileUploadSummaryProps, 'children' | 'render'>>({
+export const fileUploadSummaryRows = propRows<Pick<FileUploadSummaryProps, 'children'>>({
   children: childrenRow('the text, for example “2 of 5 files added”'),
-  render: renderRow('p', 'FileUploadState'),
 })
 
-export const fileUploadListRows = propRows<Pick<FileUploadListProps, 'children' | 'render'>>({
+export const fileUploadListRows = propRows<Pick<FileUploadListProps, 'children'>>({
   children: {
     type: 'ReactNode | ((item: FileUploadEntry, index: number) => ReactNode)',
     default: '–',
     description:
       'A function that renders one FileUpload.Item per file, or your own nodes. Use item.id as the key.',
   },
-  render: renderRow('ul', 'FileUploadState'),
 })
 
-export const fileUploadItemRows = propRows<Pick<FileUploadItemProps, 'item' | 'render'>>({
+export const fileUploadItemRows = propRows<Pick<FileUploadItemProps, 'item'>>({
   item: {
     type: 'FileUploadEntry',
     description:
       'The file this item shows, from the List’s function: id, file, status, progress, error, result and previewUrl.',
   },
-  render: renderRow('li', 'FileUploadItemState'),
 })
 
 export const fileUploadItemAttributes: readonly AttributeRow[] = [
@@ -264,9 +230,8 @@ export const fileUploadItemAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const fileUploadPreviewRows = propRows<Pick<FileUploadPreviewProps, 'children' | 'render'>>({
+export const fileUploadPreviewRows = propRows<Pick<FileUploadPreviewProps, 'children'>>({
   children: childrenRow('the document icon shown for a file that is not an image'),
-  render: renderRow('span', 'FileUploadItemState'),
 })
 
 export const fileUploadFileDetailRows = propRows<
@@ -275,9 +240,8 @@ export const fileUploadFileDetailRows = propRows<
   children: childrenRow('the file’s name, type or size'),
 })
 
-export const fileUploadStatusRows = propRows<Pick<FileUploadStatusProps, 'children' | 'render'>>({
+export const fileUploadStatusRows = propRows<Pick<FileUploadStatusProps, 'children'>>({
   children: childrenRow('the status text, for example “Uploading, 45 %”'),
-  render: renderRow('p', 'FileUploadItemState'),
 })
 
 export const fileUploadStatusAttributes: readonly AttributeRow[] = [
@@ -289,30 +253,12 @@ export const fileUploadStatusAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const fileUploadItemErrorRows = propRows<
-  Pick<FileUploadItemErrorProps, 'children' | 'render'>
->({
+export const fileUploadItemErrorRows = propRows<Pick<FileUploadItemErrorProps, 'children'>>({
   children: childrenRow('your message from the rejected upload, or the neutral sentence'),
-  render: renderRow('p', 'FileUploadItemState'),
 })
 
-export const fileUploadProgressRows = propRows<Pick<FileUploadProgressProps, 'render'>>({
-  render: renderRow('progress', 'FileUploadItemState'),
-})
-
-export const fileUploadActionsRows = propRows<Pick<FileUploadActionsProps, 'render'>>({
-  render: renderRow('div', 'FileUploadItemState'),
-})
-
-export const fileUploadItemButtonRows = propRows<
-  Pick<FileUploadCancelButtonProps, 'children' | 'render'>
->({
+export const fileUploadItemButtonRows = propRows<Pick<FileUploadCancelButtonProps, 'children'>>({
   children: childrenRow('the visible text'),
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"button">, FileUploadItemState>',
-    default: '–',
-    description: 'Changes the element, which must still be a <button>.',
-  },
 })
 
 export const fileUploadItemButtonAttributes: readonly AttributeRow[] = [

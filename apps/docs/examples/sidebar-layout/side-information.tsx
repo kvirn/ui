@@ -9,12 +9,12 @@ export function SideInformation() {
   return (
     <SidebarLayout.Root lang={textLang}>
       <SidebarLayout.Content className="kv-prose">
-        <Heading level={3}>{texts.contact.article}</Heading>
+        <Heading as="h3">{texts.contact.article}</Heading>
         <p>{texts.contact.articleText}</p>
       </SidebarLayout.Content>
-      <SidebarLayout.Sidebar render={<aside aria-labelledby={headingId} />}>
+      <SidebarLayout.Sidebar as="aside" aria-labelledby={headingId}>
         <Card.Root className="kv-prose">
-          <Heading level={4} id={headingId}>
+          <Heading as="h4" id={headingId}>
             {texts.contact.heading}
           </Heading>
           <p>{texts.contact.text}</p>

@@ -1,28 +1,6 @@
-import type {
-  CodeBlockCodeComponentProps,
-  CodeBlockCopyProps,
-  CodeBlockLabelComponentProps,
-  CodeBlockRootComponentProps,
-  UseCodeBlockResult,
-} from '@kvirn-ui/react'
+import type { CodeBlockCopyProps, UseCodeBlockResult } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
-
-const renderRow = {
-  type: 'RenderProp<CodeBlockElementProps, CodeBlockState>',
-  default: '–',
-  description: 'Changes the element. Its own semantics apply. The state is empty.',
-}
-
-export const codeBlockRootRows = propRows<Pick<CodeBlockRootComponentProps, 'render'>>({
-  render: renderRow,
-})
-export const codeBlockLabelRows = propRows<Pick<CodeBlockLabelComponentProps, 'render'>>({
-  render: renderRow,
-})
-export const codeBlockCodeRows = propRows<Pick<CodeBlockCodeComponentProps, 'render'>>({
-  render: renderRow,
-})
 
 export type CodeBlockCopyDocumentedProps = Pick<
   CodeBlockCopyProps,

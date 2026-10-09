@@ -5,7 +5,7 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 /** The props Switch documents: its own, and the native ones whose behaviour it changes. */
 export type SwitchDocumentedProps = Pick<
   SwitchProps,
-  'checked' | 'defaultChecked' | 'value' | 'name' | 'disabled' | 'onCheckedChange' | 'render'
+  'checked' | 'defaultChecked' | 'value' | 'name' | 'disabled' | 'onCheckedChange'
 >
 
 export const switchRows = propRows<SwitchDocumentedProps>({
@@ -41,12 +41,6 @@ export const switchRows = propRows<SwitchDocumentedProps>({
     default: '–',
     description:
       'Called on every change with the new state and { reason: "input", event }. It only reports. onChange still works too.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"input">, SwitchState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be an <input type="checkbox">. A function receives the props and { isInvalid, isDisabled, isFocusVisible }.',
   },
 })
 

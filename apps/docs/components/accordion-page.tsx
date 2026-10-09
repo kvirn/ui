@@ -16,7 +16,6 @@ import {
   accordionRootAttributes,
   accordionRootRows,
   accordionTriggerAttributes,
-  accordionTriggerRows,
   useAccordionHook,
 } from '../content/accordion.api.ts'
 import { AsAList } from '../examples/accordion/as-a-list.tsx'
@@ -77,7 +76,6 @@ const parts: ApiPart[] = [
         added, and takes the same attributes.
       </>
     ),
-    props: accordionTriggerRows,
     attributes: accordionTriggerAttributes,
   },
   {
@@ -183,8 +181,8 @@ export function AccordionPage({
             why="If you want the screen reader to say how many questions there are, make the root a list and each item a list item. The markup is yours, through render."
             code={sources['as-a-list']}
             propsUsed={[
-              { part: 'Accordion.Root', prop: 'render' },
-              { part: 'Accordion.Item', prop: 'render' },
+              { part: 'Accordion.Root', prop: 'as' },
+              { part: 'Accordion.Item', prop: 'as' },
             ]}
             note={
               <Note kind="recipe">

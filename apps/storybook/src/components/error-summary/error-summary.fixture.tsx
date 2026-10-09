@@ -65,7 +65,7 @@ export function ParkingForm({
           </ErrorSummary.List>
         </ErrorSummary.Root>
       ) : null}
-      <Heading level={1} size="heading-2">
+      <Heading as="h1" size="heading-2">
         Ansök om boendeparkering
       </Heading>
       <form noValidate onSubmit={(event) => event.preventDefault()} className="kv-stack">

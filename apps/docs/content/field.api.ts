@@ -1,9 +1,6 @@
 import type {
-  FieldErrorMessageProps,
-  FieldHelpTextProps,
   FieldLabelProps,
   FieldRootProps,
-  ProseRootProps,
   UseFieldOptions,
   UseFieldResult,
 } from '@kvirn-ui/react'
@@ -11,7 +8,7 @@ import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
 export const fieldRootRows = propRows<
-  Pick<FieldRootProps, 'invalid' | 'required' | 'disabled' | 'controlId' | 'messages' | 'render'>
+  Pick<FieldRootProps, 'invalid' | 'required' | 'disabled' | 'controlId' | 'messages'>
 >({
   invalid: {
     type: 'boolean',
@@ -41,12 +38,6 @@ export const fieldRootRows = propRows<
     default: '–',
     description: 'Overrides field.optional and field.errorPrefix for this field.',
   },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"div">, FieldState>',
-    default: '–',
-    description:
-      'Changes the element. A function receives the props and { isInvalid, isRequired, isDisabled }.',
-  },
 })
 
 export const fieldRootAttributes: readonly AttributeRow[] = [
@@ -56,17 +47,12 @@ export const fieldRootAttributes: readonly AttributeRow[] = [
   { name: 'data-disabled', values: 'present or absent', meaning: 'The field is disabled.' },
 ]
 
-export const fieldLabelRows = propRows<Pick<FieldLabelProps, 'marker' | 'render'>>({
+export const fieldLabelRows = propRows<Pick<FieldLabelProps, 'marker'>>({
   marker: {
     type: "'optional' | 'none'",
     default: "'optional'",
     description:
       'Whether the label ends with the optional text when the field is not required. Inside a group Fieldset the Field default is ‘none’.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"label">, FieldState>',
-    default: '–',
-    description: 'Changes the element, which must still be a <label>.',
   },
 })
 
@@ -84,41 +70,17 @@ export const fieldLabelAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const fieldProseRows = propRows<Pick<ProseRootProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ProseElementProps, ProseState>',
-    default: '–',
-    description: 'Changes the element: its own semantics apply.',
-  },
-})
-
 export const fieldProseAttributes: readonly AttributeRow[] = [
   { name: 'kv-prose', values: 'always', meaning: 'The class that styles the text for reading.' },
   { name: 'data-invalid', values: 'present or absent', meaning: 'The field is invalid.' },
   { name: 'data-disabled', values: 'present or absent', meaning: 'The field is disabled.' },
 ]
 
-export const fieldHelpTextRows = propRows<Pick<FieldHelpTextProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"p">, FieldHelpTextState>',
-    default: '–',
-    description: 'Changes the element.',
-  },
-})
-
 export const fieldHelpTextAttributes: readonly AttributeRow[] = [
   { name: 'kv-field-help-text', values: 'always', meaning: 'The part class: 14px in the theme.' },
   { name: 'data-invalid', values: 'present or absent', meaning: 'The field is invalid.' },
   { name: 'data-disabled', values: 'present or absent', meaning: 'The field is disabled.' },
 ]
-
-export const fieldErrorMessageRows = propRows<Pick<FieldErrorMessageProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"p">, FieldState>',
-    default: '–',
-    description: 'Changes the element.',
-  },
-})
 
 export const fieldErrorMessageAttributes: readonly AttributeRow[] = [
   { name: 'kv-field-error-message', values: 'always', meaning: 'The part class.' },

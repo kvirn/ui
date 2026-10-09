@@ -1,5 +1,4 @@
 import type {
-  TableOfContentsItemProps,
   TableOfContentsLinkProps,
   TableOfContentsListProps,
   TableOfContentsRootProps,
@@ -29,10 +28,7 @@ const messagesRow = {
 } as const
 
 export const tableOfContentsRootRows = propRows<
-  Pick<
-    TableOfContentsRootProps,
-    'items' | 'offset' | 'messages' | 'aria-labelledby' | 'children' | 'render'
-  >
+  Pick<TableOfContentsRootProps, 'items' | 'offset' | 'messages' | 'aria-labelledby' | 'children'>
 >({
   items: itemsRow,
   offset: offsetRow,
@@ -49,11 +45,6 @@ export const tableOfContentsRootRows = propRows<
     description:
       'Draws your own list instead of the built one. It isn’t called when items is empty, so a title drawn in it goes too.',
   },
-  render: {
-    type: 'RenderProp<TableOfContentsElementProps, TableOfContentsState>',
-    default: '–',
-    description: 'Changes the element, which must stay a <nav> or have role="navigation".',
-  },
 })
 
 export const tableOfContentsRootAttributes: readonly AttributeRow[] = [
@@ -69,11 +60,11 @@ export const tableOfContentsRootAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const tableOfContentsListRows = propRows<Pick<TableOfContentsListProps, 'render'>>({
-  render: {
-    type: 'RenderProp<TableOfContentsElementProps, TableOfContentsState>',
-    default: '–',
-    description: 'Changes the element. Its own semantics apply.',
+export const tableOfContentsListRows = propRows<Pick<TableOfContentsListProps, 'as'>>({
+  as: {
+    type: "'ul' | 'ol'",
+    default: "'ul'",
+    description: 'Changes the element to ol for a numbered contents list. role="list" stays.',
   },
 })
 
@@ -81,20 +72,12 @@ export const tableOfContentsListAttributes: readonly AttributeRow[] = [
   { name: 'kv-table-of-contents-list', values: 'always', meaning: 'The part class.' },
 ]
 
-export const tableOfContentsItemRows = propRows<Pick<TableOfContentsItemProps, 'render'>>({
-  render: {
-    type: 'RenderProp<TableOfContentsElementProps, TableOfContentsState>',
-    default: '–',
-    description: 'Changes the element. Its own semantics apply.',
-  },
-})
-
 export const tableOfContentsItemAttributes: readonly AttributeRow[] = [
   { name: 'kv-table-of-contents-item', values: 'always', meaning: 'The part class.' },
 ]
 
 export const tableOfContentsLinkRows = propRows<
-  Pick<TableOfContentsLinkProps, 'item' | 'children' | 'render'>
+  Pick<TableOfContentsLinkProps, 'item' | 'children'>
 >({
   item: {
     type: '{ id: string; label: string; level: number }',
@@ -104,11 +87,6 @@ export const tableOfContentsLinkRows = propRows<
     type: 'ReactNode',
     default: 'the entry’s label',
     description: 'Your own text for the link. Without it the link shows the entry’s label.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"a">, TableOfContentsState>',
-    default: '–',
-    description: 'Changes the element, which must stay an <a> with an href.',
   },
 })
 

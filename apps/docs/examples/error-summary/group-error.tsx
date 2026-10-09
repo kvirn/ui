@@ -23,17 +23,14 @@ export function GroupError() {
       ) : null}
       <Stack
         gap="8"
-        render={
-          <form
-            noValidate
-            onSubmit={(event) => {
-              event.preventDefault()
-              const data = new FormData(event.currentTarget)
-              setIsIncomplete(data.get('firstName') === '' || data.get('lastName') === '')
-              setSubmitCount((count) => count + 1)
-            }}
-          />
-        }
+        as="form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          const data = new FormData(event.currentTarget)
+          setIsIncomplete(data.get('firstName') === '' || data.get('lastName') === '')
+          setSubmitCount((count) => count + 1)
+        }}
       >
         <Fieldset.Root group required invalid={isIncomplete}>
           <Fieldset.Legend>{texts.nameQuestion}</Fieldset.Legend>

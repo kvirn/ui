@@ -1,7 +1,4 @@
 import type {
-  NavigationItemProps,
-  NavigationLabelProps,
-  NavigationListProps,
   NavigationRootProps,
   UseNavigationOptions,
   UseNavigationResult,
@@ -9,17 +6,12 @@ import type {
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-export const navigationRootRows = propRows<Pick<NavigationRootProps, 'label' | 'render'>>({
+export const navigationRootRows = propRows<Pick<NavigationRootProps, 'label'>>({
   label: {
     type: 'string',
     default: '–',
     description:
       'The accessible name, from your translations. Set as aria-label. Where a visible heading names it, leave it out and pass aria-labelledby instead.',
-  },
-  render: {
-    type: 'RenderProp<NavigationElementProps, NavigationState>',
-    default: '–',
-    description: 'Changes the element, which must stay a <nav> or have role="navigation".',
   },
 })
 
@@ -41,14 +33,6 @@ export const navigationRootAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const navigationListRows = propRows<Pick<NavigationListProps, 'render'>>({
-  render: {
-    type: 'RenderProp<NavigationElementProps, NavigationState>',
-    default: '–',
-    description: 'Changes the element. Its own semantics apply.',
-  },
-})
-
 export const navigationListAttributes: readonly AttributeRow[] = [
   { name: 'kv-navigation-list', values: 'always', meaning: 'The part class.' },
   {
@@ -59,25 +43,9 @@ export const navigationListAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export const navigationItemRows = propRows<Pick<NavigationItemProps, 'render'>>({
-  render: {
-    type: 'RenderProp<NavigationElementProps, NavigationState>',
-    default: '–',
-    description: 'Changes the element. Its own semantics apply.',
-  },
-})
-
 export const navigationItemAttributes: readonly AttributeRow[] = [
   { name: 'kv-navigation-item', values: 'always', meaning: 'The part class.' },
 ]
-
-export const navigationLabelRows = propRows<Pick<NavigationLabelProps, 'render'>>({
-  render: {
-    type: 'RenderProp<NavigationElementProps, NavigationState>',
-    default: '–',
-    description: 'Changes the element. It stays plain text: give it no role and no tabindex.',
-  },
-})
 
 export const navigationLabelAttributes: readonly AttributeRow[] = [
   { name: 'kv-navigation-label', values: 'always', meaning: 'The part class.' },

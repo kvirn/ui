@@ -26,7 +26,6 @@ const meta = {
       control: 'boolean',
       description: 'Puts the message `errorSummary.titlePrefix` before the page title while shown.',
     },
-    render: { control: false },
   },
   decorators: [withErrorSummaryLocale],
   globals: { locale: 'sv' },

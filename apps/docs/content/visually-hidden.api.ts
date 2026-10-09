@@ -2,14 +2,14 @@ import type { UseVisuallyHiddenResult, VisuallyHiddenProps } from '@kvirn-ui/rea
 import { propRows } from '../components/api-block.tsx'
 import type { AttributeRow } from '../components/api-block.tsx'
 
-export type VisuallyHiddenDocumentedProps = Pick<VisuallyHiddenProps, 'render'>
+export type VisuallyHiddenDocumentedProps = Pick<VisuallyHiddenProps, 'as'>
 
 export const visuallyHiddenRows = propRows<VisuallyHiddenDocumentedProps>({
-  render: {
-    type: 'RenderProp<VisuallyHiddenElementProps, VisuallyHiddenState>',
-    default: '–',
+  as: {
+    type: "'span' | 'div' | 'p' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'",
+    default: "'span'",
     description:
-      'Changes the element, for example render={<h2 />}. The rendered element’s own semantics apply. A function receives the props and an empty state.',
+      'Changes the element, for example as="h2" for a hidden heading. The element’s own semantics apply. There is no h1: the page’s title is visible.',
   },
 })
 

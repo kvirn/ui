@@ -47,7 +47,6 @@ const meta = {
       description:
         'Your own classes, added to `kv-summary-list`. The theme draws the rows and stacks them below `40rem`.',
     },
-    render: { control: false },
   },
   decorators: [withSummaryListLocale],
   globals: { locale: 'sv' },
@@ -132,7 +131,7 @@ export const InACard: Story = {
   render: (args) => (
     <Card.Root>
       <Card.Body>
-        <Heading level={2}>Ärende 2026-0142</Heading>
+        <Heading as="h2">Ärende 2026-0142</Heading>
         <SummaryList.Root {...args}>
           <SummaryList.Row>
             <SummaryList.Key>Status</SummaryList.Key>

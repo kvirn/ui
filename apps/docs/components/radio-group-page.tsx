@@ -10,13 +10,10 @@ import { UseCase } from './use-case.tsx'
 import {
   radioAttributes,
   radioGroupErrorMessageAttributes,
-  radioGroupErrorMessageRows,
   radioGroupHelpTextAttributes,
-  radioGroupHelpTextRows,
   radioGroupLegendAttributes,
   radioGroupLegendRows,
   radioGroupProseAttributes,
-  radioGroupProseRows,
   radioGroupRootAttributes,
   radioGroupRootRows,
   radioRows,
@@ -88,7 +85,6 @@ const parts: ApiPart[] = [
         answering, above the options. It is listed in the group’s <code>aria-describedby</code>.
       </>
     ),
-    props: radioGroupProseRows,
     attributes: radioGroupProseAttributes,
   },
   {
@@ -100,7 +96,6 @@ const parts: ApiPart[] = [
         in that option’s Field.
       </>
     ),
-    props: radioGroupHelpTextRows,
     attributes: radioGroupHelpTextAttributes,
   },
   {
@@ -112,7 +107,6 @@ const parts: ApiPart[] = [
         <code>aria-describedby</code>, and is not a live region. Render one per group.
       </>
     ),
-    props: radioGroupErrorMessageRows,
     attributes: radioGroupErrorMessageAttributes,
   },
 ]

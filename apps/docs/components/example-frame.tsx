@@ -13,7 +13,10 @@ const text = messages.docs.example
 const codeText = messages.docs.code
 
 /** An example that throws shows a message in its frame. The rest of the page keeps working. */
-class ExampleErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+export class ExampleErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean }
+> {
   override state = { hasError: false }
 
   static getDerivedStateFromError() {
@@ -87,10 +90,10 @@ export function ExampleFrame({
   }, [])
 
   return (
-    <Card.Root render={<figure aria-labelledby={titleId} />} className="kv-card--dividers">
+    <Card.Root as="figure" aria-labelledby={titleId} className="kv-card--dividers">
       <Card.Header className="docs-example-header">
         {headingId === undefined && (
-          <Heading level={3} size="heading-5" id={titleId}>
+          <Heading as="h3" size="heading-5" id={titleId}>
             {caption}
           </Heading>
         )}

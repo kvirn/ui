@@ -1,8 +1,5 @@
 import type {
-  FieldErrorMessageProps,
-  FieldHelpTextProps,
   FieldsetLegendProps,
-  ProseRootProps,
   RadioGroupRootProps,
   RadioProps,
   UseRadioGroupOptions,
@@ -22,7 +19,6 @@ export type RadioGroupRootDocumentedProps = Pick<
   | 'required'
   | 'disabled'
   | 'messages'
-  | 'render'
 >
 
 export const radioGroupRootRows = propRows<RadioGroupRootDocumentedProps>({
@@ -72,12 +68,6 @@ export const radioGroupRootRows = propRows<RadioGroupRootDocumentedProps>({
     default: '–',
     description: 'Overrides the legend’s optional text and the error prefix for this group.',
   },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"fieldset">, FieldsetState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be a <fieldset>. A development warning says so.',
-  },
 })
 
 export const radioGroupRootAttributes: readonly AttributeRow[] = [
@@ -116,7 +106,7 @@ export const radioGroupRootAttributes: readonly AttributeRow[] = [
 
 export type RadioDocumentedProps = Pick<
   RadioProps,
-  'value' | 'checked' | 'defaultChecked' | 'disabled' | 'render'
+  'value' | 'checked' | 'defaultChecked' | 'disabled'
 >
 
 export const radioRows = propRows<RadioDocumentedProps>({
@@ -141,11 +131,6 @@ export const radioRows = propRows<RadioDocumentedProps>({
     default: 'false',
     description: 'Native disabled: this radio is skipped by Tab and the arrow keys.',
   },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"input">, RadioState>',
-    default: '–',
-    description: 'Changes the element, which must still be an <input type="radio">.',
-  },
 })
 
 export const radioAttributes: readonly AttributeRow[] = [
@@ -168,18 +153,13 @@ export const radioAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export type RadioGroupLegendDocumentedProps = Pick<FieldsetLegendProps, 'marker' | 'render'>
+export type RadioGroupLegendDocumentedProps = Pick<FieldsetLegendProps, 'marker'>
 
 export const radioGroupLegendRows = propRows<RadioGroupLegendDocumentedProps>({
   marker: {
     type: "'optional' | 'none'",
     default: "'optional' in a group that isn’t required, else 'none'",
     description: 'Whether the legend ends with the optional text, for example “(optional)”.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"legend">, FieldsetState>',
-    default: '–',
-    description: 'Changes the element.',
   },
 })
 
@@ -189,14 +169,6 @@ export const radioGroupLegendAttributes: readonly AttributeRow[] = [
   { name: 'data-required', values: 'present or absent', meaning: 'The group is required.' },
   { name: 'data-disabled', values: 'present or absent', meaning: 'The group is disabled.' },
 ]
-
-export const radioGroupProseRows = propRows<Pick<ProseRootProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ProseElementProps, ProseState>',
-    default: '–',
-    description: 'Changes the element. Its own semantics apply.',
-  },
-})
 
 export const radioGroupProseAttributes: readonly AttributeRow[] = [
   {
@@ -208,14 +180,6 @@ export const radioGroupProseAttributes: readonly AttributeRow[] = [
   { name: 'data-disabled', values: 'present or absent', meaning: 'The group is disabled.' },
 ]
 
-export const radioGroupHelpTextRows = propRows<Pick<FieldHelpTextProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"p">, FieldState>',
-    default: '–',
-    description: 'Changes the element. Never to something interactive.',
-  },
-})
-
 export const radioGroupHelpTextAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-field-help-text',
@@ -225,14 +189,6 @@ export const radioGroupHelpTextAttributes: readonly AttributeRow[] = [
   { name: 'data-invalid', values: 'present or absent', meaning: 'The group is invalid.' },
   { name: 'data-disabled', values: 'present or absent', meaning: 'The group is disabled.' },
 ]
-
-export const radioGroupErrorMessageRows = propRows<Pick<FieldErrorMessageProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"p">, FieldState>',
-    default: '–',
-    description: 'Changes the element.',
-  },
-})
 
 export const radioGroupErrorMessageAttributes: readonly AttributeRow[] = [
   { name: 'kv-field-error-message', values: 'always', meaning: 'The part class.' },

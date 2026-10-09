@@ -7,7 +7,7 @@ export function ServicePage() {
   const { service } = texts
   return (
     <SidebarLayout.Root sidebarWidth="sm" lang={textLang}>
-      <SidebarLayout.Sidebar render={<nav aria-label={service.navigationLabel} />}>
+      <SidebarLayout.Sidebar as="nav" aria-label={service.navigationLabel}>
         <ul className="kv-stack kv-stack--gap-2">
           {service.links.map((label) => (
             <li key={label}>
@@ -19,7 +19,7 @@ export function ServicePage() {
         </ul>
       </SidebarLayout.Sidebar>
       <SidebarLayout.Content className="kv-prose">
-        <Heading level={3}>{service.heading}</Heading>
+        <Heading as="h3">{service.heading}</Heading>
         <p>{service.text}</p>
       </SidebarLayout.Content>
     </SidebarLayout.Root>

@@ -9,7 +9,6 @@ import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   tabsListAttributes,
-  tabsListRows,
   tabsPanelAttributes,
   tabsPanelRows,
   tabsRootAttributes,
@@ -31,12 +30,9 @@ export type TabsExampleSources = Record<
   string
 >
 
-const lazyPanelCode = `<Tabs.Panel
-  value="history"
-  render={(panelProps, { isSelected }) => (
-    <div {...panelProps}>{isSelected && <History />}</div>
-  )}
-/>`
+const lazyPanelCode = `<Tabs.Root value={value} onValueChange={setValue}>
+  <Tabs.Panel value="history">{value === 'history' && <History />}</Tabs.Panel>
+</Tabs.Root>`
 
 const parts: ApiPart[] = [
   {
@@ -60,7 +56,6 @@ const parts: ApiPart[] = [
         and End. Name it with <code>aria-label</code> or <code>aria-labelledby</code>.
       </>
     ),
-    props: tabsListRows,
     attributes: tabsListAttributes,
   },
   {

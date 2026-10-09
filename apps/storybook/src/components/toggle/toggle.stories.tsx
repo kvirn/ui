@@ -84,11 +84,6 @@ const meta = {
     },
     children: { control: 'text', description: 'The visible label, which is the name.' },
     ref: { control: false, description: 'A ref to the `<button>`.' },
-    render: {
-      control: false,
-      description:
-        'Another element. It must still be a `<button>`. Spread the props it gets, and keep `onClick`.',
-    },
   },
   globals: { locale: 'sv' },
   parameters: {

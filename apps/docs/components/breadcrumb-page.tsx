@@ -9,12 +9,9 @@ import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   breadcrumbCurrentAttributes,
-  breadcrumbCurrentRows,
   breadcrumbItemAttributes,
-  breadcrumbItemRows,
   breadcrumbLinkAttributes,
   breadcrumbListAttributes,
-  breadcrumbListRows,
   breadcrumbRootAttributes,
   breadcrumbRootRows,
   useBreadcrumbHook,
@@ -48,7 +45,6 @@ const parts: ApiPart[] = [
         is the meaning.
       </>
     ),
-    props: breadcrumbListRows,
     attributes: breadcrumbListAttributes,
   },
   {
@@ -59,7 +55,6 @@ const parts: ApiPart[] = [
         <code>Breadcrumb.Link</code>, or the last item’s <code>Breadcrumb.Current</code>.
       </>
     ),
-    props: breadcrumbItemRows,
     attributes: breadcrumbItemAttributes,
   },
   {
@@ -82,7 +77,6 @@ const parts: ApiPart[] = [
         on, as text: the last item, never a link.
       </>
     ),
-    props: breadcrumbCurrentRows,
     attributes: breadcrumbCurrentAttributes,
   },
 ]

@@ -81,7 +81,7 @@ export function ColumnsPage({
             title="A grid of services on the start page"
             why="Cards that lead to the services residents look for most. Render Columns as a list and each card as a list item, so the count is announced and the cards are read in the order they are written."
             code={sources['service-list']}
-            propsUsed={[{ part: 'Columns', prop: 'render' }]}
+            propsUsed={[{ part: 'Columns', prop: 'as' }]}
             note={
               <Note kind="reminder">
                 Write the items in reading order. Columns fills left to right (right to left in
@@ -99,7 +99,7 @@ export function ColumnsPage({
             propsUsed={[
               { part: 'Columns', prop: 'minColumnWidth' },
               { part: 'Columns', prop: 'gap' },
-              { part: 'Columns', prop: 'render' },
+              { part: 'Columns', prop: 'as' },
             ]}
           >
             <QuickLinks />
@@ -112,7 +112,7 @@ export function ColumnsPage({
             propsUsed={[
               { part: 'Columns', prop: 'minColumnWidth' },
               { part: 'Columns', prop: 'gap' },
-              { part: 'Columns', prop: 'render' },
+              { part: 'Columns', prop: 'as' },
             ]}
             note={
               <Note kind="tip">

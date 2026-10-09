@@ -303,7 +303,7 @@ export function LongMenu({ locale, ...rootProps }: MenuRootProps & { locale: For
 
 /**
  * Inside a vertical toolbar the trigger is one of its items, put in with `Toolbar.Item` and
- * `render`. ArrowDown on the trigger opens the menu; the toolbar does not also move focus.
+ * `as`. ArrowDown on the trigger opens the menu; the toolbar does not also move focus.
  */
 export function ToolbarMenu({ locale }: { locale: FormLocale }) {
   const { text, lang } = textsFor(locale)
@@ -312,7 +312,7 @@ export function ToolbarMenu({ locale }: { locale: FormLocale }) {
       <Toolbar.Root aria-label={text.toolbar} orientation="vertical">
         <Toolbar.Button>{text.before}</Toolbar.Button>
         <Menu.Root>
-          <Toolbar.Item render={<Menu.Trigger className="kv-button" />}>
+          <Toolbar.Item as={Menu.Trigger} className="kv-button">
             {text.trigger}
           </Toolbar.Item>
           <Menu.Popup>
@@ -337,7 +337,7 @@ export function TooltipMenu({ locale }: { locale: FormLocale }) {
     <div lang={lang}>
       <Menu.Root>
         <Tooltip.Root>
-          <Tooltip.Trigger render={<Menu.Trigger className="kv-button" />}>
+          <Tooltip.Trigger as={Menu.Trigger} className="kv-button">
             {text.trigger}
           </Tooltip.Trigger>
           <Tooltip.Popup>{text.toolbar}</Tooltip.Popup>

@@ -204,7 +204,7 @@ export function StringsBlock<Namespace extends keyof KvirnMessages>({
       ) : (
         entries.map((entry) => (
           <section key={entry.key} aria-labelledby={stringId(entry.key)}>
-            <Heading level={4} id={stringId(entry.key)}>
+            <Heading as="h4" id={stringId(entry.key)}>
               <code>
                 {entry.namespace}.{entry.key}
               </code>

@@ -5,8 +5,8 @@ import { useAccordionTexts } from './texts.ts'
 export function AsAList() {
   const { texts, textLang } = useAccordionTexts()
   return (
-    <Accordion.Root render={<ul role="list" aria-label={texts.list} />} lang={textLang}>
-      <Accordion.Item render={<li />}>
+    <Accordion.Root as="ul" aria-label={texts.list} lang={textLang}>
+      <Accordion.Item as="li">
         <Accordion.Heading level={3}>
           <Accordion.Trigger>{texts.cost}</Accordion.Trigger>
         </Accordion.Heading>
@@ -14,7 +14,7 @@ export function AsAList() {
           <p>{texts.costText}</p>
         </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item render={<li />}>
+      <Accordion.Item as="li">
         <Accordion.Heading level={3}>
           <Accordion.Trigger>{texts.howLong}</Accordion.Trigger>
         </Accordion.Heading>

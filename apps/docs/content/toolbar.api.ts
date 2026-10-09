@@ -1,6 +1,5 @@
 import type {
   ToolbarButtonProps,
-  ToolbarGroupProps,
   ToolbarItemProps,
   ToolbarRootProps,
   ToolbarToggleProps,
@@ -10,11 +9,10 @@ import type {
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-export type ToolbarRootDocumentedProps = Pick<ToolbarRootProps, 'orientation' | 'loop' | 'render'>
-export type ToolbarGroupDocumentedProps = Pick<ToolbarGroupProps, 'render'>
+export type ToolbarRootDocumentedProps = Pick<ToolbarRootProps, 'orientation' | 'loop' | 'as'>
 export type ToolbarButtonDocumentedProps = Pick<
   ToolbarButtonProps,
-  'disabled' | 'focusableWhenDisabled' | 'type' | 'onClick' | 'render'
+  'disabled' | 'focusableWhenDisabled' | 'type' | 'onClick'
 >
 export type ToolbarToggleDocumentedProps = Pick<
   ToolbarToggleProps,
@@ -24,11 +22,10 @@ export type ToolbarToggleDocumentedProps = Pick<
   | 'disabled'
   | 'focusableWhenDisabled'
   | 'onClick'
-  | 'render'
 >
 export type ToolbarItemDocumentedProps = Pick<
   ToolbarItemProps,
-  'render' | 'disabled' | 'focusableWhenDisabled'
+  'as' | 'disabled' | 'focusableWhenDisabled'
 >
 
 export const toolbarRootRows = propRows<ToolbarRootDocumentedProps>({
@@ -43,20 +40,11 @@ export const toolbarRootRows = propRows<ToolbarRootDocumentedProps>({
     default: 'true',
     description: 'Whether the arrows wrap from the last control to the first, and back.',
   },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"div">, ToolbarState>',
-    default: '–',
+  as: {
+    type: "'div' | 'section'",
+    default: "'div'",
     description:
-      'Changes the element. It still gets the role, the class and the keys. A function receives the props and { orientation }.',
-  },
-})
-
-export const toolbarGroupRows = propRows<ToolbarGroupDocumentedProps>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"div">, ButtonGroupState>',
-    default: '–',
-    description:
-      'Changes the element. The group role only goes with a name: pass aria-label or aria-labelledby.',
+      'Changes the element: a section with aria-labelledby is a named region. It still gets the role, the class and the keys.',
   },
 })
 
@@ -81,11 +69,6 @@ export const toolbarButtonRows = propRows<ToolbarButtonDocumentedProps>({
     type: 'MouseEventHandler<HTMLButtonElement>',
     default: '–',
     description: 'Called on click, Enter and Space, and never while the button is disabled.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"button">, ButtonState>',
-    default: '–',
-    description: 'Changes the element, which must still be a <button>.',
   },
 })
 
@@ -122,20 +105,14 @@ export const toolbarToggleRows = propRows<ToolbarToggleDocumentedProps>({
     default: '–',
     description: 'Called on click, Enter and Space, and never while the toggle is disabled.',
   },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"button">, ToggleState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be a <button>. A function receives the props and { isPressed, isDisabled, isFocusVisible }.',
-  },
 })
 
 export const toolbarItemRows = propRows<ToolbarItemDocumentedProps>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"button">, ToolbarItemState>',
-    default: '–',
+  as: {
+    type: 'ElementType',
+    default: "'button'",
     description:
-      'The control that becomes an item: a Listbox.Trigger, a Popover.Trigger, a Link.Root or an input. It must be focusable by itself. Without render the item is a <button type="button">. A function receives the props and { isTabStop }.',
+      'The component that becomes an item: Link.Root, Popover.Trigger, Listbox.Trigger or an input of your own, with its props set on the Item: as={Link.Root} href="#guide". It must be focusable by itself, forward its ref and spread its props on a DOM node. Without as the item is a <button type="button">.',
   },
   disabled: {
     type: 'boolean',

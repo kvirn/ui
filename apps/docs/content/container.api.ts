@@ -2,7 +2,7 @@ import type { ContainerProps, UseContainerOptions, UseContainerResult } from '@k
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-export type ContainerDocumentedProps = Pick<ContainerProps, 'size' | 'render' | 'ref'>
+export type ContainerDocumentedProps = Pick<ContainerProps, 'size' | 'as' | 'ref'>
 
 export const containerRows = propRows<ContainerDocumentedProps>({
   size: {
@@ -11,11 +11,11 @@ export const containerRows = propRows<ContainerDocumentedProps>({
     description:
       'The measure. "page" is centred, at most 80rem wide, with inline padding. "reading" (45rem) and "form" (40rem) are start-aligned and add no padding.',
   },
-  render: {
-    type: 'RenderProp<ContainerElementProps, ContainerState>',
-    default: '–',
+  as: {
+    type: "'div' | 'main' | 'section' | 'article'",
+    default: "'div'",
     description:
-      'Changes the element, for example <main />, <nav aria-label /> or <section aria-labelledby />. Its own semantics apply: Container adds no role. A function receives the props and the state, which is empty.',
+      'Changes the element: main (one per page), section with aria-labelledby, or article. Container adds no role.',
   },
   ref: {
     type: 'Ref<HTMLElement>',
@@ -28,7 +28,7 @@ export const containerAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-container',
     values: 'always',
-    meaning: 'The part class. Your className and a render element’s own class join it.',
+    meaning: 'The part class. Your className joins it.',
   },
   {
     name: 'kv-container--reading',
@@ -45,7 +45,7 @@ export const containerAttributes: readonly AttributeRow[] = [
 export const useContainerHook: ApiHook = {
   name: 'useContainer',
   intro:
-    'Use it when you can’t use render, for example on a component of your own. It adds no role, ARIA or tabindex, and it returns the same frozen object for each size.',
+    'Use it when you can’t use as, for example on a component of your own. It adds no role, ARIA or tabindex, and it returns the same frozen object for each size.',
   options: propRows<UseContainerOptions>({
     size: {
       type: "'page' | 'reading' | 'form'",

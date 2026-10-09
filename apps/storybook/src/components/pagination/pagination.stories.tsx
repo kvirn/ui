@@ -23,7 +23,6 @@ const meta = {
       description:
         'The landmark’s accessible name, set as `aria-label`. Replaces the message `pagination.label` (`Sidor`).',
     },
-    render: { control: false },
   },
   decorators: [withLocale],
   globals: { locale: 'sv' },

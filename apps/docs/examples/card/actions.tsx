@@ -7,7 +7,7 @@ export function CardWithActions() {
   return (
     <Card.Root lang={textLang}>
       <Card.Body className="kv-prose">
-        <Heading level={4}>{texts.service.heading}</Heading>
+        <Heading as="h4">{texts.service.heading}</Heading>
         <p>{texts.service.text}</p>
       </Card.Body>
       <Card.Footer className="kv-button-group">

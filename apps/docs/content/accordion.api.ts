@@ -3,24 +3,23 @@ import type {
   AccordionItemProps,
   AccordionPanelProps,
   AccordionRootProps,
-  AccordionTriggerProps,
   UseAccordionResult,
 } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-export const accordionRootRows = propRows<Pick<AccordionRootProps, 'hiddenUntilFound' | 'render'>>({
+export const accordionRootRows = propRows<Pick<AccordionRootProps, 'hiddenUntilFound' | 'as'>>({
   hiddenUntilFound: {
     type: 'boolean',
     default: 'false',
     description:
       'The default for every item: keeps closed panels’ text findable with the browser’s find-in-page and #fragment links. An item can set its own.',
   },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"div">, AccordionState>',
-    default: '–',
+  as: {
+    type: "'div' | 'ul' | 'ol'",
+    default: "'div'",
     description:
-      'Changes the element, for example to a <ul role="list">. The items are then <li> through their own render.',
+      'A list of questions whose count is announced. Use ul or ol with Accordion.Item as="li", and the root adds role="list". Another tag warns once in development.',
   },
 })
 
@@ -33,7 +32,7 @@ export const accordionItemRows = propRows<
     | 'hiddenUntilFound'
     | 'disabled'
     | 'focusableWhenDisabled'
-    | 'render'
+    | 'as'
   >
 >({
   open: {
@@ -70,47 +69,27 @@ export const accordionItemRows = propRows<
     description:
       'With disabled, keeps the trigger in the Tab order with aria-disabled="true". Opening stays blocked.',
   },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"div">, AccordionItemState>',
-    default: '–',
-    description:
-      'Changes the element, for example to an <li>. A function receives { isOpen, isDisabled }.',
+  as: {
+    type: "'div' | 'li'",
+    default: "'div'",
+    description: 'An li inside an Accordion.Root that is a ul or an ol.',
   },
 })
 
-export const accordionHeadingRows = propRows<Pick<AccordionHeadingProps, 'level' | 'render'>>({
+export const accordionHeadingRows = propRows<Pick<AccordionHeadingProps, 'level'>>({
   level: {
     type: '1 | 2 | 3 | 4 | 5 | 6',
     description:
       'The level your page’s outline needs: it renders <h1> to <h6>. Required, because an Accordion can’t know where it sits.',
   },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"h2">, AccordionHeadingState>',
-    default: '–',
-    description: 'Changes the element. A function receives { level, isOpen }.',
-  },
 })
 
-export const accordionTriggerRows = propRows<Pick<AccordionTriggerProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"button">, DisclosureState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be a <button> that forwards its ref. A function receives { isOpen, isDisabled }, and you add the chevron yourself.',
-  },
-})
-
-export const accordionPanelRows = propRows<Pick<AccordionPanelProps, 'region' | 'render'>>({
+export const accordionPanelRows = propRows<Pick<AccordionPanelProps, 'region'>>({
   region: {
     type: 'boolean',
     default: 'false',
     description:
       'Makes the panel a region named by its trigger. Use it for about six sections or fewer: many open regions crowd a screen reader user’s landmark list.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"div">, DisclosureState>',
-    default: '–',
-    description: 'Changes the element. A function receives { isOpen, isDisabled }.',
   },
 })
 

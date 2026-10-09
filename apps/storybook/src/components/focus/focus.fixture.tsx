@@ -200,7 +200,7 @@ export function RouteMove({ locale }: { locale: FocusFixtureLocale }) {
   )
 }
 
-/** `FocusScope`: the hook and the element in one part, with `render`. */
+/** `FocusScope`: the hook and the element in one part, with `as`. */
 export function ScopePart({ locale }: { locale: FocusFixtureLocale }) {
   const [open, setOpen] = useState(false)
   return (
@@ -213,7 +213,9 @@ export function ScopePart({ locale }: { locale: FocusFixtureLocale }) {
         contain="loop"
         onEscape={() => setOpen(false)}
         hidden={!open}
-        render={<aside aria-label={say(locale, 'Filter', 'Filters')} style={drawerStyle} />}
+        as="aside"
+        aria-label={say(locale, 'Filter', 'Filters')}
+        style={drawerStyle}
       >
         <FilterFields locale={locale} />
         <Button onClick={() => setOpen(false)}>{say(locale, 'Stäng', 'Close')}</Button>

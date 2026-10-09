@@ -9,13 +9,10 @@ import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   codeBlockCodeAttributes,
-  codeBlockCodeRows,
   codeBlockCopyAttributes,
   codeBlockCopyRows,
   codeBlockLabelAttributes,
-  codeBlockLabelRows,
   codeBlockRootAttributes,
-  codeBlockRootRows,
   useCodeBlockHook,
 } from '../content/code-block.api.ts'
 import { DefaultCodeBlock } from '../examples/code-block/default.tsx'
@@ -34,7 +31,6 @@ const parts: ApiPart[] = [
         by the Label while one is mounted, and a plain <code>div</code> without one.
       </>
     ),
-    props: codeBlockRootRows,
     attributes: codeBlockRootAttributes,
   },
   {
@@ -45,7 +41,6 @@ const parts: ApiPart[] = [
         heading.
       </>
     ),
-    props: codeBlockLabelRows,
     attributes: codeBlockLabelAttributes,
   },
   {
@@ -56,7 +51,6 @@ const parts: ApiPart[] = [
         is never a Tab stop. Put a <code>&lt;code&gt;</code> inside it if you like.
       </>
     ),
-    props: codeBlockCodeRows,
     attributes: codeBlockCodeAttributes,
   },
   {

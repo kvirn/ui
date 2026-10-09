@@ -55,7 +55,6 @@ const meta = {
         'Ids of your own descriptions elsewhere on the page. They come after the group’s own descriptions and error.',
     },
     className: { control: 'text', description: 'Your own classes, added to `kv-fieldset`.' },
-    render: { control: false, description: 'Another element. It must still be a `<fieldset>`.' },
     ref: { control: false, description: 'A ref to the `<fieldset>`.' },
   },
   globals: { locale: 'sv' },

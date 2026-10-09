@@ -102,7 +102,6 @@ const meta = {
       description:
         'Per-instance overrides for `dateInput.day`, `.month`, `.year` and `.autoAdvanceHint`.',
     },
-    render: { control: false, description: 'Another element. Day, Month and Year take it too.' },
   },
   globals: { locale: 'sv' },
   decorators: [

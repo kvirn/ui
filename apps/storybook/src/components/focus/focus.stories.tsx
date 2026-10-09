@@ -131,7 +131,7 @@ export const Route: Story = {
   },
 }
 
-/** `FocusScope`: the hook and the element in one part, with `render`. */
+/** `FocusScope`: the hook and the element in one part, with `as`. */
 export const Part: Story = {
   name: 'FocusScope part',
   parameters: source('ScopePart'),

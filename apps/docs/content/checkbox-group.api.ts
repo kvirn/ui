@@ -1,9 +1,6 @@
 import type {
   CheckboxGroupRootProps,
-  FieldErrorMessageProps,
-  FieldHelpTextProps,
   FieldsetLegendProps,
-  ProseRootProps,
   UseCheckboxGroupOptions,
   UseCheckboxGroupResult,
 } from '@kvirn-ui/react'
@@ -20,7 +17,6 @@ export type CheckboxGroupRootDocumentedProps = Pick<
   | 'required'
   | 'disabled'
   | 'messages'
-  | 'render'
 >
 
 export const checkboxGroupRootRows = propRows<CheckboxGroupRootDocumentedProps>({
@@ -70,12 +66,6 @@ export const checkboxGroupRootRows = propRows<CheckboxGroupRootDocumentedProps>(
     default: '–',
     description: 'Overrides the legend’s optional text and the error prefix for this group.',
   },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"fieldset">, FieldsetState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be a <fieldset>. A development warning says so.',
-  },
 })
 
 export const checkboxGroupRootAttributes: readonly AttributeRow[] = [
@@ -113,18 +103,13 @@ export const checkboxGroupRootAttributes: readonly AttributeRow[] = [
   },
 ]
 
-export type CheckboxGroupLegendDocumentedProps = Pick<FieldsetLegendProps, 'marker' | 'render'>
+export type CheckboxGroupLegendDocumentedProps = Pick<FieldsetLegendProps, 'marker'>
 
 export const checkboxGroupLegendRows = propRows<CheckboxGroupLegendDocumentedProps>({
   marker: {
     type: "'optional' | 'none'",
     default: "'optional' in a group that isn’t required, else 'none'",
     description: 'Whether the legend ends with the optional text, for example “(optional)”.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"legend">, FieldsetState>',
-    default: '–',
-    description: 'Changes the element.',
   },
 })
 
@@ -134,14 +119,6 @@ export const checkboxGroupLegendAttributes: readonly AttributeRow[] = [
   { name: 'data-required', values: 'present or absent', meaning: 'The group is required.' },
   { name: 'data-disabled', values: 'present or absent', meaning: 'The group is disabled.' },
 ]
-
-export const checkboxGroupProseRows = propRows<Pick<ProseRootProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ProseElementProps, ProseState>',
-    default: '–',
-    description: 'Changes the element. Its own semantics apply.',
-  },
-})
 
 export const checkboxGroupProseAttributes: readonly AttributeRow[] = [
   {
@@ -153,14 +130,6 @@ export const checkboxGroupProseAttributes: readonly AttributeRow[] = [
   { name: 'data-disabled', values: 'present or absent', meaning: 'The group is disabled.' },
 ]
 
-export const checkboxGroupHelpTextRows = propRows<Pick<FieldHelpTextProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"p">, FieldState>',
-    default: '–',
-    description: 'Changes the element. Never to something interactive.',
-  },
-})
-
 export const checkboxGroupHelpTextAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-field-help-text',
@@ -170,14 +139,6 @@ export const checkboxGroupHelpTextAttributes: readonly AttributeRow[] = [
   { name: 'data-invalid', values: 'present or absent', meaning: 'The group is invalid.' },
   { name: 'data-disabled', values: 'present or absent', meaning: 'The group is disabled.' },
 ]
-
-export const checkboxGroupErrorMessageRows = propRows<Pick<FieldErrorMessageProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"p">, FieldState>',
-    default: '–',
-    description: 'Changes the element.',
-  },
-})
 
 export const checkboxGroupErrorMessageAttributes: readonly AttributeRow[] = [
   { name: 'kv-field-error-message', values: 'always', meaning: 'The part class.' },

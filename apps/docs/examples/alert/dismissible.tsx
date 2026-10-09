@@ -9,12 +9,12 @@ export function Dismissible() {
   const headingRef = useRef<HTMLHeadingElement>(null)
   return (
     <div lang={textLang}>
-      <Heading level={3} tabIndex={-1} ref={headingRef}>
+      <Heading as="h3" tabIndex={-1} ref={headingRef}>
         {texts.dismissible.heading}
       </Heading>
       {isShown ? (
         <Alert.Info>
-          <Alert.Title render={<p />}>{texts.dismissible.title}</Alert.Title>
+          <Alert.Title as="p">{texts.dismissible.title}</Alert.Title>
           <Alert.Body>
             <p>{texts.dismissible.body}</p>
           </Alert.Body>

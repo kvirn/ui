@@ -15,20 +15,18 @@ const classNameRow = {
 }
 
 /** The same two rows for the Sidebar and the Content: they take the attributes of one element and nothing else. */
-export const sidebarLayoutPartRows = propRows<
-  Pick<SidebarLayoutSidebarProps, 'className' | 'render'>
->({
+export const sidebarLayoutPartRows = propRows<Pick<SidebarLayoutSidebarProps, 'className' | 'as'>>({
   className: classNameRow,
-  render: {
-    type: 'RenderProp<SidebarLayoutElementProps, SidebarLayoutState>',
-    default: '–',
+  as: {
+    type: "Sidebar: 'div' | 'nav' | 'aside'. Content: 'div' | 'main' | 'section' | 'article'",
+    default: "'div'",
     description:
-      'Changes the element: <nav aria-label>, <aside aria-labelledby>, <section aria-labelledby> or <main>. Its own semantics apply, and SidebarLayout adds no role. A function receives the props, with a callback ref, and an empty state.',
+      'Changes the element: nav or aside with a name on the Sidebar, main, section with a name or article on the Content. SidebarLayout adds no role. Root takes no as.',
   },
 })
 
 export const sidebarLayoutRootRows = propRows<
-  Pick<SidebarLayoutRootProps, 'sidebarWidth' | 'className' | 'render'>
+  Pick<SidebarLayoutRootProps, 'sidebarWidth' | 'className'>
 >({
   sidebarWidth: {
     type: "'sm' | 'md'",
@@ -36,7 +34,7 @@ export const sidebarLayoutRootRows = propRows<
     description:
       'The width of the side column from 64rem: sm is 16rem, md 20rem. Below 64rem the parts are stacked in DOM order.',
   },
-  ...sidebarLayoutPartRows,
+  className: classNameRow,
 })
 
 export const sidebarLayoutRootAttributes: readonly AttributeRow[] = [

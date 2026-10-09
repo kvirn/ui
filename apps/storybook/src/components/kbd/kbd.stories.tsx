@@ -12,7 +12,7 @@ const meta = {
   title: 'Components/Kbd',
   component: Kbd,
   args: { children: 'Tab', lang: 'en' },
-  argTypes: { render: { control: false } },
+  argTypes: { as: { control: false } },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },

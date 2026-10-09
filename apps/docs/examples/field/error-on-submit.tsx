@@ -19,19 +19,16 @@ export function ErrorOnSubmit() {
     <Stack
       gap="8"
       lang={textLang}
-      render={
-        <form
-          noValidate
-          onSubmit={(event) => {
-            event.preventDefault()
-            const isEmpty = new FormData(event.currentTarget).get('email') === ''
-            setInvalid(isEmpty)
-            if (isEmpty) {
-              setFocusRequest((request) => request + 1)
-            }
-          }}
-        />
-      }
+      as="form"
+      noValidate
+      onSubmit={(event) => {
+        event.preventDefault()
+        const isEmpty = new FormData(event.currentTarget).get('email') === ''
+        setInvalid(isEmpty)
+        if (isEmpty) {
+          setFocusRequest((request) => request + 1)
+        }
+      }}
     >
       <Field.Root required invalid={invalid}>
         <Field.Label>{texts.email}</Field.Label>

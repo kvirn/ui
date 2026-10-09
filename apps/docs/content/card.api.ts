@@ -3,18 +3,18 @@ import { propRows } from '../components/api-block.tsx'
 import type { AttributeRow } from '../components/api-block.tsx'
 
 /** The same two rows for every part: a Card part takes the attributes of one `<div>` and nothing else. */
-export const cardPartRows = propRows<Pick<CardRootProps, 'className' | 'render'>>({
+export const cardPartRows = propRows<Pick<CardRootProps, 'className' | 'as'>>({
   className: {
     type: 'string',
     default: '–',
     description:
       'Your own classes. They join the part’s class and never replace it, so the theme keeps styling the card.',
   },
-  render: {
-    type: 'RenderProp<CardElementProps, CardState>',
-    default: '–',
+  as: {
+    type: "'div' | 'li' | 'article' | 'figure' | 'section'",
+    default: "'div'",
     description:
-      'Changes the element: <article>, <section aria-labelledby>, <aside aria-labelledby> or <li>. Its own semantics apply, and Card adds no role. A function receives the props, with a callback ref, and an empty state.',
+      'Changes the element: li in a list of cards, article for a self-contained item, figure with a caption, or section with aria-labelledby. Card adds no role. Header, Body and Footer take no as. Another tag warns once in development.',
   },
 })
 

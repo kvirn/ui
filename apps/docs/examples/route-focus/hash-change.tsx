@@ -20,7 +20,7 @@ export function HashChange() {
         </Button>
       </p>
       <div ref={pageRef}>
-        <Heading level={4}>
+        <Heading as="h4">
           {location.path === '/start' ? texts.start.title : texts.services.title}
         </Heading>
         <p>{location.path === '/start' ? texts.start.body : texts.services.body}</p>

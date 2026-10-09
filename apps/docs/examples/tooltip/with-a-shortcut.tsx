@@ -7,14 +7,11 @@ export function WithAShortcut() {
   return (
     <Tooltip.Root>
       <Tooltip.Trigger
-        render={
-          <Button
-            className="kv-button--icon-only"
-            aria-label={texts.undo}
-            aria-keyshortcuts="Control+Z"
-            lang={textLang}
-          />
-        }
+        as={Button}
+        className="kv-button--icon-only"
+        aria-label={texts.undo}
+        aria-keyshortcuts="Control+Z"
+        lang={textLang}
       >
         <Icon name="arrow-back" />
       </Tooltip.Trigger>

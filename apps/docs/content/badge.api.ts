@@ -2,7 +2,7 @@ import type { BadgeProps, UseBadgeOptions, UseBadgeResult } from '@kvirn-ui/reac
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-export type BadgeDocumentedProps = Pick<BadgeProps, 'variant' | 'render'>
+export type BadgeDocumentedProps = Pick<BadgeProps, 'variant' | 'as'>
 
 export const badgeRows = propRows<BadgeDocumentedProps>({
   variant: {
@@ -11,11 +11,11 @@ export const badgeRows = propRows<BadgeDocumentedProps>({
     description:
       'The role of the badge, which gives it a class the theme colours. The words are yours: the colour is never the only cue.',
   },
-  render: {
-    type: 'RenderProp<BadgeElementProps, BadgeState>',
-    default: '–',
+  as: {
+    type: "'span' | 'strong' | 'em'",
+    default: "'span'",
     description:
-      'Changes the element, for example <strong />, and its own semantics apply. A function receives the props to spread and { variant }.',
+      'Changes the element to strong or em for emphasis. A Badge is a word, not a control.',
   },
 })
 

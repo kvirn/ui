@@ -59,7 +59,7 @@
 
 ## 3. Flow
 
-1. The reader arrives. The contents list shows its title and the section links, and nothing is current until they scroll past the first heading.
+1. The reader arrives. The contents list shows its title and the section links, and the first section on screen is already current.
 2. **They follow a link** (pointer, or Enter):
    - The browser jumps to the heading, with the page's own `scroll-padding-top`, so a sticky header doesn't cover it.
    - Focus stays on the link, and the browser moves its sequential focus starting point, so the next Tab continues inside the section.
@@ -168,7 +168,7 @@ The component isn't sticky and has no layout of its own: placement is the page's
 2. **One language for "you are here".** Solid means "here" and the quiet fill means "on the way", in a navigation and in a contents list alike. A reader learns it once, and the theme shares its rules instead of adding a second current style.
 3. **It's a jump, not motion.** The current item changes only when a heading crosses the `offset` line, not continuously.
    - The fill fades in over 120ms only under `prefers-reduced-motion: no-preference`, through the existing `.kv-link` transition. Otherwise it changes at once.
-   - Nothing is current until the reader passes the first heading.
+   - The first heading on screen is current before the reader scrolls.
 4. **Mostly it isn't moving in view.** The component isn't sticky. Above the article, or in a column that scrolls away, the reader mostly sees the current item when they come back to the list, which is when a strong mark helps most.
 
 **The risk.**
@@ -186,7 +186,7 @@ The component isn't sticky and has no layout of its own: placement is the page's
 ### 6.5 The title
 
 - **It's a real heading the consumer renders,** at the outline's level, normally `h2`, with the same words as the label: "På den här sidan".
-  - **Beside an article** (a side column), use the `heading-4` look: `<Heading level={2} className="kv-heading--heading-4">`, which is 16px, weight 600, serif and `text`. Then it doesn't compete with the article's own `h2` headings.
+  - **Beside an article** (a side column), use the `heading-4` look: `<Heading as="h2" className="kv-heading--heading-4">`, which is 16px, weight 600, serif and `text`. Then it doesn't compete with the article's own `h2` headings.
   - **Above the article,** its level's own look is fine, as with the docs site's 18px "On this page".
 - **It's never muted.** It's a heading, not a label (docs-site.md line 456).
 - **Spacing:** `space-2` (8px) below it, before the list. `kv-heading` sets no margin, so that's the consumer's.
@@ -231,7 +231,7 @@ Draft input for `table-of-contents.a11y.md` (Plan 0049).
   - Never both.
 - **Roles:** a `navigation` landmark, native nested lists (the level comes from the nesting), and native links. No `role`, no `tabindex`.
 - **State:**
-  - `aria-current="location"` sits on exactly one link, the heading being read, and on none before the first heading is passed.
+  - `aria-current="location"` sits on exactly one link, the heading being read, and on none only while no heading is on screen.
   - The parent headings get no attribute: the trail is visual only.
   - A screen reader says "current location" when it reaches that link. The change isn't announced, because there's no live region and the plan rules one out.
 - **Focus:**

@@ -55,8 +55,8 @@ export function StackPage({
             between sections.
           </li>
           <li>
-            Use <code>render</code> to make it the element the content needs, such as a{' '}
-            <code>ul</code> or a <code>form</code>.
+            Use <code>as</code> to make it the element the content needs, such as a <code>ul</code>{' '}
+            or a <code>form</code>.
           </li>
           <li>
             Not for text flow: <Link href="/components/prose">Prose</Link> has its own margins for
@@ -78,7 +78,7 @@ export function StackPage({
             code={sources['sections']}
             propsUsed={[
               { part: 'Stack', prop: 'gap' },
-              { part: 'Stack', prop: 'render' },
+              { part: 'Stack', prop: 'as' },
             ]}
           >
             <StackOfSections />
@@ -104,7 +104,7 @@ export function StackPage({
             code={sources['list']}
             propsUsed={[
               { part: 'Stack', prop: 'gap' },
-              { part: 'Stack', prop: 'render' },
+              { part: 'Stack', prop: 'as' },
             ]}
             note={
               <Note kind="tip">
@@ -122,7 +122,7 @@ export function StackPage({
             code={sources['form']}
             propsUsed={[
               { part: 'Stack', prop: 'gap' },
-              { part: 'Stack', prop: 'render' },
+              { part: 'Stack', prop: 'as' },
             ]}
           >
             <StackedForm />

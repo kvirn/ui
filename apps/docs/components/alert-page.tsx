@@ -159,11 +159,11 @@ export function AlertPage({
             title="Four statuses"
             why="Each status has its own component, with an icon, a word and a colour that always agree. A short, one-sentence alert uses a paragraph as its Title."
             code={sources['statuses']}
-            propsUsed={[{ part: 'Alert.Title', prop: 'render' }]}
+            propsUsed={[{ part: 'Alert.Title', prop: 'as' }]}
             note={
               <Note kind="tip">
                 The Title is an <code>h2</code> by default. Set the level that fits your page with{' '}
-                <code>render=&#123;&lt;h3 /&gt;&#125;</code>.
+                <code>as="h3"</code>.
               </Note>
             }
           >

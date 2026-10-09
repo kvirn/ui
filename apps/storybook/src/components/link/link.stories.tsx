@@ -37,7 +37,10 @@ const meta = {
       options: [undefined, 'page', 'step', 'location', 'date', 'time', true],
     },
     target: { control: 'select', options: [undefined, '_blank'] },
-    render: { control: false },
+    as: {
+      control: false,
+      description: 'Another element or component. `as="a"` bypasses the registered router link.',
+    },
   },
   globals: { locale: 'sv' },
   // Library strings follow the locale toolbar, like an app's provider would.
@@ -173,8 +176,8 @@ export const CurrentKinds: Story = {
 }
 
 /**
- * Next to a registered router: `render={<a />}` bypasses the router for one link (a download), your
- * own `rel` joins `noopener noreferrer` on a new-tab link, and the notice takes `render` too.
+ * Next to a registered router: `as="a"` bypasses the router for one link (a download), your
+ * own `rel` joins `noopener noreferrer` on a new-tab link, and the notice takes `as` too.
  */
 export const BypassRouterAndKeepRel: Story = {
   parameters: showSource('link/link.fixture.tsx', 'RouterAndPlainLinks'),

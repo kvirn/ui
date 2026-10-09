@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en" data-kv-color-scheme="dark" data-kv-contrast="standard">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Landing v2, direction B: the transcript · KvirnUI design exploration</title>
+    <!-- Throwaway prototype for Plan 0091 (docs/plans/0091-landing-v2-evidence.md). Direction B:
+     the hero is a two-column reading. Left, the headline for sighted visitors. Right, what a screen
+     reader says before it reaches that headline, line by line in monospace, with the words that are
+     never on screen marked. The page opens in the dark theme to make the point that the user's
+     settings win; the switch at the top is the site's real Display settings in the final page. No
+     network requests, no script. Transcripts are hand-written examples. Not library code. -->
+    <link rel="stylesheet" href="../../../apps/docs/fonts/ibm-plex/ibm-plex.css" />
+    <link rel="stylesheet" href="../../../packages/theme/theme.css" />
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; }
+      .p-hero-grid { display: grid; gap: var(--kv-space-8); grid-template-columns: 1fr; align-items: start; }
+      @media (width >= 64rem) { .p-hero-grid { grid-template-columns: 1.1fr 0.9fr; gap: var(--kv-space-12); } }
+      .p-title {
+        margin: 0;
+        font-family: var(--kv-font-family-heading);
+        font-weight: 500;
+        line-height: 1.08;
+        letter-spacing: -0.01em;
+        font-size: 2.75rem;
+        color: var(--kv-color-heading);
+      }
+      .p-title strong { display: block; font-weight: 600; }
+      @media (width >= 64rem) { .p-title { font-size: 3.75rem; } }
+      .p-tagline { margin: var(--kv-space-6) 0 0; font-family: var(--kv-font-family-heading); font-size: var(--kv-font-heading-2-size); font-weight: 500; }
+      .p-subline { margin: var(--kv-space-2) 0 0; font-size: var(--kv-font-body-large-size); max-inline-size: 55ch; }
+      .p-status { margin: var(--kv-space-4) 0 0; font-size: var(--kv-font-body-small-size); }
+      .p-actions { display: flex; flex-wrap: wrap; gap: var(--kv-space-4); align-items: center; margin-block-start: var(--kv-space-6); }
+
+      /* The transcript: a figure that reads as a terminal of the invisible. */
+      .p-figure { margin: 0; border: 1px solid var(--kv-color-border-control); border-radius: var(--kv-radius-md); background: var(--kv-color-surface-raised); overflow: hidden; }
+      .p-figure figcaption { padding: var(--kv-space-3) var(--kv-space-4); border-block-end: 1px solid var(--kv-color-border-subtle); font-weight: 500; }
+      .p-lines { margin: 0; padding: var(--kv-space-4); list-style: none; font-family: var(--kv-font-family-mono); font-size: var(--kv-font-code-size); line-height: 1.7; counter-reset: line; }
+      .p-lines li { display: grid; grid-template-columns: 2ch 1fr; gap: var(--kv-space-3); }
+      .p-lines li::before { counter-increment: line; content: counter(line); color: var(--kv-color-text-muted); font-variant-numeric: tabular-nums; }
+      .p-invisible { font-weight: 600; text-decoration: underline dotted; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+      .p-legend { padding: var(--kv-space-3) var(--kv-space-4); border-block-start: 1px solid var(--kv-color-border-subtle); font-size: var(--kv-font-body-small-size); }
+      @media (prefers-reduced-motion: no-preference) {
+        .p-lines li { animation: p-in var(--kv-duration-medium, 200ms) both; }
+        .p-lines li:nth-child(n) { animation-delay: calc(var(--i, 0) * 80ms); }
+        @keyframes p-in { from { opacity: 0; } to { opacity: 1; } }
+      }
+
+      .p-strip { display: flex; flex-wrap: wrap; gap: var(--kv-space-2) var(--kv-space-8); margin: var(--kv-space-8) 0 0; padding: 0; list-style: none; font-variant-numeric: tabular-nums; }
+      .p-strip strong { font-size: var(--kv-font-heading-2-size); font-family: var(--kv-font-family-heading); margin-inline-end: var(--kv-space-1); }
+
+      .p-pair { display: grid; gap: var(--kv-space-6); grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); }
+      .p-pair .kv-card-body > p { margin: var(--kv-space-3) 0 0; }
+      .p-fake { display: inline-block; padding: 0.625rem 1rem; border-radius: var(--kv-radius-sm); background: var(--kv-color-primary); color: var(--kv-color-on-primary); font-weight: 500; }
+      .p-mini { margin: var(--kv-space-3) 0 0; padding: var(--kv-space-3); border-radius: var(--kv-radius-sm); background: var(--kv-color-surface); font-family: var(--kv-font-family-mono); font-size: var(--kv-font-code-size); }
+      .p-lang { display: flex; flex-wrap: wrap; gap: var(--kv-space-3) var(--kv-space-6); }
+      .p-lang label { display: inline-flex; gap: var(--kv-space-2); align-items: center; min-block-size: 2.75rem; }
+
+      .p-ledger { inline-size: 100%; border-collapse: collapse; }
+      .p-ledger th, .p-ledger td { text-align: start; padding: var(--kv-space-3); border-block-end: 1px solid var(--kv-color-border-subtle); }
+      .p-ledger thead th { background: var(--kv-color-surface); }
+      .p-pending { font-style: italic; }
+      .p-small { font-size: var(--kv-font-body-small-size); max-inline-size: 70ch; }
+      pre.p-code { margin: 0; padding: var(--kv-space-4); background: var(--kv-color-surface); border: 1px solid var(--kv-color-border-subtle); border-radius: var(--kv-radius-sm); font-family: var(--kv-font-family-mono); font-size: var(--kv-font-code-size); overflow-x: auto; }
+      .p-method { display: grid; gap: var(--kv-space-6); grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin: 0; padding: 0; list-style: none; }
+      .p-method h3, .p-method p { margin: 0; }
+      .p-method h3 { margin-block-end: var(--kv-space-2); }
+    </style>
+  </head>
+  <body>
+    <a class="kv-skip-link" href="#main">Skip to main content</a>
+    <header class="kv-section kv-section--canvas kv-section--padding-sm" style="border-block-end: 1px solid var(--kv-color-border-subtle)">
+      <div class="kv-container" style="display: flex; flex-wrap: wrap; gap: var(--kv-space-4); align-items: center; justify-content: space-between">
+        <span style="display: inline-flex; gap: var(--kv-space-2); align-items: center"><a class="kv-link" href="#" style="font-weight: 600">KvirnUI</a> <span class="kv-badge">Pre-alpha</span></span>
+        <nav class="kv-navigation kv-navigation--horizontal" aria-label="Site">
+          <ul class="kv-navigation-list" role="list">
+            <li class="kv-navigation-item"><a class="kv-link" href="#" aria-current="page">Home</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Docs</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Components</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Patterns</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Content types</a></li>
+            <li class="kv-navigation-item"><a class="kv-link" href="#">Theming</a></li>
+          </ul>
+        </nav>
+        <button class="kv-button" type="button" aria-expanded="false">Display settings</button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="kv-section kv-section--canvas kv-section--padding-lg">
+        <div class="kv-container p-hero-grid">
+          <div>
+            <h1 class="p-title">Accessibility is hard. <strong>Navigating the web without it is harder.</strong></h1>
+            <p class="p-tagline">Accessibility you can verify.</p>
+            <p class="p-subline">Public-service components, with the evidence beside them. Headless React for the Nordics and the EU, designed and tested to meet WCAG 2.2 AA.</p>
+            <p class="p-status"><strong>Pre-alpha.</strong> The API will change. Testing with assistive technology is pending.</p>
+            <div class="p-actions">
+              <a class="kv-link kv-link--service" href="#">Get started</a>
+              <a class="kv-link" href="#evidence">See the evidence</a>
+            </div>
+            <ul class="p-strip" aria-label="KvirnUI in numbers">
+              <li><strong>56</strong> components</li>
+              <li><strong>6</strong> languages</li>
+              <li><strong>4</strong> themes</li>
+              <li><strong>3</strong> dependencies</li>
+              <li><strong>0</strong> CSS in headless packages</li>
+              <li><strong>0</strong> trackers</li>
+            </ul>
+          </div>
+          <figure class="p-figure">
+            <figcaption>What a screen reader says before it reaches the headline</figcaption>
+            <ol class="p-lines">
+              <li style="--i:0">Skip to main content, <span class="p-invisible">link</span></li>
+              <li style="--i:1"><span class="p-invisible">banner landmark</span></li>
+              <li style="--i:2">KvirnUI, <span class="p-invisible">link</span></li>
+              <li style="--i:3">Pre-alpha</li>
+              <li style="--i:4">Site, <span class="p-invisible">navigation landmark</span></li>
+              <li style="--i:5"><span class="p-invisible">list with 6 items</span></li>
+              <li style="--i:6">Home, <span class="p-invisible">link, current page</span></li>
+              <li style="--i:7">Docs, <span class="p-invisible">link</span></li>
+              <li style="--i:8">Display settings, <span class="p-invisible">button, collapsed</span></li>
+              <li style="--i:9"><span class="p-invisible">main landmark</span></li>
+              <li style="--i:10">Accessibility is hard. Navigating the web without it is harder. <span class="p-invisible">heading level 1</span></li>
+            </ol>
+            <p class="p-legend"><span class="p-invisible">Underlined words</span> are never on the screen. KvirnUI puts them there, in six languages. An example written by hand; real screen readers use their own words.</p>
+          </figure>
+        </div>
+      </section>
+
+      <section class="kv-section kv-section--surface kv-section--padding-lg">
+        <div class="kv-container">
+          <h2 class="kv-heading kv-heading--heading-2">Same look. Different web.</h2>
+          <p class="kv-lead">Two things that look identical to the eye. Choose a language and read what each one tells a screen reader.</p>
+          <fieldset class="kv-fieldset" style="margin-block-end: var(--kv-space-6)">
+            <legend class="kv-fieldset-legend">Language of the example</legend>
+            <div class="p-lang">
+              <label><input type="radio" name="lang" /> Svenska</label>
+              <label><input type="radio" name="lang" checked /> Suomi</label>
+              <label><input type="radio" name="lang" /> Norsk bokmål</label>
+              <label><input type="radio" name="lang" /> Nynorsk</label>
+              <label><input type="radio" name="lang" /> Davvisámegiella</label>
+              <label><input type="radio" name="lang" /> English</label>
+            </div>
+          </fieldset>
+          <div class="p-pair">
+            <div class="kv-card"><div class="kv-card-body">
+              <h3 class="kv-heading kv-heading--heading-3">A <code>div</code> with a click handler</h3>
+              <p><span class="p-fake" aria-hidden="true">Näytä vastaus</span></p>
+              <p><strong>Tab:</strong> skips it. <strong>Enter:</strong> nothing.</p>
+              <p class="p-mini" lang="fi">Näytä vastaus</p>
+            </div></div>
+            <div class="kv-card"><div class="kv-card-body">
+              <h3 class="kv-heading kv-heading--heading-3">KvirnUI <code>Disclosure.Trigger</code></h3>
+              <p><button class="kv-button kv-button--primary" type="button" aria-expanded="false">Näytä vastaus</button></p>
+              <p><strong>Tab:</strong> reaches it. <strong>Enter, Space:</strong> opens it and says so.</p>
+              <p class="p-mini" lang="fi">Näytä vastaus, <span class="p-invisible">painike</span>, <span class="p-invisible">suljettu</span></p>
+            </div></div>
+          </div>
+          <p class="p-small" style="margin-block-start: var(--kv-space-4)">In Northern Sámi, the example's own text stays English until a native speaker writes it. The words KvirnUI adds are in Sámi, and still need checking.</p>
+        </div>
+      </section>
+
+      <section class="kv-section kv-section--canvas kv-section--padding-lg" id="evidence">
+        <div class="kv-container">
+          <h2 class="kv-heading kv-heading--heading-2">The evidence, per component</h2>
+          <p class="kv-lead">Generated from the repository, not typed. Where nobody has tested yet, it says so.</p>
+          <table class="p-ledger">
+            <caption class="p-small" style="text-align: start; padding-block: var(--kv-space-3)">Sample of 4 rows. The real ledger lists all 56 and can be copied for a tender.</caption>
+            <thead><tr><th scope="col">Component</th><th scope="col">Contract</th><th scope="col">Keys tested</th><th scope="col">axe, 4 themes</th><th scope="col">Reviewer</th><th scope="col">Real assistive technology</th></tr></thead>
+            <tbody>
+              <tr><th scope="row"><a class="kv-link" href="#">Button</a></th><td>Yes</td><td>4 of 4</td><td>Yes</td><td>Approved</td><td class="p-pending">pending</td></tr>
+              <tr><th scope="row"><a class="kv-link" href="#">Combobox</a></th><td>Yes</td><td>11 of 11</td><td>Yes</td><td>Approved</td><td class="p-pending">pending</td></tr>
+              <tr><th scope="row"><a class="kv-link" href="#">Dialog</a></th><td>Yes</td><td>3 of 3</td><td>Yes</td><td>Approved</td><td class="p-pending">pending</td></tr>
+              <tr><th scope="row"><a class="kv-link" href="#">ReadAloud</a></th><td>Yes</td><td>6 of 6</td><td>Yes</td><td>In review</td><td class="p-pending">pending</td></tr>
+            </tbody>
+          </table>
+          <p class="p-actions"><a class="kv-link" href="#">Open the full ledger</a> <button class="kv-button" type="button">Copy as Markdown</button></p>
+        </div>
+      </section>
+
+      <section class="kv-section kv-section--surface kv-section--padding-lg">
+        <div class="kv-container">
+          <h2 class="kv-heading kv-heading--heading-2">For developers</h2>
+          <div class="p-pair">
+            <div><h3 class="kv-heading kv-heading--heading-3">Hook</h3><pre class="p-code"><code>const disclosure = useDisclosure()
+&lt;button {...disclosure.triggerProps}&gt;Show the answer&lt;/button&gt;
+&lt;div {...disclosure.panelProps}&gt;…&lt;/div&gt;</code></pre></div>
+            <div><h3 class="kv-heading kv-heading--heading-3">Component</h3><pre class="p-code"><code>&lt;Disclosure.Root&gt;
+  &lt;Disclosure.Trigger&gt;Show the answer&lt;/Disclosure.Trigger&gt;
+  &lt;Disclosure.Panel&gt;…&lt;/Disclosure.Panel&gt;
+&lt;/Disclosure.Root&gt;</code></pre></div>
+          </div>
+          <p style="margin-block-start: var(--kv-space-6)">Typed by inference. State as <code>data-*</code>. Remove the theme import and it unstyles; keep it and change the tokens. <code>pnpm add @kvirn-ui/react @kvirn-ui/i18n</code></p>
+        </div>
+      </section>
+
+      <section class="kv-section kv-section--canvas kv-section--padding-lg">
+        <div class="kv-container">
+          <h2 class="kv-heading kv-heading--heading-2">How we know it works</h2>
+          <ul class="p-method" role="list">
+            <li><h3 class="kv-heading kv-heading--heading-3">Native HTML first</h3><p>A button is a <code>&lt;button&gt;</code>. ARIA only where HTML falls short.</p></li>
+            <li><h3 class="kv-heading kv-heading--heading-3">A contract for every component</h3><p>Roles, focus, announcements and every key, written down and shown on its page.</p></li>
+            <li><h3 class="kv-heading kv-heading--heading-3">Every key, tested</h3><p>Each key in a contract has a test that presses it in a real browser.</p></li>
+            <li><h3 class="kv-heading kv-heading--heading-3">Checked in every theme</h3><p>Every story is checked with axe in all four themes.</p></li>
+            <li><h3 class="kv-heading kv-heading--heading-3">What a screen reader says</h3><p>Tests check what a virtual screen reader reads, and in which order.</p></li>
+            <li><h3 class="kv-heading kv-heading--heading-3">Pending means pending</h3><p>Real assistive-technology testing comes next. Until then, we say pending.</p></li>
+          </ul>
+          <p class="p-small" style="margin-block-start: var(--kv-space-8)">Free for personal use. Any other use needs a commercial licence. The code is published under the AGPL-3.0. <a class="kv-link" href="#">How the licence works</a>.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="kv-section kv-section--surface kv-section--padding-sm">
+      <div class="kv-container p-small">AGPL-3.0 · Designed and tested to meet WCAG 2.2 AA · No cookies, analytics or third-party services on this site.</div>
+    </footer>
+  </body>
+</html>

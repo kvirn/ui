@@ -1,0 +1,322 @@
+/*
+ * The Home landing page (Plan 0091, prototype D). Docs-app CSS: plain, unlayered, semantic tokens
+ * only, mobile-first, one column at 320px. Nothing here restyles a kv-* part.
+ */
+
+.home-lead {
+  max-inline-size: 60ch;
+}
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kv-space-3) var(--kv-space-6);
+  margin: 0;
+}
+
+.home-kicker {
+  margin: 0;
+  font-size: var(--kv-font-body-large-size);
+}
+
+/* The bands breathe: more block padding than a docs section, and the hero and the moments
+   take most of the viewport, as in the prototype. */
+.home-band {
+  padding-block: var(--kv-space-8);
+}
+
+@media (width >= 40rem) {
+  .home-band {
+    padding-block: var(--kv-space-12);
+  }
+}
+
+@media (width >= 64rem) {
+  .home-band {
+    padding-block: var(--kv-space-16);
+  }
+
+  .home-moment {
+    min-block-size: 60svh;
+    display: grid;
+    align-content: center;
+  }
+}
+
+/* The hero: a quiet room. A slow wash from the role tokens, never behind text in forced colours. */
+.home-hero {
+  display: grid;
+  align-content: center;
+  background:
+    radial-gradient(
+      60rem 40rem at 85% 10%,
+      color-mix(in oklab, var(--kv-color-primary) 14%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      50rem 30rem at 10% 100%,
+      color-mix(in oklab, var(--kv-color-accent) 12%, transparent),
+      transparent 70%
+    ),
+    var(--kv-color-canvas);
+}
+
+@media (width >= 40rem) {
+  .home-hero {
+    min-block-size: 70svh;
+  }
+}
+
+@media (width >= 64rem) {
+  .home-hero {
+    min-block-size: 88svh;
+  }
+}
+
+@media (forced-colors: active) {
+  .home-hero {
+    background: Canvas;
+  }
+}
+
+.home-title {
+  max-inline-size: 18ch;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+
+.home-title-line {
+  display: block;
+  font-weight: 500;
+}
+
+.home-title-line + .home-title-line {
+  font-weight: 600;
+}
+
+@media (width >= 40rem) {
+  .home-title {
+    font-size: 4rem;
+  }
+}
+
+@media (width >= 64rem) {
+  .home-title {
+    font-size: 5.25rem;
+  }
+}
+
+.home-promise {
+  margin: 0;
+  max-inline-size: 42ch;
+  font-size: var(--kv-font-lead-size);
+  line-height: var(--kv-font-lead-line-height);
+}
+
+.home-honest {
+  margin: 0;
+  font-size: var(--kv-font-body-small-size);
+}
+
+/* Moments: a photograph and a person, side by side from 64rem, alternating sides. */
+.home-moment-grid {
+  display: grid;
+  gap: var(--kv-space-8);
+  align-items: center;
+}
+
+@media (width >= 64rem) {
+  .home-moment-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--kv-space-16);
+  }
+
+  .home-moment-grid[data-flip] > .home-photo {
+    order: 2;
+  }
+}
+
+.home-photo {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 1px solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-lg);
+  background: var(--kv-color-surface);
+}
+
+@media (width >= 64rem) {
+  .home-photo {
+    aspect-ratio: 5 / 4;
+  }
+}
+
+.home-moment-heading {
+  max-inline-size: 20ch;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+
+@media (width >= 64rem) {
+  .home-moment-heading {
+    font-size: 3rem;
+  }
+}
+
+.home-moment-body {
+  margin: var(--kv-space-5) 0 0;
+  max-inline-size: 48ch;
+  font-size: var(--kv-font-body-large-size);
+}
+
+.home-moment-so {
+  margin: var(--kv-space-6) 0 0;
+  max-inline-size: 48ch;
+  padding-inline-start: var(--kv-space-4);
+  border-inline-start: 3px solid var(--kv-color-primary);
+}
+
+/* Statements: a title beside its text from 64rem. */
+.home-statement-grid {
+  display: grid;
+  gap: var(--kv-space-8);
+  align-items: start;
+}
+
+@media (width >= 64rem) {
+  .home-statement-grid {
+    grid-template-columns: 5fr 7fr;
+    gap: var(--kv-space-16);
+  }
+}
+
+.home-statement-title {
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.home-statement-title strong {
+  font-weight: 600;
+}
+
+@media (width >= 64rem) {
+  .home-statement-title {
+    font-size: 3rem;
+  }
+
+  .home-statement-title--wide {
+    max-inline-size: 22ch;
+  }
+}
+
+.home-statement-text {
+  margin: 0;
+  max-inline-size: 52ch;
+  font-size: var(--kv-font-body-large-size);
+}
+
+.home-statement-close {
+  margin: var(--kv-space-8) 0 0;
+  max-inline-size: 34ch;
+  font-family: var(--kv-font-family-heading);
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--kv-color-heading);
+}
+
+.home-statement-close strong {
+  font-weight: 600;
+}
+
+.home-big {
+  margin: 0;
+  max-inline-size: 30ch;
+  font-family: var(--kv-font-family-heading);
+  font-size: 1.375rem;
+  line-height: 1.35;
+  color: var(--kv-color-heading);
+}
+
+.home-prose > p {
+  margin: 0 0 var(--kv-space-5);
+  max-inline-size: 52ch;
+  font-size: var(--kv-font-body-large-size);
+}
+
+.home-honesty {
+  padding-inline-start: var(--kv-space-4);
+  border-inline-start: 3px solid var(--kv-color-primary);
+}
+
+/* The turn from feeling to proof: text and canvas swap places. */
+.home-evidence {
+  background: var(--kv-color-text);
+  color: var(--kv-color-canvas);
+}
+
+.home-evidence .home-evidence-heading,
+.home-evidence .home-count {
+  color: inherit;
+}
+
+.home-evidence a {
+  color: inherit;
+}
+
+.home-evidence-heading {
+  max-inline-size: 22ch;
+  line-height: 1.1;
+}
+
+@media (width >= 64rem) {
+  .home-evidence-heading {
+    font-size: 3.5rem;
+  }
+}
+
+.home-evidence-body {
+  margin: 0;
+  max-inline-size: 52ch;
+  font-size: var(--kv-font-body-large-size);
+}
+
+@media (forced-colors: active) {
+  .home-evidence {
+    background: Canvas;
+    color: CanvasText;
+    border-block: 1px solid CanvasText;
+  }
+}
+
+.home-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kv-space-2) var(--kv-space-10);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-count {
+  display: block;
+  font-family: var(--kv-font-family-heading);
+  font-size: 2.5rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* Deep links from the page's own bands: the header isn't sticky, so only a little room above. */
+.home-start,
+#who,
+#why-we-build-it,
+#evidence,
+#contact {
+  scroll-margin-block-start: var(--kv-space-4);
+}

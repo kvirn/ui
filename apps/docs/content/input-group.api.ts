@@ -1,5 +1,4 @@
 import type {
-  InputGroupAddonProps,
   InputGroupRootProps,
   UseInputGroupOptions,
   UseInputGroupResult,
@@ -7,11 +6,8 @@ import type {
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-/** The props InputGroup.Root documents: its own, and `render`. */
-export type InputGroupRootDocumentedProps = Pick<
-  InputGroupRootProps,
-  'invalid' | 'disabled' | 'render'
->
+/** The props InputGroup.Root documents: its own. */
+export type InputGroupRootDocumentedProps = Pick<InputGroupRootProps, 'invalid' | 'disabled'>
 
 export const inputGroupRootRows = propRows<InputGroupRootDocumentedProps>({
   invalid: {
@@ -25,12 +21,6 @@ export const inputGroupRootRows = propRows<InputGroupRootDocumentedProps>({
     default: 'the Field’s disabled',
     description:
       'Draws the disabled edge (data-disabled) and stops a click from focusing the input. The input needs native disabled too, which a Field sets for you.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"div">, InputGroupState>',
-    default: '–',
-    description:
-      'Changes the element. A function receives the props and { isInvalid, isDisabled, isFocusVisible }.',
   },
 })
 
@@ -56,15 +46,6 @@ export const inputGroupRootAttributes: readonly AttributeRow[] = [
     meaning: 'The input inside has keyboard focus, so the ring is drawn around the box.',
   },
 ]
-
-export const inputGroupAddonRows = propRows<Pick<InputGroupAddonProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"span">, InputGroupState>',
-    default: '–',
-    description:
-      'Changes the element. A function receives the props and { isInvalid, isDisabled, isFocusVisible } of the box.',
-  },
-})
 
 export const inputGroupAddonAttributes: readonly AttributeRow[] = [
   { name: 'kv-input-group-addon', values: 'always', meaning: 'The part class.' },

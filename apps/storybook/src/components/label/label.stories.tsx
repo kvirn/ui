@@ -34,7 +34,6 @@ const meta = {
       description:
         'Joins `kv-field-label`. The theme styles `kv-field-label--heading`, for a label that is the page’s `h1`.',
     },
-    render: { control: false, description: 'Another element. It must still be a `<label>`.' },
     ref: { control: false, description: 'A ref to the `<label>`.' },
   },
   globals: { locale: 'sv' },

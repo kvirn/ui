@@ -1,4 +1,4 @@
-import { Heading, VisuallyHidden } from '@kvirn-ui/react'
+import { VisuallyHidden } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/visually-hidden/visually-hidden.a11y.md?raw'
 import guide from '../../../../../packages/react/src/visually-hidden/visually-hidden.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -13,7 +13,7 @@ const meta = {
   title: 'Components/VisuallyHidden',
   component: VisuallyHidden,
   args: { children: ', 3 resultat' },
-  argTypes: { render: { control: false } },
+  argTypes: { as: { control: false } },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
@@ -38,11 +38,11 @@ export const Default: Story = {
   },
 }
 
-/** A heading nobody sees, for a landmark's structure: `render` changes the element. */
+/** A heading nobody sees, for a landmark's structure: `as` changes the element. */
 export const AsHeading: Story = {
   render: () => (
     <nav aria-label="Huvudmeny">
-      <VisuallyHidden render={<Heading level={2} />}>Meny</VisuallyHidden>
+      <VisuallyHidden as="h2">Meny</VisuallyHidden>
       <a href="/">Startsidan</a>
     </nav>
   ),

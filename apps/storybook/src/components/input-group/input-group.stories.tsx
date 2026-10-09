@@ -38,7 +38,6 @@ const meta = {
       control: 'text',
       description: 'Your own classes, added to `kv-input-group`.',
     },
-    render: { control: false, description: 'Another element for the box. It receives the state.' },
     ref: { control: false, description: 'A ref to the box `<div>`.' },
   },
   parameters: {

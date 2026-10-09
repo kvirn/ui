@@ -112,7 +112,7 @@ export function VisuallyHiddenPage({
             title="A heading nobody sees"
             why="A block of text has no visible title, but screen reader users move by heading. Render the hidden text as the heading level that fits the page."
             code={sources['hidden-heading']}
-            propsUsed={[{ part: 'VisuallyHidden', prop: 'render' }]}
+            propsUsed={[{ part: 'VisuallyHidden', prop: 'as' }]}
             note={
               <Note kind="tip">
                 A hidden heading is in the heading list like any other. Pick the level that keeps

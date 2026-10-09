@@ -11,42 +11,28 @@ import type {
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-const renderRow = {
-  type: 'RenderProp<SummaryListElementProps, SummaryListState>',
-  default: '–',
-  description:
-    'Changes the element, for example render={<ul />} on the Root. Its own semantics apply. In the function form, keep className to keep the theme’s look.',
-}
-
 const refRow = {
   type: 'Ref<HTMLElement>',
   default: '–',
   description: 'Reaches the element, whichever it is.',
 }
 
-const partRows = propRows<Pick<SummaryListRootProps, 'render' | 'ref'>>({
-  render: renderRow,
+const partRows = propRows<Pick<SummaryListRootProps, 'ref'>>({
   ref: refRow,
 })
 
 export const rootRows = partRows
-export const rowRows = propRows<Pick<SummaryListRowProps, 'render' | 'ref'>>(partRows)
-export const keyRows = propRows<Pick<SummaryListKeyProps, 'render' | 'ref'>>(partRows)
-export const valueRows = propRows<Pick<SummaryListValueProps, 'render' | 'ref'>>(partRows)
-export const actionsRows = propRows<Pick<SummaryListActionsProps, 'render' | 'ref'>>(partRows)
+export const rowRows = propRows<Pick<SummaryListRowProps, 'ref'>>(partRows)
+export const keyRows = propRows<Pick<SummaryListKeyProps, 'ref'>>(partRows)
+export const valueRows = propRows<Pick<SummaryListValueProps, 'ref'>>(partRows)
+export const actionsRows = propRows<Pick<SummaryListActionsProps, 'ref'>>(partRows)
 
-export const changeRows = propRows<Pick<SummaryListChangeProps, 'messages' | 'render' | 'ref'>>({
+export const changeRows = propRows<Pick<SummaryListChangeProps, 'messages' | 'ref'>>({
   messages: {
     type: "Partial<KvirnMessages['summaryList']>",
     default: '–',
     description:
       'Per-instance override of the visible text, such as { change: "Add" }. The key is still added to the accessible name.',
-  },
-  render: {
-    type: 'RenderProp<SummaryListChangeElementProps, SummaryListState>',
-    default: '–',
-    description:
-      'Changes the element, for example to your router’s link. A function receives the props to spread, including the id and aria-labelledby that build the name.',
   },
   ref: {
     type: 'Ref<HTMLAnchorElement>',

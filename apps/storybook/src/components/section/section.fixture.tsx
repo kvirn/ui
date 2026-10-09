@@ -155,7 +155,7 @@ export function ContactSection({ locale }: SectionFixtureProps) {
   const format = useFormat()
   const headingId = useId()
   return (
-    <Section render={<aside aria-labelledby={headingId} />} className="kv-prose" lang={lang}>
+    <Section as="aside" aria-labelledby={headingId} className="kv-prose" lang={lang}>
       <h2 id={headingId}>{text.contact.heading}</h2>
       <p>
         {text.contact.phone(locale === 'nb' || locale === 'nn' ? '800 12 345' : '0123-45 67 89')}
@@ -183,7 +183,8 @@ export function ContactSectionWithEdge({ locale }: SectionFixtureProps) {
   const headingId = useId()
   return (
     <Section
-      render={<aside aria-labelledby={headingId} />}
+      as="aside"
+      aria-labelledby={headingId}
       className="kv-prose"
       style={{ borderInlineEndColor: 'var(--kv-color-border-subtle)' }}
       lang={lang}
@@ -238,7 +239,7 @@ export function NewsBand({ locale }: SectionFixtureProps) {
 export function NewsCard({ locale }: SectionFixtureProps) {
   const { text, lang } = textsFor(locale)
   return (
-    <Card.Root render={<article />} lang={lang} data-testid="news-card">
+    <Card.Root as="article" lang={lang} data-testid="news-card">
       <Card.Body className="kv-prose">
         <h2>
           <Link.Root href="#vintervaghallning">{text.news.snow.title}</Link.Root>
@@ -264,9 +265,9 @@ export function ContactDetailsFieldset({ locale }: SectionFixtureProps) {
 }
 
 /**
- * `render` gives a Section the element its role needs: a `<section>` and a `<nav>`, each named by
- * its heading (`aria-labelledby`), and an `<li>` in a list. The function form spreads the
- * props, so `kv-section` stays. A `<div>` is not a landmark, so keep these few.
+ * `as` gives a Section the element its role needs: a `<section>` and a `<nav>`, each named by
+ * its heading (`aria-labelledby`), and an `<li>` in a list. `kv-section` stays. A `<div>` is not
+ * a landmark, so keep these few.
  */
 export function RenderedSections({ locale }: SectionFixtureProps) {
   const { text, lang } = textsFor(locale)
@@ -274,14 +275,11 @@ export function RenderedSections({ locale }: SectionFixtureProps) {
   const navigationId = useId()
   return (
     <div lang={lang}>
-      <Section render={<section aria-labelledby={statusId} />} data-testid="status-section">
+      <Section as="section" aria-labelledby={statusId} data-testid="status-section">
         <h2 id={statusId}>{text.waste.heading}</h2>
         <p>{text.waste.plan}</p>
       </Section>
-      <Section
-        render={(sectionProps) => <nav {...sectionProps} aria-labelledby={navigationId} />}
-        data-testid="news-navigation"
-      >
+      <Section as="nav" aria-labelledby={navigationId} data-testid="news-navigation">
         <h2 id={navigationId}>{text.news.heading}</h2>
         <ul>
           <li>
@@ -293,10 +291,10 @@ export function RenderedSections({ locale }: SectionFixtureProps) {
         </ul>
       </Section>
       <ul>
-        <Section render={<li />}>
+        <Section as="li">
           <p>{text.news.grants.title}</p>
         </Section>
-        <Section render={<li />}>
+        <Section as="li">
           <p>{text.news.snow.title}</p>
         </Section>
       </ul>

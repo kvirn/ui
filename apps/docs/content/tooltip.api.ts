@@ -1,6 +1,5 @@
 import type {
   TooltipNameProps,
-  TooltipPopupProps,
   TooltipRootProps,
   TooltipShortcutProps,
   TooltipTriggerProps,
@@ -71,26 +70,28 @@ export const tooltipRootRows = propRows<TooltipRootProps>({
   },
 })
 
-const renderRow = (element: string) =>
-  ({
-    render: {
-      type: `RenderProp<ComponentPropsWithRef<"${element}">, TooltipState>`,
-      default: '–',
-      description: `Changes the element. A function receives the props and { isOpen }.`,
-    },
-  }) as const
-
-export const tooltipTriggerRows = propRows<Pick<TooltipTriggerProps, 'render'>>({
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"button">, TooltipState>',
-    default: '–',
+export const tooltipTriggerRows = propRows<Pick<TooltipTriggerProps, 'as'>>({
+  as: {
+    type: 'ElementType',
+    default: "'button'",
     description:
-      'The control the tooltip belongs to, such as <Button aria-label="Search" />. It must be focusable and have a name of its own. A function receives the props and { isOpen }.',
+      'The control the tooltip belongs to, such as as={Button} aria-label="Search", with its props set on the Trigger. It must be focusable, forward its ref, spread its props on a DOM node and have a name of its own.',
   },
 })
-export const tooltipPopupRows = propRows<Pick<TooltipPopupProps, 'render'>>(renderRow('div'))
-export const tooltipNameRows = propRows<Pick<TooltipNameProps, 'render'>>(renderRow('span'))
-export const tooltipShortcutRows = propRows<Pick<TooltipShortcutProps, 'render'>>(renderRow('span'))
+export const tooltipNameRows = propRows<Pick<TooltipNameProps, 'as'>>({
+  as: {
+    type: "'span' | 'strong'",
+    default: "'span'",
+    description: 'Changes the element. Another tag warns once in development.',
+  },
+})
+export const tooltipShortcutRows = propRows<Pick<TooltipShortcutProps, 'as'>>({
+  as: {
+    type: "'span' | 'small'",
+    default: "'span'",
+    description: 'Changes the element. Another tag warns once in development.',
+  },
+})
 
 export const tooltipTriggerAttributes: readonly AttributeRow[] = [
   {

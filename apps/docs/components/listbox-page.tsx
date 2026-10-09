@@ -9,29 +9,21 @@ import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   emptyAttributes,
-  emptyRows,
   groupAttributes,
   groupLabelAttributes,
-  groupLabelRows,
   groupRows,
   listAttributes,
   listRows,
   nativeAttributes,
   optionAttributes,
   optionDescriptionAttributes,
-  optionDescriptionRows,
   optionIconAttributes,
-  optionIconRows,
   optionIndicatorAttributes,
-  optionIndicatorRows,
   optionRows,
   optionTextAttributes,
-  optionTextRows,
   popupAttributes,
-  popupRows,
   rootRows,
   triggerAttributes,
-  triggerRows,
   useListboxHook,
   valueAttributes,
   valueRows,
@@ -92,7 +84,6 @@ const parts: ApiPart[] = [
         <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
-    props: triggerRows,
     attributes: triggerAttributes,
   },
   {
@@ -115,7 +106,6 @@ const parts: ApiPart[] = [
         Focus never enters it. Combobox and Autocomplete use the same part.
       </>
     ),
-    props: popupRows,
     attributes: popupAttributes,
   },
   {
@@ -150,7 +140,6 @@ const parts: ApiPart[] = [
         does not render it.
       </>
     ),
-    props: optionIconRows,
     attributes: optionIconAttributes,
   },
   {
@@ -162,7 +151,6 @@ const parts: ApiPart[] = [
         development warning fires when it is not.
       </>
     ),
-    props: optionTextRows,
     attributes: optionTextAttributes,
   },
   {
@@ -174,7 +162,6 @@ const parts: ApiPart[] = [
         something essential here.
       </>
     ),
-    props: optionDescriptionRows,
     attributes: optionDescriptionAttributes,
   },
   {
@@ -186,7 +173,6 @@ const parts: ApiPart[] = [
         check in it. Children replace the check and show only on the chosen option.
       </>
     ),
-    props: optionIndicatorRows,
     attributes: optionIndicatorAttributes,
   },
   {
@@ -208,7 +194,6 @@ const parts: ApiPart[] = [
         group.
       </>
     ),
-    props: groupLabelRows,
     attributes: groupLabelAttributes,
   },
   {
@@ -219,7 +204,6 @@ const parts: ApiPart[] = [
         It is not an option and not in the listbox. Its default text is the locale’s “No results”.
       </>
     ),
-    props: emptyRows,
     attributes: emptyAttributes,
   },
 ]

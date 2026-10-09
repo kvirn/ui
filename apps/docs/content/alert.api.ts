@@ -13,11 +13,11 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
 export const readyMadeRootName = 'Alert.Info'
 
-const renderRow = {
-  type: 'RenderProp<AlertElementProps, AlertState>',
-  default: '–',
+const rootAsRow = {
+  type: "'div' | 'section' | 'aside'",
+  default: "'div'",
   description:
-    'Changes the element. Its own semantics apply. In the function form, keep className to keep the theme’s look.',
+    'Changes the element. A section with aria-labelledby is a named region for a site-wide alert; use aside only where the alert is tangential content. Another tag warns once in development.',
 }
 
 const refRow = {
@@ -33,14 +33,14 @@ const announceRow = {
     'Announces the Title and Body text once, when the alert mounts, through the Announcer. Only for an alert inserted after an action. Needs a KvirnProvider. Without it nothing is announced.',
 }
 
-export const rootRows = propRows<Pick<AlertRootProps, 'announce' | 'render' | 'ref'>>({
+export const rootRows = propRows<Pick<AlertRootProps, 'announce' | 'as' | 'ref'>>({
   announce: announceRow,
-  render: renderRow,
+  as: rootAsRow,
   ref: refRow,
 })
 
 export const readyMadeRootRows = propRows<
-  Pick<AlertStatusRootProps, 'announce' | 'messages' | 'render' | 'ref'>
+  Pick<AlertStatusRootProps, 'announce' | 'messages' | 'as' | 'ref'>
 >({
   announce: {
     ...announceRow,
@@ -52,31 +52,40 @@ export const readyMadeRootRows = propRows<
     description:
       'Per-instance override of this root’s status word, such as { dangerPrefix: "Viktigt:" }, and of the close button’s name.',
   },
-  render: renderRow,
+  as: rootAsRow,
   ref: refRow,
 })
 
-export const titleRows = propRows<Pick<AlertTitleProps, 'render' | 'ref'>>({
-  render: {
-    ...renderRow,
+export const titleRows = propRows<Pick<AlertTitleProps, 'as' | 'ref'>>({
+  as: {
+    type: "'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p'",
+    default: "'h2'",
     description:
-      'Sets the heading level (render={<h3 />}) or a paragraph for a one-sentence alert (render={<p />}). The status word stays.',
+      'Sets the heading level (as="h3") or a paragraph for a one-sentence alert (as="p"). The status word stays. There is no h1: the page title is not an alert’s.',
   },
   ref: refRow,
 })
 
-export const bodyRows = propRows<Pick<AlertBodyProps, 'render' | 'ref'>>({
-  render: renderRow,
+export const bodyRows = propRows<Pick<AlertBodyProps, 'as' | 'ref'>>({
+  as: {
+    type: "'div' | 'p' | 'section'",
+    default: "'div'",
+    description: 'Changes the element: a p for plain text, a div when it holds several blocks.',
+  },
   ref: refRow,
 })
 
-export const actionsRows = propRows<Pick<AlertActionsProps, 'render' | 'ref'>>({
-  render: renderRow,
+export const actionsRows = propRows<Pick<AlertActionsProps, 'as' | 'ref'>>({
+  as: {
+    type: "'div' | 'section'",
+    default: "'div'",
+    description: 'Changes the element. Actions adds no list semantics.',
+  },
   ref: refRow,
 })
 
 export const closeRows = propRows<
-  Pick<AlertCloseProps, 'messages' | 'disabled' | 'onClick' | 'render' | 'ref'>
+  Pick<AlertCloseProps, 'messages' | 'disabled' | 'onClick' | 'ref'>
 >({
   messages: {
     type: "Partial<KvirnMessages['alert']>",
@@ -93,12 +102,6 @@ export const closeRows = propRows<
     default: '–',
     description:
       'Called on click, Enter and Space. Remove the alert here, then move focus: the button is gone with it.',
-  },
-  render: {
-    type: 'RenderProp<ComponentPropsWithRef<"button">, AlertCloseState>',
-    default: '–',
-    description:
-      'Changes the element, which must still be a <button>. A function receives the props and { isDisabled, isFocusVisible }.',
   },
   ref: {
     type: 'Ref<HTMLButtonElement>',

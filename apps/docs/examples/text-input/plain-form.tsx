@@ -11,20 +11,17 @@ export function PlainForm() {
       <Stack
         gap="8"
         lang={textLang}
-        render={
-          <form
-            noValidate
-            onSubmit={(event) => {
-              event.preventDefault()
-              const data = new FormData(event.currentTarget)
-              setSent(
-                [data.get('name'), data.get('email')]
-                  .filter((value) => typeof value === 'string')
-                  .join(', '),
-              )
-            }}
-          />
-        }
+        as="form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          const data = new FormData(event.currentTarget)
+          setSent(
+            [data.get('name'), data.get('email')]
+              .filter((value) => typeof value === 'string')
+              .join(', '),
+          )
+        }}
       >
         <Field.Root required>
           <Field.Label>{texts.fullName}</Field.Label>

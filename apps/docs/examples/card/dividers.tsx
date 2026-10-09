@@ -7,7 +7,7 @@ export function CardWithDividers() {
   return (
     <Card.Root className="kv-card--dividers kv-card--padding-sm" lang={textLang}>
       <Card.Header>
-        <Heading level={4}>{texts.dividers.heading}</Heading>
+        <Heading as="h4">{texts.dividers.heading}</Heading>
       </Card.Header>
       <Card.Body className="kv-prose">
         <p>{texts.dividers.text}</p>

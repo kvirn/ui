@@ -10,7 +10,6 @@ import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   tableOfContentsItemAttributes,
-  tableOfContentsItemRows,
   tableOfContentsLinkAttributes,
   tableOfContentsLinkRows,
   tableOfContentsListAttributes,
@@ -67,7 +66,6 @@ const parts: ApiPart[] = [
         <code>TableOfContents.Link</code> and, optionally, a nested list.
       </>
     ),
-    props: tableOfContentsItemRows,
     attributes: tableOfContentsItemAttributes,
   },
   {

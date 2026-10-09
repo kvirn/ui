@@ -1,7 +1,6 @@
 import type {
   RowData,
   TableBodyProps,
-  TableCaptionProps,
   TableCellProps,
   TableColumnHeaderProps,
   TableDetailRowProps,
@@ -23,17 +22,6 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 type Features = TableFeatures
 type Data = RowData
 
-const renderRow = (element: string, state: string, description?: string) =>
-  ({
-    render: {
-      type: `RenderProp<ComponentPropsWithRef<"${element}">, ${state}>`,
-      default: '–',
-      description:
-        description ??
-        `Changes the element, which must still be a <${element}>. A function receives the props and the part’s state.`,
-    },
-  }) as const
-
 const tableProp = {
   type: 'UseTableResult',
   default: '–',
@@ -41,17 +29,12 @@ const tableProp = {
     'The result of useTable(). Without it the part is the plain native element with its class, so a small static table needs no TanStack Table.',
 } as const
 
-export const tableRootRows = propRows<Pick<TableRootProps<Features, Data>, 'table' | 'render'>>({
+export const tableRootRows = propRows<Pick<TableRootProps<Features, Data>, 'table'>>({
   table: tableProp,
-  ...renderRow(
-    'table',
-    'TablePartState',
-    'Changes the element, which must still be a <table>. A function receives the props and { isVirtualized, isBusy, isEmpty }.',
-  ),
 })
 
 export const tableScrollRegionRows = propRows<
-  Pick<TableScrollRegionProps<Features, Data>, 'table' | 'region' | 'render'>
+  Pick<TableScrollRegionProps<Features, Data>, 'table' | 'region'>
 >({
   table: {
     ...tableProp,
@@ -64,30 +47,18 @@ export const tableScrollRegionRows = propRows<
     description:
       'When the region is a named region landmark: only while the table scrolls, or always. It is a Tab stop only while it scrolls. With table, this wins over the region option of useTable.',
   },
-  ...renderRow('div', 'TablePartState'),
 })
 
-export const tableSimpleRows = propRows<Pick<TableCaptionProps, 'render'>>(
-  renderRow(
-    'caption',
-    'TablePartState',
-    'Changes the element, which must still be the native one for the part. A function receives the props and the part’s state.',
-  ),
-)
-
-export const tableBodyRows = propRows<Pick<TableBodyProps<Features, Data>, 'children' | 'render'>>({
+export const tableBodyRows = propRows<Pick<TableBodyProps<Features, Data>, 'children'>>({
   children: {
     type: 'ReactNode | ((row, index) => ReactNode)',
     default: '–',
     description:
       'Your own rows, or a function that renders one Row per row of the row model. The function needs table on the Root. Virtualized, only the rows near the scroll position are rendered, with spacer rows between.',
   },
-  ...renderRow('tbody', 'TablePartState'),
 })
 
-export const tableRowRows = propRows<
-  Pick<TableRowProps<Features, Data>, 'row' | 'headerGroup' | 'render'>
->({
+export const tableRowRows = propRows<Pick<TableRowProps<Features, Data>, 'row' | 'headerGroup'>>({
   row: {
     type: 'Row',
     default: '–',
@@ -99,11 +70,10 @@ export const tableRowRows = propRows<
     default: '–',
     description: 'In the head: the header group the row shows, for aria-rowindex when virtualized.',
   },
-  ...renderRow('tr', 'TableRowState'),
 })
 
 export const tableColumnHeaderRows = propRows<
-  Pick<TableColumnHeaderProps<Features, Data>, 'header' | 'render'>
+  Pick<TableColumnHeaderProps<Features, Data>, 'header'>
 >({
   header: {
     type: 'Header',
@@ -111,59 +81,44 @@ export const tableColumnHeaderRows = propRows<
     description:
       'The header from table.getHeaderGroups(): sets colSpan and aria-sort, and without children renders the column’s header template. Leave it out for a column you add yourself.',
   },
-  ...renderRow('th', 'TableHeaderState'),
 })
 
-export const tableCellRows = propRows<Pick<TableCellProps<Features, Data>, 'cell' | 'render'>>({
+export const tableCellRows = propRows<Pick<TableCellProps<Features, Data>, 'cell'>>({
   cell: {
     type: 'Cell',
     default: '–',
     description:
       'The cell from row.getAllCells(). It is a <th scope="row"> for the rowHeader column and a <td> otherwise, and without children renders the column’s cell template.',
   },
-  ...renderRow('td', 'TableRowState'),
 })
 
-export const tableSortButtonRows = propRows<
-  Pick<TableSortButtonProps<Features, Data>, 'header' | 'render'>
->({
+export const tableSortButtonRows = propRows<Pick<TableSortButtonProps<Features, Data>, 'header'>>({
   header: {
     type: 'Header',
     default: '–',
     description: 'The header whose column it sorts: from table.getHeaderGroups().',
   },
-  ...renderRow('button', 'TableHeaderState'),
 })
 
-export const tableSelectRows = propRows<
-  Pick<TableSelectCheckboxProps<Features, Data>, 'row' | 'render'>
->({
+export const tableSelectRows = propRows<Pick<TableSelectCheckboxProps<Features, Data>, 'row'>>({
   row: {
     type: 'Row',
     default: '–',
     description:
       'Table.SelectCheckbox only: the row it selects. Its name is "Select" and the row’s header cell, or "Select row 3". Table.SelectAllCheckbox takes no row.',
   },
-  ...renderRow(
-    'input',
-    'TableRowState',
-    'Changes the element, which must still be an <input type="checkbox">.',
-  ),
 })
 
-export const tableExpandButtonRows = propRows<
-  Pick<TableExpandButtonProps<Features, Data>, 'row' | 'render'>
->({
+export const tableExpandButtonRows = propRows<Pick<TableExpandButtonProps<Features, Data>, 'row'>>({
   row: {
     type: 'Row',
     default: '–',
     description: 'The row it shows and hides the details of.',
   },
-  ...renderRow('button', 'TableRowState'),
 })
 
 export const tableDetailRowRows = propRows<
-  Pick<TableDetailRowProps<Features, Data>, 'row' | 'colSpan' | 'render'>
+  Pick<TableDetailRowProps<Features, Data>, 'row' | 'colSpan'>
 >({
   row: {
     type: 'Row',
@@ -175,10 +130,9 @@ export const tableDetailRowRows = propRows<
     default: '–',
     description: 'Without a table on the Root: how many columns the detail cell spans.',
   },
-  ...renderRow('tr', 'TableRowState'),
 })
 
-export const tableEmptyRows = propRows<Pick<TableEmptyProps, 'children' | 'colSpan' | 'render'>>({
+export const tableEmptyRows = propRows<Pick<TableEmptyProps, 'children' | 'colSpan'>>({
   children: {
     type: 'ReactNode',
     default: 'the empty message',
@@ -190,7 +144,6 @@ export const tableEmptyRows = propRows<Pick<TableEmptyProps, 'children' | 'colSp
     default: '–',
     description: 'Without a table on the Root: how many columns the cell spans.',
   },
-  ...renderRow('tbody', 'TablePartState'),
 })
 
 export const tableRootAttributes: readonly AttributeRow[] = [

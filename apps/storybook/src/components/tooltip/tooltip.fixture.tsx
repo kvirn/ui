@@ -1,6 +1,6 @@
 import { Button, Icon, Kbd, Popover, Toolbar, Tooltip } from '@kvirn-ui/react'
 import type { TooltipRootProps } from '@kvirn-ui/react'
-import type { CSSProperties } from 'react'
+import type { ComponentPropsWithRef, CSSProperties } from 'react'
 
 // Fixtures for Components/Tooltip. Each exported function is one example, written to be read: the
 // stories show its source as "Show code" (`showSource`). The names are fixture text from the
@@ -58,7 +58,7 @@ const popoverStyle: CSSProperties = {
 export function SearchButton(props: Omit<TooltipRootProps, 'children'>) {
   return (
     <Tooltip.Root {...props}>
-      <Tooltip.Trigger render={<Button className="kv-button--icon-only" aria-label="Sök" />}>
+      <Tooltip.Trigger as={Button} className="kv-button--icon-only" aria-label="Sök">
         <Icon name="search" />
       </Tooltip.Trigger>
       <Tooltip.Popup>
@@ -77,13 +77,10 @@ export function BoldToggle(props: Omit<TooltipRootProps, 'children'>) {
   return (
     <Tooltip.Root {...props}>
       <Tooltip.Trigger
-        render={
-          <Toolbar.Toggle
-            className="kv-button--icon-only"
-            aria-label="Fetstil"
-            aria-keyshortcuts="Control+B"
-          />
-        }
+        as={Toolbar.Toggle}
+        className="kv-button--icon-only"
+        aria-label="Fetstil"
+        aria-keyshortcuts="Control+B"
       >
         <strong aria-hidden="true">B</strong>
       </Tooltip.Trigger>
@@ -106,7 +103,7 @@ export function BoldToggle(props: Omit<TooltipRootProps, 'children'>) {
 export function PrintButton(props: Omit<TooltipRootProps, 'children'>) {
   return (
     <Tooltip.Root {...props}>
-      <Tooltip.Trigger render={<Button className="kv-button--icon-only" aria-label="Skriv ut" />}>
+      <Tooltip.Trigger as={Button} className="kv-button--icon-only" aria-label="Skriv ut">
         <Icon name="document" />
       </Tooltip.Trigger>
       <Tooltip.Popup>Öppnar en utskriftsvy i ett nytt fönster</Tooltip.Popup>
@@ -114,8 +111,14 @@ export function PrintButton(props: Omit<TooltipRootProps, 'children'>) {
   )
 }
 
+// Each part takes one `as`, so a toolbar item that opens a Popover and has a tooltip is a small
+// component of its own: Tooltip.Trigger's `as` is this, and this one's `as` is the Popover trigger.
+function PopoverToolbarItem(props: ComponentPropsWithRef<'button'>) {
+  return <Toolbar.Item as={Popover.Trigger} {...props} />
+}
+
 /**
- * Controls in a `Toolbar` with a tooltip each, through `render`. A disabled button stays
+ * Controls in a `Toolbar` with a tooltip each, through `as`. A disabled button stays
  * focusable (`aria-disabled`), so its tooltip works too. Arrowing along the toolbar shows each
  * tooltip at once, and the next replaces the last.
  */
@@ -125,13 +128,10 @@ export function TextToolbar() {
       <Toolbar.Group aria-label="Historik">
         <Tooltip.Root>
           <Tooltip.Trigger
-            render={
-              <Toolbar.Button
-                className="kv-button--icon-only"
-                aria-label="Ångra"
-                aria-keyshortcuts="Control+Z"
-              />
-            }
+            as={Toolbar.Button}
+            className="kv-button--icon-only"
+            aria-label="Ångra"
+            aria-keyshortcuts="Control+Z"
           >
             <Icon name="arrow-back" />
           </Tooltip.Trigger>
@@ -146,14 +146,11 @@ export function TextToolbar() {
         </Tooltip.Root>
         <Tooltip.Root>
           <Tooltip.Trigger
-            render={
-              <Toolbar.Button
-                disabled
-                className="kv-button--icon-only"
-                aria-label="Gör om"
-                aria-keyshortcuts="Control+Y"
-              />
-            }
+            as={Toolbar.Button}
+            disabled
+            className="kv-button--icon-only"
+            aria-label="Gör om"
+            aria-keyshortcuts="Control+Y"
           >
             <Icon name="arrow-forward" />
           </Tooltip.Trigger>
@@ -170,13 +167,10 @@ export function TextToolbar() {
       <Toolbar.Group aria-label="Textstil">
         <Tooltip.Root>
           <Tooltip.Trigger
-            render={
-              <Toolbar.Toggle
-                className="kv-button--icon-only"
-                aria-label="Fetstil"
-                aria-keyshortcuts="Control+B"
-              />
-            }
+            as={Toolbar.Toggle}
+            className="kv-button--icon-only"
+            aria-label="Fetstil"
+            aria-keyshortcuts="Control+B"
           >
             <strong aria-hidden="true">B</strong>
           </Tooltip.Trigger>
@@ -191,13 +185,10 @@ export function TextToolbar() {
         </Tooltip.Root>
         <Tooltip.Root>
           <Tooltip.Trigger
-            render={
-              <Toolbar.Toggle
-                className="kv-button--icon-only"
-                aria-label="Kursiv"
-                aria-keyshortcuts="Control+I"
-              />
-            }
+            as={Toolbar.Toggle}
+            className="kv-button--icon-only"
+            aria-label="Kursiv"
+            aria-keyshortcuts="Control+I"
           >
             <em aria-hidden="true">I</em>
           </Tooltip.Trigger>
@@ -229,13 +220,10 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
         <Toolbar.Group aria-label={text.history}>
           <Tooltip.Root>
             <Tooltip.Trigger
-              render={
-                <Toolbar.Button
-                  className="kv-button--icon-only"
-                  aria-label={text.undo}
-                  aria-keyshortcuts="Control+Z"
-                />
-              }
+              as={Toolbar.Button}
+              className="kv-button--icon-only"
+              aria-label={text.undo}
+              aria-keyshortcuts="Control+Z"
             >
               <Icon name="arrow-back" />
             </Tooltip.Trigger>
@@ -250,14 +238,11 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
           </Tooltip.Root>
           <Tooltip.Root>
             <Tooltip.Trigger
-              render={
-                <Toolbar.Button
-                  disabled
-                  className="kv-button--icon-only"
-                  aria-label={text.redo}
-                  aria-keyshortcuts="Control+Y"
-                />
-              }
+              as={Toolbar.Button}
+              disabled
+              className="kv-button--icon-only"
+              aria-label={text.redo}
+              aria-keyshortcuts="Control+Y"
             >
               <Icon name="arrow-forward" />
             </Tooltip.Trigger>
@@ -274,13 +259,10 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
         <Toolbar.Group aria-label={text.style}>
           <Tooltip.Root>
             <Tooltip.Trigger
-              render={
-                <Toolbar.Toggle
-                  className="kv-button--icon-only"
-                  aria-label={text.bold}
-                  aria-keyshortcuts="Control+B"
-                />
-              }
+              as={Toolbar.Toggle}
+              className="kv-button--icon-only"
+              aria-label={text.bold}
+              aria-keyshortcuts="Control+B"
             >
               <strong aria-hidden="true">B</strong>
             </Tooltip.Trigger>
@@ -295,13 +277,10 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
           </Tooltip.Root>
           <Tooltip.Root>
             <Tooltip.Trigger
-              render={
-                <Toolbar.Toggle
-                  className="kv-button--icon-only"
-                  aria-label={text.italic}
-                  aria-keyshortcuts="Control+I"
-                />
-              }
+              as={Toolbar.Toggle}
+              className="kv-button--icon-only"
+              aria-label={text.italic}
+              aria-keyshortcuts="Control+I"
             >
               <em aria-hidden="true">I</em>
             </Tooltip.Trigger>
@@ -318,11 +297,9 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
         <Popover.Root>
           <Tooltip.Root>
             <Tooltip.Trigger
-              render={
-                <Toolbar.Item
-                  render={<Popover.Trigger className="kv-button" aria-keyshortcuts="Control+K" />}
-                />
-              }
+              as={PopoverToolbarItem}
+              className="kv-button"
+              aria-keyshortcuts="Control+K"
             >
               {text.link}
             </Tooltip.Trigger>
@@ -355,9 +332,7 @@ export function TooltipInAPopover() {
       <Popover.Trigger className="kv-button">Fler åtgärder</Popover.Trigger>
       <Popover.Popup aria-label="Fler åtgärder" style={popoverStyle}>
         <Tooltip.Root>
-          <Tooltip.Trigger
-            render={<Button className="kv-button--icon-only" aria-label="Kopiera" />}
-          >
+          <Tooltip.Trigger as={Button} className="kv-button--icon-only" aria-label="Kopiera">
             <Icon name="document" />
           </Tooltip.Trigger>
           <Tooltip.Popup>
@@ -382,7 +357,7 @@ export function TooltipInAPopover() {
 export function LongTooltip(props: Omit<TooltipRootProps, 'children'>) {
   return (
     <Tooltip.Root {...props}>
-      <Tooltip.Trigger render={<Button className="kv-button--icon-only" aria-label="Tulosta" />}>
+      <Tooltip.Trigger as={Button} className="kv-button--icon-only" aria-label="Tulosta">
         <Icon name="document" />
       </Tooltip.Trigger>
       <Tooltip.Popup>
@@ -401,13 +376,10 @@ export function TooltipAtTheTop(props: Omit<TooltipRootProps, 'children'>) {
   return (
     <Tooltip.Root {...props}>
       <Tooltip.Trigger
-        render={
-          <Button
-            className="kv-button--icon-only"
-            aria-label="Sök"
-            style={{ position: 'fixed', insetBlockStart: 8, insetInlineStart: 8 }}
-          />
-        }
+        as={Button}
+        className="kv-button--icon-only"
+        aria-label="Sök"
+        style={{ position: 'fixed', insetBlockStart: 8, insetInlineStart: 8 }}
       >
         <Icon name="search" />
       </Tooltip.Trigger>

@@ -10,7 +10,7 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 import {
   ContentsWithOwnList,
   finnish,
-  headingLevelOf,
+  headingTagOf,
   levels,
   paragraphOf,
   permit,
@@ -68,10 +68,6 @@ const meta = {
       description:
         'A function, `({ tree, activeId }) => …`, that draws your own list instead of the whole nested list (CustomRender). It is not called when `items` is empty.',
     },
-    render: {
-      control: false,
-      description: 'Another element. Root must stay a `<nav>`, or the landmark is gone.',
-    },
     ref: { control: false, description: 'The rendered `<nav>`.' },
   },
   globals: { locale: 'sv' },
@@ -93,7 +89,7 @@ function renderPage(args: TableOfContentsRootProps): ReactElement {
       <div>
         {args.items.map((item) => (
           <section key={item.id}>
-            <Heading level={headingLevelOf(item.level)} id={item.id}>
+            <Heading as={headingTagOf(item.level)} id={item.id}>
               {item.label}
             </Heading>
             <p>{paragraphOf(item.label)}</p>
@@ -119,8 +115,8 @@ async function scrollToHeading(canvasElement: HTMLElement, name: string) {
 /**
  * The main example: every option is a control below. The landmark is named by the message, in the
  * language of the Locale toolbar. In a side column from 64rem, as here, and above the article below
- * that. Scroll the page: nothing is current until the first heading is passed, then the link of
- * the heading being read is the solid fill, and its parents are the quiet trail.
+ * that. Scroll the page: the link of the heading being read, or the first one on screen before
+ * any has reached the top, is the solid fill, and its parents are the quiet trail.
  */
 export const Default: Story = {
   decorators: [withContentsColumns],
@@ -129,8 +125,11 @@ export const Default: Story = {
     const navigation = canvas.getByRole('navigation', { name: 'På den här sidan' })
     await expect(within(navigation).getAllByRole('list')).toHaveLength(2)
     await expect(within(navigation).getAllByRole('link')).toHaveLength(5)
-    // Nothing is current until the reader has passed the first heading.
-    await expect(navigation.querySelector('[aria-current]')).toBeNull()
+    // The first heading is on screen, so it is current before any scrolling.
+    await expect(navigation.querySelectorAll('[aria-current]')).toHaveLength(1)
+    await expect(
+      within(navigation).getByRole('link', { name: 'Vem behöver bygglov?' }),
+    ).toHaveAttribute('aria-current', 'location')
   },
 }
 
@@ -152,21 +151,21 @@ export const Keyboard: Story = {
         <Link.Root href="#keyboard-kontakt">Kontakta oss</Link.Root>
       </p>
       <section>
-        <Heading level={2} id="keyboard-vem-behover-bygglov">
+        <Heading as="h2" id="keyboard-vem-behover-bygglov">
           Vem behöver bygglov?
         </Heading>
         <p>{paragraphOf('Vem behöver bygglov?')}</p>
       </section>
       <section>
-        <Heading level={2} id="keyboard-sa-ansoker-du">
+        <Heading as="h2" id="keyboard-sa-ansoker-du">
           Så ansöker du
         </Heading>
         <p>{paragraphOf('Så ansöker du')}</p>
-        <Heading level={3} id="keyboard-ritningar">
+        <Heading as="h3" id="keyboard-ritningar">
           Ritningar
         </Heading>
         <p>{paragraphOf('Ritningar')}</p>
-        <Heading level={3} id="keyboard-avgifter">
+        <Heading as="h3" id="keyboard-avgifter">
           Avgifter
         </Heading>
         <p>
@@ -176,13 +175,13 @@ export const Keyboard: Story = {
         </p>
       </section>
       <section>
-        <Heading level={2} id="keyboard-efter-beslutet">
+        <Heading as="h2" id="keyboard-efter-beslutet">
           Efter beslutet
         </Heading>
         <p>{paragraphOf('Efter beslutet')}</p>
       </section>
       <section>
-        <Heading level={2} id="keyboard-kontakt">
+        <Heading as="h2" id="keyboard-kontakt">
           Kontakt
         </Heading>
         <p>Frågor om ditt ärende ställer du till byggnadsnämnden.</p>
@@ -202,7 +201,7 @@ export const LabelledByHeading: Story = {
   render: (args) => (
     <>
       <div>
-        <Heading level={2} size="heading-4" id="labelled-by-heading-title">
+        <Heading as="h2" size="heading-4" id="labelled-by-heading-title">
           På den här sidan
         </Heading>
         <TableOfContents.Root {...args} aria-labelledby="labelled-by-heading-title" />
@@ -210,7 +209,7 @@ export const LabelledByHeading: Story = {
       <div>
         {args.items.map((item) => (
           <section key={item.id}>
-            <Heading level={headingLevelOf(item.level)} id={item.id}>
+            <Heading as={headingTagOf(item.level)} id={item.id}>
               {item.label}
             </Heading>
             <p>{paragraphOf(item.label)}</p>
@@ -260,8 +259,8 @@ export const StickyOffset: Story = {
 
 /**
  * Your own list: the function child gets the tree and the active id. Here only the top level is
- * drawn, with the number of sub-sections after each link. `render` changes any part’s element. The
- * Root draws nothing when `items` is empty, so a title drawn in this function goes with the list.
+ * drawn, with the number of sub-sections after each link. The Root draws nothing when `items` is
+ * empty, so a title drawn in this function goes with the list.
  */
 export const CustomRender: Story = {
   parameters: showSource('table-of-contents/table-of-contents.fixture.tsx', 'ContentsWithOwnList'),

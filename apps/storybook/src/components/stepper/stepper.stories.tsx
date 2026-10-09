@@ -27,7 +27,7 @@ const meta = {
   component: Stepper,
   args: { current: 2, total: 5 },
   decorators: [withFormLocale],
-  argTypes: { render: { control: false }, messages: { control: false } },
+  argTypes: { as: { control: false }, messages: { control: false } },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
@@ -40,7 +40,7 @@ type Story = StoryObj<typeof meta>
 function UnderHeading(args: StepperProps) {
   return (
     <Stack gap="2">
-      <Heading level={1}>Which vehicle is the permit for?</Heading>
+      <Heading as="h1">Which vehicle is the permit for?</Heading>
       <Stepper {...args} />
     </Stack>
   )
@@ -129,7 +129,7 @@ export const WizardPage: Story = {
         </ErrorSummary.List>
       </ErrorSummary.Root>
       <Stack gap="2">
-        <Heading level={1}>Var bor du?</Heading>
+        <Heading as="h1">Var bor du?</Heading>
         <Stepper {...args} />
       </Stack>
       <Field.Root required invalid>
@@ -159,7 +159,7 @@ export const LongFinnish: Story = {
   render: (args) => (
     <div className="kv-story-narrow">
       <Stack gap="2">
-        <Heading level={1}>Minkä tunnuksen haluat?</Heading>
+        <Heading as="h1">Minkä tunnuksen haluat?</Heading>
         <Stepper {...args} />
       </Stack>
     </div>
@@ -207,7 +207,7 @@ export const RTL: Story = {
   render: (args) => (
     <div dir="rtl" lang="ar">
       <Stack gap="2">
-        <Heading level={1}>لأي مركبة هذا الترخيص؟</Heading>
+        <Heading as="h1">لأي مركبة هذا الترخيص؟</Heading>
         <Stepper
           {...args}
           lang="ar"

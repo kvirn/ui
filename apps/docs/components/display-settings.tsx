@@ -1,5 +1,5 @@
 'use client'
-import type { ColorSchemePreference, ContrastPreference } from '@kvirn-ui/core'
+import type { ColorSchemePreference, ContrastPreference, MotionPreference } from '@kvirn-ui/core'
 import {
   AlertBody,
   AlertInfo,
@@ -18,9 +18,10 @@ const text = messages.docs.display
 const languageNames = messages.docs.example.languages
 const colorSchemeOptions: readonly ColorSchemePreference[] = ['light', 'dark', 'system']
 const contrastOptions: readonly ContrastPreference[] = ['standard', 'more', 'system']
+const motionOptions: readonly MotionPreference[] = ['full', 'reduce', 'system']
 
 /**
- * The theme switcher: two radio groups on `useTheme()`, as in the KvirnProvider recipe, and the
+ * The theme switcher: three radio groups on `useTheme()`, as in the KvirnProvider recipe, and the
  * language every example is shown in. The checked radio or selected option is the only feedback:
  * nothing is announced and focus stays.
  */
@@ -69,6 +70,24 @@ export function DisplaySettingsPanel() {
                 </Field.Root>
               ))}
             </RadioGroup.Root>
+            <RadioGroup.Root
+              name="docs-motion"
+              value={theme.motion}
+              onValueChange={(value) => {
+                const option = motionOptions.find((candidate) => candidate === value)
+                if (option !== undefined) {
+                  theme.selectMotion(option)
+                }
+              }}
+            >
+              <RadioGroup.Legend marker="none">{text.motion.legend}</RadioGroup.Legend>
+              {motionOptions.map((option) => (
+                <Field.Root key={option}>
+                  <RadioGroup.Radio value={option} />
+                  <Field.Label>{text.motion[option]}</Field.Label>
+                </Field.Root>
+              ))}
+            </RadioGroup.Root>
             <Field.Root>
               <Field.Label marker="none">{text.exampleLanguage}</Field.Label>
               <Listbox.Root
@@ -91,8 +110,9 @@ export function DisplaySettingsPanel() {
         <Card.Footer>
           <div>
             {theme.isForcedColors && <p>{text.forcedColors}</p>}
+            <p>{text.motion.note}</p>
             <AlertInfo>
-              <AlertTitle render={<p />}>{text.storageTitle}</AlertTitle>
+              <AlertTitle as="p">{text.storageTitle}</AlertTitle>
               <AlertBody>
                 <p>{text.storageNote}</p>
               </AlertBody>

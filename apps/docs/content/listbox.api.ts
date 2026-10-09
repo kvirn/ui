@@ -1,29 +1,14 @@
 import type {
-  ListboxEmptyProps,
-  ListboxGroupLabelProps,
   ListboxGroupProps,
   ListboxListProps,
-  ListboxOptionDescriptionProps,
-  ListboxOptionIconProps,
-  ListboxOptionIndicatorProps,
   ListboxOptionProps,
-  ListboxOptionTextProps,
-  ListboxPopupProps,
   ListboxRootProps,
-  ListboxTriggerProps,
   ListboxValueProps,
   UseListboxOptions,
   UseListboxResult,
 } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
-import type { ApiHook, AttributeRow, PropRow } from '../components/api-block.tsx'
-
-/** The `render` row of a part: the element it may become, and what a render function receives. */
-export const renderRow = (element: string, state: string, extra = ''): PropRow => ({
-  type: `RenderProp<ComponentPropsWithRef<"${element}">, ${state}>`,
-  default: '–',
-  description: `Changes the element, which must still be a <${element}>.${extra}`,
-})
+import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
 export const rootRows = propRows<Omit<ListboxRootProps<unknown>, 'children'>>({
   items: {
@@ -293,11 +278,7 @@ export const useListboxHook: ApiHook = {
   }),
 }
 
-export const triggerRows = propRows<Pick<ListboxTriggerProps, 'render'>>({
-  render: renderRow('div', 'ListboxPartState'),
-})
-
-export const valueRows = propRows<Pick<ListboxValueProps, 'placeholder' | 'children' | 'render'>>({
+export const valueRows = propRows<Pick<ListboxValueProps, 'placeholder' | 'children'>>({
   placeholder: {
     type: 'string',
     default: 'The Root’s placeholder',
@@ -308,24 +289,18 @@ export const valueRows = propRows<Pick<ListboxValueProps, 'placeholder' | 'child
     default: 'The chosen texts, joined with a comma',
     description: 'What shows when something is chosen. A function gets the chosen items.',
   },
-  render: renderRow('span', 'ListboxValueState'),
 })
 
-export const popupRows = propRows<Pick<ListboxPopupProps, 'render'>>({
-  render: renderRow('div', 'ListboxPartState'),
-})
-
-export const listRows = propRows<Pick<ListboxListProps, 'children' | 'render'>>({
+export const listRows = propRows<Pick<ListboxListProps, 'children'>>({
   children: {
     type: 'ReactNode | (item: TItem, entry: ListboxEntry<TItem>) => ReactNode',
     default: '–',
     description:
       'A function that renders one Option per item (or a Group per group). Options render only while the popup is open.',
   },
-  render: renderRow('div', 'ListboxPartState'),
 })
 
-export const optionRows = propRows<Pick<ListboxOptionProps, 'item' | 'children' | 'render'>>({
+export const optionRows = propRows<Pick<ListboxOptionProps, 'item' | 'children'>>({
   item: {
     type: 'TItem',
     description: 'One of the Root’s items, as List hands it to you.',
@@ -335,23 +310,9 @@ export const optionRows = propRows<Pick<ListboxOptionProps, 'item' | 'children' 
     default: 'The item’s text',
     description: 'Your own content for a rich option. Its name is then its text content.',
   },
-  render: renderRow('div', 'ListboxOptionState<TItem>'),
 })
 
-export const optionIconRows = propRows<Pick<ListboxOptionIconProps, 'render'>>({
-  render: renderRow('span', 'ListboxOptionPartState'),
-})
-export const optionTextRows = propRows<Pick<ListboxOptionTextProps, 'render'>>({
-  render: renderRow('span', 'ListboxOptionPartState'),
-})
-export const optionDescriptionRows = propRows<Pick<ListboxOptionDescriptionProps, 'render'>>({
-  render: renderRow('span', 'ListboxOptionPartState'),
-})
-export const optionIndicatorRows = propRows<Pick<ListboxOptionIndicatorProps, 'render'>>({
-  render: renderRow('span', 'ListboxOptionPartState'),
-})
-
-export const groupRows = propRows<Pick<ListboxGroupProps, 'section' | 'children' | 'render'>>({
+export const groupRows = propRows<Pick<ListboxGroupProps, 'section' | 'children'>>({
   section: {
     type: 'ListboxSection<TItem>',
     description: 'The group, as the Root hands it out. List passes it for you.',
@@ -361,15 +322,6 @@ export const groupRows = propRows<Pick<ListboxGroupProps, 'section' | 'children'
     default: '–',
     description: 'A function renders the label, then one child per option.',
   },
-  render: renderRow('div', 'ListboxPartState'),
-})
-
-export const groupLabelRows = propRows<Pick<ListboxGroupLabelProps, 'render'>>({
-  render: renderRow('div', 'ListboxPartState'),
-})
-
-export const emptyRows = propRows<Pick<ListboxEmptyProps, 'render'>>({
-  render: renderRow('div', 'ListboxPartState'),
 })
 
 export const dataRow = (name: string, meaning: string): AttributeRow => ({

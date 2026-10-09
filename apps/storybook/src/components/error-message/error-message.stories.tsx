@@ -28,10 +28,6 @@ const meta = {
       control: 'text',
       description: 'Your own classes, added to `kv-field-error-message`.',
     },
-    render: {
-      control: false,
-      description: 'Another element for the message. It receives the host’s state.',
-    },
     ref: { control: false, description: 'A ref to the `<p>`.' },
   },
   globals: { locale: 'sv' },

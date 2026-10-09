@@ -1,12 +1,6 @@
 import type {
-  DialogActionsProps,
-  DialogBodyProps,
   DialogCloseProps,
-  DialogDescriptionProps,
-  DialogPopupProps,
   DialogRootProps,
-  DialogTitleProps,
-  DialogTriggerProps,
   UseDialogOptions,
   UseDialogResult,
 } from '@kvirn-ui/react'
@@ -68,35 +62,21 @@ export const dialogRootRows = propRows<DialogRootProps>({
   },
 })
 
-export const dialogRenderRow = (element: string) =>
-  ({
-    render: {
-      type: `RenderProp<ComponentPropsWithRef<"${element}">, DialogState>`,
-      default: '–',
-      description: `Changes the element, which must still be a <${element}>. A function receives the props and { isOpen }.`,
-    },
-  }) as const
+export const dialogCloseAsRow = {
+  type: 'ElementType',
+  default: "'button'",
+  description:
+    'A component to render instead of the button, with its props set on the Close: as={Button} className="kv-button--primary". It must render a button, forward its ref and spread its props on a DOM node.',
+} as const
 
-export const dialogTriggerRows = propRows<Pick<DialogTriggerProps, 'render'>>(
-  dialogRenderRow('button'),
-)
-export const dialogPopupRows = propRows<Pick<DialogPopupProps, 'render'>>(dialogRenderRow('dialog'))
-export const dialogTitleRows = propRows<Pick<DialogTitleProps, 'render'>>(dialogRenderRow('h2'))
-export const dialogDescriptionRows = propRows<Pick<DialogDescriptionProps, 'render'>>(
-  dialogRenderRow('p'),
-)
-export const dialogBodyRows = propRows<Pick<DialogBodyProps, 'render'>>(dialogRenderRow('div'))
-export const dialogActionsRows = propRows<Pick<DialogActionsProps, 'render'>>(
-  dialogRenderRow('div'),
-)
-export const dialogCloseRows = propRows<Pick<DialogCloseProps, 'messages' | 'render'>>({
+export const dialogCloseRows = propRows<Pick<DialogCloseProps, 'messages' | 'as'>>({
   messages: {
     type: 'Partial<KvirnMessages["dialog"]>',
     default: '–',
     description:
       'Overrides for this button’s name: close. Used only when it has no children. Without children it is an icon button named by the message.',
   },
-  ...dialogRenderRow('button'),
+  as: dialogCloseAsRow,
 })
 
 export const dialogTriggerAttributes: readonly AttributeRow[] = [

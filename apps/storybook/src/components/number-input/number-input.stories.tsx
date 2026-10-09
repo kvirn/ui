@@ -142,10 +142,6 @@ const meta = {
         'Your own description ids. They are kept, after the Field’s help text and error.',
     },
     ref: { control: false, description: 'A ref to the `<input>`.' },
-    render: {
-      control: false,
-      description: 'Another element. It must still be an `<input>`. Spread the props it gets.',
-    },
   },
   globals: { locale: 'sv' },
   decorators: [

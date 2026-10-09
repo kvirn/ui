@@ -25,7 +25,6 @@ const meta = {
   title: 'Components/CodeBlock',
   component: CodeBlock.Root,
   decorators: [withCopyMessages],
-  argTypes: { render: { control: false } },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },

@@ -7,7 +7,7 @@ export function CaseCard() {
   return (
     <Card.Root lang={textLang}>
       <Card.Header>
-        <Heading level={4}>{texts.caseHeading}</Heading>
+        <Heading as="h4">{texts.caseHeading}</Heading>
       </Card.Header>
       <Card.Body>
         <SummaryList.Root>

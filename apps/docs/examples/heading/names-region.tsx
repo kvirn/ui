@@ -8,7 +8,7 @@ export function NamesRegion() {
   const headingId = useId()
   return (
     <section aria-labelledby={headingId} lang={textLang}>
-      <Heading level={4} id={headingId}>
+      <Heading as="h4" id={headingId}>
         {texts.opening.heading}
       </Heading>
       <p>{texts.opening.text}</p>
