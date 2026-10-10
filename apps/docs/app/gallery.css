@@ -1,0 +1,38 @@
+/*
+ * The gallery card's link and picture box (docs/design/component-gallery.md §3.3). Tokens only,
+ * no raw colours. :where() keeps the specificity at zero so a consumer-side rule still wins.
+ */
+:where(.docs-gallery-link) {
+  display: flex;
+  align-items: center;
+  gap: var(--kv-space-3);
+  overflow-wrap: anywhere;
+}
+
+:where(.docs-gallery-preview) {
+  display: block;
+  flex: none;
+  inline-size: 5rem;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background-color: var(--kv-color-surface);
+  border: 1px solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-md);
+}
+
+:where(.docs-gallery-preview) > :where(svg) {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+@media (width >= 40rem) {
+  :where(.docs-gallery-link) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  :where(.docs-gallery-preview) {
+    inline-size: auto;
+  }
+}

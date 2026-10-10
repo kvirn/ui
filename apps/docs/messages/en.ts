@@ -48,7 +48,8 @@ export const messages = {
     },
     componentsIndex: {
       title: 'Components',
-      lead: 'Every component and hook, grouped by what it does. Each page shows an example, the keyboard contract and the API.',
+      lead: ({ count }: { count: number }) =>
+        `${count} components and hooks, grouped by what they do. Each page shows an example, the keyboard contract and the API.`,
     },
     header: {
       home: 'KvirnUI',

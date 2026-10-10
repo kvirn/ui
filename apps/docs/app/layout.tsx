@@ -4,6 +4,7 @@ import '@kvirn-ui/theme/theme.css'
 // time or at runtime.
 import '../fonts/ibm-plex/ibm-plex.css'
 import './docs.css'
+import './gallery.css'
 import { KvirnThemeScript, getLocaleProps } from '@kvirn-ui/react/server'
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
