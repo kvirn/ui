@@ -69,6 +69,22 @@ export interface UseIconResult {
 }
 
 const pixelsPerRem = 16
+const defaultSize: IconSize = '20'
+const iconSizes: readonly string[] = [
+  '12',
+  '14',
+  '16',
+  '20',
+  '24',
+  '28',
+  '32',
+  '40',
+  '48',
+  '56',
+  '64',
+  '80',
+  '96',
+] satisfies IconSize[]
 
 /**
  * An icon's props, and the component for its name (contract: icon.a11y.md). The
@@ -99,7 +115,17 @@ export function useIcon({ name, size, label, mirrorInRtl }: UseIconOptions = {})
     )
   }
 
-  const resolvedSize = size ?? iconDefaults.size ?? '20'
+  const requestedSize = size ?? iconDefaults.size ?? defaultSize
+  // A JS consumer, or a cast, can pass a size the theme has no class for.
+  const isKnownSize = iconSizes.includes(requestedSize)
+  const resolvedSize = isKnownSize ? requestedSize : defaultSize
+
+  if (!isKnownSize) {
+    warnOnce(
+      `unknown-icon-size:${String(requestedSize)}`,
+      `<Icon size={${JSON.stringify(requestedSize)}}> isn't one of the sizes ${iconSizes.join(', ')}, so it renders at ${defaultSize}. size is the pixel size as a string, and another size is a class you add.`,
+    )
+  }
   const isMirroredInRtl = mirrorInRtl ?? entryMirrorInRtl ?? false
   const isDecorative = label === undefined
 

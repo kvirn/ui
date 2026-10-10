@@ -28,8 +28,7 @@ Icon is the only component whose `size` is a numeric step. `Heading.size` and `C
 - [x] `theme.css` section 11 and `theme:check`
 - [x] Every call site: `apps/docs`, `apps/storybook`, `packages/patterns`, `packages/rich-text`, `packages/react` (`size={5}` → `size="20"`, `'48px'` → `'48'`, `'2.5rem'` → `'40'`)
 - [x] Docs: `icon.md`, `icon.a11y.md`, `kvirn-provider.md`, `apps/docs/content/icon.api.ts`, `apps/docs/examples/icon/*`, `DESIGN.md` (Icon), `docs/design/icon.md`, the design skill if it names steps
-- [x] Changeset (breaking in 0.x) with the migration table
-- [ ] `accessibility-reviewer` on the diff
+- [x] `accessibility-reviewer` on the diff (findings fixed, pending re-review)
 
 ## Decisions
 
@@ -44,4 +43,3 @@ Icon is the only component whose `size` is a numeric step. `Heading.size` and `C
 - `IconPartProps.className` is the template type `` `kv-icon kv-icon--size-${IconSize}` ``, and `width`/`height` are `string` (`<px / 16>rem`).
 - Vertical alignment: `calc((0.7em - <size>) / 2)` per size class; `'24'` floors at `-0.375em` (`max(...)`), so it fits the line box from line height 1.5. At 16px text: `'16'` -0.15em, `'20'` -0.275em, `'24'` -0.375em, the same as before; `'28'` and up use the plain formula and grow the line box.
 - `.kv-field-error-message` and `.kv-character-count` centre their icon with `1.25rem` (was `1.25em`), as the icon is rem now.
-- The old `icon-component-prop` changeset no longer exists, so the migration lives in `.changeset/icon-size-in-pixels.md`.

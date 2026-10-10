@@ -27,7 +27,7 @@ import '@kvirn-ui/theme/theme.css'
 ```
 
 - Every component part renders its own class: `kv-button`, `kv-link`, `kv-link-new-tab-notice`, `kv-link-icon`, `kv-navigation`, `kv-navigation-list`, `kv-navigation-item`, `kv-table-of-contents`, `kv-table-of-contents-list`, `kv-table-of-contents-item`, `kv-card`, `kv-card-header`, `kv-card-body`, `kv-card-footer`, `kv-section`, `kv-alert` and its parts (`kv-alert-icon`, `kv-alert-title`, `kv-alert-status`, `kv-alert-body`, `kv-alert-actions`, `kv-alert-close`), `kv-icon`, and for forms `kv-field`, `kv-field-label`, `kv-field-optional`, `kv-field-help-text`, `kv-field-error-message`, `kv-field-error-prefix`, `kv-fieldset`, `kv-fieldset-legend` and `kv-input`. Your `className` joins it, never replaces it. The theme selects on it.
-- State comes from the components as `data-*` attributes: `data-disabled`, `data-focus-visible`, `data-current`, `data-invalid` and `data-required` on form parts, and on icons `data-size` (the step of the size scale, such as `4`) and `data-mirror-in-rtl`. Classes style, `data-*` is state.
+- State comes from the components as `data-*` attributes: `data-disabled`, `data-focus-visible`, `data-current`, `data-invalid` and `data-required` on form parts, and on icons `data-mirror-in-rtl`. An icon's size is a class, `kv-icon--size-<px>` (such as `kv-icon--size-20`). Classes style, `data-*` is state.
 - Choices are classes you add:
   - `<Button className="kv-button--primary">` for the one main action per view, `kv-button--danger` for a destructive one. Without one, a Button is secondary.
   - `<Button className="kv-button--icon-only" aria-label={messages.close}>` makes an icon-only button square, at least the button's minimum size. Use it only for close and search.

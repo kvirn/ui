@@ -60,14 +60,14 @@ Icon has no strings. A `label` comes from your own translations.
 - Target size: not applicable. An icon-only button's target is the Button's: the default theme makes `kv-button--icon-only` square and at least `--kv-button-min-block-size` (2.5.8).
 - forced-colors behaviour: icons draw in `currentColor`, which follows the system colour. The default theme turns an explicit `fill`, `stroke` or `color` on `.kv-icon` (set by your own CSS) into `currentColor` in forced-colours mode, so a hard-coded colour can't vanish. Colours on child shapes are kept, so forced-colours contrast for a multi-colour, meaningful SVG is the consumer's job. There is no root `fill` or `stroke` option any more: a one-off SVG sets `fill="currentColor"` on its own shapes, or it draws black in forced colours.
 - reduced-motion behaviour: no motion.
-- Text resize and reflow: the size steps are `em`, so icons grow with text (1.4.4) and reflow at 320px (1.4.10). Test: `icon.test.tsx › attributes › the default size is step 5 (1.25em)`.
+- Text resize and reflow: icons are rem (`kv-icon--size-<px>` plus `width` and `height` in rem), so they scale with browser zoom and the user's root font size, not with the surrounding text. 1.4.4 holds because text resizes and icons aren't text. The largest icon is 6rem, so 1.4.10 holds at 320px. Tests: `icon.test.tsx › attributes › the default size is '20' (1.25rem)` and the `SizesNextToText` story.
 
 ## WCAG SCs covered
 
 - 1.1.1 Non-text Content: decorative icons are hidden, meaningful ones have a `label`.
 - 1.3.1 Info and Relationships: no structure from icons.
 - 1.4.1 Use of Color: status icons differ in shape (built-in set, design spec).
-- 1.4.4 Resize Text, 1.4.10 Reflow: `em` sizes.
+- 1.4.4 Resize Text, 1.4.10 Reflow: rem sizes, at most 6rem.
 - 1.4.11 Non-text Contrast: consumer, with `currentColor` by default.
 - 4.1.2 Name, Role, Value: `role="img"` with a name, or hidden. Button's dev warning for an unnamed icon-only button.
 

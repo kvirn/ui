@@ -314,6 +314,22 @@ describe('attributes', () => {
     expect(svg.getAttribute('width')).toBe('1.25rem')
   })
 
+  test.each([[5], ['48px'], ['13'], ['toString']] as const)(
+    'size=%j is outside IconSize: it warns once and falls back to 20',
+    async (size) => {
+      const svg = await renderIcon(
+        <>
+          <RegisteredIcon name="lucide-trash" size={size as never} />
+          <RegisteredIcon name="lucide-trash" size={size as never} />
+        </>,
+      )
+      expect(svg.classList.contains('kv-icon--size-20')).toBe(true)
+      expect(svg.getAttribute('width')).toBe('1.25rem')
+      expect(consoleWarn).toHaveBeenCalledTimes(1)
+      expect(consoleWarn.mock.calls[0]?.[0]).toContain('size')
+    },
+  )
+
   test('the size is never a data attribute (data-* is state, not a choice)', async () => {
     const svg = await renderIcon(<RegisteredIcon name="lucide-trash" size="24" />)
     expect(svg.hasAttribute('data-size')).toBe(false)

@@ -1073,7 +1073,7 @@
       flex: none;
       align-self: center;
       inline-size: var(--kv-border-width);
-      block-size: 1.25em;
+      block-size: 1.25rem;
       margin-inline-end: calc(var(--kv-space-2) - var(--kv-space-1));
       background-color: var(--kv-color-border-subtle);
     }
@@ -4477,14 +4477,14 @@
     grid-column: 1;
   }
 
-  /* Centred on the title's first line: (title line height - icon size) / 2. The icon is 1.25em
-   * (step 5), so 1.25em here is its own size. Under the 1.4.12 line height it stays on the line. */
+  /* Centred on the title's first line: (title line height - icon size) / 2. The icon is 1.25rem
+   * (size '20'), so 1.25rem here is its own size. Under the 1.4.12 line height it stays on the line. */
   .kv-alert > .kv-alert-icon {
     grid-column: 1;
     grid-row: 1;
     align-self: start;
     margin-block-start: calc(
-      (var(--kv-alert-title-size) * var(--kv-alert-title-line-height) - 1.25em) / 2
+      (var(--kv-alert-title-size) * var(--kv-alert-title-line-height) - 1.25rem) / 2
     );
     color: var(--kv-alert-accent);
   }
@@ -5723,7 +5723,7 @@
     position: relative;
     max-inline-size: var(--kv-prose-measure);
     margin: 0;
-    padding-inline-start: calc(1.25em + var(--kv-space-2));
+    padding-inline-start: calc(1.25rem + var(--kv-space-2));
     color: var(--kv-color-danger);
     font-size: var(--kv-font-label-size);
     font-weight: var(--kv-font-label-weight);
@@ -5885,7 +5885,7 @@
    * the weight, the icon and the words carry it, never colour alone (1.4.1). */
   .kv-character-count[data-over] {
     position: relative;
-    padding-inline-start: calc(1.25em + var(--kv-space-2));
+    padding-inline-start: calc(1.25rem + var(--kv-space-2));
     font-weight: 600;
   }
 
@@ -10951,7 +10951,7 @@
    * two chevrons (sortable), one up (ascending) and one down (descending). They don't mirror. */
   .kv-table-sort-icon {
     flex: none;
-    margin-block-start: calc((1lh - 1.25em) / 2);
+    margin-block-start: calc((1lh - 1.25rem) / 2);
     color: var(--kv-color-text-muted);
   }
 

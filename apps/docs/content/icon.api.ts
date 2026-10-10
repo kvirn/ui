@@ -35,7 +35,7 @@ export const iconRows = propRows<IconDocumentedProps>({
     type: 'IconSize',
     default: '20',
     description:
-      'The size in pixels, as a string: "16", "20", "24", "32" to "96". The theme turns it into rem with the class kv-icon--size-<px>, so it follows the root font size, not the text. Another size is a class you add. The default comes from KvirnProvider iconDefaults.',
+      'The size in pixels, as a string: "12", "14", "16", "20", "24", "28", "32", "40", "48", "56", "64", "80" or "96". The theme turns it into rem with the class kv-icon--size-<px>, so it follows the root font size, not the text. Another size is a class you add. The default comes from KvirnProvider iconDefaults.',
   },
   label: {
     type: 'string',
