@@ -24,14 +24,24 @@ import { proseAttributes, proseRows, useProseResultRows } from '../content/prose
 import { ArticleProse } from '../examples/prose/article.tsx'
 import { DefaultProse } from '../examples/prose/default.tsx'
 import { FieldDescription } from '../examples/prose/field-description.tsx'
+import { ImagesAndMediaProse } from '../examples/prose/images-and-media.tsx'
+import { InsetTextProse } from '../examples/prose/inset-text.tsx'
 import { LargeProse } from '../examples/prose/large.tsx'
 import { OwnElementProse } from '../examples/prose/own-element.tsx'
+import { StepsProse } from '../examples/prose/steps.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 const text = messages.docs.api
 
 export type ProseExampleSources = Record<
-  'default' | 'article' | 'large' | 'field-description' | 'own-element',
+  | 'default'
+  | 'article'
+  | 'large'
+  | 'field-description'
+  | 'own-element'
+  | 'inset-text'
+  | 'steps'
+  | 'images-and-media',
   string
 >
 
@@ -167,6 +177,48 @@ export function ProsePage({
             }
           >
             <FieldDescription />
+          </UseCase>
+          <UseCase
+            id="inset-text"
+            title="A paragraph that must not be missed"
+            why="Set a condition, an exception or a tip apart from the text around it with the kv-inset class. It adds no role and nothing is announced, so start it with a word that says why it is set apart."
+            code={sources['inset-text']}
+            note={
+              <Note kind="tip">
+                Inset or Alert: an inset is part of the article. A deadline that loses someone their
+                right, or money, is an Alert.Warning, not an inset.
+              </Note>
+            }
+          >
+            <InsetTextProse />
+          </UseCase>
+          <UseCase
+            id="steps"
+            title="A process in order"
+            why="Write the steps as a native ol with the kv-steps class. Every step has a heading and text, or none has. The list keeps its native numbers, so a screen reader announces the count."
+            code={sources['steps']}
+            note={
+              <Note kind="tip">
+                Steps or Stepper: steps are guidance to read, in one page. They are not a progress
+                indicator in a form, which is a Stepper.
+              </Note>
+            }
+          >
+            <StepsProse />
+          </UseCase>
+          <UseCase
+            id="images-and-media"
+            title="A picture with a caption"
+            why="Wrap the picture in a figure with a figcaption. The alt text says what the picture shows, and the caption holds the source or credit, so the two never repeat each other."
+            code={sources['images-and-media']}
+            note={
+              <Note kind="reminder">
+                Captions, never an embed: put every fact a picture carries in the text next to it,
+                and link to a video rather than embedding one from a third party.
+              </Note>
+            }
+          >
+            <ImagesAndMediaProse />
           </UseCase>
           <UseCase
             id="own-element"

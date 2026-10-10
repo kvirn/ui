@@ -6,6 +6,9 @@ export interface ProseTexts {
   large: { heading: string; text: string }
   field: { label: string; description: string }
   own: { heading: string; text: string }
+  inset: { lead: string; text: string }
+  steps: { heading: string; items: readonly { title: string; text: string }[] }
+  figure: { alt: string; caption: string; description: string }
 }
 
 export const useProseTexts = defineExampleTexts<ProseTexts>({
@@ -34,6 +37,25 @@ export const useProseTexts = defineExampleTexts<ProseTexts>({
       heading: 'Processing times',
       text: 'Most applications are decided within ten working days.',
     },
+    inset: {
+      lead: 'Important:',
+      text: 'Apply by 30 April. We can’t process applications that arrive later.',
+    },
+    steps: {
+      heading: 'How it works',
+      items: [
+        { title: 'Apply in the e-service', text: 'It takes about ten minutes.' },
+        { title: 'We check your application', text: 'We contact you if something is missing.' },
+        { title: 'You get a decision', text: 'It arrives by post within ten working days.' },
+        { title: 'Pay the fee', text: 'The invoice comes with the decision.' },
+      ],
+    },
+    figure: {
+      alt: 'Map of parking zone B: the entrance is on the north side, next to the pay station.',
+      caption: 'Parking zone B. Source: the City Planning Office.',
+      description:
+        'Zone B has 40 spaces. The entrance is on the north side, next to the pay station.',
+    },
   },
   sv: {
     contact: {
@@ -59,6 +81,24 @@ export const useProseTexts = defineExampleTexts<ProseTexts>({
     own: {
       heading: 'Handläggningstider',
       text: 'De flesta ansökningar får beslut inom tio arbetsdagar.',
+    },
+    inset: {
+      lead: 'Viktigt:',
+      text: 'Ansök senast den 30 april. Ansökningar som kommer in senare kan vi inte behandla.',
+    },
+    steps: {
+      heading: 'Så här går det till',
+      items: [
+        { title: 'Ansök i e-tjänsten', text: 'Det tar ungefär tio minuter.' },
+        { title: 'Vi går igenom ansökan', text: 'Vi hör av oss om något saknas.' },
+        { title: 'Du får ett beslut', text: 'Det kommer med post inom tio arbetsdagar.' },
+        { title: 'Betala avgiften', text: 'Fakturan kommer tillsammans med beslutet.' },
+      ],
+    },
+    figure: {
+      alt: 'Karta över parkeringszon B: ingången ligger på norra sidan, intill betalautomaten.',
+      caption: 'Parkeringszon B. Källa: stadsbyggnadskontoret.',
+      description: 'Zon B har 40 platser. Ingången ligger på norra sidan, intill betalautomaten.',
     },
   },
 })

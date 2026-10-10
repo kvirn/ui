@@ -127,7 +127,7 @@ export const componentGroups: readonly SummarisedGroup[] = [
       component(
         'Prose',
         'prose',
-        'A container that sets headings, paragraphs, lists, links and tables for reading.',
+        "Styles for text you don't control, with inset text, steps and figures.",
       ),
       component(
         'VisuallyHidden',

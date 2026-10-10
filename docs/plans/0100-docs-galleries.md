@@ -39,9 +39,9 @@ The spec is the design. Rules this plan adds on top of D12:
 Order: G1 first; G2 and G4 in parallel; G3 after G2; G5 and G6 after G1 and G2; G7 any time. **Start G1 only after plan 0099 is committed**: both edit `site-sections.ts`, `docs.css` and `messages/en.ts`.
 
 - [x] **G1 Data** (component-engineer): `summary` on `SitePage`, `patternGroups`, content-type items in `site-sections.ts`; the first lead sentence of the 64 page files moves to data; `component-page.tsx` composes the lead from it
-- [ ] **G2 Gallery, Components** (component-engineer): `components/gallery/gallery.tsx`, `app/gallery.css`, `app/components/page.tsx`; works without pictures
+- [x] **G2 Gallery, Components** (component-engineer): `components/gallery/gallery.tsx`, `app/gallery.css`, `app/components/page.tsx`; works without pictures. Decisions: the group `h2` stays a plain `Heading` with its id (not `AnchoredHeading`, no extra Tab stop), no `section` per group (spec §7), `PageContents` reused over the 7 groups; CSS under `:where()` for zero specificity.
 - [ ] **G3 Previews, Components** (component-engineer, one PR per 2–3 groups): `components/gallery/previews/*.tsx` and the registry; hidden from AT, no text, forced-colours block
-- [ ] **G4 Prose use cases** (component-engineer, parallel with G2): Inset text, Steps, Images and media on the Prose page (`/components/prose#…`), 7 use cases; delete the old `/content-types` prose pages if any were built
+- [x] **G4 Prose use cases** (component-engineer, parallel with G2): Inset text, Steps, Images and media on the Prose page (`/components/prose#…`), 7 use cases. Decisions: order is article, larger-text, field-description, inset-text, steps, images-and-media, own-element; notes lead with "Inset or Alert:", "Steps or Stepper:", "Captions, never an embed:"; the figure is an `<img>` with an inline `data:` SVG (an inline `<svg role="img">` trips the `prefer-tag-over-role` lint; the CSP allows `data:`); the test reads the ids from the page source, because a render needs the contract; `ProseTexts` has en and sv only, and `prose-content-types.md` lists fi too (left). No `/content-types` prose pages existed, so nothing was deleted.
 - [ ] **G5 Patterns** (component-engineer, after G1 and G2): `app/patterns/page.tsx` on the gallery; one minimal page per shipped pattern; only patterns with a page are listed
 - [ ] **G6 Content types** (component-engineer, after G1 and G2): `app/content-types/page.tsx`; four type pages (Start page, Subpage, Content page, Documentation page); wireframe previews
 - [x] **G7 Contact card**: its title was already `Patterns/Places and contacts/Contact card`, so only the file moved, from `content-types/` to `patterns/places-and-contacts/`; no story id changed
@@ -52,6 +52,7 @@ Behaviour and accessibility only (rule 13), once, in the cheapest layer: per gal
 
 ## Risks & open questions
 
+- **Server components and compound parts.** A docs page that is a server component must use the flat part names (`CardRoot`, not `Card.Root`): `Card` comes from a `'use client'` module, so `Card.Root` is `undefined` across the boundary and the page answers 500 in `next dev`, while a browser-mode test (no boundary) passes. Found on G2; G3, G5 and G6 take the same care.
 - **Same tree as 0099.** Both plans edit `site-sections.ts`, `docs.css` and `messages/en.ts`; one concern per PR, so 0099 lands first.
 - **64 page files in G1.** A mechanical edit, but every docs page moves once; the component-engineer runs `vp check` on the changed files only, and the orchestrator runs the whole docs test project once.
 - **About 80 drawings in G3** are authoring work, not engineering; slices ship alone and a card is complete without its picture.
