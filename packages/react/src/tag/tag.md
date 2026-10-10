@@ -54,7 +54,7 @@ const group = useTagGroup({ announceRemoval: false })
 5. **Dead ends.** No results: `filters.noResults` and `filters.noResultsHint`, with the applied row and Clear all still in view. Loading over a second: a visible `filters.loading` and `aria-busy="true"` on the results list. A failed update: an inline `Alert` with `filters.loadFailed` and `filters.retry`, the filters and old results kept.
 6. **Layout.** Reading order is Tab order: filters, applied row, sort, results, pagination. Below 64rem a Disclosure would hold the filters, open from 64rem: Disclosure has no such option yet, so lay the filters out in the page (the story does) and open this as a decision.
 
-The `Filter a list` story in Components/Tag is the working example, including the announcements.
+The `Filter a list` story in Components/Content/Tag is the working example, including the announcements.
 
 ## Accessibility
 

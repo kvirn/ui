@@ -90,7 +90,7 @@ import { expect } from 'storybook/test'
 import contract from '../../../../../packages/react/src/disclosure/disclosure.a11y.md?raw'
 
 const meta = {
-  title: 'Components/Disclosure',
+  title: 'Components/Content/Disclosure',
   component: Disclosure.Root,
   args: {
     children: (

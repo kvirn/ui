@@ -81,6 +81,7 @@ For the consumer to call when it validates. A mask never blocks a value on them,
 ## React binding
 
 - `useMask({ mask, onValueChange, announceRejections, messages })` returns `inputProps`, `format` and `unmask`. The `inputProps` hold the preset's suggested attributes, the change, focus and composition handlers, and a ref that tracks the value before each edit.
+- `PhoneInput` runs no mask by default (`mask={false}`), because `telephone()` refuses Unicode digits and a dot; `mask="telephone"` or your own mask is the consumer's choice, and no mask ever formats the number. Only a mask other than `telephone` needs a help text. Flipping the default is `defaultPhoneMask` in `use-phone-input.ts`.
 - `NumberInput` is `masks.number()` built into a text box (`decimals`, `allowNegative`, `grouping`, `min`, `max`), with `inputMode` from the mask and `type="text"`; `useNumberInput` is its hook. It reports through the same `onValueChange(value, details)`.
 - `TextInput` takes `mask` (a name, an object, a `RegExp` or a `Mask`), `messages` and `announceRejections`. With a mask, `onValueChange(value, details)` is called once, with `reason: 'input'`, `event`, `unmaskedValue`, `isComplete`, `isWithinRange` (number masks) and `rejected`.
 - During composition, `onChange` reports the raw value without `unmaskedValue`. The mask applies at `compositionend`, with the event as the `CompositionEvent`.

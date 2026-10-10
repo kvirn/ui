@@ -10,7 +10,7 @@ import { usageGuide } from '../../docs-source.ts'
 // focusable part and no Keyboard story.
 
 const meta = {
-  title: 'Components/VisuallyHidden',
+  title: 'Components/Content/VisuallyHidden',
   component: VisuallyHidden,
   args: { children: ', 3 resultat' },
   argTypes: { as: { control: false } },

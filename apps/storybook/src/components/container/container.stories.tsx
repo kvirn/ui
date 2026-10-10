@@ -23,7 +23,7 @@ function Page({ title }: { title: string }) {
 }
 
 const meta = {
-  title: 'Components/Container',
+  title: 'Components/Layout/Container',
   component: Container,
   args: { children: <Page title="Kvirnby kommun" /> },
   argTypes: {

@@ -21,7 +21,7 @@ import { SearchBoxWithClear, SearchBoxWithIconOnlyClear } from './input-group.fi
 // validates: an invalid story sets `invalid` itself.
 
 const meta = {
-  title: 'Components/Form/InputGroup',
+  title: 'Components/Forms/InputGroup',
   component: InputGroup.Root,
   // Every prop in input-group.tsx. `InputGroup.Input` takes every TextInput prop, and
   // `InputGroup.Addon` is a `<span>` with the unit or the icon.

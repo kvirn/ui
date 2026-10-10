@@ -83,7 +83,7 @@ interface ComboboxStoryArgs {
 }
 
 const meta = {
-  title: 'Components/Form/Combobox',
+  title: 'Components/Choice and overlays/Combobox',
   argTypes: {
     items: { control: false, description: 'A flat list of items. Ignored when `groups` is given.' },
     groups: { control: false, description: 'Items in named groups: `{ key, label, items }`.' },

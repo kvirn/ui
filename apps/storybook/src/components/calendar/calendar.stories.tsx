@@ -25,7 +25,7 @@ import {
 // the only way to give a date. Every story fixes `today` to 14 October 2026.
 
 const meta = {
-  title: 'Components/Calendar',
+  title: 'Components/Forms/Calendar',
   component: Calendar.Root,
   argTypes: {
     value: { control: 'text', description: 'Controlled: the chosen day, `YYYY-MM-DD`.' },

@@ -19,7 +19,7 @@ const description = usageGuide(guide)
 const source = (...names: string[]) => showSource('alert-dialog/alert-dialog.fixture.tsx', ...names)
 
 const meta = {
-  title: 'Components/AlertDialog',
+  title: 'Components/Choice and overlays/AlertDialog',
   component: AlertDialog.Root,
   argTypes: {
     open: {

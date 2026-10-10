@@ -84,6 +84,19 @@ An adopter can tell from a name alone how a component is built. Five rules:
 - **Namespaces** are built with `Object.assign(Root, { … })` or a frozen object (`as const`).
 - **`displayName` is set on every function component** (`FieldLabel.displayName = 'Field.Label'`).
 
+## Patterns (`@kvirn-ui/patterns`)
+
+A pattern wraps shipped components into a feature (Plan 0095, D9). It is a compound component, and the content is children, as literal JSX:
+
+- **`X.Root` plus named parts** (`SiteHeader.Topbar`, `.Brand`, `.Search`, `.Menu`; `MainMenu.Topic`). A namespace like any other: a frozen object, a display name on every part, a flat export for each (`SiteHeaderBrand`).
+- **Never `{ label, href }` objects or arrays in props:** no `items`, `topics`, `links`, `languages`, `brand`, `navigation`. A prop whose type is visible text or an array is wrong. The text is a child (`<SiteHeader.Brand href="/">Kvirnby kommun</SiteHeader.Brand>`), and a topic with sub-pages is the part `MainMenu.Topic`, not a flag.
+- **A part is one native element or one library component,** takes `className` and the rest of the element's props (`mergeProps`), and `as` only where a link or a component is swapped (a router link).
+- **Props are for behaviour and state:** `current`, `defaultOpen`, `action`, `name`, `messages`. DOM order is children order: no `position` or `order` prop.
+- **The pattern owns what the adopter would get wrong:** open state, Escape, focus after close and close on a link click, held in context with a `data-*` attribute as the state hook.
+- **A pattern holds no text** (Plan 0095, D10). Visible text is a child; a landmark or control name is a `label` (or `aria-label`) prop forwarded to the shipped part. The only strings from `@kvirn-ui/i18n` are those a shipped part already owns (alert close, copy and read-aloud feedback): a pattern adds no key.
+- **Few tests.** A pattern composes tested components, so a test proves only behaviour the pattern adds. A `.a11y.md` row for composed behaviour names the shipped component's test.
+- **The `fixtures` export is assets only** (images, marks). Stories write the composition as literal JSX.
+
 ## `mergeProps(...propObjects)`
 
 Public. Merges left to right, for one element:

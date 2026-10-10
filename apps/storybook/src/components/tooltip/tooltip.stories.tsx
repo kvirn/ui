@@ -28,7 +28,7 @@ const waitForFade = () =>
   )
 
 const meta = {
-  title: 'Components/Tooltip',
+  title: 'Components/Choice and overlays/Tooltip',
   component: Tooltip.Root,
   // Every option at its default, so the main example starts where an adopter starts.
   args: {

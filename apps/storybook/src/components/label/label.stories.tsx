@@ -19,7 +19,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 // docs/design/form-fields.md §6.2. KvirnUI holds no form state: `required` is a prop.
 
 const meta = {
-  title: 'Components/Form/Label',
+  title: 'Components/Forms/Label',
   component: Field.Label,
   argTypes: {
     marker: {

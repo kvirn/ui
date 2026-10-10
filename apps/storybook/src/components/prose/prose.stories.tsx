@@ -29,7 +29,7 @@ const inMain: Decorator = (Story) => (
 )
 
 const meta = {
-  title: 'Components/Prose',
+  title: 'Components/Content/Prose',
   component: Prose,
   args: {
     children: (

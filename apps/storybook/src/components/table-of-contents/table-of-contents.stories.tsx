@@ -33,7 +33,7 @@ import {
 const description = usageGuide(guide)
 
 const meta = {
-  title: 'Components/TableOfContents',
+  title: 'Components/Navigation/TableOfContents',
   component: TableOfContents.Root,
   args: { items: sampleItems('default'), offset: 0 },
   argTypes: {

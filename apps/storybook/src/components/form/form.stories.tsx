@@ -20,7 +20,7 @@ import { permitTextsFor, PermitForm } from './permit.fixture.tsx'
 // their own contracts, and Tab walks them in reading order.
 
 const meta = {
-  title: 'Components/Form/Overview',
+  title: 'Components/Forms/Overview',
   globals: { locale: 'sv' },
   decorators: [withFormLocale],
   parameters: {

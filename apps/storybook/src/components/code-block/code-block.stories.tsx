@@ -22,7 +22,7 @@ function stubClipboard(clipboard: Pick<Clipboard, 'writeText'> | undefined) {
 }
 
 const meta = {
-  title: 'Components/CodeBlock',
+  title: 'Components/Content/CodeBlock',
   component: CodeBlock.Root,
   decorators: [withCopyMessages],
   parameters: {

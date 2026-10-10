@@ -22,7 +22,7 @@ import type { FakeEngineOptions } from './read-aloud.fixture.tsx'
 const source = (...names: string[]) => showSource('read-aloud/read-aloud.fixture.tsx', ...names)
 
 const meta = {
-  title: 'Components/ReadAloud',
+  title: 'Components/Data and behaviour/ReadAloud',
   component: ReadAloud.Root,
   // Each story renders the fixture, which owns the real ref; this only satisfies the type.
   args: { contentRef: { current: null } },

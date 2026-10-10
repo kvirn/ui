@@ -20,7 +20,7 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 // implementor's form logic would.
 
 const meta = {
-  title: 'Components/Form/Field',
+  title: 'Components/Forms/Field',
   component: Field.Root,
   // A question most forms require: the label then has no "(optional)". See `Optional`.
   args: { required: true },

@@ -22,7 +22,7 @@ import {
 const description = usageGuide(guide)
 
 const meta = {
-  title: 'Components/Disclosure',
+  title: 'Components/Content/Disclosure',
   component: Disclosure.Root,
   args: {
     defaultOpen: false,

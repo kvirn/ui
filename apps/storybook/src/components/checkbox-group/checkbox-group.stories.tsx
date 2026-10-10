@@ -17,7 +17,7 @@ import { ContactForm, ControlledContactGroup } from './checkbox-group.fixture.ts
 // checkboxes are uncontrolled. Nothing here validates: an invalid story sets `invalid` itself.
 
 const meta = {
-  title: 'Components/Form/CheckboxGroup',
+  title: 'Components/Choice and overlays/CheckboxGroup',
   component: CheckboxGroup.Root,
   // Every option at its default, so the main example starts where an adopter starts.
   args: { name: 'contact', invalid: false, required: false, disabled: false },

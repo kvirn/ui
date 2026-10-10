@@ -26,6 +26,7 @@ const namespaces = [
   'FileUpload',
   'InputGroup',
   'Link',
+  'List',
   'Listbox',
   'Menu',
   'Navigation',

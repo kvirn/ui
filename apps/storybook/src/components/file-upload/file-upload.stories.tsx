@@ -48,7 +48,7 @@ const chooseFiles: Record<FormLocale, string> = {
 }
 
 const meta = {
-  title: 'Components/Form/FileUpload',
+  title: 'Components/Forms/FileUpload',
   component: FileUpload.Root,
   // Every option at its default, so the main example starts where an adopter starts.
   args: {

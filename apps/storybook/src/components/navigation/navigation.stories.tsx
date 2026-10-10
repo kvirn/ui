@@ -42,7 +42,7 @@ function surfaceClassName(parameters: Record<string, unknown>, className: string
 }
 
 const meta = {
-  title: 'Components/Navigation',
+  title: 'Components/Navigation/Navigation',
   component: Navigation.Root,
   args: { label: 'Huvudmeny' },
   argTypes: {

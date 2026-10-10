@@ -49,7 +49,7 @@ Heading renders no text, so it has no message keys.
 
 Headless: Heading ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-heading` sets the `heading` colour and family (contrast measured by `theme:check`, 1.4.3), and the modifier sets the type role (`display`, `heading-1` to `heading-6`), in prose and outside it. Levels 4 to 6 stay at 1rem (16px) and are told apart by weight and tracking, never by shrinking, and they don't step down on a small screen. Sizes are in rem, so they follow the browser's text size (1.4.4). Margins come from `kv-prose` or the consumer. Target size, focus indicator and motion: not applicable.
 
-Right to left and forced colours are the `Right to left` and `Forced colors` stories (`Components/Heading`): a heading sets no directional or background styles, so they check that it starts at the inline start and keeps the system text colour (1.4.3, 1.4.11).
+Right to left and forced colours are the `Right to left` and `Forced colors` stories (`Components/Content/Heading`): a heading sets no directional or background styles, so they check that it starts at the inline start and keeps the system text colour (1.4.3, 1.4.11).
 
 ## WCAG SCs covered
 

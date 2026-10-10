@@ -31,7 +31,7 @@ import {
 // with an example in the order of the boxes.
 
 const meta = {
-  title: 'Components/Form/DateInput',
+  title: 'Components/Forms/DateInput',
   component: DateInput.Root,
   args: {
     name: 'birth',

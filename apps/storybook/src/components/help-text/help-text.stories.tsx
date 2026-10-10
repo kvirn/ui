@@ -19,7 +19,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 // not a story, because it would warn in the console.
 
 const meta = {
-  title: 'Components/Form/HelpText',
+  title: 'Components/Forms/HelpText',
   component: Field.HelpText,
   argTypes: {
     className: { control: 'text', description: 'Your own classes, added to `kv-field-help-text`.' },

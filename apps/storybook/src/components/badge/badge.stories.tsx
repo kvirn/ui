@@ -9,7 +9,7 @@ import { usageGuide } from '../../docs-source.ts'
 // control, so there's no focusable part and no Keyboard story.
 
 const meta = {
-  title: 'Components/Badge',
+  title: 'Components/Content/Badge',
   component: Badge,
   args: { children: 'Utkast' },
   argTypes: { as: { control: false } },

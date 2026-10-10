@@ -357,6 +357,9 @@ importers:
       '@kvirn-ui/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@kvirn-ui/patterns':
+        specifier: workspace:*
+        version: link:../../packages/patterns
       '@kvirn-ui/react':
         specifier: workspace:*
         version: link:../../packages/react
@@ -439,6 +442,31 @@ importers:
       vite-plus:
         specifier: 'catalog:'
         version: 1.0.0(@types/node@24.19.1)(@vitest/browser-playwright@5.0.1)(@vitest/ui@5.0.1)(esbuild@0.28.2)(typescript@7.0.2)(yaml@2.9.1)
+
+  packages/patterns:
+    dependencies:
+      '@kvirn-ui/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@kvirn-ui/react':
+        specifier: workspace:*
+        version: link:../react
+    devDependencies:
+      '@kvirn-ui/testing':
+        specifier: workspace:*
+        version: link:../testing
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.3.0
+      react:
+        specifier: 'catalog:'
+        version: 19.3.0
+      vite-plus:
+        specifier: 'catalog:'
+        version: 1.0.0(@types/node@24.19.1)(@vitest/browser-playwright@5.0.1)(@vitest/ui@5.0.1)(esbuild@0.28.2)(typescript@7.0.2)(yaml@2.9.1)
+      vitest-browser-react:
+        specifier: 'catalog:'
+        version: 2.3.0(@types/react-dom@19.3.0)(@types/react@19.3.0)(react-dom@19.3.0)(react@19.3.0)(vitest@5.0.1)
 
   packages/react:
     dependencies:

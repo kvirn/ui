@@ -18,7 +18,7 @@ import { DistanceWithNumberInput, KeyboardSliders, sliderTextsFor } from './slid
 // `onValueChange`.
 
 const meta = {
-  title: 'Components/Form/Slider',
+  title: 'Components/Forms/Slider',
   component: Slider,
   argTypes: {
     value: { control: 'number', description: 'Controlled: the number from your own logic.' },

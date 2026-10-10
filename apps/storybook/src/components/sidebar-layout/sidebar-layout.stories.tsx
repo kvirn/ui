@@ -11,7 +11,7 @@ import { usageGuide } from '../../docs-source.ts'
 const description = usageGuide(guide)
 
 const meta = {
-  title: 'Components/SidebarLayout',
+  title: 'Components/Layout/SidebarLayout',
   component: SidebarLayout.Root,
   args: {
     children: (

@@ -75,6 +75,8 @@
  *   9. Prose            kv-prose: articles from a CMS or Markdown
  *  9a. Heading       kv-heading: the type role of a heading, apart from its level
  *  9b. Kbd           kv-kbd: a key in running text
+ *  9l. Address       kv-address: contact details of the page or an article, upright
+ *  9m. List          kv-list: the one native list, with no marker, bullets or numbers
  *  9c. Tooltip       kv-tooltip: a name and a shortcut for a control, level 3
  *  9d. Visually hidden and skip link  kv-visually-hidden, kv-skip-link: hidden until focused
  *  9f. Code block      kv-code-block: a labelled code sample that wraps, and its copy button
@@ -92,7 +94,7 @@
  *  10c. Layout           kv-container, kv-stack, kv-columns, kv-sidebar-layout: where children sit
  *  11. Icon
  *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-textarea,
- *                      kv-character-count, kv-input-group, kv-date-input, kv-checkbox, kv-switch,
+ *                      kv-character-count, kv-input-group, kv-date-input, kv-address-input, kv-checkbox, kv-switch,
  *                      kv-slider, kv-radio, kv-listbox-native, kv-listbox-trigger and popup, kv-menu
  *                      (trigger, popup, items), kv-combobox and kv-autocomplete (input, control, buttons, value chips)
  *  13. One-time code    kv-one-time-code: one input, drawn as boxes and dashes of its pattern
@@ -101,10 +103,15 @@
  *                      scroll region
  *  16. Rich text editor  kv-rich-text: the box, its attached toolbar and content, and the Link and
  *                      Image popovers
+ *  patterns.css         kv-page-frame, kv-site-header, kv-mega-menu, kv-site-footer: the classes of
+ *                      @kvirn-ui/patterns, imported at the top of this file
  */
 
 /* reset.css puts its rules in kv-reset. Declaring the order here too keeps it lowest, in whichever order the two files are imported. */
 @layer kv-reset, kv;
+
+/* Pattern classes (kv-site-header, kv-mega-menu, kv-site-footer, kv-page-frame) live in their own file, in the same layer. */
+@import './patterns.css' layer(kv);
 
 @layer kv {
   /* 1. Palette ---------------------------------------------------------------------------
@@ -2222,7 +2229,8 @@
             .kv-columns,
             .kv-sidebar-layout,
             .kv-code-block,
-            .kv-summary-list
+            .kv-summary-list,
+            .kv-list
           )
           *,
         :is(:is(.kv-card, .kv-alert, .kv-dialog, .kv-field, .kv-fieldset):not(.kv-prose) *):not(
@@ -2270,7 +2278,8 @@
         .kv-columns,
         .kv-sidebar-layout,
         .kv-code-block,
-        .kv-summary-list
+        .kv-summary-list,
+        .kv-list
       )
     ) {
       &:where(h1, h2, h3, h4, h5, h6) {
@@ -2678,7 +2687,8 @@
       .kv-field,
       .kv-fieldset,
       .kv-table,
-      .kv-summary-list
+      .kv-summary-list,
+      .kv-list
     ) {
       margin-block: var(--kv-prose-space-block);
       margin-inline: 0;
@@ -2936,6 +2946,64 @@
     :where(.kv-kbd, .kv-prose kbd:not(.kv-not-prose kbd)):not(:where(:has(.kv-kbd, kbd))) {
       border-color: CanvasText;
     }
+  }
+
+  /* 9l. Address -------------------------------------------------------------------------------
+   * <Address> renders <address class="kv-address">. The browser draws address in italic, which is
+   * hard to read over several lines, so this undoes it and keeps the body text size and line
+   * height. Nothing else: the layout is the consumer's. Zero specificity, so your own CSS wins. */
+  :where(.kv-address) {
+    font-style: normal;
+    font-size: var(--kv-font-body-size);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  /* 9m. List ----------------------------------------------------------------------------------
+   * <List.Root> renders <ul class="kv-list"> or <ol class="kv-list"> of <li>. The default has no
+   * marker and no indent, so a list of links reads as links. list-style: none drops the list role in
+   * WebKit and VoiceOver, so List.Root adds role="list" itself, and only without a marker.
+   *
+   *   kv-list                  no marker, a gap of space-4
+   *   kv-list--bullet|decimal  disc or numbers, outside, in the text colour
+   *   kv-list--gap-2|6|8       the space between items
+   *
+   * Items are a grid, so a gap needs no margin on the <li>. A nested list sits one step in.
+   * Zero specificity, so your own CSS wins. */
+  :where(.kv-list) {
+    display: grid;
+    gap: var(--kv-space-4);
+    padding-inline-start: 0;
+    list-style: none;
+  }
+
+  :where(.kv-list--gap-2) {
+    gap: var(--kv-space-2);
+  }
+
+  :where(.kv-list--gap-6) {
+    gap: var(--kv-space-6);
+  }
+
+  :where(.kv-list--gap-8) {
+    gap: var(--kv-space-8);
+  }
+
+  :where(.kv-list--bullet) {
+    padding-inline-start: 1.5rem;
+    list-style: disc;
+  }
+
+  :where(.kv-list--decimal) {
+    padding-inline-start: 2rem;
+    list-style: decimal;
+  }
+
+  :where(.kv-list--bullet > li, .kv-list--decimal > li)::marker {
+    color: var(--kv-color-text);
+  }
+
+  :where(.kv-list .kv-list) {
+    margin-block-start: var(--kv-space-2);
   }
 
   /* 9c. Tooltip ------------------------------------------------------------------------------
@@ -5362,6 +5430,8 @@
    *   kv-input--width-2, -4, -6, -10, -20                    TextInput: a width by expected
    *                                                          characters. Default: full width
    *   kv-input--numeric                                      TextInput: tabular figures
+   *   kv-phone-input                                         PhoneInput: 20 characters wide
+   *   kv-phone-input-group, kv-phone-input-country           PhoneInput.Root and the calling-code select
    *
    *   <Field.Root invalid={error !== undefined} required>
    *     <Field.Label>Postnummer</Field.Label>
@@ -5760,6 +5830,49 @@
     position: absolute;
     inset-block-start: calc((1lh - 1.25em) / 2);
     inset-inline-start: 0;
+  }
+
+  /* PhoneInput: 20 characters, the same width formula as the width classes. It comes before
+   * them, so a kv-input--width-* class of yours wins. */
+  .kv-input.kv-phone-input {
+    --kv-input-chars: 20;
+
+    inline-size: calc(
+      var(--kv-input-chars) * (1ch + 0.12em) + 2 * var(--kv-input-padding-inline) + 4px
+    );
+    max-inline-size: 100%;
+    align-self: flex-start;
+  }
+
+  /* PhoneInput with a calling-code select: kv-phone-input-group is the layout of the select and
+   * the number, each in its own field or directly in it. The select is sized to its content,
+   * never wider than 20rem or its container, and sits beside the number from 30rem of the
+   * group's own width; below it they stack, so 320px and 400% zoom never overflow (1.4.10).
+   * Only logical properties are used, so right to left mirrors the row. The select is a
+   * kv-listbox-native, which comes later and sets its width, so the rule is a class more. */
+  .kv-phone-input-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--kv-space-4);
+    min-inline-size: 0;
+    container-type: inline-size;
+  }
+
+  .kv-phone-input-group > :is(.kv-phone-input-country, :has(> .kv-phone-input-country)) {
+    flex: 1 1 100%;
+    min-inline-size: 0;
+  }
+
+  @container (inline-size >= 30rem) {
+    .kv-phone-input-group > :is(.kv-phone-input-country, :has(> .kv-phone-input-country)) {
+      flex: 0 1 auto;
+    }
+
+    .kv-listbox-native.kv-phone-input-country {
+      inline-size: auto;
+      max-inline-size: min(100%, 20rem);
+    }
   }
 
   /* Width by expected characters: a character is 1ch in the input's own font plus 0.12em, the
@@ -6307,6 +6420,45 @@
   /* Lighter than the legend: the legend is the question, these name its parts. */
   .kv-date-input .kv-field-label {
     font-weight: var(--kv-font-body-weight);
+  }
+
+  /* An address (section 12, continued): kv-address-input is the layout of an address's fields
+   * inside a plain fieldset (docs/design/phone-and-address-inputs.md §6.2, §7). Each part is an
+   * input in the consumer's own field, so every line has its label, help text and error. The
+   * fields stack, 24px apart (16px compact, from 64rem), and the field of the postal code and the
+   * field of the city share a row from 22rem of the address's own width; below it they stack,
+   * so 320px and 400% zoom never overflow (1.4.10). Nothing has a fixed height (1.4.12). The
+   * width of the postal code's box is kv-input--width-*, set by the part. Only logical
+   * properties are used, so right to left mirrors the row. */
+  .kv-address-input {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--kv-space-6);
+    min-inline-size: 0;
+    container-type: inline-size;
+  }
+
+  @media (width >= 64rem) {
+    .kv-compact .kv-address-input,
+    .kv-compact.kv-address-input {
+      gap: var(--kv-space-4);
+    }
+  }
+
+  .kv-address-input > * {
+    flex: 1 1 100%;
+    min-inline-size: 0;
+  }
+
+  @container (inline-size >= 22rem) {
+    .kv-address-input > :has(> .kv-address-input-postal-code) {
+      flex: 0 1 auto;
+    }
+
+    .kv-address-input > :has(> .kv-address-input-city) {
+      flex: 1 1 12rem;
+    }
   }
 
   /* Checkbox, radio and native listbox (section 12, continued). <Checkbox> renders

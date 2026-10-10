@@ -9,7 +9,7 @@ import { usageGuide } from '../../docs-source.ts'
 // control, so there's no focusable part and no Keyboard story.
 
 const meta = {
-  title: 'Components/Kbd',
+  title: 'Components/Content/Kbd',
   component: Kbd,
   args: { children: 'Tab', lang: 'en' },
   argTypes: { as: { control: false } },

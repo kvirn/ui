@@ -21,7 +21,7 @@ import {
 // for yours. "Filter a list" at the end is the pattern this component was built for.
 
 const meta: Meta<typeof TagGroup.Root> = {
-  title: 'Components/Tag',
+  title: 'Components/Content/Tag',
   component: TagGroup.Root,
   argTypes: {
     announceRemoval: {

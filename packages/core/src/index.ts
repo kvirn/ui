@@ -11,6 +11,7 @@ export { getLanguage, resolveDirection } from './locale/resolve-direction.ts'
 export type { Direction } from './locale/resolve-direction.ts'
 export { dateInputOrder, dateSeparator } from './locale/date-order.ts'
 export { maskCountryFromLocale } from './locale/mask-country.ts'
+export { callingCodeCountries, callingCodeFor } from './phone/calling-codes.ts'
 export type { DateInputPart } from './locale/date-order.ts'
 export { createMessageFormat } from './messages/create-message-format.ts'
 export type {

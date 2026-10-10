@@ -207,6 +207,7 @@ Four components in `@kvirn-ui/react` place content with typed choices and no CSS
 - **DOM order is visual order.** Whichever part comes first is at inline start. There is no `reverse`, `order` or dense packing (1.3.2, 2.4.3), and RTL mirrors by logical properties.
 - **A form never gets a sidebar** and a list of results is one column at `45rem` (`Container size="reading"`); a card grid is for entry points, not results.
 - **Nothing sticky.** A layout component never sets `position: sticky`, a fixed height or `overflow`, so a focused element is never covered or clipped (2.4.11) and text spacing never cuts text off (1.4.12).
+- **Lists.** `List` is the one native list for link lists and other short lists: no marker and a `space-4` gap by default, `bullet` or `decimal` markers in the text colour, and `space-2`, `-6` or `-8` gaps. It adds no token and no landmark.
 - **No landmark of its own.** `render` picks the element (`ul` for a list of links, `nav` and `main` with a name); a page has one `main`.
 - A site changes these values in its own CSS (`.kv-container { max-inline-size: 72rem }`), not in props.
 
@@ -424,6 +425,25 @@ Navigation (`Navigation.Root`) and `TableOfContents` share one item look.
 - **Focus:** the ring on the trigger.
 - **Forced colours:** hairlines are `CanvasText`, the text `CanvasText` (`GrayText` when disabled), the chevron `currentColor`, the ring `Highlight`.
 
+#### Site chrome patterns
+
+> **Maintainer review (Plan 0095):** these four texts are a proposal, from docs/design/storybook-patterns.md section 12. They reuse existing tokens only (no new token, no new colour pair). The classes are in `packages/theme/patterns.css`. Remove this note when approved.
+
+- **A disclosure trigger in a nav row** (`kv-mega-menu-trigger`, the Meny): in a horizontal navigation it takes the nav-item height (`--kv-control-min-block-size`) and `--kv-space-3` on each side, and the chevron follows the label. The topic that holds the current page has the trail look: `primary-subtle` and weight 600, drawn from `data-trail`, never announced. Below `64rem` the triggers are full-width Accordion-look rows between `border-subtle` hairlines, and the Meny is a quiet full-width row; from `64rem` the Meny is gone and the row is always shown.
+- **The mega panel** (`kv-mega-menu-panel`): elevation level 3 as a full-width band directly under the header, `surface-raised`, `border-subtle` above and below, `--kv-shadow-popup`, square (no `xl` radius), positioned in the document and never fixed or sticky. Its overview link is weight 600, its children are nav items in columns. Forced colours: a `CanvasText` border replaces the shadow.
+- **The brand link** (`kv-site-header-brand`): a link in `text` at weight 600 and the `heading-4` size, with the mark beside it, underlined on hover only. It keeps the focus ring and the current rule of every link.
+- **The site alert is a named region:** `Alert.Warning` as a `<section>` named by its title, full width after the banner and before the breadcrumb and `main`, so landmark navigation finds it. Its title is a `<p>` (no heading before the `h1`). One at most.
+
+#### Promotion patterns
+
+> **Maintainer review (Plan 0095):** a proposal that reuses existing tokens only. Classes are in `packages/theme/patterns.css`. Remove this note when approved.
+
+- **Hero** (`kv-hero`): a `canvas` band at padding `lg` in a `Container`, the `h1` at the `display` size, a `body-large` lead and one action. No minimum height, no text over the image, no wash. The image is decorative (`alt=""`), last in the DOM, below the text until `64rem` and beside it (3fr / 2fr) from there.
+- **Nav tiles** (`kv-nav-tiles`): level 2 cards, `lg` radius, the one link inside the heading and never a clickable card. A news or event item is a plain `Card` in `Columns as="ul"` (heading, date or place, text, then an image in a `kv-card-footer--padding-none` footer, so it runs to the card's edge and rows share its bottom edge).
+- **Service link closed.** While the e-service is closed the link is not drawn: an inset (`kv-inset`) says it in words, so nothing is dimmed and no disabled link is left to focus.
+- **Section nav** (`kv-section-navigation`): below `64rem` the Disclosure trigger is a full-width quiet row with `border-subtle` rules above and below, and its panel opens in the flow; from `64rem` the trigger is gone and the panel is shown whatever its state. The list is the Navigation look, with one current.
+- **Contact card** (no class of its own): a `Card`, a `heading-3`, the unit and a `SummaryList` of labelled rows (a summary list, not a table), with an `Address` for a visiting address. It is not a landmark. It is a story-level composition of shipped parts, not a pattern.
+
 #### Breadcrumb and pagination
 
 > **Maintainer review (Plan 0062):** this subsection and the class contract lines below are a proposal. It reuses existing tokens only (no new token, no new colour pair). Remove this note when approved.
@@ -469,6 +489,21 @@ The theme draws these from `data-invalid`, `aria-invalid="true"`, `:disabled` an
 - `kv-input--width-2`, `-4`, `-6`, `-10` and `-20` count characters (a day or a number of children, a year, a postcode, a registration number, a phone number or a personal identity number). They include the 1.4.12 letter-spacing allowance and the 2px invalid edge. Without one, the input is full width.
 - `kv-input--numeric` gives tabular figures. Numbers are text with `inputMode`, never `type="number"`.
 - `kv-field-label--heading` and `kv-fieldset-legend--heading` make the label or legend the page's `h1` in `heading-1`, for one question per page.
+
+#### Phone input
+
+One `tel` box in a Field, 20 characters wide at every width (it shrinks to fit a narrow screen), with tabular figures and `dir="ltr"` so `+46` stays first in a right-to-left page.
+
+- The user's format is kept: nothing is reformatted while typing or on blur, and the length isn't limited. A width class of yours wins over the 20 characters.
+- An optional calling-code select (`PhoneInput.Country`) sits beside the number from 30rem of the group's width and above it below, sized to its content: the country is the provider's by default, and the number is never prefixed or rewritten. Without it, one box takes `+358 …`. No token is added.
+
+#### Address input
+
+A plain `Fieldset.Root` (not `group`, so Line 2 can show "(optional)") with a legend that names the address, and `AddressInput.Root` (`kv-address-input`) holding one Field per line: street, line 2, postal code, city. Every box is a `kv-input` with its own label, help text and error.
+
+- The fields stack with `--kv-space-6` between them (`--kv-space-4` in compact, from 64rem). From 22rem of the address's own width the postal code and the city share a row; below it, and at 320px and 400% zoom, they stack.
+- The postal code's box is the format hint: 6 characters for SE and FI, 4 for NO, 10 for any other country. No token is added.
+- Errors are per line, in its Field; only the wrong box takes the heavy `danger` edge. A whole-address error is the Fieldset's, under the lines.
 
 #### Input group
 
@@ -561,6 +596,10 @@ A native `<dl>` of rows for the answers on a check-your-answers page, a contact 
 - **Below `40rem` and at 320px** a row stacks: key, value, then the actions at the start. A long word wraps anywhere and a value is never truncated.
 - **Change link:** a plain `kv-link` with the word "Ändra" visible; its name adds the key ("Ändra Namn"). 24px tall at least. Several actions are `space-4` apart.
 - **Prose** leaves the list alone. In forced colours the row lines are `CanvasText`.
+
+#### Address
+
+`Address` is the native `<address>` for the contact details of a page or an article: `kv-address` only undoes the browser's italic and keeps the `body` size and line height, so lines break with `<br />` and contact links are plain `kv-link`s.
 
 #### Sections
 

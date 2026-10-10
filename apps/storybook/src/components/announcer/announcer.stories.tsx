@@ -14,7 +14,7 @@ import { AnnouncementButtons, BurstsAndBlanks } from './announcer.fixture.tsx'
 // clear-then-set and the throttle.
 
 const meta = {
-  title: 'Components/Announcer',
+  title: 'Components/Data and behaviour/Announcer',
   globals: { locale: 'sv' },
   decorators: [withFormLocale],
   parameters: {

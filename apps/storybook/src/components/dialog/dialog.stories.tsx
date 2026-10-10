@@ -25,7 +25,7 @@ const description = usageGuide(guide)
 const source = (...names: string[]) => showSource('dialog/dialog.fixture.tsx', ...names)
 
 const meta = {
-  title: 'Components/Dialog',
+  title: 'Components/Choice and overlays/Dialog',
   component: Dialog.Root,
   argTypes: {
     open: {

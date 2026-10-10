@@ -12,7 +12,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 // Components/Toolbar.
 
 const meta = {
-  title: 'Components/ButtonGroup',
+  title: 'Components/Actions/ButtonGroup',
   component: ButtonGroup,
   // Every option at its default, so the main example starts where an adopter starts.
   args: { 'aria-label': 'Ärendet', layout: 'spaced' },

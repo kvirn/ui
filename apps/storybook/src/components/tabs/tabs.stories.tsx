@@ -26,7 +26,7 @@ import {
 const description = usageGuide(guide)
 
 const meta = {
-  title: 'Components/Tabs',
+  title: 'Components/Navigation/Tabs',
   component: Tabs.Root,
   // Every option at its default, so the main example starts where an adopter starts.
   args: { defaultValue: 'uppgifter', activationMode: 'automatic', orientation: 'horizontal' },

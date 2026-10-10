@@ -11,6 +11,7 @@
     "@heroicons/react": "catalog:",
     "@kvirn-ui/core": "workspace:*",
     "@kvirn-ui/i18n": "workspace:*",
+    "@kvirn-ui/patterns": "workspace:*",
     "@kvirn-ui/react": "workspace:*",
     "@kvirn-ui/rich-text": "workspace:*",
     "@kvirn-ui/testing": "workspace:*",

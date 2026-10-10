@@ -23,7 +23,7 @@ import {
 const description = usageGuide(guide)
 
 const meta = {
-  title: 'Components/Accordion',
+  title: 'Components/Content/Accordion',
   component: Accordion.Root,
   args: { hiddenUntilFound: false },
   // Every prop of Accordion.Root in accordion.tsx. The props of the other parts (`level` on a

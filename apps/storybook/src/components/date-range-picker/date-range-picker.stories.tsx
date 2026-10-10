@@ -24,7 +24,7 @@ const source = (...names: string[]) =>
   showSource('date-range-picker/date-range-picker.fixture.tsx', ...names)
 
 const meta = {
-  title: 'Components/DateRangePicker',
+  title: 'Components/Forms/DateRangePicker',
   component: DateRangePicker.Root,
   argTypes: {
     value: {

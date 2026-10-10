@@ -11,7 +11,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 const description = usageGuide(guide)
 
 const meta = {
-  title: 'Components/Stack',
+  title: 'Components/Layout/Stack',
   component: Stack,
   args: {
     children: (

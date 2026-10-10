@@ -29,7 +29,7 @@ const localeOf = (globals: Record<string, unknown>): CardFixtureLocale => {
 const description = usageGuide(guide)
 
 const meta = {
-  title: 'Components/Card',
+  title: 'Components/Content/Card',
   component: Card.Root,
   args: {
     children: (

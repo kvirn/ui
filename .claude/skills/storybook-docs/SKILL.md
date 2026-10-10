@@ -14,7 +14,7 @@ Every component's Docs page has these seven parts, in this order. The page layou
 
 | #   | Part             | What it says                                                                                           | Where it comes from                                                              |
 | --- | ---------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| 1   | **Name**         | The component's name                                                                                   | `meta.title`, `Components/<Name>`                                                |
+| 1   | **Name**         | The component's name                                                                                   | `meta.title`, `Components/<Group>/<Name>`                                        |
 | 2   | **Description**  | What it is, when and where to use it, and what to use instead when it's the wrong choice (a link)      | The `.md` lead: the prose between the title and the first `##`                   |
 | 3   | **Main example** | The component with **every API option exposed** as a control                                           | The first story, `Default`, with `meta.args` and `meta.argTypes`                 |
 | 4   | **API**          | Every option, part, state and class the component has                                                  | The controls (`argTypes` descriptions), then the `.md`'s `## API` section        |
@@ -24,7 +24,7 @@ Every component's Docs page has these seven parts, in this order. The page layou
 
 ### 1–2. Name and description
 
-- `meta.title` is `Components/<Name>`.
+- `meta.title` is `Components/<Group>/<Name>`. The groups are the docs site's `/components` index groups (`apps/docs/components/site-sections.ts`), in this order: Actions, Content, Layout, Navigation, Forms, Choice and overlays, Data and behaviour. A component with no docs page goes in the nearest group; `storySort` in `preview.tsx` orders the groups, items alphabetical. Story IDs follow the title (`components-forms-textinput--docs`).
 - The `.md` opens with one to three sentences, then the bullets that define it: what it renders, when to use it and where (a form, a page header, a dialog), and the alternative when it's the wrong choice (`For navigation, use [Link](../link/link.md)`).
 - The stories file passes it: `meta.parameters.docs.description.component = usageGuide(guide)`, with `import guide from '<path>/<name>.md?raw'`. `usageGuide` (`apps/storybook/src/docs-source.ts`) drops the title, the draft note, **every fenced code block** and the sections `Your own look`, `Classes for the default theme` and `Hook`. So write prose that stands without its code. `splitUsageGuide` then splits it into the lead, `## API` and the notes.
 
@@ -77,7 +77,7 @@ import { fn } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 
 const meta = {
-  title: 'Components/Example',
+  title: 'Components/Content/Example',
   component: Example,
   // 3. Every option at its default, so the main example starts where an adopter starts.
   args: { children: 'Spara', disabled: false, onChange: fn() },
@@ -157,6 +157,7 @@ Notes in prose: choices, pitfalls, combinations. Code blocks here are for packag
 - **Storybook's source printer can't show function props or function children.** `Combobox.List`, `Listbox.List` (a render function child), `itemToString`, `onValueChange={(value) => …}` and the like print as `{function noRefCheck() {}}`. A story that has one is not rendered inline: it uses a `showSource` fixture whose function contains the real parts. So `meta.args` never holds a logging handler such as `fn()` or `logChange(…)` on a story that is shown inline (it prints as `() => {}`): drop it, or use a fixture.
 - So write fixtures to be read: one exported function per example, the component usage visible, localisation plumbing at the top and nothing else clever. Name the function after the example. A state matrix (RTL, ForcedColors, Keyboard) is such a function too: its body is the real parts in each state, shown with `showSource`.
 - Never hand-write a code string for a story. It will drift.
+- **Pattern stories (`@kvirn-ui/patterns`) are literal JSX with literal English text:** the whole composition is written in the story's `render`, with no fixture object, no data arrays and no wrapper component, so "Show code" is the adopter's copy-paste and the documentation (see "Patterns" in the `api-conventions` skill). Shared story chrome is a small JSX component in `patterns-story-support.tsx`.
 
 ## Stories fill gaps
 

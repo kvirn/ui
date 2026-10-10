@@ -10,21 +10,22 @@ Plans describe **how** we will build something. Decisions live in the skills and
 
 ## Index
 
-| #                                             | Title                                                                        | Status                                           |
-| --------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------ |
-| [0005](0005-default-theme-storybook-docs.md)  | Default theme, styled Storybook and docs site                                | In progress                                      |
-| [0009](0009-icon.md)                          | Icon                                                                         | In progress (API follow-up open)                 |
-| [0031](0031-pointer-focus-on-text-inputs.md)  | Pointer focus on text inputs                                                 | In progress (5 follow-ups)                       |
-| [0051](0051-retire-playwright-e2e.md)         | Retire Playwright e2e, test in Vitest browser mode                           | In progress (sweep open)                         |
-| [0052](0052-docs-on-built-packages.md)        | The docs site consumes the built packages and uses the components as shipped | In progress                                      |
-| [0053](0053-docs-as-municipality-site.md)     | The docs site is also a reference municipality site                          | Draft                                            |
-| [0054](0054-skip-link-and-visually-hidden.md) | SkipLink and VisuallyHidden                                                  | In progress (docs adoption open)                 |
-| [0056](0056-layout-components.md)             | Layout components: Container, Stack, Columns, SidebarLayout                  | In progress (docs adoption open)                 |
-| [0057](0057-docs-component-pages.md)          | A docs page for every component                                              | In progress                                      |
-| [0064](0064-docs-code-and-example-frame.md)   | Docs-only CodeBlock and ExampleFrame with a highlighter                      | Approved                                         |
-| [0066](0066-react-compiler-lint-warnings.md)  | React Compiler lint warnings                                                 | Draft                                            |
-| [0080](0080-loading-indicators.md)            | Loading indicators: spinner and animated gradient bar                        | Implemented (engineering check Q7, spec §8 open) |
-| [0088](0088-read-aloud.md)                    | ReadAloud: text to speech player and selection reader (browser engine)       | Approved                                         |
-| [0090](0090-docs-header-and-landing.md)       | Docs site header, sections and landing page                                  | Implemented                                      |
-| [0091](0091-landing-v2-evidence.md)           | Landing v2: the people it is for, then the proof, then the doors             | Implemented (docs site; stories and AT pending)  |
-| [0092](0092-motion-preference.md)             | Motion as a theme preference (`data-kv-motion`, `useTheme().selectMotion`)   | Implemented                                      |
+| #                                                    | Title                                                                        | Status                                           |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------ |
+| [0005](0005-default-theme-storybook-docs.md)         | Default theme, styled Storybook and docs site                                | In progress                                      |
+| [0009](0009-icon.md)                                 | Icon                                                                         | In progress (API follow-up open)                 |
+| [0031](0031-pointer-focus-on-text-inputs.md)         | Pointer focus on text inputs                                                 | In progress (5 follow-ups)                       |
+| [0051](0051-retire-playwright-e2e.md)                | Retire Playwright e2e, test in Vitest browser mode                           | In progress (sweep open)                         |
+| [0052](0052-docs-on-built-packages.md)               | The docs site consumes the built packages and uses the components as shipped | In progress                                      |
+| [0053](0053-docs-as-municipality-site.md)            | The docs site is also a reference municipality site                          | Draft                                            |
+| [0054](0054-skip-link-and-visually-hidden.md)        | SkipLink and VisuallyHidden                                                  | In progress (docs adoption open)                 |
+| [0056](0056-layout-components.md)                    | Layout components: Container, Stack, Columns, SidebarLayout                  | In progress (docs adoption open)                 |
+| [0057](0057-docs-component-pages.md)                 | A docs page for every component                                              | In progress                                      |
+| [0064](0064-docs-code-and-example-frame.md)          | Docs-only CodeBlock and ExampleFrame with a highlighter                      | Approved                                         |
+| [0066](0066-react-compiler-lint-warnings.md)         | React Compiler lint warnings                                                 | Draft                                            |
+| [0080](0080-loading-indicators.md)                   | Loading indicators: spinner and animated gradient bar                        | Implemented (engineering check Q7, spec §8 open) |
+| [0088](0088-read-aloud.md)                           | ReadAloud: text to speech player and selection reader (browser engine)       | Approved                                         |
+| [0090](0090-docs-header-and-landing.md)              | Docs site header, sections and landing page                                  | Implemented                                      |
+| [0091](0091-landing-v2-evidence.md)                  | Landing v2: the people it is for, then the proof, then the doors             | Implemented (docs site; stories and AT pending)  |
+| [0092](0092-motion-preference.md)                    | Motion as a theme preference (`data-kv-motion`, `useTheme().selectMotion`)   | Implemented                                      |
+| [0095](0095-storybook-patterns-and-content-types.md) | Storybook Patterns and Content types, the shell of the reference site        | Draft                                            |

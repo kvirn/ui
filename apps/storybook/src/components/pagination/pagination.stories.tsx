@@ -15,7 +15,7 @@ import { withLocale } from './pagination.fixture.tsx'
 // it: that check is the manual one and Plan 0051's sweep.
 
 const meta = {
-  title: 'Components/Pagination',
+  title: 'Components/Navigation/Pagination',
   component: Pagination.Root,
   argTypes: {
     label: {

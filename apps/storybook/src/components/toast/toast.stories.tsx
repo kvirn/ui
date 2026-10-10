@@ -43,7 +43,7 @@ const inRegion = (text: RegExp) => region()?.textContent?.match(text) ?? null
 const region = () => document.querySelector<HTMLElement>('.kv-toast-region')
 
 const meta = {
-  title: 'Components/Toast',
+  title: 'Components/Choice and overlays/Toast',
   component: SaveSettings,
   argTypes: {
     limit: {

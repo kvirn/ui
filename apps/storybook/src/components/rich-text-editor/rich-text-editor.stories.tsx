@@ -29,7 +29,7 @@ import {
 // sanitized: a real app sanitizes it on the server.
 
 const meta = {
-  title: 'Components/Form/Rich text editor',
+  title: 'Components/Forms/Rich text editor',
   component: RichTextEditor.Root,
   // Every option at its default, so the main example starts where an adopter starts.
   args: {

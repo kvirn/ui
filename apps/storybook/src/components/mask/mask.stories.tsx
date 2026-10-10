@@ -35,7 +35,7 @@ import {
 // calls.
 
 const meta = {
-  title: 'Components/Form/Mask',
+  title: 'Components/Forms/Mask',
   component: TextInput,
   globals: { locale: 'sv' },
   argTypes: {

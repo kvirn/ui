@@ -223,6 +223,8 @@ export type {
 } from './tag/tag.tsx'
 export { useTagGroup } from './tag/use-tag-group.ts'
 export type { UseTagGroupOptions, UseTagGroupResult } from './tag/use-tag-group.ts'
+export { Address } from './address/address.tsx'
+export type { AddressProps } from './address/address.tsx'
 export { Kbd } from './kbd/kbd.tsx'
 export type { KbdProps } from './kbd/kbd.tsx'
 export { useKbd } from './kbd/use-kbd.ts'
@@ -401,6 +403,14 @@ export type {
   UseStackOptions,
   UseStackResult,
 } from './stack/use-stack.ts'
+export { List, ListItem, ListRoot } from './list/list.tsx'
+export type {
+  ListGap,
+  ListItemProps,
+  ListMarker,
+  ListOwnProps,
+  ListRootProps,
+} from './list/list.tsx'
 export { Columns } from './columns/columns.tsx'
 export type { ColumnsProps } from './columns/columns.tsx'
 export { useColumns } from './columns/use-columns.ts'
@@ -528,6 +538,31 @@ export type {
   UseNumberInputOptions,
   UseNumberInputResult,
 } from './number-input/use-number-input.ts'
+export {
+  PhoneInput,
+  PhoneInputCountry,
+  PhoneInputNumber,
+  PhoneInputRoot,
+} from './phone-input/phone-input.tsx'
+export type {
+  PhoneInputChangeDetails,
+  PhoneInputCountryChangeDetails,
+  PhoneInputCountryProps,
+  PhoneInputNumberProps,
+  PhoneInputRootProps,
+} from './phone-input/phone-input.tsx'
+export { usePhoneInputRoot } from './phone-input/use-phone-input-root.ts'
+export type {
+  PhoneInputRootPartProps,
+  UsePhoneInputRootOptions,
+  UsePhoneInputRootResult,
+} from './phone-input/use-phone-input-root.ts'
+export { usePhoneInput } from './phone-input/use-phone-input.ts'
+export type {
+  PhoneInputPartProps,
+  UsePhoneInputOptions,
+  UsePhoneInputResult,
+} from './phone-input/use-phone-input.ts'
 export { Textarea } from './textarea/textarea.tsx'
 export type { TextareaChangeDetails, TextareaProps } from './textarea/textarea.tsx'
 export { useTextarea } from './textarea/use-textarea.ts'
@@ -619,6 +654,30 @@ export type {
   DateInputValue,
   DateInputYearProps,
 } from './date-input/date-input.tsx'
+export {
+  AddressInput,
+  AddressInputCity,
+  AddressInputLine1,
+  AddressInputLine2,
+  AddressInputPostalCode,
+  AddressInputRoot,
+} from './address-input/address-input.tsx'
+export type {
+  AddressInputCityProps,
+  AddressInputLine1Props,
+  AddressInputLine2Props,
+  AddressInputLineProps,
+  AddressInputPart,
+  AddressInputPostalCodeProps,
+  AddressInputRootProps,
+} from './address-input/address-input.tsx'
+export { useAddressInput } from './address-input/use-address-input.ts'
+export type {
+  AddressInputInputPartProps,
+  AddressInputRootPartProps,
+  UseAddressInputOptions,
+  UseAddressInputResult,
+} from './address-input/use-address-input.ts'
 export { useDateInput } from './date-input/use-date-input.ts'
 export type {
   DateInputBoxPartProps,

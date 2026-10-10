@@ -54,11 +54,15 @@ export function listPackageSourceDirectories(repositoryRoot: string): string[] {
     .toSorted()
 }
 
-/** `apps/storybook/src/components/<name>/<name>.stories.tsx` */
+/** `apps/storybook/src/components/<name>/<name>.stories.tsx`, and the patterns' (`src/patterns/`) */
 export function listStoriesFiles(repositoryRoot: string): string[] {
-  return walk(join(repositoryRoot, 'apps/storybook/src/components'), (name) =>
-    name.endsWith('.stories.tsx'),
-  ).toSorted()
+  return ['components', 'patterns']
+    .flatMap((directory) =>
+      walk(join(repositoryRoot, 'apps/storybook/src', directory), (name) =>
+        name.endsWith('.stories.tsx'),
+      ),
+    )
+    .toSorted()
 }
 
 /** `packages/*\/src/**\/*.a11y.md` */

@@ -23,7 +23,7 @@ function stubClipboard(clipboard: Pick<Clipboard, 'writeText'> | undefined) {
 }
 
 const meta = {
-  title: 'Components/CopyButton',
+  title: 'Components/Actions/CopyButton',
   component: CopyButton,
   args: { text: referenceNumber },
   decorators: [withCopyMessages],

@@ -44,7 +44,7 @@ const withRoomBelow: Decorator = (Story) => (
 )
 
 const meta = {
-  title: 'Components/Popover',
+  title: 'Components/Choice and overlays/Popover',
   component: Popover.Root,
   argTypes: {
     open: { control: 'boolean', description: 'Controlled: whether the popup is open.' },

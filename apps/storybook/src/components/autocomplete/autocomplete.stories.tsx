@@ -77,7 +77,7 @@ interface AutocompleteStoryArgs {
 }
 
 const meta = {
-  title: 'Components/Form/Autocomplete',
+  title: 'Components/Choice and overlays/Autocomplete',
   argTypes: {
     items: {
       control: false,

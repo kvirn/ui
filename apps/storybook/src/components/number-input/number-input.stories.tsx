@@ -16,7 +16,7 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 // story sets `invalid` itself.
 
 const meta = {
-  title: 'Components/Form/NumberInput',
+  title: 'Components/Forms/NumberInput',
   component: NumberInput,
   // Every option at its default, so the main example starts where an adopter starts.
   args: {

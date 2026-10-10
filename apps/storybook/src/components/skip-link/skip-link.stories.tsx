@@ -13,7 +13,7 @@ import { usageGuide } from '../../docs-source.ts'
 // follows the locale toolbar.
 
 const meta = {
-  title: 'Components/SkipLink',
+  title: 'Components/Navigation/SkipLink',
   component: SkipLink,
   args: { href: '#default-main' },
   parameters: {

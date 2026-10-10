@@ -21,7 +21,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 // The design spec is docs/design/form-fields.md §6.2 and §4.3.
 
 const meta = {
-  title: 'Components/Form/ErrorMessage',
+  title: 'Components/Forms/ErrorMessage',
   component: Field.ErrorMessage,
   argTypes: {
     className: {

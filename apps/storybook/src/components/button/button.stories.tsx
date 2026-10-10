@@ -121,7 +121,7 @@ function statesMatrix(idPrefix: string) {
 }
 
 const meta = {
-  title: 'Components/Button',
+  title: 'Components/Actions/Button',
   component: Button,
   args: { children: 'Spara', onClick: fn() },
   argTypes: {

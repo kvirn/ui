@@ -26,7 +26,7 @@ import {
 const description = usageGuide(guide)
 
 const meta = {
-  title: 'Components/Menu',
+  title: 'Components/Choice and overlays/Menu',
   component: Menu.Root,
   argTypes: {
     open: { control: 'boolean', description: 'Controlled: whether the menu is open.' },

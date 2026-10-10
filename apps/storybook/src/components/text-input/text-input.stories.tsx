@@ -30,7 +30,7 @@ import {
 // validates: an invalid story sets `invalid` itself.
 
 const meta = {
-  title: 'Components/Form/TextInput',
+  title: 'Components/Forms/TextInput',
   component: TextInput,
   // Every option at its default, so the main example starts where an adopter starts.
   args: {

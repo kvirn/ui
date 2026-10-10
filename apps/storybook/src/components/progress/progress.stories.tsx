@@ -15,7 +15,7 @@ import { progressTextsFor, SendApplication } from './progress.fixture.tsx'
 // proved in progress.test.tsx. Progress has no focusable part, so there is no Keyboard story.
 
 const meta = {
-  title: 'Components/Progress',
+  title: 'Components/Content/Progress',
   component: Progress.Root,
   argTypes: {
     label: {

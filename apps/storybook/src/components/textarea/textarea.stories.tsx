@@ -25,7 +25,7 @@ import {
 // Nothing here validates: an invalid story sets `invalid` itself.
 
 const meta = {
-  title: 'Components/Form/Textarea',
+  title: 'Components/Forms/Textarea',
   component: Textarea,
   // Every option at its default, so the main example starts where an adopter starts.
   args: {

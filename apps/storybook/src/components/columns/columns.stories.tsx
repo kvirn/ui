@@ -20,7 +20,7 @@ const cards = services.map((service) => (
 ))
 
 const meta = {
-  title: 'Components/Columns',
+  title: 'Components/Layout/Columns',
   component: Columns,
   args: { children: cards },
   argTypes: {

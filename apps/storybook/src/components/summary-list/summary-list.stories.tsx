@@ -12,7 +12,7 @@ import { withSummaryListLocale } from './summary-list.fixture.tsx'
 // library's own string and follows the locale toolbar.
 
 const meta = {
-  title: 'Components/SummaryList',
+  title: 'Components/Forms/SummaryList',
   component: SummaryList.Root,
   args: {
     children: (

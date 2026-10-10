@@ -24,7 +24,7 @@ import {
 // gets aria-invalid: the group's error is its description.
 
 const meta = {
-  title: 'Components/Form/RadioGroup',
+  title: 'Components/Choice and overlays/RadioGroup',
   component: RadioGroup.Root,
   // Every option at its default, so the main example starts where an adopter starts.
   args: { invalid: false, required: false, disabled: false },

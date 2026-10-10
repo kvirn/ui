@@ -3,7 +3,7 @@
   "access": "public",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "ignore": ["@kvirn-ui/storybook", "@kvirn-ui/docs"],
+  "ignore": ["@kvirn-ui/storybook", "@kvirn-ui/docs", "@kvirn-ui/patterns"],
   "fixed": [],
   "linked": [],
   "updateInternalDependencies": "patch"

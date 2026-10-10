@@ -227,7 +227,7 @@ export default defineConfig({
           maxWorkers,
           environment: 'node',
           include: [
-            'packages/{core,i18n,theme}/src/**/*.test.ts',
+            'packages/{core,i18n,theme,patterns}/src/**/*.test.ts',
             'tooling/**/*.test.ts',
             'apps/docs/**/*.test.ts',
           ],
@@ -241,6 +241,7 @@ export default defineConfig({
           maxWorkers,
           include: [
             'packages/{react,testing,rich-text}/src/**/*.test.{ts,tsx}',
+            'packages/patterns/src/**/*.test.tsx',
             'apps/docs/**/*.test.tsx',
           ],
           browser: {

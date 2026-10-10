@@ -23,7 +23,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 // navigation: no list, no links, no live region.
 
 const meta = {
-  title: 'Components/Stepper',
+  title: 'Components/Navigation/Stepper',
   component: Stepper,
   args: { current: 2, total: 5 },
   decorators: [withFormLocale],

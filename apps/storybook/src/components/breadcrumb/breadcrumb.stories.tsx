@@ -13,7 +13,7 @@ import { withLocale } from './breadcrumb.fixture.tsx'
 // that presses Enter stays on the page.
 
 const meta = {
-  title: 'Components/Breadcrumb',
+  title: 'Components/Navigation/Breadcrumb',
   component: Breadcrumb.Root,
   argTypes: {
     label: {

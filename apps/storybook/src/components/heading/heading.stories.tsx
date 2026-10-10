@@ -9,7 +9,7 @@ import { usageGuide } from '../../docs-source.ts'
 // Keyboard story.
 
 const meta = {
-  title: 'Components/Heading',
+  title: 'Components/Content/Heading',
   component: Heading,
   args: { as: 'h2', children: 'Kontakta oss' },
   argTypes: {

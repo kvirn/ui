@@ -38,7 +38,7 @@ import {
 const description = usageGuide(guide)
 
 const meta = {
-  title: 'Components/Table',
+  title: 'Components/Data and behaviour/Table',
   component: Table.Root,
   globals: { locale: 'sv' },
   argTypes: {

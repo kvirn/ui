@@ -315,7 +315,7 @@ Section is never a Tab stop and never changes the Tab order. Its children handle
 | –         | Root                            | No `tabindex` is rendered, so the section never receives focus  | `section.test.tsx › rendering › adds no role, ARIA or tabindex` |
 ```
 
-**Stories** (`Components/Section`, all with axe, the contract passed as `a11yContract`; no `Keyboard` story, because there's no focusable part):
+**Stories** (`Components/Layout/Section`, all with axe, the contract passed as `a11yContract`; no `Keyboard` story, because there's no focusable part):
 
 - `Default`: a Section with an `h2` and a paragraph.
 - `SidebarTextBlock` (Example A), `CardsOnASection` (Example B), `StaffCaseView` (Example C, `kv-compact`).
@@ -390,7 +390,7 @@ Found with `grep -rn` for `kv-card--surface`, `kv-card--canvas`, `sidebar`, `lev
 - `apps/storybook/src/components/card/card.e2e.ts`: the "sidebar text block" a11y test (245–259) moves to `section.e2e.ts`; `sidebar-text-block`, `surfaces` and `surface-layers` leave the story list (271–275).
 - `apps/storybook/src/components/button/button.stories.tsx` line 546: the "surface" row of `DepthMatrix` becomes a `Section` (no `Card.Body`).
 - New `apps/storybook/src/components/section/` (`section.stories.tsx`, `section.fixture.tsx`, `section.e2e.ts`).
-- `apps/storybook/src/foundation/borders-elevation.mdx`: the level 1 row (33), the links to `components-card--surface-layers` (38, 75) → `components-section--surface-layers`, the "Which level to use" table (49: "a block of related cards" stays, add "a `Section`"), "Give every level from 1 up a border" (56) → "Every level from 1 up has a 1px border: transparent at level 1, except in forced colours", and the §6.9 table.
+- `apps/storybook/src/foundation/borders-elevation.mdx`: the level 1 row (33), the links to `components-content-card--surface-layers` (38, 75) → `components-layout-section--surface-layers`, the "Which level to use" table (49: "a block of related cards" stays, add "a `Section`"), "Give every level from 1 up a border" (56) → "Every level from 1 up has a 1px border: transparent at level 1, except in forced colours", and the §6.9 table.
 - `apps/storybook/src/foundation/colors-semantic.tsx` line 53: `surface` "Sections, sidebars, table headers, code" (add `Section` if the page lists components).
 - `.kv-story-surface` in `preview.css`, used by the Navigation stories, became a square `surface` panel with one inline-end hairline in Plan 0047, the Section look of a sidebar (`.kv-story-surface--wide` is the header band for a horizontal bar). It stays a story-only class: it is not a Section, so Navigation's stories don't import one.
 

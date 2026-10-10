@@ -22,7 +22,7 @@ import { AppRoot, RoutedLinkList, RouterAndPlainLinks } from './link.fixture.tsx
 const catalogs: Record<string, KvirnMessages> = { sv, fi, nb, nn, se, en }
 
 const meta = {
-  title: 'Components/Link',
+  title: 'Components/Actions/Link',
   component: Link.Root,
   args: { href: '#ansok', children: 'Ansök om bygglov' },
   argTypes: {

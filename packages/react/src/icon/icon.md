@@ -20,7 +20,7 @@ Icon's `size`, `color`, `strokeWidth`, `label` replace the library component's o
 
 These work with no setup:
 
-The Storybook page **Components/Icon › Built In Set** shows every one of them, generated from the set itself. The drawings are decorative: the name is the text beside each.
+The Storybook page **Components/Content/Icon › Built In Set** shows every one of them, generated from the set itself. The drawings are decorative: the name is the text beside each.
 
 | Name              | Use                                       | Mirrors in right-to-left text |
 | ----------------- | ----------------------------------------- | ----------------------------- |

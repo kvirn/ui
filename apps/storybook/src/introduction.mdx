@@ -7,7 +7,9 @@ import { Meta } from '@storybook/addon-docs/blocks'
 ## What’s here
 
 - **Foundation** is what everything is built on: the colours, type, spacing, prose and theming of `theme.css`, read live from the page, and the provider, `KvirnProvider`.
-- **Components** are the headless components, one set of stories each. Each component has a **Docs** page with its props table and every story.
+- **Components** are the headless components, one set of stories each, grouped as on the docs site: Actions, Content, Layout, Navigation, Forms, Choice and overlays, and Data and behaviour. Each component has a **Docs** page with its props table and every story.
+- **Patterns** are composed from components, in the site chrome. They use Kvirnby kommun, a fictional municipality. They are added as they are built.
+- **Content types** are composed from components, in the site chrome. They use Kvirnby kommun, a fictional municipality. They are added as they are built.
 
 Every story is styled by the default theme, `@kvirn-ui/theme/theme.css`, as described in `DESIGN.md`. The components themselves ship no CSS. The theme styles the classes they render, such as `kv-button`, their state attributes, such as `data-disabled`, and variant classes you add yourself, such as `kv-button--primary`.
 

@@ -24,7 +24,7 @@ import {
 // story sets `invalid` itself.
 
 const meta = {
-  title: 'Components/Form/Switch',
+  title: 'Components/Choice and overlays/Switch',
   component: Switch,
   argTypes: {
     checked: { control: 'boolean', description: 'Controlled: the state from your own logic.' },

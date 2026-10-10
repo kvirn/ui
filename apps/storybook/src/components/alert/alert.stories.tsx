@@ -36,7 +36,7 @@ import type { AlertFixtureLocale } from './alert.fixture.tsx'
 const description = usageGuide(guide)
 
 const meta = {
-  title: 'Components/Alert',
+  title: 'Components/Content/Alert',
   component: Alert.Info,
   argTypes: {
     announce: {

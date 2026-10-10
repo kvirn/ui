@@ -15,7 +15,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 // props from your form logic.
 
 const meta = {
-  title: 'Components/Form/Fieldset',
+  title: 'Components/Forms/Fieldset',
   component: Fieldset.Root,
   // Every option at its default, so the main example starts where an adopter starts.
   args: { invalid: false, required: false, disabled: false, group: false },

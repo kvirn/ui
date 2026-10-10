@@ -20,7 +20,7 @@ import {
 // same behaviour for a table.
 
 const meta = {
-  title: 'Components/ScrollArea',
+  title: 'Components/Layout/ScrollArea',
   component: ScrollArea,
   argTypes: {
     region: {

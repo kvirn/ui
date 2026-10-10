@@ -15,6 +15,7 @@ packages/rich-text the rich text editor on Tiptap (peers). The only package that
 packages/i18n      sv fi nb nn se en
 packages/theme     theme.css: --kv-* palette + tokens, default styles (opt-in)
 packages/testing   a11y test helpers
+packages/patterns  site patterns and content types on react + theme classes, zero CSS, private until reviewed
 tooling/           repo checks (commit messages, keyboard docs, Foundation docs, raw colours), shared tsconfig and vite presets
 docs/              vision · architecture · accessibility · compliance · engineering · roadmap · plans/ · design/
 .claude/           skills and agents (plain Markdown, readable by any agent)

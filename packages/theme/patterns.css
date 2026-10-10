@@ -1,0 +1,499 @@
+/*
+ * Pattern classes: @kvirn-ui/theme (imported by theme.css, so one import styles everything).
+ *
+ * The compositions of @kvirn-ui/patterns render these classes and ship no CSS. The file follows
+ * theme.css: semantic tokens only, logical properties, rem breakpoints (40rem, 64rem), nothing
+ * sticky, nothing reordered, no fixed height on text. It is imported into `@layer kv` after the
+ * layer order statement, so every rule here sits before the component rules of theme.css in the
+ * same layer: a selector that restyles a component part names two classes, so it wins on
+ * specificity and not on order.
+ *
+ * Sections:
+ *   P1. Page frame        kv-page-frame: the skip link, banner, main and contentinfo of a page
+ *   P2. Site header       kv-site-header, its rows, the Meny and the plain main navigation
+ *   P3. Mega menu         kv-mega-menu: topic buttons that open lists of links
+ *   P4. Site footer       kv-site-footer: contact, links about the site, organisation
+ *   P4a-c. Site alert, Cookie consent, Page tools: kv-site-alert, kv-cookie-consent, kv-page-tools
+ *   P5. Navigation and promotion  kv-hero, kv-nav-tiles, kv-service-link,
+ *                         kv-section-navigation
+ */
+
+/* P1. Page frame ------------------------------------------------------------------------------
+ * The page's vertical rhythm only. Header, alert, breadcrumb, main and footer follow each other
+ * in the DOM and on screen. */
+.kv-page-frame-main,
+.kv-page-frame-body {
+  padding-block: var(--kv-space-8);
+}
+
+/* P2. Site header -------------------------------------------------------------------------------
+ * A canvas Section (level 1). Below 64rem its rows are brand and language links, shortcuts,
+ * search, then a full-width Meny row whose panel opens in flow and pushes the page down. From
+ * 64rem the Meny button is gone and the navigation is always shown as a row. */
+.kv-section.kv-site-header {
+  /* The mega menu panel is positioned against the header, in the document: not fixed, not sticky. */
+  position: relative;
+  /* The Container inside pads the inline edges. */
+  padding-inline: 0;
+  border-block-end-color: var(--kv-color-border-subtle);
+}
+
+.kv-site-header .kv-site-header-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kv-space-3);
+}
+
+.kv-site-header-notice {
+  padding-block-end: var(--kv-space-2);
+  border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  font-size: var(--kv-font-body-small-size);
+  line-height: var(--kv-font-body-small-line-height);
+}
+
+/* The brand, the service name, the language links and the shortcuts are the row's items, in DOM
+ * order. From 64rem the first navigation (the language links, or the shortcuts without them)
+ * starts the end group. */
+.kv-site-header-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kv-space-2) var(--kv-space-6);
+}
+
+.kv-site-header-top > .kv-navigation {
+  min-inline-size: 0;
+}
+
+/* The brand: the text colour at weight 600 and heading-4 size, underlined on hover. It is a link,
+ * so it keeps the focus ring and the new-tab and current rules of kv-link. */
+.kv-link.kv-site-header-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kv-space-3);
+  color: var(--kv-color-text);
+  font-family: var(--kv-font-family-heading, var(--kv-font-family-serif));
+  font-size: var(--kv-font-heading-4-size);
+  font-weight: 600;
+  line-height: var(--kv-font-heading-4-line-height);
+  text-decoration-line: none;
+}
+
+.kv-link.kv-site-header-brand:is(:hover, :active) {
+  color: var(--kv-color-text);
+  text-decoration-line: underline;
+}
+
+.kv-site-header-mark {
+  flex: none;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+}
+
+.kv-site-header-service {
+  font-size: var(--kv-font-heading-4-size);
+  line-height: var(--kv-font-heading-4-line-height);
+}
+
+.kv-site-header-search-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--kv-space-2);
+  max-inline-size: 40rem;
+}
+
+.kv-site-header-search-field {
+  flex: 1 1 14rem;
+  min-inline-size: 0;
+}
+
+/* The label names the field for assistive technology; the button's word is the visible cue. */
+.kv-site-header-search-field > .kv-field-label {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The Meny: a quiet full-width row, with its chevron at the inline end. */
+.kv-disclosure-trigger.kv-site-header-menu-trigger {
+  display: flex;
+  justify-content: space-between;
+  inline-size: 100%;
+  padding-inline: var(--kv-space-4) var(--kv-space-3);
+  border-block: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-none);
+  font-weight: 600;
+}
+
+.kv-disclosure-panel.kv-site-header-menu-panel {
+  padding-inline: 0;
+  padding-block: var(--kv-space-2) 0;
+}
+
+/* The main navigation in the Meny panel is a column, as any list of links. */
+@media (width < 64rem) {
+  .kv-mega-menu.kv-navigation--horizontal > .kv-navigation-list {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: var(--kv-space-1);
+  }
+}
+
+@media (width >= 64rem) {
+  .kv-site-header-top > nav:first-of-type {
+    margin-inline-start: auto;
+  }
+
+  /* Meny is gone. The panel is rendered open from 64rem, never `hidden`: reset.css hides
+   * `[hidden]` with !important in an earlier layer, which no rule here could beat. */
+  .kv-disclosure-trigger.kv-site-header-menu-trigger {
+    display: none;
+  }
+
+  .kv-disclosure-panel.kv-site-header-menu-panel {
+    padding-block: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .kv-section.kv-site-header,
+  .kv-section.kv-site-footer {
+    border-color: CanvasText;
+  }
+
+  .kv-link.kv-site-header-brand {
+    color: LinkText;
+  }
+
+  .kv-disclosure-trigger.kv-site-header-menu-trigger {
+    border-color: CanvasText;
+  }
+}
+
+/* P3. Mega menu -----------------------------------------------------------------------------------
+ * Disclosure navigation, never a menu role. Each topic is a button with the chevron at the inline
+ * end and a panel after it. Narrow: rows between hairlines, panels in flow and independent. Wide:
+ * the triggers are items of a row (the nav-item height and padding), and an open panel is a
+ * full-width band under the header at elevation level 3, square, over the page. A trigger whose
+ * topic holds the current page has the trail look (weight 600, primary-subtle), drawn from
+ * data-trail and never announced. */
+.kv-disclosure-trigger.kv-mega-menu-trigger {
+  padding-inline: var(--kv-space-3);
+  border-radius: var(--kv-radius-md);
+}
+
+.kv-disclosure-trigger.kv-mega-menu-trigger[data-trail] {
+  background-color: var(--kv-color-primary-subtle);
+  font-weight: 600;
+}
+
+.kv-disclosure-panel.kv-mega-menu-panel {
+  padding-inline: 0;
+}
+
+.kv-mega-menu .kv-navigation-list.kv-mega-menu-list {
+  margin: 0;
+  padding-inline-start: 0;
+}
+
+.kv-mega-menu-overview > .kv-link {
+  font-weight: 600;
+}
+
+@media (width < 64rem) {
+  .kv-mega-menu > .kv-navigation-list > .kv-navigation-item {
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  .kv-disclosure-trigger.kv-mega-menu-trigger {
+    display: flex;
+    justify-content: space-between;
+    inline-size: 100%;
+    padding-inline: var(--kv-space-4) var(--kv-space-3);
+    border-radius: var(--kv-radius-none);
+    font-weight: 600;
+  }
+
+  .kv-disclosure-panel.kv-mega-menu-panel {
+    padding-block-end: var(--kv-space-3);
+  }
+}
+
+@media (width >= 64rem) {
+  .kv-disclosure-panel.kv-mega-menu-panel {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 100%;
+    z-index: 3;
+    box-sizing: border-box;
+    padding-block: var(--kv-space-6);
+    /* The panel's text lines up with the container's content edge, at most 80rem wide. */
+    padding-inline: max(var(--kv-space-10), calc((100% - 80rem) / 2 + var(--kv-space-10)));
+    border-block: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-none);
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-shadow-popup);
+  }
+
+  .kv-mega-menu .kv-navigation-list.kv-mega-menu-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr));
+    gap: var(--kv-space-2) var(--kv-space-4);
+  }
+}
+
+@media (forced-colors: active) {
+  /* The shadow drops, so the border carries the panel's edge. */
+  .kv-disclosure-panel.kv-mega-menu-panel {
+    border-color: CanvasText;
+    box-shadow: none;
+  }
+
+  .kv-disclosure-trigger.kv-mega-menu-trigger[data-trail] {
+    background-color: Canvas;
+  }
+}
+
+/* P4. Site footer ------------------------------------------------------------------------------
+ * A surface Section (level 1) with groups in columns: one column at 320px, more as they fit. */
+.kv-section.kv-site-footer {
+  padding-inline: 0;
+  padding-block: var(--kv-space-8);
+  border-block-start-color: var(--kv-color-border-subtle);
+}
+
+.kv-site-footer .kv-heading {
+  margin: 0;
+}
+
+.kv-site-footer-organisation {
+  margin-block: var(--kv-space-8) 0;
+  padding-block-start: var(--kv-space-4);
+  border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  font-size: var(--kv-font-body-small-size);
+  line-height: var(--kv-font-body-small-line-height);
+}
+
+/* P4a. Site alert -------------------------------------------------------------------------------
+ * An Alert.Warning or .Info as a full-width band after the banner: square, text at the prose
+ * measure (the Alert's own rule). Its inline padding follows the Container's, so the text lines
+ * up with the header. */
+.kv-alert.kv-site-alert {
+  border-radius: 0;
+  padding-inline: var(--kv-space-4);
+}
+
+@media (width >= 40rem) {
+  .kv-alert.kv-site-alert {
+    padding-inline: var(--kv-space-6);
+  }
+}
+
+@media (width >= 64rem) {
+  .kv-alert.kv-site-alert {
+    padding-inline: var(--kv-space-10);
+  }
+}
+
+/* P4b. Cookie consent ---------------------------------------------------------------------------
+ * A surface Section (level 1) in the flow, above the header. The two buttons are the same
+ * secondary look: the theme's default Button, no primary. */
+.kv-section.kv-cookie-consent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kv-space-3);
+  padding-block: var(--kv-space-4);
+  padding-inline: var(--kv-space-4);
+  border-block-end-color: var(--kv-color-border-subtle);
+}
+
+@media (width >= 40rem) {
+  .kv-section.kv-cookie-consent {
+    padding-inline: var(--kv-space-6);
+  }
+}
+
+@media (width >= 64rem) {
+  .kv-section.kv-cookie-consent {
+    padding-inline: var(--kv-space-10);
+  }
+}
+
+.kv-cookie-consent > * {
+  margin: 0;
+  max-inline-size: var(--kv-prose-measure);
+}
+
+.kv-cookie-consent .kv-heading {
+  margin: 0;
+}
+
+.kv-cookie-consent-result:focus-visible {
+  outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+  outline-offset: var(--kv-focus-ring-offset);
+}
+
+/* P4c. Page tools -------------------------------------------------------------------------------
+ * The row at the end of `main`: each tool on its own line at 320px, one row from 40rem with the
+ * date at the start and the buttons after it, in DOM order. */
+.kv-page-tools {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--kv-space-3);
+  margin-block-start: var(--kv-space-8);
+  padding-block-start: var(--kv-space-4);
+  border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+}
+
+.kv-page-tools-updated {
+  margin: 0;
+}
+
+@media (width >= 40rem) {
+  .kv-page-tools {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .kv-page-tools-updated {
+    margin-inline-end: auto;
+  }
+}
+
+.kv-page-tools-top {
+  margin-block: var(--kv-space-4);
+}
+
+/* P5. Navigation and promotion -------------------------------------------------------------------
+ * Hero, Top tasks, Nav tiles, Link list, Service link, Related links,
+ * Breadcrumb and section nav, Contact card. Entry points and where-am-I, in DOM order at every
+ * width: the layout only sets columns and gaps, never order, height or position. */
+
+/* The hero is a canvas band in a container: the title, the lead and one step, with the picture
+ * after them. One column at every width until 64rem, then the picture beside the text. The picture
+ * is last in the DOM and is only placed, never moved. No minimum height, no text over the picture
+ * and no wash behind the text. */
+.kv-hero-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kv-space-6);
+}
+
+.kv-hero-inner > .kv-heading,
+.kv-hero-lead {
+  margin: 0;
+}
+
+.kv-hero-lead {
+  max-inline-size: 45rem;
+  font-size: var(--kv-font-body-large-size);
+  line-height: var(--kv-font-body-large-line-height);
+  color: var(--kv-color-text);
+}
+
+.kv-hero-action {
+  align-self: start;
+}
+
+.kv-hero-image {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  border-radius: var(--kv-radius-lg);
+}
+
+@media (width >= 64rem) {
+  .kv-hero-inner:has(> .kv-hero-image) {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    grid-template-rows: auto auto auto 1fr;
+    column-gap: var(--kv-space-10);
+    row-gap: 0;
+  }
+
+  .kv-hero-inner:has(> .kv-hero-image) > * {
+    grid-column: 1;
+  }
+
+  .kv-hero-inner:has(> .kv-hero-image) > * + * {
+    margin-block-start: var(--kv-space-6);
+  }
+
+  .kv-hero-inner > .kv-hero-image {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    margin-block-start: 0;
+  }
+}
+
+/* Nav tiles: cards whose heading holds the one link. */
+.kv-nav-tiles {
+  margin: 0;
+  padding: 0;
+}
+
+.kv-nav-tile .kv-heading {
+  margin-block: 0 var(--kv-space-2);
+}
+
+/* Service link: the whole width at 320px, the label's width from 40rem. The closed state is an
+ * inset, so the words carry it and nothing is dimmed. */
+.kv-service-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kv-space-3);
+}
+
+.kv-service-link-action,
+.kv-service-link-alternative > :first-child {
+  margin: 0;
+}
+
+@media (width < 40rem) {
+  .kv-service-link-action > .kv-link.kv-link--service {
+    display: block;
+    inline-size: 100%;
+  }
+}
+
+/* Below 64rem the section nav is behind a button of its own name, an in-flow panel. From 64rem
+ * the button is gone and the panel is rendered open (never `hidden`, which reset.css beats). */
+.kv-disclosure-trigger.kv-section-navigation-trigger {
+  display: flex;
+  justify-content: space-between;
+  inline-size: 100%;
+  padding-inline: var(--kv-space-4) var(--kv-space-3);
+  border-block: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-none);
+  font-weight: 600;
+}
+
+.kv-disclosure-panel.kv-section-navigation-panel {
+  padding-inline: 0;
+  padding-block: var(--kv-space-2) 0;
+}
+
+@media (width >= 64rem) {
+  .kv-disclosure-trigger.kv-section-navigation-trigger {
+    display: none;
+  }
+
+  .kv-disclosure-panel.kv-section-navigation-panel {
+    padding-block: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .kv-disclosure-trigger.kv-section-navigation-trigger {
+    border-color: CanvasText;
+  }
+}

@@ -241,7 +241,7 @@ Library keys still ship in six locales (rule 4); the fi column is the length che
 3. **Layout is React components**, not bare theme classes: `Container`, `Stack`, `Columns`, `SidebarLayout` (§3); `theme.css` supplies their classes.
 4. **Roadmap:** SummaryList is an M3 primitive; "Stepper" narrows to a text step indicator; NavigationMenu is off this path (it stays on the roadmap). The orchestrator edits `docs/roadmap.md`.
 5. See 4.
-6. See 4.
+6. See 4. **Overturned 2026-10-09 (Plan 0095 D3):** a mega menu is added as a Site header variant, built as the APG Disclosure Navigation from Disclosure and Navigation, never `role="menu"`; NavigationMenu stays off as a component. Spec: [storybook-patterns.md](storybook-patterns.md) §5.2.
 7. **e-ID marks:** generic names on the reference pages, real naming only in the block docs (`TODO(legal-verify)`).
 8. **Statement:** describes the reference site's real state in Digg's structure, and names Digg as the enforcement body with a note that Kvirnby is fictional.
 9. **No live consent banner;** Storybook and its docs page only.

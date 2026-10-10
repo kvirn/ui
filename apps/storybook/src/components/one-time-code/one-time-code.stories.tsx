@@ -28,7 +28,7 @@ import {
 // sets `invalid` and writes the message itself.
 
 const meta = {
-  title: 'Components/Form/OneTimeCode',
+  title: 'Components/Forms/OneTimeCode',
   component: OneTimeCode.Root,
   globals: { locale: 'sv' },
   // Every option at its default, so the main example starts where an adopter starts. Not `action`

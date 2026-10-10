@@ -25,7 +25,7 @@ import {
 // validates: an invalid story sets `invalid` itself.
 
 const meta = {
-  title: 'Components/Form/Checkbox',
+  title: 'Components/Choice and overlays/Checkbox',
   component: Checkbox,
   argTypes: {
     checked: { control: 'boolean', description: 'Controlled: the state from your form logic.' },

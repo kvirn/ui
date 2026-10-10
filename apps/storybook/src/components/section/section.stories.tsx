@@ -50,7 +50,7 @@ const showSources = (...sources: ReturnType<typeof showSource>[]) =>
 const description = usageGuide(guide)
 
 const meta = {
-  title: 'Components/Section',
+  title: 'Components/Layout/Section',
   component: Section,
   argTypes: {
     className: {

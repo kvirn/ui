@@ -23,7 +23,7 @@ import {
 const source = (...names: string[]) => showSource('date-picker/date-picker.fixture.tsx', ...names)
 
 const meta = {
-  title: 'Components/DatePicker',
+  title: 'Components/Forms/DatePicker',
   component: DatePicker.Root,
   argTypes: {
     value: {

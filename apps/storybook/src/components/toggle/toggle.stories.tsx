@@ -31,7 +31,7 @@ const sv = {
 const fiLong = 'Näytä vain ne rakennuslupahakemukset, jotka odottavat käsittelyä'
 
 const meta = {
-  title: 'Components/Toggle',
+  title: 'Components/Choice and overlays/Toggle',
   component: Toggle,
   // Every option at its default, so the main example starts where an adopter starts.
   args: {

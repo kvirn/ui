@@ -14,7 +14,7 @@ import { ParkingForm, withErrorSummaryLocale } from './error-summary.fixture.tsx
 // shows each story in its own frame, and the library's own words follow the locale toolbar.
 
 const meta = {
-  title: 'Components/ErrorSummary',
+  title: 'Components/Forms/ErrorSummary',
   component: ErrorSummary.Root,
   argTypes: {
     focusKey: {

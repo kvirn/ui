@@ -75,10 +75,12 @@ function listCssFiles(directory: string): string[] {
   })
 }
 
-/** theme.css (outside its palette), the docs site CSS and the Storybook CSS. */
+/** theme.css (outside its palette), patterns.css, the docs site CSS and the Storybook CSS. */
 export function listCheckedCssFiles(repositoryRoot: string): string[] {
   return [
     join(repositoryRoot, 'packages/theme/theme.css'),
+    // The pattern classes, imported by theme.css.
+    join(repositoryRoot, 'packages/theme/patterns.css'),
     ...listCssFiles(join(repositoryRoot, 'apps/docs')),
     // The preview's stylesheet is in .storybook, which the walk skips as a dot directory.
     ...listCssFiles(join(repositoryRoot, 'apps/storybook/.storybook')),

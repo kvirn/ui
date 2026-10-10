@@ -17,7 +17,7 @@ import {
 // them (APG Toolbar, contract: toolbar.a11y.md), styled by @kvirn-ui/theme/theme.css.
 
 const meta = {
-  title: 'Components/Toolbar',
+  title: 'Components/Actions/Toolbar',
   component: Toolbar.Root,
   // Every option at its default, so the main example starts where an adopter starts.
   args: { 'aria-label': 'Formatering', orientation: 'horizontal', loop: true },

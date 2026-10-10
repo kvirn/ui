@@ -59,7 +59,7 @@ type IconArgs = Omit<IconProps, 'name' | 'icon' | 'as' | 'children'> & {
 }
 
 const meta = {
-  title: 'Components/Icon',
+  title: 'Components/Content/Icon',
   component: Icon,
   // `IconProps` is a union (`name`, `icon`, `as` or children): the controls drive the `name`
   // form, the common one once icons are registered.

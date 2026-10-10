@@ -64,7 +64,7 @@ const textsFor = (locale: FormLocale) => ({
 })
 
 const meta = {
-  title: 'Components/EmptyState',
+  title: 'Components/Content/EmptyState',
   globals: { locale: 'sv' },
   parameters: {
     a11yContract: contract,
