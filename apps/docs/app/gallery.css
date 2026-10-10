@@ -36,3 +36,66 @@
     inline-size: auto;
   }
 }
+
+/*
+ * Shape classes for the drawings (§3.3): the colour is by role, never a value in the SVG.
+ * Strokes are one weight, set on the shapes.
+ */
+:where(.docs-gallery-ink) {
+  fill: none;
+  stroke: var(--kv-color-border-control);
+}
+
+:where(.docs-gallery-fill) {
+  fill: var(--kv-color-surface-raised);
+  stroke: var(--kv-color-border-control);
+}
+
+:where(.docs-gallery-text) {
+  fill: var(--kv-color-text-muted);
+  stroke: var(--kv-color-text-muted);
+}
+
+:where(.docs-gallery-key) {
+  fill: var(--kv-color-primary);
+  stroke: var(--kv-color-primary);
+}
+
+:where(.docs-gallery-shell) {
+  fill: var(--kv-color-border-subtle);
+  stroke: var(--kv-color-border-subtle);
+}
+
+:where(.docs-gallery-slot) {
+  fill: none;
+  stroke: var(--kv-color-border-control);
+  stroke-dasharray: 4 3;
+}
+
+/* SVG paint from custom properties is not reliably forced, so the roles map to system colours. */
+@media (forced-colors: active) {
+  :where(.docs-gallery-ink),
+  :where(.docs-gallery-slot) {
+    stroke: CanvasText;
+  }
+
+  :where(.docs-gallery-fill) {
+    fill: Canvas;
+    stroke: CanvasText;
+  }
+
+  :where(.docs-gallery-text) {
+    fill: CanvasText;
+    stroke: CanvasText;
+  }
+
+  :where(.docs-gallery-key) {
+    fill: Highlight;
+    stroke: Highlight;
+  }
+
+  :where(.docs-gallery-shell) {
+    fill: GrayText;
+    stroke: GrayText;
+  }
+}
