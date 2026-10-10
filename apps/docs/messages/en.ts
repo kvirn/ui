@@ -51,6 +51,46 @@ export const messages = {
       lead: ({ count }: { count: number }) =>
         `${count} components and hooks, grouped by what they do. Each page shows an example, the keyboard contract and the API.`,
     },
+    contentTypesIndex: {
+      title: 'Content types',
+      lead: 'Every page has the same shell: the skip link, the site header, the site alert and the footer. A content type is everything in between, and nothing else.',
+    },
+    contentTypes: {
+      whatIsOnIt: 'What is on it',
+      whereItSits: 'Where it sits',
+      shell: ({ name }: { name: string }) =>
+        `The ${name} is only the part between the header and the footer. The skip link, the site header, the site alert and the footer belong to the shell and are the same on every page.`,
+      blocks: {
+        'start-page': [
+          'A hero with the page’s h1 and a short lead',
+          'The most common tasks as a list of links',
+          'Navigation tiles to the main services',
+          'News and events as teasers, with a link to all of them',
+          'A contact card',
+        ],
+        subpage: [
+          'The page’s h1 and a preamble',
+          'Navigation tiles to the pages below it',
+          'A list of shortcut links',
+          'One teaser for what is new',
+          'A contact card',
+        ],
+        'content-page': [
+          'The page’s h1 and a preamble',
+          'A contents list of the page’s headings',
+          'Rich text with headings, steps and a link to the service',
+          'Frequently asked questions as an accordion',
+          'A contact card and related pages',
+        ],
+        'documentation-page': [
+          'The page’s h1 and a lead',
+          'A side column with the pages of the section',
+          'An article with an example, use cases and the accessibility contract',
+          'The headings of the article as a contents list',
+          'Links to the previous and the next page',
+        ],
+      },
+    },
     header: {
       home: 'KvirnUI',
       status: 'Pre-alpha',
@@ -83,6 +123,9 @@ export const messages = {
         forms: 'Forms',
         choiceAndOverlays: 'Choice and overlays',
         dataAndBehaviour: 'Data and behaviour',
+      },
+      contentTypeGroups: {
+        pageTypes: 'Page types',
       },
       patternGroups: {
         siteChrome: 'Site chrome',

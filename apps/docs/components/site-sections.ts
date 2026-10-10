@@ -3,6 +3,7 @@ import { messages } from '../messages/en.ts'
 const text = messages.docs.nav
 const groupText = text.componentGroups
 const patternGroupText = text.patternGroups
+const contentTypeGroupText = text.contentTypeGroups
 
 export interface SitePage {
   href: string
@@ -395,6 +396,44 @@ export const patternGroups: readonly SiteGroup[] = [
   { id: 'placesAndContacts', label: patternGroupText.placesAndContacts, pages: [] },
 ]
 
+const contentType = (label: string, slug: string, summary: string): SummarisedPage => ({
+  href: `/content-types/${slug}`,
+  label,
+  summary,
+})
+
+/** The gallery of Content types (component-gallery.md §3.2): every page is a type, between the header and the footer. */
+export const contentTypeGroups: readonly SummarisedGroup[] = [
+  {
+    id: 'page-types',
+    label: contentTypeGroupText.pageTypes,
+    pages: [
+      contentType(
+        'Start page',
+        'start-page',
+        'The front door of a site: a hero, the most common tasks, navigation tiles, news and a way to make contact.',
+      ),
+      contentType(
+        'Subpage',
+        'subpage',
+        'A landing page for one area of the site: a preamble and tiles to the pages below it.',
+      ),
+      contentType(
+        'Content page',
+        'content-page',
+        'A page that explains one thing, such as how to apply, with a contents list, steps, questions and a contact card.',
+      ),
+      contentType(
+        'Documentation page',
+        'documentation-page',
+        'An article of the documentation, with the section’s pages beside it and its headings as a contents list.',
+      ),
+    ],
+  },
+]
+
+export const contentTypePages = contentTypeGroups.flatMap((group) => group.pages)
+
 export const siteSections: readonly SiteSection[] = [
   {
     id: 'home',
@@ -430,7 +469,8 @@ export const siteSections: readonly SiteSection[] = [
     id: 'content-types',
     label: text.sections.contentTypes,
     href: '/content-types',
-    pages: [{ href: '/content-types', label: text.sections.contentTypes }],
+    pages: [{ href: '/content-types', label: text.sections.contentTypes }, ...contentTypePages],
+    groups: contentTypeGroups,
   },
   {
     id: 'theming',
