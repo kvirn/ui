@@ -106,7 +106,7 @@ export function FieldPage({
   return (
     <ComponentPage
       title="Field"
-      lead="One form question: it joins a control to its visible label, an optional description, a help text and an error, so people hear them when the control gets focus. It holds no form state and never validates."
+      lead="It holds no form state and never validates."
       status="alpha-candidate"
       whenToUse={
         <ul>

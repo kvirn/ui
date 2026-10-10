@@ -118,7 +118,7 @@ export function AlertDialogPage({
   return (
     <ComponentPage
       title="AlertDialog"
-      lead="A dialog for a message that needs an answer: a confirmation before deleting, a warning that the session is about to end. It is read out together with its description, it starts on the safe action, and a press outside never closes it."
+      lead="It is read out together with its description, it starts on the safe action, and a press outside never closes it."
       status="in-progress"
       whenToUse={
         <ul>

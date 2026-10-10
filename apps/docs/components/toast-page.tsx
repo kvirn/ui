@@ -46,7 +46,7 @@ export function ToastPage({
   return (
     <ComponentPage
       title="Toast"
-      lead="A short status message in the corner after something worked. It doesn’t move focus, a screen reader announces it, and it stays until the user closes it unless your app turns timers on."
+      lead="It doesn’t move focus, a screen reader announces it, and it stays until the user closes it unless your app turns timers on."
       status="alpha-candidate"
       whenToUse={
         <>

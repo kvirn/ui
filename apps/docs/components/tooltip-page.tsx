@@ -97,7 +97,7 @@ export function TooltipPage({
   return (
     <ComponentPage
       title="Tooltip"
-      lead="A short text next to a control that shows its name or a shortcut when the pointer rests on it or it has keyboard focus. It never takes focus and holds no controls."
+      lead="It never takes focus and holds no controls."
       status="in-progress"
       whenToUse={
         <ul>

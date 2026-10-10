@@ -254,7 +254,7 @@ export function ComboboxPage({
   return (
     <ComponentPage
       title="Combobox"
-      lead="A text field with a list of options that shrinks as the user types, for choosing one option or several from a long list. The value is always one of the options, never the free text."
+      lead="The value is always one of the options, never the free text."
       status="alpha-candidate"
       whenToUse={
         <ul>

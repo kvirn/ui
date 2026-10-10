@@ -33,7 +33,7 @@ export function KbdPage({ contract, sources }: { contract: Contract; sources: Kb
   return (
     <ComponentPage
       title="Kbd"
-      lead="A key name in running text, drawn as a key. It is the native kbd element with a class, so a screen reader reads it as part of the sentence."
+      lead="It is the native kbd element with a class, so a screen reader reads it as part of the sentence."
       status="alpha-candidate"
       whenToUse={
         <ul>

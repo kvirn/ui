@@ -95,7 +95,7 @@ export function ProgressPage({
   return (
     <ComponentPage
       title="Progress"
-      lead="Says that something is working and, when it is known, how far along. It stays hidden for the first second so a quick wait never flashes, then it is shown and announced once."
+      lead="It stays hidden for the first second so a quick wait never flashes, then it is shown and announced once."
       status="alpha-candidate"
       whenToUse={
         <ul>

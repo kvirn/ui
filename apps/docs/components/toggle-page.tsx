@@ -45,7 +45,7 @@ export function TogglePage({
   return (
     <ComponentPage
       title="Toggle"
-      lead="A button that is on or off, and says which. Use it for a choice with a direct, visible effect, such as showing only unread messages."
+      lead="Use it for a choice with a direct, visible effect, such as showing only unread messages."
       status="alpha-candidate"
       whenToUse={
         <ul>

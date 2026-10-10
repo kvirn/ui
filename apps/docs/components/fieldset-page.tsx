@@ -98,7 +98,7 @@ export function FieldsetPage({
   return (
     <ComponentPage
       title="Fieldset"
-      lead="A native fieldset that groups related questions, or the controls of one question, under a legend that names the group. It holds no form state."
+      lead="It holds no form state."
       status="alpha-candidate"
       whenToUse={
         <ul>

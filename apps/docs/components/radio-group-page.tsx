@@ -121,7 +121,7 @@ export function RadioGroupPage({
   return (
     <ComponentPage
       title="RadioGroup"
-      lead="One question with exactly one answer, such as how long a permit should last. It names the group with a legend, and the browser’s own radio keys do the rest."
+      lead="It names the group with a legend, and the browser’s own radio keys do the rest."
       status="alpha-candidate"
       whenToUse={
         <ul>

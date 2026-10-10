@@ -39,7 +39,7 @@ export function BadgePage({
   return (
     <ComponentPage
       title="Badge"
-      lead="A short status or category in words, such as “Granted” or “Draft”, drawn as a pill. It is plain text in the flow of the page: it can’t be pressed and it announces nothing."
+      lead="It is plain text in the flow of the page: it can’t be pressed and it announces nothing."
       status="alpha-candidate"
       whenToUse={
         <ul>

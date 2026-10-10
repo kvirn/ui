@@ -47,7 +47,7 @@ export function ButtonGroupPage({
   return (
     <ComponentPage
       title="ButtonGroup"
-      lead="A row of related buttons, such as the actions of a form or a card. Give it a name and a screen reader tells users which buttons belong together."
+      lead="Give it a name and a screen reader tells users which buttons belong together."
       status="alpha-candidate"
       whenToUse={
         <ul>

@@ -116,7 +116,7 @@ export function CalendarPage({
   return (
     <ComponentPage
       title="Calendar"
-      lead="A month as a grid of days, for choosing one date near today or, in range mode, a start and an end. It has one Tab stop, the date keys and names for every day, and it never replaces typing the date."
+      lead="It has one Tab stop, the date keys and names for every day, and it never replaces typing the date."
       status="alpha-candidate"
       whenToUse={
         <ul>

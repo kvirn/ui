@@ -123,7 +123,7 @@ export function AlertPage({
   return (
     <ComponentPage
       title="Alert"
-      lead="A status message in the content: something people need to know now, or the result of what they just did. It shows its status with an icon, a word and a colour, and it speaks only when you ask it to."
+      lead="It shows its status with an icon, a word and a colour, and it speaks only when you ask it to."
       status="in-progress"
       whenToUse={
         <ul>

@@ -50,7 +50,7 @@ export function ButtonPage({
   return (
     <ComponentPage
       title="Button"
-      lead="A button that does something, such as sending a form or saving a draft. It never sends a form by accident, and it can stay reachable by keyboard when it’s disabled."
+      lead="It never sends a form by accident, and it can stay reachable by keyboard when it’s disabled."
       status="alpha"
       whenToUse={
         <ul>

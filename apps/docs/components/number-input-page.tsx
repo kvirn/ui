@@ -53,7 +53,7 @@ export function NumberInputPage({
   return (
     <ComponentPage
       title="NumberInput"
-      lead="A box for a quantity or an amount. It takes digits and the decimal mark of the page’s language, leaves out everything else and says so, and never changes the number with the arrow keys."
+      lead="It takes digits and the decimal mark of the page’s language, leaves out everything else and says so, and never changes the number with the arrow keys."
       status="alpha-candidate"
       whenToUse={
         <ul>

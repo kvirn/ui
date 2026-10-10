@@ -69,7 +69,7 @@ export function DisclosurePage({
   return (
     <ComponentPage
       title="Disclosure"
-      lead="A button that shows and hides one panel of content, such as the opening hours or a longer explanation. The state is a chevron and words for a screen reader, never colour alone."
+      lead="The state is a chevron and words for a screen reader, never colour alone."
       status="alpha-candidate"
       whenToUse={
         <ul>

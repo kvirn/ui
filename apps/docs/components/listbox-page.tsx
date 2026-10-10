@@ -218,7 +218,7 @@ export function ListboxPage({
   return (
     <ComponentPage
       title="Listbox"
-      lead="A list of options that opens from a box, for choosing one option or several. It reads well with a keyboard and a screen reader, and it can be the browser’s own select."
+      lead="It reads well with a keyboard and a screen reader, and it can be the browser’s own select."
       status="alpha-candidate"
       whenToUse={
         <ul>

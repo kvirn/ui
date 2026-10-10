@@ -38,7 +38,7 @@ The spec is the design. Rules this plan adds on top of D12:
 
 Order: G1 first; G2 and G4 in parallel; G3 after G2; G5 and G6 after G1 and G2; G7 any time. **Start G1 only after plan 0099 is committed**: both edit `site-sections.ts`, `docs.css` and `messages/en.ts`.
 
-- [ ] **G1 Data** (component-engineer): `summary` on `SitePage`, `patternGroups`, content-type items in `site-sections.ts`; the first lead sentence of the 64 page files moves to data; `component-page.tsx` composes the lead from it
+- [x] **G1 Data** (component-engineer): `summary` on `SitePage`, `patternGroups`, content-type items in `site-sections.ts`; the first lead sentence of the 64 page files moves to data; `component-page.tsx` composes the lead from it
 - [ ] **G2 Gallery, Components** (component-engineer): `components/gallery/gallery.tsx`, `app/gallery.css`, `app/components/page.tsx`; works without pictures
 - [ ] **G3 Previews, Components** (component-engineer, one PR per 2–3 groups): `components/gallery/previews/*.tsx` and the registry; hidden from AT, no text, forced-colours block
 - [ ] **G4 Prose use cases** (component-engineer, parallel with G2): Inset text, Steps, Images and media on the Prose page (`/components/prose#…`), 7 use cases; delete the old `/content-types` prose pages if any were built

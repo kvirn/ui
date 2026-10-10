@@ -107,7 +107,7 @@ export function ProsePage({
   return (
     <ComponentPage
       title="Prose"
-      lead="A container that sets headings, paragraphs, lists, links and tables for reading. It adds no role and no behaviour, so the semantics are the ones you write."
+      lead="It adds no role and no behaviour, so the semantics are the ones you write."
       status="alpha"
       whenToUse={
         <ul>

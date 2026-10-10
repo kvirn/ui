@@ -102,7 +102,7 @@ export function AccordionPage({
   return (
     <ComponentPage
       title="Accordion"
-      lead="A list of questions or sections, each with a heading and a button that opens its answer. Readers open them one by one, and every item opens on its own."
+      lead="Readers open them one by one, and every item opens on its own."
       status="alpha-candidate"
       whenToUse={
         <ul>

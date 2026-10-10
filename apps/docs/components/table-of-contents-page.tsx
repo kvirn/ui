@@ -91,7 +91,7 @@ export function TableOfContentsPage({
   return (
     <ComponentPage
       title="TableOfContents"
-      lead="The headings of a long page as a list of links, with the one the reader is in marked. It never scrolls by itself, never moves focus and announces nothing."
+      lead="It never scrolls by itself, never moves focus and announces nothing."
       status="alpha-candidate"
       whenToUse={
         <ul>

@@ -141,7 +141,7 @@ export function PaginationPage({
   return (
     <ComponentPage
       title="Pagination"
-      lead="A named landmark with a list of links for moving through a long list page by page. Every page is a URL, so Back, sharing and opening in a new tab work, and the current page is marked in words and shape, not colour alone."
+      lead="Every page is a URL, so Back, sharing and opening in a new tab work, and the current page is marked in words and shape, not colour alone."
       status="alpha-candidate"
       whenToUse={
         <ul>

@@ -90,7 +90,7 @@ export function CardPage({
   return (
     <ComponentPage
       title="Card"
-      lead="A container for one thing on the page, such as a service, a news item or a case. It groups what belongs together on a raised surface and adds no role, text or behaviour of its own."
+      lead="It groups what belongs together on a raised surface and adds no role, text or behaviour of its own."
       status="alpha"
       whenToUse={
         <ul>

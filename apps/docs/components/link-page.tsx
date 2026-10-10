@@ -79,7 +79,7 @@ export function LinkPage({
   return (
     <ComponentPage
       title="Link"
-      lead="A link that goes to another page or place. It is a native link, so it works the way people expect, and it can tell them when it opens a new tab."
+      lead="It is a native link, so it works the way people expect, and it can tell them when it opens a new tab."
       status="alpha-candidate"
       whenToUse={
         <ul>

@@ -84,7 +84,7 @@ export function PopoverPage({
   return (
     <ComponentPage
       title="Popover"
-      lead="A small panel that a button opens: a hint, a short form or a few controls. It sits next to the button, stays inside the screen, and closes with Escape or a press outside."
+      lead="It sits next to the button, stays inside the screen, and closes with Escape or a press outside."
       status="alpha-candidate"
       whenToUse={
         <ul>

@@ -136,7 +136,7 @@ export function ReadAloudPage({
   return (
     <ComponentPage
       title="ReadAloud"
-      lead="A player that reads a region of the page aloud, one sentence at a time, with the browser’s own speech. It never starts by itself, and it is not a substitute for a screen reader. Blocked: waiting for an npm package update and a re-test."
+      lead="It never starts by itself, and it is not a substitute for a screen reader. Blocked: waiting for an npm package update and a re-test."
       status="in-planning"
       whenToUse={
         <ul>

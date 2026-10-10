@@ -99,7 +99,7 @@ export function CheckboxGroupPage({
   return (
     <ComponentPage
       title="CheckboxGroup"
-      lead="One question with several answers that can all be true, such as how a resident wants to be contacted. It names the group with a legend and keeps the choice in your form state."
+      lead="It names the group with a legend and keeps the choice in your form state."
       status="alpha-candidate"
       whenToUse={
         <ul>

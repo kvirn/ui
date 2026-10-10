@@ -49,7 +49,7 @@ export function IconPage({
   return (
     <ComponentPage
       title="Icon"
-      lead="A small drawing that supports the text next to it. It is hidden from screen readers unless you give it a name, and it takes its size and colour from the text around it."
+      lead="It is hidden from screen readers unless you give it a name, and it takes its size and colour from the text around it."
       status="alpha-candidate"
       whenToUse={
         <ul>

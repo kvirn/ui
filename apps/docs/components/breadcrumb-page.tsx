@@ -91,7 +91,7 @@ export function BreadcrumbPage({
   return (
     <ComponentPage
       title="Breadcrumb"
-      lead="A named landmark with the trail from the start page down to the page you are on, so a resident sees where they are and can go up a level. Every level is a link; the current page is text."
+      lead="Every level is a link; the current page is text."
       status="alpha-candidate"
       whenToUse={
         <ul>

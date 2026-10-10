@@ -42,7 +42,7 @@ export function SliderPage({
   return (
     <ComponentPage
       title="Slider"
-      lead="One approximate number in a range, such as a search distance or a volume. It is a native range input, so the browser gives it the arrow keys, Home, End, PageUp, PageDown, the drag and form submission."
+      lead="It is a native range input, so the browser gives it the arrow keys, Home, End, PageUp, PageDown, the drag and form submission."
       status="alpha-candidate"
       whenToUse={
         <ul>

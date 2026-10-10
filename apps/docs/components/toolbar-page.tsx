@@ -107,7 +107,6 @@ export function ToolbarPage({
   return (
     <ComponentPage
       title="Toolbar"
-      lead="A row of related controls with one Tab stop and the arrow keys between them, so a keyboard user passes a long row of formatting buttons with a single Tab."
       status="alpha-candidate"
       whenToUse={
         <ul>

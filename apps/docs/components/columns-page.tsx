@@ -43,7 +43,7 @@ export function ColumnsPage({
   return (
     <ComponentPage
       title="Columns"
-      lead="As many columns as fit, none narrower than you choose, and one column on a small screen. It lays out a grid of cards or links with no CSS of your own, and it adds no role, text or behaviour."
+      lead="It lays out a grid of cards or links with no CSS of your own, and it adds no role, text or behaviour."
       status="alpha-candidate"
       whenToUse={
         <ul>

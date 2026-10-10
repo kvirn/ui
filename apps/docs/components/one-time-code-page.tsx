@@ -78,7 +78,7 @@ export function OneTimeCodePage({
   return (
     <ComponentPage
       title="OneTimeCode"
-      lead="A field for a code sent to the user by text message, email or an authenticator app. It is one native input drawn as boxes, so SMS autofill, paste, dictation and undo keep working."
+      lead="It is one native input drawn as boxes, so SMS autofill, paste, dictation and undo keep working."
       status="alpha-candidate"
       whenToUse={
         <ul>

@@ -76,7 +76,7 @@ export function CodeBlockPage({
   return (
     <ComponentPage
       title="CodeBlock"
-      lead="A code sample or a command with a label and a copy button. The code wraps, so there is nothing to scroll sideways, and nothing is highlighted, so no colour carries meaning."
+      lead="The code wraps, so there is nothing to scroll sideways, and nothing is highlighted, so no colour carries meaning."
       status="alpha-candidate"
       whenToUse={
         <ul>

@@ -119,7 +119,7 @@ export function DialogPage({
   return (
     <ComponentPage
       title="Dialog"
-      lead="A window on top of the page that asks for the user’s attention: a form, a short read, a decision. The page behind it is out of reach until it closes, and focus goes back to where it was."
+      lead="The page behind it is out of reach until it closes, and focus goes back to where it was."
       status="in-progress"
       whenToUse={
         <ul>

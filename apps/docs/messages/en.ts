@@ -83,6 +83,14 @@ export const messages = {
         choiceAndOverlays: 'Choice and overlays',
         dataAndBehaviour: 'Data and behaviour',
       },
+      patternGroups: {
+        siteChrome: 'Site chrome',
+        navigationAndPromotion: 'Navigation and promotion',
+        contentAndMedia: 'Content and media',
+        newsEventsAndNotices: 'News, events and notices',
+        searchAndForms: 'Search and forms',
+        placesAndContacts: 'Places and contacts',
+      },
     },
     display: {
       button: 'Display settings',

@@ -45,7 +45,7 @@ export function ContainerPage({
   return (
     <ComponentPage
       title="Container"
-      lead="A block that centres the page’s content and limits how wide it gets. It adds no role and no behaviour, so the element and its semantics are the ones you choose."
+      lead="It adds no role and no behaviour, so the element and its semantics are the ones you choose."
       status="alpha-candidate"
       whenToUse={
         <ul>

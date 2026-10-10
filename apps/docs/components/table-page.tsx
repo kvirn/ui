@@ -238,7 +238,7 @@ export function TablePage({
   return (
     <ComponentPage
       title="Table"
-      lead="A data table built on the native table elements. It names its rows and columns for assistive technology, and can sort, select, expand and render long lists without losing the table’s meaning."
+      lead="It names its rows and columns for assistive technology, and can sort, select, expand and render long lists without losing the table’s meaning."
       status="alpha-candidate"
       whenToUse={
         <ul>

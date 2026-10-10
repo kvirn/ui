@@ -98,7 +98,7 @@ export function NavigationPage({
   return (
     <ComponentPage
       title="Navigation"
-      lead="A named landmark around a list of links to pages, with the current page marked and an optional second level. It adds no keys of its own: every link is a plain Tab stop."
+      lead="It adds no keys of its own: every link is a plain Tab stop."
       status="alpha-candidate"
       whenToUse={
         <ul>

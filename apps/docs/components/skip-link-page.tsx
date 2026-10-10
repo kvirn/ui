@@ -41,7 +41,7 @@ export function SkipLinkPage({
   return (
     <ComponentPage
       title="SkipLink"
-      lead="A link that is the first stop when you press Tab, so keyboard and screen reader users can jump past the header to the main content. It is hidden until it has focus."
+      lead="It is hidden until it has focus."
       status="alpha-candidate"
       whenToUse={
         <ul>

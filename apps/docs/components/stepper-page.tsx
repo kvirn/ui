@@ -41,7 +41,7 @@ export function StepperPage({
   return (
     <ComponentPage
       title="Stepper"
-      lead="Says where the user is in a multi-page form, as one line of text: “Step 2 of 5: Your vehicle”. It is orientation, not navigation."
+      lead="It is orientation, not navigation."
       status="alpha-candidate"
       whenToUse={
         <ul>

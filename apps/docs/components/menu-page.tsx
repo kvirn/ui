@@ -135,7 +135,7 @@ export function MenuPage({
   return (
     <ComponentPage
       title="Menu"
-      lead="A button that opens a short list of actions. Menus are for actions, not navigation: for links to other pages, use Navigation or Disclosure."
+      lead="Menus are for actions, not navigation: for links to other pages, use Navigation or Disclosure."
       status="alpha-candidate"
       whenToUse={
         <ul>

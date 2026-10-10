@@ -46,7 +46,7 @@ export function CheckboxPage({
   return (
     <ComponentPage
       title="Checkbox"
-      lead="One yes-or-no answer, such as a declaration or a consent. It is a native checkbox, so the browser gives it the Space key, the label click and form submission, and it holds no form state."
+      lead="It is a native checkbox, so the browser gives it the Space key, the label click and form submission, and it holds no form state."
       status="alpha-candidate"
       whenToUse={
         <ul>

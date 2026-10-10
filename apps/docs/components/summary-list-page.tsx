@@ -131,7 +131,7 @@ export function SummaryListPage({
   return (
     <ComponentPage
       title="SummaryList"
-      lead="Rows of a label, an answer and a link to change it, as one native description list. Every link says what it changes, because its name is built from the row’s label."
+      lead="Every link says what it changes, because its name is built from the row’s label."
       status="alpha-candidate"
       whenToUse={
         <ul>

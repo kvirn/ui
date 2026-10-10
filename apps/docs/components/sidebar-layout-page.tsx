@@ -78,7 +78,7 @@ export function SidebarLayoutPage({
   return (
     <ComponentPage
       title="SidebarLayout"
-      lead="A side column and a content column: stacked on a small screen, side by side on a wide one. It lays out a page with side navigation with no CSS of your own, and it adds no role, text or behaviour."
+      lead="It lays out a page with side navigation with no CSS of your own, and it adds no role, text or behaviour."
       status="alpha-candidate"
       whenToUse={
         <ul>

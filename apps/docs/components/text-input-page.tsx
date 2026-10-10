@@ -50,7 +50,7 @@ export function TextInputPage({
   return (
     <ComponentPage
       title="TextInput"
-      lead="A native text box for a short answer such as a name, an email address or a case number. Inside a Field its label, help text and error are read with it. It holds no form state."
+      lead="Inside a Field its label, help text and error are read with it. It holds no form state."
       status="alpha-candidate"
       whenToUse={
         <ul>

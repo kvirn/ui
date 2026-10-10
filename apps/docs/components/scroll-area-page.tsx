@@ -50,7 +50,7 @@ export function ScrollAreaPage({
   return (
     <ComponentPage
       title="ScrollArea"
-      lead="Holds content that may be wider or taller than its box, such as a wide table or a long code sample, and scrolls it with the browser’s own scrollbars. While it scrolls, a keyboard user can Tab to it and scroll it."
+      lead="While it scrolls, a keyboard user can Tab to it and scroll it."
       status="alpha-candidate"
       whenToUse={
         <ul>

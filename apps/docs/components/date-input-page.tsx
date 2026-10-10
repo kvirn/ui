@@ -79,7 +79,7 @@ export function DateInputPage({
   return (
     <ComponentPage
       title="DateInput"
-      lead="A date answered with three text boxes: day, month and year, in the order the region writes dates in. It works with autofill, dictation and any screen reader, and it never parses or validates the date."
+      lead="It works with autofill, dictation and any screen reader, and it never parses or validates the date."
       status="alpha-candidate"
       whenToUse={
         <ul>

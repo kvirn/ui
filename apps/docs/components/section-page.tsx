@@ -44,7 +44,7 @@ export function SectionPage({
   return (
     <ComponentPage
       title="Section"
-      lead="A container for a region of the page, such as a sidebar or a band of content. It gives the region its own surface and padding, and it can become a named landmark when you choose the element."
+      lead="It gives the region its own surface and padding, and it can become a named landmark when you choose the element."
       status="alpha"
       whenToUse={
         <ul>

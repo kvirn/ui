@@ -72,7 +72,7 @@ export function TextareaPage({
   return (
     <ComponentPage
       title="Textarea"
-      lead="A box for a longer answer, such as describing a situation or giving a reason. It never cuts a pasted text, and it can show how many characters are left."
+      lead="It never cuts a pasted text, and it can show how many characters are left."
       status="alpha-candidate"
       whenToUse={
         <ul>

@@ -73,7 +73,7 @@ export function InputGroupPage({
   return (
     <ComponentPage
       title="InputGroup"
-      lead="The box around an input and what sits inside it: a unit, an icon or a button such as clear. It draws the edge and the focus ring once, and the label still carries all the meaning."
+      lead="It draws the edge and the focus ring once, and the label still carries all the meaning."
       status="alpha-candidate"
       whenToUse={
         <ul>

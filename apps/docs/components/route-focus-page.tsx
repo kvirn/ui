@@ -49,7 +49,6 @@ export function RouteFocusPage({
   return (
     <ComponentPage
       title="Route focus"
-      lead="A hook that moves focus to the page title after a client-side navigation, so keyboard and screen reader users start at the top of the new page instead of on a link that may be gone."
       status="in-progress"
       whenToUse={
         <ul>

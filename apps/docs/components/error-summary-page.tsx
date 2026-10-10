@@ -107,7 +107,7 @@ export function ErrorSummaryPage({
   return (
     <ComponentPage
       title="ErrorSummary"
-      lead="All the problems of a failed submit in one place at the top of the form, each a link to its field. It takes focus once, so the screen reader reads it and a keyboard user starts at the list."
+      lead="It takes focus once, so the screen reader reads it and a keyboard user starts at the list."
       status="alpha-candidate"
       whenToUse={
         <ul>

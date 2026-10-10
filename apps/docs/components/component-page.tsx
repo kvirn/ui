@@ -6,6 +6,7 @@ import { messages } from '../messages/en.ts'
 import { hasContent, PageContents, SectionHeading } from './page-contents.tsx'
 import type { PageSection } from './page-contents.tsx'
 import { PageHeading } from './page-heading.tsx'
+import { componentPages } from './site-sections.ts'
 
 const text = messages.docs.status
 const template = messages.docs.template
@@ -63,8 +64,8 @@ export function StatusLine({ status }: { status: ComponentStatus }) {
 export interface ComponentPageProps {
   /** The `h1`: the component's name. */
   title: string
-  /** What it is and what it does for the user, one or two sentences. */
-  lead: string
+  /** The rest of the lead: its first sentence is the page's `summary` in `site-sections.ts`. */
+  lead?: string
   status: ComponentStatus
   /** When, where and when not: the content of the "When to use it" section. */
   whenToUse?: ReactNode
@@ -125,6 +126,11 @@ function pageParts({
   ]
 }
 
+function leadText(title: string, lead: string | undefined) {
+  const summary = componentPages.find((page) => page.label === title)?.summary
+  return [summary, lead].filter(Boolean).join(' ')
+}
+
 /**
  * The component page template: name, lead, status and contents, then the fixed order of
  * sections. A section with no content is not rendered.
@@ -134,7 +140,7 @@ export function ComponentPage(props: ComponentPageProps) {
   return (
     <>
       <PageHeading>{props.title}</PageHeading>
-      <p className="kv-lead">{props.lead}</p>
+      <p className="kv-lead">{leadText(props.title, props.lead)}</p>
       <StatusLine status={props.status} />
       <PageContents sections={parts.flatMap((part) => [...part.sections])} />
       {parts.map((part) => part.node)}

@@ -218,7 +218,7 @@ export function AutocompletePage({
   return (
     <ComponentPage
       title="Autocomplete"
-      lead="A text field that suggests as the user types. The value is the text itself, so the user can write something that is not in the list."
+      lead="The value is the text itself, so the user can write something that is not in the list."
       status="alpha-candidate"
       whenToUse={
         <ul>

@@ -48,7 +48,7 @@ export function SwitchPage({
   return (
     <ComponentPage
       title="Switch"
-      lead="One setting that is on or off and takes effect at once, such as text message reminders on My pages. It is a native checkbox with the role switch, so the browser gives it the Space key, the label click and form submission, and it holds no state of its own."
+      lead="It is a native checkbox with the role switch, so the browser gives it the Space key, the label click and form submission, and it holds no state of its own."
       status="alpha-candidate"
       whenToUse={
         <ul>

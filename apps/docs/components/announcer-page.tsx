@@ -25,7 +25,7 @@ export function AnnouncerPage({
   return (
     <ComponentPage
       title="Announcer"
-      lead="The shared live regions that tell screen reader users something changed without moving focus. You call a hook, and the outermost KvirnProvider renders the regions."
+      lead="You call a hook, and the outermost KvirnProvider renders the regions."
       status="alpha"
       whenToUse={
         <ul>

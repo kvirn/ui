@@ -99,7 +99,7 @@ export function DateRangePickerPage({
   return (
     <ComponentPage
       title="DateRangePicker"
-      lead="One button after a From and a To date that opens a modal dialog with a range Calendar. Typing always works: the picker is the slower path, not a replacement."
+      lead="Typing always works: the picker is the slower path, not a replacement."
       status="alpha-candidate"
       whenToUse={
         <ul>

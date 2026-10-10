@@ -92,7 +92,7 @@ export function TabsPage({
   return (
     <ComponentPage
       title="Tabs"
-      lead="Tabs show one panel of content at a time, with a list of tabs to switch between them. Keyboard users pass the list with one Tab press and move between the tabs with the arrow keys."
+      lead="Keyboard users pass the list with one Tab press and move between the tabs with the arrow keys."
       status="alpha-candidate"
       whenToUse={
         <ul>

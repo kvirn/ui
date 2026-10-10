@@ -47,7 +47,7 @@ export function FocusPage({
   return (
     <ComponentPage
       title="Focus"
-      lead="FocusScope and useFocus move focus into your own drawer or wizard step, can hold it there, and return it when the scope ends. They add no role and no ARIA: you choose the element and its name."
+      lead="They add no role and no ARIA: you choose the element and its name."
       status="in-progress"
       whenToUse={
         <ul>

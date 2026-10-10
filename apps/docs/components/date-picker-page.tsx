@@ -100,7 +100,7 @@ export function DatePickerPage({
   return (
     <ComponentPage
       title="DatePicker"
-      lead="A button after a typed date that opens a modal dialog with a Calendar. Typing always works: the picker is the slower path, not a replacement."
+      lead="Typing always works: the picker is the slower path, not a replacement."
       status="alpha-candidate"
       whenToUse={
         <ul>

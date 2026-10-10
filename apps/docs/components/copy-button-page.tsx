@@ -45,7 +45,7 @@ export function CopyButtonPage({
   return (
     <ComponentPage
       title="CopyButton"
-      lead="A button that copies a text to the clipboard, such as a case number. Its name stays “Copy”, and the result is announced to screen reader users. If the browser refuses, the text is selected so the user can copy it by hand."
+      lead="Its name stays “Copy”, and the result is announced to screen reader users. If the browser refuses, the text is selected so the user can copy it by hand."
       status="alpha-candidate"
       whenToUse={
         <ul>

@@ -46,7 +46,7 @@ export function HeadingPage({
   return (
     <ComponentPage
       title="Heading"
-      lead="A heading with its element as a required prop and its look as an optional one. The level is the page’s outline, and the size is how it looks, so you never pick a level because of its size."
+      lead="The level is the page’s outline, and the size is how it looks, so you never pick a level because of its size."
       status="alpha"
       whenToUse={
         <ul>
