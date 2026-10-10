@@ -471,6 +471,7 @@ export type {
   FieldState,
 } from './field/field.tsx'
 export { useField } from './field/use-field.ts'
+export type { FieldControlOptions, FieldControlState } from './field/use-field-control.ts'
 export type {
   FieldControlPartProps,
   FieldDescriptionPartProps,
@@ -560,7 +561,12 @@ export type {
   UseCharacterCountResult,
 } from './character-count/use-character-count.ts'
 export { useMask } from './mask/use-mask.ts'
-export type { MaskInputPartProps, UseMaskOptions, UseMaskResult } from './mask/use-mask.ts'
+export type {
+  MaskBehaviourOptions,
+  MaskInputPartProps,
+  UseMaskOptions,
+  UseMaskResult,
+} from './mask/use-mask.ts'
 export { Icon } from './icon/icon.tsx'
 export type { IconProps } from './icon/icon.tsx'
 export { useIcon } from './icon/use-icon.ts'

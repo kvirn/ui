@@ -1,10 +1,13 @@
 import type { MaskRejection } from '@kvirn-ui/core'
-import { useContext, useEffect, useMemo } from 'react'
-import type { ChangeEvent, ChangeEventHandler, CompositionEvent, FocusEventHandler } from 'react'
+import { useEffect, useMemo } from 'react'
+import type { ChangeEvent, ChangeEventHandler, CompositionEvent } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
-import { FieldContext } from '../field/field-context.ts'
-import type { FieldStateAttributes } from '../field/field-state.ts'
-import { useFocusVisible } from '../focus-visible/use-focus-visible.ts'
+import { useFieldControl } from '../field/use-field-control.ts'
+import type {
+  FieldControlOptions,
+  FieldControlState,
+  InputControlPartProps,
+} from '../field/use-field-control.ts'
 
 /**
  * The text-like input types. Never `number` or `date`: for numbers use NumberInput,
@@ -30,11 +33,9 @@ export interface TextInputChangeDetails {
   rejected?: readonly MaskRejection[] | undefined
 }
 
-export interface UseTextInputOptions {
+export interface UseTextInputOptions extends FieldControlOptions<TextInputChangeDetails> {
   /** Default `'text'`. */
   type?: TextInputType | undefined
-  /** Native `disabled`. A disabled Field disables the input too. */
-  disabled?: boolean | undefined
   /**
    * Called with the new value on every change. It only reports: the value lives in your form
    * state, or in the native input when you don't pass `value`.
@@ -43,33 +44,18 @@ export interface UseTextInputOptions {
 }
 
 /** Spread on the `<input>`. */
-export interface TextInputPartProps extends FieldStateAttributes {
+export interface TextInputPartProps extends InputControlPartProps {
   /**
    * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-input`. Add a width class
    * next to it, for example `kv-input--width-10`, with `mergeProps`: class names join.
    */
   className: 'kv-input'
   type: TextInputType
-  /** From the Field: the control's id. */
-  id?: string
-  'aria-describedby'?: string
-  'aria-invalid'?: 'true'
-  'aria-required'?: 'true'
-  disabled?: true
-  /** While it has focus, however it got it. The theme's sign that the script has run. */
-  'data-focused'?: ''
-  'data-focus-visible'?: ''
   onChange: ChangeEventHandler<HTMLInputElement>
-  onFocus: FocusEventHandler<HTMLElement>
-  onBlur: FocusEventHandler<HTMLElement>
 }
 
-export interface UseTextInputResult {
+export interface UseTextInputResult extends FieldControlState {
   inputProps: TextInputPartProps
-  isInvalid: boolean
-  isRequired: boolean
-  isDisabled: boolean
-  isFocusVisible: boolean
 }
 
 /**
@@ -85,12 +71,7 @@ export function useTextInput({
   disabled = false,
   onValueChange,
 }: UseTextInputOptions = {}): UseTextInputResult {
-  const field = useContext(FieldContext)
-  const { isFocused, isFocusVisible, focusVisibleProps } = useFocusVisible()
-  const isInvalid = field?.state.isInvalid ?? false
-  const isRequired = field?.state.isRequired ?? false
-  const isDisabled = (field?.state.isDisabled ?? false) || disabled
-  const controlProps = field?.controlProps
+  const { controlProps, ...state } = useFieldControl({ disabled })
 
   useEffect(() => {
     const askedType: string = type
@@ -109,16 +90,12 @@ export function useTextInput({
       ...controlProps,
       className: 'kv-input',
       type,
-      ...(isDisabled ? { disabled: true, 'data-disabled': '' } : {}),
-      ...(isFocused ? { 'data-focused': '' } : {}),
-      ...(isFocusVisible ? { 'data-focus-visible': '' } : {}),
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         onValueChange?.(event.currentTarget.value, { reason: 'input', event })
       },
-      ...focusVisibleProps,
     }),
-    [controlProps, type, isDisabled, isFocused, isFocusVisible, onValueChange, focusVisibleProps],
+    [controlProps, type, onValueChange],
   )
 
-  return { inputProps, isInvalid, isRequired, isDisabled, isFocusVisible }
+  return { inputProps, ...state }
 }

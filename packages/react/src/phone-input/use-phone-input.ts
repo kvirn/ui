@@ -1,15 +1,10 @@
 import type { Mask, MaskInput } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { useMemo } from 'react'
-import type {
-  ChangeEventHandler,
-  CompositionEventHandler,
-  FocusEvent,
-  FocusEventHandler,
-  RefCallback,
-} from 'react'
+import type { FocusEvent } from 'react'
+import type { FieldControlOptions, FieldControlState } from '../field/use-field-control.ts'
 import { useMaskedInput } from '../mask/use-mask.ts'
-import type { TextInputChangeDetails, TextInputPartProps } from '../text-input/use-text-input.ts'
+import type { MaskBehaviourOptions, MaskedInputPartProps } from '../mask/use-mask.ts'
+import type { TextInputChangeDetails } from '../text-input/use-text-input.ts'
 import { useTextInput } from '../text-input/use-text-input.ts'
 
 /**
@@ -19,7 +14,8 @@ import { useTextInput } from '../text-input/use-text-input.ts'
  */
 export const defaultPhoneMask: MaskInput | false = false
 
-export interface UsePhoneInputOptions {
+export interface UsePhoneInputOptions
+  extends FieldControlOptions<TextInputChangeDetails>, MaskBehaviourOptions {
   /**
    * `false` (the default): no mask, so no correctly typed number is ever refused. A name such as
    * `'telephone'` (digits, `+`, space, `-`, `(` and `)`; the rest is left out and announced), a
@@ -27,27 +23,15 @@ export interface UsePhoneInputOptions {
    * is never formatted either way.
    */
   mask?: MaskInput | false | undefined
-  /** Native `disabled`. A disabled Field disables the input too. */
-  disabled?: boolean | undefined
   /**
    * Called with the text as the user wrote it on every change. It only reports: the value lives
    * in your form state, or in the native input. Normalise it to E.164 on the server.
    */
   onValueChange?: ((value: string, details: TextInputChangeDetails) => void) | undefined
-  /**
-   * Announce, politely and at most once every few seconds, when a character is left out.
-   * Default `true`. Needs a `KvirnProvider`: without one nothing is announced.
-   */
-  announceRejections?: boolean | undefined
-  /** Per-instance overrides for the rejection announcements. */
-  messages?: Partial<KvirnMessages['mask']> | undefined
 }
 
 /** Spread on the `<input>`. The attributes are suggestions: put yours after them. */
-export interface PhoneInputPartProps extends Omit<
-  TextInputPartProps,
-  'className' | 'type' | 'onChange' | 'onFocus'
-> {
+export interface PhoneInputPartProps extends MaskedInputPartProps {
   /**
    * The part's classes, for `@kvirn-ui/theme` and your own CSS: `.kv-input`, `.kv-input--numeric`
    * (tabular figures) and `.kv-phone-input` (20 characters wide). A `kv-input--width-*` class of
@@ -61,22 +45,12 @@ export interface PhoneInputPartProps extends Omit<
   dir: 'ltr'
   /** The full number, which is what autofill stores. */
   autoComplete: 'tel'
-  onChange: ChangeEventHandler<HTMLInputElement>
-  onFocus: FocusEventHandler<HTMLInputElement>
-  onCompositionStart: CompositionEventHandler<HTMLInputElement>
-  onCompositionEnd: CompositionEventHandler<HTMLInputElement>
-  /** Tracks the value before each edit, to tell what the user inserted. */
-  ref: RefCallback<HTMLInputElement>
 }
 
-export interface UsePhoneInputResult {
+export interface UsePhoneInputResult extends FieldControlState {
   inputProps: PhoneInputPartProps
   /** The mask that runs, before the provider's locale is applied. `undefined` when there is none. */
   mask: Mask | undefined
-  isInvalid: boolean
-  isRequired: boolean
-  isDisabled: boolean
-  isFocusVisible: boolean
 }
 
 /**
@@ -147,6 +121,7 @@ export function usePhoneInput({
     isInvalid: input.isInvalid,
     isRequired: input.isRequired,
     isDisabled: input.isDisabled,
+    isFocused: input.isFocused,
     isFocusVisible: input.isFocusVisible,
   }
 }

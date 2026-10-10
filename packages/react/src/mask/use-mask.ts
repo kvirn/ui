@@ -13,11 +13,23 @@ import type {
 import { useQuietAnnouncer, warnAnnouncerMissing } from '../announcer/use-announcer.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldContext } from '../field/field-context.ts'
-import type { TextInputChangeDetails } from '../text-input/use-text-input.ts'
+import type { TextInputChangeDetails, TextInputPartProps } from '../text-input/use-text-input.ts'
 import { useLocale } from '../provider/use-locale.ts'
 import { useMessages } from '../provider/use-messages.ts'
 
-export interface UseMaskOptions {
+/** The options of every masked control: `useMask`, `useNumberInput` and `usePhoneInput`. */
+export interface MaskBehaviourOptions {
+  /**
+   * Announce, politely and at most once every few seconds per field, when the mask drops
+   * characters (4.1.3). Default `true`. Turn it off when you show your own message. Needs a
+   * `KvirnProvider`: without one nothing is announced.
+   */
+  announceRejections?: boolean | undefined
+  /** Per-instance message overrides for the rejection announcements. */
+  messages?: Partial<KvirnMessages['mask']> | undefined
+}
+
+export interface UseMaskOptions extends MaskBehaviourOptions {
   /**
    * A name (`'postal-code'`, with the country from the provider's locale), `{ preset, country? }`,
    * `{ pattern, ...options }`, a `RegExp` that accepts partial values, or a finished mask from
@@ -30,14 +42,6 @@ export interface UseMaskOptions {
    * only reports: the value lives in your form state, or in the native input.
    */
   onValueChange?: ((value: string, details: TextInputChangeDetails) => void) | undefined
-  /**
-   * Announce, politely and at most once every few seconds per field, when the mask drops
-   * characters (4.1.3). Default `true`. Turn it off when you show your own message. Needs a
-   * `KvirnProvider`: without one nothing is announced.
-   */
-  announceRejections?: boolean | undefined
-  /** Per-instance message overrides for the rejection announcements. */
-  messages?: Partial<KvirnMessages['mask']> | undefined
 }
 
 /**
@@ -57,6 +61,15 @@ export interface MaskInputPartProps {
   /** Tracks the value before each edit, to tell what the user inserted. */
   ref: RefCallback<HTMLInputElement>
 }
+
+/**
+ * Internal. What a masked control spreads: the text input's props without the ones the mask
+ * replaces, and the mask's own.
+ */
+export interface MaskedInputPartProps
+  extends
+    Omit<TextInputPartProps, 'className' | 'type' | 'onChange' | 'onFocus'>,
+    MaskInputPartProps {}
 
 export interface UseMaskResult {
   inputProps: MaskInputPartProps

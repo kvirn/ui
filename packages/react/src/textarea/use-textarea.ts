@@ -1,8 +1,11 @@
-import { useContext, useMemo } from 'react'
-import type { ChangeEvent, ChangeEventHandler, FocusEventHandler } from 'react'
-import { FieldContext } from '../field/field-context.ts'
-import type { FieldStateAttributes } from '../field/field-state.ts'
-import { useFocusVisible } from '../focus-visible/use-focus-visible.ts'
+import { useMemo } from 'react'
+import type { ChangeEvent, ChangeEventHandler } from 'react'
+import { useFieldControl } from '../field/use-field-control.ts'
+import type {
+  FieldControlOptions,
+  FieldControlState,
+  InputControlPartProps,
+} from '../field/use-field-control.ts'
 
 /** The second argument of `onValueChange`. */
 export interface TextareaChangeDetails {
@@ -17,9 +20,7 @@ export interface TextareaChangeDetails {
   isOverLimit?: boolean | undefined
 }
 
-export interface UseTextareaOptions {
-  /** Native `disabled`. A disabled Field disables the box too. */
-  disabled?: boolean | undefined
+export interface UseTextareaOptions extends FieldControlOptions<TextareaChangeDetails> {
   /** The box's height in lines, and its minimum when the theme lets it grow. Default 5. */
   rows?: number | undefined
   /**
@@ -30,31 +31,15 @@ export interface UseTextareaOptions {
 }
 
 /** Spread on the `<textarea>`. */
-export interface TextareaPartProps extends FieldStateAttributes {
+export interface TextareaPartProps extends InputControlPartProps {
   /** The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-textarea`. */
   className: 'kv-textarea'
   rows: number
-  /** From the Field: the control's id. */
-  id?: string
-  'aria-describedby'?: string
-  'aria-invalid'?: 'true'
-  'aria-required'?: 'true'
-  disabled?: true
-  /** While it has focus, however it got it. The theme's sign that the script has run. */
-  'data-focused'?: ''
-  'data-focus-visible'?: ''
   onChange: ChangeEventHandler<HTMLTextAreaElement>
-  onFocus: FocusEventHandler<HTMLElement>
-  onBlur: FocusEventHandler<HTMLElement>
 }
 
-export interface UseTextareaResult {
+export interface UseTextareaResult extends FieldControlState {
   textareaProps: TextareaPartProps
-  isInvalid: boolean
-  isRequired: boolean
-  isDisabled: boolean
-  isFocused: boolean
-  isFocusVisible: boolean
 }
 
 /**
@@ -71,28 +56,19 @@ export function useTextarea({
   rows = 5,
   onValueChange,
 }: UseTextareaOptions = {}): UseTextareaResult {
-  const field = useContext(FieldContext)
-  const { isFocused, isFocusVisible, focusVisibleProps } = useFocusVisible()
-  const isInvalid = field?.state.isInvalid ?? false
-  const isRequired = field?.state.isRequired ?? false
-  const isDisabled = (field?.state.isDisabled ?? false) || disabled
-  const controlProps = field?.controlProps
+  const { controlProps, ...state } = useFieldControl({ disabled })
 
   const textareaProps = useMemo<TextareaPartProps>(
     () => ({
       ...controlProps,
       className: 'kv-textarea',
       rows,
-      ...(isDisabled ? { disabled: true, 'data-disabled': '' } : {}),
-      ...(isFocused ? { 'data-focused': '' } : {}),
-      ...(isFocusVisible ? { 'data-focus-visible': '' } : {}),
       onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         onValueChange?.(event.currentTarget.value, { reason: 'input', event })
       },
-      ...focusVisibleProps,
     }),
-    [controlProps, rows, isDisabled, isFocused, isFocusVisible, onValueChange, focusVisibleProps],
+    [controlProps, rows, onValueChange],
   )
 
-  return { textareaProps, isInvalid, isRequired, isDisabled, isFocused, isFocusVisible }
+  return { textareaProps, ...state }
 }

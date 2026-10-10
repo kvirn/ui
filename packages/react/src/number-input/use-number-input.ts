@@ -1,20 +1,19 @@
 import { masks } from '@kvirn-ui/core'
 import type { Mask, MaskInput, NumberMaskOptions } from '@kvirn-ui/core'
-import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { useMemo } from 'react'
-import type {
-  ChangeEventHandler,
-  CompositionEventHandler,
-  FocusEvent,
-  FocusEventHandler,
-  RefCallback,
-} from 'react'
+import type { FocusEvent } from 'react'
+import type { FieldControlOptions, FieldControlState } from '../field/use-field-control.ts'
 import { useMaskedInput } from '../mask/use-mask.ts'
-import type { MaskInputPartProps } from '../mask/use-mask.ts'
-import type { TextInputChangeDetails, TextInputPartProps } from '../text-input/use-text-input.ts'
+import type {
+  MaskBehaviourOptions,
+  MaskedInputPartProps,
+  MaskInputPartProps,
+} from '../mask/use-mask.ts'
+import type { TextInputChangeDetails } from '../text-input/use-text-input.ts'
 import { useTextInput } from '../text-input/use-text-input.ts'
 
-export interface UseNumberInputOptions {
+export interface UseNumberInputOptions
+  extends FieldControlOptions<TextInputChangeDetails>, MaskBehaviourOptions {
   /** Digits after the decimal mark. Default 0: no decimal mark is accepted. */
   decimals?: number | undefined
   /** Accept a leading minus sign. Default `false`. The keypad then shows text, because iOS's numeric pads have no minus. */
@@ -33,8 +32,6 @@ export interface UseNumberInputOptions {
    * number options are ignored. Default: `masks.number()` from the props above.
    */
   mask?: MaskInput | false | undefined
-  /** Native `disabled`. A disabled Field disables the input too. */
-  disabled?: boolean | undefined
   /**
    * Called with the masked value on every change. `details.unmaskedValue` is the machine form
    * (`-1234.5`) of the number mask, or the unmasked value of the `mask` you passed, and
@@ -43,20 +40,10 @@ export interface UseNumberInputOptions {
    * input.
    */
   onValueChange?: ((value: string, details: TextInputChangeDetails) => void) | undefined
-  /**
-   * Announce, politely and at most once every few seconds, when a character is left out.
-   * Default `true`. Needs a `KvirnProvider`: without one nothing is announced.
-   */
-  announceRejections?: boolean | undefined
-  /** Per-instance overrides for the rejection announcements. */
-  messages?: Partial<KvirnMessages['mask']> | undefined
 }
 
 /** Spread on the `<input>`. The attributes are the mask's suggestions: put yours after them. */
-export interface NumberInputPartProps extends Omit<
-  TextInputPartProps,
-  'className' | 'type' | 'onChange' | 'onFocus'
-> {
+export interface NumberInputPartProps extends MaskedInputPartProps {
   /**
    * The part's classes, for `@kvirn-ui/theme` and your own CSS: `.kv-input` and
    * `.kv-input--numeric` (tabular figures). Add a width class next to them, for example
@@ -66,17 +53,11 @@ export interface NumberInputPartProps extends Omit<
   /** A text box, never `type="number"`. */
   type: 'text'
   /** `numeric`, `decimal`, or `text` when negatives are allowed. */
-  inputMode?: MaskInputPartProps['inputMode']
+  inputMode?: NonNullable<MaskInputPartProps['inputMode']>
   spellCheck: false
-  onChange: ChangeEventHandler<HTMLInputElement>
-  onFocus: FocusEventHandler<HTMLInputElement>
-  onCompositionStart: CompositionEventHandler<HTMLInputElement>
-  onCompositionEnd: CompositionEventHandler<HTMLInputElement>
-  /** Tracks the value before each edit, to tell what the user inserted. */
-  ref: RefCallback<HTMLInputElement>
 }
 
-export interface UseNumberInputResult {
+export interface UseNumberInputResult extends FieldControlState {
   inputProps: NumberInputPartProps
   /**
    * The mask that runs, before the provider's locale is applied: the `masks.number()` the options
@@ -87,10 +68,6 @@ export interface UseNumberInputResult {
   format: (unmaskedValue: string) => string
   /** The machine form of a displayed number: `1 250,50` becomes `1250.50`. */
   unmask: (value: string) => string
-  isInvalid: boolean
-  isRequired: boolean
-  isDisabled: boolean
-  isFocusVisible: boolean
 }
 
 /**
@@ -182,6 +159,7 @@ export function useNumberInput({
     isInvalid: input.isInvalid,
     isRequired: input.isRequired,
     isDisabled: input.isDisabled,
+    isFocused: input.isFocused,
     isFocusVisible: input.isFocusVisible,
   }
 }
