@@ -30,6 +30,15 @@ export const withErrorSummaryLocale: Decorator = (Story, { globals }) => {
 }
 
 /**
+ * True in the frame a Docs page embeds a story in. That frame's viewMode is `story` too, so the
+ * only tell is that its parent is the Docs page. A play function that moves focus drags the whole
+ * Docs page with it, so those stories skip their play there.
+ */
+export function inDocsFrame(): boolean {
+  return window.parent !== window && window.parent.location.search.includes('viewMode=docs')
+}
+
+/**
  * The summary above the question: each link is the field's own error text and points at its
  * control, or at a group's first option. Ids start with `prefix`, because an id is unique on a
  * page and a Docs page shows every story in one document.
@@ -37,11 +46,13 @@ export const withErrorSummaryLocale: Decorator = (Story, { globals }) => {
 export function ParkingForm({
   prefix,
   focusKey,
+  disableAutoFocus,
   prefixDocumentTitle,
   showErrors = true,
 }: {
   prefix: string
   focusKey?: number
+  disableAutoFocus?: boolean
   prefixDocumentTitle?: boolean
   showErrors?: boolean
 }) {
@@ -50,7 +61,11 @@ export function ParkingForm({
   return (
     <div className="kv-stack">
       {showErrors ? (
-        <ErrorSummary.Root focusKey={focusKey} prefixDocumentTitle={prefixDocumentTitle}>
+        <ErrorSummary.Root
+          focusKey={focusKey}
+          disableAutoFocus={disableAutoFocus}
+          prefixDocumentTitle={prefixDocumentTitle}
+        >
           <ErrorSummary.Title />
           <ErrorSummary.List>
             <ErrorSummary.Item>
@@ -68,12 +83,12 @@ export function ParkingForm({
         Ansök om boendeparkering
       </Heading>
       <form noValidate onSubmit={(event) => event.preventDefault()} className="kv-stack">
-        <Field.Root controlId={emailId} invalid={showErrors}>
+        <Field.Root controlId={emailId} invalid={showErrors} required>
           <Field.Label>E-post</Field.Label>
           <TextInput type="email" autoComplete="email" />
           <Field.ErrorMessage>Ange din e-postadress</Field.ErrorMessage>
         </Field.Root>
-        <RadioGroup.Root invalid={showErrors}>
+        <RadioGroup.Root invalid={showErrors} required>
           <RadioGroup.Legend>Hur länge behöver du tillståndet?</RadioGroup.Legend>
           <Field.Root controlId={firstOptionId}>
             <RadioGroup.Radio value="1" />

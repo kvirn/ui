@@ -13,6 +13,12 @@ export interface UseErrorSummaryOptions {
    */
   focusKey?: string | number | undefined
   /**
+   * Never moves focus to the summary, on mount or when `focusKey` changes. For a static preview
+   * (a docs page, a screenshot) where the move would scroll the page. Leave it off in an app:
+   * the focus move is how the summary is announced.
+   */
+  disableAutoFocus?: boolean | undefined
+  /**
    * Puts `errorSummary.titlePrefix` ("Fel:") before `document.title` while the summary is shown,
    * and restores the title when it is removed (2.4.2). Off by default, because a router that
    * owns the title would fight it: then set the prefix there.
@@ -104,6 +110,7 @@ const itemProps: ErrorSummaryItemPartProps = Object.freeze({ className: 'kv-erro
  */
 export function useErrorSummary({
   focusKey,
+  disableAutoFocus = false,
   prefixDocumentTitle = false,
   messages,
 }: UseErrorSummaryOptions = {}): UseErrorSummaryResult {
@@ -116,8 +123,10 @@ export function useErrorSummary({
   }, [])
 
   useEffect(() => {
-    rootElement.current?.focus()
-  }, [focusKey])
+    if (!disableAutoFocus) {
+      rootElement.current?.focus()
+    }
+  }, [focusKey, disableAutoFocus])
 
   const prefix = errorSummaryMessages.titlePrefix
   useEffect(() => {

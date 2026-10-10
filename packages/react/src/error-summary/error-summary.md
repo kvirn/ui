@@ -49,11 +49,12 @@ Your part:
 - **Keep `scroll-padding`** above a sticky header and under the on-screen keyboard (2.4.11).
 - **A router owns `document.title`?** Leave `prefixDocumentTitle` off and add the prefix there.
 
-| Prop on `ErrorSummary.Root` | What it does                                                                             |
-| --------------------------- | ---------------------------------------------------------------------------------------- |
-| `focusKey`                  | Focus moves to the summary on mount and each time it changes. Without it, once, on mount |
-| `prefixDocumentTitle`       | `errorSummary.titlePrefix` before `document.title` while shown. Off by default           |
-| `messages`                  | `{ title, titlePrefix }` for this instance                                               |
+| Prop on `ErrorSummary.Root` | What it does                                                                                                                          |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `focusKey`                  | Focus moves to the summary on mount and each time it changes. Without it, once, on mount                                              |
+| `disableAutoFocus`          | Never moves focus to the summary. For a static preview (a docs page, a screenshot) only: in an app the focus move is the announcement |
+| `prefixDocumentTitle`       | `errorSummary.titlePrefix` before `document.title` while shown. Off by default                                                        |
+| `messages`                  | `{ title, titlePrefix }` for this instance                                                                                            |
 
 ## Hook
 
@@ -80,7 +81,7 @@ function Problems({ errors, submitCount }) {
 }
 ```
 
-`useErrorSummary({ focusKey, prefixDocumentTitle, messages })` returns `rootProps` (class, `role="group"`, `tabIndex={-1}`, `aria-labelledby`, a ref the hook focuses), `titleProps` (the id), `listProps`, `itemProps`, `getLinkProps(controlId)` and `title` (the message). It adds no `aria-live` and never announces.
+`useErrorSummary({ focusKey, disableAutoFocus, prefixDocumentTitle, messages })` returns `rootProps` (class, `role="group"`, `tabIndex={-1}`, `aria-labelledby`, a ref the hook focuses), `titleProps` (the id), `listProps`, `itemProps`, `getLinkProps(controlId)` and `title` (the message). It adds no `aria-live` and never announces.
 
 ## Dev warnings
 

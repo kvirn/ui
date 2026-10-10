@@ -19,6 +19,8 @@ export interface ErrorSummaryRootProps extends HTMLAttributes<HTMLElement> {
   ref?: Ref<HTMLElement> | undefined
   /** Moves focus to the summary on mount and each time this changes: pass the submit count. */
   focusKey?: string | number | undefined
+  /** Never moves focus to the summary: for a static preview only. Off by default. */
+  disableAutoFocus?: boolean | undefined
   /** Puts "Fel:" before the page title while the summary is shown. Off by default. */
   prefixDocumentTitle?: boolean | undefined
   /** Per-instance overrides: the title and the page title prefix. */
@@ -58,13 +60,19 @@ function useWarnOutsideRoot(isOutside: boolean, partName: string): void {
  */
 export function ErrorSummaryRoot({
   focusKey,
+  disableAutoFocus,
   prefixDocumentTitle,
   messages,
   ref,
   children,
   ...otherProps
 }: ErrorSummaryRootProps): ReactElement {
-  const errorSummary = useErrorSummary({ focusKey, prefixDocumentTitle, messages })
+  const errorSummary = useErrorSummary({
+    focusKey,
+    disableAutoFocus,
+    prefixDocumentTitle,
+    messages,
+  })
   const { ref: ownRef, ...rootProps } = errorSummary.rootProps
   const elementRef = useMergedRef(ref, ownRef)
   const partProps = { ...mergeProps(otherProps, rootProps), ref: elementRef, children }

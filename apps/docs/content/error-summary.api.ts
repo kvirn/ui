@@ -24,13 +24,22 @@ const messagesRow = {
 }
 
 export const rootRows = propRows<
-  Pick<ErrorSummaryRootProps, 'focusKey' | 'prefixDocumentTitle' | 'messages' | 'ref'>
+  Pick<
+    ErrorSummaryRootProps,
+    'focusKey' | 'disableAutoFocus' | 'prefixDocumentTitle' | 'messages' | 'ref'
+  >
 >({
   focusKey: {
     type: 'string | number',
     default: '–',
     description:
       'Moves focus to the summary on mount and each time it changes. Pass the submit count, so a second failed submit moves focus again. Without it, focus moves once, on mount.',
+  },
+  disableAutoFocus: {
+    type: 'boolean',
+    default: 'false',
+    description:
+      'Never moves focus to the summary, on mount or when focusKey changes. For a static preview, such as a docs page or a screenshot, where the move would scroll the page. Leave it off in an app: the focus move is how the summary is announced.',
   },
   prefixDocumentTitle: {
     type: 'boolean',
@@ -130,6 +139,11 @@ export const useErrorSummaryHook: ApiHook = {
       default: '–',
       description:
         'Moves focus to the summary on mount and each time it changes. Pass the submit count.',
+    },
+    disableAutoFocus: {
+      type: 'boolean',
+      default: 'false',
+      description: 'Never moves focus to the summary. For a static preview only.',
     },
     prefixDocumentTitle: {
       type: 'boolean',

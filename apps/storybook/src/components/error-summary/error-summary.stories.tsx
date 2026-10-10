@@ -6,12 +6,14 @@ import { useState } from 'react'
 import { expect, userEvent, waitFor } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
-import { ParkingForm, withErrorSummaryLocale } from './error-summary.fixture.tsx'
+import { inDocsFrame, ParkingForm, withErrorSummaryLocale } from './error-summary.fixture.tsx'
 
 // Components/ErrorSummary: the headless ErrorSummary, an Alert.Danger styled by
 // @kvirn-ui/theme/theme.css. The stories are the question page of a parking-permit application
-// after a failed submit, in Swedish. The summary takes focus when it appears, so a Docs page
-// shows each story in its own frame, and the library's own words follow the locale toolbar.
+// after a failed submit, in Swedish. The summary takes focus when it appears, and a focus move in
+// a Docs frame scrolls the whole page. So the stories set disableAutoFocus, and the two that drive
+// focus (OnSubmit, Keyboard) run their play function in the Canvas only. The focus rows are proved
+// in error-summary.test.tsx. The library's own words follow the locale toolbar.
 
 const meta = {
   title: 'Components/Forms/ErrorSummary',
@@ -25,6 +27,11 @@ const meta = {
     prefixDocumentTitle: {
       control: 'boolean',
       description: 'Puts the message `errorSummary.titlePrefix` before the page title while shown.',
+    },
+    disableAutoFocus: {
+      control: 'boolean',
+      description:
+        'Never moves focus to the summary. For a static preview only: in an app the focus move is the announcement.',
     },
   },
   decorators: [withErrorSummaryLocale],
@@ -43,11 +50,11 @@ type Story = StoryObj<typeof meta>
 
 const summaryName = /Det finns ett problem/
 
-/** After a failed submit: the summary has focus, and each link goes to its field or group. */
+/** After a failed submit: the summary above the form, and each link goes to its field or group. */
 export const Default: Story = {
-  render: () => <ParkingForm prefix="default" />,
+  render: () => <ParkingForm prefix="default" disableAutoFocus />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('group', { name: summaryName })).toHaveFocus()
+    await expect(canvas.getByRole('group', { name: summaryName })).toBeVisible()
     await expect(canvas.getByRole('heading', { level: 2 })).toHaveTextContent(summaryName)
     await expect(canvas.getAllByRole('listitem')).toHaveLength(2)
   },
@@ -55,7 +62,7 @@ export const Default: Story = {
 
 /** The page title carries the prefix while the summary is shown (`prefixDocumentTitle`). */
 export const TitlePrefix: Story = {
-  render: () => <ParkingForm prefix="title-prefix" prefixDocumentTitle />,
+  render: () => <ParkingForm prefix="title-prefix" prefixDocumentTitle disableAutoFocus />,
   play: async () => {
     await waitFor(() => expect(document.title.startsWith('Fel: ')).toBe(true))
   },
@@ -77,6 +84,9 @@ function Submitting() {
 export const OnSubmit: Story = {
   render: () => <Submitting />,
   play: async ({ canvas }) => {
+    if (inDocsFrame()) {
+      return
+    }
     await expect(canvas.queryByRole('group', { name: summaryName })).toBeNull()
     await userEvent.click(canvas.getAllByRole('button', { name: 'Skicka ansökan' })[0]!)
     await expect(canvas.getByRole('group', { name: summaryName })).toHaveFocus()
@@ -89,9 +99,12 @@ export const OnSubmit: Story = {
 
 /** The keys: Tab goes through the links, and Enter on one moves focus to its field. */
 export const Keyboard: Story = {
-  render: () => <ParkingForm prefix="keyboard" />,
+  render: () => <ParkingForm prefix="keyboard" disableAutoFocus />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('group', { name: summaryName })).toHaveFocus()
+    if (inDocsFrame()) {
+      return
+    }
+    canvas.getByRole('group', { name: summaryName }).focus()
     await userEvent.tab()
     await expect(canvas.getByRole('link', { name: 'Ange din e-postadress' })).toHaveFocus()
     await userEvent.tab()
@@ -107,7 +120,7 @@ export const Keyboard: Story = {
 /** One problem: the same box and list, with a single link. */
 export const SingleError: Story = {
   render: () => (
-    <ErrorSummary.Root>
+    <ErrorSummary.Root disableAutoFocus>
       <ErrorSummary.Title />
       <ErrorSummary.List>
         <ErrorSummary.Item>
@@ -117,14 +130,15 @@ export const SingleError: Story = {
     </ErrorSummary.Root>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('group', { name: summaryName })).toHaveFocus()
+    await expect(canvas.getByRole('group', { name: summaryName })).toBeVisible()
+    await expect(canvas.getAllByRole('listitem')).toHaveLength(1)
   },
 }
 
 /** A 320px column with long Finnish compound errors: they wrap and nothing scrolls sideways (1.4.10). */
 export const Reflow320: Story = {
   render: () => (
-    <ErrorSummary.Root>
+    <ErrorSummary.Root disableAutoFocus>
       <ErrorSummary.Title />
       <ErrorSummary.List>
         <ErrorSummary.Item>
@@ -154,7 +168,7 @@ export const Reflow320: Story = {
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
   render: () => (
-    <ErrorSummary.Root>
+    <ErrorSummary.Root disableAutoFocus>
       <ErrorSummary.Title />
       <ErrorSummary.List>
         <ErrorSummary.Item>
@@ -167,12 +181,12 @@ export const RTL: Story = {
     </ErrorSummary.Root>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('group', { name: /There is a problem/ })).toHaveFocus()
+    await expect(canvas.getByRole('group', { name: /There is a problem/ })).toBeVisible()
   },
 }
 
 /** The danger bar, icon, status word and underlined links survive forced colours. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  render: () => <ParkingForm prefix="forced" />,
+  render: () => <ParkingForm prefix="forced" disableAutoFocus />,
 }

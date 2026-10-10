@@ -47,7 +47,7 @@ The summary is not a widget. Focus is moved to it by script, once per submit; th
 
 ## Focus management
 
-- Initial focus: on mount, and each time `focusKey` changes, the summary root takes focus (`focus()` on `tabindex="-1"`). With no `focusKey`, once on mount. It is rendered only while there are errors and never updates while the user types.
+- Initial focus: on mount, and each time `focusKey` changes, the summary root takes focus (`focus()` on `tabindex="-1"`). With no `focusKey`, once on mount. `disableAutoFocus` skips both, for a static preview where the move would scroll the page (`focus › disableAutoFocus leaves focus where it was, on mount and when focusKey changes`); an app leaves it off. It is rendered only while there are errors and never updates while the user types.
 - A link: `preventDefault`, `focus({ preventScroll: true })` on the control with that id, then the control's label (`label[for]`) or its fieldset's legend is scrolled into view. Never smooth scrolling. A click with Ctrl, Meta, Shift, Alt or a non-primary button, and a link whose target is missing, are left to the browser (the hash navigation).
 - A link whose control can't take focus (hidden, disabled, not focusable): `focus()` leaves `document.activeElement` elsewhere, so the link does not `preventDefault` and the browser's own hash jump runs. A development warning `error-summary-control-unfocusable:<id>` is shown once per id (`error-summary.test.tsx › links › a link whose control cannot take focus is left to the browser and warns once`). After a native jump to a non-focusable target focus can fall to `body`; point the link at the focusable control.
 - A group of options: link to the first option's id.

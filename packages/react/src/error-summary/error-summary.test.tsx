@@ -319,6 +319,14 @@ describe('focus', () => {
     await expect.element(page.getByRole('textbox', { name: /^E-post/ })).toHaveFocus()
   })
 
+  test('disableAutoFocus leaves focus where it was, on mount and when focusKey changes', async () => {
+    const rootProps = { disableAutoFocus: true }
+    const view = await render(<Form focusKey={1} rootProps={rootProps} />)
+    expect(document.activeElement).toBe(document.body)
+    await view.rerender(<Form focusKey={2} rootProps={rootProps} />)
+    expect(document.activeElement).toBe(document.body)
+  })
+
   test('the summary is focusable by script but not a Tab stop', async () => {
     const { container } = await render(<Form />)
     const root = container.querySelector<HTMLElement>('.kv-error-summary')
