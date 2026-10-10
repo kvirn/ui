@@ -143,6 +143,8 @@ Tone: kind, "we" and "you", no superlatives, no comparisons, no "fully accessibl
 
 ### 5.1 Header (DOM order = visual order at every width; no CSS `order`)
 
+> **Superseded** by [docs-header-bands.md](docs-header-bands.md) (three primary bands, 2026-10-10), with the Header and Site nav rows of §6 and the header lines of §7 and §11. The DOM-order rule, the Menu behaviour per width and the contract below still hold where that spec does not change them.
+
 ```
 [skip link]                                     first Tab stop, existing
 [header: banner]  Section canvas, kv-compact from 64rem

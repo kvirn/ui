@@ -26,6 +26,13 @@ export interface SiteSection {
   groups?: readonly SiteGroup[]
 }
 
+export interface SiteTool {
+  id: string
+  label: string
+  href: string
+  opensInNewTab?: boolean
+}
+
 const component = (label: string, slug: string): SitePage => ({
   href: `/components/${slug}`,
   label,
@@ -185,6 +192,20 @@ export const siteSections: readonly SiteSection[] = [
     label: text.sections.theming,
     href: '/foundation/theming',
     pages: [{ href: '/foundation/theming', label: text.sections.theming }],
+  },
+]
+
+/**
+ * The header's Tools navigation. No Storybook entry until a deployed URL exists (Plan 0099, Q3);
+ * "Documentation" is the home page, never a second "Docs" (Q2).
+ */
+export const siteTools: readonly SiteTool[] = [
+  { id: 'documentation', label: messages.docs.header.tools.docs, href: '/' },
+  {
+    id: 'github',
+    label: messages.docs.header.tools.github,
+    href: 'https://github.com/kvirn/ui',
+    opensInNewTab: true,
   },
 ]
 

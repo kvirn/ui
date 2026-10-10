@@ -50,7 +50,14 @@ export const messages = {
       title: 'Components',
       lead: 'Every component and hook, grouped by what it does. Each page shows an example, the keyboard contract and the API.',
     },
-    header: { home: 'KvirnUI', status: 'Pre-alpha', navLabel: 'Site' },
+    header: {
+      home: 'KvirnUI',
+      status: 'Pre-alpha',
+      navLabel: 'Site',
+      toolsLabel: 'Tools',
+      latest: ({ status }: { status: string }) => `Latest: ${status}`,
+      tools: { docs: 'Documentation', github: 'GitHub' },
+    },
     nav: {
       menuButton: 'Menu',
       sections: {

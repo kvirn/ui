@@ -17,7 +17,7 @@ It is a default, not a brand (`docs/vision.md`, non-goals). A municipality rebra
 **Calm, precise, plain.** The interface is quiet so the content and the next step are loud. Nothing decorative competes with the task.
 
 - Near-black and near-white canvases, and a ladder of slightly lifted surfaces with 1px hairlines instead of shadows.
-- One lavender accent (`--kv-primary-500`), used sparingly.
+- One lavender accent (`--kv-primary-500`), used sparingly; the docs site header is the one large `primary` area (three bands).
 - IBM Plex Sans for text and controls, IBM Plex Serif for headings, no negative tracking below the display size.
 - `--kv-radius-md` on controls.
 - Depth only on the button, which sits on the page with a soft shadow and a tinted edge so it reads as "press me".
@@ -31,7 +31,7 @@ It is a default, not a brand (`docs/vision.md`, non-goals). A municipality rebra
 
 1. **Clarity over cleverness.** Everyone understands what the page is, what to do and what happens next, without prior knowledge.
 2. **Accessible by construction.** Contrast, focus, target size and reflow are properties of the tokens, not a later fix. WCAG 2.2 AA is the floor. The default theme also meets 2.4.13 Focus Appearance for keyboard focus and 2.5.5 Target Size (Enhanced) in comfortable density.
-3. **Quiet interface, loud content.** Neutral chrome, one accent, colour used for meaning and never for decoration.
+3. **Quiet interface, loud content.** Neutral chrome, one accent, colour used for meaning and never for decoration. The docs site header is the one exception: three `primary` bands.
 4. **Precision.** A 4px grid, consistent radii, 1px lines, aligned edges. Precision reads as trustworthiness, and public services need trust.
 5. **Density fits the context.** Comfortable for residents by default. Compact is opt-in for staff tools and never below AA.
 6. **Respect the user's settings.** OS colour scheme, contrast, forced colours, reduced motion, zoom and text spacing always win.
@@ -85,9 +85,9 @@ Both are CSS custom properties in `theme.css`.
 | `text`           | `neutral-950`   | `neutral-50`    | `black`         | `white`         | Body text                                                                                                                                                                  |
 | `heading`        | `neutral-950`   | `neutral-50`    | `black`         | `white`         | Headings in prose. The same step as `text` by default, so a site can set its own                                                                                           |
 | `text-muted`     | `neutral-600`   | `neutral-400`   | `neutral-700`   | `neutral-200`   | Secondary text and metadata, and the fill of a disabled pressed toggle (with `surface` on it). Never help texts or descriptions: they are instructions, so they use `text` |
-| `primary`        | `primary-500`   | `primary-500`   | `primary-800`   | `primary-200`   | Primary button background, selected state, the current navigation item's fill and the table of contents' current heading, info alert bar and icon                          |
-| `primary-hover`  | `primary-600`   | `primary-600`   | `primary-900`   | `primary-100`   | Hover and pressed state of `primary`                                                                                                                                       |
-| `on-primary`     | `white`         | `white`         | `white`         | `black`         | Text and icons on `primary`                                                                                                                                                |
+| `primary`        | `primary-500`   | `primary-500`   | `primary-800`   | `primary-200`   | Primary button background, selected state, the current navigation item's fill, the docs header bands and the table of contents' current heading, info alert bar and icon   |
+| `primary-hover`  | `primary-600`   | `primary-600`   | `primary-900`   | `primary-100`   | Hover and pressed state of `primary`, and the docs header's top bar                                                                                                        |
+| `on-primary`     | `white`         | `white`         | `white`         | `black`         | Text, icons, the current-item bar and the focus ring on `primary` fills                                                                                                    |
 | `primary-subtle` | `primary-50`    | `primary-950`   | `primary-50`    | `primary-950`   | The navigation and table-of-contents trail (the current item's ancestors), secondary button hover, selected rows, info alerts                                              |
 | `accent`         | `accent-600`    | `accent-400`    | `accent-800`    | `accent-200`    | The end of the loading indicators' gradient (`primary` to `accent`) and of the docs landing's decorative bar; never text, never a status                                   |
 | `link`           | `primary-600`   | `primary-400`   | `primary-800`   | `primary-200`   | Link text, badge text                                                                                                                                                      |
@@ -108,20 +108,20 @@ The theme paints `body` with `canvas`, `text` and the `body` role at zero specif
 
 `vp run theme:check` measures every pair below, in every theme, and is the source for the numbers. These are the floors it enforces.
 
-| What                                                                                                                                   | Standard themes | Contrast themes | On                                                                             |
-| -------------------------------------------------------------------------------------------------------------------------------------- | --------------- | --------------- | ------------------------------------------------------------------------------ |
-| Text tokens (`text`, `heading`, `text-muted`, `link`, `danger`, `success`, `warning`)                                                  | 4.5:1           | 7:1             | `canvas`, `surface`, `surface-raised` and each `-subtle` background it sits on |
-| `on-primary` on `primary`, `on-danger` on `danger`, and on their hover fills                                                           | 4.5:1           | 7:1             | The button fills                                                               |
-| `border-control`, `border-focus`, `secondary`, `focus-ring`, `primary` as a selected or current marker, `accent` as the gradient's end | 3:1             | 3:1             | `canvas`, `surface`, `surface-raised`, `primary-subtle`                        |
-| Tinted button edges (see [Button depth](#button-depth))                                                                                | 3:1             | n/a (flat)      | The three surfaces and the four alert backgrounds                              |
-| Pressed toggle fill                                                                                                                    | 3:1             | 3:1             | The three surfaces and a hovered button beside it                              |
-| `link` against `text`, so a link is told from body text without an underline (1.4.1)                                                   | 3:1             | not reachable   | Body text. The contrast themes and forced colours keep the underline at rest   |
+| What                                                                                                                                                                                      | Standard themes | Contrast themes | On                                                                             |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | --------------- | ------------------------------------------------------------------------------ |
+| Text tokens (`text`, `heading`, `text-muted`, `link`, `danger`, `success`, `warning`)                                                                                                     | 4.5:1           | 7:1             | `canvas`, `surface`, `surface-raised` and each `-subtle` background it sits on |
+| `on-primary` on `primary`, `on-danger` on `danger`, and on their hover fills (also as a focus ring, current bar or edge on `primary` and `primary-hover`, 3:1, covered by the text floor) | 4.5:1           | 7:1             | The button fills                                                               |
+| `border-control`, `border-focus`, `secondary`, `focus-ring`, `primary` as a selected or current marker, `accent` as the gradient's end                                                    | 3:1             | 3:1             | `canvas`, `surface`, `surface-raised`, `primary-subtle`                        |
+| Tinted button edges (see [Button depth](#button-depth))                                                                                                                                   | 3:1             | n/a (flat)      | The three surfaces and the four alert backgrounds                              |
+| Pressed toggle fill                                                                                                                                                                       | 3:1             | 3:1             | The three surfaces and a hovered button beside it                              |
+| `link` against `text`, so a link is told from body text without an underline (1.4.1)                                                                                                      | 3:1             | not reachable   | Body text. The contrast themes and forced colours keep the underline at rest   |
 
 ### Rules
 
 - **`border-subtle` never identifies a control.** Anything a user must perceive to operate (input edges, checkbox boxes) uses `border-control`, and a secondary button's outline uses `secondary`, both at 3:1 (1.4.11). Hairlines are only 1.15–1.36:1 in the standard themes, so they are decoration and dividers.
 - **Filled buttons get darker on hover, never lighter.** White on a lighter `#828fff` is 2.87:1.
-- **The focus ring has an offset.** `focus-ring` on `primary` is about 1:1, so the ring sits `--kv-focus-ring-offset` outside the element, where the adjacent colour is the background.
+- **The focus ring has an offset.** `focus-ring` on `primary` is about 1:1, so the ring sits `--kv-focus-ring-offset` outside the element, where the adjacent colour is the background. On a `primary` fill the offset gap shows `primary` too, so the ring is `on-primary` there.
 - **Links use `link` and underline on hover only.** The contrast themes and forced colours can't reach 3:1 against `text`, so they keep the underline at rest. So does a link in grey or red text (a caption, `small`, help text, an error message, a count). In dark themes `link` is lighter than `primary`, because `#5e6ad2` as text on the dark canvas is 4.44:1.
 - **Navigation and `TableOfContents` may drop the underline** and use `text`, because position in a labelled `<nav>` list is the cue. See [Navigation](#navigation-and-table-of-contents).
 - **Dark themes are not inverted light themes.** Raised surfaces get lighter instead of casting a shadow. The one exception is the button: its depth in dark is a lighter top edge, and its bottom edge never darkens (it would drop to 1.80–2.20:1).
@@ -306,7 +306,7 @@ Radio buttons are always circles and checkboxes always rounded squares, so the s
 
 ### Lines
 
-- Lines are 1px. The indicator bar (`--kv-indicator-width`) marks a blockquote and an alert, a selected tab, and, in forced colours only, the current navigation item. It is a straight `::before`, never a border on a rounded box, which would follow the corners.
+- Lines are 1px. The indicator bar (`--kv-indicator-width`) marks a blockquote and an alert, a selected tab, the current item of a navigation on a `primary` fill, and, in forced colours only, the current navigation item. It is a straight `::before`, never a border on a rounded box, which would follow the corners.
 - Control borders are 1px `border-control`. An invalid input switches to a heavy `danger` edge (`--kv-control-border-width-invalid`: 2px, never 1px, and also the width of the focus and drag-over edges below) plus an error message, never colour alone.
 
 ### Focus ring
@@ -384,12 +384,13 @@ Each word means one thing, in this file, the docs, Storybook, specs and code com
 
 Navigation (`Navigation.Root`) and `TableOfContents` share one item look.
 
-| Part               | Look                                                                                                                           |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| `nav-item`         | `text` at weight 400, no fill, underline on hover. Control height, `--kv-control-min-block-size`                               |
-| `nav-item-current` | Solid `primary` fill, `on-primary` label, weight 600: a shape at 3:1 against the surface, plus `aria-current`                  |
-| `nav-item-trail`   | Every ancestor of the current item: `primary-subtle` and weight 600, so it differs from the others in weight, not colour alone |
-| Forced colours     | The fills drop. The current item gets a straight `LinkText` bar and the trail keeps its weight                                 |
+| Part                            | Look                                                                                                                           |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `nav-item`                      | `text` at weight 400, no fill, underline on hover. Control height, `--kv-control-min-block-size`                               |
+| `nav-item-current`              | Solid `primary` fill, `on-primary` label, weight 600: a shape at 3:1 against the surface, plus `aria-current`                  |
+| `nav-item-trail`                | Every ancestor of the current item: `primary-subtle` and weight 600, so it differs from the others in weight, not colour alone |
+| `nav-item-current` on `primary` | Weight 600 and a straight `on-primary` bar, no fill (a fill can't show on `primary`)                                           |
+| Forced colours                  | The fills drop. The current item gets a straight `LinkText` bar and the trail keeps its weight                                 |
 
 - **`aria-current`.** Exactly one link per navigation has it: `page` when the page is listed, otherwise `true` on the deepest item shown. Never on an ancestor of a listed page or on a link inside a `hidden` group. The theme finds the trail with `:has()`, so it needs no prop.
 - **Nesting.** A nested list is indented one step (`--kv-space-4`), two levels at most on resident pages. A collapsed group is rendered with `hidden`, never unmounted.
@@ -431,7 +432,7 @@ Navigation (`Navigation.Root`) and `TableOfContents` share one item look.
 
 - **A disclosure trigger in a nav row** (`kv-mega-menu-trigger`, the Meny): in a horizontal navigation it takes the nav-item height (`--kv-control-min-block-size`) and `--kv-space-3` on each side, and the chevron follows the label. The topic that holds the current page has the trail look: `primary-subtle` and weight 600, drawn from `data-trail`, never announced. Below `64rem` the triggers are full-width Accordion-look rows between `border-subtle` hairlines, and the Meny is a quiet full-width row; from `64rem` the Meny is gone and the row is always shown.
 - **The mega panel** (`kv-mega-menu-panel`): elevation level 3 as a full-width band directly under the header, `surface-raised`, `border-subtle` above and below, `--kv-shadow-popup`, square (no `xl` radius), positioned in the document and never fixed or sticky. Its overview link is weight 600, its children are nav items in columns. Forced colours: a `CanvasText` border replaces the shadow.
-- **The brand link** (`kv-site-header-brand`): a link in `text` at weight 600 and the `heading-4` size, with the mark beside it, underlined on hover only. It keeps the focus ring and the current rule of every link.
+- **The brand link** (`kv-site-header-brand`): a link in `text` (or `on-primary` on a `primary` fill) at weight 600 and the `heading-4` size, with the mark beside it, underlined on hover only. It keeps the focus ring and the current rule of every link.
 - **The site alert is a named region:** `Alert.Warning` as a `<section>` named by its title, full width after the banner and before the breadcrumb and `main`, so landmark navigation finds it. Its title is a `<p>` (no heading before the `h1`). One at most.
 
 #### Promotion patterns
