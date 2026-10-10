@@ -68,7 +68,7 @@ The phrases are the virtual screen reader's approximation, not NVDA or JAWS word
 ## Consumer responsibilities
 
 - **Count sections, not pages.** The total stays the same when branching adds a page.
-- **Short names in plain words.** Wrap, never truncate: long Finnish and Sámi names hyphenate.
+- **Short names in plain words.** Wrap, never truncate: long Finnish names hyphenate.
 - **Never navigation.** No links to steps. Going back is a Back link, and Change links on the check-answers page keep answers (3.3.7).
 - **Not on** a start page, a confirmation, an exit page or a one-page form.
 - **Language.** `lang` on a Stepper in a text of another language (3.1.2).

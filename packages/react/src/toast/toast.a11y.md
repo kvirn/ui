@@ -81,7 +81,7 @@ Always polite: no toast needs to interrupt. The region has no `aria-live`, so no
 
 ## Message keys
 
-`toast.regionLabel` (the region's name; **`se` needs native-speaker review**), and the reused `alert.infoPrefix`, `alert.successPrefix` and `alert.close`. All can be overridden per provider (`messages`).
+`toast.regionLabel` (the region's name), and the reused `alert.infoPrefix`, `alert.successPrefix` and `alert.close`. All can be overridden per provider (`messages`).
 
 ## Consumer responsibilities
 

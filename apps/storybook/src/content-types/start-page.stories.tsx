@@ -1,3 +1,4 @@
+import { en } from '@kvirn-ui/i18n/en'
 import { Hero, NavTiles, PageFrame, SiteAlert } from '@kvirn-ui/patterns'
 import { kvirnbyHills, kvirnbySquare } from '@kvirn-ui/patterns/fixtures'
 import {
@@ -5,6 +6,7 @@ import {
   Columns,
   Container,
   Heading,
+  KvirnProvider,
   Link,
   Section,
   Stack,
@@ -46,242 +48,246 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <KvirnbyHeader current="page" />
-      <PageFrame.Main bleed>
-        <Hero.Root>
-          <Hero.Heading>Kvirnby municipality</Hero.Heading>
-          <Hero.Lead>
-            Find services, news and events in Kvirnby, from preschool to building permits.
-          </Hero.Lead>
-          <Hero.Image src={kvirnbyHills} />
-        </Hero.Root>
-        <Section className="kv-section--padding-lg">
-          <Container>
-            <Stack gap="8">
-              <Stack gap="4">
-                <Heading as="h2" size="heading-2">
-                  Popular services
-                </Heading>
-                <Columns as="ul" minColumnWidth="sm" gap="4">
-                  <li>
-                    <Link.Root href="#preschool">Apply for a preschool place</Link.Root>
-                  </li>
-                  <li>
-                    <Link.Root href="#waste">Book a bulky waste pickup</Link.Root>
-                  </li>
-                  <li>
-                    <Link.Root href="#permit">Apply for a building permit</Link.Root>
-                  </li>
-                  <li>
-                    <Link.Root href="#report">Report a fault</Link.Root>
-                  </li>
-                  <li>
-                    <Link.Root href="#support">Apply for income support</Link.Root>
-                  </li>
-                  <li>
-                    <Link.Root href="#transport">Apply for school transport</Link.Root>
-                  </li>
-                </Columns>
-              </Stack>
-              <Stack gap="6">
-                <Heading as="h2" size="heading-2">
-                  Municipal services
-                </Heading>
-                <NavTiles.Root>
-                  <NavTiles.Tile>
-                    <NavTiles.Heading level="h3" href="#children">
-                      Children and education
-                    </NavTiles.Heading>
-                    <NavTiles.Text>
-                      Preschool, school and after-school care for children and young people.
-                    </NavTiles.Text>
-                  </NavTiles.Tile>
-                  <NavTiles.Tile>
-                    <NavTiles.Heading level="h3" href="#building">
-                      Building and environment
-                    </NavTiles.Heading>
-                    <NavTiles.Text>Building permits, waste, water and sewage.</NavTiles.Text>
-                  </NavTiles.Tile>
-                  <NavTiles.Tile>
-                    <NavTiles.Heading level="h3" href="#care">
-                      Support and care
-                    </NavTiles.Heading>
-                    <NavTiles.Text>
-                      Home care, elderly care and support for people with disabilities.
-                    </NavTiles.Text>
-                  </NavTiles.Tile>
-                  <NavTiles.Tile>
-                    <NavTiles.Heading level="h3" href="#living">
-                      Living and environment
-                    </NavTiles.Heading>
-                    <NavTiles.Text>Housing, planning, roads and public spaces.</NavTiles.Text>
-                  </NavTiles.Tile>
-                  <NavTiles.Tile>
-                    <NavTiles.Heading level="h3" href="#culture">
-                      Culture and leisure
-                    </NavTiles.Heading>
-                    <NavTiles.Text>
-                      Libraries, sports halls, swimming pools and events.
-                    </NavTiles.Text>
-                  </NavTiles.Tile>
-                  <NavTiles.Tile>
-                    <NavTiles.Heading level="h3" href="#business">
-                      Business and work
-                    </NavTiles.Heading>
-                    <NavTiles.Text>
-                      Starting a business, permits for businesses and job support.
-                    </NavTiles.Text>
-                  </NavTiles.Tile>
-                  <NavTiles.Tile>
-                    <NavTiles.Heading level="h3" href="#traffic">
-                      Traffic and travel
-                    </NavTiles.Heading>
-                    <NavTiles.Text>
-                      Public transport, parking, cycling and road works.
-                    </NavTiles.Text>
-                  </NavTiles.Tile>
-                </NavTiles.Root>
-              </Stack>
-              <Stack gap="6">
-                <Heading as="h2" size="heading-2">
-                  News
-                </Heading>
-                <Columns as="ul" minColumnWidth="sm" gap="6">
-                  <Card.Root as="li">
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <KvirnbyHeader current="page" />
+        <PageFrame.Main bleed>
+          <Hero.Root>
+            <Hero.Heading>Kvirnby municipality</Hero.Heading>
+            <Hero.Lead>
+              Find services, news and events in Kvirnby, from preschool to building permits.
+            </Hero.Lead>
+            <Hero.Image src={kvirnbyHills} />
+          </Hero.Root>
+          <Section className="kv-section--padding-lg">
+            <Container>
+              <Stack className="kv-stack--gap-8">
+                <Stack className="kv-stack--gap-4">
+                  <Heading as="h2" size="heading-2">
+                    Popular services
+                  </Heading>
+                  <Columns className="kv-columns--min-sm kv-columns--gap-4" as="ul">
+                    <li>
+                      <Link.Root href="#preschool">Apply for a preschool place</Link.Root>
+                    </li>
+                    <li>
+                      <Link.Root href="#waste">Book a bulky waste pickup</Link.Root>
+                    </li>
+                    <li>
+                      <Link.Root href="#permit">Apply for a building permit</Link.Root>
+                    </li>
+                    <li>
+                      <Link.Root href="#report">Report a fault</Link.Root>
+                    </li>
+                    <li>
+                      <Link.Root href="#support">Apply for income support</Link.Root>
+                    </li>
+                    <li>
+                      <Link.Root href="#transport">Apply for school transport</Link.Root>
+                    </li>
+                  </Columns>
+                </Stack>
+                <Stack>
+                  <Heading as="h2" size="heading-2">
+                    Municipal services
+                  </Heading>
+                  <NavTiles.Root>
+                    <NavTiles.Tile>
+                      <NavTiles.Heading level="h3" href="#children">
+                        Children and education
+                      </NavTiles.Heading>
+                      <NavTiles.Text>
+                        Preschool, school and after-school care for children and young people.
+                      </NavTiles.Text>
+                    </NavTiles.Tile>
+                    <NavTiles.Tile>
+                      <NavTiles.Heading level="h3" href="#building">
+                        Building and environment
+                      </NavTiles.Heading>
+                      <NavTiles.Text>Building permits, waste, water and sewage.</NavTiles.Text>
+                    </NavTiles.Tile>
+                    <NavTiles.Tile>
+                      <NavTiles.Heading level="h3" href="#care">
+                        Support and care
+                      </NavTiles.Heading>
+                      <NavTiles.Text>
+                        Home care, elderly care and support for people with disabilities.
+                      </NavTiles.Text>
+                    </NavTiles.Tile>
+                    <NavTiles.Tile>
+                      <NavTiles.Heading level="h3" href="#living">
+                        Living and environment
+                      </NavTiles.Heading>
+                      <NavTiles.Text>Housing, planning, roads and public spaces.</NavTiles.Text>
+                    </NavTiles.Tile>
+                    <NavTiles.Tile>
+                      <NavTiles.Heading level="h3" href="#culture">
+                        Culture and leisure
+                      </NavTiles.Heading>
+                      <NavTiles.Text>
+                        Libraries, sports halls, swimming pools and events.
+                      </NavTiles.Text>
+                    </NavTiles.Tile>
+                    <NavTiles.Tile>
+                      <NavTiles.Heading level="h3" href="#business">
+                        Business and work
+                      </NavTiles.Heading>
+                      <NavTiles.Text>
+                        Starting a business, permits for businesses and job support.
+                      </NavTiles.Text>
+                    </NavTiles.Tile>
+                    <NavTiles.Tile>
+                      <NavTiles.Heading level="h3" href="#traffic">
+                        Traffic and travel
+                      </NavTiles.Heading>
+                      <NavTiles.Text>
+                        Public transport, parking, cycling and road works.
+                      </NavTiles.Text>
+                    </NavTiles.Tile>
+                  </NavTiles.Root>
+                </Stack>
+                <Stack>
+                  <Heading as="h2" size="heading-2">
+                    News
+                  </Heading>
+                  <Columns className="kv-columns--min-sm" as="ul">
+                    <Card.Root as="li">
+                      <Card.Body className="kv-prose">
+                        <Heading as="h3" size="heading-3">
+                          <Link.Root href="#pool">The swimming hall reopens</Link.Root>
+                        </Heading>
+                        <p>
+                          <time dateTime="2026-10-06">6 October 2026</time>
+                        </p>
+                        <p>After the renovation, swimmers are welcome from Monday.</p>
+                      </Card.Body>
+                    </Card.Root>
+                    <Card.Root as="li">
+                      <Card.Body className="kv-prose">
+                        <Heading as="h3" size="heading-3">
+                          <Link.Root href="#library">New library opening hours</Link.Root>
+                        </Heading>
+                        <p>
+                          <time dateTime="2026-10-03">3 October 2026</time>
+                        </p>
+                        <p>The main library is open until 8 pm from the autumn.</p>
+                      </Card.Body>
+                    </Card.Root>
+                    <Card.Root as="li">
+                      <Card.Body className="kv-prose">
+                        <Heading as="h3" size="heading-3">
+                          <Link.Root href="#water">Work on the water mains</Link.Root>
+                        </Heading>
+                        <p>
+                          <time dateTime="2026-10-01">1 October 2026</time>
+                        </p>
+                        <p>The water is shut off on Main Street on 14 October.</p>
+                      </Card.Body>
+                    </Card.Root>
+                  </Columns>
+                  <p>
+                    <Link.Root href="#news">All news</Link.Root>
+                  </p>
+                </Stack>
+                <Stack>
+                  <Heading as="h2" size="heading-2">
+                    Events
+                  </Heading>
+                  <Columns className="kv-columns--min-sm" as="ul">
+                    <Card.Root as="li">
+                      <Card.Body className="kv-prose">
+                        <Heading as="h3" size="heading-3">
+                          <Link.Root href="#dialogue">Citizen dialogue on the new square</Link.Root>
+                        </Heading>
+                        <p>
+                          <time dateTime="2026-11-12">12 November 2026</time>, 6–8 pm, Kvirnby
+                          school
+                        </p>
+                        <p>Tell us what you want on the square before the plan goes out.</p>
+                      </Card.Body>
+                    </Card.Root>
+                    <Card.Root as="li">
+                      <Card.Body className="kv-prose">
+                        <Heading as="h3" size="heading-3">
+                          <Link.Root href="#market">Autumn market</Link.Root>
+                        </Heading>
+                        <p>
+                          <time dateTime="2026-10-24">24 October 2026</time>, 10 am–3 pm, Market
+                          Square
+                        </p>
+                        <p>Local food, crafts and music in the square.</p>
+                      </Card.Body>
+                    </Card.Root>
+                    <Card.Root as="li">
+                      <Card.Body className="kv-prose">
+                        <Heading as="h3" size="heading-3">
+                          <Link.Root href="#concert">Concert in the church</Link.Root>
+                        </Heading>
+                        <p>
+                          <time dateTime="2026-10-30">30 October 2026</time>, 7 pm, Kvirnby church
+                        </p>
+                        <p>The municipal choir sings songs of the autumn.</p>
+                      </Card.Body>
+                    </Card.Root>
+                  </Columns>
+                  <p>
+                    <Link.Root href="#events">All events</Link.Root>
+                  </p>
+                </Stack>
+                <Stack>
+                  <Heading as="h2" size="heading-2">
+                    In focus
+                  </Heading>
+                  <Card.Root as="article">
                     <Card.Body className="kv-prose">
                       <Heading as="h3" size="heading-3">
-                        <Link.Root href="#pool">The swimming hall reopens</Link.Root>
+                        <Link.Root href="#square">A new square in the centre of Kvirnby</Link.Root>
                       </Heading>
                       <p>
-                        <time dateTime="2026-10-06">6 October 2026</time>
+                        Read about the plans for the square and how you can take part in the
+                        dialogue.
                       </p>
-                      <p>After the renovation, swimmers are welcome from Monday.</p>
                     </Card.Body>
+                    <Card.Footer className="kv-card-footer--padding-none">
+                      <img src={kvirnbySquare} alt="" />
+                    </Card.Footer>
                   </Card.Root>
-                  <Card.Root as="li">
-                    <Card.Body className="kv-prose">
-                      <Heading as="h3" size="heading-3">
-                        <Link.Root href="#library">New library opening hours</Link.Root>
-                      </Heading>
-                      <p>
-                        <time dateTime="2026-10-03">3 October 2026</time>
-                      </p>
-                      <p>The main library is open until 8 pm from the autumn.</p>
-                    </Card.Body>
-                  </Card.Root>
-                  <Card.Root as="li">
-                    <Card.Body className="kv-prose">
-                      <Heading as="h3" size="heading-3">
-                        <Link.Root href="#water">Work on the water mains</Link.Root>
-                      </Heading>
-                      <p>
-                        <time dateTime="2026-10-01">1 October 2026</time>
-                      </p>
-                      <p>The water is shut off on Main Street on 14 October.</p>
-                    </Card.Body>
-                  </Card.Root>
-                </Columns>
-                <p>
-                  <Link.Root href="#news">All news</Link.Root>
-                </p>
-              </Stack>
-              <Stack gap="6">
-                <Heading as="h2" size="heading-2">
-                  Events
-                </Heading>
-                <Columns as="ul" minColumnWidth="sm" gap="6">
-                  <Card.Root as="li">
-                    <Card.Body className="kv-prose">
-                      <Heading as="h3" size="heading-3">
-                        <Link.Root href="#dialogue">Citizen dialogue on the new square</Link.Root>
-                      </Heading>
-                      <p>
-                        <time dateTime="2026-11-12">12 November 2026</time>, 6–8 pm, Kvirnby school
-                      </p>
-                      <p>Tell us what you want on the square before the plan goes out.</p>
-                    </Card.Body>
-                  </Card.Root>
-                  <Card.Root as="li">
-                    <Card.Body className="kv-prose">
-                      <Heading as="h3" size="heading-3">
-                        <Link.Root href="#market">Autumn market</Link.Root>
-                      </Heading>
-                      <p>
-                        <time dateTime="2026-10-24">24 October 2026</time>, 10 am–3 pm, Market
-                        Square
-                      </p>
-                      <p>Local food, crafts and music in the square.</p>
-                    </Card.Body>
-                  </Card.Root>
-                  <Card.Root as="li">
-                    <Card.Body className="kv-prose">
-                      <Heading as="h3" size="heading-3">
-                        <Link.Root href="#concert">Concert in the church</Link.Root>
-                      </Heading>
-                      <p>
-                        <time dateTime="2026-10-30">30 October 2026</time>, 7 pm, Kvirnby church
-                      </p>
-                      <p>The municipal choir sings songs of the autumn.</p>
-                    </Card.Body>
-                  </Card.Root>
-                </Columns>
-                <p>
-                  <Link.Root href="#events">All events</Link.Root>
-                </p>
-              </Stack>
-              <Stack gap="6">
-                <Heading as="h2" size="heading-2">
-                  In focus
-                </Heading>
-                <Card.Root as="article">
+                </Stack>
+                <Card.Root>
                   <Card.Body className="kv-prose">
-                    <Heading as="h3" size="heading-3">
-                      <Link.Root href="#square">A new square in the centre of Kvirnby</Link.Root>
+                    <Heading as="h2" size="heading-3">
+                      Contact us
                     </Heading>
-                    <p>
-                      Read about the plans for the square and how you can take part in the dialogue.
-                    </p>
+                    <p>Contact centre</p>
+                    <SummaryList.Root>
+                      <SummaryList.Row>
+                        <SummaryList.Key>Phone</SummaryList.Key>
+                        <SummaryList.Value>
+                          <Link.Root href="tel:+46000000001">0000-00 00 01</Link.Root>
+                        </SummaryList.Value>
+                      </SummaryList.Row>
+                      <SummaryList.Row>
+                        <SummaryList.Key>Email</SummaryList.Key>
+                        <SummaryList.Value>
+                          <Link.Root href="mailto:contact@kvirnby.example">
+                            contact@kvirnby.example
+                          </Link.Root>
+                        </SummaryList.Value>
+                      </SummaryList.Row>
+                      <SummaryList.Row>
+                        <SummaryList.Key>Phone hours</SummaryList.Key>
+                        <SummaryList.Value>Monday to Thursday 9.00–11.00</SummaryList.Value>
+                      </SummaryList.Row>
+                    </SummaryList.Root>
                   </Card.Body>
-                  <Card.Footer className="kv-card-footer--padding-none">
-                    <img src={kvirnbySquare} alt="" />
-                  </Card.Footer>
                 </Card.Root>
               </Stack>
-              <Card.Root>
-                <Card.Body className="kv-prose">
-                  <Heading as="h2" size="heading-3">
-                    Contact us
-                  </Heading>
-                  <p>Contact centre</p>
-                  <SummaryList.Root>
-                    <SummaryList.Row>
-                      <SummaryList.Key>Phone</SummaryList.Key>
-                      <SummaryList.Value>
-                        <Link.Root href="tel:+46000000001">0000-00 00 01</Link.Root>
-                      </SummaryList.Value>
-                    </SummaryList.Row>
-                    <SummaryList.Row>
-                      <SummaryList.Key>Email</SummaryList.Key>
-                      <SummaryList.Value>
-                        <Link.Root href="mailto:contact@kvirnby.example">
-                          contact@kvirnby.example
-                        </Link.Root>
-                      </SummaryList.Value>
-                    </SummaryList.Row>
-                    <SummaryList.Row>
-                      <SummaryList.Key>Phone hours</SummaryList.Key>
-                      <SummaryList.Value>Monday to Thursday 9.00–11.00</SummaryList.Value>
-                    </SummaryList.Row>
-                  </SummaryList.Root>
-                </Card.Body>
-              </Card.Root>
-            </Stack>
-          </Container>
-        </Section>
-      </PageFrame.Main>
-      <KvirnbyFooter />
-    </PageFrame.Root>
+            </Container>
+          </Section>
+        </PageFrame.Main>
+        <KvirnbyFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvasElement }) => {
     await expectPageOutline(canvasElement)
@@ -292,256 +298,260 @@ export const Default: Story = {
 export const WithSiteAlert: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <KvirnbyHeader current="page" />
-      <SiteAlert.Root>
-        <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
-        <SiteAlert.Body>
-          The water is off from 9 to 15 because of work on the water main. Fill containers in
-          advance if you can.
-        </SiteAlert.Body>
-        <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
-      </SiteAlert.Root>
-      <PageFrame.Main bleed>
-        <Hero.Root>
-          <Hero.Heading>Kvirnby municipality</Hero.Heading>
-          <Hero.Lead>
-            Find services, news and events in Kvirnby, from preschool to building permits.
-          </Hero.Lead>
-          <Hero.Image src={kvirnbyHills} />
-        </Hero.Root>
-        <Section className="kv-section--padding-lg">
-          <Container>
-            <Stack gap="8">
-              <Stack gap="4">
-                <Heading as="h2" size="heading-2">
-                  Popular services
-                </Heading>
-                <Columns as="ul" minColumnWidth="sm" gap="4">
-                  <li>
-                    <Link.Root href="#preschool">Apply for a preschool place</Link.Root>
-                  </li>
-                  <li>
-                    <Link.Root href="#waste">Book a bulky waste pickup</Link.Root>
-                  </li>
-                  <li>
-                    <Link.Root href="#permit">Apply for a building permit</Link.Root>
-                  </li>
-                  <li>
-                    <Link.Root href="#report">Report a fault</Link.Root>
-                  </li>
-                  <li>
-                    <Link.Root href="#support">Apply for income support</Link.Root>
-                  </li>
-                  <li>
-                    <Link.Root href="#transport">Apply for school transport</Link.Root>
-                  </li>
-                  <li>
-                    <Link.Root href="#parking">Apply for a parking permit</Link.Root>
-                  </li>
-                  <li>
-                    <Link.Root href="#home-care">Apply for home care</Link.Root>
-                  </li>
-                </Columns>
-              </Stack>
-              <Stack gap="6">
-                <Heading as="h2" size="heading-2">
-                  Municipal services
-                </Heading>
-                <NavTiles.Root>
-                  <NavTiles.Tile>
-                    <NavTiles.Heading level="h3" href="#children">
-                      Children and education
-                    </NavTiles.Heading>
-                    <NavTiles.Text>
-                      Preschool, school and after-school care for children and young people.
-                    </NavTiles.Text>
-                  </NavTiles.Tile>
-                  <NavTiles.Tile>
-                    <NavTiles.Heading level="h3" href="#building">
-                      Building and environment
-                    </NavTiles.Heading>
-                    <NavTiles.Text>Building permits, waste, water and sewage.</NavTiles.Text>
-                  </NavTiles.Tile>
-                  <NavTiles.Tile>
-                    <NavTiles.Heading level="h3" href="#care">
-                      Support and care
-                    </NavTiles.Heading>
-                    <NavTiles.Text>
-                      Home care, elderly care and support for people with disabilities.
-                    </NavTiles.Text>
-                  </NavTiles.Tile>
-                  <NavTiles.Tile>
-                    <NavTiles.Heading level="h3" href="#living">
-                      Living and environment
-                    </NavTiles.Heading>
-                    <NavTiles.Text>Housing, planning, roads and public spaces.</NavTiles.Text>
-                  </NavTiles.Tile>
-                  <NavTiles.Tile>
-                    <NavTiles.Heading level="h3" href="#culture">
-                      Culture and leisure
-                    </NavTiles.Heading>
-                    <NavTiles.Text>
-                      Libraries, sports halls, swimming pools and events.
-                    </NavTiles.Text>
-                  </NavTiles.Tile>
-                  <NavTiles.Tile>
-                    <NavTiles.Heading level="h3" href="#business">
-                      Business and work
-                    </NavTiles.Heading>
-                    <NavTiles.Text>
-                      Starting a business, permits for businesses and job support.
-                    </NavTiles.Text>
-                  </NavTiles.Tile>
-                  <NavTiles.Tile>
-                    <NavTiles.Heading level="h3" href="#traffic">
-                      Traffic and travel
-                    </NavTiles.Heading>
-                    <NavTiles.Text>
-                      Public transport, parking, cycling and road works.
-                    </NavTiles.Text>
-                  </NavTiles.Tile>
-                </NavTiles.Root>
-              </Stack>
-              <Stack gap="6">
-                <Heading as="h2" size="heading-2">
-                  News
-                </Heading>
-                <Columns as="ul" minColumnWidth="sm" gap="6">
-                  <Card.Root as="li">
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <KvirnbyHeader current="page" />
+        <SiteAlert.Root>
+          <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
+          <SiteAlert.Body>
+            The water is off from 9 to 15 because of work on the water main. Fill containers in
+            advance if you can.
+          </SiteAlert.Body>
+          <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
+        </SiteAlert.Root>
+        <PageFrame.Main bleed>
+          <Hero.Root>
+            <Hero.Heading>Kvirnby municipality</Hero.Heading>
+            <Hero.Lead>
+              Find services, news and events in Kvirnby, from preschool to building permits.
+            </Hero.Lead>
+            <Hero.Image src={kvirnbyHills} />
+          </Hero.Root>
+          <Section className="kv-section--padding-lg">
+            <Container>
+              <Stack className="kv-stack--gap-8">
+                <Stack className="kv-stack--gap-4">
+                  <Heading as="h2" size="heading-2">
+                    Popular services
+                  </Heading>
+                  <Columns className="kv-columns--min-sm kv-columns--gap-4" as="ul">
+                    <li>
+                      <Link.Root href="#preschool">Apply for a preschool place</Link.Root>
+                    </li>
+                    <li>
+                      <Link.Root href="#waste">Book a bulky waste pickup</Link.Root>
+                    </li>
+                    <li>
+                      <Link.Root href="#permit">Apply for a building permit</Link.Root>
+                    </li>
+                    <li>
+                      <Link.Root href="#report">Report a fault</Link.Root>
+                    </li>
+                    <li>
+                      <Link.Root href="#support">Apply for income support</Link.Root>
+                    </li>
+                    <li>
+                      <Link.Root href="#transport">Apply for school transport</Link.Root>
+                    </li>
+                    <li>
+                      <Link.Root href="#parking">Apply for a parking permit</Link.Root>
+                    </li>
+                    <li>
+                      <Link.Root href="#home-care">Apply for home care</Link.Root>
+                    </li>
+                  </Columns>
+                </Stack>
+                <Stack>
+                  <Heading as="h2" size="heading-2">
+                    Municipal services
+                  </Heading>
+                  <NavTiles.Root>
+                    <NavTiles.Tile>
+                      <NavTiles.Heading level="h3" href="#children">
+                        Children and education
+                      </NavTiles.Heading>
+                      <NavTiles.Text>
+                        Preschool, school and after-school care for children and young people.
+                      </NavTiles.Text>
+                    </NavTiles.Tile>
+                    <NavTiles.Tile>
+                      <NavTiles.Heading level="h3" href="#building">
+                        Building and environment
+                      </NavTiles.Heading>
+                      <NavTiles.Text>Building permits, waste, water and sewage.</NavTiles.Text>
+                    </NavTiles.Tile>
+                    <NavTiles.Tile>
+                      <NavTiles.Heading level="h3" href="#care">
+                        Support and care
+                      </NavTiles.Heading>
+                      <NavTiles.Text>
+                        Home care, elderly care and support for people with disabilities.
+                      </NavTiles.Text>
+                    </NavTiles.Tile>
+                    <NavTiles.Tile>
+                      <NavTiles.Heading level="h3" href="#living">
+                        Living and environment
+                      </NavTiles.Heading>
+                      <NavTiles.Text>Housing, planning, roads and public spaces.</NavTiles.Text>
+                    </NavTiles.Tile>
+                    <NavTiles.Tile>
+                      <NavTiles.Heading level="h3" href="#culture">
+                        Culture and leisure
+                      </NavTiles.Heading>
+                      <NavTiles.Text>
+                        Libraries, sports halls, swimming pools and events.
+                      </NavTiles.Text>
+                    </NavTiles.Tile>
+                    <NavTiles.Tile>
+                      <NavTiles.Heading level="h3" href="#business">
+                        Business and work
+                      </NavTiles.Heading>
+                      <NavTiles.Text>
+                        Starting a business, permits for businesses and job support.
+                      </NavTiles.Text>
+                    </NavTiles.Tile>
+                    <NavTiles.Tile>
+                      <NavTiles.Heading level="h3" href="#traffic">
+                        Traffic and travel
+                      </NavTiles.Heading>
+                      <NavTiles.Text>
+                        Public transport, parking, cycling and road works.
+                      </NavTiles.Text>
+                    </NavTiles.Tile>
+                  </NavTiles.Root>
+                </Stack>
+                <Stack>
+                  <Heading as="h2" size="heading-2">
+                    News
+                  </Heading>
+                  <Columns className="kv-columns--min-sm" as="ul">
+                    <Card.Root as="li">
+                      <Card.Body className="kv-prose">
+                        <Heading as="h3" size="heading-3">
+                          <Link.Root href="#pool">The swimming hall reopens</Link.Root>
+                        </Heading>
+                        <p>
+                          <time dateTime="2026-10-06">6 October 2026</time>
+                        </p>
+                        <p>After the renovation, swimmers are welcome from Monday.</p>
+                      </Card.Body>
+                    </Card.Root>
+                    <Card.Root as="li">
+                      <Card.Body className="kv-prose">
+                        <Heading as="h3" size="heading-3">
+                          <Link.Root href="#library">New library opening hours</Link.Root>
+                        </Heading>
+                        <p>
+                          <time dateTime="2026-10-03">3 October 2026</time>
+                        </p>
+                        <p>The main library is open until 8 pm from the autumn.</p>
+                      </Card.Body>
+                    </Card.Root>
+                    <Card.Root as="li">
+                      <Card.Body className="kv-prose">
+                        <Heading as="h3" size="heading-3">
+                          <Link.Root href="#water">Work on the water mains</Link.Root>
+                        </Heading>
+                        <p>
+                          <time dateTime="2026-10-01">1 October 2026</time>
+                        </p>
+                        <p>The water is shut off on Main Street on 14 October.</p>
+                      </Card.Body>
+                    </Card.Root>
+                  </Columns>
+                  <p>
+                    <Link.Root href="#news">All news</Link.Root>
+                  </p>
+                </Stack>
+                <Stack>
+                  <Heading as="h2" size="heading-2">
+                    Events
+                  </Heading>
+                  <Columns className="kv-columns--min-sm" as="ul">
+                    <Card.Root as="li">
+                      <Card.Body className="kv-prose">
+                        <Heading as="h3" size="heading-3">
+                          <Link.Root href="#dialogue">Citizen dialogue on the new square</Link.Root>
+                        </Heading>
+                        <p>
+                          <time dateTime="2026-11-12">12 November 2026</time>, 6–8 pm, Kvirnby
+                          school
+                        </p>
+                        <p>Tell us what you want on the square before the plan goes out.</p>
+                      </Card.Body>
+                    </Card.Root>
+                    <Card.Root as="li">
+                      <Card.Body className="kv-prose">
+                        <Heading as="h3" size="heading-3">
+                          <Link.Root href="#market">Autumn market</Link.Root>
+                        </Heading>
+                        <p>
+                          <time dateTime="2026-10-24">24 October 2026</time>, 10 am–3 pm, Market
+                          Square
+                        </p>
+                        <p>Local food, crafts and music in the square.</p>
+                      </Card.Body>
+                    </Card.Root>
+                    <Card.Root as="li">
+                      <Card.Body className="kv-prose">
+                        <Heading as="h3" size="heading-3">
+                          <Link.Root href="#concert">Concert in the church</Link.Root>
+                        </Heading>
+                        <p>
+                          <time dateTime="2026-10-30">30 October 2026</time>, 7 pm, Kvirnby church
+                        </p>
+                        <p>The municipal choir sings songs of the autumn.</p>
+                      </Card.Body>
+                    </Card.Root>
+                  </Columns>
+                  <p>
+                    <Link.Root href="#events">All events</Link.Root>
+                  </p>
+                </Stack>
+                <Stack>
+                  <Heading as="h2" size="heading-2">
+                    In focus
+                  </Heading>
+                  <Card.Root as="article">
                     <Card.Body className="kv-prose">
                       <Heading as="h3" size="heading-3">
-                        <Link.Root href="#pool">The swimming hall reopens</Link.Root>
+                        <Link.Root href="#square">A new square in the centre of Kvirnby</Link.Root>
                       </Heading>
                       <p>
-                        <time dateTime="2026-10-06">6 October 2026</time>
+                        Read about the plans for the square and how you can take part in the
+                        dialogue.
                       </p>
-                      <p>After the renovation, swimmers are welcome from Monday.</p>
                     </Card.Body>
+                    <Card.Footer className="kv-card-footer--padding-none">
+                      <img src={kvirnbySquare} alt="" />
+                    </Card.Footer>
                   </Card.Root>
-                  <Card.Root as="li">
-                    <Card.Body className="kv-prose">
-                      <Heading as="h3" size="heading-3">
-                        <Link.Root href="#library">New library opening hours</Link.Root>
-                      </Heading>
-                      <p>
-                        <time dateTime="2026-10-03">3 October 2026</time>
-                      </p>
-                      <p>The main library is open until 8 pm from the autumn.</p>
-                    </Card.Body>
-                  </Card.Root>
-                  <Card.Root as="li">
-                    <Card.Body className="kv-prose">
-                      <Heading as="h3" size="heading-3">
-                        <Link.Root href="#water">Work on the water mains</Link.Root>
-                      </Heading>
-                      <p>
-                        <time dateTime="2026-10-01">1 October 2026</time>
-                      </p>
-                      <p>The water is shut off on Main Street on 14 October.</p>
-                    </Card.Body>
-                  </Card.Root>
-                </Columns>
-                <p>
-                  <Link.Root href="#news">All news</Link.Root>
-                </p>
-              </Stack>
-              <Stack gap="6">
-                <Heading as="h2" size="heading-2">
-                  Events
-                </Heading>
-                <Columns as="ul" minColumnWidth="sm" gap="6">
-                  <Card.Root as="li">
-                    <Card.Body className="kv-prose">
-                      <Heading as="h3" size="heading-3">
-                        <Link.Root href="#dialogue">Citizen dialogue on the new square</Link.Root>
-                      </Heading>
-                      <p>
-                        <time dateTime="2026-11-12">12 November 2026</time>, 6–8 pm, Kvirnby school
-                      </p>
-                      <p>Tell us what you want on the square before the plan goes out.</p>
-                    </Card.Body>
-                  </Card.Root>
-                  <Card.Root as="li">
-                    <Card.Body className="kv-prose">
-                      <Heading as="h3" size="heading-3">
-                        <Link.Root href="#market">Autumn market</Link.Root>
-                      </Heading>
-                      <p>
-                        <time dateTime="2026-10-24">24 October 2026</time>, 10 am–3 pm, Market
-                        Square
-                      </p>
-                      <p>Local food, crafts and music in the square.</p>
-                    </Card.Body>
-                  </Card.Root>
-                  <Card.Root as="li">
-                    <Card.Body className="kv-prose">
-                      <Heading as="h3" size="heading-3">
-                        <Link.Root href="#concert">Concert in the church</Link.Root>
-                      </Heading>
-                      <p>
-                        <time dateTime="2026-10-30">30 October 2026</time>, 7 pm, Kvirnby church
-                      </p>
-                      <p>The municipal choir sings songs of the autumn.</p>
-                    </Card.Body>
-                  </Card.Root>
-                </Columns>
-                <p>
-                  <Link.Root href="#events">All events</Link.Root>
-                </p>
-              </Stack>
-              <Stack gap="6">
-                <Heading as="h2" size="heading-2">
-                  In focus
-                </Heading>
-                <Card.Root as="article">
+                </Stack>
+                <Card.Root>
                   <Card.Body className="kv-prose">
-                    <Heading as="h3" size="heading-3">
-                      <Link.Root href="#square">A new square in the centre of Kvirnby</Link.Root>
+                    <Heading as="h2" size="heading-3">
+                      Contact us
                     </Heading>
-                    <p>
-                      Read about the plans for the square and how you can take part in the dialogue.
-                    </p>
+                    <p>Contact centre</p>
+                    <SummaryList.Root>
+                      <SummaryList.Row>
+                        <SummaryList.Key>Phone</SummaryList.Key>
+                        <SummaryList.Value>
+                          <Link.Root href="tel:+46000000001">0000-00 00 01</Link.Root>
+                        </SummaryList.Value>
+                      </SummaryList.Row>
+                      <SummaryList.Row>
+                        <SummaryList.Key>Email</SummaryList.Key>
+                        <SummaryList.Value>
+                          <Link.Root href="mailto:contact@kvirnby.example">
+                            contact@kvirnby.example
+                          </Link.Root>
+                        </SummaryList.Value>
+                      </SummaryList.Row>
+                      <SummaryList.Row>
+                        <SummaryList.Key>Phone hours</SummaryList.Key>
+                        <SummaryList.Value>Monday to Thursday 9.00–11.00</SummaryList.Value>
+                      </SummaryList.Row>
+                    </SummaryList.Root>
                   </Card.Body>
-                  <Card.Footer className="kv-card-footer--padding-none">
-                    <img src={kvirnbySquare} alt="" />
-                  </Card.Footer>
                 </Card.Root>
               </Stack>
-              <Card.Root>
-                <Card.Body className="kv-prose">
-                  <Heading as="h2" size="heading-3">
-                    Contact us
-                  </Heading>
-                  <p>Contact centre</p>
-                  <SummaryList.Root>
-                    <SummaryList.Row>
-                      <SummaryList.Key>Phone</SummaryList.Key>
-                      <SummaryList.Value>
-                        <Link.Root href="tel:+46000000001">0000-00 00 01</Link.Root>
-                      </SummaryList.Value>
-                    </SummaryList.Row>
-                    <SummaryList.Row>
-                      <SummaryList.Key>Email</SummaryList.Key>
-                      <SummaryList.Value>
-                        <Link.Root href="mailto:contact@kvirnby.example">
-                          contact@kvirnby.example
-                        </Link.Root>
-                      </SummaryList.Value>
-                    </SummaryList.Row>
-                    <SummaryList.Row>
-                      <SummaryList.Key>Phone hours</SummaryList.Key>
-                      <SummaryList.Value>Monday to Thursday 9.00–11.00</SummaryList.Value>
-                    </SummaryList.Row>
-                  </SummaryList.Root>
-                </Card.Body>
-              </Card.Root>
-            </Stack>
-          </Container>
-        </Section>
-      </PageFrame.Main>
-      <KvirnbyFooter />
-    </PageFrame.Root>
+            </Container>
+          </Section>
+        </PageFrame.Main>
+        <KvirnbyFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvasElement }) => {
     await expectPageOutline(canvasElement)

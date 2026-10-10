@@ -88,7 +88,7 @@ Nothing else is announced: not play, pause, next, stop or the end (`errors and a
 
 ## Consumer responsibilities
 
-- Set `lang` on the content (or pass `lang`), and offer the player to everyone: don't auto-start and don't hide it from assistive technology.
+- Set `lang` on the content, and offer the player to everyone: don't auto-start and don't hide it from assistive technology.
 - Wrap the app in `KvirnProvider`: errors are announced through it.
 - Mark what must not be read with `data-kv-read-aloud-skip`.
 - `allowRemoteVoices` may send the text to a third party. Leave it off for personal data.
@@ -107,7 +107,7 @@ Headless: no CSS. Classes `kv-read-aloud`, `kv-read-aloud-button`, `kv-read-alou
 - 1.4.2 Audio Control: Pause and Stop (`controls`, `names and roles`).
 - 2.1.1 Keyboard: the Keyboard rows.
 - 2.2.2 Pause, Stop, Hide: the highlight follows the speech and is cleared on stop and unmount (`highlight`).
-- 3.1.1 / 3.1.2 Language: each sentence is spoken with a voice for its own `lang`, never another language's. The `lang` option is the default for unmarked text, an inner `lang` attribute wins, and a sentence with no voice stops the reading with `noVoice` naming that language (`languages inside the content`, `controls › the language option picks the voice`).
+- 3.1.1 / 3.1.2 Language: each sentence is spoken with a voice for its own `lang`, never another language's. Unmarked text takes the closest `[lang]` above it, then the document's, then the provider's locale; an inner `lang` attribute wins, and a sentence with no voice stops the reading with `noVoice` naming that language (`languages inside the content`, `controls › the content’s lang picks the voice`).
 - 4.1.2 Name, Role, Value: `names and roles`, `accessibility` (axe).
 - 4.1.3 Status Messages: errors only (`errors and announcements`).
 - 2.5.8 Target size, 1.4.11 Non-text contrast: theme task (T7).
@@ -134,4 +134,4 @@ Headless: no CSS. Classes `kv-read-aloud`, `kv-read-aloud-button`, `kv-read-alou
 - **Real speech is manual only.** Tests use a fake engine. Voices, `pause` and the first-gesture rule on iOS are covered by the AT matrix.
 - **Pause restarts the sentence** (cancel and remember), since native `pause()` is unreliable.
 - **Highlight** needs the CSS Custom Highlight API. Without it the Status text is the only position cue.
-- **fi, nb, nn and se strings** are drafts for native review.
+- **fi, nb and nn strings** are drafts for native review.

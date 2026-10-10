@@ -4,14 +4,13 @@ import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
-import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { Field, KvirnProvider, TextInput } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 
 // Story fixture for the Components/Form pages (docs/design/form-fields.md §4.2, §4.3).
 // sv, en, fi, nb and nn are written. The fi strings are the designer's drafts, for length checks.
-// se: English, marked lang="en" (3.1.2). The spec's option help text `durationHint` is
+// The spec's option help text `durationHint` is
 // `duration12Hint` in choice.fixture.tsx, which has the same text.
 // The library's own strings ("(optional)", "Error:") follow the locale through the provider
 // decorator below, like an app's provider would.
@@ -19,7 +18,7 @@ import type { Decorator } from '@storybook/react-vite'
 // KvirnUI holds no form state. Nothing here validates: an "invalid" story
 // sets `invalid` and writes the message itself, as an implementor's form logic would.
 
-export type FormLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
+export type FormLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'en'
 
 export interface FormTexts {
   name: string
@@ -489,22 +488,19 @@ const textsNn: FormTexts = {
   proseText: 'Fyll ut opplysningane nedanfor. Felta høyrer til skjemaet, ikkje til artikkelen.',
 }
 
-/** se has no texts: it shows the English ones, marked lang="en". */
 const formTexts: Record<FormLocale, FormTexts | undefined> = {
   sv: textsSv,
   fi: textsFi,
   nb: textsNb,
   nn: textsNn,
-  se: undefined,
   en: textsEn,
 }
 
 /**
  * The provider's `locale` for a story: `en-GB`, not `en`, because bare `en` is US English to `Intl`
- * (`3/2/26`) and this is an EU audience. se has no texts, so it formats as English too.
+ * (`3/2/26`) and this is an EU audience.
  */
-export const providerLocaleOf = (locale: FormLocale): string =>
-  locale === 'en' || locale === 'se' ? 'en-GB' : locale
+export const providerLocaleOf = (locale: FormLocale): string => (locale === 'en' ? 'en-GB' : locale)
 
 export const isFormLocale = (value: unknown): value is FormLocale =>
   typeof value === 'string' && value in formTexts
@@ -517,7 +513,7 @@ export const localeOf = (globals: Record<string, unknown>): FormLocale => {
 
 interface ResolvedFormTexts {
   text: FormTexts
-  /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
+  /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
   lang: 'en' | undefined
   /** `1250.5` written the way the locale writes an amount: en `1,250.50`, sv `1 250,50`. */
   rentExample: string
@@ -525,7 +521,7 @@ interface ResolvedFormTexts {
   amountExample: string
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+/** The fixture text in a locale. */
 export function textsFor(locale: FormLocale): ResolvedFormTexts {
   const text = formTexts[locale]
   const known = text !== undefined
@@ -538,9 +534,9 @@ export function textsFor(locale: FormLocale): ResolvedFormTexts {
   }
 }
 
-const catalogs: Record<FormLocale, KvirnMessages> = { sv, fi, nb, nn, se, en }
+const catalogs: Record<FormLocale, KvirnMessages> = { sv, fi, nb, nn, en }
 
-/** The library strings a story shows in a locale: English where the fixture has no texts (se). */
+/** The library strings a story shows in a locale: English where the fixture has no texts. */
 export const messagesFor = (locale: FormLocale): KvirnMessages =>
   formTexts[locale] === undefined ? en : catalogs[locale]
 
@@ -555,7 +551,7 @@ export function fieldMessagesFor(locale: FormLocale): { optional: string; errorP
 
 /**
  * Library strings ("(valfritt)", "Fel:") follow the locale toolbar, like an app's provider
- * would. The fixture text follows it through `textsFor`. Where the fixture shows English (se),
+ * would. The fixture text follows it through `textsFor`. Where the fixture shows English,
  * the library strings are English too, so a `lang="en"` element is all English.
  */
 export const withFormLocale: Decorator = (Story, { globals }) => {

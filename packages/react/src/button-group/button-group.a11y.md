@@ -10,14 +10,14 @@ A ButtonGroup is a row of related Buttons: the footer of a Card, the actions of 
 
 ## Roles, states, properties
 
-| Part        | Element / role    | ARIA                              | Notes                                                                                                                                                            |
-| ----------- | ----------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ButtonGroup | `<div>` → `group` | `aria-label` or `aria-labelledby` | `role="group"` only when it has a name, so a screen reader says "Ärendet, group" as focus enters it. Test: `button-group.test.tsx › role and name`               |
-|             | without a name    | no role                           | A plain `<div>`: an unnamed Card footer adds no empty group to the accessibility tree                                                                            |
-|             | in a Toolbar      | name required                     | A dev warning when a group in a `Toolbar.Root` has no name (1.3.1, 4.1.2). Test: `button-group.test.tsx › inside a Toolbar`                                      |
-|             | `layout`          | `spaced` or `attached`            | `attached` joins the buttons into one strip (class `kv-button-group--attached`). Look only: no role, ARIA or key changes. Test: `button-group.test.tsx › layout` |
+| Part        | Element / role    | ARIA                              | Notes                                                                                                                                              |
+| ----------- | ----------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ButtonGroup | `<div>` → `group` | `aria-label` or `aria-labelledby` | `role="group"` only when it has a name, so a screen reader says "Ärendet, group" as focus enters it. Test: `button-group.test.tsx › role and name` |
+|             | without a name    | no role                           | A plain `<div>`: an unnamed Card footer adds no empty group to the accessibility tree                                                              |
+|             | in a Toolbar      | name required                     | A dev warning when a group in a `Toolbar.Root` has no name (1.3.1, 4.1.2). Test: `button-group.test.tsx › inside a Toolbar`                        |
+|             | `className`       | add `kv-button-group--attached`   | Joins the buttons into one strip. Look only: no role, ARIA or key changes. Test: `button-group.test.tsx › attached`                                |
 
-`useButtonGroup({ isNamed, layout })` gives the same `groupProps` for your own element.
+`useButtonGroup({ isNamed })` gives the same `groupProps` for your own element.
 
 ## Keyboard
 

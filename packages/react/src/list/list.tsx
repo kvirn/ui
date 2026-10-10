@@ -1,30 +1,23 @@
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { createElement } from 'react'
-import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
-import { resolveAsTag } from '../render/as-prop.ts'
+import { listRole, resolveAsTag } from '../render/as-prop.ts'
 import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
 
 const listTags = ['ul', 'ol'] as const
 
-export type ListMarker = 'none' | 'bullet' | 'decimal'
-export type ListGap = '2' | '4' | '6' | '8'
-
-export interface ListOwnProps {
-  /** `'none'` (default), `'bullet'` or `'decimal'`. `'decimal'` is for `as="ol"`. */
-  marker?: ListMarker | undefined
-  /** The space between items, a `space` step in the theme. Default `'4'`. */
-  gap?: ListGap | undefined
-}
-
-/** `as` is `ul` (default) or `ol`. Without a marker the list gets `role="list"`. */
-export type ListRootProps = AsTag<(typeof listTags)[number], 'ul', ListOwnProps>
+/**
+ * `as` is `ul` (default) or `ol`. The list always gets `role="list"`: WebKit and VoiceOver drop
+ * the list role under `list-style: none`, and a consumer's own `role` wins.
+ */
+export type ListRootProps = AsTag<(typeof listTags)[number], 'ul'>
 
 export type ListItemProps = ComponentPropsWithRef<'li'>
 
 /**
- * The one native list (contract: list.a11y.md): `<ul class="kv-list">`, or `<ol>` with `as="ol"`.
+ * The one native list (contract: list.a11y.md): `<ul class="kv-list">`, or `<ol>` with `as="ol"`. The class has no marker: add
+ * `kv-list--bullet` or `kv-list--decimal`, and `kv-list--gap-2|6|8` for another gap.
  * Its children are `List.Item`. Usable in a server component.
  *
  * @example
@@ -33,34 +26,12 @@ export type ListItemProps = ComponentPropsWithRef<'li'>
  *   <List.Item><Link.Root href="/avfall">Avfall</Link.Root></List.Item>
  * </List.Root>
  */
-export function ListRoot({
-  as,
-  marker = 'none',
-  gap = '4',
-  ...otherProps
-}: ListRootProps): ReactElement {
+export function ListRoot({ as, ...otherProps }: ListRootProps): ReactElement {
   const tag = resolveAsTag({ part: 'List.Root', as, allowedTags: listTags })
-  if (marker === 'decimal' && tag !== 'ol') {
-    warnOnce(
-      'list-decimal-on-ul',
-      'A List.Root with marker="decimal" renders a <ul>, so its numbers say nothing about order to assistive technology (WCAG 1.3.1). Use as="ol", or marker="bullet".',
-    )
-  }
-  const className = [
-    'kv-list',
-    marker === 'none' ? undefined : `kv-list--${marker}`,
-    gap === '4' ? undefined : `kv-list--gap-${gap}`,
-  ]
-    .filter((name) => name !== undefined)
-    .join(' ')
-  // A prop's own `role` wins. WebKit and VoiceOver drop the list role under `list-style: none`.
   return renderPart({
     as: tag,
     defaultElement: 'ul',
-    partProps: {
-      ...(marker === 'none' ? { role: 'list' } : {}),
-      ...mergeProps(otherProps, { className }),
-    },
+    partProps: { ...listRole(tag ?? 'ul'), ...mergeProps(otherProps, { className: 'kv-list' }) },
   })
 }
 ListRoot.displayName = 'List.Root'

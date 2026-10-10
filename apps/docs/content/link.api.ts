@@ -90,7 +90,7 @@ export const linkIconRows = propRows<Pick<LinkIconProps, 'children' | 'as'>>({
     type: 'ReactNode',
     default: '–',
     description:
-      'The icon, for example <Icon name="arrow-forward" size={6} />, or any decorative SVG.',
+      'The icon, for example <Icon name="arrow-forward" size="24" />, or any decorative SVG.',
   },
   as: {
     type: "'span' | 'i'",

@@ -396,7 +396,7 @@ describe('country for the masks (Plan 0039)', () => {
 
   test('the country prop wins over the locale, and a nested provider inherits it', async () => {
     await render(
-      <KvirnProvider locale="se" country="FI" messages={sv}>
+      <KvirnProvider locale="nb" country="FI" messages={sv}>
         <CountryProbe label="own" />
         <KvirnProvider>
           <CountryProbe label="nested" />

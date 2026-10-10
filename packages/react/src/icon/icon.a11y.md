@@ -6,16 +6,16 @@
 - **Status:** alpha candidate (Plan 0009). Manual AT is `pending`.
 - **Tests:** `icon.test.tsx` next to this file, and the icon-only rows in `button.test.tsx`. `icon.stories.tsx` in `apps/storybook/src/components/icon/`.
 
-An icon is decorative by default: text next to it already says what it means, so it's hidden from assistive technology. With a `label`, it's an image with that name. Icons come from the built-in set, from the app's registry (`KvirnProvider icons`), from a component reference (`icon`, Plan 0044), or from `as` (your own component) and children for one-offs. Every route renders the same attributes: hidden unless there is a `label`, and Icon's `aria-hidden` replaces a library's own. With `as`, the component gets the props as plain props, and Icon's `aria-hidden`, `role` and `aria-label` win over any of the same name: it must spread them on its `<svg>` and take a `ref`. Icon's own options (`size`, `label`, `color`) do not reach it under their own names. **Allowed elements:** none to list: `as` is a component that draws an `<svg>`.
+An icon is decorative by default: text next to it already says what it means, so it's hidden from assistive technology. With a `label`, it's an image with that name. Icons come from the built-in set, from the app's registry (`KvirnProvider icons`), from a component reference (`icon`, Plan 0044), or from `as` (your own component) and children for one-offs. Every route renders the same attributes: hidden unless there is a `label`, and Icon's `aria-hidden` replaces a library's own. With `as`, the component gets the props as plain props, and Icon's `aria-hidden`, `role` and `aria-label` win over any of the same name: it must spread them on its `<svg>` and take a `ref`. Icon's own options (`size`, `label`) do not reach it under their own names. **Allowed elements:** none to list: `as` is a component that draws an `<svg>`.
 
 ## Roles, states, properties
 
-| Part | Element / role                    | ARIA                                                 | Notes                                                                                                                                                                                                     |
-| ---- | --------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Icon | `<svg>`, no role                  | `aria-hidden="true"`                                 | Default: decorative. `class="kv-icon"`                                                                                                                                                                    |
-|      | `<svg>` → `img`, with `label`     | `role="img"`, `aria-label={label}`, no `aria-hidden` | A library's own `aria-hidden` (Heroicons, Lucide) is removed. `aria-label`, `aria-hidden` and `role` can't be passed directly: `label` sets them                                                          |
-|      | unknown `name`                    | `aria-hidden="true"`, empty                          | Sized like the icon, so nothing moves. A dev warning names the missing icon. With a `label` it is still `role="img"` with that name, so a screen-reader user keeps the name and the warning flags the bug |
-|      | `data-size`, `data-mirror-in-rtl` | none                                                 | State for CSS: the size step, and whether the icon flips in right-to-left text                                                                                                                            |
+| Part | Element / role                | ARIA                                                 | Notes                                                                                                                                                                                                     |
+| ---- | ----------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Icon | `<svg>`, no role              | `aria-hidden="true"`                                 | Default: decorative. `class="kv-icon kv-icon--size-20"`, `width` and `height` in rem                                                                                                                      |
+|      | `<svg>` → `img`, with `label` | `role="img"`, `aria-label={label}`, no `aria-hidden` | A library's own `aria-hidden` (Heroicons, Lucide) is removed. `aria-label`, `aria-hidden` and `role` can't be passed directly: `label` sets them                                                          |
+|      | unknown `name`                | `aria-hidden="true"`, empty                          | Sized like the icon, so nothing moves. A dev warning names the missing icon. With a `label` it is still `role="img"` with that name, so a screen-reader user keeps the name and the warning flags the bug |
+|      | `data-mirror-in-rtl`          | none                                                 | State for CSS: whether the icon flips in right-to-left text                                                                                                                                               |
 
 `useIcon` gives the same `iconProps`, and the component for a name, for your own `<svg>`.
 
@@ -58,7 +58,7 @@ Icon has no strings. A `label` comes from your own translations.
 
 - Focus indicator: not applicable. Icon is never focusable.
 - Target size: not applicable. An icon-only button's target is the Button's: the default theme makes `kv-button--icon-only` square and at least `--kv-button-min-block-size` (2.5.8).
-- forced-colors behaviour: icons draw in `currentColor`, which follows the system colour. The default theme turns an explicit `fill`, `stroke` or `color` on `.kv-icon` into `currentColor` in forced-colours mode, so a hard-coded colour can't vanish. Colours on child shapes are kept, so forced-colours contrast for a multi-colour, meaningful SVG is the consumer's job.
+- forced-colors behaviour: icons draw in `currentColor`, which follows the system colour. The default theme turns an explicit `fill`, `stroke` or `color` on `.kv-icon` (set by your own CSS) into `currentColor` in forced-colours mode, so a hard-coded colour can't vanish. Colours on child shapes are kept, so forced-colours contrast for a multi-colour, meaningful SVG is the consumer's job. There is no root `fill` or `stroke` option any more: a one-off SVG sets `fill="currentColor"` on its own shapes, or it draws black in forced colours.
 - reduced-motion behaviour: no motion.
 - Text resize and reflow: the size steps are `em`, so icons grow with text (1.4.4) and reflow at 320px (1.4.10). Test: `icon.test.tsx › attributes › the default size is step 5 (1.25em)`.
 
@@ -90,6 +90,5 @@ Icon has no strings. A `label` comes from your own translations.
 
 ## Known issues
 
-- `var()` in SVG presentation attributes (`color="var(--kv-color-danger)"`, and `fill` and `stroke`) is resolved by the browser engine, not by Icon. No test covers it: it is a browser capability.
-- With Tabler icons, `stroke` sets the stroke width (Tabler's own prop), not the colour. Use `color`.
+- `var()` in SVG presentation attributes (`fill` and `stroke` on your own shapes) is resolved by the browser engine, not by Icon. No test covers it: it is a browser capability.
 - react-icons applies its own `size` after Icon's `width` and `height`. Size react-icons on the element.

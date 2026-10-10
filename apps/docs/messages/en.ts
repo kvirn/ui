@@ -27,7 +27,7 @@ export const messages = {
         'This is a pre-alpha version. The API will change. Don’t use KvirnUI in a live service yet.',
       whatYouGet: {
         label: 'What you get',
-        body: 'Behaviour, keyboard support and screen reader support in six languages. You keep the markup and the styles.',
+        body: 'Behaviour, keyboard support and screen reader support in five languages. You keep the markup and the styles.',
       },
       components: { label: 'Components', readAboutButton: 'Read about Button' },
       startHere: {
@@ -150,7 +150,6 @@ export const messages = {
       parameters: 'Parameters',
       englishText: 'Default text in English',
       usedFor: 'Used for',
-      stringPendingSami: 'Not in Northern Sámi yet',
     },
     example: {
       languages: {
@@ -158,7 +157,6 @@ export const messages = {
         fi: 'Suomi',
         nb: 'Norsk bokmål',
         nn: 'Norsk nynorsk',
-        se: 'Davvisámegiella',
         en: 'English',
       },
       error:
@@ -221,7 +219,7 @@ export const messages = {
         polite: 'Polite',
         assertive: 'Assertive',
         politeOrAssertive: 'Polite or assertive, as you choose',
-        allLanguages: 'The text in all six languages',
+        allLanguages: 'The text in all five languages',
         overrideHeading: 'Change the text',
         overrideWholeApp: 'For your whole app, pass',
         overrideTo: 'to',

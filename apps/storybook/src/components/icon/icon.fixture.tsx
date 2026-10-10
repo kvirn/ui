@@ -23,11 +23,11 @@ import type { HTMLAttributes, ReactNode, Ref, SVGProps } from 'react'
 import { createPortal } from 'react-dom'
 
 // Story fixture: the design spec's strings (docs/design/icon.md §4.3). sv, en, nb
-// and nn are written. The fi strings are the designer's drafts, for length checks only. se:
-// English, marked lang="en" (3.1.2). Icon names are code, so they aren't translated. Dates are
+// and nn are written. The fi strings are the designer's drafts, for length checks only.
+// Icon names are code, so they aren't translated. Dates are
 // values, formatted with `useFormat()`.
 
-export type IconFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
+export type IconFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'en'
 
 /**
  * Every built-in icon, in the order of the design spec (§4.1). Read from `builtInIcons`, the
@@ -232,13 +232,11 @@ const nn: IconTexts = {
   pagination: { previous: 'Førre', next: 'Neste' },
 }
 
-/** se has no texts: it shows the English ones, marked lang="en". */
 const iconTexts: Record<IconFixtureLocale, IconTexts | undefined> = {
   sv,
   fi,
   nb,
   nn,
-  se: undefined,
   en,
 }
 
@@ -247,11 +245,11 @@ export const isIconFixtureLocale = (value: unknown): value is IconFixtureLocale 
 
 interface ResolvedTexts {
   text: IconTexts
-  /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
+  /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
   lang: 'en' | undefined
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+/** The fixture text in a locale. */
 export function textsFor(locale: IconFixtureLocale): ResolvedTexts {
   const text = iconTexts[locale]
   if (text === undefined) {
@@ -526,10 +524,12 @@ export function LucideOneOff({ locale }: IconFixtureProps) {
         <Icon icon={Search} label={text.button.search} />
       </li>
       <li>
-        <Icon icon={MapPin} size={6} color="var(--kv-color-primary)" />
+        <span style={{ color: 'var(--kv-color-primary)' }}>
+          <Icon icon={MapPin} size="24" />
+        </span>
       </li>
       <li>
-        <Icon icon={Trash2} strokeWidth={1.5} />
+        <Icon icon={Trash2} />
       </li>
     </ul>
   )
@@ -538,8 +538,7 @@ export function LucideOneOff({ locale }: IconFixtureProps) {
 /**
  * Lucide, registered: `<Icon name>` and every KvirnUI component use Lucide's drawings. Call
  * `defineIcons` once at module level in your app, next to the provider: a library's drawings
- * replace the built-in ones of the same names, and library defaults such as Lucide's 2 stroke go
- * in `iconDefaults`. Names that aren't built in need `Register` (see the Icon guide).
+ * replace the built-in ones of the same names, and Lucide draws its own 2 stroke. Names that aren't built in need `Register` (see the Icon guide).
  */
 export function LucideRegistered({ locale }: IconFixtureProps) {
   const { text, lang } = textsFor(locale)
@@ -549,7 +548,7 @@ export function LucideRegistered({ locale }: IconFixtureProps) {
     'arrow-forward': { component: ArrowRight, mirrorInRtl: true },
   })
   return (
-    <KvirnProvider icons={icons} iconDefaults={{ strokeWidth: 1.5 }}>
+    <KvirnProvider icons={icons}>
       <ButtonGroup lang={lang}>
         <Button>
           <Icon name="search" />
@@ -573,10 +572,12 @@ export function HeroiconsOneOff({ locale }: IconFixtureProps) {
         <Icon icon={MagnifyingGlassIcon} label={text.button.search} />
       </li>
       <li>
-        <Icon icon={MapPinIcon} size={6} color="var(--kv-color-primary)" />
+        <span style={{ color: 'var(--kv-color-primary)' }}>
+          <Icon icon={MapPinIcon} size="24" />
+        </span>
       </li>
       <li>
-        <Icon icon={TrashIcon} strokeWidth={1.5} />
+        <Icon icon={TrashIcon} />
       </li>
     </ul>
   )
@@ -628,12 +629,16 @@ export function LibraryIcons({ locale }: IconFixtureProps) {
         {overridden.map((name) => (
           <li key={name} className="kv-story-icon-cell">
             <span className="kv-story-icon-row" data-testid={`built-in-${name}`}>
-              <Icon name={name} size={6} color="var(--kv-color-primary)" />
+              <span style={{ color: 'var(--kv-color-primary)' }}>
+                <Icon name={name} size="24" />
+              </span>
               <code>{name}</code>
             </span>
             <KvirnProvider icons={icons}>
               <span className="kv-story-icon-row" data-testid={`registered-${name}`}>
-                <Icon name={name} size={6} color="var(--kv-color-primary)" />
+                <span style={{ color: 'var(--kv-color-primary)' }}>
+                  <Icon name={name} size="24" />
+                </span>
                 <code>{name}</code>
               </span>
             </KvirnProvider>
@@ -641,7 +646,7 @@ export function LibraryIcons({ locale }: IconFixtureProps) {
         ))}
         <li className="kv-story-icon-cell">
           <KvirnProvider icons={icons}>
-            <Icon name={'logo' as IconName} size={6} label={text.label.logo} />
+            <Icon name={'logo' as IconName} size="24" label={text.label.logo} />
           </KvirnProvider>
           <code>logo</code>
         </li>
@@ -672,7 +677,7 @@ export function RegistryEntries({ locale }: IconFixtureProps) {
   })
   const nestedIcons = defineIcons({ delete: Trash2 })
   return (
-    <KvirnProvider icons={icons} iconDefaults={{ size: 6 }}>
+    <KvirnProvider icons={icons} iconDefaults={{ size: '24' }}>
       <ul className="kv-story-inline-list" lang={lang} dir="rtl">
         <li data-testid="entry-says-no-flip">
           <Icon name="arrow-forward" />
@@ -684,9 +689,9 @@ export function RegistryEntries({ locale }: IconFixtureProps) {
           <Icon name="search" />
         </li>
         <li data-testid="own-size">
-          <Icon name="search" size={4} />
+          <Icon name="search" size="16" />
         </li>
-        <KvirnProvider icons={nestedIcons} iconDefaults={{ strokeWidth: 2 }}>
+        <KvirnProvider icons={nestedIcons}>
           <li data-testid="nested-delete">
             <Icon name="delete" />
           </li>
@@ -709,12 +714,14 @@ export function UnstyledIcons({ locale }: IconFixtureProps) {
   return (
     <ShadowIsland data-testid="unstyled" dir="rtl" lang={lang}>
       <p>
-        {([4, 5, 6] as const).map((size) => (
-          <Icon key={size} name="check" size={size} color="var(--kv-color-success)" />
+        {(['16', '20', '24'] as const).map((size) => (
+          <span key={size} style={{ color: 'var(--kv-color-success)' }}>
+            <Icon name="check" size={size} />
+          </span>
         ))}
       </p>
       <p>
-        <Icon name="arrow-forward" size={6} />
+        <Icon name="arrow-forward" size="24" />
       </p>
       <p>
         <Button aria-label={text.button.close}>

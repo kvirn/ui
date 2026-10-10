@@ -4,7 +4,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Fixtures for Components/Form/Slider. Each function is one example, and the story's "Show code"
 // prints it (`showSource`), so it reads the way an adopter writes it. KvirnUI holds no form
-// state: the `useState` here stands in for yours. se is English, marked lang="en" (3.1.2).
+// state: the `useState` here stands in for yours.
 
 export interface SliderTexts {
   distanceLabel: string
@@ -99,11 +99,10 @@ const sliderTexts: Record<FormLocale, SliderTexts | undefined> = {
   fi: textsFi,
   nb: textsNb,
   nn: textsNn,
-  se: undefined,
   en: textsEn,
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+/** The fixture text in a locale. */
 export function sliderTextsFor(locale: FormLocale): {
   text: SliderTexts
   lang: 'en' | undefined

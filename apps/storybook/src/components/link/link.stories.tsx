@@ -3,7 +3,6 @@ import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
-import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { Icon, KvirnProvider, Link } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/link/link.a11y.md?raw'
@@ -19,7 +18,7 @@ import { AppRoot, RoutedLinkList, RouterAndPlainLinks } from './link.fixture.tsx
 // The keyboard contract is proved in link.test.tsx, so the play functions only read. A list of
 // page links with a current page is Components/Navigation.
 
-const catalogs: Record<string, KvirnMessages> = { sv, fi, nb, nn, se, en }
+const catalogs: Record<string, KvirnMessages> = { sv, fi, nb, nn, en }
 
 const meta = {
   title: 'Components/Actions/Link',
@@ -241,7 +240,7 @@ export const Service: Story = {
     children: (
       <>
         <Link.Icon>
-          <Icon name="arrow-forward" size={6} />
+          <Icon name="arrow-forward" size="24" />
         </Link.Icon>
         Ansök om bygglov <Link.NewTabNotice />
       </>
@@ -265,7 +264,7 @@ export const ServiceLongFinnishText: Story = {
     children: (
       <>
         <Link.Icon>
-          <Icon name="arrow-forward" size={6} />
+          <Icon name="arrow-forward" size="24" />
         </Link.Icon>
         Hae rakennuslupaa sähköisesti
       </>
@@ -370,18 +369,12 @@ export const OtherLanguage: Story = {
           På svenska
         </Link.Root>
       </li>
-      <li>
-        <Link.Root href="#se" lang="se" hrefLang="se">
-          Sámegillii
-        </Link.Root>
-      </li>
     </ul>
   ),
   play: async ({ canvas }) => {
     for (const [name, language] of [
       ['Suomeksi', 'fi'],
       ['På svenska', 'sv'],
-      ['Sámegillii', 'se'],
     ] as const) {
       const link = canvas.getByRole('link', { name })
       await expect(link).toHaveAttribute('lang', language)
@@ -473,7 +466,7 @@ export const ForcedColors: Story = {
       <p>
         <Link.Root href="#bygglov" className="kv-link--service">
           <Link.Icon>
-            <Icon name="arrow-forward" size={6} />
+            <Icon name="arrow-forward" size="24" />
           </Link.Icon>
           Starta e-tjänsten
         </Link.Root>

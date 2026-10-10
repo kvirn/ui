@@ -8,13 +8,18 @@ export function StackedForm() {
   const nameId = useId()
   const emailId = useId()
   return (
-    <Stack gap="4" as="form" onSubmit={(event) => event.preventDefault()} lang={textLang}>
+    <Stack
+      className="kv-stack--gap-4"
+      as="form"
+      onSubmit={(event) => event.preventDefault()}
+      lang={textLang}
+    >
       <Heading as="h2">{texts.form.title}</Heading>
-      <Stack gap="2">
+      <Stack className="kv-stack--gap-2">
         <label htmlFor={nameId}>{texts.form.name}</label>
         <input id={nameId} autoComplete="name" />
       </Stack>
-      <Stack gap="2">
+      <Stack className="kv-stack--gap-2">
         <label htmlFor={emailId}>{texts.form.email}</label>
         <input id={emailId} type="email" autoComplete="email" />
       </Stack>

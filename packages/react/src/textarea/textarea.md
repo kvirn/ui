@@ -48,7 +48,7 @@ There is no width class: a Textarea is the full width of its field, so the box n
 | `characterCount.remaining` | "You have 120 characters remaining." (one: "You have 1 character remaining.") |
 | `characterCount.over`      | "You have 12 characters too many." (one: "You have 1 character too many.")    |
 
-A Textarea without `characterCount` announces nothing. The strings are in all six locales (`se` is English until a native speaker writes it).
+A Textarea without `characterCount` announces nothing. The strings are in all five locales.
 
 What Textarea does on its own: it takes the control's `id` and `aria-describedby` from the Field (and ignores an `id` of its own inside one, with a dev warning, so the label stays linked); it keeps your own `aria-describedby` ids after the Field's; it sets `rows` to 5; it moves no focus and handles no keys. With `characterCount` it also leaves `maxlength` off the element, renders the count after the box, registers the count as one of the control's descriptions (so it is read when the box gets focus, between the description above and the help text and error below), keeps the count's text up to date, and announces it through the Announcer.
 

@@ -15,11 +15,11 @@ export function Contact() {
       <Heading as="h2" size="heading-1">
         {text.heading}
       </Heading>
-      <Columns minColumnWidth="md" gap="6">
+      <Columns>
         {cards.map((card) => (
           <CardRoot key={card.heading}>
             <CardBody>
-              <Stack gap="4">
+              <Stack className="kv-stack--gap-4">
                 <Heading as="h3" size="heading-3">
                   {card.heading}
                 </Heading>
@@ -27,7 +27,7 @@ export function Contact() {
                 <p>
                   <Link href={mailto(card.subject)} className="kv-link--service">
                     <LinkIcon>
-                      <Icon name="arrow-forward" size={6} />
+                      <Icon name="arrow-forward" size="24" />
                     </LinkIcon>
                     {card.link}
                   </Link>

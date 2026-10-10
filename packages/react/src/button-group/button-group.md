@@ -8,7 +8,7 @@ A row of related [Button](../button/button.md)s: the footer of a [Card](../card/
 - **With a name it is a `role="group"`.** Give it `aria-label` from your translations, or `aria-labelledby` that points at visible text, and a screen reader says where the buttons belong as focus enters the group.
 - **Without a name it is a plain `<div>`.** An unnamed Card footer adds no empty group to the accessibility tree. A group is worth naming when the buttons need a context their own labels don't give.
 - **A group in a Toolbar must have a name.** A development warning says so.
-- **`layout="attached"` joins the buttons into one strip,** like a segmented control: they touch, share borders and only the outer corners are rounded (flipped in right-to-left text). A pressed `Toggle` is the filled segment. Default `layout="spaced"`. It changes the look only: the role, the name and the Tab stops are the same.
+- **Add `kv-button-group--attached` to join the buttons into one strip,** like a segmented control: they touch, share borders and only the outer corners are rounded (flipped in right-to-left text). A pressed `Toggle` is the filled segment. The default is a spaced row. It changes the look only: the role, the name and the Tab stops are the same.
 - It holds no state and handles no keys.
 - With `@kvirn-ui/theme/theme.css` imported, the group is a row that wraps, with 12px between buttons, and stacks at full width below 40rem. An attached group never stacks or wraps, and a button may wrap its own label. In a Toolbar it never stacks, and has 4px between buttons and a hairline before it from 40rem. Put the one primary button first: it is the main next step, and comes first in focus order.
 
@@ -16,16 +16,16 @@ A row of related [Button](../button/button.md)s: the footer of a [Card](../card/
 
 ### Parts
 
-| Part        | Renders                     | Props                                                                                |
-| ----------- | --------------------------- | ------------------------------------------------------------------------------------ |
-| ButtonGroup | `<div>` (flat, one element) | `layout` (`'spaced'` default, or `'attached'`), and every `<div>` prop except `role` |
+| Part        | Renders                     | Props                            |
+| ----------- | --------------------------- | -------------------------------- |
+| ButtonGroup | `<div>` (flat, one element) | every `<div>` prop except `role` |
 
 ### What it sets on the `<div>`
 
-| Attribute or class | Value                                                                                                 |
-| ------------------ | ----------------------------------------------------------------------------------------------------- |
-| `class`            | `kv-button-group`, and `kv-button-group--attached` for `layout="attached"`. Your `className` joins it |
-| `role`             | `group`, only when `aria-label` or `aria-labelledby` is set                                           |
+| Attribute or class | Value                                                                                              |
+| ------------------ | -------------------------------------------------------------------------------------------------- |
+| `class`            | `kv-button-group`. Your `className` joins it: add `kv-button-group--attached` for one joined strip |
+| `role`             | `group`, only when `aria-label` or `aria-labelledby` is set                                        |
 
 ### Strings
 
@@ -64,7 +64,7 @@ A Card footer needs no name:
 A joined strip, as in a segmented control:
 
 ```tsx
-<ButtonGroup aria-label="Textstil" layout="attached">
+<ButtonGroup className="kv-button-group--attached" aria-label="Textstil">
   <Toggle>Fet</Toggle>
   <Toggle>Kursiv</Toggle>
 </ButtonGroup>
@@ -87,4 +87,4 @@ function Actions() {
 }
 ```
 
-`useButtonGroup({ isNamed, layout })` returns `groupProps`: the class (with the attached modifier for `layout: 'attached'`), and `role="group"` when `isNamed` is `true`. Pass `isNamed` when you also set `aria-label` or `aria-labelledby`.
+`useButtonGroup({ isNamed })` returns `groupProps`: the class, and `role="group"` when `isNamed` is `true`. Pass `isNamed` when you also set `aria-label` or `aria-labelledby`.

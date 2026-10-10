@@ -35,7 +35,7 @@ Staff tools and the docs site can use a sidebar and a content area. The sidebar 
 ## Usage
 
 - **Design mobile first.** Start with one column and add layout at a breakpoint when the content needs it.
-- **Never set a fixed width on anything that contains text.** Finnish and Northern Sámi strings can be 30 to 50% longer than English, and Finnish compounds are long. Buttons and labels wrap. Use `overflow-wrap: anywhere` as a last resort, never truncation.
+- **Never set a fixed width on anything that contains text.** Finnish strings can be 30 to 50% longer than English, and Finnish compounds are long. Buttons and labels wrap. Use `overflow-wrap: anywhere` as a last resort, never truncation.
 - **Use logical properties** (`margin-inline-start`, `padding-block`), so the layout mirrors in right-to-left languages.
 - **Set `lang`** on `<html>` and on every passage in another language. Hyphenation follows it.
 - **Prose and cards hyphenate** words of 10 letters or more at the dictionary's points, never inside code.

@@ -20,8 +20,6 @@ export function NavTilesRoot({ className, ...otherProps }: NavTilesRootProps): R
   return (
     <Columns
       as="ul"
-      minColumnWidth="md"
-      gap="6"
       className={['kv-nav-tiles', className].filter(Boolean).join(' ')}
       {...otherProps}
     />

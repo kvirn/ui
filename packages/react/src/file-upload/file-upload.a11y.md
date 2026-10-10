@@ -146,7 +146,6 @@ Results are reported from the store, so auto upload, Retry and `uploadAll()` go 
 
 ## Known issues
 
-- The Northern Sámi (`se`) strings are English, shown under `lang="se"` (3.1.2).
 - HEIC photos: whether Safari converts to JPEG for `accept=".jpg"` in every path needs a device check before `beta`.
 - Client-side limits can be bypassed. The server must check again.
 - Under React's `<Activity mode="hidden">` the effect cleanup resets the list and aborts running uploads. Keep a FileUpload mounted while a form is hidden.

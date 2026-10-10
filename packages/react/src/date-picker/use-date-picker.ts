@@ -4,7 +4,7 @@ import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { RefCallback } from 'react'
 import { useQuietAnnouncer, warnAnnouncerMissing } from '../announcer/use-announcer.ts'
-import { createCalendarFormatters, resolveIntlLocale } from '../calendar/calendar-intl.ts'
+import { createCalendarFormatters } from '../calendar/calendar-intl.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { isFocusTarget } from '../focus/focus-return.ts'
 import { useModalDialog } from '../dialog/use-dialog.ts'
@@ -225,7 +225,7 @@ export function useDatePicker({
     }
   }, [isOpen])
 
-  const formatters = useMemo(() => createCalendarFormatters(resolveIntlLocale(locale)), [locale])
+  const formatters = useMemo(() => createCalendarFormatters(locale), [locale])
   // An inert page drops an announcement, so it waits for the dialog to be closed.
   useEffect(() => {
     if (isOpen) {

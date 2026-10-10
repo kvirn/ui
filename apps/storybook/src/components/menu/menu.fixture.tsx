@@ -6,8 +6,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 // Fixtures for Components/Menu: each function is one example, and the story's "Show code" prints
 // it (`showSource`), so it reads the way an adopter writes it. Menu has no strings of its own: the
 // trigger, the items and the group labels are the app's, so they are plain text here, where an app
-// would take them from its translations. Northern Sámi has no fixture text: it shows English,
-// marked `lang="en"` (3.1.2).
+// would take them from its translations.
 
 type MenuRootProps = Omit<ComponentProps<typeof Menu.Root>, 'children'>
 
@@ -33,7 +32,7 @@ interface MenuTexts {
   toolbar: string
 }
 
-const texts: Record<Exclude<FormLocale, 'se'>, MenuTexts> = {
+const texts: Record<FormLocale, MenuTexts> = {
   sv: {
     trigger: 'Åtgärder',
     assign: 'Tilldela handläggare',
@@ -143,8 +142,8 @@ const texts: Record<Exclude<FormLocale, 'se'>, MenuTexts> = {
 
 function textsFor(locale: FormLocale) {
   return {
-    text: texts[locale === 'se' ? 'en' : locale],
-    lang: locale === 'se' ? ('en' as const) : undefined,
+    text: texts[locale],
+    lang: undefined,
   }
 }
 

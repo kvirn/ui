@@ -36,7 +36,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Story fixture for Components/Table (Plan 0026, design spec docs/design/table.md §4.2,
 // §6.17). sv, en, fi, nb and nn are written, and the fi strings are the designer's drafts for length
-// checks only. se: English, marked lang="en" (3.1.2). The library's own strings (the checkbox names, the
+// checks only. The library's own strings (the checkbox names, the
 // announcements, "Detaljer") follow the locale through the provider decorator of the stories.
 // Numbers and dates are values, formatted with `useFormat()` (Plan 0046): the same decorator gives it
 // the locale of the texts, and the dates are calendar dates (`YYYY-MM-DD`), so no time zone is set.
@@ -221,7 +221,6 @@ const nn: TableTexts = {
   searchLabel: 'Søk i saker',
 }
 
-/** se has no texts: it shows the English ones, marked lang="en". */
 const tableTexts: Partial<Record<FormLocale, TableTexts>> = { sv, fi, nb, nn, en }
 
 /** `en-GB`, not `en`: bare `en` is US English to `Intl` (`3/2/26`), and this is an EU audience. */
@@ -235,25 +234,25 @@ const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
 
 interface ResolvedTexts {
   texts: TableTexts
-  /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
+  /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
   lang: 'en' | undefined
   /** The provider's `locale` for these texts: what `useFormat()` then formats in. */
   formatLocale: string
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+/** The fixture text in a locale. */
 export function tableTextsFor(locale: FormLocale): ResolvedTexts {
   const texts = tableTexts[locale]
   return {
     texts: texts ?? en,
     lang: texts === undefined ? 'en' : undefined,
-    formatLocale: formatLocales[locale === 'se' ? 'en' : locale],
+    formatLocale: formatLocales[locale],
   }
 }
 
 /**
- * The provider an app has above its tables, with the locale of the texts (English for se, which has
- * none). The library's own strings follow it, and so does `useFormat()`.
+ * The provider an app has above its tables, with the locale of the texts. The library's own strings
+ * follow it, and so does `useFormat()`.
  */
 export const withTableLocale: Decorator = (Story, { globals }) => {
   const locale = localeOf(globals)

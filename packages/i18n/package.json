@@ -1,7 +1,7 @@
 {
   "name": "@kvirn-ui/i18n",
   "version": "0.0.0",
-  "description": "KvirnUI message catalogs for sv, fi, nb, nn, se and en.",
+  "description": "KvirnUI message catalogs for sv, fi, nb, nn and en.",
   "homepage": "https://ui.kvirn.com",
   "license": "AGPL-3.0-only",
   "author": "KvirnUI <magnus@vike.se> (https://ui.kvirn.com)",
@@ -73,16 +73,6 @@
       "require": {
         "types": "./dist/locales/nn.d.cts",
         "default": "./dist/locales/nn.cjs"
-      }
-    },
-    "./se": {
-      "import": {
-        "types": "./dist/locales/se.d.mts",
-        "default": "./dist/locales/se.mjs"
-      },
-      "require": {
-        "types": "./dist/locales/se.d.cts",
-        "default": "./dist/locales/se.cjs"
       }
     },
     "./package.json": "./package.json"

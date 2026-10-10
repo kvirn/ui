@@ -5,7 +5,7 @@ import { useTextInputTexts } from './texts.ts'
 export function Widths() {
   const { texts, textLang } = useTextInputTexts()
   return (
-    <Stack gap="8" lang={textLang}>
+    <Stack className="kv-stack--gap-8" lang={textLang}>
       <Field.Root required>
         <Field.Label>{texts.houseNumber}</Field.Label>
         <TextInput name="houseNumber" className="kv-input--width-4" />

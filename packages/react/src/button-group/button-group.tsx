@@ -6,11 +6,9 @@ import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { ToolbarContext } from '../toolbar/toolbar-context.ts'
 import { useButtonGroup } from './use-button-group.ts'
-import type { UseButtonGroupOptions } from './use-button-group.ts'
 
 /** `role` is left out: it comes from the name. */
-export type ButtonGroupProps = Omit<ComponentPropsWithRef<'div'>, 'role'> &
-  Pick<UseButtonGroupOptions, 'layout'>
+export type ButtonGroupProps = Omit<ComponentPropsWithRef<'div'>, 'role'>
 
 /**
  * A row of related Buttons: one `<div class="kv-button-group">` (contract:
@@ -18,8 +16,8 @@ export type ButtonGroupProps = Omit<ComponentPropsWithRef<'div'>, 'role'> &
  * `role="group"`, so a screen reader says where the buttons belong. Without a name it is a plain
  * `<div>`, so an unnamed Card footer adds nothing to the accessibility tree.
  *
- * `layout="attached"` joins the buttons into one strip, like a segmented control. It changes the
- * look only.
+ * Add `kv-button-group--attached` to join the buttons into one strip, like a segmented control.
+ * It changes the look only.
  *
  * It holds no state and handles no keys: every button is its own Tab stop. For one Tab stop and
  * the arrow keys, put the buttons in a `Toolbar`. **A group in a Toolbar needs a name.**
@@ -30,14 +28,10 @@ export type ButtonGroupProps = Omit<ComponentPropsWithRef<'div'>, 'role'> &
  *   <Button className="kv-button--primary">Skicka</Button>
  * </ButtonGroup>
  */
-export function ButtonGroup({
-  ref,
-  layout = 'spaced',
-  ...otherProps
-}: ButtonGroupProps): ReactElement {
+export function ButtonGroup({ ref, ...otherProps }: ButtonGroupProps): ReactElement {
   const isNamed =
     otherProps['aria-label'] !== undefined || otherProps['aria-labelledby'] !== undefined
-  const group = useButtonGroup({ isNamed, layout })
+  const group = useButtonGroup({ isNamed })
   const toolbar = useContext(ToolbarContext)
   const isInToolbar = toolbar !== null
   const mergedRef = useMergedRef(ref, null)

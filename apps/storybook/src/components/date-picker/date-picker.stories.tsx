@@ -249,14 +249,14 @@ export const NarrowDefault: Story = {
   },
 }
 
-/** The seven locales, closed: the trigger's text in each (Finnish is the longest and wraps below the boxes). */
+/** The locales, closed: the trigger's text in each (Finnish is the longest and wraps below the boxes). */
 export const Locales: Story = {
   parameters: source('LocalePickers'),
   render: () => <LocalePickers />,
   play: async ({ canvas }) => {
     await expect(
       canvas.getAllByRole('button', { name: /Välj|Valitse|Velg|Vel |Choose/ }),
-    ).toHaveLength(7)
+    ).toHaveLength(6)
   },
 }
 

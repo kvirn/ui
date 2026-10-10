@@ -19,7 +19,7 @@ import { useState } from 'react'
 import { codeTextsFor } from '../one-time-code/one-time-code.fixture.tsx'
 
 // Story fixture for Components/Form/Mask (Plan 0014). sv, nb, nn and en
-// are written here. fi and se: English, marked lang="en" (3.1.2). The numbers are the published test numbers from packages/core/src/mask/checks
+// are written here. fi and The numbers are the published test numbers from packages/core/src/mask/checks
 // tests (Skatteverket, DVV, Skatteetaten, the SWIFT registry), never real people's.
 //
 // KvirnUI holds no form state. The mask shapes what is typed, and the form
@@ -467,13 +467,13 @@ const maskMessages = { sv, nb, nn, en }
 const isMaskLocale = (value: unknown): value is MaskLocale =>
   value === 'sv' || value === 'nb' || value === 'nn' || value === 'en'
 
-/** The toolbar's locale, or `en` for fi and se, which show English here. */
+/** The toolbar's locale, or `en` for fi, which show English here. */
 export const maskLocaleOf = (globals: Record<string, unknown>): MaskLocale => {
   const locale = globals['locale']
   return isMaskLocale(locale) ? locale : 'en'
 }
 
-/** The fixture text, and `lang="en"` when the toolbar's locale has no texts here (fi, se; 3.1.2). */
+/** The fixture text, and `lang="en"` when the toolbar's locale has no texts here (fi; 3.1.2). */
 export function maskTextsFor(globals: Record<string, unknown>): {
   text: MaskTexts
   lang: 'en' | undefined
@@ -499,7 +499,7 @@ export const maximumLengthMessage = (locale: MaskLocale, length: number): string
 
 /**
  * The provider, with the library strings in the page's language: the mask's announcements come
- * from its catalog. fi and se show English. `country="SE"` because every example here is
+ * from its catalog. fi show English. `country="SE"` because every example here is
  * Swedish whatever the language: the country masks would otherwise follow the toolbar's locale
  * (nb is Norway, and English has no country).
  */

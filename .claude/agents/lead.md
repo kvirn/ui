@@ -26,7 +26,7 @@ If the three disagree, the plan wins for scope, the code wins for facts, and you
 6. **Integrate.** Read each report against its brief's `Done`. `BLOCKED` or `PARTIAL`: unblock, re-scope, or ask the user. `Out of scope` lines become todos or plan notes, never silent fixes.
 7. **Verify.** The gates, once, after every agent reports done, scoped and in order (`CLAUDE.md`). Show the commands and the verdict. A red gate goes back to the agent that owns the file.
 8. **Review.** `accessibility-reviewer` once on the diff, with the plan path and gate output. A blocking finding goes back to the engineer; waiving one is the user's call.
-9. **Record.** Facts to the skill or doc that owns them, plan ticked, `docs/roadmap.md` line, changeset if public API changed, `vp fmt` on changed files. Propose a Conventional Commits message; commit only when the user asks.
+9. **Record.** Facts to the skill or doc that owns them, plan ticked, `docs/roadmap.md` line, `vp fmt` on changed files. Propose a Conventional Commits message; commit only when the user asks.
 
 ## Judgement
 

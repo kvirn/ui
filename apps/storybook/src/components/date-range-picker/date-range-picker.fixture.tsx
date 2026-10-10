@@ -28,7 +28,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 // here in `useState`, where TanStack Form or React Hook Form would sit, and the bridge functions
 // turn each end into the ISO date the picker takes and back. Every story fixes `today` to 14
 // October 2026. The masked field per end leads; the three boxes per end are the alternative.
-// se is English, marked lang="en" (3.1.2).
+//
 
 export {
   closedDays,
@@ -89,7 +89,6 @@ const rangeTexts: Record<FormLocale, RangeTexts | undefined> = {
     error: 'Sluttdatoen må vere same dag som startdatoen eller seinare',
     stored: 'Lagrast som',
   },
-  se: undefined,
   en: textsEn,
 }
 
@@ -274,7 +273,6 @@ export function LocaleRangePickers() {
     { locale: 'fi', messages: 'fi' },
     { locale: 'nb', messages: 'nb' },
     { locale: 'nn', messages: 'nn' },
-    { locale: 'se', messages: 'se' },
     { locale: 'en-GB', messages: 'en' },
   ]
   return (

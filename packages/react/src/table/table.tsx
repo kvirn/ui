@@ -707,7 +707,7 @@ export function TableExpandButton<TFeatures extends TableFeatures, TData extends
             {table?.expandButtonText}
             <Icon
               name={isExpanded ? 'chevron-up' : 'chevron-down'}
-              size={5}
+              size="20"
               className="kv-table-expand-icon"
             />
           </>

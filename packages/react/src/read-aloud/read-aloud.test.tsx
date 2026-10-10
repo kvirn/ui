@@ -60,6 +60,7 @@ function Player({
   inner,
   locale,
   contentLang = 'en',
+  ancestorLang,
   ...options
 }: {
   fake: Fake
@@ -67,7 +68,8 @@ function Player({
   spacer?: boolean
   inner?: { lang: string; text: string }
   locale?: string
-  contentLang?: string
+  contentLang?: string | null
+  ancestorLang?: string
 } & Partial<UseReadAloudOptions>) {
   const contentRef = useRef<HTMLElement>(null)
   return (
@@ -82,16 +84,18 @@ function Player({
         <ReadAloud.Status />
         <ReadAloud.SelectionTrigger />
       </ReadAloud.Root>
-      <article ref={contentRef} lang={contentLang}>
-        <p>First sentence.</p>
-        {spacer ? <div style={{ height: 4000 }} /> : null}
-        <p id="second">Second sentence.</p>
-        {inner === undefined ? null : (
-          <p id="inner" lang={inner.lang}>
-            {inner.text}
-          </p>
-        )}
-      </article>
+      <div {...(ancestorLang === undefined ? {} : { lang: ancestorLang })}>
+        <article ref={contentRef} {...(contentLang === null ? {} : { lang: contentLang })}>
+          <p>First sentence.</p>
+          {spacer ? <div style={{ height: 4000 }} /> : null}
+          <p id="second">Second sentence.</p>
+          {inner === undefined ? null : (
+            <p id="inner" lang={inner.lang}>
+              {inner.text}
+            </p>
+          )}
+        </article>
+      </div>
     </KvirnProvider>
   )
 }
@@ -324,9 +328,9 @@ describe('controls', () => {
     await expect.element(page.getByRole('option', { name: 'English Two' })).toBeInTheDocument()
   })
 
-  test('the language option picks the voice', async () => {
+  test('the content’s lang picks the voice', async () => {
     const fake = createFakeEngine({ voices: [englishVoice, swedishVoice] })
-    await render(<Player fake={fake} lang="sv" />)
+    await render(<Player fake={fake} contentLang="sv" />)
     await userEvent.click(play())
     expect(fake.spoken[0]).toMatchObject({ language: 'sv', voiceURI: 'sv-one' })
   })
@@ -1036,13 +1040,13 @@ describe('languages inside the content', () => {
     })
   })
 
-  test('the lang option is the default for unmarked text and an inner lang attribute wins', async () => {
+  test('unmarked text takes the closest lang above the content and an inner lang attribute wins', async () => {
     const fake = createFakeEngine({ voices: [englishVoice, swedishVoice] })
     await render(
       <Player
         fake={fake}
-        lang="sv"
-        contentLang=""
+        ancestorLang="sv"
+        contentLang={null}
         inner={{ lang: 'en', text: 'English inner.' }}
       />,
     )

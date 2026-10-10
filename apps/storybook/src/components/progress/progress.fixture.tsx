@@ -4,7 +4,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Fixtures for Components/Progress. Each function is one example, and the story's "Show code"
 // prints it, so it reads the way an adopter writes it. Nothing here calls a server: the send
-// "takes" as long as the timers say. se is English, marked lang="en" (3.1.2).
+// "takes" as long as the timers say.
 
 export interface ProgressTexts {
   sending: string
@@ -71,11 +71,10 @@ const progressTexts: Record<FormLocale, ProgressTexts | undefined> = {
   fi: textsFi,
   nb: textsNb,
   nn: textsNn,
-  se: undefined,
   en: textsEn,
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+/** The fixture text in a locale. */
 export function progressTextsFor(locale: FormLocale): {
   text: ProgressTexts
   lang: 'en' | undefined

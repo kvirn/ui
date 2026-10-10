@@ -7,7 +7,7 @@ export function ServiceLink() {
   return (
     <Link.Root href="#building-permit" className="kv-link--service" lang={textLang}>
       <Link.Icon>
-        <Icon name="arrow-forward" size={6} />
+        <Icon name="arrow-forward" size="24" />
       </Link.Icon>
       {texts.service}
     </Link.Root>

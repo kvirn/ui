@@ -51,8 +51,8 @@ export function StackPage({
             form or the items of a list.
           </li>
           <li>
-            Pick the space with <code>gap</code>: a smaller step inside a group, a larger one
-            between sections.
+            Pick the space with a gap class, <code>kv-stack--gap-2</code>, <code>-4</code> or{' '}
+            <code>-8</code>: a smaller step inside a group, a larger one between sections.
           </li>
           <li>
             Use <code>as</code> to make it the element the content needs, such as a <code>ul</code>{' '}
@@ -77,7 +77,7 @@ export function StackPage({
             why="A page is a series of bands. Nest a tight stack for each section’s own content inside a loose stack for the page, so the sections read as groups."
             code={sources['sections']}
             propsUsed={[
-              { part: 'Stack', prop: 'gap' },
+              { part: 'Stack', prop: 'className' },
               { part: 'Stack', prop: 'as' },
             ]}
           >
@@ -88,7 +88,7 @@ export function StackPage({
             title="Choosing the space"
             why="Items that belong together sit closer than separate blocks. The same lines are shown with the three steps that differ from the default."
             code={sources['gaps']}
-            propsUsed={[{ part: 'Stack', prop: 'gap' }]}
+            propsUsed={[{ part: 'Stack', prop: 'className' }]}
           >
             <Gaps />
           </UseCase>
@@ -103,7 +103,7 @@ export function StackPage({
             }
             code={sources['list']}
             propsUsed={[
-              { part: 'Stack', prop: 'gap' },
+              { part: 'Stack', prop: 'className' },
               { part: 'Stack', prop: 'as' },
             ]}
             note={
@@ -121,7 +121,7 @@ export function StackPage({
             why="Render the stack as a form, and stack each label with its field in a tighter stack inside it. The reading order stays the DOM order."
             code={sources['form']}
             propsUsed={[
-              { part: 'Stack', prop: 'gap' },
+              { part: 'Stack', prop: 'className' },
               { part: 'Stack', prop: 'as' },
             ]}
           >

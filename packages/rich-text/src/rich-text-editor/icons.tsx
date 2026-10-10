@@ -64,7 +64,7 @@ export interface ToolbarIconProps {
 
 /**
  * A decorative icon for a toolbar control: an `<svg aria-hidden>` that takes the control's text
- * colour (`currentColor`) and the size of the text around it, so it follows 200% zoom. The control
+ * colour (`currentColor`) and a 20px size in rem, so it follows 200% zoom. The control
  * has its own name, so the icon is never the only label.
  */
 export function ToolbarIcon({ name, paths, mirrorInRtl }: ToolbarIconProps): ReactElement {
@@ -72,11 +72,10 @@ export function ToolbarIcon({ name, paths, mirrorInRtl }: ToolbarIconProps): Rea
   const isMirrored = mirrorInRtl ?? (name !== undefined && mirroredInRtl.has(name))
   return (
     <svg
-      className="kv-icon"
-      data-size="5"
+      className="kv-icon kv-icon--size-20"
       {...(isMirrored ? { 'data-mirror-in-rtl': '' } : {})}
-      width="1.25em"
-      height="1.25em"
+      width="1.25rem"
+      height="1.25rem"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"

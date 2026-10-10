@@ -8,13 +8,13 @@
 
 ## Roles, states, properties
 
-| Part                | Element / role           | ARIA / state | Notes                                                                  |
-| ------------------- | ------------------------ | ------------ | ---------------------------------------------------------------------- |
-| `PageFrame.Root`    | `<div lang>`             | `lang`       | The page's language, with the provider's locale and catalog (3.1.1)    |
-| Skip link           | `<a href="#main">`       | none         | First in the DOM, written by the root. Moves focus to `main`           |
-| `PageFrame.Main`    | `<main id>`              | none         | One per page, `id` from the root's `mainId`. The only `h1` goes here   |
-| `PageFrame.Body`    | `<div>` in a `Container` | none         | Only with a sidebar: holds `PageFrame.Sidebar` and `PageFrame.Main`    |
-| `PageFrame.Sidebar` | `<nav>` or `<aside>`     | a name       | Before `Main` in the DOM: beside it from 64rem, stacked above it below |
+| Part                | Element / role           | ARIA / state | Notes                                                                                                                     |
+| ------------------- | ------------------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `PageFrame.Root`    | `<div>`                  | none         | The page's language is `<html lang>`'s (3.1.1). A frame in another language spreads `useLocale().localeProps` on the root |
+| Skip link           | `<a href="#main">`       | none         | First in the DOM, written by the root. Moves focus to `main`                                                              |
+| `PageFrame.Main`    | `<main id>`              | none         | One per page, `id` from the root's `mainId`. The only `h1` goes here                                                      |
+| `PageFrame.Body`    | `<div>` in a `Container` | none         | Only with a sidebar: holds `PageFrame.Sidebar` and `PageFrame.Main`                                                       |
+| `PageFrame.Sidebar` | `<nav>` or `<aside>`     | a name       | Before `Main` in the DOM: beside it from 64rem, stacked above it below                                                    |
 
 Header, alert, breadcrumb and footer are children of the root, in the order written. DOM order is reading and focus order at every width: skip link, banner, alert, breadcrumb, main, contentinfo. No `order`, nothing sticky.
 

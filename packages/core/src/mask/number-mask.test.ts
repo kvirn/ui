@@ -5,7 +5,7 @@ import { insert, remove, showCaret } from './mask-test-support.ts'
 const nbsp = ' '
 
 describe('number masks: locale separators', () => {
-  it.each(['sv', 'fi', 'nb', 'nn', 'se'])('%s shows a comma', (locale) => {
+  it.each(['sv', 'fi', 'nb', 'nn'])('%s shows a comma', (locale) => {
     const mask = masks.number({ decimals: 2, locale })
     expect(mask.apply({ value: '12.5', previousValue: '' }).value).toBe('12,5')
     expect(mask.apply({ value: '12,5', previousValue: '' }).value).toBe('12,5')

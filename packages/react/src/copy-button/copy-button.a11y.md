@@ -109,4 +109,4 @@ Headless: CopyButton ships no CSS. With `@kvirn-ui/theme/theme.css` it is a Butt
 - **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
 - **The status is not a live region on purpose:** the Announcer already speaks it, and a second region would say it twice. Browse mode reads the same words.
 - **Selection is not read in browse mode** by every screen reader: the failure message tells the user to copy the text themselves.
-- **fi, nb, nn and se strings** are drafts or placeholders for native review.
+- **fi, nb and nn strings** are drafts or placeholders for native review.

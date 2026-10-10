@@ -4,7 +4,7 @@ import type { FormLocale } from './form.fixture.tsx'
 // `messages`, `controlId`, several descriptions, a group, a required group and an optional section.
 // What the consumer writes (the labels, the descriptions, the errors, the words that replace the
 // library's own) belongs to the form, not to the library, so it lives here and not in a catalog.
-// sv, fi, nb, nn and en are written. se: English, marked lang="en" (3.1.2).
+// sv, fi, nb, nn and en are written.
 
 export interface FormGapTexts {
   /** Replaces the library's "(valfritt)" in one Field or Fieldset: the `messages` example. */
@@ -94,17 +94,15 @@ const textsNn: FormGapTexts = {
   sectionHint: 'Fyll ut viss nokon andre kan svare for deg.',
 }
 
-/** se has no texts: it shows the English ones, marked lang="en". */
 const gapTexts: Record<FormLocale, FormGapTexts | undefined> = {
   sv: textsSv,
   fi: textsFi,
   nb: textsNb,
   nn: textsNn,
-  se: undefined,
   en: textsEn,
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+/** The fixture text in a locale. */
 export function gapTextsFor(locale: FormLocale): { text: FormGapTexts; lang: 'en' | undefined } {
   const text = gapTexts[locale]
   return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }

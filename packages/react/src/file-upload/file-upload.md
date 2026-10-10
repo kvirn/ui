@@ -52,7 +52,7 @@ A FileUpload attaches files to a form. **One native button opens the system file
 | `data-invalid`, `data-disabled` | Root, DropZone and Trigger: from the Field or the `disabled` option                     |
 | `data-status`                   | Item and Status: `pending`, `uploading`, `complete`, `failed` or `cancelled`            |
 
-- **Message keys** (`messages`, namespace `fileUpload`, all six languages): the Trigger's text (`chooseFiles`, `chooseFile`, `replaceFile`), the hints (`dropHint`, `dropHintActive`), the limits (`limitsMaxFiles`, `limitsTypes`, `limitsMaxSize`), the summary (`summary`, `summaryOfMax`, `summaryFull`), the rejections (`rejectedHeading`, `errorType`, `errorTooLarge`, `errorTooSmall`, `errorEmpty`, `errorTooMany`, `errorDuplicate`, `errorFolder`, `rejectedFilePosition`), the statuses (`statusReady`, `statusQueued`, `statusUploading`, `statusUploadingPercent`, `statusComplete`, `statusFailed`, `statusCancelled`, `uploadFailedMessage`), the file (`typeUnknown`, `duplicateName`), the buttons and their names (`remove`, `cancel`, `retry`, `removeFile`, `cancelFile`, `retryFile`, `uploadingFile`) and the announcements (`fileAdded`, `filesAdded`, `filesRejected`, `uploadsStarted`, `uploadComplete`, `uploadsComplete`, `allUploadsComplete`, `uploadFailed`, `uploadsFailed`, `fileRemoved`, `announcementForField`). A visible text and its button name change together: override `remove` and `removeFile` as a pair, or the name no longer starts with its visible text (2.5.3).
+- **Message keys** (`messages`, namespace `fileUpload`, all five languages): the Trigger's text (`chooseFiles`, `chooseFile`, `replaceFile`), the hints (`dropHint`, `dropHintActive`), the limits (`limitsMaxFiles`, `limitsTypes`, `limitsMaxSize`), the summary (`summary`, `summaryOfMax`, `summaryFull`), the rejections (`rejectedHeading`, `errorType`, `errorTooLarge`, `errorTooSmall`, `errorEmpty`, `errorTooMany`, `errorDuplicate`, `errorFolder`, `rejectedFilePosition`), the statuses (`statusReady`, `statusQueued`, `statusUploading`, `statusUploadingPercent`, `statusComplete`, `statusFailed`, `statusCancelled`, `uploadFailedMessage`), the file (`typeUnknown`, `duplicateName`), the buttons and their names (`remove`, `cancel`, `retry`, `removeFile`, `cancelFile`, `retryFile`, `uploadingFile`) and the announcements (`fileAdded`, `filesAdded`, `filesRejected`, `uploadsStarted`, `uploadComplete`, `uploadsComplete`, `allUploadsComplete`, `uploadFailed`, `uploadsFailed`, `fileRemoved`, `announcementForField`). A visible text and its button name change together: override `remove` and `removeFile` as a pair, or the name no longer starts with its visible text (2.5.3).
 - **Dev warnings (once):** a part outside a Root or an Item; limits set but not said; no Announcer; a browser that can't set the files of the input.
 
 ## Component
@@ -154,7 +154,7 @@ Through the shared Announcer (`KvirnProvider`), politely: files added and refuse
 
 ## Strings
 
-The component's strings (buttons, status, errors, announcements) are in the `fileUpload` namespace of all six locales, and can be overridden per provider and per instance (`messages`). **The label and the description are yours,** because they say what to attach and why. Northern Sámi starts as English.
+The component's strings (buttons, status, errors, announcements) are in the `fileUpload` namespace of all five locales, and can be overridden per provider and per instance (`messages`). **The label and the description are yours,** because they say what to attach and why.
 
 ## Hook
 

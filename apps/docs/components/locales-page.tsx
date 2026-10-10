@@ -90,16 +90,16 @@ export function LocalesPage({
   return (
     <PageWithContents
       title="Locales and strings"
-      lead="KvirnUI ships its texts in six languages, and every text can be replaced for your whole app, a part of the page or a single component."
+      lead="KvirnUI ships its texts in five languages, and every text can be replaced for your whole app, a part of the page or a single component."
       sections={[
         {
           id: 'languages',
-          label: 'The six languages',
+          label: 'The five languages',
           content: (
             <>
               <p>
-                All six are first-class, and English is built in as the fallback. Import the catalog
-                you need from its own path and only the catalogs you import are bundled.
+                All five are first-class, and English is built in as the fallback. Import the
+                catalog you need from its own path and only the catalogs you import are bundled.
               </p>
               <TableScrollRegion aria-labelledby="languages">
                 <TableRoot aria-labelledby="languages">
@@ -125,13 +125,6 @@ export function LocalesPage({
                   </TableBody>
                 </TableRoot>
               </TableScrollRegion>
-              <Note kind="tip">
-                Northern Sámi (<code>se</code>) is not translated yet. Most of its strings are
-                English placeholders, apart from the Alert and Combobox texts, which a native
-                speaker should still review. Under <code>lang=&quot;se&quot;</code> those strings
-                are read as English, a known issue in each contract. If a service needs Northern
-                Sámi, pass your own texts for the keys you use.
-              </Note>
             </>
           ),
         },

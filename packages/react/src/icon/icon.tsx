@@ -11,7 +11,9 @@ import type { UseIconOptions } from './use-icon.ts'
 
 /**
  * The accessible name comes from `label` only, so `aria-label`, `aria-hidden` and `role` are
- * left out. Icon's own options replace the SVG attributes of the same name.
+ * left out, and so are `color`, `fill`, `stroke` and `strokeWidth`: an icon draws with
+ * `currentColor`, so colour it with a class or `style` on a wrapper. Icon's own options replace the
+ * SVG attributes of the same name.
  */
 interface IconBaseProps
   extends
@@ -25,6 +27,10 @@ interface IconBaseProps
       | 'aria-label'
       | 'aria-hidden'
       | 'role'
+      | 'color'
+      | 'fill'
+      | 'stroke'
+      | 'strokeWidth'
     >,
     Omit<UseIconOptions, 'name'> {
   ref?: Ref<SVGSVGElement> | undefined
@@ -42,7 +48,7 @@ interface IconByComponentProps {
   name?: never
   /**
    * A component from an icon library, or your own: `icon={Search}`. It needs no registration.
-   * Icon's `size`, `color` and `label` replace the component's own, and `className` is joined with it.
+   * Icon's `size` and `label` replace the component's own, and `className` is joined with it.
    */
   icon: IconComponent
   as?: never
@@ -55,7 +61,7 @@ interface IconByAsProps {
   /**
    * A one-off icon that isn't registered, such as a municipality's mark: `as={MunicipalityMark}`.
    * It gets Icon's props as plain props (`width`, `height`, `aria-hidden`, `role`, `className`),
-   * and Icon's own options (`size`, `label`, `color`) do not reach it under their own names. It
+   * and Icon's own options (`size`, `label`) do not reach it under their own names. It
    * must spread them on its `<svg>` and take a `ref`.
    */
   as: ElementType
@@ -83,17 +89,13 @@ const unknownNameProps = Object.freeze({ viewBox: '0 0 24 24' })
  * @example
  * <Icon name="close" />
  * <Icon icon={Search} label={messages.search} />
- * <Icon name="warning" label={messages.warning} size={6} />
+ * <Icon name="warning" label={messages.warning} size="24" />
  * <Button><Icon name="add" />Lägg till</Button>
  */
 export function Icon({
   name,
   icon: iconComponent,
   size,
-  strokeWidth,
-  color,
-  fill,
-  stroke,
   label,
   mirrorInRtl,
   as,
@@ -101,7 +103,7 @@ export function Icon({
   ref,
   ...otherProps
 }: IconProps): ReactElement {
-  const icon = useIcon({ name, size, strokeWidth, color, fill, stroke, label, mirrorInRtl })
+  const icon = useIcon({ name, size, label, mirrorInRtl })
   const elementRef = useMergedRef(ref, null)
 
   const sources = [

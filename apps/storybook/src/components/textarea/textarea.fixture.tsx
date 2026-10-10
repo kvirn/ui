@@ -7,7 +7,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 // code" prints it (`showSource`), so it reads the way an adopter writes it: the real parts and
 // props, with the localised text taken at the top. KvirnUI holds no form state and nothing here
 // validates: an invalid example sets `invalid` and writes its message itself, as your form logic
-// would. sv, en, fi, nb and nn are written. se shows the English texts, marked lang="en" (3.1.2).
+// would. sv, en, fi, nb and nn are written.
 
 export interface TextareaTexts {
   /** The question. */
@@ -97,17 +97,15 @@ const textsNn: TextareaTexts = {
   errorTooLong: (limit) => `Skildringa kan vere maks ${limit} teikn. Fjern litt tekst.`,
 }
 
-/** se has no texts: it shows the English ones, marked lang="en". */
 const textareaTexts: Record<FormLocale, TextareaTexts | undefined> = {
   sv: textsSv,
   fi: textsFi,
   nb: textsNb,
   nn: textsNn,
-  se: undefined,
   en: textsEn,
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se (3.1.2). */
+/** The fixture text in a locale. */
 export function textareaTextsFor(locale: FormLocale): {
   text: TextareaTexts
   lang: 'en' | undefined

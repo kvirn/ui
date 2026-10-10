@@ -7,8 +7,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 // Fixtures for Components/Toast: each function is one example, and the story's "Show code" prints
 // it (`showSource`), so it reads the way an adopter writes it. The words are example content, not
 // the component's strings (its one string is `toast.regionLabel`, the region's name). sv, fi, nb,
-// nn and en are written; se shows the English text, marked lang="en" (3.1.2), with the English
-// library strings and an English provider, so the region is named in English too.
+// nn and en are written.
 
 interface ToastTexts {
   saveSettings: string
@@ -244,7 +243,7 @@ const toastTexts: Partial<Record<FormLocale, ToastTexts>> = {
   },
 }
 
-/** The fixture text in a locale, or English with `lang="en"` for se, which has none. */
+/** The fixture text in a locale, */
 export function toastTextsFor(locale: FormLocale) {
   const text = toastTexts[locale]
   return {

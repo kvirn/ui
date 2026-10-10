@@ -10,7 +10,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 // integers, so they read the same in every locale (no number words). The component adds no strings of its own: the label and the help text belong to the consumer,
 // because they name the channel and the length. The strings below are fixture text, with keys
 // local to this file. sv, en, fi, nb and nn are written (the fi strings are the designer's drafts, for
-// length checks). se: English, marked lang="en" (3.1.2). The library's own strings (the mask's
+// length checks). The library's own strings (the mask's
 // rejection messages, "Error:") follow the locale through the shared provider decorator.
 //
 // KvirnUI holds no form state. Nothing here validates or checks the code: an
@@ -184,17 +184,15 @@ const textsNn: OneTimeCodeTexts = {
   slotSelected: 'Eit utval: rutene det dekkjer er markerte',
 }
 
-/** se has no texts: it shows the English ones, marked lang="en". */
 const oneTimeCodeTexts: Record<FormLocale, OneTimeCodeTexts | undefined> = {
   sv: textsSv,
   fi: textsFi,
   nb: textsNb,
   nn: textsNn,
-  se: undefined,
   en: textsEn,
 }
 
-/** The fixture text in a locale, or the English text for se. */
+/** The fixture text in a locale. */
 export function oneTimeCodeTextsFor(locale: FormLocale): OneTimeCodeTexts {
   return oneTimeCodeTexts[locale] ?? textsEn
 }
@@ -245,7 +243,7 @@ const labelsFor = (texts: OneTimeCodeTexts, kind: CodeKind, pattern: string) => 
 /**
  * What a story's Field says, in a locale: the label, the description above the boxes (the length
  * and the groups must be read before typing), the error for a wrong code, and the Continue button.
- * `lang` is `'en'` where the fixture shows English (se): put it on the Field (3.1.2).
+ * `lang` is `'en'` where the fixture shows English: put it on the Field (3.1.2).
  */
 export function codeTextsFor(locale: FormLocale, kind: CodeKind, pattern: string) {
   const texts = oneTimeCodeTextsFor(locale)

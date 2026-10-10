@@ -13,12 +13,12 @@ A typed headless core with thin React bindings, built the TanStack way: behaviou
 - **Accessible by default.** WCAG 2.2 AA, EN 301 549 and the EAA are the baseline. Every component ships with a documented accessibility contract, automated axe checks and a manual screen reader test record.
 - **Headless, with you in control.** Hooks for full control, thin components for convenience.
 - **Easy to theme.** State is exposed through `data-*` attributes and design tokens are CSS custom properties, so Tailwind, CSS Modules or plain CSS all work. An optional default theme passes contrast checks in light, dark and forced-colors modes.
-- **Built for Nordic public services.** Swedish, Finnish, Norwegian (Bokmål and Nynorsk), Northern Sámi and English strings ship as standard.
+- **Built for Nordic public services.** Swedish, Finnish, Norwegian (Bokmål and Nynorsk) and English strings ship as standard.
 - **Evidence you can hand to procurement.** No telemetry and no third-party requests today. Planned for M3 and later: a per-component conformance report with each release, a CycloneDX SBOM, npm provenance and a `SECURITY.md` (see Status below). Free for personal use; any other use needs a commercial licence ([LICENSING.md](LICENSING.md)).
 
 ## Status
 
-Version 0.0.0, pre-alpha. True today: 56 documented components, six locales, light, dark and increased-contrast themes, a written keyboard contract and axe-checked stories for every component, no telemetry. Planned, not yet shipped: the per-component conformance report (M3), the SBOM, npm provenance and `SECURITY.md` (before the first public 0.x), and the manual assistive-technology matrix (`pending`). Details in [docs/roadmap.md](docs/roadmap.md).
+Version 0.0.0, pre-alpha. True today: 56 documented components, five locales, light, dark and increased-contrast themes, a written keyboard contract and axe-checked stories for every component, no telemetry. Planned, not yet shipped: the per-component conformance report (M3), the SBOM, npm provenance and `SECURITY.md` (before the first public 0.x), and the manual assistive-technology matrix (`pending`). Details in [docs/roadmap.md](docs/roadmap.md).
 
 ## Packages
 
@@ -27,7 +27,7 @@ Version 0.0.0, pre-alpha. True today: 56 documented components, six locales, lig
 | `@kvirn-ui/core`      | Framework-agnostic state machines, focus and keyboard logic (TypeScript)      |
 | `@kvirn-ui/react`     | Headless React hooks and components                                           |
 | `@kvirn-ui/rich-text` | Rich text editor on Tiptap (peer dependencies)                                |
-| `@kvirn-ui/i18n`      | Locale strings for sv, fi, nb, nn, se and en                                  |
+| `@kvirn-ui/i18n`      | Locale strings for sv, fi, nb, nn and en                                  |
 | `@kvirn-ui/theme`     | Optional default theme: one readable `theme.css` you import, override or copy |
 | `@kvirn-ui/testing`   | a11y test helpers for Vitest                                                  |
 | `@kvirn-ui/blocks`    | Planned: copy-in styled patterns for public-sector UIs                        |

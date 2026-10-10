@@ -2,7 +2,6 @@ import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
-import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, StrictMode, useRef, useState } from 'react'
@@ -1156,7 +1155,7 @@ describe('Alert.Close', () => {
   })
 
   test('every shipped locale has a non-empty name for it', () => {
-    for (const catalog of [sv, fi, nb, nn, se, en]) {
+    for (const catalog of [sv, fi, nb, nn, en]) {
       expect(typeof catalog.alert.close === 'string' ? catalog.alert.close.trim() : '').not.toBe('')
     }
   })

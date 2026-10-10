@@ -71,7 +71,7 @@ Only changes made while the box has focus are announced: a text set from code (a
 
 ### Message keys
 
-`characterCount.limit` (`limit`), `characterCount.remaining` (`count`) and `characterCount.over` (`count`), in all six locales (`se` is English until a native speaker writes it). Counts and the limit are formatted for the locale, and the plural forms use `format.plural`. Override per provider or per instance (`messages`). The label, description, help text and error stay the consumer's.
+`characterCount.limit` (`limit`), `characterCount.remaining` (`count`) and `characterCount.over` (`count`), in all five locales. Counts and the limit are formatted for the locale, and the plural forms use `format.plural`. Override per provider or per instance (`messages`). The label, description, help text and error stay the consumer's.
 
 ## Consumer responsibilities
 
@@ -136,5 +136,4 @@ Research questions for the AT run: is the count read once with the value when th
 - **Auto-grow needs `field-sizing: content` and typed `attr()`.** Elsewhere `rows` sets the height and the text scrolls inside, with a native scrollbar and a resize handle. There is no JavaScript auto-grow, by decision (Plan 0034).
 - **An uncontrolled box with `characterCount` doesn't see a value set from code.** It counts typing, follows a native form reset, and reads the element's value on mount and on `pageshow` (the browser restores a form without an input event). A value you write to the element later is not seen: pass `value`.
 - **Manual AT is `pending`.** The debounce (500 ms) and the 80% threshold need NVDA, VoiceOver, TalkBack and Dragon.
-- **`se` strings are English** until a native speaker writes them.
 - **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.

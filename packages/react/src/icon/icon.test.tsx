@@ -20,13 +20,7 @@ import type { IconProps } from './icon.tsx'
 import { defineIcons } from './icon-registry.ts'
 import type { IconComponent, IconName, IconNameOf, IconsOf } from './icon-registry.ts'
 import { useIcon } from './use-icon.ts'
-import type {
-  IconPartProps,
-  IconScale,
-  IconSize,
-  UseIconOptions,
-  UseIconResult,
-} from './use-icon.ts'
+import type { IconPartProps, IconSize, UseIconOptions, UseIconResult } from './use-icon.ts'
 
 // Contract: icon.a11y.md. Plan 0009.
 
@@ -192,20 +186,18 @@ describe('registry', () => {
 
   test('iconDefaults apply below the instance props, and merge by field when nested', async () => {
     const { container } = await render(
-      <KvirnProvider icons={libraryIcons} iconDefaults={{ strokeWidth: 1.5, size: 6 }}>
-        <KvirnProvider iconDefaults={{ size: 4 }}>
+      <KvirnProvider icons={libraryIcons} iconDefaults={{ size: '24' }}>
+        <KvirnProvider iconDefaults={{ size: '16' }}>
           <RegisteredIcon name="lucide-trash" />
-          <RegisteredIcon name="lucide-trash" strokeWidth={3} size="32px" />
+          <RegisteredIcon name="lucide-trash" size="32" />
         </KvirnProvider>
       </KvirnProvider>,
     )
     const [fromDefaults, fromProps] = container.querySelectorAll('svg')
-    expect(fromDefaults?.getAttribute('stroke-width')).toBe('1.5')
-    expect(fromDefaults?.getAttribute('width')).toBe('1em')
-    expect(fromDefaults?.getAttribute('data-size')).toBe('4')
-    expect(fromProps?.getAttribute('stroke-width')).toBe('3')
-    expect(fromProps?.getAttribute('width')).toBe('32px')
-    expect(fromProps?.hasAttribute('data-size')).toBe(false)
+    expect(fromDefaults?.getAttribute('width')).toBe('1rem')
+    expect(fromDefaults?.classList.contains('kv-icon--size-16')).toBe(true)
+    expect(fromProps?.getAttribute('width')).toBe('2rem')
+    expect(fromProps?.classList.contains('kv-icon--size-32')).toBe(true)
   })
 
   test("the entry's mirrorInRtl applies, and the instance prop overrides it", async () => {
@@ -245,7 +237,7 @@ describe('registry', () => {
     const { container } = await render(
       <>
         <Icon name={unknownName} />
-        <Icon name={unknownName} size={6} />
+        <Icon name={unknownName} size="24" />
       </>,
     )
     const [first, second] = container.querySelectorAll('svg')
@@ -253,8 +245,8 @@ describe('registry', () => {
     expect(first?.getAttribute('aria-hidden')).toBe('true')
     // Without a viewBox, a replaced element's default height (150px) could apply.
     expect(first?.getAttribute('viewBox')).toBe('0 0 24 24')
-    expect(first?.getAttribute('width')).toBe('1.25em')
-    expect(second?.getAttribute('width')).toBe('1.5em')
+    expect(first?.getAttribute('width')).toBe('1.25rem')
+    expect(second?.getAttribute('width')).toBe('1.5rem')
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('"not-registered"')
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('defineIcons')
@@ -278,7 +270,7 @@ describe('registry', () => {
       const svg = svgIn(container)
       expect(svg.children).toHaveLength(0)
       expect(svg.getAttribute('aria-hidden')).toBe('true')
-      expect(svg.getAttribute('width')).toBe('1.25em')
+      expect(svg.getAttribute('width')).toBe('1.25rem')
       expect(consoleWarn).toHaveBeenCalledTimes(1)
       expect(consoleWarn.mock.calls[0]?.[0]).toContain(`"${inherited}"`)
     },
@@ -293,70 +285,43 @@ describe('registry', () => {
 
 describe('attributes', () => {
   test.each([
-    [0, '0em', '0'],
-    [0.5, '0.125em', '0.5'],
-    [1, '0.25em', '1'],
-    [1.5, '0.375em', '1.5'],
-    [3.5, '0.875em', '3.5'],
-    [4, '1em', '4'],
-    [5, '1.25em', '5'],
-    [6, '1.5em', '6'],
-    [12, '3em', '12'],
-    [32, '8em', '32'],
-    [96, '24em', '96'],
+    ['12', '0.75rem'],
+    ['14', '0.875rem'],
+    ['16', '1rem'],
+    ['20', '1.25rem'],
+    ['24', '1.5rem'],
+    ['28', '1.75rem'],
+    ['32', '2rem'],
+    ['40', '2.5rem'],
+    ['48', '3rem'],
+    ['56', '3.5rem'],
+    ['64', '4rem'],
+    ['80', '5rem'],
+    ['96', '6rem'],
   ] as const)(
-    'size={%s} is a step of the size scale: %s wide and high, with data-size="%s"',
-    async (size, length, step) => {
+    'size="%s" is a pixel size: the class kv-icon--size-%s, and %s wide and high',
+    async (size, length) => {
       const svg = await renderIcon(<RegisteredIcon name="lucide-trash" size={size} />)
+      expect(svg.getAttribute('class')).toContain(`kv-icon kv-icon--size-${size}`)
       expect(svg.getAttribute('width')).toBe(length)
       expect(svg.getAttribute('height')).toBe(length)
-      expect(svg.getAttribute('data-size')).toBe(step)
     },
   )
 
-  test('any finite number is a step: its value is the number times 0.25em', async () => {
-    const svg = await renderIcon(<RegisteredIcon name="lucide-trash" size={13 as never} />)
-    expect(svg.getAttribute('width')).toBe('3.25em')
-    expect(svg.getAttribute('data-size')).toBe('13')
-  })
-
-  test('the default size is step 5 (1.25em)', async () => {
+  test("the default size is '20' (1.25rem)", async () => {
     const svg = await renderIcon(<RegisteredIcon name="lucide-trash" />)
-    expect(svg.getAttribute('width')).toBe('1.25em')
-    expect(svg.getAttribute('data-size')).toBe('5')
+    expect(svg.classList.contains('kv-icon--size-20')).toBe(true)
+    expect(svg.getAttribute('width')).toBe('1.25rem')
   })
 
-  test.each([['1rem'], ['48px'], ['2em'], ['1.5em']] as const)(
-    'size={%j} is a CSS length: used as written, and it has no data-size',
-    async (size) => {
-      const svg = await renderIcon(<RegisteredIcon name="lucide-trash" size={size} />)
-      expect(svg.getAttribute('width')).toBe(size)
-      expect(svg.getAttribute('height')).toBe(size)
-      expect(svg.hasAttribute('data-size')).toBe(false)
-    },
-  )
-
-  test('an untyped size that names an Object.prototype member is a length, not a size step', async () => {
-    const svg = await renderIcon(<RegisteredIcon name="lucide-trash" size={'toString' as never} />)
-    expect(svg.getAttribute('width')).toBe('toString')
+  test('the size is never a data attribute (data-* is state, not a choice)', async () => {
+    const svg = await renderIcon(<RegisteredIcon name="lucide-trash" size="24" />)
     expect(svg.hasAttribute('data-size')).toBe(false)
   })
 
   test('values are attributes, never inline style (strict CSP)', async () => {
-    const svg = await renderIcon(
-      <RegisteredIcon
-        name="lucide-trash"
-        size={6}
-        strokeWidth={2}
-        color="red"
-        fill="blue"
-        stroke="green"
-      />,
-    )
+    const svg = await renderIcon(<RegisteredIcon name="lucide-trash" size="24" label="Radera" />)
     expect(svg.hasAttribute('style')).toBe(false)
-    expect(svg.getAttribute('stroke-width')).toBe('2')
-    expect(svg.getAttribute('fill')).toBe('blue')
-    expect(svg.getAttribute('stroke')).toBe('green')
   })
 
   test('className joins the part class and the library’s own', async () => {
@@ -375,61 +340,26 @@ describe('attributes', () => {
   test('renders the same attributes on the server', () => {
     const html = renderToString(
       <KvirnProvider icons={libraryIcons}>
-        <RegisteredIcon name="lucide-trash" size={4} color="currentColor" />
+        <RegisteredIcon name="lucide-trash" size="16" />
       </KvirnProvider>,
     )
     // The provider adds its two empty live regions after the icon, and they carry inline styles.
     const svg = html.slice(0, html.indexOf('</svg>') + '</svg>'.length)
     expect(svg).toMatch(/class="[^"]*\blucide\b[^"]*"/)
-    expect(svg).toContain('width="1em"')
+    expect(svg).toContain('width="1rem"')
+    expect(svg).toContain('kv-icon--size-16')
     expect(svg).toContain('aria-hidden="true"')
     expect(svg).not.toContain('style=')
   })
 })
 
-/** The shapes inherit fill, stroke and color from the root, so a prop on Icon reaches them. */
-function expectShapesSetNoPaint(svg: SVGSVGElement) {
-  const shapes = svg.querySelectorAll('*')
-  expect(shapes.length).toBeGreaterThan(0)
-  for (const shape of shapes) {
-    for (const attribute of ['fill', 'stroke', 'color']) {
-      expect(shape.hasAttribute(attribute), `<${shape.tagName}> ${attribute}`).toBe(false)
-    }
-  }
-}
-
 describe('library compatibility (Plan 0009, Background)', () => {
-  // Each library routes `color` its own way: Lucide into the root stroke, Heroicons keeps the
-  // `color` attribute (its shapes draw in currentColor), Phosphor into the root fill.
-  test.each([
-    ['lucide-trash', 'stroke'],
-    ['heroicons-trash', 'color'],
-    ['phosphor-trash', 'fill'],
-  ] as const)('%s takes size and color from Icon, as the %s attribute', async (name, attribute) => {
-    const svg = await renderIcon(<RegisteredIcon name={name} size={32} color="rgb(200, 0, 0)" />)
-    expect(svg.getAttribute('width')).toBe('8em')
-    expect(svg.getAttribute('height')).toBe('8em')
-    expect(svg.getAttribute(attribute)).toBe('rgb(200, 0, 0)')
-    expectShapesSetNoPaint(svg)
-  })
-
-  test.each(['lucide-trash', 'heroicons-trash'] as const)(
-    '%s takes strokeWidth from Icon',
+  test.each(['lucide-trash', 'heroicons-trash', 'phosphor-trash'] as const)(
+    '%s takes its size from Icon',
     async (name) => {
-      const svg = await renderIcon(<RegisteredIcon name={name} strokeWidth={1} />)
-      expect(svg.getAttribute('stroke-width')).toBe('1')
-    },
-  )
-
-  test.each(['lucide-trash', 'heroicons-trash'] as const)(
-    '%s takes fill and stroke from Icon, on the root',
-    async (name) => {
-      const svg = await renderIcon(
-        <RegisteredIcon name={name} fill="rgb(1, 2, 3)" stroke="rgb(4, 5, 6)" />,
-      )
-      expect(svg.getAttribute('fill')).toBe('rgb(1, 2, 3)')
-      expect(svg.getAttribute('stroke')).toBe('rgb(4, 5, 6)')
-      expectShapesSetNoPaint(svg)
+      const svg = await renderIcon(<RegisteredIcon name={name} size="32" />)
+      expect(svg.getAttribute('width')).toBe('2rem')
+      expect(svg.getAttribute('height')).toBe('2rem')
     },
   )
 })
@@ -535,7 +465,7 @@ describe('accessibility', () => {
 describe('one-off icons without the registry', () => {
   test('children: Icon is the <svg>', async () => {
     const { container } = await render(
-      <Icon viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <Icon viewBox="0 0 24 24">
         <path d="M5 12h14" />
       </Icon>,
     )
@@ -551,10 +481,10 @@ describe('one-off icons without the registry', () => {
       received.push(props)
       return <TrashIcon {...props} />
     }
-    const { container } = await render(<Icon as={MunicipalityMark} label="Radera" size={4} />)
+    const { container } = await render(<Icon as={MunicipalityMark} label="Radera" size="16" />)
     const svg = svgIn(container)
     expect(svg.getAttribute('data-slot')).toBe('icon')
-    expect(svg.getAttribute('width')).toBe('1em')
+    expect(svg.getAttribute('width')).toBe('1rem')
     expect(received.at(-1)).not.toHaveProperty('size')
     expect(received.at(-1)).not.toHaveProperty('label')
     await expect.element(page.getByRole('img', { name: 'Radera' })).toBeVisible()
@@ -563,20 +493,17 @@ describe('one-off icons without the registry', () => {
 
 describe('icon prop: a component reference (Plan 0044)', () => {
   test.each([
-    ['Lucide', Trash2, 'stroke'],
-    ['Heroicons', TrashIcon, 'color'],
+    ['Lucide', Trash2],
+    ['Heroicons', TrashIcon],
   ] as const)(
-    "%s: Icon's size and colour win over the library's own, with no registry",
-    async (_library, component, colourAttribute) => {
+    "%s: Icon's size wins over the library's own, with no registry",
+    async (_library, component) => {
       // No provider: `icon` needs no registration.
-      const { container } = await render(<Icon icon={component} size={6} color="rgb(200, 0, 0)" />)
+      const { container } = await render(<Icon icon={component} size="24" />)
       const svg = svgIn(container)
-      // Lucide draws 24 and Heroicons 24 by default: the step is 1.5em.
-      expect(svg.getAttribute('width')).toBe('1.5em')
-      expect(svg.getAttribute('height')).toBe('1.5em')
-      expect(svg.getAttribute('data-size')).toBe('6')
-      expect(svg.getAttribute(colourAttribute)).toBe('rgb(200, 0, 0)')
-      expectShapesSetNoPaint(svg)
+      expect(svg.getAttribute('width')).toBe('1.5rem')
+      expect(svg.getAttribute('height')).toBe('1.5rem')
+      expect(svg.classList.contains('kv-icon--size-24')).toBe(true)
     },
   )
 
@@ -605,9 +532,9 @@ describe('icon prop: a component reference (Plan 0044)', () => {
   )
 
   test("Phosphor: Icon's size wins, it is decorative, and a label makes it an image", async () => {
-    const { container } = await render(<Icon icon={PhosphorTrash} size={6} />)
+    const { container } = await render(<Icon icon={PhosphorTrash} size="24" />)
     const svg = svgIn(container)
-    expect(svg.getAttribute('width')).toBe('1.5em')
+    expect(svg.getAttribute('width')).toBe('1.5rem')
     expect(svg.getAttribute('aria-hidden')).toBe('true')
     await render(<Icon icon={PhosphorTrash} label="Radera" />)
     await expect.element(page.getByRole('img', { name: 'Radera' })).toBeVisible()
@@ -621,13 +548,10 @@ describe('icon prop: a component reference (Plan 0044)', () => {
     expect(svg.classList.contains('lucide-trash-2')).toBe(true)
   })
 
-  test('strokeWidth, other SVG attributes and a ref reach the <svg>', async () => {
+  test('other SVG attributes and a ref reach the <svg>', async () => {
     const ref = createRef<SVGSVGElement>()
-    const { container } = await render(
-      <Icon icon={Trash2} strokeWidth={1} data-testid="probe" ref={ref} />,
-    )
+    const { container } = await render(<Icon icon={Trash2} data-testid="probe" ref={ref} />)
     const svg = svgIn(container)
-    expect(svg.getAttribute('stroke-width')).toBe('1')
     expect(svg.getAttribute('data-testid')).toBe('probe')
     expect(ref.current).toBe(svg)
   })
@@ -729,11 +653,11 @@ describe('useIcon', () => {
       <HookProbe
         name={'lucide-trash' satisfies LibraryIconName as IconName}
         label="Radera"
-        size={6}
+        size="24"
       />,
     )
     expect(svg.classList.contains('lucide-trash-2')).toBe(true)
-    expect(svg.getAttribute('width')).toBe('1.5em')
+    expect(svg.getAttribute('width')).toBe('1.5rem')
     await expect.element(page.getByRole('img', { name: 'Radera' })).toBeVisible()
   })
 
@@ -756,17 +680,20 @@ describe('types', () => {
     expectTypeOf<IconsOf<{}>>().toEqualTypeOf<{}>()
   })
 
-  test('size is a step of the size scale, or a CSS length string', () => {
-    expectTypeOf<4>().toExtend<IconScale>()
-    expectTypeOf<0.5>().toExtend<IconScale>()
-    expectTypeOf<96>().toExtend<IconScale>()
-    expectTypeOf<13>().not.toExtend<IconScale>()
-    expectTypeOf<IconScale>().toExtend<IconSize>()
-    expectTypeOf<'48px'>().toExtend<IconSize>()
-    expectTypeOf<{ size: 5 }>().toExtend<IconProps>()
-    expectTypeOf<{ size: '2rem' }>().toExtend<IconProps>()
-    expectTypeOf<{ size: 13 }>().not.toExtend<IconProps>()
-    expectTypeOf<{ size: 4 }>().toExtend<UseIconOptions>()
+  test('size is a pixel string from the closed list, never a number or a CSS length', () => {
+    expectTypeOf<'20'>().toExtend<IconSize>()
+    expectTypeOf<'96'>().toExtend<IconSize>()
+    expectTypeOf<4>().not.toExtend<IconSize>()
+    expectTypeOf<20>().not.toExtend<IconSize>()
+    expectTypeOf<'48px'>().not.toExtend<IconSize>()
+    expectTypeOf<'2rem'>().not.toExtend<IconSize>()
+    expectTypeOf<'13'>().not.toExtend<IconSize>()
+    expectTypeOf<{ size: '24' }>().toExtend<IconProps>()
+    expectTypeOf<{ size: 4 }>().not.toExtend<IconProps>()
+    expectTypeOf<{ size: '48px' }>().not.toExtend<IconProps>()
+    expectTypeOf<{ size: '13' }>().not.toExtend<IconProps>()
+    expectTypeOf<{ size: '16' }>().toExtend<UseIconOptions>()
+    expectTypeOf<{ size: 4 }>().not.toExtend<UseIconOptions>()
   })
 
   test('Lucide, Heroicons and Phosphor components are icon components', () => {
@@ -799,11 +726,7 @@ describe('types', () => {
     expectTypeOf<{ role: 'img' }>().not.toExtend<IconProps>()
   })
 
-  test('sizes are steps, numbers or typed lengths', () => {
-    expectTypeOf<{ size: '1rem' }>().toExtend<UseIconOptions>()
-  })
-
   test('the part props', () => {
-    expectTypeOf<IconPartProps['className']>().toEqualTypeOf<'kv-icon'>()
+    expectTypeOf<IconPartProps['className']>().toEqualTypeOf<`kv-icon kv-icon--size-${IconSize}`>()
   })
 })

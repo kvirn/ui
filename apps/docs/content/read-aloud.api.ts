@@ -13,12 +13,6 @@ export const useReadAloudRows = propRows<UseReadAloudOptions>({
     type: 'RefObject<Element | null>',
     description: 'The element whose text is read. It is read when Play is pressed.',
   },
-  lang: {
-    type: 'string',
-    default: 'the closest [lang] of the content',
-    description:
-      'The language of the text, as a BCP 47 tag, which picks the voice. A lang attribute inside the content still wins for that stretch.',
-  },
   engine: {
     type: 'ReadAloudEngine',
     default: 'speechSynthesis',

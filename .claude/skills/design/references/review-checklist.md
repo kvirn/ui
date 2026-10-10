@@ -17,7 +17,7 @@ Use it for self-review before handoff and for reviewing stories, blocks and page
 - [ ] Plain language: short sentences, common words, active voice, no internal jargon.
 - [ ] Headings and buttons describe the task. Link text makes sense out of context (2.4.4).
 - [ ] Errors say what went wrong and how to fix it, without blaming the user.
-- [ ] Tested with the longest Finnish string and with Sámi letters.
+- [ ] Tested with the longest Finnish string.
 
 ## Visual (DESIGN.md)
 

@@ -7,7 +7,7 @@ export function SwedishContent() {
   const articleRef = useRef<HTMLElement>(null)
   return (
     <>
-      <ReadAloud.Root contentRef={articleRef} lang="sv">
+      <ReadAloud.Root contentRef={articleRef}>
         <ReadAloud.Play />
         <ReadAloud.Stop />
         <ReadAloud.Status />

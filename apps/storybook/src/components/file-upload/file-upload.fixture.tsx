@@ -6,8 +6,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 // docs/design/file-upload.md). The component's own strings (the buttons, the status, the errors,
 // the announcements) come from the library catalogs through the provider decorator. What the
 // consumer writes is the label and the description: they name what to attach and why, so they
-// belong to the form, not to the library. sv, fi, nb, nn and en are written here. se: English,
-// marked lang="en" (3.1.2).
+// belong to the form, not to the library. sv, fi, nb, nn and en are written here.
 //
 // KvirnUI sends nothing anywhere (hard rule 7). `controlledUpload` stands in for the consumer's own
 // `upload`: it reports progress, then waits until the story or the test settles it.
@@ -86,13 +85,11 @@ const textsNn: FileUploadTexts = {
   ownRemove: 'Slett',
 }
 
-/** se has no texts: it shows the English ones, marked lang="en". */
 const fileUploadTexts: Record<FormLocale, FileUploadTexts | undefined> = {
   sv: textsSv,
   fi: textsFi,
   nb: textsNb,
   nn: textsNn,
-  se: undefined,
   en: textsEn,
 }
 

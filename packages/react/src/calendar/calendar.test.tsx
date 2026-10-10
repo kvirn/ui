@@ -9,7 +9,6 @@ import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import { Calendar } from './calendar.tsx'
 import type { CalendarRootProps } from './calendar.tsx'
-import { resolveIntlLocale } from './calendar-intl.ts'
 
 // Contract: calendar.a11y.md. The date arithmetic is proved in core (calendar-keys.test.ts); these
 // tests prove the wiring: roles, names, states, focus, preventDefault and announcements.
@@ -567,16 +566,6 @@ describe('development warnings and locale', () => {
     expect(container.querySelector('table')).toBeNull()
     expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('outside Calendar.Root'))
   })
-
-  test('a locale the browser has no data for falls back by region: se-FI to fi, se-SE to sv, else nb', () => {
-    const unsupported = () => false
-    expect(resolveIntlLocale('se-FI', unsupported)).toBe('fi')
-    expect(resolveIntlLocale('se-SE', unsupported)).toBe('sv')
-    expect(resolveIntlLocale('se-NO', unsupported)).toBe('nb')
-    expect(resolveIntlLocale('se', unsupported)).toBe('nb')
-    expect(resolveIntlLocale('se', () => true)).toBe('se')
-    expect(resolveIntlLocale('sv-FI', unsupported)).toBe('sv-FI')
-  })
 })
 
 describe('read aloud', () => {
@@ -635,22 +624,6 @@ describe('read aloud', () => {
 })
 
 describe('language, messages and settings', () => {
-  test('a locale the browser has no data for marks the heading and column headers, not the grid', async () => {
-    const original = Intl.DateTimeFormat.supportedLocalesOf
-    vi.spyOn(Intl.DateTimeFormat, 'supportedLocalesOf').mockImplementation((locales, options) =>
-      String(locales).startsWith('se') ? [] : original(locales, options),
-    )
-    await render(<Example locale="se-FI" messages={undefined} />)
-    expect(document.querySelector('h3')?.getAttribute('lang')).toBe('fi')
-    const headers = document.querySelectorAll('th.kv-calendar-weekday')
-    expect(headers).toHaveLength(7)
-    for (const header of headers) {
-      expect(header.getAttribute('lang')).toBe('fi')
-    }
-    expect(document.querySelector('table')?.hasAttribute('lang')).toBe(false)
-    expect(document.querySelector('h3')?.textContent).toBe('lokakuu 2026')
-  })
-
   test('a per-instance messages override replaces the catalog string', async () => {
     await render(<Example messages={{ nextMonth: 'Förra veckan, fast framåt' }} />)
     await expect.element(button('Förra veckan, fast framåt')).toBeVisible()

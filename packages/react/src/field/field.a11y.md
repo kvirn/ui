@@ -134,7 +134,6 @@ Research questions for the AT run: is the error prefix heard once and in the rig
 
 ## Known issues
 
-- **`se` (Northern Sámi) shows English** for `field.optional` and `field.errorPrefix`, so Sámi users get English for these strings under `lang="se"` (3.1.2).
 - **The description is associated after mount.** Server-rendered markup lists a Prose or a HelpText in `aria-describedby` only after hydration. `useField` with `hasDescription` or `descriptions` doesn't have this gap.
 - **Error under the control on phones.** The on-screen keyboard can cover the message under a focused field. The mitigation is in the docs (focus on submit, `scroll-padding`), not in the components, and the AT and usability run checks it. The error is linked from the first render whenever the field is invalid, in server-rendered markup too, and when an app moves focus to the field in an effect after submit (accessibility review, Plan 0013). Tests: `field.test.tsx › focus on submit`.
 - **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.

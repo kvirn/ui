@@ -3,14 +3,14 @@ import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
 /** ButtonGroup's own props. The name comes from the native aria-label and aria-labelledby. */
-export type ButtonGroupDocumentedProps = Pick<ButtonGroupProps, 'layout'>
+export type ButtonGroupDocumentedProps = Pick<ButtonGroupProps, 'className'>
 
 export const buttonGroupRows = propRows<ButtonGroupDocumentedProps>({
-  layout: {
-    type: '"spaced" | "attached"',
-    default: '"spaced"',
+  className: {
+    type: 'string',
+    default: '–',
     description:
-      '"attached" joins the buttons into one strip, like a segmented control. It changes the look only.',
+      'Your own classes. They join the part’s class and never replace it. Add kv-button-group--attached to join the buttons into one strip, like a segmented control.',
   },
 })
 
@@ -22,7 +22,7 @@ export const buttonGroupAttributes: readonly AttributeRow[] = [
   },
   {
     name: 'kv-button-group--attached',
-    values: 'layout="attached"',
+    values: 'you add it',
     meaning: 'The buttons touch and share borders. Only the outer corners are rounded.',
   },
   {
@@ -46,18 +46,12 @@ export const useButtonGroupHook: ApiHook = {
       description:
         'Whether the group has a name (aria-label or aria-labelledby). A named group gets role="group".',
     },
-    layout: {
-      type: '"spaced" | "attached"',
-      default: '"spaced"',
-      description: 'The class modifier: "attached" adds kv-button-group--attached.',
-    },
   }),
   result: propRows<UseButtonGroupResult>({
     groupProps: {
       type: 'ButtonGroupPartProps',
       default: '–',
-      description:
-        'Spread on a <div>: the class (with the attached modifier) and role="group" when named.',
+      description: 'Spread on a <div>: the class and role="group" when named.',
     },
   }),
 }

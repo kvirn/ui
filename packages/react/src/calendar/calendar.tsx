@@ -286,12 +286,7 @@ export function CalendarGrid({
                 </th>
               ) : null}
               {calendar.weekdays.map((weekday) => (
-                <th
-                  key={weekday.weekday}
-                  scope="col"
-                  className="kv-calendar-weekday"
-                  lang={calendar.dateLanguage}
-                >
+                <th key={weekday.weekday} scope="col" className="kv-calendar-weekday">
                   <span aria-hidden="true">{weekday.short}</span>
                   <span className="kv-visually-hidden">{weekday.long}</span>
                 </th>

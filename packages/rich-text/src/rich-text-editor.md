@@ -77,7 +77,7 @@ React, `@tiptap/react`, StarterKit, TableKit and Image come to about 450 KB mini
 
 ## Strings
 
-A new `richText` namespace in all six locales (`se` is an English placeholder until it is translated). The toolbar's names, the block names, the table actions, the link and image forms with their errors, and every announcement are messages. Key names in shortcuts (Ctrl, ⌘) are not translated: they are what is printed on the keys.
+A new `richText` namespace in all five locales. The toolbar's names, the block names, the table actions, the link and image forms with their errors, and every announcement are messages. Key names in shortcuts (Ctrl, ⌘) are not translated: they are what is printed on the keys.
 
 ## Notes
 

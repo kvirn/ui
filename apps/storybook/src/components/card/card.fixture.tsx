@@ -7,10 +7,9 @@ import { messagesFor, providerLocaleOf } from '../form/form.fixture.tsx'
 
 // Story fixture: the design spec's examples B–D (docs/design/card.md §4, §5). Example A,
 // the sidebar text block, is a Section now: see ../section/section.fixture.tsx. sv, en, nb and
-// nn are written. The fi strings are the designer's drafts, for length checks only. se: English,
-// marked lang="en" (3.1.2). Dates and times are values, formatted with `useFormat()`.
+// nn are written. The fi strings are the designer's drafts, for length checks only. Dates and times are values, formatted with `useFormat()`.
 
-export type CardFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
+export type CardFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'en'
 
 interface NewsItemText {
   title: string
@@ -201,13 +200,11 @@ const nn: CardTexts = {
   },
 }
 
-/** se has no texts: it shows the English ones, marked lang="en". */
 const cardTexts: Record<CardFixtureLocale, CardTexts | undefined> = {
   sv,
   fi,
   nb,
   nn,
-  se: undefined,
   en,
 }
 
@@ -216,13 +213,13 @@ export const isCardFixtureLocale = (value: unknown): value is CardFixtureLocale 
 
 interface ResolvedTexts {
   text: CardTexts
-  /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
+  /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
   lang: 'en' | undefined
 }
 
 /**
- * The provider an app has above its cards, with the locale of the texts (English for se, which has
- * none). `useFormat()` and the library's own strings follow it.
+ * The provider an app has above its cards, with the locale of the texts. `useFormat()` and the
+ * library's own strings follow it.
  */
 export const withCardLocale: Decorator = (Story, { globals }) => {
   const locale = isCardFixtureLocale(globals['locale']) ? globals['locale'] : 'sv'
@@ -233,7 +230,7 @@ export const withCardLocale: Decorator = (Story, { globals }) => {
   )
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+/** The fixture text in a locale. */
 export function textsFor(locale: CardFixtureLocale): ResolvedTexts {
   const text = cardTexts[locale]
   if (text === undefined) {

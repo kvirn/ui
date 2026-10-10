@@ -6,8 +6,8 @@ export function Sizes() {
   const { texts, textLang } = useIconTexts()
   return (
     <p lang={textLang}>
-      {texts.sizes} <Icon name="info" size={4} /> <Icon name="info" /> <Icon name="info" size={6} />{' '}
-      <Icon name="info" size={8} /> <Icon name="info" size="2.5rem" />
+      {texts.sizes} <Icon name="info" size="16" /> <Icon name="info" />{' '}
+      <Icon name="info" size="24" /> <Icon name="info" size="32" /> <Icon name="info" size="40" />
     </p>
   )
 }

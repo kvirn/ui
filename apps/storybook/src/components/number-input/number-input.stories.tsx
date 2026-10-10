@@ -37,7 +37,7 @@ const meta = {
     decimals: {
       control: { type: 'number', min: 0, max: 4, step: 1 },
       description:
-        'Digits after the decimal mark. Default `0`: no mark is accepted. The mark is the page’s language: a comma in sv, fi, nb, nn and se, a point in en. Sets `inputmode="decimal"`. With decimals, add a help text with an example (3.3.2).',
+        'Digits after the decimal mark. Default `0`: no mark is accepted. The mark is the page’s language: a comma in sv, fi, nb and nn, a point in en. Sets `inputmode="decimal"`. With decimals, add a help text with an example (3.3.2).',
     },
     allowNegative: {
       control: 'boolean',

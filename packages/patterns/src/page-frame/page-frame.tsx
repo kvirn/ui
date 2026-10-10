@@ -1,18 +1,12 @@
 'use client'
 
-import { en } from '@kvirn-ui/i18n/en'
-import { sv } from '@kvirn-ui/i18n/sv'
-import { Container, KvirnProvider, SidebarLayout, SkipLink, mergeProps } from '@kvirn-ui/react'
+import { Container, SidebarLayout, SkipLink, mergeProps } from '@kvirn-ui/react'
 import type { ContainerProps, SidebarLayoutSidebarProps } from '@kvirn-ui/react'
 import { useContext, useMemo } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { PageFrameBodyContext, PageFrameContext } from './page-frame-context.ts'
 
-const catalogs = { sv, en } as const
-
 export interface PageFrameRootProps extends ComponentPropsWithRef<'div'> {
-  /** The page's language: sets `lang`, the provider's locale and its catalog together (3.1.1). */
-  locale?: 'sv' | 'en' | undefined
   /** The id of `main`, and the skip link's target. Default `main`. */
   mainId?: string | undefined
 }
@@ -30,34 +24,26 @@ export type PageFrameSidebarProps = SidebarLayoutSidebarProps
  * The frame of every page: the skip link first, then your children in the order you write them,
  * which is reading and focus order at every width. Write the header, the alert, the breadcrumb,
  * `PageFrame.Main` (or `PageFrame.Body`) and the footer. Nothing is sticky and nothing is
- * reordered. With `locale` it sets `lang` and the provider. Contract: page-frame.a11y.md.
+ * reordered. Contract: page-frame.a11y.md.
  */
 export function PageFrameRoot({
-  locale,
   mainId = 'main',
   children,
   className,
   ...otherProps
 }: PageFrameRootProps): ReactElement {
   const context = useMemo(() => ({ mainId }), [mainId])
-  const page = (
+  return (
     <PageFrameContext.Provider value={context}>
       <div
         {...mergeProps(otherProps, {
           className: ['kv-page-frame', className].filter(Boolean).join(' '),
-          lang: locale,
         })}
       >
         <SkipLink href={`#${mainId}`} />
         {children}
       </div>
     </PageFrameContext.Provider>
-  )
-  if (locale === undefined) return page
-  return (
-    <KvirnProvider locale={locale} messages={catalogs[locale]}>
-      {page}
-    </KvirnProvider>
   )
 }
 PageFrameRoot.displayName = 'PageFrame.Root'
@@ -71,7 +57,9 @@ export function PageFrameBody({ children, ...otherProps }: PageFrameBodyProps): 
   return (
     <PageFrameBodyContext.Provider value>
       <Container {...mergeProps(otherProps, { className: 'kv-page-frame-body' })}>
-        <SidebarLayout.Root sidebarWidth="sm">{children}</SidebarLayout.Root>
+        <SidebarLayout.Root className="kv-sidebar-layout--sidebar-sm">
+          {children}
+        </SidebarLayout.Root>
       </Container>
     </PageFrameBodyContext.Provider>
   )

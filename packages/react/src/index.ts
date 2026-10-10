@@ -44,7 +44,6 @@ export { ButtonGroup } from './button-group/button-group.tsx'
 export type { ButtonGroupProps } from './button-group/button-group.tsx'
 export { useButtonGroup } from './button-group/use-button-group.ts'
 export type {
-  ButtonGroupLayout,
   ButtonGroupPartProps,
   UseButtonGroupOptions,
   UseButtonGroupResult,
@@ -397,30 +396,13 @@ export type {
 export { Stack } from './stack/stack.tsx'
 export type { StackProps } from './stack/stack.tsx'
 export { useStack } from './stack/use-stack.ts'
-export type {
-  StackGap,
-  StackPartProps,
-  UseStackOptions,
-  UseStackResult,
-} from './stack/use-stack.ts'
+export type { StackPartProps, UseStackResult } from './stack/use-stack.ts'
 export { List, ListItem, ListRoot } from './list/list.tsx'
-export type {
-  ListGap,
-  ListItemProps,
-  ListMarker,
-  ListOwnProps,
-  ListRootProps,
-} from './list/list.tsx'
+export type { ListItemProps, ListRootProps } from './list/list.tsx'
 export { Columns } from './columns/columns.tsx'
 export type { ColumnsProps } from './columns/columns.tsx'
 export { useColumns } from './columns/use-columns.ts'
-export type {
-  ColumnsGap,
-  ColumnsMinColumnWidth,
-  ColumnsPartProps,
-  UseColumnsOptions,
-  UseColumnsResult,
-} from './columns/use-columns.ts'
+export type { ColumnsPartProps, UseColumnsResult } from './columns/use-columns.ts'
 export {
   SidebarLayout,
   SidebarLayoutContent,
@@ -435,8 +417,6 @@ export type {
 export { useSidebarLayout } from './sidebar-layout/use-sidebar-layout.ts'
 export type {
   SidebarLayoutPartProps,
-  SidebarLayoutSidebarWidth,
-  UseSidebarLayoutOptions,
   UseSidebarLayoutResult,
 } from './sidebar-layout/use-sidebar-layout.ts'
 export {
@@ -587,7 +567,6 @@ export { useIcon } from './icon/use-icon.ts'
 export type {
   IconDefaults,
   IconPartProps,
-  IconScale,
   IconSize,
   UseIconOptions,
   UseIconResult,

@@ -215,7 +215,7 @@ export function PaginationPage({
           <UseCase
             id="own-words"
             title="Your own words for the controls"
-            why="Previous, Next and the status come from the library’s messages in six languages. To use other words, pass children, or override the message with messages on the part or the provider. Your own text is yours to translate, so set lang when it differs from the page."
+            why="Previous, Next and the status come from the library’s messages in five languages. To use other words, pass children, or override the message with messages on the part or the provider. Your own text is yours to translate, so set lang when it differs from the page."
             code={sources['own-words']}
             propsUsed={[
               { part: 'Pagination.Previous', prop: 'children' },

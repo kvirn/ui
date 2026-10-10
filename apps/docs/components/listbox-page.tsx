@@ -346,12 +346,11 @@ export function ListboxPage({
             why={
               <>
                 Name each language in its own language, so people find theirs: Svenska, Suomi,
-                Davvisámegiella, English. A screen reader reads text in the voice of the page’s
-                language unless the text says otherwise (WCAG 3.1.2), so give{' '}
-                <code>itemToLang</code> the code of each item. It sets <code>lang</code> on each
-                native option, each popup option and the chosen text in the trigger. It is not
-                supported by Combobox or Autocomplete yet: their value is an input, which has one{' '}
-                <code>lang</code> for the whole text.
+                English. A screen reader reads text in the voice of the page’s language unless the
+                text says otherwise (WCAG 3.1.2), so give <code>itemToLang</code> the code of each
+                item. It sets <code>lang</code> on each native option, each popup option and the
+                chosen text in the trigger. It is not supported by Combobox or Autocomplete yet:
+                their value is an input, which has one <code>lang</code> for the whole text.
               </>
             }
             code={sources['language-switcher']}

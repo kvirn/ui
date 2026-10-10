@@ -5,7 +5,6 @@ import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
-import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import {
   Heading,
@@ -28,7 +27,7 @@ import { apiStringsId } from './api-ids.ts'
 const text = messages.docs.api
 const languageNames = messages.docs.example.languages
 
-const catalogs: Record<LocaleCode, KvirnMessages> = { sv, fi, nb, nn, se, en }
+const catalogs: Record<LocaleCode, KvirnMessages> = { sv, fi, nb, nn, en }
 
 const formats = Object.fromEntries(
   localeCodes.map((code) => [code, createMessageFormat({ locale: code, timeZone: undefined })]),
@@ -49,8 +48,6 @@ export interface StringEntry {
   parameters: readonly string[]
   meaning: string
   texts: Readonly<Record<LocaleCode, string>>
-  /** The Northern Sámi text is still the English one. */
-  isSamiPending: boolean
 }
 
 /** One key's English text, for a page that shows an example message. */
@@ -64,7 +61,7 @@ export function stringText<Namespace extends keyof KvirnMessages>(
   ])[0]!.texts.en
 }
 
-/** Each key's text in all six languages, with parameters filled by core's `createMessageFormat`. */
+/** Each key's text in all five languages, with parameters filled by core's `createMessageFormat`. */
 export function stringsFromCatalog<Namespace extends keyof KvirnMessages>(
   namespace: Namespace,
   keys: readonly StringKeySpec<Namespace>[],
@@ -80,14 +77,7 @@ export function stringsFromCatalog<Namespace extends keyof KvirnMessages>(
         return [code, resolved]
       }),
     ) as Record<LocaleCode, string>
-    return {
-      namespace,
-      key,
-      parameters: Object.keys(values),
-      meaning,
-      texts,
-      isSamiPending: texts.se === texts.en,
-    }
+    return { namespace, key, parameters: Object.keys(values), meaning, texts }
   })
 }
 
@@ -117,18 +107,12 @@ function LanguageTable({ entry }: { entry: StringEntry }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {localeCodes.map((code) => {
-            const isPending = code === 'se' && entry.isSamiPending
-            return (
-              <TableRow key={code}>
-                <TableRowHeader lang={code}>{languageNames[code]}</TableRowHeader>
-                <TableCell lang={isPending ? 'en' : code}>
-                  {entry.texts[code]}
-                  {isPending ? ` (${text.stringPendingSami})` : null}
-                </TableCell>
-              </TableRow>
-            )
-          })}
+          {localeCodes.map((code) => (
+            <TableRow key={code}>
+              <TableRowHeader lang={code}>{languageNames[code]}</TableRowHeader>
+              <TableCell lang={code}>{entry.texts[code]}</TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </TableRoot>
     </TableScrollRegion>
@@ -175,8 +159,7 @@ function CatalogTable({ entries }: { entries: readonly StringEntry[] }) {
 
 /**
  * The content of the Strings h3 (`ApiBlock`'s `strings`). `headings` gives an `h4` per key with a
- * Language and Default text table, `Northern Sámi` flagged while it is still English. `table` is
- * one table of key, parameters, English text and meaning, for a large catalog.
+ * Language and Default text table. `table` is one table of key, parameters, English text and meaning, for a large catalog.
  */
 export function StringsBlock<Namespace extends keyof KvirnMessages>({
   namespace,

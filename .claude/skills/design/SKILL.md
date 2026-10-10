@@ -60,7 +60,7 @@ These are the maintainer's choices for the default theme. `DESIGN.md` holds the 
 ## Common mistakes (reject)
 
 - Designing the happy path only. Errors, empty and timeout states are the job.
-- Lorem ipsum or English-only mock-ups. Finnish and Sámi will break the layout you didn't test.
+- Lorem ipsum or English-only mock-ups. Finnish will break the layout you didn't test.
 - Low-contrast "elegant" secondary text, hairline control borders or placeholder-as-label.
 - Colour as the only signal for status, selection, errors or required fields.
 - Hover-only affordances, tooltips holding essential information, or icon-only buttons for anything that isn't universal.

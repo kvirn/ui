@@ -3,7 +3,6 @@ import { en as enMessages } from '@kvirn-ui/i18n/en'
 import { fi as fiMessages } from '@kvirn-ui/i18n/fi'
 import { nb as nbMessages } from '@kvirn-ui/i18n/nb'
 import { nn as nnMessages } from '@kvirn-ui/i18n/nn'
-import { se as seMessages } from '@kvirn-ui/i18n/se'
 import { sv as svMessages } from '@kvirn-ui/i18n/sv'
 import { Alert, Button, KvirnProvider, Link, useAnnouncer, useFormat } from '@kvirn-ui/react'
 import type { UseFormatResult } from '@kvirn-ui/react'
@@ -14,12 +13,11 @@ import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 
 // Story fixture for Components/Alert (docs/design/alert.md §4.4, §5.2). sv,
-// en, nb and nn are written. The fi strings are the designer's drafts, for length checks only. se:
-// English, marked lang="en" (3.1.2), and the library's own status words follow in English too. The
+// en, nb and nn are written. The fi strings are the designer's drafts, for length checks only. The
 // status words ("Klart:", "Varning:") come from the provider, like an app's would. Dates and
 // times are values, formatted with `useFormat()`.
 
-export type AlertFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
+export type AlertFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'en'
 
 interface AlertTexts {
   deadline: {
@@ -411,13 +409,11 @@ const nn: AlertTexts = {
   },
 }
 
-/** se has no texts: it shows the English ones, marked lang="en". */
 const alertTexts: Record<AlertFixtureLocale, AlertTexts | undefined> = {
   sv,
   fi,
   nb,
   nn,
-  se: undefined,
   en,
 }
 
@@ -432,11 +428,11 @@ export const localeOf = (globals: Record<string, unknown>): AlertFixtureLocale =
 
 interface ResolvedTexts {
   text: AlertTexts
-  /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
+  /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
   lang: 'en' | undefined
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+/** The fixture text in a locale. */
 export function textsFor(locale: AlertFixtureLocale): ResolvedTexts {
   const text = alertTexts[locale]
   if (text === undefined) {
@@ -453,18 +449,17 @@ const catalogs: Record<AlertFixtureLocale, KvirnMessages> = {
   fi: fiMessages,
   nb: nbMessages,
   nn: nnMessages,
-  se: seMessages,
   en: enMessages,
 }
 
-/** The library strings a story shows in a locale: English where the fixture has no texts (se). */
+/** The library strings a story shows in a locale: English where the fixture has no texts. */
 const messagesFor = (locale: AlertFixtureLocale): KvirnMessages =>
   alertTexts[locale] === undefined ? enMessages : catalogs[locale]
 
 /**
  * The status words ("Klart:", "Varning:") follow the locale toolbar through a provider, like an
  * app's would. The provider also renders the live regions that `announce` needs. Where the
- * fixture shows English (se), the words are English too, so a `lang="en"` element is all
+ * fixture shows English, the words are English too, so a `lang="en"` element is all
  * English.
  */
 export const withAlertLocale: Decorator = (Story, { globals }) => {
@@ -478,7 +473,7 @@ export const withAlertLocale: Decorator = (Story, { globals }) => {
 
 /**
  * The layout of every story: one column that can shrink to 320px, with room between examples, and
- * the `lang` of the texts where the locale has none of its own (se shows English). It is a
+ * the `lang` of the texts where the locale has none of its own. It is a
  * decorator so that the code a story shows is the alert and nothing around it.
  */
 export const withAlertColumn: Decorator = (Story, { globals }) => (

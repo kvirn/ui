@@ -12,11 +12,7 @@ import { Toolbar } from '../toolbar/toolbar.tsx'
 import { ButtonGroup } from './button-group.tsx'
 import type { ButtonGroupProps } from './button-group.tsx'
 import { useButtonGroup } from './use-button-group.ts'
-import type {
-  ButtonGroupLayout,
-  ButtonGroupPartProps,
-  UseButtonGroupResult,
-} from './use-button-group.ts'
+import type { ButtonGroupPartProps, UseButtonGroupResult } from './use-button-group.ts'
 
 // Contract: button-group.a11y.md. It has no keys of its own: Tab moves through the Buttons
 // natively, which the Tab row names.
@@ -90,22 +86,10 @@ describe('part class and props', () => {
   })
 })
 
-describe('layout', () => {
-  test('layout="attached" adds kv-button-group--attached', async () => {
-    await render(
-      <ButtonGroup aria-label="Fogad" layout="attached">
-        <Button>A</Button>
-        <Button>B</Button>
-      </ButtonGroup>,
-    )
-    await expect
-      .element(page.getByRole('group', { name: 'Fogad' }))
-      .toHaveClass('kv-button-group', 'kv-button-group--attached')
-  })
-
-  test('an attached group keeps the group role and name, and the class joins a consumer class', async () => {
+describe('attached', () => {
+  test('a consumer-added kv-button-group--attached keeps the group role and name, and joins the class', async () => {
     const { container } = await render(
-      <ButtonGroup aria-label="Textstil" layout="attached" className="egen-klass">
+      <ButtonGroup aria-label="Textstil" className="kv-button-group--attached egen-klass">
         <Button>Fet</Button>
         <Button>Kursiv</Button>
       </ButtonGroup>,
@@ -119,7 +103,7 @@ describe('layout', () => {
 
   test('an attached group without a name has no role', async () => {
     await render(
-      <ButtonGroup layout="attached" data-testid="strip">
+      <ButtonGroup className="kv-button-group--attached" data-testid="strip">
         <Button>Fet</Button>
       </ButtonGroup>,
     )
@@ -184,18 +168,15 @@ describe('inside a Toolbar', () => {
 })
 
 describe('Toolbar.Group', () => {
-  test('is attached by default, and layout="spaced" opts out', async () => {
+  test('is attached, and keeps a consumer class', async () => {
     await render(
       <Toolbar.Root aria-label="Formatering">
         <Toolbar.Group aria-label="Historik">
           <Toolbar.Button>Ångra</Toolbar.Button>
           <Toolbar.Button>Gör om</Toolbar.Button>
         </Toolbar.Group>
-        <Toolbar.Group aria-label="Textstil" layout="spaced">
+        <Toolbar.Group aria-label="Textstil" className="egen-klass">
           <Toolbar.Button>Fet</Toolbar.Button>
-        </Toolbar.Group>
-        <Toolbar.Group aria-label="Infoga" layout={undefined}>
-          <Toolbar.Button>Länk</Toolbar.Button>
         </Toolbar.Group>
       </Toolbar.Root>,
     )
@@ -204,16 +185,13 @@ describe('Toolbar.Group', () => {
       .toHaveClass('kv-button-group--attached')
     await expect
       .element(page.getByRole('group', { name: 'Textstil' }))
-      .not.toHaveClass('kv-button-group--attached')
-    await expect
-      .element(page.getByRole('group', { name: 'Infoga' }))
-      .toHaveClass('kv-button-group--attached')
+      .toHaveClass('kv-button-group--attached', 'egen-klass')
   })
 })
 
 describe('useButtonGroup', () => {
-  function HookGroup({ isNamed, layout }: { isNamed: boolean; layout?: ButtonGroupLayout }) {
-    const group = useButtonGroup({ isNamed, layout })
+  function HookGroup({ isNamed }: { isNamed: boolean }) {
+    const group = useButtonGroup({ isNamed })
     return (
       <div {...mergeProps(group.groupProps, { 'aria-label': isNamed ? 'Ärendet' : undefined })}>
         <Button>Skicka</Button>
@@ -229,26 +207,6 @@ describe('useButtonGroup', () => {
     await expectNoA11yViolations(container)
     await rerender(<HookGroup isNamed={false} />)
     expect(page.getByRole('group').elements()).toHaveLength(0)
-  })
-
-  test('an unknown layout from untyped code falls back to the spaced look', async () => {
-    await render(<HookGroup isNamed layout={'wide' as ButtonGroupLayout} />)
-    await expect
-      .element(page.getByRole('group', { name: 'Ärendet' }))
-      .not.toHaveClass('kv-button-group--attached')
-  })
-
-  test('layout gives the attached class, and the default does not', async () => {
-    await render(
-      <>
-        <HookGroup isNamed layout="attached" />
-        <HookGroup isNamed={false} />
-      </>,
-    )
-    await expect
-      .element(page.getByRole('group', { name: 'Ärendet' }))
-      .toHaveClass('kv-button-group--attached')
-    expect(document.querySelectorAll('.kv-button-group--attached')).toHaveLength(1)
   })
 })
 
@@ -269,10 +227,7 @@ describe('server rendering', () => {
 
 describe('types', () => {
   test('exports the hook and part types', () => {
-    expectTypeOf<ButtonGroupPartProps['className']>().toEqualTypeOf<
-      'kv-button-group' | 'kv-button-group kv-button-group--attached'
-    >()
-    expectTypeOf<ButtonGroupLayout>().toEqualTypeOf<'spaced' | 'attached'>()
+    expectTypeOf<ButtonGroupPartProps['className']>().toEqualTypeOf<'kv-button-group'>()
     expectTypeOf<ButtonGroupPartProps['role']>().toEqualTypeOf<'group' | undefined>()
     expectTypeOf<UseButtonGroupResult['groupProps']>().toEqualTypeOf<ButtonGroupPartProps>()
     // The role comes from the name, never from a prop.

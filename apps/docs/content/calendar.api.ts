@@ -388,11 +388,5 @@ export const useCalendarHook: ApiHook = {
       default: '–',
       description: 'Range mode: what the next press does.',
     },
-    dateLanguage: {
-      type: 'string | undefined',
-      default: '–',
-      description:
-        'The language of the written months and weekdays when it isn’t the provider’s (3.1.2).',
-    },
   }),
 }

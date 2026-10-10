@@ -73,7 +73,7 @@ SidebarLayout.Root     (content page and documentation page only)
 | 64rem | Header: nav row shown, Meny gone; sidebar beside `main` (`sm` 16rem); 3 tile columns                     |
 | 80rem | Container stops at `80rem`, centred; prose stays at `45rem` (`Container size="reading"`)                 |
 
-Storybook: content types are `layout: 'fullscreen'`, wrapped by a `PageFrame` decorator (plan T2) that sets the provider's locale to the fixture's (§8.1).
+Storybook: content types are `layout: 'fullscreen'`, wrapped by a `KvirnProvider` that sets the locale to the fixture's (§8.1).
 
 ## 5. Site chrome (slice T2)
 
@@ -226,7 +226,7 @@ Fictional, labelled as such (reference §6): `.example` domains, no real organis
 
 ### 8.1 Locale rule
 
-The toolbar's `en` picks `en`; every other locale picks `sv` (fi, nb, nn, se fixtures are later, plan D4). The `PageFrame` passes the chosen fixture locale to the provider and to `lang`, so library strings and content never mix languages on one page (3.1.1, 3.1.2).
+The toolbar's `en` picks `en`; every other locale picks `sv` (fi, nb, nn, se fixtures are later, plan D4). The story wraps the `PageFrame` in a `KvirnProvider` with the chosen fixture locale and its catalog, and the toolbar sets `lang`, so library strings and content never mix languages on one page (3.1.1, 3.1.2).
 
 ### 8.2 Data sketch
 

@@ -218,12 +218,12 @@ export const YearButtons: Story = {
   },
 }
 
-/** The seven locales: months and weekdays from `Intl`; `se` is English text with Sámi names from the browser. */
+/** The locales: months and weekdays from `Intl`. */
 export const Locales: Story = {
   parameters: showSource('calendar/calendar.fixture.tsx', 'LocaleCalendars'),
   render: () => <LocaleCalendars />,
   play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('grid')).toHaveLength(7)
+    await expect(canvas.getAllByRole('grid')).toHaveLength(6)
   },
 }
 

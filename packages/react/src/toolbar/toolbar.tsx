@@ -335,10 +335,15 @@ ToolbarItem.displayName = 'Toolbar.Item'
 /**
  * A `ButtonGroup` in the toolbar: a `role="group"` that needs a name, so a screen reader says
  * "Textstil, group" as focus enters it. The theme draws a hairline between groups.
- * Its buttons are joined into one strip (`layout="attached"`), and `layout="spaced"` opts out.
+ * Its buttons are joined into one strip: it adds `kv-button-group--attached` next to your class.
  */
-export function ToolbarGroup(props: ToolbarGroupProps): ReactElement {
-  return <ButtonGroup {...props} layout={props.layout ?? 'attached'} />
+export function ToolbarGroup({ className, ...otherProps }: ToolbarGroupProps): ReactElement {
+  return (
+    <ButtonGroup
+      {...otherProps}
+      className={['kv-button-group--attached', className].filter(Boolean).join(' ')}
+    />
+  )
 }
 ToolbarGroup.displayName = 'Toolbar.Group'
 

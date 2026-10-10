@@ -29,7 +29,7 @@ describe('resolveDirectionFromLanguage (fallback without Intl text info)', () =>
     expect(resolveDirectionFromLanguage('AR-eg')).toBe('rtl')
     expect(resolveDirectionFromLanguage('ckb-IQ')).toBe('rtl')
     expect(resolveDirectionFromLanguage('sv-SE')).toBe('ltr')
-    expect(resolveDirectionFromLanguage('se')).toBe('ltr')
+    expect(resolveDirectionFromLanguage('nn')).toBe('ltr')
   })
 
   it('agrees with Intl text info for every listed language', () => {
@@ -43,6 +43,6 @@ describe('getLanguage', () => {
   it('returns the lower-cased language subtag', () => {
     expect(getLanguage('sv-SE')).toBe('sv')
     expect(getLanguage('EN')).toBe('en')
-    expect(getLanguage('se_NO')).toBe('se')
+    expect(getLanguage('nn_NO')).toBe('nn')
   })
 })

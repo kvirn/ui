@@ -275,7 +275,7 @@ export function FileUploadTrigger({
     // name starts with the visible text whatever the engine does with a button that names itself.
     children: (
       <>
-        {children === undefined ? <Icon name="upload" size={5} /> : null}
+        {children === undefined ? <Icon name="upload" size="20" /> : null}
         <span id={fileUpload?.triggerTextId}>{children ?? fileUpload?.triggerText}</span>
       </>
     ),
@@ -425,7 +425,7 @@ export function FileUploadRejections({
     children ?? (
       <>
         <p>
-          <Icon name="error" size={5} />
+          <Icon name="error" size="20" />
           <span className="kv-field-error-prefix">{fieldMessages.errorPrefix}</span>{' '}
           {fileUpload.messages.rejectedHeading({ count: fileUpload.rejections.length })}
         </p>
@@ -608,7 +608,7 @@ export function FileUploadPreview({
           ...mergeProps(otherProps, { className: 'kv-file-upload-preview' }),
           ref: mergedRef,
         },
-        children ?? <Icon name="document" size={6} />,
+        children ?? <Icon name="document" size="24" />,
       )
 }
 FileUploadPreview.displayName = 'FileUpload.Preview'
@@ -709,7 +709,7 @@ export function FileUploadStatus({
       ref: mergedRef,
     },
     <>
-      {icon === undefined ? null : <Icon name={icon} size={4} />}
+      {icon === undefined ? null : <Icon name={icon} size="16" />}
       {children ?? fileUpload.getItemStatusText(item)}
     </>,
   )
@@ -784,7 +784,7 @@ export function FileUploadItemError({
       ref: mergedRef,
     },
     <>
-      <Icon name="error" size={5} />
+      <Icon name="error" size="20" />
       <span className="kv-field-error-prefix">{fieldMessages.errorPrefix}</span>{' '}
       {children ?? fileUpload.getItemErrorText(itemContext.item)}
     </>,
@@ -860,7 +860,7 @@ function ItemButton({
     },
     children ?? (
       <>
-        {kind === 'remove' ? <Icon name="delete" size={5} /> : null}
+        {kind === 'remove' ? <Icon name="delete" size="20" /> : null}
         {visibleText}
       </>
     ),

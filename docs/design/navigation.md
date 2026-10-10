@@ -91,7 +91,7 @@ Service link, inline-level, in a paragraph or on its own line:
 | Service link (choice)  | `<a class="kv-link kv-link--service">`             | `link` text, 1px `primary` edge, transparent fill, `radius-md`, control type, `space-4` inline padding |
 | `Link.Icon` (new part) | `<span class="kv-link-icon" aria-hidden="true">`   | in a service link: `primary` fill, `on-primary` icon, inner radius at the inline start                 |
 
-`Link.Icon` works in any Link (a plain inline icon in the link colour). Only inside `kv-link--service` does it become the filled block. Put it first in the link. Recommended icon: the built-in `arrow-forward` at `size={6}` (it already mirrors in RTL).
+`Link.Icon` works in any Link (a plain inline icon in the link colour). Only inside `kv-link--service` does it become the filled block. Put it first in the link. Recommended icon: the built-in `arrow-forward` at `size="24"` (it already mirrors in RTL).
 
 ### 6.2 States
 

@@ -29,13 +29,6 @@ const meta = {
       </>
     ),
   },
-  argTypes: {
-    sidebarWidth: {
-      control: 'inline-radio',
-      options: ['sm', 'md'],
-      description: 'The sidebar track from `64rem`: `sm` 16rem or `md` 20rem (default).',
-    },
-  },
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof SidebarLayout.Root>
 
@@ -45,8 +38,8 @@ type Story = StoryObj<typeof meta>
 /** Stacked below `64rem`, side by side from it, with the sidebar at inline start. */
 export const Default: Story = {}
 
-/** `sidebarWidth="sm"`: a `16rem` sidebar. */
-export const SidebarSmall: Story = { args: { sidebarWidth: 'sm' } }
+/** `kv-sidebar-layout--sidebar-sm`: a `16rem` sidebar. */
+export const SidebarSmall: Story = { args: { className: 'kv-sidebar-layout--sidebar-sm' } }
 
 /** The sidebar as a named `nav`: the layout adds no landmark, `as` does. */
 export const AsNavigation: Story = {

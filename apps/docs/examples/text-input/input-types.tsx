@@ -5,7 +5,7 @@ import { useTextInputTexts } from './texts.ts'
 export function InputTypes() {
   const { texts, textLang } = useTextInputTexts()
   return (
-    <Stack gap="8" lang={textLang}>
+    <Stack className="kv-stack--gap-8" lang={textLang}>
       <Field.Root required>
         <Field.Label>{texts.email}</Field.Label>
         <TextInput name="email" type="email" autoComplete="email" />

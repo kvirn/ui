@@ -48,7 +48,6 @@ const texts: Record<FormLocale, EmptyTexts | undefined> = {
     searchTitle: 'Ingen treff på "parkering"',
     searchBody: 'Kontroller stavemåten eller bruk færre ord.',
   },
-  se: undefined,
   en: {
     title: 'You have no cases yet',
     body: 'When you apply for something, it shows up here.',

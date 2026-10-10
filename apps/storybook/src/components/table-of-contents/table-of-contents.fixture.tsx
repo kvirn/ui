@@ -3,7 +3,6 @@ import { en as enMessages } from '@kvirn-ui/i18n/en'
 import { fi as fiMessages } from '@kvirn-ui/i18n/fi'
 import { nb as nbMessages } from '@kvirn-ui/i18n/nb'
 import { nn as nnMessages } from '@kvirn-ui/i18n/nn'
-import { se as seMessages } from '@kvirn-ui/i18n/se'
 import { sv as svMessages } from '@kvirn-ui/i18n/sv'
 import { Heading, KvirnProvider, TableOfContents } from '@kvirn-ui/react'
 import type { HeadingTag, TableOfContentsEntry } from '@kvirn-ui/react'
@@ -21,7 +20,6 @@ const catalogs: Record<string, KvirnMessages> = {
   fi: fiMessages,
   nb: nbMessages,
   nn: nnMessages,
-  se: seMessages,
   en: enMessages,
 }
 

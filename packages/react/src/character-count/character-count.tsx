@@ -95,7 +95,7 @@ export function CharacterCount({
       ...mergeProps(otherProps, characterCount.countProps),
       children: (
         <>
-          {characterCount.isOver ? <Icon name="warning" size={5} /> : null}
+          {characterCount.isOver ? <Icon name="warning" size="20" /> : null}
           {characterCount.text}
         </>
       ),

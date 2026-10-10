@@ -10,7 +10,7 @@ export function DefaultErrorSummary() {
   const emailId = `${idPrefix}-email`
   const phoneId = `${idPrefix}-phone`
   return (
-    <Stack gap="8" lang={textLang}>
+    <Stack className="kv-stack--gap-8" lang={textLang}>
       <Button onClick={() => setIsShown(true)}>{texts.showSummary}</Button>
       {isShown ? (
         <ErrorSummary.Root>

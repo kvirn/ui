@@ -11,7 +11,7 @@ import { Link } from '../link/link.tsx'
 import { Stack } from './stack.tsx'
 import type { StackProps } from './stack.tsx'
 import { useStack } from './use-stack.ts'
-import type { UseStackOptions, StackPartProps, UseStackResult } from './use-stack.ts'
+import type { StackPartProps, UseStackResult } from './use-stack.ts'
 
 // Contract: stack.a11y.md.
 
@@ -28,20 +28,6 @@ afterEach(() => {
 
 const warnings = () => consoleWarn.mock.calls.map(([message]) => String(message))
 
-const choices = [
-  [{}, 'kv-stack'],
-  [{ gap: '6' }, 'kv-stack'],
-  [{ gap: '2' }, 'kv-stack kv-stack--gap-2'],
-  [{ gap: '4' }, 'kv-stack kv-stack--gap-4'],
-  [{ gap: '8' }, 'kv-stack kv-stack--gap-8'],
-] as const
-
-const propChoices = [
-  [{ gap: '2' }, 'kv-stack kv-stack--gap-2'],
-  [{ gap: '4' }, 'kv-stack kv-stack--gap-4'],
-  [{ gap: '8' }, 'kv-stack kv-stack--gap-8'],
-] as const
-
 describe('rendering', () => {
   test('renders one <div> with the base class and the children', async () => {
     const { container } = await render(<Stack data-testid="layout">Innehåll</Stack>)
@@ -50,11 +36,6 @@ describe('rendering', () => {
     expect(layout.element().className).toBe('kv-stack')
     await expect.element(layout).toHaveTextContent('Innehåll')
     expect(container.children).toHaveLength(1)
-  })
-
-  test.each(propChoices)('Stack %j adds only its modifier class', async (props, className) => {
-    await render(<Stack {...props} data-testid="layout" />)
-    expect(page.getByTestId('layout').element().className).toBe(className)
   })
 
   test('adds role="list" to a ul and an ol, and no role to a div', async () => {
@@ -76,7 +57,7 @@ describe('rendering', () => {
   })
 
   test('a div adds no ARIA, tabindex, inert or data attribute', async () => {
-    await render(<Stack data-testid="layout" {...propChoices[0][0]} />)
+    await render(<Stack data-testid="layout" />)
     const attributeNames = page.getByTestId('layout').element().getAttributeNames()
     expect(
       attributeNames.filter(
@@ -209,10 +190,6 @@ describe('keyboard', () => {
 })
 
 describe('useStack', () => {
-  test.each(choices)('%j gives the class "%s"', (options, className) => {
-    expect(useStack(options).stackProps.className).toBe(className)
-  })
-
   test('returns the same frozen objects every time', () => {
     const first = useStack()
     expect(useStack()).toBe(first)
@@ -233,8 +210,7 @@ describe('useStack', () => {
 })
 
 describe('types', () => {
-  test('the exported option, props and result types fit together', () => {
-    expectTypeOf<StackProps>().toExtend<UseStackOptions>()
+  test('the exported props and result types fit together', () => {
     expectTypeOf<StackProps>().toHaveProperty('as')
     expectTypeOf<ReturnType<typeof useStack>>().toEqualTypeOf<UseStackResult>()
     expectTypeOf<UseStackResult['stackProps']>().toEqualTypeOf<StackPartProps>()

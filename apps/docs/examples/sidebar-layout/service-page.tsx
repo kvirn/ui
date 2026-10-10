@@ -6,7 +6,7 @@ export function ServicePage() {
   const { texts, textLang } = useSidebarLayoutTexts()
   const { service } = texts
   return (
-    <SidebarLayout.Root sidebarWidth="sm" lang={textLang}>
+    <SidebarLayout.Root className="kv-sidebar-layout--sidebar-sm" lang={textLang}>
       <SidebarLayout.Sidebar as="nav" aria-label={service.navigationLabel}>
         <ul className="kv-stack kv-stack--gap-2">
           {service.links.map((label) => (

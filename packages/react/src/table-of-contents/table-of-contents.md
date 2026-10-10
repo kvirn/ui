@@ -34,7 +34,7 @@ The parent headings of the current one get no attribute: the trail is a visual r
 | ----------------------- | --------------- | ---------------- |
 | `tableOfContents.label` | On this page    | På den här sidan |
 
-It names the landmark when you give no `aria-labelledby`. Override it per provider, or per instance with `messages={{ label: 'Innehåll' }}`. An `aria-label` of your own wins over it. `se` is an English placeholder until a native review.
+It names the landmark when you give no `aria-labelledby`. Override it per provider, or per instance with `messages={{ label: 'Innehåll' }}`. An `aria-label` of your own wins over it.
 
 Dev warnings (English, development only, never shown to users):
 

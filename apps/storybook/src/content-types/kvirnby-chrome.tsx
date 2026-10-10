@@ -83,8 +83,8 @@ export function KvirnbyHeader({ current }: { current?: 'page' | undefined }) {
 export function KvirnbyFooter() {
   return (
     <SiteFooter.Root>
-      <Columns minColumnWidth="sm" gap="8">
-        <Stack gap="4">
+      <Columns className="kv-columns--min-sm kv-columns--gap-8">
+        <Stack className="kv-stack--gap-4">
           <Heading as="h2" size="heading-3">
             Contact us
           </Heading>
@@ -118,11 +118,11 @@ export function KvirnbyFooter() {
           </Address>
         </Stack>
         <nav aria-labelledby="footer-about">
-          <Stack gap="4">
+          <Stack className="kv-stack--gap-4">
             <Heading as="h2" size="heading-3" id="footer-about">
               About the website
             </Heading>
-            <List.Root gap="2">
+            <List.Root className="kv-list--gap-2">
               <List.Item>
                 <Link.Root href="#accessibility">Accessibility statement</Link.Root>
               </List.Item>
@@ -136,11 +136,11 @@ export function KvirnbyFooter() {
           </Stack>
         </nav>
         <nav aria-labelledby="footer-follow">
-          <Stack gap="4">
+          <Stack className="kv-stack--gap-4">
             <Heading as="h2" size="heading-3" id="footer-follow">
               Follow Kvirnby
             </Heading>
-            <List.Root gap="2">
+            <List.Root className="kv-list--gap-2">
               <List.Item>
                 <Link.Root href="#newsletter">Newsletter</Link.Root>
               </List.Item>

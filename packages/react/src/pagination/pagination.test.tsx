@@ -2,7 +2,6 @@ import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
-import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef } from 'react'
@@ -290,7 +289,6 @@ describe('Pagination', () => {
     ['fi', fi, 'Sivut', 'Edellinen sivu', 'Seuraava sivu', 'Sivu 2/9', 'Sivu 2'],
     ['nb', nb, 'Sider', 'Forrige side', 'Neste side', 'Side 2 av 9', 'Side 2'],
     ['nn', nn, 'Sider', 'Førre side', 'Neste side', 'Side 2 av 9', 'Side 2'],
-    ['se', se, 'Pages', 'Previous page', 'Next page', 'Page 2 of 9', 'Page 2'],
   ] as const)(
     'the %s catalog names the landmark, the links and the status',
     async (locale, messages, label, previous, next, status, current) => {

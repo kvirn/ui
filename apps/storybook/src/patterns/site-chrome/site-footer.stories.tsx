@@ -1,5 +1,15 @@
+import { en } from '@kvirn-ui/i18n/en'
 import { PageFrame, SiteFooter } from '@kvirn-ui/patterns'
-import { Address, Columns, Heading, Link, List, Stack, SummaryList } from '@kvirn-ui/react'
+import {
+  Address,
+  Columns,
+  Heading,
+  KvirnProvider,
+  Link,
+  List,
+  Stack,
+  SummaryList,
+} from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/site-footer/site-footer.a11y.md?raw'
@@ -52,94 +62,96 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <SiteFooter.Root>
-        <Columns minColumnWidth="sm" gap="8">
-          <Stack gap="4">
-            <Heading as="h2" size="heading-3">
-              Contact us
-            </Heading>
-            <p>
-              <strong>Contact centre</strong>
-            </p>
-            <SummaryList.Root>
-              <SummaryList.Row>
-                <SummaryList.Key>Phone</SummaryList.Key>
-                <SummaryList.Value>
-                  <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
-                </SummaryList.Value>
-              </SummaryList.Row>
-              <SummaryList.Row>
-                <SummaryList.Key>Email</SummaryList.Key>
-                <SummaryList.Value>
-                  <Link.Root href="mailto:contact@kvirnby.example">
-                    contact@kvirnby.example
-                  </Link.Root>
-                </SummaryList.Value>
-              </SummaryList.Row>
-              <SummaryList.Row>
-                <SummaryList.Key>Phone hours</SummaryList.Key>
-                <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
-              </SummaryList.Row>
-            </SummaryList.Root>
-            <Address>
-              Municipal building
-              <br />
-              Storgatan 1
-              <br />
-              123 45 Kvirnby
-            </Address>
-            <p>
-              <Link.Root href="#report-a-fault">Report a fault</Link.Root>
-            </p>
-          </Stack>
-          <nav aria-labelledby="footer-about">
-            <Stack gap="4">
-              <Heading as="h2" size="heading-3" id="footer-about">
-                About the website
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <SiteFooter.Root>
+          <Columns className="kv-columns--min-sm kv-columns--gap-8">
+            <Stack className="kv-stack--gap-4">
+              <Heading as="h2" size="heading-3">
+                Contact us
               </Heading>
-              <List.Root gap="2">
-                <List.Item>
-                  <Link.Root href="#accessibility">Accessibility statement</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#report-accessibility">
-                    Report an accessibility problem
-                  </Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#privacy">Personal data</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#cookies">Cookies</Link.Root>
-                </List.Item>
-              </List.Root>
+              <p>
+                <strong>Contact centre</strong>
+              </p>
+              <SummaryList.Root>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Email</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="mailto:contact@kvirnby.example">
+                      contact@kvirnby.example
+                    </Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone hours</SummaryList.Key>
+                  <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
+                </SummaryList.Row>
+              </SummaryList.Root>
+              <Address>
+                Municipal building
+                <br />
+                Storgatan 1
+                <br />
+                123 45 Kvirnby
+              </Address>
+              <p>
+                <Link.Root href="#report-a-fault">Report a fault</Link.Root>
+              </p>
             </Stack>
-          </nav>
-          <nav aria-labelledby="footer-follow">
-            <Stack gap="4">
-              <Heading as="h2" size="heading-3" id="footer-follow">
-                Follow Kvirnby
-              </Heading>
-              <List.Root gap="2">
-                <List.Item>
-                  <Link.Root href="#newsletter">Newsletter</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#social-media">Kvirnby on social media</Link.Root>
-                </List.Item>
-              </List.Root>
-            </Stack>
-          </nav>
-        </Columns>
-        <SiteFooter.Organisation>
-          Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
-        </SiteFooter.Organisation>
-      </SiteFooter.Root>
-    </PageFrame.Root>
+            <nav aria-labelledby="footer-about">
+              <Stack className="kv-stack--gap-4">
+                <Heading as="h2" size="heading-3" id="footer-about">
+                  About the website
+                </Heading>
+                <List.Root className="kv-list--gap-2">
+                  <List.Item>
+                    <Link.Root href="#accessibility">Accessibility statement</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#report-accessibility">
+                      Report an accessibility problem
+                    </Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#privacy">Personal data</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#cookies">Cookies</Link.Root>
+                  </List.Item>
+                </List.Root>
+              </Stack>
+            </nav>
+            <nav aria-labelledby="footer-follow">
+              <Stack className="kv-stack--gap-4">
+                <Heading as="h2" size="heading-3" id="footer-follow">
+                  Follow Kvirnby
+                </Heading>
+                <List.Root className="kv-list--gap-2">
+                  <List.Item>
+                    <Link.Root href="#newsletter">Newsletter</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#social-media">Kvirnby on social media</Link.Root>
+                  </List.Item>
+                </List.Root>
+              </Stack>
+            </nav>
+          </Columns>
+          <SiteFooter.Organisation>
+            Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
+          </SiteFooter.Organisation>
+        </SiteFooter.Root>
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('contentinfo')).toBeVisible()
@@ -154,94 +166,96 @@ export const Default: Story = {
 export const Narrow: Story = {
   globals: { ...narrowGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <SiteFooter.Root>
-        <Columns minColumnWidth="sm" gap="8">
-          <Stack gap="4">
-            <Heading as="h2" size="heading-3">
-              Contact us
-            </Heading>
-            <p>
-              <strong>Contact centre</strong>
-            </p>
-            <SummaryList.Root>
-              <SummaryList.Row>
-                <SummaryList.Key>Phone</SummaryList.Key>
-                <SummaryList.Value>
-                  <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
-                </SummaryList.Value>
-              </SummaryList.Row>
-              <SummaryList.Row>
-                <SummaryList.Key>Email</SummaryList.Key>
-                <SummaryList.Value>
-                  <Link.Root href="mailto:contact@kvirnby.example">
-                    contact@kvirnby.example
-                  </Link.Root>
-                </SummaryList.Value>
-              </SummaryList.Row>
-              <SummaryList.Row>
-                <SummaryList.Key>Phone hours</SummaryList.Key>
-                <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
-              </SummaryList.Row>
-            </SummaryList.Root>
-            <Address>
-              Municipal building
-              <br />
-              Storgatan 1
-              <br />
-              123 45 Kvirnby
-            </Address>
-            <p>
-              <Link.Root href="#report-a-fault">Report a fault</Link.Root>
-            </p>
-          </Stack>
-          <nav aria-labelledby="footer-about">
-            <Stack gap="4">
-              <Heading as="h2" size="heading-3" id="footer-about">
-                About the website
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <SiteFooter.Root>
+          <Columns className="kv-columns--min-sm kv-columns--gap-8">
+            <Stack className="kv-stack--gap-4">
+              <Heading as="h2" size="heading-3">
+                Contact us
               </Heading>
-              <List.Root gap="2">
-                <List.Item>
-                  <Link.Root href="#accessibility">Accessibility statement</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#report-accessibility">
-                    Report an accessibility problem
-                  </Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#privacy">Personal data</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#cookies">Cookies</Link.Root>
-                </List.Item>
-              </List.Root>
+              <p>
+                <strong>Contact centre</strong>
+              </p>
+              <SummaryList.Root>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Email</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="mailto:contact@kvirnby.example">
+                      contact@kvirnby.example
+                    </Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone hours</SummaryList.Key>
+                  <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
+                </SummaryList.Row>
+              </SummaryList.Root>
+              <Address>
+                Municipal building
+                <br />
+                Storgatan 1
+                <br />
+                123 45 Kvirnby
+              </Address>
+              <p>
+                <Link.Root href="#report-a-fault">Report a fault</Link.Root>
+              </p>
             </Stack>
-          </nav>
-          <nav aria-labelledby="footer-follow">
-            <Stack gap="4">
-              <Heading as="h2" size="heading-3" id="footer-follow">
-                Follow Kvirnby
-              </Heading>
-              <List.Root gap="2">
-                <List.Item>
-                  <Link.Root href="#newsletter">Newsletter</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#social-media">Kvirnby on social media</Link.Root>
-                </List.Item>
-              </List.Root>
-            </Stack>
-          </nav>
-        </Columns>
-        <SiteFooter.Organisation>
-          Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
-        </SiteFooter.Organisation>
-      </SiteFooter.Root>
-    </PageFrame.Root>
+            <nav aria-labelledby="footer-about">
+              <Stack className="kv-stack--gap-4">
+                <Heading as="h2" size="heading-3" id="footer-about">
+                  About the website
+                </Heading>
+                <List.Root className="kv-list--gap-2">
+                  <List.Item>
+                    <Link.Root href="#accessibility">Accessibility statement</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#report-accessibility">
+                      Report an accessibility problem
+                    </Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#privacy">Personal data</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#cookies">Cookies</Link.Root>
+                  </List.Item>
+                </List.Root>
+              </Stack>
+            </nav>
+            <nav aria-labelledby="footer-follow">
+              <Stack className="kv-stack--gap-4">
+                <Heading as="h2" size="heading-3" id="footer-follow">
+                  Follow Kvirnby
+                </Heading>
+                <List.Root className="kv-list--gap-2">
+                  <List.Item>
+                    <Link.Root href="#newsletter">Newsletter</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#social-media">Kvirnby on social media</Link.Root>
+                  </List.Item>
+                </List.Root>
+              </Stack>
+            </nav>
+          </Columns>
+          <SiteFooter.Organisation>
+            Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
+          </SiteFooter.Organisation>
+        </SiteFooter.Root>
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvasElement }) => {
     await expectNoHorizontalOverflow(canvasElement)
@@ -252,94 +266,96 @@ export const Narrow: Story = {
 export const Keyboard: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <SiteFooter.Root>
-        <Columns minColumnWidth="sm" gap="8">
-          <Stack gap="4">
-            <Heading as="h2" size="heading-3">
-              Contact us
-            </Heading>
-            <p>
-              <strong>Contact centre</strong>
-            </p>
-            <SummaryList.Root>
-              <SummaryList.Row>
-                <SummaryList.Key>Phone</SummaryList.Key>
-                <SummaryList.Value>
-                  <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
-                </SummaryList.Value>
-              </SummaryList.Row>
-              <SummaryList.Row>
-                <SummaryList.Key>Email</SummaryList.Key>
-                <SummaryList.Value>
-                  <Link.Root href="mailto:contact@kvirnby.example">
-                    contact@kvirnby.example
-                  </Link.Root>
-                </SummaryList.Value>
-              </SummaryList.Row>
-              <SummaryList.Row>
-                <SummaryList.Key>Phone hours</SummaryList.Key>
-                <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
-              </SummaryList.Row>
-            </SummaryList.Root>
-            <Address>
-              Municipal building
-              <br />
-              Storgatan 1
-              <br />
-              123 45 Kvirnby
-            </Address>
-            <p>
-              <Link.Root href="#report-a-fault">Report a fault</Link.Root>
-            </p>
-          </Stack>
-          <nav aria-labelledby="footer-about">
-            <Stack gap="4">
-              <Heading as="h2" size="heading-3" id="footer-about">
-                About the website
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <SiteFooter.Root>
+          <Columns className="kv-columns--min-sm kv-columns--gap-8">
+            <Stack className="kv-stack--gap-4">
+              <Heading as="h2" size="heading-3">
+                Contact us
               </Heading>
-              <List.Root gap="2">
-                <List.Item>
-                  <Link.Root href="#accessibility">Accessibility statement</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#report-accessibility">
-                    Report an accessibility problem
-                  </Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#privacy">Personal data</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#cookies">Cookies</Link.Root>
-                </List.Item>
-              </List.Root>
+              <p>
+                <strong>Contact centre</strong>
+              </p>
+              <SummaryList.Root>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Email</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="mailto:contact@kvirnby.example">
+                      contact@kvirnby.example
+                    </Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone hours</SummaryList.Key>
+                  <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
+                </SummaryList.Row>
+              </SummaryList.Root>
+              <Address>
+                Municipal building
+                <br />
+                Storgatan 1
+                <br />
+                123 45 Kvirnby
+              </Address>
+              <p>
+                <Link.Root href="#report-a-fault">Report a fault</Link.Root>
+              </p>
             </Stack>
-          </nav>
-          <nav aria-labelledby="footer-follow">
-            <Stack gap="4">
-              <Heading as="h2" size="heading-3" id="footer-follow">
-                Follow Kvirnby
-              </Heading>
-              <List.Root gap="2">
-                <List.Item>
-                  <Link.Root href="#newsletter">Newsletter</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#social-media">Kvirnby on social media</Link.Root>
-                </List.Item>
-              </List.Root>
-            </Stack>
-          </nav>
-        </Columns>
-        <SiteFooter.Organisation>
-          Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
-        </SiteFooter.Organisation>
-      </SiteFooter.Root>
-    </PageFrame.Root>
+            <nav aria-labelledby="footer-about">
+              <Stack className="kv-stack--gap-4">
+                <Heading as="h2" size="heading-3" id="footer-about">
+                  About the website
+                </Heading>
+                <List.Root className="kv-list--gap-2">
+                  <List.Item>
+                    <Link.Root href="#accessibility">Accessibility statement</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#report-accessibility">
+                      Report an accessibility problem
+                    </Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#privacy">Personal data</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#cookies">Cookies</Link.Root>
+                  </List.Item>
+                </List.Root>
+              </Stack>
+            </nav>
+            <nav aria-labelledby="footer-follow">
+              <Stack className="kv-stack--gap-4">
+                <Heading as="h2" size="heading-3" id="footer-follow">
+                  Follow Kvirnby
+                </Heading>
+                <List.Root className="kv-list--gap-2">
+                  <List.Item>
+                    <Link.Root href="#newsletter">Newsletter</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#social-media">Kvirnby on social media</Link.Root>
+                  </List.Item>
+                </List.Root>
+              </Stack>
+            </nav>
+          </Columns>
+          <SiteFooter.Organisation>
+            Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
+          </SiteFooter.Organisation>
+        </SiteFooter.Root>
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
 }
 
@@ -347,94 +363,96 @@ export const Keyboard: Story = {
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en', ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <SiteFooter.Root>
-        <Columns minColumnWidth="sm" gap="8">
-          <Stack gap="4">
-            <Heading as="h2" size="heading-3">
-              Contact us
-            </Heading>
-            <p>
-              <strong>Contact centre</strong>
-            </p>
-            <SummaryList.Root>
-              <SummaryList.Row>
-                <SummaryList.Key>Phone</SummaryList.Key>
-                <SummaryList.Value>
-                  <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
-                </SummaryList.Value>
-              </SummaryList.Row>
-              <SummaryList.Row>
-                <SummaryList.Key>Email</SummaryList.Key>
-                <SummaryList.Value>
-                  <Link.Root href="mailto:contact@kvirnby.example">
-                    contact@kvirnby.example
-                  </Link.Root>
-                </SummaryList.Value>
-              </SummaryList.Row>
-              <SummaryList.Row>
-                <SummaryList.Key>Phone hours</SummaryList.Key>
-                <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
-              </SummaryList.Row>
-            </SummaryList.Root>
-            <Address>
-              Municipal building
-              <br />
-              Storgatan 1
-              <br />
-              123 45 Kvirnby
-            </Address>
-            <p>
-              <Link.Root href="#report-a-fault">Report a fault</Link.Root>
-            </p>
-          </Stack>
-          <nav aria-labelledby="footer-about">
-            <Stack gap="4">
-              <Heading as="h2" size="heading-3" id="footer-about">
-                About the website
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <SiteFooter.Root>
+          <Columns className="kv-columns--min-sm kv-columns--gap-8">
+            <Stack className="kv-stack--gap-4">
+              <Heading as="h2" size="heading-3">
+                Contact us
               </Heading>
-              <List.Root gap="2">
-                <List.Item>
-                  <Link.Root href="#accessibility">Accessibility statement</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#report-accessibility">
-                    Report an accessibility problem
-                  </Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#privacy">Personal data</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#cookies">Cookies</Link.Root>
-                </List.Item>
-              </List.Root>
+              <p>
+                <strong>Contact centre</strong>
+              </p>
+              <SummaryList.Root>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Email</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="mailto:contact@kvirnby.example">
+                      contact@kvirnby.example
+                    </Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone hours</SummaryList.Key>
+                  <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
+                </SummaryList.Row>
+              </SummaryList.Root>
+              <Address>
+                Municipal building
+                <br />
+                Storgatan 1
+                <br />
+                123 45 Kvirnby
+              </Address>
+              <p>
+                <Link.Root href="#report-a-fault">Report a fault</Link.Root>
+              </p>
             </Stack>
-          </nav>
-          <nav aria-labelledby="footer-follow">
-            <Stack gap="4">
-              <Heading as="h2" size="heading-3" id="footer-follow">
-                Follow Kvirnby
-              </Heading>
-              <List.Root gap="2">
-                <List.Item>
-                  <Link.Root href="#newsletter">Newsletter</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#social-media">Kvirnby on social media</Link.Root>
-                </List.Item>
-              </List.Root>
-            </Stack>
-          </nav>
-        </Columns>
-        <SiteFooter.Organisation>
-          Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
-        </SiteFooter.Organisation>
-      </SiteFooter.Root>
-    </PageFrame.Root>
+            <nav aria-labelledby="footer-about">
+              <Stack className="kv-stack--gap-4">
+                <Heading as="h2" size="heading-3" id="footer-about">
+                  About the website
+                </Heading>
+                <List.Root className="kv-list--gap-2">
+                  <List.Item>
+                    <Link.Root href="#accessibility">Accessibility statement</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#report-accessibility">
+                      Report an accessibility problem
+                    </Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#privacy">Personal data</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#cookies">Cookies</Link.Root>
+                  </List.Item>
+                </List.Root>
+              </Stack>
+            </nav>
+            <nav aria-labelledby="footer-follow">
+              <Stack className="kv-stack--gap-4">
+                <Heading as="h2" size="heading-3" id="footer-follow">
+                  Follow Kvirnby
+                </Heading>
+                <List.Root className="kv-list--gap-2">
+                  <List.Item>
+                    <Link.Root href="#newsletter">Newsletter</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#social-media">Kvirnby on social media</Link.Root>
+                  </List.Item>
+                </List.Root>
+              </Stack>
+            </nav>
+          </Columns>
+          <SiteFooter.Organisation>
+            Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
+          </SiteFooter.Organisation>
+        </SiteFooter.Root>
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
 }
 
@@ -442,93 +460,95 @@ export const RTL: Story = {
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active', ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <SiteFooter.Root>
-        <Columns minColumnWidth="sm" gap="8">
-          <Stack gap="4">
-            <Heading as="h2" size="heading-3">
-              Contact us
-            </Heading>
-            <p>
-              <strong>Contact centre</strong>
-            </p>
-            <SummaryList.Root>
-              <SummaryList.Row>
-                <SummaryList.Key>Phone</SummaryList.Key>
-                <SummaryList.Value>
-                  <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
-                </SummaryList.Value>
-              </SummaryList.Row>
-              <SummaryList.Row>
-                <SummaryList.Key>Email</SummaryList.Key>
-                <SummaryList.Value>
-                  <Link.Root href="mailto:contact@kvirnby.example">
-                    contact@kvirnby.example
-                  </Link.Root>
-                </SummaryList.Value>
-              </SummaryList.Row>
-              <SummaryList.Row>
-                <SummaryList.Key>Phone hours</SummaryList.Key>
-                <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
-              </SummaryList.Row>
-            </SummaryList.Root>
-            <Address>
-              Municipal building
-              <br />
-              Storgatan 1
-              <br />
-              123 45 Kvirnby
-            </Address>
-            <p>
-              <Link.Root href="#report-a-fault">Report a fault</Link.Root>
-            </p>
-          </Stack>
-          <nav aria-labelledby="footer-about">
-            <Stack gap="4">
-              <Heading as="h2" size="heading-3" id="footer-about">
-                About the website
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <SiteFooter.Root>
+          <Columns className="kv-columns--min-sm kv-columns--gap-8">
+            <Stack className="kv-stack--gap-4">
+              <Heading as="h2" size="heading-3">
+                Contact us
               </Heading>
-              <List.Root gap="2">
-                <List.Item>
-                  <Link.Root href="#accessibility">Accessibility statement</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#report-accessibility">
-                    Report an accessibility problem
-                  </Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#privacy">Personal data</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#cookies">Cookies</Link.Root>
-                </List.Item>
-              </List.Root>
+              <p>
+                <strong>Contact centre</strong>
+              </p>
+              <SummaryList.Root>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Email</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="mailto:contact@kvirnby.example">
+                      contact@kvirnby.example
+                    </Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone hours</SummaryList.Key>
+                  <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
+                </SummaryList.Row>
+              </SummaryList.Root>
+              <Address>
+                Municipal building
+                <br />
+                Storgatan 1
+                <br />
+                123 45 Kvirnby
+              </Address>
+              <p>
+                <Link.Root href="#report-a-fault">Report a fault</Link.Root>
+              </p>
             </Stack>
-          </nav>
-          <nav aria-labelledby="footer-follow">
-            <Stack gap="4">
-              <Heading as="h2" size="heading-3" id="footer-follow">
-                Follow Kvirnby
-              </Heading>
-              <List.Root gap="2">
-                <List.Item>
-                  <Link.Root href="#newsletter">Newsletter</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#social-media">Kvirnby on social media</Link.Root>
-                </List.Item>
-              </List.Root>
-            </Stack>
-          </nav>
-        </Columns>
-        <SiteFooter.Organisation>
-          Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
-        </SiteFooter.Organisation>
-      </SiteFooter.Root>
-    </PageFrame.Root>
+            <nav aria-labelledby="footer-about">
+              <Stack className="kv-stack--gap-4">
+                <Heading as="h2" size="heading-3" id="footer-about">
+                  About the website
+                </Heading>
+                <List.Root className="kv-list--gap-2">
+                  <List.Item>
+                    <Link.Root href="#accessibility">Accessibility statement</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#report-accessibility">
+                      Report an accessibility problem
+                    </Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#privacy">Personal data</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#cookies">Cookies</Link.Root>
+                  </List.Item>
+                </List.Root>
+              </Stack>
+            </nav>
+            <nav aria-labelledby="footer-follow">
+              <Stack className="kv-stack--gap-4">
+                <Heading as="h2" size="heading-3" id="footer-follow">
+                  Follow Kvirnby
+                </Heading>
+                <List.Root className="kv-list--gap-2">
+                  <List.Item>
+                    <Link.Root href="#newsletter">Newsletter</Link.Root>
+                  </List.Item>
+                  <List.Item>
+                    <Link.Root href="#social-media">Kvirnby on social media</Link.Root>
+                  </List.Item>
+                </List.Root>
+              </Stack>
+            </nav>
+          </Columns>
+          <SiteFooter.Organisation>
+            Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
+          </SiteFooter.Organisation>
+        </SiteFooter.Root>
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
 }

@@ -18,8 +18,7 @@ import type { FormLocale } from './form.fixture.tsx'
 
 // Story fixture for Components/Form/Overview: "Apply for a resident parking permit", a
 // short form with every control (docs/design/form-fields.md §4.2, §5). sv, en, fi, nb and nn are
-// written. The fi strings are the designer's drafts, for length checks only. se: English, marked
-// lang="en" (3.1.2). The other strings come from the fixtures of the pages the controls live on.
+// written. The fi strings are the designer's drafts, for length checks only. The other strings come from the fixtures of the pages the controls live on.
 //
 // KvirnUI holds no form state. Nothing here validates: the `errors` variant sets `invalid` on
 // the fields itself and writes the messages, as an implementor's form logic would after a submit.
@@ -66,11 +65,10 @@ const permitTexts: Record<FormLocale, PermitTexts | undefined> = {
   fi: textsFi,
   nb: textsNb,
   nn: textsNn,
-  se: undefined,
   en: textsEn,
 }
 
-/** The Overview form's own strings in a locale, for the plays: the heading and the button. se shows English. */
+/** The Overview form's own strings in a locale, for the plays: the heading and the button. */
 export function permitTextsFor(locale: FormLocale): PermitTexts {
   return permitTexts[locale] ?? textsEn
 }

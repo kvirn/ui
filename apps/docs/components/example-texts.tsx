@@ -3,11 +3,9 @@ import type { LocaleCode } from '@kvirn-ui/i18n'
 import { useLocale } from '@kvirn-ui/react'
 import type { ReactNode } from 'react'
 
-// Example text for the docs site examples, in all six languages. This is fixture text, not
+// Example text for the docs site examples, in all five languages. This is fixture text, not
 // library text: library strings (`link.newTabNotice`) come from @kvirn-ui/i18n through the
 // provider.
-//
-// se: English, marked lang="en".
 
 export interface ExampleTexts {
   heading: { buttons: string; links: string }
@@ -193,27 +191,18 @@ const nn: ExampleTexts = {
   },
 }
 
-/** Northern Sámi has no texts: `se` shows the English ones with `lang="en"` (3.1.2) and the `samiPendingNote`. */
-const se: ExampleTexts | undefined = undefined
-
 export const exampleTexts: Record<LocaleCode, ExampleTexts | undefined> = {
   sv,
   fi,
   nb,
   nn,
-  se,
   en,
 }
-
-/** Shown only for `se`, in English, because the texts aren't in Northern Sámi. */
-export const samiPendingNote =
-  'Some text in this example is in English because it is not available in Northern Sámi.'
 
 export interface ExampleTextsResult {
   texts: ExampleTexts
   /** `'en'` when the texts fell back to English: put it on every element that shows them. */
   textLang: string | undefined
-  isSamiPending: boolean
 }
 
 const isLocaleCode = (language: string): language is LocaleCode => language in exampleTexts
@@ -223,25 +212,11 @@ export function getExampleTexts(locale: string): ExampleTextsResult {
   const language = getLanguage(locale)
   const texts = isLocaleCode(language) ? exampleTexts[language] : undefined
   return texts === undefined
-    ? {
-        texts: en,
-        textLang: language === 'en' ? undefined : 'en',
-        isSamiPending: language === 'se',
-      }
-    : { texts, textLang: undefined, isSamiPending: false }
+    ? { texts: en, textLang: language === 'en' ? undefined : 'en' }
+    : { texts, textLang: undefined }
 }
 
 /** The example texts for the nearest provider's locale. */
 export function useExampleTexts(): ExampleTextsResult {
   return getExampleTexts(useLocale().locale)
-}
-
-/** The English-only note under examples that have no Northern Sámi texts. */
-export function SamiPendingNote({ className }: { className?: string | undefined }) {
-  const { isSamiPending } = useExampleTexts()
-  return isSamiPending ? (
-    <p lang="en" className={className}>
-      {samiPendingNote}
-    </p>
-  ) : null
 }

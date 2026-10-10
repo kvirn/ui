@@ -152,7 +152,7 @@ const preview: Preview = {
     },
     locale: {
       description: 'Locale for component strings',
-      toolbar: { title: 'Locale', items: ['sv', 'fi', 'nb', 'nn', 'se', 'en'] },
+      toolbar: { title: 'Locale', items: ['sv', 'fi', 'nb', 'nn', 'en'] },
     },
     dir: {
       description: 'Text direction',

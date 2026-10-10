@@ -60,7 +60,7 @@ export function HeroAction({
     >
       {service === true && (
         <Link.Icon>
-          <Icon name="arrow-forward" size={6} />
+          <Icon name="arrow-forward" size="24" />
         </Link.Icon>
       )}
       {children}

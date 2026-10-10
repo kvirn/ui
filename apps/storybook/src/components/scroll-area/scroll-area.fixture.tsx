@@ -2,7 +2,7 @@ import { ScrollArea } from '@kvirn-ui/react'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Fixtures for Components/ScrollArea. Each function is one example, and the story's "Show code"
-// prints it (`showSource`). se is English, marked lang="en" (3.1.2).
+// prints it (`showSource`).
 
 export interface ScrollAreaTexts {
   feesLabel: string
@@ -98,11 +98,10 @@ const scrollAreaTexts: Record<FormLocale, ScrollAreaTexts | undefined> = {
   fi: textsFi,
   nb: textsNb,
   nn: textsNn,
-  se: undefined,
   en: textsEn,
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+/** The fixture text in a locale. */
 export function scrollAreaTextsFor(locale: FormLocale): {
   text: ScrollAreaTexts
   lang: 'en' | undefined

@@ -217,7 +217,7 @@ export function FieldErrorMessage({
 
   return (
     <p {...mergeProps(otherProps, partProps)} ref={mergedRef}>
-      <Icon name="error" size={5} />
+      <Icon name="error" size="20" />
       <span className="kv-field-error-prefix">{fieldMessages.errorPrefix}</span> {children}
     </p>
   )

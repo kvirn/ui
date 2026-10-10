@@ -131,7 +131,7 @@ Arrows do not wrap. PageUp and PageDown move ten options and stop at the ends. H
 
 ### Filtering
 
-- The default filter matches the query anywhere in the label with `Intl.Collator` (provider locale, `sensitivity: 'base'`), so å, ä and ö stay distinct from a and o in `sv`, `fi`, `nb`, `nn` and `se`. A blank query matches everything.
+- The default filter matches the query anywhere in the label with `Intl.Collator` (provider locale, `sensitivity: 'base'`), so å, ä and ö stay distinct from a and o in `sv`, `fi`, `nb` and `nn`. A blank query matches everything.
 - A consumer can pass `filter` (a function), or `filter={false}` and `isLoading` for server-side results.
 
 ### Forms
@@ -205,7 +205,7 @@ Native `<table>` with TanStack Table behind `createTable` and the `useTable` hoo
 2. Write the contract rows and the failing tests first (keys, focus return, announcements, virtualization, 320px reflow, forced colours, right to left).
 3. Use `usePopup` and `useDismissableLayer`. Do not add a second Escape or outside-press listener.
 4. Keep core free of React and DOM at import. Import TanStack only through core's wrappers.
-5. Announce through the Announcer with i18n text, never raw strings. Every new string needs all six locales.
+5. Announce through the Announcer with i18n text, never raw strings. Every new string needs all five locales.
 6. Styles: add the part class to `theme.css` (see `theme-css`). A popup keeps a border so it survives forced colours.
 
 ## Maintainer preferences

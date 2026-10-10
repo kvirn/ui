@@ -283,19 +283,16 @@ describe('field order', () => {
     }
   })
 
-  test('useDateInput exposes the order, and the order option replaces it', async () => {
-    function Probe({ order }: { order?: readonly DateInputPart[] }) {
-      const result: UseDateInputResult = useDateInput({ order })
+  test('useDateInput exposes the order of the provider’s locale', async () => {
+    function Probe() {
+      const result: UseDateInputResult = useDateInput()
       return <output data-testid="order">{result.order.join(',')}</output>
     }
-    const locale = await render(inLocale('sv-SE', sv, <Probe />))
+    await render(inLocale('sv-SE', sv, <Probe />))
     await expect.element(page.getByTestId('order')).toHaveTextContent('year,month,day')
-    await locale.unmount()
-    await render(inLocale('sv-SE', sv, <Probe order={['month', 'day', 'year']} />))
-    await expect.element(page.getByTestId('order')).toHaveTextContent('month,day,year')
   })
 
-  test('children and the order option override the locale’s order', async () => {
+  test('children override the locale’s order', async () => {
     const { container } = await render(
       inLocale(
         'sv-SE',
@@ -311,7 +308,11 @@ describe('field order', () => {
           </Fieldset.Root>
           <Fieldset.Root group>
             <Fieldset.Legend>Valt</Fieldset.Legend>
-            <DateInput.Root order={['month', 'year', 'day']} />
+            <DateInput.Root>
+              <DateInput.Month />
+              <DateInput.Year />
+              <DateInput.Day />
+            </DateInput.Root>
           </Fieldset.Root>
         </>,
       ),
@@ -368,7 +369,17 @@ describe('auto-advance', () => {
     await expect.element(page.getByRole('textbox', { name: 'Vuosi', exact: true })).toHaveFocus()
     await dayFirst.unmount()
 
-    await render(inLocale('en-GB', en, <Birth order={['month', 'day', 'year']} />))
+    await render(
+      inLocale(
+        'en-GB',
+        en,
+        <Birth>
+          <DateInput.Month />
+          <DateInput.Day />
+          <DateInput.Year />
+        </Birth>,
+      ),
+    )
     const box = (name: string) => page.getByRole('textbox', { name, exact: true })
     await userEvent.type(box('Month'), '12')
     await expect.element(box('Day')).toHaveFocus()
@@ -398,9 +409,7 @@ describe('auto-advance', () => {
   })
 
   test('right to left: it still follows the DOM order', async () => {
-    await render(
-      <div dir="rtl">{inLocale('en-GB', en, <Birth order={['day', 'month', 'year']} />)}</div>,
-    )
+    await render(<div dir="rtl">{inLocale('en-GB', en, <Birth />)}</div>)
     await userEvent.type(page.getByRole('textbox', { name: 'Day', exact: true }), '27')
     await expect.element(page.getByRole('textbox', { name: 'Month', exact: true })).toHaveFocus()
   })
@@ -534,7 +543,7 @@ describe('auto-advance', () => {
 
   test('the hook alone: getInputProps moves focus, and autoAdvanceHint is the message while it is on', async () => {
     function Probe({ autoAdvance }: { autoAdvance?: boolean }) {
-      const dateInput = useDateInput({ order: ['month', 'day'], autoAdvance })
+      const dateInput = useDateInput({ autoAdvance })
       return (
         <form>
           {(['month', 'day'] as const).map((part) => (
@@ -680,9 +689,7 @@ describe('keyboard', () => {
   })
 
   test('right to left: Tab follows the DOM order and the arrow keys stay in the box', async () => {
-    await render(
-      <div dir="rtl">{inLocale('en-GB', en, <Birth order={['day', 'month', 'year']} />)}</div>,
-    )
+    await render(<div dir="rtl">{inLocale('en-GB', en, <Birth />)}</div>)
     const box = (name: string) => page.getByRole('textbox', { name, exact: true })
     await userEvent.tab()
     await expect.element(box('Day')).toHaveFocus()

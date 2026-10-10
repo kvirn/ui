@@ -2,7 +2,6 @@ import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
-import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, StrictMode, useState } from 'react'
@@ -460,7 +459,6 @@ describe('messages', () => {
     ['fi', fi, 'Virhe: Lomakkeessa on virheitä', 'Virhe:'],
     ['nb', nb, 'Feil: Det er et problem', 'Feil:'],
     ['nn', nn, 'Feil: Det er eit problem', 'Feil:'],
-    ['se', se, 'Boasttuvuohta: There is a problem', 'Error:'],
   ] as const)(
     'the %s catalog gives the title and the page title prefix',
     async (locale, messages, heading, prefix) => {

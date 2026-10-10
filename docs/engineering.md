@@ -72,7 +72,6 @@ These are the [AGENTS.md quality gates](../AGENTS.md#quality-gates) 1 to 3. The 
 
 ## Release
 
-1. PRs carry changesets.
-2. The release PR runs full CI, and a manual AT check for changed components.
-3. Publishing includes npm provenance, a CycloneDX SBOM, a conformance JSON and the changelog.
-4. The docs site deploys to ui.kvirn.com on an EU host.
+1. The release PR runs full CI, and a manual AT check for changed components.
+2. Publishing includes npm provenance, a CycloneDX SBOM, a conformance JSON and the changelog.
+3. The docs site deploys to ui.kvirn.com on an EU host.

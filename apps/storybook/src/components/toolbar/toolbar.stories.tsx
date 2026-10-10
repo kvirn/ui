@@ -9,7 +9,6 @@ import {
   FinnishToolbar,
   FormattingToolbar,
   RowActionsToolbar,
-  SpacedGroupsToolbar,
   TextToolbar,
 } from './toolbar.fixture.tsx'
 
@@ -90,17 +89,6 @@ export const Default: Story = {
     for (const control of canvas.getAllByRole('button')) {
       await expectMinimumTargetSize(control)
     }
-  },
-}
-
-/** `Toolbar.Group` is attached by default; `layout="spaced"` gives a group a gap between its buttons instead. */
-export const SpacedGroups: Story = {
-  parameters: showSource('toolbar/toolbar.fixture.tsx', 'SpacedGroupsToolbar'),
-  render: () => <SpacedGroupsToolbar />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('group', { name: 'Textstil' })).not.toHaveClass(
-      'kv-button-group--attached',
-    )
   },
 }
 

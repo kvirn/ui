@@ -140,8 +140,8 @@ const extraTexts: Record<
   },
 }
 
-/** The text of the list of several in a locale (se shows the English text). */
-export const extraTextsFor = (locale: FormLocale) => extraTexts[locale === 'se' ? 'en' : locale]
+/** The text of the list of several in a locale. */
+export const extraTextsFor = (locale: FormLocale) => extraTexts[locale]
 
 /** Four municipalities in the locale's own words: the native examples' options. The items are memoized, as `Listbox.Root` asks. */
 export function useNativeMunicipalities(text: ChoiceTexts): readonly Municipality[] {
@@ -1221,7 +1221,6 @@ export function NativeMunicipalities({ locale }: { locale: FormLocale }) {
 const languageNames: Record<string, string> = {
   sv: 'Svenska',
   fi: 'Suomi',
-  se: 'Davvisámegiella',
   en: 'English',
 }
 const languageCodes = Object.keys(languageNames)
@@ -1261,7 +1260,7 @@ export function LanguageSwitcher() {
           itemToString={(code) => languageNames[code] ?? code}
           itemToKey={(code) => code}
           itemToLang={(code) => (code === 'sv' ? undefined : code)}
-          defaultValue="se"
+          defaultValue="fi"
         />
       </Field.Root>
     </form>

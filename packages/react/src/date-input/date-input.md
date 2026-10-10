@@ -17,12 +17,12 @@ A DateInput asks for a date in three text boxes: day, month and year, in the ord
 
 ## API
 
-| Part              | Renders                                                                      | Props                                                                                                                                                                              |
-| ----------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `DateInput.Root`  | `<div class="kv-date-input">`                                                | `name`, `value`, `defaultValue`, `onValueChange`, `autoComplete`, `order`, `required`, `disabled`, `readOnly`, `autoAdvance`, `invalidParts`, `messages`, `ref` and every div prop |
-| `DateInput.Day`   | `<div class="kv-field kv-date-input-day">` with a `<label>` and an `<input>` | `invalid`, `ref` (the input) and every `TextInput` prop except `type`, `value`, `defaultValue`, `onValueChange` and `mask`. Spread on the `<input>`                                |
-| `DateInput.Month` | the same, `kv-date-input-month`                                              | the same                                                                                                                                                                           |
-| `DateInput.Year`  | the same, `kv-date-input-year`                                               | the same                                                                                                                                                                           |
+| Part              | Renders                                                                      | Props                                                                                                                                                                     |
+| ----------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DateInput.Root`  | `<div class="kv-date-input">`                                                | `name`, `value`, `defaultValue`, `onValueChange`, `autoComplete`, `required`, `disabled`, `readOnly`, `autoAdvance`, `invalidParts`, `messages`, `ref` and every div prop |
+| `DateInput.Day`   | `<div class="kv-field kv-date-input-day">` with a `<label>` and an `<input>` | `invalid`, `ref` (the input) and every `TextInput` prop except `type`, `value`, `defaultValue`, `onValueChange` and `mask`. Spread on the `<input>`                       |
+| `DateInput.Month` | the same, `kv-date-input-month`                                              | the same                                                                                                                                                                  |
+| `DateInput.Year`  | the same, `kv-date-input-year`                                               | the same                                                                                                                                                                  |
 
 Props the controls can't show:
 
@@ -31,7 +31,6 @@ Props the controls can't show:
 | `value`         | Root             | Controlled: `{ year, month, day }`, all strings (`''` for an empty box). Pair it with `onValueChange`                                     |
 | `defaultValue`  | Root             | Uncontrolled: any of `year`, `month` and `day`, as the text each box starts with                                                          |
 | `onValueChange` | Root             | `(value, { reason: 'input', part, event })`. `value` is the whole date as the boxes show it, `part` the box that changed. It only reports |
-| `order`         | Root             | `['year', 'month', 'day']` and so on. Replaces the locale's order when the Root renders the boxes itself                                  |
 | `autoAdvance`   | Root, hook       | Default `true`: focus moves to the next box when typing fills a box, and the hint shows. `false`: typing never moves focus, no hint       |
 | `invalidParts`  | Root             | The wrong boxes, for the boxes the Root renders itself: `['year']`. With your own children, set `invalid` on each box                     |
 | `invalid`       | Day, Month, Year | This box is wrong. The Fieldset's `invalid` marks none of the boxes                                                                       |
@@ -65,7 +64,7 @@ What the parts do on their own:
 | `dateInput.year`            | `År`                                                 | `Year`                                            | The year box's label                                                                    |
 | `dateInput.autoAdvanceHint` | `Fokus flyttas till nästa ruta när en ruta är full.` | `Focus moves to the next box when a box is full.` | The visible hint under the boxes, in the group's description, while `autoAdvance` is on |
 
-Override them with `messages` on the Root, per provider, or in your catalog. `se` is English.
+Override them with `messages` on the Root, per provider, or in your catalog.
 
 ## Component
 
@@ -213,7 +212,7 @@ function Birth() {
 }
 ```
 
-`useDateInput({ name, value, defaultValue, onValueChange, autoComplete, order, readOnly, autoAdvance, messages })` returns `order`, `labels`, `autoAdvanceHint` (the message while `autoAdvance` is on, else `undefined`: render it as visible text and list its id in the group's description), `rootProps`, `getBoxProps(part)` (the class that sizes the box) and `getInputProps(part)` (`name`, `inputMode`, `spellCheck`, `autoComplete`, `value` or `defaultValue`, `readOnly`, `onChange`, which also does the auto-advance, and a `ref` that lets it read the other two boxes and watch their `beforeinput`). Mark an invalid box with `aria-invalid` and `data-invalid` yourself.
+`useDateInput({ name, value, defaultValue, onValueChange, autoComplete, readOnly, autoAdvance, messages })` returns `order`, `labels`, `autoAdvanceHint` (the message while `autoAdvance` is on, else `undefined`: render it as visible text and list its id in the group's description), `rootProps`, `getBoxProps(part)` (the class that sizes the box) and `getInputProps(part)` (`name`, `inputMode`, `spellCheck`, `autoComplete`, `value` or `defaultValue`, `readOnly`, `onChange`, which also does the auto-advance, and a `ref` that lets it read the other two boxes and watch their `beforeinput`). Mark an invalid box with `aria-invalid` and `data-invalid` yourself.
 
 ### Your own element
 

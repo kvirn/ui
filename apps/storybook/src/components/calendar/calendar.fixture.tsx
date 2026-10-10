@@ -18,7 +18,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Fixtures for Components/Calendar. The Calendar holds no date of its own beyond the visible month
 // and the focused day: `value` and `onValueChange` are yours. Every story fixes `today` so the
-// grid and the plays are the same on any day. se is English, marked lang="en" (3.1.2).
+// grid and the plays are the same on any day.
 
 /** The days the recycling centre is closed in October 2026. */
 export const closedDays = new Set(['2026-10-16', '2026-10-17', '2026-10-24'])
@@ -28,7 +28,6 @@ const closedTexts: Record<FormLocale, string> = {
   fi: 'Suljettu',
   nb: 'Stengt',
   nn: 'Stengt',
-  se: 'Closed',
   en: 'Closed',
 }
 
@@ -79,7 +78,6 @@ export function LocaleCalendars() {
     { locale: 'fi', messages: 'fi' },
     { locale: 'nb', messages: 'nb' },
     { locale: 'nn', messages: 'nn' },
-    { locale: 'se', messages: 'se' },
     { locale: 'en-GB', messages: 'en' },
   ]
   return (
@@ -98,7 +96,6 @@ const fromToTexts: Record<FormLocale, { from: string; to: string }> = {
   fi: { from: 'Alkaen', to: 'Päättyen' },
   nb: { from: 'Fra og med', to: 'Til og med' },
   nn: { from: 'Frå og med', to: 'Til og med' },
-  se: { from: 'From', to: 'To' },
   en: { from: 'From', to: 'To' },
 }
 

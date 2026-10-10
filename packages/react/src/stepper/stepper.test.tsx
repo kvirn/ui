@@ -2,7 +2,6 @@ import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
-import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { readAloud } from '@kvirn-ui/testing/read-aloud'
@@ -64,7 +63,6 @@ describe('Stepper', () => {
     ['nb', nb, 'Steg 2 av 5', 'Steg 2 av 5: Name'],
     ['nn', nn, 'Steg 2 av 5', 'Steg 2 av 5: Name'],
     ['fi', fi, 'Vaihe 2/5', 'Vaihe 2/5: Name'],
-    ['se', se, 'Step 2 of 5', 'Step 2 of 5: Name'],
   ] as const)(
     'the %s catalog has both messages with the placeholders',
     async (locale, messages, status, statusWithName) => {

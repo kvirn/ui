@@ -283,8 +283,7 @@
 
     /* The theme loads no font. Self-host IBM Plex Sans and IBM Plex Serif (IBM's files,
      * unmodified), or the system fonts are used. On Apple, Windows and Android, the system
-     * stack finds San Francisco, Segoe UI or Roboto first, and each covers å ä ö æ ø and the
-     * Northern Sámi letters (á č đ ŋ š ŧ ž). On Linux, system-ui is the desktop's font, with
+     * stack finds San Francisco, Segoe UI or Roboto first, and each covers å ä ö æ ø. On Linux, system-ui is the desktop's font, with
      * Noto Sans and Arial behind it. End your own stack with it. The serif stack is its twin,
      * for headings: ui-serif is New York in Safari, Cambria is on Windows, Noto Serif on
      * Android and most Linux desktops, and Georgia comes last because it draws old-style
@@ -2098,8 +2097,7 @@
     font-feature-settings: var(--kv-prose-feature-settings);
     /* Long Finnish and Swedish compounds wrap at 320px. Words of 10 letters or more
      * split at the dictionary's hyphenation points for the element's lang, with at least 4
-     * letters each side. Where there's no dictionary, as for Northern Sámi, break-word still
-     * wraps the word. Set lang on <html>, and on passages in another language. */
+     * letters each side. Where there's no dictionary, break-word still wraps the word. Set lang on <html>, and on passages in another language. */
     hyphens: auto;
     hyphenate-limit-chars: 10 4 4;
     overflow-wrap: break-word;
@@ -3197,7 +3195,7 @@
    * <Calendar.Root> renders kv-calendar, a wrapping row: the optional year buttons and the month
    * buttons around kv-calendar-heading (the month and year), then kv-calendar-range (the range in
    * words) and kv-calendar-grid, a <table role="grid">. Below 40rem the heading takes its own row
-   * above the buttons, so a long month name (Sámi) fits. The buttons are the quiet icon button of
+   * above the buttons, so a long month name fits. The buttons are the quiet icon button of
    * kv-dialog-close, control size. Design spec: docs/design/date-picker-and-calendar.md §6.
    *
    * Days are kv-calendar-day cells of the control size (44px, 32px in kv-compact), `md` radius. A
@@ -5354,14 +5352,13 @@
   }
 
   /* 11. Icon ---------------------------------------------------------------------------------
-   * <Icon name="close" /> renders <svg class="kv-icon">, sized and coloured by attributes
-   *. This section never sets an icon's size, stroke, fill or colour: CSS beats
-   * attributes, so a prop would lose. Only forced colours do, so an icon can't disappear.
-   * Design spec: docs/design/icon.md.
+   * <Icon name="close" /> renders <svg class="kv-icon kv-icon--size-20">, sized by that class and
+   * by width and height attributes in rem, and coloured by attributes. This section never sets an
+   * icon's stroke, fill or colour: CSS beats attributes, so a prop would lose. Only forced colours
+   * do, so an icon can't disappear. Design spec: docs/design/icon.md.
    *
-   *   data-size="<step>"     a step of Tailwind's size-* scale (width = step × 0.25em). Only the
-   *                          text-size steps 4, 5 and 6 (1em, 1.25em, 1.5em) are centred on the
-   *                          capital height in running text. Others keep `middle`.
+   *   kv-icon--size-<px>     size="<px>" in rem, so it follows the root font size and not the text.
+   *                          Another size is a class the consumer adds.
    *   data-mirror-in-rtl     a directional icon, flipped in right-to-left text
    *
    * In a flex row (a Button, kv-button-group), the row's gap separates icon and text. In
@@ -5373,19 +5370,85 @@
     vertical-align: middle;
   }
 
-  /* (capital height 0.7em − size) / 2. IBM Plex's capital height is 0.698em. Ignored in flex
-   * rows, where align-items centres. */
-  .kv-icon[data-size='4'] {
-    vertical-align: -0.15em;
+  /* vertical-align is (capital height 0.7em − size) / 2, which centres the icon on the capitals
+   * (IBM Plex's are 0.698em) in any text size. Ignored in flex rows, where align-items centres.
+   * At 24 it stops at -0.375em, so the icon fits the line box from line height 1.5. */
+  .kv-icon--size-12 {
+    inline-size: 0.75rem;
+    block-size: 0.75rem;
+    vertical-align: calc((0.7em - 0.75rem) / 2);
   }
 
-  .kv-icon[data-size='5'] {
-    vertical-align: -0.275em;
+  .kv-icon--size-14 {
+    inline-size: 0.875rem;
+    block-size: 0.875rem;
+    vertical-align: calc((0.7em - 0.875rem) / 2);
   }
 
-  /* Fits the line box from line height 1.5. */
-  .kv-icon[data-size='6'] {
-    vertical-align: -0.375em;
+  .kv-icon--size-16 {
+    inline-size: 1rem;
+    block-size: 1rem;
+    vertical-align: calc((0.7em - 1rem) / 2);
+  }
+
+  .kv-icon--size-20 {
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    vertical-align: calc((0.7em - 1.25rem) / 2);
+  }
+
+  .kv-icon--size-24 {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    vertical-align: max(calc((0.7em - 1.5rem) / 2), -0.375em);
+  }
+
+  .kv-icon--size-28 {
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+    vertical-align: calc((0.7em - 1.75rem) / 2);
+  }
+
+  .kv-icon--size-32 {
+    inline-size: 2rem;
+    block-size: 2rem;
+    vertical-align: calc((0.7em - 2rem) / 2);
+  }
+
+  .kv-icon--size-40 {
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    vertical-align: calc((0.7em - 2.5rem) / 2);
+  }
+
+  .kv-icon--size-48 {
+    inline-size: 3rem;
+    block-size: 3rem;
+    vertical-align: calc((0.7em - 3rem) / 2);
+  }
+
+  .kv-icon--size-56 {
+    inline-size: 3.5rem;
+    block-size: 3.5rem;
+    vertical-align: calc((0.7em - 3.5rem) / 2);
+  }
+
+  .kv-icon--size-64 {
+    inline-size: 4rem;
+    block-size: 4rem;
+    vertical-align: calc((0.7em - 4rem) / 2);
+  }
+
+  .kv-icon--size-80 {
+    inline-size: 5rem;
+    block-size: 5rem;
+    vertical-align: calc((0.7em - 5rem) / 2);
+  }
+
+  .kv-icon--size-96 {
+    inline-size: 6rem;
+    block-size: 6rem;
+    vertical-align: calc((0.7em - 6rem) / 2);
   }
 
   /* scale, not transform, so it combines with a component's own rotate. */
@@ -5670,7 +5733,7 @@
   /* 1lh follows the line height, so the icon stays on the first line under 1.4.12. */
   .kv-field-error-message > .kv-icon {
     position: absolute;
-    inset-block-start: calc((1lh - 1.25em) / 2);
+    inset-block-start: calc((1lh - 1.25rem) / 2);
     inset-inline-start: 0;
   }
 
@@ -5828,7 +5891,7 @@
 
   .kv-character-count > .kv-icon {
     position: absolute;
-    inset-block-start: calc((1lh - 1.25em) / 2);
+    inset-block-start: calc((1lh - 1.25rem) / 2);
     inset-inline-start: 0;
   }
 

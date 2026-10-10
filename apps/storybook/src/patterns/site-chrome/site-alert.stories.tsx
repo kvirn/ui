@@ -1,6 +1,7 @@
+import { en } from '@kvirn-ui/i18n/en'
 import { LanguageLinks, MainMenu, PageFrame, SiteAlert, SiteHeader } from '@kvirn-ui/patterns'
 import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
-import { Button, Field, TextInput } from '@kvirn-ui/react'
+import { Button, Field, KvirnProvider, TextInput } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/site-alert/site-alert.a11y.md?raw'
@@ -62,53 +63,55 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <SiteAlert.Root>
-        <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
-        <SiteAlert.Body>
-          The water is off from 9 to 15 because of work on the water main. Fill containers in
-          advance if you can.
-        </SiteAlert.Body>
-        <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
-      </SiteAlert.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <SiteAlert.Root>
+          <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
+          <SiteAlert.Body>
+            The water is off from 9 to 15 because of work on the water main. Fill containers in
+            advance if you can.
+          </SiteAlert.Body>
+          <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
+        </SiteAlert.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     const region = canvas.getByRole('region', { name: /Water shut off/ })
@@ -121,53 +124,55 @@ export const Default: Story = {
 export const Info: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <SiteAlert.Root tone="info">
-        <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
-        <SiteAlert.Body>
-          The water is off from 9 to 15 because of work on the water main. Fill containers in
-          advance if you can.
-        </SiteAlert.Body>
-        <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
-      </SiteAlert.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <SiteAlert.Root tone="info">
+          <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
+          <SiteAlert.Body>
+            The water is off from 9 to 15 because of work on the water main. Fill containers in
+            advance if you can.
+          </SiteAlert.Body>
+          <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
+        </SiteAlert.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getByText('Information:')).toBeInTheDocument()
@@ -178,54 +183,56 @@ export const Info: Story = {
 export const Dismissible: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <SiteAlert.Root>
-        <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
-        <SiteAlert.Body>
-          The water is off from 9 to 15 because of work on the water main. Fill containers in
-          advance if you can.
-        </SiteAlert.Body>
-        <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
-        <SiteAlert.Close />
-      </SiteAlert.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <SiteAlert.Root>
+          <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
+          <SiteAlert.Body>
+            The water is off from 9 to 15 because of work on the water main. Fill containers in
+            advance if you can.
+          </SiteAlert.Body>
+          <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
+          <SiteAlert.Close />
+        </SiteAlert.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
 }
 
@@ -233,54 +240,56 @@ export const Dismissible: Story = {
 export const Dismissed: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <SiteAlert.Root>
-        <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
-        <SiteAlert.Body>
-          The water is off from 9 to 15 because of work on the water main. Fill containers in
-          advance if you can.
-        </SiteAlert.Body>
-        <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
-        <SiteAlert.Close />
-      </SiteAlert.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <SiteAlert.Root>
+          <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
+          <SiteAlert.Body>
+            The water is off from 9 to 15 because of work on the water main. Fill containers in
+            advance if you can.
+          </SiteAlert.Body>
+          <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
+          <SiteAlert.Close />
+        </SiteAlert.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('button', { name: 'Close message' }))
@@ -293,57 +302,59 @@ export const Dismissed: Story = {
 export const LongTitle: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <SiteAlert.Root>
-        <SiteAlert.Title>
-          Water shut off in North Kvirnby and the neighbouring districts on Wednesday 14 October
-          because of planned work on the water main, so please fill containers in advance
-        </SiteAlert.Title>
-        <SiteAlert.Body>
-          The water is off from 9 to 15 because of work on the water main. Fill containers in
-          advance if you can.
-        </SiteAlert.Body>
-        <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
-        <SiteAlert.Close />
-      </SiteAlert.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <SiteAlert.Root>
+          <SiteAlert.Title>
+            Water shut off in North Kvirnby and the neighbouring districts on Wednesday 14 October
+            because of planned work on the water main, so please fill containers in advance
+          </SiteAlert.Title>
+          <SiteAlert.Body>
+            The water is off from 9 to 15 because of work on the water main. Fill containers in
+            advance if you can.
+          </SiteAlert.Body>
+          <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
+          <SiteAlert.Close />
+        </SiteAlert.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('region', { name: /planned work/ })).toBeVisible()
@@ -354,54 +365,56 @@ export const LongTitle: Story = {
 export const Narrow: Story = {
   globals: { ...narrowGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <SiteAlert.Root>
-        <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
-        <SiteAlert.Body>
-          The water is off from 9 to 15 because of work on the water main. Fill containers in
-          advance if you can.
-        </SiteAlert.Body>
-        <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
-        <SiteAlert.Close />
-      </SiteAlert.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <SiteAlert.Root>
+          <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
+          <SiteAlert.Body>
+            The water is off from 9 to 15 because of work on the water main. Fill containers in
+            advance if you can.
+          </SiteAlert.Body>
+          <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
+          <SiteAlert.Close />
+        </SiteAlert.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvasElement }) => {
     await expectNoHorizontalOverflow(canvasElement)
@@ -412,54 +425,56 @@ export const Narrow: Story = {
 export const Keyboard: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <SiteAlert.Root>
-        <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
-        <SiteAlert.Body>
-          The water is off from 9 to 15 because of work on the water main. Fill containers in
-          advance if you can.
-        </SiteAlert.Body>
-        <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
-        <SiteAlert.Close />
-      </SiteAlert.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <SiteAlert.Root>
+          <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
+          <SiteAlert.Body>
+            The water is off from 9 to 15 because of work on the water main. Fill containers in
+            advance if you can.
+          </SiteAlert.Body>
+          <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
+          <SiteAlert.Close />
+        </SiteAlert.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
 }
 
@@ -467,54 +482,56 @@ export const Keyboard: Story = {
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en', ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <SiteAlert.Root>
-        <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
-        <SiteAlert.Body>
-          The water is off from 9 to 15 because of work on the water main. Fill containers in
-          advance if you can.
-        </SiteAlert.Body>
-        <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
-        <SiteAlert.Close />
-      </SiteAlert.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <SiteAlert.Root>
+          <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
+          <SiteAlert.Body>
+            The water is off from 9 to 15 because of work on the water main. Fill containers in
+            advance if you can.
+          </SiteAlert.Body>
+          <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
+          <SiteAlert.Close />
+        </SiteAlert.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
 }
 
@@ -522,53 +539,55 @@ export const RTL: Story = {
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active', ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <SiteAlert.Root>
-        <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
-        <SiteAlert.Body>
-          The water is off from 9 to 15 because of work on the water main. Fill containers in
-          advance if you can.
-        </SiteAlert.Body>
-        <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
-        <SiteAlert.Close />
-      </SiteAlert.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <SiteAlert.Root>
+          <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
+          <SiteAlert.Body>
+            The water is off from 9 to 15 because of work on the water main. Fill containers in
+            advance if you can.
+          </SiteAlert.Body>
+          <SiteAlert.Link href="#water-shut-off">Read more about the water shut-off</SiteAlert.Link>
+          <SiteAlert.Close />
+        </SiteAlert.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
 }

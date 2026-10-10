@@ -2,7 +2,6 @@
 import { Card, Heading, KvirnProvider, useLocale } from '@kvirn-ui/react'
 import { Component, useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { SamiPendingNote } from './example-texts.tsx'
 import { messages } from '../messages/en.ts'
 import { CodeCopyButton, CodeScroll, CodeStatus, useCodeCopy, useCodeLines } from './code-block.tsx'
 import { DocsDisclosure } from './docs-disclosure.tsx'
@@ -100,7 +99,6 @@ export function ExampleFrame({
       </Card.Header>
       <KvirnProvider locale={locale} messages={exampleCatalogs[locale]}>
         <Card.Body className="kv-card-body--padding-lg">
-          <SamiPendingNote />
           <ExampleStage>{children}</ExampleStage>
         </Card.Body>
       </KvirnProvider>

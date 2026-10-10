@@ -30,4 +30,4 @@ This page is the overview. It shows one short form with every control, "Apply fo
 - **An invalid group does not mark its controls.** Set `invalid` on the group for its message, and on each Field that is wrong for its control.
 - **Don't wrap every Field in a fieldset.** A fieldset announces itself, and nested ones get noisy.
 - **Redundant entry (3.3.7):** don't ask again for what the user has already given in the same process, and set `autoComplete` on personal data (3.3.8).
-- **Every string** the library adds ("(valfritt)", "Fel:") follows the provider's locale in all six languages. The labels, descriptions and errors are yours.
+- **Every string** the library adds ("(valfritt)", "Fel:") follows the provider's locale in all five languages. The labels, descriptions and errors are yours.

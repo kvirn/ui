@@ -1,6 +1,7 @@
+import { en } from '@kvirn-ui/i18n/en'
 import { MainMenu, PageFrame, PageTools, SiteHeader } from '@kvirn-ui/patterns'
 import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
-import { Button, Field, TextInput } from '@kvirn-ui/react'
+import { Button, Field, KvirnProvider, TextInput } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useRef } from 'react'
 import { expect, userEvent } from 'storybook/test'
@@ -65,52 +66,55 @@ export const Default: Story = {
   render: function Render() {
     const contentRef = useRef<HTMLDivElement>(null)
     return (
-      <PageFrame.Root locale="en">
-        <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
-          <SiteHeader.Search action="#search">
-            <Field.Root className="kv-site-header-search-field">
-              <Field.Label marker="none">Search the site</Field.Label>
-              <TextInput type="search" name="q" autoComplete="off" />
-            </Field.Root>
-            <Button type="submit">Search</Button>
-          </SiteHeader.Search>
-          <SiteHeader.Menu>
-            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-            <SiteHeader.MenuPanel>
-              <MainMenu.Root label="Main menu">
-                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-              </MainMenu.Root>
-            </SiteHeader.MenuPanel>
-          </SiteHeader.Menu>
-        </SiteHeader.Root>
-        <PageFrame.Main>
-          <h1>Preschool</h1>
-          <PageTools.Top contentRef={contentRef} />
-          <div ref={contentRef}>
-            <p>
-              Find information about preschool in Kvirnby municipality and how to apply for a place.
-            </p>
-            <p>You can apply four months before the start date you want, at the earliest.</p>
-          </div>
-          <PageTools.Root>
-            <p className="kv-page-tools-updated">
-              Last updated: <time dateTime="2026-10-02">2 October 2026</time>
-            </p>
-            <PageTools.CopyLink text="https://kvirnby.example/preschool">
-              Copy link
-            </PageTools.CopyLink>
-            <PageTools.Print onPrint={() => {}}>Print</PageTools.Print>
-          </PageTools.Root>
-        </PageFrame.Main>
-        <PlaceholderFooter />
-      </PageFrame.Root>
+      <KvirnProvider locale="en" messages={en}>
+        <PageFrame.Root>
+          <SiteHeader.Root>
+            <SiteHeader.Topbar>
+              <SiteHeader.Brand href="#start">
+                <SiteHeader.Logo src={kvirnbyMark} />
+                Kvirnby municipality
+              </SiteHeader.Brand>
+            </SiteHeader.Topbar>
+            <SiteHeader.Search action="#search">
+              <Field.Root className="kv-site-header-search-field">
+                <Field.Label marker="none">Search the site</Field.Label>
+                <TextInput type="search" name="q" autoComplete="off" />
+              </Field.Root>
+              <Button type="submit">Search</Button>
+            </SiteHeader.Search>
+            <SiteHeader.Menu>
+              <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+              <SiteHeader.MenuPanel>
+                <MainMenu.Root label="Main menu">
+                  <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                  <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+                </MainMenu.Root>
+              </SiteHeader.MenuPanel>
+            </SiteHeader.Menu>
+          </SiteHeader.Root>
+          <PageFrame.Main>
+            <h1>Preschool</h1>
+            <PageTools.Top contentRef={contentRef} />
+            <div ref={contentRef}>
+              <p>
+                Find information about preschool in Kvirnby municipality and how to apply for a
+                place.
+              </p>
+              <p>You can apply four months before the start date you want, at the earliest.</p>
+            </div>
+            <PageTools.Root>
+              <p className="kv-page-tools-updated">
+                Last updated: <time dateTime="2026-10-02">2 October 2026</time>
+              </p>
+              <PageTools.CopyLink text="https://kvirnby.example/preschool">
+                Copy link
+              </PageTools.CopyLink>
+              <PageTools.Print onPrint={() => {}}>Print</PageTools.Print>
+            </PageTools.Root>
+          </PageFrame.Main>
+          <PlaceholderFooter />
+        </PageFrame.Root>
+      </KvirnProvider>
     )
   },
   play: async ({ canvas, canvasElement }) => {
@@ -126,52 +130,55 @@ export const CopySuccess: Story = {
   render: function Render() {
     const contentRef = useRef<HTMLDivElement>(null)
     return (
-      <PageFrame.Root locale="en">
-        <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
-          <SiteHeader.Search action="#search">
-            <Field.Root className="kv-site-header-search-field">
-              <Field.Label marker="none">Search the site</Field.Label>
-              <TextInput type="search" name="q" autoComplete="off" />
-            </Field.Root>
-            <Button type="submit">Search</Button>
-          </SiteHeader.Search>
-          <SiteHeader.Menu>
-            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-            <SiteHeader.MenuPanel>
-              <MainMenu.Root label="Main menu">
-                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-              </MainMenu.Root>
-            </SiteHeader.MenuPanel>
-          </SiteHeader.Menu>
-        </SiteHeader.Root>
-        <PageFrame.Main>
-          <h1>Preschool</h1>
-          <PageTools.Top contentRef={contentRef} />
-          <div ref={contentRef}>
-            <p>
-              Find information about preschool in Kvirnby municipality and how to apply for a place.
-            </p>
-            <p>You can apply four months before the start date you want, at the earliest.</p>
-          </div>
-          <PageTools.Root>
-            <p className="kv-page-tools-updated">
-              Last updated: <time dateTime="2026-10-02">2 October 2026</time>
-            </p>
-            <PageTools.CopyLink text="https://kvirnby.example/preschool">
-              Copy link
-            </PageTools.CopyLink>
-            <PageTools.Print onPrint={() => {}}>Print</PageTools.Print>
-          </PageTools.Root>
-        </PageFrame.Main>
-        <PlaceholderFooter />
-      </PageFrame.Root>
+      <KvirnProvider locale="en" messages={en}>
+        <PageFrame.Root>
+          <SiteHeader.Root>
+            <SiteHeader.Topbar>
+              <SiteHeader.Brand href="#start">
+                <SiteHeader.Logo src={kvirnbyMark} />
+                Kvirnby municipality
+              </SiteHeader.Brand>
+            </SiteHeader.Topbar>
+            <SiteHeader.Search action="#search">
+              <Field.Root className="kv-site-header-search-field">
+                <Field.Label marker="none">Search the site</Field.Label>
+                <TextInput type="search" name="q" autoComplete="off" />
+              </Field.Root>
+              <Button type="submit">Search</Button>
+            </SiteHeader.Search>
+            <SiteHeader.Menu>
+              <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+              <SiteHeader.MenuPanel>
+                <MainMenu.Root label="Main menu">
+                  <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                  <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+                </MainMenu.Root>
+              </SiteHeader.MenuPanel>
+            </SiteHeader.Menu>
+          </SiteHeader.Root>
+          <PageFrame.Main>
+            <h1>Preschool</h1>
+            <PageTools.Top contentRef={contentRef} />
+            <div ref={contentRef}>
+              <p>
+                Find information about preschool in Kvirnby municipality and how to apply for a
+                place.
+              </p>
+              <p>You can apply four months before the start date you want, at the earliest.</p>
+            </div>
+            <PageTools.Root>
+              <p className="kv-page-tools-updated">
+                Last updated: <time dateTime="2026-10-02">2 October 2026</time>
+              </p>
+              <PageTools.CopyLink text="https://kvirnby.example/preschool">
+                Copy link
+              </PageTools.CopyLink>
+              <PageTools.Print onPrint={() => {}}>Print</PageTools.Print>
+            </PageTools.Root>
+          </PageFrame.Main>
+          <PlaceholderFooter />
+        </PageFrame.Root>
+      </KvirnProvider>
     )
   },
   play: async ({ canvas }) => {
@@ -189,52 +196,55 @@ export const CopyFailure: Story = {
   render: function Render() {
     const contentRef = useRef<HTMLDivElement>(null)
     return (
-      <PageFrame.Root locale="en">
-        <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
-          <SiteHeader.Search action="#search">
-            <Field.Root className="kv-site-header-search-field">
-              <Field.Label marker="none">Search the site</Field.Label>
-              <TextInput type="search" name="q" autoComplete="off" />
-            </Field.Root>
-            <Button type="submit">Search</Button>
-          </SiteHeader.Search>
-          <SiteHeader.Menu>
-            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-            <SiteHeader.MenuPanel>
-              <MainMenu.Root label="Main menu">
-                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-              </MainMenu.Root>
-            </SiteHeader.MenuPanel>
-          </SiteHeader.Menu>
-        </SiteHeader.Root>
-        <PageFrame.Main>
-          <h1>Preschool</h1>
-          <PageTools.Top contentRef={contentRef} />
-          <div ref={contentRef}>
-            <p>
-              Find information about preschool in Kvirnby municipality and how to apply for a place.
-            </p>
-            <p>You can apply four months before the start date you want, at the earliest.</p>
-          </div>
-          <PageTools.Root>
-            <p className="kv-page-tools-updated">
-              Last updated: <time dateTime="2026-10-02">2 October 2026</time>
-            </p>
-            <PageTools.CopyLink text="https://kvirnby.example/preschool">
-              Copy link
-            </PageTools.CopyLink>
-            <PageTools.Print onPrint={() => {}}>Print</PageTools.Print>
-          </PageTools.Root>
-        </PageFrame.Main>
-        <PlaceholderFooter />
-      </PageFrame.Root>
+      <KvirnProvider locale="en" messages={en}>
+        <PageFrame.Root>
+          <SiteHeader.Root>
+            <SiteHeader.Topbar>
+              <SiteHeader.Brand href="#start">
+                <SiteHeader.Logo src={kvirnbyMark} />
+                Kvirnby municipality
+              </SiteHeader.Brand>
+            </SiteHeader.Topbar>
+            <SiteHeader.Search action="#search">
+              <Field.Root className="kv-site-header-search-field">
+                <Field.Label marker="none">Search the site</Field.Label>
+                <TextInput type="search" name="q" autoComplete="off" />
+              </Field.Root>
+              <Button type="submit">Search</Button>
+            </SiteHeader.Search>
+            <SiteHeader.Menu>
+              <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+              <SiteHeader.MenuPanel>
+                <MainMenu.Root label="Main menu">
+                  <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                  <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+                </MainMenu.Root>
+              </SiteHeader.MenuPanel>
+            </SiteHeader.Menu>
+          </SiteHeader.Root>
+          <PageFrame.Main>
+            <h1>Preschool</h1>
+            <PageTools.Top contentRef={contentRef} />
+            <div ref={contentRef}>
+              <p>
+                Find information about preschool in Kvirnby municipality and how to apply for a
+                place.
+              </p>
+              <p>You can apply four months before the start date you want, at the earliest.</p>
+            </div>
+            <PageTools.Root>
+              <p className="kv-page-tools-updated">
+                Last updated: <time dateTime="2026-10-02">2 October 2026</time>
+              </p>
+              <PageTools.CopyLink text="https://kvirnby.example/preschool">
+                Copy link
+              </PageTools.CopyLink>
+              <PageTools.Print onPrint={() => {}}>Print</PageTools.Print>
+            </PageTools.Root>
+          </PageFrame.Main>
+          <PlaceholderFooter />
+        </PageFrame.Root>
+      </KvirnProvider>
     )
   },
   play: async ({ canvas }) => {
@@ -253,52 +263,55 @@ export const Narrow: Story = {
   render: function Render() {
     const contentRef = useRef<HTMLDivElement>(null)
     return (
-      <PageFrame.Root locale="en">
-        <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
-          <SiteHeader.Search action="#search">
-            <Field.Root className="kv-site-header-search-field">
-              <Field.Label marker="none">Search the site</Field.Label>
-              <TextInput type="search" name="q" autoComplete="off" />
-            </Field.Root>
-            <Button type="submit">Search</Button>
-          </SiteHeader.Search>
-          <SiteHeader.Menu>
-            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-            <SiteHeader.MenuPanel>
-              <MainMenu.Root label="Main menu">
-                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-              </MainMenu.Root>
-            </SiteHeader.MenuPanel>
-          </SiteHeader.Menu>
-        </SiteHeader.Root>
-        <PageFrame.Main>
-          <h1>Preschool</h1>
-          <PageTools.Top contentRef={contentRef} />
-          <div ref={contentRef}>
-            <p>
-              Find information about preschool in Kvirnby municipality and how to apply for a place.
-            </p>
-            <p>You can apply four months before the start date you want, at the earliest.</p>
-          </div>
-          <PageTools.Root>
-            <p className="kv-page-tools-updated">
-              Last updated: <time dateTime="2026-10-02">2 October 2026</time>
-            </p>
-            <PageTools.CopyLink text="https://kvirnby.example/preschool">
-              Copy link
-            </PageTools.CopyLink>
-            <PageTools.Print onPrint={() => {}}>Print</PageTools.Print>
-          </PageTools.Root>
-        </PageFrame.Main>
-        <PlaceholderFooter />
-      </PageFrame.Root>
+      <KvirnProvider locale="en" messages={en}>
+        <PageFrame.Root>
+          <SiteHeader.Root>
+            <SiteHeader.Topbar>
+              <SiteHeader.Brand href="#start">
+                <SiteHeader.Logo src={kvirnbyMark} />
+                Kvirnby municipality
+              </SiteHeader.Brand>
+            </SiteHeader.Topbar>
+            <SiteHeader.Search action="#search">
+              <Field.Root className="kv-site-header-search-field">
+                <Field.Label marker="none">Search the site</Field.Label>
+                <TextInput type="search" name="q" autoComplete="off" />
+              </Field.Root>
+              <Button type="submit">Search</Button>
+            </SiteHeader.Search>
+            <SiteHeader.Menu>
+              <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+              <SiteHeader.MenuPanel>
+                <MainMenu.Root label="Main menu">
+                  <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                  <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+                </MainMenu.Root>
+              </SiteHeader.MenuPanel>
+            </SiteHeader.Menu>
+          </SiteHeader.Root>
+          <PageFrame.Main>
+            <h1>Preschool</h1>
+            <PageTools.Top contentRef={contentRef} />
+            <div ref={contentRef}>
+              <p>
+                Find information about preschool in Kvirnby municipality and how to apply for a
+                place.
+              </p>
+              <p>You can apply four months before the start date you want, at the earliest.</p>
+            </div>
+            <PageTools.Root>
+              <p className="kv-page-tools-updated">
+                Last updated: <time dateTime="2026-10-02">2 October 2026</time>
+              </p>
+              <PageTools.CopyLink text="https://kvirnby.example/preschool">
+                Copy link
+              </PageTools.CopyLink>
+              <PageTools.Print onPrint={() => {}}>Print</PageTools.Print>
+            </PageTools.Root>
+          </PageFrame.Main>
+          <PlaceholderFooter />
+        </PageFrame.Root>
+      </KvirnProvider>
     )
   },
   play: async ({ canvasElement }) => {
@@ -312,52 +325,55 @@ export const Keyboard: Story = {
   render: function Render() {
     const contentRef = useRef<HTMLDivElement>(null)
     return (
-      <PageFrame.Root locale="en">
-        <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
-          <SiteHeader.Search action="#search">
-            <Field.Root className="kv-site-header-search-field">
-              <Field.Label marker="none">Search the site</Field.Label>
-              <TextInput type="search" name="q" autoComplete="off" />
-            </Field.Root>
-            <Button type="submit">Search</Button>
-          </SiteHeader.Search>
-          <SiteHeader.Menu>
-            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-            <SiteHeader.MenuPanel>
-              <MainMenu.Root label="Main menu">
-                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-              </MainMenu.Root>
-            </SiteHeader.MenuPanel>
-          </SiteHeader.Menu>
-        </SiteHeader.Root>
-        <PageFrame.Main>
-          <h1>Preschool</h1>
-          <PageTools.Top contentRef={contentRef} />
-          <div ref={contentRef}>
-            <p>
-              Find information about preschool in Kvirnby municipality and how to apply for a place.
-            </p>
-            <p>You can apply four months before the start date you want, at the earliest.</p>
-          </div>
-          <PageTools.Root>
-            <p className="kv-page-tools-updated">
-              Last updated: <time dateTime="2026-10-02">2 October 2026</time>
-            </p>
-            <PageTools.CopyLink text="https://kvirnby.example/preschool">
-              Copy link
-            </PageTools.CopyLink>
-            <PageTools.Print onPrint={() => {}}>Print</PageTools.Print>
-          </PageTools.Root>
-        </PageFrame.Main>
-        <PlaceholderFooter />
-      </PageFrame.Root>
+      <KvirnProvider locale="en" messages={en}>
+        <PageFrame.Root>
+          <SiteHeader.Root>
+            <SiteHeader.Topbar>
+              <SiteHeader.Brand href="#start">
+                <SiteHeader.Logo src={kvirnbyMark} />
+                Kvirnby municipality
+              </SiteHeader.Brand>
+            </SiteHeader.Topbar>
+            <SiteHeader.Search action="#search">
+              <Field.Root className="kv-site-header-search-field">
+                <Field.Label marker="none">Search the site</Field.Label>
+                <TextInput type="search" name="q" autoComplete="off" />
+              </Field.Root>
+              <Button type="submit">Search</Button>
+            </SiteHeader.Search>
+            <SiteHeader.Menu>
+              <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+              <SiteHeader.MenuPanel>
+                <MainMenu.Root label="Main menu">
+                  <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                  <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+                </MainMenu.Root>
+              </SiteHeader.MenuPanel>
+            </SiteHeader.Menu>
+          </SiteHeader.Root>
+          <PageFrame.Main>
+            <h1>Preschool</h1>
+            <PageTools.Top contentRef={contentRef} />
+            <div ref={contentRef}>
+              <p>
+                Find information about preschool in Kvirnby municipality and how to apply for a
+                place.
+              </p>
+              <p>You can apply four months before the start date you want, at the earliest.</p>
+            </div>
+            <PageTools.Root>
+              <p className="kv-page-tools-updated">
+                Last updated: <time dateTime="2026-10-02">2 October 2026</time>
+              </p>
+              <PageTools.CopyLink text="https://kvirnby.example/preschool">
+                Copy link
+              </PageTools.CopyLink>
+              <PageTools.Print onPrint={() => {}}>Print</PageTools.Print>
+            </PageTools.Root>
+          </PageFrame.Main>
+          <PlaceholderFooter />
+        </PageFrame.Root>
+      </KvirnProvider>
     )
   },
 }
@@ -368,52 +384,55 @@ export const RTL: Story = {
   render: function Render() {
     const contentRef = useRef<HTMLDivElement>(null)
     return (
-      <PageFrame.Root locale="en">
-        <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
-          <SiteHeader.Search action="#search">
-            <Field.Root className="kv-site-header-search-field">
-              <Field.Label marker="none">Search the site</Field.Label>
-              <TextInput type="search" name="q" autoComplete="off" />
-            </Field.Root>
-            <Button type="submit">Search</Button>
-          </SiteHeader.Search>
-          <SiteHeader.Menu>
-            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-            <SiteHeader.MenuPanel>
-              <MainMenu.Root label="Main menu">
-                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-              </MainMenu.Root>
-            </SiteHeader.MenuPanel>
-          </SiteHeader.Menu>
-        </SiteHeader.Root>
-        <PageFrame.Main>
-          <h1>Preschool</h1>
-          <PageTools.Top contentRef={contentRef} />
-          <div ref={contentRef}>
-            <p>
-              Find information about preschool in Kvirnby municipality and how to apply for a place.
-            </p>
-            <p>You can apply four months before the start date you want, at the earliest.</p>
-          </div>
-          <PageTools.Root>
-            <p className="kv-page-tools-updated">
-              Last updated: <time dateTime="2026-10-02">2 October 2026</time>
-            </p>
-            <PageTools.CopyLink text="https://kvirnby.example/preschool">
-              Copy link
-            </PageTools.CopyLink>
-            <PageTools.Print onPrint={() => {}}>Print</PageTools.Print>
-          </PageTools.Root>
-        </PageFrame.Main>
-        <PlaceholderFooter />
-      </PageFrame.Root>
+      <KvirnProvider locale="en" messages={en}>
+        <PageFrame.Root>
+          <SiteHeader.Root>
+            <SiteHeader.Topbar>
+              <SiteHeader.Brand href="#start">
+                <SiteHeader.Logo src={kvirnbyMark} />
+                Kvirnby municipality
+              </SiteHeader.Brand>
+            </SiteHeader.Topbar>
+            <SiteHeader.Search action="#search">
+              <Field.Root className="kv-site-header-search-field">
+                <Field.Label marker="none">Search the site</Field.Label>
+                <TextInput type="search" name="q" autoComplete="off" />
+              </Field.Root>
+              <Button type="submit">Search</Button>
+            </SiteHeader.Search>
+            <SiteHeader.Menu>
+              <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+              <SiteHeader.MenuPanel>
+                <MainMenu.Root label="Main menu">
+                  <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                  <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+                </MainMenu.Root>
+              </SiteHeader.MenuPanel>
+            </SiteHeader.Menu>
+          </SiteHeader.Root>
+          <PageFrame.Main>
+            <h1>Preschool</h1>
+            <PageTools.Top contentRef={contentRef} />
+            <div ref={contentRef}>
+              <p>
+                Find information about preschool in Kvirnby municipality and how to apply for a
+                place.
+              </p>
+              <p>You can apply four months before the start date you want, at the earliest.</p>
+            </div>
+            <PageTools.Root>
+              <p className="kv-page-tools-updated">
+                Last updated: <time dateTime="2026-10-02">2 October 2026</time>
+              </p>
+              <PageTools.CopyLink text="https://kvirnby.example/preschool">
+                Copy link
+              </PageTools.CopyLink>
+              <PageTools.Print onPrint={() => {}}>Print</PageTools.Print>
+            </PageTools.Root>
+          </PageFrame.Main>
+          <PlaceholderFooter />
+        </PageFrame.Root>
+      </KvirnProvider>
     )
   },
 }
@@ -424,52 +443,55 @@ export const ForcedColors: Story = {
   render: function Render() {
     const contentRef = useRef<HTMLDivElement>(null)
     return (
-      <PageFrame.Root locale="en">
-        <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
-          <SiteHeader.Search action="#search">
-            <Field.Root className="kv-site-header-search-field">
-              <Field.Label marker="none">Search the site</Field.Label>
-              <TextInput type="search" name="q" autoComplete="off" />
-            </Field.Root>
-            <Button type="submit">Search</Button>
-          </SiteHeader.Search>
-          <SiteHeader.Menu>
-            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-            <SiteHeader.MenuPanel>
-              <MainMenu.Root label="Main menu">
-                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-              </MainMenu.Root>
-            </SiteHeader.MenuPanel>
-          </SiteHeader.Menu>
-        </SiteHeader.Root>
-        <PageFrame.Main>
-          <h1>Preschool</h1>
-          <PageTools.Top contentRef={contentRef} />
-          <div ref={contentRef}>
-            <p>
-              Find information about preschool in Kvirnby municipality and how to apply for a place.
-            </p>
-            <p>You can apply four months before the start date you want, at the earliest.</p>
-          </div>
-          <PageTools.Root>
-            <p className="kv-page-tools-updated">
-              Last updated: <time dateTime="2026-10-02">2 October 2026</time>
-            </p>
-            <PageTools.CopyLink text="https://kvirnby.example/preschool">
-              Copy link
-            </PageTools.CopyLink>
-            <PageTools.Print onPrint={() => {}}>Print</PageTools.Print>
-          </PageTools.Root>
-        </PageFrame.Main>
-        <PlaceholderFooter />
-      </PageFrame.Root>
+      <KvirnProvider locale="en" messages={en}>
+        <PageFrame.Root>
+          <SiteHeader.Root>
+            <SiteHeader.Topbar>
+              <SiteHeader.Brand href="#start">
+                <SiteHeader.Logo src={kvirnbyMark} />
+                Kvirnby municipality
+              </SiteHeader.Brand>
+            </SiteHeader.Topbar>
+            <SiteHeader.Search action="#search">
+              <Field.Root className="kv-site-header-search-field">
+                <Field.Label marker="none">Search the site</Field.Label>
+                <TextInput type="search" name="q" autoComplete="off" />
+              </Field.Root>
+              <Button type="submit">Search</Button>
+            </SiteHeader.Search>
+            <SiteHeader.Menu>
+              <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+              <SiteHeader.MenuPanel>
+                <MainMenu.Root label="Main menu">
+                  <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                  <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+                </MainMenu.Root>
+              </SiteHeader.MenuPanel>
+            </SiteHeader.Menu>
+          </SiteHeader.Root>
+          <PageFrame.Main>
+            <h1>Preschool</h1>
+            <PageTools.Top contentRef={contentRef} />
+            <div ref={contentRef}>
+              <p>
+                Find information about preschool in Kvirnby municipality and how to apply for a
+                place.
+              </p>
+              <p>You can apply four months before the start date you want, at the earliest.</p>
+            </div>
+            <PageTools.Root>
+              <p className="kv-page-tools-updated">
+                Last updated: <time dateTime="2026-10-02">2 October 2026</time>
+              </p>
+              <PageTools.CopyLink text="https://kvirnby.example/preschool">
+                Copy link
+              </PageTools.CopyLink>
+              <PageTools.Print onPrint={() => {}}>Print</PageTools.Print>
+            </PageTools.Root>
+          </PageFrame.Main>
+          <PlaceholderFooter />
+        </PageFrame.Root>
+      </KvirnProvider>
     )
   },
 }

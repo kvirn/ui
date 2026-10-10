@@ -51,10 +51,6 @@ test.each(['sv-SE', 'en', 'ar', 'he-IL', 'fa'])(
   },
 )
 
-test('getLocaleProps takes an explicit dir over the locale', () => {
-  expect(server.getLocaleProps('en', 'rtl')).toEqual({ lang: 'en', dir: 'rtl' })
-})
-
 test('the server entry re-exports createMessageFormat', () => {
   expect(server.createMessageFormat).toBeTypeOf('function')
   expect(createThemeStore).toBeTypeOf('function')

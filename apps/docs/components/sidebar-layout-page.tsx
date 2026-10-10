@@ -118,7 +118,7 @@ export function SidebarLayoutPage({
             why="Pages in the same section, such as everything about preschool, link to each other from a side column. Render the Sidebar as a nav and name it, and mark the current page with aria-current."
             code={sources['service-page']}
             propsUsed={[
-              { part: 'SidebarLayout.Root', prop: 'sidebarWidth' },
+              { part: 'SidebarLayout.Root', prop: 'className' },
               { part: 'SidebarLayout.Sidebar', prop: 'as' },
             ]}
             note={

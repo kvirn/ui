@@ -32,10 +32,6 @@ const meta = {
       control: false,
       description: 'A ref to the element that is read. Required.',
     },
-    lang: {
-      control: 'text',
-      description: 'The language of the text. Else the closest `[lang]` of the content.',
-    },
     engine: {
       control: false,
       description: 'Advanced, unstable: your own speech engine. Default: `speechSynthesis`.',
@@ -64,9 +60,9 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-function Reader({ lang, ...options }: FakeEngineOptions & { lang?: string }) {
+function Reader(options: FakeEngineOptions) {
   const engine = useFakeEngine(options)
-  return <ArticleWithPlayer engine={engine} lang={lang} />
+  return <ArticleWithPlayer engine={engine} />
 }
 
 /** Listen reads the whole article, a sentence at a time, and the Status says where it is. Nothing starts by itself. */

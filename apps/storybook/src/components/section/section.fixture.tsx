@@ -9,7 +9,7 @@ import type { CardFixtureLocale } from '../card/card.fixture.tsx'
 // Section-or-Card example (§6.9). The `contact.*` strings moved here from the Card fixture: the
 // sidebar text block is a Section now. Example B reuses the Card fixture's NewsList.
 // sv, en, nb and nn are written. The fi strings are the designer's drafts, for length checks only.
-// se: English, marked lang="en" (3.1.2). Times are values, formatted with `useFormat()`.
+// Times are values, formatted with `useFormat()`.
 
 /** The same provider as the Card stories: Section reuses the Card fixture's texts and NewsList. */
 export const withSectionLocale = withCardLocale
@@ -110,23 +110,21 @@ const nn: SectionTexts = {
   details: { legend: 'Kontaktopplysingar', email: 'E-postadresse' },
 }
 
-/** se has no texts: it shows the English ones, marked lang="en". */
 const sectionTexts: Record<SectionFixtureLocale, SectionTexts | undefined> = {
   sv,
   fi,
   nb,
   nn,
-  se: undefined,
   en,
 }
 
 interface ResolvedSectionTexts {
   text: SectionTexts
-  /** `'en'` when the locale has no texts (se): put it on the element (3.1.2). */
+  /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
   lang: 'en' | undefined
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+/** The fixture text in a locale. */
 function sectionTextsFor(locale: SectionFixtureLocale): ResolvedSectionTexts {
   const text = sectionTexts[locale]
   if (text === undefined) {

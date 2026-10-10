@@ -5,9 +5,9 @@ import { scrollRegionTabIndex } from './foundation-helpers.tsx'
 
 // Fixture text for Components/Prose (docs/design/foundations-and-prose.md §4):
 // a fictional municipality's guidance page that uses every element prose styles. sv, en, nb
-// and nn are written. fi and se: the English article, marked lang="en" (3.1.2).
+// and nn are written. fi: the English article, marked lang="en" (3.1.2).
 
-export type FixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'se' | 'en'
+export type FixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'en'
 
 interface ArticleText {
   title: string
@@ -172,7 +172,7 @@ const en: ArticleText = {
       'The bathtub along one wall is replaced by a shower area with a fold-down seat and grab rails, and the door is made wider.',
   },
   easyRead: 'Read about the grant in easy language',
-  otherLanguage: 'Sámegillii',
+  otherLanguage: 'Suomeksi',
   apply: 'Apply online',
   updated: (date) => <>Last updated {date}</>,
 }
@@ -287,7 +287,7 @@ const sv: ArticleText = {
       'Badkaret längs ena väggen är utbytt mot en duschplats med uppfällbar sits och stödhandtag, och dörren är breddad.',
   },
   easyRead: 'Läs om bidraget på lätt svenska',
-  otherLanguage: 'Sámegillii',
+  otherLanguage: 'Suomeksi',
   apply: 'Ansök via e-tjänsten',
   updated: (date) => <>Senast uppdaterad {date}</>,
 }
@@ -396,7 +396,7 @@ const nb: ArticleText = {
       'Badekaret langs den ene veggen er byttet ut med en dusjplass med nedfellbart sete og støttehåndtak, og døren er gjort bredere.',
   },
   easyRead: 'Les om tilskuddet på lettlest norsk',
-  otherLanguage: 'Sámegillii',
+  otherLanguage: 'Suomeksi',
   apply: 'Søk på nett',
   updated: (date) => <>Sist oppdatert {date}</>,
 }
@@ -505,25 +505,24 @@ const nn: ArticleText = {
       'Badekaret langs den eine veggen er bytt ut med ein dusjplass med nedfellbart sete og støttehandtak, og døra er gjord breiare.',
   },
   easyRead: 'Les om tilskotet på lettlesen nynorsk',
-  otherLanguage: 'Sámegillii',
+  otherLanguage: 'Suomeksi',
   apply: 'Søk på nett',
   updated: (date) => <>Sist oppdatert {date}</>,
 }
 
-/** fi and se have no article: they show the English one, marked lang="en". */
+/** fi have no article: they show the English one, marked lang="en". */
 const articleTexts: Record<FixtureLocale, ArticleText | undefined> = {
   sv,
   en,
   fi: undefined,
   nb,
   nn,
-  se: undefined,
 }
 
 export const isFixtureLocale = (value: unknown): value is FixtureLocale =>
   typeof value === 'string' && value in articleTexts
 
-/** The article in a locale, or the English one with `lang="en"` for fi and se. */
+/** The article in a locale, or the English one with `lang="en"` for fi. */
 export function articleFor(locale: FixtureLocale): { text: ArticleText; lang?: 'en' } {
   const text = articleTexts[locale]
   return text === undefined ? { text: en, lang: 'en' } : { text }
@@ -696,7 +695,7 @@ export function ProseArticle({
         <a href="https://kvirnby.example/latt-las">{text.easyRead}</a>
       </p>
       <p>
-        <a href="https://kvirnby.example/se" lang="se" hrefLang="se">
+        <a href="https://kvirnby.example/fi" lang="fi" hrefLang="fi">
           {text.otherLanguage}
         </a>
       </p>

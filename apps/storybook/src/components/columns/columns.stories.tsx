@@ -24,16 +24,6 @@ const meta = {
   component: Columns,
   args: { children: cards },
   argTypes: {
-    minColumnWidth: {
-      control: 'inline-radio',
-      options: ['sm', 'md', 'lg'],
-      description: 'The narrowest a column gets: `sm` 14rem, `md` 18rem (default), `lg` 24rem.',
-    },
-    gap: {
-      control: 'inline-radio',
-      options: ['4', '6', '8'],
-      description: 'The `space` step between columns and rows: 4, 6 (default) or 8.',
-    },
     as: { control: false, description: 'Another element: `ul` or `ol`.' },
   },
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
@@ -45,22 +35,22 @@ type Story = StoryObj<typeof meta>
 /** As many columns as fit, each at least `18rem`. The DOM order is the reading order. */
 export const Default: Story = {}
 
-/** `minColumnWidth="sm"`: more, narrower columns. */
-export const MinSmall: Story = { args: { minColumnWidth: 'sm' } }
+/** `kv-columns--min-sm`: more, narrower columns. */
+export const MinSmall: Story = { args: { className: 'kv-columns--min-sm' } }
 
-/** `minColumnWidth="lg"`: fewer, wider columns. */
-export const MinLarge: Story = { args: { minColumnWidth: 'lg' } }
+/** `kv-columns--min-lg`: fewer, wider columns. */
+export const MinLarge: Story = { args: { className: 'kv-columns--min-lg' } }
 
-/** `gap="4"`. */
-export const Gap4: Story = { args: { gap: '4' } }
+/** `kv-columns--gap-4`. */
+export const Gap4: Story = { args: { className: 'kv-columns--gap-4' } }
 
-/** `gap="8"`. */
-export const Gap8: Story = { args: { gap: '8' } }
+/** `kv-columns--gap-8`. */
+export const Gap8: Story = { args: { className: 'kv-columns--gap-8' } }
 
 /** `as="ul"`: a list of links to entry points, announced as a list with a count. */
 export const AsList: Story = {
   render: (args) => (
-    <Columns as="ul" gap={args.gap} minColumnWidth={args.minColumnWidth}>
+    <Columns as="ul" className={args.className}>
       {services.map((service) => (
         <li key={service}>
           <Card.Root>
@@ -81,7 +71,7 @@ export const AsList: Story = {
 /** A 320px column: one column, a long Finnish word wraps, nothing scrolls sideways (1.4.10). */
 export const Reflow320: Story = {
   args: {
-    minColumnWidth: 'lg',
+    className: 'kv-columns--min-lg',
     children: (
       <Card.Root>
         <Card.Body>Jätehuoltomaksunpalautuspäätöksentarkistuslomake</Card.Body>

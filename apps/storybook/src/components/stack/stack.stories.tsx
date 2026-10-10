@@ -27,11 +27,6 @@ const meta = {
     ),
   },
   argTypes: {
-    gap: {
-      control: 'inline-radio',
-      options: ['2', '4', '6', '8'],
-      description: 'The `space` step between the children: 2, 4, 6 (default) or 8.',
-    },
     as: { control: false, description: 'Another element: `ul`, `ol`, `li`, `section` or `form`.' },
   },
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
@@ -43,19 +38,19 @@ type Story = StoryObj<typeof meta>
 /** A vertical rhythm of `space-6`. The children keep the order of the DOM. */
 export const Default: Story = {}
 
-/** `gap="2"`: tight, for a title and its meta line. */
-export const Gap2: Story = { args: { gap: '2' } }
+/** `kv-stack--gap-2`: tight, for a title and its meta line. */
+export const Gap2: Story = { args: { className: 'kv-stack--gap-2' } }
 
-/** `gap="4"`: related blocks. */
-export const Gap4: Story = { args: { gap: '4' } }
+/** `kv-stack--gap-4`: related blocks. */
+export const Gap4: Story = { args: { className: 'kv-stack--gap-4' } }
 
-/** `gap="8"`: the sections of a page. */
-export const Gap8: Story = { args: { gap: '8' } }
+/** `kv-stack--gap-8`: the sections of a page. */
+export const Gap8: Story = { args: { className: 'kv-stack--gap-8' } }
 
 /** `as="ul"`: a list with one announced count, and the bullets left to the theme. */
 export const AsList: Story = {
   render: (args) => (
-    <Stack as="ul" gap={args.gap}>
+    <Stack as="ul" className={args.className}>
       <li>Sophämtning</li>
       <li>Bygglov</li>
       <li>Skolskjuts</li>

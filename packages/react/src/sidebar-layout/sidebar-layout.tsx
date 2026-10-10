@@ -7,7 +7,7 @@ import { resolveAsTag } from '../render/as-prop.ts'
 import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
 import { useSidebarLayout } from './use-sidebar-layout.ts'
-import type { SidebarLayoutPartProps, UseSidebarLayoutOptions } from './use-sidebar-layout.ts'
+import type { SidebarLayoutPartProps } from './use-sidebar-layout.ts'
 
 const sidebarTags = ['div', 'nav', 'aside'] as const
 const contentTags = ['div', 'main', 'section', 'article'] as const
@@ -17,7 +17,7 @@ interface SidebarLayoutDivProps extends HTMLAttributes<HTMLElement> {
 }
 
 /** Always a `<div>`: the layout adds no role, and its parts carry the landmarks. */
-export interface SidebarLayoutRootProps extends SidebarLayoutDivProps, UseSidebarLayoutOptions {}
+export interface SidebarLayoutRootProps extends SidebarLayoutDivProps {}
 
 /**
  * `as` is `div` (default), `nav` with a name for navigation, or `aside` with a name for related
@@ -67,13 +67,10 @@ function useWarnOutsideRoot(partName: 'Sidebar' | 'Content'): void {
  * The layout's container: one `<div class="kv-sidebar-layout">`. Its two parts are direct
  * children, and whichever comes first in the DOM is at inline start.
  */
-export function SidebarLayoutRoot({
-  sidebarWidth,
-  ...props
-}: SidebarLayoutRootProps): ReactElement {
+export function SidebarLayoutRoot(props: SidebarLayoutRootProps): ReactElement {
   return (
     <SidebarLayoutRootContext.Provider value={true}>
-      {renderSidebarLayoutPart(props, useSidebarLayout({ sidebarWidth }).rootProps)}
+      {renderSidebarLayoutPart(props, useSidebarLayout().rootProps)}
     </SidebarLayoutRootContext.Provider>
   )
 }
@@ -108,7 +105,7 @@ SidebarLayoutContent.displayName = 'SidebarLayout.Content'
  * behaviour, and the Sidebar and Content take `as`.
  *
  * @example
- * <SidebarLayout.Root sidebarWidth="sm">
+ * <SidebarLayout.Root className="kv-sidebar-layout--sidebar-sm">
  *   <SidebarLayout.Sidebar as="nav" aria-label="I det här avsnittet">…</SidebarLayout.Sidebar>
  *   <SidebarLayout.Content as="main" id="main">…</SidebarLayout.Content>
  * </SidebarLayout.Root>

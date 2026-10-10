@@ -37,7 +37,7 @@ import { Icon, Link } from '@kvirn-ui/react'
 
 ;<Link.Root href="https://eservice.example/bygglov" className="kv-link--service">
   <Link.Icon>
-    <Icon name="arrow-forward" size={6} />
+    <Icon name="arrow-forward" size="24" />
   </Link.Icon>
   Ansök om bygglov
 </Link.Root>
@@ -47,7 +47,7 @@ Your part:
 
 - **One per view,** for starting an e-service. It is flat, with no button depth: DESIGN.md reserves depth for buttons. An action that submits or changes something is a [Button](../button/button.md).
 - **Label** starts with a verb and names the service ("Ansök om bygglov"). Don't write "länk" in it: the role says it.
-- **Put the icon first,** and keep it decorative: `Link.Icon` is `aria-hidden`. The built-in `arrow-forward` at `size={6}` mirrors in right-to-left text.
+- **Put the icon first,** and keep it decorative: `Link.Icon` is `aria-hidden`. The built-in `arrow-forward` at `size="24"` mirrors in right-to-left text.
 - **No disabled service link.** Link has no `disabled`. When the e-service is closed, render a sentence and, when it reopens, a date, for example in an [Alert](../alert/alert.md).
 - **A new tab** needs `<Link.NewTabNotice />` inside the label, as for any link: telling users before it opens is a WCAG requirement (3.2.5, Level AAA; technique G201), and Link does not check it for you. It wraps with the label.
 

@@ -139,7 +139,7 @@ const fontFamilyTokens: readonly FontFamilyToken[] = [
   },
   {
     property: '--kv-font-family-system',
-    use: 'The system fallback stack. It covers å ä ö æ ø and the Northern Sámi letters',
+    use: 'The system fallback stack. It covers å ä ö æ ø',
   },
   {
     property: '--kv-font-family-system-serif',
@@ -306,7 +306,7 @@ function FontFamilyTable({ families }: { families: FontFamilyValues | undefined 
   )
 }
 
-const glyphs = 'Å Ä Ö Æ Ø á č đ ŋ š ŧ ž'
+const glyphs = 'Å Ä Ö Æ Ø'
 const lookAlikes = 'Il1 0O'
 
 type SpecimenFamily = 'body' | 'heading' | 'system' | 'system-serif' | 'mono'
@@ -345,7 +345,7 @@ function GlyphSpecimen() {
       <thead>
         <tr>
           <th scope="col">Family</th>
-          <th scope="col">Nordic and Sámi letters</th>
+          <th scope="col">Nordic letters</th>
           <th scope="col">Look-alikes</th>
         </tr>
       </thead>
@@ -564,7 +564,7 @@ export const FontFamilies: Story = {
   },
 }
 
-/** The Nordic and Sámi letters and the look-alikes, in every family. */
+/** The Nordic letters and the look-alikes, in every family. */
 export const Glyphs: Story = {
   render: () => <GlyphsPage />,
   play: async ({ canvas }) => {

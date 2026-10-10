@@ -24,7 +24,7 @@ It is a default, not a brand (`docs/vision.md`, non-goals). A municipality rebra
 
 ### Who we design for
 
-- **Residents** using e-services (applications, bookings, reports, payments), often once, often on a phone, sometimes stressed. They include older people, people with cognitive, visual or motor disabilities, people with low digital confidence and people reading in their second language. Some read Northern Sámi, Finnish, Swedish or Norwegian, and Finland and Norway publish in two languages.
+- **Residents** using e-services (applications, bookings, reports, payments), often once, often on a phone, sometimes stressed. They include older people, people with cognitive, visual or motor disabilities, people with low digital confidence and people reading in their second language. Some read Finnish, Swedish or Norwegian, and Finland and Norway publish in two languages.
 - **Case workers and staff** using internal tools every day on a desktop. They need speed, density and keyboard efficiency, under the same accessibility bar, because staff have disabilities too.
 
 ### Principles, in priority order
@@ -142,15 +142,15 @@ One sans family for text and controls, one serif family for headings, each with 
 
 The theme sets neither override. A link keeps the font around it. The serif is only for real headings: anything users operate or scan as data stays sans, and hierarchy never depends on the family alone. An alert's title is the exception that stays sans (weight 600, at `--kv-alert-title-size`): it is a message label, and a serif at that size would read as new page structure.
 
-Each brand stack ends in the matching system stack, `--kv-font-family-system` (`system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif`) or `--kv-font-family-system-serif` (`ui-serif, Cambria, 'Noto Serif', Georgia, serif`). `--kv-font-family-sans` and `-serif` are IBM Plex in front of them. A replacement font must cover the Sámi letters as well as å ä ö æ ø: check the Glyphs story in Foundation/Typography.
+Each brand stack ends in the matching system stack, `--kv-font-family-system` (`system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif`) or `--kv-font-family-system-serif` (`ui-serif, Cambria, 'Noto Serif', Georgia, serif`). `--kv-font-family-sans` and `-serif` are IBM Plex in front of them. A replacement font must cover å ä ö æ ø: check the Glyphs story in Foundation/Typography.
 
 ### Why IBM Plex
 
-Plex Sans's capitals sit in the middle of the line box, and its vertical metrics are the same on every OS (`hhea` = `win`, 1025/275), so labels sit the same way everywhere. It tells l, I and 1 apart without features and covers every Northern Sámi letter. Plex Serif shares its metrics and gives headings a calm, distinct voice. Both are SIL OFL 1.1 with "Plex" a Reserved Font Name: use IBM's files unmodified, never subset or rename them. Spec: `docs/design/typography-ibm-plex.md`.
+Plex Sans's capitals sit in the middle of the line box, and its vertical metrics are the same on every OS (`hhea` = `win`, 1025/275), so labels sit the same way everywhere. It tells l, I and 1 apart without features and covers every Nordic letter. Plex Serif shares its metrics and gives headings a calm, distinct voice. Both are SIL OFL 1.1 with "Plex" a Reserved Font Name: use IBM's files unmodified, never subset or rename them. Spec: `docs/design/typography-ibm-plex.md`.
 
 ### Loading
 
-The theme never loads a font (GDPR, AGENTS.md hard rule 7). The docs site and Storybook self-host IBM's split woff2 files (Latin1, Latin2, Pi). Adopters self-host the same files, from [IBM Plex's GitHub releases](https://github.com/IBM/plex/releases) or copied from `apps/docs/fonts/ibm-plex/` with `OFL.txt`, or rely on the system fallback. The `@ibm/plex-sans` and `@ibm/plex-serif` npm packages send IBM telemetry from a `postinstall` script: don't install them as dependencies. Fetch them with `npm pack`, or set `IBM_TELEMETRY_DISABLED=true` if you must install them.
+The theme never loads a font (GDPR, AGENTS.md hard rule 7). The docs site and Storybook self-host IBM's split woff2 files (Latin1 and Pi). Adopters self-host the same files, from [IBM Plex's GitHub releases](https://github.com/IBM/plex/releases) or copied from `apps/docs/fonts/ibm-plex/` with `OFL.txt`, or rely on the system fallback. The `@ibm/plex-sans` and `@ibm/plex-serif` npm packages send IBM telemetry from a `postinstall` script: don't install them as dependencies. Fetch them with `npm pack`, or set `IBM_TELEMETRY_DISABLED=true` if you must install them.
 
 ### Roles and weights
 
@@ -213,12 +213,12 @@ Four components in `@kvirn-ui/react` place content with typed choices and no CSS
 
 ### Text expansion and hyphenation
 
-Finnish and Northern Sámi strings can be 30–50% longer than English, and Finnish compounds are long.
+Finnish strings can be 30–50% longer than English, and Finnish compounds are long.
 
 - Buttons and labels wrap. Never set a fixed width on anything containing text. `overflow-wrap: anywhere` is a last resort, and truncation is not an option.
-- Prose, cards, alerts and headings (`kv-heading`) hyphenate words of 10 letters or more at the dictionary's points (`hyphens: auto`, `hyphenate-limit-chars: 10 4 4`), never inside code. Where there is no dictionary (Northern Sámi) they fall back to `overflow-wrap: break-word`.
+- Prose, cards, alerts and headings (`kv-heading`) hyphenate words of 10 letters or more at the dictionary's points (`hyphens: auto`, `hyphenate-limit-chars: 10 4 4`), never inside code. Where there is no dictionary they fall back to `overflow-wrap: break-word`.
 - Hyphenation follows `lang`: set it on `<html>` and on every passage in another language.
-- Browsers differ (measured 2026-10-02: Chromium lacks Finnish and Northern Sámi, Firefox lacks Northern Sámi), so only soft hyphens give the same result everywhere. Hyphenation is visual only, and at 200% zoom headings grow less than 2x, which is accepted. An adopter turns it off with `hyphens: manual`.
+- Browsers differ (measured 2026-10-02: Chromium lacks Finnish), so only soft hyphens give the same result everywhere. Hyphenation is visual only, and at 200% zoom headings grow less than 2x, which is accepted. An adopter turns it off with `hyphens: manual`.
 
 ### Density
 
@@ -320,7 +320,7 @@ A solid `focus-ring` at `--kv-focus-ring-width` (never below 2px, which 2.4.13 n
 
 Outline style, a 1.5 stroke on a 24 grid with round caps and joins, in `currentColor`. `@kvirn-ui/react` ships 24 built-in icons with semantic names, in the style of Heroicons outline but drawn from our own keylines (`docs/design/icon.md`). An app that registers the same name in `KvirnProvider` replaces a built-in, and Kvirn's components follow it. Icons are inline SVG: no icon fonts and none from third-party servers.
 
-- **Size** is a step of Tailwind's `size-*` scale (`size={4}`), and a step is 0.25em, so an icon grows with the text: step 4 is 1em, 5 (default) 1.25em, 6 1.5em (16, 20, 24px next to 16px text). Use 5 in buttons, because it equals their line height. A string is a CSS length (`size="48px"`). Size, stroke and colour are SVG attributes: the theme never sets them, except in forced colours, where an icon takes its parent's system colour.
+- **Size** is the size in pixels, as a string (`size="20"`, the default; `"16"`, `"24"`, `"32"` to `"96"`), and the theme turns it into rem with `kv-icon--size-<px>`, so an icon follows the root font size and not the text. Use `"20"` in buttons, because it equals their line height. Another size is a class you add. Stroke and colour are SVG attributes. The theme never sets stroke or colour, except in forced colours, where an icon takes its parent's system colour.
 - **Meaning.** An icon is decorative (`aria-hidden`) unless it has a `label` from i18n. A status icon always comes with the status in words, and the four statuses differ in shape as well as colour: info a square, success a circle, warning a triangle, error an octagon. A meaningful icon has 3:1 contrast against its background.
 - **Direction.** Name by meaning (`chevron-forward`, `arrow-back`). Only icons that show horizontal direction mirror in RTL (`mirrorInRtl`). Check marks, status icons, objects and `search` never mirror.
 - **Icon-only buttons** (`kv-button--icon-only`) are square, at least the button's minimum height, with `--kv-space-2` padding. Use them only for close and search, with an accessible name from i18n and, from M2, a visible tooltip with the same text. The menu toggle on resident-facing pages shows the word "Menu" too.
@@ -743,7 +743,7 @@ Content is design. Most failures in public services are unclear words, not uncle
 - Lead with what the user needs to do and by when. Put the exception at the end.
 - Headings and buttons describe the task: "Apply for parking permit", not "Parking permit form".
 - Errors say what went wrong and how to fix it: "Enter a date in the format 31.12.2026", not "Invalid input".
-- Every visible or announced string comes from `@kvirn-ui/i18n` in all six locales (AGENTS.md hard rule 4). Designs show the Swedish and Finnish strings side by side to catch length and wrapping issues.
+- Every visible or announced string comes from `@kvirn-ui/i18n` in all five locales (AGENTS.md hard rule 4). Designs show the Swedish and Finnish strings side by side to catch length and wrapping issues.
 - Dates, numbers and currency use `Intl` for the active locale (`31.12.2026` in fi, `2026-12-31` in sv).
 
 ## Do's and Don'ts

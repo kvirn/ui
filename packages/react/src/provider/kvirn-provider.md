@@ -81,7 +81,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 
 For several languages, let the wrapper take a `catalog` string (`'sv'`, `'fi'`) and pick the catalog itself.
 
-- **`<html lang dir>`:** `getLocaleProps(locale, dir?)` from `@kvirn-ui/react/server` gives both, the pair `KvirnProvider` derives for the same locale (WCAG 3.1.1). The provider renders no element that could hold them, so it can't set the page language.
+- **`<html lang dir>`:** `getLocaleProps(locale)` from `@kvirn-ui/react/server` gives both, the pair `KvirnProvider` derives for the same locale (WCAG 3.1.1). The provider renders no element that could hold them, so it can't set the page language.
 - **Nested languages:** a nested provider that changes the language needs that language's catalog, for example `<KvirnProvider locale="fi-FI" messages={fi}>`. Also spread `useLocale().localeProps` on its section (3.1.2).
 - **`timeZone`:** set it explicitly, the same on the server and in the browser. Without one, instants are shown in UTC (never the runtime's zone, so the two renders agree), and the first instant formatted without a zone warns in development (`date-without-time-zone`). A date-only instant (no time fields) then shows no zone label and can show the neighbouring day late in the evening or early in the morning; for a calendar date use the `YYYY-MM-DD` string form. A Calendar's "today" is the UTC date on first paint and the browser's date after mount.
 - **`suppressHydrationWarning` on `<html>`:** `KvirnThemeScript` adds `data-kv-color-scheme`, `data-kv-contrast` and `data-kv-motion` before React hydrates, so the server markup and the page differ on purpose. The flag only affects `<html>`'s own attributes.
@@ -160,7 +160,7 @@ Without the augmentation, `linkComponent` only accepts `'a'`, and link props are
 Register your icons once, so `<Icon name>` works everywhere and names are checked. The registry holds components, so it lives in a client module next to this setup. See [Icon](../icon/icon.md#registering-icons).
 
 ```tsx
-<KvirnProvider icons={icons} iconDefaults={{ strokeWidth: 1.5 }}>
+<KvirnProvider icons={icons} iconDefaults={{ size: '24' }}>
 ```
 
 ## Locale and direction
@@ -171,8 +171,8 @@ const dateSettings = useDateSettings() // { timeZone, weekStart }
 ```
 
 - `locale` is a BCP 47 tag, such as `sv-SE`, `fi-FI` or `nn-NO`. It drives `Intl.*` formatting and `lang`. `sv`, `fi`, `nb` and `nn` need no region, but `Intl` reads a bare `en` as US English (`10/14/26`, `October 14, 2026`). Pass `en-GB` for English written the way the rest of Europe writes it (`14/10/2026`, `14 October 2026`).
-- `dir` comes from the locale. Use the `dir` prop to override it.
-- `country` is `SE`, `FI` or `NO`, for the masks that differ by country (`mask="postal-code"`, `"personal-identity-number"`, `"organisation-number"` on a TextInput). It is the `country` prop, else the region of the locale (`sv-FI` is `FI`), else its language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn`, `no` and `se` are `NO`), else `undefined` (`en`): then a country mask only takes digits and warns once. Set the prop where the locale doesn't say, such as `se` (Northern Sami) in Finland. A nested provider inherits the parent's `country` prop, so set it again when a section changes country.
+- `dir` comes from the locale. Use the `dir` prop to override it. `getLocaleProps` knows nothing of the override, so on the server write `<html dir>` yourself (WCAG 1.3.2).
+- `country` is `SE`, `FI` or `NO`, for the masks that differ by country (`mask="postal-code"`, `"personal-identity-number"`, `"organisation-number"` on a TextInput). It is the `country` prop, else the region of the locale (`sv-FI` is `FI`), else its language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn` and `no` are `NO`), else `undefined` (`en`): then a country mask only takes digits and warns once. Set the prop where the locale doesn't say, such as `se` (Northern Sami) in Finland. A nested provider inherits the parent's `country` prop, so set it again when a section changes country.
 - `weekStart` is the first day of the week in Calendar and DatePicker: `1` (Monday) to `7` (Sunday), the ISO weekday. It is the Calendar's own `weekStart`, else the provider's, else the locale's when the locale names a region (`en-US` is Sunday, `en-GB` Monday), else Monday. A bare `en` stays Monday, as in every Nordic country and the EU, though `Intl` alone would say Sunday. Week numbers are ISO 8601 and only show with a Monday start. `useDateSettings().weekStart` is the resolved provider-level value; outside React use `resolveWeekStart({ instance, provider, locale })` from `@kvirn-ui/core`. Set `weekStart` explicitly for server rendering, like `timeZone`: a runtime without `Intl` week data answers Monday where another answers Sunday, so the server and the browser could differ. A value that isn't a whole number from 1 to 7 is ignored with a development warning.
 
 ### A section in another language
@@ -415,7 +415,7 @@ On the server, read the same cookie and render the attributes on `<html>`. Rende
 `@kvirn-ui/react` is a client entry. `@kvirn-ui/react/server` has no `'use client'`, depends only on `@kvirn-ui/core` and `@kvirn-ui/i18n`, and is safe to import in a Server Component such as `app/layout.tsx`:
 
 - `KvirnThemeScript({ nonce, theme })`: the same script as the client one, with no hook.
-- `getLocaleProps(locale, dir?)`: `{ lang, dir }` for `<html>`, the pair `KvirnProvider` derives for the same locale (WCAG 3.1.1).
+- `getLocaleProps(locale)`: `{ lang, dir }` for `<html>`, the pair `KvirnProvider` derives for the same locale (WCAG 3.1.1).
 - `getMessages(namespace, { locale, messages, timeZone })`: the server `useMessages`, for strings rendered in a Server Component.
 - `createMessageFormat`: the formatter behind both.
 
@@ -443,7 +443,7 @@ The layout under [Next.js](#nextjs-app-router) uses it.
 | `weekStart`     | `1` to `7` (ISO weekday, 1 is Monday)               | The parent's, else the locale's when it names a region (`en-US` is `7`), else `1`                               |
 | `linkComponent` | `RegisteredLinkComponent`                           | `'a'`, or the parent's                                                                                          |
 | `icons`         | `IconRegistry`, from `defineIcons`                  | The built-in icons, then the parent's, merged by name ([Icon](../icon/icon.md))                                 |
-| `iconDefaults`  | `IconDefaults` (`size`, `strokeWidth`)              | The parent's, merged by field                                                                                   |
+| `iconDefaults`  | `IconDefaults` (`size`)                             | The parent's, merged by field                                                                                   |
 | `theme`         | `ThemeOptions`                                      | Outermost provider only                                                                                         |
 | `toast`         | `{ limit?, autoDismiss? }`                          | First provider on the page only: `limit` 10, `autoDismiss` `false` or milliseconds ([Toast](../toast/toast.md)) |
 | `env`           | `Env`                                               | The page, after hydration                                                                                       |

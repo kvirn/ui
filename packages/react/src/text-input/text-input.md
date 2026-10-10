@@ -42,7 +42,7 @@ A width class follows the text size, includes the 1.4.12 letter-spacing allowanc
 | `mask.maximumLength`       | "You've entered all 12 characters."                                                           |
 | `mask.maximumDecimals`     | "No more decimals can be entered here." (a number mask with all its decimals)                 |
 
-Only a masked TextInput announces anything. The strings are in all six locales.
+Only a masked TextInput announces anything. The strings are in all five locales.
 
 What TextInput does on its own: it takes the control's `id` and `aria-describedby` from the Field (and ignores an `id` of its own inside one, with a dev warning, so the label stays linked); it keeps your own `aria-describedby` ids after the Field's; it moves no focus and handles no keys; with a `mask` it suggests `inputMode`, `autoCapitalize`, `spellCheck={false}` and, for identifiers, `dir="ltr"` (your own props win), warns once in development when a masked field in a Field has no help text, when `mask` is a name that doesn't exist (`mask-unknown-name:<name>`: no mask runs), and announces refused characters through the Announcer.
 

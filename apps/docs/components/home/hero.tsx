@@ -17,7 +17,7 @@ export function Hero() {
       <div className="home-actions">
         <Link href="/docs" className="kv-link--service">
           <LinkIcon>
-            <Icon name="arrow-forward" size={6} />
+            <Icon name="arrow-forward" size="24" />
           </LinkIcon>
           {text.start}
         </Link>

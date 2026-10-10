@@ -12,16 +12,6 @@ const meta = {
   title: 'Components/Content/List',
   component: List.Root,
   argTypes: {
-    marker: {
-      control: 'inline-radio',
-      options: ['none', 'bullet', 'decimal'],
-      description: 'No marker (default), bullets, or numbers. Numbers are for `as="ol"`.',
-    },
-    gap: {
-      control: 'inline-radio',
-      options: ['2', '4', '6', '8'],
-      description: 'The `space` step between items: 2, 4 (default), 6 or 8.',
-    },
     as: { control: false, description: '`ul` (default) or `ol`.' },
   },
   parameters: {
@@ -57,9 +47,9 @@ export const Default: Story = {
   },
 }
 
-/** `marker="bullet"`: for a short list in running content. The list keeps its native role. */
+/** `kv-list--bullet`: for a short list in running content. The list always has `role="list"`, so Safari keeps its list semantics. */
 export const Bulleted: Story = {
-  args: { marker: 'bullet' },
+  args: { className: 'kv-list--bullet' },
   render: (args) => (
     <List.Root {...args}>
       <List.Item>Bring your ID</List.Item>
@@ -68,14 +58,14 @@ export const Bulleted: Story = {
     </List.Root>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('list')).not.toHaveAttribute('role')
+    await expect(canvas.getByRole('list')).toHaveAttribute('role', 'list')
     await expect(canvas.getAllByRole('listitem')).toHaveLength(3)
   },
 }
 
-/** `as="ol"` with `marker="decimal"`: steps in a fixed order. */
+/** `as="ol"` with `kv-list--decimal`: steps in a fixed order. */
 export const Numbered: Story = {
-  args: { as: 'ol', marker: 'decimal' },
+  args: { as: 'ol', className: 'kv-list--decimal' },
   render: (args) => (
     <List.Root {...args}>
       <List.Item>Fill in the application</List.Item>
@@ -89,12 +79,12 @@ export const Numbered: Story = {
   },
 }
 
-/** The four `gap` steps: 2, 4 (default), 6 and 8. */
+/** The four gap steps: `kv-list--gap-2`, 4 (default), `-6` and `-8`. */
 export const GapSteps: Story = {
   render: () => (
     <>
       {(['2', '4', '6', '8'] as const).map((gap) => (
-        <List.Root key={gap} gap={gap} aria-label={`Gap ${gap}`}>
+        <List.Root key={gap} className={`kv-list--gap-${gap}`} aria-label={`Gap ${gap}`}>
           <List.Item>Gap {gap}: first</List.Item>
           <List.Item>Gap {gap}: second</List.Item>
           <List.Item>Gap {gap}: third</List.Item>
@@ -109,12 +99,12 @@ export const GapSteps: Story = {
 
 /** A nested list goes inside an item. */
 export const Nested: Story = {
-  args: { marker: 'bullet' },
+  args: { className: 'kv-list--bullet' },
   render: (args) => (
     <List.Root {...args}>
       <List.Item>
         Services
-        <List.Root marker="bullet" gap="2">
+        <List.Root className="kv-list--bullet kv-list--gap-2">
           <List.Item>Building permits</List.Item>
           <List.Item>Waste and recycling</List.Item>
         </List.Root>
@@ -130,7 +120,7 @@ export const Nested: Story = {
 
 /** Right to left: the markers and the indent follow the reading direction. */
 export const RTL: Story = {
-  args: { marker: 'bullet' },
+  args: { className: 'kv-list--bullet' },
   render: (args) => (
     <div dir="rtl" lang="ar">
       <List.Root {...args}>

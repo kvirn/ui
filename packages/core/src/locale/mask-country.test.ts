@@ -17,14 +17,12 @@ describe('maskCountryFromLocale', () => {
     ['nb', 'NO'],
     ['nn', 'NO'],
     ['no', 'NO'],
-    ['se', 'NO'],
   ])('a bare %s tag falls back to the language: %s', (locale, country) => {
     expect(maskCountryFromLocale(locale)).toBe(country)
   })
 
-  it('the region wins over the language: sv-FI is Finland, se-FI too, and fi-SE is Sweden', () => {
+  it('the region wins over the language: sv-FI is Finland and fi-SE is Sweden', () => {
     expect(maskCountryFromLocale('sv-FI')).toBe('FI')
-    expect(maskCountryFromLocale('se-FI')).toBe('FI')
     expect(maskCountryFromLocale('fi-SE')).toBe('SE')
   })
 

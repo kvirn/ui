@@ -36,7 +36,7 @@ export function ServiceLinkLink({ children, ...otherProps }: LinkProps<'a'>): Re
     <p className="kv-service-link-action">
       <Link.Root {...mergeProps(otherProps, { className: 'kv-link--service' })}>
         <Link.Icon>
-          <Icon name="arrow-forward" size={6} />
+          <Icon name="arrow-forward" size="24" />
         </Link.Icon>
         {children}
       </Link.Root>

@@ -23,7 +23,7 @@ export function Band({
       className={`home-band kv-section--${tone} kv-section--padding-lg ${className ?? ''}`.trim()}
     >
       <Container>
-        <Stack gap="8">{children}</Stack>
+        <Stack className="kv-stack--gap-8">{children}</Stack>
       </Container>
     </Section>
   )

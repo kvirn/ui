@@ -12,7 +12,7 @@ Evidence-based defaults for municipal and agency services. Deviate only with a r
 | Motor disabilities, tremor, switch or voice | 44px targets, no drag-only or precise gestures, visible labels that match the accessible name (2.5.3)         |
 | Screen reader users                         | Real headings, landmarks, labelled fields, announced status, error summary with links                         |
 | Second-language readers                     | Short sentences, common words, no idioms, a clear language switcher                                           |
-| Sámi, Finnish-Swedish and Nynorsk readers   | Content exists in their language. Longer strings, special letters and `lang` on language links                |
+| Finnish-Swedish and Nynorsk readers         | Content exists in their language. Longer strings, special letters and `lang` on language links                |
 | Phone-only users on slow connections        | Mobile first, light pages, nothing that fails when a request is slow                                          |
 | Case workers and staff                      | Speed, density, keyboard shortcuts with visible equivalents, and the same AA bar                              |
 | People in a stressful situation             | Calm tone, no blame, clear deadlines, a human contact route                                                   |
@@ -29,7 +29,7 @@ Evidence-based defaults for municipal and agency services. Deviate only with a r
 - **Save and return.** Any service longer than a few minutes lets the user save and continue later.
 - **Timeouts.** Warn at least 2 minutes before a session expires, with a way to extend it, and never lose entered data silently (2.2.1).
 - **Step indicator.** "Step 2 of 5" in text, plus the step name. Back links go to the previous step and keep answers.
-- **Language switcher.** Each language named in its own language ("Svenska", "Suomi", "Davvisámegiella"), with `lang` and `hreflang`, in the same place on every page.
+- **Language switcher.** Each language named in its own language ("Svenska", "Suomi", "Norsk"), with `lang` and `hreflang`, in the same place on every page.
 - **Help.** Contact and help in the same place on every page (3.2.6).
 - **Accessibility statement and feedback.** Linked from every page's footer (WAD). Use the `regulations` skill.
 - **Login entry.** National eID buttons use the provider's official naming and wording. No CAPTCHA or cognitive test (3.3.8).

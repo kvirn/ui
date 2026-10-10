@@ -90,5 +90,5 @@ Headless: no CSS. With `@kvirn-ui/theme/theme.css`, the link is clipped to a 1px
 
 ## Known issues
 
-- The `se` label is an English placeholder, and the `fi`, `nb` and `nn` drafts need a native review.
+- The `fi`, `nb` and `nn` drafts need a native review.
 - Whether `:focus-visible` matches on the programmatic focus after a keyboard activation in WebKit: not automated, `pending`.

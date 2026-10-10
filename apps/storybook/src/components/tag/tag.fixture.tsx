@@ -13,7 +13,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Fixtures for Components/Tag. Each function is one example, and the story's "Show code" prints
 // it (`showSource`), so it reads the way an adopter writes it. KvirnUI holds no filter state: the
-// `useState` here stands in for your URL or form state. se is English, marked lang="en" (3.1.2).
+// `useState` here stands in for your URL or form state.
 
 export interface TagTexts {
   appliedLegend: string
@@ -149,7 +149,7 @@ const texts: Partial<Record<FormLocale, TagTexts>> = {
   en: textsEn,
 }
 
-/** The fixture text in a locale, or English with `lang="en"` for se. */
+/** The fixture text in a locale. */
 export function tagTextsFor(locale: FormLocale): { text: TagTexts; lang: 'en' | undefined } {
   const text = texts[locale]
   return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }

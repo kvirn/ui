@@ -1,15 +1,15 @@
-import type { StackProps, UseStackOptions, UseStackResult } from '@kvirn-ui/react'
+import type { StackProps, UseStackResult } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-export type StackDocumentedProps = Pick<StackProps, 'gap' | 'as' | 'ref'>
+export type StackDocumentedProps = Pick<StackProps, 'className' | 'as' | 'ref'>
 
 export const stackRows = propRows<StackDocumentedProps>({
-  gap: {
-    type: "'2' | '4' | '6' | '8'",
-    default: "'6'",
+  className: {
+    type: 'string',
+    default: '–',
     description:
-      'The space between children, a space step in the theme. Use a smaller gap inside a group and a larger one between sections.',
+      'Your own classes. They join the part’s class and never replace it, so the theme keeps styling the layout. Add a gap class: kv-stack--gap-2, kv-stack--gap-4 or kv-stack--gap-8.',
   },
   as: {
     type: "'div' | 'ul' | 'ol' | 'li' | 'section' | 'form'",
@@ -32,24 +32,25 @@ export const stackAttributes: readonly AttributeRow[] = [
   },
   {
     name: 'kv-stack--gap-2',
-    values: 'gap="2"',
+    values: 'you add it',
     meaning: 'The smallest space step between children.',
   },
-  { name: 'kv-stack--gap-4', values: 'gap="4"', meaning: 'A small space step between children.' },
-  { name: 'kv-stack--gap-8', values: 'gap="8"', meaning: 'A large space step between children.' },
+  {
+    name: 'kv-stack--gap-4',
+    values: 'you add it',
+    meaning: 'A small space step between children.',
+  },
+  {
+    name: 'kv-stack--gap-8',
+    values: 'you add it',
+    meaning: 'A large space step between children.',
+  },
 ]
 
 export const useStackHook: ApiHook = {
   name: 'useStack',
   intro:
-    'Use it when you can’t use as, for example on a component of your own. It adds no role, ARIA or tabindex, and it returns the same frozen object for each gap.',
-  options: propRows<UseStackOptions>({
-    gap: {
-      type: "'2' | '4' | '6' | '8'",
-      default: "'6'",
-      description: 'The space between children, as on Stack. "6" adds no modifier class.',
-    },
-  }),
+    'Use it when you can’t use as, for example on a component of your own. It adds no role, ARIA or tabindex, and it returns the same frozen object every time.',
   result: propRows<UseStackResult>({
     stackProps: {
       type: 'StackPartProps',

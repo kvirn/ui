@@ -2,7 +2,6 @@ import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
-import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { readAloud, readAnnouncements } from '@kvirn-ui/testing/read-aloud'
@@ -174,7 +173,6 @@ describe('roles, names and states', () => {
     ['nb', nb, 'Velg dato', 'Velg en dato'],
     ['nn', nn, 'Vel dato', 'Vel ein dato'],
     ['fi', fi, 'Valitse päivämäärä', 'Valitse päivämäärä'],
-    ['se', se, 'Choose date', 'Choose a date'],
   ] as const)(
     'the %s catalog names the trigger and the dialog',
     async (locale, messages, triggerName, title) => {

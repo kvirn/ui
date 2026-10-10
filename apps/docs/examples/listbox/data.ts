@@ -38,7 +38,6 @@ export interface Language {
 export const languages: readonly Language[] = [
   { code: 'sv', name: 'Svenska' },
   { code: 'fi', name: 'Suomi' },
-  { code: 'se', name: 'Davvisámegiella' },
   { code: 'en', name: 'English' },
 ]
 

@@ -68,4 +68,4 @@ Pagination announces nothing itself. A page change is announced by the page's ow
 
 ## Message keys
 
-`pagination.label`, `pagination.previous`, `pagination.next`, `pagination.status`, `pagination.page` (all six locales; fi, nb and nn are drafts for native review, se is English placeholders).
+`pagination.label`, `pagination.previous`, `pagination.next`, `pagination.status`, `pagination.page` (all five locales; fi, nb and nn are drafts for native review).

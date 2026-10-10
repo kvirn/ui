@@ -152,5 +152,4 @@ Also pending, by hand: SMS autofill on iOS Safari and Android Chrome, the browse
 - **Password-manager icons** can cover the last box. Not detectable in CSS; waits for the manual matrix.
 - **The browser's autofill tint** shows in the 8px gaps between the boxes, under the opaque boxes. Accepted: it tells sighted users the code was filled in.
 - **Undo** after the mask inserted a literal can't be kept without `execCommand`. A grouped pattern (`****-****`) has a literal, the dash, so undo after the mask put it in can step back over it in two presses. A pattern without a separator has no literals, and undo is native.
-- **`se` story texts show English,** marked `lang="en"` (3.1.2). The component itself has no strings.
 - **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.

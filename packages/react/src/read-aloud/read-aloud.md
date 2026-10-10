@@ -34,7 +34,7 @@ const articleRef = useRef<HTMLElement>(null)
 <article ref={articleRef} lang="sv">…</article>
 ```
 
-Languages: the `lang` option, else the closest `[lang]` of the content (or above it), else the provider's locale, is the default for text that no `lang` attribute names. A `lang` attribute on an element inside the content wins for that stretch, and the option beats the content element's own `lang`. Each sentence is spoken with a voice for its own language, never a voice of another one. When a sentence has no voice, reading stops there, the Status names the language and it is announced once. A selection follows the same rule, looking up through its ancestors to the content element. The Voice select lists the voices for the default language.
+Languages: the closest `[lang]` of the content (or above it), else the document's, else the provider's locale, is the default for text that no `lang` attribute names. A `lang` attribute on an element inside the content wins for that stretch. Each sentence is spoken with a voice for its own language, never a voice of another one. When a sentence has no voice, reading stops there, the Status names the language and it is announced once. A selection follows the same rule, looking up through its ancestors to the content element. The Voice select lists the voices for the default language.
 
 ## Hook
 
@@ -48,7 +48,7 @@ const reader = useReadAloud({ contentRef })
 </div>
 ```
 
-Options: `contentRef`, `lang`, `engine`, `allowRemoteVoices`, `highlight` (default `true`), `scroll` (default `true`, off under `prefers-reduced-motion`), `messages`, `onStatusChange`. Mark content that must not be read with `data-kv-read-aloud-skip`.
+Options: `contentRef`, `engine`, `allowRemoteVoices`, `highlight` (default `true`), `scroll` (default `true`, off under `prefers-reduced-motion`), `messages`, `onStatusChange`. Mark content that must not be read with `data-kv-read-aloud-skip`.
 
 ## Voices
 

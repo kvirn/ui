@@ -47,7 +47,7 @@ A new or changed token needs the maintainer's approval, with DESIGN.md updated i
 - Scales can only be overridden on `:root`. A wrapper-level override does not reach the semantic tokens, because a custom property resolves where it is declared.
 - A swapped scale can break contrast (white on `primary-500` fails with the accent scale). Always run `checkThemeCss()` on the result. Margins on some pairs are thin (about 4.7:1).
 - Site-wide defaults an adopter sets (`--kv-font-family-body`, `--kv-font-family-heading`, `--kv-card-radius-default`, the `--kv-button-*` and `--kv-table-*` tokens) are read with the theme value as the fallback, so they work on `:root` or on any container. Keep that shape for a new default.
-- `colorTokenNames` is public API. Changing it needs a changeset.
+- `colorTokenNames` is public API. Changing it is a public API change.
 
 ## The raw-colour rule
 
@@ -63,8 +63,8 @@ A new or changed token needs the maintainer's approval, with DESIGN.md updated i
 - `kv-<part>--<option>`: a choice the consumer adds (`kv-button--primary`, `kv-link--service`, `kv-section--canvas`, `kv-input--width-6`, `kv-prose--large`). A modifier changes the look only, never the element.
 - `kv-<name>`: a context the consumer sets on a container (`kv-compact`, `kv-button-group`, `kv-prose`, `kv-not-prose`, `kv-scroll-region`).
 - `data-*` is state only (`data-disabled`, `data-invalid`, `data-focus-visible`, `data-current`, `data-open`, `data-active`, `data-selected`). The component sets it, the consumer never does.
-- Part, modifier and state names are public API: renaming one is a breaking change that needs a changeset.
-- One import styles everything. Never require a consumer to add a class or a prop for the default look. Choices (primary, danger, compact) are classes, never props.
+- Part, modifier and state names are public API: renaming one is a breaking change.
+- One import styles everything. Never require a consumer to add a class or a prop for the default look. Choices (primary, danger, compact, a gap, a marker, a layout) are classes. A component may take `variant`, `size` or `orientation` and map it to one; no other presentation prop, no inline `style`, no `data-*` for a choice (AGENTS.md rule 14).
 - The base button is the secondary look. `kv-button--primary` is the one main action, `kv-button--danger` a destructive one.
 
 ## Rules every section follows
@@ -134,9 +134,9 @@ The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@laye
 
 ## Long words and small screens
 
-- `kv-prose`, `kv-card`, `kv-alert`, `kv-field` and `kv-fieldset` set `hyphens: auto`, `hyphenate-limit-chars: 10 4 4` and `overflow-wrap: break-word`. The break-word fallback covers Northern Sámi and a missing `lang`.
+- `kv-prose`, `kv-card`, `kv-alert`, `kv-field` and `kv-fieldset` set `hyphens: auto`, `hyphenate-limit-chars: 10 4 4` and `overflow-wrap: break-word`. The break-word fallback covers languages without a dictionary and a missing `lang`.
 - `code`, `kbd`, `samp` and `pre` use `hyphens: manual`.
-- Hyphenation needs `lang` on `<html>` and on passages in another language. Browser dictionaries are incomplete (Northern Sámi has none, and Finnish was missing in Chromium when last measured), so only soft hyphens fix it everywhere. Hyphenation is visual only.
+- Hyphenation needs `lang` on `<html>` and on passages in another language. Browser dictionaries are incomplete (Finnish was missing in Chromium when last measured), so only soft hyphens fix it everywhere. Hyphenation is visual only.
 - Below `40rem`, `display` is 2rem (no tracking), `heading-1` 1.5rem, `heading-2` 1.25rem and `lead` 1.125rem. `heading-3` to `heading-6` and the body roles never change. `heading-4` to `heading-6` are 1rem (told apart by weight and tracking), so a heading is never below the 16px floor, and prose `h1` to `h6` keep their roles in every prose size. Never make a role smaller than the one below it. At 200% zoom, headings grow less than 2x.
 - Do not use `clamp()` with `vw` for type.
 
@@ -144,10 +144,10 @@ The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@laye
 
 - The theme loads no font. `--kv-font-family-sans` starts with `'IBM Plex Sans'` then `--kv-font-family-system`. `--kv-font-family-serif` starts with `'IBM Plex Serif'` then `--kv-font-family-system-serif`. Headings read `var(--kv-font-family-heading, var(--kv-font-family-serif))`, text reads `var(--kv-font-family-body, var(--kv-font-family-sans))`. Both overrides are adopter-only.
 - The docs site and Storybook self-host IBM Plex from `apps/docs/fonts/ibm-plex/ibm-plex.css`, imported by the docs layout and the Storybook preview. No third-party font request.
-  - Plain `@font-face` CSS, not `next/font/local`. One family name per typeface, split into Latin1, Latin2 and Pi by `unicode-range`. Latin1 covers å ä ö æ ø, Latin2 the Northern Sámi letters (á č đ ŋ š ŧ ž).
+  - Plain `@font-face` CSS, not `next/font/local`. One family name per typeface, split into Latin1 and Pi by `unicode-range`. Latin1 covers å ä ö æ ø.
   - Sans 400, 500, 600 and Serif 500, 600, upright only, woff2.
   - Use IBM's own files, unmodified (the licence reserves the name "Plex"; the licence file sits beside them). Fetch them with `npm pack`. Never add the IBM packages as dependencies, because their `postinstall` sends telemetry.
-- Every Nordic and Sámi letter must come from the font, not from a fallback.
+- Every Nordic letter must come from the font, not from a fallback.
 - Any font an adopter chooses must cover those letters. Fonts that need `font-feature-settings` for `l`, `I` and `1` set their own role settings.
 
 ## reset.css

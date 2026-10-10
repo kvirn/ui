@@ -3,7 +3,6 @@ import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
-import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { Fragment, createRef } from 'react'
@@ -166,7 +165,6 @@ describe('rendering', () => {
     ['fi', fi, 'Tällä sivulla'],
     ['nb', nb, 'På denne siden'],
     ['nn', nn, 'På denne sida'],
-    ['se', se, 'On this page'],
     ['en', en, 'On this page'],
   ]
   for (const [locale, messages, name] of localeNames) {

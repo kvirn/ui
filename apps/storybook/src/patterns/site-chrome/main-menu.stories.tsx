@@ -1,3 +1,5 @@
+import { en } from '@kvirn-ui/i18n/en'
+import { KvirnProvider } from '@kvirn-ui/react'
 import { MainMenu, PageFrame, SiteHeader } from '@kvirn-ui/patterns'
 import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -63,48 +65,50 @@ const secondTopic = { name: 'Care and support', hidden: true } as const
 export const Default: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#preschool">Preschool</MainMenu.Link>
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#living">
-                    All about living and environment
-                  </MainMenu.Overview>
-                  <MainMenu.Link href="#waste">Waste and recycling</MainMenu.Link>
-                  <MainMenu.Link href="#building">Building permits</MainMenu.Link>
-                  <MainMenu.Link href="#water">Water and sewage</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
-                  <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
-                  <MainMenu.Link href="#disability">Disability support</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#preschool">Preschool</MainMenu.Link>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#living">
+                      All about living and environment
+                    </MainMenu.Overview>
+                    <MainMenu.Link href="#waste">Waste and recycling</MainMenu.Link>
+                    <MainMenu.Link href="#building">Building permits</MainMenu.Link>
+                    <MainMenu.Link href="#water">Water and sewage</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
+                    <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
+                    <MainMenu.Link href="#disability">Disability support</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas, canvasElement }) => {
     const topic = canvas.getByRole('button', firstTopic)
@@ -117,48 +121,50 @@ export const Default: Story = {
 /** An open panel from 64rem: a band under the header with the overview link first, then the children. */
 export const OpenWide: Story = {
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#preschool">Preschool</MainMenu.Link>
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#living">
-                    All about living and environment
-                  </MainMenu.Overview>
-                  <MainMenu.Link href="#waste">Waste and recycling</MainMenu.Link>
-                  <MainMenu.Link href="#building">Building permits</MainMenu.Link>
-                  <MainMenu.Link href="#water">Water and sewage</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
-                  <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
-                  <MainMenu.Link href="#disability">Disability support</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#preschool">Preschool</MainMenu.Link>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#living">
+                      All about living and environment
+                    </MainMenu.Overview>
+                    <MainMenu.Link href="#waste">Waste and recycling</MainMenu.Link>
+                    <MainMenu.Link href="#building">Building permits</MainMenu.Link>
+                    <MainMenu.Link href="#water">Water and sewage</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
+                    <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
+                    <MainMenu.Link href="#disability">Disability support</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('button', firstTopic))
@@ -176,45 +182,47 @@ export const OpenWide: Story = {
 export const NarrowMenu: Story = {
   globals: { ...narrowGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Menu defaultOpen>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#living">
-                    All about living and environment
-                  </MainMenu.Overview>
-                  <MainMenu.Link href="#waste">Waste and recycling</MainMenu.Link>
-                  <MainMenu.Link href="#building">Building permits</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
-                  <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Menu defaultOpen>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#living">
+                      All about living and environment
+                    </MainMenu.Overview>
+                    <MainMenu.Link href="#waste">Waste and recycling</MainMenu.Link>
+                    <MainMenu.Link href="#building">Building permits</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
+                    <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas, canvasElement }) => {
     await userEvent.click(canvas.getByRole('button', firstTopic))
@@ -232,46 +240,48 @@ export const NarrowMenu: Story = {
 export const CurrentPage: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#living">
-                    All about living and environment
-                  </MainMenu.Overview>
-                  <MainMenu.Link href="#waste" current="page">
-                    Waste and recycling
-                  </MainMenu.Link>
-                  <MainMenu.Link href="#building">Building permits</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
-                  <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Waste and recycling</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#living">
+                      All about living and environment
+                    </MainMenu.Overview>
+                    <MainMenu.Link href="#waste" current="page">
+                      Waste and recycling
+                    </MainMenu.Link>
+                    <MainMenu.Link href="#building">Building permits</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
+                    <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Waste and recycling</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas, canvasElement }) => {
     const nav = canvasElement.querySelector('.kv-mega-menu')
@@ -285,48 +295,50 @@ export const CurrentPage: Story = {
 /** Try the keys listed in the Keyboard section above. */
 export const Keyboard: Story = {
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#preschool">Preschool</MainMenu.Link>
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#living">
-                    All about living and environment
-                  </MainMenu.Overview>
-                  <MainMenu.Link href="#waste">Waste and recycling</MainMenu.Link>
-                  <MainMenu.Link href="#building">Building permits</MainMenu.Link>
-                  <MainMenu.Link href="#water">Water and sewage</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
-                  <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
-                  <MainMenu.Link href="#disability">Disability support</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#preschool">Preschool</MainMenu.Link>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#living">
+                      All about living and environment
+                    </MainMenu.Overview>
+                    <MainMenu.Link href="#waste">Waste and recycling</MainMenu.Link>
+                    <MainMenu.Link href="#building">Building permits</MainMenu.Link>
+                    <MainMenu.Link href="#water">Water and sewage</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
+                    <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
+                    <MainMenu.Link href="#disability">Disability support</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     const topic = canvas.getByRole('button', firstTopic)
@@ -346,48 +358,50 @@ export const Keyboard: Story = {
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en', ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#preschool">Preschool</MainMenu.Link>
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#living">
-                    All about living and environment
-                  </MainMenu.Overview>
-                  <MainMenu.Link href="#waste">Waste and recycling</MainMenu.Link>
-                  <MainMenu.Link href="#building">Building permits</MainMenu.Link>
-                  <MainMenu.Link href="#water">Water and sewage</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
-                  <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
-                  <MainMenu.Link href="#disability">Disability support</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#preschool">Preschool</MainMenu.Link>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#living">
+                      All about living and environment
+                    </MainMenu.Overview>
+                    <MainMenu.Link href="#waste">Waste and recycling</MainMenu.Link>
+                    <MainMenu.Link href="#building">Building permits</MainMenu.Link>
+                    <MainMenu.Link href="#water">Water and sewage</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
+                    <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
+                    <MainMenu.Link href="#disability">Disability support</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('button', firstTopic))
@@ -398,48 +412,50 @@ export const RTL: Story = {
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active', ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#preschool">Preschool</MainMenu.Link>
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#living">
-                    All about living and environment
-                  </MainMenu.Overview>
-                  <MainMenu.Link href="#waste">Waste and recycling</MainMenu.Link>
-                  <MainMenu.Link href="#building">Building permits</MainMenu.Link>
-                  <MainMenu.Link href="#water">Water and sewage</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
-                  <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
-                  <MainMenu.Link href="#disability">Disability support</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#preschool">Preschool</MainMenu.Link>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#living">
+                      All about living and environment
+                    </MainMenu.Overview>
+                    <MainMenu.Link href="#waste">Waste and recycling</MainMenu.Link>
+                    <MainMenu.Link href="#building">Building permits</MainMenu.Link>
+                    <MainMenu.Link href="#water">Water and sewage</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
+                    <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
+                    <MainMenu.Link href="#disability">Disability support</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('button', firstTopic))

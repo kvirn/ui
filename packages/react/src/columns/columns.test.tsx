@@ -11,7 +11,7 @@ import { Link } from '../link/link.tsx'
 import { Columns } from './columns.tsx'
 import type { ColumnsProps } from './columns.tsx'
 import { useColumns } from './use-columns.ts'
-import type { UseColumnsOptions, ColumnsPartProps, UseColumnsResult } from './use-columns.ts'
+import type { ColumnsPartProps, UseColumnsResult } from './use-columns.ts'
 
 // Contract: columns.a11y.md.
 
@@ -28,24 +28,6 @@ afterEach(() => {
 
 const warnings = () => consoleWarn.mock.calls.map(([message]) => String(message))
 
-const choices = [
-  [{}, 'kv-columns'],
-  [{ minColumnWidth: 'md', gap: '6' }, 'kv-columns'],
-  [{ minColumnWidth: 'sm' }, 'kv-columns kv-columns--min-sm'],
-  [{ minColumnWidth: 'lg' }, 'kv-columns kv-columns--min-lg'],
-  [{ gap: '4' }, 'kv-columns kv-columns--gap-4'],
-  [{ gap: '8' }, 'kv-columns kv-columns--gap-8'],
-  [{ minColumnWidth: 'lg', gap: '4' }, 'kv-columns kv-columns--min-lg kv-columns--gap-4'],
-] as const
-
-const propChoices = [
-  [{ minColumnWidth: 'sm' }, 'kv-columns kv-columns--min-sm'],
-  [{ minColumnWidth: 'lg' }, 'kv-columns kv-columns--min-lg'],
-  [{ gap: '4' }, 'kv-columns kv-columns--gap-4'],
-  [{ gap: '8' }, 'kv-columns kv-columns--gap-8'],
-  [{ minColumnWidth: 'lg', gap: '4' }, 'kv-columns kv-columns--min-lg kv-columns--gap-4'],
-] as const
-
 describe('rendering', () => {
   test('renders one <div> with the base class and the children', async () => {
     const { container } = await render(<Columns data-testid="layout">Innehåll</Columns>)
@@ -54,11 +36,6 @@ describe('rendering', () => {
     expect(layout.element().className).toBe('kv-columns')
     await expect.element(layout).toHaveTextContent('Innehåll')
     expect(container.children).toHaveLength(1)
-  })
-
-  test.each(propChoices)('Columns %j adds only its modifier class', async (props, className) => {
-    await render(<Columns {...props} data-testid="layout" />)
-    expect(page.getByTestId('layout').element().className).toBe(className)
   })
 
   test('adds role="list" to a ul and an ol, and no role to a div', async () => {
@@ -80,7 +57,7 @@ describe('rendering', () => {
   })
 
   test('a div adds no ARIA, tabindex, inert or data attribute', async () => {
-    await render(<Columns data-testid="layout" {...propChoices[0][0]} />)
+    await render(<Columns data-testid="layout" />)
     const attributeNames = page.getByTestId('layout').element().getAttributeNames()
     expect(
       attributeNames.filter(
@@ -218,10 +195,6 @@ describe('keyboard', () => {
 })
 
 describe('useColumns', () => {
-  test.each(choices)('%j gives the class "%s"', (options, className) => {
-    expect(useColumns(options).columnsProps.className).toBe(className)
-  })
-
   test('returns the same frozen objects every time', () => {
     const first = useColumns()
     expect(useColumns()).toBe(first)
@@ -242,8 +215,7 @@ describe('useColumns', () => {
 })
 
 describe('types', () => {
-  test('the exported option, props and result types fit together', () => {
-    expectTypeOf<ColumnsProps>().toExtend<UseColumnsOptions>()
+  test('the exported props and result types fit together', () => {
     expectTypeOf<ColumnsProps>().toHaveProperty('as')
     expectTypeOf<ReturnType<typeof useColumns>>().toEqualTypeOf<UseColumnsResult>()
     expectTypeOf<UseColumnsResult['columnsProps']>().toEqualTypeOf<ColumnsPartProps>()

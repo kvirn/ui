@@ -88,7 +88,7 @@ Hooks `useField` and `useFieldset` return the props. The components (`Field`, `L
 A mask shapes what the user types into a native input. The engine is pure, in `core/src/mask/`. `TextInput` takes `mask`, and `useMask({ mask, onValueChange })` serves your own `<input>` (`mergeProps(mask.inputProps, ownProps)`). Details, presets and checks: [references/masks.md](references/masks.md).
 
 - **`mask` is a union, and a name is the common case** (Plan 0039): a kebab-case name (`digits`, `letters`, `letters-and-digits`, `personal-identity-number` with the alias `ssi`, `organisation-number`, `postal-code`, `date`, `iban`, `email`, `telephone`), `{ preset, country? }`, `{ pattern, ...PatternMaskOptions }`, a `RegExp`, or a `Mask` from `masks.*` (the explicit, typed form, and what `core` users build). `number` is not a name: NumberInput owns it. There is no `pattern` prop, because the native attribute is taken. The hook resolves it (`resolveMask` in `core`) before anything reads `mask.attributes`.
-- **The country comes from the locale** (`maskCountryFromLocale`): the instance's `{ preset, country }`, else `<KvirnProvider country>`, else the region of the locale (`sv-FI` is `FI`), else its language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn`, `no` and `se` are `NO`). No hidden default: an unresolvable country makes a country mask fall back to `digits` and warns once (`mask-country-unresolved:<name>:<locale>`). `useLocale().country` exposes it. DateInput's boxes still take no mask.
+- **The country comes from the locale** (`maskCountryFromLocale`): the instance's `{ preset, country }`, else `<KvirnProvider country>`, else the region of the locale (`sv-FI` is `FI`), else its language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn` and `no` are `NO`). No hidden default: an unresolvable country makes a country mask fall back to `digits` and warns once (`mask-country-unresolved:<name>:<locale>`). `useLocale().country` exposes it. DateInput's boxes still take no mask.
 
 - **Lenient, never silent.** Checksums and ranges are reported, never enforced. A rejected character is reported in `details.rejected` and announced politely, throttled (`mask.characterNotAllowed`, `mask.maximumLength`, or `mask.maximumDecimals` for a number past its decimals). `announceRejections={false}` turns it off. Announcing needs a `KvirnProvider`.
 - **The input stays native:** no placeholder characters in the value, no native `maxlength` or `pattern`, paste, drop, autofill and dictation are normalised, and undo keeps working because the value is written back only when the mask changed it.
@@ -119,7 +119,7 @@ A native `<input type="file">` is always present and always works. Parts, status
 - **The library does no network calls** and has no timeouts. `upload(file, { signal, onProgress })` is the consumer's.
 - **When a focused button disappears** (Remove, Cancel, Retry), focus moves to the same item, else the next item's `<li tabIndex={-1}>`, else the previous, else the Trigger. Never `body`, and never another button.
 - **Progress** is a native `<progress>` named `fileUpload.uploadingFile`, in whole percent. Unknown size is a static indeterminate bar (2.2.2). Progress is never announced.
-- **Languages.** Agents write nb and nn; `se` stays English, marked `lang="en"` (3.1.2). This holds for the `fileUpload` and `table` strings too.
+- **Languages.** Agents write nb and nn. This holds for the `fileUpload` and `table` strings too.
 
 ## Maintainer preferences
 

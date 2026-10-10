@@ -1,6 +1,7 @@
+import { en } from '@kvirn-ui/i18n/en'
 import { CookieConsent, MainMenu, PageFrame, SiteHeader } from '@kvirn-ui/patterns'
 import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
-import { Button, Field, TextInput } from '@kvirn-ui/react'
+import { Button, Field, KvirnProvider, TextInput } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/cookie-consent/cookie-consent.a11y.md?raw'
@@ -68,57 +69,60 @@ type Story = StoryObj<typeof meta>
 export const Undecided: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <CookieConsent.Root>
-        <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
-        <CookieConsent.Text>
-          We use statistics cookies to see which pages are read and to improve the website. Nothing
-          is shared with others. Kvirnby municipality sets no cookies on this example website.
-        </CookieConsent.Text>
-        <CookieConsent.Actions>
-          <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
-          <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
-        </CookieConsent.Actions>
-        <CookieConsent.Accepted>
-          You have accepted statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Accepted>
-        <CookieConsent.Rejected>
-          You have rejected statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Rejected>
-        <CookieConsent.Link href="#cookies">
-          Read more about cookies and change your choice
-        </CookieConsent.Link>
-      </CookieConsent.Root>
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <CookieConsent.Root>
+          <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
+          <CookieConsent.Text>
+            We use statistics cookies to see which pages are read and to improve the website.
+            Nothing is shared with others. Kvirnby municipality sets no cookies on this example
+            website.
+          </CookieConsent.Text>
+          <CookieConsent.Actions>
+            <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
+            <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
+          </CookieConsent.Actions>
+          <CookieConsent.Accepted>
+            You have accepted statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Accepted>
+          <CookieConsent.Rejected>
+            You have rejected statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Rejected>
+          <CookieConsent.Link href="#cookies">
+            Read more about cookies and change your choice
+          </CookieConsent.Link>
+        </CookieConsent.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('region', { name: 'Cookies on this website' })).toBeVisible()
@@ -132,57 +136,60 @@ export const Undecided: Story = {
 export const Accepted: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <CookieConsent.Root defaultDecision="accepted">
-        <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
-        <CookieConsent.Text>
-          We use statistics cookies to see which pages are read and to improve the website. Nothing
-          is shared with others. Kvirnby municipality sets no cookies on this example website.
-        </CookieConsent.Text>
-        <CookieConsent.Actions>
-          <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
-          <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
-        </CookieConsent.Actions>
-        <CookieConsent.Accepted>
-          You have accepted statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Accepted>
-        <CookieConsent.Rejected>
-          You have rejected statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Rejected>
-        <CookieConsent.Link href="#cookies">
-          Read more about cookies and change your choice
-        </CookieConsent.Link>
-      </CookieConsent.Root>
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <CookieConsent.Root defaultDecision="accepted">
+          <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
+          <CookieConsent.Text>
+            We use statistics cookies to see which pages are read and to improve the website.
+            Nothing is shared with others. Kvirnby municipality sets no cookies on this example
+            website.
+          </CookieConsent.Text>
+          <CookieConsent.Actions>
+            <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
+            <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
+          </CookieConsent.Actions>
+          <CookieConsent.Accepted>
+            You have accepted statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Accepted>
+          <CookieConsent.Rejected>
+            You have rejected statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Rejected>
+          <CookieConsent.Link href="#cookies">
+            Read more about cookies and change your choice
+          </CookieConsent.Link>
+        </CookieConsent.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getByText(/You have accepted statistics cookies/)).toBeVisible()
@@ -193,57 +200,60 @@ export const Accepted: Story = {
 export const Rejected: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <CookieConsent.Root defaultDecision="rejected">
-        <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
-        <CookieConsent.Text>
-          We use statistics cookies to see which pages are read and to improve the website. Nothing
-          is shared with others. Kvirnby municipality sets no cookies on this example website.
-        </CookieConsent.Text>
-        <CookieConsent.Actions>
-          <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
-          <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
-        </CookieConsent.Actions>
-        <CookieConsent.Accepted>
-          You have accepted statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Accepted>
-        <CookieConsent.Rejected>
-          You have rejected statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Rejected>
-        <CookieConsent.Link href="#cookies">
-          Read more about cookies and change your choice
-        </CookieConsent.Link>
-      </CookieConsent.Root>
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <CookieConsent.Root defaultDecision="rejected">
+          <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
+          <CookieConsent.Text>
+            We use statistics cookies to see which pages are read and to improve the website.
+            Nothing is shared with others. Kvirnby municipality sets no cookies on this example
+            website.
+          </CookieConsent.Text>
+          <CookieConsent.Actions>
+            <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
+            <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
+          </CookieConsent.Actions>
+          <CookieConsent.Accepted>
+            You have accepted statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Accepted>
+          <CookieConsent.Rejected>
+            You have rejected statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Rejected>
+          <CookieConsent.Link href="#cookies">
+            Read more about cookies and change your choice
+          </CookieConsent.Link>
+        </CookieConsent.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getByText(/You have rejected statistics cookies/)).toBeVisible()
@@ -254,57 +264,60 @@ export const Rejected: Story = {
 export const FocusAfterChoice: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <CookieConsent.Root>
-        <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
-        <CookieConsent.Text>
-          We use statistics cookies to see which pages are read and to improve the website. Nothing
-          is shared with others. Kvirnby municipality sets no cookies on this example website.
-        </CookieConsent.Text>
-        <CookieConsent.Actions>
-          <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
-          <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
-        </CookieConsent.Actions>
-        <CookieConsent.Accepted>
-          You have accepted statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Accepted>
-        <CookieConsent.Rejected>
-          You have rejected statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Rejected>
-        <CookieConsent.Link href="#cookies">
-          Read more about cookies and change your choice
-        </CookieConsent.Link>
-      </CookieConsent.Root>
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <CookieConsent.Root>
+          <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
+          <CookieConsent.Text>
+            We use statistics cookies to see which pages are read and to improve the website.
+            Nothing is shared with others. Kvirnby municipality sets no cookies on this example
+            website.
+          </CookieConsent.Text>
+          <CookieConsent.Actions>
+            <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
+            <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
+          </CookieConsent.Actions>
+          <CookieConsent.Accepted>
+            You have accepted statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Accepted>
+          <CookieConsent.Rejected>
+            You have rejected statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Rejected>
+          <CookieConsent.Link href="#cookies">
+            Read more about cookies and change your choice
+          </CookieConsent.Link>
+        </CookieConsent.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('button', { name: 'Reject statistics cookies' }))
@@ -316,57 +329,60 @@ export const FocusAfterChoice: Story = {
 export const Narrow: Story = {
   globals: { ...narrowGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <CookieConsent.Root>
-        <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
-        <CookieConsent.Text>
-          We use statistics cookies to see which pages are read and to improve the website. Nothing
-          is shared with others. Kvirnby municipality sets no cookies on this example website.
-        </CookieConsent.Text>
-        <CookieConsent.Actions>
-          <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
-          <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
-        </CookieConsent.Actions>
-        <CookieConsent.Accepted>
-          You have accepted statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Accepted>
-        <CookieConsent.Rejected>
-          You have rejected statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Rejected>
-        <CookieConsent.Link href="#cookies">
-          Read more about cookies and change your choice
-        </CookieConsent.Link>
-      </CookieConsent.Root>
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <CookieConsent.Root>
+          <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
+          <CookieConsent.Text>
+            We use statistics cookies to see which pages are read and to improve the website.
+            Nothing is shared with others. Kvirnby municipality sets no cookies on this example
+            website.
+          </CookieConsent.Text>
+          <CookieConsent.Actions>
+            <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
+            <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
+          </CookieConsent.Actions>
+          <CookieConsent.Accepted>
+            You have accepted statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Accepted>
+          <CookieConsent.Rejected>
+            You have rejected statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Rejected>
+          <CookieConsent.Link href="#cookies">
+            Read more about cookies and change your choice
+          </CookieConsent.Link>
+        </CookieConsent.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvasElement }) => {
     await expectNoHorizontalOverflow(canvasElement)
@@ -377,57 +393,60 @@ export const Narrow: Story = {
 export const Keyboard: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <CookieConsent.Root>
-        <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
-        <CookieConsent.Text>
-          We use statistics cookies to see which pages are read and to improve the website. Nothing
-          is shared with others. Kvirnby municipality sets no cookies on this example website.
-        </CookieConsent.Text>
-        <CookieConsent.Actions>
-          <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
-          <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
-        </CookieConsent.Actions>
-        <CookieConsent.Accepted>
-          You have accepted statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Accepted>
-        <CookieConsent.Rejected>
-          You have rejected statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Rejected>
-        <CookieConsent.Link href="#cookies">
-          Read more about cookies and change your choice
-        </CookieConsent.Link>
-      </CookieConsent.Root>
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <CookieConsent.Root>
+          <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
+          <CookieConsent.Text>
+            We use statistics cookies to see which pages are read and to improve the website.
+            Nothing is shared with others. Kvirnby municipality sets no cookies on this example
+            website.
+          </CookieConsent.Text>
+          <CookieConsent.Actions>
+            <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
+            <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
+          </CookieConsent.Actions>
+          <CookieConsent.Accepted>
+            You have accepted statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Accepted>
+          <CookieConsent.Rejected>
+            You have rejected statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Rejected>
+          <CookieConsent.Link href="#cookies">
+            Read more about cookies and change your choice
+          </CookieConsent.Link>
+        </CookieConsent.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
 }
 
@@ -435,57 +454,60 @@ export const Keyboard: Story = {
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en', ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <CookieConsent.Root>
-        <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
-        <CookieConsent.Text>
-          We use statistics cookies to see which pages are read and to improve the website. Nothing
-          is shared with others. Kvirnby municipality sets no cookies on this example website.
-        </CookieConsent.Text>
-        <CookieConsent.Actions>
-          <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
-          <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
-        </CookieConsent.Actions>
-        <CookieConsent.Accepted>
-          You have accepted statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Accepted>
-        <CookieConsent.Rejected>
-          You have rejected statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Rejected>
-        <CookieConsent.Link href="#cookies">
-          Read more about cookies and change your choice
-        </CookieConsent.Link>
-      </CookieConsent.Root>
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <CookieConsent.Root>
+          <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
+          <CookieConsent.Text>
+            We use statistics cookies to see which pages are read and to improve the website.
+            Nothing is shared with others. Kvirnby municipality sets no cookies on this example
+            website.
+          </CookieConsent.Text>
+          <CookieConsent.Actions>
+            <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
+            <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
+          </CookieConsent.Actions>
+          <CookieConsent.Accepted>
+            You have accepted statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Accepted>
+          <CookieConsent.Rejected>
+            You have rejected statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Rejected>
+          <CookieConsent.Link href="#cookies">
+            Read more about cookies and change your choice
+          </CookieConsent.Link>
+        </CookieConsent.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
 }
 
@@ -493,56 +515,59 @@ export const RTL: Story = {
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active', ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <CookieConsent.Root>
-        <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
-        <CookieConsent.Text>
-          We use statistics cookies to see which pages are read and to improve the website. Nothing
-          is shared with others. Kvirnby municipality sets no cookies on this example website.
-        </CookieConsent.Text>
-        <CookieConsent.Actions>
-          <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
-          <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
-        </CookieConsent.Actions>
-        <CookieConsent.Accepted>
-          You have accepted statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Accepted>
-        <CookieConsent.Rejected>
-          You have rejected statistics cookies. You can change your choice on the Cookies page.
-        </CookieConsent.Rejected>
-        <CookieConsent.Link href="#cookies">
-          Read more about cookies and change your choice
-        </CookieConsent.Link>
-      </CookieConsent.Root>
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-        <p>Find information and services from Kvirnby municipality.</p>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <CookieConsent.Root>
+          <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
+          <CookieConsent.Text>
+            We use statistics cookies to see which pages are read and to improve the website.
+            Nothing is shared with others. Kvirnby municipality sets no cookies on this example
+            website.
+          </CookieConsent.Text>
+          <CookieConsent.Actions>
+            <CookieConsent.Accept>Accept statistics cookies</CookieConsent.Accept>
+            <CookieConsent.Reject>Reject statistics cookies</CookieConsent.Reject>
+          </CookieConsent.Actions>
+          <CookieConsent.Accepted>
+            You have accepted statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Accepted>
+          <CookieConsent.Rejected>
+            You have rejected statistics cookies. You can change your choice on the Cookies page.
+          </CookieConsent.Rejected>
+          <CookieConsent.Link href="#cookies">
+            Read more about cookies and change your choice
+          </CookieConsent.Link>
+        </CookieConsent.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+          <p>Find information and services from Kvirnby municipality.</p>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
 }

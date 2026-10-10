@@ -6,7 +6,7 @@ export function NewsColumns() {
   const { texts, textLang } = useColumnsTexts()
   const items = [texts.news.recycling, texts.news.snow]
   return (
-    <Columns as="ul" minColumnWidth="lg" gap="8" lang={textLang}>
+    <Columns className="kv-columns--min-lg kv-columns--gap-8" as="ul" lang={textLang}>
       {items.map((item) => (
         <Card.Root key={item.title} as="li">
           <Card.Body className="kv-prose">

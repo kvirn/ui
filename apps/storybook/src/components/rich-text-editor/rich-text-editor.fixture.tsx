@@ -135,11 +135,10 @@ const editorTexts: Record<FormLocale, EditorTexts | undefined> = {
   fi: textsFi,
   nb: textsNb,
   nn: textsNn,
-  se: undefined,
   en: textsEn,
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se (3.1.2). */
+/** The fixture text in a locale. */
 export function editorTextsFor(locale: FormLocale): { text: EditorTexts; lang: 'en' | undefined } {
   const text = editorTexts[locale]
   return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }

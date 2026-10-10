@@ -459,10 +459,7 @@ export const Languages: Story = {
     await userEvent.click(trigger)
     await waitFor(() => expect(trigger).toHaveAttribute('aria-expanded', 'true'))
     const popup = within(canvas.getByRole('listbox'))
-    await expect(popup.getByRole('option', { name: 'Davvisámegiella' })).toHaveAttribute(
-      'lang',
-      'se',
-    )
+    await expect(popup.getByRole('option', { name: 'English' })).toHaveAttribute('lang', 'en')
     await expect(popup.getByRole('option', { name: 'Svenska' })).not.toHaveAttribute('lang')
     await userEvent.keyboard('{Escape}')
     const select = canvas.getByRole('combobox', { name: /webbläsarens/ })

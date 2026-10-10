@@ -59,8 +59,8 @@ export interface KvirnProviderProps {
   /**
    * The country for the masks that differ by country (`personal-identity-number`, `postal-code`,
    * `organisation-number`): `SE`, `FI` or `NO`. Default: the parent's, else the region of
-   * `locale` (`sv-FI` is `FI`), else its language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn`, `no` and
-   * `se` are `NO`). Set it where the locale doesn't say, such as `se` (Northern Sami) in Finland.
+   * `locale` (`sv-FI` is `FI`), else its language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn` and
+   * `no` are `NO`). Set it where the locale doesn't say, such as `sv` in Norway.
    */
   country?: MaskCountry | undefined
   /**
@@ -87,7 +87,7 @@ export interface KvirnProviderProps {
    * Register the registry's type for checked names.
    */
   icons?: IconRegistry | undefined
-  /** Defaults for every Icon below, such as `{ strokeWidth: 1.5 }`. Merged over the parent's. */
+  /** Defaults for every Icon below, such as `{ size: '24' }`. Merged over the parent's. */
   iconDefaults?: IconDefaults | undefined
   /**
    * Theme defaults and storage. Read by the outermost provider only, once,
@@ -155,16 +155,12 @@ export function KvirnProvider({
     [iconsProp, parentIcons],
   )
   const iconDefaultsSize = iconDefaultsProp?.size
-  const iconDefaultsStrokeWidth = iconDefaultsProp?.strokeWidth
   const iconDefaults = useMemo<IconDefaults>(
     () =>
-      iconDefaultsSize === undefined && iconDefaultsStrokeWidth === undefined
+      iconDefaultsSize === undefined
         ? parentIconDefaults
-        : Object.freeze({
-            size: iconDefaultsSize ?? parentIconDefaults.size,
-            strokeWidth: iconDefaultsStrokeWidth ?? parentIconDefaults.strokeWidth,
-          }),
-    [iconDefaultsSize, iconDefaultsStrokeWidth, parentIconDefaults],
+        : Object.freeze({ size: iconDefaultsSize }),
+    [iconDefaultsSize, parentIconDefaults],
   )
   const config = useMemo<KvirnConfig>(
     () => ({

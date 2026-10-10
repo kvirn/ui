@@ -7,8 +7,7 @@ import type { VirtualizedPlace } from '../form/virtualized.fixture.ts'
 
 // Story fixture for Components/Form/Combobox (docs/design/form-fields.md; contract:
 // combobox.a11y.md). The functions here are the examples the stories show with "Show code": each
-// is one Combobox as an adopter writes it. sv, en, fi, nb and nn are written, and se shows the
-// English text, marked lang="en" (3.1.2).
+// is one Combobox as an adopter writes it. sv, en, fi, nb and nn are written.
 //
 // KvirnUI holds no form state. The value is the chosen option's key: pass
 // `value` and `onValueChange`, or `defaultValue` and `name` for a plain form. Nothing here
@@ -181,7 +180,7 @@ const comboboxTexts: Partial<Record<FormLocale, ComboboxTexts>> = {
   },
 }
 
-/** The fixture text in a locale, with the shared form texts, or English with `lang="en"` for se. */
+/** The fixture text in a locale, with the shared form texts. */
 export function comboboxTextsFor(locale: FormLocale) {
   const { text: shared, lang } = choiceTextsFor(locale)
   return { text: comboboxTexts[locale] ?? textsEn, shared, lang }

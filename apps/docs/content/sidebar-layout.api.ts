@@ -1,7 +1,6 @@
 import type {
   SidebarLayoutRootProps,
   SidebarLayoutSidebarProps,
-  UseSidebarLayoutOptions,
   UseSidebarLayoutResult,
 } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
@@ -25,16 +24,11 @@ export const sidebarLayoutPartRows = propRows<Pick<SidebarLayoutSidebarProps, 'c
   },
 })
 
-export const sidebarLayoutRootRows = propRows<
-  Pick<SidebarLayoutRootProps, 'sidebarWidth' | 'className'>
->({
-  sidebarWidth: {
-    type: "'sm' | 'md'",
-    default: "'md'",
-    description:
-      'The width of the side column from 64rem: sm is 16rem, md 20rem. Below 64rem the parts are stacked in DOM order.',
+export const sidebarLayoutRootRows = propRows<Pick<SidebarLayoutRootProps, 'className'>>({
+  className: {
+    ...classNameRow,
+    description: `${classNameRow.description} Add kv-sidebar-layout--sidebar-sm for a 16rem side column from 64rem. The default is 20rem, and below 64rem the parts are stacked in DOM order.`,
   },
-  className: classNameRow,
 })
 
 export const sidebarLayoutRootAttributes: readonly AttributeRow[] = [
@@ -45,8 +39,8 @@ export const sidebarLayoutRootAttributes: readonly AttributeRow[] = [
   },
   {
     name: 'kv-sidebar-layout--sidebar-sm',
-    values: 'added by sidebarWidth',
-    meaning: 'The narrower side column. md, the default, adds no class.',
+    values: 'you add it',
+    meaning: 'The narrower side column, 16rem. The default is 20rem.',
   },
 ]
 
@@ -69,18 +63,11 @@ export const sidebarLayoutContentAttributes: readonly AttributeRow[] = [
 export const useSidebarLayoutHook: ApiHook = {
   name: 'useSidebarLayout',
   intro: 'Gives the classes for your own elements. They add no role, ARIA or tabindex.',
-  options: propRows<UseSidebarLayoutOptions>({
-    sidebarWidth: {
-      type: "'sm' | 'md'",
-      default: "'md'",
-      description: 'The width of the side column from 64rem.',
-    },
-  }),
   result: propRows<UseSidebarLayoutResult>({
     rootProps: {
       type: 'SidebarLayoutPartProps',
       default: '–',
-      description: 'Spread on the layout’s element: only className, with the width’s modifier.',
+      description: 'Spread on the layout’s element: only className.',
     },
     sidebarProps: {
       type: 'SidebarLayoutPartProps',

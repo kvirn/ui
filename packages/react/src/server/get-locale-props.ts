@@ -7,6 +7,6 @@ export interface LocaleProps {
 }
 
 /** The `lang` and `dir` for `<html>`, the same pair `KvirnProvider` derives for `locale` (WCAG 3.1.1). */
-export function getLocaleProps(locale: string, dir?: Direction): LocaleProps {
-  return { lang: locale, dir: dir ?? resolveDirection(locale) }
+export function getLocaleProps(locale: string): LocaleProps {
+  return { lang: locale, dir: resolveDirection(locale) }
 }

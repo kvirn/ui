@@ -183,7 +183,7 @@ export const SearchIcon: Story = {
         <Field.Label marker="none">{text.searchServices}</Field.Label>
         <InputGroup.Root>
           <InputGroup.Addon>
-            <Icon name="search" size={5} />
+            <Icon name="search" size="20" />
           </InputGroup.Addon>
           <InputGroup.Input type="search" name="search" enterKeyHint="search" autoComplete="off" />
         </InputGroup.Root>
@@ -265,7 +265,7 @@ export const CalendarIcon: Story = {
             className="kv-input--width-10 kv-input--numeric"
           />
           <InputGroup.Addon>
-            <Icon name="calendar" size={5} />
+            <Icon name="calendar" size="20" />
           </InputGroup.Addon>
         </InputGroup.Root>
         <Field.HelpText>{text.visitDateExample}</Field.HelpText>
@@ -402,7 +402,7 @@ export const Disabled: Story = {
           <Field.Label marker="none">{text.searchServices}</Field.Label>
           <InputGroup.Root>
             <InputGroup.Addon>
-              <Icon name="search" size={5} />
+              <Icon name="search" size="20" />
             </InputGroup.Addon>
             <InputGroup.Input
               type="search"
@@ -554,7 +554,7 @@ export const Compact: Story = {
           <Field.Label marker="none">{text.searchServices}</Field.Label>
           <InputGroup.Root>
             <InputGroup.Addon>
-              <Icon name="search" size={5} />
+              <Icon name="search" size="20" />
             </InputGroup.Addon>
             <InputGroup.Input
               type="search"
@@ -653,7 +653,7 @@ export const ForcedColors: Story = {
           <Field.Label marker="none">{text.searchServices}</Field.Label>
           <InputGroup.Root>
             <InputGroup.Addon>
-              <Icon name="search" size={5} />
+              <Icon name="search" size="20" />
             </InputGroup.Addon>
             <InputGroup.Input
               type="search"

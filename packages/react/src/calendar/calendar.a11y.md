@@ -32,7 +32,7 @@ Rules, tested in `calendar.test.tsx`:
 - **Two months** show side by side from 64rem (`visibleMonths={2}` is a maximum, one on the server, then the media query), one Tab stop and one focused day across both grids; one below 64rem so it never breaks 320px or 400% zoom.
 - **Limits.** `minimumDays` or `maximumDays` below 1, or a minimum above the maximum, is ignored with a development warning (`calendar-range-days-invalid`).
 - **Week numbers** are ISO 8601 and need a Monday start; another start hides them and warns once (`calendar-week-numbers-need-monday`).
-- **Month and weekday names** come from `Intl` with the Gregorian calendar and Latin digits. A browser without data for `se` writes them in fi, sv or nb by region, and the Heading and each column header get `lang` (3.1.2); the grid does not, because the day names stay in the provider's language.
+- **Month and weekday names** come from `Intl` with the Gregorian calendar and Latin digits.
 
 ## Keyboard
 
@@ -189,7 +189,6 @@ Research questions: do screen reader users read the week numbers or find them no
 
 ## Known issues
 
-- **Mixed languages under the `se` fallback.** When the browser has no `se` data, the month and weekdays are written in fi, sv or nb and marked with `lang` (the Heading and each column header). A day's name stays in the provider's language: the words for today, the week names, the consumer's `getDateDescription`, the RangeHint and the "selected" announcement are not in the fallback language, and an `aria-label` or an Announcer message can't carry `lang`.
 - **A controlled `value` that changes while mounted** moves the Tab stop and the visible month to it. A change of `minimum` or `maximum` that moves the focused day to another month keeps focus in the grid.
 - **"Today" is read once, on mount.** A Calendar open across midnight keeps yesterday as today.
 - **Without a provider `timeZone`, the first paint uses the UTC date.** Server and hydrated HTML agree; after hydration the grid switches "today" (`aria-current="date"`) to the browser's date, and the Tab stop moves with it while the grid is untouched (nothing chosen, no `defaultFocusedDate`) and no cell holds DOM focus; DOM focus never moves. A Calendar mounted after hydration starts on the browser's date and does not switch. Pass `timeZone` on `KvirnProvider` for the same day on the server and the client. A passed `today` or a provider `timeZone` is never changed.

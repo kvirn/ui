@@ -1,29 +1,6 @@
 import { parseIsoDate } from '@kvirn-ui/core'
 import type { IsoDate, YearMonth } from '@kvirn-ui/core'
 
-/**
- * Internal. The locale `Intl` writes month and weekday names in. A browser that ships no data for
- * `se` writes the date in the language most readers of the region know: `se-FI` in Finnish,
- * `se-SE` in Swedish, any other `se` in Norwegian Bokmål (design spec §5). Anything else is kept.
- */
-export function resolveIntlLocale(
-  locale: string,
-  isSupported: (locale: string) => boolean = (candidate) =>
-    Intl.DateTimeFormat.supportedLocalesOf(candidate).length > 0,
-): string {
-  let region: string | undefined
-  try {
-    const parsed = new Intl.Locale(locale)
-    if (parsed.language !== 'se' || isSupported(locale)) {
-      return locale
-    }
-    region = parsed.region
-  } catch {
-    return locale
-  }
-  return region === 'FI' ? 'fi' : region === 'SE' ? 'sv' : 'nb'
-}
-
 /** A calendar date as midnight UTC on that day, for `Intl`. `setUTCFullYear`: `Date.UTC` reads years 0 to 99 as 19xx. */
 function toUtcDate({ year, month, day }: { year: number; month: number; day: number }): Date {
   const date = new Date(0)

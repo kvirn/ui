@@ -15,7 +15,6 @@ export type DateInputRootDocumentedProps = Pick<
   | 'defaultValue'
   | 'onValueChange'
   | 'autoComplete'
-  | 'order'
   | 'required'
   | 'disabled'
   | 'readOnly'
@@ -54,12 +53,6 @@ export const dateInputRootRows = propRows<DateInputRootDocumentedProps>({
     default: '–',
     description:
       'For a date of birth only: the boxes get bday-day, bday-month and bday-year (1.3.5).',
-  },
-  order: {
-    type: 'readonly DateInputPart[]',
-    default: 'The locale’s',
-    description:
-      'The order of the boxes when the Root renders them itself. Your own children are the order you write them.',
   },
   required: {
     type: 'boolean',
@@ -170,11 +163,6 @@ export const useDateInputHook: ApiHook = {
       type: "'bday'",
       default: '–',
       description: 'For a date of birth: bday-day, bday-month and bday-year.',
-    },
-    order: {
-      type: 'readonly DateInputPart[]',
-      default: 'The locale’s',
-      description: 'Replaces the order from Intl for the provider’s locale.',
     },
     readOnly: { type: 'boolean', default: 'false', description: 'Native readOnly on the inputs.' },
     autoAdvance: {

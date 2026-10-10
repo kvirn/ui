@@ -11,7 +11,7 @@ Source: `packages/core/src/mask/` (pure, no React, no DOM), re-exported from `@k
 | `digits`, `letters`, `letters-and-digits`, `date`, `iban`, `email`, `telephone` | `masks.digits()` and so on, with no country           |
 | `personal-identity-number` (alias `ssi`), `organisation-number`, `postal-code`  | `masks.personalIdentityNumber({ country })` and so on |
 
-- **Country resolution** (`maskCountryFromLocale(locale)`, `core/src/locale/mask-country.ts`): the instance's `country`, the provider's `country`, the region of the tag (`sv-FI` is `FI`, any case, after a script subtag too), the language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn`, `no` and `se` are `NO`), else `undefined`. A region that isn't SE, FI or NO falls through to the language.
+- **Country resolution** (`maskCountryFromLocale(locale)`, `core/src/locale/mask-country.ts`): the instance's `country`, the provider's `country`, the region of the tag (`sv-FI` is `FI`, any case, after a script subtag too), the language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn` and `no` are `NO`), else `undefined`. A region that isn't SE, FI or NO falls through to the language.
 - **No country:** the mask is `digits`, `missingCountryFor` is the name, and the hook warns once. A name that needs no country never warns.
 - **Types:** `MaskName` (autocompletes), `MaskPresetOptions`, `MaskPatternOptions`, `MaskInput`, all re-exported from `@kvirn-ui/react`.
 - **NumberInput:** `mask` is `MaskInput | false`. Not set is `masks.number(...)`, `false` is a plain numeric text box (no mask details, keypad from `decimals` and `allowNegative`), anything else replaces the number mask and its `unmaskedValue`.

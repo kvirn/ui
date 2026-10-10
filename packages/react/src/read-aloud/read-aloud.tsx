@@ -15,7 +15,7 @@ import { useContext } from 'react'
 const statusTags = ['span', 'p', 'div'] as const
 
 export interface ReadAloudRootProps
-  extends UseReadAloudOptions, Omit<HTMLAttributes<HTMLElement>, 'onKeyDown'> {
+  extends UseReadAloudOptions, Omit<HTMLAttributes<HTMLElement>, 'onKeyDown' | 'lang'> {
   ref?: Ref<HTMLElement> | undefined
   children?: ReactNode
 }
@@ -44,7 +44,6 @@ function useReader(part: string): UseReadAloudResult {
 /** The group: `role="group"` named by `readAloud.label`. Put the player's parts in it. */
 export function ReadAloudRoot({
   contentRef,
-  lang,
   engine,
   allowRemoteVoices,
   highlight,
@@ -57,7 +56,6 @@ export function ReadAloudRoot({
 }: ReadAloudRootProps): ReactElement {
   const reader = useReadAloud({
     contentRef,
-    lang,
     engine,
     allowRemoteVoices,
     highlight,

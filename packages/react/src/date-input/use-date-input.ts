@@ -40,8 +40,6 @@ export interface UseDateInputOptions {
   onValueChange?: ((value: DateInputValue, details: DateInputChangeDetails) => void) | undefined
   /** `'bday'` for a date of birth: the boxes get `bday-day`, `bday-month` and `bday-year` (1.3.5). */
   autoComplete?: 'bday' | undefined
-  /** Replaces the locale's order. Default: from `Intl` for the provider's locale. */
-  order?: readonly DateInputPart[] | undefined
   /** Native `readOnly` on the three inputs. */
   readOnly?: boolean | undefined
   /**
@@ -95,7 +93,7 @@ export interface UseDateInputResult {
   /**
    * The order of the boxes for the provider's locale: `['year', 'month', 'day']` for `sv-SE`,
    * `['day', 'month', 'year']` for `sv-FI`, `fi`, `nb` and `en`. Month first becomes day first.
-   * Or the `order` option. Render the boxes in this order.
+   * Render the boxes in this order.
    */
   order: readonly DateInputPart[]
   /** The resolved labels, for example `Dag`, `Månad` and `År`. */
@@ -153,14 +151,13 @@ export function useDateInput({
   defaultValue,
   onValueChange,
   autoComplete,
-  order,
   readOnly = false,
   autoAdvance = true,
   messages,
 }: UseDateInputOptions = {}): UseDateInputResult {
   const { locale } = useLocale()
   const dateMessages = useMessages('dateInput', messages)
-  const localeOrder = useMemo(() => dateInputOrder(locale), [locale])
+  const order = useMemo(() => dateInputOrder(locale), [locale])
   const elements = useRef<Record<DateInputPart, HTMLInputElement | null>>({
     day: null,
     month: null,
@@ -279,7 +276,7 @@ export function useDateInput({
   }
 
   return {
-    order: order ?? localeOrder,
+    order,
     labels: { day: dateMessages.day, month: dateMessages.month, year: dateMessages.year },
     autoAdvanceHint: autoAdvance ? dateMessages.autoAdvanceHint : undefined,
     rootProps,

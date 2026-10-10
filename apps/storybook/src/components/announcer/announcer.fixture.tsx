@@ -3,8 +3,8 @@ import { useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Story fixture for the shared Announcer. The buttons stand in for what a component
-// does when something changes: they call `announce`. sv, fi, nb, nn and en are written. se
-// shows the English text, marked lang="en" (3.1.2). In a real component these strings
+// does when something changes: they call `announce`. sv, fi, nb, nn and en are written.
+// In a real component these strings
 // come from the catalogs; here they are fixture text, so the live region's output is readable.
 // The live regions come from the outermost KvirnProvider, which the stories' `withFormLocale`
 // decorator renders, like an app's provider would.
@@ -134,13 +134,12 @@ const texts: Record<AnnouncerFixtureLocale, AnnouncerTexts> = {
   },
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+/** The fixture text in a locale. */
 export function announcerTextsFor(locale: FormLocale): {
   text: AnnouncerTexts
   lang: 'en' | undefined
 } {
-  const known = locale !== 'se'
-  return { text: texts[known ? locale : 'en'], lang: known ? undefined : 'en' }
+  return { text: texts[locale], lang: undefined }
 }
 
 interface LastCall {

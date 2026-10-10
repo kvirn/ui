@@ -44,8 +44,6 @@ export interface DateInputRootProps extends Omit<
   onValueChange?: ((value: DateInputValue, details: DateInputChangeDetails) => void) | undefined
   /** `'bday'` for a date of birth: `bday-day`, `bday-month` and `bday-year` on the boxes (1.3.5). */
   autoComplete?: 'bday' | undefined
-  /** The order of the boxes when the Root renders them itself. Default: the locale's. */
-  order?: readonly DateInputPart[] | undefined
   /** `aria-required` on the three boxes. Default: the Fieldset's `required`. */
   required?: boolean | undefined
   /** Native `disabled` on the three boxes. Default: the Fieldset's `disabled`. */
@@ -145,7 +143,6 @@ export function DateInputRoot({
   defaultValue,
   onValueChange,
   autoComplete,
-  order,
   required,
   disabled,
   readOnly,
@@ -168,7 +165,6 @@ export function DateInputRoot({
     defaultValue,
     onValueChange,
     autoComplete,
-    order,
     readOnly,
     autoAdvance,
     messages,

@@ -12,7 +12,7 @@ apps/docs  apps/storybook
 packages/core      state machines. NO React, NO DOM at import time
 packages/react     useX hooks + X.Root/X.Trigger components
 packages/rich-text the rich text editor on Tiptap (peers). The only package that imports @tiptap/*
-packages/i18n      sv fi nb nn se en
+packages/i18n      sv fi nb nn en
 packages/theme     theme.css: --kv-* palette + tokens, default styles (opt-in)
 packages/testing   a11y test helpers
 packages/patterns  site patterns and content types on react + theme classes, zero CSS, private until reviewed
@@ -31,7 +31,6 @@ vp test run [files]         # Vitest: core (node), components (Chromium browser 
 vp run test                 # the whole tree: the same projects, the four Storybook ones in series
 vp run i18n:check           # all locales complete
 vp run theme:check          # token contrast
-pnpm changeset
 ```
 
 While working, pass your files. The whole tree runs once, at the end.
@@ -43,7 +42,7 @@ While working, pass your files. The whole tree runs once, at the end.
 3. **Execute.** Brief `component-engineer` (format in `CLAUDE.md`): contract, failing tests, then code, inside the plan's scope.
 4. **Verify.** The orchestrator runs the gates once, scoped to the change, and shows the commands and output.
 5. **Review.** `accessibility-reviewer` on the diff, once, at the end.
-6. **Record.** Each changed fact goes to the skill or doc that owns it, the plan is ticked, `docs/roadmap.md` updated, a changeset added.
+6. **Record.** Each changed fact goes to the skill or doc that owns it, the plan is ticked, `docs/roadmap.md` updated.
 
 | Work                                          | Skills                                                                                                                     | Agents                                                    |
 | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
@@ -75,16 +74,17 @@ Forced colours, reduced motion and 320px reflow are not gated per change; a Vite
 1. **Never weaken a gate.** No `.skip` or `.only`, disabled axe rules, loosened thresholds, unread snapshot updates or `@ts-expect-error` over real errors. A wrong gate changes only with the maintainer's approval, and the skill or doc that describes it changes in the same PR.
 2. **Native semantics first, then the APG pattern and the [APG keyboard practice](https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/)** (`keyboard` skill). Every key is in the contract and on the Docs page. A deviation needs the maintainer's approval and the `keyboard` skill updated in the same PR.
 3. **`core` stays pure:** no React, and no `window` or `document` at module scope.
-4. **No hard-coded visible or announced strings.** Every string exists in all 6 locales and can be overridden per provider and per instance (`api-conventions` skill).
+4. **No hard-coded visible or announced strings.** Every string exists in all 5 locales and can be overridden per provider and per instance (`api-conventions` skill).
 5. **Headless packages ship zero CSS.** State is exposed as `data-*`.
 6. **No runtime dependencies beyond the sanctioned ones** (`docs/architecture.md`): React as a peer; in `core` only `@tanstack/store`, `@tanstack/virtual-core` and `@tanstack/table-core`, each in its own directory; Tiptap as peers of `@kvirn-ui/rich-text` only; `@guidepup/virtual-screen-reader` as an optional peer of `@kvirn-ui/testing` (its `/read-aloud` sub-entry) only. Any new dependency, runtime or dev, needs the maintainer's approval. A runtime one also updates `docs/architecture.md` and the `regulations` skill. A dev one is pinned exactly in the pnpm catalog and recorded in the PR with its licence, network and install-script check.
 7. **No telemetry and no third-party network calls,** the docs site included.
 8. **Never claim legal compliance.** Say "designed and tested to meet WCAG 2.2 AA".
-9. **Public API changes** need a changeset and a docs update.
+9. **Public API changes** need a docs update. Changesets are off until alpha.
 10. **Stay in scope.** No drive-by refactors. If the plan is wrong, update the plan first.
 11. **The tree has one owner.** One worktree and branch per feature, created by the maintainer (`git worktree add ../kvirn-<feature> -b <feature>`). Agents never create branches or worktrees, and never `git stash`, `checkout --`, `reset` or `clean` over changes they didn't make.
 12. **Checks are scoped.** Subagents run only `vp check <files>` and `vp test run <file>` on their own files, one command at a time. Path-less runs, sweeps, builds, `vp check --fix` and a path-less `vp fmt` are the orchestrator's, once, after every subagent has reported done. No hook enforces this.
 13. **Test behaviour, accessibility and requirements, never CSS.** Every test proves a contract row, a WCAG success criterion or a plan requirement, once, in the cheapest layer. No computed styles, layout or `theme.css` text. A visual WCAG criterion asserts its threshold, not the theme's value (`testing` skill).
+14. **Variation is a class; language is the provider's.** A component takes no presentation prop except `variant`, `size` and `orientation`, and each only picks a `kv-<part>--<option>` class (the default adds none). Gap, spacing, marker, layout, columns, width and colour are classes the consumer adds, never props, never inline `style`. `data-*` is state, never a choice. No component, hook or `core` helper that renders takes `lang` or `dir`: they come from `KvirnProvider`. `itemToLang`-style marking of content in another language (WCAG 3.1.2) is the one exception.
 
 ## Conventions
 

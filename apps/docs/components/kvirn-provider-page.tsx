@@ -55,7 +55,7 @@ const providerRows = propRows<KvirnProviderProps>({
   iconDefaults: {
     type: 'IconDefaults',
     default: "The parent's",
-    description: 'Default size and strokeWidth for every Icon below. Merged by field.',
+    description: 'Default size for every Icon below. Merged by field.',
   },
   theme: {
     type: 'ThemeOptions',
@@ -435,14 +435,13 @@ export function KvirnProviderPage() {
                 </li>
                 <li>
                   The language: <code>sv</code> is <code>SE</code>, <code>fi</code> is{' '}
-                  <code>FI</code>, and <code>nb</code>, <code>nn</code>, <code>no</code> and{' '}
-                  <code>se</code> are <code>NO</code>.
+                  <code>FI</code>, and <code>nb</code>, <code>nn</code> and <code>no</code> are{' '}
+                  <code>NO</code>.
                 </li>
               </ol>
               <p>
                 For <code>en</code> it is undefined, and a country mask then only takes digits and
-                warns once in development. Set it where the locale doesn&apos;t say, such as{' '}
-                <code>se</code> in Finland.
+                warns once in development. Set it where the locale doesn&apos;t say.
               </p>
               <Sub {...timeZoneAndWeekStart} />
               <Sub id="time-zone" label="Time zone" level={4} />
@@ -501,10 +500,9 @@ export function KvirnProviderPage() {
               </p>
               <Sub {...icons} />
               <p>
-                Pass a registry made by <code>defineIcons</code> as <code>icons</code>, and set a
-                default size and <code>strokeWidth</code> with <code>iconDefaults</code>. A nested
-                provider merges the registry by name and the defaults by field. See{' '}
-                <Link href="/components/icon">Icon</Link>.
+                Pass a registry made by <code>defineIcons</code> as <code>icons</code>, and set a a
+                default size with <code>iconDefaults</code>. A nested provider merges the registry
+                by name and the default by field. See <Link href="/components/icon">Icon</Link>.
               </p>
               <Sub {...typedRegistration} />
               <p>

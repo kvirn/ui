@@ -71,11 +71,6 @@ const meta = {
       description:
         '`"bday"` gives the boxes `bday-day`, `bday-month` and `bday-year` (1.3.5). For a date of birth only.',
     },
-    order: {
-      control: 'object',
-      description:
-        'The order of the boxes when the Root renders them itself, for example `["month", "day", "year"]`. Default: the locale’s, from `Intl`.',
-    },
     required: {
       control: 'boolean',
       description:

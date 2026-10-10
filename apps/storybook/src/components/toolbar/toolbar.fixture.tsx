@@ -94,25 +94,6 @@ export function TextToolbar(props: ToolbarRootProps) {
   )
 }
 
-/** `layout="spaced"` on a group opts out of the joined strip: the buttons keep a gap, as in a plain ButtonGroup. */
-export function SpacedGroupsToolbar() {
-  return (
-    <Toolbar.Root aria-label="Formatering">
-      <Toolbar.Group aria-label="Historik" layout="spaced">
-        <Toolbar.Button>Ångra</Toolbar.Button>
-        <Toolbar.Button>Gör om</Toolbar.Button>
-      </Toolbar.Group>
-      <Toolbar.Group aria-label="Textstil" layout="spaced">
-        <Toolbar.Toggle defaultPressed>Fet</Toolbar.Toggle>
-        <Toolbar.Toggle>Kursiv</Toolbar.Toggle>
-      </Toolbar.Group>
-      <Toolbar.Group aria-label="Infoga" layout="spaced">
-        <Toolbar.Button>Länk</Toolbar.Button>
-      </Toolbar.Group>
-    </Toolbar.Root>
-  )
-}
-
 /**
  * Controls that open something go in with `Toolbar.Item` and `as`: a Listbox trigger and a
  * Popover trigger, here next to groups, a disabled button and a button of your own before and after.

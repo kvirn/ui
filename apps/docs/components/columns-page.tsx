@@ -52,8 +52,8 @@ export function ColumnsPage({
             items or quick links on a start page.
           </li>
           <li>
-            Choose the narrowest a column may get and the gap. The columns wrap by themselves, so
-            the same markup works from a phone to a wide screen and at 400% zoom.
+            Add a class for the narrowest a column may get and for the gap. The columns wrap by
+            themselves, so the same markup works from a phone to a wide screen and at 400% zoom.
           </li>
           <li>
             A grid of cards or links is a list: render Columns as a <code>&lt;ul&gt;</code> with one{' '}
@@ -97,8 +97,7 @@ export function ColumnsPage({
             why="Links with a few words fit in a narrow column, so more of them sit side by side. Choose a narrower minimum and a smaller gap."
             code={sources['quick-links']}
             propsUsed={[
-              { part: 'Columns', prop: 'minColumnWidth' },
-              { part: 'Columns', prop: 'gap' },
+              { part: 'Columns', prop: 'className' },
               { part: 'Columns', prop: 'as' },
             ]}
           >
@@ -110,8 +109,7 @@ export function ColumnsPage({
             why="Items with a heading and a few lines of text read better in wider columns, so fewer fit in a row. Choose a wider minimum and more space between them."
             code={sources['news']}
             propsUsed={[
-              { part: 'Columns', prop: 'minColumnWidth' },
-              { part: 'Columns', prop: 'gap' },
+              { part: 'Columns', prop: 'className' },
               { part: 'Columns', prop: 'as' },
             ]}
             note={

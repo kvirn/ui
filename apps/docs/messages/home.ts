@@ -68,7 +68,7 @@ export const homeMessages = {
     titleFirst: 'Public services are the websites',
     titleSecond: 'nobody chooses.',
     big: "You can't take your pension application to a competitor. So it has to work for everyone who turns up, on whatever they turn up with, on the day it matters to them.",
-    ours: 'Most libraries make that your problem. We made it ours. The invisible parts, the keyboard, the focus, the words a screen reader needs, the plain structure a tired mind needs, the contrast, the target sizes, the six languages, are built in, written down and tested, so your team can spend its time on the service itself.',
+    ours: 'Most libraries make that your problem. We made it ours. The invisible parts, the keyboard, the focus, the words a screen reader needs, the plain structure a tired mind needs, the contrast, the target sizes, the five languages, are built in, written down and tested, so your team can spend its time on the service itself.',
     honest:
       "We are small, and early. The API will change. We haven't yet put the components in front of people who use assistive technology every day, and until we have, every page here says so. That honesty is the product too.",
     links: { evidence: 'How we prove it', start: 'How to get started', contact: 'Talk to us' },

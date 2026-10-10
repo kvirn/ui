@@ -4,17 +4,7 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
 export type IconDocumentedProps = Pick<
   IconProps,
-  | 'name'
-  | 'icon'
-  | 'as'
-  | 'children'
-  | 'size'
-  | 'strokeWidth'
-  | 'color'
-  | 'fill'
-  | 'stroke'
-  | 'label'
-  | 'mirrorInRtl'
+  'name' | 'icon' | 'as' | 'children' | 'size' | 'label' | 'mirrorInRtl'
 >
 
 export const iconRows = propRows<IconDocumentedProps>({
@@ -43,32 +33,9 @@ export const iconRows = propRows<IconDocumentedProps>({
   },
   size: {
     type: 'IconSize',
-    default: '5',
+    default: '20',
     description:
-      'A step of the size scale, or a CSS length such as "2rem". A step is times 0.25em, so it follows the text: 4 is 1em, 5 is 1.25em, 6 is 1.5em. A bare number is never pixels. The default comes from KvirnProvider iconDefaults.',
-  },
-  strokeWidth: {
-    type: 'number | string',
-    default: '–',
-    description:
-      'The stroke width. Unset keeps each icon’s own (the built-in set draws 1.5). The default comes from KvirnProvider iconDefaults.',
-  },
-  color: {
-    type: 'string',
-    default: '–',
-    description:
-      'Sets currentColor for the icon, so it works with every library. Unset follows the text colour around it. A custom property works: color="var(--kv-color-danger)".',
-  },
-  fill: {
-    type: 'string',
-    default: '–',
-    description: 'The root <svg>’s fill. Shapes that set their own fill keep it.',
-  },
-  stroke: {
-    type: 'string',
-    default: '–',
-    description:
-      'The root <svg>’s stroke. With Tabler icons, stroke is the width: use color instead.',
+      'The size in pixels, as a string: "16", "20", "24", "32" to "96". The theme turns it into rem with the class kv-icon--size-<px>, so it follows the root font size, not the text. Another size is a class you add. The default comes from KvirnProvider iconDefaults.',
   },
   label: {
     type: 'string',
@@ -87,9 +54,9 @@ export const iconRows = propRows<IconDocumentedProps>({
 export const iconAttributes: readonly AttributeRow[] = [
   { name: 'kv-icon', values: 'always', meaning: 'The part class. The default theme styles it.' },
   {
-    name: 'data-size',
-    values: 'a step, such as "5"',
-    meaning: 'The size step, when size is a number.',
+    name: 'kv-icon--size-<px>',
+    values: 'such as "kv-icon--size-20"',
+    meaning: 'The size, in rem in the theme. Always present.',
   },
   {
     name: 'data-mirror-in-rtl',
@@ -116,15 +83,7 @@ export const useIconHook: ApiHook = {
       default: '–',
       description: 'A built-in or registered icon, to get its component.',
     },
-    size: { type: 'IconSize', default: '5', description: 'A step of the size scale, or a length.' },
-    strokeWidth: {
-      type: 'number | string',
-      default: '–',
-      description: 'The stroke width. Unset keeps each icon’s own.',
-    },
-    color: { type: 'string', default: '–', description: 'Sets currentColor for the icon.' },
-    fill: { type: 'string', default: '–', description: 'The root <svg>’s fill.' },
-    stroke: { type: 'string', default: '–', description: 'The root <svg>’s stroke.' },
+    size: { type: 'IconSize', default: '20', description: 'The size in pixels, as a string.' },
     label: {
       type: 'string',
       default: '–',

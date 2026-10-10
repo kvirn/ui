@@ -68,7 +68,7 @@ The provider has no strings of its own. It resolves every component's keys. Plan
 
 ## Consumer responsibilities
 
-- Set `<html lang dir>` to the root provider's locale and direction (3.1.1), with `getLocaleProps(locale, dir?)` from `@kvirn-ui/react/server`. The provider can't: it renders no element of its own to carry them, and a server layout can't spread `localeProps` on `<html>`.
+- Set `<html lang dir>` to the root provider's locale and direction (3.1.1), with `getLocaleProps(locale)` from `@kvirn-ui/react/server`. The provider can't: it renders no element of its own to carry them, and a server layout can't spread `localeProps` on `<html>`.
 - Spread `useLocale().localeProps` on the element that starts a section in another language, so `lang` matches the strings (3.1.2). Nested providers inherit everything they don't set.
 - Pass a catalog (`messages={sv}`) for a non-English locale. Otherwise English strings render under a non-English `lang`, with a dev warning per key.
 - A nested provider that changes the language must pass that language's catalog too (`<KvirnProvider locale="fi-FI" messages={fi}>`). Otherwise its strings stay in the parent's language while `lang` says otherwise. A dev warning names both locales.
@@ -114,6 +114,5 @@ The provider has no strings of its own. It resolves every component's keys. Plan
 
 ## Known issues
 
-- **`se` (Northern Sámi) shows English** for `link.newTabNotice`. Sámi users get English for this string under `lang="se"`.
 - **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
 - **`TODO(legal-verify)`:** storing an explicitly chosen theme preference in `localStorage` is assumed to fall under the ePrivacy Art. 5(3) "strictly necessary" exemption. Not yet verified.

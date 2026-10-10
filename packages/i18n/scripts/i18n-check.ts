@@ -5,10 +5,9 @@ import { en } from '../src/locales/en.ts'
 import { fi } from '../src/locales/fi.ts'
 import { nb } from '../src/locales/nb.ts'
 import { nn } from '../src/locales/nn.ts'
-import { se } from '../src/locales/se.ts'
 import { sv } from '../src/locales/sv.ts'
 
-const catalogs = { sv, fi, nb, nn, se }
+const catalogs = { sv, fi, nb, nn }
 const emptyEnglishKeys = [...describeCatalog(en)]
   .filter(([, kind]) => kind === 'empty string')
   .map(([path]) => `en: "${path}" is empty`)
@@ -25,4 +24,6 @@ if (problems.length > 0) {
   )
   process.exit(1)
 }
-console.log(`i18n:check passed: ${describeCatalog(en).size} key(s) in 6 locales.`)
+console.log(
+  `i18n:check passed: ${describeCatalog(en).size} key(s) in ${Object.keys(catalogs).length + 1} locales.`,
+)

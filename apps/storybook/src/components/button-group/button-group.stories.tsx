@@ -15,7 +15,7 @@ const meta = {
   title: 'Components/Actions/ButtonGroup',
   component: ButtonGroup,
   // Every option at its default, so the main example starts where an adopter starts.
-  args: { 'aria-label': 'Ärendet', layout: 'spaced' },
+  args: { 'aria-label': 'Ärendet' },
   // Every prop in button-group.tsx. Any other `<div>` prop passes through.
   argTypes: {
     'aria-label': {
@@ -28,16 +28,10 @@ const meta = {
       description:
         'The id of visible text that names the group, such as a heading. Use it instead of `aria-label`.',
     },
-    layout: {
-      control: 'inline-radio',
-      options: ['spaced', 'attached'],
-      description:
-        '`spaced` (default): a row with a gap. `attached`: one joined strip, where the buttons touch, share borders and only the outer corners are round. It changes the look only: no role, key or ARIA.',
-    },
     className: {
       control: false,
       description:
-        'Your own classes, added to `kv-button-group`. The theme styles the group as a row that wraps, and stacks it at full width below 40rem.',
+        'Your own classes, added to `kv-button-group`. The theme styles the group as a row that wraps, and stacks it at full width below 40rem. `kv-button-group--attached` joins the buttons into one strip, where they touch, share borders and only the outer corners are round. It changes the look only: no role, key or ARIA.',
     },
     children: { control: false, description: 'The buttons, in the order they are used.' },
     ref: { control: false, description: 'A ref to the `<div>`.' },
@@ -126,11 +120,11 @@ export const RTL: Story = {
 }
 
 /**
- * `layout="attached"`: the buttons are one strip, like a segmented control. A pressed toggle is
- * the filled segment. Only the layout changes: the role, the name and the Tab stops are the same.
+ * `kv-button-group--attached`: the buttons are one strip, like a segmented control. A pressed toggle is
+ * the filled segment. Only the look changes: the role, the name and the Tab stops are the same.
  */
 export const Attached: Story = {
-  args: { 'aria-label': 'Textstil', layout: 'attached' },
+  args: { 'aria-label': 'Textstil', className: 'kv-button-group--attached' },
   render: (args) => (
     <ButtonGroup {...args}>
       <Toggle defaultPressed>Fet</Toggle>
@@ -151,7 +145,7 @@ export const Attached: Story = {
 /** Attached, right to left, in English: the rounded outer corners and the overlap flip with the direction. */
 export const AttachedRTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
-  args: { 'aria-label': 'Text style', layout: 'attached' },
+  args: { 'aria-label': 'Text style', className: 'kv-button-group--attached' },
   render: (args) => (
     <ButtonGroup {...args}>
       <Toggle defaultPressed>Bold</Toggle>
@@ -164,7 +158,7 @@ export const AttachedRTL: Story = {
 /** Attached in forced colours: every button keeps its `ButtonText` edge, and the pressed one is a `Highlight` fill. */
 export const AttachedForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  args: { 'aria-label': 'Textstil', layout: 'attached' },
+  args: { 'aria-label': 'Textstil', className: 'kv-button-group--attached' },
   render: (args) => (
     <ButtonGroup {...args}>
       <Toggle defaultPressed>Fet</Toggle>
@@ -176,7 +170,7 @@ export const AttachedForcedColors: Story = {
 
 /** Two pressed toggles in a row keep a divider between them, so they read as two segments. */
 export const AttachedTwoPressed: Story = {
-  args: { 'aria-label': 'Textstil', layout: 'attached' },
+  args: { 'aria-label': 'Textstil', className: 'kv-button-group--attached' },
   render: (args) => (
     <ButtonGroup {...args}>
       <Toggle defaultPressed>Fet</Toggle>
@@ -198,7 +192,7 @@ export const AttachedTwoPressed: Story = {
 
 /** A keyboard-focused button next to a pressed one: its ring sits on a page-colour halo, not on the pressed fill. */
 export const AttachedFocusNextToPressed: Story = {
-  args: { 'aria-label': 'Textstil', layout: 'attached' },
+  args: { 'aria-label': 'Textstil', className: 'kv-button-group--attached' },
   render: (args) => (
     <ButtonGroup {...args}>
       <Toggle defaultPressed>Fet</Toggle>

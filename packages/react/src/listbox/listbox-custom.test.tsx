@@ -1346,7 +1346,7 @@ describe('server rendering', () => {
   })
 })
 
-const languageNames: Record<string, string> = { sv: 'Svenska', fi: 'Suomi', se: 'Davvisámegiella' }
+const languageNames: Record<string, string> = { sv: 'Svenska', fi: 'Suomi', nn: 'Nynorsk' }
 const languageCodes = Object.keys(languageNames)
 
 function LanguageExample(rootProps: Partial<UseListboxSingleOptions<string>>) {
@@ -1407,7 +1407,7 @@ describe('itemToLang (3.1.2)', () => {
     await render(<LanguageExample />)
     await openLanguages()
     expect(asHtmlElement(option('Suomi').element()).lang).toBe('fi')
-    expect(asHtmlElement(option('Davvisámegiella').element()).getAttribute('lang')).toBe('se')
+    expect(asHtmlElement(option('Nynorsk').element()).getAttribute('lang')).toBe('nn')
     expect(asHtmlElement(option('Svenska').element()).hasAttribute('lang')).toBe(false)
   })
 
@@ -1419,12 +1419,12 @@ describe('itemToLang (3.1.2)', () => {
   })
 
   test('with several chosen, each label has its own lang and the text stays joined with a comma', async () => {
-    await render(<MultipleLanguageExample defaultValue={['sv', 'fi', 'se']} />)
+    await render(<MultipleLanguageExample defaultValue={['sv', 'fi', 'nn']} />)
     const value = languageTrigger().querySelector('.kv-listbox-value')
-    expect(value?.textContent).toBe('Svenska, Suomi, Davvisámegiella')
+    expect(value?.textContent).toBe('Svenska, Suomi, Nynorsk')
     expect(
       [...(value?.querySelectorAll('span') ?? [])].map((span) => span.getAttribute('lang')),
-    ).toEqual([null, 'fi', 'se'])
+    ).toEqual([null, 'fi', 'nn'])
   })
 
   test('the placeholder has no lang', async () => {
@@ -1479,7 +1479,7 @@ describe('itemToLang (3.1.2)', () => {
     )
     const select = asSelectElement(page.getByRole('combobox', { name: /Språk/ }).element())
     const langs = [...select.options].map((optionElement) => optionElement.getAttribute('lang'))
-    expect(langs).toEqual([null, null, 'fi', 'se'])
+    expect(langs).toEqual([null, null, 'fi', 'nn'])
     expect(select.hasAttribute('lang')).toBe(false)
     await expectNoA11yViolations(container)
   })

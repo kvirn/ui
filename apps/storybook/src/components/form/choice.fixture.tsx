@@ -3,8 +3,7 @@ import type { FormLocale } from './form.fixture.tsx'
 
 // Story fixture for Components/Form/Checkbox, CheckboxGroup, RadioGroup and Listbox
 // (native rendering) (docs/design/form-fields.md §4.2, §4.3, §7.1). sv, en, fi, nb and nn are
-// written. The fi strings are designer drafts, for length checks only. se: English, marked
-// lang="en" (3.1.2). The library's own strings ("(optional)", "Error:") follow the locale
+// written. The fi strings are designer drafts, for length checks only. The library's own strings ("(optional)", "Error:") follow the locale
 // through `withFormLocale`.
 //
 // KvirnUI holds no form state. Nothing here validates: an "invalid" story
@@ -273,17 +272,15 @@ const textsNn: ChoiceTexts = {
   surface: 'I eit kort',
 }
 
-/** se has no texts: it shows the English ones, marked lang="en". */
 const choiceTexts: Record<FormLocale, ChoiceTexts | undefined> = {
   sv: textsSv,
   fi: textsFi,
   nb: textsNb,
   nn: textsNn,
-  se: undefined,
   en: textsEn,
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+/** The fixture text in a locale. */
 export function choiceTextsFor(locale: FormLocale): { text: ChoiceTexts; lang: 'en' | undefined } {
   const text = choiceTexts[locale]
   return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }

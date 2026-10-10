@@ -1,5 +1,5 @@
 /** The locales KvirnUI ships. All are first-class; `en` is the fallback. */
-export const localeCodes = ['sv', 'fi', 'nb', 'nn', 'se', 'en'] as const
+export const localeCodes = ['sv', 'fi', 'nb', 'nn', 'en'] as const
 export type LocaleCode = (typeof localeCodes)[number]
 
 /** Plural forms keyed by `Intl.PluralRules` category. `other` is always required. */

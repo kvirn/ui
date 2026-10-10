@@ -73,5 +73,5 @@ All 55 Level A and AA success criteria (31 A, 24 AA; 4.1.1 is obsolete and exclu
 
 - [ ] forced-colors mode works
 - [ ] Reduced motion is respected
-- [ ] No hard-coded strings, and all 6 locales are present
+- [ ] No hard-coded strings, and all 5 locales are present
 - [ ] RTL arrow keys flip

@@ -12,7 +12,7 @@ Stack is its children one below the other with a `space` step between them. It a
 
 | Part  | Element / role      | ARIA                                                                   | Notes                                                                                                                                                                                                       |
 | ----- | ------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Stack | `<div>` → `generic` | `role="list"` on `ul`/`ol` only                                        | `class="kv-stack"`, with `kv-stack--gap-2`, `-4` or `-8` for `gap` (the default `6` adds none). `as="ul"` or `"ol"` with `<li>` children is a list                                                          |
+| Stack | `<div>` → `generic` | `role="list"` on `ul`/`ol` only                                        | `class="kv-stack"`, plus `kv-stack--gap-2`, `-4` or `-8` for another gap, added by the consumer (the default adds none). `as="ul"` or `"ol"` with `<li>` children is a list                                 |
 | Stack | `as`                | the chosen element's own                                               | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Stack:<tag>`) and renders the default element. `className` joins, `style` and refs pass |
 | Stack | attributes          | passed through                                                         | `aria-*`, `id`, `lang` and every other attribute reach the element unchanged                                                                                                                                |
 | Stack | never               | `role="list"` on `ul`/`ol` only; no `tabindex`, `inert`, `aria-hidden` | No handler, no heading, no live region, no text                                                                                                                                                             |
@@ -56,7 +56,7 @@ Stack renders no text, so it has no message keys.
 
 ## Consumer responsibilities
 
-- **Gap.** `'2'`, `'4'`, `'6'` (default) and `'8'` are `space` steps. Group related blocks with a smaller gap and separate sections with a larger one.
+- **Gap.** `kv-stack--gap-2`, `-4` and `-8` are `space` steps, and the default is `6`. Group related blocks with a smaller gap and separate sections with a larger one.
 - **Landmarks.** Stack has none to give: a landmark is a `Container` (`main`, `section`) or a `Section` (`nav`, `aside`), always named. A page has one `main`.
 - **A list is `as="ul"` or `"ol"`.** Stack sets `role="list"` itself, because WebKit and VoiceOver drop the list role without markers. Don't write it.
 - **DOM order is the visual order.** Write children in the order they are read and focused (1.3.2, 2.4.3). There is no way to reorder them visually.
@@ -69,7 +69,7 @@ Headless: Stack ships no CSS. With `@kvirn-ui/theme/theme.css` (DESIGN.md, Layou
 - Focus indicator, target size, contrast: not applicable. Stack has no colour, no edge and no control of its own.
 - forced-colors behaviour: not applicable, nothing is drawn.
 - reduced-motion behaviour: no motion.
-- Reflow and text spacing: a flex column with a `gap`: children keep their natural width and wrap their own text (1.4.10). No fixed heights (1.4.12). The 320px story with a long Finnish word proves it with axe; the sweep is Plan 0051's.
+- Reflow and text spacing: a flex column with a gap: children keep their natural width and wrap their own text (1.4.10). No fixed heights (1.4.12). The 320px story with a long Finnish word proves it with axe; the sweep is Plan 0051's.
 
 ## WCAG SCs covered
 

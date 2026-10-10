@@ -37,13 +37,12 @@ import {
 // KvirnUI holds no form state. The Field's `invalid` and message stay with the
 // consumer, who decides whether a refused file blocks the form.
 
-/** The trigger's own text per locale (se shows the English catalog). */
+/** The trigger's own text per locale. */
 const chooseFiles: Record<FormLocale, string> = {
   sv: 'Välj filer',
   fi: 'Valitse tiedostot',
   nb: 'Velg filer',
   nn: 'Vel filer',
-  se: 'Choose files',
   en: 'Choose files',
 }
 

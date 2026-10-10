@@ -9,7 +9,7 @@ Put it directly after the page heading, as its own element. Never inside the `h1
 ```tsx
 import { Heading, Stack, Stepper } from '@kvirn-ui/react'
 
-;<Stack gap="2">
+;<Stack className="kv-stack--gap-2">
   <Heading as="h1">Vilket fordon gäller ansökan?</Heading>
   <Stepper current={2} total={5} name="Fordonet" />
 </Stack>

@@ -16,7 +16,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Story fixture for Components/Form/DateInput (docs/design/form-fields.md §4.3, §6.6).
 // sv, en, fi, nb and nn are written. The fi strings are the designer's drafts, for length checks
-// only. se: English, marked lang="en" (3.1.2). The library's own strings ("Dag", "Månad", "År",
+// only. The library's own strings ("Dag", "Månad", "År",
 // "(valfritt)", "Fel:") follow the locale through the provider decorator in form.fixture.tsx.
 //
 // KvirnUI holds no form state and never validates the date. Nothing here does: an "invalid"
@@ -130,17 +130,15 @@ const textsNn: DateTexts = {
   stored: 'Vert lagra som',
 }
 
-/** se has no texts: it shows the English ones, marked lang="en". */
 const dateTexts: Record<FormLocale, DateTexts | undefined> = {
   sv: textsSv,
   fi: textsFi,
   nb: textsNb,
   nn: textsNn,
-  se: undefined,
   en: textsEn,
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+/** The fixture text in a locale. */
 export function dateTextsFor(locale: FormLocale): { text: DateTexts; lang: 'en' | undefined } {
   const text = dateTexts[locale]
   return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }
@@ -172,7 +170,7 @@ export interface BirthDateProps extends Omit<DateInputRootProps, 'children'> {
 export function BirthDate({ locale, error, ...dateProps }: BirthDateProps) {
   const { text, lang } = dateTextsFor(locale)
   // The example is written in the order the boxes are in.
-  const { order } = useDateInput({ order: dateProps.order })
+  const { order } = useDateInput()
   return (
     <Fieldset.Root group required invalid={error !== undefined} lang={lang}>
       <Fieldset.Legend>{text.legend}</Fieldset.Legend>

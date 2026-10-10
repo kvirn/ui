@@ -10,7 +10,7 @@ export function GroupError() {
   const [isIncomplete, setIsIncomplete] = useState(false)
 
   return (
-    <Stack gap="8" lang={textLang}>
+    <Stack className="kv-stack--gap-8" lang={textLang}>
       {isIncomplete ? (
         <ErrorSummary.Root focusKey={submitCount}>
           <ErrorSummary.Title />
@@ -22,7 +22,8 @@ export function GroupError() {
         </ErrorSummary.Root>
       ) : null}
       <Stack
-        gap="8"
+        className="kv-stack--gap-8"
+
         as="form"
         noValidate
         onSubmit={(event) => {

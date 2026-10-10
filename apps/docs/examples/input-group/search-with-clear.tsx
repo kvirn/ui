@@ -12,7 +12,7 @@ export function SearchWithClear() {
       <Field.Label marker="none">{texts.searchLabel}</Field.Label>
       <InputGroup.Root>
         <InputGroup.Addon>
-          <Icon name="search" size={5} />
+          <Icon name="search" size="20" />
         </InputGroup.Addon>
         <InputGroup.Input
           ref={inputRef}

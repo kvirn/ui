@@ -30,7 +30,7 @@ export function SearchBoxWithClear({
       <Field.Label marker="none">{text.searchServices}</Field.Label>
       <InputGroup.Root>
         <InputGroup.Addon>
-          <Icon name="search" size={5} />
+          <Icon name="search" size="20" />
         </InputGroup.Addon>
         <InputGroup.Input
           ref={inputRef}
@@ -76,7 +76,7 @@ export function SearchBoxWithIconOnlyClear({
       <Field.Label marker="none">{text.searchServices}</Field.Label>
       <InputGroup.Root>
         <InputGroup.Addon>
-          <Icon name="search" size={5} />
+          <Icon name="search" size="20" />
         </InputGroup.Addon>
         <InputGroup.Input
           ref={inputRef}
@@ -96,7 +96,7 @@ export function SearchBoxWithIconOnlyClear({
               inputRef.current?.focus()
             }}
           >
-            <Icon name="close" size={5} />
+            <Icon name="close" size="20" />
           </Button>
         )}
       </InputGroup.Root>

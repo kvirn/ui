@@ -97,7 +97,7 @@ Rules, tested in `table.test.tsx`:
 
 Through the shared Announcer, politely, with no `key`: a sort is announced every time. Selecting a single row is not announced: the checkbox state is. Without a provider nothing is announced and a development warning says so.
 
-Names, not announcements, in `table`: `selectRow` ("Select"), `selectRowNumber` ("Select row 3"), `selectAllRows` ("Select all rows"), `rowDetails` ("Details"), `rowDetailsNumber` ("Details row 3") and `empty` ("No rows to show."). All are in six locales and can be overridden per provider and per instance (`messages`). `se` starts as English placeholders and blocks `beta`.
+Names, not announcements, in `table`: `selectRow` ("Select"), `selectRowNumber` ("Select row 3"), `selectAllRows` ("Select all rows"), `rowDetails` ("Details"), `rowDetailsNumber` ("Details row 3") and `empty` ("No rows to show."). All are in five locales and can be overridden per provider and per instance (`messages`).
 
 ## Consumer responsibilities
 
@@ -167,4 +167,3 @@ What the manual run must check: table navigation, the header announced with each
 - A virtualized table can't be searched with find-in-page, isn't printed in full, and Tab can't reach a control in a row that isn't rendered. Pagination or a filter is the recommended default.
 - Shift+click range selection and multi-sort are not offered: each needs a key the pattern doesn't document. A later ADR can add them.
 - The select-all checkbox always means every row of the table. A "this page only" variant is not offered yet.
-- The Northern Sámi (`se`) strings are English, shown under `lang="se"` (3.1.2).

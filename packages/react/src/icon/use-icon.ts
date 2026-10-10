@@ -6,71 +6,33 @@ import { readIconEntry } from './icon-registry.ts'
 import type { IconComponent, IconName } from './icon-registry.ts'
 
 /**
- * A step of Tailwind's `size-*` scale. The size is the step times 0.25em, so it follows the text:
- * 4 is 1em, 5 (the default) 1.25em, 6 1.5em, 8 2em. Next to 16px text, 4, 5 and 6 are 16, 20 and 24px.
+ * The size in pixels, as a string: `'20'` is 1.25rem. The theme turns it into rem with a class,
+ * so it follows the root font size and not the surrounding text. Another size is a class you add.
  */
-export type IconScale =
-  | 0
-  | 0.5
-  | 1
-  | 1.5
-  | 2
-  | 2.5
-  | 3
-  | 3.5
-  | 4
-  | 5
-  | 6
-  | 7
-  | 8
-  | 9
-  | 10
-  | 11
-  | 12
-  | 14
-  | 16
-  | 20
-  | 24
-  | 28
-  | 32
-  | 36
-  | 40
-  | 44
-  | 48
-  | 52
-  | 56
-  | 60
-  | 64
-  | 72
-  | 80
-  | 96
-
-/**
- * A step of the scale (a number), or a CSS length as a string (`'48px'`, `'2rem'`, `'1.5em'`).
- * A bare number is a step, never pixels.
- */
-export type IconSize = IconScale | string
+export type IconSize =
+  | '12'
+  | '14'
+  | '16'
+  | '20'
+  | '24'
+  | '28'
+  | '32'
+  | '40'
+  | '48'
+  | '56'
+  | '64'
+  | '80'
+  | '96'
 
 /** Defaults for every Icon below a `KvirnProvider`. Instance props win. */
 export interface IconDefaults {
-  /** Default `5` (1.25em). */
+  /** Default `'20'` (1.25rem). */
   size?: IconSize | undefined
-  /** Unset by default: each icon keeps its own (the built-in set draws 1.5). */
-  strokeWidth?: number | string | undefined
 }
 
 export interface UseIconOptions extends IconDefaults {
   /** A built-in or registered icon. */
   name?: IconName | undefined
-  /**
-   * Sets `currentColor` for the icon, so it works with every library. Default: the text colour
-   * around it. A custom property works: `color="var(--kv-color-danger)"`.
-   */
-  color?: string | undefined
-  /** The root `<svg>`'s `fill`. Shapes that set their own fill keep it. */
-  fill?: string | undefined
-  /** The root `<svg>`'s `stroke`. With Tabler, use `color`: its `stroke` prop is the width. */
-  stroke?: string | undefined
   /**
    * Makes the icon an image with this name, from your own translations. Leave it
    * out when text next to the icon says the same thing: the icon is then hidden from
@@ -87,16 +49,11 @@ export interface UseIconOptions extends IconDefaults {
 /** Spread on the root `<svg>`, or pass to an icon component. Attributes only, never `style`. */
 export interface IconPartProps {
   /** The part's class, for `@kvirn-ui/theme` and your own CSS. */
-  className: 'kv-icon'
-  width: string | number
-  height: string | number
-  /** The step of the size scale (`'4'`), when the size is a number. */
-  'data-size'?: string
+  className: `kv-icon kv-icon--size-${IconSize}`
+  /** The size in rem, so an icon without the theme is still sized. */
+  width: string
+  height: string
   'data-mirror-in-rtl'?: ''
-  strokeWidth?: number | string
-  color?: string
-  fill?: string
-  stroke?: string
   /** `'true'` for a decorative icon. Present as `undefined` otherwise, which clears a library's own. */
   'aria-hidden': 'true' | undefined
   role?: 'img'
@@ -111,11 +68,7 @@ export interface UseIconResult {
   isDecorative: boolean
 }
 
-const emPerStep = 0.25
-
-/** A number is a step: its length is the step times 0.25em (0.25 is exact in binary, so there is no rounding). */
-const sizeToLength = (size: IconSize): string =>
-  typeof size === 'number' ? `${size * emPerStep}em` : size
+const pixelsPerRem = 16
 
 /**
  * An icon's props, and the component for its name (contract: icon.a11y.md). The
@@ -126,16 +79,7 @@ const sizeToLength = (size: IconSize): string =>
  * const CloseIcon = icon.component
  * <CloseIcon {...icon.iconProps} />
  */
-export function useIcon({
-  name,
-  size,
-  strokeWidth,
-  color,
-  fill,
-  stroke,
-  label,
-  mirrorInRtl,
-}: UseIconOptions = {}): UseIconResult {
+export function useIcon({ name, size, label, mirrorInRtl }: UseIconOptions = {}): UseIconResult {
   const { icons, iconDefaults } = useContext(KvirnConfigContext)
   // Own properties only: `name="constructor"` must not find `Object.prototype.constructor`.
   const appEntry = name !== undefined && Object.hasOwn(icons, name) ? icons[name] : undefined
@@ -155,28 +99,22 @@ export function useIcon({
     )
   }
 
-  const resolvedSize = size ?? iconDefaults.size ?? 5
-  const resolvedStrokeWidth = strokeWidth ?? iconDefaults.strokeWidth
+  const resolvedSize = size ?? iconDefaults.size ?? '20'
   const isMirroredInRtl = mirrorInRtl ?? entryMirrorInRtl ?? false
   const isDecorative = label === undefined
 
   const iconProps = useMemo<IconPartProps>(() => {
-    const length = sizeToLength(resolvedSize)
+    const length = `${Number(resolvedSize) / pixelsPerRem}rem`
     return {
-      className: 'kv-icon',
+      className: `kv-icon kv-icon--size-${resolvedSize}`,
       width: length,
       height: length,
-      ...(typeof resolvedSize === 'number' ? { 'data-size': String(resolvedSize) } : {}),
       ...(isMirroredInRtl ? { 'data-mirror-in-rtl': '' } : {}),
-      ...(resolvedStrokeWidth === undefined ? {} : { strokeWidth: resolvedStrokeWidth }),
-      ...(color === undefined ? {} : { color }),
-      ...(fill === undefined ? {} : { fill }),
-      ...(stroke === undefined ? {} : { stroke }),
       // The key stays when labelled: as `undefined`, it overrides a library's own aria-hidden.
       'aria-hidden': isDecorative ? 'true' : undefined,
       ...(isDecorative ? {} : { role: 'img', 'aria-label': label }),
     }
-  }, [resolvedSize, isMirroredInRtl, resolvedStrokeWidth, color, fill, stroke, isDecorative, label])
+  }, [resolvedSize, isMirroredInRtl, isDecorative, label])
 
   return { iconProps, component: entry?.component, isDecorative }
 }

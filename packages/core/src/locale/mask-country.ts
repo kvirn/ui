@@ -8,20 +8,19 @@ const countries: Readonly<Record<string, MaskCountry>> = Object.freeze({
   NO: 'NO',
 })
 
-// The language of a bare tag. Northern Sami (`se`) is mostly spoken in Norway.
+// The language of a bare tag.
 const languageCountries: Readonly<Record<string, MaskCountry>> = Object.freeze({
   sv: 'SE',
   fi: 'FI',
   nb: 'NO',
   nn: 'NO',
   no: 'NO',
-  se: 'NO',
 })
 
 /**
  * The country a BCP 47 locale implies for the country masks (`personal-identity-number`,
  * `postal-code`, `organisation-number`): the region of the tag first (`sv-FI` is `FI`), then
- * the language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn`, `no` and `se` are `NO`). `undefined`
+ * the language (`sv` is `SE`, `fi` is `FI`, `nb`, `nn` and `no` are `NO`). `undefined`
  * when neither says (`en`, `da-DK`): the caller decides what to do, nothing is guessed.
  */
 export function maskCountryFromLocale(locale: string): MaskCountry | undefined {

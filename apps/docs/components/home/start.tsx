@@ -9,20 +9,20 @@ const text = homeMessages.start
 export function Start() {
   return (
     <Band tone="surface" id="start" className="home-start">
-      <Stack gap="4">
+      <Stack className="kv-stack--gap-4">
         <Heading as="h2" size="heading-1">
           {text.heading}
         </Heading>
         <p className="kv-lead home-lead">{text.lead}</p>
       </Stack>
-      <Columns minColumnWidth="md" gap="8">
-        <Stack gap="4">
+      <Columns className="kv-columns--gap-8">
+        <Stack className="kv-stack--gap-4">
           <Heading as="h3" size="heading-3">
             {text.hookHeading}
           </Heading>
           <CodeBlock code={text.hookCode} language="tsx" />
         </Stack>
-        <Stack gap="4">
+        <Stack className="kv-stack--gap-4">
           <Heading as="h3" size="heading-3">
             {text.componentHeading}
           </Heading>
@@ -34,7 +34,7 @@ export function Start() {
       <div className="home-actions">
         <Link href="/docs" className="kv-link--service">
           <LinkIcon>
-            <Icon name="arrow-forward" size={6} />
+            <Icon name="arrow-forward" size="24" />
           </LinkIcon>
           {text.links.getStarted}
         </Link>

@@ -16,11 +16,7 @@ import {
 } from './sidebar-layout.tsx'
 import type { SidebarLayoutRootProps } from './sidebar-layout.tsx'
 import { useSidebarLayout } from './use-sidebar-layout.ts'
-import type {
-  SidebarLayoutPartProps,
-  UseSidebarLayoutOptions,
-  UseSidebarLayoutResult,
-} from './use-sidebar-layout.ts'
+import type { SidebarLayoutPartProps, UseSidebarLayoutResult } from './use-sidebar-layout.ts'
 
 // Contract: sidebar-layout.a11y.md.
 
@@ -71,23 +67,6 @@ describe('rendering', () => {
       expect(part.textContent).toBe('Innehåll')
     },
   )
-
-  test('sidebarWidth "md" is the default and adds no modifier', async () => {
-    await render(<SidebarLayout.Root data-testid="root" />)
-    expect(page.getByTestId('root').element().className).toBe('kv-sidebar-layout')
-  })
-
-  test('sidebarWidth "sm" adds only its modifier class', async () => {
-    await render(<SidebarLayout.Root sidebarWidth="sm" data-testid="root" />)
-    expect(page.getByTestId('root').element().className).toBe(
-      'kv-sidebar-layout kv-sidebar-layout--sidebar-sm',
-    )
-  })
-
-  test('sidebarWidth is not passed on to the element', async () => {
-    await render(<SidebarLayout.Root sidebarWidth="sm" data-testid="root" />)
-    await expect.element(page.getByTestId('root')).not.toHaveAttribute('sidebarwidth')
-  })
 
   test('adds no role, ARIA, tabindex, inert or data attribute', async () => {
     const { container } = await render(
@@ -262,12 +241,8 @@ describe('parts outside Root', () => {
 })
 
 describe('useSidebarLayout', () => {
-  test('the default and "md" give the base class, "sm" adds its modifier', () => {
-    expect(useSidebarLayout().rootProps.className).toBe('kv-sidebar-layout')
-    expect(useSidebarLayout({ sidebarWidth: 'md' }).rootProps.className).toBe('kv-sidebar-layout')
-    expect(useSidebarLayout({ sidebarWidth: 'sm' }).rootProps.className).toBe(
-      'kv-sidebar-layout kv-sidebar-layout--sidebar-sm',
-    )
+  test('the root props carry only the base class', () => {
+    expect(useSidebarLayout().rootProps).toEqual({ className: 'kv-sidebar-layout' })
   })
 
   test('the part props carry only the part class', () => {
@@ -277,8 +252,8 @@ describe('useSidebarLayout', () => {
   })
 
   test('returns the same frozen objects every time', () => {
-    const first = useSidebarLayout({ sidebarWidth: 'sm' })
-    expect(useSidebarLayout({ sidebarWidth: 'sm' })).toBe(first)
+    const first = useSidebarLayout()
+    expect(useSidebarLayout()).toBe(first)
     for (const frozen of [first, first.rootProps, first.sidebarProps, first.contentProps]) {
       expect(Object.isFrozen(frozen)).toBe(true)
     }
@@ -299,8 +274,7 @@ describe('useSidebarLayout', () => {
     await expect.element(page.getByRole('complementary', { name: 'Egen' })).toBeInTheDocument()
   })
 
-  test('the exported option, props and result types fit together', () => {
-    expectTypeOf<SidebarLayoutRootProps>().toExtend<UseSidebarLayoutOptions>()
+  test('the exported props and result types fit together', () => {
     expectTypeOf<ReturnType<typeof useSidebarLayout>>().toEqualTypeOf<UseSidebarLayoutResult>()
     expectTypeOf<UseSidebarLayoutResult['sidebarProps']>().toExtend<SidebarLayoutPartProps>()
   })

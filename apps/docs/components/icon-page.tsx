@@ -97,7 +97,7 @@ export function IconPage({
           <UseCase
             id="size"
             title="A size that follows the text"
-            why="A number is a step of the size scale, times 0.25em, so icons grow with the text and with the user’s text size. For a fixed size, pass a CSS length."
+            why="The size is a pixel string, set in rem by the theme, so icons grow with the user’s text size setting. Another size is a class you add."
             code={sources['sizes']}
             propsUsed={[{ part: 'Icon', prop: 'size' }]}
           >

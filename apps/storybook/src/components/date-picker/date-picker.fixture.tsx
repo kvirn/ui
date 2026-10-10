@@ -23,7 +23,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 // Fixtures for Components/DatePicker. KvirnUI holds no form state: the field's value lives here in
 // `useState`, where TanStack Form or React Hook Form would sit, and the bridge functions turn it
 // into the ISO date the picker takes and back. Every story fixes `today` to 14 October 2026.
-// se is English, marked lang="en" (3.1.2).
+//
 
 export {
   closedDays,
@@ -38,7 +38,6 @@ const errorTexts: Record<FormLocale, string> = {
   fi: 'Päivämäärän täytyy olla oikea päivämäärä',
   nb: 'Datoen må være en gyldig dato',
   nn: 'Datoen må vere ein gyldig dato',
-  se: 'The date must be a real date',
   en: 'The date must be a real date',
 }
 
@@ -176,7 +175,6 @@ export function LocalePickers() {
     { locale: 'fi', messages: 'fi' },
     { locale: 'nb', messages: 'nb' },
     { locale: 'nn', messages: 'nn' },
-    { locale: 'se', messages: 'se' },
     { locale: 'en-GB', messages: 'en' },
   ]
   return (

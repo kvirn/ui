@@ -6,7 +6,7 @@ export function QuickLinks() {
   const { texts, textLang } = useColumnsTexts()
   const links = Object.values(texts.quickLinks)
   return (
-    <Columns as="ul" minColumnWidth="sm" gap="4" lang={textLang}>
+    <Columns className="kv-columns--min-sm kv-columns--gap-4" as="ul" lang={textLang}>
       {links.map((label) => (
         <li key={label}>
           <Link href="#">{label}</Link>

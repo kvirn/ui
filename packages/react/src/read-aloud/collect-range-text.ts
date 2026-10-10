@@ -28,18 +28,13 @@ function isNotRendered(element: Element, view: Window | null): boolean {
 export interface RangeTextOptions {
   /** The content element: the nearest `[lang]` is looked up through its ancestors, up to and including it. */
   boundary?: Element | undefined
-  /** The boundary's own `lang` is not a run: a `lang` option decides for text outside inner `[lang]`s. */
-  ignoreBoundaryLanguage?: boolean | undefined
 }
 
 /**
  * Internal. `collectText` for a selected `Range`: the same whitespace collapsing and skipped
  * content, and a `rangeFor` that maps back to the original text nodes. The range is read once.
  */
-export function collectRangeText(
-  range: Range,
-  { boundary, ignoreBoundaryLanguage = false }: RangeTextOptions = {},
-): CollectedText {
+export function collectRangeText(range: Range, { boundary }: RangeTextOptions = {}): CollectedText {
   const root = range.commonAncestorContainer
   const ownerDocument = root.ownerDocument ?? (root as Document)
   const view = ownerDocument.defaultView
@@ -70,9 +65,6 @@ export function collectRangeText(
       current !== null && language === undefined;
       current = current === boundary ? null : current.parentElement
     ) {
-      if (current === boundary && ignoreBoundaryLanguage) {
-        break
-      }
       language = current.getAttribute('lang')?.trim() || undefined
     }
     const start = textNode === range.startContainer ? range.startOffset : 0

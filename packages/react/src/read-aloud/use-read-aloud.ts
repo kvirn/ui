@@ -90,11 +90,6 @@ const getStateBeforeMount = () => stateBeforeMount
 export interface UseReadAloudOptions {
   /** The element whose text is read. Resolved when Play is pressed. */
   contentRef: RefObject<Element | null>
-  /**
-   * BCP 47 tag of the content, which picks the voice. Default: the closest `[lang]` of the
-   * content, then the document's.
-   */
-  lang?: string | undefined
   /** Advanced, unstable: your own speech engine. Default: the browser's `speechSynthesis`. */
   engine?: ReadAloudEngine | undefined
   /** Lets the browser pick voices that may send the text to a remote service. Default `false`. */
@@ -247,7 +242,6 @@ function languageOf(element: Element | null, fallback: Document, locale: string)
  */
 export function useReadAloud({
   contentRef,
-  lang,
   engine,
   allowRemoteVoices = false,
   highlight = true,
@@ -268,7 +262,7 @@ export function useReadAloud({
   const [triggerRect, setTriggerRect] = useState<DOMRect | null>(null)
   const [triggerElement, setTriggerElement] = useState<HTMLButtonElement | null>(null)
   const reading = useRef<CollectedText | null>(null)
-  const latest = useRef({ lang, engine, allowRemoteVoices, onStatusChange })
+  const latest = useRef({ engine, allowRemoteVoices, onStatusChange })
   const engineDiagnostics = useRef<{
     engine: ReadAloudEngine
     allowRemoteVoices: boolean
@@ -277,8 +271,7 @@ export function useReadAloud({
   const announcement = useRef({ announce, messages: readAloudMessages, noVoiceText: '' })
 
   const resolveLanguage = useCallback(
-    (element: Element | null) =>
-      latest.current.lang ?? languageOf(element, (env ?? { document }).document, locale),
+    (element: Element | null) => languageOf(element, (env ?? { document }).document, locale),
     [env, locale],
   )
 
@@ -346,7 +339,7 @@ export function useReadAloud({
     language: languageName(state.errorLanguage ?? state.language, locale),
   })
   useEffect(() => {
-    latest.current = { lang, engine, allowRemoteVoices, onStatusChange }
+    latest.current = { engine, allowRemoteVoices, onStatusChange }
     announcement.current = { announce, messages: readAloudMessages, noVoiceText }
   })
 
@@ -507,7 +500,6 @@ export function useReadAloud({
       const range = captured.range.cloneRange()
       const collected = collectRangeText(range, {
         boundary: contentRef.current ?? undefined,
-        ignoreBoundaryLanguage: latest.current.lang !== undefined,
       })
       reading.current = collected
       setCaptured(null)
@@ -532,23 +524,11 @@ export function useReadAloud({
       return
     }
     const collected = collectText(content)
-    const contentLanguage = content.getAttribute('lang')?.trim()
-    // The `lang` option is the default for unmarked text and beats the content's own `lang`; a
-    // `lang` on an element inside it still wins for that stretch.
-    const languageRuns =
-      latest.current.lang === undefined || !contentLanguage
-        ? collected.languageRuns
-        : collected.languageRuns.filter(
-            (run) =>
-              collected
-                .rangeFor(run.start, run.end)
-                .startContainer.parentElement?.closest('[lang]') !== content,
-          )
     reading.current = collected
     machine.actions.play({
       text: collected.text,
       source: 'content',
-      languageRuns,
+      languageRuns: collected.languageRuns,
       language: resolveLanguage(content),
     })
     announceNoVoice(machine, errorBefore)

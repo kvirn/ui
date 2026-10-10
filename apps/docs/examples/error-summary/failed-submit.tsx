@@ -14,7 +14,7 @@ export function FailedSubmit() {
   const hasErrors = errors.email || errors.phone
 
   return (
-    <Stack gap="8" lang={textLang}>
+    <Stack className="kv-stack--gap-8" lang={textLang}>
       {hasErrors ? (
         <ErrorSummary.Root focusKey={submitCount}>
           <ErrorSummary.Title />
@@ -33,7 +33,8 @@ export function FailedSubmit() {
         </ErrorSummary.Root>
       ) : null}
       <Stack
-        gap="8"
+        className="kv-stack--gap-8"
+
         as="form"
         noValidate
         onSubmit={(event) => {

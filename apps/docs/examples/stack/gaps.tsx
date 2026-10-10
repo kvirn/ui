@@ -5,9 +5,9 @@ import { useStackTexts } from './texts.ts'
 export function Gaps() {
   const { texts, textLang } = useStackTexts()
   return (
-    <Stack gap="8" lang={textLang}>
+    <Stack className="kv-stack--gap-8" lang={textLang}>
       {(['2', '4', '8'] as const).map((gap) => (
-        <Stack key={gap} gap={gap}>
+        <Stack key={gap} className={`kv-stack--gap-${gap}`}>
           {texts.gaps.related.map((line) => (
             <span key={line}>{line}</span>
           ))}

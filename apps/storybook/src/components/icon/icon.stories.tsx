@@ -2,7 +2,6 @@ import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
-import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { Button, ButtonGroup, Icon, KvirnProvider, Link, useFormat } from '@kvirn-ui/react'
@@ -43,15 +42,15 @@ import type { IconFixtureLocale } from './icon.fixture.tsx'
 // play functions only read. RTL mirroring is proven by the `data-mirror-in-rtl` plays of RTL and
 // LibraryIconsViaTheRegistry, and by icon.test.tsx.
 
-const catalogs: Record<string, KvirnMessages> = { sv, fi, nb, nn, se, en }
+const catalogs: Record<string, KvirnMessages> = { sv, fi, nb, nn, en }
 
 const localeOf = (globals: Record<string, unknown>): IconFixtureLocale => {
   const locale = globals['locale']
   return isIconFixtureLocale(locale) ? locale : 'sv'
 }
 
-/** Steps of the size scale, and the lengths a string gives, as written in the props table. */
-const sizeOptions = [4, 5, 6, 8, 12, 32, '2em', '1.5rem', '20px'] as const
+/** The pixel sizes the controls offer. */
+const sizeOptions = ['16', '20', '24', '32', '48', '96'] as const
 
 /** The `name` form of `IconProps`, which the controls drive: `IconProps` is a union, so its args are `never`. */
 type IconArgs = Omit<IconProps, 'name' | 'icon' | 'as' | 'children'> & {
@@ -77,18 +76,8 @@ const meta = {
     size: {
       control: 'select',
       options: sizeOptions,
-      description: 'A step of the size scale (a step is a quarter of an `em`), or a CSS length.',
+      description: 'The size in pixels, as a string. The theme sets it in rem with a class.',
     },
-    strokeWidth: {
-      control: { type: 'number', min: 1, max: 3, step: 0.25 },
-      description: 'The stroke width. Default: `iconDefaults.strokeWidth`, then 1.5.',
-    },
-    color: {
-      control: 'text',
-      description: 'Sets `currentColor`. A token works: `var(--kv-color-danger)`.',
-    },
-    fill: { control: 'text', description: 'The SVG `fill`. A token works.' },
-    stroke: { control: 'text', description: 'The SVG `stroke`. A token works.' },
     label: {
       control: 'text',
       description:
@@ -133,20 +122,20 @@ type Story = StoryObj<IconArgs>
 
 const iconNamed = (name: string): string => `icon-${name}`
 
-/** The default size is step 5, 1.25em. With no `label`, an icon is decorative: hidden from AT. */
+/** The default size is `'20'`, 1.25rem. With no `label`, an icon is decorative: hidden from AT. */
 export const Default: Story = {
   play: async ({ canvas, canvasElement }) => {
     const svg = canvasElement.querySelector('svg')
     await expect(svg).not.toBeNull()
     await expect(svg).toHaveAttribute('aria-hidden', 'true')
-    await expect(svg).toHaveAttribute('data-size', '5')
+    await expect(svg).toHaveClass('kv-icon--size-20')
     await expect(canvas.queryByRole('img')).toBeNull()
   },
 }
 
 /**
  * Every built-in icon, read from the package's own set, so none is missing: its name as text,
- * the drawing at sizes 4, 5 and 6, and whether it flips in right-to-left text (the five
+ * the drawing at sizes 16, 20 and 24, and whether it flips in right-to-left text (the five
  * directional ones do). The drawings are decorative, and the name is what a screen reader reads.
  */
 export const BuiltInSet: Story = {
@@ -157,9 +146,9 @@ export const BuiltInSet: Story = {
         {builtInIconNames.map((name) => (
           <li key={name} className="kv-story-icon-cell" data-testid={iconNamed(name)}>
             <span className="kv-story-icon-row">
-              <Icon name={name} size={4} />
-              <Icon name={name} size={5} />
-              <Icon name={name} size={6} />
+              <Icon name={name} size="16" />
+              <Icon name={name} size="20" />
+              <Icon name={name} size="24" />
             </span>
             <code>{name}</code>
             <span>{isMirroredIcon(name) ? text.gallery.mirrors : text.gallery.doesNotMirror}</span>
@@ -202,7 +191,7 @@ const textStyles = [
   { id: 'heading-2', className: 'kv-story-text-heading-2' },
 ] as const
 
-const iconSizes = [4, 5, 6, 8] as const
+const iconSizes = ['16', '20', '24', '32'] as const
 
 function sizesBlock(locale: IconFixtureLocale, testId: string) {
   const { text, lang } = textsFor(locale)
@@ -227,26 +216,29 @@ function sizesBlock(locale: IconFixtureLocale, testId: string) {
 }
 
 const sizeScale = [
-  0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 9, 10, 12, 16, 20, 24, 32, 48, 64,
+  '12',
+  '14',
+  '16',
+  '20',
+  '24',
+  '28',
+  '32',
+  '40',
+  '48',
+  '56',
+  '64',
+  '80',
+  '96',
 ] as const
 
-/** String sizes are CSS lengths, not steps: `'48px'` is 48 pixels, and `'2rem'` ignores the text size. */
-const sizeLengths = ['20px', '1.5rem', '48px'] as const
-
 /**
- * The size scale of Tailwind's `size-*`: a step is a quarter of an `em`, so `4` is 1em. A string
- * is a CSS length instead (`'48px'`, `'1.5rem'`), and a bare number is never pixels.
+ * The size scale: `size` is the pixel size as a string, and the theme turns it into rem with
+ * `kv-icon--size-<px>`. Another size is a class you add, never a prop.
  */
 export const SizeScale: Story = {
   render: () => (
     <ul className="kv-story-inline-list">
       {sizeScale.map((size) => (
-        <li key={size} className="kv-story-icon-row">
-          <Icon name="info" size={size} />
-          <code>{size}</code>
-        </li>
-      ))}
-      {sizeLengths.map((size) => (
         <li key={size} className="kv-story-icon-row">
           <Icon name="info" size={size} />
           <code>{`'${size}'`}</code>
@@ -255,20 +247,18 @@ export const SizeScale: Story = {
     </ul>
   ),
   play: async ({ canvasElement }) => {
-    await expect(canvasElement.querySelectorAll('svg[data-size]')).toHaveLength(sizeScale.length)
-    // A length has no step, and is the svg's width and height as written.
-    for (const size of sizeLengths) {
-      const icon = canvasElement.querySelector(`svg[width="${size}"]`)
+    for (const size of sizeScale) {
+      const icon = canvasElement.querySelector(`svg.kv-icon--size-${size}`)
       await expect(icon).not.toBeNull()
-      await expect(icon).toHaveAttribute('height', size)
+      await expect(icon).toHaveAttribute('width', `${Number(size) / 16}rem`)
       await expect(icon).not.toHaveAttribute('data-size')
     }
   },
 }
 
 /**
- * Sizes 4, 5, 6 and 8 inline in three text styles. A step is `em` (step × 0.25em), so it grows
- * with the text; the lines mark the baseline and the capital height. Below, the same at 200%.
+ * Sizes 16, 20, 24 and 32 inline in three text styles. A size is rem, so it follows the root font
+ * size and not the text; the lines mark the baseline and the capital height. Below, the same at 200%.
  */
 export const SizesNextToText: Story = {
   render: (_args, { globals }) => (
@@ -283,7 +273,7 @@ export const SizesNextToText: Story = {
     for (const testId of ['sizes-body', 'sizes-200']) {
       const block = canvas.getByTestId(testId)
       for (const size of iconSizes) {
-        await expect(block.querySelectorAll(`svg[data-size="${size}"]`)).toHaveLength(3)
+        await expect(block.querySelectorAll(`svg.kv-icon--size-${size}`)).toHaveLength(3)
       }
     }
   },
@@ -369,12 +359,12 @@ export const StatusWithText: Story = {
   },
 }
 
-/** Inherited colour, then `color` set to each token an icon may use (design spec §6.3). */
+/** Inherited colour, then the text colour of a wrapper set to each token an icon may use (design spec §6.3). */
 export const Colors: Story = {
   render: () => (
     <ul className="kv-story-inline-list">
       <li className="kv-story-icon-row">
-        <Icon name="info" size={6} />
+        <Icon name="info" size="24" />
         <code>inherited</code>
       </li>
       {(
@@ -387,7 +377,9 @@ export const Colors: Story = {
         ] as const satisfies readonly string[]
       ).map((token) => (
         <li key={token} className="kv-story-icon-row">
-          <Icon name="info" size={6} color={`var(--kv-color-${token})`} />
+          <span style={{ color: `var(--kv-color-${token})` }} data-token={token}>
+            <Icon name="info" size="24" />
+          </span>
           <code>{token}</code>
         </li>
       ))}
@@ -397,36 +389,6 @@ export const Colors: Story = {
     const icons = canvasElement.querySelectorAll('svg')
     await expect(icons).toHaveLength(6)
     await expect(icons[0]?.hasAttribute('color')).toBe(false)
-    await expect(icons[2]).toHaveAttribute('color', 'var(--kv-color-danger)')
-  },
-}
-
-/**
- * A token works in `color`, `fill` and `stroke`: each channel takes `var(--kv-color-danger)`.
- */
-export const TokenChannels: Story = {
-  render: () => (
-    <ul className="kv-story-inline-list">
-      <li className="kv-story-icon-row">
-        <Icon name="info" size={6} color="var(--kv-color-danger)" />
-        <code>color</code>
-      </li>
-      <li className="kv-story-icon-row">
-        <Icon name="info" size={6} fill="var(--kv-color-danger)" />
-        <code>fill</code>
-      </li>
-      <li className="kv-story-icon-row">
-        <Icon name="info" size={6} stroke="var(--kv-color-danger)" />
-        <code>stroke</code>
-      </li>
-    </ul>
-  ),
-  play: async ({ canvasElement }) => {
-    const icons = canvasElement.querySelectorAll('svg')
-    await expect(icons).toHaveLength(3)
-    await expect(icons[0]).toHaveAttribute('color', 'var(--kv-color-danger)')
-    await expect(icons[1]).toHaveAttribute('fill', 'var(--kv-color-danger)')
-    await expect(icons[2]).toHaveAttribute('stroke', 'var(--kv-color-danger)')
   },
 }
 
@@ -447,7 +409,7 @@ export const DecorativeAndMeaningful: Story = {
         </div>
         <div className="kv-story-panel">
           <p>
-            <Icon as={MunicipalityMark} size={48} label={text.label.logo} />
+            <Icon as={MunicipalityMark} size="48" label={text.label.logo} />
           </p>
           <p>
             <output data-testid="accessible-name" />
@@ -470,43 +432,6 @@ export const DecorativeAndMeaningful: Story = {
   },
 }
 
-const strokeWidths = [1, 1.5, 2] as const
-
-/** `iconDefaults.strokeWidth` 1, 1.5 (the built-in default) and 2 on the full set at 16px. */
-export const StrokeWidths: Story = {
-  render: () => (
-    <>
-      {strokeWidths.map((strokeWidth) => (
-        <section
-          key={strokeWidth}
-          className="kv-story-section"
-          data-testid={`stroke-${strokeWidth}`}
-        >
-          <p>
-            <code>iconDefaults={`{{ strokeWidth: ${strokeWidth} }}`}</code>
-          </p>
-          <KvirnProvider iconDefaults={{ strokeWidth }}>
-            <div className="kv-story-icon-strip">
-              {builtInIconNames.map((name) => (
-                <Icon key={name} name={name} size={4} />
-              ))}
-            </div>
-          </KvirnProvider>
-        </section>
-      ))}
-    </>
-  ),
-  play: async ({ canvas }) => {
-    for (const strokeWidth of strokeWidths) {
-      const icons = canvas.getByTestId(`stroke-${strokeWidth}`).querySelectorAll('svg')
-      await expect(icons).toHaveLength(builtInIconNames.length)
-      for (const icon of icons) {
-        await expect(icon).toHaveAttribute('stroke-width', String(strokeWidth))
-      }
-    }
-  },
-}
-
 /**
  * `dir="rtl"`: the five directional icons flip, and a check, a search and a chevron down don't.
  * A Button with the arrow at its end, and a pagination-like row, point the right way.
@@ -521,7 +446,7 @@ export const RTL: Story = {
           <ul className="kv-story-icon-strip" data-testid="mirrors">
             {mirroredIconNames.map((name) => (
               <li key={name} className="kv-story-icon-cell">
-                <Icon name={name} size={6} />
+                <Icon name={name} size="24" />
                 <code>{name}</code>
                 <span>{text.gallery.mirrors}</span>
               </li>
@@ -530,7 +455,7 @@ export const RTL: Story = {
           <ul className="kv-story-icon-strip" data-testid="stays">
             {(['check', 'search', 'chevron-down'] as const).map((name) => (
               <li key={name} className="kv-story-icon-cell">
-                <Icon name={name} size={6} />
+                <Icon name={name} size="24" />
                 <code>{name}</code>
                 <span>{text.gallery.doesNotMirror}</span>
               </li>
@@ -583,13 +508,12 @@ export const RegistryEntriesAndDefaults: Story = {
     const iconIn = (testId: string) => canvas.getByTestId(testId).querySelector('svg')
     await expect(iconIn('entry-says-no-flip')).not.toHaveAttribute('data-mirror-in-rtl')
     await expect(iconIn('instance-flips')).toHaveAttribute('data-mirror-in-rtl')
-    // iconDefaults.size is 6 (1.5em) until an icon sets its own.
-    await expect(iconIn('default-size')).toHaveAttribute('width', '1.5em')
-    await expect(iconIn('own-size')).toHaveAttribute('width', '1em')
+    // iconDefaults.size is '24' (1.5rem) until an icon sets its own.
+    await expect(iconIn('default-size')).toHaveAttribute('width', '1.5rem')
+    await expect(iconIn('own-size')).toHaveAttribute('width', '1rem')
     // The nested provider adds `delete` and its stroke, keeps the parent's size and `search`.
-    await expect(iconIn('nested-delete')).toHaveAttribute('stroke-width', '2')
-    await expect(iconIn('nested-delete')).toHaveAttribute('width', '1.5em')
-    await expect(iconIn('nested-keeps-parent')).toHaveAttribute('width', '1.5em')
+    await expect(iconIn('nested-delete')).toHaveAttribute('width', '1.5rem')
+    await expect(iconIn('nested-keeps-parent')).toHaveAttribute('width', '1.5rem')
     await expect(iconIn('nested-keeps-parent')).toHaveClass('lucide-search')
   },
 }
@@ -602,13 +526,13 @@ export const RegistryEntriesAndDefaults: Story = {
 export const UnknownName: Story = {
   render: () => (
     <p>
-      Spara <Icon name={'delte' as IconName} size={6} />
+      Spara <Icon name={'delte' as IconName} size="24" />
     </p>
   ),
   play: async ({ canvasElement }) => {
     const icon = canvasElement.querySelector('svg')
     await expect(icon).toHaveAttribute('aria-hidden', 'true')
-    await expect(icon).toHaveAttribute('width', '1.5em')
+    await expect(icon).toHaveAttribute('width', '1.5rem')
     await expect(icon).toHaveAttribute('viewBox', '0 0 24 24')
     await expect(icon?.children).toHaveLength(0)
   },
@@ -618,23 +542,20 @@ export const UnknownName: Story = {
 const hardCodedRed = '#c00'
 
 /**
- * Icons with `color`, `fill` and `stroke` set to a hard-coded red, and to a token, in text, in
- * a Button and in a Link. In forced colours the theme turns them into the system colour, so
- * they can't vanish.
+ * Icons in a wrapper whose text colour is a hard-coded red, and in one that uses a token, in
+ * text, in a Button and in a Link. In forced colours the system colour wins, so they can't vanish.
  */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   render: (_args, { globals }) => {
     const { text, lang } = textsFor(localeOf(globals))
-    const colorProps = [
-      ['color', { color: hardCodedRed }],
-      ['fill', { fill: hardCodedRed }],
-      ['stroke', { stroke: hardCodedRed }],
-      ['token', { color: 'var(--kv-color-danger)' }],
+    const colors = [
+      ['color', hardCodedRed],
+      ['token', 'var(--kv-color-danger)'],
     ] as const
     return (
       <div lang={lang} data-testid="forced">
-        {colorProps.map(([prop, iconProps]) => (
+        {colors.map(([prop, color]) => (
           <div
             key={prop}
             className="kv-story-section kv-story-icon-row"
@@ -642,14 +563,22 @@ export const ForcedColors: Story = {
           >
             <code>{prop}</code>
             <p>
-              <Icon name="warning" {...iconProps} /> {text.status.warning.word}
+              <span style={{ color }}>
+                <Icon name="warning" />
+              </span>{' '}
+              {text.status.warning.word}
             </p>
             <Button>
-              <Icon name="add" {...iconProps} />
+              <span style={{ color }}>
+                <Icon name="add" />
+              </span>
               {text.button.addChild}
             </Button>
             <Link.Root href="#guide">
-              <Icon name="external" {...iconProps} /> {text.text.guide}
+              <span style={{ color }}>
+                <Icon name="external" />
+              </span>{' '}
+              {text.text.guide}
             </Link.Root>
           </div>
         ))}
@@ -657,8 +586,8 @@ export const ForcedColors: Story = {
     )
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('button')).toHaveLength(4)
-    await expect(canvas.getAllByRole('link')).toHaveLength(4)
+    await expect(canvas.getAllByRole('button')).toHaveLength(2)
+    await expect(canvas.getAllByRole('link')).toHaveLength(2)
   },
 }
 
@@ -672,15 +601,15 @@ export const YourOwnSvg: Story = {
     return (
       <ul className="kv-story-inline-list" lang={lang}>
         <li>
-          <Icon viewBox="0 0 24 24" fill="none" stroke="currentColor" size={6} strokeWidth={1.5}>
-            <path d="M5 12h14M12 5v14" />
+          <Icon viewBox="0 0 24 24" size="24">
+            <path d="M5 12h14M12 5v14" fill="none" stroke="currentColor" strokeWidth={1.5} />
           </Icon>
         </li>
         <li>
-          <Icon as={MunicipalityMark} size={6} label={text.label.logo} />
+          <Icon as={MunicipalityMark} size="24" label={text.label.logo} />
         </li>
         <li>
-          <Icon as={SquareMark} size={6} />
+          <Icon as={SquareMark} size="24" />
         </li>
       </ul>
     )
@@ -695,11 +624,11 @@ export const YourOwnSvg: Story = {
 }
 
 /**
- * Lucide: `pnpm add lucide-react`, then pass the component as `icon`. Icon's `size`, `color`,
- * `strokeWidth`, `label` and `className` replace Lucide's own, so there is nothing to
+ * Lucide: `pnpm add lucide-react`, then pass the component as `icon`. Icon's `size`,
+ * `label` and `className` replace Lucide's own, so there is nothing to
  * repeat on the component. The second block registers the icons once with `defineIcons`, so
  * `<Icon name>` and every KvirnUI component that draws a built-in icon use Lucide's.
- * Library defaults such as Lucide's 2 stroke go in `iconDefaults`. To add names of your own,
+ * Lucide draws its own 2 stroke. To add names of your own,
  * augment `Register` (see the Icon guide).
  */
 export const Lucide: Story = {
@@ -716,8 +645,8 @@ export const Lucide: Story = {
     await expect(icons).toHaveLength(5)
     // The one-off icons: Icon's size wins over Lucide's 24, and only the labelled one is an image.
     await expect(icons[0]).toHaveClass('lucide-search')
-    await expect(icons[0]).toHaveAttribute('width', '1.25em')
-    await expect(icons[1]).toHaveAttribute('width', '1.5em')
+    await expect(icons[0]).toHaveAttribute('width', '1.25rem')
+    await expect(icons[1]).toHaveAttribute('width', '1.5rem')
     await expect(icons[2]).toHaveAttribute('aria-hidden', 'true')
     await expect(canvas.getByRole('img', { name: text.button.search })).toBeVisible()
     // The registry: the same names, Lucide's drawings, decorative next to the button text.
@@ -748,8 +677,8 @@ export const Heroicons: Story = {
     const icons = canvasElement.querySelectorAll('svg')
     await expect(icons).toHaveLength(5)
     await expect(icons[0]).toHaveAttribute('data-slot', 'icon')
-    await expect(icons[0]).toHaveAttribute('width', '1.25em')
-    await expect(icons[1]).toHaveAttribute('width', '1.5em')
+    await expect(icons[0]).toHaveAttribute('width', '1.25rem')
+    await expect(icons[1]).toHaveAttribute('width', '1.5rem')
     await expect(icons[2]).toHaveAttribute('aria-hidden', 'true')
     // Heroicons' own aria-hidden is gone once there is a label.
     await expect(icons[0]).not.toHaveAttribute('aria-hidden')
@@ -775,7 +704,7 @@ export const LibraryIconsViaTheRegistry: Story = {
       // Same props, another drawing: the library's shapes replace the built-in ones.
       await expect(registered?.innerHTML).not.toBe(builtIn?.innerHTML)
       // The libraries turn `color` into their own stroke or fill, so the size is the check.
-      await expect(registered).toHaveAttribute('width', '1.5em')
+      await expect(registered).toHaveAttribute('width', '1.5rem')
     }
     await expect(canvas.getByRole('img', { name: textsFor('sv').text.label.logo })).toBeVisible()
     await expect(canvas.getByTestId('overridden-arrow')).toHaveAttribute('data-mirror-in-rtl')
@@ -797,11 +726,11 @@ export const InRunningTextAndLinks: Story = {
     return (
       <>
         <p lang={lang}>
-          <Icon name="calendar" size={4} /> {text.text.collection(collectionDate(format))}
+          <Icon name="calendar" size="16" /> {text.text.collection(collectionDate(format))}
         </p>
         <p lang={lang}>
           <Link.Root href="https://www.digg.se/" target="_blank">
-            {text.text.guide} <Link.NewTabNotice /> <Icon name="external" size={4} />
+            {text.text.guide} <Link.NewTabNotice /> <Icon name="external" size="16" />
           </Link.Root>
         </p>
       </>
@@ -831,9 +760,9 @@ export const Unstyled: Story = {
     const icons = root?.querySelectorAll('svg') ?? []
     await expect(icons).toHaveLength(5)
     // The size is an attribute, so it works without the theme.
-    await expect(icons[0]).toHaveAttribute('width', '1em')
-    await expect(icons[1]).toHaveAttribute('width', '1.25em')
-    await expect(icons[2]).toHaveAttribute('color', 'var(--kv-color-success)')
+    await expect(icons[0]).toHaveAttribute('width', '1rem')
+    await expect(icons[1]).toHaveAttribute('width', '1.25rem')
+    await expect(icons[2]).toHaveAttribute('width', '1.5rem')
     // The flag is there for your own CSS. Nothing flips it here.
     await expect(icons[3]).toHaveAttribute('data-mirror-in-rtl')
   },

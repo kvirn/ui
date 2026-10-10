@@ -193,7 +193,7 @@ export function GuidanceArticle({
         <a href="https://kvirnby.example/latt-las">{text.easyRead}</a>
       </p>
       <p>
-        <a href="https://kvirnby.example/se" lang="se" hrefLang="se">
+        <a href="https://kvirnby.example/fi" lang="fi" hrefLang="fi">
           {text.otherLanguage}
         </a>
       </p>

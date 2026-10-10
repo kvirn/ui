@@ -2,7 +2,6 @@ import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
-import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef } from 'react'
@@ -186,7 +185,6 @@ describe('Breadcrumb', () => {
     ['fi', fi, 'Olet tässä'],
     ['nb', nb, 'Du er her'],
     ['nn', nn, 'Du er her'],
-    ['se', se, 'You are here'],
   ] as const)('the %s catalog names the landmark', async (locale, messages, name) => {
     await render(
       <KvirnProvider locale={locale} messages={messages}>

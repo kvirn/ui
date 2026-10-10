@@ -423,7 +423,7 @@ export const WithServiceLink: Story = {
         <Navigation.Item>
           <Link.Root href="#ansok" className="kv-link--service">
             <Link.Icon>
-              <Icon name="arrow-forward" size={6} />
+              <Icon name="arrow-forward" size="24" />
             </Link.Icon>
             Ansök om bygglov
           </Link.Root>

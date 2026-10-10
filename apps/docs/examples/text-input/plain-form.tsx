@@ -9,7 +9,8 @@ export function PlainForm() {
   return (
     <>
       <Stack
-        gap="8"
+        className="kv-stack--gap-8"
+
         lang={textLang}
         as="form"
         noValidate

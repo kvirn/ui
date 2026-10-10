@@ -4,9 +4,9 @@
 
 The one native list: link lists, related links, footer link groups and any other short list. `List.Root` renders `<ul class="kv-list">`, or `<ol>` with `as="ol"`, and `List.Item` renders `<li>`. There is no `List.Link`, no text and no strings.
 
-- `marker`: `'none'` (default), `'bullet'` or `'decimal'`. Without a marker the list gets `role="list"`, because WebKit and VoiceOver drop the list role under `list-style: none`. A role of your own wins.
-- `gap`: `'2'`, `'4'` (default), `'6'` or `'8'`, the `space` steps (`kv-list--gap-2`, `-6`, `-8`).
-- `as`: `'ul'` (default) or `'ol'`. `marker="decimal"` is for `ol`: on a `ul` it warns once in development.
+- Marker and gap are classes you add: `kv-list--bullet` or `kv-list--decimal`, and `kv-list--gap-2`, `-6` or `-8`. The default has no marker and the `space-4` step.
+- The list always gets `role="list"`, because WebKit and VoiceOver drop the list role under `list-style: none`. A role of your own wins.
+- `as`: `'ul'` (default) or `'ol'`. `kv-list--decimal` is for `ol`: numbers on a `ul` say nothing about order to assistive technology.
 - A list of links is a list, not a navigation. Wrap it in a `<nav>` with a name when it is navigation.
 - Headless: no CSS. No state, so no `data-*`, no hook and no client code (usable in a server component). Your `className` joins the class. `@kvirn-ui/theme/theme.css` styles `kv-list`.
 
@@ -24,7 +24,7 @@ import { Link, List } from '@kvirn-ui/react'
   </List.Root>
 </nav>
 
-;<List.Root as="ol" marker="decimal">
+;<List.Root className="kv-list--decimal" as="ol">
   <List.Item>Apply</List.Item>
   <List.Item>Wait for the decision</List.Item>
 </List.Root>

@@ -1,6 +1,7 @@
+import { en } from '@kvirn-ui/i18n/en'
 import { LanguageLinks, MainMenu, PageFrame, SiteHeader } from '@kvirn-ui/patterns'
 import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
-import { Button, Field, TextInput } from '@kvirn-ui/react'
+import { Button, Field, KvirnProvider, TextInput } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/site-header/site-header.a11y.md?raw'
@@ -64,54 +65,56 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start" current="page">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#easy-read">Easy read</LanguageLinks.Link>
-            <LanguageLinks.Link href="#sign-language">Sign language</LanguageLinks.Link>
-          </LanguageLinks.Root>
-          <SiteHeader.Utility label="Shortcuts">
-            <SiteHeader.UtilityLink href="#contact">Contact us</SiteHeader.UtilityLink>
-            <SiteHeader.UtilityLink href="#e-services">E-services</SiteHeader.UtilityLink>
-            <SiteHeader.UtilityLink href="#my-pages">My pages</SiteHeader.UtilityLink>
-          </SiteHeader.Utility>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-              <MainMenu.Link href="#living">Living and environment</MainMenu.Link>
-              <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
-              <MainMenu.Link href="#business">Business and work</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start" current="page">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#easy-read">Easy read</LanguageLinks.Link>
+              <LanguageLinks.Link href="#sign-language">Sign language</LanguageLinks.Link>
+            </LanguageLinks.Root>
+            <SiteHeader.Utility label="Shortcuts">
+              <SiteHeader.UtilityLink href="#contact">Contact us</SiteHeader.UtilityLink>
+              <SiteHeader.UtilityLink href="#e-services">E-services</SiteHeader.UtilityLink>
+              <SiteHeader.UtilityLink href="#my-pages">My pages</SiteHeader.UtilityLink>
+            </SiteHeader.Utility>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+                <MainMenu.Link href="#living">Living and environment</MainMenu.Link>
+                <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
+                <MainMenu.Link href="#business">Business and work</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getAllByRole('banner')).toHaveLength(1)
@@ -136,67 +139,69 @@ export const Default: Story = {
 export const WithMainMenu: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-          <SiteHeader.Utility label="Shortcuts">
-            <SiteHeader.UtilityLink href="#contact">Contact us</SiteHeader.UtilityLink>
-            <SiteHeader.UtilityLink href="#e-services">E-services</SiteHeader.UtilityLink>
-          </SiteHeader.Utility>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool</MainMenu.Link>
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#living">
-                    All about living and environment
-                  </MainMenu.Overview>
-                  <MainMenu.Link href="#waste">Waste and recycling</MainMenu.Link>
-                  <MainMenu.Link href="#building">Building permits</MainMenu.Link>
-                  <MainMenu.Link href="#water">Water and sewage</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Topic>
-                <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
-                <MainMenu.TopicPanel>
-                  <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
-                  <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
-                  <MainMenu.Link href="#disability">Disability support</MainMenu.Link>
-                </MainMenu.TopicPanel>
-              </MainMenu.Topic>
-              <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+            <SiteHeader.Utility label="Shortcuts">
+              <SiteHeader.UtilityLink href="#contact">Contact us</SiteHeader.UtilityLink>
+              <SiteHeader.UtilityLink href="#e-services">E-services</SiteHeader.UtilityLink>
+            </SiteHeader.Utility>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool</MainMenu.Link>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Living and environment</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#living">
+                      All about living and environment
+                    </MainMenu.Overview>
+                    <MainMenu.Link href="#waste">Waste and recycling</MainMenu.Link>
+                    <MainMenu.Link href="#building">Building permits</MainMenu.Link>
+                    <MainMenu.Link href="#water">Water and sewage</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Care and support</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#care">All about care and support</MainMenu.Overview>
+                    <MainMenu.Link href="#elderly">Elderly care</MainMenu.Link>
+                    <MainMenu.Link href="#disability">Disability support</MainMenu.Link>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
+                <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     const topic = canvas.getByRole('button', { name: 'Living and environment', hidden: true })
@@ -212,32 +217,34 @@ export const WithMainMenu: Story = {
 export const Transaction: Story = {
   globals: { ...narrowGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <SiteHeader.Service>Parking permit</SiteHeader.Service>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-          <SiteHeader.Utility label="Shortcuts">
-            <SiteHeader.UtilityLink href="#contact">Contact us</SiteHeader.UtilityLink>
-          </SiteHeader.Utility>
-        </SiteHeader.Topbar>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Apply for a parking permit</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <SiteHeader.Service>Parking permit</SiteHeader.Service>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+            <SiteHeader.Utility label="Shortcuts">
+              <SiteHeader.UtilityLink href="#contact">Contact us</SiteHeader.UtilityLink>
+            </SiteHeader.Utility>
+          </SiteHeader.Topbar>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Apply for a parking permit</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas, canvasElement }) => {
     await expect(canvas.queryByRole('search')).toBeNull()
@@ -251,49 +258,51 @@ export const Transaction: Story = {
 export const MenuOpen: Story = {
   globals: { ...narrowGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-          <SiteHeader.Utility label="Shortcuts">
-            <SiteHeader.UtilityLink href="#contact">Contact us</SiteHeader.UtilityLink>
-          </SiteHeader.Utility>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu defaultOpen>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-              <MainMenu.Link href="#living">Living and environment</MainMenu.Link>
-              <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+            <SiteHeader.Utility label="Shortcuts">
+              <SiteHeader.UtilityLink href="#contact">Contact us</SiteHeader.UtilityLink>
+            </SiteHeader.Utility>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu defaultOpen>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+                <MainMenu.Link href="#living">Living and environment</MainMenu.Link>
+                <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas, canvasElement }) => {
     await expect(canvas.getByRole('button', { name: 'Menu' })).toHaveAttribute(
@@ -310,25 +319,27 @@ export const MenuOpen: Story = {
 export const WithNotice: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Notice>
-          <p>
-            This is a reference website for KvirnUI. <a href="#about">Read more</a>
-          </p>
-        </SiteHeader.Notice>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-        </SiteHeader.Topbar>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Notice>
+            <p>
+              This is a reference website for KvirnUI. <a href="#about">Read more</a>
+            </p>
+          </SiteHeader.Notice>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+          </SiteHeader.Topbar>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
 }
 
@@ -340,47 +351,49 @@ export const WithNotice: Story = {
 export const Keyboard: Story = {
   globals: { ...narrowGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-          <SiteHeader.Utility label="Shortcuts">
-            <SiteHeader.UtilityLink href="#contact">Contact us</SiteHeader.UtilityLink>
-          </SiteHeader.Utility>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+            <SiteHeader.Utility label="Shortcuts">
+              <SiteHeader.UtilityLink href="#contact">Contact us</SiteHeader.UtilityLink>
+            </SiteHeader.Utility>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
   play: async ({ canvas }) => {
     const menu = canvas.getByRole('button', { name: 'Menu' })
@@ -399,47 +412,49 @@ export const Keyboard: Story = {
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en', ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-          <SiteHeader.Utility label="Shortcuts">
-            <SiteHeader.UtilityLink href="#contact">Contact us</SiteHeader.UtilityLink>
-          </SiteHeader.Utility>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+            <SiteHeader.Utility label="Shortcuts">
+              <SiteHeader.UtilityLink href="#contact">Contact us</SiteHeader.UtilityLink>
+            </SiteHeader.Utility>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
 }
 
@@ -447,43 +462,45 @@ export const RTL: Story = {
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active', ...wideGlobals },
   render: () => (
-    <PageFrame.Root locale="en">
-      <SiteHeader.Root>
-        <SiteHeader.Topbar>
-          <SiteHeader.Brand href="#start">
-            <SiteHeader.Logo src={kvirnbyMark} />
-            Kvirnby municipality
-          </SiteHeader.Brand>
-          <LanguageLinks.Root label="Language">
-            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
-              Svenska
-            </LanguageLinks.Link>
-            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
-              English
-            </LanguageLinks.Link>
-          </LanguageLinks.Root>
-        </SiteHeader.Topbar>
-        <SiteHeader.Search action="#search">
-          <Field.Root className="kv-site-header-search-field">
-            <Field.Label marker="none">Search the site</Field.Label>
-            <TextInput type="search" name="q" autoComplete="off" />
-          </Field.Root>
-          <Button type="submit">Search</Button>
-        </SiteHeader.Search>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label="Main menu">
-              <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
-              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
-      </SiteHeader.Root>
-      <PageFrame.Main>
-        <h1>Welcome to Kvirnby</h1>
-      </PageFrame.Main>
-      <PlaceholderFooter />
-    </PageFrame.Root>
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root>
+          <SiteHeader.Topbar>
+            <SiteHeader.Brand href="#start">
+              <SiteHeader.Logo src={kvirnbyMark} />
+              Kvirnby municipality
+            </SiteHeader.Brand>
+            <LanguageLinks.Root label="Language">
+              <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+                Svenska
+              </LanguageLinks.Link>
+              <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+                English
+              </LanguageLinks.Link>
+            </LanguageLinks.Root>
+          </SiteHeader.Topbar>
+          <SiteHeader.Search action="#search">
+            <Field.Root className="kv-site-header-search-field">
+              <Field.Label marker="none">Search the site</Field.Label>
+              <TextInput type="search" name="q" autoComplete="off" />
+            </Field.Root>
+            <Button type="submit">Search</Button>
+          </SiteHeader.Search>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <MainMenu.Root label="Main menu">
+                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+              </MainMenu.Root>
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Welcome to Kvirnby</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
   ),
 }

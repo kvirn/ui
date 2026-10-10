@@ -6,8 +6,7 @@ import { virtualizedStreets } from '../form/virtualized.fixture.ts'
 
 // Story fixture for Components/Form/Autocomplete (contract: autocomplete.a11y.md). The
 // functions here are the examples the stories show with "Show code": each is one Autocomplete as
-// an adopter writes it. sv, en, fi, nb and nn are written, and se shows the English text,
-// marked lang="en" (3.1.2).
+// an adopter writes it. sv, en, fi, nb and nn are written.
 //
 // KvirnUI holds no form state. The value is the text: pass `value` and
 // `onValueChange`, or `defaultValue` and `name` for a plain form. Nothing here validates.
@@ -119,7 +118,7 @@ const autocompleteTexts: Partial<Record<FormLocale, AutocompleteTexts>> = {
   },
 }
 
-/** The fixture text in a locale, with the shared form texts, or English with `lang="en"` for se. */
+/** The fixture text in a locale, with the shared form texts. */
 export function autocompleteTextsFor(locale: FormLocale) {
   const { text: shared, lang } = choiceTextsFor(locale)
   return { text: autocompleteTexts[locale] ?? textsEn, shared, lang }

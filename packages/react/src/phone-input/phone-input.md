@@ -52,7 +52,7 @@ A phone number in a form. A native `<input type="tel">` with the attributes a ph
 
 ### Strings
 
-PhoneInput has no strings of its own and no i18n keys. A mask uses the mask's messages, in all six locales; override them per provider, or per instance with `messages`. `announceRejections={false}` turns the announcements off. Labels, help text and errors are yours, in your translations.
+PhoneInput has no strings of its own and no i18n keys. A mask uses the mask's messages, in all five locales; override them per provider, or per instance with `messages`. `announceRejections={false}` turns the announcements off. Labels, help text and errors are yours, in your translations.
 
 ### Your own element
 

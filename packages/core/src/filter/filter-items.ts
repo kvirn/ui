@@ -3,7 +3,7 @@
  *
  * Matching uses `Intl.Collator` with `sensitivity: 'base'`: case and, where the locale allows it,
  * accents are ignored, but letters the locale treats as separate stay separate. In `sv`, `fi`,
- * `nb`, `nn` and `se` that keeps å, ä and ö distinct from a and o. The runtime's ICU data decides,
+ * `nb` and `nn` that keeps å, ä and ö distinct from a and o. The runtime's ICU data decides,
  * so this module has no letter tables of its own.
  *
  * The match is a substring search by collation: the label is cut into windows of as many code

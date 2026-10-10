@@ -35,7 +35,7 @@ describe('checkCommitMessage', () => {
 
   it('ignores comment lines and everything below the scissors line, as git does', () => {
     const message = [
-      'fix(i18n): add missing Sámi string',
+      'fix(i18n): add missing Nynorsk string',
       '# Please enter the commit message for your changes.',
       '# ------------------------ >8 ------------------------',
       'diff --git a/file b/file',

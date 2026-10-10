@@ -65,4 +65,4 @@ The landmark name is the only string: `breadcrumb.label` (en `You are here`, sv 
 
 ## Message keys
 
-`breadcrumb.label` (all six locales; fi, nb and nn are drafts for native review, se is an English placeholder).
+`breadcrumb.label` (all five locales; fi, nb and nn are drafts for native review).

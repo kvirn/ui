@@ -20,7 +20,7 @@ export function PageTitle() {
   )
 
   return (
-    <Stack gap="8" lang={textLang}>
+    <Stack className="kv-stack--gap-8" lang={textLang}>
       <Button onClick={() => setIsShown((shown) => !shown)}>
         {isShown ? texts.hideSummary : texts.showSummary}
       </Button>

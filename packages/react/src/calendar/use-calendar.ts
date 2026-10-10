@@ -47,7 +47,7 @@ import { useDateSettings } from '../provider/use-date-settings.ts'
 import { useLocale } from '../provider/use-locale.ts'
 import { useMessages } from '../provider/use-messages.ts'
 import { useStoreSelector } from '../store/use-store-selector.ts'
-import { createCalendarFormatters, resolveIntlLocale } from './calendar-intl.ts'
+import { createCalendarFormatters } from './calendar-intl.ts'
 import { useWideViewport } from './use-wide-viewport.ts'
 
 export type {
@@ -308,8 +308,6 @@ export interface UseCalendarResult {
   range: DateRange | undefined
   /** Range mode: what the next press does. */
   rangeStep: RangeStep | undefined
-  /** The language of the written months and weekdays when it isn't the provider's (3.1.2). */
-  dateLanguage: string | undefined
 }
 
 const subscribeNever = () => () => {}
@@ -517,9 +515,7 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult
     }
   }, [store, selects, rangeValueStart, rangeValueEnd])
 
-  const intlLocale = useMemo(() => resolveIntlLocale(locale), [locale])
-  const formatters = useMemo(() => createCalendarFormatters(intlLocale), [intlLocale])
-  const dateLanguage = intlLocale === locale ? undefined : intlLocale
+  const formatters = useMemo(() => createCalendarFormatters(locale), [locale])
 
   const selectedDate = isControlled
     ? value !== undefined && isValidIsoDate(value)
@@ -752,7 +748,6 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult
       headingProps: {
         className: 'kv-calendar-heading',
         id: headingId,
-        ...(dateLanguage === undefined ? {} : { lang: dateLanguage }),
       },
       headingText: formatters.month(month),
       gridProps: {
@@ -959,6 +954,5 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult
     selectedDate,
     range,
     rangeStep,
-    dateLanguage,
   }
 }

@@ -90,22 +90,15 @@ export function Article({ ref }: { ref: React.Ref<HTMLElement> }) {
 
 export function ArticleWithPlayer({
   engine,
-  lang,
   allowRemoteVoices,
 }: {
   engine?: ReadAloudEngine | undefined
-  lang?: string | undefined
   allowRemoteVoices?: boolean | undefined
 }) {
   const articleRef = useRef<HTMLElement>(null)
   return (
     <>
-      <ReadAloud.Root
-        contentRef={articleRef}
-        engine={engine}
-        lang={lang}
-        allowRemoteVoices={allowRemoteVoices}
-      >
+      <ReadAloud.Root contentRef={articleRef} engine={engine} allowRemoteVoices={allowRemoteVoices}>
         <ReadAloud.Play />
         <ReadAloud.Previous />
         <ReadAloud.Next />

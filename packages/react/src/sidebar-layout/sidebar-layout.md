@@ -4,7 +4,7 @@
 
 A side column and a content column: stacked below `64rem`, side by side from it. Three parts, each one `<div>`: `SidebarLayout.Root`, `SidebarLayout.Sidebar` and `SidebarLayout.Content` (also exported as `SidebarLayoutRoot`, `SidebarLayoutSidebar` and `SidebarLayoutContent`).
 
-- `sidebarWidth` on the Root: `'sm'` (`16rem`) or `'md'` (default, `20rem`).
+- The sidebar track is a class on the Root: `kv-sidebar-layout--sidebar-sm` (`16rem`). The default is `20rem`.
 - Whichever part comes first in the DOM is at inline start (the right in RTL), and is read and focused first.
 - Content is not `<main>` by default: a page has one `main`. Collapsing a long sidebar is a Disclosure's job.
 - Headless: no CSS. Each renders a stable class, your `className` joins it, and `@kvirn-ui/theme/theme.css` styles it. No state, so no `data-*`, no client code (usable in a server component) and no role, ARIA or `tabindex`: `as` picks the element, and a landmark is always your choice and must be named.
@@ -13,7 +13,7 @@ A side column and a content column: stacked below `64rem`, side by side from it.
 ```tsx
 import { SidebarLayout } from '@kvirn-ui/react'
 
-;<SidebarLayout.Root sidebarWidth="sm">
+;<SidebarLayout.Root className="kv-sidebar-layout--sidebar-sm">
   <SidebarLayout.Sidebar as="nav" aria-label="I det här avsnittet">
     …
   </SidebarLayout.Sidebar>
@@ -25,4 +25,4 @@ import { SidebarLayout } from '@kvirn-ui/react'
 
 ## Hook
 
-`useSidebarLayout({ sidebarWidth })` returns `rootProps`, `sidebarProps` and `contentProps`, frozen objects with only the `className`.
+`useSidebarLayout()` returns `rootProps`, `sidebarProps` and `contentProps`, frozen objects with only the `className`.

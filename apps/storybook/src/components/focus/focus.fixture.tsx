@@ -54,12 +54,12 @@ function Drawer({
     onEscape: options.onEscape === undefined ? undefined : () => setOpen(false),
   })
   return (
-    <Stack gap="4">
+    <Stack className="kv-stack--gap-4">
       <div>
         <Button onClick={() => setOpen(true)}>{say(locale, 'Öppna filter', 'Open filters')}</Button>
       </div>
       <aside {...scopeProps} aria-label={title} hidden={!open} style={drawerStyle}>
-        <Stack gap="4">
+        <Stack className="kv-stack--gap-4">
           {children}
           <div>
             <Button onClick={() => setOpen(false)}>{say(locale, 'Stäng', 'Close')}</Button>
@@ -126,7 +126,7 @@ export function InitialFocusChoices({ locale }: { locale: FocusFixtureLocale }) 
   const [choice, setChoice] = useState<InitialFocusChoice>('first')
   const choices: InitialFocusChoice[] = ['first', 'container', 'selector', 'none']
   return (
-    <Stack gap="4">
+    <Stack className="kv-stack--gap-4">
       <fieldset>
         <legend>{say(locale, 'Fokus när drawern öppnas', 'Focus when the drawer opens')}</legend>
         {choices.map((value) => (
@@ -161,7 +161,7 @@ export function WizardStep({ locale }: { locale: FocusFixtureLocale }) {
   const stepRef = useRef<HTMLDivElement>(null)
   useFocus({ moveOn: { key: String(step), selector: 'h2', containerRef: stepRef } })
   return (
-    <Stack gap="4">
+    <Stack className="kv-stack--gap-4">
       <div>
         <Button onClick={() => setStep(step + 1)}>{say(locale, 'Nästa steg', 'Next step')}</Button>
       </div>
@@ -204,7 +204,7 @@ export function RouteMove({ locale }: { locale: FocusFixtureLocale }) {
 export function ScopePart({ locale }: { locale: FocusFixtureLocale }) {
   const [open, setOpen] = useState(false)
   return (
-    <Stack gap="4">
+    <Stack className="kv-stack--gap-4">
       <div>
         <Button onClick={() => setOpen(true)}>{say(locale, 'Öppna filter', 'Open filters')}</Button>
       </div>

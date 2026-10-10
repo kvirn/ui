@@ -78,7 +78,7 @@ Nothing is announced and nothing is live: there is no live region, because the c
 
 ### Message keys
 
-`tableOfContents.label`: the landmark's name when there is no `aria-labelledby`, for example `On this page`, `På den här sidan`, `Tällä sivulla`, `På denne siden` and `På denne sida`. `se` is an English placeholder that needs a native review (`pending`). Override it per provider and per instance (`messages={{ label }}`). The text of a visible title is the consumer's own.
+`tableOfContents.label`: the landmark's name when there is no `aria-labelledby`, for example `On this page`, `På den här sidan`, `Tällä sivulla`, `På denne siden` and `På denne sida`. Override it per provider and per instance (`messages={{ label }}`). The text of a visible title is the consumer's own.
 
 ## Consumer responsibilities
 
@@ -143,4 +143,3 @@ Headless: TableOfContents ships no CSS. With `@kvirn-ui/theme/theme.css` (design
 - **List semantics in Safari.** The default theme draws no list marker, and Safari (VoiceOver) drops the list semantics of such a list, so the lists carry `role="list"`. Check "list, 3 items" and the nested level in VoiceOver + Safari in the manual AT run.
 - **"Mistaken for keyboard focus"** (design spec Q-C1). The solid fill of the current heading moves while the reader scrolls. The usability test, with the quiet fill and no trail as the fallback, is `pending`.
 - **`IntersectionObserver` does not report the last pixels of a scroll,** so passive `scroll` and `resize` listeners wakes the same measuring. WebKit and mobile Safari behaviour is not automated and is `pending` here.
-- **`se` is an English placeholder** for `tableOfContents.label` until a native review.

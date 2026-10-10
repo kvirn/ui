@@ -2,7 +2,6 @@ import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
-import { se } from '@kvirn-ui/i18n/se'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef } from 'react'
@@ -204,7 +203,6 @@ describe('Change link', () => {
     ['fi', fi, 'Muuta'],
     ['nb', nb, 'Endre'],
     ['nn', nn, 'Endre'],
-    ['se', se, 'Change'],
   ] as const)('the %s catalog gives the visible word', async (locale, messages, word) => {
     await render(
       <KvirnProvider locale={locale} messages={messages}>

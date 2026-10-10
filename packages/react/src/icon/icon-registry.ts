@@ -11,15 +11,10 @@ export interface IconComponentProps {
   className?: string
   width?: string | number
   height?: string | number
-  strokeWidth?: string | number
-  color?: string
-  fill?: string
-  stroke?: string
   role?: 'img'
   /** `undefined` clears a library's own `aria-hidden` on a labelled icon. */
   'aria-hidden'?: 'true' | undefined
   'aria-label'?: string
-  'data-size'?: string
   'data-mirror-in-rtl'?: ''
 }
 

@@ -5,7 +5,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 // Fixtures for Components/Form/Switch. Each function is one example, and the story's "Show code"
 // prints it (`showSource`), so it reads the way an adopter writes it: the real parts and props,
 // with the localised text taken at the top. KvirnUI holds no form state, and nothing here saves
-// anywhere: the Controlled example only pretends to. se is English, marked lang="en" (3.1.2).
+// anywhere: the Controlled example only pretends to.
 
 export interface SwitchTexts {
   smsReminders: string
@@ -92,11 +92,10 @@ const switchTexts: Record<FormLocale, SwitchTexts | undefined> = {
   fi: textsFi,
   nb: textsNb,
   nn: textsNn,
-  se: undefined,
   en: textsEn,
 }
 
-/** The fixture text in a locale, or the English text with `lang="en"` for se. */
+/** The fixture text in a locale. */
 export function switchTextsFor(locale: FormLocale): {
   text: SwitchTexts
   lang: 'en' | undefined

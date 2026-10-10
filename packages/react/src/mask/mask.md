@@ -30,7 +30,7 @@ Use a mask for a **code**: a personal identity number, a postcode, an organisati
 
 `number` is not a name: a quantity or an amount is a NumberInput, which owns the number mask. A number mask from `masks.number` still works on a TextInput, for a stored amount that your form formats.
 
-**Where the country comes from.** The input's own `{ preset, country }`, else the provider's `country` prop, else the region of the provider's locale (`sv-FI` is Finland), else its language (`sv` is Sweden, `fi` is Finland, `nb`, `nn`, `no` and `se` are Norway). Nothing is guessed beyond that: with no country (`en`, `da-DK`) a country mask only takes digits, and a development warning says so once (`mask-country-unresolved:<name>:<locale>`). A name is resolved in the input, so one `mask="postal-code"` follows the locale of the provider it sits in.
+**Where the country comes from.** The input's own `{ preset, country }`, else the provider's `country` prop, else the region of the provider's locale (`sv-FI` is Finland), else its language (`sv` is Sweden, `fi` is Finland, `nb`, `nn` and `no` are Norway). Nothing is guessed beyond that: with no country (`en`, `da-DK`) a country mask only takes digits, and a development warning says so once (`mask-country-unresolved:<name>:<locale>`). A name is resolved in the input, so one `mask="postal-code"` follows the locale of the provider it sits in.
 
 ### The presets
 
@@ -83,14 +83,14 @@ A check never says the person or organisation exists. **`allowSyntheticNumbers`*
 | `mask.maximumLength`       | "You've entered all 12 characters."                                                           |
 | `mask.maximumDecimals`     | "No more decimals can be entered here." (a number mask with all its decimals)                 |
 
-Rejected characters are announced (4.1.3) with a polite message from the shared Announcer, at most once every three seconds per field. The strings are in all six locales, and you can override them per provider or per instance (`messages={{ characterNotAllowed: () => '…' }}`). `announceRejections={false}` turns it off, for example when you show your own message: put that message in a live region. **The `KvirnProvider` is required for announcements:** without one the mask still works, nothing is announced, and a development warning says so once.
+Rejected characters are announced (4.1.3) with a polite message from the shared Announcer, at most once every three seconds per field. The strings are in all five locales, and you can override them per provider or per instance (`messages={{ characterNotAllowed: () => '…' }}`). `announceRejections={false}` turns it off, for example when you show your own message: put that message in a live region. **The `KvirnProvider` is required for announcements:** without one the mask still works, nothing is announced, and a development warning says so once.
 
 ## Behaviour
 
 - **Backspace and Delete always remove a character**, also next to a separator. The caret stays after the character the user typed. A dead key or IME composition is left alone until it ends.
 - **The value is written back only when the mask changed it**, so plain typing keeps the browser's undo history. When the mask inserts a separator, undo for that step is lost.
 - **A controlled `value` is rendered as given and never rewritten.** For a stored, unmasked value use the mask's `format`: `value={mask.format(stored)}`. A form submit sends the formatted value, and `mask.unmask(value)` gives the plain one.
-- **Numbers and dates** use the provider's locale for the separator (a comma in sv, fi, nb, nn and se) and for the order of a date, whichever separator is typed. `mask.withLocale(locale)` gives the same mask with that locale's separators, for showing a stored number the same way. A number mask with its own `locale` keeps it.
+- **Numbers and dates** use the provider's locale for the separator (a comma in sv, fi, nb and nn) and for the order of a date, whichever separator is typed. `mask.withLocale(locale)` gives the same mask with that locale's separators, for showing a stored number the same way. A number mask with its own `locale` keeps it.
 - **Types.** A mask works on `type` `text`, `tel`, `search`, `url` and `password`. On `type="email"` there is no caret control, so use only `masks.email()` there: another mask warns in development.
 - **`createMask` is not part of the API.** Write a mask as a plain definition (`{ pattern, ...options }`, a `RegExp` or a preset) and pass it to the input, which resolves it.
 
